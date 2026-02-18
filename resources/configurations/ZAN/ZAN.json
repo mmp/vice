@@ -107,12 +107,14 @@
         {
             "id": "A11",
             "stars_id": "AAA",
-            "single_char_stars_id": "A"
+            "single_char_stars_id": "A",
+            "two_char_stars_id": "AA"
         },
         {
             "id": "FAI",
             "stars_id": "FFF",
-            "single_char_stars_id": "F"
+            "single_char_stars_id": "F",
+            "two_char_stars_id": "FF"
         }
     ]
 }

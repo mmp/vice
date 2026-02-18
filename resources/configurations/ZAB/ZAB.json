@@ -322,7 +322,8 @@
         },
         {
             "id": "NYL",
-            "stars_id": "YYY"
+            "stars_id": "YYY",
+            "two_char_stars_id": "YY"
         },
         {
             "id": "P50",

@@ -588,7 +588,8 @@
         },
         {
             "id": "CBM",
-            "stars_id": "CBM"
+            "stars_id": "CBM",
+            "two_char_stars_id": "BB"
         },
         {
             "id": "CHA",
@@ -620,7 +621,8 @@
         },
         {
             "id": "HSV",
-            "stars_id": "HSV"
+            "stars_id": "HSV",
+            "two_char_stars_id": "HH"
         },
         {
             "id": "MGM",
@@ -634,7 +636,8 @@
         },
         {
             "id": "OZR",
-            "stars_id": "OZR"
+            "stars_id": "OZR",
+            "two_char_stars_id": "OO"
         },
         {
             "id": "RDU",
@@ -642,7 +645,8 @@
         },
         {
             "id": "ROA",
-            "stars_id": "ROA"
+            "stars_id": "ROA",
+            "two_char_stars_id": "RR"
         },
         {
             "id": "SSC",

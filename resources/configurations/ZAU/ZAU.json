@@ -296,109 +296,131 @@
         {
             "id": "ALO",
             "stars_id": "ALT",
-            "single_char_stars_id": "A"
+            "single_char_stars_id": "A",
+            "two_char_stars_id": "AL"
         },
         {
             "id": "AZO",
             "stars_id": "AZT",
-            "single_char_stars_id": "Z"
+            "single_char_stars_id": "Z",
+            "two_char_stars_id": "AZ"
         },
         {
             "id": "C90",
             "stars_id": "ORT",
-            "single_char_stars_id": "O"
+            "single_char_stars_id": "O",
+            "two_char_stars_id": "OR"
         },
         {
             "id": "CID",
             "stars_id": "CIT",
-            "single_char_stars_id": "H"
+            "single_char_stars_id": "H",
+            "two_char_stars_id": "CI"
         },
         {
             "id": "CMH",
-            "stars_id": "CMH"
+            "stars_id": "CMH",
+            "two_char_stars_id": "CO"
         },
         {
             "id": "CMI",
             "stars_id": "CMT",
-            "single_char_stars_id": "W"
+            "single_char_stars_id": "W",
+            "two_char_stars_id": "CM"
         },
         {
             "id": "DSM",
             "stars_id": "DSM",
-            "single_char_stars_id": "E"
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "DS"
         },
         {
             "id": "FWA",
             "stars_id": "FWT",
-            "single_char_stars_id": "F"
+            "single_char_stars_id": "F",
+            "two_char_stars_id": "FW"
         },
         {
             "id": "GRB",
             "stars_id": "GRB",
-            "single_char_stars_id": "Y"
+            "single_char_stars_id": "Y",
+            "two_char_stars_id": "GG"
         },
         {
             "id": "GUS",
             "stars_id": "GUT",
-            "single_char_stars_id": "U"
+            "single_char_stars_id": "U",
+            "two_char_stars_id": "GU"
         },
         {
             "id": "HUF",
-            "stars_id": "TTH"
+            "stars_id": "TTH",
+            "two_char_stars_id": "TT"
         },
         {
             "id": "IND",
             "stars_id": "IND",
-            "single_char_stars_id": "V"
+            "single_char_stars_id": "V",
+            "two_char_stars_id": "IN"
         },
         {
             "id": "LAN",
             "stars_id": "LAN",
-            "single_char_stars_id": "L"
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "LA"
         },
         {
             "id": "MKE",
             "stars_id": "MKT",
-            "single_char_stars_id": "M"
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MK"
         },
         {
             "id": "MLI",
             "stars_id": "MLT",
-            "single_char_stars_id": "Q"
+            "single_char_stars_id": "Q",
+            "two_char_stars_id": "ML"
         },
         {
             "id": "MSN",
             "stars_id": "MST",
-            "single_char_stars_id": "D"
+            "single_char_stars_id": "D",
+            "two_char_stars_id": "MS"
         },
         {
             "id": "RFD",
             "stars_id": "RFT",
-            "single_char_stars_id": "R"
+            "single_char_stars_id": "R",
+            "two_char_stars_id": "RF"
         },
         {
             "id": "RST",
-            "stars_id": "RST"
+            "stars_id": "RST",
+            "two_char_stars_id": "RS"
         },
         {
             "id": "SBN",
             "stars_id": "SBT",
-            "single_char_stars_id": "S"
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SB"
         },
         {
             "id": "T75",
             "stars_id": "STL",
-            "single_char_stars_id": "G"
+            "single_char_stars_id": "G",
+            "two_char_stars_id": "ST"
         },
         {
             "id": "TOL",
             "stars_id": "TOL",
-            "single_char_stars_id": "T"
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "TO"
         },
         {
             "id": "VOK",
             "stars_id": "VOT",
-            "single_char_stars_id": "X"
+            "single_char_stars_id": "X",
+            "two_char_stars_id": "VO"
         },
         {
             "id": "ZID",

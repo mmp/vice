@@ -294,12 +294,14 @@
     "handoff_ids": [
         {
             "id": "BHM",
-            "stars_id": "BHM"
+            "stars_id": "BHM",
+            "two_char_stars_id": "BH"
         },
         {
             "id": "BNA",
             "stars_id": "BBB",
-            "single_char_stars_id": "B"
+            "single_char_stars_id": "B",
+            "two_char_stars_id": "BB"
         },
         {
             "id": "BTR",
@@ -308,11 +310,13 @@
         {
             "id": "CBM",
             "stars_id": "CCC",
-            "single_char_stars_id": "C"
+            "single_char_stars_id": "C",
+            "two_char_stars_id": "CC"
         },
         {
             "id": "CHA",
-            "stars_id": "CHA"
+            "stars_id": "CHA",
+            "two_char_stars_id": "CH"
         },
         {
             "id": "CLT",
@@ -321,12 +325,14 @@
         {
             "id": "EVV",
             "stars_id": "EVV",
-            "single_char_stars_id": "E"
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "EV"
         },
         {
             "id": "FSM",
             "stars_id": "SSS",
-            "single_char_stars_id": "S"
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SS"
         },
         {
             "id": "GPT",
@@ -339,12 +345,14 @@
         {
             "id": "HOP",
             "stars_id": "PPP",
-            "single_char_stars_id": "P"
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "PP"
         },
         {
             "id": "HSV",
             "stars_id": "VVV",
-            "single_char_stars_id": "V"
+            "single_char_stars_id": "V",
+            "two_char_stars_id": "HH"
         },
         {
             "id": "HUF",
@@ -353,7 +361,8 @@
         {
             "id": "JAN",
             "stars_id": "JJJ",
-            "single_char_stars_id": "J"
+            "single_char_stars_id": "J",
+            "two_char_stars_id": "JJ"
         },
         {
             "id": "LEX",
@@ -362,12 +371,14 @@
         {
             "id": "LIT",
             "stars_id": "LLL",
-            "single_char_stars_id": "L"
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "LL"
         },
         {
             "id": "M03",
             "stars_id": "MMM",
-            "single_char_stars_id": "M"
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MM"
         },
         {
             "id": "MGM",
@@ -388,7 +399,8 @@
         {
             "id": "NMM",
             "stars_id": "NNN",
-            "single_char_stars_id": "N"
+            "single_char_stars_id": "N",
+            "two_char_stars_id": "NN"
         },
         {
             "id": "POE",
@@ -400,7 +412,8 @@
         },
         {
             "id": "SGF",
-            "stars_id": "SGF"
+            "stars_id": "SGF",
+            "two_char_stars_id": "SG"
         },
         {
             "id": "SHV",

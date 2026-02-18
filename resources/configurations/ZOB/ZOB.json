@@ -657,7 +657,8 @@
         },
         {
             "id": "SYR",
-            "stars_id": "SYR"
+            "stars_id": "SYR",
+            "two_char_stars_id": "SY"
         },
         {
             "id": "TOL",

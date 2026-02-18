@@ -427,7 +427,8 @@
         {
             "id": "A90",
             "stars_id": "BOA",
-            "single_char_stars_id": "B"
+            "single_char_stars_id": "B",
+            "two_char_stars_id": "BO"
         },
         {
             "id": "ABE",
@@ -440,25 +441,30 @@
         {
             "id": "ALB",
             "stars_id": "ALA",
-            "single_char_stars_id": "A"
+            "single_char_stars_id": "A",
+            "two_char_stars_id": "AL"
         },
         {
             "id": "AVP",
-            "stars_id": "WWW"
+            "stars_id": "WWW",
+            "two_char_stars_id": "WW"
         },
         {
             "id": "BGM",
-            "stars_id": "BBB"
+            "stars_id": "BBB",
+            "two_char_stars_id": "BB"
         },
         {
             "id": "BGR",
             "stars_id": "BGA",
-            "single_char_stars_id": "G"
+            "single_char_stars_id": "G",
+            "two_char_stars_id": "BG"
         },
         {
             "id": "BTV",
             "stars_id": "BTA",
-            "single_char_stars_id": "T"
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "BT"
         },
         {
             "id": "BUF",
@@ -466,7 +472,8 @@
         },
         {
             "id": "ELM",
-            "stars_id": "EEE"
+            "stars_id": "EEE",
+            "two_char_stars_id": "EE"
         },
         {
             "id": "ERI",
@@ -475,11 +482,13 @@
         {
             "id": "GTB",
             "stars_id": "GTA",
-            "single_char_stars_id": "L"
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "GT"
         },
         {
             "id": "N90",
-            "stars_id": "NNN"
+            "stars_id": "NNN",
+            "two_char_stars_id": "NN"
         },
         {
             "id": "PHL",
@@ -488,12 +497,14 @@
         {
             "id": "PVD",
             "stars_id": "NCA",
-            "single_char_stars_id": "O"
+            "single_char_stars_id": "O",
+            "two_char_stars_id": "NC"
         },
         {
             "id": "PWM",
             "stars_id": "PWA",
-            "single_char_stars_id": "P"
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "PW"
         },
         {
             "id": "RDG",
@@ -501,12 +512,14 @@
         },
         {
             "id": "ROC",
-            "stars_id": "RRR"
+            "stars_id": "RRR",
+            "two_char_stars_id": "RR"
         },
         {
             "id": "SYR",
             "stars_id": "SYA",
-            "single_char_stars_id": "S"
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SY"
         },
         {
             "id": "WRI",
@@ -515,7 +528,8 @@
         {
             "id": "Y90",
             "stars_id": "BDA",
-            "single_char_stars_id": "D"
+            "single_char_stars_id": "D",
+            "two_char_stars_id": "BD"
         },
         {
             "id": "ZDC",

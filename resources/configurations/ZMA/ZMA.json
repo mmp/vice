@@ -425,40 +425,48 @@
         {
             "id": "F11",
             "stars_id": "XOO",
-            "single_char_stars_id": "X"
+            "single_char_stars_id": "X",
+            "two_char_stars_id": "XO"
         },
         {
             "id": "HST",
-            "stars_id": "HHH"
+            "stars_id": "HHH",
+            "two_char_stars_id": "HH"
         },
         {
             "id": "JAX",
-            "stars_id": "WOO"
+            "stars_id": "WOO",
+            "two_char_stars_id": "WO"
         },
         {
             "id": "MIA",
             "stars_id": "MMM",
-            "single_char_stars_id": "M"
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MM"
         },
         {
             "id": "NQX",
             "stars_id": "EEE",
-            "single_char_stars_id": "E"
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "EE"
         },
         {
             "id": "PBI",
             "stars_id": "PPP",
-            "single_char_stars_id": "P"
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "PP"
         },
         {
             "id": "RSW",
             "stars_id": "FFF",
-            "single_char_stars_id": "F"
+            "single_char_stars_id": "F",
+            "two_char_stars_id": "FF"
         },
         {
             "id": "TPA",
             "stars_id": "TTT",
-            "single_char_stars_id": "T"
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "TT"
         },
         {
             "id": "ZHU",
