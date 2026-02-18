@@ -1868,7 +1868,8 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 						if sg.Airports == nil {
 							sg.Airports = make(map[string]*av.Airport)
 						}
-						sg.Airports[airport] = &av.Airport{}
+						sg.Airports[airport] = &av.Airport{} // This is an uninitialized, empty airport that is soley used for altimiter and coordination lists so that they're consistent across areas of a TRACON. 
+						// For example, for the N90 ISP files, the EWR and LGA airports aren't defined, so when their altimeter and coorindation lists were called from the N90 configuration file, there was no defined airport. 
 						return
 					}
 				}
