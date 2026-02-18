@@ -204,8 +204,6 @@ func SynthesizeContactTTS(text, voice string) ([]int16, error) {
 func (t *localTTS) voiceSpeed(voice string) float32 {
 	if strings.HasPrefix(voice, "zf_") || strings.HasPrefix(voice, "zm_") {
 		return 1.3 // Chinese voices work better with a slower speed
-	} else if voice == "af_jessica" {
-		return 1.5
 	} else {
 		return 1.75
 	}

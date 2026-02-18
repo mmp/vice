@@ -760,7 +760,7 @@ func (ac *Aircraft) DivertToAirport(ap string) {
 // Edit this map to customize which voices are used for each airline.
 var AirlineVoices = map[string][]string{
 	"default": {
-		"af_alloy", "af_aoede", "af_bella", "af_heart", "af_jessica", "af_nova", "af_kore",
+		"af_alloy", "af_aoede", "af_bella", "af_heart", "af_nova", "af_kore",
 		"af_river", "af_sarah", "af_sky", "am_adam", "am_echo", "am_eric", "am_fenrir", "am_liam",
 		"am_michael", "am_onyx", "am_puck",
 	},
