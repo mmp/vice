@@ -114,6 +114,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.1">0.14.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.0">0.14.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.3">0.13.3</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.2">0.13.2</a></li>
@@ -1463,6 +1464,43 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.14.1">0.14.1 (TBD)</h3>
+            <ul>
+              <li>Long requested: you can actually move sub-windows outside of the main window.
+                <ul>
+                  <li>The flight strip and messages windows are now sub-windows and now its just the radar scope in the main window.</li>
+                </ul>
+              </li>
+              <li>Text to speech now runs locally on your computer rather than in the cloud.</li>
+              <li>Added ATIS simulation: see the ATIS/METAR tab in the scenario info window for what's current.
+                <ul>
+              <li>Aircraft will call in with the current ATIS; if it's changed and they call in with the old one, STT supports "information X is now current," "advise you have information X", etc., or with the keyboard you can issue the command <code>ATIS/X</code> to tell them X is current.</li>
+                </ul>
+              </li>
+              <li>Lots of small improvements to speech-to-text.</li>
+              <li>Bugfixes:
+                <ul>
+                  <li>Handle Pacific "P" and Carribean "T" airports better.</li>
+                  <li>Use sim time, not wallclock time for delayed heading changes so it works better when sped up (@jords).</li>
+                  <li>"CSI" for cleared straight in approach without specifying the approach works now.</li>
+                  <li>STARS force quicklook was unintentionally being applied to all controllers.</li>
+                  <li>Handing off tracks before they call in should work better; they will still call in to your frequency first.</li>
+                  <li>Fixed long stalls after clicking a new ARTCC/TRACON in the new sim window.</li>
+                  <li>Fixed issues with crosswinds pushing aircraft off of the localizer/final approach course.</li>
+                </ul>
+              </li>
+              <li>Flight strips have been reworked; right click to get a menu to push them to the next controller.</li>
+              <li>Facility engineering updates:
+                <ul>
+                  <li>Major rework of how facility-specific data is managed; see (Michael Trokel)</li>
+                  <li>Added support for STARS FDAM (flight data auto-modify) filters: this allows setting things like scratchpad, leader line direction, for (selected) aircraft in a filter region.</li>
+                  <li>Added qualifying attributes to quicklook filter regions: it can now depend on owning TCP, scratchpad, flight type, flight rules, CWT category, and a bunch of other things.</li>
+                  <li>CRDA: no longer has to be tied to runways. Paths can include arcs and don't have to be straight lines. Convergence points can be arbitrary, don't have to be runway intersections.</li>
+                  <li>Added "go_around" object to "arrival_runways" specifiers: can specify heading, altitude, and handoff controller for each arrival runway.</li>
+                </ul>
+              </li>
+            </ul>
 
             <h3 id="release-0.14.0">0.14.0 (6 Feb 2026)</h3>
             <ul>
