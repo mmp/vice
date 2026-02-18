@@ -56,7 +56,7 @@ type scenarioGroup struct {
 	// not from the scenario group JSON.
 	ControlPositions   map[sim.TCP]*av.Controller `json:"-"`
 	FacilityAdaptation sim.FacilityAdaptation     `json:"-"`
-	HandoffIDs         []sim.HandoffID             `json:"-"`
+	HandoffIDs         []sim.HandoffID            `json:"-"`
 	FixPairs           []sim.FixPairDefinition    `json:"-"`
 
 	SourceFile string // path of the JSON file this was loaded from
@@ -1887,7 +1887,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			}
 
 			// Load controllers from neighboring facilities.
-			// 1. Load all facility config files. 
+			// 1. Load all facility config files.
 			// 2. Interate through the handoff IDs and then add the appropriate controllers to the scenario group.
 			for _, neighbor := range fc.HandoffIDs {
 				neighbor := string(neighbor.ID)
