@@ -1505,7 +1505,7 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 
 					r := int32(lc.DepartureRateScale*lc.DepartureRates[airport][runway][category] + 0.5)
 					if imgui.InputIntV("##adr", &r, 0, 120, 0) {
-						lc.DepartureRates[airport][runway][category] = float32(r) / lc.DepartureRateScale
+						lc.DepartureRates[airport][runway][category] = float32(r) / max(.01, lc.DepartureRateScale)
 						changed = true
 					}
 
@@ -1630,7 +1630,7 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 					r := int32(rate*lc.InboundFlowRateScale + 0.5)
 					if imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0) {
 						changed = true
-						lc.InboundFlowRates[group][ap] = float32(r) / lc.InboundFlowRateScale
+						lc.InboundFlowRates[group][ap] = float32(r) / max(.01, lc.InboundFlowRateScale)
 					}
 					aarCol++
 
@@ -1688,7 +1688,7 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 			r := int32(lc.InboundFlowRates[group]["overflights"]*lc.InboundFlowRateScale + 0.5)
 			if imgui.InputIntV("##of-"+group, &r, 0, 120, 0) {
 				changed = true
-				lc.InboundFlowRates[group]["overflights"] = float32(r) / lc.InboundFlowRateScale
+				lc.InboundFlowRates[group]["overflights"] = float32(r) / max(.01, lc.InboundFlowRateScale)
 			}
 			ofCol++
 
