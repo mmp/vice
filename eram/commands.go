@@ -331,9 +331,6 @@ func (ep *ERAMPane) closestTrackToLL(ctx *panes.Context, loc math.Point2LL, maxN
 
 func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller string) error {
 	control, err := ep.lookupControllerForID(ctx, controller, acid)
-	if control != nil {
-		fmt.Printf("ERAMPane handoffTrack: \"%s\" -> \"%s\"\n", controller, control.ERAMID())
-	}
 	if err != nil {
 		ep.bigOutput.displayError(ep.currentPrefs(), err)
 		return err

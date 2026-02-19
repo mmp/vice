@@ -183,7 +183,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 		// Validate go_around_assignments
 		for spec, tcp := range s.ControllerConfiguration.GoAroundAssignments {
-			if !slices.Contains(humanPositions, tcp) {
+			if !slices.Contains(s.ControllerConfiguration.AllPositions(), tcp) {
 				e.ErrorString("go_around_assignments: %q assigns to %q which is not a human position in \"default_consolidation\"", spec, tcp)
 			}
 			// Validate airport/runway
@@ -1616,9 +1616,6 @@ func neighborPrefix(facility string, handoffIDs []sim.HandoffID) string {
 func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor string,
 	handoffIDs []sim.HandoffID, e *util.ErrorLogger) {
 	prefix := neighborPrefix(neighbor, handoffIDs)
-	if sg.Name == "ZBW Area A" {
-		fmt.Printf("%s: Prefix for %s is %s\n", sg.Name, neighbor, prefix)
-	}
 	if prefix == "" {
 		e.ErrorString("TRACON neighbor %s not found in handoff_ids", neighbor)
 		return
@@ -1664,9 +1661,6 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 
 		if _, exists := sg.ControlPositions[pid]; !exists {
 			sg.ControlPositions[pid] = ctrlCopy
-			if sg.Name == "ZBW Area A" {
-				fmt.Printf("%s: Added controller %s for %s\n", sg.Name, pid, ctrlCopy.ERAMID())
-			}
 		}
 	}
 }

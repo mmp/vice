@@ -1592,7 +1592,7 @@
                     "runway": "22",
           "go_around": {
             "altitude": 2000,
-            "handoff_controller": "LGA_D_APP",
+            "handoff_controller": "1D",
             "hold_departures": []
           }
                 }
@@ -1668,7 +1668,7 @@
                     "runway": "4",
           "go_around": {
             "altitude": 2000,
-            "handoff_controller": "LGA_V_APP",
+            "handoff_controller": "1V",
             "hold_departures": []
           }
                 }
@@ -1744,7 +1744,7 @@
                     "runway": "22",
           "go_around": {
             "altitude": 2000,
-            "handoff_controller": "LGA_D_APP",
+            "handoff_controller": "1D",
             "hold_departures": []
           }
                 }
@@ -1820,7 +1820,7 @@
                     "runway": "4",
           "go_around": {
             "altitude": 2000,
-            "handoff_controller": "LGA_V_APP",
+            "handoff_controller": "1V",
             "hold_departures": []
           }
                 }
@@ -1897,7 +1897,7 @@
           "go_around": {
             "heading": 340,
             "altitude": 3000,
-            "handoff_controller": "LGA_DEP",
+            "handoff_controller": "1L",
             "hold_departures": ["4"]
           }
                 }
@@ -1973,7 +1973,7 @@
                     "runway": "4",
           "go_around": {
             "altitude": 2000,
-            "handoff_controller": "LGA_V_APP",
+            "handoff_controller": "1V",
             "hold_departures": []
           }
                 }
@@ -2004,7 +2004,7 @@
                     "runway": "4",
           "go_around": {
             "altitude": 2000,
-            "handoff_controller": "LGA_V_APP",
+            "handoff_controller": "1V",
             "hold_departures": []
           }
                 }
@@ -2036,7 +2036,7 @@
           "go_around": {
             "heading": 80,
             "altitude": 2000,
-            "handoff_controller": "LGA_DEP",
+            "handoff_controller": "1L",
             "hold_departures": ["13"]
           }
                 }
@@ -2067,7 +2067,7 @@
                     "runway": "22",
           "go_around": {
             "altitude": 2000,
-            "handoff_controller": "LGA_D_APP",
+            "handoff_controller": "1D",
             "hold_departures": []
           }
                 }
@@ -2098,7 +2098,7 @@
                     "runway": "22",
           "go_around": {
             "altitude": 2000,
-            "handoff_controller": "LGA_D_APP",
+            "handoff_controller": "1D",
             "hold_departures": []
           }
                 }
@@ -2130,7 +2130,7 @@
           "go_around": {
             "heading": 40,
             "altitude": 3000,
-            "handoff_controller": "LGA_F_APP",
+            "handoff_controller": "1F",
             "hold_departures": ["31"]
           }
                 }
@@ -2162,7 +2162,7 @@
           "go_around": {
             "heading": 40,
             "altitude": 3000,
-            "handoff_controller": "LGA_F_APP",
+            "handoff_controller": "1F",
             "hold_departures": ["31"]
           }
                 }
