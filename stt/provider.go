@@ -431,7 +431,7 @@ func (p *Transcriber) BuildAircraftContext(
 				}
 				if ap, ok := state.Airports[ar.Airport]; ok {
 					for code, appr := range ap.Approaches {
-						if appr.Runway == ar.Runway {
+						if appr.Runway == ar.Runway.Base() {
 							sttAc.CandidateApproaches[av.GetApproachTelephony(appr.FullName)] = code
 
 							// Build fixes map for this approach
@@ -451,8 +451,8 @@ func (p *Transcriber) BuildAircraftContext(
 						}
 					}
 					// Build LAHSORunways for this arrival runway (avoid duplicates)
-					if !seenRunways[ar.Runway] {
-						seenRunways[ar.Runway] = true
+					if !seenRunways[ar.Runway.Base()] {
+						seenRunways[ar.Runway.Base()] = true
 						intersecting := av.IntersectingRunways(ar.Airport, ar.Runway, state.NmPerLongitude, 0.5)
 						sttAc.LAHSORunways = append(sttAc.LAHSORunways, intersecting...)
 					}

@@ -235,7 +235,9 @@ jobs:
       shell: bash
       run: |
         unzip -q SDL2-devel-2.24.0-mingw.zip
-        7z x x86_64-12.2.0-release-win32-seh-rt_v10-rev0.7z -omingw
+        # Use posix-threaded MinGW (not win32) so std::thread works for ggml-vulkan
+        curl -L -o mingw-posix.7z https://github.com/niXman/mingw-builds-binaries/releases/download/12.2.0-rt_v10-rev0/x86_64-12.2.0-release-posix-seh-rt_v10-rev0.7z
+        7z x mingw-posix.7z -omingw
         echo "${{ github.workspace }}/ext/mingw/mingw64/bin" >> $GITHUB_PATH
         ls
 
@@ -264,6 +266,7 @@ jobs:
       run: |
         cp ext/mingw/mingw64/bin/libgcc_s_seh-1.dll windows/
         cp ext/mingw/mingw64/bin/libstdc++-6.dll windows/
+        cp ext/mingw/mingw64/bin/libwinpthread-1.dll windows/
         cp ext/SDL2-2.24.0/x86_64-w64-mingw32/bin/SDL2.dll windows/
 
     - name: Get sherpa-onnx commit SHA
@@ -288,7 +291,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: whisper.cpp/build_go
-        key: whisper-cpp-win-vulkan-${{ steps.whisper-sha.outputs.sha }}-sdk1.3.296.0
+        key: whisper-cpp-win-vulkan-posix-${{ steps.whisper-sha.outputs.sha }}-sdk1.3.296.0
 
     - name: Build vice
       run: |

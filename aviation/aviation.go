@@ -386,20 +386,37 @@ type Runway struct {
 	DisplacedThresholdDistance float32 // in nm
 }
 
-func TidyRunway(r string) string {
-	r, _, _ = strings.Cut(r, ".")
-	return strings.TrimSpace(r)
+// RunwayID is a runway identifier that may include a dot-separated suffix
+// (e.g., "13R.All"). Use Base() for physical runway lookups/comparisons.
+type RunwayID string
+
+func (r RunwayID) Base() string {
+	s, _, _ := strings.Cut(string(r), ".")
+	return strings.TrimSpace(s)
+}
+
+func (r RunwayID) SameRunway(other RunwayID) bool {
+	return r.Base() == other.Base()
+}
+
+// ExitID is an exit fix identifier that may include a dot-separated suffix
+// (e.g., "COLIN.P"). Use Base() for navaid lookups and display.
+type ExitID string
+
+func (e ExitID) Base() string {
+	s, _, _ := strings.Cut(string(e), ".")
+	return s
 }
 
 // AirportHasRunway returns true if the given runway exists at the airport (from DB).
-func AirportHasRunway(airport, runway string) bool {
+func AirportHasRunway(airport string, runway RunwayID) bool {
 	ap, ok := DB.Airports[airport]
 	if !ok {
 		return false
 	}
-	tidyRunway := TidyRunway(runway)
+	base := runway.Base()
 	for _, rwy := range ap.Runways {
-		if TidyRunway(rwy.Id) == tidyRunway {
+		if RunwayID(rwy.Id).Base() == base {
 			return true
 		}
 	}
@@ -434,7 +451,7 @@ type FlightPlan struct {
 	Altitude         int
 	ArrivalAirport   string
 	AlternateAirport string
-	Exit             string
+	Exit             ExitID
 	Route            string
 	Remarks          string
 }
@@ -683,8 +700,8 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 // Use maxDistNM=0 for strict threshold-to-threshold intersection, or a small
 // value (e.g., 0.5) to account for pavement extending past thresholds.
 // Returns both directions for each intersecting runway (e.g., both "13L" and "31R").
-func IntersectingRunways(airport, rwy string, nmPerLongitude, maxDistNM float32) []string {
-	rwy = TidyRunway(rwy)
+func IntersectingRunways(airport string, rwy RunwayID, nmPerLongitude, maxDistNM float32) []string {
+	rwyBase := rwy.Base()
 
 	// Get runway threshold positions
 	rwyEndpoints := func(r string) (p1, p2 [2]float32, ok bool) {
@@ -720,12 +737,12 @@ func IntersectingRunways(airport, rwy string, nmPerLongitude, maxDistNM float32)
 		return math.Distance2f(p, proj)
 	}
 
-	rwy1, rwy2, ok := rwyEndpoints(rwy)
+	rwy1, rwy2, ok := rwyEndpoints(rwyBase)
 	if !ok {
 		return nil
 	}
 
-	oppRwy := OppositeRunwayId(rwy)
+	oppRwy := OppositeRunwayId(rwyBase)
 
 	var intersecting []string
 	seen := make(map[string]bool)
@@ -735,8 +752,8 @@ func IntersectingRunways(airport, rwy string, nmPerLongitude, maxDistNM float32)
 	}
 
 	for _, otherRwy := range ap.Runways {
-		id := TidyRunway(otherRwy.Id)
-		if id == rwy || id == oppRwy {
+		id := RunwayID(otherRwy.Id).Base()
+		if id == rwyBase || id == oppRwy {
 			continue
 		}
 

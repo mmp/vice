@@ -1147,8 +1147,8 @@
                         }
                     ],
                     "destination": "KRDD",
-                    "exit": "CSTRO RBL",
-                    "route": "CSTRO RBL"
+                    "exit": "CSTRO",
+                    "route": "CSTRO"
                 }
             ],
             "exit_categories": {

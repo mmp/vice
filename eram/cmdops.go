@@ -737,7 +737,7 @@ func handleInitiateHandoff(ep *ERAMPane, ctx *panes.Context, sector string, trk 
 }
 
 func handleLeaderLine(ep *ERAMPane, ctx *panes.Context, dir int, trk *sim.Track) (CommandStatus, error) {
-	direction := numberToLLDirection(dir)
+	direction := ep.numberToLLDirection(dir)
 	callsign := trk.ADSBCallsign
 	dbType := ep.datablockType(ctx, *trk)
 
@@ -754,28 +754,55 @@ func handleLeaderLine(ep *ERAMPane, ctx *panes.Context, dir int, trk *sim.Track)
 	}, nil
 }
 
-func numberToLLDirection(cmd int) math.CardinalOrdinalDirection {
-	switch cmd {
-	case 1:
-		return math.SouthWest
-	case 2:
-		return math.South
-	case 3:
-		return math.SouthEast
-	case 4:
-		return math.West
-	case 5:
-		return math.NorthEast
-	case 6:
-		return math.East
-	case 7:
-		return math.NorthWest
-	case 8:
-		return math.North
-	case 9:
-		return math.NorthEast
-	default:
-		return math.East
+func (ep *ERAMPane) numberToLLDirection(cmd int) math.CardinalOrdinalDirection {
+	if ep.FlipNumericKeypad {
+		// Inverted layout: 1=NW (top-left on physical numpad)
+		switch cmd {
+		case 1:
+			return math.NorthWest
+		case 2:
+			return math.North
+		case 3:
+			return math.NorthEast
+		case 4:
+			return math.West
+		case 5:
+			return math.NorthEast
+		case 6:
+			return math.East
+		case 7:
+			return math.SouthWest
+		case 8:
+			return math.South
+		case 9:
+			return math.SouthEast
+		default:
+			return math.East
+		}
+	} else {
+		// Default layout: 1=SW (bottom-left on physical numpad)
+		switch cmd {
+		case 1:
+			return math.SouthWest
+		case 2:
+			return math.South
+		case 3:
+			return math.SouthEast
+		case 4:
+			return math.West
+		case 5:
+			return math.NorthEast
+		case 6:
+			return math.East
+		case 7:
+			return math.NorthWest
+		case 8:
+			return math.North
+		case 9:
+			return math.NorthEast
+		default:
+			return math.East
+		}
 	}
 }
 

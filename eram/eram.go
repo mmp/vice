@@ -58,6 +58,7 @@ type ERAMPane struct {
 	TrackState         map[av.ADSBCallsign]*TrackState `json:"TrackState,omitempty"`
 
 	DisableERAMtoRadio bool `json:"-"`
+	FlipNumericKeypad  bool
 
 	events *sim.EventsSubscription `json:"-"`
 

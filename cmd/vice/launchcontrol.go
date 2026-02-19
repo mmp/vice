@@ -50,7 +50,7 @@ func (la *LaunchAircraft) Reset() {
 
 type LaunchDeparture struct {
 	LaunchAircraft
-	Runway   string
+	Runway   av.RunwayID
 	Category string
 }
 
@@ -79,7 +79,7 @@ func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *Laun
 		rwy := client.State.VFRRunways[airport]
 		lc.vfrDepartures = append(lc.vfrDepartures, &LaunchDeparture{
 			LaunchAircraft: LaunchAircraft{Airport: airport},
-			Runway:         rwy.Id,
+			Runway:         av.RunwayID(rwy.Id),
 		})
 	}
 
@@ -108,7 +108,7 @@ func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *Laun
 }
 
 func (lc *LaunchControlWindow) spawnIFRDeparture(dep *LaunchDeparture) {
-	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.FlightRulesIFR, &dep.Aircraft,
+	lc.client.CreateDeparture(dep.Airport, string(dep.Runway), dep.Category, av.FlightRulesIFR, &dep.Aircraft,
 		func(err error) {
 			if err != nil {
 				lc.lg.Warnf("CreateDeparture: %v", err)
@@ -117,7 +117,7 @@ func (lc *LaunchControlWindow) spawnIFRDeparture(dep *LaunchDeparture) {
 }
 
 func (lc *LaunchControlWindow) spawnVFRDeparture(dep *LaunchDeparture) {
-	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.FlightRulesVFR, &dep.Aircraft,
+	lc.client.CreateDeparture(dep.Airport, string(dep.Runway), dep.Category, av.FlightRulesVFR, &dep.Aircraft,
 		func(err error) {
 			if err != nil && server.TryDecodeError(err) != sim.ErrViolatedAirspace {
 				lc.lg.Warnf("CreateDeparture: %v", err)
@@ -143,7 +143,7 @@ func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflig
 	}
 }
 
-func (lc *LaunchControlWindow) getLastDeparture(airport, runway string) (callsign av.ADSBCallsign, launch time.Time) {
+func (lc *LaunchControlWindow) getLastDeparture(airport string, runway av.RunwayID) (callsign av.ADSBCallsign, launch time.Time) {
 	match := func(dep *LaunchDeparture) bool {
 		return dep.Airport == airport && dep.Runway == runway
 	}
@@ -388,8 +388,8 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				// Sort departures by airport, then runway, then category
 				sortedDeps := util.DuplicateSlice(lc.departures)
 				slices.SortFunc(sortedDeps, func(a, b *LaunchDeparture) int {
-					return strings.Compare(a.Airport+"/"+a.Runway+"/"+a.Category,
-						b.Airport+"/"+b.Runway+"/"+b.Category)
+					return strings.Compare(a.Airport+"/"+string(a.Runway)+"/"+a.Category,
+						b.Airport+"/"+string(b.Runway)+"/"+b.Category)
 				})
 
 				// Find the maximum number of categories for any airport
@@ -440,12 +440,12 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 						}
 
 						imgui.TableNextColumn()
-						rwy, _, _ := strings.Cut(dep.Runway, ".")
+						rwy := dep.Runway.Base()
 						imgui.Text(rwy)
 						imgui.TableNextColumn()
 						imgui.Text(dep.Category)
 
-						imgui.PushIDStr(dep.Airport + " " + dep.Runway + " " + dep.Category)
+						imgui.PushIDStr(dep.Airport + " " + string(dep.Runway) + " " + dep.Category)
 
 						imgui.TableNextColumn()
 						imgui.Text(strconv.Itoa(dep.TotalLaunches))
@@ -455,14 +455,14 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							imgui.Text(dep.Aircraft.FlightPlan.AircraftType)
 
 							imgui.TableNextColumn()
-							imgui.Text(dep.Aircraft.FlightPlan.Exit)
+							imgui.Text(string(dep.Aircraft.FlightPlan.Exit))
 
 							lastCallsign, lastTime := lc.getLastDeparture(dep.Airport, dep.Runway)
 							mitAndTime(&dep.Aircraft, dep.Aircraft.Position(), lastCallsign, lastTime)
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-								lc.client.LaunchDeparture(dep.Aircraft, dep.Runway)
+								lc.client.LaunchDeparture(dep.Aircraft, string(dep.Runway))
 								dep.LastLaunchCallsign = dep.Aircraft.ADSBCallsign
 								dep.LastLaunchTime = lc.client.CurrentTime()
 								dep.TotalLaunches++
@@ -545,7 +545,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 						imgui.TableNextColumn()
 						imgui.Text(dep.Airport)
 						imgui.TableNextColumn()
-						imgui.Text(dep.Runway)
+						imgui.Text(string(dep.Runway))
 						imgui.TableNextColumn()
 						imgui.Text(strconv.Itoa(dep.TotalLaunches))
 
@@ -561,7 +561,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-								lc.client.LaunchDeparture(dep.Aircraft, dep.Runway)
+								lc.client.LaunchDeparture(dep.Aircraft, string(dep.Runway))
 								dep.LastLaunchCallsign = dep.Aircraft.ADSBCallsign
 								dep.LastLaunchTime = lc.client.CurrentTime()
 								dep.TotalLaunches++

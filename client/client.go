@@ -1125,7 +1125,7 @@ func makeWhisperPrompt(state SimState) string {
 	for _, ar := range state.ArrivalRunways {
 		if ap, ok := state.Airports[ar.Airport]; ok {
 			for _, appr := range ap.Approaches {
-				if appr.Runway == ar.Runway {
+				if appr.Runway == ar.Runway.Base() {
 					activeApproaches[appr.FullName] = struct{}{}
 					// Add all fixes from this active approach
 					for _, wps := range appr.Waypoints {

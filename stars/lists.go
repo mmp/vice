@@ -563,7 +563,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		var off, on, twoFive []string
 		for _, r := range ctx.Client.State.ArrivalRunways {
 			if ap, ok := ctx.Client.State.Airports[r.Airport]; ok {
-				if vol, ok := ap.ATPAVolumes[r.Runway]; ok {
+				if vol, ok := ap.ATPAVolumes[r.Runway.Base()]; ok {
 					if ctx.Client.State.IsATPAVolumeDisabled(vol.Id) {
 						off = append(off, vol.Id)
 					} else {

@@ -358,7 +358,7 @@ func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ra
 			ap := ctx.Client.State.Airports[rwy.Airport]
 			for _, name := range util.SortedMapKeys(ap.Approaches) {
 				appr := ap.Approaches[name]
-				if appr.Runway == rwy.Runway && ep.scopeDraw.approaches[rwy.Airport][name] {
+				if appr.Runway == rwy.Runway.Base() && ep.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
 						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 					}
@@ -389,13 +389,13 @@ func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms r
 
 			ap := ctx.Client.State.Airports[name]
 			for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
-				if ep.scopeDraw.departures[name][rwy] == nil {
+				if ep.scopeDraw.departures[name][string(rwy)] == nil {
 					continue
 				}
 
 				exitRoutes := ap.DepartureRoutes[rwy]
 				for _, exit := range util.SortedMapKeys(exitRoutes) {
-					if ep.scopeDraw.departures[name][rwy][exit] {
+					if ep.scopeDraw.departures[name][string(rwy)][string(exit)] {
 						radar.DrawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
 							td, style, ld, pd, ldr, color)
 					}
