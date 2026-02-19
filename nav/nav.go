@@ -45,6 +45,7 @@ type Nav struct {
 	Heading     NavHeading
 	Approach    NavApproach
 	Airwork     *NavAirwork
+	Prespawn    bool
 
 	FixAssignments map[string]NavFixAssignment
 

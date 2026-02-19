@@ -5,7 +5,6 @@
 package nav
 
 import (
-	"slices"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -289,8 +288,19 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 }
 
 func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, speed float32, eta float32, ok bool) {
-	haveWaypointSpeedRestriction :=
-		slices.ContainsFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Speed > 0 })
+	if nav.Prespawn {
+		return false, 0, 0, false
+	}
+
+	// Explicit loop avoids slices.ContainsFunc which copies the large
+	// Waypoint struct by value for each element via the closure.
+	haveWaypointSpeedRestriction := false
+	for i := range nav.Waypoints {
+		if nav.Waypoints[i].Speed > 0 {
+			haveWaypointSpeedRestriction = true
+			break
+		}
+	}
 
 	// Skip all this work in the (common) case that it's unnecessary.
 	if len(nav.FixAssignments) > 0 || haveWaypointSpeedRestriction {

@@ -5,7 +5,6 @@
 package nav
 
 import (
-	"slices"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -338,30 +337,61 @@ func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, boo
 		return WaypointCrossingConstraint{}, false
 	}
 
-	getRestriction := func(i int) *av.AltitudeRestriction {
-		wp := &nav.Waypoints[i]
-		// Return any controller-assigned constraint in preference to a
-		// charted one.
-		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Altitude != nil {
-			return nfa.Arrive.Altitude
-		} else if ar := nav.Waypoints[i].AltitudeRestriction; ar != nil {
-			// If the controller has given 'cross [wp] at [alt]' for a
-			// future waypoint, however, ignore the charted altitude
-			// restriction.
-			if len(nav.FixAssignments) > 0 {
-				// This is surprisingly expensive e.g. during VFR prespawn
-				// airspace violation checks and so we'll skip it entirely
-				// when possible.
-				if slices.ContainsFunc(nav.Waypoints[i+1:], func(wp av.Waypoint) bool {
-					fa, ok := nav.FixAssignments[wp.Fix]
-					return ok && fa.Arrive.Altitude != nil
-				}) {
-					return nil
-				}
+	if nav.Prespawn {
+		// Simplified altitude constraint for prespawn: find the first
+		// upcoming waypoint with a restriction that needs action and
+		// target it directly. Skips the full backwards walk with
+		// ClampRange/NMDistance2LLFast for intermediate waypoints.
+		var d float32
+		for i := range nav.Waypoints {
+			if i == 0 {
+				d = math.NMDistance2LLFast(nav.FlightState.Position, nav.Waypoints[0].Location,
+					nav.FlightState.NmPerLongitude)
+			} else {
+				d += math.NMDistance2LLFast(nav.Waypoints[i-1].Location, nav.Waypoints[i].Location,
+					nav.FlightState.NmPerLongitude)
 			}
-			return ar
+			ar := nav.Waypoints[i].AltitudeRestriction
+			if ar == nil || ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
+				continue
+			}
+			// Same altitude selection as the full algorithm: prefer
+			// upper bound if set, otherwise use FinalAltitude (cruise).
+			alt := util.Select(ar.Range[1] != 0, ar.Range[1], nav.FinalAltitude)
+			return WaypointCrossingConstraint{
+				Altitude: alt,
+				ETA:      d / nav.FlightState.GS * 3600,
+				Fix:      nav.Waypoints[i].Fix,
+			}, true
 		}
-		return nil
+		return WaypointCrossingConstraint{}, false
+	}
+
+	haveFixAssignments := len(nav.FixAssignments) > 0
+	getRestriction := func(i int) *av.AltitudeRestriction {
+		if haveFixAssignments {
+			wp := &nav.Waypoints[i]
+			// Return any controller-assigned constraint in preference to a
+			// charted one.
+			if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Altitude != nil {
+				return nfa.Arrive.Altitude
+			}
+			if ar := nav.Waypoints[i].AltitudeRestriction; ar != nil {
+				// If the controller has given 'cross [wp] at [alt]' for a
+				// future waypoint, ignore the charted altitude restriction.
+				// Explicit loop avoids slices.ContainsFunc which copies the
+				// large Waypoint struct by value for each element via the closure.
+				for j := i + 1; j < len(nav.Waypoints); j++ {
+					if fa, ok := nav.FixAssignments[nav.Waypoints[j].Fix]; ok && fa.Arrive.Altitude != nil {
+						return nil
+					}
+				}
+				return ar
+			}
+			return nil
+		}
+		// Fast path: no fix assignments, just return the charted restriction.
+		return nav.Waypoints[i].AltitudeRestriction
 	}
 
 	// Find the *last* waypoint that has an altitude restriction that

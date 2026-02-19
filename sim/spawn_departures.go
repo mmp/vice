@@ -831,37 +831,46 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		return nil, "", err
 	}
 
-	simac := deep.MustCopy(*ac)
+	// Deep-copy only Nav (not the full Aircraft) to avoid copying
+	// maps, pointers, and fields unused during route validation.
+	simNav := deep.MustCopy(ac.Nav)
+	simNav.Prespawn = true
+	simFP := ac.FlightPlan
+	prespawnWxs := s.wxModel.Lookup(simNav.FlightState.Position,
+		simNav.FlightState.Altitude, simTime)
 	for i := range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
-		if wp := simac.Update(s.wxModel, simTime, s.bravoAirspace, nil); wp != nil && wp.Delete {
+		if wp := simNav.UpdateWithWeather("", prespawnWxs, &simFP,
+			simTime, nil); wp != nil && wp.Delete {
 			return ac, rwy.Id, nil
 		}
 
 		if (i % 4) != 0 {
 			continue
 		}
-		if s.bravoAirspace.Inside(simac.Position(), int(simac.Altitude())) ||
-			s.charlieAirspace.Inside(simac.Position(), int(simac.Altitude())) ||
-			s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(simac.Position(), int(simac.Altitude())) {
+		pos := simNav.FlightState.Position
+		alt := int(simNav.FlightState.Altitude)
+		if s.bravoAirspace.Inside(pos, alt) ||
+			s.charlieAirspace.Inside(pos, alt) ||
+			s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(pos, alt) {
 			return nil, "", ErrViolatedAirspace
 		}
 		// Check MVA violation: aircraft must stay at or above MVA - 1000'.
 		// Skip when within 3nm of departure airport or 5nm of arrival airport.
-		distFromDeparture := math.NMDistance2LL(simac.Position(), simac.Nav.FlightState.DepartureAirportLocation)
-		distToArrival := math.NMDistance2LL(simac.Position(), simac.Nav.FlightState.ArrivalAirportLocation)
+		distFromDeparture := math.NMDistance2LL(pos, simNav.FlightState.DepartureAirportLocation)
+		distToArrival := math.NMDistance2LL(pos, simNav.FlightState.ArrivalAirportLocation)
 		if distFromDeparture > 3 && distToArrival > 5 {
-			if mva := s.mvaGrid.GetMVA(simac.Position()); mva > 0 && simac.Altitude() < float32(mva-vfrMVABuffer) {
+			if mva := s.mvaGrid.GetMVA(pos); mva > 0 && simNav.FlightState.Altitude < float32(mva-vfrMVABuffer) {
 				// Find which waypoint we're heading toward
 				wpIdx := -1
 				var wpName string
-				for j, wp := range simac.Nav.Waypoints {
+				for j, wp := range simNav.Waypoints {
 					wpIdx = j
 					wpName = wp.Fix
 					break
 				}
-				nav.NavLog(string(simac.ADSBCallsign), simTime, "state",
+				nav.NavLog(string(ac.ADSBCallsign), simTime, "state",
 					"rejected at %.0f' (MVA %d, need %d) heading to wp %d %q, pos %v, %.1fnm from dep, %.1fnm from arr",
-					simac.Altitude(), mva, mva-vfrMVABuffer, wpIdx, wpName, simac.Position(), distFromDeparture, distToArrival)
+					simNav.FlightState.Altitude, mva, mva-vfrMVABuffer, wpIdx, wpName, pos, distFromDeparture, distToArrival)
 				return nil, "", ErrVFRBelowMVA
 			}
 		}

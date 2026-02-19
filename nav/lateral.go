@@ -361,7 +361,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	}
 
 	passedWaypoint := false
-	if wp.FlyOver {
+	if wp.FlyOver || nav.Prespawn {
 		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
 		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, TurnClosest, wxs)
