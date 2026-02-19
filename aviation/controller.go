@@ -19,7 +19,7 @@ type Controller struct {
 	FacilityIdentifier string    `json:"-"`             // Set programmatically by loadNeighborControllers (e.g. "N" in "N4P")
 	ERAMFacility       bool      `json:"-"` // Set at runtime from facility type; true for ARTCC controllers
 	Facility           string    `json:"facility"`      // So we can get the STARS facility from a controller
-	Area               int       `json:"-"`             // Auto-derived from first digit of Position (e.g., "1A" -> area 1)
+	Area               string    `json:"area,omitempty"` // For TRACON: auto-derived from first digit of Position. For ERAM: must be manually specified.
 }
 
 func (c Controller) IsExternal() bool {

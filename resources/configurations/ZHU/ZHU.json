@@ -393,109 +393,135 @@
     "handoff_ids": [
         {
             "id": "ACT",
-            "stars_id": "ACT"
+            "stars_id": "ACT",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "A"
         },
         {
             "id": "AUS",
             "stars_id": "AAU",
             "single_char_stars_id": "U",
-            "two_char_stars_id": "AA"
+            "two_char_stars_id": "AA",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "BTR",
             "stars_id": "ARY",
             "single_char_stars_id": "Z",
-            "two_char_stars_id": "AR"
+            "two_char_stars_id": "AR",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "CRP",
             "stars_id": "ACR",
             "single_char_stars_id": "C",
-            "two_char_stars_id": "AC"
+            "two_char_stars_id": "AC",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "DLF",
             "stars_id": "ADL",
             "single_char_stars_id": "D",
-            "two_char_stars_id": "AD"
+            "two_char_stars_id": "AD",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "GGG",
-            "stars_id": "GGG"
+            "stars_id": "GGG",
+            "field_e_format": "FullStarsIdOnly"
         },
         {
             "id": "GPT",
             "stars_id": "AGP",
             "single_char_stars_id": "G",
-            "two_char_stars_id": "AG"
+            "two_char_stars_id": "AG",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "GRK",
-            "stars_id": "GRK"
+            "stars_id": "GRK",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "G"
         },
         {
             "id": "I90",
             "stars_id": "AIA",
             "single_char_stars_id": "I",
-            "two_char_stars_id": "AI"
+            "two_char_stars_id": "AI",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "LCH",
             "stars_id": "ALC",
             "single_char_stars_id": "L",
-            "two_char_stars_id": "AL"
+            "two_char_stars_id": "AL",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "LFT",
             "stars_id": "AFT",
             "single_char_stars_id": "E",
-            "two_char_stars_id": "AF"
+            "two_char_stars_id": "AF",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "MAF",
-            "stars_id": "MAF"
+            "stars_id": "MAF",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "M"
         },
         {
             "id": "MLU",
-            "stars_id": "MLU"
+            "stars_id": "MLU",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "M"
         },
         {
             "id": "MOB",
             "stars_id": "ABA",
             "single_char_stars_id": "B",
-            "two_char_stars_id": "AB"
+            "two_char_stars_id": "AB",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "MSY",
             "stars_id": "AMS",
             "single_char_stars_id": "N",
-            "two_char_stars_id": "AM"
+            "two_char_stars_id": "AM",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "NQI",
             "stars_id": "AQI",
             "single_char_stars_id": "Q",
-            "two_char_stars_id": "AQ"
+            "two_char_stars_id": "AQ",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "P31",
-            "stars_id": "PNS"
+            "stars_id": "PNS",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "P"
         },
         {
             "id": "POE",
             "stars_id": "APO",
             "single_char_stars_id": "P",
-            "two_char_stars_id": "AP"
+            "two_char_stars_id": "AP",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "SAT",
             "stars_id": "ASA",
             "single_char_stars_id": "S",
-            "two_char_stars_id": "AS"
+            "two_char_stars_id": "AS",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "SHV",
-            "stars_id": "SHV"
+            "stars_id": "SHV",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "S"
         },
         {
             "id": "ZAB",

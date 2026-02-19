@@ -727,123 +727,150 @@
         {
             "id": "A80",
             "stars_id": "A80",
-            "single_char_stars_id": "X"
+            "single_char_stars_id": "X",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "AGS",
-            "stars_id": "AGS"
+            "stars_id": "AGS",
+            "field_e_format": "OneLetterAndStarsIdOnly",
+            "field_e_letter": "A"
         },
         {
             "id": "CAE",
             "stars_id": "CAE",
-            "single_char_stars_id": "A"
+            "single_char_stars_id": "A",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "CHS",
             "stars_id": "CHS",
-            "single_char_stars_id": "C"
+            "single_char_stars_id": "C",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "CLT",
             "stars_id": "CLT",
-            "single_char_stars_id": "E"
+            "single_char_stars_id": "E",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "DAB",
             "stars_id": "DAB",
-            "single_char_stars_id": "B"
+            "single_char_stars_id": "B",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "F11",
             "stars_id": "F11",
-            "single_char_stars_id": "O"
+            "single_char_stars_id": "O",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "FAY",
             "stars_id": "FAY",
-            "single_char_stars_id": "Y"
+            "single_char_stars_id": "Y",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "GSP",
-            "stars_id": "GSP"
+            "stars_id": "GSP",
+            "field_e_format": "FullStarsIdOnly"
         },
         {
             "id": "ILM",
             "stars_id": "ILM",
-            "single_char_stars_id": "I"
+            "single_char_stars_id": "I",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "JAX",
             "stars_id": "JAX",
-            "single_char_stars_id": "J"
+            "single_char_stars_id": "J",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "MGM",
-            "stars_id": "MGM"
+            "stars_id": "MGM",
+            "field_e_format": "FullStarsIdOnly"
         },
         {
             "id": "MOB",
             "stars_id": "MOB",
-            "single_char_stars_id": "F"
+            "single_char_stars_id": "F",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "MYR",
             "stars_id": "MYR",
-            "single_char_stars_id": "M"
+            "single_char_stars_id": "M",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "NBC",
-            "stars_id": "BBB"
+            "stars_id": "BBB",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "B"
         },
         {
             "id": "OZR",
             "stars_id": "OZR",
-            "single_char_stars_id": "U"
+            "single_char_stars_id": "U",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "P31",
             "stars_id": "PNS",
-            "single_char_stars_id": "P"
+            "single_char_stars_id": "P",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "PAM",
             "stars_id": "PAM",
-            "single_char_stars_id": "Q"
+            "single_char_stars_id": "Q",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "PBI",
             "stars_id": "PBI",
-            "single_char_stars_id": "G"
+            "single_char_stars_id": "G",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "SAV",
             "stars_id": "SAV",
-            "single_char_stars_id": "S"
+            "single_char_stars_id": "S",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "SSC",
             "stars_id": "SSC",
-            "single_char_stars_id": "Z"
+            "single_char_stars_id": "Z",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "TLH",
             "stars_id": "TLH",
-            "single_char_stars_id": "L"
+            "single_char_stars_id": "L",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "TPA",
             "stars_id": "TPA",
-            "single_char_stars_id": "D"
+            "single_char_stars_id": "D",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "VLD",
             "stars_id": "VLD",
-            "single_char_stars_id": "V"
+            "single_char_stars_id": "V",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "VPS",
             "stars_id": "VPS",
-            "single_char_stars_id": "K"
+            "single_char_stars_id": "K",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "ZDC",

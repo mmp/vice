@@ -36,36 +36,8 @@ type HandoffID struct {
 	SingleCharStarsID string `json:"single_char_stars_id,omitempty"`
 	TwoCharStarsID    string `json:"two_char_stars_id,omitempty"`
 	StarsID           string `json:"stars_id,omitempty"`
-}
-
-// ShortestPrefix returns the shortest available prefix for a given
-// facility prefix by looking it up in the handoff IDs. For example,
-// if a facility has stars_id "NNN" and single_char_stars_id "N",
-// passing "NNN" returns "N".
-func ShortestPrefix(prefix string, handoffIDs []HandoffID) string {
-	for _, hid := range handoffIDs {
-		// Check if this handoff ID entry contains the given prefix.
-		ids := []string{hid.StarsID, hid.TwoCharStarsID, hid.SingleCharStarsID, hid.Prefix}
-		found := false
-		for _, id := range ids {
-			if id == prefix {
-				found = true
-				break
-			}
-		}
-		if !found {
-			continue
-		}
-		// Return the shortest non-empty ID.
-		shortest := prefix
-		for _, id := range ids {
-			if id != "" && len(id) < len(shortest) {
-				shortest = id
-			}
-		}
-		return shortest
-	}
-	return prefix
+	FieldEFormat      string `json:"field_e_format,omitempty"`
+	FieldELetter      string `json:"field_e_letter,omitempty"`
 }
 
 // FixPairDefinition defines a fixed pair (entry fix, exit fix) with
@@ -103,20 +75,20 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 		}
 	}
 
-	// Populate Position and Area from the map key. Controller.Position
-	// has no JSON tag so it's empty after unmarshal; the canonical
-	// position is the map key (e.g. "08", "1N").
+	// Populate Position from the map key. Controller.Position has no
+	// JSON tag so it's empty after unmarshal; the canonical position is
+	// the map key (e.g. "08", "1N").
 	for position, ctrl := range fc.ControlPositions {
 		if ctrl.Position == "" {
 			ctrl.Position = string(position)
 		}
-		if ctrl.Area == 0 && len(ctrl.Position) > 0 &&
-			ctrl.Position[0] >= '0' && ctrl.Position[0] <= '9' {
-			ctrl.Area = int(ctrl.Position[0] - '0')
-		}
 	}
 
-	// Validate control positions.
+	e.Push("facility " + facility)
+	defer e.Pop()
+
+	// Validate control positions (before auto-deriving Area, so
+	// redundancy checks only flag user-defined values).
 	for position, ctrl := range fc.ControlPositions {
 		e.Push("Controller " + string(position))
 
@@ -153,13 +125,23 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 			e.ErrorString("\"scope_char\" may only be a single character")
 		}
 
+		if ctrl.Area != "" && !ctrl.ERAMFacility && len(ctrl.Position) > 0 &&
+			ctrl.Position[0] >= '0' && ctrl.Position[0] <= '9' &&
+			ctrl.Area == string(ctrl.Position[0]) {
+			e.ErrorString("\"area\" is redundant since it matches the first digit of position")
+		}
+
 		e.Pop()
 	}
 
+	// Note: Area auto-derivation for TRACON controllers is done in
+	// rewriteControllers, not here. PostDeserialize may be called
+	// multiple times on cached configs, so it must not mutate.
+
 	// Validate handoff IDs.
 	seenIDs := make(map[string]bool)
-	for i, hid := range fc.HandoffIDs {
-		e.Push(fmt.Sprintf("handoff_ids[%d]", i))
+	for _, hid := range fc.HandoffIDs {
+		e.Push(fmt.Sprintf("handoff_id \"%q\"", hid.ID))
 
 		if hid.ID == "" {
 			e.ErrorString("\"id\" must not be empty")
@@ -172,13 +154,13 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 		seenIDs[hid.ID] = true
 
 		hasPrefix := hid.Prefix != ""
-		hasStarsID := hid.StarsID != "" || hid.SingleCharStarsID != "" || hid.TwoCharStarsID != ""
+		hasStarsID := hid.StarsID != "" || hid.SingleCharStarsID != "" || hid.TwoCharStarsID != "" || hid.FieldEFormat != "" || hid.FieldELetter != ""
 
 		// XOR: exactly one identification scheme.
 		if hasPrefix && hasStarsID {
-			e.ErrorString("%q: cannot specify both \"prefix\" and stars_id fields", hid.ID)
+			e.ErrorString("cannot specify both \"prefix\" and stars_id fields")
 		} else if !hasPrefix && !hasStarsID {
-			e.ErrorString("%q: must specify either \"prefix\" or \"stars_id\"", hid.ID)
+			e.ErrorString("must specify either \"prefix\" or \"stars_id\"")
 		}
 
 		_, neighborIsARTCC := av.DB.ARTCCs[hid.ID]
@@ -186,33 +168,66 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 		if neighborIsARTCC {
 			// ARTCC neighbors always use a letter prefix.
 			if !hasPrefix {
-				e.ErrorString("%q: ARTCC neighbor must use \"prefix\"", hid.ID)
+				e.ErrorString("ARTCC neighbor must use \"prefix\"")
 			} else if len(hid.Prefix) != 1 || hid.Prefix[0] < 'A' || hid.Prefix[0] > 'Z' {
-				e.ErrorString("%q: ARTCC prefix must be a single letter A-Z, got %q", hid.ID, hid.Prefix)
+				e.ErrorString("ARTCC prefix must be a single letter A-Z, got %q", hid.Prefix)
 			}
 		} else if isARTCC {
 			// Primary is ARTCC, neighbor is TRACON: must use stars_id mode.
 			if hasPrefix {
-				e.ErrorString("%q: TRACON neighbor of ARTCC must use \"stars_id\", not \"prefix\"", hid.ID)
+				e.ErrorString("TRACON neighbor of ARTCC must use \"stars_id\", not \"prefix\"")
 			}
 			if hid.StarsID == "" {
-				e.ErrorString("%q: \"stars_id\" is required for TRACON neighbor of ARTCC", hid.ID)
+				e.ErrorString("\"stars_id\" is required for TRACON neighbor of ARTCC")
+			}
+			if len(hid.StarsID) != 3 {
+				e.ErrorString("\"stars_id\" must be exactly 3 characters for \"FullStarsIdOnly\"")
+			}
+			// Validate field lengths when set.
+			if hid.SingleCharStarsID != "" && len(hid.SingleCharStarsID) != 1 {
+				e.ErrorString("\"single_char_stars_id\" must be exactly 1 character")
+			}
+			if hid.TwoCharStarsID != "" && len(hid.TwoCharStarsID) != 2 {
+				e.ErrorString("\"two_char_stars_id\" must be exactly 2 characters")
+			}
+			if hid.FieldELetter != "" && len(hid.FieldELetter) != 1 {
+				e.ErrorString("\"field_e_letter\" must be exactly 1 character")
+			}
+
+			// validate field e format
+			switch hid.FieldEFormat {
+			case "OneLetterAndSubset":
+				if hid.FieldELetter == "" && hid.SingleCharStarsID == "" {
+					e.ErrorString("\"field_e_letter\" or \"single_char_stars_id\" is required for \"OneLetterAndSubset\"")
+				}
+			case "TwoLetters":
+				if hid.TwoCharStarsID == "" {
+					e.ErrorString("\"two_char_stars_id\" is required for \"TwoLetters\"")
+				}
+			case "TwoLettersAndSubset":
+				if hid.TwoCharStarsID == "" {
+					e.ErrorString("\"field_e_letter\" is required for \"TwoLettersAndSubset\"")
+				}
+			case "OneLetterAndStarsIdOnly":
+				if hid.FieldELetter == "" {
+					e.ErrorString("\"field_e_letter\" is required for \"OneLetterAndStarsId\"")
+				}
+			case "FullStarsIdOnly":
+			case "":
+				e.ErrorString("\"field_e_format\" is required for TRACON neighbor of ARTCC")
+			default:
+				e.ErrorString("invalid field_e_format \"%q\"", hid.FieldEFormat)
 			}
 		} else {
 			// Primary is TRACON, neighbor is TRACON: must use a digit prefix.
 			if hasPrefix {
 				if len(hid.Prefix) != 1 || hid.Prefix[0] < '1' || hid.Prefix[0] > '9' {
-					e.ErrorString("%q: TRACON prefix must be a single digit 1-9, got %q", hid.ID, hid.Prefix)
+					e.ErrorString("TRACON prefix must be a single digit 1-9, got %q", hid.Prefix)
 				}
 			}
-		}
-
-		// Validate field lengths when set.
-		if hid.SingleCharStarsID != "" && len(hid.SingleCharStarsID) != 1 {
-			e.ErrorString("%q: \"single_char_stars_id\" must be exactly 1 character", hid.ID)
-		}
-		if hid.TwoCharStarsID != "" && len(hid.TwoCharStarsID) != 2 {
-			e.ErrorString("%q: \"two_char_stars_id\" must be exactly 2 characters", hid.ID)
+			if hasStarsID {
+				e.ErrorString("TRACON neighbor of TRACON must not use stars_id fields")
+			}
 		}
 
 		e.Pop()
@@ -460,15 +475,15 @@ func (fc *FacilityConfig) validateERAMAdaptation(e *util.ErrorLogger) {
 
 	// Validate area configs if present.
 	if len(fa.AreaConfigs) > 0 {
-		usedAreas := make(map[int]bool)
+		usedAreas := make(map[string]bool)
 		for _, ctrl := range fc.ControlPositions {
-			if ctrl.Area != 0 {
+			if ctrl.Area != "" {
 				usedAreas[ctrl.Area] = true
 			}
 		}
 		for areaNum := range fa.AreaConfigs {
 			if !usedAreas[areaNum] {
-				e.ErrorString("area_configs: area %d has no controllers assigned to it", areaNum)
+				e.ErrorString("area_configs: area %s has no controllers assigned to it", areaNum)
 			}
 		}
 	}

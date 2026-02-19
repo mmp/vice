@@ -459,37 +459,44 @@
         {
             "id": "ASE",
             "single_char_stars_id": "S",
-            "stars_id": "RAS"
+            "stars_id": "RAS",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "COS",
             "single_char_stars_id": "C",
-            "stars_id": "RCO"
+            "stars_id": "RCO",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "CPR",
             "single_char_stars_id": "N",
-            "stars_id": "RKP"
+            "stars_id": "RKP",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "CYS",
             "single_char_stars_id": "Y",
-            "stars_id": "RCY"
+            "stars_id": "RCY",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "D01",
             "single_char_stars_id": "D",
-            "stars_id": "RDC"
+            "stars_id": "RDC",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "EGE",
             "single_char_stars_id": "E",
-            "stars_id": "REG"
+            "stars_id": "REG",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "RCA",
             "single_char_stars_id": "R",
-            "stars_id": "RRC"
+            "stars_id": "RRC",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "ZAB",

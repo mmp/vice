@@ -334,7 +334,7 @@ type FacilityAdaptation struct {
 	ERAMMapNames        map[string][]string                        `json:"eram_maps" scope:"eram"`
 	VideoMapLabels      map[string]string                          `json:"map_labels"`
 	ControllerConfigs   map[ControlPosition]*STARSControllerConfig `json:"controller_configs"`
-	AreaConfigs         map[int]*STARSAreaConfig                   `json:"area_configs,omitempty"`
+	AreaConfigs         map[string]*STARSAreaConfig                `json:"area_configs,omitempty"`
 	RadarSites          map[string]*av.RadarSite                   `json:"radar_sites" scope:"stars"`
 	Center              math.Point2LL                              `json:"-"`
 	CenterString        string                                     `json:"center"`
@@ -884,10 +884,10 @@ type STARSAreaConfig struct {
 }
 
 // DefaultAirportForArea returns the CRDA default airport for a given
-// area number. Returns empty string if no area config or default
+// area identifier. Returns empty string if no area config or default
 // airport is defined.
-func (fa *FacilityAdaptation) DefaultAirportForArea(area int) string {
-	if area == 0 {
+func (fa *FacilityAdaptation) DefaultAirportForArea(area string) string {
+	if area == "" {
 		return ""
 	}
 	if ac, ok := fa.AreaConfigs[area]; ok {
@@ -1443,14 +1443,14 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 
 	// Process area configs similarly to controller configs.
 	for areaNum, ac := range fa.AreaConfigs {
-		e.Push(fmt.Sprintf("area_configs[%d]", areaNum))
+		e.Push(fmt.Sprintf("area_configs[%s]", areaNum))
 
 		for i := range ac.FlightFollowingAirspace {
 			if ac.FlightFollowingAirspace[i].Id == "" {
-				ac.FlightFollowingAirspace[i].Id = fmt.Sprintf("FFA%d-%d", areaNum, i+1)
+				ac.FlightFollowingAirspace[i].Id = fmt.Sprintf("FFA%s-%d", areaNum, i+1)
 			}
 			if ac.FlightFollowingAirspace[i].Description == "" {
-				ac.FlightFollowingAirspace[i].Description = fmt.Sprintf("FLIGHT FOLLOWING AREA %d %d", areaNum, i+1)
+				ac.FlightFollowingAirspace[i].Description = fmt.Sprintf("FLIGHT FOLLOWING AREA %s %d", areaNum, i+1)
 			}
 			ac.FlightFollowingAirspace[i].PostDeserialize(loc, e)
 		}
@@ -1478,7 +1478,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 			for i := range volumes {
 				volumes[i].PostDeserialize(loc, e)
 				if volumes[i].Id == "" {
-					volumes[i].Id = fmt.Sprintf("A%d-%s-%d", areaNum, name, i+1)
+					volumes[i].Id = fmt.Sprintf("A%s-%s-%d", areaNum, name, i+1)
 				}
 			}
 			ac.Airspace[name] = volumes

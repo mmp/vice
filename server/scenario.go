@@ -929,9 +929,11 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			ctrl.Position = string(position)
 		}
 
-		// Auto-derive area from the first digit of the Position.
-		if ctrl.Area == 0 && len(ctrl.Position) > 0 && ctrl.Position[0] >= '0' && ctrl.Position[0] <= '9' {
-			ctrl.Area = int(ctrl.Position[0] - '0')
+		// Auto-derive area from the first digit of the Position for
+		// TRACON controllers only. Center (ERAM) controllers must have
+		// area specified manually in the facility config.
+		if !ctrl.ERAMFacility && ctrl.Area == "" && len(ctrl.Position) > 0 && ctrl.Position[0] >= '0' && ctrl.Position[0] <= '9' {
+			ctrl.Area = string(ctrl.Position[0])
 		}
 	}
 
@@ -1474,10 +1476,7 @@ func isARTCC(facility string) bool {
 //
 // Each neighbor controller gets the canonical (longest) prefix applied to
 // its position and FacilityIdentifier so that controllers from different
-// facilities don't collide. Shorter prefix references are resolved at
-// lookup time via resolveController.
-// neighborPrefix returns the longest available prefix string for a
-// neighbor facility (stars_id > two_char > single_char > prefix).
+// facilities don't collide. 
 // Controllers are stored under only this canonical prefix; shorter
 // references are resolved at lookup time via resolveController.
 func neighborPrefix(facility string, handoffIDs []sim.HandoffID) string {
@@ -1486,10 +1485,6 @@ func neighborPrefix(facility string, handoffIDs []sim.HandoffID) string {
 			switch {
 			case hid.StarsID != "":
 				return hid.StarsID
-			case hid.TwoCharStarsID != "":
-				return hid.TwoCharStarsID
-			case hid.SingleCharStarsID != "":
-				return hid.SingleCharStarsID
 			case hid.Prefix != "":
 				return hid.Prefix
 			}
@@ -1501,6 +1496,9 @@ func neighborPrefix(facility string, handoffIDs []sim.HandoffID) string {
 func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor string,
 	handoffIDs []sim.HandoffID, e *util.ErrorLogger) {
 	prefix := neighborPrefix(neighbor, handoffIDs)
+	if sg.Name == "ZBW Area A" {
+		fmt.Printf("%s: Prefix for %s is %s\n", sg.Name, neighbor, prefix)
+	}
 	if prefix == "" {
 		e.ErrorString("TRACON neighbor %s not found in handoff_ids", neighbor)
 		return
@@ -1546,6 +1544,9 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 
 		if _, exists := sg.ControlPositions[pid]; !exists {
 			sg.ControlPositions[pid] = ctrlCopy
+			if sg.Name == "ZBW Area A" {
+				fmt.Printf("%s: Added controller %s for %s\n", sg.Name, pid, ctrlCopy.ERAMID())
+			}
 		}
 	}
 }
@@ -1775,8 +1776,8 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			}
 
 			// Load controllers from neighboring facilities.
-			for _, neighbor := range fc.HandoffIDs {
-				neighbor := string(neighbor.ID)
+			for _, neighborFac := range fc.HandoffIDs {
+				neighbor := string(neighborFac.ID)
 				loadNeighborControllers(resourcesFS, sg, neighbor, fc.HandoffIDs, e)
 			}
 		}

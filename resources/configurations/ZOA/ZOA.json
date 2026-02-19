@@ -434,66 +434,83 @@
         {
             "id": "BFL",
             "stars_id": "AAA",
-            "single_char_stars_id": "A"
+            "single_char_stars_id": "A",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "B"
         },
         {
             "id": "FAT",
             "stars_id": "FFF",
-            "single_char_stars_id": "F"
+            "single_char_stars_id": "F",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "JCF",
             "stars_id": "JJJ",
-            "single_char_stars_id": "J"
+            "single_char_stars_id": "J",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "LSV",
-            "stars_id": "VVV"
+            "stars_id": "VVV",
+            "field_e_format": "FullStarsIdOnly"
         },
         {
             "id": "MC1",
             "stars_id": "MMM",
-            "single_char_stars_id": "M"
+            "single_char_stars_id": "M",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "MR1",
             "stars_id": "RRR",
-            "single_char_stars_id": "R"
+            "single_char_stars_id": "R",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "NCT",
             "stars_id": "QQQ",
-            "single_char_stars_id": "Q"
+            "single_char_stars_id": "Q",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "NFL",
             "stars_id": "NNN",
-            "single_char_stars_id": "N"
+            "single_char_stars_id": "N",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "NLC",
             "stars_id": "EEE",
-            "single_char_stars_id": "E"
+            "single_char_stars_id": "E",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "N"
         },
         {
             "id": "O90",
             "stars_id": "OOO",
-            "single_char_stars_id": "O"
+            "single_char_stars_id": "O",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "SBA",
             "stars_id": "BBB",
-            "single_char_stars_id": "B"
+            "single_char_stars_id": "B",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "S"
         },
         {
             "id": "SC1",
             "stars_id": "SSS",
-            "single_char_stars_id": "K"
+            "single_char_stars_id": "K",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "SUU",
             "stars_id": "TTT",
-            "single_char_stars_id": "T"
+            "single_char_stars_id": "T",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "S"
         },
         {
             "id": "ZLA",

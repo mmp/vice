@@ -469,7 +469,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 			sfp.RedirectedHandoff.RedirectedTo, sfp.HandoffController)
 
 		shortFID := func(ctrl *av.Controller) string {
-			return sim.ShortestPrefix(ctrl.FacilityIdentifier, ctx.Client.State.HandoffIDs)
+			return ctrl.FacilityIdentifier
 		}
 
 		if ctx.UserControlsPosition(toTCP) { // inbound

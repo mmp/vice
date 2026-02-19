@@ -385,53 +385,62 @@
     "handoff_ids": [
         {
             "id": "DAB",
-            "stars_id": "YOO"
+            "stars_id": "YOO",
+            "field_e_format": "FullStarsIdOnly"
         },
         {
             "id": "F11",
             "stars_id": "XOO",
             "single_char_stars_id": "X",
-            "two_char_stars_id": "XO"
+            "two_char_stars_id": "XO",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "HST",
             "stars_id": "HHH",
-            "two_char_stars_id": "HH"
+            "two_char_stars_id": "HH",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "JAX",
             "stars_id": "WOO",
-            "two_char_stars_id": "WO"
+            "two_char_stars_id": "WO",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "MIA",
             "stars_id": "MMM",
             "single_char_stars_id": "M",
-            "two_char_stars_id": "MM"
+            "two_char_stars_id": "MM",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "NQX",
             "stars_id": "EEE",
             "single_char_stars_id": "E",
-            "two_char_stars_id": "EE"
+            "two_char_stars_id": "EE",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "PBI",
             "stars_id": "PPP",
             "single_char_stars_id": "P",
-            "two_char_stars_id": "PP"
+            "two_char_stars_id": "PP",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "RSW",
             "stars_id": "FFF",
             "single_char_stars_id": "F",
-            "two_char_stars_id": "FF"
+            "two_char_stars_id": "FF",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "TPA",
             "stars_id": "TTT",
             "single_char_stars_id": "T",
-            "two_char_stars_id": "TT"
+            "two_char_stars_id": "TT",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "ZHU",

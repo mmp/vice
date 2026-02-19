@@ -91,13 +91,15 @@
             "id": "A11",
             "stars_id": "AAA",
             "single_char_stars_id": "A",
-            "two_char_stars_id": "AA"
+            "two_char_stars_id": "AA",
+            "field_e_format": "TwoLetters"
         },
         {
             "id": "FAI",
             "stars_id": "FFF",
             "single_char_stars_id": "F",
-            "two_char_stars_id": "FF"
+            "two_char_stars_id": "FF",
+            "field_e_format": "TwoLetters"
         }
     ],
     "config": {

@@ -520,102 +520,128 @@
         {
             "id": "A80",
             "stars_id": "AAA",
-            "single_char_stars_id": "A"
+            "single_char_stars_id": "A",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "AGS",
             "stars_id": "ZZZ",
-            "single_char_stars_id": "Z"
+            "single_char_stars_id": "Z",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "AVL",
             "stars_id": "VVV",
-            "single_char_stars_id": "V"
+            "single_char_stars_id": "V",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "BHM",
             "stars_id": "BBB",
-            "single_char_stars_id": "B"
+            "single_char_stars_id": "B",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "CAE",
-            "stars_id": "CAE"
+            "stars_id": "CAE",
+            "field_e_format": "OneLetterAndStarsIdOnly",
+            "field_e_letter": "C"
         },
         {
             "id": "CBM",
             "stars_id": "CBM",
-            "two_char_stars_id": "BB"
+            "two_char_stars_id": "BB",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "CHA",
             "stars_id": "FFF",
-            "single_char_stars_id": "F"
+            "single_char_stars_id": "F",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "CLT",
             "stars_id": "CCC",
-            "single_char_stars_id": "C"
+            "single_char_stars_id": "C",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "FAY",
-            "stars_id": "FAY"
+            "stars_id": "FAY",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "F"
         },
         {
             "id": "FLO",
-            "stars_id": "FLO"
+            "stars_id": "FLO",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "F"
         },
         {
             "id": "GSO",
             "stars_id": "GGG",
-            "single_char_stars_id": "G"
+            "single_char_stars_id": "G",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "GSP",
             "stars_id": "SSS",
-            "single_char_stars_id": "S"
+            "single_char_stars_id": "S",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "HSV",
             "stars_id": "HSV",
-            "two_char_stars_id": "HH"
+            "two_char_stars_id": "HH",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "MGM",
             "stars_id": "DDD",
-            "single_char_stars_id": "D"
+            "single_char_stars_id": "D",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "NMM",
             "stars_id": "NMM",
-            "single_char_stars_id": "N"
+            "single_char_stars_id": "N",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "OZR",
             "stars_id": "OZR",
-            "two_char_stars_id": "OO"
+            "two_char_stars_id": "OO",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "RDU",
-            "stars_id": "RDU"
+            "stars_id": "RDU",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "R"
         },
         {
             "id": "ROA",
             "stars_id": "ROA",
-            "two_char_stars_id": "RR"
+            "two_char_stars_id": "RR",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "SSC",
-            "stars_id": "SSC"
+            "stars_id": "SSC",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "S"
         },
         {
             "id": "TRI",
             "stars_id": "RRR",
-            "single_char_stars_id": "R"
+            "single_char_stars_id": "R",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "TYS",
             "stars_id": "TTT",
-            "single_char_stars_id": "T"
+            "single_char_stars_id": "T",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "ZDC",

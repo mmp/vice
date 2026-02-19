@@ -35,22 +35,26 @@
         {
             "id": "HNL",
             "stars_id": "HHH",
-            "single_char_stars_id": "H"
+            "single_char_stars_id": "H",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "ITO",
             "stars_id": "TTT",
-            "single_char_stars_id": "T"
+            "single_char_stars_id": "T",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "NGF",
             "stars_id": "NNN",
-            "single_char_stars_id": "M"
+            "single_char_stars_id": "M",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "OGG",
             "stars_id": "GGG",
-            "single_char_stars_id": "G"
+            "single_char_stars_id": "G",
+            "field_e_format": "OneLetterAndSubset"
         }
     ],
     "config": {

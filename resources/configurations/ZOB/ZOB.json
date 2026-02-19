@@ -532,97 +532,116 @@
         {
             "id": "AZO",
             "stars_id": "AZO",
-            "single_char_stars_id": "A"
+            "single_char_stars_id": "A",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "BUF",
             "stars_id": "BBB",
-            "single_char_stars_id": "U"
+            "single_char_stars_id": "U",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "CKB",
             "stars_id": "VVV",
-            "single_char_stars_id": "V"
+            "single_char_stars_id": "V",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "CLE",
             "stars_id": "CCC",
-            "single_char_stars_id": "C"
+            "single_char_stars_id": "C",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "CMH",
             "stars_id": "CMH",
-            "single_char_stars_id": "H"
+            "single_char_stars_id": "H",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "CRW",
             "stars_id": "CRA",
-            "single_char_stars_id": "Z"
+            "single_char_stars_id": "Z",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "D21",
             "stars_id": "DDD",
-            "single_char_stars_id": "D"
+            "single_char_stars_id": "D",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "ELM",
             "stars_id": "ELM",
-            "single_char_stars_id": "E"
+            "single_char_stars_id": "E",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "FWA",
             "stars_id": "FWA",
-            "single_char_stars_id": "F"
+            "single_char_stars_id": "F",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "JST",
             "stars_id": "JJJ",
-            "single_char_stars_id": "J"
+            "single_char_stars_id": "J",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "LAN",
             "stars_id": "LLL",
-            "single_char_stars_id": "L"
+            "single_char_stars_id": "L",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "MDT",
             "stars_id": "MDT",
-            "single_char_stars_id": "M"
+            "single_char_stars_id": "M",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "MTC",
             "stars_id": "SSS",
-            "single_char_stars_id": "S"
+            "single_char_stars_id": "S",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "PCT",
             "stars_id": "PCT",
-            "single_char_stars_id": "X"
+            "single_char_stars_id": "X",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "PIT",
             "stars_id": "PPP",
-            "single_char_stars_id": "T"
+            "single_char_stars_id": "T",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "ROC",
             "stars_id": "RRR",
-            "single_char_stars_id": "R"
+            "single_char_stars_id": "R",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "SYR",
             "stars_id": "SYR",
-            "two_char_stars_id": "SY"
+            "two_char_stars_id": "SY",
+            "field_e_format": "TwoLettersAndSubset"
         },
         {
             "id": "TOL",
             "stars_id": "TTT",
-            "single_char_stars_id": "K"
+            "single_char_stars_id": "K",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "YNG",
             "stars_id": "YYY",
-            "single_char_stars_id": "Y"
+            "single_char_stars_id": "Y",
+            "field_e_format": "OneLetterAndSubset"
         },
         {
             "id": "ZAU",
