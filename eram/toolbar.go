@@ -1186,7 +1186,6 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	cb *renderer.CommandBuffer, drawBackground bool, captureMouse bool) {
 
 	toolbarDrawState.cb = cb
-	toolbarDrawState.mouse = ctx.Mouse
 	toolbarDrawState.occlusionActive = false
 	toolbarDrawState.processingOcclusion = false
 	if toolbarDrawState.buttonPositions == nil {
@@ -1314,7 +1313,7 @@ func (ep *ERAMPane) offsetFullButton(ctx *panes.Context) {
 
 // Turns any button with dynamic fields into a main name. (eg. Range 300 -> Range)
 func cleanButtonName(name string) string {
-	weirdNames := []string{"RANGE", "ALT LIM", "VECTOR", "FDB LDR", "NONADSB", "SPEED", "SIZE", "VOLUME"}
+	weirdNames := []string{"RANGE", "ALT LIM", "VECTOR", "FDB LDR", "NONADSB", "SPEED", "SIZE", "VOLUME", "FDB LDR"}
 	firstLine := strings.Split(name, "\n")[0]
 	if slices.Contains(weirdNames, firstLine) {
 		return firstLine
@@ -1412,7 +1411,7 @@ func handleMultiplicativeClick(ep *ERAMPane, pref *int, min, max, step int) {
 
 	value := *pref
 	if ep.mousePrimaryClicked(mouse) || ep.mousePrimaryDown(mouse) { // lower value
-		if value/step > min {
+		if value/step >= min {
 			if value == 1 {
 				*pref = 0
 			} else {
@@ -1422,7 +1421,7 @@ func handleMultiplicativeClick(ep *ERAMPane, pref *int, min, max, step int) {
 			ep.SetTemporaryCursor("EramInvalidSelect", 0.5, "")
 		}
 	} else if ep.mouseTertiaryClicked(mouse) || ep.mouseTertiaryDown(mouse) { // raise value
-		if value*step < max {
+		if value*step <= max {
 			if value == 0 {
 				*pref = 1
 			} else {
@@ -1699,6 +1698,8 @@ func (ep *ERAMPane) drawTornOffButtons(ctx *panes.Context, transforms radar.Scop
 // many other widgets process mouse clicks during their draw calls; if they run
 // first they can "steal" the click (and even move/capture the mouse).
 func (ep *ERAMPane) handleTornOffButtonsInput(ctx *panes.Context) {
+	toolbarDrawState.mouse = ctx.Mouse
+
 	ps := ep.currentPrefs()
 	mouse := ctx.Mouse
 	if mouse == nil || len(ps.TornOffButtons) == 0 {
@@ -2301,7 +2302,7 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 
 	// Normalize through display text so older saved keys like "CRR FIX" still work.
 	display := ep.getTornOffButtonText(buttonName)
-	switch display {
+	switch cleanButtonName(display) {
 	case "DRAW":
 		// Handle DRAW button
 	case "ATC\nTOOLS":
