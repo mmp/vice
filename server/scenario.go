@@ -1007,95 +1007,95 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	// through that facility's inbound assignments rather than collapsing
 	// to a generic HumanHandoff. This needs a redesign so keep it commented for now.
 	/*
-		prefixToFacility := make(map[string]string)
-		for _, hid := range sg.HandoffIDs {
-			if hid.SingleCharStarsID != "" {
-				prefixToFacility[hid.SingleCharStarsID] = hid.ID
-			}
-			if hid.TwoCharStarsID != "" {
-				prefixToFacility[hid.TwoCharStarsID] = hid.ID
-			}
-			if hid.StarsID != "" {
-				prefixToFacility[hid.StarsID] = hid.ID
-			}
-			if hid.Prefix != "" {
-				prefixToFacility[hid.Prefix] = hid.ID
-			}
-		}
-
-		rewriteWaypoints := func(wp av.WaypointArray) {
-			for i := range wp {
-				if wp[i].HandoffController == "" {
-					continue
+			prefixToFacility := make(map[string]string)
+			for _, hid := range sg.HandoffIDs {
+				if hid.SingleCharStarsID != "" {
+					prefixToFacility[hid.SingleCharStarsID] = hid.ID
 				}
-				hc := string(wp[i].HandoffController)
-				if _, ok := prefixToFacility[hc]; ok {
-					wp[i].HandoffController = ""
-					wp[i].HumanHandoff = true
+				if hid.TwoCharStarsID != "" {
+					prefixToFacility[hid.TwoCharStarsID] = hid.ID
+				}
+				if hid.StarsID != "" {
+					prefixToFacility[hid.StarsID] = hid.ID
+				}
+				if hid.Prefix != "" {
+					prefixToFacility[hid.Prefix] = hid.ID
 				}
 			}
-		}
 
-	for _, ap := range sg.Airports {
-		rewriteControlPosition(&ap.DepartureController)
-
-		for _, exitroutes := range ap.DepartureRoutes {
-			for _, route := range exitroutes {
-				rewriteControlPosition(&route.HandoffController)
-				rewriteWaypoints(route.Waypoints)
-			}
-		}
-
-		for _, app := range ap.Approaches {
-			for _, wps := range app.Waypoints {
-				rewriteWaypoints(wps)
-			}
-		}
-		for _, dep := range ap.Departures {
-			rewriteWaypoints(dep.RouteWaypoints)
-		}
-	}
-
-	fa := &sg.FacilityAdaptation
-	for i := range fa.AirspaceAwareness {
-		rewriteString(&fa.AirspaceAwareness[i].ReceivingController)
-	}
-	for position, config := range fa.ControllerConfigs {
-		// Rewrite controller
-		delete(fa.ControllerConfigs, position)
-		p := string(position)
-		rewriteString(&p)
-		fa.ControllerConfigs[sim.ControlPosition(p)] = config
-	}
-	// Rewrite TCP references in configurations (controller assignments)
-	for _, config := range fa.Configurations {
-		for flow, tcp := range config.InboundAssignments {
-			rewriteControlPosition(&tcp)
-			config.InboundAssignments[flow] = tcp
-		}
-		for spec, tcp := range config.DepartureAssignments {
-			rewriteControlPosition(&tcp)
-			config.DepartureAssignments[spec] = tcp
-		}
-		for spec, tcp := range config.GoAroundAssignments {
-			rewriteControlPosition(&tcp)
-			config.GoAroundAssignments[spec] = tcp
-		}
-	}
-
-		for _, flow := range sg.InboundFlows {
-			for _, ar := range flow.Arrivals {
-				rewriteWaypoints(ar.Waypoints)
-				for _, rwyWps := range ar.RunwayWaypoints {
-					for _, wps := range rwyWps {
-						rewriteWaypoints(wps)
+			rewriteWaypoints := func(wp av.WaypointArray) {
+				for i := range wp {
+					if wp[i].HandoffController == "" {
+						continue
+					}
+					hc := string(wp[i].HandoffController)
+					if _, ok := prefixToFacility[hc]; ok {
+						wp[i].HandoffController = ""
+						wp[i].HumanHandoff = true
 					}
 				}
 			}
-			for _, of := range flow.Overflights {
-				rewriteWaypoints(of.Waypoints)
+
+		for _, ap := range sg.Airports {
+			rewriteControlPosition(&ap.DepartureController)
+
+			for _, exitroutes := range ap.DepartureRoutes {
+				for _, route := range exitroutes {
+					rewriteControlPosition(&route.HandoffController)
+					rewriteWaypoints(route.Waypoints)
+				}
+			}
+
+			for _, app := range ap.Approaches {
+				for _, wps := range app.Waypoints {
+					rewriteWaypoints(wps)
+				}
+			}
+			for _, dep := range ap.Departures {
+				rewriteWaypoints(dep.RouteWaypoints)
 			}
 		}
+
+		fa := &sg.FacilityAdaptation
+		for i := range fa.AirspaceAwareness {
+			rewriteString(&fa.AirspaceAwareness[i].ReceivingController)
+		}
+		for position, config := range fa.ControllerConfigs {
+			// Rewrite controller
+			delete(fa.ControllerConfigs, position)
+			p := string(position)
+			rewriteString(&p)
+			fa.ControllerConfigs[sim.ControlPosition(p)] = config
+		}
+		// Rewrite TCP references in configurations (controller assignments)
+		for _, config := range fa.Configurations {
+			for flow, tcp := range config.InboundAssignments {
+				rewriteControlPosition(&tcp)
+				config.InboundAssignments[flow] = tcp
+			}
+			for spec, tcp := range config.DepartureAssignments {
+				rewriteControlPosition(&tcp)
+				config.DepartureAssignments[spec] = tcp
+			}
+			for spec, tcp := range config.GoAroundAssignments {
+				rewriteControlPosition(&tcp)
+				config.GoAroundAssignments[spec] = tcp
+			}
+		}
+
+			for _, flow := range sg.InboundFlows {
+				for _, ar := range flow.Arrivals {
+					rewriteWaypoints(ar.Waypoints)
+					for _, rwyWps := range ar.RunwayWaypoints {
+						for _, wps := range rwyWps {
+							rewriteWaypoints(wps)
+						}
+					}
+				}
+				for _, of := range flow.Overflights {
+					rewriteWaypoints(of.Waypoints)
+				}
+			}
 	*/
 }
 
@@ -1596,7 +1596,7 @@ func isARTCC(facility string) bool {
 //
 // Each neighbor controller gets the canonical (longest) prefix applied to
 // its position and FacilityIdentifier so that controllers from different
-// facilities don't collide. 
+// facilities don't collide.
 // Controllers are stored under only this canonical prefix; shorter
 // references are resolved at lookup time via resolveController.
 func neighborPrefix(facility string, handoffIDs []sim.HandoffID) string {

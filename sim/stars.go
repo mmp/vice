@@ -316,11 +316,11 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 // ControllerAssignments defines which controller handles each inbound/departure flow,
 // the default consolidation hierarchy for the configuration, and optional fix pair assignments.
 type ControllerAssignments struct {
-	InboundAssignments   map[string]TCP        `json:"inbound_assignments"`
-	DepartureAssignments map[string]TCP        `json:"departure_assignments"`
+	InboundAssignments   map[string]TCP `json:"inbound_assignments"`
+	DepartureAssignments map[string]TCP `json:"departure_assignments"`
 	// GoAroundAssignments maps airport or airport/runway to the controller
 	// who should handle go-arounds. If not specified, departure controller is used.
-	GoAroundAssignments map[string]TCP `json:"go_around_assignments"`
+	GoAroundAssignments  map[string]TCP        `json:"go_around_assignments"`
 	DefaultConsolidation PositionConsolidation `json:"default_consolidation"`
 	FixPairAssignments   []FixPairAssignment   `json:"fix_pair_assignments,omitempty"`
 }
