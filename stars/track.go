@@ -809,7 +809,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 			rot := math.Rotator2f(h)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels
-			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+			box := [4][2]float32{{-9, -3}, {9, -3}, {9, 3}, {-9, 3}}
 
 			// Scale box based on distance from the radar; TODO: what exactly should this be?
 			scale := ctx.DrawPixelScale * float32(math.Clamp(dist/40, .5, 1.5))
@@ -830,7 +830,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 			}
 
 			// green line
-			line := [2][2]float32{[2]float32{-16, 3}, [2]float32{16, 3}}
+			line := [2][2]float32{{-16, 3}, {16, 3}}
 			for i := range line {
 				line[i] = math.Add2f(rot(math.Scale2f(line[i], scale)), pw)
 				line[i] = transforms.LatLongFromWindowP(line[i])
@@ -849,7 +849,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 			rot := math.Rotator2f(heading)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels
-			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+			box := [4][2]float32{{-9, -3}, {9, -3}, {9, 3}, {-9, 3}}
 			for i := range box {
 				box[i] = math.Scale2f(box[i], ctx.DrawPixelScale)
 				box[i] = math.Add2f(rot(box[i]), pw)

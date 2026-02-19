@@ -405,7 +405,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 	trid.AddTriangle(tv[0], tv[1], tv[2], ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor))
 	trid.GenerateCommands(cb)
 
-	square := [][2]float32{[2]float32{-5, -5}, [2]float32{5, -5}, [2]float32{5, 5}, [2]float32{-5, 5}}
+	square := [][2]float32{{-5, -5}, {5, -5}, {5, 5}, {-5, 5}}
 	square = util.MapSlice(square, func(p [2]float32) [2]float32 { return math.Add2f(math.Scale2f(p, scale), pIndicator) })
 	ld.AddLineLoop(ps.Brightness.Lists.ScaleRGB(STARSListColor), square)
 	ld.GenerateCommands(cb)

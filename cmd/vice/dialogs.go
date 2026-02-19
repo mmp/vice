@@ -457,7 +457,7 @@ func (nr *NewReleaseModalClient) Opening() {}
 
 func (nr *NewReleaseModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
-		ModalDialogButton{
+		{
 			text: "Quit and update",
 			action: func() bool {
 				browser.OpenURL("https://pharr.org/vice/index.html#section-installation")
@@ -465,7 +465,7 @@ func (nr *NewReleaseModalClient) Buttons() []ModalDialogButton {
 				return true
 			},
 		},
-		ModalDialogButton{text: "Update later"}}
+		{text: "Update later"}}
 }
 
 func (nr *NewReleaseModalClient) Draw() int {
@@ -486,14 +486,14 @@ func (wn *WhatsNewModalClient) Opening() {}
 
 func (wn *WhatsNewModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
-		ModalDialogButton{
+		{
 			text: "View Release Notes",
 			action: func() bool {
 				browser.OpenURL("https://pharr.org/vice/index.html#releases")
 				return false
 			},
 		},
-		ModalDialogButton{
+		{
 			text: "Ok",
 			action: func() bool {
 				wn.config.WhatsNewIndex = len(whatsNew)
@@ -522,7 +522,7 @@ func (b *BroadcastModalDialog) Opening() {}
 
 func (b *BroadcastModalDialog) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
-		ModalDialogButton{
+		{
 			text: "Ok",
 			action: func() bool {
 				return true
@@ -548,7 +548,7 @@ func (d *DiscordOptInModalClient) Opening() {}
 
 func (d *DiscordOptInModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
-		ModalDialogButton{
+		{
 			text: "Ok",
 			action: func() bool {
 				d.config.AskedDiscordOptIn = true
@@ -593,7 +593,7 @@ func (ns *NotifyTargetGenModalClient) Opening() {}
 
 func (ns *NotifyTargetGenModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
-		ModalDialogButton{
+		{
 			text: "Ok",
 			action: func() bool {
 				*ns.notifiedNew = true

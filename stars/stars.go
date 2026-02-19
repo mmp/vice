@@ -54,11 +54,11 @@ var (
 	STARSRangeRingColor     = renderer.RGB{.55, .55, .55}
 	STARSTrackBlockColor    = renderer.RGB{0.12, 0.48, 1}
 	STARSTrackHistoryColors = [5]renderer.RGB{
-		renderer.RGB{.12, .31, .78},
-		renderer.RGB{.28, .28, .67},
-		renderer.RGB{.2, .2, .51},
-		renderer.RGB{.16, .16, .43},
-		renderer.RGB{.12, .12, .35},
+		{.12, .31, .78},
+		{.28, .28, .67},
+		{.2, .2, .51},
+		{.16, .16, .43},
+		{.12, .12, .35},
 	}
 	STARSJRingConeColor         = renderer.RGB{.5, .5, 1}
 	STARSTrackedAircraftColor   = renderer.RGB{1, 1, 1}
@@ -981,7 +981,7 @@ func (sp *STARSPane) drawWX(ctx *panes.Context, transforms radar.ScopeTransforma
 const numMapColors = 8
 
 var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
-	[numMapColors]renderer.RGB{ // Group A
+	{ // Group A
 		renderer.RGBFromUInt8(140, 140, 140),
 		renderer.RGBFromUInt8(0, 255, 255),
 		renderer.RGBFromUInt8(255, 0, 255),
@@ -991,7 +991,7 @@ var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
 		renderer.RGBFromUInt8(218, 165, 32),
 		renderer.RGBFromUInt8(72, 118, 255),
 	},
-	[numMapColors]renderer.RGB{ // Group B
+	{ // Group B
 		renderer.RGBFromUInt8(140, 140, 140),
 		renderer.RGBFromUInt8(132, 112, 255),
 		renderer.RGBFromUInt8(118, 238, 198),
@@ -1782,7 +1782,7 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms radar.ScopeTra
 		ld := renderer.GetLinesDrawBuilder()
 		defer renderer.ReturnLinesDrawBuilder(ld)
 
-		ld.AddLineLoop([][2]float32{p0, [2]float32{p0[0], p1[1]}, p1, [2]float32{p1[0], p0[1]}})
+		ld.AddLineLoop([][2]float32{p0, {p0[0], p1[1]}, p1, {p1[0], p0[1]}})
 		transforms.LoadWindowViewingMatrices(cb)
 		cb.SetRGB(renderer.RGB{R: 0, G: 0.75, B: 0.75})
 		ld.GenerateCommands(cb)
@@ -1795,7 +1795,7 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms radar.ScopeTra
 // out an animated GIF when the chan is closed.
 func captureEncodeFrames(ch chan *image.RGBA) {
 	// Store regular and 2x resolution for retina displays.
-	gifs := [2]*gif.GIF{&gif.GIF{}, &gif.GIF{}}
+	gifs := [2]*gif.GIF{{}, {}}
 	// Though we could have a unique palette per frame, we only need a
 	// handful of colors and having a shared one allows us to check for
 	// image equivalence by just comparing the pixels' palette index
@@ -1806,12 +1806,12 @@ func captureEncodeFrames(ch chan *image.RGBA) {
 		if img := <-ch; img != nil {
 			nx, ny := img.Bounds().Max.X-img.Bounds().Min.X, img.Bounds().Max.Y-img.Bounds().Min.Y
 			pal := [2]*image.Paletted{
-				&image.Paletted{
+				{
 					Pix:    make([]uint8, nx/2*ny/2),
 					Stride: nx / 2,
 					Rect:   image.Rectangle{Max: image.Point{X: nx / 2, Y: ny / 2}},
 				},
-				&image.Paletted{
+				{
 					Pix:    make([]uint8, nx*ny),
 					Stride: nx,
 					Rect:   image.Rectangle{Max: image.Point{X: nx, Y: ny}},

@@ -386,7 +386,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
 		}
 
 		return []av.Waypoint{
-			av.Waypoint{
+			{
 				Fix:      fix,
 				Location: p,
 			},

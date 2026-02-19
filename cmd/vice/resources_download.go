@@ -66,7 +66,7 @@ func (r *ResourcesDownloadModalClient) FixedSize() [2]float32 {
 
 func (r *ResourcesDownloadModalClient) Buttons() []ModalDialogButton {
 	btext := util.Select(r.currentFile == r.totalFiles && len(r.errors) > 0, "Ok", "Cancel")
-	return []ModalDialogButton{ModalDialogButton{text: btext,
+	return []ModalDialogButton{{text: btext,
 		action: func() bool {
 			os.Exit(1)
 			return true

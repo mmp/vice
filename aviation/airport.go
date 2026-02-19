@@ -374,11 +374,11 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 			route.Waypoints = append([]Waypoint{
-				Waypoint{
+				{
 					Fix:      rwy.Base(),
 					Location: r.Threshold,
 				},
-				Waypoint{
+				{
 					Fix:      rwy.Base() + "-mid",
 					Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
 				}}, route.Waypoints...)
