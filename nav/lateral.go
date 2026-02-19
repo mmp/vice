@@ -44,15 +44,15 @@ func (nav *Nav) updateHeading(callsign string, wxs wx.Sample, simTime time.Time)
 
 	var turn float32
 	switch turnDirection {
-	case TurnLeft:
+	case av.TurnLeft:
 		angle := math.NormalizeHeading(nav.FlightState.Heading - targetHeading)
 		angle = min(angle, turnRate)
 		turn = -angle
-	case TurnRight:
+	case av.TurnRight:
 		angle := math.NormalizeHeading(targetHeading - nav.FlightState.Heading)
 		angle = min(angle, turnRate)
 		turn = angle
-	case TurnClosest:
+	case av.TurnClosest:
 		turn = math.HeadingSignedTurn(nav.FlightState.Heading, targetHeading)
 		turn = math.Clamp(turn, -turnRate, turnRate)
 	}
@@ -153,7 +153,7 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, fp *av.FlightP
 	return nil
 }
 
-func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime time.Time) (heading float32, turn TurnMethod, rate float32) {
+func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime time.Time) (heading float32, turn av.TurnDirection, rate float32) {
 	if nav.Airwork != nil {
 		return nav.Airwork.TargetHeading()
 	}
@@ -167,7 +167,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime time.Time)
 		nav.DeferredNavHeading = nil
 	}
 
-	heading, turn = nav.FlightState.Heading, TurnClosest
+	heading, turn = nav.FlightState.Heading, av.TurnClosest
 
 	// nav.Heading.Assigned may still be nil pending a deferred turn
 	if (nav.Approach.InterceptState == InitialHeading ||
@@ -240,13 +240,13 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime time.Time)
 	// signed difference, negative is turn left
 	headingDelta := func() float32 {
 		switch turn {
-		case TurnLeft:
+		case av.TurnLeft:
 			diff := heading - nav.FlightState.Heading
 			if diff > 0 {
 				return diff - 360 // force left turn
 			}
 			return diff // already left
-		case TurnRight:
+		case av.TurnRight:
 			diff := heading - nav.FlightState.Heading
 			if diff < 0 {
 				return diff + 360 // force right turn
@@ -313,7 +313,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime time.Time)
 		}
 	}
 
-	turn = util.Select(nav.FlightState.BankAngle < 0, TurnLeft, TurnRight)
+	turn = util.Select(nav.FlightState.BankAngle < 0, av.TurnLeft, av.TurnRight)
 
 	rate = math.Abs(turnRate(nav.FlightState.BankAngle))
 
@@ -345,11 +345,11 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	} else if wp.Heading != 0 {
 		// Leaving the next fix on a specified heading.
 		hdg = float32(wp.Heading)
-	} else if wp.PresentHeading {
+	} else if wp.PresentHeading() {
 		hdg = nav.FlightState.Heading
-	} else if wp.Arc != nil {
+	} else if wp.Arc() != nil {
 		// Joining a DME arc after the heading
-		hdg = wp.Arc.InitialHeading
+		hdg = wp.Arc().InitialHeading
 	} else if len(nav.Waypoints) > 1 {
 		// Otherwise, find the heading to the following fix.
 		hdg = math.Heading2LL(wp.Location, nav.Waypoints[1].Location,
@@ -361,10 +361,10 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	}
 
 	passedWaypoint := false
-	if wp.FlyOver || nav.Prespawn {
+	if wp.FlyOver() || nav.Prespawn {
 		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
-		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, TurnClosest, wxs)
+		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, av.TurnClosest, wxs)
 	}
 
 	if passedWaypoint {
@@ -374,7 +374,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		if clearedAtFix {
 			nav.Approach.Cleared = true
 			nav.Speed = NavSpeed{}
-			if wp.NoPT || nav.Approach.AtFixClearedRoute[0].NoPT {
+			if wp.NoPT() || nav.Approach.AtFixClearedRoute[0].NoPT() {
 				nav.Approach.NoPT = true
 			}
 			nav.Waypoints = append(nav.Approach.AtFixClearedRoute, nav.FlightState.ArrivalAirport)
@@ -391,7 +391,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Heading = NavHeading{}
 		}
 
-		if wp.ClearApproach {
+		if wp.ClearApproach() {
 			if fp != nil {
 				_, _ = nav.ClearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false, simTime)
 			}
@@ -402,31 +402,33 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			// were cleared to, so they can start to descend.
 			nav.Altitude = NavAltitude{}
 			nav.Approach.PassedApproachFix = true
-			if wp.FAF {
+			if wp.FAF() {
 				nav.Approach.PassedFAF = true
 			}
-		} else if wp.OnApproach {
+		} else if wp.OnApproach() {
 			// Overflew an approach fix but haven't been cleared yet.
 			nav.Approach.PassedApproachFix = true
 		}
 
-		if wp.AltitudeRestriction != nil && !nav.InterceptedButNotCleared() &&
-			(!nav.Approach.Cleared || wp.AltitudeRestriction.Range[0] < nav.FlightState.Altitude) {
+		if wp.AltitudeRestriction() != nil && !nav.InterceptedButNotCleared() &&
+			(!nav.Approach.Cleared || wp.AltitudeRestriction().Range[0] < nav.FlightState.Altitude) {
 			// Don't climb if we're cleared approach and below the next
-			// fix's altitude.
-			nav.Altitude.Restriction = wp.AltitudeRestriction
+			// fix's altitude. Copy the value since the pointer into the
+			// slice element could become stale if the slice is reallocated.
+			ar := *wp.AltitudeRestriction()
+			nav.Altitude.Restriction = &ar
 		}
-		if wp.Speed != 0 && !wp.OnSID {
+		if wp.Speed != 0 && !wp.OnSID() {
 			// Carry on the speed restriction unless it's a SID
 			spd := float32(wp.Speed)
 			nav.Speed.Restriction = &spd
 		}
 
-		if wp.ClimbAltitude != nil {
-			alt := float32(*wp.ClimbAltitude)
+		if wp.ClimbAltitude() != 0 {
+			alt := float32(wp.ClimbAltitude())
 			nav.AssignAltitude(alt, false)
-		} else if wp.DescendAltitude != nil {
-			alt := float32(*wp.DescendAltitude)
+		} else if wp.DescendAltitude() != 0 {
+			alt := float32(wp.DescendAltitude())
 			nav.AssignAltitude(alt, false)
 		}
 
@@ -443,23 +445,23 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		} else if wp.Heading != 0 && !clearedAtFix {
 			// We have an outbound heading
 			hdg := float32(wp.Heading)
-			turn := TurnMethod(wp.Turn)
+			turn := wp.Turn()
 			nav.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
-		} else if wp.PresentHeading && !clearedAtFix {
+		} else if wp.PresentHeading() && !clearedAtFix {
 			// Round to nearest 5 degrees
 			hdg := float32(5 * int((nav.FlightState.Heading+2.5)/5))
 			hdg = math.NormalizeHeading(hdg)
 			nav.Heading = NavHeading{Assigned: &hdg}
-		} else if wp.Arc != nil {
+		} else if wp.Arc() != nil {
 			// Fly the DME arc
-			nav.Heading = NavHeading{Arc: wp.Arc, JoiningArc: true}
+			nav.Heading = NavHeading{Arc: wp.Arc(), JoiningArc: true}
 		}
 
-		if wp.NoPT {
+		if wp.NoPT() {
 			nav.Approach.NoPT = true
 		}
 
-		if wp.AirworkMinutes > 0 {
+		if wp.AirworkMinutes() > 0 {
 			nav.Airwork = StartAirwork(*wp, *nav)
 		}
 
@@ -548,12 +550,12 @@ func rolloutPosition(currentPos [2]float32, currentHdg, targetHdg float32,
 }
 
 // isTurnRight determines if the turn from currentHdg to targetHdg should
-// be a right turn, given the specified TurnMethod.
-func isTurnRight(currentHdg, targetHdg float32, turn TurnMethod) bool {
+// be a right turn, given the specified av.TurnDirection.
+func isTurnRight(currentHdg, targetHdg float32, turn av.TurnDirection) bool {
 	switch turn {
-	case TurnRight:
+	case av.TurnRight:
 		return true
-	case TurnLeft:
+	case av.TurnLeft:
 		return false
 	default: // TurnClosest
 		diff := targetHdg - currentHdg
@@ -569,7 +571,7 @@ func isTurnRight(currentHdg, targetHdg float32, turn TurnMethod) bool {
 // Given a fix location and an outbound heading, returns true when the
 // aircraft should start the turn to outbound to intercept the outbound
 // radial.
-func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMethod, wxs wx.Sample) bool {
+func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn av.TurnDirection, wxs wx.Sample) bool {
 	eta := nav.ETA(p)
 
 	// Always start the turn if we've almost passed the fix.
@@ -618,7 +620,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 
 // Given a point and a radial, returns true when the aircraft should
 // start turning to intercept the radial.
-func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMethod, wxs wx.Sample) bool {
+func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn av.TurnDirection, wxs wx.Sample) bool {
 	p0nm := math.LL2NM(p0, nav.FlightState.NmPerLongitude)
 	p1 := math.Add2f(p0nm, math.SinCos(math.Radians(hdg-nav.FlightState.MagneticVariation)))
 
@@ -664,7 +666,7 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 
 // Analytical version of shouldTurnForOutbound using geometry rather than
 // simulation. Currently unused - kept for future integration.
-func (nav *Nav) shouldTurnForOutboundAnalytical(p math.Point2LL, hdg float32, turn TurnMethod) bool {
+func (nav *Nav) shouldTurnForOutboundAnalytical(p math.Point2LL, hdg float32, turn av.TurnDirection) bool {
 	eta := nav.ETA(p)
 	if eta < 2 {
 		return true
@@ -699,7 +701,7 @@ func (nav *Nav) shouldTurnForOutboundAnalytical(p math.Point2LL, hdg float32, tu
 
 // Analytical version of shouldTurnToIntercept using geometry rather than
 // simulation. Currently unused - kept for future integration.
-func (nav *Nav) shouldTurnToInterceptAnalytical(p0 math.Point2LL, hdg float32, turn TurnMethod) bool {
+func (nav *Nav) shouldTurnToInterceptAnalytical(p0 math.Point2LL, hdg float32, turn av.TurnDirection) bool {
 	lineOrigin := math.LL2NM(p0, nav.FlightState.NmPerLongitude)
 	targetHdgTrue := hdg - nav.FlightState.MagneticVariation
 	lineDir := math.SinCos(math.Radians(targetHdgTrue))
@@ -752,32 +754,20 @@ var (
 
 ///////////////////////////////////////////////////////////////////////////
 
-type TurnMethod int
-
-const (
-	TurnClosest TurnMethod = iota // default
-	TurnLeft
-	TurnRight
-)
-
-func (t TurnMethod) String() string {
-	return []string{"closest", "left", "right"}[t]
-}
-
 const StandardTurnRate = 3
 
-func TurnAngle(from, to float32, turn TurnMethod) float32 {
+func TurnAngle(from, to float32, turn av.TurnDirection) float32 {
 	switch turn {
-	case TurnLeft:
+	case av.TurnLeft:
 		return math.NormalizeHeading(from - to)
 
-	case TurnRight:
+	case av.TurnRight:
 		return math.NormalizeHeading(to - from)
 
-	case TurnClosest:
+	case av.TurnClosest:
 		return math.Abs(math.HeadingDifference(from, to))
 
 	default:
-		panic("unhandled TurnMethod")
+		panic("unhandled TurnDirection")
 	}
 }

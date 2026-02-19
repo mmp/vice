@@ -351,7 +351,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, boo
 				d += math.NMDistance2LLFast(nav.Waypoints[i-1].Location, nav.Waypoints[i].Location,
 					nav.FlightState.NmPerLongitude)
 			}
-			ar := nav.Waypoints[i].AltitudeRestriction
+			ar := nav.Waypoints[i].AltitudeRestriction()
 			if ar == nil || ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
 				continue
 			}
@@ -376,7 +376,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, boo
 			if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Altitude != nil {
 				return nfa.Arrive.Altitude
 			}
-			if ar := nav.Waypoints[i].AltitudeRestriction; ar != nil {
+			if ar := nav.Waypoints[i].AltitudeRestriction(); ar != nil {
 				// If the controller has given 'cross [wp] at [alt]' for a
 				// future waypoint, ignore the charted altitude restriction.
 				// Explicit loop avoids slices.ContainsFunc which copies the
@@ -391,7 +391,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, boo
 			return nil
 		}
 		// Fast path: no fix assignments, just return the charted restriction.
-		return nav.Waypoints[i].AltitudeRestriction
+		return nav.Waypoints[i].AltitudeRestriction()
 	}
 
 	// Find the *last* waypoint that has an altitude restriction that

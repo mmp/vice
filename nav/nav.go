@@ -70,7 +70,7 @@ type Nav struct {
 type DeferredNavHeading struct {
 	Time    time.Time
 	Heading *float32
-	Turn    *TurnMethod
+	Turn    *av.TurnDirection
 	Hold    *FlyHold
 	// For direct fix, this will be the updated set of waypoints.
 	Waypoints []av.Waypoint
@@ -178,7 +178,7 @@ const MaxIAS = 290
 
 type NavHeading struct {
 	Assigned     *float32
-	Turn         *TurnMethod
+	Turn         *av.TurnDirection
 	Arc          *av.DMEArc
 	JoiningArc   bool
 	RacetrackPT  *FlyRacetrackPT
@@ -220,7 +220,7 @@ type NavAirwork struct {
 	NextMoveCounter int
 	Heading         float32
 	TurnRate        float32
-	TurnDirection   TurnMethod
+	TurnDirection   av.TurnDirection
 	IAS             float32
 	Altitude        float32
 	Dive            bool
@@ -334,7 +334,7 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 	av.RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, lg)
 
-	landIdx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Land })
+	landIdx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Land() })
 	if landIdx != -1 {
 		if fp.Rules == av.FlightRulesIFR {
 			lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
@@ -454,7 +454,7 @@ func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
 	}
 	// If the first waypoint has a heading, we're about to turn to it
 	if len(nav.Waypoints) > 0 && nav.Waypoints[0].Heading != 0 {
-		return nav.Waypoints[0].Heading, TurningToHeading
+		return int(nav.Waypoints[0].Heading), TurningToHeading
 	}
 	return 0, NoHeading
 }
@@ -463,7 +463,7 @@ func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
 // few seconds in the future. It should only be called for heading changes
 // due to controller instructions to the pilot and never in cases where the
 // autopilot is changing the heading assignment.
-func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod, simTime time.Time) {
+func (nav *Nav) EnqueueHeading(hdg float32, turn av.TurnDirection, simTime time.Time) {
 	var delay float32
 	if nav.Heading.Assigned != nil && nav.DeferredNavHeading == nil {
 		// Already in heading mode; have less of a delay.
@@ -535,7 +535,7 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 
 	for _, wp := range nav.Waypoints {
 		// Ignore controller-assigned "cross FIX at ALT" for this
-		if r := wp.AltitudeRestriction; r != nil {
+		if r := wp.AltitudeRestriction(); r != nil {
 			return nav.FlightState.Altitude >= r.TargetAltitude(nav.FlightState.Altitude)
 		}
 	}

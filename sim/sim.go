@@ -1158,6 +1158,7 @@ func (s *Sim) Step(elapsed time.Duration) bool {
 		// Don't bother with this if we didn't change any aircraft state
 		s.CheckLeaks()
 	}
+
 	return ns > 0
 }
 
@@ -1195,7 +1196,7 @@ func (s *Sim) updateState() {
 
 				if ac != nil {
 					haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
-						func(wp av.Waypoint) bool { return wp.TransferComms })
+						func(wp av.Waypoint) bool { return wp.TransferComms() })
 					if !haveTransferComms && s.isVirtualController(previousTrackingController) {
 						s.virtualControllerTransferComms(ac, TCP(previousTrackingController), TCP(newTrackingController))
 					}
@@ -1272,7 +1273,7 @@ func (s *Sim) updateState() {
 
 				// Handoffs still happen for "unassociated" (to us) tracks
 				// when they're currently tracked by an external facility.
-				if passedWaypoint.HumanHandoff {
+				if passedWaypoint.HumanHandoff() {
 					// Handoff from virtual controller to a human controller.
 					// During prespawn uncontrolled-only phase, cull aircraft that would be handed off to humans
 					// rather than initiating the handoff.
@@ -1287,9 +1288,9 @@ func (s *Sim) updateState() {
 					if sfp != nil {
 						s.handoffTrack(sfp, sfp.InboundHandoffController)
 					}
-				} else if passedWaypoint.HandoffController != "" {
+				} else if passedWaypoint.HandoffController() != "" {
 					// During prespawn uncontrolled-only phase, cull if handoff target is a human controller
-					if s.prespawnUncontrolledOnly && !s.isVirtualController(TCP(passedWaypoint.HandoffController)) {
+					if s.prespawnUncontrolledOnly && !s.isVirtualController(TCP(passedWaypoint.HandoffController())) {
 						s.deleteAircraft(ac)
 						continue
 					}
@@ -1298,16 +1299,16 @@ func (s *Sim) updateState() {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
 					if sfp != nil {
-						s.handoffTrack(sfp, TCP(passedWaypoint.HandoffController))
+						s.handoffTrack(sfp, TCP(passedWaypoint.HandoffController()))
 					}
 				}
 
-				if passedWaypoint.ClearApproach {
+				if passedWaypoint.ClearApproach() {
 					ac.ApproachTCP = TCP(ac.ControllerFrequency)
 				}
 
-				if passedWaypoint.GoAroundContactController != "" {
-					tcp := passedWaypoint.GoAroundContactController
+				if passedWaypoint.GoAroundContactController() != "" {
+					tcp := passedWaypoint.GoAroundContactController()
 					ac.ControllerFrequency = ControlPosition(tcp)
 
 					// Clear stale pending contacts and frequency changes from before
@@ -1345,7 +1346,7 @@ func (s *Sim) updateState() {
 					// Things that only apply to associated aircraft
 					sfp := ac.NASFlightPlan
 
-					if passedWaypoint.TransferComms {
+					if passedWaypoint.TransferComms() {
 						// This is a departure that hasn't contacted the departure controller yet, do it here
 						if ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
 							s.contactDeparture(ac, sfp)
@@ -1368,22 +1369,22 @@ func (s *Sim) updateState() {
 					// Update scratchpads if the waypoint has scratchpad commands
 					// Only update if aircraft is controlled by a virtual controller
 					if s.isVirtualController(ac.ControllerFrequency) {
-						if passedWaypoint.PrimaryScratchpad != "" {
-							sfp.Scratchpad = passedWaypoint.PrimaryScratchpad
+						if passedWaypoint.PrimaryScratchpad() != "" {
+							sfp.Scratchpad = passedWaypoint.PrimaryScratchpad()
 						}
-						if passedWaypoint.ClearPrimaryScratchpad {
+						if passedWaypoint.ClearPrimaryScratchpad() {
 							sfp.Scratchpad = ""
 						}
-						if passedWaypoint.SecondaryScratchpad != "" {
-							sfp.SecondaryScratchpad = passedWaypoint.SecondaryScratchpad
+						if passedWaypoint.SecondaryScratchpad() != "" {
+							sfp.SecondaryScratchpad = passedWaypoint.SecondaryScratchpad()
 						}
-						if passedWaypoint.ClearSecondaryScratchpad {
+						if passedWaypoint.ClearSecondaryScratchpad() {
 							sfp.SecondaryScratchpad = ""
 						}
 					}
 
-					if passedWaypoint.PointOut != "" {
-						if ctrl, ok := s.State.Controllers[TCP(passedWaypoint.PointOut)]; ok {
+					if passedWaypoint.PointOut() != "" {
+						if ctrl, ok := s.State.Controllers[TCP(passedWaypoint.PointOut())]; ok {
 							// Only do automatic point outs for virtual controllers
 							if s.isVirtualController(ac.ControllerFrequency) {
 								fromCtrl := s.State.Controllers[TCP(ac.ControllerFrequency)]
@@ -1394,15 +1395,15 @@ func (s *Sim) updateState() {
 					}
 				}
 
-				if passedWaypoint.Delete {
+				if passedWaypoint.Delete() {
 					s.lg.Debug("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
 					s.deleteAircraft(ac)
 				}
 
-				if passedWaypoint.Land {
+				if passedWaypoint.Land() {
 					// There should be an altitude restriction at the final approach waypoint, but
 					// be careful.
-					alt := passedWaypoint.AltitudeRestriction
+					alt := passedWaypoint.AltitudeRestriction()
 					// If we're more than 200 feet AGL, go around.
 					lowEnough := alt == nil || ac.Altitude() <= alt.TargetAltitude(ac.Altitude())+200
 					if lowEnough {
@@ -1451,7 +1452,7 @@ func (s *Sim) updateState() {
 			culled := false
 			if s.prespawnUncontrolledOnly && ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
 				for _, wp := range ac.Nav.Waypoints {
-					if wp.TransferComms {
+					if wp.TransferComms() {
 						if math.NMDistance2LLFast(ac.Position(), wp.Location, ac.NmPerLongitude()) < 5 {
 							s.deleteAircraft(ac)
 							culled = true
@@ -1766,11 +1767,13 @@ func (s *Sim) goAround(ac *Aircraft) {
 
 	// Waypoint at the opposite threshold recording who to contact when it's reached.
 	wp := av.Waypoint{
-		Location:                  approach.OppositeThreshold,
-		FlyOver:                   true,
-		Heading:                   proc.Heading,
-		AltitudeRestriction:       &av.AltitudeRestriction{Range: [2]float32{altitude, altitude}},
-		GoAroundContactController: proc.HandoffController,
+		Location:       approach.OppositeThreshold,
+		Flags:          av.WaypointFlagFlyOver | av.WaypointFlagHasAltRestriction,
+		Heading:        int16(proc.Heading),
+		AltRestriction: av.AltitudeRestriction{Range: [2]float32{altitude, altitude}},
+		Extra: &av.WaypointExtra{
+			GoAroundContactController: proc.HandoffController,
+		},
 	}
 
 	ac.Nav.GoAroundWithProcedure(altitude, wp)

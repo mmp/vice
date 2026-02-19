@@ -158,7 +158,7 @@ func (ac *Aircraft) GetSTTFixes() []string {
 	if ac.Nav.Approach.Assigned != nil {
 		// Check if approach waypoints are already in the route
 		hasApproachWaypoints := slices.ContainsFunc(ac.Nav.AssignedWaypoints(),
-			func(wp av.Waypoint) bool { return wp.OnApproach })
+			func(wp av.Waypoint) bool { return wp.OnApproach() })
 
 		// If not, add all approach waypoints (aircraft is being vectored to intercept)
 		if !hasApproachWaypoints {
@@ -262,13 +262,13 @@ func (ac *Aircraft) ExpediteClimb() av.CommandIntent {
 	return ac.Nav.ExpediteClimb()
 }
 
-func (ac *Aircraft) AssignHeading(heading int, turn nav.TurnMethod, simTime time.Time) av.CommandIntent {
+func (ac *Aircraft) AssignHeading(heading int, turn av.TurnDirection, simTime time.Time) av.CommandIntent {
 	return ac.Nav.AssignHeading(float32(heading), turn, simTime)
 }
 
 func (ac *Aircraft) TurnLeft(deg int, simTime time.Time) av.CommandIntent {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
-	ac.Nav.AssignHeading(hdg, nav.TurnLeft, simTime)
+	ac.Nav.AssignHeading(hdg, av.TurnLeft, simTime)
 	return av.HeadingIntent{
 		Type:    av.HeadingTurnLeft,
 		Heading: hdg,
@@ -278,7 +278,7 @@ func (ac *Aircraft) TurnLeft(deg int, simTime time.Time) av.CommandIntent {
 
 func (ac *Aircraft) TurnRight(deg int, simTime time.Time) av.CommandIntent {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
-	ac.Nav.AssignHeading(hdg, nav.TurnRight, simTime)
+	ac.Nav.AssignHeading(hdg, av.TurnRight, simTime)
 	return av.HeadingIntent{
 		Type:    av.HeadingTurnRight,
 		Heading: hdg,
@@ -723,7 +723,7 @@ func (ac *Aircraft) IsOverflight() bool {
 
 func (ac *Aircraft) WillDoAirwork() bool {
 	return ac.Nav.Airwork != nil ||
-		slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.AirworkRadius > 0 })
+		slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.AirworkRadius() > 0 })
 }
 
 func (ac *Aircraft) IsUnassociated() bool {

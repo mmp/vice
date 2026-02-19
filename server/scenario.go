@@ -247,7 +247,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 	addControllersFromWaypoints := func(route []av.Waypoint) {
 		for _, wp := range route {
-			addController(sim.TCP(wp.HandoffController))
+			addController(sim.TCP(wp.HandoffController()))
 		}
 	}
 	// Make sure all of the controllers used in airspace awareness will be there.
@@ -682,11 +682,11 @@ func (sg *scenarioGroup) resolveControllerRefs() {
 	}
 	resolveWaypoints := func(wps av.WaypointArray) {
 		for i := range wps {
-			if wps[i].HandoffController != "" {
-				wps[i].HandoffController = resolve(wps[i].HandoffController)
+			if wps[i].HandoffController() != "" {
+				wps[i].InitExtra().HandoffController = resolve(wps[i].HandoffController())
 			}
-			if wps[i].PointOut != "" {
-				wps[i].PointOut = resolve(wps[i].PointOut)
+			if wps[i].PointOut() != "" {
+				wps[i].InitExtra().PointOut = resolve(wps[i].PointOut())
 			}
 		}
 	}
@@ -1001,102 +1001,153 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		}
 		pos[id] = ctrl
 	}
-	sg.ControlPositions = pos
 
-	// TODO: facility-prefix /ho values (e.g. /hoP, /hoN) should resolve
-	// through that facility's inbound assignments rather than collapsing
-	// to a generic HumanHandoff. This needs a redesign so keep it commented for now.
-	/*
-			prefixToFacility := make(map[string]string)
-			for _, hid := range sg.HandoffIDs {
-				if hid.SingleCharStarsID != "" {
-					prefixToFacility[hid.SingleCharStarsID] = hid.ID
-				}
-				if hid.TwoCharStarsID != "" {
-					prefixToFacility[hid.TwoCharStarsID] = hid.ID
-				}
-				if hid.StarsID != "" {
-					prefixToFacility[hid.StarsID] = hid.ID
-				}
-				if hid.Prefix != "" {
-					prefixToFacility[hid.Prefix] = hid.ID
-				}
+	rewriteString := func(s *string) {
+		if *s == "" {
+			return
+		}
+		if ctrl, ok := sg.ControlPositions[sim.TCP(*s)]; ok {
+			*s = string(ctrl.PositionId())
+		}
+	}
+	rewriteControlPosition := func(s *sim.ControlPosition) {
+		if *s == "" {
+			return
+		}
+		if ctrl, ok := sg.ControlPositions[*s]; ok {
+			*s = sim.TCP(ctrl.PositionId())
+		}
+	}
+	rewriteWaypoints := func(wp av.WaypointArray) {
+		for _, w := range wp {
+			if w.HandoffController() != "" {
+				hc := w.HandoffController()
+				rewriteControlPosition(&hc)
+				w.InitExtra().HandoffController = hc
 			}
+		}
+	}
 
-			rewriteWaypoints := func(wp av.WaypointArray) {
-				for i := range wp {
-					if wp[i].HandoffController == "" {
-						continue
-					}
-					hc := string(wp[i].HandoffController)
-					if _, ok := prefixToFacility[hc]; ok {
-						wp[i].HandoffController = ""
-						wp[i].HumanHandoff = true
-					}
-				}
+	for _, s := range sg.Scenarios {
+		if len(s.Airspace) > 0 {
+			a := make(map[sim.TCP][]string)
+			for ctrl, vols := range s.Airspace {
+				rewriteControlPosition(&ctrl)
+				a[ctrl] = vols
 			}
+			s.Airspace = a
+		}
 
-		for _, ap := range sg.Airports {
-			rewriteControlPosition(&ap.DepartureController)
-
-			for _, exitroutes := range ap.DepartureRoutes {
-				for _, route := range exitroutes {
-					rewriteControlPosition(&route.HandoffController)
-					rewriteWaypoints(route.Waypoints)
-				}
+		for _, rwy := range s.DepartureRunways {
+			if ap, ok := sg.Airports[rwy.Airport]; ok {
+				rewriteControlPosition(&ap.DepartureController)
 			}
+		}
 
-			for _, app := range ap.Approaches {
-				for _, wps := range app.Waypoints {
+		for _, rwy := range s.ArrivalRunways {
+			if rwy.GoAround != nil {
+				rewriteControlPosition(&rwy.GoAround.HandoffController)
+			}
+		}
+
+		// Rewrite Configuration default_consolidation
+		if s.ControllerConfiguration != nil {
+			newPositions := make(map[sim.TCP][]sim.TCP)
+			for parent, children := range s.ControllerConfiguration.DefaultConsolidation {
+				rewriteControlPosition(&parent)
+				newChildren := make([]sim.TCP, len(children))
+				for i, child := range children {
+					c := child
+					rewriteControlPosition(&c)
+					newChildren[i] = c
+				}
+				newPositions[parent] = newChildren
+			}
+			s.ControllerConfiguration.DefaultConsolidation = newPositions
+
+			for flow, tcp := range s.ControllerConfiguration.InboundAssignments {
+				rewriteControlPosition(&tcp)
+				s.ControllerConfiguration.InboundAssignments[flow] = tcp
+			}
+			for airport, tcp := range s.ControllerConfiguration.DepartureAssignments {
+				rewriteControlPosition(&tcp)
+				s.ControllerConfiguration.DepartureAssignments[airport] = tcp
+			}
+			for spec, tcp := range s.ControllerConfiguration.GoAroundAssignments {
+				rewriteControlPosition(&tcp)
+				s.ControllerConfiguration.GoAroundAssignments[spec] = tcp
+			}
+		}
+
+		for i := range s.VirtualControllers {
+			rewriteControlPosition(&s.VirtualControllers[i])
+		}
+	}
+
+	for _, ap := range sg.Airports {
+		rewriteControlPosition(&ap.DepartureController)
+
+		for _, exitroutes := range ap.DepartureRoutes {
+			for _, route := range exitroutes {
+				rewriteControlPosition(&route.HandoffController)
+				rewriteWaypoints(route.Waypoints)
+			}
+		}
+
+		for _, app := range ap.Approaches {
+			for _, wps := range app.Waypoints {
+				rewriteWaypoints(wps)
+			}
+		}
+		for _, dep := range ap.Departures {
+			rewriteWaypoints(dep.RouteWaypoints)
+		}
+	}
+
+	fa := &sg.FacilityAdaptation
+	for i := range fa.AirspaceAwareness {
+		rewriteString(&fa.AirspaceAwareness[i].ReceivingController)
+	}
+	for position, config := range fa.ControllerConfigs {
+		// Rewrite controller
+		delete(fa.ControllerConfigs, position)
+		p := string(position)
+		rewriteString(&p)
+		fa.ControllerConfigs[sim.ControlPosition(p)] = config
+	}
+	// Rewrite TCP references in configurations (controller assignments)
+	for _, config := range fa.Configurations {
+		for flow, tcp := range config.InboundAssignments {
+			rewriteControlPosition(&tcp)
+			config.InboundAssignments[flow] = tcp
+		}
+		for spec, tcp := range config.DepartureAssignments {
+			rewriteControlPosition(&tcp)
+			config.DepartureAssignments[spec] = tcp
+		}
+		for spec, tcp := range config.GoAroundAssignments {
+			rewriteControlPosition(&tcp)
+			config.GoAroundAssignments[spec] = tcp
+		}
+	}
+
+	for _, flow := range sg.InboundFlows {
+		for i := range flow.Arrivals {
+			rewriteControlPosition(&flow.Arrivals[i].InitialController)
+			rewriteWaypoints(flow.Arrivals[i].Waypoints)
+			for _, rwyWps := range flow.Arrivals[i].RunwayWaypoints {
+				for _, wps := range rwyWps {
 					rewriteWaypoints(wps)
 				}
 			}
-			for _, dep := range ap.Departures {
-				rewriteWaypoints(dep.RouteWaypoints)
-			}
 		}
+		for i := range flow.Overflights {
+			rewriteControlPosition(&flow.Overflights[i].InitialController)
+			rewriteWaypoints(flow.Overflights[i].Waypoints)
+		}
+	}
 
-		fa := &sg.FacilityAdaptation
-		for i := range fa.AirspaceAwareness {
-			rewriteString(&fa.AirspaceAwareness[i].ReceivingController)
-		}
-		for position, config := range fa.ControllerConfigs {
-			// Rewrite controller
-			delete(fa.ControllerConfigs, position)
-			p := string(position)
-			rewriteString(&p)
-			fa.ControllerConfigs[sim.ControlPosition(p)] = config
-		}
-		// Rewrite TCP references in configurations (controller assignments)
-		for _, config := range fa.Configurations {
-			for flow, tcp := range config.InboundAssignments {
-				rewriteControlPosition(&tcp)
-				config.InboundAssignments[flow] = tcp
-			}
-			for spec, tcp := range config.DepartureAssignments {
-				rewriteControlPosition(&tcp)
-				config.DepartureAssignments[spec] = tcp
-			}
-			for spec, tcp := range config.GoAroundAssignments {
-				rewriteControlPosition(&tcp)
-				config.GoAroundAssignments[spec] = tcp
-			}
-		}
-
-			for _, flow := range sg.InboundFlows {
-				for _, ar := range flow.Arrivals {
-					rewriteWaypoints(ar.Waypoints)
-					for _, rwyWps := range ar.RunwayWaypoints {
-						for _, wps := range rwyWps {
-							rewriteWaypoints(wps)
-						}
-					}
-				}
-				for _, of := range flow.Overflights {
-					rewriteWaypoints(of.Waypoints)
-				}
-			}
-	*/
+	sg.ControlPositions = pos
 }
 
 // PostDeserializeFacilityAdaptation validates FacilityAdaptation fields that

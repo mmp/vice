@@ -931,7 +931,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			return
 
 		case 1:
-			ar.Waypoints[0].HumanHandoff = true // empty string -> to human
+			ar.Waypoints[0].SetHumanHandoff(true) // empty string -> to human
 
 		default:
 			// add a handoff point randomly halfway between the first two waypoints.
@@ -939,8 +939,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				Fix: "_handoff",
 				// FIXME: it's a little sketchy to lerp Point2ll coordinates
 				// but probably ok over short distances here...
-				Location:     math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
-				HumanHandoff: true,
+				Location: math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
+				Flags:    WaypointFlagHumanHandoff,
 			}
 			ar.Waypoints = append([]Waypoint{ar.Waypoints[0], mid}, ar.Waypoints[1:]...)
 		}
@@ -976,7 +976,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				wp = wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 				for i := range wp {
-					wp[i].OnSTAR = true
+					wp[i].SetOnSTAR(true)
 				}
 
 				if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
@@ -1001,7 +1001,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 
 	for i := range ar.Waypoints {
-		ar.Waypoints[i].OnSTAR = true
+		ar.Waypoints[i].SetOnSTAR(true)
 	}
 
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
@@ -1068,8 +1068,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		// Make sure the initial altitude isn't below any of
 		// altitude restrictions.
 		for _, wp := range ar.Waypoints {
-			if wp.AltitudeRestriction != nil &&
-				wp.AltitudeRestriction.TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
+			if wp.AltitudeRestriction() != nil &&
+				wp.AltitudeRestriction().TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
 				e.ErrorString("\"initial_altitude\" is below altitude restriction at %q", wp.Fix)
 			}
 		}

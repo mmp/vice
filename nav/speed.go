@@ -323,7 +323,7 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, speed float32
 			}
 
 			if spd != 0 {
-				return wp.OnSID, spd, eta, true
+				return wp.OnSID(), spd, eta, true
 			}
 		}
 	}

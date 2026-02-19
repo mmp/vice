@@ -784,34 +784,37 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 				}
 			}()
 
-			var ar *av.AltitudeRestriction
+			var ar av.AltitudeRestriction
 			alt := float32(ac.FlightPlan.Altitude)
 			if i < nsteps/2 {
 				// At or above for the first half, even if unattainable so that they climb
-				ar = &av.AltitudeRestriction{Range: [2]float32{alt, 0}}
+				ar = av.AltitudeRestriction{Range: [2]float32{alt, 0}}
 			} else {
 				if i < nsteps-1 {
 					// at or below to be able to start descending
-					ar = &av.AltitudeRestriction{Range: [2]float32{0, alt}}
+					ar = av.AltitudeRestriction{Range: [2]float32{0, alt}}
 				} else {
 					// Last one--get down to the field
-					ar = &av.AltitudeRestriction{
+					ar = av.AltitudeRestriction{
 						Range: [2]float32{float32(arrap.Elevation) + 1500, float32(arrap.Elevation) + 2000}}
 				}
 			}
 
-			wps = append(wps, av.Waypoint{
-				Fix:                 "_route" + strconv.Itoa(i),
-				Location:            pt,
-				AltitudeRestriction: ar,
-				Radius:              util.Select(i <= 1, 0.2*radius, radius),
-			})
+			wp := av.Waypoint{
+				Fix:      "_route" + strconv.Itoa(i),
+				Location: pt,
+			}
+			wp.SetAltitudeRestriction(ar)
+			wp.InitExtra().Radius = util.Select(i <= 1, 0.2*radius, radius)
+			wps = append(wps, wp)
 
 			if airwork && i == nsteps/2 {
-				wps[len(wps)-1].AirworkRadius = 4 + s.Rand.Intn(4)
-				wps[len(wps)-1].AirworkMinutes = 5 + s.Rand.Intn(15)
-				wps[len(wps)-1].AltitudeRestriction.Range[0] -= 500
-				wps[len(wps)-1].AltitudeRestriction.Range[1] = min(wps[len(wps)-1].AltitudeRestriction.Range[1]+2000, maxVFRAltitude)
+				w := &wps[len(wps)-1]
+				extra := w.InitExtra()
+				extra.AirworkRadius = int8(4 + s.Rand.Intn(4))
+				extra.AirworkMinutes = int8(5 + s.Rand.Intn(15))
+				w.AltRestriction.Range[0] -= 500
+				w.AltRestriction.Range[1] = min(w.AltRestriction.Range[1]+2000, maxVFRAltitude)
 			}
 		}
 	}
@@ -824,7 +827,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	// Adjust route for MVA requirements
 	wps = s.adjustRouteForMVA(string(ac.ADSBCallsign), wps)
 
-	wps[len(wps)-1].Land = true
+	wps[len(wps)-1].SetLand(true)
 
 	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, randomizeAltitudeRange,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, simTime, s.lg); err != nil {
@@ -840,7 +843,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		simNav.FlightState.Altitude, simTime)
 	for i := range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
 		if wp := simNav.UpdateWithWeather("", prespawnWxs, &simFP,
-			simTime, nil); wp != nil && wp.Delete {
+			simTime, nil); wp != nil && wp.Delete() {
 			return ac, rwy.Id, nil
 		}
 
@@ -933,13 +936,14 @@ func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoin
 
 					minAlt := min(float32(mva-vfrMVABuffer), maxVFRAltitude)
 					mvaWpNum++
-					result = append(result, av.Waypoint{
+					mvaWp := av.Waypoint{
 						Fix:      fmt.Sprintf("_mva%d@%.0f", mvaWpNum, minAlt),
 						Location: pNew,
-						AltitudeRestriction: &av.AltitudeRestriction{
-							Range: [2]float32{minAlt, 0},
-						},
+					}
+					mvaWp.SetAltitudeRestriction(av.AltitudeRestriction{
+						Range: [2]float32{minAlt, 0},
 					})
+					result = append(result, mvaWp)
 				}
 
 				prevMVA = mva
@@ -950,16 +954,16 @@ func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoin
 		// Apply MVA constraints to this waypoint and add it
 		if mva := s.mvaGrid.GetMVA(wp.Location); mva > 0 {
 			minAlt := min(float32(mva-vfrMVABuffer), maxVFRAltitude)
-			if wp.AltitudeRestriction == nil {
-				wp.AltitudeRestriction = &av.AltitudeRestriction{
+			if wp.AltitudeRestriction() == nil {
+				wp.SetAltitudeRestriction(av.AltitudeRestriction{
 					Range: [2]float32{minAlt, 0},
-				}
+				})
 			} else {
-				if wp.AltitudeRestriction.Range[0] < minAlt {
-					wp.AltitudeRestriction.Range[0] = minAlt
+				if wp.AltRestriction.Range[0] < minAlt {
+					wp.AltRestriction.Range[0] = minAlt
 				}
-				if wp.AltitudeRestriction.Range[1] != 0 && wp.AltitudeRestriction.Range[1] < wp.AltitudeRestriction.Range[0] {
-					wp.AltitudeRestriction.Range[1] = wp.AltitudeRestriction.Range[0] + 1000
+				if wp.AltRestriction.Range[1] != 0 && wp.AltRestriction.Range[1] < wp.AltRestriction.Range[0] {
+					wp.AltRestriction.Range[1] = wp.AltRestriction.Range[0] + 1000
 				}
 			}
 		}

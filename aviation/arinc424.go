@@ -551,36 +551,44 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	}
 
 	ok = true
-	wp = Waypoint{
-		Fix:     r.fix,
-		Speed:   speed,
-		FlyOver: r.waypointDescription[1] == 'Y',
-		IAF:     r.waypointDescription[3] == 'A' || r.waypointDescription[3] == 'C' || r.waypointDescription[3] == 'D',
-		IF:      r.waypointDescription[3] == 'B' || r.waypointDescription[3] == 'I',
-		FAF:     r.waypointDescription[3] == 'F',
+	wp = Waypoint{Fix: r.fix}
+	if speed != 0 {
+		wp.Speed = int16(speed)
+	}
+	if r.waypointDescription[1] == 'Y' {
+		wp.SetFlyOver(true)
+	}
+	if r.waypointDescription[3] == 'A' || r.waypointDescription[3] == 'C' || r.waypointDescription[3] == 'D' {
+		wp.SetIAF(true)
+	}
+	if r.waypointDescription[3] == 'B' || r.waypointDescription[3] == 'I' {
+		wp.SetIF(true)
+	}
+	if r.waypointDescription[3] == 'F' {
+		wp.SetFAF(true)
 	}
 	if alt0 != 0 || alt1 != 0 {
 		switch r.altDescrip { // 5.29
 		case ' ':
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}}
+			wp.SetAltitudeRestriction(AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}})
 		case '+':
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0)}}
+			wp.SetAltitudeRestriction(AltitudeRestriction{Range: [2]float32{float32(alt0)}})
 		case '-':
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{0, float32(alt0)}}
-		case 'B': // “At or above to at or below”; The higher value will always appear first.
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt1) /* low */, float32(alt0) /* high */}}
+			wp.SetAltitudeRestriction(AltitudeRestriction{Range: [2]float32{0, float32(alt0)}})
+		case 'B': // "At or above to at or below"; The higher value will always appear first.
+			wp.SetAltitudeRestriction(AltitudeRestriction{Range: [2]float32{float32(alt1) /* low */, float32(alt0) /* high */}})
 		case 'G', 'I':
 			// glideslope alt in second, 'at' in first
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}}
+			wp.SetAltitudeRestriction(AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}})
 		case 'H', 'J':
 			// glideslope alt in second, 'at or above' in first
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0)}}
+			wp.SetAltitudeRestriction(AltitudeRestriction{Range: [2]float32{float32(alt0)}})
 		case 'V':
 			// coded vertical angle alt in second, 'at or above' in first
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0)}}
+			wp.SetAltitudeRestriction(AltitudeRestriction{Range: [2]float32{float32(alt0)}})
 		case 'X':
 			// coded vertical angle alt in second, 'at' in first
-			wp.AltitudeRestriction = &AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}}
+			wp.SetAltitudeRestriction(AltitudeRestriction{Range: [2]float32{float32(alt0), float32(alt0)}})
 		default:
 			panic("TODO alt descrip: " + string(r.altDescrip))
 		}
@@ -615,7 +623,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 			pt.NmLimit = float32(parseInt(r.routeDistance)) / 10
 		}
 
-		wp.ProcedureTurn = pt
+		wp.InitExtra().ProcedureTurn = pt
 	}
 	return
 }
@@ -640,7 +648,7 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 			if n := len(transitions[rec.transition]); n == 0 {
 				panic("FM as first waypoint in transition?")
 			} else {
-				transitions[rec.transition][n-1].Heading = (hdg + 5) / 10
+				transitions[rec.transition][n-1].Heading = int16((hdg + 5) / 10)
 			}
 		} else {
 			wp, arc, ok := rec.GetWaypoint()
@@ -649,12 +657,12 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 				if n := len(transitions[rec.transition]); n == 0 {
 					fmt.Printf("%s/%s/%s: no previous fix to add arc to?\n", rec.icao, rec.id, rec.fix)
 				} else {
-					transitions[rec.transition][n-1].Arc = arc
+					transitions[rec.transition][n-1].InitExtra().Arc = arc
 				}
 			}
 			if ok {
 				if n := len(transitions[rec.transition]); n > 0 && wp.Fix == transitions[rec.transition][n-1].Fix &&
-					wp.ProcedureTurn != nil {
+					wp.ProcedureTurn() != nil {
 					transitions[rec.transition][n-1] = wp
 				} else {
 					transitions[rec.transition] = append(transitions[rec.transition], wp)
@@ -719,14 +727,14 @@ func spliceTransition(tr WaypointArray, base WaypointArray) WaypointArray {
 	// to take its fix completely, since the given transition may have
 	// things like procedure turn at the last fix that we want to preserve...
 	bwp := base[idx]
-	if bwp.IAF {
-		tr[len(tr)-1].IAF = true
+	if bwp.IAF() {
+		tr[len(tr)-1].SetIAF(true)
 	}
-	if bwp.IF {
-		tr[len(tr)-1].IF = true
+	if bwp.IF() {
+		tr[len(tr)-1].SetIF(true)
 	}
-	if bwp.FAF {
-		tr[len(tr)-1].FAF = true
+	if bwp.FAF() {
+		tr[len(tr)-1].SetFAF(true)
 	}
 
 	return append(WaypointArray(tr), base[idx+1:]...)

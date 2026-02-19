@@ -174,7 +174,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 
 							imgui.TableNextColumn()
 							for _, wp := range appr.Waypoints[0] {
-								if wp.FAF {
+								if wp.FAF() {
 									imgui.Text(wp.Fix)
 									break
 								}
