@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "1W": {
+            "callsign": "END_APP",
+            "frequency": 119775,
+            "radio_name": "Vance Approach"
+        },
+        "1Z": {
+            "callsign": "END_TWR",
+            "frequency": 124050,
+            "radio_name": "Vance Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ICT",
+            "prefix": "2"
+        },
+        {
+            "id": "OKC",
+            "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "F"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

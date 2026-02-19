@@ -345,8 +345,10 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.Pop()
 	}
 
-	if _, ok := controlPositions[ap.DepartureController]; !ok && ap.DepartureController != "" {
-		e.ErrorString("departure_controller %q unknown", ap.DepartureController)
+	if ap.DepartureController != "" {
+		if _, ok := controlPositions[ap.DepartureController]; !ok {
+			e.ErrorString("departure_controller %q unknown", ap.DepartureController)
+		}
 	}
 
 	// Departure routes are specified in the JSON as comma-separated lists

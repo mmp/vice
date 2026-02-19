@@ -1,0 +1,23 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "RCA_APP",
+            "frequency": 119500,
+            "radio_name": "Ellsworth Approach"
+        },
+        "1T": {
+            "callsign": "RCA_TWR",
+            "frequency": 126050,
+            "radio_name": "Ellsworth Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZDV",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

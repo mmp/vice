@@ -1,0 +1,69 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "CPR_APP",
+            "frequency": 120650,
+            "radio_name": "Capser approach"
+        },
+        "1T": {
+            "callsign": "CPR_TWR",
+            "frequency": 118300,
+            "radio_name": "Casper tower",
+            "scope_char": "1"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "DEN": "1A",
+                    "JAC": "1A",
+                    "MEM": "1A",
+                    "NE-GA": "1A",
+                    "SE-GA": "1A",
+                    "SLC": "1A"
+                },
+                "departure_assignments": {
+                    "KCPR": "1A"
+                },
+                "default_consolidation": {
+                    "1A": []
+                }
+            }
+        },
+        "center": "42.9058611,-106.4636389",
+        "range": 40,
+        "scratchpads": {
+            "CUSGA": "CUS",
+            "HIPEE": "DEN",
+            "KURSE": "KUR",
+            "LHO": "LHO"
+        },
+        "significant_points": {
+            "CUSGA": {},
+            "HIPEE": {},
+            "KURSE": {},
+            "LHO": {}
+        },
+        "stars_maps": [
+            "CPR BASE",
+            "CPR MVA",
+            "CPR ILS 3",
+            "CPR GPS 21",
+            "CPR GPS 26",
+            "CPR EOVM",
+            "CPR CLASS",
+            "CPR GPS 3",
+            "CPR GPS 8",
+            "CPR LCL",
+            "CPR VOR 21"
+        ],
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
+    },
+    "handoff_ids": [
+        {
+            "id": "ZDV",
+            "prefix": "C"
+        }
+    ]
+}

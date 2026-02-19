@@ -1,0 +1,134 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "OAK_2_TWR",
+            "frequency": 118300,
+            "radio_name": "Oakland Tower"
+        },
+        "1B": {
+            "callsign": "BAY_B_APP",
+            "frequency": 133950,
+            "radio_name": "Bay Approach"
+        },
+        "1D": {
+            "callsign": "BAY_D_DEP",
+            "frequency": 127000,
+            "radio_name": "Bay Approach"
+        },
+        "1E": {
+            "callsign": "HWD_TWR",
+            "frequency": 120200,
+            "radio_name": "Hayward Tower"
+        },
+        "1F": {
+            "callsign": "BAY_F_APP",
+            "frequency": 120350,
+            "radio_name": "Bay Approach"
+        },
+        "1G": {
+            "callsign": "BAY_G_APP",
+            "frequency": 125350,
+            "radio_name": "Bay Approach"
+        },
+        "1H": {
+            "callsign": "RHV_TWR",
+            "frequency": 119800,
+            "radio_name": "Reid Hillview Tower"
+        },
+        "1J": {
+            "callsign": "SJC_TWR",
+            "frequency": 124000,
+            "radio_name": "San Jose Tower"
+        },
+        "1K": {
+            "callsign": "BAY_K_APP",
+            "frequency": 135200,
+            "radio_name": "Bay Approach"
+        },
+        "1L": {
+            "callsign": "BAY_L_APP",
+            "frequency": 120100,
+            "radio_name": "Bay Approach"
+        },
+        "1M": {
+            "callsign": "BAY_M_APP",
+            "frequency": 124400,
+            "radio_name": "Bay Approach"
+        },
+        "1N": {
+            "callsign": "BAY_N_APP",
+            "frequency": 134500,
+            "radio_name": "Bay Approach"
+        },
+        "1O": {
+            "callsign": "OAK_TWR",
+            "frequency": 127200,
+            "radio_name": "Oakland Tower"
+        },
+        "1P": {
+            "callsign": "PAO_TWR",
+            "frequency": 118600,
+            "radio_name": "Palo Alto Tower"
+        },
+        "1R": {
+            "callsign": "BAY_R_DEP",
+            "frequency": 120900,
+            "radio_name": "Bay Departure"
+        },
+        "1S": {
+            "callsign": "SQL_TWR",
+            "frequency": 119000,
+            "radio_name": "San Carlos Tower"
+        },
+        "1T": {
+            "callsign": "BAY_T_DEP",
+            "frequency": 121300,
+            "radio_name": "Bay Departure"
+        },
+        "1U": {
+            "callsign": "BAY_U_DEP",
+            "frequency": 135100,
+            "radio_name": "Bay Departure"
+        },
+        "1V": {
+            "callsign": "SFO_A_TWR",
+            "frequency": 120500,
+            "radio_name": "San Francisco Tower"
+        },
+        "1W": {
+            "callsign": "BAY_W_APP",
+            "frequency": 135650,
+            "radio_name": "Bay Approach"
+        },
+        "1Z": {
+            "callsign": "NUQ_TWR",
+            "frequency": 119550,
+            "radio_name": "Moffet Local"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "MC1",
+            "prefix": "4"
+        },
+        {
+            "id": "MR1",
+            "prefix": "2"
+        },
+        {
+            "id": "SC1",
+            "prefix": "3"
+        },
+        {
+            "id": "SUU",
+            "prefix": "1"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "O"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

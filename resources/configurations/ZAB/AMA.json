@@ -1,0 +1,28 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "AMA_A_APP",
+            "frequency": 119500,
+            "radio_name": "Amarillo Approach"
+        },
+        "1F": {
+            "callsign": "AMA_F_APP",
+            "frequency": 121150,
+            "radio_name": "Amarillo Approach"
+        },
+        "2T": {
+            "callsign": "AMA_TWR",
+            "frequency": 118300,
+            "radio_name": "Amarillo Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZAB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

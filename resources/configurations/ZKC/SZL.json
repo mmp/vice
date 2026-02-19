@@ -1,0 +1,31 @@
+{
+    "control_positions": {
+        "1M": {
+            "callsign": "SZL_APP",
+            "frequency": 124475,
+            "radio_name": "Whiteman Approach"
+        },
+        "1Z": {
+            "callsign": "SZL_TWR",
+            "frequency": 132400,
+            "radio_name": "Whiteman Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "MCI",
+            "prefix": "1"
+        },
+        {
+            "id": "SGF",
+            "prefix": "2"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

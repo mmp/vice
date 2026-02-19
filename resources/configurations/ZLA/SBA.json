@@ -1,0 +1,186 @@
+{
+    "control_positions": {
+        "1R": {
+            "callsign": "SBA_R_APP",
+            "frequency": 124150,
+            "radio_name": "Santa Barbara Approach"
+        },
+        "1H": {
+            "callsign": "SBA_H_APP",
+            "frequency": 125400,
+            "radio_name": "Santa Barbara Approach"
+        },
+        "1E": {
+            "callsign": "SBA_E_APP",
+            "frequency": 120550,
+            "radio_name": "Santa Barbara Approach"
+        },
+        "1I": {
+            "callsign": "SBA_I_APP",
+            "frequency": 127725,
+            "radio_name": "Santa Barbara Approach"
+        },
+        "1S": {
+            "callsign": "SBA_TWR",
+            "frequency": 119700,
+            "radio_name": "Santa Barbara Tower"
+        },
+        "1P": {
+            "callsign": "SBP_TWR",
+            "frequency": 124000,
+            "radio_name": "San Luis Tower"
+        },
+        "1X": {
+            "callsign": "SMX_TWR",
+            "frequency": 118300,
+            "radio_name": "Santa Maria Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "EAST SBP ARR": "1I",
+                    "EAST SMX ARR": "1H",
+                    "NORTH SBA ARR": "1E",
+                    "NORTH SBP ARR": "1I",
+                    "NORTH SMX ARR": "1I",
+                    "NORTHWEST SBA ARR": "1E",
+                    "NORTHWEST SBP ARR": "1I",
+                    "PITBL2": "1H",
+                    "SOUTH SBP ARR": "1R"
+                },
+                "departure_assignments": {
+                    "KSBA": "1H",
+                    "KSBP": "1I",
+                    "KSMX": "1R"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1H",
+                        "1I",
+                        "1R"
+                    ]
+                }
+            }
+        },
+        "center": "N034.54.00.609,W120.25.43.579",
+        "radar_sites": {
+            "SBA": {
+                "char": "S",
+                "position": "35.394728, 120.354325",
+                "elevation": 3622,
+                "primary_range": 55,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 60,
+        "scratchpads": {
+            "SPLNT": "GAU",
+            "MQO": "MQO",
+            "FLW": "FLW",
+            "PRB": "WYN",
+            "GVO": "GVO",
+            "RZS": "RZS",
+            "NNAVY": "MIS",
+            "BOILE": "MIS",
+            "KPTIN": "MIS",
+            "SXC": "MIS",
+            "CMA": "CMA",
+            "HENNR": "FIM",
+            "FIM": "FIM",
+            "GINNA": "CMA",
+            "VTU": "VTU"
+        },
+        "significant_points": {
+            "MQO": {},
+            "GVO": {},
+            "CMA": {},
+            "GLJ": {},
+            "VTU": {},
+            "SXC": {},
+            "RZS": {},
+            "FIM": {},
+            "KWANG": {
+                "short_name": "KWG"
+            },
+            "KPTIN": {
+                "short_name": "KPT"
+            },
+            "MISHN": {
+                "short_name": "MIS"
+            },
+            "GAUCH": {
+                "short_name": "GAU"
+            },
+            "HABUT": {
+                "short_name": "HAB"
+            },
+            "PRB": {}
+        },
+        "stars_maps": [
+            "101S EOVM SBA",
+            "113S RWY 25 OVERLAY SBA",
+            "118S CLASS C SBA",
+            "143S 3NM FUSION MVA SBA",
+            "122S SBA GPS RWY 7 SBA",
+            "144S 5NM FUSION MVA SBA",
+            "101S EOVM SBA",
+            "143S 3NM FUSION MVA SBA",
+            "144S 5NM FUSION MVA SBA",
+            "112S RWY 7 OVERLAY SBA",
+            "113S RWY 25 OVERLAY SBA",
+            "114S VICTOR AIRWAYS SBA",
+            "123S COMPOSITE OF MAP LABELS SBA",
+            "116S COMPOSITE OF MAPS SBA",
+            "401S SMX VFR SBA",
+            "115S CLASS AIRSPACE SBA",
+            "120S IR-200 SBA",
+            "155S ASA RNP 07 SBA",
+            "156S ASA RNP 25 SBA",
+            "167S SBP RNAV M RWY 29 SBA",
+            "",
+            "",
+            "164S SBA RNAV VISUAL RWY 25 TF SBA",
+            "165S SBA RNAV VISUAL RWY 25 RF SBA",
+            "126S SBP GPS RWY 29 SBA",
+            "127S SBP VOR OR TACAN-A SBA",
+            "125S SBP GPS RWY 11 SBA",
+            "130S SMX VOR RWY 12 SBA",
+            "402S SMX GPS RWY 30 SBA",
+            "142S SMX COPTER APPROACH SBA",
+            "129S IZA VOR SBA",
+            "109S GPS APCHS SBA",
+            "128S LPC VOR-DME-A SBA",
+            "108S VBG TACAN APCHS SBA",
+            "107S VBG ILS APCHS SBA",
+            "166S SBP RNAV M RWY 11 SBA"
+        ],
+        "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
+        "coordination_fixes": {
+            "KWANG": [
+                {
+                    "type": "route",
+                    "to": "SBA",
+                    "from": "ZLA"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "NTD",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "C"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "O"
+        }
+    ]
+}

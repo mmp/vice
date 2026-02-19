@@ -1,0 +1,210 @@
+{
+    "control_positions": {
+        "1T": {
+            "callsign": "GSO_TWR",
+            "frequency": 119100,
+            "radio_name": "Greensboro Tower"
+        },
+        "1W": {
+            "callsign": "GSO_W_APP",
+            "frequency": 124350,
+            "radio_name": "Greensboro Approach"
+        },
+        "1H": {
+            "callsign": "GSO_E_APP",
+            "frequency": 120900,
+            "radio_name": "Greensboro Approach",
+            "scope_char": "E"
+        },
+        "1F": {
+            "callsign": "GSO_F_APP",
+            "frequency": 125600,
+            "radio_name": "Greensboro Approach"
+        },
+        "1S": {
+            "callsign": "GSO_S_APP",
+            "frequency": 126000,
+            "radio_name": "Greensboro Approach"
+        },
+        "1L": {
+            "callsign": "INT_TWR",
+            "frequency": 123750,
+            "radio_name": "Winston-Salem Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "BLOCC2": "1S",
+                    "BROOK4": "1W",
+                    "GANTS": "1S",
+                    "HENBY3": "1H",
+                    "TRAKS3N": "1W",
+                    "TRAKS3S": "1W"
+                },
+                "departure_assignments": {
+                    "KGSO": "1H",
+                    "KINT": "1W"
+                },
+                "default_consolidation": {
+                    "1H": [
+                        "1S",
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "KGSO",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "BNOCA A",
+                    "description": "BHM CONFLICT SUPPRESS AREA A",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3500,
+                    "vertices": [
+                        "-86.897208,33.532504",
+                        "-86.641151,33.677967",
+                        "-86.584176,33.611529",
+                        "-86.839472,33.462847"
+                    ]
+                },
+                {
+                    "id": "BNOCA B",
+                    "description": "BHM CONFLICT SUPPRESS AREA B",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3500,
+                    "vertices": [
+                        "-86.695616,33.672883",
+                        "-86.695274,33.453065",
+                        "-86.79461,33.453311",
+                        "-86.794879,33.672271"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "BHM": {
+                "char": "B",
+                "position": "33.573611,-86.75611",
+                "elevation": 705,
+                "primary_range": 100,
+                "secondary_range": 150,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "BAWDS": "TSH",
+            "CARWN": "TRI",
+            "SBV": "QKR",
+            "CHSLY": "CHS"
+        },
+        "significant_points": {
+            "BAWDS": {},
+            "CARWN": {},
+            "CHSLY": {},
+            "SBV": {}
+        },
+        "stars_maps": [
+            "RUNWAY 5L/R BASE MAP",
+            "RUNWAY 14 FINAL RADAR, 3 SECTORS",
+            "RUNWAY 14 FINAL RADAR, 2 SECTORS",
+            "RUNWAY 14 BASE MAP",
+            "RUNWAY 23 FINAL RADAR, 3 SECTORS",
+            "RUNWAY 23 FINAL RADAR, 2 SECTORS",
+            "RUNWAY 23L/R BASE MAP",
+            "RUNWAY 32 FINAL RADAR, 3 SECTORS",
+            "RUNWAY 32 FINAL RADAR, 2 SECTORS",
+            "RUNWAY 32 BASE MAP",
+            "RUNWAY 5L/R FINAL RADAR, 3 SECTORS",
+            "RUNWAY 5L/R FINAL RADAR, 2 SECTORS",
+            "BASE MAP",
+            "RNAV IFR/EMERGENCY OBSTRUCTION VIDEO MAP",
+            "GSO MINIMUM VECTORING ALTITUDE",
+            "INT RNAV RUNWAY 33 APPROACH",
+            "INT RNAV RUNWAY 33 APPROACH FIX NAMES",
+            "MTV RNAV RUNWAY 13/31 APPROACHES",
+            "GSO STADIUMS",
+            "INT RNAV RUNWAY 15 APPROACH",
+            "INT RNAV RUNWAY 15 APPROACH FIX NAMES",
+            "INT ILS RUNWAY 33 APPROACH",
+            "GSO COUNTIES",
+            "GSO RNAV RUNWAY 5R APPROACH",
+            "GSO RNAV RUNWAY 5L APPROACH",
+            "GSO RNAV RUNWAY 5L/R APPROACHES FIX NAMES",
+            "GSO RNAV RUNWAY 14 APPROACH",
+            "GSO RNAV RUNWAY 14 APPROACH FIX NAMES",
+            "GSO RNAV RUNWAY 23L/R APPROACH FIX NAMES",
+            "GSO RNAV RUNWAY 23L APPROACH",
+            "GSO RNAV RUNWAY 23R APPROACH",
+            "GSO RNAV RUNWAY 32 APPROACH",
+            "GSO RNAV RUNWAY 32 APPROACH FIX NAMES",
+            "ALL RNAV APPROACHES",
+            "ALL RNAV APPROACH T FIXES",
+            "TRSHA DEPARTURE",
+            "TRIAD DEPARTURE",
+            "TRAKS ARRIVAL"
+        ],
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "coordination_fixes": {
+            "RENZI": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "CLT"
+                }
+            ],
+            "TRAKS": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZTL"
+                }
+            ],
+            "MMJAY": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZTL"
+                }
+            ],
+            "HENBY": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZTL"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CLT",
+            "prefix": "1"
+        },
+        {
+            "id": "FAY",
+            "prefix": "4"
+        },
+        {
+            "id": "RDU",
+            "prefix": "3"
+        },
+        {
+            "id": "ROA",
+            "prefix": "2"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "C"
+        }
+    ]
+}

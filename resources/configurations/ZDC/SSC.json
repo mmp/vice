@@ -1,0 +1,47 @@
+{
+    "control_positions": {
+        "1T": {
+            "callsign": "SSC_TWR",
+            "frequency": 126650,
+            "radio_name": "Shaw Tower"
+        },
+        "1Z": {
+            "callsign": "SSC_APP",
+            "frequency": 125400,
+            "radio_name": "Shaw Approach"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "CAE",
+            "prefix": "3"
+        },
+        {
+            "id": "CHS",
+            "prefix": "4"
+        },
+        {
+            "id": "CLT",
+            "prefix": "2"
+        },
+        {
+            "id": "FLO",
+            "prefix": "1"
+        },
+        {
+            "id": "MYR",
+            "prefix": "5"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "C"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ]
+}

@@ -1,0 +1,896 @@
+{
+    "control_positions": {
+        "10": {
+            "callsign": "ZJX 10 Crestview",
+            "frequency": 120200,
+            "radio_name": "Jacksonville Center"
+        },
+        "11": {
+            "callsign": "ZJX 11 Brewton",
+            "frequency": 124475,
+            "radio_name": "JAX Center"
+        },
+        "12": {
+            "callsign": "ZJX 12 Albany",
+            "frequency": 125750,
+            "radio_name": "Jacksonville Center"
+        },
+        "14": {
+            "callsign": "ZJX 14 Cedar Key",
+            "frequency": 135750,
+            "radio_name": "JAX Center"
+        },
+        "15": {
+            "callsign": "ZJX 15 Ocala",
+            "frequency": 133325,
+            "radio_name": "JAX Center"
+        },
+        "16": {
+            "callsign": "ZJX 16 Mayo",
+            "frequency": 125175,
+            "radio_name": "JAX Center"
+        },
+        "17": {
+            "callsign": "ZJX 17 Perry",
+            "frequency": 135625,
+            "radio_name": "Jacksonville Center"
+        },
+        "21": {
+            "callsign": "ZJX 21 Enterprise",
+            "frequency": 135125,
+            "radio_name": "Jacksonville Center"
+        },
+        "28": {
+            "callsign": "ZJX 28 Tallahassee",
+            "frequency": 127800,
+            "radio_name": "Jacksonville Center"
+        },
+        "29": {
+            "callsign": "ZJX 29 Waycross",
+            "frequency": 127575,
+            "radio_name": "JAX Center"
+        },
+        "30": {
+            "callsign": "ZJX 30 Nepta",
+            "frequency": 135925,
+            "radio_name": "Jacksonville Center"
+        },
+        "31": {
+            "callsign": "ZJX 31 St. George",
+            "frequency": 134175,
+            "radio_name": "Jacksonville Center"
+        },
+        "32": {
+            "callsign": "ZJX 32 Ozark",
+            "frequency": 120325,
+            "radio_name": "JAX Center"
+        },
+        "33": {
+            "callsign": "ZJX 33 Geneva",
+            "frequency": 125050,
+            "radio_name": "JAX Center"
+        },
+        "34": {
+            "callsign": "ZJX 34 Seminole",
+            "frequency": 128075,
+            "radio_name": "Jacksonville Center"
+        },
+        "35": {
+            "callsign": "ZJX 35 Torry",
+            "frequency": 134850,
+            "radio_name": "Jacksonville Center"
+        },
+        "47": {
+            "callsign": "ZJX 47 Summer",
+            "frequency": 124075,
+            "radio_name": "Jacksonville Center"
+        },
+        "48": {
+            "callsign": "ZJX 48 Georgetown",
+            "frequency": 133625,
+            "radio_name": "Jacksonville Center"
+        },
+        "49": {
+            "callsign": "ZJX 49 Central",
+            "frequency": 133300,
+            "radio_name": "Jacksonville Center"
+        },
+        "50": {
+            "callsign": "ZJX 50 Alma",
+            "frequency": 135975,
+            "radio_name": "JAX Center"
+        },
+        "51": {
+            "callsign": "ZJX 51 Knemo",
+            "frequency": 120125,
+            "radio_name": "Jacksonville Center"
+        },
+        "52": {
+            "callsign": "ZJX 52 Metta",
+            "frequency": 135050,
+            "radio_name": "Jacksonville Center"
+        },
+        "53": {
+            "callsign": "ZJX 53 Brunswick",
+            "frequency": 126750,
+            "radio_name": "Jacksonville Center"
+        },
+        "54": {
+            "callsign": "ZJX 54 Jekyl",
+            "frequency": 124675,
+            "radio_name": "Jacksonville Center"
+        },
+        "57": {
+            "callsign": "ZJX 57 St. Johns",
+            "frequency": 134000,
+            "radio_name": "Jacksonville Center"
+        },
+        "58": {
+            "callsign": "ZJX 58 St. Augustine",
+            "frequency": 126350,
+            "radio_name": "Jacksonville Center"
+        },
+        "65": {
+            "callsign": "ZJX 65 Ridgeway",
+            "frequency": 134975,
+            "radio_name": "JAX Center"
+        },
+        "66": {
+            "callsign": "ZJX 66 Aiken",
+            "frequency": 127475,
+            "radio_name": "JAX Center"
+        },
+        "67": {
+            "callsign": "ZJX 67 Hunter",
+            "frequency": 132425,
+            "radio_name": "Jacksonville Center"
+        },
+        "68": {
+            "callsign": "ZJX 68 States",
+            "frequency": 126125,
+            "radio_name": "JAX Center"
+        },
+        "71": {
+            "callsign": "ZJX 71 Florence",
+            "frequency": 133450,
+            "radio_name": "Jacksonville Center"
+        },
+        "72": {
+            "callsign": "ZJX 72 Columbia",
+            "frequency": 124700,
+            "radio_name": "Jacksonville Center"
+        },
+        "73": {
+            "callsign": "ZJX 73 Allendale",
+            "frequency": 132925,
+            "radio_name": "Jacksonville Center"
+        },
+        "74": {
+            "callsign": "ZJX 74 Charleston ",
+            "frequency": 134375,
+            "radio_name": "Jacksonville Center"
+        },
+        "75": {
+            "callsign": "ZJX 75 Greencove",
+            "frequency": 127475,
+            "radio_name": "JAX Center"
+        },
+        "76": {
+            "callsign": "ZJX 76 Keystone",
+            "frequency": 135450,
+            "radio_name": "JAX Center"
+        },
+        "77": {
+            "callsign": "ZJX 77 Talyor",
+            "frequency": 125375,
+            "radio_name": "Jacksonville Center"
+        },
+        "78": {
+            "callsign": "ZJX 78 Lake City",
+            "frequency": 133875,
+            "radio_name": "JAX Center"
+        },
+        "85": {
+            "callsign": "ZJX 85 Micanopy",
+            "frequency": 128625,
+            "radio_name": "Jacksonville Center"
+        },
+        "86": {
+            "callsign": "ZJX 86 Zephyr",
+            "frequency": 128425,
+            "radio_name": "JAX Center"
+        },
+        "87": {
+            "callsign": "ZJX 87 Lawtey",
+            "frequency": 132825,
+            "radio_name": "JAX Center"
+        },
+        "88": {
+            "callsign": "ZJX 88 Darbs",
+            "frequency": 128050,
+            "radio_name": "JAX Center"
+        },
+        "96": {
+            "callsign": "ZJX 96 ZJX Guard",
+            "frequency": 121500,
+            "radio_name": "ZJX GUARD"
+        },
+        "98": {
+            "callsign": "ZJX 98 Landline",
+            "frequency": 132650,
+            "radio_name": "Jacksonville Center"
+        },
+        "99": {
+            "callsign": "ZJX 99 TMU",
+            "frequency": 136975,
+            "radio_name": "Jacksonville Center"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "Overflights": "30",
+                    "PRICY4": "30"
+                },
+                "default_consolidation": {
+                    "30": []
+                }
+            },
+            "ZJX": {
+                "inbound_assignments": {
+                    "BAGGY3": "50",
+                    "CAMJO": "50",
+                    "DADES2": "50",
+                    "GRNCH5": "50",
+                    "LUBBR3": "50",
+                    "OHDEA2": "50",
+                    "SHRKS": "50",
+                    "TTHOR3": "50",
+                    "50_BAGGY3": "50",
+                    "50_CAMJO": "50",
+                    "50_DADES2": "50",
+                    "50_GRNCH5": "50",
+                    "50_LUBBR3": "50",
+                    "50_OHDEA2": "50",
+                    "50_SHRKS": "50",
+                    "50_TTHOR3": "50"
+                },
+                "default_consolidation": {
+                    "50": []
+                }
+            },
+            "ZJS": {
+                "inbound_assignments": {
+                    "Overflights": "58",
+                    "SNFLD3": "58",
+                    "TTHOR3": "58"
+                },
+                "default_consolidation": {
+                    "58": []
+                }
+            },
+            "ZST": {
+                "inbound_assignments": {
+                    "Northbound Overflights": "75",
+                    "Northbound Overflights (UH)": "75",
+                    "QUBEN2": "75",
+                    "Southbound Overflights": "75",
+                    "TTHOR3": "75"
+                },
+                "default_consolidation": {
+                    "75": []
+                }
+            }
+        },
+        "center": "N029.0.0.0,W085.20.16.982",
+        "range": 300,
+        "max_distance": 350,
+        "stars_maps": [
+            "BOUND",
+            "ZJX LO",
+            "ZJX UH",
+            "HIGH AWAYS",
+            "FIN APP CRS",
+            "MOA",
+            "Y M L ROUTES",
+            "AR ROUTES",
+            "ATCT",
+            "ZJX HI",
+            "HI 2-WAY",
+            "LOW AWAYS",
+            "CLASS ASPACE",
+            "WARNING",
+            "MIA",
+            "T ROUTES",
+            "CAMAN",
+            "GEO"
+        ],
+        "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "PLUMR": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "FSHUN": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "KLMAN": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "BORRD": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "VALKA": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "JIPOD": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "ZALEN": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "ETECK": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "FAROV": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "LENDS": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "MLB": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "DDANY": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "OLENE": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "BANGZ": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "MAATY": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "LUBBR": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "PYRES": [
+                {
+                    "type": "route",
+                    "to": "ZTL",
+                    "from": "ZJX"
+                }
+            ],
+            "STUGE": [
+                {
+                    "type": "route",
+                    "to": "ZTL",
+                    "from": "ZJX"
+                }
+            ],
+            "MILEN": [
+                {
+                    "type": "route",
+                    "to": "ZTL",
+                    "from": "ZJX"
+                }
+            ],
+            "STWRT": [
+                {
+                    "type": "route",
+                    "to": "ZTL",
+                    "from": "ZJX"
+                }
+            ],
+            "RIDES": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "ZINGR": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "PRICY": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "ALYNA": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "WISRD": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "HAANZ": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "SURFR": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "BAIRN": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "JOKRS": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "GRNCH": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "BANYA": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "YAGGO": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "SUNDE": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "GIRAF": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "HARAM": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "SNFLD": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "GTOUT": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "NINJA": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "BAGGY": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "WILIT": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "VIYAP": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "PLZZZ": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "LOTTS": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "SOOOP": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "WEEEK": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "ZJX"
+                }
+            ],
+            "FONEX": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "FOLUT": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "KIZER": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "F11"
+                }
+            ],
+            "ROCIT": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "F11"
+                }
+            ],
+            "PENSE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "NATII": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "MAHKA": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "BETLE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "JERZI": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "GOTBE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "COROE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "OHDEA": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "BASSS": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "HILIS": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "A80",
+            "stars_id": "A80",
+            "single_char_stars_id": "X",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "AGS",
+            "stars_id": "AGS",
+            "field_e_format": "OneLetterAndStarsIdOnly",
+            "field_e_letter": "A"
+        },
+        {
+            "id": "CAE",
+            "stars_id": "CAE",
+            "single_char_stars_id": "A",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CHS",
+            "stars_id": "CHS",
+            "single_char_stars_id": "C",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CLT",
+            "stars_id": "CLT",
+            "single_char_stars_id": "E",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "DAB",
+            "stars_id": "DAB",
+            "single_char_stars_id": "B",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "F11",
+            "stars_id": "F11",
+            "single_char_stars_id": "O",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "FAY",
+            "stars_id": "FAY",
+            "single_char_stars_id": "Y",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "GSP",
+            "stars_id": "GSP",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "ILM",
+            "stars_id": "ILM",
+            "single_char_stars_id": "I",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "JAX",
+            "stars_id": "JAX",
+            "single_char_stars_id": "J",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MGM",
+            "stars_id": "MGM",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "MOB",
+            "stars_id": "MOB",
+            "single_char_stars_id": "F",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MYR",
+            "stars_id": "MYR",
+            "single_char_stars_id": "M",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NBC",
+            "stars_id": "BBB",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "B"
+        },
+        {
+            "id": "OZR",
+            "stars_id": "OZR",
+            "single_char_stars_id": "U",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "P31",
+            "stars_id": "PNS",
+            "single_char_stars_id": "P",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PAM",
+            "stars_id": "PAM",
+            "single_char_stars_id": "Q",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PBI",
+            "stars_id": "PBI",
+            "single_char_stars_id": "G",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "SAV",
+            "stars_id": "SAV",
+            "single_char_stars_id": "S",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "SSC",
+            "stars_id": "SSC",
+            "single_char_stars_id": "Z",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "TLH",
+            "stars_id": "TLH",
+            "single_char_stars_id": "L",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "TPA",
+            "stars_id": "TPA",
+            "single_char_stars_id": "D",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "VLD",
+            "stars_id": "VLD",
+            "single_char_stars_id": "V",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "VPS",
+            "stars_id": "VPS",
+            "single_char_stars_id": "K",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "H"
+        },
+        {
+            "id": "ZMA",
+            "prefix": "R"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ]
+}

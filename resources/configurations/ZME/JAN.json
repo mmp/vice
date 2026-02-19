@@ -1,0 +1,28 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "JAN_E_APP",
+            "frequency": 123900,
+            "radio_name": "Jackson Approach"
+        },
+        "1T": {
+            "callsign": "JAN_TWR",
+            "frequency": 120900,
+            "radio_name": "Jackson Tower"
+        },
+        "1W": {
+            "callsign": "JAN_W_APP",
+            "frequency": 125250,
+            "radio_name": "Jackson Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZME",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

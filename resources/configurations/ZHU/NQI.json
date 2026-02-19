@@ -1,0 +1,27 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "NQI_APP",
+            "frequency": 119900,
+            "radio_name": "Kingsville Approach"
+        },
+        "1Z": {
+            "callsign": "NQI_TWR",
+            "frequency": 124100,
+            "radio_name": "Kingsville Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CRP",
+            "prefix": "1"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

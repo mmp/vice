@@ -108,10 +108,11 @@ func init() {
 	registerCommand(CommandModeMultiFunc, "NP[NUM]T",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) (CommandStatus, error) {
 			ctrl := ctx.UserController()
-			if len(ctrl.DefaultAirport) == 0 {
+			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
+			if da == "" {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			ap := ctrl.DefaultAirport[1:]
+			ap := da[1:]
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "T")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]S",
@@ -121,10 +122,11 @@ func init() {
 	registerCommand(CommandModeMultiFunc, "NP[NUM]S",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) (CommandStatus, error) {
 			ctrl := ctx.UserController()
-			if len(ctrl.DefaultAirport) == 0 {
+			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
+			if da == "" {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			ap := ctrl.DefaultAirport[1:]
+			ap := da[1:]
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "S")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]D",
@@ -134,10 +136,11 @@ func init() {
 	registerCommand(CommandModeMultiFunc, "NP[NUM]D",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) (CommandStatus, error) {
 			ctrl := ctx.UserController()
-			if len(ctrl.DefaultAirport) == 0 {
+			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
+			if da == "" {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			ap := ctrl.DefaultAirport[1:]
+			ap := da[1:]
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "D")
 		})
 

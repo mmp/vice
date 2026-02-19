@@ -1,0 +1,32 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "FAR_E_APP",
+            "frequency": 120400,
+            "radio_name": "Fargo Approach"
+        },
+        "1T": {
+            "callsign": "FAR_TWR",
+            "frequency": 133800,
+            "radio_name": "Fargo Tower"
+        },
+        "1W": {
+            "callsign": "FAR_W_APP",
+            "frequency": 125125,
+            "radio_name": "Fargo Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "RDR",
+            "prefix": "1"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

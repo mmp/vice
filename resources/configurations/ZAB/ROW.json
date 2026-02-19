@@ -1,0 +1,36 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "ROW_E_APP",
+            "frequency": 119600,
+            "radio_name": "Roswell Approach"
+        },
+        "1T": {
+            "callsign": "ROW_TWR",
+            "frequency": 118500,
+            "radio_name": "Roswell Tower"
+        },
+        "1W": {
+            "callsign": "ROW_W_APP",
+            "frequency": 120350,
+            "radio_name": "Roswell Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CVS",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAB",
+            "prefix": "C"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "F"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

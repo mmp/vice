@@ -468,10 +468,14 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 		toTCP := util.Select(sfp.RedirectedHandoff.RedirectedTo != "",
 			sfp.RedirectedHandoff.RedirectedTo, sfp.HandoffController)
 
+		shortFID := func(ctrl *av.Controller) string {
+			return ctrl.FacilityIdentifier
+		}
+
 		if ctx.UserControlsPosition(toTCP) { // inbound
 			// Show the resolved controller's id (handles consolidated positions)
 			if toCtrl := ctx.GetResolvedController(toTCP); toCtrl != nil {
-				handoffId = toCtrl.SectorID[len(toCtrl.SectorID)-1:]
+				handoffId = toCtrl.Position[len(toCtrl.Position)-1:]
 			} else {
 				handoffId = string(toTCP[len(toTCP)-1:])
 			}
@@ -480,26 +484,26 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 			if fromCtrl := ctx.Client.State.Controllers[tcp]; fromCtrl != nil {
 				if fromCtrl.ERAMFacility { // Enroute controller
 					// From any center
-					handoffTCP = string(fromCtrl.PositionId())
+					handoffTCP = shortFID(fromCtrl) + fromCtrl.Position
 				} else if fromCtrl.FacilityIdentifier != "" {
 					// Different facility; show full id of originator
-					handoffTCP = fromCtrl.FacilityIdentifier + fromCtrl.SectorID
+					handoffTCP = shortFID(fromCtrl) + fromCtrl.Position
 				}
 			}
 		} else { // outbound
 			if toCtrl := ctx.GetResolvedController(toTCP); toCtrl != nil {
 				if toCtrl.ERAMFacility { // Enroute
 					// Always the one-character id and the sector
-					handoffId = toCtrl.FacilityIdentifier
-					handoffTCP = string(toTCP)
+					handoffId = shortFID(toCtrl)
+					handoffTCP = shortFID(toCtrl) + toCtrl.Position
 				} else if toCtrl.FacilityIdentifier != "" { // Different facility
 					// Different facility: show their TCP, id is the facility #
-					handoffId = toCtrl.FacilityIdentifier
-					handoffTCP = toCtrl.FacilityIdentifier + string(toTCP)
+					handoffId = shortFID(toCtrl)
+					handoffTCP = shortFID(toCtrl) + toCtrl.Position
 				} else {
 					// Intrafacility handoff - show the resolved controller's id
 					// (e.g., handoff to "2M" consolidated to "2K" shows "K")
-					handoffId = toCtrl.SectorID[len(toCtrl.SectorID)-1:]
+					handoffId = toCtrl.Position[len(toCtrl.Position)-1:]
 				}
 			} else if toTCP != "" {
 				// Fallback: show the handoff indicator even if we can't resolve the controller

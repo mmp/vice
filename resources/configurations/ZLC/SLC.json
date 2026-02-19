@@ -1,0 +1,33 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "SLC_E_TWR",
+            "frequency": 118300,
+            "radio_name": "Salt Lake City Tower"
+        },
+        "1L": {
+            "callsign": "SLC_C_TWR",
+            "frequency": 119050,
+            "radio_name": "Salt Lake City Tower"
+        },
+        "1W": {
+            "callsign": "SLC_W_TWR",
+            "frequency": 132650,
+            "radio_name": "Salt Lake City Tower"
+        },
+        "1Y": {
+            "callsign": "SLC_A_TWR",
+            "frequency": 120200,
+            "radio_name": "Salt Lake City Tower"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "ZLC",
+            "prefix": "U"
+        }
+    ]
+}

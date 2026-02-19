@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "RST_A_APP",
+            "frequency": 119800,
+            "radio_name": "Rochester Approach"
+        },
+        "1T": {
+            "callsign": "RST_TWR",
+            "frequency": 118300,
+            "radio_name": "Rochester Tower"
+        },
+        "1W": {
+            "callsign": "RST_W_APP",
+            "frequency": 119200,
+            "radio_name": "Rochester Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ALO",
+            "prefix": "1"
+        },
+        {
+            "id": "M98",
+            "prefix": "2"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

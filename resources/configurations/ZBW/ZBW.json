@@ -1,0 +1,541 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZBW 01 Millinocket",
+            "frequency": 128050,
+            "radio_name": "Boston Center"
+        },
+        "02": {
+            "callsign": "ZBW 02 Augusta",
+            "frequency": 134950,
+            "radio_name": "Boston Center"
+        },
+        "05": {
+            "callsign": "ZBW 05 Stewart",
+            "frequency": 134300,
+            "radio_name": "Boston Center"
+        },
+        "06": {
+            "callsign": "ZBW 06 Pawling",
+            "frequency": 128100,
+            "radio_name": "Boston Center"
+        },
+        "07": {
+            "callsign": "ZBW 07 Chester",
+            "frequency": 127650,
+            "radio_name": "Boston Center"
+        },
+        "08": {
+            "callsign": "ZBW 08 Watertown",
+            "frequency": 135250,
+            "radio_name": "Boston Center"
+        },
+        "09": {
+            "callsign": "ZBW 09 Utica",
+            "frequency": 123875,
+            "radio_name": "Boston Center"
+        },
+        "10": {
+            "callsign": "ZBW 10 Rockdale",
+            "frequency": 124125,
+            "radio_name": "Boston Center"
+        },
+        "15": {
+            "callsign": "ZBW 15 SURRY",
+            "frequency": 124250,
+            "radio_name": "Boston Center"
+        },
+        "16": {
+            "callsign": "ZBW 16 PARSO",
+            "frequency": 128200,
+            "radio_name": "Boston Center"
+        },
+        "17": {
+            "callsign": "ZBW 17 Nantucket",
+            "frequency": 133450,
+            "radio_name": "Boston Center"
+        },
+        "18": {
+            "callsign": "ZBW 18 Cape",
+            "frequency": 128750,
+            "radio_name": "Boston Center"
+        },
+        "19": {
+            "callsign": "ZBW 19 Danbury",
+            "frequency": 134000,
+            "radio_name": "Boston Center"
+        },
+        "20": {
+            "callsign": "ZBW 20 Kingston",
+            "frequency": 125575,
+            "radio_name": "Boston Center"
+        },
+        "21": {
+            "callsign": "ZBW 21 CANAN",
+            "frequency": 132650,
+            "radio_name": "Boston Center"
+        },
+        "22": {
+            "callsign": "ZBW 22 Albany",
+            "frequency": 121350,
+            "radio_name": "Boston Center"
+        },
+        "23": {
+            "callsign": "ZBW 23 Hancock",
+            "frequency": 133250,
+            "radio_name": "Boston Center"
+        },
+        "24": {
+            "callsign": "ZBW 24 Delancey",
+            "frequency": 127375,
+            "radio_name": "Boston Center"
+        },
+        "31": {
+            "callsign": "ZBW 31 Hampton",
+            "frequency": 124525,
+            "radio_name": "Boston Center"
+        },
+        "32": {
+            "callsign": "ZBW 32 Clipper",
+            "frequency": 135800,
+            "radio_name": "Boston Center"
+        },
+        "34": {
+            "callsign": "ZBW 34 Providence",
+            "frequency": 124850,
+            "radio_name": "Boston Center"
+        },
+        "36": {
+            "callsign": "ZBW 36 Gardner",
+            "frequency": 123750,
+            "radio_name": "Boston Center"
+        },
+        "37": {
+            "callsign": "ZBW 37 Concord",
+            "frequency": 134700,
+            "radio_name": "Boston Center"
+        },
+        "38": {
+            "callsign": "ZBW 38 Athens",
+            "frequency": 135325,
+            "radio_name": "Boston Center"
+        },
+        "39": {
+            "callsign": "ZBW 39 Cambridge",
+            "frequency": 128325,
+            "radio_name": "Boston Center"
+        },
+        "46": {
+            "callsign": "ZBW 46 Boston",
+            "frequency": 126225,
+            "radio_name": "Boston Center"
+        },
+        "47": {
+            "callsign": "ZBW 47 BOSOX",
+            "frequency": 133425,
+            "radio_name": "Boston Center"
+        },
+        "49": {
+            "callsign": "ZBW 49 Southie",
+            "frequency": 132300,
+            "radio_name": "Boston Center"
+        },
+        "52": {
+            "callsign": "ZBW 52 Montpelier",
+            "frequency": 135700,
+            "radio_name": "Boston Center"
+        },
+        "53": {
+            "callsign": "ZBW 53 Plattsburgh",
+            "frequency": 118825,
+            "radio_name": "Boston Center"
+        },
+        "97": {
+            "callsign": "ZBW 97 ZBW Guard",
+            "frequency": 121500,
+            "radio_name": "Guard"
+        },
+        "98": {
+            "callsign": "ZBW 98 Poker Center",
+            "frequency": 122400,
+            "radio_name": "Boston Poker Center"
+        },
+        "99": {
+            "callsign": "ZBW 99 TMU",
+            "frequency": 127650,
+            "radio_name": "Boston Center TMU"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "JFUND2-PONCT": "36"
+                },
+                "default_consolidation": {
+                    "36": []
+                }
+            },
+            "ZBW": {
+                "inbound_assignments": {
+                    "PARCH4-SEY": "19"
+                },
+                "default_consolidation": {
+                    "19": []
+                }
+            }
+        },
+        "center": "GDM",
+        "range": 70,
+        "stars_maps": [
+            "TRACON"
+        ],
+        "video_map_file": "videomaps/ZBW-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "FLOSI": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "GGABE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "GOSHI": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "VALRE": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "HTO": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "CCC": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "BELIT": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "CREAM": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "DPK": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "NELIE": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "HUO": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "MAD": [
+                {
+                    "type": "route",
+                    "to": "Y90",
+                    "from": "ZBW"
+                }
+            ],
+            "STELA": [
+                {
+                    "type": "route",
+                    "to": "Y90",
+                    "from": "ZBW"
+                }
+            ],
+            "ROZZE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "LFV": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "MINNK": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "NEWBE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "ENE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "CAMTN": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "GDM": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "JFUND": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "WOONS": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "PVD"
+                }
+            ],
+            "FREDO": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "PVD"
+                }
+            ],
+            "JAMMA": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "JOODY": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "OOSHN": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "ZELKA": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "DREEM": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "A90",
+            "stars_id": "BOA",
+            "single_char_stars_id": "B",
+            "two_char_stars_id": "BO",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ABE",
+            "stars_id": "ABE",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "ACY",
+            "stars_id": "ACY",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "ALB",
+            "stars_id": "ALA",
+            "single_char_stars_id": "A",
+            "two_char_stars_id": "AL",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "AVP",
+            "stars_id": "WWW",
+            "two_char_stars_id": "WW",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "W"
+        },
+        {
+            "id": "BGM",
+            "stars_id": "BBB",
+            "two_char_stars_id": "BB",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "B"
+        },
+        {
+            "id": "BGR",
+            "stars_id": "BGA",
+            "single_char_stars_id": "G",
+            "two_char_stars_id": "BG",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "BTV",
+            "stars_id": "BTA",
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "BT",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "BUF",
+            "stars_id": "BUF",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "ELM",
+            "stars_id": "EEE",
+            "two_char_stars_id": "EE",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "E"
+        },
+        {
+            "id": "ERI",
+            "stars_id": "ERI",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "GTB",
+            "stars_id": "GTA",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "GT",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "G"
+        },
+        {
+            "id": "N90",
+            "stars_id": "NNN",
+            "two_char_stars_id": "NN",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "N"
+        },
+        {
+            "id": "PHL",
+            "stars_id": "PHL",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "PVD",
+            "stars_id": "NCA",
+            "single_char_stars_id": "O",
+            "two_char_stars_id": "NC",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PWM",
+            "stars_id": "PWA",
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "PW",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "RDG",
+            "stars_id": "RDG",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "ROC",
+            "stars_id": "RRR",
+            "two_char_stars_id": "RR",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "R"
+        },
+        {
+            "id": "SYR",
+            "stars_id": "SYA",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SY",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "WRI",
+            "stars_id": "WRI",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "Y90",
+            "stars_id": "BDA",
+            "single_char_stars_id": "D",
+            "two_char_stars_id": "BD",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

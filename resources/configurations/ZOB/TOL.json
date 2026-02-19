@@ -1,0 +1,65 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "TOL_E_APP",
+            "frequency": 126100,
+            "radio_name": "Toledo Approach"
+        },
+        "1T": {
+            "callsign": "TOL_TWR",
+            "frequency": 118100,
+            "radio_name": "Toledo Tower"
+        },
+        "1W": {
+            "callsign": "TOL_W_APP",
+            "frequency": 134350,
+            "radio_name": "Toledo Approach"
+        },
+        "1Z": {
+            "callsign": "TOL_T_APP",
+            "frequency": 123450,
+            "radio_name": "Toledo Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "AZO",
+            "prefix": "4"
+        },
+        {
+            "id": "CLE",
+            "prefix": "2"
+        },
+        {
+            "id": "CMH",
+            "prefix": "6"
+        },
+        {
+            "id": "D21",
+            "prefix": "1"
+        },
+        {
+            "id": "FWA",
+            "prefix": "5"
+        },
+        {
+            "id": "LAN",
+            "prefix": "3"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

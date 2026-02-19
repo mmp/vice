@@ -1,0 +1,61 @@
+{
+    "control_positions": {
+        "1G": {
+            "callsign": "HUF_G_APP",
+            "frequency": 119800,
+            "radio_name": "Hulman Approach"
+        },
+        "1H": {
+            "callsign": "HUF_H_APP",
+            "frequency": 125450,
+            "radio_name": "Hulman Approach"
+        },
+        "1Q": {
+            "callsign": "HUF_Q_APP",
+            "frequency": 128025,
+            "radio_name": "Hulman Approach"
+        },
+        "1T": {
+            "callsign": "HUF_TWR",
+            "frequency": 134725,
+            "radio_name": "Hulman Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CMI",
+            "prefix": "4"
+        },
+        {
+            "id": "EVV",
+            "prefix": "3"
+        },
+        {
+            "id": "GUS",
+            "prefix": "1"
+        },
+        {
+            "id": "IND",
+            "prefix": "2"
+        },
+        {
+            "id": "SDF",
+            "prefix": "5"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZID",
+            "prefix": "C"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "K"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

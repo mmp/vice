@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "YNG_APP",
+            "frequency": 133950,
+            "radio_name": "Youngstown Approach"
+        },
+        "1T": {
+            "callsign": "YNG_TWR",
+            "frequency": 119500,
+            "radio_name": "Youngstown Tower"
+        },
+        "1Z": {
+            "callsign": "YNG_T_APP",
+            "frequency": 123450,
+            "radio_name": "Youngstown Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BUF",
+            "prefix": "3"
+        },
+        {
+            "id": "CLE",
+            "prefix": "1"
+        },
+        {
+            "id": "PIT",
+            "prefix": "2"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

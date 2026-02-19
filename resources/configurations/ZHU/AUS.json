@@ -1,0 +1,311 @@
+{
+    "control_positions": {
+        "1W": {
+            "callsign": "AUS_W_APP",
+            "frequency": 119000,
+            "radio_name": "Austin Approach"
+        },
+        "1E": {
+            "callsign": "AUS_E_APP",
+            "frequency": 127225,
+            "radio_name": "Austin Approach"
+        },
+        "1F": {
+            "callsign": "AUS_F_APP",
+            "frequency": 125325,
+            "radio_name": "Austin Approach"
+        },
+        "1T": {
+            "callsign": "AUS_E_TWR",
+            "frequency": 121000,
+            "radio_name": "Austin Tower"
+        },
+        "1X": {
+            "callsign": "AUS_W_TWR",
+            "frequency": 118225,
+            "radio_name": "Austin Tower"
+        },
+        "1H": {
+            "callsign": "HYI_TWR",
+            "frequency": 126825,
+            "radio_name": "San Marcos Tower",
+            "scope_char": "T"
+        },
+        "1G": {
+            "callsign": "GTU_TWR",
+            "frequency": 120225,
+            "radio_name": "Georgetown Tower",
+            "scope_char": "T"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "DXEEE3N": "1W",
+                    "DXEEE3S": "1W",
+                    "GABOO1": "1E",
+                    "LAIKS3N": "1W",
+                    "LAIKS3S": "1W",
+                    "OVERFLIGHTSE": "1E",
+                    "OVERFLIGHTSW": "1W",
+                    "SEWZY6N": "1E",
+                    "SEWZY6S": "1E",
+                    "TOAMY": "1E",
+                    "WLEEE7N": "1E",
+                    "WLEEE7S": "1E"
+                },
+                "departure_assignments": {
+                    "KAUS": "1W",
+                    "KAUS/18L": "1E",
+                    "KAUS/18R": "1W",
+                    "KAUS/36L": "1W",
+                    "KAUS/36R": "1E",
+                    "KGTU": "1W",
+                    "KGTU/11": "1E",
+                    "KGTU/29": "1W",
+                    "KHYI": "1W",
+                    "KHYI/13": "1W",
+                    "KHYI/31": "1W"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "KAUS",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "AUSNOCA",
+                    "description": "AUS CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N30.32.34.436,W97.48.10.531",
+                        "N29.50.29.042,W97.46.59.802",
+                        "N29.50.48.312,W97.31.59.718",
+                        "N30.32.53.861,W97.33.04.560",
+                        "N30.32.34.436,W97.48.10.531"
+                    ]
+                }
+            ]
+        },
+        "controller_configs": {
+            "1W": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "floor": 0,
+                        "ceiling": 12000,
+                        "vertices": "N029.31.23.338,W097.32.32.050 N029.31.37.702,W097.49.19.936 N029.48.19.614,W097.48.21.406 N029.48.00.876,W097.51.49.735 N029.53.32.656,W098.04.36.498 N030.07.02.458,W098.14.58.571 N030.48.01.713,W098.04.50.863 N030.47.50.301,W097.41.08.572 N029.43.22.530,W097.39.32.937 N029.31.23.681,W097.32.38.752"
+                    }
+                ]
+            },
+            "1E": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "floor": 0,
+                        "ceiling": 12000,
+                        "vertices": "N029.31.33.253,W097.31.58.048 N029.43.20.917,W097.38.59.648 N030.48.05.620,W097.40.27.401 N030.48.03.732,W097.06.09.799 N030.39.25.342,W097.06.36.853 N030.20.22.036,W096.48.48.845 N029.44.11.522,W096.49.03.237 N029.30.33.700,W096.55.43.881 N029.31.32.573,W097.31.44.672"
+                    }
+                ]
+            }
+        },
+        "radar_sites": {
+            "AUS": {
+                "char": "A",
+                "position": "KAUS",
+                "elevation": 542,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 10,
+                "slope_angle": 0.5
+            }
+        },
+        "scratchpads": {
+            "ZENZI": "HOO",
+            "SAYBR": "MUN",
+            "SJT": "AMU",
+            "ABI": "WLM",
+            "BNDIA": "GAR",
+            "MUCKY": "PAY",
+            "KLNGR": "WLM",
+            "AMUSE": "AMU",
+            "CLL": "CLL",
+            "KHYI": ""
+        },
+        "significant_points": {
+            "ABI": {},
+            "AMUSE": {},
+            "BNDIA": {},
+            "CLL": {},
+            "KHYI": {},
+            "KLNGR": {},
+            "MUCKY": {},
+            "SAYBR": {},
+            "SJT": {},
+            "ZENZI": {}
+        },
+        "coordination_lists": [
+            {
+                "name": "SAN MARCOS",
+                "id": "A",
+                "airports": [
+                    "KHYI"
+                ]
+            },
+            {
+                "name": "GEORGETOWN",
+                "id": "B",
+                "airports": [
+                    "KGTU"
+                ]
+            }
+        ],
+        "force_ql_self": true,
+        "stars_maps": [
+            "AUS BASE",
+            "AUS 3NM MVA",
+            "AUS CLASS C",
+            "SF FINAL APP COURSE",
+            "NF FINAL APP COURSE",
+            "AUS SF STARS",
+            "AUS NF STARS",
+            "AUS NTZ",
+            "NORTH FLOW SOUTH APP CLSD",
+            "SOUTH FLOW SOUTH APP CLSD",
+            "AUS ZHU SECTORS",
+            "SOUTH FLOW FINAL AIRSPACE",
+            "NORTH FLOW FINAL AIRSPACE",
+            "EDC FINALS",
+            "EDC CLASS D",
+            "HYI FINALS",
+            "HYI FINALS LABELS",
+            "GTU FINALS",
+            "AUS VFR"
+        ],
+        "video_map_file": "videomaps/ZHU-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ABI",
+                    "BNDIA",
+                    "MUCKY",
+                    "SJT",
+                    "AMUSE"
+                ],
+                "altitude_range": [
+                    0,
+                    0
+                ],
+                "receiving_controller": "C50"
+            },
+            {
+                "fixes": [
+                    "ZENZI",
+                    "CLL"
+                ],
+                "altitude_range": [
+                    0,
+                    8999
+                ],
+                "receiving_controller": "31U"
+            },
+            {
+                "fixes": [
+                    "ZENZI",
+                    "CLL"
+                ],
+                "altitude_range": [
+                    9000,
+                    99000
+                ],
+                "receiving_controller": "C80"
+            },
+            {
+                "fixes": [
+                    "SAYBR"
+                ],
+                "altitude_range": [
+                    0,
+                    0
+                ],
+                "receiving_controller": "C96"
+            },
+            {
+                "fixes": [
+                    "KSAT"
+                ],
+                "altitude_range": [
+                    0,
+                    13000
+                ],
+                "receiving_controller": "11N"
+            }
+        ],
+        "coordination_fixes": {
+            "DXEEE": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "LAIKS": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "WLEEE": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "GABOO": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "TOAMY": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "I90"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "GRK",
+            "prefix": "2"
+        },
+        {
+            "id": "I90",
+            "prefix": "3"
+        },
+        {
+            "id": "SAT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "F"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "C"
+        }
+    ]
+}

@@ -248,6 +248,10 @@ type NewSimConfiguration struct {
 	WXProvider wx.Provider
 
 	Emergencies []Emergency
+
+	HandoffIDs         []HandoffID
+	FixPairs           []FixPairDefinition
+	FixPairAssignments []FixPairAssignment
 }
 
 func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *Sim {
@@ -483,6 +487,36 @@ func (s *Sim) Activate(lg *log.Logger, provider wx.Provider) {
 	s.wxProvider = provider
 	if s.wxModel == nil {
 		s.wxModel = wx.MakeModel(provider, s.State.Facility, s.State.PrimaryAirport, s.State.SimTime, s.lg)
+	}
+
+	// Restore json:"-" fields that are lost during JSON config save/load.
+	restoreControllerFields(s.ControlPositions)
+	restoreControllerFields(s.State.Controllers)
+}
+
+// restoreControllerFields reconstructs the json:"-" fields
+// (FacilityIdentifier, ERAMFacility, Area) on controllers from the
+// map key and Position. These fields are excluded from JSON
+// serialization to prevent them from appearing in facility config
+// files, but they need to be restored after loading a saved sim.
+func restoreControllerFields(controllers map[TCP]*av.Controller) {
+	for tcp, ctrl := range controllers {
+		key := string(tcp)
+
+		// FacilityIdentifier is the prefix: key = FacilityIdentifier + Position
+		if len(key) > len(ctrl.Position) {
+			ctrl.FacilityIdentifier = key[:len(key)-len(ctrl.Position)]
+		}
+
+		// ERAMFacility: ARTCC controllers have 2-digit numeric positions.
+		if len(ctrl.Position) == 2 && ctrl.Position[0] >= '0' && ctrl.Position[0] <= '9' &&
+			ctrl.Position[1] >= '0' && ctrl.Position[1] <= '9' {
+			ctrl.ERAMFacility = true
+		}
+
+		// Note: Area is not restored here because it has a proper JSON tag
+		// and survives serialization. It's auto-derived (for TRACON) or
+		// manually specified (for ERAM) in PostDeserialize/rewriteControllers.
 	}
 }
 

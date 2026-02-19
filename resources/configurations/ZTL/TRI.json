@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "1W": {
+            "callsign": "TRI_APP",
+            "frequency": 125500,
+            "radio_name": "Tri City Approach"
+        },
+        "1T": {
+            "callsign": "TRI_TWR",
+            "frequency": 119500,
+            "radio_name": "Tri-City Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "AVL",
+            "prefix": "2"
+        },
+        {
+            "id": "TYS",
+            "prefix": "1"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

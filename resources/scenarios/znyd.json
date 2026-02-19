@@ -1,1014 +1,883 @@
 {
-  "artcc": "ZNY",
-  "area": "Area D (West)",
-  "name": "ZNY Area D (West)",
-  "airports": {
-    "KFRG": {
-      "vfr": {
-        "random_routes": {
-          "rate": 10
-        }
-      }
-    },
-    "KUNV": {
-      "vfr": {
-        "random_routes": {
-          "rate": 10
-        }
-      }
-    },
-    "KRDG": {
-      "vfr": {
-        "random_routes": {
-          "rate": 10
-        }
-      }
-    },
-    "KIPT": {
-      "vfr": {
-        "random_routes": {
-          "rate": 10
-        }
-      }
-    },
-    "KLGA": {
-      "approaches": {
-        "I22": {
-          "cifp_id": "I22"
-        }
-      },
-      "departure_controller": "New York Departure (LGA)",
-      "departure_routes": {
-        "31": {
-          "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
-            "cleared_altitude": 5000,
-            "sid": "LGA7",
-            "waypoints": "KLGA-13"
-          },
-          "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
-            "cleared_altitude": 5000,
-            "sid": "LGA7",
-            "waypoints": "KLGA-13"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "UAL"
+    "artcc": "ZNY",
+    "area": "Area D (West)",
+    "name": "ZNY Area D (West)",
+    "airports": {
+        "KFRG": {
+            "vfr": {
+                "random_routes": {
+                    "rate": 10
+                }
             }
-          ],
-          "altitude": 28000,
-          "destination": "KORD",
-          "exit": "COATE",
-          "route": "LGA7 COATE Q436 YYOST Q436 DGRAF Q436 KAYYS WYNDE3"
-        }
-      ]
-    },
-    "KSYR": {
-      "approaches": {
-        "I28": {
-          "cifp_id": "I28"
-        }
-      },
-      "departure_controller": "SYR GGT",
-      "departure_routes": {
-        "28": {
-          "SYR": {
-            "cleared_altitude": 5000,
-            "sid": "SYR2",
-            "waypoints": "KSYR/delete"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "UAL"
-            }
-          ],
-          "altitude": 28000,
-          "destination": "KORD",
-          "exit": "SYR",
-          "route": "SYR"
-        }
-      ]
-    },
-    "KEWR": {
-      "approaches": {
-        "I2L": {
-          "cifp_id": "I22L"
-        }
-      },
-      "departure_controller": "EWR Departure",
-      "departure_routes": {
-        "22R": {
-          "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
-            "cleared_altitude": 2500,
-            "sid": "EWR5",
-            "waypoints": "EWR/delete"
-          },
-          "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
-            "cleared_altitude": 2500,
-            "sid": "EWR5",
-            "waypoints": "EWR/delete"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "POE"
-            }
-          ],
-          "altitude": 28000,
-          "destination": "CYTZ",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND WAYGO ALVID ILIXU ILIXU1"
         },
-        {
-          "airlines": [
-            {
-              "icao": "DAL"
+        "KUNV": {
+            "vfr": {
+                "random_routes": {
+                    "rate": 10
+                }
             }
-          ],
-          "altitude": 34000,
-          "destination": "KDTW",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND CAM Q822 GONZZ DONEO CUUGR2"
         },
-        {
-          "airlines": [
-            {
-              "icao": "JBU"
+        "KRDG": {
+            "vfr": {
+                "random_routes": {
+                    "rate": 10
+                }
             }
-          ],
-          "altitude": 28000,
-          "destination": "KBUF",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND SYR ROC EHMAN"
         },
-        {
-          "airlines": [
-            {
-              "icao": "ASA"
+        "KIPT": {
+            "vfr": {
+                "random_routes": {
+                    "rate": 10
+                }
             }
-          ],
-          "altitude": 32000,
-          "destination": "KSFO",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND HANAA Q816 HOCKE SLLAP DUTYS MCW ONTIJ KD87Y KU81S GANNE KU72M FIMUV ILA MRRLO BDEGA4"
         },
-        {
-          "airlines": [
-            {
-              "icao": "DAL"
-            }
-          ],
-          "altitude": 32000,
-          "destination": "KLAX",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND HANAA Q816 HOCKE GRB ODI FSD J114 DVV J60 HVE PROMT Q88 HAKMN ANJLL4"
-        }
-      ]
-    },
-    "KJFK": {
-      "approaches": {
-        "I2L": {
-          "cifp_id": "I22L"
-        },
-        "I4R": {
-          "cifp_id": "I4R"
-        }
-      },
-      "departure_controller": "New York Departure (JFK)",
-      "departure_routes": {
-        "22R": {
-          "COATE,CANDR": {
-            "cleared_altitude": 17000,
-            "sid": "JFK5",
-            "waypoints": "JFK BOUNO SARDI HOBAM/ho",
-            "handoff_controller": "ZNY Selinsgrove 72"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "DAL"
-            }
-          ],
-          "altitude": 36000,
-          "destination": "KPHX",
-          "exit": "CANDR",
-          "route": "CANDR J60 DANNR RAV J64 FWA WHETT DARCY EDENS LMN PWE HLC J64 PUB ALS J102 GUP EAGUL6"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "AAL"
-            }
-          ],
-          "altitude": 36000,
-          "destination": "KLAX",
-          "exit": "COATE",
-          "route": "COATE Q436 RAAKK CRL IOW SINGR DSM GLENE OBH CYS BONGO KU54O MLF WINEN URIAH HAKMN ANJLL4"
-        }
-      ]
-    },
-    "KTEB": {
-      "approaches": {
-        "I19": {
-          "cifp_id": "I19"
-        }
-      },
-      "departure_controller": "EWR Departure",
-      "departure_routes": {
-        "19": {
-          "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
-            "cleared_altitude": 2500,
-            "sid": "TEB4",
-            "waypoints": "TEB/delete"
-          },
-          "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
-            "cleared_altitude": 2500,
-            "sid": "TEB4",
-            "waypoints": "TEB/delete"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "POE"
-            }
-          ],
-          "altitude": 28000,
-          "destination": "CYTZ",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND WAYGO ALVID ILIXU ILIXU1"
-        }
-      ]
-    },
-    "KDCA": {
-      "approaches": {
-        "I1": {
-          "cifp_id": "I1"
-        }
-      },
-      "departure_controller": "PCT Departure (MTV)",
-      "departure_routes": {
-        "1": {
-          "SWANN": {
-            "cleared_altitude": 5000,
-            "sid": "SOOKI5",
-            "waypoints": "REVGE BEBLE COVTO ALEEX DOGUE/a4000/s250 PHERB SOOKI/a5000/hoW32 SWANN"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "RPA"
-            }
-          ],
-          "altitude": 27000,
-          "destination": "KBOS",
-          "exit": "SWANN",
-          "route": "SOOKI5 SWANN BROSS/ho56 Q419 JFK/hoB37 ROBUC3"
-        }
-      ]
-    },
-    "KBWI": {
-      "approaches": {
-        "I3L": {
-          "cifp_id": "I33L"
-        }
-      },
-      "departure_controller": "PCT Departure (MTV)",
-      "departure_routes": {
-        "33L": {
-          "SWANN": {
-            "cleared_altitude": 5000,
-            "sid": "CONLE5",
-            "waypoints": "KBWI/delete"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "RPA"
-            }
-          ],
-          "altitude": 27000,
-          "destination": "KBOS",
-          "exit": "SWANN",
-          "route": "KBWI SWANN KBOS"
-        }
-      ]
-    }
-  },
-  "inbound_flows": {
-    "MIP4-ETG": {
-      "arrivals": [
-        {
-          "waypoints": "ETG/ho MIP MARRC BILEY VIBES FJC LIZZI BEUTY HARLM DREMS APPLE/delete",
-          "cruise_altitude": 35000,
-          "star": "MIP4",
-          "route": "/. MIP4",
-          "initial_controller": "ZOB Ravenna 48",
-          "initial_altitude": 33000,
-          "initial_speed": 300,
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "JZA",
-                "types": ["E75L"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ACA",
-                "types": ["A21N"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ASA",
-                "types": ["B39M"],
-                "airport": "KSEA"
-              },
-              {
-                "icao": "UAL",
-                "types": ["B39M"],
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "types": ["B738"],
-                "airport": "KDTW"
-              }
+        "KLGA": {
+            "approaches": {
+                "I22": {
+                    "cifp_id": "I22"
+                }
+            },
+            "departure_controller": "N5W",
+            "departure_routes": {
+                "31": {
+                    "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
+                        "cleared_altitude": 5000,
+                        "sid": "LGA7",
+                        "waypoints": "KLGA-13"
+                    },
+                    "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
+                        "cleared_altitude": 5000,
+                        "sid": "LGA7",
+                        "waypoints": "KLGA-13"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "UAL"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "KORD",
+                    "exit": "COATE",
+                    "route": "LGA7 COATE Q436 YYOST Q436 DGRAF Q436 KAYYS WYNDE3"
+                }
             ]
-          }
-        }
-      ]
-    },
-    "MIP4-SFK": {
-      "arrivals": [
-        {
-          "waypoints": "SFK/ho MIP MARRC BILEY VIBES FJC LIZZI BEUTY HARLM DREMS APPLE/delete",
-          "cruise_altitude": 35000,
-          "star": "MIP4",
-          "route": "/. MIP4",
-          "initial_controller": "ZOB Ravenna 48",
-          "initial_altitude": 33000,
-          "initial_speed": 300,
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "JZA",
-                "types": ["E75L"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ACA",
-                "types": ["A21N"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ASA",
-                "types": ["B39M"],
-                "airport": "KSEA"
-              },
-              {
-                "icao": "UAL",
-                "types": ["B39M"],
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "types": ["B738"],
-                "airport": "KDTW"
-              }
+        },
+        "KSYR": {
+            "approaches": {
+                "I28": {
+                    "cifp_id": "I28"
+                }
+            },
+            "departure_controller": "S1S",
+            "departure_routes": {
+                "28": {
+                    "SYR": {
+                        "cleared_altitude": 5000,
+                        "sid": "SYR2",
+                        "waypoints": "KSYR/delete"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "UAL"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "KORD",
+                    "exit": "SYR",
+                    "route": "SYR"
+                }
             ]
-          }
-        }
-      ]
-    },
-    "MIP4-PSB": {
-      "arrivals": [
-        {
-          "waypoints": "MAULL MIDST/ho PSB MIP MARRC BILEY VIBES FJC LIZZI BEUTY HARLM DREMS APPLE/delete",
-          "cruise_altitude": 35000,
-          "star": "MIP4",
-          "route": "/. MIP4",
-          "initial_controller": "ZOB Ravenna 48",
-          "initial_altitude": 33000,
-          "initial_speed": 300,
-          "airlines": {
-            "KLGA": [
-              {
-                "icao": "JZA",
-                "types": ["E75L"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ACA",
-                "types": ["A21N"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ASA",
-                "types": ["B39M"],
-                "airport": "KSEA"
-              },
-              {
-                "icao": "UAL",
-                "types": ["B39M"],
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "types": ["B738"],
-                "airport": "KDTW"
-              }
+        },
+        "KEWR": {
+            "approaches": {
+                "I2L": {
+                    "cifp_id": "I22L"
+                }
+            },
+            "departure_controller": "N4N",
+            "departure_routes": {
+                "22R": {
+                    "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
+                        "cleared_altitude": 2500,
+                        "sid": "EWR5",
+                        "waypoints": "EWR/delete"
+                    },
+                    "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
+                        "cleared_altitude": 2500,
+                        "sid": "EWR5",
+                        "waypoints": "EWR/delete"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "POE"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "CYTZ",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND WAYGO ALVID ILIXU ILIXU1"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL"
+                        }
+                    ],
+                    "altitude": 34000,
+                    "destination": "KDTW",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND CAM Q822 GONZZ DONEO CUUGR2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "JBU"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "KBUF",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND SYR ROC EHMAN"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "ASA"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KSFO",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND HANAA Q816 HOCKE SLLAP DUTYS MCW ONTIJ KD87Y KU81S GANNE KU72M FIMUV ILA MRRLO BDEGA4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KLAX",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND HANAA Q816 HOCKE GRB ODI FSD J114 DVV J60 HVE PROMT Q88 HAKMN ANJLL4"
+                }
             ]
-          }
-        }
-      ]
-    },
-    "FQM3": {
-      "arrivals": [
-        {
-          "waypoints": "ZORBO/ho SLT FQM MEGSS HAYED RACKI PENNS SWEET BWZ/delete",
-          "cruise_altitude": 35000,
-          "star": "FQM3",
-          "route": "/. FQM3",
-          "initial_controller": "ZOB Ravenna 48",
-          "initial_altitude": 33000,
-          "initial_speed": 300,
-          "airlines": {
-            "KEWR": [
-              {
-                "icao": "JZA",
-                "types": ["E75L"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ACA",
-                "types": ["A21N"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ASA",
-                "types": ["B39M"],
-                "airport": "KSEA"
-              },
-              {
-                "icao": "UAL",
-                "types": ["B39M"],
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "types": ["B738"],
-                "airport": "KDTW"
-              }
+        },
+        "KJFK": {
+            "approaches": {
+                "I2L": {
+                    "cifp_id": "I22L"
+                },
+                "I4R": {
+                    "cifp_id": "I4R"
+                }
+            },
+            "departure_controller": "N5E",
+            "departure_routes": {
+                "22R": {
+                    "COATE,CANDR": {
+                        "cleared_altitude": 17000,
+                        "sid": "JFK5",
+                        "waypoints": "JFK BOUNO SARDI HOBAM/ho",
+                        "handoff_controller": "72"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KPHX",
+                    "exit": "CANDR",
+                    "route": "CANDR J60 DANNR RAV J64 FWA WHETT DARCY EDENS LMN PWE HLC J64 PUB ALS J102 GUP EAGUL6"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "AAL"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KLAX",
+                    "exit": "COATE",
+                    "route": "COATE Q436 RAAKK CRL IOW SINGR DSM GLENE OBH CYS BONGO KU54O MLF WINEN URIAH HAKMN ANJLL4"
+                }
             ]
-          }
-        }
-      ]
-    },
-    "LVZ5": {
-      "arrivals": [
-        {
-          "waypoints": "DMACK/ho STENT LVZ HARTY MUGZY STW/delete",
-          "cruise_altitude": 35000,
-          "star": "LVZ5",
-          "route": "/. LVZ5",
-          "initial_controller": "ZOB Ravenna 48",
-          "initial_altitude": 33000,
-          "initial_speed": 300,
-          "airlines": {
-            "KTEB": [
-              {
-                "icao": "N",
-                "types": ["E75L"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "N",
-                "types": ["E75L"],
-                "airport": "KSFO"
-              },
-              {
-                "icao": "N",
-                "types": ["E75L"],
-                "airport": "KDTW"
-              },
-              {
-                "icao": "N",
-                "types": ["E75L"],
-                "airport": "KPWK"
-              }
+        },
+        "KTEB": {
+            "approaches": {
+                "I19": {
+                    "cifp_id": "I19"
+                }
+            },
+            "departure_controller": "N5W",
+            "departure_routes": {
+                "19": {
+                    "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
+                        "cleared_altitude": 2500,
+                        "sid": "TEB4",
+                        "waypoints": "TEB/delete"
+                    },
+                    "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
+                        "cleared_altitude": 2500,
+                        "sid": "TEB4",
+                        "waypoints": "TEB/delete"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "POE"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "CYTZ",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND WAYGO ALVID ILIXU ILIXU1"
+                }
             ]
-          }
-        }
-      ]
-    },
-    "TRISH4": {
-      "arrivals": [
-        {
-          "waypoints": "PUNCO/ho IZZEE LEGGO DRRES/a10000 RAUKY TRISH WUUDI FINNZ/a5000 KEEYY ROAPS HOOOK/delete",
-          "cruise_altitude": 37000,
-          "star": "TRISH4",
-          "route": "/. TRISH4",
-          "initial_controller": "ZOB Ravenna 48",
-          "initial_altitude": 25000,
-          "initial_speed": 300,
-          "airlines": {
-            "KBWI": [
-              {
-                "icao": "EJA",
-                "types": ["C700"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "UAL",
-                "types": ["E75L"],
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "types": ["E75L"],
-                "airport": "KDTW"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KPWK"
-              }
+        },
+        "KDCA": {
+            "approaches": {
+                "I1": {
+                    "cifp_id": "I1"
+                }
+            },
+            "departure_controller": "U1K",
+            "departure_routes": {
+                "1": {
+                    "SWANN": {
+                        "cleared_altitude": 5000,
+                        "sid": "SOOKI5",
+                        "waypoints": "REVGE BEBLE COVTO ALEEX DOGUE/a4000/s250 PHERB SOOKI/a5000/hoW32 SWANN"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "altitude": 27000,
+                    "destination": "KBOS",
+                    "exit": "SWANN",
+                    "route": "SOOKI5 SWANN BROSS/ho56 Q419 JFK/hoB37 ROBUC3"
+                }
             ]
-          }
-        }
-      ]
-    },
-    "WLKES": {
-      "overflights": [
-        {
-          "airlines": [
-            {
-              "departure_airport": "CYUL",
-              "arrival_airport": "KATL",
-              "icao": "DAL"
-            },
-            {
-              "departure_airport": "CYUL",
-              "arrival_airport": "KATL",
-              "icao": "ACA"
-            },
-            {
-              "departure_airport": "CYUL",
-              "arrival_airport": "KATL",
-              "icao": "JZA"
-            }
-          ],
-          "initial_altitude": 34000,
-          "assigned_altitude": 34000,
-          "initial_controller": "ZNY Sparta 36",
-          "initial_speed": 300,
-          "waypoints": "LAAYK/ho WLKES LVZ T212 RASHE TOMAC/delete"
         },
-        {
-          "airlines": [
-            {
-              "departure_airport": "KPHL",
-              "arrival_airport": "EDDM",
-              "icao": "DLH"
-            }
-          ],
-          "initial_altitude": 35000,
-          "assigned_altitude": 35000,
-          "initial_controller": "ZNY Lancaster 26",
-          "initial_speed": 300,
-          "waypoints": "PTW/ho BEERS LVZ WLKES LAAYK T291 DANZI/delete"
-        },
-        {
-          "airlines": [
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KCLE",
-              "icao": "JBU"
+        "KBWI": {
+            "approaches": {
+                "I3L": {
+                    "cifp_id": "I33L"
+                }
             },
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KCLE",
-              "icao": "DAL"
+            "departure_controller": "U1F",
+            "departure_routes": {
+                "33L": {
+                    "SWANN": {
+                        "cleared_altitude": 5000,
+                        "sid": "CONLE5",
+                        "waypoints": "KBWI/delete"
+                    }
+                }
             },
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KSFO",
-              "icao": "JBU"
-            },
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KCVG",
-              "icao": "JBU"
-            },
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KCVG",
-              "icao": "DAL"
-            },
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KCVG",
-              "icao": "SWA"
-            }
-          ],
-          "initial_altitude": 36000,
-          "assigned_altitude": 36000,
-          "initial_controller": "ZBW Concord 37",
-          "initial_speed": 300,
-          "waypoints": "KSWF MUGZY/ho WLKES HONLU/delete"
-        }
-      ]
-    },
-    "VAYRE": {
-      "overflights": [
-        {
-          "airlines": [
-            {
-              "departure_airport": "CYUL",
-              "arrival_airport": "KATL",
-              "icao": "DAL"
-            },
-            {
-              "departure_airport": "CYUL",
-              "arrival_airport": "KATL",
-              "icao": "ACA"
-            },
-            {
-              "departure_airport": "CYUL",
-              "arrival_airport": "KATL",
-              "icao": "JZA"
-            }
-          ],
-          "initial_altitude": 34000,
-          "assigned_altitude": 34000,
-          "initial_controller": "ZNY Sparta 36",
-          "initial_speed": 300,
-          "waypoints": "LAAYK/ho WLKES LVZ T212 RASHE TOMAC/delete"
-        },
-        {
-          "airlines": [
-            {
-              "departure_airport": "KPHL",
-              "arrival_airport": "EDDM",
-              "icao": "DLH"
-            }
-          ],
-          "initial_altitude": 35000,
-          "assigned_altitude": 35000,
-          "initial_controller": "ZNY Lancaster 26",
-          "initial_speed": 300,
-          "waypoints": "PTW/ho BEERS LVZ WLKES LAAYK T291 DANZI/delete"
-        },
-        {
-          "airlines": [
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KCLE",
-              "icao": "JBU"
-            },
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KCLE",
-              "icao": "DAL"
-            },
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KSFO",
-              "icao": "JBU"
-            },
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KCVG",
-              "icao": "JBU"
-            },
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KCVG",
-              "icao": "DAL"
-            },
-            {
-              "departure_airport": "KBOS",
-              "arrival_airport": "KCVG",
-              "icao": "SWA"
-            }
-          ],
-          "initial_altitude": 36000,
-          "assigned_altitude": 36000,
-          "initial_controller": "ZBW Concord 37",
-          "initial_speed": 300,
-          "waypoints": "KSWF MUGZY/ho WLKES HONLU/delete"
-        }
-      ]
-    },
-    "NABOR": {
-      "arrivals": [
-        {
-          "waypoints": "MCMAN/ho SEG NABOR/delete",
-          "cruise_altitude": 37000,
-          "star": null,
-          "route": "/. NABOR",
-          "initial_controller": "ZNY Lancaster 26",
-          "initial_altitude": 37000,
-          "initial_speed": 300,
-          "airlines": {
-            "KSYR": [
-              {
-                "icao": "EJA",
-                "types": ["C700"],
-                "airport": "KCLT"
-              },
-              {
-                "icao": "AAL",
-                "types": ["E75L", "B738", "A320"],
-                "airport": "KCLT"
-              }
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "altitude": 27000,
+                    "destination": "KBOS",
+                    "exit": "SWANN",
+                    "route": "KBWI SWANN KBOS"
+                }
             ]
-          }
         }
-      ]
-    }
-  },
-  "control_positions": {
-    "ZNY Selinsgrove 72": {
-      "frequency": 127725,
-      "eram_facility": true,
-      "radio_name": "New York Center",
-      "sector_id": "72"
     },
-    "ZNY Sparta 36": {
-      "frequency": 133150,
-      "eram_facility": true,
-      "radio_name": "New York Center",
-      "sector_id": "36"
-    },
-    "ZNY Lancaster 26": {
-      "frequency": 120025,
-      "eram_facility": true,
-      "radio_name": "New York Center",
-      "sector_id": "26"
-    },
-    "ZNY Kennedy 56": {
-      "frequency": 125325,
-      "eram_facility": true,
-      "radio_name": "New York Center",
-      "sector_id": "56"
-    },
-    "N90 ROBER": {
-      "frequency": 125700,
-      "radio_name": "New York Approach",
-      "sector_id": "2K",
-      "facility": "N90",
-      "facility_id": "N"
-    },
-    "EWR Departure": {
-      "frequency": 119200,
-      "radio_name": "Newark Departure",
-      "sector_id": "4N",
-      "facility": "PHL",
-      "facility_id": "N"
-    },
-    "New York Departure (JFK)": {
-      "frequency": 135900,
-      "radio_name": "New York Departure",
-      "sector_id": "2J",
-      "facility": "N90",
-      "facility_id": "N"
-    },
-    "New York Departure (LGA)": {
-      "frequency": 120400,
-      "radio_name": "New York Departure",
-      "sector_id": "1L",
-      "facility": "N90",
-      "facility_id": "N"
-    },
-    "New York Departure (LIB)": {
-      "frequency": 120850,
-      "radio_name": "New York Departure",
-      "sector_id": "5W",
-      "facility": "N90",
-      "facility_id": "N"
-    },
-    "N90 HAARP": {
-      "frequency": 120800,
-      "radio_name": "New York Approach",
-      "sector_id": "1V",
-      "facility": "N90",
-      "facility_id": "N"
-    },
-    "EWR Yardley": {
-      "frequency": 128550,
-      "radio_name": "Newark Approach",
-      "sector_id": "4P",
-      "facility": "PHL",
-      "facility_id": "N"
-    },
-    "ZDC Gordonsville 32": {
-      "frequency": 133725,
-      "radio_name": "Washington Center",
-      "sector_id": "W32",
-      "facility_id": "W",
-      "eram_facility": true,
-      "facility": "ZDC"
-    },
-    "PCT OJAYY": {
-      "frequency": 119850,
-      "radio_name": "Potomac Approach",
-      "sector_id": "J",
-      "facility": "PCT",
-      "facility_id": "P"
-    },
-    "SYR GGT": {
-      "frequency": 126125,
-      "radio_name": "Syracuse Approach",
-      "sector_id": "V",
-      "facility": "SYR",
-      "facility_id": "S"
-    },
-    "PCT Departure (MTV)": {
-      "frequency": 125650,
-      "radio_name": "Potomac Departure",
-      "sector_id": "K",
-      "facility": "PCT",
-      "facility_id": "P"
-    },
-    "ZBW Concord 37": {
-      "frequency": 134700,
-      "radio_name": "Boston Center",
-      "sector_id": "B37",
-      "facility_id": "B",
-      "eram_facility": true,
-      "facility": "ZBW"
-    },
-    "ZOB Ravenna 48": {
-      "frequency": 119875,
-      "radio_name": "Cleveland Center",
-      "sector_id": "C48",
-      "facility_id": "C",
-      "eram_facility": true,
-      "facility": "ZOB"
-    }
-  },
-  "default_scenario": "ZNY Area D Combined",
-  "scenarios": {
-    "ZNY Area D Combined": {
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "ZNY Selinsgrove 72": []
-        }
-      },
-      "controllers": [
-        "ZNY Kennedy 56",
-        "ZNY Lancaster 26",
-        "ZNY Sparta 36",
-        "N90 ROBER",
-        "New York Departure (JFK)",
-        "New York Departure (LIB)",
-        "New York Departure (LGA)",
-        "ZBW Concord 37",
-        "EWR Yardley",
-        "N90 HAARP",
-        "ZDC Gordonsville 32",
-        "ZNY Selinsgrove 72",
-        "EWR Departure",
-        "PCT OJAYY",
-        "SYR GGT"
-      ],
-      "default_maps": [],
-      "default_map_group": "ZNYMAP",
-      "departure_runways": [
-        {
-          "airport": "KLGA",
-          "rate": 6,
-          "runway": "31"
-        },
-        {
-          "airport": "KJFK",
-          "rate": 10,
-          "runway": "22R"
-        }
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KLGA",
-          "runway": "22"
-        },
-        {
-          "airport": "KEWR",
-          "runway": "22L"
-        },
-        {
-          "airport": "KTEB",
-          "runway": "19"
-        },
-        {
-          "airport": "KBWI",
-          "runway": "33L"
-        },
-        {
-          "airport": "KSYR",
-          "runway": "28"
-        }
-      ],
-      "inbound_rates": {
+    "inbound_flows": {
         "MIP4-ETG": {
-          "KLGA": 15
+            "arrivals": [
+                {
+                    "waypoints": "ETG/ho MIP MARRC BILEY VIBES FJC LIZZI BEUTY HARLM DREMS APPLE/delete",
+                    "cruise_altitude": 35000,
+                    "star": "MIP4",
+                    "route": "/. MIP4",
+                    "initial_controller": "C48",
+                    "initial_altitude": 33000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KLGA": [
+                            {
+                                "icao": "JZA",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ACA",
+                                "types": [
+                                    "A21N"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ASA",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "UAL",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "B738"
+                                ],
+                                "airport": "KDTW"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "MIP4-SFK": {
-          "KLGA": 15
+            "arrivals": [
+                {
+                    "waypoints": "SFK/ho MIP MARRC BILEY VIBES FJC LIZZI BEUTY HARLM DREMS APPLE/delete",
+                    "cruise_altitude": 35000,
+                    "star": "MIP4",
+                    "route": "/. MIP4",
+                    "initial_controller": "C48",
+                    "initial_altitude": 33000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KLGA": [
+                            {
+                                "icao": "JZA",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ACA",
+                                "types": [
+                                    "A21N"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ASA",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "UAL",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "B738"
+                                ],
+                                "airport": "KDTW"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "MIP4-PSB": {
-          "KLGA": 15
+            "arrivals": [
+                {
+                    "waypoints": "MAULL MIDST/ho PSB MIP MARRC BILEY VIBES FJC LIZZI BEUTY HARLM DREMS APPLE/delete",
+                    "cruise_altitude": 35000,
+                    "star": "MIP4",
+                    "route": "/. MIP4",
+                    "initial_controller": "C48",
+                    "initial_altitude": 33000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KLGA": [
+                            {
+                                "icao": "JZA",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ACA",
+                                "types": [
+                                    "A21N"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ASA",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "UAL",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "B738"
+                                ],
+                                "airport": "KDTW"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "FQM3": {
-          "KEWR": 15
+            "arrivals": [
+                {
+                    "waypoints": "ZORBO/ho SLT FQM MEGSS HAYED RACKI PENNS SWEET BWZ/delete",
+                    "cruise_altitude": 35000,
+                    "star": "FQM3",
+                    "route": "/. FQM3",
+                    "initial_controller": "C48",
+                    "initial_altitude": 33000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KEWR": [
+                            {
+                                "icao": "JZA",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ACA",
+                                "types": [
+                                    "A21N"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ASA",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "UAL",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "B738"
+                                ],
+                                "airport": "KDTW"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "LVZ5": {
+            "arrivals": [
+                {
+                    "waypoints": "DMACK/ho STENT LVZ HARTY MUGZY STW/delete",
+                    "cruise_altitude": 35000,
+                    "star": "LVZ5",
+                    "route": "/. LVZ5",
+                    "initial_controller": "C48",
+                    "initial_altitude": 33000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KTEB": [
+                            {
+                                "icao": "N",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "N",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "N",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "N",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "KPWK"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "TRISH4": {
-          "KBWI": 10
-        },
-        "NABOR": {
-          "KSYR": 10
+            "arrivals": [
+                {
+                    "waypoints": "PUNCO/ho IZZEE LEGGO DRRES/a10000 RAUKY TRISH WUUDI FINNZ/a5000 KEEYY ROAPS HOOOK/delete",
+                    "cruise_altitude": 37000,
+                    "star": "TRISH4",
+                    "route": "/. TRISH4",
+                    "initial_controller": "C48",
+                    "initial_altitude": 25000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KBWI": [
+                            {
+                                "icao": "EJA",
+                                "types": [
+                                    "C700"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "UAL",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "EJA",
+                                "airport": "KPWK"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "WLKES": {
-          "overflights": 20
+            "overflights": [
+                {
+                    "airlines": [
+                        {
+                            "departure_airport": "CYUL",
+                            "arrival_airport": "KATL",
+                            "icao": "DAL"
+                        },
+                        {
+                            "departure_airport": "CYUL",
+                            "arrival_airport": "KATL",
+                            "icao": "ACA"
+                        },
+                        {
+                            "departure_airport": "CYUL",
+                            "arrival_airport": "KATL",
+                            "icao": "JZA"
+                        }
+                    ],
+                    "initial_altitude": 34000,
+                    "assigned_altitude": 34000,
+                    "initial_controller": "36",
+                    "initial_speed": 300,
+                    "waypoints": "LAAYK/ho WLKES LVZ T212 RASHE TOMAC/delete"
+                },
+                {
+                    "airlines": [
+                        {
+                            "departure_airport": "KPHL",
+                            "arrival_airport": "EDDM",
+                            "icao": "DLH"
+                        }
+                    ],
+                    "initial_altitude": 35000,
+                    "assigned_altitude": 35000,
+                    "initial_controller": "26",
+                    "initial_speed": 300,
+                    "waypoints": "PTW/ho BEERS LVZ WLKES LAAYK T291 DANZI/delete"
+                },
+                {
+                    "airlines": [
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KCLE",
+                            "icao": "JBU"
+                        },
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KCLE",
+                            "icao": "DAL"
+                        },
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KSFO",
+                            "icao": "JBU"
+                        },
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KCVG",
+                            "icao": "JBU"
+                        },
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KCVG",
+                            "icao": "DAL"
+                        },
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KCVG",
+                            "icao": "SWA"
+                        }
+                    ],
+                    "initial_altitude": 36000,
+                    "assigned_altitude": 36000,
+                    "initial_controller": "B37",
+                    "initial_speed": 300,
+                    "waypoints": "KSWF MUGZY/ho WLKES HONLU/delete"
+                }
+            ]
+        },
+        "VAYRE": {
+            "overflights": [
+                {
+                    "airlines": [
+                        {
+                            "departure_airport": "CYUL",
+                            "arrival_airport": "KATL",
+                            "icao": "DAL"
+                        },
+                        {
+                            "departure_airport": "CYUL",
+                            "arrival_airport": "KATL",
+                            "icao": "ACA"
+                        },
+                        {
+                            "departure_airport": "CYUL",
+                            "arrival_airport": "KATL",
+                            "icao": "JZA"
+                        }
+                    ],
+                    "initial_altitude": 34000,
+                    "assigned_altitude": 34000,
+                    "initial_controller": "36",
+                    "initial_speed": 300,
+                    "waypoints": "LAAYK/ho WLKES LVZ T212 RASHE TOMAC/delete"
+                },
+                {
+                    "airlines": [
+                        {
+                            "departure_airport": "KPHL",
+                            "arrival_airport": "EDDM",
+                            "icao": "DLH"
+                        }
+                    ],
+                    "initial_altitude": 35000,
+                    "assigned_altitude": 35000,
+                    "initial_controller": "26",
+                    "initial_speed": 300,
+                    "waypoints": "PTW/ho BEERS LVZ WLKES LAAYK T291 DANZI/delete"
+                },
+                {
+                    "airlines": [
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KCLE",
+                            "icao": "JBU"
+                        },
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KCLE",
+                            "icao": "DAL"
+                        },
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KSFO",
+                            "icao": "JBU"
+                        },
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KCVG",
+                            "icao": "JBU"
+                        },
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KCVG",
+                            "icao": "DAL"
+                        },
+                        {
+                            "departure_airport": "KBOS",
+                            "arrival_airport": "KCVG",
+                            "icao": "SWA"
+                        }
+                    ],
+                    "initial_altitude": 36000,
+                    "assigned_altitude": 36000,
+                    "initial_controller": "B37",
+                    "initial_speed": 300,
+                    "waypoints": "KSWF MUGZY/ho WLKES HONLU/delete"
+                }
+            ]
+        },
+        "NABOR": {
+            "arrivals": [
+                {
+                    "waypoints": "MCMAN/ho SEG NABOR/delete",
+                    "cruise_altitude": 37000,
+                    "star": null,
+                    "route": "/. NABOR",
+                    "initial_controller": "26",
+                    "initial_altitude": 37000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KSYR": [
+                            {
+                                "icao": "EJA",
+                                "types": [
+                                    "C700"
+                                ],
+                                "airport": "KCLT"
+                            },
+                            {
+                                "icao": "AAL",
+                                "types": [
+                                    "E75L",
+                                    "B738",
+                                    "A320"
+                                ],
+                                "airport": "KCLT"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      },
-      "wind": {
-        "direction": "130-180",
-        "speed": "5+",
-        "flight_rules": "VMC"
-      }
-    }
-  },
-  "stars_config": {
-    "configurations": {
-      "STD": {
-        "inbound_assignments": {
-          "FQM3": "ZNY Selinsgrove 72",
-          "MIP4-ETG": "ZNY Selinsgrove 72",
-          "MIP4-PSB": "ZNY Selinsgrove 72",
-          "MIP4-SFK": "ZNY Selinsgrove 72",
-          "NABOR": "ZNY Selinsgrove 72",
-          "TRISH4": "ZNY Selinsgrove 72",
-          "WLKES": "ZNY Selinsgrove 72"
-        }
-      }
     },
-
-    "center": "FQM",
-    "range": 1000,
-    "stars_maps": [
-      "BASE MAP",
-      "HIGH SECTOR",
-      "LOW SECTOR",
-      "HIGH AIRWAY",
-      "LOW AIRWAY",
-      "APCH BDRY",
-      "3NM BDRY",
-      "MIA",
-      "HPAS",
-      "MIL",
-      "MOA",
-      "STARS",
-      "ZNY IAP",
-      "CLASS B",
-      "MVA",
-      "N90 RVM",
-      "N90 LIB RVM",
-      "PHL-W RVM",
-      "PHL-E RVM",
-      "MINOR RVM",
-      "EWR RVM",
-      "LGA RVM",
-      "JFK CFG",
-      "ISP RVM",
-      "ABE RVM",
-      "AVP RVM",
-      "BGM RVM",
-      "ELM RVM",
-      "MDT RVM",
-      "WRI RVM"
-    ],
-    "video_map_file": "videomaps/ZNY-eram-videomaps.gob.zst"
-  }
+    "default_scenario": "ZNY Area D Combined",
+    "scenarios": {
+        "ZNY Area D Combined": {
+            "configuration": {
+                "config_id": "ZNS"
+            },
+            "default_maps": [],
+            "default_map_group": "ZNYMAP",
+            "departure_runways": [
+                {
+                    "airport": "KLGA",
+                    "rate": 6,
+                    "runway": "31"
+                },
+                {
+                    "airport": "KJFK",
+                    "rate": 10,
+                    "runway": "22R"
+                }
+            ],
+            "arrival_runways": [
+                {
+                    "airport": "KLGA",
+                    "runway": "22"
+                },
+                {
+                    "airport": "KEWR",
+                    "runway": "22L"
+                },
+                {
+                    "airport": "KTEB",
+                    "runway": "19"
+                },
+                {
+                    "airport": "KBWI",
+                    "runway": "33L"
+                },
+                {
+                    "airport": "KSYR",
+                    "runway": "28"
+                }
+            ],
+            "inbound_rates": {
+                "MIP4-ETG": {
+                    "KLGA": 15
+                },
+                "MIP4-SFK": {
+                    "KLGA": 15
+                },
+                "MIP4-PSB": {
+                    "KLGA": 15
+                },
+                "FQM3": {
+                    "KEWR": 15
+                },
+                "TRISH4": {
+                    "KBWI": 10
+                },
+                "NABOR": {
+                    "KSYR": 10
+                },
+                "WLKES": {
+                    "overflights": 20
+                }
+            },
+            "wind": {
+                "direction": "130-180",
+                "speed": "5+",
+                "flight_rules": "VMC"
+            }
+        }
+    }
 }

@@ -1,0 +1,37 @@
+{
+    "control_positions": {
+        "1K": {
+            "callsign": "LUF_SN_APP",
+            "frequency": 122775,
+            "radio_name": "Snakeye"
+        },
+        "1N": {
+            "callsign": "LUF_N_APP",
+            "frequency": 118150,
+            "radio_name": "Luke Approach"
+        },
+        "1S": {
+            "callsign": "LUF_S_APP",
+            "frequency": 125450,
+            "radio_name": "Luke approach"
+        },
+        "2T": {
+            "callsign": "LUF_TWR",
+            "frequency": 119100,
+            "radio_name": "Luke Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "P50",
+            "prefix": "8"
+        },
+        {
+            "id": "ZAB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

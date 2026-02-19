@@ -1,0 +1,553 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZDC 01 Elkins",
+            "frequency": 128600,
+            "radio_name": "Washington Center"
+        },
+        "02": {
+            "callsign": "ZDC 02 Casanova",
+            "frequency": 133200,
+            "radio_name": "Washington Center"
+        },
+        "03": {
+            "callsign": "ZDC 03 Moorefield",
+            "frequency": 133275,
+            "radio_name": "Washington Center"
+        },
+        "04": {
+            "callsign": "ZDC 04 Pinion",
+            "frequency": 133975,
+            "radio_name": "Washington Center"
+        },
+        "05": {
+            "callsign": "ZDC 05 Linden",
+            "frequency": 133550,
+            "radio_name": "Washington Center"
+        },
+        "06": {
+            "callsign": "ZDC 06 Hagerstown",
+            "frequency": 134150,
+            "radio_name": "Washington Center"
+        },
+        "07": {
+            "callsign": "ZDC 07 Wahoo",
+            "frequency": 121925,
+            "radio_name": "Washington Center"
+        },
+        "09": {
+            "callsign": "ZDC 09 Dixon",
+            "frequency": 118825,
+            "radio_name": "Washington Center"
+        },
+        "10": {
+            "callsign": "ZDC 10 Bay",
+            "frequency": 132275,
+            "radio_name": "Washington Center"
+        },
+        "11": {
+            "callsign": "ZDC 11 Calvert",
+            "frequency": 133900,
+            "radio_name": "Washington Center"
+        },
+        "12": {
+            "callsign": "ZDC 12 Brooke",
+            "frequency": 126875,
+            "radio_name": "Washington Center"
+        },
+        "14": {
+            "callsign": "ZDC 14 Irons",
+            "frequency": 132950,
+            "radio_name": "Washington Center"
+        },
+        "15": {
+            "callsign": "ZDC 15 Blue Ridge",
+            "frequency": 133650,
+            "radio_name": "Washington Center"
+        },
+        "16": {
+            "callsign": "ZDC 16 Hopewell",
+            "frequency": 121875,
+            "radio_name": "Washington Center"
+        },
+        "17": {
+            "callsign": "ZDC 17 Swann",
+            "frequency": 134500,
+            "radio_name": "Washington Center"
+        },
+        "18": {
+            "callsign": "ZDC 18 DuPont",
+            "frequency": 132525,
+            "radio_name": "Washington Center"
+        },
+        "19": {
+            "callsign": "ZDC 19 Woodstown",
+            "frequency": 125450,
+            "radio_name": "Washington Center"
+        },
+        "20": {
+            "callsign": "ZDC 20 Blackstone",
+            "frequency": 127750,
+            "radio_name": "Washington Center"
+        },
+        "21": {
+            "callsign": "ZDC 21 Dominion",
+            "frequency": 118750,
+            "radio_name": "Washington Center"
+        },
+        "22": {
+            "callsign": "ZDC 22 South Boston",
+            "frequency": 124050,
+            "radio_name": "Washington Center"
+        },
+        "23": {
+            "callsign": "ZDC 23 Cape Charles",
+            "frequency": 132550,
+            "radio_name": "Washington Center"
+        },
+        "24": {
+            "callsign": "ZDC 24 Cofield",
+            "frequency": 123850,
+            "radio_name": "Washington Center"
+        },
+        "25": {
+            "callsign": "ZDC 25 New Bern",
+            "frequency": 135500,
+            "radio_name": "Washington Center"
+        },
+        "26": {
+            "callsign": "ZDC 26 Sampson",
+            "frequency": 135300,
+            "radio_name": "Washington Center"
+        },
+        "27": {
+            "callsign": "ZDC 27 Liberty",
+            "frequency": 135200,
+            "radio_name": "Washington Center"
+        },
+        "28": {
+            "callsign": "ZDC 28 Rocky Mount",
+            "frequency": 118475,
+            "radio_name": "Washington Center"
+        },
+        "29": {
+            "callsign": "ZDC 29 Valley",
+            "frequency": 134400,
+            "radio_name": "Washington Center"
+        },
+        "31": {
+            "callsign": "ZDC 31 Azalea",
+            "frequency": 135400,
+            "radio_name": "Washington Center"
+        },
+        "32": {
+            "callsign": "ZDC 32 Gordonsville",
+            "frequency": 133725,
+            "radio_name": "Washington Center"
+        },
+        "33": {
+            "callsign": "ZDC 33 Franklin",
+            "frequency": 132025,
+            "radio_name": "Washington Center"
+        },
+        "34": {
+            "callsign": "ZDC 34 Norfolk",
+            "frequency": 133825,
+            "radio_name": "Washington Center"
+        },
+        "35": {
+            "callsign": "ZDC 35 Wilmington",
+            "frequency": 124025,
+            "radio_name": "Washington Center"
+        },
+        "36": {
+            "callsign": "ZDC 36 Raleigh",
+            "frequency": 118925,
+            "radio_name": "Washington Center"
+        },
+        "37": {
+            "callsign": "ZDC 37 Marlington",
+            "frequency": 133025,
+            "radio_name": "Washington Center"
+        },
+        "38": {
+            "callsign": "ZDC 38 Tar River",
+            "frequency": 132225,
+            "radio_name": "Washington Center"
+        },
+        "39": {
+            "callsign": "ZDC 39 Snow Hill",
+            "frequency": 121375,
+            "radio_name": "Washington Center"
+        },
+        "42": {
+            "callsign": "ZDC 42 Bryce",
+            "frequency": 118025,
+            "radio_name": "Washington Center"
+        },
+        "50": {
+            "callsign": "ZDC 50 Yorktown",
+            "frequency": 120750,
+            "radio_name": "Washington Center"
+        },
+        "51": {
+            "callsign": "ZDC 51 Casino",
+            "frequency": 127700,
+            "radio_name": "Washington Center"
+        },
+        "52": {
+            "callsign": "ZDC 52 Tech",
+            "frequency": 133575,
+            "radio_name": "Washington Center"
+        },
+        "53": {
+            "callsign": "ZDC 53 Kenton",
+            "frequency": 132050,
+            "radio_name": "Washington Center"
+        },
+        "54": {
+            "callsign": "ZDC 54 Salisbury",
+            "frequency": 120975,
+            "radio_name": "Washington Center"
+        },
+        "58": {
+            "callsign": "ZDC 58 Coyle",
+            "frequency": 121025,
+            "radio_name": "Washington Center"
+        },
+        "59": {
+            "callsign": "ZDC 59 Sea Isle",
+            "frequency": 133125,
+            "radio_name": "Washington Center"
+        },
+        "60": {
+            "callsign": "ZDC 60 Montebello",
+            "frequency": 121675,
+            "radio_name": "Washington Center"
+        },
+        "72": {
+            "callsign": "ZDC 72 Shenandoah",
+            "frequency": 127925,
+            "radio_name": "Washington Center"
+        },
+        "90": {
+            "callsign": "ZDC 90 Warn 107",
+            "frequency": 135725,
+            "radio_name": "Washington Center"
+        },
+        "92": {
+            "callsign": "ZDC 92 Warn 122",
+            "frequency": 135875,
+            "radio_name": "Washington Center"
+        },
+        "97": {
+            "callsign": "ZDC 97 Warn 72",
+            "frequency": 118125,
+            "radio_name": "Washington Center"
+        },
+        "98": {
+            "callsign": "ZDC 98 Warn 386",
+            "frequency": 132150,
+            "radio_name": "Washington Center"
+        },
+        "99": {
+            "callsign": "ZDC 99 TMU",
+            "frequency": 132050,
+            "radio_name": "Washington Center"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "DYLIN": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZDC"
+                }
+            ],
+            "JIIMS": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZDC"
+                }
+            ],
+            "PAATS": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZDC"
+                }
+            ],
+            "VIBES": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZDC"
+                }
+            ],
+            "HENBY": [
+                {
+                    "type": "route",
+                    "to": "ZTL",
+                    "from": "ZDC"
+                }
+            ],
+            "FAVKO": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "VEJAY": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "DMSTR": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "TAQLE": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "CAPSS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "CLIPR": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "DEALE": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "WEWIL": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "TRUPS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "VCTRY": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "HOYAS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "SMOOT": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "JAYOH": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "ACY",
+            "stars_id": "ACY",
+            "single_char_stars_id": "A",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CKB",
+            "stars_id": "CCC",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "C"
+        },
+        {
+            "id": "CLT",
+            "stars_id": "CLT",
+            "single_char_stars_id": "L",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CRW",
+            "stars_id": "CRW",
+            "single_char_stars_id": "W",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "DOV",
+            "stars_id": "DOV",
+            "single_char_stars_id": "V",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "FAY",
+            "stars_id": "FAY",
+            "single_char_stars_id": "F",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "FLO",
+            "stars_id": "FLO",
+            "single_char_stars_id": "Q",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "GSB",
+            "stars_id": "GSB",
+            "single_char_stars_id": "X",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "GSO",
+            "stars_id": "GSO",
+            "single_char_stars_id": "G",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ILM",
+            "stars_id": "ILM",
+            "single_char_stars_id": "M",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "JST",
+            "stars_id": "JJJ",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "MDT",
+            "stars_id": "MDT",
+            "single_char_stars_id": "D",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MYR",
+            "stars_id": "MYR",
+            "single_char_stars_id": "H",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "N90",
+            "stars_id": "N90",
+            "single_char_stars_id": "Y",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NHK",
+            "stars_id": "KKK",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "K"
+        },
+        {
+            "id": "NKT",
+            "stars_id": "NKT",
+            "single_char_stars_id": "S",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NTU",
+            "stars_id": "NTU",
+            "single_char_stars_id": "U",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ORF",
+            "stars_id": "ORF",
+            "single_char_stars_id": "O",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PCT",
+            "stars_id": "PCT",
+            "single_char_stars_id": "E",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PHL",
+            "stars_id": "PHL",
+            "single_char_stars_id": "P",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "RDU",
+            "stars_id": "RDU",
+            "single_char_stars_id": "R",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ROA",
+            "stars_id": "ROA",
+            "single_char_stars_id": "K",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "WRI",
+            "stars_id": "WRI",
+            "single_char_stars_id": "Z",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "B"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "J"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ]
+}

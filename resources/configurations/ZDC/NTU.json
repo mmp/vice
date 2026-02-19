@@ -1,0 +1,31 @@
+{
+    "control_positions": {
+        "1O": {
+            "callsign": "NTU_APP",
+            "frequency": 123900,
+            "radio_name": "Oceana Approach"
+        },
+        "1Z": {
+            "callsign": "NTU_TWR",
+            "frequency": 127075,
+            "radio_name": "Oceana Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "NKT",
+            "prefix": "2"
+        },
+        {
+            "id": "ORF",
+            "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

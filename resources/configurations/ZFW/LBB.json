@@ -1,0 +1,23 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "LBB_APP",
+            "frequency": 119200,
+            "radio_name": "Lubbock Approach"
+        },
+        "1T": {
+            "callsign": "LBB_TWR",
+            "frequency": 120500,
+            "radio_name": "Lubbock Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZFW",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

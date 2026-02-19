@@ -1,0 +1,76 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "AZO_E_APP",
+            "frequency": 119200,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1G": {
+            "callsign": "AZO_G_APP",
+            "frequency": 128400,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1N": {
+            "callsign": "AZO_N_APP",
+            "frequency": 119800,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1R": {
+            "callsign": "AZO_R_APP",
+            "frequency": 121200,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1S": {
+            "callsign": "AZO_S_APP",
+            "frequency": 133825,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1W": {
+            "callsign": "AZO_W_APP",
+            "frequency": 124600,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1Z": {
+            "callsign": "AZO_TWR",
+            "frequency": 118300,
+            "radio_name": "Kalamazoo Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "FWA",
+            "prefix": "6"
+        },
+        {
+            "id": "LAN",
+            "prefix": "2"
+        },
+        {
+            "id": "MKE",
+            "prefix": "8"
+        },
+        {
+            "id": "SBN",
+            "prefix": "7"
+        },
+        {
+            "id": "TOL",
+            "prefix": "5"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "C"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "P"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

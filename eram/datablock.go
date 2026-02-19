@@ -264,10 +264,13 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 
 		fieldEText := ""
 		gsText := fmt.Sprintf(" %v", int(state.Track.Groundspeed))
+		shortERAMID := func(ctrl *av.Controller) string {
+			return shortFieldERAMID(ctrl.FacilityIdentifier, ctrl.Position, ctx.Client.State.HandoffIDs)
+		}
 		if trk.FlightPlan.HandoffController != "" {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.HandoffController); ctrl != nil {
-				controller = ctrl.ERAMID()
+				controller = shortERAMID(ctrl)
 				if len(controller) == 2 {
 					controller = "-" + controller
 				}
@@ -282,7 +285,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		} else if ctx.Client.State.SimTime.Before(state.OSectorEndTime) {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.TrackingController); ctrl != nil {
-				controller = ctrl.ERAMID()
+				controller = shortERAMID(ctrl)
 				if len(controller) == 2 {
 					controller = "-" + controller
 				}
@@ -569,4 +572,59 @@ func datablockOffset(dir math.CardinalOrdinalDirection) [2]float32 {
 		offset[1] = 15
 	}
 	return offset
+}
+
+// shortFieldERAMID returns the ERAM Field E sector identifier for a
+// given facility prefix and position. The format depends on the
+// facility's FieldEFormat, which determines which identifier and how
+// much of the position string to include.
+func shortFieldERAMID(prefix, position string, handoffIDs []sim.HandoffID) string {
+	if prefix == "" {
+		return position
+	}
+	for _, hid := range handoffIDs {
+		ids := []string{hid.StarsID, hid.TwoCharStarsID, hid.SingleCharStarsID, hid.Prefix}
+		found := false
+		for _, id := range ids {
+			if id == prefix {
+				found = true
+				break
+			}
+		}
+		if !found {
+			continue
+		}
+
+		switch hid.FieldEFormat {
+		case "OneLetterAndSubset":
+			// B1D: B = Field E Letter (or single char ID), 1D = full position
+			if hid.FieldELetter != "" {
+				return hid.FieldELetter + position
+			}
+			return hid.SingleCharStarsID + position
+
+		case "TwoLetters":
+			// B0D: B0 = two char ID, D = sector letter (last char of position)
+			if len(position) > 0 {
+				return hid.TwoCharStarsID + position[len(position)-1:]
+			}
+			return hid.TwoCharStarsID
+
+		case "TwoLettersAndSubset":
+			// B01D: B0 = two char ID, 1D = full position
+			return hid.TwoCharStarsID + position
+
+		case "OneLetterAndStarsId":
+			// AB0A: A = Field E Letter, B0A = STARS ID (no position)
+			return hid.FieldELetter + hid.StarsID
+
+		case "FullStarsIdOnly":
+			// B0A: full STARS ID (no position)
+			return hid.StarsID
+
+		default:
+			// add error logging here
+		}
+	}
+	return prefix + position
 }

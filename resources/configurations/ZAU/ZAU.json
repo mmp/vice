@@ -1,0 +1,450 @@
+{
+    "control_positions": {
+        "25": {
+            "callsign": "ZAU 25 PMM",
+            "frequency": 126125,
+            "radio_name": "Chicago Center"
+        },
+        "26": {
+            "callsign": "ZAU 26 KUBBS",
+            "frequency": 133200,
+            "radio_name": "Chicago Center"
+        },
+        "35": {
+            "callsign": "ZAU 35 BEARZ",
+            "frequency": 134875,
+            "radio_name": "Chicago Center"
+        },
+        "36": {
+            "callsign": "ZAU 36 FWA",
+            "frequency": 126325,
+            "radio_name": "Chicago Center"
+        },
+        "44": {
+            "callsign": "ZAU 44 EON",
+            "frequency": 120125,
+            "radio_name": "Chicago Center"
+        },
+        "46": {
+            "callsign": "ZAU 46 BVT",
+            "frequency": 121275,
+            "radio_name": "Chicago Center"
+        },
+        "51": {
+            "callsign": "ZAU 51 PLANO",
+            "frequency": 135150,
+            "radio_name": "Chicago Center"
+        },
+        "52": {
+            "callsign": "ZAU 52 BDF",
+            "frequency": 132225,
+            "radio_name": "Chicago Center"
+        },
+        "55": {
+            "callsign": "ZAU 55 BRL",
+            "frequency": 118750,
+            "radio_name": "Chicago Center"
+        },
+        "60": {
+            "callsign": "ZAU 60 BAE",
+            "frequency": 126875,
+            "radio_name": "Chicago Center"
+        },
+        "62": {
+            "callsign": "ZAU 62 HARLY",
+            "frequency": 123825,
+            "radio_name": "Chicago Center"
+        },
+        "63": {
+            "callsign": "ZAU 63 DBQ",
+            "frequency": 133950,
+            "radio_name": "Chicago Center"
+        },
+        "64": {
+            "callsign": "ZAU 64 LNR",
+            "frequency": 133300,
+            "radio_name": "Chicago Center"
+        },
+        "74": {
+            "callsign": "ZAU 74 FARMM",
+            "frequency": 133350,
+            "radio_name": "Chicago Center"
+        },
+        "75": {
+            "callsign": "ZAU 75 COTON",
+            "frequency": 127775,
+            "radio_name": "Chicago Center"
+        },
+        "77": {
+            "callsign": "ZAU 77 MALTA",
+            "frequency": 134825,
+            "radio_name": "Chicago Center"
+        },
+        "81": {
+            "callsign": "ZAU 81 CRIBB",
+            "frequency": 120350,
+            "radio_name": "Chicago Center"
+        },
+        "89": {
+            "callsign": "ZAU 89 GIJ",
+            "frequency": 126475,
+            "radio_name": "Chicago Center"
+        },
+        "94": {
+            "callsign": "ZAU 94 IOW",
+            "frequency": 125575,
+            "radio_name": "Chicago Center"
+        },
+        "98": {
+            "callsign": "ZAU 98 Guard",
+            "frequency": 121500,
+            "radio_name": "Guard"
+        },
+        "99": {
+            "callsign": "ZAU 99 TMU",
+            "frequency": 123450,
+            "radio_name": "Chicago TMU"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "NEWRK": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "TRTLL": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "ENDEE": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "SWIIS": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "PAPPI": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "HALIE": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "FYTTE": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "KURKK": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "MADII": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "SHAIN": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "VEECK": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "CLUSO": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "HULLS": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "WYNDE": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "FIYER": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "KRENA": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "PLANO": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "PNT": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "LEEDR": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "LYSTR": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BRAVE": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BAE": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BRTMN": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "ALO",
+            "stars_id": "ALT",
+            "single_char_stars_id": "A",
+            "two_char_stars_id": "AL",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "AZO",
+            "stars_id": "AZT",
+            "single_char_stars_id": "Z",
+            "two_char_stars_id": "AZ",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "C90",
+            "stars_id": "ORT",
+            "single_char_stars_id": "O",
+            "two_char_stars_id": "OR",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CID",
+            "stars_id": "CIT",
+            "single_char_stars_id": "H",
+            "two_char_stars_id": "CI",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CMH",
+            "stars_id": "CMH",
+            "two_char_stars_id": "CO",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "O"
+        },
+        {
+            "id": "CMI",
+            "stars_id": "CMT",
+            "single_char_stars_id": "W",
+            "two_char_stars_id": "CM",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "DSM",
+            "stars_id": "DSM",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "DS",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "FWA",
+            "stars_id": "FWT",
+            "single_char_stars_id": "F",
+            "two_char_stars_id": "FW",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "GRB",
+            "stars_id": "GRB",
+            "single_char_stars_id": "Y",
+            "two_char_stars_id": "GG",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "B"
+        },
+        {
+            "id": "GUS",
+            "stars_id": "GUT",
+            "single_char_stars_id": "U",
+            "two_char_stars_id": "GU",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "HUF",
+            "stars_id": "TTH",
+            "two_char_stars_id": "TT",
+            "field_e_format": "TwoLettersAndSubset",
+            "field_e_letter": "H"
+        },
+        {
+            "id": "IND",
+            "stars_id": "IND",
+            "single_char_stars_id": "V",
+            "two_char_stars_id": "IN",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "I"
+        },
+        {
+            "id": "LAN",
+            "stars_id": "LAN",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "LA",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MKE",
+            "stars_id": "MKT",
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MK",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MLI",
+            "stars_id": "MLT",
+            "single_char_stars_id": "Q",
+            "two_char_stars_id": "ML",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MSN",
+            "stars_id": "MST",
+            "single_char_stars_id": "D",
+            "two_char_stars_id": "MS",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "RFD",
+            "stars_id": "RFT",
+            "single_char_stars_id": "R",
+            "two_char_stars_id": "RF",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "RST",
+            "stars_id": "RST",
+            "two_char_stars_id": "RS",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "T"
+        },
+        {
+            "id": "SBN",
+            "stars_id": "SBT",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SB",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "T75",
+            "stars_id": "STL",
+            "single_char_stars_id": "G",
+            "two_char_stars_id": "ST",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "S"
+        },
+        {
+            "id": "TOL",
+            "stars_id": "TOL",
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "TO",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "VOK",
+            "stars_id": "VOT",
+            "single_char_stars_id": "X",
+            "two_char_stars_id": "VO",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "K"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "P"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

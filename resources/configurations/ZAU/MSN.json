@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "MSN_E_APP",
+            "frequency": 120100,
+            "radio_name": "Madison Approach"
+        },
+        "1L": {
+            "callsign": "MSN_TWR",
+            "frequency": 119300,
+            "radio_name": "Madison Tower"
+        },
+        "1W": {
+            "callsign": "MSN_W_APP",
+            "frequency": 135450,
+            "radio_name": "Madison Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "MKE",
+            "prefix": "2"
+        },
+        {
+            "id": "RFD",
+            "prefix": "3"
+        },
+        {
+            "id": "VOK",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

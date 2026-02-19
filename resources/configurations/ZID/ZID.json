@@ -1,0 +1,373 @@
+{
+    "control_positions": {
+        "00": {
+            "callsign": "ZID 00 ZID GUARD",
+            "frequency": 121500,
+            "radio_name": "Indianapolis Center"
+        },
+        "01": {
+            "callsign": "ZID 01 ZID TMU",
+            "frequency": 123450,
+            "radio_name": "ZID TMU"
+        },
+        "17": {
+            "callsign": "ZID 17 Evansville",
+            "frequency": 128300,
+            "radio_name": "Indy Center"
+        },
+        "18": {
+            "callsign": "ZID 18 Nabb",
+            "frequency": 124775,
+            "radio_name": "Indy Center"
+        },
+        "19": {
+            "callsign": "ZID 19 New Hope",
+            "frequency": 121175,
+            "radio_name": "Indy Center"
+        },
+        "20": {
+            "callsign": "ZID 20 Lexington",
+            "frequency": 126375,
+            "radio_name": "Indy Center"
+        },
+        "21": {
+            "callsign": "ZID 21 London",
+            "frequency": 124625,
+            "radio_name": "Indy Center"
+        },
+        "22": {
+            "callsign": "ZID 22 Covington",
+            "frequency": 123925,
+            "radio_name": "Indy Center"
+        },
+        "24": {
+            "callsign": "ZID 24 Parkersburg",
+            "frequency": 125550,
+            "radio_name": "Indy Center"
+        },
+        "25": {
+            "callsign": "ZID 25 Hazard",
+            "frequency": 126575,
+            "radio_name": "Indy Center"
+        },
+        "26": {
+            "callsign": "ZID 26 River",
+            "frequency": 124225,
+            "radio_name": "Indy Center"
+        },
+        "30": {
+            "callsign": "ZID 30 Columbus",
+            "frequency": 124450,
+            "radio_name": "Indy Center"
+        },
+        "31": {
+            "callsign": "ZID 31 Lytle",
+            "frequency": 120475,
+            "radio_name": "Indy Center"
+        },
+        "32": {
+            "callsign": "ZID 32 Rosewood",
+            "frequency": 128075,
+            "radio_name": "Indy Center"
+        },
+        "33": {
+            "callsign": "ZID 33 Muncie",
+            "frequency": 124525,
+            "radio_name": "Indy Center"
+        },
+        "34": {
+            "callsign": "ZID 34 Shelbyville",
+            "frequency": 119550,
+            "radio_name": "Indy Center"
+        },
+        "35": {
+            "callsign": "ZID 35 Terre Haute",
+            "frequency": 132200,
+            "radio_name": "Indy Center"
+        },
+        "66": {
+            "callsign": "ZID 66 Madison",
+            "frequency": 128375,
+            "radio_name": "Indy Center"
+        },
+        "69": {
+            "callsign": "ZID 69 Pike",
+            "frequency": 135575,
+            "radio_name": "Indy Center"
+        },
+        "74": {
+            "callsign": "ZID 74 Yeager",
+            "frequency": 135425,
+            "radio_name": "Indy Center"
+        },
+        "75": {
+            "callsign": "ZID 75 Rushville",
+            "frequency": 125125,
+            "radio_name": "Indy Center"
+        },
+        "77": {
+            "callsign": "ZID 77 University",
+            "frequency": 125075,
+            "radio_name": "Indy Center"
+        },
+        "80": {
+            "callsign": "ZID 80 King",
+            "frequency": 134175,
+            "radio_name": "Indy Center"
+        },
+        "81": {
+            "callsign": "ZID 81 Pocket City",
+            "frequency": 132525,
+            "radio_name": "Indy Center"
+        },
+        "82": {
+            "callsign": "ZID 82 Louisville",
+            "frequency": 133050,
+            "radio_name": "Indy Center"
+        },
+        "83": {
+            "callsign": "ZID 83 Falmouth",
+            "frequency": 128225,
+            "radio_name": "Indy Center"
+        },
+        "84": {
+            "callsign": "ZID 84 Rebel",
+            "frequency": 134675,
+            "radio_name": "Indy Center"
+        },
+        "85": {
+            "callsign": "ZID 85 Charleston",
+            "frequency": 119525,
+            "radio_name": "Indy Center"
+        },
+        "86": {
+            "callsign": "ZID 86 Beckley",
+            "frequency": 124575,
+            "radio_name": "Indy Center"
+        },
+        "87": {
+            "callsign": "ZID 87 Appleton",
+            "frequency": 132825,
+            "radio_name": "Indy Center"
+        },
+        "88": {
+            "callsign": "ZID 88 Dayton",
+            "frequency": 120575,
+            "radio_name": "Indy Center"
+        },
+        "89": {
+            "callsign": "ZID 89 Indy",
+            "frequency": 133425,
+            "radio_name": "Indy Center"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "BABNE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "EASEL": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "OPPIE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "CIRGO": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "SMUKE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "CHERI": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "NERVE": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "CVG"
+                }
+            ],
+            "FRIZN": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "MAUDD": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "MBELL": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "CKB",
+            "single_char_stars_id": "B",
+            "stars_id": "CKB",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CLE",
+            "single_char_stars_id": "J",
+            "stars_id": "CLE",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CMH",
+            "single_char_stars_id": "O",
+            "stars_id": "CMH",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CMI",
+            "single_char_stars_id": "P",
+            "stars_id": "CMI",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CRW",
+            "single_char_stars_id": "R",
+            "stars_id": "CRW",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CVG",
+            "single_char_stars_id": "V",
+            "stars_id": "CVG",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "EVV",
+            "single_char_stars_id": "E",
+            "stars_id": "EVV",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "FWA",
+            "single_char_stars_id": "F",
+            "stars_id": "FWA",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "GUS",
+            "single_char_stars_id": "U",
+            "stars_id": "GUS",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "HOP",
+            "single_char_stars_id": "X",
+            "stars_id": "HOP",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "HTS",
+            "single_char_stars_id": "A",
+            "stars_id": "HTS",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "HUF",
+            "single_char_stars_id": "H",
+            "stars_id": "HUA",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "IND",
+            "single_char_stars_id": "I",
+            "stars_id": "IND",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "LEX",
+            "single_char_stars_id": "L",
+            "stars_id": "LEX",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ROA",
+            "single_char_stars_id": "N",
+            "stars_id": "ROA",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "SDF",
+            "single_char_stars_id": "S",
+            "stars_id": "SDF",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "TOL",
+            "single_char_stars_id": "Z",
+            "stars_id": "TOL",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "TRI",
+            "single_char_stars_id": "Y",
+            "stars_id": "TRI",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "K"
+        },
+        {
+            "id": "ZME",
+            "prefix": "M"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ]
+}

@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "JST_APP",
+            "frequency": 121200,
+            "radio_name": "Johnstown Approach"
+        },
+        "1T": {
+            "callsign": "JST_TWR",
+            "frequency": 125750,
+            "radio_name": "Johnstown Tower"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "PCT",
+            "prefix": "2"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

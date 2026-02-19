@@ -1,0 +1,242 @@
+{
+    "control_positions": {
+        "1T": {
+            "callsign": "BNA_TWR",
+            "frequency": 118600,
+            "radio_name": "Nashville Tower"
+        },
+        "1X": {
+            "callsign": "BNA_X_DEP",
+            "frequency": 119350,
+            "radio_name": "Nashville Departure"
+        },
+        "1Y": {
+            "callsign": "BNA_Y_DEP",
+            "frequency": 118400,
+            "radio_name": "Nashville Departure"
+        },
+        "1W": {
+            "callsign": "BNA_W_APP",
+            "frequency": 120600,
+            "radio_name": "Nashville Approach"
+        },
+        "1E": {
+            "callsign": "BNA_E_APP",
+            "frequency": 127175,
+            "radio_name": "Nashville Approach"
+        },
+        "1F": {
+            "callsign": "BNA_F_APP",
+            "frequency": 124750,
+            "radio_name": "Nashville Approach"
+        },
+        "1B": {
+            "callsign": "BNA_B_APP",
+            "frequency": 133000,
+            "radio_name": "Nashville Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "CHSNE3": "1W",
+                    "PASLY5": "1E",
+                    "RYYMN3": "1W",
+                    "SWFFT3": "1E"
+                },
+                "departure_assignments": {
+                    "KBNA": "1X",
+                    "KBNA/CHADM3": "1Y",
+                    "KBNA/DANLS3": "1X",
+                    "KBNA/DRURY3": "1X",
+                    "KBNA/EVVAN3": "1Y",
+                    "KBNA/FLAME3": "1X",
+                    "KBNA/GDOGG3": "1X",
+                    "KBNA/HGGRD3": "1X",
+                    "KBNA/KRSTA3": "1Y",
+                    "KBNA/PARDN3": "1X",
+                    "KBNA/TAZMO3": "1Y",
+                    "KBNA/TIPPN3": "1Y"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1W",
+                        "1X",
+                        "1Y"
+                    ]
+                }
+            }
+        },
+        "center": "KBNA",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "BNANOCA",
+                    "description": "BNA FINAL CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "N036.29.08.240,W086.27.15.479",
+                        "N035.44.51.142,W086.45.31.503",
+                        "N035.46.18.277,W086.52.55.570",
+                        "N036.30.24.060,W086.34.05.599"
+                    ]
+                }
+            ]
+        },
+        "scratchpads": {
+            "CHADM": "OZC",
+            "SWAPP": "OZC",
+            "SPKER": "BGD",
+            "DANLS": "BGD",
+            "HAGIE": "GRC",
+            "JALAR": "GRC",
+            "ACKEE": "GRC",
+            "DRURY": "GRC",
+            "EVVAN": "CHP",
+            "GENDE": "COO",
+            "FLAME": "COO",
+            "FAPER": "KNN",
+            "GDOGG": "KNN",
+            "TINGS": "MER",
+            "HGGRD": "MER",
+            "OLSIE": "CER",
+            "KRSTA": "CER",
+            "JJEFF": "KEL",
+            "HODJS": "KEL",
+            "NAKIY": "KEL",
+            "PARDN": "KEL",
+            "BURME": "SAA",
+            "TAZMO": "SAA",
+            "BRXTN": "ROR",
+            "TIPPN": "ROR"
+        },
+        "significant_points": {
+            "ACKEE": {},
+            "BRXTN": {},
+            "BURME": {},
+            "CHADM": {},
+            "DANLS": {},
+            "DRURY": {},
+            "EVVAN": {},
+            "FAPER": {},
+            "FLAME": {},
+            "GDOGG": {},
+            "GENDE": {},
+            "HAGIE": {},
+            "HGGRD": {},
+            "HODJS": {},
+            "JALAR": {},
+            "JJEFF": {},
+            "KRSTA": {},
+            "NAKIY": {},
+            "OLSIE": {},
+            "PARDN": {},
+            "SPKER": {},
+            "SWAPP": {},
+            "TAZMO": {},
+            "TINGS": {},
+            "TIPPN": {}
+        },
+        "stars_maps": [
+            "BNA_NORTH FLOW",
+            "BNA_SOUTH FLOW",
+            "BNA_CLASS C",
+            "BNA_EOVM",
+            "BNA_EW NORTH SPLIT",
+            "BNA_EW SOUTH SPLIT",
+            "BNA_SID EXIT GATES",
+            "BNA_SID EXIT"
+        ],
+        "video_map_file": "videomaps/ZME-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "SWAPP",
+                    "CHADM",
+                    "KRSTA",
+                    "OLSIE"
+                ],
+                "receiving_controller": "C40"
+            },
+            {
+                "fixes": [
+                    "GDOGG",
+                    "FAPER",
+                    "TINGS",
+                    "HGGRD",
+                    "PARDN",
+                    "JJEFF",
+                    "HODJS",
+                    "NAKIY"
+                ],
+                "receiving_controller": "C41"
+            },
+            {
+                "fixes": [
+                    "DANLS",
+                    "SPKER",
+                    "DRURY",
+                    "HAGIE",
+                    "JALAR",
+                    "ACKEE",
+                    "FLAME",
+                    "GENDE"
+                ],
+                "receiving_controller": "C42"
+            },
+            {
+                "fixes": [
+                    "EVVAN",
+                    "TAZMO",
+                    "BURME",
+                    "BRXTN",
+                    "TIPPN"
+                ],
+                "receiving_controller": "C60"
+            }
+        ],
+        "coordination_fixes": {
+            "BAWLS": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ],
+            "CARAP": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ],
+            "PEKIE": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ],
+            "HIMAT": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "HOP",
+            "prefix": "1"
+        },
+        {
+            "id": "ZME",
+            "prefix": "C"
+        }
+    ]
+}

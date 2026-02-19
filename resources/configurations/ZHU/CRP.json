@@ -1,0 +1,62 @@
+{
+    "control_positions": {
+        "1H": {
+            "callsign": "CRP_H_APP",
+            "frequency": 125400,
+            "radio_name": "Corpus Approach"
+        },
+        "1M": {
+            "callsign": "CRP_M_APP",
+            "frequency": 127500,
+            "radio_name": "Corpus Approach"
+        },
+        "1N": {
+            "callsign": "CRP_N_APP",
+            "frequency": 120900,
+            "radio_name": "Corpus Approach"
+        },
+        "1R": {
+            "callsign": "CRP_L_APP",
+            "frequency": 128675,
+            "radio_name": "Corpus Approach"
+        },
+        "1S": {
+            "callsign": "CRP_S_APP",
+            "frequency": 124800,
+            "radio_name": "Corpus Approach"
+        },
+        "1T": {
+            "callsign": "CRP_TWR",
+            "frequency": 119400,
+            "radio_name": "Corpus Tower"
+        },
+        "1X": {
+            "callsign": "VLY_X_APP",
+            "frequency": 120700,
+            "radio_name": "Valley Approach"
+        },
+        "1Y": {
+            "callsign": "VLY_Y_APP",
+            "frequency": 126550,
+            "radio_name": "Valley Approach"
+        },
+        "1Z": {
+            "callsign": "VLY_Z_APP",
+            "frequency": 119500,
+            "radio_name": "Valley Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "NQI",
+            "prefix": "1"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

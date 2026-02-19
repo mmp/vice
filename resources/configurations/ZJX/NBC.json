@@ -1,0 +1,31 @@
+{
+    "control_positions": {
+        "1B": {
+            "callsign": "NBC_N_APP",
+            "frequency": 123700,
+            "radio_name": "Beaufort Arrival"
+        },
+        "1D": {
+            "callsign": "NBC_APP",
+            "frequency": 125125,
+            "radio_name": "Beaufort Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CHS",
+            "prefix": "4"
+        },
+        {
+            "id": "SAV",
+            "prefix": "3"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

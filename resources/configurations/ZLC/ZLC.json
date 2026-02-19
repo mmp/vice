@@ -1,0 +1,358 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZLC 01 Salt Lake TMAC",
+            "frequency": 123450,
+            "radio_name": "Salt Lake Center"
+        },
+        "02": {
+            "callsign": "ZLC 02 Salt Lake TMEC",
+            "frequency": 123450,
+            "radio_name": "Salt Lake Center"
+        },
+        "03": {
+            "callsign": "ZLC 03 Salt Lake 3",
+            "frequency": 119950,
+            "radio_name": "Salt Lake City Center"
+        },
+        "04": {
+            "callsign": "ZLC 04",
+            "frequency": 135775,
+            "radio_name": "Salt Lake Center"
+        },
+        "05": {
+            "callsign": "ZLC 05 Salt Lake 5",
+            "frequency": 124350,
+            "radio_name": "Salt Lake City Center"
+        },
+        "06": {
+            "callsign": "ZLC 06 Salt Lake 6",
+            "frequency": 132400,
+            "radio_name": "Salt Lake City Center"
+        },
+        "07": {
+            "callsign": "ZLC 07 Salt Lake 7",
+            "frequency": 127700,
+            "radio_name": "Salt Lake City Center"
+        },
+        "08": {
+            "callsign": "ZLC 08 Salt Lake 8",
+            "frequency": 128350,
+            "radio_name": "Salt Lake City Center"
+        },
+        "11": {
+            "callsign": "ZLC 11",
+            "frequency": 127825,
+            "radio_name": "Salt Lake Center"
+        },
+        "12": {
+            "callsign": "ZLC 12 Salt Lake",
+            "frequency": 127075,
+            "radio_name": "Salt Lake City Center"
+        },
+        "14": {
+            "callsign": "ZLC 14 Salt Lake",
+            "frequency": 127675,
+            "radio_name": "Salt Lake City Center"
+        },
+        "15": {
+            "callsign": "ZLC 15 Salt Lake",
+            "frequency": 127750,
+            "radio_name": "Salt Lake City Center"
+        },
+        "16": {
+            "callsign": "ZLC 16 Salt Lake",
+            "frequency": 133250,
+            "radio_name": "Salt Lake City Center"
+        },
+        "17": {
+            "callsign": "ZLC 17 Salt Lake",
+            "frequency": 126850,
+            "radio_name": "Salt Lake City Center"
+        },
+        "18": {
+            "callsign": "ZLC 18 Salt Lake",
+            "frequency": 125925,
+            "radio_name": "Salt Lake City Center"
+        },
+        "19": {
+            "callsign": "ZLC 19 Salt Lake",
+            "frequency": 133400,
+            "radio_name": "Salt Lake City Center"
+        },
+        "20": {
+            "callsign": "ZLC 20 Salt Lake",
+            "frequency": 119750,
+            "radio_name": "Salt Lake City Center"
+        },
+        "26": {
+            "callsign": "ZLC 26 Salt Lake",
+            "frequency": 120975,
+            "radio_name": "Salt Lake City Center"
+        },
+        "30": {
+            "callsign": "ZLC 30 Salt Lake",
+            "frequency": 128050,
+            "radio_name": "Salt Lake City Center"
+        },
+        "31": {
+            "callsign": "ZLC 31 Salt Lake",
+            "frequency": 118050,
+            "radio_name": "Salt Lake City Center"
+        },
+        "32": {
+            "callsign": "ZLC 32 Salt Lake",
+            "frequency": 133900,
+            "radio_name": "Salt Lake City Center"
+        },
+        "33": {
+            "callsign": "ZLC 33",
+            "frequency": 120275,
+            "radio_name": "Salt Lake Center"
+        },
+        "34": {
+            "callsign": "ZLC 34",
+            "frequency": 127925,
+            "radio_name": "Salt Lake Center"
+        },
+        "39": {
+            "callsign": "ZLC 39 Salt Lake",
+            "frequency": 132425,
+            "radio_name": "Salt Lake City Center"
+        },
+        "40": {
+            "callsign": "ZLC 40",
+            "frequency": 128550,
+            "radio_name": "Salt Lake Center"
+        },
+        "41": {
+            "callsign": "ZLC 41 Salt Lake",
+            "frequency": 121150,
+            "radio_name": "Salt Lake City Center"
+        },
+        "42": {
+            "callsign": "ZLC 42",
+            "frequency": 120725,
+            "radio_name": "Salt Lake Center"
+        },
+        "43": {
+            "callsign": "ZLC 43",
+            "frequency": 132250,
+            "radio_name": "Salt Lake Center"
+        },
+        "44": {
+            "callsign": "ZLC 44",
+            "frequency": 125575,
+            "radio_name": "Salt Lake Center"
+        },
+        "45": {
+            "callsign": "ZLC 45",
+            "frequency": 134525,
+            "radio_name": "Salt Lake Center"
+        },
+        "46": {
+            "callsign": "ZLC 46",
+            "frequency": 133600,
+            "radio_name": "Salt Lake Center"
+        },
+        "47": {
+            "callsign": "ZLC 47",
+            "frequency": 133450,
+            "radio_name": "Salt Lake Center"
+        },
+        "48": {
+            "callsign": "ZLC 48 Salt Lake OMIC",
+            "frequency": 121500,
+            "radio_name": "Salt Lake Center"
+        },
+        "71": {
+            "callsign": "ZLC 71 Salt Lake TMWC",
+            "frequency": 123450,
+            "radio_name": "Salt Lake Center"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "QWENN6.MLF": "44",
+                    "QWENN6.BCE": "44"
+                },
+                "default_consolidation": {
+                    "44": []
+                }
+            }
+        },
+        "center": "N038.23.59.181,W113.02.36.719",
+        "range": 80,
+        "stars_maps": [
+            ""
+        ],
+        "radar_sites": {
+            "B": {
+                "char": "B",
+                "position": "BCE",
+                "elevation": 7000,
+                "primary_range": 80,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            },
+            "M": {
+                "char": "M",
+                "position": "MLF",
+                "elevation": 7000,
+                "primary_range": 80,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            },
+            "T": {
+                "char": "T",
+                "position": "KTMT",
+                "elevation": 7000,
+                "primary_range": 80,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            }
+        },
+        "video_map_file": "videomaps/ZLC-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "CRAZI": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "BGHRN": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "KUSTR": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "YLSTN": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "CARTR": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "SKEES": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "NORDK": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "LEEHY": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "QWENN": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "WAATS": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BIL",
+            "single_char_stars_id": "I",
+            "stars_id": "III",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "BOI",
+            "single_char_stars_id": "B",
+            "stars_id": "BBB",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "BZN",
+            "single_char_stars_id": "N",
+            "stars_id": "NNN",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "GTF",
+            "single_char_stars_id": "G",
+            "stars_id": "GGG",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MSO",
+            "single_char_stars_id": "U",
+            "stars_id": "UUU",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MUO",
+            "single_char_stars_id": "M",
+            "stars_id": "MMM",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "S56",
+            "single_char_stars_id": "Q",
+            "stars_id": "QQQ",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZDV",
+            "prefix": "D"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "L"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "P"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "O"
+        },
+        {
+            "id": "ZSE",
+            "prefix": "S"
+        }
+    ]
+}

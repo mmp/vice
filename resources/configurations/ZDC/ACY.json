@@ -1,0 +1,44 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "ACY_N_APP",
+            "frequency": 134250,
+            "radio_name": "Atlantic City Approach"
+        },
+        "1S": {
+            "callsign": "ACY_S_APP",
+            "frequency": 124600,
+            "radio_name": "Atlantic City Approach"
+        },
+        "1Z": {
+            "callsign": "ACY_TWR",
+            "frequency": 120300,
+            "radio_name": "Atlantic City Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "DOV",
+            "prefix": "1"
+        },
+        {
+            "id": "PHL",
+            "prefix": "2"
+        },
+        {
+            "id": "WRI",
+            "prefix": "3"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "C"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

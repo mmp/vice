@@ -1,0 +1,86 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "CMH_E_TWR",
+            "frequency": 132700,
+            "radio_name": "Columbus Tower"
+        },
+        "1F": {
+            "callsign": "CMH_F_APP",
+            "frequency": 118200,
+            "radio_name": "Columbus Approach"
+        },
+        "1L": {
+            "callsign": "CMH_L_APP",
+            "frequency": 132300,
+            "radio_name": "Columbus Approach"
+        },
+        "1M": {
+            "callsign": "DAY_M_APP",
+            "frequency": 120925,
+            "radio_name": "Columbus Approach"
+        },
+        "1N": {
+            "callsign": "CMH_N_APP",
+            "frequency": 125950,
+            "radio_name": "Columbus Approach"
+        },
+        "1P": {
+            "callsign": "CMH_P_APP",
+            "frequency": 120200,
+            "radio_name": "Columbus Approach"
+        },
+        "1U": {
+            "callsign": "DAY_U_APP",
+            "frequency": 134450,
+            "radio_name": "Columbus Approach"
+        },
+        "1W": {
+            "callsign": "CMH_W_TWR",
+            "frequency": 127525,
+            "radio_name": "Columbus Tower"
+        },
+        "1X": {
+            "callsign": "DAY_X_APP",
+            "frequency": 118850,
+            "radio_name": "Columbus Approach"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "CLE",
+            "prefix": "2"
+        },
+        {
+            "id": "CVG",
+            "prefix": "6"
+        },
+        {
+            "id": "FWA",
+            "prefix": "4"
+        },
+        {
+            "id": "IND",
+            "prefix": "5"
+        },
+        {
+            "id": "TOL",
+            "prefix": "3"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZID",
+            "prefix": "C"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

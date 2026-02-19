@@ -1,0 +1,505 @@
+{
+    "control_positions": {
+        "1D": {
+            "callsign": "LAS_D_DEP",
+            "frequency": 125900,
+            "radio_name": "Las Vegas Departure"
+        },
+        "1M": {
+            "callsign": "LAS_M_DEP",
+            "frequency": 133950,
+            "radio_name": "Las Vegas Departure"
+        },
+        "1Y": {
+            "callsign": "LAS_Y_APP",
+            "frequency": 125475,
+            "radio_name": "Las Vegas Approach"
+        },
+        "1G": {
+            "callsign": "LAS_G_APP",
+            "frequency": 125025,
+            "radio_name": "Las Vegas Approach"
+        },
+        "1L": {
+            "callsign": "LAS_L_APP",
+            "frequency": 119775,
+            "radio_name": "Las Vegas Approach"
+        },
+        "1F": {
+            "callsign": "LAS_F_APP",
+            "frequency": 135000,
+            "radio_name": "Las Vegas Approach"
+        },
+        "1T": {
+            "callsign": "LAS_T_APP",
+            "frequency": 119400,
+            "radio_name": "Las Vegas Approach"
+        },
+        "1K": {
+            "callsign": "LAS_K_APP",
+            "frequency": 120450,
+            "radio_name": "Las Vegas Approach"
+        },
+        "1Q": {
+            "callsign": "LAS_TWR",
+            "frequency": 119900,
+            "radio_name": "Las Vegas Tower"
+        },
+        "1H": {
+            "callsign": "HND_TWR",
+            "frequency": 125100,
+            "radio_name": "Henderson Tower"
+        },
+        "1V": {
+            "callsign": "VGT_TWR",
+            "frequency": 125700,
+            "radio_name": "North Las Vegas Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "1XX": {
+                "inbound_assignments": {
+                    "BOEGY2": "1L",
+                    "CHOWW4": "1L",
+                    "COKTL4": "1G",
+                    "FLCHR1": "1G",
+                    "GAMES2": "1G",
+                    "JAYSN3.19": "1T",
+                    "NTNDO1": "1Y",
+                    "RKSTR4": "1L",
+                    "RNDRZ4": "1G",
+                    "WYLND1": "1L"
+                },
+                "departure_assignments": {
+                    "KHND": "1Y",
+                    "KLAS/GIDGT3": "1M",
+                    "KLAS/JOHKR5": "1D",
+                    "KLAS/LOHLA3": "1M",
+                    "KLAS/NIITZ4": "1D",
+                    "KLAS/RADYR2": "1D",
+                    "KLAS/RASLR3": "1D",
+                    "KLAS/RATPK3": "1M",
+                    "KVGT": "1M"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1M",
+                        "1Y"
+                    ],
+                    "1F": [
+                        "1D",
+                        "1G",
+                        "1L",
+                        "1T"
+                    ],
+                    "1L": [
+                        "1K"
+                    ]
+                }
+            },
+            "2XX": {
+                "inbound_assignments": {
+                    "BOEGY2": "1M",
+                    "CHOWW4": "1L",
+                    "COKTL4": "1G",
+                    "FLCHR1": "1G",
+                    "GAMES2": "1G",
+                    "JAYSN3.1": "1G",
+                    "NTNDO1": "1Y",
+                    "RKSTR4": "1L",
+                    "RNDRZ4": "1G",
+                    "WYLND1": "1M"
+                },
+                "departure_assignments": {
+                    "KHND": "1Y",
+                    "KLAS/FRNCK1": "1M",
+                    "KLAS/GIDGT3": "1M",
+                    "KLAS/JOHKR5": "1D",
+                    "KLAS/LOHLA3": "1D",
+                    "KLAS/NIITZ4": "1M",
+                    "KLAS/RADYR2": "1D",
+                    "KLAS/RASLR3": "1M",
+                    "KLAS/RATPK3": "1M",
+                    "KVGT": "1M"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1M",
+                        "1Y"
+                    ],
+                    "1F": [
+                        "1D",
+                        "1G",
+                        "1L",
+                        "1T"
+                    ],
+                    "1L": [
+                        "1K"
+                    ]
+                }
+            },
+            "3XX": {
+                "inbound_assignments": {
+                    "BOEGY2": "1L",
+                    "CHOWW4": "1K",
+                    "COKTL4": "1G",
+                    "FLCHR1": "1G",
+                    "GAMES2": "1G",
+                    "JAYSN3.1": "1G",
+                    "NTNDO1": "1Y",
+                    "RKSTR4": "1L",
+                    "RNDRZ4": "1G",
+                    "WYLND1": "1L"
+                },
+                "departure_assignments": {
+                    "KHND": "1Y",
+                    "KLAS": "1D",
+                    "KVGT": "1D"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1M"
+                    ],
+                    "1F": [
+                        "1D",
+                        "1G",
+                        "1K",
+                        "1L",
+                        "1T",
+                        "1Y"
+                    ]
+                }
+            },
+            "4XX": {
+                "inbound_assignments": {
+                    "BOEGY2": "1L",
+                    "CHOWW4": "1L",
+                    "COKTL4": "1G",
+                    "FLCHR1": "1G",
+                    "GAMES2": "1G",
+                    "JAYSN3.19": "1T",
+                    "NTNDO1": "1Y",
+                    "RKSTR4": "1L",
+                    "RNDRZ4": "1G",
+                    "WYLND1": "1L"
+                },
+                "departure_assignments": {
+                    "KHND": "1Y",
+                    "KLAS": "1D",
+                    "KVGT": "1D"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1M"
+                    ],
+                    "1F": [
+                        "1D",
+                        "1G",
+                        "1K",
+                        "1L",
+                        "1T",
+                        "1Y"
+                    ]
+                }
+            }
+        },
+        "center": "N36.4.59.17,W115.8.53.52",
+        "controller_configs": {
+            "1F": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 19000,
+                        "vertices": "N036.26.33.759,W115.56.03.134 N035.49.12.754,W115.58.28.044 N035.33.55.739,W115.47.25.843 N035.25.35.476,W115.32.49.683 N035.25.21.235,W114.53.41.548 N035.34.57.235,W114.23.43.883 N035.47.32.586,W114.03.52.250 N036.20.29.946,W114.04.17.711 N036.27.20.560,W114.16.54.202 N036.26.21.701,W114.40.33.883 N036.13.31.408,W114.58.30.598 N036.12.43.536,W115.13.24.199 N036.16.34.345,W115.39.35.765"
+                    }
+                ]
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "LASNOCA",
+                    "description": "LAS NO CA",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N036.05.17.449,W115.10.59.234",
+                        "N036.07.40.107,W115.09.48.619",
+                        "N036.08.25.178,W115.06.45.175",
+                        "N036.08.21.814,W115.02.12.769",
+                        "N036.07.14.275,W115.02.06.699",
+                        "N036.07.12.531,W115.06.18.424",
+                        "N036.05.45.176,W115.07.44.913",
+                        "N036.05.17.463,W115.08.00.706",
+                        "N036.05.16.131,W114.58.57.542",
+                        "N036.03.42.761,W114.59.03.585",
+                        "N036.03.50.232,W115.08.39.735",
+                        "N035.57.34.225,W115.11.28.348",
+                        "N035.58.41.022,W115.15.58.474",
+                        "N036.04.07.659,W115.11.22.250",
+                        "N036.05.17.449,W115.10.59.234"
+                    ]
+                }
+            ],
+            "auto_acquisition": [
+                {
+                    "id": "ACQ",
+                    "description": "L30 AUTO-ACQUISITION",
+                    "type": "polygon",
+                    "vertices": "N035.13.05.906,W116.34.00.078 N036.22.13.341,W116.27.34.568 N036.40.40.461,W116.36.50.449 N036.50.27.310,W116.29.09.490 N036.41.33.457,W116.19.35.509 N036.42.11.716,W115.35.34.918 N036.19.15.487,W115.08.24.190 N036.25.21.757,W114.45.42.764 N036.45.25.831,W114.03.34.205 N036.30.24.609,W113.26.48.728 N035.52.52.796,W113.38.17.103 N035.45.19.486,W113.18.18.880 N035.12.06.882,W113.22.23.518 N034.50.51.809,W113.55.26.055 N034.54.07.709,W115.29.21.190",
+                    "floor": 0,
+                    "ceiling": 24000
+                }
+            ]
+        },
+        "radar_sites": {
+            "KLAS": {
+                "char": "A",
+                "position": "KLAS",
+                "elevation": 2200,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "slope_angle": 0.175
+            }
+        },
+        "coordination_lists": [
+            {
+                "name": "HENDERSON",
+                "id": "H",
+                "airports": [
+                    "KHND"
+                ]
+            },
+            {
+                "name": "NORTH VEGAS",
+                "id": "V",
+                "airports": [
+                    "KVGT"
+                ]
+            }
+        ],
+        "scratchpads": {
+            "VERKN": "GID",
+            "TUKRR": "GID",
+            "KENNO": "JKR",
+            "JAYSN": "LOH",
+            "HOCEE": "NIT",
+            "SSKEE": "NIT",
+            "BLH": "RYZ",
+            "BOJAC": "RYD",
+            "BLAQQ": "RYB",
+            "HEC": "RYV",
+            "LVELL": "RYZ",
+            "SLVRR": "RYV",
+            "ZAYNE": "RSL",
+            "FRNCK": "RAT",
+            "LAS": "LAS",
+            "BLD": "BLD"
+        },
+        "significant_points": {
+            "BLH": {},
+            "BOJAC": {},
+            "FRNCK": {},
+            "GIDGT": {},
+            "HEC": {},
+            "HOCEE": {},
+            "JAYSN": {},
+            "JOHKR": {},
+            "KENNO": {},
+            "LOHLA": {},
+            "LVELL": {},
+            "NIITZ": {},
+            "RADYR": {},
+            "RASLR": {},
+            "SSKEE": {},
+            "TUKRR": {},
+            "VERKN": {},
+            "ZAYNE": {}
+        },
+        "stars_maps": [
+            "427 DPWP_B1 L30",
+            "402 VAIRWAY L30",
+            "005 FUS_MVA L30",
+            "426 TROUTSL L30",
+            "004 CLASSB L30",
+            "006 EOVM L30",
+            "427 DPWP_B1 L30",
+            "402 VAIRWAY L30",
+            "005 FUS_MVA L30",
+            "281 BM1M L30",
+            "283 BM3M L30",
+            "",
+            "40 HLD_PTN L30",
+            "354 TOWERC2 L30",
+            "018 NOISE_B L30",
+            "026 ZLAC134 L30",
+            "501 LSV_MVA L30",
+            "037 VGT-ILS L30",
+            "341 R_AREAS L30",
+            "",
+            "",
+            "",
+            "426 TROUTSL L30",
+            "004 CLASSB L30",
+            "006 EOVM L30",
+            "282 BM2M L30",
+            "284 BM4M L30",
+            "012 HND_D L30",
+            "353 TOWERC1 L30",
+            "356 TOWERC4 L30",
+            "019 NOISE_A L30",
+            "027 ZLA_C2 L30",
+            "500 QAS_MVA L30",
+            "038 HND-VOR L30",
+            "059 LSV L30"
+        ],
+        "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "FRNCK",
+                    "TUKRR",
+                    "VERKN"
+                ],
+                "altitude_range": [
+                    19000,
+                    23000
+                ],
+                "receiving_controller": "C07"
+            },
+            {
+                "fixes": [
+                    "HOCEE",
+                    "SSKEE",
+                    "ZAYNE"
+                ],
+                "altitude_range": [
+                    19000,
+                    23000
+                ],
+                "receiving_controller": "C08"
+            },
+            {
+                "fixes": [
+                    "KENNO"
+                ],
+                "altitude_range": [
+                    19000,
+                    23000
+                ],
+                "receiving_controller": "C16"
+            },
+            {
+                "fixes": [
+                    "JAYSN"
+                ],
+                "altitude_range": [
+                    0,
+                    25000
+                ],
+                "receiving_controller": "11L"
+            },
+            {
+                "fixes": [
+                    "BLAQQ",
+                    "HEC",
+                    "LVELL"
+                ],
+                "altitude_range": [
+                    19000,
+                    23000
+                ],
+                "receiving_controller": "C06"
+            }
+        ],
+        "coordination_fixes": {
+            "CHOWW": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "ZLLDA": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "WHIGG": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "GAMES": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "ISHEE": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "WAPID": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "LARKK": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "FABLE": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "RKSTR": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "RNDRZ": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KLAS"
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "LSV",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "C"
+        }
+    ]
+}

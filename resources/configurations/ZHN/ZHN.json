@@ -1,0 +1,63 @@
+{
+    "control_positions": {
+        "02": {
+            "callsign": "ZHN 02 Kauai",
+            "frequency": 126500,
+            "radio_name": "HCF Center"
+        },
+        "03": {
+            "callsign": "ZHN 03 Molokai",
+            "frequency": 124100,
+            "radio_name": "HCF Center"
+        },
+        "04": {
+            "callsign": "ZHN 04 Lanai",
+            "frequency": 119300,
+            "radio_name": "HCF Center"
+        },
+        "05": {
+            "callsign": "ZHN 05 Big Island",
+            "frequency": 118450,
+            "radio_name": "HCF Center"
+        },
+        "06": {
+            "callsign": "ZHN 06 West Sector",
+            "frequency": 119900,
+            "radio_name": "HCF Center"
+        },
+        "07": {
+            "callsign": "ZHN 07 East",
+            "frequency": 126600,
+            "radio_name": "HCF Center"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "HNL",
+            "stars_id": "HHH",
+            "single_char_stars_id": "H",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ITO",
+            "stars_id": "TTT",
+            "single_char_stars_id": "T",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NGF",
+            "stars_id": "NNN",
+            "single_char_stars_id": "M",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "OGG",
+            "stars_id": "GGG",
+            "single_char_stars_id": "G",
+            "field_e_format": "OneLetterAndSubset"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}
