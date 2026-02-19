@@ -718,7 +718,7 @@ func (sd *dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error 
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	c.sim.LaunchAircraft(ls.Aircraft, ls.DepartureRunway)
+	c.sim.LaunchAircraft(ls.Aircraft, av.RunwayID(ls.DepartureRunway))
 	return nil
 }
 
@@ -742,7 +742,7 @@ func (sd *dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *sim.Aircra
 	var ac *sim.Aircraft
 	var err error
 	if da.Rules == av.FlightRulesIFR {
-		ac, err = c.sim.CreateIFRDeparture(da.Airport, da.Runway, da.Category)
+		ac, err = c.sim.CreateIFRDeparture(da.Airport, av.RunwayID(da.Runway), da.Category)
 	} else {
 		ac, err = c.sim.CreateVFRDeparture(da.Airport)
 	}

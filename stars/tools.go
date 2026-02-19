@@ -529,7 +529,7 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms r
 			}
 			ap := ctx.Client.State.Airports[rwy.Airport]
 			for name, appr := range util.SortedMap(ap.Approaches) {
-				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
+				if appr.Runway == rwy.Runway.Base() && sp.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
 						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 					}
@@ -580,13 +580,13 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 
 			ap := ctx.Client.State.Airports[name]
 			for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
-				if sp.scopeDraw.departures[name][rwy] == nil {
+				if sp.scopeDraw.departures[name][string(rwy)] == nil {
 					continue
 				}
 
 				exitRoutes := ap.DepartureRoutes[rwy]
 				for exit, exitRoute := range util.SortedMap(exitRoutes) {
-					if sp.scopeDraw.departures[name][rwy][exit] {
+					if sp.scopeDraw.departures[name][string(rwy)][string(exit)] {
 						radar.DrawWaypoints(ctx, exitRoute.Waypoints, drawnWaypoints, transforms,
 							td, style, ld, pd, ldr, color)
 					}

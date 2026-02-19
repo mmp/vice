@@ -233,12 +233,12 @@ func (c *NewSimConfiguration) initDefaultWindDirection() {
 	if dbap, ok := av.DB.Airports[ap]; ok {
 		for _, rwy := range dbap.Runways {
 			if slices.ContainsFunc(c.ScenarioSpec.DepartureRunways, func(r sim.DepartureRunway) bool {
-				return r.Airport == ap && r.Runway == rwy.Id
+				return r.Airport == ap && r.Runway.Base() == rwy.Id
 			}) {
 				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
 			}
 			if slices.ContainsFunc(c.ScenarioSpec.ArrivalRunways, func(r sim.ArrivalRunway) bool {
-				return r.Airport == ap && r.Runway == rwy.Id
+				return r.Airport == ap && r.Runway.Base() == rwy.Id
 			}) {
 				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
 			}
@@ -915,7 +915,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 		if len(c.ScenarioSpec.ArrivalRunways) > 0 {
 			var a []string
 			for _, rwy := range c.ScenarioSpec.ArrivalRunways {
-				a = append(a, rwy.Airport+"/"+rwy.Runway)
+				a = append(a, rwy.Airport+"/"+string(rwy.Runway))
 			}
 			sort.Strings(a)
 			base := "Landing: "
@@ -1486,11 +1486,11 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 			imgui.PushIDStr(airport)
 			adrColumn := 0
 			for runway := range util.SortedMap(lc.DepartureRates[airport]) {
-				imgui.PushIDStr(runway)
+				imgui.PushIDStr(string(runway))
 
 				for category := range util.SortedMap(lc.DepartureRates[airport][runway]) {
 					imgui.TableNextColumn()
-					rshort, _, _ := strings.Cut(runway, ".") // don't include extras in the UI
+					rshort := runway.Base() // don't include extras in the UI
 					imgui.Text(rshort)
 					imgui.TableNextColumn()
 

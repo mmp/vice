@@ -150,7 +150,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			airport, runway, hasRunway := strings.Cut(spec, "/")
 			if _, ok := sg.Airports[airport]; !ok {
 				e.ErrorString("go_around_assignments: airport %q not in scenario", airport)
-			} else if hasRunway && !av.AirportHasRunway(airport, runway) {
+			} else if hasRunway && !av.AirportHasRunway(airport, av.RunwayID(runway)) {
 				e.ErrorString("go_around_assignments: runway %q not a valid runway at %q", runway, airport)
 			}
 		}
@@ -201,7 +201,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 	airportExits := make(map[string]map[string]any) // airport -> exit -> is it covered
 	for _, rwy := range s.DepartureRunways {
-		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
+		e.Push("Departure runway " + rwy.Airport + " " + string(rwy.Runway))
 
 		if airportExits[rwy.Airport] == nil {
 			airportExits[rwy.Airport] = make(map[string]any)
@@ -215,7 +215,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			} else {
 				for exit := range routes {
 					// It's fine if multiple active runways cover the exit.
-					airportExits[rwy.Airport][exit] = nil
+					airportExits[rwy.Airport][string(exit)] = nil
 				}
 
 				for _, r := range routes {
@@ -248,7 +248,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 	activeAirports := make(map[*av.Airport]any) // all airports with departures or arrivals
 	for _, rwy := range s.ArrivalRunways {
-		e.Push("Arrival runway " + rwy.Airport + " " + rwy.Runway)
+		e.Push("Arrival runway " + rwy.Airport + " " + string(rwy.Runway))
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
 			e.ErrorString("airport not found in scenario group \"airports\"")
@@ -256,7 +256,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			activeAirports[ap] = nil
 
 			if !util.SeqContainsFunc(maps.Values(ap.Approaches),
-				func(appr *av.Approach) bool { return appr.Runway == rwy.Runway }) {
+				func(appr *av.Approach) bool { return appr.Runway == rwy.Runway.Base() }) {
 				e.ErrorString("no approach found that reaches this runway")
 			}
 
@@ -268,7 +268,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 				if rwy.GoAround.Heading == 0 {
 					rwy.GoAround.IsRunwayHeading = true
 					for _, appr := range ap.Approaches {
-						if appr.Runway == rwy.Runway {
+						if appr.Runway == rwy.Runway.Base() {
 							rwy.GoAround.Heading = int(appr.RunwayHeading(sg.NmPerLongitude, sg.MagneticVariation) + 0.5)
 							break
 						}
@@ -291,7 +291,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 				// Validate hold_departures: each must be a valid runway at the airport
 				for _, holdRwy := range rwy.GoAround.HoldDepartures {
-					if !av.AirportHasRunway(rwy.Airport, holdRwy) {
+					if !av.AirportHasRunway(rwy.Airport, av.RunwayID(holdRwy)) {
 						e.ErrorString("hold_departures: runway %q not a valid runway at %q", holdRwy, rwy.Airport)
 					}
 				}
@@ -308,7 +308,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	activeAirportRunways := make(map[string]map[string]any)
 	activeDepartureAirports := make(map[string]any)
 	for _, rwy := range s.DepartureRunways {
-		e.Push("departure runway " + rwy.Runway)
+		e.Push("departure runway " + string(rwy.Runway))
 
 		ap, ok := sg.Airports[rwy.Airport]
 		if !ok {
@@ -351,7 +351,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 							}
 						}
 						activeAirportSIDs[rwy.Airport][route.SID] = nil
-						activeAirportRunways[rwy.Airport][rwy.Runway] = nil
+						activeAirportRunways[rwy.Airport][string(rwy.Runway)] = nil
 					}
 				}
 			}

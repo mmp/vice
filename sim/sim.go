@@ -62,7 +62,7 @@ type Sim struct {
 	lg          *log.Logger
 
 	// Airport -> runway -> state
-	DepartureState map[string]map[string]*RunwayLaunchState
+	DepartureState map[string]map[av.RunwayID]*RunwayLaunchState
 	// Key is inbound flow group name
 	NextInboundSpawn map[string]time.Time
 	NextVFFRequest   time.Time
@@ -169,10 +169,10 @@ type Track struct {
 }
 
 type DepartureRunway struct {
-	Airport     string `json:"airport"`
-	Runway      string `json:"runway"`
-	Category    string `json:"category,omitempty"`
-	DefaultRate int    `json:"rate"`
+	Airport     string      `json:"airport"`
+	Runway      av.RunwayID `json:"runway"`
+	Category    string      `json:"category,omitempty"`
+	DefaultRate int         `json:"rate"`
 }
 
 // GoAroundProcedure defines go-around parameters for a specific arrival runway.
@@ -186,7 +186,7 @@ type GoAroundProcedure struct {
 
 type ArrivalRunway struct {
 	Airport  string             `json:"airport"`
-	Runway   string             `json:"runway"`
+	Runway   av.RunwayID        `json:"runway"`
 	GoAround *GoAroundProcedure `json:"go_around,omitempty"`
 }
 
@@ -254,7 +254,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 	s := &Sim{
 		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
 
-		DepartureState:   make(map[string]map[string]*RunwayLaunchState),
+		DepartureState:   make(map[string]map[av.RunwayID]*RunwayLaunchState),
 		NextInboundSpawn: make(map[string]time.Time),
 
 		ControlPositions:     config.ControlPositions,
@@ -1389,9 +1389,11 @@ func (s *Sim) updateState() {
 								}
 							}
 
-							if rwyState, ok := depState[runway]; ok {
-								rwyState.LastArrivalLandingTime = s.State.SimTime
-								rwyState.LastArrivalFlightRules = ac.FlightPlan.Rules
+							for rwyID, rwyState := range depState {
+								if rwyID.Base() == runway {
+									rwyState.LastArrivalLandingTime = s.State.SimTime
+									rwyState.LastArrivalFlightRules = ac.FlightPlan.Rules
+								}
 							}
 						}
 
@@ -1789,12 +1791,12 @@ func (s *Sim) holdDeparturesForGoAround(airport string, holdRunways []string, go
 
 	// Set the hold state on matching runways
 	for rwy, state := range depState {
-		rwy = av.TidyRunway(rwy)
+		rwyBase := rwy.Base()
 		for _, holdRwy := range holdRunways {
-			if rwy == av.TidyRunway(holdRwy) {
+			if rwyBase == av.RunwayID(holdRwy).Base() {
 				state.GoAroundHoldUntil = holdUntil
 				s.lg.Info("holding departures on runway due to go-around",
-					slog.String("airport", airport), slog.String("runway", rwy))
+					slog.String("airport", airport), slog.String("runway", rwyBase))
 			}
 		}
 	}
@@ -1810,11 +1812,11 @@ func (s *Sim) holdDeparturesForGoAround(airport string, holdRunways []string, go
 // aircraft's arrival airport/runway, if one exists in the scenario's arrival_runways.
 func (s *Sim) getGoAroundProcedureForAircraft(ac *Aircraft) *GoAroundProcedure {
 	airport := ac.FlightPlan.ArrivalAirport
-	runway := av.TidyRunway(ac.Nav.Approach.Assigned.Runway)
+	runway := ac.Nav.Approach.Assigned.Runway
 
 	// Find matching arrival runway with a go-around procedure
 	for _, ar := range s.State.ArrivalRunways {
-		if ar.Airport == airport && av.TidyRunway(ar.Runway) == runway && ar.GoAround != nil {
+		if ar.Airport == airport && ar.Runway.Base() == runway && ar.GoAround != nil {
 			return ar.GoAround
 		}
 	}

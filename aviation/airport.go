@@ -10,7 +10,6 @@ import (
 	"maps"
 	"slices"
 	"strings"
-	"unicode"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -33,10 +32,10 @@ type Airport struct {
 	DepartureController ControlPosition `json:"departure_controller"`
 	HoldForRelease      bool            `json:"hold_for_release"`
 
-	ExitCategories map[string]string `json:"exit_categories"`
+	ExitCategories map[ExitID]string `json:"exit_categories"`
 
 	// runway -> (exit -> route)
-	DepartureRoutes map[string]map[string]*ExitRoute `json:"departure_routes"`
+	DepartureRoutes map[RunwayID]map[ExitID]*ExitRoute `json:"departure_routes"`
 
 	CRDARegions map[string]*CRDARegion `json:"crda_regions"`
 	CRDAPairs   []CRDAPair             `json:"crda_pairs"`
@@ -353,32 +352,32 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	// Departure routes are specified in the JSON as comma-separated lists
 	// of exits. We'll split those out into individual entries in the
 	// Airport's DepartureRoutes, one per exit, for convenience of future code.
-	splitDepartureRoutes := make(map[string]map[string]*ExitRoute)
+	splitDepartureRoutes := make(map[RunwayID]map[ExitID]*ExitRoute)
 	for rwy, rwyRoutes := range ap.DepartureRoutes {
-		e.Push("Departure runway " + rwy)
+		e.Push("Departure runway " + string(rwy))
 		seenExits := make(map[string]any)
-		splitDepartureRoutes[rwy] = make(map[string]*ExitRoute)
+		splitDepartureRoutes[rwy] = make(map[ExitID]*ExitRoute)
 
-		r, ok := LookupRunway(icao, rwy)
+		r, ok := LookupRunway(icao, rwy.Base())
 		if !ok {
 			e.ErrorString("unknown runway for airport")
 		}
-		rend, ok := LookupOppositeRunway(icao, rwy)
+		rend, ok := LookupOppositeRunway(icao, rwy.Base())
 		if !ok {
 			e.ErrorString("missing opposite runway")
 		}
 
 		for exitList, route := range rwyRoutes {
-			e.Push("Exit " + exitList)
+			e.Push("Exit " + string(exitList))
 			route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 			route.Waypoints = append([]Waypoint{
 				Waypoint{
-					Fix:      rwy,
+					Fix:      rwy.Base(),
 					Location: r.Threshold,
 				},
 				Waypoint{
-					Fix:      rwy + "-mid",
+					Fix:      rwy.Base() + "-mid",
 					Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
 				}}, route.Waypoints...)
 
@@ -392,14 +391,14 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 			route.Waypoints.CheckDeparture(e, controlPositions, checkScratchpad)
 
-			for exit := range strings.SplitSeq(exitList, ",") {
+			for exit := range strings.SplitSeq(string(exitList), ",") {
 				exit = strings.TrimSpace(exit)
 				if _, ok := seenExits[exit]; ok {
 					e.ErrorString("%s: exit repeatedly specified in routes", exit)
 				}
 				seenExits[exit] = nil
 
-				splitDepartureRoutes[rwy][exit] = route
+				splitDepartureRoutes[rwy][ExitID(exit)] = route
 			}
 			e.Pop()
 		}
@@ -408,9 +407,9 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	ap.DepartureRoutes = splitDepartureRoutes
 
 	for rwy, routes := range ap.DepartureRoutes {
-		e.Push("Departure runway " + rwy)
+		e.Push("Departure runway " + string(rwy))
 		for exit, route := range routes {
-			e.Push("Exit " + exit)
+			e.Push("Exit " + string(exit))
 
 			if slices.ContainsFunc(route.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff }) {
 				if route.HandoffController == "" {
@@ -434,7 +433,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 
 	for i, dep := range ap.Departures {
-		e.Push("Departure exit " + dep.Exit)
+		e.Push("Departure exit " + string(dep.Exit))
 		e.Push("Destination " + dep.Destination)
 
 		for _, alt := range dep.Altitudes {
@@ -453,23 +452,13 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 		// Make sure that all runways have a route to the exit
 		for rwy := range ap.DepartureRoutes {
-			if _, ok := LookupRunway(icao, rwy); !ok {
+			if _, ok := LookupRunway(icao, rwy.Base()); !ok {
 				e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
 			}
 		}
 
-		// We may have multiple ways to reach an exit (e.g. different for
-		// jets vs piston aircraft); in that case the departure exit may be
-		// specified like COLIN.P, etc.  Therefore, here we remove any
-		// trailing non-alphabetical characters for the departure exit name
-		// used below.
-		depExit := dep.Exit
-		for i, ch := range depExit {
-			if !unicode.IsLetter(ch) {
-				depExit = depExit[:i]
-				break
-			}
-		}
+		// Use Base() to get the canonical exit name (e.g., "COLIN" from "COLIN.P")
+		depExit := dep.Exit.Base()
 
 		if !checkScratchpad(dep.Scratchpad) {
 			e.ErrorString("%s: invalid scratchpad", dep.Scratchpad)
@@ -570,7 +559,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	for i, rwys := range ap.DepartureRunwaysAsOne {
 		// Remove whitespace and any runway suffixes.
 		ap.DepartureRunwaysAsOne[i] = strings.Join(util.MapSlice(strings.Split(rwys, ","),
-			func(r string) string { return TidyRunway(r) }), ",")
+			func(r string) string { return RunwayID(r).Base() }), ",")
 
 		e.Push(fmt.Sprintf("departure_runways_as_one[%d]", i))
 		runways := strings.Split(ap.DepartureRunwaysAsOne[i], ",")
@@ -772,7 +761,7 @@ func (er ExitRoute) FinalHeading() int {
 }
 
 type Departure struct {
-	Exit string `json:"exit"`
+	Exit ExitID `json:"exit"`
 
 	Destination         string                  `json:"destination"`
 	Altitudes           util.SingleOrArray[int] `json:"altitude,omitempty"`
