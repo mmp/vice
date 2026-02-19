@@ -390,37 +390,53 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string, acid sim.ACID) (*av.Controller, error) {
 	// Look at the length of the controller string passed in. If it's one character, ERAM would have to find which controller it goes to.
 	// That is not here yet, so return an error.
-	if len(controller) == 1 {
-		return nil, ErrERAMSectorNotActive
-	}
-
 	for _, control := range ctx.Client.State.Controllers {
-		fmt.Printf("ERAMPane lookupControllerForID: \"%s\" -> \"%s\" -> \"%s\"\n", control.FacilityIdentifier, control.Position, control.PositionId())
-	}
+		switch len(controller) {
+		case 1: // Cannot do anything with single characters in ERAM yet. TODO: fix pairs
+			return nil, ErrERAMSectorNotActive
+		case 2: // Handing off to other sectors within the same ARTCC
+			if control.FacilityIdentifier == "" {
+				if control.Position == controller {
+					return control, nil
+				}
+			}
+		case 3: // Handing off to a TRACON with a single char stars ID or another ARTCC
+			// Get full STARS ID
+			var prefix string
+			for _, id := range ctx.Client.State.HandoffIDs {
+				if id.SingleCharStarsID == string(controller[0]) {
+					prefix = id.StarsID
+					break
+				}
+				if id.Prefix == string(controller[0]) {
+					prefix = id.StarsID
+					break
+				}
+			}
 
-	// Try exact match first.
-	for _, control := range ctx.Client.State.Controllers {
-		if control.ERAMID() == controller {
-			return control, nil
+			if control.FacilityIdentifier == prefix && control.Position == controller[1:] {
+				return control, nil
+			}
+		case 4: // Handing off to a TRACON with a two char stars ID
+			// Get full STARS ID
+			var prefix string
+			for _, id := range ctx.Client.State.HandoffIDs {
+				if id.TwoCharStarsID == controller[:2] {
+					prefix = id.StarsID
+					break
+				}
+			}
+
+			if control.FacilityIdentifier == prefix && control.Position == controller[2:] {
+				return control, nil
+			}
+		case 5: // Handing off to a TRACON with a full STARS
+			if controller == control.ERAMID() {
+				return control, nil
+			}
+		default: // Invalid input
+			return nil, ErrERAMSectorNotActive
 		}
 	}
-
-	// Try resolving a short prefix to a longer one. For example, "N5W"
-	// should match a controller with ERAMID "NNN5W" if "N" is a short
-	// prefix for the same facility as "NNN".
-	for _, control := range ctx.Client.State.Controllers {
-		fid := control.FacilityIdentifier
-		pos := control.Position
-		if fid == "" || len(pos) == 0 || len(controller) <= len(pos) {
-			continue
-		}
-		// Check if the input ends with this controller's position
-		// and the input prefix is itself a prefix of the facility identifier.
-		inputPrefix := controller[:len(controller)-len(pos)]
-		if controller[len(inputPrefix):] == pos && strings.HasPrefix(fid, inputPrefix) {
-			return control, nil
-		}
-	}
-
 	return nil, ErrERAMSectorNotActive
 }
