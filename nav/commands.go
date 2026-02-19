@@ -14,19 +14,15 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func (nav *Nav) GoAround() {
-	hdg := nav.FlightState.Heading
-	nav.Heading = NavHeading{Assigned: &hdg}
+// GoAroundWithProcedure initiates a go-around with a defined procedure.
+// The runwayEndWP waypoint should have Location (opposite threshold), FlyOver,
+// Heading (outbound), AltitudeRestriction, and GoAroundContactController set.
+func (nav *Nav) GoAroundWithProcedure(altitude float32, runwayEndWP av.Waypoint) {
 	nav.DeferredNavHeading = nil
-
 	nav.Speed = NavSpeed{}
-
-	alt := float32(1000 * int((nav.FlightState.ArrivalAirportElevation+2500)/1000))
-	nav.Altitude = NavAltitude{Assigned: &alt}
-
 	nav.Approach = NavApproach{}
-	// Keep the destination airport at the end of the route.
-	nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
+	nav.Altitude = NavAltitude{Assigned: &altitude}
+	nav.Waypoints = av.WaypointArray{runwayEndWP, nav.FlightState.ArrivalAirport}
 }
 
 func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) av.CommandIntent {
@@ -217,13 +213,13 @@ func (nav *Nav) ExpediteClimb() av.CommandIntent {
 	}
 }
 
-func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) av.CommandIntent {
+func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod, simTime time.Time) av.CommandIntent {
 	if hdg <= 0 || hdg > 360 {
 		return av.MakeUnableIntent("unable. {hdg} isn't a valid heading", hdg)
 	}
 
 	cancelHold := nav.Heading.Hold != nil
-	nav.assignHeading(hdg, turn)
+	nav.assignHeading(hdg, turn, simTime)
 
 	intent := av.HeadingIntent{
 		Heading:    hdg,
@@ -245,7 +241,7 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) av.CommandIntent {
 	return intent
 }
 
-func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
+func (nav *Nav) assignHeading(hdg float32, turn TurnMethod, simTime time.Time) {
 	if _, ok := nav.AssignedHeading(); !ok {
 		// Only cancel approach clearance if the aircraft wasn't on a
 		// heading and now we're giving them one.
@@ -268,11 +264,11 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 
 	// Don't carry this from a waypoint we may have previously passed.
 	nav.Approach.NoPT = false
-	nav.EnqueueHeading(hdg, turn)
+	nav.EnqueueHeading(hdg, turn, simTime)
 }
 
-func (nav *Nav) FlyPresentHeading() av.CommandIntent {
-	nav.assignHeading(nav.FlightState.Heading, TurnClosest)
+func (nav *Nav) FlyPresentHeading(simTime time.Time) av.CommandIntent {
+	nav.assignHeading(nav.FlightState.Heading, TurnClosest, simTime)
 	return av.HeadingIntent{
 		Heading: nav.FlightState.Heading,
 		Type:    av.HeadingPresent,
@@ -401,7 +397,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
 	return nil, ErrInvalidFix
 }
 
-func (nav *Nav) DirectFix(fix string) av.CommandIntent {
+func (nav *Nav) DirectFix(fix string, simTime time.Time) av.CommandIntent {
 	if wps, err := nav.directFixWaypoints(fix); err == nil {
 		if hold := nav.Heading.Hold; hold != nil {
 			// We'll finish our lap and then depart the holding fix direct to the fix
@@ -415,7 +411,7 @@ func (nav *Nav) DirectFix(fix string) av.CommandIntent {
 				SecondFix: fix,
 			}
 		} else {
-			nav.EnqueueDirectFix(wps)
+			nav.EnqueueDirectFix(wps, simTime)
 			nav.Approach.NoPT = false
 			nav.Approach.InterceptState = NotIntercepting
 			return av.NavigationIntent{
@@ -580,25 +576,25 @@ func (nav *Nav) CancelApproachClearance() av.CommandIntent {
 	return av.ApproachIntent{Type: av.ApproachCancel}
 }
 
-func (nav *Nav) ClimbViaSID() av.CommandIntent {
+func (nav *Nav) ClimbViaSID(simTime time.Time) av.CommandIntent {
 	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSID {
 		return av.MakeUnableIntent("unable. We're not flying a departure procedure")
 	}
 
 	nav.Altitude = NavAltitude{}
 	nav.Speed = NavSpeed{}
-	nav.EnqueueOnCourse()
+	nav.EnqueueOnCourse(simTime)
 	return av.ProcedureIntent{Type: av.ProcedureClimbViaSID}
 }
 
-func (nav *Nav) DescendViaSTAR() av.CommandIntent {
+func (nav *Nav) DescendViaSTAR(simTime time.Time) av.CommandIntent {
 	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSTAR {
 		return av.MakeUnableIntent("unable. We're not on a STAR")
 	}
 
 	nav.Altitude = NavAltitude{}
 	nav.Speed = NavSpeed{}
-	nav.EnqueueOnCourse()
+	nav.EnqueueOnCourse(simTime)
 	return av.ProcedureIntent{Type: av.ProcedureDescendViaSTAR}
 }
 

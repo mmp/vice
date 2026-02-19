@@ -15114,19 +15114,33 @@
             "arrival_runways": [
                 {
                     "airport": "KFRG",
-                    "runway": "14"
+                    "runway": "14",
+          "go_around": {
+            "heading": 220,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KISP",
-                    "runway": "15R"
+                    "runway": "15R",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHVN",
-                    "runway": "2"
+                    "runway": "2",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "13L"
+                    "runway": "13L",
+          "go_around": {
+            "heading": 110,
+            "altitude": 3000
+          }
                 }
             ],
             "airspace": {
@@ -15232,23 +15246,41 @@
             "arrival_runways": [
                 {
                     "airport": "KFRG",
-                    "runway": "14"
+                    "runway": "14",
+          "go_around": {
+            "heading": 220,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KISP",
-                    "runway": "15R"
+                    "runway": "15R",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHVN",
-                    "runway": "2"
+                    "runway": "2",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "13L"
+                    "runway": "13L",
+          "go_around": {
+            "heading": 140,
+            "altitude": 3000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "22L"
+                    "runway": "22L",
+          "go_around": {
+            "heading": 170,
+            "altitude": 3000
+          }
                 }
             ],
             "airspace": {
@@ -15349,23 +15381,41 @@
             "arrival_runways": [
                 {
                     "airport": "KFRG",
-                    "runway": "19"
+                    "runway": "19",
+          "go_around": {
+            "heading": 220,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KISP",
-                    "runway": "24"
+                    "runway": "24",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHVN",
-                    "runway": "20"
+                    "runway": "20",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "22L"
+                    "runway": "22L",
+          "go_around": {
+            "heading": 140,
+            "altitude": 3000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "22R"
+                    "runway": "22R",
+          "go_around": {
+            "heading": 220,
+            "altitude": 3000
+          }
                 }
             ],
             "airspace": {
@@ -15485,23 +15535,41 @@
             "arrival_runways": [
                 {
                     "airport": "KFRG",
-                    "runway": "32"
+                    "runway": "32",
+          "go_around": {
+            "heading": 10,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KISP",
-                    "runway": "33L"
+                    "runway": "33L",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHVN",
-                    "runway": "20"
+                    "runway": "20",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "31R"
+                    "runway": "31R",
+          "go_around": {
+            "heading": 220,
+            "altitude": 3000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "31L"
+                    "runway": "31L",
+          "go_around": {
+            "heading": 170,
+            "altitude": 3000
+          }
                 }
             ],
             "airspace": {
@@ -15602,23 +15670,41 @@
             "arrival_runways": [
                 {
                     "airport": "KFRG",
-                    "runway": "1"
+                    "runway": "1",
+          "go_around": {
+            "heading": 10,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KISP",
-                    "runway": "6"
+                    "runway": "6",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHVN",
-                    "runway": "2"
+                    "runway": "2",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "4R"
+                    "runway": "4R",
+          "go_around": {
+            "heading": 140,
+            "altitude": 3000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "4L"
+                    "runway": "4L",
+          "go_around": {
+            "heading": 100,
+            "altitude": 3000
+          }
                 }
             ],
             "airspace": {
@@ -15719,11 +15805,19 @@
             "arrival_runways": [
                 {
                     "airport": "KJFK",
-                    "runway": "4L"
+                    "runway": "4L",
+          "go_around": {
+            "heading": 100,
+            "altitude": 3000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "4R"
+                    "runway": "4R",
+          "go_around": {
+            "heading": 140,
+            "altitude": 2000
+          }
                 }
             ],
             "airspace": {
@@ -15757,11 +15851,19 @@
             "arrival_runways": [
                 {
                     "airport": "KJFK",
-                    "runway": "13L"
+                    "runway": "13L",
+          "go_around": {
+            "heading": 110,
+            "altitude": 3000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "13R"
+                    "runway": "13R",
+          "go_around": {
+            "heading": 170,
+            "altitude": 3000
+          }
                 }
             ],
             "airspace": {
@@ -15795,11 +15897,19 @@
             "arrival_runways": [
                 {
                     "airport": "KJFK",
-                    "runway": "22L"
+                    "runway": "22L",
+          "go_around": {
+            "heading": 140,
+            "altitude": 3000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "22R"
+                    "runway": "22R",
+          "go_around": {
+            "heading": 220,
+            "altitude": 3000
+          }
                 }
             ],
             "airspace": {
@@ -15829,11 +15939,19 @@
             "arrival_runways": [
                 {
                     "airport": "KJFK",
-                    "runway": "31L"
+                    "runway": "31L",
+          "go_around": {
+            "heading": 170,
+            "altitude": 3000
+          }
                 },
                 {
                     "airport": "KJFK",
-                    "runway": "31R"
+                    "runway": "31R",
+          "go_around": {
+            "heading": 220,
+            "altitude": 3000
+          }
                 }
             ],
             "airspace": {

@@ -117,6 +117,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		// Copy assignments from the referenced configuration
 		s.ControllerConfiguration.InboundAssignments = maps.Clone(config.InboundAssignments)
 		s.ControllerConfiguration.DepartureAssignments = maps.Clone(config.DepartureAssignments)
+		s.ControllerConfiguration.GoAroundAssignments = maps.Clone(config.GoAroundAssignments)
 		s.ControllerConfiguration.DefaultConsolidation = deep.MustCopy(config.DefaultConsolidation)
 	}
 
@@ -179,6 +180,20 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			}
 		}
 		// departure_assignments validation is done below, after activeAirportSIDs/Runways maps are built
+
+		// Validate go_around_assignments
+		for spec, tcp := range s.ControllerConfiguration.GoAroundAssignments {
+			if !slices.Contains(humanPositions, tcp) {
+				e.ErrorString("go_around_assignments: %q assigns to %q which is not a human position in \"default_consolidation\"", spec, tcp)
+			}
+			// Validate airport/runway
+			airport, runway, hasRunway := strings.Cut(spec, "/")
+			if _, ok := sg.Airports[airport]; !ok {
+				e.ErrorString("go_around_assignments: airport %q not in scenario", airport)
+			} else if hasRunway && !av.AirportHasRunway(airport, runway) {
+				e.ErrorString("go_around_assignments: runway %q not a valid runway at %q", runway, airport)
+			}
+		}
 	}
 
 	for ctrl, vnames := range s.Airspace {
@@ -300,7 +315,47 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 				func(appr *av.Approach) bool { return appr.Runway == rwy.Runway }) {
 				e.ErrorString("no approach found that reaches this runway")
 			}
+
+			// Validate go_around procedure if specified
+			if rwy.GoAround != nil {
+				e.Push("go_around")
+
+				// Resolve heading: 0 means runway heading, otherwise must be 1-360
+				if rwy.GoAround.Heading == 0 {
+					rwy.GoAround.IsRunwayHeading = true
+					for _, appr := range ap.Approaches {
+						if appr.Runway == rwy.Runway {
+							rwy.GoAround.Heading = int(appr.RunwayHeading(sg.NmPerLongitude, sg.MagneticVariation) + 0.5)
+							break
+						}
+					}
+				} else if rwy.GoAround.Heading < 1 || rwy.GoAround.Heading > 360 {
+					e.ErrorString("heading must be between 1 and 360, got %d", rwy.GoAround.Heading)
+				}
+
+				// Validate altitude: must be reasonable (1000-15000 feet)
+				if rwy.GoAround.Altitude < 1000 || rwy.GoAround.Altitude > 15000 {
+					e.ErrorString("altitude must be between 1000 and 15000 feet, got %d", rwy.GoAround.Altitude)
+				}
+
+				// Validate handoff_controller: must be a valid TCP in control_positions
+				if rwy.GoAround.HandoffController != "" {
+					if _, ok := sg.ControlPositions[rwy.GoAround.HandoffController]; !ok {
+						e.ErrorString("\"handoff_controller\" %q not found in \"control_positions\"", rwy.GoAround.HandoffController)
+					}
+				}
+
+				// Validate hold_departures: each must be a valid runway at the airport
+				for _, holdRwy := range rwy.GoAround.HoldDepartures {
+					if !av.AirportHasRunway(rwy.Airport, holdRwy) {
+						e.ErrorString("hold_departures: runway %q not a valid runway at %q", holdRwy, rwy.Airport)
+					}
+				}
+
+				e.Pop()
+			}
 		}
+
 		e.Pop()
 	}
 
@@ -981,21 +1036,52 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			}
 		}
 
-		for _, ap := range sg.Airports {
-			for _, exitroutes := range ap.DepartureRoutes {
-				for _, route := range exitroutes {
-					rewriteWaypoints(route.Waypoints)
-				}
-			}
-			for _, app := range ap.Approaches {
-				for _, wps := range app.Waypoints {
-					rewriteWaypoints(wps)
-				}
-			}
-			for _, dep := range ap.Departures {
-				rewriteWaypoints(dep.RouteWaypoints)
+	for _, ap := range sg.Airports {
+		rewriteControlPosition(&ap.DepartureController)
+
+		for _, exitroutes := range ap.DepartureRoutes {
+			for _, route := range exitroutes {
+				rewriteControlPosition(&route.HandoffController)
+				rewriteWaypoints(route.Waypoints)
 			}
 		}
+
+		for _, app := range ap.Approaches {
+			for _, wps := range app.Waypoints {
+				rewriteWaypoints(wps)
+			}
+		}
+		for _, dep := range ap.Departures {
+			rewriteWaypoints(dep.RouteWaypoints)
+		}
+	}
+
+	fa := &sg.FacilityAdaptation
+	for i := range fa.AirspaceAwareness {
+		rewriteString(&fa.AirspaceAwareness[i].ReceivingController)
+	}
+	for position, config := range fa.ControllerConfigs {
+		// Rewrite controller
+		delete(fa.ControllerConfigs, position)
+		p := string(position)
+		rewriteString(&p)
+		fa.ControllerConfigs[sim.ControlPosition(p)] = config
+	}
+	// Rewrite TCP references in configurations (controller assignments)
+	for _, config := range fa.Configurations {
+		for flow, tcp := range config.InboundAssignments {
+			rewriteControlPosition(&tcp)
+			config.InboundAssignments[flow] = tcp
+		}
+		for spec, tcp := range config.DepartureAssignments {
+			rewriteControlPosition(&tcp)
+			config.DepartureAssignments[spec] = tcp
+		}
+		for spec, tcp := range config.GoAroundAssignments {
+			rewriteControlPosition(&tcp)
+			config.GoAroundAssignments[spec] = tcp
+		}
+	}
 
 		for _, flow := range sg.InboundFlows {
 			for _, ar := range flow.Arrivals {
@@ -1022,7 +1108,41 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 	e.Push("config")
 
-	// Video maps vs manifest.
+	// Validate configurations (controller assignments)
+	if s.Configurations == nil {
+		e.ErrorString("must provide \"configurations\"")
+	}
+	for configId, config := range s.Configurations {
+		e.Push("configurations: " + configId)
+
+		// Config IDs must be max 3 characters
+		if len(configId) > 3 {
+			e.ErrorString("configuration id %q must be at most 3 characters", configId)
+		}
+
+		// Validate that all TCPs in assignments exist in control_positions
+		for flow, tcp := range config.InboundAssignments {
+			if _, ok := sg.ControlPositions[tcp]; !ok {
+				e.ErrorString("inbound_assignments: flow %q assigns to %q which is not in \"control_positions\"", flow, tcp)
+			}
+		}
+		for spec, tcp := range config.DepartureAssignments {
+			if _, ok := sg.ControlPositions[tcp]; !ok {
+				e.ErrorString("departure_assignments: %q assigns to %q which is not in \"control_positions\"", spec, tcp)
+			}
+		}
+		// go_around_assignments validation happens at scenario level
+		// where we have access to the consolidation tree for human position validation
+
+		e.Pop()
+	}
+
+	// Video maps
+	for m := range s.VideoMapLabels {
+		if !slices.Contains(s.VideoMapNames, m) {
+			e.ErrorString("video map %q in \"map_labels\" is not in \"stars_maps\"", m)
+		}
+	}
 	if manifest != nil {
 		for _, m := range s.VideoMapNames {
 			if m != "" && !manifest.HasMap(m) {

@@ -29,6 +29,7 @@ type TrackState struct {
 	DatablockType DatablockType
 
 	LeaderLineDirection *math.CardinalOrdinalDirection
+	LeaderLineLength    int // 0=no line (W/E only), 1=normal (default), 2=2x, 3=3x
 
 	ELDB bool
 	EFDB bool
@@ -113,7 +114,9 @@ func (ep *ERAMPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*Track
 func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 	for _, trk := range ctx.Client.State.Tracks {
 		if _, ok := ep.TrackState[trk.ADSBCallsign]; !ok {
-			sa := &TrackState{}
+			sa := &TrackState{
+				LeaderLineLength: ep.currentPrefs().FDBLdrLength, // Use current preference
+			}
 			ep.TrackState[trk.ADSBCallsign] = sa
 		}
 	}
@@ -164,7 +167,9 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
 		if state == nil {
-			state = &TrackState{}
+			state = &TrackState{
+				LeaderLineLength: ep.currentPrefs().FDBLdrLength, // Use current preference
+			}
 			ep.TrackState[trk.ADSBCallsign] = state
 		}
 
@@ -375,6 +380,30 @@ func (ep *ERAMPane) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float
 	return math.Scale2f(v, 60)
 }
 
+// leaderLineVectorWithLength returns a vector in window coordinates representing a leader
+// line with the length determined by the lengthMode parameter.
+// lengthMode: 0 = no line, 1 = normal (60), 2 = 2x (120), 3 = 3x (180)
+func (ep *ERAMPane) leaderLineVectorWithLength(dir math.CardinalOrdinalDirection, lengthMode int) [2]float32 {
+	angle := dir.Heading()
+	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
+
+	scale := float32(60)
+	switch lengthMode {
+	case 0:
+		scale = 0 // No line
+	case 1:
+		scale = 60 // Normal
+	case 2:
+		scale = 120 // 2x
+	case 3:
+		scale = 180 // 3x
+	default:
+		scale = 60 // Default to normal
+	}
+
+	return math.Scale2f(v, scale)
+}
+
 // For LDBs
 func (ep *ERAMPane) leaderLineVectorNoLength(dir math.CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
@@ -441,7 +470,15 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 		if dbType == LimitedDatablock || dbType == EnhancedLimitedDatablock {
 			*dir = math.East
 		}
-		v := util.Select(dbType == FullDatablock, ep.leaderLineVector(*dir), ep.leaderLineVectorNoLength(*dir))
+
+		// For /0 mode (LeaderLineLength == 0), restrict to W/E only
+		if dbType == FullDatablock && state.LeaderLineLength == 0 {
+			if *dir != math.East && *dir != math.West {
+				*dir = math.East // Default to East if in /0 mode
+			}
+		}
+
+		v := util.Select(dbType == FullDatablock, ep.leaderLineVectorWithLength(*dir, state.LeaderLineLength), ep.leaderLineVectorNoLength(*dir))
 		if dbType == FullDatablock {
 			if !ctx.UserOwnsFlightPlan(trk.FlightPlan) && (*dir == math.NorthEast || *dir == math.East) {
 				v = math.Scale2f(v, 0.7) // shorten the leader line for FDBs that are not tracked by the user
@@ -498,40 +535,69 @@ type historyTrack struct {
 // positions of each track.
 func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
+
 	ctd := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(ctd)
 
 	ps := ep.currentPrefs()
-	for _, trk := range tracks {
-		state := ep.TrackState[trk.ADSBCallsign]
 
+	for _, trk := range tracks {
+
+		state := ep.TrackState[trk.ADSBCallsign]
+		if state == nil {
+			continue
+		}
+
+		// Determine brightness based on association
 		var bright radar.Brightness
-		if trk.IsAssociated() { // TODO: Eventually when coasting tracks, etc, (non associated with aircraft tracks) are added, this will need to be updated to include all tracks that are associated with an aircraft (not just a flight plan)
+		// TODO: Eventually when coasting tracks, etc, (non associated with aircraft tracks) are added, this will need to be updated to include all tracks that are associated with an aircraft (not just a flight plan)
+		if trk.IsAssociated() {
 			bright = ps.Brightness.PRHST
 		} else {
 			bright = ps.Brightness.UNPHST
 		}
+
 		color := bright.ScaleRGB(ERAMYellow)
 
-		for _, trk := range state.HistoryTracks {
-			loc := trk.Location
+		// Respect selected history length (0–5)
+		max := ep.HistoryLength
+		if max <= 0 {
+			continue
+		}
+		if max > len(state.HistoryTracks) {
+			max = len(state.HistoryTracks)
+		}
+
+		// Draw newest first (circular buffer handling)
+		for i := 0; i < max; i++ {
+
+			idx := (state.HistoryTrackIndex - 1 - i + len(state.HistoryTracks)) % len(state.HistoryTracks)
+			hist := state.HistoryTracks[idx]
+
+			loc := hist.Location
 			if loc.IsZero() {
 				continue
 			}
-			symbol := trk.PositionSymbol
-			pw := transforms.WindowFromLatLongP(loc)
-			pt := math.Add2f(pw, [2]float32{0.5, -.5})
+
 			if ep.systemFont[5] == nil {
 				fmt.Println("ERAMPane: systemFont[5] is nil, cannot draw history tracks")
 				continue
 			}
-			if td == nil {
-				fmt.Println("ERAMPane: TextDrawBuilder is nil, cannot draw history tracks")
-				continue
-			}
-			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.systemFont[5], Color: color})
+
+			pw := transforms.WindowFromLatLongP(loc)
+			pt := math.Add2f(pw, [2]float32{0.5, -.5})
+
+			td.AddTextCentered(
+				hist.PositionSymbol,
+				pt,
+				renderer.TextStyle{
+					Font:  ep.systemFont[5],
+					Color: color,
+				},
+			)
 		}
 	}
 

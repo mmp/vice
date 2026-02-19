@@ -2366,23 +2366,38 @@
             "arrival_runways": [
                 {
                     "airport": "KISP",
-                    "runway": "24"
+                    "runway": "24",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHVN",
-                    "runway": "20"
+                    "runway": "20",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KFOK",
-                    "runway": "24"
+                    "runway": "24",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KOXC",
-                    "runway": "18"
+                    "runway": "18",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KBDR",
-                    "runway": "24"
+                    "runway": "24",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHPN",
@@ -2508,23 +2523,38 @@
             "arrival_runways": [
                 {
                     "airport": "KISP",
-                    "runway": "6"
+                    "runway": "6",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHVN",
-                    "runway": "2"
+                    "runway": "2",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KFOK",
-                    "runway": "6"
+                    "runway": "6",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KOXC",
-                    "runway": "36"
+                    "runway": "36",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KBDR",
-                    "runway": "6"
+                    "runway": "6",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHPN",
@@ -2647,23 +2677,38 @@
             "arrival_runways": [
                 {
                     "airport": "KISP",
-                    "runway": "15R"
+                    "runway": "15R",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHVN",
-                    "runway": "20"
+                    "runway": "20",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KFOK",
-                    "runway": "15"
+                    "runway": "15",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KOXC",
-                    "runway": "18"
+                    "runway": "18",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KBDR",
-                    "runway": "11"
+                    "runway": "11",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHPN",
@@ -2786,23 +2831,38 @@
             "arrival_runways": [
                 {
                     "airport": "KISP",
-                    "runway": "33L"
+                    "runway": "33L",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHVN",
-                    "runway": "2"
+                    "runway": "2",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KFOK",
-                    "runway": "33"
+                    "runway": "33",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KOXC",
-                    "runway": "36"
+                    "runway": "36",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KBDR",
-                    "runway": "29"
+                    "runway": "29",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KHPN",

@@ -398,7 +398,7 @@ func showAboutDialog() {
 
 	ui.aboutFontSmall.ImguiPush()
 	credits := `Additional credits:
-- Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, and Yi Zhang.
+- Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Michael Knight, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, Jordan Williams, and Yi Zhang.
 - Timely feedback: radarcontacto.
 - Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Gecko, Thomas Halpin, Jason Helkenberg, Trey Hensley, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Jake Magee, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs and to the FAA, from whence the original maps came.

@@ -391,6 +391,21 @@ func TidyRunway(r string) string {
 	return strings.TrimSpace(r)
 }
 
+// AirportHasRunway returns true if the given runway exists at the airport (from DB).
+func AirportHasRunway(airport, runway string) bool {
+	ap, ok := DB.Airports[airport]
+	if !ok {
+		return false
+	}
+	tidyRunway := TidyRunway(runway)
+	for _, rwy := range ap.Runways {
+		if TidyRunway(rwy.Id) == tidyRunway {
+			return true
+		}
+	}
+	return false
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 type FlightRules int

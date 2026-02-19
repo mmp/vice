@@ -548,7 +548,7 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
 		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
 			if s.TCWCanModifyTrack(tcw, ac.NASFlightPlan) {
 				fp := ac.DisassociateFlightPlan()
-				fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute)
+				fp.DeleteTime = s.State.SimTime.Add(4 * time.Minute)
 				s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans, fp)
 				return nil
 			}
@@ -1316,13 +1316,13 @@ func (s *Sim) AssignHeading(hdg *HeadingArgs) (av.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(hdg.TCW, hdg.ADSBCallsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			if hdg.Present {
-				return ac.FlyPresentHeading()
+				return ac.FlyPresentHeading(s.State.SimTime)
 			} else if hdg.LeftDegrees != 0 {
-				return ac.TurnLeft(hdg.LeftDegrees)
+				return ac.TurnLeft(hdg.LeftDegrees, s.State.SimTime)
 			} else if hdg.RightDegrees != 0 {
-				return ac.TurnRight(hdg.RightDegrees)
+				return ac.TurnRight(hdg.RightDegrees, s.State.SimTime)
 			} else {
-				return ac.AssignHeading(hdg.Heading, hdg.Turn)
+				return ac.AssignHeading(hdg.Heading, hdg.Turn, s.State.SimTime)
 			}
 		})
 }
@@ -1433,7 +1433,7 @@ func (s *Sim) DirectFix(tcw TCW, callsign av.ADSBCallsign, fix string) (av.Comma
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.DirectFix(fix)
+			return ac.DirectFix(fix, s.State.SimTime)
 		})
 }
 
@@ -1524,9 +1524,9 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 			var intent av.CommandIntent
 			var ok bool
 			if straightIn {
-				intent, ok = ac.ClearedStraightInApproach(approach, s.lg)
+				intent, ok = ac.ClearedStraightInApproach(approach, s.State.SimTime, s.lg)
 			} else {
-				intent, ok = ac.ClearedApproach(approach, s.lg)
+				intent, ok = ac.ClearedApproach(approach, s.State.SimTime, s.lg)
 			}
 
 			if ok {
@@ -1562,7 +1562,7 @@ func (s *Sim) ClimbViaSID(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, 
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.ClimbViaSID()
+			return ac.ClimbViaSID(s.State.SimTime)
 		})
 }
 
@@ -1572,7 +1572,7 @@ func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign) (av.CommandInten
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.DescendViaSTAR()
+			return ac.DescendViaSTAR(s.State.SimTime)
 		})
 }
 
@@ -2208,12 +2208,16 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		if pc.FirstInFacility {
 			arrivalAirport := ac.FlightPlan.ArrivalAirport
 			if letter, ok := s.State.ATISLetter[arrivalAirport]; ok && letter != "" {
-				if s.Rand.Float32() < 0.85 {
+				if s.Rand.Float32() < 0.85 { // 85% of aircraft give the ATIS
 					reportLetter := letter
-					if ct, ok := s.ATISChangedTime[arrivalAirport]; ok && !ct.IsZero() {
-						if s.State.SimTime.Sub(ct) < 5*time.Minute && s.Rand.Float32() < 0.3 {
-							reportLetter = string(rune((letter[0]-'A'+25)%26 + 'A'))
-						}
+					age := s.State.SimTime.Sub(s.ATISChangedTime[arrivalAirport])
+
+					// Possible report having the previous ATIS if it has changed recently: always
+					// report the last one in the first 20 seconds after a change, then linearly
+					// ramp down the probability to zero 3 minutes after a change.
+					p := 1 - max(0, (age.Seconds()-20)/(300-20))
+					if s.Rand.Float32() < float32(p) {
+						reportLetter = string(rune((letter[0]-'A'+25)%26 + 'A'))
 					}
 					ac.ReportedATIS = reportLetter
 					rt.Add("[we have information {ch}|information {ch}|we have {ch}]", reportLetter)
@@ -2241,7 +2245,23 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt = s.generateFlightFollowingMessage(ac)
 
 	case PendingTransmissionGoAround:
-		rt = av.MakeContactTransmission("[going around|on the go]")
+		rt = av.MakeContactTransmission("[going around|on the go], ")
+		targetAlt, _ := ac.Nav.TargetAltitude()
+		currentAlt := ac.Altitude()
+		if currentAlt < targetAlt {
+			rt.Add("[at|] {alt} [climbing|for] {alt}, ", currentAlt, targetAlt)
+		} else {
+			rt.Add("[at|] {alt}, ", currentAlt)
+		}
+		if ac.GoAroundOnRunwayHeading {
+			rt.Add("[runway heading|on a runway heading]")
+		} else if ac.Nav.Heading.Assigned != nil {
+			rt.Add("heading {hdg}", int(*ac.Nav.Heading.Assigned+0.5))
+		}
+		if ac.SentAroundForSpacing {
+			rt.Add(", [tower sent us around for spacing|we were sent around for spacing]")
+			ac.SentAroundForSpacing = false
+		}
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionEmergency:
@@ -2349,7 +2369,7 @@ func (s *Sim) processFutureEvents() {
 						ac.NASFlightPlan.InterimAlt = 0
 						ac.NASFlightPlan.InterimType = 0
 					}
-					ac.DepartOnCourse(s.lg)
+					ac.DepartOnCourse(s.State.SimTime, s.lg)
 				}
 				return false
 			}

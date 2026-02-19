@@ -50,6 +50,10 @@ type RunwayLaunchState struct {
 	LastArrivalLandingTime time.Time      // when the last arrival landed on this runway
 	LastArrivalFlightRules av.FlightRules // flight rules of the last arrival that landed
 
+	// GoAroundHoldUntil is the time until which departures should be held
+	// after a go-around. Departures auto-resume after this time.
+	GoAroundHoldUntil time.Time
+
 	VFRAttempts  int
 	VFRSuccesses int
 }
@@ -232,17 +236,17 @@ func (lc *LaunchConfig) CheckRateLimits(limit float32) bool {
 // ClampRates adjusts the rate scale variables to ensure the total launch rate
 // does not exceed the given limit (aircraft per hour)
 func (lc *LaunchConfig) ClampRates(limit float32) {
-	// Calculate current totals with scale = 1 to get base rates
-	baseDepartureRate := lc.TotalDepartureRate() / lc.DepartureRateScale
-	baseInboundRate := lc.TotalInboundFlowRate() / lc.InboundFlowRateScale
+	baseDepartureRate := lc.TotalDepartureRate()
+	baseInboundRate := lc.TotalInboundFlowRate()
 
 	// If either rate would exceed the limit with current scale, adjust it
-	if baseDepartureRate*lc.DepartureRateScale > limit && baseDepartureRate > 0 {
-		lc.DepartureRateScale = limit / baseDepartureRate * 0.99
+	if baseDepartureRate > limit {
+		lc.DepartureRateScale *= limit / baseDepartureRate * 0.99
 	}
 
-	if baseInboundRate*lc.InboundFlowRateScale > limit && baseInboundRate > 0 {
-		lc.InboundFlowRateScale = limit / baseInboundRate * 0.99
+	if baseInboundRate > limit {
+		fmt.Printf("%f > %f -> scale %f\n", baseInboundRate, limit, limit/baseInboundRate)
+		lc.InboundFlowRateScale *= limit / baseInboundRate * 0.99
 	}
 }
 

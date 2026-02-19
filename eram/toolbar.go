@@ -159,7 +159,9 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			ep.activeToolbarMenu = toolbarVideomap
 		}
 		ep.drawToolbarFullButton(ctx, fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1]), 0, scale, false, false)
-		ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, false, false)
+		if ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, false, false) {
+			ep.activeToolbarMenu = toolbarRadarFilter
+		}
 		ep.drawToolbarFullButton(ctx, "PREFSET", 0, scale, false, false)
 		if ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, ep.deleteTearoffMode, false) {
 			if ep.mousePrimaryClicked(ctx.Mouse) || ep.mouseTertiaryClicked(ctx.Mouse) {
@@ -510,6 +512,64 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			oc := math.Extent2DFromPoints([][2]float32{p0, p1, p2, p3})
 			toolbarDrawState.occlusionExtent = oc
 		}
+
+	case toolbarRadarFilter:
+		if toolbarDrawState.lightToolbar != [4][2]float32{} {
+			t := toolbarDrawState.lightToolbar
+			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
+		}
+		drawButtonSamePosition(ctx, "RADAR\nFILTER")
+		if ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarMain
+			resetButtonPosDefault(ctx, scale)
+		}
+		ep.buttonVerticalOffset(ctx)
+		toolbarDrawState.buttonCursor[1] += buttonSize(buttonFull, scale)[1] + 3
+		p0 := toolbarDrawState.buttonCursor
+		if ep.drawToolbarFullButton(ctx, "ALL\nLDBS", 0, scale, false, false) {
+			// handle drawing all LDBS
+		}
+
+		if ep.drawToolbarFullButton(ctx, "PR\nLDB", 0, scale, false, false) {
+			// handle drawing PR LDB
+		}
+		if ep.drawToolbarFullButton(ctx, "UNP\nLDB", 0, scale, false, false) {
+			// handle drawing UNP LDB
+		}
+		if ep.drawToolbarFullButton(ctx, "ALL\nPRIM", 0, scale, false, false) {
+			// handle drawing ALL PRIM
+		}
+		if ep.drawToolbarFullButton(ctx, "MODE\nMODE-C", 0, scale, false, false) {
+			// handle CONFLCT ALERT
+		}
+		rightEdge := toolbarDrawState.buttonCursor[0] - 2 // remove the +2 padding added after last button
+		p1 := [2]float32{rightEdge, p0[1]}
+
+		if ep.drawToolbarFullButton(ctx, "SELECT\nBEACON", 0, scale, false, true) {
+			// handle SELECT BEACON
+		}
+
+		if ep.drawToolbarFullButton(ctx, "PERM\nECHO", 0, scale, false, false) {
+			// handle perm echo
+		}
+		if ep.drawToolbarFullButton(ctx, "STROBE\nLINES", 0, scale, false, false) {
+			//handle strobe lines
+		}
+		historyLabel := fmt.Sprintf("HISTORY\n%d", ep.HistoryLength)
+		toolbarDrawState.customButton[historyLabel] = toolbarButtonGreenColor
+
+		if ep.drawToolbarFullButton(ctx, historyLabel, 0, scale, false, false) {
+			handleClick(ep, &ep.HistoryLength, 0, 5, 1)
+		}
+
+		p2 := [2]float32{rightEdge, toolbarDrawState.buttonCursor[1] - buttonSize(buttonFull, scale)[1]}
+		p3 := [2]float32{p0[0], p2[1]}
+
+		toolbarDrawState.customButton[fmt.Sprintf("HISTORY\n%d", ep.HistoryLength)] = toolbarButtonGreenColor
+
+		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
+
 	case toolbarViews:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
 			t := toolbarDrawState.lightToolbar
@@ -671,8 +731,8 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 				ps.Line4Type = Line4Type
 			}
 		}
-		if ep.drawToolbarFullButton(ctx, "FDB LDR\n1", 0, scale, false, false) {
-			// handle FDB LDR
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("FDB LDR\n%d", ps.FDBLdrLength), 0, scale, false, false) {
+			handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
 		}
 		if ep.drawToolbarFullButton(ctx, "BCAST\nFLID", 0, scale, false, false) {
 			// handle BCAST FLD
@@ -1320,6 +1380,29 @@ func handleClick[T ~int](ep *ERAMPane, pref *T, min, max, step int) {
 	*pref = T(v)
 }
 
+// handleClickWrapping handles additive clicks with wrapping behavior at min/max boundaries
+func handleClickWrapping[T ~int](ep *ERAMPane, pref *T, min, max int) {
+	v := int(*pref)
+
+	mouse := toolbarDrawState.mouse
+	if mouse == nil {
+		return
+	}
+
+	if ep.mousePrimaryClicked(mouse) || ep.mousePrimaryDown(mouse) { // lower value
+		v--
+		if v < min {
+			v = max
+		}
+	} else if ep.mouseTertiaryClicked(mouse) || ep.mouseTertiaryDown(mouse) { // raise value
+		v++
+		if v > max {
+			v = min
+		}
+	}
+	*pref = T(v)
+}
+
 // Just for leader lines AFAIK
 func handleMultiplicativeClick(ep *ERAMPane, pref *int, min, max, step int) {
 	mouse := toolbarDrawState.mouse
@@ -1329,20 +1412,24 @@ func handleMultiplicativeClick(ep *ERAMPane, pref *int, min, max, step int) {
 
 	value := *pref
 	if ep.mousePrimaryClicked(mouse) || ep.mousePrimaryDown(mouse) { // lower value
-		if value/step >= min {
+		if value/step > min {
 			if value == 1 {
 				*pref = 0
 			} else {
 				*pref = value / step
 			}
+		} else {
+			ep.SetTemporaryCursor("EramInvalidSelect", 0.5, "")
 		}
 	} else if ep.mouseTertiaryClicked(mouse) || ep.mouseTertiaryDown(mouse) { // raise value
-		if value*step <= max {
+		if value*step < max {
 			if value == 0 {
 				*pref = 1
 			} else {
 				*pref = value * step
 			}
+		} else {
+			ep.SetTemporaryCursor("EramInvalidEnter", 0.5, "")
 		}
 	}
 }
@@ -2042,7 +2129,7 @@ func (ep *ERAMPane) tornOffButtonBaseColor(name string) renderer.RGB {
 	if key == "RANGE" || key == "ALT LIM" {
 		return renderer.RGB{0, 0, 0}
 	}
-	if key == "VECTOR" || key == "FDB LDR" || key == "NONADSB" {
+	if key == "VECTOR" || key == "HISTORY" || key == "FDB LDR" || key == "NONADSB" {
 		return toolbarButtonGreenColor
 	}
 	if display == "DELETE\nTEAROFF" {
@@ -2088,6 +2175,9 @@ func (ep *ERAMPane) getTornOffButtonText(name string) string {
 		return fmt.Sprintf("RANGE\n%.2f", val)
 	case "VECTOR":
 		return fmt.Sprintf("VECTOR\n%d", ep.VelocityTime)
+	case "FDB LDR":
+		ps := ep.currentPrefs()
+		return fmt.Sprintf("FDB LDR\n%d", ps.FDBLdrLength)
 	case "ALT LIM":
 		ps := ep.currentPrefs()
 		return fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1])
@@ -2233,6 +2323,9 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		ep.toggleTearoffMenu(buttonName, toolbarDBFields)
 	case "VECTOR":
 		handleMultiplicativeClick(ep, &ep.VelocityTime, 0, 8, 2)
+	case "FDB LDR":
+		ps := ep.currentPrefs()
+		handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
 	case "VIEWS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarViews)
@@ -2248,6 +2341,8 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarMapBright)
 	case "RADAR\nFILTER":
+		ep.clearToolbarMouseDown()
+		ep.toggleTearoffMenu(buttonName, toolbarRadarFilter)
 		// Handle RADAR FILTER
 	case "PREFSET":
 		// Handle PREFSET

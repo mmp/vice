@@ -1589,7 +1589,12 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "22"
+                    "runway": "22",
+          "go_around": {
+            "altitude": 2000,
+            "handoff_controller": "LGA_D_APP",
+            "hold_departures": []
+          }
                 }
             ],
             "inbound_rates": {
@@ -1660,7 +1665,12 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "4"
+                    "runway": "4",
+          "go_around": {
+            "altitude": 2000,
+            "handoff_controller": "LGA_V_APP",
+            "hold_departures": []
+          }
                 }
             ],
             "inbound_rates": {
@@ -1731,7 +1741,12 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "22"
+                    "runway": "22",
+          "go_around": {
+            "altitude": 2000,
+            "handoff_controller": "LGA_D_APP",
+            "hold_departures": []
+          }
                 }
             ],
             "inbound_rates": {
@@ -1802,7 +1817,12 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "4"
+                    "runway": "4",
+          "go_around": {
+            "altitude": 2000,
+            "handoff_controller": "LGA_V_APP",
+            "hold_departures": []
+          }
                 }
             ],
             "inbound_rates": {
@@ -1873,7 +1893,13 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "31"
+                    "runway": "31",
+          "go_around": {
+            "heading": 340,
+            "altitude": 3000,
+            "handoff_controller": "LGA_DEP",
+            "hold_departures": ["4"]
+          }
                 }
             ],
             "inbound_rates": {
@@ -1944,7 +1970,12 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "4"
+                    "runway": "4",
+          "go_around": {
+            "altitude": 2000,
+            "handoff_controller": "LGA_V_APP",
+            "hold_departures": []
+          }
                 }
             ],
             "inbound_rates": {
@@ -1970,7 +2001,12 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "4"
+                    "runway": "4",
+          "go_around": {
+            "altitude": 2000,
+            "handoff_controller": "LGA_V_APP",
+            "hold_departures": []
+          }
                 }
             ],
             "inbound_rates": {
@@ -1996,7 +2032,13 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "13"
+                    "runway": "13",
+          "go_around": {
+            "heading": 80,
+            "altitude": 2000,
+            "handoff_controller": "LGA_DEP",
+            "hold_departures": ["13"]
+          }
                 }
             ],
             "inbound_rates": {
@@ -2022,7 +2064,12 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "22"
+                    "runway": "22",
+          "go_around": {
+            "altitude": 2000,
+            "handoff_controller": "LGA_D_APP",
+            "hold_departures": []
+          }
                 }
             ],
             "inbound_rates": {
@@ -2048,7 +2095,12 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "22"
+                    "runway": "22",
+          "go_around": {
+            "altitude": 2000,
+            "handoff_controller": "LGA_D_APP",
+            "hold_departures": []
+          }
                 }
             ],
             "inbound_rates": {
@@ -2074,7 +2126,13 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "31"
+                    "runway": "31",
+          "go_around": {
+            "heading": 40,
+            "altitude": 3000,
+            "handoff_controller": "LGA_F_APP",
+            "hold_departures": ["31"]
+          }
                 }
             ],
             "inbound_rates": {
@@ -2100,7 +2158,13 @@
             "arrival_runways": [
                 {
                     "airport": "KLGA",
-                    "runway": "31"
+                    "runway": "31",
+          "go_around": {
+            "heading": 40,
+            "altitude": 3000,
+            "handoff_controller": "LGA_F_APP",
+            "hold_departures": ["31"]
+          }
                 }
             ],
             "inbound_rates": {

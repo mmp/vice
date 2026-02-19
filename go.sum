@@ -137,14 +137,6 @@ github.com/iancoleman/orderedmap v0.3.0 h1:5cbR2grmZR/DiVt+VJopEhtVs9YGInGIxAoMJ
 github.com/iancoleman/orderedmap v0.3.0/go.mod h1:XuLcCUkdL5owUCQeF2Ue9uuw1EptkJDkXXS7VoV7XGE=
 github.com/josephspurrier/goversioninfo v1.4.1 h1:5LvrkP+n0tg91J9yTkoVnt/QgNnrI1t4uSsWjIonrqY=
 github.com/josephspurrier/goversioninfo v1.4.1/go.mod h1:JWzv5rKQr+MmW+LvM412ToT/IkYDZjaclF2pKDss8IY=
-github.com/k2-fsa/sherpa-onnx-go v1.12.22 h1:MiqMQO4ss5FzsV+NYI95kSrkJ/DthRQFCx4Ta8Bg6Xk=
-github.com/k2-fsa/sherpa-onnx-go v1.12.22/go.mod h1:B/ynRbVa5gpYoZYeYgY3zPi4MTfKk95UZueZDSIhbjk=
-github.com/k2-fsa/sherpa-onnx-go-linux v1.12.22 h1:On25i5dFoeQ9QPJXV/eFXRojpP6z1Rp7alYDRPgYDA8=
-github.com/k2-fsa/sherpa-onnx-go-linux v1.12.22/go.mod h1:NXEH2rsBgTdqY59YpPq6CtSBlBAXy/8a9FmpLERU97I=
-github.com/k2-fsa/sherpa-onnx-go-macos v1.12.22 h1:iI96ZUaOGpgj8d6DTkWt3NmeLh1YtK5WzXKG5mwffJw=
-github.com/k2-fsa/sherpa-onnx-go-macos v1.12.22/go.mod h1:ZOhUAXC62Unj0ZNfu6zxSFKcW96aXf7P3BsqiUyOBbE=
-github.com/k2-fsa/sherpa-onnx-go-windows v1.12.22 h1:0MNAZqWJq0ZA4b47rev1o1IFs9+qKYVF4N9dxA8lCQk=
-github.com/k2-fsa/sherpa-onnx-go-windows v1.12.22/go.mod h1:5AX7TU8+P/gInjglY1ijtWUM2b8iyR0QX4yEngzMe64=
 github.com/klauspost/compress v1.15.9 h1:wKRjX6JRtDdrE9qwa4b/Cip7ACOshUI4smpCQanqjSY=
 github.com/klauspost/compress v1.15.9/go.mod h1:PhcZ0MbTNciWF3rruxRgKxI5NkcHHrHUDtV4Yw2GlzU=
 github.com/lucasb-eyer/go-colorful v1.3.0 h1:2/yBRLdWBZKrf7gB40FoiKfAWYQ0lqNcbuQwVHXptag=

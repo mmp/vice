@@ -9008,19 +9008,34 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "22L"
+                    "runway": "22L",
+          "go_around": {
+            "heading": 190,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "19"
+                    "runway": "19",
+          "go_around": {
+            "heading": 290,
+            "altitude": 1500
+          }
                 },
                 {
                     "airport": "KMMU",
-                    "runway": "23"
+                    "runway": "23",
+          "go_around": {
+            "heading": 210,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KCDW",
-                    "runway": "22"
+                    "runway": "22",
+          "go_around": {
+            "altitude": 2000
+          }
                 }
             ],
             "inbound_rates": {
@@ -9096,11 +9111,19 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "22L"
+                    "runway": "22L",
+          "go_around": {
+            "heading": 190,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "19"
+                    "runway": "19",
+          "go_around": {
+            "heading": 290,
+            "altitude": 1500
+          }
                 },
                 {
                     "airport": "KLGA",
@@ -9188,7 +9211,11 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "4R"
+                    "runway": "4R",
+          "go_around": {
+            "heading": 60,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KLGA",
@@ -9267,19 +9294,34 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "4R"
+                    "runway": "4R",
+          "go_around": {
+            "heading": 60,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "6"
+                    "runway": "6",
+          "go_around": {
+            "heading": 330,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KMMU",
-                    "runway": "5"
+                    "runway": "5",
+          "go_around": {
+            "heading": 50,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KCDW",
-                    "runway": "4"
+                    "runway": "4",
+          "go_around": {
+            "altitude": 2000
+          }
                 }
             ],
             "inbound_rates": {
@@ -9363,15 +9405,26 @@
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "6"
+                    "runway": "6",
+          "go_around": {
+            "heading": 330,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KMMU",
-                    "runway": "5"
+                    "runway": "5",
+          "go_around": {
+            "heading": 50,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KCDW",
-                    "runway": "4"
+                    "runway": "4",
+          "go_around": {
+            "altitude": 2000
+          }
                 }
             ],
             "departure_runways": [
@@ -9444,15 +9497,27 @@
             "arrival_runways": [
                 {
                     "airport": "KTEB",
-                    "runway": "19"
+                    "runway": "19",
+          "go_around": {
+            "heading": 290,
+            "altitude": 1500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "24"
+                    "runway": "24",
+          "go_around": {
+            "heading": 280,
+            "altitude": 1500
+          }
                 },
                 {
                     "airport": "KMMU",
-                    "runway": "23"
+                    "runway": "23",
+          "go_around": {
+            "heading": 210,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KEWR",
@@ -9464,7 +9529,10 @@
                 },
                 {
                     "airport": "KCDW",
-                    "runway": "22"
+                    "runway": "22",
+          "go_around": {
+            "altitude": 2000
+          }
                 }
             ],
             "inbound_rates": {
@@ -9533,7 +9601,11 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "22L"
+                    "runway": "22L",
+          "go_around": {
+            "heading": 190,
+            "altitude": 2500
+          }
                 }
             ],
             "inbound_rates": {
@@ -9572,15 +9644,27 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "22L"
+                    "runway": "22L",
+          "go_around": {
+            "heading": 190,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "19"
+                    "runway": "19",
+          "go_around": {
+            "heading": 290,
+            "altitude": 1500
+          }
                 },
                 {
                     "airport": "KMMU",
-                    "runway": "23"
+                    "runway": "23",
+          "go_around": {
+            "heading": 210,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KLGA",
@@ -9660,19 +9744,34 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "22L"
+                    "runway": "22L",
+          "go_around": {
+            "heading": 190,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "19"
+                    "runway": "19",
+          "go_around": {
+            "heading": 290,
+            "altitude": 1500
+          }
                 },
                 {
                     "airport": "KMMU",
-                    "runway": "23"
+                    "runway": "23",
+          "go_around": {
+            "heading": 210,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KCDW",
-                    "runway": "22"
+                    "runway": "22",
+          "go_around": {
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KLGA",
@@ -9760,11 +9859,19 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "22L"
+                    "runway": "22L",
+          "go_around": {
+            "heading": 190,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "19"
+                    "runway": "19",
+          "go_around": {
+            "heading": 290,
+            "altitude": 1500
+          }
                 },
                 {
                     "airport": "KLGA",
@@ -9834,19 +9941,35 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "22L"
+                    "runway": "22L",
+          "go_around": {
+            "heading": 190,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "19"
+                    "runway": "19",
+          "go_around": {
+            "heading": 290,
+            "altitude": 1500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "24"
+                    "runway": "24",
+          "go_around": {
+            "heading": 280,
+            "altitude": 1500
+          }
                 },
                 {
                     "airport": "KMMU",
-                    "runway": "23"
+                    "runway": "23",
+          "go_around": {
+            "heading": 210,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KLGA",
@@ -9854,7 +9977,10 @@
                 },
                 {
                     "airport": "KCDW",
-                    "runway": "22"
+                    "runway": "22",
+          "go_around": {
+            "altitude": 2000
+          }
                 }
             ],
             "inbound_rates": {
@@ -9930,7 +10056,10 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "29"
+                    "runway": "29",
+          "go_around": {
+            "altitude": 3000
+          }
                 }
             ],
             "inbound_rates": {
@@ -9955,11 +10084,19 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "4R"
+                    "runway": "4R",
+          "go_around": {
+            "heading": 60,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "6"
+                    "runway": "6",
+          "go_around": {
+            "heading": 330,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KLGA",
@@ -10030,11 +10167,19 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "4R"
+                    "runway": "4R",
+          "go_around": {
+            "heading": 60,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "6"
+                    "runway": "6",
+          "go_around": {
+            "heading": 330,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KLGA",
@@ -10106,7 +10251,11 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "4R"
+                    "runway": "4R",
+          "go_around": {
+            "heading": 60,
+            "altitude": 2500
+          }
                 }
             ],
             "airspace": {
@@ -10137,15 +10286,27 @@
             "arrival_runways": [
                 {
                     "airport": "KEWR",
-                    "runway": "4R"
+                    "runway": "4R",
+          "go_around": {
+            "heading": 60,
+            "altitude": 2500
+          }
                 },
                 {
                     "airport": "KTEB",
-                    "runway": "6"
+                    "runway": "6",
+          "go_around": {
+            "heading": 330,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KMMU",
-                    "runway": "5"
+                    "runway": "5",
+          "go_around": {
+            "heading": 50,
+            "altitude": 2000
+          }
                 },
                 {
                     "airport": "KLGA",
@@ -10153,7 +10314,10 @@
                 },
                 {
                     "airport": "KCDW",
-                    "runway": "4"
+                    "runway": "4",
+          "go_around": {
+            "altitude": 2000
+          }
                 }
             ],
             "inbound_rates": {

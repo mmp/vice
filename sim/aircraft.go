@@ -78,6 +78,16 @@ type Aircraft struct {
 
 	GoAroundDistance *float32
 
+	// Set when tower sends aircraft around for spacing; affects the contact message.
+	SentAroundForSpacing bool
+	// Set when a spacing check rolled "no go-around"; prevents re-rolling every tick.
+	SpacingGoAroundDeclined bool
+	// Set when going around on runway heading (vs a specific assigned heading).
+	GoAroundOnRunwayHeading bool
+	// Set when the aircraft has gone around; prevents the arrival drop
+	// filter from dropping its flight plan.
+	WentAround bool
+
 	// Departure related state
 	DepartureContactAltitude float32 // 0 = waiting for /tc point, -1 = already contacted departure
 	ReportDepartureHeading   bool    // true if runway has multiple exit heading
@@ -202,11 +212,6 @@ func (ac *Aircraft) PilotMixUp() av.CommandIntent {
 	}
 }
 
-func (ac *Aircraft) GoAround() {
-	ac.GotContactTower = false
-	ac.Nav.GoAround()
-}
-
 func (ac *Aircraft) Ident(now time.Time) av.CommandIntent {
 	ac.IdentStartTime = now.Add(time.Duration(2+ac.Nav.Rand.Intn(3)) * time.Second) // delay the start a bit
 	ac.IdentEndTime = ac.IdentStartTime.Add(10 * time.Second)
@@ -257,13 +262,13 @@ func (ac *Aircraft) ExpediteClimb() av.CommandIntent {
 	return ac.Nav.ExpediteClimb()
 }
 
-func (ac *Aircraft) AssignHeading(heading int, turn nav.TurnMethod) av.CommandIntent {
-	return ac.Nav.AssignHeading(float32(heading), turn)
+func (ac *Aircraft) AssignHeading(heading int, turn nav.TurnMethod, simTime time.Time) av.CommandIntent {
+	return ac.Nav.AssignHeading(float32(heading), turn, simTime)
 }
 
-func (ac *Aircraft) TurnLeft(deg int) av.CommandIntent {
+func (ac *Aircraft) TurnLeft(deg int, simTime time.Time) av.CommandIntent {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
-	ac.Nav.AssignHeading(hdg, nav.TurnLeft)
+	ac.Nav.AssignHeading(hdg, nav.TurnLeft, simTime)
 	return av.HeadingIntent{
 		Type:    av.HeadingTurnLeft,
 		Heading: hdg,
@@ -271,9 +276,9 @@ func (ac *Aircraft) TurnLeft(deg int) av.CommandIntent {
 	}
 }
 
-func (ac *Aircraft) TurnRight(deg int) av.CommandIntent {
+func (ac *Aircraft) TurnRight(deg int, simTime time.Time) av.CommandIntent {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
-	ac.Nav.AssignHeading(hdg, nav.TurnRight)
+	ac.Nav.AssignHeading(hdg, nav.TurnRight, simTime)
 	return av.HeadingIntent{
 		Type:    av.HeadingTurnRight,
 		Heading: hdg,
@@ -281,12 +286,12 @@ func (ac *Aircraft) TurnRight(deg int) av.CommandIntent {
 	}
 }
 
-func (ac *Aircraft) FlyPresentHeading() av.CommandIntent {
-	return ac.Nav.FlyPresentHeading()
+func (ac *Aircraft) FlyPresentHeading(simTime time.Time) av.CommandIntent {
+	return ac.Nav.FlyPresentHeading(simTime)
 }
 
-func (ac *Aircraft) DirectFix(fix string) av.CommandIntent {
-	return ac.Nav.DirectFix(strings.ToUpper(fix))
+func (ac *Aircraft) DirectFix(fix string, simTime time.Time) av.CommandIntent {
+	return ac.Nav.DirectFix(strings.ToUpper(fix), simTime)
 }
 
 func (ac *Aircraft) HoldAtFix(fix string, hold *av.Hold) av.CommandIntent {
@@ -317,24 +322,24 @@ func (ac *Aircraft) AtFixIntercept(fix string, lg *log.Logger) av.CommandIntent 
 	return ac.Nav.AtFixIntercept(fix, ac.FlightPlan.ArrivalAirport, lg)
 }
 
-func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) (av.CommandIntent, bool) {
-	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, false)
+func (ac *Aircraft) ClearedApproach(id string, simTime time.Time, lg *log.Logger) (av.CommandIntent, bool) {
+	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, false, simTime)
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(id string, lg *log.Logger) (av.CommandIntent, bool) {
-	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, true)
+func (ac *Aircraft) ClearedStraightInApproach(id string, simTime time.Time, lg *log.Logger) (av.CommandIntent, bool) {
+	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, true, simTime)
 }
 
 func (ac *Aircraft) CancelApproachClearance() av.CommandIntent {
 	return ac.Nav.CancelApproachClearance()
 }
 
-func (ac *Aircraft) ClimbViaSID() av.CommandIntent {
-	return ac.Nav.ClimbViaSID()
+func (ac *Aircraft) ClimbViaSID(simTime time.Time) av.CommandIntent {
+	return ac.Nav.ClimbViaSID(simTime)
 }
 
-func (ac *Aircraft) DescendViaSTAR() av.CommandIntent {
-	return ac.Nav.DescendViaSTAR()
+func (ac *Aircraft) DescendViaSTAR(simTime time.Time) av.CommandIntent {
+	return ac.Nav.DescendViaSTAR(simTime)
 }
 
 func (ac *Aircraft) ResumeOwnNavigation() av.CommandIntent {
@@ -524,11 +529,11 @@ func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *av.Radi
 	return ac.Nav.ContactMessage(reportingPoints, ac.STAR, reportHeading, ac.IsDeparture())
 }
 
-func (ac *Aircraft) DepartOnCourse(lg *log.Logger) {
+func (ac *Aircraft) DepartOnCourse(simTime time.Time, lg *log.Logger) {
 	if ac.FlightPlan.Exit == "" {
 		lg.Warn("unset \"exit\" for departure", slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
-	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), ac.FlightPlan.Exit)
+	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), ac.FlightPlan.Exit, simTime)
 }
 
 func (ac *Aircraft) Check(lg *log.Logger) {
@@ -755,7 +760,7 @@ func (ac *Aircraft) DivertToAirport(ap string) {
 // Edit this map to customize which voices are used for each airline.
 var AirlineVoices = map[string][]string{
 	"default": {
-		"af_alloy", "af_aoede", "af_bella", "af_heart", "af_jessica", "af_nova", "af_kore",
+		"af_alloy", "af_aoede", "af_bella", "af_heart", "af_nova", "af_kore",
 		"af_river", "af_sarah", "af_sky", "am_adam", "am_echo", "am_eric", "am_fenrir", "am_liam",
 		"am_michael", "am_onyx", "am_puck",
 	},

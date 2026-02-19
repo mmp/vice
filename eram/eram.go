@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
@@ -107,7 +108,8 @@ type ERAMPane struct {
 	tearoffMenuLightToolbar2 map[string][4][2]float32 `json:"-"` // cached secondary backgrounds (MAP BRIGHT)
 	tearoffMenuOrder         []string                 `json:"-"` // draw/input order for tearoff menus (oldest -> newest)
 
-	VelocityTime int // 0, 1, 4, or 8 minutes
+	VelocityTime  int // 0, 1, 4, or 8 minutes
+	HistoryLength int
 
 	dbLastAlternateTime time.Time `json:"-"` // Alternates every 6 seconds
 	dbAlternate         bool      `json:"-"`
@@ -497,7 +499,10 @@ func (inp *inputText) Add(str string, color renderer.RGB, location [2]float32) {
 }
 
 func (inp *inputText) AddLocation(ps *Preferences, location [2]float32) {
-	inp.Add(locationSymbol, ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
+	str := inp.String()
+	str = strings.TrimRightFunc(str, unicode.IsSpace)
+	inp.Set(ps, str)
+	inp.Add(" "+locationSymbol+"", ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
 }
 
 // No formatting needed

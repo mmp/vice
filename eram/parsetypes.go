@@ -403,17 +403,15 @@ func (h *posParser) Identifier() string { return "POS" }
 
 func (h *posParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
 	// Only match clicks on empty space, not on tracks. Use SLEW for track clicks.
-	if !input.hasClick || input.clickedTrack != nil {
+	if !input.hasClick || input.clickedTrack != nil || len(input.mousePositions) == 0 {
 		return nil, text, false, nil
 	}
 
 	var p [2]float32
 	if input.posIsLatLong {
-		// mousePosition is already lat/long (from embedded location in text)
-		p = input.mousePosition
+		p = input.mousePositions[0]
 	} else {
-		// Convert window coordinates to lat/long
-		p = input.transforms.LatLongFromWindowP(input.mousePosition)
+		p = input.transforms.LatLongFromWindowP(input.mousePositions[0])
 	}
 	return p, text, true, nil
 }
@@ -529,7 +527,7 @@ func (h *crrLocParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 	}
 
 	// Parse using existing CRR location logic
-	loc, ok := parseCRRLocation(ctx, field)
+	loc, ok := parseLocation(ctx, field)
 	if !ok {
 		return nil, text, false, nil
 	}
@@ -548,8 +546,8 @@ type locSymParser struct{}
 func (h *locSymParser) Identifier() string { return "LOC_SYM" }
 
 func (h *locSymParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	// Must have a click and the text must start with the location symbol
-	if !input.hasClick {
+	// Must have a click with positions available and the text must start with the location symbol
+	if !input.hasClick || len(input.mousePositions) == 0 {
 		return nil, text, false, nil
 	}
 
@@ -562,12 +560,16 @@ func (h *locSymParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 	// Consume the location symbol (and any leading space)
 	remaining := strings.TrimPrefix(trimmed, locationSymbol)
 
-	// Return the position from input
-	var p [2]float32
-	if input.posIsLatLong {
-		p = input.mousePosition
-	} else {
-		p = input.transforms.LatLongFromWindowP(input.mousePosition)
+	// Determine which position to use: total positions minus remaining w's in the text
+	// (including the one we're consuming now).
+	idx := len(input.mousePositions) - strings.Count(text, locationSymbol)
+	if idx < 0 || idx >= len(input.mousePositions) {
+		return nil, text, false, nil
+	}
+
+	p := input.mousePositions[idx]
+	if !input.posIsLatLong {
+		p = input.transforms.LatLongFromWindowP(p)
 	}
 
 	return p, remaining, true, nil
