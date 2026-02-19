@@ -3087,8 +3087,8 @@
           ],
           "altitude": 39000,
           "destination": "KIAH",
-          "route": "KAYEX",
-          "exit": "KAYEX LOSHN BOILE KL24K AMBRR KA18Q KEAPS KA15U INK DIESL DRLLR5"
+          "route": "KAYEX LOSHN BOILE KL24K AMBRR KA18Q KEAPS KA15U INK DIESL DRLLR5",
+          "exit": "KAYEX"
         },
         {
           "airlines": [

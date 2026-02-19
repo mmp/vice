@@ -135,7 +135,7 @@
       "approaches": {},
       "departure_routes": {
         "23": {
-          "PVD_PUT": {
+          "PVD": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_23/h290"
           },
@@ -145,7 +145,7 @@
           }
         },
         "5": {
-          "PVD_PUT": {
+          "PVD": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_05/h290"
           },
@@ -155,7 +155,7 @@
           }
         },
         "32": {
-          "PVD_PUT": {
+          "PVD": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_32/h290"
           },
@@ -165,7 +165,7 @@
           }
         },
         "14": {
-          "PVD_PUT": {
+          "PVD": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_14/h290"
           },
@@ -184,7 +184,7 @@
             }
           ],
           "destination": "KTEB",
-          "exit": "PVD_PUT",
+          "exit": "PVD",
           "route": "PVD PUT NELIE KTEB"
         },
         {
@@ -2541,7 +2541,7 @@
     "handoff_sector_display_duration": 5,
     "scratchpads": {
       "PUT": "PUT",
-      "PVD_PUT": "PUT",
+      "PVD": "PUT",
       "JUMPR": "7TN"
     },
     "coordination_lists": [

@@ -1132,7 +1132,7 @@
             }
           ],
           "destination": "KRDD",
-          "exit": "CSTRO RBL",
+          "exit": "CSTRO",
           "route": "CSTRO RBL"
         }
       ],

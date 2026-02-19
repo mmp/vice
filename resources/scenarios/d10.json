@@ -1544,7 +1544,7 @@
           ]
         },
         {
-          "exit": "HANUH ",
+          "exit": "HANUH",
           "destination": "KCLT",
           "altitude": 35000,
           "route": "FORCK3 HANUH LYING FORCK IZAAC Q30 VLKNN THRSR BESTT JONZE5",
