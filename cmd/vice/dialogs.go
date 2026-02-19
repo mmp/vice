@@ -701,6 +701,12 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 		imgui.Render()
 		implogl3.RenderDrawData(imgui.CurrentDrawData())
 
+		if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+			imgui.UpdatePlatformWindows()
+			imgui.RenderPlatformWindowsDefault()
+			p.MakeContextCurrent()
+		}
+
 		p.PostRender()
 	}
 	os.Exit(1)
@@ -792,6 +798,12 @@ func WaitForWhisperBenchmark(r renderer.Renderer, p platform.Platform, lg *log.L
 
 		imgui.Render()
 		implogl3.RenderDrawData(imgui.CurrentDrawData())
+
+		if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+			imgui.UpdatePlatformWindows()
+			imgui.RenderPlatformWindowsDefault()
+			p.MakeContextCurrent()
+		}
 
 		p.PostRender()
 
