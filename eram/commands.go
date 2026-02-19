@@ -170,31 +170,6 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	return
 }
 
-func (ep *ERAMPane) numberToLLDirection(ctx *panes.Context, cmd byte) math.CardinalOrdinalDirection {
-	var dir math.CardinalOrdinalDirection
-	switch cmd {
-	case '1':
-		dir = math.SouthWest
-	case '2':
-		dir = math.South
-	case '3':
-		dir = math.SouthEast
-	case '4':
-		dir = math.West
-	case '5':
-		dir = math.NorthEast
-	case '6':
-		dir = math.East
-	case '7':
-		dir = math.NorthWest
-	case '8':
-		dir = math.North
-	case '9':
-		dir = math.NorthEast
-	}
-	return dir
-}
-
 func (ep *ERAMPane) deleteFLightplan(ctx *panes.Context, trk sim.Track) {
 	ctx.Client.DeleteFlightPlan(sim.ACID(trk.ADSBCallsign.String()), func(err error) {
 		if err != nil {
