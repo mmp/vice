@@ -1405,7 +1405,7 @@
                     "initial_speed": 250,
                     "route": "/. J152 HAR",
                     "scratchpad": "HAR",
-                    "waypoints": "MIROY J152 COFAX/a11000 J152 LOMON/a9000/ho HAR"
+                    "waypoints": "MIROY J152 JUNEY/a9000/ho HAR"
                 },
                 {
                     "airlines": {
@@ -2033,7 +2033,7 @@
                     "initial_altitude": 27000,
                     "initial_controller": "N27",
                     "initial_speed": 280,
-                    "waypoints": "N040.19.14.251,W078.11.33.484 COFAX J152 HAR/a18000/hoN26 LRP/a13000/ho41N TRAGG BUNTS/a8000 RELNY NAGGS/ho61S CYN/a4000 CISON/a2000+ N039.53.25.123,W074.44.45.388 N039.49.58.526,W074.45.22.055 N039.52.14.371,W074.46.43.848 FENKA/a2000+ KWRI-6/delete/a0"
+                    "waypoints": "N040.19.14.251,W078.11.33.484 JUNEY J152 HAR/a18000/hoN26 LRP/a13000/ho41N TRAGG BUNTS/a8000 RELNY NAGGS/ho61S CYN/a4000 CISON/a2000+ N039.53.25.123,W074.44.45.388 N039.49.58.526,W074.45.22.055 N039.52.14.371,W074.46.43.848 FENKA/a2000+ KWRI-6/delete/a0"
                 },
                 {
                     "airlines": [

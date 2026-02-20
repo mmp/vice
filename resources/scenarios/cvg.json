@@ -6068,7 +6068,7 @@
         "SARGO4": {
             "arrivals": [
                 {
-                    "waypoints": "THERE/a19000+/a15000-/ho SARGO/a14000+ VANGE",
+                    "waypoints": "FREZE/a19000+/a15000-/ho SARGO/a14000+ VANGE",
                     "runway_waypoints": {
                         "KCVG": {
                             "9": "VANGE CALFS/a8000/h051",
@@ -6081,7 +6081,7 @@
                             "36R": "VANGE WAXIL/a13000- FECTA/a8000/h094"
                         }
                     },
-                    "route": "/. THERE.SARGO4",
+                    "route": "/. FREZE.SARGO4",
                     "initial_controller": "C18",
                     "initial_altitude": 14000,
                     "initial_speed": 280,
@@ -6271,7 +6271,7 @@
             "arrivals": [
                 {
                     "waypoints": "FECTA/a8000/ho CHEKO/a4600+ BEPEE/a4000+ ROPRR/a2500+ JIMUR/a1440+",
-                    "route": "/. THERE.SARGO4",
+                    "route": "/. FREZE.SARGO4",
                     "initial_controller": "1S",
                     "initial_altitude": 8000,
                     "initial_speed": 250,
@@ -6461,7 +6461,7 @@
             "arrivals": [
                 {
                     "waypoints": "AZONS/a8000+/s210/ho FIDEK UBEDE LEWIN/a6000/s210 GOSEC/s210/a4500+ OPHUS/a4000+ KRTHY/a2500+",
-                    "route": "/. THERE.SARGO4",
+                    "route": "/. FREZE.SARGO4",
                     "initial_controller": "1S",
                     "initial_altitude": 8000,
                     "initial_speed": 210,

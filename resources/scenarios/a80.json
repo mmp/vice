@@ -9546,9 +9546,6 @@
         },
         "KFFC": {
             "approaches": {
-                "N31": {
-                    "cifp_id": "N31"
-                },
                 "R13": {
                     "cifp_id": "R13"
                 },

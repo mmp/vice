@@ -125,11 +125,13 @@ func (mp *MessagesPane) DrawWindow(show *bool, c *client.ControlClient, p platfo
 		mp.font.ImguiPush()
 	}
 	imgui.BeginV("Messages", show, 0)
-	if imgui.BeginChildStrV("##messages_scroll", imgui.Vec2{}, 0, imgui.WindowFlagsHorizontalScrollbar) {
+	if imgui.BeginChildStrV("##messages_scroll", imgui.Vec2{}, 0, 0) {
 		for _, msg := range mp.messages {
 			color := msg.ImguiColor()
 			imgui.PushStyleColorVec4(imgui.ColText, color)
+			imgui.PushTextWrapPos()
 			imgui.TextUnformatted(msg.contents)
+			imgui.PopTextWrapPos()
 			imgui.PopStyleColor()
 		}
 		// Auto-scroll when new messages arrive
