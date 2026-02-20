@@ -289,6 +289,18 @@ func registerAllCommands() {
 		WithName("say_speed"),
 		WithPriority(10),
 	)
+	registerSTTCommand(
+		"say indicated [speed|airspeed]",
+		func() string { return "SI" },
+		WithName("say_indicated"),
+		WithPriority(12),
+	)
+	registerSTTCommand(
+		"say mach [number]",
+		func() string { return "SM" },
+		WithName("say_mach"),
+		WithPriority(12),
+	)
 
 	registerSTTCommand(
 		"cancel speed [restrictions|restriction]",

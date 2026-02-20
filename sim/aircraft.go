@@ -250,6 +250,14 @@ func (ac *Aircraft) SaySpeed() av.CommandIntent {
 	return ac.Nav.SaySpeed()
 }
 
+func (ac *Aircraft) SayIndicatedSpeed() av.CommandIntent {
+	return ac.Nav.SayIndicatedSpeed()
+}
+
+func (ac *Aircraft) SayMach() av.CommandIntent {
+	return ac.Nav.SayMach()
+}
+
 func (ac *Aircraft) SayHeading() av.CommandIntent {
 	return ac.Nav.SayHeading()
 }

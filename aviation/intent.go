@@ -284,7 +284,7 @@ func (s SpeedIntent) renderMach(rt *RadioTransmission, r *rand.Rand) {
 	}
 }
 
-// ReportSpeedIntent represents "say speed" responses
+// ReportSpeedIntent represents "say speed" responses (IAS)
 type ReportSpeedIntent struct {
 	Current  float32
 	Assigned *float32
@@ -301,6 +301,26 @@ func (r ReportSpeedIntent) Render(rt *RadioTransmission, rnd *rand.Rand) {
 		}
 	} else {
 		rt.Add("[maintaining {spd}|at {spd}]", r.Current)
+	}
+}
+
+// ReportMachIntent represents "say mach" or mach-regime "say speed" responses
+type ReportMachIntent struct {
+	Current  float32  // current mach (e.g., 0.78)
+	Assigned *float32 // assigned mach, if any
+}
+
+func (r ReportMachIntent) Render(rt *RadioTransmission, rnd *rand.Rand) {
+	if r.Assigned != nil {
+		if *r.Assigned < r.Current {
+			rt.Add("[at {mach} slowing to {mach}|{mach} down to {mach}]", r.Current, *r.Assigned)
+		} else if *r.Assigned > r.Current {
+			rt.Add("[at {mach} speeding up to {mach}|{mach} increasing to {mach}]", r.Current, *r.Assigned)
+		} else {
+			rt.Add("[maintaining {mach}|at {mach}]", r.Current)
+		}
+	} else {
+		rt.Add("[maintaining {mach}|at {mach}]", r.Current)
 	}
 }
 

@@ -244,6 +244,38 @@ func TestBasicSpeedCommands(t *testing.T) {
 			},
 			expected: "DAL200 S",
 		},
+		{
+			name:       "say indicated speed",
+			transcript: "United 452 say indicated speed",
+			aircraft: map[string]Aircraft{
+				"United 452": {Callsign: "UAL452", State: "overflight"},
+			},
+			expected: "UAL452 SI",
+		},
+		{
+			name:       "say indicated airspeed",
+			transcript: "Delta 200 say indicated airspeed",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "arrival"},
+			},
+			expected: "DAL200 SI",
+		},
+		{
+			name:       "say mach",
+			transcript: "American 300 say mach",
+			aircraft: map[string]Aircraft{
+				"American 300": {Callsign: "AAL300", State: "overflight"},
+			},
+			expected: "AAL300 SM",
+		},
+		{
+			name:       "say mach number",
+			transcript: "Alaska 500 say mach number",
+			aircraft: map[string]Aircraft{
+				"Alaska 500": {Callsign: "ASA500", State: "overflight"},
+			},
+			expected: "ASA500 SM",
+		},
 	}
 
 	provider := NewTranscriber(nil)

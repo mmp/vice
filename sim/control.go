@@ -1397,6 +1397,26 @@ func (s *Sim) SaySpeed(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, err
 		})
 }
 
+func (s *Sim) SayIndicatedSpeed(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.SayIndicatedSpeed()
+		})
+}
+
+func (s *Sim) SayMach(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.SayMach()
+		})
+}
+
 func (s *Sim) SayAltitude(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -2978,6 +2998,10 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.MaintainMaximumForward(tcw, callsign)
 		} else if command == "SS" {
 			return s.SaySpeed(tcw, callsign)
+		} else if command == "SI" {
+			return s.SayIndicatedSpeed(tcw, callsign)
+		} else if command == "SM" {
+			return s.SayMach(tcw, callsign)
 		} else if strings.HasSuffix(command, "+") {
 			// Speed floor: S180+
 			kts, err := strconv.Atoi(command[1 : len(command)-1])

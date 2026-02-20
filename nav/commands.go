@@ -154,9 +154,28 @@ func (nav *Nav) MaintainPresentSpeed() av.CommandIntent {
 }
 
 func (nav *Nav) SaySpeed() av.CommandIntent {
+	if nav.MachTransition {
+		return nav.SayMach()
+	}
+	return nav.SayIndicatedSpeed()
+}
+
+func (nav *Nav) SayIndicatedSpeed() av.CommandIntent {
 	currentSpeed := nav.FlightState.IAS
 	intent := av.ReportSpeedIntent{Current: currentSpeed}
-	if nav.Speed.Assigned != nil {
+	if nav.Speed.Assigned != nil && !nav.Speed.Mach {
+		intent.Assigned = nav.Speed.Assigned
+	}
+	return intent
+}
+
+func (nav *Nav) SayMach() av.CommandIntent {
+	if !nav.MachTransition {
+		return av.MakeUnableIntent("unable. we haven't reached mach transition altitude")
+	}
+	currentMach := nav.Mach()
+	intent := av.ReportMachIntent{Current: currentMach}
+	if nav.Speed.Assigned != nil && nav.Speed.Mach {
 		intent.Assigned = nav.Speed.Assigned
 	}
 	return intent
