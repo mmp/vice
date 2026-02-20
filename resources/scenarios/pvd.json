@@ -74,8 +74,8 @@
         "KOQU": {
             "hold_for_release": true,
             "approaches": {
-                "I16": {
-                    "cifp_id": "I16"
+                "R16": {
+                    "cifp_id": "R16"
                 },
                 "R34": {
                     "cifp_id": "R34"
@@ -625,7 +625,7 @@
                     "initial_controller": "11W",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N042.07.32.471,W071.49.26.995/ho KOQU"
                 },
                 {
@@ -658,7 +658,7 @@
                     "initial_controller": "11W",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N042.01.29.346,W072.09.34.365/ho KOQU"
                 },
                 {
@@ -691,7 +691,7 @@
                     "initial_controller": "11B",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.44.02.102,W072.16.41.568/ho KOQU"
                 },
                 {
@@ -724,7 +724,7 @@
                     "initial_controller": "1H",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.28.53.642,W072.02.27.216/ho KOQU"
                 },
                 {
@@ -757,7 +757,7 @@
                     "initial_controller": "1H",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.21.14.592,W071.50.58.813/ho KOQU"
                 },
                 {
@@ -790,7 +790,7 @@
                     "initial_controller": "1J",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.15.58.763,W071.33.42.418/ho KOQU"
                 },
                 {
@@ -823,7 +823,7 @@
                     "initial_controller": "1J",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.17.58.775,W071.18.26.295/ho KOQU"
                 },
                 {
@@ -856,7 +856,7 @@
                     "initial_controller": "1N",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.40.56.488,W071.02.31.034/ho KOQU"
                 },
                 {
@@ -889,7 +889,7 @@
                     "initial_controller": "1N",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.33.10.887,W071.02.24.854/ho KOQU"
                 }
             ]
@@ -970,7 +970,7 @@
                     "initial_controller": "11W",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N042.07.32.471,W071.49.26.995/ho KOQU"
                 },
                 {
@@ -1003,7 +1003,7 @@
                     "initial_controller": "11W",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N042.01.29.346,W072.09.34.365/ho KOQU"
                 },
                 {
@@ -1036,7 +1036,7 @@
                     "initial_controller": "11B",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.44.02.102,W072.16.41.568/ho KOQU"
                 },
                 {
@@ -1069,7 +1069,7 @@
                     "initial_controller": "1H",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.28.53.642,W072.02.27.216/ho KOQU"
                 },
                 {
@@ -1102,7 +1102,7 @@
                     "initial_controller": "1H",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.21.14.592,W071.50.58.813/ho KOQU"
                 },
                 {
@@ -1135,7 +1135,7 @@
                     "initial_controller": "1J",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.15.58.763,W071.33.42.418/ho KOQU"
                 },
                 {
@@ -1168,7 +1168,7 @@
                     "initial_controller": "1J",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.17.58.775,W071.18.26.295/ho KOQU"
                 },
                 {
@@ -1201,7 +1201,7 @@
                     "initial_controller": "1A",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.40.56.488,W071.02.31.034/ho KOQU"
                 },
                 {
@@ -1234,7 +1234,7 @@
                     "initial_controller": "1A",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.33.10.887,W071.02.24.854/ho KOQU"
                 }
             ]
@@ -1355,7 +1355,7 @@
                     "initial_controller": "11W",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N042.07.32.471,W071.49.26.995/ho KOQU"
                 },
                 {
@@ -1388,7 +1388,7 @@
                     "initial_controller": "11W",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N042.01.29.346,W072.09.34.365/ho KOQU"
                 },
                 {
@@ -1421,7 +1421,7 @@
                     "initial_controller": "11B",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.44.02.102,W072.16.41.568/ho KOQU"
                 },
                 {
@@ -1454,7 +1454,7 @@
                     "initial_controller": "1H",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.28.53.642,W072.02.27.216/ho KOQU"
                 },
                 {
@@ -1487,7 +1487,7 @@
                     "initial_controller": "1J",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.15.58.763,W071.33.42.418/ho KOQU"
                 },
                 {
@@ -1520,7 +1520,7 @@
                     "initial_controller": "1J",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.17.58.775,W071.18.26.295/ho KOQU"
                 },
                 {
@@ -1553,7 +1553,7 @@
                     "initial_controller": "1N",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.40.56.488,W071.02.31.034/ho KOQU"
                 },
                 {
@@ -1586,7 +1586,7 @@
                     "initial_controller": "1N",
                     "initial_speed": 250,
                     "route": "OQU",
-                    "expect_approach": "I16",
+                    "expect_approach": "R16",
                     "waypoints": "N041.33.10.887,W071.02.24.854/ho KOQU"
                 }
             ]

@@ -60,10 +60,10 @@
         "configurations": {
             "13R": {
                 "inbound_assignments": {
-                    "CRVZA1": "1S",
-                    "DNKIN1": "1W",
-                    "POPPO1": "1W",
-                    "QERVO2": "1N"
+                    "CRVZA2": "1S",
+                    "DNKIN2": "1W",
+                    "POPPO2": "1W",
+                    "QERVO3": "1N"
                 },
                 "departure_assignments": {
                     "KBAZ": "1Q",
@@ -82,10 +82,10 @@
             },
             "31L": {
                 "inbound_assignments": {
-                    "CRVZA1": "1S",
-                    "DNKIN1": "1S",
-                    "POPPO1": "1W",
-                    "QERVO2": "1N"
+                    "CRVZA2": "1S",
+                    "DNKIN2": "1S",
+                    "POPPO2": "1W",
+                    "QERVO3": "1N"
                 },
                 "departure_assignments": {
                     "KBAZ": "1N",

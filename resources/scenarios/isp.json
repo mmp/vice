@@ -1827,18 +1827,18 @@
         }
     },
     "inbound_flows": {
-        "DENNA3": {
+        "DENNA1": {
             "arrivals": [
                 {
-                    "spawn": "PWL",
+                    "spawn": "PAWLN",
                     "cruise_altitude": 15000,
-                    "star": "DENNA3",
+                    "star": "DENNA1",
                     "initial_controller": "C56",
                     "initial_altitude": 8000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
                     "speed_restriction": 250,
-                    "description": "DENNA3",
+                    "description": "DENNA1",
                     "expect_approach": null,
                     "airlines": {
                         "KHVN": [
@@ -2431,7 +2431,7 @@
                 "LOVES1": {
                     "KISP": 12
                 },
-                "DENNA3": {
+                "DENNA1": {
                     "KHVN": 2
                 },
                 "NELIE4": {

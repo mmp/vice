@@ -109,13 +109,6 @@
                 }
             }
         },
-        "3B4": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 1
-                }
-            }
-        },
         "KSFM": {
             "vfr": {
                 "random_routes": {
@@ -52615,7 +52608,7 @@
                     }
                 ]
             },
-            "approaches": {
+             "approaches": {
                 "I11": {
                     "cifp_id": "I11"
                 },
@@ -52625,17 +52618,11 @@
                 "R23": {
                     "cifp_id": "R23"
                 },
-                "Y11": {
-                    "cifp_id": "RY11"
+                "R11": {
+                    "cifp_id": "R11"
                 },
-                "Y29": {
-                    "cifp_id": "RY29"
-                },
-                "Z11": {
-                    "cifp_id": "RZ11"
-                },
-                "Z29": {
-                    "cifp_id": "RZ29"
+                "R29": {
+                    "cifp_id": "R29"
                 }
             },
             "departure_routes": {
@@ -76465,7 +76452,7 @@
                 }
             ]
         },
-        "DREEM2": {
+        "DREEM3": {
             "arrivals": [
                 {
                     "airlines": {
@@ -76533,16 +76520,16 @@
                             }
                         ]
                     },
-                    "initial_altitude": 10000,
+                    "initial_altitude": 11000,
                     "initial_controller": "1W",
                     "initial_speed": 250,
-                    "star": "DREEM2",
+                    "star": "DREEM3",
                     "scratchpad": "RBED",
                     "runway_waypoints": {
                         "KBED": {
-                            "11": "DREEM WANLA ZELKA/flyover",
-                            "23": "DREEM RIKAH EXXRO/h097",
-                            "29": "DREEM RIKAH EXXRO/h097"
+                              "11": "DREEM CHKST/a3100+ ZELKA/a2000+/flyover",
+                            "23": "DREEM RRENA/a3100+ RIKAH/a3000+/h078",
+                            "29": "DREEM RRENA/a3100+ RIKAH/a3000+/h078"
                         }
                     },
                     "waypoints": "DVANY GRAYM/ho GASSE/a5000 DREEM"
@@ -76585,12 +76572,12 @@
                             }
                         ]
                     },
-                    "initial_altitude": 10000,
+                    "initial_altitude": 11000,
                     "initial_controller": "1W",
                     "initial_speed": 250,
-                    "star": "DREEM2",
+                    "star": "DREEM3",
                     "scratchpad": "RLWM",
-                    "waypoints": "DVANY GRAYM/ho GASSE/a5000 DREEM WANLA ZELKA RIKAH/h076"
+                    "waypoints": "DVANY/a11000 GRAYM/ho GASSE/a5000+ DREEM RRENA/a3100+ RIKAH/a3000+/h078"
                 },
                 {
                     "airlines": {
@@ -76630,12 +76617,12 @@
                             }
                         ]
                     },
-                    "initial_altitude": 10000,
+                    "initial_altitude": 11000,
                     "initial_controller": "1W",
                     "initial_speed": 250,
-                    "star": "DREEM2",
+                    "star": "DREEM3",
                     "scratchpad": "RBVY",
-                    "waypoints": "DVANY GRAYM/ho GASSE/a5000 DREEM WANLA ZELKA RIKAH EXXRO/h097"
+                    "waypoints": "DVANY/a11000 GRAYM/ho GASSE/a5000 DREEM RRENA/a3100+ RIKAH/a3000+/h078"
                 }
             ]
         },
@@ -85346,7 +85333,7 @@
                 "OOSHN5.4R": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -85528,7 +85515,7 @@
                 "OOSHN5.4R": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -85728,7 +85715,7 @@
                 "OOSHN5.4R": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -85906,7 +85893,7 @@
                 "OOSHN5.15R": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -86068,7 +86055,7 @@
                 "OOSHN5.27": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -86224,7 +86211,7 @@
                 "OOSHN5.33L": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -86392,7 +86379,7 @@
                 "OOSHN5.22L": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -86548,7 +86535,7 @@
                 "OOSHN5.22L": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -86704,7 +86691,7 @@
                 "OOSHN5.22L": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -86861,7 +86848,7 @@
                 "OOSHN5.27": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -87017,7 +87004,7 @@
                 "OOSHN5.27": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0
@@ -87183,7 +87170,7 @@
                 "OOSHN5.33L": {
                     "KBOS": 0
                 },
-                "DREEM2": {
+                "DREEM3": {
                     "KBED": 0,
                     "KBVY": 0,
                     "KLWM": 0

@@ -92,1764 +92,1191 @@
                 },
                 "Z31": {
                     "cifp_id": "RZ31"
+                },
+                "Y2C": {
+                    "cifp_id": "RY2C"
                 }
             },
             "departure_routes": {
-                "2C": {
-                    "SWAPP": {
-                        "cleared_altitude": 4000,
-                        "sid": "CHADM3",
-                        "waypoints": "KBNA-20C/h035 OZCAR CHADM"
-                    },
+                "2L": {
                     "CHADM": {
-                        "cleared_altitude": 4000,
-                        "sid": "CHADM3",
-                        "waypoints": "KBNA-20C/h035 OZCAR"
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+"
                     },
-                    "SPKER": {
-                        "cleared_altitude": 4000,
-                        "sid": "DANLS3",
-                        "waypoints": "KBNA-20C/h020 BGDDY DANLS"
+                    "MUNNY": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+ CHADM AVERY"
                     },
                     "DANLS": {
-                        "cleared_altitude": 4000,
-                        "sid": "DANLS3",
-                        "waypoints": "KBNA-20C/h020 BGDDY"
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+"
                     },
-                    "ACKEE,JALAR,HAGIE": {
-                        "cleared_altitude": 4000,
-                        "sid": "DRURY3",
-                        "waypoints": "KBNA-20C/h020 GRCHN DRURY"
+                    "TPEEE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+ DANLS"
                     },
                     "DRURY": {
-                        "cleared_altitude": 4000,
-                        "sid": "DRURY3",
-                        "waypoints": "KBNA-20C/h020 GRCHN"
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+"
                     },
-                    "EVVAN": {
-                        "cleared_altitude": 4000,
-                        "sid": "EVVAN3",
-                        "waypoints": "KBNA-20C/h035 CHPPY"
+                    "JALAR": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
                     },
-                    "GENDE": {
-                        "cleared_altitude": 4000,
-                        "sid": "FLAME3",
-                        "waypoints": "KBNA-20C/h035 COOGR FLAME"
+                    "HAIGE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
                     },
                     "FLAME": {
-                        "cleared_altitude": 4000,
-                        "sid": "FLAME3",
-                        "waypoints": "KBNA-20C/h035 COOGR"
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
                     },
-                    "FAPER": {
-                        "cleared_altitude": 4000,
-                        "sid": "GDOGG3",
-                        "waypoints": "KBNA-20C/h020 KNNGG GDOGG"
+                    "GENDE": {
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
                     },
                     "GDOGG": {
-                        "cleared_altitude": 4000,
-                        "sid": "GDOGG3",
-                        "waypoints": "KBNA-20C/h020 KNNGG"
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-20R JATII/a5000+ KNNGG/a10000+"
                     },
-                    "TINGS": {
-                        "cleared_altitude": 4000,
-                        "sid": "HGGRD3",
-                        "waypoints": "KBNA-20C/h020 MERRL HGGRD"
-                    },
-                    "HGGRD": {
-                        "cleared_altitude": 4000,
-                        "sid": "HGGRD3",
-                        "waypoints": "KBNA-20C/h020 MERRL"
-                    },
-                    "OLSIE": {
-                        "cleared_altitude": 4000,
-                        "sid": "KRSTA3",
-                        "waypoints": "KBNA-20C/h035 CERAH KRSTA"
+                    "FAPER": {
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-20R JATII/a5000+ KNNGG/a10000+ GDOGG"
                     },
                     "KRSTA": {
-                        "cleared_altitude": 4000,
-                        "sid": "KRSTA3",
-                        "waypoints": "KBNA-20C/h035 CERAH"
+                        "cleared_altitude" :15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-20R JATII/a5000+ CERAH/a10000+"
                     },
-                    "NAKIY,JJEFF,HODJS": {
-                        "cleared_altitude": 4000,
-                        "sid": "PARDN3",
-                        "waypoints": "KBNA-20C/h020 KELLO PARDN"
+                    "OLSIE": {
+                        "cleared_altitude": 15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-20R JATII/a5000+ CERAH/a10000+ KRSTA"
                     },
                     "PARDN": {
-                        "cleared_altitude": 4000,
-                        "sid": "PARDN3",
-                        "waypoints": "KBNA-20C/h020 KELLO"
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+"
                     },
-                    "BURME": {
-                        "cleared_altitude": 4000,
-                        "sid": "TAZMO3",
-                        "waypoints": "KBNA-20C/h035 SAAMY TAZMO"
+                    "NAKIY": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+                    },
+                    "HODJS": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
                     },
                     "TAZMO": {
-                        "cleared_altitude": 4000,
-                        "sid": "TAZMO3",
-                        "waypoints": "KBNA-20C/h035 SAAMY"
+                        "cleared_altitude": 15000,
+                        "sid" :"TAZMO4",
+                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+"
                     },
-                    "BRXTN": {
-                        "cleared_altitude": 4000,
-                        "sid": "TIPPN3",
-                        "waypoints": "KBNA-20C/h035 RORRY TIPPN"
+                    "BURME": {
+                        "cleared_altitude": 15000,
+                        "sid": "TAZMO4",
+                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+ TAZMO"
                     },
                     "TIPPN": {
-                        "cleared_altitude": 4000,
-                        "sid": "TIPPN3",
-                        "waypoints": "KBNA-20C/h035 RORRY"
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+"
+                    },
+                    "DENST": {
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+ TIPPN"
+                    }
+                },
+                "2C": {
+                       "CHADM": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+"
+                    },
+                    "MUNNY": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+ CHADM AVERY"
+                    },
+                    "DANLS": {
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+"
+                    },
+                    "TPEEE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+ DANLS"
+                    },
+                    "DRURY": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+"
+                    },
+                    "JALAR": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
+                    },
+                    "HAIGE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
+                    },
+                    "FLAME": {
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
+                    },
+                    "GENDE": {
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
+                    },
+                    "GDOGG": {
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-20C JATII/a5000+ KNNGG/a10000+"
+                    },
+                    "FAPER": {
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-20C JATII/a5000+ KNNGG/a10000+ GDOGG"
+                    },
+                    "KRSTA": {
+                        "cleared_altitude" :15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-20C JATII/a5000+ CERAH/a10000+"
+                    },
+                    "OLSIE": {
+                        "cleared_altitude": 15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-20C JATII/a5000+ CERAH/a10000+ KRSTA"
+                    },
+                    "PARDN": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+"
+                    },
+                    "NAKIY": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+                    },
+                    "HODJS": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+                    },
+                    "TAZMO": {
+                        "cleared_altitude": 15000,
+                        "sid" :"TAZMO4",
+                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+"
+                    },
+                    "BURME": {
+                        "cleared_altitude": 15000,
+                        "sid": "TAZMO4",
+                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+ TAZMO"
+                    },
+                    "TIPPN": {
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+"
+                    },
+                    "DENST": {
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+ TIPPN"
+                    }
+                },
+                "2R": {
+                       "CHADM": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+"
+                    },
+                    "MUNNY": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+ CHADM AVERY"
+                    },
+                    "DANLS": {
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+"
+                    },
+                    "TPEEE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+ DANLS"
+                    },
+                    "DRURY": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+"
+                    },
+                    "JALAR": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
+                    },
+                    "HAIGE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
+                    },
+                    "FLAME": {
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
+                    },
+                    "GENDE": {
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
+                    },
+                    "GDOGG": {
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-20L JATII/a5000+ KNNGG/a10000+"
+                    },
+                    "FAPER": {
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-20L JATII/a5000+ KNNGG/a10000+ GDOGG"
+                    },
+                    "KRSTA": {
+                        "cleared_altitude" :15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-20L JATII/a5000+ CERAH/a10000+"
+                    },
+                    "OLSIE": {
+                        "cleared_altitude": 15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-20L JATII/a5000+ CERAH/a10000+ KRSTA"
+                    },
+                    "PARDN": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+"
+                    },
+                    "NAKIY": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+                    },
+                    "HODJS": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+                    },
+                    "TAZMO": {
+                        "cleared_altitude": 15000,
+                        "sid" :"TAZMO4",
+                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+"
+                    },
+                    "BURME": {
+                        "cleared_altitude": 15000,
+                        "sid": "TAZMO4",
+                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+ TAZMO"
+                    },
+                    "TIPPN": {
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+"
+                    },
+                    "DENST": {
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+ TIPPN"
+                    }
+                },
+                "20L": {
+                       "CHADM": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+"
+                    },
+                    "MUNNY": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+ CHADM AVERY"
+                    },
+                    "DANLS": {
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 BGDDY/a10000+"
+                    },
+                    "TPEEE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 BGDDY/a10000+ DANLS"
+                    },
+                    "DRURY": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-2R DIXII/a5000+ GRCHN/a12000+"
+                    },
+                    "JALAR": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-2R DIXII/a5000+ GRCHN/a12000+ DRURY"
+                    },
+                    "HAIGE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-2R DIXII/a5000+ GRCHN/a12000+ DRURY"
+                    },
+                    "FLAME": {
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-2R DIXII/a5000+ FLAME/a12000+"
+                    },
+                    "GENDE": {
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-2R DIXII/a5000+ FLAME/a12000+"
+                    },
+                    "GDOGG": {
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+"
+                    },
+                    "FAPER": {
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+ GDOGG"
+                    },
+                    "KRSTA": {
+                        "cleared_altitude" :15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+ CERAH/a10000+"
+                    },
+                    "OLSIE": {
+                        "cleared_altitude": 15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+  CERAH/a10000+ KRSTA"
+                    },
+                    "PARDN": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 KELLO/a10000+"
+                    },
+                    "NAKIY": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+                    },
+                    "HODJS": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+                    },
+                    "TAZMO": {
+                        "cleared_altitude": 15000,
+                        "sid" :"TAZMO4",
+                        "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+"
+                    },
+                    "BURME": {
+                        "cleared_altitude": 15000,
+                        "sid": "TAZMO4",
+                        "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+ TAZMO"
+                    },
+                    "TIPPN": {
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-2R DIXII/a5000+ RORRY/a12000+"
+                    },
+                    "DENST": {
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-2R DIXII/a5000+ RORRY/a12000+ TIPPN"
                     }
                 },
                 "20C": {
-                    "SWAPP": {
-                        "cleared_altitude": 4000,
-                        "sid": "CHADM3",
-                        "waypoints": "KBNA-2C/h200 OZCAR CHADM"
+                     "CHADM": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+"
                     },
-                    "CHADM": {
-                        "cleared_altitude": 4000,
-                        "sid": "CHADM3",
-                        "waypoints": "KBNA-2C/h200 OZCAR"
-                    },
-                    "SPKER": {
-                        "cleared_altitude": 4000,
-                        "sid": "DANLS3",
-                        "waypoints": "KBNA-2C/h220 BGDDY DANLS"
+                    "MUNNY": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+ CHADM AVERY"
                     },
                     "DANLS": {
-                        "cleared_altitude": 4000,
-                        "sid": "DANLS3",
-                        "waypoints": "KBNA-2C/h220 BGDDY"
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 BGDDY/a10000+"
                     },
-                    "ACKEE,JALAR,HAGIE": {
-                        "cleared_altitude": 4000,
-                        "sid": "DRURY3",
-                        "waypoints": "KBNA-2C/h220 GRCHN DRURY"
+                    "TPEEE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 BGDDY/a10000+ DANLS"
                     },
                     "DRURY": {
-                        "cleared_altitude": 4000,
-                        "sid": "DRURY3",
-                        "waypoints": "KBNA-2C/h220 GRCHN"
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-2C DIXII/a5000+ GRCHN/a12000+"
                     },
-                    "EVVAN": {
-                        "cleared_altitude": 4000,
-                        "sid": "EVVAN3",
-                        "waypoints": "KBNA-2C/h200 CHPPY"
+                    "JALAR": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-2C DIXII/a5000+ GRCHN/a12000+ DRURY"
                     },
-                    "GENDE": {
-                        "cleared_altitude": 4000,
-                        "sid": "FLAME3",
-                        "waypoints": "KBNA-2C/h200 COOGR FLAME"
+                    "HAIGE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-2C DIXII/a5000+ GRCHN/a12000+ DRURY"
                     },
                     "FLAME": {
-                        "cleared_altitude": 4000,
-                        "sid": "FLAME3",
-                        "waypoints": "KBNA-2C/h200 COOGR"
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-2C DIXII/a5000+ FLAME/a12000+"
                     },
-                    "FAPER": {
-                        "cleared_altitude": 4000,
-                        "sid": "GDOGG3",
-                        "waypoints": "KBNA-2C/h220 KNNGG GDOGG"
+                    "GENDE": {
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-2C DIXII/a5000+ FLAME/a12000+"
                     },
                     "GDOGG": {
-                        "cleared_altitude": 4000,
-                        "sid": "GDOGG3",
-                        "waypoints": "KBNA-2C/h220 KNNGG"
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+"
                     },
-                    "TINGS": {
-                        "cleared_altitude": 4000,
-                        "sid": "HGGRD3",
-                        "waypoints": "KBNA-2C/h220 MERRL HGGRD"
-                    },
-                    "HGGRD": {
-                        "cleared_altitude": 4000,
-                        "sid": "HGGRD3",
-                        "waypoints": "KBNA-2C/h220 MERRL"
-                    },
-                    "OLSIE": {
-                        "cleared_altitude": 4000,
-                        "sid": "KRSTA3",
-                        "waypoints": "KBNA-2C/h200 CERAH KRSTA"
+                    "FAPER": {
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+ GDOGG"
                     },
                     "KRSTA": {
-                        "cleared_altitude": 4000,
-                        "sid": "KRSTA3",
-                        "waypoints": "KBNA-2C/h200 CERAH"
+                        "cleared_altitude" :15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+ CERAH/a10000+"
                     },
-                    "NAKIY,JJEFF,HODJS": {
-                        "cleared_altitude": 4000,
-                        "sid": "PARDN3",
-                        "waypoints": "KBNA-2C/h220 KELLO PARDN"
+                    "OLSIE": {
+                        "cleared_altitude": 15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+  CERAH/a10000+ KRSTA"
                     },
                     "PARDN": {
-                        "cleared_altitude": 4000,
-                        "sid": "PARDN3",
-                        "waypoints": "KBNA-2C/h220 KELLO"
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 KELLO/a10000+"
                     },
-                    "BURME": {
-                        "cleared_altitude": 4000,
-                        "sid": "TAZMO3",
-                        "waypoints": "KBNA-2C/h200 SAAMY TAZMO"
+                    "NAKIY": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+                    },
+                    "HODJS": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
                     },
                     "TAZMO": {
-                        "cleared_altitude": 4000,
-                        "sid": "TAZMO3",
-                        "waypoints": "KBNA-2C/h200 SAAMY"
+                        "cleared_altitude": 15000,
+                        "sid" :"TAZMO4",
+                        "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+"
                     },
-                    "BRXTN": {
-                        "cleared_altitude": 4000,
-                        "sid": "TIPPN3",
-                        "waypoints": "KBNA-2C/h200 RORRY TIPPN"
+                    "BURME": {
+                        "cleared_altitude": 15000,
+                        "sid": "TAZMO4",
+                        "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+ TAZMO"
                     },
                     "TIPPN": {
-                        "cleared_altitude": 4000,
-                        "sid": "TIPPN3",
-                        "waypoints": "KBNA-2C/h200 RORRY"
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-2C DIXII/a5000+ RORRY/a12000+"
+                    },
+                    "DENST": {
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-2C DIXII/a5000+ RORRY/a12000+ TIPPN"
+                    }
+                },
+                "20R": {
+                     "CHADM": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+"
+                    },
+                    "MUNNY": {
+                        "cleared_altitude": 15000,
+                        "sid": "CHADM4",
+                        "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+ CHADM AVERY"
+                    },
+                    "DANLS": {
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 BGDDY/a10000+"
+                    },
+                    "TPEEE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DANLS4",
+                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 BGDDY/a10000+ DANLS"
+                    },
+                    "DRURY": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-2L DIXII/a5000+ GRCHN/a12000+"
+                    },
+                    "JALAR": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-2L DIXII/a5000+ GRCHN/a12000+ DRURY"
+                    },
+                    "HAIGE": {
+                        "cleared_altitude": 15000,
+                        "sid": "DRURY4",
+                        "waypoints": "KBNA-2L DIXII/a5000+ GRCHN/a12000+ DRURY"
+                    },
+                    "FLAME": {
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-2L DIXII/a5000+ FLAME/a12000+"
+                    },
+                    "GENDE": {
+                        "cleared_altitude": 15000,
+                        "sid": "FLAME4",
+                        "waypoints": "KBNA-2L DIXII/a5000+ FLAME/a12000+"
+                    },
+                    "GDOGG": {
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+"
+                    },
+                    "FAPER": {
+                        "cleared_altitude": 15000,
+                        "sid" :"GDOGG4",
+                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+ GDOGG"
+                    },
+                    "KRSTA": {
+                        "cleared_altitude" :15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+ CERAH/a10000+"
+                    },
+                    "OLSIE": {
+                        "cleared_altitude": 15000,
+                        "sid": "KRSTA4",
+                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+  CERAH/a10000+ KRSTA"
+                    },
+                    "PARDN": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 KELLO/a10000+"
+                    },
+                    "NAKIY": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+                    },
+                    "HODJS": {
+                        "cleared_altitude": 15000,
+                        "sid": "PARDN4",
+                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+                    },
+                    "TAZMO": {
+                        "cleared_altitude": 15000,
+                        "sid" :"TAZMO4",
+                        "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+"
+                    },
+                    "BURME": {
+                        "cleared_altitude": 15000,
+                        "sid": "TAZMO4",
+                        "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+ TAZMO"
+                    },
+                    "TIPPN": {
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-2L DIXII/a5000+ RORRY/a12000+"
+                    },
+                    "DENST": {
+                        "cleared_altitude": 15000,
+                        "sid": "TIPPN4",
+                        "waypoints": "KBNA-2L DIXII/a5000+ RORRY/a12000+ TIPPN"
                     }
                 }
             },
             "departures": [
-                {
-                    "exit": "SWAPP",
-                    "destination": "KPHL",
-                    "altitude": 35000,
-                    "route": "CHADM3 SWAPP Q34 GVE PAATS4",
+               {
                     "airlines": [
                         {
-                            "icao": "AAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KFLL",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN ACORI TEEKY3",
-                    "airlines": [
+                            "icao": "JIA"
+                        },
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KTPA",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN LGC HONID MAATY4",
-                    "airlines": [
+                            "icao": "SKW"
+                        },
                         {
-                            "icao": "SWA",
-                            "fleet": "short"
+                            "icao": "SWA"
                         }
-                    ]
-                },
-                {
-                    "exit": "FAPER",
-                    "destination": "KMSP",
-                    "altitude": 34000,
-                    "route": "GDOGG3 FAPER IMPEL TTH JOT DBQ KICKR BLUEM4",
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KDFW",
-                    "altitude": 36000,
-                    "route": "DANLS3 DANLS MEM LIT MEEOW FEWWW SEEVR4",
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KFLL",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN ACORI TEEKY3",
-                    "airlines": [
-                        {
-                            "icao": "NKS",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BURME",
-                    "destination": "KCLT",
-                    "altitude": 27000,
-                    "route": "TAZMO3 BURME COMDY FILPZ4",
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "a321"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "KMDW",
-                    "altitude": 31000,
-                    "route": "KRSTA3 OLSIE IIU DROSE FISSK6",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KPHX",
-                    "altitude": 38000,
-                    "route": "DANLS3 DANLS MEM J66 GLOVE SPS J72 ABQ J78 ZUN EAGUL6",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KDAL",
-                    "altitude": 38000,
-                    "route": "DANLS3 DANLS LIT DIRRK HIBIL3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "HODJS",
-                    "destination": "KDEN",
-                    "altitude": 38000,
-                    "route": "PARDN3 HODJS ARG CHELI GCK KIISS CLASH4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "KORD",
-                    "altitude": 30000,
-                    "route": "KRSTA3 OLSIE IIU HEVAN BONNT VEECK5",
-                    "airlines": [
-                        {
-                            "icao": "SKW",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KHOU",
-                    "altitude": 40000,
-                    "route": "DANLS3 DANLS DHART SWB WAPPL6",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KMCO",
-                    "altitude": 35000,
-                    "route": "TIPPN3 BRXTN THRSR ZJAYX GRNCH5",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KLAS",
-                    "altitude": 38000,
-                    "route": "DANLS3 DANLS LIT ADM TXO J72 ABQ HAHAA RKSTR3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KDFW",
-                    "altitude": 36000,
-                    "route": "DANLS3 DANLS LIT MEEOW FEWWW SEEVR4",
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KCCO",
-                    "altitude": 21000,
-                    "route": "TIPPN3 BRXTN HEFIN TIROE",
-                    "airlines": [
-                        {
-                            "icao": "LXJ",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KATL",
-                    "altitude": 25000,
-                    "route": "TIPPN3 BRXTN CHPPR CHPPR1",
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KRSW",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN LAYIN Q19 BULZI Q81 NICKI PLYER TYNEE2",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "JALAR",
-                    "destination": "KMSY",
-                    "altitude": 34000,
-                    "route": "DRURY3 JALAR MERDN TRSSH1",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BURME",
-                    "destination": "KRDU",
-                    "altitude": 35000,
-                    "route": "TAZMO3 BURME VXV KPASS ALDAN4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BURME",
-                    "destination": "KCLT",
-                    "altitude": 29000,
-                    "route": "TAZMO3 BURME COMDY FILPZ4",
-                    "airlines": [
-                        {
-                            "icao": "JIA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KORF",
-                    "altitude": 39000,
-                    "route": "CHADM3 SWAPP Q34 MAULS MOL TERKS2",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "TINGS",
-                    "destination": "KMSP",
-                    "altitude": 32000,
-                    "route": "HGGRD3 TINGS ENL KICKR BLUEM4",
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
+                    ],
                     "destination": "KDCA",
-                    "altitude": 41000,
-                    "route": "CHADM3 SWAPP Q34 NEALS SITTR TRUPS5",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
+                    "exit": "MUNNY",
+                    "route": "CHADM4 MUNNY TONIO Q34 SITTR TRUPS5"
                 },
                 {
-                    "exit": "BRXTN",
-                    "destination": "KMCO",
-                    "altitude": 35000,
-                    "route": "TIPPN3 BRXTN THRSR ZJAYX GRNCH5",
-                    "airlines": [
-                        {
-                            "icao": "NKS",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KDCA",
-                    "altitude": 29000,
-                    "route": "CHADM3 SWAPP Q34 SITTR TRUPS5",
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "KORD",
-                    "altitude": 33000,
-                    "route": "KRSTA3 OLSIE IIU HEVAN BONNT VEECK5",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KPHL",
-                    "altitude": 35000,
-                    "route": "CHADM3 SWAPP Q34 GVE PAATS4",
-                    "airlines": [
-                        {
-                            "icao": "NKS",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BURME",
-                    "destination": "KCLT",
-                    "altitude": 31000,
-                    "route": "TAZMO3 BURME COMDY FILPZ4",
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KPHL",
-                    "altitude": 37000,
-                    "route": "CHADM3 SWAPP Q34 GVE PAATS4",
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KTPA",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN LGC HONID MAATY4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KFLL",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN ACORI TEEKY3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "TINGS",
-                    "destination": "KOMA",
-                    "altitude": 36000,
-                    "route": "HGGRD3 TINGS Q19 STL J45 IRK LMN MARWI4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KAUS",
-                    "altitude": 38000,
-                    "route": "DANLS3 DANLS MEMFS TXK BROBB WINDU SEWZY6",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KATL",
-                    "altitude": 23000,
-                    "route": "TIPPN3 BRXTN CHPPR CHPPR1",
                     "airlines": [
                         {
                             "icao": "DAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "HODJS",
-                    "destination": "KOKC",
-                    "altitude": 34000,
-                    "route": "PARDN3 HODJS RZC DRLER MURAH3",
-                    "airlines": [
+                            "types": ["BCS1"]
+                        },
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KIAH",
-                    "altitude": 38000,
-                    "route": "DANLS3 DANLS MEMFS DHART J180 SWB GESNR1",
-                    "airlines": [
+                            "icao": "SWA"
+                        },
                         {
-                            "icao": "UAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KMCO",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN THRSR ZJAYX GRNCH5",
-                    "airlines": [
+                            "icao": "RPA"
+                        },
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
+                            "icao": "EDV"
                         }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KSRQ",
-                    "altitude": 35000,
-                    "route": "TIPPN3 BRXTN RMG MCN AMG KYYUU LUBBR3",
-                    "airlines": [
-                        {
-                            "icao": "AAY",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KDAL",
-                    "altitude": 36000,
-                    "route": "DANLS3 DANLS LIT DIRRK HIBIL3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "EVVAN",
-                    "destination": "KLAL",
-                    "altitude": 39000,
-                    "route": "EVVAN3 EVVAN CULTO Q89 YANTI KYYUU LUBBR3",
-                    "airlines": [
-                        {
-                            "icao": "SCX",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "HODJS",
-                    "destination": "KDEN",
-                    "altitude": 34000,
-                    "route": "PARDN3 HODJS ARG GCK KIISS CLASH4",
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KEWR",
-                    "altitude": 33000,
-                    "route": "CHADM3 SWAPP Q34 GHATS Q34 GVE PHLBO4",
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "NAKIY",
-                    "destination": "KMCI",
-                    "altitude": 34000,
-                    "route": "PARDN3 NAKIY KRTNY MHOMS3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "NAKIY",
-                    "destination": "KSTL",
-                    "altitude": 28000,
-                    "route": "PARDN3 NAKIY CGI DLITE FATSS BOOSH BOOSH3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
+                    ],
                     "destination": "KLGA",
-                    "altitude": 35000,
-                    "route": "KRSTA3 OLSIE IIU Q139 CREEP Q29 WWSHR TEESY J146 ETG MIP4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
+                    "exit": "OLSIE",
+                    "route": "KRSTA4 OLSIE IIU Q139 CREEP Q29 WWSHR TEESY J146 ETG MIP4"
                 },
                 {
-                    "exit": "GENDE",
-                    "destination": "KVPS",
-                    "altitude": 35000,
-                    "route": "FLAME3 GENDE MGMRY CORKY",
                     "airlines": [
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "FFT"
+                        },
+                        {
+                            "icao": "NKS"
                         }
-                    ]
+                    ],
+                    "destination": "KMCO",
+                    "exit": "DENST",
+                    "route": "TIPPN4 DENST THRSR ZJAYX GRNCH5"
                 },
                 {
-                    "exit": "HODJS",
-                    "destination": "KSLC",
-                    "altitude": 32000,
-                    "route": "PARDN3 HODJS ARG FLP VINTA VEGUC Q128 ZAROS BRK EKR LEEHY5",
                     "airlines": [
                         {
-                            "icao": "DAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KDFW",
-                    "altitude": 36000,
-                    "route": "DANLS3 DANLS LIT MEEOW FEWWW SEEVR4",
-                    "airlines": [
+                            "icao": "SWA"
+                        },
                         {
-                            "icao": "AAL",
-                            "fleet": "a321"
-                        }
-                    ]
-                },
-                {
-                    "exit": "FAPER",
-                    "destination": "KDTW",
-                    "altitude": 35000,
-                    "route": "GDOGG3 FAPER IMPEL WWODD HANBL3",
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "TINGS",
-                    "destination": "KDSM",
-                    "altitude": 38000,
-                    "route": "HGGRD3 TINGS J45 STL TWAIN COLIE SKBOZ JAVAS DSM",
-                    "airlines": [
-                        {
-                            "icao": "AAY",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KBDL",
-                    "altitude": 39000,
-                    "route": "CHADM3 SWAPP Q34 RBV Q419 DPK DPK3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DRURY",
-                    "destination": "KTUP",
-                    "altitude": 20000,
-                    "route": "DRURY3 DRURY",
-                    "airlines": [
-                        {
-                            "icao": "VTE",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KDFW",
-                    "altitude": 34000,
-                    "route": "DANLS3 DANLS FSM KOMMA RRNET SEEVR4",
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KBUR",
-                    "altitude": 38000,
-                    "route": "DANLS3 DANLS LIT ADM TXO J74 SJN J18 PXR BXK PHRED THRNE3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "HODJS",
-                    "destination": "KLGB",
-                    "altitude": 34000,
-                    "route": "PARDN3 HODJS RZC TUL KA36Y FTI INW DRK HIMDU DSNEE5",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KPHL",
-                    "altitude": 37000,
-                    "route": "CHADM3 SWAPP Q34 GVE PAATS4",
-                    "airlines": [
-                        {
-                            "icao": "FFT",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KMDT",
-                    "altitude": 39000,
-                    "route": "CHADM3 SWAPP SITTR COURG BAMMY T299 SCAPE T299 HAR",
-                    "airlines": [
-                        {
-                            "icao": "AAY",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KIAD",
-                    "altitude": 33000,
-                    "route": "CHADM3 SWAPP JARLO GIBBZ5",
-                    "airlines": [
+                            "icao": "FFT"
+                        },
                         {
                             "icao": "UAL",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "MMUN",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN LEV L214 IRDOV UL214 NUDIS UT38 LEVAT UM782 CUN",
-                    "airlines": [
+                            "types": ["B738", "B739"]
+                        },
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
+                            "icao": "EJA"
                         }
-                    ]
-                },
-                {
-                    "exit": "BURME",
-                    "destination": "KCLT",
-                    "altitude": 27000,
-                    "route": "TAZMO3 BURME COMDY FILPZ4",
-                    "airlines": [
-                        {
-                            "icao": "JIA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "CYUL",
-                    "altitude": 35000,
-                    "route": "KRSTA3 OLSIE IIU JHW MIGLO HABBS7",
-                    "airlines": [
-                        {
-                            "icao": "JZA",
-                            "fleet": "aus"
-                        }
-                    ]
-                },
-                {
-                    "exit": "FLAME",
-                    "destination": "KPNS",
-                    "altitude": 36000,
-                    "route": "FLAME3 FLAME PIGON ROMEK INBRD PENSI",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "FLAME",
-                    "destination": "KECP",
-                    "altitude": 36000,
-                    "route": "FLAME3 FLAME VLKNN MGMRY KRSTO",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BURME",
-                    "destination": "KRIC",
-                    "altitude": 39000,
-                    "route": "TAZMO3 BURME MXEEN Q66 ALEAN PSK LYH POWTN5",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KJAX",
-                    "altitude": 33000,
-                    "route": "TIPPN3 BRXTN THRSR DUCHY OHDEA1",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "FAPER",
-                    "destination": "KORD",
-                    "altitude": 35000,
-                    "route": "GDOGG3 FAPER KURTZ BONNT VEECK5",
-                    "airlines": [
-                        {
-                            "icao": "ENY",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KDAL",
-                    "altitude": 36000,
-                    "route": "DANLS3 DANLS LIT DIRRK HIBIL3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KTPA",
-                    "altitude": 33000,
-                    "route": "TIPPN3 BRXTN HANKO LGC HONID MAATY4",
-                    "airlines": [
-                        {
-                            "icao": "ENY",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KDFW",
-                    "altitude": 38000,
-                    "route": "DANLS3 DANLS LIT MEEOW FEWWW SEEVR4",
-                    "airlines": [
-                        {
-                            "icao": "NKS",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "PARDN",
-                    "destination": "KTBN",
-                    "altitude": 30000,
-                    "route": "PARDN3 PARDN",
-                    "airlines": [
-                        {
-                            "icao": "VTE",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "KMDW",
-                    "altitude": 33000,
-                    "route": "KRSTA3 OLSIE IIU DROSE FISSK6",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "HODJS",
+                    ],
                     "destination": "KDEN",
-                    "altitude": 38000,
-                    "route": "PARDN3 HODJS ARG CHELI GCK KIISS CLASH4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
+                    "exit": "NAKIY",
+                    "route": "PARDN4 NAKIY HYS J24 OATHE CLASH5"
                 },
                 {
-                    "exit": "DANLS",
-                    "destination": "KIAH",
-                    "altitude": 40000,
-                    "route": "DANLS3 DANLS DHART SWB ZEEKK2",
                     "airlines": [
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KAUS",
-                    "altitude": 38000,
-                    "route": "DANLS3 DANLS MEMFS TXK BROBB WINDU SEWZY6",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KATL",
-                    "altitude": 13000,
-                    "route": "TIPPN3 BRXTN CHPPR CHPPR1",
-                    "airlines": [
+                            "icao": "SWA`"
+                        },
                         {
                             "icao": "DAL",
-                            "fleet": "default"
+                            "types": ["B738", "B739"]
                         }
-                    ]
+                    ],
+                    "destination": "KATL",
+                    "exit": "DENST",
+                    "route": "TIPPN4 DENST CHPPR CHPPR1"
                 },
                 {
-                    "exit": "OLSIE",
-                    "destination": "KORD",
-                    "altitude": 33000,
-                    "route": "KRSTA3 OLSIE IIU HEVAN BONNT VEECK5",
                     "airlines": [
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "SKW"
+                        },
+                        {
+                            "icao": "ENY"
                         }
-                    ]
+                    ],
+                    "destination": "KORD",
+                    "exit": "OLSIE",
+                    "route": "KRSTA4 OLSIE IIU HEVAN BONNT VEECK5"
                 },
                 {
-                    "exit": "BRXTN",
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "SKW"
+                        }
+                    ],
+                    "destination": "KAUS",
+                    "exit": "JALAR",
+                    "route": "DRURY4 JALAR LFK WEEED WLEEE7"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "AAL",
+                            "types": ["B738", "B739", "A319", "A320", "A321"]
+                        },
+                        {
+                            "icao": "JIA"
+                        }
+                    ],
+                    "destination": "KCLT",
+                    "exit": "BURME",
+                    "route": "TAZMO4 BURME VXV COMDY FLIPZ4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "EJA"
+                        },
+                        {
+                            "icao": "JRE"
+                        },
+                        {
+                            "icao": "LXJ"
+                        },
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KDAL",
+                    "exit": "HODJS",
+                    "route": "PARDN4 HODJS CIVKI Q66 LITTR DIRRK HIBIL3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "AAL",
+                            "types": ["B738", "B38M"]
+                        }
+                    ],
+                    "destination": "KPHX",
+                    "exit": "HODJS",
+                    "route": "PARDN4 HODJS RZC YARNS ROLLS NOSEW ZUN EAGUL6"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "RPA"
+                        },
+                        {
+                            "icao": "JRE"
+                        },
+                        {
+                            "icao": "EDV"
+                        }
+                    ],
+                    "destination": "KRDU",
+                    "exit": "BURME",
+                    "route": "TAZMO4 BURME VXV KPASS ALDAN4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "WUP"
+                        },
+                        {
+                            "icao": "ENY"
+                        },
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
                     "destination": "KTPA",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN LGC HONID MAATY4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
+                    "exit": "TIPPN",
+                    "route": "TIPPN4 TIPPN RMG SOONE HEPAR BAAMF DADES2"
                 },
                 {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "FFT"
+                        },
+                        {
+                            "icao": "AAL",
+                            "types": ["B738", "B739", "A319", "A320", "A321"]
+                        },
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "destination": "KPHL",
                     "exit": "OLSIE",
-                    "destination": "KORD",
-                    "altitude": 30000,
-                    "route": "KRSTA3 OLSIE IIU HEVAN BONNT VEECK5",
-                    "airlines": [
-                        {
-                            "icao": "SKW",
-                            "fleet": "default"
-                        }
-                    ]
+                    "route": "OLSIE IIU Q139 CREEEP BLISS J152 JST BOJID4"
                 },
                 {
-                    "exit": "SWAPP",
-                    "destination": "KBWI",
-                    "altitude": 39000,
-                    "route": "CHADM3 SWAPP Q34 NEALS BKW RAVNN6",
                     "airlines": [
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
+                            "icao": "AAL",
+                            "types": ["B738", "B739", "A319", "A320", "A321"]
+                        },
+                        {
+                            "icao": "FFT"
                         }
-                    ]
+                    ],
+                    "destination": "KDFW",
+                    "exit": "HODJS",
+                    "route": "HODJS CIVKI Q66 LITTR MEEOW FEWWW SEEVR4"
                 },
                 {
-                    "exit": "BRXTN",
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "NKS"
+                        }
+                    ],
+                    "destination": "KLAS",
+                    "exit": "HODJS",
+                    "route": "PARDN4 HODJS IGLOO IRW J78 CRUSR GUP HAHAA RKSTR4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "TIV"
+                        },
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "ENY"
+                        },
+                        {
+                            "icao": "AAL",
+                            "types": ["B738", "B739", "A319", "A320", "A321"]
+                        }
+                    ],
                     "destination": "KMIA",
-                    "altitude": 35000,
-                    "route": "TIPPN3 BRXTN ACORI FROGZ4",
-                    "airlines": [
-                        {
-                            "icao": "ENY",
-                            "fleet": "default"
-                        }
-                    ]
+                    "exit": "GENDE",
+                    "route": "FLAME4 GENDE ACORI FROGZ4"
                 },
                 {
-                    "exit": "OLSIE",
-                    "destination": "CYYZ",
-                    "altitude": 37000,
-                    "route": "KRSTA3 OLSIE IIU Q139 RINTE QWERI NUBER6",
                     "airlines": [
+                        {
+                            "icao": "JBU"
+                        },
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "destination": "KBOS",
+                    "exit": "CHADM",
+                    "route": "CHADM4 CHADM ALEAN Q40 MAULS Q34 DUALY Q34 RBV Q419 JFK ROBUC3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "LXJ"
+                        }
+                    ],
+                    "destination": "KHOU",
+                    "exit": "DRURY",
+                    "route": "DRURY4 DRURY MHZ AEX WAPPL7"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "RPA"
+                        },
+                        {
+                            "icao": "EDV"
+                        },
+                        {
+                            "icao": "JBU"
+                        }
+                    ],
+                    "destination": "KJFK",
+                    "exit": "BURME",
+                    "route": "TAZMO4 BURME VXV IDDAA Q64 SAWED Q108 SIE CAMRN5"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "AAL",
+                            "types": ["B738", "B739", "A319", "A320", "A321"]
+                        },
+                        {
+                            "icao": "DAL",
+                            "types": ["B738", "B739"]
+                        }
+                    ],
+                    "destination": "KLAX",
+                    "exit": "HODJS",
+                    "route": "PARDN4 HODJS FAM PENUT KD51Y PUB DAAYE WOHCI NAVJO Q90 DNERO ANJLL4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "DAL",
+                            "types": ["B738", "B739", "B712"]
+                        }
+                    ],
+                    "destination": "KDTW",
+                    "exit": "FAPER",
+                    "route": "GDOGG4 FAPER IMPEL WWODD HANBL3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KMDW",
+                    "exit": "OLSIE",
+                    "route": "KRSTA4 OLSIE IIU DROSE FISSK7"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KMSY",
+                    "exit": "JALAR",
+                    "route": "DRURY4 JALAR MERDN TRSSH1"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "SCX"
+                        }
+                    ],
+                    "destination": "KMCI",
+                    "exit": "NAKIY",
+                    "route": "PARDN4 NAKIY KRTNY NELVY MHOMS3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KSTL",
+                    "exit": "HODJS",
+                    "route": "PARDN4 HODJS VISQA BOOSH3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "SCX"
+                        },
+                        {
+                            "icao": "DAL",
+                            "types": ["B738", "A320"]
+                        }
+                    ],
+                    "destination": "KMSP",
+                    "exit": "NAKIY",
+                    "route": "PARDN4 NAKIY DENNI ENL IOW MNOSO BLUEM4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "LXJ"
+                        }
+                    ],
+                    "destination": "KJAX",
+                    "exit": "DENST",
+                    "route": "TIPPN4 DENST LGC DUCHY OHDEA2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW"
+                        },
+                        {
+                            "icao": "UAL",
+                            "types": ["B737", "A320"]
+                        }
+                    ],
+                    "destination": "KIAH",
+                    "exit": "DANLS",
+                    "route": "DANL4 DANLS UJM Q31 DHART Q33 SWEUP ZEEKK3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "ERY"
+                        },
+                        {
+                            "icao": "EJA"
+                        },
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KCLE",
+                    "exit": "OLSIE",
+                    "route": "KRSTA4 OLSIE IIU DRUGA ROKNN4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KMKE",
+                    "exit": "KRSTA",
+                    "route": "KRSTA4 KRSTA BWG TTH DNV JOT LEEDN GOPAC3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KSAN",
+                    "exit": "HODJS",
+                    "route": "PARDN4 HODJS HUMBO PROWL OLLII GATTY WILSY PENUT DUUZE KD45S NAVJO TBC PLNDL Q86 TTRUE LUCKI1"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao" : "JZA"
+                        },
                         {
                             "icao": "ACA",
-                            "fleet": "default"
+                            "types": ["BCS3"]
                         }
-                    ]
+                    ],
+                    "destination": "CYYZ",
+                    "exit": "OLSIE",
+                    "route": "KRSTA4 OLSIE IIU Q139 RINTE QWERI NUBER6"
                 },
                 {
-                    "exit": "SWAPP",
-                    "destination": "KDCA",
-                    "altitude": 39000,
-                    "route": "CHADM3 SWAPP Q34 NEALS SITTR TRUPS5",
                     "airlines": [
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
+                            "icao": "SWA"
                         }
-                    ]
+                    ],
+                    "destination": "MMUN",
+                    "exit": "DRURY",
+                    "route": "DRURY4 DRURY MEI HRV LEV L214 IRDOV UL214 NUDIS UT38 LEVAT ITLOM VOMAR"
                 },
                 {
-                    "exit": "BRXTN",
-                    "destination": "KATL",
-                    "altitude": 23000,
-                    "route": "TIPPN3 BRXTN CHPPR CHPPR1",
                     "airlines": [
                         {
-                            "icao": "DAL",
-                            "fleet": "b73x"
+                            "icao": "BAW",
+                            "types": ["B789"]
                         }
-                    ]
+                    ],
+                    "destination": "EGLL",
+                    "exit": "OLSIE",
+                    "route": "KRSTA4 OLSIE IIU AIR PSB HNK MIILS N371B JOOPY NATS 4900N/05000W NATS DOGAL NATS BEXET ENJEX AVZAC INFEC JETZI AMFUL ORZEB P2 SIRIC SIRIC1H"
                 },
                 {
-                    "exit": "FAPER",
-                    "destination": "KMKE",
-                    "altitude": 33000,
-                    "route": "GDOGG3 FAPER MACES VINNE BRAVE EXARR",
                     "airlines": [
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
+                            "icao": "JZA"
                         }
-                    ]
-                },
-                {
-                    "exit": "PARDN",
-                    "destination": "KCGI",
-                    "altitude": 22000,
-                    "route": "PARDN3 PARDN FISAV",
-                    "airlines": [
-                        {
-                            "icao": "VTE",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
+                    ],
+                    "destination": "CYUL",
                     "exit": "BURME",
-                    "destination": "KCLT",
-                    "altitude": 29000,
-                    "route": "TAZMO3 BURME COMDY FILPZ4",
-                    "airlines": [
-                        {
-                            "icao": "JIA",
-                            "fleet": "default"
-                        }
-                    ]
+                    "route": "TAZMO4 BURME ECB CKB ELZ MIGLO HABBS7"
                 },
                 {
-                    "exit": "TINGS",
-                    "destination": "KMSP",
-                    "altitude": 34000,
-                    "route": "HGGRD3 TINGS DAAVE CASHN MNOSO BLUEM4",
                     "airlines": [
                         {
-                            "icao": "DAL",
-                            "fleet": "default"
+                            "icao": "EIN",
+                            "types": ["A21N"]
                         }
-                    ]
+                    ],
+                    "destination": "EIDW",
+                    "exit": "MUNNY",
+                    "route": "CHADM4 MUNNY TONIO HVQ SLT SYR SSENA CEFOU N445B ELSIR NATR RESNO NATR NETKI OLAPO OLAPO4L"
                 },
                 {
-                    "exit": "SWAPP",
-                    "destination": "KPHL",
-                    "altitude": 37000,
-                    "route": "CHADM3 SWAPP Q34 GVE PAATS4",
                     "airlines": [
                         {
-                            "icao": "AAL",
-                            "fleet": "default"
+                            "icao": "AAY"
                         }
-                    ]
+                    ],
+                    "destination": "KPIE",
+                    "exit": "DENST",
+                    "route": "TIPPN4 DENST LGC HONID BANGZ2"
                 },
                 {
-                    "exit": "BURME",
-                    "destination": "KRDU",
-                    "altitude": 35000,
-                    "route": "TAZMO3 BURME VXV KPASS ALDAN4",
                     "airlines": [
                         {
-                            "icao": "SWA",
-                            "fleet": "default"
+                            "icao": "AAY"
                         }
-                    ]
-                },
-                {
-                    "exit": "EVVAN",
-                    "destination": "KCHS",
-                    "altitude": 35000,
-                    "route": "EVVAN3 EVVAN ODF IRQ OSPRI7",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "KLGA",
-                    "altitude": 35000,
-                    "route": "KRSTA3 OLSIE IIU Q139 CREEP Q29 WWSHR TEESY J146 ETG MIP4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "KLGA",
-                    "altitude": 35000,
-                    "route": "KRSTA3 OLSIE IIU Q139 CREEP Q29 WWSHR TEESY J146 ETG MIP4",
-                    "airlines": [
-                        {
-                            "icao": "EDV",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "KCLE",
-                    "altitude": 33000,
-                    "route": "KRSTA3 OLSIE IIU DRUGA ROKNN3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KPHL",
-                    "altitude": 37000,
-                    "route": "CHADM3 SWAPP Q34 GVE PAATS4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "EVVAN",
-                    "destination": "KMYR",
-                    "altitude": 37000,
-                    "route": "EVVAN3 EVVAN ODF FLO",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KPIT",
-                    "altitude": 39000,
-                    "route": "CHADM3 SWAPP HNN FEWGA7",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "KCMH",
-                    "altitude": 31000,
-                    "route": "KRSTA3 OLSIE GETTA JAKTZ2",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "FAPER",
-                    "destination": "KDTW",
-                    "altitude": 35000,
-                    "route": "GDOGG3 FAPER IMPEL WWODD HANBL3",
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KBOS",
-                    "altitude": 37000,
-                    "route": "CHADM3 SWAPP Q34 RBV Q419 JFK ROBUC3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KDFW",
-                    "altitude": 34000,
-                    "route": "DANLS3 DANLS LIT MEEOW FEWWW SEEVR4",
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "KLGA",
-                    "altitude": 35000,
-                    "route": "KRSTA3 OLSIE IIU Q139 CREEP Q29 WWSHR TEESY J146 ETG MIP4",
-                    "airlines": [
-                        {
-                            "icao": "NKS",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KLGA",
-                    "altitude": 37000,
-                    "route": "CHADM3 SWAPP Q34 GVE PROUD2",
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "HODJS",
-                    "destination": "KPHX",
-                    "altitude": 38000,
-                    "route": "PARDN3 HODJS FSM IRW J78 TCC ACH ABQ J78 ZUN EAGUL6",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KFLL",
-                    "altitude": 35000,
-                    "route": "TIPPN3 BRXTN ACORI TEEKY3",
-                    "airlines": [
-                        {
-                            "icao": "JBU",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "OLSIE",
-                    "destination": "KGRR",
-                    "altitude": 37000,
-                    "route": "KRSTA3 OLSIE IIU BONNT VIO",
-                    "airlines": [
-                        {
-                            "icao": "AAY",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SPKER",
-                    "destination": "KSEA",
-                    "altitude": 32000,
-                    "route": "DANLS3 SPKER RZC SLN BFF LKT PDT CHINS5",
-                    "airlines": [
-                        {
-                            "icao": "ASA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BURME",
-                    "destination": "KRDU",
-                    "altitude": 29000,
-                    "route": "TAZMO3 BURME VXV KPASS ALDAN4",
-                    "airlines": [
-                        {
-                            "icao": "EDV",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KIAH",
-                    "altitude": 38000,
-                    "route": "DANLS3 DANLS DHART SWB ZEEKK2",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "ACKEE",
-                    "destination": "KAUS",
-                    "altitude": 36000,
-                    "route": "DRURY3 ACKEE SQS MNURE WLEEE7",
-                    "airlines": [
-                        {
-                            "icao": "ENY",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KIAH",
-                    "altitude": 36000,
-                    "route": "DANLS3 DANLS MEMFS DHART J180 SWB GESNR1",
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KIAD",
-                    "altitude": 37000,
-                    "route": "CHADM3 SWAPP JARLO GIBBZ5",
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SPKER",
-                    "destination": "KLAX",
-                    "altitude": 32000,
-                    "route": "DANLS3 SPKER LIT ADM SPS J72 TURKI CNX KEYKE J134 DRK GABBL HLYWD1",
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KMIA",
-                    "altitude": 35000,
-                    "route": "TIPPN3 BRXTN ACORI FROGZ4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "GENDE",
-                    "destination": "KVPS",
-                    "altitude": 35000,
-                    "route": "FLAME3 GENDE MGMRY CORKY",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "NAKIY",
-                    "destination": "KSEA",
-                    "altitude": 34000,
-                    "route": "PARDN3 NAKIY KK48G GATTY KK51C HUSQA KD63W LAR KU84M PDT CHINS5",
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "HODJS",
-                    "destination": "KDEN",
-                    "altitude": 36000,
-                    "route": "PARDN3 HODJS ARG CHELI GCK KIISS CLASH4",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KLAX",
-                    "altitude": 34000,
-                    "route": "DANLS3 DANLS LIT ATOKA TXO J74 NABOB HIPPI GABBL HLYWD1",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KFLL",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN ACORI TEEKY3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "SWAPP",
-                    "destination": "KEWR",
-                    "altitude": 35000,
-                    "route": "CHADM3 SWAPP Q34 GVE PHLBO4",
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "NAKIY",
-                    "destination": "KMCI",
-                    "altitude": 40000,
-                    "route": "PARDN3 NAKIY KRTNY MHOMS3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "short"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KAUS",
-                    "altitude": 38000,
-                    "route": "DANLS3 DANLS MEMFS TXK BROBB WINDU SEWZY6",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KPGD",
-                    "altitude": 37000,
-                    "route": "TIPPN3 BRXTN LGC HONID Q81 NICKI PLYER PIKKR7",
-                    "airlines": [
-                        {
-                            "icao": "AAY",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KHOU",
-                    "altitude": 36000,
-                    "route": "DANLS3 DANLS DHART SWB WAPPL6",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
-                },
-                {
-                    "exit": "DANLS",
-                    "destination": "KDAL",
-                    "altitude": 36000,
-                    "route": "DANLS3 DANLS LIT DIRRK HIBIL3",
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "fleet": "default"
-                        }
-                    ]
+                    ],
+                    "destination": "KSFB",
+                    "exit": "DENST",
+                    "route": "TIPPN4 DENST THRSR Q79 ZPLEN BIGDE SHREK2"
                 }
             ],
             "exit_categories": {
-                "SWAPP": "East",
                 "CHADM": "East",
-                "SPKER": "West",
+                "MUNNY": "East",
                 "DANLS": "West",
-                "ACKEE": "West",
-                "JALAR": "West",
-                "HAGIE": "West",
+                "TPEEE": "West",
                 "DRURY": "West",
-                "EVVAN": "East",
-                "GENDE": "West",
-                "FLAME": "West",
-                "FAPER": "West",
+                "JALAR": "West",
+                "HAIGE": "West",
+                "FLAME": "East",
+                "GENDE": "East",
                 "GDOGG": "West",
-                "TINGS": "West",
-                "HGGRD": "West",
-                "OLSIE": "East",
-                "KRSTA": "East",
-                "NAKIY": "West",
-                "JJEFF": "West",
-                "HODJS": "West",
+                "FAPER": "West",
+                "KRSTA": "West",
+                "OLSIE": "West",
                 "PARDN": "West",
-                "BURME": "East",
+                "NAKIY": "West",
+                "HODJS": "West",
                 "TAZMO": "East",
-                "BRXTN": "East",
-                "TIPPN": "East"
+                "BURME": "East",
+                "TIPPN": "East",
+                "DENST": "East"
             }
         }
     },
@@ -2118,7 +1545,7 @@
                 {
                     "airport": "KBNA",
                     "rate": 20,
-                    "runway": "20C",
+                    "runway": "20R",
                     "category": "West"
                 }
             ],
@@ -2131,6 +1558,10 @@
                 {
                     "airport": "KBNA",
                     "runway": "2L"
+                },
+                {
+                    "airport": "KBNA",
+                    "runway": "2C"
                 },
                 {
                     "airport": "KBNA",
@@ -2161,13 +1592,13 @@
                 {
                     "airport": "KBNA",
                     "rate": 20,
-                    "runway": "2C",
+                    "runway": "2R",
                     "category": "East"
                 },
                 {
                     "airport": "KBNA",
                     "rate": 20,
-                    "runway": "2C",
+                    "runway": "2L",
                     "category": "West"
                 }
             ],

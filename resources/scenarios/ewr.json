@@ -1995,14 +1995,20 @@
         "KMMU": {
             "hold_for_release": true,
             "approaches": {
-                "I23": {
-                    "cifp_id": "I23"
+                "Y23": {
+                    "cifp_id": "IY23"
                 },
                 "Z23": {
-                    "cifp_id": "RZ23"
+                    "cifp_id": "IZ23"
                 },
-                "Y23": {
+                "RY3": {
                     "cifp_id": "RY23"
+                },
+                "RX3": {
+                    "cifp_id": "RX23"
+                },
+                "RZ3": {
+                    "cifp_id": "RZ23"
                 },
                 "R5": {
                     "cifp_id": "R5"
@@ -6904,7 +6910,7 @@
                     "initial_speed": 300,
                     "expect_approach": {
                         "KTEB": "I19",
-                        "KMMU": "I23",
+                        "KMMU": "Z23",
                         "KCDW": "R22"
                     },
                     "airlines": {
@@ -8253,7 +8259,7 @@
                     "expect_approach": {
                         "KTEB": "I19",
                         "KCDW": "R22",
-                        "KMMU": "I23"
+                        "KMMU": "Z23"
                     },
                     "airlines": {
                         "KCDW": [
