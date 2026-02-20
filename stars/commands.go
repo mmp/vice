@@ -212,7 +212,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 	}
 
 	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
-		if !ctx.TCWIsPrivileged(ctx.UserTCW) && input != "" {
+		if !ctx.TCWIsPrivileged(ctx.UserTCW) && (input != "" || len(ctx.Keyboard.Pressed) > 0) {
 			// As long as text is being entered, hold radio transmissions
 			// for the coming few seconds.
 			ctx.Client.HoldRadioTransmissions()
@@ -766,7 +766,7 @@ func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
 	sp.resetInputState(ctx)
 	sp.commandMode = mode
 
-	if mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
+	if mode == CommandModeTargetGen || mode == CommandModeTargetGenLock {
 		ctx.Client.HoldRadioTransmissions()
 	}
 }
