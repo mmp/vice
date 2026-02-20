@@ -825,10 +825,6 @@ func handleLeaderLineLength(ep *ERAMPane, ctx *panes.Context, length int, trk *s
 	// Update track state
 	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
 
-	// Update default preference
-	ps := ep.currentPrefs()
-	ps.FDBLdrLength = length
-
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
 	}
