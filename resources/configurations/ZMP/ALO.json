@@ -1,0 +1,39 @@
+{
+    "control_positions": {
+        "1L": {
+            "callsign": "ALO_TWR",
+            "frequency": 125075,
+            "radio_name": "Waterloo Tower"
+        },
+        "1W": {
+            "callsign": "ALO_APP",
+            "frequency": 118900,
+            "radio_name": "Waterloo Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CID",
+            "prefix": "1"
+        },
+        {
+            "id": "DSM",
+            "prefix": "3"
+        },
+        {
+            "id": "RST",
+            "prefix": "2"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "P"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

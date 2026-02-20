@@ -1,0 +1,806 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "JAX_N_APP",
+            "frequency": 127000,
+            "radio_name": "Jacksonville approach"
+        },
+        "1W": {
+            "callsign": "JAX_W_APP",
+            "frequency": 127775,
+            "radio_name": "Jacksonville approach"
+        },
+        "1E": {
+            "callsign": "JAX_E_APP",
+            "frequency": 132775,
+            "radio_name": "Jacksonville approach"
+        },
+        "1R": {
+            "callsign": "JAX_R_APP",
+            "frequency": 119000,
+            "radio_name": "Jacksonville approach"
+        },
+        "1J": {
+            "callsign": "JAX_J_APP",
+            "frequency": 119850,
+            "radio_name": "Jacksonville approach"
+        },
+        "1S": {
+            "callsign": "JAX_S_APP",
+            "frequency": 124900,
+            "radio_name": "Jacksonville approach"
+        },
+        "1A": {
+            "callsign": "JAX_A_APP",
+            "frequency": 121300,
+            "radio_name": "Jacksonville approach"
+        },
+        "1G": {
+            "callsign": "JAX_G_APP",
+            "frequency": 118175,
+            "radio_name": "Jacksonville approach"
+        },
+        "1D": {
+            "callsign": "JAX_D_APP",
+            "frequency": 128675,
+            "radio_name": "Jacksonville approach"
+        },
+        "1V": {
+            "callsign": "JAX_V_APP",
+            "frequency": 118600,
+            "radio_name": "Jacksonville approach"
+        },
+        "1T": {
+            "callsign": "Jacksonville Tower",
+            "frequency": 118300,
+            "radio_name": "Jacksonville Tower"
+        },
+        "3C": {
+            "callsign": "Craig Tower",
+            "frequency": 132100,
+            "radio_name": "Jacksonville Tower"
+        },
+        "3S": {
+            "callsign": "St. Augustine Tower",
+            "frequency": 127625,
+            "radio_name": "St. Augustine Tower"
+        },
+        "3O": {
+            "callsign": "Ocala Tower",
+            "frequency": 119250,
+            "radio_name": "Ocala Tower"
+        },
+        "3G": {
+            "callsign": "Gainesville Tower",
+            "frequency": 119550,
+            "radio_name": "Gainesville Tower"
+        },
+        "3F": {
+            "callsign": "Cecil Tower",
+            "frequency": 126100,
+            "radio_name": "Cecil Tower"
+        },
+        "3N": {
+            "callsign": "Navy Tower",
+            "frequency": 125150,
+            "radio_name": "Navy Tower"
+        },
+        "3M": {
+            "callsign": "Mayport Tower",
+            "frequency": 118750,
+            "radio_name": "Navy Maypoint Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "KJA": {
+                "inbound_assignments": {
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_E": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORLNOV": "1W",
+                    "QUBEN2": "1E",
+                    "TEBOW2": "1W",
+                    "V159_S": "1N",
+                    "V51": "1E"
+                },
+                "departure_assignments": {
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX/8": "1N",
+                    "KJAX/14": "1S",
+                    "KNIP": "1S",
+                    "KNRB": "1S",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W"
+                },
+                "default_consolidation": {
+                    "1A": [
+                        "1W"
+                    ],
+                    "1G": [
+                        "1J"
+                    ],
+                    "1N": [
+                        "1A",
+                        "1R"
+                    ],
+                    "1S": [
+                        "1N",
+                        "1V"
+                    ],
+                    "1V": [
+                        "1D",
+                        "1G"
+                    ],
+                    "1W": [
+                        "1E"
+                    ]
+                }
+            },
+            "KJ1": {
+                "inbound_assignments": {
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_E": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORLNOV": "1W",
+                    "QUBEN2": "1E",
+                    "TEBOW2": "1W",
+                    "V159_S": "1N",
+                    "V51": "1E"
+                },
+                "departure_assignments": {
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX": "1S",
+                    "KNIP": "1W",
+                    "KNRB": "1N",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W"
+                },
+                "default_consolidation": {
+                    "1R": [
+                        "1E",
+                        "1N",
+                        "1S",
+                        "1W"
+                    ]
+                }
+            },
+            "KJ2": {
+                "inbound_assignments": {
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_E": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORL": "1D",
+                    "QUBEN2": "1E",
+                    "SHREK2": "1D",
+                    "TEBOW2": "1W",
+                    "V159": "1D",
+                    "V159_S": "1N",
+                    "V441 North": "1D",
+                    "V441 South": "1A",
+                    "V51": "1E",
+                    "V537 East": "1A",
+                    "V537 West": "1A"
+                },
+                "departure_assignments": {
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX/8": "1N",
+                    "KJAX/14": "1S",
+                    "KNIP": "1S",
+                    "KNRB": "1S",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W",
+                    "KGNV": "1G",
+                    "KOCF": "1V"
+                },
+                "default_consolidation": {
+                    "1A": [
+                        "1W"
+                    ],
+                    "1G": [
+                        "1J"
+                    ],
+                    "1N": [
+                        "1A",
+                        "1R"
+                    ],
+                    "1S": [
+                        "1N",
+                        "1V"
+                    ],
+                    "1V": [
+                        "1D",
+                        "1G"
+                    ],
+                    "1W": [
+                        "1E"
+                    ]
+                }
+            },
+            "KJ3": {
+                "inbound_assignments": {
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_W": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORLNOV": "1W",
+                    "QUBEN2": "1E",
+                    "TEBOW2": "1W",
+                    "V159_S": "1R",
+                    "V51": "1E"
+                },
+                "departure_assignments": {
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX/BRSTL1": "1N",
+                    "KJAX/CROSB2": "1N",
+                    "KJAX/EXBOX2": "1S",
+                    "KJAX/JETIN2": "1N",
+                    "KJAX/SAWGY3": "1S",
+                    "KNIP": "1W",
+                    "KNRB": "1S",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W"
+                },
+                "default_consolidation": {
+                    "1A": [
+                        "1W"
+                    ],
+                    "1G": [
+                        "1J"
+                    ],
+                    "1N": [
+                        "1A",
+                        "1R"
+                    ],
+                    "1S": [
+                        "1N",
+                        "1V"
+                    ],
+                    "1V": [
+                        "1D",
+                        "1G"
+                    ],
+                    "1W": [
+                        "1E"
+                    ]
+                }
+            },
+            "KJ4": {
+                "inbound_assignments": {
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_W": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORLNOV": "1W",
+                    "QUBEN2": "1E",
+                    "TEBOW2": "1W",
+                    "V159_S": "1R",
+                    "V51": "1E"
+                },
+                "departure_assignments": {
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX": "1N",
+                    "KNIP": "1W",
+                    "KNRB": "1N",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W"
+                },
+                "default_consolidation": {
+                    "1R": [
+                        "1E",
+                        "1N",
+                        "1S",
+                        "1W"
+                    ]
+                }
+            },
+            "KJ5": {
+                "inbound_assignments": {
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_W": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORL": "1D",
+                    "QUBEN2": "1E",
+                    "SHREK2": "1D",
+                    "TEBOW2": "1W",
+                    "V159": "1D",
+                    "V159_S": "1R",
+                    "V441 North": "1D",
+                    "V441 South": "1A",
+                    "V51": "1E",
+                    "V537 East": "1A",
+                    "V537 West": "1A"
+                },
+                "departure_assignments": {
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX/BRSTL1": "1N",
+                    "KJAX/CROSB2": "1N",
+                    "KJAX/EXBOX2": "1S",
+                    "KJAX/JETIN2": "1N",
+                    "KJAX/SAWGY3": "1S",
+                    "KNIP": "1W",
+                    "KNRB": "1S",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W",
+                    "KOCF": "1V",
+                    "KGNV": "1G"
+                },
+                "default_consolidation": {
+                    "1A": [
+                        "1W"
+                    ],
+                    "1G": [
+                        "1J"
+                    ],
+                    "1N": [
+                        "1A",
+                        "1R"
+                    ],
+                    "1S": [
+                        "1N",
+                        "1V"
+                    ],
+                    "1V": [
+                        "1D",
+                        "1G"
+                    ],
+                    "1W": [
+                        "1E"
+                    ]
+                }
+            },
+            "KJ6": {
+                "inbound_assignments": {
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_W": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORL": "1D",
+                    "QUBEN2": "1E",
+                    "SHREK2": "1D",
+                    "TEBOW2": "1W",
+                    "V159": "1D",
+                    "V159_S": "1R",
+                    "V441 North": "1D",
+                    "V441 South": "1A",
+                    "V51": "1E",
+                    "V537 East": "1A",
+                    "V537 West": "1A"
+                },
+                "departure_assignments": {
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX": "1W",
+                    "KNIP": "1W",
+                    "KNRB": "1N",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W"
+                },
+                "default_consolidation": {
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1N",
+                        "1A",
+                        "1S",
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "KJAX",
+        "force_ql_self": true,
+        "controller_configs": {
+            "1S": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N030.28.55.503,W081.40.56.872 N030.30.55.810,W081.22.17.805 N030.39.56.852,W081.13.05.137 N030.36.07.884,W080.57.36.765 N030.03.26.872,W081.01.33.081 N029.51.09.147,W081.01.44.425 N029.49.09.437,W081.33.38.600 N030.04.51.281,W081.32.55.781 N030.12.28.718,W081.33.05.366 N030.16.45.509,W081.41.33.182 N030.21.55.516,W081.43.03.956 N030.29.02.404,W081.40.39.898"
+                    }
+                ]
+            },
+            "1N": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 15000,
+                        "vertices": "N030.18.58.039,W082.19.19.140 N030.21.25.647,W081.42.53.876 N030.28.42.690,W081.40.31.192 N030.30.57.019,W081.22.06.022 N030.39.52.987,W081.12.52.668 N030.53.54.093,W081.19.18.206 N030.59.59.800,W081.35.59.335 N031.00.12.201,W082.10.41.244 N030.43.34.629,W082.22.55.735 N030.18.58.650,W082.19.13.234"
+                    }
+                ]
+            },
+            "1J": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N030.19.16.922,W082.12.05.399 N030.21.13.672,W081.43.10.136 N030.28.41.482,W081.40.42.974 N030.30.57.856,W081.22.47.990 N030.39.44.040,W081.12.39.457 N030.53.42.722,W081.19.28.588 N030.47.57.923,W081.22.45.902 N030.46.57.581,W081.29.12.044 N030.46.59.304,W081.53.06.914 N030.41.46.716,W082.00.21.807 N030.30.41.219,W082.04.42.238 N030.19.23.211,W082.11.54.303"
+                    }
+                ]
+            },
+            "1R": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 15000,
+                        "vertices": "N030.18.49.703,W082.19.00.051 N030.21.09.806,W081.42.57.639 N030.29.44.468,W081.41.21.591 N030.30.44.439,W081.22.28.187 N030.39.11.142,W081.12.58.820 N030.53.29.916,W081.19.02.907 N030.59.55.935,W081.35.46.838 N030.30.05.994,W081.41.12.637 N031.00.16.067,W082.10.53.741 N030.43.49.866,W082.22.57.850 N030.18.45.837,W082.18.47.554"
+                    }
+                ]
+            },
+            "1E": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 15000,
+                        "vertices": "N030.29.41.206,W081.41.03.189 N030.21.18.753,W081.43.10.823 N030.12.42.128,W081.33.25.142 N029.56.44.821,W081.33.18.001 N029.49.12.088,W081.34.02.852 N029.51.07.327,W081.02.02.085 N030.03.15.501,W081.01.43.463 N030.36.13.569,W080.57.31.574 N030.39.49.121,W081.12.40.144 N030.30.50.729,W081.22.17.091 N030.29.51.973,W081.40.58.712"
+                    }
+                ]
+            },
+            "1W": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 15000,
+                        "vertices": "N029.36.15.100,W081.32.15.186 N029.49.28.533,W081.33.53.184 N030.12.03.326,W081.33.01.851 N030.16.41.644,W081.41.20.685 N030.21.26.862,W081.42.42.066 N030.19.03.120,W082.19.19.826 N030.03.10.207,W082.16.49.835 N029.55.35.675,W081.57.50.883 N029.36.33.351,W081.51.49.323 N029.36.23.436,W081.32.34.275"
+                    }
+                ]
+            },
+            "1V": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 6000,
+                        "vertices": "N029.48.01.535,W082.40.32.208 N029.48.05.387,W082.54.05.690 N029.12.15.115,W082.52.48.841 N028.44.30.858,W082.42.53.574 N028.38.10.848,W082.02.39.768 N028.51.30.666,W081.46.34.647 N029.00.07.683,W081.42.05.564 N028.59.49.652,W081.29.59.780 N029.22.21.094,W081.31.02.567 N029.24.23.214,W081.34.54.021 N029.22.48.003,W081.39.17.446 N029.22.50.111,W082.24.38.869 N029.41.10.941,W082.40.10.510 N029.48.04.920,W082.40.05.786"
+                    }
+                ]
+            },
+            "1D": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 10000,
+                        "vertices": "N029.48.01.535,W082.40.32.208 N029.48.05.387,W082.54.05.690 N029.12.15.115,W082.52.48.841 N028.44.30.858,W082.42.53.574 N028.38.10.848,W082.02.39.768 N028.51.30.666,W081.46.34.647 N029.00.07.683,W081.42.05.564 N028.59.49.652,W081.29.59.780 N029.22.21.094,W081.31.02.567 N029.24.23.214,W081.34.54.021 N029.22.48.003,W081.39.17.446 N029.22.50.111,W082.24.38.869 N029.41.10.941,W082.40.10.510 N029.48.04.920,W082.40.05.786"
+                    }
+                ]
+            },
+            "1G": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 6000,
+                        "vertices": "N029.55.57.689,W081.58.11.290 N030.02.57.593,W082.16.50.824 N029.48.04.899,W082.40.05.758 N029.41.11.491,W082.40.04.907 N029.22.45.868,W082.24.32.607 N029.22.59.869,W081.38.56.489 N029.24.29.139,W081.34.43.502 N029.22.16.850,W081.30.56.304 N029.36.14.256,W081.32.24.113 N029.49.17.759,W081.33.55.766 N029.56.33.786,W081.33.25.883 N029.52.35.039,W081.49.15.102 N029.56.06.705,W081.58.18.184"
+                    }
+                ]
+            },
+            "1A": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 1000,
+                        "vertices": "N029.55.57.689,W081.58.11.290 N030.02.57.593,W082.16.50.824 N029.48.04.899,W082.40.05.758 N029.41.11.491,W082.40.04.907 N029.22.45.868,W082.24.32.607 N029.22.59.869,W081.38.56.489 N029.24.29.139,W081.34.43.502 N029.22.16.850,W081.30.56.304 N029.36.14.256,W081.32.24.113 N029.49.17.759,W081.33.55.766 N029.56.33.786,W081.33.25.883 N029.52.35.039,W081.49.15.102 N029.56.06.705,W081.58.18.184"
+                    }
+                ]
+            }
+        },
+        "radar_sites": {
+            "JAX": {
+                "char": "J",
+                "position": "30.49333,-81.69267",
+                "elevation": 140,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "slope_angle": 0.175,
+                "silence_angle": 15
+            },
+            "GNV": {
+                "char": "G",
+                "position": "29.41514,-82.23247",
+                "elevation": 155,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "slope_angle": 0.175,
+                "silence_angle": 15
+            },
+            "ZNEN": {
+                "char": "N",
+                "position": "30.34600,-81.87397",
+                "elevation": 125,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "slope_angle": 0.175,
+                "silence_angle": 15
+            },
+            "ZCTY": {
+                "char": "C",
+                "position": "29.74403,-83.00106",
+                "elevation": 150,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "slope_angle": 0.175,
+                "silence_angle": 15
+            },
+            "DAB": {
+                "char": "D",
+                "position": "29.17267,-81.19224",
+                "elevation": 150,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "slope_angle": 0.175,
+                "silence_angle": 15
+            }
+        },
+        "scratchpads": {
+            "ALLMA": "BRS",
+            "BAXLY": "BRS",
+            "WISPR": "CRO",
+            "EXBOX": "EXB",
+            "OMN": "EXB",
+            "CAPPS": "JET",
+            "JAYJA": "JET",
+            "SAWGY": "SAW",
+            "GNV": null,
+            "OCF": null,
+            "AYS": null,
+            "TAY": null,
+            "MMKAY": null,
+            "FOXAM": null,
+            "VIYAP": null,
+            "SSI": null,
+            "HABLE": null,
+            "KENLL": null
+        },
+        "significant_points": {
+            "ALLMA": {},
+            "AYS": {},
+            "BAXLY": {},
+            "CAPPS": {},
+            "EXBOX": {},
+            "FOXAM": {},
+            "GNV": {},
+            "HABLE": {},
+            "JAYJA": {},
+            "KENLL": {},
+            "MMKAY": {},
+            "OCF": {},
+            "OMN": {},
+            "SAWGY": {},
+            "SSI": {},
+            "TAY": {},
+            "VIYAP": {},
+            "WISPR": {}
+        },
+        "stars_maps": [
+            "EAST FLOW",
+            "CLASS C AIRSPACE",
+            "GPS APPROACHES",
+            "WEST FLOW",
+            "CLASS D AIRSPACE",
+            "MULTI MVA",
+            "EMERGENCY",
+            "T-ROUTES",
+            "HOTAR STAR",
+            "MARQO STAR",
+            "QUBEN STAR",
+            "RNAV STARS RWY 26",
+            "RNAV STARS RWY 08",
+            "LOW ROUTES",
+            "JAX HIGH TACAN 14",
+            "JAX RNAV RNP Y 26",
+            "JAX RNAV RNP Y 14",
+            "GROUND",
+            "JAX RNAV APPROACHES",
+            "SGJ RNAV APPROACHES",
+            "FHB RNAV APPROACHES",
+            "NIP RNAV APPROACHES",
+            "MID AIRSPACE",
+            "SID WAYPOINTS (JAX)",
+            "LUNNI STAR",
+            "OHDEA STAR",
+            "TEBOW STAR",
+            "RNAV STARS RWY 32",
+            "RNAV STARS RWY 14",
+            "SGJ SHELF",
+            "IR ROUTES",
+            "JAX RNAV RNP Y 08",
+            "JAX RNAV RNP Y 32",
+            "VQQ/CGC APPROACHES",
+            "CRG RNAV APPROACHES",
+            "VQQ RNAV APPROACHES",
+            "HEG RNAV",
+            "GNV RNAV APPROACHES"
+        ],
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "OCF",
+                    "GNV"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "C15"
+            },
+            {
+                "fixes": [
+                    "ALLMA",
+                    "BAXLY",
+                    "AYS",
+                    "HABLE"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "C30"
+            },
+            {
+                "fixes": [
+                    "WISPR",
+                    "VIYAP",
+                    "SSI"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "C54"
+            },
+            {
+                "fixes": [
+                    "EXBOX",
+                    "OMN",
+                    "SAWGY"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "C57"
+            },
+            {
+                "fixes": [
+                    "CAPPS",
+                    "JAYJA",
+                    "TAY"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "C77"
+            }
+        ],
+        "coordination_fixes": {
+            "PENSE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "NATII": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "MAHKA": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "BETLE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "JERZI": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "GOTBE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "COROE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "OHDEA": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "BASSS": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "HILIS": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KJAX"
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "DAB",
+            "prefix": "3"
+        },
+        {
+            "id": "F11",
+            "prefix": "2"
+        },
+        {
+            "id": "TPA",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "C"
+        },
+        {
+            "id": "ZMA",
+            "prefix": "R"
+        }
+    ]
+}

@@ -1,0 +1,66 @@
+{
+    "control_positions": {
+        "1B": {
+            "callsign": "SAC_B_APP",
+            "frequency": 120450,
+            "radio_name": "Sacramento Approach"
+        },
+        "1D": {
+            "callsign": "SAC_D_APP",
+            "frequency": 125250,
+            "radio_name": "Sacramento Approach"
+        },
+        "1E": {
+            "callsign": "SAC_E_APP",
+            "frequency": 125400,
+            "radio_name": "Sacramento Approach"
+        },
+        "1M": {
+            "callsign": "MHR_TWR",
+            "frequency": 120650,
+            "radio_name": "Mather Tower"
+        },
+        "1P": {
+            "callsign": "SAC_P_APP",
+            "frequency": 123700,
+            "radio_name": "Sacramento Approach"
+        },
+        "1U": {
+            "callsign": "BAB_TWR",
+            "frequency": 119400,
+            "radio_name": "Beale Tower"
+        },
+        "1V": {
+            "callsign": "SMF_TWR",
+            "frequency": 125700,
+            "radio_name": "Capitol Tower"
+        },
+        "1X": {
+            "callsign": "SAC_X_APP",
+            "frequency": 127400,
+            "radio_name": "Sacramento Approach"
+        },
+        "1Z": {
+            "callsign": "SAC_TWR",
+            "frequency": 119500,
+            "radio_name": "Executive Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "SC1",
+            "prefix": "2"
+        },
+        {
+            "id": "SUU",
+            "prefix": "1"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

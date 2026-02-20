@@ -1,0 +1,27 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "CYS_APP",
+            "frequency": 124550,
+            "radio_name": "Cheyenne Approach"
+        },
+        "1T": {
+            "callsign": "CYS_TWR",
+            "frequency": 118700,
+            "radio_name": "Cheyenne Tower"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "D01",
+            "prefix": "1"
+        },
+        {
+            "id": "ZDV",
+            "prefix": "C"
+        }
+    ]
+}

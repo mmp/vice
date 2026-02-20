@@ -1,0 +1,42 @@
+{
+    "control_positions": {
+        "1T": {
+            "callsign": "GTF_TWR",
+            "frequency": 118700,
+            "radio_name": "Great Falls Tower"
+        },
+        "1A": {
+            "callsign": "GTF_APP",
+            "frequency": 126800,
+            "radio_name": "Great Falls Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "North": "1A"
+                },
+                "departure_assignments": {
+                    "KGTF": "1A"
+                },
+                "default_consolidation": {
+                    "1A": []
+                }
+            }
+        },
+        "center": "KGTF",
+        "scratchpads": {},
+        "stars_maps": [
+            "STARS-GTF_N-RVM__North RVM",
+            "STARS-GTF_MVA__MVA"
+        ],
+        "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
+    },
+    "handoff_ids": [
+        {
+            "id": "ZLC",
+            "prefix": "C"
+        }
+    ]
+}

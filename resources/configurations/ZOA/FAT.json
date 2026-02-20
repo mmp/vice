@@ -1,0 +1,49 @@
+{
+    "control_positions": {
+        "1F": {
+            "callsign": "FAT_F_APP",
+            "frequency": 119600,
+            "radio_name": "Fresno Approach"
+        },
+        "1H": {
+            "callsign": "FAT_H_APP",
+            "frequency": 132350,
+            "radio_name": "Fresno Approach"
+        },
+        "1S": {
+            "callsign": "FAT_S_APP",
+            "frequency": 118500,
+            "radio_name": "Fresno Approach"
+        },
+        "1T": {
+            "callsign": "FAT_TWR",
+            "frequency": 118200,
+            "radio_name": "Fresno Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BFL",
+            "prefix": "2"
+        },
+        {
+            "id": "NCT",
+            "prefix": "1"
+        },
+        {
+            "id": "NLC",
+            "prefix": "3"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "L"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

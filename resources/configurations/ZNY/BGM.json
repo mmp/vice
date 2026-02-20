@@ -1,0 +1,48 @@
+{
+    "control_positions": {
+        "1G": {
+            "callsign": "BGM_L_APP",
+            "frequency": 118600,
+            "radio_name": "Binghamton Approach"
+        },
+        "1H": {
+            "callsign": "BGM_H_APP",
+            "frequency": 127550,
+            "radio_name": "Binghamton Approach"
+        },
+        "1K": {
+            "callsign": "BGM_TWR",
+            "frequency": 119300,
+            "radio_name": "Bignhamton Tower"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "AVP",
+            "prefix": "2"
+        },
+        {
+            "id": "ELM",
+            "prefix": "1"
+        },
+        {
+            "id": "N90",
+            "prefix": "3"
+        },
+        {
+            "id": "SYR",
+            "prefix": "4"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "B"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "C"
+        }
+    ]
+}

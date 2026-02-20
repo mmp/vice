@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "LCH_E_APP",
+            "frequency": 119800,
+            "radio_name": "Lake Charles Approach"
+        },
+        "1T": {
+            "callsign": "LCH_TWR",
+            "frequency": 120700,
+            "radio_name": "Lake Charles Tower"
+        },
+        "1W": {
+            "callsign": "LCH_W_APP",
+            "frequency": 119350,
+            "radio_name": "Lake Charles Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "I90",
+            "prefix": "2"
+        },
+        {
+            "id": "LFT",
+            "prefix": "1"
+        },
+        {
+            "id": "POE",
+            "prefix": "3"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

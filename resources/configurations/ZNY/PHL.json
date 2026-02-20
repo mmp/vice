@@ -1,0 +1,512 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "PHL_NA_APP",
+            "frequency": 128400,
+            "radio_name": "Philly approach"
+        },
+        "1E": {
+            "callsign": "PHL_ND_DEP",
+            "frequency": 124350,
+            "radio_name": "Philly departure"
+        },
+        "1Q": {
+            "callsign": "PHL_TWR",
+            "frequency": 118500,
+            "radio_name": "Philly tower"
+        },
+        "1D": {
+            "callsign": "PHL_DU_APP",
+            "frequency": 118350,
+            "radio_name": "Philly approach"
+        },
+        "1F": {
+            "callsign": "PHL_F1_APP",
+            "frequency": 125400,
+            "radio_name": "Philly approach"
+        },
+        "1L": {
+            "callsign": "PHL_F2_APP",
+            "frequency": 132675,
+            "radio_name": "Philly approach"
+        },
+        "1P": {
+            "callsign": "PHL_PT_APP",
+            "frequency": 126850,
+            "radio_name": "Philly approach"
+        },
+        "1S": {
+            "callsign": "PHL_SA_APP",
+            "frequency": 133875,
+            "radio_name": "Philly approach"
+        },
+        "1W": {
+            "callsign": "PHL_WD_APP",
+            "frequency": 127350,
+            "radio_name": "Philly approach"
+        },
+        "1Y": {
+            "callsign": "PHL_YD_APP",
+            "frequency": 123800,
+            "radio_name": "Philly approach"
+        },
+        "1H": {
+            "callsign": "PHL_NH_DEP",
+            "frequency": 126075,
+            "radio_name": "Philly departure"
+        },
+        "1V": {
+            "callsign": "PHL_SD_DEP",
+            "frequency": 119750,
+            "radio_name": "Philly departure"
+        },
+        "1J": {
+            "callsign": "PHL_SH_DEP",
+            "frequency": 126600,
+            "radio_name": "Philly departure"
+        }
+    },
+    "config": {
+        "configurations": {
+            "21X": {
+                "inbound_assignments": {
+                    "FINAL17_NORTH": "1F",
+                    "FINAL27_NORTH": "1F",
+                    "FINAL27_SOUTH": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "27L": {
+                "inbound_assignments": {
+                    "ABE-ACY": "1N",
+                    "BOJID4/HAR5": "1N",
+                    "BRAND1": "1E",
+                    "JIIMS4": "1S",
+                    "PAATS4": "1S",
+                    "PHLBO4/JAKIE4": "1E",
+                    "RDG-WRI": "1N",
+                    "SPUDS7": "1N",
+                    "V29.High": "1E",
+                    "V29.Low": "1S"
+                },
+                "departure_assignments": {
+                    "KPHL": "1E"
+                },
+                "default_consolidation": {
+                    "1N": [
+                        "1E",
+                        "1F",
+                        "1S"
+                    ]
+                }
+            }
+        },
+        "center": "KPHL",
+        "controller_configs": {
+            "1N": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "floor": 6000,
+                        "ceiling": 10000,
+                        "vertices": "N039.58.00.152,W075.15.38.616 N040.00.31.585,W075.02.01.426 N040.14.49.439,W075.03.00.148 N040.19.28.670,W075.14.29.485 N040.10.42.919,W075.37.39.146 N040.04.55.559,W075.38.07.078 N040.00.08.116,W075.43.31.642 N040.02.16.312,W075.20.27.474"
+                    }
+                ]
+            },
+            "1E": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 10000,
+                        "vertices": "N039.52.55.927,W075.11.37.988 N040.02.08.965,W075.16.20.200 N040.00.47.213,W075.45.44.961 N040.02.01.385,W076.03.10.118 N039.49.12.204,W076.12.31.272 N039.43.02.363,W075.58.34.553 N039.33.28.451,W075.19.45.562"
+                    }
+                ]
+            },
+            "1D": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 6000,
+                        "vertices": "N039.22.01.820,W075.26.07.749 N039.47.52.924,W075.36.05.899 N039.40.47.547,W076.06.17.133 N039.16.16.423,W075.50.06.573"
+                    }
+                ]
+            },
+            "1F": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 6000,
+                        "vertices": "N040.01.14.583,W075.07.19.755 N040.06.13.988,W074.45.19.775 N039.48.35.551,W074.39.21.071 N039.43.47.682,W075.01.32.971"
+                    }
+                ]
+            },
+            "1P": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N039.54.45.420,W075.05.51.150 N040.05.56.039,W075.10.12.872 N040.26.19.257,W075.23.30.699 N040.13.54.521,W075.51.57.315 N039.59.44.454,W075.44.35.280 N040.01.46.196,W075.21.29.355 N039.52.00.803,W075.13.51.884"
+                    }
+                ]
+            },
+            "1S": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "floor": 6000,
+                        "ceiling": 8000,
+                        "vertices": "N039.28.39.950,W075.18.18.138 N039.37.05.637,W075.06.17.545 N039.43.54.397,W074.48.17.616 N039.49.42.952,W074.38.38.142 N039.57.56.376,W074.43.56.663 N039.53.44.899,W075.08.38.609 N039.45.14.859,W075.02.58.060 N039.38.07.669,W075.18.41.539"
+                    }
+                ]
+            },
+            "1W": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N039.42.56.142,W074.55.02.215 N039.50.43.350,W075.04.27.626 N039.34.38.874,W075.30.35.485 N039.22.01.215,W075.27.35.172"
+                    }
+                ]
+            },
+            "1Y": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 7000,
+                        "vertices": "N039.53.30.520,W075.05.57.000 N040.20.45.066,W075.17.01.728 N040.27.44.332,W075.23.45.146 N040.28.47.380,W075.05.21.020 N040.14.03.873,W074.35.38.351 N040.04.53.252,W074.43.56.444 N039.57.06.347,W074.46.20.694"
+                    }
+                ]
+            },
+            "1V": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 10000,
+                        "vertices": "N039.51.55.859,W075.16.28.220 N039.45.02.609,W075.32.50.535 N039.36.54.280,W075.27.42.176 N039.43.10.837,W075.09.33.486"
+                    },
+                    {
+                        "type": "polygon",
+                        "floor": 6000,
+                        "ceiling": 10000,
+                        "vertices": "N039.36.41.852,W075.29.41.433 N039.45.11.123,W075.08.56.187 N039.35.48.046,W075.06.40.177 N039.25.07.241,W075.14.33.687 N039.21.19.879,W075.27.41.434"
+                    }
+                ]
+            }
+        },
+        "radar_sites": {
+            "NXX": {
+                "char": "N",
+                "position": "40.19980, -75.14820",
+                "elevation": 408,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.175
+            },
+            "PHL": {
+                "char": "P",
+                "position": "KPHL",
+                "elevation": 150,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.175
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "PHLNOCA",
+                    "description": "PHL CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "vertices": [
+                        "39.99353,-75.27406",
+                        "39.88791,-75.21548",
+                        "39.93058,-75.047",
+                        "39.89772,-75.03668",
+                        "39.85968,-75.20819",
+                        "39.73525,-75.14333",
+                        "39.7281,-75.1677",
+                        "39.86025,-75.23223",
+                        "39.82196,-75.42499",
+                        "39.84186,-75.43244",
+                        "39.8784,-75.24258",
+                        "39.98712,-75.2978"
+                    ]
+                },
+                {
+                    "id": "ILGNOCA",
+                    "description": "ILG CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "39.67787,-75.60479"
+                },
+                {
+                    "id": "PNENOCA",
+                    "description": "PNE CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "vertices": [
+                        "40.07569,-75.03271",
+                        "40.01926,-75.1147",
+                        "40.0049,-75.10013",
+                        "40.06448,-75.01097",
+                        "39.99652,-74.94562",
+                        "40.0159,-74.91596",
+                        "40.07651,-74.99092",
+                        "40.14525,-74.89523",
+                        "40.16401,-74.91683",
+                        "40.09764,-75.00448",
+                        "40.22654,-75.14552",
+                        "40.21517,-75.16453"
+                    ]
+                },
+                {
+                    "id": "TTNNOCA",
+                    "description": "TTN CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "vertices": [
+                        "40.27265,-74.82605",
+                        "40.21457,-74.90508",
+                        "40.20265,-74.88945",
+                        "40.26373,-74.81612",
+                        "40.1944,-74.75272",
+                        "40.20421,-74.73504",
+                        "40.27346,-74.80138",
+                        "40.29985,-74.71533",
+                        "40.31505,-74.72249",
+                        "40.28611,-74.80537",
+                        "40.36191,-74.87496",
+                        "40.35088,-74.897"
+                    ]
+                }
+            ],
+            "auto_acquisition": [
+                {
+                    "id": "phlack",
+                    "description": "phl arrival acquisition all",
+                    "type": "polygon",
+                    "vertices": "N039.48.44.780,W076.18.36.732 N040.09.15.358,W076.08.34.654 N040.31.07.346,W075.27.42.066 N040.33.38.710,W075.02.23.728 N040.16.54.848,W074.29.23.360 N040.07.14.742,W074.38.17.433 N039.57.02.035,W074.27.42.396 N039.39.52.547,W074.46.07.730 N039.23.09.358,W074.56.14.917 N039.12.06.951,W075.50.51.452",
+                    "floor": 0,
+                    "ceiling": 10000
+                }
+            ],
+            "secondary_drop": [
+                {
+                    "id": "secdrop",
+                    "description": "drop region all",
+                    "type": "polygon",
+                    "vertices": "N039.48.44.780,W076.18.36.732 N040.09.15.358,W076.08.34.654 N040.31.07.346,W075.27.42.066 N040.33.38.710,W075.02.23.728 N040.16.54.848,W074.29.23.360 N040.07.14.742,W074.38.17.433 N039.57.02.035,W074.27.42.396 N039.39.52.547,W074.46.07.730 N039.23.09.358,W074.56.14.917 N039.12.06.951,W075.50.51.452",
+                    "floor": 0,
+                    "ceiling": 40000
+                }
+            ]
+        },
+        "scratchpads": {
+            "ARD": "ARD",
+            "BAYYS": "BAY",
+            "BDR": "BDR",
+            "COATE": "COA",
+            "DITCH": "DIT",
+            "DIXIE": "DIX",
+            "DQO": "DQO",
+            "FJC": "FJC",
+            "GAYEL": "GAY",
+            "GREKI": "GRE",
+            "HAAYS": "HAY",
+            "HAPIE": "HAP",
+            "MERIT": "MER",
+            "MXE": "MXE",
+            "NEION": "NEI",
+            "OOD": "OOD",
+            "PTW": "PTW",
+            "RBV": "RBV",
+            "RUUTH": "RUU",
+            "STOEN": "STO",
+            "WHITE": "WHI"
+        },
+        "significant_points": {
+            "ARD": {},
+            "BAYYS": {},
+            "BDR": {},
+            "COATE": {},
+            "DITCH": {},
+            "DIXIE": {},
+            "DQO": {},
+            "FJC": {},
+            "GAYEL": {},
+            "GREKI": {},
+            "HAAYS": {
+                "short_name": "HAY"
+            },
+            "HAPIE": {},
+            "MERIT": {},
+            "MXE": {},
+            "NEION": {},
+            "OOD": {},
+            "PTW": {},
+            "RBV": {},
+            "RUUTH": {},
+            "STOEN": {},
+            "WHITE": {}
+        },
+        "stars_maps": [
+            "PHL West",
+            "P Class B",
+            "",
+            "PHL East",
+            "PHL MVA",
+            "",
+            "PHL ATCT West",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "PHL ATCT East",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ],
+        "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
+        "coordination_fixes": {
+            "OOD": [
+                {
+                    "type": "route",
+                    "to": "ZDC",
+                    "from": "ZNY"
+                }
+            ],
+            "DQO": [
+                {
+                    "type": "route",
+                    "to": "ZDC",
+                    "from": "ZNY"
+                }
+            ],
+            "BOJID": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "HIFAL": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "CHPMN": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "SPERY": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "JIIMS": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "PAATS": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "SPUDS": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KPHL"
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ABE",
+            "prefix": "4"
+        },
+        {
+            "id": "ACY",
+            "prefix": "6"
+        },
+        {
+            "id": "DOV",
+            "prefix": "7"
+        },
+        {
+            "id": "MDT",
+            "prefix": "2"
+        },
+        {
+            "id": "N90",
+            "prefix": "1"
+        },
+        {
+            "id": "PCT",
+            "prefix": "9"
+        },
+        {
+            "id": "WRI",
+            "prefix": "3"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "C"
+        }
+    ]
+}

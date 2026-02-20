@@ -1,0 +1,57 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "RSW_E_APP",
+            "frequency": 126800,
+            "radio_name": "Fort Myers Approach"
+        },
+        "1F": {
+            "callsign": "RSW_F_APP",
+            "frequency": 125150,
+            "radio_name": "Fort Myers Approach"
+        },
+        "1G": {
+            "callsign": "RSW_G_APP",
+            "frequency": 119750,
+            "radio_name": "Fort Myers Approach"
+        },
+        "1J": {
+            "callsign": "RSW_TWR",
+            "frequency": 128750,
+            "radio_name": "Fort Myers Tower"
+        },
+        "1K": {
+            "callsign": "RSW_2_TWR",
+            "frequency": 128750,
+            "radio_name": "Fort Myers Tower"
+        },
+        "1L": {
+            "callsign": "RSW_L_APP",
+            "frequency": 127050,
+            "radio_name": "Fort Myers Approach"
+        },
+        "1S": {
+            "callsign": "RSW_S_APP",
+            "frequency": 124125,
+            "radio_name": "Fort Myers Approach"
+        },
+        "1W": {
+            "callsign": "RSW_W_APP",
+            "frequency": 134425,
+            "radio_name": "Fort Myers Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "TPA",
+            "prefix": "1"
+        },
+        {
+            "id": "ZMA",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

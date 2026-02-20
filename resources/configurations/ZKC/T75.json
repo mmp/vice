@@ -1,0 +1,99 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "STL_A_APP",
+            "frequency": 124200,
+            "radio_name": "St. Louis Approach"
+        },
+        "1B": {
+            "callsign": "PIA_B_APP",
+            "frequency": 128725,
+            "radio_name": "St. Louis Approach"
+        },
+        "1D": {
+            "callsign": "STL_D_APP",
+            "frequency": 126500,
+            "radio_name": "St. Louis Approach"
+        },
+        "1E": {
+            "callsign": "STL_E_DEP",
+            "frequency": 119150,
+            "radio_name": "St. Louis Departure"
+        },
+        "1J": {
+            "callsign": "STL_J_APP",
+            "frequency": 132125,
+            "radio_name": "St. Louis Approach"
+        },
+        "1K": {
+            "callsign": "STL_K_APP",
+            "frequency": 123700,
+            "radio_name": "St. Louis Approach"
+        },
+        "1N": {
+            "callsign": "STL_N_APP",
+            "frequency": 124250,
+            "radio_name": "St. Louis Approach"
+        },
+        "1P": {
+            "callsign": "PIA_APP",
+            "frequency": 125800,
+            "radio_name": "St. Louis Approach"
+        },
+        "1Q": {
+            "callsign": "STL_Q_APP",
+            "frequency": 121025,
+            "radio_name": "St. Louis Approach"
+        },
+        "1R": {
+            "callsign": "STL_R_APP",
+            "frequency": 126550,
+            "radio_name": "St. Louis Approach"
+        },
+        "1S": {
+            "callsign": "SPI_APP",
+            "frequency": 126150,
+            "radio_name": "St. Louis Approach"
+        },
+        "1W": {
+            "callsign": "STL_W_DEP",
+            "frequency": 128100,
+            "radio_name": "St. Louis Departure"
+        },
+        "1Z": {
+            "callsign": "STL_Z_APP",
+            "frequency": 125200,
+            "radio_name": "St. Louis Approach"
+        },
+        "9Z": {
+            "callsign": "STL_EM_APP",
+            "frequency": 121500,
+            "radio_name": "St Louis Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CMI",
+            "prefix": "1"
+        },
+        {
+            "id": "MLI",
+            "prefix": "3"
+        },
+        {
+            "id": "SGF",
+            "prefix": "2"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

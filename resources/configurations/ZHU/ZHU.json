@@ -1,0 +1,551 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZHU 01 ZHU TMU",
+            "frequency": 123450,
+            "radio_name": "Houston TMU"
+        },
+        "02": {
+            "callsign": "ZHU 02 GUARD",
+            "frequency": 121500,
+            "radio_name": "Houston Guard"
+        },
+        "23": {
+            "callsign": "ZHU 23 White Lake",
+            "frequency": 132950,
+            "radio_name": "Houston Center"
+        },
+        "24": {
+            "callsign": "ZHU 24 Leeville",
+            "frequency": 132175,
+            "radio_name": "Houston Center"
+        },
+        "25": {
+            "callsign": "ZHU 25 Brookley",
+            "frequency": 127650,
+            "radio_name": "Houston Center"
+        },
+        "26": {
+            "callsign": "ZHU 26 Woodville",
+            "frequency": 128175,
+            "radio_name": "Houston Center"
+        },
+        "27": {
+            "callsign": "ZHU 27 Picayune",
+            "frequency": 126800,
+            "radio_name": "Houston Center"
+        },
+        "28": {
+            "callsign": "ZHU 28 Offshore West",
+            "frequency": 127850,
+            "radio_name": "Houston Center"
+        },
+        "30": {
+            "callsign": "ZHU 30 Offshore East",
+            "frequency": 134900,
+            "radio_name": "Houston Center"
+        },
+        "34": {
+            "callsign": "ZHU 34 Baton Rouge",
+            "frequency": 126350,
+            "radio_name": "Houston Center"
+        },
+        "36": {
+            "callsign": "ZHU 36 Liberty",
+            "frequency": 124700,
+            "radio_name": "Houston Center"
+        },
+        "37": {
+            "callsign": "ZHU 37 Hattiesburg",
+            "frequency": 126875,
+            "radio_name": "Houston Center"
+        },
+        "38": {
+            "callsign": "ZHU 38 Daisetta",
+            "frequency": 126950,
+            "radio_name": "Houston Center"
+        },
+        "40": {
+            "callsign": "ZHU 40 Polk",
+            "frequency": 120975,
+            "radio_name": "Houston Center"
+        },
+        "42": {
+            "callsign": "ZHU 42 Alexandria",
+            "frequency": 132700,
+            "radio_name": "Houston Center"
+        },
+        "43": {
+            "callsign": "ZHU 43 Trinity",
+            "frequency": 133800,
+            "radio_name": "Houston Center"
+        },
+        "46": {
+            "callsign": "ZHU 46 Houston",
+            "frequency": 132775,
+            "radio_name": "Houston Center"
+        },
+        "49": {
+            "callsign": "ZHU 49 Lufkin",
+            "frequency": 125175,
+            "radio_name": "Houston Center"
+        },
+        "50": {
+            "callsign": "ZHU 50 Stonewall",
+            "frequency": 134200,
+            "radio_name": "Houston Center"
+        },
+        "53": {
+            "callsign": "ZHU 53 Offshore Central",
+            "frequency": 120350,
+            "radio_name": "Houston Center"
+        },
+        "56": {
+            "callsign": "ZHU 56 Shiner",
+            "frequency": 134600,
+            "radio_name": "Houston Center"
+        },
+        "58": {
+            "callsign": "ZHU 58 Brownsville",
+            "frequency": 128150,
+            "radio_name": "Houston Center"
+        },
+        "59": {
+            "callsign": "ZHU 59 Corpus Christi",
+            "frequency": 133750,
+            "radio_name": "Houston Center"
+        },
+        "63": {
+            "callsign": "ZHU 63 Mobile",
+            "frequency": 125775,
+            "radio_name": "Houston Center"
+        },
+        "65": {
+            "callsign": "ZHU 65 McComb",
+            "frequency": 119725,
+            "radio_name": "Houston Center"
+        },
+        "68": {
+            "callsign": "ZHU 68 Galveston",
+            "frequency": 123825,
+            "radio_name": "Houston Center"
+        },
+        "70": {
+            "callsign": "ZHU 70 Tibby",
+            "frequency": 134925,
+            "radio_name": "Houston Center"
+        },
+        "72": {
+            "callsign": "ZHU 72 Ocean East",
+            "frequency": 135775,
+            "radio_name": "Houston Center"
+        },
+        "74": {
+            "callsign": "ZHU 74 Alamo",
+            "frequency": 128650,
+            "radio_name": "Houston Center"
+        },
+        "76": {
+            "callsign": "ZHU 76 Slimm",
+            "frequency": 125625,
+            "radio_name": "Houston Center"
+        },
+        "78": {
+            "callsign": "ZHU 78 Austin",
+            "frequency": 126425,
+            "radio_name": "Houston Center"
+        },
+        "79": {
+            "callsign": "ZHU 79 Ocean West",
+            "frequency": 132650,
+            "radio_name": "Houston Center"
+        },
+        "80": {
+            "callsign": "ZHU 80 Industry",
+            "frequency": 132150,
+            "radio_name": "Houston Center"
+        },
+        "81": {
+            "callsign": "ZHU 81 Esler",
+            "frequency": 134425,
+            "radio_name": "Houston Center"
+        },
+        "82": {
+            "callsign": "ZHU 82 Bilee",
+            "frequency": 123725,
+            "radio_name": "Houston Center"
+        },
+        "83": {
+            "callsign": "ZHU 83 Cugar",
+            "frequency": 128075,
+            "radio_name": "128.075"
+        },
+        "84": {
+            "callsign": "ZHU 84 Sotex",
+            "frequency": 135425,
+            "radio_name": "Houston Center"
+        },
+        "85": {
+            "callsign": "ZHU 85 Kelly",
+            "frequency": 134950,
+            "radio_name": "Houston Center"
+        },
+        "87": {
+            "callsign": "ZHU 87 Eagle Lake",
+            "frequency": 128600,
+            "radio_name": "Houston Center"
+        },
+        "88": {
+            "callsign": "ZHU 88 Frio",
+            "frequency": 127025,
+            "radio_name": "Houston Center"
+        },
+        "92": {
+            "callsign": "ZHU 92 Voodo",
+            "frequency": 132600,
+            "radio_name": "Houston Center"
+        },
+        "93": {
+            "callsign": "ZHU 93 Laredo",
+            "frequency": 127800,
+            "radio_name": "Houston Center"
+        },
+        "95": {
+            "callsign": "ZHU 95 Palacios",
+            "frequency": 123600,
+            "radio_name": "Houston Center"
+        },
+        "96": {
+            "callsign": "ZHU 96 Bergstrom",
+            "frequency": 125650,
+            "radio_name": "Houston Center"
+        },
+        "97": {
+            "callsign": "ZHU 97 Junction",
+            "frequency": 132400,
+            "radio_name": "Houston Center"
+        },
+        "98": {
+            "callsign": "ZHU 98 Rocksprings",
+            "frequency": 125750,
+            "radio_name": "Houston Center"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "GILLL": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "HOWLN": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "BOPPR": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "DOMNO": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "DXEEE": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "LAIKS": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "WLEEE": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "GABOO": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "TOAMY": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "I90"
+                }
+            ],
+            "BEATL": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "SSTAX": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "ZEEKK": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "WUUDZ": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "CATTT": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "BBQUE": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "JJACK": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "BAYYY": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "BELLR": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "CAASE": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "CESAN": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "TKNIQ": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ],
+            "WAPPL": [
+                {
+                    "type": "route",
+                    "to": "I90",
+                    "from": "ZHU"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "ACT",
+            "stars_id": "ACT",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "A"
+        },
+        {
+            "id": "AUS",
+            "stars_id": "AAU",
+            "single_char_stars_id": "U",
+            "two_char_stars_id": "AA",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "BTR",
+            "stars_id": "ARY",
+            "single_char_stars_id": "Z",
+            "two_char_stars_id": "AR",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "CRP",
+            "stars_id": "ACR",
+            "single_char_stars_id": "C",
+            "two_char_stars_id": "AC",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "DLF",
+            "stars_id": "ADL",
+            "single_char_stars_id": "D",
+            "two_char_stars_id": "AD",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "GGG",
+            "stars_id": "GGG",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "GPT",
+            "stars_id": "AGP",
+            "single_char_stars_id": "G",
+            "two_char_stars_id": "AG",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "GRK",
+            "stars_id": "GRK",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "G"
+        },
+        {
+            "id": "I90",
+            "stars_id": "AIA",
+            "single_char_stars_id": "I",
+            "two_char_stars_id": "AI",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "LCH",
+            "stars_id": "ALC",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "AL",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "LFT",
+            "stars_id": "AFT",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "AF",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "MAF",
+            "stars_id": "MAF",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "M"
+        },
+        {
+            "id": "MLU",
+            "stars_id": "MLU",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "M"
+        },
+        {
+            "id": "MOB",
+            "stars_id": "ABA",
+            "single_char_stars_id": "B",
+            "two_char_stars_id": "AB",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "MSY",
+            "stars_id": "AMS",
+            "single_char_stars_id": "N",
+            "two_char_stars_id": "AM",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "NQI",
+            "stars_id": "AQI",
+            "single_char_stars_id": "Q",
+            "two_char_stars_id": "AQ",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "P31",
+            "stars_id": "PNS",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "P"
+        },
+        {
+            "id": "POE",
+            "stars_id": "APO",
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "AP",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "SAT",
+            "stars_id": "ASA",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "AS",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "SHV",
+            "stars_id": "SHV",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "S"
+        },
+        {
+            "id": "ZAB",
+            "prefix": "A"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "F"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "J"
+        },
+        {
+            "id": "ZMA",
+            "prefix": "R"
+        },
+        {
+            "id": "ZME",
+            "prefix": "M"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ]
+}

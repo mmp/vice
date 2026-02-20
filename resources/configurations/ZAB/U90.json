@@ -1,0 +1,27 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "TUS_APP",
+            "frequency": 119400,
+            "radio_name": "Tucson Approach"
+        },
+        "1D": {
+            "callsign": "TUS_DEP",
+            "frequency": 125100,
+            "radio_name": "Tucson Departure"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "FHU",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

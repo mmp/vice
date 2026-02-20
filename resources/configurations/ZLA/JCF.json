@@ -1,0 +1,85 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "PMD_A_APP",
+            "frequency": 124550,
+            "radio_name": "Joshua Approach"
+        },
+        "1F": {
+            "callsign": "EDW_F_APP",
+            "frequency": 133150,
+            "radio_name": "Joshua Approach"
+        },
+        "1I": {
+            "callsign": "EDW_I_APP",
+            "frequency": 134050,
+            "radio_name": "Joshua Approach"
+        },
+        "1J": {
+            "callsign": "JCF_APP",
+            "frequency": 133650,
+            "radio_name": "Joshua Approach"
+        },
+        "1M": {
+            "callsign": "EDW_M_APP",
+            "frequency": 120250,
+            "radio_name": "Joshua Approach"
+        },
+        "1O": {
+            "callsign": "EDW_O_APP",
+            "frequency": 126550,
+            "radio_name": "Joshua Approach"
+        },
+        "1P": {
+            "callsign": "PMD_P_APP",
+            "frequency": 126100,
+            "radio_name": "Joshua Approach"
+        },
+        "1S": {
+            "callsign": "EDW_S_APP",
+            "frequency": 123950,
+            "radio_name": "Joshua Approach"
+        },
+        "1W": {
+            "callsign": "EDW_W_APP",
+            "frequency": 127500,
+            "radio_name": "Joshua Approach"
+        },
+        "2D": {
+            "callsign": "EDW_D_APP",
+            "frequency": 126200,
+            "radio_name": "Desert Radio"
+        },
+        "2T": {
+            "callsign": "EDW_T_APP",
+            "frequency": 132750,
+            "radio_name": "Sport Control"
+        },
+        "3C": {
+            "callsign": "NID_APP",
+            "frequency": 128250,
+            "radio_name": "China Control"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BFL",
+            "prefix": "2"
+        },
+        {
+            "id": "SCT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "C"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "O"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

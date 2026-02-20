@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "HOP_N_APP",
+            "frequency": 118100,
+            "radio_name": "Campbell Approach"
+        },
+        "1S": {
+            "callsign": "HOP_S_APP",
+            "frequency": 134350,
+            "radio_name": "Campbell Approach"
+        },
+        "1T": {
+            "callsign": "HOP_TWR",
+            "frequency": 120900,
+            "radio_name": "Campbell Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BNA",
+            "prefix": "1"
+        },
+        {
+            "id": "EVV",
+            "prefix": "2"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZME",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

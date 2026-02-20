@@ -1,0 +1,22 @@
+{
+    "control_positions": {
+        "1S": {
+            "callsign": "SUU_S_APP",
+            "frequency": 119900,
+            "radio_name": "Travis Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "NCT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

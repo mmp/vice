@@ -1,0 +1,41 @@
+{
+    "control_positions": {
+        "1G": {
+            "callsign": "GRB_G_APP",
+            "frequency": 119400,
+            "radio_name": "Green Bay Approach"
+        },
+        "1S": {
+            "callsign": "GRB_S_APP",
+            "frequency": 126300,
+            "radio_name": "Green Bay Approach"
+        },
+        "1T": {
+            "callsign": "GRB_TWR",
+            "frequency": 118700,
+            "radio_name": "Green Bay Tower"
+        },
+        "1X": {
+            "callsign": "GRB_X_APP",
+            "frequency": 120200,
+            "radio_name": "GRB_X_APP"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "MKE",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

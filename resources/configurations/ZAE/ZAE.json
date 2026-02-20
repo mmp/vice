@@ -1,0 +1,18 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZAE_TUL",
+            "frequency": 132350,
+            "radio_name": "Academy Center"
+        },
+        "02": {
+            "callsign": "ZAE_OKC",
+            "frequency": 125650,
+            "radio_name": "Academy Center"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": []
+}

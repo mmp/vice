@@ -1,0 +1,59 @@
+{
+    "control_positions": {
+        "1J": {
+            "callsign": "SCK_J_APP",
+            "frequency": 123850,
+            "radio_name": "Stockton Approach"
+        },
+        "1K": {
+            "callsign": "SCK_K_APP",
+            "frequency": 120950,
+            "radio_name": "Stockton Approach"
+        },
+        "1L": {
+            "callsign": "LVK_TWR",
+            "frequency": 118100,
+            "radio_name": "Livermore Tower"
+        },
+        "1P": {
+            "callsign": "MOD_TWR",
+            "frequency": 125300,
+            "radio_name": "Modesto Tower"
+        },
+        "1Y": {
+            "callsign": "SCK_Y_APP",
+            "frequency": 125100,
+            "radio_name": "Stockton Approach"
+        },
+        "1Z": {
+            "callsign": "SCK_TWR",
+            "frequency": 120300,
+            "radio_name": "Stockton Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "FAT",
+            "prefix": "3"
+        },
+        {
+            "id": "NLC",
+            "prefix": "4"
+        },
+        {
+            "id": "O90",
+            "prefix": "1"
+        },
+        {
+            "id": "SUU",
+            "prefix": "2"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

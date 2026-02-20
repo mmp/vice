@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "NMM_APP",
+            "frequency": 120500,
+            "radio_name": "Meridian Approach"
+        },
+        "1Z": {
+            "callsign": "NMM_TWR",
+            "frequency": 126200,
+            "radio_name": "Navy Mc Cain Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BHM",
+            "prefix": "2"
+        },
+        {
+            "id": "CBM",
+            "prefix": "1"
+        },
+        {
+            "id": "ZME",
+            "prefix": "C"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

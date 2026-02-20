@@ -216,6 +216,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-locations">Specifying Locations</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-routes">Aircraft Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airlines-aircraft">Airlines and Aircraft</a></li>
+          <li class="nav-item"><a class="nav-link scrollto" href="#fe-facility-config">Facility Configuration</a></li>
           <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenario-groups">Scenario Groups</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airports">Airports</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-approaches">Approaches</a></li>
@@ -328,7 +329,7 @@ index ca31f47..48159e0 100644
               </p>
               <p><i>vice</i> supports departure and arrival control
                 scenarios in numerous TRACONs and ATCT/TRACONs, currently:
-A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, BTV, BUF, C90, CHS, CID, CLE, CLT, COS, CPR, D01, D10, D21, DAB, EWR, F11, GSO, GSP, GTF, I90, IND, JAX, L30, M98, MCI, MDT, MIA, MKE, N90, NCT, OKC, P31, P50, P80, PCT, PHL, PIT, PVD, PWM, R90, RDU, S46, S56, SAV, SBA, SBN, SCT, SDF, SGF, SYR, TPA, and Y90.
+A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, BTV, BUF, C90, CHS, CID, CLE, CLT, COS, CPR, CVG, D01, D10, D21, DAB, F11, GSO, GSP, GTF, HNL, I90, IND, JAX, L30, M98, MCI, MDT, MIA, MKE, MYR, N90, NCT, OGG, OKC, P31, P50, P80, PCT, PHL, PIT, PVD, PWM, R90, RDU, S46, S56, SAT, SAV, SBA, SBN, SCT, SDF, SGF, SYR, TPA, and Y90.
                 New scenarios are regularly added.
                 Adding scenarios at additional airports is a matter of writing JSON configuration files that describe them;
                 see <a href="#section-facility-engineering">below</a> for
@@ -1577,7 +1578,7 @@ how it simulates aircraft or the STARS interface.
               <li>Facility engineering
                 <ul>
                   <li>Added "max_distance" field for when far-away aircraft are culled (125nm default)</li>
-                  <li>"solo_controller" and "multi_controllers" are both gone: "configuration"s are now specified in "stars_config"; they give which arrival/departure flows go to which controller. Then each scenario has a "configuration" field as well; it references a configuration from "stars_config" and also provides a default consolidation: the controller hierarchy.</li>
+                  <li>"solo_controller" and "multi_controllers" are both gone: "configuration"s are now specified in "config"; they give which arrival/departure flows go to which controller. Then each scenario has a "configuration" field as well; it references a configuration from "config" and also provides a default consolidation: the controller hierarchy.</li>
                   <li>Removed deprecated "arrivals" for specifying arrival rates; this is now "inbound_rates".</li>
               </ul></li>
             </ul>
@@ -1773,7 +1774,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                       <li>"vfr_inhibit": an additional region (beyond B and C airspace) that VFRs will remain outside of.</li>
                     </ul>
                   </li>
-                  <li>"inhibit_ca_volumes" in "stars_config" has moved to "inhibit_ca" under the "filters".</li>
+                  <li>"inhibit_ca_volumes" in "config" has moved to "inhibit_ca" under the "filters".</li>
                   <li>For airspace volumes, the "name" field was renamed to "label" (and can be no more than 7 characters).
                     Added a "description" field for a longer description of it.</li>
                   <li>Added support "ssr_codes" to specify beacon code pool for local flight plans.</li>
@@ -1834,9 +1835,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
               <li>Facility engineering:
                 <ul>
-                  <li>Added "custom_spcs" in "stars_config" to allow specifying facility-specific special purpose codes that
+                  <li>Added "custom_spcs" in "config" to allow specifying facility-specific special purpose codes that
                     aircraft can have assigned to them. There is also now "display_custom_spcs" under the "pdb" adaptation
-                    in "stars_config" to determine whether such SPCs are shown in partial datablocks.</li>
+                    in "config" to determine whether such SPCs are shown in partial datablocks.</li>
                   <li>Added "beacon_code_blocks" to "controller_configs" to allow specifying per-controller default monitored
                     beacon code blocks.</li>
                   <li>STARS now has a <code>.VFR</code> command to toggle whether the VFR airports are shown on the scope and
@@ -1910,14 +1911,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <li>Departures are now auto-tracked by default.</li>
                   <li>Improve representation of SPCs (Makoto Sakaguchi.)</li>
                   <li>Improve handling of altimeters in SSA list: don't draw more than 6, allow developer to specify the ones
-                    to draw via "altimeters" in "stars_config" if there are more than 6.</li>
+                    to draw via "altimeters" in "config" if there are more than 6.</li>
                   <li>When a partial callsign is given to specify an aircraft to be given an instruction, it must be
                     a unique suffix of an aircraft callsign; we no longer accept a prefix or the middle part of a callsign.</li>
                   <li>OJTI mode now available where an instructor can issue aircraft control commands (Michael Trokel).</li>
                 </ul>
               <li>Facility engineering:
                 <ul>
-                  <li>New adaptations under "stars_config": "handoff_acceptance_flash_duration" gives the number of seconds
+                  <li>New adaptations under "config": "handoff_acceptance_flash_duration" gives the number of seconds
                     datablocks flash after an accepted handoff, "handoff_sector_display_duration" gives the number of seconds
                     the external sector id is displayed after a handoff, and "display_handoff_facility_only" inhibits the
                     display of external facility sector ids in datablocks.</li>
@@ -1961,7 +1962,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <li>"arrival_groups" is no longer supported: arrivals must be specified using the <a href="#fe-arrivals">"inbound_flows"</a> variable.</li>
                   <li>"star" is now optional for arrivals; the pilot contact message has been improved for arrivals not on STARs.</li>
                   <li>Added an adaptation ("yellow_entries") for coordination lists that causes list entries to be yellow, not green.</li>
-                  <li>Added an adaptation ("use_legacy_font") to "stars_config" to select the legacy STARS font.
+                  <li>Added an adaptation ("use_legacy_font") to "config" to select the legacy STARS font.
                     (The font used can also be selected in the "settings" window.)</li>
                 </ul>
                 </li>
@@ -1988,7 +1989,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>Added global scale controls for departure and arrival/overflight rates.</li>
               <li>Facility engineering:
                 <ul>
-                  <li>Added "scratchpad1" adaptation to "stars_config", providing 4 preset scratchpad formats for departures.</li>
+                  <li>Added "scratchpad1" adaptation to "config", providing 4 preset scratchpad formats for departures.</li>
                   <li>In "expect_approach" in STARs, different approaches can be specified depending on the destination airport.</li>
                   <li>An array of altitudes may be specified for departures and overflights; one will be chosen at random for each aircraft.</li>
                   <li>For GA ("n" airline) aircraft, "GAsinglepiston", "GAmultipiston", and "GAturbine" fleets are now available.</li>
@@ -2149,7 +2150,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     the other information (short name for DCB, map id number) is found automatically.
                     Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the available
                     maps for an ARTCC.</li>
-                  <li>"stars_config" has a new "controller_configs" field that can be used to specify controller-adapted
+                  <li>"config" has a new "controller_configs" field that can be used to specify controller-adapted
                     sets of video maps in the DCB, which maps are enabled by default, as well
                     as the initial center and range of the STARS scope for each controller.</li>
                 </ul>
@@ -2229,9 +2230,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>Facility engineering changes/improvements:
                 <ul>
                   <li>In scenario groups, "tracon" must be a valid 3-letter id from the <a href="https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon">FAA list of TRACONs</a>. (This allows <i>vice</i> to present scenarios grouped by ARTCC and then TRACON.)</li>
-                  <li>In the <a href="#fe-scenario-groups">specification of controllers in "control_positions"</a>, "eram_facility" and "facility_id" may now be specified.</li>
+                  <li>In the <a href="#fe-facility-config">specification of controllers in "control_positions"</a>, "facility_id" may now be specified. ARTCC controllers automatically have their ERAM facility status set at runtime.</li>
                   <li><i>vice</i> now has a built-in model of magnetic declination. Therefore, the "magnetic_variation" setting is no longer used. If small adjustments are needed (e.g. due to video maps assuming a different magnetic adjustment, "magnetic_correction" can be used to add a small offset to the automatically-determined value.</li>
-                  <li>There is a new "stars_config" field in scenario definitions with a number of new fields to define per-facility STARS behavior. (See the <a href="#fe-stars-videomaps">STARS and Video Maps</a> section for details.) The entries "center", "inhibit_ca_volumes", "radar_sites", "range", "scratchpads", "stars_maps", and "video_map_file" have moved from the scenario to be inside "stars_config".</li>
+                  <li>There is a new "config" field in scenario definitions with a number of new fields to define per-facility STARS behavior. (See the <a href="#fe-stars-videomaps">STARS and Video Maps</a> section for details.) The entries "center", "inhibit_ca_volumes", "radar_sites", "range", "scratchpads", "stars_maps", and "video_map_file" have moved from the scenario to be inside "config".</li>
                   <li>In <a href="#fe-airports">airport specifications</a>, the Boolean value "omit_arrival_scratchpad" may be set to indicate that the arrival airport should not be shown in place of an empty scratchpad in datablocks.</li>
                 </ul>
               </li>
@@ -4104,7 +4105,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tr>
               </tbody>
             </table>
-            <p>It is also possible to add custom codes for a facility via "custom_spcs" in <a href="#fe-stars-videomaps">"stars_config"</a>.
+            <p>It is also possible to add custom codes for a facility via "custom_spcs" in <a href="#fe-stars-videomaps">"config"</a>.
             Custom SPCs are shown in yellow.</p>
 
             <h3 id="stars-leader-lines">Leader Lines and Positioning Datablocks</h3>
@@ -6890,8 +6891,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <p>In the following, the use of terms like "element", "object", "member", "array", etc.,
                 correspond to their use in the JSON specification.  See <a href="https://www.json.org/json-en.html">this page</a> for reference.
                 </p>
-              <p>See the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code> directory</a> in the 
-                  vice source code for the scenarios that are currently available and the
+              <p>See the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code> directory</a> in the
+                  vice source code for the scenarios that are currently available,
+                the <a href="https://github.com/mmp/vice/tree/master/resources/configurations"><code>resources/configurations/</code> directory</a> for
+                facility configuration files (control positions, STARS config, and handoff topology),
+                and the
                 <a href="https://github.com/mmp/vice/tree/master/resources/videomaps"><code>resources/videomaps/</code> directory</a> for
                 the video map definitions.
                 Files in those directories with names ending with a "zst" suffix have been compressed using <a href="https://facebook.github.io/zstd/">zstandard</a>;
@@ -7259,6 +7263,102 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </p>
           </section><!--//section-->
 
+          <section class="docs-section" id="fe-facility-config">
+            <h2 class="section-heading">Facility Configuration</h2>
+
+            <p>Facility-wide settings are defined in separate JSON files, stored in
+              the <a href="https://github.com/mmp/vice/tree/master/resources/configurations"><code>resources/configurations/</code></a>
+              directory. They're organized by ARTCC and facility name (e.g., <code>resources/configurations/ZNY/N90.json</code>).
+              When a scenario is loaded, <i>vice</i> automatically loads the corresponding facility configuration
+              based on the scenario's "tracon" field.
+            </p>
+            <p>Each facility configuration file may contain the following top-level elements:</p>
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"control_positions"</td>
+                <td>Object</td>
+                <td><p>Information about all of the controllers at the facility.
+                Each member specifies a controller for the named position/sector.
+                For each position, the following members should be specified:</p>
+                  <ul>
+                    <li>the sector id of the control position would be the key of the object.</li>
+                    <li>"radio_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
+                    <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
+                    <li>"scope_char":  (<i>Optional</i>) a string giving a single character for the STARS position symbol for tracks owned by this position (e.g., "C"). If unset, the position symbol is generated automatically by:
+                      <ul>
+                        <li>For local positions, the last character of the TCP id: "4P" gets "P", for example.</li>
+                        <li>For positions at external facilities, the numeric "facility_id".</li>
+                        <li>For enroute controllers (in ARTCC configs), the first character of their sector id: "N56" gets "N" by default.</li>
+                      </ul>
+                      An error is issued if the given "scope_char" is the same as <i>vice</i> would have automatically selected.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"config"</td>
+                <td>Object</td>
+                <td>Defines settings and configurations related to the STARS radar scope.
+                  See <a href="#fe-stars-videomaps">STARS and Video Maps</a> for documentation about the items stored in this object.</td>
+              </tr>
+              <tr>
+                <td>"handoff_ids"</td>
+                <td>Array</td>
+                <td><p>An array of objects identifying neighboring facilities and mapping them
+                  to short STARS identifiers used in handoff route specifications (e.g., <code>/ho1Z</code>).
+                  Controllers from each listed facility are loaded and may participate in handoffs.</p>
+                  <p>Each entry has the following members:</p>
+                  <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Element</th>
+                      <th>Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"id"</td>
+                      <td>String</td>
+                      <td>The facility code of the neighbor (e.g., "MKE", "ZAU"). Required. </td>
+                    </tr>
+                    <tr>
+                      <td>"prefix"</td>
+                      <td>String</td>
+                      <td>A short prefix for the facility, used when referencing ARTCC sectors or TRACON sectors as a TRACON. For ARTCC neighbors this is a letter (e.g., "G" for ZAU); for TRACON neighbors this is a digit (e.g., "1"). Cannot be used in
+                        conjunction with "stars_id", "single_char_stars_id", or "two_char_stars_id".</td>
+                    </tr>
+                    <tr>
+                      <td>"stars_id"</td>
+                      <td>String</td>
+                      <td>The full STARS identifier for the facility (e.g., "AAA"). Used  when referencing a TRACON from an ARTCC. Cannot be used in conjunction with "prefix".</td>
+                    </tr>
+                    <tr>
+                      <td>"single_char_stars_id"</td>
+                      <td>String</td>
+                      <td>A one-character STARS identifier for the facility (e.g., "A"). Used when referencing a TRACON from an ARTCC. Cannot be used in conjunction with "prefix".</td>
+                    </tr>
+                    <tr>
+                      <td>"two_char_stars_id"</td>
+                      <td>String</td>
+                      <td>A two-character STARS identifier. Used when referencing a TRACON from an ARTCC. Cannot be used in conjunction with "prefix".</td>
+                    </tr>
+                  </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+            </table>
+
+          </section><!--//section-->
+
           <section class="docs-section" id="fe-scenario-groups">
             <h2 class="section-heading">Scenario Groups</h2>
 
@@ -7268,6 +7368,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               airport.
               Each scenario group is specified by its own JSON file; see the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code></a> directory in the
               <i>vice</i> source code distribution for examples.
+              The facility-wide settings (control positions, STARS configuration) are stored separately in
+              <a href="#fe-facility-config">facility configuration files</a>.
             </p>
             <p>These are the elements of a scenario group:</p>
             <table class="table">
@@ -7294,34 +7396,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>Object</td>
                 <td>Defines the routes for arrivals and overflights;
                 see <a href="#fe-arrivals">Arrivals and Overflights</a>.</td>
-              </tr>
-              <tr>
-                <td>"control_positions"</td>
-                <td>Object</td>
-                <td><p>Information about all of the controllers that are used
-                in the scenarios in the group.  Each member specifies a
-                controller for the named position/sector.  For each
-                position, the following members should be specified:</p>
-                  <ul>
-                    <li>"eram_facility": (<i>Optional</i>) indicates whether the controller is using an ERAM scope (i.e., is a center controller).</li>
-                    <li>"facility_id": (<i>Optional</i>) a single character giving the controller's facility. This should only be specified for controllers outside of the TRACON.</li>
-                    <li>"radio_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
-                    <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
-                    <li>"scope_char":  (<i>Optional</i>) a string giving a single character to for the STARS position symbol for tracks owned by this position (e.g., "C"). If unset, the position symbol is generated automatically by:
-                      <ul>
-                        <li>For local positions, the last character of the TCP id: "4P" gets "P", for example.</li>
-                        <li>For positions at external facilities, the numeric "facility_id".</li>
-                        <li>For enroute controllers (where "eram_facility" is true), the first character of their "sector_id": "N56" gets "N" by default.</li>
-                      </ul>
-                      An error is issued if the given "scope_char" is the same as <i>vice</i> would have automatically selected.</li>
-                    <li>"sector_id": the controller's sector id, as used for handoffs, etc. (e.g., "N56")</li>
-                  </ul>
-                  <p>One additional member may be required.</p>
-                  <ul>
-                    <li>"default_airport": when CRDA is used, each
-                    controller must have a default airport specified for CRDA commands.</li>
-                  </ul>
-                </td>
               </tr>
               <tr>
                 <td>"default_scenario"</td>
@@ -7375,11 +7449,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>"scenarios"</td>
                 <td>Object</td>
                 <td>This defines all of the ATC scenarios that are available in the scenario group. See the <a href="#fe-scenarios">scenarios section</a> for details.</td>
-              </tr>
-              <tr>
-                <td>"stars_config"</td>
-                <td>Object</td>
-                <td>Defines settings and configurations related to the STARS radar scope. See <a href="#fe-stars-videomaps">STARS and Video Maps</a> for documentation about the items stored in this object.</td>
               </tr>
               <tr>
                 <td>"tracon"</td>
@@ -7585,7 +7654,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>"hold_for_release"</td>
                 <td>Boolean</td>
                 <td>(<i>Optional</i>) If true, departures from the airport must be released by a controller.
-                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"stars_config"</a>,
+                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"config"</a>,
                   then the release will be managed using STARS coordination lists; otherwise it will appear
                   in the <i>Launch Control</i> window.
                 </td>
@@ -7812,7 +7881,7 @@ Given the id, the approach can be specified with:</p>
                 <td>"hold_for_release"</td>
                 <td>Boolean</td>
                 <td>(<i>Optional</i>) If true, departures on this route must be released by a controller.
-                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"stars_config"</a>,
+                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"config"</a>,
                   then the release will be managed using STARS coordination lists; otherwise it will appear
                   in the <i>Launch Control</i> window.
                 </td>
@@ -7893,7 +7962,7 @@ Given the id, the approach can be specified with:</p>
                 <td>Optional String</td>
                 <td>If specified, this gives the aircraft's initial scratchpad. Otherwise, the scratchpad
                   is set based on the exit, either using the "scratchpads" dictionary in the scenario definition or
-                  via "display_exit_gate" or "display_alternate_exit_gate" in "stars_config".</td>
+                  via "display_exit_gate" or "display_alternate_exit_gate" in "config".</td>
               </tr>
               <tr>
                 <td>"secondary_scratchpad"</td>
@@ -8559,7 +8628,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"controllers"</td>
                 <td>Array of strings</td>
-                <td>Callsigns of the other virtual controllers who are online. (These also must be in "control_positions".)</td>
+                <td>Callsigns of the other virtual controllers who are online. (These also must be in <a href="#fe-facility-config">"control_positions"</a> in the facility configuration.)</td>
               </tr>
               <tr>
                 <td>"default_maps"</td>
@@ -8609,7 +8678,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   The following members are available:
                   <ul>
                     <li>"config_id": A short identifier (maximum 3 characters) that references a configuration
-                      defined in <a href="#fe-stars-videomaps">"configurations"</a> under "stars_config".
+                      defined in <a href="#fe-stars-videomaps">"configurations"</a> under "config".
                       The referenced configuration provides the inbound and departure assignments for this scenario.
                       The selected configuration must assignments for all of the scenario's active
                       arrivals and departures.</li>
@@ -8820,8 +8889,8 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
           <section class="docs-section" id="fe-stars-videomaps">
             <h2 class="section-heading">STARS and Video Maps</h2>
 
-            <p>A number of settings related to the STARS radar scope are set using the "stars_config" object
-              in the scenario group. It stores the following values:
+            <p>A number of settings related to the STARS radar scope are set using the "config" object
+              in the <a href="#fe-facility-config">facility configuration file</a>. It stores the following values:
               </p>
 
             <table class="table">
@@ -8944,7 +9013,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   </ul>
                   These configurations allow multiple scenarios to share the same assignment definitions,
                   reducing duplication when only the consolidation hierarchy differs between scenarios.
-                  The TCPs referenced in assignments must exist in "control_positions".
+                  The TCPs referenced in assignments must exist in <a href="#fe-facility-config">"control_positions"</a> in the facility configuration.
                   It is acceptable for a configuration to include assignments for flows or departures
                   that a particular scenario doesn't use; only the assignments needed by the scenario's
                   active arrivals and departures are required.
@@ -9331,7 +9400,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             <h3 id="fe-stars-list-format">List Formatting</h3>
 
             <p>STARS system lists display information about aircraft in various contexts. 
-              The format of entries in these lists can be customized using the "format" field for the corresponding list in "stars_config".
+              The format of entries in these lists can be customized using the "format" field for the corresponding list in "config".
               The format string consists of literal text and format specifiers enclosed in square brackets.</p>
 
             <p>The following format specifiers are available for all system lists:</p>
@@ -9390,7 +9459,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
 
             <p>STARS uses <em>filter regions</em> to manage a number of behaviors that are enabled or disabled
               depending on whether an aircraft's track is within particular volumes of space.
-              These regions are defined under "filters" in the <a href="#fe-stars-videomaps">stars_config</a> object.
+              These regions are defined under "filters" in the <a href="#fe-stars-videomaps">config</a> object.
               As an example, the "inhibit_ca" filter is used to disable collision alerts
               close to airports so that spurious alerts aren't issued between departing and arriving aircraft.
               The lateral extent of filter volumes volumes can be defined either with a polygon or a circle and their

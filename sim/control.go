@@ -15,7 +15,6 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
@@ -844,7 +843,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 
 			if ac != nil {
 				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
-					func(wp av.Waypoint) bool { return wp.TransferComms })
+					func(wp av.Waypoint) bool { return wp.TransferComms() })
 				if !haveTransferComms && s.isVirtualController(previousTrackingController) {
 					// For a handoff from a virtual controller, transfer
 					// comms only if the pilot is on the virtual's
@@ -1306,7 +1305,7 @@ type HeadingArgs struct {
 	Present      bool
 	LeftDegrees  int
 	RightDegrees int
-	Turn         nav.TurnMethod
+	Turn         av.TurnDirection
 }
 
 func (s *Sim) AssignHeading(hdg *HeadingArgs) (av.CommandIntent, error) {
@@ -2869,7 +2868,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				TCW:          tcw,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
-				Turn:         nav.TurnClosest,
+				Turn:         av.TurnClosest,
 			})
 		} else {
 			// Hold at fix (published or controller-specified)
@@ -2909,7 +2908,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				TCW:          tcw,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
-				Turn:         nav.TurnLeft,
+				Turn:         av.TurnLeft,
 			})
 		}
 
@@ -2937,7 +2936,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				TCW:          tcw,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
-				Turn:         nav.TurnRight,
+				Turn:         av.TurnRight,
 			})
 		}
 

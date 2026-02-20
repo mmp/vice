@@ -1,0 +1,265 @@
+{
+  "time": "2026-02-04T20:50:01.160020529Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta ten seventy one cleared right Finki",
+  "whisper_duration_ms": 334.781,
+  "audio_duration_ms": 3016,
+  "processor": "GPU: NVIDIA GeForce RTX 4090 (24138MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "DAL1071",
+  "command": "DFINKI",
+  "stt_aircraft": {
+    "American 69": {
+      "Callsign": "AAL69",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Lee County": "RSW",
+        "Sabe": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "C46",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American niner 23": {
+      "Callsign": "AAL923",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Dormer": "DORMR",
+        "sykes": "SYKES"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "DORMR3",
+      "STAR": "",
+      "Altitude": 3428,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 10 71": {
+      "Callsign": "DAL1071",
+      "AircraftType": "B712",
+      "Fixes": {
+        "Baypo": "BAYPO",
+        "Ecake": "ECAKE",
+        "Finki": "FINKI"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 5350,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Fedex 34 zero eight heavy": {
+      "Callsign": "FDX3408",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Lacen": "LACEN",
+        "Patoy": "PATOY"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 1751,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Moxy one 24": {
+      "Callsign": "MXY124",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Camjo": "CAMJO"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "J30",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 11 70": {
+      "Callsign": "SWA1170",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Guzda": "GUZDA",
+        "Jetstream": "JSTRM",
+        "Lisa F": "LISAF",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 11580,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Spirit Wings 87 56": {
+      "Callsign": "NKS8756",
+      "AircraftType": "A321",
+      "Fixes": {},
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United 86": {
+      "Callsign": "UAL86",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Baypo": "BAYPO",
+        "Ecake": "ECAKE",
+        "Finki": "FINKI"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 5477,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta ten seventy one cleared right Finki\"",
+    "[local-stt] normalized words: [delta 10 71 cleared right finki]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[2]: Text=\"71\" Type=1 Value=71",
+    "[local-stt]   token[3]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"finki\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 6 tokens, 8 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 8 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Delta 10 71\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Delta 10 71\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"Delta 10 71\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest 11 70\" (airline=0.437, flight=0.700, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Delta 10 71\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 6 results",
+    "[local-stt]     result 0: \"Fedex 34 zero eight heavy\" (airline=0.467, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"American 69\" (airline=0.550, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"United 86\" (airline=0.456, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Southwest 11 70\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Delta 10 71\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta 10 71\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Delta 10 71\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Delta 10 71\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"DAL1071\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Delta 10 71\")",
+    "[local-stt] callsign match: Callsign=\"DAL1071\" SpokenKey=\"Delta 10 71\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=5350 Fixes=3 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Finki\" -\u003e \"FINKI\"",
+    "[local-stt]   fix: \"Baypo\" -\u003e \"BAYPO\"",
+    "[local-stt]   fix: \"Ecake\" -\u003e \"ECAKE\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"finki\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"right\" against 3 fixes",
+    "[local-stt]   extractFix: matched \"right\" -\u003e \"FINKI\" (fuzzy 0.80)",
+    "[local-stt]   matched command: \"DFINKI\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[DFINKI] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DFINKI] (conf=1.00)",
+    "[local-stt] validated commands: [DFINKI] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL1071 DFINKI\" (conf=1.00, time=520.8µs) ==="
+  ]
+}

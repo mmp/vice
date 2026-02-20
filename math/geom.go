@@ -252,9 +252,9 @@ func ClosestPointOnLine(line [2][2]float32, p [2]float32) [2]float32 {
 func EquilateralTriangleVertices(height float32) [3][2]float32 {
 	const InvSqrt3 = 0.577350269189626
 	return [3][2]float32{
-		[2]float32{0, height * 2 / 3},
-		[2]float32{height * InvSqrt3, -height / 3},
-		[2]float32{-height * InvSqrt3, -height / 3},
+		{0, height * 2 / 3},
+		{height * InvSqrt3, -height / 3},
+		{-height * InvSqrt3, -height / 3},
 	}
 }
 

@@ -1,0 +1,462 @@
+{
+  "time": "2026-02-06T01:17:17.89351788Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "JetBlue Fourty Six hundred New York Approach fly heading T seven zero",
+  "whisper_duration_ms": 128.497,
+  "audio_duration_ms": 3272,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "JBU4600",
+  "command": "H270",
+  "stt_aircraft": {
+    "JetBlue 46 zero zero": {
+      "Callsign": "JBU4600",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22 Left",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "WestJet 20": {
+      "Callsign": "WJA20",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Aroke": "AROKE",
+        "Crystal": "KRSTL",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4 Left",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"JetBlue Fourty Six hundred New York Approach fly heading T seven zero\"",
+    "[local-stt] normalized words: [jetblue fourty 6 hundred new york approach fly heading t 7 0]",
+    "[local-stt] tokens: 11",
+    "[local-stt]   token[0]: Text=\"jetblue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"fourty\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"6\" Type=1 Value=6",
+    "[local-stt]   token[3]: Text=\"hundred\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"t\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"70\" Type=1 Value=70",
+    "[local-stt] MatchCallsign: 11 tokens, 2 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 11 tokens, 2 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"JetBlue 46 zero zero\" (airline=0.437, flight=0.750, skip=1)",
+    "[local-stt]     pattern \"airline_flight\": selected \"JetBlue 46 zero zero\" (airline=0.44, flight=0.75, skip=1)",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"JetBlue 46 zero zero\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"WestJet 20\" (airline=0.619, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"JetBlue 46 zero zero\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": no results",
+    "[local-stt]   pattern \"airline_only\" matched: \"JBU4600\" (conf=0.90, consumed=1, addressingForm=0, spokenKey=\"JetBlue 46 zero zero\")",
+    "[local-stt] callsign match: Callsign=\"JBU4600\" SpokenKey=\"JetBlue 46 zero zero\" Conf=0.90 Consumed=1",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=3000 Fixes=13 Approaches=17 AssignedApproach=\"ILS Runway 22 Left\" LAHSORunways=[4L 22R 4R 22L 4L 22R 13L 31R 13L 31R 13R 31L 4L 22R 4L 22R 4R 22L 13L 31R 13R 31L 13L 31R]",
+    "[local-stt]   fix: \"Cimble\" -\u003e \"CIMBL\"",
+    "[local-stt]   fix: \"Hair\" -\u003e \"HAIRR\"",
+    "[local-stt]   fix: \"Tapper\" -\u003e \"TAPPR\"",
+    "[local-stt]   fix: \"Detgy\" -\u003e \"DETGY\"",
+    "[local-stt]   fix: \"Haupt\" -\u003e \"HAUPT\"",
+    "[local-stt]   fix: \"Lefer\" -\u003e \"LEFER\"",
+    "[local-stt]   fix: \"Seagull\" -\u003e \"CEEGL\"",
+    "[local-stt]   fix: \"Rosley\" -\u003e \"ROSLY\"",
+    "[local-stt]   fix: \"Zalpo\" -\u003e \"ZALPO\"",
+    "[local-stt]   fix: \"Norton\" -\u003e \"NRTON\"",
+    "[local-stt]   fix: \"Sajul\" -\u003e \"SAJUL\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   approach: \"r-nav zulu runway four Left\" -\u003e \"R4L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one three Left\" -\u003e \"R3L\"",
+    "[local-stt]   approach: \"r-nav zulu runway two two Right\" -\u003e \"R2R\"",
+    "[local-stt]   approach: \"r-nav zulu runway three one Right\" -\u003e \"R1R\"",
+    "[local-stt]   approach: \"r-nav zulu runway four Right\" -\u003e \"R4R\"",
+    "[local-stt]   approach: \"r-nav zulu runway three one Left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"I L S runway four Right\" -\u003e \"I4R\"",
+    "[local-stt]   approach: \"Parkway Visual runway one three Left\" -\u003e \"PVA\"",
+    "[local-stt]   approach: \"r-nav zulu runway one three Right\" -\u003e \"R3R\"",
+    "[local-stt]   approach: \"I L S runway three one Left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"I L S runway four Left\" -\u003e \"I4L\"",
+    "[local-stt]   approach: \"I L S runway one three Left\" -\u003e \"I3L\"",
+    "[local-stt]   approach: \"Belmont Visual runway two two Left\" -\u003e \"BVA\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two Left\" -\u003e \"R2L\"",
+    "[local-stt]   approach: \"I L S runway two two Left\" -\u003e \"I2L\"",
+    "[local-stt]   approach: \"I L S runway two two Right\" -\u003e \"I2R\"",
+    "[local-stt]   approach: \"I L S runway three one Right\" -\u003e \"I1R\"",
+    "[local-stt] command tokens after disregard: 10",
+    "[local-stt]   token[0]: Text=\"fourty\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"6\" Type=1 Value=6",
+    "[local-stt]   token[2]: Text=\"hundred\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"t\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"70\" Type=1 Value=70",
+    "[local-stt] ParseCommands: 10 tokens",
+    "[local-stt]   no match at token[0]=\"fourty\", skipping",
+    "[local-stt]   no match at token[1]=\"6\", skipping",
+    "[local-stt]   no match at token[2]=\"hundred\", skipping",
+    "[local-stt]   no match at token[3]=\"new\", skipping",
+    "[local-stt]   no match at token[4]=\"york\", skipping",
+    "[local-stt]   no match at token[5]=\"approach\", skipping",
+    "[local-stt]   matched command: \"H070\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[H070] (avgConf=1.00)",
+    "[local-stt] parsed commands: [H070] (conf=1.00)",
+    "[local-stt] validated commands: [H070] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU4600 H070\" (conf=0.90, time=1.0587ms) ==="
+  ]
+}

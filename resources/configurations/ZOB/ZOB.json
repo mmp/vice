@@ -1,0 +1,671 @@
+{
+    "control_positions": {
+        "00": {
+            "callsign": "ZOB 00 ZOB GUARD",
+            "frequency": 121500,
+            "radio_name": "Cleveland Center"
+        },
+        "02": {
+            "callsign": "ZOB 02 Pandora",
+            "frequency": 128625,
+            "radio_name": "Cleveland Center"
+        },
+        "03": {
+            "callsign": "ZOB 03 Marion",
+            "frequency": 135100,
+            "radio_name": "Cleveland Center"
+        },
+        "04": {
+            "callsign": "ZOB 04 Mansfield",
+            "frequency": 134900,
+            "radio_name": "Cleveland Center"
+        },
+        "06": {
+            "callsign": "ZOB 06 Briggs",
+            "frequency": 120600,
+            "radio_name": "Cleveland Center"
+        },
+        "07": {
+            "callsign": "ZOB 07 Sandusky",
+            "frequency": 127675,
+            "radio_name": "Cleveland Center"
+        },
+        "08": {
+            "callsign": "ZOB 08 Carleton",
+            "frequency": 127900,
+            "radio_name": "Cleveland Center"
+        },
+        "12": {
+            "callsign": "ZOB 12 Lansing",
+            "frequency": 126750,
+            "radio_name": "Cleveland Center"
+        },
+        "14": {
+            "callsign": "ZOB 14 Jackson",
+            "frequency": 120450,
+            "radio_name": "Cleveland Center"
+        },
+        "15": {
+            "callsign": "ZOB 15 Litchfield",
+            "frequency": 134650,
+            "radio_name": "Cleveland Center"
+        },
+        "16": {
+            "callsign": "ZOB 16 Flint",
+            "frequency": 127700,
+            "radio_name": "Cleveland Center"
+        },
+        "18": {
+            "callsign": "ZOB 18 Peck",
+            "frequency": 133875,
+            "radio_name": "Cleveland Center"
+        },
+        "19": {
+            "callsign": "ZOB 19 Gamble",
+            "frequency": 126525,
+            "radio_name": "Cleveland Center"
+        },
+        "20": {
+            "callsign": "ZOB 20 Dresden",
+            "frequency": 132250,
+            "radio_name": "Cleveland Center"
+        },
+        "21": {
+            "callsign": "ZOB 21 Windsor",
+            "frequency": 132450,
+            "radio_name": "Cleveland Center"
+        },
+        "26": {
+            "callsign": "ZOB 26 Lake",
+            "frequency": 120075,
+            "radio_name": "Cleveland Center"
+        },
+        "27": {
+            "callsign": "ZOB 27 Hudson",
+            "frequency": 134775,
+            "radio_name": "Cleveland Center"
+        },
+        "28": {
+            "callsign": "ZOB 28 Detroit",
+            "frequency": 135725,
+            "radio_name": "Cleveland Center"
+        },
+        "29": {
+            "callsign": "ZOB 29 Wayne",
+            "frequency": 133525,
+            "radio_name": "Cleveland Center"
+        },
+        "31": {
+            "callsign": "ZOB 31 Rochester",
+            "frequency": 127475,
+            "radio_name": "Cleveland Center"
+        },
+        "33": {
+            "callsign": "ZOB 33 Buffalo",
+            "frequency": 125200,
+            "radio_name": "Cleveland Center"
+        },
+        "36": {
+            "callsign": "ZOB 36 Dansville",
+            "frequency": 118625,
+            "radio_name": "Cleveland Center"
+        },
+        "37": {
+            "callsign": "ZOB 37 Geneseo",
+            "frequency": 128025,
+            "radio_name": "Cleveland Center"
+        },
+        "38": {
+            "callsign": "ZOB 38 Niagara",
+            "frequency": 120625,
+            "radio_name": "Cleveland Center"
+        },
+        "39": {
+            "callsign": "ZOB 39 Steuben",
+            "frequency": 119375,
+            "radio_name": "Cleveland Center"
+        },
+        "45": {
+            "callsign": "ZOB 45 Geauga",
+            "frequency": 120325,
+            "radio_name": "Cleveland Center"
+        },
+        "46": {
+            "callsign": "ZOB 46 Marblehead",
+            "frequency": 135375,
+            "radio_name": "Cleveland Center"
+        },
+        "47": {
+            "callsign": "ZOB 47 Bluffton",
+            "frequency": 119325,
+            "radio_name": "Cleveland Center"
+        },
+        "48": {
+            "callsign": "ZOB 48 Ravenna",
+            "frequency": 119875,
+            "radio_name": "Cleveland Center"
+        },
+        "49": {
+            "callsign": "ZOB 49 Lorain",
+            "frequency": 133375,
+            "radio_name": "Cleveland Center"
+        },
+        "50": {
+            "callsign": "ZOB 50 Clarion",
+            "frequency": 126725,
+            "radio_name": "Cleveland Center"
+        },
+        "53": {
+            "callsign": "ZOB 53 Indian Head",
+            "frequency": 124400,
+            "radio_name": "Cleveland Center"
+        },
+        "55": {
+            "callsign": "ZOB 55 Morgantown",
+            "frequency": 126950,
+            "radio_name": "Cleveland Center"
+        },
+        "57": {
+            "callsign": "ZOB 57 Brecksville",
+            "frequency": 125875,
+            "radio_name": "Cleveland Center"
+        },
+        "58": {
+            "callsign": "ZOB 58 Palmer",
+            "frequency": 121075,
+            "radio_name": "Cleveland Center"
+        },
+        "59": {
+            "callsign": "ZOB 59 Franklin",
+            "frequency": 119725,
+            "radio_name": "Cleveland Center"
+        },
+        "64": {
+            "callsign": "ZOB 64 Keystone",
+            "frequency": 134475,
+            "radio_name": "Cleveland Center"
+        },
+        "66": {
+            "callsign": "ZOB 66 Bellaire",
+            "frequency": 125425,
+            "radio_name": "Cleveland Center"
+        },
+        "67": {
+            "callsign": "ZOB 67 Imperial",
+            "frequency": 132125,
+            "radio_name": "Cleveland Center"
+        },
+        "68": {
+            "callsign": "ZOB 68 Allegheny",
+            "frequency": 133075,
+            "radio_name": "Cleveland Center"
+        },
+        "69": {
+            "callsign": "ZOB 69 Clarksburg",
+            "frequency": 135175,
+            "radio_name": "Cleveland Center"
+        },
+        "70": {
+            "callsign": "ZOB 70 Dunkirk",
+            "frequency": 127075,
+            "radio_name": "Cleveland Center"
+        },
+        "73": {
+            "callsign": "ZOB 73 Bradford",
+            "frequency": 124325,
+            "radio_name": "Cleveland Center"
+        },
+        "75": {
+            "callsign": "ZOB 75 Youngstown",
+            "frequency": 120775,
+            "radio_name": "Cleveland Center"
+        },
+        "77": {
+            "callsign": "ZOB 77 Warren",
+            "frequency": 134125,
+            "radio_name": "Cleveland Center"
+        },
+        "79": {
+            "callsign": "ZOB 79 Jamestown",
+            "frequency": 132925,
+            "radio_name": "Cleveland Center"
+        },
+        "99": {
+            "callsign": "ZOB 99 TMU",
+            "frequency": 123450,
+            "radio_name": "Cleveland Center"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "BRWNZ": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "QUUBE": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "JIIMM": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "ROKNN": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "SEPLN": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "KINCS": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "ROLNN": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "CLAPT": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "GROHL": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "HFNER": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "BUDRW": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "CLVTO": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "BENEE": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "BUF": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "DKK": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "EHMAN": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "JHW": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "WOZEE": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "ARICO": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "BONZZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "CRAKN": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "TPGUN": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "WNGNT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "GRAYT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HANBL": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HAYLL": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "SMMNS": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HUMRR": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "SHANX": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "VCTRZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "NUTTZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "NACCA": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "RIPPY": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "PETTE": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "KILIT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOBN"
+                }
+            ],
+            "LOPVO": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "LEJOY": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "AIR": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "EARED": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "CUTTA": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "HOMEE": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "AZO",
+            "stars_id": "AZO",
+            "single_char_stars_id": "A",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "BUF",
+            "stars_id": "BBB",
+            "single_char_stars_id": "U",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CKB",
+            "stars_id": "VVV",
+            "single_char_stars_id": "V",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CLE",
+            "stars_id": "CCC",
+            "single_char_stars_id": "C",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CMH",
+            "stars_id": "CMH",
+            "single_char_stars_id": "H",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CRW",
+            "stars_id": "CRA",
+            "single_char_stars_id": "Z",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "D21",
+            "stars_id": "DDD",
+            "single_char_stars_id": "D",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ELM",
+            "stars_id": "ELM",
+            "single_char_stars_id": "E",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "FWA",
+            "stars_id": "FWA",
+            "single_char_stars_id": "F",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "JST",
+            "stars_id": "JJJ",
+            "single_char_stars_id": "J",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "LAN",
+            "stars_id": "LLL",
+            "single_char_stars_id": "L",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MDT",
+            "stars_id": "MDT",
+            "single_char_stars_id": "M",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MTC",
+            "stars_id": "SSS",
+            "single_char_stars_id": "S",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PCT",
+            "stars_id": "PCT",
+            "single_char_stars_id": "X",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PIT",
+            "stars_id": "PPP",
+            "single_char_stars_id": "T",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ROC",
+            "stars_id": "RRR",
+            "single_char_stars_id": "R",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "SYR",
+            "stars_id": "SYR",
+            "two_char_stars_id": "SY",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "TOL",
+            "stars_id": "TTT",
+            "single_char_stars_id": "K",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "YNG",
+            "stars_id": "YYY",
+            "single_char_stars_id": "Y",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "B"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "P"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        }
+    ]
+}

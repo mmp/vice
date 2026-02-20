@@ -1,0 +1,28 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "BIS_E_APP",
+            "frequency": 126300,
+            "radio_name": "Bismarck Approach"
+        },
+        "1T": {
+            "callsign": "BIS_TWR",
+            "frequency": 118300,
+            "radio_name": "Bismarck Tower"
+        },
+        "1W": {
+            "callsign": "BIS_W_APP",
+            "frequency": 124800,
+            "radio_name": "Bismarck Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZMP",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

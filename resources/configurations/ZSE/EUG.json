@@ -1,0 +1,37 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "EUG_E_APP",
+            "frequency": 119600,
+            "radio_name": "Cascade Approach"
+        },
+        "1M": {
+            "callsign": "MFR_APP",
+            "frequency": 124300,
+            "radio_name": "Cascade Approach"
+        },
+        "1T": {
+            "callsign": "EUG_W_TWR",
+            "frequency": 118900,
+            "radio_name": "Eugene Tower"
+        },
+        "1W": {
+            "callsign": "EUG_W_APP",
+            "frequency": 123450,
+            "radio_name": "Cascade Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "LMT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZSE",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

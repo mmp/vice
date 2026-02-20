@@ -1,0 +1,131 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "ANC_N_APP",
+            "frequency": 118600,
+            "radio_name": "Anchorage Approach"
+        },
+        "1S": {
+            "callsign": "ANC_S_APP",
+            "frequency": 126400,
+            "radio_name": "Anchorage Approach"
+        },
+        "1F": {
+            "callsign": "ANC_F_APP",
+            "frequency": 135150,
+            "radio_name": "Anchorage Approach"
+        },
+        "1T": {
+            "callsign": "ANC_TWR",
+            "frequency": 118300,
+            "radio_name": "Anchorage Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "KROTO5.ROHHN": "1N",
+                    "KROTO5.TKA": "1N",
+                    "NEELL7": "1S",
+                    "PTERS3": "1N",
+                    "WITTI5": "1S"
+                },
+                "departure_assignments": {
+                    "PANC": "1N",
+                    "PANC/ANCH1": "1N",
+                    "PANC/FFITZ4": "1S",
+                    "PANC/NOEND4": "1N",
+                    "PANC/POTTR3": "1S"
+                },
+                "default_consolidation": {
+                    "1N": [
+                        "1S"
+                    ],
+                    "1S": [
+                        "1F"
+                    ]
+                }
+            }
+        },
+        "center": "PANC",
+        "radar_sites": {
+            "ANC": {
+                "char": "S",
+                "position": "35.394728, 120.354325",
+                "elevation": 3622,
+                "primary_range": 55,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 40,
+        "scratchpads": {
+            "NOEND": "NOE",
+            "FFITZ": "FTZ",
+            "TED": "TED"
+        },
+        "significant_points": {
+            "BGQ": {},
+            "MATTA": {
+                "short_name": "MAT"
+            },
+            "ELLAM": {
+                "short_name": "ELM"
+            },
+            "YESKA": {
+                "short_name": "YSK"
+            },
+            "SEWAR": {
+                "short_name": "SEW"
+            },
+            "NAPTO": {
+                "short_name": "NAP"
+            },
+            "ENA": {},
+            "GASTO": {
+                "short_name": "GST"
+            },
+            "IVANN": {
+                "short_name": "IVN"
+            },
+            "TAGER": {
+                "short_name": "TAG"
+            }
+        },
+        "stars_maps": [
+            "A11 RVM",
+            "A11 ANC MVA",
+            "A11 15 FIN",
+            "A11 33 STRAIGHT",
+            "A11 25 STRAIGHT",
+            "A11 7 FEED",
+            "A11 RVM",
+            "A11 ANC MVA",
+            "A11 15 FIN",
+            "A11 33 STRAIGHT",
+            "A11 25 STRAIGHT",
+            "A11 7 FEED",
+            "A11 15 FEED",
+            "A11 7 FINAL",
+            "A11 ZAN SPLIT",
+            "A11 GPS",
+            "A11 EVOM",
+            "A11 GEO",
+            "A11 ARSP"
+        ],
+        "video_map_file": "videomaps/ZAN-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "default_airport": "PANC"
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZAN",
+            "prefix": "C"
+        }
+    ]
+}

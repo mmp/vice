@@ -1,0 +1,31 @@
+{
+    "control_positions": {
+        "1R": {
+            "callsign": "SPS_APP",
+            "frequency": 118200,
+            "radio_name": "Sheppard Approach"
+        },
+        "1T": {
+            "callsign": "SPS_TWR",
+            "frequency": 119750,
+            "radio_name": "Sheppard Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "FSI",
+            "prefix": "2"
+        },
+        {
+            "id": "LTS",
+            "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

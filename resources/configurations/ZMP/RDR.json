@@ -1,0 +1,42 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "RDR_A_APP",
+            "frequency": 121100,
+            "radio_name": "Grand Forks Arrival"
+        },
+        "1E": {
+            "callsign": "RDR_E_APP",
+            "frequency": 118100,
+            "radio_name": "Grand Forks Approach"
+        },
+        "1R": {
+            "callsign": "RDR_R_APP",
+            "frequency": 124400,
+            "radio_name": "Red River Arrival"
+        },
+        "1W": {
+            "callsign": "RDR_W_APP",
+            "frequency": 132300,
+            "radio_name": "Grand Forks Approach"
+        },
+        "1Z": {
+            "callsign": "RDR_TWR",
+            "frequency": 124900,
+            "radio_name": "Red River Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "FAR",
+            "prefix": "1"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

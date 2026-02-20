@@ -252,6 +252,8 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 		WXProvider:                  wxp,
 		Emergencies:                 req.Emergencies,
 		StartTime:                   req.StartTime,
+		HandoffIDs:                  sg.HandoffIDs,
+		FixPairs:                    sg.FixPairs,
 	}
 
 	return &nsc

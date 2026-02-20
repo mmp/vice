@@ -166,6 +166,9 @@ func (cb *CommandBuffer) Viewport(x, y, w, h int) {
 // retina displays; the scale takes care of this. It should be initialized
 // as the ratio of framebuffer resolution to display resolution.
 func (cb *CommandBuffer) SetDrawBounds(b math.Extent2D, scale float32) {
+	if scale <= 0 || gomath.IsInf(float64(scale), 0) || gomath.IsNaN(float64(scale)) {
+		return
+	}
 	x0, y0 := int(scale*b.P0[0]), int(scale*b.P0[1])
 	w, h := int(scale*b.Width()), int(scale*b.Height())
 	w, h = max(w, 0), max(h, 0)
@@ -182,6 +185,9 @@ func (cb *CommandBuffer) SetDrawBounds(b math.Extent2D, scale float32) {
 // retina displays; the scale takes care of this. It should be initialized
 // as the ratio of framebuffer resolution to display resolution.
 func (cb *CommandBuffer) SetScissorBounds(b math.Extent2D, scale float32) {
+	if scale <= 0 || gomath.IsInf(float64(scale), 0) || gomath.IsNaN(float64(scale)) {
+		return
+	}
 	x0, y0 := int(scale*b.P0[0]), int(scale*b.P0[1])
 	w, h := int(scale*b.Width()), int(scale*b.Height())
 	w, h = max(w, 0), max(h, 0)

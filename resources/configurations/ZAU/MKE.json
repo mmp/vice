@@ -1,0 +1,353 @@
+{
+    "control_positions": {
+        "OT": {
+            "callsign": "ORD_TWR",
+            "frequency": 120750,
+            "radio_name": "O'Hare Tower"
+        },
+        "RT": {
+            "callsign": "MWC_TWR",
+            "frequency": 119500,
+            "radio_name": "Timmerman Tower"
+        },
+        "1E": {
+            "callsign": "MKE_E_APP",
+            "frequency": 118000,
+            "radio_name": "Milwaukee Approach"
+        },
+        "1W": {
+            "callsign": "MKE_W_APP",
+            "frequency": 126500,
+            "radio_name": "Milwaukee Approach"
+        },
+        "1F": {
+            "callsign": "MKE_F_APP",
+            "frequency": 118475,
+            "radio_name": "Milwaukee Approach"
+        },
+        "1M": {
+            "callsign": "MKE_M_DEP",
+            "frequency": 135875,
+            "radio_name": "Milwaukee Departure"
+        },
+        "1B": {
+            "callsign": "MKE_B_DEP",
+            "frequency": 125350,
+            "radio_name": "Milwaukee Departure"
+        },
+        "1H": {
+            "callsign": "MKE_H_APP",
+            "frequency": 127375,
+            "radio_name": "Milwaukee Approach"
+        },
+        "1L": {
+            "callsign": "MKE_L_APP",
+            "frequency": 127000,
+            "radio_name": "Milwaukee Approach"
+        },
+        "1T": {
+            "callsign": "MKE_TWR",
+            "frequency": 124575,
+            "radio_name": "Milwaukee Tower"
+        },
+        "1V": {
+            "callsign": "OSH_TWR",
+            "frequency": 118500,
+            "radio_name": "Osh Kosh Tower"
+        },
+        "6W": {
+            "callsign": "UES_TWR",
+            "frequency": 123700,
+            "radio_name": "Wakeshua Tower"
+        },
+        "7K": {
+            "callsign": "ENW_TWR",
+            "frequency": 118600,
+            "radio_name": "Kenosha Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "19R": {
+                "inbound_assignments": {
+                    "19R_Final_East": "1F",
+                    "19R_Final_SouthEast": "1F",
+                    "19R_Final_SouthWest": "1F",
+                    "19R_Final_West": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "1LX": {
+                "inbound_assignments": {
+                    "1L_Final_East": "1F",
+                    "1L_Final_NorthEast": "1F",
+                    "1L_Final_NorthWest": "1F",
+                    "1L_Final_South": "1F",
+                    "1L_Final_West": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "MIL": {
+                "inbound_assignments": {
+                    "BAE": "1W",
+                    "BRAVE": "1E",
+                    "ERNNY8": "1M",
+                    "GOPAC3": "1W",
+                    "RAYNR": "1F",
+                    "SUDDS": "1E"
+                },
+                "departure_assignments": {
+                    "KENW": "1M",
+                    "KMKE": "1M",
+                    "KMWC": "1M",
+                    "KOSH": "1L",
+                    "KUES": "1M"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1F",
+                        "1L",
+                        "1M",
+                        "1W"
+                    ]
+                }
+            },
+            "MI1": {
+                "inbound_assignments": {
+                    "BAE": "1W",
+                    "BRAVE": "1E",
+                    "GOPAC3": "1W",
+                    "MADII7": "1M",
+                    "RAYNR": "1F",
+                    "SUDDS": "1E"
+                },
+                "departure_assignments": {
+                    "KENW": "1B",
+                    "KMKE": "1B",
+                    "KMKE/MKE9EAST": "1M",
+                    "KMKE/ACCRA5": "1M",
+                    "KMKE/UECKR6": "1M",
+                    "KMKE/MKE9": "1B",
+                    "KMWC": "1B",
+                    "KOSH": "1L",
+                    "KUES": "1B"
+                },
+                "default_consolidation": {
+                    "1B": [
+                        "1E",
+                        "1F",
+                        "1L",
+                        "1M",
+                        "1W"
+                    ]
+                }
+            },
+            "MI2": {
+                "inbound_assignments": {
+                    "BAE": "1W",
+                    "BRAVE": "1E",
+                    "GOPAC3": "1W",
+                    "MADII7": "1M",
+                    "RAYNR": "1F",
+                    "SUDDS": "1E"
+                },
+                "departure_assignments": {
+                    "KENW": "1M",
+                    "KMKE/MKE9EAST": "1M",
+                    "KMKE/ACCRA5": "1M",
+                    "KMKE/UECKR6": "1M",
+                    "KMKE/MKE9": "1B",
+                    "KMWC": "1M",
+                    "KOSH": "1L",
+                    "KUES": "1M"
+                },
+                "default_consolidation": {
+                    "1B": [
+                        "1E",
+                        "1F",
+                        "1L",
+                        "1M",
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "KMKE",
+        "coordination_lists": [
+            {
+                "name": "OSH",
+                "id": "A",
+                "airports": [
+                    "KOSH"
+                ]
+            },
+            {
+                "name": "MWC",
+                "id": "B",
+                "airports": [
+                    "KMWC"
+                ]
+            },
+            {
+                "name": "UES",
+                "id": "C",
+                "airports": [
+                    "KUES"
+                ]
+            },
+            {
+                "name": "ENW",
+                "id": "D",
+                "airports": [
+                    "KENW"
+                ]
+            }
+        ],
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "19RNOCA",
+                    "description": "MKE 19R CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N043.16.33.164,W088.05.53.375",
+                        "N043.15.16.520,W087.38.30.671",
+                        "N042.57.14.449,W088.01.27.149",
+                        "N042.56.48.686,W087.42.51.5697"
+                    ]
+                },
+                {
+                    "id": "1LNOCA",
+                    "description": "MKE 1L CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N042.56.39.650,W088.03.59.254",
+                        "N042.54.27.443,W087.43.54.164",
+                        "N042.30.04.655,W087.44.59.505",
+                        "N042.30.03.240,W088.08.32.127"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "MKE": {
+                "char": "A",
+                "position": "KMKE",
+                "elevation": 728,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "ACCRA": "ACR",
+            "DELHI": "UEC",
+            "SAMPL": "UEC",
+            "HAWKN": "HAW",
+            "BRAVE": "BRA",
+            "GREAS": "GRE",
+            "SQUIB": "SQU",
+            "LYNNI": "LYN"
+        },
+        "stars_maps": [
+            "MKE RWY 1L",
+            "MKE MVA",
+            "MKE RWY 19R",
+            "MKE RWY 7R",
+            "MKE RWY 25L"
+        ],
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALL"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "C81"
+            }
+        ],
+        "coordination_fixes": {
+            "LEEDR": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "LYSTR": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BRAVE": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BAE": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BRTMN": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "AZO",
+            "prefix": "6"
+        },
+        {
+            "id": "C90",
+            "prefix": "1"
+        },
+        {
+            "id": "GRB",
+            "prefix": "5"
+        },
+        {
+            "id": "MSN",
+            "prefix": "3"
+        },
+        {
+            "id": "RFD",
+            "prefix": "2"
+        },
+        {
+            "id": "VOK",
+            "prefix": "4"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "C"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "P"
+        }
+    ]
+}

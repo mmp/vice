@@ -1,0 +1,122 @@
+{
+    "control_positions": {
+        "1T": {
+            "callsign": "ALB_TWR",
+            "frequency": 119500,
+            "radio_name": "Albany Tower"
+        },
+        "1S": {
+            "callsign": "SCH_TWR",
+            "frequency": 121300,
+            "radio_name": "Schenectady Tower"
+        },
+        "1W": {
+            "callsign": "ALB_W_APP",
+            "frequency": 118050,
+            "radio_name": "Albany Approach"
+        },
+        "1F": {
+            "callsign": "ALB_F_APP",
+            "frequency": 127150,
+            "radio_name": "Albany Approach"
+        },
+        "1E": {
+            "callsign": "ALB_E_APP",
+            "frequency": 132825,
+            "radio_name": "Albany Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "EAS": {
+                "inbound_assignments": {
+                    "CANAN": "1E",
+                    "HANAA": "1E",
+                    "SYR": "1W"
+                },
+                "departure_assignments": {
+                    "KALB": "1W",
+                    "KSCH": "1W"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1W"
+                    ]
+                }
+            },
+            "EA1": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_EAST": "1F",
+                    "SYR_FINAL_EAST": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "NOR": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_NORTH": "1F",
+                    "SYR_NORTH_FINALS": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "SOU": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_SOUTH": "1F",
+                    "SYR_FINAL_SOUTH": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "WES": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_WEST": "1F",
+                    "SYR_FINAL_WEST": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            }
+        },
+        "center": "KALB",
+        "scratchpads": {},
+        "stars_maps": [
+            "ALB MAIN",
+            "ALB MVA",
+            "ALB SAT FINALS",
+            "ALB RVM",
+            "ALB GPS RWY 19",
+            "ALB EOVM",
+            "ALB GPS RWY 10",
+            "ALB Cab",
+            "ALB GPS RWY 1",
+            "ALB GPS RWY 28"
+        ],
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
+    },
+    "handoff_ids": [
+        {
+            "id": "N90",
+            "prefix": "3"
+        },
+        {
+            "id": "SYR",
+            "prefix": "2"
+        },
+        {
+            "id": "Y90",
+            "prefix": "1"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "C"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "APN_APP",
+            "frequency": 128425,
+            "radio_name": "Alpena Approach"
+        },
+        "1F": {
+            "callsign": "APN_F_APP",
+            "frequency": 118500,
+            "radio_name": "Alpena Arrival"
+        },
+        "1Z": {
+            "callsign": "APN_TWR",
+            "frequency": 121350,
+            "radio_name": "Alpena Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZMP",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

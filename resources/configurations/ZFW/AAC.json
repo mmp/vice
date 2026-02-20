@@ -1,0 +1,348 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "AAC_N_APP",
+            "frequency": 120200,
+            "radio_name": "Academy Approach"
+        },
+        "1S": {
+            "callsign": "AAC_S_APP",
+            "frequency": 119500,
+            "radio_name": "Academy Approach"
+        },
+        "1D": {
+            "callsign": "AAC_D_APP",
+            "frequency": 126600,
+            "radio_name": "Academy Departure"
+        },
+        "1K": {
+            "callsign": "AAC_K_APP",
+            "frequency": 127700,
+            "radio_name": "Academy Departure"
+        },
+        "1F": {
+            "callsign": "AAC_F_APP",
+            "frequency": 128400,
+            "radio_name": "Academy Approach"
+        },
+        "1B": {
+            "callsign": "AAC_B_APP",
+            "frequency": 123800,
+            "radio_name": "Academy Approach"
+        },
+        "1J": {
+            "callsign": "AAC_J_APP",
+            "frequency": 125400,
+            "radio_name": "Academy Approach"
+        },
+        "2T": {
+            "callsign": "AAC_S_TWR",
+            "frequency": 121200,
+            "radio_name": "Academy Tower"
+        },
+        "9T": {
+            "callsign": "BRT_TWR",
+            "frequency": 122950,
+            "radio_name": "Bartles UNICOM"
+        },
+        "4T": {
+            "callsign": "JKE_TWR",
+            "frequency": 126200,
+            "radio_name": "Jeske Tower"
+        },
+        "3T": {
+            "callsign": "4Y3_TWR",
+            "frequency": 118900,
+            "radio_name": "James Tower"
+        },
+        "8T": {
+            "callsign": "4V4_TWR",
+            "frequency": 122800,
+            "radio_name": "Viney UNICOM"
+        },
+        "1T": {
+            "callsign": "AAC_TWR",
+            "frequency": 119200,
+            "radio_name": "Academy Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "OVERFLIGHTS": "1D"
+                },
+                "departure_assignments": {
+                    "KAAC": "1D"
+                },
+                "default_consolidation": {
+                    "1D": []
+                }
+            },
+            "6XX": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL_6NM": "1F",
+                    "MAYES": "1F",
+                    "REELI_FINAL": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "CTO": {
+                "inbound_assignments": {
+                    "BARTS_FINAL": "1F",
+                    "MAYES": "1F",
+                    "REELI_FINAL": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "CWT": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL": "1F",
+                    "BARTS_CWT_A": "1F",
+                    "BARTS_CWT_B": "1F",
+                    "BARTS_CWT_C": "1F",
+                    "BARTS_CWT_D": "1F",
+                    "BARTS_CWT_E_F_G": "1F",
+                    "BARTS_CWT_H_I": "1F",
+                    "BARTS_FINAL": "1F",
+                    "MAYES_CWT_A": "1F",
+                    "MAYES_CWT_B": "1F",
+                    "MAYES_CWT_C": "1F",
+                    "MAYES_CWT_D": "1F",
+                    "MAYES_CWT_E_F_G": "1F",
+                    "MAYES_CWT_H_I": "1F",
+                    "REELI_FINAL": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "3XX": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL": "1F",
+                    "BARTS_FINAL": "1F",
+                    "REELI_FINAL": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "4XX": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL": "1F",
+                    "BARTS_FINAL": "1F",
+                    "INTERNAL_FINAL": "1F",
+                    "REELI_FINAL": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "NOR": {
+                "inbound_assignments": {
+                    "BARTS_STAGGER": "1F",
+                    "REELI_FINAL": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "SCA": {
+                "inbound_assignments": {
+                    "SCAN": "1N"
+                },
+                "default_consolidation": {
+                    "1N": []
+                }
+            },
+            "WES": {
+                "inbound_assignments": {
+                    "ATOKA": "1S",
+                    "ATOKA_LO": "1J",
+                    "BARTS": "1N",
+                    "BARTS_LO": "1B",
+                    "INTERNAL_FINAL": "1B",
+                    "KILLR": "1S",
+                    "KILLR_LO": "1J",
+                    "MAYES": "1F",
+                    "REELI": "1N",
+                    "SGF.6": "1N",
+                    "SGF.8": "1N"
+                },
+                "departure_assignments": {
+                    "4V4": "1J",
+                    "4Y3": "1B",
+                    "KAAC": "1N",
+                    "KAAC/28R.NE.J": "1D",
+                    "KAAC/28R.NE.P": "1B",
+                    "KAAC/28R.SW.J": "1D",
+                    "KAAC/28R.SW.P": "1J",
+                    "KJKE": "1J"
+                },
+                "default_consolidation": {
+                    "1B": [
+                        "1D",
+                        "1F",
+                        "1J",
+                        "1N",
+                        "1S"
+                    ]
+                }
+            }
+        },
+        "force_ql_self": true,
+        "center": "KAAC",
+        "display_handoff_facility_only": true,
+        "handoff_sector_display_duration": 5,
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "AACNOCA",
+                    "description": "KAAC NO CA",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 4,
+                    "center": "KAAC"
+                },
+                {
+                    "id": "APPNOCA",
+                    "description": "KAAC APPR NO CA",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "vertices": [
+                        "N036.13.41.447,W095.57.41.462",
+                        "N036.11.51.886,W095.58.16.096",
+                        "N036.08.18.188,W095.33.24.647",
+                        "N036.10.22.608,W095.32.50.755"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "AAC": {
+                "char": "A",
+                "position": "KAAC",
+                "elevation": 820,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            },
+            "JKE": {
+                "char": "J",
+                "position": "KJKE",
+                "elevation": 658,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            }
+        },
+        "scratchpads": {
+            "COLIN.RNAV": "RCO",
+            "MAYES.RNAV": "RMA",
+            "NOBLE.RNAV": "RNO",
+            "SHAWN.RNAV": "RSH"
+        },
+        "scratchpad1": {
+            "display_exit_gate": true
+        },
+        "significant_points": {
+            "COLIN": {
+                "short_name": "COL",
+                "abbreviation": "C"
+            },
+            "MAYES": {
+                "short_name": "MAY",
+                "abbreviation": "M"
+            },
+            "NOBLE": {
+                "short_name": "NOB",
+                "abbreviation": "N"
+            },
+            "SHAWN": {
+                "short_name": "SHA",
+                "abbreviation": "S"
+            },
+            "SGF": {
+                "abbreviation": "G"
+            }
+        },
+        "stars_maps": [
+            "MVA",
+            "BASE",
+            "EAST",
+            "ARSPC",
+            "STARS",
+            "TAA",
+            "SID"
+        ],
+        "video_map_file": "videomaps/aac-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "COLIN",
+                    "MAYES"
+                ],
+                "receiving_controller": "E01"
+            },
+            {
+                "fixes": [
+                    "SHAWN",
+                    "NOBLE"
+                ],
+                "receiving_controller": "E02"
+            }
+        ],
+        "coordination_fixes": {
+            "ATO": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ],
+            "BAR": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ],
+            "KIL": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ],
+            "REE": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZAE",
+            "prefix": "E"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "C"
+        },
+        {
+            "id": "SGF",
+            "prefix": "1"
+        }
+    ]
+}

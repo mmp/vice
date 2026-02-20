@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "HSV_E_APP",
+            "frequency": 125600,
+            "radio_name": "Huntsville Approach"
+        },
+        "1F": {
+            "callsign": "HSV_F_APP",
+            "frequency": 118750,
+            "radio_name": "Huntsville Approach"
+        },
+        "1T": {
+            "callsign": "HSV_TWR",
+            "frequency": 127600,
+            "radio_name": "Huntsville Tower"
+        },
+        "1W": {
+            "callsign": "HSV_W_APP",
+            "frequency": 118050,
+            "radio_name": "Huntsville Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BHM",
+            "prefix": "1"
+        },
+        {
+            "id": "CHA",
+            "prefix": "2"
+        },
+        {
+            "id": "ZME",
+            "prefix": "C"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

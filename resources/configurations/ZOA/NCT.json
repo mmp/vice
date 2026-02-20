@@ -1,0 +1,1650 @@
+{
+    "control_positions": {
+        "1M": {
+            "callsign": "SJC_M_APP",
+            "frequency": 124525,
+            "radio_name": "NorCal Approach"
+        },
+        "1F": {
+            "callsign": "SJC_F_APP",
+            "frequency": 133000,
+            "radio_name": "NorCal Approach"
+        },
+        "1K": {
+            "callsign": "SJC_K_APP",
+            "frequency": 135200,
+            "radio_name": "NorCal Approach"
+        },
+        "1Q": {
+            "callsign": "SJC_Q_APP",
+            "frequency": 126475,
+            "radio_name": "NorCal Approach"
+        },
+        "1S": {
+            "callsign": "SJC_S_APP",
+            "frequency": 127150,
+            "radio_name": "NorCal Approach"
+        },
+        "1L": {
+            "callsign": "SJC_L_APP",
+            "frequency": 120100,
+            "radio_name": "NorCal Approach"
+        },
+        "1T": {
+            "callsign": "SJC_T_APP",
+            "frequency": 121300,
+            "radio_name": "NorCal Approach"
+        },
+        "2B": {
+            "callsign": "SFO_B_APP",
+            "frequency": 133950,
+            "radio_name": "NorCal Approach"
+        },
+        "2Z": {
+            "callsign": "SFO_Z_APP",
+            "frequency": 128325,
+            "radio_name": "NorCal Approach"
+        },
+        "2F": {
+            "callsign": "SFO_F_APP",
+            "frequency": 120350,
+            "radio_name": "NorCal Approach"
+        },
+        "2G": {
+            "callsign": "SFO_G_APP",
+            "frequency": 128575,
+            "radio_name": "NorCal Approach"
+        },
+        "2N": {
+            "callsign": "SFO_N_APP",
+            "frequency": 134500,
+            "radio_name": "NorCal Approach"
+        },
+        "2W": {
+            "callsign": "SFO_W_APP",
+            "frequency": 135650,
+            "radio_name": "NorCal Approach"
+        },
+        "3Y": {
+            "callsign": "OAK_Y_APP",
+            "frequency": 125100,
+            "radio_name": "NorCal Approach"
+        },
+        "3S": {
+            "callsign": "OAK_S_APP",
+            "frequency": 124800,
+            "radio_name": "NorCal Approach"
+        },
+        "3G": {
+            "callsign": "OAK_G_APP",
+            "frequency": 125350,
+            "radio_name": "NorCal Approach"
+        },
+        "4U": {
+            "callsign": "SFO_U_DEP",
+            "frequency": 135100,
+            "radio_name": "NorCal Departure"
+        },
+        "4Q": {
+            "callsign": "SFO_Q_DEP",
+            "frequency": 127975,
+            "radio_name": "NorCal Departure"
+        },
+        "4D": {
+            "callsign": "SFO_D_DEP",
+            "frequency": 127000,
+            "radio_name": "NorCal Departure"
+        },
+        "4F": {
+            "callsign": "SFO_F_DEP",
+            "frequency": 124325,
+            "radio_name": "NorCal Departure"
+        },
+        "4R": {
+            "callsign": "SFO_R_DEP",
+            "frequency": 120900,
+            "radio_name": "NorCal Departure"
+        },
+        "5P": {
+            "callsign": "SMF_P_APP",
+            "frequency": 123700,
+            "radio_name": "NorCal Approach"
+        },
+        "8S": {
+            "callsign": "RNO_S_APP",
+            "frequency": 119200,
+            "radio_name": "NorCal Approach"
+        },
+        "5E": {
+            "callsign": "SMF_E_APP",
+            "frequency": 125400,
+            "radio_name": "NorCal Approach"
+        },
+        "8N": {
+            "callsign": "RNO_N_APP",
+            "frequency": 126300,
+            "radio_name": "NorCal Approach"
+        },
+        "1J": {
+            "callsign": "SJC_TWR",
+            "frequency": 124000,
+            "radio_name": "San Jose Tower"
+        },
+        "2V": {
+            "callsign": "SFO_TWR",
+            "frequency": 120500,
+            "radio_name": "San Francisco Tower"
+        },
+        "3O": {
+            "callsign": "OAK_TWR",
+            "frequency": 118300,
+            "radio_name": "Oakland Tower"
+        },
+        "8R": {
+            "callsign": "RNO_TWR",
+            "frequency": 118700,
+            "radio_name": "Reno Tower"
+        },
+        "5V": {
+            "callsign": "SMF_TWR",
+            "frequency": 125700,
+            "radio_name": "Sacramento Tower"
+        },
+        "1Z": {
+            "callsign": "MRY_TWR",
+            "frequency": 118400,
+            "radio_name": "Monterey Tower"
+        },
+        "5T": {
+            "callsign": "MER_TWR",
+            "frequency": 118175,
+            "radio_name": "Castle Tower"
+        },
+        "3P": {
+            "callsign": "MOD_TWR",
+            "frequency": 125300,
+            "radio_name": "Modesto Tower"
+        },
+        "3Z": {
+            "callsign": "SCK_TWR",
+            "frequency": 120300,
+            "radio_name": "Stockton Tower"
+        },
+        "5Z": {
+            "callsign": "SAC_TWR",
+            "frequency": 119500,
+            "radio_name": "Executive Tower"
+        },
+        "3L": {
+            "callsign": "LVK_TWR",
+            "frequency": 118100,
+            "radio_name": "Livermore Tower"
+        },
+        "1Y": {
+            "callsign": "SNS_TWR",
+            "frequency": 119525,
+            "radio_name": "Salinas Tower"
+        },
+        "1P": {
+            "callsign": "PAO_TWR",
+            "frequency": 118600,
+            "radio_name": "Palo Alto Tower"
+        },
+        "2S": {
+            "callsign": "SQL_TWR",
+            "frequency": 119000,
+            "radio_name": "San Carlos Tower"
+        },
+        "5B": {
+            "callsign": "SMF_B_APP",
+            "frequency": 120450,
+            "radio_name": "NorCal Approach"
+        },
+        "5D": {
+            "callsign": "SMF_D_APP",
+            "frequency": 125250,
+            "radio_name": "NorCal Approach"
+        },
+        "5X": {
+            "callsign": "SMF_X_APP",
+            "frequency": 127400,
+            "radio_name": "NorCal Approach"
+        },
+        "5M": {
+            "callsign": "MHR_TWR",
+            "frequency": 120650,
+            "radio_name": "Mather Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "ARE": {
+                "inbound_assignments": {
+                    "BRINY2": "1M",
+                    "EMZOH4.E": "1M",
+                    "FRLON2": "1M",
+                    "PYE3": "1L",
+                    "RAZRR5.E": "1M",
+                    "RISTI1.ORRCA": "1M",
+                    "RISTI1.TIPRE": "1M",
+                    "SAT.EAST": "1M",
+                    "SAT.SOUTH": "1M",
+                    "SILCN6.S": "1M"
+                },
+                "departure_assignments": {
+                    "KMRY": "1S",
+                    "KPAO": "1L",
+                    "KSJC": "1T",
+                    "KSNS": "1M"
+                },
+                "default_consolidation": {
+                    "1L": [
+                        "1M",
+                        "1S",
+                        "1T"
+                    ]
+                }
+            },
+            "AR1": {
+                "inbound_assignments": {
+                    "BRINY2": "1K",
+                    "BRIXX4": "1K",
+                    "EMZOH4.W": "1M",
+                    "PYE3": "1K",
+                    "RAZRR5.W": "1Q",
+                    "RISTI1.ORRCA": "1L",
+                    "RISTI1.TIPRE": "1L",
+                    "SAT.EAST": "1M",
+                    "SAT.SOUTH": "1M",
+                    "SILCN6.N": "1M"
+                },
+                "departure_assignments": {
+                    "KMRY": "1S",
+                    "KPAO": "1T",
+                    "KSJC": "1T",
+                    "KSNS": "1M"
+                },
+                "default_consolidation": {
+                    "1K": [
+                        "1L",
+                        "1M",
+                        "1Q",
+                        "1S",
+                        "1T"
+                    ]
+                }
+            },
+            "AR2": {
+                "inbound_assignments": {
+                    "BRINY2": "1M",
+                    "BRIXX4": "1M",
+                    "EMZOH4.E": "1M",
+                    "PYE3": "1L",
+                    "RAZRR5.E": "1M",
+                    "RISTI1.ORRCA": "1M",
+                    "RISTI1.TIPRE": "1M",
+                    "SAT.EAST": "1M",
+                    "SAT.SOUTH": "1M",
+                    "SILCN6.N": "1M"
+                },
+                "departure_assignments": {
+                    "KMRY": "1S",
+                    "KPAO": "1L",
+                    "KSJC": "1T",
+                    "KSNS": "1M"
+                },
+                "default_consolidation": {
+                    "1L": [
+                        "1M",
+                        "1S",
+                        "1T"
+                    ]
+                }
+            },
+            "11X": {
+                "inbound_assignments": {
+                    "ALWYS3": "2Z",
+                    "PIRAT3": "2B",
+                    "REBAS1": "2Z",
+                    "RISTI1.ORRCA": "2Z",
+                    "RISTI1.TIPRE": "2Z",
+                    "STLER4": "2B",
+                    "WWAVS2": "2G"
+                },
+                "departure_assignments": {
+                    "KSQL": "2W"
+                },
+                "default_consolidation": {
+                    "2B": [
+                        "2G",
+                        "2W",
+                        "2Z"
+                    ]
+                }
+            },
+            "01X": {
+                "inbound_assignments": {
+                    "BDEGA4": "2B",
+                    "BRIXX4": "2B",
+                    "DYAMD5": "2Z",
+                    "PIRAT3": "2B",
+                    "PYE3": "2B",
+                    "RISTI1.ORRCA": "2Z",
+                    "RISTI1.TIPRE": "2Z",
+                    "SERFR4": "2G",
+                    "SJC OCEANIC": "2B",
+                    "VNYRD1": "2Z",
+                    "YOSEM3": "2Z"
+                },
+                "departure_assignments": {
+                    "KSQL": "2W"
+                },
+                "default_consolidation": {
+                    "2B": [
+                        "2G",
+                        "2W",
+                        "2Z"
+                    ]
+                }
+            },
+            "22X": {
+                "inbound_assignments": {
+                    "LOUPE1.AD": "4Q",
+                    "VNYRD1.RGOOD": "4Q",
+                    "VNYRD1.SNORA": "4Q",
+                    "WNDSR2.AD": "4R"
+                },
+                "departure_assignments": {
+                    "KOAK": "4R",
+                    "KSFO": "4R"
+                },
+                "default_consolidation": {
+                    "4Q": [
+                        "4R"
+                    ]
+                }
+            },
+            "28X": {
+                "inbound_assignments": {
+                    "LOUPE1.AD": "4Q",
+                    "VNYRD1.RGOOD": "4Q",
+                    "VNYRD1.SNORA": "4Q",
+                    "WNDSR2.AD": "4R"
+                },
+                "departure_assignments": {
+                    "KOAK": "4U",
+                    "KSFO": "4U"
+                },
+                "default_consolidation": {
+                    "4Q": [
+                        "4R",
+                        "4U"
+                    ]
+                }
+            },
+            "AR3": {
+                "inbound_assignments": {
+                    "ANAHO2": "8N",
+                    "KLUBS1": "8N",
+                    "ORRCA1": "8S",
+                    "RYANN2": "8S",
+                    "SCOLA1": "8S",
+                    "WINRZ1": "8N"
+                },
+                "departure_assignments": {
+                    "KRNO": "8S"
+                },
+                "default_consolidation": {
+                    "8N": [
+                        "8S"
+                    ]
+                }
+            },
+            "NCT": {
+                "inbound_assignments": {
+                    "BMRNG4.AD": "4Q",
+                    "VNYRD1.RGOOD": "4Q",
+                    "VNYRD1.SNORA": "4Q"
+                },
+                "departure_assignments": {
+                    "KOAK": "4U",
+                    "KSFO": "4R"
+                },
+                "default_consolidation": {
+                    "4Q": [
+                        "4R",
+                        "4U"
+                    ]
+                }
+            },
+            "NCA": {
+                "inbound_assignments": {
+                    "AMRVR2": "5P",
+                    "CCR2.S": "5D",
+                    "SAT.SOUTH": "5P",
+                    "SLMMR5": "5B",
+                    "SUUTR4": "5P",
+                    "TUDOR2": "5B"
+                },
+                "departure_assignments": {
+                    "KMHR": "5X",
+                    "KSAC": "5X",
+                    "KSMF": "5X"
+                },
+                "default_consolidation": {
+                    "5B": [
+                        "5D",
+                        "5P",
+                        "5X"
+                    ]
+                }
+            },
+            "NAR": {
+                "inbound_assignments": {
+                    "EELZA4": "8N",
+                    "KENNO.TARVR1": "8S",
+                    "MVA.TARVR1": "8S",
+                    "ORRCA.TARVR1": "8S",
+                    "SLEAT.TARVR1": "8S",
+                    "WADOL4": "8N"
+                },
+                "departure_assignments": {
+                    "KRNO": "8N"
+                },
+                "default_consolidation": {
+                    "8N": [
+                        "8S"
+                    ]
+                }
+            },
+            "AR0": {
+                "inbound_assignments": {
+                    "ALWYS3": "2Z",
+                    "BDEGA4": "2B",
+                    "PIRAT3": "2B",
+                    "PYE3.SFOE": "2F",
+                    "REBAS1": "2Z",
+                    "RISTI1.ORRCA": "2Z",
+                    "RISTI1.TIPRE": "2Z",
+                    "SERFR4": "2G"
+                },
+                "departure_assignments": {
+                    "KSQL": "2W"
+                },
+                "default_consolidation": {
+                    "2B": [
+                        "2F",
+                        "2G",
+                        "2W",
+                        "2Z"
+                    ]
+                }
+            },
+            "AR4": {
+                "inbound_assignments": {
+                    "ALMDN4/OCEANIC.AD": "4R",
+                    "REBAS1.RGOOD": "4R",
+                    "REBAS1.SNORA": "4R"
+                },
+                "departure_assignments": {
+                    "KOAK": "4U",
+                    "KSFO": "4U"
+                },
+                "default_consolidation": {
+                    "4R": [
+                        "4U"
+                    ]
+                }
+            },
+            "AR5": {
+                "inbound_assignments": {
+                    "AMRVR2": "5P",
+                    "CCR2.N": "5D",
+                    "SAT.SOUTH": "5P",
+                    "SLMMR5": "5B",
+                    "SUUTR4": "5P",
+                    "TUDOR2": "5B"
+                },
+                "departure_assignments": {
+                    "KMHR": "5X",
+                    "KSAC": "5X",
+                    "KSMF": "5E"
+                },
+                "default_consolidation": {
+                    "5B": [
+                        "5D",
+                        "5E",
+                        "5P",
+                        "5X"
+                    ]
+                }
+            }
+        },
+        "center": "KSJC",
+        "altimeters": [
+            "KSJC",
+            "KMRY",
+            "KSNS",
+            "KPAO"
+        ],
+        "controller_configs": {
+            "1M": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 19000,
+                        "vertices": "N037.20.00.256,W121.24.13.683 N037.17.08.196,W120.54.39.089 N037.20.07.466,W120.29.41.982 N037.29.18.348,W120.16.52.582 N037.10.10.551,W120.01.17.975 N037.10.59.591,W120.05.47.827 N037.05.55.270,W120.11.07.694 N036.53.29.202,W120.16.42.777 N036.44.01.525,W120.11.41.477 N036.39.16.059,W120.39.26.784 N036.32.24.799,W120.50.01.354 N036.24.31.000,W121.06.46.713 N036.11.30.641,W121.32.22.190 N036.07.00.515,W122.02.44.163 N036.10.59.454,W122.23.35.670 N036.23.30.575,W122.31.43.051 N036.32.10.737,W121.48.06.383 N036.35.21.556,W121.51.12.409 N036.44.27.356,W121.46.49.368 N036.59.20.929,W121.54.39.885 N037.01.02.059,W121.41.48.755 N037.02.19.306,W121.34.22.847 N037.03.52.429,W121.32.37.131 N037.14.17.414,W121.44.38.686 N037.20.41.482,W121.32.48.310"
+                    },
+                    {
+                        "type": "polygon",
+                        "ceiling": 3000,
+                        "vertices": "N037.14.26.340,W122.10.04.934 N037.13.00.043,W122.14.06.578 N037.22.55.158,W122.17.45.646 N037.24.07.805,W122.07.12.806 N037.28.52.310,W122.08.01.063 N037.32.22.657,W122.03.04.432 N037.31.11.507,W121.57.57.255 N037.14.58.667,W122.08.28.886"
+                    },
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N037.06.42.854,W122.06.21.115 N037.14.10.959,W122.10.16.085 N037.14.24.404,W122.09.06.597 N037.24.18.792,W122.03.10.667 N037.27.37.754,W122.00.20.077 N037.31.12.550,W121.58.30.571 N037.29.30.748,W121.52.26.127 N037.27.18.748,W121.43.22.441 N037.31.11.768,W121.39.31.343 N037.31.55.576,W121.34.11.504 N037.24.54.374,W121.27.57.557 N037.24.13.147,W121.37.00.336 N037.25.26.989,W121.38.20.509 N037.27.10.961,W121.43.18.706 N037.29.06.166,W121.52.21.265 N037.25.24.023,W121.54.48.674 N037.21.52.962,W121.55.40.447 N037.17.40.455,W122.02.18.235 N037.06.08.563,W121.57.07.212"
+                    },
+                    {
+                        "type": "polygon",
+                        "ceiling": 12000,
+                        "vertices": "N036.59.27.672,W121.54.16.539 N037.18.01.150,W122.02.56.550 N037.21.36.524,W121.55.56.076 N037.22.08.205,W121.53.49.376 N037.03.39.561,W121.32.50.864 N037.02.11.314,W121.34.22.216"
+                    },
+                    {
+                        "type": "polygon",
+                        "ceiling": 6000,
+                        "vertices": "N037.21.47.620,W121.55.45.309 N037.25.19.505,W121.54.34.365 N037.29.22.385,W121.52.21.293 N037.27.02.406,W121.43.09.340 N037.24.59.249,W121.37.55.460 N037.24.11.651,W121.36.42.648 N037.22.57.671,W121.48.35.936"
+                    }
+                ]
+            }
+        },
+        "filters": {
+            "quicklook": [
+                {
+                    "id": "Q69",
+                    "description": "SECA SERFR QUICKLOOK",
+                    "type": "polygon",
+                    "floor": 16000,
+                    "ceiling": 24000,
+                    "vertices": [
+                        "N036.32.25.060,W121.48.32.997",
+                        "N036.33.45.508,W121.41.43.674",
+                        "N036.31.00.575,W121.39.46.834",
+                        "N036.28.41.214,W121.45.51.828"
+                    ]
+                }
+            ],
+            "inhibit_ca": [
+                {
+                    "id": "SFONOCA",
+                    "description": "SFO CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 9500,
+                    "vertices": [
+                        "N037.37.08.892,W122.33.08.745",
+                        "N037.22.39.887,W122.09.39.473",
+                        "N037.35.58.882,W122.02.09.364",
+                        "N037.46.00.246,W122.25.24.023"
+                    ]
+                },
+                {
+                    "id": "OAKNOCA",
+                    "description": "OAK CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 9500,
+                    "vertices": [
+                        "N037.52.49.775,W122.17.57.264",
+                        "N037.40.51.887,W122.21.36.276",
+                        "N037.32.51.112,W122.02.56.907",
+                        "N037.42.43.769,W121.48.34.590",
+                        "N037.53.55.281,W122.20.16.955"
+                    ]
+                },
+                {
+                    "id": "SJCNOCA",
+                    "description": "SJC CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 9500,
+                    "vertices": [
+                        "N037.23.02.519,W122.01.52.362",
+                        "N037.11.55.003,W121.46.33.273",
+                        "N037.14.26.313,W121.43.03.242",
+                        "N037.26.32.028,W121.52.57.493"
+                    ]
+                },
+                {
+                    "id": "MRYNOCA",
+                    "description": "MRY CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 9500,
+                    "vertices": [
+                        "N036.38.52.122,W121.54.18.929",
+                        "N036.32.57.456,W121.58.21.425",
+                        "N036.30.18.827,W121.44.01.442",
+                        "N036.37.44.213,W121.43.51.170"
+                    ]
+                }
+            ],
+            "inhibit_msaw": [
+                {
+                    "id": "SFOMSAW",
+                    "description": "SFO MSAW SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 2600,
+                    "vertices": [
+                        "N037.37.08.892,W122.33.08.745",
+                        "N037.22.39.887,W122.09.39.473",
+                        "N037.35.58.882,W122.02.09.364",
+                        "N037.46.00.246,W122.25.24.023"
+                    ]
+                },
+                {
+                    "id": "OAKMSAW",
+                    "description": "OAK MSAW SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "vertices": [
+                        "N037.52.49.775,W122.17.57.264",
+                        "N037.40.51.887,W122.21.36.276",
+                        "N037.32.51.112,W122.02.56.907",
+                        "N037.42.43.769,W121.48.34.590",
+                        "N037.53.55.281,W122.20.16.955"
+                    ]
+                },
+                {
+                    "id": "SJCMSAW",
+                    "description": "SJC MSAW SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "vertices": [
+                        "N037.11.57.269,W121.46.27.863",
+                        "N037.23.03.673,W122.01.49.176",
+                        "N037.26.54.413,W121.59.11.934",
+                        "N037.26.30.902,W121.52.58.729",
+                        "N037.14.24.280,W121.42.56.239"
+                    ]
+                },
+                {
+                    "id": "SLCNMVA",
+                    "description": "SILCN STAR SEGMENT MSAW",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 4700,
+                    "vertices": [
+                        "N037.05.36.689,W121.42.32.838",
+                        "N037.07.14.097,W121.41.10.687",
+                        "N037.08.41.974,W121.43.34.059"
+                    ]
+                },
+                {
+                    "id": "SNSMSAW",
+                    "description": "SNS MSAW SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "radius": 5,
+                    "center": "KSNS"
+                },
+                {
+                    "id": "MRYMSAW",
+                    "description": "MRY MSAW SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "N036.38.52.122,W121.54.18.929",
+                        "N036.32.57.456,W121.58.21.425",
+                        "N036.30.18.827,W121.44.01.442",
+                        "N036.37.44.213,W121.43.51.170"
+                    ]
+                }
+            ],
+            "auto_acquisition": [
+                {
+                    "id": "ACQ",
+                    "description": "NCT AUTO-ACQUISITION",
+                    "type": "polygon",
+                    "vertices": "N035.50.34.039,W121.11.18.790 N035.59.06.345,W123.46.41.403 N039.40.47.959,W123.13.06.511 N040.55.06.321,W119.43.59.080 N039.46.43.642,W117.36.56.079 N037.27.46.007,W118.27.10.151 N036.15.02.938,W119.30.02.005",
+                    "floor": 0,
+                    "ceiling": 30000
+                }
+            ]
+        },
+        "coordination_lists": [
+            {
+                "name": "Palo Alto",
+                "id": "P",
+                "airports": [
+                    "KPAO"
+                ]
+            },
+            {
+                "name": "Salinas",
+                "id": "Y",
+                "airports": [
+                    "KSNS"
+                ]
+            }
+        ],
+        "radar_sites": {
+            "NUQ": {
+                "char": "N",
+                "position": "37.424528,122.01511",
+                "elevation": 112,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "OAK": {
+                "char": "O",
+                "position": "37.706125,-122.22532",
+                "elevation": 50,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "BAB": {
+                "char": "B",
+                "position": "39.129919,-121.46101",
+                "elevation": 167,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "FLX": {
+                "char": "L",
+                "position": "37.424528,122.01511",
+                "elevation": 5436,
+                "primary_range": 225,
+                "secondary_range": 225,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "MCC": {
+                "char": "M",
+                "position": "38.674069,-121.3655",
+                "elevation": 255,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "MCE": {
+                "char": "E",
+                "position": "37.287139,-120.50908",
+                "elevation": 320,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "MRY": {
+                "char": "Y",
+                "position": "36.69462,-121.76025",
+                "elevation": 449,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "QMV": {
+                "char": "Q",
+                "position": "37.923889,-122.59778",
+                "elevation": 3522,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "PRB": {
+                "char": "P",
+                "position": "35.394722,-120.35444",
+                "elevation": 4920,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "RNO": {
+                "char": "R",
+                "position": "36.69462,-121.76025",
+                "elevation": 4519,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "SAC": {
+                "char": "S",
+                "position": "38.553806,-121.269",
+                "elevation": 258,
+                "primary_range": 5,
+                "secondary_range": 250,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "SCK": {
+                "char": "A",
+                "position": "37.887714,-121.24351",
+                "elevation": 121,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "SUU": {
+                "char": "T",
+                "position": "38.250619,-121.92464",
+                "elevation": 186,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "RBL": {
+                "char": "F",
+                "position": "40.146167,-122.30453",
+                "elevation": 711,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 30,
+                "slope_angle": 1.3
+            },
+            "WLWA": {
+                "char": "0",
+                "position": "39.5234,-122.17",
+                "elevation": 275,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0
+            },
+            "SPZA": {
+                "char": "1",
+                "position": "39.48469,-118.857",
+                "elevation": 4150,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 1.5
+            },
+            "RNOA": {
+                "char": "2",
+                "position": "39.5837,-119.799",
+                "elevation": 5450,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0
+            },
+            "JAQA": {
+                "char": "3",
+                "position": "38.34001,-120.721",
+                "elevation": 2275,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "SMFA": {
+                "char": "4",
+                "position": "38.7824,-121.694",
+                "elevation": 200,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0
+            },
+            "SQLA": {
+                "char": "5",
+                "position": "37.41051,-122.307",
+                "elevation": 2300,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0
+            },
+            "RHVA": {
+                "char": "6",
+                "position": "37.3227,-121.755",
+                "elevation": 1000,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0
+            },
+            "O27A": {
+                "char": "7",
+                "position": "37.6415,-120.628",
+                "elevation": 300,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "SNSA": {
+                "char": "8",
+                "position": "36.5348,-121.62",
+                "elevation": 3475,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0
+            },
+            "MAEA": {
+                "char": "9",
+                "position": "37.02199,-120.135",
+                "elevation": 375,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "D86A": {
+                "char": "10",
+                "position": "36.5178,-119.414",
+                "elevation": 425,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "TRKA": {
+                "char": "11",
+                "position": "39.31711,-120.14",
+                "elevation": 5974,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "TVLA": {
+                "char": "11",
+                "position": "38.8892,-119.998",
+                "elevation": 6338,
+                "primary_range": 1,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 45,
+        "scratchpads": {
+            "BENNE": "BEN",
+            "BARGR": "BRG",
+            "POGTE": "PGT",
+            "HAMER": "HAM",
+            "SHOOP": "SHP",
+            "MILKY": "MLK",
+            "EGBER": "EGB",
+            "SNY": "SNY",
+            "SJC": "SJC",
+            "OSI": "OSI",
+            "TECKY": "TKY",
+            "HRNER": "HRN",
+            "NTELL": "NTE",
+            "CINNY": "CIN",
+            "BEBOP": "BEP",
+            "ALCOA": "ALC",
+            "AMAKR": "AMK",
+            "NTELL.28": "NTE",
+            "CINNY.28": "CIN",
+            "BEBOP.28": "BEP",
+            "ALCOA.28": "ALC",
+            "AMAKR.28": "AMK",
+            "ENI": "ENI",
+            "MQO": "MQO",
+            "FLW": "FLW",
+            "RAS": "RAS",
+            "RZS": "RZS",
+            "GVO": "GVO",
+            "SXC": "SXC",
+            "KAYEX": "KAY",
+            "SUSEY": "SSY",
+            "KTINA": "KTI",
+            "KAYEX.28": "KAY",
+            "SUSEY.28": "SSY",
+            "KTINA.28": "KTI",
+            "CCR": "CCR",
+            "RBL": "RBL",
+            "SYRAH": "SRH",
+            "GRTFL": "GRT",
+            "JFREE": "JFR",
+            "VLREE": "VLR",
+            "LOSHN": "LSN",
+            "EBAYE": "EBY",
+            "DEDHD": "DHD",
+            "ORRCA": "ORR",
+            "MOGEE": "MOG",
+            "TIPRE": "TIP",
+            "DEDHD.28": "DHD",
+            "ORRCA.28": "ORR",
+            "MOGEE.28": "MOG",
+            "TIPRE.28": "TIP",
+            "SAC": "SAC",
+            "LIN": "LIN",
+            "YYUNG": "FOI",
+            "CRDDZ": "CRD",
+            "HALLE": "HAL",
+            "PYGOW": "PYG",
+            "SWR": "SWR",
+            "FMG": "FMG",
+            "LLC": "LLC",
+            "YERIN": "YER",
+            "PESKE": "PSK",
+            "DARBI": "DRB",
+            "MRLET": "MRL",
+            "BLKJK": "BLK",
+            "MACUS": "MAC",
+            "RALEY": "RAL",
+            "SHUFL": "SHF",
+            "FRA": "FRA",
+            "HNW": "HNW",
+            "OAL": "OAL",
+            "MVA": "MVA",
+            "DUDES": "DUD",
+            "FROGO": "FRG",
+            "AVE": "AVE",
+            "PRB": "PRB",
+            "PXN": "PXN",
+            "SNS": "SNS",
+            "SHOEY": "SHY",
+            "BSR": "BSR",
+            "MOD": "MOD",
+            "HAGRD": "HAG",
+            "FUULL": "FLL",
+            "JAGWA": "JAG",
+            "ALTAM": "ALT"
+        },
+        "significant_points": {
+            "ALCOA": {},
+            "ALTAM": {},
+            "AVE": {},
+            "BARGR": {
+                "short_name": "BRG"
+            },
+            "BEBOP": {
+                "short_name": "BEP"
+            },
+            "BENNE": {},
+            "BLKJK": {},
+            "BSR": {},
+            "CCR": {},
+            "CINNY": {},
+            "CRDDZ": {},
+            "DARBI": {
+                "short_name": "DRB"
+            },
+            "DEDHD": {
+                "short_name": "DHD"
+            },
+            "DUDES": {},
+            "EBAYE": {
+                "short_name": "EBY"
+            },
+            "EGBER": {},
+            "ENI": {},
+            "FLW": {},
+            "FMG": {},
+            "FRA": {},
+            "FROGO": {
+                "short_name": "FRG"
+            },
+            "FUULL": {
+                "short_name": "FLL"
+            },
+            "GRTFL": {},
+            "GVO": {},
+            "HAGRD": {},
+            "HALLE": {},
+            "HAMER": {},
+            "HNW": {},
+            "HRNER": {
+                "short_name": "HRN"
+            },
+            "JAGWA": {},
+            "JFREE": {},
+            "KAYEX": {},
+            "KTINA": {},
+            "LIN": {},
+            "LLC": {},
+            "LOSHN": {
+                "short_name": "LSN"
+            },
+            "MACUS": {},
+            "MILKY": {
+                "short_name": "MLK"
+            },
+            "MOD": {},
+            "MOGEE": {},
+            "MQO": {},
+            "MRLET": {},
+            "MVA": {},
+            "NTELL": {
+                "short_name": "NTL"
+            },
+            "OAL": {},
+            "ORRCA": {
+                "short_name": "ORC"
+            },
+            "OSI": {},
+            "PESKE": {
+                "short_name": "PSK"
+            },
+            "POGTE": {
+                "short_name": "PGT"
+            },
+            "PRB": {},
+            "PXN": {},
+            "PYGOW": {},
+            "RALEY": {},
+            "RBL": {},
+            "RZS": {},
+            "SAC": {},
+            "SHOEY": {
+                "short_name": "SHY"
+            },
+            "SHOOP": {
+                "short_name": "SHP"
+            },
+            "SHUFL": {
+                "short_name": "SHF"
+            },
+            "SJC": {},
+            "SNS": {},
+            "SNY": {},
+            "SUSEY": {
+                "short_name": "KTA"
+            },
+            "SWR": {},
+            "SXC": {},
+            "SYRAH": {},
+            "TECKY": {
+                "short_name": "TKY"
+            },
+            "TIPRE": {
+                "short_name": "TPR"
+            },
+            "VLREE": {},
+            "YERIN": {},
+            "YYUNG": {
+                "short_name": "YNG"
+            }
+        },
+        "stars_maps": [
+            "RVMNCT903S",
+            "RVMNCT907S",
+            "RVMNCT921S",
+            "RVMNCT905S",
+            "RVMNCT906S",
+            "RVMNCT904S",
+            "RVMNCT901S",
+            "RVMNCT903S",
+            "RVMNCT905S",
+            "RVMNCT907S",
+            "RVMNCT909S",
+            "RVMNCT911S",
+            "RVMNCT913S",
+            "RVMNCT916S",
+            "RVMNCT922S",
+            "RVMNCT924S",
+            "RVMNCT931S",
+            "RVMNCT941S",
+            "RVMNCT943S",
+            "RVMNCT945S",
+            "",
+            "",
+            "RVMNCT902S",
+            "RVMNCT904S",
+            "RVMNCT906S",
+            "RVMNCT908S",
+            "RVMNCT910S",
+            "",
+            "RVMNCT915S",
+            "RVMNCT921S",
+            "RVMNCT923S",
+            "RVMNCT925S",
+            "RVMNCT934S",
+            "RVMNCT942S",
+            "RVMNCT944S",
+            "RVMNCT946S"
+        ],
+        "video_map_file": "videomaps/ZOA-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "NTELL",
+                    "KAYEX",
+                    "SUSEY",
+                    "KTINA",
+                    "JFREE",
+                    "VLREE",
+                    "TECKY"
+                ],
+                "altitude_range": [
+                    19000,
+                    27000
+                ],
+                "receiving_controller": "C11"
+            },
+            {
+                "fixes": [
+                    "YYUNG",
+                    "LIBBO",
+                    "BSR",
+                    "SXC",
+                    "FLW",
+                    "GVO"
+                ],
+                "altitude_range": [
+                    19000,
+                    999000
+                ],
+                "receiving_controller": "C14"
+            },
+            {
+                "fixes": [
+                    "ALCOA",
+                    "CINNY",
+                    "BEBOP",
+                    "MOLEN",
+                    "STINS",
+                    "AMAKR"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "C35"
+            },
+            {
+                "fixes": [
+                    "GRTFL",
+                    "DEDHD",
+                    "HRNER",
+                    "RBL",
+                    "SGD",
+                    "ENI",
+                    "PYE",
+                    "SUU",
+                    "CCR",
+                    "RAGGS",
+                    "BURDE"
+                ],
+                "altitude_range": [
+                    19000,
+                    23000
+                ],
+                "receiving_controller": "C41"
+            },
+            {
+                "fixes": [
+                    "SGD",
+                    "ENI",
+                    "PYE",
+                    "SUU",
+                    "CCR"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "11S"
+            },
+            {
+                "fixes": [
+                    "ORRCA",
+                    "MOGEE",
+                    "TIPRE",
+                    "SYRAH",
+                    "ORANG",
+                    "FTHIL",
+                    "FROGO",
+                    "HNW",
+                    "FRA"
+                ],
+                "altitude_range": [
+                    19000,
+                    29000
+                ],
+                "receiving_controller": "C29"
+            }
+        ],
+        "coordination_fixes": {
+            "OSI": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "CORKK": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "FRLON": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "RAZRR": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "BYRON": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "MOVDD": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "GOALI": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "SILCN": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "LAANE": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "LOZIT": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "ANJEE": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "FLOWZ": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "MOD": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "PIRAT": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "NRRLI": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "ZOMER": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "AANET": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "BANND": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "SKIZM": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "KARNN": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "WRAPS": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "WEBRR": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "ANAHO": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "EELZA": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "HOSME": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "HOBOA": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "RYANN": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "TEXSS": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "NEUPS": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "MYYAA": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "ISYOH": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "SLMMR": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "LOMBO": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "FOOLZ": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "FATHM": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "DYAMD": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "COGOL": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "LUCAB": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "BSR": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "PXN": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "ORRCA": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "TIPRE": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "FAT",
+            "prefix": "3"
+        },
+        {
+            "id": "NFL",
+            "prefix": "5"
+        },
+        {
+            "id": "NLC",
+            "prefix": "4"
+        },
+        {
+            "id": "O90",
+            "prefix": "9"
+        },
+        {
+            "id": "SUU",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "L"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "C"
+        }
+    ]
+}

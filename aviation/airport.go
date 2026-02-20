@@ -292,24 +292,24 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			threshold := math.Offset2LL(rwy.Threshold, rwy.Heading, rwy.DisplacedThresholdDistance,
 				nmPerLongitude, magneticVariation)
 
-			appr.Waypoints[i] = append(appr.Waypoints[i], Waypoint{
-				Fix:                 "_" + appr.Runway + "_THRESHOLD",
-				Location:            threshold,
-				AltitudeRestriction: &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}},
-				Land:                true,
-				FlyOver:             true,
-			})
+			thresholdWP := Waypoint{
+				Fix:      "_" + appr.Runway + "_THRESHOLD",
+				Location: threshold,
+				Flags:    WaypointFlagLand | WaypointFlagFlyOver,
+			}
+			thresholdWP.SetAltitudeRestriction(AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}})
+			appr.Waypoints[i] = append(appr.Waypoints[i], thresholdWP)
 			n := len(appr.Waypoints[i])
 
-			if appr.Waypoints[i][n-1].ProcedureTurn != nil {
+			if appr.Waypoints[i][n-1].ProcedureTurn() != nil {
 				e.ErrorString("ProcedureTurn cannot be specified at the final waypoint")
 			}
 			for j, wp := range appr.Waypoints[i] {
-				appr.Waypoints[i][j].OnApproach = true
+				appr.Waypoints[i][j].SetOnApproach(true)
 				e.Push("Fix " + wp.Fix)
-				if wp.NoPT {
+				if wp.NoPT() {
 					if !slices.ContainsFunc(appr.Waypoints[i][j+1:],
-						func(wp Waypoint) bool { return wp.ProcedureTurn != nil }) {
+						func(wp Waypoint) bool { return wp.ProcedureTurn() != nil }) {
 						e.ErrorString("No procedure turn found after fix with \"nopt\"")
 					}
 				}
@@ -345,8 +345,10 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.Pop()
 	}
 
-	if _, ok := controlPositions[ap.DepartureController]; !ok && ap.DepartureController != "" {
-		e.ErrorString("departure_controller %q unknown", ap.DepartureController)
+	if ap.DepartureController != "" {
+		if _, ok := controlPositions[ap.DepartureController]; !ok {
+			e.ErrorString("departure_controller %q unknown", ap.DepartureController)
+		}
 	}
 
 	// Departure routes are specified in the JSON as comma-separated lists
@@ -372,19 +374,19 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 			route.Waypoints = append([]Waypoint{
-				Waypoint{
+				{
 					Fix:      rwy.Base(),
 					Location: r.Threshold,
 				},
-				Waypoint{
+				{
 					Fix:      rwy.Base() + "-mid",
 					Location: math.Lerp2f(0.75, r.Threshold, rend.Threshold),
 				}}, route.Waypoints...)
 
 			for i := range route.Waypoints {
-				route.Waypoints[i].OnSID = true
+				route.Waypoints[i].SetOnSID(true)
 
-				if route.Waypoints[i].TransferComms {
+				if route.Waypoints[i].TransferComms() {
 					route.WaitToContactDeparture = true
 				}
 			}
@@ -411,7 +413,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		for exit, route := range routes {
 			e.Push("Exit " + string(exit))
 
-			if slices.ContainsFunc(route.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff }) {
+			if slices.ContainsFunc(route.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff() }) {
 				if route.HandoffController == "" {
 					e.ErrorString("no \"handoff_controller\" specified even though route has \"/ho\"")
 				} else if _, ok := controlPositions[route.HandoffController]; !ok {
@@ -530,7 +532,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		if len(spec.Waypoints) == 0 {
 			e.ErrorString("must specify \"waypoints\"")
 		} else {
-			spec.Waypoints[len(spec.Waypoints)-1].Land = true
+			spec.Waypoints[len(spec.Waypoints)-1].SetLand(true)
 		}
 		if _, ok := DB.Airports[spec.Destination]; !ok {
 			e.ErrorString("Destination airport %q unknown", spec.Destination)
@@ -754,7 +756,7 @@ type ExitRoute struct {
 func (er ExitRoute) FinalHeading() int {
 	for i := len(er.Waypoints) - 1; i >= 0; i-- {
 		if er.Waypoints[i].Heading != 0 {
-			return er.Waypoints[i].Heading
+			return int(er.Waypoints[i].Heading)
 		}
 	}
 	return 0
@@ -864,13 +866,13 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Way
 	minDiff := float32(360)
 
 	for i, wps := range ap.Waypoints {
-		fafIdx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF })
+		fafIdx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF() })
 		if fafIdx == -1 {
 			// no FAF on this segment(?)
 			continue
 		}
 
-		if wps[fafIdx].IF || wps[fafIdx].IAF {
+		if wps[fafIdx].IF() || wps[fafIdx].IAF() {
 			// Likely a HILPT; don't go outbound for the approach course as
 			// it may be some random feeder fix.
 			fafIdx++

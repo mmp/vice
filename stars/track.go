@@ -645,10 +645,10 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, transforms radar.ScopeTransf
 					// Explicitly specified scope_char overrides everything.
 					positionSymbol = ctrl.Scope
 				} else if ctrl.FacilityIdentifier != "" {
-					// For external facilities we use the facility id
+					// For external facilities we use the shortest facility id
 					positionSymbol = ctrl.FacilityIdentifier
-				} else if len(ctrl.SectorID) > 0 {
-					positionSymbol = ctrl.SectorID[len(ctrl.SectorID)-1:]
+				} else if len(ctrl.Position) > 0 {
+					positionSymbol = ctrl.Position[len(ctrl.Position)-1:]
 				}
 			}
 		}
@@ -753,7 +753,7 @@ func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, tra
 
 	ps := sp.currentPrefs()
 	brightness := ps.Brightness.OtherTracks
-	color := brightness.ScaleRGB(STARSGhostColor)
+	color := brightness.ScaleRGB(sp.Colors.Ghost)
 	trackFont := sp.systemFont(ctx, ps.CharSize.PositionSymbols)
 	trackStyle := renderer.TextStyle{Font: trackFont, Color: color, LineSpacing: 0}
 	datablockFont := sp.systemFont(ctx, ps.CharSize.Datablocks)
@@ -809,7 +809,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 			rot := math.Rotator2f(h)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels
-			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+			box := [4][2]float32{{-9, -3}, {9, -3}, {9, 3}, {-9, 3}}
 
 			// Scale box based on distance from the radar; TODO: what exactly should this be?
 			scale := ctx.DrawPixelScale * float32(math.Clamp(dist/40, .5, 1.5))
@@ -819,7 +819,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
 
-			color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+			color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackBlock)
 			if primary {
 				// Draw a filled box
 				trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -830,7 +830,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 			}
 
 			// green line
-			line := [2][2]float32{[2]float32{-16, 3}, [2]float32{16, 3}}
+			line := [2][2]float32{{-16, 3}, {16, 3}}
 			for i := range line {
 				line[i] = math.Add2f(rot(math.Scale2f(line[i], scale)), pw)
 				line[i] = transforms.LatLongFromWindowP(line[i])
@@ -849,14 +849,14 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 			rot := math.Rotator2f(heading)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels
-			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+			box := [4][2]float32{{-9, -3}, {9, -3}, {9, 3}, {-9, 3}}
 			for i := range box {
 				box[i] = math.Scale2f(box[i], ctx.DrawPixelScale)
 				box[i] = math.Add2f(rot(box[i]), pw)
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
 
-			color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+			color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackBlock)
 			if primary {
 				// Draw a filled box
 				trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -868,7 +868,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 
 		case RadarModeFused:
 			if ps.Brightness.PrimarySymbols > 0 {
-				color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+				color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackBlock)
 				drawTrack(trackBuilder, pw, sp.fusedTrackVertices, color)
 			}
 		}
@@ -969,8 +969,8 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, transforms radar.Scop
 
 		// Draw history from new to old
 		for i := range ps.RadarTrackHistory {
-			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
-			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
+			trackColorNum := min(i, len(sp.Colors.TrackHistory)-1)
+			trackColor := ps.Brightness.History.ScaleRGB(sp.Colors.TrackHistory[trackColorNum])
 
 			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
 				if p := state.historyTracks[idx].Location; !p.IsZero() {

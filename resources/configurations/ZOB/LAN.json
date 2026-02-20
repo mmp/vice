@@ -1,0 +1,77 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "LAN_A_APP",
+            "frequency": 120950,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1B": {
+            "callsign": "LAN_B_APP",
+            "frequency": 118800,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1H": {
+            "callsign": "LAN_H_APP",
+            "frequency": 126450,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1L": {
+            "callsign": "LAN_L_APP",
+            "frequency": 118650,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1O": {
+            "callsign": "LAN_O_APP",
+            "frequency": 128550,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1Y": {
+            "callsign": "LAN_Y_APP",
+            "frequency": 127300,
+            "radio_name": "Great Lakes Approach"
+        },
+        "1Z": {
+            "callsign": "LAN_T_APP",
+            "frequency": 123450,
+            "radio_name": "Great Lakes Approach"
+        },
+        "5T": {
+            "callsign": "LAN_TWR",
+            "frequency": 119900,
+            "radio_name": "Lansing Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "AZO",
+            "prefix": "1"
+        },
+        {
+            "id": "D21",
+            "prefix": "2"
+        },
+        {
+            "id": "MTC",
+            "prefix": "4"
+        },
+        {
+            "id": "TOL",
+            "prefix": "3"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "P"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "MUO_N_APP",
+            "frequency": 124800,
+            "radio_name": "Mountain Home Approach"
+        },
+        "1S": {
+            "callsign": "MUO_S_APP",
+            "frequency": 134100,
+            "radio_name": "Cowboy Control"
+        },
+        "1T": {
+            "callsign": "MUO_TWR",
+            "frequency": 133850,
+            "radio_name": "Mountain Home Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BOI",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLC",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}
