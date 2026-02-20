@@ -439,6 +439,27 @@ func registerAllCommands() {
 		WithPriority(12),
 	)
 
+	registerSTTCommand(
+		"reduce|slow [speed] [to] mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("reduce_mach"), WithPriority(12),
+	)
+	registerSTTCommand(
+		"increase [speed] [to] mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("increase_mach"), WithPriority(12),
+	)
+	registerSTTCommand(
+		"maintain mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("maintain_mach"), WithPriority(10),
+	)
+	registerSTTCommand(
+		"mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("mach_only"), WithPriority(7),
+	)
+
 	// === NAVIGATION COMMANDS ===
 	registerSTTCommand(
 		"direct|proceed [direct] [to] [at] {fix}",

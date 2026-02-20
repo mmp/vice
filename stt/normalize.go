@@ -435,6 +435,7 @@ var commandKeywords = map[string]string{
 	"forward":  "forward",
 	"knots":    "knots",
 	"normal":   "normal",
+	"mach":     "mach",
 
 	// Navigation
 	"direct":   "direct",
@@ -957,7 +958,7 @@ func IsFillerWord(w string) bool {
 // These keywords should stop the slack mechanism from searching past them.
 var commandBoundaryKeywords = map[string]bool{
 	// Speed-related
-	"speed": true, "slow": true, "reduce": true, "increase": true,
+	"speed": true, "slow": true, "reduce": true, "increase": true, "mach": true,
 	// Altitude-related
 	"maintain": true, "descend": true, "climb": true, "altitude": true,
 	// Heading-related
