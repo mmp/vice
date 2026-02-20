@@ -255,7 +255,7 @@
             "radio_name": "New York approach"
         }
     },
-    "config": {
+  "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -1866,6 +1866,27 @@
         "filters": {
             "auto_acquisition": [
                 {
+                    "id": "jfkacq",
+                    "description": "jfk arrival acquisition all",
+                    "type": "polygon",
+                    "vertices": "N040.31.05.876,W074.10.30.780 N040.26.28.760,W074.06.50.449 N040.14.13.871,W074.22.45.682 N040.06.32.912,W073.55.32.482 N040.00.08.596,W073.44.08.583 N040.36.35.576,W072.56.28.238 N040.40.35.243,W072.43.47.709 N040.52.37.772,W072.42.40.418 N040.56.54.660,W072.55.46.902 N041.00.06.948,W073.20.50.546 N040.51.36.881,W073.42.54.645 N041.02.30.595,W074.09.19.094 N040.43.54.892,W074.18.04.790 N040.39.15.386,W074.07.47.303",
+                    "floor": 0,
+                    "ceiling": 10000
+                },
+                {
+                    "id": "acqcmrn",
+                    "description": "camrn arrival acquisition",
+                    "type": "polygon",
+                    "vertices": [
+                        "N039.53.37.153,W073.18.56.563",
+                        "N040.12.56.142,W073.26.12.335",
+                        "N040.04.25.003,W074.07.24.754",
+                        "N039.45.45.675,W074.01.09.323"
+                    ],
+                    "floor": 0,
+                    "ceiling": 13000
+                },
+                {
                     "id": "ispack",
                     "description": "isp arrival acquisition all",
                     "type": "polygon",
@@ -1879,12 +1900,48 @@
                     "id": "secdrop",
                     "description": "drop region all",
                     "type": "polygon",
-                    "vertices": "N040.30.03.611,W073.12.49.976 N040.23.50.145,W073.19.52.620 N040.13.25.586,W073.01.07.346 N040.37.35.918,W072.28.09.614 N040.44.17.084,W071.46.04.736 N040.58.21.466,W071.47.22.163 N041.06.35.535,W072.07.04.896 N041.31.32.587,W072.24.38.869 N041.27.22.236,W072.56.18.405 N041.38.19.809,W072.55.51.132 N041.37.08.810,W073.45.15.270 N041.28.57.405,W073.34.53.554 N041.04.03.072,W073.28.35.570 N040.50.57.481,W073.22.07.203 N040.33.07.976,W073.23.25.316",
+                    "vertices": "N040.31.05.876,W074.10.30.780 N040.26.28.760,W074.06.50.449 N040.14.13.871,W074.22.45.682 N040.06.32.912,W073.55.32.482 N040.00.08.596,W073.44.08.583 N040.36.35.576,W072.56.28.238 N040.40.35.243,W072.43.47.709 N040.52.37.772,W072.42.40.418 N040.56.54.660,W072.55.46.902 N041.00.06.948,W073.20.50.546 N040.51.36.881,W073.42.54.645 N041.02.30.595,W074.09.19.094 N040.43.54.892,W074.18.04.790 N040.39.15.386,W074.07.47.303",
                     "floor": 0,
                     "ceiling": 40000
                 }
             ],
             "inhibit_ca": [
+                {
+                    "id": "JFKNOCA",
+                    "description": "JFK CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1500,
+                    "radius": 3,
+                    "center": "KJFK"
+                },
+                {
+                    "id": "EWRNOCA",
+                    "description": "EWR CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "radius": 10,
+                    "center": "KEWR"
+                },
+                {
+                    "id": "LGANOCA",
+                    "description": "LGA CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 2,
+                    "center": "KLGA"
+                },
+                {
+                    "id": "FRGNOCA",
+                    "description": "FRG CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 2,
+                    "center": "KFRG"
+                },
                 {
                     "id": "ISPNOCA",
                     "description": "ISP CONFLICT SUPPRESS",
@@ -1902,6 +1959,25 @@
                     "ceiling": 1200,
                     "radius": 2,
                     "center": "KHVN"
+                },
+                {
+                    "id": "TEBNOCA",
+                    "description": "TEB CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 2,
+                    "center": "KTEB"
+                }
+            ],
+            "quicklook": [
+                {
+                    "id": "QLCONEY",
+                    "description": "CONEY QUICKLOOK",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 15000,
+                    "vertices": "N040.42.06.773,W073.47.11.726 N040.41.10.042,W073.53.10.814 N040.31.45.125,W074.00.45.620 N040.25.52.052,W074.04.46.441 N040.22.58.015,W074.00.21.505"
                 }
             ]
         },
