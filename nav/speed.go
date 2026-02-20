@@ -130,8 +130,8 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 	}
 	if nav.Speed.Assigned != nil {
 		if nav.Speed.Mach {
-			mach := av.MachToTAS(*nav.Speed.Assigned)
-			return mach, MaximumRate
+			tas := av.MachToTAS(*nav.Speed.Assigned)
+			return av.TASToIAS(tas, nav.FlightState.Altitude), MaximumRate
 		} else {
 			return *nav.Speed.Assigned, MaximumRate
 		}
