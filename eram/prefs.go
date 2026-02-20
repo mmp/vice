@@ -58,6 +58,12 @@ type Preferences struct {
 		Position      [2]float32
 		DisplayFixes  bool // ATC TOOLS overlay of CRR fixes
 	}
+
+	// ALTIM SET view preferences
+	AltimSet struct {
+		Visible  bool
+		Position [2]float32
+	}
 }
 
 const numSavedPreferenceSets = 10
@@ -205,6 +211,11 @@ func makeDefaultPreferences() *Preferences {
 	}
 	prefs.CRR.Position = [2]float32{10, 600}
 	prefs.CRR.DisplayFixes = false
+
+	// ALTIM SET defaults
+	prefs.AltimSet.Visible = false
+	prefs.AltimSet.Position = [2]float32{200, 600}
+
 	return &prefs
 }
 

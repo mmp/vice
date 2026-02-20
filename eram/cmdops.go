@@ -109,6 +109,11 @@ func init() {
 	registerCommand(CommandModeNone, "LF [CRR_LABEL]", handleCRRLabelOnly) // LF LABEL without click or aircraft
 	registerCommand(CommandModeNone, "LF", handleCRREmpty)                 // LF alone
 
+	// AR - Add airport to ALTIM SET list
+	// AR [ICAO]: Add 4-letter ICAO code (e.g., AR KMCO)
+	// AR [IATA]: Add 3-letter IATA code, auto-prepends K (e.g., AR MCO → KMCO)
+	registerCommand(CommandModeNone, "AR [FIELD]", handleAltimAdd)
+
 	// // - Toggle VCI (on-frequency indicator)
 	// Keyboard: //[FLID] or // [FLID]
 	// Clicked: //[SLEW]
@@ -960,4 +965,36 @@ func handleQSFreeText(ep *ERAMPane, ctx *panes.Context, freeText string, trk *si
 
 func isQSFreeText(s string) bool {
 	return strings.HasPrefix(s, circleClear)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// AR - ALTIM SET Add Airport Handler
+
+func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
+	airport = strings.ToUpper(strings.TrimSpace(airport))
+	if len(airport) == 0 {
+		return CommandStatus{}, NewERAMError("REJECT - AR - MISSING AIRPORT")
+	}
+
+	// Convert 3-letter IATA to ICAO by prepending K (US convention).
+	icao := airport
+	if len(airport) == 3 {
+		icao = "K" + airport
+	}
+
+	// Toggle: if already in the list, remove it.
+	for i, existing := range ep.AltimSetAirports {
+		if existing == icao {
+			ep.AltimSetAirports = append(ep.AltimSetAirports[:i], ep.AltimSetAirports[i+1:]...)
+			return CommandStatus{bigOutput: "ACCEPT\nALTIMETER REQ"}, nil
+		}
+	}
+
+	ep.AltimSetAirports = append([]string{icao}, ep.AltimSetAirports...)
+
+	// Make the window visible when the first airport is added.
+	ps := ep.currentPrefs()
+	ps.AltimSet.Visible = true
+
+	return CommandStatus{bigOutput: "ACCEPT\nALTIMETER REQ"}, nil
 }
