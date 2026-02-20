@@ -148,15 +148,16 @@ type ERAMPane struct {
 	crrDragOffset    [2]float32                                   `json:"-"`
 
 	// ALTIM SET state (session)
-	AltimSetAirports   []string                    `json:"AltimSetAirports,omitempty"`
-	altimSetMenuOpen   bool                        `json:"-"`
-	altimSetMetars     map[string]altimMetarResult `json:"-"`
-	altimSetLastFetch  map[string]time.Time        `json:"-"`
-	altimSetFetching   map[string]bool             `json:"-"`
-	altimSetFetchCh    chan altimMetarResult        `json:"-"`
-	altimSetReposition bool                        `json:"-"`
-	altimSetRepoStart  time.Time                   `json:"-"`
-	altimSetDragOffset [2]float32                  `json:"-"`
+	AltimSetAirports     []string                    `json:"AltimSetAirports,omitempty"`
+	altimSetScrollOffset int                         `json:"-"`
+	altimSetMenuOpen     bool                        `json:"-"`
+	altimSetMetars       map[string]altimMetarResult `json:"-"`
+	altimSetLastFetch    map[string]time.Time        `json:"-"`
+	altimSetFetching     map[string]bool             `json:"-"`
+	altimSetFetchCh      chan altimMetarResult       `json:"-"`
+	altimSetReposition   bool                        `json:"-"`
+	altimSetRepoStart    time.Time                   `json:"-"`
+	altimSetDragOffset   [2]float32                  `json:"-"`
 
 	commandMode       CommandMode     `json:"-"`
 	drawRouteAircraft av.ADSBCallsign `json:"-"`
@@ -488,6 +489,18 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	// Fill in ALTIM SET defaults if this preference set was created before ALTIM SET existed
 	if ep.prefSet.Current.AltimSet.Position == ([2]float32{}) {
 		ep.prefSet.Current.AltimSet.Position = def.AltimSet.Position
+	}
+	if ep.prefSet.Current.AltimSet.Lines == 0 {
+		ep.prefSet.Current.AltimSet.Lines = def.AltimSet.Lines
+	}
+	if ep.prefSet.Current.AltimSet.Col == 0 {
+		ep.prefSet.Current.AltimSet.Col = def.AltimSet.Col
+	}
+	if ep.prefSet.Current.AltimSet.Font == 0 {
+		ep.prefSet.Current.AltimSet.Font = def.AltimSet.Font
+	}
+	if ep.prefSet.Current.AltimSet.Bright == 0 {
+		ep.prefSet.Current.AltimSet.Bright = def.AltimSet.Bright
 	}
 }
 

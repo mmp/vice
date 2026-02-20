@@ -744,7 +744,10 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, transforms radar.ScopeTransf
 				trid.AddQuad(rp0, rp1, rp2, rp3, blackBg)
 				style := renderer.TextStyle{Font: font,
 					Color: ep.CRRGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ep.CRRGroups[l].Color]), 0, 100)))}
-				td.AddText(strings.ToUpper(l), math.Add2f(rp0, [2]float32{4, -itemH + 12}), style)
+				labelText := strings.ToUpper(l)
+				_, th := font.BoundText(labelText, 0)
+				textY := rp0[1] - itemH/2 + float32(th)/2
+				td.AddText(labelText, [2]float32{rp0[0] + 4, textY}, style)
 				cursor = rp3
 				extent := math.Extent2D{P0: rp3, P1: rp1}
 				groupExtents[l] = extent

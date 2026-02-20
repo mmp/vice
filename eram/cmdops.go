@@ -986,6 +986,15 @@ func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	for i, existing := range ep.AltimSetAirports {
 		if existing == icao {
 			ep.AltimSetAirports = append(ep.AltimSetAirports[:i], ep.AltimSetAirports[i+1:]...)
+			// Adjust scroll offset if needed after removal
+			ps := ep.currentPrefs()
+			maxOffset := len(ep.AltimSetAirports) - ps.AltimSet.Lines
+			if maxOffset < 0 {
+				maxOffset = 0
+			}
+			if ep.altimSetScrollOffset > maxOffset {
+				ep.altimSetScrollOffset = maxOffset
+			}
 			return CommandStatus{bigOutput: "ACCEPT\nALTIMETER REQ"}, nil
 		}
 	}

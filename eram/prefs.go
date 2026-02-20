@@ -61,8 +61,15 @@ type Preferences struct {
 
 	// ALTIM SET view preferences
 	AltimSet struct {
-		Visible  bool
-		Position [2]float32
+		Visible        bool
+		Position       [2]float32
+		Opaque         bool
+		ShowBorder     bool
+		ShowIndicators bool
+		Lines          int
+		Col            int // 1-4 columns
+		Font           int // 1-3
+		Bright         int // 0-100
 	}
 }
 
@@ -215,6 +222,13 @@ func makeDefaultPreferences() *Preferences {
 	// ALTIM SET defaults
 	prefs.AltimSet.Visible = false
 	prefs.AltimSet.Position = [2]float32{200, 600}
+	prefs.AltimSet.Opaque = false
+	prefs.AltimSet.ShowBorder = true
+	prefs.AltimSet.ShowIndicators = true
+	prefs.AltimSet.Lines = 5
+	prefs.AltimSet.Col = 1
+	prefs.AltimSet.Font = 2
+	prefs.AltimSet.Bright = 80
 
 	return &prefs
 }
