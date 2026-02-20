@@ -56,6 +56,38 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) av.CommandIntent {
 	return intent
 }
 
+func (nav *Nav) AssignMach(mach float32, afterAltitude bool) av.CommandIntent {
+	maxTAS := nav.Perf.Speed.MaxTAS
+	maxTAS = 10 * float32(int(maxTAS/10))
+
+	if mach == 0 {
+		nav.Speed = NavSpeed{}
+		return av.SpeedIntent{Type: av.SpeedCancel}
+	} else if mach < .65 {
+		return av.MakeUnableIntent("unable. Our minimum mach is 0.65")
+	} else if mach > nav.Perf.Speed.MaxMach {
+		return av.MakeUnableIntent("unable. Our maximum mach is {mach}", nav.Perf.Speed.MaxMach)
+	} else if !nav.MachTransition {
+		return av.MakeUnableIntent("unable. we haven't reached mach transition altitude")
+	} else if afterAltitude && nav.Altitude.Assigned != nil &&
+		*nav.Altitude.Assigned != nav.FlightState.Altitude {
+		nav.Speed.AfterAltitude = &mach
+		alt := *nav.Altitude.Assigned
+		nav.Speed.AfterAltitudeAltitude = &alt
+		return av.SpeedIntent{Speed: mach, AfterAltitude: &alt, Type: av.SpeedAssign, Mach: true}
+	} else {
+		nav.Speed = NavSpeed{Assigned: &mach}
+		if mach < nav.Mach() {
+			return av.SpeedIntent{Speed: mach, Type: av.SpeedReduce, Mach: true}
+		} else if mach > nav.Mach() {
+			return av.SpeedIntent{Speed: mach, Type: av.SpeedIncrease, Mach: true}
+		} else {
+			return av.SpeedIntent{Speed: mach, Type: av.SpeedAssign, Mach: true}
+		}
+	}
+
+}
+
 func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) av.CommandIntent {
 	maxIAS := av.TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
 	maxIAS = 10 * float32(int((maxIAS+5)/10)) // round to 10s

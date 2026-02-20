@@ -42,6 +42,7 @@ type Nav struct {
 	Perf        av.AircraftPerformance
 	Altitude    NavAltitude
 	Speed       NavSpeed
+	MachTransition bool // the aircraft can be assigned a mach speed when true. 
 	Heading     NavHeading
 	Approach    NavApproach
 	Airwork     *NavAirwork
@@ -171,6 +172,7 @@ type NavSpeed struct {
 	MaintainMaximumForward   bool
 	// Carried after passing a waypoint
 	Restriction *float32
+	Mach bool 
 }
 
 const MaxIAS = 290
@@ -398,6 +400,11 @@ func (nav *Nav) TAS() float32 {
 	tas := av.IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude)
 	tas = min(tas, nav.Perf.Speed.CruiseTAS)
 	return tas
+}
+
+func (nav *Nav) Mach() float32 {
+	tas := nav.TAS()
+	return av.TASToMach(tas)
 }
 
 func (nav *Nav) v2() float32 {

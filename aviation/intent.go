@@ -208,6 +208,7 @@ type SpeedIntent struct {
 	Type          SpeedType
 	AfterAltitude *float32    // speed change conditional on reaching this altitude
 	Until         *SpeedUntil // what the speed restriction is "until"
+	Mach          bool
 }
 
 func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {

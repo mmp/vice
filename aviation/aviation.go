@@ -811,6 +811,15 @@ func TASToIAS(tas, altitude float32) float32 {
 	return tas * math.Sqrt(DensityRatioAtAltitude(altitude))
 }
 
+func TASToMach(tas float32) float32 {
+	// speed of sound = sqrt(ratio of specific heats (1.4)* gas constant for dry air (287 J/ (kg*K)) * temperature in kelvin)
+	sound := math.Sqrt(1.4 * 287 * 240) // for now we can use 240K until we can find some real data for temperatures at different altitudes 
+	return tas / sound
+}
+
+func MachToTAS(mach float32) float32 {
+	return mach * math.Sqrt(1.4 * 287 * 240)
+}
 ///////////////////////////////////////////////////////////////////////////
 // Arrival
 

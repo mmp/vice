@@ -222,6 +222,10 @@ func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool) av.CommandInte
 	return ac.Nav.AssignAltitude(float32(altitude), afterSpeed)
 }
 
+func (ac *Aircraft) AssignMach(mach float32, afterAltitude bool) av.CommandIntent {
+	return ac.Nav.AssignMach(mach, afterAltitude)
+}
+
 func (ac *Aircraft) AssignSpeed(speed int, afterAltitude bool) av.CommandIntent {
 	return ac.Nav.AssignSpeed(float32(speed), afterAltitude)
 }

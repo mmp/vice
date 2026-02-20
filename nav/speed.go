@@ -46,6 +46,9 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, fp *av.FlightPlan, 
 		return delta, slowingTo250
 	}
 
+	// Check if the aircraft has a mach transition
+	nav.MachTransition = nav.machTransition()
+
 	if !nav.FlightState.InitialDepartureClimb && alt > nav.FlightState.Altitude &&
 		nav.Perf.Engine.AircraftType == "P" {
 		// Climbing prop; bleed off speed.
@@ -126,7 +129,12 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 		return nav.targetAltitudeIAS()
 	}
 	if nav.Speed.Assigned != nil {
-		return *nav.Speed.Assigned, MaximumRate
+		if nav.Speed.Mach {
+			mach := av.MachToTAS(*nav.Speed.Assigned)
+			return mach, MaximumRate
+		} else {
+			return *nav.Speed.Assigned, MaximumRate
+		}
 	}
 
 	if hold := nav.Heading.Hold; hold != nil && nav.ETA(hold.FixLocation) < 180 /* slow 3 minutes out */ {
@@ -262,6 +270,21 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 	}
 
 	return ias, rate
+}
+
+// If the aircraft has reached an altitude where they transition to mach 
+func (nav *Nav) machTransition() bool {
+
+	switch nav.Perf.Engine.AircraftType {
+	case "J":
+		return nav.FlightState.Altitude >= 27000
+	// case "P":
+	// 	return nav.FlightState.Altitude >= 5000
+	// case "T":
+	// 	return nav.FlightState.Altitude >= 3000
+	default:
+		return false // TODO: check if turboprops ever transition to mach
+	}
 }
 
 // ETA returns the estimated time in seconds until the aircraft will arrive at `p`, assuming it is flying direct.

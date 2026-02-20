@@ -1327,6 +1327,16 @@ func (s *Sim) AssignHeading(hdg *HeadingArgs) (av.CommandIntent, error) {
 		})
 }
 
+func (s *Sim) AssignMach(tcw TCW, callsign av.ADSBCallsign, mach float32, afterAltitude bool) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.AssignMach(mach, afterAltitude)
+		})
+}
+
 func (s *Sim) AssignSpeed(tcw TCW, callsign av.ADSBCallsign, speed int, afterAltitude bool) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -2912,6 +2922,22 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				Turn:         nav.TurnLeft,
 			})
 		}
+	case 'M': // mach speed 
+		// M78 for mach 0.78
+		// + and - operators work here as well 
+		if len(command) != 3 {
+			return nil, ErrInvalidCommandSyntax
+		}
+
+		machStr := command[1:]
+		mach, err := strconv.ParseFloat(machStr, 32)
+		if err != nil {
+			return nil, ErrInvalidCommandSyntax
+		}
+		mach /= 100.0
+
+		return s.AssignMach(tcw, callsign, float32(mach), false)
+
 
 	case 'R':
 		if command == "RON" {
