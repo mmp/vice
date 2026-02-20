@@ -70,6 +70,8 @@ type NewSimConfiguration struct {
 	windsAloftAltitude float32
 
 	availableWXIntervals []util.TimeInterval
+
+	savedVFRDepartureRateScale float32
 }
 
 // loadEmergencies loads all emergency types from the emergencies.json resource file.
@@ -213,6 +215,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 		c.ScenarioSpec = scenarioCatalog.Scenarios[scenarioName]
 	}
 	c.ScenarioName = scenarioName
+	c.savedVFRDepartureRateScale = c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale
 
 	// Initialize default wind direction from runways
 	c.initDefaultWindDirection()
@@ -2194,9 +2197,12 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 			}
 			c.StartTime = startTime
 
-			// Set VFR launch rate to zero if selected weather is IMC
+			// Set VFR launch rate to zero if selected weather is IMC;
+			// restore the original value if VMC.
 			if !sampledMETAR.IsVMC() {
 				c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale = 0
+			} else {
+				c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale = c.savedVFRDepartureRateScale
 			}
 		} else {
 			c.weatherFilterError = "No weather matching filters found"
