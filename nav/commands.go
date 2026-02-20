@@ -76,7 +76,7 @@ func (nav *Nav) AssignMach(mach float32, afterAltitude bool) av.CommandIntent {
 		nav.Speed.AfterAltitudeAltitude = &alt
 		return av.SpeedIntent{Speed: mach, AfterAltitude: &alt, Type: av.SpeedAssign, Mach: true}
 	} else {
-		nav.Speed = NavSpeed{Assigned: &mach}
+		nav.Speed = NavSpeed{Assigned: &mach, Mach: true}
 		if mach < nav.Mach() {
 			return av.SpeedIntent{Speed: mach, Type: av.SpeedReduce, Mach: true}
 		} else if mach > nav.Mach() {

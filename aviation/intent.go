@@ -212,6 +212,11 @@ type SpeedIntent struct {
 }
 
 func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	if s.Mach {
+		s.renderMach(rt, r)
+		return
+	}
+
 	switch s.Type {
 	case SpeedCancel:
 		rt.Add("cancel speed restrictions")
@@ -250,6 +255,31 @@ func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add("[at {alt} maintain {spd}|at {alt} {spd}|{alt} then {spd}]", *s.AfterAltitude, s.Speed)
 		} else {
 			rt.Add("[speed {spd}|maintain {spd}|{spd}]", s.Speed)
+		}
+	}
+}
+
+func (s SpeedIntent) renderMach(rt *RadioTransmission, r *rand.Rand) {
+	switch s.Type {
+	case SpeedCancel:
+		rt.Add("cancel speed restrictions")
+	case SpeedReduce:
+		if s.AfterAltitude != nil {
+			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
+		} else {
+			rt.Add("[reduce to {mach}|{mach}|slow to {mach}]", s.Speed)
+		}
+	case SpeedIncrease:
+		if s.AfterAltitude != nil {
+			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
+		} else {
+			rt.Add("[increase to {mach}|{mach}|maintain {mach}]", s.Speed)
+		}
+	case SpeedAssign:
+		if s.AfterAltitude != nil {
+			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
+		} else {
+			rt.Add("[{mach}|maintain {mach}]", s.Speed)
 		}
 	}
 }
