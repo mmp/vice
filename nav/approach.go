@@ -453,7 +453,7 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 	}
 
 	// Update the route and go direct to the intercept/first point.
-	nav.Waypoints = wi
+	nav.Waypoints = append(wi, nav.FlightState.ArrivalAirport)
 	nav.Heading = NavHeading{}
 	nav.DeferredNavHeading = nil
 	return nil

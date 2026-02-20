@@ -31,6 +31,16 @@ const (
 	AddressingFormTypeTrailing3
 )
 
+// VisualPreference indicates whether a pilot prefers to request a
+// visual approach when eligible.
+type VisualPreference int
+
+const (
+	VisualPreferenceUndecided VisualPreference = iota
+	VisualPreferenceNo
+	VisualPreferenceYes
+)
+
 type Aircraft struct {
 	// This is ADS-B callsign of the aircraft. Just because different the
 	// callsign in the flight plan can be different across multiple STARS
@@ -123,6 +133,14 @@ type Aircraft struct {
 	// RequestedVisual is set when the pilot has spontaneously requested
 	// the visual approach (field in sight). Prevents repeated requests.
 	RequestedVisual bool
+	// WantsVisual is decided once per aircraft: whether this pilot
+	// prefers to request the visual when eligible (many crews prefer the
+	// ILS even in VMC).
+	WantsVisual VisualPreference
+	// VisualRequestTime is when the pilot will key the mic to request the
+	// visual, set once the field comes into sight (adds a short random
+	// delay to simulate identification and reaction time).
+	VisualRequestTime time.Time
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {

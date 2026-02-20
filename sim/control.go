@@ -1864,10 +1864,8 @@ func (ac *Aircraft) canRequestVisualApproach() bool {
 // VisualEligibility describes whether an aircraft can see the field
 // and request a visual approach.
 type VisualEligibility struct {
-	FieldInSight bool    // true if VMC, within range, and airport visible
-	Runway       string  // runway for the visual approach (when FieldInSight)
-	Distance     float32 // distance to airport in nm (valid when FieldInSight)
-	Visibility   float32 // visibility in SM (valid when FieldInSight)
+	FieldInSight bool   // true if VMC, within range, and airport visible
+	Runway       string // runway for the visual approach (when FieldInSight)
 }
 
 // checkVisualEligibility determines whether the aircraft can see the field.
@@ -1887,16 +1885,15 @@ func (s *Sim) checkVisualEligibility(ac *Aircraft) VisualEligibility {
 		return VisualEligibility{}
 	}
 
-	// Must be within 15nm of the airport.
+	// Must be within range of the airport.
 	dist := math.NMDistance2LLFast(ac.Position(), ap.Location, ac.NmPerLongitude())
-	if dist > 15 {
+	if dist > visualMaxDistance {
 		return VisualEligibility{}
 	}
 
-	// The airport must be within the pilot's forward visibility arc
-	// (~120 degrees off the nose).
+	// The airport must be within the pilot's forward visibility arc.
 	bearingToAirport := math.Heading2LL(ac.Position(), ap.Location, ac.NmPerLongitude(), ac.MagneticVariation())
-	if math.HeadingDifference(ac.Heading(), bearingToAirport) > 120 {
+	if math.HeadingDifference(ac.Heading(), bearingToAirport) > visualMaxBearingOff {
 		return VisualEligibility{}
 	}
 
@@ -1905,62 +1902,63 @@ func (s *Sim) checkVisualEligibility(ac *Aircraft) VisualEligibility {
 	}
 	runway := ac.Nav.Approach.Assigned.Runway
 
-	vis, err := metar.Visibility()
-	if err != nil {
-		return VisualEligibility{}
-	}
-
 	return VisualEligibility{
 		FieldInSight: true,
 		Runway:       runway,
-		Distance:     float32(dist),
-		Visibility:   vis,
 	}
 }
 
-// VisualDistanceFactor returns a probability scaling factor based on
-// distance to the airport: 1.0 at <=3nm, tapering to 0.25 at 15nm.
-func VisualDistanceFactor(dist float32) float32 {
-	if dist <= 3 {
-		return 1.0
-	}
-	return 1.0 - 0.75*(dist-3)/12
-}
-
-// VisualVisibilityFactor returns a probability scaling factor based on
-// visibility: 0.3 at 3SM, ramping to 1.0 at 10SM+.
-func VisualVisibilityFactor(vis float32) float32 {
-	if vis >= 10 {
-		return 1.0
-	}
-	if vis > 3 {
-		return 0.3 + 0.7*(vis-3)/7
-	}
-	return 0.3
-}
+// Tunables for the spontaneous visual-request model.
+const (
+	visualMaxDistance   = float32(15)  // nm; max range to identify the airport
+	visualMaxBearingOff = float32(120) // degrees off nose; forward visibility arc
+	visualWantsProb     = float32(0.3) // fraction of pilots who prefer the visual
+	visualDelayMin      = 2            // seconds; min delay after field in sight
+	visualDelayMax      = 8            // seconds; max delay after field in sight
+)
 
 // checkSpontaneousVisualRequest checks if an arrival aircraft should
 // spontaneously report "field in sight, requesting the visual approach".
-// Called once per second from the update loop. The pilot only requests
-// when VMC, close to the airport, and a charted visual approach exists
-// for the assigned runway; probability scales with distance and visibility.
+// Called once per second from the update loop. The pilot requests when
+// VMC, within 15nm, the airport is visible, and they're the type of
+// crew that prefers the visual (~30%). A short random delay (2-8s)
+// after the field first comes into sight simulates identification and
+// reaction time.
 func (s *Sim) checkSpontaneousVisualRequest(ac *Aircraft) {
 	if !ac.canRequestVisualApproach() {
 		return
 	}
 
-	elig := s.checkVisualEligibility(ac)
-	if !elig.FieldInSight {
+	// Don't request the visual before the pilot has checked in.
+	if s.hasPendingCheckIn(ac.ADSBCallsign) {
 		return
 	}
 
-	// ~3% base probability per second, scaled by distance and visibility.
-	// At 3nm in clear weather this gives ~3%/s (~30s expected wait);
-	// at 10nm it drops to ~1%/s.
-	distFactor := VisualDistanceFactor(elig.Distance)
-	visFactor := VisualVisibilityFactor(elig.Visibility)
-	prob := 0.03 * distFactor * visFactor
-	if s.Rand.Float32() >= prob {
+	// One-time coin flip: does this pilot prefer to request the visual?
+	if ac.WantsVisual == VisualPreferenceUndecided {
+		if s.Rand.Float32() < visualWantsProb {
+			ac.WantsVisual = VisualPreferenceYes
+		} else {
+			ac.WantsVisual = VisualPreferenceNo
+		}
+	}
+	if ac.WantsVisual == VisualPreferenceNo {
+		return
+	}
+
+	elig := s.checkVisualEligibility(ac)
+	if !elig.FieldInSight {
+		ac.VisualRequestTime = time.Time{} // reset if field lost
+		return
+	}
+
+	// Set a random delay the first time the field comes into sight.
+	if ac.VisualRequestTime.IsZero() {
+		delay := visualDelayMin + s.Rand.Intn(visualDelayMax-visualDelayMin+1)
+		ac.VisualRequestTime = s.State.SimTime.Add(time.Duration(delay) * time.Second)
+		return
+	}
+	if s.State.SimTime.Before(ac.VisualRequestTime) {
 		return
 	}
 
@@ -2135,6 +2133,20 @@ type PendingContact struct {
 	HasQueuedEmergency     bool                    // For departures: trigger emergency after contact
 	PrebuiltTransmission   *av.RadioTransmission   // For emergency transmissions: pre-built message
 	FirstInFacility        bool                    // For arrivals: first contact in this TRACON facility
+}
+
+// hasPendingCheckIn reports whether the aircraft has a pending arrival or
+// departure check-in that hasn't been transmitted yet.
+func (s *Sim) hasPendingCheckIn(callsign av.ADSBCallsign) bool {
+	for _, pcs := range s.PendingContacts {
+		for _, pc := range pcs {
+			if pc.ADSBCallsign == callsign &&
+				(pc.Type == PendingTransmissionArrival || pc.Type == PendingTransmissionDeparture) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // addPendingContact adds an aircraft to the pending contacts queue for a controller.

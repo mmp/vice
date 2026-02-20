@@ -271,34 +271,6 @@ func TestVisualRequestBearingFilter(t *testing.T) {
 	}
 }
 
-func TestVisualRequestDistanceFactor(t *testing.T) {
-	tests := []struct {
-		name       string
-		dist       float32
-		wantFactor float32
-		tolerance  float32
-	}{
-		{"At airport", 0, 1.0, 0.01},
-		{"At 3nm", 3, 1.0, 0.01},
-		{"At 9nm (midpoint)", 9, 0.625, 0.01},
-		{"At 15nm", 15, 0.25, 0.01},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := VisualDistanceFactor(tt.dist)
-			diff := got - tt.wantFactor
-			if diff < 0 {
-				diff = -diff
-			}
-			if diff > tt.tolerance {
-				t.Errorf("VisualDistanceFactor(%.1f) = %.4f, want %.4f (±%.2f)",
-					tt.dist, got, tt.wantFactor, tt.tolerance)
-			}
-		})
-	}
-}
-
 // setupTestRunway installs a minimal runway into the global aviation DB
 // for the duration of the test, then removes it on cleanup.
 func setupTestRunway(t *testing.T, icao string, rwy av.Runway) {
@@ -469,32 +441,4 @@ func wpNames(wps []av.Waypoint) []string {
 		names[i] = wp.Fix
 	}
 	return names
-}
-
-func TestVisualRequestVisibilityFactor(t *testing.T) {
-	tests := []struct {
-		name       string
-		vis        float32
-		wantFactor float32
-		tolerance  float32
-	}{
-		{"3SM (VMC minimum)", 3, 0.3, 0.01},
-		{"5SM", 5, 0.5, 0.01},
-		{"10SM (clear)", 10, 1.0, 0.01},
-		{"15SM (unlimited)", 15, 1.0, 0.01},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := VisualVisibilityFactor(tt.vis)
-			diff := got - tt.wantFactor
-			if diff < 0 {
-				diff = -diff
-			}
-			if diff > tt.tolerance {
-				t.Errorf("VisualVisibilityFactor(%.0f) = %.4f, want %.4f (±%.2f)",
-					tt.vis, got, tt.wantFactor, tt.tolerance)
-			}
-		})
-	}
 }
