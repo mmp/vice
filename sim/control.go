@@ -2941,9 +2941,9 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				Turn:         av.TurnLeft,
 			})
 		}
-	case 'M': // mach speed 
+	case 'M': // mach speed
 		// M78 for mach 0.78
-		// + and - operators work here as well 
+		// + and - operators work here as well
 		if len(command) != 3 {
 			return nil, ErrInvalidCommandSyntax
 		}
@@ -2956,7 +2956,6 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		mach /= 100.0
 
 		return s.AssignMach(tcw, callsign, float32(mach), false)
-
 
 	case 'R':
 		if command == "RON" {

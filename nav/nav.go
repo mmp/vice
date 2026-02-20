@@ -38,15 +38,15 @@ var (
 // State related to navigation. Pointers are used for optional values; nil
 // -> unset/unspecified.
 type Nav struct {
-	FlightState FlightState
-	Perf        av.AircraftPerformance
-	Altitude    NavAltitude
-	Speed       NavSpeed
-	MachTransition bool // the aircraft can be assigned a mach speed when true. 
-	Heading     NavHeading
-	Approach    NavApproach
-	Airwork     *NavAirwork
-	Prespawn    bool
+	FlightState    FlightState
+	Perf           av.AircraftPerformance
+	Altitude       NavAltitude
+	Speed          NavSpeed
+	MachTransition bool // the aircraft can be assigned a mach speed when true.
+	Heading        NavHeading
+	Approach       NavApproach
+	Airwork        *NavAirwork
+	Prespawn       bool
 
 	FixAssignments map[string]NavFixAssignment
 
@@ -173,7 +173,7 @@ type NavSpeed struct {
 	MaintainMaximumForward   bool
 	// Carried after passing a waypoint
 	Restriction *float32
-	Mach bool 
+	Mach        bool
 }
 
 const MaxIAS = 290

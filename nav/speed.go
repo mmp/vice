@@ -271,7 +271,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 	return ias, rate
 }
 
-// If the aircraft has reached an altitude where they transition to mach 
+// If the aircraft has reached an altitude where they transition to mach
 func (nav *Nav) machTransition() bool {
 
 	switch nav.Perf.Engine.AircraftType {

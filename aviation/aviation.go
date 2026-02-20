@@ -822,6 +822,7 @@ func MachToTAS(mach float32) float32 {
 	sound := math.Sqrt(1.4*287*240) * 1.94384
 	return mach * sound
 }
+
 ///////////////////////////////////////////////////////////////////////////
 // Arrival
 
