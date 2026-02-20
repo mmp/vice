@@ -183,7 +183,7 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, paneExtent math.Extent2
 
 	listStyle := renderer.TextStyle{
 		Font:  sp.systemFont(ctx, ps.CharSize.Lists),
-		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
+		Color: ps.Brightness.Lists.ScaleRGB(sp.Colors.List),
 	}
 
 	td := renderer.GetTextDrawBuilder()
@@ -195,10 +195,10 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, paneExtent math.Extent2
 		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
 	}
 
-	previewAreaColor := ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor)
+	previewAreaColor := ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.List)
 	if ctx.Client.RadioIsActive() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) &&
 		!ctx.TCWIsPrivileged(ctx.UserTCW) {
-		previewAreaColor = ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor)
+		previewAreaColor = ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.TextAlert)
 	}
 
 	// Collect bounds from all lists for overlap detection
@@ -238,8 +238,8 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, paneExtent math.Extent2
 					continue
 				}
 				if math.Overlaps(b1, b2) {
-					sp.drawListFrameColor(ctx, b1, STARSListColor, ld)
-					sp.drawListFrameColor(ctx, b2, STARSListColor, ld)
+					sp.drawListFrameColor(ctx, b1, sp.Colors.List, ld)
+					sp.drawListFrameColor(ctx, b2, sp.Colors.List, ld)
 				}
 			}
 		}
@@ -254,12 +254,12 @@ func (sp *STARSPane) drawListFrame(ctx *panes.Context, bounds math.Extent2D, tit
 		return
 	}
 
-	sp.drawListFrameColor(ctx, bounds, STARSListColor, ld)
+	sp.drawListFrameColor(ctx, bounds, sp.Colors.List, ld)
 
 	// Draw title above the frame in a smaller font
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, max(0, ps.CharSize.Lists-1))
-	style := renderer.TextStyle{Font: font, Color: ps.Brightness.Lists.ScaleRGB(STARSListColor)}
+	style := renderer.TextStyle{Font: font, Color: ps.Brightness.Lists.ScaleRGB(sp.Colors.List)}
 	td.AddText(title, [2]float32{bounds.P0[0], bounds.P1[1] + float32(font.Size)}, style)
 }
 
@@ -285,7 +285,7 @@ func (sp *STARSPane) handleListDrag(ctx *panes.Context, bounds math.Extent2D, po
 
 	if sp.movingList == listId {
 		// Draw green frame at original location
-		sp.drawListFrameColor(ctx, sp.movingListBounds, STARSListColor, ld)
+		sp.drawListFrameColor(ctx, sp.movingListBounds, sp.Colors.List, ld)
 
 		// Draw white frame at current cursor position
 		cursorPos := ctx.Mouse.Pos
@@ -370,11 +370,11 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	alertStyle := renderer.TextStyle{
 		Font:  font,
-		Color: ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor),
+		Color: ps.Brightness.Lists.ScaleRGB(sp.Colors.TextAlert),
 	}
 	warnStyle := renderer.TextStyle{
 		Font:  font,
-		Color: ps.Brightness.Lists.ScaleRGB(STARSTextWarningColor),
+		Color: ps.Brightness.Lists.ScaleRGB(sp.Colors.TextWarning),
 	}
 
 	stripPrefix := func(airport string) string {
@@ -402,12 +402,12 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 	for i := range tv {
 		tv[i] = math.Add2f(pIndicator, math.Scale2f(tv[i], -scale))
 	}
-	trid.AddTriangle(tv[0], tv[1], tv[2], ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor))
+	trid.AddTriangle(tv[0], tv[1], tv[2], ps.Brightness.Lists.ScaleRGB(sp.Colors.TextAlert))
 	trid.GenerateCommands(cb)
 
 	square := [][2]float32{{-5, -5}, {5, -5}, {5, 5}, {-5, 5}}
 	square = util.MapSlice(square, func(p [2]float32) [2]float32 { return math.Add2f(math.Scale2f(p, scale), pIndicator) })
-	ld.AddLineLoop(ps.Brightness.Lists.ScaleRGB(STARSListColor), square)
+	ld.AddLineLoop(ps.Brightness.Lists.ScaleRGB(sp.Colors.List), square)
 	ld.GenerateCommands(cb)
 
 	pw[1] -= 10 * scale
@@ -1296,7 +1296,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	titleStyle := renderer.TextStyle{
 		Font:  font,
-		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
+		Color: ps.Brightness.Lists.ScaleRGB(sp.Colors.List),
 	}
 
 	normalizedToWindow := func(p [2]float32) [2]float32 {
@@ -1310,7 +1310,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 	for i, cl := range fa.CoordinationLists {
 		listStyle := renderer.TextStyle{
 			Font:  font,
-			Color: ps.Brightness.Lists.ScaleRGB(util.Select(cl.YellowEntries, renderer.RGB{1, 1, 0}, STARSListColor)),
+			Color: ps.Brightness.Lists.ScaleRGB(util.Select(cl.YellowEntries, renderer.RGB{1, 1, 0}, sp.Colors.List)),
 		}
 		dimStyle := renderer.TextStyle{
 			Font:  font,

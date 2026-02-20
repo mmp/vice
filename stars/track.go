@@ -753,7 +753,7 @@ func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, tra
 
 	ps := sp.currentPrefs()
 	brightness := ps.Brightness.OtherTracks
-	color := brightness.ScaleRGB(STARSGhostColor)
+	color := brightness.ScaleRGB(sp.Colors.Ghost)
 	trackFont := sp.systemFont(ctx, ps.CharSize.PositionSymbols)
 	trackStyle := renderer.TextStyle{Font: trackFont, Color: color, LineSpacing: 0}
 	datablockFont := sp.systemFont(ctx, ps.CharSize.Datablocks)
@@ -819,7 +819,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
 
-			color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+			color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackBlock)
 			if primary {
 				// Draw a filled box
 				trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -856,7 +856,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
 
-			color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+			color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackBlock)
 			if primary {
 				// Draw a filled box
 				trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -868,7 +868,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 
 		case RadarModeFused:
 			if ps.Brightness.PrimarySymbols > 0 {
-				color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+				color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackBlock)
 				drawTrack(trackBuilder, pw, sp.fusedTrackVertices, color)
 			}
 		}
@@ -969,8 +969,8 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, transforms radar.Scop
 
 		// Draw history from new to old
 		for i := range ps.RadarTrackHistory {
-			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
-			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
+			trackColorNum := min(i, len(sp.Colors.TrackHistory)-1)
+			trackColor := ps.Brightness.History.ScaleRGB(sp.Colors.TrackHistory[trackColorNum])
 
 			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
 				if p := state.historyTracks[idx].Location; !p.IsZero() {

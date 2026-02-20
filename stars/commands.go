@@ -720,7 +720,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 			style := renderer.TextStyle{
 				Font:        font,
-				Color:       ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
+				Color:       ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.List),
 				LineSpacing: 0}
 
 			// Track position in window coordinates
