@@ -121,8 +121,8 @@ func TestCheckVisualEligibility(t *testing.T) {
 			wantField: false,
 		},
 		{
-			name:      "Nil assigned approach",
-			sim:       makeVisualTestSim(airportLoc, "13L"),
+			name: "Nil assigned approach",
+			sim:  makeVisualTestSim(airportLoc, "13L"),
 			ac: func() *Aircraft {
 				ac := makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180)
 				ac.Nav.Approach.Assigned = nil
@@ -241,18 +241,18 @@ func TestVisualRequestBearingFilter(t *testing.T) {
 	acPos := math.Point2LL{0, 5.0 / 60} // 5nm north
 
 	tests := []struct {
-		name           string
-		heading        float32
+		name               string
+		heading            float32
 		shouldBePastFilter bool // true = bearing difference <= 120
 	}{
 		{"Heading south toward airport", 180, true},
 		{"Heading southwest", 225, true},
 		{"Heading southeast", 135, true},
-		{"Heading east (abeam)", 90, true},   // 90° off nose
-		{"Heading west (abeam)", 270, true},   // 90° off nose
-		{"Heading north away from airport", 0, false},  // 180° off nose
-		{"Heading NNE away", 30, false},       // 150° off nose
-		{"Heading NNW away", 330, false},      // 150° off nose
+		{"Heading east (abeam)", 90, true},            // 90° off nose
+		{"Heading west (abeam)", 270, true},           // 90° off nose
+		{"Heading north away from airport", 0, false}, // 180° off nose
+		{"Heading NNE away", 30, false},               // 150° off nose
+		{"Heading NNW away", 330, false},              // 150° off nose
 	}
 
 	for _, tt := range tests {
@@ -332,23 +332,23 @@ func TestVisualApproachWaypoints(t *testing.T) {
 	nmPerLong := float32(52) // ~40°N
 
 	tests := []struct {
-		name           string
-		pos            math.Point2LL
-		heading        float32
-		wantNil        bool   // expect go-around (nil)
-		wantBase       bool   // expect a _BASE waypoint
-		baseSide       string // "left" or "right" of centerline (looking inbound, i.e. north)
+		name     string
+		pos      math.Point2LL
+		heading  float32
+		wantNil  bool   // expect go-around (nil)
+		wantBase bool   // expect a _BASE waypoint
+		baseSide string // "left" or "right" of centerline (looking inbound, i.e. north)
 	}{
 		{
-			name:    "Aligned on centerline, 8nm south",
-			pos:     math.Point2LL{0, -8.0 / 60}, // 8nm south
-			heading: 360,                           // heading north
+			name:     "Aligned on centerline, 8nm south",
+			pos:      math.Point2LL{0, -8.0 / 60}, // 8nm south
+			heading:  360,                         // heading north
 			wantBase: false,
 		},
 		{
-			name:    "Slightly offset (1nm east), 8nm south",
-			pos:     math.Point2LL{1.0 / nmPerLong, -8.0 / 60}, // 1nm east, 8nm south
-			heading: 360,
+			name:     "Slightly offset (1nm east), 8nm south",
+			pos:      math.Point2LL{1.0 / nmPerLong, -8.0 / 60}, // 1nm east, 8nm south
+			heading:  360,
 			wantBase: false, // within 1.5nm threshold
 		},
 		{
