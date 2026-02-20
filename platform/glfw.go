@@ -461,7 +461,7 @@ func (g *glfwPlatform) updateKeyModifiers() {
 
 func (g *glfwPlatform) charChange(window *glfw.Window, char rune) {
 	g.anyEvents = true
-	g.imguiIO.AddInputCharactersUTF8(string(char))
+	// imgui character input is handled by implglfw.InstallCallbacks.
 	g.inputCharacters = g.inputCharacters + string(char)
 }
 
