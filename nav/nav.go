@@ -398,7 +398,11 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 
 func (nav *Nav) TAS() float32 {
 	tas := av.IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude)
-	tas = min(tas, nav.Perf.Speed.CruiseTAS)
+	if nav.MachTransition {
+		tas = min(tas, av.MachToTAS(nav.Perf.Speed.MaxMach))
+	} else {
+		tas = min(tas, nav.Perf.Speed.CruiseTAS)
+	}
 	return tas
 }
 
