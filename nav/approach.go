@@ -569,11 +569,12 @@ func (nav *Nav) buildDirectVisualWaypoints(runway string) []av.Waypoint {
 			return nil
 		}
 
-		wps = append(wps, av.Waypoint{
-			Fix:        "_" + runway + "_BASE",
-			Location:   baseLoc,
-			OnApproach: true,
-		})
+		base := av.Waypoint{
+			Fix:      "_" + runway + "_BASE",
+			Location: baseLoc,
+		}
+		base.SetOnApproach(true)
+		wps = append(wps, base)
 	} else {
 		// Roughly aligned. Go-around check on the 3nm final point.
 		bearingTo3nm := math.Heading2LL(nav.FlightState.Position, final3nm, nmPerLong, magVar)
@@ -582,22 +583,23 @@ func (nav *Nav) buildDirectVisualWaypoints(runway string) []av.Waypoint {
 		}
 	}
 
-	wps = append(wps,
-		av.Waypoint{
-			Fix:                 "_" + runway + "_3NM_FINAL",
-			Location:            final3nm,
-			OnApproach:          true,
-			AltitudeRestriction: &av.AltitudeRestriction{Range: [2]float32{final3nmAlt, 0}},
-		},
-		av.Waypoint{
-			Fix:                 "_" + runway + "_THRESHOLD",
-			Location:            threshold,
-			AltitudeRestriction: &av.AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}},
-			Land:                true,
-			FlyOver:             true,
-			OnApproach:          true,
-		},
-	)
+	finalWp := av.Waypoint{
+		Fix:      "_" + runway + "_3NM_FINAL",
+		Location: final3nm,
+	}
+	finalWp.SetOnApproach(true)
+	finalWp.SetAltitudeRestriction(av.AltitudeRestriction{Range: [2]float32{final3nmAlt, 0}})
+
+	thresholdWp := av.Waypoint{
+		Fix:      "_" + runway + "_THRESHOLD",
+		Location: threshold,
+	}
+	thresholdWp.SetOnApproach(true)
+	thresholdWp.SetLand(true)
+	thresholdWp.SetFlyOver(true)
+	thresholdWp.SetAltitudeRestriction(av.AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}})
+
+	wps = append(wps, finalWp, thresholdWp)
 
 	return wps
 }

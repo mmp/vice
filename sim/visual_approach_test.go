@@ -440,10 +440,10 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			if last.Fix != "_36_THRESHOLD" {
 				t.Errorf("last waypoint = %q, want _36_THRESHOLD", last.Fix)
 			}
-			if !last.Land {
+			if !last.Land() {
 				t.Error("threshold waypoint should have Land=true")
 			}
-			if !last.FlyOver {
+			if !last.FlyOver() {
 				t.Error("threshold waypoint should have FlyOver=true")
 			}
 
@@ -454,9 +454,9 @@ func TestVisualApproachWaypoints(t *testing.T) {
 					final3nm = wp
 				}
 			}
-			if final3nm.AltitudeRestriction == nil {
+			if alt := final3nm.AltitudeRestriction(); alt == nil {
 				t.Error("3nm final should have an altitude restriction")
-			} else if final3nm.AltitudeRestriction.Range[0] == 0 {
+			} else if alt.Range[0] == 0 {
 				t.Error("3nm final altitude lower bound should be non-zero")
 			}
 		})
