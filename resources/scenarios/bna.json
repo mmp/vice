@@ -787,7 +787,7 @@
                 {
                     "airlines": [
                         {
-                            "icao": "SWA`"
+                            "icao": "SWA"
                         },
                         {
                             "icao": "DAL",
@@ -961,9 +961,6 @@
                 },
                 {
                     "airlines": [
-                        {
-                            "icao": "TIV"
-                        },
                         {
                             "icao": "SWA"
                         },
@@ -1146,7 +1143,7 @@
                 {
                     "airlines": [
                         {
-                            "icao": "ERY"
+                            "icao": "ENY"
                         },
                         {
                             "icao": "EJA"
