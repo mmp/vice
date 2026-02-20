@@ -1394,70 +1394,77 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 			return
 		}
 
+		whisperModelName := GetWhisperModelName()
+
+		var callsign, command string
 		if decoded == "" {
 			lg.Infof("STT: no command decoded from %q", finalText)
 			c.transmissions.Unhold()
 			c.postSTTEvent(finalText, decoded, timingStr)
-			return
-		}
-
-		// Parse callsign and command from decoded result
-		callsign, command, _ := strings.Cut(decoded, " ")
-		lg.Infof("STT command: %s %s", callsign, command)
-
-		c.SetLastCommand(decoded)
-		c.postSTTEvent(finalText, decoded, timingStr)
-
-		// Track AGAIN responses for fallback callsign
-		if command == "AGAIN" {
-			c.mu.Lock()
-			c.lastAgainCallsign = av.ADSBCallsign(callsign)
-			c.mu.Unlock()
-			lg.Infof("STT: set lastAgainCallsign=%s", callsign)
 		} else {
-			// Clear the last AGAIN callsign on successful command
-			c.mu.Lock()
-			if c.lastAgainCallsign != "" {
-				lg.Infof("STT: clearing lastAgainCallsign (was %s)", c.lastAgainCallsign)
-				c.lastAgainCallsign = ""
-			}
-			c.mu.Unlock()
-		}
+			// Parse callsign and command from decoded result
+			callsign, command, _ = strings.Cut(decoded, " ")
+			lg.Infof("STT command: %s %s", callsign, command)
 
-		// Execute the command via RPC (TTS readback will arrive via WebSocket)
-		whisperModelName := GetWhisperModelName()
-		c.RunAircraftCommands(AircraftCommandRequest{
-			Callsign:          av.ADSBCallsign(callsign),
-			Commands:          command,
-			WhisperDuration:   totalDuration,
-			AudioDuration:     audioDuration,
-			WhisperTranscript: finalText,
-			WhisperModel:      whisperModelName,
-			AircraftContext:   aircraftCtx,
-			STTDebugLogs:      debugLogs,
-		}, func(message string, remainingInput string) {
-			c.transmissions.Unhold()
-			if message != "" {
-				lg.Infof("STT command result: %s", message)
-			}
-		})
+			c.SetLastCommand(decoded)
+			c.postSTTEvent(finalText, decoded, timingStr)
 
-		// Report STT to remote server for logging (when running local sim)
-		c.mu.Lock()
-		remoteServer := c.remoteServer
-		c.mu.Unlock()
-		if remoteServer != nil {
-			go remoteServer.Go(server.ReportSTTLogRPC, &server.STTLogArgs{
-				Callsign:          callsign,
+			// Track AGAIN responses for fallback callsign
+			if command == "AGAIN" {
+				c.mu.Lock()
+				c.lastAgainCallsign = av.ADSBCallsign(callsign)
+				c.mu.Unlock()
+				lg.Infof("STT: set lastAgainCallsign=%s", callsign)
+			} else {
+				// Clear the last AGAIN callsign on successful command
+				c.mu.Lock()
+				if c.lastAgainCallsign != "" {
+					lg.Infof("STT: clearing lastAgainCallsign (was %s)", c.lastAgainCallsign)
+					c.lastAgainCallsign = ""
+				}
+				c.mu.Unlock()
+			}
+
+			// Execute the command via RPC (TTS readback will arrive via WebSocket)
+			c.RunAircraftCommands(AircraftCommandRequest{
+				Callsign:          av.ADSBCallsign(callsign),
 				Commands:          command,
 				WhisperDuration:   totalDuration,
 				AudioDuration:     audioDuration,
 				WhisperTranscript: finalText,
-				WhisperProcessor:  whisper.ProcessorDescription(),
 				WhisperModel:      whisperModelName,
 				AircraftContext:   aircraftCtx,
 				STTDebugLogs:      debugLogs,
-			}, nil, nil)
+			}, func(message string, remainingInput string) {
+				c.transmissions.Unhold()
+				if message != "" {
+					lg.Infof("STT command result: %s", message)
+				}
+			})
+		}
+
+		// Report STT to server for logging, including no-command cases.
+		// For local sim clients with a remote server, send to remoteServer.
+		// For no-command cases without a remote server (remote sim client),
+		// send directly since the dispatcher won't log it.
+		c.mu.Lock()
+		remoteServer := c.remoteServer
+		c.mu.Unlock()
+		sttLogArgs := &server.STTLogArgs{
+			Callsign:          callsign,
+			Commands:          command,
+			WhisperDuration:   totalDuration,
+			AudioDuration:     audioDuration,
+			WhisperTranscript: finalText,
+			WhisperProcessor:  whisper.ProcessorDescription(),
+			WhisperModel:      whisperModelName,
+			AircraftContext:   aircraftCtx,
+			STTDebugLogs:      debugLogs,
+		}
+		if remoteServer != nil {
+			go remoteServer.Go(server.ReportSTTLogRPC, sttLogArgs, nil, nil)
+		} else if decoded == "" {
+			go c.client.Go(server.ReportSTTLogRPC, sttLogArgs, nil, nil)
 		}
 	}()
 }
