@@ -1,0 +1,44 @@
+{
+    "control_positions": {
+        "1Y": {
+            "callsign": "WRI_APP",
+            "frequency": 126475,
+            "radio_name": "McGuire Approach"
+        },
+        "1L": {
+            "callsign": "WRI_TWR",
+            "frequency": 118650,
+            "radio_name": "McGuire Tower"
+        },
+        "1H": {
+            "callsign": "NEL_TWR",
+            "frequency": 127775,
+            "radio_name": "Lakehurst Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ACY",
+            "prefix": "3"
+        },
+        {
+            "id": "N90",
+            "prefix": "1"
+        },
+        {
+            "id": "PHL",
+            "prefix": "2"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

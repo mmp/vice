@@ -1,0 +1,44 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "SHV_E_APP",
+            "frequency": 123750,
+            "radio_name": "Shreveport Approach"
+        },
+        "1L": {
+            "callsign": "SHV_TWR",
+            "frequency": 121400,
+            "radio_name": "Shreveport Tower"
+        },
+        "1W": {
+            "callsign": "SHV_W_APP",
+            "frequency": 119900,
+            "radio_name": "Shreveport Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "GGG",
+            "prefix": "2"
+        },
+        {
+            "id": "MLU",
+            "prefix": "1"
+        },
+        {
+            "id": "POE",
+            "prefix": "3"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "C"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "H"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

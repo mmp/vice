@@ -1,0 +1,667 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZTL 01 Rome Ultra Low",
+            "frequency": 124500,
+            "radio_name": "Atlanta Center"
+        },
+        "02": {
+            "callsign": "ZTL 02 Gunter Ultra High",
+            "frequency": 126825,
+            "radio_name": "Atlanta Center"
+        },
+        "03": {
+            "callsign": "ZTL 03 Gadsden High",
+            "frequency": 128725,
+            "radio_name": "Atlanta Center"
+        },
+        "04": {
+            "callsign": "ZTL 04 West Departure Low",
+            "frequency": 134950,
+            "radio_name": "Atlanta Center"
+        },
+        "05": {
+            "callsign": "ZTL 05 Dalas Low",
+            "frequency": 132050,
+            "radio_name": "Atlanta Center"
+        },
+        "06": {
+            "callsign": "ZTL 06 Rocket High",
+            "frequency": 133175,
+            "radio_name": "Atlanta Center"
+        },
+        "08": {
+            "callsign": "ZTL 08 Martin Lake Ultra High",
+            "frequency": 125875,
+            "radio_name": "Atlanta Center"
+        },
+        "09": {
+            "callsign": "ZTL 09 Tiroe Low",
+            "frequency": 120450,
+            "radio_name": "Atlanta Center"
+        },
+        "10": {
+            "callsign": "ZTL 10 LaGrange High",
+            "frequency": 125575,
+            "radio_name": "Atlanta Center"
+        },
+        "11": {
+            "callsign": "ZTL 11 Monroeville High",
+            "frequency": 128025,
+            "radio_name": "Atlanta Center"
+        },
+        "12": {
+            "callsign": "ZTL 12 Birmingham Low",
+            "frequency": 127300,
+            "radio_name": "Atlanta Center"
+        },
+        "13": {
+            "callsign": "ZTL 13 Montgomery Low",
+            "frequency": 120550,
+            "radio_name": "Atlanta Center"
+        },
+        "14": {
+            "callsign": "ZTL 14 Maxwell Low",
+            "frequency": 132250,
+            "radio_name": "Atlanta Center"
+        },
+        "15": {
+            "callsign": "ZTL 15 Baden Ultra-High",
+            "frequency": 126775,
+            "radio_name": "Atlanta Center"
+        },
+        "16": {
+            "callsign": "ZTL 16 East Departure Low",
+            "frequency": 134200,
+            "radio_name": "Atlanta Center"
+        },
+        "18": {
+            "callsign": "ZTL 18 Commerce Ultra Low",
+            "frequency": 134800,
+            "radio_name": "Atlanta Center"
+        },
+        "19": {
+            "callsign": "ZTL 19 Sinca Low",
+            "frequency": 123950,
+            "radio_name": "Atlanta Center"
+        },
+        "20": {
+            "callsign": "ZTL 20 Dublin High",
+            "frequency": 126425,
+            "radio_name": "Atlanta Center"
+        },
+        "21": {
+            "callsign": "ZTL 21 South Departure Low",
+            "frequency": 134500,
+            "radio_name": "Atlanta Center"
+        },
+        "22": {
+            "callsign": "ZTL 22 Macon High",
+            "frequency": 119375,
+            "radio_name": "Atlanta Center"
+        },
+        "23": {
+            "callsign": "ZTL 23 Clark Hill Ultra High",
+            "frequency": 124325,
+            "radio_name": "Atlanta Center"
+        },
+        "24": {
+            "callsign": "ZTL 24 Augusta Low",
+            "frequency": 128100,
+            "radio_name": "Atlanta Center"
+        },
+        "27": {
+            "callsign": "ZTL 27 Hampton Ultra High",
+            "frequency": 125825,
+            "radio_name": "Atlanta Center"
+        },
+        "28": {
+            "callsign": "ZTL 28 High Rock Ultra High",
+            "frequency": 125025,
+            "radio_name": "Atlanta Center"
+        },
+        "29": {
+            "callsign": "ZTL 29 Leeon Low",
+            "frequency": 128800,
+            "radio_name": "Atlanta Center"
+        },
+        "30": {
+            "callsign": "ZTL 30 Locas Low",
+            "frequency": 133150,
+            "radio_name": "Atlanta Center"
+        },
+        "31": {
+            "callsign": "ZTL 31 Unarm Low",
+            "frequency": 135350,
+            "radio_name": "Atlanta Center"
+        },
+        "32": {
+            "callsign": "ZTL 32 Spartanburg High",
+            "frequency": 125625,
+            "radio_name": "Atlanta Center"
+        },
+        "33": {
+            "callsign": "ZTL 33 Charlotte High",
+            "frequency": 124425,
+            "radio_name": "Atlanta Center"
+        },
+        "34": {
+            "callsign": "ZTL 34 Georgia High",
+            "frequency": 120425,
+            "radio_name": "Atlanta Center"
+        },
+        "36": {
+            "callsign": "ZTL 36 Allatoona Ultra High",
+            "frequency": 124875,
+            "radio_name": "Atlanta Center"
+        },
+        "37": {
+            "callsign": "ZTL 37 Crossville High",
+            "frequency": 126675,
+            "radio_name": "Atlanta Center"
+        },
+        "38": {
+            "callsign": "ZTL 38 North Departure Low",
+            "frequency": 133100,
+            "radio_name": "Atlanta Center"
+        },
+        "39": {
+            "callsign": "ZTL 39 Burne High",
+            "frequency": 125925,
+            "radio_name": "Atlanta Center"
+        },
+        "40": {
+            "callsign": "ZTL 40 Blue Ridge Ultra-High",
+            "frequency": 134075,
+            "radio_name": "Atlanta Center"
+        },
+        "41": {
+            "callsign": "ZTL 41 Hinch Mountain Low",
+            "frequency": 133600,
+            "radio_name": "Atlanta Center"
+        },
+        "42": {
+            "callsign": "ZTL 42 Salem High",
+            "frequency": 120725,
+            "radio_name": "Atlanta Center"
+        },
+        "43": {
+            "callsign": "ZTL 43 Pulaski High",
+            "frequency": 132975,
+            "radio_name": "Atlanta Center"
+        },
+        "44": {
+            "callsign": "ZTL 44 Shine Low",
+            "frequency": 132625,
+            "radio_name": "Atlanta Center"
+        },
+        "45": {
+            "callsign": "ZTL 45 Bristol Low",
+            "frequency": 127850,
+            "radio_name": "Atlanta Center"
+        },
+        "47": {
+            "callsign": "ZTL 47 Moped Low",
+            "frequency": 134550,
+            "radio_name": "Atlanta Center"
+        },
+        "48": {
+            "callsign": "ZTL 48 Wilkes Ultra Low",
+            "frequency": 125150,
+            "radio_name": "Atlanta Center"
+        },
+        "49": {
+            "callsign": "ZTL 49 Logen Low",
+            "frequency": 121350,
+            "radio_name": "Atlanta Center"
+        },
+        "50": {
+            "callsign": "ZTL 50 Lanier High",
+            "frequency": 124375,
+            "radio_name": "Atlanta Center"
+        },
+        "98": {
+            "callsign": "ZTL 98 TMEC",
+            "frequency": 125550,
+            "radio_name": "Atlanta Center "
+        },
+        "99": {
+            "callsign": "ZTL 99 TMAC",
+            "frequency": 125550,
+            "radio_name": "Atlanta Center"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "CHPPR": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "GLAVN": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "HOBTT": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "JJEDI": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "ONDRE": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "OZZZI": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "DEBBT": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "CHSLY": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "FILPZ": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "JONZE": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "STOCR": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "PARQR": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "GAIRY": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "GRD": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "PYRES": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZJX"
+                }
+            ],
+            "STUGE": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZJX"
+                }
+            ],
+            "MILEN": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZJX"
+                }
+            ],
+            "STWRT": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZJX"
+                }
+            ],
+            "EXIST": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "CIVMA": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "FAYEZ": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "IXUSE": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "BESOM": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "QECKE": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "KOCEY": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "BOYDD": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "RENZI": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "CLT"
+                }
+            ],
+            "TRAKS": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZTL"
+                }
+            ],
+            "MMJAY": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZTL"
+                }
+            ],
+            "HENBY": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZDC"
+                }
+            ],
+            "ANGRI": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "MCHLN": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "RCTOR": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "TANCE": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "LEAVI": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "JONEB": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "TUSRE": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "OBURY": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "PUPDG": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "BARRD": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "A80",
+            "stars_id": "AAA",
+            "single_char_stars_id": "A",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "AGS",
+            "stars_id": "ZZZ",
+            "single_char_stars_id": "Z",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "AVL",
+            "stars_id": "VVV",
+            "single_char_stars_id": "V",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "BHM",
+            "stars_id": "BBB",
+            "single_char_stars_id": "B",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CAE",
+            "stars_id": "CAE",
+            "field_e_format": "OneLetterAndStarsIdOnly",
+            "field_e_letter": "C"
+        },
+        {
+            "id": "CBM",
+            "stars_id": "CBM",
+            "two_char_stars_id": "BB",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "CHA",
+            "stars_id": "FFF",
+            "single_char_stars_id": "F",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CLT",
+            "stars_id": "CCC",
+            "single_char_stars_id": "C",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "FAY",
+            "stars_id": "FAY",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "F"
+        },
+        {
+            "id": "FLO",
+            "stars_id": "FLO",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "F"
+        },
+        {
+            "id": "GSO",
+            "stars_id": "GGG",
+            "single_char_stars_id": "G",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "GSP",
+            "stars_id": "SSS",
+            "single_char_stars_id": "S",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "HSV",
+            "stars_id": "HSV",
+            "two_char_stars_id": "HH",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "MGM",
+            "stars_id": "DDD",
+            "single_char_stars_id": "D",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NMM",
+            "stars_id": "NMM",
+            "single_char_stars_id": "N",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "OZR",
+            "stars_id": "OZR",
+            "two_char_stars_id": "OO",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "RDU",
+            "stars_id": "RDU",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "R"
+        },
+        {
+            "id": "ROA",
+            "stars_id": "ROA",
+            "two_char_stars_id": "RR",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "SSC",
+            "stars_id": "SSC",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "S"
+        },
+        {
+            "id": "TRI",
+            "stars_id": "RRR",
+            "single_char_stars_id": "R",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "TYS",
+            "stars_id": "TTT",
+            "single_char_stars_id": "T",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "H"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "J"
+        },
+        {
+            "id": "ZME",
+            "prefix": "M"
+        }
+    ]
+}

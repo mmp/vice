@@ -1,0 +1,1183 @@
+{
+    "control_positions": {
+        "1G": {
+            "callsign": "BOS_E_TWR",
+            "frequency": 132225,
+            "radio_name": "Boston Tower",
+            "scope_char": "T"
+        },
+        "4Q": {
+            "callsign": "OWD_TWR",
+            "frequency": 126000,
+            "radio_name": "Norwood Tower"
+        },
+        "2Q": {
+            "callsign": "BVY_TWR",
+            "frequency": 125200,
+            "radio_name": "Beverly Tower"
+        },
+        "3Q": {
+            "callsign": "LWM_TWR",
+            "frequency": 119250,
+            "radio_name": "Lawrence Tower"
+        },
+        "1C": {
+            "callsign": "BED_TWR",
+            "frequency": 121700,
+            "radio_name": "Bedford Tower",
+            "scope_char": "T"
+        },
+        "1T": {
+            "callsign": "BOS_W_TWR",
+            "frequency": 128800,
+            "radio_name": "Boston Tower"
+        },
+        "1D": {
+            "callsign": "BOS_D_APP",
+            "frequency": 133000,
+            "radio_name": "Boston Approach"
+        },
+        "1R": {
+            "callsign": "BOS_R_APP",
+            "frequency": 118250,
+            "radio_name": "Boston Approach"
+        },
+        "1F": {
+            "callsign": "BOS_F_APP",
+            "frequency": 126500,
+            "radio_name": "Boston Approach"
+        },
+        "1I": {
+            "callsign": "BOS_I_APP",
+            "frequency": 119650,
+            "radio_name": "Boston Approach"
+        },
+        "1B": {
+            "callsign": "BOS_B_APP",
+            "frequency": 124400,
+            "radio_name": "Boston Approach"
+        },
+        "1U": {
+            "callsign": "BOS_U_APP",
+            "frequency": 127200,
+            "radio_name": "Boston Approach"
+        },
+        "1L": {
+            "callsign": "BOS_L_APP",
+            "frequency": 124100,
+            "radio_name": "Boston Approach"
+        },
+        "3T": {
+            "callsign": "PSM_TWR",
+            "frequency": 128400,
+            "radio_name": "Portsmouth Tower"
+        },
+        "1V": {
+            "callsign": "MHT_TWR",
+            "frequency": 121300,
+            "radio_name": "Manchester Tower"
+        },
+        "1P": {
+            "callsign": "MHT_P_APP",
+            "frequency": 125825,
+            "radio_name": "Boston Approach"
+        },
+        "1J": {
+            "callsign": "MHT_J_APP",
+            "frequency": 127350,
+            "radio_name": "Boston Approach"
+        },
+        "1N": {
+            "callsign": "ACK_N_APP",
+            "frequency": 118200,
+            "radio_name": "Boston Approach"
+        },
+        "1O": {
+            "callsign": "ACK_O_APP",
+            "frequency": 126300,
+            "radio_name": "Boston Approach"
+        },
+        "1Y": {
+            "callsign": "ACK_Y_APP",
+            "frequency": 119700,
+            "radio_name": "Boston Approach"
+        },
+        "1S": {
+            "callsign": "ACK_S_APP",
+            "frequency": 133750,
+            "radio_name": "Boston Approach"
+        },
+        "1K": {
+            "callsign": "ACK_DEP",
+            "frequency": 126100,
+            "radio_name": "Boston Approach"
+        },
+        "1A": {
+            "callsign": "ACK_A_APP",
+            "frequency": 124050,
+            "radio_name": "Boston Approach"
+        },
+        "4T": {
+            "callsign": "ACK_TWR",
+            "frequency": 118300,
+            "radio_name": "Nantucket Tower"
+        },
+        "4V": {
+            "callsign": "MVY_TWR",
+            "frequency": 121400,
+            "radio_name": "Vineyard Tower"
+        },
+        "2T": {
+            "callsign": "ASH_TWR",
+            "frequency": 133200,
+            "radio_name": "Nashua Tower"
+        },
+        "4H": {
+            "callsign": "HYA_TWR",
+            "frequency": 119500,
+            "radio_name": "Hayannis Tower"
+        },
+        "4J": {
+            "callsign": "FMH_TWR",
+            "frequency": 128425,
+            "radio_name": "Coast Guard Tower"
+        },
+        "1M": {
+            "callsign": "BOS_M_APP",
+            "frequency": 120600,
+            "radio_name": "Boston Approach"
+        },
+        "1E": {
+            "callsign": "MHT_E_APP",
+            "frequency": 125050,
+            "radio_name": "Boston Approach"
+        },
+        "1Z": {
+            "callsign": "MHT_Z_APP",
+            "frequency": 124900,
+            "radio_name": "Boston Approach"
+        },
+        "1W": {
+            "callsign": "MHT_W_APP",
+            "frequency": 134750,
+            "radio_name": "Boston Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "90X": {
+                "inbound_assignments": {
+                    "CON": "1W",
+                    "ENE": "1E",
+                    "FREDO.6K": "1S",
+                    "FREDO.8K": "1S",
+                    "GDM": "1W",
+                    "GDM.7K": "1R",
+                    "GDM.9K": "1R",
+                    "JFUND2": "1R",
+                    "MANCH..LWRNC": "1R",
+                    "OOSHN5": "1R",
+                    "PSM..LWRNC": "1R",
+                    "ROBUC3": "1S",
+                    "ROZZE2": "1W",
+                    "WOONS.5K": "1D",
+                    "WOONS.7K": "1D"
+                },
+                "departure_assignments": {
+                    "KBOS": "1D",
+                    "KMHT": "1J"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1N",
+                        "1J"
+                    ],
+                    "1F": [
+                        "1I"
+                    ],
+                    "1N": [
+                        "1F",
+                        "1S"
+                    ],
+                    "1J": [
+                        "1Z"
+                    ],
+                    "1Z": [
+                        "1E",
+                        "1W"
+                    ]
+                }
+            },
+            "A90": {
+                "inbound_assignments": {
+                    "CON": "1W",
+                    "DEEPO2": "1N",
+                    "DREEM3.BED": "1B",
+                    "DREEM3.BVY": "1B",
+                    "DREEM3.LWM": "1B",
+                    "ENE": "1E",
+                    "FREDO.4K": "1S",
+                    "FREDO.6K": "1S",
+                    "FREDO.8K": "1S",
+                    "GDM": "1W",
+                    "GDM.7K": "1R",
+                    "GDM.9K": "1R",
+                    "JFUND2": "1R",
+                    "MANCH..LWRNC": "1R",
+                    "MANCH..LWRNC.SAT": "1R",
+                    "OOSHN5": "1R",
+                    "PSM..LWRNC": "1R",
+                    "PSM..LWRNC.SAT": "1R",
+                    "ROBUC3": "1S",
+                    "ROZZE2": "1W",
+                    "WOONS.3K": "1U",
+                    "WOONS.5K": "1U",
+                    "WOONS.7K": "1U",
+                    "ZELKA2.BED": "1B",
+                    "ZELKA2.BVY": "1B",
+                    "ZELKA2.LWM": "1B"
+                },
+                "departure_assignments": {
+                    "KACK": "1K",
+                    "KBED": "1B",
+                    "KBOS": "1D",
+                    "KMHT": "1J",
+                    "KMVY": "1K",
+                    "KPSM": "1P"
+                },
+                "default_consolidation": {
+                    "1K": [
+                        "1O"
+                    ],
+                    "1N": [
+                        "1K",
+                        "1B",
+                        "1F"
+                    ],
+                    "1O": [
+                        "1Y"
+                    ],
+                    "1S": [
+                        "1A",
+                        "1L"
+                    ],
+                    "1Y": [
+                        "1S"
+                    ],
+                    "1D": [
+                        "1N",
+                        "1U",
+                        "1J"
+                    ],
+                    "1F": [
+                        "1I"
+                    ],
+                    "1E": [
+                        "1P"
+                    ],
+                    "1J": [
+                        "1Z"
+                    ],
+                    "1Z": [
+                        "1E",
+                        "1W"
+                    ]
+                }
+            },
+            "A91": {
+                "inbound_assignments": {
+                    "CON": "1W",
+                    "ENE": "1E",
+                    "FREDO.6K": "1S",
+                    "FREDO.8K": "1S",
+                    "GDM": "1W",
+                    "GDM.7K": "1R",
+                    "GDM.9K": "1R",
+                    "JFUND2": "1R",
+                    "MANCH..LWRNC": "1R",
+                    "OOSHN5": "1R",
+                    "PSM..LWRNC": "1R",
+                    "ROBUC3": "1S",
+                    "ROZZE2": "1W",
+                    "WOONS.5K": "1D",
+                    "WOONS.7K": "1D"
+                },
+                "departure_assignments": {
+                    "KBOS": "1D",
+                    "KMHT": "1Z"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1N",
+                        "1Z"
+                    ],
+                    "1F": [
+                        "1I"
+                    ],
+                    "1N": [
+                        "1F",
+                        "1S"
+                    ],
+                    "1Z": [
+                        "1E",
+                        "1J",
+                        "1W"
+                    ]
+                }
+            },
+            "A92": {
+                "inbound_assignments": {
+                    "CON": "1W",
+                    "DEEPO2": "1N",
+                    "DREEM3.BED": "1B",
+                    "DREEM3.BVY": "1B",
+                    "DREEM3.LWM": "1B",
+                    "ENE": "1E",
+                    "FREDO.4K": "1S",
+                    "FREDO.6K": "1S",
+                    "FREDO.8K": "1S",
+                    "GDM": "1W",
+                    "GDM.7K": "1R",
+                    "GDM.9K": "1R",
+                    "JFUND2": "1R",
+                    "MANCH..LWRNC": "1R",
+                    "MANCH..LWRNC.SAT": "1R",
+                    "OOSHN5": "1R",
+                    "PSM..LWRNC": "1R",
+                    "PSM..LWRNC.SAT": "1R",
+                    "ROBUC3": "1S",
+                    "ROZZE2": "1W",
+                    "WOONS.3K": "1U",
+                    "WOONS.5K": "1U",
+                    "WOONS.7K": "1U",
+                    "ZELKA2.BED": "1B",
+                    "ZELKA2.BVY": "1B",
+                    "ZELKA2.LWM": "1B"
+                },
+                "departure_assignments": {
+                    "KACK": "1K",
+                    "KBED": "1B",
+                    "KBOS": "1D",
+                    "KMHT": "1Z",
+                    "KMVY": "1K",
+                    "KPSM": "1P"
+                },
+                "default_consolidation": {
+                    "1K": [
+                        "1O"
+                    ],
+                    "1N": [
+                        "1K",
+                        "1B",
+                        "1F"
+                    ],
+                    "1O": [
+                        "1Y"
+                    ],
+                    "1S": [
+                        "1A",
+                        "1L"
+                    ],
+                    "1Y": [
+                        "1S"
+                    ],
+                    "1D": [
+                        "1N",
+                        "1U",
+                        "1Z"
+                    ],
+                    "1F": [
+                        "1I"
+                    ],
+                    "1E": [
+                        "1P"
+                    ],
+                    "1Z": [
+                        "1E",
+                        "1J",
+                        "1W"
+                    ]
+                }
+            },
+            "STD": {
+                "inbound_assignments": {
+                    "DEEPO2": "1N"
+                },
+                "departure_assignments": {
+                    "KACK": "1K",
+                    "KMVY": "1K"
+                },
+                "default_consolidation": {
+                    "1K": [
+                        "1N"
+                    ]
+                }
+            },
+            "33X": {
+                "inbound_assignments": {},
+                "departure_assignments": {
+                    "KBOS": "1D"
+                },
+                "default_consolidation": {
+                    "1D": []
+                }
+            },
+            "CNE": {
+                "inbound_assignments": {
+                    "DREEM3": "1B",
+                    "FREDO": "1M",
+                    "GDM": "1R",
+                    "GDM.15R": "1R",
+                    "JFUND2.15R": "1R",
+                    "JFUND2.22L": "1R",
+                    "JFUND2.27": "1R",
+                    "JFUND2.33L": "1R",
+                    "JFUND2.4R": "1R",
+                    "KLANE": "1R",
+                    "LWRNC": "1R",
+                    "LWRNC.SAT": "1R",
+                    "OOSHN5.15R": "1R",
+                    "OOSHN5.22L": "1R",
+                    "OOSHN5.27": "1R",
+                    "OOSHN5.33L": "1R",
+                    "OOSHN5.4R": "1R",
+                    "ROBUC3.15R": "1M",
+                    "ROBUC3.22L": "1M",
+                    "ROBUC3.27": "1M",
+                    "ROBUC3.33L": "1M",
+                    "ROBUC3.4R": "1M",
+                    "WOONS": "1U",
+                    "WOONS.LO": "1L",
+                    "ZELKA2": "1B"
+                },
+                "departure_assignments": {
+                    "KBED": "1B",
+                    "KBOS": "1D",
+                    "KBVY": "1B",
+                    "KLWM": "1B",
+                    "KOWD": "1L"
+                },
+                "default_consolidation": {
+                    "1B": [
+                        "1D",
+                        "1L",
+                        "1M",
+                        "1R",
+                        "1U"
+                    ]
+                }
+            },
+            "CNW": {
+                "inbound_assignments": {
+                    "DREEM3": "1B",
+                    "FREDO": "1M",
+                    "GDM": "1R",
+                    "GDM.15R": "1R",
+                    "JFUND2.15R": "1R",
+                    "JFUND2.22L": "1R",
+                    "JFUND2.27": "1R",
+                    "JFUND2.33L": "1R",
+                    "JFUND2.4R": "1R",
+                    "KLANE": "1R",
+                    "LWRNC": "1R",
+                    "LWRNC.SAT": "1R",
+                    "OOSHN5.15R": "1R",
+                    "OOSHN5.22L": "1R",
+                    "OOSHN5.27": "1R",
+                    "OOSHN5.33L": "1R",
+                    "OOSHN5.4R": "1R",
+                    "ROBUC3.15R": "1M",
+                    "ROBUC3.22L": "1M",
+                    "ROBUC3.27": "1M",
+                    "ROBUC3.33L": "1M",
+                    "ROBUC3.4R": "1M",
+                    "WOONS": "1U",
+                    "WOONS.LO": "1L",
+                    "ZELKA2": "1B"
+                },
+                "departure_assignments": {
+                    "KBED": "1B",
+                    "KBOS": "1D",
+                    "KBVY": "1B",
+                    "KLWM": "1B",
+                    "KOWD": "1L"
+                },
+                "default_consolidation": {
+                    "1B": [
+                        "1D",
+                        "1L",
+                        "1M",
+                        "1R",
+                        "1U"
+                    ]
+                }
+            },
+            "CSE": {
+                "inbound_assignments": {
+                    "DREEM3": "1B",
+                    "FREDO": "1M",
+                    "GDM": "1R",
+                    "GDM.15R": "1R",
+                    "JFUND2.15R": "1R",
+                    "JFUND2.22L": "1R",
+                    "JFUND2.27": "1R",
+                    "JFUND2.33L": "1R",
+                    "JFUND2.4R": "1R",
+                    "KLANE": "1R",
+                    "LWRNC": "1R",
+                    "LWRNC.SAT": "1R",
+                    "OOSHN5.15R": "1R",
+                    "OOSHN5.22L": "1R",
+                    "OOSHN5.27": "1R",
+                    "OOSHN5.33L": "1R",
+                    "OOSHN5.4R": "1R",
+                    "ROBUC3.15R": "1M",
+                    "ROBUC3.22L": "1M",
+                    "ROBUC3.27": "1M",
+                    "ROBUC3.33L": "1M",
+                    "ROBUC3.4R": "1M",
+                    "WOONS": "1U",
+                    "WOONS.LO": "1L",
+                    "ZELKA2": "1B"
+                },
+                "departure_assignments": {
+                    "KBED": "1B",
+                    "KBOS": "1D",
+                    "KBVY": "1B",
+                    "KLWM": "1B",
+                    "KOWD": "1L"
+                },
+                "default_consolidation": {
+                    "1B": [
+                        "1D",
+                        "1L",
+                        "1M",
+                        "1R",
+                        "1U"
+                    ]
+                }
+            },
+            "CSW": {
+                "inbound_assignments": {
+                    "DREEM3": "1B",
+                    "FREDO": "1M",
+                    "GDM": "1R",
+                    "GDM.15R": "1R",
+                    "JFUND2.15R": "1R",
+                    "JFUND2.22L": "1R",
+                    "JFUND2.27": "1R",
+                    "JFUND2.33L": "1R",
+                    "JFUND2.4R": "1R",
+                    "KLANE": "1R",
+                    "LWRNC": "1R",
+                    "LWRNC.SAT": "1R",
+                    "OOSHN5.15R": "1R",
+                    "OOSHN5.22L": "1R",
+                    "OOSHN5.27": "1R",
+                    "OOSHN5.33L": "1R",
+                    "OOSHN5.4R": "1R",
+                    "ROBUC3.15R": "1M",
+                    "ROBUC3.22L": "1M",
+                    "ROBUC3.27": "1M",
+                    "ROBUC3.33L": "1M",
+                    "ROBUC3.4R": "1M",
+                    "WOONS": "1U",
+                    "WOONS.LO": "1L",
+                    "ZELKA2": "1B"
+                },
+                "departure_assignments": {
+                    "KBED": "1B",
+                    "KBOS": "1D",
+                    "KBVY": "1B",
+                    "KLWM": "1B",
+                    "KOWD": "1L"
+                },
+                "default_consolidation": {
+                    "1B": [
+                        "1D",
+                        "1L",
+                        "1M",
+                        "1R",
+                        "1U"
+                    ]
+                }
+            },
+            "44X": {
+                "inbound_assignments": {
+                    "FV.JFUND.4R": "1F",
+                    "FV.ROBUC.4R": "1F",
+                    "FV.WOONS.4L": "1I",
+                    "FV.LD.4L": "1I",
+                    "FV.FREDO.4L": "1I"
+                },
+                "departure_assignments": {
+                    "KBOS": "1F"
+                },
+                "default_consolidation": {
+                    "1F": [
+                        "1I"
+                    ]
+                }
+            },
+            "22X": {
+                "inbound_assignments": {
+                    "FV.JFUND.22L": "1F",
+                    "FV.OOSHN.22L": "1F",
+                    "FV.LWRNC.22L": "1F",
+                    "FV.ROBUC.22L": "1F",
+                    "FV.RD.22L": "1F"
+                },
+                "departure_assignments": {
+                    "KBOS": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "KMH": {
+                "inbound_assignments": {
+                    "CON": "1W",
+                    "ENE": "1E",
+                    "GDM": "1W",
+                    "ROZZE2": "1W"
+                },
+                "departure_assignments": {
+                    "KMHT": "1Z",
+                    "KPSM": "1P"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1P",
+                        "1W",
+                        "1Z"
+                    ]
+                }
+            },
+            "KM1": {
+                "inbound_assignments": {
+                    "CON": "1W",
+                    "ENE": "1E",
+                    "GDM": "1W",
+                    "ROZZE2": "1W"
+                },
+                "departure_assignments": {
+                    "KMHT": "1J",
+                    "KPSM": "1P"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1J",
+                        "1P",
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "KBOS",
+        "allow_long_scratchpad": true,
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "MHTNOCA",
+                    "description": "MHT CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "radius": 5,
+                    "center": "KMHT"
+                },
+                {
+                    "id": "PSMNOCA",
+                    "description": "PSM CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "radius": 5,
+                    "center": "KPSM"
+                },
+                {
+                    "id": "BOSNOCA",
+                    "description": "BOS CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "radius": 7,
+                    "center": "N042.23.05.581,W071.00.43.615"
+                }
+            ]
+        },
+        "force_ql_self": true,
+        "scratchpads": {
+            "CCC": "PRT",
+            "NELIE": "PRT",
+            "BAF": "PRT",
+            "HANNA": "HAN",
+            "ENE": "ENE",
+            "MANCH": "MHT",
+            "CLOWW": "CLO",
+            "CAM": "CAM",
+            "CON": "CON",
+            "WEEZE": "WEE",
+            "STEVO": "STE",
+            "PEASE": "PSM",
+            "BLZZR": "BLZ",
+            "BRUWN": "BRU",
+            "CELTK": "FRI",
+            "HYLND": "LUR",
+            "LBSTA": "LBS",
+            "PATSS": "PAT",
+            "REVSS": "REV",
+            "SSOXS": "SSO",
+            "PVC": "PVC",
+            "LFV": "LFV",
+            "DUNKK": "DUN",
+            "BOSOX": "BOX",
+            "MVY": "MVY",
+            "BOGEY": "BOG",
+            "FREDO": "FRE",
+            "POMPY": "PMP",
+            "PVD": "PVD",
+            "ACK": "ACK",
+            "HYA": "HYA",
+            "KEWB": "KEW",
+            "DOLIE": "DOL"
+        },
+        "significant_points": {
+            "ACK": {},
+            "BAF": {},
+            "BLZZR": {
+                "short_name": "BLZ"
+            },
+            "BOGEY": {
+                "short_name": "BOG"
+            },
+            "BOSOX": {
+                "short_name": "BOX"
+            },
+            "BRUWN": {},
+            "CAM": {},
+            "CCC": {},
+            "CELTK": {
+                "short_name": "FRI"
+            },
+            "CLOWW": {},
+            "CON": {},
+            "DOLIE": {},
+            "DUNKK": {},
+            "ENE": {},
+            "FREDO": {},
+            "HANNA": {},
+            "HYA": {
+                "location": "KHYA"
+            },
+            "HYLND": {
+                "short_name": "LUR"
+            },
+            "KEWB": {
+                "short_name": "KEW"
+            },
+            "LBSTA": {
+                "abbreviation": "P"
+            },
+            "LFV": {},
+            "MANCH": {
+                "short_name": "MHT"
+            },
+            "MVY": {},
+            "NELIE": {
+                "short_name": "PRT"
+            },
+            "PATSS": {
+                "short_name": "PAT"
+            },
+            "PEASE": {
+                "short_name": "PSM"
+            },
+            "POMPY": {
+                "short_name": "PMP"
+            },
+            "PVC": {},
+            "PVD": {},
+            "REVSS": {
+                "short_name": "REV"
+            },
+            "SSOXS": {
+                "short_name": "SSO"
+            },
+            "STEVO": {},
+            "WEEZE": {}
+        },
+        "stars_maps": [
+            "A90 BASE",
+            "MHT MAIN",
+            "A90 SAT FINALS",
+            "CAPE NE FLOW",
+            "CAPE SW FLOW",
+            "A90 MVA",
+            "B, C, D, AIRSPACE",
+            "A90 SAT FINALS",
+            "A90 COASTLINE",
+            "A90 EOVM",
+            "BOS A90 MAIN",
+            "BOS 4R/15R",
+            "BOS 4R/L",
+            "BOS 15R",
+            "BOS 15R/9",
+            "BOS 27",
+            "BOS 27/22",
+            "BOS 27/32",
+            "BOS 33L/32",
+            "BOS 33L",
+            "BOS RNAV RWY 32 APP",
+            "BOS RNAV RNP X 33L",
+            "BOS RNAV RWY 4L APP",
+            "BOS RWY 4 RNAV SID",
+            "BOS RWY 4R/L RNAV STAR",
+            "BOS RWY 9 RNAV SID",
+            "BOS RWY 15R RNAV SID",
+            "BOS RWY 15R RNAV STAR",
+            "BOS RWY 22L RNAV SID",
+            "BOS RWY 22L RNAV STAR",
+            "BOS RWY 33L RNAV SID",
+            "BOS RWY 33L RNAV STAR",
+            "BED ZELKA STAR",
+            "BED DREEM STAR",
+            "MHT RWY 6 ROZZE STAR",
+            "MHT RWY 17 ROZZE STAR",
+            "MHT RWY 24 ROZZE STAR",
+            "MHT RWY 35 ROZZE STAR"
+        ],
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "altimeters": [
+            "KBOS",
+            "KFMH",
+            "KMHT"
+        ],
+        "ssr_codes": {
+            "auto_assignable_codes": {
+                "1": {
+                    "ranges": [
+                        "0206-0437"
+                    ],
+                    "flight_rules": "v"
+                },
+                "ifr": {
+                    "ranges": [
+                        "0101-0177"
+                    ]
+                },
+                "vfr": {
+                    "ranges": [
+                        "5120-5174"
+                    ],
+                    "backup_pool_list": "1"
+                }
+            },
+            "beacon_code_table": {
+                "vfr_codes": [
+                    "1200-1277"
+                ]
+            }
+        },
+        "custom_spcs": [
+            "ME"
+        ],
+        "pdb": {
+            "hide_gs": true
+        },
+        "scratchpad1": {
+            "display_exit_gate": true
+        },
+        "display_handoff_facility_only": true,
+        "fdb": {
+            "scratchpad2_on_line3": true
+        },
+        "coordination_lists": [
+            {
+                "name": ".     PBVY -",
+                "id": "BVY",
+                "airports": [
+                    "KBVY"
+                ]
+            },
+            {
+                "name": ".     PLWM -",
+                "id": "LWM",
+                "airports": [
+                    "KLWM"
+                ]
+            },
+            {
+                "name": ".     POWD -",
+                "id": "OWD",
+                "airports": [
+                    "KOWD"
+                ]
+            }
+        ],
+        "controller_configs": {
+            "1B": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 4500,
+                        "vertices": "N042.13.11.084,W071.38.37.016 N042.22.54.911,W071.53.25.096 N042.35.39.422,W071.54.43.044 N042.39.13.051,W071.48.19.731 N042.43.23.334,W071.22.33.213 N042.51.00.900,W071.05.02.975 N042.49.07.645,W070.47.41.004 N042.44.09.957,W070.22.40.931 N042.29.06.633,W070.16.22.287 N042.19.48.047,W071.06.24.631 N042.13.38.508,W071.24.45.131 N042.13.38.508,W071.24.45.131"
+                    }
+                ]
+            },
+            "1L": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 4500,
+                        "vertices": "N042.13.10.631,W071.44.41.735 N042.21.25.537,W071.22.30.302 N042.22.27.953,W071.12.13.035 N042.20.23.657,W071.01.12.454 N042.24.25.658,W070.28.07.280 N042.27.17.677,W070.12.42.753 N042.17.31.583,W070.04.49.462 N042.07.02.135,W070.11.33.319 N042.02.03.774,W070.20.09.924 N041.54.00.197,W070.31.56.839 N041.51.07.890,W070.51.24.521 N041.52.35.039,W071.04.24.221 N041.57.56.609,W071.15.51.470 N042.04.10.653,W071.32.40.647"
+                    }
+                ]
+            }
+        },
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "HYLND",
+                    "CON",
+                    "MANCH"
+                ],
+                "altitude_range": [
+                    11000,
+                    999000
+                ],
+                "receiving_controller": "C37"
+            },
+            {
+                "fixes": [
+                    "HYLND",
+                    "CON",
+                    "MANCH"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "1Z"
+            },
+            {
+                "fixes": [
+                    "BLZZR",
+                    "PATSS",
+                    "REVSS",
+                    "BOSOX",
+                    "GLYDE",
+                    "PUT"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "C47"
+            },
+            {
+                "fixes": [
+                    "BRUWN",
+                    "CELTK",
+                    "PVC",
+                    "LFV",
+                    "DUNKK"
+                ],
+                "altitude_range": [
+                    11000,
+                    99999000
+                ],
+                "receiving_controller": "C18"
+            },
+            {
+                "fixes": [
+                    "BRUWN",
+                    "PVC",
+                    "LFV",
+                    "DUNKK"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "1N"
+            },
+            {
+                "fixes": [
+                    "CELTK",
+                    "LBSTA",
+                    "PEASE",
+                    "ENE"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "1E"
+            },
+            {
+                "fixes": [
+                    "CELTK",
+                    "LBSTA",
+                    "PEASE",
+                    "ENE"
+                ],
+                "altitude_range": [
+                    11000,
+                    99999000
+                ],
+                "receiving_controller": "C16"
+            },
+            {
+                "fixes": [
+                    "SSOXS"
+                ],
+                "altitude_range": [
+                    11000,
+                    999000
+                ],
+                "receiving_controller": "C18"
+            },
+            {
+                "fixes": [
+                    "SSOXS"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "11D"
+            }
+        ],
+        "coordination_fixes": {
+            "ROZZE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "LFV": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "MINNK": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "NEWBE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "ENE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "CAMTN": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "GDM": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "JFUND": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "WOONS": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "PVD"
+                }
+            ],
+            "FREDO": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "PVD"
+                }
+            ],
+            "JAMMA": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "JOODY": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "OOSHN": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "ZELKA": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "DREEM": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KBOS"
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "PVD",
+            "prefix": "1"
+        },
+        {
+            "id": "PWM",
+            "prefix": "3"
+        },
+        {
+            "id": "Y90",
+            "prefix": "2"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "C"
+        }
+    ]
+}

@@ -1,0 +1,458 @@
+{
+    "control_positions": {
+        "1H": {
+            "callsign": "MDT_W_APP",
+            "frequency": 124100,
+            "radio_name": "Harrisburg Approach"
+        },
+        "HL": {
+            "callsign": "MDT_TWR",
+            "frequency": 124800,
+            "radio_name": "Harrisburg Tower"
+        },
+        "HH": {
+            "callsign": "CXY_TWR",
+            "frequency": 119500,
+            "radio_name": "Capital City Tower"
+        },
+        "HM": {
+            "callsign": "LNS_TWR",
+            "frequency": 120900,
+            "radio_name": "Lancaster Tower"
+        },
+        "1L": {
+            "callsign": "MDT_E_APP",
+            "frequency": 126450,
+            "radio_name": "Harrisburg Approach"
+        },
+        "1R": {
+            "callsign": "MDT_N_APP",
+            "frequency": 118250,
+            "radio_name": "Harrisburg Approach"
+        },
+        "1X": {
+            "callsign": "RDG_APP",
+            "frequency": 125150,
+            "radio_name": "Reading Approach"
+        },
+        "RR": {
+            "callsign": "RDG_TWR",
+            "frequency": 119900,
+            "radio_name": "Reading Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "East": "1L",
+                    "North/NE": "1R",
+                    "West/South": "1H"
+                },
+                "departure_assignments": {
+                    "KCXY": "1H",
+                    "KLNS": "1L",
+                    "KMDT": "1H"
+                },
+                "default_consolidation": {
+                    "1L": [
+                        "1R",
+                        "1H"
+                    ]
+                }
+            }
+        },
+        "center": "KMDT",
+        "range": 55,
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "MDTNOCA",
+                    "description": "MDT CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1300,
+                    "center": "N040.11.37.357,W076.45.01.483",
+                    "radius": 4
+                },
+                {
+                    "id": "CXYNOCA",
+                    "description": "CXY CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1300,
+                    "center": "N040.12.51.253,W076.50.48.403",
+                    "radius": 4
+                }
+            ]
+        },
+        "radar_sites": {
+            "MDT": {
+                "char": "M",
+                "position": "40.185833,-76.795",
+                "elevation": 230,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            },
+            "RDG": {
+                "char": "R",
+                "position": "40.374722,-75.970278",
+                "elevation": 230,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            }
+        },
+        "coordination_lists": [
+            {
+                "name": ".       CXY",
+                "id": "A",
+                "airports": [
+                    "KCXY"
+                ]
+            },
+            {
+                "name": ".       LNS",
+                "id": "B",
+                "airports": [
+                    "KLNS"
+                ]
+            }
+        ],
+        "scratchpads": {
+            "GAAPP": "GAA",
+            "SEG": "SEG",
+            "ETX": "ETX",
+            "LVZ": "LVZ",
+            "FJC": "FJC",
+            "LRP": "LRP",
+            "PTW": "PTW",
+            "ARD": "ARD",
+            "DQO": "DQO",
+            "HAR": "HAR",
+            "BRNAN": "BRN",
+            "JST": "JST",
+            "VINSE": "VIN",
+            "THS": "THS",
+            "SCAPE": "SCA",
+            "GRAMO": "GRA",
+            "MRB": "MRB",
+            "VINNY": "VNY",
+            "EMI": "EMI",
+            "MCMAN": "MCM",
+            "PSB": "PSB",
+            "WILSS": "WLS",
+            "KIACK": "KCK",
+            "HWANG": "HWG"
+        },
+        "significant_points": {
+            "KIACK": {
+                "short_name": "KCK"
+            },
+            "SEG": {},
+            "GAAPP": {
+                "short_name": "GAA"
+            },
+            "LVZ": {},
+            "ETX": {},
+            "FJC": {},
+            "LRP": {},
+            "PTW": {},
+            "ARD": {},
+            "DQO": {},
+            "HAR": {},
+            "BRNAN": {
+                "short_name": "BRN"
+            },
+            "JST": {},
+            "VINSE": {
+                "short_name": "VIN"
+            },
+            "THS": {},
+            "SCAPE": {
+                "short_name": "SCA"
+            },
+            "GRAMO": {
+                "short_name": "GRA"
+            },
+            "MRB": {},
+            "VINNY": {
+                "short_name": "VNY"
+            },
+            "EMI": {},
+            "MCMAN": {
+                "short_name": "MCM"
+            },
+            "PSB": {},
+            "WILSS": {
+                "short_name": "WLS"
+            },
+            "HWANG": {
+                "short_name": "HWG"
+            },
+            "DELRO": {
+                "short_name": "DLR"
+            },
+            "KATVE": {
+                "short_name": "KTV"
+            },
+            "COFAX": {}
+        },
+        "stars_maps": [
+            "MDT-002 (GPS EAST)",
+            "MDT-014 (CLASS C)",
+            "MDT-004 (MVA)",
+            "MDT-009 (GPS WEST)",
+            "MDT-012 (EOVM)",
+            "MDT-005 (EAST FLOW)",
+            "MDT-006 (WEST FLOW)"
+        ],
+        "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "LVZ",
+                    "ETX",
+                    "FJC",
+                    "LRP",
+                    "PTW",
+                    "ARD",
+                    "DQO",
+                    "VINNY",
+                    "HWANG"
+                ],
+                "altitude_range": [
+                    9000,
+                    99999
+                ],
+                "receiving_controller": "N26"
+            },
+            {
+                "fixes": [
+                    "LVZ"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "receiving_controller": "11E"
+            },
+            {
+                "fixes": [
+                    "ETX",
+                    "FJC",
+                    "HWANG"
+                ],
+                "altitude_range": [
+                    6000,
+                    8000
+                ],
+                "receiving_controller": "21D"
+            },
+            {
+                "fixes": [
+                    "ETX",
+                    "FJC",
+                    "PTW",
+                    "ARD",
+                    "HWANG"
+                ],
+                "altitude_range": [
+                    0,
+                    5000
+                ],
+                "receiving_controller": "1X"
+            },
+            {
+                "fixes": [
+                    "DQO"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "receiving_controller": "41E"
+            },
+            {
+                "fixes": [
+                    "ARD",
+                    "PTW"
+                ],
+                "altitude_range": [
+                    7000,
+                    8000
+                ],
+                "receiving_controller": "41N"
+            },
+            {
+                "fixes": [
+                    "ARD",
+                    "PTW"
+                ],
+                "altitude_range": [
+                    6000,
+                    6000
+                ],
+                "receiving_controller": "41P"
+            },
+            {
+                "fixes": [
+                    "HAR",
+                    "BRNAN",
+                    "JST",
+                    "VINSE",
+                    "SCAPE",
+                    "THS",
+                    "GRAMO",
+                    "MRB",
+                    "EMI",
+                    "PSB",
+                    "MCMAN",
+                    "GAAPP",
+                    "SEG",
+                    "KIACK",
+                    "WILSS"
+                ],
+                "altitude_range": [
+                    9000,
+                    99999
+                ],
+                "receiving_controller": "N27"
+            },
+            {
+                "fixes": [
+                    "PSB",
+                    "MCMAN",
+                    "GAAPP",
+                    "SEG",
+                    "KIACK"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "receiving_controller": "N91"
+            },
+            {
+                "fixes": [
+                    "VINNY",
+                    "EMI"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "receiving_controller": "61B"
+            },
+            {
+                "fixes": [
+                    "MRB"
+                ],
+                "altitude_range": [
+                    0,
+                    6000
+                ],
+                "receiving_controller": "63E"
+            },
+            {
+                "fixes": [
+                    "MRB"
+                ],
+                "altitude_range": [
+                    7000,
+                    8000
+                ],
+                "receiving_controller": "63M"
+            },
+            {
+                "fixes": [
+                    "SCAPE",
+                    "THS",
+                    "VINSE",
+                    "BRNAN",
+                    "JST",
+                    "WILSS"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "receiving_controller": "71A"
+            }
+        ],
+        "coordination_fixes": {
+            "HAR": [
+                {
+                    "type": "route",
+                    "to": "MDT",
+                    "from": "ZNY"
+                }
+            ],
+            "HWANG": [
+                {
+                    "type": "route",
+                    "to": "MDT",
+                    "from": "ZNY"
+                }
+            ],
+            "ETX": [
+                {
+                    "type": "route",
+                    "to": "MDT",
+                    "from": "ZNY"
+                }
+            ],
+            "LRP": [
+                {
+                    "type": "route",
+                    "to": "MDT",
+                    "from": "ZNY"
+                }
+            ],
+            "MXE": [
+                {
+                    "type": "route",
+                    "to": "MDT",
+                    "from": "ZNY"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ABE",
+            "prefix": "2"
+        },
+        {
+            "id": "AVP",
+            "prefix": "1"
+        },
+        {
+            "id": "JST",
+            "prefix": "7"
+        },
+        {
+            "id": "PCT",
+            "prefix": "6"
+        },
+        {
+            "id": "PHL",
+            "prefix": "4"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

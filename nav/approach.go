@@ -16,9 +16,9 @@ import (
 	"github.com/mmp/vice/wx"
 )
 
-func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime time.Time) (heading float32, turn TurnMethod) {
+func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime time.Time) (heading float32, turn av.TurnDirection) {
 	// Baseline
-	heading, turn = *nav.Heading.Assigned, TurnClosest
+	heading, turn = *nav.Heading.Assigned, av.TurnClosest
 
 	ap := nav.Approach.Assigned
 
@@ -34,7 +34,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime time.Tim
 
 		loc := ap.ExtendedCenterline(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
-		if nav.shouldTurnToIntercept(loc[0], hdg, TurnClosest, wxs) {
+		if nav.shouldTurnToIntercept(loc[0], hdg, av.TurnClosest, wxs) {
 			NavLog(callsign, simTime, NavLogApproach, "InitialHeading->TurningToJoin: turning to intercept runway hdg %.0f", hdg)
 			nav.Approach.InterceptState = TurningToJoin
 			// The autopilot is doing this, so start the turn immediately;
@@ -161,10 +161,10 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 					// modifiers we would like to carry over if they are
 					// set though in general the waypoint from the approach
 					// takes priority for things like altitude, speed, etc.
-					nopt := navwp[idx].NoPT
-					humanHandoff := navwp[idx].HumanHandoff
-					tcpHandoff := navwp[idx].HandoffController
-					clearapp := navwp[idx].ClearApproach
+					nopt := navwp[idx].NoPT()
+					humanHandoff := navwp[idx].HumanHandoff()
+					tcpHandoff := navwp[idx].HandoffController()
+					clearapp := navwp[idx].ClearApproach()
 
 					// Keep the waypoints up to but not including the match.
 					navwp = navwp[:idx]
@@ -173,10 +173,10 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 					// And add the destination airport again at the end.
 					navwp = append(navwp, nav.FlightState.ArrivalAirport)
 
-					navwp[idx].NoPT = nopt
-					navwp[idx].HumanHandoff = humanHandoff
-					navwp[idx].HandoffController = tcpHandoff
-					navwp[idx].ClearApproach = clearapp
+					navwp[idx].SetNoPT(nopt)
+					navwp[idx].SetHumanHandoff(humanHandoff)
+					navwp[idx].InitExtra().HandoffController = tcpHandoff
+					navwp[idx].SetClearApproach(clearapp)
 
 					// Update the deferred waypoints if present (as they're
 					// what we got from AssignedWaypoints() above) and
@@ -227,7 +227,7 @@ func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) av.CommandInte
 
 	if _, onHeading := nav.AssignedHeading(); !onHeading {
 		wps := nav.AssignedWaypoints()
-		if len(wps) == 0 || !wps[0].OnApproach {
+		if len(wps) == 0 || !wps[0].OnApproach() {
 			return av.MakeUnableIntent("unable. we have to be on a heading or direct to an approach fix to intercept")
 		}
 	}

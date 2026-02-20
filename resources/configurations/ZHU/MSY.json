@@ -1,0 +1,60 @@
+{
+    "control_positions": {
+        "1B": {
+            "callsign": "MSY_TWR",
+            "frequency": 119500,
+            "radio_name": "New Orleans Tower"
+        },
+        "1F": {
+            "callsign": "MSY_F_APP",
+            "frequency": 120100,
+            "radio_name": "New  Orleans Approach"
+        },
+        "1H": {
+            "callsign": "MSY_H_APP",
+            "frequency": 124300,
+            "radio_name": "New Orleans Approach"
+        },
+        "1L": {
+            "callsign": "MSY_L_APP",
+            "frequency": 120850,
+            "radio_name": "New Orleans Approach"
+        },
+        "1N": {
+            "callsign": "MSY_N_APP",
+            "frequency": 133150,
+            "radio_name": "New Orleans Approach"
+        },
+        "1S": {
+            "callsign": "MSY_S_APP",
+            "frequency": 123850,
+            "radio_name": "New Orleans Approach"
+        },
+        "1W": {
+            "callsign": "MSY_W_APP",
+            "frequency": 125500,
+            "radio_name": "New Orleans Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BTR",
+            "prefix": "2"
+        },
+        {
+            "id": "GPT",
+            "prefix": "3"
+        },
+        {
+            "id": "LFT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

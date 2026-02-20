@@ -1,0 +1,33 @@
+{
+    "control_positions": {
+        "1L": {
+            "callsign": "DLH_APP",
+            "frequency": 125450,
+            "radio_name": "Duluth Approach"
+        },
+        "1N": {
+            "callsign": "DLH_N_APP",
+            "frequency": 119500,
+            "radio_name": "Duluth Approach"
+        },
+        "1S": {
+            "callsign": "DLH_S_APP",
+            "frequency": 125450,
+            "radio_name": "Duluth Approach"
+        },
+        "1T": {
+            "callsign": "DLH_TWR",
+            "frequency": 118300,
+            "radio_name": "Duluth Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZMP",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

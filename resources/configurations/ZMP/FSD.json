@@ -1,0 +1,32 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "FSD_E_APP",
+            "frequency": 126900,
+            "radio_name": "Sioux Falls Approach"
+        },
+        "1T": {
+            "callsign": "FSD_TWR",
+            "frequency": 118300,
+            "radio_name": "Sioux Falls Tower"
+        },
+        "1W": {
+            "callsign": "FSD_W_APP",
+            "frequency": 125800,
+            "radio_name": "Sioux Falls Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "SUX",
+            "prefix": "1"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

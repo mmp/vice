@@ -1,0 +1,2559 @@
+{
+  "time": "2026-02-06T01:16:26.548278168Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Got a fifty eight turn left heading two nine zero",
+  "whisper_duration_ms": 237.651,
+  "audio_duration_ms": 3272,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12108MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "DAL58",
+  "command": "L290",
+  "stt_aircraft": {
+    "Air France 39 hotel delta heavy": {
+      "Callsign": "AFR39HD",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Ebee": "EBBEE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Rober": "ROBER",
+        "Zetal": "ZETAL"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4 Right",
+      "SID": "",
+      "STAR": "PARCH3",
+      "Altitude": 5319,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "American eight 38": {
+      "Callsign": "AAL838",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Corvet": "CORVT",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Matter": "MATTR",
+        "Norton": "NRTON",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22 Right",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 4015,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "American two 82": {
+      "Callsign": "AAL282",
+      "AircraftType": "B738",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 15303,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Delta 15 99": {
+      "Callsign": "DAL1599",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Ebee": "EBBEE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Rober": "ROBER",
+        "Zetal": "ZETAL"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4 Right",
+      "SID": "",
+      "STAR": "PARCH3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Delta 58 heavy": {
+      "Callsign": "DAL58",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Ebee": "EBBEE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Vadder": "VADDR",
+        "Zetal": "ZETAL"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4 Right",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 11026,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Delta seven 97 heavy": {
+      "Callsign": "DAL797",
+      "AircraftType": "A359",
+      "Fixes": {
+        "Ebee": "EBBEE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Zetal": "ZETAL"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4 Right",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Flexjet niner 72": {
+      "Callsign": "LXJ972",
+      "AircraftType": "LJ45",
+      "Fixes": {
+        "Candor": "CANDR",
+        "Deez": "DEEZZ"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "REP1",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "departure",
+      "ControllerFrequency": "2S",
+      "TrackingController": "2S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 46 zero zero": {
+      "Callsign": "JBU4600",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22 Left",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "JetBlue niner 62": {
+      "Callsign": "JBU962",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Ebee": "EBBEE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Zetal": "ZETAL"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4 Right",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Looft-hansa 58 39 heavy": {
+      "Callsign": "DLH5839",
+      "AircraftType": "A343",
+      "Fixes": {
+        "Ebee": "EBBEE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Rober": "ROBER",
+        "Zetal": "ZETAL"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4 Right",
+      "SID": "",
+      "STAR": "PARCH3",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Speedbird 18 brahvo heavy": {
+      "Callsign": "BAW18B",
+      "AircraftType": "B78X",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PARCH3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Virgin eight 35 echo heavy": {
+      "Callsign": "VIR835E",
+      "AircraftType": "A333",
+      "Fixes": {
+        "Aroke": "AROKE",
+        "Crystal": "KRSTL",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4 Left",
+      "SID": "",
+      "STAR": "PARCH3",
+      "Altitude": 8016,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "WestJet 18 80": {
+      "Callsign": "WJA1880",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Vadder": "VADDR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 19000,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "WestJet 74": {
+      "Callsign": "WJA74",
+      "AircraftType": "B738",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    },
+    "WestJet niner 78": {
+      "Callsign": "WJA978",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Ebee": "EBBEE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Vadder": "VADDR",
+        "Veru": "VERRU"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway four Left": "I4L",
+        "I L S runway four Right": "I4R",
+        "I L S runway one three Left": "I3L",
+        "I L S runway three one Left": "I1L",
+        "I L S runway three one Right": "I1R",
+        "I L S runway two two Left": "I2L",
+        "I L S runway two two Right": "I2R",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two Left": "R2L",
+        "r-nav zulu runway four Left": "R4L",
+        "r-nav zulu runway four Right": "R4R",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R",
+        "r-nav zulu runway three one Left": "R1L",
+        "r-nav zulu runway three one Right": "R1R",
+        "r-nav zulu runway two two Right": "R2R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX",
+          "Ux-hub": "UXHUB"
+        },
+        "I4L": {
+          "Aroke": "AROKE",
+          "Crystal": "KRSTL"
+        },
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        },
+        "R4L": {
+          "Crystal": "KRSTL",
+          "Repre": "REPRE"
+        },
+        "R4R": {
+          "Ebee": "EBBEE",
+          "Veru": "VERRU"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 4 Right",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R",
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R",
+        "13R",
+        "31L",
+        "13L",
+        "31R"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Got a fifty eight turn left heading two nine zero\"",
+    "[local-stt] normalized words: [got a 58 turn left heading 2 9 0]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"got\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"a\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"58\" Type=1 Value=58",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"290\" Type=1 Value=290",
+    "[local-stt] MatchCallsign: 7 tokens, 15 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 7 tokens, 15 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"Delta 58 heavy\" (airline=0.511, flight=0.800, skip=0)",
+    "[local-stt]     result 1: \"Looft-hansa 58 39 heavy\" (airline=0.616, flight=0.722, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Looft-hansa 58 39 heavy\" (airline=0.62, flight=0.72, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 9 results",
+    "[local-stt]     result 0: \"Delta 15 99\" (airline=0.511, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"JetBlue niner 62\" (airline=0.492, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"JetBlue 46 zero zero\" (airline=0.492, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Delta 58 heavy\" (airline=0.511, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"WestJet niner 78\" (airline=0.492, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta 58 heavy\" (airline=0.51, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Delta 58 heavy\"",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Delta 58 heavy\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Delta 58 heavy\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"DLH5839\" (conf=0.87, consumed=3, addressingForm=0, spokenKey=\"Looft-hansa 58 39 heavy\")",
+    "[local-stt] callsign match: Callsign=\"DLH5839\" SpokenKey=\"Looft-hansa 58 39 heavy\" Conf=0.87 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=5 Approaches=17 AssignedApproach=\"ILS Runway 4 Right\" LAHSORunways=[4L 22R 4R 22L 4L 22R 13L 31R 13L 31R 13R 31L 4L 22R 4L 22R 4R 22L 13L 31R 13R 31L 13L 31R]",
+    "[local-stt]   fix: \"Ebee\" -\u003e \"EBBEE\"",
+    "[local-stt]   fix: \"Rober\" -\u003e \"ROBER\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Zetal\" -\u003e \"ZETAL\"",
+    "[local-stt]   approach: \"I L S runway three one Left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"I L S runway four Left\" -\u003e \"I4L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one three Left\" -\u003e \"R3L\"",
+    "[local-stt]   approach: \"I L S runway one three Left\" -\u003e \"I3L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two Left\" -\u003e \"R2L\"",
+    "[local-stt]   approach: \"I L S runway two two Right\" -\u003e \"I2R\"",
+    "[local-stt]   approach: \"I L S runway two two Left\" -\u003e \"I2L\"",
+    "[local-stt]   approach: \"r-nav zulu runway three one Right\" -\u003e \"R1R\"",
+    "[local-stt]   approach: \"I L S runway three one Right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"Parkway Visual runway one three Left\" -\u003e \"PVA\"",
+    "[local-stt]   approach: \"r-nav zulu runway one three Right\" -\u003e \"R3R\"",
+    "[local-stt]   approach: \"Belmont Visual runway two two Left\" -\u003e \"BVA\"",
+    "[local-stt]   approach: \"r-nav zulu runway two two Right\" -\u003e \"R2R\"",
+    "[local-stt]   approach: \"I L S runway four Right\" -\u003e \"I4R\"",
+    "[local-stt]   approach: \"r-nav zulu runway four Right\" -\u003e \"R4R\"",
+    "[local-stt]   approach: \"r-nav zulu runway three one Left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"r-nav zulu runway four Left\" -\u003e \"R4L\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"290\" Type=1 Value=290",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   matched command: \"L290\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[L290] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L290] (conf=1.00)",
+    "[local-stt] validated commands: [L290] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DLH5839 L290\" (conf=0.87, time=3.1073ms) ==="
+  ]
+}

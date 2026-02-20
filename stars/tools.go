@@ -44,7 +44,7 @@ func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, 
 	pw := transforms.WindowFromLatLongP(ctr)
 	bounds := math.Extent2D{P1: [2]float32{scopeExtent.Width(), scopeExtent.Height()}}
 	font := sp.systemFont(ctx, ps.CharSize.Tools)
-	color := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
+	color := ps.Brightness.Compass.ScaleRGB(sp.Colors.Compass)
 
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -140,7 +140,7 @@ func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms radar.ScopeTr
 	}
 
 	cb.LineWidth(1, ctx.DPIScale)
-	color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
+	color := ps.Brightness.RangeRings.ScaleRGB(sp.Colors.RangeRing)
 	cb.SetRGB(color)
 	transforms.LoadWindowViewingMatrices(cb)
 	ld.GenerateCommands(cb)
@@ -161,7 +161,7 @@ func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms radar.ScopeT
 	// "The color of the blinking square is the same as that for blinking
 	// data block information"(?)
 	ps := sp.currentPrefs()
-	color := ps.Brightness.FullDatablocks.ScaleRGB(STARSUntrackedAircraftColor)
+	color := ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.UntrackedAircraft)
 	halfSeconds := ctx.Now.UnixMilli() / 500
 	blinkDim := halfSeconds&1 == 0
 	if blinkDim {
@@ -724,7 +724,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
-	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.JRingCone)
 
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
@@ -806,11 +806,11 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 				pts[i] = rot(pts[i])
 			}
 
-			coneColor := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
+			coneColor := ps.Brightness.Lines.ScaleRGB(sp.Colors.JRingCone)
 			if atpaStatus == ATPAStatusWarning {
-				coneColor = ps.Brightness.Lines.ScaleRGB(STARSATPAWarningColor)
+				coneColor = ps.Brightness.Lines.ScaleRGB(sp.Colors.ATPAWarning)
 			} else if atpaStatus == ATPAStatusAlert {
-				coneColor = ps.Brightness.Lines.ScaleRGB(STARSATPAAlertColor)
+				coneColor = ps.Brightness.Lines.ScaleRGB(sp.Colors.ATPAAlert)
 			}
 
 			// We've got what we need to draw a polyline with the
@@ -844,7 +844,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 
 	transforms.LoadWindowViewingMatrices(cb)
 	ld.GenerateCommands(cb)
-	cb.SetRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
+	cb.SetRGB(ps.Brightness.BackgroundContrast.ScaleRGB(sp.Colors.Background))
 	trid.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
@@ -870,7 +870,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms radar.Scop
 
 	prefs := sp.currentPrefs()
 	cb.LineWidth(1, ctx.DPIScale)
-	cb.SetRGB(prefs.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
+	cb.SetRGB(prefs.Brightness.Lines.ScaleRGB(sp.Colors.JRingCone))
 	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)
 }

@@ -1,0 +1,198 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "ABE_APP",
+            "frequency": 119650,
+            "radio_name": "Allentown approach"
+        },
+        "1D": {
+            "callsign": "ABE_DEP",
+            "frequency": 124450,
+            "radio_name": "Allentown departure"
+        },
+        "1L": {
+            "callsign": "ABE_TWR",
+            "frequency": 120500,
+            "radio_name": "Lehigh Valley tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "EWR": "1D",
+                    "MDT/RDG": "1D",
+                    "PHL": "1D",
+                    "ZNY Northwest": "1D",
+                    "ZNY Southwest": "1D"
+                },
+                "departure_assignments": {
+                    "KABE": "1D"
+                },
+                "default_consolidation": {
+                    "1D": []
+                }
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "ABENOCA",
+                    "description": "ABE CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "40.65236,-75.4404"
+                }
+            ]
+        },
+        "center": "KABE",
+        "radar_sites": {
+            "ABE": {
+                "char": "A",
+                "position": "40.673611,-75.453333",
+                "elevation": 413,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "NXX": {
+                "char": "N",
+                "position": "40.19980, -75.14820",
+                "elevation": 408,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.175
+            }
+        },
+        "scratchpads": {
+            "ARD": "ARD",
+            "ETX": "ETX",
+            "FJC": "FJC",
+            "PTW": "PTW",
+            "RBV": "RBV",
+            "SAX": "SAX"
+        },
+        "significant_points": {
+            "ARD": {},
+            "ETX": {},
+            "FJC": {},
+            "PTW": {},
+            "RBV": {},
+            "SAX": {}
+        },
+        "stars_maps": [
+            "ABE-103 (MAP 1)",
+            "ABE-105 (VFR)",
+            "ABE-101 (MAP 5)",
+            "ABE-102 (MVA)",
+            "ABE-106 (EOVM)",
+            "ABE-112 (SAT)",
+            "ABE-113 (RNAV)",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "ABE-114 (WAYPT NAMES)",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ],
+        "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
+        "coordination_fixes": {
+            "FJC": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "N90"
+                }
+            ],
+            "BOYER": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "MDT"
+                }
+            ],
+            "ETX": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "MDT"
+                }
+            ],
+            "KRAZE": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "SNOWY": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "SLATT": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "DUMMR": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "AVP",
+            "prefix": "1"
+        },
+        {
+            "id": "MDT",
+            "prefix": "5"
+        },
+        {
+            "id": "N90",
+            "prefix": "2"
+        },
+        {
+            "id": "PHL",
+            "prefix": "3"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "C"
+        }
+    ]
+}

@@ -264,7 +264,7 @@ func (nav *Nav) ExpediteClimb() av.CommandIntent {
 	}
 }
 
-func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod, simTime time.Time) av.CommandIntent {
+func (nav *Nav) AssignHeading(hdg float32, turn av.TurnDirection, simTime time.Time) av.CommandIntent {
 	if hdg <= 0 || hdg > 360 {
 		return av.MakeUnableIntent("unable. {hdg} isn't a valid heading", hdg)
 	}
@@ -279,11 +279,11 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod, simTime time.Time) a
 	}
 
 	switch turn {
-	case TurnClosest:
+	case av.TurnClosest:
 		intent.Turn = av.HeadingTurnClosest
-	case TurnRight:
+	case av.TurnRight:
 		intent.Turn = av.HeadingTurnToRight
-	case TurnLeft:
+	case av.TurnLeft:
 		intent.Turn = av.HeadingTurnToLeft
 	default:
 		panic(fmt.Sprintf("%d: unhandled turn type", turn))
@@ -292,7 +292,7 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod, simTime time.Time) a
 	return intent
 }
 
-func (nav *Nav) assignHeading(hdg float32, turn TurnMethod, simTime time.Time) {
+func (nav *Nav) assignHeading(hdg float32, turn av.TurnDirection, simTime time.Time) {
 	if _, ok := nav.AssignedHeading(); !ok {
 		// Only cancel approach clearance if the aircraft wasn't on a
 		// heading and now we're giving them one.
@@ -304,7 +304,7 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod, simTime time.Time) {
 		// If an arrival is given a heading off of a route with altitude
 		// constraints, set its cleared altitude to its current altitude
 		// for now.
-		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR || nav.Waypoints[0].OnApproach) && nav.Altitude.Assigned == nil {
+		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR() || nav.Waypoints[0].OnApproach()) && nav.Altitude.Assigned == nil {
 			if _, ok := nav.getWaypointAltitudeConstraint(); ok {
 				// Don't take a direct pointer to nav.FlightState.Altitude!
 				alt := nav.FlightState.Altitude
@@ -319,7 +319,7 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod, simTime time.Time) {
 }
 
 func (nav *Nav) FlyPresentHeading(simTime time.Time) av.CommandIntent {
-	nav.assignHeading(nav.FlightState.Heading, TurnClosest, simTime)
+	nav.assignHeading(nav.FlightState.Heading, av.TurnClosest, simTime)
 	return av.HeadingIntent{
 		Heading: nav.FlightState.Heading,
 		Type:    av.HeadingPresent,
@@ -399,7 +399,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
 			for i, wp := range route {
 				if wp.Fix == fix {
 					wps = append(route[i:], nav.FlightState.ArrivalAirport)
-					if wp.ProcedureTurn != nil {
+					if wp.ProcedureTurn() != nil {
 						return wps, nil
 					}
 				}
@@ -437,7 +437,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
 		}
 
 		return []av.Waypoint{
-			av.Waypoint{
+			{
 				Fix:      fix,
 				Location: p,
 			},
@@ -628,7 +628,7 @@ func (nav *Nav) CancelApproachClearance() av.CommandIntent {
 }
 
 func (nav *Nav) ClimbViaSID(simTime time.Time) av.CommandIntent {
-	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSID {
+	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSID() {
 		return av.MakeUnableIntent("unable. We're not flying a departure procedure")
 	}
 
@@ -639,7 +639,7 @@ func (nav *Nav) ClimbViaSID(simTime time.Time) av.CommandIntent {
 }
 
 func (nav *Nav) DescendViaSTAR(simTime time.Time) av.CommandIntent {
-	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSTAR {
+	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSTAR() {
 		return av.MakeUnableIntent("unable. We're not on a STAR")
 	}
 

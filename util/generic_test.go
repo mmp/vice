@@ -194,11 +194,11 @@ func TestSingleOrArrayJSON(t *testing.T) {
 		err    bool
 	}
 	for _, c := range []test{
-		test{json: "null", expect: []int{}},
-		test{json: "1234", expect: []int{1234}},
-		test{json: "[ 1, 4, 9]", expect: []int{1, 4, 9}},
-		test{json: "hai", err: true},
-		test{json: `{ "foo": 12 }`, err: true},
+		{json: "null", expect: []int{}},
+		{json: "1234", expect: []int{1234}},
+		{json: "[ 1, 4, 9]", expect: []int{1, 4, 9}},
+		{json: "hai", err: true},
+		{json: `{ "foo": 12 }`, err: true},
 	} {
 		var s SingleOrArray[int]
 		err := s.UnmarshalJSON([]byte(c.json))
@@ -222,9 +222,9 @@ func TestOneOfJSON(t *testing.T) {
 		err  bool
 	}
 	for _, c := range []test{
-		test{json: `"hello"`, str: "hello"},
-		test{json: `{ "a": "1", "b": "2" }`, m: map[string]string{"a": "1", "b": "2"}},
-		test{json: "1234", err: true},
+		{json: `"hello"`, str: "hello"},
+		{json: `{ "a": "1", "b": "2" }`, m: map[string]string{"a": "1", "b": "2"}},
+		{json: "1234", err: true},
 	} {
 		var o OneOf[string, map[string]string]
 		err := o.UnmarshalJSON([]byte(c.json))
@@ -286,19 +286,19 @@ func TestFilterSeq2(t *testing.T) {
 		expect map[string]int
 	}
 	for i, c := range []testcase{
-		testcase{
+		{
 			pred:   func(s string, v int) bool { return v > 6 },
 			expect: map[string]int{"ten": 10},
 		},
-		testcase{
+		{
 			pred:   func(s string, v int) bool { return len(s) == 3 },
 			expect: map[string]int{"one": 1, "two": 2, "ten": 10, "six": 6},
 		},
-		testcase{
+		{
 			pred:   func(s string, v int) bool { return true },
 			expect: m,
 		},
-		testcase{
+		{
 			pred:   func(s string, v int) bool { return false },
 			expect: nil,
 		},

@@ -1,0 +1,32 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "NYL_APP",
+            "frequency": 124700,
+            "radio_name": "Yuma Approach"
+        },
+        "1D": {
+            "callsign": "NYL_DEP",
+            "frequency": 125550,
+            "radio_name": "Yuma Departure"
+        },
+        "1T": {
+            "callsign": "NYL_TWR",
+            "frequency": 119300,
+            "radio_name": "Yuma Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZAB",
+            "prefix": "A"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

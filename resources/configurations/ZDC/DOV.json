@@ -1,0 +1,43 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "DOV_APP",
+            "frequency": 132425,
+            "radio_name": "Dover Approach"
+        },
+        "1Z": {
+            "callsign": "DOV_TWR",
+            "frequency": 126350,
+            "radio_name": "Dover Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ACY",
+            "prefix": "2"
+        },
+        {
+            "id": "NHK",
+            "prefix": "4"
+        },
+        {
+            "id": "PCT",
+            "prefix": "1"
+        },
+        {
+            "id": "PHL",
+            "prefix": "3"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "C"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

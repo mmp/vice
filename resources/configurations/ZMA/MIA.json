@@ -1,0 +1,602 @@
+{
+    "control_positions": {
+        "1T": {
+            "callsign": "MIA_N_TWR",
+            "frequency": 118300,
+            "radio_name": "Miami Tower"
+        },
+        "1M": {
+            "callsign": "MIA_S_TWR",
+            "frequency": 123900,
+            "radio_name": "Miami Tower"
+        },
+        "1B": {
+            "callsign": "FLL_N_TWR",
+            "frequency": 119300,
+            "radio_name": "Fort Lauderdale Tower"
+        },
+        "1U": {
+            "callsign": "FLL_S_TWR",
+            "frequency": 120200,
+            "radio_name": "Fort Lauderdale Tower"
+        },
+        "4O": {
+            "callsign": "OPF_TWR",
+            "frequency": 134675,
+            "radio_name": "Opa Locka Tower"
+        },
+        "1X": {
+            "callsign": "FXE_TWR",
+            "frequency": 120900,
+            "radio_name": "Executive Tower"
+        },
+        "1I": {
+            "callsign": "TMB_TWR",
+            "frequency": 118900,
+            "radio_name": "Tamiami Tower"
+        },
+        "1V": {
+            "callsign": "MIA_V_APP",
+            "frequency": 124850,
+            "radio_name": "Miami Approach"
+        },
+        "1A": {
+            "callsign": "MIA_A_APP",
+            "frequency": 133050,
+            "radio_name": "Miami Approach"
+        },
+        "1N": {
+            "callsign": "MIA_N_APP",
+            "frequency": 125750,
+            "radio_name": "Miami Approach"
+        },
+        "1S": {
+            "callsign": "MIA_S_APP",
+            "frequency": 120500,
+            "radio_name": "Miami Approach"
+        },
+        "1Q": {
+            "callsign": "MIA_Q_APP",
+            "frequency": 126850,
+            "radio_name": "Miami Approach"
+        },
+        "1H": {
+            "callsign": "MIA_H_APP",
+            "frequency": 125250,
+            "radio_name": "Miami Approach"
+        },
+        "1D": {
+            "callsign": "MIA_D_DEP",
+            "frequency": 119450,
+            "radio_name": "Miami Departure"
+        },
+        "1W": {
+            "callsign": "MIA_W_DEP",
+            "frequency": 125500,
+            "radio_name": "Miami Departure"
+        },
+        "1L": {
+            "callsign": "MIA_L_DEP",
+            "frequency": 126050,
+            "radio_name": "Miami Departure"
+        },
+        "1R": {
+            "callsign": "MIA_R_APP",
+            "frequency": 133770,
+            "radio_name": "Miami Approach"
+        },
+        "1J": {
+            "callsign": "MIA_J_APP",
+            "frequency": 118100,
+            "radio_name": "Miami Approach"
+        },
+        "1F": {
+            "callsign": "MIA_F_APP",
+            "frequency": 133720,
+            "radio_name": "Miami Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "KMI": {
+                "inbound_assignments": {
+                    "BHHIA3 NOSATS EAST": "1N",
+                    "BNFSH3 NOSATS EAST": "1N",
+                    "CSTAL3 NOSATS EAST": "1N",
+                    "CUUDA3 NOSATS EAST": "1R",
+                    "FROGZ4 NOSATS EAST": "1N",
+                    "OLAHS3 NOSATS EAST": "1D",
+                    "SNDBR3 NOSATS EAST": "1S",
+                    "TEEKY3 NOSATS EAST": "1J",
+                    "VIICE2 NOSATS EAST": "1S"
+                },
+                "departure_assignments": {
+                    "KFLL": "1D",
+                    "KMIA": "1W"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1L",
+                        "1V",
+                        "1W"
+                    ],
+                    "1L": [
+                        "1R"
+                    ],
+                    "1R": [
+                        "1F",
+                        "1J"
+                    ],
+                    "1S": [
+                        "1A"
+                    ],
+                    "1V": [
+                        "1N",
+                        "1S"
+                    ]
+                }
+            },
+            "KM1": {
+                "inbound_assignments": {
+                    "BHHIA3": "1N",
+                    "BNFSH3": "1N",
+                    "CSTAL3": "1N",
+                    "CUUDA3": "1R",
+                    "FROGZ4": "1N",
+                    "OLAHS3": "1D",
+                    "SNDBR3": "1S",
+                    "TEEKY3": "1J",
+                    "VIICE2": "1S"
+                },
+                "departure_assignments": {
+                    "KFLL": "1L",
+                    "KFXE": "1Q",
+                    "KMIA": "1D",
+                    "KOPF": "1Q",
+                    "KTMB": "1H"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1L",
+                        "1Q",
+                        "1V",
+                        "1W"
+                    ],
+                    "1L": [
+                        "1R"
+                    ],
+                    "1R": [
+                        "1F",
+                        "1J"
+                    ],
+                    "1S": [
+                        "1A"
+                    ],
+                    "1V": [
+                        "1N",
+                        "1S"
+                    ],
+                    "1W": [
+                        "1H"
+                    ]
+                }
+            },
+            "KM2": {
+                "inbound_assignments": {
+                    "BHHIA3 NOSATS WEST": "1D",
+                    "BNFSH3 NOSATS WEST": "1N",
+                    "CSTAL3 NOSATS WEST": "1N",
+                    "CUUDA3 NOSATS WEST": "1R",
+                    "FROGZ4 NOSATS WEST": "1S",
+                    "OLAHS3 NOSATS WEST": "1J",
+                    "SNDBR3 NOSATS WEST": "1S",
+                    "TEEKY3 NOSATS WEST": "1R",
+                    "VIICE2 NOSATS WEST": "1S"
+                },
+                "departure_assignments": {
+                    "KFLL": "1D",
+                    "KMIA": "1D"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1L",
+                        "1V",
+                        "1W"
+                    ],
+                    "1L": [
+                        "1R"
+                    ],
+                    "1R": [
+                        "1F",
+                        "1J"
+                    ],
+                    "1S": [
+                        "1A"
+                    ],
+                    "1V": [
+                        "1N",
+                        "1S"
+                    ]
+                }
+            },
+            "KM3": {
+                "inbound_assignments": {
+                    "BHHIA3": "1D",
+                    "BNFSH3": "1N",
+                    "CSTAL3": "1N",
+                    "CUUDA3": "1R",
+                    "FROGZ4": "1S",
+                    "OLAHS3": "1J",
+                    "SNDBR3": "1S",
+                    "TEEKY3": "1R",
+                    "VIICE2": "1S"
+                },
+                "departure_assignments": {
+                    "KFLL": "1L",
+                    "KFXE": "1Q",
+                    "KMIA": "1W",
+                    "KOPF": "1Q",
+                    "KTMB": "1H"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1L",
+                        "1Q",
+                        "1V",
+                        "1W"
+                    ],
+                    "1L": [
+                        "1R"
+                    ],
+                    "1R": [
+                        "1F",
+                        "1J"
+                    ],
+                    "1S": [
+                        "1A"
+                    ],
+                    "1V": [
+                        "1N",
+                        "1S"
+                    ],
+                    "1W": [
+                        "1H"
+                    ]
+                }
+            }
+        },
+        "center": "KMIA",
+        "radar_sites": {
+            "MIA": {
+                "char": "M",
+                "position": "25.79772, -80.29338",
+                "elevation": 112,
+                "primary_range": 64,
+                "secondary_range": 90,
+                "silence_angle": 49.59,
+                "slope_angle": 0.3
+            },
+            "FLL": {
+                "char": "F",
+                "position": "26.06761, -80.15268",
+                "elevation": 77,
+                "primary_range": 64,
+                "secondary_range": 90,
+                "silence_angle": 49.59,
+                "slope_angle": 0.3
+            },
+            "QMA": {
+                "char": "T",
+                "position": "25.38503, -80.30199",
+                "elevation": 109,
+                "primary_range": 60,
+                "secondary_range": 255,
+                "silence_angle": 29.7,
+                "slope_angle": 0.3
+            },
+            "QML": {
+                "char": "L",
+                "position": "28.05032, -81.47532",
+                "elevation": 118,
+                "primary_range": 60,
+                "secondary_range": 255,
+                "silence_angle": 29.7,
+                "slope_angle": 0.3
+            },
+            "QMQ": {
+                "char": "N",
+                "position": "24.35056, -81.41202",
+                "elevation": 103,
+                "primary_range": 60,
+                "secondary_range": 255,
+                "silence_angle": 29.7,
+                "slope_angle": 0.3
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "MIANOCA",
+                    "description": "MIA CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "vertices": [
+                        "N25.48.37.085,W80.35.06.374",
+                        "N25.44.07.170,W80.35.01.151",
+                        "N25.45.22.666,W79.57.13.907",
+                        "N25.51.23.540,W79.56.40.533"
+                    ]
+                },
+                {
+                    "id": "FLLNOCA",
+                    "description": "FLL CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "vertices": [
+                        "N26.05.42.838,W80.20.03.890",
+                        "N26.06.05.183,W79.55.58.486",
+                        "N26.02.45.551,W79.58.18.903",
+                        "N26.03.17.401,W80.24.50.474"
+                    ]
+                },
+                {
+                    "id": "FXENOCA",
+                    "description": "FXE CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 5,
+                    "center": "N26.11.49.540,W80.10.13.363"
+                },
+                {
+                    "id": "OPFNOCA",
+                    "description": "OPF CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "N25.54.25.166,W80.16.29.327"
+                },
+                {
+                    "id": "TMVNOCA",
+                    "description": "TMV CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "N25.38.53.381,W80.25.49.415"
+                }
+            ]
+        },
+        "scratchpads": {
+            "DUCEN": "ALT",
+            "ALTNN": "ALT",
+            "COREA": "BNG",
+            "MERKS": "BNG",
+            "BNGOS": "BNG",
+            "DOLIE": "BNG",
+            "STYMY": "FLM",
+            "WAPOM": "FLM",
+            "PAUDS": "FOL",
+            "ZFP": "FOL",
+            "SNAGY": "FOL",
+            "SUMRS": "FOL",
+            "ALYRA": "FOL",
+            "LLLLS": "GLA",
+            "BAGGS": "GLA",
+            "SHAQQ": "GLA",
+            "URSUS": "GWA",
+            "GWAVA": "GWA",
+            "HURCN": "HUR",
+            "SMELZ": "HUR",
+            "KLADA": "KLA",
+            "RAJAY": "KLA",
+            "BITAC": "KLA",
+            "JAGOR": "KLA",
+            "CANOA": "MAY",
+            "MAXIM": "MAY",
+            "FUNDI": "MAY",
+            "MAYNR": "MAY",
+            "HURGI": "AGE",
+            "BNICE": "BNI",
+            "WOLFO": "FEA",
+            "MELLZ": "MEL"
+        },
+        "significant_points": {
+            "ALTNN": {},
+            "ALYRA": {},
+            "BAGGS": {},
+            "BITAC": {},
+            "BNGOS": {},
+            "BNICE": {},
+            "CANOA": {},
+            "COREA": {},
+            "DOLIE": {},
+            "DUCEN": {},
+            "FUNDI": {},
+            "GWAVA": {},
+            "HURCN": {
+                "short_name": "HCN"
+            },
+            "HURGI": {},
+            "JAGOR": {},
+            "KLADA": {},
+            "MAXIM": {},
+            "MAYNR": {},
+            "MELLZ": {},
+            "MERKS": {},
+            "RAJAY": {},
+            "SHAQQ": {},
+            "SMELZ": {},
+            "SNAGY": {},
+            "STYMY": {},
+            "SUMRS": {},
+            "URSUS": {},
+            "WAPOM": {},
+            "WOLFO": {},
+            "ZFP": {}
+        },
+        "stars_maps": [
+            "MIA-001S EAST OPERATIONS ARRIVAL",
+            "MIA-002S WEST OPERATIONS ARRIVAL",
+            "MIA-003S MIA DEPARTURE EAST",
+            "MIA-036S MIA DEPARTURE WEST",
+            "FLL-001S EAST OPERATIONS",
+            "FLL-002S WEST OPERATIONS",
+            "MIA-850S CLASS D AIRSPACE",
+            "MIA-225S FLL CLASS C",
+            "FLL-015S RNAV (RNP) APPCHS",
+            "MIA-007S RNAV/GPS APPROACHES",
+            "MIA-018S ZMA OVR",
+            "MIA-010S SHORELINE / PRIMARY ARPTS",
+            "MIA-009S MULTI MVA",
+            "MIA-048S MVA",
+            "MIA-131S 12 CLSD",
+            "MIA-132S 27 CLSD",
+            "MIA-130S 30 CLSD",
+            "MIA-135S 26R CLSD",
+            "MIA-136S 26L CLSD",
+            "MIA-137S 8L CLSD",
+            "MIA-138S 8R CLSD",
+            "MIA-139S 9 CLSD",
+            "FLL-006S FLL GEO MAP",
+            "FLL-013S BRITE 2/FLL",
+            "MIA-004S EMERGENCY-ILS MONITOR",
+            "MIA-049S EMERGENCY MAP",
+            "MIA-301S FLL DEP EAST",
+            "MIA-300S FLL DEP WEST",
+            "MIA-304S MIA NORTH DEP EAST",
+            "MIA-303S MIA NORTH DEP WEST",
+            "MIA-306S MIA SOUTH DEP EAST",
+            "MIA-305S MIA SOUTH DEP WEST",
+            "MIA-026S N EAST AIRSPACE WO/WORPP",
+            "MIA-028S N WEST AIRSPACE WO/WORPP",
+            "MIA-023S V WEST AIRSPACE",
+            "MIA-023S V WEST AIRSPACE",
+            "MIA-024S W EAST AIRSPACE",
+            "MIA-016S A EAST AIRSPACE",
+            "MIA-022S V EAST AIRSPACE",
+            "MIA-017S A WEST AIRSPACE",
+            "MIA-013S S EAST AIRSPACE WO/WORPP",
+            "MIA-015S S WEST AIRSPACE WO/WORPP",
+            "MIA-025S WORPP EAST",
+            "MIA-027S WORPP WEST",
+            "MIA-019S D EAST EAST AIRSPACE",
+            "MIA-020S D WEST WEST AIRSPACE",
+            "MIA-012S D EAST WEST AIRSPACE",
+            "MIA-014S D WEST EAST AIRSPACE",
+            "MIA-024S W EAST AIRSPACE",
+            "MIA-035S W WEST AIRSPACE",
+            "MIA-021S H EAST",
+            "MIA-021S H EAST",
+            "MIA-141S H WEST",
+            "FLL-017S R EAST AIRSPACE",
+            "FLL-025S R WEST AIRSPACE",
+            "FLL-018S F EAST AIRSPACE",
+            "FLL-022S F WEST AIRSPACE",
+            "FLL-023S J EAST FINAL",
+            "FLL-027S J WEST FINAL",
+            "MIA-029S Q EAST EAST AIRSPACE",
+            "MIA-031S Q WEST WEST AIRSPACE",
+            "MIA-037S Q EAST WEST AIRSPACE",
+            "MIA-034S Q WEST EAST AIRSPACE",
+            "MIA-032S Z FLL EAST AIRSPACE",
+            "MIA-033S Z FLL WEST AIRSPACE",
+            "MIA-030S Z EAST WEST AIRSPACE",
+            "MIA-148S Z WEST EAST AIRSPACE",
+            "FLL-019S L EAST EAST AIRSPACE",
+            "FLL-020S L EAST WEST AIRSPACE",
+            "FLL-024S L WEST WEST AIRSPACE",
+            "FLL-026S L WEST EAST AIRSPACE",
+            "FLL-016S G EAST AIRSPACE",
+            "FLL-021S G WEST AIRSPACE"
+        ],
+        "video_map_file": "videomaps/ZMA-videomaps.gob.zst",
+        "coordination_fixes": {
+            "HULKY": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "CUUDA": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "OLAHS": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "BANTY": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "WOOSA": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "YACKO": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "FROGZ": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "SNDBR": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "VIICE": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KMIA"
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "HST",
+            "prefix": "1"
+        },
+        {
+            "id": "PBI",
+            "prefix": "2"
+        },
+        {
+            "id": "ZMA",
+            "prefix": "C"
+        }
+    ]
+}

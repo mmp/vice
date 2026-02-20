@@ -468,10 +468,14 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 		toTCP := util.Select(sfp.RedirectedHandoff.RedirectedTo != "",
 			sfp.RedirectedHandoff.RedirectedTo, sfp.HandoffController)
 
+		shortFID := func(ctrl *av.Controller) string {
+			return ctrl.FacilityIdentifier
+		}
+
 		if ctx.UserControlsPosition(toTCP) { // inbound
 			// Show the resolved controller's id (handles consolidated positions)
 			if toCtrl := ctx.GetResolvedController(toTCP); toCtrl != nil {
-				handoffId = toCtrl.SectorID[len(toCtrl.SectorID)-1:]
+				handoffId = toCtrl.Position[len(toCtrl.Position)-1:]
 			} else {
 				handoffId = string(toTCP[len(toTCP)-1:])
 			}
@@ -480,26 +484,26 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 			if fromCtrl := ctx.Client.State.Controllers[tcp]; fromCtrl != nil {
 				if fromCtrl.ERAMFacility { // Enroute controller
 					// From any center
-					handoffTCP = string(fromCtrl.PositionId())
+					handoffTCP = shortFID(fromCtrl) + fromCtrl.Position
 				} else if fromCtrl.FacilityIdentifier != "" {
 					// Different facility; show full id of originator
-					handoffTCP = fromCtrl.FacilityIdentifier + fromCtrl.SectorID
+					handoffTCP = shortFID(fromCtrl) + fromCtrl.Position
 				}
 			}
 		} else { // outbound
 			if toCtrl := ctx.GetResolvedController(toTCP); toCtrl != nil {
 				if toCtrl.ERAMFacility { // Enroute
 					// Always the one-character id and the sector
-					handoffId = toCtrl.FacilityIdentifier
-					handoffTCP = string(toTCP)
+					handoffId = shortFID(toCtrl)
+					handoffTCP = shortFID(toCtrl) + toCtrl.Position
 				} else if toCtrl.FacilityIdentifier != "" { // Different facility
 					// Different facility: show their TCP, id is the facility #
-					handoffId = toCtrl.FacilityIdentifier
-					handoffTCP = toCtrl.FacilityIdentifier + string(toTCP)
+					handoffId = shortFID(toCtrl)
+					handoffTCP = shortFID(toCtrl) + toCtrl.Position
 				} else {
 					// Intrafacility handoff - show the resolved controller's id
 					// (e.g., handoff to "2M" consolidated to "2K" shows "K")
-					handoffId = toCtrl.SectorID[len(toCtrl.SectorID)-1:]
+					handoffId = toCtrl.Position[len(toCtrl.Position)-1:]
 				}
 			} else if toTCP != "" {
 				// Fallback: show the handoff indicator even if we can't resolve the controller
@@ -656,7 +660,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 				// TODO: Field 1: WHO if unassociated and no flight plan
 				var f1 int
 				if displayBeaconCode { // flashing yellow
-					f1 = formatDBText(db.field1[:], trk.Squawk.String(), brightness.ScaleRGB(STARSTextWarningColor), true)
+					f1 = formatDBText(db.field1[:], trk.Squawk.String(), brightness.ScaleRGB(sp.Colors.TextWarning), true)
 				} else {
 					f1 = formatDBText(db.field1[:], trk.Squawk.String(), color, false)
 				}
@@ -916,9 +920,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 			} else if state.IntrailDistance != 0 && sp.currentPrefs().DisplayATPAInTrailDist && !state.InhibitDisplayInTrailDist {
 				distColor := color
 				if state.ATPAStatus == ATPAStatusWarning {
-					distColor = STARSATPAWarningColor
+					distColor = sp.Colors.ATPAWarning
 				} else if state.ATPAStatus == ATPAStatusAlert {
-					distColor = STARSATPAAlertColor
+					distColor = sp.Colors.ATPAAlert
 				}
 				if sfp.CWTCategory == "" {
 					formatDBText(db.field6[idx6][:], "NOWGT", distColor, false)
@@ -928,7 +932,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 				idx6++
 			}
 			if displayBeaconCode {
-				formatDBText(db.field6[idx6][:], trk.Squawk.String(), brightness.ScaleRGB(STARSTextWarningColor), true)
+				formatDBText(db.field6[idx6][:], trk.Squawk.String(), brightness.ScaleRGB(sp.Colors.TextWarning), true)
 				idx6++
 			} else if beaconMismatch {
 				formatDBText(db.field6[idx6][:], trk.Squawk.String(), color, false)
@@ -1079,44 +1083,44 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 
 	if state.IsSelected {
 		// middle button selected
-		color = STARSSelectedAircraftColor
+		color = sp.Colors.SelectedAircraft
 	} else if trk.IsUnassociated() {
-		color = STARSUntrackedAircraftColor
+		color = sp.Colors.UntrackedAircraft
 	} else {
 		sfp := trk.FlightPlan
 		if _, ok := sp.ForceQLACIDs[sfp.ACID]; ok {
 			// Check if we're the controller being ForceQL
-			color = STARSTrackAlertColor
+			color = sp.Colors.TrackAlert
 		} else if state.PointOutAcknowledged || state.ForceQL {
 			// Ack'ed point out to us (but not cleared) or force quick look.
-			color = STARSTrackAlertColor
+			color = sp.Colors.TrackAlert
 		} else if inboundPointOut {
 			// Pointed out to us.
-			color = STARSTrackAlertColor
+			color = sp.Colors.TrackAlert
 		} else if state.DatablockAlert {
-			color = STARSTrackAlertColor
+			color = sp.Colors.TrackAlert
 		} else if ctx.UserOwnsFlightPlan(sfp) {
 			// we own the track
-			color = STARSTrackedAircraftColor
+			color = sp.Colors.TrackedAircraft
 		} else if ctx.UserControlsPosition(sfp.RedirectedHandoff.OriginalOwner) ||
 			ctx.UserControlsPosition(sfp.RedirectedHandoff.RedirectedTo) {
-			color = STARSTrackedAircraftColor
+			color = sp.Colors.TrackedAircraft
 		} else if ctx.UserControlsPosition(sfp.HandoffController) &&
 			!ctx.UserControlsPosition(sfp.RedirectedHandoff.GetLastRedirector()) {
 			// flashing white if it's being handed off to us.
-			color = STARSTrackedAircraftColor
+			color = sp.Colors.TrackedAircraft
 		} else if state.OutboundHandoffAccepted {
 			// we handed it off, it was accepted, but we haven't yet acknowledged
-			color = STARSTrackedAircraftColor
+			color = sp.Colors.TrackedAircraft
 		} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
 			// quick look all plus
-			color = STARSTrackedAircraftColor
+			color = sp.Colors.TrackedAircraft
 		} else if ps.QuickLookTCPs[string(ctx.PrimaryTCPForTCW(sfp.OwningTCW))] {
 			// individual quicklook plus controller
-			color = STARSTrackedAircraftColor
+			color = sp.Colors.TrackedAircraft
 		} else {
 			// other controller owns, no special case applies
-			color = STARSUntrackedAircraftColor
+			color = sp.Colors.UntrackedAircraft
 		}
 	}
 
@@ -1351,7 +1355,7 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtyp
 		}
 		added[s] = nil
 
-		color := util.Select(red, STARSTextAlertColor, STARSTextWarningColor)
+		color := util.Select(red, sp.Colors.TextAlert, sp.Colors.TextWarning)
 		if len(alerts) > 0 {
 			alerts = append(alerts, dbChar{ch: '/', color: color})
 		}

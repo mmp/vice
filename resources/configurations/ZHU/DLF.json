@@ -1,0 +1,38 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "DLF_A_APP",
+            "frequency": 123100,
+            "radio_name": "Del Rio Approach"
+        },
+        "1E": {
+            "callsign": "DLF_E_APP",
+            "frequency": 119600,
+            "radio_name": "Del Rio Approach"
+        },
+        "1S": {
+            "callsign": "DLF_S_APP",
+            "frequency": 127750,
+            "radio_name": "Del Rio Approach"
+        },
+        "1W": {
+            "callsign": "DLF_W_APP",
+            "frequency": 118000,
+            "radio_name": "Del Rio Approach"
+        },
+        "1Z": {
+            "callsign": "DLF_TWR",
+            "frequency": 125200,
+            "radio_name": "Laughlin Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZHU",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

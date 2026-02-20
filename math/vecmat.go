@@ -91,9 +91,9 @@ type Matrix3 [3][3]float32
 
 func MakeMatrix3(m00, m01, m02, m10, m11, m12, m20, m21, m22 float32) Matrix3 {
 	return [3][3]float32{
-		[3]float32{m00, m01, m02},
-		[3]float32{m10, m11, m12},
-		[3]float32{m20, m21, m22}}
+		{m00, m01, m02},
+		{m10, m11, m12},
+		{m20, m21, m22}}
 }
 
 func Identity3x3() Matrix3 {

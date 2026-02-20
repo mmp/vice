@@ -45,31 +45,57 @@ const STARSFilledUpTriangle = string(rune(0x1e))
 const TabListEntries = 100
 const TabListUnassignedIndex = -1
 
-var (
-	STARSBackgroundColor    = renderer.RGB{.2, .2, .2} // at 100 contrast
-	STARSListColor          = renderer.RGB{.1, .9, .1}
-	STARSTextAlertColor     = renderer.RGB{1, 0, 0}
-	STARSTextWarningColor   = renderer.RGB{1, 1, 0}
-	STARSCompassColor       = renderer.RGB{.55, .55, .55}
-	STARSRangeRingColor     = renderer.RGB{.55, .55, .55}
-	STARSTrackBlockColor    = renderer.RGB{0.12, 0.48, 1}
-	STARSTrackHistoryColors = [5]renderer.RGB{
-		renderer.RGB{.12, .31, .78},
-		renderer.RGB{.28, .28, .67},
-		renderer.RGB{.2, .2, .51},
-		renderer.RGB{.16, .16, .43},
-		renderer.RGB{.12, .12, .35},
-	}
-	STARSJRingConeColor         = renderer.RGB{.5, .5, 1}
-	STARSTrackedAircraftColor   = renderer.RGB{1, 1, 1}
-	STARSUntrackedAircraftColor = renderer.RGB{0, 1, 0}
-	STARSTrackAlertColor        = renderer.RGB{1, 1, 0}
-	STARSGhostColor             = renderer.RGB{1, 1, 0}
-	STARSSelectedAircraftColor  = renderer.RGB{0, 1, 1}
+type ColorSet struct {
+	TrackedAircraft   renderer.RGB
+	UntrackedAircraft renderer.RGB
+	TrackAlert        renderer.RGB
+	Ghost             renderer.RGB
+	SelectedAircraft  renderer.RGB
+	TrackBlock        renderer.RGB
+	TrackHistory      [5]renderer.RGB
 
-	STARSATPAWarningColor = renderer.RGB{1, 1, 0}
-	STARSATPAAlertColor   = renderer.RGB{1, .215, 0}
-)
+	List        renderer.RGB
+	TextAlert   renderer.RGB
+	TextWarning renderer.RGB
+
+	Background  renderer.RGB // at 100% contrast
+	Compass     renderer.RGB
+	RangeRing   renderer.RGB
+	JRingCone   renderer.RGB
+	ATPAWarning renderer.RGB
+	ATPAAlert   renderer.RGB
+}
+
+var colorSets = map[string]ColorSet{
+	"Legacy": {
+		TrackedAircraft:   renderer.RGBFromUInt8(255, 255, 255),
+		UntrackedAircraft: renderer.RGBFromUInt8(0, 255, 0),
+		TrackAlert:        renderer.RGBFromUInt8(255, 255, 0),
+		Ghost:             renderer.RGBFromUInt8(255, 255, 0),
+		SelectedAircraft:  renderer.RGBFromUInt8(0, 255, 255),
+		TrackBlock:        renderer.RGBFromUInt8(30, 120, 255),
+		TrackHistory: [5]renderer.RGB{
+			renderer.RGBFromUInt8(30, 80, 200),
+			renderer.RGBFromUInt8(70, 70, 170),
+			renderer.RGBFromUInt8(50, 50, 130),
+			renderer.RGBFromUInt8(40, 40, 110),
+			renderer.RGBFromUInt8(30, 30, 90),
+		},
+
+		List:        renderer.RGBFromUInt8(0, 255, 0),
+		TextAlert:   renderer.RGBFromUInt8(255, 0, 0),
+		TextWarning: renderer.RGBFromUInt8(255, 255, 0),
+
+		Background:  renderer.RGBFromUInt8(50, 50, 50),
+		Compass:     renderer.RGBFromUInt8(140, 140, 140),
+		RangeRing:   renderer.RGBFromUInt8(140, 140, 140),
+		JRingCone:   renderer.RGBFromUInt8(128, 128, 255),
+		ATPAWarning: renderer.RGBFromUInt8(255, 255, 0),
+		ATPAAlert:   renderer.RGBFromUInt8(255, 55, 0),
+
+		// TODO: Wx. Also, there are lots of places where we have 255,255,255 hardcoded
+	},
+}
 
 type STARSPane struct {
 	TRACONPreferenceSets map[string]*PreferenceSet
@@ -93,6 +119,8 @@ type STARSPane struct {
 	visibleTracks []sim.Track
 
 	mvaGrid *av.MVAGrid
+
+	Colors ColorSet
 
 	// Which weather history snapshot to draw: this is always 0 unless the
 	// 'display weather history' command was entered.
@@ -418,6 +446,8 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	if sp.TgtGenKey == 0 {
 		sp.TgtGenKey = ';'
 	}
+
+	sp.Colors = colorSets["Legacy"]
 
 	if sp.IFPHelpers.ApproachesColor == nil {
 		sp.IFPHelpers.ApproachesColor = &[3]float32{.1, .9, .1}
@@ -828,7 +858,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	// Clear to background color
-	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
+	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(sp.Colors.Background))
 
 	sp.processKeyboardInput(ctx)
 
@@ -981,7 +1011,7 @@ func (sp *STARSPane) drawWX(ctx *panes.Context, transforms radar.ScopeTransforma
 const numMapColors = 8
 
 var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
-	[numMapColors]renderer.RGB{ // Group A
+	{ // Group A
 		renderer.RGBFromUInt8(140, 140, 140),
 		renderer.RGBFromUInt8(0, 255, 255),
 		renderer.RGBFromUInt8(255, 0, 255),
@@ -991,7 +1021,7 @@ var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
 		renderer.RGBFromUInt8(218, 165, 32),
 		renderer.RGBFromUInt8(72, 118, 255),
 	},
-	[numMapColors]renderer.RGB{ // Group B
+	{ // Group B
 		renderer.RGBFromUInt8(140, 140, 140),
 		renderer.RGBFromUInt8(132, 112, 255),
 		renderer.RGBFromUInt8(118, 238, 198),
@@ -1321,7 +1351,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 				region := sp.CRDAPairs[i].CRDARegions[j]
 				courseLine := region.CourseLine(ctx.NmPerLongitude)
 				ld := renderer.GetLinesDrawBuilder()
-				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
+				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(sp.Colors.Ghost))
 				for k := 0; k+1 < len(courseLine); k++ {
 					ld.AddLine(courseLine[k], courseLine[k+1])
 				}
@@ -1335,7 +1365,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 				poly := region.QualificationPolygon(ctx.NmPerLongitude)
 
 				ld := renderer.GetLinesDrawBuilder()
-				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
+				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(sp.Colors.Ghost))
 				polyF32 := make([][2]float32, len(poly))
 				for k, p := range poly {
 					polyF32[k] = p
@@ -1380,7 +1410,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 
 	// STARS Operators Manual 4-74: FDB brightness is used for the cursor
 	cursorStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: ps.Brightness.FullDatablocks.RGB()}
-	background := ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor)
+	background := ps.Brightness.BackgroundContrast.ScaleRGB(sp.Colors.Background)
 	bgStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: background}
 
 	draw := func(idx int, style renderer.TextStyle) {
@@ -1782,7 +1812,7 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms radar.ScopeTra
 		ld := renderer.GetLinesDrawBuilder()
 		defer renderer.ReturnLinesDrawBuilder(ld)
 
-		ld.AddLineLoop([][2]float32{p0, [2]float32{p0[0], p1[1]}, p1, [2]float32{p1[0], p0[1]}})
+		ld.AddLineLoop([][2]float32{p0, {p0[0], p1[1]}, p1, {p1[0], p0[1]}})
 		transforms.LoadWindowViewingMatrices(cb)
 		cb.SetRGB(renderer.RGB{R: 0, G: 0.75, B: 0.75})
 		ld.GenerateCommands(cb)
@@ -1795,7 +1825,7 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms radar.ScopeTra
 // out an animated GIF when the chan is closed.
 func captureEncodeFrames(ch chan *image.RGBA) {
 	// Store regular and 2x resolution for retina displays.
-	gifs := [2]*gif.GIF{&gif.GIF{}, &gif.GIF{}}
+	gifs := [2]*gif.GIF{{}, {}}
 	// Though we could have a unique palette per frame, we only need a
 	// handful of colors and having a shared one allows us to check for
 	// image equivalence by just comparing the pixels' palette index
@@ -1806,12 +1836,12 @@ func captureEncodeFrames(ch chan *image.RGBA) {
 		if img := <-ch; img != nil {
 			nx, ny := img.Bounds().Max.X-img.Bounds().Min.X, img.Bounds().Max.Y-img.Bounds().Min.Y
 			pal := [2]*image.Paletted{
-				&image.Paletted{
+				{
 					Pix:    make([]uint8, nx/2*ny/2),
 					Stride: nx / 2,
 					Rect:   image.Rectangle{Max: image.Point{X: nx / 2, Y: ny / 2}},
 				},
-				&image.Paletted{
+				{
 					Pix:    make([]uint8, nx*ny),
 					Stride: nx,
 					Rect:   image.Rectangle{Max: image.Point{X: nx, Y: ny}},

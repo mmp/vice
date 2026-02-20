@@ -1,0 +1,28 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "NQX_A_APP",
+            "frequency": 126575,
+            "radio_name": "Key West Approach"
+        },
+        "1B": {
+            "callsign": "NQX_B_APP",
+            "frequency": 124025,
+            "radio_name": "Key West Approach"
+        },
+        "1Z": {
+            "callsign": "NQX_TWR",
+            "frequency": 118575,
+            "radio_name": "Navy Key West Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZMA",
+            "prefix": "R"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

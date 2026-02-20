@@ -1,0 +1,99 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "ASE_APP",
+            "frequency": 123800,
+            "radio_name": "Aspen approach"
+        },
+        "1T": {
+            "callsign": "ASE_TWR",
+            "frequency": 118850,
+            "radio_name": "Aspen tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "HAREI": "1A",
+                    "LAWSN": "1A",
+                    "LOYYD": "1A"
+                },
+                "departure_assignments": {
+                    "KASE": "1A"
+                },
+                "default_consolidation": {
+                    "1A": []
+                }
+            }
+        },
+        "center": "N039.19.41.442,W106.53.21.361",
+        "range": 25,
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "ASENOCA",
+                    "description": "ASE FINAL CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 6155,
+                    "ceiling": 10000,
+                    "vertices": [
+                        "N039.10.33.155,W106.55.16.442",
+                        "N039.17.10.915,W106.56.44.278",
+                        "N039.17.52.732,W106.48.56.947",
+                        "N039.11.23.500,W106.46.07.620"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "KASE": {
+                "char": "A",
+                "position": "39.223202,-106.869003",
+                "elevation": 7820,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "RLG": "RLG",
+            "RIL": "RIL",
+            "JNC": "JNC",
+            "EKR": "EKR",
+            "DBL": "DBL",
+            "LINDZ": "LIN"
+        },
+        "significant_points": {
+            "DBL": {},
+            "EKR": {},
+            "JNC": {},
+            "LINDZ": {},
+            "RIL": {},
+            "RLG": {}
+        },
+        "stars_maps": [
+            "ASE BASE",
+            "ASE MVA",
+            "ASE LOC-DME",
+            "ASE LOC-E",
+            "ASE Airwy",
+            "ASE ODO",
+            "ASE EOVM",
+            "ASE RIL ILS",
+            "ASE RNAV-F",
+            "ASE RNVY-15",
+            "ASE RNVZ 15",
+            "ASE VFR",
+            "ASE WRAP-D"
+        ],
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
+    },
+    "handoff_ids": [
+        {
+            "id": "ZDV",
+            "prefix": "C"
+        }
+    ]
+}

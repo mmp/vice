@@ -70,6 +70,8 @@ type NewSimConfiguration struct {
 	windsAloftAltitude float32
 
 	availableWXIntervals []util.TimeInterval
+
+	savedVFRDepartureRateScale float32
 }
 
 // loadEmergencies loads all emergency types from the emergencies.json resource file.
@@ -213,6 +215,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 		c.ScenarioSpec = scenarioCatalog.Scenarios[scenarioName]
 	}
 	c.ScenarioName = scenarioName
+	c.savedVFRDepartureRateScale = c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale
 
 	// Initialize default wind direction from runways
 	c.initDefaultWindDirection()
@@ -1745,8 +1748,9 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, activeRadar
 		// Make big(ish) tables somewhat more legible
 		tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 			imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		if imgui.BeginTableV("controllers", 3, tableFlags, imgui.Vec2{}, 0) {
+		if imgui.BeginTableV("controllers", 4, tableFlags, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumn("Workstation")
+			imgui.TableSetupColumn("Name")
 			imgui.TableSetupColumn("Human")
 			imgui.TableSetupColumn("Positions")
 			imgui.TableHeadersRow()
@@ -1759,6 +1763,9 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, activeRadar
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text(controllerDisplayLabel(c.State.Controllers, av.ControlPosition(tcw)))
+
+				imgui.TableNextColumn()
+				imgui.Text(c.State.Controllers[av.ControlPosition(tcw)].Callsign)
 
 				imgui.TableNextColumn()
 				sq := renderer.FontAwesomeIconCheckSquare
@@ -1814,6 +1821,8 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, activeRadar
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text(controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()))
+				imgui.TableNextColumn()
+				imgui.Text(ctrl.Callsign)
 				imgui.TableNextColumn()
 				imgui.TableNextColumn()
 				imgui.Text(fmt.Sprintf("%s (%s, %s)",
@@ -2188,9 +2197,12 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 			}
 			c.StartTime = startTime
 
-			// Set VFR launch rate to zero if selected weather is IMC
+			// Set VFR launch rate to zero if selected weather is IMC;
+			// restore the original value if VMC.
 			if !sampledMETAR.IsVMC() {
 				c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale = 0
+			} else {
+				c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale = c.savedVFRDepartureRateScale
 			}
 		} else {
 			c.weatherFilterError = "No weather matching filters found"

@@ -1,0 +1,502 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZMP 01 PLN LO",
+            "frequency": 134600,
+            "radio_name": "Minneapolis Center"
+        },
+        "02": {
+            "callsign": "ZMP 02 TVC LO",
+            "frequency": 132900,
+            "radio_name": "Minneapolis Center"
+        },
+        "03": {
+            "callsign": "ZMP 03 SAW LO",
+            "frequency": 133550,
+            "radio_name": "Minneapolis Center"
+        },
+        "04": {
+            "callsign": "ZMP 04 AUW LO",
+            "frequency": 124400,
+            "radio_name": "Minneapolis Center"
+        },
+        "05": {
+            "callsign": "ZMP 05 ODI LO",
+            "frequency": 125300,
+            "radio_name": "Minneapolis Center"
+        },
+        "06": {
+            "callsign": "ZMP 06 TWINZ LO",
+            "frequency": 134300,
+            "radio_name": "Minneapolis Center"
+        },
+        "07": {
+            "callsign": "ZMP 07 FGT LO",
+            "frequency": 132350,
+            "radio_name": "Minneapolis Center"
+        },
+        "08": {
+            "callsign": "ZMP 08 MKT LO",
+            "frequency": 135000,
+            "radio_name": "Minneapolis Center"
+        },
+        "09": {
+            "callsign": "ZMP 09 RWF LO",
+            "frequency": 125500,
+            "radio_name": "Minneapolis Center"
+        },
+        "10": {
+            "callsign": "ZMP 10 GEP LO",
+            "frequency": 121050,
+            "radio_name": "Minneapolis Center"
+        },
+        "11": {
+            "callsign": "ZMP 11 AXN HI",
+            "frequency": 133400,
+            "radio_name": "Minneapolis Center"
+        },
+        "12": {
+            "callsign": "ZMP 12 TVC HI",
+            "frequency": 132425,
+            "radio_name": "Minneapolis Center"
+        },
+        "13": {
+            "callsign": "ZMP 13 TKV HI",
+            "frequency": 133175,
+            "radio_name": "Minneapolis Center"
+        },
+        "14": {
+            "callsign": "ZMP 14 APN HI",
+            "frequency": 127125,
+            "radio_name": "Minneapolis Center"
+        },
+        "15": {
+            "callsign": "ZMP 15 ODI HI",
+            "frequency": 135700,
+            "radio_name": "Minneapolis Center"
+        },
+        "16": {
+            "callsign": "ZMP 16 EAU HI",
+            "frequency": 133750,
+            "radio_name": "Minneapolis Center"
+        },
+        "17": {
+            "callsign": "ZMP 17 MCW HI",
+            "frequency": 134250,
+            "radio_name": "Minneapolis Center"
+        },
+        "18": {
+            "callsign": "ZMP 18 OTG HI",
+            "frequency": 128675,
+            "radio_name": "Minneapolis Center"
+        },
+        "19": {
+            "callsign": "ZMP 19 FSD HI",
+            "frequency": 119875,
+            "radio_name": "Minneapolis Center"
+        },
+        "20": {
+            "callsign": "ZMP 20 PIR HI",
+            "frequency": 128425,
+            "radio_name": "Minneapolis Center"
+        },
+        "21": {
+            "callsign": "ZMP 21 RGK LO",
+            "frequency": 134850,
+            "radio_name": "Minneapolis Center"
+        },
+        "22": {
+            "callsign": "ZMP 22 FAR HI",
+            "frequency": 134750,
+            "radio_name": "Minneapolis Center"
+        },
+        "23": {
+            "callsign": "ZMP 23 DIK HI/LO",
+            "frequency": 127600,
+            "radio_name": "Minneapolis Center"
+        },
+        "24": {
+            "callsign": "ZMP 24 FAR HI/LO",
+            "frequency": 132150,
+            "radio_name": "Minneapolis Center"
+        },
+        "25": {
+            "callsign": "ZMP 25 DLH HI/LO",
+            "frequency": 134550,
+            "radio_name": "Minneapolis Center"
+        },
+        "26": {
+            "callsign": "ZMP 26 GRI LO",
+            "frequency": 119400,
+            "radio_name": "Minneapolis Center"
+        },
+        "27": {
+            "callsign": "ZMP 27 OMA LO",
+            "frequency": 119600,
+            "radio_name": "Minneapolis Center"
+        },
+        "28": {
+            "callsign": "ZMP 28 POLAR SUPER HI",
+            "frequency": 119725,
+            "radio_name": "Minneapolis Center"
+        },
+        "29": {
+            "callsign": "ZMP 29 ONL HI",
+            "frequency": 124875,
+            "radio_name": "Minneapolis Center"
+        },
+        "30": {
+            "callsign": "ZMP 30 FOD HI",
+            "frequency": 135775,
+            "radio_name": "Minneapolis Center"
+        },
+        "32": {
+            "callsign": "ZMP 32 VIKING SUPER HI",
+            "frequency": 133075,
+            "radio_name": "Minneapolis Center"
+        },
+        "33": {
+            "callsign": "ZMP 33 PIR LO",
+            "frequency": 125100,
+            "radio_name": "Minneapolis Center"
+        },
+        "34": {
+            "callsign": "ZMP 34 SAW HI",
+            "frequency": 132725,
+            "radio_name": "Minneapolis Center"
+        },
+        "36": {
+            "callsign": "ZMP 36 FOD LO",
+            "frequency": 134000,
+            "radio_name": "Minneapolis Center"
+        },
+        "37": {
+            "callsign": "ZMP 37 ONL LO",
+            "frequency": 128000,
+            "radio_name": "Minneapolis Center"
+        },
+        "38": {
+            "callsign": "ZMP 38 DSM HI",
+            "frequency": 123975,
+            "radio_name": "Minneapolis Center"
+        },
+        "39": {
+            "callsign": "ZMP 39 LNK HI",
+            "frequency": 135100,
+            "radio_name": "Minneapolis Center"
+        },
+        "40": {
+            "callsign": "ZMP 40 ARCTIC SUPER HI",
+            "frequency": 134225,
+            "radio_name": "Minneapolis Center"
+        },
+        "42": {
+            "callsign": "ZMP 42 WILD HI",
+            "frequency": 119525,
+            "radio_name": "Minneapolis Center"
+        },
+        "43": {
+            "callsign": "ZMP 43 HAWKEYE HI",
+            "frequency": 118825,
+            "radio_name": "Minneapolis Center"
+        },
+        "44": {
+            "callsign": "ZMP 44 MILLER SUPER HI",
+            "frequency": 120050,
+            "radio_name": "Minneapolis Center"
+        },
+        "46": {
+            "callsign": "ZMP 46 MCD SUPER HI",
+            "frequency": 125825,
+            "radio_name": "Minneapolis Center"
+        },
+        "61": {
+            "callsign": "ZMP 61 ZMP TMU MSP",
+            "frequency": 123450,
+            "radio_name": "Minneapolis TMU"
+        },
+        "62": {
+            "callsign": "ZMP 62 ZMP TMU NY",
+            "frequency": 123450,
+            "radio_name": "Minneapolis TMU"
+        },
+        "63": {
+            "callsign": "ZMP 63 ZMP TMU DEN/MDW",
+            "frequency": 123450,
+            "radio_name": "Minneapolis TMU"
+        },
+        "64": {
+            "callsign": "ZMP 64 ZMP TMU ORD",
+            "frequency": 123450,
+            "radio_name": "Minneapolis TMU"
+        },
+        "83": {
+            "callsign": "ZMP 83 TVC LO W",
+            "frequency": 125550,
+            "radio_name": "Minneapolis Center"
+        },
+        "99": {
+            "callsign": "ZMP 99 ZMP GUARD",
+            "frequency": 121500,
+            "radio_name": "Minneapolis Center"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "LUCCY": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "BLUEM": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "KKILR": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "BAYKS": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "NITZR": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ],
+            "OFSON": [
+                {
+                    "type": "route",
+                    "to": "M98",
+                    "from": "ZMP"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "ALO",
+            "stars_id": "ALT",
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "WW",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "A"
+        },
+        {
+            "id": "APN",
+            "stars_id": "ZZZ",
+            "single_char_stars_id": "Z",
+            "two_char_stars_id": "ZZ",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "AZO",
+            "stars_id": "SSS",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SS",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "BIL",
+            "stars_id": "BIL",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "BIS",
+            "stars_id": "AAA",
+            "single_char_stars_id": "A",
+            "two_char_stars_id": "AA",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CID",
+            "stars_id": "CID",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "D21",
+            "stars_id": "DTW",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "DLH",
+            "stars_id": "LLL",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "LL",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "DSM",
+            "stars_id": "DDD",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "EE",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "D"
+        },
+        {
+            "id": "FAR",
+            "stars_id": "HHH",
+            "single_char_stars_id": "H",
+            "two_char_stars_id": "HH",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "FSD",
+            "stars_id": "FFF",
+            "single_char_stars_id": "F",
+            "two_char_stars_id": "FF",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "GRB",
+            "stars_id": "GGG",
+            "single_char_stars_id": "B",
+            "two_char_stars_id": "BB",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "G"
+        },
+        {
+            "id": "GTF",
+            "stars_id": "GTF",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "LAN",
+            "stars_id": "LAN",
+            "two_char_stars_id": "NN",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "X"
+        },
+        {
+            "id": "M98",
+            "stars_id": "MMM",
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MM",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MCI",
+            "stars_id": "MCI",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "MIB",
+            "stars_id": "III",
+            "single_char_stars_id": "I",
+            "two_char_stars_id": "II",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MKE",
+            "stars_id": "MKE",
+            "single_char_stars_id": "X",
+            "two_char_stars_id": "XX",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MLI",
+            "stars_id": "MLI",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "MSN",
+            "stars_id": "MSN",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "MTC",
+            "stars_id": "MTC",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "R90",
+            "stars_id": "OOO",
+            "single_char_stars_id": "O",
+            "two_char_stars_id": "OO",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "RCA",
+            "stars_id": "RCA",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "RDR",
+            "stars_id": "RRR",
+            "single_char_stars_id": "R",
+            "two_char_stars_id": "RR",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ROC",
+            "stars_id": "ROC",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "RST",
+            "stars_id": "TTT",
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "TT",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "SUX",
+            "stars_id": "YYY",
+            "single_char_stars_id": "Y",
+            "two_char_stars_id": "YY",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "TOL",
+            "stars_id": "TOL",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "VOK",
+            "stars_id": "JJJ",
+            "single_char_stars_id": "J",
+            "two_char_stars_id": "JJ",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "YNG",
+            "stars_id": "YNG",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZDV",
+            "prefix": "D"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "K"
+        },
+        {
+            "id": "ZLC",
+            "prefix": "U"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

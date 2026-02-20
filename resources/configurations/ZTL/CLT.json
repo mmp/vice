@@ -1,0 +1,397 @@
+{
+    "control_positions": {
+        "1W": {
+            "callsign": "CLT_W_DEP",
+            "frequency": 119500,
+            "radio_name": "Charlotte Departure"
+        },
+        "1E": {
+            "callsign": "CLT_E_DEP",
+            "frequency": 124000,
+            "radio_name": "Charlotte Departure"
+        },
+        "1N": {
+            "callsign": "CLT_N_APP",
+            "frequency": 134750,
+            "radio_name": "Charlotte Approach"
+        },
+        "1S": {
+            "callsign": "CLT_S_APP",
+            "frequency": 120050,
+            "radio_name": "Charlotte Approach"
+        },
+        "1Q": {
+            "callsign": "CLT_Q_APP",
+            "frequency": 128320,
+            "radio_name": "Charlotte Approach"
+        },
+        "1H": {
+            "callsign": "CLT_H_APP",
+            "frequency": 126150,
+            "radio_name": "Charlotte Approach"
+        },
+        "1U": {
+            "callsign": "CLT_U_APP",
+            "frequency": 125350,
+            "radio_name": "Charlotte Approach"
+        },
+        "1D": {
+            "callsign": "CLT_D_APP",
+            "frequency": 135600,
+            "radio_name": "Charlotte Approach"
+        },
+        "1A": {
+            "callsign": "CLT_A_APP",
+            "frequency": 127700,
+            "radio_name": "Charlotte Approach"
+        },
+        "1M": {
+            "callsign": "CLT_M_APP",
+            "frequency": 119000,
+            "radio_name": "Charlotte Approach"
+        },
+        "1F": {
+            "callsign": "CLT_F_APP",
+            "frequency": 132700,
+            "radio_name": "Charlotte Approach"
+        },
+        "CT": {
+            "callsign": "CLT_TWR",
+            "frequency": 118100,
+            "radio_name": "Charlotte Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "18L": {
+                "inbound_assignments": {
+                    "CHSLY6_18LFINAL": "1A",
+                    "STOCR4_18LFINAL": "1A"
+                },
+                "default_consolidation": {
+                    "1A": []
+                }
+            },
+            "36R": {
+                "inbound_assignments": {
+                    "CHSLY6_NORTHEAST_36RFINAL": "1A",
+                    "STOCR4_NORTHEAST_36RFINAL": "1A"
+                },
+                "departure_assignments": {
+                    "KCLT": "1A"
+                },
+                "default_consolidation": {
+                    "1A": []
+                }
+            },
+            "KCL": {
+                "inbound_assignments": {
+                    "BANKR5": "1D",
+                    "CHSLY6": "1H",
+                    "FLIPZ4": "1U",
+                    "JONZE5": "1D",
+                    "PARQR4": "1U",
+                    "STOCR4": "1H"
+                },
+                "departure_assignments": {
+                    "KCLT": "1W"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1H",
+                        "1U",
+                        "1W"
+                    ]
+                }
+            },
+            "KC1": {
+                "inbound_assignments": {
+                    "BANKR5_NORTHWEST_36LFINAL": "1F",
+                    "CHSLY6_NORTHEAST_36RFINAL": "1F",
+                    "JONZE5_NORTHWEST_36LFINAL": "1F",
+                    "NORTHWEST_36LFINAL": "1F",
+                    "STOCR4_NORTHEAST_36RFINAL": "1F"
+                },
+                "departure_assignments": {
+                    "KCLT": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "KC2": {
+                "inbound_assignments": {
+                    "CHSLY6_18LFINAL": "1F",
+                    "FLIPZ4_18RFINAL": "1F",
+                    "PARQR4_18RFINAL": "1F",
+                    "SOUTHWEST_18RFINAL": "1F",
+                    "STOCR4_18LFINAL": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            }
+        },
+        "center": "KCLT",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "CLTNOCA",
+                    "description": "CLT CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N035.40.57.861,W080.55.23.748",
+                        "N035.40.57.861,W081.02.11.671",
+                        "N034.42.27.537,W080.59.16.933",
+                        "N034.42.46.598,W080.47.34.467"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "CLT": {
+                "char": "C",
+                "position": "KCLT",
+                "elevation": 850,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 10,
+                "slope_angle": 0.5
+            }
+        },
+        "scratchpads": {
+            "RDU": "BAR",
+            "TYI": "BAR",
+            "BARMY": "BAR",
+            "NUTZE": "BAR",
+            "AUDII": "KIL",
+            "KILNS": "KIL",
+            "LILLS": "LIL",
+            "ICONS": "ICO",
+            "NOOKS": "ICO",
+            "KWEEN": "KWE",
+            "PITRW": "KWE",
+            "UNJAM": "KWE",
+            "BEAVY": "BEA",
+            "JENDO": "BEA",
+            "GANDT": "BEA",
+            "BOBZY": "BOB",
+            "TNSLY": "BOB",
+            "BNA": "BOB",
+            "ESTRR": "EST",
+            "IPTAY": "EST",
+            "CUBIM": "JOJ",
+            "DOOGE": "JOJ",
+            "JOJJO": "JOJ",
+            "NOOMN": "JOJ",
+            "FILDS": "KRI",
+            "KRITR": "KRI",
+            "SMIAM": "KRI",
+            "CLAWD": "WEA",
+            "WEAZL": "WEA"
+        },
+        "significant_points": {
+            "AUDII": {},
+            "BNA": {},
+            "CLAWD": {},
+            "CUBIM": {},
+            "DOOGE": {},
+            "FILDS": {},
+            "GANDT": {},
+            "IPTAY": {},
+            "JENDO": {},
+            "LILLS": {},
+            "NOOKS": {
+                "short_name": "NKS"
+            },
+            "NOOMN": {},
+            "NUTZE": {},
+            "PITRW": {},
+            "RDU": {},
+            "SMIAM": {},
+            "TNSLY": {},
+            "TYI": {}
+        },
+        "stars_maps": [
+            "CLT NORTH",
+            "CLT SOUTH",
+            "CHARLOTTE AIRPORT RUNWAYS",
+            "ARRIVAL RADAR NORTH",
+            "ARRIVAL RADAR SOUTH",
+            "CLT TRACON EXTERNAL BOUNDARY",
+            "CLT MINIMUM VECTORING ALTITUDE",
+            "CLT CLASS B",
+            "CLT AIRPORT RNAV (GPS) APPROACHES",
+            "DEPARTURE RADAR NORTH",
+            "DEPARTURE RADAR SOUTH",
+            "SATELLITE RADAR NORTH",
+            "SATELLITE RADAR SOUTH",
+            "RNAV DEPARTURES",
+            "NORTH RNAV STARS",
+            "SOUTH RNAV STARS",
+            "ADJACENT AIRSPACE",
+            "ZTL/ZJX/ZDC AIRSPACE",
+            "NAVAIDS WITHIN 250 MILES",
+            "CLT RNAV STAR FIXES",
+            "CLT FINAL APPROACH COURSES NORTH",
+            "CLT FINAL APPROACH COURSES SOUTH",
+            "NOISE 2NM/4NM LINES (SOUTH)",
+            "CAPTURES POINTS (18R/18L)",
+            "CLT LOCAL AIRSPACE",
+            "DEPARTURE RADAR SOUTH TRANSFER AREA",
+            "CAPTURE POINTS (36L/36R)",
+            "TRIPS CAPTURE POINTS (SOUTH)",
+            "TRIPS CAPTURE POINTS (NORTH)"
+        ],
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "RDU",
+                    "TYI",
+                    "BARMY",
+                    "NUTZE",
+                    "AUDII",
+                    "KILNS",
+                    "LILLS"
+                ],
+                "altitude_range": [
+                    12001,
+                    99000
+                ],
+                "receiving_controller": "W32"
+            },
+            {
+                "fixes": [
+                    "NOOKS",
+                    "ICONS",
+                    "KWEEN",
+                    "PITRW",
+                    "UNJAM",
+                    "BEAVY",
+                    "JENDO",
+                    "GANDT"
+                ],
+                "altitude_range": [
+                    16001,
+                    99000
+                ],
+                "receiving_controller": "J30"
+            },
+            {
+                "fixes": [
+                    "BOBZY",
+                    "TNSLY",
+                    "BNA",
+                    "ESTRR",
+                    "IPTAY",
+                    "CUBIM",
+                    "DOOGE",
+                    "NOONN",
+                    "JOJJO",
+                    "FILDS",
+                    "KRITR",
+                    "SMIAM",
+                    "CLAWD",
+                    "WEAZL"
+                ],
+                "altitude_range": [
+                    16001,
+                    99000
+                ],
+                "receiving_controller": "C43"
+            }
+        ],
+        "coordination_fixes": {
+            "BANKR": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "CHSLY": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "FILPZ": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "JONZE": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "STOCR": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "PARQR": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "GAIRY": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CAE",
+            "prefix": "4"
+        },
+        {
+            "id": "FAY",
+            "prefix": "8"
+        },
+        {
+            "id": "FLO",
+            "prefix": "6"
+        },
+        {
+            "id": "GSO",
+            "prefix": "1"
+        },
+        {
+            "id": "GSP",
+            "prefix": "2"
+        },
+        {
+            "id": "SSC",
+            "prefix": "5"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "J"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "C"
+        }
+    ]
+}

@@ -1,0 +1,528 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZOA 01 ZOA_ZLA",
+            "frequency": 118000,
+            "radio_name": "ONE"
+        },
+        "10": {
+            "callsign": "ZOA Sector 10",
+            "frequency": 128700,
+            "radio_name": "Oakland Center"
+        },
+        "11": {
+            "callsign": "ZOA Sector 11",
+            "frequency": 133700,
+            "radio_name": "Oakland Center"
+        },
+        "13": {
+            "callsign": "ZOA Sector 13",
+            "frequency": 127450,
+            "radio_name": "Oakland Center"
+        },
+        "14": {
+            "callsign": "ZOA Sector 14",
+            "frequency": 134550,
+            "radio_name": "Oakland Center"
+        },
+        "15": {
+            "callsign": "ZOA Sector 15",
+            "frequency": 132800,
+            "radio_name": "Oakland Center"
+        },
+        "16": {
+            "callsign": "ZOA Sector 16",
+            "frequency": 123800,
+            "radio_name": "Oakland Center"
+        },
+        "22": {
+            "callsign": "ZOA Sector 22",
+            "frequency": 121250,
+            "radio_name": "Oakland Center"
+        },
+        "29": {
+            "callsign": "ZOA Sector 29",
+            "frequency": 119750,
+            "radio_name": "Oakland Center"
+        },
+        "30": {
+            "callsign": "ZOA Sector 30",
+            "frequency": 127175,
+            "radio_name": "Oakland Center"
+        },
+        "31": {
+            "callsign": "ZOA Sector 31",
+            "frequency": 134975,
+            "radio_name": "Oakland Center"
+        },
+        "32": {
+            "callsign": "ZOA Sector 32",
+            "frequency": 132950,
+            "radio_name": "Oakland Center"
+        },
+        "33": {
+            "callsign": "ZOA Sector 33",
+            "frequency": 132050,
+            "radio_name": "Oakland Center"
+        },
+        "34": {
+            "callsign": "ZOA Sector 34",
+            "frequency": 134375,
+            "radio_name": "Oakland Center"
+        },
+        "35": {
+            "callsign": "ZOA Sector 35",
+            "frequency": 134150,
+            "radio_name": "Oakland Center"
+        },
+        "36": {
+            "callsign": "ZOA Sector 36",
+            "frequency": 119975,
+            "radio_name": "Oakland Center"
+        },
+        "40": {
+            "callsign": "ZOA Sector 40",
+            "frequency": 127800,
+            "radio_name": "Oakland Center"
+        },
+        "41": {
+            "callsign": "ZOA Sector 41",
+            "frequency": 125850,
+            "radio_name": "Oakland Center"
+        },
+        "42": {
+            "callsign": "ZOA Sector 42",
+            "frequency": 132200,
+            "radio_name": "Oakland Center"
+        },
+        "43": {
+            "callsign": "ZOA Sector 43",
+            "frequency": 134450,
+            "radio_name": "Oakland Center"
+        },
+        "44": {
+            "callsign": "ZOA Sector 44",
+            "frequency": 127950,
+            "radio_name": "Oakland Center"
+        },
+        "45": {
+            "callsign": "ZOA Sector 45",
+            "frequency": 128800,
+            "radio_name": "Oakland Center"
+        },
+        "46": {
+            "callsign": "ZOA Sector 46",
+            "frequency": 125750,
+            "radio_name": "Oakland Center"
+        },
+        "62": {
+            "callsign": "ZOA Sector 62",
+            "frequency": 132200,
+            "radio_name": "Oakland Center"
+        },
+        "97": {
+            "callsign": "ZOA 97 ZOA Guard",
+            "frequency": 121500,
+            "radio_name": "Guard"
+        },
+        "99": {
+            "callsign": "ZOA 99 TMU FD",
+            "frequency": 133800,
+            "radio_name": "Oakland Center Flight Data"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "OSI": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "CORKK": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "FRLON": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "RAZRR": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "BYRON": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "MOVDD": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "GOALI": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "SILCN": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "LAANE": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "LOZIT": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "ANJEE": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "FLOWZ": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "MOD": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "PIRAT": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "NRRLI": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "ZOMER": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "AANET": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "BANND": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "SKIZM": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "KARNN": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "WRAPS": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "WEBRR": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "ANAHO": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "EELZA": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "HOSME": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "HOBOA": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "RYANN": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "TEXSS": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "NEUPS": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "MYYAA": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "ISYOH": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "SLMMR": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "LOMBO": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "FOOLZ": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "FATHM": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "DYAMD": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "COGOL": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "LUCAB": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "BSR": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "PXN": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "ORRCA": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ],
+            "TIPRE": [
+                {
+                    "type": "route",
+                    "to": "NCT",
+                    "from": "ZOA"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "BFL",
+            "stars_id": "AAA",
+            "single_char_stars_id": "A",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "B"
+        },
+        {
+            "id": "FAT",
+            "stars_id": "FFF",
+            "single_char_stars_id": "F",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "JCF",
+            "stars_id": "JJJ",
+            "single_char_stars_id": "J",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "LSV",
+            "stars_id": "VVV",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "MC1",
+            "stars_id": "MMM",
+            "single_char_stars_id": "M",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MR1",
+            "stars_id": "RRR",
+            "single_char_stars_id": "R",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NCT",
+            "stars_id": "QQQ",
+            "single_char_stars_id": "Q",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NFL",
+            "stars_id": "NNN",
+            "single_char_stars_id": "N",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NLC",
+            "stars_id": "EEE",
+            "single_char_stars_id": "E",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "N"
+        },
+        {
+            "id": "O90",
+            "stars_id": "OOO",
+            "single_char_stars_id": "O",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "SBA",
+            "stars_id": "BBB",
+            "single_char_stars_id": "B",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "S"
+        },
+        {
+            "id": "SC1",
+            "stars_id": "SSS",
+            "single_char_stars_id": "K",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "SUU",
+            "stars_id": "TTT",
+            "single_char_stars_id": "T",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "S"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "L"
+        },
+        {
+            "id": "ZLC",
+            "prefix": "U"
+        },
+        {
+            "id": "ZSE",
+            "prefix": "S"
+        }
+    ]
+}

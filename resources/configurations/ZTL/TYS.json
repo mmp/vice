@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "1W": {
+            "callsign": "TYS_APP",
+            "frequency": 123900,
+            "radio_name": "Knoxville Approach"
+        },
+        "1L": {
+            "callsign": "TYS_TWR",
+            "frequency": 121200,
+            "radio_name": "Knoxville Tower"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "AVL",
+            "prefix": "3"
+        },
+        {
+            "id": "CHA",
+            "prefix": "1"
+        },
+        {
+            "id": "TRI",
+            "prefix": "2"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "C"
+        }
+    ]
+}

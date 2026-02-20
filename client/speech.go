@@ -222,7 +222,6 @@ func (tm *TransmissionManager) IsPlaying() bool {
 
 // ShouldRequestContact returns true if the client should request a contact from the server.
 // It checks that we're not playing, not held, queue is empty, and no request is pending.
-// It also returns true slightly early (2s before hold expires) to hide TTS latency.
 func (tm *TransmissionManager) ShouldRequestContact() bool {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
@@ -231,9 +230,7 @@ func (tm *TransmissionManager) ShouldRequestContact() bool {
 		return false
 	}
 
-	// Request early to hide latency: when hold expires in less than 2s
-	// (or has already expired)
-	return time.Until(tm.holdUntil) < 2*time.Second
+	return time.Now().After(tm.holdUntil)
 }
 
 // SetContactRequested marks that we've sent a contact request and are waiting.

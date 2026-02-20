@@ -1,0 +1,48 @@
+{
+    "control_positions": {
+        "1L": {
+            "callsign": "AVP_TWR",
+            "frequency": 120100,
+            "radio_name": "Wilkes Barre Tower"
+        },
+        "1E": {
+            "callsign": "AVP_S_APP",
+            "frequency": 126300,
+            "radio_name": "Wilkes-Barre Approach"
+        },
+        "1B": {
+            "callsign": "AVP_N_APP",
+            "frequency": 120950,
+            "radio_name": "Wilkes-Barre Approach"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "ABE",
+            "prefix": "3"
+        },
+        {
+            "id": "BGM",
+            "prefix": "4"
+        },
+        {
+            "id": "MDT",
+            "prefix": "5"
+        },
+        {
+            "id": "N90",
+            "prefix": "1"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "B"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "C"
+        }
+    ]
+}

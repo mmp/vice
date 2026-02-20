@@ -1,0 +1,43 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "LIT_E_APP",
+            "frequency": 135400,
+            "radio_name": "Little Rock Approach"
+        },
+        "1F": {
+            "callsign": "LIT_F_APP",
+            "frequency": 135350,
+            "radio_name": "Little Rock Approach"
+        },
+        "1H": {
+            "callsign": "LIT_H_APP",
+            "frequency": 119850,
+            "radio_name": "Little Rock Approach"
+        },
+        "1N": {
+            "callsign": "LIT_N_APP",
+            "frequency": 119750,
+            "radio_name": "Little Rock Approach"
+        },
+        "1T": {
+            "callsign": "LIT_TWR",
+            "frequency": 118700,
+            "radio_name": "Adams Tower"
+        },
+        "1W": {
+            "callsign": "LIT_W_APP",
+            "frequency": 119500,
+            "radio_name": "Little Rock Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZME",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

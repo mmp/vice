@@ -216,10 +216,10 @@ func (s *Sim) initNASFlightPlan(ac *Aircraft, flightType av.TypeOfFlight) NASFli
 func findLowestWaypointAltitude(wps av.WaypointArray, initialAlt float32) (int, bool) {
 	lowestAlt := gomath.MaxInt
 	for _, wp := range wps {
-		if wp.AltitudeRestriction == nil {
+		if wp.AltitudeRestriction() == nil {
 			continue
 		}
-		if target := int(wp.AltitudeRestriction.TargetAltitude(initialAlt)); target < lowestAlt {
+		if target := int(wp.AltitudeRestriction().TargetAltitude(initialAlt)); target < lowestAlt {
 			lowestAlt = target
 		}
 	}
@@ -241,7 +241,7 @@ func (s *Sim) maybeSetGoAround(ac *Aircraft, goAroundRate float32) {
 		return // Random chance didn't trigger
 	}
 	// Only allow go-around if there's human controller involvement
-	if !slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff }) {
+	if !slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff() }) {
 		return
 	}
 	d := 0.1 + 0.6*s.Rand.Float32()

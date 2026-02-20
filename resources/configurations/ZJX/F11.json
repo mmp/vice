@@ -1,0 +1,1144 @@
+{
+    "control_positions": {
+        "1W": {
+            "callsign": "MCO_W_DEP",
+            "frequency": 120150,
+            "radio_name": "Orlando departure"
+        },
+        "1N": {
+            "callsign": "MCO_N_APP",
+            "frequency": 135300,
+            "radio_name": "Orlando Approach"
+        },
+        "3E": {
+            "callsign": "MCO_E_TWR",
+            "frequency": 118450,
+            "radio_name": "Orlando tower"
+        },
+        "1D": {
+            "callsign": "MCO_D_APP",
+            "frequency": 119400,
+            "radio_name": "Orlando approach"
+        },
+        "3W": {
+            "callsign": "MCO_W_TWR",
+            "frequency": 126400,
+            "radio_name": "Orlando tower"
+        },
+        "3F": {
+            "callsign": "SFB_N_TWR",
+            "frequency": 120300,
+            "radio_name": "Sanford tower"
+        },
+        "3J": {
+            "callsign": "SFB_S_TWR",
+            "frequency": 135250,
+            "radio_name": "Sanford tower"
+        },
+        "3L": {
+            "callsign": "LEE_TWR",
+            "frequency": 119350,
+            "radio_name": "Leesburg tower"
+        },
+        "3P": {
+            "callsign": "COF_TWR",
+            "frequency": 133750,
+            "radio_name": "Patrick Tower"
+        },
+        "3B": {
+            "callsign": "MLB_TWR",
+            "frequency": 118200,
+            "radio_name": "Melbourne Orlando tower"
+        },
+        "3S": {
+            "callsign": "TIX_TWR",
+            "frequency": 118900,
+            "radio_name": "Space Coast Tower"
+        },
+        "3K": {
+            "callsign": "ISM_TWR",
+            "frequency": 124450,
+            "radio_name": "Kissimee Gateway tower"
+        },
+        "3T": {
+            "callsign": "ORL_TWR",
+            "frequency": 118700,
+            "radio_name": "Orlando Executive tower"
+        },
+        "1E": {
+            "callsign": "MCO_E_DEP",
+            "frequency": 124800,
+            "radio_name": "Orlando approach"
+        },
+        "1B": {
+            "callsign": "MCO_B_APP",
+            "frequency": 128375,
+            "radio_name": "Orlando approach"
+        },
+        "1J": {
+            "callsign": "MCO_J_APP",
+            "frequency": 120150,
+            "radio_name": "Orlando Approach"
+        },
+        "1A": {
+            "callsign": "MCO_A_APP",
+            "frequency": 126025,
+            "radio_name": "Orlando Approach"
+        },
+        "1M": {
+            "callsign": "MCO_M_APP",
+            "frequency": 127750,
+            "radio_name": "Orlando Approach"
+        },
+        "1R": {
+            "callsign": "MCO_R_APP",
+            "frequency": 127325,
+            "radio_name": "Orlando Approach"
+        },
+        "1K": {
+            "callsign": "MCO_K_APP",
+            "frequency": 134950,
+            "radio_name": "Orlando Approach"
+        },
+        "1S": {
+            "callsign": "MCO_S_APP",
+            "frequency": 132650,
+            "radio_name": "Orlando Approach"
+        },
+        "1V": {
+            "callsign": "MCO_V_APP",
+            "frequency": 119775,
+            "radio_name": "Orlando Approach"
+        },
+        "1X": {
+            "callsign": "MCO_X_APP",
+            "frequency": 120225,
+            "radio_name": "Orlando Approach"
+        },
+        "1P": {
+            "callsign": "MCO_P_APP",
+            "frequency": 128450,
+            "radio_name": "Orlando Approach"
+        },
+        "3M": {
+            "callsign": "MLB_M_TWR",
+            "frequency": 118200,
+            "radio_name": "Melbourne Orlando tower"
+        },
+        "MG": {
+            "callsign": "MCO_MG_APP",
+            "frequency": 124300,
+            "radio_name": "Orlando approach"
+        },
+        "1G": {
+            "callsign": "MCO_G_APP",
+            "frequency": 123850,
+            "radio_name": "Orlando approach"
+        },
+        "MM": {
+            "callsign": "MCO_MM_APP",
+            "frequency": 118450,
+            "radio_name": "Orlando approach"
+        },
+        "1L": {
+            "callsign": "MCO_L_APP",
+            "frequency": 134050,
+            "radio_name": "Orlando approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "MCO": {
+                "inbound_assignments": {
+                    "ALYNA4_BNU": "1L",
+                    "GRNCH5_LNU": "1L",
+                    "PRICY4_LNU": "1L",
+                    "RIDES2_BNU": "1L",
+                    "SNFLD3_BNU": "1L"
+                },
+                "default_consolidation": {
+                    "1L": []
+                }
+            },
+            "MC1": {
+                "inbound_assignments": {
+                    "ALYNA4_BSU": "1B",
+                    "GRNCH5_LSU": "1B",
+                    "GTOUT1_BSU": "1B",
+                    "PRICY4_LSU": "1B",
+                    "RIDES2_BSU": "1B"
+                },
+                "default_consolidation": {
+                    "1B": []
+                }
+            },
+            "MC2": {
+                "inbound_assignments": {
+                    "ALYNA4_BNU": "1B",
+                    "RIDES2_BNU": "1B",
+                    "SNFLD3_BNU": "1B"
+                },
+                "default_consolidation": {
+                    "1B": []
+                }
+            },
+            "MC3": {
+                "inbound_assignments": {
+                    "ALYNA4_BSU": "1B",
+                    "GTOUT1_BSU": "1B",
+                    "RIDES2_BSU": "1B"
+                },
+                "default_consolidation": {
+                    "1B": []
+                }
+            },
+            "MC5": {
+                "departure_assignments": {
+                    "KISM": "1W",
+                    "KMCO": "1W",
+                    "KORL": "1W",
+                    "KSFB": "1W"
+                },
+                "default_consolidation": {
+                    "1W": []
+                }
+            },
+            "MC6": {
+                "inbound_assignments": {
+                    "GRNCH_NFINAL": "1M",
+                    "PRICY4_NFINAL": "1M",
+                    "RIDES2_NFINAL": "1M",
+                    "SNFLD3_NFINAL": "1M"
+                },
+                "default_consolidation": {
+                    "1M": []
+                }
+            },
+            "MCN": {
+                "inbound_assignments": {
+                    "ALYNA4": "1R",
+                    "BITHO7": "1B",
+                    "DADES1": "1R",
+                    "East_coast/T208 ": "1A",
+                    "GOOFY7": "1D",
+                    "GRNCH5": "1L",
+                    "GTOUT1": "1B",
+                    "JOKRS3": "1D",
+                    "JOKRS3.MCO": "1L",
+                    "MINEE6.N": "1L",
+                    "PRICY4": "1L",
+                    "RIDES2": "1B",
+                    "SHREK2.MCO": "1L",
+                    "SHREK2E": "1L",
+                    "SLOAO1.MCON": "1B",
+                    "SNFLD3": "1B",
+                    "T208": "1E",
+                    "T336 MLB": "1D",
+                    "T336 OCF": "1E",
+                    "TTHOR3": "1V",
+                    "V3": "1E",
+                    "West_coast/T210N": "1D",
+                    "West_coast/T210S": "1N"
+                },
+                "departure_assignments": {
+                    "KCOF": "1A",
+                    "KCOI": "1A",
+                    "KISM": "1D",
+                    "KLEE": "1N",
+                    "KMCO/CITR2W": "1D",
+                    "KMCO/CITR2E": "1A",
+                    "KMCO/DDANY3": "1E",
+                    "KMCO/FATHE3": "1E",
+                    "KMCO/MZULO3": "1E",
+                    "KMCO/FSHUN4": "1W",
+                    "KMCO/JEEMY4": "1E",
+                    "KMCO/RDSOX1": "1W",
+                    "KMCO/OSPRY1": "1W",
+                    "KMCO/ORLA6": "1W",
+                    "KMLB": "1A",
+                    "KORL": "1V",
+                    "KSFB": "1V",
+                    "KTIX": "1K",
+                    "X04": "1N",
+                    "X23": "1N"
+                },
+                "default_consolidation": {
+                    "1A": [
+                        "1B",
+                        "1D",
+                        "1E",
+                        "1G",
+                        "1K",
+                        "1L",
+                        "1M",
+                        "MG",
+                        "MM",
+                        "1N",
+                        "1P",
+                        "1R",
+                        "1V",
+                        "1W",
+                        "1X"
+                    ]
+                }
+            },
+            "MCS": {
+                "inbound_assignments": {
+                    "ALYNA4": "1R",
+                    "BITHO7": "1B",
+                    "DADES1": "1R",
+                    "East_coast/T208 ": "1A",
+                    "GOOFY7": "1D",
+                    "GRNCH5": "1L",
+                    "GTOUT1": "1B",
+                    "JOKRS3": "1D",
+                    "JOKRS3.MCO": "1L",
+                    "MINEE6": "1L",
+                    "PRICY4": "1L",
+                    "RIDES2": "1B",
+                    "SHREK2.MCO": "1L",
+                    "SHREK2W": "1L",
+                    "SLOAO1.MCOS": "1B",
+                    "SNFLD3": "1B",
+                    "T208": "1E",
+                    "T336 MLB": "1D",
+                    "T336 OCF": "1E",
+                    "TTHOR3": "1V",
+                    "V3": "1E",
+                    "West_coast/T210N": "1D",
+                    "West_coast/T210S": "1N"
+                },
+                "departure_assignments": {
+                    "KCOF": "1A",
+                    "KCOI": "1A",
+                    "KISM": "1D",
+                    "KLEE": "1N",
+                    "KMCO/CITR2W": "1D",
+                    "KMCO/CITR2E": "1A",
+                    "KMCO/DDANY3": "1E",
+                    "KMCO/FATHE3": "1E",
+                    "KMCO/MZULO3": "1E",
+                    "KMCO/FSHUN4": "1W",
+                    "KMCO/JEEMY4": "1W",
+                    "KMCO/RDSOX1": "1W",
+                    "KMCO/OSPRY1": "1W",
+                    "KMCO/ORLA6": "1W",
+                    "KMLB": "1A",
+                    "KORL": "1D",
+                    "KSFB": "1N",
+                    "KTIX": "1K",
+                    "X04": "1N",
+                    "X23": "1N"
+                },
+                "default_consolidation": {
+                    "1A": [
+                        "1B",
+                        "1D",
+                        "1E",
+                        "1G",
+                        "1K",
+                        "1L",
+                        "1M",
+                        "MG",
+                        "MM",
+                        "1N",
+                        "1P",
+                        "1R",
+                        "1V",
+                        "1W",
+                        "1X"
+                    ]
+                }
+            },
+            "MC8": {
+                "departure_assignments": {
+                    "KMCO": "1W",
+                    "KORL": "1W",
+                    "KSFB": "1W"
+                },
+                "default_consolidation": {
+                    "1W": []
+                }
+            },
+            "MC9": {
+                "inbound_assignments": {
+                    "ALYNA4_SFINAL": "1M",
+                    "FINAL_S_GRNCH5": "1M",
+                    "GTOUT1_SFINAL": "1M",
+                    "PRICY4_SFINAL": "1M",
+                    "RIDES2_SFINAL": "1M"
+                },
+                "default_consolidation": {
+                    "1M": []
+                }
+            },
+            "MCA": {
+                "inbound_assignments": {
+                    "GRNCH5_LNU": "1L",
+                    "PRICY4_LNU": "1L"
+                },
+                "default_consolidation": {
+                    "1L": []
+                }
+            },
+            "MCB": {
+                "inbound_assignments": {
+                    "GRNCH5_LSU": "1L",
+                    "PRICY4_LSU": "1L"
+                },
+                "default_consolidation": {
+                    "1L": []
+                }
+            },
+            "STD": {
+                "inbound_assignments": {
+                    "ALYNA4.LEEE": "1S",
+                    "ALYNA4.SFBE": "1S",
+                    "GOOFY7": "1S",
+                    "PRICY3.SFBE": "1S",
+                    "RIDES2.SFBE": "1S",
+                    "SHREK2E.SFB": "1S",
+                    "TTHOR3.SFBE": "1S",
+                    "West_coast/T210N": "1S",
+                    "West_coast/T210S": "1S"
+                },
+                "departure_assignments": {
+                    "KLEE": "1S",
+                    "X04": "1S",
+                    "X23": "1S"
+                },
+                "default_consolidation": {
+                    "1S": []
+                }
+            }
+        },
+        "center": "N028.25.45.781,W081.18.32.260",
+        "force_ql_self": true,
+        "pdb": {
+            "hide_gs": true
+        },
+        "handoff_acceptance_flash_duration": 10,
+        "handoff_sector_display_duration": 10,
+        "use_legacy_font": true,
+        "altimeters": [
+            "KMLB",
+            "KISM",
+            "KLEE",
+            "KMCO",
+            "KTIX",
+            "KSFB"
+        ],
+        "coordination_lists": [
+            {
+                "name": ".      ORL COORD",
+                "id": "T",
+                "airports": [
+                    "KORL"
+                ]
+            },
+            {
+                "name": ".      MLB COORD",
+                "id": "B",
+                "airports": [
+                    "KMLB"
+                ]
+            },
+            {
+                "name": ".      ISM COORD",
+                "id": "K",
+                "airports": [
+                    "KISM"
+                ]
+            },
+            {
+                "name": ".      TIX COORD",
+                "id": "S",
+                "airports": [
+                    "KTIX"
+                ]
+            },
+            {
+                "name": ".      COF COORD",
+                "id": "P",
+                "airports": [
+                    "KCOF"
+                ]
+            }
+        ],
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "NF1NOCA",
+                    "description": "MCON FINAL 1 CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3500,
+                    "vertices": [
+                        "28.41091, -81.36375",
+                        "28.42071, -81.24334",
+                        "28.27062, -81.24346",
+                        "28.26492, -81.36209"
+                    ]
+                },
+                {
+                    "id": "NF2NOCA",
+                    "description": "MCON FINAL 2 CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 1500,
+                    "ceiling": 5500,
+                    "vertices": [
+                        "28.26492, -81.36209",
+                        "28.270617, -81.243458",
+                        "28.174966, -81.243933",
+                        "28.162737, -81.363028"
+                    ]
+                },
+                {
+                    "id": "SF1NOCA",
+                    "description": "MCOS FINAL 1 CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3500,
+                    "vertices": [
+                        "28.440698, -81.366071",
+                        "28.597189, -81.369039",
+                        "28.595685, -81.245422",
+                        "28.441817, -81.244156"
+                    ]
+                },
+                {
+                    "id": "SF2NOCA",
+                    "description": "MCOS FINAL 2 CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 1500,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "28.597189, -81.369039",
+                        "28.741967, -81.374263",
+                        "28.744883, -81.245658",
+                        "28.59685, -81.245422"
+                    ]
+                },
+                {
+                    "id": "SFBNOCA",
+                    "description": "SFB CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "center": "KSFB",
+                    "radius": 7
+                },
+                {
+                    "id": "MLBNOCA",
+                    "description": "MLB CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "center": "KMLB",
+                    "radius": 7
+                },
+                {
+                    "id": "ORLNOCA",
+                    "description": "ORL CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "center": "KORL",
+                    "radius": 7
+                },
+                {
+                    "id": "TIXNOCA",
+                    "description": "TIX CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "center": "KTIX",
+                    "radius": 7
+                },
+                {
+                    "id": "ISMNOCA",
+                    "description": "ISM CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "center": "KISM",
+                    "radius": 7
+                }
+            ],
+            "arrival_drop": []
+        },
+        "radar_sites": {
+            "MCO": {
+                "char": "M",
+                "position": "28.394833, -81.304639",
+                "elevation": 100,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 50.4,
+                "slope_angle": 0.175
+            },
+            "DAB": {
+                "char": "D",
+                "position": "29.172639, -81.192194",
+                "elevation": 38,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 49.7,
+                "slope_angle": 0.175
+            },
+            "MLB": {
+                "char": "B",
+                "position": "28.111714, -80.668556",
+                "elevation": 30,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 49.7,
+                "slope_angle": 0.175
+            },
+            "GNV": {
+                "char": "G",
+                "position": "29.41538, -82.23232",
+                "elevation": 155,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "ZMLB": {
+                "char": "Z",
+                "position": "28.08427, -80.79808",
+                "elevation": 22,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            }
+        },
+        "controller_configs": {
+            "1E": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 16000,
+                        "vertices": "N027.59.51.732,W081.17.55.726 N028.56.13.509,W081.16.06.275 N028.56.19.387,W081.05.05.776 N028.51.07.623,W080.55.47.589 N028.56.16.229,W080.32.27.518 N028.37.08.274,W080.25.45.529 N028.14.38.782,W080.27.42.643 N028.06.19.845,W080.30.33.810 N028.06.21.582,W080.47.34.605 N027.59.52.659,W081.02.39.411"
+                    }
+                ]
+            },
+            "1W": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 16000,
+                        "vertices": "N027.59.51.732,W081.17.55.726 N028.56.13.509,W081.16.06.27 N028.57.53.938,W081.28.23.814 N029.00.01.187,W081.29.59.340 N028.59.54.554,W081.42.33.442 N028.58.12.759,W081.55.41.381 N028.43.33.812,W081.56.22.388 N028.38.11.013,W082.02.29.496 N028.33.37.433,W081.57.16.056 N028.22.05.720,W081.58.01.869 N028.10.04.316,W081.54.49.306 N028.05.43.453,W081.53.21.498 N027.55.59.632,W081.50.06.958 N027.59.57.596,W081.21.19.605"
+                    }
+                ]
+            },
+            "1B": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 16000,
+                        "vertices": "N029.12.48.603,W081.12.59.809 N028.45.57.273,W081.09.19.039 N028.36.30.529,W081.16.21.271 N028.25.40.853,W081.18.25.746 N027.59.56.237,W081.17.56.330 N028.00.01.078,W081.12.08.118 N027.54.04.887,W081.10.32.455 N027.56.08.058,W081.01.58.212 N027.59.58.249,W081.02.29.771 N028.16.14.480,W081.03.04.570 N028.22.43.238,W081.08.54.622 N028.29.48.436,W081.09.00.829 N028.35.07.424,W080.56.17.444 N028.41.34.342,W080.56.39.197 N028.54.36.541,W081.01.49.451 N029.00.02.458,W081.01.42.035 N029.13.09.875,W081.07.29.450"
+                    }
+                ]
+            },
+            "1L": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 16000,
+                        "vertices": "N028.59.59.883,W081.42.36.216 N028.49.34.424,W081.29.21.520 N028.32.13.717,W081.18.11.821 N027.59.47.784,W081.17.47.788 N027.59.49.151,W081.21.27.213 N027.56.54.166,W081.39.56.722 N027.56.01.988,W081.50.05.310 N028.00.37.277,W081.50.01.052 N028.10.09.246,W081.54.53.975 N028.27.42.567,W081.27.17.759 N028.32.17.521,W081.27.55.415 N028.47.04.234,W081.52.20.304 N028.51.34.168,W081.46.39.453 N028.59.57.789,W081.42.17.265"
+                    }
+                ]
+            },
+            "1N": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N028.49.34.884,W081.56.10.303 N028.40.38.724,W081.41.27.387 N028.40.38.394,W081.23.39.900 N028.42.32.989,W081.17.19.773 N028.46.29.181,W081.14.00.838 N028.49.00.236,W081.17.19.443 N028.52.13.376,W081.21.23.834 N028.52.35.809,W081.24.38.155 N029.00.06.461,W081.30.02.307 N028.59.53.504,W081.42.32.178 N028.57.55.662,W081.55.32.180 N028.49.31.032,W081.56.09.781"
+                    },
+                    {
+                        "type": "polygon",
+                        "ceiling": 2000,
+                        "vertices": "N028.46.19.149,W081.14.21.712 N028.51.56.374,W081.10.32.153 N028.55.04.769,W081.06.44.461 N028.56.25.780,W081.05.04.348 N028.57.52.174,W081.28.23.869 N028.52.22.385,W081.24.54.113 N028.51.55.489,W081.21.08.041 N028.48.57.311,W081.17.10.160 N028.46.16.691,W081.14.08.034"
+                    }
+                ]
+            },
+            "1D": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N028.49.34.884,W081.56.10.303 N028.40.38.724,W081.41.27.387 N028.40.38.394,W081.23.39.900 N028.42.32.989,W081.17.19.773 N028.40.35.002,W081.23.34.984 N028.32.39.363,W081.18.25.197 N028.30.29.209,W081.17.58.472 N028.30.43.608,W081.21.51.740 N028.22.54.005,W081.21.54.102 N028.23.15.002,W081.27.12.760 N028.21.47.860,W081.27.23.060 N028.17.27.608,W081.24.38.430 N028.07.30.775,W081.24.23.378 N028.07.57.232,W081.17.54.188 N028.00.03.776,W081.17.56.028 N027.59.51.513,W081.21.05.597 N027.57.12.650,W081.39.55.788 N027.56.01.308,W081.49.55.339 N028.00.42.606,W081.49.58.278 N028.10.17.417,W081.54.54.964 N028.22.24.026,W081.58.07.911 N028.33.58.822,W081.57.07.432 N028.37.55.570,W082.02.20.075 N028.44.04.148,W081.56.39.197 N028.49.13.688,W081.55.57.092"
+                    }
+                ]
+            },
+            "1V": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N028.30.28.578,W081.18.33.491 N028.30.19.335,W081.14.53.627 N028.32.38.628,W081.12.31.300 N028.32.35.573,W081.08.48.936 N028.31.31.859,W081.05.48.706 N028.35.13.996,W080.56.27.277 N028.41.33.196,W080.56.48.975 N028.41.28.595,W080.54.17.006 N028.43.21.500,W080.52.48.237 N028.51.10.534,W080.55.46.820 N028.56.29.673,W081.05.35.330 N028.57.58.772,W081.28.19.392 N028.52.44.378,W081.24.44.829 N028.52.08.659,W081.21.31.607 N028.46.45.029,W081.14.17.180 N028.42.42.767,W081.17.02.387 N028.40.35.387,W081.23.35.203 N028.32.30.196,W081.18.29.976 N028.30.31.839,W081.18.30.580"
+                    }
+                ]
+            },
+            "1K": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N028.54.22.685,W081.01.59.970 N028.41.24.503,W080.56.38.785 N028.17.50.397,W080.55.49.649 N028.13.21.047,W080.44.38.356 N028.24.56.070,W080.37.54.472 N028.25.09.713,W080.09.57.079 N028.50.35.769,W080.09.56.255 N028.59.57.452,W080.11.55.182 N028.50.57.735,W080.56.10.028 N028.54.19.128,W081.01.54.834"
+                    }
+                ]
+            },
+            "1A": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N027.59.46.370,W081.02.26.887 N028.06.37.039,W081.02.22.520 N028.14.29.334,W080.55.50.088 N028.17.38.251,W080.55.47.973 N028.13.06.806,W080.44.17.757 N028.20.00.839,W080.39.10.634 N028.25.12.226,W080.37.56.669 N028.25.13.737,W080.09.57.628 N028.01.04.022,W080.10.13.586 N027.55.01.721,W080.22.41.590 N027.55.59.934,W080.55.28.692 N027.59.54.939,W081.02.23.399"
+                    }
+                ]
+            },
+            "1M": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N028.45.58.055,W081.27.49.345 N028.04.04.734,W081.26.58.890 N028.04.00.010,W081.09.00.719 N028.22.48.505,W081.08.56.737 N028.45.22.302,W081.08.55.610 N028.46.58.418,W081.13.48.671 N028.46.58.851,W081.22.07.835 N028.45.57.080,W081.27.58.546"
+                    }
+                ]
+            },
+            "1G": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 5000,
+                        "vertices": "N028.45.58.055,W081.27.49.345 N028.04.04.734,W081.26.58.890 N028.04.00.010,W081.09.00.719 N028.22.48.505,W081.08.56.737 N028.45.22.302,W081.08.55.610 N028.46.58.418,W081.13.48.671 N028.46.58.851,W081.22.07.835 N028.45.57.080,W081.27.58.546"
+                    }
+                ]
+            }
+        },
+        "scratchpads": {
+            "BORRD": "DDA",
+            "LENDS": "MZU",
+            "MZULO": "M",
+            "RDSOX": "C",
+            "VARZE": "V",
+            "MALET": "W",
+            "VALKA": "DDA",
+            "JIPOD": "DDA",
+            "ZALEN": "DDA",
+            "VIYAP": "FAT",
+            "ETECK": "MZU",
+            "FAROV": "MZU",
+            "LAL": "F",
+            "FSHUN": "F",
+            "RSW": "F",
+            "PLUMR": "FSH",
+            "PAINN": "JEE",
+            "REMIS": "OSP",
+            "OSPRY": "C",
+            "CIGAR": "OSP",
+            "JFRYS": "RDS",
+            "OCF": "C",
+            "SZW": "C",
+            "WORMS": "W",
+            "GUANO": "W",
+            "CRG": "W",
+            "OMN": "W",
+            "PIE": "C",
+            "MLB": "A",
+            "KIZER": "",
+            "DDANY": "T",
+            "VIZTA": "V"
+        },
+        "significant_points": {
+            "BORRD": {},
+            "CIGAR": {},
+            "CRG": {},
+            "DDANY": {},
+            "ETECK": {},
+            "FAROV": {},
+            "FSHUN": {},
+            "GUANO": {},
+            "JFRYS": {},
+            "JIPOD": {},
+            "KIZER": {},
+            "LAL": {},
+            "LENDS": {},
+            "MALET": {},
+            "MLB": {},
+            "MZULO": {},
+            "OCF": {},
+            "OMN": {},
+            "OSPRY": {},
+            "PAINN": {},
+            "PIE": {},
+            "PLUMR": {},
+            "RDSOX": {},
+            "REMIS": {},
+            "RSW": {},
+            "SZW": {},
+            "VALKA": {},
+            "VARZE": {},
+            "VIYAP": {},
+            "VIZTA": {},
+            "WORMS": {},
+            "ZALEN": {}
+        },
+        "stars_maps": [
+            "DEPARTURE NORTH SOLID",
+            "ARB/ARL NORTH SOLID",
+            "MCO FINAL (NORTH) SOLID LINE",
+            "DEPARTURE SOUTH SOLID",
+            "ARB/ARL SOUTH SOLID",
+            "MCO FINAL (SOUTH) SOLID LINE",
+            "DEPARTURE NORTH SOLID",
+            "ARB/ARL NORTH SOLID",
+            "MCO FINAL (NORTH) SOLID LINE",
+            "SAT NORTH SFB EAST",
+            "SAT NORTH SFB WEST",
+            "RVMMCO113S",
+            "RVMMCO003S",
+            "",
+            "MCO FINAL AIRSPACE",
+            "HIGH NORTH DASHED",
+            "",
+            "RVMMLB001S",
+            "RVMMCO153S",
+            "",
+            "",
+            "",
+            "DEPARTURE SOUTH SOLID",
+            "ARB/ARL SOUTH SOLID",
+            "MCO FINAL (SOUTH) SOLID LINE",
+            "SAT SOUTH SFB EAST",
+            "SAT SOUTH SFB WEST",
+            "RVMMCO114S",
+            "RVMMCO110S",
+            "RVMMCO163S",
+            "",
+            "HIGH SOUTH DASHED",
+            "",
+            "RVMMLB002S",
+            "RVMMCO154S"
+        ],
+        "video_map_file": "videomaps/F11-videomaps.gob.zst",
+        "range": 30,
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "BORRD",
+                    "VALKA",
+                    "JIPOD",
+                    "ZALEN",
+                    "ETECK",
+                    "FAROV",
+                    "LENDS",
+                    "MLB",
+                    "DDANY"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "R23"
+            },
+            {
+                "fixes": [
+                    "VIYAP",
+                    "PAINN",
+                    "WORMS"
+                ],
+                "altitude_range": [
+                    12000,
+                    999000
+                ],
+                "receiving_controller": "C57"
+            },
+            {
+                "fixes": [
+                    "VIYAP",
+                    "PAINN",
+                    "WORMS"
+                ],
+                "altitude_range": [
+                    0,
+                    11000
+                ],
+                "receiving_controller": "31N"
+            },
+            {
+                "fixes": [
+                    "PLUMR",
+                    "FSHUN"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "R67"
+            },
+            {
+                "fixes": [
+                    "JFRYS",
+                    "REMIS",
+                    "CIGAR",
+                    "VIZTA"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "C14"
+            }
+        ],
+        "coordination_fixes": {
+            "BANYA": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "KIZER": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "YAGGO": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "SUNDE": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "GIRAF": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "HARAM": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "ALYNA": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "WISRD": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "HAANZ": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "PLUMR": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "FSHUN": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "KLMAN": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "BORRD": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "VALKA": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "JIPOD": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "ZALEN": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "ETECK": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "FAROV": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "LENDS": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "MLB": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "DDANY": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "RIDES": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "ZINGR": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "PRICY": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "SURFR": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "BAIRN": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "JOKRS": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "VARZE": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "GRNCH": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "SNFLD": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "GTOUT": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "DAB",
+            "prefix": "3"
+        },
+        {
+            "id": "JAX",
+            "prefix": "4"
+        },
+        {
+            "id": "PBI",
+            "prefix": "2"
+        },
+        {
+            "id": "TPA",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "C"
+        },
+        {
+            "id": "ZMA",
+            "prefix": "R"
+        }
+    ]
+}

@@ -172,7 +172,7 @@ func TestDeltaEncodeDecodeBytesSlice(t *testing.T) {
 			name: "with empty slices",
 			data: [][]byte{
 				[]byte("start"),
-				[]byte{},
+				{},
 				[]byte("end"),
 			},
 		},

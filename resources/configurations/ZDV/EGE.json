@@ -1,0 +1,18 @@
+{
+    "control_positions": {
+        "4T": {
+            "callsign": "EGE_TWR",
+            "frequency": 119800,
+            "radio_name": "Eagle Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZDV",
+            "prefix": "D"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

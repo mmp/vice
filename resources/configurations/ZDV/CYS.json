@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "CYS_APP",
+            "frequency": 124550,
+            "radio_name": "Cheyenne Approach"
+        },
+        "1T": {
+            "callsign": "CYS_TWR",
+            "frequency": 118700,
+            "radio_name": "Cheyenne Tower"
+        }
+    },
+    "config": {
+        "configurations": {},
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "CYSNOCA",
+                    "description": "CYS CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 9500,
+                    "radius": 10,
+                    "center": "N041.09.19.519,W104.48.39.012"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "D01",
+            "prefix": "1"
+        },
+        {
+            "id": "ZDV",
+            "prefix": "C"
+        }
+    ]
+}

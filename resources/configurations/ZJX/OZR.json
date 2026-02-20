@@ -1,0 +1,42 @@
+{
+    "control_positions": {
+        "1Z": {
+            "callsign": "OZR_APP",
+            "frequency": 121100,
+            "radio_name": "Cairns Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "A80",
+            "prefix": "4"
+        },
+        {
+            "id": "MGM",
+            "prefix": "5"
+        },
+        {
+            "id": "PAM",
+            "prefix": "2"
+        },
+        {
+            "id": "TLH",
+            "prefix": "3"
+        },
+        {
+            "id": "VPS",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "C"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

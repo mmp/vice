@@ -1,0 +1,23 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "ITO_APP",
+            "frequency": 119700,
+            "radio_name": "HCF Approach"
+        },
+        "1T": {
+            "callsign": "ITO_TWR",
+            "frequency": 118100,
+            "radio_name": "Hilo Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZHN",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

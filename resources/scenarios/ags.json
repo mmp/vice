@@ -1,661 +1,510 @@
 {
-  "tracon": "AGS",
-  "airports": {
-    "KAGS": {
-      "approaches": {
-        "I17": {
-          "cifp_id": "I17"
-        },
-        "I35": {
-          "cifp_id": "I35"
-        },
-        "R17": {
-          "full_name": "RNAV GPS Runway 17",
-          "runway": "17",
-          "type": "RNAV",
-          "waypoints": [
-            "WASAP/iaf/nopt/a2400 CARDO/if/hilpt/nopt180/a2400 HOGEM/faf/a1800",
-            "CARDO/iaf/hilpt/nopt180/a2400 HOGEM/faf/a1800",
-            "POGEE/iaf/nopt/a2400 CARDO/if/hilpt/nopt180/a2400 HOGEM/faf/a1800"
-          ]
-        },
-        "R26": {
-          "full_name": "RNAV GPS Runway 26",
-          "runway": "26",
-          "type": "RNAV",
-          "waypoints": [
-            "JUXER/iaf/nopt/a2500 BEKAC/if/hilpt/nopt180/a2500 KELRE/faf/a2500 GAPTE/a1020",
-            "BEKAC/iaf/hilpt/nopt180/a2500 KELRE/faf/a2500 GAPTE/a1020",
-            "HIKAL/iaf/nopt/a2500 BEKAC/if/hilpt/nopt180/a2500 KELRE/faf/a2500 GAPTE/a1020"
-          ]
-        },
-        "R35": {
-          "full_name": "RNAV GPS Runway 35",
-          "runway": "35",
-          "type": "RNAV",
-          "waypoints": [
-            "ZOXOM/iaf/nopt/a2100 HOMRU/if/hilpt/a2100 WATEM/faf/a1700",
-            "YALRU/iaf/nopt/a2100 HOMRU/if/hilpt/a2100 WATEM/faf/a1700",
-            "HOMRU/iaf/hilpt/nopt180/a2100 WATEM/faf/a1700"
-          ]
-        },
-        "RY8": {
-          "cifp_id": "RY8"
-        },
-        "Z8": {
-          "cifp_id": "RZ8"
-        }
-      },
-      "departure_routes": {
-        "8": {
-          "HOGAP, GSO": {
-            "cleared_altitude": 10000,
-            "description": "CHATT6",
-            "sid": "CHATT6",
-            "waypoints": "_AGS_26/h085 BRDYE CHATT"
-          },
-          "DOVER": {
-            "cleared_altitude": 10000,
-            "description": "DOVER5",
-            "sid": "DOVER5",
-            "waypoints": "_AGS_26/h085 BEANS SARDY"
-          },
-          "GREAN, NOKIE": {
-            "cleared_altitude": 10000,
-            "description": "JUNPR6",
-            "sid": "JUNPR6",
-            "waypoints": "_AGS_26/h085 PARRR/a3000+ KNINE JUNPR"
-          },
-          "KAOLN": {
-            "cleared_altitude": 10000,
-            "description": "KAOLN6",
-            "sid": "KAOLN6",
-            "waypoints": "_AGS_26/h085 PARRR FOURR PGAAA"
-          },
-          "RDBUD": {
-            "cleared_altitude": 10000,
-            "description": "RDBUD4",
-            "sid": "RDBUD4",
-            "waypoints": "_AGS_26/h085 EAGAL SWANG"
-          },
-          "SAMMI": {
-            "cleared_altitude": 10000,
-            "description": "SAMMI4",
-            "sid": "SAMMI4",
-            "waypoints": "_AGS_26/h085 TRPLE BOGII"
-          },
-          "LAYUH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_AGS_26/h085"
-          },
-          "PONZE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_AGS_26/h085"
-          },
-          "PRMUS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_AGS_26/h085"
-          }
-        },
-        "26": {
-          "HOGAP, GSO": {
-            "cleared_altitude": 10000,
-            "description": "CHATT6",
-            "sid": "CHATT6",
-            "waypoints": "_AGS_8/h265 BRDYE CHATT"
-          },
-          "DOVER": {
-            "cleared_altitude": 10000,
-            "description": "DOVER5",
-            "sid": "DOVER5",
-            "waypoints": "_AGS_8/h265 BEANS SARDY"
-          },
-          "GREAN, NOKIE": {
-            "cleared_altitude": 10000,
-            "description": "JUNPR6",
-            "sid": "JUNPR6",
-            "waypoints": "_AGS_8/h265 PARRR/a3000+ KNINE JUNPR"
-          },
-          "KAOLN": {
-            "cleared_altitude": 10000,
-            "description": "KAOLN6",
-            "sid": "KAOLN6",
-            "waypoints": "_AGS_8/h265 PARRR FOURR PGAAA"
-          },
-          "RDBUD": {
-            "cleared_altitude": 10000,
-            "description": "RDBUD4",
-            "sid": "RDBUD4",
-            "waypoints": "_AGS_8/h265 EAGAL SWANG"
-          },
-          "SAMMI": {
-            "cleared_altitude": 10000,
-            "description": "SAMMI4",
-            "sid": "SAMMI4",
-            "waypoints": "_AGS_8/h265 TRPLE BOGII"
-          },
-          "LAYUH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_AGS_8/h265"
-          },
-          "PONZE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_AGS_8/h265"
-          },
-          "PRMUS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_AGS_8/h265"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "SKW"
+    "tracon": "AGS",
+    "airports": {
+        "KAGS": {
+            "approaches": {
+                "I17": {
+                    "cifp_id": "I17"
+                },
+                "I35": {
+                    "cifp_id": "I35"
+                },
+                "R17": {
+                    "full_name": "RNAV GPS Runway 17",
+                    "runway": "17",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "WASAP/iaf/nopt/a2400 CARDO/if/hilpt/nopt180/a2400 HOGEM/faf/a1800",
+                        "CARDO/iaf/hilpt/nopt180/a2400 HOGEM/faf/a1800",
+                        "POGEE/iaf/nopt/a2400 CARDO/if/hilpt/nopt180/a2400 HOGEM/faf/a1800"
+                    ]
+                },
+                "R26": {
+                    "full_name": "RNAV GPS Runway 26",
+                    "runway": "26",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "JUXER/iaf/nopt/a2500 BEKAC/if/hilpt/nopt180/a2500 KELRE/faf/a2500 GAPTE/a1020",
+                        "BEKAC/iaf/hilpt/nopt180/a2500 KELRE/faf/a2500 GAPTE/a1020",
+                        "HIKAL/iaf/nopt/a2500 BEKAC/if/hilpt/nopt180/a2500 KELRE/faf/a2500 GAPTE/a1020"
+                    ]
+                },
+                "R35": {
+                    "full_name": "RNAV GPS Runway 35",
+                    "runway": "35",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "ZOXOM/iaf/nopt/a2100 HOMRU/if/hilpt/a2100 WATEM/faf/a1700",
+                        "YALRU/iaf/nopt/a2100 HOMRU/if/hilpt/a2100 WATEM/faf/a1700",
+                        "HOMRU/iaf/hilpt/nopt180/a2100 WATEM/faf/a1700"
+                    ]
+                },
+                "RY8": {
+                    "cifp_id": "RY8"
+                },
+                "Z8": {
+                    "cifp_id": "RZ8"
+                }
             },
-            {
-              "icao": "EDV"
-            }
-          ],
-          "destination": "KATL",
-          "exit": "LAYUH",
-          "route": "LAYUH JJEDI3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "JIA"
+            "departure_routes": {
+                "8": {
+                    "HOGAP, GSO": {
+                        "cleared_altitude": 10000,
+                        "description": "CHATT6",
+                        "sid": "CHATT6",
+                        "waypoints": "_AGS_26/h085 BRDYE CHATT"
+                    },
+                    "DOVER": {
+                        "cleared_altitude": 10000,
+                        "description": "DOVER5",
+                        "sid": "DOVER5",
+                        "waypoints": "_AGS_26/h085 BEANS SARDY"
+                    },
+                    "GREAN, NOKIE": {
+                        "cleared_altitude": 10000,
+                        "description": "JUNPR6",
+                        "sid": "JUNPR6",
+                        "waypoints": "_AGS_26/h085 PARRR/a3000+ KNINE JUNPR"
+                    },
+                    "KAOLN": {
+                        "cleared_altitude": 10000,
+                        "description": "KAOLN6",
+                        "sid": "KAOLN6",
+                        "waypoints": "_AGS_26/h085 PARRR FOURR PGAAA"
+                    },
+                    "RDBUD": {
+                        "cleared_altitude": 10000,
+                        "description": "RDBUD4",
+                        "sid": "RDBUD4",
+                        "waypoints": "_AGS_26/h085 EAGAL SWANG"
+                    },
+                    "SAMMI": {
+                        "cleared_altitude": 10000,
+                        "description": "SAMMI4",
+                        "sid": "SAMMI4",
+                        "waypoints": "_AGS_26/h085 TRPLE BOGII"
+                    },
+                    "LAYUH": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_AGS_26/h085"
+                    },
+                    "PONZE": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_AGS_26/h085"
+                    },
+                    "PRMUS": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_AGS_26/h085"
+                    }
+                },
+                "26": {
+                    "HOGAP, GSO": {
+                        "cleared_altitude": 10000,
+                        "description": "CHATT6",
+                        "sid": "CHATT6",
+                        "waypoints": "_AGS_8/h265 BRDYE CHATT"
+                    },
+                    "DOVER": {
+                        "cleared_altitude": 10000,
+                        "description": "DOVER5",
+                        "sid": "DOVER5",
+                        "waypoints": "_AGS_8/h265 BEANS SARDY"
+                    },
+                    "GREAN, NOKIE": {
+                        "cleared_altitude": 10000,
+                        "description": "JUNPR6",
+                        "sid": "JUNPR6",
+                        "waypoints": "_AGS_8/h265 PARRR/a3000+ KNINE JUNPR"
+                    },
+                    "KAOLN": {
+                        "cleared_altitude": 10000,
+                        "description": "KAOLN6",
+                        "sid": "KAOLN6",
+                        "waypoints": "_AGS_8/h265 PARRR FOURR PGAAA"
+                    },
+                    "RDBUD": {
+                        "cleared_altitude": 10000,
+                        "description": "RDBUD4",
+                        "sid": "RDBUD4",
+                        "waypoints": "_AGS_8/h265 EAGAL SWANG"
+                    },
+                    "SAMMI": {
+                        "cleared_altitude": 10000,
+                        "description": "SAMMI4",
+                        "sid": "SAMMI4",
+                        "waypoints": "_AGS_8/h265 TRPLE BOGII"
+                    },
+                    "LAYUH": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_AGS_8/h265"
+                    },
+                    "PONZE": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_AGS_8/h265"
+                    },
+                    "PRMUS": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_AGS_8/h265"
+                    }
+                }
             },
-            {
-              "icao": "PDT"
-            }
-          ],
-          "destination": "KCLT",
-          "exit": "SAMMI",
-          "route": "SAMMI UNARM"
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW"
+                        },
+                        {
+                            "icao": "EDV"
+                        }
+                    ],
+                    "destination": "KATL",
+                    "exit": "LAYUH",
+                    "route": "LAYUH JJEDI3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "JIA"
+                        },
+                        {
+                            "icao": "PDT"
+                        }
+                    ],
+                    "destination": "KCLT",
+                    "exit": "SAMMI",
+                    "route": "SAMMI UNARM"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "JIA"
+                        }
+                    ],
+                    "destination": "KDFW",
+                    "exit": "NOKIE",
+                    "route": "NOKIE VLKNN Q30 IZAAC YUYUN BEREE2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "ENY"
+                        }
+                    ],
+                    "destination": "MYNN",
+                    "exit": "DOVER",
+                    "route": "DOVER PRMUS BENZI BR69V ZFP BR63V KURAY"
+                }
+            ],
+            "exit_categories": {
+                "LAYUH": "ALL",
+                "SAMMI": "SAMMI4",
+                "NOKIE": "JUNPR6",
+                "DOVER": "DOVER5"
+            },
+            "tower_list": 1
+        }
+    },
+    "airspace": {
+        "boundaries": {
+            "AGSAPP": [
+                "N34.05.03.062,W81.53.28.219",
+                "N33.59.05.149,W81.48.12.361",
+                "N33.46.40.867,W81.38.36.924",
+                "N33.21.15.243,W81.27.18.188",
+                "N33.00.35.428,W81.30.11.097",
+                "N32.52.44.241,W81.52.24.887",
+                "N32.59.50.818,W82.41.44.190",
+                "N33.29.45.973,W83.04.45.408",
+                "N34.00.20.976,W82.49.35.055",
+                "N34.03.10.553,W82.20.57.057",
+                "N34.03.55.120,W82.16.00.925",
+                "N34.05.00.784,W81.53.27.652"
+            ]
         },
-        {
-          "airlines": [
-            {
-              "icao": "JIA"
-            }
-          ],
-          "destination": "KDFW",
-          "exit": "NOKIE",
-          "route": "NOKIE VLKNN Q30 IZAAC YUYUN BEREE2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "ENY"
-            }
-          ],
-          "destination": "MYNN",
-          "exit": "DOVER",
-          "route": "DOVER PRMUS BENZI BR69V ZFP BR63V KURAY"
-        }
-      ],
-      "exit_categories": {
-        "LAYUH": "ALL",
-        "SAMMI": "SAMMI4",
-        "NOKIE": "JUNPR6",
-        "DOVER": "DOVER5"
-      },
-      "tower_list": 1
-    }
-  },
-  "airspace": {
-    "boundaries": {
-      "AGSAPP": [
-        "N34.05.03.062,W81.53.28.219",
-        "N33.59.05.149,W81.48.12.361",
-        "N33.46.40.867,W81.38.36.924",
-        "N33.21.15.243,W81.27.18.188",
-        "N33.00.35.428,W81.30.11.097",
-        "N32.52.44.241,W81.52.24.887",
-        "N32.59.50.818,W82.41.44.190",
-        "N33.29.45.973,W83.04.45.408",
-        "N34.00.20.976,W82.49.35.055",
-        "N34.03.10.553,W82.20.57.057",
-        "N34.03.55.120,W82.16.00.925",
-        "N34.05.00.784,W81.53.27.652"
-      ]
-    },
-    "volumes": {
-      "AGSAPP": [
-        {
-          "boundaries": ["AGSAPP"],
-          "lower": 0,
-          "upper": 10000
-        }
-      ]
-    }
-  },
-  "inbound_flows": {
-    "East": {
-      "arrivals": [
-        {
-          "waypoints": "PYRES YUTEE/a11000/ho GANDT/h215",
-          "route": "GANDT",
-          "initial_controller": "JAX_CTR",
-          "initial_altitude": 11000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KAGS": [
-              {
-                "icao": "JIA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KAGS"
-              }
+        "volumes": {
+            "AGSAPP": [
+                {
+                    "boundaries": [
+                        "AGSAPP"
+                    ],
+                    "lower": 0,
+                    "upper": 10000
+                }
             ]
-          }
         }
-      ]
     },
-    "North": {
-      "arrivals": [
-        {
-          "waypoints": "SOTHH GRD/a11000/ho IRQ/h158",
-          "route": "IRQ",
-          "initial_controller": "ATL_CTR",
-          "initial_altitude": 15000,
-          "initial_speed": 280,
-          "expect_approach": null,
-          "airlines": {
-            "KAGS": [
-              {
-                "icao": "EJA",
-                "airport": "KGYH"
-              }
+    "inbound_flows": {
+        "East": {
+            "arrivals": [
+                {
+                    "waypoints": "PYRES YUTEE/a11000/ho GANDT/h215",
+                    "route": "GANDT",
+                    "initial_controller": "J30",
+                    "initial_altitude": 11000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KAGS": [
+                            {
+                                "icao": "JIA",
+                                "airport": "KCLT"
+                            },
+                            {
+                                "icao": "AAL",
+                                "fleet": "short",
+                                "airport": "KAGS"
+                            }
+                        ]
+                    }
+                }
             ]
-          }
-        }
-      ]
-    },
-    "STUGE3": {
-      "arrivals": [
-        {
-          "waypoints": "ALD/a14000/ho STUGE/a12000-/s250",
-          "star": "STUGE3",
-          "initial_controller": "ATL_CTR",
-          "initial_altitude": 14000,
-          "initial_speed": 290,
-          "speed_restriction": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KAGS": [
-              {
-                "icao": "EDV",
-                "airport": "KAGS"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KJFK"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "STWRT3": {
-      "arrivals": [
-        {
-          "waypoints": "GSO LIARS DOUGH CAE STWRT/ho PAANE/h240",
-          "star": "STWRT3",
-          "initial_controller": "JAX_CTR",
-          "initial_altitude": 11000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KAGS": [
-              {
-                "icao": "ENY",
-                "airport": "KMDW"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KORD"
-              },
-              {
-                "icao": "FDX",
-                "fleet": "long",
-                "airport": "KMEM"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "South": {
-      "arrivals": [
-        {
-          "waypoints": "VIYAP SAV MILEN/a11000/ho",
-          "route": "MILEN",
-          "initial_controller": "JAX_CTR",
-          "initial_altitude": 13000,
-          "initial_speed": 250,
-          "speed_restriction": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KAGS": [
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KMCO"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "West": {
-      "arrivals": [
-        {
-          "waypoints": "GAIRY/ho IRQ/h158",
-          "route": "IRQ",
-          "initial_controller": "ATL_CTR",
-          "initial_altitude": 11000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KAGS": [
-              {
-                "icao": "EDV",
-                "airport": "KATL"
-              },
-              {
-                "icao": "SKW",
-                "airport": "KATL"
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  "control_positions": {
-    "ATL_CTR": {
-      "frequency": 132975,
-      "radio_name": "Atlanta Center",
-      "sector_id": "C43",
-      "facility_id": "C",
-      "eram_facility": true
-    },
-    "JAX_CTR": {
-      "frequency": 135925,
-      "radio_name": "Jaxsonville Center",
-      "sector_id": "J30",
-      "facility_id": "J",
-      "eram_facility": true
-    },
-    "CAE_APP": {
-      "frequency": 133400,
-      "radio_name": "Columbia Approach",
-      "sector_id": "1N",
-      "facility_id": "1"
-    },
-    "AGS_TWR": {
-      "frequency": 118700,
-      "radio_name": "Augusta Tower",
-      "sector_id": "1T"
-    },
-    "AGS_E_APP": {
-      "frequency": 119150,
-      "radio_name": "Augusta Approach",
-      "sector_id": "1E"
-    },
-    "AGS_W_APP": {
-      "frequency": 126800,
-      "radio_name": "Augusta Approach",
-      "sector_id": "1W"
-    }
-  },
-  "default_scenario": "KAGS Land and Depart Runway 17/8",
-  "fixes": {
-    "_AGS_17": "N33.22.56.752,W81.58.14.502",
-    "_AGS_35": "N33.21.39.089,W81.57.55.656",
-    "_AGS_8": "N33.21.57.743,W81.58.09.123",
-    "_AGS_26": "N33.22.09.888,W81.57.00.056",
-    "KAGS": "N33.22.11.628,W81.57.52.097"
-  },
-  "magnetic_adjustment": -1,
-  "name": "KAGS",
-  "primary_airport": "KAGS",
-  "scenarios": {
-    "KAGS Land and Depart Runway 17/8": {
-      "airspace": {
-        "AGS_E_APP": ["AGSAPP"],
-        "AGS_W_APP": ["AGSAPP"]
-      },
-      "arrival_runways": [
-        {
-          "airport": "KAGS",
-          "runway": "17"
-        },
-        {
-          "airport": "KAGS",
-          "runway": "8"
-        }
-      ],
-      "inbound_rates": {
-        "West": {
-          "KAGS": 5
         },
         "North": {
-          "KAGS": 6
-        },
-        "East": {
-          "KAGS": 4
-        },
-        "South": {
-          "KAGS": 4
-        },
-        "STWRT3": {
-          "KAGS": 6
+            "arrivals": [
+                {
+                    "waypoints": "SOTHH GRD/a11000/ho IRQ/h158",
+                    "route": "IRQ",
+                    "initial_controller": "C43",
+                    "initial_altitude": 15000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KAGS": [
+                            {
+                                "icao": "EJA",
+                                "airport": "KGYH"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "STUGE3": {
-          "KAGS": 5
-        }
-      },
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "AGS_E_APP": ["AGS_W_APP"]
-        }
-      },
-      "controllers": ["AGS_TWR", "ATL_CTR", "JAX_CTR", "CAE_APP"],
-      "default_maps": ["MAIN"],
-      "departure_runways": [
-        {
-          "airport": "KAGS",
-          "rate": 20,
-          "runway": "8"
-        }
-      ],
-      "wind": {
-        "direction": "75-135"
-      }
-    },
-    "KAGS Land and Depart Runway 35/26": {
-      "airspace": {
-        "AGS_E_APP": ["AGSAPP"],
-        "AGS_W_APP": ["AGSAPP"]
-      },
-      "arrival_runways": [
-        {
-          "airport": "KAGS",
-          "runway": "35"
+            "arrivals": [
+                {
+                    "waypoints": "ALD/a14000/ho STUGE/a12000-/s250",
+                    "star": "STUGE3",
+                    "initial_controller": "C43",
+                    "initial_altitude": 14000,
+                    "initial_speed": 290,
+                    "speed_restriction": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KAGS": [
+                            {
+                                "icao": "EDV",
+                                "airport": "KAGS"
+                            },
+                            {
+                                "icao": "DAL",
+                                "fleet": "short",
+                                "airport": "KJFK"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
-        {
-          "airport": "KAGS",
-          "runway": "26"
-        }
-      ],
-      "inbound_rates": {
+        "STWRT3": {
+            "arrivals": [
+                {
+                    "waypoints": "GSO LIARS DOUGH CAE STWRT/ho PAANE/h240",
+                    "star": "STWRT3",
+                    "initial_controller": "J30",
+                    "initial_altitude": 11000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KAGS": [
+                            {
+                                "icao": "ENY",
+                                "airport": "KMDW"
+                            },
+                            {
+                                "icao": "RPA",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "FDX",
+                                "fleet": "long",
+                                "airport": "KMEM"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "South": {
+            "arrivals": [
+                {
+                    "waypoints": "VIYAP SAV MILEN/a11000/ho",
+                    "route": "MILEN",
+                    "initial_controller": "J30",
+                    "initial_altitude": 13000,
+                    "initial_speed": 250,
+                    "speed_restriction": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KAGS": [
+                            {
+                                "icao": "AAL",
+                                "fleet": "short",
+                                "airport": "KMCO"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "West": {
-          "KAGS": 5
-        },
-        "North": {
-          "KAGS": 6
-        },
-        "East": {
-          "KAGS": 4
-        },
-        "South": {
-          "KAGS": 4
-        },
-        "STWRT3": {
-          "KAGS": 6
-        },
-        "STUGE3": {
-          "KAGS": 5
+            "arrivals": [
+                {
+                    "waypoints": "GAIRY/ho IRQ/h158",
+                    "route": "IRQ",
+                    "initial_controller": "C43",
+                    "initial_altitude": 11000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KAGS": [
+                            {
+                                "icao": "EDV",
+                                "airport": "KATL"
+                            },
+                            {
+                                "icao": "SKW",
+                                "airport": "KATL"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      },
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "AGS_E_APP": ["AGS_W_APP"]
+    },
+    "default_scenario": "KAGS Land and Depart Runway 17/8",
+    "fixes": {
+        "_AGS_17": "N33.22.56.752,W81.58.14.502",
+        "_AGS_35": "N33.21.39.089,W81.57.55.656",
+        "_AGS_8": "N33.21.57.743,W81.58.09.123",
+        "_AGS_26": "N33.22.09.888,W81.57.00.056",
+        "KAGS": "N33.22.11.628,W81.57.52.097"
+    },
+    "magnetic_adjustment": -1,
+    "name": "KAGS",
+    "primary_airport": "KAGS",
+    "scenarios": {
+        "KAGS Land and Depart Runway 17/8": {
+            "airspace": {
+                "1E": [
+                    "AGSAPP"
+                ],
+                "1W": [
+                    "AGSAPP"
+                ]
+            },
+            "arrival_runways": [
+                {
+                    "airport": "KAGS",
+                    "runway": "17"
+                },
+                {
+                    "airport": "KAGS",
+                    "runway": "8"
+                }
+            ],
+            "inbound_rates": {
+                "West": {
+                    "KAGS": 5
+                },
+                "North": {
+                    "KAGS": 6
+                },
+                "East": {
+                    "KAGS": 4
+                },
+                "South": {
+                    "KAGS": 4
+                },
+                "STWRT3": {
+                    "KAGS": 6
+                },
+                "STUGE3": {
+                    "KAGS": 5
+                }
+            },
+            "configuration": {
+                "config_id": "STD"
+            },
+            "default_maps": [
+                "MAIN"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KAGS",
+                    "rate": 20,
+                    "runway": "8"
+                }
+            ],
+            "wind": {
+                "direction": "75-135"
+            }
+        },
+        "KAGS Land and Depart Runway 35/26": {
+            "airspace": {
+                "1E": [
+                    "AGSAPP"
+                ],
+                "1W": [
+                    "AGSAPP"
+                ]
+            },
+            "arrival_runways": [
+                {
+                    "airport": "KAGS",
+                    "runway": "35"
+                },
+                {
+                    "airport": "KAGS",
+                    "runway": "26"
+                }
+            ],
+            "inbound_rates": {
+                "West": {
+                    "KAGS": 5
+                },
+                "North": {
+                    "KAGS": 6
+                },
+                "East": {
+                    "KAGS": 4
+                },
+                "South": {
+                    "KAGS": 4
+                },
+                "STWRT3": {
+                    "KAGS": 6
+                },
+                "STUGE3": {
+                    "KAGS": 5
+                }
+            },
+            "configuration": {
+                "config_id": "STD"
+            },
+            "default_maps": [
+                "MAIN"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KAGS",
+                    "rate": 20,
+                    "runway": "26"
+                }
+            ],
+            "wind": {
+                "direction": "255-315"
+            }
         }
-      },
-      "controllers": ["AGS_TWR", "ATL_CTR", "JAX_CTR", "CAE_APP"],
-      "default_maps": ["MAIN"],
-      "departure_runways": [
-        {
-          "airport": "KAGS",
-          "rate": 20,
-          "runway": "26"
-        }
-      ],
-      "wind": {
-        "direction": "255-315"
-      }
     }
-  },
-  "stars_config": {
-    "configurations": {
-      "STD": {
-        "inbound_assignments": {
-          "East": "AGS_E_APP",
-          "North": "AGS_W_APP",
-          "STUGE3": "AGS_E_APP",
-          "STWRT3": "AGS_E_APP",
-          "South": "AGS_W_APP",
-          "West": "AGS_W_APP"
-        },
-        "departure_assignments": {
-          "KAGS": "AGS_W_APP"
-        }
-      }
-    },
-
-    "center": "KAGS",
-    "coordination_fixes": {
-      "PYRES": [
-        {
-          "type": "route",
-          "to": "AGS",
-          "from": "ZTL"
-        }
-      ],
-      "STUGE": [
-        {
-          "type": "route",
-          "to": "AGS",
-          "from": "ZTL"
-        }
-      ],
-      "MILEN": [
-        {
-          "type": "route",
-          "to": "AGS",
-          "from": "ZTL"
-        }
-      ],
-      "STWRT": [
-        {
-          "type": "route",
-          "to": "AGS",
-          "from": "ZTL"
-        }
-      ]
-    },
-    "filters": {
-      "inhibit_ca": [
-        {
-          "id": "B NOCA1",
-          "description": "BHM CONFLICT SUPPRESS",
-          "type": "polygon",
-          "floor": 0,
-          "ceiling": 3500,
-          "vertices": ["-86.897208,33.532504", "-86.641151,33.677967", "-86.584176,33.611529", "-86.839472,33.462847"]
-        },
-        {
-          "id": "B NOCA2",
-          "description": "BHM CONFLICT SUPPRESS",
-          "type": "polygon",
-          "floor": 0,
-          "ceiling": 3500,
-          "vertices": ["-86.695616,33.672883", "-86.695274,33.453065", "-86.79461,33.453311", "-86.794879,33.672271"]
-        }
-      ]
-    },
-    "radar_sites": {
-      "BHM": {
-        "char": "B",
-        "position": "33.573611,-86.75611",
-        "elevation": 705,
-        "primary_range": 100,
-        "secondary_range": 150,
-        "silence_angle": 50.4,
-        "slope_angle": 0.3
-      }
-    },
-    "scratchpads": {
-      "LAYUH": "LAY",
-      "SAMMI": "SAM",
-      "NOKIE": "NOK",
-      "DOVER": "DOV"
-    },
-    "significant_points": {
-      "DOVER": {},
-      "LAYUH": {},
-      "NOKIE": {},
-      "SAMMI": {}
-    },
-    "stars_maps": [
-      "AGS BASE MAP",
-      "MAIN",
-      "AIRPORTS/HELIPORTS",
-      "AGS CLASS D",
-      "AGS RWY 26 APPROACHES",
-      "AGS RWY 8 APPROACHES",
-      "AGS RWY 35 APPROACHES",
-      "AGS RWY 17 APPROACHES",
-      "BNL APPROACHES",
-      "6J4 APPROACHES",
-      "3J7 APPROACHES",
-      "IIY APPROACHES",
-      "2J3 APPROACHES",
-      "2J5 APPROACHES",
-      "BXG APPROACHES",
-      "AIK APPROACHES",
-      "HQU APPROACHES",
-      "DNL APPROACHES",
-      "TOPOGRAPHY",
-      "TOWER MAP",
-      "AGS MINIMUM VECTORING ALTITUDE",
-      "SATELLITE APPROACHES",
-      "AGS APPROACHES",
-      "1A3 RNAV (GPS) RUNWAY 20 APPROACH",
-      "1A3 RNAV (GPS) RUNWAY 02 APPROACH"
-    ],
-    "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
-  }
 }

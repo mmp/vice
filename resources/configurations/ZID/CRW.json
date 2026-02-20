@@ -1,0 +1,49 @@
+{
+    "control_positions": {
+        "1B": {
+            "callsign": "CRW_B_APP",
+            "frequency": 125400,
+            "radio_name": "Charleston Approach"
+        },
+        "1N": {
+            "callsign": "CRW_N_APP",
+            "frequency": 124100,
+            "radio_name": "Charleston Approach"
+        },
+        "1S": {
+            "callsign": "CRW_S_APP",
+            "frequency": 119200,
+            "radio_name": "Charleston Approach"
+        },
+        "1T": {
+            "callsign": "CRW_TWR",
+            "frequency": 125700,
+            "radio_name": "Charleston Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CKB",
+            "prefix": "2"
+        },
+        {
+            "id": "HTS",
+            "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZID",
+            "prefix": "C"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

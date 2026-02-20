@@ -1,0 +1,42 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "HMN_APP",
+            "frequency": 120600,
+            "radio_name": "Holloman Approach"
+        },
+        "1D": {
+            "callsign": "HMN_DEP",
+            "frequency": 128100,
+            "radio_name": "Holloman Departure"
+        },
+        "1K": {
+            "callsign": "HMN_C_APP",
+            "frequency": 126900,
+            "radio_name": "Cherokee"
+        },
+        "1R": {
+            "callsign": "HMN_R_APP",
+            "frequency": 125700,
+            "radio_name": "Holloman Approach"
+        },
+        "2T": {
+            "callsign": "HMN_TWR",
+            "frequency": 119300,
+            "radio_name": "Holloman Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ELP",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

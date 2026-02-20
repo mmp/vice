@@ -1,0 +1,60 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "ORF_E_APP",
+            "frequency": 126050,
+            "radio_name": "Norfolk Approach"
+        },
+        "1F": {
+            "callsign": "ORF_F_APP",
+            "frequency": 118900,
+            "radio_name": "Norfolk Approach"
+        },
+        "1G": {
+            "callsign": "ORF_G_APP",
+            "frequency": 125200,
+            "radio_name": "Norfolk Approach"
+        },
+        "1P": {
+            "callsign": "ORF_P_APP",
+            "frequency": 125700,
+            "radio_name": "Norfolk Approach"
+        },
+        "1S": {
+            "callsign": "ORF_S_APP",
+            "frequency": 127900,
+            "radio_name": "Norfolk Approach"
+        },
+        "1W": {
+            "callsign": "ORF_W_APP",
+            "frequency": 119450,
+            "radio_name": "Norfolk Approach"
+        },
+        "1Z": {
+            "callsign": "ORF_TWR",
+            "frequency": 120800,
+            "radio_name": "Norfolk Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "NHK",
+            "prefix": "2"
+        },
+        {
+            "id": "NTU",
+            "prefix": "3"
+        },
+        {
+            "id": "PCT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

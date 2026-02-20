@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "1R": {
+            "callsign": "FSI_APP",
+            "frequency": 120550,
+            "radio_name": "Fort Sill Approach"
+        },
+        "1T": {
+            "callsign": "FSI_TWR",
+            "frequency": 124950,
+            "radio_name": "Post Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "LTS",
+            "prefix": "3"
+        },
+        {
+            "id": "OKC",
+            "prefix": "1"
+        },
+        {
+            "id": "SPS",
+            "prefix": "2"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

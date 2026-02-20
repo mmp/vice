@@ -360,13 +360,52 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string, acid sim.ACID) (*av.Controller, error) {
 	// Look at the length of the controller string passed in. If it's one character, ERAM would have to find which controller it goes to.
 	// That is not here yet, so return an error.
-	if len(controller) == 1 {
-		return nil, ErrERAMSectorNotActive
-	}
-
 	for _, control := range ctx.Client.State.Controllers {
-		if control.ERAMID() == controller {
-			return control, nil
+		switch len(controller) {
+		case 1: // Cannot do anything with single characters in ERAM yet. TODO: fix pairs
+			return nil, ErrERAMSectorNotActive
+		case 2: // Handing off to other sectors within the same ARTCC
+			if control.FacilityIdentifier == "" {
+				if control.Position == controller {
+					return control, nil
+				}
+			}
+		case 3: // Handing off to a TRACON with a single char stars ID or another ARTCC
+			// Get full STARS ID
+			var prefix string
+			for _, id := range ctx.Client.State.HandoffIDs {
+				if id.SingleCharStarsID == string(controller[0]) {
+					prefix = id.StarsID
+					break
+				}
+				if id.Prefix == string(controller[0]) {
+					prefix = id.StarsID
+					break
+				}
+			}
+
+			if control.FacilityIdentifier == prefix && control.Position == controller[1:] {
+				return control, nil
+			}
+		case 4: // Handing off to a TRACON with a two char stars ID
+			// Get full STARS ID
+			var prefix string
+			for _, id := range ctx.Client.State.HandoffIDs {
+				if id.TwoCharStarsID == controller[:2] {
+					prefix = id.StarsID
+					break
+				}
+			}
+
+			if control.FacilityIdentifier == prefix && control.Position == controller[2:] {
+				return control, nil
+			}
+		case 5: // Handing off to a TRACON with a full STARS
+			if controller == control.ERAMID() {
+				return control, nil
+			}
+		default: // Invalid input
+			return nil, ErrERAMSectorNotActive
 		}
 	}
 	return nil, ErrERAMSectorNotActive

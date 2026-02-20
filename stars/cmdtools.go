@@ -93,14 +93,15 @@ func init() {
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]", toggleCRDAGhostsForRunwayPair)
 	registerCommand(CommandModeMultiFunc, "NP[NUM]",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) error {
-			// Use default airport
+			// Use default airport from area config
 			ctrl := ctx.UserController()
-			if len(ctrl.DefaultAirport) == 0 {
+			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
+			if da == "" {
 				return ErrSTARSIllegalFunction
 			}
-			ap := ctrl.DefaultAirport[1:]
+			ap := da[1:] // Strip leading "K" to get FAA 3-letter code
 			if _, ok := av.DB.LookupAirport(ap); !ok {
-				panic(ctrl.DefaultAirport)
+				panic(da)
 			}
 			return toggleCRDAGhostsForRunwayPair(sp, ctx, ps, ap, idx)
 		})
@@ -618,7 +619,7 @@ func init() {
 					return ErrSTARSCommandFormat
 				}
 
-				ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcps[:2], ctx.UserController().SectorID)
+				ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcps[:2], ctx.UserController().Position)
 				if ctrl == nil {
 					return ErrSTARSIllegalPosition
 				}
@@ -626,7 +627,7 @@ func init() {
 				tcps = tcps[2:]
 			} else {
 				// TCP without controller subset
-				ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcps[:1], ctx.UserController().SectorID)
+				ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcps[:1], ctx.UserController().Position)
 				if ctrl == nil {
 					return ErrSTARSIllegalPosition
 				}
@@ -724,7 +725,7 @@ func init() {
 		plus := strings.HasSuffix(tcp, "+")
 		tcp = strings.TrimSuffix(tcp, "+")
 
-		ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcp, ctx.UserController().SectorID)
+		ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcp, ctx.UserController().Position)
 		if ctrl == nil {
 			return ErrSTARSIllegalPosition
 		}

@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "VOK_APP",
+            "frequency": 135250,
+            "radio_name": "Volk Approach"
+        },
+        "1L": {
+            "callsign": "VOK_TWR",
+            "frequency": 127500,
+            "radio_name": "Volk Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "MKE",
+            "prefix": "2"
+        },
+        {
+            "id": "MSN",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "C"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "P"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

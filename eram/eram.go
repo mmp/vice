@@ -29,7 +29,7 @@ var (
 const numMapColors = 8
 
 var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
-	[numMapColors]renderer.RGB{ // Group A
+	{ // Group A
 		renderer.RGBFromUInt8(140, 140, 140),
 		renderer.RGBFromUInt8(0, 255, 255),
 		renderer.RGBFromUInt8(255, 0, 255),
@@ -39,7 +39,7 @@ var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
 		renderer.RGBFromUInt8(218, 165, 32),
 		renderer.RGBFromUInt8(72, 118, 255),
 	},
-	[numMapColors]renderer.RGB{ // Group B
+	{ // Group B
 		renderer.RGBFromUInt8(140, 140, 140),
 		renderer.RGBFromUInt8(132, 112, 255),
 		renderer.RGBFromUInt8(118, 238, 198),

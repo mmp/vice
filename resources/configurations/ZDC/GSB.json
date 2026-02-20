@@ -1,0 +1,44 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "GSB_N_APP",
+            "frequency": 123700,
+            "radio_name": "Seymour Johnson Approach"
+        },
+        "1S": {
+            "callsign": "GSB_S_APP",
+            "frequency": 119700,
+            "radio_name": "Seymour Johnson Approach"
+        },
+        "1Z": {
+            "callsign": "GSB_TWR",
+            "frequency": 126250,
+            "radio_name": "Seymour Johnson Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "FAY",
+            "prefix": "4"
+        },
+        {
+            "id": "ILM",
+            "prefix": "3"
+        },
+        {
+            "id": "NKT",
+            "prefix": "2"
+        },
+        {
+            "id": "RDU",
+            "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

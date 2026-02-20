@@ -1,0 +1,464 @@
+{
+    "control_positions": {
+        "1H": {
+            "callsign": "DAB_H_APP",
+            "frequency": 125725,
+            "radio_name": "Daytona Beach approach"
+        },
+        "1M": {
+            "callsign": "DAB_M_APP",
+            "frequency": 118850,
+            "radio_name": "Daytona Beach approach"
+        },
+        "1L": {
+            "callsign": "DAB_L_APP",
+            "frequency": 127075,
+            "radio_name": "Daytona Beach approach"
+        },
+        "1N": {
+            "callsign": "DAB_N_APP",
+            "frequency": 125800,
+            "radio_name": "Daytona Beach approach"
+        },
+        "1S": {
+            "callsign": "DAB_S_APP",
+            "frequency": 125350,
+            "radio_name": "Daytona Beach approach"
+        },
+        "1E": {
+            "callsign": "DAB_E_APP",
+            "frequency": 123900,
+            "radio_name": "Daytona Beach approach"
+        },
+        "1W": {
+            "callsign": "DAB_W_APP",
+            "frequency": 126550,
+            "radio_name": "Daytona Beach approach"
+        },
+        "1T": {
+            "callsign": "DAB_N_TWR",
+            "frequency": 120700,
+            "radio_name": "Daytona Beach tower"
+        },
+        "1P": {
+            "callsign": "DAB_S_TWR",
+            "frequency": 118100,
+            "radio_name": "Daytona Beach tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "DAE": {
+                "inbound_assignments": {
+                    "TTHOR3": "1H",
+                    "WALEE": "1M",
+                    "WORMSE": "1H",
+                    "V267S": "1M",
+                    "V267N": "1L",
+                    "KIZER": "1W",
+                    "SMYRA": "1S",
+                    "ASTOR": "1M"
+                },
+                "departure_assignments": {
+                    "KDAB": "1W",
+                    "KOMN": "1N",
+                    "KFIN": "1N",
+                    "KEVB": "1S",
+                    "KDED": "1W"
+                },
+                "default_consolidation": {
+                    "1H": [
+                        "1L",
+                        "1M",
+                        "1N",
+                        "1S",
+                        "1W"
+                    ]
+                }
+            },
+            "DAW": {
+                "inbound_assignments": {
+                    "TTHOR3": "1H",
+                    "WALEE": "1M",
+                    "WORMSW": "1H",
+                    "V267S": "1M",
+                    "V267N": "1L",
+                    "KIZER": "1W",
+                    "SMYRA": "1S",
+                    "ASTOR": "1M"
+                },
+                "departure_assignments": {
+                    "KDAB": "1W",
+                    "KOMN": "1N",
+                    "KFIN": "1N",
+                    "KEVB": "1S",
+                    "KDED": "1W"
+                },
+                "default_consolidation": {
+                    "1H": [
+                        "1L",
+                        "1M",
+                        "1N",
+                        "1S",
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "KDAB",
+        "coordination_lists": [
+            {
+                "name": ".      OMN COORD",
+                "id": "O",
+                "airports": [
+                    "KOMN"
+                ]
+            },
+            {
+                "name": ".      EVB COORD",
+                "id": "B",
+                "airports": [
+                    "KEVB"
+                ]
+            }
+        ],
+        "radar_sites": {
+            "DAB": {
+                "char": "D",
+                "position": "29.17264, -81.19219",
+                "elevation": 38,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "JAX": {
+                "char": "J",
+                "position": "30.49333, -81.69267",
+                "elevation": 40,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "MCO": {
+                "char": "O",
+                "position": "28.37483, -81.30463",
+                "elevation": 100,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "GNV": {
+                "char": "G",
+                "position": "29.41538, -82.23232",
+                "elevation": 155,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "NEN": {
+                "char": "W",
+                "position": "30.34593, -81.87403",
+                "elevation": 95,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "MLB": {
+                "char": "M",
+                "position": "28.08427, -80.79808",
+                "elevation": 22,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            }
+        },
+        "filters": {
+            "inhibit_ca": [],
+            "arrival_drop": [],
+            "inhibit_msaw": []
+        },
+        "scratchpads": {
+            "OCEAN": "OCN",
+            "SEBAG": "SBG",
+            "STARY": "STA",
+            "CRG": "ROY",
+            "MATEO": "MAT",
+            "ASTOR": "AST",
+            "BASSS": "BAS",
+            "BARBS": "BAR",
+            "KIZER": "KZR",
+            "LAMMA": "LMA",
+            "MALET": "MLT",
+            "ILIND": "ILD",
+            "SMYRA": "SMY",
+            "GTOUT": "GTO"
+        },
+        "significant_points": {
+            "CRG": {},
+            "MALET": {},
+            "SEBAG": {},
+            "STARY": {},
+            "MATEO": {},
+            "ASTOR": {},
+            "BASSS": {},
+            "KIZER": {},
+            "LAMMA": {},
+            "ILIND": {}
+        },
+        "stars_maps": [
+            "DAB APPROACH FIXES",
+            "DAB CLASS C",
+            "DAB CLASS D",
+            "DAB EAST FLOW",
+            "DAB East Ops High",
+            "DAB East Ops Low",
+            "DAB West Ops High",
+            "DAB West Ops Low",
+            "DAB EMERGENCY",
+            "DAB ILS ARC",
+            "DAB LOW AIRWAYS",
+            "DAB MLH MAP",
+            "DAB MULTI SECTOR",
+            "DAB MVA",
+            "DAB RNAV 16",
+            "DAB RNAV 34",
+            "DAB RNAV APPROACHES",
+            "DAB RWY 25R",
+            "DAB RWY 7L",
+            "DAB WARNING AREAS",
+            "DAB WEST FLOW",
+            "DAB West Ops High",
+            "DAB West Ops Low",
+            "DED APPROACHES",
+            "DED RNAV 05",
+            "DED RNAV 12",
+            "DED RNAV 24",
+            "DED RNAV 30",
+            "EVB RNAV 02",
+            "EVB RNAV 07",
+            "EVB RNAV 07",
+            "EVB RNAV 25",
+            "EVB RNAV 29",
+            "FIN RNAV 06",
+            "FIN RNAV 11",
+            "FIN RNAV 24",
+            "FIN RNAV 29",
+            "OMN RNAV 09",
+            "OMN RNAV 17",
+            "OMN RNAV 27",
+            "RNAV",
+            "SATELLITE APPROACHES",
+            "SECTOR BOUNDARY",
+            "SGJ/COI APPROACHES",
+            "X50/7FL6 APPROACHES",
+            "WARNING AREA 497"
+        ],
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "CRG"
+                ],
+                "altitude_range": [
+                    15000,
+                    999000
+                ],
+                "receiving_controller": "C57"
+            },
+            {
+                "fixes": [
+                    "SMYRA"
+                ],
+                "altitude_range": [
+                    6000,
+                    11000
+                ],
+                "receiving_controller": "21E"
+            },
+            {
+                "fixes": [
+                    "GTOUT"
+                ],
+                "altitude_range": [
+                    6000,
+                    11000
+                ],
+                "receiving_controller": "21E"
+            },
+            {
+                "fixes": [
+                    "GTOUT"
+                ],
+                "altitude_range": [
+                    0,
+                    5000
+                ],
+                "receiving_controller": "21N"
+            },
+            {
+                "fixes": [
+                    "ILIND"
+                ],
+                "altitude_range": [
+                    6000,
+                    11000
+                ],
+                "receiving_controller": "21E"
+            },
+            {
+                "fixes": [
+                    "ILIND"
+                ],
+                "altitude_range": [
+                    0,
+                    5000
+                ],
+                "receiving_controller": "21N"
+            },
+            {
+                "fixes": [
+                    "KIZER"
+                ],
+                "altitude_range": [
+                    6000,
+                    11000
+                ],
+                "receiving_controller": "21E"
+            },
+            {
+                "fixes": [
+                    "KIZER"
+                ],
+                "altitude_range": [
+                    0,
+                    5000
+                ],
+                "receiving_controller": "21N"
+            },
+            {
+                "fixes": [
+                    "MMKAY"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "11V"
+            },
+            {
+                "fixes": [
+                    "MMKAY"
+                ],
+                "altitude_range": [
+                    15000,
+                    999000
+                ],
+                "receiving_controller": "C57"
+            },
+            {
+                "fixes": [
+                    "ASTOR"
+                ],
+                "altitude_range": [
+                    0,
+                    15000
+                ],
+                "receiving_controller": "11V"
+            },
+            {
+                "fixes": [
+                    "ASTOR"
+                ],
+                "altitude_range": [
+                    15000,
+                    999000
+                ],
+                "receiving_controller": "C57"
+            },
+            {
+                "fixes": [
+                    "WORMS"
+                ],
+                "altitude_range": [
+                    10000,
+                    999000
+                ],
+                "receiving_controller": "C57"
+            },
+            {
+                "fixes": [
+                    "GUANO"
+                ],
+                "altitude_range": [
+                    10000,
+                    999000
+                ],
+                "receiving_controller": "C57"
+            }
+        ],
+        "coordination_fixes": {
+            "WEEEK": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "ZJX"
+                }
+            ],
+            "FONEX": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "MMKAY": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "FOLUT": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "KIZER": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "F11"
+                }
+            ],
+            "ROCIT": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "F11"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "F11",
+            "prefix": "2"
+        },
+        {
+            "id": "JAX",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "C"
+        }
+    ]
+}

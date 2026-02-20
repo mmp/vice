@@ -1,0 +1,201 @@
+{
+  "time": "2026-02-04T20:09:38.904336857Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:977:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American thirty three direct Coen you intercept the localizer",
+  "whisper_duration_ms": 323.709,
+  "audio_duration_ms": 3912,
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "AAL33",
+  "command": "DKOENN I",
+  "stt_aircraft": {
+    "American 33": {
+      "Callsign": "AAL33",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Chicago O'Hare": "KORD",
+        "Coen": "KOENN",
+        "Hazel": "HAZIL",
+        "Landuh": "LNDUH",
+        "Meemaw": "MEMAW",
+        "Ruzko": "RZUKO",
+        "Santoe": "SNTOE",
+        "Seika": "SEIKA",
+        "Tony": "TONIE",
+        "Vogler": "VOGLR"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Coen": "KOENN",
+          "Hazel": "HAZIL",
+          "Landuh": "LNDUH",
+          "Meemaw": "MEMAW",
+          "Ruzko": "RZUKO",
+          "Santoe": "SNTOE",
+          "Seika": "SEIKA",
+          "Vogler": "VOGLR"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28C",
+      "SID": "",
+      "STAR": "BENKY6",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4R",
+        "22L"
+      ]
+    },
+    "American 90": {
+      "Callsign": "AAL90",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Chicago O'Hare": "KORD",
+        "Hazel": "HAZIL",
+        "Seika": "SEIKA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Coen": "KOENN",
+          "Hazel": "HAZIL",
+          "Landuh": "LNDUH",
+          "Meemaw": "MEMAW",
+          "Ruzko": "RZUKO",
+          "Santoe": "SNTOE",
+          "Seika": "SEIKA",
+          "Vogler": "VOGLR"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28C",
+      "SID": "",
+      "STAR": "BENKY6",
+      "Altitude": 5292,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4R",
+        "22L"
+      ]
+    },
+    "American two 16": {
+      "Callsign": "AAL216",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Chicago O'Hare": "KORD",
+        "Coen": "KOENN",
+        "Hazel": "HAZIL",
+        "Meemaw": "MEMAW",
+        "Ruzko": "RZUKO",
+        "Seika": "SEIKA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Coen": "KOENN",
+          "Hazel": "HAZIL",
+          "Landuh": "LNDUH",
+          "Meemaw": "MEMAW",
+          "Ruzko": "RZUKO",
+          "Santoe": "SNTOE",
+          "Seika": "SEIKA",
+          "Vogler": "VOGLR"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28C",
+      "SID": "",
+      "STAR": "VEECK5",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4R",
+        "22L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American thirty three direct Coen you intercept the localizer\"",
+    "[local-stt] normalized words: [american 33 direct coen you intercept the localizer]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"33\" Type=1 Value=33",
+    "[local-stt]   token[2]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"coen\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"you\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"intercept\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"American 33\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"American 33\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"American 33\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"American 33\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 3 results",
+    "[local-stt]     result 0: \"American 90\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"American two 16\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"American 33\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"American 33\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"American 33\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"American 33\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"AAL33\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"American 33\")",
+    "[local-stt] callsign match: Callsign=\"AAL33\" SpokenKey=\"American 33\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=7000 Fixes=10 Approaches=1 AssignedApproach=\"ILS Runway 28C\" LAHSORunways=[4R 22L]",
+    "[local-stt]   fix: \"Vogler\" -\u003e \"VOGLR\"",
+    "[local-stt]   fix: \"Landuh\" -\u003e \"LNDUH\"",
+    "[local-stt]   fix: \"Santoe\" -\u003e \"SNTOE\"",
+    "[local-stt]   fix: \"Ruzko\" -\u003e \"RZUKO\"",
+    "[local-stt]   fix: \"Tony\" -\u003e \"TONIE\"",
+    "[local-stt]   fix: \"Chicago O'Hare\" -\u003e \"KORD\"",
+    "[local-stt]   fix: \"Coen\" -\u003e \"KOENN\"",
+    "[local-stt]   fix: \"Meemaw\" -\u003e \"MEMAW\"",
+    "[local-stt]   fix: \"Hazel\" -\u003e \"HAZIL\"",
+    "[local-stt]   fix: \"Seika\" -\u003e \"SEIKA\"",
+    "[local-stt]   approach: \"I L S runway two eight center\" -\u003e \"I8C\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"coen\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"you\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"intercept\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"coen\" against 10 fixes",
+    "[local-stt]   extractFix: matched \"coen\" -\u003e \"KOENN\" (exact)",
+    "[local-stt]   extractFix: matched \"coen\" -\u003e \"KOENN\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"DKOENN\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   skipping filler word: \"you\"",
+    "[local-stt]   matched command: \"I\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[DKOENN I] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DKOENN I] (conf=1.00)",
+    "[local-stt] validated commands: [DKOENN I] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL33 DKOENN I\" (conf=1.00, time=400.916µs) ==="
+  ]
+}

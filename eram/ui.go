@@ -216,7 +216,7 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 
 							imgui.TableNextColumn()
 							for _, wp := range appr.Waypoints[0] {
-								if wp.FAF {
+								if wp.FAF() {
 									imgui.Text(wp.Fix)
 									break
 								}

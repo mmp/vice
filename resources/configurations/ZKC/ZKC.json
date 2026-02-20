@@ -1,0 +1,349 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZKC 01 TMU",
+            "frequency": 125725,
+            "radio_name": "Kansas City Center"
+        },
+        "02": {
+            "callsign": "ZKC 02 (02) WICHITA HI",
+            "frequency": 132250,
+            "radio_name": "Kansas City Center"
+        },
+        "03": {
+            "callsign": "ZKC 03 (03) EMPORIA SH",
+            "frequency": 124975,
+            "radio_name": "Kansas City Center"
+        },
+        "06": {
+            "callsign": "ZKC 06 (06) ANTHONY HI",
+            "frequency": 133200,
+            "radio_name": "Kansas City Center"
+        },
+        "07": {
+            "callsign": "ZKC 07 (07) HUTCHINSON SH",
+            "frequency": 132825,
+            "radio_name": "Kansas City Center"
+        },
+        "12": {
+            "callsign": "ZKC 12 (12) COWES HI",
+            "frequency": 135050,
+            "radio_name": "Kansas City Center"
+        },
+        "14": {
+            "callsign": "ZKC 14 (14) FARMINGTON HI",
+            "frequency": 120825,
+            "radio_name": "Kansas City Center"
+        },
+        "20": {
+            "callsign": "ZKC 20 (20) HAYS HI",
+            "frequency": 134300,
+            "radio_name": "Kansas City Center"
+        },
+        "21": {
+            "callsign": "ZKC 21 (21) DODGE CITY SH",
+            "frequency": 120725,
+            "radio_name": "Kansas City Center"
+        },
+        "22": {
+            "callsign": "ZKC 22 (22) GARDEN CITY HI",
+            "frequency": 133450,
+            "radio_name": "Kansas City Center"
+        },
+        "23": {
+            "callsign": "ZKC 23 (23) LIBERAL HI",
+            "frequency": 134675,
+            "radio_name": "Kansas City Center"
+        },
+        "24": {
+            "callsign": "ZKC 24 (24) SALINA HI",
+            "frequency": 125175,
+            "radio_name": "Kansas City Center"
+        },
+        "26": {
+            "callsign": "ZKC 26 (26) KANSAS CITY HI",
+            "frequency": 133800,
+            "radio_name": "Kansas City Center"
+        },
+        "27": {
+            "callsign": "ZKC 27 (27) TULSA HI",
+            "frequency": 127625,
+            "radio_name": "Kansas City Center"
+        },
+        "28": {
+            "callsign": "ZKC 28 (28) SPRINGFIELD HI",
+            "frequency": 133475,
+            "radio_name": "Kansas City Center"
+        },
+        "29": {
+            "callsign": "ZKC 29 (29) VICHY HI",
+            "frequency": 132650,
+            "radio_name": "Kansas City Center"
+        },
+        "30": {
+            "callsign": "ZKC 30 (30) HALLSVILLE HI",
+            "frequency": 119475,
+            "radio_name": "Kansas City Center"
+        },
+        "31": {
+            "callsign": "ZKC 31 (31) SWISS SH",
+            "frequency": 125675,
+            "radio_name": "Kansas City Center"
+        },
+        "32": {
+            "callsign": "ZKC 32 (32) TRIX HI",
+            "frequency": 134625,
+            "radio_name": "Kansas City Center"
+        },
+        "33": {
+            "callsign": "ZKC 33 (33) MITBY SH",
+            "frequency": 126975,
+            "radio_name": "Kansas City Center"
+        },
+        "40": {
+            "callsign": "ZKC 40 (40) KIRKSVILLE LO",
+            "frequency": 125250,
+            "radio_name": "Kansas City Center"
+        },
+        "41": {
+            "callsign": "ZKC 41 (41) CHIEF SH",
+            "frequency": 134725,
+            "radio_name": "Kansas City Center"
+        },
+        "42": {
+            "callsign": "ZKC 42 (42) NAPOLEAN LO",
+            "frequency": 125550,
+            "radio_name": "Kansas City Center"
+        },
+        "44": {
+            "callsign": "ZKC 44 (44) TOPEKA LO",
+            "frequency": 123800,
+            "radio_name": "Kansas City Center"
+        },
+        "46": {
+            "callsign": "ZKC 46 (46) ST. JOESPH LO",
+            "frequency": 127900,
+            "radio_name": "Kansas City Center"
+        },
+        "47": {
+            "callsign": "ZKC 47 (47) TRAPR SH",
+            "frequency": 125425,
+            "radio_name": "Kansas City Center"
+        },
+        "48": {
+            "callsign": "ZKC 48 (48) EMPORIA LO",
+            "frequency": 127725,
+            "radio_name": "Kansas City Center"
+        },
+        "50": {
+            "callsign": "ZKC 50 (50) QUINCY LO",
+            "frequency": 126225,
+            "radio_name": "Kansas City Center"
+        },
+        "52": {
+            "callsign": "ZKC 52 (52) COLUMBIA LO",
+            "frequency": 134500,
+            "radio_name": "Kansas City Center"
+        },
+        "53": {
+            "callsign": "ZKC 53 (53) VICHY LO",
+            "frequency": 128350,
+            "radio_name": "Kansas City Center"
+        },
+        "54": {
+            "callsign": "ZKC 54 (54) JAZZ LO",
+            "frequency": 127475,
+            "radio_name": "Kansas City Center"
+        },
+        "58": {
+            "callsign": "ZKC 58 (58) VANDALIA LO",
+            "frequency": 124300,
+            "radio_name": "Kansas City Center"
+        },
+        "59": {
+            "callsign": "ZKC 59 (59) CAPITOL LO",
+            "frequency": 127275,
+            "radio_name": "Kansas City Center"
+        },
+        "62": {
+            "callsign": "ZKC 62 (62) STILLWATER LO",
+            "frequency": 127800,
+            "radio_name": "Kansas City Center"
+        },
+        "66": {
+            "callsign": "ZKC 66 (66) SALINA LO",
+            "frequency": 120200,
+            "radio_name": "Kansas City Center"
+        },
+        "67": {
+            "callsign": "ZKC 67 (67) RUSSELL LO",
+            "frequency": 124200,
+            "radio_name": "Kansas City Center"
+        },
+        "68": {
+            "callsign": "ZKC 68 (68) GARDEN CITY LO",
+            "frequency": 125200,
+            "radio_name": "Kansas City Center"
+        },
+        "72": {
+            "callsign": "ZKC 72 (72) VINTA LO",
+            "frequency": 128600,
+            "radio_name": "Kansas City Center"
+        },
+        "84": {
+            "callsign": "ZKC 84 (84) ST. LOUIS HI",
+            "frequency": 133150,
+            "radio_name": "Kansas City Center"
+        },
+        "90": {
+            "callsign": "ZKC 90 (90) BLUES SH",
+            "frequency": 132875,
+            "radio_name": "Kansas City Center"
+        },
+        "92": {
+            "callsign": "ZKC 92 (92) COLIE SH",
+            "frequency": 133725,
+            "radio_name": "Kansas City Center"
+        },
+        "94": {
+            "callsign": "ZKC 94 (94) FARGO SH",
+            "frequency": 125725,
+            "radio_name": "Kansas City Center"
+        },
+        "97": {
+            "callsign": "ZKC 97 (97) CHANNUTE SH",
+            "frequency": 118125,
+            "radio_name": "Kansas City Center"
+        },
+        "98": {
+            "callsign": "ZKC 98 (98) ROCK SH",
+            "frequency": 133225,
+            "radio_name": "Kansas City Center"
+        },
+        "99": {
+            "callsign": "ZKC 99 ZKC GUARD",
+            "frequency": 121500,
+            "radio_name": "Kansas City Center"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "MURAH": [
+                {
+                    "type": "route",
+                    "to": "ZFW",
+                    "from": "ZKC"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "CMI",
+            "stars_id": "NNN",
+            "single_char_stars_id": "N",
+            "two_char_stars_id": "NN",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "END",
+            "stars_id": "EEE",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "EN",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "EVV",
+            "stars_id": "RRR",
+            "single_char_stars_id": "R",
+            "two_char_stars_id": "RR",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "FSM",
+            "stars_id": "VVV",
+            "single_char_stars_id": "V",
+            "two_char_stars_id": "VV",
+            "field_e_format": "TwoLettersAndSubset",
+            "field_e_letter": "F"
+        },
+        {
+            "id": "ICT",
+            "stars_id": "WWW",
+            "single_char_stars_id": "W",
+            "two_char_stars_id": "IC",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "MCI",
+            "stars_id": "ZZZ",
+            "single_char_stars_id": "Z",
+            "two_char_stars_id": "MC",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "OKC",
+            "stars_id": "KKK",
+            "single_char_stars_id": "K",
+            "two_char_stars_id": "KK",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "SGF",
+            "stars_id": "OOO",
+            "single_char_stars_id": "O",
+            "two_char_stars_id": "SG",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "SZL",
+            "stars_id": "LLL",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "SZ",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "T75",
+            "stars_id": "SSS",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "ST",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "TUL",
+            "stars_id": "TTT",
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "TU",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "ZAB",
+            "prefix": "A"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZDV",
+            "prefix": "D"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "F"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZME",
+            "prefix": "M"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "P"
+        }
+    ]
+}

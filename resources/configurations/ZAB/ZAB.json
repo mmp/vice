@@ -1,0 +1,336 @@
+{
+    "control_positions": {
+        "00": {
+            "callsign": "ZAB 00 P50 Satellite Clearance",
+            "frequency": 127450,
+            "radio_name": "PHX Satellite Clearance"
+        },
+        "15": {
+            "callsign": "ZAB 15 E Borger Low",
+            "frequency": 127850,
+            "radio_name": "Albuquerque Center"
+        },
+        "16": {
+            "callsign": "ZAB 16 N Sandia Low",
+            "frequency": 132800,
+            "radio_name": "Albuquerque Center"
+        },
+        "17": {
+            "callsign": "ZAB 17 N Lavan Low",
+            "frequency": 124325,
+            "radio_name": "Albuquerque Center"
+        },
+        "19": {
+            "callsign": "ZAB 19 SE Deming Low",
+            "frequency": 128200,
+            "radio_name": "Albuquerque Center"
+        },
+        "20": {
+            "callsign": "ZAB 20 SE Salt Flat Low",
+            "frequency": 135875,
+            "radio_name": "Albuquerque Center"
+        },
+        "21": {
+            "callsign": "ZAB 21 SE Cannon Low",
+            "frequency": 126850,
+            "radio_name": "Albuquerque Center"
+        },
+        "23": {
+            "callsign": "ZAB 23 SE Roswell Low/Hi",
+            "frequency": 132650,
+            "radio_name": "Albuquerque Center"
+        },
+        "37": {
+            "callsign": "ZAB 37 NW Hippi Hi",
+            "frequency": 134325,
+            "radio_name": "Albuquerque Center"
+        },
+        "38": {
+            "callsign": "ZAB 38 NW Miami Low/Hi",
+            "frequency": 132900,
+            "radio_name": "Albuquerque Center"
+        },
+        "39": {
+            "callsign": "ZAB 39 NW Fosil Low/Hi",
+            "frequency": 135725,
+            "radio_name": "Albuquerque Center"
+        },
+        "41": {
+            "callsign": "ZAB 41 TMU",
+            "frequency": 122200,
+            "radio_name": "ZAB Traffic Management"
+        },
+        "42": {
+            "callsign": "ZAB 42 SW Gila Bend Low",
+            "frequency": 126450,
+            "radio_name": "Albuquerque Center"
+        },
+        "43": {
+            "callsign": "ZAB 43 NW Drake Low",
+            "frequency": 128450,
+            "radio_name": "Albuquerque Center"
+        },
+        "45": {
+            "callsign": "ZAB 45 NW Winslow Low",
+            "frequency": 127675,
+            "radio_name": "Albuquerque Center"
+        },
+        "46": {
+            "callsign": "ZAB 46 SW Tucson Low",
+            "frequency": 125400,
+            "radio_name": "Albuquerque Center"
+        },
+        "47": {
+            "callsign": "ZAB 47 SW Silver City Low",
+            "frequency": 134450,
+            "radio_name": "Albuquerque Center"
+        },
+        "49": {
+            "callsign": "ZAB 49 SW Stanfield Low",
+            "frequency": 125250,
+            "radio_name": "Albuquerque Center"
+        },
+        "50": {
+            "callsign": "ZAB 50 NW Payson Hi",
+            "frequency": 128125,
+            "radio_name": "Albuquerque Center"
+        },
+        "58": {
+            "callsign": "ZAB 58 N Black Rock Ultra Hi",
+            "frequency": 126925,
+            "radio_name": "Albuquerque Center"
+        },
+        "63": {
+            "callsign": "ZAB 63 SE El Paso Hi",
+            "frequency": 120975,
+            "radio_name": "Albuquerque Center"
+        },
+        "65": {
+            "callsign": "ZAB 65 SW Phoenix Ultra Hi",
+            "frequency": 132450,
+            "radio_name": "Albuquerque Center"
+        },
+        "67": {
+            "callsign": "ZAB 67 NW Winslow Hi",
+            "frequency": 133925,
+            "radio_name": "Albuquerque Center"
+        },
+        "68": {
+            "callsign": "ZAB 68 N Albuquerque Hi",
+            "frequency": 134600,
+            "radio_name": "Albuquerque Center"
+        },
+        "70": {
+            "callsign": "ZAB 70 E Espan Hi",
+            "frequency": 120950,
+            "radio_name": "Albuquerque Center"
+        },
+        "71": {
+            "callsign": "ZAB 71 E Kento Hi",
+            "frequency": 133050,
+            "radio_name": "Albuquerque Center"
+        },
+        "72": {
+            "callsign": "ZAB 72 E Cimarron Ultra Hi",
+            "frequency": 128225,
+            "radio_name": "Albuquerque Center"
+        },
+        "78": {
+            "callsign": "ZAB 78 SE Fort Stockton Ultra Hi",
+            "frequency": 133225,
+            "radio_name": "Albuquerque Center"
+        },
+        "79": {
+            "callsign": "ZAB 79 N Otto Hi",
+            "frequency": 118650,
+            "radio_name": "Albuquerque Center"
+        },
+        "80": {
+            "callsign": "ZAB 80 SW Cochise Ultra Hi",
+            "frequency": 126225,
+            "radio_name": "Albuquerque Center"
+        },
+        "86": {
+            "callsign": "ZAB 86 TMU",
+            "frequency": 122200,
+            "radio_name": "TMU 86"
+        },
+        "87": {
+            "callsign": "ZAB 87 SE Texico Hi",
+            "frequency": 132325,
+            "radio_name": "Albuquerque Center"
+        },
+        "89": {
+            "callsign": "ZAB 89 SE Sunland Hi",
+            "frequency": 125525,
+            "radio_name": "Albuquerque Center"
+        },
+        "90": {
+            "callsign": "ZAB 90 SW San Simon Hi",
+            "frequency": 133000,
+            "radio_name": "Albuquerque Center"
+        },
+        "91": {
+            "callsign": "ZAB 91 SW Gila Bend Hi",
+            "frequency": 135150,
+            "radio_name": "Albuquerque Center"
+        },
+        "92": {
+            "callsign": "ZAB 92 NW Prescott Ultra Hi",
+            "frequency": 135325,
+            "radio_name": "Albuquerque Center"
+        },
+        "93": {
+            "callsign": "ZAB 93 N Gallup Hi",
+            "frequency": 120550,
+            "radio_name": "Albuquerque Center"
+        },
+        "94": {
+            "callsign": "ZAB 94 N Corona Low/Hi",
+            "frequency": 133650,
+            "radio_name": "Albuquerque Center"
+        },
+        "95": {
+            "callsign": "ZAB 95 E Las Vegas Hi",
+            "frequency": 125075,
+            "radio_name": "Albuquerque Center"
+        },
+        "96": {
+            "callsign": "ZAB 96 E Tucumcari Ultra Hi",
+            "frequency": 128675,
+            "radio_name": "Albuquerque Center"
+        },
+        "97": {
+            "callsign": "ZAB 97 E Amarillo Hi",
+            "frequency": 134750,
+            "radio_name": "Albuquerque Center"
+        },
+        "98": {
+            "callsign": "ZAB 98 E Dalhart Ultra Hi",
+            "frequency": 132125,
+            "radio_name": "Albuquerque Center"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "BRUSR": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ],
+            "HOMRR": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ],
+            "GEELA": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ],
+            "BRDEY": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "ABQ",
+            "stars_id": "AAA",
+            "single_char_stars_id": "A",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "AMA",
+            "stars_id": "MMM",
+            "single_char_stars_id": "M",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CVS",
+            "stars_id": "CCC",
+            "single_char_stars_id": "C",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ELP",
+            "stars_id": "EEE",
+            "single_char_stars_id": "E",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "FHU",
+            "stars_id": "FFF",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "F"
+        },
+        {
+            "id": "HMN",
+            "stars_id": "SSS",
+            "single_char_stars_id": "S",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "LUF",
+            "stars_id": "LLL",
+            "single_char_stars_id": "U",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NYL",
+            "stars_id": "YYY",
+            "two_char_stars_id": "YY",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "Y"
+        },
+        {
+            "id": "P50",
+            "stars_id": "PPP",
+            "single_char_stars_id": "P",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ROW",
+            "stars_id": "RRR",
+            "single_char_stars_id": "R",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "U90",
+            "stars_id": "DDD",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "D"
+        },
+        {
+            "id": "ZDV",
+            "prefix": "D"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "F"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "H"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "K"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "L"
+        }
+    ]
+}

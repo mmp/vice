@@ -1,0 +1,550 @@
+{
+    "control_positions": {
+        "1R": {
+            "callsign": "DTW_R_APP",
+            "frequency": 126850,
+            "radio_name": "Detroit Approach"
+        },
+        "1V": {
+            "callsign": "DTW_V_APP",
+            "frequency": 124975,
+            "radio_name": "Detroit Approach"
+        },
+        "1F": {
+            "callsign": "DTW_F_APP",
+            "frequency": 126225,
+            "radio_name": "Detroit Approach"
+        },
+        "1H": {
+            "callsign": "DTW_H_APP",
+            "frequency": 124250,
+            "radio_name": "Detroit Approach"
+        },
+        "1A": {
+            "callsign": "DTW_A_APP",
+            "frequency": 124050,
+            "radio_name": "Detroit Approach"
+        },
+        "1B": {
+            "callsign": "DTW_B_APP",
+            "frequency": 125150,
+            "radio_name": "Detroit Approach"
+        },
+        "1Z": {
+            "callsign": "DTW_Z_APP",
+            "frequency": 123900,
+            "radio_name": "Detroit Approach"
+        },
+        "1E": {
+            "callsign": "DTW_E_DEP",
+            "frequency": 132025,
+            "radio_name": "Detroit Departure"
+        },
+        "1W": {
+            "callsign": "DTW_W_DEP",
+            "frequency": 125525,
+            "radio_name": "Detroit Departure"
+        },
+        "1Y": {
+            "callsign": "DTW_Y_APP",
+            "frequency": 118950,
+            "radio_name": "Detroit Approach"
+        },
+        "1D": {
+            "callsign": "DTW_D_APP",
+            "frequency": 134300,
+            "radio_name": "Detroit Approach"
+        },
+        "1P": {
+            "callsign": "DTW_P_APP",
+            "frequency": 132350,
+            "radio_name": "Detroit Approach"
+        },
+        "1N": {
+            "callsign": "DTW_SW_TWR",
+            "frequency": 135000,
+            "radio_name": "Detroit Tower"
+        },
+        "1M": {
+            "callsign": "DTW_NE_TWR",
+            "frequency": 128750,
+            "radio_name": "Detroit Tower"
+        },
+        "1L": {
+            "callsign": "DTW_NW_TWR",
+            "frequency": 128125,
+            "radio_name": "Detroit Tower"
+        },
+        "4P": {
+            "callsign": "PTK_TWR",
+            "frequency": 120500,
+            "radio_name": "Pontiac Tower"
+        },
+        "6Y": {
+            "callsign": "DET_TWR",
+            "frequency": 121300,
+            "radio_name": "Detroit Tower"
+        },
+        "8W": {
+            "callsign": "YIP_TWR",
+            "frequency": 125275,
+            "radio_name": "Willow Run Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "43X": {
+                "inbound_assignments": {
+                    "CRAKN2": "1H",
+                    "CUUGR2": "1F",
+                    "FOREY2": "1D",
+                    "GIGGY2": "1D",
+                    "GRAYT2": "1R",
+                    "HAYLL3": "1V",
+                    "KKISS2": "1R",
+                    "KLYNK3": "1H",
+                    "LECTR3": "1V",
+                    "OKLND1": "1P",
+                    "PETTE2": "1Y",
+                    "RRALF3": "1P",
+                    "WNGNT2": "1F"
+                },
+                "departure_assignments": {
+                    "KDET": "1D",
+                    "KDTW": "1E",
+                    "KPTK": "1P",
+                    "KYIP": "1Y"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1E",
+                        "1F",
+                        "1H",
+                        "1P",
+                        "1R",
+                        "1V",
+                        "1Y"
+                    ]
+                }
+            },
+            "NOR": {
+                "inbound_assignments": {
+                    "CRAKN2_FINALN": "1A",
+                    "CUUGR2_FINALN": "1A",
+                    "GRAYT2_FINALN": "1A",
+                    "KKISS2_FINALN": "1A",
+                    "KLYNK3_FINALN": "1A",
+                    "LECTR3_FINALN": "1A",
+                    "WNGNT2_FINALN": "1A"
+                },
+                "default_consolidation": {
+                    "1A": []
+                }
+            },
+            "22X": {
+                "inbound_assignments": {
+                    "BONZZ2": "1H",
+                    "FERRL2": "1F",
+                    "FOREY2": "1D",
+                    "GIGGY2": "1D",
+                    "HANBL3": "1V",
+                    "HTROD2": "1H",
+                    "LAYKS2": "1R",
+                    "OKLND1": "1P",
+                    "PETTE2": "1Y",
+                    "RKCTY2": "1R",
+                    "RRALF3": "1P",
+                    "TPGUN2": "1F",
+                    "VCTRZ2": "1V"
+                },
+                "departure_assignments": {
+                    "KDET": "1D",
+                    "KDTW": "1W",
+                    "KPTK": "1P",
+                    "KYIP": "1Y"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1F",
+                        "1H",
+                        "1P",
+                        "1R",
+                        "1V",
+                        "1W",
+                        "1Y"
+                    ]
+                }
+            },
+            "SOU": {
+                "inbound_assignments": {
+                    "BONZZ2": "1H",
+                    "FERRL2": "1F",
+                    "FOREY2": "1D",
+                    "GIGGY2": "1D",
+                    "HANBL3": "1V",
+                    "HTROD2": "1H",
+                    "LAYKS2": "1R",
+                    "OKLND1": "1P",
+                    "PETTE2": "1Y",
+                    "RKCTY2": "1R",
+                    "RRALF3": "1P",
+                    "TPGUN2": "1F",
+                    "VCTRZ2": "1V"
+                },
+                "departure_assignments": {
+                    "KDET": "1D",
+                    "KDTW": "1E",
+                    "KPTK": "1P",
+                    "KYIP": "1Y"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1E",
+                        "1F",
+                        "1H",
+                        "1P",
+                        "1R",
+                        "1V",
+                        "1Y"
+                    ]
+                }
+            },
+            "SO1": {
+                "inbound_assignments": {
+                    "BONZZ2_FINALS": "1A",
+                    "FERRL2_FINALS": "1A",
+                    "HANBL3_FINALS": "1A",
+                    "HTROD2_FINALS": "1A",
+                    "LAYKS2_FINALS": "1A",
+                    "RKCTY2_FINALS": "1A",
+                    "TPGUN2_FINALS": "1A",
+                    "VCTRZ2_FINALS": "1A"
+                },
+                "default_consolidation": {
+                    "1A": []
+                }
+            },
+            "WES": {
+                "inbound_assignments": {
+                    "CRAKN2": "1H",
+                    "FERRL2": "1F",
+                    "FOREY2": "1D",
+                    "GIGGY2": "1D",
+                    "GRAYT2": "1R",
+                    "HANBL3": "1V",
+                    "KKISS2": "1R",
+                    "KLYNK3": "1H",
+                    "OKLND1": "1P",
+                    "PETTE2": "1Y",
+                    "RRALF3": "1P",
+                    "TPGUN2": "1F",
+                    "VCTRZ2": "1V"
+                },
+                "departure_assignments": {
+                    "KDET": "1D",
+                    "KDTW": "1E",
+                    "KPTK": "1P",
+                    "KYIP": "1Y"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1E",
+                        "1F",
+                        "1H",
+                        "1P",
+                        "1R",
+                        "1V",
+                        "1Y"
+                    ]
+                }
+            },
+            "WE1": {
+                "inbound_assignments": {
+                    "CRAKN2_FINALW": "1A",
+                    "FERRL2_FINALW": "1A",
+                    "GRAYT2_FINALW": "1A",
+                    "HANBL3_FINALW": "1A",
+                    "KKISS2_FINALW": "1A",
+                    "KLYNK3_FINALW": "1A",
+                    "TPGUN2_FINALW": "1A",
+                    "VCTRZ2_FINALW": "1A"
+                },
+                "default_consolidation": {
+                    "1A": []
+                }
+            }
+        },
+        "center": "KDTW",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "S NOCA",
+                    "description": "DTW South CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "N042.13.55.716,W083.24.08.245",
+                        "N042.35.57.275,W083.09.27.333",
+                        "N042.30.15.902,W083.00.37.078",
+                        "N042.13.00.839,W083.17.38.505"
+                    ]
+                },
+                {
+                    "id": "N NOCA",
+                    "description": "DTW North CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "N042.13.32.013,W083.26.15.027",
+                        "N042.11.26.755,W083.18.21.324",
+                        "N041.45.06.674,W083.33.50.438",
+                        "N041.49.48.940,W083.45.43.533"
+                    ]
+                },
+                {
+                    "id": "W NOCA",
+                    "description": "DTW West CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "N042.14.04.807,W083.20.09.924",
+                        "N042.10.27.635,W083.20.12.396",
+                        "N042.16.22.356,W082.43.29.335",
+                        "N042.16.22.356,W082.43.29.335"
+                    ]
+                }
+            ]
+        },
+        "scratchpads": {
+            "SINKR": "SIN",
+            "ZEGBI": "ZEG",
+            "STAZE": "STA",
+            "BROKK": "BRO",
+            "LNCON": "LNC",
+            "SMUUV": "SMU",
+            "WINNZ": "WIN",
+            "GRIVY": "GRI",
+            "MONEE": "MON",
+            "MRDOC": "MRD",
+            "ESSBE": "ESS",
+            "TORRR": "TOR",
+            "BGHRT": "BGH",
+            "GNZOE": "GNZ",
+            "ZETTR": "ZET",
+            "SNDRS": "SND",
+            "KAYLN": "KAY",
+            "DUNKS": "DUN",
+            "SLLAP": "SLL",
+            "CLVIN": "CLV"
+        },
+        "significant_points": {
+            "BGHRT": {},
+            "BROKK": {},
+            "CLVIN": {},
+            "DUNKS": {},
+            "ESSBE": {},
+            "GNZOE": {},
+            "GRIVY": {},
+            "KAYLN": {},
+            "LNCON": {},
+            "MONEE": {},
+            "MRDOC": {},
+            "SINKR": {},
+            "SLLAP": {},
+            "SMUUV": {},
+            "SNDRS": {},
+            "STAZE": {},
+            "TORRR": {},
+            "WINNZ": {},
+            "ZEGBI": {},
+            "ZETTR": {}
+        },
+        "stars_maps": [
+            "DTW-023 (SAT APCH)",
+            "DTW-007 (SF-ARR FEEDER)",
+            "DTW-008 (SF-DEP SAT)",
+            "DTW-009 (NF-ARR FEEDER)",
+            "DTW-011 (WF-ARR FEEDER)",
+            "DTW-012 (WF-DEP SAT)",
+            "DTW-013 (22R Z)",
+            "DTW-014 (4L Z)",
+            "DTW-015 (22L)",
+            "DTW-016 (4R)",
+            "DTW-017 (21L)",
+            "DTW-018 (3R)",
+            "DTW-019 (27R)",
+            "DTW-020 (27L)",
+            "DTW-124 (4L Y)",
+            "DTW-125 (22R Y)",
+            "DTW-118 (NORTH FLOW CAGE)",
+            "DTW-119 (SOUTH FLOW CAGE)",
+            "DTW-201 (NORTH FLOW SIDS)",
+            "DTW-202 (SOUTH FLOW SIDS)",
+            "DTW-203 (METRO SID)",
+            "DTW-211 (NORTH FLOW STARS)",
+            "DTW-214 (WEST FLOW STARS)",
+            "DTW-216 (SOUTH FLOW STARS)",
+            "DTW-220 (SATELLITE STARS)",
+            "DTW-010 (NF-DEP SAT)",
+            "DTW-001 (MVA)",
+            "DTW-133 (NORTH FLOW INITIAL SIDS)",
+            "DTW-134 (SOUTH FLOW INITIAL SIDS)",
+            "DTW-600 (NF DEP DELEGATIONS)",
+            "DTW-601 (NF SAT DELEGATIONS)",
+            "DTW-602 (NF ARR FEEDER DELEGATIONS)",
+            "DTW-604 (SF DEP DELEGATIONS)",
+            "DTW-605 (SF SAT DELEGATIONS)",
+            "DTW-606 (SF ARR FEEDER DELEGATIONS)",
+            "DTW-608 (WF DEP DELEGATIONS)",
+            "DTW-609 (WF SAT DELEGATIONS)",
+            "DTW-610 (WF ARR FEEDER DELEGATIONS)"
+        ],
+        "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
+        "coordination_fixes": {
+            "BONZZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "CRAKN": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "TPGUN": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "WNGNT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "GRAYT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HANBL": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HAYLL": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "SMMNS": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HUMRR": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "SHANX": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "VCTRZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "NUTTZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "NACCA": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "RIPPY": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "PETTE": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "KILIT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "LOPVO": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CLE",
+            "prefix": "2"
+        },
+        {
+            "id": "LAN",
+            "prefix": "1"
+        },
+        {
+            "id": "MTC",
+            "prefix": "4"
+        },
+        {
+            "id": "TOL",
+            "prefix": "3"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "5E": {
+            "callsign": "NHK_E_APP",
+            "frequency": 127950,
+            "radio_name": "Patuxent Approach"
+        },
+        "5F": {
+            "callsign": "NHK_F_APP",
+            "frequency": 127950,
+            "radio_name": "Patuxent Approach"
+        },
+        "5W": {
+            "callsign": "NHK_W_APP",
+            "frequency": 120050,
+            "radio_name": "Patuxent Approach"
+        },
+        "5Z": {
+            "callsign": "NHK_TWR",
+            "frequency": 123700,
+            "radio_name": "Patuxent Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "DOV",
+            "prefix": "2"
+        },
+        {
+            "id": "ORF",
+            "prefix": "3"
+        },
+        {
+            "id": "PCT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

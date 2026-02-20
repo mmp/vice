@@ -1,0 +1,48 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "CMI_E_APP",
+            "frequency": 121350,
+            "radio_name": "Champaign Approach"
+        },
+        "1T": {
+            "callsign": "CMI_TWR",
+            "frequency": 120400,
+            "radio_name": "Champaign Tower"
+        },
+        "1W": {
+            "callsign": "CMI_W_APP",
+            "frequency": 132850,
+            "radio_name": "Champaign Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "GUS",
+            "prefix": "3"
+        },
+        {
+            "id": "HUF",
+            "prefix": "4"
+        },
+        {
+            "id": "T75",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "C"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "K"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

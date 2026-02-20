@@ -1,0 +1,32 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "HTS_N_APP",
+            "frequency": 128400,
+            "radio_name": "Huntington Approach"
+        },
+        "1S": {
+            "callsign": "HTS_S_APP",
+            "frequency": 119750,
+            "radio_name": "Huntington Approach"
+        },
+        "1T": {
+            "callsign": "HTS_TWR",
+            "frequency": 118500,
+            "radio_name": "Huntington Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CRW",
+            "prefix": "1"
+        },
+        {
+            "id": "ZID",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}
