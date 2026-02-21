@@ -311,7 +311,7 @@ build_whisper() {
             -DGGML_METAL_EMBED_LIBRARY=ON \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.4
     elif [ "$OS_TYPE" = "linux" ]; then
         # Disable GGML_NATIVE to avoid -march=native. Enable instruction sets
         # safe for computers from ~2013+ (Haswell era, see build.bat for details).
@@ -367,7 +367,7 @@ build_sherpa() {
             -DSHERPA_ONNX_BUILD_C_API_EXAMPLES=OFF \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.4
     elif [ "$OS_TYPE" = "linux" ]; then
         cmake -S sherpa-onnx -B sherpa-onnx/build_go \
             -DBUILD_SHARED_LIBS=OFF \
@@ -432,9 +432,9 @@ build_vice() {
 
     # Build
     if [ "$OS_TYPE" = "macos" ]; then
-        export MACOSX_DEPLOYMENT_TARGET='13.0'
-        export CGO_CFLAGS='-mmacosx-version-min=13.0'
-        export CGO_LDFLAGS='-mmacosx-version-min=13.0'
+        export MACOSX_DEPLOYMENT_TARGET='13.4'
+        export CGO_CFLAGS='-mmacosx-version-min=13.4'
+        export CGO_LDFLAGS='-mmacosx-version-min=13.4'
 
         if [ "$DO_UNIVERSAL" = true ]; then
             echo "Building universal binary..."
