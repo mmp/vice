@@ -480,6 +480,8 @@ var secondaryAcCommands = [][3]string{
 	{"*CAC*", `"Cancel approach clearance".`, "*CAC*"},
 	{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},
 	{"*I*", `"Intercept the localizer."`, "*I*"},
+	{"*CV_rwy*", `"Cleared visual approach runway _rwy_."`, "*CV13L*"},
+	{"*FS*", `"Do you have the field in sight?"`, "*FS*"},
 	{"*ID*", `"Ident."`, "*ID*"},
 	{"*CVS*", `"Climb via the SID"`, "*CVS*"},
 	{"*DVS*", `"Descend via the STAR"`, "*CVS*"},
