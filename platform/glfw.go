@@ -311,10 +311,8 @@ func (g *glfwPlatform) NewFrame() {
 	if g.cursorOverride != nil {
 		// A pane set a specific OS cursor (e.g., ERAM); show it
 		// regardless of the imgui cursor state.
-		if g.cursorOverride != g.currentCursor {
-			g.currentCursor = g.cursorOverride
-			g.window.SetCursor(g.cursorOverride)
-		}
+		g.currentCursor = g.cursorOverride
+		g.window.SetCursor(g.cursorOverride)
 		g.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
 	} else if g.mouseDeltaMode || imgui_cursor == imgui.MouseCursorNone {
 		// Hide OS mouse cursor (the pane draws its own)
