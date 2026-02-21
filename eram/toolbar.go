@@ -584,14 +584,14 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		toolbarDrawState.buttonCursor[1] += buttonSize(buttonFull, scale)[1] + 3
 		p0 := toolbarDrawState.buttonCursor
 		{
-			altPs := ep.currentPrefs()
-			altimActive := altPs.AltimSet.Visible || ep.altimSetMenuOpen
+			ps := ep.currentPrefs()
+			altimActive := ps.AltimSet.Visible || ep.altimSetMenuOpen
 			if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, altimActive, false) {
-				if altPs.AltimSet.Visible {
-					altPs.AltimSet.Visible = false
+				if ps.AltimSet.Visible {
+					ps.AltimSet.Visible = false
 					ep.altimSetMenuOpen = false
 				} else {
-					altPs.AltimSet.Visible = true
+					ps.AltimSet.Visible = true
 					ep.altimSetMenuOpen = false
 				}
 			}

@@ -1143,33 +1143,19 @@
                 {
                     "airlines": [
                         {
-                            "icao": "UAL",
-                            "fleet": "default"
+                            "icao": "ENY"
+                        },
+                        {
+                            "icao": "EJA"
+                        },
+                        {
+                            "icao": "SWA"
                         }
                     ],
-                    "destination": "KIAH",
-                    "exit": "DANLS",
-                    "route": "DANL4 DANLS UJM Q31 DHART Q33 SWEUP ZEEKK3"
+                    "destination": "KCLE",
+                    "exit": "OLSIE",
+                    "route": "KRSTA4 OLSIE IIU DRUGA ROKNN4"
                 },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ]
-                },
-                {
-                    "exit": "BRXTN",
-                    "destination": "KMIA",
-                    "altitude": 35000,
-                    "route": "TIPPN3 BRXTN ACORI FROGZ4",
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ]
-                },
-              
                 {
                     "airlines": [
                         {

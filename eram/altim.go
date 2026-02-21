@@ -168,7 +168,7 @@ draining:
 	titleFont := ep.ERAMFont(2)
 	titleTextStyle := renderer.TextStyle{
 		Font:        titleFont,
-		Color:       radar.Brightness(90).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
+		Color:       ps.Brightness.Text.ScaleRGB(radar.Brightness(ps.AltimSet.Bright).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})),
 		LineSpacing: 0,
 	}
 
@@ -176,12 +176,11 @@ draining:
 	listFont := ep.ERAMFont(fontNum)
 	textStyle := renderer.TextStyle{
 		Font:        listFont,
-		Color:       radar.Brightness(90).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
+		Color:       ps.Brightness.Text.ScaleRGB(radar.Brightness(ps.AltimSet.Bright).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})),
 		LineSpacing: 0,
 	}
 
 	_, by := listFont.BoundText("0", textStyle.LineSpacing)
-	lineH := float32(by + 2)
 
 	// Scale boxes based on font size: 1=0.85x, 2=1.0x, 3=1.2x (only affects list)
 	fontScale := []float32{0.85, 1.0, 1.2}[fontNum-1]
@@ -193,22 +192,13 @@ draining:
 
 	p0 := ps.AltimSet.Position
 
-	// Calculate window width based on number of columns and font scale
-	numCols := ps.AltimSet.Col
-	if numCols < 1 {
-		numCols = 1
-	}
-	if numCols > 4 {
-		numCols = 4
-	}
-	width := altimWindowWidth * float32(numCols) * fontScale
-
 	titleH := float32(16)
 	if _, tby := titleFont.BoundText("ALTIM SET", titleTextStyle.LineSpacing); tby > 0 {
 		titleH = float32(tby) + 4
 	}
 
 	numRows := len(ep.AltimSetAirports)
+
 	visibleRows := ps.AltimSet.Lines
 	if visibleRows < 3 {
 		visibleRows = 3
@@ -216,11 +206,42 @@ draining:
 	if visibleRows > 24 {
 		visibleRows = 24
 	}
+
+	// Calculate window width based on actual number of columns needed
+	numCols := ps.AltimSet.Col
+	if numCols < 1 {
+		numCols = 1
+	}
+	if numCols > 4 {
+		numCols = 4
+	}
+
+	var width float32
 	var bodyHeight float32
-	if visibleRows == 0 {
-		bodyHeight = lineH + 4
+
+	// If no airports, just show title bar with minimal width
+	if numRows == 0 {
+		width = altimWindowWidth * fontScale
+		bodyHeight = 0
 	} else {
-		bodyHeight = boxTopPad + boxBottomPad + float32(visibleRows)*boxH + float32(visibleRows-1)*boxGap
+		// Calculate actual columns needed based on number of airports and rows
+		actualCols := (numRows + visibleRows - 1) / visibleRows // Ceiling division
+		if actualCols < 1 {
+			actualCols = 1
+		}
+		if actualCols > numCols {
+			actualCols = numCols // Don't exceed user preference
+		}
+
+		// Calculate actual rows needed - since rendering fills columns with visibleRows items each,
+		// the first column will have min(visibleRows, numRows) items
+		actualRows := numRows
+		if actualRows > visibleRows {
+			actualRows = visibleRows
+		}
+
+		width = altimWindowWidth * float32(actualCols) * fontScale
+		bodyHeight = boxTopPad + boxBottomPad + float32(actualRows)*boxH + float32(actualRows-1)*boxGap
 	}
 	height := titleH + bodyHeight
 
@@ -269,7 +290,7 @@ draining:
 	titleText := "ALTIM SET"
 	ttw, tth := titleFont.BoundText(titleText, titleTextStyle.LineSpacing)
 	titlePos := math.Add2f(titleP0, [2]float32{width/2 - float32(ttw)/2, -titleH/2 + float32(tth)/2})
-	titleColor := ps.Brightness.Text.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
+	titleColor := titleTextStyle.Color
 
 	// M button (left side of title bar)
 	mLabel := "M"
@@ -433,64 +454,10 @@ draining:
 	}
 
 	// Draw airport rows
-	// Calculate colors based on brightness setting
-	bright := ps.AltimSet.Bright
-	if bright < 0 {
-		bright = 0
-	}
-	if bright > 100 {
-		bright = 100
-	}
-
-	// Scale yellow color based on bright (0=black, 80=current, 100=max bright)
-	var yellowColor renderer.RGB
-	if bright <= 80 {
-		scale := float32(bright) / 80.0
-		yellowColor = renderer.RGB{
-			R: (159.0 / 255.0) * scale,
-			G: (163.0 / 255.0) * scale,
-			B: (9.0 / 255.0) * scale,
-		}
-	} else {
-		// Interpolate between 80 and 100
-		scale := float32(bright-80) / 20.0
-		r80 := float32(159.0 / 255.0)
-		r100 := float32(198.0 / 255.0)
-		g80 := float32(163.0 / 255.0)
-		g100 := float32(203.0 / 255.0)
-		b80 := float32(9.0 / 255.0)
-		b100 := float32(11.0 / 255.0)
-		yellowColor = renderer.RGB{
-			R: r80 + (r100-r80)*scale,
-			G: g80 + (g100-g80)*scale,
-			B: b80 + (b100-b80)*scale,
-		}
-	}
-
-	// Scale text color based on bright (0=black, 80=default 187/255, 100=233/255)
-	var textColor renderer.RGB
-	if bright <= 80 {
-		scale := float32(bright) / 80.0
-		textColor = renderer.RGB{
-			R: float32(187.0/255.0) * scale,
-			G: float32(187.0/255.0) * scale,
-			B: float32(187.0/255.0) * scale,
-		}
-	} else {
-		// Interpolate between 80 and 100
-		scale := float32(bright-80) / 20.0
-		t80 := float32(187.0 / 255.0)
-		t100 := float32(233.0 / 255.0)
-		textColor = renderer.RGB{
-			R: t80 + (t100-t80)*scale,
-			G: t80 + (t100-t80)*scale,
-			B: t80 + (t100-t80)*scale,
-		}
-	}
-	// Apply brightness scaling
-	textColor = ps.Brightness.Text.ScaleRGB(textColor)
-
+	// Calculate yellow indicator color based on brightness setting
+	yellowColor := radar.Brightness(ps.AltimSet.Bright).ScaleRGB(renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0})
 	boxBorderColor := renderer.RGB{R: 0.5, G: 0.5, B: 0.5}
+	textColor := textStyle.Color
 
 	textWidth := func(s string) float32 {
 		w, _ := listFont.BoundText(s, textStyle.LineSpacing)
@@ -776,68 +743,29 @@ func (ep *ERAMPane) drawAltimSetMenu(ctx *panes.Context, transforms radar.ScopeT
 			return false
 		}},
 		{Label: fmt.Sprintf("LINES %d", ps.AltimSet.Lines), BgColor: greenBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickPrimary {
-				// Left-click: decrement
-				if ps.AltimSet.Lines > 3 {
-					ps.AltimSet.Lines--
-					if ep.altimSetScrollOffset > 0 {
-						maxOffset := len(ep.AltimSetAirports) - ps.AltimSet.Lines
-						if maxOffset < 0 {
-							maxOffset = 0
-						}
-						if ep.altimSetScrollOffset > maxOffset {
-							ep.altimSetScrollOffset = maxOffset
-						}
-					}
+			handleClick(ep, &ps.AltimSet.Lines, 3, 24, 1)
+			// Adjust scroll offset if needed
+			if ep.altimSetScrollOffset > 0 {
+				maxOffset := len(ep.AltimSetAirports) - ps.AltimSet.Lines
+				if maxOffset < 0 {
+					maxOffset = 0
 				}
-			} else if ct == MenuClickTertiary {
-				// Middle-click: increment
-				if ps.AltimSet.Lines < 24 {
-					ps.AltimSet.Lines++
+				if ep.altimSetScrollOffset > maxOffset {
+					ep.altimSetScrollOffset = maxOffset
 				}
 			}
 			return false
 		}},
 		{Label: fmt.Sprintf("COL %d", ps.AltimSet.Col), BgColor: greenBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickPrimary {
-				// Left-click: decrement
-				if ps.AltimSet.Col > 1 {
-					ps.AltimSet.Col--
-				}
-			} else if ct == MenuClickTertiary {
-				// Middle-click: increment
-				if ps.AltimSet.Col < 4 {
-					ps.AltimSet.Col++
-				}
-			}
+			handleClick(ep, &ps.AltimSet.Col, 1, 4, 1)
 			return false
 		}},
 		{Label: fmt.Sprintf("FONT %d", ps.AltimSet.Font), BgColor: greenBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickPrimary {
-				// Left-click: decrement
-				if ps.AltimSet.Font > 1 {
-					ps.AltimSet.Font--
-				}
-			} else if ct == MenuClickTertiary {
-				// Middle-click: increment
-				if ps.AltimSet.Font < 3 {
-					ps.AltimSet.Font++
-				}
-			}
+			handleClick(ep, &ps.AltimSet.Font, 1, 3, 1)
 			return false
 		}},
 		{Label: fmt.Sprintf("BRIGHT %d", ps.AltimSet.Bright), BgColor: greenBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickPrimary {
-				// Left-click: decrement
-				if ps.AltimSet.Bright > 0 {
-					ps.AltimSet.Bright--
-				}
-			} else if ct == MenuClickTertiary {
-				// Middle-click: increment
-				if ps.AltimSet.Bright < 100 {
-					ps.AltimSet.Bright++
-				}
-			}
+			handleClick(ep, &ps.AltimSet.Bright, 0, 100, 1)
 			return false
 		}},
 		{Label: "TEMPLATE", BgColor: blackBg, Color: textColor, Centered: false},

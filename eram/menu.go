@@ -128,7 +128,7 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		td.AddText(xLabel, xPos, style)
 
 		// Separator line at bottom of title
-		ld.AddLine(rp0, rp1, renderer.RGB{R: 213.0 / 255.0, G: 213.0 / 255.0, B: 213.0 / 255.0})
+		ld.AddLine(rp0, rp1, eramGray.Scale(.25))
 		// Left border of title
 		ld.AddLine(cursor, [2]float32{cursor[0], rp3[1]}, renderer.RGB{})
 
@@ -253,7 +253,7 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 			result.RowExtents[i] = extent
 
 			// Row hover outlines
-			dimColor := renderer.RGB{R: 213.0 / 255.0, G: 213.0 / 255.0, B: 213.0 / 255.0}
+			dimColor := eramGray.Scale(.25)
 			brightColor := eramGray.Scale(.8)
 			hovered := mouse != nil && extent.Inside(mouse.Pos)
 
