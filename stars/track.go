@@ -753,7 +753,7 @@ func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, tra
 
 	ps := sp.currentPrefs()
 	brightness := ps.Brightness.OtherTracks
-	color := brightness.ScaleRGB(sp.Colors.Ghost)
+	color := brightness.ScaleRGB(sp.Colors.GhostDatablock)
 	trackFont := sp.systemFont(ctx, ps.CharSize.PositionSymbols)
 	trackStyle := renderer.TextStyle{Font: trackFont, Color: color, LineSpacing: 0}
 	datablockFont := sp.systemFont(ctx, ps.CharSize.Datablocks)
@@ -819,7 +819,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
 
-			color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackBlock)
+			color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackGeometry)
 			if primary {
 				// Draw a filled box
 				trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -856,7 +856,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
 
-			color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackBlock)
+			color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackGeometry)
 			if primary {
 				// Draw a filled box
 				trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -868,7 +868,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 
 		case RadarModeFused:
 			if ps.Brightness.PrimarySymbols > 0 {
-				color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackBlock)
+				color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackGeometry)
 				drawTrack(trackBuilder, pw, sp.fusedTrackVertices, color)
 			}
 		}
@@ -896,8 +896,8 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 
 			px := 3 * ctx.DrawPixelScale
 			// diagonals
-			diagPx := px * 0.707107                                                 /* 1/sqrt(2) */
-			trackColor := posBrightness.ScaleRGB(renderer.RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
+			diagPx := px * 0.707107 /* 1/sqrt(2) */
+			trackColor := posBrightness.ScaleRGB(sp.Colors.UnownedDatablock)
 			ld.AddLine(delta(pos, -diagPx, -diagPx), delta(pos, diagPx, diagPx), trackColor)
 			ld.AddLine(delta(pos, diagPx, -diagPx), delta(pos, -diagPx, diagPx), trackColor)
 			// horizontal line

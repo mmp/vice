@@ -773,6 +773,36 @@
         "filters": {
             "inhibit_ca": [
                 {
+                    "id": "DCANOCA",
+                    "description": "DCA CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1500,
+                    "radius": 5,
+                    "center": "N38.51.34.118,W77.02.10.979"
+                },
+                {
+                    "id": "IADNOCA",
+                    "description": "IAD CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "N038.56.59.316,W077.28.51.829",
+                        "N038.59.45.813,W077.35.43.624",
+                        "N038.57.32.549,W077.36.42.456",
+                        "N038.55.44.210,W077.29.11.083",
+                        "N038.55.27.456,W077.28.36.860",
+                        "N038.40.33.279,W077.28.55.647",
+                        "N038.40.36.424,W077.25.38.772",
+                        "N038.55.32.400,W077.25.57.614",
+                        "N039.12.59.095,W077.25.41.381",
+                        "N039.12.54.742,W077.28.29.143",
+                        "N038.56.52.875,W077.28.37.108",
+                        "N038.56.59.316,W077.28.51.829"
+                    ]
+                },
+                {
                     "id": "BWINOCA",
                     "description": "BWI CONFLICT SUPPRESS",
                     "center": "KBWI",
@@ -783,6 +813,15 @@
                 }
             ],
             "inhibit_msaw": [
+                {
+                    "id": "DCAMSAW",
+                    "description": "DCA MSAW SUPRESS",
+                    "type": "circle",
+                    "center": "KDCA",
+                    "radius": 6,
+                    "floor": 0,
+                    "ceiling": 2500
+                },
                 {
                     "id": "IADMSAW",
                     "description": "IAD MSAW SUPRESS",
@@ -801,13 +840,24 @@
                     "ceiling": 2500
                 },
                 {
-                    "id": "DCAMSAW",
-                    "description": "DCA MSAW SUPRESS",
+                    "id": "HEFMSAW",
+                    "description": "HEF MSAW SUPRESS",
                     "type": "circle",
-                    "center": "KDCA",
+                    "center": "KHEF",
                     "radius": 5,
                     "floor": 0,
                     "ceiling": 2500
+                }
+            ],
+            "vfr_inhibit": [
+                {
+                    "id": "SFRA",
+                    "description": "SHD SFRA BOUNDARY",
+                    "type": "circle",
+                    "center": "DCA",
+                    "radius": 30,
+                    "floor": 0,
+                    "ceiling": 17900
                 }
             ],
             "auto_acquisition": [
@@ -816,6 +866,14 @@
                     "description": "CHP AUTO-ACQUISITION",
                     "type": "polygon",
                     "vertices": "N038.27.11.771,W075.50.51.315 N038.20.32.926,W078.20.06.298 N039.44.06.194,W078.28.44.963 N040.00.59.051,W077.34.53.939 N040.22.26.978,W077.13.46.885 N040.27.27.729,W075.58.19.255 N040.00.37.394,W075.17.10.435 N039.35.59.033,W074.42.47.752 N038.45.55.755,W075.04.06.835 N038.31.27.863,W075.20.35.934",
+                    "floor": 0,
+                    "ceiling": 23000
+                },
+                {
+                    "id": "ACQ2",
+                    "description": "SHD AUTO-ACQUISITION",
+                    "type": "polygon",
+                    "vertices": "N038.35.19.729,W078.53.16.389 N039.00.21.794,W078.46.59.256 N039.20.23.190,W079.10.08.203 N039.48.10.832,W078.42.34.458 N040.03.40.344,W077.50.32.418 N040.09.31.426,W076.49.41.304 N040.04.07.000,W076.29.37.615 N039.50.13.906,W075.42.46.461 N039.20.25.332,W075.37.20.661 N038.51.24.713,W075.21.51.135 N038.46.21.188,W074.41.18.652 N038.04.16.640,W074.41.57.297 N037.27.13.955,W075.12.02.625 N037.22.43.636,W076.10.23.611 N036.44.31.257,W076.57.34.321 N036.46.01.633,W078.11.47.409 N037.25.58.108,W078.28.12.773 N037.33.05.943,W079.31.38.162 N038.15.18.786,W079.43.34.746 N038.29.44.193,W079.28.11.125",
                     "floor": 0,
                     "ceiling": 23000
                 }
