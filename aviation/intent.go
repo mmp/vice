@@ -312,9 +312,11 @@ type ReportMachIntent struct {
 
 func (r ReportMachIntent) Render(rt *RadioTransmission, rnd *rand.Rand) {
 	if r.Assigned != nil {
-		if *r.Assigned < r.Current {
+		cur := int(r.Current*100 + 0.5)
+		asgn := int(*r.Assigned*100 + 0.5)
+		if asgn < cur {
 			rt.Add("[at {mach} slowing to {mach}|{mach} down to {mach}]", r.Current, *r.Assigned)
-		} else if *r.Assigned > r.Current {
+		} else if asgn > cur {
 			rt.Add("[at {mach} speeding up to {mach}|{mach} increasing to {mach}]", r.Current, *r.Assigned)
 		} else {
 			rt.Add("[maintaining {mach}|at {mach}]", r.Current)
