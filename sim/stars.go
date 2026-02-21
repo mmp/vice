@@ -374,6 +374,7 @@ type FacilityAdaptation struct {
 	SingleCharAIDs    map[string]string             `json:"single_char_aids" scope:"stars"` // Char to airport. TODO: Check if this is for ERAM as well.
 	KeepLDB           bool                          `json:"keep_ldb" scope:"stars"`
 	FullLDBSeconds    int                           `json:"full_ldb_seconds" scope:"stars"`
+	Monitor           string                        `json:"monitor" scope:"stars"`
 
 	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes" scope:"stars"`
 
@@ -1494,6 +1495,15 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 		if !fa.CheckScratchpad(sp) {
 			e.ErrorString("%s: invalid scratchpad in \"scratchpads\"", sp)
 		}
+	}
+
+	switch fa.Monitor {
+	// Ugly: we need to keep this in sync with colorSets in stars/stars.go
+	case "":
+		fa.Monitor = "legacy" // default
+	case "legacy", "mdm3", "mdm4":
+	default:
+		e.ErrorString(`%s: invalid value for "monitor": must be "legacy", "mdm3", or "mdm4"`, fa.Monitor)
 	}
 
 	makeCircleAirportFilters := func(id string, description string, radius float32,
