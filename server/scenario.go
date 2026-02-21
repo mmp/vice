@@ -774,7 +774,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 
 	if sg.ARTCC == "" {
 		if sg.TRACON == "" {
-			e.ErrorString(`"tracon" or must be specified`)
+			e.ErrorString(`"tracon" or "artcc" must be specified`)
 		} else if _, ok := av.DB.TRACONs[sg.TRACON]; !ok {
 			e.ErrorString("TRACON %q is unknown; it must be a 3-letter identifier listed at "+
 				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
@@ -1290,7 +1290,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	for char, airport := range s.SingleCharAIDs {
 		e.Push("Airport ID " + char)
 		if _, ok := sg.Airports[airport]; !ok {
-			e.ErrorString(`airport"%v" isn't specified`, airport)
+			e.ErrorString(`airport %q isn't specified`, airport)
 		}
 		e.Pop()
 	}

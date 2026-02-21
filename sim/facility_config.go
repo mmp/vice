@@ -141,7 +141,7 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 	// Validate handoff IDs.
 	seenIDs := make(map[string]bool)
 	for _, hid := range fc.HandoffIDs {
-		e.Push(fmt.Sprintf(`handoff_id "%q"`, hid.ID))
+		e.Push(fmt.Sprintf("handoff_id %q", hid.ID))
 
 		if hid.ID == "" {
 			e.ErrorString(`"id" must not be empty`)
@@ -206,11 +206,11 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 				}
 			case "TwoLettersAndSubset":
 				if hid.TwoCharStarsID == "" {
-					e.ErrorString(`"field_e_letter" is required for "TwoLettersAndSubset"`)
+					e.ErrorString(`"two_char_stars_id" is required for "TwoLettersAndSubset"`)
 				}
 			case "OneLetterAndStarsIdOnly":
 				if hid.FieldELetter == "" {
-					e.ErrorString(`"field_e_letter" is required for "OneLetterAndStarsId"`)
+					e.ErrorString(`"field_e_letter" is required for "OneLetterAndStarsIdOnly"`)
 				}
 			case "FullStarsIdOnly":
 			case "":
