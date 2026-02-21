@@ -379,7 +379,7 @@ func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string,
 					break
 				}
 				if id.Prefix == string(controller[0]) {
-					prefix = id.StarsID
+					prefix = id.Prefix
 					break
 				}
 			}
