@@ -140,9 +140,6 @@
                 "R5R": {
                     "cifp_id": "R25R"
                 },
-                "R5L": {
-                    "cifp_id": "R25L"
-                },
                 "R34": {
                     "cifp_id": "R34"
                 },
@@ -2907,10 +2904,6 @@
                 {
                     "airport": "KDAB",
                     "runway": "25R"
-                },
-                {
-                    "airport": "KDAB",
-                    "runway": "25L"
                 },
                 {
                     "airport": "KDAB",

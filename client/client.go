@@ -1866,7 +1866,8 @@ func sttEvalWriteWAV(filename string, samples []int16) error {
 // Called from a goroutine. On failure, Unhold() is called because RunAircraftCommands
 // calls Hold() before issuing the command to prevent contacts while waiting for the readback.
 func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, text, voice string) {
-	if pcm, err := tts.SynthesizeReadbackTTS(text, voice); err != nil {
+	radioSeed := uint32(util.HashString64(string(callsign)))
+	if pcm, err := tts.SynthesizeReadbackTTS(text, voice, radioSeed); err != nil {
 		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)
 		c.transmissions.Unhold()
 	} else if pcm == nil {
@@ -1882,7 +1883,8 @@ func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, t
 // Called from a goroutine. Unlike readbacks, no Hold() is acquired before requesting
 // contacts, so no Unhold() is needed on failure.
 func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty av.RadioTransmissionType, text, voice string) {
-	if pcm, err := tts.SynthesizeContactTTS(text, voice); err != nil {
+	radioSeed := uint32(util.HashString64(string(callsign)))
+	if pcm, err := tts.SynthesizeContactTTS(text, voice, radioSeed); err != nil {
 		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)
 		return
 	} else if pcm != nil {

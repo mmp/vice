@@ -47,17 +47,15 @@
                 },
                 "departure_assignments": {
                     "KBNA": "1X",
-                    "KBNA/CHADM3": "1Y",
-                    "KBNA/DANLS3": "1X",
-                    "KBNA/DRURY3": "1X",
-                    "KBNA/EVVAN3": "1Y",
-                    "KBNA/FLAME3": "1X",
-                    "KBNA/GDOGG3": "1X",
-                    "KBNA/HGGRD3": "1X",
-                    "KBNA/KRSTA3": "1Y",
-                    "KBNA/PARDN3": "1X",
-                    "KBNA/TAZMO3": "1Y",
-                    "KBNA/TIPPN3": "1Y"
+                    "KBNA/CHADM4": "1Y",
+                    "KBNA/DANLS4": "1X",
+                    "KBNA/DRURY4": "1X",
+                    "KBNA/FLAME4": "1Y",
+                    "KBNA/GDOGG4": "1X",
+                    "KBNA/KRSTA4": "1Y",
+                    "KBNA/PARDN4": "1X",
+                    "KBNA/TAZMO4": "1Y",
+                    "KBNA/TIPPN4": "1Y"
                 },
                 "default_consolidation": {
                     "1E": [
@@ -87,35 +85,31 @@
             ]
         },
         "scratchpads": {
-            "CHADM": "OZC",
-            "SWAPP": "OZC",
-            "SPKER": "BGD",
-            "DANLS": "BGD",
-            "HAGIE": "GRC",
-            "JALAR": "GRC",
-            "ACKEE": "GRC",
-            "DRURY": "GRC",
-            "EVVAN": "CHP",
-            "GENDE": "COO",
-            "FLAME": "COO",
-            "FAPER": "KNN",
-            "GDOGG": "KNN",
-            "TINGS": "MER",
-            "HGGRD": "MER",
-            "OLSIE": "CER",
-            "KRSTA": "CER",
-            "JJEFF": "KEL",
-            "HODJS": "KEL",
-            "NAKIY": "KEL",
-            "PARDN": "KEL",
-            "BURME": "SAA",
-            "TAZMO": "SAA",
-            "BRXTN": "ROR",
-            "TIPPN": "ROR"
+            "CHADM": "CDM",
+            "MUNNY": "CDM",
+            "DANLS": "DLS",
+            "TPEEE": "DLS",
+            "DRURY": "DRU",
+            "HAGIE": "DRU",
+            "JALAR": "DRU",
+            "FLAME": "FLA",
+            "GENDE": "FLA",
+            "GDOGG": "CDG",
+            "FAPER": "CDG",
+            "KRSTA": "KRS",
+            "OLSIE": "KRS",
+            "PARDN": "PAR",
+            "NAKIY": "PAR",
+            "HODJS": "PAR",
+            "TAZMO": "TAZ",
+            "BURME": "TAZ",
+            "TIPPN": "TPN",
+            "DENST": "TPN",
+            "EVVAN": "EVN",
+            "HGGRD": "HGG"
         },
         "significant_points": {
             "ACKEE": {},
-            "BRXTN": {},
             "BURME": {},
             "CHADM": {},
             "DANLS": {},
@@ -129,7 +123,6 @@
             "HGGRD": {},
             "HODJS": {},
             "JALAR": {},
-            "JJEFF": {},
             "KRSTA": {},
             "NAKIY": {},
             "OLSIE": {},
@@ -154,8 +147,8 @@
         "airspace_awareness": [
             {
                 "fixes": [
-                    "SWAPP",
                     "CHADM",
+                    "MUNNY",
                     "KRSTA",
                     "OLSIE"
                 ],
@@ -165,34 +158,30 @@
                 "fixes": [
                     "GDOGG",
                     "FAPER",
-                    "TINGS",
-                    "HGGRD",
-                    "PARDN",
-                    "JJEFF",
-                    "HODJS",
-                    "NAKIY"
+                     "HODJS",
+                    "NAKIY",
+                    "PARDN"
                 ],
                 "receiving_controller": "C41"
             },
             {
                 "fixes": [
                     "DANLS",
-                    "SPKER",
+                    "TPEEE",
                     "DRURY",
                     "HAGIE",
                     "JALAR",
-                    "ACKEE",
                     "FLAME",
-                    "GENDE"
+                    "GENDE"                    
                 ],
                 "receiving_controller": "C42"
             },
             {
                 "fixes": [
-                    "EVVAN",
+                    "BURME",
                     "TAZMO",
                     "BURME",
-                    "BRXTN",
+                    "DENST",
                     "TIPPN"
                 ],
                 "receiving_controller": "C60"

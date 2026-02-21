@@ -318,8 +318,8 @@
                 "R6": {
                     "cifp_id": "R6"
                 },
-                "R0L": {
-                    "cifp_id": "R10L"
+                "R10": {
+                    "cifp_id": "R10"
                 },
                 "Z24": {
                     "cifp_id": "RZ24"
@@ -327,29 +327,29 @@
                 "Y24": {
                     "cifp_id": "RY24"
                 },
-                "Y8R": {
-                    "cifp_id": "IY28R"
+                "Y28": {
+                    "cifp_id": "IY28"
                 },
-                "Z8R": {
-                    "cifp_id": "IZ28R"
+                "Z28": {
+                    "cifp_id": "IZ28"
                 },
-                "R8R": {
-                    "cifp_id": "R28R"
+                "R28": {
+                    "cifp_id": "R28"
                 }
             },
             "departure_routes": {
-                "28R": {
+                "28": {
                     "JHW": {
                         "cleared_altitude": 3000,
                         "sid": "BUF8",
-                        "waypoints": "_IAG_10L/h200"
+                        "waypoints": "_IAG_28R/h200"
                     }
                 },
-                "10L": {
+                "10": {
                     "JHW": {
                         "cleared_altitude": 3000,
                         "sid": "BUF8",
-                        "waypoints": "_IAG_28R/h190"
+                        "waypoints": "_IAG_10L/h190"
                     }
                 },
                 "6": {
@@ -770,7 +770,7 @@
                 },
                 {
                     "airport": "KIAG",
-                    "runway": "28R"
+                    "runway": "28"
                 }
             ],
             "inbound_rates": {
@@ -819,7 +819,7 @@
                 {
                     "airport": "KIAG",
                     "rate": 3,
-                    "runway": "28R"
+                    "runway": "28"
                 }
             ],
             "wind": {
@@ -845,7 +845,7 @@
                 },
                 {
                     "airport": "KIAG",
-                    "runway": "10L"
+                    "runway": "10"
                 }
             ],
             "inbound_rates": {
@@ -894,7 +894,7 @@
                 {
                     "airport": "KIAG",
                     "rate": 3,
-                    "runway": "10L"
+                    "runway": "10"
                 }
             ],
             "wind": {

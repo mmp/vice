@@ -37,11 +37,10 @@
             "STD": {
                 "inbound_assignments": {
                     "BLOCC2": "1S",
-                    "BROOK4": "1W",
                     "GANTS": "1S",
-                    "HENBY3": "1H",
-                    "TRAKS3N": "1W",
-                    "TRAKS3S": "1W"
+                    "HENBY1": "1H",
+                    "TRAKS4N": "1W",
+                    "TRAKS4S": "1W"
                 },
                 "departure_assignments": {
                     "KGSO": "1H",

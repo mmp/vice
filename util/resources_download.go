@@ -21,9 +21,9 @@ func initResourcesFS() *fs.StatFS {
 		panic(fmt.Sprintf("failed to get user config dir: %v", err))
 	}
 
-	resourcesDir := filepath.Join(configDir, "vice", "resources")
+	resourcesBasePath = filepath.Join(configDir, "vice", "resources")
 
-	fsys, ok := os.DirFS(resourcesDir).(fs.StatFS)
+	fsys, ok := os.DirFS(resourcesBasePath).(fs.StatFS)
 	if !ok {
 		panic("FS from DirFS is not a StatFS?")
 	}

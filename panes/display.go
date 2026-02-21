@@ -104,15 +104,6 @@ func DrawPanes(pane Pane, p platform.Platform, r renderer.Renderer,
 	}
 
 	p.ClearCursorOverride()
-	// Hide the OS cursor when the mouse is over the radar pane (which
-	// draws its own cursor), but only if imgui isn't capturing the mouse
-	// (e.g., the mouse is over a floating child window like Messages or
-	// Flight Strips). In that case, show the normal arrow cursor.
-	if paneDisplayExtent.Inside(mousePos) && !io.WantCaptureMouse() {
-		imgui.SetMouseCursor(imgui.MouseCursorNone)
-	} else {
-		imgui.SetMouseCursor(imgui.MouseCursorArrow)
-	}
 
 	commandBuffer := renderer.GetCommandBuffer()
 	defer renderer.ReturnCommandBuffer(commandBuffer)

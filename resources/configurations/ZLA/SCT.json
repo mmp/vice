@@ -1106,6 +1106,60 @@
         "filters": {
             "inhibit_ca": [
                 {
+                    "id": "LAXNOCA",
+                    "description": "LAX CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "KLAX"
+                },
+                {
+                    "id": "SNANOCA",
+                    "description": "SNA CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "KSNA"
+                },
+                {
+                    "id": "SANNOCA",
+                    "description": "SAN CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "KSAN"
+                },
+                {
+                    "id": "PSPNOCA",
+                    "description": "KPSP CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "KPSP"
+                },
+                {
+                    "id": "ONTNOCA",
+                    "description": "ONT CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "KONT"
+                },
+                {
+                    "id": "VNYNOCA",
+                    "description": "VNY CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "KVNY"
+                },
+                {
                     "id": "BURNOCA",
                     "description": "BUR CONFLICT SUPPRESS",
                     "type": "circle",
@@ -1113,6 +1167,94 @@
                     "ceiling": 3000,
                     "radius": 12.4,
                     "center": "KBUR"
+                },
+                {
+                    "id": "FINNOCA",
+                    "description": "LAX FINAL CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N033.57.51.665,W118.27.37.122",
+                        "N033.54.05.553,W118.26.40.296",
+                        "N033.59.40.773,W117.30.46.636",
+                        "N034.03.49.229,W117.32.59.159",
+                        "N033.57.51.665,W118.27.37.122"
+                    ]
+                },
+                {
+                    "id": "W NOCA",
+                    "description": "DEL REY WEST CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "N033.56.03.945,W118.23.19.795",
+                        "N033.57.10.233,W118.24.06.597",
+                        "N033.57.25.243,W118.30.34.881",
+                        "N033.53.15.881,W118.28.48.479"
+                    ]
+                },
+                {
+                    "id": "E NOCA",
+                    "description": "DEL REY EAST CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "N033.55.49.909,W118.25.03.561",
+                        "N033.55.20.658,W118.18.44.642",
+                        "N033.59.29.664,W118.20.04.348",
+                        "N033.57.02.103,W118.25.47.698",
+                        "N033.55.49.909,W118.25.03.561"
+                    ]
+                }
+            ],
+            "inhibit_msaw": [
+                {
+                    "id": "LAXMSAW",
+                    "description": "PSP MSAW SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "radius": 10,
+                    "center": "KLAX"
+                },
+                {
+                    "id": "LGBMSAW",
+                    "description": "ONT MSAW SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "radius": 8,
+                    "center": "KLGB"
+                },
+                {
+                    "id": "SNAMSAW",
+                    "description": "PSP MSAW SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "radius": 5,
+                    "center": "KSNA"
+                },
+                {
+                    "id": "SMOMSAW",
+                    "description": "PSP MSAW SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "radius": 3,
+                    "center": "KSMO"
+                },
+                {
+                    "id": "HHRMSAW",
+                    "description": "ONT MSAW SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "radius": 3,
+                    "center": "KHHR"
                 }
             ],
             "auto_acquisition": [
@@ -1122,7 +1264,7 @@
                     "type": "polygon",
                     "vertices": "N035.12.54.426,W119.40.23.556 N035.06.12.985,W116.32.10.242 N034.20.04.650,W115.35.53.622 N034.01.19.458,W114.34.09.746 N033.07.48.209,W114.43.52.928 N033.02.32.009,W115.55.56.954 N032.17.44.355,W115.58.14.174 N032.13.07.156,W117.48.36.101 N032.52.08.274,W118.42.27.839 N032.55.25.135,W119.25.36.328 N034.53.19.424,W119.43.41.832 N035.12.54.426,W119.40.23.556",
                     "floor": 0,
-                    "ceiling": 23000
+                    "ceiling": 26000
                 }
             ]
         },

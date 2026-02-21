@@ -212,9 +212,9 @@
                 "inbound_assignments": {
                     "CON": "1W",
                     "DEEPO2": "1N",
-                    "DREEM2.BED": "1B",
-                    "DREEM2.BVY": "1B",
-                    "DREEM2.LWM": "1B",
+                    "DREEM3.BED": "1B",
+                    "DREEM3.BVY": "1B",
+                    "DREEM3.LWM": "1B",
                     "ENE": "1E",
                     "FREDO.4K": "1S",
                     "FREDO.6K": "1S",
@@ -225,7 +225,6 @@
                     "JFUND2": "1R",
                     "MANCH..LWRNC": "1R",
                     "MANCH..LWRNC.SAT": "1R",
-                    "NEWBE3": "1N",
                     "OOSHN5": "1R",
                     "PSM..LWRNC": "1R",
                     "PSM..LWRNC.SAT": "1R",
@@ -330,9 +329,9 @@
                 "inbound_assignments": {
                     "CON": "1W",
                     "DEEPO2": "1N",
-                    "DREEM2.BED": "1B",
-                    "DREEM2.BVY": "1B",
-                    "DREEM2.LWM": "1B",
+                    "DREEM3.BED": "1B",
+                    "DREEM3.BVY": "1B",
+                    "DREEM3.LWM": "1B",
                     "ENE": "1E",
                     "FREDO.4K": "1S",
                     "FREDO.6K": "1S",
@@ -343,7 +342,6 @@
                     "JFUND2": "1R",
                     "MANCH..LWRNC": "1R",
                     "MANCH..LWRNC.SAT": "1R",
-                    "NEWBE3": "1N",
                     "OOSHN5": "1R",
                     "PSM..LWRNC": "1R",
                     "PSM..LWRNC.SAT": "1R",
@@ -403,8 +401,7 @@
             },
             "STD": {
                 "inbound_assignments": {
-                    "DEEPO2": "1N",
-                    "NEWBE3": "1N"
+                    "DEEPO2": "1N"
                 },
                 "departure_assignments": {
                     "KACK": "1K",
@@ -427,7 +424,7 @@
             },
             "CNE": {
                 "inbound_assignments": {
-                    "DREEM2": "1B",
+                    "DREEM3": "1B",
                     "FREDO": "1M",
                     "GDM": "1R",
                     "GDM.15R": "1R",
@@ -472,7 +469,7 @@
             },
             "CNW": {
                 "inbound_assignments": {
-                    "DREEM2": "1B",
+                    "DREEM3": "1B",
                     "FREDO": "1M",
                     "GDM": "1R",
                     "GDM.15R": "1R",
@@ -517,7 +514,7 @@
             },
             "CSE": {
                 "inbound_assignments": {
-                    "DREEM2": "1B",
+                    "DREEM3": "1B",
                     "FREDO": "1M",
                     "GDM": "1R",
                     "GDM.15R": "1R",
@@ -562,7 +559,7 @@
             },
             "CSW": {
                 "inbound_assignments": {
-                    "DREEM2": "1B",
+                    "DREEM3": "1B",
                     "FREDO": "1M",
                     "GDM": "1R",
                     "GDM.15R": "1R",

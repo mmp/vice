@@ -533,57 +533,6 @@
                 }
             ]
         },
-        "BROOK4": {
-            "arrivals": [
-                {
-                    "waypoints": "BROOK BURCH/ho TRAKS WALLK/h107",
-                    "star": "BROOK4",
-                    "initial_controller": "C43",
-                    "initial_altitude": 11000,
-                    "initial_speed": 250,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KGSO": [
-                            {
-                                "icao": "AAL",
-                                "fleet": "short",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "short",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "short",
-                                "airport": "KJFK"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "KHAOS BROOK/ho TRAKS WALLK/h282",
-                    "star": "BROOK4",
-                    "initial_controller": "C43",
-                    "initial_altitude": 9000,
-                    "initial_speed": 250,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KINT": [
-                            {
-                                "icao": "EJA",
-                                "airport": "KRSW"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KFLL"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
         "GANTS": {
             "arrivals": [
                 {
@@ -613,11 +562,11 @@
                 }
             ]
         },
-        "HENBY3": {
+        "HENBY1": {
             "arrivals": [
                 {
-                    "waypoints": "ROA PIGGS/ho HENBY/s280/h180",
-                    "star": "HENBY3",
+                    "waypoints": "DBRAH/ho HENBY/s280/h180",
+                    "star": "HENBY1",
                     "initial_controller": "W32",
                     "initial_altitude": 12000,
                     "initial_speed": 280,
@@ -637,8 +586,8 @@
                     }
                 },
                 {
-                    "waypoints": "LYH PIGGS/ho HENBY/h180",
-                    "star": "HENBY3",
+                    "waypoints": "AIROW/ho HENBY/h180",
+                    "star": "HENBY1",
                     "initial_controller": "W32",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
@@ -658,11 +607,11 @@
                 }
             ]
         },
-        "TRAKS3N": {
+        "TRAKS4N": {
             "arrivals": [
                 {
                     "waypoints": "KHAOS TRAKS/ho DEMNZ PDMNT/h80",
-                    "star": "TRAKS3N",
+                    "star": "TRAKS4N",
                     "initial_controller": "C43",
                     "initial_altitude": 11000,
                     "initial_speed": 290,
@@ -695,7 +644,7 @@
                 },
                 {
                     "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL/h98",
-                    "star": "TRAKS3",
+                    "star": "TRAKS4",
                     "initial_controller": "C43",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
@@ -715,11 +664,11 @@
                 }
             ]
         },
-        "TRAKS3S": {
+        "TRAKS4S": {
             "arrivals": [
                 {
                     "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL GLFRD/h60",
-                    "star": "TRAKS3S",
+                    "star": "TRAKS4S",
                     "initial_controller": "C43",
                     "initial_altitude": 11000,
                     "initial_speed": 290,
@@ -752,7 +701,7 @@
                 },
                 {
                     "waypoints": "KHAOS TRAKS/ho DEMNZ EARLL/h98",
-                    "star": "TRAKS3",
+                    "star": "TRAKS4",
                     "initial_controller": "C43",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
@@ -817,11 +766,7 @@
                 }
             ],
             "inbound_rates": {
-                "BROOK4": {
-                    "KGSO": 5,
-                    "KINT": 3
-                },
-                "TRAKS3N": {
+                "TRAKS4N": {
                     "KGSO": 6,
                     "KINT": 3
                 },
@@ -832,7 +777,7 @@
                 "GANTS": {
                     "KGSO": 8
                 },
-                "HENBY3": {
+                "HENBY1": {
                     "KGSO": 8,
                     "KINT": 3
                 }
@@ -886,11 +831,7 @@
                 }
             ],
             "inbound_rates": {
-                "BROOK4": {
-                    "KGSO": 5,
-                    "KINT": 3
-                },
-                "TRAKS3S": {
+                "TRAKS4S": {
                     "KGSO": 6,
                     "KINT": 3
                 },
@@ -901,7 +842,7 @@
                 "GANTS": {
                     "KGSO": 8
                 },
-                "HENBY3": {
+                "HENBY1": {
                     "KGSO": 8,
                     "KINT": 3
                 }
