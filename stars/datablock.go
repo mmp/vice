@@ -1083,44 +1083,44 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 
 	if state.IsSelected {
 		// middle button selected
-		color = sp.Colors.SelectedAircraft
+		color = sp.Colors.SelectedDatablock
 	} else if trk.IsUnassociated() {
-		color = sp.Colors.UntrackedAircraft
+		color = sp.Colors.UnownedDatablock
 	} else {
 		sfp := trk.FlightPlan
 		if _, ok := sp.ForceQLACIDs[sfp.ACID]; ok {
 			// Check if we're the controller being ForceQL
-			color = sp.Colors.TrackAlert
+			color = sp.Colors.AlertDatablock
 		} else if state.PointOutAcknowledged || state.ForceQL {
 			// Ack'ed point out to us (but not cleared) or force quick look.
-			color = sp.Colors.TrackAlert
+			color = sp.Colors.AlertDatablock
 		} else if inboundPointOut {
 			// Pointed out to us.
-			color = sp.Colors.TrackAlert
+			color = sp.Colors.AlertDatablock
 		} else if state.DatablockAlert {
-			color = sp.Colors.TrackAlert
+			color = sp.Colors.AlertDatablock
 		} else if ctx.UserOwnsFlightPlan(sfp) {
 			// we own the track
-			color = sp.Colors.TrackedAircraft
+			color = sp.Colors.OwnedDatablock
 		} else if ctx.UserControlsPosition(sfp.RedirectedHandoff.OriginalOwner) ||
 			ctx.UserControlsPosition(sfp.RedirectedHandoff.RedirectedTo) {
-			color = sp.Colors.TrackedAircraft
+			color = sp.Colors.OwnedDatablock
 		} else if ctx.UserControlsPosition(sfp.HandoffController) &&
 			!ctx.UserControlsPosition(sfp.RedirectedHandoff.GetLastRedirector()) {
 			// flashing white if it's being handed off to us.
-			color = sp.Colors.TrackedAircraft
+			color = sp.Colors.OwnedDatablock
 		} else if state.OutboundHandoffAccepted {
 			// we handed it off, it was accepted, but we haven't yet acknowledged
-			color = sp.Colors.TrackedAircraft
+			color = sp.Colors.OwnedDatablock
 		} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
 			// quick look all plus
-			color = sp.Colors.TrackedAircraft
+			color = sp.Colors.OwnedDatablock
 		} else if ps.QuickLookTCPs[string(ctx.PrimaryTCPForTCW(sfp.OwningTCW))] {
 			// individual quicklook plus controller
-			color = sp.Colors.TrackedAircraft
+			color = sp.Colors.OwnedDatablock
 		} else {
 			// other controller owns, no special case applies
-			color = sp.Colors.UntrackedAircraft
+			color = sp.Colors.UnownedDatablock
 		}
 	}
 
@@ -1355,7 +1355,7 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtyp
 		}
 		added[s] = nil
 
-		color := util.Select(red, sp.Colors.TextAlert, sp.Colors.TextWarning)
+		color := util.Select(red, sp.Colors.AlertDatablock, sp.Colors.CautionDatablock)
 		if len(alerts) > 0 {
 			alerts = append(alerts, dbChar{ch: '/', color: color})
 		}

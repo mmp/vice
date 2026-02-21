@@ -20,17 +20,6 @@ import (
 	"github.com/brunoga/deep"
 )
 
-var (
-	dcbButtonColor            = renderer.RGB{0, .173, 0}
-	dcbActiveButtonColor      = renderer.RGB{0, .305, 0}
-	dcbTextColor              = renderer.RGB{1, 1, 1}
-	dcbTextSelectedColor      = renderer.RGB{1, 1, 0}
-	dcbUnsupportedButtonColor = renderer.RGB{.4, .4, .4}
-	dcbUnsupportedTextColor   = renderer.RGB{.8, .8, .8}
-	dcbDisabledButtonColor    = renderer.RGB{0, .173 / 2, 0}
-	dcbDisabledTextColor      = renderer.RGB{.5, 0.5, 0.5}
-)
-
 const dcbButtonSize = 84
 const numDCBSlots = 22
 
@@ -152,7 +141,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 
 			text := fmt.Sprintf("%d\n%s", m.Id, label)
 			_, vis := ps.VideoMapVisible[m.Id]
-			if toggleButton(ctx, text, &vis, flags|buttonHalfVertical, buttonScale) {
+			if sp.toggleButton(ctx, text, &vis, flags|buttonHalfVertical, buttonScale) {
 				if vis {
 					ps.VideoMapVisible[m.Id] = nil
 				} else {
@@ -162,7 +151,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		} else {
 			// Inert button
 			off := false
-			toggleButton(ctx, "", &off, flags|buttonHalfVertical, buttonScale)
+			sp.toggleButton(ctx, "", &off, flags|buttonHalfVertical, buttonScale)
 		}
 	}
 
@@ -216,10 +205,10 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 				ps.UserCenter = math.Sub2f(ps.UserCenter, deltaLL)
 			})
 
-		toggleButton(ctx, "OFF\nCNTR", &ps.UseUserCenter, maybeDisable(buttonHalfVertical), buttonScale)
+		sp.toggleButton(ctx, "OFF\nCNTR", &ps.UseUserCenter, maybeDisable(buttonHalfVertical), buttonScale)
 		sp.drawDCBSpinner(ctx, makeRangeRingRadiusSpinner(&ps.RangeRingRadius), CommandModeRangeRings,
 			maybeDisable(buttonFull), buttonScale)
-		if drawDCBButton(ctx, "PLACE\nRR", maybeDisable(buttonHalfVertical), buttonScale,
+		if sp.drawDCBButton(ctx, "PLACE\nRR", maybeDisable(buttonHalfVertical), buttonScale,
 			sp.commandMode == CommandModePlaceRangeRings) {
 			if sp.commandMode == CommandModePlaceRangeRings { // disable
 				sp.setCommandMode(ctx, CommandModeNone)
@@ -234,8 +223,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 				))
 			}
 		}
-		toggleButton(ctx, "RR\nCNTR", &ps.UseUserRangeRingsCenter, maybeDisable(buttonHalfVertical), buttonScale)
-		if selectButton(ctx, "MAPS", maybeDisable(buttonFull), buttonScale) {
+		sp.toggleButton(ctx, "RR\nCNTR", &ps.UseUserRangeRingsCenter, maybeDisable(buttonHalfVertical), buttonScale)
+		if sp.selectButton(ctx, "MAPS", maybeDisable(buttonFull), buttonScale) {
 			sp.setCommandMode(ctx, CommandModeMaps)
 		}
 		for i := range 6 {
@@ -253,10 +242,10 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 				label += "\nAVL"
 				flags = flags | buttonWXAVL
 			}
-			toggleButton(ctx, label, &ps.DisplayWeatherLevel[i], maybeDisable(flags), buttonScale)
+			sp.toggleButton(ctx, label, &ps.DisplayWeatherLevel[i], maybeDisable(flags), buttonScale)
 		}
 
-		if selectButton(ctx, "BRITE", maybeDisable(buttonFull), buttonScale) {
+		if sp.selectButton(ctx, "BRITE", maybeDisable(buttonFull), buttonScale) {
 			sp.setCommandMode(ctx, CommandModeBrite)
 		}
 		sp.drawDCBSpinner(ctx, makeLeaderLineDirectionSpinner(sp, &ps.LeaderLineDirection), CommandModeLDRDir,
@@ -264,15 +253,15 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		sp.drawDCBSpinner(ctx, makeLeaderLineLengthSpinner(&ps.LeaderLineLength), CommandModeLDR,
 			maybeDisable(buttonHalfVertical), buttonScale)
 
-		if selectButton(ctx, "CHAR\nSIZE", maybeDisable(buttonFull), buttonScale) {
+		if sp.selectButton(ctx, "CHAR\nSIZE", maybeDisable(buttonFull), buttonScale) {
 			sp.setCommandMode(ctx, CommandModeCharSize)
 		}
-		unsupportedButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
+		sp.unsupportedButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
 
 		site := sp.radarSiteId(ctx.FacilityAdaptation.RadarSites)
 		if len(ctx.FacilityAdaptation.RadarSites) == 0 {
-			disabledButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale)
-		} else if selectButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale) {
+			sp.disabledButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale)
+		} else if sp.selectButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale) {
 			sp.setCommandMode(ctx, CommandModeSite)
 		}
 
@@ -280,7 +269,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		if sp.prefSet.Selected != nil && sp.prefSet.Saved[*sp.prefSet.Selected] != nil {
 			pref += "\n" + sp.prefSet.Saved[*sp.prefSet.Selected].Name
 		}
-		if selectButton(ctx, pref, maybeDisable(buttonFull), buttonScale) {
+		if sp.selectButton(ctx, pref, maybeDisable(buttonFull), buttonScale) {
 			sp.setCommandMode(ctx, CommandModePref)
 
 			// Don't alias anything in the restore values
@@ -293,13 +282,13 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			}
 		}
 
-		if selectButton(ctx, "SSA\nFILTER", maybeDisable(buttonHalfVertical), buttonScale) {
+		if sp.selectButton(ctx, "SSA\nFILTER", maybeDisable(buttonHalfVertical), buttonScale) {
 			sp.setCommandMode(ctx, CommandModeSSAFilter)
 		}
-		if selectButton(ctx, "GI TEXT\nFILTER", maybeDisable(buttonHalfVertical), buttonScale) {
+		if sp.selectButton(ctx, "GI TEXT\nFILTER", maybeDisable(buttonHalfVertical), buttonScale) {
 			sp.setCommandMode(ctx, CommandModeGITextFilter)
 		}
-		if selectButton(ctx, "SHIFT", maybeDisable(buttonFull), buttonScale) {
+		if sp.selectButton(ctx, "SHIFT", maybeDisable(buttonFull), buttonScale) {
 			sp.dcbShowAux = true
 		}
 
@@ -316,10 +305,10 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		rewindDCBCursor(14, buttonScale)
 		dcbStartCaptureMouseRegion()
 
-		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
+		if sp.selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
 		}
-		if selectButton(ctx, "CLR ALL", buttonHalfVertical, buttonScale) {
+		if sp.selectButton(ctx, "CLR ALL", buttonHalfVertical, buttonScale) {
 			clear(ps.VideoMapVisible)
 		}
 
@@ -367,7 +356,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		for cat, b := range haveCategory {
 			if b {
 				sel := int(ps.VideoMapsList.Selection) == cat && ps.VideoMapsList.Visible
-				if toggleButton(ctx, mapLabels[cat], &sel, buttonHalfVertical, buttonScale) {
+				if sp.toggleButton(ctx, mapLabels[cat], &sel, buttonHalfVertical, buttonScale) {
 					ps.VideoMapsList.Selection = VideoMapsGroup(cat)
 					ps.VideoMapsList.Visible = sel
 				}
@@ -376,11 +365,11 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		if ncat&1 == 0 {
 			// If there are an even number then there's an extra empty button above CURRENT
 			off := false
-			toggleButton(ctx, "", &off, buttonHalfVertical, buttonScale)
+			sp.toggleButton(ctx, "", &off, buttonHalfVertical, buttonScale)
 		}
 
 		currentMapsSelected := ps.VideoMapsList.Selection == VideoMapCurrent && ps.VideoMapsList.Visible
-		if toggleButton(ctx, "CURRENT", &currentMapsSelected, buttonHalfVertical, buttonScale) {
+		if sp.toggleButton(ctx, "CURRENT", &currentMapsSelected, buttonHalfVertical, buttonScale) {
 			ps.VideoMapsList.Selection = VideoMapCurrent
 			ps.VideoMapsList.Visible = currentMapsSelected
 		}
@@ -429,7 +418,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("WXC", &ps.Brightness.WxContrast, 5, false),
 			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
-		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
+		if sp.selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
 		} else if sp.activeSpinner == nil { // let spinner capture take precedence
 			dcbCaptureMouseFromRegion(ctx, buttonScale)
@@ -450,7 +439,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			CommandModeCharSizeSpinner, buttonFull, buttonScale)
 		sp.drawDCBSpinner(ctx, makeCharSizeSpinner("POS\n", &ps.CharSize.PositionSymbols, 0, 5),
 			CommandModeCharSizeSpinner, buttonFull, buttonScale)
-		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
+		if sp.selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
 		} else if sp.activeSpinner == nil { // let spinner capture take precedence
 			dcbCaptureMouseFromRegion(ctx, buttonScale)
@@ -465,7 +454,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		for id, site := range util.SortedMap(radarSites) {
 			label := " " + site.Char + " " + "\n" + id
 			selected := ps.RadarSiteSelected == id
-			if toggleButton(ctx, label, &selected, buttonFull, buttonScale) {
+			if sp.toggleButton(ctx, label, &selected, buttonFull, buttonScale) {
 				if selected {
 					ps.RadarSiteSelected = id
 				} else {
@@ -474,14 +463,14 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			}
 		}
 		multi := sp.radarMode(radarSites) == RadarModeMulti
-		if toggleButton(ctx, "MULTI", &multi, buttonFull, buttonScale) && multi {
+		if sp.toggleButton(ctx, "MULTI", &multi, buttonFull, buttonScale) && multi {
 			sp.setRadarModeMulti()
 		}
 		fused := sp.radarMode(radarSites) == RadarModeFused
-		if toggleButton(ctx, "FUSED", &fused, buttonFull, buttonScale) && fused {
+		if sp.toggleButton(ctx, "FUSED", &fused, buttonFull, buttonScale) && fused {
 			sp.setRadarModeFused()
 		}
-		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
+		if sp.selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
 		} else {
 			dcbCaptureMouseFromRegion(ctx, buttonScale)
@@ -495,13 +484,13 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			text := strconv.Itoa(i+1) + "\n"
 			flags := buttonHalfVertical
 			if prefs == nil {
-				disabledButton(ctx, text, flags, buttonScale)
+				sp.disabledButton(ctx, text, flags, buttonScale)
 			} else {
 				text += prefs.Name
 				if sp.prefSet.Selected != nil && i == *sp.prefSet.Selected {
 					flags = flags | buttonSelected
 				}
-				if selectButton(ctx, text, flags, buttonScale) {
+				if sp.selectButton(ctx, text, flags, buttonScale) {
 					// Make this one current
 					idx := i // copy since i is a loop iteration variable..
 					sp.prefSet.Selected = &idx
@@ -511,14 +500,14 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			}
 		}
 
-		if selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
+		if sp.selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
 			sp.prefSet.ResetDefault(ctx.Client.State, ctx.Platform, sp)
 		}
-		unsupportedButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
+		sp.unsupportedButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
 		if sp.RestorePreferences == nil {
 			// It shouldn't be nil, but...
-			disabledButton(ctx, "RESTORE", buttonHalfVertical, buttonScale)
-		} else if selectButton(ctx, "RESTORE", buttonHalfVertical, buttonScale) {
+			sp.disabledButton(ctx, "RESTORE", buttonHalfVertical, buttonScale)
+		} else if sp.selectButton(ctx, "RESTORE", buttonHalfVertical, buttonScale) {
 			// 4-20: restore display settings that were in effect when we
 			// entered the PREF sub-menu.
 			sp.prefSet.Current = deep.MustCopy(*sp.RestorePreferences)
@@ -532,32 +521,32 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		}
 
 		if sp.prefSet.Selected != nil {
-			if selectButton(ctx, "SAVE", buttonHalfVertical, buttonScale) {
+			if sp.selectButton(ctx, "SAVE", buttonHalfVertical, buttonScale) {
 				sp.prefSet.Saved[*sp.prefSet.Selected] = sp.prefSet.Current.Duplicate()
 			}
 		} else {
-			disabledButton(ctx, "SAVE", buttonHalfVertical, buttonScale)
+			sp.disabledButton(ctx, "SAVE", buttonHalfVertical, buttonScale)
 		}
-		unsupportedButton(ctx, "CHG PIN", buttonHalfVertical, buttonScale)
+		sp.unsupportedButton(ctx, "CHG PIN", buttonHalfVertical, buttonScale)
 
 		canSaveAs := slices.Contains(sp.prefSet.Saved[:], nil)
 		if !canSaveAs {
-			disabledButton(ctx, "SAVE AS", buttonHalfVertical, buttonScale)
-		} else if selectButton(ctx, "SAVE AS", buttonHalfVertical, buttonScale) {
+			sp.disabledButton(ctx, "SAVE AS", buttonHalfVertical, buttonScale)
+		} else if sp.selectButton(ctx, "SAVE AS", buttonHalfVertical, buttonScale) {
 			// This command mode handles prompting for the name and then
 			// saves when enter is pressed.
 			sp.setCommandMode(ctx, CommandModeSavePrefAs)
 		}
 		if sp.prefSet.Selected != nil {
-			if selectButton(ctx, "DELETE", buttonHalfVertical, buttonScale) {
+			if sp.selectButton(ctx, "DELETE", buttonHalfVertical, buttonScale) {
 				sp.prefSet.Saved[*sp.prefSet.Selected] = nil
 				sp.prefSet.Selected = nil
 			}
 		} else {
-			disabledButton(ctx, "DELETE", buttonHalfVertical, buttonScale)
+			sp.disabledButton(ctx, "DELETE", buttonHalfVertical, buttonScale)
 		}
 
-		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
+		if sp.selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
 			sp.RestorePreferences = nil
 			sp.RestorePreferencesNumber = nil
@@ -578,15 +567,15 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		ssaButton := func(text string, v *bool) {
 			if ps.SSAList.Filter.All {
 				t := true
-				if toggleButton(ctx, text, &t, buttonHalfVertical, buttonScale) {
+				if sp.toggleButton(ctx, text, &t, buttonHalfVertical, buttonScale) {
 					ps.SSAList.Filter.All = false
 					*v = false
 				}
 			} else {
-				toggleButton(ctx, text, v, buttonHalfVertical, buttonScale)
+				sp.toggleButton(ctx, text, v, buttonHalfVertical, buttonScale)
 			}
 		}
-		toggleButton(ctx, "ALL", &ps.SSAList.Filter.All, buttonHalfVertical, buttonScale)
+		sp.toggleButton(ctx, "ALL", &ps.SSAList.Filter.All, buttonHalfVertical, buttonScale)
 		ssaButton("WX", &ps.SSAList.Filter.Wx)
 		ssaButton("TIME", &ps.SSAList.Filter.Time)
 		ssaButton("ALTSTG", &ps.SSAList.Filter.Altimeter)
@@ -599,22 +588,22 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		ssaButton("RANGE", &ps.SSAList.Filter.Range)
 		ssaButton("PTL", &ps.SSAList.Filter.PredictedTrackLines)
 		ssaButton("ALT FIL", &ps.SSAList.Filter.AltitudeFilters)
-		unsupportedButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
+		sp.unsupportedButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
 		ssaButton("INTRAIL", &ps.SSAList.Filter.Intrail)
 		ssaButton("2.5", &ps.SSAList.Filter.Intrail25)
 		ssaButton("AIRPORT", &ps.SSAList.Filter.AirportWeather)
-		unsupportedButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
-		unsupportedButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
+		sp.unsupportedButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
+		sp.unsupportedButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
 		ssaButton("WX HIST", &ps.SSAList.Filter.WxHistory)
 		ssaButton("QL", &ps.SSAList.Filter.QuickLookPositions)
 		ssaButton("TW OFF", &ps.SSAList.Filter.DisabledTerminal)
 		ssaButton("CON/CPL", &ps.SSAList.Filter.Consolidation)
-		unsupportedButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
+		sp.unsupportedButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
 		ssaButton("CRDA", &ps.SSAList.Filter.ActiveCRDAPairs)
-		unsupportedButton(ctx, "FLOW", buttonHalfVertical, buttonScale) // TODO
-		unsupportedButton(ctx, "AMZ", buttonHalfVertical, buttonScale)  // TODO
-		unsupportedButton(ctx, "TBFM", buttonHalfVertical, buttonScale) // TODO
-		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
+		sp.unsupportedButton(ctx, "FLOW", buttonHalfVertical, buttonScale) // TODO
+		sp.unsupportedButton(ctx, "AMZ", buttonHalfVertical, buttonScale)  // TODO
+		sp.unsupportedButton(ctx, "TBFM", buttonHalfVertical, buttonScale) // TODO
+		if sp.selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
 		} else {
 			dcbCaptureMouseFromRegion(ctx, buttonScale)
@@ -627,13 +616,13 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 
 		for i := range ps.SSAList.Filter.GIText {
 			if i == 0 {
-				toggleButton(ctx, "MAIN", &ps.SSAList.Filter.GIText[0], buttonHalfVertical, buttonScale)
+				sp.toggleButton(ctx, "MAIN", &ps.SSAList.Filter.GIText[0], buttonHalfVertical, buttonScale)
 			} else {
-				toggleButton(ctx, fmt.Sprintf("GI %d", i), &ps.SSAList.Filter.GIText[i],
+				sp.toggleButton(ctx, fmt.Sprintf("GI %d", i), &ps.SSAList.Filter.GIText[i],
 					buttonHalfVertical, buttonScale)
 			}
 		}
-		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
+		if sp.selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
 		} else {
 			dcbCaptureMouseFromRegion(ctx, buttonScale)
@@ -649,51 +638,51 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			CommandModeHistory, maybeDisable(buttonHalfVertical), buttonScale)
 		sp.drawDCBSpinner(ctx, makeHistoryRateSpinner(&ps.RadarTrackHistoryRate),
 			CommandModeHistoryRate, maybeDisable(buttonHalfVertical), buttonScale)
-		if toggleButton(ctx, "CURSOR\nHOME", &ps.AutoCursorHome, maybeDisable(buttonFull), buttonScale) {
+		if sp.toggleButton(ctx, "CURSOR\nHOME", &ps.AutoCursorHome, maybeDisable(buttonFull), buttonScale) {
 			sp.previewAreaOutput = util.Select(ps.AutoCursorHome, "HOME", "NO HOME")
 		}
-		unsupportedButton(ctx, "CSR SPD\n4", maybeDisable(buttonFull), buttonScale)
-		unsupportedButton(ctx, "MAP\nUNCOR", maybeDisable(buttonFull), buttonScale)
-		unsupportedButton(ctx, "UNCOR", maybeDisable(buttonFull), buttonScale)
-		unsupportedButton(ctx, "BEACON\nMODE-2", maybeDisable(buttonFull), buttonScale)
-		unsupportedButton(ctx, "RTQC", maybeDisable(buttonFull), buttonScale)
-		unsupportedButton(ctx, "MCP", maybeDisable(buttonFull), buttonScale)
+		sp.unsupportedButton(ctx, "CSR SPD\n4", maybeDisable(buttonFull), buttonScale)
+		sp.unsupportedButton(ctx, "MAP\nUNCOR", maybeDisable(buttonFull), buttonScale)
+		sp.unsupportedButton(ctx, "UNCOR", maybeDisable(buttonFull), buttonScale)
+		sp.unsupportedButton(ctx, "BEACON\nMODE-2", maybeDisable(buttonFull), buttonScale)
+		sp.unsupportedButton(ctx, "RTQC", maybeDisable(buttonFull), buttonScale)
+		sp.unsupportedButton(ctx, "MCP", maybeDisable(buttonFull), buttonScale)
 		top := ps.DCBPosition == dcbPositionTop
-		if toggleButton(ctx, "DCB\nTOP", &top, maybeDisable(buttonHalfVertical), buttonScale) {
+		if sp.toggleButton(ctx, "DCB\nTOP", &top, maybeDisable(buttonHalfVertical), buttonScale) {
 			ps.DCBPosition = dcbPositionTop
 		}
 		left := ps.DCBPosition == dcbPositionLeft
-		if toggleButton(ctx, "DCB\nLEFT", &left, maybeDisable(buttonHalfVertical), buttonScale) {
+		if sp.toggleButton(ctx, "DCB\nLEFT", &left, maybeDisable(buttonHalfVertical), buttonScale) {
 			ps.DCBPosition = dcbPositionLeft
 		}
 		right := ps.DCBPosition == dcbPositionRight
-		if toggleButton(ctx, "DCB\nRIGHT", &right, maybeDisable(buttonHalfVertical), buttonScale) {
+		if sp.toggleButton(ctx, "DCB\nRIGHT", &right, maybeDisable(buttonHalfVertical), buttonScale) {
 			ps.DCBPosition = dcbPositionRight
 		}
 		bottom := ps.DCBPosition == dcbPositionBottom
-		if toggleButton(ctx, "DCB\nBOTTOM", &bottom, maybeDisable(buttonHalfVertical), buttonScale) {
+		if sp.toggleButton(ctx, "DCB\nBOTTOM", &bottom, maybeDisable(buttonHalfVertical), buttonScale) {
 			ps.DCBPosition = dcbPositionBottom
 		}
 		sp.drawDCBSpinner(ctx, makePTLLengthSpinner(&ps.PTLLength), CommandModePTLLength, maybeDisable(buttonFull),
 			buttonScale)
 		if ps.PTLLength > 0 {
-			if toggleButton(ctx, "PTL OWN", &ps.PTLOwn, maybeDisable(buttonHalfVertical), buttonScale) && ps.PTLOwn {
+			if sp.toggleButton(ctx, "PTL OWN", &ps.PTLOwn, maybeDisable(buttonHalfVertical), buttonScale) && ps.PTLOwn {
 				ps.PTLAll = false
 			}
-			if toggleButton(ctx, "PTL ALL", &ps.PTLAll, maybeDisable(buttonHalfVertical), buttonScale) && ps.PTLAll {
+			if sp.toggleButton(ctx, "PTL ALL", &ps.PTLAll, maybeDisable(buttonHalfVertical), buttonScale) && ps.PTLAll {
 				ps.PTLOwn = false
 			}
 		} else {
-			disabledButton(ctx, "PTL OWN", maybeDisable(buttonHalfVertical), buttonScale)
-			disabledButton(ctx, "PTL ALL", maybeDisable(buttonHalfVertical), buttonScale)
+			sp.disabledButton(ctx, "PTL OWN", maybeDisable(buttonHalfVertical), buttonScale)
+			sp.disabledButton(ctx, "PTL ALL", maybeDisable(buttonHalfVertical), buttonScale)
 
 		}
 		sp.drawDCBSpinner(ctx, makeDwellModeSpinner(&ps.DwellMode), CommandModeDwell, maybeDisable(buttonFull), buttonScale)
 
-		if selectButton(ctx, "TPA/\nATPA", maybeDisable(buttonFull), buttonScale) {
+		if sp.selectButton(ctx, "TPA/\nATPA", maybeDisable(buttonFull), buttonScale) {
 			sp.setCommandMode(ctx, CommandModeTPA)
 		}
-		if selectButton(ctx, "SHIFT", maybeDisable(buttonFull), buttonScale) {
+		if sp.selectButton(ctx, "SHIFT", maybeDisable(buttonFull), buttonScale) {
 			sp.dcbShowAux = false
 		}
 
@@ -710,7 +699,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		dcbStartCaptureMouseRegion()
 
 		onoff := func(b bool) string { return util.Select(b, "ENABLED", "INHIBTD") }
-		if selectButton(ctx, "A/TPA\nMILEAGE\n"+onoff(ps.DisplayTPASize), buttonFull, buttonScale) {
+		if sp.selectButton(ctx, "A/TPA\nMILEAGE\n"+onoff(ps.DisplayTPASize), buttonFull, buttonScale) {
 			ps.DisplayTPASize = !ps.DisplayTPASize
 			if ps.DisplayTPASize {
 				sp.previewAreaOutput = "TPA SIZE ON"
@@ -718,19 +707,19 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 				sp.previewAreaOutput = "TPA SIZE OFF"
 			}
 		}
-		if selectButton(ctx, "INTRAIL\nDIST\n"+onoff(ps.DisplayATPAInTrailDist), buttonFull, buttonScale) {
+		if sp.selectButton(ctx, "INTRAIL\nDIST\n"+onoff(ps.DisplayATPAInTrailDist), buttonFull, buttonScale) {
 			ps.DisplayATPAInTrailDist = !ps.DisplayATPAInTrailDist
 			sp.previewAreaOutput = ""
 		}
-		if selectButton(ctx, "ALERT\nCONES\n"+onoff(ps.DisplayATPAWarningAlertCones), buttonFull, buttonScale) {
+		if sp.selectButton(ctx, "ALERT\nCONES\n"+onoff(ps.DisplayATPAWarningAlertCones), buttonFull, buttonScale) {
 			ps.DisplayATPAWarningAlertCones = !ps.DisplayATPAWarningAlertCones
 			sp.previewAreaOutput = ""
 		}
-		if selectButton(ctx, "MONITOR\nCONES\n"+onoff(ps.DisplayATPAMonitorCones), buttonFull, buttonScale) {
+		if sp.selectButton(ctx, "MONITOR\nCONES\n"+onoff(ps.DisplayATPAMonitorCones), buttonFull, buttonScale) {
 			ps.DisplayATPAMonitorCones = !ps.DisplayATPAMonitorCones
 			sp.previewAreaOutput = ""
 		}
-		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
+		if sp.selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
 		} else {
 			dcbCaptureMouseFromRegion(ctx, buttonScale)
@@ -797,7 +786,7 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 
 	dcbDrawState.style = renderer.TextStyle{
 		Font:        sp.dcbFont(ctx, ps.CharSize.DCB),
-		Color:       renderer.RGB{1, 1, 1},
+		Color:       sp.Colors.DCBText,
 		LineSpacing: 0,
 	}
 
@@ -809,7 +798,7 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	trid.AddQuad(dcbDrawState.drawStartPos, [2]float32{drawEndPos[0], dcbDrawState.drawStartPos[1]},
 		drawEndPos, [2]float32{dcbDrawState.drawStartPos[0], drawEndPos[1]},
-		renderer.RGB{0, 0.05, 0})
+		sp.Colors.DCBBackground)
 	trid.GenerateCommands(cb)
 
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
@@ -853,7 +842,7 @@ func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float3
 	}
 }
 
-func drawDCBButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32, pushedIn bool) bool {
+func (sp *STARSPane) drawDCBButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32, pushedIn bool) bool {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	td := renderer.GetTextDrawBuilder()
@@ -879,13 +868,13 @@ func drawDCBButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale 
 	var buttonColor, textColor renderer.RGB
 	disabled := flags&buttonDisabled != 0
 	if disabled {
-		buttonColor = dcbDisabledButtonColor
-		textColor = dcbDisabledTextColor
+		buttonColor = sp.Colors.DCBDisabledButton
+		textColor = sp.Colors.DCBDisabledText
 	}
 	unsupported := flags&buttonUnsupported != 0
 	if unsupported {
-		buttonColor = dcbUnsupportedButtonColor
-		textColor = dcbUnsupportedTextColor
+		buttonColor = sp.Colors.DCBUnsupportedButton
+		textColor = sp.Colors.DCBUnsupportedText
 	}
 	if !disabled && !unsupported {
 		if mouseInside && mouseDownInside {
@@ -894,12 +883,11 @@ func drawDCBButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale 
 
 		// Swap selected/regular color to indicate the tentative result
 		if flags&buttonWXAVL != 0 {
-			buttonColor = util.Select(pushedIn, renderer.RGBFromUInt8(116, 116, 162), // 70,70,100
-				renderer.RGBFromUInt8(83, 83, 162)) // 50,50,100
+			buttonColor = util.Select(pushedIn, sp.Colors.DCBActiveWXButton, sp.Colors.DCBWXButton)
 		} else {
-			buttonColor = util.Select(pushedIn, dcbActiveButtonColor, dcbButtonColor)
+			buttonColor = util.Select(pushedIn, sp.Colors.DCBActiveButton, sp.Colors.DCBButton)
 		}
-		textColor = util.Select(mouseInside, dcbTextSelectedColor, dcbTextColor)
+		textColor = util.Select(mouseInside, sp.Colors.DCBTextSelected, sp.Colors.DCBText)
 	}
 	buttonColor = dcbDrawState.brightness.ScaleRGB(buttonColor)
 	//textColor = dcbDrawState.brightness.ScaleRGB(textColor)
@@ -908,8 +896,8 @@ func drawDCBButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale 
 	drawDCBText(text, td, sz, textColor)
 
 	// Draw the bevel around the button
-	topLeftBevelColor := renderer.RGB{0.2, 0.2, 0.2}
-	bottomRightBevelColor := renderer.RGB{0, 0, 0}
+	topLeftBevelColor := sp.Colors.DCBTopBevel
+	bottomRightBevelColor := sp.Colors.DCBBottomBevel
 	shiftp := func(p [2]float32, dx, dy float32) [2]float32 {
 		return math.Add2f(p, [2]float32{dx, dy})
 	}
@@ -1052,8 +1040,8 @@ func moveDCBCursor(flags dcbFlags, sz [2]float32, ctx *panes.Context) {
 	}
 }
 
-func toggleButton(ctx *panes.Context, text string, state *bool, flags dcbFlags, buttonScale float32) bool {
-	if drawDCBButton(ctx, text, flags, buttonScale, *state) {
+func (sp *STARSPane) toggleButton(ctx *panes.Context, text string, state *bool, flags dcbFlags, buttonScale float32) bool {
+	if sp.drawDCBButton(ctx, text, flags, buttonScale, *state) {
 		*state = !*state
 		return true
 	}
@@ -1092,7 +1080,7 @@ func dcbCaptureMouse(ctx *panes.Context, bounds math.Extent2D) {
 func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, commandMode CommandMode, flags dcbFlags,
 	buttonScale float32, start func(), update func([2]float32)) {
 	active := sp.commandMode == commandMode
-	if drawDCBButton(ctx, text, flags, buttonScale, active) && !active {
+	if sp.drawDCBButton(ctx, text, flags, buttonScale, active) && !active {
 		sp.setCommandMode(ctx, commandMode)
 		savedMousePosition := ctx.Mouse.Pos
 		ctx.Platform.StartMouseDeltaMode()
@@ -1126,7 +1114,7 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 	// to do that trick then.
 	commandModeSelected := !active && sp.commandMode == commandMode &&
 		commandMode != CommandModeBriteSpinner && commandMode != CommandModeCharSizeSpinner
-	clicked := drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active)
+	clicked := sp.drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active)
 	if clicked && active {
 		// Clicking an active spinner deselects it
 		modeAfter := spinner.ModeAfter()
@@ -1671,14 +1659,14 @@ func (s *dcbCharSizeSpinner) ModeAfter() CommandMode {
 	return CommandModeCharSize
 }
 
-func selectButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) bool {
-	return drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0)
+func (sp *STARSPane) selectButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) bool {
+	return sp.drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0)
 }
 
-func disabledButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) {
-	drawDCBButton(ctx, text, flags|buttonDisabled, buttonScale, false)
+func (sp *STARSPane) disabledButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) {
+	sp.drawDCBButton(ctx, text, flags|buttonDisabled, buttonScale, false)
 }
 
-func unsupportedButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) {
-	drawDCBButton(ctx, text, flags|buttonUnsupported, buttonScale, false)
+func (sp *STARSPane) unsupportedButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) {
+	sp.drawDCBButton(ctx, text, flags|buttonUnsupported, buttonScale, false)
 }
