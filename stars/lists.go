@@ -295,7 +295,7 @@ func (sp *STARSPane) handleListDrag(ctx *panes.Context, bounds math.Extent2D, po
 			P0: math.Sub2f(cursorPos, offset),
 			P1: math.Add2f(math.Sub2f(cursorPos, offset), size),
 		}
-		sp.drawListFrameColor(ctx, movedBounds, renderer.RGB{1, 1, 1}, ld)
+		sp.drawListFrameColor(ctx, movedBounds, sp.Colors.ListFrame, ld)
 
 		// Second middle click outside original bounds finishes the move
 		if ctx.Mouse.Clicked[platform.MouseButtonTertiary] && !sp.movingListBounds.Inside(ctx.Mouse.Pos) {
@@ -1310,7 +1310,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 	for i, cl := range fa.CoordinationLists {
 		listStyle := renderer.TextStyle{
 			Font:  font,
-			Color: ps.Brightness.Lists.ScaleRGB(util.Select(cl.YellowEntries, renderer.RGB{1, 1, 0}, sp.Colors.List)),
+			Color: ps.Brightness.Lists.ScaleRGB(util.Select(cl.YellowEntries, sp.Colors.TextWarning, sp.Colors.List)),
 		}
 		dimStyle := renderer.TextStyle{
 			Font:  font,

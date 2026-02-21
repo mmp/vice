@@ -161,7 +161,7 @@ func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms radar.ScopeT
 	// "The color of the blinking square is the same as that for blinking
 	// data block information"(?)
 	ps := sp.currentPrefs()
-	color := ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.UntrackedAircraft)
+	color := ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.UnownedDatablock)
 	halfSeconds := ctx.Now.UnixMilli() / 500
 	blinkDim := halfSeconds&1 == 0
 	if blinkDim {
@@ -191,7 +191,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms radar.ScopeT
 	defer renderer.ReturnLinesDrawBuilder(ld)
 
 	ps := sp.currentPrefs()
-	color := ps.Brightness.Lines.RGB()
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.RangeBearingLine) // arbitrary white-ish...
 	style := renderer.TextStyle{
 		Font:  sp.systemFont(ctx, ps.CharSize.Tools),
 		Color: color,
@@ -221,7 +221,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, transforms radar.ScopeTransfor
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	ps := sp.currentPrefs()
-	color := ps.Brightness.Lines.RGB() // check
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.RangeBearingLine)
 	style := renderer.TextStyle{
 		Font:  sp.systemFont(ctx, ps.CharSize.Tools),
 		Color: color,
@@ -310,7 +310,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	ps := sp.currentPrefs()
-	color := ps.Brightness.Lines.RGB()
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.PTL) // same color for min sep as PTL
 
 	s0, ok0 := sp.TrackState[trk0.ADSBCallsign]
 	s1, ok1 := sp.TrackState[trk1.ADSBCallsign]
@@ -675,7 +675,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, transforms radar.ScopeTransfor
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
-	color := ps.Brightness.Lines.RGB()
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.PTL)
 
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
@@ -908,7 +908,7 @@ func (sp *STARSPane) drawWind(ctx *panes.Context, transforms radar.ScopeTransfor
 
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Tools)
-	color := ps.Brightness.Lines.RGB()
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.RangeBearingLine) // arbitrary white-ish...
 
 	const arrowLength = 25
 	const arrowheadSize = 8

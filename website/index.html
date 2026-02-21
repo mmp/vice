@@ -1499,6 +1499,8 @@ how it simulates aircraft or the STARS interface.
                   <li>Added qualifying attributes to quicklook filter regions: it can now depend on owning TCP, scratchpad, flight type, flight rules, CWT category, and a bunch of other things.</li>
                   <li>CRDA: no longer has to be tied to runways. Paths can include arcs and don't have to be straight lines. Convergence points can be arbitrary, don't have to be runway intersections.</li>
                   <li>Added "go_around" object to "arrival_runways" specifiers: can specify heading, altitude, and handoff controller for each arrival runway.</li>
+                  <li>Added "monitor" option under "config" in facility configuration types to specify a display monitor type to simulate;
+                    for STARS this determines the color scheme. Options are "legacy", "mdm3", and "mdm4".</li>
                 </ul>
               </li>
             </ul>
@@ -9164,6 +9166,13 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       If not specified, the default format <code>"[ACID] [BEACON]  [SUPP_BEACON]"</code> is used.
                     </li>
                   </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"monitor"</td>
+                <td>String</td>
+                <td>Specifies the type of monitor to simulate, which in turn determines the STARS color scheme used.
+                  Options are: "legacy" (the default), "mdm3", and "mdm4".
                 </td>
               </tr>
               <tr>

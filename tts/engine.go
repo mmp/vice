@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 )
@@ -145,7 +144,7 @@ func CheckTTSLoadError() (error, bool) {
 }
 
 func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts,
-	text, voice string) ([]int16, error) {
+	text, voice string, radioSeed uint32) ([]int16, error) {
 	<-t.done
 
 	if ttsEngine == nil || text == "" {
@@ -166,38 +165,48 @@ func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts,
 	}
 
 	pcm := t.convertAndResample(audio.Samples, audio.SampleRate)
-	addNoise(pcm, t.targetSampleRate)
+
+	// Append silence to simulate the pilot holding the transmit key
+	// briefly after finishing speaking. addRadioEffect fills this with
+	// noise and engine rumble before the squelch tail fades it out.
+	r := rand.Make()
+	tailSamples := t.targetSampleRate * (100 + r.Intn(200)) / 1000 // 0.1-0.3s
+	pcm = append(pcm, make([]int16, tailSamples)...)
+
+	addRadioEffect(pcm, t.targetSampleRate, radioSeed, 1)
 	return pcm, nil
 }
 
 // synthesizeReadback generates speech using the high-priority TTS instance.
-func (t *localTTS) synthesizeReadback(text, voice string) ([]int16, error) {
-	return t.synthesize(&t.readbackMu, t.readbackTTS, text, voice)
+func (t *localTTS) synthesizeReadback(text, voice string, radioSeed uint32) ([]int16, error) {
+	return t.synthesize(&t.readbackMu, t.readbackTTS, text, voice, radioSeed)
 }
 
 // synthesizeContact generates speech using the low-priority TTS instance.
-func (t *localTTS) synthesizeContact(text, voice string) ([]int16, error) {
-	return t.synthesize(&t.contactMu, t.contactTTS, text, voice)
+func (t *localTTS) synthesizeContact(text, voice string, radioSeed uint32) ([]int16, error) {
+	return t.synthesize(&t.contactMu, t.contactTTS, text, voice, radioSeed)
 }
 
 // SynthesizeReadbackTTS generates PCM audio for a readback using the
-// high-priority TTS instance.
-func SynthesizeReadbackTTS(text, voice string) ([]int16, error) {
+// high-priority TTS instance. The radioSeed determines per-aircraft radio
+// characteristics so the same aircraft has a consistent sound.
+func SynthesizeReadbackTTS(text, voice string, radioSeed uint32) ([]int16, error) {
 	start := time.Now()
 	defer func() {
 		fmt.Printf("readback %s: %q in %s\n", voice, text, time.Since(start))
 	}()
-	return globalTTS.synthesizeReadback(text, voice)
+	return globalTTS.synthesizeReadback(text, voice, radioSeed)
 }
 
 // SynthesizeContactTTS generates PCM audio for a contact using the
-// low-priority TTS instance.
-func SynthesizeContactTTS(text, voice string) ([]int16, error) {
+// low-priority TTS instance. The radioSeed determines per-aircraft radio
+// characteristics so the same aircraft has a consistent sound.
+func SynthesizeContactTTS(text, voice string, radioSeed uint32) ([]int16, error) {
 	start := time.Now()
 	defer func() {
 		fmt.Printf("contact %s: %q in %s\n", voice, text, time.Since(start))
 	}()
-	return globalTTS.synthesizeContact(text, voice)
+	return globalTTS.synthesizeContact(text, voice, radioSeed)
 }
 
 // voiceSpeed returns the TTS speed multiplier for the given voice name.
@@ -255,41 +264,4 @@ func resampleAudio(samples []float32, srcRate, dstRate int) []float32 {
 	}
 
 	return out
-}
-
-// addNoise applies radio-style noise and static to PCM audio samples.
-func addNoise(pcm []int16, sampleRate int) {
-	r := rand.Make()
-	amp := 256 + r.Intn(512)
-	freqs := []int{10 + r.Intn(5), 18 + r.Intn(5)}
-	noises := []int{0, 0}
-	for i, v := range pcm {
-		n := 0
-		for j := range freqs {
-			if i%freqs[j] == 0 {
-				noises[j] = -amp + r.Intn(2*amp)
-			}
-			n += noises[j]
-		}
-
-		pcm[i] = int16(math.Clamp(n+int(v), -32768, 32767))
-	}
-
-	// Random squelch
-	if false && r.Float32() < 0.1 {
-		length := sampleRate/2 + r.Intn(sampleRate/4)
-		freqs := []int{100 + r.Intn(50), 500 + r.Intn(250), 1500 + r.Intn(500), 4000 + r.Intn(1000)}
-		start := r.Intn(4 * len(pcm) / 5)
-		const amp = 20000
-
-		n := min(len(pcm), start+length)
-		for i := start; i < n; i++ {
-			sq := -amp + r.Intn(2*amp)
-			for _, fr := range freqs {
-				sq += int(amp * math.Sin(float32(fr*i)*2*3.14159/float32(sampleRate)))
-			}
-			sq /= 1 + len(freqs) // normalize
-			pcm[i] = int16(math.Clamp(int(pcm[i]/4)+sq, -32768, 32767))
-		}
-	}
 }
