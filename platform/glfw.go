@@ -288,6 +288,7 @@ func (g *glfwPlatform) NewFrame() {
 	// Let the imgui backends update their internal state for viewport management.
 	implogl3.NewFrame()
 	implglfw.NewFrame()
+	clampMonitorWorkBounds()
 
 	if g.multisample {
 		gl.Enable(gl.MULTISAMPLE)
@@ -342,6 +343,42 @@ func (g *glfwPlatform) NewFrame() {
 	if g.mouseDeltaMode {
 		g.mouseDelta = math.Sub2f(g.getCursorPos(), g.mouseDeltaWindowCenter)
 		g.window.SetCursorPos(float64(g.mouseDeltaWindowCenter[0]), float64(g.mouseDeltaWindowCenter[1]))
+	}
+}
+
+// clampMonitorWorkBounds fixes a bug where glfwGetMonitorWorkarea returns
+// work bounds that extend outside the monitor's main bounds on Windows
+// with certain DPI scaling configurations. imgui asserts that WorkRect is
+// contained in MainRect during NewFrame; without this clamp the assertion
+// crashes the application. See https://github.com/ocornut/imgui/issues/7219
+func clampMonitorWorkBounds() {
+	pio := imgui.CurrentPlatformIO()
+	for _, mon := range pio.Monitors().Slice() {
+		mainPos := mon.MainPos()
+		mainSize := mon.MainSize()
+		workPos := mon.WorkPos()
+		workSize := mon.WorkSize()
+
+		mainRight := mainPos.X + mainSize.X
+		mainBottom := mainPos.Y + mainSize.Y
+
+		if workPos.X < mainPos.X {
+			workSize.X -= mainPos.X - workPos.X
+			workPos.X = mainPos.X
+		}
+		if workPos.Y < mainPos.Y {
+			workSize.Y -= mainPos.Y - workPos.Y
+			workPos.Y = mainPos.Y
+		}
+		if workPos.X+workSize.X > mainRight {
+			workSize.X = mainRight - workPos.X
+		}
+		if workPos.Y+workSize.Y > mainBottom {
+			workSize.Y = mainBottom - workPos.Y
+		}
+
+		mon.SetWorkPos(workPos)
+		mon.SetWorkSize(workSize)
 	}
 }
 
