@@ -442,17 +442,10 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 	}
 
 	if wi == nil {
-		// No geometric intercept found. For a visual approach the pilot
-		// has the field in sight, so fly a 3nm final to the runway
-		// threshold rather than through the charted waypoints.
-		wi = nav.buildDirectVisualWaypoints(nav.Approach.Assigned.Runway)
-	}
-
-	if wi == nil {
 		return av.MakeUnableIntent("unable. We are not on course to intercept the approach")
 	}
 
-	// Update the route and go direct to the intercept/first point.
+	// Update the route and go direct to the intercept point.
 	nav.Waypoints = append(wi, nav.FlightState.ArrivalAirport)
 	nav.Heading = NavHeading{}
 	nav.DeferredNavHeading = nil
