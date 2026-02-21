@@ -96,11 +96,11 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 			e.ErrorString("invalid frequency: %6.3f", float32(ctrl.Frequency)/1000)
 		}
 		if ctrl.RadioName == "" {
-			e.ErrorString("no \"radio_name\" specified")
+			e.ErrorString(`no "radio_name" specified`)
 		}
 
 		if !ctrl.ERAMFacility && strings.HasSuffix(strings.ToLower(ctrl.RadioName), "center") {
-			e.ErrorString("radio name ends in \"center\" but this is not an ARTCC facility")
+			e.ErrorString(`radio name ends in "center" but this is not an ARTCC facility`)
 		}
 		if ctrl.ERAMFacility {
 			if _, err := strconv.Atoi(ctrl.Position); err != nil {
@@ -114,21 +114,21 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 
 		if ctrl.Scope != "" {
 			if ctrl.FacilityIdentifier == ctrl.Scope {
-				e.ErrorString("\"scope_char\" is redundant since it matches \"facility_id\"")
+				e.ErrorString(`"scope_char" is redundant since it matches "facility_id"`)
 			}
 			if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == "" && len(ctrl.Position) > 0 &&
 				ctrl.Scope == string(ctrl.Position[len(ctrl.Position)-1]) {
-				e.ErrorString("\"scope_char\" is redundant since it matches the last character of position")
+				e.ErrorString(`"scope_char" is redundant since it matches the last character of position`)
 			}
 		}
 		if len(ctrl.Scope) > 1 {
-			e.ErrorString("\"scope_char\" may only be a single character")
+			e.ErrorString(`"scope_char" may only be a single character`)
 		}
 
 		if ctrl.Area != "" && !ctrl.ERAMFacility && len(ctrl.Position) > 0 &&
 			ctrl.Position[0] >= '0' && ctrl.Position[0] <= '9' &&
 			ctrl.Area == string(ctrl.Position[0]) {
-			e.ErrorString("\"area\" is redundant since it matches the first digit of position")
+			e.ErrorString(`"area" is redundant since it matches the first digit of position`)
 		}
 
 		e.Pop()
@@ -141,10 +141,10 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 	// Validate handoff IDs.
 	seenIDs := make(map[string]bool)
 	for _, hid := range fc.HandoffIDs {
-		e.Push(fmt.Sprintf("handoff_id \"%q\"", hid.ID))
+		e.Push(fmt.Sprintf(`handoff_id "%q"`, hid.ID))
 
 		if hid.ID == "" {
-			e.ErrorString("\"id\" must not be empty")
+			e.ErrorString(`"id" must not be empty`)
 			e.Pop()
 			continue
 		}
@@ -158,9 +158,9 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 
 		// XOR: exactly one identification scheme.
 		if hasPrefix && hasStarsID {
-			e.ErrorString("cannot specify both \"prefix\" and stars_id fields")
+			e.ErrorString(`cannot specify both "prefix" and stars_id fields`)
 		} else if !hasPrefix && !hasStarsID {
-			e.ErrorString("must specify either \"prefix\" or \"stars_id\"")
+			e.ErrorString(`must specify either "prefix" or "stars_id"`)
 		}
 
 		_, neighborIsARTCC := av.DB.ARTCCs[hid.ID]
@@ -168,55 +168,55 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 		if neighborIsARTCC {
 			// ARTCC neighbors always use a letter prefix.
 			if !hasPrefix {
-				e.ErrorString("ARTCC neighbor must use \"prefix\"")
+				e.ErrorString(`ARTCC neighbor must use "prefix"`)
 			} else if len(hid.Prefix) != 1 || hid.Prefix[0] < 'A' || hid.Prefix[0] > 'Z' {
 				e.ErrorString("ARTCC prefix must be a single letter A-Z, got %q", hid.Prefix)
 			}
 		} else if isARTCC {
 			// Primary is ARTCC, neighbor is TRACON: must use stars_id mode.
 			if hasPrefix {
-				e.ErrorString("TRACON neighbor of ARTCC must use \"stars_id\", not \"prefix\"")
+				e.ErrorString(`TRACON neighbor of ARTCC must use "stars_id", not "prefix"`)
 			}
 			if hid.StarsID == "" {
-				e.ErrorString("\"stars_id\" is required for TRACON neighbor of ARTCC")
+				e.ErrorString(`"stars_id" is required for TRACON neighbor of ARTCC`)
 			}
 			if len(hid.StarsID) != 3 {
-				e.ErrorString("\"stars_id\" must be exactly 3 characters for \"FullStarsIdOnly\"")
+				e.ErrorString(`"stars_id" must be exactly 3 characters for "FullStarsIdOnly"`)
 			}
 			// Validate field lengths when set.
 			if hid.SingleCharStarsID != "" && len(hid.SingleCharStarsID) != 1 {
-				e.ErrorString("\"single_char_stars_id\" must be exactly 1 character")
+				e.ErrorString(`"single_char_stars_id" must be exactly 1 character`)
 			}
 			if hid.TwoCharStarsID != "" && len(hid.TwoCharStarsID) != 2 {
-				e.ErrorString("\"two_char_stars_id\" must be exactly 2 characters")
+				e.ErrorString(`"two_char_stars_id" must be exactly 2 characters`)
 			}
 			if hid.FieldELetter != "" && len(hid.FieldELetter) != 1 {
-				e.ErrorString("\"field_e_letter\" must be exactly 1 character")
+				e.ErrorString(`"field_e_letter" must be exactly 1 character`)
 			}
 
 			// validate field e format
 			switch hid.FieldEFormat {
 			case "OneLetterAndSubset":
 				if hid.FieldELetter == "" && hid.SingleCharStarsID == "" {
-					e.ErrorString("\"field_e_letter\" or \"single_char_stars_id\" is required for \"OneLetterAndSubset\"")
+					e.ErrorString(`"field_e_letter" or "single_char_stars_id" is required for "OneLetterAndSubset"`)
 				}
 			case "TwoLetters":
 				if hid.TwoCharStarsID == "" {
-					e.ErrorString("\"two_char_stars_id\" is required for \"TwoLetters\"")
+					e.ErrorString(`"two_char_stars_id" is required for "TwoLetters"`)
 				}
 			case "TwoLettersAndSubset":
 				if hid.TwoCharStarsID == "" {
-					e.ErrorString("\"field_e_letter\" is required for \"TwoLettersAndSubset\"")
+					e.ErrorString(`"field_e_letter" is required for "TwoLettersAndSubset"`)
 				}
 			case "OneLetterAndStarsIdOnly":
 				if hid.FieldELetter == "" {
-					e.ErrorString("\"field_e_letter\" is required for \"OneLetterAndStarsId\"")
+					e.ErrorString(`"field_e_letter" is required for "OneLetterAndStarsId"`)
 				}
 			case "FullStarsIdOnly":
 			case "":
-				e.ErrorString("\"field_e_format\" is required for TRACON neighbor of ARTCC")
+				e.ErrorString(`"field_e_format" is required for TRACON neighbor of ARTCC`)
 			default:
-				e.ErrorString("invalid field_e_format \"%q\"", hid.FieldEFormat)
+				e.ErrorString(`invalid field_e_format "%q"`, hid.FieldEFormat)
 			}
 		} else {
 			// Primary is TRACON, neighbor is TRACON: must use a digit prefix.
@@ -248,7 +248,7 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 
 	// Validate configurations (controller assignments).
 	if fa.Configurations == nil {
-		e.ErrorString("must provide \"configurations\"")
+		e.ErrorString(`must provide "configurations"`)
 	}
 	for configId, config := range fa.Configurations {
 		e.Push("configurations: " + configId)
@@ -259,22 +259,22 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 
 		for flow, tcp := range config.InboundAssignments {
 			if _, ok := fc.ControlPositions[tcp]; !ok {
-				e.ErrorString("inbound_assignments: flow %q assigns to %q which is not in \"control_positions\"", flow, tcp)
+				e.ErrorString(`inbound_assignments: flow %q assigns to %q which is not in "control_positions"`, flow, tcp)
 			}
 		}
 		for spec, tcp := range config.DepartureAssignments {
 			if _, ok := fc.ControlPositions[tcp]; !ok {
-				e.ErrorString("departure_assignments: %q assigns to %q which is not in \"control_positions\"", spec, tcp)
+				e.ErrorString(`departure_assignments: %q assigns to %q which is not in "control_positions"`, spec, tcp)
 			}
 		}
 
 		for parent, children := range config.DefaultConsolidation {
 			if _, ok := fc.ControlPositions[parent]; !ok {
-				e.ErrorString("default_consolidation: parent %q is not in \"control_positions\"", parent)
+				e.ErrorString(`default_consolidation: parent %q is not in "control_positions"`, parent)
 			}
 			for _, child := range children {
 				if _, ok := fc.ControlPositions[child]; !ok {
-					e.ErrorString("default_consolidation: child %q (under %q) is not in \"control_positions\"", child, parent)
+					e.ErrorString(`default_consolidation: child %q (under %q) is not in "control_positions"`, child, parent)
 				}
 			}
 		}
@@ -289,7 +289,7 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 		for bl := range strings.SplitSeq(*fa.MonitoredBeaconCodeBlocksString, ",") {
 			bl = strings.TrimSpace(bl)
 			if code, err := av.ParseSquawkOrBlock(bl); err != nil {
-				e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", bl, err)
+				e.ErrorString(`invalid beacon code %q in "beacon_code_blocks": %v`, bl, err)
 			} else {
 				fa.MonitoredBeaconCodeBlocks = append(fa.MonitoredBeaconCodeBlocks, code)
 			}
@@ -309,7 +309,7 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	// Video map labels must reference known stars_maps.
 	for m := range fa.VideoMapLabels {
 		if !slices.Contains(fa.VideoMapNames, m) {
-			e.ErrorString("video map %q in \"map_labels\" is not in \"stars_maps\"", m)
+			e.ErrorString(`video map %q in "map_labels" is not in "stars_maps"`, m)
 		}
 	}
 
@@ -317,18 +317,18 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	if len(fa.ControllerConfigs) > 0 {
 		for tcp := range fa.ControllerConfigs {
 			if ctrl, ok := fc.ControlPositions[TCP(tcp)]; !ok {
-				e.ErrorString("Control position %q in \"controller_configs\" not defined in \"control_positions\"", tcp)
+				e.ErrorString(`Control position %q in "controller_configs" not defined in "control_positions"`, tcp)
 			} else if ctrl.IsExternal() {
-				e.ErrorString("Control position %q in \"controller_configs\" is external and not in this TRACON.", tcp)
+				e.ErrorString(`Control position %q in "controller_configs" is external and not in this TRACON.`, tcp)
 			}
 		}
 	} else if len(fa.VideoMapNames) == 0 {
-		e.ErrorString("Must specify either \"controller_configs\" or \"stars_maps\"")
+		e.ErrorString(`Must specify either "controller_configs" or "stars_maps"`)
 	}
 
 	if len(fa.VideoMapNames) == 0 {
 		if len(fa.ControllerConfigs) == 0 {
-			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" with \"video_maps\" in \"config\"")
+			e.ErrorString(`must provide one of "stars_maps" or "controller_configs" with "video_maps" in "config"`)
 		}
 		var err error
 		fa.ControllerConfigs, err = util.CommaKeyExpand(fa.ControllerConfigs)
@@ -346,13 +346,13 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 
 	// PDB mutual exclusion.
 	if fa.PDB.SplitGSAndCWT && fa.PDB.ShowAircraftType {
-		e.ErrorString("Both \"split_gs_and_cwt\" and \"show_aircraft_type\" cannot be specified for \"pdb\" adaption.")
+		e.ErrorString(`Both "split_gs_and_cwt" and "show_aircraft_type" cannot be specified for "pdb" adaption.`)
 	}
 	if fa.PDB.SplitGSAndCWT && fa.PDB.HideGroundspeed {
-		e.ErrorString("Both \"split_gs_and_cwt\" and \"hide_gs\" cannot be specified for \"pdb\" adaption.")
+		e.ErrorString(`Both "split_gs_and_cwt" and "hide_gs" cannot be specified for "pdb" adaption.`)
 	}
 	if fa.PDB.DisplayCustomSPCs && len(fa.CustomSPCs) == 0 {
-		e.ErrorString("\"display_custom_spcs\" was set but none were defined in \"custom_spcs\".")
+		e.ErrorString(`"display_custom_spcs" was set but none were defined in "custom_spcs".`)
 	}
 
 	// Scratchpad1 mutual exclusion.
@@ -372,13 +372,13 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	if len(disp) > 1 {
 		d := util.SortedMapKeys(disp)
 		d = util.MapSlice(d, func(s string) string { return `"` + s + `"` })
-		e.ErrorString("Cannot specify %s for \"scratchpad1\"", strings.Join(d, " and "))
+		e.ErrorString(`Cannot specify %s for "scratchpad1"`, strings.Join(d, " and "))
 	}
 
 	// Custom SPCs.
 	for _, spc := range fa.CustomSPCs {
 		if len(spc) != 2 || spc[0] < 'A' || spc[0] > 'Z' || spc[1] < 'A' || spc[1] > 'Z' {
-			e.ErrorString("Invalid \"custom_spcs\" code %q: must be two characters between A-Z", spc)
+			e.ErrorString(`Invalid "custom_spcs" code %q: must be two characters between A-Z`, spc)
 		}
 		if av.StringIsSPC(spc) {
 			e.ErrorString("%q is a standard SPC already", spc)
@@ -395,11 +395,11 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 			var r [2]av.Squawk
 			r[0], err = av.ParseSquawk(low)
 			if err != nil {
-				e.ErrorString("invalid beacon code %q in \"beacon_codes\": %v", low, err)
+				e.ErrorString(`invalid beacon code %q in "beacon_codes": %v`, low, err)
 			} else if ok {
 				r[1], err = av.ParseSquawk(high)
 				if err != nil {
-					e.ErrorString("invalid beacon code %q in \"beacon_codes\": %v", high, err)
+					e.ErrorString(`invalid beacon code %q in "beacon_codes": %v`, high, err)
 				} else if r[0] > r[1] {
 					e.ErrorString("first code %q in range must be less than or equal to second %q", low, high)
 				}
@@ -410,9 +410,9 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		}
 
 		if len(fa.UntrackedPositionSymbolOverrides.Symbol) == 0 {
-			e.ErrorString("\"symbol\" must be provided if \"untracked_position_symbol_overrides\" is specified")
+			e.ErrorString(`"symbol" must be provided if "untracked_position_symbol_overrides" is specified`)
 		} else if len(fa.UntrackedPositionSymbolOverrides.Symbol) > 1 {
-			e.ErrorString("only one character may be provided for \"symbol\"")
+			e.ErrorString(`only one character may be provided for "symbol"`)
 		}
 		e.Pop()
 	}
@@ -420,16 +420,16 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	// Coordination lists: name/id required, id uniqueness.
 	seenIds := make(map[string][]string)
 	for _, list := range fa.CoordinationLists {
-		e.Push("\"coordination_lists\" " + list.Name)
+		e.Push(`"coordination_lists" ` + list.Name)
 
 		if list.Name == "" {
-			e.ErrorString("\"name\" must be specified for coordination list.")
+			e.ErrorString(`"name" must be specified for coordination list.`)
 		}
 		if list.Id == "" {
-			e.ErrorString("\"id\" must be specified for coordination list.")
+			e.ErrorString(`"id" must be specified for coordination list.`)
 		}
 		if len(list.Airports) == 0 {
-			e.ErrorString("At least one airport must be specified in \"airports\" for coordination list.")
+			e.ErrorString(`At least one airport must be specified in "airports" for coordination list.`)
 		}
 
 		seenIds[list.Id] = append(seenIds[list.Id], list.Name)
@@ -438,12 +438,12 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	}
 	for id, groups := range seenIds {
 		if len(groups) > 1 {
-			e.ErrorString("Multiple \"coordination_lists\" are using id %q: %s", id, strings.Join(groups, ", "))
+			e.ErrorString(`Multiple "coordination_lists" are using id %q: %s`, id, strings.Join(groups, ", "))
 		}
 	}
 
 	// Restriction areas: non-spatial checks.
-	e.Push("\"restriction_areas\"")
+	e.Push(`"restriction_areas"`)
 	if len(fa.RestrictionAreas) > av.MaxRestrictionAreas {
 		e.ErrorString("No more than %d restriction areas may be specified; %d were given.",
 			av.MaxRestrictionAreas, len(fa.RestrictionAreas))
@@ -452,19 +452,19 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		ra := &fa.RestrictionAreas[idx]
 
 		if ra.Title == "" {
-			e.ErrorString("Must define \"title\" for restriction area.")
+			e.ErrorString(`Must define "title" for restriction area.`)
 		}
 		for i := range 2 {
 			if len(ra.Text[i]) > 32 {
-				e.ErrorString("Maximum of 32 characters per line in \"text\": line %d: %q (%d)",
+				e.ErrorString(`Maximum of 32 characters per line in "text": line %d: %q (%d)`,
 					i, ra.Text, len(ra.Text[i]))
 			}
 		}
 		if ra.Color < 0 || ra.Color > 8 {
-			e.ErrorString("\"color\" must be between 1 and 8 (inclusive).")
+			e.ErrorString(`"color" must be between 1 and 8 (inclusive).`)
 		}
 		if ra.Shaded && ra.CircleRadius == 0 && len(ra.Vertices) == 0 && len(ra.VerticesUser) == 0 {
-			e.ErrorString("\"shaded\" cannot be specified without \"circle_radius\" or \"vertices\".")
+			e.ErrorString(`"shaded" cannot be specified without "circle_radius" or "vertices".`)
 		}
 	}
 	e.Pop()

@@ -95,7 +95,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 	// Validate wind specifier if present
 	if s.WindSpecifier != nil {
-		e.Push("\"wind\"")
+		e.Push(`"wind"`)
 		if err := s.WindSpecifier.Validate(); err != nil {
 			e.Error(err)
 		}
@@ -104,15 +104,15 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 	// Validate configuration
 	if s.ControllerConfiguration == nil {
-		e.ErrorString("\"configuration\" is required")
+		e.ErrorString(`"configuration" is required`)
 		return
 	}
 
 	// Resolve config_id to get assignments and consolidation from config.configurations
 	if s.ControllerConfiguration.ConfigId == "" {
-		e.ErrorString("\"config_id\" must be specified in \"configuration\"")
+		e.ErrorString(`"config_id" must be specified in "configuration"`)
 	} else if config, ok := sg.FacilityAdaptation.Configurations[s.ControllerConfiguration.ConfigId]; !ok {
-		e.ErrorString("\"config_id\" %q not found in \"config\" \"configurations\"", s.ControllerConfiguration.ConfigId)
+		e.ErrorString(`"config_id" %q not found in "config" "configurations"`, s.ControllerConfiguration.ConfigId)
 	} else {
 		// Copy assignments from the referenced configuration
 		s.ControllerConfiguration.InboundAssignments = maps.Clone(config.InboundAssignments)
@@ -175,7 +175,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		for flowName := range s.InboundFlowDefaultRates {
 			if flow, ok := sg.InboundFlows[flowName]; ok && flowNeedsHumanAssignment(flow) {
 				if _, ok := s.ControllerConfiguration.InboundAssignments[flowName]; !ok {
-					e.ErrorString("inbound flow %q needs human controller but has no assignment in \"inbound_assignments\"", flowName)
+					e.ErrorString(`inbound flow %q needs human controller but has no assignment in "inbound_assignments"`, flowName)
 				}
 			}
 		}
@@ -184,7 +184,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		// Validate go_around_assignments
 		for spec, tcp := range s.ControllerConfiguration.GoAroundAssignments {
 			if !slices.Contains(s.ControllerConfiguration.AllPositions(), tcp) {
-				e.ErrorString("go_around_assignments: %q assigns to %q which is not a human position in \"default_consolidation\"", spec, tcp)
+				e.ErrorString(`go_around_assignments: %q assigns to %q which is not a human position in "default_consolidation"`, spec, tcp)
 			}
 			// Validate airport/runway
 			airport, runway, hasRunway := strings.Cut(spec, "/")
@@ -206,7 +206,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 		for _, vname := range vnames {
 			if _, ok := sg.Airspace.Volumes[vname]; !ok {
-				e.ErrorString("Airspace volume %q for controller %q not defined in scenario group \"airspace\"",
+				e.ErrorString(`Airspace volume %q for controller %q not defined in scenario group "airspace"`,
 					vname, ctrl)
 			}
 		}
@@ -264,7 +264,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
-			e.ErrorString("airport not found in scenario group \"airports\"")
+			e.ErrorString(`airport not found in scenario group "airports"`)
 		} else {
 			if routes, ok := ap.DepartureRoutes[rwy.Runway]; !ok {
 				e.ErrorString("runway departure routes not found")
@@ -280,7 +280,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			}
 
 			if len(ap.Departures) == 0 {
-				e.ErrorString("no \"departures\" specified for airport")
+				e.ErrorString(`no "departures" specified for airport`)
 			}
 
 			if rwy.Category != "" {
@@ -307,7 +307,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		e.Push("Arrival runway " + rwy.Airport + " " + string(rwy.Runway))
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
-			e.ErrorString("airport not found in scenario group \"airports\"")
+			e.ErrorString(`airport not found in scenario group "airports"`)
 		} else {
 			activeAirports[ap] = nil
 
@@ -341,7 +341,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 				// Validate handoff_controller: must be a valid TCP in control_positions
 				if rwy.GoAround.HandoffController != "" {
 					if _, ok := sg.ControlPositions[rwy.GoAround.HandoffController]; !ok {
-						e.ErrorString("\"handoff_controller\" %q not found in \"control_positions\"", rwy.GoAround.HandoffController)
+						e.ErrorString(`"handoff_controller" %q not found in "control_positions"`, rwy.GoAround.HandoffController)
 					}
 				}
 
@@ -368,7 +368,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 		ap, ok := sg.Airports[rwy.Airport]
 		if !ok {
-			e.ErrorString("%s: airport not found in \"airports\"", rwy.Airport)
+			e.ErrorString(`%s: airport not found in "airports"`, rwy.Airport)
 		} else {
 			activeAirports[ap] = nil
 			activeDepartureAirports[rwy.Airport] = nil
@@ -382,7 +382,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 				for fix, route := range exitRoutes {
 					fixCategory := ap.ExitCategories[fix]
 					if rwy.Category != "" && fixCategory == "" {
-						e.ErrorString("exit fix %q (SID %s) has no entry in \"exit_categories\" but runway uses category %q",
+						e.ErrorString(`exit fix %q (SID %s) has no entry in "exit_categories" but runway uses category %q`,
 							fix, route.SID, rwy.Category)
 					}
 					if rwy.Category == "" || fixCategory == rwy.Category {
@@ -484,7 +484,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 				}
 			} else {
 				// No assignments at all for this airport
-				e.ErrorString("departure airport %q has no assignment in \"departure_assignments\" in %q", ap,
+				e.ErrorString(`departure airport %q has no assignment in "departure_assignments" in %q`, ap,
 					s.ControllerConfiguration.ConfigId)
 			}
 		}
@@ -533,7 +533,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			for category := range s.InboundFlowDefaultRates[name] {
 				if category == "overflights" {
 					if len(flow.Overflights) == 0 {
-						e.ErrorString("Rate specified for \"overflights\" but no overflights specified in %q", name)
+						e.ErrorString(`Rate specified for "overflights" but no overflights specified in %q`, name)
 					}
 				} else {
 					airport := category
@@ -554,7 +554,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 									func(r sim.ArrivalRunway) bool {
 										return r.Airport == airport
 									}) {
-									e.ErrorString("no runways listed in \"arrival_runways\" for %s even though there are %s arrivals in \"arrivals\"",
+									e.ErrorString(`no runways listed in "arrival_runways" for %s even though there are %s arrivals in "arrivals"`,
 										airport, airport)
 								}
 							}
@@ -586,7 +586,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 	if s.CenterString != "" {
 		if pos, ok := sg.Locate(s.CenterString); !ok {
-			e.ErrorString("unknown location %q specified for \"center\"", s.CenterString)
+			e.ErrorString(`unknown location %q specified for "center"`, s.CenterString)
 		} else {
 			s.Center = pos
 		}
@@ -595,14 +595,14 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	if manifest != nil {
 		for _, dm := range s.DefaultMaps {
 			if !manifest.HasMap(dm) {
-				e.ErrorString("video map %q in \"default_maps\" not found. Use -listmaps "+
+				e.ErrorString(`video map %q in "default_maps" not found. Use -listmaps `+
 					"<path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.", dm)
 			}
 		}
 
 		if sg.ARTCC != "" {
 			if !manifest.HasMapGroup(s.DefaultMapGroup) {
-				e.ErrorString("video map group %q in \"default_map_group\" not found. Use -listmaps "+
+				e.ErrorString(`video map group %q in "default_map_group" not found. Use -listmaps `+
 					"<path to Zxx-videomaps.gob.zst> to show available video map groups for an ARTCC.", s.DefaultMapGroup)
 			}
 		}
@@ -774,7 +774,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 
 	if sg.ARTCC == "" {
 		if sg.TRACON == "" {
-			e.ErrorString("\"tracon\" or must be specified")
+			e.ErrorString(`"tracon" or must be specified`)
 		} else if _, ok := av.DB.TRACONs[sg.TRACON]; !ok {
 			e.ErrorString("TRACON %q is unknown; it must be a 3-letter identifier listed at "+
 				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
@@ -782,7 +782,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		}
 	} else if sg.TRACON == "" {
 		if sg.ARTCC == "" {
-			e.ErrorString("\"artcc\" must be specified")
+			e.ErrorString(`"artcc" must be specified`)
 		}
 		if _, ok := av.DB.ARTCCs[sg.ARTCC]; !ok {
 			e.ErrorString("ARTCC %q is unknown; it must be a 3-letter identifier listed at "+
@@ -870,9 +870,9 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	}
 	if sg.ARTCC == "" {
 		if sg.PrimaryAirport == "" {
-			e.ErrorString("\"primary_airport\" not specified")
+			e.ErrorString(`"primary_airport" not specified`)
 		} else if ap, ok := av.DB.Airports[sg.PrimaryAirport]; !ok {
-			e.ErrorString("\"primary_airport\" %q unknown", sg.PrimaryAirport)
+			e.ErrorString(`"primary_airport" %q unknown`, sg.PrimaryAirport)
 		} else if mvar, err := av.DB.MagneticGrid.Lookup(ap.Location); err != nil {
 			e.ErrorString("%s: unable to find magnetic declination: %v", sg.PrimaryAirport, err)
 		} else {
@@ -889,7 +889,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	sg.resolveControllerRefs()
 
 	if len(sg.Airports) == 0 {
-		e.ErrorString("No \"airports\" specified in scenario group")
+		e.ErrorString(`No "airports" specified in scenario group`)
 	}
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
@@ -917,7 +917,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	}
 
 	if _, ok := sg.Scenarios[sg.DefaultScenario]; !ok {
-		e.ErrorString("default scenario %q not found in \"scenarios\"", sg.DefaultScenario)
+		e.ErrorString(`default scenario %q not found in "scenarios"`, sg.DefaultScenario)
 	}
 
 	// Check that neighbor controllers loaded at runtime have facility_id set.
@@ -926,7 +926,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		if ctrl.ERAMFacility && sg.ARTCC == "" {
 			if ctrl.FacilityIdentifier == "" {
 				e.Push("Controller " + string(position))
-				e.ErrorString("must specify \"facility_id\" for center controller in TRACON scenario group")
+				e.ErrorString(`must specify "facility_id" for center controller in TRACON scenario group`)
 				e.Pop()
 			}
 		}
@@ -952,7 +952,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 
 	for _, rp := range sg.ReportingPointStrings {
 		if loc, ok := sg.Locate(rp); !ok {
-			e.ErrorString("unknown \"reporting_point\" %q", rp)
+			e.ErrorString(`unknown "reporting_point" %q`, rp)
 		} else {
 			sg.ReportingPoints = append(sg.ReportingPoints, av.ReportingPoint{Fix: rp, Location: loc})
 		}
@@ -964,7 +964,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 
 	// Do after airports!
 	if len(sg.Scenarios) == 0 {
-		e.ErrorString("No \"scenarios\" specified")
+		e.ErrorString(`No "scenarios" specified`)
 	}
 	for name, s := range sg.Scenarios {
 		e.Push("Scenario " + name)
@@ -997,7 +997,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	for _, ctrl := range sg.ControlPositions {
 		id := sim.TCP(ctrl.PositionId())
 		if _, ok := pos[id]; ok {
-			e.ErrorString("%s: TCP / position used for multiple \"control_positions\"", ctrl.Position)
+			e.ErrorString(`%s: TCP / position used for multiple "control_positions"`, ctrl.Position)
 		}
 		pos[id] = ctrl
 	}
@@ -1161,7 +1161,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 	// Validate configurations (controller assignments)
 	if s.Configurations == nil {
-		e.ErrorString("must provide \"configurations\"")
+		e.ErrorString(`must provide "configurations"`)
 	}
 	for configId, config := range s.Configurations {
 		e.Push("configurations: " + configId)
@@ -1174,12 +1174,12 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		// Validate that all TCPs in assignments exist in control_positions
 		for flow, tcp := range config.InboundAssignments {
 			if _, ok := sg.ControlPositions[tcp]; !ok {
-				e.ErrorString("inbound_assignments: flow %q assigns to %q which is not in \"control_positions\"", flow, tcp)
+				e.ErrorString(`inbound_assignments: flow %q assigns to %q which is not in "control_positions"`, flow, tcp)
 			}
 		}
 		for spec, tcp := range config.DepartureAssignments {
 			if _, ok := sg.ControlPositions[tcp]; !ok {
-				e.ErrorString("departure_assignments: %q assigns to %q which is not in \"control_positions\"", spec, tcp)
+				e.ErrorString(`departure_assignments: %q assigns to %q which is not in "control_positions"`, spec, tcp)
 			}
 		}
 		// go_around_assignments validation happens at scenario level
@@ -1191,13 +1191,13 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	// Video maps
 	for m := range s.VideoMapLabels {
 		if !slices.Contains(s.VideoMapNames, m) {
-			e.ErrorString("video map %q in \"map_labels\" is not in \"stars_maps\"", m)
+			e.ErrorString(`video map %q in "map_labels" is not in "stars_maps"`, m)
 		}
 	}
 	if manifest != nil {
 		for _, m := range s.VideoMapNames {
 			if m != "" && !manifest.HasMap(m) {
-				e.ErrorString("video map %q in \"stars_maps\" is not a valid video map", m)
+				e.ErrorString(`video map %q in "stars_maps" is not a valid video map`, m)
 			}
 		}
 	}
@@ -1207,7 +1207,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		for ctrl, config := range s.ControllerConfigs {
 			if config.CenterString != "" {
 				if pos, ok := sg.Locate(config.CenterString); !ok {
-					e.ErrorString("unknown location %q specified for \"center\"", s.CenterString)
+					e.ErrorString(`unknown location %q specified for "center"`, s.CenterString)
 				} else {
 					config.Center = pos
 					s.ControllerConfigs[ctrl] = config
@@ -1219,13 +1219,13 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			if manifest != nil {
 				for _, name := range config.DefaultMaps {
 					if !manifest.HasMap(name) {
-						e.ErrorString("video map %q in \"default_maps\" for controller %q is not a valid video map",
+						e.ErrorString(`video map %q in "default_maps" for controller %q is not a valid video map`,
 							name, tcp)
 					}
 				}
 				for _, name := range config.VideoMapNames {
 					if name != "" && !manifest.HasMap(name) {
-						e.ErrorString("video map %q in \"video_maps\" for controller %q is not a valid video map",
+						e.ErrorString(`video map %q in "video_maps" for controller %q is not a valid video map`,
 							name, tcp)
 					}
 				}
@@ -1242,10 +1242,10 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			rs.Position = p
 		}
 		if rs.Char == "" {
-			e.ErrorString("radar site is missing \"char\"")
+			e.ErrorString(`radar site is missing "char"`)
 		}
 		if rs.Elevation == 0 {
-			e.ErrorString("radar site is missing \"elevation\"")
+			e.ErrorString(`radar site is missing "elevation"`)
 		}
 		e.Pop()
 	}
@@ -1256,29 +1256,29 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		// FIXME(mtrokel)
 		/*
 			if _, ok := sg.Locate(fix); !ok {
-				e.ErrorString("coordination fix \"%v\" cannot be located", fix)
+				e.ErrorString(`coordination fix "%v" cannot be located`, fix)
 			}
 		*/
 		acceptableTypes := []string{"route", "zone"}
 		for i, fix := range fixes {
 			e.Push(fmt.Sprintf("Number %v", i))
 			if !slices.Contains(acceptableTypes, fix.Type) {
-				e.ErrorString("type \"%v\" is invalid. Valid types are \"route\" and \"zone\"", fix.Type)
+				e.ErrorString(`type "%v" is invalid. Valid types are "route" and "zone"`, fix.Type)
 			}
 			if fix.Altitude[0] < 0 {
-				e.ErrorString("bottom altitude \"%v\" is below zero", fix.Altitude[0])
+				e.ErrorString(`bottom altitude "%v" is below zero`, fix.Altitude[0])
 			}
 			if fix.Altitude[0] > fix.Altitude[1] {
-				e.ErrorString("bottom altitude \"%v\" is higher than the top altitude \"%v\"", fix.Altitude[0], fix.Altitude[1])
+				e.ErrorString(`bottom altitude "%v" is higher than the top altitude "%v"`, fix.Altitude[0], fix.Altitude[1])
 			}
 			if _, ok := av.DB.TRACONs[fix.ToFacility]; !ok {
 				if _, ok := av.DB.ARTCCs[fix.ToFacility]; !ok {
-					e.ErrorString("to facility \"%v\" is invalid", fix.ToFacility)
+					e.ErrorString(`to facility "%v" is invalid`, fix.ToFacility)
 				}
 			}
 			if _, ok := av.DB.TRACONs[fix.FromFacility]; !ok {
 				if _, ok := av.DB.ARTCCs[fix.FromFacility]; !ok {
-					e.ErrorString("from facility \"%v\" is invalid", fix.FromFacility)
+					e.ErrorString(`from facility "%v" is invalid`, fix.FromFacility)
 				}
 			}
 			e.Pop()
@@ -1290,13 +1290,13 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	for char, airport := range s.SingleCharAIDs {
 		e.Push("Airport ID " + char)
 		if _, ok := sg.Airports[airport]; !ok {
-			e.ErrorString("airport\"%v\" isn't specified", airport)
+			e.ErrorString(`airport"%v" isn't specified`, airport)
 		}
 		e.Pop()
 	}
 
 	// Significant points (require Locator).
-	e.Push("\"significant_points\"")
+	e.Push(`"significant_points"`)
 	if s.SignificantPoints == nil {
 		s.SignificantPoints = make(map[string]sim.SignificantPoint)
 	}
@@ -1309,10 +1309,10 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			sp.Name = name
 
 			if sp.ShortName != "" && len(name) == 3 {
-				e.ErrorString("\"short_name\" can only be given if name is more than 3 characters.")
+				e.ErrorString(`"short_name" can only be given if name is more than 3 characters.`)
 			}
 			if len(sp.ShortName) > 3 {
-				e.ErrorString("\"short_name\" cannot be more than 3 characters.")
+				e.ErrorString(`"short_name" cannot be more than 3 characters.`)
 			}
 			if sp.Location.IsZero() {
 				if p, ok := sg.Locate(name); !ok {
@@ -1332,11 +1332,11 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 	// Altimeters (require sg.Airports).
 	if len(s.Altimeters) > 6 {
-		e.ErrorString("Only 6 airports may be specified for \"altimeters\"; %d were given", len(s.Altimeters))
+		e.ErrorString(`Only 6 airports may be specified for "altimeters"; %d were given`, len(s.Altimeters))
 	}
 	for _, ap := range s.Altimeters {
 		if _, ok := sg.Airports[ap]; !ok {
-			e.ErrorString("Airport %q in \"altimeters\" not found in scenario group \"airports\"", ap)
+			e.ErrorString(`Airport %q in "altimeters" not found in scenario group "airports"`, ap)
 		}
 	}
 
@@ -1361,18 +1361,18 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		if hfr {
 			// Make sure it's in either zero or one of the coordination lists.
 			if len(matches) > 1 {
-				e.ErrorString("Airport %q is in multiple entries in \"coordination_lists\": %s.", airport, strings.Join(matches, ", "))
+				e.ErrorString(`Airport %q is in multiple entries in "coordination_lists": %s.`, airport, strings.Join(matches, ", "))
 			}
 		} else if len(matches) != 0 {
 			// And it shouldn't be any if it's not hold for release
-			e.ErrorString("Airport %q isn't \"hold_for_release\" but is in \"coordination_lists\": %s.", airport,
+			e.ErrorString(`Airport %q isn't "hold_for_release" but is in "coordination_lists": %s.`, airport,
 				strings.Join(matches, ", "))
 		}
 	}
 
 	// Coordination list airports (require sg.Airports).
 	for _, list := range s.CoordinationLists {
-		e.Push("\"coordination_lists\" " + list.Name)
+		e.Push(`"coordination_lists" ` + list.Name)
 		for _, ap := range list.Airports {
 			if _, ok := sg.Airports[ap]; !ok {
 				e.ErrorString("Airport %q not defined in scenario group.", ap)
@@ -1390,7 +1390,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 
 		if aa.AltitudeRange[0] > aa.AltitudeRange[1] {
-			e.ErrorString("lower end of \"altitude_range\" %d above upper end %d",
+			e.ErrorString(`lower end of "altitude_range" %d above upper end %d`,
 				aa.AltitudeRange[0], aa.AltitudeRange[1])
 		}
 
@@ -1400,21 +1400,21 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 		for _, t := range aa.AircraftType {
 			if t != "J" && t != "T" && t != "P" {
-				e.ErrorString("%q: invalid \"aircraft_type\". Expected \"J\", \"T\", or \"P\".", t)
+				e.ErrorString(`%q: invalid "aircraft_type". Expected "J", "T", or "P".`, t)
 			}
 		}
 	}
 
 	// Restriction areas: vertex resolution and spatial checks (require Locator).
-	e.Push("\"restriction_areas\"")
+	e.Push(`"restriction_areas"`)
 	for idx := range s.RestrictionAreas {
 		ra := &s.RestrictionAreas[idx]
 
 		if ra.Closed && len(ra.Vertices) == 0 || len(ra.Vertices[0]) < 3 {
-			e.ErrorString("At least 3 \"vertices\" must be given for a closed restriction area.")
+			e.ErrorString(`At least 3 "vertices" must be given for a closed restriction area.`)
 		}
 		if !ra.Closed && len(ra.Vertices) == 0 || len(ra.Vertices[0]) < 2 {
-			e.ErrorString("At least 2 \"vertices\" must be given for an open restriction area.")
+			e.ErrorString(`At least 2 "vertices" must be given for an open restriction area.`)
 		}
 
 		if len(ra.VerticesUser) > 0 {
@@ -1434,15 +1434,15 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			}
 
 			if ra.CircleRadius > 0 {
-				e.ErrorString("Cannot specify both \"circle_radius\" and \"vertices\".")
+				e.ErrorString(`Cannot specify both "circle_radius" and "vertices".`)
 			}
 		} else if ra.CircleRadius > 0 {
 			// Circle-related checks
 			if ra.CircleRadius > 125 {
-				e.ErrorString("\"radius\" cannot be larger than 125.")
+				e.ErrorString(`"radius" cannot be larger than 125.`)
 			}
 			if ra.CircleCenter.IsZero() {
-				e.ErrorString("Must specify \"circle_center\" if \"circle_radius\" is given.")
+				e.ErrorString(`Must specify "circle_center" if "circle_radius" is given.`)
 			}
 			if ra.TextPosition.IsZero() {
 				ra.TextPosition = ra.CircleCenter
@@ -1450,7 +1450,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		} else {
 			// Must be text-only
 			if ra.Text[0] != "" || ra.Text[1] != "" && ra.TextPosition.IsZero() {
-				e.ErrorString("Must specify \"text_position\" with restriction area")
+				e.ErrorString(`Must specify "text_position" with restriction area`)
 			}
 		}
 	}
@@ -1562,11 +1562,11 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 		return nil
 	}
 	if s.Name == "" {
-		e.ErrorString("scenario group is missing \"name\"")
+		e.ErrorString(`scenario group is missing "name"`)
 		return nil
 	}
 	if s.TRACON == "" && s.ARTCC == "" {
-		e.ErrorString("scenario group is missing \"tracon\" or \"artcc\"")
+		e.ErrorString(`scenario group is missing "tracon" or "artcc"`)
 		return nil
 	}
 	s.SourceFile = path
@@ -1817,7 +1817,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				if extraVideoMapFilename != "" {
 					s.FacilityAdaptation.VideoMapFile = extraVideoMapFilename
 				} else {
-					extraE.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
+					extraE.ErrorString(`%s: no "video_map_file" in scenario and -videomap not specified`,
 						extraScenarioFilename)
 				}
 			}
@@ -1979,7 +1979,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				// Make sure we have what we need in terms of video maps
 				fa := &sgroup.FacilityAdaptation
 				if vf := fa.VideoMapFile; vf == "" {
-					e.ErrorString("no \"video_map_file\" specified")
+					e.ErrorString(`no "video_map_file" specified`)
 				} else if manifest, ok := mapManifests[vf]; !ok {
 					e.ErrorString("no manifest for video map %q found. Options: %s", vf,
 						strings.Join(util.SortedMapKeys(mapManifests), ", "))
@@ -2013,7 +2013,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			// Make sure we have what we need in terms of video maps
 			fa := &extraScenario.FacilityAdaptation
 			if vf := fa.VideoMapFile; vf == "" {
-				extraE.ErrorString("no \"video_map_file\" specified")
+				extraE.ErrorString(`no "video_map_file" specified`)
 			} else if manifest, ok := mapManifests[vf]; !ok {
 				extraE.ErrorString("no manifest for video map %q found. Options: %s", vf,
 					strings.Join(util.SortedMapKeys(mapManifests), ", "))

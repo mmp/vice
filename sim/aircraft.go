@@ -531,7 +531,7 @@ func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *av.Radi
 
 func (ac *Aircraft) DepartOnCourse(simTime time.Time, lg *log.Logger) {
 	if ac.FlightPlan.Exit == "" {
-		lg.Warn("unset \"exit\" for departure", slog.String("adsb_callsign", string(ac.ADSBCallsign)))
+		lg.Warn(`unset "exit" for departure`, slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
 	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), string(ac.FlightPlan.Exit), simTime)
 }

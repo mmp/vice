@@ -362,7 +362,7 @@ func Offset2LL(pll Point2LL, hdg float32, dist float32, nmPerLongitude, magnetic
 
 // Store Point2LLs as strings is JSON, for compactness/friendliness...
 func (p Point2LL) MarshalJSON() ([]byte, error) {
-	return []byte("\"" + p.DMSString() + "\""), nil
+	return []byte(`"` + p.DMSString() + `"`), nil
 }
 
 func (p *Point2LL) UnmarshalJSON(b []byte) error {

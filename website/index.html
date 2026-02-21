@@ -1055,10 +1055,9 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <p>STT works best if you have a decent microphone and are not in a noisy environment
               (music or TV in the background, etc.)
               Results will generally be better if you have a discrete GPU in your computer (or
-              a laptop with a powerful laptop GPU); parts of STT run on the GPU and in able to
-              have good response times on machines with slower (or no) GPUs, we're able to do
-              less processing on spoken text and thus have more inaccurate transcriptions in
-              that case.
+              a laptop with a powerful laptop GPU); parts of STT run on the GPU. In order to
+              have good response times on machines with slower (or no) GPUs, we have to do
+              less processing on spoken text and thus have more inaccurate transcriptions.
             </p>
             <p>A few options related to STT may be controlled via the settings menu (<i class="fas fa-cog"></i> in the menubar):</p>
 <div class="text-center">
@@ -1169,7 +1168,8 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                   </tr>
                 </tbody>
               </table>
-            <h3>Speed</h3>
+              <h3>Speed</h3>
+              
               <table class="table">
                 <thead>
                   <tr>
@@ -1398,6 +1398,14 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                   </tr>
                 </tbody>
               </table>
+            <h3>Miscellaneous / Filler</h3>
+            <p>The STT system is aware of variety of phrases that may be part of instructions or controller replies
+              but do not correspond to instructions themselves. These include:
+              </p>
+            <ul>
+              <li>"Radar contact"</li>
+              <li>"Good day", "Seeya", "Hello"</li>
+            </ul>
 
 	  </section><!--//docs-intro-->
 
