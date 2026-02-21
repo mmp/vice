@@ -45,7 +45,6 @@ const (
 	WaypointFlagTurnLeft
 	WaypointFlagTurnRight
 	WaypointFlagHasAltRestriction
-	WaypointFlagRequestApproachClearance
 )
 
 // Waypoint is the core waypoint struct. Most waypoints only use Fix,
@@ -109,9 +108,6 @@ func (wp Waypoint) ClearSecondaryScratchpad() bool {
 	return wp.Flags&WaypointFlagClearSecondaryScratchpad != 0
 }
 func (wp Waypoint) TransferComms() bool { return wp.Flags&WaypointFlagTransferComms != 0 }
-func (wp Waypoint) RequestApproachClearance() bool {
-	return wp.Flags&WaypointFlagRequestApproachClearance != 0
-}
 
 func (wp Waypoint) Turn() TurnDirection {
 	if wp.Flags&WaypointFlagTurnLeft != 0 {
@@ -152,9 +148,6 @@ func (wp *Waypoint) SetClearSecondaryScratchpad(v bool) {
 	wp.setFlag(WaypointFlagClearSecondaryScratchpad, v)
 }
 func (wp *Waypoint) SetTransferComms(v bool) { wp.setFlag(WaypointFlagTransferComms, v) }
-func (wp *Waypoint) SetRequestApproachClearance(v bool) {
-	wp.setFlag(WaypointFlagRequestApproachClearance, v)
-}
 
 func (wp *Waypoint) SetTurn(t TurnDirection) {
 	wp.Flags &^= WaypointFlagTurnLeft | WaypointFlagTurnRight
