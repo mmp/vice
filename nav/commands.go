@@ -56,7 +56,7 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) av.CommandIntent {
 	return intent
 }
 
-func (nav *Nav) AssignMach(mach float32, afterAltitude bool) av.CommandIntent {
+func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp float32) av.CommandIntent {
 	maxTAS := nav.Perf.Speed.MaxTAS
 	maxTAS = 10 * float32(int(maxTAS/10))
 
@@ -77,15 +77,14 @@ func (nav *Nav) AssignMach(mach float32, afterAltitude bool) av.CommandIntent {
 		return av.SpeedIntent{Speed: mach, AfterAltitude: &alt, Type: av.SpeedAssign, Mach: true}
 	} else {
 		nav.Speed = NavSpeed{Assigned: &mach, Mach: true}
-		if mach < nav.Mach() {
+		if mach < nav.Mach(temp) {
 			return av.SpeedIntent{Speed: mach, Type: av.SpeedReduce, Mach: true}
-		} else if mach > nav.Mach() {
+		} else if mach > nav.Mach(temp) {
 			return av.SpeedIntent{Speed: mach, Type: av.SpeedIncrease, Mach: true}
 		} else {
 			return av.SpeedIntent{Speed: mach, Type: av.SpeedAssign, Mach: true}
 		}
 	}
-
 }
 
 func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) av.CommandIntent {
@@ -153,9 +152,9 @@ func (nav *Nav) MaintainPresentSpeed() av.CommandIntent {
 	return av.SpeedIntent{Speed: speed, Type: av.SpeedPresentSpeed}
 }
 
-func (nav *Nav) SaySpeed() av.CommandIntent {
+func (nav *Nav) SaySpeed(temp float32) av.CommandIntent {
 	if nav.machTransition() {
-		return nav.SayMach()
+		return nav.SayMach(temp)
 	}
 	return nav.SayIndicatedSpeed()
 }
@@ -169,11 +168,11 @@ func (nav *Nav) SayIndicatedSpeed() av.CommandIntent {
 	return intent
 }
 
-func (nav *Nav) SayMach() av.CommandIntent {
+func (nav *Nav) SayMach(tempKelvin float32) av.CommandIntent {
 	if !nav.machTransition() {
 		return av.MakeUnableIntent("unable. we haven't reached mach transition altitude")
 	}
-	currentMach := nav.Mach()
+	currentMach := nav.Mach(tempKelvin)
 	intent := av.ReportMachIntent{Current: currentMach}
 	if nav.Speed.Assigned != nil && nav.Speed.Mach {
 		intent.Assigned = nav.Speed.Assigned
@@ -586,7 +585,7 @@ func (nav *Nav) DepartFixHeading(fix string, hdg float32) av.CommandIntent {
 	}
 }
 
-func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) av.CommandIntent {
+func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int, mach float32) av.CommandIntent {
 	if !nav.fixInRoute(fix) {
 		return av.MakeUnableIntent("unable. {fix} isn't in our route", fix)
 	}
@@ -608,6 +607,11 @@ func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) av
 		nfa.Arrive.Speed = &s
 		intent.Speed = &s
 		// Delete other speed restrictions
+		nav.Speed = NavSpeed{}
+	} else if mach != 0 {
+		m := float32(mach)
+		nfa.Arrive.Mach = &m
+		intent.Mach = &m
 		nav.Speed = NavSpeed{}
 	}
 	nav.FixAssignments[fix] = nfa

@@ -470,6 +470,7 @@ type NavigationIntent struct {
 	HoldLegLength  string               // e.g., "2 mile" or "1 minute"
 	AltRestriction *AltitudeRestriction // for CrossFixAt
 	Speed          *float32             // for CrossFixAt
+	Mach           *float32             // for CrossFixAt
 }
 
 func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
@@ -495,6 +496,8 @@ func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		}
 		if n.Speed != nil {
 			rt.Add("at {spd}", *n.Speed)
+		} else if n.Mach != nil {
+			rt.Add("at {mach}", *n.Mach)
 		}
 	case NavResumeOwnNav:
 		rt.Add("[own navigation|resuming own navigation]")

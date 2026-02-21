@@ -1332,7 +1332,8 @@ func (s *Sim) AssignMach(tcw TCW, callsign av.ADSBCallsign, mach float32, afterA
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.AssignMach(mach, afterAltitude)
+			temp := s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime).Temperature() + 273.15
+			return ac.AssignMach(mach, afterAltitude, temp)
 		})
 }
 
@@ -1392,7 +1393,8 @@ func (s *Sim) SaySpeed(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, err
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.SaySpeed()
+			tempK := s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime).Temperature() + 273.15
+			return ac.SaySpeed(tempK)
 		})
 }
 
@@ -1412,7 +1414,8 @@ func (s *Sim) SayMach(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, erro
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.SayMach()
+			tempK := s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime).Temperature() + 273.15
+			return ac.SayMach(tempK)
 		})
 }
 
@@ -1496,13 +1499,13 @@ func (s *Sim) DepartFixHeading(tcw TCW, callsign av.ADSBCallsign, fix string, he
 		})
 }
 
-func (s *Sim) CrossFixAt(tcw TCW, callsign av.ADSBCallsign, fix string, ar *av.AltitudeRestriction, speed int) (av.CommandIntent, error) {
+func (s *Sim) CrossFixAt(tcw TCW, callsign av.ADSBCallsign, fix string, ar *av.AltitudeRestriction, speed int, mach float32) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.CrossFixAt(fix, ar, speed)
+			return ac.CrossFixAt(fix, ar, speed, mach)
 		})
 }
 
@@ -2780,7 +2783,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			fix := components[0][1:]
 			var ar *av.AltitudeRestriction
 			speed := 0
-
+			mach := float32(0)
 			for _, cmd := range components[1:] {
 				if len(cmd) == 0 {
 					return nil, ErrInvalidCommandSyntax
@@ -2801,12 +2804,24 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 					if speed, err = strconv.Atoi(speedStr); err != nil {
 						return nil, err
 					}
+				} else if cmd[0] == 'M' {
+					machStr := cmd[1:]
+					machStr = strings.TrimSuffix(machStr, "+")
+					machStr = strings.TrimSuffix(machStr, "-")
+					mach64, err := strconv.ParseFloat(machStr, 32)
+					if err != nil {
+						return nil, err
+					}
+					if mach64 >= 1 {
+						mach64 /= 100
+					}
+					mach = float32(mach64)
 				} else {
 					return nil, ErrInvalidCommandSyntax
 				}
 			}
 
-			return s.CrossFixAt(tcw, callsign, fix, ar, speed)
+			return s.CrossFixAt(tcw, callsign, fix, ar, speed, mach)
 		} else if strings.HasPrefix(command, "CT") && len(command) > 2 {
 			// Only treat as contact command if the TCP exists as a valid controller;
 			// otherwise treat as cleared approach (e.g., "CTTL" -> cleared for TTL approach)
