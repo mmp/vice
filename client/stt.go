@@ -5,15 +5,10 @@
 package client
 
 import (
-	"encoding/binary"
 	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
-	"regexp"
 	"runtime"
 	"slices"
-	"sort"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -294,9 +289,6 @@ var whisperBenchmarkReport *server.WhisperBenchmarkReport
 var whisperBenchmarkReportMu sync.Mutex
 var whisperBenchmarkReported bool
 
-// STT evaluation mode - when enabled, runs audio through all models and prints comparison
-var sttEvalEnabled bool
-
 // ErrCPUNotSupported is returned when the CPU doesn't support the required
 // instruction sets for speech-to-text (AVX on x86/amd64).
 var ErrCPUNotSupported = errors.New("CPU does not support required instructions for speech-to-text")
@@ -329,12 +321,6 @@ func GetWhisperModelName() string {
 // GetWhisperModelTiers returns the list of available whisper models, from smallest to largest.
 func GetWhisperModelTiers() []string {
 	return whisperModelTiers
-}
-
-// SetSTTEvalEnabled enables or disables STT evaluation mode.
-// When enabled, each voice command runs through all whisper models and results are printed.
-func SetSTTEvalEnabled(enabled bool) {
-	sttEvalEnabled = enabled
 }
 
 // SelectWhisperModel directly selects a whisper model without benchmarking.
@@ -918,182 +904,6 @@ func makeWhisperPrompt(state SimState) string {
 	return strings.Join(promptParts, ", ")
 }
 
-const sttEvalSampleRate = 16000
-
-// runSTTEvaluation runs the audio through all whisper models and prints comparison results.
-func runSTTEvaluation(audioSamples []float32, audioDuration time.Duration, sttTranscriber *stt.Transcriber, aircraftCtx map[string]stt.Aircraft, lg *log.Logger) {
-	// Find all whisper models
-	modelsDir := "resources/models"
-	entries, err := os.ReadDir(modelsDir)
-	if err != nil {
-		fmt.Printf("\n[STT-EVAL] Failed to read models directory: %v\n", err)
-		return
-	}
-
-	var modelFiles []string
-	for _, entry := range entries {
-		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".bin") {
-			modelFiles = append(modelFiles, entry.Name())
-		}
-	}
-
-	if len(modelFiles) == 0 {
-		fmt.Printf("\n[STT-EVAL] No whisper models found in %s\n", modelsDir)
-		return
-	}
-
-	sort.Strings(modelFiles)
-
-	// Convert float32 audio to int16 for transcription API
-	audioInt16 := make([]int16, len(audioSamples))
-	for i, s := range audioSamples {
-		// Clamp to int16 range
-		val := s * 32768.0
-		if val > 32767 {
-			val = 32767
-		} else if val < -32768 {
-			val = -32768
-		}
-		audioInt16[i] = int16(val)
-	}
-
-	fmt.Printf("\n[STT-EVAL] Evaluating %.2fs audio against %d models...\n", audioDuration.Seconds(), len(modelFiles))
-
-	type evalResult struct {
-		model      string
-		transcript string
-		commands   string
-		duration   time.Duration
-	}
-	var results []evalResult
-	var firstTranscript string
-
-	for _, modelFile := range modelFiles {
-		modelPath := filepath.Join(modelsDir, modelFile)
-
-		modelData, err := os.ReadFile(modelPath)
-		if err != nil {
-			fmt.Printf("[STT-EVAL] %-35s | error reading: %v\n", modelFile, err)
-			continue
-		}
-
-		model, err := whisper.LoadModelFromBytes(modelData)
-		if err != nil {
-			fmt.Printf("[STT-EVAL] %-35s | error loading: %v\n", modelFile, err)
-			continue
-		}
-
-		opts := whisper.Options{
-			Language: "en",
-			Threads:  0, // use all cores
-		}
-
-		start := time.Now()
-		transcript, err := whisper.TranscribeWithModel(model, audioInt16, sttEvalSampleRate, 1, opts)
-		elapsed := time.Since(start)
-
-		model.Close()
-
-		if err != nil {
-			fmt.Printf("[STT-EVAL] %-35s | error transcribing: %v\n", modelFile, err)
-			continue
-		}
-
-		if firstTranscript == "" && transcript != "" {
-			firstTranscript = transcript
-		}
-
-		// Run through STT pipeline
-		commands, _ := sttTranscriber.DecodeTranscript(aircraftCtx, transcript, "")
-
-		results = append(results, evalResult{
-			model:      modelFile,
-			transcript: transcript,
-			commands:   commands,
-			duration:   elapsed,
-		})
-	}
-
-	// Save audio as WAV
-	wavFilename := sttEvalGenerateFilename(firstTranscript)
-	if err := sttEvalWriteWAV(wavFilename, audioInt16); err != nil {
-		fmt.Printf("[STT-EVAL] Failed to save WAV: %v\n", err)
-	} else {
-		fmt.Printf("[STT-EVAL] Audio saved to: %s\n", wavFilename)
-	}
-
-	// Print results table
-	fmt.Printf("\n[STT-EVAL] Results:\n")
-	for _, r := range results {
-		fmt.Printf("[STT-EVAL] %-35s | %4dms | %-50s | %s\n", r.model, r.duration.Milliseconds(), r.transcript, r.commands)
-	}
-	fmt.Println()
-}
-
-func sttEvalGenerateFilename(transcript string) string {
-	if transcript == "" {
-		return fmt.Sprintf("recording_%d.wav", time.Now().Unix())
-	}
-
-	// Clean the transcript for use as filename
-	reg := regexp.MustCompile(`[^a-zA-Z0-9\s]`)
-	clean := reg.ReplaceAllString(transcript, "")
-	clean = strings.ToLower(strings.ReplaceAll(clean, " ", "_"))
-
-	// Truncate if too long
-	if len(clean) > 50 {
-		clean = clean[:50]
-	}
-	clean = strings.TrimRight(clean, "_")
-
-	if clean == "" {
-		return fmt.Sprintf("recording_%d.wav", time.Now().Unix())
-	}
-
-	return clean + ".wav"
-}
-
-func sttEvalWriteWAV(filename string, samples []int16) error {
-	f, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	numChannels := uint16(1)
-	bitsPerSample := uint16(16)
-	byteRate := uint32(sttEvalSampleRate) * uint32(numChannels) * uint32(bitsPerSample) / 8
-	blockAlign := numChannels * bitsPerSample / 8
-	dataSize := uint32(len(samples) * 2)
-	fileSize := 36 + dataSize
-
-	// RIFF header
-	f.Write([]byte("RIFF"))
-	binary.Write(f, binary.LittleEndian, fileSize)
-	f.Write([]byte("WAVE"))
-
-	// fmt chunk
-	f.Write([]byte("fmt "))
-	binary.Write(f, binary.LittleEndian, uint32(16)) // chunk size
-	binary.Write(f, binary.LittleEndian, uint16(1))  // PCM format
-	binary.Write(f, binary.LittleEndian, numChannels)
-	binary.Write(f, binary.LittleEndian, uint32(sttEvalSampleRate))
-	binary.Write(f, binary.LittleEndian, byteRate)
-	binary.Write(f, binary.LittleEndian, blockAlign)
-	binary.Write(f, binary.LittleEndian, bitsPerSample)
-
-	// data chunk
-	f.Write([]byte("data"))
-	binary.Write(f, binary.LittleEndian, dataSize)
-
-	// Write samples
-	for _, sample := range samples {
-		binary.Write(f, binary.LittleEndian, sample)
-	}
-
-	return nil
-}
-
 // postSTTEvent posts an STTCommandEvent to the event stream.
 func (c *ControlClient) postSTTEvent(transcript, command, timings string) {
 	c.mu.Lock()
@@ -1186,16 +996,8 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 	go func() {
 		defer lg.CatchAndReportCrash()
 
-		// Get final transcription from whisper (with audio if eval mode enabled)
-		var finalText string
-		var audioDuration time.Duration
-		var audioSamples []float32
-
-		if sttEvalEnabled {
-			finalText, audioDuration, audioSamples = sttSession.transcriber.StopWithAudio()
-		} else {
-			finalText, audioDuration = sttSession.transcriber.Stop()
-		}
+		// Get final transcription from whisper
+		finalText, audioDuration := sttSession.transcriber.Stop()
 		whisperDuration := time.Since(pttReleaseTime)
 
 		lg.Infof("Whisper transcription completed in %v: %q", whisperDuration, finalText)
@@ -1227,13 +1029,6 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		// Report slow performance outside the lock
 		if shouldReport {
 			c.reportSlowWhisperPerformance(lg)
-		}
-
-		// Run STT evaluation if enabled
-		if sttEvalEnabled && len(audioSamples) > 0 {
-			// Build aircraft context for STT evaluation
-			evalAircraftCtx := c.sttTranscriber.BuildAircraftContext(&c.State.UserState, c.State.UserTCW)
-			runSTTEvaluation(audioSamples, audioDuration, c.sttTranscriber, evalAircraftCtx, lg)
 		}
 
 		if finalText == "" || finalText == "[BLANK_AUDIO]" {
