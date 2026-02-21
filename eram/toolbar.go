@@ -664,8 +664,18 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		if ep.drawToolbarFullButton(ctx, "UA", 0, scale, false, false) {
 			// handle UA
 		}
-		if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, false, false) {
-			// handle WX REPORT
+		{
+			wxPs := ep.currentPrefs()
+			wxActive := wxPs.WX.Visible || ep.wxMenuOpen
+			if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, wxActive, false) {
+				if wxPs.WX.Visible {
+					wxPs.WX.Visible = false
+					ep.wxMenuOpen = false
+				} else {
+					wxPs.WX.Visible = true
+					ep.wxMenuOpen = false
+				}
+			}
 		}
 		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
 		p2[0] = p1[0]

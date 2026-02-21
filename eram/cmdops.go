@@ -114,6 +114,11 @@ func init() {
 	// AR [IATA]: Add 3-letter IATA code, auto-prepends K (e.g., AR MCO → KMCO)
 	registerCommand(CommandModeNone, "AR [FIELD]", handleAltimAdd)
 
+	// WR - Add airport to WX REPORT list
+	// WR [ICAO]: Add 4-letter ICAO code (e.g., WR KMCO)
+	// WR [IATA]: Add 3-letter IATA code, auto-prepends K (e.g., WR MCO → KMCO)
+	registerCommand(CommandModeNone, "WR [FIELD]", handleWXReportAdd)
+
 	// // - Toggle VCI (on-frequency indicator)
 	// Keyboard: //[FLID] or // [FLID]
 	// Clicked: //[SLEW]
@@ -1002,4 +1007,44 @@ func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	ps.AltimSet.Visible = true
 
 	return CommandStatus{bigOutput: "ACCEPT\nALTIMETER REQ"}, nil
+}
+
+// WR - WX REPORT Add Airport Handler
+
+func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
+	airport = strings.ToUpper(strings.TrimSpace(airport))
+	if len(airport) == 0 {
+		return CommandStatus{}, NewERAMError("REJECT - WR - MISSING AIRPORT")
+	}
+
+	// Convert 3-letter IATA to ICAO by prepending K (US convention).
+	icao := airport
+	if len(airport) == 3 {
+		icao = "K" + airport
+	}
+
+	// Toggle: if already in the list, remove it.
+	for i, existing := range ep.WXReportStations {
+		if existing == icao {
+			ep.WXReportStations = append(ep.WXReportStations[:i], ep.WXReportStations[i+1:]...)
+			// Adjust scroll offset if needed after removal
+			ps := ep.currentPrefs()
+			maxOffset := len(ep.WXReportStations) - ps.WX.Lines
+			if maxOffset < 0 {
+				maxOffset = 0
+			}
+			if ep.wxScrollOffset > maxOffset {
+				ep.wxScrollOffset = maxOffset
+			}
+			return CommandStatus{bigOutput: "ACCEPT\nWX REPORT REQ"}, nil
+		}
+	}
+
+	ep.WXReportStations = append([]string{icao}, ep.WXReportStations...)
+
+	// Make the window visible when the first airport is added.
+	ps := ep.currentPrefs()
+	ps.WX.Visible = true
+
+	return CommandStatus{bigOutput: "ACCEPT\nWX REPORT REQ"}, nil
 }
