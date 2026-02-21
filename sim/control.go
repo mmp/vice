@@ -3081,7 +3081,13 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 					return nil, err
 				}
 				return s.AssignSpeed(tcw, callsign, kts, true)
-
+			case "TM":
+				mach, err := strconv.ParseFloat(command[2:], 32)
+				if err != nil {
+					return nil, err
+				}
+				mach /= 100.0
+				return s.AssignMach(tcw, callsign, float32(mach), true)
 			case "TA", "TC", "TD":
 				alt, err := strconv.Atoi(command[2:])
 				if err != nil {
