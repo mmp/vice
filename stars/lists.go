@@ -44,7 +44,7 @@ func (sp *STARSPane) drawSystemList(ctx *panes.Context, paneExtent math.Extent2D
 		allText.WriteString(formatter.Title + "\n")
 	}
 	if formatter.Entries > formatter.Lines && formatter.Lines > 0 {
-		allText.WriteString(fmt.Sprintf("MORE: %d/%d\n", formatter.Lines, formatter.Entries))
+		fmt.Fprintf(&allText, "MORE: %d/%d\n", formatter.Lines, formatter.Entries)
 	}
 	for i := range min(formatter.Entries, formatter.Lines) {
 		l := allText.Len()
@@ -948,7 +948,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, paneExtent math.Extent2D,
 		text.WriteString(strings.Join(lists, "/") + "\n")
 		const alertListMaxLines = 50 // this is hard-coded
 		if n > alertListMaxLines {
-			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", alertListMaxLines, n))
+			fmt.Fprintf(&text, "MORE: %d/%d\n", alertListMaxLines, n)
 		}
 
 		next := func() (*sim.Track, *CAAircraft, *CAAircraft) {
@@ -982,17 +982,17 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, paneExtent math.Extent2D,
 
 			// FIXME: should be using ACIDs for the second two cases.
 			if msawtrk != nil {
-				text.WriteString(fmt.Sprintf("%-13s%4s LA\n", msawtrk.FlightPlan.ACID, alt(msawtrk)))
+				fmt.Fprintf(&text, "%-13s%4s LA\n", msawtrk.FlightPlan.ACID, alt(msawtrk))
 			} else if capair != nil {
-				text.WriteString(fmt.Sprintf("%-17s CA\n", capair.ADSBCallsigns[0]+"*"+capair.ADSBCallsigns[1]))
+				fmt.Fprintf(&text, "%-17s CA\n", capair.ADSBCallsigns[0]+"*"+capair.ADSBCallsigns[1])
 			} else if mcipair != nil {
 				// For MCIs, the unassociated track is always the second callsign.
 				// Beacon code is reported for MCI or blank if we don't have it.
 				trk1, ok := ctx.GetTrackByCallsign(mcipair.ADSBCallsigns[1])
 				if ok && trk1.Mode != av.TransponderModeStandby {
-					text.WriteString(fmt.Sprintf("%-17s MCI\n", string(mcipair.ADSBCallsigns[0])+"*"+trk1.Squawk.String()))
+					fmt.Fprintf(&text, "%-17s MCI\n", string(mcipair.ADSBCallsigns[0])+"*"+trk1.Squawk.String())
 				} else {
-					text.WriteString(fmt.Sprintf("%-17s MCI\n", mcipair.ADSBCallsigns[0]+"*"))
+					fmt.Fprintf(&text, "%-17s MCI\n", mcipair.ADSBCallsigns[0]+"*")
 				}
 			} else {
 				break
@@ -1059,7 +1059,7 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, paneExtent math.Extent2D, 
 		}
 		_, vis := ps.VideoMapVisible[m.Id]
 		text.WriteString(util.Select(vis, ">", " "))
-		text.WriteString(fmt.Sprintf("%3d ", m.Id))
+		fmt.Fprintf(&text, "%3d ", m.Id)
 		fmtlabel := func(s string) string {
 			if len(s) > 8 {
 				s = s[:8]
@@ -1068,7 +1068,7 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, paneExtent math.Extent2D, 
 			s = strings.ReplaceAll(s, " ", "_")
 			return s
 		}
-		text.WriteString(fmt.Sprintf("%-8s ", fmtlabel(m.Label)))
+		fmt.Fprintf(&text, "%-8s ", fmtlabel(m.Label))
 		text.WriteString(strings.ToUpper(m.Name) + "\n")
 	}
 
@@ -1155,7 +1155,7 @@ func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, paneExtent mat
 			} else {
 				sb.WriteByte(' ')
 			}
-			sb.WriteString(fmt.Sprintf("%-3d ", area.idx))
+			fmt.Fprintf(sb, "%-3d ", area.idx)
 			if area.ra.Title != "" {
 				sb.WriteString(strings.ToUpper(area.ra.Title))
 			} else {
@@ -1380,7 +1380,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			text.WriteString("     ")
 			if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
 				func(fp *sim.NASFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
-				text.WriteString(fmt.Sprintf(" %-10s NO FP", string(dep.ADSBCallsign)))
+				fmt.Fprintf(&text, " %-10s NO FP", string(dep.ADSBCallsign))
 			} else {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]
 				formattedEntry := sp.formatListEntry(ctx, cl.Format, fp, map[string]func() string{
