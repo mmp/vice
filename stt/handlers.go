@@ -533,6 +533,13 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
+		"cross {fix} [at] mach [point] {mach}",
+		func(fix string, mach int) string { return fmt.Sprintf("C%s/M%d", fix, mach) },
+		WithName("cross_fix_mach"),
+		WithPriority(10),
+	)
+
+	registerSTTCommand(
 		"depart {fix} [heading] {heading}",
 		func(fix string, hdg int) string { return fmt.Sprintf("D%s/H%03d", fix, hdg) },
 		WithName("depart_fix_heading"),
