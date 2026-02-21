@@ -85,12 +85,20 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, fp *av.FlightPlan, 
 				accel *= 0.6
 			}
 		}
+		if nav.FlightState.Altitude >= 25000 {
+			// Thinner air at high altitude makes acceleration harder
+			accel *= 0.6
+		}
 		return setSpeed(min(targetSpeed, nav.FlightState.IAS+accel))
 	} else if nav.FlightState.IAS > targetSpeed {
 		decel := nav.Perf.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
 		decel = min(decel, targetRate/60)
 		if nav.Altitude.Assigned != nil && nav.FlightState.Altitude > *nav.Altitude.Assigned {
 			// Reduce deceleration since also descending
+			decel *= 0.6
+		}
+		if nav.FlightState.Altitude >= 25000 {
+			// Thinner air at high altitude makes deceleration harder
 			decel *= 0.6
 		}
 		return setSpeed(max(targetSpeed, nav.FlightState.IAS-decel))
