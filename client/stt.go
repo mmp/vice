@@ -1006,50 +1006,11 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		c.LastWhisperDurationMs = whisperDuration.Milliseconds()
 		c.LastTranscription = finalText
 
-		// Track recent whisper durations for slow performance detection
-		c.recentWhisperDurations = append(c.recentWhisperDurations, whisperDuration)
-		const maxTrackedDurations = 5
-		if len(c.recentWhisperDurations) > maxTrackedDurations {
-			c.recentWhisperDurations = c.recentWhisperDurations[1:]
-		}
-
-		// Check for consistently slow performance (all recent durations > 1 second)
-		// Only check when using ggml-small model (not ggml-tiny)
-		slowPerformanceThreshold := time.Second
-		modelName := GetWhisperModelName()
-		isSlowCandidate := strings.Contains(modelName, "small") && len(c.recentWhisperDurations) >= 3
-		shouldReport := isSlowCandidate && !c.slowPerformanceReported
-
-		if shouldReport {
-			shouldReport = util.SeqContainsAllFunc(slices.Values(c.recentWhisperDurations),
-				func(d time.Duration) bool { return d >= slowPerformanceThreshold })
-		}
 		c.mu.Unlock()
-
-		// Report slow performance outside the lock
-		if shouldReport {
-			c.reportSlowWhisperPerformance(lg)
-		}
 
 		if finalText == "" || finalText == "[BLANK_AUDIO]" {
 			c.transmissions.Unhold()
 			c.postSTTEvent("", "", "")
-			return
-		}
-
-		// Check for "STT bug" command pattern
-		// After normalization, "sierra tango tango bug" becomes ["s", "t", "t", "bug", ...]
-		words := stt.NormalizeTranscript(finalText)
-		if len(words) >= 4 && words[0] == "s" && words[1] == "t" && words[2] == "t" && words[3] == "bug" {
-			// Extract user explanation (words after "bug")
-			var explanation string
-			if len(words) > 4 {
-				explanation = strings.Join(words[4:], " ")
-			}
-
-			c.reportSTTBug(explanation, lg)
-			c.transmissions.Unhold()
-			c.postSTTEvent(finalText, "[STT Bug Reported]", "")
 			return
 		}
 
@@ -1074,17 +1035,6 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 
 		totalDuration := time.Since(pttReleaseTime)
 		timingStr := fmt.Sprintf("%.0fms", float64(totalDuration.Microseconds())/1000)
-
-		// Store this context as "previous" for future bug reports
-		c.mu.Lock()
-		c.prevSTTContext = &STTBugContext{
-			Transcript:      finalText,
-			AircraftContext: aircraftCtx,
-			DebugLogs:       debugLogs,
-			DecodedCommand:  decoded,
-			Timestamp:       time.Now(),
-		}
-		c.mu.Unlock()
 
 		if err != nil {
 			lg.Infof("STT decode error: %v", err)
@@ -1177,90 +1127,4 @@ func (c *ControlClient) FeedAudioToStreaming(samples []int16) {
 	if sttSession != nil && sttSession.transcriber != nil {
 		sttSession.transcriber.AddSamples(samples)
 	}
-}
-
-// reportSTTBug sends an STT bug report to the server using the previous STT context.
-func (c *ControlClient) reportSTTBug(explanation string, lg *log.Logger) {
-	c.mu.Lock()
-	prevCtx := c.prevSTTContext
-	recentDurations := slices.Clone(c.recentWhisperDurations)
-	c.mu.Unlock()
-
-	if prevCtx == nil {
-		lg.Info("STT bug reported but no previous context available")
-		return
-	}
-
-	args := server.STTBugReportArgs{
-		ControllerToken:   c.controllerToken,
-		PrevTranscript:    prevCtx.Transcript,
-		PrevCommand:       prevCtx.DecodedCommand,
-		AircraftContext:   prevCtx.AircraftContext,
-		DebugLogs:         prevCtx.DebugLogs,
-		UserExplanation:   explanation,
-		ReportTime:        time.Now(),
-		GPUInfo:           whisper.GetGPUInfo(),
-		WhisperModelName:  GetWhisperModelName(),
-		RecentDurations:   recentDurations,
-		IsSlowPerformance: false,
-	}
-
-	c.addCall(makeRPCCall(c.client.Go(server.ReportSTTBugRPC, &args, nil, nil),
-		func(err error) {
-			if err != nil {
-				lg.Errorf("STT bug report failed: %v", err)
-			} else {
-				lg.Info("STT bug report submitted")
-			}
-		}))
-}
-
-// reportSlowWhisperPerformance sends an automatic bug report when whisper is consistently slow.
-// This indicates a possible GPU selection issue (integrated GPU selected instead of discrete).
-func (c *ControlClient) reportSlowWhisperPerformance(lg *log.Logger) {
-	c.mu.Lock()
-	if c.slowPerformanceReported {
-		c.mu.Unlock()
-		return
-	}
-	c.slowPerformanceReported = true
-	recentDurations := slices.Clone(c.recentWhisperDurations)
-	prevCtx := c.prevSTTContext
-	c.mu.Unlock()
-
-	// Include previous STT context if available for debugging
-	var prevTranscript, prevCommand string
-	var aircraftContext map[string]stt.Aircraft
-	var debugLogs []string
-	if prevCtx != nil {
-		prevTranscript = prevCtx.Transcript
-		prevCommand = prevCtx.DecodedCommand
-		aircraftContext = prevCtx.AircraftContext
-		debugLogs = prevCtx.DebugLogs
-	}
-
-	args := server.STTBugReportArgs{
-		ControllerToken:   c.controllerToken,
-		PrevTranscript:    prevTranscript,
-		PrevCommand:       prevCommand,
-		AircraftContext:   aircraftContext,
-		DebugLogs:         debugLogs,
-		UserExplanation:   "Automatic: slow whisper performance detected",
-		ReportTime:        time.Now(),
-		GPUInfo:           whisper.GetGPUInfo(),
-		WhisperModelName:  GetWhisperModelName(),
-		RecentDurations:   recentDurations,
-		IsSlowPerformance: true,
-	}
-
-	lg.Warn("Reporting slow whisper performance - possible integrated GPU selection issue")
-
-	c.addCall(makeRPCCall(c.client.Go(server.ReportSTTBugRPC, &args, nil, nil),
-		func(err error) {
-			if err != nil {
-				lg.Errorf("Slow performance report failed: %v", err)
-			} else {
-				lg.Info("Slow performance report submitted")
-			}
-		}))
 }

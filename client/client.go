@@ -44,15 +44,8 @@ type ControlClient struct {
 	sttTranscriber *stt.Transcriber
 	pttReleaseTime time.Time // Wall clock time when PTT was released (for latency tracking)
 
-	// Previous STT context for bug reporting
-	prevSTTContext *STTBugContext
-
 	// Last callsign that replied "AGAIN" - allows controller to repeat command without callsign
 	lastAgainCallsign av.ADSBCallsign
-
-	// Whisper performance tracking for slow GPU detection
-	recentWhisperDurations  []time.Duration // Sliding window of recent whisper durations
-	slowPerformanceReported bool            // True if we've already reported slow performance
 
 	lg *log.Logger
 	mu sync.Mutex
@@ -69,15 +62,6 @@ type ControlClient struct {
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
 	State SimState
-}
-
-// STTBugContext stores context from a previous STT decode for bug reporting.
-type STTBugContext struct {
-	Transcript      string                  // Raw whisper transcript
-	AircraftContext map[string]stt.Aircraft // Aircraft context used for decoding
-	DebugLogs       []string                // Captured logLocalStt output
-	DecodedCommand  string                  // Result of DecodeTranscript
-	Timestamp       time.Time               // When this decode happened
 }
 
 // This is the client-side representation of a server (perhaps could be better-named...)
