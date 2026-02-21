@@ -42,7 +42,6 @@ type Nav struct {
 	Perf           av.AircraftPerformance
 	Altitude       NavAltitude
 	Speed          NavSpeed
-	MachTransition bool // the aircraft can be assigned a mach speed when true.
 	Heading        NavHeading
 	Approach       NavApproach
 	Airwork        *NavAirwork
@@ -399,7 +398,7 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 
 func (nav *Nav) TAS() float32 {
 	tas := av.IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude)
-	if nav.MachTransition {
+	if nav.machTransition() {
 		tas = min(tas, av.MachToTAS(nav.Perf.Speed.MaxMach))
 	} else {
 		tas = min(tas, nav.Perf.Speed.CruiseTAS)

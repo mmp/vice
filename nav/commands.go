@@ -67,7 +67,7 @@ func (nav *Nav) AssignMach(mach float32, afterAltitude bool) av.CommandIntent {
 		return av.MakeUnableIntent("unable. Our minimum mach is 0.65")
 	} else if mach > nav.Perf.Speed.MaxMach {
 		return av.MakeUnableIntent("unable. Our maximum mach is {mach}", nav.Perf.Speed.MaxMach)
-	} else if !nav.MachTransition {
+	} else if !nav.machTransition() {
 		return av.MakeUnableIntent("unable. we haven't reached mach transition altitude")
 	} else if afterAltitude && nav.Altitude.Assigned != nil &&
 		*nav.Altitude.Assigned != nav.FlightState.Altitude {
@@ -154,7 +154,7 @@ func (nav *Nav) MaintainPresentSpeed() av.CommandIntent {
 }
 
 func (nav *Nav) SaySpeed() av.CommandIntent {
-	if nav.MachTransition {
+	if nav.machTransition() {
 		return nav.SayMach()
 	}
 	return nav.SayIndicatedSpeed()
@@ -170,7 +170,7 @@ func (nav *Nav) SayIndicatedSpeed() av.CommandIntent {
 }
 
 func (nav *Nav) SayMach() av.CommandIntent {
-	if !nav.MachTransition {
+	if !nav.machTransition() {
 		return av.MakeUnableIntent("unable. we haven't reached mach transition altitude")
 	}
 	currentMach := nav.Mach()

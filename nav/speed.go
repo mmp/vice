@@ -45,9 +45,6 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, fp *av.FlightPlan, 
 		return delta, slowingTo250
 	}
 
-	// Check if the aircraft has a mach transition
-	nav.MachTransition = nav.machTransition()
-
 	if !nav.FlightState.InitialDepartureClimb && alt > nav.FlightState.Altitude &&
 		nav.Perf.Engine.AircraftType == "P" {
 		// Climbing prop; bleed off speed.
