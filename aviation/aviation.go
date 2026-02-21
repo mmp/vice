@@ -176,11 +176,11 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 	}
 	if a.Fleet != "" {
 		if len(a.AircraftTypes) != 0 {
-			e.ErrorString("cannot specify both \"fleet\" and \"types\"")
+			e.ErrorString(`cannot specify both "fleet" and "types"`)
 			return
 		}
 		if _, ok := al.Fleets[a.Fleet]; !ok {
-			e.ErrorString("\"fleet\" %s unknown", a.Fleet)
+			e.ErrorString(`"fleet" %s unknown`, a.Fleet)
 			return
 		}
 	}
@@ -832,7 +832,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ar.Route == "" && ar.STAR == "" {
-		e.ErrorString("neither \"route\" nor \"star\" specified")
+		e.ErrorString(`neither "route" nor "star" specified`)
 		return
 	}
 
@@ -848,11 +848,11 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		// everything is ok so we don't get into trouble when we
 		// spawn arrivals...
 		if ar.STAR == "" {
-			e.ErrorString("must provide \"star\" if \"waypoints\" aren't given")
+			e.ErrorString(`must provide "star" if "waypoints" aren't given`)
 			return
 		}
 		if ar.SpawnWaypoint == "" {
-			e.ErrorString("must specify \"spawn\" if \"waypoints\" aren't given with arrival")
+			e.ErrorString(`must specify "spawn" if "waypoints" aren't given with arrival`)
 			return
 		}
 
@@ -959,12 +959,12 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	} else {
 		if len(ar.Waypoints) < 2 {
 			e.ErrorString(
-				"must provide at least two \"waypoints\" for arrival " +
-					"(even if \"runway_waypoints\" are provided)",
+				`must provide at least two "waypoints" for arrival ` +
+					`(even if "runway_waypoints" are provided)`,
 			)
 		}
 		if ar.SpawnWaypoint != "" {
-			e.ErrorString("\"spawn\" cannot be specified if \"waypoints\" are provided")
+			e.ErrorString(`"spawn" cannot be specified if "waypoints" are provided`)
 			return
 		}
 
@@ -993,8 +993,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 				if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
 					e.ErrorString(
-						"initial \"runway_waypoints\" fix must match " +
-							"last \"waypoints\" fix",
+						`initial "runway_waypoints" fix must match ` +
+							`last "waypoints" fix`,
 					)
 				}
 
@@ -1022,12 +1022,12 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	for arrivalAirport := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
 		if len(ar.Airlines[arrivalAirport]) == 0 {
-			e.ErrorString("no \"airlines\" specified for arrivals to %q", arrivalAirport)
+			e.ErrorString(`no "airlines" specified for arrivals to %q`, arrivalAirport)
 		}
 		for i := range ar.Airlines[arrivalAirport] {
 			ar.Airlines[arrivalAirport][i].Check(e)
 			if _, ok := DB.Airports[ar.Airlines[arrivalAirport][i].Airport]; !ok {
-				e.ErrorString("departure airport \"airport\" %q unknown", ar.Airlines[arrivalAirport][i].Airport)
+				e.ErrorString(`departure airport "airport" %q unknown`, ar.Airlines[arrivalAirport][i].Airport)
 			}
 		}
 
@@ -1041,7 +1041,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 	if ar.ExpectApproach.A != nil { // Given a single string
 		if len(ar.Airlines) > 1 {
-			e.ErrorString("There are multiple arrival airports but only one approach in \"expect_approach\"")
+			e.ErrorString(`There are multiple arrival airports but only one approach in "expect_approach"`)
 		}
 		// Ugly way to get the key from a one-element map
 		var airport string
@@ -1051,7 +1051,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		if ap, ok := airports[airport]; ok {
 			if _, ok := ap.Approaches[*ar.ExpectApproach.A]; !ok {
 				e.ErrorString(
-					"arrival airport %q doesn't have a %q approach for \"expect_approach\"",
+					`arrival airport %q doesn't have a %q approach for "expect_approach"`,
 					airport, *ar.ExpectApproach.A,
 				)
 			}
@@ -1060,13 +1060,13 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		for airport, appr := range *ar.ExpectApproach.B {
 			if _, ok := ar.Airlines[airport]; !ok {
 				e.ErrorString(
-					"airport %q is listed in \"expect_approach\" but is not in arrival airports",
+					`airport %q is listed in "expect_approach" but is not in arrival airports`,
 					airport,
 				)
 			} else if ap, ok := airports[airport]; ok {
 				if _, ok := ap.Approaches[appr]; !ok {
 					e.ErrorString(
-						"arrival airport %q doesn't have a %q approach for \"expect_approach\"",
+						`arrival airport %q doesn't have a %q approach for "expect_approach"`,
 						airport, appr,
 					)
 				}
@@ -1075,26 +1075,26 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 
 	if ar.InitialAltitude == 0 {
-		e.ErrorString("must specify \"initial_altitude\"")
+		e.ErrorString(`must specify "initial_altitude"`)
 	} else {
 		// Make sure the initial altitude isn't below any of
 		// altitude restrictions.
 		for _, wp := range ar.Waypoints {
 			if wp.AltitudeRestriction() != nil &&
 				wp.AltitudeRestriction().TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
-				e.ErrorString("\"initial_altitude\" is below altitude restriction at %q", wp.Fix)
+				e.ErrorString(`"initial_altitude" is below altitude restriction at %q`, wp.Fix)
 			}
 		}
 	}
 
 	if ar.InitialSpeed == 0 {
-		e.ErrorString("must specify \"initial_speed\"")
+		e.ErrorString(`must specify "initial_speed"`)
 	}
 
 	if ar.InitialController == "" {
-		e.ErrorString("\"initial_controller\" missing")
+		e.ErrorString(`"initial_controller" missing`)
 	} else if _, ok := controlPositions[ar.InitialController]; !ok {
-		e.ErrorString("controller %q not found for \"initial_controller\"", ar.InitialController)
+		e.ErrorString(`controller %q not found for "initial_controller"`, ar.InitialController)
 	}
 
 	if !checkScratchpad(ar.Scratchpad) {
@@ -1313,15 +1313,15 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 		return
 	} else {
 		if vpool, ok := s.Pools["vfr"]; !ok {
-			e.ErrorString("must specify \"vfr\" squawk pool")
+			e.ErrorString(`must specify "vfr" squawk pool`)
 		} else if vpool.Rules != "" && vpool.Rules != "v" {
-			e.ErrorString("\"rules\" cannot be specified for the \"vfr\" pool")
+			e.ErrorString(`"rules" cannot be specified for the "vfr" pool`)
 		}
 
 		if ipool, ok := s.Pools["ifr"]; !ok {
-			e.ErrorString("must specify \"ifr\" squawk pool")
+			e.ErrorString(`must specify "ifr" squawk pool`)
 		} else if ipool.Rules != "" && ipool.Rules != "i" {
-			e.ErrorString("\"rules\" cannot be specified for the \"ifr\" pool")
+			e.ErrorString(`"rules" cannot be specified for the "ifr" pool`)
 		}
 		// Numbered ones optional(?)
 
@@ -1332,13 +1332,13 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 			e.Push("Code pool " + name)
 			if name != "ifr" && name != "vfr" && name != "1" && name != "2" &&
 				name != "3" && name != "4" {
-				e.ErrorString("Pool name %q is invalid: must be one of \"ifr\", \"vfr\", "+
-					"\"1\", \"2\", \"3\", or \"4\".", name)
+				e.ErrorString(`Pool name %q is invalid: must be one of "ifr", "vfr", `+
+					`"1", "2", "3", or "4".`, name)
 			}
 
 			// Validate input: must provide Ranges
 			if len(spec.Ranges) == 0 {
-				e.ErrorString("must specify \"ranges\" for pool %q", name)
+				e.ErrorString(`must specify "ranges" for pool %q`, name)
 			}
 
 			// Parse all the ranges for this pool
@@ -1368,7 +1368,7 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 			allRanges = append(allRanges, poolRanges)
 
 			if spec.Rules != "" && spec.Rules != "i" && spec.Rules != "v" {
-				e.ErrorString("\"rules\" must be \"i\" or \"v\"")
+				e.ErrorString(`"rules" must be "i" or "v"`)
 			}
 
 			for i, ch := range spec.Backups {
@@ -1377,7 +1377,7 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 				} else if strings.Contains(spec.Backups[:i], string(ch)) {
 					e.ErrorString("Can't repeat the same backup pool %q", string(ch))
 				} else if ch < '1' && ch > '4' {
-					e.ErrorString("Backup pools can only contain \"1\", \"2\", \"3\", or \"4\".")
+					e.ErrorString(`Backup pools can only contain "1", "2", "3", or "4".`)
 				}
 			}
 
@@ -1385,7 +1385,7 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 		}
 	}
 
-	e.Push("\"beacon_code_table\"")
+	e.Push(`"beacon_code_table"`)
 	// Validate VFR codes using the same parser
 	_ = parseCodeRanges(s.BeaconCodeTable.VFRCodes, e)
 	e.Pop()

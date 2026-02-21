@@ -79,7 +79,7 @@ func (p *Transcriber) decodeInternal(
 	// Handle empty transcript
 	transcript = strings.TrimSpace(transcript)
 	if transcript == "" {
-		logLocalStt("empty transcript, returning \"\"")
+		logLocalStt(`empty transcript, returning ""`)
 		return "", nil
 	}
 
@@ -87,7 +87,7 @@ func (p *Transcriber) decodeInternal(
 	words := NormalizeTranscript(transcript)
 	logLocalStt("normalized words: %v", words)
 	if len(words) == 0 {
-		logLocalStt("no words after normalization, returning \"\"")
+		logLocalStt(`no words after normalization, returning ""`)
 		return "", nil
 	}
 
@@ -98,7 +98,7 @@ func (p *Transcriber) decodeInternal(
 		logLocalStt("  token[%d]: Text=%q Type=%d Value=%d", i, t.Text, t.Type, t.Value)
 	}
 	if len(tokens) == 0 {
-		logLocalStt("no tokens, returning \"\"")
+		logLocalStt(`no tokens, returning ""`)
 		return "", nil
 	}
 
@@ -216,8 +216,8 @@ func (p *Transcriber) decodeInternal(
 	if isDisregardOnly(commandTokens) {
 		logLocalStt("detected disregard-only command, returning empty")
 		elapsed := time.Since(start)
-		logLocalStt("=== DecodeTranscript END: \"\" (disregard, time=%s) ===", elapsed)
-		p.logInfo("local STT: %q -> \"\" (disregard, time=%s)", transcript, elapsed)
+		logLocalStt(`=== DecodeTranscript END: "" (disregard, time=%s) ===`, elapsed)
+		p.logInfo(`local STT: %q -> "" (disregard, time=%s)`, transcript, elapsed)
 		return "", nil
 	}
 
@@ -234,8 +234,8 @@ func (p *Transcriber) decodeInternal(
 	if isAcknowledgmentOnly(commandTokens) {
 		logLocalStt("detected acknowledgment only (roger/wilco/copy), returning empty")
 		elapsed := time.Since(start)
-		logLocalStt("=== DecodeTranscript END: \"\" (acknowledgment, time=%s) ===", elapsed)
-		p.logInfo("local STT: %q -> \"\" (acknowledgment, time=%s)", transcript, elapsed)
+		logLocalStt(`=== DecodeTranscript END: "" (acknowledgment, time=%s) ===`, elapsed)
+		p.logInfo(`local STT: %q -> "" (acknowledgment, time=%s)`, transcript, elapsed)
 		return "", nil
 	}
 
@@ -253,8 +253,8 @@ func (p *Transcriber) decodeInternal(
 	if len(commandTokens) == 0 {
 		logLocalStt("no tokens after stripping prefixes, returning empty")
 		elapsed := time.Since(start)
-		logLocalStt("=== DecodeTranscript END: \"\" (position ID only, time=%s) ===", elapsed)
-		p.logInfo("local STT: %q -> \"\" (position ID only, time=%s)", transcript, elapsed)
+		logLocalStt(`=== DecodeTranscript END: "" (position ID only, time=%s) ===`, elapsed)
+		p.logInfo(`local STT: %q -> "" (position ID only, time=%s)`, transcript, elapsed)
 		return "", nil
 	}
 
@@ -263,8 +263,8 @@ func (p *Transcriber) decodeInternal(
 	if isRadarContactOnly(commandTokens) {
 		logLocalStt("detected radar contact only, returning empty")
 		elapsed := time.Since(start)
-		logLocalStt("=== DecodeTranscript END: \"\" (radar contact, time=%s) ===", elapsed)
-		p.logInfo("local STT: %q -> \"\" (radar contact, time=%s)", transcript, elapsed)
+		logLocalStt(`=== DecodeTranscript END: "" (radar contact, time=%s) ===`, elapsed)
+		p.logInfo(`local STT: %q -> "" (radar contact, time=%s)`, transcript, elapsed)
 		return "", nil
 	}
 
@@ -273,8 +273,8 @@ func (p *Transcriber) decodeInternal(
 	if isAcknowledgmentOnly(commandTokens) {
 		logLocalStt("detected acknowledgment only after stripping prefixes, returning empty")
 		elapsed := time.Since(start)
-		logLocalStt("=== DecodeTranscript END: \"\" (acknowledgment, time=%s) ===", elapsed)
-		p.logInfo("local STT: %q -> \"\" (acknowledgment, time=%s)", transcript, elapsed)
+		logLocalStt(`=== DecodeTranscript END: "" (acknowledgment, time=%s) ===`, elapsed)
+		p.logInfo(`local STT: %q -> "" (acknowledgment, time=%s)`, transcript, elapsed)
 		return "", nil
 	}
 
@@ -301,8 +301,8 @@ func (p *Transcriber) decodeInternal(
 	if len(validation.ValidCommands) == 0 && containsGreeting(commandTokens) {
 		logLocalStt("no commands but greeting detected, returning empty")
 		elapsed := time.Since(start)
-		logLocalStt("=== DecodeTranscript END: \"\" (greeting, time=%s) ===", elapsed)
-		p.logInfo("local STT: %q -> \"\" (greeting, time=%s)", transcript, elapsed)
+		logLocalStt(`=== DecodeTranscript END: "" (greeting, time=%s) ===`, elapsed)
+		p.logInfo(`local STT: %q -> "" (greeting, time=%s)`, transcript, elapsed)
 		return "", nil
 	}
 

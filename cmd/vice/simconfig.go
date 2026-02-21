@@ -91,7 +91,7 @@ func loadEmergencies(e *util.ErrorLogger) []sim.Emergency {
 	emergencies := emap["emergencies"]
 
 	if len(emergencies) == 0 {
-		e.ErrorString("No \"emergencies\" found")
+		e.ErrorString(`No "emergencies" found`)
 		return nil
 	}
 
@@ -127,28 +127,28 @@ func loadEmergencies(e *util.ErrorLogger) []sim.Emergency {
 				case "approach":
 					em.ApplicableTo |= sim.EmergencyApplicabilityApproach
 				default:
-					e.ErrorString("invalid \"applicable_to\" value %q: must be one or more of \"departure\", \"arrival\", \"external\", \"approach\" (comma-separated)",
+					e.ErrorString(`invalid "applicable_to" value %q: must be one or more of "departure", "arrival", "external", "approach" (comma-separated)`,
 						typeStr)
 				}
 			}
 		}
 
 		if len(em.Stages) == 0 {
-			e.ErrorString("no emergency \"stages\" defined")
+			e.ErrorString(`no emergency "stages" defined`)
 		}
 		for i, stage := range em.Stages {
 			// transmission is required unless request_return is true
 			if stage.Transmission == "" && !stage.RequestReturn {
-				e.ErrorString("stage %d missing required field \"transmission\"", i)
+				e.ErrorString(`stage %d missing required field "transmission"`, i)
 			}
 			// duration_minutes is required for all stages except the last one
 			isLastStage := i == len(em.Stages)-1
 			if !isLastStage {
 				if stage.DurationMinutes[1] == 0 {
-					e.ErrorString("stage %d missing required field \"duration_minutes\"", i)
+					e.ErrorString(`stage %d missing required field "duration_minutes"`, i)
 				}
 				if stage.DurationMinutes[0] > stage.DurationMinutes[1] {
-					e.ErrorString("First value in \"duration_minutes\" cannot be greater than second")
+					e.ErrorString(`First value in "duration_minutes" cannot be greater than second`)
 				}
 			}
 		}
