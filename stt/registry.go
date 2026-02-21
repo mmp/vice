@@ -3,6 +3,7 @@ package stt
 import (
 	"fmt"
 	"reflect"
+	"sync"
 )
 
 // sttCommand represents a registered command with its template and handler.
@@ -18,6 +19,15 @@ type sttCommand struct {
 
 // sttCommands holds all registered commands.
 var sttCommands []sttCommand
+
+var initOnce sync.Once
+
+func Init() {
+	initOnce.Do(func() {
+		registerAllCallsignPatterns()
+		registerAllCommands()
+	})
+}
 
 // CommandOption configures a command registration.
 type CommandOption func(*sttCommand)

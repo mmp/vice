@@ -36,6 +36,7 @@ import (
 	"github.com/mmp/vice/stars"
 	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/apenwarr/fixconsole"
@@ -148,6 +149,7 @@ func cliInit() error {
 		return fmt.Errorf("SyncResources: %w", err)
 	}
 	av.InitDB()
+	wx.Init()
 	return nil
 }
 
@@ -528,6 +530,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	}
 
 	av.InitDB()
+	wx.Init()
 	startBackgroundModelLoading(config, plat, lg)
 
 	// Initialize navigation logging if requested

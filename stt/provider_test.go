@@ -11,9 +11,10 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-// TestMain initializes the aviation database for all tests.
+// TestMain initializes the aviation database and STT registries for all tests.
 func TestMain(m *testing.M) {
 	av.InitDB()
+	Init()
 	os.Exit(m.Run())
 }
 

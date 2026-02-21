@@ -17,6 +17,7 @@ type Transcriber struct {
 
 // NewTranscriber creates a new STT transcriber.
 func NewTranscriber(lg *log.Logger) *Transcriber {
+	Init()
 	return &Transcriber{lg: lg}
 }
 

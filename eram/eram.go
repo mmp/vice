@@ -153,6 +153,7 @@ type ERAMPane struct {
 }
 
 func NewERAMPane() *ERAMPane {
+	InitCommands()
 	return &ERAMPane{}
 }
 

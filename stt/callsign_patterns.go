@@ -4,10 +4,6 @@ import (
 	"strings"
 )
 
-func init() {
-	registerAllCallsignPatterns()
-}
-
 // registerAllCallsignPatterns registers all callsign matching patterns.
 // Weight class filtering is handled separately before pattern matching.
 func registerAllCallsignPatterns() {

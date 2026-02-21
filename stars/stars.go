@@ -674,6 +674,7 @@ var monitorColorSets = map[string]MonitorColors{
 // STARSPane proper
 
 func NewSTARSPane() *STARSPane {
+	InitCommands()
 	return &STARSPane{}
 }
 

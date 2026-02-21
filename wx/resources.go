@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/mmp/vice/util"
@@ -18,7 +19,7 @@ import (
 	"github.com/vmihailenco/msgpack/v5"
 )
 
-// Cached resource data, loaded asynchronously at startup via init().
+// Cached resource data, loaded asynchronously at startup via Init().
 // Each cache uses a channel that is closed when loading completes;
 // callers block on the channel if the data isn't ready yet.
 var (
@@ -34,7 +35,13 @@ var (
 	}
 )
 
-func init() {
+var wxInitOnce sync.Once
+
+func Init() {
+	wxInitOnce.Do(initResources)
+}
+
+func initResources() {
 	metarCache.done = make(chan struct{})
 	go func() {
 		defer close(metarCache.done)
@@ -84,6 +91,7 @@ func init() {
 
 // GetMETAR returns METAR data from bundled resources for the specified airports.
 func GetMETAR(airports []string) (map[string]METARSOA, error) {
+	Init()
 	<-metarCache.done
 	if metarCache.err != nil {
 		return nil, metarCache.err
@@ -102,12 +110,14 @@ func GetMETAR(airports []string) (map[string]METARSOA, error) {
 // GetTimeIntervals returns available time intervals from bundled resources.
 // Returns a map from TRACON to available time intervals.
 func GetTimeIntervals() map[string][]util.TimeInterval {
+	Init()
 	<-atmosCache.done
 	return atmosCache.timeInt
 }
 
 // GetAtmosByTime returns atmospheric data for a TRACON from bundled resources.
 func GetAtmosByTime(tracon string) (*AtmosByTime, error) {
+	Init()
 	<-atmosCache.done
 	if abt, ok := atmosCache.byTime[tracon]; ok {
 		return abt, nil

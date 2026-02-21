@@ -61,6 +61,8 @@ func setupSignalHandler() {
 }
 
 func main() {
+	initZstdEncoders()
+
 	const bucketName = "vice-wx"
 
 	flag.Parse()
