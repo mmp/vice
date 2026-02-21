@@ -231,10 +231,22 @@
             "STD": {
                 "inbound_assignments": {
                     "Overflights": "30",
-                    "PRICY4": "30"
+                    "PRICY4": "30",
+                    "GRNCH5": "30",
+                    "SNFLD3": "66",
+                    "MARQO3": "30",
+                    "LUNNI2": "66",
+                    "OHDEA2": "30",
+                    "TTHOR3": "66"
+                },
+                "departure_assignments": {
+                    "KMCO": "15",
+                    "KDAB": "15",
+                    "KJAX": "15"
                 },
                 "default_consolidation": {
-                    "30": []
+                    "30": ["66"],
+                    "66": ["15"]
                 }
             },
             "ZJX": {
