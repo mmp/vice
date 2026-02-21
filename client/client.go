@@ -1073,7 +1073,7 @@ func makeWhisperPrompt(state SimState) string {
 		"until established", "on the localizer", "flight level", "niner",
 		"climb via", "descend via", "arrival",
 		"hold", "as published", "radial inbound", "minute legs", "left turns", "right turns",
-		"expect further clearance",
+		"expect further clearance", "mach", "say mach", "maintain mach",
 	}
 
 	// Add telephony and approaches for user-controlled tracks.
