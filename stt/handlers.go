@@ -581,6 +581,20 @@ func registerAllCommands() {
 		WithSayAgainOnFail(), // "expect [approach]" should ask for clarification if approach unrecognized
 	)
 
+	registerSTTCommand(
+		"standby [for] [the] approach",
+		func() string { return "E" },
+		WithName("standby_approach"),
+		WithPriority(14),
+	)
+
+	registerSTTCommand(
+		"expect [the] approach",
+		func() string { return "E" },
+		WithName("expect_the_approach"),
+		WithPriority(14),
+	)
+
 	// "vectors {approach}" without SAYAGAIN - "vectors" alone (e.g., "vectors for sequence")
 	// is often informational filler, not an actual expect command
 	registerSTTCommand(

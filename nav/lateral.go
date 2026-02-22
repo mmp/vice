@@ -410,6 +410,20 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Approach.PassedApproachFix = true
 		}
 
+		if wp.FAF() && nav.InterceptedButNotCleared() {
+			// At the FAF without clearance, go around.
+			nav.Approach.GoAroundNoApproachClearance = true
+		} else if nav.InterceptedButNotCleared() && !nav.Approach.StandbyApproach {
+			if wp.IF() {
+				// At the IF, the pilot asks for approach clearance.
+				nav.Approach.RequestApproachClearance = true
+			} else if wp.OnApproach() {
+				// At an intermediate approach fix, check if the altitude
+				// makes descent to the FAF challenging (>300 ft/nm).
+				nav.checkEarlyApproachRequest(wp)
+			}
+		}
+
 		if wp.AltitudeRestriction() != nil && !nav.InterceptedButNotCleared() &&
 			(!nav.Approach.Cleared || wp.AltitudeRestriction().Range[0] < nav.FlightState.Altitude) {
 			// Don't climb if we're cleared approach and below the next
@@ -437,7 +451,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			hdg := *nfa.Depart.Heading
 			nav.Heading = NavHeading{Assigned: &hdg}
 		} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
-			if wps, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
+			if wps, _, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
 				// Hacky: below we peel off the current waypoint, so re-add
 				// it here so everything works out.
 				nav.Waypoints = append([]av.Waypoint{*wp}, wps...)
@@ -769,5 +783,36 @@ func TurnAngle(from, to float32, turn av.TurnDirection) float32 {
 
 	default:
 		panic("unhandled TurnDirection")
+	}
+}
+
+// checkEarlyApproachRequest checks whether the aircraft is too high to
+// comfortably descend to the FAF at 300 ft/nm or less.  If so, it sets
+// RequestApproachClearance so the pilot asks early.
+func (nav *Nav) checkEarlyApproachRequest(currentWp *av.Waypoint) {
+	// Find the FAF in the remaining waypoints and compute the distance.
+	var fafAlt float32
+	var dist float32
+	found := false
+	prev := currentWp.Location
+	for _, wp := range nav.Waypoints {
+		d := math.NMDistance2LL(prev, wp.Location)
+		dist += d
+		prev = wp.Location
+		if wp.FAF() {
+			if ar := wp.AltitudeRestriction(); ar != nil {
+				fafAlt = ar.Range[0]
+			}
+			found = true
+			break
+		}
+	}
+	if !found || fafAlt == 0 || dist < 0.1 {
+		return
+	}
+
+	altToLose := nav.FlightState.Altitude - fafAlt
+	if altToLose > 0 && altToLose/dist > 300 {
+		nav.Approach.RequestApproachClearance = true
 	}
 }

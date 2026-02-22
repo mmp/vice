@@ -902,7 +902,7 @@ func stripPositionIDPrefix(tokens []Token) []Token {
 		"contact": true, "squawk": true, "ident": true, "cross": true,
 		"hold": true, "intercept": true, "fly": true, "reduce": true,
 		"increase": true, "expedite": true, "cancel": true, "canceled": true, "cancelled": true,
-		"resume": true, "vectors": true, "go": true,
+		"resume": true, "vectors": true, "go": true, "standby": true,
 	}
 
 	// Find position suffix in the first few tokens (position ID is at the start)

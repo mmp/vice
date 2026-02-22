@@ -437,6 +437,7 @@ If no speed is given, "cancel speed restrictions".`, "*S210*, *S*"},
 	{"*TS_kts", `"After reaching _alt_, reduce/increase speed to _kts_", where _alt_ is a previously-assigned
 altitude. (*TS* = 'then speed')`, "*TS210*"},
 	{"*E_appr", `"Expect the _appr_ approach."`, "*EI2L*"},
+	{"*E*", `"Standby; re-issue expect for the assigned approach."`, "*E*"},
 	{"*C_appr", `"Cleared _appr_ approach."`, "*CI2L*"},
 	{"*C*", `"Cleared for the approach that was previously assigned."`, "*C*"},
 	{"*TO*", `"Contact tower"`, "*TO*"},

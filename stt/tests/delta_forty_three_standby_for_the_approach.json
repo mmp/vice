@@ -1,0 +1,23 @@
+{
+  "transcript": "Delta Forty Three standby for the approach",
+  "callsign": "DAL43",
+  "command": "E",
+  "stt_aircraft": {
+    "Delta 43": {
+      "Callsign": "DAL43",
+      "AircraftType": "B738",
+      "Fixes": {},
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "I22L",
+      "SID": "",
+      "STAR": "LENDY6",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "N56",
+      "TrackingController": "N56",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  }
+}

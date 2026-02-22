@@ -188,16 +188,19 @@ type NavHeading struct {
 }
 
 type NavApproach struct {
-	Assigned          *av.Approach
-	AssignedId        string
-	ATPAVolume        *av.ATPAVolume
-	Cleared           bool
-	InterceptState    InterceptState
-	PassedApproachFix bool // have we passed a fix on the approach yet?
-	PassedFAF         bool
-	NoPT              bool
-	AtFixClearedRoute []av.Waypoint
-	AtFixInterceptFix string // fix where aircraft should intercept the localizer
+	Assigned                    *av.Approach
+	AssignedId                  string
+	ATPAVolume                  *av.ATPAVolume
+	Cleared                     bool
+	StandbyApproach             bool // suppress repeated approach clearance requests
+	RequestApproachClearance    bool // pilot should radio for approach clearance
+	GoAroundNoApproachClearance bool // pilot should go around (reached FAF without clearance)
+	InterceptState              InterceptState
+	PassedApproachFix           bool // have we passed a fix on the approach yet?
+	PassedFAF                   bool
+	NoPT                        bool
+	AtFixClearedRoute           []av.Waypoint
+	AtFixInterceptFix           string // fix where aircraft should intercept the localizer
 }
 
 type NavFixAssignment struct {
