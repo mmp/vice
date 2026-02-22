@@ -1,6 +1,7 @@
 package eram
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -91,7 +92,7 @@ draining:
 		}
 	}
 
-	// --- Layout ---
+	// --- Font setup ---
 	fontNum := ps.WX.Font
 	if fontNum < 1 {
 		fontNum = 1
@@ -100,7 +101,6 @@ draining:
 		fontNum = 3
 	}
 
-	// Title uses fixed FONT 2 for consistent size
 	titleFont := ep.ERAMFont(2)
 	titleTextStyle := renderer.TextStyle{
 		Font:        titleFont,
@@ -108,7 +108,6 @@ draining:
 		LineSpacing: 0,
 	}
 
-	// List uses selected font
 	listFont := ep.ERAMFont(fontNum)
 	textStyle := renderer.TextStyle{
 		Font:        listFont,
@@ -119,14 +118,13 @@ draining:
 	_, by := listFont.BoundText("0", textStyle.LineSpacing)
 	lineH := float32(by + 2)
 
-	// Scale boxes based on font size
 	fontScale := []float32{0.85, 1.0, 1.2}[fontNum-1]
 	boxTopPad := float32(8) * fontScale
-	boxBottomPad := float32(8) * fontScale
+	boxW := float32(13) * fontScale
+	boxH := lineH
+	boxGap := float32(4) * fontScale
 
 	p0 := ps.WX.Position
-
-	// Fixed window width
 	width := wxWindowWidth
 
 	titleH := float32(16)
@@ -134,6 +132,7 @@ draining:
 		titleH = float32(tby) + 4
 	}
 
+	numRows := len(ep.WXReportStations)
 	visibleRows := ps.WX.Lines
 	if visibleRows < 3 {
 		visibleRows = 3
@@ -141,14 +140,158 @@ draining:
 	if visibleRows > 24 {
 		visibleRows = 24
 	}
-	var bodyHeight float32
-	if visibleRows == 0 {
+
+	// --- Pre-pass: compute word-wrapped content for each station ---
+	// X coordinates (p0[0], width) are known before height is computed,
+	// so we can do the wrapping now and use the results to derive bodyHeight.
+	type stationRender struct {
+		lines []string // wrapped METAR lines; empty means show msg instead
+		msg   string   // text for loading / error state
+	}
+	stationRenders := make([]stationRender, len(ep.WXReportStations))
+
+	spaceW, _ := listFont.BoundText(" ", textStyle.LineSpacing)
+	threeSpaceW := float32(3 * spaceW)
+	stationIDX := p0[0] + 4 + boxW + boxGap // left edge of station ID text
+
+	for i, icao := range ep.WXReportStations {
+		displayID := wxDisplayID(icao)
+		displayIDW, _ := listFont.BoundText(displayID, textStyle.LineSpacing)
+		metarStartX := stationIDX + float32(displayIDW) + threeSpaceW
+		firstLineAvailW := width - (metarStartX - p0[0]) - 4
+		contLineAvailW := width - (stationIDX - p0[0]) - 4
+
+		result, hasResult := ep.wxMetars[icao]
+		sr := &stationRenders[i]
+
+		if !hasResult || ep.wxFetching[icao] {
+			sr.msg = "....  (Loading)"
+			continue
+		}
+		if result.err != nil || result.rawText == "" {
+			sr.msg = "-M-"
+			continue
+		}
+
+		// Find the time-group token: all digits followed by 'Z' (e.g. "220100Z").
+		// Using strings.Index would wrongly match the 'Z' inside station IDs like "CYYZ".
+		rawFields := strings.Fields(result.rawText)
+		timeField := -1
+		for j, f := range rawFields {
+			if len(f) >= 5 && f[len(f)-1] == 'Z' {
+				allDigits := true
+				for _, c := range f[:len(f)-1] {
+					if c < '0' || c > '9' {
+						allDigits = false
+						break
+					}
+				}
+				if allDigits {
+					timeField = j
+					break
+				}
+			}
+		}
+		if timeField == -1 || len(rawFields[timeField]) < 5 {
+			sr.msg = "-M-"
+			continue
+		}
+
+		tok := rawFields[timeField]
+		hhmmStr := tok[len(tok)-5 : len(tok)-1] // last 4 digits before 'Z'
+		metarData := hhmmStr
+		if timeField+1 < len(rawFields) {
+			metarData += " " + strings.Join(rawFields[timeField+1:], " ")
+		}
+
+		var cur string
+		isFirstLine := true
+		for word := range strings.FieldsSeq(metarData) {
+			curAvailW := firstLineAvailW
+			if !isFirstLine {
+				curAvailW = contLineAvailW
+			}
+			test := cur
+			if test != "" {
+				test += " "
+			}
+			test += word
+			w, _ := listFont.BoundText(test, textStyle.LineSpacing)
+			if float32(w) > curAvailW && cur != "" {
+				sr.lines = append(sr.lines, cur)
+				cur = word
+				isFirstLine = false
+			} else {
+				cur = test
+			}
+		}
+		if cur != "" {
+			sr.lines = append(sr.lines, cur)
+		}
+	}
+
+	// Count total text lines across all stations to determine if scrolling is needed
+	totalLines := 0
+	stationLineCount := make([]int, numRows) // lines per station
+	for i, sr := range stationRenders {
+		n := 1
+		if len(sr.lines) > 0 {
+			n = len(sr.lines)
+		}
+		stationLineCount[i] = n
+		totalLines += n
+	}
+
+	// Determine which stations to show based on LINES limit
+	startIdx := 0
+	endIdx := numRows
+	if totalLines > visibleRows {
+		// LINES limits the total text lines displayed, not the station count
+		// Paging: scroll by stations until accumulated lines >= visibleRows
+		currentLines := 0
+		startIdx = ep.wxScrollOffset
+		if startIdx >= numRows {
+			startIdx = numRows - 1
+		}
+		if startIdx < 0 {
+			startIdx = 0
+		}
+
+		endIdx = startIdx
+		for endIdx < numRows && currentLines < visibleRows {
+			currentLines += stationLineCount[endIdx]
+			endIdx++
+			if currentLines >= visibleRows {
+				break
+			}
+		}
+		if endIdx > numRows {
+			endIdx = numRows
+		}
+
+		// Clamp scroll offset: don't scroll past the last station
+		maxOffset := numRows - 1
+		if ep.wxScrollOffset > maxOffset {
+			ep.wxScrollOffset = maxOffset
+		}
+	}
+
+	// Compute bodyHeight from the stations that will be displayed
+	bodyHeight := float32(0)
+	if numRows == 0 {
 		bodyHeight = lineH + 4
 	} else {
-		bodyHeight = boxTopPad + boxBottomPad + float32(visibleRows)*lineH
+		displayedLines := 0
+		for i := startIdx; i < endIdx; i++ {
+			n := stationLineCount[i]
+			bodyHeight += boxTopPad + float32(n)*lineH + boxGap
+			displayedLines += n
+		}
+		bodyHeight = max(bodyHeight, lineH+4)
 	}
 	height := titleH + bodyHeight
 
+	// --- Draw builders ---
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -168,8 +311,16 @@ draining:
 	bodyP3 := math.Add2f(bodyP0, [2]float32{0, -bodyHeight})
 	trid.AddQuad(bodyP0, bodyP1, bodyP2, bodyP3, renderer.RGB{R: 0, G: 0, B: 0})
 
-	// 1px border
+	// Borders
 	if ps.WX.ShowBorder {
+		// 1px grey border around the body list area
+		listBorderColor := renderer.RGB{R: 0.5, G: 0.5, B: 0.5}
+		ld.AddLine(bodyP0, bodyP1, listBorderColor)
+		ld.AddLine(bodyP1, bodyP2, listBorderColor)
+		ld.AddLine(bodyP2, bodyP3, listBorderColor)
+		ld.AddLine(bodyP3, bodyP0, listBorderColor)
+
+		// 1px border around entire window
 		borderColor := ps.Brightness.Border.ScaleRGB(renderer.RGB{R: .914, G: .914, B: .914})
 		ld.AddLine(p0, p1, borderColor)
 		ld.AddLine(p1, p2, borderColor)
@@ -177,7 +328,7 @@ draining:
 		ld.AddLine(p3, p0, borderColor)
 	}
 
-	// Title bar background (black or grey based on Opaque mode)
+	// Title bar background
 	titleBgColor := renderer.RGB{R: 0, G: 0, B: 0}
 	if ps.WX.Opaque {
 		titleBgColor = renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
@@ -273,10 +424,53 @@ draining:
 
 	// Handle title bar clicks
 	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
+		// Check scroll bar clicks first (if scroll bar is visible)
+		if totalLines > visibleRows {
+			const scrollBarContentW = float32(15)
+			const scrollBarBorderW = float32(1)
+			const scrollBarTotalW = scrollBarContentW + 2*scrollBarBorderW
+			const scrollBarGap = float32(2)
+
+			scrollBarSectionH := (bodyHeight - 2 - scrollBarGap) / 2
+
+			scrollX1 := bodyP1[0] - 4
+			scrollX0 := scrollX1 - scrollBarTotalW
+
+			upY1 := bodyP0[1] - 1
+			upY0 := upY1 - scrollBarSectionH
+
+			downY1 := upY0 - scrollBarGap
+			downY0 := downY1 - scrollBarSectionH
+
+			upRect := math.Extent2D{
+				P0: [2]float32{scrollX0, upY0},
+				P1: [2]float32{scrollX1, upY1},
+			}
+			downRect := math.Extent2D{
+				P0: [2]float32{scrollX0, downY0},
+				P1: [2]float32{scrollX1, downY1},
+			}
+
+			if upRect.Inside(mouse.Pos) {
+				if ep.wxScrollOffset > 0 {
+					ep.wxScrollOffset--
+				}
+				mouse.Clicked = [platform.MouseButtonCount]bool{}
+			} else if downRect.Inside(mouse.Pos) {
+				if ep.wxScrollOffset < numRows-1 {
+					ep.wxScrollOffset++
+				}
+				mouse.Clicked = [platform.MouseButtonCount]bool{}
+			}
+		}
+
 		switch {
 		case mRect.Inside(mouse.Pos):
 			ctx.SetMousePosition(math.Add2f(mouse.Pos, [2]float32{width * 1.5, 0}))
 			ep.wxMenuOpen = !ep.wxMenuOpen
+			if ep.wxMenuOpen {
+				ep.altimSetMenuOpen = false
+			}
 			mouse.Clicked = [platform.MouseButtonCount]bool{}
 		case minRect.Inside(mouse.Pos):
 			ps.WX.Visible = false
@@ -305,13 +499,13 @@ draining:
 		ld.AddLine(previewP3, previewP0, c)
 	}
 
-	// Menu, if open (drawn to the right side of the title by default)
+	// Menu, if open
 	if ep.wxMenuOpen {
 		menuOrigin := math.Add2f(titleP3, [2]float32{width, titleH})
 		ep.drawWXMenu(ctx, transforms, menuOrigin, 150, cb)
 	}
 
-	// Draw METAR list
+	// --- Draw METAR list ---
 	bright := ps.WX.Bright
 	if bright < 0 {
 		bright = 0
@@ -320,7 +514,6 @@ draining:
 		bright = 100
 	}
 
-	// Scale yellow color based on bright (0=black, 80=current, 100=max bright)
 	var yellowColor renderer.RGB
 	if bright <= 80 {
 		scale := float32(bright) / 80.0
@@ -344,7 +537,6 @@ draining:
 		}
 	}
 
-	// Scale text color based on bright
 	var textColor renderer.RGB
 	if bright <= 80 {
 		scale := float32(bright) / 80.0
@@ -366,129 +558,143 @@ draining:
 	textColor = ps.Brightness.Text.ScaleRGB(textColor)
 
 	greyBorderColor := renderer.RGB{R: 0.5, G: 0.5, B: 0.5}
-	boxW := float32(13) * fontScale
-	boxH := lineH
-	boxGap := float32(4) * fontScale
 
-	// Render each station's METAR
 	yOffset := bodyP0[1]
-	for _, icao := range ep.WXReportStations {
+	linesDrawn := 0
+	for i := startIdx; i < endIdx; i++ {
+		if linesDrawn >= visibleRows {
+			break
+		}
+		icao := ep.WXReportStations[i]
+		sr := stationRenders[i]
 		displayID := wxDisplayID(icao)
-		result, hasResult := ep.wxMetars[icao]
 
-		// Record the top of this station block for border drawing
-		stationBlockTop := yOffset
-
-		// Yellow indicator box for station ID - 8 pixels from top of border area
-		boxX0 := bodyP0[0] + 4
-		boxX1 := boxX0 + boxW
-		boxY1 := yOffset - 8
-		boxY0 := boxY1 - boxH
-
-		bp0 := [2]float32{boxX0, boxY0}
-		bp1 := [2]float32{boxX1, boxY0}
-		bp2 := [2]float32{boxX1, boxY1}
-		bp3 := [2]float32{boxX0, boxY1}
-		trid.AddQuad(bp0, bp1, bp2, bp3, yellowColor)
-		ld.AddLine(bp0, bp1, greyBorderColor)
-		ld.AddLine(bp1, bp2, greyBorderColor)
-		ld.AddLine(bp2, bp3, greyBorderColor)
-		ld.AddLine(bp3, bp0, greyBorderColor)
-
-		// Draw station ID next to box - position text baseline at bottom of yellow box
-		textX := boxX1 + boxGap
-		textY := boxY0 + float32(by)
-		td.AddText(displayID, [2]float32{textX, textY}, renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
-
-		// Calculate where the station ID text ends so METAR starts after it
-		displayIDWidth, _ := listFont.BoundText(displayID, textStyle.LineSpacing)
-		metarStartX := textX + float32(displayIDWidth) + boxGap
-
-		// Draw METAR text if available
-		if hasResult && !ep.wxFetching[icao] {
-			if result.err == nil && result.rawText != "" {
-				// Find the Zulu time indicator (format: DDHHMMZ)
-				zuluIdx := strings.Index(result.rawText, "Z")
-				var metarData string
-				if zuluIdx != -1 && zuluIdx >= 4 {
-					// Extract HHMM (4 chars before Z), skip DD prefix and Z itself
-					// Format is DDHHMMZ, so 4 chars before Z gets us HHMM
-					hhmmStart := zuluIdx - 4
-					hhmmStr := result.rawText[hhmmStart:zuluIdx]
-					restStr := result.rawText[zuluIdx+1:] // Everything after Z
-					if restStr != "" {
-						metarData = hhmmStr + " " + restStr
-					} else {
-						metarData = hhmmStr
-					}
-
-					// Word wrap the METAR text
-					// Calculate available width from where METAR starts to 53 pixels before right edge (adds 10px text room)
-					maxTextWidth := width - (metarStartX - bodyP0[0]) - 53
-					words := strings.Fields(metarData)
-					var currentLine string
-					currentY := textY
-					isFirstLine := true
-
-					for _, word := range words {
-						testLine := currentLine
-						if testLine != "" {
-							testLine += " "
-						}
-						testLine += word
-
-						w, _ := listFont.BoundText(testLine, textStyle.LineSpacing)
-						if float32(w) > maxTextWidth && currentLine != "" {
-							// Draw current line and move to next line
-							if isFirstLine {
-								td.AddText(currentLine, [2]float32{metarStartX, currentY}, renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
-								isFirstLine = false
-							} else {
-								// Wrapped lines align under the text (metarStartX)
-								td.AddText(currentLine, [2]float32{metarStartX, currentY}, renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
-							}
-							currentY -= lineH
-							currentLine = word
-						} else {
-							currentLine = testLine
-						}
-					}
-
-					// Draw last line
-					if currentLine != "" {
-						td.AddText(currentLine, [2]float32{metarStartX, currentY}, renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
-						currentY -= lineH
-					}
-
-					yOffset = currentY - boxGap
-				} else {
-					// Draw error message
-					td.AddText("  -M-  (METAR unavailable)", [2]float32{metarStartX, textY}, renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
-					yOffset = textY - lineH - boxGap
-				}
-			} else {
-				// Draw loading or missing message
-				td.AddText("  ....  (Loading)", [2]float32{metarStartX, textY}, renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
-				yOffset = textY - lineH - boxGap
-			}
+		n := 1
+		if len(sr.lines) > 0 {
+			n = len(sr.lines)
 		}
 
-		// Add spacing between stations
-		yOffset -= boxGap
+		// Truncate station if we've already drawn some lines and are at the limit
+		linesToDraw := n
+		if linesDrawn+n > visibleRows {
+			linesToDraw = visibleRows - linesDrawn
+		}
 
-		// Draw 1px grey border around each station block
-		stationBlockBottom := yOffset
-		stationBlockLeft := bodyP0[0] + 2
-		stationBlockRight := bodyP1[0] - 2
+		stationTop := yOffset
+		stationBottom := stationTop - boxTopPad - float32(linesToDraw)*lineH - boxGap
 
-		borderP0 := [2]float32{stationBlockLeft, stationBlockBottom}
-		borderP1 := [2]float32{stationBlockRight, stationBlockBottom}
-		borderP2 := [2]float32{stationBlockRight, stationBlockTop}
-		borderP3 := [2]float32{stationBlockLeft, stationBlockTop}
-		ld.AddLine(borderP0, borderP1, greyBorderColor)
-		ld.AddLine(borderP1, borderP2, greyBorderColor)
-		ld.AddLine(borderP2, borderP3, greyBorderColor)
-		ld.AddLine(borderP3, borderP0, greyBorderColor)
+		// Yellow indicator box: sits boxTopPad below the station top
+		boxX0 := bodyP0[0] + 4
+		boxX1 := boxX0 + boxW
+		boxY1 := stationTop - boxTopPad // top of box
+		boxY0 := boxY1 - boxH           // bottom of box
+
+		if ps.WX.ShowIndicators {
+			bp0 := [2]float32{boxX0, boxY0}
+			bp1 := [2]float32{boxX1, boxY0}
+			bp2 := [2]float32{boxX1, boxY1}
+			bp3 := [2]float32{boxX0, boxY1}
+			trid.AddQuad(bp0, bp1, bp2, bp3, yellowColor)
+			ld.AddLine(bp0, bp1, greyBorderColor)
+			ld.AddLine(bp1, bp2, greyBorderColor)
+			ld.AddLine(bp2, bp3, greyBorderColor)
+			ld.AddLine(bp3, bp0, greyBorderColor)
+		}
+
+		// Station ID text: top-left aligned with the top of the yellow box
+		textX := boxX1 + boxGap
+		textY := boxY0 + float32(by)
+		td.AddText(displayID, [2]float32{textX, textY},
+			renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
+
+		// METAR or status text: line 1 starts 3 spaces after the station ID;
+		// continuation lines start at the station ID's left edge.
+		displayIDW, _ := listFont.BoundText(displayID, textStyle.LineSpacing)
+		metarStartX := textX + float32(displayIDW) + threeSpaceW
+
+		currentY := textY
+		if len(sr.lines) > 0 {
+			// Draw only up to linesToDraw lines
+			for j := 0; j < linesToDraw && j < len(sr.lines); j++ {
+				line := sr.lines[j]
+				lineX := metarStartX
+				if j > 0 {
+					lineX = textX
+				}
+				td.AddText(line, [2]float32{lineX, currentY},
+					renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
+				currentY -= lineH
+			}
+		} else if linesDrawn == 0 {
+			// Only draw status message for first station
+			td.AddText(sr.msg, [2]float32{metarStartX, currentY},
+				renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
+		}
+
+		linesDrawn += linesToDraw
+		yOffset = stationBottom
+	}
+
+	// Render scroll bar when there are more text lines than can fit in the current view
+	if totalLines > visibleRows {
+		const scrollBarContentW = float32(14)
+		const scrollBarBorderW = float32(1)
+		const scrollBarTotalW = scrollBarContentW + 2*scrollBarBorderW // 16 pixels total
+		const scrollBarGap = float32(2)
+
+		scrollBarSectionH := (bodyHeight - 2 - scrollBarGap) / 2
+
+		scrollX1 := bodyP1[0] - 1
+		scrollX0 := scrollX1 - scrollBarTotalW
+
+		upY1 := bodyP0[1] - 1
+		upY0 := upY1 - scrollBarSectionH
+
+		downY0 := upY0 - scrollBarGap
+		downY1 := downY0 - scrollBarSectionH
+
+		scrollBg := renderer.RGB{R: 0, G: 0, B: 0}
+		scrollBorder := renderer.RGB{R: 0.5, G: 0.5, B: 0.5}
+		arrowColor := renderer.RGB{R: 145.0 / 255.0, G: 145.0 / 255.0, B: 145.0 / 255.0}
+
+		upP0 := [2]float32{scrollX0, upY0}
+		upP1 := [2]float32{scrollX1, upY0}
+		upP2 := [2]float32{scrollX1, upY1}
+		upP3 := [2]float32{scrollX0, upY1}
+		trid.AddQuad(upP0, upP1, upP2, upP3, scrollBg)
+		ld.AddLine(upP0, upP1, scrollBorder)
+		ld.AddLine(upP1, upP2, scrollBorder)
+		ld.AddLine(upP2, upP3, scrollBorder)
+		ld.AddLine(upP3, upP0, scrollBorder)
+
+		arrowCenterX := scrollX0 + scrollBarBorderW + scrollBarContentW/2
+		downArrowTopY := downY1 + 1
+		downArrowWidths := []float32{1, 3, 5, 7, 9}
+		for i, w := range downArrowWidths {
+			y := downArrowTopY + float32(i)
+			x0 := arrowCenterX - w/2
+			x1 := arrowCenterX + w/2
+			ld.AddLine([2]float32{x0, y}, [2]float32{x1, y}, arrowColor)
+		}
+
+		downP0 := [2]float32{scrollX0, downY0}
+		downP1 := [2]float32{scrollX1, downY0}
+		downP2 := [2]float32{scrollX1, downY1}
+		downP3 := [2]float32{scrollX0, downY1}
+		trid.AddQuad(downP0, downP1, downP2, downP3, scrollBg)
+		ld.AddLine(downP0, downP1, scrollBorder)
+		ld.AddLine(downP1, downP2, scrollBorder)
+		ld.AddLine(downP2, downP3, scrollBorder)
+		ld.AddLine(downP3, downP0, scrollBorder)
+
+		upArrowTopY := upY1 - 5
+		updatedUpArrowWidths := []float32{9, 7, 5, 3, 1}
+		for i, w := range updatedUpArrowWidths {
+			y := upArrowTopY + float32(i)
+			x0 := arrowCenterX - w/2
+			x1 := arrowCenterX + w/2
+			ld.AddLine([2]float32{x0, y}, [2]float32{x1, y}, arrowColor)
+		}
 	}
 
 	// Commit all draw commands
@@ -497,49 +703,91 @@ draining:
 	td.GenerateCommands(cb)
 }
 
-// drawWXMenu renders the menu for the WX window (similar to ALTIM SET menu).
-func (ep *ERAMPane) drawWXMenu(ctx *panes.Context, transforms radar.ScopeTransformations, menuOrigin [2]float32, menuWidth float32, cb *renderer.CommandBuffer) {
-	// TODO: Implement WX menu similar to ALTIM SET menu
-	// For now, this is a placeholder
-	ps := ep.currentPrefs()
-
-	trid := renderer.GetColoredTrianglesDrawBuilder()
-	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-
-	font := ep.ERAMFont(2)
-	textStyle := renderer.TextStyle{
-		Font:        font,
-		Color:       ps.Brightness.Text.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
-		LineSpacing: 0,
+// drawWXMenu renders the configuration menu for the WX REPORT window.
+func (ep *ERAMPane) drawWXMenu(ctx *panes.Context, transforms radar.ScopeTransformations, origin [2]float32, menuWidth float32, cb *renderer.CommandBuffer) {
+	if !ep.wxMenuOpen {
+		return
 	}
 
-	// Simple menu placeholder
-	menuHeight := float32(100)
-	p0 := menuOrigin
-	p1 := math.Add2f(p0, [2]float32{menuWidth, 0})
-	p2 := math.Add2f(p1, [2]float32{0, -menuHeight})
-	p3 := math.Add2f(p0, [2]float32{0, -menuHeight})
+	ps := ep.currentPrefs()
 
-	// Menu background
-	trid.AddQuad(p0, p1, p2, p3, renderer.RGB{R: 0, G: 0, B: 0})
+	blackBg := renderer.RGB{R: 0, G: 0, B: 0}
+	greyBg := renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
+	greenBg := renderer.RGB{R: 0, G: 157.0 / 255.0, B: 0}
+	textColor := renderer.RGB{R: .85, G: .85, B: .85}
 
-	// Menu border
-	borderColor := ps.Brightness.Border.ScaleRGB(menuOutlineColor)
-	ld.AddLine(p0, p1, borderColor)
-	ld.AddLine(p1, p2, borderColor)
-	ld.AddLine(p2, p3, borderColor)
-	ld.AddLine(p3, p0, borderColor)
+	// T/O button — shows "T" (transparent) or "O" (opaque)
+	tLabel := "T"
+	tBg := blackBg
+	if ps.WX.Opaque {
+		tLabel = "O"
+		tBg = greyBg
+	}
 
-	// Placeholder text
-	textPos := math.Add2f(p0, [2]float32{10, -20})
-	td.AddText("WX Menu", textPos, textStyle)
+	// BORDER button - grey when ON, black when OFF
+	borderBg := blackBg
+	if ps.WX.ShowBorder {
+		borderBg = greyBg
+	}
 
-	// Commit all draw commands
-	trid.GenerateCommands(cb)
-	ld.GenerateCommands(cb)
-	td.GenerateCommands(cb)
+	// TEAROFF button - grey when ON, black when OFF
+	tearoffBg := blackBg
+	if ps.WX.ShowIndicators {
+		tearoffBg = greyBg
+	}
+
+	rows := []ERAMMenuItem{
+		{Label: tLabel, BgColor: tBg, Color: textColor, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
+			if ct == MenuClickTertiary {
+				ps.WX.Opaque = !ps.WX.Opaque
+			}
+			return false
+		}},
+		{Label: "BORDER", BgColor: borderBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
+			if ct == MenuClickTertiary {
+				ps.WX.ShowBorder = !ps.WX.ShowBorder
+			}
+			return false
+		}},
+		{Label: "TEAROFF", BgColor: tearoffBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
+			if ct == MenuClickTertiary {
+				ps.WX.ShowIndicators = !ps.WX.ShowIndicators
+			}
+			return false
+		}},
+		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: greenBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.WX.Lines, 3, 24, 1)
+			if ep.wxScrollOffset > 0 {
+				maxOffset := len(ep.WXReportStations) - ps.WX.Lines
+				if maxOffset < 0 {
+					maxOffset = 0
+				}
+				if ep.wxScrollOffset > maxOffset {
+					ep.wxScrollOffset = maxOffset
+				}
+			}
+			return false
+		}},
+		{Label: fmt.Sprintf("FONT %d", ps.WX.Font), BgColor: greenBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.WX.Font, 1, 3, 1)
+			return false
+		}},
+		{Label: fmt.Sprintf("BRIGHT %d", ps.WX.Bright), BgColor: greenBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.WX.Bright, 0, 100, 1)
+			return false
+		}},
+	}
+
+	cfg := ERAMMenuConfig{
+		Title:                 "WX",
+		OnClose:               func() { ep.wxMenuOpen = false },
+		Width:                 menuWidth,
+		Font:                  ep.ERAMFont(2),
+		ShowBorder:            true,
+		BorderColor:           renderer.RGB{R: 213.0 / 255.0, G: 213.0 / 255.0, B: 213.0 / 255.0},
+		DismissOnClickOutside: true,
+		Rows:                  rows,
+	}
+
+	ep.DrawERAMMenu(ctx, transforms, cb, origin, cfg)
 }

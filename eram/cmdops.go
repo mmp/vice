@@ -9,6 +9,7 @@ package eram
 import (
 	"fmt"
 	"strings"
+	"time"
 	"unicode"
 
 	av "github.com/mmp/vice/aviation"
@@ -114,9 +115,12 @@ func registerOpsCommands() {
 	// AR [IATA]: Add 3-letter IATA code, auto-prepends K (e.g., AR MCO → KMCO)
 	registerCommand(CommandModeNone, "AR [FIELD]", handleAltimAdd)
 
-	// WR - Add airport to WX REPORT list
-	// WR [ICAO]: Add 4-letter ICAO code (e.g., WR KMCO)
+	// WR - Weather report commands
+	// WR [ICAO]: Add 4-letter ICAO code to WX REPORT list (e.g., WR KMCO)
 	// WR [IATA]: Add 3-letter IATA code, auto-prepends K (e.g., WR MCO → KMCO)
+	// WR R [ICAO]: Display station's weather report in Response Area (e.g., WR R KMCO)
+	// WR R [IATA]: Display with 3-letter IATA code (e.g., WR R MCO → KMCO)
+	registerCommand(CommandModeNone, "WR R [FIELD]", handleWXReportDisplay)
 	registerCommand(CommandModeNone, "WR [FIELD]", handleWXReportAdd)
 
 	// // - Toggle VCI (on-frequency indicator)
@@ -1036,7 +1040,7 @@ func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 			if ep.wxScrollOffset > maxOffset {
 				ep.wxScrollOffset = maxOffset
 			}
-			return CommandStatus{bigOutput: "ACCEPT\nWX REPORT REQ"}, nil
+			return CommandStatus{bigOutput: "ACCEPT\nWEATHER STAT REQ"}, nil
 		}
 	}
 
@@ -1046,5 +1050,51 @@ func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	ps := ep.currentPrefs()
 	ps.WX.Visible = true
 
-	return CommandStatus{bigOutput: "ACCEPT\nWX REPORT REQ"}, nil
+	return CommandStatus{bigOutput: "ACCEPT\nWEATHER STAT REQ"}, nil
+}
+
+// WR R - WX REPORT Display (show METAR in Response Area)
+
+func handleWXReportDisplay(ep *ERAMPane, airport string) (CommandStatus, error) {
+	airport = strings.ToUpper(strings.TrimSpace(airport))
+	if len(airport) == 0 {
+		return CommandStatus{}, NewERAMError("REJECT - WR R - MISSING AIRPORT")
+	}
+
+	// Convert 3-letter IATA to ICAO by prepending K (US convention).
+	icao := airport
+	if len(airport) == 3 {
+		icao = "K" + airport
+	}
+
+	// Trigger fetch if not already done or stale
+	if !ep.wxFetching[icao] {
+		lastFetch, fetched := ep.wxLastFetch[icao]
+		if !fetched || time.Since(lastFetch) > wxRefreshInterval {
+			ep.wxFetching[icao] = true
+			wxFetchMETAR(icao, ep.wxFetchCh)
+		}
+	}
+
+	// Look for the METAR result
+	result, hasResult := ep.wxMetars[icao]
+
+	// Determine what to display
+	var displayText string
+	if hasResult {
+		if result.err != nil {
+			displayText = fmt.Sprintf("ERROR\n%s\nWEATHER REQUEST\n%s", icao, result.err.Error())
+		} else {
+			displayText = result.rawText
+		}
+	} else if ep.wxFetching[icao] {
+		displayText = fmt.Sprintf("LOADING\n%s", icao)
+	} else {
+		displayText = fmt.Sprintf("NO DATA\n%s", icao)
+	}
+
+	ps := ep.currentPrefs()
+	ep.smallOutput.Set(ps, displayText)
+
+	return CommandStatus{}, nil
 }

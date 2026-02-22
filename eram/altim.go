@@ -419,6 +419,9 @@ draining:
 		case mRect.Inside(mouse.Pos):
 			ctx.SetMousePosition(math.Add2f(mouse.Pos, [2]float32{width * 1.5, 0}))
 			ep.altimSetMenuOpen = !ep.altimSetMenuOpen
+			if ep.altimSetMenuOpen {
+				ep.wxMenuOpen = false
+			}
 			mouse.Clicked = [platform.MouseButtonCount]bool{}
 		case minRect.Inside(mouse.Pos):
 			ps.AltimSet.Visible = false

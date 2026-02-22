@@ -74,13 +74,14 @@ type Preferences struct {
 
 	// WX view preferences
 	WX struct {
-		Visible    bool
-		Position   [2]float32
-		Opaque     bool
-		ShowBorder bool
-		Lines      int
-		Font       int // 1-3
-		Bright     int // 0-100
+		Visible        bool
+		Position       [2]float32
+		Opaque         bool
+		ShowBorder     bool
+		ShowIndicators bool
+		Lines          int
+		Font           int // 1-3
+		Bright         int // 0-100
 	}
 }
 
@@ -246,6 +247,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.WX.Position = [2]float32{400, 600}
 	prefs.WX.Opaque = false
 	prefs.WX.ShowBorder = true
+	prefs.WX.ShowIndicators = true
 	prefs.WX.Lines = 5
 	prefs.WX.Font = 2
 	prefs.WX.Bright = 80
