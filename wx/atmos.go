@@ -753,6 +753,7 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 			if !ok && idx > 0 {
 				idx--
 			}
+			idx = math.Clamp(idx, 0, NumSampleLevels-2)
 
 			s0, s1 := stack.Levels[idx], stack.Levels[idx+1]
 			var t float32
