@@ -644,6 +644,7 @@ func TestAirportAdvisoryLowVisibility(t *testing.T) {
 
 func TestDelayedFieldInSight(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
 	sim := makeVisualTestSim(airportLoc, "13L")
 	sim.State.SimTime = time.Now()
 
@@ -652,18 +653,17 @@ func TestDelayedFieldInSight(t *testing.T) {
 	sim.Aircraft = map[av.ADSBCallsign]*Aircraft{"AAL123": ac}
 	sim.PendingContacts = make(map[TCP][]PendingContact)
 
-	// Run many ticks — eventually the delayed call should fire.
-	fieldReported := false
-	for range 5000 {
-		sim.checkDelayedFieldInSight(ac)
-		if ac.FieldInSight {
-			fieldReported = true
-			break
-		}
+	// Should not fire before the timer expires.
+	sim.checkDelayedFieldInSight(ac)
+	if ac.FieldInSight {
+		t.Fatal("field in sight reported before timer expired")
 	}
 
-	if !fieldReported {
-		t.Error("expected delayed field-in-sight to fire within 5000 ticks")
+	// Advance past the timer and check again.
+	sim.State.SimTime = sim.State.SimTime.Add(21 * time.Second)
+	sim.checkDelayedFieldInSight(ac)
+	if !ac.FieldInSight {
+		t.Error("expected field in sight after timer expired")
 	}
 }
 

@@ -1892,56 +1892,42 @@ func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles int, traffic
 
 // checkDelayedTrafficInSight checks if an aircraft that said "looking" should now report traffic in sight.
 func (s *Sim) checkDelayedTrafficInSight(ac *Aircraft) {
-	// Only check if we're within the looking window
-	if ac.TrafficLookingUntil.IsZero() || s.State.SimTime.After(ac.TrafficLookingUntil) {
-		ac.TrafficLookingUntil = time.Time{} // Clear expired window
+	if ac.TrafficLookingUntil.IsZero() || s.State.SimTime.Before(ac.TrafficLookingUntil) {
 		return
 	}
 
-	// Must be on a frequency to transmit
+	ac.TrafficLookingUntil = time.Time{}
+
 	if ac.ControllerFrequency == "" {
 		return
 	}
 
-	// Random chance each update to report traffic in sight (roughly 1/20 chance per second at 10 updates/sec)
-	if s.Rand.Intn(200) != 0 {
-		return
-	}
-
-	// Report traffic in sight
 	ac.TrafficInSight = true
 	ac.TrafficInSightTime = s.State.SimTime
-	ac.TrafficLookingUntil = time.Time{} // Clear the looking window
 
-	// Queue the transmission
 	s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionTrafficInSight)
 }
 
 // checkDelayedFieldInSight checks if an aircraft that said "looking" (in response to an
 // AP command) should now report "field in sight". Mirrors checkDelayedTrafficInSight.
 func (s *Sim) checkDelayedFieldInSight(ac *Aircraft) {
-	if ac.FieldLookingUntil.IsZero() || s.State.SimTime.After(ac.FieldLookingUntil) {
-		ac.FieldLookingUntil = time.Time{}
+	if ac.FieldLookingUntil.IsZero() || s.State.SimTime.Before(ac.FieldLookingUntil) {
 		return
 	}
+
+	ac.FieldLookingUntil = time.Time{}
 
 	if ac.ControllerFrequency == "" {
 		return
 	}
 
-	// Check if the field is actually visible now.
+	// Re-check that the field is actually visible now.
 	elig := s.checkVisualEligibility(ac)
 	if !elig.FieldInSight {
 		return
 	}
 
-	// Random chance each update (~1/200 per tick, roughly 1/20 per second at 10 updates/sec).
-	if s.Rand.Intn(200) != 0 {
-		return
-	}
-
 	ac.FieldInSight = true
-	ac.FieldLookingUntil = time.Time{}
 
 	s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionFieldInSight)
 }
