@@ -285,6 +285,18 @@ func registerAllCommands() {
 		WithName("say_speed"),
 		WithPriority(10),
 	)
+	registerSTTCommand(
+		"say indicated [speed|airspeed]",
+		func() string { return "SI" },
+		WithName("say_indicated"),
+		WithPriority(12),
+	)
+	registerSTTCommand(
+		"say mach [number]",
+		func() string { return "SM" },
+		WithName("say_mach"),
+		WithPriority(12),
+	)
 
 	registerSTTCommand(
 		"cancel speed [restrictions|restriction]",
@@ -435,6 +447,27 @@ func registerAllCommands() {
 		WithPriority(12),
 	)
 
+	registerSTTCommand(
+		"reduce|slow [speed] [to] mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("reduce_mach"), WithPriority(12),
+	)
+	registerSTTCommand(
+		"increase [speed] [to] mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("increase_mach"), WithPriority(12),
+	)
+	registerSTTCommand(
+		"maintain mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("maintain_mach"), WithPriority(10),
+	)
+	registerSTTCommand(
+		"mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("mach_only"), WithPriority(7),
+	)
+
 	// === NAVIGATION COMMANDS ===
 	registerSTTCommand(
 		"direct|proceed [direct] [to] [at] {fix}",
@@ -493,6 +526,13 @@ func registerAllCommands() {
 		func(fix string, spd int) string { return fmt.Sprintf("C%s/S%d-", fix, spd) },
 		WithName("cross_fix_do_not_exceed"),
 		WithPriority(12),
+	)
+
+	registerSTTCommand(
+		"cross {fix} [at] mach [point] {mach}",
+		func(fix string, mach int) string { return fmt.Sprintf("C%s/M%d", fix, mach) },
+		WithName("cross_fix_mach"),
+		WithPriority(10),
 	)
 
 	registerSTTCommand(

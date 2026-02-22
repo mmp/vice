@@ -338,6 +338,37 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 	return nil, 0, "SPEED"
 }
 
+// machParser extracts mach speed values (60-99).
+type machParser struct{}
+
+func (p *machParser) identifier() string {
+	return "mach"
+}
+
+func (p *machParser) goType() reflect.Type {
+	return reflect.TypeOf(0)
+}
+
+func (p *machParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	if pos >= len(tokens) {
+		return nil, 0, "MACH"
+	}
+
+	t := tokens[pos]
+	if t.Type == TokenNumber {
+		// Two-digit values 60-99 returned as-is (e.g., 75 → M75)
+		if t.Value >= 60 && t.Value <= 99 {
+			return t.Value, 1, ""
+		}
+		// Single-digit values 6-9 multiplied by 10 (e.g., 7 → 70 for mach 0.70)
+		if t.Value >= 6 && t.Value <= 9 {
+			return t.Value * 10, 1, ""
+		}
+	}
+
+	return nil, 0, "MACH"
+}
+
 // fixParser extracts navigation fix names.
 type fixParser struct{}
 
@@ -812,6 +843,8 @@ func getTypeParser(typeID string) typeParser {
 		return &headingParser{}
 	case "speed":
 		return &speedParser{}
+	case "mach":
+		return &machParser{}
 	case "fix":
 		return &fixParser{}
 	case "approach":

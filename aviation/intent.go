@@ -208,9 +208,15 @@ type SpeedIntent struct {
 	Type          SpeedType
 	AfterAltitude *float32    // speed change conditional on reaching this altitude
 	Until         *SpeedUntil // what the speed restriction is "until"
+	Mach          bool
 }
 
 func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	if s.Mach {
+		s.renderMach(rt, r)
+		return
+	}
+
 	switch s.Type {
 	case SpeedCancel:
 		rt.Add("cancel speed restrictions")
@@ -253,7 +259,32 @@ func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	}
 }
 
-// ReportSpeedIntent represents "say speed" responses
+func (s SpeedIntent) renderMach(rt *RadioTransmission, r *rand.Rand) {
+	switch s.Type {
+	case SpeedCancel:
+		rt.Add("cancel speed restrictions")
+	case SpeedReduce:
+		if s.AfterAltitude != nil {
+			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
+		} else {
+			rt.Add("[reduce to {mach}|{mach}|slow to {mach}]", s.Speed)
+		}
+	case SpeedIncrease:
+		if s.AfterAltitude != nil {
+			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
+		} else {
+			rt.Add("[increase to {mach}|{mach}|maintain {mach}]", s.Speed)
+		}
+	case SpeedAssign:
+		if s.AfterAltitude != nil {
+			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
+		} else {
+			rt.Add("[{mach}|maintain {mach}]", s.Speed)
+		}
+	}
+}
+
+// ReportSpeedIntent represents "say speed" responses (IAS)
 type ReportSpeedIntent struct {
 	Current  float32
 	Assigned *float32
@@ -270,6 +301,28 @@ func (r ReportSpeedIntent) Render(rt *RadioTransmission, rnd *rand.Rand) {
 		}
 	} else {
 		rt.Add("[maintaining {spd}|at {spd}]", r.Current)
+	}
+}
+
+// ReportMachIntent represents "say mach" or mach-regime "say speed" responses
+type ReportMachIntent struct {
+	Current  float32  // current mach (e.g., 0.78)
+	Assigned *float32 // assigned mach, if any
+}
+
+func (r ReportMachIntent) Render(rt *RadioTransmission, rnd *rand.Rand) {
+	if r.Assigned != nil {
+		cur := int(r.Current*100 + 0.5)
+		asgn := int(*r.Assigned*100 + 0.5)
+		if asgn < cur {
+			rt.Add("[at {mach} slowing to {mach}|{mach} down to {mach}]", r.Current, *r.Assigned)
+		} else if asgn > cur {
+			rt.Add("[at {mach} speeding up to {mach}|{mach} increasing to {mach}]", r.Current, *r.Assigned)
+		} else {
+			rt.Add("[maintaining {mach}|at {mach}]", r.Current)
+		}
+	} else {
+		rt.Add("[maintaining {mach}|at {mach}]", r.Current)
 	}
 }
 
@@ -417,6 +470,7 @@ type NavigationIntent struct {
 	HoldLegLength  string               // e.g., "2 mile" or "1 minute"
 	AltRestriction *AltitudeRestriction // for CrossFixAt
 	Speed          *float32             // for CrossFixAt
+	Mach           *float32             // for CrossFixAt
 }
 
 func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
@@ -442,6 +496,8 @@ func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		}
 		if n.Speed != nil {
 			rt.Add("at {spd}", *n.Speed)
+		} else if n.Mach != nil {
+			rt.Add("at {mach}", *n.Mach)
 		}
 	case NavResumeOwnNav:
 		rt.Add("[own navigation|resuming own navigation]")
