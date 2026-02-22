@@ -1666,9 +1666,9 @@ func (s *Sim) ClearedVisualApproach(tcw TCW, callsign av.ADSBCallsign, runway st
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			// Pilot must have the field in sight (or have spontaneously requested the visual)
+			// Pilot must have the field or preceding traffic in sight
 			// before accepting a visual approach clearance.
-			if !ac.FieldInSight && !ac.RequestedVisual {
+			if !ac.FieldInSight && !ac.RequestedVisual && !ac.TrafficInSight {
 				return av.MakeUnableIntent("unable, we don't have the field in sight")
 			}
 
@@ -1924,6 +1924,7 @@ func (s *Sim) checkDelayedFieldInSight(ac *Aircraft) {
 	// Re-check that the field is actually visible now.
 	elig := s.checkVisualEligibility(ac)
 	if !elig.FieldInSight {
+		s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionFieldNegativeContact)
 		return
 	}
 
@@ -2239,6 +2240,7 @@ const (
 	PendingTransmissionEmergency                                               // Emergency stage transmission
 	PendingTransmissionRequestApproachClearance                                // Pilot requesting approach clearance
 	PendingTransmissionFieldInSight                                            // Delayed "field in sight" after "looking"
+	PendingTransmissionFieldNegativeContact                                    // "Negative contact" after looking timer expires
 	PendingTransmissionRequestVisual                                           // Spontaneous "field in sight, requesting visual"
 )
 
@@ -2608,6 +2610,11 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	case PendingTransmissionFieldInSight:
 		rt = av.MakeReadbackTransmission("[approach|], {callsign}, [we have the field in sight now|field in sight|we have the airport in sight now]",
+			av.CallsignArg{Callsign: ac.ADSBCallsign})
+		rt.Type = av.RadioTransmissionContact
+
+	case PendingTransmissionFieldNegativeContact:
+		rt = av.MakeReadbackTransmission("[approach|], {callsign}, [negative field|field not in sight|no joy on the field]",
 			av.CallsignArg{Callsign: ac.ADSBCallsign})
 		rt.Type = av.RadioTransmissionContact
 

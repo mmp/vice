@@ -922,11 +922,19 @@ func registerAllCommands() {
 
 	// === AIRPORT ADVISORY ===
 	registerSTTCommand(
-		"[airport|field] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		"airport [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
 		func(oclock int, miles int) string {
 			return fmt.Sprintf("AP/%d/%d", oclock, miles)
 		},
 		WithName("airport_advisory"),
+		WithPriority(10),
+	)
+	registerSTTCommand(
+		"field [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		func(oclock int, miles int) string {
+			return fmt.Sprintf("AP/%d/%d", oclock, miles)
+		},
+		WithName("airport_advisory_field"),
 		WithPriority(10),
 	)
 	registerSTTCommand(
