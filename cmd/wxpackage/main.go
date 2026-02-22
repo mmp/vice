@@ -153,7 +153,7 @@ func main() {
 func gcsNewReader(ctx context.Context, bucket *storage.BucketHandle, path string) (io.ReadCloser, error) {
 	var r *storage.Reader
 	var cancel context.CancelFunc
-	err := retry(3, 10*time.Second, func() error {
+	err := retry(ctx, 3, 10*time.Second, func() error {
 		var readCtx context.Context
 		readCtx, cancel = context.WithTimeout(ctx, gcsReadTimeout)
 
@@ -294,12 +294,14 @@ func processFacilityAtmos(ctx context.Context, bucket *storage.BucketHandle, man
 	facilityAtmos, err := loadExistingAtmosData(outputPath)
 	if err == nil {
 		fmt.Printf("Loaded existing atmospheric data for %s with %d time entries\n", facilityID, len(facilityAtmos.SampleStacks))
-	} else if os.IsNotExist(err) {
+	} else {
+		if !os.IsNotExist(err) {
+			// Corrupt file from a previous interrupted run; warn and start fresh.
+			fmt.Printf("%s: failed to load existing data (%v), starting fresh\n", facilityID, err)
+		}
 		facilityAtmos = wx.AtmosByTime{
 			SampleStacks: make(map[time.Time]*wx.AtmosSampleStack),
 		}
-	} else {
-		return err
 	}
 
 	// Get timestamps for this facility from the manifest
@@ -345,14 +347,14 @@ func processFacilityAtmos(ctx context.Context, bucket *storage.BucketHandle, man
 		zr, err := zstd.NewReader(r)
 		if err != nil {
 			r.Close()
-			return err
+			return fmt.Errorf("%s: zstd decompress %s: %w", facilityID, objectPath, err)
 		}
 
 		var atmosSOA wx.AtmosByPointSOA
 		if err := msgpack.NewDecoder(zr).Decode(&atmosSOA); err != nil {
 			zr.Close()
 			r.Close()
-			return err
+			return fmt.Errorf("%s: msgpack decode %s: %w", facilityID, objectPath, err)
 		}
 		zr.Close()
 		r.Close()
@@ -417,11 +419,15 @@ func loadExistingAtmosData(path string) (wx.AtmosByTime, error) {
 }
 
 // retry calls fn up to attempts times with exponential backoff starting at sleep.
-func retry(attempts int, sleep time.Duration, fn func() error) error {
+// It stops early if ctx is cancelled.
+func retry(ctx context.Context, attempts int, sleep time.Duration, fn func() error) error {
 	var err error
 	for range attempts {
 		if err = fn(); err == nil {
 			return nil
+		}
+		if ctx.Err() != nil {
+			return err
 		}
 		fmt.Printf("retryable error (will retry in %s): %v\n", sleep, err)
 		time.Sleep(sleep)
