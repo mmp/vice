@@ -148,21 +148,40 @@ func main() {
 }
 
 // gcsNewReader opens a GCS object for reading with a per-operation timeout
-// and retries with exponential backoff on transient failures.
+// and retries with exponential backoff on transient failures. The returned
+// reader's context is kept alive until Close is called.
 func gcsNewReader(ctx context.Context, bucket *storage.BucketHandle, path string) (io.ReadCloser, error) {
 	var r *storage.Reader
+	var cancel context.CancelFunc
 	err := retry(3, 10*time.Second, func() error {
-		readCtx, cancel := context.WithTimeout(ctx, gcsReadTimeout)
-		defer cancel()
+		var readCtx context.Context
+		readCtx, cancel = context.WithTimeout(ctx, gcsReadTimeout)
 
 		var err error
 		r, err = bucket.Object(path).NewReader(readCtx)
-		return err
+		if err != nil {
+			cancel()
+			return err
+		}
+		return nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to read %s: %w", path, err)
 	}
-	return r, nil
+	return &readerWithCancel{ReadCloser: r, cancel: cancel}, nil
+}
+
+// readerWithCancel wraps a ReadCloser and calls cancel when closed,
+// ensuring the context stays alive for the duration of the read.
+type readerWithCancel struct {
+	io.ReadCloser
+	cancel context.CancelFunc
+}
+
+func (r *readerWithCancel) Close() error {
+	err := r.ReadCloser.Close()
+	r.cancel()
+	return err
 }
 
 func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports map[string]bool, start, end time.Time, outputDir string) error {
