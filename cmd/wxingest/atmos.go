@@ -163,9 +163,14 @@ func ingestHRRR(sb StorageBackend) error {
 						missing = append(missing, tracon)
 					}
 				}
-				for _, artcc := range wx.AtmosARTCCs {
-					if !slices.Contains(facilities, artcc) {
-						missing = append(missing, artcc)
+				// ARTCC precip data is only available starting Feb 1, 2026;
+				// skip ARTCC atmos ingest before then.
+				artccAtmosStart := time.Date(2026, time.February, 1, 0, 0, 0, 0, time.UTC)
+				if !t.Before(artccAtmosStart) {
+					for _, artcc := range wx.AtmosARTCCs {
+						if !slices.Contains(facilities, artcc) {
+							missing = append(missing, artcc)
+						}
 					}
 				}
 

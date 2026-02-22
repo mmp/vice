@@ -204,11 +204,13 @@ func convertStacksToSOALevels[K comparable](stacks map[K]*AtmosSampleStack, keys
 			}
 			levels[i].Dewpoint = append(levels[i].Dewpoint, int8(dq))
 
-			h := level.Height + windHeightOffset // deal with slightly below sea level
+			h := level.Height + windHeightOffset // deal with below sea level
 			h = (h + 50) / 100                   // 100s of meters
-			if h < 0 || h > 255 {
-				return levels, fmt.Errorf("bad remapped height: %f not in 0-255", h)
-			}
+			// Clamp to uint8 range. Heights below -windHeightOffset can
+			// occur at the 1013.2 mb level near hurricanes with very low
+			// central pressure (the isobaric surface is well underground).
+			// Aircraft don't fly at these altitudes so clamping is fine.
+			h = math.Clamp(h, 0, 255)
 			levels[i].Height = append(levels[i].Height, uint8(h))
 		}
 	}
@@ -753,7 +755,10 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 			}
 
 			s0, s1 := stack.Levels[idx], stack.Levels[idx+1]
-			t := (altm - s0.Height) / (s1.Height - s0.Height)
+			var t float32
+			if s1.Height != s0.Height {
+				t = (altm - s0.Height) / (s1.Height - s0.Height)
+			}
 
 			// Convert wind velocity from m/s to nm/s since the nav code all
 			// works w.r.t nautical miles. AtmosSample.UComponent/VComponent
