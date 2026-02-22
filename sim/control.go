@@ -2010,7 +2010,7 @@ const (
 	visualMaxDistance   = float32(15)   // nm; absolute cap on field-in-sight range
 	visualMaxBearingOff = float32(120)  // degrees off nose; forward visibility arc
 	visualFieldProb     = float32(0.10) // fraction of pilots who spontaneously report field in sight
-	visualRequestProb   = float32(0.01) // fraction of pilots who spontaneously request the visual
+	visualRequestProb   = float32(0.10) // fraction of field-in-sight pilots who also request the visual
 	visualDelayMin      = 2             // seconds; min delay after field in sight
 	visualDelayMax      = 8             // seconds; max delay after field in sight
 )
@@ -2045,7 +2045,7 @@ func (s *Sim) checkSpontaneousVisualRequest(ac *Aircraft) {
 		return
 	}
 
-	// One-time independent coin flips.
+	// One-time coin flip: ~10% of pilots spontaneously report field in sight.
 	if ac.WantsVisual == VisualPreferenceUndecided {
 		if s.Rand.Float32() < visualFieldProb {
 			ac.WantsVisual = VisualPreferenceYes
@@ -2053,17 +2053,17 @@ func (s *Sim) checkSpontaneousVisualRequest(ac *Aircraft) {
 			ac.WantsVisual = VisualPreferenceNo
 		}
 	}
+	if ac.WantsVisual == VisualPreferenceNo {
+		return
+	}
+
+	// Of those, ~1% also request the visual approach.
 	if ac.WantsVisualRequest == VisualPreferenceUndecided {
 		if s.Rand.Float32() < visualRequestProb {
 			ac.WantsVisualRequest = VisualPreferenceYes
 		} else {
 			ac.WantsVisualRequest = VisualPreferenceNo
 		}
-	}
-
-	// If this pilot won't do either, bail out.
-	if ac.WantsVisual == VisualPreferenceNo && ac.WantsVisualRequest == VisualPreferenceNo {
-		return
 	}
 
 	elig := s.checkVisualEligibility(ac)
