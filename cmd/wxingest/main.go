@@ -13,9 +13,11 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
+	"github.com/vmihailenco/msgpack/v5"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -173,6 +175,42 @@ func LogError(msg string, args ...any) {
 func LogFatal(msg string, args ...any) {
 	log.Printf("FATAL "+msg, args...)
 	os.Exit(1)
+}
+
+func retry(attempts int, sleep time.Duration, fn func() error) error {
+	var err error
+	for range attempts {
+		if err = fn(); err == nil {
+			return nil
+		}
+		LogError("retryable error (will retry in %s): %v", sleep, err)
+		time.Sleep(sleep)
+		sleep *= 2
+	}
+	return err
+}
+
+// storeObjectLocal writes a msgpack+zstd encoded object to a local file.
+// Used as a fallback when GCS uploads fail.
+func storeObjectLocal(localPath string, object any) error {
+	f, err := os.Create(localPath)
+	if err != nil {
+		return err
+	}
+
+	zw := <-zstdEncoders
+	defer func() { zstdEncoders <- zw }()
+	zw.Reset(f)
+
+	if err := msgpack.NewEncoder(zw).Encode(object); err != nil {
+		f.Close()
+		return err
+	}
+	if err := zw.Close(); err != nil {
+		f.Close()
+		return err
+	}
+	return f.Close()
 }
 
 func launchHTTPServer() {

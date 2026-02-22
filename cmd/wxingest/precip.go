@@ -215,9 +215,21 @@ func generateMonthlyManifests(sb StorageBackend, months map[string]bool) error {
 		}
 
 		manifestPath := wx.MonthlyManifestPath("precip", month)
-		n, err := sb.StoreObject(manifestPath, manifest.RawManifest())
+		raw := manifest.RawManifest()
+		var n int64
+		err := retry(3, 10*time.Second, func() error {
+			var err error
+			n, err = sb.StoreObject(manifestPath, raw)
+			return err
+		})
 		if err != nil {
-			return fmt.Errorf("failed to store manifest for %s: %w", month, err)
+			localFile := fmt.Sprintf("precip-manifest-%s.msgpack.zst", month)
+			if localErr := storeObjectLocal(localFile, raw); localErr != nil {
+				LogError("MANIFEST WRITE FAILED for %s and local save also failed: upload: %v, local: %v", month, err, localErr)
+			} else {
+				LogError("MANIFEST WRITE FAILED for %s: %v -- saved to %s; upload to gs://vice-wx/%s", month, err, localFile, manifestPath)
+			}
+			continue
 		}
 
 		LogInfo("Stored %d items in %s (%s)", totalEntries, manifestPath, util.ByteCount(n))
@@ -284,9 +296,21 @@ func generateConsolidatedManifest(sb StorageBackend) error {
 
 	// Store consolidated manifest
 	manifestPath := wx.ManifestPath("precip")
-	n, err := sb.StoreObject(manifestPath, consolidated.RawManifest())
+	raw := consolidated.RawManifest()
+	var n int64
+	err = retry(3, 10*time.Second, func() error {
+		var err error
+		n, err = sb.StoreObject(manifestPath, raw)
+		return err
+	})
 	if err != nil {
-		return fmt.Errorf("failed to store consolidated manifest: %w", err)
+		localFile := "precip-manifest-consolidated.msgpack.zst"
+		if localErr := storeObjectLocal(localFile, raw); localErr != nil {
+			LogError("MANIFEST WRITE FAILED for consolidated precip and local save also failed: upload: %v, local: %v", err, localErr)
+		} else {
+			LogError("MANIFEST WRITE FAILED for consolidated precip: %v -- saved to %s; upload to gs://vice-wx/%s", err, localFile, manifestPath)
+		}
+		return err
 	}
 
 	LogInfo("Stored %d items in %s (%s) from monthly manifests", consolidated.TotalEntries(), manifestPath, util.ByteCount(n))

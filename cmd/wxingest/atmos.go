@@ -268,8 +268,20 @@ func generateAtmosManifest(sb StorageBackend) error {
 	}
 
 	manifestPath := wx.ManifestPath("atmos")
-	n, err := sb.StoreObject(manifestPath, manifest.RawManifest())
+	raw := manifest.RawManifest()
+	var n int64
+	err = retry(3, 10*time.Second, func() error {
+		var err error
+		n, err = sb.StoreObject(manifestPath, raw)
+		return err
+	})
 	if err != nil {
+		localFile := "atmos-manifest.msgpack.zst"
+		if localErr := storeObjectLocal(localFile, raw); localErr != nil {
+			LogError("MANIFEST WRITE FAILED for atmos and local save also failed: upload: %v, local: %v", err, localErr)
+		} else {
+			LogError("MANIFEST WRITE FAILED for atmos: %v -- saved to %s; upload to gs://vice-wx/%s", err, localFile, manifestPath)
+		}
 		return err
 	}
 
