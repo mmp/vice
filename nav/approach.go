@@ -470,7 +470,7 @@ func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool, simT
 	if nav.Approach.PassedApproachFix {
 		// We've already passed an approach fix, so allow it to start descending.
 		nav.Altitude = NavAltitude{}
-	} else if nav.Approach.InterceptState == OnApproachCourse || nav.Approach.PassedApproachFix {
+	} else if nav.Approach.InterceptState == OnApproachCourse {
 		// First intercepted then cleared or otherwise passed an
 		// approach fix, so allow it to start descending.
 		nav.Altitude = NavAltitude{}
