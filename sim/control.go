@@ -2015,14 +2015,19 @@ const (
 	visualDelayMax      = 8             // seconds; max delay after field in sight
 )
 
-// effectiveVisualRange returns the maximum distance at which a pilot can
-// identify the field, based on METAR visibility capped at visualMaxDistance.
+// effectiveVisualRange returns the maximum distance (in nautical miles) at
+// which a pilot can identify the field, based on METAR visibility capped
+// at visualMaxDistance.
 func effectiveVisualRange(metar wx.METAR) float32 {
 	vis, err := metar.Visibility()
-	if err != nil || vis > visualMaxDistance {
+	if err != nil {
 		return visualMaxDistance
 	}
-	return vis
+	visNM := vis * math.StatuteMilesToNauticalMiles
+	if visNM > visualMaxDistance {
+		return visualMaxDistance
+	}
+	return visNM
 }
 
 // checkSpontaneousVisualRequest checks if an arrival aircraft should
