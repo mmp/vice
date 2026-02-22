@@ -1476,10 +1476,18 @@ func (s *Sim) handleAirportAdvisory(ac *Aircraft, oclock int, miles int) av.Comm
 		return av.FieldInSightIntent{Looking: true}
 	}
 
-	// Check if the aircraft is in the clouds (above ceiling).
 	metar, ok := s.State.METAR[arrivalAirport]
 	if !ok || !metar.IsVMC() {
 		return av.FieldInSightIntent{} // IMC response
+	}
+
+	// Aircraft above the ceiling is in the clouds → IMC response.
+	if ceiling, err := metar.Ceiling(); err == nil {
+		if faa, ok := av.DB.Airports[arrivalAirport]; ok {
+			if ac.Altitude() > float32(faa.Elevation+ceiling) {
+				return av.FieldInSightIntent{}
+			}
+		}
 	}
 
 	// Convert the controller's o'clock/miles to a bearing from the aircraft.
@@ -1497,15 +1505,15 @@ func (s *Sim) handleAirportAdvisory(ac *Aircraft, oclock int, miles int) av.Comm
 		return av.FieldInSightIntent{Looking: true}
 	}
 
-	// Probability of seeing scales with visibility vs distance.
-	// Use the same visualMaxDistance (15nm) threshold.
-	if actualDist > visualMaxDistance {
+	// Use METAR visibility (capped at 15nm) as the effective visual range.
+	maxRange := effectiveVisualRange(metar)
+	if actualDist > maxRange {
 		ac.FieldLookingUntil = s.State.SimTime.Add(time.Duration(10+s.Rand.Intn(10)) * time.Second)
 		return av.FieldInSightIntent{Looking: true}
 	}
 
-	// Probability increases as distance decreases relative to max visibility.
-	seeProb := float32(0.8) * (1.0 - actualDist/visualMaxDistance*0.5)
+	// Probability increases as distance decreases relative to effective range.
+	seeProb := float32(0.8) * (1.0 - actualDist/maxRange*0.5)
 	seeProb = max(0.2, min(0.95, seeProb))
 
 	if s.Rand.Float32() < seeProb {
@@ -1978,9 +1986,19 @@ func (s *Sim) checkVisualEligibility(ac *Aircraft) VisualEligibility {
 		return VisualEligibility{}
 	}
 
-	// Must be within range of the airport.
+	// Aircraft above the ceiling is in the clouds → can't see the field.
+	if ceiling, err := metar.Ceiling(); err == nil {
+		if faa, ok := av.DB.Airports[arrivalAirport]; ok {
+			if ac.Altitude() > float32(faa.Elevation+ceiling) {
+				return VisualEligibility{}
+			}
+		}
+	}
+
+	// Must be within effective visual range (METAR visibility capped at 15nm).
+	maxRange := effectiveVisualRange(metar)
 	dist := math.NMDistance2LLFast(ac.Position(), ap.Location, ac.NmPerLongitude())
-	if dist > visualMaxDistance {
+	if dist > maxRange {
 		return VisualEligibility{}
 	}
 
@@ -2003,13 +2021,23 @@ func (s *Sim) checkVisualEligibility(ac *Aircraft) VisualEligibility {
 
 // Tunables for the spontaneous visual-request model.
 const (
-	visualMaxDistance   = float32(15)   // nm; max range to identify the airport
+	visualMaxDistance   = float32(15)   // nm; absolute cap on field-in-sight range
 	visualMaxBearingOff = float32(120)  // degrees off nose; forward visibility arc
 	visualFieldProb     = float32(0.10) // fraction of pilots who spontaneously report field in sight
 	visualRequestProb   = float32(0.01) // fraction of pilots who spontaneously request the visual
 	visualDelayMin      = 2             // seconds; min delay after field in sight
 	visualDelayMax      = 8             // seconds; max delay after field in sight
 )
+
+// effectiveVisualRange returns the maximum distance at which a pilot can
+// identify the field, based on METAR visibility capped at visualMaxDistance.
+func effectiveVisualRange(metar wx.METAR) float32 {
+	vis, err := metar.Visibility()
+	if err != nil || vis > visualMaxDistance {
+		return visualMaxDistance
+	}
+	return vis
+}
 
 // checkSpontaneousVisualRequest checks if an arrival aircraft should
 // spontaneously report "field in sight" (~10%) or request the visual

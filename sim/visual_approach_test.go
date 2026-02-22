@@ -16,6 +16,10 @@ import (
 // given direction. Suitable for canRequestVisualApproach and
 // checkSpontaneousVisualRequest tests.
 func makeVisualTestAircraft(pos math.Point2LL, heading float32) *Aircraft {
+	return makeVisualTestAircraftAlt(pos, heading, 3000) // default 3000ft MSL
+}
+
+func makeVisualTestAircraftAlt(pos math.Point2LL, heading float32, altitude float32) *Aircraft {
 	return &Aircraft{
 		ADSBCallsign:        "AAL123",
 		TypeOfFlight:        av.FlightTypeArrival,
@@ -27,6 +31,7 @@ func makeVisualTestAircraft(pos math.Point2LL, heading float32) *Aircraft {
 			FlightState: nav.FlightState{
 				Position:          pos,
 				Heading:           heading,
+				Altitude:          altitude,
 				NmPerLongitude:    52, // ~40°N
 				MagneticVariation: 0,
 			},
@@ -66,6 +71,9 @@ func makeVisualTestSim(airportLoc math.Point2LL, runway string) *Sim {
 
 func TestCheckVisualEligibility(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
+
+	// Set up av.DB so ceiling checks can look up airport elevation.
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc, Elevation: 13})
 
 	tests := []struct {
 		name      string
@@ -139,6 +147,56 @@ func TestCheckVisualEligibility(t *testing.T) {
 			}(),
 			ac:        makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180),
 			wantField: false,
+		},
+		{
+			name: "Low visibility, aircraft beyond vis range",
+			sim: func() *Sim {
+				s := makeVisualTestSim(airportLoc, "13L")
+				s.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 5SM BKN050"} // 5SM vis
+				return s
+			}(),
+			ac:        makeVisualTestAircraft(math.Point2LL{0, 8.0 / 60}, 180), // 8nm out > 5SM
+			wantField: false,
+		},
+		{
+			name: "Good visibility, aircraft within vis range",
+			sim: func() *Sim {
+				s := makeVisualTestSim(airportLoc, "13L")
+				s.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 10SM BKN050"} // 10SM vis
+				return s
+			}(),
+			ac:        makeVisualTestAircraft(math.Point2LL{0, 8.0 / 60}, 180), // 8nm out < 10SM
+			wantField: true,
+		},
+		{
+			name: "3SM visibility, aircraft at 5nm — beyond vis",
+			sim: func() *Sim {
+				s := makeVisualTestSim(airportLoc, "13L")
+				s.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 3SM BKN050"} // 3SM vis, VMC ceiling
+				return s
+			}(),
+			ac:        makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180), // 5nm > 3SM
+			wantField: false,
+		},
+		{
+			name: "VMC surface but aircraft above ceiling",
+			sim: func() *Sim {
+				s := makeVisualTestSim(airportLoc, "13L")
+				s.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 10SM BKN030"} // 3000ft ceiling, VMC
+				return s
+			}(),
+			ac:        makeVisualTestAircraftAlt(math.Point2LL{0, 5.0 / 60}, 180, 4000), // above ceiling (elev 0 + 3000)
+			wantField: false,
+		},
+		{
+			name: "VMC surface, aircraft below ceiling",
+			sim: func() *Sim {
+				s := makeVisualTestSim(airportLoc, "13L")
+				s.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 10SM BKN050"} // 5000ft ceiling
+				return s
+			}(),
+			ac:        makeVisualTestAircraftAlt(math.Point2LL{0, 5.0 / 60}, 180, 3000), // below ceiling (elev 0 + 5000)
+			wantField: true,
 		},
 	}
 
@@ -456,6 +514,7 @@ func TestAirportAdvisoryAccuracyCheck(t *testing.T) {
 	// Airport at (0, 0). Aircraft 5nm north heading south → airport is at 12 o'clock.
 	// Actual bearing from ac to airport ≈ 180°.
 	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
 
 	tests := []struct {
 		name        string
@@ -508,6 +567,7 @@ func TestAirportAdvisoryAccuracyCheck(t *testing.T) {
 
 func TestAirportAdvisoryIMC(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
 	sim := makeVisualTestSim(airportLoc, "13L")
 	sim.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 1SM OVC003"} // IMC
 
@@ -524,6 +584,7 @@ func TestAirportAdvisoryIMC(t *testing.T) {
 
 func TestAirportAdvisoryTooFar(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
 	sim := makeVisualTestSim(airportLoc, "13L")
 
 	// Aircraft 20nm north, beyond visualMaxDistance. Use correct direction (12 o'clock)
@@ -539,6 +600,45 @@ func TestAirportAdvisoryTooFar(t *testing.T) {
 	}
 	if !fi.Looking {
 		t.Error("expected looking=true for too-far airport")
+	}
+}
+
+func TestAirportAdvisoryAboveCeiling(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
+	sim := makeVisualTestSim(airportLoc, "13L")
+	sim.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 10SM BKN030"} // 3000ft ceiling, VMC
+
+	// Aircraft at 4000ft, above ceiling (elev 0 + 3000 = 3000).
+	ac := makeVisualTestAircraftAlt(math.Point2LL{0, 5.0 / 60}, 180, 4000)
+	intent := sim.handleAirportAdvisory(ac, 12, 5)
+	fi, ok := intent.(av.FieldInSightIntent)
+	if !ok {
+		t.Fatalf("expected FieldInSightIntent, got %T", intent)
+	}
+	if fi.HasField || fi.Looking {
+		t.Error("expected IMC response for aircraft above ceiling")
+	}
+}
+
+func TestAirportAdvisoryLowVisibility(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
+	sim := makeVisualTestSim(airportLoc, "13L")
+	sim.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 5SM BKN050"} // 5SM visibility
+
+	// Aircraft at 8nm, beyond 5SM visibility → should be "looking".
+	ac := makeVisualTestAircraft(math.Point2LL{0, 8.0 / 60}, 180)
+	intent := sim.handleAirportAdvisory(ac, 12, 8)
+	fi, ok := intent.(av.FieldInSightIntent)
+	if !ok {
+		t.Fatalf("expected FieldInSightIntent, got %T", intent)
+	}
+	if fi.HasField {
+		t.Error("expected looking for aircraft beyond visibility range, got field in sight")
+	}
+	if !fi.Looking {
+		t.Error("expected looking=true for aircraft beyond visibility range")
 	}
 }
 
