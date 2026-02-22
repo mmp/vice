@@ -62,7 +62,7 @@ func main() {
 
 	av.InitDB()
 
-	// Load scenarios to find active airports/TRACONs
+	// Load scenarios to find active airports and facilities (TRACONs + ARTCCs)
 	var e util.ErrorLogger
 	lg := log.New(false, "warn", "")
 	scenarioGroups, _, _, _ := server.LoadScenarioGroups("", "", true /* skipVideoMaps */, &e, lg)
@@ -71,16 +71,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Extract all active airports from scenarios
 	airports := make(map[string]bool)
-	facilities := make(map[string]bool) // TRACONs and ARTCCs
+	facilities := make(map[string]bool)
 
-	for tracon, scenarios := range scenarioGroups {
-		if tracon == "" { // ERAM scenario; ignore for now
-			continue
-		}
-
-		facilities[tracon] = true
+	for facility, scenarios := range scenarioGroups {
+		facilities[facility] = true
 		for _, sg := range scenarios {
 			for icao := range sg.Airports {
 				airports[icao] = true
@@ -88,7 +83,11 @@ func main() {
 		}
 	}
 
-	// Add all ARTCCs from AtmosARTCCs list
+	// Also add all facilities from the atmos lists (some may not have
+	// scenarios yet but we still want their data bundled).
+	for _, tracon := range wx.AtmosTRACONs {
+		facilities[tracon] = true
+	}
 	for _, artcc := range wx.AtmosARTCCs {
 		facilities[artcc] = true
 	}

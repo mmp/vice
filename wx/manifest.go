@@ -29,17 +29,17 @@ const ManifestFilename = "manifest-int64time.msgpack.zst"
 const METARFilename = "METAR-flate.msgpack.zst"
 
 // RawManifest is the underlying storage format for manifests.
-// It maps TRACON/airport identifiers to compressed, delta-encoded int64 Unix timestamps.
+// It maps facility identifiers to compressed, delta-encoded int64 Unix timestamps.
 type RawManifest map[string][]byte
 
-// Manifest represents a weather data manifest that maps TRACONs/airports to
+// Manifest represents a weather data manifest that maps facilities to
 // compressed timestamps. The manifest provides efficient access to available
 // data timestamps for each location.
 type Manifest struct {
-	// data maps TRACON/airport identifiers to compressed, delta-encoded int64 timestamps
+	// data maps facility identifiers to compressed, delta-encoded int64 timestamps
 	data RawManifest
 
-	// cache stores decompressed timestamps for recently accessed TRACONs
+	// cache stores decompressed timestamps for recently accessed facilities
 	// to avoid repeated decompression
 	cache *expirable.LRU[string, []time.Time]
 }
@@ -123,9 +123,9 @@ func (m *Manifest) Save(w io.Writer) error {
 	return nil
 }
 
-// GetTimestamps retrieves and decompresses the timestamps for a specific TRACON/airport.
+// GetTimestamps retrieves and decompresses the timestamps for a specific facility.
 // Results are cached to avoid repeated decompression.
-// Returns nil, false if the TRACON/airport is not in the manifest.
+// Returns nil, false if the facility is not in the manifest.
 func (m *Manifest) GetTimestamps(identifier string) ([]time.Time, bool) {
 	// Check cache first
 	if times, ok := m.cache.Get(identifier); ok {
@@ -162,23 +162,23 @@ func (m *Manifest) RawManifest() RawManifest {
 	return maps.Clone(m.data)
 }
 
-// TRACONs returns a sorted list of all TRACON/airport identifiers in the manifest
-func (m *Manifest) TRACONs() []string {
-	tracons := slices.Collect(maps.Keys(m.data))
-	slices.Sort(tracons)
-	return tracons
+// Facilities returns a sorted list of all facility identifiers in the manifest.
+func (m *Manifest) Facilities() []string {
+	facilities := slices.Collect(maps.Keys(m.data))
+	slices.Sort(facilities)
+	return facilities
 }
 
-// Count returns the number of TRACONs/airports in the manifest
+// Count returns the number of facilities in the manifest
 func (m *Manifest) Count() int {
 	return len(m.data)
 }
 
-// TotalEntries returns the total number of timestamp entries across all TRACONs/airports
+// TotalEntries returns the total number of timestamp entries across all facilities
 func (m *Manifest) TotalEntries() int {
 	total := 0
-	for tracon := range m.data {
-		times, ok := m.GetTimestamps(tracon)
+	for facility := range m.data {
+		times, ok := m.GetTimestamps(facility)
 		if ok {
 			total += len(times)
 		}
@@ -186,12 +186,12 @@ func (m *Manifest) TotalEntries() int {
 	return total
 }
 
-// GetAllTimestamps returns all timestamps from all TRACONs/airports in the manifest.
+// GetAllTimestamps returns all timestamps from all facilities in the manifest.
 // The timestamps are collected in an unspecified order.
 func (m *Manifest) GetAllTimestamps() []time.Time {
 	var allTimes []time.Time
-	for _, tracon := range m.TRACONs() {
-		times, ok := m.GetTimestamps(tracon)
+	for _, facility := range m.Facilities() {
+		times, ok := m.GetTimestamps(facility)
 		if ok {
 			allTimes = append(allTimes, times...)
 		}
@@ -199,13 +199,13 @@ func (m *Manifest) GetAllTimestamps() []time.Time {
 	return allTimes
 }
 
-// ParseWeatherObjectPath extracts the TRACON/airport identifier and timestamp
+// ParseWeatherObjectPath extracts the facility identifier and timestamp
 // from a weather data object path.
-// Expected format: "TRACON/2025-08-06T03:00:00Z.msgpack.zst"
+// Expected format: "FACILITY/2025-08-06T03:00:00Z.msgpack.zst"
 func ParseWeatherObjectPath(relativePath string) (identifier string, timestamp int64, err error) {
 	parts := strings.Split(relativePath, "/")
 	if len(parts) != 2 {
-		return "", 0, fmt.Errorf("unexpected path format: %s (expected TRACON/timestamp.msgpack.zst)", relativePath)
+		return "", 0, fmt.Errorf("unexpected path format: %s (expected FACILITY/timestamp.msgpack.zst)", relativePath)
 	}
 
 	identifier = parts[0]

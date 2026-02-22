@@ -268,15 +268,15 @@ func generateConsolidatedManifest(sb StorageBackend) error {
 
 			monthlyManifest := wx.MakeManifest(rawManifest)
 
-			// Collect timestamps for each TRACON
-			for _, tracon := range monthlyManifest.TRACONs() {
-				times, ok := monthlyManifest.GetTimestamps(tracon)
+			// Collect timestamps for each facility
+			for _, facility := range monthlyManifest.Facilities() {
+				times, ok := monthlyManifest.GetTimestamps(facility)
 				if !ok {
 					continue
 				}
 
 				mu.Lock()
-				timestamps[tracon] = append(timestamps[tracon], times...)
+				timestamps[facility] = append(timestamps[facility], times...)
 				mu.Unlock()
 			}
 

@@ -642,7 +642,7 @@ func LerpSample(x float32, s0, s1 Sample) Sample {
 
 func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid {
 	g := &AtmosGrid{
-		AltRange: [2]float32{24000, 0}, // will fix up from actual data below
+		AltRange: [2]float32{1e18, -1e18}, // will fix up from actual data below
 	}
 
 	// Check if region crosses date line (longitude span > 180°).
@@ -925,7 +925,7 @@ func (ap *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
 }
 
 // MakeFallbackAtmosFromMETAR creates a simple AtmosByPointSOA from METAR wind data.
-// This is used as a fallback when actual atmospheric data is not available for a TRACON.
+// This is used as a fallback when actual atmospheric data is not available for a facility.
 // The resulting grid has a single point at the specified location with uniform wind
 // at all altitude levels based on the METAR surface wind.
 func MakeFallbackAtmosFromMETAR(metar METAR, location math.Point2LL) (*AtmosByPointSOA, error) {

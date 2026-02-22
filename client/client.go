@@ -68,7 +68,7 @@ type ControlClient struct {
 type Server struct {
 	*RPCClient
 
-	AvailableWXByTRACON map[string][]util.TimeInterval
+	AvailableWXByFacility map[string][]util.TimeInterval
 
 	name        string
 	catalogs    map[string]map[string]*server.ScenarioCatalog
@@ -566,11 +566,11 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
 				ch <- &serverConnection{
 					Server: &Server{
-						RPCClient:           client,
-						AvailableWXByTRACON: cr.AvailableWXByTRACON,
-						name:                "Network (Multi-controller)",
-						catalogs:            cr.ScenarioCatalogs,
-						runningSims:         cr.RunningSims,
+						RPCClient:             client,
+						AvailableWXByFacility: cr.AvailableWXByFacility,
+						name:                  "Network (Multi-controller)",
+						catalogs:              cr.ScenarioCatalogs,
+						runningSims:           cr.RunningSims,
 					},
 				}
 			}
