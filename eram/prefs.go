@@ -58,6 +58,31 @@ type Preferences struct {
 		Position      [2]float32
 		DisplayFixes  bool // ATC TOOLS overlay of CRR fixes
 	}
+
+	// ALTIM SET view preferences
+	AltimSet struct {
+		Visible        bool
+		Position       [2]float32
+		Opaque         bool
+		ShowBorder     bool
+		ShowIndicators bool
+		Lines          int
+		Col            int // 1-4 columns
+		Font           int // 1-3
+		Bright         int // 0-100
+	}
+
+	// WX view preferences
+	WX struct {
+		Visible        bool
+		Position       [2]float32
+		Opaque         bool
+		ShowBorder     bool
+		ShowIndicators bool
+		Lines          int
+		Font           int // 1-3
+		Bright         int // 0-100
+	}
 }
 
 const numSavedPreferenceSets = 10
@@ -205,6 +230,28 @@ func makeDefaultPreferences() *Preferences {
 	}
 	prefs.CRR.Position = [2]float32{10, 600}
 	prefs.CRR.DisplayFixes = false
+
+	// ALTIM SET defaults
+	prefs.AltimSet.Visible = false
+	prefs.AltimSet.Position = [2]float32{200, 600}
+	prefs.AltimSet.Opaque = false
+	prefs.AltimSet.ShowBorder = true
+	prefs.AltimSet.ShowIndicators = true
+	prefs.AltimSet.Lines = 5
+	prefs.AltimSet.Col = 1
+	prefs.AltimSet.Font = 2
+	prefs.AltimSet.Bright = 80
+
+	// WX defaults
+	prefs.WX.Visible = false
+	prefs.WX.Position = [2]float32{400, 600}
+	prefs.WX.Opaque = false
+	prefs.WX.ShowBorder = true
+	prefs.WX.ShowIndicators = true
+	prefs.WX.Lines = 5
+	prefs.WX.Font = 2
+	prefs.WX.Bright = 80
+
 	return &prefs
 }
 

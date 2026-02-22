@@ -583,8 +583,18 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		ep.buttonVerticalOffset(ctx)
 		toolbarDrawState.buttonCursor[1] += buttonSize(buttonFull, scale)[1] + 3
 		p0 := toolbarDrawState.buttonCursor
-		if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, false, false) {
-			// handle ALTIM SET
+		{
+			ps := ep.currentPrefs()
+			altimActive := ps.AltimSet.Visible || ep.altimSetMenuOpen
+			if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, altimActive, false) {
+				if ps.AltimSet.Visible {
+					ps.AltimSet.Visible = false
+					ep.altimSetMenuOpen = false
+				} else {
+					ps.AltimSet.Visible = true
+					ep.altimSetMenuOpen = false
+				}
+			}
 		}
 
 		if ep.drawToolbarFullButton(ctx, "AUTO HO\nINHIB", 0, scale, false, false) {
@@ -654,8 +664,18 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		if ep.drawToolbarFullButton(ctx, "UA", 0, scale, false, false) {
 			// handle UA
 		}
-		if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, false, false) {
-			// handle WX REPORT
+		{
+			wxPs := ep.currentPrefs()
+			wxActive := wxPs.WX.Visible || ep.wxMenuOpen
+			if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, wxActive, false) {
+				if wxPs.WX.Visible {
+					wxPs.WX.Visible = false
+					ep.wxMenuOpen = false
+				} else {
+					wxPs.WX.Visible = true
+					ep.wxMenuOpen = false
+				}
+			}
 		}
 		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
 		p2[0] = p1[0]

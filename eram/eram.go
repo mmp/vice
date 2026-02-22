@@ -147,6 +147,30 @@ type ERAMPane struct {
 	crrRepoStart     time.Time                                    `json:"-"`
 	crrDragOffset    [2]float32                                   `json:"-"`
 
+	// ALTIM SET state (session)
+	AltimSetAirports     []string                    `json:"AltimSetAirports,omitempty"`
+	altimSetScrollOffset int                         `json:"-"`
+	altimSetMenuOpen     bool                        `json:"-"`
+	altimSetMetars       map[string]altimMetarResult `json:"-"`
+	altimSetLastFetch    map[string]time.Time        `json:"-"`
+	altimSetFetching     map[string]bool             `json:"-"`
+	altimSetFetchCh      chan altimMetarResult       `json:"-"`
+	altimSetReposition   bool                        `json:"-"`
+	altimSetRepoStart    time.Time                   `json:"-"`
+	altimSetDragOffset   [2]float32                  `json:"-"`
+
+	// WX window state (session)
+	WXReportStations []string                 `json:"WXReportStations,omitempty"`
+	wxScrollOffset   int                      `json:"-"`
+	wxMenuOpen       bool                     `json:"-"`
+	wxMetars         map[string]wxMetarResult `json:"-"`
+	wxLastFetch      map[string]time.Time     `json:"-"`
+	wxFetching       map[string]bool          `json:"-"`
+	wxFetchCh        chan wxMetarResult       `json:"-"`
+	wxReposition     bool                     `json:"-"`
+	wxRepoStart      time.Time                `json:"-"`
+	wxDragOffset     [2]float32               `json:"-"`
+
 	commandMode       CommandMode     `json:"-"`
 	drawRouteAircraft av.ADSBCallsign `json:"-"`
 	drawRoutePoints   []math.Point2LL `json:"-"`
@@ -184,6 +208,32 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	}
 	if ep.crrAircraftRects == nil {
 		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
+	}
+
+	if ep.altimSetMetars == nil {
+		ep.altimSetMetars = make(map[string]altimMetarResult)
+	}
+	if ep.altimSetLastFetch == nil {
+		ep.altimSetLastFetch = make(map[string]time.Time)
+	}
+	if ep.altimSetFetching == nil {
+		ep.altimSetFetching = make(map[string]bool)
+	}
+	if ep.altimSetFetchCh == nil {
+		ep.altimSetFetchCh = make(chan altimMetarResult, 32)
+	}
+
+	if ep.wxMetars == nil {
+		ep.wxMetars = make(map[string]wxMetarResult)
+	}
+	if ep.wxLastFetch == nil {
+		ep.wxLastFetch = make(map[string]time.Time)
+	}
+	if ep.wxFetching == nil {
+		ep.wxFetching = make(map[string]bool)
+	}
+	if ep.wxFetchCh == nil {
+		ep.wxFetchCh = make(chan wxMetarResult, 32)
 	}
 
 	ep.events = es.Subscribe()
@@ -339,6 +389,10 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	cb.SetScissorBounds(ctx.PaneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawtoolbar(ctx, transforms, cb)
 	ep.drawCommandInput(ctx, transforms, cb)
+	// Draw floating windows after toolbar so they render on top and appear in the same
+	// frame the toolbar button is clicked (toolbar sets Visible=true before this runs).
+	ep.drawAltimSetView(ctx, transforms, cb)
+	ep.drawWXView(ctx, transforms, cb)
 
 	// Draw torn-off buttons
 	ep.drawTornOffButtons(ctx, transforms, cb)
@@ -458,6 +512,40 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	// If explicitly unset, start visible in new sessions
 	if !ep.prefSet.Current.CRR.Visible {
 		ep.prefSet.Current.CRR.Visible = def.CRR.Visible
+	}
+	// Fill in ALTIM SET defaults if this preference set was created before ALTIM SET existed
+	needsAltimSetDefaults := ep.prefSet.Current.AltimSet.Position == ([2]float32{})
+	if needsAltimSetDefaults {
+		ep.prefSet.Current.AltimSet.Position = def.AltimSet.Position
+		ep.prefSet.Current.AltimSet.ShowBorder = def.AltimSet.ShowBorder
+		ep.prefSet.Current.AltimSet.ShowIndicators = def.AltimSet.ShowIndicators
+	}
+	if ep.prefSet.Current.AltimSet.Lines == 0 {
+		ep.prefSet.Current.AltimSet.Lines = def.AltimSet.Lines
+	}
+	if ep.prefSet.Current.AltimSet.Col == 0 {
+		ep.prefSet.Current.AltimSet.Col = def.AltimSet.Col
+	}
+	if ep.prefSet.Current.AltimSet.Font == 0 {
+		ep.prefSet.Current.AltimSet.Font = def.AltimSet.Font
+	}
+	if ep.prefSet.Current.AltimSet.Bright == 0 {
+		ep.prefSet.Current.AltimSet.Bright = def.AltimSet.Bright
+	}
+	// Fill in WX defaults if this preference set was created before WX existed
+	needsWXDefaults := ep.prefSet.Current.WX.Position == ([2]float32{})
+	if needsWXDefaults {
+		ep.prefSet.Current.WX.Position = def.WX.Position
+		ep.prefSet.Current.WX.ShowBorder = def.WX.ShowBorder
+	}
+	if ep.prefSet.Current.WX.Lines == 0 {
+		ep.prefSet.Current.WX.Lines = def.WX.Lines
+	}
+	if ep.prefSet.Current.WX.Font == 0 {
+		ep.prefSet.Current.WX.Font = def.WX.Font
+	}
+	if ep.prefSet.Current.WX.Bright == 0 {
+		ep.prefSet.Current.WX.Bright = def.WX.Bright
 	}
 }
 
