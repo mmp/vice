@@ -1003,17 +1003,23 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <td><code>I</code></td>
                   </tr>
                   <tr>
+                    <td><code>AP/</code><i>oclock</i><code>/</code><i>miles</i></td>
+                    <td>Tells the pilot where to look for the airport
+                    (e.g., "airport, 2 o'clock, 8 miles"). The pilot
+                    responds "field in sight" or "looking" depending
+                    on conditions. The pilot must have the field in
+                    sight before you can clear the visual approach.</td>
+                    <td><code>AP/2/8</code></td>
+                  </tr>
+                  <tr>
                     <td><code>CV</code><i>runway</i></td>
                     <td>Clears the aircraft for a visual approach to the
-                    specified runway. The aircraft will fly a straight-in
+                    specified runway. Requires the pilot to have the
+                    field in sight (via AP command or spontaneous
+                    report). The aircraft will fly a straight-in
                     if aligned or insert a base turn if offset from the
                     centerline.</td>
                     <td><code>CV13L</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>FS</code></td>
-                    <td>Asks the pilot if they have the field in sight.</td>
-                    <td><code>FS</code></td>
                   </tr>
                 </tbody>
               </table>
@@ -1369,9 +1375,9 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <i>Cleared visual (runway)</i> /  <i>Cleared the visual approach runway (runway)</i>
                   </td>
                 </tr>
-                <tr><td>Field in Sight</td>
+                <tr><td>Airport Advisory</td>
                   <td>
-                    <i>Do you have the field in sight</i> /  <i>Have the field in sight</i> /  <i>Do you have the airport in sight</i>
+                    <i>Airport (N) o'clock (N) miles</i> /  <i>Field (N) o'clock (N) miles</i>
                   </td>
                 </tr>
               </tbody>

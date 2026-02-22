@@ -783,17 +783,20 @@ func (m MixUpIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 ///////////////////////////////////////////////////////////////////////////
 // FieldInSight Intent
 
-// FieldInSightIntent represents a pilot's response to "do you have the field in sight?"
+// FieldInSightIntent represents a pilot's response to an AP (airport advisory) command.
+// The pilot may report "field in sight", "looking", or an IMC response.
 type FieldInSightIntent struct {
-	HasField bool   // true if VMC and field in sight
-	Runway   string // runway for the visual approach (if HasField)
+	HasField bool // true if pilot can see the airport
+	Looking  bool // true if pilot says "looking" (can't see yet but not IMC)
 }
 
 func (f FieldInSightIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	if f.HasField {
-		rt.Add("affirmative, [field in sight|we have the field in sight|we have the airport], runway {rwy}", f.Runway)
+		rt.Add("[field in sight|we have the field in sight|we have the airport in sight]")
+	} else if f.Looking {
+		rt.Add("[looking|looking for it]")
 	} else {
-		rt.Add("negative, [we're in the clouds|we're IMC|we don't have the field]")
+		rt.Add("[we're in the clouds|we're IMC|we don't have the field]")
 	}
 }
 

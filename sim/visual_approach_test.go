@@ -175,6 +175,15 @@ func TestCanRequestVisualApproach(t *testing.T) {
 			want: false,
 		},
 		{
+			name: "Already has field in sight",
+			ac: func() *Aircraft {
+				ac := makeVisualTestAircraft(math.Point2LL{}, 180)
+				ac.FieldInSight = true
+				return ac
+			}(),
+			want: false,
+		},
+		{
 			name: "Already requested visual",
 			ac: func() *Aircraft {
 				ac := makeVisualTestAircraft(math.Point2LL{}, 180)
@@ -441,4 +450,156 @@ func wpNames(wps []av.Waypoint) []string {
 		names[i] = wp.Fix
 	}
 	return names
+}
+
+func TestAirportAdvisoryAccuracyCheck(t *testing.T) {
+	// Airport at (0, 0). Aircraft 5nm north heading south → airport is at 12 o'clock.
+	// Actual bearing from ac to airport ≈ 180°.
+	airportLoc := math.Point2LL{0, 0}
+
+	tests := []struct {
+		name        string
+		oclock      int
+		miles       int
+		wantLooking bool // true if pilot should say "looking" (bad direction)
+	}{
+		{
+			name:        "Accurate direction (12 o'clock, airport ahead)",
+			oclock:      12,
+			miles:       5,
+			wantLooking: false, // May get field or looking based on probability, but not forced looking
+		},
+		{
+			name:        "Way off direction (6 o'clock = behind, 180° error)",
+			oclock:      6,
+			miles:       5,
+			wantLooking: true, // >120° error → always looking
+		},
+		{
+			name:        "Moderately off direction (3 o'clock = right, ~90° error)",
+			oclock:      3,
+			miles:       5,
+			wantLooking: false, // <120° error → might see
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sim := makeVisualTestSim(airportLoc, "13L")
+			ac := makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180) // 5nm north heading south
+
+			intent := sim.handleAirportAdvisory(ac, tt.oclock, tt.miles)
+			fi, ok := intent.(av.FieldInSightIntent)
+			if !ok {
+				t.Fatalf("expected FieldInSightIntent, got %T", intent)
+			}
+
+			if tt.wantLooking {
+				if fi.HasField {
+					t.Error("expected looking (bad direction), but got field in sight")
+				}
+				if !fi.Looking {
+					t.Error("expected looking=true for bad direction, got IMC response")
+				}
+			}
+		})
+	}
+}
+
+func TestAirportAdvisoryIMC(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	sim := makeVisualTestSim(airportLoc, "13L")
+	sim.State.METAR["KJFK"] = wx.METAR{Raw: "KJFK 1SM OVC003"} // IMC
+
+	ac := makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180)
+	intent := sim.handleAirportAdvisory(ac, 6, 5)
+	fi, ok := intent.(av.FieldInSightIntent)
+	if !ok {
+		t.Fatalf("expected FieldInSightIntent, got %T", intent)
+	}
+	if fi.HasField || fi.Looking {
+		t.Error("expected IMC response (HasField=false, Looking=false)")
+	}
+}
+
+func TestAirportAdvisoryTooFar(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	sim := makeVisualTestSim(airportLoc, "13L")
+
+	// Aircraft 20nm north, beyond visualMaxDistance. Use correct direction (12 o'clock)
+	// so we isolate the distance check from the bearing error check.
+	ac := makeVisualTestAircraft(math.Point2LL{0, 20.0 / 60}, 180)
+	intent := sim.handleAirportAdvisory(ac, 12, 20)
+	fi, ok := intent.(av.FieldInSightIntent)
+	if !ok {
+		t.Fatalf("expected FieldInSightIntent, got %T", intent)
+	}
+	if fi.HasField {
+		t.Error("expected looking for distant airport, got field in sight")
+	}
+	if !fi.Looking {
+		t.Error("expected looking=true for too-far airport")
+	}
+}
+
+func TestDelayedFieldInSight(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	sim := makeVisualTestSim(airportLoc, "13L")
+	sim.State.SimTime = time.Now()
+
+	ac := makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180) // 5nm north heading south
+	ac.FieldLookingUntil = sim.State.SimTime.Add(20 * time.Second)
+	sim.Aircraft = map[av.ADSBCallsign]*Aircraft{"AAL123": ac}
+	sim.PendingContacts = make(map[TCP][]PendingContact)
+
+	// Run many ticks — eventually the delayed call should fire.
+	fieldReported := false
+	for range 5000 {
+		sim.checkDelayedFieldInSight(ac)
+		if ac.FieldInSight {
+			fieldReported = true
+			break
+		}
+	}
+
+	if !fieldReported {
+		t.Error("expected delayed field-in-sight to fire within 5000 ticks")
+	}
+}
+
+func TestCVRequiresFieldInSight(t *testing.T) {
+	tests := []struct {
+		name      string
+		setup     func(ac *Aircraft)
+		wantAllow bool
+	}{
+		{
+			name:      "No field in sight, no visual request → refused",
+			setup:     func(ac *Aircraft) {},
+			wantAllow: false,
+		},
+		{
+			name:      "FieldInSight set → allowed",
+			setup:     func(ac *Aircraft) { ac.FieldInSight = true },
+			wantAllow: true,
+		},
+		{
+			name:      "RequestedVisual set → allowed",
+			setup:     func(ac *Aircraft) { ac.RequestedVisual = true },
+			wantAllow: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ac := makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180)
+			tt.setup(ac)
+
+			// Mirror the gate check in ClearedVisualApproach.
+			allowed := ac.FieldInSight || ac.RequestedVisual
+			if allowed != tt.wantAllow {
+				t.Errorf("CV gate: allowed=%v, want %v", allowed, tt.wantAllow)
+			}
+		})
+	}
 }

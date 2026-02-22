@@ -920,11 +920,21 @@ func registerAllCommands() {
 		WithPriority(15),
 	)
 
-	// === FIELD IN SIGHT ===
+	// === AIRPORT ADVISORY ===
 	registerSTTCommand(
-		"[do you] [have the|have] field in sight|[do you] [have the|have] airport in sight",
-		func() string { return "FS" },
-		WithName("field_in_sight"),
+		"airport [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		func(oclock int, miles int) string {
+			return fmt.Sprintf("AP/%d/%d", oclock, miles)
+		},
+		WithName("airport_advisory"),
+		WithPriority(10),
+	)
+	registerSTTCommand(
+		"field [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		func(oclock int, miles int) string {
+			return fmt.Sprintf("AP/%d/%d", oclock, miles)
+		},
+		WithName("airport_advisory_field"),
 		WithPriority(10),
 	)
 }

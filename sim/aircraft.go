@@ -130,16 +130,25 @@ type Aircraft struct {
 	TrafficInSightTime  time.Time // When traffic was reported in sight
 	TrafficLookingUntil time.Time // If non-zero, aircraft may report traffic in sight before this time
 
+	// FieldInSight is set when the pilot has confirmed the airport is in sight
+	// (either via AP command response or spontaneous report).
+	FieldInSight bool
+	// FieldLookingUntil is non-zero when the pilot said "looking" in response
+	// to an AP command and may report "field in sight" before this time.
+	FieldLookingUntil time.Time
+
 	// RequestedVisual is set when the pilot has spontaneously requested
 	// the visual approach (field in sight). Prevents repeated requests.
 	RequestedVisual bool
 	// WantsVisual is decided once per aircraft: whether this pilot
-	// prefers to request the visual when eligible (many crews prefer the
-	// ILS even in VMC).
+	// spontaneously reports field in sight when eligible.
 	WantsVisual VisualPreference
-	// VisualRequestTime is when the pilot will key the mic to request the
-	// visual, set once the field comes into sight (adds a short random
-	// delay to simulate identification and reaction time).
+	// WantsVisualRequest is decided independently: whether this pilot
+	// spontaneously requests the visual approach (implies field in sight).
+	WantsVisualRequest VisualPreference
+	// VisualRequestTime is when the pilot will key the mic to report the
+	// field in sight, set once the field first comes into view (adds a short
+	// random delay to simulate identification and reaction time).
 	VisualRequestTime time.Time
 }
 
