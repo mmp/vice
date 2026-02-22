@@ -57,9 +57,6 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) av.CommandIntent {
 }
 
 func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp float32) av.CommandIntent {
-	maxTAS := nav.Perf.Speed.MaxTAS
-	maxTAS = 10 * float32(int(maxTAS/10))
-
 	if mach == 0 {
 		nav.Speed = NavSpeed{}
 		return av.SpeedIntent{Type: av.SpeedCancel}
