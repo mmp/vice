@@ -235,7 +235,7 @@ func ingestHRRR(sb StorageBackend) error {
 		for hrrr := range hrrrCh {
 			LogInfo("Starting work on %s (%s region)", hrrr.t.Format(time.RFC3339), hrrr.region)
 			if err := ingestHRRRForTime(hrrr.path, hrrr.t, hrrr.targetFacilities, sb); err != nil {
-				return err
+				LogError("%s %s: %v", hrrr.t.Format(time.RFC3339), hrrr.region, err)
 			}
 		}
 		return nil
@@ -403,17 +403,20 @@ func ingestHRRRForTime(gribPath string, t time.Time, targetFacilities []string, 
 			defer func() { <-sem }()
 
 			n, err := ingestHRRRForFacility(grid, records, facilityID, t, sb)
-			if err == nil {
-				LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), facilityID, t.Format(time.RFC3339))
-				atomic.AddInt64(&totalUploads, 1)
-				atomic.AddInt64(&totalUploadBytes, n)
+			if err != nil {
+				LogError("%s-%s: %v", facilityID, t.Format(time.RFC3339), err)
+				return nil
 			}
 
-			return err
+			LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), facilityID, t.Format(time.RFC3339))
+			atomic.AddInt64(&totalUploads, 1)
+			atomic.AddInt64(&totalUploadBytes, n)
+			return nil
 		})
 	}
 
-	return eg.Wait()
+	eg.Wait()
+	return nil
 }
 
 func ingestHRRRForFacility(grid *Grid, records []*squall.GRIB2, facilityID string, t time.Time, sb StorageBackend) (int64, error) {

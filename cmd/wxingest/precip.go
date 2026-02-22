@@ -35,6 +35,7 @@ func ingestPrecip(sb StorageBackend) error {
 	})
 
 	var totalBytes, totalObjects int64
+	var nErrors atomic.Int64
 	for range *nWorkers {
 		eg.Go(func() error {
 			for path := range ch {
@@ -46,7 +47,9 @@ func ingestPrecip(sb StorageBackend) error {
 
 				n, month, err := processPrecip(sb, path)
 				if err != nil {
-					return fmt.Errorf("%s: %v", path, err)
+					LogError("%s: %v", path, err)
+					nErrors.Add(1)
+					continue
 				}
 
 				mu.Lock()
@@ -65,6 +68,9 @@ func ingestPrecip(sb StorageBackend) error {
 
 	err := eg.Wait()
 	LogInfo("Ingested %s of WX stored in %d objects", util.ByteCount(totalBytes), totalObjects)
+	if ne := nErrors.Load(); ne > 0 {
+		LogError("%d objects had errors and were skipped; they remain in scrape/ for the next run", ne)
+	}
 	if err != nil {
 		return err
 	}
