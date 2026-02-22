@@ -517,18 +517,18 @@ func (r *FilterQualifiers) PostDeserialize(controlPositions map[TCP]*av.Controll
 
 	r.FlightType = strings.ToUpper(strings.TrimSpace(r.FlightType))
 	if r.FlightType != "" && r.FlightType != "ARRIVAL" && r.FlightType != "DEPARTURE" && r.FlightType != "OVERFLIGHT" {
-		e.ErrorString("invalid \"flight_type\" %q: must be \"arrival\", \"departure\", or \"overflight\"", r.FlightType)
+		e.ErrorString(`invalid "flight_type" %q: must be "arrival", "departure", or "overflight"`, r.FlightType)
 	}
 
 	r.FlightRules = strings.ToUpper(strings.TrimSpace(r.FlightRules))
 	if r.FlightRules != "" && r.FlightRules != "V" && r.FlightRules != "I" && r.FlightRules != "B" {
-		e.ErrorString("invalid \"flight_rules\" %q: must be \"V\", \"I\", or \"B\"", r.FlightRules)
+		e.ErrorString(`invalid "flight_rules" %q: must be "V", "I", or "B"`, r.FlightRules)
 	}
 
 	r.CWTCategory = strings.ToUpper(strings.TrimSpace(r.CWTCategory))
 	if r.CWTCategory != "" {
 		if len(r.CWTCategory) != 1 || r.CWTCategory[0] < 'A' || r.CWTCategory[0] > 'I' {
-			e.ErrorString("invalid \"cwt_category\" %q: must be a single letter A-I", r.CWTCategory)
+			e.ErrorString(`invalid "cwt_category" %q: must be a single letter A-I`, r.CWTCategory)
 		}
 	}
 
@@ -541,23 +541,23 @@ func (r *FilterQualifiers) PostDeserialize(controlPositions map[TCP]*av.Controll
 		if lo, hi, ok := strings.Cut(s, "-"); ok {
 			loSq, err := av.ParseSquawk(lo)
 			if err != nil {
-				e.ErrorString("invalid SSR code %q in \"ssr_codes\": %v", lo, err)
+				e.ErrorString(`invalid SSR code %q in "ssr_codes": %v`, lo, err)
 				continue
 			}
 			hiSq, err := av.ParseSquawk(hi)
 			if err != nil {
-				e.ErrorString("invalid SSR code %q in \"ssr_codes\": %v", hi, err)
+				e.ErrorString(`invalid SSR code %q in "ssr_codes": %v`, hi, err)
 				continue
 			}
 			if loSq > hiSq {
-				e.ErrorString("SSR code range %q has low > high in \"ssr_codes\"", s)
+				e.ErrorString(`SSR code range %q has low > high in "ssr_codes"`, s)
 				continue
 			}
 			r.SSRCodes = append(r.SSRCodes, [2]av.Squawk{loSq, hiSq})
 		} else {
 			sq, err := av.ParseSquawk(s)
 			if err != nil {
-				e.ErrorString("invalid SSR code %q in \"ssr_codes\": %v", s, err)
+				e.ErrorString(`invalid SSR code %q in "ssr_codes": %v`, s, err)
 				continue
 			}
 			r.SSRCodes = append(r.SSRCodes, [2]av.Squawk{sq, sq})
@@ -573,23 +573,23 @@ func (r *FilterQualifiers) PostDeserialize(controlPositions map[TCP]*av.Controll
 		if lo, hi, ok := strings.Cut(s, "-"); ok {
 			loAlt, err := strconv.Atoi(lo)
 			if err != nil {
-				e.ErrorString("invalid altitude %q in \"requested_altitude\": %v", lo, err)
+				e.ErrorString(`invalid altitude %q in "requested_altitude": %v`, lo, err)
 				continue
 			}
 			hiAlt, err := strconv.Atoi(hi)
 			if err != nil {
-				e.ErrorString("invalid altitude %q in \"requested_altitude\": %v", hi, err)
+				e.ErrorString(`invalid altitude %q in "requested_altitude": %v`, hi, err)
 				continue
 			}
 			if loAlt > hiAlt {
-				e.ErrorString("altitude range %q has low > high in \"requested_altitude\"", s)
+				e.ErrorString(`altitude range %q has low > high in "requested_altitude"`, s)
 				continue
 			}
 			r.RequestedAltitudes = append(r.RequestedAltitudes, [2]int{loAlt, hiAlt})
 		} else {
 			alt, err := strconv.Atoi(s)
 			if err != nil {
-				e.ErrorString("invalid altitude %q in \"requested_altitude\": %v", s, err)
+				e.ErrorString(`invalid altitude %q in "requested_altitude": %v`, s, err)
 				continue
 			}
 			r.RequestedAltitudes = append(r.RequestedAltitudes, [2]int{alt, alt})
@@ -780,7 +780,7 @@ func (r *FDAMRegion) PostDeserialize(controlPositions map[TCP]*av.Controller, lo
 	r.FilterQualifiers.PostDeserialize(controlPositions, e)
 
 	if r.TCPsString != "" {
-		e.ErrorString("\"tcps\" is not supported for FDAM regions")
+		e.ErrorString(`"tcps" is not supported for FDAM regions`)
 	}
 	r.TCPs = nil // FDAM regions don't filter by user position
 
@@ -805,20 +805,20 @@ func (r *FDAMRegion) PostDeserialize(controlPositions map[TCP]*av.Controller, lo
 		r.HandoffInitiateTransfer = "N"
 	}
 	if r.HandoffInitiateTransfer != "I" && r.HandoffInitiateTransfer != "T" && r.HandoffInitiateTransfer != "N" {
-		e.ErrorString("invalid \"handoff_initiate_transfer\" %q: must be \"I\", \"T\", or \"N\"", r.HandoffInitiateTransfer)
+		e.ErrorString(`invalid "handoff_initiate_transfer" %q: must be "I", "T", or "N"`, r.HandoffInitiateTransfer)
 	}
 
 	r.NewOwnerTCPString = strings.ToUpper(strings.TrimSpace(r.NewOwnerTCPString))
 	if r.NewOwnerTCPString != "" {
 		tcp := ControlPosition(r.NewOwnerTCPString)
 		if _, ok := controlPositions[tcp]; !ok {
-			e.ErrorString("unknown TCP %q in \"new_owner_tcp\"", r.NewOwnerTCPString)
+			e.ErrorString(`unknown TCP %q in "new_owner_tcp"`, r.NewOwnerTCPString)
 		} else {
 			r.NewOwnerTCP = tcp
 		}
 	}
 	if r.HandoffInitiateTransfer != "N" && r.NewOwnerTCP == "" {
-		e.ErrorString("\"new_owner_tcp\" must be specified when \"handoff_initiate_transfer\" is %q", r.HandoffInitiateTransfer)
+		e.ErrorString(`"new_owner_tcp" must be specified when "handoff_initiate_transfer" is %q`, r.HandoffInitiateTransfer)
 	}
 
 	// Parse pointout TCPs
@@ -830,21 +830,21 @@ func (r *FDAMRegion) PostDeserialize(controlPositions map[TCP]*av.Controller, lo
 			}
 			tcp := ControlPosition(v)
 			if _, ok := controlPositions[tcp]; !ok {
-				e.ErrorString("unknown TCP %q in \"pointout_tcps\"", v)
+				e.ErrorString(`unknown TCP %q in "pointout_tcps"`, v)
 			} else {
 				r.PointoutTCPs = append(r.PointoutTCPs, tcp)
 			}
 		}
 	}
 	if r.ImmediatePointout && len(r.PointoutTCPs) == 0 {
-		e.ErrorString("\"pointout_tcps\" must be specified when \"immediate_pointout\" is true")
+		e.ErrorString(`"pointout_tcps" must be specified when "immediate_pointout" is true`)
 	}
 
 	if r.RetainOwnerLeaderDirection && r.NewOwnerLeaderDirection == nil {
-		e.ErrorString("\"retain_owner_leader_direction\" requires \"new_owner_leader_direction\"")
+		e.ErrorString(`"retain_owner_leader_direction" requires "new_owner_leader_direction"`)
 	}
 	if r.RetainTCPSpecificLeaderDirection && r.NewTCPSpecificLeaderDirection == nil {
-		e.ErrorString("\"retain_tcp_specific_leader_direction\" requires \"new_tcp_specific_leader_direction\"")
+		e.ErrorString(`"retain_tcp_specific_leader_direction" requires "new_tcp_specific_leader_direction"`)
 	}
 }
 
@@ -920,7 +920,7 @@ func validateListFormat(format string, extra ...string) error {
 			// Find the end of the specifier
 			endIdx := strings.IndexByte(format[i:], ']')
 			if endIdx == -1 {
-				return fmt.Errorf("unclosed \"[\" at offset %d", i)
+				return fmt.Errorf(`unclosed "[" at offset %d`, i)
 			}
 
 			specifier := format[i+1 : i+endIdx]
@@ -1407,9 +1407,9 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ctr := fa.CenterString; ctr == "" {
-		e.ErrorString("No \"center\" specified")
+		e.ErrorString(`No "center" specified`)
 	} else if pos, ok := loc.Locate(ctr); !ok {
-		e.ErrorString("unknown location %q specified for \"center\"", ctr)
+		e.ErrorString(`unknown location %q specified for "center"`, ctr)
 	} else {
 		fa.Center = pos
 	}
@@ -1436,7 +1436,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 				for s := range strings.SplitSeq(*config.MonitoredBeaconCodeBlocksString, ",") {
 					s = strings.TrimSpace(s)
 					if code, err := av.ParseSquawkOrBlock(s); err != nil {
-						e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
+						e.ErrorString(`invalid beacon code %q in "beacon_code_blocks": %v`, s, err)
 					} else {
 						config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
 					}
@@ -1463,7 +1463,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 			for s := range strings.SplitSeq(*ac.MonitoredBeaconCodeBlocksString, ",") {
 				s = strings.TrimSpace(s)
 				if code, err := av.ParseSquawkOrBlock(s); err != nil {
-					e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
+					e.ErrorString(`invalid beacon code %q in "beacon_code_blocks": %v`, s, err)
 				} else {
 					ac.MonitoredBeaconCodeBlocks = append(ac.MonitoredBeaconCodeBlocks, code)
 				}
@@ -1493,7 +1493,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 
 	for _, sp := range fa.Scratchpads {
 		if !fa.CheckScratchpad(sp) {
-			e.ErrorString("%s: invalid scratchpad in \"scratchpads\"", sp)
+			e.ErrorString(`%s: invalid scratchpad in "scratchpads"`, sp)
 		}
 	}
 
@@ -1623,7 +1623,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 			f[i].AirspaceVolume.PostDeserialize(loc, e)
 
 			if _, ok := ids[filt.Id]; ok {
-				e.ErrorString("filter \"id\"s must be unique: %q was repeated", filt.Id)
+				e.ErrorString(`filter "id"s must be unique: %q was repeated`, filt.Id)
 			}
 			ids[filt.Id] = nil
 
@@ -1645,7 +1645,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 			fa.Filters.Quicklook[i].PostDeserialize(controlPositions, loc, e)
 
 			if _, ok := ids[filt.Id]; ok {
-				e.ErrorString("quicklook filter \"id\"s must be unique: %q was repeated", filt.Id)
+				e.ErrorString(`quicklook filter "id"s must be unique: %q was repeated`, filt.Id)
 			}
 			ids[filt.Id] = nil
 
@@ -1660,7 +1660,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 			fa.Filters.FDAM[i].PostDeserialize(controlPositions, loc, e)
 
 			if _, ok := ids[filt.Id]; ok {
-				e.ErrorString("FDAM filter \"id\"s must be unique: %q was repeated", filt.Id)
+				e.ErrorString(`FDAM filter "id"s must be unique: %q was repeated`, filt.Id)
 			}
 			ids[filt.Id] = nil
 
@@ -1674,16 +1674,16 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 
 	// Quick FP ACID
-	e.Push("\"flight_plan\"")
+	e.Push(`"flight_plan"`)
 	fa.FlightPlan.QuickACID = strings.ToUpper(fa.FlightPlan.QuickACID)
 	if qa := fa.FlightPlan.QuickACID; qa == "" {
 		fa.FlightPlan.QuickACID = "VCE"
 	} else {
 		if qa[0] < 'A' || qa[0] > 'Z' {
-			e.ErrorString("\"quick_acid\" must start with a letter")
+			e.ErrorString(`"quick_acid" must start with a letter`)
 		}
 		if len(qa) > 3 {
-			e.ErrorString("\"quick_acid\" can't be more than three characters")
+			e.ErrorString(`"quick_acid" can't be more than three characters`)
 		}
 	}
 
@@ -1703,7 +1703,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"tab_list\"")
+	e.Push(`"tab_list"`)
 	if fa.TABList.Format == "" {
 		fa.TABList.Format = "[INDEX] [ACID_MSAWCA][DUPE_BEACON] [BEACON] [DEP_EXIT_FIX]"
 	}
@@ -1712,7 +1712,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"vfr_list\"")
+	e.Push(`"vfr_list"`)
 	if fa.VFRList.Format == "" {
 		fa.VFRList.Format = "[INDEX] [ACID_MSAWCA][BEACON]"
 	}
@@ -1721,7 +1721,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"coast_suspend_list\"")
+	e.Push(`"coast_suspend_list"`)
 	if fa.CoastSuspendList.Format == "" {
 		fa.CoastSuspendList.Format = "[INDEX] [ACID] S [BEACON] [ALT]"
 	}
@@ -1730,7 +1730,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"mci_suppression_list\"")
+	e.Push(`"mci_suppression_list"`)
 	if fa.MCISuppressionList.Format == "" {
 		fa.MCISuppressionList.Format = "[ACID] [BEACON]  [SUPP_BEACON]"
 	}
@@ -1739,7 +1739,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"tower_list\"")
+	e.Push(`"tower_list"`)
 	if fa.TowerList.Format == "" {
 		fa.TowerList.Format = "[ACID] [ACTYPE]"
 	}
@@ -1748,7 +1748,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"coordination_lists\"")
+	e.Push(`"coordination_lists"`)
 	for i, cl := range fa.CoordinationLists {
 		if cl.Format == "" {
 			// Default format

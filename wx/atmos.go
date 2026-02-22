@@ -642,7 +642,7 @@ func LerpSample(x float32, s0, s1 Sample) Sample {
 
 func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid {
 	g := &AtmosGrid{
-		AltRange: [2]float32{24000, 24000}, // will fix up min below
+		AltRange: [2]float32{24000, 0}, // will fix up from actual data below
 	}
 
 	// Check if region crosses date line (longitude span > 180°).
@@ -712,6 +712,7 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 	for _, stack := range sampleStacks {
 		for _, level := range stack.Levels {
 			g.AltRange[0] = min(g.AltRange[0], level.Height*metersToFeet)
+			g.AltRange[1] = max(g.AltRange[1], level.Height*metersToFeet)
 		}
 	}
 	// roughly one level per 1000' feet (though nonlinearly distributed)

@@ -288,6 +288,7 @@ var (
 )
 
 func FontsInit(r Renderer, p platform.Platform) {
+	initFontsFS()
 	lg.Info("Starting to initialize fonts")
 	fonts = make(map[FontIdentifier]*Font)
 	io := imgui.CurrentIO()
@@ -517,7 +518,7 @@ func AvailableFontSizes(name string) []int {
 
 var fontsFS fs.StatFS
 
-func init() {
+func initFontsFS() {
 	path, err := os.Executable()
 	if err != nil {
 		panic(err)

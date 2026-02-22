@@ -12,7 +12,7 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-func init() {
+func registerEmergencyCommands() {
 	// 7.1 Display bearing / range to known emergency airport / heliport
 	// registerCommand(CommandModeNone, "*[POS][POS]", unimplementedCommand) // needs a callback...
 

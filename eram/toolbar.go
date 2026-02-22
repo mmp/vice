@@ -1198,10 +1198,6 @@ var toolbarDrawState struct {
 	disableHoldRepeat bool
 }
 
-func init() {
-	toolbarDrawState.mouseYetReleased = true
-}
-
 func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer, drawBackground bool, captureMouse bool) {
 

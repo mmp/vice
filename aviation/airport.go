@@ -213,7 +213,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 
 	if ap.Location.IsZero() {
-		e.ErrorString("Must specify \"location\" for airport")
+		e.ErrorString(`Must specify "location" for airport`)
 	}
 
 	for name, appr := range ap.Approaches {
@@ -233,20 +233,20 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				// Copy the approach from the database, doing checks to
 				// make sure bogus overrides haven't been specified.
 				if appr.Type != UnknownApproach {
-					e.ErrorString("\"type\" cannot be given with \"cifp_id\" approaches")
+					e.ErrorString(`"type" cannot be given with "cifp_id" approaches`)
 				}
 				appr.Type = dbAppr.Type
 
 				if len(appr.Waypoints) > 0 {
-					e.ErrorString("\"waypoints\" cannot be given with \"cifp_id\" approaches")
+					e.ErrorString(`"waypoints" cannot be given with "cifp_id" approaches`)
 				}
 
 				if dbAppr.Runway == "" {
 					if appr.Runway == "" {
-						e.ErrorString("\"runway\" must be specified: the CIFP approach is not runway-specific")
+						e.ErrorString(`"runway" must be specified: the CIFP approach is not runway-specific`)
 					}
 				} else if appr.Runway != "" && appr.Runway != dbAppr.Runway {
-					e.ErrorString("specified \"runway\" doesn't match the one %q in the CIFP approach", dbAppr.Runway)
+					e.ErrorString(`specified "runway" doesn't match the one %q in the CIFP approach`, dbAppr.Runway)
 				} else {
 					appr.Runway = dbAppr.Runway
 				}
@@ -261,18 +261,18 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		} else {
 			if appr.Type == UnknownApproach {
-				e.ErrorString("Must specify \"type\"")
+				e.ErrorString(`Must specify "type"`)
 			}
 			if appr.Runway == "" {
-				e.ErrorString("Must specify \"runway\"")
+				e.ErrorString(`Must specify "runway"`)
 			}
 			if len(appr.Waypoints) == 0 {
-				e.ErrorString("Must specify \"waypoints\"")
+				e.ErrorString(`Must specify "waypoints"`)
 			}
 		}
 		rwy, ok := LookupRunway(icao, appr.Runway)
 		if !ok {
-			e.ErrorString("\"runway\" %q is unknown. Options: %s", appr.Runway,
+			e.ErrorString(`"runway" %q is unknown. Options: %s`, appr.Runway,
 				DB.Airports[icao].ValidRunways())
 		}
 		appr.Threshold = rwy.Threshold
@@ -310,7 +310,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				if wp.NoPT() {
 					if !slices.ContainsFunc(appr.Waypoints[i][j+1:],
 						func(wp Waypoint) bool { return wp.ProcedureTurn() != nil }) {
-						e.ErrorString("No procedure turn found after fix with \"nopt\"")
+						e.ErrorString(`No procedure turn found after fix with "nopt"`)
 					}
 				}
 				e.Pop()
@@ -321,7 +321,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 		if appr.FullName == "" {
 			if appr.Type == ChartedVisualApproach {
-				e.ErrorString("Must provide \"full_name\" for charted visual approach")
+				e.ErrorString(`Must provide "full_name" for charted visual approach`)
 			} else {
 				appr.FullName = appr.Type.String() + " "
 				if len(appr.Id) > 3 && appr.Id[1] >= 'W' && appr.Id[1] <= 'Z' {
@@ -333,7 +333,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				appr.FullName += "Runway " + appr.Runway
 			}
 		} else if !strings.Contains(appr.FullName, "runway") && !strings.Contains(appr.FullName, "Runway") {
-			e.ErrorString("Must have \"runway\" in approach's \"full_name\"")
+			e.ErrorString(`Must have "runway" in approach's "full_name"`)
 		}
 
 		if appr.Type == ChartedVisualApproach && len(appr.Waypoints) != 1 {
@@ -415,18 +415,18 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 			if slices.ContainsFunc(route.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff() }) {
 				if route.HandoffController == "" {
-					e.ErrorString("no \"handoff_controller\" specified even though route has \"/ho\"")
+					e.ErrorString(`no "handoff_controller" specified even though route has "/ho"`)
 				} else if _, ok := controlPositions[route.HandoffController]; !ok {
 					e.ErrorString("control position %q unknown in scenario", route.HandoffController)
 				}
 			} else if route.HandoffController != "" {
-				e.ErrorString("\"handoff_controller\" specified but won't be used since route has no \"/ho\"")
+				e.ErrorString(`"handoff_controller" specified but won't be used since route has no "/ho"`)
 			}
 
 			if route.AssignedAltitude == 0 && route.ClearedAltitude == 0 {
-				e.ErrorString("must specify either \"assigned_altitude\" or \"cleared_altitude\"")
+				e.ErrorString(`must specify either "assigned_altitude" or "cleared_altitude"`)
 			} else if route.AssignedAltitude != 0 && route.ClearedAltitude != 0 {
-				e.ErrorString("cannot specify both \"assigned_altitude\" and \"cleared_altitude\"")
+				e.ErrorString(`cannot specify both "assigned_altitude" and "cleared_altitude"`)
 			}
 
 			e.Pop()
@@ -449,7 +449,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 
 		if len(dep.Airlines) == 0 {
-			e.ErrorString("No \"airlines\" specified for departure")
+			e.ErrorString(`No "airlines" specified for departure`)
 		}
 
 		// Make sure that all runways have a route to the exit
@@ -508,11 +508,11 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				fleet, loc, strings.Join(slices.Collect(maps.Keys(ga.Fleets)), ", "))
 		}
 	}
-	e.Push("\"vfr\"")
+	e.Push(`"vfr"`)
 	if ap.VFR.Randoms.Fleet != "" {
 		checkFleet(ap.VFR.Randoms.Fleet, "random_routes")
 		if ap.VFR.Randoms.Rate == 0 {
-			e.ErrorString("\"fleet\" specified for \"vfr\" \"random_routes\" but \"rate\" is not specified or is zero.")
+			e.ErrorString(`"fleet" specified for "vfr" "random_routes" but "rate" is not specified or is zero.`)
 		}
 	}
 	for i := range ap.VFR.Routes {
@@ -522,7 +522,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		spec := &ap.VFR.Routes[i]
 		e.Push("routes " + spec.Name)
 		if spec.Rate == 0 {
-			e.ErrorString("No \"rate\" specified")
+			e.ErrorString(`No "rate" specified`)
 		}
 		if spec.Fleet == "" {
 			spec.Fleet = "default"
@@ -530,7 +530,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			checkFleet(spec.Fleet, "routes")
 		}
 		if len(spec.Waypoints) == 0 {
-			e.ErrorString("must specify \"waypoints\"")
+			e.ErrorString(`must specify "waypoints"`)
 		} else {
 			spec.Waypoints[len(spec.Waypoints)-1].SetLand(true)
 		}
@@ -589,12 +589,12 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		hasRefRoute := def.ReferenceRoute != ""
 
 		if hasRefLine && hasRefRoute {
-			e.ErrorString("cannot specify both reference line fields and \"reference_route\"")
+			e.ErrorString(`cannot specify both reference line fields and "reference_route"`)
 		} else if !hasRefLine && !hasRefRoute {
-			e.ErrorString("must specify either reference line fields or \"reference_route\"")
+			e.ErrorString(`must specify either reference line fields or "reference_route"`)
 		} else if hasRefRoute {
 			if def.RegionLength != 0 {
-				e.ErrorString("\"region_length\" must not be specified with \"reference_route\"")
+				e.ErrorString(`"region_length" must not be specified with "reference_route"`)
 			}
 			routePoints := parseCRDARoute(def.ReferenceRoute, loc, nmPerLongitude, magneticVariation, e)
 			def.Path = PathFromRoutePoints(routePoints, nmPerLongitude)
@@ -605,7 +605,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 		if !slices.ContainsFunc(ap.CRDAPairs,
 			func(c CRDAPair) bool { return c.Regions[0] == name || c.Regions[1] == name }) {
-			e.ErrorString("region not used in \"crda_pairs\"")
+			e.ErrorString(`region not used in "crda_pairs"`)
 		}
 
 		e.Pop()
@@ -616,7 +616,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 		for _, name := range pair.Regions {
 			if _, ok := ap.CRDARegions[name]; !ok {
-				e.ErrorString("region %q not defined in \"crda_regions\"", name)
+				e.ErrorString(`region %q not defined in "crda_regions"`, name)
 			}
 		}
 
@@ -691,7 +691,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				if vol.ThresholdString != "" {
 					var ok bool
 					if vol.Threshold, ok = loc.Locate(vol.ThresholdString); !ok {
-						e.ErrorString("%q unknown for \"runway_threshold\".", vol.ThresholdString)
+						e.ErrorString(`%q unknown for "runway_threshold".`, vol.ThresholdString)
 					}
 				} else {
 					vol.Threshold = rwy.Threshold
@@ -797,17 +797,17 @@ func (at ApproachType) String() string {
 func (at ApproachType) MarshalJSON() ([]byte, error) {
 	switch at {
 	case UnknownApproach:
-		return []byte("\"Unknown\""), nil
+		return []byte(`"Unknown"`), nil
 	case ILSApproach:
-		return []byte("\"ILS\""), nil
+		return []byte(`"ILS"`), nil
 	case RNAVApproach:
-		return []byte("\"RNAV\""), nil
+		return []byte(`"RNAV"`), nil
 	case ChartedVisualApproach:
-		return []byte("\"Visual\""), nil
+		return []byte(`"Visual"`), nil
 	case LocalizerApproach:
-		return []byte("\"Localizer\""), nil
+		return []byte(`"Localizer"`), nil
 	case VORApproach:
-		return []byte("\"VOR\""), nil
+		return []byte(`"VOR"`), nil
 	default:
 		return nil, fmt.Errorf("unhandled approach type in MarshalJSON()")
 	}
@@ -815,27 +815,27 @@ func (at ApproachType) MarshalJSON() ([]byte, error) {
 
 func (at *ApproachType) UnmarshalJSON(b []byte) error {
 	switch string(b) {
-	case "\"Unknown\"":
+	case `"Unknown"`:
 		*at = UnknownApproach
 		return nil
 
-	case "\"ILS\"":
+	case `"ILS"`:
 		*at = ILSApproach
 		return nil
 
-	case "\"RNAV\"":
+	case `"RNAV"`:
 		*at = RNAVApproach
 		return nil
 
-	case "\"Visual\"":
+	case `"Visual"`:
 		*at = ChartedVisualApproach
 		return nil
 
-	case "\"Localizer\"":
+	case `"Localizer"`:
 		*at = LocalizerApproach
 		return nil
 
-	case "\"VOR\"":
+	case `"VOR"`:
 		*at = VORApproach
 		return nil
 

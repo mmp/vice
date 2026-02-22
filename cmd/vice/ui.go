@@ -1035,7 +1035,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 				case "darwin":
 					hint = "Please check System Settings -> Privacy & Security -> Microphone and ensure vice has permission."
 				case "windows":
-					hint = "Please check Settings -> Privacy & Security -> Microphone and ensure \"Let desktop apps access your microphone\" is enabled."
+					hint = `Please check Settings -> Privacy & Security -> Microphone and ensure "Let desktop apps access your microphone" is enabled.`
 				default:
 					hint = "Please check your system's audio settings and ensure microphone access is permitted."
 				}

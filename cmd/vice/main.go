@@ -36,6 +36,7 @@ import (
 	"github.com/mmp/vice/stars"
 	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/apenwarr/fixconsole"
@@ -68,7 +69,6 @@ var (
 	replayDuration    = flag.String("replay-duration", "3600", "replay duration in seconds or 'until:CALLSIGN'")
 	waypointCommands  = flag.String("waypoint-commands", "", "waypoint commands in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
 	starsRandoms      = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
-	sttEval           = flag.Bool("stteval", false, "record audio and evaluate all whisper models with STT pipeline")
 )
 
 func setupSignalHandler(profiler *util.Profiler) {
@@ -149,6 +149,7 @@ func cliInit() error {
 		return fmt.Errorf("SyncResources: %w", err)
 	}
 	av.InitDB()
+	wx.Init()
 	return nil
 }
 
@@ -498,12 +499,6 @@ func setupFuzzTesting(mgr *client.ConnectionManager, config *Config,
 }
 
 func runGUI(config *Config, configErr error, lg *log.Logger) error {
-	// Enable STT evaluation mode if requested
-	if *sttEval {
-		client.SetSTTEvalEnabled(true)
-		fmt.Println("STT evaluation mode enabled - voice commands will be evaluated against all models")
-	}
-
 	var stats Stats
 	var fuzzController *stars.FuzzController // For -starsrandoms mode
 
@@ -535,6 +530,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	}
 
 	av.InitDB()
+	wx.Init()
 	startBackgroundModelLoading(config, plat, lg)
 
 	// Initialize navigation logging if requested

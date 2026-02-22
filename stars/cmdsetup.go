@@ -19,7 +19,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func init() {
+func registerSetupCommands() {
 	// 4.1.3 Apply preference set
 	registerCommand(CommandModePref, "[NUM]", func(sp *STARSPane, ctx *panes.Context, idx int) error {
 		if idx <= 0 || idx > numSavedPreferenceSets {

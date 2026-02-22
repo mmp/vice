@@ -45,9 +45,9 @@ const (
 func (t *AirspaceVolumeType) MarshalJSON() ([]byte, error) {
 	switch *t {
 	case AirspaceVolumePolygon:
-		return []byte("\"polygon\""), nil
+		return []byte(`"polygon"`), nil
 	case AirspaceVolumeCircle:
-		return []byte("\"circle\""), nil
+		return []byte(`"circle"`), nil
 	default:
 		return nil, fmt.Errorf("%d: unknown airspace volume type", *t)
 	}
@@ -55,10 +55,10 @@ func (t *AirspaceVolumeType) MarshalJSON() ([]byte, error) {
 
 func (t *AirspaceVolumeType) UnmarshalJSON(b []byte) error {
 	switch string(b) {
-	case "\"polygon\"":
+	case `"polygon"`:
 		*t = AirspaceVolumePolygon
 		return nil
-	case "\"circle\"":
+	case `"circle"`:
 		*t = AirspaceVolumeCircle
 		return nil
 	default:
@@ -114,20 +114,20 @@ func (a *AirspaceVolume) Below(p math.Point2LL, alt int) bool {
 
 func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
 	if a.Id == "" {
-		e.ErrorString("must provide \"id\" with airspace volume")
+		e.ErrorString(`must provide "id" with airspace volume`)
 	}
 	if len(a.Id) > 7 {
 		e.ErrorString("airspace volume id %q cannot be more than 7 characters", a.Id)
 	}
 	if a.Description == "" {
-		e.ErrorString("must provide \"description\" with airspace volume")
+		e.ErrorString(`must provide "description" with airspace volume`)
 	}
 	if a.Floor > a.Ceiling {
-		e.ErrorString("\"floor\" %d is above \"ceiling\" %d", a.Floor, a.Ceiling)
+		e.ErrorString(`"floor" %d is above "ceiling" %d`, a.Floor, a.Ceiling)
 	}
 	switch a.Type {
 	case AirspaceVolumeUnknown:
-		e.ErrorString("must provide \"type\" with airspace volume")
+		e.ErrorString(`must provide "type" with airspace volume`)
 
 	case AirspaceVolumePolygon:
 		if len(a.Vertices) == 0 {
@@ -138,14 +138,14 @@ func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
 				vstrs = *a.VerticesStr.B
 			}
 			if len(vstrs) == 0 {
-				e.ErrorString("must provide \"vertices\" with \"polygon\" airspace volume")
+				e.ErrorString(`must provide "vertices" with "polygon" airspace volume`)
 			} else if len(vstrs) < 3 {
-				e.ErrorString("must provide at least 3 \"vertices\" with \"polygon\" airspace volume")
+				e.ErrorString(`must provide at least 3 "vertices" with "polygon" airspace volume`)
 			}
 
 			for _, s := range vstrs {
 				if p, ok := loc.Locate(s); !ok {
-					e.ErrorString("unknown point %q in \"vertices\"", s)
+					e.ErrorString(`unknown point %q in "vertices"`, s)
 				} else {
 					a.Vertices = append(a.Vertices, p)
 				}
@@ -157,10 +157,10 @@ func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
 
 	case AirspaceVolumeCircle:
 		if a.Radius == 0 {
-			e.ErrorString("must provide \"radius\" with \"circle\" airspace volume")
+			e.ErrorString(`must provide "radius" with "circle" airspace volume`)
 		}
 		if a.Center.IsZero() {
-			e.ErrorString("must provide \"center\" with \"circle\" airspace volume")
+			e.ErrorString(`must provide "center" with "circle" airspace volume`)
 		}
 	}
 }
@@ -559,9 +559,9 @@ type VFRReportingPoint struct {
 
 func (rp *VFRReportingPoint) PostDeserialize(loc Locator, controllers map[ControlPosition]*Controller, e *util.ErrorLogger) {
 	if rp.Description == "" {
-		e.ErrorString("must specify \"description\" with reporting point")
+		e.ErrorString(`must specify "description" with reporting point`)
 	}
 	if rp.Location.IsZero() {
-		e.ErrorString("must specify \"location\" with reporting point")
+		e.ErrorString(`must specify "location" with reporting point`)
 	}
 }

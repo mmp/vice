@@ -4,10 +4,6 @@ import (
 	"fmt"
 )
 
-func init() {
-	registerAllCommands()
-}
-
 // registerAllCommands registers all STT command templates.
 func registerAllCommands() {
 	// === ALTITUDE COMMANDS ===

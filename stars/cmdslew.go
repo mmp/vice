@@ -16,7 +16,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func init() {
+func registerSlewCommands() {
 	registerCommand(CommandModeNone, "[SLEW]",
 		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
 			state := sp.TrackState[trk.ADSBCallsign]

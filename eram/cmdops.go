@@ -18,7 +18,7 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-func init() {
+func registerOpsCommands() {
 	// QQ - Interim altitude
 	// Keyboard: QQ [ALT] [FLID] or QQ [FLID] to clear
 	// Clicked: QQ [ALT][SLEW] or QQ[SLEW] to clear

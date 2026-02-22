@@ -386,7 +386,7 @@ func TestMapContains(t *testing.T) {
 
 	// Test with predicate that checks for key "d"
 	if MapContains(m, func(k string, v int) bool { return k == "d" }) {
-		t.Error("MapContains should not find key \"d\"")
+		t.Error(`MapContains should not find key "d"`)
 	}
 }
 
@@ -402,7 +402,7 @@ func TestMapSeq2(t *testing.T) {
 	for k, v := range MapSeq2(maps.All(m), func(k int, v string) (string, int) { return v, k }) {
 		count++
 		if k == "one" && v != 1 {
-			t.Errorf("MapSeq2 key-value mapping incorrect: got %d for \"one\", expected 1", v)
+			t.Errorf(`MapSeq2 key-value mapping incorrect: got %d for "one", expected 1`, v)
 		}
 	}
 	if count != 3 {

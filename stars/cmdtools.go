@@ -19,7 +19,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func init() {
+func registerToolsCommands() {
 	// 6.1.1 Change range ring spacing,
 	// 6.1.2 Define user-specified range ring center
 	// 6.1.3 Toggle between default and user-specified range ring center

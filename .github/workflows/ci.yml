@@ -122,9 +122,9 @@ jobs:
     runs-on: macos-latest
 
     env:
-      MACOSX_DEPLOYMENT_TARGET: '13.0'
-      CGO_CFLAGS: '-mmacosx-version-min=13.0'
-      CGO_LDFLAGS: '-mmacosx-version-min=13.0'
+      MACOSX_DEPLOYMENT_TARGET: '13.4'
+      CGO_CFLAGS: '-mmacosx-version-min=13.4'
+      CGO_LDFLAGS: '-mmacosx-version-min=13.4'
 
     steps:
     - name: Checkout source

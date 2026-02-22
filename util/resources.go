@@ -10,17 +10,23 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/klauspost/compress/zstd"
 )
 
 var resourcesFS *fs.StatFS
 
-func init() {
-	resourcesFS = initResourcesFS()
+var resourcesOnce sync.Once
+
+func InitResources() {
+	resourcesOnce.Do(func() {
+		resourcesFS = initResourcesFS()
+	})
 }
 
 func GetResourcesFS() fs.StatFS {
+	InitResources()
 	return *resourcesFS
 }
 
@@ -43,7 +49,7 @@ func (bytesReadCloser) Close() {}
 // handle decompression transparently. It panics if the file is not found
 // since missing resources are pretty much impossible to recover from.
 func LoadResource(path string) ResourceReadCloser {
-	f, err := fs.ReadFile(*resourcesFS, path)
+	f, err := fs.ReadFile(GetResourcesFS(), path)
 	if err != nil {
 		panic(err)
 	}
@@ -73,14 +79,15 @@ func LoadResourceBytes(path string) []byte {
 
 // ResourceExists returns true if the specified resource file exists.
 func ResourceExists(path string) bool {
-	_, err := (*resourcesFS).Stat(path)
+	_, err := GetResourcesFS().Stat(path)
 	return err == nil
 }
 
 func WalkResources(root string, fn func(path string, d fs.DirEntry, filesystem fs.FS, err error) error) error {
-	return fs.WalkDir(*resourcesFS, root,
+	rfs := GetResourcesFS()
+	return fs.WalkDir(rfs, root,
 		func(path string, d fs.DirEntry, err error) error {
-			return fn(path, d, *resourcesFS, err)
+			return fn(path, d, rfs, err)
 		})
 }
 

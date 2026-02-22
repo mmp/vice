@@ -385,8 +385,8 @@ func buildOpusPrompt(procedures map[string]*ProcedureInfo, procedureType string)
 		for ap := range info.Airports {
 			airports = append(airports, ap)
 		}
-		sb.WriteString(fmt.Sprintf("- %s (variants: %s) at %s\n",
-			baseName, strings.Join(fullNames, ", "), strings.Join(airports, ", ")))
+		fmt.Fprintf(&sb, "- %s (variants: %s) at %s\n",
+			baseName, strings.Join(fullNames, ", "), strings.Join(airports, ", "))
 	}
 
 	sb.WriteString("\nReturn ONLY valid JSON mapping each base identifier (without the number) to its name (also without the number):\n")

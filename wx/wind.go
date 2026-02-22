@@ -36,7 +36,7 @@ func (ws *WindSpecifier) Validate() error {
 	}
 
 	if ws.FlightRules != "" && ws.FlightRules != "VMC" && ws.FlightRules != "IMC" {
-		return fmt.Errorf("invalid flight_rules %q: must be \"VMC\" or \"IMC\"", ws.FlightRules)
+		return fmt.Errorf(`invalid flight_rules %q: must be "VMC" or "IMC"`, ws.FlightRules)
 	}
 
 	return nil
@@ -47,7 +47,7 @@ func validateDirection(dir string) error {
 	// Range format: "min-max"
 	parts := strings.Split(dir, "-")
 	if len(parts) != 2 {
-		return fmt.Errorf("direction range must be in format \"min-max\"")
+		return fmt.Errorf(`direction range must be in format "min-max"`)
 	}
 
 	min, err := strconv.Atoi(strings.TrimSpace(parts[0]))
@@ -95,7 +95,7 @@ func validateSpeed(speed string) error {
 		// Range: "5-15"
 		parts := strings.Split(speed, "-")
 		if len(parts) != 2 {
-			return fmt.Errorf("speed range must be in format \"min-max\"")
+			return fmt.Errorf(`speed range must be in format "min-max"`)
 		}
 		min, err := strconv.Atoi(strings.TrimSpace(parts[0]))
 		if err != nil {
@@ -109,7 +109,7 @@ func validateSpeed(speed string) error {
 			return fmt.Errorf("minimum speed %d must be less than maximum speed %d", min, max)
 		}
 	} else {
-		return fmt.Errorf("speed must be in format \"N+\", \"N-\", or \"N-M\"")
+		return fmt.Errorf(`speed must be in format "N+", "N-", or "N-M"`)
 	}
 
 	return nil
