@@ -31,15 +31,6 @@ const (
 	AddressingFormTypeTrailing3
 )
 
-// VisualPreference indicates whether a pilot prefers to request a
-// visual approach when eligible.
-type VisualPreference int
-
-const (
-	VisualPreferenceUndecided VisualPreference = iota
-	VisualPreferenceNo
-	VisualPreferenceYes
-)
 
 type Aircraft struct {
 	// This is ADS-B callsign of the aircraft. Just because different the
@@ -140,12 +131,12 @@ type Aircraft struct {
 	// RequestedVisual is set when the pilot has spontaneously requested
 	// the visual approach (field in sight). Prevents repeated requests.
 	RequestedVisual bool
-	// WantsVisual is decided once per aircraft: whether this pilot
+	// WantsVisual is decided at aircraft creation: whether this pilot
 	// spontaneously reports field in sight when eligible.
-	WantsVisual VisualPreference
-	// WantsVisualRequest is decided independently: whether this pilot
-	// spontaneously requests the visual approach (implies field in sight).
-	WantsVisualRequest VisualPreference
+	WantsVisual bool
+	// WantsVisualRequest is decided at aircraft creation: whether this
+	// pilot spontaneously requests the visual approach (implies field in sight).
+	WantsVisualRequest bool
 	// VisualRequestTime is when the pilot will key the mic to report the
 	// field in sight, set once the field first comes into view (adds a short
 	// random delay to simulate identification and reaction time).

@@ -1469,50 +1469,50 @@ func (s *Sim) AirportAdvisory(tcw TCW, callsign av.ADSBCallsign, command string)
 }
 
 // handleAirportAdvisory determines the pilot's response to an AP command.
+// It reuses checkVisualEligibility for METAR/VMC/ceiling/distance/bearing
+// checks, then layers on AP-specific logic (o'clock validation, probability,
+// looking delay).
 func (s *Sim) handleAirportAdvisory(ac *Aircraft, oclock int, miles int) av.CommandIntent {
 	arrivalAirport := ac.FlightPlan.ArrivalAirport
 	ap := s.State.Airports[arrivalAirport]
-	if ap == nil {
+
+	// Use the shared eligibility check for VMC, ceiling, range, and bearing.
+	elig := s.checkVisualEligibility(ac)
+	if !elig.FieldInSight {
+		if ap == nil {
+			return av.FieldInSightIntent{Looking: true}
+		}
+		// Distinguish IMC (no "looking") from out-of-range/bearing (pilot says "looking").
+		metar, ok := s.State.METAR[arrivalAirport]
+		if !ok || !metar.IsVMC() {
+			return av.FieldInSightIntent{} // IMC
+		}
+		if ceiling, err := metar.Ceiling(); err == nil {
+			if faa, ok := av.DB.Airports[arrivalAirport]; ok {
+				if ac.Altitude() > float32(faa.Elevation+ceiling) {
+					return av.FieldInSightIntent{} // above ceiling = IMC
+				}
+			}
+		}
+		// Passed VMC/ceiling checks but not eligibility → distance or bearing issue.
+		ac.FieldLookingUntil = s.State.SimTime.Add(time.Duration(10+s.Rand.Intn(10)) * time.Second)
 		return av.FieldInSightIntent{Looking: true}
 	}
 
-	metar, ok := s.State.METAR[arrivalAirport]
-	if !ok || !metar.IsVMC() {
-		return av.FieldInSightIntent{} // IMC response
-	}
-
-	// Aircraft above the ceiling is in the clouds → IMC response.
-	if ceiling, err := metar.Ceiling(); err == nil {
-		if faa, ok := av.DB.Airports[arrivalAirport]; ok {
-			if ac.Altitude() > float32(faa.Elevation+ceiling) {
-				return av.FieldInSightIntent{}
-			}
-		}
-	}
-
-	// Convert the controller's o'clock/miles to a bearing from the aircraft.
+	// Validate the controller's o'clock direction against the actual bearing.
 	oclockHeading := float32((oclock % 12) * 30)
 	reportedBearing := math.NormalizeHeading(ac.Heading() + oclockHeading)
-
-	// Calculate actual bearing and distance to airport.
 	actualBearing := math.Heading2LL(ac.Position(), ap.Location, ac.NmPerLongitude(), ac.MagneticVariation())
-	actualDist := math.NMDistance2LLFast(ac.Position(), ap.Location, ac.NmPerLongitude())
-
-	// If reported o'clock is off by more than ~4 clock positions (~120°), always "looking".
 	bearingError := math.HeadingDifference(reportedBearing, actualBearing)
 	if bearingError > 120 {
 		ac.FieldLookingUntil = s.State.SimTime.Add(time.Duration(10+s.Rand.Intn(10)) * time.Second)
 		return av.FieldInSightIntent{Looking: true}
 	}
 
-	// Use METAR visibility (capped at 15nm) as the effective visual range.
-	maxRange := effectiveVisualRange(metar)
-	if actualDist > maxRange {
-		ac.FieldLookingUntil = s.State.SimTime.Add(time.Duration(10+s.Rand.Intn(10)) * time.Second)
-		return av.FieldInSightIntent{Looking: true}
-	}
-
 	// Probability increases as distance decreases relative to effective range.
+	metar := s.State.METAR[arrivalAirport]
+	maxRange := effectiveVisualRange(metar)
+	actualDist := math.NMDistance2LLFast(ac.Position(), ap.Location, ac.NmPerLongitude())
 	seeProb := float32(0.8) * (1.0 - actualDist/maxRange*0.5)
 	seeProb = max(0.2, min(0.95, seeProb))
 
@@ -1656,7 +1656,7 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 }
 
 // ClearedVisualApproach clears the aircraft for a visual approach to the
-// specified runway. Command format is "CV<runway>" (e.g. "CV13L"). The
+// specified runway. Command format is "CVA<runway>" (e.g. "CVA13L"). The
 // aircraft flies a 3nm final aligned with the runway heading to the
 // threshold. For charted visual approaches (e.g., Belmont Visual), use
 // the C command with the approach ID instead.
@@ -1995,10 +1995,10 @@ func (s *Sim) checkVisualEligibility(ac *Aircraft) VisualEligibility {
 		return VisualEligibility{}
 	}
 
-	if ac.Nav.Approach.Assigned == nil {
-		return VisualEligibility{}
+	var runway string
+	if ac.Nav.Approach.Assigned != nil {
+		runway = ac.Nav.Approach.Assigned.Runway
 	}
-	runway := ac.Nav.Approach.Assigned.Runway
 
 	return VisualEligibility{
 		FieldInSight: true,
@@ -2032,10 +2032,10 @@ func effectiveVisualRange(metar wx.METAR) float32 {
 }
 
 // checkSpontaneousVisualRequest checks if an arrival aircraft should
-// spontaneously report "field in sight" (~10%) or request the visual
-// approach (~1%). The two are independent coin flips decided once per
-// aircraft. A short random delay (2-8s) after the field first comes
-// into sight simulates identification and reaction time.
+// spontaneously report "field in sight" or request the visual approach.
+// WantsVisual/WantsVisualRequest are decided at aircraft creation time.
+// A short random delay (2-8s) after the field first comes into sight
+// simulates identification and reaction time.
 func (s *Sim) checkSpontaneousVisualRequest(ac *Aircraft) {
 	if !ac.canRequestVisualApproach() {
 		return
@@ -2046,25 +2046,8 @@ func (s *Sim) checkSpontaneousVisualRequest(ac *Aircraft) {
 		return
 	}
 
-	// One-time coin flip: ~10% of pilots spontaneously report field in sight.
-	if ac.WantsVisual == VisualPreferenceUndecided {
-		if s.Rand.Float32() < visualFieldProb {
-			ac.WantsVisual = VisualPreferenceYes
-		} else {
-			ac.WantsVisual = VisualPreferenceNo
-		}
-	}
-	if ac.WantsVisual == VisualPreferenceNo {
+	if !ac.WantsVisual {
 		return
-	}
-
-	// Of those, ~1% also request the visual approach.
-	if ac.WantsVisualRequest == VisualPreferenceUndecided {
-		if s.Rand.Float32() < visualRequestProb {
-			ac.WantsVisualRequest = VisualPreferenceYes
-		} else {
-			ac.WantsVisualRequest = VisualPreferenceNo
-		}
 	}
 
 	elig := s.checkVisualEligibility(ac)
@@ -2086,7 +2069,7 @@ func (s *Sim) checkSpontaneousVisualRequest(ac *Aircraft) {
 	ac.FieldInSight = true
 
 	// Visual request is a superset of field-in-sight; prefer it if both won.
-	if ac.WantsVisualRequest == VisualPreferenceYes {
+	if ac.WantsVisualRequest {
 		ac.RequestedVisual = true
 		s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestVisual)
 	} else {
@@ -2604,23 +2587,16 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		}
 
 	case PendingTransmissionTrafficInSight:
-		rt = av.MakeReadbackTransmission("[approach|], {callsign}, [we've got the traffic|we have the traffic in sight|traffic in sight now]",
-			av.CallsignArg{Callsign: ac.ADSBCallsign})
-		rt.Type = av.RadioTransmissionContact
+		rt = av.MakeContactTransmission("[we've got the traffic|we have the traffic in sight|traffic in sight now]")
 
 	case PendingTransmissionFieldInSight:
-		rt = av.MakeReadbackTransmission("[approach|], {callsign}, [we have the field in sight now|field in sight|we have the airport in sight now]",
-			av.CallsignArg{Callsign: ac.ADSBCallsign})
-		rt.Type = av.RadioTransmissionContact
+		rt = av.MakeContactTransmission("[we have the field in sight now|field in sight|we have the airport in sight now]")
 
 	case PendingTransmissionFieldNegativeContact:
-		rt = av.MakeReadbackTransmission("[approach|], {callsign}, [negative field|field not in sight|no joy on the field]",
-			av.CallsignArg{Callsign: ac.ADSBCallsign})
-		rt.Type = av.RadioTransmissionContact
+		rt = av.MakeContactTransmission("[negative field|field not in sight|no joy on the field]")
 
 	case PendingTransmissionFlightFollowingReq:
 		rt = av.MakeContactTransmission("[VFR request|with a VFR request]")
-		rt.Type = av.RadioTransmissionContact
 
 	case PendingTransmissionFlightFollowingFull:
 		rt = s.generateFlightFollowingMessage(ac)
@@ -2664,11 +2640,10 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 		// Pilot just reports field in sight and requests "the visual" —
 		// it's the controller's decision whether to clear a plain visual
-		// (CV) or a charted visual procedure (C).
-		rt = av.MakeReadbackTransmission(
+		// (CVA) or a charted visual procedure (C).
+		rt = av.MakeContactTransmission(
 			"[field in sight|we have the airport in sight], [requesting the visual|can we get the visual] [approach |]runway {rwy}",
 			runway)
-		rt.Type = av.RadioTransmissionContact
 
 	default:
 		return "", ""
@@ -3146,8 +3121,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.CancelApproachClearance(tcw, callsign)
 		} else if command == "CVS" {
 			return s.ClimbViaSID(tcw, callsign)
-		} else if strings.HasPrefix(command, "CV") && command != "CVS" && len(command) > 2 {
-			return s.ClearedVisualApproach(tcw, callsign, command[2:])
+		} else if strings.HasPrefix(command, "CVA") && len(command) > 3 {
+			return s.ClearedVisualApproach(tcw, callsign, command[3:])
 		} else if command == "CSI" || (strings.HasPrefix(command, "CSI") && !util.IsAllNumbers(command[3:])) {
 			return s.ClearedApproach(tcw, callsign, command[3:], true)
 		} else if components := strings.Split(command, "/"); len(components) > 1 {
@@ -3234,6 +3209,14 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.ExpediteDescent(tcw, callsign)
 		} else if command == "EC" {
 			return s.ExpediteClimb(tcw, callsign)
+		} else if strings.HasPrefix(command, "EVA") && len(command) > 3 {
+			// "Expect visual approach runway XX" — just a heads-up, doesn't
+			// change the approach assignment. The actual clearance comes via CVA.
+			runway := command[3:]
+			return av.ApproachIntent{
+				Type:         av.ApproachExpect,
+				ApproachName: "Visual Runway " + runway,
+			}, nil
 		} else if len(command) > 1 {
 			// Parse: "EI22L/LAHSO26" -> approach="I22L", lahsoRunway="26"
 			components := strings.Split(command[1:], "/")
@@ -3508,3 +3491,4 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		return nil, ErrInvalidCommandSyntax
 	}
 }
+

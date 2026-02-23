@@ -581,7 +581,7 @@ func (nav *Nav) buildDirectVisualWaypoints(runway string) []av.Waypoint {
 		Location: final3nm,
 	}
 	finalWp.SetOnApproach(true)
-	finalWp.SetAltitudeRestriction(av.AltitudeRestriction{Range: [2]float32{final3nmAlt, 0}})
+	finalWp.SetAltitudeRestriction(av.AltitudeRestriction{Range: [2]float32{final3nmAlt, final3nmAlt}})
 
 	thresholdWp := av.Waypoint{
 		Fix:      "_" + runway + "_THRESHOLD",

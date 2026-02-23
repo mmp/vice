@@ -1800,6 +1800,167 @@ func TestParseCommandsPriorityResolution(t *testing.T) {
 	}
 }
 
+func TestVisualApproachSTTPatterns(t *testing.T) {
+	tests := []struct {
+		name     string
+		tokens   []Token
+		ac       Aircraft
+		expected []string
+	}{
+		{
+			name: "cleared visual approach produces CVA",
+			tokens: []Token{
+				{Text: "cleared", Type: TokenWord},
+				{Text: "visual", Type: TokenWord},
+				{Text: "approach", Type: TokenWord},
+				{Text: "runway", Type: TokenWord},
+				{Text: "13", Type: TokenNumber, Value: 13},
+				{Text: "left", Type: TokenWord},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"CVA13L"},
+		},
+		{
+			name: "cleared visual without runway keyword",
+			tokens: []Token{
+				{Text: "cleared", Type: TokenWord},
+				{Text: "visual", Type: TokenWord},
+				{Text: "26", Type: TokenNumber, Value: 26},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"CVA26"},
+		},
+		{
+			name: "expect visual approach produces EVA not charted visual",
+			tokens: []Token{
+				{Text: "expect", Type: TokenWord},
+				{Text: "visual", Type: TokenWord},
+				{Text: "approach", Type: TokenWord},
+				{Text: "runway", Type: TokenWord},
+				{Text: "22", Type: TokenNumber, Value: 22},
+				{Text: "left", Type: TokenWord},
+			},
+			ac: Aircraft{
+				State: "arrival",
+				CandidateApproaches: map[string]string{
+					"Visual belmont runway two two left": "VB2L", // charted visual — should NOT match
+					"I L S runway two two left":         "I22L",
+				},
+			},
+			expected: []string{"EVA22L"},
+		},
+		{
+			name: "expect visual approach without left/right",
+			tokens: []Token{
+				{Text: "expect", Type: TokenWord},
+				{Text: "visual", Type: TokenWord},
+				{Text: "approach", Type: TokenWord},
+				{Text: "runway", Type: TokenWord},
+				{Text: "31", Type: TokenNumber, Value: 31},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"EVA31"},
+		},
+		{
+			name: "vectors visual approach produces EVA",
+			tokens: []Token{
+				{Text: "vectors", Type: TokenWord},
+				{Text: "visual", Type: TokenWord},
+				{Text: "approach", Type: TokenWord},
+				{Text: "runway", Type: TokenWord},
+				{Text: "31", Type: TokenNumber, Value: 31},
+				{Text: "right", Type: TokenWord},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"EVA31R"},
+		},
+		{
+			name: "vectors for the visual approach",
+			tokens: []Token{
+				{Text: "vectors", Type: TokenWord},
+				{Text: "for", Type: TokenWord},
+				{Text: "the", Type: TokenWord},
+				{Text: "visual", Type: TokenWord},
+				{Text: "approach", Type: TokenWord},
+				{Text: "runway", Type: TokenWord},
+				{Text: "4", Type: TokenNumber, Value: 4},
+				{Text: "right", Type: TokenWord},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"EVA4R"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			commands, _ := ParseCommands(tt.tokens, tt.ac)
+			if len(commands) != len(tt.expected) {
+				t.Errorf("ParseCommands() got %v, want %v", commands, tt.expected)
+				return
+			}
+			for i := range commands {
+				if commands[i] != tt.expected[i] {
+					t.Errorf("ParseCommands()[%d] = %q, want %q", i, commands[i], tt.expected[i])
+				}
+			}
+		})
+	}
+}
+
+func TestAirportAdvisorySTTPatterns(t *testing.T) {
+	provider := NewTranscriber(nil)
+
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "basic airport advisory",
+			transcript: "American 123 airport twelve o'clock eight miles",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123 AP/12/8",
+		},
+		{
+			name:       "field advisory",
+			transcript: "American 123 field eleven o'clock six miles",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123 AP/11/6",
+		},
+		{
+			name:       "airport name before o'clock position",
+			transcript: "American 123 kennedy at your eleven o'clock eight miles",
+			aircraft: map[string]Aircraft{
+				"American 123": {
+					Callsign: "AAL123",
+					State:    "arrival",
+					Altitude: 5000,
+					Fixes:    map[string]string{"kennedy": "KJFK"},
+				},
+			},
+			expected: "AAL123 AP/11/8",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
 func TestExtractAltitude(t *testing.T) {
 	tests := []struct {
 		name         string

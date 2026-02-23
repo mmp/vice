@@ -148,6 +148,11 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 
 	s.maybeSetGoAround(ac, s.State.LaunchConfig.GoAroundRate)
 
+	// Decide at creation whether this pilot will spontaneously report
+	// field in sight (~10%) and/or request the visual (~10% of those).
+	ac.WantsVisual = s.Rand.Float32() < visualFieldProb
+	ac.WantsVisualRequest = ac.WantsVisual && s.Rand.Float32() < visualRequestProb
+
 	if err := s.assignSquawk(ac, &nasFp); err != nil {
 		return nil, err
 	}
