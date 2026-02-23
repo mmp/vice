@@ -139,8 +139,8 @@ func (mp *MessagesPane) DrawWindow(show *bool, c *client.ControlClient, p platfo
 			imgui.SetScrollHereYV(1.0)
 			mp.shouldAutoScroll = false
 		}
-		imgui.EndChild()
 	}
+	imgui.EndChild()
 	imgui.End()
 	if mp.font != nil {
 		imgui.PopFont()

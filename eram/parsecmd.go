@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/radar"
@@ -95,8 +96,17 @@ var userCommands = make(map[CommandMode][]userCommand)
 // Track registered command strings to detect duplicates
 var registeredCommands = make(map[CommandMode]map[string]bool)
 
+var initCommandsOnce sync.Once
+
+func InitCommands() {
+	initCommandsOnce.Do(func() {
+		registerOpsCommands()
+		toolbarDrawState.mouseYetReleased = true
+	})
+}
+
 // registerCommand is used to register all of the supported ERAM commands at startup time via
-// init() functions in the cmd*.go files.
+// the register*Commands() functions in the cmd*.go files.
 func registerCommand(m CommandMode, c string, f any) {
 	if registeredCommands[m] == nil {
 		registeredCommands[m] = make(map[string]bool)

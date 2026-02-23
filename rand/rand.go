@@ -228,17 +228,12 @@ func SampleWeightedSeq[T any, W constraints.Integer | constraints.Float](r *Rand
 var (
 	//go:embed nouns.txt
 	nounsFile string
-	nounList  []string
+	nounList  = strings.Split(nounsFile, "\n")
 
 	//go:embed adjectives.txt
 	adjectivesFile string
-	adjectiveList  []string
+	adjectiveList  = strings.Split(adjectivesFile, "\n")
 )
-
-func init() {
-	nounList = strings.Split(nounsFile, "\n")
-	adjectiveList = strings.Split(adjectivesFile, "\n")
-}
 
 func (r *Rand) AdjectiveNoun() string {
 	return strings.TrimSpace(adjectiveList[r.Intn(len(adjectiveList))]) + "-" +

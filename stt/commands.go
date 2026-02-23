@@ -76,6 +76,9 @@ func getCommandCategory(cmd string) string {
 			if strings.Contains(cmd, "/S") {
 				return "speed"
 			}
+			if strings.Contains(cmd, "/M") {
+				return "speed"
+			}
 			return "navigation" // default for other crossing restrictions
 		}
 		// C followed by letter without '/' is approach clearance (CI9L)
@@ -1771,7 +1774,7 @@ func extractSquawk(tokens []Token) (string, int) {
 			code.WriteString(t.Text)
 			consumed++
 		} else if t.Type == TokenNumber && t.Value >= 0 && t.Value <= 7777 {
-			code.WriteString(fmt.Sprintf("%04d", t.Value))
+			fmt.Fprintf(&code, "%04d", t.Value)
 			consumed++
 			break
 		} else {

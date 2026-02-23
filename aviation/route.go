@@ -581,9 +581,9 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 
 		if wp.AirworkMinutes() > 0 {
 			if ar := wp.AltitudeRestriction(); ar == nil {
-				e.ErrorString("Must provide altitude range via \"/aXXX-YYY\" with /airwork")
+				e.ErrorString(`Must provide altitude range via "/aXXX-YYY" with /airwork`)
 			} else if ar.Range[0] == 0 || ar.Range[1] == 0 {
-				e.ErrorString("Must provide top and bottom in altitude range \"/aXXX-YYY\" with /airwork")
+				e.ErrorString(`Must provide top and bottom in altitude range "/aXXX-YYY" with /airwork`)
 			} else if ar.Range[1]-ar.Range[0] < 2000 {
 				e.ErrorString("Must provide at least 2,000' of altitude range with /airwork")
 			}
@@ -1499,7 +1499,7 @@ func (e RacetrackPTEntry) String() string {
 }
 
 func (e RacetrackPTEntry) MarshalJSON() ([]byte, error) {
-	s := "\"" + e.String() + "\""
+	s := `"` + e.String() + `"`
 	return []byte(s), nil
 }
 
@@ -1915,7 +1915,7 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 	if len(of.Waypoints) < 2 {
-		e.ErrorString("must provide at least two \"waypoints\" for overflight")
+		e.ErrorString(`must provide at least two "waypoints" for overflight`)
 	}
 
 	of.Waypoints = of.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
@@ -1926,13 +1926,13 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 	of.Waypoints.CheckOverflight(e, controlPositions, checkScratchpad)
 
 	if len(of.Airlines) == 0 {
-		e.ErrorString("must specify at least one airline in \"airlines\"")
+		e.ErrorString(`must specify at least one airline in "airlines"`)
 	}
 	for i := range of.Airlines {
 		of.Airlines[i].Check(e)
 
 		if of.Airlines[i].DepartureAirport == "" {
-			e.ErrorString("must specify \"departure_airport\"")
+			e.ErrorString(`must specify "departure_airport"`)
 		} else if _, ok := airports[of.Airlines[i].DepartureAirport]; !ok {
 			if _, ok := DB.Airports[of.Airlines[i].DepartureAirport]; !ok {
 				e.ErrorString("departure airport %q is unknown", of.Airlines[i].DepartureAirport)
@@ -1940,7 +1940,7 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 		}
 
 		if of.Airlines[i].ArrivalAirport == "" {
-			e.ErrorString("must specify \"arrival_airport\"")
+			e.ErrorString(`must specify "arrival_airport"`)
 		} else if _, ok := airports[of.Airlines[i].ArrivalAirport]; !ok {
 			if _, ok := DB.Airports[of.Airlines[i].ArrivalAirport]; !ok {
 				e.ErrorString("arrival airport %q is unknown", of.Airlines[i].ArrivalAirport)
@@ -1949,17 +1949,17 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 	}
 
 	if len(of.InitialAltitudes) == 0 {
-		e.ErrorString("must specify at least one \"initial_altitude\"")
+		e.ErrorString(`must specify at least one "initial_altitude"`)
 	}
 
 	if of.InitialSpeed == 0 {
-		e.ErrorString("must specify \"initial_speed\"")
+		e.ErrorString(`must specify "initial_speed"`)
 	}
 
 	if of.InitialController == "" {
-		e.ErrorString("Must specify \"initial_controller\".")
+		e.ErrorString(`Must specify "initial_controller".`)
 	} else if _, ok := controlPositions[of.InitialController]; !ok {
-		e.ErrorString("controller %q not found for \"initial_controller\"", of.InitialController)
+		e.ErrorString(`controller %q not found for "initial_controller"`, of.InitialController)
 	}
 
 	if !checkScratchpad(of.Scratchpad) {

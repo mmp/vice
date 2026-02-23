@@ -154,13 +154,13 @@ func (pc PositionConsolidation) AllPositions() []TCP {
 
 // Validate checks the configuration for errors
 func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
-	e.Push("\"configuration\"")
+	e.Push(`"configuration"`)
 	defer e.Pop()
 
 	// Check that all positions are valid control positions
 	for _, tcp := range cc.AllPositions() {
 		if _, ok := controlPositions[tcp]; !ok {
-			e.ErrorString("position %q not found in \"control_positions\"", tcp)
+			e.ErrorString(`position %q not found in "control_positions"`, tcp)
 		}
 	}
 
@@ -171,7 +171,7 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 	} else {
 		// Check that root is in default_consolidation map (as a key with possibly empty children)
 		if _, ok := cc.DefaultConsolidation[root]; !ok {
-			e.ErrorString("root position %q must be a key in \"default_consolidation\"", root)
+			e.ErrorString(`root position %q must be a key in "default_consolidation"`, root)
 		}
 	}
 
@@ -204,7 +204,7 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 	for parent, children := range cc.DefaultConsolidation {
 		for _, child := range children {
 			if existingParent, ok := childParent[child]; ok {
-				e.ErrorString("position %q appears as a child of both %q and %q in \"default_consolidation\"",
+				e.ErrorString(`position %q appears as a child of both %q and %q in "default_consolidation"`,
 					child, existingParent, parent)
 			} else {
 				childParent[child] = parent
@@ -215,14 +215,14 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 	// Check inbound assignments refer to valid control positions
 	for flow, tcp := range cc.InboundAssignments {
 		if _, ok := controlPositions[tcp]; !ok {
-			e.ErrorString("inbound_assignments: %q assigns to %q which is not in \"control_positions\"", flow, tcp)
+			e.ErrorString(`inbound_assignments: %q assigns to %q which is not in "control_positions"`, flow, tcp)
 		}
 	}
 
 	// Check departure assignments refer to valid control positions
 	for airport, tcp := range cc.DepartureAssignments {
 		if _, ok := controlPositions[tcp]; !ok {
-			e.ErrorString("departure_assignments: %q assigns to %q which is not in \"control_positions\"", airport, tcp)
+			e.ErrorString(`departure_assignments: %q assigns to %q which is not in "control_positions"`, airport, tcp)
 		}
 	}
 }

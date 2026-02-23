@@ -19,7 +19,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func init() {
+func registerOpsCommands() {
 	// 5.1.1 Initiate handoff (implied)
 	// 5.1.5 Redirect handoff (implied)
 	handoffOrRedirectTrack := func(sp *STARSPane, ctx *panes.Context, tcp string, trk *sim.Track) error {

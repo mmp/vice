@@ -214,6 +214,7 @@ var (
 		"num":      &BasicNumberSnippetFormatter{},
 		"rwy":      &RunwaySnippetFormatter{},
 		"sid":      &SIDSnippetFormatter{},
+		"mach":     &MachSnippetFormatter{},
 		"spd":      &SpeedSnippetFormatter{},
 		"star":     &STARSnippetFormatter{},
 	}
@@ -683,6 +684,39 @@ func (AppControllerSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 func (AppControllerSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(*Controller); !ok {
 		return fmt.Errorf("expected *Controller arg, got %T", arg)
+	}
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// MachSnippetFormatter formats mach numbers (e.g., 0.75 → "mach .75" written, "mach point seven five" spoken)
+
+type MachSnippetFormatter struct{}
+
+func (MachSnippetFormatter) Written(arg any) string {
+	mach, ok := arg.(int)
+	if !ok {
+		// float32 like 0.75 → convert to int 75
+		f := arg.(float32)
+		mach = int(f * 100)
+	}
+	return fmt.Sprintf("mach .%d", mach)
+}
+
+func (MachSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	mach, ok := arg.(int)
+	if !ok {
+		f := arg.(float32)
+		mach = int(f * 100)
+	}
+	return "mach point " + sayDigits(mach, 2)
+}
+
+func (MachSnippetFormatter) Validate(arg any) error {
+	if _, ok := arg.(int); !ok {
+		if _, ok := arg.(float32); !ok {
+			return fmt.Errorf("expected int or float32 arg, got %T", arg)
+		}
 	}
 	return nil
 }

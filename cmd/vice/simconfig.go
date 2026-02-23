@@ -66,8 +66,9 @@ type NewSimConfiguration struct {
 	fetchMETARError error
 
 	// Winds aloft data for the current facility
-	atmosByTime        *wx.AtmosByTime
-	windsAloftAltitude float32
+	atmosByTime         *wx.AtmosByTime
+	windsAloftAltitudes [2]float32 // altitudes for WindsAloft[0] and [1]; 0 means unused
+	isTRACON            bool
 
 	availableWXIntervals []util.TimeInterval
 
@@ -91,7 +92,7 @@ func loadEmergencies(e *util.ErrorLogger) []sim.Emergency {
 	emergencies := emap["emergencies"]
 
 	if len(emergencies) == 0 {
-		e.ErrorString("No \"emergencies\" found")
+		e.ErrorString(`No "emergencies" found`)
 		return nil
 	}
 
@@ -127,28 +128,28 @@ func loadEmergencies(e *util.ErrorLogger) []sim.Emergency {
 				case "approach":
 					em.ApplicableTo |= sim.EmergencyApplicabilityApproach
 				default:
-					e.ErrorString("invalid \"applicable_to\" value %q: must be one or more of \"departure\", \"arrival\", \"external\", \"approach\" (comma-separated)",
+					e.ErrorString(`invalid "applicable_to" value %q: must be one or more of "departure", "arrival", "external", "approach" (comma-separated)`,
 						typeStr)
 				}
 			}
 		}
 
 		if len(em.Stages) == 0 {
-			e.ErrorString("no emergency \"stages\" defined")
+			e.ErrorString(`no emergency "stages" defined`)
 		}
 		for i, stage := range em.Stages {
 			// transmission is required unless request_return is true
 			if stage.Transmission == "" && !stage.RequestReturn {
-				e.ErrorString("stage %d missing required field \"transmission\"", i)
+				e.ErrorString(`stage %d missing required field "transmission"`, i)
 			}
 			// duration_minutes is required for all stages except the last one
 			isLastStage := i == len(em.Stages)-1
 			if !isLastStage {
 				if stage.DurationMinutes[1] == 0 {
-					e.ErrorString("stage %d missing required field \"duration_minutes\"", i)
+					e.ErrorString(`stage %d missing required field "duration_minutes"`, i)
 				}
 				if stage.DurationMinutes[0] > stage.DurationMinutes[1] {
-					e.ErrorString("First value in \"duration_minutes\" cannot be greater than second")
+					e.ErrorString(`First value in "duration_minutes" cannot be greater than second`)
 				}
 			}
 		}
@@ -306,24 +307,22 @@ func (c *NewSimConfiguration) fetchMETAR() {
 }
 
 // loadAtmosphericData loads atmospheric data for the current facility and determines
-// the appropriate winds aloft altitude based on whether it's a TRACON or ARTCC.
+// the appropriate winds aloft altitudes based on whether it's a TRACON or ARTCC.
 func (c *NewSimConfiguration) loadAtmosphericData() {
-	// Determine if this is a TRACON or ARTCC based on the facility
-	_, isTRACON := av.DB.TRACONs[c.Facility]
+	_, c.isTRACON = av.DB.TRACONs[c.Facility]
 
-	// Set altitude based on facility type:
-	// - TRACON: 5,000' - representative of terminal area traffic
-	// - Center/ERAM (ARTCC): FL280 (28,000') - representative of en route traffic
-	if isTRACON {
-		c.windsAloftAltitude = 5000
+	// Set altitudes based on facility type:
+	// - TRACON: single altitude at 5,000' (representative of terminal area traffic)
+	// - Center/ARTCC: FL240 and FL380 (lower and upper flight levels)
+	if c.isTRACON {
+		c.windsAloftAltitudes = [2]float32{5000, 0}
 	} else {
-		c.windsAloftAltitude = 28000
+		c.windsAloftAltitudes = [2]float32{24000, 38000}
 	}
 
 	// Try to load atmospheric data for the facility
 	atmosByTime, err := wx.GetAtmosByTime(c.Facility)
 	if err != nil {
-		// We don't yet have data for center scenarios; don't treat this as an error.
 		c.atmosByTime = nil
 		return
 	}
@@ -347,19 +346,25 @@ func (c *NewSimConfiguration) computeAvailableWXIntervals() {
 		metarIntervals = wx.METARIntervals(metarTimes)
 	}
 
-	// Get TRACON intervals from local resources
-	traconIntervalsMap := wx.GetTimeIntervals()
-	var traconIntervals []util.TimeInterval
-	if intervals, ok := traconIntervalsMap[c.Facility]; ok {
-		traconIntervals = intervals
+	// Get facility-specific intervals from local resources.
+	// TRACONs and ARTCCs have different data histories.
+	var facilityIntervals []util.TimeInterval
+	if c.isTRACON {
+		if intervals, ok := wx.GetTRACONTimeIntervals()[c.Facility]; ok {
+			facilityIntervals = intervals
+		}
+	} else {
+		if intervals, ok := wx.GetARTCCTimeIntervals()[c.Facility]; ok {
+			facilityIntervals = intervals
+		}
 	}
 
-	if len(traconIntervals) == 0 {
+	if len(facilityIntervals) == 0 {
 		// Just use the METAR.
 		c.availableWXIntervals = wx.MergeAndAlignToMidnight(metarIntervals)
 	} else {
-		// Intersect METAR intervals with TRACON intervals and align to midnight
-		c.availableWXIntervals = wx.MergeAndAlignToMidnight(metarIntervals, traconIntervals)
+		// Intersect METAR intervals with facility intervals and align to midnight
+		c.availableWXIntervals = wx.MergeAndAlignToMidnight(metarIntervals, facilityIntervals)
 	}
 }
 
@@ -1978,91 +1983,26 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		changed = true
 	}
 
-	// Surface Wind group
-	imgui.SeparatorText("Surface Wind")
-	if imgui.BeginTableV("surfaceWind", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
-		imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 100, 0)
-		imgui.TableSetupColumnV("Value", imgui.TableColumnFlagsWidthStretch, 0, 0)
-
-		// Direction (most important for runway selection)
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Direction (mag):")
-		imgui.TableNextColumn()
-		if optionalIntInput("##windDirMin", "Min", &c.weatherFilter.WindDirMin) {
-			changed = true
-		}
-		imgui.SameLine()
-		imgui.Text("-")
-		imgui.SameLine()
-		if optionalIntInput("##windDirMax", "Max", &c.weatherFilter.WindDirMax) {
-			changed = true
-		}
-
-		// Speed
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Speed (kt):")
-		imgui.TableNextColumn()
-		if optionalIntInput("##windSpeedMin", "Min", &c.weatherFilter.WindSpeedMin) {
-			changed = true
-		}
-		imgui.SameLine()
-		imgui.Text("-")
-		imgui.SameLine()
-		if optionalIntInput("##windSpeedMax", "Max", &c.weatherFilter.WindSpeedMax) {
-			changed = true
-		}
-
-		// Gusting
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Gusting:")
-		imgui.TableNextColumn()
-		gustInt := int32(c.weatherFilter.Gusting)
-		if imgui.RadioButtonIntPtr("Any##gust", &gustInt, int32(wx.GustAny)) {
-			c.weatherFilter.Gusting = wx.GustAny
-			changed = true
-		}
-		imgui.SameLine()
-		if imgui.RadioButtonIntPtr("Yes##gust", &gustInt, int32(wx.GustYes)) {
-			c.weatherFilter.Gusting = wx.GustYes
-			changed = true
-		}
-		imgui.SameLine()
-		if imgui.RadioButtonIntPtr("No##gust", &gustInt, int32(wx.GustNo)) {
-			c.weatherFilter.Gusting = wx.GustNo
-			changed = true
-		}
-
-		imgui.EndTable()
-	}
-
-	// Winds Aloft group (only show if atmosByTime is available)
-	if c.atmosByTime != nil {
-		altLabel := fmt.Sprintf("Winds Aloft (%s)", av.FormatAltitude(c.windsAloftAltitude))
-		imgui.SeparatorText(altLabel)
-		if imgui.BeginTableV("windsAloft", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
+	if c.isTRACON {
+		// Surface Wind group (TRACONs only)
+		imgui.SeparatorText("Surface Wind")
+		if imgui.BeginTableV("surfaceWind", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 100, 0)
 			imgui.TableSetupColumnV("Value", imgui.TableColumnFlagsWidthStretch, 0, 0)
 
-			// Direction
+			// Direction (most important for runway selection)
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Direction (mag):")
 			imgui.TableNextColumn()
-			aloftDirChanged := optionalIntInput("##aloftDirMin", "Min", &c.weatherFilter.WindsAloftDirMin)
+			if optionalIntInput("##windDirMin", "Min", &c.weatherFilter.WindDirMin) {
+				changed = true
+			}
 			imgui.SameLine()
 			imgui.Text("-")
 			imgui.SameLine()
-			aloftDirChanged = optionalIntInput("##aloftDirMax", "Max", &c.weatherFilter.WindsAloftDirMax) || aloftDirChanged
-			// Only trigger update when both values are set or both are empty
-			if aloftDirChanged {
-				bothSet := c.weatherFilter.WindsAloftDirMin != nil && c.weatherFilter.WindsAloftDirMax != nil
-				bothEmpty := c.weatherFilter.WindsAloftDirMin == nil && c.weatherFilter.WindsAloftDirMax == nil
-				if bothSet || bothEmpty {
-					changed = true
-				}
+			if optionalIntInput("##windDirMax", "Max", &c.weatherFilter.WindDirMax) {
+				changed = true
 			}
 
 			// Speed
@@ -2070,17 +2010,91 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 			imgui.TableNextColumn()
 			imgui.Text("Speed (kt):")
 			imgui.TableNextColumn()
-			if optionalIntInput("##aloftSpeedMin", "Min", &c.weatherFilter.WindsAloftSpeedMin) {
+			if optionalIntInput("##windSpeedMin", "Min", &c.weatherFilter.WindSpeedMin) {
 				changed = true
 			}
 			imgui.SameLine()
 			imgui.Text("-")
 			imgui.SameLine()
-			if optionalIntInput("##aloftSpeedMax", "Max", &c.weatherFilter.WindsAloftSpeedMax) {
+			if optionalIntInput("##windSpeedMax", "Max", &c.weatherFilter.WindSpeedMax) {
+				changed = true
+			}
+
+			// Gusting
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("Gusting:")
+			imgui.TableNextColumn()
+			gustInt := int32(c.weatherFilter.Gusting)
+			if imgui.RadioButtonIntPtr("Any##gust", &gustInt, int32(wx.GustAny)) {
+				c.weatherFilter.Gusting = wx.GustAny
+				changed = true
+			}
+			imgui.SameLine()
+			if imgui.RadioButtonIntPtr("Yes##gust", &gustInt, int32(wx.GustYes)) {
+				c.weatherFilter.Gusting = wx.GustYes
+				changed = true
+			}
+			imgui.SameLine()
+			if imgui.RadioButtonIntPtr("No##gust", &gustInt, int32(wx.GustNo)) {
+				c.weatherFilter.Gusting = wx.GustNo
 				changed = true
 			}
 
 			imgui.EndTable()
+		}
+	}
+
+	// Winds Aloft groups (only show if atmosByTime is available)
+	if c.atmosByTime != nil {
+		for i, alt := range c.windsAloftAltitudes {
+			if alt == 0 {
+				continue
+			}
+			altLabel := fmt.Sprintf("Winds Aloft (%s)", av.FormatAltitude(alt))
+			imgui.SeparatorText(altLabel)
+
+			idSuffix := fmt.Sprintf("%d", i)
+			if imgui.BeginTableV("windsAloft"+idSuffix, 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
+				imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 100, 0)
+				imgui.TableSetupColumnV("Value", imgui.TableColumnFlagsWidthStretch, 0, 0)
+
+				// Direction
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text("Direction (mag):")
+				imgui.TableNextColumn()
+				aloftDirChanged := optionalIntInput("##aloftDirMin"+idSuffix, "Min", &c.weatherFilter.WindsAloft[i].DirMin)
+				imgui.SameLine()
+				imgui.Text("-")
+				imgui.SameLine()
+				aloftDirChanged = optionalIntInput("##aloftDirMax"+idSuffix, "Max", &c.weatherFilter.WindsAloft[i].DirMax) || aloftDirChanged
+				// Only trigger update when both values are set or both are empty
+				if aloftDirChanged {
+					bothSet := c.weatherFilter.WindsAloft[i].DirMin != nil && c.weatherFilter.WindsAloft[i].DirMax != nil
+					bothEmpty := c.weatherFilter.WindsAloft[i].DirMin == nil && c.weatherFilter.WindsAloft[i].DirMax == nil
+					if bothSet || bothEmpty {
+						changed = true
+					}
+				}
+
+				// Speed
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text("Speed (kt):")
+				imgui.TableNextColumn()
+				if optionalIntInput("##aloftSpeedMin"+idSuffix, "Min", &c.weatherFilter.WindsAloft[i].SpeedMin) {
+					changed = true
+				}
+				imgui.SameLine()
+				imgui.Text("-")
+				imgui.SameLine()
+				if optionalIntInput("##aloftSpeedMax"+idSuffix, "Max", &c.weatherFilter.WindsAloft[i].SpeedMax) {
+					changed = true
+				}
+
+				imgui.EndTable()
+			}
 		}
 	}
 
@@ -2182,7 +2196,7 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 			c.atmosByTime,
 			c.availableWXIntervals,
 			&c.weatherFilter,
-			c.windsAloftAltitude,
+			c.windsAloftAltitudes,
 			c.ScenarioSpec.MagneticVariation)
 
 		if sampledMETAR != nil {

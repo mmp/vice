@@ -183,8 +183,8 @@ func validateCommand(cmd string, ac Aircraft) string {
 			}
 			return ""
 		}
-		if cmd == "S" || cmd == "SMIN" || cmd == "SMAX" || cmd == "SPRES" {
-			// Cancel speed restriction, slowest practical, max speed, present speed - always valid
+		if cmd == "S" || cmd == "SS" || cmd == "SI" || cmd == "SM" || cmd == "SMIN" || cmd == "SMAX" || cmd == "SPRES" {
+			// Cancel speed restriction, say speed/indicated/mach, slowest practical, max speed, present speed - always valid
 			return ""
 		}
 		// S{SPD} - validate against aircraft performance

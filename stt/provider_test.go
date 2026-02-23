@@ -11,9 +11,10 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-// TestMain initializes the aviation database for all tests.
+// TestMain initializes the aviation database and STT registries for all tests.
 func TestMain(m *testing.M) {
 	av.InitDB()
+	Init()
 	os.Exit(m.Run())
 }
 
@@ -243,6 +244,103 @@ func TestBasicSpeedCommands(t *testing.T) {
 				"Delta 200": {Callsign: "DAL200", State: "arrival"},
 			},
 			expected: "DAL200 S",
+		},
+		{
+			name:       "say indicated speed",
+			transcript: "United 452 say indicated speed",
+			aircraft: map[string]Aircraft{
+				"United 452": {Callsign: "UAL452", State: "overflight"},
+			},
+			expected: "UAL452 SI",
+		},
+		{
+			name:       "say indicated airspeed",
+			transcript: "Delta 200 say indicated airspeed",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "arrival"},
+			},
+			expected: "DAL200 SI",
+		},
+		{
+			name:       "say mach",
+			transcript: "American 300 say mach",
+			aircraft: map[string]Aircraft{
+				"American 300": {Callsign: "AAL300", State: "overflight"},
+			},
+			expected: "AAL300 SM",
+		},
+		{
+			name:       "say mach number",
+			transcript: "Alaska 500 say mach number",
+			aircraft: map[string]Aircraft{
+				"Alaska 500": {Callsign: "ASA500", State: "overflight"},
+			},
+			expected: "ASA500 SM",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestMachSpeedCommands(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "maintain mach point seven five",
+			transcript: "Delta 200 maintain mach point seven five",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "overflight"},
+			},
+			expected: "DAL200 M75",
+		},
+		{
+			name:       "mach without point",
+			transcript: "United 452 mach seven five",
+			aircraft: map[string]Aircraft{
+				"United 452": {Callsign: "UAL452", State: "overflight"},
+			},
+			expected: "UAL452 M75",
+		},
+		{
+			name:       "reduce to mach",
+			transcript: "American 300 reduce to mach point seven two",
+			aircraft: map[string]Aircraft{
+				"American 300": {Callsign: "AAL300", State: "arrival"},
+			},
+			expected: "AAL300 M72",
+		},
+		{
+			name:       "increase to mach",
+			transcript: "Alaska 500 increase to mach point eight zero",
+			aircraft: map[string]Aircraft{
+				"Alaska 500": {Callsign: "ASA500", State: "departure"},
+			},
+			expected: "ASA500 M80",
+		},
+		{
+			name:       "single digit mach",
+			transcript: "Spirit 101 maintain mach point seven",
+			aircraft: map[string]Aircraft{
+				"Spirit 101": {Callsign: "NKS101", State: "overflight"},
+			},
+			expected: "NKS101 M70",
 		},
 	}
 

@@ -163,9 +163,14 @@ func ingestHRRR(sb StorageBackend) error {
 						missing = append(missing, tracon)
 					}
 				}
-				for _, artcc := range wx.AtmosARTCCs {
-					if !slices.Contains(facilities, artcc) {
-						missing = append(missing, artcc)
+				// ARTCC precip data is only available starting Feb 1, 2026;
+				// skip ARTCC atmos ingest before then.
+				artccAtmosStart := time.Date(2026, time.February, 1, 0, 0, 0, 0, time.UTC)
+				if !t.Before(artccAtmosStart) {
+					for _, artcc := range wx.AtmosARTCCs {
+						if !slices.Contains(facilities, artcc) {
+							missing = append(missing, artcc)
+						}
 					}
 				}
 
@@ -235,7 +240,7 @@ func ingestHRRR(sb StorageBackend) error {
 		for hrrr := range hrrrCh {
 			LogInfo("Starting work on %s (%s region)", hrrr.t.Format(time.RFC3339), hrrr.region)
 			if err := ingestHRRRForTime(hrrr.path, hrrr.t, hrrr.targetFacilities, sb); err != nil {
-				return err
+				LogError("%s %s: %v", hrrr.t.Format(time.RFC3339), hrrr.region, err)
 			}
 		}
 		return nil
@@ -268,8 +273,20 @@ func generateAtmosManifest(sb StorageBackend) error {
 	}
 
 	manifestPath := wx.ManifestPath("atmos")
-	n, err := sb.StoreObject(manifestPath, manifest.RawManifest())
+	raw := manifest.RawManifest()
+	var n int64
+	err = retry(3, 10*time.Second, func() error {
+		var err error
+		n, err = sb.StoreObject(manifestPath, raw)
+		return err
+	})
 	if err != nil {
+		localFile := "atmos-manifest.msgpack.zst"
+		if localErr := storeObjectLocal(localFile, raw); localErr != nil {
+			LogError("MANIFEST WRITE FAILED for atmos and local save also failed: upload: %v, local: %v", err, localErr)
+		} else {
+			LogError("MANIFEST WRITE FAILED for atmos: %v -- saved to %s; upload to gs://vice-wx/%s", err, localFile, manifestPath)
+		}
 		return err
 	}
 
@@ -403,17 +420,20 @@ func ingestHRRRForTime(gribPath string, t time.Time, targetFacilities []string, 
 			defer func() { <-sem }()
 
 			n, err := ingestHRRRForFacility(grid, records, facilityID, t, sb)
-			if err == nil {
-				LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), facilityID, t.Format(time.RFC3339))
-				atomic.AddInt64(&totalUploads, 1)
-				atomic.AddInt64(&totalUploadBytes, n)
+			if err != nil {
+				LogError("%s-%s: %v", facilityID, t.Format(time.RFC3339), err)
+				return nil
 			}
 
-			return err
+			LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), facilityID, t.Format(time.RFC3339))
+			atomic.AddInt64(&totalUploads, 1)
+			atomic.AddInt64(&totalUploadBytes, n)
+			return nil
 		})
 	}
 
-	return eg.Wait()
+	eg.Wait()
+	return nil
 }
 
 func ingestHRRRForFacility(grid *Grid, records []*squall.GRIB2, facilityID string, t time.Time, sb StorageBackend) (int64, error) {

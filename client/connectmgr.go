@@ -71,11 +71,11 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 				errorLogger.Error(err)
 			} else {
 				cm.LocalServer = &Server{
-					RPCClient:           client,
-					AvailableWXByTRACON: cr.AvailableWXByTRACON,
-					name:                "Local (Single controller)",
-					catalogs:            cr.ScenarioCatalogs,
-					runningSims:         cr.RunningSims,
+					RPCClient:             client,
+					AvailableWXByFacility: cr.AvailableWXByFacility,
+					name:                  "Local (Single controller)",
+					catalogs:              cr.ScenarioCatalogs,
+					runningSims:           cr.RunningSims,
 				}
 			}
 		}

@@ -9,6 +9,7 @@ import (
 	crand "crypto/rand"
 	"encoding/base64"
 	"log/slog"
+	"maps"
 	"os"
 	"path/filepath"
 	"slices"
@@ -539,9 +540,9 @@ func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.
 // Controller Lookup and State Updates
 
 type ConnectResult struct {
-	ScenarioCatalogs    map[string]map[string]*ScenarioCatalog
-	RunningSims         map[string]*RunningSim
-	AvailableWXByTRACON map[string][]util.TimeInterval
+	ScenarioCatalogs      map[string]map[string]*ScenarioCatalog
+	RunningSims           map[string]*RunningSim
+	AvailableWXByFacility map[string][]util.TimeInterval
 }
 
 const ConnectRPC = "SimManager.Connect"
@@ -556,7 +557,9 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 		return err
 	}
 
-	result.AvailableWXByTRACON = wx.GetTimeIntervals()
+	result.AvailableWXByFacility = make(map[string][]util.TimeInterval)
+	maps.Copy(result.AvailableWXByFacility, wx.GetTRACONTimeIntervals())
+	maps.Copy(result.AvailableWXByFacility, wx.GetARTCCTimeIntervals())
 
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
@@ -737,11 +740,6 @@ func (sm *SimManager) GetAtmosGrid(args GetAtmosArgs, result *GetAtmosResult) er
 
 	if sm.wxProvider == nil {
 		return ErrWeatherUnavailable
-	}
-
-	// Only load for TRACON scenarios (for now)
-	if _, ok := av.DB.TRACONs[args.Facility]; !ok {
-		return nil
 	}
 
 	var err error

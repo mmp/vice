@@ -432,7 +432,7 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, config
 	}
 
 	if bt, err := time.Parse(time.RFC3339, buildTime); err != nil {
-		lg.Errorf("error parsing build time \"%s\": %v", buildTime, err)
+		lg.Errorf(`error parsing build time "%s": %v`, buildTime, err)
 	} else if newestRelease.Created.UTC().After(bt.UTC()) {
 		lg.Infof("build time %s newest release %s -> release is newer",
 			bt.UTC().String(), newestRelease.Created.UTC().String())

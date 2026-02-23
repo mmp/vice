@@ -185,8 +185,8 @@ func (ac *Aircraft) InitializeFlightPlan(r av.FlightRules, acType, dep, arr stri
 	}
 }
 
-func (ac *Aircraft) TAS() float32 {
-	return ac.Nav.TAS()
+func (ac *Aircraft) TAS(temp float32) float32 {
+	return ac.Nav.TAS(temp)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -222,6 +222,10 @@ func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool) av.CommandInte
 	return ac.Nav.AssignAltitude(float32(altitude), afterSpeed)
 }
 
+func (ac *Aircraft) AssignMach(mach float32, afterAltitude bool, temp float32) av.CommandIntent {
+	return ac.Nav.AssignMach(mach, afterAltitude, temp)
+}
+
 func (ac *Aircraft) AssignSpeed(speed int, afterAltitude bool) av.CommandIntent {
 	return ac.Nav.AssignSpeed(float32(speed), afterAltitude)
 }
@@ -242,8 +246,16 @@ func (ac *Aircraft) MaintainPresentSpeed() av.CommandIntent {
 	return ac.Nav.MaintainPresentSpeed()
 }
 
-func (ac *Aircraft) SaySpeed() av.CommandIntent {
-	return ac.Nav.SaySpeed()
+func (ac *Aircraft) SaySpeed(tempKelvin float32) av.CommandIntent {
+	return ac.Nav.SaySpeed(tempKelvin)
+}
+
+func (ac *Aircraft) SayIndicatedSpeed() av.CommandIntent {
+	return ac.Nav.SayIndicatedSpeed()
+}
+
+func (ac *Aircraft) SayMach(tempKelvin float32) av.CommandIntent {
+	return ac.Nav.SayMach(tempKelvin)
 }
 
 func (ac *Aircraft) SayHeading() av.CommandIntent {
@@ -306,8 +318,8 @@ func (ac *Aircraft) DepartFixDirect(fixa, fixb string) av.CommandIntent {
 	return ac.Nav.DepartFixDirect(strings.ToUpper(fixa), strings.ToUpper(fixb))
 }
 
-func (ac *Aircraft) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) av.CommandIntent {
-	return ac.Nav.CrossFixAt(strings.ToUpper(fix), ar, speed)
+func (ac *Aircraft) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int, mach float32) av.CommandIntent {
+	return ac.Nav.CrossFixAt(strings.ToUpper(fix), ar, speed, mach)
 }
 
 func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport, lahsoRunway string, lg *log.Logger) av.CommandIntent {
@@ -531,7 +543,7 @@ func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *av.Radi
 
 func (ac *Aircraft) DepartOnCourse(simTime time.Time, lg *log.Logger) {
 	if ac.FlightPlan.Exit == "" {
-		lg.Warn("unset \"exit\" for departure", slog.String("adsb_callsign", string(ac.ADSBCallsign)))
+		lg.Warn(`unset "exit" for departure`, slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
 	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), string(ac.FlightPlan.Exit), simTime)
 }

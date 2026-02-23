@@ -10,15 +10,17 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
 
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
 )
 
-// Cached resource data, loaded asynchronously at startup via init().
+// Cached resource data, loaded asynchronously at startup via Init().
 // Each cache uses a channel that is closed when loading completes;
 // callers block on the channel if the data isn't ready yet.
 var (
@@ -29,12 +31,18 @@ var (
 	}
 	atmosCache struct {
 		done    chan struct{}
-		byTime  map[string]*AtmosByTime // keyed by TRACON
-		timeInt map[string][]util.TimeInterval
+		byTime  map[string]*AtmosByTime        // keyed by facility (TRACON or ARTCC)
+		timeInt map[string][]util.TimeInterval // keyed by facility
 	}
 )
 
-func init() {
+var wxInitOnce sync.Once
+
+func Init() {
+	wxInitOnce.Do(initResources)
+}
+
+func initResources() {
 	metarCache.done = make(chan struct{})
 	go func() {
 		defer close(metarCache.done)
@@ -58,13 +66,13 @@ func init() {
 			}
 
 			filename := filepath.Base(path)
-			tracon := strings.TrimSuffix(filename, ".msgpack.zst")
+			facility := strings.TrimSuffix(filename, ".msgpack.zst")
 
-			atmosByTime, err := loadAtmosByTime(tracon)
+			atmosByTime, err := loadAtmosByTime(facility)
 			if err != nil {
 				return nil
 			}
-			atmosCache.byTime[tracon] = atmosByTime
+			atmosCache.byTime[facility] = atmosByTime
 
 			var atmosTimes []time.Time
 			for t := range atmosByTime.SampleStacks {
@@ -74,7 +82,7 @@ func init() {
 
 			intervals := MergeAndAlignToMidnight(AtmosIntervals(atmosTimes))
 			if len(intervals) > 0 {
-				atmosCache.timeInt[tracon] = intervals
+				atmosCache.timeInt[facility] = intervals
 			}
 
 			return nil
@@ -84,6 +92,7 @@ func init() {
 
 // GetMETAR returns METAR data from bundled resources for the specified airports.
 func GetMETAR(airports []string) (map[string]METARSOA, error) {
+	Init()
 	<-metarCache.done
 	if metarCache.err != nil {
 		return nil, metarCache.err
@@ -99,26 +108,52 @@ func GetMETAR(airports []string) (map[string]METARSOA, error) {
 	return m, nil
 }
 
-// GetTimeIntervals returns available time intervals from bundled resources.
-// Returns a map from TRACON to available time intervals.
-func GetTimeIntervals() map[string][]util.TimeInterval {
+// GetTRACONTimeIntervals returns available time intervals for TRACONs from
+// bundled resources. Returns a map from TRACON id to available time
+// intervals.
+func GetTRACONTimeIntervals() map[string][]util.TimeInterval {
+	Init()
 	<-atmosCache.done
-	return atmosCache.timeInt
+
+	result := make(map[string][]util.TimeInterval)
+	for facility, intervals := range atmosCache.timeInt {
+		if _, ok := av.DB.TRACONs[facility]; ok {
+			result[facility] = intervals
+		}
+	}
+	return result
 }
 
-// GetAtmosByTime returns atmospheric data for a TRACON from bundled resources.
-func GetAtmosByTime(tracon string) (*AtmosByTime, error) {
+// GetARTCCTimeIntervals returns available time intervals for ARTCCs from
+// bundled resources. Returns a map from ARTCC id to available time
+// intervals.
+func GetARTCCTimeIntervals() map[string][]util.TimeInterval {
+	Init()
 	<-atmosCache.done
-	if abt, ok := atmosCache.byTime[tracon]; ok {
+
+	result := make(map[string][]util.TimeInterval)
+	for facility, intervals := range atmosCache.timeInt {
+		if _, ok := av.DB.ARTCCs[facility]; ok {
+			result[facility] = intervals
+		}
+	}
+	return result
+}
+
+// GetAtmosByTime returns atmospheric data for a facility from bundled resources.
+func GetAtmosByTime(facility string) (*AtmosByTime, error) {
+	Init()
+	<-atmosCache.done
+	if abt, ok := atmosCache.byTime[facility]; ok {
 		return abt, nil
 	}
-	// Not in cache (no atmos file for this TRACON); load directly.
-	return loadAtmosByTime(tracon)
+	// Not in cache (no atmos file for this facility); load directly.
+	return loadAtmosByTime(facility)
 }
 
-// loadAtmosByTime reads and decodes atmospheric data for a single TRACON from disk.
-func loadAtmosByTime(tracon string) (*AtmosByTime, error) {
-	path := "wx/atmos/" + tracon + ".msgpack.zst"
+// loadAtmosByTime reads and decodes atmospheric data for a single facility from disk.
+func loadAtmosByTime(facility string) (*AtmosByTime, error) {
+	path := "wx/atmos/" + facility + ".msgpack.zst"
 
 	f, err := fs.ReadFile(util.GetResourcesFS(), path)
 	if err != nil {

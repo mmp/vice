@@ -78,7 +78,8 @@ func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float
 	// Baseline climb and descent capabilities in ft/minute
 	climb, descent := nav.Perf.Rate.Climb, nav.Perf.Rate.Descent
 
-	climb *= nav.atmosClimbFactor(wxs)
+	atmosFactor := nav.atmosClimbFactor(wxs)
+	climb *= atmosFactor
 	// Reduce rates from highest possible to be more realistic.
 	if !nav.Altitude.Expedite {
 		// For high performing aircraft, reduce climb rate after 5,000'
@@ -88,6 +89,9 @@ func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float
 		climb = min(climb, targetRate)
 		descent = min(descent, targetRate)
 	}
+
+	NavLog(callsign, simTime, NavLogAltitude, "atmosFactor=%.3f climb=%.0f descent=%.0f pressure=%.1f temp=%.1f",
+		atmosFactor, climb, descent, wxs.Pressure(), wxs.Temperature())
 
 	const rateFadeAltDifference = 500
 	const rateMaxDeltaPercent = 0.075
@@ -212,10 +216,10 @@ func (nav *Nav) atmosClimbFactor(wxs wx.Sample) float32 {
 		humidityFactor = 0.95 // -5% average
 	}
 
-	// If f is NaN, the factors might have issues, but we'll just return it
-
 	// Ad-hoc clamp and softening to reduce effect at high temperatures.
-	return max(0.5, math.Sqrt(tempFactor*altFactor*humidityFactor))
+	// Clamp the product before sqrt: the linear altitude correction goes
+	// negative above ~33,000' for jets, which would produce NaN from sqrt.
+	return max(0.5, math.Sqrt(max(0, tempFactor*altFactor*humidityFactor)))
 }
 
 // mbToPressureAltitude converts pressure in millibars to pressure altitude in feet

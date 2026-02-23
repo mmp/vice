@@ -10,7 +10,7 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-func init() {
+func registerSupeCommands() {
 	// 8.1 Enable / inhibit CA system-wide
 	registerCommand(CommandModeCollisionAlert, "AE", func(ps *Preferences) CommandStatus {
 		if !ps.DisableCAWarnings {

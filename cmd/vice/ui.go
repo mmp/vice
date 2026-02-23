@@ -437,6 +437,7 @@ If no speed is given, "cancel speed restrictions".`, "*S210*, *S*"},
 	{"*TS_kts", `"After reaching _alt_, reduce/increase speed to _kts_", where _alt_ is a previously-assigned
 altitude. (*TS* = 'then speed')`, "*TS210*"},
 	{"*E_appr", `"Expect the _appr_ approach."`, "*EI2L*"},
+	{"*E*", `"Standby; re-issue expect for the assigned approach."`, "*E*"},
 	{"*C_appr", `"Cleared _appr_ approach."`, "*CI2L*"},
 	{"*C*", `"Cleared for the approach that was previously assigned."`, "*C*"},
 	{"*TO*", `"Contact tower"`, "*TO*"},
@@ -454,8 +455,8 @@ var secondaryAcCommands = [][3]string{
 	{"*H_fix*", `"Hold at _fix_ (published hold)".`, "*HJIMEE*"},
 	{"*H_fix*/[opts]",
 		`"Hold at _fix_ (controller-specified)." Options: *L*/*R* (turns), *xxNM*/*xxM* (legs), *Rxxx* (radial, req'd).`, "*HJIMEE/L/5NM/R090*"},
-	{"*C_fix*/A_alt*/S_kts",
-		`"Cross _fix_ at _alt_ / _kts_ knots." Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
+	{"*C_fix*/A_alt*/S_kts*/M_mach*",
+		`"Cross _fix_ at _alt_ / _kts_ knots / mach." Any combination of *A*, *S*, and *M* may be specified.`, "*CCAMRN/A110+*"},
 	{"*ED*", `"Expedite descent"`, "*ED*"},
 	{"*EC*", `"Expedite climb"`, "*EC*"},
 	{"*SMIN*", `"Maintain slowest practical speed".`, "*SMIN*"},
@@ -1035,7 +1036,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 				case "darwin":
 					hint = "Please check System Settings -> Privacy & Security -> Microphone and ensure vice has permission."
 				case "windows":
-					hint = "Please check Settings -> Privacy & Security -> Microphone and ensure \"Let desktop apps access your microphone\" is enabled."
+					hint = `Please check Settings -> Privacy & Security -> Microphone and ensure "Let desktop apps access your microphone" is enabled.`
 				default:
 					hint = "Please check your system's audio settings and ensure microphone access is permitted."
 				}

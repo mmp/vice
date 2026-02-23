@@ -34,7 +34,7 @@ type StorageBackend interface {
 // Pool a limited number of them to keep memory use under control.
 var zstdEncoders chan *zstd.Encoder
 
-func init() {
+func initZstdEncoders() {
 	const nenc = 16
 	zstdEncoders = make(chan *zstd.Encoder, nenc)
 	for range nenc {
