@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	"maps"
+	gomath "math"
 	"slices"
 	"strconv"
 	"strings"
@@ -1511,7 +1512,14 @@ func (s *Sim) handleAirportAdvisory(ac *Aircraft, oclock int, miles int) av.Comm
 
 	// Probability increases as distance decreases relative to effective range.
 	metar := s.State.METAR[arrivalAirport]
-	maxRange := effectiveVisualRange(metar)
+	var apAltAGL float32
+	if faa, ok := av.DB.Airports[arrivalAirport]; ok {
+		apAltAGL = ac.Altitude() - float32(faa.Elevation)
+		if apAltAGL < 0 {
+			apAltAGL = 0
+		}
+	}
+	maxRange := effectiveVisualRange(metar, apAltAGL)
 	actualDist := math.NMDistance2LLFast(ac.Position(), ap.Location, ac.NmPerLongitude())
 	seeProb := float32(0.8) * (1.0 - actualDist/maxRange*0.5)
 	seeProb = max(0.2, min(0.95, seeProb))
@@ -1982,8 +1990,15 @@ func (s *Sim) checkVisualEligibility(ac *Aircraft) VisualEligibility {
 		}
 	}
 
-	// Must be within effective visual range (METAR visibility capped at 15nm).
-	maxRange := effectiveVisualRange(metar)
+	// Must be within effective visual range (METAR visibility + altitude bonus).
+	var altAGL float32
+	if faa, ok := av.DB.Airports[arrivalAirport]; ok {
+		altAGL = ac.Altitude() - float32(faa.Elevation)
+		if altAGL < 0 {
+			altAGL = 0
+		}
+	}
+	maxRange := effectiveVisualRange(metar, altAGL)
 	dist := math.NMDistance2LLFast(ac.Position(), ap.Location, ac.NmPerLongitude())
 	if dist > maxRange {
 		return VisualEligibility{}
@@ -2008,7 +2023,8 @@ func (s *Sim) checkVisualEligibility(ac *Aircraft) VisualEligibility {
 
 // Tunables for the spontaneous visual-request model.
 const (
-	visualMaxDistance   = float32(15)   // nm; absolute cap on field-in-sight range
+	visualMaxDistance   = float32(25)   // nm; absolute cap on field-in-sight range
+	hazeScaleHeight     = float32(2500) // ft; aerosol extinction e-folding height in the boundary layer
 	visualMaxBearingOff = float32(120)  // degrees off nose; forward visibility arc
 	visualFieldProb     = float32(0.10) // fraction of pilots who spontaneously report field in sight
 	visualRequestProb   = float32(0.10) // fraction of field-in-sight pilots who also request the visual
@@ -2017,14 +2033,36 @@ const (
 )
 
 // effectiveVisualRange returns the maximum distance (in nautical miles) at
-// which a pilot can identify the field, based on METAR visibility capped
-// at visualMaxDistance.
-func effectiveVisualRange(metar wx.METAR) float32 {
+// which a pilot can identify the field, based on METAR visibility and
+// aircraft altitude AGL.
+//
+// METAR visibility is a ground-level measurement. Aerosol concentration
+// (and thus the extinction coefficient σ) decays exponentially with
+// altitude: σ(z) = σ₀ × exp(-z/H), where H is the haze scale height
+// (~2500 ft in the boundary layer). Integrating σ along the slant path
+// from the aircraft at altitude h to the airport at ground level
+// (Beer-Lambert law), and using Koschmieder to convert METAR visibility
+// to σ₀ (σ₀ = 3.912/V_surface), gives:
+//
+//	effectiveRange = surfaceVisibility × h / (H × (1 - exp(-h/H)))
+//
+// As h→0 this reduces to surfaceVisibility (L'Hôpital). At altitude the
+// pilot looks through proportionally less of the dense haze layer, so
+// effective range increases. The result is capped at visualMaxDistance.
+func effectiveVisualRange(metar wx.METAR, altitudeAGL float32) float32 {
 	vis, err := metar.Visibility()
 	if err != nil {
 		return visualMaxDistance
 	}
 	visNM := vis * math.StatuteMilesToNauticalMiles
+
+	// Apply the slant-path extinction integral.
+	if altitudeAGL > 1 { // avoid division by zero; at ground level factor is 1
+		h := float64(altitudeAGL)
+		H := float64(hazeScaleHeight)
+		visNM *= float32(h / (H * (1 - gomath.Exp(-h/H))))
+	}
+
 	if visNM > visualMaxDistance {
 		return visualMaxDistance
 	}
@@ -3491,4 +3529,3 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		return nil, ErrInvalidCommandSyntax
 	}
 }
-
