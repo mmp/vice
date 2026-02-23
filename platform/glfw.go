@@ -351,34 +351,63 @@ func (g *glfwPlatform) NewFrame() {
 // with certain DPI scaling configurations. imgui asserts that WorkRect is
 // contained in MainRect during NewFrame; without this clamp the assertion
 // crashes the application. See https://github.com/ocornut/imgui/issues/7219
+//
+// The implementation accesses the C ImGuiPlatformMonitor struct fields
+// directly via unsafe.Pointer rather than using the cimgui-go Go wrapper
+// methods, which crash under Go 1.25's stricter cgo pointer checker due
+// to the way ReinterpretCast passes pointers across the cgo boundary.
 func clampMonitorWorkBounds() {
 	pio := imgui.CurrentPlatformIO()
-	for _, mon := range pio.Monitors().Slice() {
-		mainPos := mon.MainPos()
-		mainSize := mon.MainSize()
-		workPos := mon.WorkPos()
-		workSize := mon.WorkSize()
+	monitors := pio.Monitors()
+	if monitors.Size == 0 {
+		return
+	}
 
-		mainRight := mainPos.X + mainSize.X
-		mainBottom := mainPos.Y + mainSize.Y
+	// monitors.Data is *PlatformMonitor, a Go struct whose sole field
+	// is CData (*C.ImGuiPlatformMonitor), a C pointer to the first
+	// element of the C array of monitors.
+	arrayBase := *(*unsafe.Pointer)(unsafe.Pointer(monitors.Data))
 
-		if workPos.X < mainPos.X {
-			workSize.X -= mainPos.X - workPos.X
-			workPos.X = mainPos.X
-		}
-		if workPos.Y < mainPos.Y {
-			workSize.Y -= mainPos.Y - workPos.Y
-			workPos.Y = mainPos.Y
-		}
-		if workPos.X+workSize.X > mainRight {
-			workSize.X = mainRight - workPos.X
-		}
-		if workPos.Y+workSize.Y > mainBottom {
-			workSize.Y = mainBottom - workPos.Y
-		}
+	// C struct layout (64-bit):
+	//   ImVec2 MainPos  [offset  0] (2 x float32)
+	//   ImVec2 MainSize [offset  8]
+	//   ImVec2 WorkPos  [offset 16]
+	//   ImVec2 WorkSize [offset 24]
+	//   float  DpiScale [offset 32]
+	//   void*  PlatformHandle [offset 40, with 4 bytes padding]
+	// Total size: 48 bytes on 64-bit, 40 on 32-bit.
+	ptrSize := unsafe.Sizeof(uintptr(0))
+	monitorSize := uintptr(36) + (ptrSize-(36%ptrSize))%ptrSize + ptrSize
 
-		mon.SetWorkPos(workPos)
-		mon.SetWorkSize(workSize)
+	for i := range monitors.Size {
+		mon := unsafe.Add(arrayBase, int(uintptr(i)*monitorSize))
+
+		mainPosX := *(*float32)(unsafe.Add(mon, 0))
+		mainPosY := *(*float32)(unsafe.Add(mon, 4))
+		mainSizeX := *(*float32)(unsafe.Add(mon, 8))
+		mainSizeY := *(*float32)(unsafe.Add(mon, 12))
+		workPosX := (*float32)(unsafe.Add(mon, 16))
+		workPosY := (*float32)(unsafe.Add(mon, 20))
+		workSizeX := (*float32)(unsafe.Add(mon, 24))
+		workSizeY := (*float32)(unsafe.Add(mon, 28))
+
+		mainRight := mainPosX + mainSizeX
+		mainBottom := mainPosY + mainSizeY
+
+		if *workPosX < mainPosX {
+			*workSizeX -= mainPosX - *workPosX
+			*workPosX = mainPosX
+		}
+		if *workPosY < mainPosY {
+			*workSizeY -= mainPosY - *workPosY
+			*workPosY = mainPosY
+		}
+		if *workPosX+*workSizeX > mainRight {
+			*workSizeX = mainRight - *workPosX
+		}
+		if *workPosY+*workSizeY > mainBottom {
+			*workSizeY = mainBottom - *workPosY
+		}
 	}
 }
 
