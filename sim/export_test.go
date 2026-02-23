@@ -45,13 +45,13 @@ func MakeTestAircraft(callsign av.ADSBCallsign, runway string) *Aircraft {
 		},
 		Nav: nav.Nav{
 			FlightState: nav.FlightState{
-				Position:               [2]float32{0, 5.0 / 60}, // 5nm north
-				Heading:                180,
-				Altitude:               3000,
-				NmPerLongitude:         52,
-				MagneticVariation:      0,
-				ArrivalAirport:         av.Waypoint{Fix: "KJFK"},
-				ArrivalAirportLocation: [2]float32{0, 0},
+				Position:                [2]float32{0, 5.0 / 60}, // 5nm north
+				Heading:                 180,
+				Altitude:                3000,
+				NmPerLongitude:          52,
+				MagneticVariation:       0,
+				ArrivalAirport:          av.Waypoint{Fix: "KJFK"},
+				ArrivalAirportLocation:  [2]float32{0, 0},
 				ArrivalAirportElevation: 13,
 			},
 			Approach: nav.NavApproach{

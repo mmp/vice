@@ -47,13 +47,13 @@ func NewVisualScenario(t *testing.T, airportLoc math.Point2LL, runway string, ac
 		},
 		Nav: nav.Nav{
 			FlightState: nav.FlightState{
-				Position:          acPos,
-				Heading:           heading,
-				Altitude:          3000,
-				NmPerLongitude:    52,
-				MagneticVariation: 0,
-				ArrivalAirport:    av.Waypoint{Fix: "KJFK"},
-				ArrivalAirportLocation: airportLoc,
+				Position:                acPos,
+				Heading:                 heading,
+				Altitude:                3000,
+				NmPerLongitude:          52,
+				MagneticVariation:       0,
+				ArrivalAirport:          av.Waypoint{Fix: "KJFK"},
+				ArrivalAirportLocation:  airportLoc,
 				ArrivalAirportElevation: 13,
 			},
 			Approach: nav.NavApproach{
@@ -1163,7 +1163,7 @@ func TestScenarioAboveCeilingIMC(t *testing.T) {
 
 	vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
 	vs.SetMETAR("KJFK 10SM BKN030") // 3000ft ceiling, VMC surface
-	vs.SetAltitude(4000)             // above ceiling
+	vs.SetAltitude(4000)            // above ceiling
 
 	intent := vs.AirportAdvisory(12, 5)
 	vs.ExpectIMC(intent) // Aircraft in clouds → IMC response

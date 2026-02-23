@@ -1844,7 +1844,7 @@ func TestVisualApproachSTTPatterns(t *testing.T) {
 				State: "arrival",
 				CandidateApproaches: map[string]string{
 					"Visual belmont runway two two left": "VB2L", // charted visual — should NOT match
-					"I L S runway two two left":         "I22L",
+					"I L S runway two two left":          "I22L",
 				},
 			},
 			expected: []string{"EVA22L"},

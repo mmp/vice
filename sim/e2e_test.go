@@ -15,13 +15,13 @@ import (
 
 type e2eCase struct {
 	name          string
-	transcript    string                // what the controller said
+	transcript    string                  // what the controller said
 	sttAircraft   map[string]stt.Aircraft // STT context (callsign matching, approaches)
-	simSetup      func(s *sim.Sim)      // optional Sim tweaks (e.g., set FieldInSight)
-	wantCommand   string                // expected "CALLSIGN CMD" from STT
-	wantError     bool                  // should command dispatch fail?
-	wantReadback  string                // substring expected in readback (or "")
-	notInReadback string                // substring that must NOT appear
+	simSetup      func(s *sim.Sim)        // optional Sim tweaks (e.g., set FieldInSight)
+	wantCommand   string                  // expected "CALLSIGN CMD" from STT
+	wantError     bool                    // should command dispatch fail?
+	wantReadback  string                  // substring expected in readback (or "")
+	notInReadback string                  // substring that must NOT appear
 }
 
 func TestE2E_STTToSim(t *testing.T) {
@@ -49,7 +49,7 @@ func TestE2E_STTToSim(t *testing.T) {
 					CandidateApproaches: map[string]string{
 						"I L S runway two two left":  "I22L",
 						"I L S runway two two right": "I22R",
-						"Visual runway two two left":  "V22L",
+						"Visual runway two two left": "V22L",
 					},
 					AssignedApproach: "ILS Runway 22L",
 					State:            "arrival",
@@ -68,7 +68,7 @@ func TestE2E_STTToSim(t *testing.T) {
 					Callsign:     "AAL1232",
 					AircraftType: "A321",
 					CandidateApproaches: map[string]string{
-						"I L S runway three one right": "I31R",
+						"I L S runway three one right":  "I31R",
 						"Visual runway three one right": "V31R",
 					},
 					AssignedApproach: "ILS Runway 31R",
@@ -100,7 +100,7 @@ func TestE2E_STTToSim(t *testing.T) {
 					Callsign:     "SWA247",
 					AircraftType: "B738",
 					CandidateApproaches: map[string]string{
-						"I L S runway two six": "I26",
+						"I L S runway two six":  "I26",
 						"Visual runway two six": "V26",
 					},
 					AssignedApproach: "ILS Runway 26",
@@ -142,7 +142,7 @@ func TestE2E_STTToSim(t *testing.T) {
 					Callsign:     "DAL43",
 					AircraftType: "A321",
 					CandidateApproaches: map[string]string{
-						"I L S runway two two left": "I22L",
+						"I L S runway two two left":  "I22L",
 						"Visual runway two two left": "V22L",
 					},
 					AssignedApproach: "ILS Runway 22L",
