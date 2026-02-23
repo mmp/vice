@@ -1,0 +1,23 @@
+{
+  "transcript": "American 100 standby approach",
+  "callsign": "AAL100",
+  "command": "E",
+  "stt_aircraft": {
+    "American 100": {
+      "Callsign": "AAL100",
+      "AircraftType": "B738",
+      "Fixes": {},
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "I4R",
+      "SID": "",
+      "STAR": "CAMRN4",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "N56",
+      "TrackingController": "N56",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  }
+}

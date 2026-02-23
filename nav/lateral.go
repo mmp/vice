@@ -64,7 +64,7 @@ func (nav *Nav) updateHeading(callsign string, wxs wx.Sample, simTime time.Time)
 func (nav *Nav) updatePositionAndGS(wxs wx.Sample) {
 	// Calculate offset vector based on heading and current TAS.
 	hdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
-	TAS := nav.TAS() / 3600
+	TAS := nav.TAS(wxs.Temperature()+273.15) / 3600
 	flightVector := math.Scale2f(math.SinCos(math.Radians(hdg)), TAS)
 
 	// Further offset based on the wind
@@ -266,7 +266,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime time.Time)
 	// Note that turnRate is signed.
 	maxBankAngle := nav.Perf.Turn.MaxBankAngle
 	maxRollRate := nav.Perf.Turn.MaxBankRate
-	tasMS := nav.TAS() * 0.514444
+	tasMS := nav.TAS(wxs.Temperature()+273.15) * 0.514444
 	turnRate := func(bankAngle float32) float32 {
 		if bankAngle == 0 {
 			return 0
@@ -410,6 +410,20 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Approach.PassedApproachFix = true
 		}
 
+		if wp.FAF() && nav.InterceptedButNotCleared() {
+			// At the FAF without clearance, go around.
+			nav.Approach.GoAroundNoApproachClearance = true
+		} else if nav.InterceptedButNotCleared() && !nav.Approach.StandbyApproach {
+			if wp.IF() {
+				// At the IF, the pilot asks for approach clearance.
+				nav.Approach.RequestApproachClearance = true
+			} else if wp.OnApproach() {
+				// At an intermediate approach fix, check if the altitude
+				// makes descent to the FAF challenging (>300 ft/nm).
+				nav.checkEarlyApproachRequest(wp)
+			}
+		}
+
 		if wp.AltitudeRestriction() != nil && !nav.InterceptedButNotCleared() &&
 			(!nav.Approach.Cleared || wp.AltitudeRestriction().Range[0] < nav.FlightState.Altitude) {
 			// Don't climb if we're cleared approach and below the next
@@ -437,7 +451,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			hdg := *nfa.Depart.Heading
 			nav.Heading = NavHeading{Assigned: &hdg}
 		} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
-			if wps, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
+			if wps, _, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
 				// Hacky: below we peel off the current waypoint, so re-add
 				// it here so everything works out.
 				nav.Waypoints = append([]av.Waypoint{*wp}, wps...)
@@ -498,8 +512,8 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 // turnRateAndRadius calculates the steady-state turn rate and radius
 // based on aircraft performance and current state.
 // Returns turnRate in deg/s and radius in nm.
-func (nav *Nav) turnRateAndRadius() (turnRate, radius float32) {
-	TAS_ms := nav.TAS() * 0.514444
+func (nav *Nav) turnRateAndRadius(tempKelvin float32) (turnRate, radius float32) {
+	TAS_ms := nav.TAS(tempKelvin) * 0.514444
 	bankRad := math.Radians(nav.Perf.Turn.MaxBankAngle)
 	turnRate = min(math.Degrees(9.81*math.Tan(bankRad)/TAS_ms), 3.0)
 	// R = V / ω where V is in nm/s and ω is in rad/s
@@ -677,7 +691,7 @@ func (nav *Nav) shouldTurnForOutboundAnalytical(p math.Point2LL, hdg float32, tu
 		return false
 	}
 
-	_, radius := nav.turnRateAndRadius()
+	_, radius := nav.turnRateAndRadius(240) // standard atmosphere approximation
 	if radius == 0 {
 		return false
 	}
@@ -720,7 +734,7 @@ func (nav *Nav) shouldTurnToInterceptAnalytical(p0 math.Point2LL, hdg float32, t
 		return false
 	}
 
-	_, radius := nav.turnRateAndRadius()
+	_, radius := nav.turnRateAndRadius(240) // standard atmosphere approximation
 	if radius == 0 {
 		return false
 	}
@@ -769,5 +783,36 @@ func TurnAngle(from, to float32, turn av.TurnDirection) float32 {
 
 	default:
 		panic("unhandled TurnDirection")
+	}
+}
+
+// checkEarlyApproachRequest checks whether the aircraft is too high to
+// comfortably descend to the FAF at 300 ft/nm or less.  If so, it sets
+// RequestApproachClearance so the pilot asks early.
+func (nav *Nav) checkEarlyApproachRequest(currentWp *av.Waypoint) {
+	// Find the FAF in the remaining waypoints and compute the distance.
+	var fafAlt float32
+	var dist float32
+	found := false
+	prev := currentWp.Location
+	for _, wp := range nav.Waypoints {
+		d := math.NMDistance2LL(prev, wp.Location)
+		dist += d
+		prev = wp.Location
+		if wp.FAF() {
+			if ar := wp.AltitudeRestriction(); ar != nil {
+				fafAlt = ar.Range[0]
+			}
+			found = true
+			break
+		}
+	}
+	if !found || fafAlt == 0 || dist < 0.1 {
+		return
+	}
+
+	altToLose := nav.FlightState.Altitude - fafAlt
+	if altToLose > 0 && altToLose/dist > 300 {
+		nav.Approach.RequestApproachClearance = true
 	}
 }

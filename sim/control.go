@@ -1326,6 +1326,17 @@ func (s *Sim) AssignHeading(hdg *HeadingArgs) (av.CommandIntent, error) {
 		})
 }
 
+func (s *Sim) AssignMach(tcw TCW, callsign av.ADSBCallsign, mach float32, afterAltitude bool) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			temp := s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime).Temperature() + 273.15
+			return ac.AssignMach(mach, afterAltitude, temp)
+		})
+}
+
 func (s *Sim) AssignSpeed(tcw TCW, callsign av.ADSBCallsign, speed int, afterAltitude bool) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -1382,7 +1393,29 @@ func (s *Sim) SaySpeed(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, err
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.SaySpeed()
+			tempK := s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime).Temperature() + 273.15
+			return ac.SaySpeed(tempK)
+		})
+}
+
+func (s *Sim) SayIndicatedSpeed(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.SayIndicatedSpeed()
+		})
+}
+
+func (s *Sim) SayMach(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			tempK := s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime).Temperature() + 273.15
+			return ac.SayMach(tempK)
 		})
 }
 
@@ -1466,13 +1499,13 @@ func (s *Sim) DepartFixHeading(tcw TCW, callsign av.ADSBCallsign, fix string, he
 		})
 }
 
-func (s *Sim) CrossFixAt(tcw TCW, callsign av.ADSBCallsign, fix string, ar *av.AltitudeRestriction, speed int) (av.CommandIntent, error) {
+func (s *Sim) CrossFixAt(tcw TCW, callsign av.ADSBCallsign, fix string, ar *av.AltitudeRestriction, speed int, mach float32) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.CrossFixAt(fix, ar, speed)
+			return ac.CrossFixAt(fix, ar, speed, mach)
 		})
 }
 
@@ -1905,13 +1938,14 @@ func (s *Sim) SayAgainCommand(tcw TCW, callsign av.ADSBCallsign, commandType str
 type PendingTransmissionType int
 
 const (
-	PendingTransmissionDeparture           PendingTransmissionType = iota // Departure checking in
-	PendingTransmissionArrival                                            // Arrival/handoff checking in
-	PendingTransmissionTrafficInSight                                     // "Traffic in sight" call
-	PendingTransmissionFlightFollowingReq                                 // Abbreviated "VFR request"
-	PendingTransmissionFlightFollowingFull                                // Full flight following request
-	PendingTransmissionGoAround                                           // Go-around announcement
-	PendingTransmissionEmergency                                          // Emergency stage transmission
+	PendingTransmissionDeparture                PendingTransmissionType = iota // Departure checking in
+	PendingTransmissionArrival                                                 // Arrival/handoff checking in
+	PendingTransmissionTrafficInSight                                          // "Traffic in sight" call
+	PendingTransmissionFlightFollowingReq                                      // Abbreviated "VFR request"
+	PendingTransmissionFlightFollowingFull                                     // Full flight following request
+	PendingTransmissionGoAround                                                // Go-around announcement
+	PendingTransmissionEmergency                                               // Emergency stage transmission
+	PendingTransmissionRequestApproachClearance                                // Pilot requesting approach clearance
 )
 
 // PendingFrequencyChange represents a pilot switching to a new frequency.
@@ -2261,6 +2295,10 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 			rt.Add(", [tower sent us around for spacing|we were sent around for spacing]")
 			ac.SentAroundForSpacing = false
 		}
+		rt.Type = av.RadioTransmissionUnexpected
+
+	case PendingTransmissionRequestApproachClearance:
+		rt = av.MakeContactTransmission("[are we cleared for the approach|looking for the approach|we're going to need the approach here shortly]")
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionEmergency:
@@ -2750,7 +2788,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			fix := components[0][1:]
 			var ar *av.AltitudeRestriction
 			speed := 0
-
+			mach := float32(0)
 			for _, cmd := range components[1:] {
 				if len(cmd) == 0 {
 					return nil, ErrInvalidCommandSyntax
@@ -2771,12 +2809,24 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 					if speed, err = strconv.Atoi(speedStr); err != nil {
 						return nil, err
 					}
+				} else if cmd[0] == 'M' {
+					machStr := cmd[1:]
+					machStr = strings.TrimSuffix(machStr, "+")
+					machStr = strings.TrimSuffix(machStr, "-")
+					mach64, err := strconv.ParseFloat(machStr, 32)
+					if err != nil {
+						return nil, err
+					}
+					if mach64 >= 1 {
+						mach64 /= 100
+					}
+					mach = float32(mach64)
 				} else {
 					return nil, ErrInvalidCommandSyntax
 				}
 			}
 
-			return s.CrossFixAt(tcw, callsign, fix, ar, speed)
+			return s.CrossFixAt(tcw, callsign, fix, ar, speed, mach)
 		} else if strings.HasPrefix(command, "CT") && len(command) > 2 {
 			// Only treat as contact command if the TCP exists as a valid controller;
 			// otherwise treat as cleared approach (e.g., "CTTL" -> cleared for TTL approach)
@@ -2827,6 +2877,12 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				lahsoRunway = components[1][5:] // Extract runway after "LAHSO"
 			}
 			return s.ExpectApproach(tcw, callsign, approach, lahsoRunway)
+		} else if command == "E" {
+			// Bare "E" re-issues expect for the already-assigned approach
+			if ac, ok := s.Aircraft[callsign]; ok && ac.Nav.Approach.AssignedId != "" {
+				return s.ExpectApproach(tcw, callsign, ac.Nav.Approach.AssignedId, "")
+			}
+			return av.MakeUnableIntent("unable. We haven't been told to expect an approach"), nil
 		} else {
 			return nil, ErrInvalidCommandSyntax
 		}
@@ -2911,6 +2967,21 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				Turn:         av.TurnLeft,
 			})
 		}
+	case 'M': // mach speed
+		// M78 for mach 0.78
+		// + and - operators work here as well
+		if len(command) != 3 {
+			return nil, ErrInvalidCommandSyntax
+		}
+
+		machStr := command[1:]
+		mach, err := strconv.ParseFloat(machStr, 32)
+		if err != nil {
+			return nil, ErrInvalidCommandSyntax
+		}
+		mach /= 100.0
+
+		return s.AssignMach(tcw, callsign, float32(mach), false)
 
 	case 'R':
 		if command == "RON" {
@@ -2951,6 +3022,10 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.MaintainMaximumForward(tcw, callsign)
 		} else if command == "SS" {
 			return s.SaySpeed(tcw, callsign)
+		} else if command == "SI" {
+			return s.SayIndicatedSpeed(tcw, callsign)
+		} else if command == "SM" {
+			return s.SayMach(tcw, callsign)
 		} else if strings.HasSuffix(command, "+") {
 			// Speed floor: S180+
 			kts, err := strconv.Atoi(command[1 : len(command)-1])
@@ -3032,7 +3107,13 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 					return nil, err
 				}
 				return s.AssignSpeed(tcw, callsign, kts, true)
-
+			case "TM":
+				mach, err := strconv.ParseFloat(command[2:], 32)
+				if err != nil {
+					return nil, err
+				}
+				mach /= 100.0
+				return s.AssignMach(tcw, callsign, float32(mach), true)
 			case "TA", "TC", "TD":
 				alt, err := strconv.Atoi(command[2:])
 				if err != nil {

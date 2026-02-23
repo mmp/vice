@@ -2,6 +2,7 @@ package eram
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -237,6 +238,11 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.Fl
 			cmd = "D" + fmt.Sprint(alt/100)
 		}
 		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
+	}
+	if spec.SecondaryScratchpad.IsSet {
+		if _, err := strconv.Atoi(spec.SecondaryScratchpad.Value[1:]); err == nil {
+			ep.runAircraftCommands(ctx, trk.ADSBCallsign, spec.SecondaryScratchpad.Value)
+		}
 	}
 }
 

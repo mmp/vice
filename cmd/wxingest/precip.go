@@ -35,6 +35,7 @@ func ingestPrecip(sb StorageBackend) error {
 	})
 
 	var totalBytes, totalObjects int64
+	var nErrors atomic.Int64
 	for range *nWorkers {
 		eg.Go(func() error {
 			for path := range ch {
@@ -46,7 +47,9 @@ func ingestPrecip(sb StorageBackend) error {
 
 				n, month, err := processPrecip(sb, path)
 				if err != nil {
-					return fmt.Errorf("%s: %v", path, err)
+					LogError("%s: %v", path, err)
+					nErrors.Add(1)
+					continue
 				}
 
 				mu.Lock()
@@ -65,6 +68,9 @@ func ingestPrecip(sb StorageBackend) error {
 
 	err := eg.Wait()
 	LogInfo("Ingested %s of WX stored in %d objects", util.ByteCount(totalBytes), totalObjects)
+	if ne := nErrors.Load(); ne > 0 {
+		LogError("%d objects had errors and were skipped; they remain in scrape/ for the next run", ne)
+	}
 	if err != nil {
 		return err
 	}
@@ -209,9 +215,21 @@ func generateMonthlyManifests(sb StorageBackend, months map[string]bool) error {
 		}
 
 		manifestPath := wx.MonthlyManifestPath("precip", month)
-		n, err := sb.StoreObject(manifestPath, manifest.RawManifest())
+		raw := manifest.RawManifest()
+		var n int64
+		err := retry(3, 10*time.Second, func() error {
+			var err error
+			n, err = sb.StoreObject(manifestPath, raw)
+			return err
+		})
 		if err != nil {
-			return fmt.Errorf("failed to store manifest for %s: %w", month, err)
+			localFile := fmt.Sprintf("precip-manifest-%s.msgpack.zst", month)
+			if localErr := storeObjectLocal(localFile, raw); localErr != nil {
+				LogError("MANIFEST WRITE FAILED for %s and local save also failed: upload: %v, local: %v", month, err, localErr)
+			} else {
+				LogError("MANIFEST WRITE FAILED for %s: %v -- saved to %s; upload to gs://vice-wx/%s", month, err, localFile, manifestPath)
+			}
+			continue
 		}
 
 		LogInfo("Stored %d items in %s (%s)", totalEntries, manifestPath, util.ByteCount(n))
@@ -250,15 +268,15 @@ func generateConsolidatedManifest(sb StorageBackend) error {
 
 			monthlyManifest := wx.MakeManifest(rawManifest)
 
-			// Collect timestamps for each TRACON
-			for _, tracon := range monthlyManifest.TRACONs() {
-				times, ok := monthlyManifest.GetTimestamps(tracon)
+			// Collect timestamps for each facility
+			for _, facility := range monthlyManifest.Facilities() {
+				times, ok := monthlyManifest.GetTimestamps(facility)
 				if !ok {
 					continue
 				}
 
 				mu.Lock()
-				timestamps[tracon] = append(timestamps[tracon], times...)
+				timestamps[facility] = append(timestamps[facility], times...)
 				mu.Unlock()
 			}
 
@@ -278,9 +296,21 @@ func generateConsolidatedManifest(sb StorageBackend) error {
 
 	// Store consolidated manifest
 	manifestPath := wx.ManifestPath("precip")
-	n, err := sb.StoreObject(manifestPath, consolidated.RawManifest())
+	raw := consolidated.RawManifest()
+	var n int64
+	err = retry(3, 10*time.Second, func() error {
+		var err error
+		n, err = sb.StoreObject(manifestPath, raw)
+		return err
+	})
 	if err != nil {
-		return fmt.Errorf("failed to store consolidated manifest: %w", err)
+		localFile := "precip-manifest-consolidated.msgpack.zst"
+		if localErr := storeObjectLocal(localFile, raw); localErr != nil {
+			LogError("MANIFEST WRITE FAILED for consolidated precip and local save also failed: upload: %v, local: %v", err, localErr)
+		} else {
+			LogError("MANIFEST WRITE FAILED for consolidated precip: %v -- saved to %s; upload to gs://vice-wx/%s", err, localFile, manifestPath)
+		}
+		return err
 	}
 
 	LogInfo("Stored %d items in %s (%s) from monthly manifests", consolidated.TotalEntries(), manifestPath, util.ByteCount(n))

@@ -285,6 +285,18 @@ func registerAllCommands() {
 		WithName("say_speed"),
 		WithPriority(10),
 	)
+	registerSTTCommand(
+		"say indicated [speed|airspeed]",
+		func() string { return "SI" },
+		WithName("say_indicated"),
+		WithPriority(12),
+	)
+	registerSTTCommand(
+		"say mach [number]",
+		func() string { return "SM" },
+		WithName("say_mach"),
+		WithPriority(12),
+	)
 
 	registerSTTCommand(
 		"cancel speed [restrictions|restriction]",
@@ -435,6 +447,27 @@ func registerAllCommands() {
 		WithPriority(12),
 	)
 
+	registerSTTCommand(
+		"reduce|slow [speed] [to] mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("reduce_mach"), WithPriority(12),
+	)
+	registerSTTCommand(
+		"increase [speed] [to] mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("increase_mach"), WithPriority(12),
+	)
+	registerSTTCommand(
+		"maintain mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("maintain_mach"), WithPriority(10),
+	)
+	registerSTTCommand(
+		"mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d", mach) },
+		WithName("mach_only"), WithPriority(7),
+	)
+
 	// === NAVIGATION COMMANDS ===
 	registerSTTCommand(
 		"direct|proceed [direct] [to] [at] {fix}",
@@ -496,6 +529,13 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
+		"cross {fix} [at] mach [point] {mach}",
+		func(fix string, mach int) string { return fmt.Sprintf("C%s/M%d", fix, mach) },
+		WithName("cross_fix_mach"),
+		WithPriority(10),
+	)
+
+	registerSTTCommand(
 		"depart {fix} [heading] {heading}",
 		func(fix string, hdg int) string { return fmt.Sprintf("D%s/H%03d", fix, hdg) },
 		WithName("depart_fix_heading"),
@@ -539,6 +579,20 @@ func registerAllCommands() {
 		WithName("expect_approach"),
 		WithPriority(15),     // Higher than heading commands to match approach context first
 		WithSayAgainOnFail(), // "expect [approach]" should ask for clarification if approach unrecognized
+	)
+
+	registerSTTCommand(
+		"standby [for] [the] approach",
+		func() string { return "E" },
+		WithName("standby_approach"),
+		WithPriority(14),
+	)
+
+	registerSTTCommand(
+		"expect [the] approach",
+		func() string { return "E" },
+		WithName("expect_the_approach"),
+		WithPriority(14),
 	)
 
 	// "vectors {approach}" without SAYAGAIN - "vectors" alone (e.g., "vectors for sequence")

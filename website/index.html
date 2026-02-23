@@ -801,6 +801,18 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <td><code>TS210</code></td>
                   </tr>
                   <tr>
+                    <td><code>M</code><i>mach</i></td>
+                    <td>Gives the aircraft a mach speed restriction.</td>
+                    <td><code>M78</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>TM</code><i>mach</i></td>
+                    <td>Gives the aircraft a mach speed restriction to be
+                      applied after the aircraft climbs or descends to the
+                      most recent controller-specified altitude.</td>
+                    <td><code>TM78</code></td>
+                  </tr>
+                  <tr>
                     <td><code>SMIN</code></td>
                     <td>Directs the aircraft to maintain its slowest practical speed.</td>
                     <td><code>SMIN</code></td>
@@ -827,8 +839,20 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                   </tr>
                   <tr>
                     <td><code>SS</code></td>
-                    <td>Directs the aircraft to say its indicated airspeed.</td>
+                    <td>Directs the aircraft to say its indicated airspeed. If above its transition altitude, it will respond with its
+                      Mach number instead.
+                    </td>
                     <td><code>SS</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>SI</code></td>
+                    <td>Forces the pilot to give their indicated airspeed, regardless of their altitude.</td>
+                    <td><code>SI</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>SM</code></td>
+                    <td>Directs an aircraft to say its Mach number. This will only work when they're above their transition altitude.</td>
+                    <td><code>SM</code></td>
                   </tr>
                 </tbody>
               </table>
@@ -927,6 +951,12 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     is cleared for an approach and it also adds the approach
                     fixes to the end of the aircraft's route.</td>
                     <td><code>EI2L</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>E</code></td>
+                    <td>Re-issues expect for the already-assigned approach,
+                    telling the pilot to standby.</td>
+                    <td><code>E</code></td>
                   </tr>
                   <tr>
                     <td><code>C</code><i>approach</i></td>
@@ -1183,15 +1213,22 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <i>Speed (speed)</i> /  <i>Maintain (speed) knots</i>
                   </td>
                 </tr>
+                <tr><td>Assign Mach</td>
+                  <td>
+                    <i>Reduce mach to Mach (mach)</i> /  <i>Slow to Mach (mach)</i> /  <i>Increase to Mach (mach)</i> / 
+                    <i>Mach (mach)</i> /  <i>Maintain mach (mach)</i>
+                  </td>
+                </tr>
                 <tr><td>Speed at Fix</td>
                   <td>
-                    <i>Cross (fix) at (speed) knots</i>
+                    <i>Cross (fix) at (speed) knots</i> / <i>Cross (fix) at Mach (mach)</i>
                   </td>
                 </tr>
                 <tr><td>Speed after Altitude</td>
                   <td>
                     <i>...then reduce speed to (speed)</i> / <i>...then increase speed to (speed)</i> / <i>...then speed (speed)</i> /
-                    <i>at (altitude), increase/reduce speed to (speed)</i>:
+                    <i>at (altitude), increase/reduce speed to (speed)</i> / <i> ...then reduce to Mach (mach)</i> / <i>...then increase to Mach (mach)</i> / 
+                    <i>...then speed Mach (mach)</i> / <i>at (altitude), Mach (mach)</i>:
                     after an altitude assignment, then the speed adjustment will be made after the aircraft reaches the altitude.
                   </td>
                 </tr>
@@ -1226,6 +1263,16 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 <tr><td>Say Speed</td>
                   <td>
                     <i>Say speed</i> /  <i>Say airspeed</i>
+                  </td>
+                </tr>
+                <tr><td>Say Mach</td>
+                  <td>
+                    <i>Say Mach</i> /  <i>Say Mach number</i>
+                  </td>
+                </tr>
+                <tr><td>Say indicated airspeed</td>
+                  <td>
+                    <i>Say indicated</i> / <i>Say indicated airspeed</i>
                   </td>
                 </tr>
               </tbody>
@@ -1289,6 +1336,16 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <i>Intercept the localizer</i> /  <i>Join the localizer</i> /  <i>At (fix) intercept the localizer</i>
                   </td>
                 </tr>
+                  <tr><td>Standby Approach</td>
+                  <td>
+                    <i>Standby [for] [the] approach</i>
+                  </td>
+                  </tr>
+                  <tr><td>Expect Approach (standby)</td>
+                  <td>
+                    <i>Expect [the] approach</i>
+                  </td>
+                  </tr>
                 <tr><td>Cancel Approach</td>
                   <td>
                     <i>Cancel approach clearance</i>

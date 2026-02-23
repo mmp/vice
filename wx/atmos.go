@@ -204,11 +204,13 @@ func convertStacksToSOALevels[K comparable](stacks map[K]*AtmosSampleStack, keys
 			}
 			levels[i].Dewpoint = append(levels[i].Dewpoint, int8(dq))
 
-			h := level.Height + windHeightOffset // deal with slightly below sea level
+			h := level.Height + windHeightOffset // deal with below sea level
 			h = (h + 50) / 100                   // 100s of meters
-			if h < 0 || h > 255 {
-				return levels, fmt.Errorf("bad remapped height: %f not in 0-255", h)
-			}
+			// Clamp to uint8 range. Heights below -windHeightOffset can
+			// occur at the 1013.2 mb level near hurricanes with very low
+			// central pressure (the isobaric surface is well underground).
+			// Aircraft don't fly at these altitudes so clamping is fine.
+			h = math.Clamp(h, 0, 255)
 			levels[i].Height = append(levels[i].Height, uint8(h))
 		}
 	}
@@ -642,7 +644,7 @@ func LerpSample(x float32, s0, s1 Sample) Sample {
 
 func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid {
 	g := &AtmosGrid{
-		AltRange: [2]float32{24000, 0}, // will fix up from actual data below
+		AltRange: [2]float32{1e18, -1e18}, // will fix up from actual data below
 	}
 
 	// Check if region crosses date line (longitude span > 180°).
@@ -751,9 +753,13 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 			if !ok && idx > 0 {
 				idx--
 			}
+			idx = math.Clamp(idx, 0, NumSampleLevels-2)
 
 			s0, s1 := stack.Levels[idx], stack.Levels[idx+1]
-			t := (altm - s0.Height) / (s1.Height - s0.Height)
+			var t float32
+			if s1.Height != s0.Height {
+				t = (altm - s0.Height) / (s1.Height - s0.Height)
+			}
 
 			// Convert wind velocity from m/s to nm/s since the nav code all
 			// works w.r.t nautical miles. AtmosSample.UComponent/VComponent
@@ -925,7 +931,7 @@ func (ap *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
 }
 
 // MakeFallbackAtmosFromMETAR creates a simple AtmosByPointSOA from METAR wind data.
-// This is used as a fallback when actual atmospheric data is not available for a TRACON.
+// This is used as a fallback when actual atmospheric data is not available for a facility.
 // The resulting grid has a single point at the specified location with uniform wind
 // at all altitude levels based on the METAR surface wind.
 func MakeFallbackAtmosFromMETAR(metar METAR, location math.Point2LL) (*AtmosByPointSOA, error) {

@@ -76,6 +76,9 @@ func getCommandCategory(cmd string) string {
 			if strings.Contains(cmd, "/S") {
 				return "speed"
 			}
+			if strings.Contains(cmd, "/M") {
+				return "speed"
+			}
 			return "navigation" // default for other crossing restrictions
 		}
 		// C followed by letter without '/' is approach clearance (CI9L)
