@@ -1,0 +1,68 @@
+{
+  "Approach Clearance Requests": [
+    {
+      "label": "Direct to IF, clear before FAF",
+      "aircraft": [
+        {"callsign": "TEST1", "distance_nm": 8, "relative_to": "{if}", "speed": 210}
+      ],
+      "steps": [
+        {"command": "E{approach}", "callsign": "TEST1", "expect_readback": "{approach_name}"},
+        {"command": "D{if}", "callsign": "TEST1", "expect_readback": "direct {if}"},
+        {"wait_for": "approach_clearance_request"},
+        {"command": "C", "callsign": "TEST1", "expect_readback": "cleared"}
+      ]
+    },
+    {
+      "label": "Direct to IF, standby then clear",
+      "aircraft": [
+        {"callsign": "TEST1", "distance_nm": 8, "relative_to": "{if}", "speed": 210}
+      ],
+      "steps": [
+        {"command": "E{approach}", "callsign": "TEST1", "expect_readback": "{approach_name}"},
+        {"command": "D{if}", "callsign": "TEST1", "expect_readback": "direct {if}"},
+        {"wait_for": "approach_clearance_request"},
+        {"command": "E", "callsign": "TEST1", "expect_readback": "{approach_name}"},
+        {"command": "C", "callsign": "TEST1", "expect_readback": "cleared"}
+      ]
+    },
+    {
+      "label": "Direct to IF, no clearance (go-around)",
+      "aircraft": [
+        {"callsign": "TEST1", "distance_nm": 8, "relative_to": "{if}", "speed": 210,
+         "note": "do NOT clear - expect go-around at FAF"}
+      ],
+      "steps": [
+        {"command": "E{approach}", "callsign": "TEST1", "expect_readback": "{approach_name}"},
+        {"command": "D{if}", "callsign": "TEST1", "expect_readback": "direct {if}"},
+        {"wait_for": "approach_clearance_request"},
+        {"wait_for": "go_around"}
+      ]
+    }
+  ],
+  "Departure Basics": [
+    {
+      "label": "Heading assignment",
+      "departure": true,
+      "steps": [
+        {"wait_for": "check_in"},
+        {"command": "H090", "expect_readback": "090"}
+      ]
+    },
+    {
+      "label": "Altitude assignment",
+      "departure": true,
+      "steps": [
+        {"wait_for": "check_in"},
+        {"command": "A110", "expect_readback": "11,000"}
+      ]
+    },
+    {
+      "label": "Climb via SID",
+      "departure": true,
+      "steps": [
+        {"wait_for": "check_in"},
+        {"command": "CVS", "expect_readback": "climb via"}
+      ]
+    }
+  ]
+}
