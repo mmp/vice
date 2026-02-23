@@ -167,6 +167,15 @@ func (ac *Aircraft) GetSTTFixes() []string {
 		return len(fix) >= 3 && len(fix) <= 5 && fix[0] != '_'
 	}
 
+	// Include arrival and departure airports so STT can match airport
+	// names (e.g. "Kennedy 12 o'clock 12 miles" for AP command).
+	if ac.FlightPlan.ArrivalAirport != "" {
+		fixes = append(fixes, ac.FlightPlan.ArrivalAirport)
+	}
+	if ac.FlightPlan.DepartureAirport != "" {
+		fixes = append(fixes, ac.FlightPlan.DepartureAirport)
+	}
+
 	for _, wp := range ac.Nav.AssignedWaypoints() {
 		if math.NMDistance2LL(p, wp.Location) > 75 && len(fixes) > 0 {
 			break
