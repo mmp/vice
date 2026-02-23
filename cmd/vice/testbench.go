@@ -644,6 +644,26 @@ func (ds *TestBench) defaultCallsign(tc *TestBenchCase) av.ADSBCallsign {
 	return ""
 }
 
+// matchWaitFor checks whether the given event matches a wait_for condition.
+func matchWaitFor(waitFor string, event sim.Event) bool {
+	text := strings.ToLower(event.WrittenText)
+	switch waitFor {
+	case "check_in":
+		return event.RadioTransmissionType == av.RadioTransmissionContact
+	case "field_in_sight":
+		return strings.Contains(text, "field in sight") ||
+			strings.Contains(text, "airport in sight")
+	case "approach_clearance_request":
+		return strings.Contains(text, "cleared for the approach") ||
+			strings.Contains(text, "looking for the approach") ||
+			strings.Contains(text, "need the approach")
+	case "go_around":
+		return strings.Contains(text, "going around") ||
+			strings.Contains(text, "on the go")
+	}
+	return false
+}
+
 func (ds *TestBench) processEvents() {
 	if ds.activeTest == nil {
 		// Still drain events so the subscription doesn't fall behind.
@@ -670,23 +690,7 @@ func (ds *TestBench) processEvents() {
 		// For wait_for steps, accept contact/unexpected transmissions
 		// (spontaneous pilot reports).
 		if step.WaitFor != "" {
-			text := strings.ToLower(event.WrittenText)
-			matched := false
-			switch step.WaitFor {
-			case "check_in":
-				matched = event.RadioTransmissionType == av.RadioTransmissionContact
-			case "field_in_sight":
-				matched = strings.Contains(text, "field in sight") ||
-					strings.Contains(text, "airport in sight")
-			case "approach_clearance_request":
-				matched = strings.Contains(text, "cleared for the approach") ||
-					strings.Contains(text, "looking for the approach") ||
-					strings.Contains(text, "need the approach")
-			case "go_around":
-				matched = strings.Contains(text, "going around") ||
-					strings.Contains(text, "on the go")
-			}
-			if matched {
+			if matchWaitFor(step.WaitFor, event) {
 				ds.stepResults[ds.currentStep] = "pass"
 				ds.lastReadback = event.WrittenText
 				ds.lastReadbackCS = event.ADSBCallsign
@@ -720,10 +724,29 @@ func (ds *TestBench) processEvents() {
 			continue
 		}
 
+		// If the command step has no readback expectations, it's a
+		// "fire and forget" step — pass the readback through so the
+		// next step (e.g. wait_for) can evaluate it.
+		if step.ExpectReadback == "" && step.RejectReadback == "" {
+			ds.stepResults[ds.currentStep] = "pass"
+			ds.advanceStep()
+			// Re-evaluate this same event against the new current step.
+			if ds.currentStep < len(tc.Steps) {
+				next := ds.resolveStep(tc.Steps[ds.currentStep])
+				if next.WaitFor != "" && matchWaitFor(next.WaitFor, event) {
+					ds.stepResults[ds.currentStep] = "pass"
+					ds.lastReadback = event.WrittenText
+					ds.lastReadbackCS = event.ADSBCallsign
+					ds.advanceStep()
+				}
+			}
+			continue
+		}
+
 		// Verify readback against WrittenText (the structured form,
 		// not the randomized spoken form).
 		pass := true
-		if step.ExpectReadback != "" && !strings.Contains(text, strings.ToLower(step.ExpectReadback)) {
+		if !strings.Contains(text, strings.ToLower(step.ExpectReadback)) {
 			pass = false
 		}
 		if step.RejectReadback != "" && strings.Contains(text, strings.ToLower(step.RejectReadback)) {
