@@ -41,7 +41,7 @@ type Preferences struct {
 	CursorSize  int
 
 	VideoMapBrightness map[string]int
-	HistoryLength int
+	HistoryLength      int
 
 	UseRightClick bool
 
