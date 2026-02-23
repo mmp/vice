@@ -553,13 +553,16 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 
 		currentDeviceID := whisper.ProcessorDescription()
 
-		// If no GPU available (Windows/Linux without Vulkan), just use tiny model.
+		// If no GPU available (Windows/Linux without Vulkan), just use smallest model.
 		// On macOS, Metal is always available and handled by whisper.cpp internally.
 		if runtime.GOOS != "darwin" && !whisper.GPUEnabled() {
-			setWhisperBenchmarkStatus("No GPU available, using tiny model")
-			lg.Info("No GPU available, using tiny whisper model")
-			modelName := "ggml-tiny.en.bin"
-			loadModelDirect(modelName, currentDeviceID, 0, lg) // 0 = unknown realtime factor
+			modelName := whisperModelTiers[0]
+			setWhisperBenchmarkStatus("No GPU available, using " + modelName)
+			lg.Infof("No GPU available, using whisper model %s", modelName)
+			if !loadModelDirect(modelName, currentDeviceID, 0, lg) {
+				whisperModelErr = fmt.Errorf("failed to load fallback whisper model %s", modelName)
+				setWhisperBenchmarkStatus("Failed to load model")
+			}
 			return
 		}
 
