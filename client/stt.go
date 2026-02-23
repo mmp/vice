@@ -79,6 +79,11 @@ func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty a
 		tm.holdCount--
 	}
 
+	// Clear any post-transmission hold timer. After a contact plays, an
+	// 8-second hold gives the controller time to respond; once the
+	// controller has responded and we have a readback, that hold is moot.
+	tm.holdUntil = time.Time{}
+
 	if len(pcm) == 0 {
 		tm.lg.Warnf("Skipping readback for %s due to empty PCM", callsign)
 		return
