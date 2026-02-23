@@ -625,7 +625,7 @@ func (nav *Nav) ClearedDirectVisual(runway string, simTime time.Time) (av.Comman
 	nav.Speed = NavSpeed{}
 
 	return av.ClearedApproachIntent{
-		Approach:   "visual runway " + runway,
+		Approach:   "Visual Approach Runway " + runway,
 		CancelHold: cancelHold,
 	}, true
 }

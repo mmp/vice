@@ -7,6 +7,7 @@ package aviation
 import (
 	"reflect"
 	"slices"
+	"strings"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
@@ -531,7 +532,11 @@ type ApproachIntent struct {
 func (a ApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	switch a.Type {
 	case ApproachExpect:
-		rt.Add("[we'll expect the|expecting the|we'll plan for the] {appr} approach", a.ApproachName)
+		suffix := " approach"
+		if strings.Contains(strings.ToLower(a.ApproachName), "approach") {
+			suffix = ""
+		}
+		rt.Add("[we'll expect the|expecting the|we'll plan for the] {appr}"+suffix, a.ApproachName)
 		if a.LAHSORunway != "" {
 			rt.Add("[and we'll hold short of|hold short of] runway {rwy}", a.LAHSORunway)
 		}
@@ -561,10 +566,17 @@ func (c ClearedApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		prefix = "cancel [the|] hold, "
 	}
 
+	// Visual approaches include "approach" in the name (e.g. "visual approach runway 22L"),
+	// so skip the trailing [approach|] to avoid "approach approach".
+	suffix := " [approach|]"
+	if strings.Contains(strings.ToLower(c.Approach), "approach") {
+		suffix = ""
+	}
+
 	if c.StraightIn {
-		rt.Add(prefix+"cleared straight in {appr} [approach|]", c.Approach)
+		rt.Add(prefix+"cleared straight in {appr}"+suffix, c.Approach)
 	} else {
-		rt.Add(prefix+"cleared {appr} [approach|]", c.Approach)
+		rt.Add(prefix+"cleared {appr}"+suffix, c.Approach)
 	}
 }
 

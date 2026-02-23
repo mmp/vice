@@ -1685,7 +1685,7 @@ func (s *Sim) ClearedVisualApproach(tcw TCW, callsign av.ADSBCallsign, runway st
 			intent, ok := ac.ClearedDirectVisual(runway, s.State.SimTime)
 			if !ok {
 				s.goAround(ac)
-				return nil
+				return av.MakeUnableIntent("unable, going around")
 			}
 			ac.ApproachTCP = TCP(ac.ControllerFrequency)
 			return intent
@@ -3253,7 +3253,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			runway := command[3:]
 			return av.ApproachIntent{
 				Type:         av.ApproachExpect,
-				ApproachName: "Visual Runway " + runway,
+				ApproachName: "Visual Approach Runway " + runway,
 			}, nil
 		} else if len(command) > 1 {
 			// Parse: "EI22L/LAHSO26" -> approach="I22L", lahsoRunway="26"

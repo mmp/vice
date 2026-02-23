@@ -31,7 +31,6 @@ const (
 	AddressingFormTypeTrailing3
 )
 
-
 type Aircraft struct {
 	// This is ADS-B callsign of the aircraft. Just because different the
 	// callsign in the flight plan can be different across multiple STARS
