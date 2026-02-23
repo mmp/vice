@@ -1841,10 +1841,8 @@ func (h *fpVFRFixesParser) Parse(sp *STARSPane, ctx *panes.Context, input *Comma
 
 	// Validate exit fix is an airport (unless intermediate)
 	if !isIntermediate {
-		if _, ok := av.DB.Airports[exit]; !ok {
-			if _, ok := av.DB.Airports["K"+exit]; !ok {
-				return nil, text, false, nil
-			}
+		if _, ok := av.DB.LookupAirport(exit); !ok {
+			return nil, text, false, nil
 		}
 	}
 
