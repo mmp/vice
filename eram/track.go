@@ -563,7 +563,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 		color := bright.ScaleRGB(ERAMYellow)
 
 		// Respect selected history length (0–5)
-		max := ep.HistoryLength
+		max := ps.HistoryLength
 		if max <= 0 {
 			continue
 		}
