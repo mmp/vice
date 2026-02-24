@@ -244,6 +244,8 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 			if cm.client != nil && cm.ClientIsLocal() {
 				cm.client.SetRemoteServer(cm.RemoteServer.RPCClient)
 			}
+			// Set crash report client so crashes are reported to the remote server
+			lg.SetCrashReportClient(cm.RemoteServer.RPCClient.Client)
 		}
 
 	default:
