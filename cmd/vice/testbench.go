@@ -498,6 +498,8 @@ func (ds *TestBench) buildAircraft(spec TestBenchAircraftSpec, airport *av.Airpo
 		heading = spec.Heading
 	}
 
+	// Aircraft type is hardcoded to B738 for now; may want to make this
+	// configurable if we need to test category-specific behavior.
 	ac := sim.Aircraft{
 		ADSBCallsign:        av.ADSBCallsign(spec.Callsign),
 		TypeOfFlight:        av.FlightTypeArrival,
