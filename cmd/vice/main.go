@@ -596,7 +596,8 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	)
 
 	if errorLogger.HaveErrors() {
-		ShowFatalErrorDialog(render, plat, lg, "%s", errorLogger.String())
+		errorLogger.PrintErrors(lg)
+		ShowFatalErrorDialog(render, plat, nil, "%s", errorLogger.String())
 	}
 
 	// Show non-fatal dialog for extra scenario errors
