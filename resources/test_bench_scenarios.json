@@ -3,37 +3,37 @@
     {
       "label": "Direct to IF, clear before FAF",
       "aircraft": [
-        {"callsign": "TEST1", "distance_nm": 8, "relative_to": "{if}", "speed": 210}
+        {"distance_nm": 8, "relative_to": "{if}", "speed": 210}
       ],
       "steps": [
-        {"command": "E{approach}", "callsign": "TEST1", "expect_readback": "{approach_name}"},
-        {"command": "D{if}", "callsign": "TEST1", "expect_readback": "direct {if}"},
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "D{if}", "expect_readback": "direct {if}"},
         {"wait_for": "approach_clearance_request"},
-        {"command": "C", "callsign": "TEST1", "expect_readback": "cleared"}
+        {"command": "C", "expect_readback": "cleared"}
       ]
     },
     {
       "label": "Direct to IF, standby then clear",
       "aircraft": [
-        {"callsign": "TEST1", "distance_nm": 8, "relative_to": "{if}", "speed": 210}
+        {"distance_nm": 8, "relative_to": "{if}", "speed": 210}
       ],
       "steps": [
-        {"command": "E{approach}", "callsign": "TEST1", "expect_readback": "{approach_name}"},
-        {"command": "D{if}", "callsign": "TEST1", "expect_readback": "direct {if}"},
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "D{if}", "expect_readback": "direct {if}"},
         {"wait_for": "approach_clearance_request"},
-        {"command": "E", "callsign": "TEST1", "expect_readback": "{approach_name}"},
-        {"command": "C", "callsign": "TEST1", "expect_readback": "cleared"}
+        {"command": "E", "expect_readback": "{approach_name}"},
+        {"command": "C", "expect_readback": "cleared"}
       ]
     },
     {
       "label": "Direct to IF, no clearance (go-around)",
       "aircraft": [
-        {"callsign": "TEST1", "distance_nm": 8, "relative_to": "{if}", "speed": 210,
+        {"distance_nm": 8, "relative_to": "{if}", "speed": 210,
          "note": "do NOT clear - expect go-around at FAF"}
       ],
       "steps": [
-        {"command": "E{approach}", "callsign": "TEST1", "expect_readback": "{approach_name}"},
-        {"command": "D{if}", "callsign": "TEST1", "expect_readback": "direct {if}"},
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "D{if}", "expect_readback": "direct {if}"},
         {"wait_for": "approach_clearance_request"},
         {"wait_for": "go_around"}
       ]

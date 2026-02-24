@@ -45,13 +45,14 @@ type TestBenchStep struct {
 }
 
 type TestBenchAircraftSpec struct {
-	Callsign   string  `json:"callsign"`
-	DistanceNM float32 `json:"distance_nm"`
-	Altitude   float32 `json:"altitude,omitempty"` // explicit altitude; 0 = use fix restriction
-	Speed      float32 `json:"speed"`
-	Heading    float32 `json:"heading,omitempty"`     // aircraft heading; 0 = inbound to fix/airport
-	Bearing    float32 `json:"bearing,omitempty"`     // bearing FROM reference to place aircraft
-	RelativeTo string  `json:"relative_to,omitempty"` // fix name or placeholder (e.g. "{if}"); empty = airport
+	Callsign     string  `json:"callsign,omitempty"`
+	AircraftType string  `json:"aircraft_type,omitempty"` // e.g. "B738"; empty = sampled from airline or B738 fallback
+	DistanceNM   float32 `json:"distance_nm"`
+	Altitude     float32 `json:"altitude,omitempty"` // explicit altitude; 0 = use fix restriction
+	Speed        float32 `json:"speed"`
+	Heading      float32 `json:"heading,omitempty"`     // aircraft heading; 0 = inbound to fix/airport
+	Bearing      float32 `json:"bearing,omitempty"`     // bearing FROM reference to place aircraft
+	RelativeTo   string  `json:"relative_to,omitempty"` // fix name or placeholder (e.g. "{if}"); empty = airport
 
 	TrafficInSight bool   `json:"traffic_in_sight,omitempty"`
 	Note           string `json:"note,omitempty"`
@@ -71,6 +72,10 @@ type TestBench struct {
 	// Spawned aircraft tracking (for clear button)
 	spawnedAircraft []sim.Aircraft
 	spawnedTest     *TestBenchCase // which test case owns spawnedAircraft
+
+	// Callsign mapping: spec index -> generated callsign.
+	// Populated at spawn time so steps can reference aircraft by index.
+	callsignMap map[int]string
 
 	// Test step tracking
 	activeTest     *TestBenchCase
@@ -123,7 +128,7 @@ func approachFixNames(ap *av.Approach) (iaf, ifFix, faf string) {
 //	{iaf}           → Initial Approach Fix name
 //	{if}            → Intermediate Fix name
 //	{faf}           → Final Approach Fix name
-func (ds *TestBench) resolveStep(step TestBenchStep) TestBenchStep {
+func (ds *TestBench) resolveStep(tc *TestBenchCase, step TestBenchStep) TestBenchStep {
 	if ds.selectedApproach < 0 || ds.selectedApproach >= len(ds.approaches) {
 		return step
 	}
@@ -140,7 +145,38 @@ func (ds *TestBench) resolveStep(step TestBenchStep) TestBenchStep {
 	step.Command = r.Replace(step.Command)
 	step.ExpectReadback = r.Replace(step.ExpectReadback)
 	step.RejectReadback = r.Replace(step.RejectReadback)
+
+	// Resolve callsign index references like "{0}", "{1}" to the
+	// generated callsign for that aircraft spec index.
+	if ds.spawnedTest == tc && ds.callsignMap != nil {
+		step.Callsign = ds.resolveCallsignRef(step.Callsign)
+	}
+
 	return step
+}
+
+// resolveCallsignRef maps a callsign reference to the actual spawned callsign.
+// It handles index references like "{0}", "{1}" for multi-aircraft tests.
+// An empty string passes through unchanged (defaultCallsign handles that case).
+func (ds *TestBench) resolveCallsignRef(ref string) string {
+	if ref == "" {
+		return ""
+	}
+	// Try "{N}" format.
+	if len(ref) >= 3 && ref[0] == '{' && ref[len(ref)-1] == '}' {
+		inner := ref[1 : len(ref)-1]
+		idx := 0
+		for _, ch := range inner {
+			if ch < '0' || ch > '9' {
+				return ref // not a numeric index
+			}
+			idx = idx*10 + int(ch-'0')
+		}
+		if cs, ok := ds.callsignMap[idx]; ok {
+			return cs
+		}
+	}
+	return ref
 }
 
 func NewTestBench(c *client.ControlClient, es *sim.EventStream, lg *log.Logger) *TestBench {
@@ -202,6 +238,7 @@ func (ds *TestBench) resetTestState() {
 	ds.stepResults = nil
 	ds.lastReadback = ""
 	ds.lastReadbackCS = ""
+	ds.callsignMap = nil
 }
 
 func (ds *TestBench) Draw(show *bool, p platform.Platform) {
@@ -326,7 +363,7 @@ func (ds *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 	}
 
 	// Show aircraft specs
-	for _, spec := range tc.Aircraft {
+	for i, spec := range tc.Aircraft {
 		note := ""
 		if spec.Note != "" {
 			note = " (" + spec.Note + ")"
@@ -343,15 +380,25 @@ func (ds *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 		if spec.RelativeTo != "" {
 			refStr = fmt.Sprintf(" from %s", spec.RelativeTo)
 		}
+		// Show the generated callsign if available, otherwise the spec callsign or index.
+		displayCS := spec.Callsign
+		if ds.spawnedTest == tc {
+			if cs, ok := ds.callsignMap[i]; ok {
+				displayCS = cs
+			}
+		}
+		if displayCS == "" {
+			displayCS = fmt.Sprintf("#%d", i)
+		}
 		imgui.TextColored(imgui.Vec4{0.7, 0.7, 0.7, 1},
-			fmt.Sprintf("  %s: %.0fnm%s/%s/%.0fkts%s%s", spec.Callsign,
+			fmt.Sprintf("  %s: %.0fnm%s/%s/%.0fkts%s%s", displayCS,
 				spec.DistanceNM, refStr, altStr, spec.Speed, flags, note))
 	}
 
 	// Show test steps
 	if len(tc.Steps) > 0 {
 		for i, rawStep := range tc.Steps {
-			step := ds.resolveStep(rawStep)
+			step := ds.resolveStep(tc, rawStep)
 			isActive := ds.activeTest == tc && ds.currentStep == i
 
 			// Per-step result indicator
@@ -394,6 +441,32 @@ func (ds *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 	imgui.Separator()
 }
 
+// generateCallsign samples a random arrival airline from the scenario's
+// inbound flows for the given airport and returns a realistic callsign and
+// aircraft type (e.g. "AAL1234", "B738").
+func (ds *TestBench) generateCallsign(airport string, existingCallsigns []av.ADSBCallsign) (callsign, acType string) {
+	// Collect all arrival airlines destined for this airport.
+	var airlines []av.ArrivalAirline
+	for _, flow := range ds.client.State.InboundFlows {
+		for _, arr := range flow.Arrivals {
+			airlines = append(airlines, arr.Airlines[airport]...)
+		}
+	}
+	if len(airlines) == 0 {
+		ds.lg.Warnf("test bench: no arrival airlines found for %s", airport)
+		return "", "B738"
+	}
+
+	r := rand.Make()
+	al := rand.SampleSlice(r, airlines)
+	acType, callsign = al.AirlineSpecifier.SampleAcTypeAndCallsign(
+		r, existingCallsigns, false, al.Airport, airport, ds.lg)
+	if acType == "" {
+		acType = "B738"
+	}
+	return callsign, acType
+}
+
 func (ds *TestBench) spawnAircraft(tc *TestBenchCase) {
 	if ds.selectedApproach < 0 || ds.selectedApproach >= len(ds.approaches) {
 		ds.statusMessage = "No approach selected"
@@ -422,11 +495,30 @@ func (ds *TestBench) spawnAircraft(tc *TestBenchCase) {
 	}
 
 	ds.spawnedAircraft = nil
-	for _, spec := range tc.Aircraft {
-		ac := ds.buildAircraft(spec, airport, apInfo, rwyHeading, nmPerLong, magVar, ctrlFreq)
+	ds.callsignMap = make(map[int]string)
+	var existingCallsigns []av.ADSBCallsign
+	for i, spec := range tc.Aircraft {
+		acType := spec.AircraftType
+		callsign := spec.Callsign
+		// Generate a realistic callsign (and aircraft type) if the spec doesn't provide one.
+		if callsign == "" {
+			var genType string
+			callsign, genType = ds.generateCallsign(apInfo.airport, existingCallsigns)
+			if callsign == "" {
+				ds.statusMessage = "Failed to generate callsign — no matching airlines"
+				return
+			}
+			if acType == "" {
+				acType = genType
+			}
+		}
+		ds.callsignMap[i] = callsign
+		existingCallsigns = append(existingCallsigns, av.ADSBCallsign(callsign))
+
+		ac := ds.buildAircraftWithCallsign(spec, callsign, acType, airport, apInfo, rwyHeading, nmPerLong, magVar, ctrlFreq)
 		ds.client.LaunchArrivalOverflight(ac)
 		ds.spawnedAircraft = append(ds.spawnedAircraft, ac)
-		ds.lg.Infof("test bench: launched %s at %.1fnm/%.0fft", spec.Callsign, spec.DistanceNM, ac.Nav.FlightState.Altitude)
+		ds.lg.Infof("test bench: launched %s at %.1fnm/%.0fft", callsign, spec.DistanceNM, ac.Nav.FlightState.Altitude)
 	}
 
 	ds.spawnedTest = tc
@@ -462,8 +554,8 @@ func (ds *TestBench) resolveFixRef(name string, apInfo debugApproachInfo) (loc m
 	return math.Point2LL{}, 0, false
 }
 
-func (ds *TestBench) buildAircraft(spec TestBenchAircraftSpec, airport *av.Airport,
-	apInfo debugApproachInfo, rwyHeading, nmPerLong, magVar float32,
+func (ds *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, callsign, acType string,
+	airport *av.Airport, apInfo debugApproachInfo, rwyHeading, nmPerLong, magVar float32,
 	ctrlFreq sim.ControlPosition) sim.Aircraft {
 
 	// Determine reference point and altitude.
@@ -498,22 +590,31 @@ func (ds *TestBench) buildAircraft(spec TestBenchAircraftSpec, airport *av.Airpo
 		heading = spec.Heading
 	}
 
-	// Aircraft type is hardcoded to B738 for now; may want to make this
-	// configurable if we need to test category-specific behavior.
+	// Use the generated aircraft type if provided, otherwise fall back to B738.
+	if acType == "" {
+		acType = "B738"
+	}
+	perf, ok := av.DB.AircraftPerformance[acType]
+	if !ok {
+		// Fallback if the sampled type has no performance data.
+		acType = "B738"
+		perf = av.DB.AircraftPerformance["B738"]
+	}
+
 	ac := sim.Aircraft{
-		ADSBCallsign:        av.ADSBCallsign(spec.Callsign),
+		ADSBCallsign:        av.ADSBCallsign(callsign),
 		TypeOfFlight:        av.FlightTypeArrival,
 		Mode:                av.TransponderModeAltitude,
 		ControllerFrequency: ctrlFreq,
 		FlightPlan: av.FlightPlan{
 			ArrivalAirport: apInfo.airport,
-			AircraftType:   "B738",
+			AircraftType:   acType,
 			Rules:          av.FlightRulesIFR,
 		},
 		Nav: nav.Nav{
 			Rand:           rand.Make(),
 			FixAssignments: make(map[string]nav.NavFixAssignment),
-			Perf:           av.DB.AircraftPerformance["B738"],
+			Perf:           perf,
 			Altitude: nav.NavAltitude{
 				Assigned: &altitude,
 			},
@@ -536,12 +637,12 @@ func (ds *TestBench) buildAircraft(spec TestBenchAircraftSpec, airport *av.Airpo
 		},
 		TrafficInSight: spec.TrafficInSight,
 		NASFlightPlan: &sim.NASFlightPlan{
-			ACID:               sim.ACID(spec.Callsign),
+			ACID:               sim.ACID(callsign),
 			ArrivalAirport:     apInfo.airport,
 			Rules:              av.FlightRulesIFR,
 			TypeOfFlight:       av.FlightTypeArrival,
 			AircraftCount:      1,
-			AircraftType:       "B738",
+			AircraftType:       acType,
 			TrackingController: ctrlFreq,
 			OwningTCW:          ds.client.State.UserTCW,
 		},
@@ -617,8 +718,16 @@ func (ds *TestBench) spawnDeparture(tc *TestBenchCase) {
 }
 
 // isTestCallsign checks whether the given callsign belongs to one of the
-// test case's aircraft — either from the JSON spec or from sim-spawned aircraft.
+// test case's aircraft — either from the callsign map, JSON spec, or sim-spawned aircraft.
 func (ds *TestBench) isTestCallsign(tc *TestBenchCase, cs av.ADSBCallsign) bool {
+	// Check generated callsigns (only for the active spawned test).
+	if ds.spawnedTest == tc {
+		for _, mapped := range ds.callsignMap {
+			if av.ADSBCallsign(mapped) == cs {
+				return true
+			}
+		}
+	}
 	for _, spec := range tc.Aircraft {
 		if av.ADSBCallsign(spec.Callsign) == cs {
 			return true
@@ -637,6 +746,12 @@ func (ds *TestBench) isTestCallsign(tc *TestBenchCase, cs av.ADSBCallsign) bool 
 
 // defaultCallsign returns the callsign to use when a step doesn't specify one.
 func (ds *TestBench) defaultCallsign(tc *TestBenchCase) av.ADSBCallsign {
+	// Use the callsign map first (populated at spawn time with generated callsigns).
+	if ds.spawnedTest == tc {
+		if cs, ok := ds.callsignMap[0]; ok {
+			return av.ADSBCallsign(cs)
+		}
+	}
 	if len(tc.Aircraft) > 0 {
 		return av.ADSBCallsign(tc.Aircraft[0].Callsign)
 	}
@@ -687,7 +802,7 @@ func (ds *TestBench) processEvents() {
 		if ds.currentStep >= len(tc.Steps) {
 			continue
 		}
-		step := ds.resolveStep(tc.Steps[ds.currentStep])
+		step := ds.resolveStep(tc, tc.Steps[ds.currentStep])
 
 		// For wait_for steps, accept contact/unexpected transmissions
 		// (spontaneous pilot reports).
@@ -734,7 +849,7 @@ func (ds *TestBench) processEvents() {
 			ds.advanceStep()
 			// Re-evaluate this same event against the new current step.
 			if ds.currentStep < len(tc.Steps) {
-				next := ds.resolveStep(tc.Steps[ds.currentStep])
+				next := ds.resolveStep(tc, tc.Steps[ds.currentStep])
 				if next.WaitFor != "" && matchWaitFor(next.WaitFor, event) {
 					ds.stepResults[ds.currentStep] = "pass"
 					ds.lastReadback = event.WrittenText
