@@ -1,31 +1,41 @@
 {
-    "control_positions": {
-        "1A": {
-            "callsign": "NTD_APP",
-            "frequency": 124700,
-            "radio_name": "Point Magu Approach"
-        },
-        "1Z": {
-            "callsign": "NTD_TWR",
-            "frequency": 124850,
-            "radio_name": "Point Magu Tower"
-        }
+  "control_positions": {
+    "1G": {
+      "callsign": "NTD_G_APP",
+      "frequency": 124700,
+      "radio_name": "Point Mugu Approach"
     },
-    "config": {
-        "configurations": {}
+    "1T": {
+      "callsign": "NTD_T_APP",
+      "frequency": 128650,
+      "radio_name": "Point Mugu Approach"
     },
-    "handoff_ids": [
-        {
-            "id": "SBA",
-            "prefix": "2"
-        },
-        {
-            "id": "SCT",
-            "prefix": "1"
-        },
-        {
-            "id": "ZLA",
-            "prefix": "C"
-        }
-    ]
+    "1V": {
+      "callsign": "NTD_V_APP",
+      "frequency": 123750,
+      "radio_name": "Point Mugu Approach"
+    },
+    "1Z": {
+      "callsign": "NTD_TWR",
+      "frequency": 124850,
+      "radio_name": "Point Mugu Tower"
+    }
+  },
+  "config": {
+    "configurations": {}
+  },
+  "handoff_ids": [
+    {
+      "id": "SBA",
+      "prefix": "2"
+    },
+    {
+      "id": "SCT",
+      "prefix": "1"
+    },
+    {
+      "id": "ZLA",
+      "prefix": "C"
+    }
+  ]
 }

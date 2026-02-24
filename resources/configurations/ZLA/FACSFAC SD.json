@@ -1,0 +1,27 @@
+{
+  "control_positions": {
+    "1N": {
+      "callsign": "FACSFAC_N",
+      "frequency": 120850,
+      "radio_name": "Beaver"
+    },
+    "1S": {
+      "callsign": "FACSFAC_S",
+      "frequency": 118650,
+      "radio_name": "Beaver"
+    }
+  },
+  "config": {
+    "configurations": {}
+  },
+  "handoff_ids": [
+    {
+      "id": "SCT",
+      "prefix": "1"
+    },
+    {
+      "id": "ZLA",
+      "prefix": "C"
+    }
+  ]
+}
