@@ -16,6 +16,7 @@ import (
 	"crypto/tls"
 	"encoding/hex"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -46,6 +47,29 @@ type uploadResult struct {
 	path string
 	hash string
 	size int64
+}
+
+// Walk the resources directory and send the paths of all non-temporary files to filesChan
+func walkResourcesDirectory(eg *errgroup.Group) chan string {
+	filesChan := make(chan string, 1)
+	eg.Go(func() error {
+		defer close(filesChan)
+
+		return filepath.Walk(resourcesDir, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			if info.IsDir() || isTemporaryFile(path) {
+				return nil
+			}
+
+			filesChan <- path
+
+			return nil
+		})
+	})
+	return filesChan
 }
 
 func isTemporaryFile(name string) bool {
@@ -107,126 +131,135 @@ func uploadToR2(ctx context.Context, client *s3.Client, path, hash string) error
 }
 
 func main() {
-	if len(os.Args) != 1 {
-		log.Fatal("Usage: bundleresources")
+	noUpload := flag.Bool("no-upload", false, "generate manifest.json from local files without uploading to R2")
+	flag.Parse()
+
+	if flag.NArg() != 0 {
+		log.Fatal("Usage: bundleresources [-no-upload]")
 	}
 
-	// Get R2 credentials from environment.
-	accountID := os.Getenv("R2_ACCOUNT_ID")
-	accessKeyID := os.Getenv("R2_ACCESS_KEY_ID")
-	secretAccessKey := os.Getenv("R2_SECRET_ACCESS_KEY")
-	if accountID == "" || accessKeyID == "" || secretAccessKey == "" {
-		log.Fatal("R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY environment variables must be set")
-	}
-
-	ctx := context.Background()
-
-	// Create S3-compatible client for Cloudflare R2.
-	// Force TLS 1.2 to work around TLS 1.3 handshake failures with R2 endpoints.
-	r2Endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountID)
-	httpClient := &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				MaxVersion: tls.VersionTLS12,
-			},
-		},
-	}
-	cfg, err := config.LoadDefaultConfig(ctx,
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, secretAccessKey, "")),
-		config.WithRegion("auto"),
-		config.WithHTTPClient(httpClient),
-	)
-	if err != nil {
-		log.Fatalf("Failed to load AWS config: %v", err)
-	}
-
-	client := s3.NewFromConfig(cfg, func(o *s3.Options) {
-		o.BaseEndpoint = aws.String(r2Endpoint)
-		o.UsePathStyle = true
-	})
-
-	// List existing objects in the bucket
-	listStart := time.Now()
-	existingObjects, err := listExistingObjects(ctx, client)
-	if err != nil {
-		log.Fatalf("Failed to list existing objects: %v", err)
-	}
-	fmt.Printf("Listed %d existing objects in %s\n", len(existingObjects), time.Since(listStart))
-
-	// Walk the resources directory and send the paths of all non-temporary files to filesChan
-	var eg errgroup.Group
-	filesChan := make(chan string, 1)
-	eg.Go(func() error {
-		defer close(filesChan)
-
-		return filepath.Walk(resourcesDir, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-
-			if info.IsDir() || isTemporaryFile(path) {
-				return nil
-			}
-
-			filesChan <- path
-
-			return nil
-		})
-	})
-
-	resultsChan := make(chan uploadResult)
-
-	// Launch upload workers
-	const numWorkers = 16
-	for range numWorkers {
-		eg.Go(func() error {
-			for path := range filesChan {
-				hash, err := sha256file(path)
-				if err != nil {
-					return fmt.Errorf("%s: %v", path, err)
-				}
-
-				info, err := os.Stat(path)
-				if err != nil {
-					return fmt.Errorf("%s: %v", path, err)
-				}
-
-				if existingObjects[hash] {
-					fmt.Printf("Skipped %s -> %s (already exists)\n", path, hash)
-				} else {
-					if err := uploadToR2(ctx, client, path, hash); err != nil {
-						return err
-					}
-					fmt.Printf("Uploaded %s -> %s\n", path, hash)
-				}
-
-				resultsChan <- uploadResult{
-					path: path,
-					hash: hash,
-					size: info.Size(),
-				}
-			}
-			return nil
-		})
-	}
-
-	// Close the results channel once all workers have finished.
-	go func() {
-		if err := eg.Wait(); err != nil {
-			log.Fatalf("%v", err)
-		}
-		close(resultsChan)
-	}()
-
-	// Harvest results as they come in and build the manifest.
 	manifest := make(map[string]manifestEntry)
-	for result := range resultsChan {
-		relPath, err := filepath.Rel(resourcesDir, result.path)
-		if err != nil {
-			log.Fatalf("%s: %v", result.path, err)
+
+	var eg errgroup.Group
+	if *noUpload {
+		filesChan := walkResourcesDirectory(&eg)
+
+		for path := range filesChan {
+			hash, err := sha256file(path)
+			if err != nil {
+				log.Fatalf("%s: %v", path, err)
+			}
+
+			info, err := os.Stat(path)
+			if err != nil {
+				log.Fatalf("%s: %v", path, err)
+			}
+
+			relPath, err := filepath.Rel(resourcesDir, path)
+			if err != nil {
+				log.Fatalf("%s: %v", path, err)
+			}
+
+			manifest[relPath] = manifestEntry{Hash: hash, Size: info.Size()}
+		}
+	} else {
+		// Get R2 credentials from environment.
+		accountID := os.Getenv("R2_ACCOUNT_ID")
+		accessKeyID := os.Getenv("R2_ACCESS_KEY_ID")
+		secretAccessKey := os.Getenv("R2_SECRET_ACCESS_KEY")
+		if accountID == "" || accessKeyID == "" || secretAccessKey == "" {
+			log.Fatal("R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY environment variables must be set")
 		}
 
-		manifest[relPath] = manifestEntry{Hash: result.hash, Size: result.size}
+		ctx := context.Background()
+
+		// Create S3-compatible client for Cloudflare R2.
+		// Force TLS 1.2 to work around TLS 1.3 handshake failures with R2 endpoints.
+		r2Endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountID)
+		httpClient := &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					MaxVersion: tls.VersionTLS12,
+				},
+			},
+		}
+		cfg, err := config.LoadDefaultConfig(ctx,
+			config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, secretAccessKey, "")),
+			config.WithRegion("auto"),
+			config.WithHTTPClient(httpClient),
+		)
+		if err != nil {
+			log.Fatalf("Failed to load AWS config: %v", err)
+		}
+
+		client := s3.NewFromConfig(cfg, func(o *s3.Options) {
+			o.BaseEndpoint = aws.String(r2Endpoint)
+			o.UsePathStyle = true
+		})
+
+		// List existing objects in the bucket
+		listStart := time.Now()
+		existingObjects, err := listExistingObjects(ctx, client)
+		if err != nil {
+			log.Fatalf("Failed to list existing objects: %v", err)
+		}
+		fmt.Printf("Listed %d existing objects in %s\n", len(existingObjects), time.Since(listStart))
+
+		filesChan := walkResourcesDirectory(&eg)
+
+		resultsChan := make(chan uploadResult)
+
+		// Launch upload workers
+		const numWorkers = 16
+		for range numWorkers {
+			eg.Go(func() error {
+				for path := range filesChan {
+					hash, err := sha256file(path)
+					if err != nil {
+						return fmt.Errorf("%s: %v", path, err)
+					}
+
+					info, err := os.Stat(path)
+					if err != nil {
+						return fmt.Errorf("%s: %v", path, err)
+					}
+
+					if existingObjects[hash] {
+						fmt.Printf("Skipped %s -> %s (already exists)\n", path, hash)
+					} else {
+						if err := uploadToR2(ctx, client, path, hash); err != nil {
+							return err
+						}
+						fmt.Printf("Uploaded %s -> %s\n", path, hash)
+					}
+
+					resultsChan <- uploadResult{
+						path: path,
+						hash: hash,
+						size: info.Size(),
+					}
+				}
+				return nil
+			})
+		}
+
+		// Close the results channel once all workers have finished.
+		go func() {
+			if err := eg.Wait(); err != nil {
+				log.Fatalf("%v", err)
+			}
+			close(resultsChan)
+		}()
+
+		// Harvest results as they come in and build the manifest.
+		for result := range resultsChan {
+			relPath, err := filepath.Rel(resourcesDir, result.path)
+			if err != nil {
+				log.Fatalf("%s: %v", result.path, err)
+			}
+
+			manifest[relPath] = manifestEntry{Hash: result.hash, Size: result.size}
+		}
 	}
 
 	// Merge in the models manifest. The model files are stored directly in
