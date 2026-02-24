@@ -42,7 +42,8 @@ type scenarioGroup struct {
 	InboundFlows       map[string]*av.InboundFlow `json:"inbound_flows"`
 	VFRReportingPoints []av.VFRReportingPoint     `json:"vfr_reporting_points"`
 
-	PrimaryAirport string `json:"primary_airport" scope:"stars"`
+	AllowFixRedefinitions bool   `json:"allow_fix_redefinitions"`
+	PrimaryAirport        string `json:"primary_airport" scope:"stars"`
 
 	ReportingPointStrings []string            `json:"reporting_points"`
 	ReportingPoints       []av.ReportingPoint // not in JSON
@@ -622,11 +623,11 @@ func (sg *scenarioGroup) Locate(s string) (math.Point2LL, bool) {
 	// ScenarioGroup's definitions take precedence...
 	if p, ok := sg.Fixes[s]; ok {
 		return p, true
-	} else if n, ok := av.DB.Navaids[strings.ToUpper(s)]; ok {
+	} else if n, ok := av.DB.Navaids[s]; ok {
 		return n.Location, ok
-	} else if ap, ok := av.DB.Airports[strings.ToUpper(s)]; ok {
+	} else if ap, ok := av.DB.LookupAirport(s); ok {
 		return ap.Location, ok
-	} else if f, ok := av.DB.Fixes[strings.ToUpper(s)]; ok {
+	} else if f, ok := av.DB.Fixes[s]; ok {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
@@ -827,6 +828,16 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 			sg.Fixes[fix] = pos
 		} else {
 			e.ErrorString("invalid location syntax %q for fix %q", location, fix)
+		}
+
+		// Entries in "fixes" should not shadow navaids, fixes, or airports
+		// already in the aviation DB, since Locate will find them anyway.
+		if _, ok := sg.Fixes[fix]; ok && !sg.AllowFixRedefinitions {
+			if _, ok := av.DB.LookupWaypoint(fix); ok {
+				e.ErrorString("fix shadows a navaid/fix in the aviation DB; remove it from \"fixes\"")
+			} else if _, ok := av.DB.LookupAirport(fix); ok {
+				e.ErrorString("fix shadows an airport in the aviation DB; remove it from \"fixes\"")
+			}
 		}
 
 		e.Pop()
