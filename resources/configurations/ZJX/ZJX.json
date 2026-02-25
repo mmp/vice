@@ -245,8 +245,12 @@
                     "KJAX": "15"
                 },
                 "default_consolidation": {
-                    "30": ["66"],
-                    "66": ["15"]
+                    "30": [
+                        "66"
+                    ],
+                    "66": [
+                        "15"
+                    ]
                 }
             },
             "ZJX": {
@@ -298,26 +302,6 @@
         "center": "N029.0.0.0,W085.20.16.982",
         "range": 300,
         "max_distance": 350,
-        "stars_maps": [
-            "BOUND",
-            "ZJX LO",
-            "ZJX UH",
-            "HIGH AWAYS",
-            "FIN APP CRS",
-            "MOA",
-            "Y M L ROUTES",
-            "AR ROUTES",
-            "ATCT",
-            "ZJX HI",
-            "HI 2-WAY",
-            "LOW AWAYS",
-            "CLASS ASPACE",
-            "WARNING",
-            "MIA",
-            "T ROUTES",
-            "CAMAN",
-            "GEO"
-        ],
         "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst",
         "coordination_fixes": {
             "PLUMR": [
@@ -733,7 +717,27 @@
                     "from": "ZJX"
                 }
             ]
-        }
+        },
+        "eram_maps": [
+            "BOUND",
+            "ZJX LO",
+            "ZJX UH",
+            "HIGH AWAYS",
+            "FIN APP CRS",
+            "MOA",
+            "Y M L ROUTES",
+            "AR ROUTES",
+            "ATCT",
+            "ZJX HI",
+            "HI 2-WAY",
+            "LOW AWAYS",
+            "CLASS ASPACE",
+            "WARNING",
+            "MIA",
+            "T ROUTES",
+            "CAMAN",
+            "GEO"
+        ]
     },
     "handoff_ids": [
         {

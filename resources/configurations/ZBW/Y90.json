@@ -134,14 +134,6 @@
             "THUMB": {},
             "VEERS": {}
         },
-        "stars_maps": [
-            "Y90 RWY 6/33",
-            "Y90 SATS FAC",
-            "Y90 COASTLINE",
-            "BDL_TWR 6/33",
-            "BDL_TWR 24/33",
-            "Y90 RWY 24/33"
-        ],
         "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
         "coordination_fixes": {
             "MAD": [
@@ -158,6 +150,18 @@
                     "from": "ZBW"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "Y90 RWY 6/33",
+                    "Y90 SATS FAC",
+                    "Y90 COASTLINE",
+                    "BDL_TWR 6/33",
+                    "BDL_TWR 24/33",
+                    "Y90 RWY 24/33"
+                ]
+            }
         }
     },
     "handoff_ids": [

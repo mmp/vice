@@ -115,31 +115,6 @@
             "TCATE": {},
             "VOAXA": {}
         },
-        "stars_maps": [
-            "NEW NPA 25 MAP",
-            "PNS MVA",
-            "EMERGENCY",
-            "NSE MVA",
-            "PENSACOLA SOUTH MOA OUTLINE",
-            "PENSACOLA SOUTH MOA LABELS",
-            "NPA07/PNS & NSE",
-            "NPA25/PNS & NSE",
-            "SPECIAL USE AIRSPACE",
-            "P31 GPS LABELS",
-            "P31 GPS WAYPOINTS",
-            "P-AR 17",
-            "P-AR 26",
-            "P-AR 35",
-            "P-AR 8",
-            "PNS TWR 1",
-            "PNS TWR 2",
-            "WEEKEND SPLIT NPA RW 01",
-            "WEEKEND SPLIT NPA RW 25",
-            "WEEKEND SPLIT NPA RW 07/19",
-            "P31 AIRWAYS",
-            "P31 CLASS C",
-            "NEW NPA 07 MAP"
-        ],
         "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -167,7 +142,36 @@
                 ],
                 "receiving_controller": "C10"
             }
-        ]
+        ],
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "NEW NPA 25 MAP",
+                    "PNS MVA",
+                    "EMERGENCY",
+                    "NSE MVA",
+                    "PENSACOLA SOUTH MOA OUTLINE",
+                    "PENSACOLA SOUTH MOA LABELS",
+                    "NPA07/PNS & NSE",
+                    "NPA25/PNS & NSE",
+                    "SPECIAL USE AIRSPACE",
+                    "P31 GPS LABELS",
+                    "P31 GPS WAYPOINTS",
+                    "P-AR 17",
+                    "P-AR 26",
+                    "P-AR 35",
+                    "P-AR 8",
+                    "PNS TWR 1",
+                    "PNS TWR 2",
+                    "WEEKEND SPLIT NPA RW 01",
+                    "WEEKEND SPLIT NPA RW 25",
+                    "WEEKEND SPLIT NPA RW 07/19",
+                    "P31 AIRWAYS",
+                    "P31 CLASS C",
+                    "NEW NPA 07 MAP"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

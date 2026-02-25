@@ -102,17 +102,6 @@
             "JROSS": {},
             "SMALZ": {}
         },
-        "stars_maps": [
-            "RADAR MAP",
-            "MVA",
-            "CLASS C D AIRSPACE",
-            "LOW AIRWAYS SAV",
-            "COASTLINE",
-            "RNAV Z - 28",
-            "RNAV-10",
-            "RNAV-19",
-            "RNAV - 01"
-        ],
         "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
         "coordination_fixes": {
             "VIYAP": [
@@ -143,6 +132,21 @@
                     "from": "ZJX"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "RADAR MAP",
+                    "MVA",
+                    "CLASS C D AIRSPACE",
+                    "LOW AIRWAYS SAV",
+                    "COASTLINE",
+                    "RNAV Z - 28",
+                    "RNAV-10",
+                    "RNAV-19",
+                    "RNAV - 01"
+                ]
+            }
         }
     },
     "handoff_ids": [

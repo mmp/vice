@@ -83,19 +83,23 @@
         },
         "center": "KALB",
         "scratchpads": {},
-        "stars_maps": [
-            "ALB MAIN",
-            "ALB MVA",
-            "ALB SAT FINALS",
-            "ALB RVM",
-            "ALB GPS RWY 19",
-            "ALB EOVM",
-            "ALB GPS RWY 10",
-            "ALB Cab",
-            "ALB GPS RWY 1",
-            "ALB GPS RWY 28"
-        ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "ALB MAIN",
+                    "ALB MVA",
+                    "ALB SAT FINALS",
+                    "ALB RVM",
+                    "ALB GPS RWY 19",
+                    "ALB EOVM",
+                    "ALB GPS RWY 10",
+                    "ALB Cab",
+                    "ALB GPS RWY 1",
+                    "ALB GPS RWY 28"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

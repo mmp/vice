@@ -180,25 +180,6 @@
                 "slope_angle": 0.175
             }
         },
-        "stars_maps": [
-            "TPA-101S NORTH HI",
-            "TPA-103S SAT",
-            "TPA-105S EMERGENCY (WITH MVA)",
-            "TPA-102S SOUTH HI",
-            "TPA-104S FINAL 1",
-            "TPA-106S CLASSBC1",
-            "TPA-107S OUTER",
-            "TPA-109S S BDRY",
-            "TPA-111S FINAL 2",
-            "TPA-113S ILS/NDB",
-            "TPA-117S RNAV DPS",
-            "TPA-119S CTR BND",
-            "TPA-122S MVA",
-            "TPA-124S ROADS",
-            "TPA-126S TWR MAP",
-            "TPA-128S COUNTY",
-            "TPA-127S MID MAP"
-        ],
         "video_map_file": "videomaps/ZMA-videomaps.gob.zst",
         "coordination_fixes": {
             "DSIDE": [
@@ -257,6 +238,29 @@
                     "from": "ZMA"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "TPA-101S NORTH HI",
+                    "TPA-103S SAT",
+                    "TPA-105S EMERGENCY (WITH MVA)",
+                    "TPA-102S SOUTH HI",
+                    "TPA-104S FINAL 1",
+                    "TPA-106S CLASSBC1",
+                    "TPA-107S OUTER",
+                    "TPA-109S S BDRY",
+                    "TPA-111S FINAL 2",
+                    "TPA-113S ILS/NDB",
+                    "TPA-117S RNAV DPS",
+                    "TPA-119S CTR BND",
+                    "TPA-122S MVA",
+                    "TPA-124S ROADS",
+                    "TPA-126S TWR MAP",
+                    "TPA-128S COUNTY",
+                    "TPA-127S MID MAP"
+                ]
+            }
         }
     },
     "handoff_ids": [

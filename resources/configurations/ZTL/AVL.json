@@ -97,18 +97,6 @@
             "SPA": {},
             "VXV": {}
         },
-        "stars_maps": [
-            "AVL CLASS C / SECTORS",
-            "AVL SECTORS",
-            "AVL AIRSPACE",
-            "AVL RNAV (GPS) RWY 17/35 APPROACHES",
-            "AVL TOWER",
-            "RUNWAY 17",
-            "RUNWAY 35",
-            "AVL MINIMUM VECTORING ALTITUDES",
-            "AVL EMERGENCY OBSTRUCTION VIDEO MAP",
-            "AVL Cab"
-        ],
         "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
         "coordination_fixes": {
             "LEAVI": [
@@ -153,6 +141,22 @@
                     "from": "ZTL"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "AVL CLASS C / SECTORS",
+                    "AVL SECTORS",
+                    "AVL AIRSPACE",
+                    "AVL RNAV (GPS) RWY 17/35 APPROACHES",
+                    "AVL TOWER",
+                    "RUNWAY 17",
+                    "RUNWAY 35",
+                    "AVL MINIMUM VECTORING ALTITUDES",
+                    "AVL EMERGENCY OBSTRUCTION VIDEO MAP",
+                    "AVL Cab"
+                ]
+            }
         }
     },
     "handoff_ids": [

@@ -121,27 +121,119 @@
             "ITH": "ITH",
             "RKA": "RKA"
         },
-        "stars_maps": [
-            "SW SATS",
-            "SYR EAST",
-            "EMG MAP",
-            "MVA",
-            "TEST1",
-            "TEST2",
-            "SYR WEST",
-            "RME GPS",
-            "AIRWAY",
-            "SYR VOR",
-            "FZY GPS",
-            "SYR TACAN",
-            "B16 GPS",
-            "RY28",
-            "RY10",
-            "VGC GPS",
-            "0G7 GPS",
-            "RME D"
-        ],
-        "video_map_file": "videomaps/SYR-videomaps.gob.zst"
+        "video_map_file": "videomaps/SYR-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "SW SATS",
+                    "SYR EAST",
+                    "EMG MAP",
+                    "MVA",
+                    "TEST1",
+                    "TEST2",
+                    "SYR WEST",
+                    "RME GPS",
+                    "AIRWAY",
+                    "SYR VOR",
+                    "FZY GPS",
+                    "SYR TACAN",
+                    "B16 GPS",
+                    "RY28",
+                    "RY10",
+                    "VGC GPS",
+                    "0G7 GPS",
+                    "RME D"
+                ]
+            },
+            "2": {
+                "video_maps": [
+                    "SW SATS",
+                    "SYR EAST",
+                    "EMG MAP",
+                    "MVA",
+                    "TEST1",
+                    "TEST2",
+                    "SYR WEST",
+                    "RME GPS",
+                    "AIRWAY",
+                    "SYR VOR",
+                    "FZY GPS",
+                    "SYR TACAN",
+                    "B16 GPS",
+                    "RY28",
+                    "RY10",
+                    "VGC GPS",
+                    "0G7 GPS",
+                    "RME D"
+                ]
+            },
+            "3": {
+                "video_maps": [
+                    "SW SATS",
+                    "SYR EAST",
+                    "EMG MAP",
+                    "MVA",
+                    "TEST1",
+                    "TEST2",
+                    "SYR WEST",
+                    "RME GPS",
+                    "AIRWAY",
+                    "SYR VOR",
+                    "FZY GPS",
+                    "SYR TACAN",
+                    "B16 GPS",
+                    "RY28",
+                    "RY10",
+                    "VGC GPS",
+                    "0G7 GPS",
+                    "RME D"
+                ]
+            },
+            "4": {
+                "video_maps": [
+                    "SW SATS",
+                    "SYR EAST",
+                    "EMG MAP",
+                    "MVA",
+                    "TEST1",
+                    "TEST2",
+                    "SYR WEST",
+                    "RME GPS",
+                    "AIRWAY",
+                    "SYR VOR",
+                    "FZY GPS",
+                    "SYR TACAN",
+                    "B16 GPS",
+                    "RY28",
+                    "RY10",
+                    "VGC GPS",
+                    "0G7 GPS",
+                    "RME D"
+                ]
+            },
+            "5": {
+                "video_maps": [
+                    "SW SATS",
+                    "SYR EAST",
+                    "EMG MAP",
+                    "MVA",
+                    "TEST1",
+                    "TEST2",
+                    "SYR WEST",
+                    "RME GPS",
+                    "AIRWAY",
+                    "SYR VOR",
+                    "FZY GPS",
+                    "SYR TACAN",
+                    "B16 GPS",
+                    "RY28",
+                    "RY10",
+                    "VGC GPS",
+                    "0G7 GPS",
+                    "RME D"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

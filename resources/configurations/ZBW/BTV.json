@@ -58,14 +58,18 @@
         },
         "center": "KBTV",
         "scratchpads": {},
-        "stars_maps": [
-            "BTV RVM",
-            "BTV MAIN",
-            "BTV MVA",
-            "BTV VFR",
-            "BTV SATS"
-        ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "BTV RVM",
+                    "BTV MAIN",
+                    "BTV MVA",
+                    "BTV VFR",
+                    "BTV SATS"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

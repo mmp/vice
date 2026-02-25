@@ -266,34 +266,6 @@
             "STL": {},
             "WEGEE": {}
         },
-        "stars_maps": [
-            "RWY 23s",
-            "RWY 5s",
-            "RWY 14",
-            "RWY 32",
-            "IND 3 NM MVA",
-            "Departures (Fixes Only)",
-            "Class C/D",
-            "CLANG STAR",
-            "GIIBS STAR",
-            "JAKKS STAR",
-            "KOLTS STAR",
-            "RACYR STAR",
-            "SMUKE STAR",
-            "SNKPT STAR",
-            "DAWNN SID",
-            "MARIO SID",
-            "MEARZ SID",
-            "ROCKY SID",
-            "RWY 23s Composite Training",
-            "RWY 5s Composite Training",
-            "RWY 14 Composite Training",
-            "RWY 32 Composite Training",
-            "RNP FIXES RWY 23",
-            "RNP FIXES RWY 5",
-            "RNP FIXES RWY 14",
-            "RNP FIXES RWY 32"
-        ],
         "video_map_file": "videomaps/ZID-videomaps.gob.zst",
         "coordination_fixes": {
             "BABNE": [
@@ -331,6 +303,38 @@
                     "from": "ZID"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "RWY 23s",
+                    "RWY 5s",
+                    "RWY 14",
+                    "RWY 32",
+                    "IND 3 NM MVA",
+                    "Departures (Fixes Only)",
+                    "Class C/D",
+                    "CLANG STAR",
+                    "GIIBS STAR",
+                    "JAKKS STAR",
+                    "KOLTS STAR",
+                    "RACYR STAR",
+                    "SMUKE STAR",
+                    "SNKPT STAR",
+                    "DAWNN SID",
+                    "MARIO SID",
+                    "MEARZ SID",
+                    "ROCKY SID",
+                    "RWY 23s Composite Training",
+                    "RWY 5s Composite Training",
+                    "RWY 14 Composite Training",
+                    "RWY 32 Composite Training",
+                    "RNP FIXES RWY 23",
+                    "RNP FIXES RWY 5",
+                    "RNP FIXES RWY 14",
+                    "RNP FIXES RWY 32"
+                ]
+            }
         }
     },
     "handoff_ids": [

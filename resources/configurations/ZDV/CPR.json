@@ -45,20 +45,24 @@
             "KURSE": {},
             "LHO": {}
         },
-        "stars_maps": [
-            "CPR BASE",
-            "CPR MVA",
-            "CPR ILS 3",
-            "CPR GPS 21",
-            "CPR GPS 26",
-            "CPR EOVM",
-            "CPR CLASS",
-            "CPR GPS 3",
-            "CPR GPS 8",
-            "CPR LCL",
-            "CPR VOR 21"
-        ],
-        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "CPR BASE",
+                    "CPR MVA",
+                    "CPR ILS 3",
+                    "CPR GPS 21",
+                    "CPR GPS 26",
+                    "CPR EOVM",
+                    "CPR CLASS",
+                    "CPR GPS 3",
+                    "CPR GPS 8",
+                    "CPR LCL",
+                    "CPR VOR 21"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

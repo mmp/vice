@@ -306,10 +306,16 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
 
-	// Video map labels must reference known stars_maps.
+	// Collect all video map names across all area configs.
+	var allAreaVideoMaps []string
+	for _, ac := range fa.AreaConfigs {
+		allAreaVideoMaps = append(allAreaVideoMaps, ac.VideoMapNames...)
+	}
+
+	// Video map labels must reference a known video map in some area.
 	for m := range fa.VideoMapLabels {
-		if !slices.Contains(fa.VideoMapNames, m) {
-			e.ErrorString(`video map %q in "map_labels" is not in "stars_maps"`, m)
+		if !slices.Contains(allAreaVideoMaps, m) {
+			e.ErrorString(`video map %q in "map_labels" is not in any area's "video_maps"`, m)
 		}
 	}
 
@@ -322,19 +328,13 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 				e.ErrorString(`Control position %q in "controller_configs" is external and not in this TRACON.`, tcp)
 			}
 		}
-	} else if len(fa.VideoMapNames) == 0 {
-		e.ErrorString(`Must specify either "controller_configs" or "stars_maps"`)
-	}
-
-	if len(fa.VideoMapNames) == 0 {
-		if len(fa.ControllerConfigs) == 0 {
-			e.ErrorString(`must provide one of "stars_maps" or "controller_configs" with "video_maps" in "config"`)
-		}
 		var err error
 		fa.ControllerConfigs, err = util.CommaKeyExpand(fa.ControllerConfigs)
 		if err != nil {
 			e.Error(err)
 		}
+	} else if len(allAreaVideoMaps) == 0 {
+		e.ErrorString(`must specify either "controller_configs" or "video_maps" in "area_configs"`)
 	}
 
 	if fa.Range == 0 {

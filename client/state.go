@@ -117,15 +117,35 @@ func (ss *SimState) GetFlightPlanForACID(acid sim.ACID) *sim.NASFlightPlan {
 }
 
 func (ss *SimState) GetInitialRange() float32 {
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.PrimaryPositionForTCW(ss.UserTCW)]; ok && config.Range != 0 {
+	tcp := ss.PrimaryPositionForTCW(ss.UserTCW)
+	fa := &ss.FacilityAdaptation
+
+	// Controller-specific config takes priority.
+	if config, ok := fa.ControllerConfigs[tcp]; ok && config.Range != 0 {
 		return config.Range
+	}
+	// Then area-level config.
+	if ctrl, ok := ss.Controllers[tcp]; ok && ctrl.Area != "" {
+		if ac, ok := fa.AreaConfigs[ctrl.Area]; ok && ac.Range != 0 {
+			return ac.Range
+		}
 	}
 	return ss.Range
 }
 
 func (ss *SimState) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.PrimaryPositionForTCW(ss.UserTCW)]; ok && !config.Center.IsZero() {
+	tcp := ss.PrimaryPositionForTCW(ss.UserTCW)
+	fa := &ss.FacilityAdaptation
+
+	// Controller-specific config takes priority.
+	if config, ok := fa.ControllerConfigs[tcp]; ok && !config.Center.IsZero() {
 		return config.Center
+	}
+	// Then area-level config.
+	if ctrl, ok := ss.Controllers[tcp]; ok && ctrl.Area != "" {
+		if ac, ok := fa.AreaConfigs[ctrl.Area]; ok && !ac.Center.IsZero() {
+			return ac.Center
+		}
 	}
 	return ss.Center
 }

@@ -33,19 +33,23 @@
         },
         "center": "KPWM",
         "scratchpads": {},
-        "stars_maps": [
-            "PWM MAIN",
-            "PWM EVENT RWY 29",
-            "PWM EOVM",
-            "PWM EVENT RWY 11",
-            "PWM IAF",
-            "PWM MVA",
-            "PWM LOW AIRWAYS",
-            "ZBW_PWM SCOGS STAR (RNAV)",
-            "ZBW_PWM CDOGG STAR (RNAV)",
-            "PWM RVM"
-        ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "PWM MAIN",
+                    "PWM EVENT RWY 29",
+                    "PWM EOVM",
+                    "PWM EVENT RWY 11",
+                    "PWM IAF",
+                    "PWM MVA",
+                    "PWM LOW AIRWAYS",
+                    "ZBW_PWM SCOGS STAR (RNAV)",
+                    "ZBW_PWM CDOGG STAR (RNAV)",
+                    "PWM RVM"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

@@ -917,12 +917,6 @@
             "SCOOB": {},
             "SWANN": {}
         },
-        "stars_maps": [
-            "CHP Approaches",
-            "PCT MVA",
-            "CHP SIDSTAR",
-            "CHP Approaches"
-        ],
         "video_map_file": "videomaps/ZDC-videomaps.gob.zst",
         "pdb": {
             "hide_gs": true,
@@ -1184,13 +1178,76 @@
         },
         "area_configs": {
             "1": {
-                "default_airport": "KDCA"
+                "default_airport": "KDCA",
+                "video_maps": [
+                    "MTV North",
+                    "MTV South",
+                    "MTV ADWN",
+                    "ADW South",
+                    "PCT Coastlines",
+                    "MTV River",
+                    "PCT SFRA",
+                    "PCT MVA",
+                    "MTV DCA NSTAR",
+                    "MTV DCA SSTAR",
+                    "PCT ClassB",
+                    "MTV DCA NSID",
+                    "MTV DCA SSID",
+                    "MTV ADW STAR",
+                    "MTV ADW SID",
+                    "MTV BWI STAR",
+                    "MTV CGS RNAV",
+                    "MTV DCA R33",
+                    "MTV DCATCT",
+                    "MTV Other SID",
+                    "MTV River",
+                    "PCT Airport",
+                    "PCT ClassD"
+                ],
+                "center": "KDCA"
             },
             "2": {
-                "default_airport": "KRIC"
+                "default_airport": "KRIC",
+                "video_maps": [
+                    "JRV North",
+                    "JRV CSIDE",
+                    "JRV STAR",
+                    "JRV South",
+                    "PCT MVA",
+                    "JRV WIGOL STAR",
+                    "RIC IAP H02-Y",
+                    "RIC IAP H20-Y",
+                    "JRV Sat Approaches",
+                    "JRV Fixes",
+                    "PCT ClassB",
+                    "PCT Coastlines",
+                    "PCT Zones",
+                    "PCT MEGA Combined",
+                    "PCT Roads",
+                    "PCT TAirway",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "RIC IAP H16-Y",
+                    "RIC IAP H34-Y",
+                    "JRV RAREA",
+                    "PCT Airport",
+                    "PCT ClassD",
+                    "PCT Helo Route",
+                    "PCT JAirway",
+                    "PCT QAirway",
+                    "PCT SFRA",
+                    "PCT VAirway"
+                ],
+                "center": "KRIC",
+                "range": 75
             },
             "3": {
-                "default_airport": "KIAD"
+                "default_airport": "KIAD",
+                "video_maps": []
             }
         }
     },

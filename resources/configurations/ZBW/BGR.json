@@ -65,14 +65,18 @@
             }
         },
         "scratchpads": {},
-        "stars_maps": [
-            "BGR MAIN",
-            "BGR EOVM",
-            "BGR VFR",
-            "BGR MVA",
-            "BGR RVM"
-        ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "BGR MAIN",
+                    "BGR EOVM",
+                    "BGR VFR",
+                    "BGR MVA",
+                    "BGR RVM"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

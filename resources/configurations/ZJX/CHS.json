@@ -102,34 +102,6 @@
             "SWPFX": {},
             "VANNC": {}
         },
-        "stars_maps": [
-            "CHS SHELF",
-            "CHS NO SHELF",
-            "33_3",
-            "15_21",
-            "CHS MVA 3NM",
-            "STARS_N",
-            "STARS S",
-            "CHS MVA 5NM",
-            "CHS VICTOR AIRWAYS",
-            "CHS RNAV Y03",
-            "CHS RNAV Y15",
-            "CHS RNAV Y21",
-            "CHS RNAV Y33",
-            "CHS RNAV Z RWY 33",
-            "CHS RNAV Z RWY 15",
-            "CHS RNAV Z RWY 21",
-            "CHS RNAV Z RWY 33",
-            "CHS LGRHD",
-            "CHS PLFMD",
-            "CHS MLTRE",
-            "CHS SWPFX",
-            "CHS PLMTO",
-            "CHS HIGHWAYS",
-            "CHS STADIUMS",
-            "CHS COPTER",
-            "JZI FINALS"
-        ],
         "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -185,6 +157,38 @@
                     "from": "ZJX"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "CHS SHELF",
+                    "CHS NO SHELF",
+                    "33_3",
+                    "15_21",
+                    "CHS MVA 3NM",
+                    "STARS_N",
+                    "STARS S",
+                    "CHS MVA 5NM",
+                    "CHS VICTOR AIRWAYS",
+                    "CHS RNAV Y03",
+                    "CHS RNAV Y15",
+                    "CHS RNAV Y21",
+                    "CHS RNAV Y33",
+                    "CHS RNAV Z RWY 33",
+                    "CHS RNAV Z RWY 15",
+                    "CHS RNAV Z RWY 21",
+                    "CHS RNAV Z RWY 33",
+                    "CHS LGRHD",
+                    "CHS PLFMD",
+                    "CHS MLTRE",
+                    "CHS SWPFX",
+                    "CHS PLMTO",
+                    "CHS HIGHWAYS",
+                    "CHS STADIUMS",
+                    "CHS COPTER",
+                    "JZI FINALS"
+                ]
+            }
         }
     },
     "handoff_ids": [

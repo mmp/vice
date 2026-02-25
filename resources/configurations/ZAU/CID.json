@@ -110,12 +110,16 @@
             "TNU": {},
             "WAVUM": {}
         },
-        "stars_maps": [
-            "CID RVM",
-            "CID MVA",
-            "CID VFR"
-        ],
-        "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "CID RVM",
+                    "CID MVA",
+                    "CID VFR"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

@@ -109,11 +109,6 @@
             "ROZBO": {},
             "SHPRD": {}
         },
-        "stars_maps": [
-            "RDU NE RVM",
-            "RDU SW RVM",
-            "RDU MVA"
-        ],
         "video_map_file": "videomaps/ZDC-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -175,6 +170,15 @@
                     "from": "ZDC"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "RDU NE RVM",
+                    "RDU SW RVM",
+                    "RDU MVA"
+                ]
+            }
         }
     },
     "handoff_ids": [

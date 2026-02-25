@@ -187,9 +187,6 @@
         },
         "center": "GDM",
         "range": 70,
-        "stars_maps": [
-            "TRACON"
-        ],
         "video_map_file": "videomaps/ZBW-eram-videomaps.gob.zst",
         "coordination_fixes": {
             "FLOSI": [
@@ -388,7 +385,10 @@
                     "from": "ZBW"
                 }
             ]
-        }
+        },
+        "eram_maps": [
+            "TRACON"
+        ]
     },
     "handoff_ids": [
         {

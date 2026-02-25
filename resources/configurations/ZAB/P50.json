@@ -516,41 +516,6 @@
                 "short_name": "BNY"
             }
         },
-        "stars_maps": [
-            "PHX667 RWY7R_8",
-            "PHX101 CLASS_B",
-            "",
-            "PHX668 RWY2526",
-            "PHX165 PTACWRD",
-            "PHX003 PHX003",
-            "PHX667 RWY7R_8",
-            "PHX310 TWEAST",
-            "PHX101 CLASS_B",
-            "PHX307 EOVM",
-            "PHX166 E_ARR",
-            "PHX168 E_DEP",
-            "PHX170 EFINSAT",
-            "PHX305 HIGHWAY",
-            "PHX317 V_AIRWY",
-            "PHX315 CITY",
-            "PHX322 Y7L_25R",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "PHX668 RWY2526",
-            "PHX311 TWWEST",
-            "PHX165 PTACWRD",
-            "PHX003 PHX003",
-            "PHX167 W_ARR",
-            "PHX169 W_DEP",
-            "PHX171 WFINSAT",
-            "PHX302 ZABSCT",
-            "PHX318 J_AIRWY",
-            "PHX308 HWY_RWY",
-            "PHX366 LUFOPEN"
-        ],
         "video_map_file": "videomaps/ZAB-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -637,6 +602,45 @@
                     "from": "ZAB"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "PHX667 RWY7R_8",
+                    "PHX101 CLASS_B",
+                    "",
+                    "PHX668 RWY2526",
+                    "PHX165 PTACWRD",
+                    "PHX003 PHX003",
+                    "PHX667 RWY7R_8",
+                    "PHX310 TWEAST",
+                    "PHX101 CLASS_B",
+                    "PHX307 EOVM",
+                    "PHX166 E_ARR",
+                    "PHX168 E_DEP",
+                    "PHX170 EFINSAT",
+                    "PHX305 HIGHWAY",
+                    "PHX317 V_AIRWY",
+                    "PHX315 CITY",
+                    "PHX322 Y7L_25R",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "PHX668 RWY2526",
+                    "PHX311 TWWEST",
+                    "PHX165 PTACWRD",
+                    "PHX003 PHX003",
+                    "PHX167 W_ARR",
+                    "PHX169 W_DEP",
+                    "PHX171 WFINSAT",
+                    "PHX302 ZABSCT",
+                    "PHX318 J_AIRWY",
+                    "PHX308 HWY_RWY",
+                    "PHX366 LUFOPEN"
+                ]
+            }
         }
     },
     "handoff_ids": [

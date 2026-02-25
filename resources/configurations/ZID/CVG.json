@@ -241,41 +241,6 @@
             "LODLL": {},
             "FIITZ": {}
         },
-        "stars_maps": [
-            "North Base",
-            "South Base",
-            "CVG 5 NM MVA",
-            "CVG Class B",
-            "Bengals TFR",
-            "CVG Reds TFR",
-            "CVG ROADS",
-            "Bearcats TFR",
-            "CVG V Airways with Fixes",
-            "CVG VORs",
-            "CVG RNAVs",
-            "CVG RNAV Fixes",
-            "BNGLE SID",
-            "CHCLL SID",
-            "GIPLE SID",
-            "HAGOL SID",
-            "JBNCH SID",
-            "KENLN SID",
-            "LOVEY SID",
-            "ROCKT SID",
-            "CEGRM STAR",
-            "GAVNN STAR",
-            "JAKIE STAR",
-            "SARGO STAR",
-            "TIGRR STAR",
-            "CVG ILS RWY 18L - 18C Fixes",
-            "CVG ILS RWY 18R Fixes",
-            "CVG SAT ILS",
-            "CVG SAT Airports",
-            "CVG ILS RWY 9 Fixes",
-            "CVG ILS RWY 27 Fixes",
-            "East Base",
-            "West Base"
-        ],
         "video_map_file": "videomaps/ZID-videomaps.gob.zst",
         "coordination_fixes": {
             "ARIVR": [
@@ -327,6 +292,45 @@
                     "from": "CMH"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "North Base",
+                    "South Base",
+                    "CVG 5 NM MVA",
+                    "CVG Class B",
+                    "Bengals TFR",
+                    "CVG Reds TFR",
+                    "CVG ROADS",
+                    "Bearcats TFR",
+                    "CVG V Airways with Fixes",
+                    "CVG VORs",
+                    "CVG RNAVs",
+                    "CVG RNAV Fixes",
+                    "BNGLE SID",
+                    "CHCLL SID",
+                    "GIPLE SID",
+                    "HAGOL SID",
+                    "JBNCH SID",
+                    "KENLN SID",
+                    "LOVEY SID",
+                    "ROCKT SID",
+                    "CEGRM STAR",
+                    "GAVNN STAR",
+                    "JAKIE STAR",
+                    "SARGO STAR",
+                    "TIGRR STAR",
+                    "CVG ILS RWY 18L - 18C Fixes",
+                    "CVG ILS RWY 18R Fixes",
+                    "CVG SAT ILS",
+                    "CVG SAT Airports",
+                    "CVG ILS RWY 9 Fixes",
+                    "CVG ILS RWY 27 Fixes",
+                    "East Base",
+                    "West Base"
+                ]
+            }
         }
     },
     "handoff_ids": [

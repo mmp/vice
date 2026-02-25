@@ -1,356 +1,370 @@
 {
-  "control_positions": {
-    "1S": {
-      "callsign": "HCF_S_APP",
-      "frequency": 119500,
-      "radio_name": "HCF Approach"
-    },
-    "1N": {
-      "callsign": "HCF_N_APP",
-      "frequency": 120200,
-      "radio_name": "HCF Approach"
-    },
-    "1T": {
-      "callsign": "OGG_TWR",
-      "frequency": 118700,
-      "radio_name": "Maui Tower"
-    }
-  },
-  "config": {
-    "configurations": {
-      "CF1": {
-        "inbound_assignments": {
-          "CAMPS4.LNY.N": "1S",
-          "LNDHY1": "1N",
-          "V1.CAMPS4.N": "1S",
-          "V2.CAMPS4.N": "1S"
+    "control_positions": {
+        "1S": {
+            "callsign": "HCF_S_APP",
+            "frequency": 119500,
+            "radio_name": "HCF Approach"
         },
-        "departure_assignments": {
-          "PHOG": "1N"
+        "1N": {
+            "callsign": "HCF_N_APP",
+            "frequency": 120200,
+            "radio_name": "HCF Approach"
         },
-        "default_consolidation": {
-          "1N": ["1S"]
+        "1T": {
+            "callsign": "OGG_TWR",
+            "frequency": 118700,
+            "radio_name": "Maui Tower"
         }
-      },
-      "CF2": {
-        "inbound_assignments": {
-          "CAMPS4.LNY.S": "1S",
-          "OCEANIC SOUTH FLOW": "1N",
-          "V1.CAMPS4.S": "1S",
-          "V2.CAMPS4.S": "1S"
+    },
+    "config": {
+        "configurations": {
+            "CF1": {
+                "inbound_assignments": {
+                    "CAMPS4.LNY.N": "1S",
+                    "LNDHY1": "1N",
+                    "V1.CAMPS4.N": "1S",
+                    "V2.CAMPS4.N": "1S"
+                },
+                "departure_assignments": {
+                    "PHOG": "1N"
+                },
+                "default_consolidation": {
+                    "1N": [
+                        "1S"
+                    ]
+                }
+            },
+            "CF2": {
+                "inbound_assignments": {
+                    "CAMPS4.LNY.S": "1S",
+                    "OCEANIC SOUTH FLOW": "1N",
+                    "V1.CAMPS4.S": "1S",
+                    "V2.CAMPS4.S": "1S"
+                },
+                "departure_assignments": {
+                    "PHOG": "1S"
+                },
+                "default_consolidation": {
+                    "1N": [
+                        "1S"
+                    ]
+                }
+            }
         },
-        "departure_assignments": {
-          "PHOG": "1S"
+        "center": "OGG",
+        "controller_configs": {
+            "1S": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 16000,
+                        "vertices": "N020.28.23.711,W156.21.27.872 N020.36.50.380,W156.52.01.984 N020.45.39.241,W156.47.35.236 N020.57.58.772,W156.52.25.001 N021.03.33.732,W156.50.18.768 N021.07.40.629,W156.47.42.158 N021.13.32.905,W156.42.50.965 N021.15.53.633,W156.38.08.122 N021.19.07.164,W156.30.10.821 N021.19.25.580,W156.21.19.138 N021.18.18.289,W156.17.07.056 N021.14.53.264,W156.10.04.907 N021.12.17.972,W156.06.21.829 N021.08.43.683,W156.02.56.000 N021.04.38.448,W156.00.28.509 N020.57.37.685,W155.58.22.716 N020.51.19.591,W155.58.31.230 N020.50.08.084,W155.58.47.380 N020.35.43.309,W156.20.58.374"
+                    }
+                ]
+            }
         },
-        "default_consolidation": {
-          "1N": ["1S"]
-        }
-      }
-    },
-    "center": "OGG",
-    "controller_configs": {
-      "1S": {
-        "flight_following_airspace": [
-          {
-            "type": "polygon",
-            "ceiling": 16000,
-            "vertices": "N020.28.23.711,W156.21.27.872 N020.36.50.380,W156.52.01.984 N020.45.39.241,W156.47.35.236 N020.57.58.772,W156.52.25.001 N021.03.33.732,W156.50.18.768 N021.07.40.629,W156.47.42.158 N021.13.32.905,W156.42.50.965 N021.15.53.633,W156.38.08.122 N021.19.07.164,W156.30.10.821 N021.19.25.580,W156.21.19.138 N021.18.18.289,W156.17.07.056 N021.14.53.264,W156.10.04.907 N021.12.17.972,W156.06.21.829 N021.08.43.683,W156.02.56.000 N021.04.38.448,W156.00.28.509 N020.57.37.685,W155.58.22.716 N020.51.19.591,W155.58.31.230 N020.50.08.084,W155.58.47.380 N020.35.43.309,W156.20.58.374"
-          }
-        ]
-      }
-    },
-    "ssr_codes": {
-      "auto_assignable_codes": {
-        "ifr": {
-          "ranges": ["1501-1577"]
+        "ssr_codes": {
+            "auto_assignable_codes": {
+                "ifr": {
+                    "ranges": [
+                        "1501-1577"
+                    ]
+                },
+                "vfr": {
+                    "ranges": [
+                        "1701-1777"
+                    ]
+                }
+            },
+            "beacon_code_table": {
+                "vfr_codes": [
+                    "1200-1202"
+                ]
+            }
         },
-        "vfr": {
-          "ranges": ["1701-1777"]
+        "filters": {
+            "auto_acquisition": [
+                {
+                    "id": "ACQ",
+                    "description": "HCF AUTO-ACQUISITION",
+                    "type": "polygon",
+                    "vertices": "N019.58.13.995,W158.06.57.864 N020.26.43.598,W158.02.16.505 N020.37.05.136,W159.13.53.312 N021.04.01.376,W159.31.21.188 N021.22.59.807,W159.26.45.651 N021.24.44.946,W159.33.56.920 N021.29.29.355,W159.42.38.880 N021.35.54.721,W159.49.54.543 N021.41.22.360,W159.53.42.290 N021.49.32.776,W159.57.14.545 N021.59.01.477,W159.58.16.398 N022.06.40.952,W159.57.07.789 N022.14.12.168,W159.53.44.212 N022.21.24.823,W159.48.21.214 N022.27.12.987,W159.40.43.359 N022.31.16.052,W159.31.21.518 N022.33.07.255,W159.22.50.544 N022.32.13.621,W159.14.21.877 N022.28.53.656,W159.01.05.643 N022.18.53.583,W157.58.05.742 N022.30.44.453,W158.00.44.934 N023.17.36.980,W157.59.51.485 N022.59.26.251,W156.20.35.247 N021.55.43.943,W156.01.45.578 N021.41.12.411,W156.07.46.204 N020.35.32.041,W154.26.46.365 N019.56.12.761,W154.20.23.986 N019.09.49.141,W154.29.50.606 N017.21.16.934,W156.35.53.649 N019.41.44.251,W156.36.12.381",
+                    "floor": 0,
+                    "ceiling": 30000
+                }
+            ]
+        },
+        "radar_sites": {
+            "QKA": {
+                "char": "A",
+                "position": "21.5078,-158.1461",
+                "elevation": 4080,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "QKK": {
+                "char": "K",
+                "position": "22.1222,-159.6689",
+                "elevation": 3903,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "QPN": {
+                "char": "L",
+                "position": "20.7047,-156.2672",
+                "elevation": 10023,
+                "primary_range": 0,
+                "secondary_range": 250,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "POA": {
+                "char": "P",
+                "position": "19.6325,-155.265833",
+                "elevation": 250,
+                "primary_range": 0,
+                "secondary_range": 250,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "KOA": {
+                "char": "N",
+                "position": "19.7485,-156.0312",
+                "elevation": 170,
+                "primary_range": 0,
+                "secondary_range": 250,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "HNL": {
+                "char": "H",
+                "position": "21.3177,-157.9282",
+                "elevation": 82,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "NFG": {
+                "char": "A",
+                "position": "21.4482,-157.7567",
+                "elevation": 390,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "LIH": {
+                "char": "I",
+                "position": "21.9747,-159.3331",
+                "elevation": 72,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "OGG": {
+                "char": "G",
+                "position": "20.8936,-156.4289",
+                "elevation": 134,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "ITO": {
+                "char": "T",
+                "position": "19.7169,-155.0239",
+                "elevation": 111,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 30,
+        "scratchpads": {
+            "APACK": "APA",
+            "CLUTS": "CLU",
+            "CODDY": "EBB",
+            "EBBER": "EBB",
+            "FITES": "FIT",
+            "KOLEA": "CLU",
+            "MKK": "MKK",
+            "PULPS": "PUL",
+            "ZIGIE": "ZIG",
+            "KEAHI": "KEA",
+            "UPP": "KUP",
+            "LNY": "PLN",
+            "KATHS": "KAT",
+            "LIH": "LIH",
+            "LILIA": "LIL",
+            "NONNI": "NON",
+            "PUPPI": "PUP",
+            "SOK": "SOK",
+            "CARRP": "CAR",
+            "CHOKO": "CHO",
+            "DOVRR": "DOV",
+            "KEOLA": "KEO",
+            "KUCHI": "KUC",
+            "GECKO": "GEC",
+            "PALAY": "PAL"
+        },
+        "significant_points": {
+            "APACK": {
+                "short_name": "APA"
+            },
+            "CLUTS": {
+                "short_name": "CLU"
+            },
+            "CODDY": {
+                "short_name": "COD"
+            },
+            "EBBER": {
+                "short_name": "EBB"
+            },
+            "FITES": {
+                "short_name": "FIT"
+            },
+            "KOLEA": {
+                "short_name": "KOL"
+            },
+            "MKK": {},
+            "PULPS": {
+                "short_name": "PUL"
+            },
+            "ZIGIE": {
+                "short_name": "ZIG"
+            },
+            "KEAHI": {
+                "short_name": "KEA"
+            },
+            "UPP": {},
+            "LNY": {},
+            "KATHS": {
+                "short_name": "KAT"
+            },
+            "LIH": {},
+            "LILIA": {
+                "short_name": "LIL"
+            },
+            "NONNI": {
+                "short_name": "NON"
+            },
+            "PUPPI": {
+                "short_name": "PUP"
+            },
+            "SOK": {},
+            "CARRP": {
+                "short_name": "CAR"
+            },
+            "CHOKO": {
+                "short_name": "CHO"
+            },
+            "DOVRR": {
+                "short_name": "DOV"
+            },
+            "KEOLA": {
+                "short_name": "KEO"
+            },
+            "KUCHI": {
+                "short_name": "KUC"
+            },
+            "GECKO": {
+                "short_name": "GEC"
+            },
+            "PALAY": {
+                "short_name": "PAL"
+            }
+        },
+        "video_map_file": "videomaps/ZHN-videomaps.gob.zst",
+        "coordination_fixes": {
+            "BARBY": [
+                {
+                    "type": "route",
+                    "to": "ZHN",
+                    "from": "OGG"
+                }
+            ],
+            "LAVAS": [
+                {
+                    "type": "route",
+                    "to": "OGG",
+                    "from": "ZHN"
+                }
+            ],
+            "HARPO": [
+                {
+                    "type": "route",
+                    "to": "OGG",
+                    "from": "ZHN"
+                }
+            ],
+            "LNY": [
+                {
+                    "type": "route",
+                    "to": "OGG",
+                    "from": "ZHN"
+                }
+            ],
+            "LNDHY": [
+                {
+                    "type": "route",
+                    "to": "OGG",
+                    "from": "ZHN"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "OGG TRACON",
+                    "OGG MVA__MAUI MINIMUM VEC ALT",
+                    "TRACON__TRACON OUTLINES",
+                    "OGG RVM__MAUI RADAR VEC MAP",
+                    "SPLIT__TRACON SPLITS",
+                    "COAST__COASTLINES",
+                    "ARWYS__AIRWAYS",
+                    "CTR__CENTER SPLITS",
+                    "OGG_FIX_ARR",
+                    "OGG_FIX_I2",
+                    "OGG_FIX_R2",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "APRTS__AIRPORTS",
+                    "ZHN Airspace Classes",
+                    "",
+                    "OGG_FIX_20",
+                    "OGG_FIX_23"
+                ]
+            }
         }
-      },
-      "beacon_code_table": {
-        "vfr_codes": ["1200-1202"]
-      }
     },
-    "filters": {
-      "auto_acquisition": [
+    "handoff_ids": [
         {
-          "id": "ACQ",
-          "description": "HCF AUTO-ACQUISITION",
-          "type": "polygon",
-          "vertices": "N019.58.13.995,W158.06.57.864 N020.26.43.598,W158.02.16.505 N020.37.05.136,W159.13.53.312 N021.04.01.376,W159.31.21.188 N021.22.59.807,W159.26.45.651 N021.24.44.946,W159.33.56.920 N021.29.29.355,W159.42.38.880 N021.35.54.721,W159.49.54.543 N021.41.22.360,W159.53.42.290 N021.49.32.776,W159.57.14.545 N021.59.01.477,W159.58.16.398 N022.06.40.952,W159.57.07.789 N022.14.12.168,W159.53.44.212 N022.21.24.823,W159.48.21.214 N022.27.12.987,W159.40.43.359 N022.31.16.052,W159.31.21.518 N022.33.07.255,W159.22.50.544 N022.32.13.621,W159.14.21.877 N022.28.53.656,W159.01.05.643 N022.18.53.583,W157.58.05.742 N022.30.44.453,W158.00.44.934 N023.17.36.980,W157.59.51.485 N022.59.26.251,W156.20.35.247 N021.55.43.943,W156.01.45.578 N021.41.12.411,W156.07.46.204 N020.35.32.041,W154.26.46.365 N019.56.12.761,W154.20.23.986 N019.09.49.141,W154.29.50.606 N017.21.16.934,W156.35.53.649 N019.41.44.251,W156.36.12.381",
-          "floor": 0,
-          "ceiling": 30000
-        }
-      ]
-    },
-    "radar_sites": {
-      "QKA": {
-        "char": "A",
-        "position": "21.5078,-158.1461",
-        "elevation": 4080,
-        "primary_range": 250,
-        "secondary_range": 250,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "QKK": {
-        "char": "K",
-        "position": "22.1222,-159.6689",
-        "elevation": 3903,
-        "primary_range": 250,
-        "secondary_range": 250,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "QPN": {
-        "char": "L",
-        "position": "20.7047,-156.2672",
-        "elevation": 10023,
-        "primary_range": 0,
-        "secondary_range": 250,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "POA": {
-        "char": "P",
-        "position": "19.6325,-155.265833",
-        "elevation": 250,
-        "primary_range": 0,
-        "secondary_range": 250,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "KOA": {
-        "char": "N",
-        "position": "19.7485,-156.0312",
-        "elevation": 170,
-        "primary_range": 0,
-        "secondary_range": 250,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "HNL": {
-        "char": "H",
-        "position": "21.3177,-157.9282",
-        "elevation": 82,
-        "primary_range": 60,
-        "secondary_range": 60,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "NFG": {
-        "char": "A",
-        "position": "21.4482,-157.7567",
-        "elevation": 390,
-        "primary_range": 60,
-        "secondary_range": 60,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "LIH": {
-        "char": "I",
-        "position": "21.9747,-159.3331",
-        "elevation": 72,
-        "primary_range": 60,
-        "secondary_range": 60,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "OGG": {
-        "char": "G",
-        "position": "20.8936,-156.4289",
-        "elevation": 134,
-        "primary_range": 60,
-        "secondary_range": 60,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "ITO": {
-        "char": "T",
-        "position": "19.7169,-155.0239",
-        "elevation": 111,
-        "primary_range": 60,
-        "secondary_range": 60,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      }
-    },
-    "range": 30,
-    "scratchpads": {
-      "APACK": "APA",
-      "CLUTS": "CLU",
-      "CODDY": "EBB",
-      "EBBER": "EBB",
-      "FITES": "FIT",
-      "KOLEA": "CLU",
-      "MKK": "MKK",
-      "PULPS": "PUL",
-      "ZIGIE": "ZIG",
-      "KEAHI": "KEA",
-      "UPP": "KUP",
-      "LNY": "PLN",
-      "KATHS": "KAT",
-      "LIH": "LIH",
-      "LILIA": "LIL",
-      "NONNI": "NON",
-      "PUPPI": "PUP",
-      "SOK": "SOK",
-      "CARRP": "CAR",
-      "CHOKO": "CHO",
-      "DOVRR": "DOV",
-      "KEOLA": "KEO",
-      "KUCHI": "KUC",
-      "GECKO": "GEC",
-      "PALAY": "PAL"
-    },
-    "significant_points": {
-      "APACK": {
-        "short_name": "APA"
-      },
-      "CLUTS": {
-        "short_name": "CLU"
-      },
-      "CODDY": {
-        "short_name": "COD"
-      },
-      "EBBER": {
-        "short_name": "EBB"
-      },
-      "FITES": {
-        "short_name": "FIT"
-      },
-      "KOLEA": {
-        "short_name": "KOL"
-      },
-      "MKK": {},
-      "PULPS": {
-        "short_name": "PUL"
-      },
-      "ZIGIE": {
-        "short_name": "ZIG"
-      },
-      "KEAHI": {
-        "short_name": "KEA"
-      },
-      "UPP": {},
-      "LNY": {},
-      "KATHS": {
-        "short_name": "KAT"
-      },
-      "LIH": {},
-      "LILIA": {
-        "short_name": "LIL"
-      },
-      "NONNI": {
-        "short_name": "NON"
-      },
-      "PUPPI": {
-        "short_name": "PUP"
-      },
-      "SOK": {},
-      "CARRP": {
-        "short_name": "CAR"
-      },
-      "CHOKO": {
-        "short_name": "CHO"
-      },
-      "DOVRR": {
-        "short_name": "DOV"
-      },
-      "KEOLA": {
-        "short_name": "KEO"
-      },
-      "KUCHI": {
-        "short_name": "KUC"
-      },
-      "GECKO": {
-        "short_name": "GEC"
-      },
-      "PALAY": {
-        "short_name": "PAL"
-      }
-    },
-    "stars_maps": [
-      "OGG TRACON",
-      "OGG MVA__MAUI MINIMUM VEC ALT",
-      "TRACON__TRACON OUTLINES",
-      "OGG RVM__MAUI RADAR VEC MAP",
-      "SPLIT__TRACON SPLITS",
-      "COAST__COASTLINES",
-      "ARWYS__AIRWAYS",
-      "CTR__CENTER SPLITS",
-      "OGG_FIX_ARR",
-      "OGG_FIX_I2",
-      "OGG_FIX_R2",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "APRTS__AIRPORTS",
-      "ZHN Airspace Classes",
-      "",
-      "OGG_FIX_20",
-      "OGG_FIX_23"
-    ],
-    "video_map_file": "videomaps/ZHN-videomaps.gob.zst",
-    "coordination_fixes": {
-      "BARBY": [
+            "id": "HNL",
+            "prefix": "1"
+        },
         {
-          "type": "route",
-          "to": "ZHN",
-          "from": "OGG"
-        }
-      ],
-      "LAVAS": [
+            "id": "NGF",
+            "prefix": "2"
+        },
         {
-          "type": "route",
-          "to": "OGG",
-          "from": "ZHN"
+            "id": "ZHN",
+            "prefix": "C"
         }
-      ],
-      "HARPO": [
-        {
-          "type": "route",
-          "to": "OGG",
-          "from": "ZHN"
-        }
-      ],
-      "LNY": [
-        {
-          "type": "route",
-          "to": "OGG",
-          "from": "ZHN"
-        }
-      ],
-      "LNDHY": [
-        {
-          "type": "route",
-          "to": "OGG",
-          "from": "ZHN"
-        }
-      ]
-    }
-  },
-  "handoff_ids": [
-    {
-      "id": "HNL",
-      "prefix": "1"
-    },
-    {
-      "id": "NGF",
-      "prefix": "2"
-    },
-    {
-      "id": "ZHN",
-      "prefix": "C"
-    }
-  ]
+    ]
 }

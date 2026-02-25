@@ -91,23 +91,6 @@
             "SOTHH": {},
             "SPA": {}
         },
-        "stars_maps": [
-            "GSP MINIMUM VECTORING ALTITUDE",
-            "COUNTY JURISDICTIONS",
-            "RNAV APPROACHES (AND17, 18A26, EOE04, EOE22, EHO05, AVL35)",
-            "SIDS/STARS/EXTENDED FINAL APPROACH COURSES",
-            "RNAV APPROACHES (FQD01, SPA05, 35A05, LUX08, GRD09, GMU01, GMU10, GYH05, LQK05, AND05, CEU07)",
-            "NORTH FLOW",
-            "VPLOW WAYPOINT",
-            "RNAV APPROACHES (FQD19, SPA23, 35A23, LUX26, GRD27, GMU19, GMU28, GYH23, LQK23, AND23, AND35, CEU25)",
-            "SOUTH FLOW",
-            "GSP EMERGENCY OBSTRUCTION VIDEO MAP",
-            "EMERGENCY LOCATIONS",
-            "GYH RNAV 23",
-            "GMU RNAV 19",
-            "GMU RNAV 10",
-            "GMU RNAV 28"
-        ],
         "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
         "coordination_fixes": {
             "ANGRI": [
@@ -138,6 +121,27 @@
                     "from": "ZTL"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "GSP MINIMUM VECTORING ALTITUDE",
+                    "COUNTY JURISDICTIONS",
+                    "RNAV APPROACHES (AND17, 18A26, EOE04, EOE22, EHO05, AVL35)",
+                    "SIDS/STARS/EXTENDED FINAL APPROACH COURSES",
+                    "RNAV APPROACHES (FQD01, SPA05, 35A05, LUX08, GRD09, GMU01, GMU10, GYH05, LQK05, AND05, CEU07)",
+                    "NORTH FLOW",
+                    "VPLOW WAYPOINT",
+                    "RNAV APPROACHES (FQD19, SPA23, 35A23, LUX26, GRD27, GMU19, GMU28, GYH23, LQK23, AND23, AND35, CEU25)",
+                    "SOUTH FLOW",
+                    "GSP EMERGENCY OBSTRUCTION VIDEO MAP",
+                    "EMERGENCY LOCATIONS",
+                    "GYH RNAV 23",
+                    "GMU RNAV 19",
+                    "GMU RNAV 10",
+                    "GMU RNAV 28"
+                ]
+            }
         }
     },
     "handoff_ids": [

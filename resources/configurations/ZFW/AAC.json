@@ -274,15 +274,6 @@
                 "abbreviation": "G"
             }
         },
-        "stars_maps": [
-            "MVA",
-            "BASE",
-            "EAST",
-            "ARSPC",
-            "STARS",
-            "TAA",
-            "SID"
-        ],
         "video_map_file": "videomaps/aac-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -329,6 +320,20 @@
                     "from": "ZFW"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "MVA",
+                    "BASE",
+                    "EAST",
+                    "ARSPC",
+                    "STARS",
+                    "TAA",
+                    "SID"
+                ],
+                "center": "KAAC"
+            }
         }
     },
     "handoff_ids": [
