@@ -907,17 +907,11 @@ func (s *Sim) GetUserState() *UserState {
 
 // GetControllerVideoMaps returns the video map configuration for the given TCW.
 // Priority: controller-specific config > area-level config > facility-level.
-// For ERAM facilities, returns ERAMMapNames instead.
 func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, beaconCodes []av.Squawk) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	fa := &s.State.FacilityAdaptation
-
-	// ERAM facilities use eram_maps.
-	if _, isERAM := av.DB.ARTCCs[s.State.Facility]; isERAM {
-		return fa.ERAMMapNames, s.State.ScenarioDefaultVideoMaps, nil
-	}
 
 	tcp := s.State.PrimaryPositionForTCW(tcw)
 

@@ -333,7 +333,6 @@ type FacilityAdaptation struct {
 	AirspaceAwareness   []AirspaceAwareness                        `json:"airspace_awareness" scope:"stars"`
 	ForceQLToSelf       bool                                       `json:"force_ql_self" scope:"stars"`
 	AllowLongScratchpad bool                                       `json:"allow_long_scratchpad" scope:"stars"`
-	ERAMMapNames        []string                                   `json:"eram_maps" scope:"eram"`
 	VideoMapLabels      map[string]string                          `json:"map_labels"`
 	ControllerConfigs   map[ControlPosition]*STARSControllerConfig `json:"controller_configs"`
 	AreaConfigs         map[string]*STARSAreaConfig                `json:"area_configs,omitempty"`

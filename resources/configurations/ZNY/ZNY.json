@@ -612,39 +612,7 @@
                     "from": "ZNY"
                 }
             ]
-        },
-        "eram_maps": [
-            "BASE MAP",
-            "HIGH SECTOR",
-            "LOW SECTOR",
-            "HIGH AIRWAY",
-            "LOW AIRWAY",
-            "APCH BDRY",
-            "3NM BDRY",
-            "MIA",
-            "HPAS",
-            "MIL",
-            "MOA",
-            "STARS",
-            "ZNY IAP",
-            "CLASS B",
-            "MVA",
-            "N90 RVM",
-            "N90 LIB RVM",
-            "PHL-W RVM",
-            "PHL-E RVM",
-            "MINOR RVM",
-            "EWR RVM",
-            "LGA RVM",
-            "JFK CFG",
-            "ISP RVM",
-            "ABE RVM",
-            "AVP RVM",
-            "BGM RVM",
-            "ELM RVM",
-            "MDT RVM",
-            "WRI RVM"
-        ]
+        }
     },
     "handoff_ids": [
         {

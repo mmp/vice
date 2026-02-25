@@ -479,29 +479,7 @@
                     "from": "ZLA"
                 }
             ]
-        },
-        "eram_maps": [
-            "LOW WEST",
-            "LOW EAST",
-            "APCH WEST",
-            "APCH EAST/OO",
-            "EMERG AIRPORT",
-            "MIA",
-            "AIRWAYS",
-            "JET ROUTES",
-            "SHORE LINE",
-            "",
-            "HIGH SECTORS",
-            "SECTOR BNDRYS",
-            "SPECIAL USE AIR",
-            "OVER OCEAN",
-            "SBA SUMZUM",
-            "B V S LEGOZ",
-            "LAX STAR",
-            "LGB SNA",
-            "SERFR ARC",
-            "LAX ARCS"
-        ]
+        }
     },
     "handoff_ids": [
         {

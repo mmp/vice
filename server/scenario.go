@@ -1215,15 +1215,6 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 	}
 
-	// ERAM maps validation.
-	if manifest != nil {
-		for _, m := range s.ERAMMapNames {
-			if m != "" && !manifest.HasMap(m) {
-				e.ErrorString(`video map %q in "eram_maps" is not a valid video map`, m)
-			}
-		}
-	}
-
 	// Video map labels must reference a known video map in some area.
 	var allAreaVideoMaps []string
 	for _, ac := range s.AreaConfigs {
