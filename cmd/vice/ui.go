@@ -156,7 +156,8 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 	ui.font.ImguiPush()
 	if imgui.BeginMainMenuBar() {
-		imgui.PushStyleColorVec4(imgui.ColButton, imgui.CurrentStyle().Colors()[imgui.ColMenuBarBg])
+		menuBarCursorY := imgui.CursorPosY()
+		imgui.PushStyleColorVec4(imgui.ColButton, imgui.Vec4{})
 
 		if controlClient != nil && controlClient.Connected() {
 			if controlClient.State.Paused {
@@ -277,13 +278,13 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		if ui.pttRecording || ui.pttGarbling {
 			// red for recording, yellow for garbling
 			micColor := util.Select(ui.pttGarbling, imgui.Vec4{1, 1, 0, 1}, imgui.Vec4{1, 0, 0, 1})
-			imgui.SetCursorPos(imgui.Vec2{X: buttonsX - float32(iconWidth) - itemSpacingX, Y: 0})
+			imgui.SetCursorPos(imgui.Vec2{X: buttonsX - float32(iconWidth) - itemSpacingX, Y: menuBarCursorY})
 			imgui.PushStyleColorVec4(imgui.ColText, micColor)
 			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
 			imgui.PopStyleColor()
 		}
 
-		imgui.SetCursorPos(imgui.Vec2{X: buttonsX, Y: 0})
+		imgui.SetCursorPos(imgui.Vec2{X: buttonsX, Y: menuBarCursorY})
 
 		if imgui.Button(renderer.FontAwesomeIconInfoCircle) {
 			ui.showAboutDialog = !ui.showAboutDialog
