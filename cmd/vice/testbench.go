@@ -37,22 +37,43 @@ type TestBenchCase struct {
 }
 
 type TestBenchStep struct {
-	Command        string `json:"command,omitempty"`
-	Callsign       string `json:"callsign,omitempty"`
-	ExpectReadback string `json:"expect_readback,omitempty"`
-	RejectReadback string `json:"reject_readback,omitempty"`
-	WaitFor        string `json:"wait_for,omitempty"`
+	Command        string        `json:"command,omitempty"`
+	Callsign       string        `json:"callsign,omitempty"`
+	ExpectReadback StringOrArray `json:"expect_readback,omitempty"`
+	RejectReadback string        `json:"reject_readback,omitempty"`
+	WaitFor        string        `json:"wait_for,omitempty"`
+}
+
+// StringOrArray unmarshals from either a JSON string or an array of strings.
+type StringOrArray []string
+
+func (s *StringOrArray) UnmarshalJSON(data []byte) error {
+	// Try string first.
+	var single string
+	if err := json.Unmarshal(data, &single); err == nil {
+		*s = []string{single}
+		return nil
+	}
+	// Then try array.
+	var arr []string
+	if err := json.Unmarshal(data, &arr); err != nil {
+		return err
+	}
+	*s = arr
+	return nil
 }
 
 type TestBenchAircraftSpec struct {
-	Callsign     string  `json:"callsign,omitempty"`
-	AircraftType string  `json:"aircraft_type,omitempty"` // e.g. "B738"; empty = sampled from airline or B738 fallback
-	DistanceNM   float32 `json:"distance_nm"`
-	Altitude     float32 `json:"altitude,omitempty"` // explicit altitude; 0 = use fix restriction
-	Speed        float32 `json:"speed"`
-	Heading      float32 `json:"heading,omitempty"`     // aircraft heading; 0 = inbound to fix/airport
-	Bearing      float32 `json:"bearing,omitempty"`     // bearing FROM reference to place aircraft
-	RelativeTo   string  `json:"relative_to,omitempty"` // fix name or placeholder (e.g. "{if}"); empty = airport
+	Callsign      string  `json:"callsign,omitempty"`
+	AircraftType  string  `json:"aircraft_type,omitempty"` // e.g. "B738"; empty = sampled from airline or B738 fallback
+	DistanceNM    float32 `json:"distance_nm"`
+	Altitude      float32 `json:"altitude,omitempty"` // explicit altitude; 0 = use fix restriction
+	Speed         float32 `json:"speed"`
+	Heading       float32 `json:"heading,omitempty"`        // aircraft heading; 0 = inbound to fix/airport
+	HeadingOffset float32 `json:"heading_offset,omitempty"` // added to default heading (runway heading)
+	Bearing       float32 `json:"bearing,omitempty"`        // bearing FROM reference to place aircraft
+	BearingOffset float32 `json:"bearing_offset,omitempty"` // added to default bearing (extended centerline)
+	RelativeTo    string  `json:"relative_to,omitempty"`    // fix name or placeholder (e.g. "{if}"); empty = airport
 
 	TrafficInSight bool   `json:"traffic_in_sight,omitempty"`
 	Note           string `json:"note,omitempty"`
@@ -143,7 +164,9 @@ func (ds *TestBench) resolveStep(tc *TestBenchCase, step TestBenchStep) TestBenc
 		"{faf}", faf,
 	)
 	step.Command = r.Replace(step.Command)
-	step.ExpectReadback = r.Replace(step.ExpectReadback)
+	for i, s := range step.ExpectReadback {
+		step.ExpectReadback[i] = r.Replace(s)
+	}
 	step.RejectReadback = r.Replace(step.RejectReadback)
 
 	// Resolve callsign index references like "{0}", "{1}" to the
@@ -585,7 +608,8 @@ func (ds *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 
 	// Determine the bearing from reference to place the aircraft.
 	// Default: on extended centerline (reciprocal of runway heading).
-	bearing := rwyHeading + 180
+	// BearingOffset is relative to the default; Bearing is absolute.
+	bearing := rwyHeading + 180 + spec.BearingOffset
 	if spec.Bearing != 0 {
 		bearing = spec.Bearing
 	}
@@ -593,7 +617,8 @@ func (ds *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 	pos := math.Offset2LL(refPos, bearing, spec.DistanceNM, nmPerLong, magVar)
 
 	// Aircraft heading: default is inbound (runway heading).
-	heading := rwyHeading
+	// HeadingOffset is relative to the default; Heading is absolute.
+	heading := rwyHeading + spec.HeadingOffset
 	if spec.Heading != 0 {
 		heading = spec.Heading
 	}
@@ -859,7 +884,7 @@ func (ds *TestBench) processCommandStep(tc *TestBenchCase, step TestBenchStep, e
 	// If the command step has no readback expectations, it's a
 	// "fire and forget" step — pass the readback through so the
 	// next step (e.g. wait_for) can evaluate it.
-	if step.ExpectReadback == "" && step.RejectReadback == "" {
+	if len(step.ExpectReadback) == 0 && step.RejectReadback == "" {
 		ds.stepResults[ds.currentStep] = "pass"
 		ds.advanceStep()
 		// Re-evaluate this same event against the new current step.
@@ -876,16 +901,23 @@ func (ds *TestBench) processCommandStep(tc *TestBenchCase, step TestBenchStep, e
 	}
 
 	// Verify readback against WrittenText (the structured form,
-	// not the randomized spoken form).
-	pass := true
-	if !strings.Contains(text, strings.ToLower(step.ExpectReadback)) {
-		pass = false
+	// not the randomized spoken form). Pass if any of the expected
+	// strings match.
+	pass := false
+	for _, expect := range step.ExpectReadback {
+		if strings.Contains(text, strings.ToLower(expect)) {
+			pass = true
+			break
+		}
+	}
+	if len(step.ExpectReadback) == 0 {
+		pass = true
 	}
 	if step.RejectReadback != "" && strings.Contains(text, strings.ToLower(step.RejectReadback)) {
 		pass = false
 	}
 
-	ds.lg.Debugf("test bench: step %d cmd=%q expect=%q reject=%q written=%q pass=%v",
+	ds.lg.Debugf("test bench: step %d cmd=%q expect=%v reject=%q written=%q pass=%v",
 		ds.currentStep, step.Command, step.ExpectReadback, step.RejectReadback, event.WrittenText, pass)
 
 	if pass {

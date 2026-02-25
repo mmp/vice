@@ -39,6 +39,150 @@
       ]
     }
   ],
+  "Speed Assignments": [
+    {
+      "label": "Reduce speed",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "S210", "expect_readback": "210 knots"}
+      ]
+    },
+    {
+      "label": "Cancel speed restrictions",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "S210", "expect_readback": "210 knots"},
+        {"command": "S", "expect_readback": "cancel speed"}
+      ]
+    },
+    {
+      "label": "Slowest practical speed",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "SMIN", "expect_readback": ["slowest practical speed", "slowing as much as we can"]}
+      ]
+    },
+    {
+      "label": "Maximum forward speed",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 210, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "SMAX", "expect_readback": ["maximum forward speed", "maintaining maximum forward speed"]}
+      ]
+    },
+    {
+      "label": "Maintain present speed",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "SPRES", "expect_readback": ["maintain present speed", "present speed", "maintaining"]}
+      ]
+    }
+  ],
+  "Altitude + Speed Sequencing": [
+    {
+      "label": "Descend, then reduce speed",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "D050", "expect_readback": "5,000"},
+        {"command": "TS170", "expect_readback": "170 knots"}
+      ]
+    },
+    {
+      "label": "Reduce speed, then descend",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "S210", "expect_readback": "210 knots"},
+        {"command": "TD050", "expect_readback": "5,000"}
+      ]
+    }
+  ],
+  "Crossing Restrictions": [
+    {
+      "label": "Cross fix at altitude",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "C{faf}/A030", "expect_readback": "cross"}
+      ]
+    },
+    {
+      "label": "Cross fix at speed",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "C{faf}/S180", "expect_readback": "cross"}
+      ]
+    },
+    {
+      "label": "Cross fix at altitude and speed",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "C{faf}/A030/S180", "expect_readback": "cross"}
+      ]
+    }
+  ],
+  "Vectoring to Intercept": [
+    {
+      "label": "Intercept localizer",
+      "aircraft": [
+        {"distance_nm": 12, "relative_to": "{if}", "speed": 210, "altitude": 3000,
+         "bearing_offset": 30, "heading_offset": -30}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "I", "expect_readback": "intercepting"}
+      ]
+    },
+    {
+      "label": "At fix, intercept localizer",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 210, "altitude": 4000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "D{if}", "expect_readback": "direct {if}"},
+        {"command": "A{if}/I", "expect_readback": ["{if}", "intercept", "join"]}
+      ]
+    },
+    {
+      "label": "At fix, cleared approach",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 210, "altitude": 4000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "D{if}", "expect_readback": "direct {if}"},
+        {"command": "A{if}/C{approach}", "expect_readback": "cleared"}
+      ]
+    }
+  ],
   "Departure Basics": [
     {
       "label": "Heading assignment",
