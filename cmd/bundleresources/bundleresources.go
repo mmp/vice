@@ -162,6 +162,10 @@ func main() {
 
 			manifest[relPath] = manifestEntry{Hash: hash, Size: info.Size()}
 		}
+
+		if err := eg.Wait(); err != nil {
+			log.Fatalf("%v", err)
+		}
 	} else {
 		// Get R2 credentials from environment.
 		accountID := os.Getenv("R2_ACCOUNT_ID")
