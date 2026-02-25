@@ -1,2734 +1,2351 @@
 {
-    "tracon": "OGG",
-    "airports": {
-        "PHKO": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 4
-                }
-            }
-        },
-        "PHJR": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 7
-                }
-            }
-        },
-        "PHJH": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 2
-                }
-            }
-        },
-        "PHHN": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            },
-            "approaches": {
-                "R8": {
-                    "cifp_id": "R8"
-                },
-                "R26": {
-                    "cifp_id": "R26"
-                }
-            }
-        },
-        "PHUP": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 4
-                }
-            }
-        },
-        "PHMU": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 3
-                }
-            }
-        },
-        "PHNY": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 10
-                }
-            }
-        },
-        "PHMK": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "PHLU": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "PHOG": {
-            "approaches": {
-                "IY2": {
-                    "cifp_id": "IY2"
-                },
-                "IZ2": {
-                    "cifp_id": "IZ2"
-                },
-                "RY2": {
-                    "cifp_id": "RY2"
-                },
-                "RZ2": {
-                    "cifp_id": "RZ2"
-                },
-                "SSV": {
-                    "full_name": "Smoke Stack Visual Runway 1",
-                    "runway": "2",
-                    "type": "Visual",
-                    "waypoints": [
-                        "N020.35.19.784,W156.28.37.218 N020.43.38.948,W156.29.14.351 N020.50.43.631,W156.28.08.708"
-                    ]
-                },
-                "R20": {
-                    "cifp_id": "R20"
-                },
-                "R23": {
-                    "cifp_id": "R23"
-                }
-            },
-            "departure_routes": {
-                "2": {
-                    "LNY, OGG, MKK": {
-                        "cleared_altitude": 7000,
-                        "sid": "MAUI5",
-                        "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
-                    },
-                    "ZIGIE, APACK, CLUTS, EBBER, FITES, SCOON, UPP, KOA, TARDE, DOVRR": {
-                        "cleared_altitude": 6000,
-                        "sid": "RV",
-                        "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
-                    },
-                    "SAKKI, JULLE, CARRP, CHOKO, NONNI, PUPPI, SYVAD, LILIA, CANON, DANNO, THOMA": {
-                        "cleared_altitude": 6000,
-                        "sid": "RV",
-                        "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
-                    },
-                    "BARBY": {
-                        "cleared_altitude": 6000,
-                        "sid": "ONOHI2",
-                        "waypoints": "N020.57.57.282,W156.22.43.842/a2100+/flyover N020.53.26.716,W156.16.07.950 ONOHI BARBY"
-                    },
-                    "ONOHI": {
-                        "cleared_altitude": 6000,
-                        "sid": "ONOHI2",
-                        "waypoints": "N020.57.57.282,W156.22.43.842/a2100+/flyover N020.53.26.716,W156.16.07.950 ONOHI"
-                    }
-                },
-                "20": {
-                    "LNY": {
-                        "cleared_altitude": 6000,
-                        "sid": "BEACH4",
-                        "waypoints": "N020.53.19.802,W156.26.11.539/a400+ N020.52.07.306,W156.26.25.327 BEACH LNY"
-                    },
-                    "HARPO": {
-                        "cleared_altitude": 6000,
-                        "sid": "BEACH4",
-                        "waypoints": "N020.53.19.802,W156.26.11.539/a400+ N020.52.07.306,W156.26.25.327 BEACH HARPO"
-                    },
-                    "BARBY": {
-                        "cleared_altitude": 6000,
-                        "sid": "ONOHI2",
-                        "waypoints": "N020.51.47.627,W156.27.19.929/a2100+/flyover OGG ONOHI BARBY"
-                    },
-                    "ONOHI": {
-                        "cleared_altitude": 6000,
-                        "sid": "ONOHI2",
-                        "waypoints": "N020.51.47.627,W156.27.19.929/a2100+/flyover OGG ONOHI"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "FDY"
-                        },
-                        {
-                            "icao": "FDY"
-                        }
-                    ],
-                    "destination": "PHMK",
-                    "scratchpad": "MKK",
-                    "route": "OGG V6 BLUSH V8 MKK",
-                    "exit": "OGG"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "FDY"
-                        },
-                        {
-                            "icao": "FDY"
-                        }
-                    ],
-                    "destination": "PHMU",
-                    "scratchpad": "MUE",
-                    "route": "BARBY V11 UPP TAMMI",
-                    "exit": "BARBY"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "FDY"
-                        },
-                        {
-                            "icao": "FDY"
-                        }
-                    ],
-                    "destination": "PHMU",
-                    "scratchpad": "HNM",
-                    "route": "OGG V11 OPANA SEYOL",
-                    "exit": "OGG"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "FDY"
-                        },
-                        {
-                            "icao": "FDY"
-                        }
-                    ],
-                    "destination": "PHNY",
-                    "scratchpad": "LNY",
-                    "route": "OGG V1 HARPO V2 LNY",
-                    "exit": "OGG"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M",
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M",
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "short"
-                        }
-                    ],
-                    "destination": "PHLI",
-                    "route": "LNY V16 NAPUA LIH",
-                    "exit": "LNY"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M",
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M",
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "AAH",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "AAH",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "UPS",
-                            "fleet": "b763"
-                        },
-                        {
-                            "icao": "FDX",
-                            "fleet": "b752"
-                        }
-                    ],
-                    "destination": "PHNL",
-                    "route": "LNY JULLE5",
-                    "exit": "LNY"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M",
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M",
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "AAH",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "AAH",
-                            "fleet": "short"
-                        }
-                    ],
-                    "destination": "PHKO",
-                    "route": "ONOHI WANSI TAMMI KAYAK KOA",
-                    "exit": "ONOHI"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M",
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M",
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "AAH",
-                            "fleet": "short"
-                        },
-                        {
-                            "icao": "AAH",
-                            "fleet": "short"
-                        }
-                    ],
-                    "destination": "PHKO",
-                    "route": "HARPO MAKEN V5 KOA",
-                    "exit": "HARPO"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "HAL",
-                            "fleet": "short"
-                        }
-                    ],
-                    "destination": "PHTO",
-                    "route": "BARBY PARIS V15 ITO",
-                    "exit": "BARBY"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "HAL",
-                            "fleet": "short"
-                        }
-                    ],
-                    "destination": "PHTO",
-                    "route": "HARPO V21 PUMIC V15 ITO",
-                    "exit": "HARPO"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "b772"
-                        }
-                    ],
-                    "destination": "KDEN",
-                    "route": "APACK R463 AUNTI A332 HALLI A332 HELOP 3600N/14000W 3900N/13000W FATMO RBL BVL J154 TCH KAMPR LONGZ4",
-                    "exit": "APACK"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "b772"
-                        }
-                    ],
-                    "destination": "KDEN",
-                    "route": "EBBER R577 EDSEL ELKEY KL21G GBNEY KL36M DICEE BUMMP SSKII4",
-                    "exit": "EBBER"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "b772"
-                        },
-                        {
-                            "icao": "UAL",
-                            "fleet": "b772"
-                        },
-                        {
-                            "icao": "DAL",
-                            "fleet": "b763"
-                        },
-                        {
-                            "icao": "CKS"
-                        },
-                        {
-                            "icao": "ASA",
-                            "types": [
-                                "B739",
-                                "B739",
-                                "B39M",
-                                "B39M",
-                                "B39M"
-                            ]
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "a332"
-                        },
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "AAL",
-                            "types": [
-                                "A21N",
-                                "A21N",
-                                "A21N"
-                            ]
-                        },
-                        {
-                            "icao": "FDX",
-                            "types": [
-                                "B77L",
-                                "B77L"
-                            ]
-                        }
-                    ],
-                    "destination": "KLAX",
-                    "route": "CLUTS R465 CIVIT R585 AUDIA SNAXX RYDRR2",
-                    "exit": "CLUTS"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "b772"
-                        },
-                        {
-                            "icao": "UAL",
-                            "fleet": "b772"
-                        },
-                        {
-                            "icao": "DAL",
-                            "fleet": "b763"
-                        },
-                        {
-                            "icao": "ASA",
-                            "types": [
-                                "B739",
-                                "B739",
-                                "B39M",
-                                "B39M",
-                                "B39M"
-                            ]
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "a332"
-                        },
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "AAL",
-                            "types": [
-                                "A21N",
-                                "A21N",
-                                "A21N"
-                            ]
-                        }
-                    ],
-                    "destination": "KLAX",
-                    "route": "EBBER R577 ELOYI R577 ELKEY RYDRR2",
-                    "exit": "EBBER"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "b772"
-                        },
-                        {
-                            "icao": "UAL",
-                            "fleet": "b772"
-                        },
-                        {
-                            "icao": "UAL",
-                            "fleet": "b757"
-                        },
-                        {
-                            "icao": "UAL",
-                            "types": [
-                                "B39M",
-                                "B39M"
-                            ]
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "a332"
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "a332"
-                        }
-                    ],
-                    "destination": "KSFO",
-                    "route": "CLUTS R465 CREAN R465 CINNY PIRAT3",
-                    "exit": "CLUTS"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "b763"
-                        }
-                    ],
-                    "destination": "KSLC",
-                    "route": "APACK AUNTI R463 AXELE R463 ALCOA PYE FMG J32 LLC SLOWN FLECC YUTES1",
-                    "exit": "APACK"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "HAL",
-                            "fleet": "A21N"
-                        }
-                    ],
-                    "destination": "KSJC",
-                    "route": "EBBER R577 ETNIC GITLE ALANN CINNY TPCAT HEPAP",
-                    "exit": "EBBER"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "HAL",
-                            "fleet": "A21N"
-                        },
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M"
-                            ]
-                        }
-                    ],
-                    "destination": "KOAK",
-                    "route": "CLUTS R465 CEBEN R465 CREAN R465 CINNY PIRAT3",
-                    "exit": "CLUTS"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "HAL",
-                            "fleet": "A21N"
-                        }
-                    ],
-                    "destination": "KSMF",
-                    "route": "CLUTS R465 CORTT R465 CREAN R465 CINNY PYE",
-                    "exit": "CLUTS"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "ASA",
-                            "types": [
-                                "B739",
-                                "B739",
-                                "B39M",
-                                "B39M",
-                                "B39M"
-                            ]
-                        }
-                    ],
-                    "destination": "KPDX",
-                    "route": "APACK R463 AUNTI ADOPE AXELE ADTIL 4000N/13000W HEMLO ONP LARSN UBG",
-                    "exit": "APACK"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "AAL",
-                            "types": [
-                                "A21N",
-                                "A21N",
-                                "A21N"
-                            ]
-                        }
-                    ],
-                    "destination": "KPHX",
-                    "route": "EBBER R577 ELOYI R577 ELKEY SXC CNERY BLH HYDRR1",
-                    "exit": "EBBER"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "types": [
-                                "B788",
-                                "B788",
-                                "B788"
-                            ]
-                        }
-                    ],
-                    "destination": "KDFW",
-                    "route": "EBBER R577 ELOYI R577 ELKEY SXC TRM CURIV GIREY CHEAR J74 SJN MAXXO TURKI VKTRY2",
-                    "exit": "EBBER"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "types": [
-                                "B788",
-                                "B788",
-                                "B788"
-                            ]
-                        }
-                    ],
-                    "destination": "KORD",
-                    "route": "CLUTS R465 CREAN R465 CINNY MOD MVA SPRUZ TCH BFF FOD MYRRS FYTTE7",
-                    "exit": "CLUTS"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA",
-                            "types": [
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "A21N"
-                        }
-                    ],
-                    "destination": "KLAS",
-                    "route": "FITES R578 FAPIS R578 FICKY C1177 SXC POM DAG MISEN RNDRZ4",
-                    "exit": "FITES"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "ATN",
-                            "types": [
-                                "B763"
-                            ]
-                        }
-                    ],
-                    "destination": "KONT",
-                    "route": "FITES R578 FICKY KARLB3",
-                    "exit": "FITES"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "ASA",
-                            "types": [
-                                "B739",
-                                "B739",
-                                "B39M",
-                                "B39M",
-                                "B39M"
-                            ]
-                        }
-                    ],
-                    "destination": "KSAN",
-                    "route": "EBBER R577 ELOYI R577 ETNIC R577 ETECO FOOTS R578 FICKY C1177 SXC COMIX2",
-                    "exit": "EBBER"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "a21N"
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "a332"
-                        },
-                        {
-                            "icao": "HAL",
-                            "fleet": "a332"
-                        },
-                        {
-                            "icao": "ASA",
-                            "types": [
-                                "B39M",
-                                "B39M",
-                                "B39M",
-                                "B39M"
-                            ]
-                        }
-                    ],
-                    "destination": "KSEA",
-                    "route": "APACK ZOULU A331 SEDAR LATAY HAWKZ8",
-                    "exit": "APACK"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "ACA",
-                            "types": [
-                                "B38M",
-                                "B38M"
-                            ]
-                        },
-                        {
-                            "icao": "WJA",
-                            "types": [
-                                "B38M",
-                                "B38M"
-                            ]
-                        }
-                    ],
-                    "destination": "CYVR",
-                    "route": "APACK R463 AUNTI A332 HALLI 3400N/14500W 3800N/14000W ZAGER 4300N/13500W SHARI PEKAA RAGIT7",
-                    "exit": "APACK"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "WJA",
-                            "types": [
-                                "B38M",
-                                "B38M"
-                            ]
-                        }
-                    ],
-                    "destination": "CYYC",
-                    "route": "APACK R463 AUNTI A332 HALLI A332 HEMLO C1419 ONP LOCAN MENBO Q983 NORET IGVEP7",
-                    "exit": "APACK"
-                }
-            ],
-            "exit_categories": {
-                "APACK": "North",
-                "CODDY": "East",
-                "KOLEA": "North",
-                "PULPS": "East",
-                "REXIE": "North"
-            },
-            "tower_list": 1
+  "tracon": "OGG",
+  "airports": {
+    "PHKO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 4
         }
+      }
     },
-    "inbound_flows": {
-        "LNDHY1": {
-            "arrivals": [
-                {
-                    "waypoints": "N021.41.53.541,W156.19.07.631 N021.27.09.691,W156.13.40.019/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
-                    "cruise_altitude": 30000,
-                    "star": "LNDHY1",
-                    "initial_controller": "C03",
-                    "initial_altitude": 20000,
-                    "initial_speed": 270,
-                    "description": "ZIGIE",
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KPDX"
-                            },
-                            {
-                                "icao": "ACA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYVR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "a21N",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "a332",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "WJA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYVR"
-                            },
-                            {
-                                "icao": "WJA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYYC"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N021.43.23.313,W156.09.42.440 N021.27.35.660,W156.08.38.005/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
-                    "cruise_altitude": 30000,
-                    "star": "LNDHY1",
-                    "initial_controller": "C03",
-                    "initial_altitude": 20000,
-                    "initial_speed": 270,
-                    "description": "APACK",
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KPDX"
-                            },
-                            {
-                                "icao": "ACA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYVR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "a21N",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "a332",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "WJA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYVR"
-                            },
-                            {
-                                "icao": "WJA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYYC"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N021.42.46.365,W155.58.40.404 N021.27.18.940,W156.02.52.045/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
-                    "cruise_altitude": 30000,
-                    "star": "LNDHY1",
-                    "initial_controller": "C03",
-                    "initial_altitude": 20000,
-                    "initial_speed": 270,
-                    "description": "BITTA",
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "B788",
-                                    "B788",
-                                    "B772",
-                                    "B772"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSAN"
-                            },
-                            {
-                                "icao": "ATN",
-                                "types": [
-                                    "B763"
-                                ],
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "DAL",
-                                "types": [
-                                    "A333"
-                                ],
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "b763",
-                                "airport": "KSLC"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "b763",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KMEM"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "HAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLGB"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KSJC"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "a332",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KSJC"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B788",
-                                    "B788",
-                                    "B788"
-                                ],
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "b772",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B772"
-                                ],
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KLAX"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N021.26.17.815,W155.36.20.895 N021.18.22.697,W155.51.53.470/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
-                    "cruise_altitude": 30000,
-                    "star": "LNDHY1",
-                    "initial_controller": "C03",
-                    "initial_altitude": 20000,
-                    "initial_speed": 270,
-                    "description": "DENNS",
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "B788",
-                                    "B788",
-                                    "B772",
-                                    "B772"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSAN"
-                            },
-                            {
-                                "icao": "ATN",
-                                "types": [
-                                    "B763"
-                                ],
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "DAL",
-                                "types": [
-                                    "A333"
-                                ],
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "b763",
-                                "airport": "KSLC"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "b763",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KMEM"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "HAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLGB"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KSJC"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "a332",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KSJC"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B788",
-                                    "B788",
-                                    "B788"
-                                ],
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "b772",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B772"
-                                ],
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KLAX"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N021.06.15.169,W155.31.56.839 N021.07.56.071,W155.46.13.773/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
-                    "cruise_altitude": 30000,
-                    "star": "LNDHY1",
-                    "initial_controller": "C03",
-                    "initial_altitude": 20000,
-                    "initial_speed": 270,
-                    "description": "FITES",
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "B788",
-                                    "B788",
-                                    "B772",
-                                    "B772"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSAN"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "b763",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "HAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLGB"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "a332",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KLAX"
-                            }
-                        ]
-                    }
-                }
-            ]
+    "PHJR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      }
+    },
+    "PHJH": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "PHHN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
+      "approaches": {
+        "R8": {
+          "cifp_id": "R8"
         },
-        "OCEANIC SOUTH FLOW": {
-            "arrivals": [
-                {
-                    "waypoints": "N021.42.11.263,W156.21.10.458 N021.29.32.595,W156.20.53.540/ho WEPTU",
-                    "cruise_altitude": 30000,
-                    "route": "ZOULU WEPTU OGG",
-                    "initial_controller": "C03",
-                    "initial_altitude": 20000,
-                    "assigned_altitude": 4000,
-                    "initial_speed": 270,
-                    "description": "Z Track",
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KPDX"
-                            },
-                            {
-                                "icao": "ACA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYVR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "a21N",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "a332",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "WJA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYVR"
-                            },
-                            {
-                                "icao": "WJA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYYC"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N021.40.45.227,W156.08.51.079 N021.29.27.700,W156.12.09.052/ho WEPTU",
-                    "route": "AUNTI WEPTU OGG",
-                    "initial_controller": "C03",
-                    "initial_altitude": 20000,
-                    "assigned_altitude": 4000,
-                    "initial_speed": 270,
-                    "description": "A Track",
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KPDX"
-                            },
-                            {
-                                "icao": "ACA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYVR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "a21N",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "a332",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "WJA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYVR"
-                            },
-                            {
-                                "icao": "WJA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "CYYC"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N021.39.09.755,W155.56.06.979 N021.24.50.487,W156.05.13.934/ho WEPTU",
-                    "route": "BOARD WEPTU OGG",
-                    "initial_controller": "C03",
-                    "initial_altitude": 20000,
-                    "assigned_altitude": 4000,
-                    "initial_speed": 270,
-                    "description": "B Track",
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "B788",
-                                    "B788",
-                                    "B772",
-                                    "B772"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSAN"
-                            },
-                            {
-                                "icao": "ATN",
-                                "types": [
-                                    "B763"
-                                ],
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "DAL",
-                                "types": [
-                                    "A333"
-                                ],
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "b763",
-                                "airport": "KSLC"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "b763",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KMEM"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "HAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLGB"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KSJC"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "a332",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KSJC"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B788",
-                                    "B788",
-                                    "B788"
-                                ],
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "b772",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B772"
-                                ],
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KLAX"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N021.24.02.855,W155.37.22.419 N021.15.07.944,W155.54.07.229/ho WEPTU",
-                    "cruise_altitude": 30000,
-                    "route": "DRAYK WEPTU OGG",
-                    "initial_controller": "C03",
-                    "initial_altitude": 20000,
-                    "assigned_altitude": 4000,
-                    "initial_speed": 270,
-                    "description": "D Track",
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "B788",
-                                    "B788",
-                                    "B772",
-                                    "B772"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSAN"
-                            },
-                            {
-                                "icao": "ATN",
-                                "types": [
-                                    "B763"
-                                ],
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "DAL",
-                                "types": [
-                                    "A333"
-                                ],
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "b763",
-                                "airport": "KSLC"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "b763",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KMEM"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "HAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLGB"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KSJC"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "A21N",
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "a332",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KSJC"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KSMF"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B788",
-                                    "B788",
-                                    "B788"
-                                ],
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "b772",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B772"
-                                ],
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KLAX"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N021.03.44.375,W155.18.39.781 N021.01.15.627,W155.38.24.492/ho SWEEP POCGI",
-                    "route": "FAPIS WEPTU OGG",
-                    "initial_controller": "C03",
-                    "initial_altitude": 28000,
-                    "assigned_altitude": 9000,
-                    "initial_speed": 270,
-                    "description": "F Track",
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "B788",
-                                    "B788",
-                                    "B772",
-                                    "B772"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M",
-                                    "B39M"
-                                ],
-                                "airport": "KSAN"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "b763",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B77L",
-                                    "B77L",
-                                    "MD11",
-                                    "MD11"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "HAL",
-                                "types": [
-                                    "A21N",
-                                    "A21N",
-                                    "A21N"
-                                ],
-                                "airport": "KLGB"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "a332",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "UAL",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "KLAX"
-                            }
-                        ]
-                    }
-                }
+        "R26": {
+          "cifp_id": "R26"
+        }
+      }
+    },
+    "PHUP": {
+      "vfr": {
+        "random_routes": {
+          "rate": 4
+        }
+      }
+    },
+    "PHMU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "PHNY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "PHMK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "PHLU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "PHOG": {
+      "approaches": {
+        "IY2": {
+          "cifp_id": "IY2"
+        },
+        "IZ2": {
+          "cifp_id": "IZ2"
+        },
+        "RY2": {
+          "cifp_id": "RY2"
+        },
+        "RZ2": {
+          "cifp_id": "RZ2"
+        },
+        "SSV": {
+          "full_name": "Smoke Stack Visual Runway 1",
+          "runway": "2",
+          "type": "Visual",
+          "waypoints": ["N020.35.19.784,W156.28.37.218 N020.43.38.948,W156.29.14.351 N020.50.43.631,W156.28.08.708"]
+        },
+        "R20": {
+          "cifp_id": "R20"
+        },
+        "R23": {
+          "cifp_id": "R23"
+        }
+      },
+      "departure_routes": {
+        "2": {
+          "LNY,OGG,MKK": {
+            "cleared_altitude": 7000,
+            "sid": "MAUI5",
+            "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
+          },
+          "ZIGIE, APACK, CLUTS, EBBER, FITES, SCOON, UPP, KOA, TARDE, DOVRR": {
+            "cleared_altitude": 6000,
+            "sid": "RV",
+            "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
+          },
+          "SAKKI, JULLE, CARRP, CHOKO, NONNI, PUPPI, SYVAD, LILIA, CANON, DANNO, THOMA": {
+            "cleared_altitude": 6000,
+            "sid": "RV",
+            "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
+          },
+          "BARBY": {
+            "cleared_altitude": 6000,
+            "sid": "ONOHI2",
+            "waypoints": "N020.57.57.282,W156.22.43.842/a2100+/flyover N020.53.26.716,W156.16.07.950 ONOHI BARBY"
+          },
+          "ONOHI": {
+            "cleared_altitude": 6000,
+            "sid": "ONOHI2",
+            "waypoints": "N020.57.57.282,W156.22.43.842/a2100+/flyover N020.53.26.716,W156.16.07.950 ONOHI"
+          }
+        },
+        "20": {
+          "LNY": {
+            "cleared_altitude": 6000,
+            "sid": "BEACH4",
+            "waypoints": "N020.53.19.802,W156.26.11.539/a400+ N020.52.07.306,W156.26.25.327 BEACH LNY"
+          },
+          "HARPO": {
+            "cleared_altitude": 6000,
+            "sid": "BEACH4",
+            "waypoints": "N020.53.19.802,W156.26.11.539/a400+ N020.52.07.306,W156.26.25.327 BEACH HARPO"
+          },
+          "BARBY": {
+            "cleared_altitude": 6000,
+            "sid": "ONOHI2",
+            "waypoints": "N020.51.47.627,W156.27.19.929/a2100+/flyover OGG ONOHI BARBY"
+          },
+          "ONOHI": {
+            "cleared_altitude": 6000,
+            "sid": "ONOHI2",
+            "waypoints": "N020.51.47.627,W156.27.19.929/a2100+/flyover OGG ONOHI"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "FDY"
+            },
+            {
+              "icao": "FDY"
+            }
+          ],
+          "destination": "PHMK",
+          "scratchpad": "MKK",
+          "route": "OGG V6 BLUSH V8 MKK",
+          "exit": "OGG"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FDY"
+            },
+            {
+              "icao": "FDY"
+            }
+          ],
+          "destination": "PHMU",
+          "scratchpad": "HNM",
+          "route": "BARBY V11 UPP TAMMI",
+          "exit": "BARBY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FDY"
+            },
+            {
+              "icao": "FDY"
+            }
+          ],
+          "destination": "PHMU",
+          "scratchpad": "HNM",
+          "route": "OGG V11 OPANA SEYOL",
+          "exit": "OGG"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FDY"
+            },
+            {
+              "icao": "FDY"
+            }
+          ],
+          "destination": "PHNY",
+          "scratchpad": "LNY",
+          "route": "OGG V1 HARPO V2 LNY",
+          "exit": "OGG"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            }
+          ],
+          "destination": "PHLI",
+          "route": "LNY V16 NAPUA LIH",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            }
+          ],
+          "destination": "PHKO",
+          "route": "ONOHI WANSI TAMMI KAYAK KOA",
+          "exit": "ONOHI"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            }
+          ],
+          "destination": "PHKO",
+          "route": "HARPO MAKEN V5 KOA",
+          "exit": "HARPO"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            }
+          ],
+          "destination": "PHTO",
+          "route": "BARBY PARIS V15 ITO",
+          "exit": "BARBY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            }
+          ],
+          "destination": "PHTO",
+          "route": "HARPO V21 PUMIC V15 ITO",
+          "exit": "HARPO"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "b772"
+            }
+          ],
+          "destination": "KDEN",
+          "route": "APACK R463 AUNTI A332 HALLI A332 HELOP 3600N/14000W 3900N/13000W FATMO RBL BVL J154 TCH KAMPR LONGZ4",
+          "exit": "APACK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "b772"
+            }
+          ],
+          "destination": "KDEN",
+          "route": "EBBER R577 EDSEL ELKEY KL21G GBNEY KL36M DICEE BUMMP SSKII4",
+          "exit": "EBBER"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "b772"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "b772"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "b763"
+            },
+            {
+              "icao": "CKS"
+            },
+            {
+              "icao": "ASA",
+              "types": ["B739", "B739", "B39M", "B39M", "B39M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "a332"
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M"]
+            },
+            {
+              "icao": "AAL",
+              "types": ["A21N", "A21N", "A21N"]
+            },
+            {
+              "icao": "FDX",
+              "types": ["B77L", "B77L"]
+            }
+          ],
+          "destination": "KLAX",
+          "route": "CLUTS R465 CIVIT R585 AUDIA SNAXX RYDRR2",
+          "exit": "CLUTS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "b772"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "b772"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "b763"
+            },
+            {
+              "icao": "ASA",
+              "types": ["B739", "B739", "B39M", "B39M", "B39M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "a332"
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M"]
+            },
+            {
+              "icao": "AAL",
+              "types": ["A21N", "A21N", "A21N"]
+            }
+          ],
+          "destination": "KLAX",
+          "route": "EBBER R577 ELOYI R577 ELKEY RYDRR2",
+          "exit": "EBBER"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "b772"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "b772"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "b757"
+            },
+            {
+              "icao": "UAL",
+              "types": ["B39M", "B39M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "a332"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "a332"
+            }
+          ],
+          "destination": "KSFO",
+          "route": "CLUTS R465 CREAN R465 CINNY PIRAT3",
+          "exit": "CLUTS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "b763"
+            }
+          ],
+          "destination": "KSLC",
+          "route": "APACK AUNTI R463 AXELE R463 ALCOA PYE FMG J32 LLC SLOWN FLECC YUTES1",
+          "exit": "APACK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "HAL",
+              "fleet": "A21N"
+            }
+          ],
+          "destination": "KSJC",
+          "route": "EBBER R577 ETNIC GITLE ALANN CINNY TPCAT HEPAP",
+          "exit": "EBBER"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "HAL",
+              "fleet": "A21N"
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M"]
+            }
+          ],
+          "destination": "KOAK",
+          "route": "CLUTS R465 CEBEN R465 CREAN R465 CINNY PIRAT3",
+          "exit": "CLUTS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "HAL",
+              "fleet": "A21N"
+            }
+          ],
+          "destination": "KSMF",
+          "route": "CLUTS R465 CORTT R465 CREAN R465 CINNY PYE",
+          "exit": "CLUTS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ASA",
+              "types": ["B739", "B739", "B39M", "B39M", "B39M"]
+            }
+          ],
+          "destination": "KPDX",
+          "route": "APACK R463 AUNTI ADOPE AXELE ADTIL 4000N/13000W HEMLO ONP LARSN UBG",
+          "exit": "APACK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M"]
+            },
+            {
+              "icao": "AAL",
+              "types": ["A21N", "A21N", "A21N"]
+            }
+          ],
+          "destination": "KPHX",
+          "route": "EBBER R577 ELOYI R577 ELKEY SXC CNERY BLH HYDRR1",
+          "exit": "EBBER"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL",
+              "types": ["B788", "B788", "B788"]
+            }
+          ],
+          "destination": "KDFW",
+          "route": "EBBER R577 ELOYI R577 ELKEY SXC TRM CURIV GIREY CHEAR J74 SJN MAXXO TURKI VKTRY2",
+          "exit": "EBBER"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "types": ["B788", "B788", "B788"]
+            }
+          ],
+          "destination": "KORD",
+          "route": "CLUTS R465 CREAN R465 CINNY MOD MVA SPRUZ TCH BFF FOD MYRRS FYTTE7",
+          "exit": "CLUTS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "A21N"
+            }
+          ],
+          "destination": "KLAS",
+          "route": "FITES R578 FAPIS R578 FICKY C1177 SXC POM DAG MISEN RNDRZ4",
+          "exit": "FITES"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ATN",
+              "types": ["B763"]
+            }
+          ],
+          "destination": "KONT",
+          "route": "FITES R578 FICKY KARLB3",
+          "exit": "FITES"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ASA",
+              "types": ["B739", "B739", "B39M", "B39M", "B39M"]
+            }
+          ],
+          "destination": "KSAN",
+          "route": "EBBER R577 ELOYI R577 ETNIC R577 ETECO FOOTS R578 FICKY C1177 SXC COMIX2",
+          "exit": "EBBER"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "a21N"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "a332"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "a332"
+            },
+            {
+              "icao": "ASA",
+              "types": ["B39M", "B39M", "B39M", "B39M"]
+            }
+          ],
+          "destination": "KSEA",
+          "route": "APACK ZOULU A331 SEDAR LATAY HAWKZ8",
+          "exit": "APACK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ACA",
+              "types": ["B38M", "B38M"]
+            },
+            {
+              "icao": "WJA",
+              "types": ["B38M", "B38M"]
+            }
+          ],
+          "destination": "CYVR",
+          "route": "APACK R463 AUNTI A332 HALLI 3400N/14500W 3800N/14000W ZAGER 4300N/13500W SHARI PEKAA RAGIT7",
+          "exit": "APACK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "WJA",
+              "types": ["B38M", "B38M"]
+            }
+          ],
+          "destination": "CYYC",
+          "route": "APACK R463 AUNTI A332 HALLI A332 HEMLO C1419 ONP LOCAN MENBO Q983 NORET IGVEP7",
+          "exit": "APACK"
+        }
+      ],
+      "exit_categories": {
+        "APACK": "North",
+        "CODDY": "East",
+        "KOLEA": "North",
+        "PULPS": "East",
+        "REXIE": "North"
+      },
+      "tower_list": 1
+    }
+  },
+  "inbound_flows": {
+    "LNDHY1": {
+      "arrivals": [
+        {
+          "waypoints": "N021.41.53.541,W156.19.07.631 N021.27.09.691,W156.13.40.019/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
+          "cruise_altitude": 30000,
+          "star": "LNDHY1",
+          "initial_controller": "C03",
+          "initial_altitude": 20000,
+          "initial_speed": 270,
+          "description": "ZIGIE",
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M", "B39M", "B39M", "B39M", "B39M"],
+                "airport": "KSEA"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KPDX"
+              },
+              {
+                "icao": "ACA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYVR"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "a21N",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "a332",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "WJA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYVR"
+              },
+              {
+                "icao": "WJA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYYC"
+              }
             ]
+          }
+        },
+        {
+          "waypoints": "N021.43.23.313,W156.09.42.440 N021.27.35.660,W156.08.38.005/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
+          "cruise_altitude": 30000,
+          "star": "LNDHY1",
+          "initial_controller": "C03",
+          "initial_altitude": 20000,
+          "initial_speed": 270,
+          "description": "APACK",
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M", "B39M", "B39M", "B39M", "B39M"],
+                "airport": "KSEA"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KPDX"
+              },
+              {
+                "icao": "ACA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYVR"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "a21N",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "a332",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "WJA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYVR"
+              },
+              {
+                "icao": "WJA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYYC"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N021.42.46.365,W155.58.40.404 N021.27.18.940,W156.02.52.045/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
+          "cruise_altitude": 30000,
+          "star": "LNDHY1",
+          "initial_controller": "C03",
+          "initial_altitude": 20000,
+          "initial_speed": 270,
+          "description": "BITTA",
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "AAL",
+                "types": ["B788", "B788", "B772", "B772"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KSFO"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KSAN"
+              },
+              {
+                "icao": "ATN",
+                "types": ["B763"],
+                "airport": "KSMF"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A333"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "KSLC"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KMEM"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KOAK"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "HAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLGB"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KOAK"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KSJC"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KSMF"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "a332",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KSJC"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KOAK"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KSMF"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M", "B38M", "B38M", "B38M"],
+                "airport": "KLAS"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B788", "B788", "B788"],
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b772",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B38M", "B38M", "B38M", "B38M", "B772"],
+                "airport": "KSFO"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B38M", "B38M", "B38M", "B38M"],
+                "airport": "KLAX"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N021.26.17.815,W155.36.20.895 N021.18.22.697,W155.51.53.470/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
+          "cruise_altitude": 30000,
+          "star": "LNDHY1",
+          "initial_controller": "C03",
+          "initial_altitude": 20000,
+          "initial_speed": 270,
+          "description": "DENNS",
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "AAL",
+                "types": ["B788", "B788", "B772", "B772"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KSFO"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KSAN"
+              },
+              {
+                "icao": "ATN",
+                "types": ["B763"],
+                "airport": "KSMF"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A333"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "KSLC"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KMEM"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KOAK"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "HAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLGB"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KOAK"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KSJC"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KSMF"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "a332",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KSJC"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KOAK"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KSMF"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M", "B38M", "B38M", "B38M"],
+                "airport": "KLAS"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B788", "B788", "B788"],
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b772",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B38M", "B38M", "B38M", "B38M", "B772"],
+                "airport": "KSFO"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B38M", "B38M", "B38M", "B38M"],
+                "airport": "KLAX"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N021.06.15.169,W155.31.56.839 N021.07.56.071,W155.46.13.773/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
+          "cruise_altitude": 30000,
+          "star": "LNDHY1",
+          "initial_controller": "C03",
+          "initial_altitude": 20000,
+          "initial_speed": 270,
+          "description": "FITES",
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "AAL",
+                "types": ["B788", "B788", "B772", "B772"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KSAN"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "HAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLGB"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "a332",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B38M", "B38M", "B38M", "B38M"],
+                "airport": "KLAX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "OCEANIC SOUTH FLOW": {
+      "arrivals": [
+        {
+          "waypoints": "N021.42.11.263,W156.21.10.458 N021.29.32.595,W156.20.53.540/ho WEPTU",
+          "cruise_altitude": 30000,
+          "route": "ZOULU WEPTU OGG",
+          "initial_controller": "C03",
+          "initial_altitude": 20000,
+          "assigned_altitude": 4000,
+          "initial_speed": 270,
+          "description": "Z Track",
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M", "B39M", "B39M", "B39M", "B39M"],
+                "airport": "KSEA"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KPDX"
+              },
+              {
+                "icao": "ACA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYVR"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "a21N",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "a332",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "WJA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYVR"
+              },
+              {
+                "icao": "WJA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYYC"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N021.40.45.227,W156.08.51.079 N021.29.27.700,W156.12.09.052/ho WEPTU",
+          "route": "AUNTI WEPTU OGG",
+          "initial_controller": "C03",
+          "initial_altitude": 20000,
+          "assigned_altitude": 4000,
+          "initial_speed": 270,
+          "description": "A Track",
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M", "B39M", "B39M", "B39M", "B39M"],
+                "airport": "KSEA"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KPDX"
+              },
+              {
+                "icao": "ACA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYVR"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "a21N",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "a332",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "WJA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYVR"
+              },
+              {
+                "icao": "WJA",
+                "types": ["B38M", "B38M"],
+                "airport": "CYYC"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N021.39.09.755,W155.56.06.979 N021.24.50.487,W156.05.13.934/ho WEPTU",
+          "route": "BOARD WEPTU OGG",
+          "initial_controller": "C03",
+          "initial_altitude": 20000,
+          "assigned_altitude": 4000,
+          "initial_speed": 270,
+          "description": "B Track",
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "AAL",
+                "types": ["B788", "B788", "B772", "B772"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KSFO"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KSAN"
+              },
+              {
+                "icao": "ATN",
+                "types": ["B763"],
+                "airport": "KSMF"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A333"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "KSLC"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KMEM"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KOAK"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "HAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLGB"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KOAK"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KSJC"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KSMF"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "a332",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KSJC"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KOAK"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KSMF"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M", "B38M", "B38M", "B38M"],
+                "airport": "KLAS"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B788", "B788", "B788"],
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b772",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B38M", "B38M", "B38M", "B38M", "B772"],
+                "airport": "KSFO"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B38M", "B38M", "B38M", "B38M"],
+                "airport": "KLAX"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N021.24.02.855,W155.37.22.419 N021.15.07.944,W155.54.07.229/ho WEPTU",
+          "cruise_altitude": 30000,
+          "route": "DRAYK WEPTU OGG",
+          "initial_controller": "C03",
+          "initial_altitude": 20000,
+          "assigned_altitude": 4000,
+          "initial_speed": 270,
+          "description": "D Track",
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "AAL",
+                "types": ["B788", "B788", "B772", "B772"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KSFO"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KSAN"
+              },
+              {
+                "icao": "ATN",
+                "types": ["B763"],
+                "airport": "KSMF"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A333"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "KSLC"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KMEM"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KOAK"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "HAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLGB"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KOAK"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KSJC"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "KSMF"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "a332",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KSJC"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KOAK"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KSMF"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M", "B38M", "B38M", "B38M"],
+                "airport": "KLAS"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B788", "B788", "B788"],
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b772",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B38M", "B38M", "B38M", "B38M", "B772"],
+                "airport": "KSFO"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B38M", "B38M", "B38M", "B38M"],
+                "airport": "KLAX"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N021.03.44.375,W155.18.39.781 N021.01.15.627,W155.38.24.492/ho SWEEP POCGI",
+          "route": "FAPIS WEPTU OGG",
+          "initial_controller": "C03",
+          "initial_altitude": 28000,
+          "assigned_altitude": 9000,
+          "initial_speed": 270,
+          "description": "F Track",
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "AAL",
+                "types": ["B788", "B788", "B772", "B772"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "ASA",
+                "types": ["B39M", "B39M"],
+                "airport": "KSAN"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B77L", "B77L", "MD11", "MD11"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "HAL",
+                "types": ["A21N", "A21N", "A21N"],
+                "airport": "KLGB"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "a332",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B38M", "B38M", "B38M", "B38M"],
+                "airport": "KLAX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CAMPS4.LNY.N": {
+      "arrivals": [
+        {
+          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a5000 CAMPS/a3000+/h024",
+          "cruise_altitude": 13000,
+          "star": "CAMPS4",
+          "initial_controller": "C04",
+          "initial_altitude": 13000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "HAL",
+                "fleet": "short",
+                "airport": "PHNL"
+              },
+              {
+                "icao": "AAH",
+                "fleet": "short",
+                "airport": "PHNL"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M", "B38M"],
+                "airport": "PHNL"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B752"],
+                "airport": "PHNL"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a5000 CAMPS/a3000+/h024",
+          "cruise_altitude": 25000,
+          "star": "CAMPS4",
+          "initial_controller": "C04",
+          "initial_altitude": 25000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "HAL",
+                "fleet": "short",
+                "airport": "PHLI"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M", "B38M"],
+                "airport": "PHLI"
+              },
+              {
+                "icao": "ATN",
+                "types": ["B763", "B763", "B763"],
+                "airport": "PHLI"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "V1.CAMPS4.N": {
+      "arrivals": [
+        {
+          "waypoints": "JESSI N020.25.34.343,W156.25.09.301/ho LAVAS V1 HARPO CAMPS/a3000/h024",
+          "cruise_altitude": 12000,
+          "star": "CAMPS4",
+          "initial_controller": "C05",
+          "initial_altitude": 12000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "HAL",
+                "fleet": "short",
+                "airport": "PHKO"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M", "B38M"],
+                "airport": "PHKO"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "V2.CAMPS4.N": {
+      "arrivals": [
+        {
+          "waypoints": "UPP N020.27.44.655,W156.14.30.996/ho MAKEN V2 HARPO CAMPS/a3000/h024",
+          "cruise_altitude": 16000,
+          "star": "CAMPS4",
+          "initial_controller": "C05",
+          "initial_altitude": 16000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "HAL",
+                "fleet": "short",
+                "airport": "PHLI"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "short",
+                "airport": "PHLI"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CAMPS4.LNY.S": {
+      "arrivals": [
+        {
+          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a7000 CAMPS/a3000+/h024",
+          "cruise_altitude": 13000,
+          "star": "CAMPS4",
+          "initial_controller": "C04",
+          "initial_altitude": 13000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "HAL",
+                "fleet": "short",
+                "airport": "PHNL"
+              },
+              {
+                "icao": "AAH",
+                "fleet": "short",
+                "airport": "PHNL"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M", "B38M"],
+                "airport": "PHNL"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B752"],
+                "airport": "PHNL"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a7000 CAMPS/a3000+/h024",
+          "cruise_altitude": 25000,
+          "star": "CAMPS4",
+          "initial_controller": "C04",
+          "initial_altitude": 25000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "HAL",
+                "fleet": "short",
+                "airport": "PHLI"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M", "B38M"],
+                "airport": "PHLI"
+              },
+              {
+                "icao": "ATN",
+                "types": ["B763", "B763", "B763"],
+                "airport": "PHLI"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "V1.CAMPS4.S": {
+      "arrivals": [
+        {
+          "waypoints": "JESSI N020.25.34.343,W156.25.09.301/ho LAVAS V1 HARPO CAMPS/a6000/h024",
+          "cruise_altitude": 12000,
+          "star": "CAMPS4",
+          "initial_controller": "C05",
+          "initial_altitude": 12000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "HAL",
+                "fleet": "short",
+                "airport": "PHKO"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B38M", "B38M"],
+                "airport": "PHKO"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "V2.CAMPS4.S": {
+      "arrivals": [
+        {
+          "waypoints": "UPP N020.27.44.655,W156.14.30.996/ho MAKEN V2 HARPO CAMPS/a6000/h024",
+          "cruise_altitude": 16000,
+          "star": "CAMPS4",
+          "initial_controller": "C05",
+          "initial_altitude": 16000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "PHOG": [
+              {
+                "icao": "HAL",
+                "fleet": "short",
+                "airport": "PHLI"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "short",
+                "airport": "PHLI"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "airspace": {
+    "boundaries": {
+      "NORTH APPROACH": [
+        "N020.56.34.390,W156.39.12.557",
+        "N020.56.59.638,W156.39.06.350",
+        "N020.57.20.890,W156.39.00.856",
+        "N020.57.47.635,W156.38.51.134",
+        "N020.58.14.469,W156.38.41.905",
+        "N020.58.36.634,W156.38.32.402",
+        "N020.59.04.876,W156.38.19.053",
+        "N020.59.31.950,W156.38.08.122",
+        "N020.59.57.534,W156.38.04.112",
+        "N021.00.26.209,W156.38.03.343",
+        "N021.00.52.239,W156.38.08.671",
+        "N021.01.19.760,W156.38.20.262",
+        "N021.01.40.923,W156.38.33.885",
+        "N021.01.58.611,W156.38.48.332",
+        "N021.02.16.642,W156.39.11.513",
+        "N021.02.27.505,W156.39.31.563",
+        "N021.02.37.447,W156.39.55.623",
+        "N021.02.43.071,W156.40.28.198",
+        "N021.02.43.854,W156.40.59.454",
+        "N021.02.40.372,W156.41.19.888",
+        "N021.02.31.741,W156.41.50.046",
+        "N021.02.22.259,W156.42.08.228",
+        "N021.02.08.279,W156.42.30.585",
+        "N021.01.50.460,W156.42.48.109",
+        "N021.01.29.888,W156.43.04.478",
+        "N021.01.15.393,W156.43.13.652",
+        "N021.04.10.296,W156.49.57.564",
+        "N021.06.52.577,W156.48.27.916",
+        "N021.10.27.291,W156.45.46.087",
+        "N021.13.32.274,W156.42.28.828",
+        "N021.16.02.910,W156.38.39.104",
+        "N021.17.51.764,W156.34.25.759",
+        "N021.18.59.982,W156.29.55.989",
+        "N021.19.23.294,W156.25.14.794",
+        "N021.19.00.394,W156.20.37.719",
+        "N021.17.52.657,W156.16.06.467",
+        "N021.16.01.434,W156.11.49.606",
+        "N021.13.31.635,W156.08.02.244",
+        "N021.10.27.854,W156.04.44.106",
+        "N021.06.50.799,W156.02.02.772",
+        "N021.02.53.686,W156.00.04.174",
+        "N020.58.38.845,W155.58.53.203",
+        "N020.54.18.579,W155.58.29.582",
+        "N020.50.00.853,W155.58.55.015",
+        "N020.42.17.340,W156.10.47.863",
+        "N020.54.22.802,W156.25.14.465",
+        "N020.56.34.390,W156.39.12.557"
+      ],
+      "NORTH SHELF": [
+        "N020.56.34.390,W156.39.12.557",
+        "N020.56.59.638,W156.39.06.350",
+        "N020.57.20.890,W156.39.00.856",
+        "N020.57.47.635,W156.38.51.134",
+        "N020.58.14.469,W156.38.41.905",
+        "N020.58.36.634,W156.38.32.402",
+        "N020.59.04.876,W156.38.19.053",
+        "N020.59.31.950,W156.38.08.122",
+        "N020.59.57.534,W156.38.04.112",
+        "N021.00.26.209,W156.38.03.343",
+        "N021.00.52.239,W156.38.08.671",
+        "N021.01.19.760,W156.38.20.262",
+        "N021.01.40.923,W156.38.33.885",
+        "N021.01.58.611,W156.38.48.332",
+        "N021.02.16.642,W156.39.11.513",
+        "N021.02.27.505,W156.39.31.563",
+        "N021.02.37.447,W156.39.55.623",
+        "N021.02.43.071,W156.40.28.198",
+        "N021.02.43.854,W156.40.59.454",
+        "N021.02.40.372,W156.41.19.888",
+        "N021.02.31.741,W156.41.50.046",
+        "N021.02.22.259,W156.42.08.228",
+        "N021.02.08.279,W156.42.30.585",
+        "N021.01.50.460,W156.42.48.109",
+        "N021.01.29.888,W156.43.04.478",
+        "N021.01.15.393,W156.43.13.652",
+        "N021.04.10.296,W156.49.57.564",
+        "N021.03.24.579,W156.50.19.372",
+        "N021.02.15.509,W156.50.47.772",
+        "N021.01.20.598,W156.51.08.096",
+        "N021.00.23.201,W156.51.25.565",
+        "N020.59.31.037,W156.51.40.451",
+        "N020.57.33.607,W156.52.05.390",
+        "N020.51.32.019,W156.49.47.841",
+        "N020.56.58.677,W156.41.48.398",
+        "N020.56.34.390,W156.39.12.557"
+      ],
+      "SOUTH APPROACH": [
+        "N020.42.17.340,W156.10.47.863",
+        "N020.54.22.802,W156.25.14.465",
+        "N020.56.34.651,W156.39.12.777",
+        "N020.55.39.651,W156.39.24.477",
+        "N020.54.55.232,W156.39.29.750",
+        "N020.53.59.881,W156.39.34.145",
+        "N020.52.55.364,W156.39.32.552",
+        "N020.52.11.762,W156.39.26.619",
+        "N020.51.23.821,W156.39.19.259",
+        "N020.50.40.225,W156.39.10.085",
+        "N020.50.14.373,W156.39.02.614",
+        "N020.47.50.384,W156.48.26.158",
+        "N020.45.22.439,W156.47.27.711",
+        "N020.36.59.293,W156.51.35.452",
+        "N020.29.25.708,W156.25.08.752",
+        "N020.28.31.216,W156.21.45.560",
+        "N020.35.41.647,W156.21.10.184",
+        "N020.42.17.340,W156.10.47.863"
+      ],
+      "SOUTH APPROACH SHELF": [
+        "N020.56.34.651,W156.39.12.777",
+        "N020.55.39.651,W156.39.24.477",
+        "N020.54.55.232,W156.39.29.750",
+        "N020.53.59.881,W156.39.34.145",
+        "N020.52.55.364,W156.39.32.552",
+        "N020.52.11.762,W156.39.26.619",
+        "N020.51.23.821,W156.39.19.259",
+        "N020.50.40.225,W156.39.10.085",
+        "N020.50.14.373,W156.39.02.614",
+        "N020.47.50.384,W156.48.26.158",
+        "N020.51.32.019,W156.49.47.841",
+        "N020.56.58.464,W156.41.48.068",
+        "N020.56.34.651,W156.39.12.777"
+      ]
+    },
+    "volumes": {
+      "HCF_N_APP": [
+        {
+          "boundaries": ["NORTH APPROACH"],
+          "lower": 0,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["NORTH SHELF"],
+          "lower": 9000,
+          "upper": 16000
+        }
+      ],
+      "HCF_S_APP": [
+        {
+          "boundaries": ["SOUTH APPROACH"],
+          "lower": 0,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["SOUTH APPROACH SHELF"],
+          "lower": 9000,
+          "upper": 16000
+        }
+      ]
+    }
+  },
+  "default_scenario": "OGG - North Flow",
+  "name": "HCF APP - OGG",
+  "primary_airport": "PHOG",
+  "scenarios": {
+    "OGG - North Flow": {
+      "airspace": {
+        "1N": ["HCF_N_APP"],
+        "1S": ["HCF_S_APP"]
+      },
+      "arrival_runways": [
+        {
+          "airport": "PHOG",
+          "runway": "2"
+        },
+        {
+          "airport": "PHHN",
+          "runway": "26"
+        },
+        {
+          "airport": "PHHN",
+          "runway": "8"
+        }
+      ],
+      "inbound_rates": {
+        "LNDHY1": {
+          "PHOG": 7
         },
         "CAMPS4.LNY.N": {
-            "arrivals": [
-                {
-                    "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a5000 CAMPS/a3000+ OGG",
-                    "cruise_altitude": 13000,
-                    "star": "CAMPS4",
-                    "initial_controller": "C04",
-                    "initial_altitude": 13000,
-                    "initial_speed": 270,
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "HAL",
-                                "fleet": "short",
-                                "airport": "PHNL"
-                            },
-                            {
-                                "icao": "AAH",
-                                "fleet": "short",
-                                "airport": "PHNL"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "PHNL"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B752"
-                                ],
-                                "airport": "PHNL"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a5000 CAMPS/a3000+ OGG",
-                    "cruise_altitude": 25000,
-                    "star": "CAMPS4",
-                    "initial_controller": "C04",
-                    "initial_altitude": 25000,
-                    "initial_speed": 270,
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "HAL",
-                                "fleet": "short",
-                                "airport": "PHLI"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "PHLI"
-                            },
-                            {
-                                "icao": "ATN",
-                                "types": [
-                                    "B763",
-                                    "B763",
-                                    "B763"
-                                ],
-                                "airport": "PHLI"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "PHOG": 3
         },
         "V1.CAMPS4.N": {
-            "arrivals": [
-                {
-                    "waypoints": "JESSI N020.25.34.343,W156.25.09.301/ho LAVAS V1 HARPO CAMPS/a3000 OGG",
-                    "cruise_altitude": 12000,
-                    "star": "CAMPS4",
-                    "initial_controller": "C05",
-                    "initial_altitude": 12000,
-                    "initial_speed": 270,
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "HAL",
-                                "fleet": "short",
-                                "airport": "PHKO"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "PHKO"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "PHOG": 2
         },
         "V2.CAMPS4.N": {
-            "arrivals": [
-                {
-                    "waypoints": "UPP N020.27.44.655,W156.14.30.996/ho MAKEN V2 HARPO CAMPS/a3000 OGG",
-                    "cruise_altitude": 16000,
-                    "star": "CAMPS4",
-                    "initial_controller": "C05",
-                    "initial_altitude": 16000,
-                    "initial_speed": 270,
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "HAL",
-                                "fleet": "short",
-                                "airport": "PHLI"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "short",
-                                "airport": "PHLI"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "PHOG": 2
+        }
+      },
+      "configuration": {
+        "config_id": "CF1"
+      },
+      "default_maps": ["COAST__COASTLINES", "OGG TRACON", "OGG RVM__MAUI RADAR VEC MAP"],
+      "departure_runways": [
+        {
+          "airport": "PHOG",
+          "rate": 10,
+          "runway": "2"
+        }
+      ],
+      "wind": {
+        "direction": "250-069"
+      }
+    },
+    "OGG - South Flow": {
+      "airspace": {
+        "1N": ["HCF_N_APP"],
+        "1S": ["HCF_S_APP"]
+      },
+      "arrival_runways": [
+        {
+          "airport": "PHOG",
+          "runway": "20"
+        },
+        {
+          "airport": "PHOG",
+          "runway": "23"
+        },
+        {
+          "airport": "PHHN",
+          "runway": "26"
+        },
+        {
+          "airport": "PHHN",
+          "runway": "8"
+        }
+      ],
+      "inbound_rates": {
+        "OCEANIC SOUTH FLOW": {
+          "PHOG": 7
         },
         "CAMPS4.LNY.S": {
-            "arrivals": [
-                {
-                    "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a7000 CAMPS/a3000+ OGG",
-                    "cruise_altitude": 13000,
-                    "star": "CAMPS4",
-                    "initial_controller": "C04",
-                    "initial_altitude": 13000,
-                    "initial_speed": 270,
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "HAL",
-                                "fleet": "short",
-                                "airport": "PHNL"
-                            },
-                            {
-                                "icao": "AAH",
-                                "fleet": "short",
-                                "airport": "PHNL"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "PHNL"
-                            },
-                            {
-                                "icao": "FDX",
-                                "types": [
-                                    "B752"
-                                ],
-                                "airport": "PHNL"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a7000 CAMPS/a3000+ OGG",
-                    "cruise_altitude": 25000,
-                    "star": "CAMPS4",
-                    "initial_controller": "C04",
-                    "initial_altitude": 25000,
-                    "initial_speed": 270,
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "HAL",
-                                "fleet": "short",
-                                "airport": "PHLI"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "PHLI"
-                            },
-                            {
-                                "icao": "ATN",
-                                "types": [
-                                    "B763",
-                                    "B763",
-                                    "B763"
-                                ],
-                                "airport": "PHLI"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "PHOG": 3
         },
         "V1.CAMPS4.S": {
-            "arrivals": [
-                {
-                    "waypoints": "JESSI N020.25.34.343,W156.25.09.301/ho LAVAS V1 HARPO CAMPS/a6000 OGG",
-                    "cruise_altitude": 12000,
-                    "star": "CAMPS4",
-                    "initial_controller": "C05",
-                    "initial_altitude": 12000,
-                    "initial_speed": 270,
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "HAL",
-                                "fleet": "short",
-                                "airport": "PHKO"
-                            },
-                            {
-                                "icao": "SWA",
-                                "types": [
-                                    "B38M",
-                                    "B38M",
-                                    "B38M"
-                                ],
-                                "airport": "PHKO"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "PHOG": 2
         },
         "V2.CAMPS4.S": {
-            "arrivals": [
-                {
-                    "waypoints": "UPP N020.27.44.655,W156.14.30.996/ho MAKEN V2 HARPO CAMPS/a6000 OGG",
-                    "cruise_altitude": 16000,
-                    "star": "CAMPS4",
-                    "initial_controller": "C05",
-                    "initial_altitude": 16000,
-                    "initial_speed": 270,
-                    "expect_approach": null,
-                    "airlines": {
-                        "PHOG": [
-                            {
-                                "icao": "HAL",
-                                "fleet": "short",
-                                "airport": "PHLI"
-                            },
-                            {
-                                "icao": "HAL",
-                                "fleet": "short",
-                                "airport": "PHLI"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "PHOG": 2
         }
-    },
-    "airspace": {
-        "boundaries": {
-            "NORTH APPROACH": [
-                "N020.56.34.390,W156.39.12.557",
-                "N020.56.59.638,W156.39.06.350",
-                "N020.57.20.890,W156.39.00.856",
-                "N020.57.47.635,W156.38.51.134",
-                "N020.58.14.469,W156.38.41.905",
-                "N020.58.36.634,W156.38.32.402",
-                "N020.59.04.876,W156.38.19.053",
-                "N020.59.31.950,W156.38.08.122",
-                "N020.59.57.534,W156.38.04.112",
-                "N021.00.26.209,W156.38.03.343",
-                "N021.00.52.239,W156.38.08.671",
-                "N021.01.19.760,W156.38.20.262",
-                "N021.01.40.923,W156.38.33.885",
-                "N021.01.58.611,W156.38.48.332",
-                "N021.02.16.642,W156.39.11.513",
-                "N021.02.27.505,W156.39.31.563",
-                "N021.02.37.447,W156.39.55.623",
-                "N021.02.43.071,W156.40.28.198",
-                "N021.02.43.854,W156.40.59.454",
-                "N021.02.40.372,W156.41.19.888",
-                "N021.02.31.741,W156.41.50.046",
-                "N021.02.22.259,W156.42.08.228",
-                "N021.02.08.279,W156.42.30.585",
-                "N021.01.50.460,W156.42.48.109",
-                "N021.01.29.888,W156.43.04.478",
-                "N021.01.15.393,W156.43.13.652",
-                "N021.04.10.296,W156.49.57.564",
-                "N021.06.52.577,W156.48.27.916",
-                "N021.10.27.291,W156.45.46.087",
-                "N021.13.32.274,W156.42.28.828",
-                "N021.16.02.910,W156.38.39.104",
-                "N021.17.51.764,W156.34.25.759",
-                "N021.18.59.982,W156.29.55.989",
-                "N021.19.23.294,W156.25.14.794",
-                "N021.19.00.394,W156.20.37.719",
-                "N021.17.52.657,W156.16.06.467",
-                "N021.16.01.434,W156.11.49.606",
-                "N021.13.31.635,W156.08.02.244",
-                "N021.10.27.854,W156.04.44.106",
-                "N021.06.50.799,W156.02.02.772",
-                "N021.02.53.686,W156.00.04.174",
-                "N020.58.38.845,W155.58.53.203",
-                "N020.54.18.579,W155.58.29.582",
-                "N020.50.00.853,W155.58.55.015",
-                "N020.42.17.340,W156.10.47.863",
-                "N020.54.22.802,W156.25.14.465",
-                "N020.56.34.390,W156.39.12.557"
-            ],
-            "NORTH SHELF": [
-                "N020.56.34.390,W156.39.12.557",
-                "N020.56.59.638,W156.39.06.350",
-                "N020.57.20.890,W156.39.00.856",
-                "N020.57.47.635,W156.38.51.134",
-                "N020.58.14.469,W156.38.41.905",
-                "N020.58.36.634,W156.38.32.402",
-                "N020.59.04.876,W156.38.19.053",
-                "N020.59.31.950,W156.38.08.122",
-                "N020.59.57.534,W156.38.04.112",
-                "N021.00.26.209,W156.38.03.343",
-                "N021.00.52.239,W156.38.08.671",
-                "N021.01.19.760,W156.38.20.262",
-                "N021.01.40.923,W156.38.33.885",
-                "N021.01.58.611,W156.38.48.332",
-                "N021.02.16.642,W156.39.11.513",
-                "N021.02.27.505,W156.39.31.563",
-                "N021.02.37.447,W156.39.55.623",
-                "N021.02.43.071,W156.40.28.198",
-                "N021.02.43.854,W156.40.59.454",
-                "N021.02.40.372,W156.41.19.888",
-                "N021.02.31.741,W156.41.50.046",
-                "N021.02.22.259,W156.42.08.228",
-                "N021.02.08.279,W156.42.30.585",
-                "N021.01.50.460,W156.42.48.109",
-                "N021.01.29.888,W156.43.04.478",
-                "N021.01.15.393,W156.43.13.652",
-                "N021.04.10.296,W156.49.57.564",
-                "N021.03.24.579,W156.50.19.372",
-                "N021.02.15.509,W156.50.47.772",
-                "N021.01.20.598,W156.51.08.096",
-                "N021.00.23.201,W156.51.25.565",
-                "N020.59.31.037,W156.51.40.451",
-                "N020.57.33.607,W156.52.05.390",
-                "N020.51.32.019,W156.49.47.841",
-                "N020.56.58.677,W156.41.48.398",
-                "N020.56.34.390,W156.39.12.557"
-            ],
-            "SOUTH APPROACH": [
-                "N020.42.17.340,W156.10.47.863",
-                "N020.54.22.802,W156.25.14.465",
-                "N020.56.34.651,W156.39.12.777",
-                "N020.55.39.651,W156.39.24.477",
-                "N020.54.55.232,W156.39.29.750",
-                "N020.53.59.881,W156.39.34.145",
-                "N020.52.55.364,W156.39.32.552",
-                "N020.52.11.762,W156.39.26.619",
-                "N020.51.23.821,W156.39.19.259",
-                "N020.50.40.225,W156.39.10.085",
-                "N020.50.14.373,W156.39.02.614",
-                "N020.47.50.384,W156.48.26.158",
-                "N020.45.22.439,W156.47.27.711",
-                "N020.36.59.293,W156.51.35.452",
-                "N020.29.25.708,W156.25.08.752",
-                "N020.28.31.216,W156.21.45.560",
-                "N020.35.41.647,W156.21.10.184",
-                "N020.42.17.340,W156.10.47.863"
-            ],
-            "SOUTH APPROACH SHELF": [
-                "N020.56.34.651,W156.39.12.777",
-                "N020.55.39.651,W156.39.24.477",
-                "N020.54.55.232,W156.39.29.750",
-                "N020.53.59.881,W156.39.34.145",
-                "N020.52.55.364,W156.39.32.552",
-                "N020.52.11.762,W156.39.26.619",
-                "N020.51.23.821,W156.39.19.259",
-                "N020.50.40.225,W156.39.10.085",
-                "N020.50.14.373,W156.39.02.614",
-                "N020.47.50.384,W156.48.26.158",
-                "N020.51.32.019,W156.49.47.841",
-                "N020.56.58.464,W156.41.48.068",
-                "N020.56.34.651,W156.39.12.777"
-            ]
-        },
-        "volumes": {
-            "HCF_N_APP": [
-                {
-                    "boundaries": [
-                        "NORTH APPROACH"
-                    ],
-                    "lower": 0,
-                    "upper": 16000
-                },
-                {
-                    "boundaries": [
-                        "NORTH SHELF"
-                    ],
-                    "lower": 9000,
-                    "upper": 16000
-                }
-            ],
-            "HCF_S_APP": [
-                {
-                    "boundaries": [
-                        "SOUTH APPROACH"
-                    ],
-                    "lower": 0,
-                    "upper": 16000
-                },
-                {
-                    "boundaries": [
-                        "SOUTH APPROACH SHELF"
-                    ],
-                    "lower": 9000,
-                    "upper": 16000
-                }
-            ]
+      },
+      "configuration": {
+        "config_id": "CF2"
+      },
+      "default_maps": ["COAST__COASTLINES", "OGG TRACON", "OGG RVM__MAUI RADAR VEC MAP"],
+      "departure_runways": [
+        {
+          "airport": "PHOG",
+          "rate": 10,
+          "runway": "20"
         }
-    },
-    "default_scenario": "OGG - North Flow",
-    "name": "HCF APP - OGG",
-    "primary_airport": "PHOG",
-    "scenarios": {
-        "OGG - North Flow": {
-            "airspace": {
-                "1N": [
-                    "HCF_N_APP"
-                ],
-                "1S": [
-                    "HCF_S_APP"
-                ]
-            },
-            "arrival_runways": [
-                {
-                    "airport": "PHOG",
-                    "runway": "2"
-                },
-                {
-                    "airport": "PHHN",
-                    "runway": "26"
-                },
-                {
-                    "airport": "PHHN",
-                    "runway": "8"
-                }
-            ],
-            "inbound_rates": {
-                "LNDHY1": {
-                    "PHOG": 7
-                },
-                "CAMPS4.LNY.N": {
-                    "PHOG": 3
-                },
-                "V1.CAMPS4.N": {
-                    "PHOG": 2
-                },
-                "V2.CAMPS4.N": {
-                    "PHOG": 2
-                }
-            },
-            "configuration": {
-                "config_id": "OGG"
-            },
-            "default_maps": [
-                "COAST__COASTLINES",
-                "OGG TRACON",
-                "OGG RVM__MAUI RADAR VEC MAP"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "PHOG",
-                    "rate": 10,
-                    "runway": "2"
-                }
-            ],
-            "wind": {
-                "direction": "250-069"
-            }
-        },
-        "OGG - South Flow": {
-            "arrival_runways": [
-                {
-                    "airport": "PHOG",
-                    "runway": "20"
-                },
-                {
-                    "airport": "PHOG",
-                    "runway": "23"
-                },
-                {
-                    "airport": "PHHN",
-                    "runway": "26"
-                },
-                {
-                    "airport": "PHHN",
-                    "runway": "8"
-                }
-            ],
-            "inbound_rates": {
-                "OCEANIC SOUTH FLOW": {
-                    "PHOG": 7
-                },
-                "CAMPS4.LNY.S": {
-                    "PHOG": 3
-                },
-                "V1.CAMPS4.S": {
-                    "PHOG": 2
-                },
-                "V2.CAMPS4.S": {
-                    "PHOG": 2
-                }
-            },
-            "configuration": {
-                "config_id": "OG1"
-            },
-            "default_maps": [
-                "COAST__COASTLINES",
-                "OGG TRACON",
-                "OGG RVM__MAUI RADAR VEC MAP"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "PHOG",
-                    "rate": 10,
-                    "runway": "20"
-                }
-            ],
-            "wind": {
-                "direction": "070-249",
-                "speed": "10+"
-            }
-        }
+      ],
+      "wind": {
+        "direction": "070-249",
+        "speed": "10+"
+      }
     }
+  }
 }

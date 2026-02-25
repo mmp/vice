@@ -41,6 +41,7 @@ type Preferences struct {
 	CursorSize  int
 
 	VideoMapBrightness map[string]int
+	HistoryLength      int
 
 	UseRightClick bool
 
@@ -230,6 +231,8 @@ func makeDefaultPreferences() *Preferences {
 	}
 	prefs.CRR.Position = [2]float32{10, 600}
 	prefs.CRR.DisplayFixes = false
+
+	prefs.HistoryLength = 5
 
 	// ALTIM SET defaults
 	prefs.AltimSet.Visible = false

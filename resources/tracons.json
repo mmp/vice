@@ -1420,6 +1420,20 @@
     "Longitude": -117.129828,
     "Radius": 75
   },
+  "FACSFAC SD": {
+    "Name": "Beaver",
+    "ARTCC": "ZLA",
+    "Latitude": 32.71237,
+    "Longitude": -117.19272,
+    "Radius": 200
+  },
+  "FACSFAC HI": {
+    "Name": "Beaver",
+    "ARTCC": "ZHN",
+    "Latitude": 32.71237,
+    "Longitude": -117.19272,
+    "Radius": 200
+  },
   "FAF": {
     "Name": "Felker ATCT",
     "ARTCC": "ZDC",

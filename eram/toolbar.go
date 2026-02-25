@@ -555,17 +555,17 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		if ep.drawToolbarFullButton(ctx, "STROBE\nLINES", 0, scale, false, false) {
 			//handle strobe lines
 		}
-		historyLabel := fmt.Sprintf("HISTORY\n%d", ep.HistoryLength)
+		historyLabel := fmt.Sprintf("HISTORY\n%d", ps.HistoryLength)
 		toolbarDrawState.customButton[historyLabel] = toolbarButtonGreenColor
 
 		if ep.drawToolbarFullButton(ctx, historyLabel, 0, scale, false, false) {
-			handleClick(ep, &ep.HistoryLength, 0, 5, 1)
+			handleClick(ep, &ps.HistoryLength, 0, 5, 1)
 		}
 
 		p2 := [2]float32{rightEdge, toolbarDrawState.buttonCursor[1] - buttonSize(buttonFull, scale)[1]}
 		p3 := [2]float32{p0[0], p2[1]}
 
-		toolbarDrawState.customButton[fmt.Sprintf("HISTORY\n%d", ep.HistoryLength)] = toolbarButtonGreenColor
+		toolbarDrawState.customButton[fmt.Sprintf("HISTORY\n%d", ps.HistoryLength)] = toolbarButtonGreenColor
 
 		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		ep.drawMenuOutline(ctx, p0, p1, p2, p3)

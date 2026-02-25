@@ -571,9 +571,6 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 				} else if mgr.LocalServer != nil && mgr.LocalServer.RPCClient != nil {
 					lg.SetCrashReportClient(mgr.LocalServer.RPCClient.Client)
 				}
-			} else {
-				// Clear crash report client when disconnecting
-				lg.SetCrashReportClient(nil)
 			}
 			uiResetControlClient(c, plat, lg)
 			controlClient = c
@@ -599,7 +596,8 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	)
 
 	if errorLogger.HaveErrors() {
-		ShowFatalErrorDialog(render, plat, lg, "%s", errorLogger.String())
+		errorLogger.PrintErrors(lg)
+		ShowFatalErrorDialog(render, plat, nil, "%s", errorLogger.String())
 	}
 
 	// Show non-fatal dialog for extra scenario errors

@@ -767,7 +767,7 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 				CRDAPair: pair,
 				CRDARegions: [2]*av.CRDARegion{ap.CRDARegions[pair.Regions[0]],
 					ap.CRDARegions[pair.Regions[1]]},
-				Airport: name[1:], // drop the leading "K" (or "P")
+				Airport: name[1:], // drop the ICAO prefix ("K", "P", or "T")
 				Index:   idx + 1,  // 1-based
 			})
 		}

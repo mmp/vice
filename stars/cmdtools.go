@@ -99,7 +99,7 @@ func registerToolsCommands() {
 			if da == "" {
 				return ErrSTARSIllegalFunction
 			}
-			ap := da[1:] // Strip leading "K" to get FAA 3-letter code
+			ap := da[1:] // Strip ICAO prefix to get FAA 3-letter code
 			if _, ok := av.DB.LookupAirport(ap); !ok {
 				panic(da)
 			}
