@@ -495,6 +495,7 @@ func (ds *TestBench) spawnAircraft(tc *TestBenchCase) {
 	}
 
 	ds.spawnedAircraft = nil
+	ds.spawnedTest = tc
 	ds.callsignMap = make(map[int]string)
 	var existingCallsigns []av.ADSBCallsign
 	for i, spec := range tc.Aircraft {
@@ -515,13 +516,16 @@ func (ds *TestBench) spawnAircraft(tc *TestBenchCase) {
 		ds.callsignMap[i] = callsign
 		existingCallsigns = append(existingCallsigns, av.ADSBCallsign(callsign))
 
-		ac := ds.buildAircraftWithCallsign(spec, callsign, acType, airport, apInfo, rwyHeading, nmPerLong, magVar, ctrlFreq)
+		ac, err := ds.buildAircraftWithCallsign(spec, callsign, acType, airport, apInfo, rwyHeading, nmPerLong, magVar, ctrlFreq)
+		if err != nil {
+			ds.statusMessage = fmt.Sprintf("Aircraft #%d: %v", i, err)
+			return
+		}
 		ds.client.LaunchArrivalOverflight(ac)
 		ds.spawnedAircraft = append(ds.spawnedAircraft, ac)
 		ds.lg.Infof("test bench: launched %s at %.1fnm/%.0fft", callsign, spec.DistanceNM, ac.Nav.FlightState.Altitude)
 	}
 
-	ds.spawnedTest = tc
 	ds.activateSteps(tc)
 
 	ds.statusMessage = fmt.Sprintf("Spawned %d aircraft for \"%s\"", len(tc.Aircraft), tc.Label)
@@ -556,7 +560,7 @@ func (ds *TestBench) resolveFixRef(name string, apInfo debugApproachInfo) (loc m
 
 func (ds *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, callsign, acType string,
 	airport *av.Airport, apInfo debugApproachInfo, rwyHeading, nmPerLong, magVar float32,
-	ctrlFreq sim.ControlPosition) sim.Aircraft {
+	ctrlFreq sim.ControlPosition) (sim.Aircraft, error) {
 
 	// Determine reference point and altitude.
 	// If relative_to is set, position relative to that fix;
@@ -567,11 +571,15 @@ func (ds *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 	if spec.RelativeTo != "" {
 		if fixLoc, fixAlt, ok := ds.resolveFixRef(spec.RelativeTo, apInfo); ok {
 			refPos = fixLoc
-			if altitude == 0 && fixAlt > 0 {
-				altitude = fixAlt
+			if altitude == 0 {
+				if fixAlt > 0 {
+					altitude = fixAlt
+				} else {
+					return sim.Aircraft{}, fmt.Errorf("fix %q has no altitude restriction and spec has no explicit altitude", spec.RelativeTo)
+				}
 			}
 		} else {
-			ds.lg.Warnf("test bench: couldn't resolve fix %q", spec.RelativeTo)
+			return sim.Aircraft{}, fmt.Errorf("couldn't resolve fix %q", spec.RelativeTo)
 		}
 	}
 
@@ -648,7 +656,7 @@ func (ds *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 		},
 	}
 
-	return ac
+	return ac, nil
 }
 
 func (ds *TestBench) spawnSTAR(tc *TestBenchCase) {
@@ -788,98 +796,104 @@ func (ds *TestBench) processEvents() {
 		return
 	}
 
+	tc := ds.activeTest
+
 	for _, event := range ds.events.Get() {
 		if event.Type != sim.RadioTransmissionEvent {
 			continue
 		}
-
-		// Check if this is from one of our test callsigns.
-		tc := ds.activeTest
 		if !ds.isTestCallsign(tc, event.ADSBCallsign) {
 			continue
 		}
-
 		if ds.currentStep >= len(tc.Steps) {
 			continue
 		}
-		step := ds.resolveStep(tc, tc.Steps[ds.currentStep])
 
-		// For wait_for steps, accept contact/unexpected transmissions
-		// (spontaneous pilot reports).
+		step := ds.resolveStep(tc, tc.Steps[ds.currentStep])
 		if step.WaitFor != "" {
-			if matchWaitFor(step.WaitFor, event) {
+			ds.processWaitForStep(step, event)
+		} else {
+			ds.processCommandStep(tc, step, event)
+		}
+	}
+}
+
+// processWaitForStep handles a wait_for step by checking whether the event
+// matches the expected condition (check_in, field_in_sight, etc.).
+func (ds *TestBench) processWaitForStep(step TestBenchStep, event sim.Event) {
+	if matchWaitFor(step.WaitFor, event) {
+		ds.stepResults[ds.currentStep] = "pass"
+		ds.lastReadback = event.WrittenText
+		ds.lastReadbackCS = event.ADSBCallsign
+		ds.advanceStep()
+	}
+}
+
+// processCommandStep handles a command step by verifying the pilot's readback
+// against the expected/rejected text patterns.
+func (ds *TestBench) processCommandStep(tc *TestBenchCase, step TestBenchStep, event sim.Event) {
+	// Only evaluate actual readbacks — not check-ins or spontaneous transmissions.
+	if event.RadioTransmissionType != av.RadioTransmissionReadback {
+		return
+	}
+
+	// Check the step's target callsign.
+	targetCS := av.ADSBCallsign(step.Callsign)
+	if targetCS == "" {
+		targetCS = ds.defaultCallsign(tc)
+	}
+	if targetCS != event.ADSBCallsign {
+		return
+	}
+
+	ds.lastReadback = event.WrittenText
+	ds.lastReadbackCS = event.ADSBCallsign
+
+	// "Say again" means the pilot didn't understand; skip it so
+	// the controller can re-issue the command.
+	text := strings.ToLower(event.WrittenText)
+	if strings.Contains(text, "say again") {
+		return
+	}
+
+	// If the command step has no readback expectations, it's a
+	// "fire and forget" step — pass the readback through so the
+	// next step (e.g. wait_for) can evaluate it.
+	if step.ExpectReadback == "" && step.RejectReadback == "" {
+		ds.stepResults[ds.currentStep] = "pass"
+		ds.advanceStep()
+		// Re-evaluate this same event against the new current step.
+		if ds.currentStep < len(tc.Steps) {
+			next := ds.resolveStep(tc, tc.Steps[ds.currentStep])
+			if next.WaitFor != "" && matchWaitFor(next.WaitFor, event) {
 				ds.stepResults[ds.currentStep] = "pass"
 				ds.lastReadback = event.WrittenText
 				ds.lastReadbackCS = event.ADSBCallsign
 				ds.advanceStep()
 			}
-			continue
 		}
-
-		// For command steps, only evaluate actual readbacks — not
-		// check-ins (contact) or other spontaneous transmissions.
-		if event.RadioTransmissionType != av.RadioTransmissionReadback {
-			continue
-		}
-
-		// Check the step's target callsign
-		targetCS := av.ADSBCallsign(step.Callsign)
-		if targetCS == "" {
-			targetCS = ds.defaultCallsign(tc)
-		}
-		if targetCS != event.ADSBCallsign {
-			continue
-		}
-
-		ds.lastReadback = event.WrittenText
-		ds.lastReadbackCS = event.ADSBCallsign
-
-		// "Say again" means the pilot didn't understand; skip it so
-		// the controller can re-issue the command.
-		text := strings.ToLower(event.WrittenText)
-		if strings.Contains(text, "say again") {
-			continue
-		}
-
-		// If the command step has no readback expectations, it's a
-		// "fire and forget" step — pass the readback through so the
-		// next step (e.g. wait_for) can evaluate it.
-		if step.ExpectReadback == "" && step.RejectReadback == "" {
-			ds.stepResults[ds.currentStep] = "pass"
-			ds.advanceStep()
-			// Re-evaluate this same event against the new current step.
-			if ds.currentStep < len(tc.Steps) {
-				next := ds.resolveStep(tc, tc.Steps[ds.currentStep])
-				if next.WaitFor != "" && matchWaitFor(next.WaitFor, event) {
-					ds.stepResults[ds.currentStep] = "pass"
-					ds.lastReadback = event.WrittenText
-					ds.lastReadbackCS = event.ADSBCallsign
-					ds.advanceStep()
-				}
-			}
-			continue
-		}
-
-		// Verify readback against WrittenText (the structured form,
-		// not the randomized spoken form).
-		pass := true
-		if !strings.Contains(text, strings.ToLower(step.ExpectReadback)) {
-			pass = false
-		}
-		if step.RejectReadback != "" && strings.Contains(text, strings.ToLower(step.RejectReadback)) {
-			pass = false
-		}
-
-		ds.lg.Debugf("test bench: step %d cmd=%q expect=%q reject=%q written=%q pass=%v",
-			ds.currentStep, step.Command, step.ExpectReadback, step.RejectReadback, event.WrittenText, pass)
-
-		if pass {
-			ds.stepResults[ds.currentStep] = "pass"
-		} else {
-			ds.stepResults[ds.currentStep] = "fail"
-		}
-		ds.advanceStep()
+		return
 	}
+
+	// Verify readback against WrittenText (the structured form,
+	// not the randomized spoken form).
+	pass := true
+	if !strings.Contains(text, strings.ToLower(step.ExpectReadback)) {
+		pass = false
+	}
+	if step.RejectReadback != "" && strings.Contains(text, strings.ToLower(step.RejectReadback)) {
+		pass = false
+	}
+
+	ds.lg.Debugf("test bench: step %d cmd=%q expect=%q reject=%q written=%q pass=%v",
+		ds.currentStep, step.Command, step.ExpectReadback, step.RejectReadback, event.WrittenText, pass)
+
+	if pass {
+		ds.stepResults[ds.currentStep] = "pass"
+	} else {
+		ds.stepResults[ds.currentStep] = "fail"
+	}
+	ds.advanceStep()
 }
 
 func (ds *TestBench) activateSteps(tc *TestBenchCase) {
