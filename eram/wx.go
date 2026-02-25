@@ -278,14 +278,10 @@ draining:
 
 	// Compute bodyHeight from the stations that will be displayed
 	bodyHeight := float32(0)
-	if numRows == 0 {
-		bodyHeight = lineH + 4
-	} else {
-		displayedLines := 0
+	if numRows > 0 {
 		for i := startIdx; i < endIdx; i++ {
 			n := stationLineCount[i]
 			bodyHeight += boxTopPad + float32(n)*lineH + boxGap
-			displayedLines += n
 		}
 		bodyHeight = max(bodyHeight, lineH+4)
 	}
