@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
 
@@ -53,7 +54,7 @@ type FixPairDefinition struct {
 
 // FixPairAssignment maps a fix pair definition (by index) to a controller
 // TCP for a specific configuration. These are stored in
-// ControllerAssignments alongside inbound/departure assignments.
+// FacilityConfiguration alongside inbound/departure assignments.
 type FixPairAssignment struct {
 	TCP      TCP `json:"tcp"`      // Controller assigned to handle this fix pair
 	Priority int `json:"priority"` // Priority for deterministic matching
@@ -246,7 +247,7 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 	e.Push("config")
 	defer e.Pop()
 
-	// Validate configurations (controller assignments).
+	// Validate configurations (facility configurations).
 	if fa.Configurations == nil {
 		e.ErrorString(`must provide "configurations"`)
 	}
@@ -276,6 +277,24 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 				if _, ok := fc.ControlPositions[child]; !ok {
 					e.ErrorString(`default_consolidation: child %q (under %q) is not in "control_positions"`, child, parent)
 				}
+			}
+		}
+
+		// Resolve scratchpad leader line direction strings to native directions.
+		if len(config.ScratchpadLeaderLineDirectionStrings) > 0 {
+			config.ScratchpadLeaderLineDirections = make(map[string]math.CardinalOrdinalDirection,
+				len(config.ScratchpadLeaderLineDirectionStrings))
+			for sp, dirStr := range config.ScratchpadLeaderLineDirectionStrings {
+				if !fa.CheckScratchpad(sp) {
+					e.ErrorString("scratchpad_leader_line_directions: invalid scratchpad %q", sp)
+					continue
+				}
+				dir, err := math.ParseCardinalOrdinalDirection(dirStr)
+				if err != nil {
+					e.ErrorString("scratchpad_leader_line_directions: invalid direction %q for scratchpad %q", dirStr, sp)
+					continue
+				}
+				config.ScratchpadLeaderLineDirections[sp] = dir
 			}
 		}
 

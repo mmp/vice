@@ -1438,7 +1438,22 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 			return *state.LeaderLineDirection
 		} else if state.FDAMLeaderLineDirection != nil {
 			return *state.FDAMLeaderLineDirection
-		} else if ctx.UserOwnsFlightPlan(sfp) {
+		}
+
+		// Check if the active configuration specifies a leader line
+		// direction for this scratchpad. This comes after per-aircraft and
+		// FDAM overrides but before controller defaults, since it is an
+		// adaptation-defined default keyed on flight plan data.
+		if sfp.Scratchpad != "" {
+			if config, ok := ctx.FacilityAdaptation.Configurations[ctx.Client.State.ConfigurationId]; ok &&
+				config.ScratchpadLeaderLineDirections != nil {
+				if dir, ok := config.ScratchpadLeaderLineDirections[sfp.Scratchpad]; ok {
+					return dir
+				}
+			}
+		}
+
+		if ctx.UserOwnsFlightPlan(sfp) {
 			// Tracked by us
 			return ps.LeaderLineDirection
 		} else if ctx.UserControlsPosition(sfp.HandoffController) {

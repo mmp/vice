@@ -313,9 +313,9 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 	}
 }
 
-// ControllerAssignments defines which controller handles each inbound/departure flow,
+// FacilityConfiguration defines which controller handles each inbound/departure flow,
 // the default consolidation hierarchy for the configuration, and optional fix pair assignments.
-type ControllerAssignments struct {
+type FacilityConfiguration struct {
 	InboundAssignments   map[string]TCP `json:"inbound_assignments"`
 	DepartureAssignments map[string]TCP `json:"departure_assignments"`
 	// GoAroundAssignments maps airport or airport/runway to the controller
@@ -323,12 +323,21 @@ type ControllerAssignments struct {
 	GoAroundAssignments  map[string]TCP        `json:"go_around_assignments"`
 	DefaultConsolidation PositionConsolidation `json:"default_consolidation"`
 	FixPairAssignments   []FixPairAssignment   `json:"fix_pair_assignments,omitempty"`
+
+	// ScratchpadLeaderLineDirectionStrings is the JSON-facing map from
+	// primary scratchpad values to cardinal/ordinal direction strings
+	// (e.g. "N", "NE", "SW"). Resolved into ScratchpadLeaderLineDirections
+	// during PostDeserialize.
+	ScratchpadLeaderLineDirectionStrings map[string]string `json:"scratchpad_leader_line_directions"`
+	// ScratchpadLeaderLineDirections is the resolved map from primary
+	// scratchpad values to leader line directions.
+	ScratchpadLeaderLineDirections map[string]math.CardinalOrdinalDirection `json:"-"`
 }
 
 type FacilityAdaptation struct {
-	// Configurations maps config IDs (max 3 chars) to controller assignments.
+	// Configurations maps config IDs (max 3 chars) to facility configurations.
 	// These define which TCP handles each inbound flow and departure airport/runway/SID.
-	Configurations map[string]*ControllerAssignments `json:"configurations"`
+	Configurations map[string]*FacilityConfiguration `json:"configurations"`
 
 	AirspaceAwareness   []AirspaceAwareness                        `json:"airspace_awareness" scope:"stars"`
 	ForceQLToSelf       bool                                       `json:"force_ql_self" scope:"stars"`
