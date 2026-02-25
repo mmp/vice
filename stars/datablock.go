@@ -992,7 +992,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 			}
 			if beaconMismatch {
 				idx := util.Select(fieldEmpty(db.field7[0][:]), 0, 1)
-				formatDBText(db.field7[idx][:], sfp.AssignedSquawk.String(), color, true)
+				// In S-NW (right-justified) leaders, offset ABC by one to shift RBC left.
+				startIdx := util.Select(sp.getLeaderLineDirection(ctx, trk) >= math.South, 1, 0)
+				formatDBText(db.field7[idx][startIdx:], sfp.AssignedSquawk.String(), color, true)
 			}
 		}
 
