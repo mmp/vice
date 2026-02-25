@@ -75,6 +75,7 @@ type TestBenchAircraftSpec struct {
 	BearingOffset float32 `json:"bearing_offset,omitempty"` // added to default bearing (extended centerline)
 	RelativeTo    string  `json:"relative_to,omitempty"`    // fix name or placeholder (e.g. "{if}"); empty = airport
 
+	StarWaypoints  bool   `json:"star_waypoints,omitempty"` // populate Nav.Waypoints from a STAR at the airport
 	TrafficInSight bool   `json:"traffic_in_sight,omitempty"`
 	Note           string `json:"note,omitempty"`
 }
@@ -97,6 +98,11 @@ type TestBench struct {
 	// Callsign mapping: spec index -> generated callsign.
 	// Populated at spawn time so steps can reference aircraft by index.
 	callsignMap map[int]string
+
+	// Runtime-resolved placeholders, populated at spawn time.
+	holdFix       string           // randomly selected fix with a published hold
+	starFix       string           // first fix of the randomly selected STAR
+	starWaypoints av.WaypointArray // waypoints from the selected STAR transition
 
 	// Test step tracking
 	activeTest     *TestBenchCase
@@ -142,13 +148,15 @@ func approachFixNames(ap *av.Approach) (iaf, ifFix, faf string) {
 }
 
 // resolveStep substitutes placeholders in a step's strings with values
-// from the currently selected approach:
+// from the currently selected approach and runtime state:
 //
 //	{approach}      → approach ID (e.g. "I2L")
 //	{approach_name} → full name (e.g. "ILS Runway 22L")
 //	{iaf}           → Initial Approach Fix name
 //	{if}            → Intermediate Fix name
 //	{faf}           → Final Approach Fix name
+//	{hold_fix}      → randomly selected fix with a published hold
+//	{star_fix}      → first fix of a randomly selected STAR
 func (ds *TestBench) resolveStep(tc *TestBenchCase, step TestBenchStep) TestBenchStep {
 	if ds.selectedApproach < 0 || ds.selectedApproach >= len(ds.approaches) {
 		return step
@@ -162,6 +170,8 @@ func (ds *TestBench) resolveStep(tc *TestBenchCase, step TestBenchStep) TestBenc
 		"{iaf}", iaf,
 		"{if}", ifFix,
 		"{faf}", faf,
+		"{hold_fix}", ds.holdFix,
+		"{star_fix}", ds.starFix,
 	)
 	step.Command = r.Replace(step.Command)
 	for i, s := range step.ExpectReadback {
@@ -200,6 +210,46 @@ func (ds *TestBench) resolveCallsignRef(ref string) string {
 		}
 	}
 	return ref
+}
+
+// resolveRuntimePlaceholders picks random fixes for {hold_fix} and {star_fix}
+// based on the selected approach's airport.
+func (ds *TestBench) resolveRuntimePlaceholders(apInfo debugApproachInfo) {
+	ds.holdFix = ""
+	ds.starFix = ""
+	ds.starWaypoints = nil
+
+	r := rand.Make()
+
+	// Pick a random fix with a published hold near this airport.
+	if holds := av.DB.TerminalHolds[apInfo.airport]; len(holds) > 0 {
+		fixes := util.SortedMapKeys(holds)
+		ds.holdFix = fixes[r.Intn(len(fixes))]
+	} else {
+		// Fall back to enroute holds.
+		fixes := util.SortedMapKeys(av.DB.EnrouteHolds)
+		if len(fixes) > 0 {
+			ds.holdFix = fixes[r.Intn(len(fixes))]
+		}
+	}
+
+	// Pick a random STAR transition at this airport.
+	dbAirport := av.DB.Airports[apInfo.airport]
+	starNames := util.SortedMapKeys(dbAirport.STARs)
+	if len(starNames) > 0 {
+		star := dbAirport.STARs[starNames[r.Intn(len(starNames))]]
+		trNames := util.SortedMapKeys(star.Transitions)
+		if len(trNames) > 0 {
+			wps := star.Transitions[trNames[r.Intn(len(trNames))]]
+			ds.starWaypoints = util.DuplicateSlice(wps)
+			for i := range ds.starWaypoints {
+				ds.starWaypoints[i].SetOnSTAR(true)
+			}
+			if len(ds.starWaypoints) > 0 {
+				ds.starFix = ds.starWaypoints[0].Fix
+			}
+		}
+	}
 }
 
 func NewTestBench(c *client.ControlClient, es *sim.EventStream, lg *log.Logger) *TestBench {
@@ -520,6 +570,7 @@ func (ds *TestBench) spawnAircraft(tc *TestBenchCase) {
 	ds.spawnedAircraft = nil
 	ds.spawnedTest = tc
 	ds.callsignMap = make(map[int]string)
+	ds.resolveRuntimePlaceholders(apInfo)
 	var existingCallsigns []av.ADSBCallsign
 	for i, spec := range tc.Aircraft {
 		acType := spec.AircraftType
@@ -559,7 +610,10 @@ func (ds *TestBench) spawnAircraft(tc *TestBenchCase) {
 func (ds *TestBench) resolveFixRef(name string, apInfo debugApproachInfo) (loc math.Point2LL, alt float32, ok bool) {
 	// Resolve placeholders.
 	iaf, ifFix, faf := approachFixNames(apInfo.approach)
-	name = strings.NewReplacer("{iaf}", iaf, "{if}", ifFix, "{faf}", faf).Replace(name)
+	name = strings.NewReplacer(
+		"{iaf}", iaf, "{if}", ifFix, "{faf}", faf,
+		"{hold_fix}", ds.holdFix, "{star_fix}", ds.starFix,
+	).Replace(name)
 
 	// Find the fix in the approach waypoints.
 	for _, route := range apInfo.approach.Waypoints {
@@ -587,7 +641,7 @@ func (ds *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 
 	// Determine reference point and altitude.
 	// If relative_to is set, position relative to that fix;
-	// otherwise position relative to the airport.
+	// otherwise use the first STAR waypoint (if available) or the airport.
 	refPos := airport.Location
 	altitude := spec.Altitude
 
@@ -604,6 +658,9 @@ func (ds *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 		} else {
 			return sim.Aircraft{}, fmt.Errorf("couldn't resolve fix %q", spec.RelativeTo)
 		}
+	} else if spec.StarWaypoints && len(ds.starWaypoints) > 0 {
+		// Default to positioning near the first STAR waypoint.
+		refPos = ds.starWaypoints[0].Location
 	}
 
 	// Determine the bearing from reference to place the aircraft.
@@ -679,6 +736,10 @@ func (ds *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 			TrackingController: ctrlFreq,
 			OwningTCW:          ds.client.State.UserTCW,
 		},
+	}
+
+	if spec.StarWaypoints && len(ds.starWaypoints) > 0 {
+		ac.Nav.Waypoints = util.DuplicateSlice(ds.starWaypoints)
 	}
 
 	return ac, nil
@@ -810,6 +871,10 @@ func matchWaitFor(waitFor string, event sim.Event) bool {
 	case "go_around":
 		return strings.Contains(text, "going around") ||
 			strings.Contains(text, "on the go")
+	case "traffic_in_sight":
+		return strings.Contains(text, "traffic in sight") ||
+			strings.Contains(text, "we've got the traffic") ||
+			strings.Contains(text, "we have the traffic")
 	}
 	return false
 }

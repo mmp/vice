@@ -46,7 +46,6 @@
         {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
       ],
       "steps": [
-        {"command": "E{approach}", "expect_readback": "{approach_name}"},
         {"command": "S210", "expect_readback": "210 knots"}
       ]
     },
@@ -56,7 +55,6 @@
         {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
       ],
       "steps": [
-        {"command": "E{approach}", "expect_readback": "{approach_name}"},
         {"command": "S210", "expect_readback": "210 knots"},
         {"command": "S", "expect_readback": "cancel speed"}
       ]
@@ -67,7 +65,6 @@
         {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
       ],
       "steps": [
-        {"command": "E{approach}", "expect_readback": "{approach_name}"},
         {"command": "SMIN", "expect_readback": ["slowest practical speed", "slowing as much as we can"]}
       ]
     },
@@ -77,7 +74,6 @@
         {"distance_nm": 15, "relative_to": "{if}", "speed": 210, "altitude": 7000}
       ],
       "steps": [
-        {"command": "E{approach}", "expect_readback": "{approach_name}"},
         {"command": "SMAX", "expect_readback": ["maximum forward speed", "maintaining maximum forward speed"]}
       ]
     },
@@ -87,7 +83,6 @@
         {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
       ],
       "steps": [
-        {"command": "E{approach}", "expect_readback": "{approach_name}"},
         {"command": "SPRES", "expect_readback": ["maintain present speed", "present speed", "maintaining"]}
       ]
     }
@@ -99,7 +94,6 @@
         {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
       ],
       "steps": [
-        {"command": "E{approach}", "expect_readback": "{approach_name}"},
         {"command": "D050", "expect_readback": "5,000"},
         {"command": "TS170", "expect_readback": "170 knots"}
       ]
@@ -110,7 +104,6 @@
         {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
       ],
       "steps": [
-        {"command": "E{approach}", "expect_readback": "{approach_name}"},
         {"command": "S210", "expect_readback": "210 knots"},
         {"command": "TD050", "expect_readback": "5,000"}
       ]
@@ -180,6 +173,94 @@
         {"command": "E{approach}", "expect_readback": "{approach_name}"},
         {"command": "D{if}", "expect_readback": "direct {if}"},
         {"command": "A{if}/C{approach}", "expect_readback": "cleared"}
+      ]
+    }
+  ],
+  "Descend via STAR": [
+    {
+      "label": "Descend via the STAR",
+      "aircraft": [
+        {"distance_nm": 3, "relative_to": "{star_fix}", "speed": 250, "altitude": 11000,
+         "star_waypoints": true}
+      ],
+      "steps": [
+        {"command": "DVS", "expect_readback": "descend via the STAR"}
+      ]
+    }
+  ],
+  "Speed Until": [
+    {
+      "label": "Speed until fix",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "S180/U{faf}", "expect_readback": "until"}
+      ]
+    }
+  ],
+  "Expedite Altitude": [
+    {
+      "label": "Expedite descent",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "D050", "expect_readback": "5,000"},
+        {"command": "ED", "expect_readback": ["expediting down to", "expedite"]}
+      ]
+    },
+    {
+      "label": "Expedite climb (departure)",
+      "departure": true,
+      "steps": [
+        {"wait_for": "check_in"},
+        {"command": "A110", "expect_readback": "11,000"},
+        {"command": "EC", "expect_readback": ["expediting up to", "expedite"]}
+      ]
+    }
+  ],
+  "Hold": [
+    {
+      "label": "Hold at fix (published)",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{hold_fix}", "speed": 210, "altitude": 5000}
+      ],
+      "steps": [
+        {"command": "D{hold_fix}", "expect_readback": "direct {hold_fix}"},
+        {"command": "H{hold_fix}", "expect_readback": "hold"}
+      ]
+    },
+    {
+      "label": "Hold at fix, left turns",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{hold_fix}", "speed": 210, "altitude": 5000}
+      ],
+      "steps": [
+        {"command": "D{hold_fix}", "expect_readback": "direct {hold_fix}"},
+        {"command": "H{hold_fix}/L", "expect_readback": "hold"}
+      ]
+    }
+  ],
+  "Traffic + Visual Separation": [
+    {
+      "label": "Traffic advisory",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "TRAFFIC/12/3/70", "expect_readback": ["looking", "traffic in sight", "we have the traffic", "in the clouds", "IMC"]}
+      ]
+    },
+    {
+      "label": "Visual separation (traffic already in sight)",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000,
+         "traffic_in_sight": true}
+      ],
+      "steps": [
+        {"command": "VISSEP", "expect_readback": ["visual separation", "maintain visual"]}
       ]
     }
   ],
