@@ -1,5 +1,6 @@
 {
     "tracon": "AAC",
+    "allow_fix_redefinitions": true,
     "airports": {
         "KAAC": {
             "approaches": {

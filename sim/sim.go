@@ -1371,7 +1371,7 @@ func (s *Sim) updateState() {
 							ctrl := s.State.ResolveController(sfp.InboundHandoffController)
 							// Make sure they've bought the handoff.
 							if ctrl != sfp.HandoffController {
-								s.enqueueControllerContact(ac.ADSBCallsign, TCP(ctrl), ac.ControllerFrequency)
+								s.enqueueControllerContact(ac, TCP(ctrl), ac.ControllerFrequency)
 							}
 						}
 					}
@@ -1513,6 +1513,7 @@ func (s *Sim) updateState() {
 		s.possiblyRequestFlightFollowing()
 
 		s.processPendingFrequencySwitches()
+		s.processVirtualControllerContacts()
 
 		s.processFutureEvents()
 

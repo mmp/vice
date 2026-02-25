@@ -1572,6 +1572,11 @@ how it simulates aircraft or the STARS interface.
                 </ul>
               </li>
               <li>Lots of small improvements to speech-to-text.</li>
+              <li>ERAM
+                <ul>
+                  <li>Added support for giving aircraft speeds in mach (Michael Trokel)</li>
+                </ul>
+              </li>
               <li>Bugfixes:
                 <ul>
                   <li>Handle Pacific "P" and Carribean "T" airports better.</li>
@@ -1581,6 +1586,8 @@ how it simulates aircraft or the STARS interface.
                   <li>Handing off tracks before they call in should work better; they will still call in to your frequency first.</li>
                   <li>Fixed long stalls after clicking a new ARTCC/TRACON in the new sim window.</li>
                   <li>Fixed issues with crosswinds pushing aircraft off of the localizer/final approach course.</li>
+                  <li>Fixed longstanding bug where aircraft sent direct to a fix on an approach but not cleared would start descending anyway (Jordan Williams).</li>
+                  <li>Fixed bug where aircraft couldn't climb past FL322.</li>
                 </ul>
               </li>
               <li>Flight strips have been reworked; right click to get a menu to push them to the next controller.</li>
@@ -7479,6 +7486,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>"airports"</td>
                 <td>Object</td>
                 <td>Defines all of the airports that are included in the scenarios. See the <a href="#fe-airports">airports section</a> for details.</td>
+              </tr>
+              <tr>
+                <td>"allow_fix_redefinitions"</td>
+                <td>Boolean</td>
+                <td><i>(Optional)</i> When set to <code>true</code>, disables the validation check that
+                  verifies fixes defined in <code>"fixes"</code> are close to their locations in the FAA database.
+                  This is useful for fictional scenarios where fixes are intentionally placed at different
+                  locations than their real-world counterparts. Default is <code>false</code>.</td>
               </tr>
               <tr>
                 <td>"airspace"</td>

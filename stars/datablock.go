@@ -1090,15 +1090,16 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 		sfp := trk.FlightPlan
 		if _, ok := sp.ForceQLACIDs[sfp.ACID]; ok {
 			// Check if we're the controller being ForceQL
-			color = sp.Colors.AlertDatablock
+			color = sp.Colors.CautionDatablock
 		} else if state.PointOutAcknowledged || state.ForceQL {
 			// Ack'ed point out to us (but not cleared) or force quick look.
-			color = sp.Colors.AlertDatablock
+			color = sp.Colors.CautionDatablock
 		} else if inboundPointOut {
 			// Pointed out to us.
-			color = sp.Colors.AlertDatablock
+			color = sp.Colors.CautionDatablock
 		} else if state.DatablockAlert {
-			color = sp.Colors.AlertDatablock
+			// This is indeed supposed to be CautionDatablock, not AlertDatablock(!).
+			color = sp.Colors.CautionDatablock
 		} else if ctx.UserOwnsFlightPlan(sfp) {
 			// we own the track
 			color = sp.Colors.OwnedDatablock

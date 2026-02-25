@@ -109,8 +109,7 @@ type ERAMPane struct {
 	tearoffMenuLightToolbar2 map[string][4][2]float32 `json:"-"` // cached secondary backgrounds (MAP BRIGHT)
 	tearoffMenuOrder         []string                 `json:"-"` // draw/input order for tearoff menus (oldest -> newest)
 
-	VelocityTime  int // 0, 1, 4, or 8 minutes
-	HistoryLength int
+	VelocityTime int // 0, 1, 4, or 8 minutes
 
 	dbLastAlternateTime time.Time `json:"-"` // Alternates every 6 seconds
 	dbAlternate         bool      `json:"-"`

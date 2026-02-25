@@ -686,7 +686,9 @@ func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...any)
 }
 
 func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...any) {
-	lg.Errorf(s, args...)
+	if lg != nil {
+		lg.Errorf(s, args...)
+	}
 
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
 

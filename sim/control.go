@@ -793,7 +793,7 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 	// controller deferred contact chain.
 	delete(s.DeferredContacts, ac.ADSBCallsign)
 
-	s.enqueueControllerContact(ac.ADSBCallsign, toTCP, ControlPosition(fromTCP))
+	s.enqueueControllerContact(ac, toTCP, ControlPosition(fromTCP))
 
 	return intent
 }
@@ -2038,21 +2038,49 @@ func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
 	return nil
 }
 
+// processVirtualControllerContacts handles pending contacts for virtual
+// controllers. Human controllers' contacts are processed by their clients
+// via PopReadyContact/GenerateContactTransmission, but virtual controllers
+// have no client, so we process their contacts here in the update loop.
+func (s *Sim) processVirtualControllerContacts() {
+	for tcp, contacts := range s.PendingContacts {
+		if !s.isVirtualController(tcp) {
+			continue
+		}
+
+		s.PendingContacts[tcp] = util.FilterSliceInPlace(contacts,
+			func(pc PendingContact) bool {
+				if !s.State.SimTime.After(pc.ReadyTime) {
+					return true // not ready yet; leave it in the slice
+				}
+
+				if ac, ok := s.Aircraft[pc.ADSBCallsign]; ok && ac.IsDeparture() {
+					// For departures contacting virtual controllers, enqueue climbing to
+					// cruise altitude.
+					s.enqueueDepartOnCourse(ac.ADSBCallsign)
+				}
+				// In any case, we can drop it from the pending contacts slice.
+				return false
+			})
+	}
+}
+
 // enqueueControllerContact adds an aircraft to the pending contacts queue.
 // Called when an aircraft should contact a controller (after handoff accepted, etc.)
 // fromPos is the controller position the aircraft is coming from, used to
 // determine whether this is the first contact in a TRACON facility (for ATIS reporting).
-func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP, fromPos ControlPosition) {
+func (s *Sim) enqueueControllerContact(ac *Aircraft, tcp TCP, fromPos ControlPosition) {
 	// Aircraft will switch frequency (2-4 sec), then listen before transmitting (3-6 sec).
 	switchDelay := time.Duration(2+s.Rand.Intn(3)) * time.Second
 	listenDelay := time.Duration(3+s.Rand.Intn(4)) * time.Second
 	s.PendingFrequencyChanges = append(s.PendingFrequencyChanges,
-		PendingFrequencyChange{ADSBCallsign: callsign, TCP: tcp, Time: s.State.SimTime.Add(switchDelay)})
+		PendingFrequencyChange{ADSBCallsign: ac.ADSBCallsign, TCP: tcp, Time: s.State.SimTime.Add(switchDelay)})
+
 	s.addPendingContact(PendingContact{
-		ADSBCallsign:    callsign,
+		ADSBCallsign:    ac.ADSBCallsign,
 		TCP:             tcp,
 		ReadyTime:       s.State.SimTime.Add(switchDelay + listenDelay),
-		Type:            PendingTransmissionArrival,
+		Type:            util.Select(ac.IsDeparture(), PendingTransmissionDeparture, PendingTransmissionArrival),
 		FirstInFacility: s.isFirstFacilityContact(fromPos, tcp),
 	})
 }
@@ -2091,7 +2119,7 @@ func (s *Sim) virtualControllerTransferComms(ac *Aircraft, virtualTCP TCP, targe
 			s.processDeferredContact(ac)
 		} else {
 			// Virtual-to-human: realistic switch/listen delay.
-			s.enqueueControllerContact(ac.ADSBCallsign, targetTCP, ControlPosition(virtualTCP))
+			s.enqueueControllerContact(ac, targetTCP, ControlPosition(virtualTCP))
 		}
 	} else {
 		// Pilot hasn't reached the virtual's frequency yet. Store a
@@ -2141,7 +2169,7 @@ func (s *Sim) processDeferredContact(ac *Aircraft) {
 		s.processDeferredContact(ac)
 	} else {
 		// Virtual-to-human: realistic delay.
-		s.enqueueControllerContact(ac.ADSBCallsign, targetTCP, ac.ControllerFrequency)
+		s.enqueueControllerContact(ac, targetTCP, ac.ControllerFrequency)
 	}
 }
 
