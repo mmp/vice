@@ -25,7 +25,8 @@ type FlightStripPane struct {
 	FontSize int
 	font     *renderer.Font
 
-	DarkMode bool
+	DarkMode         bool
+	HideOffFrequency bool
 
 	// Display ordering, reconciled each frame with the server list.
 	ACIDDisplayOrder []sim.ACID
@@ -104,6 +105,7 @@ func (fsp *FlightStripPane) DisplayName() string { return "Flight Strips" }
 
 func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Night mode", &fsp.DarkMode)
+	imgui.Checkbox("Hide aircraft not on my frequency", &fsp.HideOffFrequency)
 
 	id := renderer.FontIdentifier{Name: fsp.font.Id.Name, Size: fsp.FontSize}
 	if newFont, changed := renderer.DrawFontSizeSelector(&id); changed {
@@ -221,6 +223,11 @@ func (fsp *FlightStripPane) DrawWindow(show *bool, c *client.ControlClient,
 			continue
 		}
 		track := c.State.Tracks[av.ADSBCallsign(acid)]
+
+		if fsp.HideOffFrequency && track != nil &&
+			!c.State.TCWControlsPosition(c.State.UserTCW, track.ControllerFrequency) {
+			continue
+		}
 
 		imgui.PushIDInt(int32(i))
 		tableMin, tableMax := fsp.drawStripImgui(acid, sfp, track, c, fw)

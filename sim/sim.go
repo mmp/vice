@@ -1240,6 +1240,7 @@ func (s *Sim) updateState() {
 			s.lg.Debug("automatic pointout accept", slog.String("acid", string(acid)),
 				slog.String("by", string(po.ToController)), slog.String("to", string(po.FromController)))
 
+			fp.AddPointOutHistory(po.ToController)
 			delete(s.PointOuts, acid)
 		}
 	}

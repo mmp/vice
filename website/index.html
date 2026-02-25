@@ -9102,7 +9102,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"configurations"</td>
                 <td>Object</td>
-                <td>Defines controller assignment configurations that can be referenced by scenarios.
+                <td>Defines facility configurations that can be referenced by scenarios.
                   Each key is a short identifier (maximum 3 characters) for the configuration,
                   and the value is an object with the following members:
                   <ul>
@@ -9120,6 +9120,13 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       airport name ("KJFK") or airport/runway ("KJFK/22L") for per-runway
                       specification. If not specified for an airport/runway, the departure
                       controller for that airport is used.</li>
+                    <li>"scratchpad_leader_line_directions": (<i>Optional</i>) An object that maps
+                      primary scratchpad values to leader line directions. Keys are scratchpad
+                      strings (subject to standard scratchpad validation rules) and values are
+                      cardinal/ordinal direction strings: "N", "NE", "E", "SE", "S", "SW", "W",
+                      or "NW". When an aircraft has a matching primary scratchpad, the specified
+                      direction is used for the leader line. This takes effect after per-aircraft
+                      and FDAM direction overrides but before controller default directions.</li>
                   </ul>
                   These configurations allow multiple scenarios to share the same assignment definitions,
                   reducing duplication when only the consolidation hierarchy differs between scenarios.
