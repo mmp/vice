@@ -1047,12 +1047,7 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 				ToController:   po.FromController,
 				ACID:           acid,
 			})
-			if len(fp.PointOutHistory) < 20 {
-				fp.PointOutHistory = append([]TCP{po.ToController}, fp.PointOutHistory...)
-			} else {
-				fp.PointOutHistory = fp.PointOutHistory[:19]
-				fp.PointOutHistory = append([]TCP{po.ToController}, fp.PointOutHistory...)
-			}
+			fp.AddPointOutHistory(po.ToController)
 
 			delete(s.PointOuts, acid)
 			return nil

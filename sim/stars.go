@@ -1045,6 +1045,13 @@ type NASFlightPlan struct {
 	StripOwner       ControlPosition // which TCP position has this strip (empty = no strip)
 }
 
+func (fp *NASFlightPlan) AddPointOutHistory(tcp TCP) {
+	if len(fp.PointOutHistory) >= 20 {
+		fp.PointOutHistory = fp.PointOutHistory[:19]
+	}
+	fp.PointOutHistory = append([]TCP{tcp}, fp.PointOutHistory...)
+}
+
 type ACID string
 
 type FlightPlanSpecifier struct {
