@@ -260,27 +260,30 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		// Handle PTT key for STT recording
 		uiHandlePTTKey(p, controlClient, config, lg)
 
-		// Position for right-side icons (add space for mic icon when recording/garbling)
-		width, _ := ui.font.BoundText(renderer.FontAwesomeIconInfoCircle, 0)
-		numIcons := 6
-		if ui.pttRecording || ui.pttGarbling {
-			numIcons = 7
-		}
+		// Position for right-side icons: info, discord, full screen toggle,
+		// and optionally a microphone icon during PTT recording/garbling.
+		// The 3 buttons are always at the same fixed position so they don't
+		// shift when the microphone icon appears/disappears.
+		iconWidth, _ := ui.font.BoundText(renderer.FontAwesomeIconInfoCircle, 0)
+		style := imgui.CurrentStyle()
+		framePaddingX := style.FramePadding().X
+		itemSpacingX := style.ItemSpacing().X
+		buttonWidth := float32(iconWidth) + 2*framePaddingX
 		displaySize := imgui.CurrentIO().DisplaySize()
-		imgui.SetCursorPos(imgui.Vec2{X: displaySize.X - float32(numIcons*width+15), Y: 0})
+		buttonsX := displaySize.X - 3*buttonWidth - 2*itemSpacingX - itemSpacingX
 
-		// Show microphone icon while recording (red) or garbling (yellow)
-		if ui.pttRecording {
-			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, 0, 0, 1})
+		// Show microphone icon while recording (red) or garbling (yellow),
+		// positioned to the left of the 3 fixed buttons.
+		if ui.pttRecording || ui.pttGarbling {
+			// red for recording, yellow for garbling
+			micColor := util.Select(ui.pttGarbling, imgui.Vec4{1, 1, 0, 1}, imgui.Vec4{1, 0, 0, 1})
+			imgui.SetCursorPos(imgui.Vec2{X: buttonsX - float32(iconWidth) - itemSpacingX, Y: 0})
+			imgui.PushStyleColorVec4(imgui.ColText, micColor)
 			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
 			imgui.PopStyleColor()
-			imgui.SameLine()
-		} else if ui.pttGarbling {
-			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, 1, 0, 1})
-			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
-			imgui.PopStyleColor()
-			imgui.SameLine()
 		}
+
+		imgui.SetCursorPos(imgui.Vec2{X: buttonsX, Y: 0})
 
 		if imgui.Button(renderer.FontAwesomeIconInfoCircle) {
 			ui.showAboutDialog = !ui.showAboutDialog
