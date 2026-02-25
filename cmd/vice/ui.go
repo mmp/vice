@@ -261,7 +261,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Display online vice documentation")
 		}
 
-		if *devMode && controlClient != nil && controlClient.Connected() {
+		if (*devMode || config.DevMode) && controlClient != nil && controlClient.Connected() {
 			if imgui.Button(renderer.FontAwesomeIconWrench) {
 				ui.showTestBench = !ui.showTestBench
 			}
@@ -793,6 +793,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 	if c != nil {
 		imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
 	}
+
+	imgui.Checkbox("Developer mode", &config.DevMode)
 
 	imgui.Separator()
 

@@ -43,7 +43,7 @@
     {
       "label": "Reduce speed",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "S210", "expect_readback": "210 knots"}
@@ -52,7 +52,7 @@
     {
       "label": "Cancel speed restrictions",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "S210", "expect_readback": "210 knots"},
@@ -62,7 +62,7 @@
     {
       "label": "Slowest practical speed",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "SMIN", "expect_readback": ["slowest practical speed", "slowing as much as we can"]}
@@ -71,7 +71,7 @@
     {
       "label": "Maximum forward speed",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 210, "altitude": 7000}
+        {"distance_nm": 15, "speed": 210, "altitude": 7000}
       ],
       "steps": [
         {"command": "SMAX", "expect_readback": ["maximum forward speed", "maintaining maximum forward speed"]}
@@ -80,7 +80,7 @@
     {
       "label": "Maintain present speed",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "SPRES", "expect_readback": ["maintain present speed", "present speed", "maintaining"]}
@@ -89,7 +89,7 @@
     {
       "label": "Speed until fix",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "E{approach}", "expect_readback": "{approach_name}"},
@@ -101,7 +101,7 @@
     {
       "label": "Descend, then reduce speed",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "D050", "expect_readback": "5,000"},
@@ -111,7 +111,7 @@
     {
       "label": "Reduce speed, then descend",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "S210", "expect_readback": "210 knots"},
@@ -123,7 +123,7 @@
     {
       "label": "Cross fix at altitude",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "E{approach}", "expect_readback": "{approach_name}"},
@@ -133,7 +133,7 @@
     {
       "label": "Cross fix at speed",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "E{approach}", "expect_readback": "{approach_name}"},
@@ -143,7 +143,7 @@
     {
       "label": "Cross fix at altitude and speed",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "E{approach}", "expect_readback": "{approach_name}"},
@@ -203,7 +203,7 @@
     {
       "label": "Expedite descent",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "speed": 250, "altitude": 7000}
       ],
       "steps": [
         {"command": "D050", "expect_readback": "5,000"},
@@ -248,11 +248,11 @@
       "aircraft": [
         {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000,
          "traffic_in_sight": true},
-        {"distance_nm": 12, "relative_to": "{if}", "speed": 210, "altitude": 7000,
+        {"distance_nm": 12, "relative_to": "{if}", "speed": 250, "altitude": 7000,
          "bearing_offset": 10, "note": "traffic target"}
       ],
       "steps": [
-        {"callsign": "{0}", "command": "TRAFFIC/12/3/70"},
+        {"callsign": "{0}", "command": "TRAFFIC/12/3/{alt1}"},
         {"wait_for": "traffic_in_sight"}
       ]
     },
@@ -260,11 +260,11 @@
       "label": "Traffic advisory, negative contact",
       "aircraft": [
         {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000},
-        {"distance_nm": 7, "relative_to": "{if}", "speed": 210, "altitude": 5000,
+        {"distance_nm": 7, "relative_to": "{if}", "speed": 250, "altitude": 5000,
          "bearing_offset": 30, "note": "traffic target"}
       ],
       "steps": [
-        {"callsign": "{0}", "command": "TRAFFIC/2/8/50"},
+        {"callsign": "{0}", "command": "TRAFFIC/2/8/{alt1}"},
         {"wait_for": "traffic_response"}
       ]
     },
@@ -273,11 +273,11 @@
       "aircraft": [
         {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000,
          "traffic_in_sight": true},
-        {"distance_nm": 12, "relative_to": "{if}", "speed": 210, "altitude": 7000,
+        {"distance_nm": 12, "relative_to": "{if}", "speed": 250, "altitude": 7000,
          "bearing_offset": 10, "note": "traffic target"}
       ],
       "steps": [
-        {"callsign": "{0}", "command": "TRAFFIC/12/3/70"},
+        {"callsign": "{0}", "command": "TRAFFIC/12/3/{alt1}"},
         {"wait_for": "traffic_in_sight"},
         {"callsign": "{0}", "command": "VISSEP", "expect_readback": ["visual separation", "maintain visual"]}
       ]

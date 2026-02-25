@@ -218,8 +218,14 @@ func (s *Sim) DeleteAircraftSlice(tcw TCW, aircraft []Aircraft) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	if lctrl := s.State.LaunchConfig.Controller; lctrl != "" && lctrl != tcw {
+		return av.ErrOtherControllerHasTrack
+	}
+
 	for _, ac := range aircraft {
-		s.deleteAircraft(&ac)
+		if serverAc, ok := s.Aircraft[ac.ADSBCallsign]; ok {
+			s.deleteAircraft(serverAc)
+		}
 	}
 
 	return nil

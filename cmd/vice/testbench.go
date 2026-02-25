@@ -39,6 +39,15 @@ type TestBenchCase struct {
 	Category  string `json:"category,omitempty"`
 }
 
+func (tc *TestBenchCase) usesCVS() bool {
+	for _, step := range tc.Steps {
+		if step.Command == "CVS" {
+			return true
+		}
+	}
+	return false
+}
+
 type TestBenchStep struct {
 	Command        string        `json:"command,omitempty"`
 	Callsign       string        `json:"callsign,omitempty"`
@@ -102,6 +111,7 @@ type TestBench struct {
 	// Populated at spawn time so steps can reference aircraft by index.
 	callsignMap map[int]string
 	headingMap  map[int]float32 // spec index -> spawned heading
+	altitudeMap map[int]float32 // spec index -> spawned altitude
 
 	// Runtime-resolved placeholders, populated at spawn time.
 	holdFix       string           // randomly selected fix with a published hold
@@ -116,6 +126,7 @@ type TestBench struct {
 	lastReadback   string
 	lastReadbackCS av.ADSBCallsign
 	statusMessage  string
+	statusIsError  bool
 }
 
 type testBenchApproachInfo struct {
@@ -193,6 +204,18 @@ func (tb *TestBench) resetTestState() {
 	tb.lastReadback = ""
 	tb.lastReadbackCS = ""
 	tb.callsignMap = nil
+	tb.headingMap = nil
+	tb.altitudeMap = nil
+}
+
+func (tb *TestBench) setStatus(msg string) {
+	tb.statusMessage = msg
+	tb.statusIsError = false
+}
+
+func (tb *TestBench) setError(msg string) {
+	tb.statusMessage = msg
+	tb.statusIsError = true
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -271,6 +294,17 @@ func (tb *TestBench) resolveStep(tc *TestBenchCase, step TestBenchStep) TestBenc
 				h = 360
 			}
 			formatted := fmt.Sprintf("%03d", h)
+			step.Command = strings.ReplaceAll(step.Command, placeholder, formatted)
+			for i, s := range step.ExpectReadback {
+				step.ExpectReadback[i] = strings.ReplaceAll(s, placeholder, formatted)
+			}
+			step.RejectReadback = strings.ReplaceAll(step.RejectReadback, placeholder, formatted)
+		}
+		// Replace {altN} with altitude in hundreds of feet for aircraft N
+		// (e.g. 70 for 7000ft — used in TRAFFIC command parameters).
+		for idx, alt := range tb.altitudeMap {
+			placeholder := fmt.Sprintf("{alt%d}", idx)
+			formatted := fmt.Sprintf("%d", int(alt+50)/100)
 			step.Command = strings.ReplaceAll(step.Command, placeholder, formatted)
 			for i, s := range step.ExpectReadback {
 				step.ExpectReadback[i] = strings.ReplaceAll(s, placeholder, formatted)
@@ -396,6 +430,21 @@ func (tb *TestBench) resolveRuntimePlaceholders(apInfo testBenchApproachInfo) {
 			}
 		}
 	}
+	// Prefer STARs that have at least one altitude restriction, since
+	// those are needed for DVS (descend via STAR) to be meaningful.
+	hasAltRestriction := func(wps av.WaypointArray) bool {
+		for _, wp := range wps {
+			if wp.AltitudeRestriction() != nil {
+				return true
+			}
+		}
+		return false
+	}
+	restrictedSets := util.FilterSlice(starWaypointSets, hasAltRestriction)
+	if len(restrictedSets) > 0 {
+		starWaypointSets = restrictedSets
+	}
+
 	if len(starWaypointSets) > 0 {
 		wps := starWaypointSets[r.Intn(len(starWaypointSets))]
 		tb.starWaypoints = util.DuplicateSlice(wps)
@@ -408,6 +457,80 @@ func (tb *TestBench) resolveRuntimePlaceholders(apInfo testBenchApproachInfo) {
 	}
 }
 
+// validateScenario checks that all placeholders used by a test case can be
+// resolved with the current approach selection. Returns an error message
+// describing the first unresolvable placeholder, or "" if everything is fine.
+// isIMC checks whether the weather at the given airport is IMC.
+func (tb *TestBench) isIMC(airport string) bool {
+	if metar, ok := tb.client.State.METAR[airport]; ok {
+		return !metar.IsVMC()
+	}
+	return false
+}
+
+func (tb *TestBench) validateScenario(tc *TestBenchCase, apInfo testBenchApproachInfo) string {
+	iaf, ifFix, faf := approachFixNames(apInfo.approach)
+
+	placeholders := []struct {
+		tag   string
+		value string
+		desc  string
+	}{
+		{"{if}", ifFix, "No intermediate fix (IF) in this approach"},
+		{"{iaf}", iaf, "No initial approach fix (IAF) in this approach"},
+		{"{faf}", faf, "No final approach fix (FAF) in this approach"},
+		{"{hold_fix}", tb.holdFix, "No published holds near this airport"},
+		{"{star_fix}", tb.starFix, "No STARs configured for this airport"},
+	}
+
+	// checkStr reports the first empty-value placeholder found in s.
+	checkStr := func(s, context string) string {
+		for _, p := range placeholders {
+			if p.value == "" && strings.Contains(s, p.tag) {
+				return fmt.Sprintf("%s: %s", p.desc, context)
+			}
+		}
+		return ""
+	}
+
+	for _, spec := range tc.Aircraft {
+		if msg := checkStr(spec.RelativeTo, "aircraft positioning"); msg != "" {
+			return msg
+		}
+	}
+	for _, step := range tc.Steps {
+		ctx := fmt.Sprintf("step %q", step.Command)
+		if msg := checkStr(step.Command, ctx); msg != "" {
+			return msg
+		}
+		if msg := checkStr(step.Callsign, ctx); msg != "" {
+			return msg
+		}
+
+		// DVS requires STAR waypoints with altitude restrictions.
+		if step.Command == "DVS" {
+			hasRestriction := false
+			for _, wp := range tb.starWaypoints {
+				if wp.AltitudeRestriction() != nil {
+					hasRestriction = true
+					break
+				}
+			}
+			if !hasRestriction {
+				return "No STAR with altitude restrictions available for DVS"
+			}
+		}
+
+		// Traffic advisories won't work in IMC — the pilot will always
+		// respond "we're in IMC" instead of reporting traffic.
+		if strings.HasPrefix(step.Command, "TRAFFIC/") && tb.isIMC(apInfo.airport) {
+			return "Weather is IMC — traffic advisories won't get a visual response"
+		}
+	}
+
+	return ""
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // UI drawing
 
@@ -416,7 +539,7 @@ func (tb *TestBench) Draw(show *bool, p platform.Platform) {
 	tb.processEvents()
 
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{400, 200}, imgui.Vec2{800, float32(p.WindowSize()[1]) * 19 / 20})
-	imgui.BeginV("Test Bench", show, imgui.WindowFlagsAlwaysAutoResize)
+	imgui.BeginV("Test Bench", show, imgui.WindowFlagsAlwaysAutoResize|imgui.WindowFlagsNoCollapse)
 
 	// Approach selector
 	if len(tb.approaches) > 0 {
@@ -454,7 +577,11 @@ func (tb *TestBench) Draw(show *bool, p platform.Platform) {
 	}
 
 	if tb.statusMessage != "" {
-		imgui.TextColored(imgui.Vec4{0, 1, 0, 1}, tb.statusMessage)
+		if tb.statusIsError {
+			imgui.TextColored(imgui.Vec4{1, 0.3, 0.3, 1}, tb.statusMessage)
+		} else {
+			imgui.TextColored(imgui.Vec4{0, 1, 0, 1}, tb.statusMessage)
+		}
 	}
 
 	imgui.Separator()
@@ -528,7 +655,7 @@ func (tb *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 			tb.spawnedAircraft = nil
 			tb.spawnedTest = nil
 			tb.resetTestState()
-			tb.statusMessage = "Cleared spawned aircraft"
+			tb.setStatus("Cleared spawned aircraft")
 		}
 	}
 
@@ -558,7 +685,7 @@ func (tb *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 			}
 		}
 		if displayCS == "" {
-			displayCS = fmt.Sprintf("#%d", i)
+			displayCS = fmt.Sprintf("#%d", i+1)
 		}
 		imgui.TextColored(imgui.Vec4{0.7, 0.7, 0.7, 1},
 			fmt.Sprintf("  %s: %.0fnm%s/%s/%.0fkts%s%s", displayCS,
@@ -608,6 +735,20 @@ func (tb *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 	}
 
 	imgui.EndGroup()
+
+	// Draw a green border around the active test case.
+	if tb.spawnedTest == tc {
+		min := imgui.ItemRectMin()
+		max := imgui.ItemRectMax()
+		pad := imgui.Vec2{4, 2}
+		winPos := imgui.WindowPos()
+		winWidth := imgui.WindowSize().X
+		imgui.WindowDrawList().AddRectV(
+			imgui.Vec2{winPos.X + pad.X, min.Y - pad.Y},
+			imgui.Vec2{winPos.X + winWidth - pad.X, max.Y + pad.Y},
+			imgui.ColorU32Vec4(imgui.Vec4{0, 1, 0, 0.6}), 3, 0, 1)
+	}
+
 	imgui.Separator()
 }
 
@@ -642,14 +783,14 @@ func (tb *TestBench) generateCallsign(airport string, existingCallsigns []av.ADS
 
 func (tb *TestBench) spawnAircraft(tc *TestBenchCase) {
 	if tb.selectedApproach < 0 || tb.selectedApproach >= len(tb.approaches) {
-		tb.statusMessage = "No approach selected"
+		tb.setError("No approach selected")
 		return
 	}
 
 	apInfo := tb.approaches[tb.selectedApproach]
 	airport := tb.client.State.Airports[apInfo.airport]
 	if airport == nil {
-		tb.statusMessage = "Airport not found: " + apInfo.airport
+		tb.setError("Airport not found: " + apInfo.airport)
 		return
 	}
 
@@ -671,7 +812,15 @@ func (tb *TestBench) spawnAircraft(tc *TestBenchCase) {
 	tb.spawnedTest = tc
 	tb.callsignMap = make(map[int]string)
 	tb.headingMap = make(map[int]float32)
+	tb.altitudeMap = make(map[int]float32)
 	tb.resolveRuntimePlaceholders(apInfo)
+
+	if msg := tb.validateScenario(tc, apInfo); msg != "" {
+		tb.spawnedTest = nil
+		tb.setError(msg)
+		return
+	}
+
 	var existingCallsigns []av.ADSBCallsign
 	for i, spec := range tc.Aircraft {
 		acType := spec.AircraftType
@@ -681,7 +830,7 @@ func (tb *TestBench) spawnAircraft(tc *TestBenchCase) {
 			var genType string
 			callsign, genType = tb.generateCallsign(apInfo.airport, existingCallsigns)
 			if callsign == "" {
-				tb.statusMessage = "Failed to generate callsign — no matching airlines"
+				tb.setError("Failed to generate callsign — no matching airlines")
 				return
 			}
 			if acType == "" {
@@ -693,10 +842,11 @@ func (tb *TestBench) spawnAircraft(tc *TestBenchCase) {
 
 		ac, err := tb.buildAircraftWithCallsign(spec, callsign, acType, airport, apInfo, rwyHeading, nmPerLong, magVar, ctrlFreq)
 		if err != nil {
-			tb.statusMessage = fmt.Sprintf("Aircraft #%d: %v", i, err)
+			tb.setError(fmt.Sprintf("Aircraft #%d: %v", i, err))
 			return
 		}
 		tb.headingMap[i] = ac.Nav.FlightState.Heading
+		tb.altitudeMap[i] = ac.Nav.FlightState.Altitude
 		tb.client.LaunchArrivalOverflight(ac)
 		tb.spawnedAircraft = append(tb.spawnedAircraft, ac)
 		tb.lg.Infof("test bench: launched %s at %.1fnm/%.0fft", callsign, spec.DistanceNM, ac.Nav.FlightState.Altitude)
@@ -704,7 +854,7 @@ func (tb *TestBench) spawnAircraft(tc *TestBenchCase) {
 
 	tb.activateSteps(tc)
 
-	tb.statusMessage = fmt.Sprintf("Spawned %d aircraft for \"%s\"", len(tc.Aircraft), tc.Label)
+	tb.setStatus(fmt.Sprintf("Spawned %d aircraft for \"%s\"", len(tc.Aircraft), tc.Label))
 }
 
 func (tb *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, callsign, acType string,
@@ -733,6 +883,13 @@ func (tb *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 	} else if spec.StarWaypoints && len(tb.starWaypoints) > 0 {
 		// Default to positioning near the first STAR waypoint.
 		refPos = tb.starWaypoints[0].Location
+	}
+
+	// Cap altitude below the ceiling so aircraft stay in visual conditions.
+	if metar, ok := tb.client.State.METAR[apInfo.airport]; ok {
+		if ceil, err := metar.Ceiling(); err == nil && altitude > float32(ceil-500) {
+			altitude = float32(ceil - 500)
+		}
 	}
 
 	// Determine the bearing from reference to place the aircraft.
@@ -823,16 +980,18 @@ func (tb *TestBench) spawnSTAR(tc *TestBenchCase) {
 		airport = tb.client.State.PrimaryAirport
 	}
 
+	tb.resetTestState()
+
 	var ac sim.Aircraft
 	tb.client.CreateArrival(tc.Group, airport, &ac, func(err error) {
 		if err != nil {
 			tb.lg.Warnf("test bench: CreateArrival %s: %v", tc.Group, err)
-			tb.statusMessage = fmt.Sprintf("STAR spawn failed: %v", err)
+			tb.setError(fmt.Sprintf("STAR spawn failed: %v", err))
 		} else {
 			tb.spawnedAircraft = append(tb.spawnedAircraft, ac)
 			tb.spawnedTest = tc
 			tb.lg.Infof("test bench: STAR %s spawned for %s (%s)", tc.Group, airport, ac.ADSBCallsign)
-			tb.statusMessage = fmt.Sprintf("Spawned STAR %s at %s (%s)", tc.Group, airport, ac.ADSBCallsign)
+			tb.setStatus(fmt.Sprintf("Spawned STAR %s at %s (%s)", tc.Group, airport, ac.ADSBCallsign))
 			tb.activateSteps(tc)
 		}
 	})
@@ -855,21 +1014,33 @@ func (tb *TestBench) spawnDeparture(tc *TestBenchCase) {
 				category = d.category
 			}
 		} else {
-			tb.statusMessage = "No departure runway selected"
+			tb.setError("No departure runway selected")
 			return
 		}
 	}
 	if airport == "" || runway == "" {
-		tb.statusMessage = "No departure runway selected"
+		tb.setError("No departure runway selected")
 		return
 	}
+
+	tb.resetTestState()
 
 	var ac sim.Aircraft
 	tb.client.CreateDeparture(airport, runway, category, av.FlightRulesIFR, &ac, func(err error) {
 		if err != nil {
 			tb.lg.Warnf("test bench: CreateDeparture: %v", err)
-			tb.statusMessage = fmt.Sprintf("Departure spawn failed: %v", err)
+			tb.setError(fmt.Sprintf("Departure spawn failed: %v", err))
 		} else {
+			// Check if the scenario needs CVS but the departure has no
+			// SID waypoints (e.g. radar vectors departure).
+			if tc.usesCVS() {
+				hasSIDWaypoints := len(ac.Nav.Waypoints) > 0 && ac.Nav.Waypoints[0].OnSID()
+				if !hasSIDWaypoints {
+					tb.setError("Spawned departure has no SID waypoints — CVS won't work. Try a different runway/category.")
+					return
+				}
+			}
+
 			// Launch the departure immediately (same pattern as LaunchControl).
 			// CreateDeparture builds the aircraft; LaunchDeparture puts it on scope.
 			tb.client.LaunchDeparture(ac, runway)
@@ -877,7 +1048,7 @@ func (tb *TestBench) spawnDeparture(tc *TestBenchCase) {
 			tb.spawnedAircraft = append(tb.spawnedAircraft, ac)
 			tb.spawnedTest = tc
 			tb.lg.Infof("test bench: departure %s launched at %s rwy %s", ac.ADSBCallsign, airport, runway)
-			tb.statusMessage = fmt.Sprintf("Launched departure %s at %s rwy %s", ac.ADSBCallsign, airport, runway)
+			tb.setStatus(fmt.Sprintf("Launched departure %s at %s rwy %s", ac.ADSBCallsign, airport, runway))
 			tb.activateSteps(tc)
 		}
 	})
@@ -950,6 +1121,8 @@ func matchWaitFor(waitFor string, event sim.Event) bool {
 		return strings.Contains(text, "traffic in sight") ||
 			strings.Contains(text, "we've got the traffic") ||
 			strings.Contains(text, "we have the traffic") ||
+			strings.Contains(text, "we see the traffic") ||
+			strings.Contains(text, "got the traffic") ||
 			strings.Contains(text, "looking") ||
 			strings.Contains(text, "negative contact") ||
 			strings.Contains(text, "in the clouds") ||
@@ -957,7 +1130,9 @@ func matchWaitFor(waitFor string, event sim.Event) bool {
 	case "traffic_in_sight":
 		return strings.Contains(text, "traffic in sight") ||
 			strings.Contains(text, "we've got the traffic") ||
-			strings.Contains(text, "we have the traffic")
+			strings.Contains(text, "we have the traffic") ||
+			strings.Contains(text, "we see the traffic") ||
+			strings.Contains(text, "got the traffic")
 	}
 	return false
 }
@@ -978,6 +1153,7 @@ func (tb *TestBench) processEvents() {
 		if !tb.isTestCallsign(tc, event.ADSBCallsign) {
 			continue
 		}
+
 		if tb.currentStep >= len(tc.Steps) {
 			continue
 		}
@@ -988,6 +1164,14 @@ func (tb *TestBench) processEvents() {
 		} else {
 			tb.processCommandStep(tc, step, event)
 		}
+
+		// After a step passes, speculatively try matching subsequent
+		// steps against the same event text. Multi-command input
+		// produces a single combined readback, so one event may
+		// satisfy multiple steps. Only mark passes here — if the
+		// text doesn't match, leave the step pending (the user
+		// hasn't issued that command yet).
+		tb.speculativeAdvance(tc, event)
 	}
 }
 
@@ -1030,50 +1214,28 @@ func (tb *TestBench) processCommandStep(tc *TestBenchCase, step TestBenchStep, e
 	}
 
 	// If the command step has no readback expectations, it's a
-	// "fire and forget" step — pass the readback through so the
-	// next step (e.g. wait_for) can evaluate it.
+	// "fire and forget" step — advance immediately so the outer
+	// loop can re-evaluate this event against the next step.
 	if len(step.ExpectReadback) == 0 && step.RejectReadback == "" {
 		tb.stepResults[tb.currentStep] = "pass"
 		tb.advanceStep()
-		// Re-evaluate this same event against the new current step.
-		if tb.currentStep < len(tc.Steps) {
-			next := tb.resolveStep(tc, tc.Steps[tb.currentStep])
-			if next.WaitFor != "" && matchWaitFor(next.WaitFor, event) {
-				tb.stepResults[tb.currentStep] = "pass"
-				tb.lastReadback = event.WrittenText
-				tb.lastReadbackCS = event.ADSBCallsign
-				tb.advanceStep()
-			}
-		}
 		return
 	}
 
 	// Verify readback against WrittenText (the structured form,
-	// not the randomized spoken form). Pass if any of the expected
-	// strings match.
-	pass := false
-	for _, expect := range step.ExpectReadback {
-		if strings.Contains(text, strings.ToLower(expect)) {
-			pass = true
-			break
-		}
-	}
-	if len(step.ExpectReadback) == 0 {
-		pass = true
-	}
-	if step.RejectReadback != "" && strings.Contains(text, strings.ToLower(step.RejectReadback)) {
-		pass = false
-	}
+	// not the randomized spoken form).
+	result := matchReadback(text, step)
 
-	tb.lg.Debugf("test bench: step %d cmd=%q expect=%v reject=%q written=%q pass=%v",
-		tb.currentStep, step.Command, step.ExpectReadback, step.RejectReadback, event.WrittenText, pass)
+	tb.lg.Debugf("test bench: step %d cmd=%q expect=%v reject=%q written=%q result=%s",
+		tb.currentStep, step.Command, step.ExpectReadback, step.RejectReadback, event.WrittenText, result)
 
-	if pass {
-		tb.stepResults[tb.currentStep] = "pass"
-	} else {
-		tb.stepResults[tb.currentStep] = "fail"
+	if result != "" {
+		tb.stepResults[tb.currentStep] = result
+		tb.advanceStep()
 	}
-	tb.advanceStep()
+	// Otherwise leave the step pending. Non-matching readbacks from
+	// other events (e.g. approach clearance requests) shouldn't fail
+	// a step whose command hasn't been issued yet.
 }
 
 func (tb *TestBench) activateSteps(tc *TestBenchCase) {
@@ -1088,4 +1250,61 @@ func (tb *TestBench) activateSteps(tc *TestBenchCase) {
 
 func (tb *TestBench) advanceStep() {
 	tb.currentStep++
+}
+
+// matchReadback checks whether text matches a step's readback expectations.
+// Returns "pass" if any expected string is found (and reject is absent),
+// "fail" if the reject string is found, or "" if nothing matched.
+func matchReadback(text string, step TestBenchStep) string {
+	pass := len(step.ExpectReadback) == 0
+	for _, expect := range step.ExpectReadback {
+		if strings.Contains(text, strings.ToLower(expect)) {
+			pass = true
+			break
+		}
+	}
+	rejected := step.RejectReadback != "" && strings.Contains(text, strings.ToLower(step.RejectReadback))
+	if rejected {
+		return "fail"
+	}
+	if pass {
+		return "pass"
+	}
+	return ""
+}
+
+// speculativeAdvance tries to advance through subsequent steps using the
+// same event, but only marks passes — never failures. This handles
+// multi-command readbacks where one event contains text for multiple commands.
+func (tb *TestBench) speculativeAdvance(tc *TestBenchCase, event sim.Event) {
+	for tb.currentStep < len(tc.Steps) {
+		// Only advance past a step if the previous one passed. When
+		// currentStep == 0, the first step hasn't been evaluated by
+		// processEvents yet, so we must not skip it here.
+		if tb.currentStep == 0 || tb.stepResults[tb.currentStep-1] != "pass" {
+			break
+		}
+
+		step := tb.resolveStep(tc, tc.Steps[tb.currentStep])
+
+		if step.WaitFor != "" {
+			// Try wait_for conditions.
+			if matchWaitFor(step.WaitFor, event) {
+				tb.stepResults[tb.currentStep] = "pass"
+				tb.lastReadback = event.WrittenText
+				tb.lastReadbackCS = event.ADSBCallsign
+				tb.advanceStep()
+			} else {
+				break
+			}
+		} else if len(step.ExpectReadback) == 0 && step.RejectReadback == "" {
+			// Fire-and-forget: advance unconditionally.
+			tb.stepResults[tb.currentStep] = "pass"
+			tb.advanceStep()
+		} else {
+			// Command step with expected readback — the command hasn't
+			// been issued yet so don't try to match this event's text.
+			break
+		}
+	}
 }
