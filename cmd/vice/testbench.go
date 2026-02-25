@@ -21,6 +21,9 @@ import (
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
+///////////////////////////////////////////////////////////////////////////
+// Types
+
 // TestBenchConfig maps section names to test cases.
 type TestBenchConfig map[string][]TestBenchCase
 
@@ -98,9 +101,11 @@ type TestBench struct {
 	// Callsign mapping: spec index -> generated callsign.
 	// Populated at spawn time so steps can reference aircraft by index.
 	callsignMap map[int]string
+	headingMap  map[int]float32 // spec index -> spawned heading
 
 	// Runtime-resolved placeholders, populated at spawn time.
 	holdFix       string           // randomly selected fix with a published hold
+	holdFixName   string           // written form of holdFix (e.g. navaid full name)
 	starFix       string           // first fix of the randomly selected STAR
 	starWaypoints av.WaypointArray // waypoints from the selected STAR transition
 
@@ -125,132 +130,8 @@ type debugDepartureInfo struct {
 	category string
 }
 
-// approachFixNames returns the IAF, IF, and FAF fix names from the first
-// route of the given approach that defines them.
-func approachFixNames(ap *av.Approach) (iaf, ifFix, faf string) {
-	for _, route := range ap.Waypoints {
-		for _, wp := range route {
-			if wp.IAF() && iaf == "" {
-				iaf = wp.Fix
-			}
-			if wp.IF() && ifFix == "" {
-				ifFix = wp.Fix
-			}
-			if wp.FAF() && faf == "" {
-				faf = wp.Fix
-			}
-		}
-		if iaf != "" || ifFix != "" || faf != "" {
-			return
-		}
-	}
-	return
-}
-
-// resolveStep substitutes placeholders in a step's strings with values
-// from the currently selected approach and runtime state:
-//
-//	{approach}      → approach ID (e.g. "I2L")
-//	{approach_name} → full name (e.g. "ILS Runway 22L")
-//	{iaf}           → Initial Approach Fix name
-//	{if}            → Intermediate Fix name
-//	{faf}           → Final Approach Fix name
-//	{hold_fix}      → randomly selected fix with a published hold
-//	{star_fix}      → first fix of a randomly selected STAR
-func (ds *TestBench) resolveStep(tc *TestBenchCase, step TestBenchStep) TestBenchStep {
-	if ds.selectedApproach < 0 || ds.selectedApproach >= len(ds.approaches) {
-		return step
-	}
-	ap := ds.approaches[ds.selectedApproach]
-	iaf, ifFix, faf := approachFixNames(ap.approach)
-
-	r := strings.NewReplacer(
-		"{approach}", ap.approachId,
-		"{approach_name}", ap.approach.FullName,
-		"{iaf}", iaf,
-		"{if}", ifFix,
-		"{faf}", faf,
-		"{hold_fix}", ds.holdFix,
-		"{star_fix}", ds.starFix,
-	)
-	step.Command = r.Replace(step.Command)
-	for i, s := range step.ExpectReadback {
-		step.ExpectReadback[i] = r.Replace(s)
-	}
-	step.RejectReadback = r.Replace(step.RejectReadback)
-
-	// Resolve callsign index references like "{0}", "{1}" to the
-	// generated callsign for that aircraft spec index.
-	if ds.spawnedTest == tc && ds.callsignMap != nil {
-		step.Callsign = ds.resolveCallsignRef(step.Callsign)
-	}
-
-	return step
-}
-
-// resolveCallsignRef maps a callsign reference to the actual spawned callsign.
-// It handles index references like "{0}", "{1}" for multi-aircraft tests.
-// An empty string passes through unchanged (defaultCallsign handles that case).
-func (ds *TestBench) resolveCallsignRef(ref string) string {
-	if ref == "" {
-		return ""
-	}
-	// Try "{N}" format.
-	if len(ref) >= 3 && ref[0] == '{' && ref[len(ref)-1] == '}' {
-		inner := ref[1 : len(ref)-1]
-		idx := 0
-		for _, ch := range inner {
-			if ch < '0' || ch > '9' {
-				return ref // not a numeric index
-			}
-			idx = idx*10 + int(ch-'0')
-		}
-		if cs, ok := ds.callsignMap[idx]; ok {
-			return cs
-		}
-	}
-	return ref
-}
-
-// resolveRuntimePlaceholders picks random fixes for {hold_fix} and {star_fix}
-// based on the selected approach's airport.
-func (ds *TestBench) resolveRuntimePlaceholders(apInfo debugApproachInfo) {
-	ds.holdFix = ""
-	ds.starFix = ""
-	ds.starWaypoints = nil
-
-	r := rand.Make()
-
-	// Pick a random fix with a published hold near this airport.
-	if holds := av.DB.TerminalHolds[apInfo.airport]; len(holds) > 0 {
-		fixes := util.SortedMapKeys(holds)
-		ds.holdFix = fixes[r.Intn(len(fixes))]
-	} else {
-		// Fall back to enroute holds.
-		fixes := util.SortedMapKeys(av.DB.EnrouteHolds)
-		if len(fixes) > 0 {
-			ds.holdFix = fixes[r.Intn(len(fixes))]
-		}
-	}
-
-	// Pick a random STAR transition at this airport.
-	dbAirport := av.DB.Airports[apInfo.airport]
-	starNames := util.SortedMapKeys(dbAirport.STARs)
-	if len(starNames) > 0 {
-		star := dbAirport.STARs[starNames[r.Intn(len(starNames))]]
-		trNames := util.SortedMapKeys(star.Transitions)
-		if len(trNames) > 0 {
-			wps := star.Transitions[trNames[r.Intn(len(trNames))]]
-			ds.starWaypoints = util.DuplicateSlice(wps)
-			for i := range ds.starWaypoints {
-				ds.starWaypoints[i].SetOnSTAR(true)
-			}
-			if len(ds.starWaypoints) > 0 {
-				ds.starFix = ds.starWaypoints[0].Fix
-			}
-		}
-	}
-}
+///////////////////////////////////////////////////////////////////////////
+// Constructor and setup
 
 func NewTestBench(c *client.ControlClient, es *sim.EventStream, lg *log.Logger) *TestBench {
 	ds := &TestBench{
@@ -313,6 +194,210 @@ func (ds *TestBench) resetTestState() {
 	ds.lastReadbackCS = ""
 	ds.callsignMap = nil
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Placeholder resolution
+
+// approachFixNames returns the IAF, IF, and FAF fix names from the first
+// route of the given approach that defines them.
+func approachFixNames(ap *av.Approach) (iaf, ifFix, faf string) {
+	for _, route := range ap.Waypoints {
+		for _, wp := range route {
+			if wp.IAF() && iaf == "" {
+				iaf = wp.Fix
+			}
+			if wp.IF() && ifFix == "" {
+				ifFix = wp.Fix
+			}
+			if wp.FAF() && faf == "" {
+				faf = wp.Fix
+			}
+		}
+		if iaf != "" || ifFix != "" || faf != "" {
+			return
+		}
+	}
+	return
+}
+
+// resolveStep substitutes placeholders in a step's strings with values
+// from the currently selected approach and runtime state:
+//
+//	{approach}      → approach ID (e.g. "I2L")
+//	{approach_name} → full name (e.g. "ILS Runway 22L")
+//	{iaf}           → Initial Approach Fix name
+//	{if}            → Intermediate Fix name
+//	{faf}           → Final Approach Fix name
+//	{hold_fix}      → fix ID for commands, written name for readbacks
+//	{star_fix}      → first fix of a randomly selected STAR
+func (ds *TestBench) resolveStep(tc *TestBenchCase, step TestBenchStep) TestBenchStep {
+	if ds.selectedApproach < 0 || ds.selectedApproach >= len(ds.approaches) {
+		return step
+	}
+	ap := ds.approaches[ds.selectedApproach]
+	iaf, ifFix, faf := approachFixNames(ap.approach)
+
+	// Commands use the fix ID (e.g. "LENDY") for the command parser;
+	// readbacks use the written name (e.g. "Lendy") which is what
+	// FixSnippetFormatter produces for pilot readbacks.
+	r := strings.NewReplacer(
+		"{approach_name}", ap.approach.FullName,
+		"{approach}", ap.approachId,
+		"{iaf}", iaf,
+		"{if}", ifFix,
+		"{faf}", faf,
+		"{star_fix}", ds.starFix,
+	)
+	step.Command = strings.ReplaceAll(r.Replace(step.Command), "{hold_fix}", ds.holdFix)
+	for i, s := range step.ExpectReadback {
+		step.ExpectReadback[i] = strings.ReplaceAll(r.Replace(s), "{hold_fix}", ds.holdFixName)
+	}
+	step.RejectReadback = strings.ReplaceAll(r.Replace(step.RejectReadback), "{hold_fix}", ds.holdFixName)
+
+	// Resolve per-aircraft index references like "{0}", "{hdg0}" to the
+	// generated callsign or heading for that aircraft spec index.
+	if ds.spawnedTest == tc && ds.callsignMap != nil {
+		step.Callsign = ds.resolveCallsignRef(step.Callsign)
+		// Replace {hdgN} with the 3-digit zero-padded heading for aircraft N.
+		for idx, hdg := range ds.headingMap {
+			placeholder := fmt.Sprintf("{hdg%d}", idx)
+			formatted := fmt.Sprintf("%03d", int(hdg+0.5)%360)
+			step.Command = strings.ReplaceAll(step.Command, placeholder, formatted)
+			for i, s := range step.ExpectReadback {
+				step.ExpectReadback[i] = strings.ReplaceAll(s, placeholder, formatted)
+			}
+			step.RejectReadback = strings.ReplaceAll(step.RejectReadback, placeholder, formatted)
+		}
+	}
+
+	return step
+}
+
+// resolveCallsignRef maps a callsign reference to the actual spawned callsign.
+// It handles index references like "{0}", "{1}" for multi-aircraft tests.
+// An empty string passes through unchanged (defaultCallsign handles that case).
+func (ds *TestBench) resolveCallsignRef(ref string) string {
+	if ref == "" {
+		return ""
+	}
+	// Try "{N}" format.
+	if len(ref) >= 3 && ref[0] == '{' && ref[len(ref)-1] == '}' {
+		inner := ref[1 : len(ref)-1]
+		idx := 0
+		for _, ch := range inner {
+			if ch < '0' || ch > '9' {
+				return ref // not a numeric index
+			}
+			idx = idx*10 + int(ch-'0')
+		}
+		if cs, ok := ds.callsignMap[idx]; ok {
+			return cs
+		}
+	}
+	return ref
+}
+
+// resolveFixRef resolves a fix name (possibly a placeholder like "{if}")
+// to its location and altitude restriction from the selected approach.
+func (ds *TestBench) resolveFixRef(name string, apInfo debugApproachInfo) (loc math.Point2LL, alt float32, ok bool) {
+	// Resolve placeholders.
+	iaf, ifFix, faf := approachFixNames(apInfo.approach)
+	name = strings.NewReplacer(
+		"{iaf}", iaf, "{if}", ifFix, "{faf}", faf,
+		"{hold_fix}", ds.holdFix, "{star_fix}", ds.starFix,
+	).Replace(name)
+
+	// Find the fix in the approach waypoints.
+	for _, route := range apInfo.approach.Waypoints {
+		for _, wp := range route {
+			if wp.Fix == name {
+				var fixAlt float32
+				if ar := wp.AltitudeRestriction(); ar != nil {
+					fixAlt = ar.Range[0]
+				}
+				return wp.Location, fixAlt, true
+			}
+		}
+	}
+
+	// Fall back to the global waypoint database.
+	if p, found := av.DB.LookupWaypoint(name); found {
+		return p, 0, true
+	}
+	return math.Point2LL{}, 0, false
+}
+
+// fixWrittenName returns the written form of a fix name, matching the
+// logic in FixSnippetFormatter.Written: navaid full name if available,
+// otherwise the fix ID itself.
+func fixWrittenName(fix string) string {
+	if aid, ok := av.DB.Navaids[fix]; ok {
+		return util.StopShouting(aid.Name)
+	}
+	return fix
+}
+
+// resolveRuntimePlaceholders picks random fixes for {hold_fix} and {star_fix}
+// based on the selected approach's airport.
+func (ds *TestBench) resolveRuntimePlaceholders(apInfo debugApproachInfo) {
+	ds.holdFix = ""
+	ds.holdFixName = ""
+	ds.starFix = ""
+	ds.starWaypoints = nil
+
+	r := rand.Make()
+
+	// Pick a random published hold near this airport. A fix has a published
+	// hold if it appears in EnrouteHolds (which is what HoldAtFix validates).
+	airportLoc := av.DB.Airports[apInfo.airport].Location
+	var holdFixes []string
+	for fix := range av.DB.EnrouteHolds {
+		if loc, ok := av.DB.LookupWaypoint(fix); ok && math.NMDistance2LL(airportLoc, loc) <= 25 {
+			holdFixes = append(holdFixes, fix)
+		}
+	}
+	if len(holdFixes) > 0 {
+		ds.holdFix = holdFixes[r.Intn(len(holdFixes))]
+		ds.holdFixName = fixWrittenName(ds.holdFix)
+	}
+
+	// Pick a random STAR that's active in the current scenario. Use the
+	// arrival's own waypoints if available (scoped to the scenario's
+	// airspace); otherwise look up the STAR in the DB.
+	dbAirport := av.DB.Airports[apInfo.airport]
+	var starWaypointSets []av.WaypointArray
+	for _, flow := range ds.client.State.InboundFlows {
+		for _, arr := range flow.Arrivals {
+			if arr.STAR == "" {
+				continue
+			}
+			// Only consider arrivals serving the selected airport.
+			if _, ok := arr.Airlines[apInfo.airport]; !ok {
+				continue
+			}
+			if len(arr.Waypoints) > 0 {
+				starWaypointSets = append(starWaypointSets, arr.Waypoints)
+			} else if star, ok := dbAirport.STARs[arr.STAR]; ok {
+				for _, wps := range star.Transitions {
+					starWaypointSets = append(starWaypointSets, wps)
+				}
+			}
+		}
+	}
+	if len(starWaypointSets) > 0 {
+		wps := starWaypointSets[r.Intn(len(starWaypointSets))]
+		ds.starWaypoints = util.DuplicateSlice(wps)
+		for i := range ds.starWaypoints {
+			ds.starWaypoints[i].SetOnSTAR(true)
+		}
+		if len(ds.starWaypoints) > 0 {
+			ds.starFix = ds.starWaypoints[0].Fix
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// UI drawing
 
 func (ds *TestBench) Draw(show *bool, p platform.Platform) {
 	// Process events for readback tracking
@@ -514,6 +599,9 @@ func (ds *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 	imgui.Separator()
 }
 
+///////////////////////////////////////////////////////////////////////////
+// Spawning
+
 // generateCallsign samples a random arrival airline from the scenario's
 // inbound flows for the given airport and returns a realistic callsign and
 // aircraft type (e.g. "AAL1234", "B738").
@@ -570,6 +658,7 @@ func (ds *TestBench) spawnAircraft(tc *TestBenchCase) {
 	ds.spawnedAircraft = nil
 	ds.spawnedTest = tc
 	ds.callsignMap = make(map[int]string)
+	ds.headingMap = make(map[int]float32)
 	ds.resolveRuntimePlaceholders(apInfo)
 	var existingCallsigns []av.ADSBCallsign
 	for i, spec := range tc.Aircraft {
@@ -595,6 +684,7 @@ func (ds *TestBench) spawnAircraft(tc *TestBenchCase) {
 			ds.statusMessage = fmt.Sprintf("Aircraft #%d: %v", i, err)
 			return
 		}
+		ds.headingMap[i] = ac.Nav.FlightState.Heading
 		ds.client.LaunchArrivalOverflight(ac)
 		ds.spawnedAircraft = append(ds.spawnedAircraft, ac)
 		ds.lg.Infof("test bench: launched %s at %.1fnm/%.0fft", callsign, spec.DistanceNM, ac.Nav.FlightState.Altitude)
@@ -603,36 +693,6 @@ func (ds *TestBench) spawnAircraft(tc *TestBenchCase) {
 	ds.activateSteps(tc)
 
 	ds.statusMessage = fmt.Sprintf("Spawned %d aircraft for \"%s\"", len(tc.Aircraft), tc.Label)
-}
-
-// resolveFixRef resolves a fix name (possibly a placeholder like "{if}")
-// to its location and altitude restriction from the selected approach.
-func (ds *TestBench) resolveFixRef(name string, apInfo debugApproachInfo) (loc math.Point2LL, alt float32, ok bool) {
-	// Resolve placeholders.
-	iaf, ifFix, faf := approachFixNames(apInfo.approach)
-	name = strings.NewReplacer(
-		"{iaf}", iaf, "{if}", ifFix, "{faf}", faf,
-		"{hold_fix}", ds.holdFix, "{star_fix}", ds.starFix,
-	).Replace(name)
-
-	// Find the fix in the approach waypoints.
-	for _, route := range apInfo.approach.Waypoints {
-		for _, wp := range route {
-			if wp.Fix == name {
-				var fixAlt float32
-				if ar := wp.AltitudeRestriction(); ar != nil {
-					fixAlt = ar.Range[0]
-				}
-				return wp.Location, fixAlt, true
-			}
-		}
-	}
-
-	// Fall back to the global waypoint database.
-	if p, found := av.DB.LookupWaypoint(name); found {
-		return p, 0, true
-	}
-	return math.Point2LL{}, 0, false
 }
 
 func (ds *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, callsign, acType string,
@@ -811,6 +871,9 @@ func (ds *TestBench) spawnDeparture(tc *TestBenchCase) {
 	})
 }
 
+///////////////////////////////////////////////////////////////////////////
+// Event processing
+
 // isTestCallsign checks whether the given callsign belongs to one of the
 // test case's aircraft — either from the callsign map, JSON spec, or sim-spawned aircraft.
 func (ds *TestBench) isTestCallsign(tc *TestBenchCase, cs av.ADSBCallsign) bool {
@@ -871,6 +934,14 @@ func matchWaitFor(waitFor string, event sim.Event) bool {
 	case "go_around":
 		return strings.Contains(text, "going around") ||
 			strings.Contains(text, "on the go")
+	case "traffic_response":
+		return strings.Contains(text, "traffic in sight") ||
+			strings.Contains(text, "we've got the traffic") ||
+			strings.Contains(text, "we have the traffic") ||
+			strings.Contains(text, "looking") ||
+			strings.Contains(text, "negative contact") ||
+			strings.Contains(text, "in the clouds") ||
+			strings.Contains(text, "imc")
 	case "traffic_in_sight":
 		return strings.Contains(text, "traffic in sight") ||
 			strings.Contains(text, "we've got the traffic") ||

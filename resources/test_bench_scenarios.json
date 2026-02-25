@@ -85,6 +85,16 @@
       "steps": [
         {"command": "SPRES", "expect_readback": ["maintain present speed", "present speed", "maintaining"]}
       ]
+    },
+    {
+      "label": "Speed until fix",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+      ],
+      "steps": [
+        {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "S180/U{faf}", "expect_readback": "until"}
+      ]
     }
   ],
   "Altitude + Speed Sequencing": [
@@ -145,18 +155,19 @@
     {
       "label": "Intercept localizer",
       "aircraft": [
-        {"distance_nm": 12, "relative_to": "{if}", "speed": 210, "altitude": 3000,
-         "bearing_offset": 30, "heading_offset": -30}
+        {"distance_nm": 5, "relative_to": "{faf}", "speed": 210, "altitude": 3000,
+         "bearing_offset": 40, "heading_offset": 30}
       ],
       "steps": [
         {"command": "E{approach}", "expect_readback": "{approach_name}"},
+        {"command": "H{hdg0}", "expect_readback": "{hdg0}"},
         {"command": "I", "expect_readback": "intercepting"}
       ]
     },
     {
       "label": "At fix, intercept localizer",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 210, "altitude": 4000}
+        {"distance_nm": 8, "relative_to": "{if}", "speed": 210, "altitude": 4000}
       ],
       "steps": [
         {"command": "E{approach}", "expect_readback": "{approach_name}"},
@@ -167,7 +178,7 @@
     {
       "label": "At fix, cleared approach",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 210, "altitude": 4000}
+        {"distance_nm": 8, "relative_to": "{if}", "speed": 210, "altitude": 4000}
       ],
       "steps": [
         {"command": "E{approach}", "expect_readback": "{approach_name}"},
@@ -185,18 +196,6 @@
       ],
       "steps": [
         {"command": "DVS", "expect_readback": "descend via the STAR"}
-      ]
-    }
-  ],
-  "Speed Until": [
-    {
-      "label": "Speed until fix",
-      "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
-      ],
-      "steps": [
-        {"command": "E{approach}", "expect_readback": "{approach_name}"},
-        {"command": "S180/U{faf}", "expect_readback": "until"}
       ]
     }
   ],
@@ -245,22 +244,42 @@
   ],
   "Traffic + Visual Separation": [
     {
-      "label": "Traffic advisory",
+      "label": "Traffic advisory, in sight",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000}
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000,
+         "traffic_in_sight": true},
+        {"distance_nm": 12, "relative_to": "{if}", "speed": 210, "altitude": 7000,
+         "bearing_offset": 10, "note": "traffic target"}
       ],
       "steps": [
-        {"command": "TRAFFIC/12/3/70", "expect_readback": ["looking", "traffic in sight", "we have the traffic", "in the clouds", "IMC"]}
+        {"callsign": "{0}", "command": "TRAFFIC/12/3/70"},
+        {"wait_for": "traffic_in_sight"}
       ]
     },
     {
-      "label": "Visual separation (traffic already in sight)",
+      "label": "Traffic advisory, negative contact",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000,
-         "traffic_in_sight": true}
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000},
+        {"distance_nm": 7, "relative_to": "{if}", "speed": 210, "altitude": 5000,
+         "bearing_offset": 30, "note": "traffic target"}
       ],
       "steps": [
-        {"command": "VISSEP", "expect_readback": ["visual separation", "maintain visual"]}
+        {"callsign": "{0}", "command": "TRAFFIC/2/8/50"},
+        {"wait_for": "traffic_response"}
+      ]
+    },
+    {
+      "label": "Traffic in sight, visual separation",
+      "aircraft": [
+        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000,
+         "traffic_in_sight": true},
+        {"distance_nm": 12, "relative_to": "{if}", "speed": 210, "altitude": 7000,
+         "bearing_offset": 10, "note": "traffic target"}
+      ],
+      "steps": [
+        {"callsign": "{0}", "command": "TRAFFIC/12/3/70"},
+        {"wait_for": "traffic_in_sight"},
+        {"callsign": "{0}", "command": "VISSEP", "expect_readback": ["visual separation", "maintain visual"]}
       ]
     }
   ],
