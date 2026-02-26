@@ -185,9 +185,6 @@
         },
         "center": "N038.23.59.181,W113.02.36.719",
         "range": 80,
-        "stars_maps": [
-            ""
-        ],
         "radar_sites": {
             "B": {
                 "char": "B",

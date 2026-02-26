@@ -101,13 +101,17 @@
             "JLPNO": "JLP",
             "FLAVA": "FLA"
         },
-        "stars_maps": [
-            "A001 East Flow",
-            "A002 West Flow",
-            "A011 ABQ MVA",
-            "A041 Class C"
-        ],
-        "video_map_file": "videomaps/ZAB-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZAB-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "A001 East Flow",
+                    "A002 West Flow",
+                    "A011 ABQ MVA",
+                    "A041 Class C"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

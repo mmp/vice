@@ -59,28 +59,6 @@
         },
         "force_ql_self": true,
         "allow_long_scratchpad": true,
-        "stars_maps": [
-            "BUF-019 (23 GPS)",
-            "BUF-020 (32 GPS)",
-            "BUF-018 (14 GPS)",
-            "BUF-017 (5 GPS)",
-            "BUF-016 (SUA)",
-            "BUF-015 (IAG TACAN 28R)",
-            "BUF-014 (IAG RNAV 28)",
-            "BUF-013 (BUF FAC)",
-            "BUF-012 (ERIE MVA)",
-            "BUF-011 (ERIE TRSA)",
-            "BUF-010 (CLASS D)",
-            "BUF-009 (CLASS C)",
-            "BUF-008 (ZOB)",
-            "BUF-007 (VFR)",
-            "BUF-006 (MVA)",
-            "BUF-005 (ERIE RVM)",
-            "BUF-004 (32 FLOW)",
-            "BUF-003 (23 FLOW)",
-            "BUF-002 (14 FLOW)",
-            "BUF-001 (5 FLOW)"
-        ],
         "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
         "center": "KBUF",
         "filters": {
@@ -212,6 +190,32 @@
                     "from": "ZOB"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "BUF-019 (23 GPS)",
+                    "BUF-020 (32 GPS)",
+                    "BUF-018 (14 GPS)",
+                    "BUF-017 (5 GPS)",
+                    "BUF-016 (SUA)",
+                    "BUF-015 (IAG TACAN 28R)",
+                    "BUF-014 (IAG RNAV 28)",
+                    "BUF-013 (BUF FAC)",
+                    "BUF-012 (ERIE MVA)",
+                    "BUF-011 (ERIE TRSA)",
+                    "BUF-010 (CLASS D)",
+                    "BUF-009 (CLASS C)",
+                    "BUF-008 (ZOB)",
+                    "BUF-007 (VFR)",
+                    "BUF-006 (MVA)",
+                    "BUF-005 (ERIE RVM)",
+                    "BUF-004 (32 FLOW)",
+                    "BUF-003 (23 FLOW)",
+                    "BUF-002 (14 FLOW)",
+                    "BUF-001 (5 FLOW)"
+                ]
+            }
         }
     },
     "handoff_ids": [

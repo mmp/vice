@@ -90,31 +90,6 @@
         "significant_points": {
             "STEWW": {}
         },
-        "stars_maps": [
-            "S56 107 N Flow Base Map",
-            "S56 109 South Flow Base Map",
-            "S56 141 North Final Lines",
-            "S56 142 South Final Lines",
-            "S56 203 3NM Separation MVA",
-            "S56 119 Emergency Obstacle Map",
-            "S56 147 North Finals Extended",
-            "S56 146 South Finals Extended",
-            "S56 162 North Flow SID Lines",
-            "S56 159 South Flow SID Lines",
-            "S56 160 North Flow SID Waypoint Symbols",
-            "S56 157 South Flow SID Waypoints Symbols",
-            "S56 161 North Flow SID Names",
-            "S56 158 South Flow SID Waypoint Names",
-            "S56 137 Tower Airspace",
-            "S56 176 Roads",
-            "S56 102 Satellite Approaches",
-            "S56 167 Widely Spaced Simuls Map",
-            "S56 120 GPS Approach Centerlines",
-            "S56 150 GPS Approaches Text",
-            "S56 190 OGD VOR-A Approach",
-            "S56 169 PVU VOR Approach",
-            "S56 104 ZLC Split Map"
-        ],
         "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
         "coordination_fixes": {
             "CARTR": [
@@ -159,6 +134,35 @@
                     "from": "ZLC"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "S56 107 N Flow Base Map",
+                    "S56 109 South Flow Base Map",
+                    "S56 141 North Final Lines",
+                    "S56 142 South Final Lines",
+                    "S56 203 3NM Separation MVA",
+                    "S56 119 Emergency Obstacle Map",
+                    "S56 147 North Finals Extended",
+                    "S56 146 South Finals Extended",
+                    "S56 162 North Flow SID Lines",
+                    "S56 159 South Flow SID Lines",
+                    "S56 160 North Flow SID Waypoint Symbols",
+                    "S56 157 South Flow SID Waypoints Symbols",
+                    "S56 161 North Flow SID Names",
+                    "S56 158 South Flow SID Waypoint Names",
+                    "S56 137 Tower Airspace",
+                    "S56 176 Roads",
+                    "S56 102 Satellite Approaches",
+                    "S56 167 Widely Spaced Simuls Map",
+                    "S56 120 GPS Approach Centerlines",
+                    "S56 150 GPS Approaches Text",
+                    "S56 190 OGD VOR-A Approach",
+                    "S56 169 PVU VOR Approach",
+                    "S56 104 ZLC Split Map"
+                ]
+            }
         }
     },
     "handoff_ids": [

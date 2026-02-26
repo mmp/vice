@@ -258,13 +258,6 @@
             "SQUIB": "SQU",
             "LYNNI": "LYN"
         },
-        "stars_maps": [
-            "MKE RWY 1L",
-            "MKE MVA",
-            "MKE RWY 19R",
-            "MKE RWY 7R",
-            "MKE RWY 25L"
-        ],
         "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -314,6 +307,17 @@
                     "from": "ZAU"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "MKE RWY 1L",
+                    "MKE MVA",
+                    "MKE RWY 19R",
+                    "MKE RWY 7R",
+                    "MKE RWY 25L"
+                ]
+            }
         }
     },
     "handoff_ids": [

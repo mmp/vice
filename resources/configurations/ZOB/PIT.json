@@ -125,20 +125,6 @@
             "PSB": {},
             "TYROO": {}
         },
-        "stars_maps": [
-            "PIT-001 (WEST FLOW)",
-            "PIT-002 (EAST FLOW)",
-            "PIT-003 (MVA)",
-            "PIT-005 (VFR)",
-            "PIT-006 (RNAV APPROACHES)",
-            "PIT-009 (CLASS B)",
-            "PIT-010 (LIFEFLIGHT APPROACHES)",
-            "PIT-013 (ADJACENT APPROACHES)",
-            "PIT-129 (DEMME)",
-            "PIT-131 (FEWGA)",
-            "PIT-133 (HAYNZ)",
-            "PIT-135 (JESEY)"
-        ],
         "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
         "coordination_fixes": {
             "LEJOY": [
@@ -179,7 +165,21 @@
         },
         "area_configs": {
             "1": {
-                "default_airport": "KPIT"
+                "default_airport": "KPIT",
+                "video_maps": [
+                    "PIT-001 (WEST FLOW)",
+                    "PIT-002 (EAST FLOW)",
+                    "PIT-003 (MVA)",
+                    "PIT-005 (VFR)",
+                    "PIT-006 (RNAV APPROACHES)",
+                    "PIT-009 (CLASS B)",
+                    "PIT-010 (LIFEFLIGHT APPROACHES)",
+                    "PIT-013 (ADJACENT APPROACHES)",
+                    "PIT-129 (DEMME)",
+                    "PIT-131 (FEWGA)",
+                    "PIT-133 (HAYNZ)",
+                    "PIT-135 (JESEY)"
+                ]
             }
         }
     },

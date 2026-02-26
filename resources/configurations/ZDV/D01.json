@@ -441,19 +441,6 @@
             },
             "SNY": {}
         },
-        "stars_maps": [
-            "ARSPC__CYS AIRSPACE",
-            "CLS D__CYS CLASS DELTA",
-            "MVA__MVA",
-            "RWYS__CYS RUNWAYS",
-            "RWYS__CYS RUNWAYS",
-            "ILS27__CYS ILS RWY 27",
-            "RNAV27__CYS RNAV RWY 27",
-            "RNAV27__CYS RNAV RWY 27",
-            "RNAV31__CYS RNAV RWY 31",
-            "AWYS__VICTOR AIRWAYS",
-            "RNAV9__CYS RNAV RWY 09"
-        ],
         "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
         "controller_configs": {
             "1I": {
@@ -1248,6 +1235,60 @@
                     "from": "ZDV"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "ARSPC__CYS AIRSPACE",
+                    "CLS D__CYS CLASS DELTA",
+                    "MVA__MVA",
+                    "RWYS__CYS RUNWAYS",
+                    "RWYS__CYS RUNWAYS",
+                    "ILS27__CYS ILS RWY 27",
+                    "RNAV27__CYS RNAV RWY 27",
+                    "RNAV27__CYS RNAV RWY 27",
+                    "RNAV31__CYS RNAV RWY 31",
+                    "AWYS__VICTOR AIRWAYS",
+                    "RNAV9__CYS RNAV RWY 09"
+                ],
+                "center": "KDEN"
+            },
+            "5": {
+                "video_maps": [
+                    "GJT AIRWAYS",
+                    "GJT BASE",
+                    "GJT GPS 29",
+                    "GJT GPS Y 11",
+                    "GJT ILS 11",
+                    "GJT MVA",
+                    "GJT NOKXI1",
+                    "GJT RHONE2",
+                    "GJT RNP Z",
+                    "GJT SATS",
+                    "GJT VFR"
+                ],
+                "center": "KGJT"
+            },
+            "6": {
+                "video_maps": [
+                    "ARSPC__CYS AIRSPACE",
+                    "CLS D__CYS CLASS DELTA",
+                    "MVA__MVA",
+                    "RWYS__CYS RUNWAYS",
+                    "RWYS__CYS RUNWAYS",
+                    "ILS27__CYS ILS RWY 27",
+                    "RNAV27__CYS RNAV RWY 27",
+                    "RNAV27__CYS RNAV RWY 27",
+                    "RNAV31__CYS RNAV RWY 31",
+                    "AWYS__VICTOR AIRWAYS",
+                    "RNAV9__CYS RNAV RWY 09"
+                ],
+                "center": "KCYS",
+                "range": 30
+            },
+            "2": {
+                "center": "KDEN"
+            }
         }
     },
     "handoff_ids": [

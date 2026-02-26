@@ -88,31 +88,35 @@
             "DVV": "DVV",
             "FQF": "FQF"
         },
-        "stars_maps": [
-            "COS NORTH",
-            "COS SOUTH",
-            "COS MVA",
-            "COS ODO",
-            "COS EOVM",
-            "COS AFF RTE",
-            "COS AFF TFR",
-            "COS CLASS C",
-            "COS DEN FIX",
-            "COS DME ARC",
-            "COS GPS",
-            "COS MID",
-            "COS RNPZ N",
-            "COS RNPZ S",
-            "COS RNV STR",
-            "COS STDMS",
-            "COS TOWER",
-            "COS VR",
-            "COS Z 17L",
-            "COS Z 17R",
-            "COS Z 35L",
-            "COS Z 35R"
-        ],
-        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "COS NORTH",
+                    "COS SOUTH",
+                    "COS MVA",
+                    "COS ODO",
+                    "COS EOVM",
+                    "COS AFF RTE",
+                    "COS AFF TFR",
+                    "COS CLASS C",
+                    "COS DEN FIX",
+                    "COS DME ARC",
+                    "COS GPS",
+                    "COS MID",
+                    "COS RNPZ N",
+                    "COS RNPZ S",
+                    "COS RNV STR",
+                    "COS STDMS",
+                    "COS TOWER",
+                    "COS VR",
+                    "COS Z 17L",
+                    "COS Z 17R",
+                    "COS Z 35L",
+                    "COS Z 35R"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

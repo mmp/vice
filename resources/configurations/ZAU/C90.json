@@ -1401,35 +1401,6 @@
             "SCOTO": {},
             "SIMMN": {}
         },
-        "stars_maps": [
-            "C90 MVA",
-            "C90 CLASS B C",
-            "C90 ORD STAR WP",
-            "C90 CAPTURE BARS",
-            "C90 SAT APCHS",
-            "C90 VFR",
-            "C90 MAIN",
-            "C90 DEPS",
-            "C90 EAST FLOW",
-            "C90 WEST FLOW",
-            "C90 ORD 4R",
-            "C90 ORD 22",
-            "C90 SSAT MDW 4R",
-            "C90 SSAT MDW 13C",
-            "C90 SSAT MDW 22L",
-            "C90 SSAT MDW 31C",
-            "MDW RNAV Y RWY 4R",
-            "MDW RNAV Y RWY 13C",
-            "MDW RNAV X RWY 22L",
-            "MDW RNAV Y RWY 31C",
-            "C90 ZAU LOW SECTORS",
-            "C90 SHORE",
-            "ORD ILS RWY 10L",
-            "ORD ILS RWY 28R",
-            "ZAU C90 9C-27C 9R-27L",
-            "ZAU C90 Arrival Fixes",
-            "ZAU C90 NSAT RNAV"
-        ],
         "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -1569,7 +1540,36 @@
         },
         "area_configs": {
             "1": {
-                "default_airport": "KORD"
+                "default_airport": "KORD",
+                "video_maps": [
+                    "C90 MVA",
+                    "C90 CLASS B C",
+                    "C90 ORD STAR WP",
+                    "C90 CAPTURE BARS",
+                    "C90 SAT APCHS",
+                    "C90 VFR",
+                    "C90 MAIN",
+                    "C90 DEPS",
+                    "C90 EAST FLOW",
+                    "C90 WEST FLOW",
+                    "C90 ORD 4R",
+                    "C90 ORD 22",
+                    "C90 SSAT MDW 4R",
+                    "C90 SSAT MDW 13C",
+                    "C90 SSAT MDW 22L",
+                    "C90 SSAT MDW 31C",
+                    "MDW RNAV Y RWY 4R",
+                    "MDW RNAV Y RWY 13C",
+                    "MDW RNAV X RWY 22L",
+                    "MDW RNAV Y RWY 31C",
+                    "C90 ZAU LOW SECTORS",
+                    "C90 SHORE",
+                    "ORD ILS RWY 10L",
+                    "ORD ILS RWY 28R",
+                    "ZAU C90 9C-27C 9R-27L",
+                    "ZAU C90 Arrival Fixes",
+                    "ZAU C90 NSAT RNAV"
+                ]
             }
         }
     },

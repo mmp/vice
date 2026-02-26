@@ -906,16 +906,32 @@ func (s *Sim) GetUserState() *UserState {
 }
 
 // GetControllerVideoMaps returns the video map configuration for the given TCW.
-// Returns controller-specific config if available, otherwise facility defaults.
+// Priority: controller-specific config > area-level config > facility-level.
 func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, beaconCodes []av.Squawk) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	fa := &s.State.FacilityAdaptation
+
 	tcp := s.State.PrimaryPositionForTCW(tcw)
-	if config, ok := s.State.FacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
+
+	// First check controller-specific config.
+	if config, ok := fa.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
 		return config.VideoMapNames, config.DefaultMaps, config.MonitoredBeaconCodeBlocks
 	}
-	return s.State.FacilityAdaptation.VideoMapNames, s.State.ScenarioDefaultVideoMaps, s.State.FacilityAdaptation.MonitoredBeaconCodeBlocks
+
+	// Fall back to area-level config.
+	if ctrl, ok := s.ControlPositions[tcp]; ok && ctrl.Area != "" {
+		if ac, ok := fa.AreaConfigs[ctrl.Area]; ok && len(ac.VideoMapNames) > 0 {
+			dm := s.State.ScenarioDefaultVideoMaps
+			if len(dm) == 0 {
+				dm = ac.DefaultMaps
+			}
+			return ac.VideoMapNames, dm, ac.MonitoredBeaconCodeBlocks
+		}
+	}
+
+	return nil, s.State.ScenarioDefaultVideoMaps, fa.MonitoredBeaconCodeBlocks
 }
 
 // GetDepartureController returns the TCP responsible for a departure given the
@@ -1224,6 +1240,7 @@ func (s *Sim) updateState() {
 			s.lg.Debug("automatic pointout accept", slog.String("acid", string(acid)),
 				slog.String("by", string(po.ToController)), slog.String("to", string(po.FromController)))
 
+			fp.AddPointOutHistory(po.ToController)
 			delete(s.PointOuts, acid)
 		}
 	}

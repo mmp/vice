@@ -61,13 +61,25 @@
             "YATGU": "YAT",
             "CATIL": "CAT"
         },
-        "stars_maps": [
-            "SGF Primary Map",
-            "SGF 3NM MVA MAP",
-            "SGF 5NM MVA MAP",
-            "SGF Geography"
-        ],
-        "video_map_file": "videomaps/ZKC-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZKC-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "SGF Primary Map",
+                    "SGF 3NM MVA MAP",
+                    "SGF 5NM MVA MAP",
+                    "SGF Geography"
+                ]
+            },
+            "2": {
+                "video_maps": [
+                    "SGF Primary Map",
+                    "SGF 3NM MVA MAP",
+                    "SGF 5NM MVA MAP",
+                    "SGF Geography"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

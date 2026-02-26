@@ -67,38 +67,6 @@
             "ILM": {},
             "UNJAM": {}
         },
-        "stars_maps": [
-            "5J9 APPROACHES",
-            "AIRPORT IDS",
-            "MYR CLASS C D AIRSPACE",
-            "AR 7-12-25",
-            "BASE MAP",
-            "BASE MAP CLEAN",
-            "CKI APPROACHES",
-            "CPC APPROACHES",
-            "CRE R05/23",
-            "CRE RNAV 05",
-            "CRE RNAV 23",
-            "DOUBLESHOT",
-            "GAMECOCK MOA A",
-            "GAMECOCK MOA A",
-            "GAMECOCK MOA C",
-            "GAMECOCK MOA D",
-            "GGE APPROACHES",
-            "GPS APPROACH FIXES",
-            "HYW APPROACHES",
-            "INTERSECTIONS",
-            "IR-035",
-            "IR/VR ROUTES",
-            "MVA",
-            "MYR EMERGENCY",
-            "MYR GPS APPROACHES",
-            "MYR RNAV 18",
-            "MYR RNAV 36",
-            "MYRTWRAIRSPACESTARS",
-            "NC78 COPTER RNAV 29",
-            "NC78 HUSIN1 DEP"
-        ],
         "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -147,6 +115,42 @@
                     "from": "ZJX"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "5J9 APPROACHES",
+                    "AIRPORT IDS",
+                    "MYR CLASS C D AIRSPACE",
+                    "AR 7-12-25",
+                    "BASE MAP",
+                    "BASE MAP CLEAN",
+                    "CKI APPROACHES",
+                    "CPC APPROACHES",
+                    "CRE R05/23",
+                    "CRE RNAV 05",
+                    "CRE RNAV 23",
+                    "DOUBLESHOT",
+                    "GAMECOCK MOA A",
+                    "GAMECOCK MOA A",
+                    "GAMECOCK MOA C",
+                    "GAMECOCK MOA D",
+                    "GGE APPROACHES",
+                    "GPS APPROACH FIXES",
+                    "HYW APPROACHES",
+                    "INTERSECTIONS",
+                    "IR-035",
+                    "IR/VR ROUTES",
+                    "MVA",
+                    "MYR EMERGENCY",
+                    "MYR GPS APPROACHES",
+                    "MYR RNAV 18",
+                    "MYR RNAV 36",
+                    "MYRTWRAIRSPACESTARS",
+                    "NC78 COPTER RNAV 29",
+                    "NC78 HUSIN1 DEP"
+                ]
+            }
         }
     },
     "handoff_ids": [

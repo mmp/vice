@@ -8743,8 +8743,8 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"default_maps"</td>
                 <td>Array of strings</td>
                 <td>The names of the initial video maps that should be displayed when this scenario is selected.
-                  Note that "default_maps" may not be used if "stars_maps" is specified in "controller_configs";
-                  in that case controller-specific default maps can be specified there.
+                  Note that "default_maps" may not be used if "video_maps" is specified in "controller_configs"
+                  or "area_configs"; in that case controller- or area-specific default maps can be specified there.
                 </td>
               </tr>
               <tr>
@@ -9084,24 +9084,25 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                     <li>"beacon_code_blocks": a string containing a comma-separated list of beacon code banks
                       (two digits) or discrete beacon codes (four digits) that should be monitored by default.</li>
                     <li>"center": the initial center of the controller's STARS scope.
-                      If specified, this overrides any center specified in the scenario or scenario group.</li>
+                      This takes highest priority, overriding "area_configs" center and the top-level center.</li>
                     <li>"default_maps": an array of strings that specifies which maps in "video_maps"
                       should be initially displayed.</li>
                     <li>"flight_following_airspace": an array of regions of airspace (both lateral and vertical)
                       following the form that is used for defining <a href="#fe-stars-filters">filter regions</a>.
                       (In this case, "id" and "description" are optional.") Only VFR aircraft within the specified
-                      region will call the controller for flight following.</li> 
+                      region will call the controller for flight following.</li>
                     <li>"range": the initial range for the controller's scope in nautical miles.
-                      If specified, this overrides any range specified in the scenario or scenario group.</li>
+                      This takes highest priority, overriding "area_configs" range and the top-level range.</li>
                     <li>"video_maps": an array of strings specifying which video maps should be displayed
-                      in the DCB for the controller.  See "stars_maps" below for further details.</li>
+                      in the DCB for the controller. If specified, these override the area-level "video_maps"
+                      in "area_configs".</li>
                   </ul>
                 </td>
               </tr>
               <tr>
                 <td>"configurations"</td>
                 <td>Object</td>
-                <td>Defines controller assignment configurations that can be referenced by scenarios.
+                <td>Defines facility configurations that can be referenced by scenarios.
                   Each key is a short identifier (maximum 3 characters) for the configuration,
                   and the value is an object with the following members:
                   <ul>
@@ -9119,6 +9120,13 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       airport name ("KJFK") or airport/runway ("KJFK/22L") for per-runway
                       specification. If not specified for an airport/runway, the departure
                       controller for that airport is used.</li>
+                    <li>"scratchpad_leader_line_directions": (<i>Optional</i>) An object that maps
+                      primary scratchpad values to leader line directions. Keys are scratchpad
+                      strings (subject to standard scratchpad validation rules) and values are
+                      cardinal/ordinal direction strings: "N", "NE", "E", "SE", "S", "SW", "W",
+                      or "NW". When an aircraft has a matching primary scratchpad, the specified
+                      direction is used for the leader line. This takes effect after per-aircraft
+                      and FDAM direction overrides but before controller default directions.</li>
                   </ul>
                   These configurations allow multiple scenarios to share the same assignment definitions,
                   reducing duplication when only the consolidation hierarchy differs between scenarios.
@@ -9259,7 +9267,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Object</td>
                 <td>Allows overriding the labels used for video maps in the
                   STARS DCB. Each entry is the name of a video map (as would
-                  be specified in "stars_maps") and its value is the label
+                  be specified in "video_maps" within "area_configs") and its value is the label
                   that should be assigned to it.
                 </td>
               </tr>
@@ -9443,14 +9451,34 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
-                <td>"stars_maps"</td>
-                <td>Array of strings</td>
-                <td>These strings specify the available video maps shown in the STARS DCB;
-                  the first 6 are shown in the main DCB and all are available under the "MAPS" sub-menu.
-                  An empty string, <code>""</code>, may be given to specify an empty map button in the DCB.
-                  No more than 38 maps may be specified.
-                  Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the available
-                  maps for an ARTCC.
+                <td>"area_configs"</td>
+                <td>Object</td>
+                <td>Defines per-area configuration for TRACON areas.
+                  Each key is the area number (e.g., "1", "2", "3") corresponding to the first digit
+                  of the control positions assigned to that area.
+                  The following properties may be specified for each area:
+                  <ul>
+                    <li>"video_maps": an array of strings specifying the available video maps shown in the
+                      STARS DCB for controllers in this area.
+                      The first 6 are shown in the main DCB and all are available under the "MAPS" sub-menu.
+                      An empty string, <code>""</code>, may be given to specify an empty map button in the DCB.
+                      No more than 38 maps may be specified.
+                      Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the
+                      available maps for an ARTCC.</li>
+                    <li>"default_maps": an array of strings specifying which of the video maps should be
+                      initially displayed.</li>
+                    <li>"center": the initial center of the STARS scope for controllers in this area.
+                      This is overridden by any center specified in "controller_configs" and overrides
+                      the top-level "center" in the facility configuration.</li>
+                    <li>"range": the initial range for the scope in nautical miles.
+                      This is overridden by any range specified in "controller_configs" and overrides
+                      the top-level "range" in the facility configuration.</li>
+                    <li>"beacon_code_blocks": a string of comma-separated beacon code banks or discrete codes
+                      to monitor by default for controllers in this area.</li>
+                    <li>"default_airport": the CRDA default airport for this area.</li>
+                    <li>"flight_following_airspace": an array of airspace volumes for flight following
+                      in this area.</li>
+                  </ul>
                 </td>
               </tr>
               <tr>
@@ -9508,7 +9536,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"video_map_file"</td>
                 <td>String</td>
-                <td>Filename of the video map file from which the maps specified in "stars_maps" are found (e.g., "videomaps/ZNY-videomaps.gob.zst")</td>
+                <td>Filename of the video map file from which the video maps are found (e.g., "videomaps/ZNY-videomaps.gob.zst")</td>
               </tr>
             </tbody>
             </table>

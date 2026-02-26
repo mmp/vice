@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
 
@@ -53,7 +54,7 @@ type FixPairDefinition struct {
 
 // FixPairAssignment maps a fix pair definition (by index) to a controller
 // TCP for a specific configuration. These are stored in
-// ControllerAssignments alongside inbound/departure assignments.
+// FacilityConfiguration alongside inbound/departure assignments.
 type FixPairAssignment struct {
 	TCP      TCP `json:"tcp"`      // Controller assigned to handle this fix pair
 	Priority int `json:"priority"` // Priority for deterministic matching
@@ -246,7 +247,7 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 	e.Push("config")
 	defer e.Pop()
 
-	// Validate configurations (controller assignments).
+	// Validate configurations (facility configurations).
 	if fa.Configurations == nil {
 		e.ErrorString(`must provide "configurations"`)
 	}
@@ -279,6 +280,24 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 			}
 		}
 
+		// Resolve scratchpad leader line direction strings to native directions.
+		if len(config.ScratchpadLeaderLineDirectionStrings) > 0 {
+			config.ScratchpadLeaderLineDirections = make(map[string]math.CardinalOrdinalDirection,
+				len(config.ScratchpadLeaderLineDirectionStrings))
+			for sp, dirStr := range config.ScratchpadLeaderLineDirectionStrings {
+				if !fa.CheckScratchpad(sp) {
+					e.ErrorString("scratchpad_leader_line_directions: invalid scratchpad %q", sp)
+					continue
+				}
+				dir, err := math.ParseCardinalOrdinalDirection(dirStr)
+				if err != nil {
+					e.ErrorString("scratchpad_leader_line_directions: invalid direction %q for scratchpad %q", dirStr, sp)
+					continue
+				}
+				config.ScratchpadLeaderLineDirections[sp] = dir
+			}
+		}
+
 		e.Pop()
 	}
 
@@ -306,10 +325,16 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
 
-	// Video map labels must reference known stars_maps.
+	// Collect all video map names across all area configs.
+	var allAreaVideoMaps []string
+	for _, ac := range fa.AreaConfigs {
+		allAreaVideoMaps = append(allAreaVideoMaps, ac.VideoMapNames...)
+	}
+
+	// Video map labels must reference a known video map in some area.
 	for m := range fa.VideoMapLabels {
-		if !slices.Contains(fa.VideoMapNames, m) {
-			e.ErrorString(`video map %q in "map_labels" is not in "stars_maps"`, m)
+		if !slices.Contains(allAreaVideoMaps, m) {
+			e.ErrorString(`video map %q in "map_labels" is not in any area's "video_maps"`, m)
 		}
 	}
 
@@ -322,19 +347,13 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 				e.ErrorString(`Control position %q in "controller_configs" is external and not in this TRACON.`, tcp)
 			}
 		}
-	} else if len(fa.VideoMapNames) == 0 {
-		e.ErrorString(`Must specify either "controller_configs" or "stars_maps"`)
-	}
-
-	if len(fa.VideoMapNames) == 0 {
-		if len(fa.ControllerConfigs) == 0 {
-			e.ErrorString(`must provide one of "stars_maps" or "controller_configs" with "video_maps" in "config"`)
-		}
 		var err error
 		fa.ControllerConfigs, err = util.CommaKeyExpand(fa.ControllerConfigs)
 		if err != nil {
 			e.Error(err)
 		}
+	} else if len(allAreaVideoMaps) == 0 {
+		e.ErrorString(`must specify either "controller_configs" or "video_maps" in "area_configs"`)
 	}
 
 	if fa.Range == 0 {
