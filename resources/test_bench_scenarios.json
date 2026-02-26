@@ -246,10 +246,10 @@
     {
       "label": "Traffic advisory, in sight",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000,
+        {"distance_nm": 15, "speed": 250, "altitude": "{altCeiling}",
          "traffic_in_sight": true},
-        {"distance_nm": 12, "relative_to": "{if}", "speed": 250, "altitude": 7000,
-         "bearing_offset": 10, "note": "traffic target"}
+        {"distance_nm": 12, "speed": 250, "altitude": "{altCeiling}",
+         "note": "traffic target"}
       ],
       "steps": [
         {"callsign": "{0}", "command": "TRAFFIC/12/3/{alt1}"},
@@ -259,22 +259,22 @@
     {
       "label": "Traffic advisory, negative contact",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000},
-        {"distance_nm": 7, "relative_to": "{if}", "speed": 250, "altitude": 5000,
-         "bearing_offset": 30, "note": "traffic target"}
+        {"distance_nm": 15, "speed": 250, "altitude": "{altCeiling}"},
+        {"distance_nm": 18, "speed": 250, "altitude": "{altCeiling}",
+         "note": "traffic target"}
       ],
       "steps": [
-        {"callsign": "{0}", "command": "TRAFFIC/2/8/{alt1}"},
+        {"callsign": "{0}", "command": "TRAFFIC/12/3/{alt1}"},
         {"wait_for": "traffic_response"}
       ]
     },
     {
       "label": "Traffic in sight, visual separation",
       "aircraft": [
-        {"distance_nm": 15, "relative_to": "{if}", "speed": 250, "altitude": 7000,
+        {"distance_nm": 15, "speed": 250, "altitude": "{altCeiling}",
          "traffic_in_sight": true},
-        {"distance_nm": 12, "relative_to": "{if}", "speed": 250, "altitude": 7000,
-         "bearing_offset": 10, "note": "traffic target"}
+        {"distance_nm": 12, "speed": 250, "altitude": "{altCeiling}",
+         "note": "traffic target"}
       ],
       "steps": [
         {"callsign": "{0}", "command": "TRAFFIC/12/3/{alt1}"},

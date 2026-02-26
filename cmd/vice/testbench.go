@@ -75,11 +75,36 @@ func (s *StringOrArray) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// AltitudeSpec unmarshals from either a JSON number (literal altitude) or a
+// placeholder string like "{altCeiling}".
+type AltitudeSpec struct {
+	Value       float32
+	Placeholder string
+}
+
+func (a *AltitudeSpec) UnmarshalJSON(data []byte) error {
+	// Try number first.
+	var num float32
+	if err := json.Unmarshal(data, &num); err == nil {
+		a.Value = num
+		a.Placeholder = ""
+		return nil
+	}
+	// Then try string placeholder.
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return fmt.Errorf("altitude must be a number or a placeholder string: %s", string(data))
+	}
+	a.Placeholder = s
+	a.Value = 0
+	return nil
+}
+
 type TestBenchAircraftSpec struct {
 	Callsign      string  `json:"callsign,omitempty"`
 	AircraftType  string  `json:"aircraft_type,omitempty"` // e.g. "B738"; empty = sampled from airline or B738 fallback
 	DistanceNM    float32 `json:"distance_nm"`
-	Altitude      float32 `json:"altitude,omitempty"` // explicit altitude; 0 = use fix restriction
+	Altitude      AltitudeSpec `json:"altitude,omitempty"` // number or "{altCeiling}" placeholder
 	Speed         float32 `json:"speed"`
 	Heading       float32 `json:"heading,omitempty"`        // aircraft heading; 0 = inbound to fix/airport
 	HeadingOffset float32 `json:"heading_offset,omitempty"` // added to default heading (runway heading)
@@ -669,9 +694,13 @@ func (tb *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 		if spec.TrafficInSight {
 			flags += " TIS"
 		}
-		altStr := fmt.Sprintf("%.0fft", spec.Altitude)
-		if spec.Altitude == 0 && spec.RelativeTo != "" {
+		var altStr string
+		if spec.Altitude.Placeholder != "" {
+			altStr = spec.Altitude.Placeholder
+		} else if spec.Altitude.Value == 0 && spec.RelativeTo != "" {
 			altStr = "fix alt"
+		} else {
+			altStr = fmt.Sprintf("%.0fft", spec.Altitude.Value)
 		}
 		refStr := ""
 		if spec.RelativeTo != "" {
@@ -865,7 +894,28 @@ func (tb *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 	// If relative_to is set, position relative to that fix;
 	// otherwise use the first STAR waypoint (if available) or the airport.
 	refPos := airport.Location
-	altitude := spec.Altitude
+	var altitude float32
+
+	// Resolve altitude placeholder or use the literal numeric value.
+	switch spec.Altitude.Placeholder {
+	case "":
+		altitude = spec.Altitude.Value
+
+	case "{altCeiling}":
+		// Derive from METAR ceiling minus 500 ft buffer; default 5000 if clear/unavailable.
+		if metar, ok := tb.client.State.METAR[apInfo.airport]; ok {
+			if ceil, err := metar.Ceiling(); err == nil {
+				altitude = float32(ceil - 500)
+			} else {
+				altitude = 5000
+			}
+		} else {
+			altitude = 5000
+		}
+
+	default:
+		return sim.Aircraft{}, fmt.Errorf("unknown altitude placeholder %q", spec.Altitude.Placeholder)
+	}
 
 	if spec.RelativeTo != "" {
 		if fixLoc, fixAlt, ok := tb.resolveFixRef(spec.RelativeTo, apInfo); ok {
@@ -883,13 +933,6 @@ func (tb *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 	} else if spec.StarWaypoints && len(tb.starWaypoints) > 0 {
 		// Default to positioning near the first STAR waypoint.
 		refPos = tb.starWaypoints[0].Location
-	}
-
-	// Cap altitude below the ceiling so aircraft stay in visual conditions.
-	if metar, ok := tb.client.State.METAR[apInfo.airport]; ok {
-		if ceil, err := metar.Ceiling(); err == nil && altitude > float32(ceil-500) {
-			altitude = float32(ceil - 500)
-		}
 	}
 
 	// Determine the bearing from reference to place the aircraft.
