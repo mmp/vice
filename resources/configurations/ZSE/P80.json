@@ -184,26 +184,6 @@
             "FAMUK.H": "BER",
             "HARPR": "BER"
         },
-        "stars_maps": [
-            "RWY 10",
-            "RWY 28",
-            "3 NM BUFFER MVA",
-            "RWY 28 FIXES",
-            "RWY 10 FIXES",
-            "VFRLABL",
-            "PDX Class-C",
-            "CASCADE RNAV SID",
-            "WHAMY RNAV SID",
-            "PDX HRMNS SID",
-            "PDX LAVAA/MINNE SIDS",
-            "RNP RWY 10R",
-            "RNP RWY 28L",
-            "RNP RWY 28R",
-            "DELTA AIRSPACES",
-            "SATFNLS",
-            "FINAL 10",
-            "FINAL 28"
-        ],
         "video_map_file": "videomaps/ZSE-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -258,7 +238,31 @@
                 ],
                 "receiving_controller": "C05"
             }
-        ]
+        ],
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "RWY 10",
+                    "RWY 28",
+                    "3 NM BUFFER MVA",
+                    "RWY 28 FIXES",
+                    "RWY 10 FIXES",
+                    "VFRLABL",
+                    "PDX Class-C",
+                    "CASCADE RNAV SID",
+                    "WHAMY RNAV SID",
+                    "PDX HRMNS SID",
+                    "PDX LAVAA/MINNE SIDS",
+                    "RNP RWY 10R",
+                    "RNP RWY 28L",
+                    "RNP RWY 28R",
+                    "DELTA AIRSPACES",
+                    "SATFNLS",
+                    "FINAL 10",
+                    "FINAL 28"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

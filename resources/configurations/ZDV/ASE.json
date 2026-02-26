@@ -73,22 +73,26 @@
             "RIL": {},
             "RLG": {}
         },
-        "stars_maps": [
-            "ASE BASE",
-            "ASE MVA",
-            "ASE LOC-DME",
-            "ASE LOC-E",
-            "ASE Airwy",
-            "ASE ODO",
-            "ASE EOVM",
-            "ASE RIL ILS",
-            "ASE RNAV-F",
-            "ASE RNVY-15",
-            "ASE RNVZ 15",
-            "ASE VFR",
-            "ASE WRAP-D"
-        ],
-        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "ASE BASE",
+                    "ASE MVA",
+                    "ASE LOC-DME",
+                    "ASE LOC-E",
+                    "ASE Airwy",
+                    "ASE ODO",
+                    "ASE EOVM",
+                    "ASE RIL ILS",
+                    "ASE RNAV-F",
+                    "ASE RNVY-15",
+                    "ASE RNVZ 15",
+                    "ASE VFR",
+                    "ASE WRAP-D"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

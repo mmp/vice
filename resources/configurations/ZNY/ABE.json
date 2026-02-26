@@ -84,42 +84,6 @@
             "RBV": {},
             "SAX": {}
         },
-        "stars_maps": [
-            "ABE-103 (MAP 1)",
-            "ABE-105 (VFR)",
-            "ABE-101 (MAP 5)",
-            "ABE-102 (MVA)",
-            "ABE-106 (EOVM)",
-            "ABE-112 (SAT)",
-            "ABE-113 (RNAV)",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "ABE-114 (WAYPT NAMES)",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-        ],
         "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
         "coordination_fixes": {
             "FJC": [
@@ -171,6 +135,46 @@
                     "from": "ZNY"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "ABE-103 (MAP 1)",
+                    "ABE-105 (VFR)",
+                    "ABE-101 (MAP 5)",
+                    "ABE-102 (MVA)",
+                    "ABE-106 (EOVM)",
+                    "ABE-112 (SAT)",
+                    "ABE-113 (RNAV)",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "ABE-114 (WAYPT NAMES)",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ]
+            }
         }
     },
     "handoff_ids": [

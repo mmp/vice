@@ -137,18 +137,6 @@
             "KSKF",
             "5C1"
         ],
-        "stars_maps": [
-            "SAT BASE",
-            "SAT 13 SPLIT",
-            "SAT 31 SPLIT",
-            "SAT 4 SPLIT",
-            "SAT 22 SPLIT",
-            "SAT 3NM MVA",
-            "SAT VFR",
-            "SAT ZHU SECTORS",
-            "SAT MIL ROUTES",
-            "SAT CLASS AIRSPACES"
-        ],
         "controller_configs": {
             "1N": {
                 "flight_following_airspace": [
@@ -339,7 +327,23 @@
                 ],
                 "receiving_controller": "C56"
             }
-        ]
+        ],
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "SAT BASE",
+                    "SAT 13 SPLIT",
+                    "SAT 31 SPLIT",
+                    "SAT 4 SPLIT",
+                    "SAT 22 SPLIT",
+                    "SAT 3NM MVA",
+                    "SAT VFR",
+                    "SAT ZHU SECTORS",
+                    "SAT MIL ROUTES",
+                    "SAT CLASS AIRSPACES"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

@@ -271,25 +271,6 @@
             "WEEED": {},
             "WWREN": {}
         },
-        "stars_maps": [
-            "I90 BASE MAP",
-            "I90 MVA FUS 3",
-            "I90 CLASS B",
-            "I90 MVA FUS 3",
-            "IAH FINAL EAST FLOW",
-            "IAH FINAL EAST FLOW ALT",
-            "IAH FINAL WEST FLOW",
-            "IAH FINAL WEST FLOW ALT",
-            "HOU FINAL 4",
-            "HOU FINAL EAST HOU 13 ALT",
-            "HOU FINAL WEST-15-33 HOU 13 ALT",
-            "CLASS D AIRPORTS",
-            "BPT EAST 15-33 HOU ALL",
-            "BPT WEST-15 HOU ALL",
-            "CLL-IDU EAST HOU ALL",
-            "CLL-IDU WEST-15-33 HOU ALL",
-            "DWH FINAL"
-        ],
         "video_map_file": "videomaps/ZHU-videomaps.gob.zst",
         "coordination_fixes": {
             "BEATL": [
@@ -411,6 +392,29 @@
                     "from": "ZHU"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "I90 BASE MAP",
+                    "I90 MVA FUS 3",
+                    "I90 CLASS B",
+                    "I90 MVA FUS 3",
+                    "IAH FINAL EAST FLOW",
+                    "IAH FINAL EAST FLOW ALT",
+                    "IAH FINAL WEST FLOW",
+                    "IAH FINAL WEST FLOW ALT",
+                    "HOU FINAL 4",
+                    "HOU FINAL EAST HOU 13 ALT",
+                    "HOU FINAL WEST-15-33 HOU 13 ALT",
+                    "CLASS D AIRPORTS",
+                    "BPT EAST 15-33 HOU ALL",
+                    "BPT WEST-15 HOU ALL",
+                    "CLL-IDU EAST HOU ALL",
+                    "CLL-IDU WEST-15-33 HOU ALL",
+                    "DWH FINAL"
+                ]
+            }
         }
     },
     "handoff_ids": [

@@ -146,29 +146,6 @@
             "RHETT": {},
             "VUZ": {}
         },
-        "stars_maps": [
-            "BHM MAIN",
-            "BHM CLASS C",
-            "BHM EMERGENCY",
-            "BHM RNAV RUNWAY 06/24 APPROACH",
-            "BHM/TCL ANNEX",
-            "BHM MINIMUM VECTORING ALTITUDE",
-            "BHM IFR MILITARY TRAINING ROUTES",
-            "BHM EMERGENCY OBSTRUCTION VIDEO MAP",
-            "BHM INTERSECTIONS",
-            "BHM STADIUMS",
-            "BHM RNAV RUNWAY 18/36 APPROACHES",
-            "BHM VORS WITHIN 250NM",
-            "BHM ARRIVAL FIXES",
-            "BHM DEPARTURE FIX LABELS",
-            "BHM ARRIVAL FIX LABELS",
-            "BHM RNAV (RNP) Z RWY 24 APPROACH",
-            "RWY 24/36 FINAL BOUNDARY",
-            "BHM RNAV (RNP) Z RWY 6 APPROACH",
-            "RWY 24/18 FINAL BOUNDARY",
-            "BHM INTERSECTIONS WITH NAMES",
-            "BHM SAT BOUNDARY"
-        ],
         "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
         "coordination_fixes": {
             "EXIST": [
@@ -227,6 +204,33 @@
                     "from": "ZTL"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "BHM MAIN",
+                    "BHM CLASS C",
+                    "BHM EMERGENCY",
+                    "BHM RNAV RUNWAY 06/24 APPROACH",
+                    "BHM/TCL ANNEX",
+                    "BHM MINIMUM VECTORING ALTITUDE",
+                    "BHM IFR MILITARY TRAINING ROUTES",
+                    "BHM EMERGENCY OBSTRUCTION VIDEO MAP",
+                    "BHM INTERSECTIONS",
+                    "BHM STADIUMS",
+                    "BHM RNAV RUNWAY 18/36 APPROACHES",
+                    "BHM VORS WITHIN 250NM",
+                    "BHM ARRIVAL FIXES",
+                    "BHM DEPARTURE FIX LABELS",
+                    "BHM ARRIVAL FIX LABELS",
+                    "BHM RNAV (RNP) Z RWY 24 APPROACH",
+                    "RWY 24/36 FINAL BOUNDARY",
+                    "BHM RNAV (RNP) Z RWY 6 APPROACH",
+                    "RWY 24/18 FINAL BOUNDARY",
+                    "BHM INTERSECTIONS WITH NAMES",
+                    "BHM SAT BOUNDARY"
+                ]
+            }
         }
     },
     "handoff_ids": [

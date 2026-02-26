@@ -295,19 +295,6 @@
             "TKO": {},
             "TOP": {}
         },
-        "stars_maps": [
-            "R90 001 MAIN",
-            "R90 004 RWY 36",
-            "R90 002 N FLOW",
-            "R90 003 S FLOW",
-            "R90 220 LNKNFLO",
-            "R90 221 LNKSFLO",
-            "R90 202 LNK M",
-            "R90 215 LNK C",
-            "R90 253 MVA",
-            "R90 013 GEO",
-            "R90 250 SHELF2"
-        ],
         "video_map_file": "videomaps/ZMP-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -344,7 +331,24 @@
                 ],
                 "receiving_controller": "C27"
             }
-        ]
+        ],
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "R90 001 MAIN",
+                    "R90 004 RWY 36",
+                    "R90 002 N FLOW",
+                    "R90 003 S FLOW",
+                    "R90 220 LNKNFLO",
+                    "R90 221 LNKSFLO",
+                    "R90 202 LNK M",
+                    "R90 215 LNK C",
+                    "R90 253 MVA",
+                    "R90 013 GEO",
+                    "R90 250 SHELF2"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

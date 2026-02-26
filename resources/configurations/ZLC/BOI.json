@@ -30,18 +30,22 @@
         },
         "center": "KBOI",
         "scratchpads": {},
-        "stars_maps": [
-            "BOI_001S - RWY 10 EAST FLOW",
-            "BOI_002S - RWY 28 WEST FLOW",
-            "BOI_005S - MOUNTAIN HOME SHELF",
-            "BOI_006S - ZLC SECTORS AND MILITARY DATA",
-            "STARS-BOI_MVA__MVA",
-            "STARS-BOI_EOVM__EOVM",
-            "STARS-BOI_VFR__VFR Video Map ",
-            "BOI_003S - BOI TOWER AIRSPACE RWY 10",
-            "BOI_004S - BOI TOWER AIRSPACE RWY 28"
-        ],
-        "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "BOI_001S - RWY 10 EAST FLOW",
+                    "BOI_002S - RWY 28 WEST FLOW",
+                    "BOI_005S - MOUNTAIN HOME SHELF",
+                    "BOI_006S - ZLC SECTORS AND MILITARY DATA",
+                    "STARS-BOI_MVA__MVA",
+                    "STARS-BOI_EOVM__EOVM",
+                    "STARS-BOI_VFR__VFR Video Map ",
+                    "BOI_003S - BOI TOWER AIRSPACE RWY 10",
+                    "BOI_004S - BOI TOWER AIRSPACE RWY 28"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

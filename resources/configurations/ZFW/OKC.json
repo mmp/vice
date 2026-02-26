@@ -154,35 +154,6 @@
             "YOUSE": {},
             "ZEEWE": {}
         },
-        "stars_maps": [
-            "OKC010S ZFW ATCO",
-            "OKC011S LOW SECTORS",
-            "OKC012S SOUTH FLOW",
-            "OKC013S NORTH FLOW",
-            "OKC014S VFR",
-            "OKC015S 3NM MVA",
-            "OKC016S END SOUTH FLOW",
-            "OKC017S END NORTH FLOW",
-            "OKC018S TIK_LOC",
-            "OKC021S FINAL APPROACH FIXES",
-            "OKC025S 5NM MVA",
-            "OKC110S OUN ILS",
-            "OKC130S RWY 17L GPS",
-            "OKC134S VOR_13",
-            "OKC151S STADIUMS",
-            "OKC137S RNAV (RNP) Z RWY 17L",
-            "OKC138S RNAV (RNP) Z RWY 17R",
-            "OKC140S RNAV (RNP) Z RWY 35R",
-            "OKC139S RNAV (RNP) Z RWY 35L",
-            "OKC141S OUN_SFC",
-            "OKC143S APCH_GT",
-            "OKC145S OKC_S",
-            "OKC144S OKC_N",
-            "OKC147S STARS_S",
-            "OKC146S STARS_N",
-            "OKC152S ODO",
-            "OKC MTRs"
-        ],
         "video_map_file": "videomaps/ZFW-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -228,6 +199,39 @@
                     "from": "ZFW"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "OKC010S ZFW ATCO",
+                    "OKC011S LOW SECTORS",
+                    "OKC012S SOUTH FLOW",
+                    "OKC013S NORTH FLOW",
+                    "OKC014S VFR",
+                    "OKC015S 3NM MVA",
+                    "OKC016S END SOUTH FLOW",
+                    "OKC017S END NORTH FLOW",
+                    "OKC018S TIK_LOC",
+                    "OKC021S FINAL APPROACH FIXES",
+                    "OKC025S 5NM MVA",
+                    "OKC110S OUN ILS",
+                    "OKC130S RWY 17L GPS",
+                    "OKC134S VOR_13",
+                    "OKC151S STADIUMS",
+                    "OKC137S RNAV (RNP) Z RWY 17L",
+                    "OKC138S RNAV (RNP) Z RWY 17R",
+                    "OKC140S RNAV (RNP) Z RWY 35R",
+                    "OKC139S RNAV (RNP) Z RWY 35L",
+                    "OKC141S OUN_SFC",
+                    "OKC143S APCH_GT",
+                    "OKC145S OKC_S",
+                    "OKC144S OKC_N",
+                    "OKC147S STARS_S",
+                    "OKC146S STARS_N",
+                    "OKC152S ODO",
+                    "OKC MTRs"
+                ]
+            }
         }
     },
     "handoff_ids": [

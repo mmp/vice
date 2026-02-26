@@ -201,15 +201,6 @@
             },
             "COFAX": {}
         },
-        "stars_maps": [
-            "MDT-002 (GPS EAST)",
-            "MDT-014 (CLASS C)",
-            "MDT-004 (MVA)",
-            "MDT-009 (GPS WEST)",
-            "MDT-012 (EOVM)",
-            "MDT-005 (EAST FLOW)",
-            "MDT-006 (WEST FLOW)"
-        ],
         "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -419,6 +410,19 @@
                     "from": "ZNY"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "MDT-002 (GPS EAST)",
+                    "MDT-014 (CLASS C)",
+                    "MDT-004 (MVA)",
+                    "MDT-009 (GPS WEST)",
+                    "MDT-012 (EOVM)",
+                    "MDT-005 (EAST FLOW)",
+                    "MDT-006 (WEST FLOW)"
+                ]
+            }
         }
     },
     "handoff_ids": [

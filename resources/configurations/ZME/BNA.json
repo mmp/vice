@@ -133,16 +133,6 @@
             "TINGS": {},
             "TIPPN": {}
         },
-        "stars_maps": [
-            "BNA_NORTH FLOW",
-            "BNA_SOUTH FLOW",
-            "BNA_CLASS C",
-            "BNA_EOVM",
-            "BNA_EW NORTH SPLIT",
-            "BNA_EW SOUTH SPLIT",
-            "BNA_SID EXIT GATES",
-            "BNA_SID EXIT"
-        ],
         "video_map_file": "videomaps/ZME-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -158,7 +148,7 @@
                 "fixes": [
                     "GDOGG",
                     "FAPER",
-                     "HODJS",
+                    "HODJS",
                     "NAKIY",
                     "PARDN"
                 ],
@@ -172,7 +162,7 @@
                     "HAGIE",
                     "JALAR",
                     "FLAME",
-                    "GENDE"                    
+                    "GENDE"
                 ],
                 "receiving_controller": "C42"
             },
@@ -216,6 +206,20 @@
                     "from": "ZME"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "BNA_NORTH FLOW",
+                    "BNA_SOUTH FLOW",
+                    "BNA_CLASS C",
+                    "BNA_EOVM",
+                    "BNA_EW NORTH SPLIT",
+                    "BNA_EW SOUTH SPLIT",
+                    "BNA_SID EXIT GATES",
+                    "BNA_SID EXIT"
+                ]
+            }
         }
     },
     "handoff_ids": [

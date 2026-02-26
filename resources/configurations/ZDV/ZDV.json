@@ -199,27 +199,6 @@
         },
         "center": "N039.58.19.255,W104.45.04.202",
         "range": 150,
-        "stars_maps": [
-            "HIGH BDRY",
-            "JET ROUTE",
-            "",
-            "SIAP",
-            "ARPT",
-            "AR ORBIT",
-            "SKI",
-            "RNAV",
-            "MIA",
-            "",
-            "LOW BDRY",
-            "VICTOR AIRWAY",
-            "LEGACY",
-            "",
-            "STATES",
-            "IR",
-            "RANGE RINGS",
-            "",
-            "MIA LABELS"
-        ],
         "video_map_file": "videomaps/ZDV-eram-videomaps.gob.zst",
         "coordination_fixes": {
             "TESSY": [

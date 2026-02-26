@@ -1199,17 +1199,30 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		e.Pop()
 	}
 
-	// Video maps
-	for m := range s.VideoMapLabels {
-		if !slices.Contains(s.VideoMapNames, m) {
-			e.ErrorString(`video map %q in "map_labels" is not in "stars_maps"`, m)
+	// Video maps: validate area-level video_maps against manifest
+	for areaNum, ac := range s.AreaConfigs {
+		if manifest != nil {
+			for _, m := range ac.VideoMapNames {
+				if m != "" && !manifest.HasMap(m) {
+					e.ErrorString(`video map %q in area %s "video_maps" is not a valid video map`, m, areaNum)
+				}
+			}
+			for _, m := range ac.DefaultMaps {
+				if m != "" && !manifest.HasMap(m) {
+					e.ErrorString(`video map %q in area %s "default_maps" is not a valid video map`, m, areaNum)
+				}
+			}
 		}
 	}
-	if manifest != nil {
-		for _, m := range s.VideoMapNames {
-			if m != "" && !manifest.HasMap(m) {
-				e.ErrorString(`video map %q in "stars_maps" is not a valid video map`, m)
-			}
+
+	// Video map labels must reference a known video map in some area.
+	var allAreaVideoMaps []string
+	for _, ac := range s.AreaConfigs {
+		allAreaVideoMaps = append(allAreaVideoMaps, ac.VideoMapNames...)
+	}
+	for m := range s.VideoMapLabels {
+		if !slices.Contains(allAreaVideoMaps, m) {
+			e.ErrorString(`video map %q in "map_labels" is not in any area's "video_maps"`, m)
 		}
 	}
 

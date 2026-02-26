@@ -168,27 +168,6 @@
             }
         ],
         "force_ql_self": true,
-        "stars_maps": [
-            "AUS BASE",
-            "AUS 3NM MVA",
-            "AUS CLASS C",
-            "SF FINAL APP COURSE",
-            "NF FINAL APP COURSE",
-            "AUS SF STARS",
-            "AUS NF STARS",
-            "AUS NTZ",
-            "NORTH FLOW SOUTH APP CLSD",
-            "SOUTH FLOW SOUTH APP CLSD",
-            "AUS ZHU SECTORS",
-            "SOUTH FLOW FINAL AIRSPACE",
-            "NORTH FLOW FINAL AIRSPACE",
-            "EDC FINALS",
-            "EDC CLASS D",
-            "HYI FINALS",
-            "HYI FINALS LABELS",
-            "GTU FINALS",
-            "AUS VFR"
-        ],
         "video_map_file": "videomaps/ZHU-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -284,6 +263,31 @@
                     "from": "I90"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "AUS BASE",
+                    "AUS 3NM MVA",
+                    "AUS CLASS C",
+                    "SF FINAL APP COURSE",
+                    "NF FINAL APP COURSE",
+                    "AUS SF STARS",
+                    "AUS NF STARS",
+                    "AUS NTZ",
+                    "NORTH FLOW SOUTH APP CLSD",
+                    "SOUTH FLOW SOUTH APP CLSD",
+                    "AUS ZHU SECTORS",
+                    "SOUTH FLOW FINAL AIRSPACE",
+                    "NORTH FLOW FINAL AIRSPACE",
+                    "EDC FINALS",
+                    "EDC CLASS D",
+                    "HYI FINALS",
+                    "HYI FINALS LABELS",
+                    "GTU FINALS",
+                    "AUS VFR"
+                ]
+            }
         }
     },
     "handoff_ids": [

@@ -181,29 +181,6 @@
             "YVR": {},
             "YYJ": {}
         },
-        "stars_maps": [
-            "ZSE__S46S",
-            "BFI 14R FINAL",
-            "BFI 32L FINAL",
-            "CLASS B",
-            "S46 EOVM",
-            "G_FIXES",
-            "HAWKZ N",
-            "HAWKZ S",
-            "MARNR N",
-            "MARNR S",
-            "LMT 3NM MOSIAC",
-            "ZSE__S46N",
-            "16C",
-            "16L",
-            "16R",
-            "34C",
-            "34L",
-            "34R",
-            "ZSE HANDOFF",
-            "NORTH SHORELINE",
-            "SOUTH SHORELINE"
-        ],
         "video_map_file": "videomaps/ZSE-videomaps.gob.zst",
         "coordination_fixes": {
             "HUMPP": [
@@ -255,6 +232,33 @@
                     "from": "ZSE"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "ZSE__S46S",
+                    "BFI 14R FINAL",
+                    "BFI 32L FINAL",
+                    "CLASS B",
+                    "S46 EOVM",
+                    "G_FIXES",
+                    "HAWKZ N",
+                    "HAWKZ S",
+                    "MARNR N",
+                    "MARNR S",
+                    "LMT 3NM MOSIAC",
+                    "ZSE__S46N",
+                    "16C",
+                    "16L",
+                    "16R",
+                    "34C",
+                    "34L",
+                    "34R",
+                    "ZSE HANDOFF",
+                    "NORTH SHORELINE",
+                    "SOUTH SHORELINE"
+                ]
+            }
         }
     },
     "handoff_ids": [

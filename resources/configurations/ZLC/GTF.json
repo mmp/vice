@@ -27,11 +27,15 @@
         },
         "center": "KGTF",
         "scratchpads": {},
-        "stars_maps": [
-            "STARS-GTF_N-RVM__North RVM",
-            "STARS-GTF_MVA__MVA"
-        ],
-        "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "STARS-GTF_N-RVM__North RVM",
+                    "STARS-GTF_MVA__MVA"
+                ]
+            }
+        }
     },
     "handoff_ids": [
         {

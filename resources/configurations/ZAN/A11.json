@@ -94,31 +94,31 @@
                 "short_name": "TAG"
             }
         },
-        "stars_maps": [
-            "A11 RVM",
-            "A11 ANC MVA",
-            "A11 15 FIN",
-            "A11 33 STRAIGHT",
-            "A11 25 STRAIGHT",
-            "A11 7 FEED",
-            "A11 RVM",
-            "A11 ANC MVA",
-            "A11 15 FIN",
-            "A11 33 STRAIGHT",
-            "A11 25 STRAIGHT",
-            "A11 7 FEED",
-            "A11 15 FEED",
-            "A11 7 FINAL",
-            "A11 ZAN SPLIT",
-            "A11 GPS",
-            "A11 EVOM",
-            "A11 GEO",
-            "A11 ARSP"
-        ],
         "video_map_file": "videomaps/ZAN-videomaps.gob.zst",
         "area_configs": {
             "1": {
-                "default_airport": "PANC"
+                "default_airport": "PANC",
+                "video_maps": [
+                    "A11 RVM",
+                    "A11 ANC MVA",
+                    "A11 15 FIN",
+                    "A11 33 STRAIGHT",
+                    "A11 25 STRAIGHT",
+                    "A11 7 FEED",
+                    "A11 RVM",
+                    "A11 ANC MVA",
+                    "A11 15 FIN",
+                    "A11 33 STRAIGHT",
+                    "A11 25 STRAIGHT",
+                    "A11 7 FEED",
+                    "A11 15 FEED",
+                    "A11 7 FINAL",
+                    "A11 ZAN SPLIT",
+                    "A11 GPS",
+                    "A11 EVOM",
+                    "A11 GEO",
+                    "A11 ARSP"
+                ]
             }
         }
     },

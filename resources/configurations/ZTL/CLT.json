@@ -214,37 +214,6 @@
             "TNSLY": {},
             "TYI": {}
         },
-        "stars_maps": [
-            "CLT NORTH",
-            "CLT SOUTH",
-            "CHARLOTTE AIRPORT RUNWAYS",
-            "ARRIVAL RADAR NORTH",
-            "ARRIVAL RADAR SOUTH",
-            "CLT TRACON EXTERNAL BOUNDARY",
-            "CLT MINIMUM VECTORING ALTITUDE",
-            "CLT CLASS B",
-            "CLT AIRPORT RNAV (GPS) APPROACHES",
-            "DEPARTURE RADAR NORTH",
-            "DEPARTURE RADAR SOUTH",
-            "SATELLITE RADAR NORTH",
-            "SATELLITE RADAR SOUTH",
-            "RNAV DEPARTURES",
-            "NORTH RNAV STARS",
-            "SOUTH RNAV STARS",
-            "ADJACENT AIRSPACE",
-            "ZTL/ZJX/ZDC AIRSPACE",
-            "NAVAIDS WITHIN 250 MILES",
-            "CLT RNAV STAR FIXES",
-            "CLT FINAL APPROACH COURSES NORTH",
-            "CLT FINAL APPROACH COURSES SOUTH",
-            "NOISE 2NM/4NM LINES (SOUTH)",
-            "CAPTURES POINTS (18R/18L)",
-            "CLT LOCAL AIRSPACE",
-            "DEPARTURE RADAR SOUTH TRANSFER AREA",
-            "CAPTURE POINTS (36L/36R)",
-            "TRIPS CAPTURE POINTS (SOUTH)",
-            "TRIPS CAPTURE POINTS (NORTH)"
-        ],
         "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -354,6 +323,41 @@
                     "from": "ZTL"
                 }
             ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "CLT NORTH",
+                    "CLT SOUTH",
+                    "CHARLOTTE AIRPORT RUNWAYS",
+                    "ARRIVAL RADAR NORTH",
+                    "ARRIVAL RADAR SOUTH",
+                    "CLT TRACON EXTERNAL BOUNDARY",
+                    "CLT MINIMUM VECTORING ALTITUDE",
+                    "CLT CLASS B",
+                    "CLT AIRPORT RNAV (GPS) APPROACHES",
+                    "DEPARTURE RADAR NORTH",
+                    "DEPARTURE RADAR SOUTH",
+                    "SATELLITE RADAR NORTH",
+                    "SATELLITE RADAR SOUTH",
+                    "RNAV DEPARTURES",
+                    "NORTH RNAV STARS",
+                    "SOUTH RNAV STARS",
+                    "ADJACENT AIRSPACE",
+                    "ZTL/ZJX/ZDC AIRSPACE",
+                    "NAVAIDS WITHIN 250 MILES",
+                    "CLT RNAV STAR FIXES",
+                    "CLT FINAL APPROACH COURSES NORTH",
+                    "CLT FINAL APPROACH COURSES SOUTH",
+                    "NOISE 2NM/4NM LINES (SOUTH)",
+                    "CAPTURES POINTS (18R/18L)",
+                    "CLT LOCAL AIRSPACE",
+                    "DEPARTURE RADAR SOUTH TRANSFER AREA",
+                    "CAPTURE POINTS (36L/36R)",
+                    "TRIPS CAPTURE POINTS (SOUTH)",
+                    "TRIPS CAPTURE POINTS (NORTH)"
+                ]
+            }
         }
     },
     "handoff_ids": [
