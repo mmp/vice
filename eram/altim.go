@@ -18,6 +18,7 @@ import (
 const altimRefreshInterval = 10 * time.Minute
 
 const altimWindowWidth = float32(207)
+const metarVatsimURLPrefix = "https://metar.vatsim.net/metar.php?id="
 
 // altimMetarResult holds the parsed METAR data for one airport.
 type altimMetarResult struct {
@@ -96,13 +97,28 @@ func altimDisplayID(icao string) string {
 // sending the result to ch when done.
 func altimFetchMETAR(icao string, ch chan<- altimMetarResult) {
 	go func() {
-		url := "https://metar.vatsim.net/metar.php?id=" + icao
-		resp, err := http.Get(url)
+		url := metarVatsimURLPrefix + icao
+		client := http.Client{Timeout: 5 * time.Second}
+		resp, err := client.Get(url)
 		if err != nil {
 			ch <- altimMetarResult{icao: icao, err: err}
 			return
 		}
 		defer resp.Body.Close()
+
+		switch resp.StatusCode {
+		case http.StatusOK:
+			// continue
+		case http.StatusNotFound:
+			ch <- altimMetarResult{icao: icao, err: fmt.Errorf("METAR not found for %s (HTTP 404)", icao)}
+			return
+		case http.StatusInternalServerError:
+			ch <- altimMetarResult{icao: icao, err: fmt.Errorf("METAR service error for %s (HTTP 500)", icao)}
+			return
+		default:
+			ch <- altimMetarResult{icao: icao, err: fmt.Errorf("METAR request failed for %s (HTTP %d)", icao, resp.StatusCode)}
+			return
+		}
 
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
@@ -126,10 +142,6 @@ func altimFetchMETAR(icao string, ch chan<- altimMetarResult) {
 // drawAltimSetView renders the ALTIM SET floating window.
 func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	if !ps.AltimSet.Visible {
-		return
-	}
-
 	// Drain completed fetch results.
 draining:
 	for {
@@ -141,6 +153,10 @@ draining:
 		default:
 			break draining
 		}
+	}
+
+	if !ps.AltimSet.Visible {
+		return
 	}
 
 	// Kick off fetches for airports that need refreshing.
@@ -156,13 +172,7 @@ draining:
 	}
 
 	// --- Layout ---
-	fontNum := ps.AltimSet.Font
-	if fontNum < 1 {
-		fontNum = 1
-	}
-	if fontNum > 3 {
-		fontNum = 3
-	}
+	fontNum := int(math.Clamp(float32(ps.AltimSet.Font), 1, 3))
 
 	// Title uses fixed FONT 2 for consistent size
 	titleFont := ep.ERAMFont(2)
@@ -374,7 +384,7 @@ draining:
 
 		// Check scroll bar clicks first (if scroll bar is visible)
 		if numRows > maxAirportsPerPage {
-			const scrollBarContentW = float32(15)
+			const scrollBarContentW = float32(14)
 			const scrollBarBorderW = float32(1)
 			const scrollBarTotalW = scrollBarContentW + 2*scrollBarBorderW
 			const scrollBarGap = float32(2)
@@ -691,15 +701,6 @@ func (ep *ERAMPane) drawAltimSetMenu(ctx *panes.Context, transforms radar.ScopeT
 	}
 
 	ps := ep.currentPrefs()
-
-	// Calculate fontNum for use in menu config
-	fontNum := ps.AltimSet.Font
-	if fontNum < 1 {
-		fontNum = 1
-	}
-	if fontNum > 3 {
-		fontNum = 3
-	}
 
 	blackBg := renderer.RGB{R: 0, G: 0, B: 0}
 	greyBg := renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}

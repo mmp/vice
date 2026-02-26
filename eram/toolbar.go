@@ -2319,6 +2319,14 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	// Normalize through display text so older saved keys like "CRR FIX" still work.
 	display := ep.getTornOffButtonText(buttonName)
 	switch cleanButtonName(display) {
+	case "ALTIM\nSET", "ALTIM SET", "ALTIMSET":
+		if ps.AltimSet.Visible {
+			ps.AltimSet.Visible = false
+			ep.altimSetMenuOpen = false
+		} else {
+			ps.AltimSet.Visible = true
+			ep.altimSetMenuOpen = false
+		}
 	case "DRAW":
 		// Handle DRAW button
 	case "ATC\nTOOLS":
@@ -2363,6 +2371,14 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		// Handle RADAR FILTER
 	case "PREFSET":
 		// Handle PREFSET
+	case "WX\nREPORT", "WX REPORT", "WXREPORT":
+		if ps.WX.Visible {
+			ps.WX.Visible = false
+			ep.wxMenuOpen = false
+		} else {
+			ps.WX.Visible = true
+			ep.wxMenuOpen = false
+		}
 	case "CRR\nFIX":
 		ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
 	case "DELETE\nTEAROFF":

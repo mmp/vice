@@ -1067,6 +1067,19 @@ func handleWXReportDisplay(ep *ERAMPane, airport string) (CommandStatus, error) 
 		icao = "K" + airport
 	}
 
+	// Drain any completed async fetches so display state is up-to-date
+	for {
+		select {
+		case result := <-ep.wxFetchCh:
+			ep.wxMetars[result.icao] = result
+			ep.wxLastFetch[result.icao] = time.Now()
+			ep.wxFetching[result.icao] = false
+		default:
+			goto drained
+		}
+	}
+drained:
+
 	// Trigger fetch if not already done or stale
 	if !ep.wxFetching[icao] {
 		lastFetch, fetched := ep.wxLastFetch[icao]

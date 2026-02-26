@@ -37,13 +37,28 @@ func wxDisplayID(icao string) string {
 // sending the result to ch when done.
 func wxFetchMETAR(icao string, ch chan<- wxMetarResult) {
 	go func() {
-		url := "https://metar.vatsim.net/metar.php?id=" + icao
-		resp, err := http.Get(url)
+		url := metarVatsimURLPrefix + icao
+		client := http.Client{Timeout: 5 * time.Second}
+		resp, err := client.Get(url)
 		if err != nil {
 			ch <- wxMetarResult{icao: icao, err: err}
 			return
 		}
 		defer resp.Body.Close()
+
+		switch resp.StatusCode {
+		case http.StatusOK:
+			// continue
+		case http.StatusNotFound:
+			ch <- wxMetarResult{icao: icao, err: fmt.Errorf("METAR not found for %s (HTTP 404)", icao)}
+			return
+		case http.StatusInternalServerError:
+			ch <- wxMetarResult{icao: icao, err: fmt.Errorf("METAR service error for %s (HTTP 500)", icao)}
+			return
+		default:
+			ch <- wxMetarResult{icao: icao, err: fmt.Errorf("METAR request failed for %s (HTTP %d)", icao, resp.StatusCode)}
+			return
+		}
 
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
@@ -63,10 +78,6 @@ func wxFetchMETAR(icao string, ch chan<- wxMetarResult) {
 // drawWXView renders the WX floating window.
 func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	if !ps.WX.Visible {
-		return
-	}
-
 	// Drain completed fetch results
 draining:
 	for {
@@ -78,6 +89,10 @@ draining:
 		default:
 			break draining
 		}
+	}
+
+	if !ps.WX.Visible {
+		return
 	}
 
 	// Kick off fetches for airports that need refreshing
@@ -161,13 +176,8 @@ draining:
 		firstLineAvailW := width - (metarStartX - p0[0]) - 4
 		contLineAvailW := width - (stationIDX - p0[0]) - 4
 
-		result, hasResult := ep.wxMetars[icao]
+		result := ep.wxMetars[icao]
 		sr := &stationRenders[i]
-
-		if !hasResult || ep.wxFetching[icao] {
-			sr.msg = "....  (Loading)"
-			continue
-		}
 		if result.err != nil || result.rawText == "" {
 			sr.msg = "-M-"
 			continue
@@ -279,9 +289,21 @@ draining:
 	// Compute bodyHeight from the stations that will be displayed
 	bodyHeight := float32(0)
 	if numRows > 0 {
+		linesDrawn := 0
 		for i := startIdx; i < endIdx; i++ {
+			if linesDrawn >= visibleRows {
+				break
+			}
 			n := stationLineCount[i]
-			bodyHeight += boxTopPad + float32(n)*lineH + boxGap
+			linesToDraw := n
+			if linesDrawn+n > visibleRows {
+				linesToDraw = visibleRows - linesDrawn
+			}
+			if linesToDraw <= 0 {
+				break
+			}
+			bodyHeight += boxTopPad + float32(linesToDraw)*lineH + boxGap
+			linesDrawn += linesToDraw
 		}
 		bodyHeight = max(bodyHeight, lineH+4)
 	}
@@ -502,56 +524,9 @@ draining:
 	}
 
 	// --- Draw METAR list ---
-	bright := ps.WX.Bright
-	if bright < 0 {
-		bright = 0
-	}
-	if bright > 100 {
-		bright = 100
-	}
-
-	var yellowColor renderer.RGB
-	if bright <= 80 {
-		scale := float32(bright) / 80.0
-		yellowColor = renderer.RGB{
-			R: (159.0 / 255.0) * scale,
-			G: (163.0 / 255.0) * scale,
-			B: (9.0 / 255.0) * scale,
-		}
-	} else {
-		scale := float32(bright-80) / 20.0
-		r80 := float32(159.0 / 255.0)
-		r100 := float32(198.0 / 255.0)
-		g80 := float32(163.0 / 255.0)
-		g100 := float32(203.0 / 255.0)
-		b80 := float32(9.0 / 255.0)
-		b100 := float32(11.0 / 255.0)
-		yellowColor = renderer.RGB{
-			R: r80 + (r100-r80)*scale,
-			G: g80 + (g100-g80)*scale,
-			B: b80 + (b100-b80)*scale,
-		}
-	}
-
-	var textColor renderer.RGB
-	if bright <= 80 {
-		scale := float32(bright) / 80.0
-		textColor = renderer.RGB{
-			R: float32(187.0/255.0) * scale,
-			G: float32(187.0/255.0) * scale,
-			B: float32(187.0/255.0) * scale,
-		}
-	} else {
-		scale := float32(bright-80) / 20.0
-		t80 := float32(187.0 / 255.0)
-		t100 := float32(233.0 / 255.0)
-		textColor = renderer.RGB{
-			R: t80 + (t100-t80)*scale,
-			G: t80 + (t100-t80)*scale,
-			B: t80 + (t100-t80)*scale,
-		}
-	}
-	textColor = ps.Brightness.Text.ScaleRGB(textColor)
+	wxBright := radar.Brightness(ps.WX.Bright)
+	yellowColor := wxBright.ScaleRGB(renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0})
+	textColor := ps.Brightness.Text.ScaleRGB(wxBright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}))
 
 	greyBorderColor := renderer.RGB{R: 0.5, G: 0.5, B: 0.5}
 
@@ -694,6 +669,7 @@ draining:
 	}
 
 	// Commit all draw commands
+	transforms.LoadWindowViewingMatrices(cb)
 	trid.GenerateCommands(cb)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
