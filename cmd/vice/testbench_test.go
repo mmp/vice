@@ -312,7 +312,7 @@ func TestProcessWaitForStep(t *testing.T) {
 }
 
 func TestSpeculativeAdvance(t *testing.T) {
-	t.Run("advances through fire-and-forget", func(t *testing.T) {
+	t.Run("does not advance fire-and-forget after command", func(t *testing.T) {
 		tc := &TestBenchCase{
 			Steps: []TestBenchStep{
 				{Command: "S210", ExpectReadback: StringOrArray{"210 knots"}},
@@ -321,13 +321,35 @@ func TestSpeculativeAdvance(t *testing.T) {
 			},
 		}
 		tb := newTestBench(tc)
-		// Simulate step 0 already passed.
 		tb.stepResults[0] = "pass"
 		tb.currentStep = 1
 
 		tb.speculativeAdvance(tc, readbackEvent("AAL123", "210 knots"))
 
-		// Should have advanced past fire-and-forget (step 1) and stopped at step 2.
+		// Should NOT advance: step 0 is a command, not a wait_for.
+		if tb.stepResults[1] != "" {
+			t.Errorf("step 1 result = %q, want empty", tb.stepResults[1])
+		}
+		if tb.currentStep != 1 {
+			t.Errorf("currentStep = %d, want 1", tb.currentStep)
+		}
+	})
+
+	t.Run("advances fire-and-forget after wait_for", func(t *testing.T) {
+		tc := &TestBenchCase{
+			Steps: []TestBenchStep{
+				{WaitFor: "field_in_sight"},
+				{Command: "CVA"},                                                // fire-and-forget after wait
+				{Command: "D050", ExpectReadback: StringOrArray{"5,000"}},
+			},
+		}
+		tb := newTestBench(tc)
+		tb.stepResults[0] = "pass"
+		tb.currentStep = 1
+
+		tb.speculativeAdvance(tc, sim.Event{WrittenText: "field in sight"})
+
+		// Should advance past fire-and-forget (step 1) since previous was wait_for.
 		if tb.stepResults[1] != "pass" {
 			t.Errorf("step 1 result = %q, want pass", tb.stepResults[1])
 		}
@@ -421,12 +443,12 @@ func TestSpeculativeAdvance(t *testing.T) {
 		}
 	})
 
-	t.Run("chains fire-and-forget then wait_for", func(t *testing.T) {
+	t.Run("chains fire-and-forget after wait_for then wait_for", func(t *testing.T) {
 		tc := &TestBenchCase{
 			Steps: []TestBenchStep{
-				{Command: "D050", ExpectReadback: StringOrArray{"5,000"}},
-				{Command: "E{approach}"},                                  // fire-and-forget
-				{Command: "D{if}"},                                        // fire-and-forget
+				{WaitFor: "field_in_sight"},
+				{Command: "E{approach}"},                                  // fire-and-forget after wait
+				{Command: "D{if}"},                                        // fire-and-forget after fire-and-forget
 				{WaitFor: "approach_clearance_request"},
 			},
 		}
@@ -436,7 +458,8 @@ func TestSpeculativeAdvance(t *testing.T) {
 
 		tb.speculativeAdvance(tc, sim.Event{WrittenText: "looking for the approach"})
 
-		// Should chain through both fire-and-forget steps and the wait_for.
+		// Should chain: step 1 advances (prev is wait_for), step 2 advances
+		// (prev is advanced fire-and-forget), step 3 advances (wait_for matches).
 		if tb.currentStep != 4 {
 			t.Errorf("currentStep = %d, want 4", tb.currentStep)
 		}

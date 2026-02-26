@@ -6,6 +6,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
@@ -118,10 +119,11 @@ type TestBenchAircraftSpec struct {
 }
 
 type TestBench struct {
-	client *client.ControlClient
-	lg     *log.Logger
-	config TestBenchConfig
-	events *sim.EventsSubscription
+	client      *client.ControlClient
+	lg          *log.Logger
+	config      TestBenchConfig
+	eventStream *sim.EventStream
+	events      *sim.EventsSubscription
 
 	selectedApproach  int
 	approaches        []testBenchApproachInfo // cached list of available approaches
@@ -171,9 +173,10 @@ type testBenchDepartureInfo struct {
 
 func NewTestBench(c *client.ControlClient, es *sim.EventStream, lg *log.Logger) *TestBench {
 	tb := &TestBench{
-		client: c,
-		lg:     lg,
-		events: es.Subscribe(),
+		client:      c,
+		lg:          lg,
+		eventStream: es,
+		events:      es.Subscribe(),
 	}
 
 	// Load test scenarios via the resource system so the path is
@@ -191,6 +194,40 @@ func NewTestBench(c *client.ControlClient, es *sim.EventStream, lg *log.Logger) 
 
 	tb.refreshSelections()
 	return tb
+}
+
+// Pause releases the event stream subscription so it doesn't pin the
+// EventStream offset while the window is hidden. The TestBench state
+// (spawned aircraft, test progress) is preserved.
+func (tb *TestBench) Pause() {
+	if tb.events != nil {
+		tb.events.Unsubscribe()
+		tb.events = nil
+	}
+}
+
+// Resume re-subscribes to the event stream after a Pause. Events that
+// occurred while paused are lost, but that is acceptable since step
+// processing is only meaningful while the window is visible.
+func (tb *TestBench) Resume() {
+	if tb.events == nil {
+		tb.events = tb.eventStream.Subscribe()
+	}
+}
+
+// Close tears down the TestBench entirely: deletes any spawned aircraft
+// and unsubscribes from events. Called on connection reset.
+func (tb *TestBench) Close() {
+	if len(tb.spawnedAircraft) > 0 {
+		tb.client.DeleteAircraft(tb.spawnedAircraft, func(err error) {
+			if err != nil {
+				tb.lg.Warnf("test bench: close cleanup: %v", err)
+			}
+		})
+		tb.spawnedAircraft = nil
+		tb.spawnedTest = nil
+	}
+	tb.Pause()
 }
 
 func (tb *TestBench) refreshSelections() {
@@ -315,8 +352,8 @@ func (tb *TestBench) resolveStep(tc *TestBenchCase, step TestBenchStep) TestBenc
 		for idx, hdg := range tb.headingMap {
 			placeholder := fmt.Sprintf("{hdg%d}", idx)
 			h := int(hdg+0.5) % 360
-			if h == 0 {
-				h = 360
+			if h <= 0 {
+				h += 360
 			}
 			formatted := fmt.Sprintf("%03d", h)
 			step.Command = strings.ReplaceAll(step.Command, placeholder, formatted)
@@ -350,16 +387,10 @@ func (tb *TestBench) resolveCallsignRef(ref string) string {
 	}
 	// Try "{N}" format.
 	if len(ref) >= 3 && ref[0] == '{' && ref[len(ref)-1] == '}' {
-		inner := ref[1 : len(ref)-1]
-		idx := 0
-		for _, ch := range inner {
-			if ch < '0' || ch > '9' {
-				return ref // not a numeric index
+		if idx, err := strconv.Atoi(ref[1 : len(ref)-1]); err == nil {
+			if cs, ok := tb.callsignMap[idx]; ok {
+				return cs
 			}
-			idx = idx*10 + int(ch-'0')
-		}
-		if cs, ok := tb.callsignMap[idx]; ok {
-			return cs
 		}
 	}
 	return ref
@@ -482,9 +513,6 @@ func (tb *TestBench) resolveRuntimePlaceholders(apInfo testBenchApproachInfo) {
 	}
 }
 
-// validateScenario checks that all placeholders used by a test case can be
-// resolved with the current approach selection. Returns an error message
-// describing the first unresolvable placeholder, or "" if everything is fine.
 // isIMC checks whether the weather at the given airport is IMC.
 func (tb *TestBench) isIMC(airport string) bool {
 	if metar, ok := tb.client.State.METAR[airport]; ok {
@@ -493,6 +521,9 @@ func (tb *TestBench) isIMC(airport string) bool {
 	return false
 }
 
+// validateScenario checks that all placeholders used by a test case can be
+// resolved with the current approach selection. Returns an error message
+// describing the first unresolvable placeholder, or "" if everything is fine.
 func (tb *TestBench) validateScenario(tc *TestBenchCase, apInfo testBenchApproachInfo) string {
 	iaf, ifFix, faf := approachFixNames(apInfo.approach)
 
@@ -563,7 +594,7 @@ func (tb *TestBench) Draw(show *bool, p platform.Platform) {
 	// Process events for readback tracking
 	tb.processEvents()
 
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{400, 200}, imgui.Vec2{800, float32(p.WindowSize()[1]) * 19 / 20})
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{400, 200}, imgui.Vec2{800, float32(p.WindowSize()[1]) * 4 / 5})
 	imgui.BeginV("Test Bench", show, imgui.WindowFlagsAlwaysAutoResize|imgui.WindowFlagsNoCollapse)
 
 	// Approach selector
@@ -672,15 +703,22 @@ func (tb *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 	if tb.spawnedTest == tc && len(tb.spawnedAircraft) > 0 {
 		imgui.SameLine()
 		if imgui.Button("Clear") {
+			clearingTest := tc // capture so the callback doesn't wipe a newer spawn
 			tb.client.DeleteAircraft(tb.spawnedAircraft, func(err error) {
 				if err != nil {
 					tb.lg.Warnf("test bench: clear aircraft: %v", err)
+					if tb.spawnedTest == clearingTest {
+						tb.setError("Clear failed: " + err.Error())
+					}
+					return
+				}
+				if tb.spawnedTest == clearingTest {
+					tb.spawnedAircraft = nil
+					tb.spawnedTest = nil
+					tb.resetTestState()
+					tb.setStatus("Cleared spawned aircraft")
 				}
 			})
-			tb.spawnedAircraft = nil
-			tb.spawnedTest = nil
-			tb.resetTestState()
-			tb.setStatus("Cleared spawned aircraft")
 		}
 	}
 
@@ -850,7 +888,11 @@ func (tb *TestBench) spawnAircraft(tc *TestBenchCase) {
 		return
 	}
 
+	// Seed with all currently live aircraft to avoid callsign collisions.
 	var existingCallsigns []av.ADSBCallsign
+	for cs := range tb.client.State.Tracks {
+		existingCallsigns = append(existingCallsigns, cs)
+	}
 	for i, spec := range tc.Aircraft {
 		acType := spec.AircraftType
 		callsign := spec.Callsign
@@ -1341,9 +1383,19 @@ func (tb *TestBench) speculativeAdvance(tc *TestBenchCase, event sim.Event) {
 				break
 			}
 		} else if len(step.ExpectReadback) == 0 && step.RejectReadback == "" {
-			// Fire-and-forget: advance unconditionally.
-			tb.stepResults[tb.currentStep] = "pass"
-			tb.advanceStep()
+			// Fire-and-forget: only advance if the previous step was a
+			// wait_for or another fire-and-forget that was just advanced
+			// (i.e. not a command the controller still needs to issue).
+			prevStep := tc.Steps[tb.currentStep-1]
+			prevIsWait := prevStep.WaitFor != ""
+			prevIsAdvancedFF := len(prevStep.ExpectReadback) == 0 && prevStep.RejectReadback == "" &&
+				prevStep.Command != "" && tb.stepResults[tb.currentStep-1] == "pass"
+			if prevIsWait || prevIsAdvancedFF {
+				tb.stepResults[tb.currentStep] = "pass"
+				tb.advanceStep()
+			} else {
+				break
+			}
 		} else {
 			// Command step with expected readback — the command hasn't
 			// been issued yet so don't try to match this event's text.

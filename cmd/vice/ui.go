@@ -338,8 +338,14 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		if ui.showTestBench {
 			if ui.testBenchWindow == nil {
 				ui.testBenchWindow = NewTestBench(controlClient, eventStream, lg)
+			} else {
+				ui.testBenchWindow.Resume()
 			}
 			ui.testBenchWindow.Draw(&ui.showTestBench, p)
+		} else if ui.testBenchWindow != nil {
+			// Release the event stream subscription when the window is
+			// hidden so it doesn't pin the EventStream offset.
+			ui.testBenchWindow.Pause()
 		}
 
 		if ui.showMessages {
@@ -384,7 +390,10 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 func uiResetControlClient(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	ui.launchControlWindow = nil
-	ui.testBenchWindow = nil
+	if ui.testBenchWindow != nil {
+		ui.testBenchWindow.Close()
+		ui.testBenchWindow = nil
+	}
 	clear(acknowledgedATIS)
 }
 
