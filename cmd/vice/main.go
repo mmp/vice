@@ -417,7 +417,13 @@ func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log
 	// Check for whisper model errors asynchronously and show dialog if CPU not supported.
 	go func() {
 		if err := client.WhisperModelError(); err != nil {
-			if errors.Is(err, client.ErrCPUNotSupported) {
+			if errors.Is(err, client.ErrWindowsARM) {
+				ShowErrorDialog(plat, lg, "Speech-to-text is unavailable on this computer.\n\n"+
+					"You appear to be running vice on a Windows ARM device (e.g., Snapdragon) "+
+					"using x86 emulation. The speech recognition engine requires native x86 "+
+					"instructions (AVX/AVX2) that cannot be emulated on ARM processors.\n\n"+
+					"You can still use vice, but the push-to-talk voice command feature will not work.")
+			} else if errors.Is(err, client.ErrCPUNotSupported) {
 				ShowErrorDialog(plat, lg, "Speech-to-text is unavailable on this computer.\n\n"+
 					"Your CPU does not support the AVX instruction set, which is required "+
 					"for the speech recognition engine. You can still use vice, but the "+

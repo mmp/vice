@@ -298,9 +298,21 @@ var whisperBenchmarkReported bool
 // instruction sets for speech-to-text (AVX on x86/amd64).
 var ErrCPUNotSupported = errors.New("CPU does not support required instructions for speech-to-text")
 
+// ErrWindowsARM is returned when running on Windows ARM hardware via x86
+// emulation. The whisper library uses AVX/AVX2 instructions that cannot
+// be emulated on ARM.
+var ErrWindowsARM = errors.New("Windows on ARM is not supported for speech-to-text")
+
 // checkCPUSupport verifies that the CPU supports the instruction sets
 // required by the whisper library. Returns an error if not supported.
 func checkCPUSupport() error {
+	// Detect x86 binaries running on Windows ARM via emulation. The
+	// whisper library uses AVX/AVX2 SIMD instructions that Windows'
+	// x86-on-ARM emulation cannot handle, causing crashes.
+	if isWindowsARM() {
+		return ErrWindowsARM
+	}
+
 	// Only x86/amd64 needs AVX support check; ARM uses NEON which is always available.
 	if runtime.GOARCH != "amd64" && runtime.GOARCH != "386" {
 		return nil
@@ -550,7 +562,7 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 
 		// Check CPU compatibility before attempting to load.
 		if err := checkCPUSupport(); err != nil {
-			whisperModelErr = fmt.Errorf("%w (AVX instruction set not available)", ErrCPUNotSupported)
+			whisperModelErr = err
 			lg.Warnf("Speech-to-text unavailable: %v", whisperModelErr)
 			setWhisperBenchmarkStatus("CPU not supported")
 			return
