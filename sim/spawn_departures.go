@@ -599,7 +599,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 	ac.ReportDepartureHeading = exitRoutesHaveVariedHeadings(exitRoutes)
 
 	shortExit := dep.Exit.Base()
-	_, isTRACON := av.DB.TRACONs[s.State.Facility]
+	isTRACON := av.DB.IsTRACON(s.State.Facility)
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeDeparture)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:],

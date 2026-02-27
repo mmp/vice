@@ -452,7 +452,7 @@ func loadSavedSim(mgr *client.ConnectionManager, config *Config,
 	}
 
 	// Notify the active radar pane about the loaded sim
-	_, isSTARSSim := av.DB.TRACONs[c.State.Facility]
+	isSTARSSim := av.DB.IsTRACON(c.State.Facility) || av.DB.IsATCT(c.State.Facility)
 	activeRadarPane := config.ActiveRadarPane(isSTARSSim)
 	activeRadarPane.LoadedSim(c, plat, lg)
 	uiResetControlClient(c, plat, lg)
@@ -557,7 +557,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		func(c *client.ControlClient) { // updated client
 			if c != nil {
 				// Determine if this is a STARS or ERAM scenario
-				_, isSTARSSim := av.DB.TRACONs[c.State.Facility]
+				isSTARSSim := av.DB.IsTRACON(c.State.Facility) || av.DB.IsATCT(c.State.Facility)
 				activeRadarPane = config.ActiveRadarPane(isSTARSSim)
 
 				// Reset each pane for the new sim

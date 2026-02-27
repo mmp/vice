@@ -776,7 +776,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	if sg.ARTCC == "" {
 		if sg.TRACON == "" {
 			e.ErrorString(`"tracon" or "artcc" must be specified`)
-		} else if _, ok := av.DB.TRACONs[sg.TRACON]; !ok {
+		} else if !av.DB.IsFacility(sg.TRACON) {
 			e.ErrorString("TRACON %q is unknown; it must be a 3-letter identifier listed at "+
 				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
 				sg.TRACON)
@@ -1295,15 +1295,11 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			if fix.Altitude[0] > fix.Altitude[1] {
 				e.ErrorString(`bottom altitude "%v" is higher than the top altitude "%v"`, fix.Altitude[0], fix.Altitude[1])
 			}
-			if _, ok := av.DB.TRACONs[fix.ToFacility]; !ok {
-				if _, ok := av.DB.ARTCCs[fix.ToFacility]; !ok {
-					e.ErrorString(`to facility "%v" is invalid`, fix.ToFacility)
-				}
+			if !av.DB.IsFacility(fix.ToFacility) {
+				e.ErrorString(`to facility "%v" is invalid`, fix.ToFacility)
 			}
-			if _, ok := av.DB.TRACONs[fix.FromFacility]; !ok {
-				if _, ok := av.DB.ARTCCs[fix.FromFacility]; !ok {
-					e.ErrorString(`from facility "%v" is invalid`, fix.FromFacility)
-				}
+			if !av.DB.IsFacility(fix.FromFacility) {
+				e.ErrorString(`from facility "%v" is invalid`, fix.FromFacility)
 			}
 			e.Pop()
 		}
@@ -1492,6 +1488,8 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 	if artcc == "" {
 		if info, ok := av.DB.TRACONs[facility]; ok {
 			artcc = info.ARTCC
+		} else if info, ok := av.DB.ATCTs[facility]; ok {
+			artcc = info.ARTCC
 		}
 	}
 
@@ -1610,6 +1608,8 @@ func facilityConfigPath(sg *scenarioGroup) string {
 	if artcc == "" {
 		if info, ok := av.DB.TRACONs[sg.TRACON]; ok {
 			artcc = info.ARTCC
+		} else if info, ok := av.DB.ATCTs[sg.TRACON]; ok {
+			artcc = info.ARTCC
 		}
 	}
 	return "configurations/" + artcc + "/" + facility + ".json"
@@ -1702,6 +1702,8 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 		artcc = neighbor
 	} else if tracon, ok := av.DB.TRACONs[neighbor]; ok {
 		artcc = tracon.ARTCC
+	} else if atct, ok := av.DB.ATCTs[neighbor]; ok {
+		artcc = atct.ARTCC
 	} else {
 		e.Push("Scenario group: " + sg.Name)
 		e.ErrorString("unknown facility %s", neighbor)

@@ -376,7 +376,13 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		}
 	}
 
-	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.Facility].ARTCC, s.LocalCodePool)
+	var facilityARTCC string
+	if tracon, ok := av.DB.TRACONs[config.Facility]; ok {
+		facilityARTCC = tracon.ARTCC
+	} else if atct, ok := av.DB.ATCTs[config.Facility]; ok {
+		facilityARTCC = atct.ARTCC
+	}
+	s.ERAMComputer = makeERAMComputer(facilityARTCC, s.LocalCodePool)
 
 	s.State = newCommonState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, s.Rand, lg)
 	s.ScenarioDefaultConsolidation = config.ControllerConfiguration.DefaultConsolidation
