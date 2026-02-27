@@ -1987,7 +1987,7 @@
                 }
             },
             "configuration": {
-                "config_id": "LGA"
+                "config_id": "LGF"
             },
             "default_maps": [
                 "LGA-HPN ARR/DEP"
@@ -2018,7 +2018,7 @@
                 }
             },
             "configuration": {
-                "config_id": "LGA"
+                "config_id": "LGF"
             },
             "default_maps": [
                 "LGA-HPN ARR/DEP"
@@ -2050,7 +2050,7 @@
                 }
             },
             "configuration": {
-                "config_id": "LGA"
+                "config_id": "LGF"
             },
             "default_maps": [
                 "LGA-HPN ARR/DEP"
@@ -2081,7 +2081,7 @@
                 }
             },
             "configuration": {
-                "config_id": "LGA"
+                "config_id": "LGF"
             },
             "default_maps": [
                 "LGA-HPN ARR/DEP"
@@ -2112,7 +2112,7 @@
                 }
             },
             "configuration": {
-                "config_id": "LGA"
+                "config_id": "LGF"
             },
             "default_maps": [
                 "LGA-HPN ARR/DEP"
@@ -2144,7 +2144,7 @@
                 }
             },
             "configuration": {
-                "config_id": "LGA"
+                "config_id": "LGF"
             },
             "default_maps": [
                 "LGA-HPN ARR/DEP"
@@ -2176,7 +2176,7 @@
                 }
             },
             "configuration": {
-                "config_id": "LGA"
+                "config_id": "LGF"
             },
             "default_maps": [
                 "LGA-HPN ARR/DEP"

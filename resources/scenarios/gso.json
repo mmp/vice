@@ -536,7 +536,7 @@
         "GANTS": {
             "arrivals": [
                 {
-                    "waypoints": "RENZI/ho GANTS/s250/h20",
+                    "waypoints": "RENZI GANTS/s250/h20",
                     "route": "/. GANTS",
                     "initial_controller": "1S",
                     "initial_altitude": 9000,

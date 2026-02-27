@@ -13248,7 +13248,7 @@
         "REDDN4_DN_SF": {
             "arrivals": [
                 {
-                    "waypoints": "HAPNS/a24000-30000/s280/ho1S HEERE JAKCY ORVLL/a9000/s250/ho GBEAR/a6000 REDDN BACHR/h315",
+                    "waypoints": "HAPNS/a24000-30000/s280 HEERE JAKCY ORVLL/a9000/s250/ho GBEAR/a6000 REDDN BACHR/h315",
                     "star": "MNNDO4",
                     "initial_controller": "1S",
                     "initial_altitude": 26000,
@@ -16672,7 +16672,7 @@
         "YEAGR4_DN_NF_JET": {
             "arrivals": [
                 {
-                    "waypoints": "GIFFA/ho1S WEIRS CQY/ho YEAGR/s230 EESAT/h315/tc",
+                    "waypoints": "GIFFA WEIRS CQY/ho YEAGR/s230 EESAT/h315/tc",
                     "star": "YEAGR4",
                     "initial_controller": "1S",
                     "initial_altitude": 8000,

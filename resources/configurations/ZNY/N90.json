@@ -1332,11 +1332,43 @@
                         "1D",
                         "1L",
                         "1F",
-                        "1X",
-                        "1Y"
+                        "1X"
                     ]
                 }
             },
+            "LGF": {
+                "inbound_assignments": {
+                    "Finals-EMPYR-ILS13": "1F",
+                    "Finals-HAARP-ILS13": "1F",
+                    "Finals-EMPYR-ILS22/D13": "1F",
+                    "Finals-HAARP-ILS22": "1F",
+                    "Finals-EMPYR-ILS22/D31": "1F",
+                    "Finals-EMPYR-ILS4": "1F",
+                    "Finals-HAARP-L4/D13": "1F",
+                    "Finals-HAARP-L4/D31": "1F",
+                    "Finals-EMPYR-LOC31": "1F",
+                    "Finals-HAARP-LOC31": "1F",
+                    "Finals-EMPYR-RX31": "1F",
+                    "Finals-HAARP-RX31": "1F"
+                },
+                "default_consolidation": {
+                    "1F": [ ]
+                }
+            },
+          "JFF": {
+                "inbound_assignments": {
+                    "CAMRN/PUCKY1.Finals22": "2A",
+                    "CAMRN/PUCKY1.Finals31": "2A",
+                    "CAMRN5.Finals13": "2A",
+                    "PARCH4.Finals13": "2A",
+                    "PARCH4.Finals22": "2A",
+                    "PARCH4.Finals31": "2A",
+                  "PUCKY1.Finals13": "2A"
+                },
+            "default_consolidation": {
+              "2A": [ ]
+            }
+          },
             "JFK": {
                 "inbound_assignments": {
                     "BOUNO5": "1X",
@@ -1352,13 +1384,6 @@
                     "RICED4": "1X",
                     "VALRE5": "1X",
                     "WRI": "4P",
-                    "CAMRN/PUCKY1.Finals22": "2A",
-                    "CAMRN/PUCKY1.Finals31": "2A",
-                    "CAMRN5.Finals13": "2A",
-                    "PARCH4.Finals13": "2A",
-                    "PARCH4.Finals22": "2A",
-                    "PARCH4.Finals31": "2A",
-                    "PUCKY1.Finals13": "2A",
                     "WRI DIXIE": "5S",
                     "Finals-EMPYR-ILS13": "1F",
                     "Finals-HAARP-ILS13": "1F",
@@ -1586,7 +1611,7 @@
                     ]
                 }
             },
-            "ISP": {
+          "ISP": {
                 "inbound_assignments": {
                     "BOUNO5": "1X",
                     "COATE": "4S",

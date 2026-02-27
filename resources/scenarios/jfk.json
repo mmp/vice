@@ -15845,7 +15845,7 @@
                 }
             },
             "configuration": {
-                "config_id": "JFK"
+                "config_id": "JFF"
             },
             "default_maps": [
                 "JFK ARR/DEP RWY 4L/R"
@@ -15891,7 +15891,7 @@
                 }
             },
             "configuration": {
-                "config_id": "JFK"
+                "config_id": "JFF"
             },
             "default_maps": [
                 "JFK ARR/DEP RWY 13L/R"
@@ -15933,7 +15933,7 @@
                 }
             },
             "configuration": {
-                "config_id": "JFK"
+                "config_id": "JFF"
             },
             "default_maps": [
                 "JFK ARR/DEP RWY 22L/R"
@@ -15975,7 +15975,7 @@
                 }
             },
             "configuration": {
-                "config_id": "JFK"
+                "config_id": "JFF"
             },
             "default_maps": [
                 "JFK ARR/DEP RWY 31L/R"

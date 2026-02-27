@@ -2280,7 +2280,7 @@
         "V267S": {
             "arrivals": [
                 {
-                    "waypoints": "CRG/ho V267 GUANO",
+                    "waypoints": "CRG V267 GUANO",
                     "cruise_altitude": 4000,
                     "initial_controller": "1S",
                     "route": "CRG V267 GUANO",
