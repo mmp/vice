@@ -7107,7 +7107,8 @@
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
                     "speed_restriction": 250,
-                    "expect_approach": null,
+                    "expect_approach": "I2L",
+                    "scratchpad": "I2L",
                     "airlines": {
                         "KJFK": [
                             {
@@ -8348,7 +8349,8 @@
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
                     "speed_restriction": 250,
-                    "expect_approach": null,
+                    "expect_approach": "I1R",
+                    "scratchpad": "I1R",
                     "airlines": {
                         "KJFK": [
                             {
@@ -9589,7 +9591,8 @@
                     "assigned_altitude": 3000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
-                    "expect_approach": null,
+                    "expect_approach": "R3L",
+                    "scratchpad": "R3L",
                     "airlines": {
                         "KJFK": [
                             {
@@ -11931,7 +11934,8 @@
                     "initial_altitude": 13000,
                     "initial_speed": 250,
                     "description": "PUCKY1",
-                    "expect_approach": null,
+                    "expect_approach": "R3L",
+                    "scratchpad": "R3L",
                     "airlines": {
                         "KJFK": [
                             {
@@ -13300,7 +13304,8 @@
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
                     "description": "PARCH4",
-                    "expect_approach": null,
+                    "expect_approach": "I2L",
+                    "scratchpad": "I2L",
                     "airlines": {
                         "KJFK": [
                             {
@@ -13872,7 +13877,8 @@
                     "initial_altitude": 12000,
                     "initial_speed": 250,
                     "description": "PARCH4",
-                    "expect_approach": null,
+                    "expect_approach": "I1R",
+                    "scratchpad": "I1R",
                     "airlines": {
                         "KJFK": [
                             {
@@ -14444,7 +14450,8 @@
                     "initial_altitude": 12000,
                     "initial_speed": 250,
                     "description": "PARCH4",
-                    "expect_approach": null,
+                    "expect_approach": "R3L",
+                    "scratchpad": "R3L",
                     "airlines": {
                         "KJFK": [
                             {
