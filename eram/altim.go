@@ -2,10 +2,6 @@ package eram
 
 import (
 	"fmt"
-	"io"
-	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/mmp/vice/math"
@@ -13,162 +9,44 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/wx"
 )
 
-const altimRefreshInterval = 10 * time.Minute
-
 const altimWindowWidth = float32(207)
-const metarVatsimURLPrefix = "https://metar.vatsim.net/metar.php?id="
 
-// altimMetarResult holds the parsed METAR data for one airport.
-type altimMetarResult struct {
-	icao         string
-	obsTime      time.Time
-	timeStr      string // "HHMM" from METAR observation time
-	altimeter    string // 3-digit string, e.g., "991" for A2991
-	altimeterRaw int    // 4-digit A-setting, e.g., 2991
-	err          error
-}
+// altimMetarForDisplay returns the formatted METAR data for display, extracting
+// the observation time (HHMM) and 3-digit altimeter setting from a wx.METAR object.
+func altimMetarForDisplay(metar wx.METAR) (timeStr string, altStr string, altRaw int) {
+	// Extract HHMM from the METAR observation time
+	timeStr = fmt.Sprintf("%02d%02d", metar.Time.Hour(), metar.Time.Minute())
 
-// parseMETARForAltim extracts the observation time (HHMM) and altimeter
-// (last 3 digits of the A-setting) from a raw METAR string.
-func parseMETARForAltim(raw string) (timeStr string, obsTime time.Time, altStr string, altRaw int, err error) {
-	tokens := strings.Fields(raw)
-	if len(tokens) < 2 {
-		return "", time.Time{}, "", 0, fmt.Errorf("invalid METAR: too few tokens")
+	// Convert altimeter from inHg to 4-digit A-setting format
+	// A-setting is always 4 digits (e.g., 2992, 3012)
+	altRaw = int(metar.Altimeter_inHg() * 100)
+	if altRaw > 0 {
+		// Last 3 digits of the 4-digit A-setting
+		altStr = fmt.Sprintf("%03d", altRaw%1000)
 	}
 
-	// Token[1] is the date/time group, e.g., "201151Z" → extract chars [2:6] = "1151"
-	t := tokens[1]
-	if len(t) >= 7 && strings.HasSuffix(t, "Z") {
-		day, dayErr := strconv.Atoi(t[0:2])
-		hour, hourErr := strconv.Atoi(t[2:4])
-		min, minErr := strconv.Atoi(t[4:6])
-		if dayErr == nil && hourErr == nil && minErr == nil {
-			timeStr = t[2:6]
-			now := time.Now().UTC()
-			obsTime = time.Date(now.Year(), now.Month(), day, hour, min, 0, 0, time.UTC)
-			for i := 0; i < 40 && obsTime.After(now.Add(12*time.Hour)); i++ {
-				obsTime = obsTime.AddDate(0, 0, -1)
-			}
-			for i := 0; i < 40 && obsTime.Before(now.Add(-36*time.Hour)); i++ {
-				obsTime = obsTime.AddDate(0, 0, 1)
-			}
-		}
-	} else if len(t) >= 6 {
-		timeStr = t[2:6]
-	}
-
-	// Find the altimeter setting: token "A" followed by exactly 4 digits.
-	for _, tok := range tokens[2:] {
-		if len(tok) == 5 && tok[0] == 'A' {
-			allDigits := true
-			for _, c := range tok[1:] {
-				if c < '0' || c > '9' {
-					allDigits = false
-					break
-				}
-			}
-			if allDigits {
-				altRaw, _ = strconv.Atoi(tok[1:5])
-				// Display the last 3 digits (e.g., A2991 → "991", A3000 → "000")
-				altStr = tok[2:5]
-				return timeStr, obsTime, altStr, altRaw, nil
-			}
-		}
-	}
-
-	if timeStr != "" {
-		return timeStr, obsTime, "", 0, fmt.Errorf("altimeter not found in METAR")
-	}
-	return "", time.Time{}, "", 0, fmt.Errorf("METAR parse failed")
+	return
 }
 
 // altimDisplayID returns the short display identifier for an ICAO code.
-// US airports (K + 3-letter IATA) drop the leading K for display.
+// US airports (K + 3-letter IATA), Pacific territories (P + 3-letter IATA),
+// and Caribbean territories (T + 3-letter IATA) drop the leading letter for display.
 func altimDisplayID(icao string) string {
-	if len(icao) == 4 && icao[0] == 'K' {
+	if len(icao) == 4 && (icao[0] == 'K' || icao[0] == 'P' || icao[0] == 'T') {
 		return icao[1:]
 	}
 	return icao
 }
 
-// altimFetchMETAR asynchronously fetches and parses a METAR from VATSIM,
-// sending the result to ch when done.
-func altimFetchMETAR(icao string, ch chan<- altimMetarResult) {
-	go func() {
-		url := metarVatsimURLPrefix + icao
-		client := http.Client{Timeout: 5 * time.Second}
-		resp, err := client.Get(url)
-		if err != nil {
-			ch <- altimMetarResult{icao: icao, err: err}
-			return
-		}
-		defer resp.Body.Close()
-
-		switch resp.StatusCode {
-		case http.StatusOK:
-			// continue
-		case http.StatusNotFound:
-			ch <- altimMetarResult{icao: icao, err: fmt.Errorf("METAR not found for %s (HTTP 404)", icao)}
-			return
-		case http.StatusInternalServerError:
-			ch <- altimMetarResult{icao: icao, err: fmt.Errorf("METAR service error for %s (HTTP 500)", icao)}
-			return
-		default:
-			ch <- altimMetarResult{icao: icao, err: fmt.Errorf("METAR request failed for %s (HTTP %d)", icao, resp.StatusCode)}
-			return
-		}
-
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			ch <- altimMetarResult{icao: icao, err: err}
-			return
-		}
-
-		raw := strings.TrimSpace(string(body))
-		timeStr, obsTime, altStr, altRaw, parseErr := parseMETARForAltim(raw)
-		ch <- altimMetarResult{
-			icao:         icao,
-			obsTime:      obsTime,
-			timeStr:      timeStr,
-			altimeter:    altStr,
-			altimeterRaw: altRaw,
-			err:          parseErr,
-		}
-	}()
-}
-
 // drawAltimSetView renders the ALTIM SET floating window.
 func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	// Drain completed fetch results.
-draining:
-	for {
-		select {
-		case result := <-ep.altimSetFetchCh:
-			ep.altimSetMetars[result.icao] = result
-			ep.altimSetLastFetch[result.icao] = time.Now()
-			ep.altimSetFetching[result.icao] = false
-		default:
-			break draining
-		}
-	}
 
 	if !ps.AltimSet.Visible {
 		return
-	}
-
-	// Kick off fetches for airports that need refreshing.
-	for _, icao := range ep.AltimSetAirports {
-		if ep.altimSetFetching[icao] {
-			continue
-		}
-		lastFetch, fetched := ep.altimSetLastFetch[icao]
-		if !fetched || time.Since(lastFetch) > altimRefreshInterval {
-			ep.altimSetFetching[icao] = true
-			altimFetchMETAR(icao, ep.altimSetFetchCh)
-		}
 	}
 
 	// --- Layout ---
@@ -484,8 +362,6 @@ draining:
 		ld.AddLine([2]float32{x, underlineY}, [2]float32{x + textWidth(s), underlineY}, color)
 	}
 
-	now := time.Now().UTC()
-
 	// Multi-column rendering: fill each column with visibleRows items
 	numCols = ps.AltimSet.Col
 	if numCols < 1 {
@@ -539,7 +415,9 @@ draining:
 		}
 
 		displayID := altimDisplayID(icao)
-		result, hasResult := ep.altimSetMetars[icao]
+
+		// Get METAR from the Client.State (pre-populated with active airports)
+		metar, hasMetar := ctx.Client.State.METAR[icao]
 
 		// Calculate position: base column X + column offset
 		colX0 := bodyP0[0] + float32(colIdx)*colWidth
@@ -567,28 +445,15 @@ draining:
 		// Text position
 		boxX1 := rowX0 + boxW
 
-		timeStr := "...."
-		altStr := "..."
-		staleTime := false
-		tooOld := false
 		altBelowStandard := false
 		missingReport := false
-		if hasResult && !ep.altimSetFetching[icao] {
-			if result.timeStr != "" {
-				timeStr = result.timeStr
-			}
-			if !result.obsTime.IsZero() {
-				age := now.Sub(result.obsTime)
-				staleTime = age > 65*time.Minute
-				tooOld = age > 120*time.Minute
-			}
-			altBelowStandard = result.altimeterRaw > 0 && result.altimeterRaw < 2992
-			if result.err == nil && !tooOld && result.altimeter != "" {
-				altStr = result.altimeter
-			} else if result.err != nil || tooOld {
-				missingReport = true
-			}
-		} else if !hasResult {
+		var timeStr string
+		var altStr string
+		var altRaw int
+		if hasMetar {
+			timeStr, altStr, altRaw = altimMetarForDisplay(metar)
+			altBelowStandard = altRaw > 0 && altRaw < 2992
+		} else {
 			missingReport = true
 		}
 
@@ -608,9 +473,6 @@ draining:
 
 		td.AddText(line, textCursor, renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
 
-		if staleTime && timeStr != "...." {
-			underlineText(textCursor[0]+textWidth(prefix), textCursor[1], timeField, textColor)
-		}
 		if altBelowStandard && altStr != "..." {
 			underlineText(textCursor[0]+textWidth(prefix)+textWidth(timeField)+textWidth(mid), textCursor[1], altField, textColor)
 		}

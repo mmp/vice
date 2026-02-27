@@ -9,7 +9,6 @@ package eram
 import (
 	"fmt"
 	"strings"
-	"time"
 	"unicode"
 
 	av "github.com/mmp/vice/aviation"
@@ -980,11 +979,19 @@ func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	if len(airport) == 0 {
 		return CommandStatus{}, NewERAMError("REJECT - AR - MISSING AIRPORT")
 	}
+	if len(airport) != 3 && len(airport) != 4 {
+		return CommandStatus{}, NewERAMError("REJECT - AR - INVALID AIRPORT CODE")
+	}
 
 	// Convert 3-letter IATA to ICAO by prepending K (US convention).
 	icao := airport
 	if len(airport) == 3 {
 		icao = "K" + airport
+	}
+
+	// Confirm airport exists in the database
+	if _, ok := av.DB.Airports[icao]; !ok {
+		return CommandStatus{}, NewERAMError("REJECT - AR - UNKNOWN AIRPORT")
 	}
 
 	// Toggle: if already in the list, remove it.
@@ -1020,6 +1027,9 @@ func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	if len(airport) == 0 {
 		return CommandStatus{}, NewERAMError("REJECT - WR - MISSING AIRPORT")
 	}
+	if len(airport) != 3 && len(airport) != 4 {
+		return CommandStatus{}, NewERAMError("REJECT - WR - INVALID AIRPORT CODE")
+	}
 
 	// Convert 3-letter IATA to ICAO by prepending K (US convention).
 	icao := airport
@@ -1027,7 +1037,10 @@ func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 		icao = "K" + airport
 	}
 
-	// Toggle: if already in the list, remove it.
+	// Confirm airport exists in the database
+	if _, ok := av.DB.Airports[icao]; !ok {
+		return CommandStatus{}, NewERAMError("REJECT - WR - UNKNOWN AIRPORT")
+	}
 	for i, existing := range ep.WXReportStations {
 		if existing == icao {
 			ep.WXReportStations = append(ep.WXReportStations[:i], ep.WXReportStations[i+1:]...)
@@ -1055,10 +1068,13 @@ func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 
 // WR R - WX REPORT Display (show METAR in Response Area)
 
-func handleWXReportDisplay(ep *ERAMPane, airport string) (CommandStatus, error) {
+func handleWXReportDisplay(ep *ERAMPane, ctx *panes.Context, airport string) (CommandStatus, error) {
 	airport = strings.ToUpper(strings.TrimSpace(airport))
 	if len(airport) == 0 {
 		return CommandStatus{}, NewERAMError("REJECT - WR R - MISSING AIRPORT")
+	}
+	if len(airport) != 3 && len(airport) != 4 {
+		return CommandStatus{}, NewERAMError("REJECT - WR R - INVALID AIRPORT CODE")
 	}
 
 	// Convert 3-letter IATA to ICAO by prepending K (US convention).
@@ -1067,41 +1083,18 @@ func handleWXReportDisplay(ep *ERAMPane, airport string) (CommandStatus, error) 
 		icao = "K" + airport
 	}
 
-	// Drain any completed async fetches so display state is up-to-date
-	for {
-		select {
-		case result := <-ep.wxFetchCh:
-			ep.wxMetars[result.icao] = result
-			ep.wxLastFetch[result.icao] = time.Now()
-			ep.wxFetching[result.icao] = false
-		default:
-			goto drained
-		}
-	}
-drained:
-
-	// Trigger fetch if not already done or stale
-	if !ep.wxFetching[icao] {
-		lastFetch, fetched := ep.wxLastFetch[icao]
-		if !fetched || time.Since(lastFetch) > wxRefreshInterval {
-			ep.wxFetching[icao] = true
-			wxFetchMETAR(icao, ep.wxFetchCh)
-		}
+	// Confirm airport exists in the database
+	if _, ok := av.DB.Airports[icao]; !ok {
+		return CommandStatus{}, NewERAMError("REJECT - WR R - UNKNOWN AIRPORT")
 	}
 
-	// Look for the METAR result
-	result, hasResult := ep.wxMetars[icao]
+	// Get METAR from the pre-populated wx system
+	metar, hasMetar := ctx.Client.State.METAR[icao]
 
 	// Determine what to display
 	var displayText string
-	if hasResult {
-		if result.err != nil {
-			displayText = fmt.Sprintf("ERROR\n%s\nWEATHER REQUEST\n%s", icao, result.err.Error())
-		} else {
-			displayText = result.rawText
-		}
-	} else if ep.wxFetching[icao] {
-		displayText = fmt.Sprintf("LOADING\n%s", icao)
+	if hasMetar && metar.Raw != "" {
+		displayText = metar.Raw
 	} else {
 		displayText = fmt.Sprintf("NO DATA\n%s", icao)
 	}

@@ -2,8 +2,6 @@ package eram
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 	"strings"
 	"time"
 
@@ -15,96 +13,23 @@ import (
 )
 
 const wxWindowWidth = float32(320)
-const wxRefreshInterval = 10 * time.Minute
-
-// wxMetarResult holds the raw METAR data for one airport.
-type wxMetarResult struct {
-	icao    string
-	rawText string // Full METAR text
-	err     error
-}
 
 // wxDisplayID returns the short display identifier for an ICAO code.
-// US airports (K + 3-letter IATA) drop the leading K for display.
+// US airports (K + 3-letter IATA), Pacific territories (P + 3-letter IATA),
+// and Caribbean territories (T + 3-letter IATA) drop the leading letter for display.
 func wxDisplayID(icao string) string {
-	if len(icao) == 4 && icao[0] == 'K' {
+	if len(icao) == 4 && (icao[0] == 'K' || icao[0] == 'P' || icao[0] == 'T') {
 		return icao[1:]
 	}
 	return icao
 }
 
-// wxFetchMETAR asynchronously fetches a full METAR from VATSIM,
-// sending the result to ch when done.
-func wxFetchMETAR(icao string, ch chan<- wxMetarResult) {
-	go func() {
-		url := metarVatsimURLPrefix + icao
-		client := http.Client{Timeout: 5 * time.Second}
-		resp, err := client.Get(url)
-		if err != nil {
-			ch <- wxMetarResult{icao: icao, err: err}
-			return
-		}
-		defer resp.Body.Close()
-
-		switch resp.StatusCode {
-		case http.StatusOK:
-			// continue
-		case http.StatusNotFound:
-			ch <- wxMetarResult{icao: icao, err: fmt.Errorf("METAR not found for %s (HTTP 404)", icao)}
-			return
-		case http.StatusInternalServerError:
-			ch <- wxMetarResult{icao: icao, err: fmt.Errorf("METAR service error for %s (HTTP 500)", icao)}
-			return
-		default:
-			ch <- wxMetarResult{icao: icao, err: fmt.Errorf("METAR request failed for %s (HTTP %d)", icao, resp.StatusCode)}
-			return
-		}
-
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			ch <- wxMetarResult{icao: icao, err: err}
-			return
-		}
-
-		raw := strings.TrimSpace(string(body))
-		ch <- wxMetarResult{
-			icao:    icao,
-			rawText: raw,
-			err:     nil,
-		}
-	}()
-}
-
 // drawWXView renders the WX floating window.
 func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	// Drain completed fetch results
-draining:
-	for {
-		select {
-		case result := <-ep.wxFetchCh:
-			ep.wxMetars[result.icao] = result
-			ep.wxLastFetch[result.icao] = time.Now()
-			ep.wxFetching[result.icao] = false
-		default:
-			break draining
-		}
-	}
 
 	if !ps.WX.Visible {
 		return
-	}
-
-	// Kick off fetches for airports that need refreshing
-	for _, icao := range ep.WXReportStations {
-		if ep.wxFetching[icao] {
-			continue
-		}
-		lastFetch, fetched := ep.wxLastFetch[icao]
-		if !fetched || time.Since(lastFetch) > wxRefreshInterval {
-			ep.wxFetching[icao] = true
-			wxFetchMETAR(icao, ep.wxFetchCh)
-		}
 	}
 
 	// --- Font setup ---
@@ -176,16 +101,18 @@ draining:
 		firstLineAvailW := width - (metarStartX - p0[0]) - 4
 		contLineAvailW := width - (stationIDX - p0[0]) - 4
 
-		result := ep.wxMetars[icao]
+		// Get METAR from vice's wx system
+		metar, hasMetar := ctx.Client.State.METAR[icao]
 		sr := &stationRenders[i]
-		if result.err != nil || result.rawText == "" {
+		if !hasMetar || metar.Raw == "" {
 			sr.msg = "-M-"
 			continue
 		}
 
+		// Parse the raw METAR string for display
 		// Find the time-group token: all digits followed by 'Z' (e.g. "220100Z").
 		// Using strings.Index would wrongly match the 'Z' inside station IDs like "CYYZ".
-		rawFields := strings.Fields(result.rawText)
+		rawFields := strings.Fields(metar.Raw)
 		timeField := -1
 		for j, f := range rawFields {
 			if len(f) >= 5 && f[len(f)-1] == 'Z' {

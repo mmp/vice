@@ -587,13 +587,8 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			ps := ep.currentPrefs()
 			altimActive := ps.AltimSet.Visible || ep.altimSetMenuOpen
 			if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, altimActive, false) {
-				if ps.AltimSet.Visible {
-					ps.AltimSet.Visible = false
-					ep.altimSetMenuOpen = false
-				} else {
-					ps.AltimSet.Visible = true
-					ep.altimSetMenuOpen = false
-				}
+				ep.altimSetMenuOpen = false
+				ps.AltimSet.Visible = !ps.AltimSet.Visible
 			}
 		}
 
@@ -668,13 +663,8 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			wxPs := ep.currentPrefs()
 			wxActive := wxPs.WX.Visible || ep.wxMenuOpen
 			if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, wxActive, false) {
-				if wxPs.WX.Visible {
-					wxPs.WX.Visible = false
-					ep.wxMenuOpen = false
-				} else {
-					wxPs.WX.Visible = true
-					ep.wxMenuOpen = false
-				}
+				ep.wxMenuOpen = false
+				wxPs.WX.Visible = !wxPs.WX.Visible
 			}
 		}
 		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
@@ -2320,13 +2310,8 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	display := ep.getTornOffButtonText(buttonName)
 	switch cleanButtonName(display) {
 	case "ALTIM\nSET", "ALTIM SET", "ALTIMSET":
-		if ps.AltimSet.Visible {
-			ps.AltimSet.Visible = false
-			ep.altimSetMenuOpen = false
-		} else {
-			ps.AltimSet.Visible = true
-			ep.altimSetMenuOpen = false
-		}
+		ep.altimSetMenuOpen = false
+		ps.AltimSet.Visible = !ps.AltimSet.Visible
 	case "DRAW":
 		// Handle DRAW button
 	case "ATC\nTOOLS":
@@ -2372,13 +2357,8 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	case "PREFSET":
 		// Handle PREFSET
 	case "WX\nREPORT", "WX REPORT", "WXREPORT":
-		if ps.WX.Visible {
-			ps.WX.Visible = false
-			ep.wxMenuOpen = false
-		} else {
-			ps.WX.Visible = true
-			ep.wxMenuOpen = false
-		}
+		ep.wxMenuOpen = false
+		ps.WX.Visible = !ps.WX.Visible
 	case "CRR\nFIX":
 		ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
 	case "DELETE\nTEAROFF":

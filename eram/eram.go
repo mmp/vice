@@ -147,28 +147,20 @@ type ERAMPane struct {
 	crrDragOffset    [2]float32                                   `json:"-"`
 
 	// ALTIM SET state (session)
-	AltimSetAirports     []string                    `json:"AltimSetAirports,omitempty"`
-	altimSetScrollOffset int                         `json:"-"`
-	altimSetMenuOpen     bool                        `json:"-"`
-	altimSetMetars       map[string]altimMetarResult `json:"-"`
-	altimSetLastFetch    map[string]time.Time        `json:"-"`
-	altimSetFetching     map[string]bool             `json:"-"`
-	altimSetFetchCh      chan altimMetarResult       `json:"-"`
-	altimSetReposition   bool                        `json:"-"`
-	altimSetRepoStart    time.Time                   `json:"-"`
-	altimSetDragOffset   [2]float32                  `json:"-"`
+	AltimSetAirports     []string   `json:"AltimSetAirports,omitempty"`
+	altimSetScrollOffset int        `json:"-"`
+	altimSetMenuOpen     bool       `json:"-"`
+	altimSetReposition   bool       `json:"-"`
+	altimSetRepoStart    time.Time  `json:"-"`
+	altimSetDragOffset   [2]float32 `json:"-"`
 
 	// WX window state (session)
-	WXReportStations []string                 `json:"WXReportStations,omitempty"`
-	wxScrollOffset   int                      `json:"-"`
-	wxMenuOpen       bool                     `json:"-"`
-	wxMetars         map[string]wxMetarResult `json:"-"`
-	wxLastFetch      map[string]time.Time     `json:"-"`
-	wxFetching       map[string]bool          `json:"-"`
-	wxFetchCh        chan wxMetarResult       `json:"-"`
-	wxReposition     bool                     `json:"-"`
-	wxRepoStart      time.Time                `json:"-"`
-	wxDragOffset     [2]float32               `json:"-"`
+	WXReportStations []string   `json:"WXReportStations,omitempty"`
+	wxScrollOffset   int        `json:"-"`
+	wxMenuOpen       bool       `json:"-"`
+	wxReposition     bool       `json:"-"`
+	wxRepoStart      time.Time  `json:"-"`
+	wxDragOffset     [2]float32 `json:"-"`
 
 	commandMode       CommandMode     `json:"-"`
 	drawRouteAircraft av.ADSBCallsign `json:"-"`
@@ -207,32 +199,6 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	}
 	if ep.crrAircraftRects == nil {
 		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
-	}
-
-	if ep.altimSetMetars == nil {
-		ep.altimSetMetars = make(map[string]altimMetarResult)
-	}
-	if ep.altimSetLastFetch == nil {
-		ep.altimSetLastFetch = make(map[string]time.Time)
-	}
-	if ep.altimSetFetching == nil {
-		ep.altimSetFetching = make(map[string]bool)
-	}
-	if ep.altimSetFetchCh == nil {
-		ep.altimSetFetchCh = make(chan altimMetarResult, 32)
-	}
-
-	if ep.wxMetars == nil {
-		ep.wxMetars = make(map[string]wxMetarResult)
-	}
-	if ep.wxLastFetch == nil {
-		ep.wxLastFetch = make(map[string]time.Time)
-	}
-	if ep.wxFetching == nil {
-		ep.wxFetching = make(map[string]bool)
-	}
-	if ep.wxFetchCh == nil {
-		ep.wxFetchCh = make(chan wxMetarResult, 32)
 	}
 
 	ep.events = es.Subscribe()
