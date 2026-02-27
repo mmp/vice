@@ -309,7 +309,7 @@ func (c *NewSimConfiguration) fetchMETAR() {
 // loadAtmosphericData loads atmospheric data for the current facility and determines
 // the appropriate winds aloft altitudes based on whether it's a TRACON or ARTCC.
 func (c *NewSimConfiguration) loadAtmosphericData() {
-	_, c.isTRACON = av.DB.TRACONs[c.Facility]
+	c.isTRACON = av.DB.IsTRACON(c.Facility)
 
 	// Set altitudes based on facility type:
 	// - TRACON: single altitude at 5,000' (representative of terminal area traffic)
@@ -423,6 +423,9 @@ func getARTCCForFacility(facility string, catalog *server.ScenarioCatalog) strin
 	if traconInfo, ok := av.DB.TRACONs[facility]; ok {
 		return traconInfo.ARTCC
 	}
+	if atctInfo, ok := av.DB.ATCTs[facility]; ok {
+		return atctInfo.ARTCC
+	}
 	return facility
 }
 
@@ -445,17 +448,15 @@ func trimFacilityName(name, facilityType string) string {
 func formatFacilityLabel(facility string) string {
 	if traconInfo, ok := av.DB.TRACONs[facility]; ok {
 		name := trimFacilityName(traconInfo.Name, "TRACON")
-		if name == "" {
-			return facility
-		}
-		return fmt.Sprintf("%s (%s)", facility, name)
+		return util.Select(name == "", facility, fmt.Sprintf("%s (%s)", facility, name))
+	}
+	if atctInfo, ok := av.DB.ATCTs[facility]; ok {
+		name := trimFacilityName(atctInfo.Name, "ATCT")
+		return util.Select(name == "", facility, fmt.Sprintf("%s (%s)", facility, name))
 	}
 	if artccInfo, ok := av.DB.ARTCCs[facility]; ok {
 		name := trimFacilityName(artccInfo.Name, "ARTCC")
-		if name == "" {
-			return facility
-		}
-		return fmt.Sprintf("%s (%s)", facility, name)
+		return util.Select(name == "", facility, fmt.Sprintf("%s (%s)", facility, name))
 	}
 	return facility
 }
@@ -463,7 +464,7 @@ func formatFacilityLabel(facility string) string {
 // getAreaKey returns the area identifier for grouping scenarios.
 // For TRACONs, returns the groupName; for ARTCCs, returns the trimmed Area field.
 func getAreaKey(facility, groupName string, catalog *server.ScenarioCatalog) string {
-	if _, isTRACON := av.DB.TRACONs[facility]; isTRACON {
+	if av.DB.IsTRACON(facility) || av.DB.IsARTCC(facility) {
 		return groupName
 	}
 	return trimFacilityName(catalog.Area, "Area")
@@ -815,7 +816,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 
 					// Build area/group structure for this facility, only including matching catalogs
 					catalogs := catalogsByFacility[facility]
-					_, isTRACON := av.DB.TRACONs[facility]
+					isTRACON := av.DB.IsTRACON(facility)
 					areaToGroups := make(map[string]*areaInfo)
 
 					for groupName, gcfg := range catalogs {

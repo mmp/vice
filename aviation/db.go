@@ -1,4 +1,4 @@
-// pkg/aviation/db.go
+// aviation/db.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -50,6 +50,7 @@ type StaticDatabase struct {
 	MagneticGrid        MagneticGrid
 	ARTCCs              map[string]ARTCC
 	TRACONs             map[string]TRACON
+	ATCTs               map[string]ATCT
 	MVAs                map[string][]MVA // TRACON -> MVAs
 	ERAMAdaptations     map[string]ERAMAdaptation
 	BravoAirspace       map[string][]AirspaceVolume
@@ -90,6 +91,8 @@ type TRACON struct {
 	Facility
 	ARTCC string
 }
+
+type ATCT TRACON
 
 type Navaid struct {
 	Id       string
@@ -175,11 +178,14 @@ func (d StaticDatabase) LookupAirport(name string) (FAAAirport, bool) {
 	return FAAAirport{}, false
 }
 
-// LookupFacility returns a Facility for the given id, checking both
-// TRACONs and ARTCCs.
+// LookupFacility returns a Facility for the given id, checking
+// TRACONs, ATCTs, and ARTCCs.
 func (d StaticDatabase) LookupFacility(id string) (Facility, bool) {
 	if tracon, ok := d.TRACONs[id]; ok {
 		return tracon.Facility, true
+	}
+	if atct, ok := d.ATCTs[id]; ok {
+		return atct.Facility, true
 	}
 	if artcc, ok := d.ARTCCs[id]; ok {
 		return artcc, true
@@ -187,13 +193,23 @@ func (d StaticDatabase) LookupFacility(id string) (Facility, bool) {
 	return Facility{}, false
 }
 
-// IsFacility returns true if id is a known TRACON or ARTCC.
+// IsFacility returns true if id is a known ARTCC, TRACON, or ATCT.
 func (d StaticDatabase) IsFacility(id string) bool {
+	return d.IsARTCC(id) || d.IsTRACON(id) || d.IsATCT(id)
+}
+
+func (d StaticDatabase) IsARTCC(id string) bool {
+	_, ok := d.ARTCCs[id]
+	return ok
+}
+
+func (d StaticDatabase) IsTRACON(id string) bool {
 	_, ok := d.TRACONs[id]
-	if ok {
-		return true
-	}
-	_, ok = d.ARTCCs[id]
+	return ok
+}
+
+func (d StaticDatabase) IsATCT(id string) bool {
+	_, ok := d.ATCTs[id]
 	return ok
 }
 
@@ -312,7 +328,7 @@ func InitDB() {
 	var hpfEnroute map[string][]Hold
 	wg.Go(func() { hpfEnroute = parseHPF() })
 	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
-	wg.Go(func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs() })
+	wg.Go(func() { db.ARTCCs, db.TRACONs, db.ATCTs = parseFacilities() })
 	wg.Go(func() { db.MVAs = parseMVAs() })
 	wg.Go(func() { db.ERAMAdaptations = parseAdaptations() })
 	wg.Go(func() {
@@ -954,7 +970,7 @@ func parseMVAs() map[string][]MVA {
 	return mvas
 }
 
-func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
+func parseFacilities() (map[string]ARTCC, map[string]TRACON, map[string]ATCT) {
 	ar := util.LoadResource("artccs.json")
 	defer ar.Close()
 	var artccs map[string]ARTCC
@@ -983,7 +999,23 @@ func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
 		}
 	}
 
-	return artccs, tracons
+	at := util.LoadResource("atcts.json")
+	defer at.Close()
+	var atcts map[string]ATCT
+	if err := util.UnmarshalJSON(at, &atcts); err != nil {
+		fmt.Fprintf(os.Stderr, "atcts.json: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Validate that all of the ATCT ARTCCs are known.
+	for name, atct := range atcts {
+		if _, ok := artccs[atct.ARTCC]; !ok {
+			fmt.Fprintln(os.Stderr, atct.ARTCC+": ARTCC unknown for ATCT "+name)
+			os.Exit(1)
+		}
+	}
+
+	return artccs, tracons, atcts
 }
 
 func parseAdaptations() map[string]ERAMAdaptation {
@@ -1174,17 +1206,20 @@ func (t *TFRCache) Sync(timeout time.Duration, lg *log.Logger) {
 func (t *TFRCache) TFRsForTRACON(tracon string, lg *log.Logger) []TFR {
 	t.Sync(3*time.Second, lg)
 
-	if tr, ok := DB.TRACONs[tracon]; !ok {
-		return nil
+	var artcc string
+	if tr, ok := DB.TRACONs[tracon]; ok {
+		artcc = tr.ARTCC
 	} else {
-		var tfrs []TFR
-		for _, tfr := range util.SortedMap(t.TFRs) {
-			if tfr.ARTCC == tr.ARTCC {
-				tfrs = append(tfrs, tfr)
-			}
-		}
-		return tfrs
+		return nil
 	}
+
+	var tfrs []TFR
+	for _, tfr := range util.SortedMap(t.TFRs) {
+		if tfr.ARTCC == artcc {
+			tfrs = append(tfrs, tfr)
+		}
+	}
+	return tfrs
 }
 
 type TFRListJSON struct {

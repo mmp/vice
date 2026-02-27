@@ -1292,7 +1292,7 @@ func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.Sco
 		return
 	}
 
-	tracon, ok := av.DB.TRACONs[ctx.Client.State.Facility]
+	facility, ok := av.DB.LookupFacility(ctx.Client.State.Facility)
 	if !ok {
 		return
 	}
@@ -1301,7 +1301,7 @@ func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.Sco
 	ld := renderer.GetLinesDrawBuilder()
 	defer renderer.ReturnLinesDrawBuilder(ld)
 
-	ld.AddLatLongCircle(tracon.Center(), ctx.NmPerLongitude, tracon.Radius, 360)
+	ld.AddLatLongCircle(facility.Center(), ctx.NmPerLongitude, facility.Radius, 360)
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
