@@ -175,6 +175,16 @@ func TestE2E_STTToSim(t *testing.T) {
 			// Step 3: Set up sim and aircraft
 			s := sim.NewTestSim(lg)
 			runway := guessRunway(commands)
+
+			// CVA/EVA runway validation and visual-path setup use av.DB runway data.
+			av.DB.Airports["KJFK"] = av.FAAAirport{
+				Id:        "KJFK",
+				Elevation: 13,
+				Runways: []av.Runway{
+					{Id: runway, Heading: 180, Threshold: [2]float32{0, 0}, Elevation: 13},
+				},
+			}
+
 			ac := sim.MakeTestAircraft(av.ADSBCallsign(callsign), runway)
 			s.Aircraft[av.ADSBCallsign(callsign)] = ac
 

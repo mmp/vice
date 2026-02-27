@@ -619,6 +619,20 @@ func (nav *Nav) ClearedDirectVisual(runway string, simTime time.Time) (av.Comman
 	nav.Heading = NavHeading{}
 	nav.DeferredNavHeading = nil
 
+	// Synthesize an Approach so downstream consumers (go-around,
+	// spacing checks, landing bookkeeping, departure scheduling) have
+	// the runway data they need.
+	rwy, _ := av.LookupRunway(nav.FlightState.ArrivalAirport.Fix, runway)
+	opp, _ := av.LookupOppositeRunway(nav.FlightState.ArrivalAirport.Fix, runway)
+	nav.Approach.Assigned = &av.Approach{
+		Id:                "V" + runway,
+		FullName:          "Visual Approach Runway " + runway,
+		Runway:            runway,
+		Threshold:         rwy.Threshold,
+		OppositeThreshold: opp.Threshold,
+	}
+	nav.Approach.AssignedId = "V" + runway
+
 	// Mark as cleared and allow descent.
 	nav.Approach.Cleared = true
 	nav.Altitude = NavAltitude{}

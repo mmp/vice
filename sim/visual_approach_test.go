@@ -1080,6 +1080,58 @@ func TestScenarioCVARefusedWithoutFieldInSight(t *testing.T) {
 	}
 }
 
+func TestScenarioCVAInvalidRunwayDoesNotGoAround(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc, Elevation: 13})
+
+	vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
+	vs.AC.FieldInSight = true
+
+	intent, err := vs.ClearedVisual("99")
+	if err != nil {
+		t.Fatalf("expected nil error (unable is an intent, not an error), got %v", err)
+	}
+	if _, ok := intent.(av.UnableIntent); !ok {
+		t.Fatalf("expected UnableIntent on invalid runway, got %T", intent)
+	}
+	if vs.AC.WentAround {
+		t.Fatal("invalid runway should not trigger go-around")
+	}
+}
+
+func TestScenarioCVACancelsPendingInitialContact(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc, Elevation: 13})
+
+	vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
+	vs.AC.FieldInSight = true
+
+	tcp := TCP(vs.AC.ControllerFrequency)
+	vs.Sim.PendingContacts[tcp] = []PendingContact{
+		{
+			ADSBCallsign: vs.callsign,
+			TCP:          tcp,
+			Type:         PendingTransmissionArrival,
+			ReadyTime:    vs.Sim.State.SimTime,
+		},
+	}
+
+	intent, err := vs.ClearedVisual("13L")
+	if err != nil {
+		t.Fatalf("ClearedVisual error: %v", err)
+	}
+	if intent == nil {
+		t.Fatal("expected non-nil intent from CVA")
+	}
+
+	for _, pc := range vs.Sim.PendingContacts[tcp] {
+		if pc.ADSBCallsign == vs.callsign &&
+			(pc.Type == PendingTransmissionArrival || pc.Type == PendingTransmissionDeparture) {
+			t.Fatal("expected pending initial contact to be canceled after CVA")
+		}
+	}
+}
+
 func TestScenarioAPInIMC(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
 	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc, Elevation: 13})

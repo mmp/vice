@@ -1672,12 +1672,32 @@ func (s *Sim) ClearedVisualApproach(tcw TCW, callsign av.ADSBCallsign, runway st
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControlledAircraftCommand(tcw, callsign,
+	intent, err := s.dispatchAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) error {
+			if !s.TCWCanCommandAircraft(tcw, ac) {
+				return av.ErrOtherControllerHasTrack
+			}
+			// Resolve runway: fall back to assigned approach runway.
+			if runway == "" {
+				if ac.Nav.Approach.Assigned != nil {
+					runway = ac.Nav.Approach.Assigned.Runway
+				} else {
+					return av.ErrUnknownRunway
+				}
+			}
+			return nil
+		},
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			// Pilot must have the field or preceding traffic in sight
 			// before accepting a visual approach clearance.
 			if !ac.FieldInSight && !ac.RequestedVisual && !ac.TrafficInSight {
 				return av.MakeUnableIntent("unable, we don't have the field in sight")
+			}
+
+			// Validate runway before attempting the approach so an
+			// invalid runway produces an "unable" rather than a go-around.
+			if _, ok := av.LookupRunway(ac.FlightPlan.ArrivalAirport, runway); !ok {
+				return av.MakeUnableIntent("unable, we don't know runway " + runway)
 			}
 
 			// Clear direct to the runway.
@@ -1690,6 +1710,14 @@ func (s *Sim) ClearedVisualApproach(tcw TCW, callsign av.ADSBCallsign, runway st
 			ac.ApproachTCP = TCP(ac.ControllerFrequency)
 			return intent
 		})
+
+	// Keep parity with dispatchControlledAircraftCommand behavior:
+	// any successfully-dispatched command (even an "unable" intent)
+	// suppresses stale initial check-ins.
+	if err == nil {
+		s.cancelPendingInitialContact(callsign)
+	}
+	return intent, err
 }
 
 func (s *Sim) InterceptLocalizer(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
@@ -1924,6 +1952,11 @@ func (s *Sim) checkDelayedFieldInSight(ac *Aircraft) {
 	}
 
 	ac.FieldLookingUntil = time.Time{}
+
+	// Already acquired — don't send a duplicate report.
+	if ac.FieldInSight {
+		return
+	}
 
 	if ac.ControllerFrequency == "" {
 		return
@@ -3159,8 +3192,12 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.CancelApproachClearance(tcw, callsign)
 		} else if command == "CVS" {
 			return s.ClimbViaSID(tcw, callsign)
-		} else if strings.HasPrefix(command, "CVA") && len(command) > 3 {
-			return s.ClearedVisualApproach(tcw, callsign, command[3:])
+		} else if strings.HasPrefix(command, "CVA") {
+			runway := ""
+			if len(command) > 3 {
+				runway = command[3:]
+			}
+			return s.ClearedVisualApproach(tcw, callsign, runway)
 		} else if command == "CSI" || (strings.HasPrefix(command, "CSI") && !util.IsAllNumbers(command[3:])) {
 			return s.ClearedApproach(tcw, callsign, command[3:], true)
 		} else if components := strings.Split(command, "/"); len(components) > 1 {
