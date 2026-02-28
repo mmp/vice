@@ -361,7 +361,9 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	}
 
 	passedWaypoint := false
-	if wp.FlyOver() || nav.Prespawn {
+	if wp.FlyOver() || wp.ProcedureTurn() != nil || nav.Prespawn {
+		// Waypoints with procedure turns are implicitly "fly over"; we also treat all wps as
+		// flyover during the prespawn phase to avoid the expense of shouldTurnForOutbound.
 		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
 		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, av.TurnClosest, wxs)
