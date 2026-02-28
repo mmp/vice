@@ -1378,29 +1378,30 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 			break
 		}
 
-		// Which way are we turning as we depart p0? Use either the
-		// previous waypoint or the next one after the end of the arc
-		// to figure it out.
-		var v0, v1 [2]float32
-		p0 := math.LL2NM(wa[i].Location, nmPerLongitude)
-		p1 := math.LL2NM(wa[i+1].Location, nmPerLongitude)
-		if i > 0 {
-			v0 = math.Sub2f(p0, math.LL2NM(wa[i-1].Location, nmPerLongitude))
-			v1 = math.Sub2f(p1, p0)
-		} else {
-			if i+2 == len(wa) {
-				if e != nil {
-					e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
-					e.Pop()
+		if wa[i].Arc().Direction == DMEArcDirectionUnset {
+			// Direction wasn't explicitly provided (e.g., from CIFP turn
+			// direction); infer it from the surrounding waypoints.
+			var v0, v1 [2]float32
+			p0 := math.LL2NM(wa[i].Location, nmPerLongitude)
+			p1 := math.LL2NM(wa[i+1].Location, nmPerLongitude)
+			if i > 0 {
+				v0 = math.Sub2f(p0, math.LL2NM(wa[i-1].Location, nmPerLongitude))
+				v1 = math.Sub2f(p1, p0)
+			} else {
+				if i+2 == len(wa) {
+					if e != nil {
+						e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
+						e.Pop()
+					}
+					continue
 				}
-				continue
+				v0 = math.Sub2f(p1, p0)
+				v1 = math.Sub2f(math.LL2NM(wa[i+2].Location, nmPerLongitude), p1)
 			}
-			v0 = math.Sub2f(p1, p0)
-			v1 = math.Sub2f(math.LL2NM(wa[i+2].Location, nmPerLongitude), p1)
+			// cross product
+			x := v0[0]*v1[1] - v0[1]*v1[0]
+			wa[i].InitExtra().Arc.Direction = util.Select(x < 0, DMEArcDirectionClockwise, DMEArcDirectionCounterClockwise)
 		}
-		// cross product
-		x := v0[0]*v1[1] - v0[1]*v1[0]
-		wa[i].InitExtra().Arc.Clockwise = x < 0
 
 		if !wa[i].Extra.Arc.Initialize(loc, wa[i].Location, wa[i+1].Location, nmPerLongitude, magneticVariation, e) {
 			wa[i].Extra.Arc = nil
@@ -1640,7 +1641,19 @@ func (a AltitudeRestriction) Encoded() string {
 ///////////////////////////////////////////////////////////////////////////
 // DMEArc
 
-// Can either be specified with (Fix,Radius), or (Length,Clockwise); the
+type DMEArcDirection int
+
+const (
+	DMEArcDirectionUnset            DMEArcDirection = iota
+	DMEArcDirectionClockwise                        // right turn
+	DMEArcDirectionCounterClockwise                 // left turn
+)
+
+func (d DMEArcDirection) IsClockwise() bool {
+	return d == DMEArcDirectionClockwise
+}
+
+// Can either be specified with (Fix,Radius), or (Length,Direction); the
 // remaining fields are then derived from those.
 type DMEArc struct {
 	Fix            string
@@ -1648,11 +1661,11 @@ type DMEArc struct {
 	Radius         float32
 	Length         float32
 	InitialHeading float32
-	Clockwise      bool
+	Direction      DMEArcDirection
 }
 
 // Initialize resolves the arc's center, radius, and initial heading from
-// its specification. Clockwise must be set before calling. startLoc and
+// its specification. Direction must be set before calling. startLoc and
 // endLoc are the waypoint positions at each end of the arc. Returns true
 // on success; returns false if the arc should be dropped (either due to
 // error or because it's approximately linear).
@@ -1695,7 +1708,7 @@ func (arc *DMEArc) Initialize(loc Locator, startLoc, endLoc math.Point2LL, nmPer
 		// negative steps in parametric t along the perpendicular line
 		// so that we're searching in the right direction to get the
 		// clockwise/counter clockwise route we want.
-		delta := float32(util.Select(arc.Clockwise, -.01, .01))
+		delta := float32(util.Select(arc.Direction.IsClockwise(), -.01, .01))
 
 		// We will search with uniform small steps along the line. Some
 		// sort of bisection search would probably be better, but...
@@ -1732,7 +1745,7 @@ func (arc *DMEArc) Initialize(loc Locator, startLoc, endLoc math.Point2LL, nmPer
 	hfix := math.Heading2LL(arc.Center, startLoc, nmPerLongitude, magneticVariation)
 
 	// Then perpendicular to that, depending on the arc's direction
-	arc.InitialHeading = math.NormalizeHeading(hfix + float32(util.Select(arc.Clockwise, 90, -90)))
+	arc.InitialHeading = math.NormalizeHeading(hfix + float32(util.Select(arc.Direction.IsClockwise(), 90, -90)))
 
 	return true
 }

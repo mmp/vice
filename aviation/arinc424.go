@@ -507,6 +507,17 @@ func parseSSA(line []byte) ssaRecord {
 	}
 }
 
+func turnDirectionToArcDirection(td byte) DMEArcDirection {
+	switch td {
+	case 'R':
+		return DMEArcDirectionClockwise
+	case 'L':
+		return DMEArcDirectionCounterClockwise
+	default:
+		return DMEArcDirectionUnset
+	}
+}
+
 func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	switch string(r.pathAndTermination) {
 	case "FM", "VM":
@@ -597,13 +608,15 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	switch r.pathAndTermination {
 	case "AF": // arc to fix. w.r.t. a NAVAID
 		arc = &DMEArc{
-			Fix:    strings.TrimSpace(string(r.recommendedNavaid)),
-			Radius: float32(parseInt(r.rho)) / 10,
+			Fix:       strings.TrimSpace(string(r.recommendedNavaid)),
+			Radius:    float32(parseInt(r.rho)) / 10,
+			Direction: turnDirectionToArcDirection(r.turnDirection),
 		}
 
 	case "RF": // constant radius arc
 		arc = &DMEArc{
-			Length: float32(parseInt(r.routeDistance)) / 10,
+			Length:    float32(parseInt(r.routeDistance)) / 10,
+			Direction: turnDirectionToArcDirection(r.turnDirection),
 		}
 
 	case "HF", "PI": // procedure turns

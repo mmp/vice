@@ -296,25 +296,26 @@ func parseCRDARoute(s string, loc Locator, nmPerLongitude, magneticVariation flo
 			break
 		}
 
-		// Which way are we turning? Use previous or next-after-arc
-		// waypoint to determine clockwise/counterclockwise.
-		var v0, v1 [2]float32
-		p0 := math.LL2NM(points[i].Location, nmPerLongitude)
-		p1 := math.LL2NM(points[i+1].Location, nmPerLongitude)
-		if i > 0 {
-			v0 = math.Sub2f(p0, math.LL2NM(points[i-1].Location, nmPerLongitude))
-			v1 = math.Sub2f(p1, p0)
-		} else {
-			if i+2 == len(points) {
-				e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
-				e.Pop()
-				continue
+		if points[i].Arc.Direction == DMEArcDirectionUnset {
+			// Direction wasn't explicitly provided; infer from surrounding waypoints.
+			var v0, v1 [2]float32
+			p0 := math.LL2NM(points[i].Location, nmPerLongitude)
+			p1 := math.LL2NM(points[i+1].Location, nmPerLongitude)
+			if i > 0 {
+				v0 = math.Sub2f(p0, math.LL2NM(points[i-1].Location, nmPerLongitude))
+				v1 = math.Sub2f(p1, p0)
+			} else {
+				if i+2 == len(points) {
+					e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
+					e.Pop()
+					continue
+				}
+				v0 = math.Sub2f(p1, p0)
+				v1 = math.Sub2f(math.LL2NM(points[i+2].Location, nmPerLongitude), p1)
 			}
-			v0 = math.Sub2f(p1, p0)
-			v1 = math.Sub2f(math.LL2NM(points[i+2].Location, nmPerLongitude), p1)
+			x := v0[0]*v1[1] - v0[1]*v1[0]
+			points[i].Arc.Direction = util.Select(x < 0, DMEArcDirectionClockwise, DMEArcDirectionCounterClockwise)
 		}
-		x := v0[0]*v1[1] - v0[1]*v1[0]
-		points[i].Arc.Clockwise = x < 0
 
 		if !points[i].Arc.Initialize(loc, points[i].Location, points[i+1].Location, nmPerLongitude, magneticVariation, e) {
 			points[i].Arc = nil

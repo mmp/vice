@@ -208,7 +208,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime time.Time)
 			angle := math.VectorHeading(v) // x, y, as elsewhere..
 
 			// Choose a point a bit farther ahead on the arc
-			angle += float32(util.Select(arc.Clockwise, 10, -10))
+			angle += float32(util.Select(arc.Direction.IsClockwise(), 10, -10))
 			p := math.Add2f(pc, math.Scale2f(math.SinCos(math.Radians(angle)), arc.Radius))
 			pTarget = math.NM2LL(p, nav.FlightState.NmPerLongitude)
 		} else {
