@@ -102,16 +102,17 @@ func (a *AltitudeSpec) UnmarshalJSON(data []byte) error {
 }
 
 type TestBenchAircraftSpec struct {
-	Callsign      string  `json:"callsign,omitempty"`
-	AircraftType  string  `json:"aircraft_type,omitempty"` // e.g. "B738"; empty = sampled from airline or B738 fallback
-	DistanceNM    float32 `json:"distance_nm"`
-	Altitude      AltitudeSpec `json:"altitude,omitempty"` // number or "{altCeiling}" placeholder
-	Speed         float32 `json:"speed"`
-	Heading       float32 `json:"heading,omitempty"`        // aircraft heading; 0 = inbound to fix/airport
-	HeadingOffset float32 `json:"heading_offset,omitempty"` // added to default heading (runway heading)
-	Bearing       float32 `json:"bearing,omitempty"`        // bearing FROM reference to place aircraft
-	BearingOffset float32 `json:"bearing_offset,omitempty"` // added to default bearing (extended centerline)
-	RelativeTo    string  `json:"relative_to,omitempty"`    // fix name or placeholder (e.g. "{if}"); empty = airport
+	Callsign       string       `json:"callsign,omitempty"`
+	AircraftType   string       `json:"aircraft_type,omitempty"` // e.g. "B738"; empty = sampled from airline or B738 fallback
+	DistanceNM     float32      `json:"distance_nm"`
+	Altitude       AltitudeSpec `json:"altitude,omitempty"`        // number or "{altCeiling}" placeholder
+	AltitudeOffset float32      `json:"altitude_offset,omitempty"` // feet added after resolving altitude
+	Speed          float32      `json:"speed"`
+	Heading        float32      `json:"heading,omitempty"`        // aircraft heading; 0 = inbound to fix/airport
+	HeadingOffset  float32      `json:"heading_offset,omitempty"` // added to default heading (runway heading)
+	Bearing        float32      `json:"bearing,omitempty"`        // bearing FROM reference to place aircraft
+	BearingOffset  float32      `json:"bearing_offset,omitempty"` // added to default bearing (extended centerline)
+	RelativeTo     string       `json:"relative_to,omitempty"`    // fix name or placeholder (e.g. "{if}"); empty = airport
 
 	StarWaypoints  bool   `json:"star_waypoints,omitempty"` // populate Nav.Waypoints from a STAR at the airport
 	TrafficInSight bool   `json:"traffic_in_sight,omitempty"`
@@ -971,6 +972,8 @@ func (tb *TestBench) buildAircraftWithCallsign(spec TestBenchAircraftSpec, calls
 	default:
 		return sim.Aircraft{}, fmt.Errorf("unknown altitude placeholder %q", spec.Altitude.Placeholder)
 	}
+
+	altitude += spec.AltitudeOffset
 
 	if spec.RelativeTo != "" {
 		if fixLoc, fixAlt, ok := tb.resolveFixRef(spec.RelativeTo, apInfo); ok {

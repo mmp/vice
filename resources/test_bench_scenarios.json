@@ -248,11 +248,11 @@
       "aircraft": [
         {"distance_nm": 15, "speed": 250, "altitude": "{altCeiling}",
          "traffic_in_sight": true},
-        {"distance_nm": 12, "speed": 250, "altitude": "{altCeiling}",
-         "note": "traffic target"}
+        {"distance_nm": 14, "speed": 250, "altitude": "{altCeiling}",
+         "altitude_offset": 500, "note": "traffic target"}
       ],
       "steps": [
-        {"callsign": "{0}", "command": "TRAFFIC/12/3/{alt1}"},
+        {"callsign": "{0}", "command": "TRAFFIC/12/1/{alt1}"},
         {"wait_for": "traffic_in_sight"}
       ]
     },
@@ -273,11 +273,11 @@
       "aircraft": [
         {"distance_nm": 15, "speed": 250, "altitude": "{altCeiling}",
          "traffic_in_sight": true},
-        {"distance_nm": 12, "speed": 250, "altitude": "{altCeiling}",
-         "note": "traffic target"}
+        {"distance_nm": 14, "speed": 250, "altitude": "{altCeiling}",
+         "altitude_offset": 500, "note": "traffic target"}
       ],
       "steps": [
-        {"callsign": "{0}", "command": "TRAFFIC/12/3/{alt1}"},
+        {"callsign": "{0}", "command": "TRAFFIC/12/1/{alt1}"},
         {"wait_for": "traffic_in_sight"},
         {"callsign": "{0}", "command": "VISSEP", "expect_readback": ["visual separation", "maintain visual"]}
       ]
