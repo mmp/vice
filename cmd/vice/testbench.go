@@ -791,6 +791,19 @@ func (tb *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 					cs = tb.defaultCallsign(tc)
 				}
 				imgui.Text(fmt.Sprintf("%s %s", cs, step.Command))
+				if isActive && tb.spawnedTest == tc {
+					imgui.SameLine()
+					if imgui.ArrowButton(fmt.Sprintf("##send_%d", i), imgui.DirRight) {
+						tb.client.RunAircraftCommands(client.AircraftCommandRequest{
+							Callsign: cs,
+							Commands: step.Command,
+						}, func(errStr string, remaining string) {
+							if errStr != "" {
+								tb.lg.Warnf("test bench send: %s: %s", cs, errStr)
+							}
+						})
+					}
+				}
 			}
 		}
 
