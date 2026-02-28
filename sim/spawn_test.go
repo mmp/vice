@@ -42,7 +42,7 @@ func makeTestBenchAircraft(callsign string) Aircraft {
 			Rand: vrand.Make(),
 		},
 		NASFlightPlan: &NASFlightPlan{
-			ACID:          ACID(callsign),
+			ACID:           ACID(callsign),
 			ArrivalAirport: "KJFK",
 			Rules:          av.FlightRulesIFR,
 			TypeOfFlight:   av.FlightTypeArrival,

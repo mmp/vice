@@ -316,7 +316,7 @@ func TestSpeculativeAdvance(t *testing.T) {
 		tc := &TestBenchCase{
 			Steps: []TestBenchStep{
 				{Command: "S210", ExpectReadback: StringOrArray{"210 knots"}},
-				{Command: "E{approach}"},                                        // fire-and-forget
+				{Command: "E{approach}"}, // fire-and-forget
 				{Command: "D050", ExpectReadback: StringOrArray{"5,000"}},
 			},
 		}
@@ -339,7 +339,7 @@ func TestSpeculativeAdvance(t *testing.T) {
 		tc := &TestBenchCase{
 			Steps: []TestBenchStep{
 				{WaitFor: "field_in_sight"},
-				{Command: "CVA"},                                                // fire-and-forget after wait
+				{Command: "CVA"}, // fire-and-forget after wait
 				{Command: "D050", ExpectReadback: StringOrArray{"5,000"}},
 			},
 		}
@@ -361,7 +361,7 @@ func TestSpeculativeAdvance(t *testing.T) {
 	t.Run("advances through matching wait_for", func(t *testing.T) {
 		tc := &TestBenchCase{
 			Steps: []TestBenchStep{
-				{Command: "TRAFFIC/12/3/50"},       // fire-and-forget
+				{Command: "TRAFFIC/12/3/50"}, // fire-and-forget
 				{WaitFor: "traffic_in_sight"},
 			},
 		}
@@ -407,7 +407,7 @@ func TestSpeculativeAdvance(t *testing.T) {
 	t.Run("stops at non-matching wait_for", func(t *testing.T) {
 		tc := &TestBenchCase{
 			Steps: []TestBenchStep{
-				{Command: "E{approach}"},     // fire-and-forget
+				{Command: "E{approach}"}, // fire-and-forget
 				{WaitFor: "go_around"},
 			},
 		}
@@ -447,8 +447,8 @@ func TestSpeculativeAdvance(t *testing.T) {
 		tc := &TestBenchCase{
 			Steps: []TestBenchStep{
 				{WaitFor: "field_in_sight"},
-				{Command: "E{approach}"},                                  // fire-and-forget after wait
-				{Command: "D{if}"},                                        // fire-and-forget after fire-and-forget
+				{Command: "E{approach}"}, // fire-and-forget after wait
+				{Command: "D{if}"},       // fire-and-forget after fire-and-forget
 				{WaitFor: "approach_clearance_request"},
 			},
 		}
