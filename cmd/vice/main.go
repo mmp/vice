@@ -773,6 +773,7 @@ func main() {
 	}
 	if err != nil {
 		lg.Errorf("%v", err)
+		profiler.Cleanup() // defers don't run with exit
 		os.Exit(1)
 	}
 }
