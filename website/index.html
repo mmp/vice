@@ -9026,14 +9026,19 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <li><strong>Select an approach and departure runway</strong> using the
                 dropdowns at the top of the panel. These determine which
                 runway and approach fixes are used by the test scenarios.</li>
-              <li><strong>Click "Spawn"</strong> next to a test scenario to
-                create the test aircraft on your scope. The aircraft will
-                appear at the position described in the scenario (e.g., 8nm from
-                the intermediate fix at 210 knots).</li>
-              <li><strong>Issue the commands yourself</strong> by typing them
+              <li><strong>Click "Spawn"</strong> (or "Spawn STAR" / "Spawn
+                Departure" for group and departure tests) next to a test
+                scenario to create the test aircraft on your scope. The
+                aircraft will appear at the position described in the scenario
+                (e.g., 8nm from the intermediate fix at 210 knots). Clicking
+                Spawn while aircraft are already active automatically clears
+                the previous test first.</li>
+              <li><strong>Issue the commands</strong> using STT or by typing them
                 into the STARS command line, just as you would during normal
                 controlling. The steps listed in each scenario show you what
-                commands to issue and in what order.</li>
+                commands to issue and in what order. Alternatively, click the
+                <strong>&#9654; (Send)</strong> button next to the active step
+                to auto-execute the command without typing it.</li>
               <li><strong>Observe the results.</strong> The test bench tracks
                 the pilot's readbacks and marks each step with a result:
                 <ul>
@@ -9044,7 +9049,9 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 Steps with <code>[wait: ...]</code> labels are automatic
                 checkpoints that pass when the pilot transmits a specific
                 message (e.g., checking in, requesting an approach clearance,
-                or reporting the field in sight).
+                or reporting the field in sight). The last pilot readback is
+                shown in yellow below the step list. If the pilot says "say
+                again", the step stays pending so you can re-issue the command.
               </li>
               <li><strong>Click "Clear"</strong> to remove the spawned aircraft
                 when you are done with a test.</li>
@@ -9076,10 +9083,13 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             <table class="table">
               <thead><tr><th>Field</th><th>Description</th></tr></thead>
               <tbody>
+                <tr><td><code>callsign</code></td><td>Pin a specific callsign for this aircraft. If omitted, a callsign is generated automatically.</td></tr>
+                <tr><td><code>aircraft_type</code></td><td>Aircraft type code (e.g., <code>"B738"</code>). If omitted, sampled from the airline or defaults to B738.</td></tr>
                 <tr><td><code>distance_nm</code></td><td>Distance in nautical miles from the reference point.</td></tr>
                 <tr><td><code>speed</code></td><td>Initial airspeed in knots.</td></tr>
-                <tr><td><code>altitude</code></td><td>Altitude in feet. If omitted and <code>relative_to</code> is set, uses the fix's altitude restriction.</td></tr>
-                <tr><td><code>relative_to</code></td><td>Position relative to a fix name or placeholder (e.g., <code>{if}</code>). If omitted, positions relative to the airport.</td></tr>
+                <tr><td><code>altitude</code></td><td>Altitude in feet, or the placeholder string <code>"{altCeiling}"</code> to derive altitude from the METAR ceiling (ceiling minus 500 ft, or 5000 ft if clear). If omitted and <code>relative_to</code> is set, uses the fix's altitude restriction.</td></tr>
+                <tr><td><code>altitude_offset</code></td><td>Feet added after resolving the altitude. Useful for offsetting from <code>{altCeiling}</code> (e.g., <code>500</code> to place traffic 500 ft higher).</td></tr>
+                <tr><td><code>relative_to</code></td><td>Position relative to a fix name or placeholder (<code>{iaf}</code>, <code>{if}</code>, <code>{faf}</code>, <code>{hold_fix}</code>, or <code>{star_fix}</code>). If omitted, positions relative to the airport.</td></tr>
                 <tr><td><code>heading</code></td><td>Absolute aircraft heading. If omitted, defaults to the runway heading.</td></tr>
                 <tr><td><code>heading_offset</code></td><td>Offset added to the default heading (runway heading).</td></tr>
                 <tr><td><code>bearing</code></td><td>Absolute bearing from the reference point to place the aircraft.</td></tr>
@@ -9096,7 +9106,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <thead><tr><th>Field</th><th>Description</th></tr></thead>
               <tbody>
                 <tr><td><code>command</code></td><td>The STARS command string to issue (e.g., <code>E{approach}</code>, <code>S210</code>, <code>H090</code>).</td></tr>
-                <tr><td><code>expect_readback</code></td><td>A string or array of strings. The step passes if any of these appear in the pilot's readback.</td></tr>
+                <tr><td><code>expect_readback</code></td><td>A string or array of strings. The step passes if any of these appear in the pilot's readback. If omitted, the step is "fire-and-forget" and advances immediately without waiting for a readback.</td></tr>
                 <tr><td><code>reject_readback</code></td><td>If this string appears in the readback, the step fails even if an expected string also matched.</td></tr>
                 <tr><td><code>callsign</code></td><td>Target callsign for multi-aircraft tests. Use <code>{0}</code>, <code>{1}</code>, etc. to reference aircraft by index.</td></tr>
                 <tr><td><code>wait_for</code></td><td>Instead of issuing a command, wait for the pilot to transmit a specific type of message.</td></tr>
@@ -9109,8 +9119,8 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <li><code>approach_clearance_request</code> &mdash; pilot requests approach clearance</li>
               <li><code>field_in_sight</code> &mdash; pilot reports the field/airport in sight</li>
               <li><code>go_around</code> &mdash; pilot announces a go-around</li>
-              <li><code>traffic_response</code> &mdash; any response to a traffic advisory</li>
-              <li><code>traffic_in_sight</code> &mdash; positive traffic response only</li>
+              <li><code>traffic_response</code> &mdash; any response to a traffic advisory (including "looking", "negative contact", and IMC responses)</li>
+              <li><code>traffic_in_sight</code> &mdash; positive traffic response only (e.g., "traffic in sight", "we have the traffic")</li>
             </ul>
 
             <h4>Placeholders</h4>
@@ -9128,6 +9138,8 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <tr><td><code>{star_fix}</code></td><td>First fix of a randomly selected active STAR</td></tr>
                 <tr><td><code>{0}</code>, <code>{1}</code></td><td>Generated callsign for aircraft at that index</td></tr>
                 <tr><td><code>{hdg0}</code>, <code>{hdg1}</code></td><td>Three-digit heading of the aircraft at that index</td></tr>
+                <tr><td><code>{alt0}</code>, <code>{alt1}</code></td><td>Altitude of the aircraft at that index in hundreds of feet (e.g., <code>70</code> for 7,000 ft). Useful in TRAFFIC command parameters.</td></tr>
+                <tr><td><code>{altCeiling}</code></td><td>Used in aircraft spec <code>altitude</code> field. Resolves to the METAR ceiling minus 500 ft, or 5,000 ft if clear/unavailable.</td></tr>
               </tbody>
             </table>
 
