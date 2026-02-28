@@ -155,6 +155,8 @@ type TestBench struct {
 	lastReadbackCS av.ADSBCallsign
 	statusMessage  string
 	statusIsError  bool
+
+	spawnGeneration int
 }
 
 type testBenchApproachInfo struct {
@@ -219,6 +221,7 @@ func (tb *TestBench) Resume() {
 // Close tears down the TestBench entirely: deletes any spawned aircraft
 // and unsubscribes from events. Called on connection reset.
 func (tb *TestBench) Close() {
+	tb.spawnGeneration++
 	if len(tb.spawnedAircraft) > 0 {
 		tb.client.DeleteAircraft(tb.spawnedAircraft, func(err error) {
 			if err != nil {
@@ -292,6 +295,16 @@ func (tb *TestBench) replaceSpawnedAircraft(tc *TestBenchCase) {
 
 	tb.spawnedAircraft = nil
 	tb.spawnedTest = tc
+}
+
+func (tb *TestBench) beginSpawnRequest(tc *TestBenchCase) int {
+	tb.spawnGeneration++
+	tb.replaceSpawnedAircraft(tc)
+	return tb.spawnGeneration
+}
+
+func (tb *TestBench) spawnRequestCurrent(tc *TestBenchCase, generation int) bool {
+	return tb.spawnedTest == tc && tb.spawnGeneration == generation
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -736,6 +749,7 @@ func (tb *TestBench) drawTestCase(section string, tc *TestBenchCase) {
 	if tb.spawnedTest == tc && len(tb.spawnedAircraft) > 0 {
 		imgui.SameLine()
 		if imgui.Button("Clear") {
+			tb.spawnGeneration++
 			clearingTest := tc // capture so the callback doesn't wipe a newer spawn
 			tb.client.DeleteAircraft(tb.spawnedAircraft, func(err error) {
 				if err != nil {
@@ -912,7 +926,7 @@ func (tb *TestBench) spawnAircraft(tc *TestBenchCase) {
 	rwyHeading := apInfo.approach.RunwayHeading(nmPerLong, magVar)
 	ctrlFreq := sim.ControlPosition(tb.client.State.PrimaryPositionForTCW(tb.client.State.UserTCW))
 
-	tb.replaceSpawnedAircraft(tc)
+	tb.beginSpawnRequest(tc)
 	tb.callsignMap = make(map[int]string)
 	tb.headingMap = make(map[int]float32)
 	tb.altitudeMap = make(map[int]float32)
@@ -1103,11 +1117,14 @@ func (tb *TestBench) spawnSTAR(tc *TestBenchCase) {
 		airport = tb.client.State.PrimaryAirport
 	}
 
-	tb.replaceSpawnedAircraft(tc)
+	reqGen := tb.beginSpawnRequest(tc)
 	tb.resetTestState()
 
 	var ac sim.Aircraft
 	tb.client.CreateArrival(tc.Group, airport, &ac, func(err error) {
+		if !tb.spawnRequestCurrent(tc, reqGen) {
+			return
+		}
 		if err != nil {
 			tb.lg.Warnf("test bench: CreateArrival %s: %v", tc.Group, err)
 			tb.setError(fmt.Sprintf("STAR spawn failed: %v", err))
@@ -1151,11 +1168,14 @@ func (tb *TestBench) spawnDeparture(tc *TestBenchCase) {
 		return
 	}
 
-	tb.replaceSpawnedAircraft(tc)
+	reqGen := tb.beginSpawnRequest(tc)
 	tb.resetTestState()
 
 	var ac sim.Aircraft
 	tb.client.CreateDeparture(airport, runway, category, av.FlightRulesIFR, &ac, func(err error) {
+		if !tb.spawnRequestCurrent(tc, reqGen) {
+			return
+		}
 		if err != nil {
 			tb.lg.Warnf("test bench: CreateDeparture: %v", err)
 			tb.setError(fmt.Sprintf("Departure spawn failed: %v", err))

@@ -216,6 +216,44 @@ func TestTrafficCommandNeedsVisualResponse(t *testing.T) {
 	}
 }
 
+func TestSpawnRequestCurrent(t *testing.T) {
+	t.Run("current request matches active test and generation", func(t *testing.T) {
+		tc := &TestBenchCase{Label: "active"}
+		tb := &TestBench{}
+
+		gen := tb.beginSpawnRequest(tc)
+
+		if !tb.spawnRequestCurrent(tc, gen) {
+			t.Fatal("spawn request should be current")
+		}
+	})
+
+	t.Run("newer request invalidates older callback", func(t *testing.T) {
+		tc1 := &TestBenchCase{Label: "first"}
+		tc2 := &TestBenchCase{Label: "second"}
+		tb := &TestBench{}
+
+		gen1 := tb.beginSpawnRequest(tc1)
+		_ = tb.beginSpawnRequest(tc2)
+
+		if tb.spawnRequestCurrent(tc1, gen1) {
+			t.Fatal("older spawn request should be stale after a newer request starts")
+		}
+	})
+
+	t.Run("clear invalidates in-flight request", func(t *testing.T) {
+		tc := &TestBenchCase{Label: "active"}
+		tb := &TestBench{}
+
+		gen := tb.beginSpawnRequest(tc)
+		tb.spawnGeneration++
+
+		if tb.spawnRequestCurrent(tc, gen) {
+			t.Fatal("spawn request should be stale after invalidation")
+		}
+	})
+}
+
 // newTestBench creates a minimal TestBench with the given case activated.
 func newTestBench(tc *TestBenchCase) *TestBench {
 	tb := &TestBench{
