@@ -53,6 +53,9 @@ var (
 		showLaunchControl bool
 		showMessages      bool
 		showFlightStrips  bool
+		showTestBench     bool
+
+		testBenchWindow *TestBench
 
 		// STT state
 		pttRecording              bool
@@ -258,6 +261,15 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Display online vice documentation")
 		}
 
+		if (*devMode || config.DevMode) && controlClient != nil && controlClient.Connected() {
+			if imgui.Button(renderer.FontAwesomeIconWrench) {
+				ui.showTestBench = !ui.showTestBench
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Test bench")
+			}
+		}
+
 		// Handle PTT key for STT recording
 		uiHandlePTTKey(p, controlClient, config, lg)
 
@@ -323,6 +335,19 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			ui.launchControlWindow.Draw(eventStream, p)
 		}
 
+		if ui.showTestBench {
+			if ui.testBenchWindow == nil {
+				ui.testBenchWindow = NewTestBench(controlClient, eventStream, lg)
+			} else {
+				ui.testBenchWindow.Resume()
+			}
+			ui.testBenchWindow.Draw(&ui.showTestBench, p)
+		} else if ui.testBenchWindow != nil {
+			// Release the event stream subscription when the window is
+			// hidden so it doesn't pin the EventStream offset.
+			ui.testBenchWindow.Pause()
+		}
+
 		if ui.showMessages {
 			config.MessagesPane.DrawWindow(&ui.showMessages, controlClient, p, lg)
 		}
@@ -365,6 +390,10 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 func uiResetControlClient(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	ui.launchControlWindow = nil
+	if ui.testBenchWindow != nil {
+		ui.testBenchWindow.Close()
+		ui.testBenchWindow = nil
+	}
 	clear(acknowledgedATIS)
 }
 
@@ -773,6 +802,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 	if c != nil {
 		imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
 	}
+
+	imgui.Checkbox("Developer mode", &config.DevMode)
 
 	imgui.Separator()
 

@@ -69,6 +69,7 @@ var (
 	replayDuration    = flag.String("replay-duration", "3600", "replay `duration` in seconds or 'until:CALLSIGN'")
 	waypointCommands  = flag.String("waypoint-commands", "", "waypoint `commands` in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
 	starsRandoms      = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
+	devMode           = flag.Bool("dev", false, "enable developer tools")
 )
 
 func setupSignalHandler(profiler *util.Profiler) {

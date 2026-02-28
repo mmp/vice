@@ -393,6 +393,20 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 		}
 	}
 
+	// Assign a squawk code and list index if the aircraft has a NAS flight
+	// plan but no squawk (e.g. test bench spawned aircraft). The flight
+	// plan stays on the aircraft (associated); it is NOT added to
+	// STARSComputer.FlightPlans which holds unassociated plans.
+	if ac.NASFlightPlan != nil && ac.Squawk == av.Squawk(0) {
+		if sq, err := s.ERAMComputer.CreateSquawk(); err == nil {
+			ac.Squawk = sq
+			ac.NASFlightPlan.AssignedSquawk = sq
+		}
+		if ac.NASFlightPlan.ListIndex == UnsetSTARSListIndex {
+			ac.NASFlightPlan.ListIndex = s.STARSComputer.getListIndex()
+		}
+	}
+
 	s.Aircraft[ac.ADSBCallsign] = &ac
 
 	ac.Nav.Prespawn = s.prespawn && (ac.FlightPlan.Rules == av.FlightRulesVFR || s.prespawnUncontrolledOnly)

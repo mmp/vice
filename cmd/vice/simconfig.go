@@ -1323,6 +1323,24 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	// TRAFFIC RATES section
 	drawSectionHeader("Traffic Rates")
 
+	// In developer mode, offer a quick toggle to disable all traffic.
+	if *devMode || config.DevMode {
+		lc := &c.ScenarioSpec.LaunchConfig
+		noTraffic := lc.DepartureRateScale == 0 && lc.InboundFlowRateScale == 0 &&
+			lc.VFRDepartureRateScale == 0
+		if imgui.Checkbox("No traffic (test bench)", &noTraffic) {
+			if noTraffic {
+				lc.DepartureRateScale = 0
+				lc.InboundFlowRateScale = 0
+				lc.VFRDepartureRateScale = 0
+			} else {
+				lc.DepartureRateScale = 1
+				lc.InboundFlowRateScale = 1
+				lc.VFRDepartureRateScale = 1
+			}
+		}
+	}
+
 	// Rate limit warning
 	const rateLimit = 100.0
 	if !c.ScenarioSpec.LaunchConfig.CheckRateLimits(rateLimit) {

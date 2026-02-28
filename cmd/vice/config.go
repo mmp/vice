@@ -66,6 +66,7 @@ type ConfigNoSim struct {
 	InhibitDiscordActivity util.AtomicBool
 	NotifiedTargetGenMode  bool
 	DisableTextToSpeech    bool
+	DevMode                bool
 
 	UserWorkstation    string
 	ControllerInitials string
