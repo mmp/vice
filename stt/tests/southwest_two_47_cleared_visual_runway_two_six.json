@@ -15,7 +15,7 @@
   "processor": "GPU: Apple M1, 8 CPU / 8 GPU cores, 8GB",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "SWA247",
-  "command": "CV26",
+  "command": "CVA26",
   "stt_aircraft": {
     "Alaska 72 88": {
       "Callsign": "ASA7288",

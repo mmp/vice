@@ -1531,6 +1531,12 @@ func (s *Sim) updateState() {
 
 			// Check for delayed "traffic in sight" call
 			s.checkDelayedTrafficInSight(ac)
+
+			// Check for delayed "field in sight" call (after AP "looking" response)
+			s.checkDelayedFieldInSight(ac)
+
+			// Check for spontaneous "field in sight" call
+			s.checkSpontaneousVisualRequest(ac)
 		}
 
 		s.possiblyRequestFlightFollowing()

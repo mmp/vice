@@ -604,6 +604,84 @@ func registerAllCommands() {
 		WithPriority(15),
 	)
 
+	// "expect visual approach runway XX" — higher priority than generic "expect {approach_lahso}"
+	// to prevent "expect visual approach runway 22L" from matching a charted visual via {approach_lahso}.
+	registerSTTCommand(
+		"expect [the|vectors] [for] [to] visual [approach] [runway] {num:1-36} left",
+		func(rwy int) string { return fmt.Sprintf("EVA%dL", rwy) },
+		WithName("expect_visual_left"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"expect [the|vectors] [for] [to] visual [approach] [runway] {num:1-36} right",
+		func(rwy int) string { return fmt.Sprintf("EVA%dR", rwy) },
+		WithName("expect_visual_right"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"expect [the|vectors] [for] [to] visual [approach] [runway] {num:1-36} center",
+		func(rwy int) string { return fmt.Sprintf("EVA%dC", rwy) },
+		WithName("expect_visual_center"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"expect [the|vectors] [for] [to] visual [approach] [runway] {num:1-36}",
+		func(rwy int) string { return fmt.Sprintf("EVA%d", rwy) },
+		WithName("expect_visual"),
+		WithPriority(16),
+	)
+
+	// "vectors visual approach runway XX" — same priority as cleared visual
+	registerSTTCommand(
+		"vector|vectors [for] [to] [the] visual [approach] [runway] {num:1-36} left",
+		func(rwy int) string { return fmt.Sprintf("EVA%dL", rwy) },
+		WithName("vectors_visual_left"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"vector|vectors [for] [to] [the] visual [approach] [runway] {num:1-36} right",
+		func(rwy int) string { return fmt.Sprintf("EVA%dR", rwy) },
+		WithName("vectors_visual_right"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"vector|vectors [for] [to] [the] visual [approach] [runway] {num:1-36} center",
+		func(rwy int) string { return fmt.Sprintf("EVA%dC", rwy) },
+		WithName("vectors_visual_center"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"vector|vectors [for] [to] [the] visual [approach] [runway] {num:1-36}",
+		func(rwy int) string { return fmt.Sprintf("EVA%d", rwy) },
+		WithName("vectors_visual"),
+		WithPriority(16),
+	)
+
+	registerSTTCommand(
+		"cleared [the] visual [approach] [runway] {num:1-36} left",
+		func(rwy int) string { return fmt.Sprintf("CVA%dL", rwy) },
+		WithName("cleared_visual_left"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cleared [the] visual [approach] [runway] {num:1-36} right",
+		func(rwy int) string { return fmt.Sprintf("CVA%dR", rwy) },
+		WithName("cleared_visual_right"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cleared [the] visual [approach] [runway] {num:1-36} center",
+		func(rwy int) string { return fmt.Sprintf("CVA%dC", rwy) },
+		WithName("cleared_visual_center"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cleared [the] visual [approach] [runway] {num:1-36}",
+		func(rwy int) string { return fmt.Sprintf("CVA%d", rwy) },
+		WithName("cleared_visual"),
+		WithPriority(16),
+	)
+
 	registerSTTCommand(
 		"cleared [approach] [for] {approach}",
 		func(appr string) string { return fmt.Sprintf("C%s", appr) },
@@ -893,5 +971,41 @@ func registerAllCommands() {
 		func(letter string) string { return "ATIS/" + letter },
 		WithName("advise_have_information"),
 		WithPriority(15),
+	)
+
+	// === AIRPORT ADVISORY ===
+	registerSTTCommand(
+		"airport [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		func(oclock int, miles int) string {
+			return fmt.Sprintf("AP/%d/%d", oclock, miles)
+		},
+		WithName("airport_advisory"),
+		WithPriority(10),
+	)
+	registerSTTCommand(
+		"field [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		func(oclock int, miles int) string {
+			return fmt.Sprintf("AP/%d/%d", oclock, miles)
+		},
+		WithName("airport_advisory_field"),
+		WithPriority(10),
+	)
+	registerSTTCommand(
+		"report [the] [field|airport] in sight [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		func(oclock int, miles int) string {
+			return fmt.Sprintf("AP/%d/%d", oclock, miles)
+		},
+		WithName("airport_advisory_report"),
+		WithPriority(10),
+	)
+	// Variant that accepts any leading word(s) before o'clock (e.g., "kennedy is at
+	// your 11 o'clock 8 miles"). The {fix} type absorbs the airport name token.
+	registerSTTCommand(
+		"{fix} [is] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		func(_ string, oclock int, miles int) string {
+			return fmt.Sprintf("AP/%d/%d", oclock, miles)
+		},
+		WithName("airport_advisory_named"),
+		WithPriority(9), // Lower priority so explicit "airport"/"field" patterns win
 	)
 }
