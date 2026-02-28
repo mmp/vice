@@ -281,6 +281,19 @@ func (tb *TestBench) setError(msg string) {
 	tb.statusIsError = true
 }
 
+func (tb *TestBench) replaceSpawnedAircraft(tc *TestBenchCase) {
+	if len(tb.spawnedAircraft) > 0 {
+		tb.client.DeleteAircraft(tb.spawnedAircraft, func(err error) {
+			if err != nil {
+				tb.lg.Warnf("test bench: auto-clear: %v", err)
+			}
+		})
+	}
+
+	tb.spawnedAircraft = nil
+	tb.spawnedTest = tc
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Placeholder resolution
 
@@ -522,6 +535,23 @@ func (tb *TestBench) isIMC(airport string) bool {
 	return false
 }
 
+func trafficCommandNeedsVisualResponse(steps []TestBenchStep, idx int) bool {
+	if idx < 0 || idx >= len(steps) || !strings.HasPrefix(steps[idx].Command, "TRAFFIC/") {
+		return false
+	}
+
+	for _, step := range steps[idx+1:] {
+		if step.Command != "" {
+			return false
+		}
+		if step.WaitFor == "traffic_in_sight" {
+			return true
+		}
+	}
+
+	return false
+}
+
 // validateScenario checks that all placeholders used by a test case can be
 // resolved with the current approach selection. Returns an error message
 // describing the first unresolvable placeholder, or "" if everything is fine.
@@ -555,7 +585,7 @@ func (tb *TestBench) validateScenario(tc *TestBenchCase, apInfo testBenchApproac
 			return msg
 		}
 	}
-	for _, step := range tc.Steps {
+	for i, step := range tc.Steps {
 		ctx := fmt.Sprintf("step %q", step.Command)
 		if msg := checkStr(step.Command, ctx); msg != "" {
 			return msg
@@ -578,9 +608,11 @@ func (tb *TestBench) validateScenario(tc *TestBenchCase, apInfo testBenchApproac
 			}
 		}
 
-		// Traffic advisories won't work in IMC — the pilot will always
-		// respond "we're in IMC" instead of reporting traffic.
-		if strings.HasPrefix(step.Command, "TRAFFIC/") && tb.isIMC(apInfo.airport) {
+		// Traffic advisories that require visual contact won't work in
+		// IMC. However, traffic_response accepts IMC replies (e.g.
+		// "negative contact"), so only block steps that specifically
+		// need traffic_in_sight.
+		if tb.isIMC(apInfo.airport) && trafficCommandNeedsVisualResponse(tc.Steps, i) {
 			return "Weather is IMC — traffic advisories won't get a visual response"
 		}
 	}
@@ -880,17 +912,7 @@ func (tb *TestBench) spawnAircraft(tc *TestBenchCase) {
 	rwyHeading := apInfo.approach.RunwayHeading(nmPerLong, magVar)
 	ctrlFreq := sim.ControlPosition(tb.client.State.PrimaryPositionForTCW(tb.client.State.UserTCW))
 
-	// Clear any previously spawned aircraft before spawning new ones.
-	if len(tb.spawnedAircraft) > 0 {
-		tb.client.DeleteAircraft(tb.spawnedAircraft, func(err error) {
-			if err != nil {
-				tb.lg.Warnf("test bench: auto-clear: %v", err)
-			}
-		})
-	}
-
-	tb.spawnedAircraft = nil
-	tb.spawnedTest = tc
+	tb.replaceSpawnedAircraft(tc)
 	tb.callsignMap = make(map[int]string)
 	tb.headingMap = make(map[int]float32)
 	tb.altitudeMap = make(map[int]float32)
@@ -1081,6 +1103,7 @@ func (tb *TestBench) spawnSTAR(tc *TestBenchCase) {
 		airport = tb.client.State.PrimaryAirport
 	}
 
+	tb.replaceSpawnedAircraft(tc)
 	tb.resetTestState()
 
 	var ac sim.Aircraft
@@ -1089,6 +1112,10 @@ func (tb *TestBench) spawnSTAR(tc *TestBenchCase) {
 			tb.lg.Warnf("test bench: CreateArrival %s: %v", tc.Group, err)
 			tb.setError(fmt.Sprintf("STAR spawn failed: %v", err))
 		} else {
+			// CreateArrival only builds the aircraft; we must launch it
+			// into the sim so it actually appears on scope.
+			tb.client.LaunchArrivalOverflight(ac)
+
 			tb.spawnedAircraft = append(tb.spawnedAircraft, ac)
 			tb.spawnedTest = tc
 			tb.lg.Infof("test bench: STAR %s spawned for %s (%s)", tc.Group, airport, ac.ADSBCallsign)
@@ -1124,6 +1151,7 @@ func (tb *TestBench) spawnDeparture(tc *TestBenchCase) {
 		return
 	}
 
+	tb.replaceSpawnedAircraft(tc)
 	tb.resetTestState()
 
 	var ac sim.Aircraft

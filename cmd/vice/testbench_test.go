@@ -150,6 +150,72 @@ func TestMatchWaitFor(t *testing.T) {
 	}
 }
 
+func TestTrafficCommandNeedsVisualResponse(t *testing.T) {
+	tests := []struct {
+		name  string
+		steps []TestBenchStep
+		idx   int
+		want  bool
+	}{
+		{
+			name: "traffic followed by traffic in sight wait",
+			steps: []TestBenchStep{
+				{Command: "TRAFFIC/12/1/65"},
+				{WaitFor: "traffic_in_sight"},
+			},
+			idx:  0,
+			want: true,
+		},
+		{
+			name: "traffic followed by generic traffic response wait",
+			steps: []TestBenchStep{
+				{Command: "TRAFFIC/12/3/65"},
+				{WaitFor: "traffic_response"},
+			},
+			idx:  0,
+			want: false,
+		},
+		{
+			name: "traffic followed by unrelated wait then traffic in sight",
+			steps: []TestBenchStep{
+				{Command: "TRAFFIC/12/1/65"},
+				{WaitFor: "check_in"},
+				{WaitFor: "traffic_in_sight"},
+			},
+			idx:  0,
+			want: true,
+		},
+		{
+			name: "subsequent command stops scan",
+			steps: []TestBenchStep{
+				{Command: "TRAFFIC/12/1/65"},
+				{Command: "VISSEP"},
+				{WaitFor: "traffic_in_sight"},
+			},
+			idx:  0,
+			want: false,
+		},
+		{
+			name: "non traffic command never requires visual response",
+			steps: []TestBenchStep{
+				{Command: "S210"},
+				{WaitFor: "traffic_in_sight"},
+			},
+			idx:  0,
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := trafficCommandNeedsVisualResponse(tt.steps, tt.idx)
+			if got != tt.want {
+				t.Errorf("trafficCommandNeedsVisualResponse(...) = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 // newTestBench creates a minimal TestBench with the given case activated.
 func newTestBench(tc *TestBenchCase) *TestBench {
 	tb := &TestBench{
