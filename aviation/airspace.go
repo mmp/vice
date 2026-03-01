@@ -513,17 +513,21 @@ func (ra *RestrictionArea) UpdateTriangles() {
 			continue
 		}
 
-		vertices := make([]earcut.Vertex, len(loop))
-		for i, v := range loop {
-			vertices[i].P = [2]float64{float64(v[0]), float64(v[1])}
-		}
-
-		for _, tri := range earcut.Triangulate(earcut.Polygon{Rings: [][]earcut.Vertex{vertices}}) {
-			var v32 [3]math.Point2LL
-			for i, v64 := range tri.Vertices {
-				v32[i] = [2]float32{float32(v64.P[0]), float32(v64.P[1])}
+		// Decompose self-intersecting polygons into simple ones before
+		// triangulating; earcut doesn't handle self-intersections well.
+		for _, simple := range math.SplitSelfIntersectingPolygon(loop) {
+			vertices := make([]earcut.Vertex, len(simple))
+			for i, v := range simple {
+				vertices[i].P = [2]float64{float64(v[0]), float64(v[1])}
 			}
-			ra.Tris = append(ra.Tris, v32)
+
+			for _, tri := range earcut.Triangulate(earcut.Polygon{Rings: [][]earcut.Vertex{vertices}}) {
+				var v32 [3]math.Point2LL
+				for i, v64 := range tri.Vertices {
+					v32[i] = [2]float32{float32(v64.P[0]), float32(v64.P[1])}
+				}
+				ra.Tris = append(ra.Tris, v32)
+			}
 		}
 	}
 }
