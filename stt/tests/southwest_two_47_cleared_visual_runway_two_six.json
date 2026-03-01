@@ -1,0 +1,194 @@
+{
+  "time": "2026-02-01T03:41:35.243179237Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Southwest two 47 cleared visual runway two six",
+  "whisper_duration_ms": 1670.959,
+  "audio_duration_ms": 3912,
+  "processor": "GPU: Apple M1, 8 CPU / 8 GPU cores, 8GB",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SWA247",
+  "command": "CV26",
+  "stt_aircraft": {
+    "Alaska 72 88": {
+      "Callsign": "ASA7288",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Delsey": "DELSE",
+        "Jagal": "JAGAL",
+        "Juraz": "JURAZ",
+        "Phoenix": "KPHX",
+        "Prune": "PRUNN",
+        "Serun": "CERUN",
+        "Sky Harbor": "KPHX",
+        "Todre": "TODRE",
+        "Zemos": "ZEMOS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "Visual Runway 26",
+      "SID": "",
+      "STAR": "BRUSR1",
+      "Altitude": 7016,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest two 47": {
+      "Callsign": "SWA247",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Delsey": "DELSE",
+        "Dervil": "DERVL",
+        "Jagal": "JAGAL",
+        "Phoenix": "KPHX",
+        "Prune": "PRUNN",
+        "Serun": "CERUN",
+        "Sky Harbor": "KPHX",
+        "Todre": "TODRE",
+        "Zemos": "ZEMOS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "Visual Runway 26",
+      "SID": "",
+      "STAR": "EAGUL6",
+      "Altitude": 6239,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Southwest two 47 cleared visual runway two six\"",
+    "[local-stt] normalized words: [southwest 2 47 cleared visual runway 2 6]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"southwest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"247\" Type=1 Value=247",
+    "[local-stt]   token[2]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"visual\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"26\" Type=1 Value=26",
+    "[local-stt] MatchCallsign: 6 tokens, 2 aircraft",
+    "[local-stt]   candidate \"Alaska 72 88\" (ICAO=\"ASA7288\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest two 47\" (ICAO=\"SWA247\"): score=1.10 consumed=2",
+    "[local-stt]   candidate \"Southwest two 47\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
+    "[local-stt]   accepted: \"SWA247\" (conf=1.10, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"SWA247\" SpokenKey=\"Southwest two 47\" Conf=1.10 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6239 Fixes=9 Approaches=4 AssignedApproach=\"Visual Runway 26\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Phoenix\" -\u003e \"KPHX\"",
+    "[local-stt]   fix: \"Todre\" -\u003e \"TODRE\"",
+    "[local-stt]   fix: \"Delsey\" -\u003e \"DELSE\"",
+    "[local-stt]   fix: \"Dervil\" -\u003e \"DERVL\"",
+    "[local-stt]   fix: \"Sky Harbor\" -\u003e \"KPHX\"",
+    "[local-stt]   fix: \"Serun\" -\u003e \"CERUN\"",
+    "[local-stt]   fix: \"Zemos\" -\u003e \"ZEMOS\"",
+    "[local-stt]   fix: \"Prune\" -\u003e \"PRUNN\"",
+    "[local-stt]   fix: \"Jagal\" -\u003e \"JAGAL\"",
+    "[local-stt]   approach: \"I L S runway two five left\" -\u003e \"I5L\"",
+    "[local-stt]   approach: \"Visual runway two five left\" -\u003e \"V5L\"",
+    "[local-stt]   approach: \"Visual runway two six\" -\u003e \"V26\"",
+    "[local-stt]   approach: \"I L S runway two six\" -\u003e \"I26\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"visual\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"26\" Type=1 Value=26",
+    "[local-stt]   position ID: found command keyword \"cleared\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"visual\" against 9 fixes",
+    "[local-stt]   extractFix: no match found for \"visual\"",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"visual\" runway=\"two six\" -\u003e \"V26\" (consumed=3)",
+    "[local-stt]   matched command: \"CV26\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[CV26] (avgConf=1.00)",
+    "[local-stt] parsed commands: [CV26] (conf=1.00)",
+    "[local-stt] validated commands: [CV26] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA247 CV26\" (conf=1.10, time=198.917µs) ==="
+  ]
+}

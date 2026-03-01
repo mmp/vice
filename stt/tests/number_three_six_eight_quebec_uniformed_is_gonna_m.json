@@ -1,0 +1,1469 @@
+{
+  "time": "2026-02-05T03:37:25.833824058Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:977:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "number three six eight quebec uniformed is gonna maintain three thousand seven hundred cleared R\u0026M runway three two five right approach",
+  "whisper_duration_ms": 568.582,
+  "audio_duration_ms": 5960,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 Laptop GPU (7948MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "N368QU",
+  "command": "A37 CR5R",
+  "stt_aircraft": {
+    "Bigstripe 80 96": {
+      "Callsign": "JSX8096",
+      "AircraftType": "E145",
+      "Fixes": {
+        "Fist": "FFIST",
+        "Franny": "FRNNY",
+        "Metropolitan Oakland": "KOAK",
+        "Mission": "MYSHN",
+        "Mito": "MITOE",
+        "My Caf": "MYCAF",
+        "Parb": "PARBB",
+        "Perfect": "PRFCT",
+        "Tool": "TOOOL",
+        "Zolum": "ZOLUM",
+        "woovon": "WUVON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three zero": "I30",
+        "I L S runway two eight right": "I8R",
+        "r-nav yankee runway three zero": "RY30",
+        "r-nav yankee runway two eight left": "RY8L",
+        "r-nav yankee runway two eight right": "RY8R",
+        "r-nav zulu runway three zero": "RZ30",
+        "r-nav zulu runway two eight left": "RZ8L",
+        "r-nav zulu runway two eight right": "RZ8R"
+      },
+      "ApproachFixes": {
+        "I30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "I8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RY30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "RY8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Tenie": "TENIE",
+          "Vodsy": "VODSY"
+        },
+        "RY8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Japso": "JAPSO",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RZ30": {
+          "Alex": "ALLXX",
+          "Carsen": "CRSEN",
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Hepmo": "HEPMO",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "woovon": "WUVON"
+        },
+        "RZ8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Vodsy": "VODSY"
+        },
+        "RZ8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 30",
+      "SID": "",
+      "STAR": "OAKES3",
+      "Altitude": 16521,
+      "State": "arrival",
+      "ControllerFrequency": "3S",
+      "TrackingController": "3S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "15",
+        "33"
+      ]
+    },
+    "Fedex six 32 heavy": {
+      "Callsign": "FDX632",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Fist": "FFIST",
+        "Franny": "FRNNY",
+        "Metropolitan Oakland": "KOAK",
+        "Mission": "MYSHN",
+        "Mito": "MITOE",
+        "My Caf": "MYCAF",
+        "Parb": "PARBB",
+        "Perfect": "PRFCT",
+        "Zolum": "ZOLUM",
+        "woovon": "WUVON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three zero": "I30",
+        "I L S runway two eight right": "I8R",
+        "r-nav yankee runway three zero": "RY30",
+        "r-nav yankee runway two eight left": "RY8L",
+        "r-nav yankee runway two eight right": "RY8R",
+        "r-nav zulu runway three zero": "RZ30",
+        "r-nav zulu runway two eight left": "RZ8L",
+        "r-nav zulu runway two eight right": "RZ8R"
+      },
+      "ApproachFixes": {
+        "I30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "I8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RY30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "RY8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Tenie": "TENIE",
+          "Vodsy": "VODSY"
+        },
+        "RY8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Japso": "JAPSO",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RZ30": {
+          "Alex": "ALLXX",
+          "Carsen": "CRSEN",
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Hepmo": "HEPMO",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "woovon": "WUVON"
+        },
+        "RZ8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Vodsy": "VODSY"
+        },
+        "RZ8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 30",
+      "SID": "",
+      "STAR": "OAKES3",
+      "Altitude": 9768,
+      "State": "arrival",
+      "ControllerFrequency": "3S",
+      "TrackingController": "3S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "15",
+        "33"
+      ]
+    },
+    "Hawaiian one 57": {
+      "Callsign": "HAL157",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Metropolitan Oakland": "KOAK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three zero": "I30",
+        "I L S runway two eight right": "I8R",
+        "r-nav yankee runway three zero": "RY30",
+        "r-nav yankee runway two eight left": "RY8L",
+        "r-nav yankee runway two eight right": "RY8R",
+        "r-nav zulu runway three zero": "RZ30",
+        "r-nav zulu runway two eight left": "RZ8L",
+        "r-nav zulu runway two eight right": "RZ8R"
+      },
+      "ApproachFixes": {
+        "I30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "I8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RY30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "RY8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Tenie": "TENIE",
+          "Vodsy": "VODSY"
+        },
+        "RY8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Japso": "JAPSO",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RZ30": {
+          "Alex": "ALLXX",
+          "Carsen": "CRSEN",
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Hepmo": "HEPMO",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "woovon": "WUVON"
+        },
+        "RZ8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Vodsy": "VODSY"
+        },
+        "RZ8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PIRAT3",
+      "Altitude": 4062,
+      "State": "arrival",
+      "ControllerFrequency": "3M",
+      "TrackingController": "3M",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "15",
+        "33"
+      ]
+    },
+    "Reach five 11 heavy": {
+      "Callsign": "RCH511",
+      "AircraftType": "C5",
+      "Fixes": {
+        "Bmber": "BMBER",
+        "Glided": "GLDDD",
+        "Josba": "JOSBA",
+        "Raf": "RAAAF",
+        "Travis Air Force Base": "KSUU"
+      },
+      "CandidateApproaches": {
+        "I L S runway two one left": "I21L"
+      },
+      "ApproachFixes": {
+        "I21L": {
+          "Alric": "ALRIC",
+          "Cotes": "COTES",
+          "Odica": "ODICA"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BMBER1",
+      "Altitude": 19169,
+      "State": "arrival",
+      "ControllerFrequency": "3S",
+      "TrackingController": "3S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "SkyWest 63 55": {
+      "Callsign": "SKW6355",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Pinnen": "PNNEN",
+        "Sacramento": "KSMF",
+        "Sluice": "SLUIC",
+        "Wraps": "WRAPS"
+      },
+      "CandidateApproaches": {
+        "runway one seven left": "17L",
+        "runway one seven right": "17R"
+      },
+      "ApproachFixes": {
+        "17L": {
+          "Dirby": "DIRBE",
+          "Levy": "LEVEY"
+        },
+        "17R": {
+          "Fapin": "FAPIN",
+          "Jarnu": "JARNU"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "SUUTR4",
+      "Altitude": 17520,
+      "State": "arrival",
+      "ControllerFrequency": "3S",
+      "TrackingController": "5P",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 40 16": {
+      "Callsign": "SWA4016",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Alex": "ALLXX",
+        "Carsen": "CRSEN",
+        "Fist": "FFIST",
+        "Franny": "FRNNY",
+        "Metropolitan Oakland": "KOAK",
+        "Mission": "MYSHN",
+        "Mito": "MITOE",
+        "My Caf": "MYCAF",
+        "Parb": "PARBB",
+        "Perfect": "PRFCT",
+        "Zolum": "ZOLUM",
+        "woovon": "WUVON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three zero": "I30",
+        "I L S runway two eight right": "I8R",
+        "r-nav yankee runway three zero": "RY30",
+        "r-nav yankee runway two eight left": "RY8L",
+        "r-nav yankee runway two eight right": "RY8R",
+        "r-nav zulu runway three zero": "RZ30",
+        "r-nav zulu runway two eight left": "RZ8L",
+        "r-nav zulu runway two eight right": "RZ8R"
+      },
+      "ApproachFixes": {
+        "I30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "I8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RY30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "RY8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Tenie": "TENIE",
+          "Vodsy": "VODSY"
+        },
+        "RY8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Japso": "JAPSO",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RZ30": {
+          "Alex": "ALLXX",
+          "Carsen": "CRSEN",
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Hepmo": "HEPMO",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "woovon": "WUVON"
+        },
+        "RZ8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Vodsy": "VODSY"
+        },
+        "RZ8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 30",
+      "SID": "",
+      "STAR": "WNDSR2",
+      "Altitude": 5126,
+      "State": "arrival",
+      "ControllerFrequency": "3G",
+      "TrackingController": "3G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "15",
+        "33"
+      ]
+    },
+    "caravan five five seven": {
+      "Callsign": "N14557",
+      "AircraftType": "C208",
+      "Fixes": {
+        "Bogre": "BOGRE",
+        "Fenra": "FENRA",
+        "Hayward Executive": "KHWD",
+        "Huzby": "HUZBY",
+        "Jobus": "JOBUS",
+        "Okivy": "OKIVY",
+        "Sludge": "SUDGE",
+        "Wesch": "WESCH"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two eight left": "L8L",
+        "r-nav runway two eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "L8L": {
+          "Brian": "BRIEN",
+          "Fern": "FERNE",
+          "Jiban": "JIBAN",
+          "Rishi": "RISHE",
+          "San Jose": "SJC"
+        },
+        "R8L": {
+          "Bogre": "BOGRE",
+          "Fenra": "FENRA",
+          "Huzby": "HUZBY",
+          "Jobus": "JOBUS",
+          "Okivy": "OKIVY",
+          "San Jose": "SJC",
+          "Sludge": "SUDGE",
+          "Sunol": "SUNOL",
+          "Vinco": "VINCO",
+          "Wesch": "WESCH"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 28L",
+      "SID": "",
+      "STAR": "PXN6",
+      "Altitude": 7361,
+      "State": "cleared approach",
+      "ControllerFrequency": "3S",
+      "TrackingController": "3S",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "cessna caravan five five seven": {
+      "Callsign": "N14557",
+      "AircraftType": "C208",
+      "Fixes": {
+        "Bogre": "BOGRE",
+        "Fenra": "FENRA",
+        "Hayward Executive": "KHWD",
+        "Huzby": "HUZBY",
+        "Jobus": "JOBUS",
+        "Okivy": "OKIVY",
+        "Sludge": "SUDGE",
+        "Wesch": "WESCH"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two eight left": "L8L",
+        "r-nav runway two eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "L8L": {
+          "Brian": "BRIEN",
+          "Fern": "FERNE",
+          "Jiban": "JIBAN",
+          "Rishi": "RISHE",
+          "San Jose": "SJC"
+        },
+        "R8L": {
+          "Bogre": "BOGRE",
+          "Fenra": "FENRA",
+          "Huzby": "HUZBY",
+          "Jobus": "JOBUS",
+          "Okivy": "OKIVY",
+          "San Jose": "SJC",
+          "Sludge": "SUDGE",
+          "Sunol": "SUNOL",
+          "Vinco": "VINCO",
+          "Wesch": "WESCH"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 28L",
+      "SID": "",
+      "STAR": "PXN6",
+      "Altitude": 7361,
+      "State": "cleared approach",
+      "ControllerFrequency": "3S",
+      "TrackingController": "3S",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "cessna four forty-one eight kebeck uniform": {
+      "Callsign": "N368QU",
+      "AircraftType": "C441",
+      "Fixes": {
+        "Livermore Municipal": "KLVK",
+        "Oyahi": "OYAHI",
+        "Torcs": "TORCS",
+        "Uhut": "UHHUT",
+        "gains": "GAYNS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five right": "I5R",
+        "Localizer runway two five right": "L5R",
+        "r-nav runway two five right": "R5R"
+      },
+      "ApproachFixes": {
+        "I5R": {
+          "Jusom": "JUSOM",
+          "Linden": "LIN",
+          "Modesto": "MOD",
+          "Uhut": "UHHUT"
+        },
+        "L5R": {
+          "Hinix": "HINIX",
+          "Jusom": "JUSOM",
+          "Linden": "LIN",
+          "Modesto": "MOD",
+          "Uhut": "UHHUT",
+          "Zabgo": "ZABGO"
+        },
+        "R5R": {
+          "Evett": "EVETT",
+          "Owen": "OOWEN",
+          "Oyahi": "OYAHI",
+          "Torcs": "TORCS",
+          "Uhut": "UHHUT",
+          "Zorir": "ZORIR",
+          "gains": "GAYNS",
+          "someone": "SMONE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 25R",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "cleared approach",
+      "ControllerFrequency": "3Y",
+      "TrackingController": "3Y",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation eight charlie zulu": {
+      "Callsign": "N98CZ",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Modesto": "MOD",
+        "Stockton Metropolitan": "KSCK"
+      },
+      "CandidateApproaches": {
+        "I L S runway two niner right": "I9R",
+        "r-nav runway two niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9R": {
+          "Diger": "DIJER",
+          "Ipdew": "IPDEW",
+          "Linden": "LIN",
+          "Modesto": "MOD",
+          "Simms": "SIMMS",
+          "honey": "HONEZ"
+        },
+        "R9R": {
+          "Fasit": "FASIT",
+          "Ipdew": "IPDEW",
+          "Oxjef": "OXJEF",
+          "Wigbi": "WIGBI",
+          "axing": "AXING"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 10232,
+      "State": "arrival",
+      "ControllerFrequency": "3Y",
+      "TrackingController": "3Y",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "conquest eight kebeck uniform": {
+      "Callsign": "N368QU",
+      "AircraftType": "C441",
+      "Fixes": {
+        "Livermore Municipal": "KLVK",
+        "Oyahi": "OYAHI",
+        "Torcs": "TORCS",
+        "Uhut": "UHHUT",
+        "gains": "GAYNS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five right": "I5R",
+        "Localizer runway two five right": "L5R",
+        "r-nav runway two five right": "R5R"
+      },
+      "ApproachFixes": {
+        "I5R": {
+          "Jusom": "JUSOM",
+          "Linden": "LIN",
+          "Modesto": "MOD",
+          "Uhut": "UHHUT"
+        },
+        "L5R": {
+          "Hinix": "HINIX",
+          "Jusom": "JUSOM",
+          "Linden": "LIN",
+          "Modesto": "MOD",
+          "Uhut": "UHHUT",
+          "Zabgo": "ZABGO"
+        },
+        "R5R": {
+          "Evett": "EVETT",
+          "Owen": "OOWEN",
+          "Oyahi": "OYAHI",
+          "Torcs": "TORCS",
+          "Uhut": "UHHUT",
+          "Zorir": "ZORIR",
+          "gains": "GAYNS",
+          "someone": "SMONE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 25R",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "cleared approach",
+      "ControllerFrequency": "3Y",
+      "TrackingController": "3Y",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "embraer phenom one hundred seven golf mike": {
+      "Callsign": "N467GM",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Fist": "FFIST",
+        "Franny": "FRNNY",
+        "Metropolitan Oakland": "KOAK",
+        "Minnie": "MYNEE",
+        "Mission": "MYSHN",
+        "Mito": "MITOE",
+        "My Caf": "MYCAF",
+        "My Hip": "MYHIP",
+        "My Rib": "MYRIB",
+        "Parb": "PARBB",
+        "Perfect": "PRFCT",
+        "Zolum": "ZOLUM",
+        "woovon": "WUVON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three zero": "I30",
+        "I L S runway two eight right": "I8R",
+        "r-nav yankee runway three zero": "RY30",
+        "r-nav yankee runway two eight left": "RY8L",
+        "r-nav yankee runway two eight right": "RY8R",
+        "r-nav zulu runway three zero": "RZ30",
+        "r-nav zulu runway two eight left": "RZ8L",
+        "r-nav zulu runway two eight right": "RZ8R"
+      },
+      "ApproachFixes": {
+        "I30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "I8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RY30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "RY8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Tenie": "TENIE",
+          "Vodsy": "VODSY"
+        },
+        "RY8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Japso": "JAPSO",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RZ30": {
+          "Alex": "ALLXX",
+          "Carsen": "CRSEN",
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Hepmo": "HEPMO",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "woovon": "WUVON"
+        },
+        "RZ8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Vodsy": "VODSY"
+        },
+        "RZ8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 30",
+      "SID": "",
+      "STAR": "EMZOH4",
+      "Altitude": 10463,
+      "State": "arrival",
+      "ControllerFrequency": "3S",
+      "TrackingController": "3S",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "15",
+        "33"
+      ]
+    },
+    "november four six seven golf mike": {
+      "Callsign": "N467GM",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Fist": "FFIST",
+        "Franny": "FRNNY",
+        "Metropolitan Oakland": "KOAK",
+        "Minnie": "MYNEE",
+        "Mission": "MYSHN",
+        "Mito": "MITOE",
+        "My Caf": "MYCAF",
+        "My Hip": "MYHIP",
+        "My Rib": "MYRIB",
+        "Parb": "PARBB",
+        "Perfect": "PRFCT",
+        "Zolum": "ZOLUM",
+        "woovon": "WUVON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three zero": "I30",
+        "I L S runway two eight right": "I8R",
+        "r-nav yankee runway three zero": "RY30",
+        "r-nav yankee runway two eight left": "RY8L",
+        "r-nav yankee runway two eight right": "RY8R",
+        "r-nav zulu runway three zero": "RZ30",
+        "r-nav zulu runway two eight left": "RZ8L",
+        "r-nav zulu runway two eight right": "RZ8R"
+      },
+      "ApproachFixes": {
+        "I30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "I8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RY30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "RY8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Tenie": "TENIE",
+          "Vodsy": "VODSY"
+        },
+        "RY8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Japso": "JAPSO",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RZ30": {
+          "Alex": "ALLXX",
+          "Carsen": "CRSEN",
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Hepmo": "HEPMO",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "woovon": "WUVON"
+        },
+        "RZ8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Vodsy": "VODSY"
+        },
+        "RZ8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 30",
+      "SID": "",
+      "STAR": "EMZOH4",
+      "Altitude": 10463,
+      "State": "arrival",
+      "ControllerFrequency": "3S",
+      "TrackingController": "3S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "15",
+        "33"
+      ]
+    },
+    "november niner eight charlie zulu": {
+      "Callsign": "N98CZ",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Modesto": "MOD",
+        "Stockton Metropolitan": "KSCK"
+      },
+      "CandidateApproaches": {
+        "I L S runway two niner right": "I9R",
+        "r-nav runway two niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9R": {
+          "Diger": "DIJER",
+          "Ipdew": "IPDEW",
+          "Linden": "LIN",
+          "Modesto": "MOD",
+          "Simms": "SIMMS",
+          "honey": "HONEZ"
+        },
+        "R9R": {
+          "Fasit": "FASIT",
+          "Ipdew": "IPDEW",
+          "Oxjef": "OXJEF",
+          "Wigbi": "WIGBI",
+          "axing": "AXING"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 10232,
+      "State": "arrival",
+      "ControllerFrequency": "3Y",
+      "TrackingController": "3Y",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november one four five five seven": {
+      "Callsign": "N14557",
+      "AircraftType": "C208",
+      "Fixes": {
+        "Bogre": "BOGRE",
+        "Fenra": "FENRA",
+        "Hayward Executive": "KHWD",
+        "Huzby": "HUZBY",
+        "Jobus": "JOBUS",
+        "Okivy": "OKIVY",
+        "Sludge": "SUDGE",
+        "Wesch": "WESCH"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two eight left": "L8L",
+        "r-nav runway two eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "L8L": {
+          "Brian": "BRIEN",
+          "Fern": "FERNE",
+          "Jiban": "JIBAN",
+          "Rishi": "RISHE",
+          "San Jose": "SJC"
+        },
+        "R8L": {
+          "Bogre": "BOGRE",
+          "Fenra": "FENRA",
+          "Huzby": "HUZBY",
+          "Jobus": "JOBUS",
+          "Okivy": "OKIVY",
+          "San Jose": "SJC",
+          "Sludge": "SUDGE",
+          "Sunol": "SUNOL",
+          "Vinco": "VINCO",
+          "Wesch": "WESCH"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 28L",
+      "SID": "",
+      "STAR": "PXN6",
+      "Altitude": 7361,
+      "State": "cleared approach",
+      "ControllerFrequency": "3S",
+      "TrackingController": "3S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november three six eight kebeck uniform": {
+      "Callsign": "N368QU",
+      "AircraftType": "C441",
+      "Fixes": {
+        "Livermore Municipal": "KLVK",
+        "Oyahi": "OYAHI",
+        "Torcs": "TORCS",
+        "Uhut": "UHHUT",
+        "gains": "GAYNS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five right": "I5R",
+        "Localizer runway two five right": "L5R",
+        "r-nav runway two five right": "R5R"
+      },
+      "ApproachFixes": {
+        "I5R": {
+          "Jusom": "JUSOM",
+          "Linden": "LIN",
+          "Modesto": "MOD",
+          "Uhut": "UHHUT"
+        },
+        "L5R": {
+          "Hinix": "HINIX",
+          "Jusom": "JUSOM",
+          "Linden": "LIN",
+          "Modesto": "MOD",
+          "Uhut": "UHHUT",
+          "Zabgo": "ZABGO"
+        },
+        "R5R": {
+          "Evett": "EVETT",
+          "Owen": "OOWEN",
+          "Oyahi": "OYAHI",
+          "Torcs": "TORCS",
+          "Uhut": "UHHUT",
+          "Zorir": "ZORIR",
+          "gains": "GAYNS",
+          "someone": "SMONE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 25R",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "cleared approach",
+      "ControllerFrequency": "3Y",
+      "TrackingController": "3Y",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "phenom one hundred seven golf mike": {
+      "Callsign": "N467GM",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Fist": "FFIST",
+        "Franny": "FRNNY",
+        "Metropolitan Oakland": "KOAK",
+        "Minnie": "MYNEE",
+        "Mission": "MYSHN",
+        "Mito": "MITOE",
+        "My Caf": "MYCAF",
+        "My Hip": "MYHIP",
+        "My Rib": "MYRIB",
+        "Parb": "PARBB",
+        "Perfect": "PRFCT",
+        "Zolum": "ZOLUM",
+        "woovon": "WUVON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three zero": "I30",
+        "I L S runway two eight right": "I8R",
+        "r-nav yankee runway three zero": "RY30",
+        "r-nav yankee runway two eight left": "RY8L",
+        "r-nav yankee runway two eight right": "RY8R",
+        "r-nav zulu runway three zero": "RZ30",
+        "r-nav zulu runway two eight left": "RZ8L",
+        "r-nav zulu runway two eight right": "RZ8R"
+      },
+      "ApproachFixes": {
+        "I30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "I8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RY30": {
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "Zolum": "ZOLUM",
+          "woovon": "WUVON"
+        },
+        "RY8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Tenie": "TENIE",
+          "Vodsy": "VODSY"
+        },
+        "RY8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Japso": "JAPSO",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        },
+        "RZ30": {
+          "Alex": "ALLXX",
+          "Carsen": "CRSEN",
+          "Fist": "FFIST",
+          "Franny": "FRNNY",
+          "Hepmo": "HEPMO",
+          "Mission": "MYSHN",
+          "Mito": "MITOE",
+          "My Caf": "MYCAF",
+          "Parb": "PARBB",
+          "Perfect": "PRFCT",
+          "woovon": "WUVON"
+        },
+        "RZ8L": {
+          "Bub": "BBUBB",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Heeder": "HEDER",
+          "Jupap": "JUPAP",
+          "Mission": "MYSHN",
+          "Vodsy": "VODSY"
+        },
+        "RZ8R": {
+          "Bub": "BBUBB",
+          "Cuvsa": "CUVSA",
+          "Cymbal": "CYMBL",
+          "Fist": "FFIST",
+          "Mission": "MYSHN",
+          "Navy": "NAGVY",
+          "Nixdy": "NIXDE",
+          "Skylin": "SKYLN",
+          "Urzaf": "URZAF",
+          "grove": "GROVE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 30",
+      "SID": "",
+      "STAR": "EMZOH4",
+      "Altitude": 10463,
+      "State": "arrival",
+      "ControllerFrequency": "3S",
+      "TrackingController": "3S",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "15",
+        "33"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"number three six eight quebec uniformed is gonna maintain three thousand seven hundred cleared R\u0026M runway three two five right approach\"",
+    "[local-stt] normalized words: [number 3 6 8 quebec uniformed is gonna maintain 3 thousand 7 hundred cleared rm runway 3 2 5 right approach]",
+    "[local-stt] tokens: 14",
+    "[local-stt]   token[0]: Text=\"number\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"368\" Type=1 Value=368",
+    "[local-stt]   token[2]: Text=\"quebec\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"uniformed\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"gonna\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"37\" Type=2 Value=37",
+    "[local-stt]   token[8]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"rm\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"325\" Type=1 Value=325",
+    "[local-stt]   token[12]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 14 tokens, 17 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 14 tokens, 17 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"november three six eight kebeck uniform\" (airline=0.748, flight=0.960, skip=0)",
+    "[local-stt]     result 1: \"conquest eight kebeck uniform\" (airline=0.625, flight=0.960, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"november three six eight kebeck uniform\" (airline=0.75, flight=0.96, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 4 results",
+    "[local-stt]     result 0: \"Bigstripe 80 96\" (airline=0.519, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"SkyWest 63 55\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Fedex six 32 heavy\" (airline=0.456, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Southwest 40 16\" (airline=0.519, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Bigstripe 80 96\" (airline=0.52, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Bigstripe 80 96\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 3 results",
+    "[local-stt]     result 0: \"november three six eight kebeck uniform\" (airline=0.500, flight=0.907, skip=0)",
+    "[local-stt]     result 1: \"cessna four forty-one eight kebeck uniform\" (airline=0.500, flight=0.907, skip=0)",
+    "[local-stt]     result 2: \"conquest eight kebeck uniform\" (airline=0.500, flight=0.907, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"november three six eight kebeck uniform\" (airline=0.50, flight=0.91, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"N368QU\" (conf=0.94, consumed=3, addressingForm=0, spokenKey=\"november three six eight kebeck uniform\")",
+    "[local-stt] callsign match: Callsign=\"N368QU\" SpokenKey=\"november three six eight kebeck uniform\" Conf=0.94 Consumed=3",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=4000 Fixes=5 Approaches=3 AssignedApproach=\"RNAV Runway 25R\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Livermore Municipal\" -\u003e \"KLVK\"",
+    "[local-stt]   fix: \"Uhut\" -\u003e \"UHHUT\"",
+    "[local-stt]   fix: \"gains\" -\u003e \"GAYNS\"",
+    "[local-stt]   fix: \"Oyahi\" -\u003e \"OYAHI\"",
+    "[local-stt]   fix: \"Torcs\" -\u003e \"TORCS\"",
+    "[local-stt]   approach: \"Localizer runway two five right\" -\u003e \"L5R\"",
+    "[local-stt]   approach: \"r-nav runway two five right\" -\u003e \"R5R\"",
+    "[local-stt]   approach: \"I L S runway two five right\" -\u003e \"I5R\"",
+    "[local-stt] command tokens after disregard: 11",
+    "[local-stt]   token[0]: Text=\"uniformed\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"gonna\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"37\" Type=2 Value=37",
+    "[local-stt]   token[5]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"rm\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"325\" Type=1 Value=325",
+    "[local-stt]   token[9]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 11 tokens",
+    "[local-stt]   no match at token[0]=\"uniformed\", skipping",
+    "[local-stt]   skipping filler word: \"is\"",
+    "[local-stt]   no match at token[2]=\"gonna\", skipping",
+    "[local-stt]   matched command: \"A37\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"rm\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"rm\"",
+    "[local-stt]   extractApproach: no type match, falling back to assigned approach \"R5R\" (dir=R)",
+    "[local-stt]   matched command: \"CR5R\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt]   no match at token[10]=\"approach\", skipping",
+    "[local-stt] ParseCommands: result=[A37 CR5R] (avgConf=1.00)",
+    "[local-stt] parsed commands: [A37 CR5R] (conf=1.00)",
+    "[local-stt] validated commands: [A37 CR5R] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"N368QU A37 CR5R\" (conf=0.94, time=17.0839ms) ==="
+  ]
+}

@@ -1,0 +1,501 @@
+{
+    "control_positions": {
+        "00": {
+            "callsign": "ZDV 00 GUARD",
+            "frequency": 121500,
+            "radio_name": "Denver Center"
+        },
+        "03": {
+            "callsign": "ZDV 03 - Meeker High",
+            "frequency": 126725,
+            "radio_name": "Denver Center"
+        },
+        "04": {
+            "callsign": "ZDV 04 - Grand Junction High",
+            "frequency": 135125,
+            "radio_name": "Denver Center"
+        },
+        "05": {
+            "callsign": "ZDV 05 - Kremmling High",
+            "frequency": 132850,
+            "radio_name": "Denver Center"
+        },
+        "06": {
+            "callsign": "ZDV 06 - Kremmling Low",
+            "frequency": 128650,
+            "radio_name": "Denver Center"
+        },
+        "07": {
+            "callsign": "ZDV 07 - Thurman Low",
+            "frequency": 133950,
+            "radio_name": "Denver Center"
+        },
+        "08": {
+            "callsign": "ZDV 08 - Hayes Center High",
+            "frequency": 127025,
+            "radio_name": "Denver Center"
+        },
+        "09": {
+            "callsign": "ZDV 09 - North Platte High",
+            "frequency": 126325,
+            "radio_name": "Denver Center"
+        },
+        "11": {
+            "callsign": "ZDV 11 Junction Low",
+            "frequency": 120475,
+            "radio_name": "Denver center"
+        },
+        "12": {
+            "callsign": "ZDV 12 - Gunnison Low",
+            "frequency": 125350,
+            "radio_name": "Denver Center"
+        },
+        "13": {
+            "callsign": "ZDV 13 - TOMSN Low",
+            "frequency": 126500,
+            "radio_name": "Denver Center"
+        },
+        "14": {
+            "callsign": "ZDV 14 Hayden High",
+            "frequency": 128325,
+            "radio_name": "Denver center"
+        },
+        "15": {
+            "callsign": "ZDV 15 - Sidney Low",
+            "frequency": 118475,
+            "radio_name": "Denver Center"
+        },
+        "16": {
+            "callsign": "ZDV 16 Denver High",
+            "frequency": 120575,
+            "radio_name": "Denver center"
+        },
+        "17": {
+            "callsign": "ZDV 17 Hill City High",
+            "frequency": 127650,
+            "radio_name": "Denver center"
+        },
+        "19": {
+            "callsign": "ZDV 19 - North Platte Low",
+            "frequency": 132700,
+            "radio_name": "Denver Center"
+        },
+        "21": {
+            "callsign": "ZDV 21 - Cheyenne Low",
+            "frequency": 125900,
+            "radio_name": "Denver Center"
+        },
+        "22": {
+            "callsign": "ZDV 22 - Casper Low",
+            "frequency": 135600,
+            "radio_name": "Denver Center"
+        },
+        "23": {
+            "callsign": "ZDV 23 - Tuba City High",
+            "frequency": 118225,
+            "radio_name": "Denver Center"
+        },
+        "25": {
+            "callsign": "ZDV 25 Blue Mesa High",
+            "frequency": 133525,
+            "radio_name": "Denver center"
+        },
+        "26": {
+            "callsign": "ZDV 26 - POWDR Low",
+            "frequency": 119850,
+            "radio_name": "Denver Center"
+        },
+        "27": {
+            "callsign": "ZDV 27 - La Junta Low",
+            "frequency": 134125,
+            "radio_name": "Denver Center"
+        },
+        "28": {
+            "callsign": "ZDV 28 - Lamar High",
+            "frequency": 134125,
+            "radio_name": "Denver Center"
+        },
+        "29": {
+            "callsign": "ZDV 29 Pueblo High",
+            "frequency": 132225,
+            "radio_name": "Denver center"
+        },
+        "31": {
+            "callsign": "ZDV 31 - Rapid City Low",
+            "frequency": 127950,
+            "radio_name": "Denver Center"
+        },
+        "33": {
+            "callsign": "ZDV 33 - ScottBluff High",
+            "frequency": 134575,
+            "radio_name": "Denver Center"
+        },
+        "34": {
+            "callsign": "ZDV 34 - Medicine Bow High",
+            "frequency": 133175,
+            "radio_name": "Denver Center"
+        },
+        "35": {
+            "callsign": "ZDV 35 - BRUIT High",
+            "frequency": 135025,
+            "radio_name": "Denver Center"
+        },
+        "36": {
+            "callsign": "ZDV 36 - Farmington Low",
+            "frequency": 118575,
+            "radio_name": "Denver Center"
+        },
+        "37": {
+            "callsign": "ZDV 37 - Farmington High",
+            "frequency": 125675,
+            "radio_name": "Denver Center"
+        },
+        "41": {
+            "callsign": "ZDV 41 - Pueblo Low",
+            "frequency": 128375,
+            "radio_name": "Denver Center"
+        },
+        "61": {
+            "callsign": "ZDV 61 - Falcon High",
+            "frequency": 126875,
+            "radio_name": "Denver Center"
+        },
+        "68": {
+            "callsign": "ZDV 68 - Tuba City Low",
+            "frequency": 127550,
+            "radio_name": "Denver Center"
+        },
+        "77": {
+            "callsign": "ZDV 77 - Hayden Low",
+            "frequency": 120475,
+            "radio_name": "Denver Center"
+        },
+        "99": {
+            "callsign": "ZDV 99 Denver TMU",
+            "frequency": 123450,
+            "radio_name": "Denver TMU"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "departure_assignments": {
+                    "KCOS": "29"
+                },
+                "inbound_assignments": {
+                    "CLASH5.OATHE": "29",
+                    "CLASH5.KIISS": "29",
+                    "NIIXX4.HALEN": "29",
+                    "NIIXX4.ZIGEE": "29",
+                    "DBRY5.HBU": "29",
+                    "DBRY5.ALS": "29",
+                    "OZZZY5.GLD": "29",
+                    "OZZZY5.LAA": "29"
+                },
+                "default_consolidation": {
+                    "29": []
+                }
+            }
+        },
+        "center": "N039.58.19.255,W104.45.04.202",
+        "range": 150,
+        "video_map_file": "videomaps/ZDV-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "TESSY": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "HORST": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "BRICK": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "AGIME": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "SINSY": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "JISIG": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "AALLE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "CLASH": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FLATI": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "PPINT": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FLNEL": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "HAGGR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "BGDEE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "MNARK": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ELKEE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "LARKS": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ALLAN": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "LANDR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "POWDR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "DANDD": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "QUAIL": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "PICKK": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "IMAGN": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FFEST": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ZOMBZ": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "OZZZY": [
+                {
+                    "type": "route",
+                    "to": "COS",
+                    "from": "ZDV"
+                }
+            ],
+            "FSHER": [
+                {
+                    "type": "route",
+                    "to": "COS",
+                    "from": "ZDV"
+                }
+            ],
+            "LUFSE": [
+                {
+                    "type": "route",
+                    "to": "COS",
+                    "from": "ZDV"
+                }
+            ],
+            "PUB": [
+                {
+                    "type": "route",
+                    "to": "COS",
+                    "from": "ZDV"
+                }
+            ],
+            "ADANE": [
+                {
+                    "type": "route",
+                    "to": "COS",
+                    "from": "ZDV"
+                }
+            ],
+            "CYS": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "WERNR": [
+                {
+                    "type": "route",
+                    "to": "ASE",
+                    "from": "ZDV"
+                }
+            ],
+            "DBL": [
+                {
+                    "type": "route",
+                    "to": "ASE",
+                    "from": "ZDV"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ASE",
+            "single_char_stars_id": "S",
+            "stars_id": "RAS",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "COS",
+            "single_char_stars_id": "C",
+            "stars_id": "RCO",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CPR",
+            "single_char_stars_id": "N",
+            "stars_id": "RKP",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CYS",
+            "single_char_stars_id": "Y",
+            "stars_id": "RCY",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "D01",
+            "single_char_stars_id": "D",
+            "stars_id": "RDC",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "EGE",
+            "single_char_stars_id": "E",
+            "stars_id": "REG",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "RCA",
+            "single_char_stars_id": "R",
+            "stars_id": "RRC",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZAB",
+            "prefix": "A"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "K"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "L"
+        },
+        {
+            "id": "ZLC",
+            "prefix": "U"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "P"
+        }
+    ]
+}

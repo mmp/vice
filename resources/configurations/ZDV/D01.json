@@ -1,0 +1,1308 @@
+{
+    "control_positions": {
+        "6A": {
+            "callsign": "CYS_APP",
+            "frequency": 124550,
+            "radio_name": "Cheyenne approach"
+        },
+        "CT": {
+            "callsign": "CYS_TWR",
+            "frequency": 118700,
+            "radio_name": "Cheyenne tower"
+        },
+        "1I": {
+            "callsign": "DEN_I_APP",
+            "frequency": 120350,
+            "radio_name": "Denver Approach"
+        },
+        "1H": {
+            "callsign": "DEN_H_APP",
+            "frequency": 119300,
+            "radio_name": "Denver Approach"
+        },
+        "1G": {
+            "callsign": "DEN_G_APP",
+            "frequency": 124950,
+            "radio_name": "Denver Approach"
+        },
+        "1X": {
+            "callsign": "DEN_X_APP",
+            "frequency": 126550,
+            "radio_name": "Denver Approach"
+        },
+        "1W": {
+            "callsign": "DEN_W_APP",
+            "frequency": 123850,
+            "radio_name": "Denver Approach"
+        },
+        "1E": {
+            "callsign": "DEN_E_APP",
+            "frequency": 120800,
+            "radio_name": "Denver Approach"
+        },
+        "1O": {
+            "callsign": "DEN_O_APP",
+            "frequency": 125750,
+            "radio_name": "Denver Approach"
+        },
+        "1T": {
+            "callsign": "DEN_T_APP",
+            "frequency": 133620,
+            "radio_name": "Denver Approach"
+        },
+        "1L": {
+            "callsign": "DEN_L_DEP",
+            "frequency": 126100,
+            "radio_name": "Denver Departure"
+        },
+        "1N": {
+            "callsign": "DEN_N_DEP",
+            "frequency": 127050,
+            "radio_name": "Denver Departure"
+        },
+        "1R": {
+            "callsign": "DEN_R_DEP",
+            "frequency": 128250,
+            "radio_name": "Denver Departure"
+        },
+        "1S": {
+            "callsign": "DEN_S_DEP",
+            "frequency": 128450,
+            "radio_name": "Denver Departure"
+        },
+        "1J": {
+            "callsign": "DEN_J_APP",
+            "frequency": 125120,
+            "radio_name": "Denver Approach"
+        },
+        "1D": {
+            "callsign": "DEN_D_APP",
+            "frequency": 134850,
+            "radio_name": "Denver Approach"
+        },
+        "1A": {
+            "callsign": "DEN_A_APP",
+            "frequency": 132750,
+            "radio_name": "Denver Approach"
+        },
+        "ET": {
+            "callsign": "DEN_E_TWR",
+            "frequency": 132350,
+            "radio_name": "Denver Tower"
+        },
+        "12": {
+            "callsign": "DEN_S_TWR",
+            "frequency": 124300,
+            "radio_name": "Denver Tower"
+        },
+        "2Y": {
+            "callsign": "APA_TWR",
+            "frequency": 118900,
+            "radio_name": "Centennial Tower"
+        },
+        "2B": {
+            "callsign": "BJC_TWR",
+            "frequency": 118600,
+            "radio_name": "Metro Tower"
+        },
+        "2F": {
+            "callsign": "FNL_TWR",
+            "frequency": 118400,
+            "radio_name": "NoCo Tower"
+        },
+        "GT": {
+            "callsign": "GXY_TWR",
+            "frequency": 118800,
+            "radio_name": "Greeley Tower",
+            "scope_char": "*"
+        },
+        "BT": {
+            "callsign": "BKF_TWR",
+            "frequency": 121000,
+            "radio_name": "Buckley Tower"
+        },
+        "ST": {
+            "callsign": "CFO_TWR",
+            "frequency": 120200,
+            "radio_name": "Spaceport Tower"
+        },
+        "5J": {
+            "callsign": "GJT_APP",
+            "frequency": 119700,
+            "radio_name": "Denver Approach"
+        },
+        "5T": {
+            "callsign": "GJT_TWR",
+            "frequency": 118100,
+            "radio_name": "Grand Junction Tower"
+        },
+        "1P": {
+            "callsign": "PUB_APP",
+            "frequency": 120100,
+            "radio_name": "Denver Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "BZN": "6A",
+                    "DEN": "6A",
+                    "OMA": "6A",
+                    "SEA": "6A"
+                },
+                "departure_assignments": {
+                    "KCYS": "6A"
+                },
+                "default_consolidation": {
+                    "6A": []
+                }
+            },
+            "ALL": {
+                "inbound_assignments": {
+                    "AALLE4": "1G",
+                    "BRNKO4": "1N",
+                    "CLASH5": "1X",
+                    "COS Arrivals/Overflights": "1S",
+                    "CYS Arrivals/Overflights": "1N",
+                    "DANDD1": "1X",
+                    "DUNNN6": "1S",
+                    "FLATI5": "1H",
+                    "LANDR3": "1G",
+                    "LARKS3": "1I",
+                    "LAWGR4": "1G",
+                    "LONGZ4": "1H",
+                    "NIIXX4": "1X",
+                    "PINNR3": "1N",
+                    "POWDR1": "1I",
+                    "QUAIL1": "1X",
+                    "RAMMS8": "1H",
+                    "SSKII4": "1I",
+                    "TBARR4": "1I",
+                    "TOMSN9": "1H",
+                    "ZOMBZ6": "1S"
+                },
+                "departure_assignments": {
+                    "KAPA": "1A",
+                    "KBJC": "1J",
+                    "KBKF": "1S",
+                    "KCFO": "1R",
+                    "KDEN/ZIMMR3": "1L",
+                    "KDEN/CONNR7": "1L",
+                    "KDEN/COORZ6": "1L",
+                    "KDEN/BAYLR6": "1L",
+                    "KDEN/CHUWY1": "1N",
+                    "KDEN/DDRTH1": "1N",
+                    "KDEN/HHOTH2": "1N",
+                    "KDEN/XXWNG1": "1N",
+                    "KDEN/EXTAN7": "1R",
+                    "KDEN/EMMYS8": "1R",
+                    "KDEN/EEONS8": "1R",
+                    "KDEN/EPKEE7": "1R",
+                    "KDEN/SABTH2": "1S",
+                    "KDEN/SUDDZ1": "1S",
+                    "KDEN/SMMUR2": "1S",
+                    "KDEN/SLEEK2": "1S",
+                    "KDEN/DEN3": "1S",
+                    "KFNL": "1D",
+                    "KGXY": "1D"
+                },
+                "default_consolidation": {
+                    "1A": [
+                        "1D",
+                        "1G",
+                        "1H",
+                        "1I",
+                        "1J",
+                        "1L",
+                        "1N",
+                        "1R",
+                        "1S",
+                        "1X"
+                    ]
+                }
+            },
+            "FRE": {
+                "inbound_assignments": {
+                    "Final-FLATI-LE": "1W",
+                    "Final-LONGZ-LE": "1W",
+                    "Final-NE-Gates-LE": "1W",
+                    "Final-SE-Gates-LE": "1W",
+                    "Final-SSKII-LE": "1W",
+                    "Final-TBARR-LE": "1W"
+                },
+                "default_consolidation": {
+                    "1W": []
+                }
+            },
+            "FRN": {
+                "inbound_assignments": {
+                    "Final-CLASH-LN": "1E",
+                    "Final-NE-Gates-LN": "1E",
+                    "Final-NIIXX-LN": "1O",
+                    "Final-NW-Gates-LN": "1W",
+                    "Final-SSKII-LN": "1W",
+                    "Final-TBARR-LN": "1T"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1O",
+                        "1T",
+                        "1W"
+                    ]
+                }
+            },
+            "FRS": {
+                "inbound_assignments": {
+                    "Final-AALLE-LS": "1O",
+                    "Final-FLATI-LS": "1T",
+                    "Final-LAWGR-LS": "1E",
+                    "Final-LONGZ-LS": "1W",
+                    "Final-SE-Gates-LS": "1E",
+                    "Final-SW-Gates-LS": "1W"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1O",
+                        "1T",
+                        "1W"
+                    ]
+                }
+            },
+            "FRW": {
+                "inbound_assignments": {
+                    "Final-AALLE-LW": "1W",
+                    "Final-CLASH-LW": "1W",
+                    "Final-LAWGR-LW": "1W",
+                    "Final-NIIXX-LW": "1W",
+                    "Final-NW-Gates-LW": "1W",
+                    "Final-SW-Gates-LW": "1W"
+                },
+                "default_consolidation": {
+                    "1W": []
+                }
+            },
+            "SRN": {
+                "inbound_assignments": {
+                    "BRNKO4": "1J",
+                    "CYS Arrivals/Overflights": "1J",
+                    "DANDD1": "1J",
+                    "DUNNN6": "1J",
+                    "LANDR3": "1J",
+                    "LARKS3": "1J",
+                    "PINNR3": "1J",
+                    "POWDR1": "1J",
+                    "QUAIL1": "1J",
+                    "RAMMS8": "1J",
+                    "TOMSN9": "1J",
+                    "ZOMBZ6": "1J"
+                },
+                "departure_assignments": {
+                    "KAPA": "1J",
+                    "KBJC": "1J",
+                    "KBKF": "1J",
+                    "KCFO": "1J",
+                    "KFNL": "1J",
+                    "KGXY": "1J"
+                },
+                "default_consolidation": {
+                    "1J": []
+                }
+            },
+            "SRS": {
+                "inbound_assignments": {
+                    "BRNKO4": "1J",
+                    "CYS Arrivals/Overflights": "1J",
+                    "DANDD1": "1J",
+                    "DUNNN6": "1J",
+                    "LANDR3": "1J",
+                    "LARKS3": "1J",
+                    "PINNR3": "1J",
+                    "POWDR1": "1J",
+                    "QUAIL1": "1J",
+                    "RAMMS8": "1J",
+                    "TOMSN9": "1J",
+                    "ZOMBZ6": "1J"
+                },
+                "departure_assignments": {
+                    "KAPA": "1J",
+                    "KBJC": "1J",
+                    "KBKF": "1J",
+                    "KCFO": "1J",
+                    "KFNL": "1J",
+                    "KGXY": "1J"
+                },
+                "default_consolidation": {
+                    "1J": []
+                }
+            },
+            "GJT": {
+                "inbound_assignments": {
+                    "NORTH": "5J",
+                    "NORTHEAST": "5J",
+                    "NORTHWEST": "5J",
+                    "SOUTHEAST": "5J",
+                    "SOUTHWEST": "5J",
+                    "WEST": "5J"
+                },
+                "departure_assignments": {
+                    "KGJT": "5J"
+                },
+                "default_consolidation": {
+                    "5J": []
+                }
+            }
+        },
+        "center": "KCYS",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "D01NOCA",
+                    "description": "D01 CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 5000,
+                    "ceiling": 13000,
+                    "vertices": [
+                        "N039.18.01.727,W104.33.48.707",
+                        "N039.18.14.375,W104.45.11.370",
+                        "N040.24.47.562,W104.45.01.098",
+                        "N040.24.22.019,W104.31.03.253"
+                    ]
+                }
+            ],
+            "vfr_inhibit": [
+                {
+                    "id": "DENVER1",
+                    "description": "DENVER CLASS B",
+                    "type": "polygon",
+                    "floor": 5000,
+                    "ceiling": 12000,
+                    "vertices": [
+                        "N039.48.43.530,W104.34.59.679",
+                        "N039.48.43.928,W104.26.39.829",
+                        "N039.58.18.554,W104.35.45.822",
+                        "N039.58.21.329,W104.43.49.055",
+                        "N039.57.22.291,W104.46.07.291",
+                        "N039.46.34.592,W104.52.14.454",
+                        "N039.46.13.100,W104.48.18.962",
+                        "N039.45.13.568,W104.45.20.846",
+                        "N039.44.31.105,W104.44.06.688",
+                        "N039.44.24.088,W104.43.45.650",
+                        "N039.44.24.775,W104.35.00.695"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "CYS": {
+                "char": "A",
+                "position": "KCYS",
+                "elevation": 6155,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 30,
+        "scratchpads": {
+            "DEN": "DEN",
+            "CYS": "DEN",
+            "BENNE": "BEN",
+            "BARGR": "BRG",
+            "SENSE": "SNS",
+            "POGTE": "PGT",
+            "HAMER": "HAM",
+            "SHOOP": "SHP",
+            "MILKY": "MLK",
+            "EGBER": "EGB",
+            "SNY": "SNY"
+        },
+        "significant_points": {
+            "BARGR": {
+                "short_name": "BRG"
+            },
+            "BENNE": {},
+            "CYS": {},
+            "DEN": {},
+            "EGBER": {},
+            "HAMER": {},
+            "MILKY": {
+                "short_name": "MLK"
+            },
+            "POGTE": {
+                "short_name": "PGT"
+            },
+            "SENSE": {
+                "short_name": "SNS"
+            },
+            "SHOOP": {
+                "short_name": "SHP"
+            },
+            "SNY": {}
+        },
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
+        "controller_configs": {
+            "1I": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "AIRWAYS",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 LANDMARK VFR",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "AR LE",
+                    "AR LN",
+                    "AR LNS",
+                    "AR LS",
+                    "AR LSW",
+                    "DR LE",
+                    "N STARS",
+                    "ALL DEPARTURE SIDS",
+                    "SAT SIDS",
+                    "DR LN",
+                    "DR LS",
+                    "DR LNE",
+                    "DR LSW",
+                    "DR LNS",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "AR LEW",
+                    "AR LNE",
+                    "AR LNW",
+                    "AR LSE",
+                    "AR LW",
+                    "D01 CLASS B/E Airspace",
+                    "S STARS",
+                    "ALL ARRIVAL SIDS",
+                    "",
+                    "DR LE",
+                    "DR LW",
+                    "DR LSE",
+                    "DR LNW",
+                    "DR LEW"
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1H": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "AIRWAYS",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 LANDMARK VFR",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "AR LE",
+                    "AR LN",
+                    "AR LNS",
+                    "AR LS",
+                    "AR LSW",
+                    "DR LE",
+                    "N STARS",
+                    "ALL DEPARTURE SIDS",
+                    "SAT SIDS",
+                    "DR LN",
+                    "DR LS",
+                    "DR LNE",
+                    "DR LSW",
+                    "DR LNS",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "AR LEW",
+                    "AR LNE",
+                    "AR LNW",
+                    "AR LSE",
+                    "AR LW",
+                    "D01 CLASS B/E Airspace",
+                    "S STARS",
+                    "ALL ARRIVAL SIDS",
+                    "",
+                    "DR LE",
+                    "DR LW",
+                    "DR LSE",
+                    "DR LNW",
+                    "DR LEW"
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1G": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "AIRWAYS",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 LANDMARK VFR",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "AR LE",
+                    "AR LN",
+                    "AR LNS",
+                    "AR LS",
+                    "AR LSW",
+                    "DR LE",
+                    "N STARS",
+                    "ALL DEPARTURE SIDS",
+                    "SAT SIDS",
+                    "DR LN",
+                    "DR LS",
+                    "DR LNE",
+                    "DR LSW",
+                    "DR LNS",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "AR LEW",
+                    "AR LNE",
+                    "AR LNW",
+                    "AR LSE",
+                    "AR LW",
+                    "D01 CLASS B/E Airspace",
+                    "S STARS",
+                    "ALL ARRIVAL SIDS",
+                    "",
+                    "DR LE",
+                    "DR LW",
+                    "DR LSE",
+                    "DR LNW",
+                    "DR LEW"
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1X": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "AIRWAYS",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 LANDMARK VFR",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "AR LE",
+                    "AR LN",
+                    "AR LNS",
+                    "AR LS",
+                    "AR LSW",
+                    "DR LE",
+                    "N STARS",
+                    "ALL DEPARTURE SIDS",
+                    "SAT SIDS",
+                    "DR LN",
+                    "DR LS",
+                    "DR LNE",
+                    "DR LSW",
+                    "DR LNS",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "AR LEW",
+                    "AR LNE",
+                    "AR LNW",
+                    "AR LSE",
+                    "AR LW",
+                    "D01 CLASS B/E Airspace",
+                    "S STARS",
+                    "ALL ARRIVAL SIDS",
+                    "",
+                    "DR LE",
+                    "DR LW",
+                    "DR LSE",
+                    "DR LNW",
+                    "DR LEW"
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1W": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "D01 EAST WEST ILS MONITOR",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 CLASS B/E Airspace",
+                    "FR LN",
+                    "FR LS 16L HI",
+                    "FR LN ASPC",
+                    "ILS 17L-35R",
+                    "ILS 16L-34R",
+                    "ILS 34R",
+                    "ALL ARRIVAL SIDS",
+                    "WEST ALL STARS",
+                    "N STARS",
+                    "RNAV Y 16R",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "RWY 34L 35L 35R 16R 17R 17L NTZ",
+                    "",
+                    "",
+                    "",
+                    "FR LE",
+                    "FR LW",
+                    "FR LS ASPC",
+                    "ILS 17R-35L",
+                    "ILS 16R-34L",
+                    "ILS 16R",
+                    "ALL DEPARTURE SIDS",
+                    "JET ROUTES",
+                    "S NAMES",
+                    "",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "D01 34R 35L 35R 16L 17R 17L NTZ",
+                    "",
+                    "",
+                    ""
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1E": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "D01 EAST WEST ILS MONITOR",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 CLASS B/E Airspace",
+                    "FR LN",
+                    "FR LS 16L HI",
+                    "FR LN ASPC",
+                    "ILS 17L-35R",
+                    "ILS 16L-34R",
+                    "ILS 34R",
+                    "ALL ARRIVAL SIDS",
+                    "WEST ALL STARS",
+                    "N STARS",
+                    "RNAV Y 16R",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "RWY 34L 35L 35R 16R 17R 17L NTZ",
+                    "",
+                    "",
+                    "",
+                    "FR LE",
+                    "FR LW",
+                    "FR LS ASPC",
+                    "ILS 17R-35L",
+                    "ILS 16R-34L",
+                    "ILS 16R",
+                    "ALL DEPARTURE SIDS",
+                    "JET ROUTES",
+                    "S NAMES",
+                    "",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "D01 34R 35L 35R 16L 17R 17L NTZ",
+                    "",
+                    "",
+                    ""
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1O": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "D01 EAST WEST ILS MONITOR",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 CLASS B/E Airspace",
+                    "FR LN",
+                    "FR LS 16L HI",
+                    "FR LN ASPC",
+                    "ILS 17L-35R",
+                    "ILS 16L-34R",
+                    "ILS 34R",
+                    "ALL ARRIVAL SIDS",
+                    "WEST ALL STARS",
+                    "N STARS",
+                    "RNAV Y 16R",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "RWY 34L 35L 35R 16R 17R 17L NTZ",
+                    "",
+                    "",
+                    "",
+                    "FR LE",
+                    "FR LW",
+                    "FR LS ASPC",
+                    "ILS 17R-35L",
+                    "ILS 16R-34L",
+                    "ILS 16R",
+                    "ALL DEPARTURE SIDS",
+                    "JET ROUTES",
+                    "S NAMES",
+                    "",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "D01 34R 35L 35R 16L 17R 17L NTZ",
+                    "",
+                    "",
+                    ""
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1T": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "D01 EAST WEST ILS MONITOR",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 CLASS B/E Airspace",
+                    "FR LN",
+                    "FR LS 16L HI",
+                    "FR LN ASPC",
+                    "ILS 17L-35R",
+                    "ILS 16L-34R",
+                    "ILS 34R",
+                    "ALL ARRIVAL SIDS",
+                    "WEST ALL STARS",
+                    "N STARS",
+                    "RNAV Y 16R",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "RWY 34L 35L 35R 16R 17R 17L NTZ",
+                    "",
+                    "",
+                    "",
+                    "FR LE",
+                    "FR LW",
+                    "FR LS ASPC",
+                    "ILS 17R-35L",
+                    "ILS 16R-34L",
+                    "ILS 16R",
+                    "ALL DEPARTURE SIDS",
+                    "JET ROUTES",
+                    "S NAMES",
+                    "",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "D01 34R 35L 35R 16L 17R 17L NTZ",
+                    "",
+                    "",
+                    ""
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1L": {
+                "video_maps": [
+                    "DR BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "AIRWAYS",
+                    "ARRIVAL BASE",
+                    "EOVM",
+                    "D01 CLASS B/E Airspace",
+                    "DR LN",
+                    "DR LS",
+                    "DR LNE",
+                    "DR LSW",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "JET ROUTES",
+                    "D01 LANDMARK VFR",
+                    "N SID W",
+                    "S SID S",
+                    "E SID E",
+                    "E SID N",
+                    "E SID 17",
+                    "W SID N",
+                    "W SID 25",
+                    "ALL ARRIVAL SIDS",
+                    "DR LE",
+                    "DR LW",
+                    "DR LSE",
+                    "DR LNW",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "SAT SIDS",
+                    "D01 ZDV SPLITS",
+                    "N SID 8",
+                    "S SID 8",
+                    "E SID S",
+                    "E SID 8",
+                    "W SID W",
+                    "W SID S",
+                    "W SID 17",
+                    "ALL DEPARTURE SIDS"
+                ],
+                "default_maps": [
+                    "DR BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1N": {
+                "video_maps": [
+                    "DR BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "AIRWAYS",
+                    "ARRIVAL BASE",
+                    "EOVM",
+                    "D01 CLASS B/E Airspace",
+                    "DR LN",
+                    "DR LS",
+                    "DR LNE",
+                    "DR LSW",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "JET ROUTES",
+                    "D01 LANDMARK VFR",
+                    "N SID W",
+                    "S SID S",
+                    "E SID E",
+                    "E SID N",
+                    "E SID 17",
+                    "W SID N",
+                    "W SID 25",
+                    "ALL ARRIVAL SIDS",
+                    "DR LE",
+                    "DR LW",
+                    "DR LSE",
+                    "DR LNW",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "SAT SIDS",
+                    "D01 ZDV SPLITS",
+                    "N SID 8",
+                    "S SID 8",
+                    "E SID S",
+                    "E SID 8",
+                    "W SID W",
+                    "W SID S",
+                    "W SID 17",
+                    "ALL DEPARTURE SIDS"
+                ],
+                "default_maps": [
+                    "DR BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1R": {
+                "video_maps": [
+                    "DR BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "AIRWAYS",
+                    "ARRIVAL BASE",
+                    "EOVM",
+                    "D01 CLASS B/E Airspace",
+                    "DR LN",
+                    "DR LS",
+                    "DR LNE",
+                    "DR LSW",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "JET ROUTES",
+                    "D01 LANDMARK VFR",
+                    "N SID W",
+                    "S SID S",
+                    "E SID E",
+                    "E SID N",
+                    "E SID 17",
+                    "W SID N",
+                    "W SID 25",
+                    "ALL ARRIVAL SIDS",
+                    "DR LE",
+                    "DR LW",
+                    "DR LSE",
+                    "DR LNW",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "SAT SIDS",
+                    "D01 ZDV SPLITS",
+                    "N SID 8",
+                    "S SID 8",
+                    "E SID S",
+                    "E SID 8",
+                    "W SID W",
+                    "W SID S",
+                    "W SID 17",
+                    "ALL DEPARTURE SIDS"
+                ],
+                "default_maps": [
+                    "DR BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1S": {
+                "video_maps": [
+                    "DR BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "AIRWAYS",
+                    "ARRIVAL BASE",
+                    "EOVM",
+                    "D01 CLASS B/E Airspace",
+                    "DR LN",
+                    "DR LS",
+                    "DR LNE",
+                    "DR LSW",
+                    "LN DUMP",
+                    "EAST ALL DUMP",
+                    "JET ROUTES",
+                    "D01 LANDMARK VFR",
+                    "N SID W",
+                    "S SID S",
+                    "E SID E",
+                    "E SID N",
+                    "E SID 17",
+                    "W SID N",
+                    "W SID 25",
+                    "ALL ARRIVAL SIDS",
+                    "DR LE",
+                    "DR LW",
+                    "DR LSE",
+                    "DR LNW",
+                    "LS DUMP",
+                    "WEST ALL DUMP",
+                    "SAT SIDS",
+                    "D01 ZDV SPLITS",
+                    "N SID 8",
+                    "S SID 8",
+                    "E SID S",
+                    "E SID 8",
+                    "W SID W",
+                    "W SID S",
+                    "W SID 17",
+                    "ALL DEPARTURE SIDS"
+                ],
+                "default_maps": [
+                    "DR BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "5J": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "D01 CLASS B/E Airspace",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 LANDMARK VFR",
+                    "SR LN",
+                    "SR LS",
+                    "SR LNE",
+                    "SR LSW",
+                    "SR LNS",
+                    "D01 DVX LANDMARK",
+                    "SAT STARS",
+                    "SAT STARS NAMES",
+                    "JET ROUTES",
+                    "STADIUMS",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "SR LE",
+                    "SR LW",
+                    "SR LSE",
+                    "SR LNW",
+                    "SR LEW",
+                    "SAT SIDS",
+                    "SAT STAR COMBO",
+                    "AIRWAYS",
+                    "COUNTY MAP",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1D": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "D01 CLASS B/E Airspace",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 LANDMARK VFR",
+                    "SR LN",
+                    "SR LS",
+                    "SR LNE",
+                    "SR LSW",
+                    "SR LNS",
+                    "D01 DVX LANDMARK",
+                    "SAT STARS",
+                    "SAT STARS NAMES",
+                    "JET ROUTES",
+                    "STADIUMS",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "SR LE",
+                    "SR LW",
+                    "SR LSE",
+                    "SR LNW",
+                    "SR LEW",
+                    "SAT SIDS",
+                    "SAT STAR COMBO",
+                    "AIRWAYS",
+                    "COUNTY MAP",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            },
+            "1A": {
+                "video_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT",
+                    "D01 CLASS B/E Airspace",
+                    "DR BASE",
+                    "EOVM",
+                    "D01 LANDMARK VFR",
+                    "SR LN",
+                    "SR LS",
+                    "SR LNE",
+                    "SR LSW",
+                    "SR LNS",
+                    "D01 DVX LANDMARK",
+                    "SAT STARS",
+                    "SAT STARS NAMES",
+                    "JET ROUTES",
+                    "STADIUMS",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "SR LE",
+                    "SR LW",
+                    "SR LSE",
+                    "SR LNW",
+                    "SR LEW",
+                    "SAT SIDS",
+                    "SAT STAR COMBO",
+                    "AIRWAYS",
+                    "COUNTY MAP",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "default_maps": [
+                    "ARRIVAL BASE",
+                    "DEN PUB MVA FUS3 B - ALT"
+                ],
+                "center": "KDEN"
+            }
+        },
+        "coordination_lists": [
+            {
+                "name": "Centennial",
+                "id": "A",
+                "airports": [
+                    "KAPA"
+                ]
+            },
+            {
+                "name": "Metro",
+                "id": "B",
+                "airports": [
+                    "KBJC"
+                ]
+            },
+            {
+                "name": "NoCo",
+                "id": "C",
+                "airports": [
+                    "KFNL"
+                ]
+            },
+            {
+                "name": "Greely",
+                "id": "D",
+                "airports": [
+                    "KGXY"
+                ]
+            }
+        ],
+        "force_ql_self": true,
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "TEHRU",
+                    "HBU",
+                    "WERNR",
+                    "CONNR",
+                    "VOAXA",
+                    "CHNGY"
+                ],
+                "receiving_controller": "C06"
+            },
+            {
+                "fixes": [
+                    "CHUWY",
+                    "DDRTH",
+                    "JOBBA",
+                    "SAABR",
+                    "XXWNG"
+                ],
+                "receiving_controller": "C21"
+            },
+            {
+                "fixes": [
+                    "EEONS",
+                    "WYNDM",
+                    "EMMYS",
+                    "ZIRKL",
+                    "GAETR",
+                    "DUUZE",
+                    "EXTAN",
+                    "SHAYK"
+                ],
+                "receiving_controller": "C07"
+            },
+            {
+                "fixes": [
+                    "JOPLN",
+                    "VRONI",
+                    "SLEEK",
+                    "DAAYE",
+                    "RAITT",
+                    "SUDDZ"
+                ],
+                "receiving_controller": "C41"
+            }
+        ],
+        "coordination_fixes": {
+            "CYS": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "ARSPC__CYS AIRSPACE",
+                    "CLS D__CYS CLASS DELTA",
+                    "MVA__MVA",
+                    "RWYS__CYS RUNWAYS",
+                    "RWYS__CYS RUNWAYS",
+                    "ILS27__CYS ILS RWY 27",
+                    "RNAV27__CYS RNAV RWY 27",
+                    "RNAV27__CYS RNAV RWY 27",
+                    "RNAV31__CYS RNAV RWY 31",
+                    "AWYS__VICTOR AIRWAYS",
+                    "RNAV9__CYS RNAV RWY 09"
+                ],
+                "center": "KDEN"
+            },
+            "5": {
+                "video_maps": [
+                    "GJT AIRWAYS",
+                    "GJT BASE",
+                    "GJT GPS 29",
+                    "GJT GPS Y 11",
+                    "GJT ILS 11",
+                    "GJT MVA",
+                    "GJT NOKXI1",
+                    "GJT RHONE2",
+                    "GJT RNP Z",
+                    "GJT SATS",
+                    "GJT VFR"
+                ],
+                "center": "KGJT"
+            },
+            "6": {
+                "video_maps": [
+                    "ARSPC__CYS AIRSPACE",
+                    "CLS D__CYS CLASS DELTA",
+                    "MVA__MVA",
+                    "RWYS__CYS RUNWAYS",
+                    "RWYS__CYS RUNWAYS",
+                    "ILS27__CYS ILS RWY 27",
+                    "RNAV27__CYS RNAV RWY 27",
+                    "RNAV27__CYS RNAV RWY 27",
+                    "RNAV31__CYS RNAV RWY 31",
+                    "AWYS__VICTOR AIRWAYS",
+                    "RNAV9__CYS RNAV RWY 09"
+                ],
+                "center": "KCYS",
+                "range": 30
+            },
+            "2": {
+                "center": "KDEN"
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "COS",
+            "prefix": "1"
+        },
+        {
+            "id": "CYS",
+            "prefix": "2"
+        },
+        {
+            "id": "ZDV",
+            "prefix": "C"
+        }
+    ]
+}

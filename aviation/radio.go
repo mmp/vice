@@ -158,11 +158,14 @@ func (rt RadioTransmission) Spoken(r *rand.Rand) string {
 	var result []string
 
 	for i := range rt.Strings {
-		s := rt.Strings[i].Spoken(r, rt.Args[i])
-		result = append(result, s)
+		s := strings.TrimSpace(rt.Strings[i].Spoken(r, rt.Args[i]))
+		s = strings.TrimRight(s, ",.")
+		if s != "" {
+			result = append(result, s)
+		}
 	}
 
-	return strings.Join(result, " ") + "."
+	return strings.Join(result, ", ") + "."
 }
 
 // Written returns a string corresponding to how the transmission should be
@@ -171,8 +174,11 @@ func (rt RadioTransmission) Written(r *rand.Rand) string {
 	var result []string
 
 	for i := range rt.Strings {
-		s := rt.Strings[i].Written(r, rt.Args[i])
-		result = append(result, strings.TrimSuffix(strings.TrimSpace(s), ","))
+		s := strings.TrimSpace(rt.Strings[i].Written(r, rt.Args[i]))
+		s = strings.TrimRight(s, ",.")
+		if s != "" {
+			result = append(result, s)
+		}
 	}
 
 	return strings.Join(result, ", ")
@@ -212,7 +218,9 @@ var (
 		"gf":       &GroupFormSnippetFormatter{},
 		"hdg":      &HeadingSnippetFormatter{},
 		"num":      &BasicNumberSnippetFormatter{},
+		"rwy":      &RunwaySnippetFormatter{},
 		"sid":      &SIDSnippetFormatter{},
+		"mach":     &MachSnippetFormatter{},
 		"spd":      &SpeedSnippetFormatter{},
 		"star":     &STARSnippetFormatter{},
 	}
@@ -583,6 +591,40 @@ func (AirportSnippetFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// RunwaySnippetFormatter
+
+type RunwaySnippetFormatter struct{}
+
+func (RunwaySnippetFormatter) Written(arg any) string {
+	return arg.(string)
+}
+
+func (RunwaySnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	rwy := arg.(string)
+	var result []string
+	for _, ch := range rwy {
+		switch ch {
+		case 'L', 'l':
+			result = append(result, "left")
+		case 'R', 'r':
+			result = append(result, "right")
+		case 'C', 'c':
+			result = append(result, "center")
+		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+			result = append(result, sayDigit(int(ch-'0')))
+		}
+	}
+	return strings.Join(result, " ")
+}
+
+func (RunwaySnippetFormatter) Validate(arg any) error {
+	if _, ok := arg.(string); !ok {
+		return fmt.Errorf("expected string arg, got %T", arg)
+	}
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
 // DepControllerSnippetFormatter
 
 type DepControllerSnippetFormatter struct{}
@@ -648,6 +690,39 @@ func (AppControllerSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 func (AppControllerSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(*Controller); !ok {
 		return fmt.Errorf("expected *Controller arg, got %T", arg)
+	}
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// MachSnippetFormatter formats mach numbers (e.g., 0.75 → "mach .75" written, "mach point seven five" spoken)
+
+type MachSnippetFormatter struct{}
+
+func (MachSnippetFormatter) Written(arg any) string {
+	mach, ok := arg.(int)
+	if !ok {
+		// float32 like 0.75 → convert to int 75
+		f := arg.(float32)
+		mach = int(f * 100)
+	}
+	return fmt.Sprintf("mach .%d", mach)
+}
+
+func (MachSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	mach, ok := arg.(int)
+	if !ok {
+		f := arg.(float32)
+		mach = int(f * 100)
+	}
+	return "mach point " + sayDigits(mach, 2)
+}
+
+func (MachSnippetFormatter) Validate(arg any) error {
+	if _, ok := arg.(int); !ok {
+		if _, ok := arg.(float32); !ok {
+			return fmt.Errorf("expected int or float32 arg, got %T", arg)
+		}
 	}
 	return nil
 }
@@ -861,6 +936,58 @@ func GetTelephony(callsign string, cwtCategory string) string {
 	return tele
 }
 
+// GetCallsignSpoken returns the spoken telephony string for a callsign,
+// formatted as it would be pronounced (for Whisper prompts).
+// Example: "JBU520" → "jetblue five 20", "BAW22J" → "speedbird 22 juliet"
+func GetCallsignSpoken(callsign string, cwtCategory string) string {
+	loadPronunciationsIfNeeded()
+
+	prefix, fnum := SplitCallsign(callsign)
+
+	// GA N-numbers: spell out character by character
+	if prefix == "N" {
+		var s []string
+		for _, ch := range callsign {
+			if ch >= '0' && ch <= '9' {
+				s = append(s, sayDigit(int(ch-'0')))
+			} else {
+				s = append(s, strings.ToLower(spokenLetters[string(ch)]))
+			}
+		}
+		return strings.Join(s, " ")
+	}
+
+	// Extract trailing letters from flight number (e.g., "22J" → suffix=" juliet")
+	var suffix string
+	if suffixIdx := strings.IndexAny(fnum, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); suffixIdx != -1 {
+		for _, ch := range fnum[suffixIdx:] {
+			suffix += " " + strings.ToLower(spokenLetters[string(ch)])
+		}
+		fnum = fnum[:suffixIdx]
+	}
+
+	// Get telephony with override
+	var tel string
+	if t, ok := DB.Callsigns[prefix]; ok {
+		tel = t
+	}
+	if tel2, ok := sayAirlineMap[tel]; ok {
+		tel = tel2
+	}
+
+	// Build result with spoken flight number
+	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix)
+
+	// Add heavy/super suffix
+	if cwtCategory == "A" {
+		result += " super"
+	} else if len(cwtCategory) > 0 && cwtCategory[0] <= 'D' {
+		result += " heavy"
+	}
+
+	return result
+}
+
 // GetFixTelephony returns the spoken name for a fix (navaid, airport, or waypoint).
 // It uses pronunciations from sayfix.json when available, falls back to database
 // lookups for navaids/airports, and uses StopShouting for other fixes.
@@ -870,8 +997,8 @@ func GetFixTelephony(fix string) string {
 	// Cut off any trailing bits like COLIN.JT
 	fix, _, _ = strings.Cut(fix, ".")
 
-	// For 3-char fixes or 4-char starting with K (VORs, airports), use the full name
-	if len(fix) == 3 || (len(fix) == 4 && fix[0] == 'K') {
+	// For 3-char fixes or 4-char ICAO codes (VORs, airports), use the full name
+	if len(fix) == 3 || len(fix) == 4 {
 		if aid, ok := DB.Navaids[fix]; ok {
 			return util.StopShouting(aid.Name)
 		} else if ap, ok := DB.Airports[fix]; ok {
@@ -886,6 +1013,33 @@ func GetFixTelephony(fix string) string {
 
 	// Fall back to StopShouting for readability
 	return util.StopShouting(fix)
+}
+
+// GetAirportTelephonyVariants returns all spoken name variants for an airport.
+// This is used by STT for matching spoken airport names to ICAO codes.
+// Returns all variants from sayairport.json if available, otherwise returns
+// a slice with just the database name (if available), or nil if not found.
+func GetAirportTelephonyVariants(icao string) []string {
+	loadPronunciationsIfNeeded()
+
+	// First check sayairport.json for custom variants
+	if variants, ok := sayAirportMap[icao]; ok && len(variants) > 0 {
+		return variants
+	}
+
+	// Fall back to database name
+	if ap, ok := DB.Airports[icao]; ok && ap.Name != "" {
+		// Strip common suffixes that wouldn't typically be said
+		name := ap.Name
+		for _, extra := range []string{"Airport", "Air Field", "Field", "Strip", "Airstrip", "International", "Regional"} {
+			name = strings.TrimSuffix(name, " "+extra)
+		}
+		if name != "" {
+			return []string{name}
+		}
+	}
+
+	return nil
 }
 
 // GetSIDTelephony returns the spoken form of a SID name.
@@ -1115,9 +1269,10 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 		tel = tel2
 	}
 
-	// For non-emergency aircraft reading back instructions, 5% of the time
+	// For non-emergency aircraft reading back instructions, sometimes
 	// skip the ICAO identifier and just say the flight number.
-	if !isEmergency && !alwaysFullCallsign && r.Float32() < 0.05 {
+	// (Disabled: set to 0% to always include the full callsign.)
+	if !isEmergency && !alwaysFullCallsign && r.Float32() < 0 {
 		tel = ""
 	}
 
@@ -1168,6 +1323,17 @@ var spokenLetters = map[string]string{
 	"J": "Juliet", "K": "Kilo", "L": "Lima", "M": "mike", "N": "November",
 	"O": "Oscar", "P": "Pahpah", "Q": "Kebeck", "R": "Romeo", "S": "Sierra",
 	"T": "tango", "U": "uniform", "V": "victor", "W": "whiskey", "X": "x-ray",
+	"Y": "yankee", "Z": "zulu",
+}
+
+// NATOPhonetic maps uppercase letters to their standard NATO phonetic alphabet words.
+var NATOPhonetic = map[string]string{
+	"A": "alpha", "B": "bravo", "C": "charlie", "D": "delta",
+	"E": "echo", "F": "foxtrot", "G": "golf", "H": "hotel",
+	"I": "india", "J": "juliet", "K": "kilo", "L": "lima",
+	"M": "mike", "N": "november", "O": "oscar", "P": "papa",
+	"Q": "quebec", "R": "romeo", "S": "sierra", "T": "tango",
+	"U": "uniform", "V": "victor", "W": "whiskey", "X": "x-ray",
 	"Y": "yankee", "Z": "zulu",
 }
 

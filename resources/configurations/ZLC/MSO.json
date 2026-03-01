@@ -1,0 +1,27 @@
+{
+    "control_positions": {
+        "1M": {
+            "callsign": "MSO_APP",
+            "frequency": 124900,
+            "radio_name": "Spokane Approach"
+        },
+        "2L": {
+            "callsign": "MSO_TWR",
+            "frequency": 118400,
+            "radio_name": "Missoula Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZLC",
+            "prefix": "C"
+        },
+        {
+            "id": "ZSE",
+            "prefix": "S"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

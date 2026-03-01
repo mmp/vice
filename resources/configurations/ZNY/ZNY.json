@@ -1,0 +1,750 @@
+{
+    "control_positions": {
+        "08": {
+            "callsign": "ZNY 08 BRNAN",
+            "frequency": 124775,
+            "radio_name": "New York center"
+        },
+        "09": {
+            "callsign": "ZNY 09 Westminster",
+            "frequency": 134325,
+            "radio_name": "New York center"
+        },
+        "10": {
+            "callsign": "ZNY 10 Harrisburg",
+            "frequency": 133475,
+            "radio_name": "New York center"
+        },
+        "25": {
+            "callsign": "ZNY 25 Modena",
+            "frequency": 135450,
+            "radio_name": "New York center"
+        },
+        "26": {
+            "callsign": "ZNY 26 Lancaster",
+            "frequency": 120025,
+            "radio_name": "New York center"
+        },
+        "27": {
+            "callsign": "ZNY 27 Middletown",
+            "frequency": 120025,
+            "radio_name": "New York center"
+        },
+        "34": {
+            "callsign": "ZNY 34 Elmira",
+            "frequency": 132175,
+            "radio_name": "New York center"
+        },
+        "35": {
+            "callsign": "ZNY 35 Huguenot",
+            "frequency": 132600,
+            "radio_name": "New York center"
+        },
+        "36": {
+            "callsign": "ZNY 36 Sparta",
+            "frequency": 133150,
+            "radio_name": "New York center"
+        },
+        "39": {
+            "callsign": "ZNY 39 PARKE",
+            "frequency": 132100,
+            "radio_name": "New York center"
+        },
+        "42": {
+            "callsign": "ZNY 42 East Texas",
+            "frequency": 127175,
+            "radio_name": "New York center"
+        },
+        "49": {
+            "callsign": "ZNY 49 Stony Fork",
+            "frequency": 121320,
+            "radio_name": "New York center"
+        },
+        "50": {
+            "callsign": "ZNY 50 Binghamton",
+            "frequency": 133350,
+            "radio_name": "New York center"
+        },
+        "51": {
+            "callsign": "ZNY 51 Lake Henry",
+            "frequency": 134450,
+            "radio_name": "New York center"
+        },
+        "55": {
+            "callsign": "ZNY 55 Yardley",
+            "frequency": 134600,
+            "radio_name": "New York center"
+        },
+        "56": {
+            "callsign": "ZNY 56 Kennedy",
+            "frequency": 125325,
+            "radio_name": "New York center"
+        },
+        "57": {
+            "callsign": "ZNY 57 TMU",
+            "frequency": 136500,
+            "radio_name": "ZNY TMU"
+        },
+        "65": {
+            "callsign": "ZNY 65 JOBOC",
+            "frequency": 125925,
+            "radio_name": "New York Center"
+        },
+        "66": {
+            "callsign": "ZNY 66 MANTA",
+            "frequency": 128300,
+            "radio_name": "New York Center"
+        },
+        "68": {
+            "callsign": "ZNY 68 DIXIE",
+            "frequency": 132100,
+            "radio_name": "New York center"
+        },
+        "72": {
+            "callsign": "ZNY 72 Selinsgrove",
+            "frequency": 127725,
+            "radio_name": "New York center"
+        },
+        "73": {
+            "callsign": "ZNY 73 Philpsburg",
+            "frequency": 132875,
+            "radio_name": "New York center"
+        },
+        "74": {
+            "callsign": "ZNY 74 Broadway",
+            "frequency": 132150,
+            "radio_name": "New York center"
+        },
+        "75": {
+            "callsign": "ZNY 75 Milton",
+            "frequency": 128570,
+            "radio_name": "New York center"
+        },
+        "80": {
+            "callsign": "ZNY 80 COCOA",
+            "frequency": 119100,
+            "radio_name": "New York Center"
+        },
+        "81": {
+            "callsign": "ZNY 81 HILDY",
+            "frequency": 128500,
+            "radio_name": "New York Center"
+        },
+        "82": {
+            "callsign": "ZNY 82 PAEPR",
+            "frequency": 126025,
+            "radio_name": "New York Center"
+        },
+        "83": {
+            "callsign": "ZNY 83 HANRI",
+            "frequency": 133525,
+            "radio_name": "New York Center"
+        },
+        "85": {
+            "callsign": "ZNY 85 OHRYN",
+            "frequency": 121125,
+            "radio_name": "New York Center"
+        },
+        "86": {
+            "callsign": "ZNY 86 Atlantic",
+            "frequency": 133500,
+            "radio_name": "New York Center"
+        },
+        "91": {
+            "callsign": "ZNY 91 Williamsport",
+            "frequency": 134800,
+            "radio_name": "New York center"
+        },
+        "92": {
+            "callsign": "ZNY 92 Pottstown",
+            "frequency": 124625,
+            "radio_name": "New York center"
+        },
+        "93": {
+            "callsign": "ZNY 93 Swissdale",
+            "frequency": 123625,
+            "radio_name": "New York center"
+        },
+        "99": {
+            "callsign": "ZNY 99 Guard",
+            "frequency": 121500,
+            "radio_name": "ZNY Guard"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {},
+                "departure_assignments": {},
+                "default_consolidation": {
+                    "25": []
+                }
+            },
+            "ZNY": {
+                "inbound_assignments": {
+                    "PUCKY1-JENNO": "36",
+                    "PUCKY1-YODAA": "36"
+                },
+                "default_consolidation": {
+                    "36": []
+                }
+            },
+            "ZNS": {
+                "inbound_assignments": {
+                    "FQM3": "72",
+                    "MIP4-ETG": "72",
+                    "MIP4-PSB": "72",
+                    "MIP4-SFK": "72",
+                    "NABOR": "72",
+                    "TRISH4": "72",
+                    "WLKES": "72"
+                },
+                "default_consolidation": {
+                    "72": []
+                }
+            }
+        },
+        "center": "N039.47.39.800,W076.10.50.300",
+        "range": 150,
+        "video_map_file": "videomaps/ZNY-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "FLOSI": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "DYLIN": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZDC"
+                }
+            ],
+            "SWEET": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "BOJID": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "HIFAL": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "CHPMN": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "SPERY": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "JIIMS": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZDC"
+                }
+            ],
+            "PAATS": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZDC"
+                }
+            ],
+            "SPUDS": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZDC"
+                }
+            ],
+            "KORRY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "VIBES": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZDC"
+                }
+            ],
+            "VALRE": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "CRALY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "MINKS": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "HEROS": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "DIALS": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "JERZY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "GGREG": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CAMRN": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "HTO": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "CCC": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "BELIT": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "JFK": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "SARDI": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CREAM": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "CMK": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "BDR": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "DPK": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "ZIGGI": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "COL": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "LENDY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "LOVES": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "NELIE": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "ROBER": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CREEL": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "RBV": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "PHL",
+                    "altitude": [
+                        7000,
+                        7000
+                    ]
+                },
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "WRI",
+                    "altitude": [
+                        6000,
+                        6000
+                    ]
+                }
+            ],
+            "MUGZY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "MAZIE": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "PHL"
+                }
+            ],
+            "HUO": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "MERIT": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "GREKI": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "BAYYS": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "BETTE": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "HAPIE": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "FJC": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "PHL",
+                    "altitude": [
+                        4000,
+                        4000
+                    ]
+                },
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "N90",
+                    "altitude": [
+                        4000,
+                        4000
+                    ]
+                }
+            ],
+            "BOYER": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "MDT"
+                }
+            ],
+            "ETX": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "MDT"
+                }
+            ],
+            "KRAZE": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "SNOWY": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "SLATT": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "DUMMR": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "OOD": [
+                {
+                    "type": "route",
+                    "to": "ZDC",
+                    "from": "ZNY"
+                }
+            ],
+            "DQO": [
+                {
+                    "type": "route",
+                    "to": "ZDC",
+                    "from": "ZNY"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ABE",
+            "single_char_stars_id": "A",
+            "stars_id": "AAA",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ACY",
+            "single_char_stars_id": "Y",
+            "stars_id": "ACY",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ALB",
+            "stars_id": "ALB",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "A"
+        },
+        {
+            "id": "AVP",
+            "single_char_stars_id": "V",
+            "stars_id": "WWW",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "BGM",
+            "single_char_stars_id": "G",
+            "stars_id": "BBB",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "CAE",
+            "stars_id": "CAE",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "C"
+        },
+        {
+            "id": "DOV",
+            "stars_id": "DOV",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "D"
+        },
+        {
+            "id": "ELM",
+            "single_char_stars_id": "E",
+            "stars_id": "EEE",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "JST",
+            "single_char_stars_id": "F",
+            "stars_id": "JJJ",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "J"
+        },
+        {
+            "id": "MDT",
+            "single_char_stars_id": "H",
+            "stars_id": "HHH",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "N90",
+            "single_char_stars_id": "N",
+            "stars_id": "NNN",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PCT",
+            "single_char_stars_id": "U",
+            "stars_id": "UCT",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PHL",
+            "single_char_stars_id": "P",
+            "stars_id": "PPP",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PNS",
+            "stars_id": "PNS",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "P"
+        },
+        {
+            "id": "PVD",
+            "stars_id": "PVD",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "P"
+        },
+        {
+            "id": "ROC",
+            "single_char_stars_id": "T",
+            "stars_id": "ROC",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "SYR",
+            "single_char_stars_id": "S",
+            "stars_id": "SYR",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "WRI",
+            "single_char_stars_id": "M",
+            "stars_id": "MMM",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "Y90",
+            "stars_id": "BDL",
+            "field_e_format": "OneLetterAndSubset",
+            "field_e_letter": "B"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "B"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "J"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

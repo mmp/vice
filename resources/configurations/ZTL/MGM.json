@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "1S": {
+            "callsign": "MGM_APP",
+            "frequency": 124000,
+            "radio_name": "Montgomery Approach"
+        },
+        "1Z": {
+            "callsign": "MGM_TWR",
+            "frequency": 119700,
+            "radio_name": "Montgomery Tower"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "A80",
+            "prefix": "1"
+        },
+        {
+            "id": "BHM",
+            "prefix": "3"
+        },
+        {
+            "id": "OZR",
+            "prefix": "2"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "C"
+        }
+    ]
+}

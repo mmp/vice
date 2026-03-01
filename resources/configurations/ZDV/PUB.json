@@ -1,0 +1,18 @@
+{
+    "control_positions": {
+        "5T": {
+            "callsign": "PUB_TWR",
+            "frequency": 119100,
+            "radio_name": "Pueblo Tower"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "ZDV",
+            "prefix": "D"
+        }
+    ]
+}

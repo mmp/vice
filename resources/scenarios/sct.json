@@ -6287,9 +6287,6 @@
         "RZ4": {
           "cifp_id": "RZ24"
         },
-        "RX4": {
-          "cifp_id": "RX24"
-        },
         "RZ6": {
           "cifp_id": "RZ6"
         },
@@ -7600,13 +7597,8 @@
           ]
         },
         "VRA": {
-          "runway": "1",
-          "full_name": "VOR-A into the El Monte Airport (runway 1)",
-          "type": "RNAV",
-          "waypoints": [
-            "PDZ/nopt/a4000 POM/if/iaf/a4000/hilpt/nopt180 FLYIN/a3700 SELAW/a3000/faf N034.05.37.664,W118.05.07.012 N034.03.22.024,W118.06.19.275 N034.02.47.033,W118.03.08.580",
-            "PRADO/iaf/a4000/nopt POM/if/iaf/a4000/hilpt/nopt180 FLYIN/a3700 SELAW/a3000/faf N034.05.37.664,W118.05.07.012 N034.03.22.024,W118.06.19.275 N034.02.47.033,W118.03.08.580"
-          ]
+          "cifp_id": "VAOR",
+          "runway": "1"
         }
       },
       "departure_routes": {
@@ -9249,7 +9241,7 @@
         {
           "waypoints": "GLESN/a24000-30000/s280 ANJLL/a19000-24000/ho CAANN/a17000+ BOYEL/a14000+ CRCUS/a12000-14000/s270",
           "route": "ANJLL4",
-          "initial_controller": "LAX_37_CTR",
+          "initial_controller": "C37",
           "initial_altitude": 25000,
           "initial_speed": 310,
           "expect_approach": null,
@@ -9421,7 +9413,7 @@
           "waypoints": "MOMAR SALTN/a24000/ho CARUL BARET IFHEJ PGY IFSOX/flyover",
           "cruise_altitude": 32000,
           "star": "BARET5",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -9458,7 +9450,7 @@
           "waypoints": "IPL KUMBA/ho PILLO/a10000 BARET IFHEJ/flyover",
           "cruise_altitude": 32000,
           "star": "BARET5",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -9504,7 +9496,7 @@
             }
           },
           "route": "BIGBR3",
-          "initial_controller": "LAX_37_CTR",
+          "initial_controller": "C37",
           "initial_altitude": 29000,
           "initial_speed": 310,
           "expect_approach": null,
@@ -9675,7 +9667,7 @@
         {
           "waypoints": "JOHHN/a22000 BASAL DYVER/a19000 CHKNZ KOPLE/a14000 ROPEZ/a11000-13000/ho BOGET/a8000 MEETT/a7500+ WATSS/a6900+ UPDOC/a6000/h140",
           "star": "BOGET2",
-          "initial_controller": "JCF_APP",
+          "initial_controller": "1J",
           "initial_altitude": 22000,
           "initial_speed": 310,
           "expect_approach": null,
@@ -9710,7 +9702,7 @@
             }
           },
           "route": "BRUEN2",
-          "initial_controller": "LAX_39_CTR",
+          "initial_controller": "C39",
           "initial_altitude": 33000,
           "initial_speed": 310,
           "expect_approach": null,
@@ -9820,7 +9812,7 @@
           "waypoints": "IPL/a24000-26000 BLUZE/a17000-19000 GUUSE/a10000-12000 TOPGN/a7300+ CHASR/a6400/h250",
           "cruise_altitude": 32000,
           "star": "CHASR2",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -9859,7 +9851,7 @@
           "waypoints": "MOMAR/a24000-26000 DSURT/a19000-23000/ho TRIXI/a12000-14000/s270 RIPPL/a8500 TOPGN/a7300+ CHASR/a6400/h250",
           "cruise_altitude": 32000,
           "star": "CHASR2",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -9894,7 +9886,7 @@
           "waypoints": "LEJEN/a15000-19000/ho COMIX/a12000-15000 FLSHH LNTRN/a9000+/s230 XMANS/a7000 KLOMN/a6000/s210 NADDO/a6000/h095",
           "cruise_altitude": 30000,
           "star": "COMIX2",
-          "initial_controller": "LAX_22_CTR",
+          "initial_controller": "C22",
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -9977,7 +9969,7 @@
         {
           "waypoints": "DRTHI/a24000+/s280 CHURO/a22000+ BRCKK/a20000+ ROADE/a17000-19000/ho PHIYA/a14000 TOETO/a10000- DSNEE/a8000/s220 JWARD/a8000/s190/h263",
           "star": "DSNEE6",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10044,7 +10036,7 @@
             }
           },
           "star": "DSNEE6",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10076,7 +10068,7 @@
         {
           "waypoints": "KCHOW/a20000+ N034.22.55.419,W116.54.37.029/ho AASPN/a14000 KADYN/a13000- EROCK/a12000+/s250 LUQAS/a11000- DSNEE/a8000/s220 JWARD/a8000/s190/h263",
           "star": "DSNEE6",
-          "initial_controller": "LAX_19_CTR",
+          "initial_controller": "C19",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10143,7 +10135,7 @@
             }
           },
           "star": "DSNEE6",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10175,7 +10167,7 @@
         {
           "waypoints": "DUUNN/a20000+ CARZZ/a15000+/ho AASPN/a14000 KADYN/a13000- JRDDN/a12000+/s250 ROOBY/a10000 SLPPR/a8000+ WRSTL/a6000-8000 JITSU/a5500+/s220 FYTRR/a4000/s210/h242",
           "star": "ROOBY3",
-          "initial_controller": "LAX_19_CTR",
+          "initial_controller": "C19",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10235,7 +10227,7 @@
         {
           "waypoints": "DUUNN/a20000+ CARZZ/a15000+/ho AASPN/a14000 KADYN/a13000- JRDDN/a12000+/s250 ROOBY/a10000 SLPPR/a8000+ WRSTL/a6000-8000 JITSU/a5500+/s220 FYTRR/a4000/s210/h270",
           "star": "ROOBY3",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10283,7 +10275,7 @@
         {
           "waypoints": "CHURO/a24000+/s280 BRCKK/a21000+ ROADE/a17000-19000/ho PHIYA/a12000-14000 ROOBY/a10000 SLPPR/a8000+ WRSTL/a6000-8000 JITSU/a5500+/s220 FYTRR/a4000/s210/h242",
           "star": "ROOBY3",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10343,7 +10335,7 @@
         {
           "waypoints": "CHURO/a24000+/s280 BRCKK/a21000+ ROADE/a17000-19000/ho PHIYA/a12000-14000 ROOBY/a10000 SLPPR/a8000+ WRSTL/a6000-8000 JITSU/a5500+/s220 FYTRR/a4000/s210/h270",
           "star": "ROOBY3",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10392,7 +10384,7 @@
           "waypoints": "PMD N034.34.23.548,W118.19.27.984/ho LYNXX VNY",
           "cruise_altitude": 8000,
           "star": "EDWP4",
-          "initial_controller": "JCF_APP",
+          "initial_controller": "1J",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -10412,7 +10404,7 @@
         {
           "waypoints": "DAG BASAL/a10000 APLES/a10000/ho EMMLN CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 DOWDD/a6000 AHEIM/a6000 SLI/a6000/h210",
           "star": "EMMLN1",
-          "initial_controller": "JCF_APP",
+          "initial_controller": "1J",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10442,7 +10434,7 @@
         {
           "waypoints": "HEC GILLM APLES/a10000/ho EMMLN CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 DOWDD/a6000 AHEIM/a6000 SLI/a6000/h210",
           "star": "EMMLN1",
-          "initial_controller": "JCF_APP",
+          "initial_controller": "1J",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10472,7 +10464,7 @@
         {
           "waypoints": "DAG BASAL/a10000 APLES/a10000/ho EMMLN CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 RNDAL/a6000/h250",
           "star": "EMMLN1",
-          "initial_controller": "JCF_APP",
+          "initial_controller": "1J",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10502,7 +10494,7 @@
         {
           "waypoints": "HEC GILLM APLES/a10000/ho EMMLN CAPTZ/a10000 RRIZE/a8100 PDZ/a6000 RNDAL/a6000/h250",
           "star": "EMMLN1",
-          "initial_controller": "JCF_APP",
+          "initial_controller": "1J",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10536,7 +10528,7 @@
         {
           "waypoints": "OHIGH CANYN/ho FIM UMBER",
           "star": "FERN7",
-          "initial_controller": "LAX_13_CTR",
+          "initial_controller": "C13",
           "initial_altitude": 13000,
           "assigned_altitude": 9000,
           "initial_speed": 250,
@@ -10578,7 +10570,7 @@
         {
           "waypoints": "N033.07.45.023,W118.44.33.962 GOATZ/a16000/s280/ho DIRBY PHUNN/a14000- SHHOW/a12000-  OLLLY/a9000+ KARLB/a8000- POXKU/a7000/s220 PDZ/a7000/h049",
           "star": "KARLB3",
-          "initial_controller": "LAX_28_CTR",
+          "initial_controller": "C28",
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10613,7 +10605,7 @@
         {
           "waypoints": "N033.07.45.023,W118.44.33.962 GOATZ/a16000/s280/ho DIRBY PHUNN/a14000 SHHOW/a12000 ZAPPP/a9000+ BUFIE/a8000- SLI/a7000/s210 TRNDO/a5000/s210",
           "star": "GOATZ2",
-          "initial_controller": "LAX_28_CTR",
+          "initial_controller": "C28",
           "initial_altitude": 16000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10674,7 +10666,7 @@
         {
           "waypoints": "N034.03.39.218,W116.43.12.471 AVATR/a19000-24000/ho DAAAY/a17000+ WADUP/a15000+ NEILE/a14000+ SEAVU/a12000-14000/s270",
           "route": "HLYWD1",
-          "initial_controller": "LAX_39_CTR",
+          "initial_controller": "C39",
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10783,7 +10775,7 @@
         {
           "waypoints": "BIKNG/a16000-20000 RUNNN/a14000-17000/ho IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/h71",
           "route": "IRNMN2",
-          "initial_controller": "LAX_13_CTR",
+          "initial_controller": "C13",
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -10985,7 +10977,7 @@
           "waypoints": "CHKNZ KOPLE/a14000 PMD/a13000-/s250 N034.35.38.845,W118.13.52.791/ho JANNY/a8000 PUCCK/a8000 ELMRR/a7000+ WABBT/a6000/h201",
           "cruise_altitude": 30000,
           "star": "JANNY5",
-          "initial_controller": "JCF_APP",
+          "initial_controller": "1J",
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -11022,7 +11014,7 @@
           "waypoints": "CHKNZ KOPLE/a14000 PMD/a13000-/s250 N034.35.38.845,W118.13.52.791/ho JANNY/a8000 PUCCK/a8000 EIFEL/a7000+ UMBER/a6000",
           "cruise_altitude": 30000,
           "star": "JANNY5",
-          "initial_controller": "JCF_APP",
+          "initial_controller": "1J",
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -11040,7 +11032,7 @@
           "waypoints": "CHKNZ KOPLE/a14000 PMD/a13000- N034.35.38.845,W118.13.52.791/ho JANNY/a8000 ALYSN/a7100+ GUERA SESPE/a5300 DOOBY/a5000/h200",
           "cruise_altitude": 35000,
           "star": "GUERA2",
-          "initial_controller": "JCF_APP",
+          "initial_controller": "1J",
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -11074,7 +11066,7 @@
           "waypoints": "GBNEY/a14000-16000 GRRAY/a12000-14000/ho HINOH/a11000-13000 RUMBL/a10000/s240/h196",
           "cruise_altitude": 37000,
           "star": "JCKIE2",
-          "initial_controller": "LAX_19_CTR",
+          "initial_controller": "C19",
           "initial_altitude": 14000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -11133,7 +11125,7 @@
           "waypoints": "GBNEY/a14000-16000 GRRAY/a12000-14000/ho HINOH/a11000-13000 ARRAN/a10000+/s250 FIXUT/a9000 ILONE/a8000 ESAYE/a6000 EFFXX/a6000/s210 CASIE/h267",
           "cruise_altitude": 37000,
           "star": "JCKIE2",
-          "initial_controller": "LAX_19_CTR",
+          "initial_controller": "C19",
           "initial_altitude": 14000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -11192,7 +11184,7 @@
           "waypoints": "LANDO/a23000- NUGEE LAX KRAGL/a16000- LEGOZ/a15000/ho BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/h110",
           "cruise_altitude": 32000,
           "star": "LEGOZ3",
-          "initial_controller": "LAX_22_CTR",
+          "initial_controller": "C22",
           "initial_altitude": 23000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -11214,7 +11206,7 @@
           "waypoints": "BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000/ho BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/h110",
           "cruise_altitude": 32000,
           "star": "LEGOZ3",
-          "initial_controller": "LAX_13_CTR",
+          "initial_controller": "C13",
           "initial_altitude": 23000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -11236,7 +11228,7 @@
           "waypoints": "RUKKI SCANN BAUBB/a16000 LEGOZ/a15000/ho BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/h110",
           "cruise_altitude": 32000,
           "star": "LEGOZ3",
-          "initial_controller": "LAX_14_CTR",
+          "initial_controller": "C14",
           "initial_altitude": 23000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -11261,7 +11253,7 @@
           "waypoints": "MOMAR/a24000-26000 DSURT/a19000-23000 TRIXI/a12000-14000/s270/ho HSKER/a8700+ BARET/a8000+ HNAHH/a6100+ LUCKI/a6000 LYNDI/a5000+/s210",
           "cruise_altitude": 36000,
           "route": "LUCKI/a6000 LYNDI/a5000+/s210",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -11350,7 +11342,7 @@
           "waypoints": "CMPOE/a19000-23000 HEELX/a12000-15000/s270/ho JACKK/a10000-11000/s250 AZTEK/a8000+ JEEVS/a6100+ LUCKI/a6000 LYNDI/a5000+/s210",
           "cruise_altitude": 36000,
           "route": "LUCKI/a6000 LYNDI/a5000+/s210",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -11438,7 +11430,7 @@
         {
           "waypoints": "ANJLL/a24000-29000/s280 KAOSS/a19000-23000/ho TOLLA/a14000-17000 SLACR/a15000-  BIGBR/a13000-14000 MDNYT/a10000-13000 DOWNE DOYRS/a10000+ CLIFY/a8000-10000/s230 HNCHE SASSI/a7000/s210 SHIPM/h251",
           "route": "ANJLL.MDNYT2",
-          "initial_controller": "LAX_37_CTR",
+          "initial_controller": "C37",
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -11585,7 +11577,7 @@
         {
           "waypoints": "AVATR/a24000-29000/s280 TRUBL/a19000-23000/ho EMMMY/a14000-17000 WHDDN/a15000- SHRTZ/a13000-14000 MDNYT/a10000-13000 DOWNE DOYRS/a10000+ CLIFY/a8000-10000/s230 HNCHE SASSI/a7000/s210 SHIPM/h251",
           "route": "HLYWD.MDNYT2",
-          "initial_controller": "LAX_39_CTR",
+          "initial_controller": "C39",
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -11620,7 +11612,7 @@
         {
           "waypoints": "LAHVA/a17000/ho LAAMP/a15000-17000/s280 SNDDR/a15000 SHRTZ/a13000-14000 MDNYT/a10000-13000 DOWNE DOYRS/a10000+ CLIFY/a8000-10000/s230 HNCHE SASSI/a7000/s210 SHIPM/h251",
           "route": "AMMOR.MDNYT2",
-          "initial_controller": "LAX_30_CTR",
+          "initial_controller": "C30",
           "initial_altitude": 17000,
           "initial_speed": 310,
           "expect_approach": null,
@@ -11756,7 +11748,7 @@
             }
           },
           "star": "OHSEA3",
-          "initial_controller": "LAX_14_CTR",
+          "initial_controller": "C14",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -11812,7 +11804,7 @@
             }
           },
           "star": "PCIFC3",
-          "initial_controller": "LAX_14_CTR",
+          "initial_controller": "C14",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -11848,7 +11840,7 @@
         {
           "waypoints": "RNCHO/a26000+ REGGO/a24000+ CYNDE/a14000-/ho OLAAA/a12000-13000 PESOZ MADOW/a8000- TOZEK/a7000 SLI/a7000/s210 TRNDO/a5000/s210",
           "star": "OLAAA2",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 27000,
           "initial_speed": 310,
           "expect_approach": null,
@@ -11985,7 +11977,7 @@
           },
           "cruise_altitude": 35000,
           "star": "RDBUL1",
-          "initial_controller": "LAX_10_CTR",
+          "initial_controller": "C10",
           "initial_altitude": 19000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12027,7 +12019,7 @@
           },
           "cruise_altitude": 35000,
           "star": "RDBUL1",
-          "initial_controller": "LAX_10_CTR",
+          "initial_controller": "C10",
           "initial_altitude": 13000,
           "assigned_altitude": 11000,
           "initial_speed": 250,
@@ -12082,7 +12074,7 @@
           },
           "cruise_altitude": 35000,
           "star": "ROKKR3",
-          "initial_controller": "LAX_13_CTR",
+          "initial_controller": "C13",
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -12126,7 +12118,7 @@
           },
           "cruise_altitude": 35000,
           "star": "IVINS2",
-          "initial_controller": "LAX_13_CTR",
+          "initial_controller": "C13",
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -12156,7 +12148,7 @@
           "waypoints": "YUTOO/a14000-16000/s270 TRAVV ROKKR/a11000-12000/s250/ho ZEPPE/a9000-10000 IVINS/a8000+ ROLLI/a6000+ BONJO/a5000/h103",
           "cruise_altitude": 35000,
           "star": "BONJO3",
-          "initial_controller": "LAX_13_CTR",
+          "initial_controller": "C13",
           "initial_altitude": 14000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -12181,7 +12173,7 @@
         {
           "waypoints": "GNZZO/a13000-14000 RYDRR/a11000/s250/ho KEVVI/a10000+ BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/h71",
           "route": "RYDRR2",
-          "initial_controller": "LAX_14_CTR",
+          "initial_controller": "C14",
           "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12307,7 +12299,7 @@
           "waypoints": "BOREN KARRO/ho JLI",
           "cruise_altitude": 10000,
           "star": "BOREN KARRO JLI",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 10000,
           "initial_speed": 200,
           "expect_approach": null,
@@ -12368,7 +12360,7 @@
           "waypoints": "KUMBA/ho GILYY STAXS BLLYJ HAILE MZB",
           "cruise_altitude": 12000,
           "star": "KUMBA GILYY STAXS BLLYJ HAILE MZB",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 10000,
           "initial_speed": 200,
           "expect_approach": null,
@@ -12393,7 +12385,7 @@
           "waypoints": "CMA N034.12.55.469,W119.01.23.193/ho GINNA",
           "cruise_altitude": 5000,
           "star": "SBAP2",
-          "initial_controller": "NTD_APP",
+          "initial_controller": "61T",
           "initial_altitude": 5000,
           "initial_speed": 150,
           "expect_approach": "RA2",
@@ -12415,7 +12407,7 @@
           "waypoints": "ZOINK/a20000- MSTRY/a16000-19000/ho MCHNE/a15000-16000 DEWAY/a11000-14000 SCBBY/a9300-11000 STRKS/a7900+ CAYDE/a6000+ KALEA/a5000/s220 TAKOE/a4300+/s210",
           "cruise_altitude": 37000,
           "star": "SCBBY2",
-          "initial_controller": "LAX_39_CTR",
+          "initial_controller": "C39",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12457,7 +12449,7 @@
           "waypoints": "SNSTT SOLAY/a12000-14000/ho SCBBY/a9300-11000 STRKS/a7900+ CAYDE/a6000+ KALEA/a5000/s220 TAKOE/a4300+/s210",
           "cruise_altitude": 37000,
           "star": "SCBBY2",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12484,7 +12476,7 @@
           "waypoints": "SNSTT/a20000-23000 SOLAY/ho COHEE/a12000 ERTLE/a11000 PHIYA THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h253",
           "cruise_altitude": 37000,
           "star": "THRNE4",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12522,7 +12514,7 @@
           "waypoints": "SNSTT/a20000-23000 SOLAY/ho COHEE/a12000 ERTLE/a11000 PHIYA THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h272",
           "cruise_altitude": 37000,
           "star": "THRNE4",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12552,7 +12544,7 @@
           "waypoints": "SNSTT SOLAY/a12000-14000/ho SCBBY/a9300-11000 RRJAY/a8000-9000 HRVEE/a7000+ HVANI/a6000/s240 EFFXX/a6000/s210 CASIE/h267",
           "cruise_altitude": 37000,
           "star": "SCBBY2",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12590,7 +12582,7 @@
           "waypoints": "SNSTT/a20000-23000 SOLAY/ho COHEE/a12000 ERTLE/a11000 PHIYA THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h253",
           "cruise_altitude": 37000,
           "star": "THRNE4",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12628,7 +12620,7 @@
           "waypoints": "SNSTT/a20000-23000 SOLAY/ho COHEE/a12000 ERTLE/a11000 PHIYA THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h272",
           "cruise_altitude": 37000,
           "star": "THRNE4",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12658,7 +12650,7 @@
           "waypoints": "BLH PSP/a16000/ho AHLEX BANDS SETER BERDU PDZ",
           "cruise_altitude": 32000,
           "star": "SETER5",
-          "initial_controller": "LAX_19_CTR",
+          "initial_controller": "C19",
           "initial_altitude": 32000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12696,7 +12688,7 @@
           "waypoints": "GLRNO/a24000+ SIZLR/a20000-23000 MXIMO/a19000- HITOP/a16000/ho CURKO/a16000 GEBEE/a15000 MORON/a14000 FERNN/a11000/h124",
           "cruise_altitude": 32000,
           "star": "SIZLR4",
-          "initial_controller": "LAX_19_CTR",
+          "initial_controller": "C19",
           "initial_altitude": 28000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12757,7 +12749,7 @@
           "waypoints": "VLLMA DROGO/a24000+ DEWWW/a21000+ DNERY/a18000-20000/ho ARRYA/a16000 YATZE/a14000-15000 IRONN/a13000 BRATH/a11000 THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h253",
           "cruise_altitude": 37000,
           "star": "THRNE4",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 29000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -12792,7 +12784,7 @@
           "waypoints": "VLLMA DROGO/a24000+ DEWWW/a21000+ DNERY/a18000-20000/ho ARRYA/a16000 YATZE/a14000-15000 IRONN/a13000 BRATH/a11000 THRNE/a11000- CRCUS/a10000 EDARD/a10000/s250 NNEDD/a8000/h272",
           "cruise_altitude": 37000,
           "star": "THRNE4",
-          "initial_controller": "LAX_12_CTR",
+          "initial_controller": "C12",
           "initial_altitude": 29000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -12827,7 +12819,7 @@
             }
           },
           "star": "RUKKI1",
-          "initial_controller": "LAX_14_CTR",
+          "initial_controller": "C14",
           "initial_altitude": 32000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12883,7 +12875,7 @@
             }
           },
           "star": "BAUBB3",
-          "initial_controller": "LAX_14_CTR",
+          "initial_controller": "C14",
           "initial_altitude": 32000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -12920,7 +12912,7 @@
           "waypoints": "MOMAR/a24000+ DSURT/a19000+ TRIXI/a12000+/s270/ho TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
           "cruise_altitude": 36000,
           "route": "TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 24000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -13009,7 +13001,7 @@
           "waypoints": "IPL/a24000+ BLUZE/a17000+/ho GUUSE/a12000+/s270 TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
           "cruise_altitude": 36000,
           "route": "TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
-          "initial_controller": "LAX_09_CTR",
+          "initial_controller": "C09",
           "initial_altitude": 24000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -13092,38 +13084,13 @@
         }
       ]
     },
-    "W291 NZY ARR": {
-      "arrivals": [
-        {
-          "waypoints": "N032.59.07.540,W118.25.44.403 ZOOLU/ho SKATE",
-          "route": "ZOOLU SKATE",
-          "cruise_altitude": 5000,
-          "initial_controller": "FACSFAC_S",
-          "initial_altitude": 5000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KNZY": [
-              {
-                "icao": "CNV",
-                "airport": "KNUC"
-              },
-              {
-                "icao": "CNV",
-                "airport": "KNSI"
-              }
-            ]
-          }
-        }
-      ]
-    },
     "WEESL1": {
       "arrivals": [
         {
           "waypoints": "WEESL GRRIT/ho SWIIM/a9000 LYNXX/a9000/h192",
           "cruise_altitude": 36000,
           "star": "WEESL1",
-          "initial_controller": "LAX_04_CTR",
+          "initial_controller": "C04",
           "initial_altitude": 13000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -13160,7 +13127,7 @@
           "waypoints": "LANDO BLUUH PMD/ho FLAVR/a14000/s250 MAJEK/s250 HESPE HITOP NITIY ZIGGY PETIS PDZ",
           "cruise_altitude": 32000,
           "star": "ZIGGY8",
-          "initial_controller": "LAX_18_CTR",
+          "initial_controller": "C18",
           "initial_altitude": 32000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -13240,7 +13207,7 @@
           "waypoints": "HEC BULGY/s280 DAWNA/a12000 ARRAN GAREY/ho ZIGGY PETIS PDZ",
           "cruise_altitude": 32000,
           "star": "ZIGGY8",
-          "initial_controller": "LAX_19_CTR",
+          "initial_controller": "C19",
           "initial_altitude": 27000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -13276,7 +13243,7 @@
         {
           "waypoints": "DANYY/a14000-17000 N034.26.44.264,W119.06.31.882/ho ZUUMA/a9000-11000/s250 DEEZY/a8000+/s220 WAKER/a6000/s210",
           "route": "ZUUMA4",
-          "initial_controller": "LAX_13_CTR",
+          "initial_controller": "C13",
           "initial_altitude": 14000,
           "initial_speed": 310,
           "airlines": {
@@ -13424,312 +13391,6 @@
           }
         }
       ]
-    }
-  },
-  "control_positions": {
-    "SCT_APP": {
-      "frequency": 128050,
-      "radio_name": "SoCal Approach",
-      "sector_id": "6G"
-    },
-    "SCT_F_APP": {
-      "frequency": 120400,
-      "radio_name": "SoCal Approach",
-      "sector_id": "6F"
-    },
-    "BUR_M_APP": {
-      "frequency": 128750,
-      "radio_name": "SoCal Approach",
-      "sector_id": "1M"
-    },
-    "BUR_W_APP": {
-      "frequency": 134200,
-      "radio_name": "SoCal Approach",
-      "sector_id": "1W"
-    },
-    "BUR_V_APP": {
-      "frequency": 124600,
-      "radio_name": "Socal Approach",
-      "sector_id": "1V"
-    },
-    "LAX_D_APP": {
-      "frequency": 124900,
-      "radio_name": "SoCal Approach",
-      "sector_id": "2D"
-    },
-    "LAX_F_APP": {
-      "frequency": 124050,
-      "radio_name": "SoCal Approach",
-      "sector_id": "2F"
-    },
-    "LAX_U_APP": {
-      "frequency": 128500,
-      "radio_name": "SoCal Approach",
-      "sector_id": "2U"
-    },
-    "LAX_Z_APP": {
-      "frequency": 124500,
-      "radio_name": "SoCal Approach",
-      "sector_id": "2Z"
-    },
-    "ONT_N_APP": {
-      "frequency": 127000,
-      "radio_name": "Socal Approach",
-      "sector_id": "3N"
-    },
-    "ONT_P_APP": {
-      "frequency": 125500,
-      "radio_name": "Socal Approach",
-      "sector_id": "3P"
-    },
-    "PSP_S_APP": {
-      "frequency": 126700,
-      "radio_name": "Socal Approach",
-      "sector_id": "3S"
-    },
-    "SNA_T_APP": {
-      "frequency": 121300,
-      "radio_name": "Socal Approach",
-      "sector_id": "4T"
-    },
-    "SNA_Y_APP": {
-      "frequency": 128100,
-      "radio_name": "Socal Approach",
-      "sector_id": "4Y"
-    },
-    "SAN_W_APP": {
-      "frequency": 119600,
-      "radio_name": "SoCal Approach",
-      "sector_id": "5W"
-    },
-    "SAN_E_APP": {
-      "frequency": 124350,
-      "radio_name": "SoCal Approach",
-      "sector_id": "5E"
-    },
-    "SAN_N_APP": {
-      "frequency": 125300,
-      "radio_name": "SoCal Approach",
-      "sector_id": "5N"
-    },
-    "SAN_D_APP": {
-      "frequency": 127300,
-      "radio_name": "SoCal Approach",
-      "sector_id": "5D"
-    },
-    "LAX_S_DEP": {
-      "frequency": 124300,
-      "radio_name": "SoCal Departure",
-      "sector_id": "6S"
-    },
-    "LAX_N_DEP": {
-      "frequency": 125200,
-      "radio_name": "SoCal Departure",
-      "sector_id": "6N"
-    },
-    "LAX_X_DEP": {
-      "frequency": 134350,
-      "radio_name": "SoCal Departure",
-      "sector_id": "6X"
-    },
-    "JCF_APP": {
-      "frequency": 133650,
-      "radio_name": "Joshua Approach",
-      "facility_id": "1",
-      "sector_id": "1J"
-    },
-    "NTD_APP": {
-      "frequency": 124700,
-      "radio_name": "Point Mugu Approach",
-      "facility_id": "6",
-      "sector_id": "1U"
-    },
-    "FACSFAC_S": {
-      "frequency": 118650,
-      "radio_name": "PLEAD Control",
-      "facility_id": "7",
-      "sector_id": "1S"
-    },
-    "FACSFAC_N": {
-      "frequency": 120850,
-      "radio_name": "PLEAD Control",
-      "facility_id": "7",
-      "sector_id": "1N"
-    },
-    "BUR_TWR": {
-      "frequency": 122800,
-      "radio_name": "Burbank Tower",
-      "sector_id": "1T"
-    },
-    "HHR_TWR": {
-      "frequency": 121100,
-      "radio_name": "Hawthorne Tower",
-      "sector_id": "3T"
-    },
-    "LAX_N_TWR": {
-      "frequency": 133900,
-      "radio_name": "Los Angeles Tower",
-      "sector_id": "2T"
-    },
-    "LAX_S_TWR": {
-      "frequency": 120950,
-      "radio_name": "Los Angeles Tower",
-      "scope_char": "T",
-      "sector_id": "2V"
-    },
-    "LGB_TWR": {
-      "frequency": 119400,
-      "radio_name": "Long Beach Tower",
-      "sector_id": "4V"
-    },
-    "ONT_TWR": {
-      "frequency": 120600,
-      "radio_name": "Ontario Tower",
-      "sector_id": "3O"
-    },
-    "PSP_TWR": {
-      "frequency": 119700,
-      "radio_name": "Palm Springs Tower",
-      "sector_id": "3Z"
-    },
-    "SAN_TWR": {
-      "frequency": 118300,
-      "radio_name": "Lindbergh Tower",
-      "sector_id": "5S"
-    },
-    "SBD_TWR": {
-      "frequency": 119450,
-      "radio_name": "San Bernadino Tower",
-      "scope_char": "T",
-      "sector_id": "3T1"
-    },
-    "SNA_TWR": {
-      "frequency": 126800,
-      "radio_name": "John Wayne Tower",
-      "sector_id": "4J"
-    },
-    "VNY_TWR": {
-      "frequency": 118300,
-      "radio_name": "Van Nuys Tower",
-      "scope_char": "T",
-      "sector_id": "1Y"
-    },
-    "WHP_TWR": {
-      "frequency": 135000,
-      "radio_name": "Whiteman Tower",
-      "sector_id": "1B"
-    },
-    "LAX_04_CTR": {
-      "frequency": 119050,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C04"
-    },
-    "LAX_09_CTR": {
-      "frequency": 128600,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C09"
-    },
-    "LAX_10_CTR": {
-      "frequency": 128150,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C10"
-    },
-    "LAX_12_CTR": {
-      "frequency": 125650,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C12"
-    },
-    "LAX_13_CTR": {
-      "frequency": 132600,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C13"
-    },
-    "LAX_14_CTR": {
-      "frequency": 135500,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C14"
-    },
-    "LAX_17_CTR": {
-      "frequency": 132500,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C17"
-    },
-    "LAX_18_CTR": {
-      "frequency": 125275,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C18"
-    },
-    "LAX_19_CTR": {
-      "frequency": 126350,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C19"
-    },
-    "LAX_21_CTR": {
-      "frequency": 132850,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C21"
-    },
-    "LAX_22_CTR": {
-      "frequency": 134575,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C22"
-    },
-    "LAX_28_CTR": {
-      "frequency": 132150,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C28"
-    },
-    "LAX_30_CTR": {
-      "frequency": 119950,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C30"
-    },
-    "LAX_37_CTR": {
-      "frequency": 133550,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C37"
-    },
-    "LAX_39_CTR": {
-      "frequency": 133200,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C39"
-    },
-    "LAX_40_CTR": {
-      "frequency": 127525,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C40"
     }
   },
   "default_scenario": "SCT - LAW SANW SNAS BUR8/15",
@@ -13932,9 +13593,6 @@
           "KNZY": 1,
           "KSDM": 1
         },
-        "W291 NZY ARR": {
-          "KNZY": 2
-        },
         "EMMLN1": {
           "KFUL": 1
         },
@@ -13950,42 +13608,8 @@
         }
       },
       "configuration": {
-        "config_id": "81X",
-        "default_consolidation": {
-          "BUR_M_APP": ["BUR_V_APP"],
-          "BUR_V_APP": ["BUR_W_APP"],
-          "LAX_D_APP": ["LAX_F_APP", "LAX_U_APP"],
-          "LAX_S_DEP": ["LAX_N_DEP", "LAX_X_DEP"],
-          "LAX_U_APP": ["LAX_Z_APP"],
-          "ONT_N_APP": ["ONT_P_APP"],
-          "ONT_P_APP": ["PSP_S_APP"],
-          "SAN_E_APP": ["SAN_N_APP"],
-          "SAN_N_APP": ["SAN_D_APP"],
-          "SAN_W_APP": ["SAN_E_APP"],
-          "SCT_APP": ["BUR_M_APP", "LAX_D_APP", "LAX_S_DEP", "ONT_N_APP", "SAN_W_APP", "SNA_T_APP"],
-          "SNA_T_APP": ["SNA_Y_APP"]
-        }
+        "config_id": "81X"
       },
-      "controllers": [
-        "SCT_APP",
-        "SCT_F_APP",
-        "LAX_04_CTR",
-        "LAX_09_CTR",
-        "LAX_10_CTR",
-        "LAX_12_CTR",
-        "LAX_13_CTR",
-        "LAX_14_CTR",
-        "LAX_17_CTR",
-        "LAX_18_CTR",
-        "LAX_19_CTR",
-        "LAX_21_CTR",
-        "LAX_22_CTR",
-        "LAX_28_CTR",
-        "LAX_30_CTR",
-        "LAX_37_CTR",
-        "LAX_39_CTR",
-        "LAX_40_CTR"
-      ],
       "default_maps": ["099S SCT NORMAL CFG SCT"],
       "departure_runways": [
         {
@@ -14280,9 +13904,6 @@
         "CHASR2": {
           "KNZY": 1
         },
-        "W291 NZY ARR": {
-          "KNZY": 2
-        },
         "EMMLN1": {
           "KFUL": 1
         },
@@ -14298,42 +13919,8 @@
         }
       },
       "configuration": {
-        "config_id": "23X",
-        "default_consolidation": {
-          "BUR_M_APP": ["BUR_V_APP"],
-          "BUR_V_APP": ["BUR_W_APP"],
-          "LAX_D_APP": ["LAX_F_APP", "LAX_U_APP"],
-          "LAX_S_DEP": ["LAX_N_DEP", "LAX_X_DEP"],
-          "LAX_U_APP": ["LAX_Z_APP"],
-          "ONT_N_APP": ["ONT_P_APP"],
-          "ONT_P_APP": ["PSP_S_APP"],
-          "SAN_E_APP": ["SAN_N_APP"],
-          "SAN_N_APP": ["SAN_D_APP"],
-          "SAN_W_APP": ["SAN_E_APP"],
-          "SCT_APP": ["BUR_M_APP", "LAX_D_APP", "LAX_S_DEP", "ONT_N_APP", "SAN_W_APP", "SNA_T_APP"],
-          "SNA_T_APP": ["SNA_Y_APP"]
-        }
+        "config_id": "SC2"
       },
-      "controllers": [
-        "SCT_APP",
-        "SCT_F_APP",
-        "LAX_04_CTR",
-        "LAX_09_CTR",
-        "LAX_10_CTR",
-        "LAX_12_CTR",
-        "LAX_13_CTR",
-        "LAX_14_CTR",
-        "LAX_17_CTR",
-        "LAX_18_CTR",
-        "LAX_19_CTR",
-        "LAX_21_CTR",
-        "LAX_22_CTR",
-        "LAX_28_CTR",
-        "LAX_30_CTR",
-        "LAX_37_CTR",
-        "LAX_39_CTR",
-        "LAX_40_CTR"
-      ],
       "default_maps": ["099S SCT NORMAL CFG SCT"],
       "departure_runways": [
         {
@@ -14529,9 +14116,6 @@
           "KNZY": 3,
           "KSDM": 1
         },
-        "W291 NZY ARR": {
-          "KNZY": 3
-        },
         "SETER5": {
           "KSBD": 3
         },
@@ -14545,33 +14129,8 @@
       },
       "vfr_rate_scale": 0.2,
       "configuration": {
-        "config_id": "SCT",
-        "default_consolidation": {
-          "LAX_S_DEP": ["LAX_X_DEP"],
-          "ONT_N_APP": ["ONT_P_APP"],
-          "SCT_APP": ["BUR_M_APP", "LAX_F_APP", "LAX_S_DEP", "LAX_U_APP", "ONT_N_APP", "SAN_E_APP", "SNA_Y_APP"]
-        }
+        "config_id": "SCT"
       },
-      "controllers": [
-        "SCT_APP",
-        "SCT_F_APP",
-        "LAX_04_CTR",
-        "LAX_09_CTR",
-        "LAX_10_CTR",
-        "LAX_12_CTR",
-        "LAX_13_CTR",
-        "LAX_14_CTR",
-        "LAX_17_CTR",
-        "LAX_18_CTR",
-        "LAX_19_CTR",
-        "LAX_21_CTR",
-        "LAX_22_CTR",
-        "LAX_28_CTR",
-        "LAX_30_CTR",
-        "LAX_37_CTR",
-        "LAX_39_CTR",
-        "LAX_40_CTR"
-      ],
       "default_maps": ["099S SCT NORMAL CFG SCT"],
       "departure_runways": [
         {
@@ -14641,631 +14200,5 @@
         }
       ]
     }
-  },
-  "stars_config": {
-    "configurations": {
-      "23X": {
-        "inbound_assignments": {
-          "BIGBR3": "LAX_F_APP",
-          "BOGET2": "BUR_V_APP",
-          "BRUEN2": "LAX_F_APP",
-          "CHASR2": "SAN_E_APP",
-          "COMIX2": "SAN_N_APP",
-          "EAST SAN SAT ARR": "SAN_D_APP",
-          "EDWP4": "BUR_M_APP",
-          "EMMLN1": "ONT_N_APP",
-          "FERN7": "BUR_M_APP",
-          "JANNY5/GUERA2": "BUR_M_APP",
-          "JCKIE2": "ONT_N_APP",
-          "KARLB3/GOATZ2": "LAX_X_DEP",
-          "LEGOZ3": "LAX_X_DEP",
-          "LUCKI1.HEELX": "SAN_E_APP",
-          "LUCKI1.MOMAR": "SAN_E_APP",
-          "OHSEA3/PCIFC3": "LAX_X_DEP",
-          "OLAAA2": "SNA_Y_APP",
-          "RDBUL1": "PSP_S_APP",
-          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
-          "ROOBY3.DRTHI": "ONT_N_APP",
-          "ROOBY3.LRSON": "ONT_N_APP",
-          "RUKKI1/BAUBB3": "LAX_X_DEP",
-          "SBAP2": "BUR_W_APP",
-          "SCBBY2.DEWWW": "ONT_N_APP",
-          "SETER5": "ONT_N_APP",
-          "SIZLR4": "ONT_N_APP",
-          "THRNE4": "ONT_N_APP",
-          "W291 NZY ARR": "SAN_W_APP",
-          "WEESL1": "BUR_M_APP",
-          "ZIGGY8.HEC": "ONT_N_APP",
-          "ZIGGY8.LANDO": "ONT_N_APP",
-          "ZUUMA4": "LAX_Z_APP"
-        },
-        "departure_assignments": {
-          "KBUR": "BUR_V_APP",
-          "KCRQ": "SAN_D_APP",
-          "KHHR": "LAX_S_DEP",
-          "KLAX": "LAX_S_DEP",
-          "KLGB": "SNA_Y_APP",
-          "KMYF": "SAN_W_APP",
-          "KNZY": "SAN_W_APP",
-          "KONT": "ONT_P_APP",
-          "KPSP": "PSP_S_APP",
-          "KRNM": "SAN_D_APP",
-          "KSAN": "SAN_W_APP",
-          "KSBD": "ONT_N_APP",
-          "KSDM": "SAN_W_APP",
-          "KSEE": "SAN_E_APP",
-          "KSMO": "BUR_V_APP",
-          "KSNA": "SNA_Y_APP",
-          "KVNY": "BUR_M_APP",
-          "KWHP": "BUR_M_APP"
-        }
-      },
-      "81X": {
-        "inbound_assignments": {
-          "ANJLL4": "LAX_F_APP",
-          "BOGET2": "BUR_V_APP",
-          "CHASR2": "SAN_E_APP",
-          "COMIX2": "SAN_N_APP",
-          "DSNEE6.DRTHI": "ONT_N_APP",
-          "DSNEE6.LRSON": "ONT_N_APP",
-          "EAST SAN SAT ARR": "SAN_D_APP",
-          "EDWP4": "BUR_M_APP",
-          "EMMLN1": "ONT_N_APP",
-          "FERN7": "BUR_M_APP",
-          "HLYWD1": "LAX_F_APP",
-          "IRNMN2": "LAX_Z_APP",
-          "JANNY5/GUERA2": "BUR_M_APP",
-          "JCKIE2": "ONT_N_APP",
-          "KARLB3/GOATZ2": "LAX_X_DEP",
-          "LEGOZ3": "LAX_X_DEP",
-          "LUCKI1.HEELX": "SAN_E_APP",
-          "LUCKI1.MOMAR": "SAN_E_APP",
-          "OHSEA3/PCIFC3": "LAX_X_DEP",
-          "OLAAA2": "SNA_Y_APP",
-          "RDBUL1": "PSP_S_APP",
-          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
-          "RUKKI1/BAUBB3": "LAX_X_DEP",
-          "RYDRR2": "LAX_Z_APP",
-          "SBAP2": "BUR_W_APP",
-          "SCBBY2.DEWWW": "ONT_N_APP",
-          "SETER5": "ONT_N_APP",
-          "SIZLR4": "ONT_N_APP",
-          "THRNE4": "ONT_N_APP",
-          "W291 NZY ARR": "SAN_W_APP",
-          "WEESL1": "BUR_M_APP",
-          "ZIGGY8.HEC": "ONT_N_APP",
-          "ZIGGY8.LANDO": "ONT_N_APP"
-        },
-        "departure_assignments": {
-          "KBUR": "BUR_V_APP",
-          "KCRQ": "SAN_D_APP",
-          "KLAX": "LAX_S_DEP",
-          "KLGB": "SNA_Y_APP",
-          "KMYF": "SAN_W_APP",
-          "KNZY": "SAN_W_APP",
-          "KONT": "ONT_P_APP",
-          "KPSP": "PSP_S_APP",
-          "KRNM": "SAN_D_APP",
-          "KSAN": "SAN_W_APP",
-          "KSBD": "ONT_N_APP",
-          "KSDM": "SAN_W_APP",
-          "KSEE": "SAN_E_APP",
-          "KSMO": "LAX_N_DEP",
-          "KSNA": "SNA_Y_APP",
-          "KVNY": "BUR_M_APP",
-          "KWHP": "BUR_M_APP"
-        }
-      },
-      "SCT": {
-        "inbound_assignments": {
-          "CHASR2": "SAN_E_APP",
-          "JANNY5/GUERA2": "BUR_M_APP",
-          "JCKIE2": "ONT_N_APP",
-          "KARLB3/GOATZ2": "LAX_X_DEP",
-          "MDNYT2.ANJLL": "LAX_F_APP",
-          "MDNYT2.HLYWD": "LAX_F_APP",
-          "MDNYT2.SNSTT": "LAX_F_APP",
-          "SCBBY2.DEWWW": "ONT_N_APP",
-          "SETER5": "ONT_N_APP",
-          "W291 NZY ARR": "SAN_E_APP",
-          "ZIGGY8.HEC": "ONT_N_APP",
-          "ZIGGY8.LANDO": "ONT_N_APP",
-          "ZUUMA4": "LAX_U_APP"
-        },
-        "departure_assignments": {
-          "KBUR": "BUR_M_APP",
-          "KCRQ": "SAN_E_APP",
-          "KLAX": "LAX_S_DEP",
-          "KMYF": "SAN_E_APP",
-          "KNZY": "SAN_E_APP",
-          "KONT": "ONT_P_APP",
-          "KSAN": "SAN_E_APP",
-          "KSBD": "ONT_N_APP",
-          "KSDM": "SAN_E_APP",
-          "KSEE": "SAN_E_APP",
-          "KSMO": "BUR_M_APP",
-          "KVNY": "BUR_M_APP"
-        }
-      }
-    },
-
-    "center": "N033.39.14.521,W117.31.32.257",
-    "range": 70,
-    "coordination_fixes": {
-      "ANJLL": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "HLYWD": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "MDOTS": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "COWWS": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "RUKKI": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "GOATZ": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "GNZZO": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "SOLAY": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "ALMST": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "CYNDE": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "GNKEE": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "DUNNN": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "CHURO": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "PCIFC": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "PMD": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "PEPRZ": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "THRNE": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "GRRIT": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "OHIGH": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "CMA": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "KIMMO": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "LRSON": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "MCHNE": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "ARRAN": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "BITTY": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "COMIX": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "HNAHH": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ],
-      "ISEMN": [
-        {
-          "type": "route",
-          "to": "SCT",
-          "from": "ZLA"
-        }
-      ]
-    },
-    "altimeters": ["KBUR", "KLAX", "KONT", "KPSP", "KSAN", "KSNA"],
-    "filters": {
-      "inhibit_ca": [
-        {
-          "id": "LAXNOCA",
-          "description": "LAX CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "KLAX"
-        },
-        {
-          "id": "SNANOCA",
-          "description": "SNA CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "KSNA"
-        },
-        {
-          "id": "SANNOCA",
-          "description": "SAN CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "KSAN"
-        },
-        {
-          "id": "PSPNOCA",
-          "description": "KPSP CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "KPSP"
-        },
-        {
-          "id": "ONTNOCA",
-          "description": "ONT CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "KONT"
-        },
-        {
-          "id": "VNYNOCA",
-          "description": "VNY CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "KVNY"
-        }
-      ],
-      "auto_acquisition": [
-        {
-          "id": "ACQ",
-          "description": "SCT AUTO-ACQUISITION",
-          "type": "polygon",
-          "vertices": "N035.12.54.426,W119.40.23.556 N035.06.12.985,W116.32.10.242 N034.20.04.650,W115.35.53.622 N034.01.19.458,W114.34.09.746 N033.07.48.209,W114.43.52.928 N033.02.32.009,W115.55.56.954 N032.17.44.355,W115.58.14.174 N032.13.07.156,W117.48.36.101 N032.52.08.274,W118.42.27.839 N032.55.25.135,W119.25.36.328 N034.53.19.424,W119.43.41.832 N035.12.54.426,W119.40.23.556",
-          "floor": 0,
-          "ceiling": 26000
-        }
-      ]
-    },
-    "coordination_lists": [
-      {
-        "name": "PSP",
-        "id": "Z",
-        "airports": ["KPSP"]
-      },
-      {
-        "name": "LGB",
-        "id": "V",
-        "airports": ["KLGB"]
-      },
-      {
-        "name": "VNY",
-        "id": "Y",
-        "airports": ["KVNY"]
-      }
-    ],
-    "airspace_awareness": [
-      {
-        "fixes": ["CNERY", "CLEEE", "DOTSS", "CAHIL", "BEALE"],
-        "altitude_range": [13000, 23000],
-        "receiving_controller": "LAX_21_CTR"
-      },
-      {
-        "fixes": ["SCTRR", "STOKD", "MCKEY", "HHERO", "RIZIN", "DARRK", "IKAYE", "DINTY", "FICKY"],
-        "altitude_range": [13000, 23000],
-        "receiving_controller": "LAX_14_CTR"
-      },
-      {
-        "fixes": ["OROSZ", "EHF", "COREZ", "CSTRO"],
-        "altitude_range": [13000, 23000],
-        "receiving_controller": "LAX_04_CTR"
-      },
-      {
-        "fixes": ["LAS", "MISEN"],
-        "altitude_range": [13000, 23000],
-        "receiving_controller": "LAX_18_CTR"
-      },
-      {
-        "fixes": ["TNP", "BLH"],
-        "altitude_range": [15000, 23000],
-        "receiving_controller": "LAX_10_CTR"
-      },
-      {
-        "fixes": ["AVRRY", "MTBAL", "OTAYY", "DINTY", "MALIT", "SXC"],
-        "altitude_range": [13000, 23000],
-        "receiving_controller": "LAX_12_CTR"
-      },
-      {
-        "fixes": ["EHF", "COREZ", "LAS", "MISEN", "GMN", "POM"],
-        "altitude_range": [13000, 23000],
-        "receiving_controller": "LAX_18_CTR"
-      },
-      {
-        "fixes": ["PMD"],
-        "altitude_range": [15000, 23000],
-        "receiving_controller": "LAX_19_CTR"
-      }
-    ],
-    "force_ql_self": true,
-    "scratchpads": {
-      "BEALE": "FIN",
-      "MISEN": "FIN",
-      "EHF": "HRC",
-      "IKAYE": "HRY",
-      "OROSZ": "HRC",
-      "MTBAL": "PIG",
-      "CSTWY": "PIG",
-      "WIILD": "PIG",
-      "WAGAV": "PIG",
-      "AVRRY": "STY",
-      "CNERY": "STY",
-      "TCATE": "STY",
-      "OTAYY": "STY",
-      "PEELR": "FTR",
-      "BLCKD": "FTR",
-      "CSTRO": "TPO",
-      "COREZ": "TPO",
-      "ARRMY": "ZMM",
-      "BLAZN": "ZMM",
-      "YELAH": "ZMM",
-      "WYZEE": "ZMM",
-      "DINTY": "SHL",
-      "LAS": "NVY",
-      "TNP": "TNP",
-      "PMD": "SOG",
-      "PDZ": "PDZ",
-      "RAVON": "RVN",
-      "RRIZE": "RZE",
-      "CIVET": "CIV",
-      "TIFNI": "TIF",
-      "POM": "POM",
-      "NIKKL": "NIK",
-      "SXC": "DTY",
-      "HAILO": "HAI",
-      "HEC": "HEC",
-      "BLH": "BLH",
-      "DAG": "DAG",
-      "LAX": "LAX",
-      "SLI": "SLI",
-      "GMN": "GMN",
-      "AVE": "AVE",
-      "CLEEE": "CLE",
-      "SCTRR": "SCT",
-      "CHKNN": "CHK",
-      "MALIT": "MAL",
-      "IPL": "IPL",
-      "CENZA": "CEN",
-      "JLI": "JLI",
-      "OCN": "OCN",
-      "TANNR": "TAN",
-      "VNY": "VNY",
-      "MZB": "MZB"
-    },
-    "significant_points": {
-      "ARRMY": {},
-      "AVE": {},
-      "AVRRY": {},
-      "BEALE": {},
-      "BLAZN": {},
-      "BLCKD": {},
-      "BLH": {},
-      "BOILE": {},
-      "CENZA": {},
-      "CHKNN": {},
-      "CIVET": {},
-      "CLEEE": {},
-      "CNERY": {},
-      "COREZ": {},
-      "CSTRO": {},
-      "CSTWY": {
-        "short_name": "CWY"
-      },
-      "DAG": {},
-      "DINTY": {},
-      "EHF": {},
-      "GMN": {},
-      "HAILO": {},
-      "HEC": {},
-      "IKAYE": {},
-      "IPL": {},
-      "JLI": {},
-      "LAS": {},
-      "LAX": {},
-      "MALIT": {},
-      "MISEN": {},
-      "MTBAL": {},
-      "NIKKL": {},
-      "OCN": {},
-      "OROSZ": {},
-      "OTAYY": {},
-      "PDZ": {},
-      "PEELR": {},
-      "PMD": {},
-      "POM": {},
-      "RAVON": {},
-      "RRIZE": {},
-      "SCTRR": {},
-      "SLI": {},
-      "SXC": {},
-      "TANNR": {},
-      "TCATE": {},
-      "TIFNI": {},
-      "TNP": {},
-      "VNY": {},
-      "WAGAV": {},
-      "WIILD": {},
-      "WYZEE": {},
-      "YELAH": {}
-    },
-    "stars_maps": [
-      "701S FUS 3NM MVA SCT",
-      "022S T C A-S SCT",
-      "027S T D A-S SCT",
-      "016S NTZ LW SCT",
-      "099S SCT NORMAL CFG SCT",
-      "100S BURB LW SCT",
-      "101S BURB LE SCT",
-      "102S BURB LO SCT",
-      "200S LAAB LW SCT",
-      "201S LAAB LE SCT",
-      "300S EMPB LW SCT",
-      "301S EMPB LE SCT",
-      "302S EMPB LO SCT",
-      "400S CB LWSS SCT",
-      "401S CB LESS SCT",
-      "402S CB LWSN SCT",
-      "403S CB LESN SCT",
-      "500S SB WEST SCT",
-      "501S SB EAST SCT",
-      "600S DB LW SCT",
-      "601S DB LO SCT",
-      "602S DB LWSN SCT",
-      "603S DB LE SCT",
-      "017S NTZ LE SCT",
-      "724S AIRWAY SCT",
-      "020S TVFRPTS SCT",
-      "264S WEST NORTH RNAV RNP-RNAV24 SCT",
-      "265S WEST SOUTH RNAV RNP-RNAV25 SCT",
-      "208S OVER OCEAN RNAV RNP-RNAV06R",
-      "450S ZLA ASW SCT",
-      "161S BUR STARS WEST SCT",
-      "261S LAX STARS WEST SCT",
-      "365S DSNEE AND SIZZLR STAR SCT",
-      "563S SAN 1 SCT",
-      "668S DIRBY STAR SCT",
-      "711S EOVM SCT"
-    ],
-    "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
   }
 }

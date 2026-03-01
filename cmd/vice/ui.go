@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/ncruces/zenity"
 	"github.com/pkg/browser"
 )
@@ -50,11 +51,16 @@ var (
 		showSettings      bool
 		showScenarioInfo  bool
 		showLaunchControl bool
+		showMessages      bool
+		showFlightStrips  bool
 
 		// STT state
-		pttRecording bool
-		pttGarbling  bool // true if PTT pressed while audio was playing (no recording)
-		pttCapture   bool // capturing new PTT key assignment
+		pttRecording              bool
+		pttGarbling               bool      // true if PTT pressed while audio was playing (no recording)
+		pttMicFailed              bool      // true if mic open failed this press; cleared on release
+		pttCapture                bool      // capturing new PTT key assignment
+		pttPressTime              time.Time // for latency logging
+		audioCaptureWarningLogged bool      // only log audio capture failure once
 	}
 
 	//go:embed icons/tower-256x256.png
@@ -65,10 +71,17 @@ func imguiInit() *imgui.Context {
 	context := imgui.CreateContext()
 	imgui.CurrentIO().SetIniFilename("")
 
+	// Enable multi-viewport support so imgui windows can float outside the main window.
+	io := imgui.CurrentIO()
+	io.SetConfigFlags(io.ConfigFlags() | imgui.ConfigFlagsViewportsEnable)
+
 	// Disable the nav windowing popup (Ctrl+Tab/Cmd+Tab window switcher) by
 	// clearing the shortcut keys that trigger it.
 	context.SetConfigNavWindowingKeyNext(imgui.KeyChord(imgui.KeyNone))
 	context.SetConfigNavWindowingKeyPrev(imgui.KeyChord(imgui.KeyNone))
+
+	// Only allow dragging windows by their title bars, not by clicking content.
+	io.SetConfigWindowsMoveFromTitleBarOnly(true)
 
 	// General imgui styling
 	style := imgui.CurrentStyle()
@@ -115,10 +128,18 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 	if !config.NotifiedTargetGenMode {
 		uiShowTargetGenCommandModeDialog(p, config)
 	}
+
+	// Restore which child windows were open in the previous session.
+	ui.showSettings = config.ShowSettings
+	ui.showLaunchControl = config.ShowLaunchCtrl
+	ui.showScenarioInfo = config.ShowScenarioInfo
+	ui.showMessages = config.ShowMessages
+	ui.showFlightStrips = config.ShowFlightStrips
+	keyboardWindowVisible = config.ShowKeyboardRef
 }
 
 func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
-	controlClient *client.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
+	controlClient *client.ControlClient, activeRadarPane panes.Pane, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -133,9 +154,10 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		}
 	}
 
-	imgui.PushFont(&ui.font.Ifont)
+	ui.font.ImguiPush()
 	if imgui.BeginMainMenuBar() {
-		imgui.PushStyleColorVec4(imgui.ColButton, imgui.CurrentStyle().Colors()[imgui.ColMenuBarBg])
+		menuBarCursorY := imgui.CursorPosY()
+		imgui.PushStyleColorVec4(imgui.ColButton, imgui.Vec4{})
 
 		if controlClient != nil && controlClient.Connected() {
 			if controlClient.State.Paused {
@@ -213,6 +235,22 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Control spawning new aircraft and grant departure releases")
 		}
 
+		if controlClient != nil && controlClient.Connected() {
+			if imgui.Button(renderer.FontAwesomeIconComment) {
+				ui.showMessages = !ui.showMessages
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Toggle messages window")
+			}
+
+			if imgui.Button(renderer.FontAwesomeIconClipboardList) {
+				ui.showFlightStrips = !ui.showFlightStrips
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Toggle flight strips window")
+			}
+		}
+
 		if imgui.Button(renderer.FontAwesomeIconBook) {
 			browser.OpenURL("https://pharr.org/vice/index.html")
 		}
@@ -223,26 +261,30 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		// Handle PTT key for STT recording
 		uiHandlePTTKey(p, controlClient, config, lg)
 
-		// Position for right-side icons (add space for mic icon when recording/garbling)
-		width, _ := ui.font.BoundText(renderer.FontAwesomeIconInfoCircle, 0)
-		numIcons := 6
-		if ui.pttRecording || ui.pttGarbling {
-			numIcons = 7
-		}
-		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(numIcons*width+15), 0})
+		// Position for right-side icons: info, discord, full screen toggle,
+		// and optionally a microphone icon during PTT recording/garbling.
+		// The 3 buttons are always at the same fixed position so they don't
+		// shift when the microphone icon appears/disappears.
+		iconWidth, _ := ui.font.BoundText(renderer.FontAwesomeIconInfoCircle, 0)
+		style := imgui.CurrentStyle()
+		framePaddingX := style.FramePadding().X
+		itemSpacingX := style.ItemSpacing().X
+		buttonWidth := float32(iconWidth) + 2*framePaddingX
+		displaySize := imgui.CurrentIO().DisplaySize()
+		buttonsX := displaySize.X - 3*buttonWidth - 2*itemSpacingX - itemSpacingX
 
-		// Show microphone icon while recording (red) or garbling (yellow)
-		if ui.pttRecording {
-			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, 0, 0, 1})
+		// Show microphone icon while recording (red) or garbling (yellow),
+		// positioned to the left of the 3 fixed buttons.
+		if ui.pttRecording || ui.pttGarbling {
+			// red for recording, yellow for garbling
+			micColor := util.Select(ui.pttGarbling, imgui.Vec4{1, 1, 0, 1}, imgui.Vec4{1, 0, 0, 1})
+			imgui.SetCursorPos(imgui.Vec2{X: buttonsX - float32(iconWidth) - itemSpacingX, Y: menuBarCursorY})
+			imgui.PushStyleColorVec4(imgui.ColText, micColor)
 			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
 			imgui.PopStyleColor()
-			imgui.SameLine()
-		} else if ui.pttGarbling {
-			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, 1, 0, 1})
-			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
-			imgui.PopStyleColor()
-			imgui.SameLine()
 		}
+
+		imgui.SetCursorPos(imgui.Vec2{X: buttonsX, Y: menuBarCursorY})
 
 		if imgui.Button(renderer.FontAwesomeIconInfoCircle) {
 			ui.showAboutDialog = !ui.showAboutDialog
@@ -268,10 +310,10 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
 	if controlClient != nil {
-		uiDrawSettingsWindow(controlClient, config, p, lg)
+		uiDrawSettingsWindow(controlClient, config, activeRadarPane, p, lg)
 
 		if ui.showScenarioInfo {
-			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, p, lg)
+			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, activeRadarPane, p, lg)
 		}
 
 		if ui.showLaunchControl {
@@ -279,6 +321,13 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 				ui.launchControlWindow = MakeLaunchControlWindow(controlClient, lg)
 			}
 			ui.launchControlWindow.Draw(eventStream, p)
+		}
+
+		if ui.showMessages {
+			config.MessagesPane.DrawWindow(&ui.showMessages, controlClient, p, lg)
+		}
+		if ui.showFlightStrips {
+			config.FlightStripPane.DrawWindow(&ui.showFlightStrips, controlClient, p, lg)
 		}
 	}
 
@@ -296,14 +345,27 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 	// Finalize and submit the imgui draw lists
 	imgui.Render()
-	cb := renderer.GetCommandBuffer()
-	defer renderer.ReturnCommandBuffer(cb)
-	renderer.GenerateImguiCommandBuffer(cb, p.DisplaySize(), p.FramebufferSize(), lg)
-	return r.RenderCommandBuffer(cb)
+
+	// Use the OpenGL 3 backend for all imgui rendering. Both main and
+	// secondary viewports use the same code path, eliminating DPI
+	// discrepancies between our custom OGL2 renderer and imgui's OGL3 backend.
+	implogl3.RenderDrawData(imgui.CurrentDrawData())
+	renderer.SyncFontAtlasTexID()
+
+	// Update and render secondary viewport windows (floating OS windows).
+	io := imgui.CurrentIO()
+	if io.ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+		imgui.UpdatePlatformWindows()
+		imgui.RenderPlatformWindowsDefault()
+		p.MakeContextCurrent()
+	}
+
+	return renderer.RendererStats{}
 }
 
 func uiResetControlClient(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	ui.launchControlWindow = nil
+	clear(acknowledgedATIS)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -313,7 +375,7 @@ func showAboutDialog() {
 	flags := imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
 	imgui.BeginV("About vice...", &ui.showAboutDialog, flags)
 
-	imgui.Image(imgui.TextureID(ui.iconTextureID), imgui.Vec2{256, 256})
+	imgui.Image(*imgui.NewTextureRefTextureID(imgui.TextureID(ui.iconTextureID)), imgui.Vec2{256, 256})
 
 	center := func(s string) {
 		// https://stackoverflow.com/a/67855985
@@ -323,7 +385,7 @@ func showAboutDialog() {
 		imgui.Text(s)
 	}
 
-	imgui.PushFont(&ui.aboutFont.Ifont)
+	ui.aboutFont.ImguiPush()
 	center("vice")
 	center(renderer.FontAwesomeIconCopyright + "2023-2025 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
@@ -338,11 +400,11 @@ func showAboutDialog() {
 
 	imgui.Separator()
 
-	imgui.PushFont(&ui.aboutFontSmall.Ifont)
+	ui.aboutFontSmall.ImguiPush()
 	credits := `Additional credits:
-- Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, and Yi Zhang.
+- Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Michael Knight, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, Jordan Williams, and Yi Zhang.
 - Timely feedback: radarcontacto.
-- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Thomas Halpin, Jason Helkenberg, Trey Hensley, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
+- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Gecko, Thomas Halpin, Jason Helkenberg, Trey Hensley, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Jake Magee, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs and to the FAA, from whence the original maps came.
 - Additionally: OpenScope for the aircraft performance and airline databases, ourairports.com for the airport database, and for the FAA for being awesome about providing the CIFP, MVA specifications, and other useful aviation data digitally.
 - One more thing: see the file CREDITS.txt in the vice source code distribution for third-party software, fonts, sounds, etc.`
@@ -366,76 +428,82 @@ func uiToggleShowKeyboardWindow() {
 }
 
 var primaryAcCommands = [][3]string{
-	[3]string{"*H_hdg", `"Fly heading _hdg_." If no heading is given, "fly present heading".`,
+	{"*H_hdg", `"Fly heading _hdg_." If no heading is given, "fly present heading".`,
 		"*H050*, *H*"},
-	[3]string{"*D_fix", `"Proceed direct _fix_".`, "*DWAVEY*"},
-	[3]string{"*C_alt", `"Climb and maintain _alt_".`, "*C170*"},
-	[3]string{"*TC_alt", `"After reaching speed _kts_, climb and maintain _alt_", where _kts_ is a previously-assigned speed.`, "*TC170*"},
-	[3]string{"*D_alt", `"Descend and maintain _alt_".`, "*D20*"},
-	[3]string{"*TD_alt", `"Descend and maintain _alt_ after reaching _kts_ knots", where _kts_ is a previously-assigned
+	{"*D_fix", `"Proceed direct _fix_".`, "*DWAVEY*"},
+	{"*C_alt", `"Climb and maintain _alt_".`, "*C170*"},
+	{"*TC_alt", `"After reaching speed _kts_, climb and maintain _alt_", where _kts_ is a previously-assigned speed.`, "*TC170*"},
+	{"*D_alt", `"Descend and maintain _alt_".`, "*D20*"},
+	{"*TD_alt", `"Descend and maintain _alt_ after reaching _kts_ knots", where _kts_ is a previously-assigned
 speed. (*TD* = 'then descend')`, "*TD20*"},
-	[3]string{"*S_kts", `"Reduce/increase speed to _kts_."
+	{"*S_kts", `"Reduce/increase speed to _kts_."
 If no speed is given, "cancel speed restrictions".`, "*S210*, *S*"},
-	[3]string{"*TS_kts", `"After reaching _alt_, reduce/increase speed to _kts_", where _alt_ is a previously-assigned
+	{"*TS_kts", `"After reaching _alt_, reduce/increase speed to _kts_", where _alt_ is a previously-assigned
 altitude. (*TS* = 'then speed')`, "*TS210*"},
-	[3]string{"*E_appr", `"Expect the _appr_ approach."`, "*EI2L*"},
-	[3]string{"*C_appr", `"Cleared _appr_ approach."`, "*CI2L*"},
-	[3]string{"*C*", `"Cleared for the approach that was previously assigned."`, "*C*"},
-	[3]string{"*TO*", `"Contact tower"`, "*TO*"},
-	[3]string{"*FC*", `"Contact _ctrl_ on _freq_, where _ctrl_ is the controller who has the track and _freq_ is their frequency."`, "*FC*"},
-	[3]string{"*CT_tcp*", `"Contact the controller identified by TCP _tcp_."`, "*CT2J*"},
-	[3]string{"*X*", "(Deletes the aircraft.)", "*X*"},
+	{"*E_appr", `"Expect the _appr_ approach."`, "*EI2L*"},
+	{"*E*", `"Standby; re-issue expect for the assigned approach."`, "*E*"},
+	{"*C_appr", `"Cleared _appr_ approach."`, "*CI2L*"},
+	{"*C*", `"Cleared for the approach that was previously assigned."`, "*C*"},
+	{"*TO*", `"Contact tower"`, "*TO*"},
+	{"*FC*", `"Contact _ctrl_ on _freq_, where _ctrl_ is the controller who has the track and _freq_ is their frequency."`, "*FC*"},
+	{"*CT_tcp*", `"Contact the controller identified by TCP _tcp_."`, "*CT2J*"},
+	{"*X*", "(Deletes the aircraft.)", "*X*"},
 }
 
 var secondaryAcCommands = [][3]string{
-	[3]string{"*L_hdg", `"Turn left heading _hdg_."`, "*L130*"},
-	[3]string{"*T_deg*L", `"Turn _deg_ degrees left."`, "*T10L*"},
-	[3]string{"*R_hdg", `"Turn right heading _hdg_".`, "*R210*"},
-	[3]string{"*T_deg*R", `"Turn _deg_ degrees right".`, "*T20R*"},
-	[3]string{"*D_fix*/H_hdg", `"Depart _fix_ heading _hdg_".`, "*DLENDY/H180*"},
-	[3]string{"*H_fix*", `"Hold at _fix_ (published hold)".`, "*HJIMEE*"},
-	[3]string{"*H_fix*/[opts]",
+	{"*L_hdg", `"Turn left heading _hdg_."`, "*L130*"},
+	{"*T_deg*L", `"Turn _deg_ degrees left."`, "*T10L*"},
+	{"*R_hdg", `"Turn right heading _hdg_".`, "*R210*"},
+	{"*T_deg*R", `"Turn _deg_ degrees right".`, "*T20R*"},
+	{"*D_fix*/H_hdg", `"Depart _fix_ heading _hdg_".`, "*DLENDY/H180*"},
+	{"*H_fix*", `"Hold at _fix_ (published hold)".`, "*HJIMEE*"},
+	{"*H_fix*/[opts]",
 		`"Hold at _fix_ (controller-specified)." Options: *L*/*R* (turns), *xxNM*/*xxM* (legs), *Rxxx* (radial, req'd).`, "*HJIMEE/L/5NM/R090*"},
-	[3]string{"*C_fix*/A_alt*/S_kts",
-		`"Cross _fix_ at _alt_ / _kts_ knots." Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
-	[3]string{"*ED*", `"Expedite descent"`, "*ED*"},
-	[3]string{"*EC*", `"Expedite climb"`, "*EC*"},
-	[3]string{"*SMIN*", `"Maintain slowest practical speed".`, "*SMIN*"},
-	[3]string{"*SMAX*", `"Maintain maximum forward speed".`, "*SMAX*"},
-	[3]string{"*SS*", `"Say airspeed".`, "*SS*"},
-	[3]string{"*SA*", `"Say altitude".`, "*SA*"},
-	[3]string{"*SH*", `"Say heading".`, "*SH*"},
-	[3]string{"*SQ_code", `"Squawk _code_."`, "*SQ1200*"},
-	[3]string{"*SQS", `"Squawk standby."`, "*SQS*"},
-	[3]string{"*SQA", `"Squawk altitude."`, "*SQA*"},
-	[3]string{"*SQON", `"Squawk on."`, "*SSON*"},
-	[3]string{"*A_fix*/C[_appr]", `"At _fix_, cleared [_appr_] approach." (approach is optional)`, "*AROSLY/C*"},
-	[3]string{"*CAC*", `"Cancel approach clearance".`, "*CAC*"},
-	[3]string{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},
-	[3]string{"*I*", `"Intercept the localizer."`, "*I*"},
-	[3]string{"*ID*", `"Ident."`, "*ID*"},
-	[3]string{"*CVS*", `"Climb via the SID"`, "*CVS*"},
-	[3]string{"*DVS*", `"Descend via the STAR"`, "*CVS*"},
-	[3]string{"*RON*", `"Resume own navigation" (VFR)`, "*RON*"},
-	[3]string{"*A*", `"Altitude your discretion, maintain VFR" (VFR)`, "*A*"},
-	[3]string{"*A_alt*", `"Maintain _alt_`, "*A120*"},
-	[3]string{"*RST*", `"Radar services terminated, squawk VFR, frequency change approved" (VFR)`, "*RST*"},
-	[3]string{"*GA*", `"Go ahead" (VFR) - respond to abbreviated VFR request`, "*GA*"},
-	[3]string{"*P*", `Pauses/unpauses the sim`, "*P*"},
-	[3]string{"*/_message*", `Displays a message to all controllers`, "*/DINNER TIME 2A CLOSED*"},
+	{"*C_fix*/A_alt*/S_kts*/M_mach*",
+		`"Cross _fix_ at _alt_ / _kts_ knots / mach." Any combination of *A*, *S*, and *M* may be specified.`, "*CCAMRN/A110+*"},
+	{"*ED*", `"Expedite descent"`, "*ED*"},
+	{"*EC*", `"Expedite climb"`, "*EC*"},
+	{"*SMIN*", `"Maintain slowest practical speed".`, "*SMIN*"},
+	{"*SMAX*", `"Maintain maximum forward speed".`, "*SMAX*"},
+	{"*SPRES*", `"Maintain present speed".`, "*SPRES*"},
+	{"*S_kts*+", `"Maintain _kts_ knots or greater" (speed floor). Currently treated as standard speed assignment.`, "*S180+*"},
+	{"*S_kts*-", `"Do not exceed _kts_ knots" (speed ceiling). Currently treated as standard speed assignment.`, "*S180-*"},
+	{"*SS*", `"Say airspeed".`, "*SS*"},
+	{"*SA*", `"Say altitude".`, "*SA*"},
+	{"*SH*", `"Say heading".`, "*SH*"},
+	{"*SQ_code", `"Squawk _code_."`, "*SQ1200*"},
+	{"*SQS", `"Squawk standby."`, "*SQS*"},
+	{"*SQA", `"Squawk altitude."`, "*SQA*"},
+	{"*SQON", `"Squawk on."`, "*SSON*"},
+	{"*A_fix*/C[_appr]", `"At _fix_, cleared [_appr_] approach." (approach is optional)`, "*AROSLY/C*"},
+	{"*A_fix*/I", `"At _fix_, intercept the localizer."`, "*AROSLY/I*"},
+	{"*CAC*", `"Cancel approach clearance".`, "*CAC*"},
+	{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},
+	{"*I*", `"Intercept the localizer."`, "*I*"},
+	{"*ID*", `"Ident."`, "*ID*"},
+	{"*CVS*", `"Climb via the SID"`, "*CVS*"},
+	{"*DVS*", `"Descend via the STAR"`, "*CVS*"},
+	{"*RON*", `"Resume own navigation" (VFR)`, "*RON*"},
+	{"*A*", `"Altitude your discretion, maintain VFR" (VFR)`, "*A*"},
+	{"*A_alt*", `"Maintain _alt_`, "*A120*"},
+	{"*ATIS/_ltr*", `"Advise you have information _ltr_." If the pilot already reported the correct ATIS, no readback.`, "*ATIS/B*"},
+	{"*RST*", `"Radar services terminated, squawk VFR, frequency change approved" (VFR)`, "*RST*"},
+	{"*GA*", `"Go ahead" (VFR) - respond to abbreviated VFR request`, "*GA*"},
+	{"*P*", `Pauses/unpauses the sim`, "*P*"},
+	{"*/_message*", `Displays a message to all controllers`, "*/DINNER TIME 2A CLOSED*"},
 }
 
 var starsCommands = [][2]string{
-	[2]string{"@", `If the aircraft is an inbound handoff, accept the handoff.
+	{"@", `If the aircraft is an inbound handoff, accept the handoff.
 If the aircraft has been handed off to another controller who has accepted
 the handoff, transfer control to the other controller.`},
-	[2]string{"*[F3] @", `Initiate track of an untracked aircraft.`},
-	[2]string{"_id_ @", `Handoff aircraft to the controller identified by _id_.`},
-	[2]string{". @", `Clear aircraft's scratchpad.`},
-	[2]string{"*[F7]Y_scr_ @", `Set aircraft's scratchpad to _scr_ (3 character limit).`},
-	[2]string{"+_alt_ @", `Set the temporary altitude in the aircraft's datablock to _alt_,
+	{"*[F3] @", `Initiate track of an untracked aircraft.`},
+	{"_id_ @", `Handoff aircraft to the controller identified by _id_.`},
+	{". @", `Clear aircraft's scratchpad.`},
+	{"*[F7]Y_scr_ @", `Set aircraft's scratchpad to _scr_ (3 character limit).`},
+	{"+_alt_ @", `Set the temporary altitude in the aircraft's datablock to _alt_,
 which must be 3 digits (e.g., *040*).`},
-	[2]string{"_id_\\* @", `Point out the aircraft to the controller identified by _id_.`},
+	{"_id_\\* @", `Point out the aircraft to the controller identified by _id_.`},
 }
 
 // draw the windows that shows the available keyboard commands
@@ -522,7 +590,7 @@ after the first.`)
 				ap := c.State.Airports[rwy.Airport]
 				for _, name := range util.SortedMapKeys(ap.Approaches) {
 					appr := ap.Approaches[name]
-					if appr.Runway == rwy.Runway {
+					if appr.Runway == rwy.Runway.Base() {
 						apprNames = append(apprNames, name+" ("+rwy.Airport+")")
 					}
 				}
@@ -595,14 +663,14 @@ control positions in the controller list on the upper right side of the scope (u
 // necessary to write "*D*_alt_".
 func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, italicFont *renderer.Font, str string) {
 	// regularFont is the default and starting point
-	imgui.PushFont(&regularFont.Ifont)
+	regularFont.ImguiPush()
 
 	// textWidth approximates the width of the given string in pixels; it
 	// may slightly over-estimate the width, but that's fine since we use
 	// it to decide when to wrap lines of text.
 	textWidth := func(s string) float32 {
 		s = strings.Trim(s, `_*\`) // remove markup characters
-		imgui.PushFont(&fixedFont.Ifont)
+		fixedFont.ImguiPush()
 		sz := imgui.CalcTextSize(s)
 		imgui.PopFont()
 		return sz.X
@@ -654,7 +722,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 						imgui.PopFont()
 					}
 					fixed, italic = true, false
-					imgui.PushFont(&fixedFont.Ifont)
+					fixedFont.ImguiPush()
 				}
 
 			case '_':
@@ -669,7 +737,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 						imgui.PopFont()
 					}
 					fixed, italic = false, true
-					imgui.PushFont(&italicFont.Ifont)
+					italicFont.ImguiPush()
 				}
 
 			default:
@@ -687,7 +755,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	imgui.PopFont() // regular font
 }
 
-func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Platform, lg *log.Logger) {
+func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) {
 	if !ui.showSettings {
 		return
 	}
@@ -702,7 +770,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	imgui.Checkbox("Update Discord activity status", &update)
 	config.InhibitDiscordActivity.Store(!update)
 
-	if c != nil && c.HaveTTS() {
+	if c != nil {
 		imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
 	}
 
@@ -736,7 +804,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		monitorNames := p.GetAllMonitorNames()
 		if imgui.BeginComboV("Monitor", monitorNames[config.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
 			for index, monitor := range monitorNames {
-				if imgui.SelectableBoolV(monitor, monitor == monitorNames[config.FullScreenMonitor], 0, imgui.Vec2{}) {
+				label := fmt.Sprintf("%s##monitor%d", monitor, index)
+				if imgui.SelectableBoolV(label, monitor == monitorNames[config.FullScreenMonitor], 0, imgui.Vec2{}) {
 					config.FullScreenMonitor = index
 
 					p.EnableFullScreen(p.IsFullScreen())
@@ -797,8 +866,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 				config.SelectedMicrophone = ""
 			}
 			mics := p.GetAudioInputDevices()
-			for _, mic := range mics {
-				micFormatted := strings.Map(cleanMic, mic)
+			for i, mic := range mics {
+				micFormatted := fmt.Sprintf("%s##mic%d", strings.Map(cleanMic, mic), i)
 				if imgui.SelectableBoolV(micFormatted, mic == config.SelectedMicrophone, 0, imgui.Vec2{}) {
 					config.SelectedMicrophone = mic
 				}
@@ -806,22 +875,44 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			imgui.EndCombo()
 		}
 
-		// Show selected whisper model and re-benchmark button
+		// Whisper model selection dropdown
 		if modelName := client.GetWhisperModelName(); modelName != "" {
 			imgui.Text("Model:")
 			imgui.SameLine()
-			imgui.TextColored(imgui.Vec4{0.5, 0.8, 0.5, 1}, modelName)
-			imgui.SameLine()
-			if imgui.Button("Re-benchmark") {
-				client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
-					config.WhisperModelName = modelName
-					config.WhisperDeviceID = deviceID
-					config.WhisperBenchmarkIndex = benchmarkIndex
-					config.WhisperRealtimeFactor = realtimeFactor
-				})
-				// Show benchmark progress dialog
-				benchClient := &rebenchmarkModalClient{config: config, lg: lg}
-				uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
+			// Format display name (remove ggml- prefix and .bin suffix for readability)
+			displayName := modelName
+			displayName = strings.TrimPrefix(displayName, "ggml-")
+			displayName = strings.TrimSuffix(displayName, ".bin")
+			if imgui.BeginComboV("##whispermodel", displayName, 0) {
+				// Auto option runs benchmark
+				if imgui.SelectableBoolV("Auto (Benchmark)", false, 0, imgui.Vec2{}) {
+					client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
+						config.WhisperModelName = modelName
+						config.WhisperDeviceID = deviceID
+						config.WhisperBenchmarkIndex = benchmarkIndex
+						config.WhisperRealtimeFactor = realtimeFactor
+					})
+					benchClient := &rebenchmarkModalClient{config: config, lg: lg}
+					uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
+				}
+				imgui.Separator()
+				// Individual model options
+				for _, model := range client.GetWhisperModelTiers() {
+					modelDisplay := strings.TrimPrefix(model, "ggml-")
+					modelDisplay = strings.TrimSuffix(modelDisplay, ".bin")
+					isSelected := model == modelName
+					if imgui.SelectableBoolV(modelDisplay, isSelected, 0, imgui.Vec2{}) {
+						if model != modelName {
+							client.SelectWhisperModel(lg, model, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
+								config.WhisperModelName = modelName
+								config.WhisperDeviceID = deviceID
+								config.WhisperBenchmarkIndex = benchmarkIndex
+								config.WhisperRealtimeFactor = realtimeFactor
+							})
+						}
+					}
+				}
+				imgui.EndCombo()
 			}
 		}
 
@@ -895,11 +986,15 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		imgui.EndGroup()
 	}
 
-	for pane := range config.AllPanes() {
-		if draw, ok := pane.(panes.UIDrawer); ok {
-			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
-				draw.DrawUI(p, &config.Config)
-			}
+	if imgui.CollapsingHeaderBoolPtr(config.MessagesPane.DisplayName(), nil) {
+		config.MessagesPane.DrawUI(p, &config.Config)
+	}
+	if imgui.CollapsingHeaderBoolPtr(config.FlightStripPane.DisplayName(), nil) {
+		config.FlightStripPane.DrawUI(p, &config.Config)
+	}
+	if draw, ok := activeRadarPane.(panes.UIDrawer); ok {
+		if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
+			draw.DrawUI(p, &config.Config)
 		}
 	}
 
@@ -913,14 +1008,31 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 		return
 	}
 
+	// Ensure background capture is running for preroll buffer.
+	// This captures audio continuously so we don't lose the start of transmissions.
+	if !p.IsAudioCapturing() {
+		if err := p.StartAudioCaptureWithDevice(config.SelectedMicrophone); err != nil {
+			// Log but don't block - recording will still work, just without preroll
+			if !ui.audioCaptureWarningLogged {
+				lg.Warnf("Failed to start background audio capture: %v", err)
+				ui.audioCaptureWarningLogged = true
+			}
+		}
+	}
+
 	// Start on initial press (ignore repeats by checking our own flags)
-	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling {
+	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling && !ui.pttMicFailed {
 		if p.IsPlayingSpeech() {
 			// Audio is playing - garble it instead of recording
 			p.SetSpeechGarbled(true)
 			ui.pttGarbling = true
 			lg.Infof("Push-to-talk: Garbling audio (pressed during playback)")
 		} else {
+			ui.pttPressTime = time.Now()
+
+			// Get preroll samples before starting recording (if capture is active)
+			preroll := p.GetAudioPreroll()
+
 			// No audio playing - start recording
 			if err := p.StartAudioRecordingWithDevice(config.SelectedMicrophone); err != nil {
 				var hint string
@@ -928,11 +1040,12 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 				case "darwin":
 					hint = "Please check System Settings -> Privacy & Security -> Microphone and ensure vice has permission."
 				case "windows":
-					hint = "Please check Settings -> Privacy & Security -> Microphone and ensure \"Let desktop apps access your microphone\" is enabled."
+					hint = `Please check Settings -> Privacy & Security -> Microphone and ensure "Let desktop apps access your microphone" is enabled.`
 				default:
 					hint = "Please check your system's audio settings and ensure microphone access is permitted."
 				}
 				ShowErrorDialog(p, lg, "Unable to access microphone: %v\n\n%s", err, hint)
+				ui.pttMicFailed = true
 			} else {
 				ui.pttRecording = true
 				if controlClient != nil {
@@ -940,7 +1053,12 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 					if err := controlClient.StartStreamingSTT(lg); err != nil {
 						lg.Errorf("Failed to start streaming STT: %v", err)
 					} else {
-						// Set up audio streaming callback to feed samples to transcriber
+						// Feed preroll samples to transcriber first (audio from before PTT press)
+						if len(preroll) > 0 {
+							controlClient.FeedAudioToStreaming(preroll)
+							lg.Debugf("Fed %d preroll samples to transcriber", len(preroll))
+						}
+						// Set up audio streaming callback to feed new samples to transcriber
 						p.SetAudioStreamCallback(func(samples []int16) {
 							controlClient.FeedAudioToStreaming(samples)
 						})
@@ -953,6 +1071,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 
 	// Detect release
 	if !imgui.IsKeyDown(pttKey) {
+		ui.pttMicFailed = false
 		if ui.pttGarbling {
 			// Was garbling - stop garbling
 			p.SetSpeechGarbled(false)

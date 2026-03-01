@@ -1,0 +1,60 @@
+{
+    "control_positions": {
+        "1T": {
+            "callsign": "BOI_TWR",
+            "frequency": 118100,
+            "radio_name": "Boise Tower"
+        },
+        "1W": {
+            "callsign": "BOI_APP",
+            "frequency": 126900,
+            "radio_name": "Big Sky Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "KOURT4": "1W",
+                    "KYAAN4": "1W",
+                    "SADYL4": "1W",
+                    "SPUUD4": "1W"
+                },
+                "departure_assignments": {
+                    "KBOI": "1W"
+                },
+                "default_consolidation": {
+                    "1W": []
+                }
+            }
+        },
+        "center": "KBOI",
+        "scratchpads": {},
+        "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "BOI_001S - RWY 10 EAST FLOW",
+                    "BOI_002S - RWY 28 WEST FLOW",
+                    "BOI_005S - MOUNTAIN HOME SHELF",
+                    "BOI_006S - ZLC SECTORS AND MILITARY DATA",
+                    "STARS-BOI_MVA__MVA",
+                    "STARS-BOI_EOVM__EOVM",
+                    "STARS-BOI_VFR__VFR Video Map ",
+                    "BOI_003S - BOI TOWER AIRSPACE RWY 10",
+                    "BOI_004S - BOI TOWER AIRSPACE RWY 28"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "MUO",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLC",
+            "prefix": "C"
+        }
+    ]
+}

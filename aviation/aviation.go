@@ -219,11 +219,11 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 			return
 		}
 		if len(a.AircraftTypes) != 0 {
-			e.ErrorString("cannot specify both \"fleet\" and \"types\"")
+			e.ErrorString(`cannot specify both "fleet" and "types"`)
 			return
 		}
 		if _, ok := al.Fleets[a.Fleet]; !ok {
-			e.ErrorString("\"fleet\" %s unknown", a.Fleet)
+			e.ErrorString(`"fleet" %s unknown`, a.Fleet)
 			return
 		}
 	}
@@ -482,16 +482,41 @@ type Runway struct {
 	DisplacedThresholdDistance float32 // in nm
 }
 
-func TidyRunway(r string) string {
-	r, _, _ = strings.Cut(r, ".")
-	return strings.TrimSpace(r)
+// RunwayID is a runway identifier that may include a dot-separated suffix
+// (e.g., "13R.All"). Use Base() for physical runway lookups/comparisons.
+type RunwayID string
+
+func (r RunwayID) Base() string {
+	s, _, _ := strings.Cut(string(r), ".")
+	return strings.TrimSpace(s)
 }
 
-type ATIS struct {
-	Airport  string
-	AppDep   string
-	Code     string
-	Contents string
+func (r RunwayID) SameRunway(other RunwayID) bool {
+	return r.Base() == other.Base()
+}
+
+// ExitID is an exit fix identifier that may include a dot-separated suffix
+// (e.g., "COLIN.P"). Use Base() for navaid lookups and display.
+type ExitID string
+
+func (e ExitID) Base() string {
+	s, _, _ := strings.Cut(string(e), ".")
+	return s
+}
+
+// AirportHasRunway returns true if the given runway exists at the airport (from DB).
+func AirportHasRunway(airport string, runway RunwayID) bool {
+	ap, ok := DB.Airports[airport]
+	if !ok {
+		return false
+	}
+	base := runway.Base()
+	for _, rwy := range ap.Runways {
+		if RunwayID(rwy.Id).Base() == base {
+			return true
+		}
+	}
+	return false
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -522,13 +547,9 @@ type FlightPlan struct {
 	Altitude         int
 	ArrivalAirport   string
 	AlternateAirport string
-	Exit             string
+	Exit             ExitID
 	Route            string
 	Remarks          string
-}
-
-type FlightStrip struct {
-	Callsign string
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -712,56 +733,156 @@ func LookupRunway(icao, rwy string) (Runway, bool) {
 	}
 }
 
-func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
-	if ap, ok := DB.Airports[icao]; !ok {
-		return Runway{}, false
-	} else {
-		rwy = cleanRunway(rwy)
-		if rwy == "" {
-			return Runway{}, false
-		}
-
-		// Break runway into number and optional extension and swap
-		// left/right.
-		n := len(rwy)
-		num, ext := "", ""
-		switch rwy[n-1] {
-		case 'R':
-			ext = "L"
-			num = rwy[:n-1]
-		case 'L':
-			ext = "R"
-			num = rwy[:n-1]
-		case 'C':
-			ext = "C"
-			num = rwy[:n-1]
-		case 'W':
-			ext = "W"
-			num = rwy[:n-1]
-		default:
-			num = rwy
-		}
-
-		// Extract the number so we can get the opposite heading
-		v, err := strconv.Atoi(num)
-		if err != nil {
-			return Runway{}, false
-		}
-
-		// The (v+18)%36 below would give us 0 for runway 36, so handle 18
-		// specially.
-		if v == 18 {
-			rwy = "36" + ext
-		} else {
-			rwy = fmt.Sprintf("%d", (v+18)%36) + ext
-		}
-
-		idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == rwy })
-		if idx == -1 {
-			return Runway{}, false
-		}
-		return ap.Runways[idx], true
+// OppositeRunwayId returns the runway ID for the opposite end of the given runway.
+// E.g., "13L" -> "31R", "22R" -> "4L", "9" -> "27".
+func OppositeRunwayId(rwy string) string {
+	rwy = cleanRunway(rwy)
+	if rwy == "" {
+		return ""
 	}
+
+	n := len(rwy)
+	num, ext := "", ""
+	switch rwy[n-1] {
+	case 'R':
+		ext = "L"
+		num = rwy[:n-1]
+	case 'L':
+		ext = "R"
+		num = rwy[:n-1]
+	case 'C':
+		ext = "C"
+		num = rwy[:n-1]
+	case 'W':
+		ext = "W"
+		num = rwy[:n-1]
+	default:
+		num = rwy
+	}
+
+	v, err := strconv.Atoi(num)
+	if err != nil {
+		return ""
+	}
+
+	// (v+18)%36 would give 0 for runway 36, so handle 18 specially.
+	if v == 18 {
+		return "36" + ext
+	}
+	return fmt.Sprintf("%d", (v+18)%36) + ext
+}
+
+func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
+	ap, ok := DB.Airports[icao]
+	if !ok {
+		return Runway{}, false
+	}
+
+	oppRwy := OppositeRunwayId(rwy)
+	if oppRwy == "" {
+		return Runway{}, false
+	}
+
+	idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == oppRwy })
+	if idx == -1 {
+		return Runway{}, false
+	}
+	return ap.Runways[idx], true
+}
+
+// IntersectingRunways returns all runways at airport that physically intersect
+// the given runway. It checks if runway centerlines cross and the intersection
+// point is within maxDistNM of both runway segments (threshold to threshold).
+// Use maxDistNM=0 for strict threshold-to-threshold intersection, or a small
+// value (e.g., 0.5) to account for pavement extending past thresholds.
+// Returns both directions for each intersecting runway (e.g., both "13L" and "31R").
+func IntersectingRunways(airport string, rwy RunwayID, nmPerLongitude, maxDistNM float32) []string {
+	rwyBase := rwy.Base()
+
+	// Get runway threshold positions
+	rwyEndpoints := func(r string) (p1, p2 [2]float32, ok bool) {
+		var runway, opp Runway
+		if runway, ok = LookupRunway(airport, r); !ok {
+			return
+		}
+		if opp, ok = LookupOppositeRunway(airport, r); !ok {
+			return
+		}
+		p1 = math.LL2NM(runway.Threshold, nmPerLongitude)
+		p2 = math.LL2NM(opp.Threshold, nmPerLongitude)
+		return p1, p2, true
+	}
+
+	// Distance from point p to line segment seg0-seg1
+	pointToSegmentDist := func(p, seg0, seg1 [2]float32) float32 {
+		v := math.Sub2f(seg1, seg0)
+		w := math.Sub2f(p, seg0)
+		c1 := math.Dot(w, v)
+		c2 := math.Dot(v, v)
+		if c2 == 0 {
+			return math.Distance2f(p, seg0)
+		}
+		t := c1 / c2
+		// Clamp to segment endpoints
+		if t < 0 {
+			t = 0
+		} else if t > 1 {
+			t = 1
+		}
+		proj := math.Add2f(seg0, math.Scale2f(v, t))
+		return math.Distance2f(p, proj)
+	}
+
+	rwy1, rwy2, ok := rwyEndpoints(rwyBase)
+	if !ok {
+		return nil
+	}
+
+	oppRwy := OppositeRunwayId(rwyBase)
+
+	var intersecting []string
+	seen := make(map[string]bool)
+	ap, ok := DB.Airports[airport]
+	if !ok {
+		return nil
+	}
+
+	for _, otherRwy := range ap.Runways {
+		id := RunwayID(otherRwy.Id).Base()
+		if id == rwyBase || id == oppRwy {
+			continue
+		}
+
+		oth1, oth2, ok := rwyEndpoints(otherRwy.Id)
+		if !ok {
+			continue
+		}
+
+		// Check if the infinite centerlines intersect
+		p, ok := math.LineLineIntersect(rwy1, rwy2, oth1, oth2)
+		if !ok {
+			continue // Lines are parallel
+		}
+
+		// Check if intersection point is within maxDistNM of both runway segments
+		dist1 := pointToSegmentDist(p, rwy1, rwy2)
+		dist2 := pointToSegmentDist(p, oth1, oth2)
+
+		if dist1 <= maxDistNM && dist2 <= maxDistNM {
+			// Add both this runway and its opposite direction
+			if !seen[id] {
+				seen[id] = true
+				intersecting = append(intersecting, id)
+			}
+			oppId := OppositeRunwayId(id)
+			if oppId != "" && !seen[oppId] {
+				seen[oppId] = true
+				intersecting = append(intersecting, oppId)
+			}
+		}
+	}
+
+	return intersecting
 }
 
 // returns the ratio of air density at the given altitude (in feet) to the
@@ -786,6 +907,18 @@ func TASToIAS(tas, altitude float32) float32 {
 	return tas * math.Sqrt(DensityRatioAtAltitude(altitude))
 }
 
+func TASToMach(tas float32, temp float32) float32 {
+	// speed of sound = sqrt(ratio of specific heats (1.4) * gas constant for dry air (287 J/(kg*K)) * temperature in kelvin)
+	// convert to knots (* 1.94384)
+	sound := math.Sqrt(1.4*287*temp) * 1.94384
+	return tas / sound
+}
+
+func MachToTAS(mach float32, temp float32) float32 {
+	sound := math.Sqrt(1.4*287*temp) * 1.94384
+	return mach * sound
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Arrival
 
@@ -795,7 +928,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ar.Route == "" && ar.STAR == "" {
-		e.ErrorString("neither \"route\" nor \"star\" specified")
+		e.ErrorString(`neither "route" nor "star" specified`)
 		return
 	}
 
@@ -811,11 +944,11 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		// everything is ok so we don't get into trouble when we
 		// spawn arrivals...
 		if ar.STAR == "" {
-			e.ErrorString("must provide \"star\" if \"waypoints\" aren't given")
+			e.ErrorString(`must provide "star" if "waypoints" aren't given`)
 			return
 		}
 		if ar.SpawnWaypoint == "" {
-			e.ErrorString("must specify \"spawn\" if \"waypoints\" aren't given with arrival")
+			e.ErrorString(`must specify "spawn" if "waypoints" aren't given with arrival`)
 			return
 		}
 
@@ -911,7 +1044,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			return
 
 		case 1:
-			ar.Waypoints[0].HumanHandoff = true // empty string -> to human
+			ar.Waypoints[0].SetHumanHandoff(true) // empty string -> to human
 
 		default:
 			// add a handoff point randomly halfway between the first two waypoints.
@@ -919,20 +1052,20 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				Fix: "_handoff",
 				// FIXME: it's a little sketchy to lerp Point2ll coordinates
 				// but probably ok over short distances here...
-				Location:     math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
-				HumanHandoff: true,
+				Location: math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
+				Flags:    WaypointFlagHumanHandoff,
 			}
 			ar.Waypoints = append([]Waypoint{ar.Waypoints[0], mid}, ar.Waypoints[1:]...)
 		}
 	} else {
 		if len(ar.Waypoints) < 2 {
 			e.ErrorString(
-				"must provide at least two \"waypoints\" for arrival " +
-					"(even if \"runway_waypoints\" are provided)",
+				`must provide at least two "waypoints" for arrival ` +
+					`(even if "runway_waypoints" are provided)`,
 			)
 		}
 		if ar.SpawnWaypoint != "" {
-			e.ErrorString("\"spawn\" cannot be specified if \"waypoints\" are provided")
+			e.ErrorString(`"spawn" cannot be specified if "waypoints" are provided`)
 			return
 		}
 
@@ -956,13 +1089,13 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				wp = wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 				for i := range wp {
-					wp[i].OnSTAR = true
+					wp[i].SetOnSTAR(true)
 				}
 
 				if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
 					e.ErrorString(
-						"initial \"runway_waypoints\" fix must match " +
-							"last \"waypoints\" fix",
+						`initial "runway_waypoints" fix must match ` +
+							`last "waypoints" fix`,
 					)
 				}
 
@@ -981,7 +1114,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 
 	for i := range ar.Waypoints {
-		ar.Waypoints[i].OnSTAR = true
+		ar.Waypoints[i].SetOnSTAR(true)
 	}
 
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
@@ -990,12 +1123,12 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	for arrivalAirport := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
 		if len(ar.Airlines[arrivalAirport]) == 0 {
-			e.ErrorString("no \"airlines\" specified for arrivals to %q", arrivalAirport)
+			e.ErrorString(`no "airlines" specified for arrivals to %q`, arrivalAirport)
 		}
 		for i := range ar.Airlines[arrivalAirport] {
 			ar.Airlines[arrivalAirport][i].Check(e)
 			if _, ok := DB.Airports[ar.Airlines[arrivalAirport][i].Airport]; !ok {
-				e.ErrorString("departure airport \"airport\" %q unknown", ar.Airlines[arrivalAirport][i].Airport)
+				e.ErrorString(`departure airport "airport" %q unknown`, ar.Airlines[arrivalAirport][i].Airport)
 			}
 		}
 
@@ -1009,7 +1142,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 	if ar.ExpectApproach.A != nil { // Given a single string
 		if len(ar.Airlines) > 1 {
-			e.ErrorString("There are multiple arrival airports but only one approach in \"expect_approach\"")
+			e.ErrorString(`There are multiple arrival airports but only one approach in "expect_approach"`)
 		}
 		// Ugly way to get the key from a one-element map
 		var airport string
@@ -1019,7 +1152,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		if ap, ok := airports[airport]; ok {
 			if _, ok := ap.Approaches[*ar.ExpectApproach.A]; !ok {
 				e.ErrorString(
-					"arrival airport %q doesn't have a %q approach for \"expect_approach\"",
+					`arrival airport %q doesn't have a %q approach for "expect_approach"`,
 					airport, *ar.ExpectApproach.A,
 				)
 			}
@@ -1028,7 +1161,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		for airport, appr := range *ar.ExpectApproach.B {
 			if _, ok := ar.Airlines[airport]; !ok {
 				e.ErrorString(
-					"airport %q is listed in \"expect_approach\" but is not in arrival airports",
+					`airport %q is listed in "expect_approach" but is not in arrival airports`,
 					airport,
 				)
 				continue
@@ -1036,7 +1169,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			if ap, ok := airports[airport]; ok {
 				if _, ok := ap.Approaches[appr]; !ok {
 					e.ErrorString(
-						"arrival airport %q doesn't have a %q approach for \"expect_approach\"",
+						`arrival airport %q doesn't have a %q approach for "expect_approach"`,
 						airport, appr,
 					)
 				}
@@ -1045,34 +1178,27 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 
 	if ar.InitialAltitude == 0 {
-		e.ErrorString("must specify \"initial_altitude\"")
+		e.ErrorString(`must specify "initial_altitude"`)
 	} else {
 		// Make sure the initial altitude isn't below any of
 		// altitude restrictions.
 		for _, wp := range ar.Waypoints {
-			if wp.AltitudeRestriction != nil &&
-				wp.AltitudeRestriction.TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
-				e.ErrorString("\"initial_altitude\" is below altitude restriction at %q", wp.Fix)
+			if wp.AltitudeRestriction() != nil &&
+				wp.AltitudeRestriction().TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
+				e.ErrorString(`"initial_altitude" is below altitude restriction at %q`, wp.Fix)
 			}
 		}
 	}
 
 	if ar.InitialSpeed == 0 {
-		e.ErrorString("must specify \"initial_speed\"")
+		e.ErrorString(`must specify "initial_speed"`)
 	}
 
 	if ar.InitialController == "" {
-		e.ErrorString("\"initial_controller\" missing")
+		e.ErrorString(`"initial_controller" missing`)
 	} else if _, ok := controlPositions[ar.InitialController]; !ok {
-		e.ErrorString("controller %q not found for \"initial_controller\"", ar.InitialController)
+		e.ErrorString(`controller %q not found for "initial_controller"`, ar.InitialController)
 	}
-
-	// TODO: Change for only STARS scenarios
-	// for id, controller := range controlPositions {
-	// 	if controller.ERAMFacility && controller.FacilityIdentifier == "" {
-	// 		e.ErrorString("%q is an ERAM facility, but has no facility id specified", id)
-	// 	}
-	// }
 
 	if !checkScratchpad(ar.Scratchpad) {
 		e.ErrorString("%s: invalid scratchpad", ar.Scratchpad)
@@ -1290,15 +1416,15 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 		return
 	} else {
 		if vpool, ok := s.Pools["vfr"]; !ok {
-			e.ErrorString("must specify \"vfr\" squawk pool")
+			e.ErrorString(`must specify "vfr" squawk pool`)
 		} else if vpool.Rules != "" && vpool.Rules != "v" {
-			e.ErrorString("\"rules\" cannot be specified for the \"vfr\" pool")
+			e.ErrorString(`"rules" cannot be specified for the "vfr" pool`)
 		}
 
 		if ipool, ok := s.Pools["ifr"]; !ok {
-			e.ErrorString("must specify \"ifr\" squawk pool")
+			e.ErrorString(`must specify "ifr" squawk pool`)
 		} else if ipool.Rules != "" && ipool.Rules != "i" {
-			e.ErrorString("\"rules\" cannot be specified for the \"ifr\" pool")
+			e.ErrorString(`"rules" cannot be specified for the "ifr" pool`)
 		}
 		// Numbered ones optional(?)
 
@@ -1309,13 +1435,13 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 			e.Push("Code pool " + name)
 			if name != "ifr" && name != "vfr" && name != "1" && name != "2" &&
 				name != "3" && name != "4" {
-				e.ErrorString("Pool name %q is invalid: must be one of \"ifr\", \"vfr\", "+
-					"\"1\", \"2\", \"3\", or \"4\".", name)
+				e.ErrorString(`Pool name %q is invalid: must be one of "ifr", "vfr", `+
+					`"1", "2", "3", or "4".`, name)
 			}
 
 			// Validate input: must provide Ranges
 			if len(spec.Ranges) == 0 {
-				e.ErrorString("must specify \"ranges\" for pool %q", name)
+				e.ErrorString(`must specify "ranges" for pool %q`, name)
 			}
 
 			// Parse all the ranges for this pool
@@ -1345,7 +1471,7 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 			allRanges = append(allRanges, poolRanges)
 
 			if spec.Rules != "" && spec.Rules != "i" && spec.Rules != "v" {
-				e.ErrorString("\"rules\" must be \"i\" or \"v\"")
+				e.ErrorString(`"rules" must be "i" or "v"`)
 			}
 
 			for i, ch := range spec.Backups {
@@ -1354,7 +1480,7 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 				} else if strings.Contains(spec.Backups[:i], string(ch)) {
 					e.ErrorString("Can't repeat the same backup pool %q", string(ch))
 				} else if ch < '1' && ch > '4' {
-					e.ErrorString("Backup pools can only contain \"1\", \"2\", \"3\", or \"4\".")
+					e.ErrorString(`Backup pools can only contain "1", "2", "3", or "4".`)
 				}
 			}
 
@@ -1362,7 +1488,7 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 		}
 	}
 
-	e.Push("\"beacon_code_table\"")
+	e.Push(`"beacon_code_table"`)
 	// Validate VFR codes using the same parser
 	_ = parseCodeRanges(s.BeaconCodeTable.VFRCodes, e)
 	e.Pop()
@@ -1562,4 +1688,86 @@ func (r RadioTransmissionType) String() string {
 	default:
 		return "(unhandled type)"
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// CWT functions
+
+// CWTApproachSeparation returns the required separation between aircraft of the two
+// given CWT categories. If 0 is returned, minimum radar separation should be used.
+func CWTApproachSeparation(front, back string) float32 {
+	if len(front) != 1 || (front[0] < 'A' && front[0] > 'I') {
+		return 10
+	}
+	if len(back) != 1 || (back[0] < 'A' && back[0] > 'I') {
+		return 10
+	}
+
+	f, b := front[0]-'A', back[0]-'A'
+
+	// 7110.126B TBL 5-5-2
+	cwtOnApproachLookUp := [9][9]float32{ // [front][back]
+		{0, 5, 6, 6, 7, 7, 7, 8, 8},       // Behind A
+		{0, 3, 4, 4, 5, 5, 5, 5, 6},       // Behind B
+		{0, 0, 0, 0, 3.5, 3.5, 3.5, 5, 6}, // Behind C
+		{0, 3, 4, 4, 5, 5, 5, 6, 6},       // Behind D
+		{0, 0, 0, 0, 0, 0, 0, 0, 4},       // Behind E
+		{0, 0, 0, 0, 0, 0, 0, 0, 4},       // Behind F
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind G
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind H
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind I
+	}
+	return cwtOnApproachLookUp[f][b]
+}
+
+// CWT25nmReductionAllowed returns true if 2.5nm reduced approach separation is
+// allowed for the given front/back CWT category pair per 7110.65 5-5-4(i):
+// the leading aircraft's weight class must be the same or less than the trailing
+// aircraft, and super/heavy aircraft may only participate as the trailing aircraft.
+func CWT25nmReductionAllowed(frontCWT, backCWT string) bool {
+	return len(frontCWT) == 1 && frontCWT[0] >= 'E' && frontCWT[0] <= 'I' &&
+		len(backCWT) == 1 && backCWT[0] >= 'A' && backCWT[0] <= 'I' &&
+		frontCWT[0] >= backCWT[0]
+}
+
+// CWTRequiredApproachSeparation returns the required approach separation between
+// aircraft of the given CWT categories, applying the 2.5nm reduction if eligible25nm
+// is true and the weight categories allow it.
+func CWTRequiredApproachSeparation(frontCWT, backCWT string, eligible25nm bool) float32 {
+	sep := CWTApproachSeparation(frontCWT, backCWT)
+	if sep == 0 {
+		sep = 3 // baseline radar separation
+	}
+	if eligible25nm && CWT25nmReductionAllowed(frontCWT, backCWT) {
+		sep = 2.5
+	}
+	return sep
+}
+
+// CWTDirectlyBehindSeparation returns the required separation between
+// aircraft of the two given CWT categories. If 0 is returned, minimum
+// radar separation should be used.
+func CWTDirectlyBehindSeparation(front, back string) float32 {
+	if len(front) != 1 || (front[0] < 'A' && front[0] > 'I') {
+		return 10
+	}
+	if len(back) != 1 || (back[0] < 'A' && back[0] > 'I') {
+		return 10
+	}
+
+	f, b := front[0]-'A', back[0]-'A'
+
+	// 7110.126B TBL 5-5-1
+	cwtBehindLookup := [9][9]float32{ // [front][back]
+		{0, 5, 6, 6, 7, 7, 7, 8, 8},       // Behind A
+		{0, 3, 4, 4, 5, 5, 5, 5, 5},       // Behind B
+		{0, 0, 0, 0, 3.5, 3.5, 3.5, 5, 5}, // Behind C
+		{0, 3, 4, 4, 5, 5, 5, 5, 5},       // Behind D
+		{0, 0, 0, 0, 0, 0, 0, 0, 4},       // Behind E
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind F
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind G
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind H
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind I
+	}
+	return cwtBehindLookup[f][b]
 }

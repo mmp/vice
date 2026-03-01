@@ -364,16 +364,45 @@ func PhoneticMatch(w1, w2 string) bool {
 		return true
 	}
 
-	// Conservative extension: check if one code is a suffix of the other
+	// Conservative extension: check if one code is a prefix of the other
+	// This handles STT errors that add or drop trailing sounds (e.g., "rhea" → "R", "reebo" → "RP")
+	// Only apply when:
+	// 1. The LONGER code is at most 2 chars to avoid overly broad matches
+	// 2. The original words have decent JW similarity (>= 0.65) to filter out false positives
+	maxPLen := max(len(p1), len(p2))
+	if maxPLen == 2 {
+		if strings.HasPrefix(p1, p2) || strings.HasPrefix(p2, p1) {
+			if JaroWinkler(w1, w2) >= 0.65 {
+				return true
+			}
+		}
+	}
+
+	// Extended prefix matching for longer codes (3-6 chars)
+	// This handles STT errors like "klomanad" (KLMNT) matching "clomn" (KLMN)
+	// where the transcription adds extra syllables that produce extra consonants.
+	// Requires higher JW threshold and shorter prefix must be at least 3 chars.
+	minPLen := min(len(p1), len(p2))
+	if minPLen >= 3 && maxPLen <= 6 && maxPLen-minPLen <= 2 {
+		if strings.HasPrefix(p1, p2) || strings.HasPrefix(p2, p1) {
+			if JaroWinkler(w1, w2) >= 0.70 {
+				return true
+			}
+		}
+	}
+
+	// Also check suffix matching for longer codes
 	// This handles STT errors that drop leading sounds (e.g., "laser" for "localizer")
 	// Only apply when the shorter code is at least 3 chars (to avoid false positives)
 	if len(p1) >= 3 && len(p2) >= 3 {
 		if strings.HasSuffix(p1, p2) || strings.HasSuffix(p2, p1) {
 			return true
 		}
-		// Also check if they share a common suffix of 3+ characters
+		// Also check if they share a common suffix of 4+ characters
+		// (3-char suffixes like "TNK" are too common and cause false positives
+		// like "decelerating" matching "heading")
 		minLen := min(len(p1), len(p2))
-		for suffixLen := minLen; suffixLen >= 3; suffixLen-- {
+		for suffixLen := minLen; suffixLen >= 4; suffixLen-- {
 			if p1[len(p1)-suffixLen:] == p2[len(p2)-suffixLen:] {
 				return true
 			}
@@ -387,13 +416,29 @@ func PhoneticMatch(w1, w2 string) bool {
 // These are known false positives where similar-looking words have completely
 // different meanings in ATC context.
 var fuzzyMatchBlocklist = map[string][]string{
-	"intercept": {"increase"},           // "intercept localizer" vs "increase speed"
-	"increase":  {"intercept", "cross"}, // "increase speed" vs "cross fix"
-	"cross":     {"increase"},
-	"see":       {"speed"},      // "see ya" vs "speed"
-	"degrees":   {"increase"},   // garbled STT output
-	"flight":    {"right"},      // "flight 638" vs "turn right"
-	"heading":   {"descending"}, // "heading 180" vs "descend"
+	"intercept":    {"increase", "speed"},  // "intercept localizer" vs "increase/speed"
+	"increase":     {"intercept", "cross"}, // "increase speed" vs "cross fix"
+	"cross":        {"increase"},
+	"see":          {"speed"},             // "see ya" vs "speed"
+	"degrees":      {"increase"},          // garbled STT output
+	"flight":       {"right"},             // "flight 638" vs "turn right"
+	"heading":      {"descending"},        // "heading 180" vs "descend"
+	"had":          {"heading"},           // "just had to" vs "heading" command
+	"descend":      {"present"},           // "descend and maintain" vs "present heading"
+	"present":      {"descend"},           // "present heading" vs "descend"
+	"maximum":      {"minimum"},           // "maximum speed" vs "minimum speed"
+	"minimum":      {"maximum"},           // "minimum speed" vs "maximum speed"
+	"stand":        {"ident"},             // "stand on the sand" vs "squawk ident"
+	"red":          {"right", "reduce"},   // garbled word in phrases like "Red or Collins"
+	"rig":          {"right"},             // garbage word vs turn direction
+	"departure":    {"depart"},            // position ID ("NY departure") vs depart fix instruction
+	"departures":   {"depart"},            // position ID plural vs depart instruction
+	"project":      {"direct", "proceed"}, // "project" in "miami project" is not "direct"
+	"approach":     {"direct", "proceed"}, // "approach" in position ID is not direct
+	"pro":          {"direct", "proceed"}, // Garbled "pro" is not direct/proceed
+	"redo":         {"right"},             // "redo speed" should not match "turn right"
+	"san":          {"say"},               // "san juan" should not match "say"
+	"intermittent": {"ident"},             // noise word should not match "ident" command
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold

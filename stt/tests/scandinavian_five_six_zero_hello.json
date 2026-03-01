@@ -1,0 +1,189 @@
+{
+  "time": "2026-02-06T03:16:53.530784938Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Scandinavian five six zero hello",
+  "whisper_duration_ms": 476.969,
+  "audio_duration_ms": 4680,
+  "processor": "GPU: NVIDIA GeForce GTX 1660 Ti with Max-Q Design (6180MB)",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "Cair seven 33": {
+      "Callsign": "KAP733",
+      "AircraftType": "C402",
+      "Fixes": {
+        "Marconi": "LFV",
+        "Nantucket": "KACK"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "LOGAN4",
+      "STAR": "",
+      "Altitude": 5893,
+      "State": "departure",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 29 95": {
+      "Callsign": "DAL2995",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Ernie": "ERNEI",
+        "Goshi": "GOSHI",
+        "Jody": "JOODY",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Provi": "PROVI",
+        "Sofie": "SOFEE",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 13678,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Scandinavian five 60": {
+      "Callsign": "SAS560",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Celtic": "CELTK",
+        "Claw": "CLAWW",
+        "Fenway": "FENWY",
+        "Frill": "FRILL",
+        "Score": "SCOAR"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "CELTK7",
+      "STAR": "",
+      "Altitude": 3711,
+      "State": "departure",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Scandinavian five six zero hello\"",
+    "[local-stt] normalized words: [scandinavian 5 6 0 hello]",
+    "[local-stt] tokens: 3",
+    "[local-stt]   token[0]: Text=\"scandinavian\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"560\" Type=1 Value=560",
+    "[local-stt]   token[2]: Text=\"hello\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 3 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 3 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Scandinavian five 60\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Scandinavian five 60\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 3 results",
+    "[local-stt]     result 0: \"Cair seven 33\" (airline=0.667, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta 29 95\" (airline=0.356, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Scandinavian five 60\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Scandinavian five 60\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Scandinavian five 60\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Scandinavian five 60\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"SAS560\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Scandinavian five 60\")",
+    "[local-stt] callsign match: Callsign=\"SAS560\" SpokenKey=\"Scandinavian five 60\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=3711 Fixes=5 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Frill\" -\u003e \"FRILL\"",
+    "[local-stt]   fix: \"Claw\" -\u003e \"CLAWW\"",
+    "[local-stt]   fix: \"Fenway\" -\u003e \"FENWY\"",
+    "[local-stt]   fix: \"Score\" -\u003e \"SCOAR\"",
+    "[local-stt]   fix: \"Celtic\" -\u003e \"CELTK\"",
+    "[local-stt] command tokens after disregard: 1",
+    "[local-stt]   token[0]: Text=\"hello\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 1 tokens",
+    "[local-stt]   no match at token[0]=\"hello\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"SAS560 AGAIN\" (conf=1.00, time=660.6µs) ==="
+  ]
+}

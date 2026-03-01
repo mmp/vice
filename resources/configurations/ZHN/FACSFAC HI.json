@@ -1,0 +1,22 @@
+{
+  "control_positions": {
+    "1R": {
+      "callsign": "FACSFAC_R",
+      "frequency": 127000,
+      "radio_name": "Hula Dancer"
+    }
+  },
+  "handoff_ids": [
+    {
+      "id": "HNL",
+      "prefix": "1"
+    },
+    {
+      "id": "ZHN",
+      "prefix": "C"
+    }
+  ],
+  "config": {
+    "configurations": {}
+  }
+}

@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/gdamore/tcell/v2"
@@ -30,6 +31,7 @@ type LogEntry struct {
 	Duration          int64                   `json:"duration,omitempty"`
 	AudioDurationMs   float64                 `json:"audio_duration_ms,omitempty"`
 	Processor         string                  `json:"processor,omitempty"`
+	WhisperModel      string                  `json:"whisper_model,omitempty"`
 	Callsign          string                  `json:"callsign"`
 	Command           string                  `json:"command"`
 	STTAircraft       map[string]stt.Aircraft `json:"stt_aircraft"`
@@ -42,20 +44,47 @@ type PersistedState struct {
 	Seen  map[string]bool `json:"seen"`
 }
 
+// FocusedField indicates which input field has keyboard focus.
+type FocusedField int
+
+const (
+	FocusSearch FocusedField = iota
+	FocusCorrection
+)
+
+// Disposition indicates what action was taken on an entry.
+type Disposition int
+
+const (
+	DispositionNone Disposition = iota
+	DispositionSaved
+	DispositionSkipped
+)
+
 // AppState holds the runtime state of the application.
 type AppState struct {
-	entries      []LogEntry
-	currentIndex int
-	correction   string // editable correction (CALLSIGN COMMAND format)
-	cursorPos    int
-	showContext  bool
+	entries            []LogEntry
+	selectedIndex      int    // which entry is currently selected
+	scrollOffset       int    // first visible entry index
+	correction         string // editable correction (CALLSIGN COMMAND format)
+	correctionEntryIdx int    // entry index that correction was initialized from
+	cursorPos          int
+	showContext        bool
+
+	// Focus state
+	focusedField FocusedField
 
 	// Search state
-	searchMode     bool   // true when actively typing search
-	searchString   string // current search query
-	searchLocked   bool   // true when search is locked (after Enter)
-	filteredIdx    []int  // indices into entries that match search
-	filteredCursor int    // position within filteredIdx
+	searchString    string // current search query
+	searchCursorPos int    // cursor position in search string
+	filteredIdx     []int  // indices into entries that match search
+
+	// Disposition tracking
+	disposition map[int]Disposition // entry index -> disposition
+	savedFiles  map[int]string      // entry index -> saved filename (for deletion if changed)
+
+	// Output directory
+	outputDir string
 }
 
 // Action represents the result of handling an event.
@@ -64,8 +93,6 @@ type Action int
 const (
 	ActionNone Action = iota
 	ActionQuit
-	ActionSkip
-	ActionSave
 )
 
 const stateDir = "~/.sttreview"
@@ -74,6 +101,7 @@ func main() {
 	outputDir := flag.String("output", "stt/failing_tests", "output directory for saved tests")
 	ingestMode := flag.Bool("ingest", false, "ingest entries only, don't start review UI")
 	showStatus := flag.Bool("status", false, "show queue status and exit")
+	lifoMode := flag.Bool("lifo", false, "order entries by time, most recent first")
 	flag.Parse()
 
 	// Load persisted state
@@ -125,16 +153,32 @@ func main() {
 		Background(tcell.ColorReset).
 		Foreground(tcell.ColorReset))
 
-	// Shuffle the queue for random order
-	rand.Shuffle(len(persisted.Queue), func(i, j int) {
-		persisted.Queue[i], persisted.Queue[j] = persisted.Queue[j], persisted.Queue[i]
-	})
+	// Order the queue: LIFO (most recent first) or random
+	if *lifoMode {
+		sort.Slice(persisted.Queue, func(i, j int) bool {
+			ti, _ := time.Parse(time.RFC3339Nano, persisted.Queue[i].Time)
+			tj, _ := time.Parse(time.RFC3339Nano, persisted.Queue[j].Time)
+			return ti.After(tj)
+		})
+	} else {
+		rand.Shuffle(len(persisted.Queue), func(i, j int) {
+			persisted.Queue[i], persisted.Queue[j] = persisted.Queue[j], persisted.Queue[i]
+		})
+	}
 
-	appState := &AppState{entries: persisted.Queue}
+	appState := &AppState{
+		entries:      persisted.Queue,
+		disposition:  make(map[int]Disposition),
+		savedFiles:   make(map[int]string),
+		outputDir:    *outputDir,
+		focusedField: FocusCorrection,
+	}
 	// Initialize correction from first entry
 	if len(appState.entries) > 0 {
-		appState.initFromEntry(appState.entries[0])
+		appState.initFromEntry(0)
 	}
+	// Build initial filter (empty search shows all)
+	appState.updateSearchFilter()
 
 	for {
 		render(screen, appState)
@@ -143,44 +187,17 @@ func main() {
 		ev := screen.PollEvent()
 		action := handleEvent(ev, appState, screen)
 
-		switch action {
-		case ActionQuit:
-			// Save remaining queue
-			persisted.Queue = appState.entries[appState.currentIndex:]
-			if err := persisted.save(); err != nil {
-				fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
+		if action == ActionQuit {
+			// Save state: remove entries that have been processed from the queue
+			var remaining []LogEntry
+			for i, entry := range appState.entries {
+				if appState.disposition[i] == DispositionNone {
+					remaining = append(remaining, entry)
+				} else {
+					persisted.markDone(entry)
+				}
 			}
-			return
-		case ActionSkip:
-			currentEntry := getCurrentEntry(appState)
-			if currentEntry == nil {
-				continue
-			}
-			persisted.markDone(*currentEntry)
-			advanceToNextEntry(appState)
-			if err := persisted.save(); err != nil {
-				fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
-			}
-		case ActionSave:
-			currentEntry := getCurrentEntry(appState)
-			if currentEntry == nil {
-				continue
-			}
-			if err := saveEntry(*currentEntry, appState.correction, *outputDir); err != nil {
-				// Show error briefly - for now just continue
-				_ = err
-			}
-			persisted.markDone(*currentEntry)
-			advanceToNextEntry(appState)
-			if err := persisted.save(); err != nil {
-				fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
-			}
-		}
-
-		// Check if done (only when not in locked search mode)
-		if !appState.searchLocked && appState.currentIndex >= len(appState.entries) {
-			// Clear the queue since all entries have been processed
-			persisted.Queue = nil
+			persisted.Queue = remaining
 			if err := persisted.save(); err != nil {
 				fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
 			}
@@ -189,80 +206,72 @@ func main() {
 	}
 }
 
-// initFromEntry initializes the correction field from an entry.
-func (state *AppState) initFromEntry(entry LogEntry) {
+// initFromEntry initializes the correction field from an entry at the given index.
+func (state *AppState) initFromEntry(entryIdx int) {
+	if entryIdx < 0 || entryIdx >= len(state.entries) {
+		return
+	}
+	entry := state.entries[entryIdx]
 	callsign := strings.TrimSuffix(entry.Callsign, "/T")
 	state.correction = callsign + " " + entry.Command
 	state.cursorPos = len(state.correction)
+	state.correctionEntryIdx = entryIdx
 }
 
 // updateSearchFilter updates the filtered indices based on the current search string.
 func (state *AppState) updateSearchFilter() {
 	if state.searchString == "" {
-		state.filteredIdx = nil
-		state.filteredCursor = 0
+		// Show all entries
+		state.filteredIdx = make([]int, len(state.entries))
+		for i := range state.entries {
+			state.filteredIdx[i] = i
+		}
 		return
 	}
 
 	searchLower := strings.ToLower(state.searchString)
 	state.filteredIdx = nil
 
-	for i := state.currentIndex; i < len(state.entries); i++ {
-		entry := state.entries[i]
-		// Match against transcript, callsign, or command (case-insensitive)
+	for i, entry := range state.entries {
+		// Match against transcript, callsign, command, or whisper model (case-insensitive)
 		transcriptLower := strings.ToLower(entry.Transcript)
 		callsignLower := strings.ToLower(entry.Callsign)
 		commandLower := strings.ToLower(entry.Command)
+		whisperModelLower := strings.ToLower(entry.WhisperModel)
 		if strings.Contains(transcriptLower, searchLower) ||
 			strings.Contains(callsignLower, searchLower) ||
-			strings.Contains(commandLower, searchLower) {
+			strings.Contains(commandLower, searchLower) ||
+			strings.Contains(whisperModelLower, searchLower) {
 			state.filteredIdx = append(state.filteredIdx, i)
 		}
 	}
-	state.filteredCursor = 0
+
+	// Reset selection if it's now out of bounds
+	if state.selectedIndex >= len(state.filteredIdx) {
+		state.selectedIndex = 0
+		state.scrollOffset = 0
+	}
 }
 
-// clearSearch clears search state and reverts to showing all entries.
-func (state *AppState) clearSearch() {
-	state.searchMode = false
-	state.searchString = ""
-	state.searchLocked = false
-	state.filteredIdx = nil
-	state.filteredCursor = 0
+// getSelectedEntryIndex returns the actual entry index of the currently selected item.
+// Returns -1 if no valid selection.
+func (state *AppState) getSelectedEntryIndex() int {
+	if len(state.filteredIdx) == 0 {
+		return -1
+	}
+	if state.selectedIndex >= len(state.filteredIdx) {
+		return -1
+	}
+	return state.filteredIdx[state.selectedIndex]
 }
 
-// getCurrentEntry returns a pointer to the current entry based on search state.
-func getCurrentEntry(state *AppState) *LogEntry {
-	if state.searchLocked && len(state.filteredIdx) > 0 {
-		if state.filteredCursor < len(state.filteredIdx) {
-			return &state.entries[state.filteredIdx[state.filteredCursor]]
-		}
+// getSelectedEntry returns the currently selected entry, or nil if none.
+func (state *AppState) getSelectedEntry() *LogEntry {
+	idx := state.getSelectedEntryIndex()
+	if idx < 0 {
 		return nil
 	}
-	if state.currentIndex < len(state.entries) {
-		return &state.entries[state.currentIndex]
-	}
-	return nil
-}
-
-// advanceToNextEntry moves to the next entry based on search state.
-func advanceToNextEntry(state *AppState) {
-	if state.searchLocked && len(state.filteredIdx) > 0 {
-		// In locked search mode, advance within filtered list
-		state.filteredCursor++
-		if state.filteredCursor < len(state.filteredIdx) {
-			state.initFromEntry(state.entries[state.filteredIdx[state.filteredCursor]])
-		} else {
-			// Reached end of filtered list - clear search and continue
-			state.clearSearch()
-		}
-	} else {
-		// Normal mode
-		state.currentIndex++
-		if state.currentIndex < len(state.entries) {
-			state.initFromEntry(state.entries[state.currentIndex])
-		}
-	}
+	return &state.entries[idx]
 }
 
 // expandPath expands ~ to home directory.
@@ -292,11 +301,14 @@ func loadState() *PersistedState {
 		state.Seen = make(map[string]bool)
 	}
 
-	// Filter out any entries that are already in the Seen set
+	// Filter out any entries that are already in the Seen set and deduplicate
+	seen := make(map[string]bool)
 	var filtered []LogEntry
 	for _, e := range state.Queue {
-		if !state.Seen[entryHash(e)] {
+		h := entryHash(e)
+		if !state.Seen[h] && !seen[h] {
 			filtered = append(filtered, e)
+			seen[h] = true
 		}
 	}
 	state.Queue = filtered
@@ -317,13 +329,20 @@ func (s *PersistedState) save() error {
 	return os.WriteFile(filepath.Join(dir, "state.json"), data, 0644)
 }
 
-// ingest adds new entries to the queue, skipping already-seen ones.
+// ingest adds new entries to the queue, skipping already-seen ones and duplicates.
 func (s *PersistedState) ingest(entries []LogEntry) int {
+	// Build set of hashes already in queue
+	queued := make(map[string]bool)
+	for _, e := range s.Queue {
+		queued[entryHash(e)] = true
+	}
+
 	added := 0
 	for _, e := range entries {
 		h := entryHash(e)
-		if !s.Seen[h] {
+		if !s.Seen[h] && !queued[h] {
 			s.Queue = append(s.Queue, e)
+			queued[h] = true
 			added++
 		}
 	}
@@ -524,388 +543,431 @@ func parseCorrection(correction string, entry LogEntry) (string, string, bool) {
 
 // render draws the UI.
 func render(screen tcell.Screen, state *AppState) {
+	// Ensure correction is synchronized with selected entry
+	selectedIdx := state.getSelectedEntryIndex()
+	if selectedIdx >= 0 && selectedIdx != state.correctionEntryIdx {
+		state.initFromEntry(selectedIdx)
+	}
+
 	screen.Clear()
 	width, height := screen.Size()
 
 	// Styles
 	styleDefault := tcell.StyleDefault.Foreground(tcell.ColorDarkBlue)
 	styleHeader := tcell.StyleDefault.Bold(true).Reverse(true)
-	styleCurrent := tcell.StyleDefault.Foreground(tcell.ColorBlack).Bold(true)
+	styleSelected := tcell.StyleDefault.Foreground(tcell.ColorBlack).Bold(true)
 	styleHelp := tcell.StyleDefault.Foreground(tcell.ColorGray)
 	styleColumn := tcell.StyleDefault.Foreground(tcell.ColorTeal)
 	styleInvalid := tcell.StyleDefault.Foreground(tcell.ColorRed).Bold(true)
 	styleContext := tcell.StyleDefault.Background(tcell.ColorWhite).Foreground(tcell.ColorBlack)
 	styleContextLabel := tcell.StyleDefault.Background(tcell.ColorWhite).Foreground(tcell.ColorDarkBlue).Bold(true)
+	styleSaved := tcell.StyleDefault.Foreground(tcell.ColorGreen)
+	styleSkipped := tcell.StyleDefault.Foreground(tcell.ColorGray)
+	styleFocused := tcell.StyleDefault.Foreground(tcell.ColorDarkCyan).Bold(true)
+	styleUnfocused := tcell.StyleDefault.Foreground(tcell.ColorGray)
 
 	// Header
+	totalCount := len(state.filteredIdx)
 	var title string
-	if state.searchLocked {
-		matchCount := len(state.filteredIdx)
-		title = fmt.Sprintf(" STT Review [%d/%d] Search: %q (%d matches) ",
-			state.filteredCursor+1, matchCount, state.searchString, matchCount)
-	} else if state.searchMode {
-		title = fmt.Sprintf(" STT Review - Search: %s_ ", state.searchString)
+	if state.searchString != "" {
+		title = fmt.Sprintf(" STT Review [%d/%d matches] ", state.selectedIndex+1, totalCount)
 	} else {
-		title = fmt.Sprintf(" STT Review [%d/%d] ", state.currentIndex+1, len(state.entries))
+		title = fmt.Sprintf(" STT Review [%d/%d] ", state.selectedIndex+1, totalCount)
 	}
-	help := " [-]=Skip [\u23ce]=Save "
-	if state.searchMode {
-		help = " [Esc]=Cancel [Enter]=Lock "
-	} else if state.searchLocked {
-		help = " [Esc]=Clear Search "
-	}
+	help := " [^K]=Skip [⏎]=Save "
 	drawText(screen, 0, 0, width, styleHeader, title+strings.Repeat(" ", max(0, width-len(title)-len(help)))+help)
 
-	// Handle search mode with no matches
-	if state.searchMode && state.searchString != "" && len(state.filteredIdx) == 0 {
-		drawText(screen, 0, 3, width, tcell.StyleDefault.Foreground(tcell.ColorRed),
-			" No matches found for: "+state.searchString)
-		return
+	// Search box row
+	y := 1
+	searchLabel := "Search: "
+	searchStyle := styleUnfocused
+	if state.focusedField == FocusSearch {
+		searchStyle = styleFocused
 	}
+	drawText(screen, 0, y, len(searchLabel), searchStyle, searchLabel)
 
-	// Determine current entry based on search state
-	var entry LogEntry
-	var displayEntries []LogEntry
-	var displayIndex int
-
-	if state.searchLocked && len(state.filteredIdx) > 0 {
-		// Locked search: show filtered entries
-		displayIndex = state.filteredCursor
-		entry = state.entries[state.filteredIdx[displayIndex]]
-		displayEntries = make([]LogEntry, len(state.filteredIdx))
-		for i, idx := range state.filteredIdx {
-			displayEntries[i] = state.entries[idx]
-		}
-	} else if state.searchMode && len(state.filteredIdx) > 0 {
-		// Active search with matches: show filtered entries
-		displayIndex = 0
-		entry = state.entries[state.filteredIdx[0]]
-		displayEntries = make([]LogEntry, len(state.filteredIdx))
-		for i, idx := range state.filteredIdx {
-			displayEntries[i] = state.entries[idx]
-		}
-	} else if state.searchMode {
-		// Active search with empty query: show all from current
-		if state.currentIndex >= len(state.entries) {
-			return
-		}
-		displayIndex = 0
-		entry = state.entries[state.currentIndex]
-		displayEntries = state.entries[state.currentIndex:]
-	} else {
-		// Normal mode: show all entries from currentIndex
-		if state.currentIndex >= len(state.entries) {
-			return
-		}
-		displayIndex = 0
-		entry = state.entries[state.currentIndex]
-		displayEntries = state.entries[state.currentIndex:]
-	}
-
-	// Column 2: callsign + command (read-only, from entry)
-	entryCallsign := strings.TrimSuffix(entry.Callsign, "/T")
-	col2Display := entryCallsign + " " + entry.Command
-
-	// Calculate col2Width based on content - find max width needed
-	col2Width := len(col2Display)
-	// Check upcoming entries too
-	for i := 1; i < 20 && displayIndex+i < len(displayEntries); i++ {
-		nextEntry := displayEntries[displayIndex+i]
-		nextCallsign := strings.TrimSuffix(nextEntry.Callsign, "/T")
-		nextCol2 := nextCallsign + " " + nextEntry.Command
-		if len(nextCol2) > col2Width {
-			col2Width = len(nextCol2)
+	// Draw search box content with cursor if focused
+	searchDisplay := state.searchString
+	if state.focusedField == FocusSearch {
+		if state.searchCursorPos <= len(searchDisplay) {
+			searchDisplay = searchDisplay[:state.searchCursorPos] + "_" + searchDisplay[state.searchCursorPos:]
 		}
 	}
-	// Add some padding and ensure minimum width for header
-	col2Width = max(col2Width+2, len("CALLSIGN CMD")+2)
+	drawText(screen, len(searchLabel), y, width-len(searchLabel), searchStyle, searchDisplay)
+	y++
 
-	// Column widths
+	// Column layout
 	indent := 4
-	col3Width := 25                                // Fixed width for correction column
-	col1Width := width - col2Width - col3Width - 6 // 6 for separators and prefix
-	if col1Width < 30 {
-		col1Width = 30
-		col2Width = width - col1Width - col3Width - 6
+	col1Width := 50 // Transcript
+	col2Width := 30 // Callsign + Command
+	col3Width := 25 // Correction
+
+	// Adjust widths based on screen size
+	totalColWidth := col1Width + col2Width + col3Width + 8 // separators
+	if totalColWidth > width {
+		col1Width = width - col2Width - col3Width - 8
+		if col1Width < 30 {
+			col1Width = 30
+			col2Width = width - col1Width - col3Width - 8
+		}
 	}
 
-	headerLine := fmt.Sprintf(" %-*s \u2502 %-*s \u2502 %-*s",
+	headerLine := fmt.Sprintf("   %-*s │ %-*s │ %-*s",
 		col1Width, "TRANSCRIPT",
 		col2Width, "CALLSIGN CMD",
 		col3Width, "CORRECTION")
-	drawText(screen, 0, 1, width, styleColumn, headerLine)
-
-	// Separator
-	drawText(screen, 0, 2, width, styleDefault, strings.Repeat("\u2500", width))
-
-	y := 3
-
-	// Column 3: correction (editable) or search input
-	var correctionDisplay string
-	correctionStyle := styleCurrent
-	styleSearch := tcell.StyleDefault.Foreground(tcell.ColorYellow).Bold(true)
-
-	if state.searchMode {
-		// Show search input with "/" prefix
-		correctionDisplay = "/" + state.searchString + "_"
-		correctionStyle = styleSearch
-	} else if state.correction == " " {
-		// Special display for "ignore" (single space)
-		correctionDisplay = "(ignore)_"
-	} else {
-		correctionDisplay = state.correction
-		// Add cursor
-		if state.cursorPos <= len(correctionDisplay) {
-			before := correctionDisplay[:state.cursorPos]
-			after := correctionDisplay[state.cursorPos:]
-			correctionDisplay = before + "_" + after
-		}
-
-		// Check if correction is valid (if non-empty)
-		if state.correction != "" {
-			_, _, valid := parseCorrection(state.correction, entry)
-			if !valid {
-				correctionStyle = styleInvalid
-			}
-		}
-	}
-
-	// Wrap transcript text
-	transcriptLines := wrapText(entry.Transcript, col1Width, col1Width-indent)
-
-	// Draw first line
-	firstTranscript := fmt.Sprintf("%-*s", col1Width, transcriptLines[0])
-
-	drawText(screen, 0, y, 1, styleCurrent, ">")
-	drawText(screen, 1, y, col1Width, styleCurrent, firstTranscript)
-	drawText(screen, col1Width+1, y, 3, styleCurrent, " \u2502 ")
-	// Column 2: callsign + command (read-only)
-	drawText(screen, col1Width+4, y, col2Width, styleCurrent, fmt.Sprintf("%-*s", col2Width, col2Display))
-	drawText(screen, col1Width+4+col2Width, y, 3, styleCurrent, " \u2502 ")
-	// Column 3: correction
-	drawText(screen, col1Width+4+col2Width+3, y, col3Width, correctionStyle, fmt.Sprintf("%-*s", col3Width, truncate(correctionDisplay, col3Width)))
+	drawText(screen, 0, y, width, styleColumn, headerLine)
 	y++
 
-	// Draw continuation lines for transcript
-	for i := 1; i < len(transcriptLines); i++ {
-		contLine := fmt.Sprintf(" %s%-*s \u2502 %-*s \u2502 %-*s",
-			strings.Repeat(" ", indent),
-			col1Width-indent, transcriptLines[i],
-			col2Width, "",
-			col3Width, "")
-		drawText(screen, 0, y, width, styleCurrent, contLine)
-		y++
+	// Separator
+	drawText(screen, 0, y, width, styleDefault, strings.Repeat("─", width))
+	y++
+
+	// Calculate visible area
+	listStartY := y
+	listEndY := height - 2 // Leave room for help line
+	if state.showContext {
+		// In context mode, only show the selected entry to ensure full transcript is visible
+		state.scrollOffset = state.selectedIndex
+		entryIdx := state.getSelectedEntryIndex()
+		if entryIdx >= 0 {
+			entry := state.entries[entryIdx]
+			transcriptLines := wrapText(entry.Transcript, col1Width, col1Width-indent)
+			listEndY = listStartY + len(transcriptLines)
+		} else {
+			listEndY = listStartY + 1
+		}
+	}
+	visibleLines := listEndY - listStartY
+
+	// Adjust scroll offset to keep selected item visible
+	if state.selectedIndex < state.scrollOffset {
+		state.scrollOffset = state.selectedIndex
+	}
+	if state.selectedIndex >= state.scrollOffset+visibleLines {
+		state.scrollOffset = state.selectedIndex - visibleLines + 1
 	}
 
-	// Show context or upcoming entries
-	y++ // blank line
-	if state.showContext {
-		// Draw context on white background
-		maxY := height - 2
+	// Draw entries
+	for i := state.scrollOffset; i < len(state.filteredIdx) && y < listEndY; i++ {
+		entryIdx := state.filteredIdx[i]
+		entry := state.entries[entryIdx]
+		isSelected := i == state.selectedIndex
 
-		// Always show context for the entry's original callsign
-		ac := getAircraftForCallsign(entryCallsign, entry)
-		if ac != nil {
-			// Aircraft info
-			drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
-			drawText(screen, 0, y, width, styleContextLabel, fmt.Sprintf(" Aircraft: %s (%s)", ac.Callsign, ac.AircraftType))
-			y++
+		// Determine disposition marker
+		dispMarker := " "
+		disp := state.disposition[entryIdx]
+		if disp == DispositionSaved {
+			dispMarker = "+"
+		} else if disp == DispositionSkipped {
+			dispMarker = "-"
+		}
 
-			if y < maxY {
-				info := fmt.Sprintf(" State: %s   Altitude: %d", ac.State, ac.Altitude)
-				if ac.SID != "" {
-					info += fmt.Sprintf("   SID: %s", ac.SID)
-				}
-				if ac.STAR != "" {
-					info += fmt.Sprintf("   STAR: %s", ac.STAR)
-				}
-				drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, info))
-				y++
-			}
+		// Choose style based on selection and disposition
+		var lineStyle tcell.Style
+		if isSelected {
+			lineStyle = styleSelected
+		} else if disp == DispositionSaved {
+			lineStyle = styleSaved
+		} else if disp == DispositionSkipped {
+			lineStyle = styleSkipped
+		} else {
+			lineStyle = styleDefault
+		}
 
-			// Controller info
-			if y < maxY && (ac.ControllerFrequency != "" || ac.TrackingController != "") {
-				ctrlInfo := " "
-				if ac.ControllerFrequency != "" {
-					ctrlInfo += fmt.Sprintf("Frequency: %s", ac.ControllerFrequency)
-				}
-				if ac.TrackingController != "" {
-					if ctrlInfo != " " {
-						ctrlInfo += "   "
-					}
-					ctrlInfo += fmt.Sprintf("Tracking: %s", ac.TrackingController)
-				}
-				drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, ctrlInfo))
-				y++
-			}
+		// Column content
+		entryCallsign := strings.TrimSuffix(entry.Callsign, "/T")
+		col2Display := entryCallsign + " " + entry.Command
 
-			if ac.AssignedApproach != "" && y < maxY {
-				drawText(screen, 0, y, width, styleContext, fmt.Sprintf(" Assigned Approach: %-*s", width-20, ac.AssignedApproach))
-				y++
-			}
+		// Wrap transcript text
+		transcriptLines := wrapText(entry.Transcript, col1Width, col1Width-indent)
 
-			// Fixes (sorted alphabetically)
-			if len(ac.Fixes) > 0 && y < maxY {
-				drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
-				drawText(screen, 0, y, width, styleContextLabel, " Fixes:")
-				y++
-
-				// Sort fix names
-				var fixNames []string
-				for spoken := range ac.Fixes {
-					fixNames = append(fixNames, spoken)
-				}
-				sort.Strings(fixNames)
-
-				fixLine := " "
-				for _, spoken := range fixNames {
-					id := ac.Fixes[spoken]
-					part := fmt.Sprintf("%s\u2192%s  ", spoken, id)
-					if len(fixLine)+len(part) > width-2 {
-						if y < maxY {
-							drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, fixLine))
-							y++
-						}
-						fixLine = "   " + part
-					} else {
-						fixLine += part
-					}
-				}
-				if fixLine != " " && fixLine != "   " && y < maxY {
-					drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, fixLine))
-					y++
+		// For the selected entry, show the correction field
+		var correctionDisplay string
+		if isSelected {
+			correctionDisplay = state.correction
+			// Add cursor if correction field is focused
+			if state.focusedField == FocusCorrection {
+				if state.cursorPos <= len(correctionDisplay) {
+					correctionDisplay = correctionDisplay[:state.cursorPos] + "_" + correctionDisplay[state.cursorPos:]
 				}
 			}
-
-			// Approaches (sorted alphabetically)
-			if len(ac.CandidateApproaches) > 0 && y < maxY {
-				drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
-				drawText(screen, 0, y, width, styleContextLabel, " Approaches:")
-				y++
-
-				// Sort approach names
-				var apprNames []string
-				for spoken := range ac.CandidateApproaches {
-					apprNames = append(apprNames, spoken)
-				}
-				sort.Strings(apprNames)
-
-				apprLine := " "
-				for _, spoken := range apprNames {
-					id := ac.CandidateApproaches[spoken]
-					part := fmt.Sprintf("%s\u2192%s  ", spoken, id)
-					if len(apprLine)+len(part) > width-2 {
-						if y < maxY {
-							drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, apprLine))
-							y++
-						}
-						apprLine = "   " + part
-					} else {
-						apprLine += part
-					}
-				}
-				if apprLine != " " && apprLine != "   " && y < maxY {
-					drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, apprLine))
-					y++
+			if state.correction == " " {
+				correctionDisplay = "(ignore)"
+				if state.focusedField == FocusCorrection {
+					correctionDisplay += "_"
 				}
 			}
 		}
 
-		// Always show list of available callsigns (sorted alphabetically)
-		if y < maxY {
-			drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
-			drawText(screen, 0, y, width, styleContextLabel, " All callsigns:")
+		// Draw first line
+		prefix := dispMarker
+		if isSelected {
+			prefix = ">"
+		}
+		drawText(screen, 0, y, 1, lineStyle, prefix)
+		drawText(screen, 1, y, 2, lineStyle, dispMarker+" ")
+		drawText(screen, 3, y, col1Width, lineStyle, fmt.Sprintf("%-*s", col1Width, transcriptLines[0]))
+		drawText(screen, 3+col1Width, y, 3, lineStyle, " │ ")
+		drawText(screen, 3+col1Width+3, y, col2Width, lineStyle, fmt.Sprintf("%-*s", col2Width, truncate(col2Display, col2Width)))
+		drawText(screen, 3+col1Width+3+col2Width, y, 3, lineStyle, " │ ")
+
+		// Correction column - only show for selected entry
+		if isSelected {
+			corrStyle := lineStyle
+			if state.focusedField == FocusCorrection {
+				corrStyle = styleFocused
+			}
+			// Check validity
+			if state.correction != "" && state.correction != " " {
+				_, _, valid := parseCorrection(state.correction, entry)
+				if !valid {
+					corrStyle = styleInvalid
+				}
+			}
+			drawText(screen, 3+col1Width+3+col2Width+3, y, col3Width, corrStyle, fmt.Sprintf("%-*s", col3Width, truncate(correctionDisplay, col3Width)))
+		} else {
+			drawText(screen, 3+col1Width+3+col2Width+3, y, col3Width, lineStyle, strings.Repeat(" ", col3Width))
+		}
+		y++
+
+		// Draw continuation lines for transcript
+		for j := 1; j < len(transcriptLines) && y < listEndY; j++ {
+			contLine := fmt.Sprintf("   %s%-*s │ %-*s │ %-*s",
+				strings.Repeat(" ", indent),
+				col1Width-indent, transcriptLines[j],
+				col2Width, "",
+				col3Width, "")
+			drawText(screen, 0, y, width, lineStyle, contLine)
 			y++
+		}
+	}
 
-			// Collect unique callsigns and sort
-			callsignSet := make(map[string]bool)
-			for _, a := range entry.STTAircraft {
-				callsignSet[a.Callsign] = true
-			}
-			var callsigns []string
-			for cs := range callsignSet {
-				callsigns = append(callsigns, cs)
-			}
-			sort.Strings(callsigns)
+	// Show context if enabled and we have a selected entry
+	if state.showContext {
+		entry := state.getSelectedEntry()
+		if entry != nil {
+			y++ // blank line
+			maxY := height - 2
+			entryCallsign := strings.TrimSuffix(entry.Callsign, "/T")
 
-			csLine := " "
-			for _, cs := range callsigns {
-				part := cs + "  "
-				if len(csLine)+len(part) > width-2 {
-					if y < maxY {
-						drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, csLine))
+			// Show whisper model if available
+			if entry.WhisperModel != "" && y < maxY {
+				drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+				drawText(screen, 0, y, width, styleContextLabel, fmt.Sprintf(" Whisper Model: %s", entry.WhisperModel))
+				y++
+			}
+
+			// Determine which callsign to show context for
+			contextCallsign := entryCallsign
+			if state.correction != "" && state.correction != " " {
+				parts := strings.SplitN(strings.TrimSpace(state.correction), " ", 2)
+				if len(parts) > 0 && isValidCallsign(parts[0], *entry) {
+					contextCallsign = parts[0]
+				}
+			}
+
+			ac := getAircraftForCallsign(contextCallsign, *entry)
+			if ac != nil {
+				// Aircraft info
+				drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+				drawText(screen, 0, y, width, styleContextLabel, fmt.Sprintf(" Aircraft: %s (%s)", ac.Callsign, ac.AircraftType))
+				y++
+
+				if y < maxY {
+					info := fmt.Sprintf(" State: %s   Altitude: %d", ac.State, ac.Altitude)
+					if ac.SID != "" {
+						info += fmt.Sprintf("   SID: %s", ac.SID)
+					}
+					if ac.STAR != "" {
+						info += fmt.Sprintf("   STAR: %s", ac.STAR)
+					}
+					drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, info))
+					y++
+				}
+
+				// Controller info
+				if y < maxY && (ac.ControllerFrequency != "" || ac.TrackingController != "") {
+					ctrlInfo := " "
+					if ac.ControllerFrequency != "" {
+						ctrlInfo += fmt.Sprintf("Frequency: %s", ac.ControllerFrequency)
+					}
+					if ac.TrackingController != "" {
+						if ctrlInfo != " " {
+							ctrlInfo += "   "
+						}
+						ctrlInfo += fmt.Sprintf("Tracking: %s", ac.TrackingController)
+					}
+					drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, ctrlInfo))
+					y++
+				}
+
+				if ac.AssignedApproach != "" && y < maxY {
+					drawText(screen, 0, y, width, styleContext, fmt.Sprintf(" Assigned Approach: %-*s", width-20, ac.AssignedApproach))
+					y++
+				}
+
+				if len(ac.LAHSORunways) > 0 && y < maxY {
+					drawText(screen, 0, y, width, styleContext, fmt.Sprintf(" LAHSO Runways: %-*s", width-17, strings.Join(ac.LAHSORunways, ", ")))
+					y++
+				}
+
+				// Fixes (sorted alphabetically)
+				if len(ac.Fixes) > 0 && y < maxY {
+					drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+					drawText(screen, 0, y, width, styleContextLabel, " Fixes:")
+					y++
+
+					var fixNames []string
+					for spoken := range ac.Fixes {
+						fixNames = append(fixNames, spoken)
+					}
+					sort.Strings(fixNames)
+
+					fixLine := " "
+					for _, spoken := range fixNames {
+						id := ac.Fixes[spoken]
+						part := fmt.Sprintf("%s→%s  ", spoken, id)
+						if len(fixLine)+len(part) > width-2 {
+							if y < maxY {
+								drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, fixLine))
+								y++
+							}
+							fixLine = "   " + part
+						} else {
+							fixLine += part
+						}
+					}
+					if fixLine != " " && fixLine != "   " && y < maxY {
+						drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, fixLine))
 						y++
 					}
-					csLine = " " + part
-				} else {
-					csLine += part
+				}
+
+				// Approaches (sorted alphabetically)
+				if len(ac.CandidateApproaches) > 0 && y < maxY {
+					drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+					drawText(screen, 0, y, width, styleContextLabel, " Approaches:")
+					y++
+
+					var apprNames []string
+					for spoken := range ac.CandidateApproaches {
+						apprNames = append(apprNames, spoken)
+					}
+					sort.Strings(apprNames)
+
+					apprLine := " "
+					for _, spoken := range apprNames {
+						id := ac.CandidateApproaches[spoken]
+						part := fmt.Sprintf("%s→%s  ", spoken, id)
+						if len(apprLine)+len(part) > width-2 {
+							if y < maxY {
+								drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, apprLine))
+								y++
+							}
+							apprLine = "   " + part
+						} else {
+							apprLine += part
+						}
+					}
+					if apprLine != " " && apprLine != "   " && y < maxY {
+						drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, apprLine))
+						y++
+					}
+				}
+
+				// Show approach fixes if there's an assigned approach or expect approach command
+				if len(ac.ApproachFixes) > 0 && y < maxY {
+					approachID := ac.AssignedApproach
+					if approachID == "" {
+						approachID = extractExpectApproachID(entry.Command)
+					}
+					if approachID != "" {
+						if approachFixes, ok := ac.ApproachFixes[approachID]; ok && len(approachFixes) > 0 {
+							drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+							drawText(screen, 0, y, width, styleContextLabel, fmt.Sprintf(" Approach %s Fixes:", approachID))
+							y++
+
+							var fixNames []string
+							for spoken := range approachFixes {
+								fixNames = append(fixNames, spoken)
+							}
+							sort.Strings(fixNames)
+
+							fixLine := " "
+							for _, spoken := range fixNames {
+								id := approachFixes[spoken]
+								part := fmt.Sprintf("%s→%s  ", spoken, id)
+								if len(fixLine)+len(part) > width-2 {
+									if y < maxY {
+										drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, fixLine))
+										y++
+									}
+									fixLine = "   " + part
+								} else {
+									fixLine += part
+								}
+							}
+							if fixLine != " " && fixLine != "   " && y < maxY {
+								drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, fixLine))
+								y++
+							}
+						}
+					}
 				}
 			}
-			if csLine != " " && y < maxY {
-				drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, csLine))
+
+			// Always show list of available callsigns (sorted alphabetically)
+			if y < maxY {
+				drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+				drawText(screen, 0, y, width, styleContextLabel, " All callsigns:")
 				y++
-			}
-		}
 
-		// Fill remaining context area with white
-		for y < maxY {
-			drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
-			y++
-		}
-	} else {
-		// Show upcoming entries
-		maxY := height - 2
-		entryIdx := 1
+				callsignSet := make(map[string]bool)
+				for _, a := range entry.STTAircraft {
+					callsignSet[a.Callsign] = true
+				}
+				var callsigns []string
+				for cs := range callsignSet {
+					callsigns = append(callsigns, cs)
+				}
+				sort.Strings(callsigns)
 
-		for y < maxY && displayIndex+entryIdx < len(displayEntries) {
-			nextEntry := displayEntries[displayIndex+entryIdx]
-
-			// Wrap transcript text
-			nextTranscriptLines := wrapText(nextEntry.Transcript, col1Width, col1Width-indent)
-
-			// Draw first line - column 2 shows callsign + command
-			nextCallsign := strings.TrimSuffix(nextEntry.Callsign, "/T")
-			nextCol2 := nextCallsign + " " + nextEntry.Command
-			line := fmt.Sprintf(" %-*s \u2502 %-*s \u2502 %-*s",
-				col1Width, nextTranscriptLines[0],
-				col2Width, nextCol2,
-				col3Width, "")
-			drawText(screen, 0, y, width, styleDefault, line)
-			y++
-
-			// Draw continuation lines
-			for i := 1; i < len(nextTranscriptLines) && y < maxY; i++ {
-				contLine := fmt.Sprintf(" %s%-*s \u2502 %-*s \u2502 %-*s",
-					strings.Repeat(" ", indent),
-					col1Width-indent, nextTranscriptLines[i],
-					col2Width, "",
-					col3Width, "")
-				drawText(screen, 0, y, width, styleDefault, contLine)
-				y++
+				csLine := " "
+				for _, cs := range callsigns {
+					part := cs + "  "
+					if len(csLine)+len(part) > width-2 {
+						if y < maxY {
+							drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, csLine))
+							y++
+						}
+						csLine = " " + part
+					} else {
+						csLine += part
+					}
+				}
+				if csLine != " " && y < maxY {
+					drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, csLine))
+					y++
+				}
 			}
 
-			entryIdx++
+			// Fill remaining context area with white
+			for y < maxY {
+				drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+				y++
+			}
 		}
 	}
 
 	// Help footer
 	helpY := height - 1
-	var helpText string
-	if state.searchMode {
-		helpText = " Type to search  [Enter]=Lock results  [Esc]=Cancel search "
-	} else if state.searchLocked {
-		contextHint := "[`]=Context "
-		if state.showContext {
-			contextHint = "[`]=Hide "
-		}
-		helpText = fmt.Sprintf(" %s[-]=Skip  [Enter]=Save  [Esc]=Clear search  [/]=New search ", contextHint)
-	} else {
-		contextHint := "[`]=Context "
-		if state.showContext {
-			contextHint = "[`]=Hide "
-		}
-		helpText = fmt.Sprintf(" %s[-]=Skip  [Enter]=Save  [Space]=Ignore  [Esc]=Quit  [/]=Search ", contextHint)
+	contextHint := "[`]=Context "
+	if state.showContext {
+		contextHint = "[`]=Hide "
 	}
+	focusHint := "[Tab]=Switch "
+	helpText := fmt.Sprintf(" %s%s[↑↓]=Select  [^K]=Skip  [Enter]=Save  [Space]=Ignore  [Esc]=Clear/Quit ", contextHint, focusHint)
 	drawText(screen, 0, helpY, width, styleHelp, helpText)
 }
 
@@ -945,113 +1007,107 @@ func handleEvent(ev tcell.Event, state *AppState, screen tcell.Screen) Action {
 		return ActionNone
 
 	case *tcell.EventKey:
-		// Handle search mode
-		if state.searchMode {
-			return handleSearchEvent(ev, state)
+		// Handle Tab to switch focus
+		if ev.Key() == tcell.KeyTab {
+			if state.focusedField == FocusSearch {
+				state.focusedField = FocusCorrection
+			} else {
+				state.focusedField = FocusSearch
+			}
+			return ActionNone
 		}
 
-		// Handle locked search - Escape clears it
-		if state.searchLocked {
-			if ev.Key() == tcell.KeyEscape {
-				state.clearSearch()
-				return ActionNone
-			}
-			// Other keys work normally on the filtered list
-		}
-
-		switch ev.Key() {
-		case tcell.KeyEscape:
-			return ActionQuit
-
-		case tcell.KeyEnter:
-			return ActionSave
-
-		case tcell.KeyBackspace, tcell.KeyBackspace2:
-			if state.cursorPos > 0 {
-				state.correction = state.correction[:state.cursorPos-1] + state.correction[state.cursorPos:]
-				state.cursorPos--
-			}
-
-		case tcell.KeyDelete:
-			if state.cursorPos < len(state.correction) {
-				state.correction = state.correction[:state.cursorPos] + state.correction[state.cursorPos+1:]
-			}
-
-		case tcell.KeyLeft:
-			if state.cursorPos > 0 {
-				state.cursorPos--
-			}
-
-		case tcell.KeyRight:
-			if state.cursorPos < len(state.correction) {
-				state.cursorPos++
-			}
-
-		case tcell.KeyHome:
-			state.cursorPos = 0
-
-		case tcell.KeyEnd:
-			state.cursorPos = len(state.correction)
-
-		case tcell.KeyRune:
-			r := ev.Rune()
-			if r == '`' {
-				// Toggle context display
-				state.showContext = !state.showContext
-				return ActionNone
-			}
-			if r == '-' && !state.searchLocked {
-				return ActionSkip
-			}
-			// '/' at start of empty correction enters search mode
-			if r == '/' && state.correction == "" && state.cursorPos == 0 {
-				state.searchMode = true
+		// Handle Escape - clear search if focused and non-empty, otherwise quit
+		if ev.Key() == tcell.KeyEscape {
+			if state.focusedField == FocusSearch && state.searchString != "" {
 				state.searchString = ""
+				state.searchCursorPos = 0
+				state.updateSearchFilter()
 				return ActionNone
 			}
-			// Auto-uppercase
-			r = unicode.ToUpper(r)
-			state.correction = state.correction[:state.cursorPos] + string(r) + state.correction[state.cursorPos:]
-			state.cursorPos++
+			return ActionQuit
 		}
+
+		// Handle Up/Down for list navigation (always work regardless of focus)
+		if ev.Key() == tcell.KeyUp {
+			if state.selectedIndex > 0 {
+				state.selectedIndex--
+				// Initialize correction for newly selected entry
+				state.initFromEntry(state.getSelectedEntryIndex())
+			}
+			return ActionNone
+		}
+		if ev.Key() == tcell.KeyDown {
+			if state.selectedIndex < len(state.filteredIdx)-1 {
+				state.selectedIndex++
+				// Initialize correction for newly selected entry
+				state.initFromEntry(state.getSelectedEntryIndex())
+			}
+			return ActionNone
+		}
+
+		// Handle input based on focused field
+		if state.focusedField == FocusSearch {
+			return handleSearchInput(ev, state)
+		}
+		return handleCorrectionInput(ev, state)
 	}
 
 	return ActionNone
 }
 
-// handleSearchEvent handles keyboard events while in search mode.
-func handleSearchEvent(ev *tcell.EventKey, state *AppState) Action {
+// handleSearchInput handles keyboard input for the search field.
+func handleSearchInput(ev *tcell.EventKey, state *AppState) Action {
 	switch ev.Key() {
-	case tcell.KeyEscape:
-		// Clear search and exit search mode
-		state.clearSearch()
-		return ActionNone
-
-	case tcell.KeyEnter:
-		// Lock the search results
-		if state.searchString != "" && len(state.filteredIdx) > 0 {
-			state.searchMode = false
-			state.searchLocked = true
-			// Initialize correction for the first filtered entry
-			if len(state.filteredIdx) > 0 {
-				state.initFromEntry(state.entries[state.filteredIdx[0]])
-			}
-		} else {
-			// No matches or empty search - just exit search mode
-			state.clearSearch()
-		}
-		return ActionNone
-
 	case tcell.KeyBackspace, tcell.KeyBackspace2:
-		if len(state.searchString) > 0 {
-			state.searchString = state.searchString[:len(state.searchString)-1]
+		if state.searchCursorPos > 0 {
+			state.searchString = state.searchString[:state.searchCursorPos-1] + state.searchString[state.searchCursorPos:]
+			state.searchCursorPos--
 			state.updateSearchFilter()
 		}
 		return ActionNone
 
+	case tcell.KeyDelete:
+		if state.searchCursorPos < len(state.searchString) {
+			state.searchString = state.searchString[:state.searchCursorPos] + state.searchString[state.searchCursorPos+1:]
+			state.updateSearchFilter()
+		}
+		return ActionNone
+
+	case tcell.KeyLeft:
+		if state.searchCursorPos > 0 {
+			state.searchCursorPos--
+		}
+		return ActionNone
+
+	case tcell.KeyRight:
+		if state.searchCursorPos < len(state.searchString) {
+			state.searchCursorPos++
+		}
+		return ActionNone
+
+	case tcell.KeyHome:
+		state.searchCursorPos = 0
+		return ActionNone
+
+	case tcell.KeyEnd:
+		state.searchCursorPos = len(state.searchString)
+		return ActionNone
+
+	case tcell.KeyEnter:
+		// Enter in search just moves focus to correction
+		state.focusedField = FocusCorrection
+		return ActionNone
+
 	case tcell.KeyRune:
 		r := ev.Rune()
-		state.searchString += string(r)
+		// Backtick toggles context regardless of focus
+		if r == '`' {
+			state.showContext = !state.showContext
+			return ActionNone
+		}
+		state.searchString = state.searchString[:state.searchCursorPos] + string(r) + state.searchString[state.searchCursorPos:]
+		state.searchCursorPos++
 		state.updateSearchFilter()
 		return ActionNone
 	}
@@ -1059,14 +1115,106 @@ func handleSearchEvent(ev *tcell.EventKey, state *AppState) Action {
 	return ActionNone
 }
 
+// handleCorrectionInput handles keyboard input for the correction field.
+func handleCorrectionInput(ev *tcell.EventKey, state *AppState) Action {
+	entry := state.getSelectedEntry()
+	if entry == nil {
+		return ActionNone
+	}
+	entryIdx := state.getSelectedEntryIndex()
+
+	switch ev.Key() {
+	case tcell.KeyEnter:
+		// Save entry
+		savedFile, err := saveEntry(*entry, state.correction, state.outputDir)
+		if err == nil {
+			// If previously saved with different correction, delete old file
+			if oldFile, ok := state.savedFiles[entryIdx]; ok && oldFile != savedFile {
+				os.Remove(oldFile)
+			}
+			state.disposition[entryIdx] = DispositionSaved
+			state.savedFiles[entryIdx] = savedFile
+		}
+		// Move to next entry
+		if state.selectedIndex < len(state.filteredIdx)-1 {
+			state.selectedIndex++
+			state.initFromEntry(state.getSelectedEntryIndex())
+		}
+		return ActionNone
+
+	case tcell.KeyBackspace, tcell.KeyBackspace2:
+		if state.cursorPos > 0 {
+			state.correction = state.correction[:state.cursorPos-1] + state.correction[state.cursorPos:]
+			state.cursorPos--
+		}
+		return ActionNone
+
+	case tcell.KeyDelete:
+		if state.cursorPos < len(state.correction) {
+			state.correction = state.correction[:state.cursorPos] + state.correction[state.cursorPos+1:]
+		}
+		return ActionNone
+
+	case tcell.KeyLeft:
+		if state.cursorPos > 0 {
+			state.cursorPos--
+		}
+		return ActionNone
+
+	case tcell.KeyRight:
+		if state.cursorPos < len(state.correction) {
+			state.cursorPos++
+		}
+		return ActionNone
+
+	case tcell.KeyHome:
+		state.cursorPos = 0
+		return ActionNone
+
+	case tcell.KeyEnd:
+		state.cursorPos = len(state.correction)
+		return ActionNone
+
+	case tcell.KeyCtrlK:
+		// Skip entry
+		// If previously saved, delete the file
+		if oldFile, ok := state.savedFiles[entryIdx]; ok {
+			os.Remove(oldFile)
+			delete(state.savedFiles, entryIdx)
+		}
+		state.disposition[entryIdx] = DispositionSkipped
+		// Move to next entry
+		if state.selectedIndex < len(state.filteredIdx)-1 {
+			state.selectedIndex++
+			state.initFromEntry(state.getSelectedEntryIndex())
+		}
+		return ActionNone
+
+	case tcell.KeyRune:
+		r := ev.Rune()
+		// Backtick toggles context regardless of focus
+		if r == '`' {
+			state.showContext = !state.showContext
+			return ActionNone
+		}
+		// Auto-uppercase
+		r = unicode.ToUpper(r)
+		state.correction = state.correction[:state.cursorPos] + string(r) + state.correction[state.cursorPos:]
+		state.cursorPos++
+		return ActionNone
+	}
+
+	return ActionNone
+}
+
 // saveEntry saves an entry to the output directory as a test case.
-// If correction is provided, it should be in "CALLSIGN COMMAND" format.
-func saveEntry(entry LogEntry, correction, outputDir string) error {
+// Returns the path of the saved file.
+func saveEntry(entry LogEntry, correction, outputDir string) (string, error) {
 	// Parse correction if provided
 	if correction != "" {
 		callsign, command, valid := parseCorrection(correction, entry)
 		if !valid {
-			return fmt.Errorf("invalid callsign in correction: %s", callsign)
+			return "", fmt.Errorf("invalid callsign in correction: %s", callsign)
 		}
 		entry.Callsign = callsign
 		entry.Command = command
@@ -1074,7 +1222,7 @@ func saveEntry(entry LogEntry, correction, outputDir string) error {
 
 	// Create output directory if needed
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
-		return err
+		return "", err
 	}
 
 	// Generate filename from transcript
@@ -1090,10 +1238,27 @@ func saveEntry(entry LogEntry, correction, outputDir string) error {
 	// Marshal with indentation
 	data, err := json.MarshalIndent(entry, "", "  ")
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return os.WriteFile(path, data, 0644)
+	return path, os.WriteFile(path, data, 0644)
+}
+
+// extractExpectApproachID extracts the approach ID from a command string containing an "E" command.
+// Returns empty string if no expect approach command is found.
+func extractExpectApproachID(command string) string {
+	parts := strings.Fields(command)
+	for _, part := range parts {
+		if strings.HasPrefix(part, "E") && len(part) > 1 {
+			approachID := part[1:]
+			// Strip LAHSO suffix if present (e.g., "EI22L/LAHSO26" -> "I22L")
+			if idx := strings.Index(approachID, "/LAHSO"); idx != -1 {
+				approachID = approachID[:idx]
+			}
+			return approachID
+		}
+	}
+	return ""
 }
 
 // sanitizeFilename creates a safe filename from a transcript.

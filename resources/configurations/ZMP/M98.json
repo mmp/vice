@@ -1,0 +1,600 @@
+{
+    "control_positions": {
+        "1D": {
+            "callsign": "MSP_D_DEP",
+            "frequency": 125750,
+            "radio_name": "Minneapolis Departure"
+        },
+        "1R": {
+            "callsign": "MSP_R_DEP",
+            "frequency": 124700,
+            "radio_name": "Minneapolis Departure"
+        },
+        "1L": {
+            "callsign": "MSP_L_DEP",
+            "frequency": 132975,
+            "radio_name": "Minneapolis Departure"
+        },
+        "1I": {
+            "callsign": "MSP_I_APP",
+            "frequency": 126350,
+            "radio_name": "Minneapolis Approach"
+        },
+        "1H": {
+            "callsign": "MSP_H_APP",
+            "frequency": 135475,
+            "radio_name": "Minneapolis Approach"
+        },
+        "1N": {
+            "callsign": "MSP_N_APP",
+            "frequency": 119300,
+            "radio_name": "Minneapolis Approach"
+        },
+        "1S": {
+            "callsign": "MSP_S_APP",
+            "frequency": 126350,
+            "radio_name": "Minneapolis Approach"
+        },
+        "1J": {
+            "callsign": "MSP_J_APP",
+            "frequency": 118725,
+            "radio_name": "Minneapolis Approach"
+        },
+        "1E": {
+            "callsign": "MSP_E_APP",
+            "frequency": 126350,
+            "radio_name": "Minneapolis Approach"
+        },
+        "1G": {
+            "callsign": "MSP_G_APP",
+            "frequency": 121200,
+            "radio_name": "Minneapolis Approach"
+        },
+        "1K": {
+            "callsign": "MSP_K_APP",
+            "frequency": 126500,
+            "radio_name": "Minneapolis Approach"
+        },
+        "1T": {
+            "callsign": "MSP_N_TWR",
+            "frequency": 123950,
+            "radio_name": "Minneapolis Tower"
+        },
+        "1V": {
+            "callsign": "MSP_S_TWR",
+            "frequency": 126700,
+            "radio_name": "Minneapolis Tower"
+        },
+        "1Y": {
+            "callsign": "MSP_W_TWR",
+            "frequency": 123675,
+            "radio_name": "Minneapolis Tower"
+        },
+        "2F": {
+            "callsign": "FCM_TWR",
+            "frequency": 119150,
+            "radio_name": "Flying Cloud Tower"
+        },
+        "2P": {
+            "callsign": "STP_TWR",
+            "frequency": 119100,
+            "radio_name": "St. Paul Tower"
+        },
+        "2O": {
+            "callsign": "ANE_TWR",
+            "frequency": 132400,
+            "radio_name": "Anoka Tower"
+        },
+        "2M": {
+            "callsign": "MIC_TWR",
+            "frequency": 120700,
+            "radio_name": "Crystal Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "117": {
+                "inbound_assignments": {
+                    "BAINY3.12s": "1I",
+                    "BLUEM4.12s": "1H",
+                    "KKILR3.12s": "1I",
+                    "MUSCL3.12s": "1I",
+                    "NITZR3.12s": "1H",
+                    "TORGY3.12s": "1H",
+                    "GEP1.12s": "1I",
+                    "LSE.12s": "1G",
+                    "RPD": "1G"
+                },
+                "departure_assignments": {
+                    "KMSP/12L": "1D",
+                    "KMSP/12R_17": "1L",
+                    "KMSP/17_12s": "1R",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
+                },
+                "default_consolidation": {
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
+                    ],
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
+                    ],
+                    "1N": [
+                        "1S",
+                        "1J"
+                    ],
+                    "1E": [
+                        "1G",
+                        "1K"
+                    ]
+                }
+            },
+            "135": {
+                "inbound_assignments": {
+                    "BAINY3.35": "1I",
+                    "BLUEM4.35": "1N",
+                    "KKILR3.35": "1H",
+                    "MUSCL3.35": "1H",
+                    "NITZR3.35": "1N",
+                    "TORGY3.35": "1I",
+                    "GEP1.35": "1I",
+                    "LSE.30s": "1G",
+                    "RPD": "1G"
+                },
+                "departure_assignments": {
+                    "KMSP/12R": "1R",
+                    "KMSP/12L": "1D",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
+                },
+                "default_consolidation": {
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
+                    ],
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
+                    ],
+                    "1N": [
+                        "1S",
+                        "1J"
+                    ],
+                    "1E": [
+                        "1G",
+                        "1K"
+                    ]
+                }
+            },
+            "317": {
+                "inbound_assignments": {
+                    "BAINY3.30s": "1I",
+                    "BLUEM4.30s": "1H",
+                    "KKILR3.30s": "1I",
+                    "MUSCL3.30s": "1I",
+                    "NITZR3.30s": "1H",
+                    "TORGY3.30s": "1H",
+                    "GEP1.30s": "1I",
+                    "LSE.30s": "1G",
+                    "RPD": "1G"
+                },
+                "departure_assignments": {
+                    "KMSP/30L_17": "1R",
+                    "KMSP/30R": "1D",
+                    "KMSP/17_30s": "1R",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
+                },
+                "default_consolidation": {
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
+                    ],
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
+                    ],
+                    "1N": [
+                        "1S",
+                        "1J"
+                    ],
+                    "1E": [
+                        "1G",
+                        "1K"
+                    ]
+                }
+            },
+            "335": {
+                "inbound_assignments": {
+                    "BAINY3.30s": "1I",
+                    "BLUEM4.35": "1J",
+                    "KKILR3.30s": "1I",
+                    "MUSCL3.30s": "1I",
+                    "NITZR3.35": "1J",
+                    "TORGY3.35": "1H",
+                    "GEP1.30s": "1I",
+                    "LSE.30s": "1G",
+                    "RPD": "1G"
+                },
+                "departure_assignments": {
+                    "KMSP/30L": "1R",
+                    "KMSP/30R": "1D",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
+                },
+                "default_consolidation": {
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
+                    ],
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
+                    ],
+                    "1N": [
+                        "1S",
+                        "1J"
+                    ],
+                    "1E": [
+                        "1G",
+                        "1K"
+                    ]
+                }
+            },
+            "12S": {
+                "inbound_assignments": {
+                    "BAINY3.12s": "1I",
+                    "BLUEM4.12s": "1H",
+                    "KKILR3.12s": "1I",
+                    "MUSCL3.12s": "1I",
+                    "NITZR3.12s": "1H",
+                    "TORGY3.12s": "1H",
+                    "GEP1.12s": "1I",
+                    "LSE.12s": "1G",
+                    "RPD": "1G"
+                },
+                "departure_assignments": {
+                    "KMSP/12L": "1D",
+                    "KMSP/12R": "1R",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
+                },
+                "default_consolidation": {
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
+                    ],
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
+                    ],
+                    "1N": [
+                        "1S",
+                        "1J"
+                    ],
+                    "1E": [
+                        "1G",
+                        "1K"
+                    ]
+                }
+            },
+            "30S": {
+                "inbound_assignments": {
+                    "BAINY3.30s": "1I",
+                    "BLUEM4.30s": "1H",
+                    "KKILR3.30s": "1I",
+                    "MUSCL3.30s": "1I",
+                    "NITZR3.30s": "1H",
+                    "TORGY3.30s": "1H",
+                    "GEP1.30s": "1I",
+                    "LSE.30s": "1G",
+                    "RPD": "1G"
+                },
+                "departure_assignments": {
+                    "KMSP/30L": "1R",
+                    "KMSP/30R": "1D",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
+                },
+                "default_consolidation": {
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
+                    ],
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
+                    ],
+                    "1N": [
+                        "1S",
+                        "1J"
+                    ],
+                    "1E": [
+                        "1G",
+                        "1K"
+                    ]
+                }
+            }
+        },
+        "center": "44.890395, -93.230667",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "MSP 12",
+                    "description": "MSP 12 CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "N044.57.03.000,W093.40.21.000",
+                        "N044.48.31.000,W093.19.10.000",
+                        "N044.57.85.000,W093.06.34.000",
+                        "N045.08.93.000,W093.29.66.000",
+                        "N044.57.03.000,W093.40.21.000"
+                    ]
+                },
+                {
+                    "id": "MSP 30",
+                    "description": "MSP 30 CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "N044.46.98.000,W093.15.89.000",
+                        "N044.35.67.000,W092.54.47.000",
+                        "N044.50.94.000,W092.42.14.000",
+                        "N044.57.94.000,W093.06.72.000",
+                        "N044.46.98.000,W093.15.89.000"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "MSP": {
+                "char": "A",
+                "position": "44.890395, -93.230667",
+                "elevation": 848,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            },
+            "QJE": {
+                "char": "A",
+                "position": "44.752631, -93.227664",
+                "elevation": 1114,
+                "primary_range": 200,
+                "secondary_range": 225,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "HRBEK.PISTON": "FAR",
+            "HRBEK.TURBOPROP": "FAR",
+            "HRBEK.JET": "FAR",
+            "HRBEK.HEAVYJET": "FAR",
+            "ZOGAP.PISTON": "SME",
+            "ZOGAP.TURBOPROP": "SME",
+            "ZOGAP.JET": "SME",
+            "ZOGAP.HEAVYJET": "SME",
+            "TONCA.PISTON": "LEI",
+            "TONCA.TURBOPROP": "LEI",
+            "TONCA.JET": "LEI",
+            "HUGIR.PISTON": "ONL",
+            "HUGIR.TURBOPROP": "ONL",
+            "HUGIR.JET": "ONL",
+            "HUGIR.HEAVYJET": "ONL",
+            "JURNY.PISTON": "FOD",
+            "JURNY.TURBOPROP": "FOD",
+            "JURNY.JET": "FOD",
+            "FOBUG.PISTON": "RST",
+            "FOBUG.TURBOPROP": "RST",
+            "FOBUG.JET": "RST",
+            "FOBUG.HEAVYJET": "RST",
+            "JEDET.PISTON": "ODI",
+            "JEDET.TURBOPROP": "ODI",
+            "JEDET.JET": "ODI",
+            "JEDET.HEAVYJET": "ODI",
+            "TAXEE.PISTON": "DLL",
+            "TAXEE.TURBOPROP": "DLL",
+            "TAXEE.JET": "DLL",
+            "SNINE.PISTON": "GRB",
+            "SNINE.TURBOPROP": "GRB",
+            "SNINE.JET": "GRB",
+            "SNINE.HEAVYJET": "GRB",
+            "DLH.PISTON": "DLH",
+            "DLH.TURBOPROP": "DLH",
+            "DLH.JET": "DLH",
+            "DLH.HEAVYJET": "DLH",
+            "BRNRD.PISTON": "BRD",
+            "BRNRD.TURBOPROP": "BRD",
+            "BRNRD.JET": "BRD",
+            "BRNRD.HEAVYJET": "BRD",
+            "LSE.PISTON": "LSE",
+            "LSE.TURBOPROP": "LSE",
+            "LSE.JET": "LSE",
+            "FGT.PISTON": "FGT",
+            "FGT.TURBOPROP": "FGT",
+            "FGT.JET": "FGT",
+            "GEP.PISTON": "GEP",
+            "GEP.TURBOPROP": "GEP",
+            "GEP.JET": "GEP"
+        },
+        "significant_points": {
+            "HRBEK": {},
+            "ZOGAP": {},
+            "TONCA": {},
+            "HUGIR": {},
+            "JURNY": {},
+            "FOBUG": {},
+            "JEDET": {},
+            "TAXEE": {},
+            "RXANN": {},
+            "STILS": {},
+            "DLH": {},
+            "BRNRD": {},
+            "LSE": {},
+            "FGT": {},
+            "GEP": {}
+        },
+        "altimeters": [
+            "KMSP",
+            "KFCM",
+            "KANE",
+            "KSTP",
+            "KMIC"
+        ],
+        "video_map_file": "videomaps/ZMP-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "SNINE",
+                    "LSE",
+                    "STILS",
+                    "TAXEE",
+                    "JEDET",
+                    "EAU"
+                ],
+                "altitude_range": [
+                    0,
+                    7000
+                ],
+                "receiving_controller": "C05"
+            },
+            {
+                "fixes": [
+                    "LSE",
+                    "TAXEE",
+                    "JEDET"
+                ],
+                "altitude_range": [
+                    8000,
+                    99999
+                ],
+                "receiving_controller": "C05"
+            },
+            {
+                "fixes": [
+                    "SNINE",
+                    "STILS",
+                    "EAU"
+                ],
+                "altitude_range": [
+                    8000,
+                    99999
+                ],
+                "receiving_controller": "C06"
+            },
+            {
+                "fixes": [
+                    "FGT",
+                    "FOBUG"
+                ],
+                "altitude_range": [
+                    10000,
+                    99999
+                ],
+                "receiving_controller": "C07"
+            },
+            {
+                "fixes": [
+                    "ABR",
+                    "JURNY",
+                    "HUGIR",
+                    "TONCA",
+                    "ZOGAP"
+                ],
+                "receiving_controller": "C09"
+            },
+            {
+                "fixes": [
+                    "BRNRD",
+                    "DLH",
+                    "GEP",
+                    "HRBEK"
+                ],
+                "receiving_controller": "C10"
+            }
+        ],
+        "area_configs": {
+            "1": {
+                "default_airport": "KMSP",
+                "video_maps": [
+                    "M98 105 BRAV0",
+                    "M98 153 MVA",
+                    "M98 113 R0ADS",
+                    "M98 110 FIXES",
+                    "M98 313 RNAV 12",
+                    "M98 331 RNAV 30",
+                    "M98 220 12 D",
+                    "M98 226 12-17 D",
+                    "M98 246 30-17 D",
+                    "M98 223 35-12 B",
+                    "M98 201 4 B",
+                    "M98 222 17 B",
+                    "M98 227 12-17 B",
+                    "M98 231 30-35 B",
+                    "M98 228 17-22 B",
+                    "M98 911 EMRGNCY",
+                    "M98 152 12INTER",
+                    "M98 312 RNP 12",
+                    "M98 335 RNP 35",
+                    "M98 157 SID",
+                    "M98 217 30 D",
+                    "M98 249 30-35 D",
+                    "M98 217 30 D",
+                    "M98 249 30-35 D",
+                    "M98 255 17-22 D",
+                    "M98 221 35 B",
+                    "M98 202 22 B",
+                    "M98 204 12 B",
+                    "M98 229 30-17 B",
+                    "M98 203 30 B",
+                    "M98 111 QJE 40",
+                    "M98 109 ZMP",
+                    "M98 151 30INTER",
+                    "M98 330 RNP 30",
+                    "M98 ZMPEVNT",
+                    "M98 112 AIRWAYS"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "RST",
+            "prefix": "1"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "C"
+        }
+    ]
+}

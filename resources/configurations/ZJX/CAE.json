@@ -1,0 +1,61 @@
+{
+    "control_positions": {
+        "1F": {
+            "callsign": "CAE_F_APP",
+            "frequency": 128500,
+            "radio_name": "Columbia Approach"
+        },
+        "1N": {
+            "callsign": "CAE_N_APP",
+            "frequency": 133400,
+            "radio_name": "Columbia Approach"
+        },
+        "1S": {
+            "callsign": "CAE_S_APP",
+            "frequency": 124150,
+            "radio_name": "Columbia Approach"
+        },
+        "1T": {
+            "callsign": "CAE_TWR",
+            "frequency": 119500,
+            "radio_name": "Columbia Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "AGS",
+            "prefix": "1"
+        },
+        {
+            "id": "CHS",
+            "prefix": "5"
+        },
+        {
+            "id": "CLT",
+            "prefix": "2"
+        },
+        {
+            "id": "GSP",
+            "prefix": "4"
+        },
+        {
+            "id": "SSC",
+            "prefix": "3"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "C"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

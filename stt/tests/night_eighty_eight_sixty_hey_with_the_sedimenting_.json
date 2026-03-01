@@ -1,0 +1,260 @@
+{
+  "time": "2026-01-29T17:43:08.451650955Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "night eighty eight sixty hey with the sedimenting three thousand",
+  "whisper_duration_ms": 377.979,
+  "audio_duration_ms": 2760,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12113MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "UAL8860",
+  "command": "D30",
+  "stt_aircraft": {
+    "Brickyard 20 85": {
+      "Callsign": "RPA2085",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Lindbergh 50 79": {
+      "Callsign": "GJS5079",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Santa Cruz": "SAX",
+        "Shaff": "SHAFF",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Spirit Wings 99 50": {
+      "Callsign": "NKS9950",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Santa Cruz": "SAX",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 5268,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "U.P.S. four 14 heavy": {
+      "Callsign": "UPS414",
+      "AircraftType": "A306",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Robbinsville": "RBV",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United 88 60 heavy": {
+      "Callsign": "UAL8860",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FQM3",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"night eighty eight sixty hey with the sedimenting three thousand\"",
+    "[local-stt] normalized words: [night 88 60 hey with the heading 3 thousand]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"night\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"88\" Type=1 Value=88",
+    "[local-stt]   token[2]: Text=\"60\" Type=1 Value=60",
+    "[local-stt]   token[3]: Text=\"hey\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"with\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"30\" Type=2 Value=30",
+    "[local-stt] MatchCallsign: 8 tokens, 5 aircraft",
+    "[local-stt]   candidate \"U.P.S. four 14 heavy\" (ICAO=\"UPS414\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Lindbergh 50 79\" (ICAO=\"GJS5079\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United 88 60 heavy\" (ICAO=\"UAL8860\"): score=0.94 consumed=3",
+    "[local-stt]   candidate \"Spirit Wings 99 50\" (ICAO=\"NKS9950\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Brickyard 20 85\" (ICAO=\"RPA2085\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United 88 60 heavy\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   accepted: \"UAL8860\" (conf=0.94, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"UAL8860\" SpokenKey=\"United 88 60 heavy\" Conf=0.94 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=7 Approaches=1 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[11 29]",
+    "[local-stt]   fix: \"Zavpi\" -\u003e \"ZAVPI\"",
+    "[local-stt]   fix: \"Buzzed\" -\u003e \"BUZZD\"",
+    "[local-stt]   fix: \"Broadway\" -\u003e \"BWZ\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   fix: \"Pattern\" -\u003e \"PATRN\"",
+    "[local-stt]   fix: \"Izeko\" -\u003e \"IZEKO\"",
+    "[local-stt]   fix: \"Gimme\" -\u003e \"GIMEE\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"hey\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"with\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   position ID: found command keyword \"heading\" at position 3 - not just position ID",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   no match at token[0]=\"hey\", skipping",
+    "[local-stt]   no match at token[1]=\"with\", skipping",
+    "[local-stt]   skipping filler word: \"the\"",
+    "[local-stt]   matched command: \"SAYAGAIN/HEADING\" (conf=0.50, consumed=1, isThen=false)",
+    "[local-stt]   no match at token[4]=\"30\", skipping",
+    "[local-stt] ParseCommands: result=[SAYAGAIN/HEADING] (avgConf=0.50)",
+    "[local-stt] parsed commands: [SAYAGAIN/HEADING] (conf=0.50)",
+    "[local-stt] validated commands: [SAYAGAIN/HEADING] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UAL8860 SAYAGAIN/HEADING\" (conf=0.47, time=0s) ==="
+  ]
+}

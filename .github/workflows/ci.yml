@@ -26,7 +26,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: manifest.json
-        key: manifest-v1-${{ hashFiles('resources/**') }}
+        key: manifest-v2-${{ hashFiles('resources/**') }}
 
     - name: Setup Go
       if: steps.cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
@@ -38,7 +38,9 @@ jobs:
     - name: Fetch LFS and generate manifest
       if: steps.cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
       env:
-        VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
+        R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+        R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+        R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       run: |
         git lfs install
         git lfs pull
@@ -81,6 +83,16 @@ jobs:
         sudo apt update
         sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
+    - name: Get sherpa-onnx commit SHA
+      id: sherpa-sha
+      run: echo "sha=$(git -C sherpa-onnx rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Cache sherpa-onnx build
+      uses: actions/cache@v4
+      with:
+        path: sherpa-onnx/build_go
+        key: sherpa-onnx-linux-${{ steps.sherpa-sha.outputs.sha }}
+
     - name: Build vice
       run: ./build.sh
 
@@ -110,9 +122,9 @@ jobs:
     runs-on: macos-latest
 
     env:
-      MACOSX_DEPLOYMENT_TARGET: '13.0'
-      CGO_CFLAGS: '-mmacosx-version-min=13.0'
-      CGO_LDFLAGS: '-mmacosx-version-min=13.0'
+      MACOSX_DEPLOYMENT_TARGET: '13.4'
+      CGO_CFLAGS: '-mmacosx-version-min=13.4'
+      CGO_LDFLAGS: '-mmacosx-version-min=13.4'
 
     steps:
     - name: Checkout source
@@ -133,6 +145,16 @@ jobs:
 
     - name: Install Mac dependencies
       run: brew install sdl2 pkg-config glfw
+
+    - name: Get sherpa-onnx commit SHA
+      id: sherpa-sha
+      run: echo "sha=$(git -C sherpa-onnx rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Cache sherpa-onnx build
+      uses: actions/cache@v4
+      with:
+        path: sherpa-onnx/build_go
+        key: sherpa-onnx-mac-${{ steps.sherpa-sha.outputs.sha }}
 
     - name: Build vice
       run: ./build.sh
@@ -210,10 +232,13 @@ jobs:
 
     - name: Install windows prebuilts
       working-directory: ./ext
+      shell: bash
       run: |
         unzip -q SDL2-devel-2.24.0-mingw.zip
-        7z x x86_64-12.2.0-release-win32-seh-rt_v10-rev0.7z -omingw
-        echo ${{ github.workspace }}/ext/mingw/mingw64 >> $GITHUB_PATH
+        # Use posix-threaded MinGW (not win32) so std::thread works for ggml-vulkan
+        curl -L -o mingw-posix.7z https://github.com/niXman/mingw-builds-binaries/releases/download/12.2.0-rt_v10-rev0/x86_64-12.2.0-release-posix-seh-rt_v10-rev0.7z
+        7z x mingw-posix.7z -omingw
+        echo "${{ github.workspace }}/ext/mingw/mingw64/bin" >> $GITHUB_PATH
         ls
 
     - name: Install Vulkan SDK
@@ -241,7 +266,20 @@ jobs:
       run: |
         cp ext/mingw/mingw64/bin/libgcc_s_seh-1.dll windows/
         cp ext/mingw/mingw64/bin/libstdc++-6.dll windows/
+        cp ext/mingw/mingw64/bin/libwinpthread-1.dll windows/
         cp ext/SDL2-2.24.0/x86_64-w64-mingw32/bin/SDL2.dll windows/
+
+    - name: Get sherpa-onnx commit SHA
+      id: sherpa-sha
+      run: echo "sha=$(git -C sherpa-onnx rev-parse HEAD)" >> $env:GITHUB_OUTPUT
+      shell: pwsh
+
+    - name: Cache sherpa-onnx build
+      id: cache-sherpa
+      uses: actions/cache@v4
+      with:
+        path: sherpa-onnx/build_go
+        key: sherpa-onnx-win-msvc-${{ steps.sherpa-sha.outputs.sha }}
 
     - name: Get whisper.cpp commit SHA
       id: whisper-sha
@@ -253,7 +291,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: whisper.cpp/build_go
-        key: whisper-cpp-win-vulkan-${{ steps.whisper-sha.outputs.sha }}-sdk1.3.296.0
+        key: whisper-cpp-win-vulkan-posix-${{ steps.whisper-sha.outputs.sha }}-sdk1.3.296.0
 
     - name: Build vice
       run: |
@@ -269,6 +307,7 @@ jobs:
         # Add Vulkan SDK lib path to CGO_LDFLAGS
         $env:CGO_LDFLAGS = "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib -L $env:VULKAN_SDK/Lib"
         .\build.bat --icons
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       shell: pwsh
       env:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
@@ -296,7 +335,6 @@ jobs:
 
     - name: Build for release (download resources)
       run: |
-        # Add Vulkan SDK lib path to CGO_LDFLAGS
         $env:CGO_LDFLAGS = "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib -L $env:VULKAN_SDK/Lib"
         .\build.bat --release
         go build -o ./crc2vice.exe ./cmd/crc2vice

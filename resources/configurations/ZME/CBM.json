@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "CBM_A_APP",
+            "frequency": 126075,
+            "radio_name": "Columbus Approach"
+        },
+        "1E": {
+            "callsign": "CBM_E_APP",
+            "frequency": 132025,
+            "radio_name": "Columbus Approach"
+        },
+        "1W": {
+            "callsign": "CBM_W_APP",
+            "frequency": 135600,
+            "radio_name": "Columbus Approach"
+        },
+        "1Z": {
+            "callsign": "CBM_TWR",
+            "frequency": 126650,
+            "radio_name": "Columbus Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BHM",
+            "prefix": "2"
+        },
+        {
+            "id": "NMM",
+            "prefix": "1"
+        },
+        {
+            "id": "ZME",
+            "prefix": "C"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

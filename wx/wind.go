@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -35,7 +36,7 @@ func (ws *WindSpecifier) Validate() error {
 	}
 
 	if ws.FlightRules != "" && ws.FlightRules != "VMC" && ws.FlightRules != "IMC" {
-		return fmt.Errorf("invalid flight_rules %q: must be \"VMC\" or \"IMC\"", ws.FlightRules)
+		return fmt.Errorf(`invalid flight_rules %q: must be "VMC" or "IMC"`, ws.FlightRules)
 	}
 
 	return nil
@@ -46,7 +47,7 @@ func validateDirection(dir string) error {
 	// Range format: "min-max"
 	parts := strings.Split(dir, "-")
 	if len(parts) != 2 {
-		return fmt.Errorf("direction range must be in format \"min-max\"")
+		return fmt.Errorf(`direction range must be in format "min-max"`)
 	}
 
 	min, err := strconv.Atoi(strings.TrimSpace(parts[0]))
@@ -94,7 +95,7 @@ func validateSpeed(speed string) error {
 		// Range: "5-15"
 		parts := strings.Split(speed, "-")
 		if len(parts) != 2 {
-			return fmt.Errorf("speed range must be in format \"min-max\"")
+			return fmt.Errorf(`speed range must be in format "min-max"`)
 		}
 		min, err := strconv.Atoi(strings.TrimSpace(parts[0]))
 		if err != nil {
@@ -108,7 +109,7 @@ func validateSpeed(speed string) error {
 			return fmt.Errorf("minimum speed %d must be less than maximum speed %d", min, max)
 		}
 	} else {
-		return fmt.Errorf("speed must be in format \"N+\", \"N-\", or \"N-M\"")
+		return fmt.Errorf(`speed must be in format "N+", "N-", or "N-M"`)
 	}
 
 	return nil
@@ -221,18 +222,32 @@ const (
 	GustNo
 )
 
+// WindsAloftFilter defines constraints for winds at a specific altitude.
+// All fields are optional; nil means "don't care".
+type WindsAloftFilter struct {
+	SpeedMin *int // knots
+	SpeedMax *int // knots
+	DirMin   *int // magnetic degrees
+	DirMax   *int // magnetic degrees
+}
+
+// IsEmpty returns true if no constraints are set
+func (f *WindsAloftFilter) IsEmpty() bool {
+	return f.SpeedMin == nil && f.SpeedMax == nil && f.DirMin == nil && f.DirMax == nil
+}
+
 // WeatherFilter defines UI-specified constraints for sampling weather data.
 // All fields are optional; nil/zero means "don't care".
 type WeatherFilter struct {
 	FlightRules FlightRulesFilter
 
-	// Wind speed range in knots (nil means no constraint)
+	// Ground wind speed range in knots (nil means no constraint)
 	WindSpeedMin *int
 	WindSpeedMax *int
 
 	Gusting GustFilter
 
-	// Wind direction range in magnetic degrees (nil means no constraint)
+	// Ground wind direction range in magnetic degrees (nil means no constraint)
 	// Uses the same wraparound logic as WindSpecifier
 	WindDirMin *int
 	WindDirMax *int
@@ -240,6 +255,11 @@ type WeatherFilter struct {
 	// Temperature range in Celsius (nil means no constraint)
 	TemperatureMin *int
 	TemperatureMax *int
+
+	// Winds aloft constraints at up to two altitudes. TRACONs use
+	// WindsAloft[0] only (e.g. 5,000'). ARTCCs use both (e.g. FL240
+	// and FL380).
+	WindsAloft [2]WindsAloftFilter
 }
 
 // IsEmpty returns true if no filter constraints are set
@@ -248,7 +268,8 @@ func (wf *WeatherFilter) IsEmpty() bool {
 		wf.WindSpeedMin == nil && wf.WindSpeedMax == nil &&
 		wf.Gusting == GustAny &&
 		wf.WindDirMin == nil && wf.WindDirMax == nil &&
-		wf.TemperatureMin == nil && wf.TemperatureMax == nil
+		wf.TemperatureMin == nil && wf.TemperatureMax == nil &&
+		wf.WindsAloft[0].IsEmpty() && wf.WindsAloft[1].IsEmpty()
 }
 
 // Matches checks if a METAR matches this weather filter
@@ -335,5 +356,91 @@ func SampleMETARWithFilter(metar []METAR, intervals []util.TimeInterval, filter 
 
 	return SampleMatchingMETAR(metar, intervals, func(m METAR) bool {
 		return filter.Matches(m, magVar)
+	})
+}
+
+// matchesWindsAloftAt checks if winds aloft at the specified altitude match
+// the given filter constraints.
+func matchesWindsAloftAt(f *WindsAloftFilter, atmosByTime *AtmosByTime, t time.Time, altitudeFeet float32, magVar float32) bool {
+	if f.IsEmpty() {
+		return true
+	}
+
+	// Get winds aloft data
+	direction, speed, ok := atmosByTime.GetWindsAloftAtTime(t, altitudeFeet)
+	if !ok {
+		return false
+	}
+
+	// Convert true heading to magnetic
+	windMagnetic := math.NormalizeHeading(direction - magVar)
+	speedKnots := int(speed + 0.5)
+
+	// Check speed constraints
+	if f.SpeedMin != nil && speedKnots < *f.SpeedMin {
+		return false
+	}
+	if f.SpeedMax != nil && speedKnots > *f.SpeedMax {
+		return false
+	}
+
+	// Check direction constraints
+	if f.DirMin != nil || f.DirMax != nil {
+		minDir := 0
+		if f.DirMin != nil {
+			minDir = *f.DirMin
+		}
+		maxDir := 360
+		if f.DirMax != nil {
+			maxDir = *f.DirMax
+		}
+
+		if minDir <= maxDir {
+			if windMagnetic < float32(minDir) || windMagnetic > float32(maxDir) {
+				return false
+			}
+		} else {
+			if windMagnetic < float32(minDir) && windMagnetic > float32(maxDir) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+// SampleWeatherWithFilter randomly samples a METAR that matches both ground
+// wind filter (METAR) and winds aloft filters (atmospheric data at specified
+// altitudes). If atmosByTime is nil, only the ground wind filter is checked.
+// windsAloftAltitudes provides the altitude for each WindsAloft filter entry;
+// entries with altitude 0 are skipped.
+func SampleWeatherWithFilter(
+	metar []METAR,
+	atmosByTime *AtmosByTime,
+	intervals []util.TimeInterval,
+	filter *WeatherFilter,
+	windsAloftAltitudes [2]float32,
+	magVar float32,
+) *METAR {
+	if filter == nil || filter.IsEmpty() {
+		return SampleMatchingMETAR(metar, intervals, func(m METAR) bool { return true })
+	}
+
+	return SampleMatchingMETAR(metar, intervals, func(m METAR) bool {
+		// Check ground wind filter
+		if !filter.Matches(m, magVar) {
+			return false
+		}
+
+		// Check winds aloft filters at each configured altitude
+		if atmosByTime != nil {
+			for i, alt := range windsAloftAltitudes {
+				if alt > 0 && !matchesWindsAloftAt(&filter.WindsAloft[i], atmosByTime, m.Time, alt, magVar) {
+					return false
+				}
+			}
+		}
+
+		return true
 	})
 }

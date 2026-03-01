@@ -22,12 +22,15 @@ func (ep *ERAMPane) DisplayName() string { return "ERAM" }
 
 func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Disable ERAM to Radio Commands", &ep.DisableERAMtoRadio)
+	imgui.Checkbox("Invert numeric keypad", &ep.FlipNumericKeypad)
+	if ep.prefSet == nil {
+		return
+	}
+	ps := ep.currentPrefs()
+	imgui.Checkbox("Use right click for primary button", &ps.UseRightClick)
 	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	if imgui.CollapsingHeaderBoolPtr("Preferences", nil) {
-		if ep.prefSet == nil {
-			return
-		}
 		if imgui.BeginTableV("Saved Preferences", 4, tableFlags, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumn("Name")
 			imgui.TableSetupColumn("Save ")
@@ -192,18 +195,18 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 					}
 					for _, name := range util.SortedMapKeys(ap.Approaches) {
 						appr := ap.Approaches[name]
-						if appr.Runway == rwy.Runway {
+						if appr.Runway == rwy.Runway.Base() {
 							imgui.TableNextRow()
 							imgui.TableNextColumn()
 							enabled := ep.scopeDraw.approaches[rwy.Airport][name]
-							imgui.Checkbox("##enable-"+rwy.Airport+"-"+rwy.Runway+"-"+name, &enabled)
+							imgui.Checkbox("##enable-"+rwy.Airport+"-"+string(rwy.Runway)+"-"+name, &enabled)
 							ep.scopeDraw.approaches[rwy.Airport][name] = enabled
 
 							imgui.TableNextColumn()
 							imgui.Text(rwy.Airport)
 
 							imgui.TableNextColumn()
-							imgui.Text(rwy.Runway)
+							imgui.Text(string(rwy.Runway))
 
 							imgui.TableNextColumn()
 							imgui.Text(name)
@@ -213,7 +216,7 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 
 							imgui.TableNextColumn()
 							for _, wp := range appr.Waypoints[0] {
-								if wp.FAF {
+								if wp.FAF() {
 									imgui.Text(wp.Fix)
 									break
 								}
@@ -251,8 +254,8 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 
 				runwayRates := c.State.LaunchConfig.DepartureRates[airport]
 				for _, rwy := range util.SortedMapKeys(runwayRates) {
-					if ep.scopeDraw.departures[airport][rwy] == nil {
-						ep.scopeDraw.departures[airport][rwy] = make(map[string]bool)
+					if ep.scopeDraw.departures[airport][string(rwy)] == nil {
+						ep.scopeDraw.departures[airport][string(rwy)] = make(map[string]bool)
 					}
 
 					exitRoutes := ap.DepartureRoutes[rwy]
@@ -264,27 +267,27 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 					for _, exit := range util.SortedMapKeys(exitRoutes) {
 						exitRoute := ap.DepartureRoutes[rwy][exit]
 						r := exitRoute.Waypoints.Encode()
-						routeToExit[r] = append(routeToExit[r], exit)
+						routeToExit[r] = append(routeToExit[r], string(exit))
 					}
 
 					for _, exit := range util.SortedMapKeys(exitRoutes) {
 						// Draw the row only when we hit the first exit
 						// that uses the corresponding route route.
 						r := exitRoutes[exit].Waypoints.Encode()
-						if routeToExit[r][0] != exit {
+						if routeToExit[r][0] != string(exit) {
 							continue
 						}
 
 						imgui.TableNextRow()
 						imgui.TableNextColumn()
-						enabled := ep.scopeDraw.departures[airport][rwy][exit]
-						imgui.Checkbox("##enable-"+airport+"-"+rwy+"-"+exit, &enabled)
-						ep.scopeDraw.departures[airport][rwy][exit] = enabled
+						enabled := ep.scopeDraw.departures[airport][string(rwy)][string(exit)]
+						imgui.Checkbox("##enable-"+airport+"-"+string(rwy)+"-"+string(exit), &enabled)
+						ep.scopeDraw.departures[airport][string(rwy)][string(exit)] = enabled
 
 						imgui.TableNextColumn()
 						imgui.Text(airport)
 						imgui.TableNextColumn()
-						rwyBase, _, _ := strings.Cut(rwy, ".")
+						rwyBase := rwy.Base()
 						imgui.Text(rwyBase)
 						imgui.TableNextColumn()
 						if len(routeToExit) == 1 {

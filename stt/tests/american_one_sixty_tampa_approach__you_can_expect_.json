@@ -1,0 +1,389 @@
+{
+  "time": "2026-01-29T18:32:43.209759377Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American one sixty Tampa approach  you can expect the ILS runway one niner left approach listen maintain three thousand maintain one eighty nine",
+  "whisper_duration_ms": 1306.572,
+  "audio_duration_ms": 7112,
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4151MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "AAL160",
+  "command": "EI9L A30 S180",
+  "stt_aircraft": {
+    "American one 60": {
+      "Callsign": "AAL160",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Jackball": "JKBAL",
+        "Lizard": "LZARD",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 7554,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Frontier Flight 56 61": {
+      "Callsign": "FFT5661",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Fadi": "FADDI",
+        "Jambob": "JMBOB",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19R",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "JetBlue niner 51": {
+      "Callsign": "JBU951",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA",
+        "slop": "SCLOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 4912,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest 49 79": {
+      "Callsign": "SWA4979",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 3000,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "United 98": {
+      "Callsign": "UAL98",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American one sixty Tampa approach  you can expect the ILS runway one niner left approach listen maintain three thousand maintain one eighty nine\"",
+    "[local-stt] normalized words: [american 1 60 tampa approach you can expect the ils runway 1 9 left approach listen maintain 3 thousand maintain 1 89]",
+    "[local-stt] tokens: 18",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"160\" Type=1 Value=160",
+    "[local-stt]   token[2]: Text=\"tampa\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"you\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"can\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[11]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"listen\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[16]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"189\" Type=1 Value=189",
+    "[local-stt] MatchCallsign: 18 tokens, 5 aircraft",
+    "[local-stt]   candidate \"JetBlue niner 51\" (ICAO=\"JBU951\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American one 60\" (ICAO=\"AAL160\"): score=1.10 consumed=2",
+    "[local-stt]   candidate \"United 98\" (ICAO=\"UAL98\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 49 79\" (ICAO=\"SWA4979\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Frontier Flight 56 61\" (ICAO=\"FFT5661\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American one 60\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
+    "[local-stt]   accepted: \"AAL160\" (conf=1.10, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"AAL160\" SpokenKey=\"American one 60\" Conf=1.10 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=7554 Fixes=3 Approaches=4 AssignedApproach=\"\" LAHSORunways=[10 28 10 28]",
+    "[local-stt]   fix: \"Lizard\" -\u003e \"LZARD\"",
+    "[local-stt]   fix: \"Jackball\" -\u003e \"JKBAL\"",
+    "[local-stt]   fix: \"Tampa\" -\u003e \"KTPA\"",
+    "[local-stt]   approach: \"I L S runway one niner left\" -\u003e \"I9L\"",
+    "[local-stt]   approach: \"r-nav runway one niner left\" -\u003e \"R9L\"",
+    "[local-stt]   approach: \"I L S runway one niner right\" -\u003e \"I9R\"",
+    "[local-stt]   approach: \"r-nav runway one niner right\" -\u003e \"R9R\"",
+    "[local-stt] command tokens after disregard: 16",
+    "[local-stt]   token[0]: Text=\"tampa\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"you\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"can\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[9]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"listen\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[14]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"189\" Type=1 Value=189",
+    "[local-stt]   position ID: found command keyword \"expect\" at position 4 - not just position ID",
+    "[local-stt] ParseCommands: 16 tokens",
+    "[local-stt]   no match at token[0]=\"tampa\", skipping",
+    "[local-stt]   no match at token[1]=\"approach\", skipping",
+    "[local-stt]   skipping filler word: \"you\"",
+    "[local-stt]   no match at token[3]=\"can\", skipping",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" runway=\"one niner left\" -\u003e \"I9L\" (consumed=4)",
+    "[local-stt]   matched command: \"EI9L\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt]   adding 2 fixes from approach I9L to aircraft context",
+    "[local-stt]   no match at token[10]=\"approach\", skipping",
+    "[local-stt]   no match at token[11]=\"listen\", skipping",
+    "[local-stt]   matched command: \"A30\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   matched command: \"S189\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[EI9L A30 S189] (avgConf=1.00)",
+    "[local-stt] parsed commands: [EI9L A30 S189] (conf=1.00)",
+    "[local-stt] validated commands: [EI9L A30 S189] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL160 EI9L A30 S189\" (conf=1.10, time=1.705ms) ==="
+  ]
+}

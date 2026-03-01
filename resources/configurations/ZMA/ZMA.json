@@ -1,0 +1,454 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZMA 01 PERMT",
+            "frequency": 125325,
+            "radio_name": "Miami Center"
+        },
+        "02": {
+            "callsign": "ZMA 02 HOBEE",
+            "frequency": 119825,
+            "radio_name": "Miami Center"
+        },
+        "04": {
+            "callsign": "ZMA 04 MELBOURNE LOW",
+            "frequency": 132250,
+            "radio_name": "Miami Center"
+        },
+        "05": {
+            "callsign": "ZMA 05 MARATHON",
+            "frequency": 132500,
+            "radio_name": "Miami Center"
+        },
+        "06": {
+            "callsign": "ZMA 06 KEY WEST",
+            "frequency": 132200,
+            "radio_name": "Miami Center"
+        },
+        "07": {
+            "callsign": "ZMA 07 SARASOTA",
+            "frequency": 132350,
+            "radio_name": "Miami Center"
+        },
+        "08": {
+            "callsign": "ZMA 08 CIGAR",
+            "frequency": 133900,
+            "radio_name": "Miami Center"
+        },
+        "17": {
+            "callsign": "ZMA 17 APOLO",
+            "frequency": 128650,
+            "radio_name": "Miami Center"
+        },
+        "18": {
+            "callsign": "ZMA 18 ADOOR",
+            "frequency": 134350,
+            "radio_name": "Miami Center"
+        },
+        "19": {
+            "callsign": "ZMA 19 NUCAR",
+            "frequency": 123675,
+            "radio_name": "Miami Center"
+        },
+        "20": {
+            "callsign": "ZMA 20 PALM BEACH LOW",
+            "frequency": 132150,
+            "radio_name": "Miami Center"
+        },
+        "21": {
+            "callsign": "ZMA 21 FREEPORT LOW",
+            "frequency": 133400,
+            "radio_name": "Miami Center"
+        },
+        "22": {
+            "callsign": "ZMA 22 BAIRN",
+            "frequency": 133475,
+            "radio_name": "Miami Center"
+        },
+        "23": {
+            "callsign": "ZMA 23 STOOP",
+            "frequency": 126950,
+            "radio_name": "Miami Center"
+        },
+        "24": {
+            "callsign": "ZMA 24 FORT MYERS LOW",
+            "frequency": 132400,
+            "radio_name": "Miami Center"
+        },
+        "25": {
+            "callsign": "ZMA 25 FORT MYERS HIGH",
+            "frequency": 128225,
+            "radio_name": "Miami Center"
+        },
+        "40": {
+            "callsign": "ZMA 40 BIMINI HIGH",
+            "frequency": 126325,
+            "radio_name": "Miami Center"
+        },
+        "41": {
+            "callsign": "ZMA 41 VIICE",
+            "frequency": 133850,
+            "radio_name": "Miami Center"
+        },
+        "42": {
+            "callsign": "ZMA 42 BIMINI LOW",
+            "frequency": 135600,
+            "radio_name": "Miami Center"
+        },
+        "43": {
+            "callsign": "ZMA 43 GREAT INAGUA",
+            "frequency": 123775,
+            "radio_name": "Miami Center"
+        },
+        "44": {
+            "callsign": "ZMA 44 ABACO LOW",
+            "frequency": 134200,
+            "radio_name": "Miami Center"
+        },
+        "46": {
+            "callsign": "ZMA 46 ALUTO",
+            "frequency": 135175,
+            "radio_name": "Miami Center"
+        },
+        "47": {
+            "callsign": "ZMA 47 LABELLE",
+            "frequency": 132450,
+            "radio_name": "Miami Center"
+        },
+        "58": {
+            "callsign": "ZMA 58 MILLE",
+            "frequency": 126275,
+            "radio_name": "Miami Center"
+        },
+        "59": {
+            "callsign": "ZMA 59 ABACO",
+            "frequency": 134800,
+            "radio_name": "Miami Center"
+        },
+        "60": {
+            "callsign": "ZMA 60 GEORGE TOWN",
+            "frequency": 127225,
+            "radio_name": "Miami Center"
+        },
+        "61": {
+            "callsign": "ZMA 61 NASSAU LOW",
+            "frequency": 125700,
+            "radio_name": "Miami Center"
+        },
+        "62": {
+            "callsign": "ZMA 62 GRAND TURK",
+            "frequency": 126450,
+            "radio_name": "Miami Center"
+        },
+        "63": {
+            "callsign": "ZMA 63 CERDA",
+            "frequency": 135200,
+            "radio_name": "Miami Center"
+        },
+        "64": {
+            "callsign": "ZMA 64 AVON",
+            "frequency": 126525,
+            "radio_name": "Miami Center"
+        },
+        "65": {
+            "callsign": "ZMA 65 BOYLE",
+            "frequency": 125075,
+            "radio_name": "Miami Center"
+        },
+        "66": {
+            "callsign": "ZMA 66 LAKELAND LOW",
+            "frequency": 134550,
+            "radio_name": "Miami Center"
+        },
+        "67": {
+            "callsign": "ZMA 67 LAKELAND HIGH",
+            "frequency": 127200,
+            "radio_name": "Miami Center"
+        },
+        "68": {
+            "callsign": "ZMA 68 SEBRING ULTRA HIGH",
+            "frequency": 133550,
+            "radio_name": "Miami Center"
+        },
+        "89": {
+            "callsign": "ZMA 89 FROSTY",
+            "frequency": 124825,
+            "radio_name": "Miami Center"
+        },
+        "99": {
+            "callsign": "ZMA 99 ZMA TMU",
+            "frequency": 121500,
+            "radio_name": "ZMA TMU"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "ECAKE": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "LACEN": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "RIDES": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "ALYNA": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "HAANZ": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "WISRD": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "GIRAF": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "LORRA": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "ZINGR": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "PRICY": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "SURFR": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "BAIRN": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "JOKRS": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "DSIDE": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZMA"
+                }
+            ],
+            "RAYZZ": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZMA"
+                }
+            ],
+            "OLENE": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZJX"
+                }
+            ],
+            "MAATY": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZJX"
+                }
+            ],
+            "BANGZ": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZJX"
+                }
+            ],
+            "LUBBR": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZJX"
+                }
+            ],
+            "HULKY": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "CUUDA": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "OLAHS": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "BANTY": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "WOOSA": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "YACKO": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "FROGZ": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "SNDBR": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "VIICE": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "DAB",
+            "stars_id": "YOO",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "F11",
+            "stars_id": "XOO",
+            "single_char_stars_id": "X",
+            "two_char_stars_id": "XO",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "HST",
+            "stars_id": "HHH",
+            "two_char_stars_id": "HH",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "JAX",
+            "stars_id": "WOO",
+            "two_char_stars_id": "WO",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "MIA",
+            "stars_id": "MMM",
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MM",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NQX",
+            "stars_id": "EEE",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "EE",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "PBI",
+            "stars_id": "PPP",
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "PP",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "RSW",
+            "stars_id": "FFF",
+            "single_char_stars_id": "F",
+            "two_char_stars_id": "FF",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "TPA",
+            "stars_id": "TTT",
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "TT",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "H"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "J"
+        }
+    ]
+}

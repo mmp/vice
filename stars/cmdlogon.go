@@ -15,7 +15,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func init() {
+func registerLogonCommands() {
 	// 3.11.1 Basic consolidation of inactive and future flights (p. 3-22)
 	// C[receiver][sender] - Basic consolidation
 	consolidate := func(sp *STARSPane, ctx *panes.Context, receiver sim.TCW, sender string, ty sim.ConsolidationType) {

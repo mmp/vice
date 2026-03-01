@@ -17,9 +17,9 @@ func TestFrequencyFormat(t *testing.T) {
 		s string
 	}
 
-	for _, fs := range []FS{FS{f: Frequency(121900), s: "121.900"},
-		FS{f: Frequency(130050), s: "130.050"},
-		FS{f: Frequency(128000), s: "128.000"},
+	for _, fs := range []FS{{f: Frequency(121900), s: "121.900"},
+		{f: Frequency(130050), s: "130.050"},
+		{f: Frequency(128000), s: "128.000"},
 	} {
 		if fs.f.String() != fs.s {
 			t.Errorf("Frequency String() %q; expected %q", fs.f.String(), fs.s)
@@ -61,10 +61,10 @@ func TestParseAltitudeRestriction(t *testing.T) {
 		ar AltitudeRestriction
 	}
 	for _, test := range []testcase{
-		testcase{s: "1000", ar: AltitudeRestriction{Range: [2]float32{1000, 1000}}},
-		testcase{s: "3000-5000", ar: AltitudeRestriction{Range: [2]float32{3000, 5000}}},
-		testcase{s: "7000+", ar: AltitudeRestriction{Range: [2]float32{7000, 0}}},
-		testcase{s: "9000-", ar: AltitudeRestriction{Range: [2]float32{0, 9000}}},
+		{s: "1000", ar: AltitudeRestriction{Range: [2]float32{1000, 1000}}},
+		{s: "3000-5000", ar: AltitudeRestriction{Range: [2]float32{3000, 5000}}},
+		{s: "7000+", ar: AltitudeRestriction{Range: [2]float32{7000, 0}}},
+		{s: "9000-", ar: AltitudeRestriction{Range: [2]float32{0, 9000}}},
 	} {
 		ar, err := ParseAltitudeRestriction(test.s)
 		if err != nil {
@@ -155,14 +155,14 @@ func TestApproachCWTSeparation(t *testing.T) {
 		expect      float32
 	}
 	for _, tc := range []testcase{
-		testcase{front: "B", back: "G", expect: 5},
-		testcase{front: "NOWGT", back: "G", expect: 10},
-		testcase{front: "A", back: "D", expect: 6},
-		testcase{front: "C", back: "D", expect: 0},
-		testcase{front: "C", back: "E", expect: 3.5},
-		testcase{front: "D", back: "B", expect: 3},
-		testcase{front: "E", back: "H", expect: 0},
-		testcase{front: "E", back: "I", expect: 4},
+		{front: "B", back: "G", expect: 5},
+		{front: "NOWGT", back: "G", expect: 10},
+		{front: "A", back: "D", expect: 6},
+		{front: "C", back: "D", expect: 0},
+		{front: "C", back: "E", expect: 3.5},
+		{front: "D", back: "B", expect: 3},
+		{front: "E", back: "H", expect: 0},
+		{front: "E", back: "I", expect: 4},
 	} {
 		if s := CWTApproachSeparation(tc.front, tc.back); s != tc.expect {
 			t.Errorf("CWTApproachSeparation(%q, %q) = %f. Expected %f", tc.front, tc.back, s, tc.expect)
@@ -176,16 +176,16 @@ func TestDirectlyBehindCWTSeparation(t *testing.T) {
 		expect      float32
 	}
 	for _, tc := range []testcase{
-		testcase{front: "B", back: "G", expect: 5},
-		testcase{front: "B", back: "I", expect: 5},
-		testcase{front: "NOWGT", back: "G", expect: 10},
-		testcase{front: "A", back: "D", expect: 6},
-		testcase{front: "C", back: "D", expect: 0},
-		testcase{front: "C", back: "E", expect: 3.5},
-		testcase{front: "D", back: "B", expect: 3},
-		testcase{front: "E", back: "H", expect: 0},
-		testcase{front: "E", back: "I", expect: 4},
-		testcase{front: "F", back: "I", expect: 0},
+		{front: "B", back: "G", expect: 5},
+		{front: "B", back: "I", expect: 5},
+		{front: "NOWGT", back: "G", expect: 10},
+		{front: "A", back: "D", expect: 6},
+		{front: "C", back: "D", expect: 0},
+		{front: "C", back: "E", expect: 3.5},
+		{front: "D", back: "B", expect: 3},
+		{front: "E", back: "H", expect: 0},
+		{front: "E", back: "I", expect: 4},
+		{front: "F", back: "I", expect: 0},
 	} {
 		if s := CWTDirectlyBehindSeparation(tc.front, tc.back); s != tc.expect {
 			t.Errorf("CWTDirectlyBehindSeparation(%q, %q) = %f. Expected %f", tc.front, tc.back, s, tc.expect)
@@ -193,29 +193,82 @@ func TestDirectlyBehindCWTSeparation(t *testing.T) {
 	}
 }
 
+func TestCWT25nmReductionAllowed(t *testing.T) {
+	type testcase struct {
+		front, back string
+		expect      bool
+	}
+	for _, tc := range []testcase{
+		// Valid: front lighter or same as back
+		{front: "E", back: "A", expect: true},
+		{front: "E", back: "E", expect: true},
+		{front: "G", back: "C", expect: true},
+		{front: "I", back: "I", expect: true},
+		// Invalid: front is heavy/super (A-D)
+		{front: "A", back: "A", expect: false},
+		{front: "D", back: "E", expect: false},
+		// Invalid: front lighter than back (higher letter)
+		{front: "E", back: "F", expect: false},
+		// Invalid: bad categories
+		{front: "NOWGT", back: "E", expect: false},
+		{front: "E", back: "NOWGT", expect: false},
+	} {
+		if got := CWT25nmReductionAllowed(tc.front, tc.back); got != tc.expect {
+			t.Errorf("CWT25nmReductionAllowed(%q, %q) = %v, expected %v", tc.front, tc.back, got, tc.expect)
+		}
+	}
+}
+
+func TestCWTRequiredApproachSeparation(t *testing.T) {
+	type testcase struct {
+		front, back  string
+		eligible25nm bool
+		expect       float32
+	}
+	for _, tc := range []testcase{
+		// Table lookup value, no 2.5nm
+		{front: "B", back: "G", eligible25nm: false, expect: 5},
+		// Zero from table → defaults to 3
+		{front: "G", back: "G", eligible25nm: false, expect: 3},
+		// 2.5nm eligible and allowed
+		{front: "E", back: "A", eligible25nm: true, expect: 2.5},
+		{front: "G", back: "G", eligible25nm: true, expect: 2.5},
+		// 2.5nm eligible but not allowed (front is heavy/super)
+		{front: "A", back: "I", eligible25nm: true, expect: 8},
+		{front: "D", back: "I", eligible25nm: true, expect: 6},
+		// Not eligible even though categories would allow
+		{front: "E", back: "A", eligible25nm: false, expect: 3},
+	} {
+		if got := CWTRequiredApproachSeparation(tc.front, tc.back, tc.eligible25nm); got != tc.expect {
+			t.Errorf("CWTRequiredApproachSeparation(%q, %q, %v) = %v, expected %v",
+				tc.front, tc.back, tc.eligible25nm, got, tc.expect)
+		}
+	}
+}
+
 func TestLocalSquawkCodePool(t *testing.T) {
 	spec := LocalSquawkCodePoolSpecifier{
 		Pools: map[string]PoolSpecifier{
-			"ifr": PoolSpecifier{
+			"ifr": {
 				Ranges:  []string{"0101-0177"},
 				Backups: "1",
 			},
-			"vfr": PoolSpecifier{
+			"vfr": {
 				Ranges:  []string{"0201-0277"},
 				Backups: "2",
 			},
-			"1": PoolSpecifier{
+			"1": {
 				Ranges:  []string{"0301-0377"},
 				Backups: "234",
 			},
-			"2": PoolSpecifier{
+			"2": {
 				Ranges:  []string{"0401-0477"},
 				Backups: "341",
 			},
-			"3": PoolSpecifier{
+			"3": {
 				Ranges: []string{"1602"},
 			},
-			"4": PoolSpecifier{
+			"4": {
 				Ranges:  []string{"0501-0577"},
 				Backups: "12",
 			},

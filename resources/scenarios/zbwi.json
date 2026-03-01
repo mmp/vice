@@ -1,375 +1,282 @@
 {
-  "artcc": "ZBW",
-  "area": "Area I",
-  "name": "ZBW Area I",
-  "airports": {
-    "KBOS": {
-      "approaches": {
-        "I2L": {
-          "cifp_id": "I22L"
-        },
-        "I4R": {
-          "cifp_id": "I4R"
-        },
-        "R4L": {
-          "cifp_id": "R4L"
-        },
-        "I27": {
-          "cifp_id": "I27"
-        },
-        "I3L": {
-          "cifp_id": "I33L"
-        },
-        "I5R": {
-          "cifp_id": "I15R"
-        },
-        "R32": {
-          "cifp_id": "R32"
-        }
-      },
-      "departure_controller": "Boston Departure (ID)",
-      "departure_routes": {
-        "22R": {
-          "HYLND": {
-            "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "TJAYY/a1200+ BOATT/hoB1R HEARR MARBB/flyover HYLND/flyover"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "POE"
-            }
-          ],
-          "altitude": 28000,
-          "destination": "CYTZ",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND WAYGO ALVID ILIXU ILIXU1"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL"
-            }
-          ],
-          "altitude": 34000,
-          "destination": "KDTW",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND CAM Q822 GONZZ DONEO CUUGR2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "JBU"
-            }
-          ],
-          "altitude": 28000,
-          "destination": "KBUF",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND SYR ROC EHMAN"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "ASA"
-            }
-          ],
-          "altitude": 32000,
-          "destination": "KSFO",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND HANAA Q816 HOCKE SLLAP DUTYS MCW ONTIJ KD87Y KU81S GANNE KU72M FIMUV ILA MRRLO BDEGA4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL"
-            }
-          ],
-          "altitude": 32000,
-          "destination": "KLAX",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND HANAA Q816 HOCKE GRB ODI FSD J114 DVV J60 HVE PROMT Q88 HAKMN ANJLL4"
-        }
-      ]
-    },
-    "KJFK": {
-      "approaches": {
-        "I2L": {
-          "cifp_id": "I22L"
-        },
-        "I4R": {
-          "cifp_id": "I4R"
-        }
-      },
-      "departure_controller": "New York Departure (JFK)",
-      "departure_routes": {
-        "22R": {
-          "MERIT, GREKI, BAYYS, BDR, BETTE": {
-            "cleared_altitude": 17000,
-            "sid": "JFK5",
-            "waypoints": "CPF/hoN5W BOUNO ROBER/ho",
-            "handoff_controller": "ZBW Nantucket 17"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "POE"
-            }
-          ],
-          "altitude": 28000,
-          "destination": "CYTZ",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND WAYGO ALVID ILIXU ILIXU1"
-        }
-      ]
-    }
-  },
-  "inbound_flows": {
-    "PARCH4-ENE": {
-      "arrivals": [
-        {
-          "waypoints": "ENE ASPEN/ho19 TRAIT/a24000 PARCH CCC/a12000 ROBER/delete",
-          "cruise_altitude": 35000,
-          "star": "PARCH4",
-          "route": "/. PARCH4",
-          "initial_controller": "ZBW Nantucket 17",
-          "initial_altitude": 38000,
-          "initial_speed": 300,
-          "airlines": {
-            "KJFK": [
-              {
-                "icao": "JZA",
-                "types": ["E75L"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ACA",
-                "types": ["A21N"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ASA",
-                "types": ["B39M"],
-                "airport": "KSEA"
-              },
-              {
-                "icao": "UAL",
-                "types": ["B39M"],
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "types": ["B738"],
-                "airport": "KDTW"
-              }
+    "artcc": "ZBW",
+    "area": "Area I",
+    "name": "ZBW Area I",
+    "airports": {
+        "KBOS": {
+            "approaches": {
+                "I2L": {
+                    "cifp_id": "I22L"
+                },
+                "I4R": {
+                    "cifp_id": "I4R"
+                },
+                "R4L": {
+                    "cifp_id": "R4L"
+                },
+                "I27": {
+                    "cifp_id": "I27"
+                },
+                "I3L": {
+                    "cifp_id": "I33L"
+                },
+                "I5R": {
+                    "cifp_id": "I15R"
+                },
+                "R32": {
+                    "cifp_id": "R32"
+                }
+            },
+            "departure_controller": "B1D",
+            "departure_routes": {
+                "22R": {
+                    "HYLND": {
+                        "cleared_altitude": 5000,
+                        "sid": "HYLND7",
+                        "waypoints": "TJAYY/a1200+ BOATT/hoB1R HEARR MARBB/flyover HYLND/flyover"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "POE"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "CYTZ",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND WAYGO ALVID ILIXU ILIXU1"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL"
+                        }
+                    ],
+                    "altitude": 34000,
+                    "destination": "KDTW",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND CAM Q822 GONZZ DONEO CUUGR2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "JBU"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "KBUF",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND SYR ROC EHMAN"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "ASA"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KSFO",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND HANAA Q816 HOCKE SLLAP DUTYS MCW ONTIJ KD87Y KU81S GANNE KU72M FIMUV ILA MRRLO BDEGA4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KLAX",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND HANAA Q816 HOCKE GRB ODI FSD J114 DVV J60 HVE PROMT Q88 HAKMN ANJLL4"
+                }
             ]
-          }
-        }
-      ]
-    },
-    "PARCH4-SEY": {
-      "arrivals": [
-        {
-          "waypoints": "LFV/ho SEY PARCH CCC/a12000 ROBER/delete",
-          "cruise_altitude": 22000,
-          "star": "PARCH4",
-          "route": "/. PARCH4",
-          "initial_controller": "ZBW Danbury 19",
-          "initial_altitude": 22000,
-          "initial_speed": 300,
-          "airlines": {
-            "KJFK": [
-              {
-                "icao": "JZA",
-                "types": ["E75L"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ACA",
-                "types": ["A21N"],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ASA",
-                "types": ["B39M"],
-                "airport": "KSEA"
-              },
-              {
-                "icao": "UAL",
-                "types": ["B39M"],
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "types": ["B738"],
-                "airport": "KDTW"
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  "control_positions": {
-    "ZBW Gardner 36": {
-      "frequency": 123750,
-      "eram_facility": true,
-      "radio_name": "Boston Center",
-      "sector_id": "36"
-    },
-    "ZBW Danbury 19": {
-      "frequency": 134000,
-      "eram_facility": true,
-      "radio_name": "Boston Center",
-      "sector_id": "19"
-    },
-    "ZBW Nantucket 17": {
-      "frequency": 133450,
-      "eram_facility": true,
-      "radio_name": "Boston Center",
-      "sector_id": "17"
-    },
-    "N90 ROBER": {
-      "frequency": 125700,
-      "radio_name": "New York Approach",
-      "sector_id": "2K",
-      "facility": "N90",
-      "facility_id": "N"
-    },
-    "New York Departure (JFK)": {
-      "frequency": 135900,
-      "radio_name": "New York Departure",
-      "sector_id": "2J",
-      "facility": "N90",
-      "facility_id": "N"
-    },
-    "New York Departure (LIB)": {
-      "frequency": 120850,
-      "radio_name": "New York Departure",
-      "sector_id": "5W",
-      "facility": "N90",
-      "facility_id": "N"
-    },
-    "N90 HAARP": {
-      "frequency": 120800,
-      "radio_name": "New York Approach",
-      "sector_id": "1V",
-      "facility": "N90",
-      "facility_id": "N"
-    },
-    "EWR Yardley": {
-      "frequency": 128550,
-      "radio_name": "Newark Approach",
-      "sector_id": "4P",
-      "facility": "EWR",
-      "facility_id": "N"
-    },
-    "A90 Rockport": {
-      "frequency": 118250,
-      "radio_name": "Boston Approach",
-      "sector_id": "1R",
-      "facility": "A90",
-      "facility_id": "B"
-    },
-    "Boston Departure (ID)": {
-      "frequency": 133000,
-      "radio_name": "Boston Departure",
-      "sector_id": "1D",
-      "facility": "A90",
-      "facility_id": "B"
-    },
-    "ZDC Gordonsville 32": {
-      "frequency": 133725,
-      "radio_name": "Washington Center",
-      "sector_id": "W32",
-      "facility_id": "W",
-      "eram_facility": true,
-      "facility": "ZDC"
-    },
-    "ZNY Kennedy 56": {
-      "frequency": 125325,
-      "radio_name": "New York Center",
-      "sector_id": "N56",
-      "facility_id": "N",
-      "eram_facility": true,
-      "facility": "ZNY"
-    }
-  },
-  "default_scenario": "ZBW Danbury 19",
-  "scenarios": {
-    "ZBW Danbury 19": {
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "ZBW Danbury 19": []
-        }
-      },
-      "controllers": [
-        "ZBW Gardner 36",
-        "ZNY Kennedy 56",
-        "N90 ROBER",
-        "New York Departure (JFK)",
-        "New York Departure (LIB)",
-        "ZBW Nantucket 17",
-        "ZBW Danbury 19",
-        "EWR Yardley",
-        "N90 HAARP",
-        "A90 Rockport",
-        "Boston Departure (ID)",
-        "ZDC Gordonsville 32"
-      ],
-      "default_maps": ["TRACON", "HIGH SCTRS", "LOW SCTRS"],
-      "default_map_group": "ZBWMAP",
-      "departure_runways": [
-        {
-          "airport": "KBOS",
-          "rate": 6,
-          "runway": "22R"
-        }
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KBOS",
-          "runway": "22L"
         },
-        {
-          "airport": "KJFK",
-          "runway": "22L"
+        "KJFK": {
+            "approaches": {
+                "I2L": {
+                    "cifp_id": "I22L"
+                },
+                "I4R": {
+                    "cifp_id": "I4R"
+                }
+            },
+            "departure_controller": "NNN2J",
+            "departure_routes": {
+                "22R": {
+                    "BETTE": {
+                        "cleared_altitude": 11000,
+                        "sid": "JFK5",
+                        "waypoints": "KJFK-4L N040.31.58.130,W073.46.58.624/ho",
+                        "handoff_controller": "17"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "BAW"
+                        }
+                    ],
+                    "destination": "EGLL",
+                    "exit": "BETTE",
+                    "route": "BETTE ACK KANNI N171E PORTI NATT XETBO EVRIN JETZI AMFUL ORZEB P2 SIRIC SIRI1H"
+                }
+            ]
         }
-      ],
-      "inbound_rates": {
+    },
+    "inbound_flows": {
         "PARCH4-ENE": {
-          "KJFK": 20
+            "arrivals": [
+                {
+                    "waypoints": "ENE ASPEN/ho19 TRAIT/a24000 PARCH CCC/a12000 ROBER/delete",
+                    "cruise_altitude": 35000,
+                    "star": "PARCH4",
+                    "route": "/. PARCH4",
+                    "initial_controller": "17",
+                    "initial_altitude": 38000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KJFK": [
+                            {
+                                "icao": "JZA",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ACA",
+                                "types": [
+                                    "A21N"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ASA",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "UAL",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "B738"
+                                ],
+                                "airport": "KDTW"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "PARCH4-SEY": {
-          "KJFK": 20
+            "arrivals": [
+                {
+                    "waypoints": "LFV/ho SEY PARCH CCC/a12000 ROBER/delete",
+                    "cruise_altitude": 22000,
+                    "star": "PARCH4",
+                    "route": "/. PARCH4",
+                    "initial_controller": "19",
+                    "initial_altitude": 22000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KJFK": [
+                            {
+                                "icao": "JZA",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ACA",
+                                "types": [
+                                    "A21N"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ASA",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "UAL",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "B738"
+                                ],
+                                "airport": "KDTW"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      },
-      "wind": {
-        "direction": "130-180",
-        "speed": "5+",
-        "flight_rules": "VMC"
-      }
-    }
-  },
-  "stars_config": {
-    "configurations": {
-      "STD": {
-        "inbound_assignments": {
-          "PARCH4-SEY": "ZBW Danbury 19"
-        }
-      }
     },
-
-    "center": "PVD",
-    "range": 70,
-    "stars_maps": ["TRACON"],
-    "video_map_file": "videomaps/ZBW-eram-videomaps.gob.zst"
-  }
+    "default_scenario": "19",
+    "scenarios": {
+        "19": {
+            "configuration": {
+                "config_id": "ZBW"
+            },
+            "default_maps": [
+                "TRACON",
+                "HIGH SCTRS",
+                "LOW SCTRS"
+            ],
+            "default_map_group": "ZBWMAP",
+            "departure_runways": [
+                {
+                    "airport": "KBOS",
+                    "rate": 6,
+                    "runway": "22R"
+                }
+            ],
+            "arrival_runways": [
+                {
+                    "airport": "KBOS",
+                    "runway": "22L"
+                },
+                {
+                    "airport": "KJFK",
+                    "runway": "22L"
+                }
+            ],
+            "inbound_rates": {
+                "PARCH4-ENE": {
+                    "KJFK": 20
+                },
+                "PARCH4-SEY": {
+                    "KJFK": 20
+                }
+            },
+            "wind": {
+                "direction": "130-180",
+                "speed": "5+",
+                "flight_rules": "VMC"
+            }
+        }
+    }
 }

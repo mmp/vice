@@ -1,0 +1,323 @@
+{
+  "time": "2026-01-31T14:36:07.761214984Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Turkish Six Five Golf heavy descend and maintain four thousand flight heading two nine r zero join localizer",
+  "whisper_duration_ms": 157.179,
+  "audio_duration_ms": 5320,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "THY65G",
+  "command": "D40 H290 I",
+  "stt_aircraft": {
+    "Air Serbia six zero three heavy": {
+      "Callsign": "ASL603",
+      "AircraftType": "A332",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "All Nippon five heavy": {
+      "Callsign": "ANA5",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3848,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Delta 48": {
+      "Callsign": "DAL48",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Turkish 65 golf heavy": {
+      "Callsign": "THY65G",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Turkish Six Five Golf heavy descend and maintain four thousand flight heading two nine r zero join localizer\"",
+    "[local-stt] normalized words: [turkish 6 5 golf heavy descend and maintain 4 thousand flight heading 2 9 r 0 join localizer]",
+    "[local-stt] tokens: 15",
+    "[local-stt]   token[0]: Text=\"turkish\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"65\" Type=1 Value=65",
+    "[local-stt]   token[2]: Text=\"golf\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"40\" Type=2 Value=40",
+    "[local-stt]   token[8]: Text=\"flight\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"29\" Type=1 Value=29",
+    "[local-stt]   token[11]: Text=\"r\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"0\" Type=1 Value=0",
+    "[local-stt]   token[13]: Text=\"join\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 15 tokens, 4 aircraft",
+    "[local-stt]   exact match: \"turkish 65 golf heavy\" -\u003e \"THY65G\" (consumed 4)",
+    "[local-stt] callsign match: Callsign=\"THY65G\" SpokenKey=\"Turkish 65 golf heavy\" Conf=1.00 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=5 Approaches=4 AssignedApproach=\"ILS Runway 31R\" LAHSORunways=[4L 22R 4L 22R 4R 22L]",
+    "[local-stt]   fix: \"Catod\" -\u003e \"CATOD\"",
+    "[local-stt]   fix: \"Maldey\" -\u003e \"MALDE\"",
+    "[local-stt]   fix: \"Zulab\" -\u003e \"ZULAB\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   approach: \"I L S runway three one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"r-nav runway three one left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"I L S runway three one right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"r-nav runway three one right\" -\u003e \"R1R\"",
+    "[local-stt] command tokens after disregard: 11",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"40\" Type=2 Value=40",
+    "[local-stt]   token[4]: Text=\"flight\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"29\" Type=1 Value=29",
+    "[local-stt]   token[7]: Text=\"r\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"0\" Type=1 Value=0",
+    "[local-stt]   token[9]: Text=\"join\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"descend\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 11 tokens",
+    "[local-stt]   matched command: \"D40\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[4]=\"flight\", skipping",
+    "[local-stt]   matched command: \"H290\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   no match at token[7]=\"r\", skipping",
+    "[local-stt]   no match at token[8]=\"0\", skipping",
+    "[local-stt]   matched command: \"I\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[D40 H290 I] (avgConf=1.00)",
+    "[local-stt] parsed commands: [D40 H290 I] (conf=1.00)",
+    "[local-stt] validated commands: [D40 H290 I] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"THY65G D40 H290 I\" (conf=1.00, time=513.7µs) ==="
+  ]
+}

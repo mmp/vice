@@ -7,10 +7,8 @@ package server
 import (
 	"fmt"
 	"log/slog"
-	"strings"
 	"time"
 
-	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
@@ -598,11 +596,12 @@ type AircraftCommandsArgs struct {
 	Commands          string
 	Multiple          bool
 	ClickedTrack      bool
-	EnableTTS         bool                    // Whether to synthesize readback audio
-	WhisperDuration   time.Duration           // Time from PTT release to whisper completion (zero for keyboard input)
-	AudioDuration     time.Duration           // Duration of the recorded audio (zero for keyboard input)
-	WhisperTranscript string                  // Raw whisper transcript (empty for keyboard input)
-	WhisperProcessor  string                  // Description of the processor running whisper (GPU model or CPU info)
+	EnableTTS         bool          // Whether to synthesize readback audio
+	WhisperDuration   time.Duration // Time from PTT release to whisper completion (zero for keyboard input)
+	AudioDuration     time.Duration // Duration of the recorded audio (zero for keyboard input)
+	WhisperTranscript string        // Raw whisper transcript (empty for keyboard input)
+	WhisperProcessor  string        // Description of the processor running whisper (GPU model or CPU info)
+	WhisperModel      string
 	AircraftContext   map[string]stt.Aircraft // Aircraft context used for STT decoding (for logging)
 	STTDebugLogs      []string                // Local STT processing logs (for logging)
 }
@@ -610,9 +609,11 @@ type AircraftCommandsArgs struct {
 // If an RPC call returns an error, then the result argument is not returned(!?).
 // So we don't use the error type for syntax errors...
 type AircraftCommandsResult struct {
-	ErrorMessage   string
-	RemainingInput string
-	Readback       *sim.PilotSpeech // Synthesized readback audio if EnableTTS was set
+	ErrorMessage      string
+	RemainingInput    string
+	ReadbackText      string          // Text for client to synthesize
+	ReadbackVoiceName string          // Voice name for synthesis (e.g., "am_adam")
+	ReadbackCallsign  av.ADSBCallsign // Callsign for the readback
 }
 
 const RunAircraftCommandsRPC = "Sim.RunAircraftCommands"
@@ -626,7 +627,6 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	}
 
 	callsign := cmds.Callsign
-	simTime := c.sim.SimTime()
 
 	rewriteError := func(err error) {
 		result.RemainingInput = cmds.Commands
@@ -635,13 +635,12 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		}
 	}
 
-	// Helper to synthesize TTS for readback
-	synthesizeReadback := func(spokenText string) {
+	// Helper to populate readback fields for client-side TTS synthesis.
+	setReadback := func(spokenText string) {
 		if cmds.EnableTTS && spokenText != "" {
-			result.Readback = SynthesizeSpeechWithTimeout(
-				c.session.voiceAssigner, sd.sm.tts, callsign,
-				av.RadioTransmissionReadback, spokenText, simTime,
-				2*time.Second, sd.sm.lg)
+			result.ReadbackText = spokenText
+			result.ReadbackVoiceName = c.sim.VoiceAssigner.GetVoice(callsign, c.sim.Rand)
+			result.ReadbackCallsign = callsign
 		}
 	}
 
@@ -650,14 +649,14 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		if err != nil {
 			rewriteError(err)
 		}
-		synthesizeReadback(spokenText)
+		setReadback(spokenText)
 		return nil // don't continue with the commands
 	} else if !cmds.ClickedTrack && c.sim.ShouldTriggerPilotMixUp(callsign) {
 		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
 		if err != nil {
 			rewriteError(err)
 		}
-		synthesizeReadback(spokenText)
+		setReadback(spokenText)
 		return nil // don't continue with the commands
 	}
 
@@ -666,7 +665,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	if execResult.Error != nil {
 		result.ErrorMessage = execResult.Error.Error()
 	}
-	synthesizeReadback(execResult.ReadbackSpokenText)
+	setReadback(execResult.ReadbackSpokenText)
 
 	// Log whisper STT commands (WhisperDuration is non-zero for voice commands)
 	if cmds.WhisperDuration > 0 {
@@ -675,6 +674,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 			slog.Float64("whisper_duration_ms", float64(cmds.WhisperDuration.Microseconds())/1000.0),
 			slog.Float64("audio_duration_ms", float64(cmds.AudioDuration.Microseconds())/1000.0),
 			slog.String("processor", cmds.WhisperProcessor),
+			slog.String("whisper_model", cmds.WhisperModel),
 			slog.String("callsign", string(cmds.Callsign)),
 			slog.String("command", cmds.Commands),
 			slog.Any("stt_aircraft", cmds.AircraftContext),
@@ -716,7 +716,7 @@ func (sd *dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error 
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	c.sim.LaunchAircraft(ls.Aircraft, ls.DepartureRunway)
+	c.sim.LaunchAircraft(ls.Aircraft, av.RunwayID(ls.DepartureRunway))
 	return nil
 }
 
@@ -740,7 +740,7 @@ func (sd *dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *sim.Aircra
 	var ac *sim.Aircraft
 	var err error
 	if da.Rules == av.FlightRulesIFR {
-		ac, err = c.sim.CreateIFRDeparture(da.Airport, da.Runway, da.Category)
+		ac, err = c.sim.CreateIFRDeparture(da.Airport, av.RunwayID(da.Runway), da.Category)
 	} else {
 		ac, err = c.sim.CreateVFRDeparture(da.Airport)
 	}
@@ -959,26 +959,20 @@ func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResu
 	return err
 }
 
-// STTBugReportArgs contains data for an STT bug report.
-type STTBugReportArgs struct {
+type FDAMConfigArgs struct {
 	ControllerToken string
-	PrevTranscript  string                  // Transcript of the previous transmission
-	PrevCommand     string                  // Decoded command from previous transmission
-	AircraftContext map[string]stt.Aircraft // Aircraft context used for decoding
-	DebugLogs       []string                // Debug log lines from the decode
-	UserExplanation string                  // User's explanation of the issue
-	ReportTime      time.Time
-
-	// GPU and performance information
-	GPUInfo           whisper.GPUInfo // GPU acceleration status and devices
-	WhisperModelName  string          // Name of the whisper model being used
-	RecentDurations   []time.Duration // Recent whisper transcription durations
-	IsSlowPerformance bool            // True if this is an automatic slow performance report
+	Op              sim.FDAMConfigOp
+	RegionId        string
 }
 
-const ReportSTTBugRPC = "Sim.ReportSTTBug"
+type FDAMConfigResult struct {
+	SimStateUpdate
+	Output string
+}
 
-func (sd *dispatcher) ReportSTTBug(args *STTBugReportArgs, _ *struct{}) error {
+const ConfigureFDAMRPC = "Sim.ConfigureFDAM"
+
+func (sd *dispatcher) ConfigureFDAM(args *FDAMConfigArgs, result *FDAMConfigResult) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	c := sd.sm.LookupController(args.ControllerToken)
@@ -986,41 +980,72 @@ func (sd *dispatcher) ReportSTTBug(args *STTBugReportArgs, _ *struct{}) error {
 		return ErrNoSimForControllerToken
 	}
 
-	// Format GPU device info for logging
-	gpuDevices := util.MapSlice(args.GPUInfo.Devices, func(dev whisper.GPUDeviceInfo) string {
-		return fmt.Sprintf("%s (idx=%d, type=%s, mem=%dMB/%dMB)",
-			dev.Description, dev.Index, dev.DeviceType, dev.FreeMemory/(1024*1024), dev.TotalMemory/(1024*1024))
-	})
+	var err error
+	result.Output, err = c.sim.ConfigureFDAM(args.Op, args.RegionId)
+	if err == nil {
+		result.SimStateUpdate = c.GetStateUpdate()
+	}
+	return err
+}
 
-	// Format recent durations for logging
-	durationsStr := util.MapSlice(args.RecentDurations, func(d time.Duration) string { return d.String() })
+type RequestContactArgs struct {
+	ControllerToken string
+}
 
-	// Format aircraft context for logging
-	aircraftStr := util.MapSlice(util.SortedMapKeys(args.AircraftContext), func(telephony string) string {
-		ac := args.AircraftContext[telephony]
-		return fmt.Sprintf("%s: %s state=%s alt=%d", telephony, ac.Callsign, ac.State, ac.Altitude)
-	})
+type RequestContactResult struct {
+	ContactText      string          // Text to synthesize
+	ContactVoiceName string          // Voice name for synthesis (e.g., "am_adam")
+	ContactCallsign  av.ADSBCallsign // Callsign of the aircraft
+	ContactType      av.RadioTransmissionType
+}
 
-	reportType := util.Select(args.IsSlowPerformance, "slow_performance", "user")
-	logFunc := util.Select(args.IsSlowPerformance, sd.sm.lg.Warn, sd.sm.lg.Info)
+const RequestContactTransmissionRPC = "Sim.RequestContactTransmission"
 
-	logFunc("STT Bug Report",
-		slog.String("type", reportType),
-		slog.String("tcw", string(c.tcw)),
-		slog.String("transcript", args.PrevTranscript),
-		slog.String("decoded_command", args.PrevCommand),
-		slog.String("user_explanation", args.UserExplanation),
-		slog.Time("report_time", args.ReportTime),
-		// GPU info
-		slog.String("whisper_model", args.WhisperModelName),
-		slog.Bool("gpu_enabled", args.GPUInfo.Enabled),
-		slog.Int("gpu_selected_idx", args.GPUInfo.SelectedIndex),
-		slog.String("gpu_devices", strings.Join(gpuDevices, "; ")),
-		slog.String("recent_durations", strings.Join(durationsStr, ", ")),
-		// STT context
-		slog.String("debug_logs", strings.Join(args.DebugLogs, "\n")),
-		slog.String("aircraft_context", strings.Join(aircraftStr, "; ")),
-	)
+func (sd *dispatcher) RequestContactTransmission(args *RequestContactArgs, result *RequestContactResult) error {
+	defer sd.sm.lg.CatchAndReportCrash()
 
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+
+	// Request a contact from the session - returns text and voice name for client-side synthesis
+	result.ContactText, result.ContactVoiceName, result.ContactCallsign, result.ContactType = c.session.RequestContact(c.tcw)
 	return nil
+}
+
+type PushFlightStripArgs struct {
+	ControllerToken string
+	ACID            sim.ACID
+	ToTCP           sim.TCP
+}
+
+const PushFlightStripRPC = "Sim.PushFlightStrip"
+
+func (sd *dispatcher) PushFlightStrip(args *PushFlightStripArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	return c.sim.PushFlightStrip(c.tcw, args.ACID, args.ToTCP)
+}
+
+type AnnotateFlightStripArgs struct {
+	ControllerToken string
+	ACID            sim.ACID
+	Annotations     [9]string
+}
+
+const AnnotateFlightStripRPC = "Sim.AnnotateFlightStrip"
+
+func (sd *dispatcher) AnnotateFlightStrip(args *AnnotateFlightStripArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	return c.sim.AnnotateFlightStrip(c.tcw, args.ACID, args.Annotations)
 }

@@ -28,6 +28,7 @@ type AircraftCommandRequest struct {
 	WhisperDuration   time.Duration
 	AudioDuration     time.Duration
 	WhisperTranscript string
+	WhisperModel      string
 	AircraftContext   map[string]stt.Aircraft
 	STTDebugLogs      []string
 }
@@ -414,10 +415,14 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 	handleResult func(message string, remainingInput string)) {
 	// Determine if TTS is enabled for this command
-	enableTTS := c.HaveTTS() && (c.disableTTSPtr == nil || !*c.disableTTSPtr) && req.Commands != "P" && req.Commands != "X"
+	enableTTS := !*c.disableTTSPtr && req.Commands != "P" && req.Commands != "X"
 
-	// Capture PTT release time now (before async RPC) - will be zero for non-STT commands
-	pttReleaseTime := c.GetAndClearPTTReleaseTime()
+	// Hold transmissions BEFORE the async RPC to prevent contact requests
+	// between RPC call and callback. Released when readback arrives, or
+	// in callback if server didn't queue a readback.
+	if enableTTS {
+		c.transmissions.Hold()
+	}
 
 	// Get processor info for voice commands
 	var processorDesc string
@@ -425,6 +430,7 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 		processorDesc = whisper.ProcessorDescription()
 	}
 
+	rpcStart := time.Now()
 	var result server.AircraftCommandsResult
 	c.addCall(makeRPCCall(c.client.Go(server.RunAircraftCommandsRPC, &server.AircraftCommandsArgs{
 		ControllerToken:   c.controllerToken,
@@ -437,21 +443,60 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 		AudioDuration:     req.AudioDuration,
 		WhisperTranscript: req.WhisperTranscript,
 		WhisperProcessor:  processorDesc,
+		WhisperModel:      req.WhisperModel,
 		AircraftContext:   req.AircraftContext,
 		STTDebugLogs:      req.STTDebugLogs,
 	}, &result, nil),
 		func(err error) {
-			// Handle readback from RPC result
-			if result.Readback != nil {
-				// Set PTT release time for latency tracking (only set for STT commands)
-				result.Readback.PTTReleaseTime = pttReleaseTime
-				c.transmissions.EnqueueReadback(*result.Readback)
+			rpcDuration := time.Since(rpcStart)
+			if req.WhisperDuration > 0 {
+				c.lg.Infof("RPC round-trip: %v", rpcDuration)
 			}
+
+			// Synthesize readback locally if text was returned
+			if enableTTS && result.ReadbackText != "" {
+				go c.synthesizeAndEnqueueReadback(result.ReadbackCallsign, result.ReadbackText, result.ReadbackVoiceName)
+			} else if enableTTS {
+				// No readback text - release hold
+				c.transmissions.Unhold()
+			}
+
 			if handleResult != nil {
 				handleResult(result.ErrorMessage, result.RemainingInput)
 			}
 			if err != nil {
 				c.lg.Errorf("%s: %v", req.Callsign, err)
+			}
+		}))
+}
+
+// RequestContactTransmission requests the next pending contact transmission from the server.
+// The result (if any) will be synthesized locally and enqueued for playback.
+func (c *ControlClient) RequestContactTransmission() {
+	c.transmissions.SetContactRequested(true)
+
+	var result server.RequestContactResult
+	c.addCall(makeRPCCall(c.client.Go(server.RequestContactTransmissionRPC, &server.RequestContactArgs{
+		ControllerToken: c.controllerToken,
+	}, &result, nil),
+		func(err error) {
+			c.transmissions.SetContactRequested(false)
+
+			if err != nil {
+				c.lg.Errorf("RequestContactTransmission: %v", err)
+				return
+			}
+
+			if result.ContactText != "" {
+				if *c.disableTTSPtr {
+					// Contact was processed on server (pilot joins frequency, text event posted)
+					// but user doesn't want audio. Set a hold to maintain pacing.
+					c.transmissions.HoldAfterSilentContact(result.ContactCallsign)
+					return
+				}
+
+				go c.synthesizeAndEnqueueContact(result.ContactCallsign, result.ContactType,
+					result.ContactText, result.ContactVoiceName)
 			}
 		}))
 }
@@ -462,6 +507,20 @@ func (c *ControlClient) ConfigureATPA(op sim.ATPAConfigOp, volumeId string, call
 		ControllerToken: c.controllerToken,
 		Op:              op,
 		VolumeId:        volumeId,
+	}, &result, nil), &result.SimStateUpdate,
+		func(err error) {
+			if callback != nil {
+				callback(result.Output, err)
+			}
+		}))
+}
+
+func (c *ControlClient) ConfigureFDAM(op sim.FDAMConfigOp, regionId string, callback func(output string, err error)) {
+	var result server.FDAMConfigResult
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ConfigureFDAMRPC, &server.FDAMConfigArgs{
+		ControllerToken: c.controllerToken,
+		Op:              op,
+		RegionId:        regionId,
 	}, &result, nil), &result.SimStateUpdate,
 		func(err error) {
 			if callback != nil {
@@ -491,4 +550,20 @@ func (c *ControlClient) DeconsolidateTCP(tcp sim.TCP, callback func(error)) {
 		ControllerToken: c.controllerToken,
 		TCP:             tcp,
 	}, &update, nil), &update, callback))
+}
+
+func (c *ControlClient) PushFlightStrip(acid sim.ACID, toTCP sim.TCP) {
+	c.addCall(makeRPCCall(c.client.Go(server.PushFlightStripRPC, &server.PushFlightStripArgs{
+		ControllerToken: c.controllerToken,
+		ACID:            acid,
+		ToTCP:           toTCP,
+	}, nil, nil), nil))
+}
+
+func (c *ControlClient) AnnotateFlightStrip(acid sim.ACID, annotations [9]string) {
+	c.addCall(makeRPCCall(c.client.Go(server.AnnotateFlightStripRPC, &server.AnnotateFlightStripArgs{
+		ControllerToken: c.controllerToken,
+		ACID:            acid,
+		Annotations:     annotations,
+	}, nil, nil), nil))
 }

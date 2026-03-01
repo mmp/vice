@@ -1,0 +1,184 @@
+{
+  "time": "2026-02-04T19:51:34.09800637Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:977:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "nine, Wisconsin sixty three twenty six increase speed to two two zero",
+  "whisper_duration_ms": 317.017,
+  "audio_duration_ms": 3400,
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "AWI6326",
+  "command": "S220",
+  "stt_aircraft": {
+    "American one 99": {
+      "Callsign": "AAL199",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Chicago O'Hare": "KORD",
+        "Coen": "KOENN",
+        "Hazel": "HAZIL",
+        "Meemaw": "MEMAW",
+        "Ruzko": "RZUKO",
+        "Seika": "SEIKA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Coen": "KOENN",
+          "Hazel": "HAZIL",
+          "Landuh": "LNDUH",
+          "Meemaw": "MEMAW",
+          "Ruzko": "RZUKO",
+          "Santoe": "SNTOE",
+          "Seika": "SEIKA",
+          "Vogler": "VOGLR"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28C",
+      "SID": "",
+      "STAR": "VEECK5",
+      "Altitude": 9000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4R",
+        "22L"
+      ]
+    },
+    "American six 48": {
+      "Callsign": "AAL648",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Chicago O'Hare": "KORD",
+        "Coen": "KOENN",
+        "Hazel": "HAZIL",
+        "Landuh": "LNDUH",
+        "Meemaw": "MEMAW",
+        "Ruzko": "RZUKO",
+        "Santoe": "SNTOE",
+        "Seika": "SEIKA",
+        "Vogler": "VOGLR"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Coen": "KOENN",
+          "Hazel": "HAZIL",
+          "Landuh": "LNDUH",
+          "Meemaw": "MEMAW",
+          "Ruzko": "RZUKO",
+          "Santoe": "SNTOE",
+          "Seika": "SEIKA",
+          "Vogler": "VOGLR"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28C",
+      "SID": "",
+      "STAR": "VEECK5",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4R",
+        "22L"
+      ]
+    },
+    "Wisconsin 63 26": {
+      "Callsign": "AWI6326",
+      "AircraftType": "CRJ2",
+      "Fixes": {
+        "Chicago O'Hare": "KORD",
+        "Hazel": "HAZIL",
+        "Seika": "SEIKA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Coen": "KOENN",
+          "Hazel": "HAZIL",
+          "Landuh": "LNDUH",
+          "Meemaw": "MEMAW",
+          "Ruzko": "RZUKO",
+          "Santoe": "SNTOE",
+          "Seika": "SEIKA",
+          "Vogler": "VOGLR"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28C",
+      "SID": "",
+      "STAR": "BENKY6",
+      "Altitude": 4177,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4R",
+        "22L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"nine, Wisconsin sixty three twenty six increase speed to two two zero\"",
+    "[local-stt] normalized words: [9 wisconsin 63 26 increase speed to 2 2 0]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"9\" Type=1 Value=9",
+    "[local-stt]   token[1]: Text=\"wisconsin\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"63\" Type=1 Value=63",
+    "[local-stt]   token[3]: Text=\"26\" Type=1 Value=26",
+    "[local-stt]   token[4]: Text=\"increase\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"220\" Type=1 Value=220",
+    "[local-stt] MatchCallsign: 8 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Wisconsin 63 26\" (airline=1.000, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Wisconsin 63 26\" (airline=1.00, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Wisconsin 63 26\" (airline=0.967, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Wisconsin 63 26\" (airline=0.97, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 1 results",
+    "[local-stt]     result 0: \"Wisconsin 63 26\" (airline=0.967, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Wisconsin 63 26\" (airline=0.97, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Wisconsin 63 26\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Wisconsin 63 26\" (airline=0.50, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"AWI6326\" (conf=0.99, consumed=4, addressingForm=0, spokenKey=\"Wisconsin 63 26\")",
+    "[local-stt] callsign match: Callsign=\"AWI6326\" SpokenKey=\"Wisconsin 63 26\" Conf=0.99 Consumed=4",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=4177 Fixes=3 Approaches=1 AssignedApproach=\"ILS Runway 28C\" LAHSORunways=[4R 22L]",
+    "[local-stt]   fix: \"Chicago O'Hare\" -\u003e \"KORD\"",
+    "[local-stt]   fix: \"Hazel\" -\u003e \"HAZIL\"",
+    "[local-stt]   fix: \"Seika\" -\u003e \"SEIKA\"",
+    "[local-stt]   approach: \"I L S runway two eight center\" -\u003e \"I8C\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"increase\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"220\" Type=1 Value=220",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   matched command: \"S220\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[S220] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S220] (conf=1.00)",
+    "[local-stt] validated commands: [S220] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AWI6326 S220\" (conf=0.99, time=506.291µs) ==="
+  ]
+}

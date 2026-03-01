@@ -49,9 +49,11 @@ type Logger struct {
 	LogDir  string
 	Start   time.Time
 
-	mu             sync.Mutex
-	crashRPCClient *rpc.Client
-	systemInfo     SystemInfo
+	mu               sync.Mutex
+	crashRPCClient   *rpc.Client
+	crashClientReady chan struct{}
+	crashClientOnce  sync.Once
+	systemInfo       SystemInfo
 }
 
 func New(server bool, level string, dir string) *Logger {
@@ -104,10 +106,11 @@ func New(server bool, level string, dir string) *Logger {
 
 	h := newHandler(w, &slog.HandlerOptions{Level: lvl})
 	l := &Logger{
-		Logger:  slog.New(h),
-		LogFile: w.Filename,
-		LogDir:  dir,
-		Start:   time.Now(),
+		Logger:           slog.New(h),
+		LogFile:          w.Filename,
+		LogDir:           dir,
+		Start:            time.Now(),
+		crashClientReady: make(chan struct{}),
 	}
 
 	// Collect CPU info for crash reports
@@ -240,6 +243,9 @@ func (l *Logger) SetCrashReportClient(client *rpc.Client) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.crashRPCClient = client
+	if client != nil {
+		l.crashClientOnce.Do(func() { close(l.crashClientReady) })
+	}
 }
 
 // SetGPUInfo sets the GPU information for crash reports. This should be
@@ -279,11 +285,24 @@ func (l *Logger) ReportCrash(err any) {
 
 	now := time.Now()
 
-	// Get the system info with a lock
+	// Get the system info and RPC client with a lock
 	l.mu.Lock()
 	sysInfo := l.systemInfo
 	rpcClient := l.crashRPCClient
 	l.mu.Unlock()
+
+	// If we don't have an RPC client yet, wait a few seconds for the
+	// remote server connection to be established.
+	if rpcClient == nil {
+		select {
+		case <-l.crashClientReady:
+			l.mu.Lock()
+			rpcClient = l.crashRPCClient
+			l.mu.Unlock()
+		case <-time.After(4 * time.Second):
+			l.Warn("No crash report RPC client available")
+		}
+	}
 
 	// Format the report information
 	report := fmt.Sprintf("Crashed: %v\n", err)
@@ -336,7 +355,7 @@ func (l *Logger) ReportCrash(err any) {
 			} else {
 				l.Info("Crash report sent via RPC")
 			}
-		case <-time.After(2 * time.Second):
+		case <-time.After(4 * time.Second):
 			l.Warn("Timeout sending crash report via RPC")
 		}
 	}

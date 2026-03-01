@@ -1,0 +1,250 @@
+{
+  "time": "2026-01-30T17:16:47.285150834Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "delta six forty seven descend via star",
+  "whisper_duration_ms": 418.054,
+  "audio_duration_ms": 2504,
+  "processor": "GPU: Apple M2, 8 CPU / 10 GPU cores, 8GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "DAL647",
+  "command": "DVS",
+  "stt_aircraft": {
+    "Air Portugal four 93 alpha": {
+      "Callsign": "TAP493A",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Boat": "BOATT",
+        "Hear": "HEARR",
+        "Kennebunk": "ENE",
+        "Lobstah": "LBSTA",
+        "Shaun": "SHAUN"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "LBSTA8",
+      "STAR": "",
+      "Altitude": 4694,
+      "State": "departure",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 96 81": {
+      "Callsign": "AAL9681",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Harris": "HRRIS",
+        "Islay": "ISLAY",
+        "Lowland": "LWLND",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 8842,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Delta six 47": {
+      "Callsign": "DAL647",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue 98": {
+      "Callsign": "JBU98",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 1700,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"delta six forty seven descend via star\"",
+    "[local-stt] normalized words: [delta 6 47 descend via star]",
+    "[local-stt] tokens: 5",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"647\" Type=1 Value=647",
+    "[local-stt]   token[2]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"via\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"star\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 5 tokens, 4 aircraft",
+    "[local-stt]   candidate \"American 96 81\" (ICAO=\"AAL9681\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta six 47\" (ICAO=\"DAL647\"): score=1.10 consumed=2",
+    "[local-stt]   candidate \"JetBlue 98\" (ICAO=\"JBU98\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Air Portugal four 93 alpha\" (ICAO=\"TAP493A\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta six 47\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
+    "[local-stt]   accepted: \"DAL647\" (conf=1.10, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"DAL647\" SpokenKey=\"Delta six 47\" Conf=1.10 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=6 Approaches=3 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Patrick\" -\u003e \"PTRIK\"",
+    "[local-stt]   fix: \"Tale\" -\u003e \"TAALE\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   fix: \"Noley\" -\u003e \"NOLEY\"",
+    "[local-stt]   fix: \"Wyane\" -\u003e \"WYANE\"",
+    "[local-stt]   fix: \"Vocus\" -\u003e \"VOCUS\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -\u003e \"X2L\"",
+    "[local-stt]   approach: \"r-nav yankee runway two two left\" -\u003e \"Y2L\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"via\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"star\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"descend\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   extractSTAR: matched generic \"star\" as 'star'",
+    "[local-stt]   matched command: \"DVS\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[DVS] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DVS] (conf=1.00)",
+    "[local-stt] validated commands: [DVS] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL647 DVS\" (conf=1.10, time=211.5µs) ==="
+  ]
+}

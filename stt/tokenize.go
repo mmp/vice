@@ -24,7 +24,6 @@ type Token struct {
 	Text     string    // Normalized text
 	Type     TokenType // Token type
 	Value    int       // Numeric value if applicable (-1 if not)
-	Pos      int       // Position in original token sequence
 }
 
 // Tokenize converts normalized words into structured tokens.
@@ -48,7 +47,6 @@ func Tokenize(words []string) []Token {
 					Text:  "FL" + strconv.Itoa(fl),
 					Type:  TokenAltitude,
 					Value: fl,
-					Pos:   i,
 				})
 				i += 2 + consumed
 				continue
@@ -63,7 +61,6 @@ func Tokenize(words []string) []Token {
 					Text:  strconv.Itoa(alt),
 					Type:  TokenAltitude,
 					Value: alt,
-					Pos:   i,
 				})
 				i += consumed
 				continue
@@ -80,7 +77,6 @@ func Tokenize(words []string) []Token {
 					Text:  text, // Preserve original digit sequence (e.g., "020" vs "20")
 					Type:  TokenNumber,
 					Value: num,
-					Pos:   i,
 				})
 				i += consumed
 				continue
@@ -92,7 +88,6 @@ func Tokenize(words []string) []Token {
 			tokens = append(tokens, Token{
 				Text: strings.ToUpper(w),
 				Type: TokenICAO,
-				Pos:  i,
 			})
 			i++
 			continue
@@ -104,7 +99,6 @@ func Tokenize(words []string) []Token {
 				Text:  w,
 				Type:  TokenNumber,
 				Value: num,
-				Pos:   i,
 			}
 			// Large numbers might be malformed altitudes from STT
 			if num >= 1000 && num%1000 == 0 {
@@ -131,7 +125,6 @@ func Tokenize(words []string) []Token {
 			Text:  w,
 			Type:  TokenWord,
 			Value: -1,
-			Pos:   i,
 		})
 		i++
 	}
@@ -197,8 +190,8 @@ func parseAltitudePattern(words []string) (int, int) {
 		return 0, 0
 	}
 
-	// Must have "thousand" next
-	if words[consumed] != "thousand" {
+	// Must have "thousand" next (fuzzy match to handle STT errors like "thousandth")
+	if !FuzzyMatch(words[consumed], "thousand", 0.90) {
 		return 0, 0
 	}
 	consumed++
@@ -250,8 +243,26 @@ func parseDigitSequence(words []string) (int, string, int) {
 	for consumed < len(words) {
 		w := words[consumed]
 		if IsDigit(w) {
-			// Single digit - always safe to merge
-			num = num*10 + ParseDigit(w)
+			// Single digit - check if merging would exceed reasonable limit
+			candidate := num*10 + ParseDigit(w)
+			if candidate > 100000 {
+				break // Stop merging - result would be unreasonably large
+			}
+			// Look ahead: if we have a multi-digit number accumulated and the next
+			// word after this digit is a large number (>=1000), don't merge this digit.
+			// This allows "10 1 2000" to parse as "10" + "12000" instead of "101" + "2000".
+			if lastWasMultiDigit && consumed+1 < len(words) {
+				nextN := ParseNumber(words[consumed+1])
+				if nextN >= 1000 {
+					break // Let this digit start a new sequence with the large number
+				}
+			}
+			// Don't merge a single digit if "thousand" follows - it's part of an altitude
+			// pattern like "18 3 thousand" where "3 thousand" means 3000 feet.
+			if num > 0 && consumed+1 < len(words) && words[consumed+1] == "thousand" {
+				break // Let this digit be parsed with "thousand" as an altitude
+			}
+			num = candidate
 			text += w
 			consumed++
 			lastWasMultiDigit = false
@@ -269,7 +280,11 @@ func parseDigitSequence(words []string) (int, string, int) {
 			// If we already have digits, combine appropriately
 			if num > 0 {
 				// Combine: 2 + 50 = 250, 2 + 5 + 0 = 250
-				num = num*intPow10(len(w)) + n
+				candidate := num*intPow10(len(w)) + n
+				if candidate > 100000 {
+					break // Stop merging - result would be unreasonably large
+				}
+				num = candidate
 			} else {
 				num = n
 			}

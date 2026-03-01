@@ -13,12 +13,15 @@
 #   --universal     Build universal binary on macOS (arm64 + amd64)
 #   --help          Show this help message
 #
-# whisper-cpp is built automatically if needed.
+# whisper-cpp and sherpa-onnx are built automatically if needed.
 
 set -e
 
 # Expected whisper.cpp submodule SHA (update this when bumping the submodule)
 WHISPER_EXPECTED_SHA="050f4ef8286ca6d49b1b0e131462b9d71959f5ff"
+
+# Expected sherpa-onnx submodule SHA (update this when bumping the submodule)
+SHERPA_EXPECTED_SHA="8dcca037bb73880c4fcb231a9c41740189e95e7c"
 
 # Check that whisper.cpp submodule is at the expected commit
 check_whisper_submodule() {
@@ -51,7 +54,208 @@ check_whisper_submodule() {
     fi
 }
 
+# Check that sherpa-onnx submodule is at the expected commit
+check_sherpa_submodule() {
+    if [ ! -d "sherpa-onnx/.git" ] && [ ! -f "sherpa-onnx/.git" ]; then
+        echo "Error: sherpa-onnx submodule is not initialized."
+        echo ""
+        echo "Please run:"
+        echo "  git submodule update --init --recursive"
+        exit 1
+    fi
+
+    SHERPA_ACTUAL_SHA=$(git -C sherpa-onnx rev-parse HEAD 2>/dev/null || echo "")
+    if [ -z "$SHERPA_ACTUAL_SHA" ]; then
+        echo "Error: Could not determine sherpa-onnx submodule version."
+        echo ""
+        echo "Please run:"
+        echo "  git submodule update --init --recursive"
+        exit 1
+    fi
+
+    if [ "$SHERPA_ACTUAL_SHA" != "$SHERPA_EXPECTED_SHA" ]; then
+        echo "Error: sherpa-onnx submodule is at wrong commit."
+        echo ""
+        echo "  Expected: $SHERPA_EXPECTED_SHA"
+        echo "  Actual:   $SHERPA_ACTUAL_SHA"
+        echo ""
+        echo "Please run:"
+        echo "  git submodule update --init --recursive"
+        exit 1
+    fi
+}
+
 check_whisper_submodule
+check_sherpa_submodule
+
+# Sync models from R2 if needed
+sync_models() {
+    local manifest="resources/models/manifest.json"
+    local models_dir="resources/models"
+    local stamp="$models_dir/.synced"
+
+    if [ ! -f "$manifest" ]; then
+        return 0  # No manifest = no models to sync
+    fi
+
+    # Determine the sha256sum command (shasum -a 256 on macOS, sha256sum on Linux)
+    if command -v sha256sum &> /dev/null; then
+        SHA256CMD="sha256sum"
+    elif command -v shasum &> /dev/null; then
+        SHA256CMD="shasum -a 256"
+    else
+        echo "Error: No SHA256 command found (sha256sum or shasum)"
+        exit 1
+    fi
+
+    # Parse JSON - try jq first, fall back to python
+    if command -v jq &> /dev/null; then
+        JSON_PARSER="jq"
+    elif command -v python3 &> /dev/null; then
+        JSON_PARSER="python3"
+    elif command -v python &> /dev/null; then
+        JSON_PARSER="python"
+    else
+        echo "Error: No JSON parser found (jq, python3, or python)"
+        exit 1
+    fi
+
+    # Get list of models from manifest (one per line to handle spaces in names)
+    if [ "$JSON_PARSER" = "jq" ]; then
+        model_list=$(jq -r 'keys[]' "$manifest")
+    else
+        model_list=$($JSON_PARSER -c "import json; [print(k) for k in json.load(open('$manifest')).keys()]" 2>/dev/null)
+    fi
+
+    # Separate kokoro zip/file entries from individual download entries
+    local kokoro_zip_hash=""
+    local kokoro_files=""
+    local individual_files=""
+    while IFS= read -r model; do
+        if [ "$model" = "kokoro-multi-lang-v1_0.zip" ]; then
+            if [ "$JSON_PARSER" = "jq" ]; then
+                kokoro_zip_hash=$(jq -r '."kokoro-multi-lang-v1_0.zip".hash' "$manifest")
+            else
+                kokoro_zip_hash=$($JSON_PARSER -c "import json; print(json.load(open('$manifest'))['kokoro-multi-lang-v1_0.zip']['hash'])")
+            fi
+        elif [[ "$model" == kokoro-multi-lang-v1_0/* ]]; then
+            if [ -z "$kokoro_files" ]; then
+                kokoro_files="$model"
+            else
+                kokoro_files="$kokoro_files"$'\n'"$model"
+            fi
+        else
+            if [ -z "$individual_files" ]; then
+                individual_files="$model"
+            else
+                individual_files="$individual_files"$'\n'"$model"
+            fi
+        fi
+    done <<< "$model_list"
+
+    # Compute manifest hash for stamp file comparison
+    local manifest_hash=$($SHA256CMD "$manifest" | cut -d' ' -f1)
+
+    # Fast path: check if already synced
+    if [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$manifest_hash" ]; then
+        local all_exist=true
+        while IFS= read -r model; do
+            [ -z "$model" ] && continue
+            if [ ! -f "$models_dir/$model" ]; then
+                all_exist=false
+                break
+            fi
+        done <<< "$individual_files"
+        if [ "$all_exist" = true ] && [ -n "$kokoro_files" ]; then
+            while IFS= read -r model; do
+                [ -z "$model" ] && continue
+                if [ ! -f "$models_dir/$model" ]; then
+                    all_exist=false
+                    break
+                fi
+            done <<< "$kokoro_files"
+        fi
+        if [ "$all_exist" = true ]; then
+            return 0  # Already synced
+        fi
+    fi
+
+    # Check if any kokoro files are missing; download and extract zip if so
+    if [ -n "$kokoro_files" ]; then
+        local kokoro_missing=false
+        while IFS= read -r model; do
+            [ -z "$model" ] && continue
+            if [ ! -f "$models_dir/$model" ]; then
+                kokoro_missing=true
+                break
+            fi
+        done <<< "$kokoro_files"
+
+        if [ "$kokoro_missing" = true ]; then
+            local zip_path="$models_dir/kokoro-multi-lang-v1_0.zip"
+            echo "Downloading kokoro-multi-lang-v1_0.zip..."
+            curl -L --progress-bar -o "$zip_path" \
+                "https://vice-resources.pharr.org/$kokoro_zip_hash"
+
+            local actual_hash=$($SHA256CMD "$zip_path" | cut -d' ' -f1)
+            if [ "$actual_hash" != "$kokoro_zip_hash" ]; then
+                echo "Error: Downloaded file hash mismatch for kokoro-multi-lang-v1_0.zip"
+                echo "  Expected: $kokoro_zip_hash"
+                echo "  Actual:   $actual_hash"
+                rm -f "$zip_path"
+                exit 1
+            fi
+
+            echo "Extracting kokoro-multi-lang-v1_0.zip..."
+            unzip -o -q "$zip_path" -d "$models_dir/"
+            rm -f "$zip_path"
+        fi
+    fi
+
+    # Download individual files (whisper models)
+    if [ -n "$individual_files" ]; then
+        while IFS= read -r model; do
+            [ -z "$model" ] && continue
+
+            if [ "$JSON_PARSER" = "jq" ]; then
+                expected_hash=$(jq -r ".\"$model\".hash" "$manifest")
+            else
+                expected_hash=$($JSON_PARSER -c "import json; print(json.load(open('$manifest'))['$model']['hash'])")
+            fi
+
+            local model_path="$models_dir/$model"
+
+            # Check if file exists with correct hash
+            if [ -f "$model_path" ]; then
+                actual_hash=$($SHA256CMD "$model_path" | cut -d' ' -f1)
+                if [ "$actual_hash" = "$expected_hash" ]; then
+                    continue  # File is up to date
+                fi
+                echo "Model $model has wrong hash, re-downloading..."
+            fi
+
+            echo "Downloading $model..."
+            mkdir -p "$(dirname "$model_path")"
+            curl -L --progress-bar -o "$model_path" \
+                "https://vice-resources.pharr.org/$expected_hash"
+
+            # Verify the download
+            actual_hash=$($SHA256CMD "$model_path" | cut -d' ' -f1)
+            if [ "$actual_hash" != "$expected_hash" ]; then
+                echo "Error: Downloaded file hash mismatch for $model"
+                echo "  Expected: $expected_hash"
+                echo "  Actual:   $actual_hash"
+                rm -f "$model_path"
+                exit 1
+            fi
+        done <<< "$individual_files"
+    fi
+
+    # Write stamp file to skip verification on next build
+    echo "$manifest_hash" > "$stamp"
+}
+
+sync_models
 
 # Detect OS
 OS="$(uname -s)"
@@ -81,7 +285,7 @@ for arg in "$@"; do
             DO_TEST=true
             ;;
         --help)
-            head -15 "$0" | tail -13
+            head -16 "$0" | tail -14
             exit 0
             ;;
         *)
@@ -107,7 +311,7 @@ build_whisper() {
             -DGGML_METAL_EMBED_LIBRARY=ON \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.4
     elif [ "$OS_TYPE" = "linux" ]; then
         # Disable GGML_NATIVE to avoid -march=native. Enable instruction sets
         # safe for computers from ~2013+ (Haswell era, see build.bat for details).
@@ -144,6 +348,43 @@ build_whisper() {
     cmake --build whisper.cpp/build_go --parallel "$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
 
     echo "whisper-cpp built successfully."
+}
+
+# Build sherpa-onnx
+build_sherpa() {
+    echo "=== Building sherpa-onnx ==="
+
+    if [ "$OS_TYPE" = "macos" ]; then
+        cmake -S sherpa-onnx -B sherpa-onnx/build_go \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DSHERPA_ONNX_ENABLE_TTS=ON \
+            -DSHERPA_ONNX_ENABLE_CHECK=OFF \
+            -DSHERPA_ONNX_ENABLE_BINARY=OFF \
+            -DSHERPA_ONNX_ENABLE_WEBSOCKET=OFF \
+            -DSHERPA_ONNX_ENABLE_PORTAUDIO=OFF \
+            -DSHERPA_ONNX_ENABLE_TESTS=OFF \
+            -DSHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION=OFF \
+            -DSHERPA_ONNX_BUILD_C_API_EXAMPLES=OFF \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.4
+    elif [ "$OS_TYPE" = "linux" ]; then
+        cmake -S sherpa-onnx -B sherpa-onnx/build_go \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DSHERPA_ONNX_ENABLE_TTS=ON \
+            -DSHERPA_ONNX_ENABLE_CHECK=OFF \
+            -DSHERPA_ONNX_ENABLE_BINARY=OFF \
+            -DSHERPA_ONNX_ENABLE_WEBSOCKET=OFF \
+            -DSHERPA_ONNX_ENABLE_PORTAUDIO=OFF \
+            -DSHERPA_ONNX_ENABLE_TESTS=OFF \
+            -DSHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION=OFF \
+            -DSHERPA_ONNX_BUILD_C_API_EXAMPLES=OFF \
+            -DCMAKE_BUILD_TYPE=Release
+    fi
+
+    cmake --build sherpa-onnx/build_go --parallel "$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
+
+    echo "sherpa-onnx built successfully."
 }
 
 # Run checks (gofmt, staticcheck)
@@ -191,9 +432,9 @@ build_vice() {
 
     # Build
     if [ "$OS_TYPE" = "macos" ]; then
-        export MACOSX_DEPLOYMENT_TARGET='13.0'
-        export CGO_CFLAGS='-mmacosx-version-min=13.0'
-        export CGO_LDFLAGS='-mmacosx-version-min=13.0'
+        export MACOSX_DEPLOYMENT_TARGET='13.4'
+        export CGO_CFLAGS='-mmacosx-version-min=13.4'
+        export CGO_LDFLAGS='-mmacosx-version-min=13.4'
 
         if [ "$DO_UNIVERSAL" = true ]; then
             echo "Building universal binary..."
@@ -208,6 +449,7 @@ build_vice() {
         if [ "$DO_VULKAN" = true ]; then
             BUILD_TAGS="$BUILD_TAGS,vulkan"
         fi
+
         go build -tags "$BUILD_TAGS" -o vice ./cmd/vice
     fi
 
@@ -234,9 +476,21 @@ needs_whisper_build() {
     return 1
 }
 
+# Check if sherpa-onnx needs to be built
+needs_sherpa_build() {
+    if [ ! -f "sherpa-onnx/build_go/lib/libsherpa-onnx-c-api.a" ]; then
+        return 0
+    fi
+    return 1
+}
+
 # Main execution
 if needs_whisper_build; then
     build_whisper
+fi
+
+if needs_sherpa_build; then
+    build_sherpa
 fi
 
 if [ "$DO_CHECK" = true ]; then

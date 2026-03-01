@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/panes"
@@ -92,8 +93,23 @@ var userCommands = make(map[CommandMode][]userCommand)
 // Track registered command strings to detect duplicates
 var registeredCommands = make(map[CommandMode]map[string]bool)
 
+var initCommandsOnce sync.Once
+
+func InitCommands() {
+	initCommandsOnce.Do(func() {
+		registerSupeCommands()
+		registerOpsCommands()
+		registerSetupCommands()
+		registerLogonCommands()
+		registerSlewCommands()
+		registerEmergencyCommands()
+		registerCustomCommands()
+		registerToolsCommands()
+	})
+}
+
 // registerCommand is used to register all of the supported STARS commands at startup time via
-// init() functions in the cmd*.go files.
+// the register*Commands() functions in the cmd*.go files.
 func registerCommand(m CommandMode, c string, f any) {
 	if registeredCommands[m] == nil {
 		registeredCommands[m] = make(map[string]bool)
@@ -695,14 +711,16 @@ func typeNameToGenerator(typeName string) matchGenerator {
 		return &timeMatchGenerator{}
 	case "ALT_FILTER_6":
 		return &altFilter6MatchGenerator{}
-	case "CRDA_RUNWAY_ID":
-		return &crdaRunwayMatchGenerator{}
+	case "CRDA_REGION_ID":
+		return &crdaRegionMatchGenerator{}
 	case "UNASSOC_FP":
 		return &unassocFPMatchGenerator{}
 
 	// Restriction areas
 	case "QL_REGION":
 		return &qlRegionMatchGenerator{}
+	case "FDAM_REGION":
+		return &fdamRegionMatchGenerator{}
 	case "RA_INDEX":
 		return &raIndexMatchGenerator{UserOnly: false}
 	case "USER_RA_INDEX":

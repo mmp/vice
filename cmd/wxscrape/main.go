@@ -232,30 +232,43 @@ func fetchPRECIP(ctx context.Context, bucket *storage.BucketHandle) {
 	av.InitDB()
 
 	for tracon := range av.DB.TRACONs {
-		go fetchTraconPrecip(ctx, bucket, tracon)
+		go fetchFacilityPrecip(ctx, bucket, tracon)
+	}
+	for artcc := range av.DB.ARTCCs {
+		go fetchFacilityPrecip(ctx, bucket, artcc)
 	}
 }
 
-// fetchTraconPrecip runs asynchronously in a goroutine and fetches radar
-// images for a single TRACON and writes them to disk.
-func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon string) {
+// calcResolution returns the image resolution to fetch for a given facility.
+// TRACONs use 4*radius (0.5nm/pixel), ARTCCs use 2*radius capped at 2048 (~1nm/pixel).
+func calcResolution(facilityID string, radius float32) int {
+	if _, isARTCC := av.DB.ARTCCs[facilityID]; isARTCC {
+		return min(int(2*radius), 2048)
+	}
+	return int(4 * radius)
+}
+
+// fetchFacilityPrecip runs asynchronously in a goroutine and fetches radar
+// images for a single facility (TRACON or ARTCC) and writes them to disk.
+func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, facilityID string) {
 	// Spread out the requests temporally
 	time.Sleep(time.Duration(rand.Intn(200)) * time.Second)
 
 	tick := time.Tick(5 * time.Minute)
 
-	tspec, ok := av.DB.TRACONs[tracon]
+	fac, ok := av.DB.LookupFacility(facilityID)
 	if !ok {
-		LogError("%s: unable to find TRACON info", tracon)
+		LogError("%s: unable to find facility info", facilityID)
+		return
 	}
-	center := tspec.Center()
-	fetchResolution := int(4 * tspec.Radius) // -> 0.5nm per pixel
-	bbox := math.BoundLatLongCircle(center, tspec.Radius)
+	center := fac.Center()
+	fetchResolution := calcResolution(facilityID, fac.Radius)
+	bbox := math.BoundLatLongCircle(center, fac.Radius)
 
 	area := "conus"
-	if tracon == "HCF" || tracon == "OGG" {
+	if facilityID == "HCF" || facilityID == "OGG" || facilityID == "ZHN" {
 		area = "hawaii"
-	} else if tracon == "A11" || tracon == "FAI" {
+	} else if facilityID == "A11" || facilityID == "FAI" || facilityID == "ZAN" {
 		area = "alaska"
 	}
 
@@ -283,14 +296,14 @@ func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon
 		tryFetch := func() Status {
 			resp, err := http.Get(url)
 			if err != nil {
-				LogError("%s: %s: %v", tracon, url, err)
+				LogError("%s: %s: %v", facilityID, url, err)
 				return StatusTransientFailure
 			}
 			defer resp.Body.Close()
 
 			b, err := io.ReadAll(resp.Body)
 			if err != nil {
-				LogError("%s: %s: %v", tracon, url, err)
+				LogError("%s: %s: %v", facilityID, url, err)
 				return StatusTransientFailure
 			}
 
@@ -299,7 +312,7 @@ func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon
 				// Decode and see if there's anything there.
 				img, err := png.Decode(bytes.NewReader(b))
 				if err != nil {
-					LogError("%s: %s: %v", tracon, url, err)
+					LogError("%s: %s: %v", facilityID, url, err)
 					return false, StatusTransientFailure
 				}
 
@@ -307,7 +320,7 @@ func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon
 					// This path is much slower but we'll keep it
 					// around for robustness in case the image format
 					// somehow changes.
-					LogError("%s: %s: PNG is not an *image.NRGBA", tracon, url)
+					LogError("%s: %s: PNG is not an *image.NRGBA", facilityID, url)
 					bounds := img.Bounds()
 					for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 						for x := bounds.Min.X; x < bounds.Max.X; x++ {
@@ -350,7 +363,7 @@ func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon
 				Longitude:  center[0],
 			}
 
-			path := filepath.Join("scrape", "WX", tracon, time.Now().UTC().Format(time.RFC3339)+".gob")
+			path := filepath.Join("scrape", "WX", facilityID, time.Now().UTC().Format(time.RFC3339)+".gob")
 
 			objw := bucket.Object(path).NewWriter(ctx)
 
@@ -367,7 +380,7 @@ func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon
 		}
 
 		if doWithBackoff(tryFetch) {
-			LogInfo("Got precip for %s have precip %v", tracon, havePrecip)
+			LogInfo("Got precip for %s have precip %v", facilityID, havePrecip)
 
 			<-tick
 
@@ -378,7 +391,7 @@ func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon
 				}
 			}
 		} else {
-			LogError("%s: unable to fetch precip", tracon)
+			LogError("%s: unable to fetch precip", facilityID)
 			<-tick
 		}
 	}

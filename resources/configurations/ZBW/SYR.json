@@ -1,0 +1,272 @@
+{
+    "control_positions": {
+        "1S": {
+            "callsign": "SYR_S_APP",
+            "frequency": 126125,
+            "radio_name": "Syracuse Approach"
+        },
+        "1R": {
+            "callsign": "SYR_R_APP",
+            "frequency": 127425,
+            "radio_name": "Syracuse Approach"
+        },
+        "1A": {
+            "callsign": "GTB_APP",
+            "frequency": 124875,
+            "radio_name": "Wheeler Sack Approach"
+        },
+        "2A": {
+            "callsign": "ALB_APP",
+            "frequency": 132825,
+            "radio_name": "Albany Approach"
+        },
+        "3A": {
+            "callsign": "BGM_APP",
+            "frequency": 118600,
+            "radio_name": "Binghamton Approach"
+        },
+        "4A": {
+            "callsign": "ELM_APP",
+            "frequency": 124300,
+            "radio_name": "Elmira Approach"
+        },
+        "5A": {
+            "callsign": "ROC_APP",
+            "frequency": 119550,
+            "radio_name": "Rochester Approach"
+        },
+        "1Z": {
+            "callsign": "SYR_TWR",
+            "frequency": 120300,
+            "radio_name": "Syracuse Tower"
+        },
+        "1Y": {
+            "callsign": "RME_TWR",
+            "frequency": 118100,
+            "radio_name": "Griffiss Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "ALBHIGH": "1R",
+                    "ALBLOW": "1R",
+                    "ARTLOW": "1S",
+                    "BTV": "1R",
+                    "BUF": "1S",
+                    "CAMHIGH": "1R",
+                    "CAMLOW": "1R",
+                    "CFBHIGH": "1S",
+                    "CFBLOW": "1S",
+                    "CODDI": "1R",
+                    "CON": "1R",
+                    "CTR": "1R",
+                    "DKK": "1S",
+                    "DNYLOW": "1S",
+                    "ELZ": "1S",
+                    "GALWA": "1R",
+                    "GEELOW": "1S",
+                    "HNK": "1R",
+                    "MARIA": "1R",
+                    "PSB": "1R",
+                    "ROC": "1S",
+                    "SLKHIGH": "1R",
+                    "SLKLOW": "1R",
+                    "ULWLOW": "1S"
+                },
+                "departure_assignments": {
+                    "KRME": "1R",
+                    "KSYR": "1S"
+                },
+                "default_consolidation": {
+                    "1R": [
+                        "1S"
+                    ]
+                }
+            }
+        },
+        "center": "N043.06.43.349,W076.06.22.928",
+        "coordination_lists": [
+            {
+                "name": "GRIFFISS",
+                "id": "A",
+                "airports": [
+                    "KRME"
+                ]
+            }
+        ],
+        "radar_sites": {
+            "KSYR": {
+                "char": "S",
+                "position": "KSYR",
+                "elevation": 50,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "slope_angle": 0.175
+            }
+        },
+        "scratchpads": {
+            "FLOOR": "SD9",
+            "DINES": "SD8",
+            "PTAKI": "SD7",
+            "POMPY": "SD4",
+            "LAMMS": "SD3",
+            "GGT": "SD4",
+            "SYR": "SD8",
+            "NORSE": "SD3",
+            "ROOMS": "SD2",
+            "BECKS": "SD1",
+            "ROC": "ROC",
+            "ITH": "ITH",
+            "RKA": "RKA"
+        },
+        "video_map_file": "videomaps/SYR-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "SW SATS",
+                    "SYR EAST",
+                    "EMG MAP",
+                    "MVA",
+                    "TEST1",
+                    "TEST2",
+                    "SYR WEST",
+                    "RME GPS",
+                    "AIRWAY",
+                    "SYR VOR",
+                    "FZY GPS",
+                    "SYR TACAN",
+                    "B16 GPS",
+                    "RY28",
+                    "RY10",
+                    "VGC GPS",
+                    "0G7 GPS",
+                    "RME D"
+                ]
+            },
+            "2": {
+                "video_maps": [
+                    "SW SATS",
+                    "SYR EAST",
+                    "EMG MAP",
+                    "MVA",
+                    "TEST1",
+                    "TEST2",
+                    "SYR WEST",
+                    "RME GPS",
+                    "AIRWAY",
+                    "SYR VOR",
+                    "FZY GPS",
+                    "SYR TACAN",
+                    "B16 GPS",
+                    "RY28",
+                    "RY10",
+                    "VGC GPS",
+                    "0G7 GPS",
+                    "RME D"
+                ]
+            },
+            "3": {
+                "video_maps": [
+                    "SW SATS",
+                    "SYR EAST",
+                    "EMG MAP",
+                    "MVA",
+                    "TEST1",
+                    "TEST2",
+                    "SYR WEST",
+                    "RME GPS",
+                    "AIRWAY",
+                    "SYR VOR",
+                    "FZY GPS",
+                    "SYR TACAN",
+                    "B16 GPS",
+                    "RY28",
+                    "RY10",
+                    "VGC GPS",
+                    "0G7 GPS",
+                    "RME D"
+                ]
+            },
+            "4": {
+                "video_maps": [
+                    "SW SATS",
+                    "SYR EAST",
+                    "EMG MAP",
+                    "MVA",
+                    "TEST1",
+                    "TEST2",
+                    "SYR WEST",
+                    "RME GPS",
+                    "AIRWAY",
+                    "SYR VOR",
+                    "FZY GPS",
+                    "SYR TACAN",
+                    "B16 GPS",
+                    "RY28",
+                    "RY10",
+                    "VGC GPS",
+                    "0G7 GPS",
+                    "RME D"
+                ]
+            },
+            "5": {
+                "video_maps": [
+                    "SW SATS",
+                    "SYR EAST",
+                    "EMG MAP",
+                    "MVA",
+                    "TEST1",
+                    "TEST2",
+                    "SYR WEST",
+                    "RME GPS",
+                    "AIRWAY",
+                    "SYR VOR",
+                    "FZY GPS",
+                    "SYR TACAN",
+                    "B16 GPS",
+                    "RY28",
+                    "RY10",
+                    "VGC GPS",
+                    "0G7 GPS",
+                    "RME D"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ALB",
+            "prefix": "2"
+        },
+        {
+            "id": "BGM",
+            "prefix": "3"
+        },
+        {
+            "id": "ELM",
+            "prefix": "4"
+        },
+        {
+            "id": "GTB",
+            "prefix": "1"
+        },
+        {
+            "id": "ROC",
+            "prefix": "5"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "C"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

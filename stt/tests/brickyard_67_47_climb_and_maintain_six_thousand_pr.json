@@ -1,0 +1,268 @@
+{
+  "time": "2026-01-31T15:37:28.12450777Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Brickyard 67 47 climb and maintain six thousand proceed direct Yoman",
+  "whisper_duration_ms": 94.314,
+  "audio_duration_ms": 4552,
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "RPA6747",
+  "command": "C60 DYOMAN",
+  "stt_aircraft": {
+    "American 66": {
+      "Callsign": "AAL66",
+      "AircraftType": "A320",
+      "Fixes": {
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "American five 97": {
+      "Callsign": "AAL597",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4905,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 67 47": {
+      "Callsign": "RPA6747",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 90 50": {
+      "Callsign": "RPA9050",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3534,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 91 63": {
+      "Callsign": "RPA9163",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "JetBlue 96": {
+      "Callsign": "JBU96",
+      "AircraftType": "A320",
+      "Fixes": {
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2394,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "JetBlue two 89": {
+      "Callsign": "JBU289",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2830,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Brickyard 67 47 climb and maintain six thousand proceed direct Yoman\"",
+    "[local-stt] normalized words: [brickyard 67 47 climb and maintain 6 thousand proceed direct yoman]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"brickyard\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"67\" Type=1 Value=67",
+    "[local-stt]   token[2]: Text=\"47\" Type=1 Value=47",
+    "[local-stt]   token[3]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"60\" Type=2 Value=60",
+    "[local-stt]   token[7]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"yoman\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 10 tokens, 7 aircraft",
+    "[local-stt]   exact match: \"brickyard 67 47\" -\u003e \"RPA6747\" (consumed 3)",
+    "[local-stt] callsign match: Callsign=\"RPA6747\" SpokenKey=\"Brickyard 67 47\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=3 Approaches=1 AssignedApproach=\"ILS Runway 22\" LAHSORunways=[13 31]",
+    "[local-stt]   fix: \"LaGuardia\" -\u003e \"KLGA\"",
+    "[local-stt]   fix: \"Yoman\" -\u003e \"YOMAN\"",
+    "[local-stt]   fix: \"Greko\" -\u003e \"GREKO\"",
+    "[local-stt]   approach: \"I L S runway two two\" -\u003e \"I22\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"60\" Type=2 Value=60",
+    "[local-stt]   token[4]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"yoman\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"climb\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   matched command: \"C60\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"yoman\" against 3 fixes",
+    "[local-stt]   extractFix: matched \"yoman\" -\u003e \"YOMAN\" (exact)",
+    "[local-stt]   extractFix: matched \"yoman\" -\u003e \"YOMAN\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"DYOMAN\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[C60 DYOMAN] (avgConf=1.00)",
+    "[local-stt] parsed commands: [C60 DYOMAN] (conf=1.00)",
+    "[local-stt] validated commands: [C60 DYOMAN] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"RPA6747 C60 DYOMAN\" (conf=1.00, time=0s) ==="
+  ]
+}

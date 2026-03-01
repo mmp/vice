@@ -252,7 +252,8 @@ func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
 }
 
 // Draw draws the current weather radar data, if available.
-func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, contrast float32,
+func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32,
+	wxColors [2]renderer.RGB, wxStippleColor renderer.RGB,
 	active [NumWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	w.mu.Lock(ctx.Lg)
 	defer w.mu.Unlock(ctx.Lg)
@@ -287,9 +288,7 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, con
 	transforms.LoadLatLongViewingMatrices(cb)
 	for i := range w.cb[hist] {
 		if active[i] && w.cb[hist][i] != nil {
-			// RGBs from STARS Manual, B-5
-			baseColor := util.Select(i < 3,
-				renderer.RGBFromUInt8(37, 77, 77), renderer.RGBFromUInt8(100, 100, 51))
+			baseColor := util.Select(i < 3, wxColors[0], wxColors[1])
 			cb.SetRGB(baseColor.Scale(intensity))
 			cb.Call(*w.cb[hist][i])
 
@@ -305,7 +304,7 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, con
 				cb.PolygonStipple(reverseStippleBytes(wxStippleDense))
 			}
 			// Draw the same quads again, just with a different color and stippled.
-			cb.SetRGB(renderer.RGB{contrast, contrast, contrast})
+			cb.SetRGB(wxStippleColor)
 			cb.Call(*w.cb[hist][i])
 			cb.DisablePolygonStipple()
 		}

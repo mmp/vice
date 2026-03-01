@@ -1,0 +1,1706 @@
+{
+    "control_positions": {
+        "1H": {
+            "callsign": "ATL_H_APP",
+            "frequency": 127900,
+            "radio_name": "Atlanta Approach"
+        },
+        "1D": {
+            "callsign": "ATL_D_APP",
+            "frequency": 128000,
+            "radio_name": "Atlanta Approach"
+        },
+        "1L": {
+            "callsign": "ATL_L_APP",
+            "frequency": 128525,
+            "radio_name": "Atlanta Approach"
+        },
+        "1Y": {
+            "callsign": "ATL_Y_APP",
+            "frequency": 124725,
+            "radio_name": "Atlanta Approach"
+        },
+        "1O": {
+            "callsign": "ATL_O_APP",
+            "frequency": 124600,
+            "radio_name": "Atlanta Approach"
+        },
+        "1V": {
+            "callsign": "ATL_V_APP",
+            "frequency": 127250,
+            "radio_name": "Atlanta Approach"
+        },
+        "1A": {
+            "callsign": "ATL_A_APP",
+            "frequency": 135375,
+            "radio_name": "Atlanta Approach"
+        },
+        "1N": {
+            "callsign": "ATL_N_DEP",
+            "frequency": 125200,
+            "radio_name": "Atlanta Departure"
+        },
+        "1S": {
+            "callsign": "ATL_S_DEP",
+            "frequency": 125200,
+            "radio_name": "Atlanta Departure"
+        },
+        "1I": {
+            "callsign": "ATL_I_DEP",
+            "frequency": 125200,
+            "radio_name": "Atlanta Departure"
+        },
+        "1P": {
+            "callsign": "ATL_P_APP",
+            "frequency": 126975,
+            "radio_name": "Atlanta Approach"
+        },
+        "1F": {
+            "callsign": "ATL_F_APP",
+            "frequency": 121000,
+            "radio_name": "Atlanta Approach"
+        },
+        "1X": {
+            "callsign": "ATL_X_APP",
+            "frequency": 119800,
+            "radio_name": "Atlanta Approach"
+        },
+        "1G": {
+            "callsign": "ATL_G_APP",
+            "frequency": 128575,
+            "radio_name": "Atlanta Approach"
+        },
+        "1Q": {
+            "callsign": "ATL_Q_APP",
+            "frequency": 124300,
+            "radio_name": "Atlanta Approach"
+        },
+        "21": {
+            "callsign": "ATL_1_TWR",
+            "frequency": 119100,
+            "radio_name": "Atlanta Tower",
+            "scope_char": "T"
+        },
+        "22": {
+            "callsign": "ATL_2_TWR",
+            "frequency": 125320,
+            "radio_name": "Atlanta Tower",
+            "scope_char": "T"
+        },
+        "23": {
+            "callsign": "ATL_3_TWR",
+            "frequency": 123850,
+            "radio_name": "Atlanta Tower",
+            "scope_char": "T"
+        },
+        "24": {
+            "callsign": "ATL_4_TWR",
+            "frequency": 119300,
+            "radio_name": "Atlanta Tower",
+            "scope_char": "T"
+        },
+        "25": {
+            "callsign": "ATL_5_TWR",
+            "frequency": 119500,
+            "radio_name": "Atlanta Tower",
+            "scope_char": "T"
+        },
+        "1Z": {
+            "callsign": "ATL_Z_APP",
+            "frequency": 124300,
+            "radio_name": "Atlanta Approach"
+        },
+        "1R": {
+            "callsign": "ATL_R_APP",
+            "frequency": 126550,
+            "radio_name": "Atlanta Approach"
+        },
+        "1M": {
+            "callsign": "ATL_M_APP",
+            "frequency": 124200,
+            "radio_name": "Atlanta Approach"
+        },
+        "1W": {
+            "callsign": "ATL_W_APP",
+            "frequency": 119600,
+            "radio_name": "Atlanta Approach"
+        },
+        "1E": {
+            "callsign": "ATL_E_APP",
+            "frequency": 132475,
+            "radio_name": "Atlanta Approach"
+        },
+        "3E": {
+            "callsign": "ATL_3E_APP",
+            "frequency": 119875,
+            "radio_name": "Atlanta Approach"
+        },
+        "FT": {
+            "callsign": "FTY_TWR",
+            "frequency": 118450,
+            "radio_name": "Fulton County Tower"
+        },
+        "PT": {
+            "callsign": "PDK_TWR",
+            "frequency": 120900,
+            "radio_name": "Peachtree Tower"
+        },
+        "DT": {
+            "callsign": "MGE_TWR",
+            "frequency": 120750,
+            "radio_name": "Dobbins Tower"
+        },
+        "MT": {
+            "callsign": "RYY_TWR",
+            "frequency": 125900,
+            "radio_name": "McCollum Tower"
+        },
+        "GT": {
+            "callsign": "LZU_TWR",
+            "frequency": 124100,
+            "radio_name": "Gwinnett Tower"
+        },
+        "RT": {
+            "callsign": "WRB_TWR",
+            "frequency": 133225,
+            "radio_name": "Robins AFB Tower"
+        },
+        "8T": {
+            "callsign": "MCN_TWR",
+            "frequency": 128200,
+            "radio_name": "Macon Tower"
+        },
+        "CT": {
+            "callsign": "CSG_TWR",
+            "frequency": 120100,
+            "radio_name": "Columbus Tower"
+        },
+        "LT": {
+            "callsign": "LSF_TWR",
+            "frequency": 119050,
+            "radio_name": "Lawson Tower"
+        },
+        "AT": {
+            "callsign": "AUO_TWR",
+            "frequency": 123875,
+            "radio_name": "Auburn Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "80X": {
+                "inbound_assignments": {
+                    "AHN Inbounds": "1E",
+                    "AHN Overflights": "3E",
+                    "BOKRT3": "1X",
+                    "BUKHD3": "1F",
+                    "CHPPR1": "1D",
+                    "CSG Inbounds": "1R",
+                    "CSG Overflights": "1R",
+                    "DEHAN3": "1P",
+                    "GLAVN1": "1D",
+                    "HOBTT2": "1Y",
+                    "JJEDI3": "1H",
+                    "MCN Inbounds": "1W",
+                    "MCN Overflights": "1W",
+                    "ONDRE1": "1L",
+                    "OZZZI1": "1L",
+                    "SWTEE2": "1F",
+                    "WRGNZ3": "1G"
+                },
+                "departure_assignments": {
+                    "06A": "1Z",
+                    "53A": "1M",
+                    "6A1": "1M",
+                    "6A2": "1G",
+                    "D73": "1P",
+                    "KACJ": "1M",
+                    "KAHN": "1E",
+                    "KATL": "1H",
+                    "KATL/BANNG3": "1I",
+                    "KATL/CUTTN2": "1N",
+                    "KATL/GAIRY2": "1S",
+                    "KATL/HAALO3": "1I",
+                    "KATL/JACCC2": "1S",
+                    "KATL/KAJIN2": "1S",
+                    "KATL/NASSA2": "1N",
+                    "KATL/PADGT2": "1N",
+                    "KATL/PENCL2": "1N",
+                    "KATL/PHIIL3": "1S",
+                    "KATL/PLMMR3": "1N",
+                    "KATL/POUNC2": "1I",
+                    "KATL/SMKEY2": "1N",
+                    "KATL/SMLTZ3": "1I",
+                    "KATL/VARNM2": "1N",
+                    "KATL/VRSTY3": "1I",
+                    "KAUO": "1Z",
+                    "KCCO": "1X",
+                    "KCPP": "1E",
+                    "KCSG": "1Z",
+                    "KCTJ": "1F",
+                    "KCVC": "1G",
+                    "KDBN": "1M",
+                    "KEUF": "1Z",
+                    "KFFC": "1X",
+                    "KFTY": "1F",
+                    "KGVL": "1E",
+                    "KHMP": "1G",
+                    "KJCA": "1E",
+                    "KLGC": "1Z",
+                    "KLSF": "1Z",
+                    "KLZU": "1P",
+                    "KMAC": "1M",
+                    "KMCN": "1M",
+                    "KMGE": "1F",
+                    "KMLJ": "1M",
+                    "KOPN": "1M",
+                    "KPDK": "1P",
+                    "KPIM": "1Z",
+                    "KPUJ": "1F",
+                    "KPXE": "1M",
+                    "KRYY": "1F",
+                    "KVPC": "1F",
+                    "KWDR": "1E",
+                    "KWRB": "1M"
+                },
+                "default_consolidation": {
+                    "3E": [
+                        "1A",
+                        "1D",
+                        "1E",
+                        "1F",
+                        "1G",
+                        "1H",
+                        "1I",
+                        "1L",
+                        "1M",
+                        "1N",
+                        "1O",
+                        "1P",
+                        "1Q",
+                        "1R",
+                        "1S",
+                        "1V",
+                        "1W",
+                        "1X",
+                        "1Y",
+                        "1Z"
+                    ]
+                }
+            },
+            "A80": {
+                "inbound_assignments": {
+                    "AHN Inbounds": "1E",
+                    "AHN Overflights": "3E",
+                    "BOKRT3": "1X",
+                    "BUKHD3": "1F",
+                    "CHPPR1": "1D",
+                    "CSG Inbounds": "1R",
+                    "CSG Overflights": "1R",
+                    "DEHAN3": "1P",
+                    "GLAVN1": "1D",
+                    "HOBTT2": "1Y",
+                    "JJEDI3": "1H",
+                    "MCN Inbounds": "1W",
+                    "MCN Overflights": "1W",
+                    "ONDRE1": "1L",
+                    "OZZZI1": "1L",
+                    "SWTEE2": "1F",
+                    "WRGNZ3": "1G"
+                },
+                "departure_assignments": {
+                    "06A": "1Z",
+                    "53A": "1M",
+                    "6A1": "1M",
+                    "6A2": "1G",
+                    "D73": "1P",
+                    "KACJ": "1M",
+                    "KAHN": "1E",
+                    "KATL": "1H",
+                    "KATL/BANNG3": "1S",
+                    "KATL/CUTTN2": "1N",
+                    "KATL/GAIRY2": "1I",
+                    "KATL/HAALO3": "1S",
+                    "KATL/JACCC2": "1I",
+                    "KATL/KAJIN2": "1I",
+                    "KATL/NASSA2": "1N",
+                    "KATL/PADGT2": "1N",
+                    "KATL/PENCL2": "1N",
+                    "KATL/PHIIL3": "1I",
+                    "KATL/PLMMR3": "1N",
+                    "KATL/POUNC2": "1S",
+                    "KATL/SMKEY2": "1N",
+                    "KATL/SMLTZ3": "1S",
+                    "KATL/VARNM2": "1N",
+                    "KATL/VRSTY3": "1S",
+                    "KAUO": "1Z",
+                    "KCCO": "1X",
+                    "KCPP": "1E",
+                    "KCSG": "1Z",
+                    "KCTJ": "1F",
+                    "KCVC": "1G",
+                    "KDBN": "1M",
+                    "KEUF": "1Z",
+                    "KFFC": "1X",
+                    "KFTY": "1F",
+                    "KGVL": "1E",
+                    "KHMP": "1G",
+                    "KJCA": "1E",
+                    "KLGC": "1Z",
+                    "KLSF": "1Z",
+                    "KLZU": "1P",
+                    "KMAC": "1M",
+                    "KMCN": "1M",
+                    "KMGE": "1F",
+                    "KMLJ": "1M",
+                    "KOPN": "1M",
+                    "KPDK": "1P",
+                    "KPIM": "1Z",
+                    "KPUJ": "1F",
+                    "KPXE": "1M",
+                    "KRYY": "1F",
+                    "KVPC": "1F",
+                    "KWDR": "1E",
+                    "KWRB": "1M"
+                },
+                "default_consolidation": {
+                    "3E": [
+                        "1A",
+                        "1D",
+                        "1E",
+                        "1F",
+                        "1G",
+                        "1H",
+                        "1I",
+                        "1L",
+                        "1M",
+                        "1N",
+                        "1O",
+                        "1P",
+                        "1Q",
+                        "1R",
+                        "1S",
+                        "1V",
+                        "1W",
+                        "1X",
+                        "1Y",
+                        "1Z"
+                    ]
+                }
+            },
+            "KAT": {
+                "inbound_assignments": {
+                    "BOKRT3": "1X",
+                    "BUKHD3": "1F",
+                    "CHPPR1 EAST": "1D",
+                    "DEHAN3": "1P",
+                    "GLAVN1 EAST": "1D",
+                    "GNDLF2": "1Y",
+                    "ONDRE1 EAST": "1L",
+                    "OZZZI1 EAST": "1L",
+                    "SITTH2": "1H",
+                    "SWTEE2": "1F",
+                    "WRGNZ3": "1G"
+                },
+                "departure_assignments": {
+                    "KATL": "1N",
+                    "KCTJ": "1F",
+                    "KCVC": "1G",
+                    "KFFC": "1X",
+                    "KFTY": "1F",
+                    "KHMP": "1G",
+                    "KLZU": "1P",
+                    "KMGE": "1F",
+                    "KPDK": "1P",
+                    "KPUJ": "1F",
+                    "KRYY": "1F",
+                    "KVPC": "1F"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1F",
+                        "1G",
+                        "1H",
+                        "1L",
+                        "1N",
+                        "1P",
+                        "1X",
+                        "1Y"
+                    ]
+                }
+            },
+            "KA1": {
+                "inbound_assignments": {
+                    "CHPPR1_EFINALD": "1O",
+                    "GLAVN1_EFINALD": "1O",
+                    "GNDLF2_EFINALD": "1O",
+                    "NE_FINALTRIPS": "1O",
+                    "SITTH2_EFINALD": "1O"
+                },
+                "default_consolidation": {
+                    "1O": []
+                }
+            },
+            "KA2": {
+                "inbound_assignments": {
+                    "CHPPR1_EFINALT": "1O",
+                    "GLAVN1_EFINALD": "1O",
+                    "GNDLF2_EFINALT": "1O",
+                    "NE_FINALTRIPS": "1O",
+                    "SITTH2_EFINALT": "1O"
+                },
+                "default_consolidation": {
+                    "1O": []
+                }
+            },
+            "KA3": {
+                "inbound_assignments": {
+                    "BOKRT3": "1X",
+                    "BUKHD3": "1F",
+                    "CHPPR1": "1D",
+                    "DEHAN3": "1P",
+                    "GLAVN1": "1D",
+                    "HOBTT2": "1Y",
+                    "JJEDI3": "1H",
+                    "ONDRE1": "1L",
+                    "OZZZI1": "1L",
+                    "SWTEE2": "1F",
+                    "WRGNZ3": "1G"
+                },
+                "departure_assignments": {
+                    "KATL": "1N",
+                    "KCTJ": "1F",
+                    "KCVC": "1G",
+                    "KFFC": "1X",
+                    "KFTY": "1F",
+                    "KHMP": "1G",
+                    "KLZU": "1P",
+                    "KMGE": "1F",
+                    "KPDK": "1P",
+                    "KPUJ": "1F",
+                    "KRYY": "1F",
+                    "KVPC": "1F"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1F",
+                        "1G",
+                        "1H",
+                        "1L",
+                        "1N",
+                        "1P",
+                        "1X",
+                        "1Y"
+                    ]
+                }
+            },
+            "KA4": {
+                "inbound_assignments": {
+                    "HOBTT2_AFINALD": "1O",
+                    "JJEDI3_FINALD": "1O",
+                    "NW_FINALTRIPS": "1O",
+                    "ONDRE1_FINALWT": "1O",
+                    "OZZZI1_FINALWT": "1O"
+                },
+                "default_consolidation": {
+                    "1O": []
+                }
+            },
+            "KA5": {
+                "inbound_assignments": {
+                    "HOBTT2_AFINALT": "1O",
+                    "JJEDI3_FINALT": "1O",
+                    "NW_FINALTRIPS": "1O",
+                    "ONDRE1_FINALWT": "1O",
+                    "OZZZI1_FINALWT": "1O"
+                },
+                "default_consolidation": {
+                    "1O": []
+                }
+            }
+        },
+        "center": "N33.38.24.846,W84.25.42.088",
+        "force_ql_self": true,
+        "allow_long_scratchpad": true,
+        "coordination_lists": [
+            {
+                "name": "FULTON COUNTY",
+                "id": "FTY",
+                "airports": [
+                    "KFTY"
+                ]
+            },
+            {
+                "name": "PEACHTREE DEKALB",
+                "id": "PDK",
+                "airports": [
+                    "KPDK"
+                ]
+            },
+            {
+                "name": "GWINNETT COUNTY",
+                "id": "LZU",
+                "airports": [
+                    "KLZU"
+                ]
+            },
+            {
+                "name": "COLUMBUS",
+                "id": "CSG",
+                "airports": [
+                    "KCSG"
+                ]
+            },
+            {
+                "name": "ATHENS",
+                "id": "AHN",
+                "airports": [
+                    "KAHN"
+                ]
+            },
+            {
+                "name": "MACON",
+                "id": "MCN",
+                "airports": [
+                    "KMCN"
+                ]
+            }
+        ],
+        "controller_configs": {
+            "1H": {
+                "default_maps": [
+                    "RVMA80001S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80002S",
+                    "RVMA80090S",
+                    "RVMA80001S",
+                    "RVMA80092S",
+                    "RVMA80001S",
+                    "RVMA80006S",
+                    "RVMA80018S",
+                    "RVMA80017S",
+                    "RVMA80016S",
+                    "RVMA80008S",
+                    "",
+                    "RVMA80024S",
+                    "RVMA80026S",
+                    "RVMA80171S",
+                    "FINAL_E BLANK",
+                    "RWY-8L",
+                    "RWY-8R",
+                    "RWY-9L",
+                    "RWY-9R",
+                    "",
+                    "RVMA80002S",
+                    "RVMA80005S",
+                    "RVMA80020S",
+                    "RVMA80007S",
+                    "RVMA80019S",
+                    "RVMA80009S",
+                    "",
+                    "RVMA80023S",
+                    "RVMA80025S",
+                    "RVMA80176S",
+                    "FINAL_W BLANK",
+                    "RWY-26R",
+                    "RWY-26L",
+                    "RWY-27R",
+                    "RWY-27L"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1Y": {
+                "default_maps": [
+                    "RVMA80001S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80002S",
+                    "RVMA80090S",
+                    "RVMA80001S",
+                    "RVMA80092S",
+                    "RVMA80001S",
+                    "RVMA80006S",
+                    "RVMA80018S",
+                    "RVMA80017S",
+                    "RVMA80016S",
+                    "RVMA80008S",
+                    "",
+                    "RVMA80024S",
+                    "RVMA80026S",
+                    "RVMA80171S",
+                    "FINAL_E BLANK",
+                    "RWY-8L",
+                    "RWY-8R",
+                    "RWY-9L",
+                    "RWY-9R",
+                    "",
+                    "RVMA80002S",
+                    "RVMA80005S",
+                    "RVMA80020S",
+                    "RVMA80007S",
+                    "RVMA80019S",
+                    "RVMA80009S",
+                    "",
+                    "RVMA80023S",
+                    "RVMA80025S",
+                    "RVMA80176S",
+                    "FINAL_W BLANK",
+                    "RWY-26R",
+                    "RWY-26L",
+                    "RWY-27R",
+                    "RWY-27L"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1L": {
+                "default_maps": [
+                    "RVMA80001S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80002S",
+                    "RVMA80090S",
+                    "RVMA80001S",
+                    "RVMA80092S",
+                    "RVMA80001S",
+                    "RVMA80006S",
+                    "RVMA80018S",
+                    "RVMA80017S",
+                    "RVMA80016S",
+                    "RVMA80008S",
+                    "",
+                    "RVMA80024S",
+                    "RVMA80026S",
+                    "RVMA80171S",
+                    "FINAL_E BLANK",
+                    "RWY-8L",
+                    "RWY-8R",
+                    "RWY-9L",
+                    "RWY-9R",
+                    "",
+                    "RVMA80002S",
+                    "RVMA80005S",
+                    "RVMA80020S",
+                    "RVMA80007S",
+                    "RVMA80019S",
+                    "RVMA80009S",
+                    "",
+                    "RVMA80023S",
+                    "RVMA80025S",
+                    "RVMA80176S",
+                    "FINAL_W BLANK",
+                    "RWY-26R",
+                    "RWY-26L",
+                    "RWY-27R",
+                    "RWY-27L"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1D": {
+                "default_maps": [
+                    "RVMA80001S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80002S",
+                    "RVMA80090S",
+                    "RVMA80001S",
+                    "RVMA80092S",
+                    "RVMA80001S",
+                    "RVMA80006S",
+                    "RVMA80018S",
+                    "RVMA80017S",
+                    "RVMA80016S",
+                    "RVMA80008S",
+                    "",
+                    "RVMA80024S",
+                    "RVMA80026S",
+                    "RVMA80171S",
+                    "FINAL_E BLANK",
+                    "RWY-8L",
+                    "RWY-8R",
+                    "RWY-9L",
+                    "RWY-9R",
+                    "",
+                    "RVMA80002S",
+                    "RVMA80005S",
+                    "RVMA80020S",
+                    "RVMA80007S",
+                    "RVMA80019S",
+                    "RVMA80009S",
+                    "",
+                    "RVMA80023S",
+                    "RVMA80025S",
+                    "RVMA80176S",
+                    "FINAL_W BLANK",
+                    "RWY-26R",
+                    "RWY-26L",
+                    "RWY-27R",
+                    "RWY-27L"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1O": {
+                "default_maps": [
+                    "FINAL_W BLANK"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80005S",
+                    "RVMA80090S",
+                    "RVMA80006S",
+                    "RVMA80092S",
+                    "RVMA80083S",
+                    "RVMA80084S",
+                    "RVMA80085S",
+                    "RVMA80086S",
+                    "RVMA80087S",
+                    "RVMA80089S",
+                    "RVMA80006S",
+                    "RVMA80017S",
+                    "RVMA80018S",
+                    "RVMA80172S",
+                    "FINAL_E BLANK",
+                    "RWY-8L",
+                    "RWY-8R",
+                    "RWY-9L",
+                    "RWY-9R",
+                    "",
+                    "RVMA80075S",
+                    "RVMA80076S",
+                    "RVMA80077S",
+                    "RVMA80078S",
+                    "RVMA80079S",
+                    "RVMA80080S",
+                    "RVMA80005S",
+                    "RVMA80007S",
+                    "RVMA80020S",
+                    "RVMA80177S",
+                    "FINAL_W BLANK",
+                    "RWY-26R",
+                    "RWY-26L",
+                    "RWY-27R",
+                    "RWY-27L"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1A": {
+                "default_maps": [
+                    "FINAL_W BLANK"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80005S",
+                    "RVMA80090S",
+                    "RVMA80006S",
+                    "RVMA80092S",
+                    "RVMA80083S",
+                    "RVMA80084S",
+                    "RVMA80085S",
+                    "RVMA80086S",
+                    "RVMA80087S",
+                    "RVMA80089S",
+                    "RVMA80006S",
+                    "RVMA80017S",
+                    "RVMA80018S",
+                    "RVMA80172S",
+                    "FINAL_E BLANK",
+                    "RWY-8L",
+                    "RWY-8R",
+                    "RWY-9L",
+                    "RWY-9R",
+                    "",
+                    "RVMA80075S",
+                    "RVMA80076S",
+                    "RVMA80077S",
+                    "RVMA80078S",
+                    "RVMA80079S",
+                    "RVMA80080S",
+                    "RVMA80005S",
+                    "RVMA80007S",
+                    "RVMA80020S",
+                    "RVMA80177S",
+                    "FINAL_W BLANK",
+                    "RWY-26R",
+                    "RWY-26L",
+                    "RWY-27R",
+                    "RWY-27L"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1V": {
+                "default_maps": [
+                    "FINAL_W BLANK"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80005S",
+                    "RVMA80090S",
+                    "RVMA80006S",
+                    "RVMA80092S",
+                    "RVMA80083S",
+                    "RVMA80084S",
+                    "RVMA80085S",
+                    "RVMA80086S",
+                    "RVMA80087S",
+                    "RVMA80089S",
+                    "RVMA80006S",
+                    "RVMA80017S",
+                    "RVMA80018S",
+                    "RVMA80172S",
+                    "FINAL_E BLANK",
+                    "RWY-8L",
+                    "RWY-8R",
+                    "RWY-9L",
+                    "RWY-9R",
+                    "",
+                    "RVMA80075S",
+                    "RVMA80076S",
+                    "RVMA80077S",
+                    "RVMA80078S",
+                    "RVMA80079S",
+                    "RVMA80080S",
+                    "RVMA80005S",
+                    "RVMA80007S",
+                    "RVMA80020S",
+                    "RVMA80177S",
+                    "FINAL_W BLANK",
+                    "RWY-26R",
+                    "RWY-26L",
+                    "RWY-27R",
+                    "RWY-27L"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1N": {
+                "default_maps": [
+                    "RVMA80031S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80008S",
+                    "RVMA80090S",
+                    "RVMA80060S",
+                    "RVMA80009S",
+                    "RVMA80031S",
+                    "RVMA80038S",
+                    "RVMA80040S",
+                    "RVMA80036S",
+                    "RVMA80035S",
+                    "",
+                    "RVMA80044S",
+                    "RVMA80046S",
+                    "RVMA80047S",
+                    "RVMA80060S",
+                    "",
+                    "RVMA80173S",
+                    "DEP E BLANK FINAL",
+                    "RWY-8L",
+                    "RWY-9R",
+                    "RVMA80032S",
+                    "RVMA80037S",
+                    "RVMA80039S",
+                    "RVMA80034S",
+                    "RVMA80035S",
+                    "RVMA80042S",
+                    "RVMA80041S",
+                    "RVMA80061S",
+                    "RVMA80106S",
+                    "RVMA80048S",
+                    "",
+                    "RVMA80178S",
+                    "DEP W BLANK FINAL",
+                    "RWY-26R",
+                    "RWY-27L"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1I": {
+                "default_maps": [
+                    "RVMA80031S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80008S",
+                    "RVMA80090S",
+                    "RVMA80060S",
+                    "RVMA80009S",
+                    "RVMA80031S",
+                    "RVMA80038S",
+                    "RVMA80040S",
+                    "RVMA80036S",
+                    "RVMA80035S",
+                    "",
+                    "RVMA80044S",
+                    "RVMA80046S",
+                    "RVMA80047S",
+                    "RVMA80060S",
+                    "",
+                    "RVMA80173S",
+                    "DEP E BLANK FINAL",
+                    "RWY-8L",
+                    "RWY-9R",
+                    "RVMA80032S",
+                    "RVMA80037S",
+                    "RVMA80039S",
+                    "RVMA80034S",
+                    "RVMA80035S",
+                    "RVMA80042S",
+                    "RVMA80041S",
+                    "RVMA80061S",
+                    "RVMA80106S",
+                    "RVMA80048S",
+                    "",
+                    "RVMA80178S",
+                    "DEP W BLANK FINAL",
+                    "RWY-26R",
+                    "RWY-27L"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1S": {
+                "default_maps": [
+                    "RVMA80031S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80008S",
+                    "RVMA80090S",
+                    "RVMA80060S",
+                    "RVMA80009S",
+                    "RVMA80031S",
+                    "RVMA80038S",
+                    "RVMA80040S",
+                    "RVMA80036S",
+                    "RVMA80035S",
+                    "",
+                    "RVMA80044S",
+                    "RVMA80046S",
+                    "RVMA80047S",
+                    "RVMA80060S",
+                    "",
+                    "RVMA80173S",
+                    "DEP E BLANK FINAL",
+                    "RWY-8L",
+                    "RWY-9R",
+                    "RVMA80032S",
+                    "RVMA80037S",
+                    "RVMA80039S",
+                    "RVMA80034S",
+                    "RVMA80035S",
+                    "RVMA80042S",
+                    "RVMA80041S",
+                    "RVMA80061S",
+                    "RVMA80106S",
+                    "RVMA80048S",
+                    "",
+                    "RVMA80178S",
+                    "DEP W BLANK FINAL",
+                    "RWY-26R",
+                    "RWY-27L"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1P": {
+                "default_maps": [
+                    "RVMA80028S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80060S",
+                    "RVMA80090S",
+                    "RVMA80092S",
+                    "RVMA80106S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80067S",
+                    "",
+                    "RVMA80105S",
+                    "RVMA80107S",
+                    "RVMA80097S",
+                    "",
+                    "RVMA80053S",
+                    "RVMA80055S",
+                    "RVMA80058S",
+                    "RVMA80135S",
+                    "RVMA80029S",
+                    "RVMA80170S",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80065S",
+                    "RVMA80066S",
+                    "RVMA80104S",
+                    "RVMA80106S",
+                    "RVMA80062S",
+                    "RVMA80098S",
+                    "RVMA80047S",
+                    "RVMA80054S",
+                    "RVMA80092S",
+                    "RVMA80059S",
+                    "RVMA80134S",
+                    "",
+                    "RVMA80175S"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1G": {
+                "default_maps": [
+                    "RVMA80028S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80060S",
+                    "RVMA80090S",
+                    "RVMA80092S",
+                    "RVMA80106S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80067S",
+                    "",
+                    "RVMA80105S",
+                    "RVMA80107S",
+                    "RVMA80097S",
+                    "",
+                    "RVMA80053S",
+                    "RVMA80055S",
+                    "RVMA80058S",
+                    "RVMA80135S",
+                    "RVMA80029S",
+                    "RVMA80170S",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80065S",
+                    "RVMA80066S",
+                    "RVMA80104S",
+                    "RVMA80106S",
+                    "RVMA80062S",
+                    "RVMA80098S",
+                    "RVMA80047S",
+                    "RVMA80054S",
+                    "RVMA80092S",
+                    "RVMA80059S",
+                    "RVMA80134S",
+                    "",
+                    "RVMA80175S"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1F": {
+                "default_maps": [
+                    "RVMA80028S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80060S",
+                    "RVMA80090S",
+                    "RVMA80092S",
+                    "RVMA80106S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80067S",
+                    "",
+                    "RVMA80105S",
+                    "RVMA80107S",
+                    "RVMA80097S",
+                    "",
+                    "RVMA80053S",
+                    "RVMA80055S",
+                    "RVMA80058S",
+                    "RVMA80135S",
+                    "RVMA80029S",
+                    "RVMA80170S",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80065S",
+                    "RVMA80066S",
+                    "RVMA80104S",
+                    "RVMA80106S",
+                    "RVMA80062S",
+                    "RVMA80098S",
+                    "RVMA80047S",
+                    "RVMA80054S",
+                    "RVMA80092S",
+                    "RVMA80059S",
+                    "RVMA80134S",
+                    "",
+                    "RVMA80175S"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1X": {
+                "default_maps": [
+                    "RVMA80028S"
+                ],
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80060S",
+                    "RVMA80090S",
+                    "RVMA80092S",
+                    "RVMA80106S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80067S",
+                    "",
+                    "RVMA80105S",
+                    "RVMA80107S",
+                    "RVMA80097S",
+                    "",
+                    "RVMA80053S",
+                    "RVMA80055S",
+                    "RVMA80058S",
+                    "RVMA80135S",
+                    "RVMA80029S",
+                    "RVMA80170S",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80065S",
+                    "RVMA80066S",
+                    "RVMA80104S",
+                    "RVMA80106S",
+                    "RVMA80062S",
+                    "RVMA80098S",
+                    "RVMA80047S",
+                    "RVMA80054S",
+                    "RVMA80092S",
+                    "RVMA80059S",
+                    "RVMA80134S",
+                    "",
+                    "RVMA80175S"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1Q": {
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80109S",
+                    "RVMA80060S",
+                    "RVMA80090S",
+                    "RVMA80092S",
+                    "RVMA80106S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80067S",
+                    "",
+                    "RVMA80105S",
+                    "RVMA80107S",
+                    "RVMA80097S",
+                    "",
+                    "RVMA80053S",
+                    "RVMA80055S",
+                    "RVMA80058S",
+                    "RVMA80135S",
+                    "RVMA80029S",
+                    "RVMA80170S",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80065S",
+                    "RVMA80066S",
+                    "RVMA80104S",
+                    "RVMA80106S",
+                    "RVMA80062S",
+                    "RVMA80098S",
+                    "RVMA80047S",
+                    "RVMA80054S",
+                    "RVMA80092S",
+                    "RVMA80059S",
+                    "RVMA80134S",
+                    "",
+                    "RVMA80175S"
+                ],
+                "center": "N33.37.43.000,W084.25.48.000",
+                "range": 60
+            },
+            "1M": {
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80060S",
+                    "RVMA80092S",
+                    "RVMA80109S",
+                    "RVMA80106S",
+                    "RVMA80097S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80095S",
+                    "RVMA80110S",
+                    "RVMA80105S",
+                    "RVMA80127S",
+                    "RVMA80132S",
+                    "RVMA80129S",
+                    "RVMA80131S",
+                    "RVMA80107S",
+                    "",
+                    "RVMA80091S",
+                    "RVMA80029S",
+                    "",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80097S",
+                    "RVMA80096S",
+                    "RVMA80111S",
+                    "RVMA80106S",
+                    "RVMA80104S",
+                    "RVMA80128S",
+                    "RVMA80130S",
+                    "RVMA80098S",
+                    "RVMA80030S",
+                    "",
+                    "RVMA80092S",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "center": "N32.41.34.000,W083.38.57.000",
+                "range": 60
+            },
+            "1W": {
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80060S",
+                    "RVMA80092S",
+                    "RVMA80109S",
+                    "RVMA80106S",
+                    "RVMA80097S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80095S",
+                    "RVMA80110S",
+                    "RVMA80105S",
+                    "RVMA80127S",
+                    "RVMA80132S",
+                    "RVMA80129S",
+                    "RVMA80131S",
+                    "RVMA80107S",
+                    "",
+                    "RVMA80091S",
+                    "RVMA80029S",
+                    "",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80097S",
+                    "RVMA80096S",
+                    "RVMA80111S",
+                    "RVMA80106S",
+                    "RVMA80104S",
+                    "RVMA80128S",
+                    "RVMA80130S",
+                    "RVMA80098S",
+                    "RVMA80030S",
+                    "",
+                    "RVMA80092S",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "center": "N32.41.34.000,W083.38.57.000",
+                "range": 60
+            },
+            "1Z": {
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80060S",
+                    "RVMA80128S",
+                    "RVMA80109S",
+                    "RVMA80106S",
+                    "RVMA80129S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80095S",
+                    "RVMA80105S",
+                    "RVMA80127S",
+                    "RVMA80132S",
+                    "RVMA80129S",
+                    "RVMA80131S",
+                    "RVMA80107S",
+                    "",
+                    "RVMA80091S",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80097S",
+                    "RVMA80096S",
+                    "RVMA80106S",
+                    "RVMA80104S",
+                    "RVMA80128S",
+                    "RVMA80130S",
+                    "RVMA80098S",
+                    "RVMA80030S",
+                    "",
+                    "RVMA80092S",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "center": "N32.30.58.000,W084.56.19.000",
+                "range": 60
+            },
+            "1R": {
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80060S",
+                    "RVMA80128S",
+                    "RVMA80109S",
+                    "RVMA80106S",
+                    "RVMA80129S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80095S",
+                    "RVMA80105S",
+                    "RVMA80127S",
+                    "RVMA80132S",
+                    "RVMA80129S",
+                    "RVMA80131S",
+                    "RVMA80107S",
+                    "",
+                    "RVMA80091S",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80097S",
+                    "RVMA80096S",
+                    "RVMA80106S",
+                    "RVMA80104S",
+                    "RVMA80128S",
+                    "RVMA80130S",
+                    "RVMA80098S",
+                    "RVMA80030S",
+                    "",
+                    "RVMA80092S",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "center": "N32.30.58.000,W084.56.19.000",
+                "range": 60
+            },
+            "1E": {
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80060S",
+                    "",
+                    "RVMA80109S",
+                    "RVMA80106S",
+                    "RVMA80105S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80067S",
+                    "",
+                    "RVMA80105S",
+                    "RVMA80107S",
+                    "RVMA80097S",
+                    "",
+                    "RVMA80053S",
+                    "RVMA80055S",
+                    "RVMA80058S",
+                    "RVMA80029S",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80065S",
+                    "RVMA80066S",
+                    "RVMA80104S",
+                    "RVMA80106S",
+                    "",
+                    "RVMA80098S",
+                    "RVMA80047S",
+                    "RVMA80054S",
+                    "RVMA80091S",
+                    "RVMA80059S",
+                    "RVMA80174S"
+                ],
+                "center": "N33.56.55.000,W083.19.33.000",
+                "range": 60
+            },
+            "3E": {
+                "video_maps": [
+                    "RVMA80091S",
+                    "RVMA80060S",
+                    "",
+                    "RVMA80109S",
+                    "RVMA80106S",
+                    "RVMA80105S",
+                    "RVMA80028S",
+                    "RVMA80060S",
+                    "RVMA80067S",
+                    "",
+                    "RVMA80105S",
+                    "RVMA80107S",
+                    "RVMA80097S",
+                    "",
+                    "RVMA80053S",
+                    "RVMA80055S",
+                    "RVMA80058S",
+                    "RVMA80029S",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "RVMA80027S",
+                    "RVMA80065S",
+                    "RVMA80066S",
+                    "RVMA80104S",
+                    "RVMA80106S",
+                    "",
+                    "RVMA80098S",
+                    "RVMA80047S",
+                    "RVMA80054S",
+                    "RVMA80091S",
+                    "RVMA80059S",
+                    "RVMA80174S"
+                ],
+                "center": "N33.56.55.000,W083.19.33.000",
+                "range": 60
+            }
+        },
+        "radar_sites": {
+            "KATL": {
+                "char": "A",
+                "position": "KATL",
+                "elevation": 1150,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "slope_angle": 0.175
+            }
+        },
+        "scratchpads": {
+            "LUCKK": "BNG",
+            "HANKO": "CTN",
+            "IRQ": "GRY",
+            "SARGE": "HLO",
+            "KELLN": "JAC",
+            "STNGA": "KJN",
+            "CHOOK": "NAS",
+            "YAALL": "NAS",
+            "VUZ": "VUZ",
+            "RAFTN": "PGT",
+            "SMTTH": "PGT",
+            "BNA": "PEN",
+            "EMAHH": "PEN",
+            "JAACE": "PEN",
+            "HRTWL": "PHL",
+            "BURGG": "PLR",
+            "STEIT": "POU",
+            "GRGIA": "POU",
+            "BOBBD": "SKY",
+            "WALET": "SMZ",
+            "GLAZR": "VNM",
+            "RESPE": "VNM",
+            "NOKIE": "VTY",
+            "UGAAA": "UGA",
+            "TIROE": "TIR",
+            "SPA": "SPA",
+            "SOONE": "SOU",
+            "SOTWO": "SOT",
+            "NOONE": "NON",
+            "NOTWO": "NTW",
+            "WEONE": "WEO",
+            "WETWO": "WET",
+            "EAONE": "EAO",
+            "EATWO": "EAT",
+            "KFTY": "KFTY",
+            "KPDK": "KPDK",
+            "KMGE": "KMGE",
+            "KRYY": "KRYY",
+            "KLZU": "KLZU",
+            "KPUJ": "KPUJ",
+            "KVPC": "KVPC",
+            "KCVC": "KCVC",
+            "KFFC": "KFFC",
+            "KHMP": "KHMP",
+            "KCTJ": "KCTJ",
+            "KWDR": "KWDR",
+            "KGVL": "KGVL",
+            "KWRB": "KWRB",
+            "KMCN": "KMCN",
+            "KCSG": "KCSG",
+            "KLSF": "KLSF",
+            "KAUO": "KAUO",
+            "KJCA": "KJCA",
+            "KMLJ": "KMLJ",
+            "KOPN": "KOPN",
+            "KACJ": "KACJ",
+            "KPIM": "KPIM",
+            "KLGC": "KLGC",
+            "KCPP": "KCPP",
+            "6A1": "6A1",
+            "D73": "D73",
+            "06A": "06A",
+            "53A": "53A",
+            "KPXE": "KPXE",
+            "KMAC": "KMAC",
+            "KDBN": "KDBN",
+            "KCCO": "KCCO",
+            "6A2": "6A2"
+        },
+        "significant_points": {
+            "BNA": {},
+            "BOBBD": {},
+            "BURGG": {},
+            "CHOOK": {},
+            "EMAHH": {},
+            "GLAZR": {},
+            "GRGIA": {},
+            "HANKO": {},
+            "HRTWL": {},
+            "IRQ": {},
+            "JAACE": {},
+            "KELLN": {},
+            "LUCKK": {},
+            "NOKIE": {},
+            "RAFTN": {},
+            "RESPE": {},
+            "SARGE": {},
+            "SMTTH": {},
+            "STEIT": {},
+            "STNGA": {},
+            "VUZ": {},
+            "WALET": {},
+            "YAALL": {}
+        },
+        "video_map_file": "videomaps/A80-videomaps.gob.zst",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "ATLNOCA",
+                    "description": "ATL CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 100,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N033.46.44.205,W084.57.26.438",
+                        "N033.29.50.112,W084.57.34.980",
+                        "N033.29.53.902,W083.53.59.675",
+                        "N033.46.52.472,W083.54.04.070"
+                    ]
+                }
+            ]
+        },
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALL"
+                ],
+                "altitude_range": [
+                    0,
+                    0
+                ],
+                "receiving_controller": "C43"
+            }
+        ],
+        "coordination_fixes": {
+            "CHPPR": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "GLAVN": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "HOBTT": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "JJEDI": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "ONDRE": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "OZZZI": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "AGS",
+            "prefix": "1"
+        },
+        {
+            "id": "MGM",
+            "prefix": "2"
+        },
+        {
+            "id": "OZR",
+            "prefix": "3"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "J"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "C"
+        }
+    ]
+}

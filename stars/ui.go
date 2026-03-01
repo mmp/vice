@@ -35,6 +35,15 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.SameLine()
 	imgui.RadioButtonIntPtr("ARTS", &sp.FontSelection, fontARTS)
 
+	imgui.Text("Monitor: ")
+	for _, m := range util.SortedMapKeys(monitorColorSets) {
+		imgui.SameLine()
+		if imgui.RadioButtonBool(m, sp.Monitor == m) {
+			sp.Monitor = m
+			sp.Colors = monitorColorSets[sp.Monitor]
+		}
+	}
+
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
 
 	imgui.Checkbox("Invert numeric keypad", &sp.FlipNumericKeypad)
@@ -153,18 +162,18 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 						sp.scopeDraw.approaches[rwy.Airport] = make(map[string]bool)
 					}
 					for name, appr := range util.SortedMap(ap.Approaches) {
-						if appr.Runway == rwy.Runway {
+						if appr.Runway == rwy.Runway.Base() {
 							imgui.TableNextRow()
 							imgui.TableNextColumn()
 							enabled := sp.scopeDraw.approaches[rwy.Airport][name]
-							imgui.Checkbox("##enable-"+rwy.Airport+"-"+rwy.Runway+"-"+name, &enabled)
+							imgui.Checkbox("##enable-"+rwy.Airport+"-"+string(rwy.Runway)+"-"+name, &enabled)
 							sp.scopeDraw.approaches[rwy.Airport][name] = enabled
 
 							imgui.TableNextColumn()
 							imgui.Text(rwy.Airport)
 
 							imgui.TableNextColumn()
-							imgui.Text(rwy.Runway)
+							imgui.Text(string(rwy.Runway))
 
 							imgui.TableNextColumn()
 							imgui.Text(name)
@@ -174,7 +183,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 
 							imgui.TableNextColumn()
 							for _, wp := range appr.Waypoints[0] {
-								if wp.FAF {
+								if wp.FAF() {
 									imgui.Text(wp.Fix)
 									break
 								}
@@ -220,18 +229,18 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 				})
 
 				for _, rwy := range util.SortedMapKeys(runwayRates) {
-					if sp.scopeDraw.departures[airport][rwy] == nil {
-						sp.scopeDraw.departures[airport][rwy] = make(map[string]bool)
+					if sp.scopeDraw.departures[airport][string(rwy)] == nil {
+						sp.scopeDraw.departures[airport][string(rwy)] = make(map[string]bool)
 					}
 
 					exitRoutes := ap.DepartureRoutes[rwy]
 					for exit, exitRoute := range util.SortedMap(exitRoutes) {
 						group := sidGroups[exitRoute.SID]
-						if !slices.Contains(group.Runways, rwy) {
-							group.Runways = append(group.Runways, rwy)
+						if !slices.Contains(group.Runways, string(rwy)) {
+							group.Runways = append(group.Runways, string(rwy))
 						}
-						if !slices.Contains(group.Exits, exit) {
-							group.Exits = append(group.Exits, exit)
+						if !slices.Contains(group.Exits, string(exit)) {
+							group.Exits = append(group.Exits, string(exit))
 						}
 						if exitRoute.Description != "" && !slices.Contains(group.Descriptions, exitRoute.Description) {
 							group.Descriptions = append(group.Descriptions, exitRoute.Description)

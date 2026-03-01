@@ -13,11 +13,6 @@ import (
 
 type Brightness int
 
-func (b Brightness) RGB() renderer.RGB {
-	v := float32(b) / 100
-	return renderer.RGB{v, v, v}
-}
-
 func (b Brightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 	return r.Scale(float32(b) / 100)
 }
@@ -204,7 +199,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 			// arrowhead at the end
 			drawArrow(pend, a)
 		} else if i+1 < len(waypoints) {
-			if wp.Arc != nil {
+			if wp.Arc() != nil {
 				// Draw DME arc. One subtlety is that although the arc's
 				// radius should cause it to pass through the waypoint, it
 				// may be slightly off due to error from using nm
@@ -213,7 +208,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				// point in nm coordinates and store it in r0 and do the
 				// same for the end point. Then we will interpolate those
 				// radii along the arc.
-				pc := math.LL2NM(wp.Arc.Center, ctx.NmPerLongitude)
+				pc := math.LL2NM(wp.Arc().Center, ctx.NmPerLongitude)
 				p0 := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)
 				r0 := math.Distance2f(p0, pc)
 				v0 := math.Normalize2f(math.Sub2f(p0, pc))
@@ -229,7 +224,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				a := a0
 				pprev := waypoints[i].Location
 				for i := 1; i < n-1; i++ {
-					if wp.Arc.Clockwise {
+					if wp.Arc().Direction.IsClockwise() {
 						a += 1
 					} else {
 						a -= 1
@@ -243,7 +238,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 
 					if i == n/2 {
 						// Draw an arrow at the midpoint showing the arc's direction
-						drawArrow(math.Add2f(pc, v), util.Select(wp.Arc.Clockwise, math.Radians(a+90), math.Radians(a-90)))
+						drawArrow(math.Add2f(pc, v), util.Select(wp.Arc().Direction.IsClockwise(), math.Radians(a+90), math.Radians(a-90)))
 					}
 				}
 				ld.AddLine(pprev, waypoints[i+1].Location, color)
@@ -251,8 +246,8 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				// Regular segment between waypoints: draw the line
 				ld.AddLine(waypoints[i].Location, waypoints[i+1].Location, color)
 
-				if waypoints[i+1].ProcedureTurn == nil &&
-					!(waypoints[i].ProcedureTurn != nil && waypoints[i].ProcedureTurn.Type == av.PTStandard45) {
+				if waypoints[i+1].ProcedureTurn() == nil &&
+					!(waypoints[i].ProcedureTurn() != nil && waypoints[i].ProcedureTurn().Type == av.PTStandard45) {
 					// Draw an arrow indicating direction of flight along
 					// the segment, unless the next waypoint has a
 					// procedure turn. In that case, we'll let the PT draw
@@ -265,7 +260,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 			}
 		}
 
-		if pt := wp.ProcedureTurn; pt != nil {
+		if pt := wp.ProcedureTurn(); pt != nil {
 			if i+1 >= len(waypoints) {
 				ctx.Lg.Errorf("Expected another waypoint after the procedure turn?")
 			} else {
@@ -383,18 +378,18 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 		pd.AddCircle(transforms.WindowFromLatLongP(wp.Location), pointRadius, nSegments, color)
 
 		// If /radius has been specified, draw a corresponding circle
-		if wp.Radius > 0 {
+		if wp.Radius() > 0 {
 			ld.AddLatLongCircle(wp.Location, ctx.NmPerLongitude,
-				wp.Radius, 32)
+				wp.Radius(), 32)
 		}
 
 		// For /shift, extend the line beyond the waypoint (just in case)
 		// and draw perpendicular bars at the ends.
-		if wp.Shift > 0 {
+		if wp.Shift() > 0 {
 			prev := waypoints[i-1]
 			v := math.Sub2f(wp.Location, prev.Location)
 			v = math.Scale2f(v, 1/math.NMDistance2LL(wp.Location, prev.Location)) // ~1nm length
-			v = math.Scale2f(v, wp.Shift/2)
+			v = math.Scale2f(v, wp.Shift()/2)
 
 			// extend the line
 			e0, e1 := math.Sub2f(wp.Location, v), math.Add2f(wp.Location, v)
@@ -423,30 +418,30 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 			p = td.AddText(wp.Fix+"\n", p, style)
 		}
 
-		if wp.IAF || wp.IF || wp.FAF || wp.NoPT || wp.FlyOver {
+		if wp.IAF() || wp.IF() || wp.FAF() || wp.NoPT() || wp.FlyOver() {
 			var s []string
-			if wp.IAF {
+			if wp.IAF() {
 				s = append(s, "IAF")
 			}
-			if wp.IF {
+			if wp.IF() {
 				s = append(s, "IF")
 			}
-			if wp.FAF {
+			if wp.FAF() {
 				s = append(s, "FAF")
 			}
-			if wp.NoPT {
+			if wp.NoPT() {
 				s = append(s, "NoPT")
 			}
-			if wp.FlyOver {
+			if wp.FlyOver() {
 				s = append(s, "FlyOver")
 			}
 			p = td.AddText(strings.Join(s, "/")+"\n", p, style)
 		}
 
-		if wp.Speed != 0 || wp.AltitudeRestriction != nil {
+		if wp.Speed != 0 || wp.AltitudeRestriction() != nil {
 			p[1] -= 0.25 * float32(style.Font.Size) // extra space for lines above if needed
 
-			if ar := wp.AltitudeRestriction; ar != nil {
+			if ar := wp.AltitudeRestriction(); ar != nil {
 				pt := p       // draw position for text
 				var w float32 // max width of altitudes drawn
 				if ar.Range[1] != 0 {

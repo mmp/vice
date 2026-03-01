@@ -25,6 +25,7 @@ import (
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/pkg/browser"
 )
 
@@ -147,7 +148,13 @@ func (m *ModalDialogBox) Draw() {
 	imgui.OpenPopupStr(title)
 
 	dpiScale := util.Select(runtime.GOOS == "windows", m.platform.DPIScale(), float32(1))
-	windowSize := m.platform.WindowSize()
+
+	// Use the main viewport for positioning and sizing so that dialogs
+	// are centered correctly when multi-viewport is enabled (imgui uses
+	// screen-space coordinates with viewports).
+	mainVP := imgui.MainViewport()
+	vpPos := mainVP.Pos()
+	vpSize := mainVP.Size()
 
 	// Check if client wants a fixed size window
 	var flags imgui.WindowFlags
@@ -159,14 +166,13 @@ func (m *ModalDialogBox) Draw() {
 	} else {
 		// Auto-resize dialog with constraints
 		flags = imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
-		maxHeight := float32(windowSize[1]) * 19 / 20
+		maxHeight := vpSize.Y * 19 / 20
 		imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 850, dpiScale * 100}, imgui.Vec2{-1, maxHeight})
 	}
 
-	// Position the window near the top of the screen to ensure it doesn't extend below the bottom
-	// Use a small margin from the top (5% of screen height)
-	topMargin := float32(windowSize[1]) * 0.05
-	imgui.SetNextWindowPosV(imgui.Vec2{float32(windowSize[0]) / 2, topMargin}, imgui.CondAlways, imgui.Vec2{0.5, 0})
+	// Center the dialog on the main viewport, near the top.
+	topMargin := vpSize.Y * 0.05
+	imgui.SetNextWindowPosV(imgui.Vec2{vpPos.X + vpSize.X/2, vpPos.Y + topMargin}, imgui.CondAlways, imgui.Vec2{0.5, 0})
 
 	if imgui.BeginPopupModalV(title, nil, flags) {
 		if !m.isOpen {
@@ -426,7 +432,7 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, config
 	}
 
 	if bt, err := time.Parse(time.RFC3339, buildTime); err != nil {
-		lg.Errorf("error parsing build time \"%s\": %v", buildTime, err)
+		lg.Errorf(`error parsing build time "%s": %v`, buildTime, err)
 	} else if newestRelease.Created.UTC().After(bt.UTC()) {
 		lg.Infof("build time %s newest release %s -> release is newer",
 			bt.UTC().String(), newestRelease.Created.UTC().String())
@@ -451,7 +457,7 @@ func (nr *NewReleaseModalClient) Opening() {}
 
 func (nr *NewReleaseModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
-		ModalDialogButton{
+		{
 			text: "Quit and update",
 			action: func() bool {
 				browser.OpenURL("https://pharr.org/vice/index.html#section-installation")
@@ -459,7 +465,7 @@ func (nr *NewReleaseModalClient) Buttons() []ModalDialogButton {
 				return true
 			},
 		},
-		ModalDialogButton{text: "Update later"}}
+		{text: "Update later"}}
 }
 
 func (nr *NewReleaseModalClient) Draw() int {
@@ -480,14 +486,14 @@ func (wn *WhatsNewModalClient) Opening() {}
 
 func (wn *WhatsNewModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
-		ModalDialogButton{
+		{
 			text: "View Release Notes",
 			action: func() bool {
 				browser.OpenURL("https://pharr.org/vice/index.html#releases")
 				return false
 			},
 		},
-		ModalDialogButton{
+		{
 			text: "Ok",
 			action: func() bool {
 				wn.config.WhatsNewIndex = len(whatsNew)
@@ -516,7 +522,7 @@ func (b *BroadcastModalDialog) Opening() {}
 
 func (b *BroadcastModalDialog) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
-		ModalDialogButton{
+		{
 			text: "Ok",
 			action: func() bool {
 				return true
@@ -542,7 +548,7 @@ func (d *DiscordOptInModalClient) Opening() {}
 
 func (d *DiscordOptInModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
-		ModalDialogButton{
+		{
 			text: "Ok",
 			action: func() bool {
 				d.config.AskedDiscordOptIn = true
@@ -587,7 +593,7 @@ func (ns *NotifyTargetGenModalClient) Opening() {}
 
 func (ns *NotifyTargetGenModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{
-		ModalDialogButton{
+		{
 			text: "Ok",
 			action: func() bool {
 				*ns.notifiedNew = true
@@ -658,7 +664,7 @@ func (e *ErrorModalClient) Draw() int {
 
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
-		imgui.Image(imgui.TextureID(sadTowerTextureID), imgui.Vec2{128, 128})
+		imgui.Image(*imgui.NewTextureRefTextureID(imgui.TextureID(sadTowerTextureID)), imgui.Vec2{128, 128})
 
 		imgui.TableNextColumn()
 		text, _ := util.TextWrapConfig{
@@ -680,7 +686,9 @@ func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...any)
 }
 
 func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...any) {
-	lg.Errorf(s, args...)
+	if lg != nil {
+		lg.Errorf(s, args...)
+	}
 
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
 
@@ -688,14 +696,18 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 		p.ProcessEvents()
 		p.NewFrame()
 		imgui.NewFrame()
-		imgui.PushFont(&ui.font.Ifont)
+		ui.font.ImguiPush()
 		d.Draw()
 		imgui.PopFont()
 
 		imgui.Render()
-		var cb renderer.CommandBuffer
-		renderer.GenerateImguiCommandBuffer(&cb, p.DisplaySize(), p.FramebufferSize(), lg)
-		r.RenderCommandBuffer(&cb)
+		implogl3.RenderDrawData(imgui.CurrentDrawData())
+
+		if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+			imgui.UpdatePlatformWindows()
+			imgui.RenderPlatformWindowsDefault()
+			p.MakeContextCurrent()
+		}
 
 		p.PostRender()
 	}
@@ -782,14 +794,18 @@ func WaitForWhisperBenchmark(r renderer.Renderer, p platform.Platform, lg *log.L
 		p.ProcessEvents()
 		p.NewFrame()
 		imgui.NewFrame()
-		imgui.PushFont(&ui.font.Ifont)
+		ui.font.ImguiPush()
 		d.Draw()
 		imgui.PopFont()
 
 		imgui.Render()
-		var cb renderer.CommandBuffer
-		renderer.GenerateImguiCommandBuffer(&cb, p.DisplaySize(), p.FramebufferSize(), lg)
-		r.RenderCommandBuffer(&cb)
+		implogl3.RenderDrawData(imgui.CurrentDrawData())
+
+		if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+			imgui.UpdatePlatformWindows()
+			imgui.RenderPlatformWindowsDefault()
+			p.MakeContextCurrent()
+		}
 
 		p.PostRender()
 

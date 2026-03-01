@@ -44,7 +44,7 @@ func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, 
 	pw := transforms.WindowFromLatLongP(ctr)
 	bounds := math.Extent2D{P1: [2]float32{scopeExtent.Width(), scopeExtent.Height()}}
 	font := sp.systemFont(ctx, ps.CharSize.Tools)
-	color := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
+	color := ps.Brightness.Compass.ScaleRGB(sp.Colors.Compass)
 
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -140,7 +140,7 @@ func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms radar.ScopeTr
 	}
 
 	cb.LineWidth(1, ctx.DPIScale)
-	color := ps.Brightness.RangeRings.ScaleRGB(STARSRangeRingColor)
+	color := ps.Brightness.RangeRings.ScaleRGB(sp.Colors.RangeRing)
 	cb.SetRGB(color)
 	transforms.LoadWindowViewingMatrices(cb)
 	ld.GenerateCommands(cb)
@@ -161,7 +161,7 @@ func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms radar.ScopeT
 	// "The color of the blinking square is the same as that for blinking
 	// data block information"(?)
 	ps := sp.currentPrefs()
-	color := ps.Brightness.FullDatablocks.ScaleRGB(STARSUntrackedAircraftColor)
+	color := ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.UnownedDatablock)
 	halfSeconds := ctx.Now.UnixMilli() / 500
 	blinkDim := halfSeconds&1 == 0
 	if blinkDim {
@@ -191,7 +191,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms radar.ScopeT
 	defer renderer.ReturnLinesDrawBuilder(ld)
 
 	ps := sp.currentPrefs()
-	color := ps.Brightness.Lines.RGB()
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.RangeBearingLine) // arbitrary white-ish...
 	style := renderer.TextStyle{
 		Font:  sp.systemFont(ctx, ps.CharSize.Tools),
 		Color: color,
@@ -221,7 +221,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, transforms radar.ScopeTransfor
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	ps := sp.currentPrefs()
-	color := ps.Brightness.Lines.RGB() // check
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.RangeBearingLine)
 	style := renderer.TextStyle{
 		Font:  sp.systemFont(ctx, ps.CharSize.Tools),
 		Color: color,
@@ -310,7 +310,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	ps := sp.currentPrefs()
-	color := ps.Brightness.Lines.RGB()
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.PTL) // same color for min sep as PTL
 
 	s0, ok0 := sp.TrackState[trk0.ADSBCallsign]
 	s1, ok1 := sp.TrackState[trk1.ADSBCallsign]
@@ -529,7 +529,7 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms r
 			}
 			ap := ctx.Client.State.Airports[rwy.Airport]
 			for name, appr := range util.SortedMap(ap.Approaches) {
-				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
+				if appr.Runway == rwy.Runway.Base() && sp.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
 						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 					}
@@ -580,13 +580,13 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 
 			ap := ctx.Client.State.Airports[name]
 			for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
-				if sp.scopeDraw.departures[name][rwy] == nil {
+				if sp.scopeDraw.departures[name][string(rwy)] == nil {
 					continue
 				}
 
 				exitRoutes := ap.DepartureRoutes[rwy]
 				for exit, exitRoute := range util.SortedMap(exitRoutes) {
-					if sp.scopeDraw.departures[name][rwy][exit] {
+					if sp.scopeDraw.departures[name][string(rwy)][string(exit)] {
 						radar.DrawWaypoints(ctx, exitRoute.Waypoints, drawnWaypoints, transforms,
 							td, style, ld, pd, ldr, color)
 					}
@@ -675,7 +675,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, transforms radar.ScopeTransfor
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
-	color := ps.Brightness.Lines.RGB()
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.PTL)
 
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
@@ -724,7 +724,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
-	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.JRingCone)
 
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
@@ -806,11 +806,11 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 				pts[i] = rot(pts[i])
 			}
 
-			coneColor := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
+			coneColor := ps.Brightness.Lines.ScaleRGB(sp.Colors.JRingCone)
 			if atpaStatus == ATPAStatusWarning {
-				coneColor = ps.Brightness.Lines.ScaleRGB(STARSATPAWarningColor)
+				coneColor = ps.Brightness.Lines.ScaleRGB(sp.Colors.ATPAWarning)
 			} else if atpaStatus == ATPAStatusAlert {
-				coneColor = ps.Brightness.Lines.ScaleRGB(STARSATPAAlertColor)
+				coneColor = ps.Brightness.Lines.ScaleRGB(sp.Colors.ATPAAlert)
 			}
 
 			// We've got what we need to draw a polyline with the
@@ -844,7 +844,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 
 	transforms.LoadWindowViewingMatrices(cb)
 	ld.GenerateCommands(cb)
-	cb.SetRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
+	cb.SetRGB(ps.Brightness.BackgroundContrast.ScaleRGB(sp.Colors.Background))
 	trid.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
@@ -870,7 +870,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms radar.Scop
 
 	prefs := sp.currentPrefs()
 	cb.LineWidth(1, ctx.DPIScale)
-	cb.SetRGB(prefs.Brightness.Lines.ScaleRGB(STARSJRingConeColor))
+	cb.SetRGB(prefs.Brightness.Lines.ScaleRGB(sp.Colors.JRingCone))
 	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)
 }
@@ -908,7 +908,7 @@ func (sp *STARSPane) drawWind(ctx *panes.Context, transforms radar.ScopeTransfor
 
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Tools)
-	color := ps.Brightness.Lines.RGB()
+	color := ps.Brightness.Lines.ScaleRGB(sp.Colors.RangeBearingLine) // arbitrary white-ish...
 
 	const arrowLength = 25
 	const arrowheadSize = 8
@@ -1091,10 +1091,8 @@ func (sp *STARSPane) drawHoldPattern(ctx *panes.Context, transforms radar.ScopeT
 	// Outbound vector (pointing away from fix)
 	outboundVec := [2]float32{-inboundVec[0], -inboundVec[1]}
 
-	// Calculate turn radius for standard rate turn at 120 knots
-	// Turn radius = speed / (turning rate in rad/s) / 60
-	// At 120 knots, standard rate (3°/s): radius ≈ 0.67 nm
-	turnRadius := float32(0.67)
+	// Use 1nm turn radius to match the racetrack drawing in DrawWaypoints.
+	turnRadius := float32(1)
 
 	// Perpendicular vector for turn offset (depends on turn direction)
 	var perpVec [2]float32

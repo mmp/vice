@@ -16,6 +16,7 @@ REM
 REM Prerequisites:
 REM   - Go installed and in PATH
 REM   - MinGW-w64 installed and in PATH (for gcc, cmake)
+REM   - Visual Studio Build Tools with C++ workload (for sherpa-onnx MSVC build)
 REM
 REM whisper-cpp is built automatically if needed.
 
@@ -26,6 +27,9 @@ set DO_ICONS=0
 
 REM Expected whisper.cpp submodule SHA (update this when bumping the submodule)
 set WHISPER_EXPECTED_SHA=050f4ef8286ca6d49b1b0e131462b9d71959f5ff
+
+REM Expected sherpa-onnx submodule SHA (update this when bumping the submodule)
+set SHERPA_EXPECTED_SHA=8dcca037bb73880c4fcb231a9c41740189e95e7c
 
 REM Check that whisper.cpp submodule is at the expected commit
 if not exist "whisper.cpp\.git" (
@@ -55,6 +59,39 @@ if not "!WHISPER_ACTUAL_SHA!"=="!WHISPER_EXPECTED_SHA!" (
     echo   git submodule update --init --recursive
     exit /b 1
 )
+
+REM Check that sherpa-onnx submodule is at the expected commit
+if not exist "sherpa-onnx\.git" (
+    echo Error: sherpa-onnx submodule is not initialized.
+    echo.
+    echo Please run:
+    echo   git submodule update --init --recursive
+    exit /b 1
+)
+
+for /f "delims=" %%i in ('git -C sherpa-onnx rev-parse HEAD 2^>nul') do set SHERPA_ACTUAL_SHA=%%i
+if not defined SHERPA_ACTUAL_SHA (
+    echo Error: Could not determine sherpa-onnx submodule version.
+    echo.
+    echo Please run:
+    echo   git submodule update --init --recursive
+    exit /b 1
+)
+
+if not "!SHERPA_ACTUAL_SHA!"=="!SHERPA_EXPECTED_SHA!" (
+    echo Error: sherpa-onnx submodule is at wrong commit.
+    echo.
+    echo   Expected: !SHERPA_EXPECTED_SHA!
+    echo   Actual:   !SHERPA_ACTUAL_SHA!
+    echo.
+    echo Please run:
+    echo   git submodule update --init --recursive
+    exit /b 1
+)
+
+REM Sync models from R2 if needed
+call :sync_models
+if errorlevel 1 exit /b 1
 
 REM Parse arguments
 :parse_args
@@ -112,6 +149,7 @@ if exist "!MINGW_BIN!\libgcc_s_seh-1.dll" (
         echo Copying MinGW runtime DLLs to windows/
         copy "!MINGW_BIN!\libgcc_s_seh-1.dll" "windows\" >nul
         copy "!MINGW_BIN!\libstdc++-6.dll" "windows\" >nul
+        if exist "!MINGW_BIN!\libwinpthread-1.dll" copy "!MINGW_BIN!\libwinpthread-1.dll" "windows\" >nul
     )
 )
 if exist "!SDL2_DIR!\bin\SDL2.dll" (
@@ -134,6 +172,79 @@ if defined VULKAN_SDK (
     )
 ) else (
     echo VULKAN_SDK environment variable not set
+)
+
+REM Build sherpa-onnx if needed.
+REM sherpa-onnx's fetched dependencies (kaldifst, simple-sentencepiece) add
+REM MSVC-specific compiler flags (/wd*, /std:c++14) that break MinGW/GCC.
+REM We build sherpa-onnx with MSVC (NMake) which produces DLLs and import
+REM libraries (.lib) that MinGW-compiled Go code can link against.
+REM BUILD_SHARED_LIBS=ON is required so the output is a DLL + import lib.
+
+REM Locate MSVC (vcvarsall.bat) via vswhere
+set VCVARSALL=
+for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath 2^>nul`) do (
+    set "VCVARSALL=%%i\VC\Auxiliary\Build\vcvarsall.bat"
+)
+if not defined VCVARSALL (
+    echo Error: Could not find MSVC vcvarsall.bat via vswhere.
+    echo Please install Visual Studio Build Tools with the C++ workload.
+    exit /b 1
+)
+if not exist "!VCVARSALL!" (
+    echo Error: vcvarsall.bat not found at !VCVARSALL!
+    exit /b 1
+)
+
+if not exist "sherpa-onnx\build_go\lib\sherpa-onnx-c-api.lib" (
+    echo === Building sherpa-onnx with MSVC ===
+    setlocal
+    call "!VCVARSALL!" x64
+    if errorlevel 1 (
+        echo Error: Failed to set up MSVC environment.
+        endlocal
+        exit /b 1
+    )
+    cmake -S sherpa-onnx -B sherpa-onnx\build_go ^
+        -G "NMake Makefiles" ^
+        -DCMAKE_VS_PLATFORM_NAME=x64 ^
+        -DBUILD_SHARED_LIBS=ON ^
+        -DSHERPA_ONNX_ENABLE_TTS=ON ^
+        -DSHERPA_ONNX_ENABLE_CHECK=OFF ^
+        -DSHERPA_ONNX_ENABLE_BINARY=OFF ^
+        -DSHERPA_ONNX_ENABLE_WEBSOCKET=OFF ^
+        -DSHERPA_ONNX_ENABLE_PORTAUDIO=OFF ^
+        -DSHERPA_ONNX_ENABLE_TESTS=OFF ^
+        -DSHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION=OFF ^
+        -DSHERPA_ONNX_BUILD_C_API_EXAMPLES=OFF ^
+        -DCMAKE_BUILD_TYPE=Release
+    if errorlevel 1 (
+        endlocal
+        exit /b 1
+    )
+    cmake --build sherpa-onnx\build_go
+    if errorlevel 1 (
+        endlocal
+        exit /b 1
+    )
+    endlocal
+    echo sherpa-onnx built successfully.
+)
+
+REM Copy sherpa-onnx runtime DLLs to windows/ if not already there
+if not exist "windows\sherpa-onnx-c-api.dll" (
+    echo Copying sherpa-onnx runtime DLLs to windows/
+    for /r sherpa-onnx\build_go %%f in (sherpa-onnx-c-api.dll) do (
+        if exist "%%f" copy /y "%%f" "windows\sherpa-onnx-c-api.dll" >nul
+    )
+)
+if not exist "windows\onnxruntime.dll" (
+    for /r sherpa-onnx\build_go\_deps %%f in (onnxruntime.dll) do (
+        if exist "%%f" (
+            echo Copying onnxruntime.dll to windows/
+            copy /y "%%f" "windows\" >nul
+        )
+    )
 )
 
 REM Build whisper-cpp if needed
@@ -288,3 +399,16 @@ if %DO_TEST%==1 (
 )
 
 echo === Done ===
+goto :eof
+
+:sync_models
+set MANIFEST=resources\models\manifest.json
+set MODELS_DIR=resources\models
+set STAMP=%MODELS_DIR%\.synced
+
+if not exist "%MANIFEST%" goto :eof
+
+REM Use PowerShell script to parse JSON and sync models
+powershell -NoProfile -ExecutionPolicy Bypass -File windows\sync-models.ps1 -ManifestPath "%MANIFEST%" -ModelsDir "%MODELS_DIR%" -StampPath "%STAMP%"
+if errorlevel 1 exit /b 1
+goto :eof

@@ -1,0 +1,52 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "GUS_E_APP",
+            "frequency": 121050,
+            "radio_name": "Grissom Approach"
+        },
+        "1W": {
+            "callsign": "GUS_W_APP",
+            "frequency": 123850,
+            "radio_name": "Grissom Approach"
+        },
+        "1Z": {
+            "callsign": "GUS_TWR",
+            "frequency": 133700,
+            "radio_name": "Grissom Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CMI",
+            "prefix": "5"
+        },
+        {
+            "id": "FWA",
+            "prefix": "2"
+        },
+        {
+            "id": "HUF",
+            "prefix": "4"
+        },
+        {
+            "id": "IND",
+            "prefix": "3"
+        },
+        {
+            "id": "SBN",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "C"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

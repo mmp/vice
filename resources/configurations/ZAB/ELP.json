@@ -1,0 +1,32 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "ELP_N_APP",
+            "frequency": 124250,
+            "radio_name": "El Paso Approach"
+        },
+        "1S": {
+            "callsign": "ELP_S_APP",
+            "frequency": 119150,
+            "radio_name": "El Paso Approach"
+        },
+        "2T": {
+            "callsign": "ELP_TWR",
+            "frequency": 118300,
+            "radio_name": "El Paso Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "HMN",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

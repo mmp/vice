@@ -16,22 +16,23 @@ import (
 // Gap ranges (in degrees) where reduced separation J rings should not be drawn.
 
 type TrackState struct {
-	track             av.RadarTrack
-	previousTrack     av.RadarTrack
-	previousAltitude  float32 // for seeing if the track is climbing or descending. This may need to be moved someplace else later
-	previousTrackTime time.Time
-	trackTime         time.Time
+	Track             av.RadarTrack
+	PreviousTrack     av.RadarTrack
+	PreviousAltitude  float32 // for seeing if the track is climbing or descending. This may need to be moved someplace else later
+	PreviousTrackTime time.Time
+	TrackTime         time.Time
 	CID               int
 
-	historyTracks     [6]historyTrack // I think it's six?
-	historyTrackIndex int
+	HistoryTracks     [6]historyTrack // I think it's six?
+	HistoryTrackIndex int
 
 	DatablockType DatablockType
 
-	leaderLineDirection *math.CardinalOrdinalDirection
+	LeaderLineDirection *math.CardinalOrdinalDirection
+	LeaderLineLength    int // 0=no line (W/E only), 1=normal (default), 2=2x, 3=3x
 
-	eLDB bool
-	eFDB bool
+	ELDB bool
+	EFDB bool
 
 	DisplayJRing        bool
 	DisplayReducedJRing bool
@@ -44,8 +45,9 @@ type TrackState struct {
 
 	HoverVCI bool // if the user is hovering over the VCI field
 
-	// add more as we figure out what to do...
+	HSFHide bool
 
+	// add more as we figure out what to do...
 }
 
 type aircraftFixCoordinates struct {
@@ -54,27 +56,27 @@ type aircraftFixCoordinates struct {
 }
 
 func (ts *TrackState) TrackDeltaAltitude() int {
-	if ts.previousTrack.Location.IsZero() {
+	if ts.PreviousTrack.Location.IsZero() {
 		// No previous track
 		return 0
 	}
-	return int(ts.track.TransponderAltitude - ts.previousTrack.TransponderAltitude)
+	return int(ts.Track.TransponderAltitude - ts.PreviousTrack.TransponderAltitude)
 }
 
 func (ts *TrackState) Descending() bool {
-	return ts.track.TransponderAltitude < ts.previousTrack.TransponderAltitude
+	return ts.Track.TransponderAltitude < ts.PreviousTrack.TransponderAltitude
 }
 
 func (ts *TrackState) Climbing() bool {
-	return ts.track.TransponderAltitude > ts.previousTrack.TransponderAltitude
+	return ts.Track.TransponderAltitude > ts.PreviousTrack.TransponderAltitude
 }
 
 func (ts *TrackState) IsLevel() bool {
-	return ts.track.TransponderAltitude == ts.previousTrack.TransponderAltitude
+	return ts.Track.TransponderAltitude == ts.PreviousTrack.TransponderAltitude
 }
 
 func (ts *TrackState) HaveHeading() bool {
-	return !ts.previousTrack.Location.IsZero()
+	return !ts.PreviousTrack.Location.IsZero()
 }
 
 func (ts *TrackState) HeadingVector(nmPerLongitude, magneticVariation float32) math.Point2LL {
@@ -82,12 +84,12 @@ func (ts *TrackState) HeadingVector(nmPerLongitude, magneticVariation float32) m
 		return math.Point2LL{}
 	}
 
-	p0 := math.LL2NM(ts.track.Location, nmPerLongitude)
-	p1 := math.LL2NM(ts.previousTrack.Location, nmPerLongitude)
+	p0 := math.LL2NM(ts.Track.Location, nmPerLongitude)
+	p1 := math.LL2NM(ts.PreviousTrack.Location, nmPerLongitude)
 	v := math.Sub2LL(p0, p1)
 	v = math.Normalize2f(v)
 	// v's length should be groundspeed / 60 nm.
-	v = math.Scale2f(v, float32(ts.track.Groundspeed)/60) // hours to minutes
+	v = math.Scale2f(v, float32(ts.Track.Groundspeed)/60) // hours to minutes
 	return math.NM2LL(v, nmPerLongitude)
 }
 
@@ -95,7 +97,7 @@ func (ts *TrackState) TrackHeading(nmPerLongitude float32) float32 {
 	if !ts.HaveHeading() {
 		return -1
 	}
-	return math.Heading2LL(ts.previousTrack.Location, ts.track.Location, nmPerLongitude, 0)
+	return math.Heading2LL(ts.PreviousTrack.Location, ts.Track.Location, nmPerLongitude, 0)
 }
 
 func (ep *ERAMPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*TrackState, bool) {
@@ -112,7 +114,9 @@ func (ep *ERAMPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*Track
 func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 	for _, trk := range ctx.Client.State.Tracks {
 		if _, ok := ep.TrackState[trk.ADSBCallsign]; !ok {
-			sa := &TrackState{}
+			sa := &TrackState{
+				LeaderLineLength: ep.currentPrefs().FDBLdrLength, // Use current preference
+			}
 			ep.TrackState[trk.ADSBCallsign] = sa
 		}
 	}
@@ -124,7 +128,7 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 				continue
 			}
 			state := ep.TrackState[av.ADSBCallsign(event.ACID)]
-			state.eFDB = true
+			state.EFDB = true
 			state.OSectorEndTime = ctx.Client.CurrentTime().Add(30 * time.Second) // check this pls
 		case sim.FixCoordinatesEvent:
 			ac := event.ACID
@@ -163,35 +167,37 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
 		if state == nil {
-			state = &TrackState{}
+			state = &TrackState{
+				LeaderLineLength: ep.currentPrefs().FDBLdrLength, // Use current preference
+			}
 			ep.TrackState[trk.ADSBCallsign] = state
 		}
 
-		if trk.TypeOfFlight == av.FlightTypeDeparture && trk.IsTentative && !state.trackTime.IsZero() {
+		if trk.TypeOfFlight == av.FlightTypeDeparture && trk.IsTentative && !state.TrackTime.IsZero() {
 			// Get the first track for tentative tracks but then don't
 			// update any further until it's no longer tentative.
 			continue
 		}
 
 		// check if tracks with a reduced DRI are above FL230
-		if state.DisplayReducedJRing && state.track.TransponderAltitude > 23000 {
+		if state.DisplayReducedJRing && state.Track.TransponderAltitude > 23000 {
 			state.DisplayReducedJRing = false
 		}
 
-		state.previousTrack = state.track
-		state.previousAltitude = state.track.TransponderAltitude
-		state.previousTrackTime = state.trackTime
-		state.track = trk.RadarTrack
-		state.trackTime = now
+		state.PreviousTrack = state.Track
+		state.PreviousAltitude = state.Track.TransponderAltitude
+		state.PreviousTrackTime = state.TrackTime
+		state.Track = trk.RadarTrack
+		state.TrackTime = now
 
 		// Update history tracks
-		idx := state.historyTrackIndex % len(state.historyTracks)
-		state.historyTracks[idx] = historyTrack{state.track, ep.positionSymbol(trk, state)}
-		state.historyTrackIndex++
+		idx := state.HistoryTrackIndex % len(state.HistoryTracks)
+		state.HistoryTracks[idx] = historyTrack{state.Track, ep.positionSymbol(trk, state)}
+		state.HistoryTrackIndex++
 
 		// check to see if the a/c has reached the altitude
 		if trk.IsAssociated() {
-			if av.FormatScopeAltitude(state.track.TransponderAltitude) == av.FormatScopeAltitude(trk.FlightPlan.AssignedAltitude) {
+			if av.FormatScopeAltitude(state.Track.TransponderAltitude) == av.FormatScopeAltitude(trk.FlightPlan.AssignedAltitude) {
 				state.ReachedAltitude = true
 			}
 		}
@@ -238,7 +244,7 @@ func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *panes.Co
 	transforms radar.ScopeTransformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder,
 	cb *renderer.CommandBuffer) {
-	pos := state.track.Location
+	pos := state.Track.Location
 	pw := transforms.WindowFromLatLongP(pos)
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
 
@@ -271,7 +277,7 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 // TODO: Store tracks in ERAMComputer and have them associate to targets
 func (ep *ERAMPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Context,
 	td *renderer.TextDrawBuilder, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
-	pos := state.track.Location
+	pos := state.Track.Location
 	// TODO: free tracks, frozen tracks, and coast tracks
 	// drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
 	font := ep.systemFont[9]
@@ -300,7 +306,7 @@ func (ep *ERAMPane) positionSymbol(trk sim.Track, state *TrackState) string {
 	} else {
 		if trk.Mode == av.TransponderModeStandby {
 			symbol = "\u0002"
-		} else if state.track.TransponderAltitude < 23000 {
+		} else if state.Track.TransponderAltitude < 23000 {
 			symbol = "\u0005"
 		} else {
 			symbol = "\u0004"
@@ -357,13 +363,13 @@ func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.Brightness {
 // should be drawn. The initial implementation always points northeast.
 func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) *math.CardinalOrdinalDirection {
 	state := ep.TrackState[trk.ADSBCallsign]
-	dir := state.leaderLineDirection
+	dir := state.LeaderLineDirection
 	if dir == nil {
 		direction := math.CardinalOrdinalDirection(math.NorthEast)
 		dir = &direction
-		state.leaderLineDirection = dir
+		state.LeaderLineDirection = dir
 	}
-	return state.leaderLineDirection
+	return state.LeaderLineDirection
 }
 
 // leaderLineVector returns a vector in window coordinates representing a leader
@@ -372,6 +378,30 @@ func (ep *ERAMPane) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float
 	angle := dir.Heading()
 	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
 	return math.Scale2f(v, 60)
+}
+
+// leaderLineVectorWithLength returns a vector in window coordinates representing a leader
+// line with the length determined by the lengthMode parameter.
+// lengthMode: 0 = no line, 1 = normal (60), 2 = 2x (120), 3 = 3x (180)
+func (ep *ERAMPane) leaderLineVectorWithLength(dir math.CardinalOrdinalDirection, lengthMode int) [2]float32 {
+	angle := dir.Heading()
+	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
+
+	scale := float32(60)
+	switch lengthMode {
+	case 0:
+		scale = 0 // No line
+	case 1:
+		scale = 60 // Normal
+	case 2:
+		scale = 120 // 2x
+	case 3:
+		scale = 180 // 3x
+	default:
+		scale = 60 // Default to normal
+	}
+
+	return math.Scale2f(v, scale)
 }
 
 // For LDBs
@@ -400,10 +430,10 @@ func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockTy
 		if ctx.IsHandoffToUser(&trk) {
 			return FullDatablock
 		}
-		if state.eFDB {
+		if state.EFDB {
 			return FullDatablock
 		}
-		if state.eLDB {
+		if state.ELDB {
 			return LimitedDatablock
 		}
 	}
@@ -435,12 +465,20 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 		if state == nil {
 			continue
 		}
-		p0 := transforms.WindowFromLatLongP(state.track.Location)
+		p0 := transforms.WindowFromLatLongP(state.Track.Location)
 		dir := ep.leaderLineDirection(ctx, trk)
 		if dbType == LimitedDatablock || dbType == EnhancedLimitedDatablock {
 			*dir = math.East
 		}
-		v := util.Select(dbType == FullDatablock, ep.leaderLineVector(*dir), ep.leaderLineVectorNoLength(*dir))
+
+		// For /0 mode (LeaderLineLength == 0), restrict to W/E only
+		if dbType == FullDatablock && state.LeaderLineLength == 0 {
+			if *dir != math.East && *dir != math.West {
+				*dir = math.East // Default to East if in /0 mode
+			}
+		}
+
+		v := util.Select(dbType == FullDatablock, ep.leaderLineVectorWithLength(*dir, state.LeaderLineLength), ep.leaderLineVectorNoLength(*dir))
 		if dbType == FullDatablock {
 			if !ctx.UserOwnsFlightPlan(trk.FlightPlan) && (*dir == math.NorthEast || *dir == math.East) {
 				v = math.Scale2f(v, 0.7) // shorten the leader line for FDBs that are not tracked by the user
@@ -469,9 +507,9 @@ func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms 
 			continue // Only draw PTLs for full datablocks
 		}
 		state := ep.TrackState[trk.ADSBCallsign]
-		speed := state.track.Groundspeed
-		dist := speed / 60 * float32(ep.velocityTime)
-		pos := state.track.Location
+		speed := state.Track.Groundspeed
+		dist := speed / 60 * float32(ep.VelocityTime)
+		pos := state.Track.Location
 		heading := state.TrackHeading(ctx.NmPerLongitude)
 		if heading == -1 {
 			continue // dont draw PTLs for tracks that don't have a calculated heading
@@ -497,40 +535,69 @@ type historyTrack struct {
 // positions of each track.
 func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
+
 	ctd := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(ctd)
 
 	ps := ep.currentPrefs()
-	for _, trk := range tracks {
-		state := ep.TrackState[trk.ADSBCallsign]
 
+	for _, trk := range tracks {
+
+		state := ep.TrackState[trk.ADSBCallsign]
+		if state == nil {
+			continue
+		}
+
+		// Determine brightness based on association
 		var bright radar.Brightness
-		if trk.IsAssociated() { // TODO: Eventually when coasting tracks, etc, (non associated with aircraft tracks) are added, this will need to be updated to include all tracks that are associated with an aircraft (not just a flight plan)
+		// TODO: Eventually when coasting tracks, etc, (non associated with aircraft tracks) are added, this will need to be updated to include all tracks that are associated with an aircraft (not just a flight plan)
+		if trk.IsAssociated() {
 			bright = ps.Brightness.PRHST
 		} else {
 			bright = ps.Brightness.UNPHST
 		}
+
 		color := bright.ScaleRGB(ERAMYellow)
 
-		for _, trk := range state.historyTracks {
-			loc := trk.Location
+		// Respect selected history length (0–5)
+		max := ps.HistoryLength
+		if max <= 0 {
+			continue
+		}
+		if max > len(state.HistoryTracks) {
+			max = len(state.HistoryTracks)
+		}
+
+		// Draw newest first (circular buffer handling)
+		for i := 0; i < max; i++ {
+
+			idx := (state.HistoryTrackIndex - 1 - i + len(state.HistoryTracks)) % len(state.HistoryTracks)
+			hist := state.HistoryTracks[idx]
+
+			loc := hist.Location
 			if loc.IsZero() {
 				continue
 			}
-			symbol := trk.PositionSymbol
-			pw := transforms.WindowFromLatLongP(loc)
-			pt := math.Add2f(pw, [2]float32{0.5, -.5})
+
 			if ep.systemFont[5] == nil {
 				fmt.Println("ERAMPane: systemFont[5] is nil, cannot draw history tracks")
 				continue
 			}
-			if td == nil {
-				fmt.Println("ERAMPane: TextDrawBuilder is nil, cannot draw history tracks")
-				continue
-			}
-			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.systemFont[5], Color: color})
+
+			pw := transforms.WindowFromLatLongP(loc)
+			pt := math.Add2f(pw, [2]float32{0.5, -.5})
+
+			td.AddTextCentered(
+				hist.PositionSymbol,
+				pt,
+				renderer.TextStyle{
+					Font:  ep.systemFont[5],
+					Color: color,
+				},
+			)
 		}
 	}
 
@@ -547,7 +614,7 @@ func (ep *ERAMPane) drawJRings(ctx *panes.Context, tracks []sim.Track,
 
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
-		pos := state.track.Location
+		pos := state.Track.Location
 		if pos.IsZero() {
 			continue
 		}
@@ -586,7 +653,7 @@ func (ep *ERAMPane) drawQULines(ctx *panes.Context, transforms radar.ScopeTransf
 		color := ep.trackDatablockColor(ctx, *trk)
 
 		// Convert aircraft position to window coordinates
-		acWindowPos := transforms.WindowFromLatLongP(state.track.Location)
+		acWindowPos := transforms.WindowFromLatLongP(state.Track.Location)
 		if len(info.coords) == 0 {
 			continue
 		}

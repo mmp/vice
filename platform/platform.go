@@ -27,6 +27,14 @@ type Platform interface {
 	// PostRender performs the buffer swap.
 	PostRender()
 
+	// MakeContextCurrent makes the main window's OpenGL context current.
+	// Used to restore state after rendering secondary viewport windows.
+	MakeContextCurrent()
+
+	// InitViewportBackends initializes the imgui GLFW and OpenGL3 backends
+	// for multi-viewport support. Must be called after OpenGL is initialized.
+	InitViewportBackends()
+
 	// Dispose is called when the application is shutting down and is when
 	// resources are be freed.
 	Dispose()
@@ -100,6 +108,14 @@ type Platform interface {
 	// and which keys are currently down.
 	GetKeyboard() *KeyboardState
 
+	// Cursor overrides. LoadCursorFromFile parses a .cur file and creates a
+	// cursor handle that can be set as the active cursor via SetCursorOverride.
+	LoadCursorFromFile(path string) (*Cursor, error)
+	// SetCursorOverride replaces the OS cursor until cleared.
+	SetCursorOverride(cursor *Cursor)
+	// ClearCursorOverride removes any cursor override.
+	ClearCursorOverride()
+
 	// AddPCM registers an audio effect encoded via pulse code modulation.
 	// It is assumed to be one channel audio sampled at AudioSampleRate.
 	// The integer return value identifies the effect and can be passed to
@@ -112,11 +128,10 @@ type Platform interface {
 	// entrypoints.
 	AddMP3(mp3 []byte) (int, error)
 
-	// Possibly MP3 audio from speech synthesis; it will be played once and
-	// discarded. If speech is currently being played,
-	// ErrCurrentlyPlayingSpeech is returned. If non-nil, the provided
-	// callback function is called after the speech has finished.
-	TryEnqueueSpeechMP3(mp3 []byte, finished func()) error
+	// TryEnqueueSpeechPCM queues pre-decoded PCM speech audio for playback.
+	// If speech is currently being played, ErrCurrentlyPlayingSpeech is returned.
+	// If non-nil, the provided callback function is called after the speech has finished.
+	TryEnqueueSpeechPCM(pcm []int16, finished func()) error
 
 	// SetSpeechGarbled enables or disables garbling of speech audio.
 	// When enabled, speech is ducked and static noise is added.
@@ -141,7 +156,18 @@ type Platform interface {
 	// by the given identifier.
 	StopPlayAudio(id int)
 
-	// Audio recording methods
+	// Audio capture methods for continuous background capture with preroll buffer.
+	// StartAudioCapture begins capturing to the preroll buffer (200ms ring buffer).
+	// This allows recording to include audio from before PTT was pressed.
+	StartAudioCapture() error
+	StartAudioCaptureWithDevice(deviceName string) error
+	StopAudioCapture()
+	IsAudioCapturing() bool
+	// GetAudioPreroll returns the current preroll buffer (200ms of audio before now).
+	// Returns nil if not capturing.
+	GetAudioPreroll() []int16
+
+	// Audio recording methods. If capture is active, recording includes preroll.
 	StartAudioRecording() error
 	StartAudioRecordingWithDevice(deviceName string) error
 	StopAudioRecording() ([]int16, error)

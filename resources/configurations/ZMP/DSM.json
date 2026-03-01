@@ -1,0 +1,50 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "DSM_A_APP",
+            "frequency": 135200,
+            "radio_name": "Des Moines Approach"
+        },
+        "1D": {
+            "callsign": "DSM_APP",
+            "frequency": 123900,
+            "radio_name": "Des Moines Approach"
+        },
+        "1S": {
+            "callsign": "DSM_S_APP",
+            "frequency": 120450,
+            "radio_name": "Des Moines Approach"
+        },
+        "1T": {
+            "callsign": "DSM_TWR",
+            "frequency": 118300,
+            "radio_name": "Des Moines Tower"
+        },
+        "1U": {
+            "callsign": "DSM_U_APP",
+            "frequency": 124850,
+            "radio_name": "Des Moines Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ALO",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAU",
+            "prefix": "G"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "K"
+        },
+        {
+            "id": "ZMP",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

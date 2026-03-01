@@ -3,7 +3,6 @@ package eram
 import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
@@ -63,7 +62,7 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 		if db.Fields[DBFieldVCI].Inside(mouse.Pos) {
 			state.HoverVCI = true
 			// check if clicked down on the VCI field to activate it
-			if mouse.Clicked[platform.MouseButtonPrimary] {
+			if ep.mousePrimaryClicked(mouse) {
 				var input inputText
 				input.Set(ep.currentPrefs(), "//")
 				status := ep.executeERAMClickedCommand(ctx, input, &trk, transforms)
@@ -249,10 +248,11 @@ func (ep *ERAMPane) fullDatablockAnchor(ctx *panes.Context, trk sim.Track,
 	if state == nil {
 		return [2]float32{}, false
 	}
-	start := transforms.WindowFromLatLongP(state.track.Location)
+	start := transforms.WindowFromLatLongP(state.Track.Location)
 	dir := ep.leaderLineDirection(ctx, trk)
+
 	offset := datablockOffset(*dir)
-	vector := ep.leaderLineVector(*dir)
+	vector := ep.leaderLineVectorWithLength(*dir, state.LeaderLineLength)
 	vector[0] += float32(offset[0]) * ctx.DrawPixelScale
 	vector[1] += float32(offset[1]) * ctx.DrawPixelScale
 	end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))

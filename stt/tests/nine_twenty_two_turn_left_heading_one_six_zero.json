@@ -1,0 +1,100 @@
+{
+  "time": "2026-01-29T17:32:24.244564754Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "nine twenty two turn left heading one six zero",
+  "whisper_duration_ms": 378.855,
+  "audio_duration_ms": 2632,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12113MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "UAL22",
+  "command": "L160",
+  "stt_aircraft": {
+    "United 22": {
+      "Callsign": "UAL22",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Santa Cruz": "SAX",
+        "Shaff": "SHAFF",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"nine twenty two turn left heading one six zero\"",
+    "[local-stt] normalized words: [9 22 turn left heading 1 6 0]",
+    "[local-stt] tokens: 5",
+    "[local-stt]   token[0]: Text=\"922\" Type=1 Value=922",
+    "[local-stt]   token[1]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"160\" Type=1 Value=160",
+    "[local-stt] MatchCallsign: 5 tokens, 1 aircraft",
+    "[local-stt]   candidate \"United 22\" (ICAO=\"UAL22\"): score=0.64 consumed=1",
+    "[local-stt]   accepted: \"UAL22\" (conf=0.64, consumed=1, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"UAL22\" SpokenKey=\"United 22\" Conf=0.64 Consumed=1",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=10 Approaches=1 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[11 29]",
+    "[local-stt]   fix: \"Zavpi\" -\u003e \"ZAVPI\"",
+    "[local-stt]   fix: \"Santa Cruz\" -\u003e \"SAX\"",
+    "[local-stt]   fix: \"Philbo\" -\u003e \"PHLBO\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   fix: \"Buzzed\" -\u003e \"BUZZD\"",
+    "[local-stt]   fix: \"Shaff\" -\u003e \"SHAFF\"",
+    "[local-stt]   fix: \"Hokir\" -\u003e \"HOKIR\"",
+    "[local-stt]   fix: \"Pattern\" -\u003e \"PATRN\"",
+    "[local-stt]   fix: \"Izeko\" -\u003e \"IZEKO\"",
+    "[local-stt]   fix: \"Gimme\" -\u003e \"GIMEE\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"160\" Type=1 Value=160",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   matched command: \"L160\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[L160] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L160] (conf=1.00)",
+    "[local-stt] validated commands: [L160] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UAL22 L160\" (conf=0.64, time=0s) ==="
+  ]
+}

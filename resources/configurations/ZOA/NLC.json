@@ -1,0 +1,49 @@
+{
+    "control_positions": {
+        "1R": {
+            "callsign": "NLC_APP",
+            "frequency": 124100,
+            "radio_name": "Lemoore Final"
+        },
+        "1D": {
+            "callsign": "NLC_DEP",
+            "frequency": 124100,
+            "radio_name": "Lemoore Departure"
+        },
+        "1M": {
+            "callsign": "NLC_M_APP",
+            "frequency": 134225,
+            "radio_name": "Showtime"
+        },
+        "1Z": {
+            "callsign": "NLC_TWR",
+            "frequency": 128300,
+            "radio_name": "Lemoore Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BFL",
+            "prefix": "3"
+        },
+        {
+            "id": "FAT",
+            "prefix": "2"
+        },
+        {
+            "id": "NCT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "L"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

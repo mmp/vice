@@ -1,0 +1,32 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "GTB_APP",
+            "frequency": 124875,
+            "radio_name": "Wheeler-Sack Approach"
+        },
+        "1F": {
+            "callsign": "GTB_F_APP",
+            "frequency": 128250,
+            "radio_name": "Wheeler-Sack Approach"
+        },
+        "1L": {
+            "callsign": "GTB_TWR",
+            "frequency": 118750,
+            "radio_name": "Wheeler-Sack Tower"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "SYR",
+            "prefix": "1"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "C"
+        }
+    ]
+}

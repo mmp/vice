@@ -1,0 +1,41 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "LEX_E_APP",
+            "frequency": 120150,
+            "radio_name": "Lexington Approach"
+        },
+        "1F": {
+            "callsign": "LEX_F_APP",
+            "frequency": 133400,
+            "radio_name": "Lexington Approach"
+        },
+        "1T": {
+            "callsign": "LEX_TWR",
+            "frequency": 119100,
+            "radio_name": "Lexington Tower"
+        },
+        "1W": {
+            "callsign": "LEX_W_APP",
+            "frequency": 120750,
+            "radio_name": "Lexington Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CVG",
+            "prefix": "1"
+        },
+        {
+            "id": "SDF",
+            "prefix": "2"
+        },
+        {
+            "id": "ZID",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

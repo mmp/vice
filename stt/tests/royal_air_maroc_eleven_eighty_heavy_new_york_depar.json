@@ -1,0 +1,385 @@
+{
+  "time": "2026-02-02T10:19:19.102254-08:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": "Royal Air Maroc eleven eighty heavy new york departure radar contact proceed direct betty climb and maintain one one thousandth",
+  "whisper_duration_ms": 500.505,
+  "audio_duration_ms": 6216,
+  "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "RAM1180",
+  "command": "DBETTE C110",
+  "stt_aircraft": {
+    "American 40": {
+      "Callsign": "AAL40",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "Cimble": "CIMBL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway one three left": "I3L",
+        "I L S runway two two left": "I2L",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two left": "R2L",
+        "r-nav zulu runway one three Left": "R3L"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Deer Park": "DPK",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6659,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Avianca three 81": {
+      "Callsign": "AVA381",
+      "AircraftType": "A320",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway one three left": "I3L",
+        "I L S runway two two left": "I2L",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two left": "R2L",
+        "r-nav zulu runway one three Left": "R3L"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Deer Park": "DPK",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Delta 82 heavy": {
+      "Callsign": "DAL82",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Calverton": "CCC",
+        "Cimble": "CIMBL",
+        "Crail": "CRAIL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rober": "ROBER",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway one three left": "I3L",
+        "I L S runway two two left": "I2L",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two left": "R2L",
+        "r-nav zulu runway one three Left": "R3L"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Deer Park": "DPK",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Royal Air Maroc 11 80 heavy": {
+      "Callsign": "RAM1180",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Betty": "BETTE"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 1258,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Shamrock seven sierra brahvo heavy": {
+      "Callsign": "EIN7SB",
+      "AircraftType": "A333",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 3554,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "5E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Royal Air Maroc eleven eighty heavy new york departure radar contact proceed direct betty climb and maintain one one thousandth\"",
+    "[local-stt] normalized words: [royal air maroc 11 80 heavy new york departure radar contact proceed direct betty climb and maintain 1 1 thousandth]",
+    "[local-stt] tokens: 18",
+    "[local-stt]   token[0]: Text=\"royal\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"maroc\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"11\" Type=1 Value=11",
+    "[local-stt]   token[4]: Text=\"80\" Type=1 Value=80",
+    "[local-stt]   token[5]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"betty\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"110\" Type=2 Value=110",
+    "[local-stt] MatchCallsign: 18 tokens, 5 aircraft",
+    "[local-stt]   detected \"heavy\" in callsign region, filtering to 3 aircraft",
+    "[local-stt] MatchCallsign: 6 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Royal Air Maroc 11 80 heavy\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Royal Air Maroc 11 80 heavy\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Royal Air Maroc 11 80 heavy\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Royal Air Maroc 11 80 heavy\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 3 results",
+    "[local-stt]     result 0: \"Shamrock seven sierra brahvo heavy\" (airline=0.442, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta 82 heavy\" (airline=0.467, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Royal Air Maroc 11 80 heavy\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Royal Air Maroc 11 80 heavy\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Royal Air Maroc 11 80 heavy\" (airline=0.500, flight=1.000, skip=2)",
+    "[local-stt]     pattern \"flight_only\": selected \"Royal Air Maroc 11 80 heavy\" (airline=0.50, flight=1.00, skip=2)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"RAM1180\" (conf=1.00, consumed=6, addressingForm=0, spokenKey=\"Royal Air Maroc 11 80 heavy\")",
+    "[local-stt] callsign match: Callsign=\"RAM1180\" SpokenKey=\"Royal Air Maroc 11 80 heavy\" Conf=1.00 Consumed=6",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=1258 Fixes=1 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Betty\" -\u003e \"BETTE\"",
+    "[local-stt] command tokens after disregard: 12",
+    "[local-stt]   token[0]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"betty\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"110\" Type=2 Value=110",
+    "[local-stt] stripped position ID prefix: 3 tokens",
+    "[local-stt] stripped 'radar contact' prefix",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"betty\" against 1 fixes",
+    "[local-stt]   extractFix: matched \"betty\" -\u003e \"BETTE\" (exact)",
+    "[local-stt]   extractFix: matched \"betty\" -\u003e \"BETTE\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"DBETTE\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   matched command: \"C110\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[DBETTE C110] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DBETTE C110] (conf=1.00)",
+    "[local-stt] validated commands: [DBETTE C110] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"RAM1180 DBETTE C110\" (conf=1.00, time=393.375µs) ==="
+  ]
+}

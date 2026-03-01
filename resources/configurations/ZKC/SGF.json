@@ -1,0 +1,106 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "SGF_E_APP",
+            "frequency": 124950,
+            "radio_name": "Springfield approach"
+        },
+        "1W": {
+            "callsign": "SGF_W_APP",
+            "frequency": 121100,
+            "radio_name": "Springfield approach"
+        },
+        "1T": {
+            "callsign": "SGF_TWR",
+            "frequency": 119900,
+            "radio_name": "Springfield tower"
+        },
+        "2M": {
+            "callsign": "MZU_APP",
+            "frequency": 124375,
+            "radio_name": "Mizzu approach"
+        },
+        "1M": {
+            "callsign": "LBO_TWR",
+            "frequency": 122800,
+            "radio_name": "Jones lebanon unicom",
+            "scope_char": "L"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "DEN": "1W",
+                    "NE": "1E",
+                    "ORD": "1E",
+                    "SE": "1E",
+                    "SW": "1W"
+                },
+                "departure_assignments": {
+                    "KLBO": "1E",
+                    "KSGF": "1E"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "37.2456614,-93.3886269",
+        "range": 40,
+        "scratchpads": {
+            "FSM": "FSM",
+            "CNU": "CNU",
+            "MEMFS": "MEM",
+            "ZAVEL": "ZAV",
+            "EOS": "EOS",
+            "SGF": "SGF",
+            "WHOLL": "WHO",
+            "YATGU": "YAT",
+            "CATIL": "CAT"
+        },
+        "video_map_file": "videomaps/ZKC-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "SGF Primary Map",
+                    "SGF 3NM MVA MAP",
+                    "SGF 5NM MVA MAP",
+                    "SGF Geography"
+                ]
+            },
+            "2": {
+                "video_maps": [
+                    "SGF Primary Map",
+                    "SGF 3NM MVA MAP",
+                    "SGF 5NM MVA MAP",
+                    "SGF Geography"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "FSM",
+            "prefix": "4"
+        },
+        {
+            "id": "SZL",
+            "prefix": "1"
+        },
+        {
+            "id": "T75",
+            "prefix": "2"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "C"
+        },
+        {
+            "id": "ZME",
+            "prefix": "M"
+        }
+    ]
+}

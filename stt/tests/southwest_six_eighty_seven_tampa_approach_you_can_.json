@@ -1,0 +1,392 @@
+{
+  "time": "2026-01-29T18:19:04.226109699Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Southwest Six Eighty Seven Tampa approach you can expect the ILS runway one niner left approach descend and maintain three thousand maintain one internal",
+  "whisper_duration_ms": 1295.554,
+  "audio_duration_ms": 6216,
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4151MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SWA686",
+  "command": "EI9L D30 SAYAGAIN/SPEED",
+  "stt_aircraft": {
+    "Southwest 65 23": {
+      "Callsign": "SWA6523",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Fadi": "FADDI",
+        "Jambob": "JMBOB",
+        "Mera": "MERRA",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19R",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest one 51": {
+      "Callsign": "SWA151",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest seven 93": {
+      "Callsign": "SWA793",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 3024,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest six 86": {
+      "Callsign": "SWA686",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Lisa F": "LISAF",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 6474,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Spirit Wings 86 56": {
+      "Callsign": "NKS8656",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Jackball": "JKBAL",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 6752,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Southwest Six Eighty Seven Tampa approach you can expect the ILS runway one niner left approach descend and maintain three thousand maintain one internal\"",
+    "[local-stt] normalized words: [southwest 6 87 tampa approach you can expect the ils runway 1 9 left approach descend and maintain 3 thousand maintain 1 turn ils]",
+    "[local-stt] tokens: 21",
+    "[local-stt]   token[0]: Text=\"southwest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"687\" Type=1 Value=687",
+    "[local-stt]   token[2]: Text=\"tampa\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"you\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"can\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[11]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[17]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[18]: Text=\"1\" Type=1 Value=1",
+    "[local-stt]   token[19]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[20]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 21 tokens, 5 aircraft",
+    "[local-stt]   candidate \"Southwest six 86\" (ICAO=\"SWA686\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"Southwest one 51\" (ICAO=\"SWA151\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"Southwest 65 23\" (ICAO=\"SWA6523\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"Spirit Wings 86 56\" (ICAO=\"NKS8656\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest seven 93\" (ICAO=\"SWA793\"): score=0.80 consumed=2",
+    "[local-stt]   accepted: \"SWA686\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"SWA686\" SpokenKey=\"Southwest six 86\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6474 Fixes=2 Approaches=4 AssignedApproach=\"\" LAHSORunways=[10 28 10 28]",
+    "[local-stt]   fix: \"Lisa F\" -\u003e \"LISAF\"",
+    "[local-stt]   fix: \"Tampa\" -\u003e \"KTPA\"",
+    "[local-stt]   approach: \"r-nav runway one niner left\" -\u003e \"R9L\"",
+    "[local-stt]   approach: \"I L S runway one niner left\" -\u003e \"I9L\"",
+    "[local-stt]   approach: \"I L S runway one niner right\" -\u003e \"I9R\"",
+    "[local-stt]   approach: \"r-nav runway one niner right\" -\u003e \"R9R\"",
+    "[local-stt] command tokens after disregard: 19",
+    "[local-stt]   token[0]: Text=\"tampa\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"you\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"can\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[9]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[15]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"1\" Type=1 Value=1",
+    "[local-stt]   token[17]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[18]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"expect\" at position 4 - not just position ID",
+    "[local-stt] ParseCommands: 19 tokens",
+    "[local-stt]   no match at token[0]=\"tampa\", skipping",
+    "[local-stt]   no match at token[1]=\"approach\", skipping",
+    "[local-stt]   skipping filler word: \"you\"",
+    "[local-stt]   no match at token[3]=\"can\", skipping",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" runway=\"one niner left\" -\u003e \"I9L\" (consumed=4)",
+    "[local-stt]   matched command: \"EI9L\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt]   adding 2 fixes from approach I9L to aircraft context",
+    "[local-stt]   no match at token[10]=\"approach\", skipping",
+    "[local-stt]   matched command: \"D30\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   matched command: \"A10\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   no match at token[17]=\"turn\", skipping",
+    "[local-stt]   no match at token[18]=\"ils\", skipping",
+    "[local-stt] ParseCommands: result=[EI9L D30 A10] (avgConf=1.00)",
+    "[local-stt] parsed commands: [EI9L D30 A10] (conf=1.00)",
+    "[local-stt] validated commands: [EI9L D30 A10] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA686 EI9L D30 A10\" (conf=1.00, time=2.0018ms) ==="
+  ]
+}

@@ -101,7 +101,7 @@
       },
       "departure_routes": {
         "2": {
-          "LNY, OGG, MKK": {
+          "LNY,OGG,MKK": {
             "cleared_altitude": 7000,
             "sid": "MAUI5",
             "waypoints": "N020.54.17.521,W156.25.29.791/a400+/h360"
@@ -175,7 +175,7 @@
             }
           ],
           "destination": "PHMU",
-          "scratchpad": "MUE",
+          "scratchpad": "HNM",
           "route": "BARBY V11 UPP TAMMI",
           "exit": "BARBY"
         },
@@ -228,6 +228,240 @@
           ],
           "destination": "PHLI",
           "route": "LNY V16 NAPUA LIH",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
+          "exit": "LNY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "SWA",
+              "types": ["B38M", "B38M", "B38M", "B38M"]
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "HAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "AAH",
+              "fleet": "short"
+            },
+            {
+              "icao": "UPS",
+              "fleet": "b763"
+            },
+            {
+              "icao": "FDX",
+              "fleet": "b752"
+            }
+          ],
+          "destination": "PHNL",
+          "route": "LNY JULLE5",
           "exit": "LNY"
         },
         {
@@ -683,7 +917,7 @@
           "waypoints": "N021.41.53.541,W156.19.07.631 N021.27.09.691,W156.13.40.019/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
           "cruise_altitude": 30000,
           "star": "LNDHY1",
-          "initial_controller": "HCF_03_CTR",
+          "initial_controller": "C03",
           "initial_altitude": 20000,
           "initial_speed": 270,
           "description": "ZIGIE",
@@ -732,7 +966,7 @@
           "waypoints": "N021.43.23.313,W156.09.42.440 N021.27.35.660,W156.08.38.005/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
           "cruise_altitude": 30000,
           "star": "LNDHY1",
-          "initial_controller": "HCF_03_CTR",
+          "initial_controller": "C03",
           "initial_altitude": 20000,
           "initial_speed": 270,
           "description": "APACK",
@@ -781,7 +1015,7 @@
           "waypoints": "N021.42.46.365,W155.58.40.404 N021.27.18.940,W156.02.52.045/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
           "cruise_altitude": 30000,
           "star": "LNDHY1",
-          "initial_controller": "HCF_03_CTR",
+          "initial_controller": "C03",
           "initial_altitude": 20000,
           "initial_speed": 270,
           "description": "BITTA",
@@ -935,7 +1169,7 @@
           "waypoints": "N021.26.17.815,W155.36.20.895 N021.18.22.697,W155.51.53.470/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
           "cruise_altitude": 30000,
           "star": "LNDHY1",
-          "initial_controller": "HCF_03_CTR",
+          "initial_controller": "C03",
           "initial_altitude": 20000,
           "initial_speed": 270,
           "description": "DENNS",
@@ -1084,7 +1318,7 @@
           "waypoints": "N021.06.15.169,W155.31.56.839 N021.07.56.071,W155.46.13.773/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
           "cruise_altitude": 30000,
           "star": "LNDHY1",
-          "initial_controller": "HCF_03_CTR",
+          "initial_controller": "C03",
           "initial_altitude": 20000,
           "initial_speed": 270,
           "description": "FITES",
@@ -1152,7 +1386,7 @@
           "waypoints": "N021.42.11.263,W156.21.10.458 N021.29.32.595,W156.20.53.540/ho WEPTU",
           "cruise_altitude": 30000,
           "route": "ZOULU WEPTU OGG",
-          "initial_controller": "HCF_03_CTR",
+          "initial_controller": "C03",
           "initial_altitude": 20000,
           "assigned_altitude": 4000,
           "initial_speed": 270,
@@ -1201,7 +1435,7 @@
         {
           "waypoints": "N021.40.45.227,W156.08.51.079 N021.29.27.700,W156.12.09.052/ho WEPTU",
           "route": "AUNTI WEPTU OGG",
-          "initial_controller": "HCF_03_CTR",
+          "initial_controller": "C03",
           "initial_altitude": 20000,
           "assigned_altitude": 4000,
           "initial_speed": 270,
@@ -1250,7 +1484,7 @@
         {
           "waypoints": "N021.39.09.755,W155.56.06.979 N021.24.50.487,W156.05.13.934/ho WEPTU",
           "route": "BOARD WEPTU OGG",
-          "initial_controller": "HCF_03_CTR",
+          "initial_controller": "C03",
           "initial_altitude": 20000,
           "assigned_altitude": 4000,
           "initial_speed": 270,
@@ -1405,7 +1639,7 @@
           "waypoints": "N021.24.02.855,W155.37.22.419 N021.15.07.944,W155.54.07.229/ho WEPTU",
           "cruise_altitude": 30000,
           "route": "DRAYK WEPTU OGG",
-          "initial_controller": "HCF_03_CTR",
+          "initial_controller": "C03",
           "initial_altitude": 20000,
           "assigned_altitude": 4000,
           "initial_speed": 270,
@@ -1554,7 +1788,7 @@
         {
           "waypoints": "N021.03.44.375,W155.18.39.781 N021.01.15.627,W155.38.24.492/ho SWEEP POCGI",
           "route": "FAPIS WEPTU OGG",
-          "initial_controller": "HCF_03_CTR",
+          "initial_controller": "C03",
           "initial_altitude": 28000,
           "assigned_altitude": 9000,
           "initial_speed": 270,
@@ -1620,10 +1854,10 @@
     "CAMPS4.LNY.N": {
       "arrivals": [
         {
-          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a5000 CAMPS/a3000+ OGG",
+          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a5000 CAMPS/a3000+/h024",
           "cruise_altitude": 13000,
           "star": "CAMPS4",
-          "initial_controller": "HCF_04_CTR",
+          "initial_controller": "C04",
           "initial_altitude": 13000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -1653,10 +1887,10 @@
           }
         },
         {
-          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a5000 CAMPS/a3000+ OGG",
+          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a5000 CAMPS/a3000+/h024",
           "cruise_altitude": 25000,
           "star": "CAMPS4",
-          "initial_controller": "HCF_04_CTR",
+          "initial_controller": "C04",
           "initial_altitude": 25000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -1685,10 +1919,10 @@
     "V1.CAMPS4.N": {
       "arrivals": [
         {
-          "waypoints": "JESSI N020.25.34.343,W156.25.09.301/ho LAVAS V1 HARPO CAMPS/a3000 OGG",
+          "waypoints": "JESSI N020.25.34.343,W156.25.09.301/ho LAVAS V1 HARPO CAMPS/a3000/h024",
           "cruise_altitude": 12000,
           "star": "CAMPS4",
-          "initial_controller": "HCF_05_CTR",
+          "initial_controller": "C05",
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -1712,10 +1946,10 @@
     "V2.CAMPS4.N": {
       "arrivals": [
         {
-          "waypoints": "UPP N020.27.44.655,W156.14.30.996/ho MAKEN V2 HARPO CAMPS/a3000 OGG",
+          "waypoints": "UPP N020.27.44.655,W156.14.30.996/ho MAKEN V2 HARPO CAMPS/a3000/h024",
           "cruise_altitude": 16000,
           "star": "CAMPS4",
-          "initial_controller": "HCF_05_CTR",
+          "initial_controller": "C05",
           "initial_altitude": 16000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -1739,10 +1973,10 @@
     "CAMPS4.LNY.S": {
       "arrivals": [
         {
-          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a7000 CAMPS/a3000+ OGG",
+          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a7000 CAMPS/a3000+/h024",
           "cruise_altitude": 13000,
           "star": "CAMPS4",
-          "initial_controller": "HCF_04_CTR",
+          "initial_controller": "C04",
           "initial_altitude": 13000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -1772,10 +2006,10 @@
           }
         },
         {
-          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a7000 CAMPS/a3000+ OGG",
+          "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a7000 CAMPS/a3000+/h024",
           "cruise_altitude": 25000,
           "star": "CAMPS4",
-          "initial_controller": "HCF_04_CTR",
+          "initial_controller": "C04",
           "initial_altitude": 25000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -1804,10 +2038,10 @@
     "V1.CAMPS4.S": {
       "arrivals": [
         {
-          "waypoints": "JESSI N020.25.34.343,W156.25.09.301/ho LAVAS V1 HARPO CAMPS/a6000 OGG",
+          "waypoints": "JESSI N020.25.34.343,W156.25.09.301/ho LAVAS V1 HARPO CAMPS/a6000/h024",
           "cruise_altitude": 12000,
           "star": "CAMPS4",
-          "initial_controller": "HCF_05_CTR",
+          "initial_controller": "C05",
           "initial_altitude": 12000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -1831,10 +2065,10 @@
     "V2.CAMPS4.S": {
       "arrivals": [
         {
-          "waypoints": "UPP N020.27.44.655,W156.14.30.996/ho MAKEN V2 HARPO CAMPS/a6000 OGG",
+          "waypoints": "UPP N020.27.44.655,W156.14.30.996/ho MAKEN V2 HARPO CAMPS/a6000/h024",
           "cruise_altitude": 16000,
           "star": "CAMPS4",
-          "initial_controller": "HCF_05_CTR",
+          "initial_controller": "C05",
           "initial_altitude": 16000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -1854,50 +2088,6 @@
           }
         }
       ]
-    }
-  },
-  "control_positions": {
-    "HCF_05_CTR": {
-      "frequency": 118450,
-      "radio_name": "Honolulu Center",
-      "facility_id": "D",
-      "eram_facility": true,
-      "sector_id": "D05"
-    },
-    "HCF_03_CTR": {
-      "frequency": 124100,
-      "radio_name": "Honolulu Center",
-      "facility_id": "I",
-      "eram_facility": true,
-      "sector_id": "I03"
-    },
-    "HCF_04_CTR": {
-      "frequency": 119300,
-      "radio_name": "Honolulu Center",
-      "facility_id": "F",
-      "eram_facility": true,
-      "sector_id": "F04"
-    },
-    "NFG_APP": {
-      "frequency": 125000,
-      "radio_name": "Kaneohe Approach",
-      "facility_id": "3",
-      "sector_id": "1A"
-    },
-    "HCF_S_APP": {
-      "frequency": 119500,
-      "radio_name": "Honolulu Approach",
-      "sector_id": "1S"
-    },
-    "HCF_N_APP": {
-      "frequency": 120200,
-      "radio_name": "Honolulu Approach",
-      "sector_id": "1N"
-    },
-    "OGG_TWR": {
-      "frequency": 118700,
-      "radio_name": "Maui Tower",
-      "sector_id": "1T"
     }
   },
   "airspace": {
@@ -2058,8 +2248,8 @@
   "scenarios": {
     "OGG - North Flow": {
       "airspace": {
-        "HCF_N_APP": ["HCF_N_APP"],
-        "HCF_S_APP": ["HCF_S_APP"]
+        "1N": ["HCF_N_APP"],
+        "1S": ["HCF_S_APP"]
       },
       "arrival_runways": [
         {
@@ -2090,12 +2280,8 @@
         }
       },
       "configuration": {
-        "config_id": "OGG",
-        "default_consolidation": {
-          "HCF_S_APP": ["HCF_N_APP"]
-        }
+        "config_id": "CF1"
       },
-      "controllers": ["OGG_TWR", "HCF_05_CTR", "HCF_03_CTR", "HCF_04_CTR"],
       "default_maps": ["COAST__COASTLINES", "OGG TRACON", "OGG RVM__MAUI RADAR VEC MAP"],
       "departure_runways": [
         {
@@ -2109,6 +2295,10 @@
       }
     },
     "OGG - South Flow": {
+      "airspace": {
+        "1N": ["HCF_N_APP"],
+        "1S": ["HCF_S_APP"]
+      },
       "arrival_runways": [
         {
           "airport": "PHOG",
@@ -2142,12 +2332,8 @@
         }
       },
       "configuration": {
-        "config_id": "OG1",
-        "default_consolidation": {
-          "HCF_S_APP": ["HCF_N_APP"]
-        }
+        "config_id": "CF2"
       },
-      "controllers": ["OGG_TWR", "HCF_05_CTR", "HCF_03_CTR", "HCF_04_CTR"],
       "default_maps": ["COAST__COASTLINES", "OGG TRACON", "OGG RVM__MAUI RADAR VEC MAP"],
       "departure_runways": [
         {
@@ -2161,323 +2347,5 @@
         "speed": "10+"
       }
     }
-  },
-  "stars_config": {
-    "configurations": {
-      "OGG": {
-        "inbound_assignments": {
-          "CAMPS4.LNY.N": "HCF_S_APP",
-          "LNDHY1": "HCF_N_APP",
-          "V1.CAMPS4.N": "HCF_S_APP",
-          "V2.CAMPS4.N": "HCF_S_APP"
-        },
-        "departure_assignments": {
-          "PHOG": "HCF_N_APP"
-        }
-      },
-      "OG1": {
-        "inbound_assignments": {
-          "CAMPS4.LNY.S": "HCF_S_APP",
-          "OCEANIC SOUTH FLOW": "HCF_N_APP",
-          "V1.CAMPS4.S": "HCF_S_APP",
-          "V2.CAMPS4.S": "HCF_S_APP"
-        },
-        "departure_assignments": {
-          "PHOG": "HCF_S_APP"
-        }
-      }
-    },
-
-    "center": "OGG",
-    "coordination_fixes": {
-      "BARBY": [
-        {
-          "type": "route",
-          "to": "ZHN",
-          "from": "OGG"
-        }
-      ],
-      "LAVAS": [
-        {
-          "type": "route",
-          "to": "OGG",
-          "from": "ZHN"
-        }
-      ],
-      "HARPO": [
-        {
-          "type": "route",
-          "to": "OGG",
-          "from": "ZHN"
-        }
-      ],
-      "LNY": [
-        {
-          "type": "route",
-          "to": "OGG",
-          "from": "ZHN"
-        }
-      ],
-      "LNDHY": [
-        {
-          "type": "route",
-          "to": "OGG",
-          "from": "ZHN"
-        }
-      ]
-    },
-    "controller_configs": {
-      "1S": {
-        "flight_following_airspace": [
-          {
-            "type": "polygon",
-            "ceiling": 16000,
-            "vertices": "N020.28.23.711,W156.21.27.872 N020.36.50.380,W156.52.01.984 N020.45.39.241,W156.47.35.236 N020.57.58.772,W156.52.25.001 N021.03.33.732,W156.50.18.768 N021.07.40.629,W156.47.42.158 N021.13.32.905,W156.42.50.965 N021.15.53.633,W156.38.08.122 N021.19.07.164,W156.30.10.821 N021.19.25.580,W156.21.19.138 N021.18.18.289,W156.17.07.056 N021.14.53.264,W156.10.04.907 N021.12.17.972,W156.06.21.829 N021.08.43.683,W156.02.56.000 N021.04.38.448,W156.00.28.509 N020.57.37.685,W155.58.22.716 N020.51.19.591,W155.58.31.230 N020.50.08.084,W155.58.47.380 N020.35.43.309,W156.20.58.374"
-          }
-        ]
-      }
-    },
-    "ssr_codes": {
-      "auto_assignable_codes": {
-        "ifr": {
-          "ranges": ["1501-1577"]
-        },
-        "vfr": {
-          "ranges": ["1701-1777"]
-        }
-      },
-      "beacon_code_table": {
-        "vfr_codes": ["1200-1202"]
-      }
-    },
-    "filters": {
-      "auto_acquisition": [
-        {
-          "id": "ACQ",
-          "description": "HCF AUTO-ACQUISITION",
-          "type": "polygon",
-          "vertices": "N019.58.13.995,W158.06.57.864 N020.26.43.598,W158.02.16.505 N020.37.05.136,W159.13.53.312 N021.04.01.376,W159.31.21.188 N021.22.59.807,W159.26.45.651 N021.24.44.946,W159.33.56.920 N021.29.29.355,W159.42.38.880 N021.35.54.721,W159.49.54.543 N021.41.22.360,W159.53.42.290 N021.49.32.776,W159.57.14.545 N021.59.01.477,W159.58.16.398 N022.06.40.952,W159.57.07.789 N022.14.12.168,W159.53.44.212 N022.21.24.823,W159.48.21.214 N022.27.12.987,W159.40.43.359 N022.31.16.052,W159.31.21.518 N022.33.07.255,W159.22.50.544 N022.32.13.621,W159.14.21.877 N022.28.53.656,W159.01.05.643 N022.18.53.583,W157.58.05.742 N022.30.44.453,W158.00.44.934 N023.17.36.980,W157.59.51.485 N022.59.26.251,W156.20.35.247 N021.55.43.943,W156.01.45.578 N021.41.12.411,W156.07.46.204 N020.35.32.041,W154.26.46.365 N019.56.12.761,W154.20.23.986 N019.09.49.141,W154.29.50.606 N017.21.16.934,W156.35.53.649 N019.41.44.251,W156.36.12.381",
-          "floor": 0,
-          "ceiling": 30000
-        }
-      ]
-    },
-    "radar_sites": {
-      "QKA": {
-        "char": "A",
-        "position": "21.5078,-158.1461",
-        "elevation": 4080,
-        "primary_range": 250,
-        "secondary_range": 250,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "QKK": {
-        "char": "K",
-        "position": "22.1222,-159.6689",
-        "elevation": 3903,
-        "primary_range": 250,
-        "secondary_range": 250,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "QPN": {
-        "char": "L",
-        "position": "20.7047,-156.2672",
-        "elevation": 10023,
-        "primary_range": 0,
-        "secondary_range": 250,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "POA": {
-        "char": "P",
-        "position": "19.6325,-155.265833",
-        "elevation": 250,
-        "primary_range": 0,
-        "secondary_range": 250,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "KOA": {
-        "char": "N",
-        "position": "19.7485,-156.0312",
-        "elevation": 170,
-        "primary_range": 0,
-        "secondary_range": 250,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "HNL": {
-        "char": "H",
-        "position": "21.3177,-157.9282",
-        "elevation": 82,
-        "primary_range": 60,
-        "secondary_range": 60,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "NFG": {
-        "char": "A",
-        "position": "21.4482,-157.7567",
-        "elevation": 390,
-        "primary_range": 60,
-        "secondary_range": 60,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "LIH": {
-        "char": "I",
-        "position": "21.9747,-159.3331",
-        "elevation": 72,
-        "primary_range": 60,
-        "secondary_range": 60,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "OGG": {
-        "char": "G",
-        "position": "20.8936,-156.4289",
-        "elevation": 134,
-        "primary_range": 60,
-        "secondary_range": 60,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      },
-      "ITO": {
-        "char": "T",
-        "position": "19.7169,-155.0239",
-        "elevation": 111,
-        "primary_range": 60,
-        "secondary_range": 60,
-        "silence_angle": 30,
-        "slope_angle": 0.3
-      }
-    },
-    "range": 30,
-    "scratchpads": {
-      "APACK": "APA",
-      "CLUTS": "CLU",
-      "CODDY": "EBB",
-      "EBBER": "EBB",
-      "FITES": "FIT",
-      "KOLEA": "CLU",
-      "MKK": "MKK",
-      "PULPS": "PUL",
-      "ZIGIE": "ZIG",
-      "KEAHI": "KEA",
-      "UPP": "KUP",
-      "LNY": "PLN",
-      "KATHS": "KAT",
-      "LIH": "LIH",
-      "LILIA": "LIL",
-      "NONNI": "NON",
-      "PUPPI": "PUP",
-      "SOK": "SOK",
-      "CARRP": "CAR",
-      "CHOKO": "CHO",
-      "DOVRR": "DOV",
-      "KEOLA": "KEO",
-      "KUCHI": "KUC",
-      "GECKO": "GEC",
-      "PALAY": "PAL"
-    },
-    "significant_points": {
-      "APACK": {
-        "short_name": "APA"
-      },
-      "CLUTS": {
-        "short_name": "CLU"
-      },
-      "CODDY": {
-        "short_name": "COD"
-      },
-      "EBBER": {
-        "short_name": "EBB"
-      },
-      "FITES": {
-        "short_name": "FIT"
-      },
-      "KOLEA": {
-        "short_name": "KOL"
-      },
-      "MKK": {},
-      "PULPS": {
-        "short_name": "PUL"
-      },
-      "ZIGIE": {
-        "short_name": "ZIG"
-      },
-      "KEAHI": {
-        "short_name": "KEA"
-      },
-      "UPP": {},
-      "LNY": {},
-      "KATHS": {
-        "short_name": "KAT"
-      },
-      "LIH": {},
-      "LILIA": {
-        "short_name": "LIL"
-      },
-      "NONNI": {
-        "short_name": "NON"
-      },
-      "PUPPI": {
-        "short_name": "PUP"
-      },
-      "SOK": {},
-      "CARRP": {
-        "short_name": "CAR"
-      },
-      "CHOKO": {
-        "short_name": "CHO"
-      },
-      "DOVRR": {
-        "short_name": "DOV"
-      },
-      "KEOLA": {
-        "short_name": "KEO"
-      },
-      "KUCHI": {
-        "short_name": "KUC"
-      },
-      "GECKO": {
-        "short_name": "GEC"
-      },
-      "PALAY": {
-        "short_name": "PAL"
-      }
-    },
-    "stars_maps": [
-      "OGG TRACON",
-      "OGG MVA__MAUI MINIMUM VEC ALT",
-      "TRACON__TRACON OUTLINES",
-      "OGG RVM__MAUI RADAR VEC MAP",
-      "SPLIT__TRACON SPLITS",
-      "COAST__COASTLINES",
-      "ARWYS__AIRWAYS",
-      "CTR__CENTER SPLITS",
-      "OGG_FIX_ARR",
-      "OGG_FIX_I2",
-      "OGG_FIX_R2",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "APRTS__AIRPORTS",
-      "ZHN Airspace Classes",
-      "",
-      "OGG_FIX_20",
-      "OGG_FIX_23"
-    ],
-    "video_map_file": "videomaps/ZHN-videomaps.gob.zst"
   }
 }

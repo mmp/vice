@@ -18,6 +18,8 @@ import (
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
+
+	"github.com/brunoga/deep"
 )
 
 // Errors used by the nav package
@@ -43,6 +45,7 @@ type Nav struct {
 	Heading     NavHeading
 	Approach    NavApproach
 	Airwork     *NavAirwork
+	Prespawn    bool
 
 	FixAssignments map[string]NavFixAssignment
 
@@ -65,18 +68,50 @@ type Nav struct {
 // seconds after the controller issues it in order to model the delay
 // before pilots start to follow assignments.
 type DeferredNavHeading struct {
-	// Time is just plain old wallclock time; it should be sim time, but a
-	// lot of replumbing would be required to have that available where
-	// needed. The downsides are minor: 1. On quit and resume, any pending
-	// assignments will generally be followed immediately, and 2. if the
-	// sim rate is increased, the delay will end up being longer than
-	// intended.
 	Time    time.Time
 	Heading *float32
-	Turn    *TurnMethod
+	Turn    *av.TurnDirection
 	Hold    *FlyHold
 	// For direct fix, this will be the updated set of waypoints.
 	Waypoints []av.Waypoint
+}
+
+// NavSnapshot captures all controller-modifiable state in Nav for rollback purposes.
+// It does NOT include FlightState (aircraft physical position/heading/altitude) -
+// only control assignments that can be rolled back.
+type NavSnapshot struct {
+	Altitude           NavAltitude
+	Speed              NavSpeed
+	Heading            NavHeading
+	Approach           NavApproach
+	Waypoints          av.WaypointArray
+	DeferredNavHeading *DeferredNavHeading
+	FixAssignments     map[string]NavFixAssignment
+}
+
+// TakeSnapshot captures the current controller-modifiable nav state for later rollback.
+func (nav *Nav) TakeSnapshot() NavSnapshot {
+	return deep.MustCopy(NavSnapshot{
+		Altitude:           nav.Altitude,
+		Speed:              nav.Speed,
+		Heading:            nav.Heading,
+		Approach:           nav.Approach,
+		Waypoints:          nav.Waypoints,
+		DeferredNavHeading: nav.DeferredNavHeading,
+		FixAssignments:     nav.FixAssignments,
+	})
+}
+
+// RestoreSnapshot restores nav state from a previously captured snapshot.
+// The aircraft's physical state (FlightState) is NOT restored - only control assignments.
+func (nav *Nav) RestoreSnapshot(snap NavSnapshot) {
+	nav.Altitude = snap.Altitude
+	nav.Speed = snap.Speed
+	nav.Heading = snap.Heading
+	nav.Approach = snap.Approach
+	nav.Waypoints = snap.Waypoints
+	nav.DeferredNavHeading = snap.DeferredNavHeading
+	nav.FixAssignments = snap.FixAssignments
 }
 
 type FlightState struct {
@@ -137,13 +172,14 @@ type NavSpeed struct {
 	MaintainMaximumForward   bool
 	// Carried after passing a waypoint
 	Restriction *float32
+	Mach        bool
 }
 
 const MaxIAS = 290
 
 type NavHeading struct {
 	Assigned     *float32
-	Turn         *TurnMethod
+	Turn         *av.TurnDirection
 	Arc          *av.DMEArc
 	JoiningArc   bool
 	RacetrackPT  *FlyRacetrackPT
@@ -152,21 +188,26 @@ type NavHeading struct {
 }
 
 type NavApproach struct {
-	Assigned          *av.Approach
-	AssignedId        string
-	ATPAVolume        *av.ATPAVolume
-	Cleared           bool
-	InterceptState    InterceptState
-	PassedApproachFix bool // have we passed a fix on the approach yet?
-	PassedFAF         bool
-	NoPT              bool
-	AtFixClearedRoute []av.Waypoint
+	Assigned                    *av.Approach
+	AssignedId                  string
+	ATPAVolume                  *av.ATPAVolume
+	Cleared                     bool
+	StandbyApproach             bool // suppress repeated approach clearance requests
+	RequestApproachClearance    bool // pilot should radio for approach clearance
+	GoAroundNoApproachClearance bool // pilot should go around (reached FAF without clearance)
+	InterceptState              InterceptState
+	PassedApproachFix           bool // have we passed a fix on the approach yet?
+	PassedFAF                   bool
+	NoPT                        bool
+	AtFixClearedRoute           []av.Waypoint
+	AtFixInterceptFix           string // fix where aircraft should intercept the localizer
 }
 
 type NavFixAssignment struct {
 	Arrive struct {
 		Altitude *av.AltitudeRestriction
 		Speed    *float32
+		Mach     *float32
 	}
 	Depart struct {
 		Fix     *av.Waypoint
@@ -184,7 +225,7 @@ type NavAirwork struct {
 	NextMoveCounter int
 	Heading         float32
 	TurnRate        float32
-	TurnDirection   TurnMethod
+	TurnDirection   av.TurnDirection
 	IAS             float32
 	Altitude        float32
 	Dive            bool
@@ -298,7 +339,7 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 	av.RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, lg)
 
-	landIdx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Land })
+	landIdx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Land() })
 	if landIdx != -1 {
 		if fp.Rules == av.FlightRulesIFR {
 			lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
@@ -359,10 +400,19 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 	return nav
 }
 
-func (nav *Nav) TAS() float32 {
+func (nav *Nav) TAS(temp float32) float32 {
 	tas := av.IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude)
-	tas = min(tas, nav.Perf.Speed.CruiseTAS)
+	if nav.machTransition() {
+		tas = min(tas, av.MachToTAS(nav.Perf.Speed.MaxMach, temp))
+	} else {
+		tas = min(tas, nav.Perf.Speed.CruiseTAS)
+	}
 	return tas
+}
+
+func (nav *Nav) Mach(temp float32) float32 {
+	tas := nav.TAS(temp)
+	return av.TASToMach(tas, temp)
 }
 
 func (nav *Nav) v2() float32 {
@@ -418,7 +468,7 @@ func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
 	}
 	// If the first waypoint has a heading, we're about to turn to it
 	if len(nav.Waypoints) > 0 && nav.Waypoints[0].Heading != 0 {
-		return nav.Waypoints[0].Heading, TurningToHeading
+		return int(nav.Waypoints[0].Heading), TurningToHeading
 	}
 	return 0, NoHeading
 }
@@ -427,7 +477,7 @@ func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
 // few seconds in the future. It should only be called for heading changes
 // due to controller instructions to the pilot and never in cases where the
 // autopilot is changing the heading assignment.
-func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod) {
+func (nav *Nav) EnqueueHeading(hdg float32, turn av.TurnDirection, simTime time.Time) {
 	var delay float32
 	if nav.Heading.Assigned != nil && nav.DeferredNavHeading == nil {
 		// Already in heading mode; have less of a delay.
@@ -437,9 +487,8 @@ func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod) {
 		delay = 5 + 4*nav.Rand.Float32()
 	}
 
-	now := time.Now()
 	nav.DeferredNavHeading = &DeferredNavHeading{
-		Time:    now.Add(time.Duration(delay * float32(time.Second))),
+		Time:    simTime.Add(time.Duration(delay * float32(time.Second))),
 		Heading: &hdg,
 		Turn:    &turn,
 	}
@@ -456,7 +505,7 @@ func (nav *Nav) AssignedWaypoints() []av.Waypoint {
 	return nav.Waypoints
 }
 
-func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint) {
+func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, simTime time.Time) {
 	var delay float32
 	if nav.Heading.Assigned == nil && nav.DeferredNavHeading == nil {
 		// Already in LNAV mode; have less of a delay
@@ -466,18 +515,16 @@ func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint) {
 		delay = 8 + 5*nav.Rand.Float32()
 	}
 
-	now := time.Now()
 	nav.DeferredNavHeading = &DeferredNavHeading{
-		Time:      now.Add(time.Duration(delay * float32(time.Second))),
+		Time:      simTime.Add(time.Duration(delay * float32(time.Second))),
 		Waypoints: wps,
 	}
 }
 
-func (nav *Nav) EnqueueOnCourse() {
+func (nav *Nav) EnqueueOnCourse(simTime time.Time) {
 	delay := 8 + 5*nav.Rand.Float32()
-	now := time.Now()
 	nav.DeferredNavHeading = &DeferredNavHeading{
-		Time: now.Add(time.Duration(delay * float32(time.Second))),
+		Time: simTime.Add(time.Duration(delay * float32(time.Second))),
 	}
 }
 
@@ -502,7 +549,7 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 
 	for _, wp := range nav.Waypoints {
 		// Ignore controller-assigned "cross FIX at ALT" for this
-		if r := wp.AltitudeRestriction; r != nil {
+		if r := wp.AltitudeRestriction(); r != nil {
 			return nav.FlightState.Altitude >= r.TargetAltitude(nav.FlightState.Altitude)
 		}
 	}
@@ -626,7 +673,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime time.Time, lg
 	// Speed; don't be as exhaustive as we are for altitude
 	targetAltitude, _ := nav.TargetAltitude()
 	lines = append(lines, fmt.Sprintf("IAS %d GS %d TAS %d", int(nav.FlightState.IAS),
-		int(nav.FlightState.GS), int(nav.TAS())))
+		int(nav.FlightState.GS), int(nav.TAS(wxs.Temperature()+273.15))))
 	ias, _ := nav.TargetSpeed(targetAltitude, &fp, wxs, nil)
 	if nav.Speed.MaintainSlowestPractical {
 		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))

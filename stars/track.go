@@ -75,8 +75,9 @@ type TrackState struct {
 
 	// These are only set if a leader line direction was specified for this
 	// aircraft individually:
-	LeaderLineDirection *math.CardinalOrdinalDirection
-	UseGlobalLeaderLine bool
+	LeaderLineDirection     *math.CardinalOrdinalDirection
+	FDAMLeaderLineDirection *math.CardinalOrdinalDirection
+	UseGlobalLeaderLine     bool
 
 	Ghost struct {
 		PartialDatablock bool
@@ -366,11 +367,20 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				}
 			}
 
-		case sim.ForceQLEvent:
-			if sp.ForceQLACIDs == nil {
-				sp.ForceQLACIDs = make(map[sim.ACID]any)
+		case sim.FDAMLeaderLineEvent:
+			if ctx.UserControlsPosition(event.ToController) {
+				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
+					state.FDAMLeaderLineDirection = event.LeaderLineDirection
+				}
 			}
-			sp.ForceQLACIDs[event.ACID] = nil
+
+		case sim.ForceQLEvent:
+			if ctx.UserControlsPosition(event.ToController) {
+				if sp.ForceQLACIDs == nil {
+					sp.ForceQLACIDs = make(map[sim.ACID]any)
+				}
+				sp.ForceQLACIDs[event.ACID] = nil
+			}
 
 		case sim.TransferRejectedEvent:
 			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
@@ -519,20 +529,28 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context) {
 	fa := ctx.Client.State.FacilityAdaptation
 
 	qlfilt := util.FilterSlice(fa.Filters.Quicklook,
-		func(f sim.FilterRegion) bool {
+		func(f sim.QuicklookRegion) bool {
 			_, disabled := ps.DisabledQLRegions[f.Id]
 			return !disabled
 		})
+	userPositions := ctx.Client.State.GetPositionsForTCW(ctx.UserTCW)
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		if trk.IsUnassociated() || state.DisplayFDB {
 			continue
 		} else {
+			fp := trk.FlightPlan
+			acType := ""
+			if fp != nil {
+				acType = fp.AircraftType
+			}
 			state.DisplayFDB = slices.ContainsFunc(qlfilt,
-				func(f sim.FilterRegion) bool {
-					return f.Inside(state.track.Location, int(state.track.TransponderAltitude)) &&
-						!f.Inside(state.previousTrack.Location, int(state.previousTrack.TransponderAltitude))
+				func(f sim.QuicklookRegion) bool {
+					return f.Match(state.track.Location, int(state.track.TransponderAltitude),
+						fp, userPositions, acType, fa.SignificantPoints) &&
+						!f.Match(state.previousTrack.Location, int(state.previousTrack.TransponderAltitude),
+							fp, userPositions, acType, fa.SignificantPoints)
 				})
 		}
 	}
@@ -627,10 +645,10 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, transforms radar.ScopeTransf
 					// Explicitly specified scope_char overrides everything.
 					positionSymbol = ctrl.Scope
 				} else if ctrl.FacilityIdentifier != "" {
-					// For external facilities we use the facility id
+					// For external facilities we use the shortest facility id
 					positionSymbol = ctrl.FacilityIdentifier
-				} else if len(ctrl.SectorID) > 0 {
-					positionSymbol = ctrl.SectorID[len(ctrl.SectorID)-1:]
+				} else if len(ctrl.Position) > 0 {
+					positionSymbol = ctrl.Position[len(ctrl.Position)-1:]
 				}
 			}
 		}
@@ -688,22 +706,20 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 
 			// Leader line direction comes from the scenario configuration, unless it
 			// has been overridden for the runway via <multifunc>NL.
-			leaderDirection := sp.ConvergingRunways[i].LeaderDirections[j]
+			leaderDirection := sp.CRDAPairs[i].LeaderDirections[j]
 			if rwyState.LeaderLineDirection != nil {
 				leaderDirection = *rwyState.LeaderLineDirection
 			}
 
-			runwayIntersection := sp.ConvergingRunways[i].RunwayIntersection
-			region := sp.ConvergingRunways[i].ApproachRegions[j]
-			otherRegion := sp.ConvergingRunways[i].ApproachRegions[(j+1)%2]
+			region := sp.CRDAPairs[i].CRDARegions[j]
+			otherRegion := sp.CRDAPairs[i].CRDARegions[(j+1)%2]
 
-			trackId := util.Select(pairState.Mode == CRDAModeStagger, sp.ConvergingRunways[i].StaggerSymbol,
-				sp.ConvergingRunways[i].TieSymbol)
+			trackId := util.Select(pairState.Mode == CRDAModeStagger, sp.CRDAPairs[i].StaggerSymbol,
+				sp.CRDAPairs[i].TieSymbol)
 
-			offset := util.Select(pairState.Mode == CRDAModeTie, sp.ConvergingRunways[i].TieOffset, float32(0))
+			offset := util.Select(pairState.Mode == CRDAModeTie, sp.CRDAPairs[i].TieOffset, float32(0))
 
 			nmPerLongitude := ctx.NmPerLongitude
-			magneticVariation := ctx.MagneticVariation
 			for _, trk := range sp.visibleTracks {
 				if trk.IsUnassociated() {
 					continue
@@ -716,7 +732,7 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 				heading := util.Select(state.HaveHeading(), state.TrackHeading(nmPerLongitude), trk.Heading)
 
 				ghost := region.TryMakeGhost(trk.RadarTrack, heading, trk.FlightPlan.Scratchpad, force, offset,
-					leaderDirection, runwayIntersection, nmPerLongitude, magneticVariation, otherRegion)
+					leaderDirection, nmPerLongitude, otherRegion)
 				if ghost != nil {
 					ghost.TrackId = trackId
 					ghosts = append(ghosts, ghost)
@@ -737,7 +753,7 @@ func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, tra
 
 	ps := sp.currentPrefs()
 	brightness := ps.Brightness.OtherTracks
-	color := brightness.ScaleRGB(STARSGhostColor)
+	color := brightness.ScaleRGB(sp.Colors.GhostDatablock)
 	trackFont := sp.systemFont(ctx, ps.CharSize.PositionSymbols)
 	trackStyle := renderer.TextStyle{Font: trackFont, Color: color, LineSpacing: 0}
 	datablockFont := sp.systemFont(ctx, ps.CharSize.Datablocks)
@@ -793,7 +809,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 			rot := math.Rotator2f(h)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels
-			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+			box := [4][2]float32{{-9, -3}, {9, -3}, {9, 3}, {-9, 3}}
 
 			// Scale box based on distance from the radar; TODO: what exactly should this be?
 			scale := ctx.DrawPixelScale * float32(math.Clamp(dist/40, .5, 1.5))
@@ -803,7 +819,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
 
-			color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+			color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackGeometry)
 			if primary {
 				// Draw a filled box
 				trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -814,7 +830,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 			}
 
 			// green line
-			line := [2][2]float32{[2]float32{-16, 3}, [2]float32{16, 3}}
+			line := [2][2]float32{{-16, 3}, {16, 3}}
 			for i := range line {
 				line[i] = math.Add2f(rot(math.Scale2f(line[i], scale)), pw)
 				line[i] = transforms.LatLongFromWindowP(line[i])
@@ -833,14 +849,14 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 			rot := math.Rotator2f(heading)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels
-			box := [4][2]float32{[2]float32{-9, -3}, [2]float32{9, -3}, [2]float32{9, 3}, [2]float32{-9, 3}}
+			box := [4][2]float32{{-9, -3}, {9, -3}, {9, 3}, {-9, 3}}
 			for i := range box {
 				box[i] = math.Scale2f(box[i], ctx.DrawPixelScale)
 				box[i] = math.Add2f(rot(box[i]), pw)
 				box[i] = transforms.LatLongFromWindowP(box[i])
 			}
 
-			color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+			color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackGeometry)
 			if primary {
 				// Draw a filled box
 				trid.AddQuad(box[0], box[1], box[2], box[3], color)
@@ -852,7 +868,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 
 		case RadarModeFused:
 			if ps.Brightness.PrimarySymbols > 0 {
-				color := primaryTargetBrightness.ScaleRGB(STARSTrackBlockColor)
+				color := primaryTargetBrightness.ScaleRGB(sp.Colors.TrackGeometry)
 				drawTrack(trackBuilder, pw, sp.fusedTrackVertices, color)
 			}
 		}
@@ -880,8 +896,8 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 
 			px := 3 * ctx.DrawPixelScale
 			// diagonals
-			diagPx := px * 0.707107                                                 /* 1/sqrt(2) */
-			trackColor := posBrightness.ScaleRGB(renderer.RGB{R: .1, G: .7, B: .1}) // TODO make a STARS... constant
+			diagPx := px * 0.707107 /* 1/sqrt(2) */
+			trackColor := posBrightness.ScaleRGB(sp.Colors.UnownedDatablock)
 			ld.AddLine(delta(pos, -diagPx, -diagPx), delta(pos, diagPx, diagPx), trackColor)
 			ld.AddLine(delta(pos, diagPx, -diagPx), delta(pos, -diagPx, diagPx), trackColor)
 			// horizontal line
@@ -953,8 +969,8 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, transforms radar.Scop
 
 		// Draw history from new to old
 		for i := range ps.RadarTrackHistory {
-			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
-			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
+			trackColorNum := min(i, len(sp.Colors.TrackHistory)-1)
+			trackColor := ps.Brightness.History.ScaleRGB(sp.Colors.TrackHistory[trackColorNum])
 
 			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
 				if p := state.historyTracks[idx].Location; !p.IsZero() {
@@ -1299,31 +1315,12 @@ func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front s
 	state := sp.TrackState[back.ADSBCallsign]
 	vol := back.ATPAVolume
 
-	cwtSeparation := av.CWTApproachSeparation(front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory)
-	if cwtSeparation == 0 {
-		// No CWT requirement; 3nm baseline
-		cwtSeparation = 3
-	}
-
-	if vol.Enable25nmApproach && ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) {
-		// Reduced separation allowed if:
-		// 1. Volume is adapted for 2.5nm (vol.Enable25nmApproach)
-		// 2. 2.5nm is enabled for this volume (via 2.5[volume]E command)
-		// 3. Aircraft is within the distance threshold for 2.5nm separation
-		// 4. Both aircraft are on extended centerline
-		if math.NMDistance2LL(vol.Threshold, back.Location) < vol.Dist25nmApproach &&
-			back.OnExtendedCenterline && front.OnExtendedCenterline {
-			// ... and 7110.65 5-5-4(i):
-			// 1. The leading aircraft's weight class is the same or less than the trailing aircraft;
-			// 2. Super and heavy aircraft are permitted to participate in the separation reduction as the trailing aircraft only;
-			fcat, bcat := front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory
-			if len(fcat) == 1 && fcat[0] >= 'E' && fcat[0] <= 'I' && // no heavy / super
-				len(bcat) == 1 && bcat[0] >= 'A' && bcat[0] <= 'I' &&
-				fcat[0] >= bcat[0] { // swap test since lower weight is higher letter
-				cwtSeparation = 2.5
-			}
-		}
-	}
+	eligible25nm := vol.Enable25nmApproach &&
+		ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) &&
+		math.NMDistance2LL(vol.Threshold, back.Location) < vol.Dist25nmApproach &&
+		back.OnExtendedCenterline && front.OnExtendedCenterline
+	cwtSeparation := av.CWTRequiredApproachSeparation(
+		front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory, eligible25nm)
 
 	state.MinimumMIT = cwtSeparation
 	state.ATPALeadAircraftCallsign = front.ADSBCallsign
@@ -1439,7 +1436,24 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 		} else if state.LeaderLineDirection != nil {
 			// The direction was specified for the aircraft specifically
 			return *state.LeaderLineDirection
-		} else if ctx.UserOwnsFlightPlan(sfp) {
+		} else if state.FDAMLeaderLineDirection != nil {
+			return *state.FDAMLeaderLineDirection
+		}
+
+		// Check if the active configuration specifies a leader line
+		// direction for this scratchpad. This comes after per-aircraft and
+		// FDAM overrides but before controller defaults, since it is an
+		// adaptation-defined default keyed on flight plan data.
+		if sfp.Scratchpad != "" {
+			if config, ok := ctx.FacilityAdaptation.Configurations[ctx.Client.State.ConfigurationId]; ok &&
+				config.ScratchpadLeaderLineDirections != nil {
+				if dir, ok := config.ScratchpadLeaderLineDirections[sfp.Scratchpad]; ok {
+					return dir
+				}
+			}
+		}
+
+		if ctx.UserOwnsFlightPlan(sfp) {
 			// Tracked by us
 			return ps.LeaderLineDirection
 		} else if ctx.UserControlsPosition(sfp.HandoffController) {

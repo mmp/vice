@@ -132,13 +132,13 @@ func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
 	}
 
 	if mm.Group != 0 && mm.Group != 1 {
-		return sm, fmt.Errorf("\"brightness\" must be 0 or 1 for map %s", mm.Filename)
+		return sm, fmt.Errorf(`"brightness" must be 0 or 1 for map %s`, mm.Filename)
 	}
 	if mm.Color < 0 || mm.Color > 8 {
-		return sm, fmt.Errorf("\"color\" must be between 1 and 8 for map %s", mm.Filename)
+		return sm, fmt.Errorf(`"color" must be between 1 and 8 for map %s`, mm.Filename)
 	}
 	if mm.Category < -1 || mm.Category > 9 {
-		return sm, fmt.Errorf("\"category\" must be between -1 and 9 for map %s", mm.Filename)
+		return sm, fmt.Errorf(`"category" must be between -1 and 9 for map %s`, mm.Filename)
 	}
 
 	r, err := os.Open(mm.Filename)
@@ -158,7 +158,7 @@ func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
 			for i, ch := range b {
 				v *= 10
 				if ch < '0' || ch > '9' {
-					panic(fmt.Sprintf("Non-numeric value found at column %d: \"%s\"", i, string(b)))
+					panic(fmt.Sprintf(`Non-numeric value found at column %d: "%s"`, i, string(b)))
 				}
 				v += int(ch - '0')
 			}
@@ -183,7 +183,7 @@ func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
 		}
 
 		if bang := bytes.IndexByte(line, '!'); bang == -1 {
-			return sm, fmt.Errorf("%s: unexpected line in DAT file: \"%s\"", mm.Filename, line)
+			return sm, fmt.Errorf(`%s: unexpected line in DAT file: "%s"`, mm.Filename, line)
 		} else {
 			line = line[:bang]
 		}
@@ -202,7 +202,7 @@ func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
 			pt := parseLatLong(line[3:])
 			currentLineStrip = append(currentLineStrip, pt)
 		} else {
-			return sm, fmt.Errorf("%s: unexpected line in DAT file: \"%s\"", mm.Filename, line)
+			return sm, fmt.Errorf(`%s: unexpected line in DAT file: "%s"`, mm.Filename, line)
 		}
 	}
 

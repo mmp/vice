@@ -1,24 +1,137 @@
 {
-  "ZAB": { "Name": "Albuquerque Center" },
-  "ZAN": { "Name": "Anchorage Center" },
-  "ZAU": { "Name": "Chicago Center" },
-  "ZBW": { "Name": "Boston Center" },
-  "ZDC": { "Name": "Washington Center" },
-  "ZDV": { "Name": "Denver Center" },
-  "ZFW": { "Name": "Fort Worth Center" },
-  "ZHN": { "Name": "Honolulu Center" },
-  "ZHU": { "Name": "Houston Center" },
-  "ZID": { "Name": "Indianapolis Center" },
-  "ZJX": { "Name": "Jacksonville Center" },
-  "ZKC": { "Name": "Kansas City Center" },
-  "ZLA": { "Name": "Los Angeles Center" },
-  "ZLC": { "Name": "Salt Lake Center" },
-  "ZMA": { "Name": "Miami Center" },
-  "ZME": { "Name": "Memphis Center" },
-  "ZMP": { "Name": "Minneapolis Center" },
-  "ZNY": { "Name": "New York Center" },
-  "ZOA": { "Name": "Oakland Center" },
-  "ZOB": { "Name": "Cleveland Center" },
-  "ZSE": { "Name": "Seattle Center" },
-  "ZTL": { "Name": "Atlanta Center" }
+  "ZAB": {
+    "Latitude": 34.1372,
+    "Longitude": -106.9625,
+    "Name": "Albuquerque Center",
+    "Radius": 387
+  },
+  "ZAN": {
+    "Latitude": 63.6271,
+    "Longitude": -150.6067,
+    "Name": "Anchorage Center",
+    "Radius": 821
+  },
+  "ZAU": {
+    "Latitude": 41.8998,
+    "Longitude": -89.1257,
+    "Name": "Chicago Center",
+    "Radius": 231
+  },
+  "ZBW": {
+    "Latitude": 43.7658,
+    "Longitude": -70.8406,
+    "Name": "Boston Center",
+    "Radius": 284
+  },
+  "ZDC": {
+    "Latitude": 36.8826,
+    "Longitude": -76.3137,
+    "Name": "Washington Center",
+    "Radius": 256
+  },
+  "ZDV": {
+    "Latitude": 40.0622,
+    "Longitude": -106.4098,
+    "Name": "Denver Center",
+    "Radius": 378
+  },
+  "ZFW": {
+    "Latitude": 32.375,
+    "Longitude": -97.8111,
+    "Name": "Fort Worth Center",
+    "Radius": 326
+  },
+  "ZHN": {
+    "Latitude": 22,
+    "Longitude": -157,
+    "Name": "Honolulu Center",
+    "Radius": 428
+  },
+  "ZHU": {
+    "Latitude": 27.6417,
+    "Longitude": -93.5716,
+    "Name": "Houston Center",
+    "Radius": 521
+  },
+  "ZID": {
+    "Latitude": 38.6723,
+    "Longitude": -84.4858,
+    "Name": "Indianapolis Center",
+    "Radius": 212
+  },
+  "ZJX": {
+    "Latitude": 30.2339,
+    "Longitude": -82.2314,
+    "Name": "Jacksonville Center",
+    "Radius": 346
+  },
+  "ZKC": {
+    "Latitude": 38.6842,
+    "Longitude": -95.349,
+    "Name": "Kansas City Center",
+    "Radius": 370
+  },
+  "ZLA": {
+    "Latitude": 34.3992,
+    "Longitude": -117.9245,
+    "Name": "Los Angeles Center",
+    "Radius": 367
+  },
+  "ZLC": {
+    "Latitude": 43.4417,
+    "Longitude": -110.1307,
+    "Name": "Salt Lake Center",
+    "Radius": 476
+  },
+  "ZMA": {
+    "Latitude": 24.1196,
+    "Longitude": -76.8253,
+    "Name": "Miami Center",
+    "Radius": 544
+  },
+  "ZME": {
+    "Latitude": 35.4117,
+    "Longitude": -90.4611,
+    "Name": "Memphis Center",
+    "Radius": 276
+  },
+  "ZMP": {
+    "Latitude": 46.1314,
+    "Longitude": -92.8112,
+    "Name": "Minneapolis Center",
+    "Radius": 495
+  },
+  "ZNY": {
+    "Latitude": 40.6668,
+    "Longitude": -75.3857,
+    "Name": "New York Center",
+    "Radius": 146
+  },
+  "ZOA": {
+    "Latitude": 38.7033,
+    "Longitude": -122.2348,
+    "Name": "Oakland Center",
+    "Radius": 279
+  },
+  "ZOB": {
+    "Latitude": 42.4304,
+    "Longitude": -80.7354,
+    "Name": "Cleveland Center",
+    "Radius": 222
+  },
+  "ZSE": {
+    "Latitude": 45.1339,
+    "Longitude": -120.9733,
+    "Name": "Seattle Center",
+    "Radius": 372
+  },
+  "ZTL": {
+    "Latitude": 34.4243,
+    "Longitude": -84.4792,
+    "Name": "Atlanta Center",
+    "Radius": 279
+  },
+  "ZAE": {
+    "Name": "Academy Center"
+  }
 }

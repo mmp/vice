@@ -11,15 +11,15 @@ package aviation
 type ControlPosition string
 
 type Controller struct {
-	Position           string    // This is the key in the controllers map in JSON
+	Position           string    // This is the key in the controllers map in JSON (now the sector ID, e.g. "1N", "4P")
+	Callsign           string    `json:"callsign,omitempty"` // Human-readable callsign (e.g. "PHL_NA_APP")
 	RadioName          string    `json:"radio_name"`
 	Frequency          Frequency `json:"frequency"`
-	SectorID           string    `json:"sector_id"`       // e.g. N56, 2J, ...
-	Scope              string    `json:"scope_char"`      // Optional. If unset, facility id is used for external, last char of sector id for local.
-	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
-	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
-	Facility           string    `json:"facility"`        // So we can get the STARS facility from a controller
-	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
+	Scope              string    `json:"scope_char"`     // Optional. If unset, facility id is used for external, last char of position for local.
+	FacilityIdentifier string    `json:"-"`              // Set programmatically by loadNeighborControllers (e.g. "N" in "N4P")
+	ERAMFacility       bool      `json:"-"`              // Set at runtime from facility type; true for ARTCC controllers
+	Facility           string    `json:"facility"`       // So we can get the STARS facility from a controller
+	Area               string    `json:"area,omitempty"` // For TRACON: auto-derived from first digit of Position. For ERAM: must be manually specified.
 }
 
 func (c Controller) IsExternal() bool {
@@ -27,15 +27,9 @@ func (c Controller) IsExternal() bool {
 }
 
 func (c Controller) PositionId() ControlPosition {
-	if c.ERAMFacility {
-		return ControlPosition(c.SectorID)
-	}
-	return ControlPosition(c.FacilityIdentifier + c.SectorID)
+	return ControlPosition(c.FacilityIdentifier + c.Position)
 }
 
 func (c Controller) ERAMID() string { // For display
-	if c.ERAMFacility {
-		return c.SectorID // Already includes the facility letter
-	}
-	return c.FacilityIdentifier + c.SectorID
+	return c.FacilityIdentifier + c.Position
 }

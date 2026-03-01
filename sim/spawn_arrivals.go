@@ -170,6 +170,11 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		return nil, err
 	}
 
+	// Create a flight strip at the inbound handoff controller if it's a human position
+	if shouldCreateFlightStrip(&nasFp) && !s.isVirtualController(nasFp.InboundHandoffController) {
+		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
+	}
+
 	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
 
 	return ac, err
@@ -255,10 +260,10 @@ func (s *Sim) initNASFlightPlan(ac *Aircraft, flightType av.TypeOfFlight) NASFli
 func findLowestWaypointAltitude(wps av.WaypointArray, initialAlt float32) (int, bool) {
 	lowestAlt := gomath.MaxInt
 	for _, wp := range wps {
-		if wp.AltitudeRestriction == nil {
+		if wp.AltitudeRestriction() == nil {
 			continue
 		}
-		if target := int(wp.AltitudeRestriction.TargetAltitude(initialAlt)); target < lowestAlt {
+		if target := int(wp.AltitudeRestriction().TargetAltitude(initialAlt)); target < lowestAlt {
 			lowestAlt = target
 		}
 	}
@@ -280,7 +285,7 @@ func (s *Sim) maybeSetGoAround(ac *Aircraft, goAroundRate float32) {
 		return // Random chance didn't trigger
 	}
 	// Only allow go-around if there's human controller involvement
-	if !slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff }) {
+	if !slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff() }) {
 		return
 	}
 	d := 0.1 + 0.6*s.Rand.Float32()
@@ -334,7 +339,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		return nil, err
 	}
 
-	_, isTRACON := av.DB.TRACONs[s.State.Facility]
+	isTRACON := av.DB.IsTRACON(s.State.Facility)
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeOverflight)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO
@@ -352,6 +357,12 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		return nil, err
 	}
 
+	// Create a flight strip at the inbound handoff controller if it's a human position
+	if shouldCreateFlightStrip(&nasFp) && !s.isVirtualController(nasFp.InboundHandoffController) {
+		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
+	}
+
 	_, err := s.STARSComputer.CreateFlightPlan(nasFp)
+
 	return ac, err
 }

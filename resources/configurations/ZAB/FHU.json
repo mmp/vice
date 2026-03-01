@@ -1,0 +1,27 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "FHU_APP",
+            "frequency": 127050,
+            "radio_name": "Libby approach"
+        },
+        "1T": {
+            "callsign": "FHU_TWR",
+            "frequency": 124950,
+            "radio_name": "Libby Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "U90",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

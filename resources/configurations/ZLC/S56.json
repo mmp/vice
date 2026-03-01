@@ -1,0 +1,174 @@
+{
+    "control_positions": {
+        "1W": {
+            "callsign": "SLC_W_TWR",
+            "frequency": 132650,
+            "radio_name": "Salt Lake City Tower"
+        },
+        "1L": {
+            "callsign": "SLC_C_TWR",
+            "frequency": 119050,
+            "radio_name": "Salt Lake City Tower"
+        },
+        "1E": {
+            "callsign": "SLC_E_TWR",
+            "frequency": 118300,
+            "radio_name": "Salt Lake City Tower"
+        },
+        "1A": {
+            "callsign": "SLC_A_APP",
+            "frequency": 118850,
+            "radio_name": "Salt Lake City Approach"
+        },
+        "1B": {
+            "callsign": "SLC_B_APP",
+            "frequency": 124900,
+            "radio_name": "Salt Lake City Approach"
+        },
+        "1F": {
+            "callsign": "SLC_F_APP",
+            "frequency": 125700,
+            "radio_name": "Salt Lake City Approach"
+        },
+        "1G": {
+            "callsign": "SLC_G_APP",
+            "frequency": 126250,
+            "radio_name": "Salt Lake City Approach"
+        },
+        "1H": {
+            "callsign": "SLC_H_APP",
+            "frequency": 121100,
+            "radio_name": "Salt Lake City Approach"
+        },
+        "1J": {
+            "callsign": "SLC_J_APP",
+            "frequency": 128600,
+            "radio_name": "Salt Lake City Approach"
+        },
+        "1K": {
+            "callsign": "SLC_K_APP",
+            "frequency": 135500,
+            "radio_name": "Salt Lake City Approach"
+        },
+        "1S": {
+            "callsign": "SLC_S_APP",
+            "frequency": 128100,
+            "radio_name": "Salt Lake City Approach"
+        },
+        "1V": {
+            "callsign": "SLC_V_APP",
+            "frequency": 127400,
+            "radio_name": "Salt Lake City Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "CARTR1.N": "1K",
+                    "CARTR1.S": "1K",
+                    "JAZZZ1": "1K",
+                    "PITTT1.E": "1K",
+                    "PITTT1.S": "1K",
+                    "QWENN6.BCE": "1K",
+                    "QWENN6.MLF": "1K",
+                    "YUTES1.N": "1K",
+                    "YUTES1.S": "1K"
+                },
+                "departure_assignments": {
+                    "KSLC": "1K"
+                },
+                "default_consolidation": {
+                    "1K": []
+                }
+            }
+        },
+        "center": "KSLC",
+        "scratchpads": {
+            "STEWW": "SCA"
+        },
+        "significant_points": {
+            "STEWW": {}
+        },
+        "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
+        "coordination_fixes": {
+            "CARTR": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "SKEES": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "NORDK": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "LEEHY": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "QWENN": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "WAATS": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "S56 107 N Flow Base Map",
+                    "S56 109 South Flow Base Map",
+                    "S56 141 North Final Lines",
+                    "S56 142 South Final Lines",
+                    "S56 203 3NM Separation MVA",
+                    "S56 119 Emergency Obstacle Map",
+                    "S56 147 North Finals Extended",
+                    "S56 146 South Finals Extended",
+                    "S56 162 North Flow SID Lines",
+                    "S56 159 South Flow SID Lines",
+                    "S56 160 North Flow SID Waypoint Symbols",
+                    "S56 157 South Flow SID Waypoints Symbols",
+                    "S56 161 North Flow SID Names",
+                    "S56 158 South Flow SID Waypoint Names",
+                    "S56 137 Tower Airspace",
+                    "S56 176 Roads",
+                    "S56 102 Satellite Approaches",
+                    "S56 167 Widely Spaced Simuls Map",
+                    "S56 120 GPS Approach Centerlines",
+                    "S56 150 GPS Approaches Text",
+                    "S56 190 OGD VOR-A Approach",
+                    "S56 169 PVU VOR Approach",
+                    "S56 104 ZLC Split Map"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZLC",
+            "prefix": "C"
+        }
+    ]
+}

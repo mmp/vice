@@ -1,0 +1,166 @@
+{
+    "control_positions": {
+        "1N": {
+            "callsign": "SAV_N_APP",
+            "frequency": 125300,
+            "radio_name": "Savannah Approach"
+        },
+        "1W": {
+            "callsign": "SAV_W_APP",
+            "frequency": 118400,
+            "radio_name": "Savannah Approach"
+        },
+        "1S": {
+            "callsign": "SAV_S_APP",
+            "frequency": 120400,
+            "radio_name": "Savannah Approach"
+        },
+        "1T": {
+            "callsign": "SAV_TWR",
+            "frequency": 125975,
+            "radio_name": "Savannah Tower"
+        },
+        "2T": {
+            "callsign": "HXD_TWR",
+            "frequency": 118975,
+            "radio_name": "Hilton Head Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "10X": {
+                "inbound_assignments": {
+                    "LOTTS": "1W",
+                    "PLZZZ": "1N",
+                    "SOOOP": "1N",
+                    "VIYAP": "1S"
+                },
+                "departure_assignments": {
+                    "KHXD": "1N",
+                    "KSAV": "1N",
+                    "KTBR": "1W"
+                },
+                "default_consolidation": {
+                    "1N": [
+                        "1S",
+                        "1W"
+                    ]
+                }
+            },
+            "28X": {
+                "inbound_assignments": {
+                    "LOTTS": "1W",
+                    "PLZZZ": "1N",
+                    "SOOOP": "1N",
+                    "VIYAP": "1S"
+                },
+                "departure_assignments": {
+                    "KHXD": "1N",
+                    "KSAV": "1W",
+                    "KTBR": "1W"
+                },
+                "default_consolidation": {
+                    "1N": [
+                        "1S",
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "KSAV",
+        "radar_sites": {
+            "SAV": {
+                "char": "S",
+                "position": "32.13347,-81.21328",
+                "elevation": 35,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "SAVNOCA",
+                    "description": "SAV CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "radius": 7,
+                    "center": "N32.07.39.009,W81.12.07.892"
+                }
+            ]
+        },
+        "scratchpads": {
+            "GIPPL": "GIP",
+            "JROSS": "JRO",
+            "SMALZ": "SMA"
+        },
+        "significant_points": {
+            "GIPPL": {},
+            "JROSS": {},
+            "SMALZ": {}
+        },
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "coordination_fixes": {
+            "VIYAP": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "PLZZZ": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "LOTTS": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "SOOOP": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "RADAR MAP",
+                    "MVA",
+                    "CLASS C D AIRSPACE",
+                    "LOW AIRWAYS SAV",
+                    "COASTLINE",
+                    "RNAV Z - 28",
+                    "RNAV-10",
+                    "RNAV-19",
+                    "RNAV - 01"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CHS",
+            "prefix": "2"
+        },
+        {
+            "id": "NBC",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "C"
+        }
+    ]
+}

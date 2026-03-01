@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"net/http/pprof"
 	"runtime"
-	"slices"
 	"strconv"
 	"strings"
 	"text/template"
@@ -24,69 +23,17 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-type ttsClientStats struct {
-	IP       string
-	Calls    int
-	Words    int
-	LastUsed time.Time
-}
-
 type serverStats struct {
 	Uptime           time.Duration
 	AllocMemory      uint64
 	TotalAllocMemory uint64
 	SysMemory        uint64
 	RX, TX           int64
-	TXWebsocket      int64
 	NumGC            uint32
 	NumGoRoutines    int
 	CPUUsage         int
 
 	SimStatus []simStatus
-	TTSStats  []ttsClientStats
-}
-
-///////////////////////////////////////////////////////////////////////////
-// TTS usage tracking
-
-func (sm *SimManager) UpdateTTSUsage(ip, text string) error {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
-	if _, ok := sm.ttsUsageByIP[ip]; !ok {
-		sm.ttsUsageByIP[ip] = &ttsUsageStats{}
-	}
-
-	stats := sm.ttsUsageByIP[ip]
-	stats.Calls++
-	stats.Words += len(strings.Fields(text))
-	stats.LastUsed = time.Now()
-
-	if stats.Words > 30000 {
-		return fmt.Errorf("TTS capacity exceeded")
-	}
-
-	return nil
-}
-
-func (sm *SimManager) GetTTSStats() []ttsClientStats {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
-	var stats []ttsClientStats
-	for ip, usage := range sm.ttsUsageByIP {
-		stats = append(stats, ttsClientStats{
-			IP:       ip,
-			Calls:    usage.Calls,
-			Words:    usage.Words,
-			LastUsed: usage.LastUsed,
-		})
-	}
-
-	// Sort high to low on word count
-	slices.SortFunc(stats, func(a, b ttsClientStats) int { return b.Words - a.Words })
-
-	return stats
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -208,7 +155,7 @@ tr:nth-child(even) {
 <ul>
   <li>Uptime: {{.Uptime}}</li>
   <li>CPU usage: {{.CPUUsage}}%</li>
-  <li>Bandwidth: {{bytes .RX}} RX, {{bytes .TX}} TX, {{bytes .TXWebsocket}} TX Websocket</li>
+  <li>Bandwidth: {{bytes .RX}} RX, {{bytes .TX}} TX</li>
   <li>Allocated memory: {{.AllocMemory}} MB</li>
   <li>Total allocated memory: {{.TotalAllocMemory}} MB</li>
   <li>System memory: {{.SysMemory}} MB</li>
@@ -238,28 +185,6 @@ tr:nth-child(even) {
 {{end}}
 </table>
 
-<h1>Text-to-Speech Usage</h1>
-{{if .TTSStats}}
-<table>
-  <tr>
-  <th>Client IP</th>
-  <th>Call Count</th>
-  <th>Word Count</th>
-  <th>Last Used</th>
-  </tr>
-{{range .TTSStats}}
-  <tr>
-  <td>{{.IP}}</td>
-  <td>{{.Calls}}</td>
-  <td>{{.Words}}</td>
-  <td>{{.LastUsed.Format "2006-01-02 15:04:05"}}</td>
-  </tr>
-{{end}}
-</table>
-{{else}}
-<p>No TTS usage recorded.</p>
-{{end}}
-
 </body>
 </html>
 `))
@@ -278,10 +203,8 @@ func (sm *SimManager) statsHandler(w http.ResponseWriter, r *http.Request) {
 		NumGC:            m.NumGC,
 		NumGoRoutines:    runtime.NumGoroutine(),
 		CPUUsage:         int(math.Round(float32(usage[0]))),
-		TXWebsocket:      sm.websocketTXBytes.Load(),
 
 		SimStatus: sm.GetSimStatus(),
-		TTSStats:  sm.GetTTSStats(),
 	}
 
 	stats.RX, stats.TX = util.GetLoggedRPCBandwidth()

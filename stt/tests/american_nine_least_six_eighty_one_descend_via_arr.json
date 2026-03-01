@@ -1,0 +1,200 @@
+{
+  "time": "2026-01-30T17:15:14.098827074Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American nine least six eighty one descend via, arrival,",
+  "whisper_duration_ms": 441.778,
+  "audio_duration_ms": 2888,
+  "processor": "GPU: Apple M2, 8 CPU / 10 GPU cores, 8GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "AAL9681",
+  "command": "DVS",
+  "stt_aircraft": {
+    "American 96 81": {
+      "Callsign": "AAL9681",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Harris": "HRRIS",
+        "Islay": "ISLAY",
+        "Lowland": "LWLND",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wintah": "WINTA",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Hainan seven 21 heavy": {
+      "Callsign": "CHH721",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Borrow": "BRRRO",
+        "Celtic": "CELTK",
+        "Frill": "FRILL",
+        "Score": "SCOAR"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "CELTK7",
+      "STAR": "",
+      "Altitude": 4268,
+      "State": "departure",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 98": {
+      "Callsign": "JBU98",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 2105,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American nine least six eighty one descend via, arrival,\"",
+    "[local-stt] normalized words: [american 9 least 6 81 descend via arrival]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"9\" Type=1 Value=9",
+    "[local-stt]   token[2]: Text=\"least\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"681\" Type=1 Value=681",
+    "[local-stt]   token[4]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"via\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"arrival\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 7 tokens, 3 aircraft",
+    "[local-stt]   candidate \"Hainan seven 21 heavy\" (ICAO=\"CHH721\"): score=0.58 consumed=2",
+    "[local-stt]   candidate \"JetBlue 98\" (ICAO=\"JBU98\"): score=0.68 consumed=2",
+    "[local-stt]   candidate \"American 96 81\" (ICAO=\"AAL9681\"): score=1.02 consumed=4",
+    "[local-stt]   accepted: \"AAL9681\" (conf=1.02, consumed=4, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"AAL9681\" SpokenKey=\"American 96 81\" Conf=1.02 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=11000 Fixes=8 Approaches=3 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   fix: \"Noley\" -\u003e \"NOLEY\"",
+    "[local-stt]   fix: \"Wyane\" -\u003e \"WYANE\"",
+    "[local-stt]   fix: \"Vocus\" -\u003e \"VOCUS\"",
+    "[local-stt]   fix: \"Wintah\" -\u003e \"WINTA\"",
+    "[local-stt]   fix: \"Harris\" -\u003e \"HRRIS\"",
+    "[local-stt]   fix: \"Islay\" -\u003e \"ISLAY\"",
+    "[local-stt]   fix: \"Lowland\" -\u003e \"LWLND\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -\u003e \"X2L\"",
+    "[local-stt]   approach: \"r-nav yankee runway two two left\" -\u003e \"Y2L\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"via\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"arrival\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"descend\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   extractSTAR: looking for STAR=\"JFUND2\" telephony=\"J-Fund two\"",
+    "[local-stt]   extractSTAR: no match found",
+    "[local-stt]   no match at token[0]=\"descend\", skipping",
+    "[local-stt]   no match at token[1]=\"via\", skipping",
+    "[local-stt]   no match at token[2]=\"arrival\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL9681 AGAIN\" (conf=1.02, time=342.416µs) ==="
+  ]
+}

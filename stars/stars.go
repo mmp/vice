@@ -5,7 +5,6 @@
 package stars
 
 import (
-	"encoding/json"
 	"fmt"
 	"image"
 	"image/color"
@@ -46,32 +45,6 @@ const STARSFilledUpTriangle = string(rune(0x1e))
 const TabListEntries = 100
 const TabListUnassignedIndex = -1
 
-var (
-	STARSBackgroundColor    = renderer.RGB{.2, .2, .2} // at 100 contrast
-	STARSListColor          = renderer.RGB{.1, .9, .1}
-	STARSTextAlertColor     = renderer.RGB{1, 0, 0}
-	STARSTextWarningColor   = renderer.RGB{1, 1, 0}
-	STARSCompassColor       = renderer.RGB{.55, .55, .55}
-	STARSRangeRingColor     = renderer.RGB{.55, .55, .55}
-	STARSTrackBlockColor    = renderer.RGB{0.12, 0.48, 1}
-	STARSTrackHistoryColors = [5]renderer.RGB{
-		renderer.RGB{.12, .31, .78},
-		renderer.RGB{.28, .28, .67},
-		renderer.RGB{.2, .2, .51},
-		renderer.RGB{.16, .16, .43},
-		renderer.RGB{.12, .12, .35},
-	}
-	STARSJRingConeColor         = renderer.RGB{.5, .5, 1}
-	STARSTrackedAircraftColor   = renderer.RGB{1, 1, 1}
-	STARSUntrackedAircraftColor = renderer.RGB{0, 1, 0}
-	STARSTrackAlertColor        = renderer.RGB{1, 1, 0}
-	STARSGhostColor             = renderer.RGB{1, 1, 0}
-	STARSSelectedAircraftColor  = renderer.RGB{0, 1, 1}
-
-	STARSATPAWarningColor = renderer.RGB{1, 1, 0}
-	STARSATPAAlertColor   = renderer.RGB{1, .215, 0}
-)
-
 type STARSPane struct {
 	TRACONPreferenceSets map[string]*PreferenceSet
 	prefSet              *PreferenceSet
@@ -94,6 +67,9 @@ type STARSPane struct {
 	visibleTracks []sim.Track
 
 	mvaGrid *av.MVAGrid
+
+	Monitor string
+	Colors  MonitorColors
 
 	// Which weather history snapshot to draw: this is always 0 unless the
 	// 'display weather history' command was entered.
@@ -145,7 +121,7 @@ type STARSPane struct {
 	MCIAircraft []CAAircraft
 
 	// For CRDA
-	ConvergingRunways []STARSConvergingRunways
+	CRDAPairs []STARSCRDAPair
 
 	// Various UI state
 	FlipNumericKeypad bool
@@ -266,14 +242,6 @@ const (
 	fontARTS
 )
 
-func init() {
-	panes.RegisterUnmarshalPane("STARSPane", func(d []byte) (panes.Pane, error) {
-		var p STARSPane
-		err := json.Unmarshal(d, &p)
-		return &p, err
-	})
-}
-
 type AudioType int
 
 // The types of events we may play audio for.
@@ -318,31 +286,31 @@ const (
 )
 
 // this is read-only, stored in STARSPane for convenience
-type STARSConvergingRunways struct {
-	av.ConvergingRunways
-	ApproachRegions [2]*av.ApproachRegion
-	Airport         string
-	Index           int
+type STARSCRDAPair struct {
+	av.CRDAPair
+	CRDARegions [2]*av.CRDARegion
+	Airport     string
+	Index       int
 }
 
 type CRDARunwayState struct {
 	Enabled                 bool
 	Airport                 string
-	Runway                  string
+	Region                  string
 	LeaderLineDirection     *math.CardinalOrdinalDirection // nil -> unset
 	DrawCourseLines         bool
 	DrawQualificationRegion bool
 }
 
-// stores the per-preference set state for each STARSConvergingRunways
+// stores the per-preference set state for each STARSCRDAPair
 type CRDARunwayPairState struct {
 	Enabled     bool
 	Mode        CRDAMode
 	RunwayState [2]CRDARunwayState
 }
 
-func (c *STARSConvergingRunways) getRunwaysString() string {
-	return c.Runways[0] + "/" + c.Runways[1]
+func (c *STARSCRDAPair) getRegionsString() string {
+	return c.Regions[0] + "/" + c.Regions[1]
 }
 
 type VideoMapsGroup int
@@ -389,13 +357,326 @@ func (d DwellMode) String() string {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Monitor colors
+
+type MonitorColors struct {
+	// Tracks/datablocks
+	OwnedDatablock    renderer.RGB // Also handoff attention, ...
+	UnownedDatablock  renderer.RGB
+	AlertDatablock    renderer.RGB
+	CautionDatablock  renderer.RGB
+	GhostDatablock    renderer.RGB
+	SelectedDatablock renderer.RGB // Middle-button - highlight
+	TrackGeometry     renderer.RGB // Search target extent / fused-track symbol
+	TrackHistory      [5]renderer.RGB
+
+	// Lists / text
+	List        renderer.RGB
+	ListFrame   renderer.RGB
+	TextAlert   renderer.RGB
+	TextWarning renderer.RGB // caution
+
+	// UI
+	Cursor     renderer.RGB
+	Background renderer.RGB // at 100% contrast
+
+	// Tools
+	RangeBearingLine renderer.RGB
+	PTL              renderer.RGB
+	Compass          renderer.RGB
+	RangeRing        renderer.RGB
+	JRingCone        renderer.RGB // TPA
+	ATPAWarning      renderer.RGB
+	ATPAAlert        renderer.RGB
+
+	// Maps / restriction areas
+	MapA                [8]renderer.RGB
+	MapB                [8]renderer.RGB
+	RestrictionAreaText renderer.RGB
+	RestrictionAreaGeom [8]renderer.RGB
+
+	// WX
+	WX        [2]renderer.RGB
+	WXStipple renderer.RGB
+
+	// DCB
+	DCBButton            renderer.RGB
+	DCBActiveButton      renderer.RGB
+	DCBText              renderer.RGB
+	DCBTextSelected      renderer.RGB
+	DCBUnsupportedButton renderer.RGB
+	DCBUnsupportedText   renderer.RGB
+	DCBDisabledButton    renderer.RGB
+	DCBDisabledText      renderer.RGB
+	DCBBackground        renderer.RGB
+	DCBTopBevel          renderer.RGB
+	DCBBottomBevel       renderer.RGB
+	DCBWXButton          renderer.RGB
+	DCBActiveWXButton    renderer.RGB
+}
+
+var monitorColorSets = map[string]MonitorColors{
+	"legacy": {
+		OwnedDatablock:    renderer.RGBFromUInt8(255, 255, 255),
+		UnownedDatablock:  renderer.RGBFromUInt8(0, 255, 0),
+		AlertDatablock:    renderer.RGBFromUInt8(255, 0, 0),
+		CautionDatablock:  renderer.RGBFromUInt8(255, 255, 0),
+		GhostDatablock:    renderer.RGBFromUInt8(255, 255, 0),
+		SelectedDatablock: renderer.RGBFromUInt8(0, 255, 255),
+		TrackGeometry:     renderer.RGBFromUInt8(30, 120, 255),
+		TrackHistory: [5]renderer.RGB{
+			renderer.RGBFromUInt8(30, 80, 200),
+			renderer.RGBFromUInt8(70, 70, 170),
+			renderer.RGBFromUInt8(50, 50, 130),
+			renderer.RGBFromUInt8(40, 40, 110),
+			renderer.RGBFromUInt8(30, 30, 90),
+		},
+
+		List:        renderer.RGBFromUInt8(0, 255, 0),
+		ListFrame:   renderer.RGBFromUInt8(0, 255, 0),
+		TextAlert:   renderer.RGBFromUInt8(255, 0, 0),
+		TextWarning: renderer.RGBFromUInt8(255, 255, 0),
+
+		Cursor:     renderer.RGBFromUInt8(255, 255, 255),
+		Background: renderer.RGBFromUInt8(50, 50, 50),
+
+		RangeBearingLine: renderer.RGBFromUInt8(255, 255, 255),
+		PTL:              renderer.RGBFromUInt8(255, 255, 255),
+		Compass:          renderer.RGBFromUInt8(140, 140, 140),
+		RangeRing:        renderer.RGBFromUInt8(140, 140, 140),
+		JRingCone:        renderer.RGBFromUInt8(128, 128, 255),
+		ATPAWarning:      renderer.RGBFromUInt8(255, 255, 0),
+		ATPAAlert:        renderer.RGBFromUInt8(255, 55, 0),
+
+		MapA: [8]renderer.RGB{
+			renderer.RGBFromUInt8(140, 140, 140),
+			renderer.RGBFromUInt8(0, 255, 255),
+			renderer.RGBFromUInt8(255, 0, 255),
+			renderer.RGBFromUInt8(238, 201, 0),
+			renderer.RGBFromUInt8(238, 106, 80),
+			renderer.RGBFromUInt8(162, 205, 90),
+			renderer.RGBFromUInt8(218, 165, 32),
+			renderer.RGBFromUInt8(72, 118, 255),
+		},
+		MapB: [8]renderer.RGB{
+			renderer.RGBFromUInt8(140, 140, 140),
+			renderer.RGBFromUInt8(132, 112, 255),
+			renderer.RGBFromUInt8(118, 238, 198),
+			renderer.RGBFromUInt8(237, 145, 33),
+			renderer.RGBFromUInt8(218, 112, 214),
+			renderer.RGBFromUInt8(238, 180, 180),
+			renderer.RGBFromUInt8(50, 205, 50),
+			renderer.RGBFromUInt8(255, 106, 106),
+		},
+		RestrictionAreaText: renderer.RGBFromUInt8(255, 255, 0),
+		RestrictionAreaGeom: [8]renderer.RGB{
+			renderer.RGBFromUInt8(255, 255, 0),
+			renderer.RGBFromUInt8(0, 255, 255),
+			renderer.RGBFromUInt8(255, 0, 255),
+			renderer.RGBFromUInt8(238, 201, 0),
+			renderer.RGBFromUInt8(238, 106, 80),
+			renderer.RGBFromUInt8(132, 112, 255),
+			renderer.RGBFromUInt8(118, 238, 198),
+			renderer.RGBFromUInt8(50, 205, 50),
+		},
+
+		WX: [2]renderer.RGB{
+			renderer.RGBFromUInt8(38, 77, 77),
+			renderer.RGBFromUInt8(100, 100, 51),
+		},
+		WXStipple: renderer.RGBFromUInt8(255, 255, 255),
+
+		DCBButton:            renderer.RGBFromUInt8(0, 44, 0),
+		DCBActiveButton:      renderer.RGBFromUInt8(0, 78, 0),
+		DCBText:              renderer.RGBFromUInt8(255, 255, 255),
+		DCBTextSelected:      renderer.RGBFromUInt8(255, 255, 0),
+		DCBUnsupportedButton: renderer.RGBFromUInt8(100, 100, 100),
+		DCBUnsupportedText:   renderer.RGBFromUInt8(200, 200, 200),
+		DCBDisabledButton:    renderer.RGBFromUInt8(0, 22, 0),
+		DCBDisabledText:      renderer.RGBFromUInt8(128, 128, 128),
+		DCBBackground:        renderer.RGBFromUInt8(0, 12, 0),
+		DCBTopBevel:          renderer.RGBFromUInt8(50, 50, 50),
+		DCBBottomBevel:       renderer.RGBFromUInt8(0, 0, 0),
+		DCBWXButton:          renderer.RGBFromUInt8(83, 83, 162),   // 50,50,100
+		DCBActiveWXButton:    renderer.RGBFromUInt8(116, 116, 162), // 70,70,100
+	},
+	"mdm3": {
+		OwnedDatablock:    renderer.RGBFromUInt8(254, 236, 237),
+		UnownedDatablock:  renderer.RGBFromUInt8(106, 218, 88),
+		AlertDatablock:    renderer.RGBFromUInt8(255, 56, 24),
+		CautionDatablock:  renderer.RGBFromUInt8(254, 255, 50),
+		GhostDatablock:    renderer.RGBFromUInt8(254, 255, 50),
+		SelectedDatablock: renderer.RGBFromUInt8(96, 196, 192),
+		TrackGeometry:     renderer.RGBFromUInt8(139, 163, 253),
+		TrackHistory: [5]renderer.RGB{
+			renderer.RGBFromUInt8(146, 172, 255),
+			renderer.RGBFromUInt8(123, 145, 208),
+			renderer.RGBFromUInt8(100, 115, 161),
+			renderer.RGBFromUInt8(87, 85, 114),
+			renderer.RGBFromUInt8(64, 55, 67),
+		},
+
+		List:        renderer.RGBFromUInt8(106, 218, 88),
+		ListFrame:   renderer.RGBFromUInt8(106, 218, 88),
+		TextAlert:   renderer.RGBFromUInt8(255, 56, 24),
+		TextWarning: renderer.RGBFromUInt8(254, 255, 50),
+
+		Cursor:     renderer.RGBFromUInt8(254, 236, 237),
+		Background: renderer.RGBFromUInt8(50, 50, 50),
+
+		RangeBearingLine: renderer.RGBFromUInt8(254, 236, 237),
+		PTL:              renderer.RGBFromUInt8(254, 236, 237),
+		Compass:          renderer.RGBFromUInt8(203, 187, 159),
+		RangeRing:        renderer.RGBFromUInt8(203, 187, 159),
+		JRingCone:        renderer.RGBFromUInt8(139, 163, 253),
+		ATPAWarning:      renderer.RGBFromUInt8(254, 255, 50),
+		ATPAAlert:        renderer.RGBFromUInt8(255, 56, 24),
+
+		MapA: [8]renderer.RGB{
+			renderer.RGBFromUInt8(203, 187, 159),
+			renderer.RGBFromUInt8(96, 196, 192),
+			renderer.RGBFromUInt8(216, 62, 208),
+			renderer.RGBFromUInt8(254, 147, 14),
+			renderer.RGBFromUInt8(255, 135, 173),
+			renderer.RGBFromUInt8(108, 224, 90),
+			renderer.RGBFromUInt8(254, 147, 14),
+			renderer.RGBFromUInt8(139, 163, 253),
+		},
+		MapB: [8]renderer.RGB{
+			renderer.RGBFromUInt8(203, 187, 159),
+			renderer.RGBFromUInt8(139, 163, 253),
+			renderer.RGBFromUInt8(109, 236, 230),
+			renderer.RGBFromUInt8(254, 147, 14),
+			renderer.RGBFromUInt8(253, 64, 249),
+			renderer.RGBFromUInt8(252, 134, 171),
+			renderer.RGBFromUInt8(102, 208, 85),
+			renderer.RGBFromUInt8(255, 177, 99),
+		},
+		RestrictionAreaText: renderer.RGBFromUInt8(254, 255, 50),
+		RestrictionAreaGeom: [8]renderer.RGB{
+			renderer.RGBFromUInt8(254, 255, 50),
+			renderer.RGBFromUInt8(96, 196, 192),
+			renderer.RGBFromUInt8(216, 62, 208),
+			renderer.RGBFromUInt8(254, 147, 14),
+			renderer.RGBFromUInt8(255, 135, 173),
+			renderer.RGBFromUInt8(139, 163, 253),
+			renderer.RGBFromUInt8(109, 236, 230),
+			renderer.RGBFromUInt8(102, 208, 85),
+		},
+
+		WX: [2]renderer.RGB{
+			renderer.RGBFromUInt8(37, 77, 77),
+			renderer.RGBFromUInt8(100, 100, 51),
+		},
+		WXStipple: renderer.RGBFromUInt8(185, 172, 147),
+
+		DCBButton:            renderer.RGBFromUInt8(0, 10, 0),
+		DCBActiveButton:      renderer.RGBFromUInt8(57, 94, 40),
+		DCBText:              renderer.RGBFromUInt8(254, 236, 237),
+		DCBTextSelected:      renderer.RGBFromUInt8(254, 255, 50),
+		DCBUnsupportedButton: renderer.RGBFromUInt8(100, 100, 100), // ???
+		DCBUnsupportedText:   renderer.RGBFromUInt8(200, 200, 200), // ???
+		DCBDisabledButton:    renderer.RGBFromUInt8(3, 39, 0),
+		DCBDisabledText:      renderer.RGBFromUInt8(25, 51, 8),
+		DCBBackground:        renderer.RGBFromUInt8(0, 10, 0),
+		DCBTopBevel:          renderer.RGBFromUInt8(152, 135, 108),
+		DCBBottomBevel:       renderer.RGBFromUInt8(0, 0, 0),
+		DCBWXButton:          renderer.RGBFromUInt8(44, 81, 73),
+		DCBActiveWXButton:    renderer.RGBFromUInt8(58, 99, 95),
+	},
+	"mdm4": {
+		OwnedDatablock:    renderer.RGBFromUInt8(253, 241, 237),
+		UnownedDatablock:  renderer.RGBFromUInt8(41, 202, 48),
+		AlertDatablock:    renderer.RGBFromUInt8(255, 20, 14),
+		CautionDatablock:  renderer.RGBFromUInt8(253, 255, 32),
+		GhostDatablock:    renderer.RGBFromUInt8(253, 255, 32),
+		SelectedDatablock: renderer.RGBFromUInt8(16, 183, 133),
+		TrackGeometry:     renderer.RGBFromUInt8(51, 115, 140),
+		TrackHistory: [5]renderer.RGB{
+			renderer.RGBFromUInt8(80, 200, 236),
+			renderer.RGBFromUInt8(65, 161, 191),
+			renderer.RGBFromUInt8(50, 122, 146),
+			renderer.RGBFromUInt8(35, 83, 101),
+			renderer.RGBFromUInt8(20, 44, 56),
+		},
+
+		List:        renderer.RGBFromUInt8(41, 202, 48),
+		ListFrame:   renderer.RGBFromUInt8(41, 202, 48),
+		TextAlert:   renderer.RGBFromUInt8(255, 20, 14),
+		TextWarning: renderer.RGBFromUInt8(253, 255, 32),
+
+		Cursor:     renderer.RGBFromUInt8(253, 241, 237),
+		Background: renderer.RGBFromUInt8(50, 50, 50),
+
+		RangeBearingLine: renderer.RGBFromUInt8(253, 241, 237),
+		PTL:              renderer.RGBFromUInt8(253, 241, 237),
+		Compass:          renderer.RGBFromUInt8(177, 167, 99),
+		RangeRing:        renderer.RGBFromUInt8(177, 167, 99),
+		JRingCone:        renderer.RGBFromUInt8(51, 115, 140),
+		ATPAWarning:      renderer.RGBFromUInt8(253, 255, 32),
+		ATPAAlert:        renderer.RGBFromUInt8(255, 20, 14),
+
+		MapA: [8]renderer.RGB{
+			renderer.RGBFromUInt8(177, 167, 99),
+			renderer.RGBFromUInt8(16, 183, 133),
+			renderer.RGBFromUInt8(194, 45, 141),
+			renderer.RGBFromUInt8(252, 98, 16),
+			renderer.RGBFromUInt8(252, 100, 108),
+			renderer.RGBFromUInt8(42, 210, 49),
+			renderer.RGBFromUInt8(252, 98, 16),
+			renderer.RGBFromUInt8(89, 199, 230),
+		},
+		MapB: [8]renderer.RGB{
+			renderer.RGBFromUInt8(177, 167, 99),
+			renderer.RGBFromUInt8(97, 219, 246),
+			renderer.RGBFromUInt8(19, 236, 158),
+			renderer.RGBFromUInt8(252, 98, 16),
+			renderer.RGBFromUInt8(249, 56, 170),
+			renderer.RGBFromUInt8(252, 100, 108),
+			renderer.RGBFromUInt8(39, 187, 44),
+			renderer.RGBFromUInt8(255, 149, 54),
+		},
+		RestrictionAreaText: renderer.RGBFromUInt8(253, 255, 32),
+		RestrictionAreaGeom: [8]renderer.RGB{
+			renderer.RGBFromUInt8(253, 255, 32),
+			renderer.RGBFromUInt8(16, 183, 133),
+			renderer.RGBFromUInt8(194, 45, 141),
+			renderer.RGBFromUInt8(252, 98, 16),
+			renderer.RGBFromUInt8(252, 100, 108),
+			renderer.RGBFromUInt8(97, 219, 246),
+			renderer.RGBFromUInt8(19, 236, 158),
+			renderer.RGBFromUInt8(39, 187, 44),
+		},
+
+		WX: [2]renderer.RGB{
+			renderer.RGBFromUInt8(0, 78, 90),
+			renderer.RGBFromUInt8(85, 100, 45),
+		},
+		WXStipple: renderer.RGBFromUInt8(153, 144, 89),
+
+		DCBButton:            renderer.RGBFromUInt8(2, 20, 4),
+		DCBActiveButton:      renderer.RGBFromUInt8(7, 37, 12),
+		DCBText:              renderer.RGBFromUInt8(253, 241, 237),
+		DCBTextSelected:      renderer.RGBFromUInt8(253, 255, 32),
+		DCBUnsupportedButton: renderer.RGBFromUInt8(100, 100, 100), // ???
+		DCBUnsupportedText:   renderer.RGBFromUInt8(200, 200, 200), // ???
+		DCBDisabledButton:    renderer.RGBFromUInt8(0, 6, 0),
+		DCBDisabledText:      renderer.RGBFromUInt8(85, 73, 76),
+		DCBBackground:        renderer.RGBFromUInt8(0, 1, 0),
+		DCBTopBevel:          renderer.RGBFromUInt8(158, 134, 139),
+		DCBBottomBevel:       renderer.RGBFromUInt8(0, 0, 0),
+		DCBWXButton:          renderer.RGBFromUInt8(0, 16, 20),
+		DCBActiveWXButton:    renderer.RGBFromUInt8(1, 26, 33),
+	},
+}
+
+///////////////////////////////////////////////////////////////////////////
 // STARSPane proper
 
 func NewSTARSPane() *STARSPane {
+	InitCommands()
 	return &STARSPane{}
 }
-
-func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	if sp.PointOuts == nil {
@@ -429,6 +710,9 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	if sp.TgtGenKey == 0 {
 		sp.TgtGenKey = ';'
 	}
+
+	sp.Colors = monitorColorSets["legacy"]
+	sp.Monitor = "legacy"
 
 	if sp.IFPHelpers.ApproachesColor == nil {
 		sp.IFPHelpers.ApproachesColor = &[3]float32{.1, .9, .1}
@@ -466,17 +750,24 @@ func (sp *STARSPane) LoadedSim(client *client.ControlClient, pl platform.Platfor
 	sp.makeSignificantPoints(client.State)
 
 	sp.mvaGrid = av.MakeMVAGrid(av.DB.MVAs[client.State.Facility])
+
+	var ok bool
+	if sp.Colors, ok = monitorColorSets[client.State.FacilityAdaptation.Monitor]; !ok {
+		// This should have been caught during validation of the FacilityAdaptation...
+		sp.Monitor = "legacy"
+		sp.Colors = monitorColorSets[sp.Monitor]
+	}
 }
 
 func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
-	sp.ConvergingRunways = nil
+	sp.CRDAPairs = nil
 	for name, ap := range util.SortedMap(client.State.Airports) {
-		for idx, pair := range ap.ConvergingRunways {
-			sp.ConvergingRunways = append(sp.ConvergingRunways, STARSConvergingRunways{
-				ConvergingRunways: pair,
-				ApproachRegions: [2]*av.ApproachRegion{ap.ApproachRegions[pair.Runways[0]],
-					ap.ApproachRegions[pair.Runways[1]]},
-				Airport: name[1:], // drop the leading "K" (or "P")
+		for idx, pair := range ap.CRDAPairs {
+			sp.CRDAPairs = append(sp.CRDAPairs, STARSCRDAPair{
+				CRDAPair: pair,
+				CRDARegions: [2]*av.CRDARegion{ap.CRDARegions[pair.Regions[0]],
+					ap.CRDARegions[pair.Regions[1]]},
+				Airport: name[1:], // drop the ICAO prefix ("K", "P", or "T")
 				Index:   idx + 1,  // 1-based
 			})
 		}
@@ -490,6 +781,13 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 	sp.makeSignificantPoints(client.State)
 
 	sp.resetPrefsForNewSim(client.State, pl)
+
+	var ok bool
+	if sp.Colors, ok = monitorColorSets[client.State.FacilityAdaptation.Monitor]; !ok {
+		// This should have been caught during validation of the FacilityAdaptation...
+		sp.Monitor = "legacy"
+		sp.Colors = monitorColorSets[sp.Monitor]
+	}
 
 	sp.lastTrackUpdate = time.Time{} // force update
 	sp.lastHistoryTrackUpdate = time.Time{}
@@ -630,7 +928,67 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	addAirspaceVolumes("DEP", "DEPARTURE AREA ALL", ss.FacilityAdaptation.Filters.Departure)
 	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.FacilityAdaptation.Filters.SecondaryDrop)
 	addAirspaceVolumes("SURFTRK", "SURFACE TRACKING AREA ALL", ss.FacilityAdaptation.Filters.SurfaceTracking)
-	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.FacilityAdaptation.Filters.Quicklook)
+	// Quicklook regions have a different type; extract their airspace volumes.
+	if ql := ss.FacilityAdaptation.Filters.Quicklook; len(ql) > 0 {
+		vm := radar.ClientVideoMap{
+			VideoMap: sim.VideoMap{
+				Label:    "QLRGNS",
+				Name:     "QUICKLOOK REGIONS ALL",
+				Id:       asIdx,
+				Category: VideoMapProcessingAreas,
+			},
+		}
+		asIdx++
+		for _, f := range ql {
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+		}
+		addMap(vm)
+
+		for _, f := range ql {
+			vm := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    strings.ToUpper(f.Id),
+					Name:     strings.ToUpper(f.Description),
+					Id:       asIdx,
+					Category: VideoMapProcessingAreas,
+				},
+			}
+			asIdx++
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+			addMap(vm)
+		}
+	}
+
+	// FDAM regions
+	if fdam := ss.FacilityAdaptation.Filters.FDAM; len(fdam) > 0 {
+		vm := radar.ClientVideoMap{
+			VideoMap: sim.VideoMap{
+				Label:    "FDAMRGNS",
+				Name:     "FDAM REGIONS ALL",
+				Id:       asIdx,
+				Category: VideoMapProcessingAreas,
+			},
+		}
+		asIdx++
+		for _, f := range fdam {
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+		}
+		addMap(vm)
+
+		for _, f := range fdam {
+			vm := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    strings.ToUpper(f.Id),
+					Name:     strings.ToUpper(f.Description),
+					Id:       asIdx,
+					Category: VideoMapProcessingAreas,
+				},
+			}
+			asIdx++
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+			addMap(vm)
+		}
+	}
 
 	// MVAs
 	mvas := radar.ClientVideoMap{
@@ -779,7 +1137,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	// Clear to background color
-	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
+	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(sp.Colors.Background))
 
 	sp.processKeyboardInput(ctx)
 
@@ -891,7 +1249,7 @@ func (sp *STARSPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBu
 		[2]float32{width/2 + 180, quadTop},    // Right-top
 		[2]float32{width/2 + 180, quadBottom}, // Right-bottom
 		[2]float32{width/2 - 180, quadBottom}, // Left-bottom
-		renderer.RGB{R: 1, G: 0, B: 0})        // Solid red
+		sp.Colors.TextAlert)
 
 	// Draw text
 	td := renderer.GetTextDrawBuilder()
@@ -910,8 +1268,6 @@ func (sp *STARSPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBu
 
 func (sp *STARSPane) drawWX(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
-	weatherBrightness := float32(ps.Brightness.Weather) / float32(100)
-	weatherContrast := float32(ps.Brightness.WxContrast) / float32(100)
 
 	if !sp.wxNextHistoryStepTime.IsZero() && ctx.Now.After(sp.wxNextHistoryStepTime) {
 		sp.wxHistoryDraw--
@@ -925,33 +1281,10 @@ func (sp *STARSPane) drawWX(ctx *panes.Context, transforms radar.ScopeTransforma
 		}
 	}
 
-	sp.weatherRadar.Draw(ctx, sp.wxHistoryDraw, weatherBrightness, weatherContrast, ps.DisplayWeatherLevel,
-		transforms, cb)
-}
-
-const numMapColors = 8
-
-var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
-	[numMapColors]renderer.RGB{ // Group A
-		renderer.RGBFromUInt8(140, 140, 140),
-		renderer.RGBFromUInt8(0, 255, 255),
-		renderer.RGBFromUInt8(255, 0, 255),
-		renderer.RGBFromUInt8(238, 201, 0),
-		renderer.RGBFromUInt8(238, 106, 80),
-		renderer.RGBFromUInt8(162, 205, 90),
-		renderer.RGBFromUInt8(218, 165, 32),
-		renderer.RGBFromUInt8(72, 118, 255),
-	},
-	[numMapColors]renderer.RGB{ // Group B
-		renderer.RGBFromUInt8(140, 140, 140),
-		renderer.RGBFromUInt8(132, 112, 255),
-		renderer.RGBFromUInt8(118, 238, 198),
-		renderer.RGBFromUInt8(237, 145, 33),
-		renderer.RGBFromUInt8(218, 112, 214),
-		renderer.RGBFromUInt8(238, 180, 180),
-		renderer.RGBFromUInt8(50, 205, 50),
-		renderer.RGBFromUInt8(255, 106, 106),
-	},
+	weatherBrightness := float32(ps.Brightness.Weather) / float32(100)
+	wxStipple := ps.Brightness.WxContrast.ScaleRGB(sp.Colors.WXStipple)
+	sp.weatherRadar.Draw(ctx, sp.wxHistoryDraw, weatherBrightness, sp.Colors.WX, wxStipple,
+		ps.DisplayWeatherLevel, transforms, cb)
 }
 
 func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
@@ -959,7 +1292,7 @@ func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.Sco
 		return
 	}
 
-	tracon, ok := av.DB.TRACONs[ctx.Client.State.Facility]
+	facility, ok := av.DB.LookupFacility(ctx.Client.State.Facility)
 	if !ok {
 		return
 	}
@@ -968,7 +1301,7 @@ func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.Sco
 	ld := renderer.GetLinesDrawBuilder()
 	defer renderer.ReturnLinesDrawBuilder(ld)
 
-	ld.AddLatLongCircle(tracon.Center(), ctx.NmPerLongitude, tracon.Radius, 360)
+	ld.AddLatLongCircle(facility.Center(), ctx.NmPerLongitude, facility.Radius, 360)
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
@@ -991,11 +1324,15 @@ func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTra
 	slices.SortFunc(draw, func(a, b radar.ClientVideoMap) int { return a.Id - b.Id })
 
 	for _, vm := range draw {
-		brite := util.Select(vm.Group == 0, ps.Brightness.VideoGroupA, ps.Brightness.VideoGroupB)
-		cidx := math.Clamp(vm.Color-1, 0, numMapColors-1) // switch to 0-based indexing
-		color := brite.ScaleRGB(mapColors[vm.Group][cidx])
-
-		cb.SetRGB(color)
+		if vm.Group == 0 {
+			cidx := math.Clamp(vm.Color-1, 0, len(sp.Colors.MapA)-1) // switch to 0-based indexing
+			color := ps.Brightness.VideoGroupA.ScaleRGB(sp.Colors.MapA[cidx])
+			cb.SetRGB(color)
+		} else {
+			cidx := math.Clamp(vm.Color-1, 0, len(sp.Colors.MapB)-1) // switch to 0-based indexing
+			color := ps.Brightness.VideoGroupB.ScaleRGB(sp.Colors.MapB[cidx])
+			cb.SetRGB(color)
+		}
 		cb.Call(vm.CommandBuffer)
 	}
 }
@@ -1070,20 +1407,6 @@ var restrictionAreaHighDPIStipple [32]uint32 = [32]uint32{
 	0,
 }
 
-func raGeomColor(ra *av.RestrictionArea) renderer.RGB {
-	return [9]renderer.RGB{
-		renderer.RGBFromUInt8(255, 255, 0), // double up so 0 by default remains yellow but we have 1-based indexing otherwise
-		renderer.RGBFromUInt8(255, 255, 0),
-		renderer.RGBFromUInt8(0, 255, 255),
-		renderer.RGBFromUInt8(255, 0, 255),
-		renderer.RGBFromUInt8(238, 201, 0),
-		renderer.RGBFromUInt8(238, 106, 80),
-		renderer.RGBFromUInt8(132, 112, 255),
-		renderer.RGBFromUInt8(118, 238, 198),
-		renderer.RGBFromUInt8(50, 205, 50),
-	}[ra.Color]
-}
-
 func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ra := sp.wipRestrictionArea
 	if ra == nil {
@@ -1120,7 +1443,7 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms radar
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ps := sp.currentPrefs()
-	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 1})
+	color := ps.Brightness.VideoGroupB.ScaleRGB(sp.Colors.MapB[0])
 	cb.SetRGB(color)
 
 	ld.GenerateCommands(cb)
@@ -1186,11 +1509,11 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms radar.S
 	}
 
 	for _, ra := range util.SortedMap(draw) {
-
 		ld.Reset()
 		trid.Reset()
 
-		color := ps.Brightness.VideoGroupB.ScaleRGB(raGeomColor(ra))
+		cidx := math.Clamp(ra.Color-1, 0, len(sp.Colors.RestrictionAreaGeom)-1) // 1-based indexing
+		color := ps.Brightness.VideoGroupB.ScaleRGB(sp.Colors.RestrictionAreaGeom[cidx])
 		cb.SetRGB(color)
 
 		if ra.CircleRadius > 0 {
@@ -1229,7 +1552,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms radar.S
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	halfSeconds := ctx.Now.UnixMilli() / 500
 	blinkDim := halfSeconds&1 == 0
-	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0}) // always yellow
+	color := ps.Brightness.VideoGroupB.ScaleRGB(sp.Colors.RestrictionAreaText)
 
 	for idx, ra := range util.SortedMap(draw) {
 		var text string
@@ -1269,24 +1592,29 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 	for i, state := range ps.CRDA.RunwayPairState {
 		for j, rwyState := range state.RunwayState {
 			if rwyState.DrawCourseLines {
-				region := sp.ConvergingRunways[i].ApproachRegions[j]
-				line, _ := region.GetLateralGeometry(ctx.NmPerLongitude, ctx.MagneticVariation)
-
+				region := sp.CRDAPairs[i].CRDARegions[j]
+				courseLine := region.CourseLine(ctx.NmPerLongitude)
 				ld := renderer.GetLinesDrawBuilder()
-				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
-				ld.AddLine(line[0], line[1])
+				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(sp.Colors.GhostDatablock))
+				for k := 0; k+1 < len(courseLine); k++ {
+					ld.AddLine(courseLine[k], courseLine[k+1])
+				}
 
 				ld.GenerateCommands(cb)
 				renderer.ReturnLinesDrawBuilder(ld)
 			}
 
 			if rwyState.DrawQualificationRegion {
-				region := sp.ConvergingRunways[i].ApproachRegions[j]
-				_, quad := region.GetLateralGeometry(ctx.NmPerLongitude, ctx.MagneticVariation)
+				region := sp.CRDAPairs[i].CRDARegions[j]
+				poly := region.QualificationPolygon(ctx.NmPerLongitude)
 
 				ld := renderer.GetLinesDrawBuilder()
-				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
-				ld.AddLineLoop([][2]float32{quad[0], quad[1], quad[2], quad[3]})
+				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(sp.Colors.GhostDatablock))
+				polyF32 := make([][2]float32, len(poly))
+				for k, p := range poly {
+					polyF32[k] = p
+				}
+				ld.AddLineLoop(polyF32)
 
 				ld.GenerateCommands(cb)
 				renderer.ReturnLinesDrawBuilder(ld)
@@ -1325,8 +1653,9 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 	}
 
 	// STARS Operators Manual 4-74: FDB brightness is used for the cursor
-	cursorStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: ps.Brightness.FullDatablocks.RGB()}
-	background := ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor)
+	color := ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.Cursor)
+	cursorStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: color}
+	background := ps.Brightness.BackgroundContrast.ScaleRGB(sp.Colors.Background)
 	bgStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: background}
 
 	draw := func(idx int, style renderer.TextStyle) {
@@ -1371,7 +1700,7 @@ func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {
 	center := ss.GetInitialCenter()
 	for name, ap := range av.DB.Airports {
 		if math.NMDistance2LL(ap.Location, center) < 250 {
-			if len(name) == 4 && name[0] == 'K' {
+			if len(name) == 4 {
 				name = name[1:]
 			}
 			tryAdd(name, name+" AIRPORT", ap.Location)
@@ -1590,7 +1919,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 					return false
 				}
 				trk0, ok0 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
-				trk1, ok1 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk1, ok1 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[1])
 				if !ok0 || !ok1 {
 					return false
 				}
@@ -1728,7 +2057,7 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms radar.ScopeTra
 		ld := renderer.GetLinesDrawBuilder()
 		defer renderer.ReturnLinesDrawBuilder(ld)
 
-		ld.AddLineLoop([][2]float32{p0, [2]float32{p0[0], p1[1]}, p1, [2]float32{p1[0], p0[1]}})
+		ld.AddLineLoop([][2]float32{p0, {p0[0], p1[1]}, p1, {p1[0], p0[1]}})
 		transforms.LoadWindowViewingMatrices(cb)
 		cb.SetRGB(renderer.RGB{R: 0, G: 0.75, B: 0.75})
 		ld.GenerateCommands(cb)
@@ -1741,7 +2070,7 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms radar.ScopeTra
 // out an animated GIF when the chan is closed.
 func captureEncodeFrames(ch chan *image.RGBA) {
 	// Store regular and 2x resolution for retina displays.
-	gifs := [2]*gif.GIF{&gif.GIF{}, &gif.GIF{}}
+	gifs := [2]*gif.GIF{{}, {}}
 	// Though we could have a unique palette per frame, we only need a
 	// handful of colors and having a shared one allows us to check for
 	// image equivalence by just comparing the pixels' palette index
@@ -1752,12 +2081,12 @@ func captureEncodeFrames(ch chan *image.RGBA) {
 		if img := <-ch; img != nil {
 			nx, ny := img.Bounds().Max.X-img.Bounds().Min.X, img.Bounds().Max.Y-img.Bounds().Min.Y
 			pal := [2]*image.Paletted{
-				&image.Paletted{
+				{
 					Pix:    make([]uint8, nx/2*ny/2),
 					Stride: nx / 2,
 					Rect:   image.Rectangle{Max: image.Point{X: nx / 2, Y: ny / 2}},
 				},
-				&image.Paletted{
+				{
 					Pix:    make([]uint8, nx*ny),
 					Stride: nx,
 					Rect:   image.Rectangle{Max: image.Point{X: nx, Y: ny}},

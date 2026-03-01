@@ -1,0 +1,262 @@
+{
+    "control_positions": {
+        "1B": {
+            "callsign": "BHM_TWR",
+            "frequency": 119900,
+            "radio_name": "Birmingham Tower",
+            "scope_char": "C"
+        },
+        "1N": {
+            "callsign": "BHM_N_APP",
+            "frequency": 127670,
+            "radio_name": "Birmingham Approach"
+        },
+        "1S": {
+            "callsign": "BHM_S_APP",
+            "frequency": 123800,
+            "radio_name": "Birmingham Approach"
+        },
+        "1W": {
+            "callsign": "BHM_W_APP",
+            "frequency": 120150,
+            "radio_name": "Birmingham Approach"
+        },
+        "1E": {
+            "callsign": "BHM_E_APP",
+            "frequency": 120050,
+            "radio_name": "Birmingham Approach"
+        },
+        "1F": {
+            "callsign": "BHM_F_APP",
+            "frequency": 126150,
+            "radio_name": "Birmingham Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "DIODE24": "1N",
+                    "DIODE6": "1N",
+                    "HERKO24": "1S",
+                    "HERKO6": "1S",
+                    "KIOSK24": "1S",
+                    "KIOSK6": "1S",
+                    "LYMPH24": "1N",
+                    "LYMPH6": "1N",
+                    "NESTS24": "1N",
+                    "NESTS6": "1N",
+                    "NULLS24": "1N",
+                    "NULLS6": "1N",
+                    "SHIMS": "1N",
+                    "WANDS": "1S"
+                },
+                "departure_assignments": {
+                    "KBHM": "1S"
+                },
+                "default_consolidation": {
+                    "1N": [
+                        "1S"
+                    ]
+                }
+            }
+        },
+        "center": "KBHM",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "B NOCA1",
+                    "description": "BHM CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3500,
+                    "vertices": [
+                        "-86.897208,33.532504",
+                        "-86.641151,33.677967",
+                        "-86.584176,33.611529",
+                        "-86.839472,33.462847"
+                    ]
+                },
+                {
+                    "id": "B NOCA2",
+                    "description": "BHM CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3500,
+                    "vertices": [
+                        "-86.695616,33.672883",
+                        "-86.695274,33.453065",
+                        "-86.79461,33.453311",
+                        "-86.794879,33.672271"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "BHM": {
+                "char": "B",
+                "position": "33.573611,-86.75611",
+                "elevation": 705,
+                "primary_range": 100,
+                "secondary_range": 150,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            }
+        },
+        "allow_long_scratchpad": true,
+        "scratchpads": {
+            "RHETT": "RHET",
+            "MRICA": "MRCA",
+            "CHEHA": "CHEA",
+            "GUMMP": "GUMP",
+            "DAYVS": "DYVS",
+            "JOEYE": "JOEY",
+            "KELCC": "KELC",
+            "BNA": "BNA",
+            "GQO": "GQO",
+            "GAD": "GAD",
+            "ATL": "ATL",
+            "LGC": "LGC",
+            "MGM": "MGM",
+            "MEI": "MEI",
+            "OKW": "OKW",
+            "IGB": "IGB",
+            "VUZ": "VUZ",
+            "MEM": "MEM"
+        },
+        "significant_points": {
+            "ATL": {
+                "location": "KATL"
+            },
+            "BNA": {},
+            "CHEHA": {},
+            "DAYVS": {},
+            "GAD": {},
+            "GQO": {},
+            "GUMMP": {},
+            "IGB": {},
+            "JOEYE": {},
+            "KELCC": {},
+            "LGC": {},
+            "MEI": {},
+            "MEM": {},
+            "MGM": {},
+            "MRICA": {},
+            "OKW": {},
+            "RHETT": {},
+            "VUZ": {}
+        },
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "coordination_fixes": {
+            "EXIST": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "CIVMA": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "FAYEZ": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "IXUSE": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "BESOM": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "QECKE": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "KOCEY": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "BOYDD": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "BHM MAIN",
+                    "BHM CLASS C",
+                    "BHM EMERGENCY",
+                    "BHM RNAV RUNWAY 06/24 APPROACH",
+                    "BHM/TCL ANNEX",
+                    "BHM MINIMUM VECTORING ALTITUDE",
+                    "BHM IFR MILITARY TRAINING ROUTES",
+                    "BHM EMERGENCY OBSTRUCTION VIDEO MAP",
+                    "BHM INTERSECTIONS",
+                    "BHM STADIUMS",
+                    "BHM RNAV RUNWAY 18/36 APPROACHES",
+                    "BHM VORS WITHIN 250NM",
+                    "BHM ARRIVAL FIXES",
+                    "BHM DEPARTURE FIX LABELS",
+                    "BHM ARRIVAL FIX LABELS",
+                    "BHM RNAV (RNP) Z RWY 24 APPROACH",
+                    "RWY 24/36 FINAL BOUNDARY",
+                    "BHM RNAV (RNP) Z RWY 6 APPROACH",
+                    "RWY 24/18 FINAL BOUNDARY",
+                    "BHM INTERSECTIONS WITH NAMES",
+                    "BHM SAT BOUNDARY"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CBM",
+            "prefix": "3"
+        },
+        {
+            "id": "HSV",
+            "prefix": "2"
+        },
+        {
+            "id": "MGM",
+            "prefix": "1"
+        },
+        {
+            "id": "NMM",
+            "prefix": "4"
+        },
+        {
+            "id": "ZME",
+            "prefix": "M"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "C"
+        }
+    ]
+}

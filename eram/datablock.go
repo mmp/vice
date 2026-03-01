@@ -261,10 +261,16 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(ERAMYellow)
 		dbWriteText(db.col1[:], util.Select(ctx.UserOwnsFlightPlan(trk.FlightPlan), "", " R"), colColor, false)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
+
+		fieldEText := ""
+		gsText := fmt.Sprintf(" %v", int(state.Track.Groundspeed))
+		shortERAMID := func(ctrl *av.Controller) string {
+			return shortFieldERAMID(ctrl.FacilityIdentifier, ctrl.Position, ctx.Client.State.HandoffIDs)
+		}
 		if trk.FlightPlan.HandoffController != "" {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.HandoffController); ctrl != nil {
-				controller = ctrl.ERAMID()
+				controller = shortERAMID(ctrl)
 				if len(controller) == 2 {
 					controller = "-" + controller
 				}
@@ -274,34 +280,69 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 			if len(controller) == 2 {
 				controller = "-" + controller
 			}
-			a := util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
-			dbWriteText(db.fieldE[:], a, color, true)
+			fieldEText = util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), gsText)
+			dbWriteText(db.fieldE[:], fieldEText, color, true)
 		} else if ctx.Client.State.SimTime.Before(state.OSectorEndTime) {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.TrackingController); ctrl != nil {
-				controller = ctrl.ERAMID()
+				controller = shortERAMID(ctrl)
 				if len(controller) == 2 {
 					controller = "-" + controller
 				}
 			} else {
 				controller = string(trk.FlightPlan.TrackingController)
 			}
-			a := util.Select(ep.dbAlternate, fmt.Sprintf("O%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
-			dbWriteText(db.fieldE[:], a, color, false)
+			fieldEText = util.Select(ep.dbAlternate, fmt.Sprintf("O%v", controller), gsText)
+			dbWriteText(db.fieldE[:], fieldEText, color, false)
 		} else {
 			middle := " "
 			airportCode, ok := ctx.Client.State.FacilityAdaptation.AirportCodes[trk.FlightPlan.ExitFix]
 			if ok {
 				middle = airportCode
 			}
-			dbWriteText(db.fieldE[:], fmt.Sprintf("%v%v", middle, int(state.track.Groundspeed)), color, false)
+			gsText = fmt.Sprintf("%v%v", middle, int(state.Track.Groundspeed))
+			fieldEText = gsText
+			dbWriteText(db.fieldE[:], fieldEText, color, false)
 		}
+
+		if hsfDataExists(trk.FlightPlan) {
+			placeScratchpadArrowAfterText(&db.fieldE, fieldEText, color)
+		}
+
 		// Get line 4 (if applicable)
-		if ps.Line4Type == Line4Destination {
-			line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(ERAMYellow)
+		line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(ERAMYellow)
+		if state != nil && !state.HSFHide && hsfDataExists(trk.FlightPlan) {
+			clear(db.line4[:])
+
+			const headingStart = 0
+			speedStart := speedStartFromGroundspeedLine4(gsText)
+			if speedStart < 0 {
+				speedStart = 0
+			} else if speedStart >= len(db.line4) {
+				speedStart = len(db.line4) - 1
+			}
+
+			sp := trk.FlightPlan.Scratchpad
+			if isQSFreeTextScratchpad(sp) {
+				// Free text overrides. The clear-weather circle is only an indicator; do not render it.
+				dbWriteText(db.line4[headingStart:], stripQSFreeTextIndicator(sp), line4Color, false)
+			} else {
+				// Heading (optional)
+				if sp != "" {
+					txt := sp
+					if len(sp) != 4 {
+						txt = "H" + sp
+					}
+					dbWriteText(db.line4[headingStart:], txt, line4Color, false)
+				}
+				// Speed/Mach (optional)
+				if sm := trk.FlightPlan.SecondaryScratchpad; sm != "" {
+					dbWriteText(db.line4[speedStart:], sm, line4Color, false)
+				}
+			}
+		} else if ps.Line4Type == Line4Destination {
 			dbWriteText(db.line4[:], trk.FlightPlan.ArrivalAirport, line4Color, false)
 		} else if ps.Line4Type == Line4Type {
-			line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(ERAMYellow)
 			dbWriteText(db.line4[:], trk.FlightPlan.AircraftType, line4Color, false)
 		}
 		return db
@@ -311,16 +352,70 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		db := ep.ldbArena.AllocClear()
 		state := ep.TrackState[trk.ADSBCallsign]
 		dbWriteText(db.line0[:], trk.ADSBCallsign.String(), color, false)
-		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(state.track.TransponderAltitude+50)/100), color, false)
+		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(state.Track.TransponderAltitude+50)/100), color, false)
 		return db
 	default:
 		return nil // should not happen
 	}
 }
 
+func hsfDataExists(fp *sim.NASFlightPlan) bool {
+	if fp == nil {
+		return false
+	}
+	return fp.Scratchpad != "" || fp.SecondaryScratchpad != ""
+}
+
+func isQSFreeTextScratchpad(s string) bool {
+	return strings.HasPrefix(s, "`") || strings.HasPrefix(s, circleClear)
+}
+
+func stripQSFreeTextIndicator(s string) string {
+	if len(s) == 0 {
+		return ""
+	}
+	if isQSFreeTextScratchpad(s) && len(s) > 1 {
+		return s[1:]
+	}
+	return ""
+}
+
+func placeScratchpadArrowAfterText(dst *[8]dbChar, fieldEText string, c renderer.RGB) {
+	// Place arrow one cell after the last visible character (trim trailing spaces).
+	t := strings.TrimRight(fieldEText, " ")
+	idx := len(t)
+	if idx < 0 {
+		idx = 0
+	}
+	if idx >= len(dst) {
+		// If the field is full, fall back to the last cell.
+		idx = len(dst) - 1
+	}
+	dst[idx] = dbChar{ch: []rune(scratchpadArrow)[0], color: c, flashing: false}
+}
+
+// speedStartFromGroundspeedLine4 returns the column in line4 where the 'S'/'M' should start.
+func speedStartFromGroundspeedLine4(gsText string) int {
+	// Find digit positions in the groundspeed-bearing text.
+	var digitPos []int
+	for i := 0; i < len(gsText); i++ {
+		if gsText[i] >= '0' && gsText[i] <= '9' {
+			digitPos = append(digitPos, i)
+		}
+	}
+	if len(digitPos) < 2 {
+		return -1
+	}
+
+	const line3FieldEStart = 10
+	const line3ToLine4Shift = 7
+	line3Index := line3FieldEStart + digitPos[1]
+	return line3Index - line3ToLine4Shift
+}
+
 func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 	state := ep.TrackState[track.ADSBCallsign]
-	currentAltitude := state.track.TransponderAltitude
+	currentAltitude := state.Track.TransponderAltitude
 	assignedAltitude := track.FlightPlan.AssignedAltitude
 	if assignedAltitude == 0 && track.FlightPlan.PerceivedAssigned != 0 {
 		assignedAltitude = track.FlightPlan.PerceivedAssigned
@@ -406,19 +501,36 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 				sz = ps.LDBSize
 			}
 			font := ep.ERAMFont(sz)
-			start := transforms.WindowFromLatLongP(state.track.Location)
+			start := transforms.WindowFromLatLongP(state.Track.Location)
 			dir := ep.leaderLineDirection(ctx, trk)
+			lengthMode := state.LeaderLineLength
+
+			// For mode 0, restrict to W/E only
+			if lengthMode == 0 {
+				if *dir != math.East && *dir != math.West {
+					*dir = math.East // Default to East if in mode 0
+				}
+			}
+
 			offset := datablockOffset(*dir)
-			vector := ep.leaderLineVector(*dir)
-			vector[0] += float32(offset[0]) * ctx.DrawPixelScale
-			vector[1] += float32(offset[1]) * ctx.DrawPixelScale
+			vector := ep.leaderLineVectorWithLength(*dir, lengthMode)
+
+			// For mode 0, adjust positioning based on direction
+			if lengthMode == 0 {
+				if *dir == math.East {
+					offset[0] += 25 // Move right
+					offset[1] -= 10 // Move down
+				}
+			}
 			if dbType == EnhancedLimitedDatablock || dbType == LimitedDatablock {
 				*dir = math.East // TODO: change to state eventually
 				vector = ep.leaderLineVectorNoLength(*dir)
 				offset[1] = -10
-				vector[1] += float32(offset[1]) * ctx.DrawPixelScale
 			}
+			// Calculate final position: track position + leader line + offset
 			end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
+			end[0] += float32(offset[0]) * ctx.DrawPixelScale
+			end[1] += float32(offset[1]) * ctx.DrawPixelScale
 			brightness := ep.datablockBrightness(state)
 			db.draw(td, end, font, &sb, brightness, *dir, halfSeconds)
 		}
@@ -460,4 +572,59 @@ func datablockOffset(dir math.CardinalOrdinalDirection) [2]float32 {
 		offset[1] = 15
 	}
 	return offset
+}
+
+// shortFieldERAMID returns the ERAM Field E sector identifier for a
+// given facility prefix and position. The format depends on the
+// facility's FieldEFormat, which determines which identifier and how
+// much of the position string to include.
+func shortFieldERAMID(prefix, position string, handoffIDs []sim.HandoffID) string {
+	if prefix == "" {
+		return position
+	}
+	for _, hid := range handoffIDs {
+		ids := []string{hid.StarsID, hid.TwoCharStarsID, hid.SingleCharStarsID, hid.Prefix}
+		found := false
+		for _, id := range ids {
+			if id == prefix {
+				found = true
+				break
+			}
+		}
+		if !found {
+			continue
+		}
+
+		switch hid.FieldEFormat {
+		case "OneLetterAndSubset":
+			// B1D: B = Field E Letter (or single char ID), 1D = full position
+			if hid.FieldELetter != "" {
+				return hid.FieldELetter + position
+			}
+			return hid.SingleCharStarsID + position
+
+		case "TwoLetters":
+			// B0D: B0 = two char ID, D = sector letter (last char of position)
+			if len(position) > 0 {
+				return hid.TwoCharStarsID + position[len(position)-1:]
+			}
+			return hid.TwoCharStarsID
+
+		case "TwoLettersAndSubset":
+			// B01D: B0 = two char ID, 1D = full position
+			return hid.TwoCharStarsID + position
+
+		case "OneLetterAndStarsId":
+			// AB0A: A = Field E Letter, B0A = STARS ID (no position)
+			return hid.FieldELetter + hid.StarsID
+
+		case "FullStarsIdOnly":
+			// B0A: full STARS ID (no position)
+			return hid.StarsID
+
+		default:
+			// add error logging here
+		}
+	}
+	return prefix + position
 }

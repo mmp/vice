@@ -1,0 +1,231 @@
+{
+  "time": "2026-01-29T17:42:13.111772769Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Spivak Ninety Nine Fifty reduce speed to two one zero then descend and maintain five thousand",
+  "whisper_duration_ms": 428.191,
+  "audio_duration_ms": 4936,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12113MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "NKS9950",
+  "command": "S210 TD50",
+  "stt_aircraft": {
+    "Brickyard 20 85": {
+      "Callsign": "RPA2085",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Lindbergh 50 79": {
+      "Callsign": "GJS5079",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Crank": "CRANK",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Santa Cruz": "SAX",
+        "Shaff": "SHAFF",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Spirit Wings 99 50": {
+      "Callsign": "NKS9950",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Santa Cruz": "SAX",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United 88 60 heavy": {
+      "Callsign": "UAL8860",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FQM3",
+      "Altitude": 4848,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Spivak Ninety Nine Fifty reduce speed to two one zero then descend and maintain five thousand\"",
+    "[local-stt] normalized words: [spivak 99 50 reduce speed to 2 1 0 then descend and maintain 5 thousand]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"spivak\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"99\" Type=1 Value=99",
+    "[local-stt]   token[2]: Text=\"50\" Type=1 Value=50",
+    "[local-stt]   token[3]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   token[7]: Text=\"then\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"50\" Type=2 Value=50",
+    "[local-stt] MatchCallsign: 12 tokens, 4 aircraft",
+    "[local-stt]   candidate \"United 88 60 heavy\" (ICAO=\"UAL8860\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Lindbergh 50 79\" (ICAO=\"GJS5079\"): score=0.69 consumed=3",
+    "[local-stt]   candidate \"Spirit Wings 99 50\" (ICAO=\"NKS9950\"): score=0.97 consumed=3",
+    "[local-stt]   candidate \"Brickyard 20 85\" (ICAO=\"RPA2085\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Spirit Wings 99 50\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   accepted: \"NKS9950\" (conf=0.97, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"NKS9950\" SpokenKey=\"Spirit Wings 99 50\" Conf=0.97 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=9 Approaches=1 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[11 29]",
+    "[local-stt]   fix: \"Pattern\" -\u003e \"PATRN\"",
+    "[local-stt]   fix: \"Izeko\" -\u003e \"IZEKO\"",
+    "[local-stt]   fix: \"Gimme\" -\u003e \"GIMEE\"",
+    "[local-stt]   fix: \"Buzzed\" -\u003e \"BUZZD\"",
+    "[local-stt]   fix: \"Philbo\" -\u003e \"PHLBO\"",
+    "[local-stt]   fix: \"Hokir\" -\u003e \"HOKIR\"",
+    "[local-stt]   fix: \"Zavpi\" -\u003e \"ZAVPI\"",
+    "[local-stt]   fix: \"Santa Cruz\" -\u003e \"SAX\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt] command tokens after disregard: 9",
+    "[local-stt]   token[0]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   token[4]: Text=\"then\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"50\" Type=2 Value=50",
+    "[local-stt]   position ID: found command keyword \"reduce\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 9 tokens",
+    "[local-stt]   matched command: \"S210\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   found 'then' keyword at position 4",
+    "[local-stt]   matched command: \"TD50\" (conf=1.00, consumed=4, isThen=true)",
+    "[local-stt] ParseCommands: result=[S210 TD50] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S210 TD50] (conf=1.00)",
+    "[local-stt] validated commands: [S210 TD50] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"NKS9950 S210 TD50\" (conf=0.97, time=567.3µs) ==="
+  ]
+}

@@ -1,0 +1,325 @@
+{
+    "control_positions": {
+        "01": {
+            "callsign": "ZSE Sector 01",
+            "frequency": 120300,
+            "radio_name": "Seattle Center"
+        },
+        "02": {
+            "callsign": "ZSE Sector 02",
+            "frequency": 128300,
+            "radio_name": "Seattle Center"
+        },
+        "03": {
+            "callsign": "ZSE Sector 03",
+            "frequency": 125100,
+            "radio_name": "Seattle Center"
+        },
+        "04": {
+            "callsign": "ZSE Sector 04",
+            "frequency": 124200,
+            "radio_name": "Seattle Center"
+        },
+        "05": {
+            "callsign": "ZSE Sector 05",
+            "frequency": 128150,
+            "radio_name": "Seattle Center"
+        },
+        "06": {
+            "callsign": "ZSE Sector 06",
+            "frequency": 125800,
+            "radio_name": "Seattle Center"
+        },
+        "07": {
+            "callsign": "ZSE Sector 07",
+            "frequency": 128450,
+            "radio_name": "Seattle Center"
+        },
+        "08": {
+            "callsign": "ZSE Sector 08",
+            "frequency": 123950,
+            "radio_name": "Seattle Center"
+        },
+        "09": {
+            "callsign": "ZSE Sector 09",
+            "frequency": 132600,
+            "radio_name": "Seattle Center"
+        },
+        "10": {
+            "callsign": "ZSE Sector 10",
+            "frequency": 127600,
+            "radio_name": "Seattle Center"
+        },
+        "11": {
+            "callsign": "ZSE Sector 11",
+            "frequency": 119225,
+            "radio_name": "Seattle Center"
+        },
+        "12": {
+            "callsign": "ZSE Sector 12",
+            "frequency": 134950,
+            "radio_name": "Seattle Center"
+        },
+        "13": {
+            "callsign": "ZSE Sector 13",
+            "frequency": 135350,
+            "radio_name": "Seattle Center"
+        },
+        "14": {
+            "callsign": "ZSE Sector 14",
+            "frequency": 134900,
+            "radio_name": "Seattle Center"
+        },
+        "15": {
+            "callsign": "ZSE Sector 15",
+            "frequency": 135150,
+            "radio_name": "Seattle Center"
+        },
+        "16": {
+            "callsign": "ZSE Sector 16",
+            "frequency": 135450,
+            "radio_name": "Seattle Center"
+        },
+        "18": {
+            "callsign": "ZSE Sector 18",
+            "frequency": 126100,
+            "radio_name": "Seattle Center"
+        },
+        "30": {
+            "callsign": "ZSE Sector 30",
+            "frequency": 124850,
+            "radio_name": "Seattle Center"
+        },
+        "31": {
+            "callsign": "ZSE Sector 31",
+            "frequency": 127050,
+            "radio_name": "Seattle Center"
+        },
+        "32": {
+            "callsign": "ZSE Sector 32",
+            "frequency": 126600,
+            "radio_name": "Seattle Center"
+        },
+        "34": {
+            "callsign": "ZSE Sector 34",
+            "frequency": 119650,
+            "radio_name": "Seattle Center"
+        },
+        "35": {
+            "callsign": "ZSE Sector 35",
+            "frequency": 126150,
+            "radio_name": "Seattle Center"
+        },
+        "36": {
+            "callsign": "ZSE Sector 36",
+            "frequency": 127550,
+            "radio_name": "Seattle Center"
+        },
+        "42": {
+            "callsign": "ZSE Sector 42",
+            "frequency": 132075,
+            "radio_name": "Seattle Center"
+        },
+        "46": {
+            "callsign": "ZSE Sector 46",
+            "frequency": 121350,
+            "radio_name": "Seattle Center"
+        },
+        "47": {
+            "callsign": "ZSE Sector 47",
+            "frequency": 118550,
+            "radio_name": "Seattle Center"
+        },
+        "48": {
+            "callsign": "ZSE Sector 48",
+            "frequency": 118625,
+            "radio_name": "Seattle Center"
+        },
+        "69": {
+            "callsign": "ZSE 69 TMU",
+            "frequency": 123450,
+            "radio_name": "Don't Talk to Me"
+        },
+        "99": {
+            "callsign": "ZSE 99 ZSE_ZOA",
+            "frequency": 118025,
+            "radio_name": "ZSE_ZOA Hotline"
+        }
+    },
+    "config": {
+        "coordination_fixes": {
+            "HHOOD": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "KRATR": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "VANTZ": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "YORKY": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "VOODU": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "SSSUN": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "FLOWR": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "MYCRO": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "HUMPP": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "GLASR": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "LIINE": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "DIGGN": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "MARNR": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "LACEE": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "HUVUS": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ]
+        },
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "EUG",
+            "stars_id": "EEE",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "EE",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "GEG",
+            "stars_id": "GGG",
+            "single_char_stars_id": "G",
+            "two_char_stars_id": "GG",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "LMT",
+            "stars_id": "LLL",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "LL",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MSO",
+            "stars_id": "AAA",
+            "single_char_stars_id": "A",
+            "two_char_stars_id": "AA",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "MWH",
+            "stars_id": "MMM",
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MM",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NUW",
+            "stars_id": "NNN",
+            "single_char_stars_id": "N",
+            "two_char_stars_id": "NN",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "P80",
+            "stars_id": "PPP",
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "PP",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "S46",
+            "stars_id": "SSS",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SS",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZLC",
+            "prefix": "U"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "O"
+        }
+    ]
+}

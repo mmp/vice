@@ -1,0 +1,23 @@
+{
+    "control_positions": {
+        "1B": {
+            "callsign": "BZN_APP",
+            "frequency": 118975,
+            "radio_name": "Big Sky Approach"
+        },
+        "1T": {
+            "callsign": "BZN_TWR",
+            "frequency": 118200,
+            "radio_name": "Bozeman Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZLC",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

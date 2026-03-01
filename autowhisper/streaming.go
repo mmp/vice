@@ -1,7 +1,6 @@
 package autowhisper
 
 import (
-	"fmt"
 	"runtime"
 	"strings"
 	"sync"
@@ -51,19 +50,27 @@ func (t *Transcriber) AddSamples(samples []int16) {
 // Stop ends the recording session and returns the final transcription
 // along with the duration of the recorded audio.
 func (t *Transcriber) Stop() (text string, audioDuration time.Duration) {
+	text, audioDuration, _ = t.StopWithAudio()
+	return
+}
+
+// StopWithAudio ends the recording session and returns the final transcription,
+// audio duration, and the raw audio samples (as float32, 16kHz mono).
+// This is useful for evaluation modes that need to re-process the audio.
+func (t *Transcriber) StopWithAudio() (text string, audioDuration time.Duration, audio []float32) {
 	t.audioMu.Lock()
-	audio := t.audio
+	audio = t.audio
 	t.audio = nil // Clear for potential reuse
 	t.audioMu.Unlock()
 
 	if len(audio) == 0 {
-		return "", 0
+		return "", 0, nil
 	}
 
 	// Calculate audio duration from sample count (16kHz sample rate)
 	audioDuration = time.Duration(len(audio)) * time.Second / 16000
 
-	return t.transcribe(audio), audioDuration
+	return t.transcribe(audio), audioDuration, audio
 }
 
 // transcribe runs whisper on the given audio samples.
@@ -72,21 +79,15 @@ func (t *Transcriber) transcribe(audio []float32) string {
 		return ""
 	}
 
-	transcribeStart := time.Now()
-
 	// Acquire mutex to serialize whisper access
-	mutexStart := time.Now()
 	t.modelMu.Lock()
 	defer t.modelMu.Unlock()
-	mutexWait := time.Since(mutexStart)
 
-	ctxStart := time.Now()
 	ctx, err := t.model.model.NewContext()
 	if err != nil {
 		return ""
 	}
 	defer ctx.Close() // Free C-allocated params
-	ctxCreate := time.Since(ctxStart)
 
 	// Configure context
 	if t.opts.Threads > 0 {
@@ -117,12 +118,12 @@ func (t *Transcriber) transcribe(audio []float32) string {
 		ctx.SetBeamSize(3)
 	}
 
-	// Language selection
+	// Language selection (only for multilingual models; .en models are already English-only)
 	lang := strings.TrimSpace(t.opts.Language)
 	if lang == "" {
 		lang = "auto"
 	}
-	if lang != "auto" {
+	if lang != "auto" && ctx.IsMultilingual() {
 		if err := ctx.SetLanguage(lang); err != nil {
 			return ""
 		}
@@ -134,25 +135,9 @@ func (t *Transcriber) transcribe(audio []float32) string {
 		segments = append(segments, seg.Text)
 	}
 
-	processStart := time.Now()
 	if err := ctx.Process(audio, nil, segmentCb, nil); err != nil {
 		return ""
 	}
-	processTime := time.Since(processStart)
-
-	totalTime := time.Since(transcribeStart)
-	audioDuration := time.Duration(len(audio)) * time.Second / 16000
-
-	// Log timing details for slow transcriptions (>500ms)
-	if totalTime > 500*time.Millisecond {
-		logWhisperTiming("SLOW whisper: total=%v (mutex=%v, ctx=%v, process=%v) audio=%v samples=%d",
-			totalTime, mutexWait, ctxCreate, processTime, audioDuration, len(audio))
-	}
 
 	return strings.TrimSpace(strings.Join(segments, " "))
-}
-
-// logWhisperTiming logs whisper timing information.
-func logWhisperTiming(format string, args ...any) {
-	println("[whisper-timing]", fmt.Sprintf(format, args...))
 }

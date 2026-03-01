@@ -80,13 +80,13 @@ type ARTCC struct {
 						Name        string `json:"name"`
 						ID          string `json:"id"`
 						Transitions []struct {
-							Name                string `json:"name"`
-							ID                  string `json:"id"`
-							FirstRoutePofloat32 string `json:"firstRoutePofloat32"`
-							DefaultExpect       string `json:"defaultExpect"`
-							DefaultDepFreq      string `json:"defaultDepFreq"`
-							DefaultContactInfo  string `json:"defaultContactInfo"`
-							DefaultLocalInfo    string `json:"defaultLocalInfo"`
+							Name               string `json:"name"`
+							ID                 string `json:"id"`
+							FirstRoutePoint    string `json:"firstRoutePoint"`
+							DefaultExpect      string `json:"defaultExpect"`
+							DefaultDepFreq     string `json:"defaultDepFreq"`
+							DefaultContactInfo string `json:"defaultContactInfo"`
+							DefaultLocalInfo   string `json:"defaultLocalInfo"`
 						} `json:"transitions"`
 					} `json:"sids"`
 					Climbouts []struct {
@@ -128,11 +128,11 @@ type ARTCC struct {
 						FacilityID string `json:"facilityId"`
 						BayID      string `json:"bayId"`
 					} `json:"externalBays"`
-					DisplayDestinationAirportIds     bool `json:"displayDestinationAirportIds"`
-					DisplayBarcodes                  bool `json:"displayBarcodes"`
-					EnableArrivalStrips              bool `json:"enableArrivalStrips"`
-					EnableSeparateArrDepPrfloat32ers bool `json:"enableSeparateArrDepPrfloat32ers"`
-					LockSeparators                   bool `json:"lockSeparators"`
+					DisplayDestinationAirportIds bool `json:"displayDestinationAirportIds"`
+					DisplayBarcodes              bool `json:"displayBarcodes"`
+					EnableArrivalStrips          bool `json:"enableArrivalStrips"`
+					EnableSeparateArrDepPrinters bool `json:"enableSeparateArrDepPrinters"`
+					LockSeparators               bool `json:"lockSeparators"`
 				} `json:"flightStripsConfiguration"`
 				Positions []struct {
 					ID                 string  `json:"id"`
@@ -177,8 +177,8 @@ type ARTCC struct {
 					ShowDestinationSatelliteArrivals bool `json:"showDestinationSatelliteArrivals"`
 					ShowDestinationPrimaryArrivals   bool `json:"showDestinationPrimaryArrivals"`
 				} `json:"areas"`
-				float32ernalAirports []string `json:"float32ernalAirports"`
-				BeaconCodeBanks      []struct {
+				InternalAirports []string `json:"internalAirports"`
+				BeaconCodeBanks  []struct {
 					ID     string  `json:"id"`
 					Type   string  `json:"type"`
 					Subset float32 `json:"subset"`
@@ -192,56 +192,56 @@ type ARTCC struct {
 					PositionSymbolTie     string  `json:"positionSymbolTie"`
 					PositionSymbolStagger string  `json:"positionSymbolStagger"`
 					MasterRunway          struct {
-						RunwayID                 string  `json:"runwayId"`
-						HeadingTolerance         float32 `json:"headingTolerance"`
-						NearSideHalfWidth        float32 `json:"nearSideHalfWidth"`
-						FarSideHalfWidth         float32 `json:"farSideHalfWidth"`
-						NearSideDistance         float64 `json:"nearSideDistance"`
-						RegionLength             float32 `json:"regionLength"`
-						TargetReferencePofloat32 struct {
+						RunwayID             string  `json:"runwayId"`
+						HeadingTolerance     float32 `json:"headingTolerance"`
+						NearSideHalfWidth    float32 `json:"nearSideHalfWidth"`
+						FarSideHalfWidth     float32 `json:"farSideHalfWidth"`
+						NearSideDistance     float64 `json:"nearSideDistance"`
+						RegionLength         float32 `json:"regionLength"`
+						TargetReferencePoint struct {
 							Lat float64 `json:"lat"`
 							Lon float64 `json:"lon"`
-						} `json:"targetReferencePofloat32"`
-						TargetReferenceLineHeading       float32 `json:"targetReferenceLineHeading"`
-						TargetReferenceLineLength        float32 `json:"targetReferenceLineLength"`
-						TargetReferencePofloat32Altitude float32 `json:"targetReferencePofloat32Altitude"`
-						ImageReferencePofloat32          struct {
+						} `json:"targetReferencePoint"`
+						TargetReferenceLineHeading   float32 `json:"targetReferenceLineHeading"`
+						TargetReferenceLineLength    float32 `json:"targetReferenceLineLength"`
+						TargetReferencePointAltitude float32 `json:"targetReferencePointAltitude"`
+						ImageReferencePoint          struct {
 							Lat float64 `json:"lat"`
 							Lon float64 `json:"lon"`
-						} `json:"imageReferencePofloat32"`
+						} `json:"imageReferencePoint"`
 						ImageReferenceLineHeading float64 `json:"imageReferenceLineHeading"`
 						ImageReferenceLineLength  float32 `json:"imageReferenceLineLength"`
 						TieModeOffset             float64 `json:"tieModeOffset"`
-						DescentPofloat32Distance  float64 `json:"descentPofloat32Distance"`
-						DescentPofloat32Altitude  float32 `json:"descentPofloat32Altitude"`
+						DescentPointDistance      float64 `json:"descentPointDistance"`
+						DescentPointAltitude      float32 `json:"descentPointAltitude"`
 						AbovePathTolerance        float32 `json:"abovePathTolerance"`
 						BelowPathTolerance        float32 `json:"belowPathTolerance"`
 						DefaultLeaderDirection    string  `json:"defaultLeaderDirection"`
 						ScratchpadPatterns        []any   `json:"scratchpadPatterns"`
 					} `json:"masterRunway"`
 					SlaveRunway struct {
-						RunwayID                 string  `json:"runwayId"`
-						HeadingTolerance         float32 `json:"headingTolerance"`
-						NearSideHalfWidth        float32 `json:"nearSideHalfWidth"`
-						FarSideHalfWidth         float32 `json:"farSideHalfWidth"`
-						NearSideDistance         float32 `json:"nearSideDistance"`
-						RegionLength             float32 `json:"regionLength"`
-						TargetReferencePofloat32 struct {
+						RunwayID             string  `json:"runwayId"`
+						HeadingTolerance     float32 `json:"headingTolerance"`
+						NearSideHalfWidth    float32 `json:"nearSideHalfWidth"`
+						FarSideHalfWidth     float32 `json:"farSideHalfWidth"`
+						NearSideDistance     float32 `json:"nearSideDistance"`
+						RegionLength         float32 `json:"regionLength"`
+						TargetReferencePoint struct {
 							Lat float64 `json:"lat"`
 							Lon float64 `json:"lon"`
-						} `json:"targetReferencePofloat32"`
-						TargetReferenceLineHeading       float64 `json:"targetReferenceLineHeading"`
-						TargetReferenceLineLength        float32 `json:"targetReferenceLineLength"`
-						TargetReferencePofloat32Altitude float32 `json:"targetReferencePofloat32Altitude"`
-						ImageReferencePofloat32          struct {
+						} `json:"targetReferencePoint"`
+						TargetReferenceLineHeading   float64 `json:"targetReferenceLineHeading"`
+						TargetReferenceLineLength    float32 `json:"targetReferenceLineLength"`
+						TargetReferencePointAltitude float32 `json:"targetReferencePointAltitude"`
+						ImageReferencePoint          struct {
 							Lat float64 `json:"lat"`
 							Lon float64 `json:"lon"`
-						} `json:"imageReferencePofloat32"`
+						} `json:"imageReferencePoint"`
 						ImageReferenceLineHeading float32 `json:"imageReferenceLineHeading"`
 						ImageReferenceLineLength  float32 `json:"imageReferenceLineLength"`
 						TieModeOffset             float64 `json:"tieModeOffset"`
-						DescentPofloat32Distance  float64 `json:"descentPofloat32Distance"`
-						DescentPofloat32Altitude  float32 `json:"descentPofloat32Altitude"`
+						DescentPointDistance      float64 `json:"descentPointDistance"`
+						DescentPointAltitude      float32 `json:"descentPointAltitude"`
 						AbovePathTolerance        float32 `json:"abovePathTolerance"`
 						BelowPathTolerance        float32 `json:"belowPathTolerance"`
 						DefaultLeaderDirection    string  `json:"defaultLeaderDirection"`
@@ -279,16 +279,16 @@ type ARTCC struct {
 						Lat float64 `json:"lat"`
 						Lon float64 `json:"lon"`
 					} `json:"runwayThreshold"`
-					Ceiling                          float32 `json:"ceiling"`
-					Floor                            float32 `json:"floor"`
-					MagneticHeading                  float32 `json:"magneticHeading"`
-					MaximumHeadingDeviation          float32 `json:"maximumHeadingDeviation"`
-					Length                           float32 `json:"length"`
-					WidthLeft                        float32 `json:"widthLeft"`
-					WidthRight                       float32 `json:"widthRight"`
-					TwoPofloat32FiveApproachDistance float32 `json:"twoPofloat32FiveApproachDistance"`
-					TwoPofloat32FiveApproachEnabled  bool    `json:"twoPofloat32FiveApproachEnabled"`
-					Scratchpads                      []struct {
+					Ceiling                      float32 `json:"ceiling"`
+					Floor                        float32 `json:"floor"`
+					MagneticHeading              float32 `json:"magneticHeading"`
+					MaximumHeadingDeviation      float32 `json:"maximumHeadingDeviation"`
+					Length                       float32 `json:"length"`
+					WidthLeft                    float32 `json:"widthLeft"`
+					WidthRight                   float32 `json:"widthRight"`
+					TwoPointFiveApproachDistance float32 `json:"twoPointFiveApproachDistance"`
+					TwoPointFiveApproachEnabled  bool    `json:"twoPointFiveApproachEnabled"`
+					Scratchpads                  []struct {
 						ID               string `json:"id"`
 						Entry            string `json:"entry"`
 						ScratchPadNumber string `json:"scratchPadNumber"`
@@ -320,12 +320,12 @@ type ARTCC struct {
 					Name          string  `json:"name"`
 					NumberOfRacks float32 `json:"numberOfRacks"`
 				} `json:"stripBays"`
-				ExternalBays                     []any `json:"externalBays"`
-				DisplayDestinationAirportIds     bool  `json:"displayDestinationAirportIds"`
-				DisplayBarcodes                  bool  `json:"displayBarcodes"`
-				EnableArrivalStrips              bool  `json:"enableArrivalStrips"`
-				EnableSeparateArrDepPrfloat32ers bool  `json:"enableSeparateArrDepPrfloat32ers"`
-				LockSeparators                   bool  `json:"lockSeparators"`
+				ExternalBays                 []any `json:"externalBays"`
+				DisplayDestinationAirportIds bool  `json:"displayDestinationAirportIds"`
+				DisplayBarcodes              bool  `json:"displayBarcodes"`
+				EnableArrivalStrips          bool  `json:"enableArrivalStrips"`
+				EnableSeparateArrDepPrinters bool  `json:"enableSeparateArrDepPrinters"`
+				LockSeparators               bool  `json:"lockSeparators"`
 			} `json:"flightStripsConfiguration"`
 			Positions []struct {
 				ID                 string  `json:"id"`
@@ -451,7 +451,7 @@ type ARTCC struct {
 			} `json:"geoMaps"`
 			EmergencyChecklist      []string `json:"emergencyChecklist"`
 			PositionReliefChecklist []string `json:"positionReliefChecklist"`
-			float32ernalAirports    []string `json:"float32ernalAirports"`
+			InternalAirports        []string `json:"internalAirports"`
 			BeaconCodeBanks         []struct {
 				ID       string  `json:"id"`
 				Category string  `json:"category"`
@@ -543,14 +543,14 @@ type ARTCC struct {
 			ApplicableToProps      bool     `json:"applicableToProps"`
 		} `json:"criteria"`
 		DescentCrossingRestriction struct {
-			CrossingFix            string `json:"crossingFix"`
-			CrossingFixName        string `json:"crossingFixName"`
-			AltitudeConstrafloat32 struct {
-				Value              float32 `json:"value"`
-				TransitionLevel    float32 `json:"transitionLevel"`
-				Constrafloat32Type string  `json:"constrafloat32Type"`
-				IsLufl             bool    `json:"isLufl"`
-			} `json:"altitudeConstrafloat32"`
+			CrossingFix        string `json:"crossingFix"`
+			CrossingFixName    string `json:"crossingFixName"`
+			AltitudeConstraint struct {
+				Value           float32 `json:"value"`
+				TransitionLevel float32 `json:"transitionLevel"`
+				ConstraintType  string  `json:"constraintType"`
+				IsLufl          bool    `json:"isLufl"`
+			} `json:"altitudeConstraint"`
 			AltimeterStation struct {
 				StationID   string `json:"stationId"`
 				StationName string `json:"stationName"`
@@ -561,12 +561,12 @@ type ARTCC struct {
 				Lat float64 `json:"lat"`
 				Lon float64 `json:"lon"`
 			} `json:"crossingLine"`
-			AltitudeConstrafloat32 struct {
-				Value              float32 `json:"value"`
-				TransitionLevel    float32 `json:"transitionLevel"`
-				Constrafloat32Type string  `json:"constrafloat32Type"`
-				IsLufl             bool    `json:"isLufl"`
-			} `json:"altitudeConstrafloat32"`
+			AltitudeConstraint struct {
+				Value           float32 `json:"value"`
+				TransitionLevel float32 `json:"transitionLevel"`
+				ConstraintType  string  `json:"constraintType"`
+				IsLufl          bool    `json:"isLufl"`
+			} `json:"altitudeConstraint"`
 		} `json:"descentRestriction,omitempty"`
 	} `json:"autoAtcRules"`
 }

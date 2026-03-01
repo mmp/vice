@@ -71,26 +71,30 @@ func (tc *TCPConsolidation) OwnedPositions() []ControlPosition {
 ///////////////////////////////////////////////////////////////////////////
 // ControllerConfiguration
 
-// ControllerConfiguration defines the consolidation hierarchy for a scenario.
+// ControllerConfiguration defines which facility configuration to use for a scenario.
+// The scenario JSON only contains config_id; all other fields are populated at runtime
+// from the referenced configuration in the facility config file.
 type ControllerConfiguration struct {
-	// ConfigId references a configuration in stars_config.configurations that defines
-	// the inbound and departure assignments for this scenario.
+	// ConfigId references a configuration in config.configurations in the
+	// facility config file. This is the only field from JSON.
 	ConfigId string `json:"config_id"`
 
-	// DefaultConsolidation defines the consolidation tree. Each key is a parent TCP, and its value is the list
-	// of TCPs consolidated into it.  Example: {"1A": ["1B", "1C"], "1C": ["1D"]} means 1B and 1C
-	// consolidated into 1A, and 1D consolidated into 1C (and transitively into 1A).
-	DefaultConsolidation PositionConsolidation `json:"default_consolidation"`
+	// DefaultConsolidation defines the consolidation tree. It is always
+	// populated from the referenced facility configuration during
+	// post-deserialization. Scenarios cannot override this field.
+	DefaultConsolidation PositionConsolidation `json:"-"`
 
 	// InboundAssignments maps inbound flow names to the TCP that handles them.
-	// This is populated from the referenced configuration during post-deserialization.
-	InboundAssignments map[string]TCP `json:"-"`
+	// Populated from the referenced configuration during post-deserialization.
+	InboundAssignments map[string]TCP
 
-	// DepartureAssignments maps departure specifiers to the TCP that handles them.  Keys can be:
-	// airport only ("KJFK"), airport/runway ("KJFK/22R"), or airport/SID ("KJFK/SKORR5"). It is not
-	// allowed to mix different specifier types for the same airport within a configuration.
+	// DepartureAssignments maps departure specifiers to the TCP that handles them.
+	// Populated from the referenced configuration during post-deserialization.
+	DepartureAssignments map[string]TCP
+
+	// GoAroundAssignments maps airport or airport/runway to the TCP that handles go-arounds.
 	// This is populated from the referenced configuration during post-deserialization.
-	DepartureAssignments map[string]TCP `json:"-"`
+	GoAroundAssignments map[string]TCP
 }
 
 type PositionConsolidation map[TCP][]TCP
@@ -150,13 +154,13 @@ func (pc PositionConsolidation) AllPositions() []TCP {
 
 // Validate checks the configuration for errors
 func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
-	e.Push("\"configuration\"")
+	e.Push(`"configuration"`)
 	defer e.Pop()
 
 	// Check that all positions are valid control positions
 	for _, tcp := range cc.AllPositions() {
 		if _, ok := controlPositions[tcp]; !ok {
-			e.ErrorString("position %q not found in \"control_positions\"", tcp)
+			e.ErrorString(`position %q not found in "control_positions"`, tcp)
 		}
 	}
 
@@ -167,7 +171,7 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 	} else {
 		// Check that root is in default_consolidation map (as a key with possibly empty children)
 		if _, ok := cc.DefaultConsolidation[root]; !ok {
-			e.ErrorString("root position %q must be a key in \"default_consolidation\"", root)
+			e.ErrorString(`root position %q must be a key in "default_consolidation"`, root)
 		}
 	}
 
@@ -200,7 +204,7 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 	for parent, children := range cc.DefaultConsolidation {
 		for _, child := range children {
 			if existingParent, ok := childParent[child]; ok {
-				e.ErrorString("position %q appears as a child of both %q and %q in \"default_consolidation\"",
+				e.ErrorString(`position %q appears as a child of both %q and %q in "default_consolidation"`,
 					child, existingParent, parent)
 			} else {
 				childParent[child] = parent
@@ -208,17 +212,17 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 		}
 	}
 
-	// Check inbound assignments refer to valid positions
+	// Check inbound assignments refer to valid control positions
 	for flow, tcp := range cc.InboundAssignments {
-		if !slices.Contains(cc.AllPositions(), tcp) {
-			e.ErrorString("inbound_assignments: %q assigns to %q which is not in positions", flow, tcp)
+		if _, ok := controlPositions[tcp]; !ok {
+			e.ErrorString(`inbound_assignments: %q assigns to %q which is not in "control_positions"`, flow, tcp)
 		}
 	}
 
-	// Check departure assignments refer to valid positions
+	// Check departure assignments refer to valid control positions
 	for airport, tcp := range cc.DepartureAssignments {
-		if !slices.Contains(cc.AllPositions(), tcp) {
-			e.ErrorString("departure_assignments: %q assigns to %q which is not in positions", airport, tcp)
+		if _, ok := controlPositions[tcp]; !ok {
+			e.ErrorString(`departure_assignments: %q assigns to %q which is not in "control_positions"`, airport, tcp)
 		}
 	}
 }

@@ -7,7 +7,9 @@ import (
 	"io"
 	"os"
 	fpath "path/filepath"
+	"slices"
 	"strings"
+	"sync"
 	"sync/atomic"
 
 	"cloud.google.com/go/storage"
@@ -20,7 +22,7 @@ import (
 
 type StorageBackend interface {
 	List(path string) (map[string]int64, error)
-	ChanList(path string, ch chan<- string) error
+	ChanList(ctx context.Context, path string, ch chan<- string) error
 	OpenRead(path string) (io.ReadCloser, error)
 	ReadObject(path string, result any) error
 	Store(path string, r io.Reader) (int64, error)
@@ -32,7 +34,7 @@ type StorageBackend interface {
 // Pool a limited number of them to keep memory use under control.
 var zstdEncoders chan *zstd.Encoder
 
-func init() {
+func initZstdEncoders() {
 	const nenc = 16
 	zstdEncoders = make(chan *zstd.Encoder, nenc)
 	for range nenc {
@@ -58,8 +60,8 @@ func (d DryRunBackend) List(path string) (map[string]int64, error) {
 	return d.g.List(path)
 }
 
-func (d DryRunBackend) ChanList(path string, ch chan<- string) error {
-	return d.g.ChanList(path, ch)
+func (d DryRunBackend) ChanList(ctx context.Context, path string, ch chan<- string) error {
+	return d.g.ChanList(ctx, path, ch)
 }
 
 func (d DryRunBackend) OpenRead(path string) (io.ReadCloser, error) {
@@ -155,14 +157,14 @@ func (g *GCSBackend) List(path string) (map[string]int64, error) {
 	return m, nil
 }
 
-func (g *GCSBackend) ChanList(path string, ch chan<- string) error {
+func (g *GCSBackend) ChanList(ctx context.Context, path string, ch chan<- string) error {
 	path = fpath.Clean(path)
 	query := storage.Query{
 		Projection: storage.ProjectionNoACL,
 		Prefix:     path,
 	}
 
-	it := g.bucket.Objects(g.ctx, &query)
+	it := g.bucket.Objects(ctx, &query)
 	pager := iterator.NewPager(it, 1000, "")
 
 	for {
@@ -177,8 +179,8 @@ func (g *GCSBackend) ChanList(path string, ch chan<- string) error {
 		for _, obj := range objects {
 			if fpath.Clean(obj.Name) != path { // don't return the root ~folder
 				select {
-				case <-g.ctx.Done():
-					return g.ctx.Err()
+				case <-ctx.Done():
+					return ctx.Err()
 				case ch <- obj.Name:
 				}
 			}
@@ -277,8 +279,8 @@ func (t *TrackingBackend) List(path string) (map[string]int64, error) {
 	return t.sb.List(path)
 }
 
-func (t *TrackingBackend) ChanList(path string, ch chan<- string) error {
-	return t.sb.ChanList(path, ch)
+func (t *TrackingBackend) ChanList(ctx context.Context, path string, ch chan<- string) error {
+	return t.sb.ChanList(ctx, path, ch)
 }
 
 func (t *TrackingBackend) OpenRead(path string) (io.ReadCloser, error) {
@@ -361,4 +363,142 @@ func (trc *countingReadCloser) Read(p []byte) (n int, err error) {
 	n, err = trc.ReadCloser.Read(p)
 	trc.n.Add(int64(n))
 	return n, err
+}
+
+///////////////////////////////////////////////////////////////////////////
+// LocalBackend - writes files to a local directory
+
+type LocalBackend struct {
+	dir         string
+	gcsForReads StorageBackend // for read operations (downloading HRRR, etc.)
+	totalBytes  atomic.Int64
+	totalFiles  atomic.Int64
+	bytesPerFac sync.Map // facilityID -> *atomic.Int64
+}
+
+func MakeLocalBackend(dir string, gcsForReads StorageBackend) (*LocalBackend, error) {
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to create output directory %s: %w", dir, err)
+	}
+	return &LocalBackend{
+		dir:         dir,
+		gcsForReads: gcsForReads,
+	}, nil
+}
+
+func (l *LocalBackend) List(path string) (map[string]int64, error) {
+	return l.gcsForReads.List(path)
+}
+
+func (l *LocalBackend) ChanList(ctx context.Context, path string, ch chan<- string) error {
+	return l.gcsForReads.ChanList(ctx, path, ch)
+}
+
+func (l *LocalBackend) OpenRead(path string) (io.ReadCloser, error) {
+	return l.gcsForReads.OpenRead(path)
+}
+
+func (l *LocalBackend) ReadObject(path string, result any) error {
+	return l.gcsForReads.ReadObject(path, result)
+}
+
+func (l *LocalBackend) Store(path string, r io.Reader) (int64, error) {
+	fullPath := fpath.Join(l.dir, path)
+	if err := os.MkdirAll(fpath.Dir(fullPath), 0755); err != nil {
+		return 0, err
+	}
+
+	f, err := os.Create(fullPath)
+	if err != nil {
+		return 0, err
+	}
+	defer f.Close()
+
+	n, err := io.Copy(f, r)
+	if err != nil {
+		return n, err
+	}
+
+	l.totalBytes.Add(n)
+	l.totalFiles.Add(1)
+	return n, nil
+}
+
+func (l *LocalBackend) StoreObject(path string, object any) (int64, error) {
+	fullPath := fpath.Join(l.dir, path)
+	if err := os.MkdirAll(fpath.Dir(fullPath), 0755); err != nil {
+		return 0, err
+	}
+
+	f, err := os.Create(fullPath)
+	if err != nil {
+		return 0, err
+	}
+
+	cw := &CountingWriter{Writer: f}
+
+	zw := <-zstdEncoders
+	defer func() { zstdEncoders <- zw }()
+	zw.Reset(cw)
+
+	if err := msgpack.NewEncoder(zw).Encode(object); err != nil {
+		f.Close()
+		return 0, err
+	}
+	if err := zw.Close(); err != nil {
+		f.Close()
+		return 0, err
+	}
+	if err := f.Close(); err != nil {
+		return 0, err
+	}
+
+	l.totalBytes.Add(cw.N)
+	l.totalFiles.Add(1)
+
+	// Track per-facility bytes from path like "atmos/ZDC/2026-01-28T00:00:00Z.msgpack.zst"
+	parts := strings.Split(path, "/")
+	if len(parts) >= 2 {
+		facilityID := parts[1]
+		counter, _ := l.bytesPerFac.LoadOrStore(facilityID, &atomic.Int64{})
+		counter.(*atomic.Int64).Add(cw.N)
+	}
+
+	return cw.N, nil
+}
+
+func (l *LocalBackend) Delete(path string) error {
+	return nil // no-op for local backend
+}
+
+func (l *LocalBackend) Close() {
+	if l.gcsForReads != nil {
+		l.gcsForReads.Close()
+	}
+}
+
+func (l *LocalBackend) ReportStats() {
+	LogInfo("Local output statistics: %d files, %s total",
+		l.totalFiles.Load(), util.ByteCount(l.totalBytes.Load()))
+
+	// Report per-facility sizes
+	type facSize struct {
+		id   string
+		size int64
+	}
+	var sizes []facSize
+	l.bytesPerFac.Range(func(key, value any) bool {
+		sizes = append(sizes, facSize{id: key.(string), size: value.(*atomic.Int64).Load()})
+		return true
+	})
+
+	// Sort by size descending
+	slices.SortFunc(sizes, func(a, b facSize) int {
+		return int(b.size - a.size)
+	})
+
+	LogInfo("Per-facility sizes:")
+	for _, fs := range sizes {
+		LogInfo("  %s: %s", fs.id, util.ByteCount(fs.size))
+	}
 }

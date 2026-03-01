@@ -11,16 +11,18 @@ package platform
 
 import (
 	"fmt"
-	gomath "math"
 	"runtime"
 	"slices"
 	"strconv"
+	"unsafe"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	implglfw "github.com/AllenDang/cimgui-go/impl/glfw"
+	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
@@ -34,10 +36,10 @@ type glfwPlatform struct {
 	window *glfw.Window
 	config *Config
 
-	time                   float64
 	mouseJustPressed       [3]bool
 	mouseCursors           [imgui.MouseCursorCOUNT]*glfw.Cursor
 	currentCursor          *glfw.Cursor
+	cursorOverride         *glfw.Cursor
 	inputCharacters        string
 	anyEvents              bool
 	lastMouseX, lastMouseY float64
@@ -216,6 +218,11 @@ func (g *glfwPlatform) Dispose() {
 	}
 	g.audioEngine.Close()
 
+	// Shut down viewport backends before destroying the window.
+	imgui.DestroyPlatformWindows()
+	implogl3.Shutdown()
+	implglfw.Shutdown()
+
 	g.window.Destroy()
 	glfw.Terminate()
 }
@@ -278,47 +285,49 @@ func (g *glfwPlatform) FramebufferSize() [2]float32 {
 }
 
 func (g *glfwPlatform) NewFrame() {
+	// Let the imgui backends update their internal state for viewport management.
+	implogl3.NewFrame()
+	implglfw.NewFrame()
+	clampMonitorWorkBounds()
+
+	// Re-apply the macOS Ctrl↔Super swap. The imgui GLFW backend's
+	// callbacks call ImGui_ImplGlfw_UpdateKeyModifiers which maps
+	// physical keys directly (Control→ModCtrl, Super→ModSuper),
+	// overwriting the swap we set in our own callbacks. We re-apply
+	// it here so the correct mapping is in effect for the rest of
+	// the frame.
+	g.updateKeyModifiers()
+
 	if g.multisample {
 		gl.Enable(gl.MULTISAMPLE)
 	}
 
-	// Setup display size (every frame to accommodate for window resizing)
-	displaySize := g.DisplaySize()
-	g.imguiIO.SetDisplaySize(imgui.Vec2{X: displaySize[0], Y: displaySize[1]})
+	// implglfw.NewFrame() sets io.DisplaySize (window size in screen coords)
+	// and io.DisplayFramebufferScale (framebuffer/window ratio) correctly.
+	// We don't override them; our renderer reads display size and scale
+	// from the draw data.
 
-	// Setup time step
-	currentTime := glfw.GetTime()
-	if g.time > 0 {
-		g.imguiIO.SetDeltaTime(float32(currentTime - g.time))
-	}
-	g.time = currentTime
-
-	// Setup inputs
-	if g.window.GetAttrib(glfw.Focused) != 0 {
-		pc := g.getCursorPos()
-		if g.mouseCapture.Width() > 0 && g.mouseCapture.Height() > 0 && !g.mouseCapture.Inside(pc) {
-			pc = g.mouseCapture.ClosestPointInBox(pc)
-		}
-		g.imguiIO.SetMousePos(imgui.Vec2{X: pc[0], Y: pc[1]})
-	} else {
-		g.imguiIO.SetMousePos(imgui.Vec2{X: -gomath.MaxFloat32, Y: -gomath.MaxFloat32})
-	}
-
+	// Clear stale mouseJustPressed flags. The imgui GLFW backend now
+	// handles mouse button and position tracking for all windows (main
+	// and secondary viewports) via its installed callbacks.
 	for i := range len(g.mouseJustPressed) {
-		down := g.mouseJustPressed[i] ||
-			(g.window.GetMouseButton(glfwButtonIDByIndex[imgui.MouseButton(i)]) == glfw.Press)
-		g.imguiIO.SetMouseButtonDown(i, down)
 		g.mouseJustPressed[i] = false
 	}
 
 	// Mouse cursor
 	imgui_cursor := imgui.CurrentMouseCursor()
 
-	if g.mouseDeltaMode || imgui_cursor == imgui.MouseCursorNone {
-		// Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
+	if g.cursorOverride != nil {
+		// A pane set a specific OS cursor (e.g., ERAM); show it
+		// regardless of the imgui cursor state.
+		g.currentCursor = g.cursorOverride
+		g.window.SetCursor(g.cursorOverride)
+		g.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
+	} else if g.mouseDeltaMode || imgui_cursor == imgui.MouseCursorNone {
+		// Hide OS mouse cursor (the pane draws its own)
 		g.window.SetInputMode(glfw.CursorMode, glfw.CursorHidden)
 	} else {
-		// Show OS mouse cursor
+		// Show standard OS mouse cursor
 		cursor := g.mouseCursors[imgui_cursor]
 		if cursor == nil {
 			cursor = g.mouseCursors[imgui.MouseCursorArrow]
@@ -327,7 +336,6 @@ func (g *glfwPlatform) NewFrame() {
 			g.currentCursor = cursor
 			g.window.SetCursor(cursor)
 		}
-
 		g.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
 	}
 
@@ -346,6 +354,71 @@ func (g *glfwPlatform) NewFrame() {
 	}
 }
 
+// clampMonitorWorkBounds fixes a bug where glfwGetMonitorWorkarea returns
+// work bounds that extend outside the monitor's main bounds on Windows
+// with certain DPI scaling configurations. imgui asserts that WorkRect is
+// contained in MainRect during NewFrame; without this clamp the assertion
+// crashes the application. See https://github.com/ocornut/imgui/issues/7219
+//
+// The implementation accesses the C ImGuiPlatformMonitor struct fields
+// directly via unsafe.Pointer rather than using the cimgui-go Go wrapper
+// methods, which crash under Go 1.25's stricter cgo pointer checker due
+// to the way ReinterpretCast passes pointers across the cgo boundary.
+func clampMonitorWorkBounds() {
+	pio := imgui.CurrentPlatformIO()
+	monitors := pio.Monitors()
+	if monitors.Size == 0 {
+		return
+	}
+
+	// monitors.Data is *PlatformMonitor, a Go struct whose sole field
+	// is CData (*C.ImGuiPlatformMonitor), a C pointer to the first
+	// element of the C array of monitors.
+	arrayBase := *(*unsafe.Pointer)(unsafe.Pointer(monitors.Data))
+
+	// C struct layout (64-bit):
+	//   ImVec2 MainPos  [offset  0] (2 x float32)
+	//   ImVec2 MainSize [offset  8]
+	//   ImVec2 WorkPos  [offset 16]
+	//   ImVec2 WorkSize [offset 24]
+	//   float  DpiScale [offset 32]
+	//   void*  PlatformHandle [offset 40, with 4 bytes padding]
+	// Total size: 48 bytes on 64-bit, 40 on 32-bit.
+	ptrSize := unsafe.Sizeof(uintptr(0))
+	monitorSize := uintptr(36) + (ptrSize-(36%ptrSize))%ptrSize + ptrSize
+
+	for i := range monitors.Size {
+		mon := unsafe.Add(arrayBase, int(uintptr(i)*monitorSize))
+
+		mainPosX := *(*float32)(unsafe.Add(mon, 0))
+		mainPosY := *(*float32)(unsafe.Add(mon, 4))
+		mainSizeX := *(*float32)(unsafe.Add(mon, 8))
+		mainSizeY := *(*float32)(unsafe.Add(mon, 12))
+		workPosX := (*float32)(unsafe.Add(mon, 16))
+		workPosY := (*float32)(unsafe.Add(mon, 20))
+		workSizeX := (*float32)(unsafe.Add(mon, 24))
+		workSizeY := (*float32)(unsafe.Add(mon, 28))
+
+		mainRight := mainPosX + mainSizeX
+		mainBottom := mainPosY + mainSizeY
+
+		if *workPosX < mainPosX {
+			*workSizeX -= mainPosX - *workPosX
+			*workPosX = mainPosX
+		}
+		if *workPosY < mainPosY {
+			*workSizeY -= mainPosY - *workPosY
+			*workPosY = mainPosY
+		}
+		if *workPosX+*workSizeX > mainRight {
+			*workSizeX = mainRight - *workPosX
+		}
+		if *workPosY+*workSizeY > mainBottom {
+			*workSizeY = mainBottom - *workPosY
+		}
+	}
+}
+
 func (g *glfwPlatform) getCursorPos() [2]float32 {
 	x, y := g.window.GetCursorPos()
 	return [2]float32{float32(int(x)), float32(int(y))}
@@ -353,6 +426,32 @@ func (g *glfwPlatform) getCursorPos() [2]float32 {
 
 func (g *glfwPlatform) PostRender() {
 	g.window.SwapBuffers()
+}
+
+func (g *glfwPlatform) MakeContextCurrent() {
+	g.window.MakeContextCurrent()
+}
+
+// InitViewportBackends initializes the imgui GLFW and OpenGL3 backends
+// for multi-viewport support. Must be called after OpenGL is initialized
+// (i.e., after gl.Init() in NewOpenGL2Renderer).
+func (g *glfwPlatform) InitViewportBackends() {
+	// Extract the raw *C.GLFWwindow pointer from go-gl/glfw's Window.
+	// Window.data (*C.GLFWwindow) is the first field of the struct.
+	rawPtr := *(*unsafe.Pointer)(unsafe.Pointer(g.window))
+	implWindow := implglfw.NewGLFWwindowFromC(rawPtr)
+
+	// Initialize the GLFW backend WITHOUT installing callbacks yet.
+	implglfw.InitForOpenGL(implWindow, false)
+	// Install callbacks on the main window. The default chaining behavior
+	// chains only for the main window (window == bd->Window), which ensures
+	// go-gl/glfw's callbacks fire for the main window but not for secondary
+	// viewport windows (which go-gl/glfw doesn't know about).
+	implglfw.InstallCallbacks(implWindow)
+
+	// Initialize the OpenGL3 backend with GLSL 1.20 for OpenGL 2.1 compatibility.
+	implogl3.InitV("#version 120")
+
 }
 
 func (g *glfwPlatform) installCallbacks() {
@@ -434,7 +533,7 @@ func (g *glfwPlatform) updateKeyModifiers() {
 
 func (g *glfwPlatform) charChange(window *glfw.Window, char rune) {
 	g.anyEvents = true
-	g.imguiIO.AddInputCharactersUTF8(string(char))
+	// imgui character input is handled by implglfw.InstallCallbacks.
 	g.inputCharacters = g.inputCharacters + string(char)
 }
 
@@ -791,6 +890,27 @@ func glfwKeyToImguiKey(keycode glfw.Key) imgui.Key {
 	default:
 		return imgui.KeyNone
 	}
+}
+
+// Audio capture methods for continuous background capture with preroll buffer
+func (g *glfwPlatform) StartAudioCapture() error {
+	return g.audioRecorder.StartCapture()
+}
+
+func (g *glfwPlatform) StartAudioCaptureWithDevice(deviceName string) error {
+	return g.audioRecorder.StartCaptureWithDevice(deviceName)
+}
+
+func (g *glfwPlatform) StopAudioCapture() {
+	g.audioRecorder.StopCapture()
+}
+
+func (g *glfwPlatform) IsAudioCapturing() bool {
+	return g.audioRecorder.IsCapturing()
+}
+
+func (g *glfwPlatform) GetAudioPreroll() []int16 {
+	return g.audioRecorder.GetPreroll()
 }
 
 // Audio recording methods

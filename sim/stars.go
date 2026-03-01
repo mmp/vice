@@ -313,29 +313,42 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 	}
 }
 
-// ControllerAssignments defines which controller handles each inbound/departure flow.
-// This is separate from the consolidation hierarchy (PositionConsolidation).
-type ControllerAssignments struct {
+// FacilityConfiguration defines which controller handles each inbound/departure flow,
+// the default consolidation hierarchy for the configuration, and optional fix pair assignments.
+type FacilityConfiguration struct {
 	InboundAssignments   map[string]TCP `json:"inbound_assignments"`
 	DepartureAssignments map[string]TCP `json:"departure_assignments"`
+	// GoAroundAssignments maps airport or airport/runway to the controller
+	// who should handle go-arounds. If not specified, departure controller is used.
+	GoAroundAssignments  map[string]TCP        `json:"go_around_assignments"`
+	DefaultConsolidation PositionConsolidation `json:"default_consolidation"`
+	FixPairAssignments   []FixPairAssignment   `json:"fix_pair_assignments,omitempty"`
+
+	// ScratchpadLeaderLineDirectionStrings is the JSON-facing map from
+	// primary scratchpad values to cardinal/ordinal direction strings
+	// (e.g. "N", "NE", "SW"). Resolved into ScratchpadLeaderLineDirections
+	// during PostDeserialize.
+	ScratchpadLeaderLineDirectionStrings map[string]string `json:"scratchpad_leader_line_directions"`
+	// ScratchpadLeaderLineDirections is the resolved map from primary
+	// scratchpad values to leader line directions.
+	ScratchpadLeaderLineDirections map[string]math.CardinalOrdinalDirection `json:"-"`
 }
 
 type FacilityAdaptation struct {
-	// Configurations maps config IDs (max 3 chars) to controller assignments.
+	// Configurations maps config IDs (max 3 chars) to facility configurations.
 	// These define which TCP handles each inbound flow and departure airport/runway/SID.
-	Configurations map[string]*ControllerAssignments `json:"configurations"`
+	Configurations map[string]*FacilityConfiguration `json:"configurations"`
 
 	AirspaceAwareness   []AirspaceAwareness                        `json:"airspace_awareness" scope:"stars"`
 	ForceQLToSelf       bool                                       `json:"force_ql_self" scope:"stars"`
 	AllowLongScratchpad bool                                       `json:"allow_long_scratchpad" scope:"stars"`
-	VideoMapNames       []string                                   `json:"stars_maps" scope:"stars"`
-	ERAMMapNames        map[string][]string                        `json:"eram_maps" scope:"eram"`
 	VideoMapLabels      map[string]string                          `json:"map_labels"`
 	ControllerConfigs   map[ControlPosition]*STARSControllerConfig `json:"controller_configs"`
+	AreaConfigs         map[string]*STARSAreaConfig                `json:"area_configs,omitempty"`
 	RadarSites          map[string]*av.RadarSite                   `json:"radar_sites" scope:"stars"`
 	Center              math.Point2LL                              `json:"-"`
 	CenterString        string                                     `json:"center"`
-	MaxDistance         float32                                    `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm)
+	MaxDistance         float32                                    `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm STARS, 400nm ERAM)
 	Range               float32                                    `json:"range"`
 	Scratchpads         map[string]string                          `json:"scratchpads" scope:"stars"`
 	SignificantPoints   map[string]SignificantPoint                `json:"significant_points" scope:"stars"`
@@ -343,15 +356,16 @@ type FacilityAdaptation struct {
 
 	// Airpsace filters
 	Filters struct {
-		AutoAcquisition FilterRegions `json:"auto_acquisition"`
-		ArrivalDrop     FilterRegions `json:"arrival_drop"`
-		Departure       FilterRegions `json:"departure"`
-		InhibitCA       FilterRegions `json:"inhibit_ca"`
-		InhibitMSAW     FilterRegions `json:"inhibit_msaw"`
-		Quicklook       FilterRegions `json:"quicklook"`
-		SecondaryDrop   FilterRegions `json:"secondary_drop"`
-		SurfaceTracking FilterRegions `json:"surface_tracking"`
-		VFRInhibit      FilterRegions `json:"vfr_inhibit"`
+		AutoAcquisition FilterRegions    `json:"auto_acquisition"`
+		ArrivalDrop     FilterRegions    `json:"arrival_drop"`
+		Departure       FilterRegions    `json:"departure"`
+		InhibitCA       FilterRegions    `json:"inhibit_ca"`
+		InhibitMSAW     FilterRegions    `json:"inhibit_msaw"`
+		Quicklook       QuicklookRegions `json:"quicklook"`
+		FDAM            FDAMRegions      `json:"fdam"`
+		SecondaryDrop   FilterRegions    `json:"secondary_drop"`
+		SurfaceTracking FilterRegions    `json:"surface_tracking"`
+		VFRInhibit      FilterRegions    `json:"vfr_inhibit"`
 	} `json:"filters" scope:"stars"` //Should this be STARS or justy parts of it?
 
 	MonitoredBeaconCodeBlocksString  *string
@@ -367,6 +381,7 @@ type FacilityAdaptation struct {
 	SingleCharAIDs    map[string]string             `json:"single_char_aids" scope:"stars"` // Char to airport. TODO: Check if this is for ERAM as well.
 	KeepLDB           bool                          `json:"keep_ldb" scope:"stars"`
 	FullLDBSeconds    int                           `json:"full_ldb_seconds" scope:"stars"`
+	Monitor           string                        `json:"monitor" scope:"stars"`
 
 	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes" scope:"stars"`
 
@@ -432,6 +447,425 @@ type FilterRegion struct {
 
 type FilterRegions []FilterRegion
 
+// FilterQualifiers holds qualifying attributes (DMS Table 4-109) shared
+// by quicklook and FDAM filter regions.
+type FilterQualifiers struct {
+	// JSON input fields (comma-delimited strings)
+	TCPsString                string `json:"tcps"`
+	ScratchpadString          string `json:"scratchpad"`
+	SecondaryScratchpadString string `json:"secondary_scratchpad"`
+	OwningTCPString           string `json:"owning_tcp"`
+	EntryFixString            string `json:"entry_fix"`
+	ExitFixString             string `json:"exit_fix"`
+	FlightType                string `json:"flight_type"`
+	FlightRules               string `json:"flight_rules"`
+	CWTCategory               string `json:"cwt_category"`
+	SSRCodesString            string `json:"ssr_codes"`
+	RequestedAltitudeString   string `json:"requested_altitude"`
+
+	// Parsed runtime fields
+	TCPs                 []ControlPosition `json:"-"`
+	Scratchpads          []string          `json:"-"`
+	SecondaryScratchpads []string          `json:"-"`
+	OwningTCPs           []ControlPosition `json:"-"`
+	EntryFixes           []string          `json:"-"`
+	ExitFixes            []string          `json:"-"`
+	SSRCodes             [][2]av.Squawk    `json:"-"`
+	RequestedAltitudes   [][2]int          `json:"-"`
+}
+
+func (r *FilterQualifiers) PostDeserialize(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
+	parseCSV := func(s string) []string {
+		if s == "" {
+			return nil
+		}
+		var result []string
+		for v := range strings.SplitSeq(s, ",") {
+			v = strings.TrimSpace(v)
+			if v != "" {
+				result = append(result, strings.ToUpper(v))
+			}
+		}
+		return result
+	}
+
+	parseTCPs := func(s string, field string) []ControlPosition {
+		vals := parseCSV(s)
+		if len(vals) == 1 && vals[0] == "ALL" {
+			var all []ControlPosition
+			for tcp, ctrl := range controlPositions {
+				if ctrl.FacilityIdentifier == "" {
+					all = append(all, tcp)
+				}
+			}
+			return all
+		}
+		var result []ControlPosition
+		for _, v := range vals {
+			tcp := ControlPosition(v)
+			ctrl, ok := controlPositions[tcp]
+			if !ok {
+				e.ErrorString("unknown TCP %q in %q", v, field)
+			} else if ctrl.FacilityIdentifier != "" {
+				e.ErrorString("TCP %q in %q is not a local position", v, field)
+			} else {
+				result = append(result, tcp)
+			}
+		}
+		return result
+	}
+
+	r.TCPs = parseTCPs(r.TCPsString, "tcps")
+	r.Scratchpads = parseCSV(r.ScratchpadString)
+	r.SecondaryScratchpads = parseCSV(r.SecondaryScratchpadString)
+	r.OwningTCPs = parseTCPs(r.OwningTCPString, "owning_tcp")
+	r.EntryFixes = parseCSV(r.EntryFixString)
+	r.ExitFixes = parseCSV(r.ExitFixString)
+
+	r.FlightType = strings.ToUpper(strings.TrimSpace(r.FlightType))
+	if r.FlightType != "" && r.FlightType != "ARRIVAL" && r.FlightType != "DEPARTURE" && r.FlightType != "OVERFLIGHT" {
+		e.ErrorString(`invalid "flight_type" %q: must be "arrival", "departure", or "overflight"`, r.FlightType)
+	}
+
+	r.FlightRules = strings.ToUpper(strings.TrimSpace(r.FlightRules))
+	if r.FlightRules != "" && r.FlightRules != "V" && r.FlightRules != "I" && r.FlightRules != "B" {
+		e.ErrorString(`invalid "flight_rules" %q: must be "V", "I", or "B"`, r.FlightRules)
+	}
+
+	r.CWTCategory = strings.ToUpper(strings.TrimSpace(r.CWTCategory))
+	if r.CWTCategory != "" {
+		if len(r.CWTCategory) != 1 || r.CWTCategory[0] < 'A' || r.CWTCategory[0] > 'I' {
+			e.ErrorString(`invalid "cwt_category" %q: must be a single letter A-I`, r.CWTCategory)
+		}
+	}
+
+	// Parse SSR codes: "1200,1300-1377"
+	for s := range strings.SplitSeq(r.SSRCodesString, ",") {
+		s = strings.TrimSpace(s)
+		if s == "" {
+			continue
+		}
+		if lo, hi, ok := strings.Cut(s, "-"); ok {
+			loSq, err := av.ParseSquawk(lo)
+			if err != nil {
+				e.ErrorString(`invalid SSR code %q in "ssr_codes": %v`, lo, err)
+				continue
+			}
+			hiSq, err := av.ParseSquawk(hi)
+			if err != nil {
+				e.ErrorString(`invalid SSR code %q in "ssr_codes": %v`, hi, err)
+				continue
+			}
+			if loSq > hiSq {
+				e.ErrorString(`SSR code range %q has low > high in "ssr_codes"`, s)
+				continue
+			}
+			r.SSRCodes = append(r.SSRCodes, [2]av.Squawk{loSq, hiSq})
+		} else {
+			sq, err := av.ParseSquawk(s)
+			if err != nil {
+				e.ErrorString(`invalid SSR code %q in "ssr_codes": %v`, s, err)
+				continue
+			}
+			r.SSRCodes = append(r.SSRCodes, [2]av.Squawk{sq, sq})
+		}
+	}
+
+	// Parse requested altitudes: "40,100-180" (hundreds of feet)
+	for s := range strings.SplitSeq(r.RequestedAltitudeString, ",") {
+		s = strings.TrimSpace(s)
+		if s == "" {
+			continue
+		}
+		if lo, hi, ok := strings.Cut(s, "-"); ok {
+			loAlt, err := strconv.Atoi(lo)
+			if err != nil {
+				e.ErrorString(`invalid altitude %q in "requested_altitude": %v`, lo, err)
+				continue
+			}
+			hiAlt, err := strconv.Atoi(hi)
+			if err != nil {
+				e.ErrorString(`invalid altitude %q in "requested_altitude": %v`, hi, err)
+				continue
+			}
+			if loAlt > hiAlt {
+				e.ErrorString(`altitude range %q has low > high in "requested_altitude"`, s)
+				continue
+			}
+			r.RequestedAltitudes = append(r.RequestedAltitudes, [2]int{loAlt, hiAlt})
+		} else {
+			alt, err := strconv.Atoi(s)
+			if err != nil {
+				e.ErrorString(`invalid altitude %q in "requested_altitude": %v`, s, err)
+				continue
+			}
+			r.RequestedAltitudes = append(r.RequestedAltitudes, [2]int{alt, alt})
+		}
+	}
+}
+
+func (r FilterQualifiers) Match(fp *NASFlightPlan, userPositions []ControlPosition,
+	aircraftType string, significantPoints map[string]SignificantPoint) bool {
+	if len(r.TCPs) > 0 {
+		if !slices.ContainsFunc(userPositions, func(pos ControlPosition) bool {
+			return slices.Contains(r.TCPs, pos)
+		}) {
+			return false
+		}
+	}
+
+	// Flight plan-dependent checks: if fp is nil, skip them (pass).
+	if fp != nil {
+		if len(r.Scratchpads) > 0 {
+			// When fp.Scratchpad is empty, the displayed scratchpad is
+			// derived from the exit fix (possibly via its significant
+			// point short name), so check that as well.
+			sp := fp.Scratchpad
+			if sp == "" {
+				sp = exitFixDisplayName(fp.ExitFix, significantPoints)
+			}
+			if !slices.Contains(r.Scratchpads, sp) {
+				return false
+			}
+		}
+		if len(r.SecondaryScratchpads) > 0 && !slices.Contains(r.SecondaryScratchpads, fp.SecondaryScratchpad) {
+			return false
+		}
+		if len(r.OwningTCPs) > 0 && !slices.Contains(r.OwningTCPs, fp.TrackingController) {
+			return false
+		}
+		if len(r.EntryFixes) > 0 && fp.EntryFix != "" && !slices.Contains(r.EntryFixes, fp.EntryFix) {
+			return false
+		}
+		if len(r.ExitFixes) > 0 && fp.ExitFix != "" && !slices.Contains(r.ExitFixes, fp.ExitFix) {
+			return false
+		}
+		if r.FlightType != "" {
+			switch r.FlightType {
+			case "ARRIVAL":
+				if fp.TypeOfFlight != av.FlightTypeArrival {
+					return false
+				}
+			case "DEPARTURE":
+				if fp.TypeOfFlight != av.FlightTypeDeparture {
+					return false
+				}
+			case "OVERFLIGHT":
+				if fp.TypeOfFlight != av.FlightTypeOverflight {
+					return false
+				}
+			}
+		}
+		if r.FlightRules == "V" {
+			if fp.Rules != av.FlightRulesVFR && fp.Rules != av.FlightRulesDVFR && fp.Rules != av.FlightRulesSVFR {
+				return false
+			}
+		} else if r.FlightRules == "I" {
+			if fp.Rules != av.FlightRulesIFR {
+				return false
+			}
+		}
+		if len(r.SSRCodes) > 0 {
+			if !slices.ContainsFunc(r.SSRCodes, func(rng [2]av.Squawk) bool {
+				return fp.AssignedSquawk >= rng[0] && fp.AssignedSquawk <= rng[1]
+			}) {
+				return false
+			}
+		}
+		if len(r.RequestedAltitudes) > 0 {
+			alt := fp.RequestedAltitude / 100
+			if !slices.ContainsFunc(r.RequestedAltitudes, func(rng [2]int) bool {
+				return alt >= rng[0] && alt <= rng[1]
+			}) {
+				return false
+			}
+		}
+	}
+
+	if r.CWTCategory != "" {
+		if perf, ok := av.DB.AircraftPerformance[aircraftType]; !ok || perf.Category.CWT != r.CWTCategory {
+			return false
+		}
+	}
+
+	return true
+}
+
+type QuicklookRegion struct {
+	av.AirspaceVolume
+	FilterQualifiers
+}
+
+type QuicklookRegions []QuicklookRegion
+
+func (r *QuicklookRegion) PostDeserialize(controlPositions map[TCP]*av.Controller, loc av.Locator, e *util.ErrorLogger) {
+	r.AirspaceVolume.PostDeserialize(loc, e)
+	r.FilterQualifiers.PostDeserialize(controlPositions, e)
+}
+
+// exitFixDisplayName returns the name that would be displayed as the
+// scratchpad for the given exit fix, accounting for significant point
+// short names. This mirrors the datablock rendering logic.
+func exitFixDisplayName(exitFix string, significantPoints map[string]SignificantPoint) string {
+	if exitFix == "" {
+		return ""
+	}
+	fix, _, _ := strings.Cut(exitFix, ".")
+	if sp, ok := significantPoints[fix]; ok {
+		if sp.ShortName != "" {
+			return sp.ShortName
+		} else if len(fix) > 3 {
+			return fix[:3]
+		}
+		return fix
+	}
+	return ""
+}
+
+func (r QuicklookRegion) Match(p math.Point2LL, alt int, fp *NASFlightPlan,
+	userPositions []ControlPosition, aircraftType string,
+	significantPoints map[string]SignificantPoint) bool {
+	return r.AirspaceVolume.Inside(p, alt) &&
+		r.FilterQualifiers.Match(fp, userPositions, aircraftType, significantPoints)
+}
+
+func (r QuicklookRegions) Match(p math.Point2LL, alt int, fp *NASFlightPlan,
+	userPositions []ControlPosition, aircraftType string,
+	significantPoints map[string]SignificantPoint) bool {
+	return slices.ContainsFunc(r, func(r QuicklookRegion) bool {
+		return r.Match(p, alt, fp, userPositions, aircraftType, significantPoints)
+	})
+}
+
+func (r QuicklookRegions) HaveId(s string) bool {
+	return slices.ContainsFunc(r, func(r QuicklookRegion) bool { return s == r.Id })
+}
+
+// FDAMRegion defines a Flight Data Auto-Modify filter region. When a
+// qualifying track enters the region, entry actions are applied; when it
+// exits, exit actions may revert changes.
+type FDAMRegion struct {
+	av.AirspaceVolume
+	FilterQualifiers
+
+	// Entry actions
+	NewScratchpad1           string `json:"new_scratchpad_1"`
+	AllowScratchpad1Override bool   `json:"allow_scratchpad_1_override"`
+	NewScratchpad2           string `json:"new_scratchpad_2"`
+	AllowScratchpad2Override bool   `json:"allow_scratchpad_2_override"`
+
+	NewOwnerLeaderDirectionString string `json:"new_owner_leader_direction"`
+	NewOwnerLeaderDirection       *math.CardinalOrdinalDirection
+
+	HandoffInitiateTransfer string `json:"handoff_initiate_transfer"` // "I", "T", or "N"
+	NewOwnerTCPString       string `json:"new_owner_tcp"`
+	NewOwnerTCP             ControlPosition
+
+	NewTCPSpecificLeaderDirectionString string `json:"new_tcp_specific_leader_direction"`
+	NewTCPSpecificLeaderDirection       *math.CardinalOrdinalDirection
+
+	ImmediatePointout  bool   `json:"immediate_pointout"`
+	PointoutTCPsString string `json:"pointout_tcps"`
+	PointoutTCPs       []ControlPosition
+
+	// Exit actions
+	RetainOwnerLeaderDirection       bool `json:"retain_owner_leader_direction"`
+	RetainTCPSpecificLeaderDirection bool `json:"retain_tcp_specific_leader_direction"`
+}
+
+type FDAMRegions []FDAMRegion
+
+// FDAMTrackState tracks per-aircraft state for a single FDAM region so
+// that entry/exit transitions and revert-on-exit can be handled.
+type FDAMTrackState struct {
+	Inside                       bool
+	PreEntryOwnerLeaderDirection *math.CardinalOrdinalDirection
+}
+
+func (r *FDAMRegion) PostDeserialize(controlPositions map[TCP]*av.Controller, loc av.Locator, e *util.ErrorLogger) {
+	r.AirspaceVolume.PostDeserialize(loc, e)
+	r.FilterQualifiers.PostDeserialize(controlPositions, e)
+
+	if r.TCPsString != "" {
+		e.ErrorString(`"tcps" is not supported for FDAM regions`)
+	}
+	r.TCPs = nil // FDAM regions don't filter by user position
+
+	parseDirection := func(s, field string) *math.CardinalOrdinalDirection {
+		s = strings.ToUpper(strings.TrimSpace(s))
+		if s == "" {
+			return nil
+		}
+		dir, err := math.ParseCardinalOrdinalDirection(s)
+		if err != nil {
+			e.ErrorString("invalid %q: %v", field, err)
+			return nil
+		}
+		return &dir
+	}
+
+	r.NewOwnerLeaderDirection = parseDirection(r.NewOwnerLeaderDirectionString, "new_owner_leader_direction")
+	r.NewTCPSpecificLeaderDirection = parseDirection(r.NewTCPSpecificLeaderDirectionString, "new_tcp_specific_leader_direction")
+
+	r.HandoffInitiateTransfer = strings.ToUpper(strings.TrimSpace(r.HandoffInitiateTransfer))
+	if r.HandoffInitiateTransfer == "" {
+		r.HandoffInitiateTransfer = "N"
+	}
+	if r.HandoffInitiateTransfer != "I" && r.HandoffInitiateTransfer != "T" && r.HandoffInitiateTransfer != "N" {
+		e.ErrorString(`invalid "handoff_initiate_transfer" %q: must be "I", "T", or "N"`, r.HandoffInitiateTransfer)
+	}
+
+	r.NewOwnerTCPString = strings.ToUpper(strings.TrimSpace(r.NewOwnerTCPString))
+	if r.NewOwnerTCPString != "" {
+		tcp := ControlPosition(r.NewOwnerTCPString)
+		if _, ok := controlPositions[tcp]; !ok {
+			e.ErrorString(`unknown TCP %q in "new_owner_tcp"`, r.NewOwnerTCPString)
+		} else {
+			r.NewOwnerTCP = tcp
+		}
+	}
+	if r.HandoffInitiateTransfer != "N" && r.NewOwnerTCP == "" {
+		e.ErrorString(`"new_owner_tcp" must be specified when "handoff_initiate_transfer" is %q`, r.HandoffInitiateTransfer)
+	}
+
+	// Parse pointout TCPs
+	if r.PointoutTCPsString != "" {
+		for v := range strings.SplitSeq(r.PointoutTCPsString, ",") {
+			v = strings.ToUpper(strings.TrimSpace(v))
+			if v == "" {
+				continue
+			}
+			tcp := ControlPosition(v)
+			if _, ok := controlPositions[tcp]; !ok {
+				e.ErrorString(`unknown TCP %q in "pointout_tcps"`, v)
+			} else {
+				r.PointoutTCPs = append(r.PointoutTCPs, tcp)
+			}
+		}
+	}
+	if r.ImmediatePointout && len(r.PointoutTCPs) == 0 {
+		e.ErrorString(`"pointout_tcps" must be specified when "immediate_pointout" is true`)
+	}
+
+	if r.RetainOwnerLeaderDirection && r.NewOwnerLeaderDirection == nil {
+		e.ErrorString(`"retain_owner_leader_direction" requires "new_owner_leader_direction"`)
+	}
+	if r.RetainTCPSpecificLeaderDirection && r.NewTCPSpecificLeaderDirection == nil {
+		e.ErrorString(`"retain_tcp_specific_leader_direction" requires "new_tcp_specific_leader_direction"`)
+	}
+}
+
+func (r FDAMRegion) Match(p math.Point2LL, alt int, fp *NASFlightPlan, aircraftType string,
+	significantPoints map[string]SignificantPoint) bool {
+	// FDAM uses TCPs="ALL" per the DMS manual, so no userPositions filtering
+	return r.AirspaceVolume.Inside(p, alt) &&
+		r.FilterQualifiers.Match(fp, nil, aircraftType, significantPoints)
+}
+
+func (r FDAMRegions) HaveId(s string) bool {
+	return slices.ContainsFunc(r, func(r FDAMRegion) bool { return s == r.Id })
+}
+
 type STARSControllerConfig struct {
 	VideoMapNames                   []string      `json:"video_maps"`
 	DefaultMaps                     []string      `json:"default_maps"`
@@ -441,6 +875,36 @@ type STARSControllerConfig struct {
 	MonitoredBeaconCodeBlocksString *string       `json:"beacon_code_blocks"`
 	MonitoredBeaconCodeBlocks       []av.Squawk
 	FlightFollowingAirspace         []av.AirspaceVolume `json:"flight_following_airspace"`
+}
+
+// STARSAreaConfig provides default configuration for all controllers
+// within a TRACON area. Controller-specific configs in ControllerConfigs
+// override or append these defaults.
+type STARSAreaConfig struct {
+	DefaultAirport                  string                         `json:"default_airport,omitempty"` // CRDA default airport for this area
+	VideoMapNames                   []string                       `json:"video_maps,omitempty"`
+	DefaultMaps                     []string                       `json:"default_maps,omitempty"`
+	Center                          math.Point2LL                  `json:"-"`
+	CenterString                    string                         `json:"center,omitempty"`
+	Range                           float32                        `json:"range,omitempty"`
+	MonitoredBeaconCodeBlocksString *string                        `json:"beacon_code_blocks,omitempty"`
+	MonitoredBeaconCodeBlocks       []av.Squawk                    `json:"-"`
+	FlightFollowingAirspace         []av.AirspaceVolume            `json:"flight_following_airspace,omitempty"`
+	CoordinationLists               []CoordinationList             `json:"coordination_lists,omitempty"`
+	Airspace                        map[string][]av.AirspaceVolume `json:"airspace,omitempty"`
+}
+
+// DefaultAirportForArea returns the CRDA default airport for a given
+// area identifier. Returns empty string if no area config or default
+// airport is defined.
+func (fa *FacilityAdaptation) DefaultAirportForArea(area string) string {
+	if area == "" {
+		return ""
+	}
+	if ac, ok := fa.AreaConfigs[area]; ok {
+		return ac.DefaultAirport
+	}
+	return ""
 }
 
 type CoordinationList struct {
@@ -463,7 +927,7 @@ func validateListFormat(format string, extra ...string) error {
 			// Find the end of the specifier
 			endIdx := strings.IndexByte(format[i:], ']')
 			if endIdx == -1 {
-				return fmt.Errorf("unclosed \"[\" at offset %d", i)
+				return fmt.Errorf(`unclosed "[" at offset %d`, i)
 			}
 
 			specifier := format[i+1 : i+endIdx]
@@ -578,6 +1042,21 @@ type NASFlightPlan struct {
 
 	// Used so that such FPs can associate regardless of acquisition filters.
 	ManuallyCreated bool
+
+	// FDAM region membership state, keyed by region ID.
+	FDAMState map[string]*FDAMTrackState `json:"-"`
+
+	// Flight strip fields
+	StripCID         int             // numeric 000-999, allocated server-side
+	StripAnnotations [9]string       // 3x3 annotation grid
+	StripOwner       ControlPosition // which TCP position has this strip (empty = no strip)
+}
+
+func (fp *NASFlightPlan) AddPointOutHistory(tcp TCP) {
+	if len(fp.PointOutHistory) >= 20 {
+		fp.PointOutHistory = fp.PointOutHistory[:19]
+	}
+	fp.PointOutHistory = append([]TCP{tcp}, fp.PointOutHistory...)
 }
 
 type ACID string
@@ -840,7 +1319,10 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 		fp.PilotReportedAltitude = spec.PilotReportedAltitude.Get()
 	}
 	if spec.Scratchpad.IsSet {
-		if fp.Scratchpad == spec.Scratchpad.Get() {
+		if spec.Scratchpad.Get() == "" {
+			fp.Scratchpad = ""
+			fp.PriorScratchpad = ""
+		} else if fp.Scratchpad == spec.Scratchpad.Get() {
 			fp.Scratchpad = fp.PriorScratchpad
 		} else {
 			fp.PriorScratchpad = fp.Scratchpad
@@ -848,7 +1330,10 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 		}
 	}
 	if spec.SecondaryScratchpad.IsSet {
-		if fp.SecondaryScratchpad == spec.SecondaryScratchpad.Get() {
+		if spec.SecondaryScratchpad.Get() == "" {
+			fp.SecondaryScratchpad = ""
+			fp.PriorSecondaryScratchpad = ""
+		} else if fp.SecondaryScratchpad == spec.SecondaryScratchpad.Get() {
 			fp.SecondaryScratchpad = fp.PriorSecondaryScratchpad
 		} else {
 			fp.PriorSecondaryScratchpad = fp.SecondaryScratchpad
@@ -931,13 +1416,14 @@ const (
 	LocalNonEnroute
 )
 
-func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports []string, allAirports []string, e *util.ErrorLogger) {
+func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports []string, allAirports []string,
+	controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ctr := fa.CenterString; ctr == "" {
-		e.ErrorString("No \"center\" specified")
+		e.ErrorString(`No "center" specified`)
 	} else if pos, ok := loc.Locate(ctr); !ok {
-		e.ErrorString("unknown location %q specified for \"center\"", ctr)
+		e.ErrorString(`unknown location %q specified for "center"`, ctr)
 	} else {
 		fa.Center = pos
 	}
@@ -964,7 +1450,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 				for s := range strings.SplitSeq(*config.MonitoredBeaconCodeBlocksString, ",") {
 					s = strings.TrimSpace(s)
 					if code, err := av.ParseSquawkOrBlock(s); err != nil {
-						e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
+						e.ErrorString(`invalid beacon code %q in "beacon_code_blocks": %v`, s, err)
 					} else {
 						config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
 					}
@@ -973,10 +1459,65 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 		}
 	}
 
+	// Process area configs similarly to controller configs.
+	for areaNum, ac := range fa.AreaConfigs {
+		e.Push(fmt.Sprintf("area_configs[%s]", areaNum))
+
+		for i := range ac.FlightFollowingAirspace {
+			if ac.FlightFollowingAirspace[i].Id == "" {
+				ac.FlightFollowingAirspace[i].Id = fmt.Sprintf("FFA%s-%d", areaNum, i+1)
+			}
+			if ac.FlightFollowingAirspace[i].Description == "" {
+				ac.FlightFollowingAirspace[i].Description = fmt.Sprintf("FLIGHT FOLLOWING AREA %s %d", areaNum, i+1)
+			}
+			ac.FlightFollowingAirspace[i].PostDeserialize(loc, e)
+		}
+
+		if ac.MonitoredBeaconCodeBlocksString != nil {
+			for s := range strings.SplitSeq(*ac.MonitoredBeaconCodeBlocksString, ",") {
+				s = strings.TrimSpace(s)
+				if code, err := av.ParseSquawkOrBlock(s); err != nil {
+					e.ErrorString(`invalid beacon code %q in "beacon_code_blocks": %v`, s, err)
+				} else {
+					ac.MonitoredBeaconCodeBlocks = append(ac.MonitoredBeaconCodeBlocks, code)
+				}
+			}
+		}
+
+		if ac.CenterString != "" {
+			if pos, ok := loc.Locate(ac.CenterString); ok {
+				ac.Center = pos
+			} else {
+				e.ErrorString("unknown location %q specified for area center", ac.CenterString)
+			}
+		}
+
+		for name, volumes := range ac.Airspace {
+			for i := range volumes {
+				volumes[i].PostDeserialize(loc, e)
+				if volumes[i].Id == "" {
+					volumes[i].Id = fmt.Sprintf("A%s-%s-%d", areaNum, name, i+1)
+				}
+			}
+			ac.Airspace[name] = volumes
+		}
+
+		e.Pop()
+	}
+
 	for _, sp := range fa.Scratchpads {
 		if !fa.CheckScratchpad(sp) {
-			e.ErrorString("%s: invalid scratchpad in \"scratchpads\"", sp)
+			e.ErrorString(`%s: invalid scratchpad in "scratchpads"`, sp)
 		}
+	}
+
+	switch fa.Monitor {
+	// Ugly: we need to keep this in sync with colorSets in stars/stars.go
+	case "":
+		fa.Monitor = "legacy" // default
+	case "legacy", "mdm3", "mdm4":
+	default:
+		e.ErrorString(`%s: invalid value for "monitor": must be "legacy", "mdm3", or "mdm4"`, fa.Monitor)
 	}
 
 	makeCircleAirportFilters := func(id string, description string, radius float32,
@@ -1093,10 +1634,10 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 		ids := make(map[string]any)
 		for i, filt := range f {
 			e.Push(filt.Description)
-			f[i].PostDeserialize(loc, e)
+			f[i].AirspaceVolume.PostDeserialize(loc, e)
 
 			if _, ok := ids[filt.Id]; ok {
-				e.ErrorString("Quicklook filter \"id\"s must be unique: %q was repeated", filt.Id)
+				e.ErrorString(`filter "id"s must be unique: %q was repeated`, filt.Id)
 			}
 			ids[filt.Id] = nil
 
@@ -1108,9 +1649,38 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	checkFilter(fa.Filters.Departure, "departure")
 	checkFilter(fa.Filters.InhibitCA, "inhibit_ca")
 	checkFilter(fa.Filters.InhibitMSAW, "inhibit_msaw")
-	checkFilter(fa.Filters.Quicklook, "quicklook")
 	checkFilter(fa.Filters.SecondaryDrop, "secondary_drop")
 	checkFilter(fa.Filters.SurfaceTracking, "surface_tracking")
+
+	{
+		ids := make(map[string]any)
+		for i, filt := range fa.Filters.Quicklook {
+			e.Push(filt.Description)
+			fa.Filters.Quicklook[i].PostDeserialize(controlPositions, loc, e)
+
+			if _, ok := ids[filt.Id]; ok {
+				e.ErrorString(`quicklook filter "id"s must be unique: %q was repeated`, filt.Id)
+			}
+			ids[filt.Id] = nil
+
+			e.Pop()
+		}
+	}
+
+	{
+		ids := make(map[string]any)
+		for i, filt := range fa.Filters.FDAM {
+			e.Push(filt.Description)
+			fa.Filters.FDAM[i].PostDeserialize(controlPositions, loc, e)
+
+			if _, ok := ids[filt.Id]; ok {
+				e.ErrorString(`FDAM filter "id"s must be unique: %q was repeated`, filt.Id)
+			}
+			ids[filt.Id] = nil
+
+			e.Pop()
+		}
+	}
 
 	// This one kicks in when they exit the "inside" region defined by the volume.
 	for i := range fa.Filters.SecondaryDrop {
@@ -1118,16 +1688,16 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 
 	// Quick FP ACID
-	e.Push("\"flight_plan\"")
+	e.Push(`"flight_plan"`)
 	fa.FlightPlan.QuickACID = strings.ToUpper(fa.FlightPlan.QuickACID)
 	if qa := fa.FlightPlan.QuickACID; qa == "" {
 		fa.FlightPlan.QuickACID = "VCE"
 	} else {
 		if qa[0] < 'A' || qa[0] > 'Z' {
-			e.ErrorString("\"quick_acid\" must start with a letter")
+			e.ErrorString(`"quick_acid" must start with a letter`)
 		}
 		if len(qa) > 3 {
-			e.ErrorString("\"quick_acid\" can't be more than three characters")
+			e.ErrorString(`"quick_acid" can't be more than three characters`)
 		}
 	}
 
@@ -1147,7 +1717,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"tab_list\"")
+	e.Push(`"tab_list"`)
 	if fa.TABList.Format == "" {
 		fa.TABList.Format = "[INDEX] [ACID_MSAWCA][DUPE_BEACON] [BEACON] [DEP_EXIT_FIX]"
 	}
@@ -1156,7 +1726,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"vfr_list\"")
+	e.Push(`"vfr_list"`)
 	if fa.VFRList.Format == "" {
 		fa.VFRList.Format = "[INDEX] [ACID_MSAWCA][BEACON]"
 	}
@@ -1165,7 +1735,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"coast_suspend_list\"")
+	e.Push(`"coast_suspend_list"`)
 	if fa.CoastSuspendList.Format == "" {
 		fa.CoastSuspendList.Format = "[INDEX] [ACID] S [BEACON] [ALT]"
 	}
@@ -1174,7 +1744,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"mci_suppression_list\"")
+	e.Push(`"mci_suppression_list"`)
 	if fa.MCISuppressionList.Format == "" {
 		fa.MCISuppressionList.Format = "[ACID] [BEACON]  [SUPP_BEACON]"
 	}
@@ -1183,7 +1753,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"tower_list\"")
+	e.Push(`"tower_list"`)
 	if fa.TowerList.Format == "" {
 		fa.TowerList.Format = "[ACID] [ACTYPE]"
 	}
@@ -1192,7 +1762,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push("\"coordination_lists\"")
+	e.Push(`"coordination_lists"`)
 	for i, cl := range fa.CoordinationLists {
 		if cl.Format == "" {
 			// Default format

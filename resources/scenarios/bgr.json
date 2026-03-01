@@ -1,346 +1,442 @@
 {
-  "tracon": "BGR",
-  "airports": {
-    "KBHB": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KBGR": {
-      "name": "BGR",
-      "approaches": {
-        "Y15": {
-          "cifp_id": "IY15"
-        },
-        "I33": {
-          "cifp_id": "I33"
-        },
-        "R15": {
-          "cifp_id": "R15"
-        },
-        "R33": {
-          "cifp_id": "R33"
-        }
-      },
-      "departure_routes": {
-        "15": {
-          "SYR, BTV, CAM, ALB, BOS, LFV, ENE, BGR, PQI, MLT, HANAA": {
-            "assigned_altitude": 10000,
-            "sid": "BGR5",
-            "waypoints": "KBGR/h150"
-          }
-        },
-        "33": {
-          "SYR, BTV, CAM, ALB, BOS, LFV, ENE, BGR, PQI, MLT, HANAA": {
-            "assigned_altitude": 10000,
-            "sid": "BGR5",
-            "waypoints": "BGR/ph"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "WUP"
-            }
-          ],
-          "destination": "KBED",
-          "exit": "ENE",
-          "route": "ENE BOS BED",
-          "scratchpad": "ENE"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "KAP"
-            }
-          ],
-          "destination": "KMVY",
-          "exit": "LFV",
-          "route": "LFV NVY",
-          "scratchpad": "LFV"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EDV"
-            }
-          ],
-          "destination": "KLGA",
-          "exit": "ALB",
-          "route": "ALB HAARP4",
-          "scratchpad": "ALB"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KEWR",
-          "exit": "HANAA",
-          "route": "HANAA FLOSI4",
-          "scratchpad": "HAN"
-        }
-      ],
-      "tower_list": 1
-    }
-  },
-  "inbound_flows": {
-    "RANGY Arrival Land South": {
-      "arrivals": [
-        {
-          "waypoints": "RANGY/ho BUP AALYS",
-          "route": "BUP AALYS",
-          "initial_controller": "BOS_17_CTR",
-          "initial_altitude": 11000,
-          "initial_speed": 270,
-          "expect_approach": null,
-          "airlines": {
-            "KBGR": [
-              {
-                "icao": "SWA",
-                "airport": "KBNA"
-              },
-              {
-                "icao": "MXY",
-                "airport": "KPIT"
-              },
-              {
-                "icao": "JIA",
-                "airport": "KMKE"
-              }
+    "tracon": "BGR",
+    "airports": {
+        "KBHB": {
+            "approaches": {
+                "R4": {
+                    "cifp_id": "R4"
+                },
+                "I22": {
+                    "cifp_id": "I22"
+                },
+                "R22": {
+                    "cifp_id": "R22"
+                }
+            },
+            "tower_list": 2,
+            "vfr": {
+                "random_routes": {
+                    "rate": 5
+                },
+                "routes": [
+                    {
+                        "destination": "KPWM",
+                        "rate": 10,
+                        "waypoints": "N044.19.54.790,W068.26.38.510/radius5 N044.15.20.681,W068.31.20.886/radius3 N044.06.22.228,W068.46.24.732/radius3/a1500-2500 N043.59.15.368,W068.56.50.073/radius3 N043.52.38.679,W069.03.52.553/radius3 N043.46.00.493,W069.16.43.161/radius2 N043.37.33.131,W069.27.30.860/a1000-1500 N043.30.59.216,W069.44.51.348 N043.30.23.249,W069.56.01.349/radius3/land",
+                        "name": ""
+                    }
+                ]
+            },
+            "hold_for_release": true,
+            "departure_routes": {
+                "22": {
+                    "SYR, BTV, CAM, ALB, BOS, LFV, ENE, BGR, PQI, MLT, HANAA, TOPPS, CEDAP": {
+                        "assigned_altitude": 10000,
+                        "sid": null,
+                        "waypoints": "KBHB/h220"
+                    }
+                },
+                "4": {
+                    "SYR, BTV, CAM, ALB, BOS, LFV, ENE, BGR, PQI, MLT, HANAA, TOPPS, CEDAP": {
+                        "assigned_altitude": 10000,
+                        "sid": null,
+                        "waypoints": "KBHB/h040"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "EJA"
+                        }
+                    ],
+                    "destination": "KBED",
+                    "exit": "ENE",
+                    "route": "ENE BOS BED",
+                    "scratchpad": "ENE"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "LXJ"
+                        }
+                    ],
+                    "destination": "EINN",
+                    "exit": "TOPPS",
+                    "route": "TOPPS N322A ELSIR NATR BEXET ERABI ERAB2E",
+                    "scratchpad": "TOP"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KPWM",
+                    "exit": "CEDAP",
+                    "route": "CEDAP PWM",
+                    "scratchpad": "PWM"
+                }
             ]
-          }
+        },
+        "KBGR": {
+            "approaches": {
+                "Y15": {
+                    "cifp_id": "IY15"
+                },
+                "LY15": {
+                    "cifp_id": "LY15"
+                },
+                "I33": {
+                    "cifp_id": "I33"
+                },
+                "R15": {
+                    "cifp_id": "R15"
+                },
+                "R33": {
+                    "cifp_id": "R33"
+                },
+                "L33": {
+                    "cifp_id": "L33"
+                }
+            },
+            "departure_routes": {
+                "15": {
+                    "SYR, BTV, CAM, ALB, BOS, LFV, ENE, BGR, PQI, MLT, HANAA, TOPPS": {
+                        "assigned_altitude": 10000,
+                        "sid": "BGR5",
+                        "waypoints": "KBGR/h150"
+                    }
+                },
+                "33": {
+                    "SYR, BTV, CAM, ALB, BOS, LFV, ENE, BGR, PQI, MLT, HANAA, TOPPS": {
+                        "assigned_altitude": 10000,
+                        "sid": "BGR5",
+                        "waypoints": "BGR/ph"
+                    }
+                }
+            },
+            "atpa_volumes": {
+                "33": {
+                    "runway_threshold": "N044.47.48.392,W068.48.41.264",
+                    "heading": 330,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 8000,
+                    "length": 50,
+                    "left_width": 20000,
+                    "right_width": 20000,
+                    "filtered_scratchpads": [
+                        ""
+                    ],
+                    "excluded_scratchpads": [
+                        ""
+                    ],
+                    "enable_2.5nm": true,
+                    "2.5nm_distance": 10
+                },
+                "15": {
+                    "runway_threshold": "N044.49.04.143,W068.50.39.669",
+                    "heading": 150,
+                    "max_heading_deviation": 90,
+                    "floor": 100,
+                    "ceiling": 8000,
+                    "length": 50,
+                    "left_width": 20000,
+                    "right_width": 20000,
+                    "filtered_scratchpads": [
+                        ""
+                    ],
+                    "excluded_scratchpads": [
+                        ""
+                    ],
+                    "enable_2.5nm": true,
+                    "2.5nm_distance": 10
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "WUP"
+                        }
+                    ],
+                    "destination": "KBED",
+                    "exit": "ENE",
+                    "route": "ENE BOS BED",
+                    "scratchpad": "ENE"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "KAP"
+                        }
+                    ],
+                    "destination": "KMVY",
+                    "exit": "LFV",
+                    "route": "LFV NVY",
+                    "scratchpad": "LFV"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "EDV"
+                        }
+                    ],
+                    "destination": "KLGA",
+                    "exit": "ALB",
+                    "route": "ALB HAARP4",
+                    "scratchpad": "ALB"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "destination": "KEWR",
+                    "exit": "HANAA",
+                    "route": "HANAA FLOSI4",
+                    "scratchpad": "HAN"
+                }
+            ],
+            "tower_list": 1
         }
-      ]
     },
-    "AUG Arrival Land South": {
-      "arrivals": [
-        {
-          "waypoints": "AUG/ho KBHB",
-          "route": "AUG KBHB",
-          "initial_controller": "BOS_17_CTR",
-          "initial_altitude": 11000,
-          "initial_speed": 270,
-          "expect_approach": null,
-          "airlines": {
-            "KBGR": [
-              {
-                "icao": "EJA",
-                "airport": "KDTW"
-              },
-              {
-                "icao": "JIA",
-                "airport": "KORD"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KMKE"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KASE"
-              }
+    "inbound_flows": {
+        "BOS": {
+            "arrivals": [
+                {
+                    "waypoints": "43.908167,-69.644500 N044.08.25.851,W069.26.42.658/ho BGR",
+                    "route": "N044.08.25.851,W069.26.42.658/ho 43.908167,-69.644500 BGR",
+                    "initial_controller": "C17",
+                    "initial_altitude": 11000,
+                    "initial_speed": 270,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KBGR": [
+                            {
+                                "icao": "MXY",
+                                "airport": "KTPA"
+                            },
+                            {
+                                "icao": "JIA",
+                                "airport": "KDCA"
+                            },
+                            {
+                                "icao": "EDV",
+                                "airport": "KLGA"
+                            },
+                            {
+                                "icao": "AAY",
+                                "airport": "KSFB"
+                            }
+                        ]
+                    }
+                }
             ]
-          }
-        }
-      ]
-    },
-    "RANGY Arrival Land North": {
-      "arrivals": [
-        {
-          "waypoints": "RANGY/ho BUP AALYS DELGE KUCEV KBHB KBGR",
-          "route": "BUP AALYS DELGE KUCEV KBHB KBGR",
-          "initial_controller": "BOS_17_CTR",
-          "initial_altitude": 11000,
-          "initial_speed": 270,
-          "expect_approach": null,
-          "airlines": {
-            "KBGR": [
-              {
-                "icao": "LXJ",
-                "airport": "KDTW"
-              },
-              {
-                "icao": "JIA",
-                "airport": "KMKE"
-              }
+        },
+        "ALB": {
+            "arrivals": [
+                {
+                    "waypoints": "43.941500,-71.048000/ho BGR",
+                    "route": "43.941500,-71.048000/ho BGR",
+                    "initial_controller": "C02",
+                    "initial_altitude": 11000,
+                    "initial_speed": 270,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KBGR": [
+                            {
+                                "icao": "EDV",
+                                "airport": "KPHL"
+                            },
+                            {
+                                "icao": "JIA",
+                                "airport": "KPHL"
+                            }
+                        ]
+                    }
+                }
             ]
-          }
-        }
-      ]
-    },
-    "AUG Arrival Land North": {
-      "arrivals": [
-        {
-          "waypoints": "AUG/ho KBHB",
-          "route": "AUG KBHB",
-          "initial_controller": "BOS_17_CTR",
-          "initial_altitude": 11000,
-          "initial_speed": 270,
-          "expect_approach": null,
-          "airlines": {
-            "KBGR": [
-              {
-                "icao": "EJA",
-                "airport": "KDTW"
-              },
-              {
-                "icao": "JIA",
-                "airport": "KORD"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KMKE"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KASE"
-              }
+        },
+        "ENE": {
+            "arrivals": [
+                {
+                    "waypoints": "ENE T295 BRNNS/ho",
+                    "route": "ENE T295 BRNNS/ho ",
+                    "initial_controller": "C17",
+                    "initial_altitude": 9000,
+                    "initial_speed": 270,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KBGR": [
+                            {
+                                "icao": "EJA",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "EJM",
+                                "airport": "KBOS"
+                            }
+                        ],
+                        "KBHB": [
+                            {
+                                "icao": "KAP",
+                                "airport": "KBOS"
+                            }
+                        ]
+                    }
+                }
             ]
-          }
+        },
+        "HUL": {
+            "arrivals": [
+                {
+                    "waypoints": "HUL/ho BGR",
+                    "route": "HUL/ho BGR",
+                    "initial_controller": "C01",
+                    "initial_altitude": 11000,
+                    "initial_speed": 270,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KBGR": [
+                            {
+                                "icao": "EJA",
+                                "airport": "EIDW"
+                            },
+                            {
+                                "icao": "EJM",
+                                "airport": "EINN"
+                            },
+                            {
+                                "icao": "LXJ",
+                                "airport": "EINN"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      ]
+    },
+    "primary_airport": "KBGR",
+    "default_scenario": "Land South",
+    "name": "BGR",
+    "vfr_reporting_points": [
+        {
+            "description": "Bar Harbor",
+            "location": "KBHB"
+        },
+        {
+            "description": "Bangor",
+            "location": "KBGR"
+        },
+        {
+            "description": "Old Town Municipal",
+            "location": "N044.57.20.313,W068.40.05.786"
+        },
+        {
+            "description": "Burnham",
+            "location": "N044.41.36.807,W069.21.33.200"
+        }
+    ],
+    "scenarios": {
+        "Land North": {
+            "arrival_runways": [
+                {
+                    "airport": "KBGR",
+                    "runway": "33"
+                },
+                {
+                    "airport": "KBHB",
+                    "runway": "4"
+                }
+            ],
+            "inbound_rates": {
+                "BOS": {
+                    "KBGR": 10
+                },
+                "ALB": {
+                    "KBGR": 10
+                },
+                "ENE": {
+                    "KBGR": 10,
+                    "KBHB": 5
+                },
+                "HUL": {
+                    "KBGR": 10
+                }
+            },
+            "configuration": {
+                "config_id": "STD"
+            },
+            "departure_runways": [
+                {
+                    "airport": "KBGR",
+                    "rate": 10,
+                    "runway": "33"
+                },
+                {
+                    "airport": "KBHB",
+                    "rate": 5,
+                    "runway": "4"
+                }
+            ],
+            "wind": {
+                "direction": "300-0"
+            },
+            "default_maps": [
+                "BGR MAIN"
+            ]
+        },
+        "Land South": {
+            "arrival_runways": [
+                {
+                    "airport": "KBGR",
+                    "runway": "15"
+                },
+                {
+                    "airport": "KBHB",
+                    "runway": "22"
+                }
+            ],
+            "inbound_rates": {
+                "BOS": {
+                    "KBGR": 10
+                },
+                "ALB": {
+                    "KBGR": 10
+                },
+                "ENE": {
+                    "KBGR": 10,
+                    "KBHB": 5
+                },
+                "HUL": {
+                    "KBGR": 10
+                }
+            },
+            "configuration": {
+                "config_id": "STD"
+            },
+            "departure_runways": [
+                {
+                    "airport": "KBGR",
+                    "rate": 10,
+                    "runway": "15"
+                },
+                {
+                    "airport": "KBHB",
+                    "rate": 5,
+                    "runway": "22"
+                }
+            ],
+            "wind": {
+                "direction": "120-180"
+            },
+            "default_maps": [
+                "BGR MAIN"
+            ]
+        }
     }
-  },
-  "control_positions": {
-    "BGR_TWR": {
-      "frequency": 120700,
-      "radio_name": "Bangor Tower",
-      "sector_id": "1T"
-    },
-    "BGR_B_APP": {
-      "frequency": 118925,
-      "radio_name": "Bangor Approach",
-      "sector_id": "1B"
-    },
-    "BGR_S_APP": {
-      "frequency": 124500,
-      "radio_name": "Bangor Approach",
-      "sector_id": "1S"
-    },
-    "BOS_17_CTR": {
-      "frequency": 133450,
-      "radio_name": "Boston Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C17"
-    },
-    "BOS_18_CTR": {
-      "frequency": 128750,
-      "radio_name": "Boston Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C18"
-    }
-  },
-  "primary_airport": "KBGR",
-  "default_scenario": "Land South",
-  "name": "BGR",
-  "scenarios": {
-    "Land North": {
-      "arrival_runways": [
-        {
-          "airport": "KBGR",
-          "runway": "33"
-        }
-      ],
-      "inbound_rates": {
-        "AUG Arrival Land North": {
-          "KBGR": 10
-        },
-        "RANGY Arrival Land North": {
-          "KBGR": 10
-        },
-        "AUG Arrival Land South": {
-          "KBGR": 0
-        },
-        "RANGY Arrival Land South": {
-          "KBGR": 0
-        }
-      },
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "BGR_B_APP": []
-        }
-      },
-      "controllers": ["BGR_B_APP", "BGR_S_APP", "BGR_TWR", "BOS_17_CTR"],
-      "departure_runways": [
-        {
-          "airport": "KBGR",
-          "rate": 10,
-          "runway": "33"
-        }
-      ],
-      "wind": {
-        "direction": "300-0"
-      },
-      "default_maps": ["BGR MAIN"]
-    },
-    "Land South": {
-      "arrival_runways": [
-        {
-          "airport": "KBGR",
-          "runway": "15"
-        }
-      ],
-      "inbound_rates": {
-        "AUG Arrival Land South": {
-          "KBGR": 10
-        },
-        "RANGY Arrival Land South": {
-          "KBGR": 10
-        },
-        "AUG Arrival Land North": {
-          "KBGR": 0
-        },
-        "RANGY Arrival Land North": {
-          "KBGR": 0
-        }
-      },
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "BGR_B_APP": ["BGR_S_APP"]
-        }
-      },
-      "controllers": ["BGR_B_APP", "BGR_S_APP", "BGR_TWR", "BOS_17_CTR"],
-      "departure_runways": [
-        {
-          "airport": "KBGR",
-          "rate": 10,
-          "runway": "15"
-        }
-      ],
-      "wind": {
-        "direction": "120-180"
-      },
-      "default_maps": ["BGR MAIN"]
-    }
-  },
-  "stars_config": {
-    "configurations": {
-      "STD": {
-        "inbound_assignments": {
-          "AUG Arrival Land North": "BGR_B_APP",
-          "AUG Arrival Land South": "BGR_B_APP",
-          "RANGY Arrival Land North": "BGR_B_APP",
-          "RANGY Arrival Land South": "BGR_B_APP"
-        },
-        "departure_assignments": {
-          "KBGR": "BGR_B_APP"
-        }
-      }
-    },
-
-    "center": "KBGR",
-    "scratchpads": {},
-    "stars_maps": ["BGR MAIN", "BGR EOVM", "BGR VFR", "BGR MVA", "BGR RVM"],
-    "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
-  }
 }

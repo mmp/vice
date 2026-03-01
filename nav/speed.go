@@ -5,7 +5,6 @@
 package nav
 
 import (
-	"slices"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -83,12 +82,20 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, fp *av.FlightPlan, 
 				accel *= 0.6
 			}
 		}
+		if nav.FlightState.Altitude >= 25000 {
+			// Thinner air at high altitude makes acceleration harder
+			accel *= 0.6
+		}
 		return setSpeed(min(targetSpeed, nav.FlightState.IAS+accel))
 	} else if nav.FlightState.IAS > targetSpeed {
 		decel := nav.Perf.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
 		decel = min(decel, targetRate/60)
 		if nav.Altitude.Assigned != nil && nav.FlightState.Altitude > *nav.Altitude.Assigned {
 			// Reduce deceleration since also descending
+			decel *= 0.6
+		}
+		if nav.FlightState.Altitude >= 25000 {
+			// Thinner air at high altitude makes deceleration harder
 			decel *= 0.6
 		}
 		return setSpeed(max(targetSpeed, nav.FlightState.IAS-decel))
@@ -126,7 +133,12 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 		return nav.targetAltitudeIAS()
 	}
 	if nav.Speed.Assigned != nil {
-		return *nav.Speed.Assigned, MaximumRate
+		if nav.Speed.Mach {
+			tas := av.MachToTAS(*nav.Speed.Assigned, wxs.Temperature()+273.15)
+			return av.TASToIAS(tas, nav.FlightState.Altitude), MaximumRate
+		} else {
+			return *nav.Speed.Assigned, MaximumRate
+		}
 	}
 
 	if hold := nav.Heading.Hold; hold != nil && nav.ETA(hold.FixLocation) < 180 /* slow 3 minutes out */ {
@@ -264,6 +276,21 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 	return ias, rate
 }
 
+// If the aircraft has reached an altitude where they transition to mach
+func (nav *Nav) machTransition() bool {
+
+	switch nav.Perf.Engine.AircraftType {
+	case "J":
+		return nav.FlightState.Altitude >= 27000
+	// case "P":
+	// 	return nav.FlightState.Altitude >= 5000
+	// case "T":
+	// 	return nav.FlightState.Altitude >= 3000
+	default:
+		return false // TODO: check if turboprops ever transition to mach
+	}
+}
+
 // ETA returns the estimated time in seconds until the aircraft will arrive at `p`, assuming it is flying direct.
 func (nav *Nav) ETA(p math.Point2LL) float32 {
 	dist := math.NMDistance2LLFast(nav.FlightState.Position, p, nav.FlightState.NmPerLongitude)
@@ -289,8 +316,19 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 }
 
 func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, speed float32, eta float32, ok bool) {
-	haveWaypointSpeedRestriction :=
-		slices.ContainsFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Speed > 0 })
+	if nav.Prespawn {
+		return false, 0, 0, false
+	}
+
+	// Explicit loop avoids slices.ContainsFunc which copies the large
+	// Waypoint struct by value for each element via the closure.
+	haveWaypointSpeedRestriction := false
+	for i := range nav.Waypoints {
+		if nav.Waypoints[i].Speed > 0 {
+			haveWaypointSpeedRestriction = true
+			break
+		}
+	}
 
 	// Skip all this work in the (common) case that it's unnecessary.
 	if len(nav.FixAssignments) > 0 || haveWaypointSpeedRestriction {
@@ -313,7 +351,7 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, speed float32
 			}
 
 			if spd != 0 {
-				return wp.OnSID, spd, eta, true
+				return wp.OnSID(), spd, eta, true
 			}
 		}
 	}

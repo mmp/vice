@@ -11,20 +11,16 @@ import (
 )
 
 type Provider interface {
-	// Returns a map from TRACON to available time intervals.
-	// For providers with precip data, intervals represent when both precip and atmos are available.
-	// For providers without precip data, intervals represent when atmos is available.
-	GetAvailableTimeIntervals() map[string][]util.TimeInterval
+	// GetPrecipURL returns precipitation radar URL (GCS only).
+	// Returns the item at-or-before the given time.
+	GetPrecipURL(facility string, t time.Time) (string, time.Time, error)
 
-	// Best effort, may not have it for all airports, but no error is returned for that.
-	GetMETAR(airports []string) (map[string]METARSOA, error)
-
-	// Returns the item at-or-before the given time
-	GetPrecipURL(tracon string, t time.Time) (string, time.Time, error)
+	// GetAtmosGrid returns atmospheric grid for simulation.
+	// GCS provides full spatial grid; local fallback provides single averaged sample.
 	// Returns atmos, its time, the time for the next one in the series.
 	// If primaryAirport is non-empty and no atmos data is available, creates
 	// a fallback grid from the primary airport's METAR wind data.
-	GetAtmosGrid(tracon string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error)
+	GetAtmosGrid(facility string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error)
 }
 
 const (

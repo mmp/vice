@@ -1,0 +1,18 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "KWA_TWR",
+            "frequency": 126200,
+            "radio_name": "Kwajalein Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZOA",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

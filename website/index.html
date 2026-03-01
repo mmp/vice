@@ -104,7 +104,8 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#draw-routes">Drawing Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#launches">Launching Aircraft</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#multi-controller">Multiple Controllers</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Instructions</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Instructions (Keyboard)</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands-spoken">ATC Instructions (Spoken)</a></li>
 
 	  <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-installation"><span class="theme-icon-holder me-2"><i class="fas fa-arrow-down"></i></span>Installation</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#install-windows">Windows</a></li>
@@ -113,6 +114,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.1">0.14.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.0">0.14.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.3">0.13.3</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.2">0.13.2</a></li>
@@ -196,6 +198,7 @@
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-radar-site">RADAR Sites</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#audio-alerts">Audio</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-preferences">Preferences</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-fdam">FDAMs</a></li>
 	    </ul>
 	  </li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-display-elements">Display Elements</a>
@@ -213,6 +216,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-locations">Specifying Locations</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-routes">Aircraft Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airlines-aircraft">Airlines and Aircraft</a></li>
+          <li class="nav-item"><a class="nav-link scrollto" href="#fe-facility-config">Facility Configuration</a></li>
           <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenario-groups">Scenario Groups</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airports">Airports</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-approaches">Approaches</a></li>
@@ -231,6 +235,7 @@
 	    <ul class="submenu">
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-list-format">List Formatting</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-filters">Filter Regions</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-fdam">FDAM Regions</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-video-maps">Video Maps</a></li>
 	    </ul>
 	  </li>
@@ -324,7 +329,7 @@ index ca31f47..48159e0 100644
               </p>
               <p><i>vice</i> supports departure and arrival control
                 scenarios in numerous TRACONs and ATCT/TRACONs, currently:
-A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, BTV, BUF, C90, CHS, CID, CLE, CLT, COS, CPR, D01, D10, D21, DAB, EWR, F11, GSO, GSP, GTF, I90, IND, JAX, L30, M98, MCI, MDT, MIA, MKE, N90, NCT, OKC, P31, P50, P80, PCT, PHL, PIT, PVD, PWM, R90, RDU, S46, S56, SAV, SBA, SBN, SCT, SDF, SGF, SYR, TPA, and Y90.
+A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, BTV, BUF, C90, CHS, CID, CLE, CLT, COS, CPR, CVG, D01, D10, D21, DAB, F11, GSO, GSP, GTF, HNL, I90, IND, JAX, L30, M98, MCI, MDT, MIA, MKE, MYR, N90, NCT, OGG, OKC, P31, P50, P80, PCT, PHL, PIT, PVD, PWM, R90, RDU, S46, S56, SAT, SAV, SBA, SBN, SCT, SDF, SGF, SYR, TPA, and Y90.
                 New scenarios are regularly added.
                 Adding scenarios at additional airports is a matter of writing JSON configuration files that describe them;
                 see <a href="#section-facility-engineering">below</a> for
@@ -400,9 +405,11 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
               The approach codes&mdash;here, "27R" and "35"&mdash; are used in <i>vice</i>'s aircraft control commands like "expect approach"
               and "cleared approach".
             </p>
-            <p>To adjust the amount of space used for flight strips, right click the line separating the flight strips from the
-              radar window and drag left or right with your mouse.
-              You can also remove flight strips entirely by opening the settings window, <i class="fas fa-cog"></i> in the menubar, and disabling "Show flight strips" under the "Flight strips" header.
+            <p>The Messages and Flight Strips windows can be toggled
+              on and off using the <i class="fas fa-comment"></i> and
+              <i class="fas fa-clipboard-list"></i> buttons in the
+              menubar.  Both windows can be repositioned and resized
+              freely, and their layout is saved across sessions.
             </p>
             <p>
               A number of buttons are available in the menu bar at the top of the window:
@@ -419,6 +426,8 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 of <i>vice</i>'s <a href="#atc-commands">ATC commands</a>
                 and frequently-used STARS commands.</li>
                 <li> <i class="fas fa-plane-departure"></i>: open a window with controls for launching aircraft, either automatically or manually.</li>
+                <li> <i class="fas fa-comment"></i>: toggle the Messages window, which displays system messages and alerts.</li>
+                <li> <i class="fas fa-clipboard-list"></i>: toggle the Flight Strips window.</li>
                 <li> <i class="fas fa-book"></i>: open this webpage to review <i>vice</i>'s documentation.</li>
                 <li> <i class="fas fa-info-circle"></i>: display information about the version of <i>vice</i> you have installed.</li>
                 <li> <i class="fab fa-discord"></i>: join the <i>vice</i> Discord.</li>
@@ -543,7 +552,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
           </section>
 
 	  <section class="docs-section" id="atc-commands">
-            <h2 class="section-heading">ATC Instructions</h2>
+            <h2 class="section-heading">ATC Instructions (Keyboard)</h2>
 
             <p>A variety of instructions can be issued to aircraft by an aircraft controller.
               To issue an instruction, first press the <code>[TAB]</code> key.
@@ -792,6 +801,18 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <td><code>TS210</code></td>
                   </tr>
                   <tr>
+                    <td><code>M</code><i>mach</i></td>
+                    <td>Gives the aircraft a mach speed restriction.</td>
+                    <td><code>M78</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>TM</code><i>mach</i></td>
+                    <td>Gives the aircraft a mach speed restriction to be
+                      applied after the aircraft climbs or descends to the
+                      most recent controller-specified altitude.</td>
+                    <td><code>TM78</code></td>
+                  </tr>
+                  <tr>
                     <td><code>SMIN</code></td>
                     <td>Directs the aircraft to maintain its slowest practical speed.</td>
                     <td><code>SMIN</code></td>
@@ -802,9 +823,36 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <td><code>SMAX</code></td>
                   </tr>
                   <tr>
+                    <td><code>SPRES</code></td>
+                    <td>Instructs the aircraft to maintain its present speed.</td>
+                    <td><code>SPRES</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>S</code><i>kts</i><code>+</code></td>
+                    <td>Assigns a speed floor: aircraft should fly at or above the specified speed. Currently treated as a standard speed assignment.</td>
+                    <td><code>S180+</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>S</code><i>kts</i><code>-</code></td>
+                    <td>Assigns a speed ceiling: aircraft should not exceed the specified speed. Currently treated as a standard speed assignment.</td>
+                    <td><code>S180-</code></td>
+                  </tr>
+                  <tr>
                     <td><code>SS</code></td>
-                    <td>Directs the aircraft to say its indicated airspeed.</td>
+                    <td>Directs the aircraft to say its indicated airspeed. If above its transition altitude, it will respond with its
+                      Mach number instead.
+                    </td>
                     <td><code>SS</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>SI</code></td>
+                    <td>Forces the pilot to give their indicated airspeed, regardless of their altitude.</td>
+                    <td><code>SI</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>SM</code></td>
+                    <td>Directs an aircraft to say its Mach number. This will only work when they're above their transition altitude.</td>
+                    <td><code>SM</code></td>
                   </tr>
                 </tbody>
               </table>
@@ -860,6 +908,12 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 </thead>
                 <tbody>
                   <tr>
+                    <td><code>ATIS/</code><i>letter</i></td>
+                    <td>Tells the pilot the current ATIS information letter. (This is mostly useful if
+                      the pilot reports having an out-of-date ATIS in their initial contact.)</td>
+                    <td><code>ATIS/B</code></td>
+                  </tr>
+                  <tr>
                     <td><code>FC</code></td>
                     <td>"Frequency change": change radio frequency to the controller the aircraft was handed off to
                       and contact them.</td>
@@ -899,6 +953,12 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <td><code>EI2L</code></td>
                   </tr>
                   <tr>
+                    <td><code>E</code></td>
+                    <td>Re-issues expect for the already-assigned approach,
+                    telling the pilot to standby.</td>
+                    <td><code>E</code></td>
+                  </tr>
+                  <tr>
                     <td><code>C</code><i>approach</i></td>
                     <td>Clears the aircraft for the specified
                     approach. The aircraft must have been told to expect the approach before it is cleared for it.</td>
@@ -915,6 +975,13 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     it passes the given fix. The approach identifier is optional;
                     if not specified, uses the previously-assigned approach.</td>
                     <td><code>AROSLY/C</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>A</code><i>fix</i><code>/I</code></td>
+                    <td>Directs the aircraft to intercept the localizer when
+                    it passes the given fix. The aircraft must have been told
+                    to expect an approach before this command is given.</td>
+                    <td><code>AROSLY/I</code></td>
                   </tr>
                   <tr>
                     <td><code>CAC</code></td>
@@ -966,7 +1033,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                   </tr>
                   <tr>
                     <td><code>GA</code></td>
-                    <td>"Go ahead" - respond to an abbreviated VFR flight following request.</td>
+                    <td>"Go ahead" - respond to a VFR request.</td>
                     <td><code>GA</code></td>
                   </tr>
                 </tbody>
@@ -1008,6 +1075,423 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
 
 	    </section><!--//docs-intro-->
 
+	  <section class="docs-section" id="atc-commands-spoken">
+            <h2 class="section-heading">ATC Instructions (Spoken)</h2>
+
+            <p>There is also support for issuing aircraft commands by speaking out loud (via
+              <i>speech to text</i>, or STT).
+              This is very much a work in progress but it is progressing quickly.
+            </p>
+            <p>STT works best if you have a decent microphone and are not in a noisy environment
+              (music or TV in the background, etc.)
+              Results will generally be better if you have a discrete GPU in your computer (or
+              a laptop with a powerful laptop GPU); parts of STT run on the GPU. In order to
+              have good response times on machines with slower (or no) GPUs, we have to do
+              less processing on spoken text and thus have more inaccurate transcriptions.
+            </p>
+            <p>A few options related to STT may be controlled via the settings menu (<i class="fas fa-cog"></i> in the menubar):</p>
+            <div class="text-center">
+              <img src="stt-settings.png" srcset="stt-settings-2x.png 2x" width="380" height="166">
+            </div><br>
+            <p>It's important to make sure that the correct microphone is selected, if you have more than one (e.g. a headset and the built-in microphone).
+              By default, the push-to-talk key is <code>;</code>, though this can be changed to another key.
+              The model allows selection of different speech-to-text transcription models; <i>vice</i> tries to choose one that gives
+              a reasonable balance of accuracy and speed for your system.
+              If you try a different model and are happier with the overall experience, please report your findings on the <i>vice</i> discord!
+            </p>
+            <p><i>vice</i>'s STT system expects that proper (US FAA) phraseology will be used
+              to issue aircraft instructions, specifically <a href="https://www.faa.gov/air_traffic/publications/atpubs/atc_html/chap2_section_4.html">Section 2-4: Radio and Interphone Communications</a> for the basics and then other instructions as specified in the 7110.65.
+              It tries to be flexible to allow minor deviations
+              as are used in practice (as well as to allow errors in the STT transcription of the
+              audio), but if your phraseology is highly non-standard, you will likely not have
+              a good experience.
+            </p>
+            <p>STT is also mostly limited to the control commands that <i>vice</i> supports in general
+              (i.e., those described in the <a href="#atc-commands">previous section</a>), though
+              there are a few commands that are STT-only. More details about expected phraseology
+              and supported commands in specific scenarios are in the following.
+            </p>
+            <p>The following instructions are currently supported:
+            </p>
+            <h3>Altitude</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Assign Altitude</td>
+                  <td>
+                    <i>Maintain (altitude)</i> /  <i>Descend and maintain (altitude)</i> /  <i>Climb and maintain (altitude)</i> / 
+                    <i>Altitude your discretion</i> (for VFRs).
+                  </td>
+                </tr>
+                <tr><td>Altitude at Fix</td>
+                  <td>
+                    <i>Cross (fix) at (altitude)</i> /  <i>Cross (fix) at or above (altitude)</i>
+                  </td>
+                </tr>
+                <tr><td>Altitude after Speed</td>
+                  <td>
+                    <i>...then climb and maintain (altitude)</i> /  <i>...then descend and maintain (altitude)</i>, after a speed assignment&mdash;the aircraft will climb/descend after reaching the speed.
+                  </td>
+                </tr>
+                <tr><td>Expedite Altitude</td>
+                  <td>
+                    <i>Expedite descent</i> /  <i>Expedite climb</i>
+                  </td>
+                </tr>
+                <tr><td>Say Altitude</td>
+                  <td>
+                    <i>Say altitude</i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>SIDs and STARs</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Climb/Descend Via</td>
+                  <td>
+                    <i>Climb via the (SID)</i> /  <i>Climb via SID</i> /  <i>Descend via the (STAR)</i> /  <i>Descend via STAR</i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Lateral Navigation</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Heading</td>
+                  <td>
+                    <i>Turn left heading (heading)</i> /  <i>Turn right heading (heading)</i> / 
+                    <i>Fly heading (heading)</i>
+                  </td>
+                </tr>
+                <tr><td>Present Heading</td>
+                  <td>
+                    <i>Fly present heading</i>
+                  </td>
+                </tr>
+                <tr><td>Turn Degrees</td>
+                  <td>
+                    <i>Turn (number) degrees left</i> /  <i>Turn (number) degrees right</i>
+                  </td>
+                </tr>
+                <tr><td>Say Heading</td>
+                  <td>
+                    <i>Say heading</i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Speed</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Assign Speed</td>
+                  <td>
+                    <i>Reduce speed to (speed)</i> /  <i>Slow to (speed)</i> /  <i>Increase speed to (speed)</i> / 
+                    <i>Speed (speed)</i> /  <i>Maintain (speed) knots</i>
+                  </td>
+                </tr>
+                <tr><td>Assign Mach</td>
+                  <td>
+                    <i>Reduce mach to Mach (mach)</i> /  <i>Slow to Mach (mach)</i> /  <i>Increase to Mach (mach)</i> / 
+                    <i>Mach (mach)</i> /  <i>Maintain mach (mach)</i>
+                  </td>
+                </tr>
+                <tr><td>Speed at Fix</td>
+                  <td>
+                    <i>Cross (fix) at (speed) knots</i> / <i>Cross (fix) at Mach (mach)</i>
+                  </td>
+                </tr>
+                <tr><td>Speed after Altitude</td>
+                  <td>
+                    <i>...then reduce speed to (speed)</i> / <i>...then increase speed to (speed)</i> / <i>...then speed (speed)</i> /
+                    <i>at (altitude), increase/reduce speed to (speed)</i> / <i> ...then reduce to Mach (mach)</i> / <i>...then increase to Mach (mach)</i> / 
+                    <i>...then speed Mach (mach)</i> / <i>at (altitude), Mach (mach)</i>:
+                    after an altitude assignment, then the speed adjustment will be made after the aircraft reaches the altitude.
+                  </td>
+                </tr>
+                <tr><td>Minimum/Maximum Speed</td>
+                  <td>
+                    <i>Slowest practical speed</i> /  <i>Slow to minimum practical speed</i> / 
+                    <i>Maximum forward speed</i> /  <i>Best forward speed</i> / 
+                    <i>Reduce to final approach speed</i>
+                  </td>
+                </tr>
+                <tr><td>Cancel Speed</td>
+                  <td>
+                    <i>Cancel speed restrictions</i> /  <i>Resume normal speed</i> / <i>Speed your discretion</i> /
+                    <i>Comply with speed restrictions</i> / <i>Delete speed restrictions</i> / <i>No speed restrictions</i>
+                  </td>
+                </tr>
+                <tr><td>Maintain Present Speed</td>
+                  <td>
+                    <i>Maintain present speed</i> / <i>Present speed</i>
+                  </td>
+                </tr>
+                <tr><td>Speed Or Greater</td>
+                  <td>
+                    <i>Maintain (speed) or greater</i> / <i>(speed) or better</i>
+                  </td>
+                </tr>
+                <tr><td>Do Not Exceed</td>
+                  <td>
+                    <i>Do not exceed (speed)</i>
+                  </td>
+                </tr>
+                <tr><td>Say Speed</td>
+                  <td>
+                    <i>Say speed</i> /  <i>Say airspeed</i>
+                  </td>
+                </tr>
+                <tr><td>Say Mach</td>
+                  <td>
+                    <i>Say Mach</i> /  <i>Say Mach number</i>
+                  </td>
+                </tr>
+                <tr><td>Say indicated airspeed</td>
+                  <td>
+                    <i>Say indicated</i> / <i>Say indicated airspeed</i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p>When a speed instruction is given after an approach clearance, the following qualifiers may be added:
+            </p>
+            <ul>
+              <li>"... until X mile final"</li>
+              <li>"... until X DME"</li>
+              <li>"... until (fix)" (generally, the FAF).</li>
+            </ul>
+            <h3>Altitude</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Direct to Fix</td>
+                  <td>
+                    <i>Direct (fix)</i> /  <i>Proceed direct (fix)</i> /  <i>Cleared direct (fix)</i>
+                  </td>
+                </tr>
+                <tr><td>Depart Fix</td>
+                  <td>
+                    <i>Depart (fix) heading (heading)</i>
+                  </td>
+                </tr>
+                <tr><td>Hold</td>
+                  <td>
+                    <i>Hold at (fix)</i> /  <i>Hold (direction) of (fix)</i> /  <i>Hold at (fix) as published</i>.
+                    For non-published holds, <i>on the (number) radial</i>, <i>(number) minute legs</i> and <i>left/right turns</i>
+                    may also be specified.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Approaches</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Expect Approach</td>
+                  <td>
+                    <i>Expect (approach)</i> /  <i>Vectors (approach)</i> /  <i>Vectors for (approach)</i>. The approach specified may include a LAHSO, e.g. "expect ILS runway 22 left approach, land and hold short runway 31 left".
+                  </td>
+                </tr>
+                <tr><td>Cleared Approach</td>
+                  <td>
+                    <i>Cleared (approach)</i> /  <i>Cleared straight in (approach)</i> /  <i>At (fix) cleared (approach)</i>. Note: a speed assignment after an approach clearance is interpreted as until 5 DME.
+                  </td>
+                </tr>
+                <tr><td>Intercept Localizer</td>
+                  <td>
+                    <i>Intercept the localizer</i> /  <i>Join the localizer</i> /  <i>At (fix) intercept the localizer</i>
+                  </td>
+                </tr>
+                  <tr><td>Standby Approach</td>
+                  <td>
+                    <i>Standby [for] [the] approach</i>
+                  </td>
+                  </tr>
+                  <tr><td>Expect Approach (standby)</td>
+                  <td>
+                    <i>Expect [the] approach</i>
+                  </td>
+                  </tr>
+                <tr><td>Cancel Approach</td>
+                  <td>
+                    <i>Cancel approach clearance</i>
+                  </td>
+              </tbody>
+            </table>
+            <h3>VFR Aircraft</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Squawk Beacon Code</td>
+                  <td>
+                    <i>Squawk (code)</i>
+                  </td>
+                </tr>
+                <tr><td>Ident</td>
+                  <td>
+                    <i>Ident</i>
+                  </td>
+                </tr>
+                <tr><td>Transponder Mode</td>
+                  <td>
+                    <i>Squawk standby</i> /  <i>Squawk altitude</i> /  <i>Squawk normal</i>
+                  </td>
+                </tr>
+                <tr><td>Go Ahead / Say Request</td>
+                  <td>
+                    <i>Go ahead</i> / <i>Say request</i> (after a VFR request)
+                  </td>
+                </tr>
+                <tr><td>Resume Own Navigation</td>
+                  <td>
+                    <i>Resume own navigation</i>
+                  </td>
+                </tr>
+                <tr><td>Radar Services Terminated</td>
+                  <td>
+                    <i>Radar services terminated, frequency change approved</i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Handoffs</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Contact Tower</td>
+                  <td>
+                    <i>Contact tower</i> /  <i>Contact (facility) tower (frequency)</i>
+                  </td>
+                </tr>
+                <tr><td>Frequency Change</td>
+                  <td>
+                    <i>Contact (facility) (frequency)</i>
+                  </td>
+                </tr>
+                <tr><td>ATIS</td>
+                  <td>
+                    <i>Information (letter) is current</i> /  <i>Advise you have information (letter)</i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Traffic Calls</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Traffic Advisory</td>
+                  <td>
+                    <i>Traffic (o'clock), (miles), (aircraft type), (altitude)</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), report in sight</i>
+                  </td>
+                </tr>
+                <tr><td>Visual Separation</td>
+                  <td>
+                    <i>Maintain visual separation from the traffic</i> (after traffic has been reported in sight).
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Corrections</h3>
+            <p>If STT misidentifies the callsign and sends a command to the wrong aircraft, you can
+              correct it by saying "negative, that was for (correct callsign)" followed by the
+              command for the correct aircraft. This will undo the command sent to the wrong aircraft
+              and apply the new command to the correct one. Do not repeat the wrong aircraft's callsign&mdash;this
+              avoids confusing them.
+            </p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Callsign Correction</td>
+                  <td>
+                    <i>Negative, that was for (callsign). (Callsign), (command)</i>&mdash;e.g., "Negative, that was for Delta 456. Delta 456, turn left heading 270."
+                    This undoes the previous command (which went to the wrong aircraft) and issues the new command to the correct aircraft.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Advisories</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:20%">Type</th>
+                  <th>Phraseology</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>ATIS</td>
+                  <td>
+                    <i>ATIS (letter) is current / advise you have information (letter)</i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Miscellaneous / Filler</h3>
+            <p>The STT system is aware of variety of phrases that may be part of instructions or controller replies
+              but do not correspond to instructions themselves. These include:
+            </p>
+            <ul>
+              <li>"Radar contact"</li>
+              <li>"Roger"</li>
+              <li>"Good day", "Seeya", "Hello"</li>
+              <li>"Altimeter ..."</li>
+            </ul>
+
+	  </section><!--//docs-intro-->
+
         </article>
 
         <article class="docs-article" id="section-installation">
@@ -1015,7 +1499,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <h1 class="docs-heading">Installation</h1>
 
             <section class="docs-intro">
-              <p>Installing <i>vice</i> is straightforward, at least on Windows and Macs; on Linux, you need to do a little more work.
+              <p>Installing <i>vice</i> is straightforward on Windows, Mac, and Linux!
               </p>
             </section><!--//docs-intro-->
           </header>
@@ -1035,7 +1519,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.13.3/Vice-v0.13.3-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.3 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.14.0/Vice-v0.14.0-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.0 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1044,15 +1528,17 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.13.3/Vice-v0.13.3-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.3 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.14.0/Vice-v0.14.0-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.0 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
             <h2 class="section-heading"><i class="fa-brands fa-linux"></i> Linux</h2>
-
-            <p>On Linux systems, it is necessary to install <i>vice</i> from source.
-              See the <a href="https://github.com/mmp/vice#building-vice">directions on building vice on Linux</a> in the source code distribution for details.
-              </p>
+            <p><i>Vice</i> is packaged as a flatpak and published to flathub.
+                Install it directly from GNOME Software/KDE Discover or follow the instructions from flathub.
+                Run it from your application launcher or by running <code>flatpak run io.github.mmp.Vice</code>.</p>
+            <a href='https://flathub.org/en/apps/io.github.mmp.Vice'>
+              <img width='240' alt='Get it on Flathub' src='https://flathub.org/api/badge?locale=en'>
+            </a>
           </section><!--//section-->
 
           <section class="docs-section" id="bugs">
@@ -1071,28 +1557,82 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
-            <h3 id="release-0.14.0">0.14.0 (TBD)</h3>
+            <h3 id="release-0.14.1">0.14.1 (TBD)</h3>
             <ul>
-              <li>Added speech-to-text support (Michael Trokel)</li>
-              <li>New Scenarios: ZLC Area C (JY_SUPn't)</li>
-              <li>Scenario updates: BOS (radarcontacto)</li>
+              <li>New scenario: ZJX Consolidated (Jake Magee).</li>
+              <li>Long requested: you can actually move sub-windows outside of the main window.
+                <ul>
+                  <li>The flight strip and messages windows are now sub-windows and now its just the radar scope in the main window.</li>
+                </ul>
+              </li>
+              <li>Text to speech now runs locally on your computer rather than in the cloud.</li>
+              <li>Added ATIS simulation: see the ATIS/METAR tab in the scenario info window for what's current.
+                <ul>
+              <li>Aircraft will call in with the current ATIS; if it's changed and they call in with the old one, STT supports "information X is now current," "advise you have information X", etc., or with the keyboard you can issue the command <code>ATIS/X</code> to tell them X is current.</li>
+                </ul>
+              </li>
+              <li>Lots of small improvements to speech-to-text.</li>
+              <li>ERAM
+                <ul>
+                  <li>Added support for giving aircraft speeds in mach (Michael Trokel)</li>
+                </ul>
+              </li>
+              <li>Bugfixes:
+                <ul>
+                  <li>Handle Pacific "P" and Carribean "T" airports better.</li>
+                  <li>Use sim time, not wallclock time for delayed heading changes so it works better when sped up (Jordan Williams).</li>
+                  <li>"CSI" for cleared straight in approach without specifying the approach works now.</li>
+                  <li>STARS force quicklook was unintentionally being applied to all controllers.</li>
+                  <li>Handing off tracks before they call in should work better; they will still call in to your frequency first.</li>
+                  <li>Fixed long stalls after clicking a new ARTCC/TRACON in the new sim window.</li>
+                  <li>Fixed issues with crosswinds pushing aircraft off of the localizer/final approach course.</li>
+                  <li>Fixed longstanding bug where aircraft sent direct to a fix on an approach but not cleared would start descending anyway (Jordan Williams).</li>
+                  <li>Fixed bug where aircraft couldn't climb past FL322.</li>
+                </ul>
+              </li>
+              <li>Flight strips have been reworked; right click to get a menu to push them to the next controller.</li>
+              <li>Facility engineering updates:
+                <ul>
+                  <li>Major rework of how facility-specific data is managed; see (Michael Trokel)</li>
+                  <li>Added support for STARS FDAM (flight data auto-modify) filters: this allows setting things like scratchpad, leader line direction, for (selected) aircraft in a filter region.</li>
+                  <li>Added qualifying attributes to quicklook filter regions: it can now depend on owning TCP, scratchpad, flight type, flight rules, CWT category, and a bunch of other things.</li>
+                  <li>CRDA: no longer has to be tied to runways. Paths can include arcs and don't have to be straight lines. Convergence points can be arbitrary, don't have to be runway intersections.</li>
+                  <li>Added "go_around" object to "arrival_runways" specifiers: can specify heading, altitude, and handoff controller for each arrival runway.</li>
+                  <li>Added "monitor" option under "config" in facility configuration types to specify a display monitor type to simulate;
+                    for STARS this determines the color scheme. Options are "legacy", "mdm3", and "mdm4".</li>
+                </ul>
+              </li>
+            </ul>
+
+            <h3 id="release-0.14.0">0.14.0 (6 Feb 2026)</h3>
+            <ul>
+              <li>Added speech-to-text support (Michael Trokel / Matt P)</li>
+              <li>New Scenarios: ZLC Area C (JY_SUPn't), ZJX 30 (Jake Magee), CVG (manaphy), ZDV Area 3 (Andrew S)</li>
+              <li>Scenario updates: BOS, ACK, MHT (radarcontacto), P50 (Ketan K), COS (Andrew S), BGR (Ryan G), M98 (Logan S), F11, ZJX 50 (Jud Lopez), DAB, F11 (Michael Knight), MIA (Gecko)</li>
               <li>Added search box to filter scenarios</li>
               <li>Improved pilot readbacks to be more natural / cohesive</li>
-              <li>VFRs are better about not flying into terrain</li>
+              <li>VFRs are better about not flying into terrain (and staying out of the flight levels)</li>
+              <li>Added "at fix, intercept the localizer" command: <code>AFIX/I</code></li>
+              <li>Fixed bug with multi-controller scenarios where controllers could be locked out of issuing aircraft commands.</li>
               <li>STARS:
                 <ul>
                   <li>Fixed bug where interfacility handoffs would get a FORMAT error</li>
                   <li>Fixed keyboard input for DCB button values (e.g. RANGE)</li>
                 </ul>
               </li>
-              <li>Bug fixes:
+              <li>ERAM:
                 <ul>
-                  <li>Fixed bug with multi-controller scenarios where controllers could be locked out of issuing aircraft commands.</li>
+                  <li>Added QF and QU commands</li>
+                  <li>Added tearoffs, cursors, and clock</li>
+                  <li>Added HSF data</li>
+                  <li>Switched tertiary/primary mouse clicks to primary/secondary</li>
                 </ul>
               </li>
               <li>Facility engineering:
                 <ul>
-                  <li>Headings leaving fixes in routes can be specified to be left or right turns: <code>PUCKY/l320</code>, <code>ROSLY/r250</code>, etc. (Xavier Caldwell).</li>
+                  <li>Headings leaving fixes in routes can be specified to be left or right turns: <code>PUCKY/L320</code>, <code>ROSLY/R250</code>, etc. (Xavier Caldwell)</li>
+                  <li>Specific routes (not just the entire airport) can be marked hold for release</li>
+                  <li>Departures' contact location can be defined in routes</li>
                 </ul>
               </li>
             </ul>
@@ -1138,8 +1678,8 @@ how it simulates aircraft or the STARS interface.
                   </ul></li>
               <li>Facility engineering
                 <ul>
-                  <li>Added "max_distance" field for when far-away aircraft are culled (125nm default)</li>
-                  <li>"solo_controller" and "multi_controllers" are both gone: "configuration"s are now specified in "stars_config"; they give which arrival/departure flows go to which controller. Then each scenario has a "configuration" field as well; it references a configuration from "stars_config" and also provides a default consolidation: the controller hierarchy.</li>
+                  <li>Added "max_distance" field for when far-away aircraft are culled (125nm default for STARS, 400nm for ERAM)</li>
+                  <li>"solo_controller" and "multi_controllers" are both gone: "configuration"s are now specified in "config"; they give which arrival/departure flows go to which controller. Then each scenario has a "configuration" field as well; it references a configuration from "config" and also provides a default consolidation: the controller hierarchy.</li>
                   <li>Removed deprecated "arrivals" for specifying arrival rates; this is now "inbound_rates".</li>
               </ul></li>
             </ul>
@@ -1237,6 +1777,7 @@ how it simulates aircraft or the STARS interface.
                   <li>Added crc2vice-eram command</li>
                 </ul>
               </li>
+            </ul>
                 
             <div id="release-earlier" class="container">
               <button id="toggleButton">🔍 Show Earlier Releases</button>
@@ -1244,8 +1785,6 @@ how it simulates aircraft or the STARS interface.
             <div id="hiddenText" style="display:none;">
               <br>
           
-            </ul>
-
             <h3 id="release-0.12.2">0.12.2 (29 August 2025)</h3>
             <ul>
               <li>Scenario update: MIA (Connor Allen)</li>
@@ -1336,7 +1875,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                       <li>"vfr_inhibit": an additional region (beyond B and C airspace) that VFRs will remain outside of.</li>
                     </ul>
                   </li>
-                  <li>"inhibit_ca_volumes" in "stars_config" has moved to "inhibit_ca" under the "filters".</li>
+                  <li>"inhibit_ca_volumes" in "config" has moved to "inhibit_ca" under the "filters".</li>
                   <li>For airspace volumes, the "name" field was renamed to "label" (and can be no more than 7 characters).
                     Added a "description" field for a longer description of it.</li>
                   <li>Added support "ssr_codes" to specify beacon code pool for local flight plans.</li>
@@ -1397,9 +1936,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
               <li>Facility engineering:
                 <ul>
-                  <li>Added "custom_spcs" in "stars_config" to allow specifying facility-specific special purpose codes that
+                  <li>Added "custom_spcs" in "config" to allow specifying facility-specific special purpose codes that
                     aircraft can have assigned to them. There is also now "display_custom_spcs" under the "pdb" adaptation
-                    in "stars_config" to determine whether such SPCs are shown in partial datablocks.</li>
+                    in "config" to determine whether such SPCs are shown in partial datablocks.</li>
                   <li>Added "beacon_code_blocks" to "controller_configs" to allow specifying per-controller default monitored
                     beacon code blocks.</li>
                   <li>STARS now has a <code>.VFR</code> command to toggle whether the VFR airports are shown on the scope and
@@ -1473,14 +2012,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <li>Departures are now auto-tracked by default.</li>
                   <li>Improve representation of SPCs (Makoto Sakaguchi.)</li>
                   <li>Improve handling of altimeters in SSA list: don't draw more than 6, allow developer to specify the ones
-                    to draw via "altimeters" in "stars_config" if there are more than 6.</li>
+                    to draw via "altimeters" in "config" if there are more than 6.</li>
                   <li>When a partial callsign is given to specify an aircraft to be given an instruction, it must be
                     a unique suffix of an aircraft callsign; we no longer accept a prefix or the middle part of a callsign.</li>
                   <li>OJTI mode now available where an instructor can issue aircraft control commands (Michael Trokel).</li>
                 </ul>
               <li>Facility engineering:
                 <ul>
-                  <li>New adaptations under "stars_config": "handoff_acceptance_flash_duration" gives the number of seconds
+                  <li>New adaptations under "config": "handoff_acceptance_flash_duration" gives the number of seconds
                     datablocks flash after an accepted handoff, "handoff_sector_display_duration" gives the number of seconds
                     the external sector id is displayed after a handoff, and "display_handoff_facility_only" inhibits the
                     display of external facility sector ids in datablocks.</li>
@@ -1524,7 +2063,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <li>"arrival_groups" is no longer supported: arrivals must be specified using the <a href="#fe-arrivals">"inbound_flows"</a> variable.</li>
                   <li>"star" is now optional for arrivals; the pilot contact message has been improved for arrivals not on STARs.</li>
                   <li>Added an adaptation ("yellow_entries") for coordination lists that causes list entries to be yellow, not green.</li>
-                  <li>Added an adaptation ("use_legacy_font") to "stars_config" to select the legacy STARS font.
+                  <li>Added an adaptation ("use_legacy_font") to "config" to select the legacy STARS font.
                     (The font used can also be selected in the "settings" window.)</li>
                 </ul>
                 </li>
@@ -1551,7 +2090,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>Added global scale controls for departure and arrival/overflight rates.</li>
               <li>Facility engineering:
                 <ul>
-                  <li>Added "scratchpad1" adaptation to "stars_config", providing 4 preset scratchpad formats for departures.</li>
+                  <li>Added "scratchpad1" adaptation to "config", providing 4 preset scratchpad formats for departures.</li>
                   <li>In "expect_approach" in STARs, different approaches can be specified depending on the destination airport.</li>
                   <li>An array of altitudes may be specified for departures and overflights; one will be chosen at random for each aircraft.</li>
                   <li>For GA ("n" airline) aircraft, "GAsinglepiston", "GAmultipiston", and "GAturbine" fleets are now available.</li>
@@ -1712,7 +2251,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     the other information (short name for DCB, map id number) is found automatically.
                     Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the available
                     maps for an ARTCC.</li>
-                  <li>"stars_config" has a new "controller_configs" field that can be used to specify controller-adapted
+                  <li>"config" has a new "controller_configs" field that can be used to specify controller-adapted
                     sets of video maps in the DCB, which maps are enabled by default, as well
                     as the initial center and range of the STARS scope for each controller.</li>
                 </ul>
@@ -1792,9 +2331,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>Facility engineering changes/improvements:
                 <ul>
                   <li>In scenario groups, "tracon" must be a valid 3-letter id from the <a href="https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon">FAA list of TRACONs</a>. (This allows <i>vice</i> to present scenarios grouped by ARTCC and then TRACON.)</li>
-                  <li>In the <a href="#fe-scenario-groups">specification of controllers in "control_positions"</a>, "eram_facility" and "facility_id" may now be specified.</li>
+                  <li>In the <a href="#fe-facility-config">specification of controllers in "control_positions"</a>, "facility_id" may now be specified. ARTCC controllers automatically have their ERAM facility status set at runtime.</li>
                   <li><i>vice</i> now has a built-in model of magnetic declination. Therefore, the "magnetic_variation" setting is no longer used. If small adjustments are needed (e.g. due to video maps assuming a different magnetic adjustment, "magnetic_correction" can be used to add a small offset to the automatically-determined value.</li>
-                  <li>There is a new "stars_config" field in scenario definitions with a number of new fields to define per-facility STARS behavior. (See the <a href="#fe-stars-videomaps">STARS and Video Maps</a> section for details.) The entries "center", "inhibit_ca_volumes", "radar_sites", "range", "scratchpads", "stars_maps", and "video_map_file" have moved from the scenario to be inside "stars_config".</li>
+                  <li>There is a new "config" field in scenario definitions with a number of new fields to define per-facility STARS behavior. (See the <a href="#fe-stars-videomaps">STARS and Video Maps</a> section for details.) The entries "center", "inhibit_ca_volumes", "radar_sites", "range", "scratchpads", "stars_maps", and "video_map_file" have moved from the scenario to be inside "config".</li>
                   <li>In <a href="#fe-airports">airport specifications</a>, the Boolean value "omit_arrival_scratchpad" may be set to indicate that the arrival airport should not be shown in place of an empty scratchpad in datablocks.</li>
                 </ul>
               </li>
@@ -3667,7 +4206,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tr>
               </tbody>
             </table>
-            <p>It is also possible to add custom codes for a facility via "custom_spcs" in <a href="#fe-stars-videomaps">"stars_config"</a>.
+            <p>It is also possible to add custom codes for a facility via "custom_spcs" in <a href="#fe-stars-videomaps">"config"</a>.
             Custom SPCs are shown in yellow.</p>
 
             <h3 id="stars-leader-lines">Leader Lines and Positioning Datablocks</h3>
@@ -4944,7 +5483,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </thead>
                 <tbody>
                   <tr>
-                    <th rowspan="10" style="text-align: center; vertical-align: middle; writing-mode: vertical-rl; ">Leading CWT Class</th>
+                    <th rowspan="7" style="text-align: center; vertical-align: middle; writing-mode: vertical-rl; ">Leading CWT Class</th>
                     <td><b>A</b></td>
                     <td>-</td><td>4.5</td><td>6</td><td>6</td><td>7</td><td>7</td><td>7</td><td>7</td><td>8</td><td>10</td>
                   </tr>
@@ -5126,12 +5665,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>The brightness of range rings can be controlled with the "RR" spinner in the "BRITE" menu of the main DCB.
               If the brightness is set to 0, range rings are not drawn. </p>
             
-              <h3 id="crda">CRDA</h3>
+            <h3 id="crda">CRDA</h3>
 
-            <p>The Converging Runways Display Aid (CRDA) helps ensure separation between aircraft approaching
-              intersecting runways. It does so by drawing
-              "ghost" aircraft on one course that correspond to aircraft on another course. The idea is perhaps
-              best understood with an example:</p>
+            <p>The Converging Runway Display Aid (CRDA) helps ensure separation between aircraft on
+              intersecting paths. It does so by drawing
+              "ghost" aircraft on one course that correspond to aircraft on another course.
+              Although originally designed for converging runways, CRDA regions can be defined for
+              any pair of converging paths, including those based on fixes or curved routes.
+              The idea is perhaps best understood with an example:</p>
             <div class="text-center">
               <img src="crda.png" srcset="crda-2x.png 2x" width="473" height="298">
             </div>
@@ -5176,9 +5717,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     leading "K" from ICAO airport identifiers should not be included: "BOS", not "KBOS".</td>
                   </tr>
                   <tr>
-                    <td><code>(RUNWAY)</code></td>
-                    <td><i>Runway identifier</i>: one or two digits followed optionally by "L", "C", or "R", as
-                    appropriate. Runways numbered 9 or less should not have a leading zero.</td>
+                    <td><code>(REGION)</code></td>
+                    <td><i>CRDA region identifier</i>: the name of a CRDA region from an enabled pair.
+                    This may be a runway name (e.g., "22L") or any other identifier used in the
+                    scenario's CRDA region definitions. The name must uniquely
+                    identify a region among all enabled CRDA pairs (or be preceded by an airport
+                    identifier to disambiguate).</td>
                   </tr>
                 </tbody>
               </table>
@@ -5198,38 +5742,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)</code>/<br> <code>[MULTIFUNC]NP(#)</code></td>
                     <td>Toggles whether ghost tracks are enabled for the CRDA runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)S</code>/<br> <code>[MULTIFUNC]NP(#)S</code></td>
                     <td>Toggles stagger mode for the CRDA runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)T</code>/<br> <code>[MULTIFUNC]NP(#)T</code></td>
                     <td>Toggles tie mode for the given CRDA runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)D</code>/<br> <code>[MULTIFUNC]NP(#)D</code></td>
                     <td>Disables CRDA for the given runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]NL(AIRPORT)&nbsp;(RWY)(#)</code>/<br> <code>[MULTIFUNC]NL(RWY)(#)</code></td>
-                    <td>Set the leader line direction for ghost aircraft at the specified airport and given runway
+                    <td><code>[MULTIFUNC]NL(AIRPORT)&nbsp;(REGION)(#)</code>/<br> <code>[MULTIFUNC]NL(REGION)(#)</code></td>
+                    <td>Set the leader line direction for ghost aircraft at the specified airport and given region
                       according to the given number. Clears the assigned leader line direction if '5' is given.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N*ALL</code></td>
                     <td>Force ghost tracks for all aircraft. (Aircraft still must be within the lateral boundary of
-                    their runway's approach region for a ghost to be displayed, however.)</td>
+                    their CRDA region for a ghost to be displayed, however.)</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N[SLEW]</code></td>
@@ -5241,38 +5785,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>If a ghost track as slewed, display the aircraft's flight plan in the preview area.
                       If a primary track was slewed, toggle whether display of its ghost is forced (i.e., always
                       displayed regardless of heading, altitude, etc., so long as it is within the lateral
-                      boundary of its runway's approach region.)</td>
+                      boundary of its CRDA region.)</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)</code> / <code>[MULTIFUNC]N(RWY)</code></td>
-                    <td>Toggles whether ghosts are generated for the specified runway.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)</code> / <code>[MULTIFUNC]N(REGION)</code></td>
+                    <td>Toggles whether ghosts are generated for the specified region.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)E</code> / <code>[MULTIFUNC]N(RWY)E</code></td>
-                    <td>Enable ghosts for the specified runway.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)E</code> / <code>[MULTIFUNC]N(REGION)E</code></td>
+                    <td>Enable ghosts for the specified region.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)I</code> / <code>[MULTIFUNC]N(RWY)I</code></td>
-                    <td>Inhibit ghosts for the specified runway.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)I</code> / <code>[MULTIFUNC]N(REGION)I</code></td>
+                    <td>Inhibit ghosts for the specified region.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)&nbsp;B</code> / <code>[MULTIFUNC]N(RWY)&nbsp;B</code></td>
-                    <td>Toggle whether the <i>qualification region</i> for the runway is drawn;
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)&nbsp;B</code> / <code>[MULTIFUNC]N(REGION)&nbsp;B</code></td>
+                    <td>Toggle whether the <i>qualification region</i> for the CRDA region is drawn;
                       this is the lateral region of space aircraft must be inside for a ghost to be generated.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)&nbsp;L</code> / <code>[MULTIFUNC]N(RWY)&nbsp;L</code></td>
-                    <td>Toggle whether the <i>course lines</i> for the runway are drawn;
-                      these show the final approach course that CRDA is defined with respect to.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)&nbsp;L</code> / <code>[MULTIFUNC]N(REGION)&nbsp;L</code></td>
+                    <td>Toggle whether the <i>course lines</i> for the CRDA region are drawn;
+                      these show the approach course that CRDA is defined with respect to.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
@@ -5749,10 +6293,64 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tbody>
               </table>
 
+            <h3 id="stars-fdam">FDAMs</h3>
 
+            <p>Flight Data Auto-Modify (FDAM) regions automatically modify
+              flight data when an associated track enters an adapted
+              airspace volume. Entry actions may include changing
+              scratchpads, setting leader line directions, initiating
+              handoffs or ownership transfers, and issuing force quicklooks.
+              Some of these changes can be automatically reverted when the
+              track exits the region. FDAM regions are defined in scenario
+              configuration files; see the
+              <a href="#fe-stars-fdam">Facility Engineering</a> section for
+              details on their configuration.</p>
+
+            <p>The lateral extent of FDAM regions can be shown on the scope
+              via "SYS PROC" from the DCB "MAPS" menu.</p>
+
+            <p>The following supervisor commands control FDAM processing.</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X</code></td>
+                    <td>Toggles FDAM processing system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2XE</code></td>
+                    <td>Enables FDAM processing system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2XI</code></td>
+                    <td>Inhibits FDAM processing system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X(REGION)</code></td>
+                    <td>Toggles FDAM processing for a single region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X(REGION) E</code></td>
+                    <td>Enables FDAM processing for a single region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X(REGION) I</code></td>
+                    <td>Inhibits FDAM processing for a single region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2XS</code></td>
+                    <td>Displays the status of all FDAM regions.</td>
+                  </tr>
+                </tbody>
+              </table>
 
           </section>
-          
+
 
 	  <section class="docs-section" id="stars-display-elements">
             <h2 class="section-heading">Display Elements</h2>
@@ -5862,7 +6460,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Clear ATIS in given line
                     </td>
                   </tr>
-                  </tr>
                   <tr>
                     <td><code>[MULTIFUNC]S(#) * (TEXT)</code></td>
                     <td>Clear ATIS in given line and set GI text
@@ -5887,7 +6484,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>ALT FIL: altitude filters</li>
               <li>AIRPORT: altimeter at nearby airports</li>
               <li>QL: quick looked sectors</li>
-              <li>CRDA: active CRDA runway pairs</li>
+              <li>CRDA: active CRDA pairs</li>
               <li>WX: available and displayed weather precipitation levels</li>
               <li>ALTSTG: show altimeter at primary airport</li>
               <li>CODES: show selected beacon codes</li>
@@ -6395,8 +6992,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <p>In the following, the use of terms like "element", "object", "member", "array", etc.,
                 correspond to their use in the JSON specification.  See <a href="https://www.json.org/json-en.html">this page</a> for reference.
                 </p>
-              <p>See the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code> directory</a> in the 
-                  vice source code for the scenarios that are currently available and the
+              <p>See the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code> directory</a> in the
+                  vice source code for the scenarios that are currently available,
+                the <a href="https://github.com/mmp/vice/tree/master/resources/configurations"><code>resources/configurations/</code> directory</a> for
+                facility configuration files (control positions, STARS config, and handoff topology),
+                and the
                 <a href="https://github.com/mmp/vice/tree/master/resources/videomaps"><code>resources/videomaps/</code> directory</a> for
                 the video map definitions.
                 Files in those directories with names ending with a "zst" suffix have been compressed using <a href="https://facebook.github.io/zstd/">zstandard</a>;
@@ -6769,6 +7369,102 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </p>
           </section><!--//section-->
 
+          <section class="docs-section" id="fe-facility-config">
+            <h2 class="section-heading">Facility Configuration</h2>
+
+            <p>Facility-wide settings are defined in separate JSON files, stored in
+              the <a href="https://github.com/mmp/vice/tree/master/resources/configurations"><code>resources/configurations/</code></a>
+              directory. They're organized by ARTCC and facility name (e.g., <code>resources/configurations/ZNY/N90.json</code>).
+              When a scenario is loaded, <i>vice</i> automatically loads the corresponding facility configuration
+              based on the scenario's "tracon" field.
+            </p>
+            <p>Each facility configuration file may contain the following top-level elements:</p>
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"control_positions"</td>
+                <td>Object</td>
+                <td><p>Information about all of the controllers at the facility.
+                Each member specifies a controller for the named position/sector.
+                For each position, the following members should be specified:</p>
+                  <ul>
+                    <li>the sector id of the control position would be the key of the object.</li>
+                    <li>"radio_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
+                    <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
+                    <li>"scope_char":  (<i>Optional</i>) a string giving a single character for the STARS position symbol for tracks owned by this position (e.g., "C"). If unset, the position symbol is generated automatically by:
+                      <ul>
+                        <li>For local positions, the last character of the TCP id: "4P" gets "P", for example.</li>
+                        <li>For positions at external facilities, the numeric "facility_id".</li>
+                        <li>For enroute controllers (in ARTCC configs), the first character of their sector id: "N56" gets "N" by default.</li>
+                      </ul>
+                      An error is issued if the given "scope_char" is the same as <i>vice</i> would have automatically selected.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"config"</td>
+                <td>Object</td>
+                <td>Defines settings and configurations related to the STARS radar scope.
+                  See <a href="#fe-stars-videomaps">STARS and Video Maps</a> for documentation about the items stored in this object.</td>
+              </tr>
+              <tr>
+                <td>"handoff_ids"</td>
+                <td>Array</td>
+                <td><p>An array of objects identifying neighboring facilities and mapping them
+                  to short STARS identifiers used in handoff route specifications (e.g., <code>/ho1Z</code>).
+                  Controllers from each listed facility are loaded and may participate in handoffs.</p>
+                  <p>Each entry has the following members:</p>
+                  <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Element</th>
+                      <th>Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"id"</td>
+                      <td>String</td>
+                      <td>The facility code of the neighbor (e.g., "MKE", "ZAU"). Required. </td>
+                    </tr>
+                    <tr>
+                      <td>"prefix"</td>
+                      <td>String</td>
+                      <td>A short prefix for the facility, used when referencing ARTCC sectors or TRACON sectors as a TRACON. For ARTCC neighbors this is a letter (e.g., "G" for ZAU); for TRACON neighbors this is a digit (e.g., "1"). Cannot be used in
+                        conjunction with "stars_id", "single_char_stars_id", or "two_char_stars_id".</td>
+                    </tr>
+                    <tr>
+                      <td>"stars_id"</td>
+                      <td>String</td>
+                      <td>The full STARS identifier for the facility (e.g., "AAA"). Used  when referencing a TRACON from an ARTCC. Cannot be used in conjunction with "prefix".</td>
+                    </tr>
+                    <tr>
+                      <td>"single_char_stars_id"</td>
+                      <td>String</td>
+                      <td>A one-character STARS identifier for the facility (e.g., "A"). Used when referencing a TRACON from an ARTCC. Cannot be used in conjunction with "prefix".</td>
+                    </tr>
+                    <tr>
+                      <td>"two_char_stars_id"</td>
+                      <td>String</td>
+                      <td>A two-character STARS identifier. Used when referencing a TRACON from an ARTCC. Cannot be used in conjunction with "prefix".</td>
+                    </tr>
+                  </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+            </table>
+
+          </section><!--//section-->
+
           <section class="docs-section" id="fe-scenario-groups">
             <h2 class="section-heading">Scenario Groups</h2>
 
@@ -6778,6 +7474,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               airport.
               Each scenario group is specified by its own JSON file; see the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code></a> directory in the
               <i>vice</i> source code distribution for examples.
+              The facility-wide settings (control positions, STARS configuration) are stored separately in
+              <a href="#fe-facility-config">facility configuration files</a>.
             </p>
             <p>These are the elements of a scenario group:</p>
             <table class="table">
@@ -6795,6 +7493,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>Defines all of the airports that are included in the scenarios. See the <a href="#fe-airports">airports section</a> for details.</td>
               </tr>
               <tr>
+                <td>"allow_fix_redefinitions"</td>
+                <td>Boolean</td>
+                <td><i>(Optional)</i> When set to <code>true</code>, disables the validation check that
+                  verifies fixes defined in <code>"fixes"</code> are close to their locations in the FAA database.
+                  This is useful for fictional scenarios where fixes are intentionally placed at different
+                  locations than their real-world counterparts. Default is <code>false</code>.</td>
+              </tr>
+              <tr>
                 <td>"airspace"</td>
                 <td>Object</td>
                 <td>Defines the extent of controllers' airspace; see <a href="#fe-airspace">airspace</a> for details.</td>
@@ -6804,34 +7510,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>Object</td>
                 <td>Defines the routes for arrivals and overflights;
                 see <a href="#fe-arrivals">Arrivals and Overflights</a>.</td>
-              </tr>
-              <tr>
-                <td>"control_positions"</td>
-                <td>Object</td>
-                <td><p>Information about all of the controllers that are used
-                in the scenarios in the group.  Each member specifies a
-                controller for the named position/sector.  For each
-                position, the following members should be specified:</p>
-                  <ul>
-                    <li>"eram_facility": (<i>Optional</i>) indicates whether the controller is using an ERAM scope (i.e., is a center controller).</li>
-                    <li>"facility_id": (<i>Optional</i>) a single character giving the controller's facility. This should only be specified for controllers outside of the TRACON.</li>
-                    <li>"full_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
-                    <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
-                    <li>"scope_char":  (<i>Optional</i>) a string giving a single character to for the STARS position symbol for tracks owned by this position (e.g., "C"). If unset, the position symbol is generated automatically by:
-                      <ul>
-                        <li>For local positions, the last character of the TCP id: "4P" gets "P", for example.</li>
-                        <li>For positions at external facilities, the numeric "facility_id".</li>
-                        <li>For enroute controllers (where "eram_facility" is true), the first character of their "sector_id": "N56" gets "N" by default.</li>
-                      </ul>
-                      An error is issued if the given "scope_char" is the same as <i>vice</i> would have automatically selected.</li>
-                    <li>"sector_id": the controller's sector id, as used for handoffs, etc. (e.g., "N56")</li>
-                  </ul>
-                  <p>One additional member may be required.</p>
-                  <ul>
-                    <li>"default_airport": when CRDA is used, each
-                    controller must have a default airport specified for CRDA commands.</li>
-                  </ul>
-                </td>
               </tr>
               <tr>
                 <td>"default_scenario"</td>
@@ -6887,11 +7565,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>This defines all of the ATC scenarios that are available in the scenario group. See the <a href="#fe-scenarios">scenarios section</a> for details.</td>
               </tr>
               <tr>
-                <td>"stars_config"</td>
-                <td>Object</td>
-                <td>Defines settings and configurations related to the STARS radar scope. See <a href="#fe-stars-videomaps">STARS and Video Maps</a> for documentation about the items stored in this object.</td>
-              </tr>
-              <tr>
                 <td>"tracon"</td>
                 <td>String</td>
                 <td>Name of the ATCT/TRACON that the scenario group is associated with. This is used to show all scenarios for a given ATCT/TRACON together in the UI.</td>
@@ -6937,34 +7610,78 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     See <a href="#fe-approaches">below for documentation about how approaches are specified</a>.</td>
               </tr>
               <tr>
-                <td>"approach_regions"</td>
+                <td>"crda_regions"</td>
                 <td>Object</td>
                 <td>
-                  <p>Each member name specifies information about the region of space associated with a runway
-                  when CRDA is used and it is one of the converging
-                  runways.  First, the following members specify the lateral extent that
-                    an aircraft must be inside for a ghost aircraft to be generated for it:
-                    </p>
+                  <p>Each member defines a CRDA region&mdash;a volume of space associated with an
+                  approach path used for CRDA ghost generation. Region names (the object keys)
+                  can be any short identifier: a runway name like "22L", procedure name like "PUCKY1",
+                  or any other descriptive name.</p>
+
+                  <p>The approach path can be defined in one of two ways (mutually exclusive):</p>
+
+                  <p><b>Straight-line reference</b> (for simple runway-aligned paths):</p>
                   <ul>
                     <li>"reference_point": position with respect to which the lateral and vertical extents are defined. (Often, the threshold
                       of the runway.)</li>
-                    <li>"reference_heading": heading that is opposite to the runway heading.</li>
+                    <li>"reference_heading": heading that is opposite to the approach heading.</li>
                     <li>"reference_length": length in nm of the reference line.</li>
-                    <li>"heading_tolerance": maximum difference between an aircraft's heading and the runway's heading for a ghost aircraft to be displayed.</li>
-                    <li>"near_distance": distance from the reference point along the reference heading where the lateral volume begins.</li>
-                    <li>"near_half_width": half of the width of the reference volume at the near distance.</li>
-                    <li>"region_length": length of the lateral volume along the reference heading, starting from the near distance point.</li>
-                    <li>"far_half_width": half of the width of the reference volume at the far distance.</li>
                   </ul>
-                  <p>These members specify the vertical extent that an aircraft must be inside to have a ghost aircraft:
-                  </p>
+
+                  <p><b>Route-based reference</b> (for curved approaches, converging fixes, etc.):</p>
                   <ul>
-                    <li>"descent_distance": distance from the reference point in nm where aircraft are expected to start its final descent.</li>
-                    <li>"reference_altitude": altitude of the reference point.</li>
-                    <li>"descent_altitude": expected aircraft altitude when it's at the descent distance.</li>
-                    <li>"above_altitude_tolerance": maximum distance in feet an aircraft may be above its expected altitude and still have a ghost be drawn for it.</li>
-                    <li>"below_altitude_tolerance": maximum distance in feet an aircraft may be below its expected altitude and still have a ghost be drawn for it.</li>
+                    <li>"reference_route": a string specifying the path as a series of fix names (or lat-long
+                      positions), optionally with <code>/arc</code> qualifiers for curved segments.
+                      Unlike approach/departure routes, only fix names and <code>/arc</code> are supported;
+                      other waypoint qualifiers (altitude restrictions, speed, handoff, etc.) are not allowed.
+                      Example: <code>"MERIT ROSLY/arc5.0JFK CATOD"</code>.
+                      When this is specified, "reference_point", "reference_heading", and "reference_length" must not be given.</li>
                   </ul>
+
+                  <p>The following members apply to both path types and specify the lateral
+                    qualification region&mdash;the volume an aircraft must be inside for a ghost to be generated:</p>
+                  <ul>
+                    <li>"heading_tolerance": maximum difference between an aircraft's heading and the local path heading for a ghost aircraft to be displayed.</li>
+                    <li>"near_distance": distance along the path from the start where the lateral volume begins.</li>
+                    <li>"near_half_width": half of the width of the region at the near distance.</li>
+                    <li>"region_length": length of the lateral volume along the path, starting from the near distance.
+                      Must not be specified with "reference_route" (the route length is used automatically).</li>
+                    <li>"far_half_width": half of the width of the region at the far distance.</li>
+                  </ul>
+                  <p>These members specify the vertical qualification region&mdash;the
+                    altitude envelope an aircraft must be inside for a ghost to be
+                    generated. There are two modes:</p>
+
+                  <p><b>Fixed altitude range</b> (no descent profile): set
+                    "descent_distance" to 0 (or omit it). The vertical
+                    qualification region is a flat band over the entire region,
+                    centered on "descent_altitude" with "above_altitude_tolerance"
+                    and "below_altitude_tolerance" defining the upper and lower
+                    bounds. For example, to qualify aircraft between 1000 and 5000
+                    feet:</p>
+                  <pre>
+    "descent_distance": 0,
+    "descent_altitude": 3000,
+    "above_altitude_tolerance": 2000,
+    "below_altitude_tolerance": 2000</pre>
+
+                  <p><b>Descent profile</b> (for approach paths with a glideslope):
+                    set "descent_distance" to a nonzero value. The expected altitude
+                    slopes linearly from "reference_altitude" at the path origin
+                    (the near end) to "descent_altitude" at "descent_distance" along
+                    the path, then remains flat at "descent_altitude" beyond that
+                    point. The tolerances define a band around this sloping
+                    profile.</p>
+
+                  <ul>
+                    <li>"descent_distance": distance along the path where the descent profile levels off. Set to 0 for a fixed altitude range.</li>
+                    <li>"descent_altitude": expected altitude at the descent distance (or the center of the fixed band when "descent_distance" is 0).</li>
+                    <li>"reference_altitude": expected altitude at the path origin. Only used when "descent_distance" is nonzero.</li>
+                    <li>"above_altitude_tolerance": maximum feet above the expected altitude at any point along the path for an aircraft to still qualify.</li>
+                    <li>"below_altitude_tolerance": maximum feet below the expected altitude at any point along the path for an aircraft to still qualify.</li>
+                  </ul>
+                  <p>Optionally, "scratchpad_patterns" may be specified as an array of strings; if present, only
+                    aircraft whose scratchpad contains one of the given patterns will generate ghosts.</p>
                 </td>
               </tr>
               <tr>
@@ -6997,18 +7714,18 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </td>
               </tr>
               <tr>
-                <td>"converging_runways"</td>
+                <td>"crda_pairs"</td>
                 <td>Array of objects</td>
-                <td>Each object specifies a pair of converging runways that
+                <td>Each object specifies a pair of converging CRDA regions that
                   will be included in the STARS CRDA list. Each object has
                   the following members:
                   <ul>
-                    <li>"runways": array of two strings referencing two runways
-                      specified in "approach_regions".</li>
+                    <li>"crda_regions": array of two strings referencing two regions
+                      defined in "crda_regions".</li>
                     <li>"leader_directions": array of two strings
                       specifying the compass direction ("N", "NE", "E",
                       ...) that will be used for leader lines for ghost
-                      aircraft from the two respective runways.</li>
+                      aircraft from the two respective regions.</li>
                     <li>"tie_symbol": A single-character string giving the
                     symbol to use on the STARS display for ghost aircraft
                     when CRDA "tie" mode is used.</li>
@@ -7016,7 +7733,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     symbol to use on the STARS display for ghost aircraft
                     when CRDA "stagger" mode is used.</li>
                     <li>"tie_offset": number giving an offset in nautical
-                      miles to add to ghost aircraft's distance from the airport when
+                      miles to add to ghost aircraft's distance from the convergence point when
                       "tie" mode is used.</li>
                   </ul>
                 </td>
@@ -7051,15 +7768,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>"hold_for_release"</td>
                 <td>Boolean</td>
                 <td>(<i>Optional</i>) If true, departures from the airport must be released by a controller.
-                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"stars_config"</a>,
+                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"config"</a>,
                   then the release will be managed using STARS coordination lists; otherwise it will appear
                   in the <i>Launch Control</i> window.
                 </td>
-              </tr>
-              <tr>
-                <td>"name"</td>
-                <td>String</td>
-                <td>(<i>Optional</i>) The name of the airport.</td>
               </tr>
               <tr>
                 <td>"omit_arrival_scratchpad"</td>
@@ -7283,7 +7995,7 @@ Given the id, the approach can be specified with:</p>
                 <td>"hold_for_release"</td>
                 <td>Boolean</td>
                 <td>(<i>Optional</i>) If true, departures on this route must be released by a controller.
-                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"stars_config"</a>,
+                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"config"</a>,
                   then the release will be managed using STARS coordination lists; otherwise it will appear
                   in the <i>Launch Control</i> window.
                 </td>
@@ -7371,7 +8083,7 @@ Given the id, the approach can be specified with:</p>
                 <td>Optional String</td>
                 <td>If specified, this gives the aircraft's initial scratchpad. Otherwise, the scratchpad
                   is set based on the exit, either using the "scratchpads" dictionary in the scenario definition or
-                  via "display_exit_gate" or "display_alternate_exit_gate" in "stars_config".</td>
+                  via "display_exit_gate" or "display_alternate_exit_gate" in "config".</td>
               </tr>
               <tr>
                 <td>"secondary_scratchpad"</td>
@@ -8011,10 +8723,19 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"arrival_runways"</td>
                 <td>Array of objects</td>
-                <td>Each object has two values that specify an airport and one of its runways
+                <td>Each object specifies an airport, one of its runways, and an optional go-around procedure:
                   <ul>
                     <li>"airport": string that gives an airport name</li>
                     <li>"runway": string that specifies a runway at the given airport</li>
+                    <li>"go_around": (<i>Optional</i>) object defining the go-around procedure for this runway:
+                      <ul>
+                        <li>"heading": integer heading in degrees (1-360). If omitted or 0, runway heading is used.</li>
+                        <li>"altitude": integer altitude in feet (e.g., 2000, 3000).</li>
+                        <li>"handoff_controller": (<i>Optional</i>) TCP that should handle the go-around aircraft.</li>
+                        <li>"hold_departures": (<i>Optional</i>) array of runway strings on which departures
+                          should be held for one minute after a go-around.</li>
+                      </ul>
+                    </li>
                   </ul>
                   The specified airport must be present in the "airports" member of the scenario group,
                   and the specified runway must be one of its runways.
@@ -8030,14 +8751,14 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"controllers"</td>
                 <td>Array of strings</td>
-                <td>Callsigns of the other virtual controllers who are online. (These also must be in "control_positions".)</td>
+                <td>Callsigns of the other virtual controllers who are online. (These also must be in <a href="#fe-facility-config">"control_positions"</a> in the facility configuration.)</td>
               </tr>
               <tr>
                 <td>"default_maps"</td>
                 <td>Array of strings</td>
                 <td>The names of the initial video maps that should be displayed when this scenario is selected.
-                  Note that "default_maps" may not be used if "stars_maps" is specified in "controller_configs";
-                  in that case controller-specific default maps can be specified there.
+                  Note that "default_maps" may not be used if "video_maps" is specified in "controller_configs"
+                  or "area_configs"; in that case controller- or area-specific default maps can be specified there.
                 </td>
               </tr>
               <tr>
@@ -8080,7 +8801,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   The following members are available:
                   <ul>
                     <li>"config_id": A short identifier (maximum 3 characters) that references a configuration
-                      defined in <a href="#fe-stars-videomaps">"configurations"</a> under "stars_config".
+                      defined in <a href="#fe-stars-videomaps">"configurations"</a> under "config".
                       The referenced configuration provides the inbound and departure assignments for this scenario.
                       The selected configuration must assignments for all of the scenario's active
                       arrivals and departures.</li>
@@ -8125,10 +8846,10 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   The wind direction and speed are shown using arrows.
                   "WIND" and an altitude will be shown in the preview area; the altitude can be stepped up and down
                   using the up and down arrow keys. Pressing <code>[Escape]</code> clears the wind display.
+                  </p>
                   <div class="text-center">
                     <img src="wind-arrows.png" srcset="wind-arrows-2x.png 2x" width="204" height="170">
                   </div><br>
-                  </p>
                 </td>
               </tr>
             </tbody>
@@ -8291,8 +9012,8 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
           <section class="docs-section" id="fe-stars-videomaps">
             <h2 class="section-heading">STARS and Video Maps</h2>
 
-            <p>A number of settings related to the STARS radar scope are set using the "stars_config" object
-              in the scenario group. It stores the following values:
+            <p>A number of settings related to the STARS radar scope are set using the "config" object
+              in the <a href="#fe-facility-config">facility configuration file</a>. It stores the following values:
               </p>
 
             <table class="table">
@@ -8377,24 +9098,25 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                     <li>"beacon_code_blocks": a string containing a comma-separated list of beacon code banks
                       (two digits) or discrete beacon codes (four digits) that should be monitored by default.</li>
                     <li>"center": the initial center of the controller's STARS scope.
-                      If specified, this overrides any center specified in the scenario or scenario group.</li>
+                      This takes highest priority, overriding "area_configs" center and the top-level center.</li>
                     <li>"default_maps": an array of strings that specifies which maps in "video_maps"
                       should be initially displayed.</li>
                     <li>"flight_following_airspace": an array of regions of airspace (both lateral and vertical)
                       following the form that is used for defining <a href="#fe-stars-filters">filter regions</a>.
                       (In this case, "id" and "description" are optional.") Only VFR aircraft within the specified
-                      region will call the controller for flight following.</li> 
+                      region will call the controller for flight following.</li>
                     <li>"range": the initial range for the controller's scope in nautical miles.
-                      If specified, this overrides any range specified in the scenario or scenario group.</li>
+                      This takes highest priority, overriding "area_configs" range and the top-level range.</li>
                     <li>"video_maps": an array of strings specifying which video maps should be displayed
-                      in the DCB for the controller.  See "stars_maps" below for further details.</li>
+                      in the DCB for the controller. If specified, these override the area-level "video_maps"
+                      in "area_configs".</li>
                   </ul>
                 </td>
               </tr>
               <tr>
                 <td>"configurations"</td>
                 <td>Object</td>
-                <td>Defines controller assignment configurations that can be referenced by scenarios.
+                <td>Defines facility configurations that can be referenced by scenarios.
                   Each key is a short identifier (maximum 3 characters) for the configuration,
                   and the value is an object with the following members:
                   <ul>
@@ -8407,10 +9129,22 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       SID ("KJFK/SKORR5"). It is not allowed to specify runway and SID departure selections
                       at an airport, however the airport name alone may be given as a catch-all
                       for any unspecified runways/SIDs if that method is used.</li>
+                    <li>"go_around_assignments": An optional object that maps airports or airport/runway
+                      combinations to the TCP that should handle go-arounds. Keys can be
+                      airport name ("KJFK") or airport/runway ("KJFK/22L") for per-runway
+                      specification. If not specified for an airport/runway, the departure
+                      controller for that airport is used.</li>
+                    <li>"scratchpad_leader_line_directions": (<i>Optional</i>) An object that maps
+                      primary scratchpad values to leader line directions. Keys are scratchpad
+                      strings (subject to standard scratchpad validation rules) and values are
+                      cardinal/ordinal direction strings: "N", "NE", "E", "SE", "S", "SW", "W",
+                      or "NW". When an aircraft has a matching primary scratchpad, the specified
+                      direction is used for the leader line. This takes effect after per-aircraft
+                      and FDAM direction overrides but before controller default directions.</li>
                   </ul>
                   These configurations allow multiple scenarios to share the same assignment definitions,
                   reducing duplication when only the consolidation hierarchy differs between scenarios.
-                  The TCPs referenced in assignments must exist in "control_positions".
+                  The TCPs referenced in assignments must exist in <a href="#fe-facility-config">"control_positions"</a> in the facility configuration.
                   It is acceptable for a configuration to include assignments for flows or departures
                   that a particular scenario doesn't use; only the assignments needed by the scenario's
                   active arrivals and departures are required.
@@ -8493,6 +9227,14 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                     <li>"surface_tracking": defines a region of airspace off the ground at airports where
                       radar tracks are not shown. By default, up to 250' AGL 1.5nm around each airport.</li>
                     <li>"vfr_inhibit": random VFR routes will not be generated through this filter's airspace.</li>
+                    <li>"fdam": Flight Data Auto-Modify regions. When an associated
+                      track enters an enabled FDAM region and matches its qualifying
+                      attributes, adapted entry actions are automatically applied
+                      (scratchpad changes, leader direction changes, handoff initiation,
+                      ownership transfer, or force quicklook). When the track exits,
+                      selected changes can be reverted. See the
+                      <a href="#fe-stars-fdam">FDAM section</a> below for the full list
+                      of fields.</li>
                   </ul>
                 </td>
               </tr>
@@ -8539,7 +9281,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Object</td>
                 <td>Allows overriding the labels used for video maps in the
                   STARS DCB. Each entry is the name of a video map (as would
-                  be specified in "stars_maps") and its value is the label
+                  be specified in "video_maps" within "area_configs") and its value is the label
                   that should be assigned to it.
                 </td>
               </tr>
@@ -8553,6 +9295,13 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       If not specified, the default format <code>"[ACID] [BEACON]  [SUPP_BEACON]"</code> is used.
                     </li>
                   </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"monitor"</td>
+                <td>String</td>
+                <td>Specifies the type of monitor to simulate, which in turn determines the STARS color scheme used.
+                  Options are: "legacy" (the default), "mdm3", and "mdm4".
                 </td>
               </tr>
               <tr>
@@ -8599,7 +9348,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"max_distance"</td>
                 <td>Number</td>
-                <td>Maximum distance in nautical miles from center before aircraft are deleted. If unspecified, a 125 nautical mile maximum distance is used.</td>
+                <td>Maximum distance in nautical miles from center before aircraft are deleted. If unspecified, the default is 125 nautical miles for STARS facilities and 400 nautical miles for ERAM facilities.</td>
               </tr>
               <tr>
                 <td>"restriction_areas"</td>
@@ -8716,14 +9465,34 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
-                <td>"stars_maps"</td>
-                <td>Array of strings</td>
-                <td>These strings specify the available video maps shown in the STARS DCB;
-                  the first 6 are shown in the main DCB and all are available under the "MAPS" sub-menu.
-                  An empty string, <code>""</code>, may be given to specify an empty map button in the DCB.
-                  No more than 38 maps may be specified.
-                  Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the available
-                  maps for an ARTCC.
+                <td>"area_configs"</td>
+                <td>Object</td>
+                <td>Defines per-area configuration for TRACON areas.
+                  Each key is the area number (e.g., "1", "2", "3") corresponding to the first digit
+                  of the control positions assigned to that area.
+                  The following properties may be specified for each area:
+                  <ul>
+                    <li>"video_maps": an array of strings specifying the available video maps shown in the
+                      STARS DCB for controllers in this area.
+                      The first 6 are shown in the main DCB and all are available under the "MAPS" sub-menu.
+                      An empty string, <code>""</code>, may be given to specify an empty map button in the DCB.
+                      No more than 38 maps may be specified.
+                      Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the
+                      available maps for an ARTCC.</li>
+                    <li>"default_maps": an array of strings specifying which of the video maps should be
+                      initially displayed.</li>
+                    <li>"center": the initial center of the STARS scope for controllers in this area.
+                      This is overridden by any center specified in "controller_configs" and overrides
+                      the top-level "center" in the facility configuration.</li>
+                    <li>"range": the initial range for the scope in nautical miles.
+                      This is overridden by any range specified in "controller_configs" and overrides
+                      the top-level "range" in the facility configuration.</li>
+                    <li>"beacon_code_blocks": a string of comma-separated beacon code banks or discrete codes
+                      to monitor by default for controllers in this area.</li>
+                    <li>"default_airport": the CRDA default airport for this area.</li>
+                    <li>"flight_following_airspace": an array of airspace volumes for flight following
+                      in this area.</li>
+                  </ul>
                 </td>
               </tr>
               <tr>
@@ -8781,7 +9550,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"video_map_file"</td>
                 <td>String</td>
-                <td>Filename of the video map file from which the maps specified in "stars_maps" are found (e.g., "videomaps/ZNY-videomaps.gob.zst")</td>
+                <td>Filename of the video map file from which the video maps are found (e.g., "videomaps/ZNY-videomaps.gob.zst")</td>
               </tr>
             </tbody>
             </table>
@@ -8789,7 +9558,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             <h3 id="fe-stars-list-format">List Formatting</h3>
 
             <p>STARS system lists display information about aircraft in various contexts. 
-              The format of entries in these lists can be customized using the "format" field for the corresponding list in "stars_config".
+              The format of entries in these lists can be customized using the "format" field for the corresponding list in "config".
               The format string consists of literal text and format specifiers enclosed in square brackets.</p>
 
             <p>The following format specifiers are available for all system lists:</p>
@@ -8848,7 +9617,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
 
             <p>STARS uses <em>filter regions</em> to manage a number of behaviors that are enabled or disabled
               depending on whether an aircraft's track is within particular volumes of space.
-              These regions are defined under "filters" in the <a href="#fe-stars-videomaps">stars_config</a> object.
+              These regions are defined under "filters" in the <a href="#fe-stars-videomaps">config</a> object.
               As an example, the "inhibit_ca" filter is used to disable collision alerts
               close to airports so that spurious alerts aren't issued between departing and arriving aircraft.
               The lateral extent of filter volumes volumes can be defined either with a polygon or a circle and their
@@ -8880,6 +9649,129 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             it's not necessary to close the polygon yourself.
             </p>
 
+            <p>Quicklook and FDAM filter regions may include optional qualifying
+              attributes that constrain which aircraft are affected (per DMS Table
+              4-109). When any of these fields are specified, an aircraft must satisfy
+              all of them (as well as being inside the volume) to match the filter.
+              If a field is omitted or empty, that constraint is not applied.
+            </p>
+            <p>The following attributes apply to both quicklook and FDAM filters:</p>
+            <ul>
+              <li>"tcps": comma-delimited list of TCP identifiers (local positions only),
+                or "ALL" for all local positions. The filter only applies if the user is
+                signed in to one of the listed positions.</li>
+              <li>"scratchpad": comma-delimited list of scratchpad values. The aircraft's
+                scratchpad must match one of them.</li>
+              <li>"secondary_scratchpad": comma-delimited list of secondary scratchpad values.
+                The aircraft's secondary scratchpad must match one of them.</li>
+              <li>"owning_tcp": comma-delimited list of TCP identifiers. The aircraft's
+                tracking controller must be one of them.</li>
+              <li>"entry_fix": comma-delimited list of fix names. The aircraft's entry fix
+                must be one of them (aircraft with no entry fix set are not excluded).</li>
+              <li>"exit_fix": comma-delimited list of fix names. The aircraft's exit fix
+                must be one of them (aircraft with no exit fix set are not excluded).</li>
+              <li>"flight_type": one of "arrival", "departure", or "overflight". If set,
+                only aircraft of that flight type match.</li>
+              <li>"cwt_category": a single letter from "A" through "I" matching the
+                aircraft's CWT category, where "A" is the heaviest (e.g. A380) and "I"
+                is the lightest (small aircraft).</li>
+            </ul>
+            <p>The following additional attributes also apply to both quicklook and FDAM filters:</p>
+            <ul>
+              <li>"flight_rules": "V" for VFR only, "I" for IFR only, or "B" (or empty)
+                for both.</li>
+              <li>"ssr_codes": comma-delimited list of SSR codes or ranges. Each element is
+                either a single four-digit octal code (e.g. "1200") or a range
+                ("1300-1377"). The aircraft's assigned squawk must fall in one of the
+                specified codes or ranges.</li>
+              <li>"requested_altitude": comma-delimited list of altitudes or ranges, in
+                hundreds of feet. Each element is either a single value (e.g. "40" for
+                4,000') or a range ("100-180" for FL100&ndash;FL180). The aircraft's requested
+                altitude must fall in one of the specified values or ranges.</li>
+            </ul>
+
+            <h3 id="fe-stars-fdam">FDAM Regions</h3>
+
+            <p>Flight Data Auto-Modify (FDAM) regions automatically modify
+              flight data and initiate flight operations when an associated
+              track enters an adapted region. FDAM regions are defined under
+              "fdam" in the "filters" object. Each FDAM region includes an
+              airspace volume, optional qualifying attributes (documented
+              above), and a set of entry/exit actions. See the
+              <a href="#stars-fdam">FDAMs</a> section under STARS
+              Configuration for the supervisor commands that control FDAM
+              processing.
+            </p>
+
+            <p>Each FDAM region object includes the standard volume fields
+              ("id", "description", "type", "floor", "ceiling", etc.) and
+              the shared qualifying attributes described above. In addition,
+              the following entry-action fields control what happens when a
+              matching track enters the region:</p>
+            <ul>
+              <li>"new_scratchpad_1": string to assign to the track's
+                primary scratchpad on entry. Use "-" to clear an existing
+                scratchpad.</li>
+              <li>"allow_scratchpad_1_override": boolean. If true, the
+                adapted scratchpad replaces any existing value. If false
+                (the default), the scratchpad is only set if the track's
+                current scratchpad is empty.</li>
+              <li>"new_scratchpad_2": string to assign to the track's
+                secondary scratchpad on entry. Use "-" to clear.</li>
+              <li>"allow_scratchpad_2_override": boolean. Same override
+                behavior as above, for the secondary scratchpad.</li>
+              <li>"new_owner_leader_direction": string giving the cardinal
+                or ordinal direction for the owning controller's leader
+                line (e.g. "N", "NE", "S", "SW"). The direction is set on
+                entry for all TCWs displaying the track.</li>
+              <li>"new_tcp_specific_leader_direction": string giving the
+                leader line direction to set for the TCPs listed in
+                "pointout_tcps" (see below).</li>
+              <li>"handoff_initiate_transfer": one of "I" (initiate
+                handoff), "T" (transfer ownership immediately), or "N"/""
+                (no action). Used together with "new_owner_tcp".</li>
+              <li>"new_owner_tcp": TCP identifier. When
+                "handoff_initiate_transfer" is "I", a handoff is initiated
+                to this TCP. When it is "T", ownership is transferred
+                directly.</li>
+              <li>"immediate_pointout": boolean. If true, a force quicklook
+                (immediate pointout) is sent to each TCP listed in
+                "pointout_tcps" when the track enters the region.</li>
+              <li>"pointout_tcps": comma-delimited list of TCP identifiers
+                that receive force quicklook events and/or TCP-specific
+                leader direction changes on entry.</li>
+            </ul>
+
+            <p>The following fields control what happens when a track exits
+              the region:</p>
+            <ul>
+              <li>"retain_owner_leader_direction": boolean. If false (the
+                default), the owning controller's leader line direction
+                reverts to its pre-entry value when the track exits. If
+                true, the direction set on entry is kept.</li>
+              <li>"retain_tcp_specific_leader_direction": boolean. Same
+                retain/revert behavior for the TCP-specific leader
+                directions set via "pointout_tcps".</li>
+            </ul>
+
+            <p>Example FDAM region:</p>
+            <pre><code>{
+  "id": "FD001",
+  "description": "Departure handoff region",
+  "type": "polygon",
+  "floor": 0,
+  "ceiling": 10000,
+  "vertices": "MERIT,HAAYS,SAAME,GREKI",
+  "flight_type": "departure",
+  "new_scratchpad_1": "DEP",
+  "allow_scratchpad_1_override": false,
+  "handoff_initiate_transfer": "I",
+  "new_owner_tcp": "D21",
+  "immediate_pointout": true,
+  "pointout_tcps": "F31,D21",
+  "new_tcp_specific_leader_direction": "NE",
+  "retain_tcp_specific_leader_direction": false
+}</code></pre>
 
             <h3 id="fe-video-maps">Video Maps</h3>
 

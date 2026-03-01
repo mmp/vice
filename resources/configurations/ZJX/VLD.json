@@ -1,0 +1,22 @@
+{
+    "control_positions": {
+        "1V": {
+            "callsign": "VAD_APP",
+            "frequency": 126600,
+            "radio_name": "Valdosta Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "TLH",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

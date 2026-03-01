@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "1W": {
+            "callsign": "CHA_APP",
+            "frequency": 119200,
+            "radio_name": "Chattanooga Approach"
+        },
+        "1T": {
+            "callsign": "CHA_TWR",
+            "frequency": 118300,
+            "radio_name": "Chattanooga Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "HSV",
+            "prefix": "2"
+        },
+        {
+            "id": "TYS",
+            "prefix": "1"
+        },
+        {
+            "id": "ZME",
+            "prefix": "M"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

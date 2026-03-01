@@ -1,0 +1,291 @@
+{
+  "time": "2026-01-26T19:41:19.096071-08:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": "Delta thirty two turn ten degrees left",
+  "whisper_duration_ms": 387.967,
+  "audio_duration_ms": 2432,
+  "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
+  "whisper_model": "ggml-medium.en-atc-q5_0.bin",
+  "callsign": "DAL32",
+  "command": "T10L",
+  "stt_aircraft": {
+    "Delta 1086 heavy": {
+      "Callsign": "DAL1086",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 2582,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 32": {
+      "Callsign": "DAL32",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "Cimble": "CIMBL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway one three left": "I3L",
+        "I L S runway two two left": "I2L",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two left": "R2L",
+        "r-nav zulu runway one three Left": "R3L"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Deer Park": "DPK",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Endeavor 7216": {
+      "Callsign": "EDV7216",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Neon": "NEION"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 5656,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 6789": {
+      "Callsign": "JBU6789",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "Cimble": "CIMBL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway one three left": "I3L",
+        "I L S runway two two left": "I2L",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two left": "R2L",
+        "r-nav zulu runway one three Left": "R3L"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Deer Park": "DPK",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 8749,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R"
+      ]
+    },
+    "november 119SB": {
+      "Callsign": "N119SB",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury": "KDXR"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 785,
+      "State": "",
+      "ControllerFrequency": "2G",
+      "TrackingController": "",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta thirty two turn ten degrees left\"",
+    "[local-stt] normalized words: [delta 30 2 turn turn 10 degrees left]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"302\" Type=1 Value=302",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[5]: Text=\"degrees\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 7 tokens, 5 aircraft",
+    "[local-stt]   candidate \"Delta 1086 heavy\" (ICAO=\"DAL1086\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"Endeavor 7216\" (ICAO=\"EDV7216\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 32\" (ICAO=\"DAL32\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"november 119SB\" (ICAO=\"N119SB\"): score=0.60 consumed=1",
+    "[local-stt]   candidate \"JetBlue 6789\" (ICAO=\"JBU6789\"): score=0.00 consumed=0",
+    "[local-stt]   accepted: \"DAL1086\" (conf=0.80, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"DAL1086\" SpokenKey=\"Delta 1086 heavy\" Conf=0.80 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=2582 Fixes=2 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Greki\" -\u003e \"GREKI\"",
+    "[local-stt]   fix: \"Judds\" -\u003e \"JUDDS\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[3]: Text=\"degrees\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   matched command: \"T10L\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt] ParseCommands: result=[T10L] (avgConf=1.00)",
+    "[local-stt] parsed commands: [T10L] (conf=1.00)",
+    "[local-stt] validated commands: [T10L] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL1086 T10L\" (conf=0.80, time=159.5µs) ==="
+  ]
+}

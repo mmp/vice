@@ -1,0 +1,243 @@
+{
+    "control_positions": {
+        "1B": {
+            "callsign": "BUF_TWR",
+            "frequency": 120500,
+            "radio_name": "Buffalo Tower",
+            "scope_char": "L"
+        },
+        "1E": {
+            "callsign": "BUF_E_APP",
+            "frequency": 126150,
+            "radio_name": "Buffalo Approach"
+        },
+        "1W": {
+            "callsign": "BUF_W_APP",
+            "frequency": 126500,
+            "radio_name": "Buffalo Approach"
+        },
+        "1F": {
+            "callsign": "BUF_F_APP",
+            "frequency": 123800,
+            "radio_name": "Buffalo Approach"
+        },
+        "1X": {
+            "callsign": "BUF_X_APP",
+            "frequency": 120050,
+            "radio_name": "Buffalo Approach"
+        },
+        "1N": {
+            "callsign": "IAG_TWR",
+            "frequency": 118500,
+            "radio_name": "Niagara Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "AIRCO GA": "1E",
+                    "BENEE": "1E",
+                    "BUF VOR": "1E",
+                    "DKK VOR (South/East)": "1E",
+                    "DKK VOR (West)": "1W",
+                    "EHMAN": "1E",
+                    "JHW GA": "1E",
+                    "JHW VOR": "1E",
+                    "WOZEE": "1W"
+                },
+                "departure_assignments": {
+                    "KBUF": "1W",
+                    "KIAG": "1W"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "force_ql_self": true,
+        "allow_long_scratchpad": true,
+        "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
+        "center": "KBUF",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "BUFNOCA",
+                    "description": "BUF CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2300,
+                    "center": "N042.56.25.162,W078.43.47.297",
+                    "radius": 6
+                }
+            ]
+        },
+        "radar_sites": {
+            "BUF": {
+                "char": "A",
+                "position": "42.939898010396576, -78.73013362979619",
+                "elevation": 707,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            }
+        },
+        "range": 60,
+        "scratchpads": {
+            "SLT": "SLT",
+            "BUF": "BUF",
+            "GEE": "GEE",
+            "SFK": "SFK",
+            "DJB": "DJB",
+            "JHW": "JHW",
+            "YXU": "YXU",
+            "SYR": "SYR",
+            "ROC": "ROC",
+            "EHMAN": "EHM",
+            "WOZEE": "WOZ",
+            "AIRCO": "AIR",
+            "DKK": "DKK",
+            "VAIRS": "VAIR",
+            "YQO": "YQO",
+            "WELLA": "WELA",
+            "FKL": "FKL",
+            "YNG": "YNG",
+            "EWC": "EWC",
+            "CXR": "CXR",
+            "DONEO": "DONE",
+            "DAVVK": "DAVK"
+        },
+        "significant_points": {
+            "AIRCO": {},
+            "BUF": {},
+            "CXR": {},
+            "DAVVK": {},
+            "DJB": {},
+            "DKK": {},
+            "DONEO": {},
+            "EHMAN": {},
+            "EWC": {},
+            "FKL": {},
+            "GEE": {},
+            "JHW": {},
+            "ROC": {},
+            "SFK": {},
+            "SLT": {},
+            "SYR": {},
+            "VAIRS": {},
+            "WOZEE": {},
+            "YNG": {},
+            "YXU": {}
+        },
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALL"
+                ],
+                "receiving_controller": "C66"
+            }
+        ],
+        "coordination_fixes": {
+            "BENEE": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "BUF": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "DKK": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "EHMAN": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "JHW": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "WOZEE": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "ARICO": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "BUF-019 (23 GPS)",
+                    "BUF-020 (32 GPS)",
+                    "BUF-018 (14 GPS)",
+                    "BUF-017 (5 GPS)",
+                    "BUF-016 (SUA)",
+                    "BUF-015 (IAG TACAN 28R)",
+                    "BUF-014 (IAG RNAV 28)",
+                    "BUF-013 (BUF FAC)",
+                    "BUF-012 (ERIE MVA)",
+                    "BUF-011 (ERIE TRSA)",
+                    "BUF-010 (CLASS D)",
+                    "BUF-009 (CLASS C)",
+                    "BUF-008 (ZOB)",
+                    "BUF-007 (VFR)",
+                    "BUF-006 (MVA)",
+                    "BUF-005 (ERIE RVM)",
+                    "BUF-004 (32 FLOW)",
+                    "BUF-003 (23 FLOW)",
+                    "BUF-002 (14 FLOW)",
+                    "BUF-001 (5 FLOW)"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CLE",
+            "prefix": "1"
+        },
+        {
+            "id": "ROC",
+            "prefix": "2"
+        },
+        {
+            "id": "YNG",
+            "prefix": "3"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "B"
+        }
+    ]
+}

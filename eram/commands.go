@@ -2,6 +2,7 @@ package eram
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -47,14 +48,14 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		ctx.Mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.HaveFocus {
 		ctx.KeyboardFocus.Take(ep)
 	}
-	if mouse.Released[platform.MouseButtonPrimary] {
+	if ep.mousePrimaryReleased(mouse) {
 		if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() && ctx.Keyboard.KeyControl() {
 			mouseLatLong := transforms.LatLongFromWindowP(mouse.Pos)
 			ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 
 		}
 	}
-	if mouse.Released[platform.MouseButtonTertiary] {
+	if ep.mouseTertiaryReleased(mouse) {
 		// Try execute a clicked command on the closest track.
 		trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms)
 		if trk != nil {
@@ -81,7 +82,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		}
 	}
 
-	if mouse.Clicked[platform.MouseButtonPrimary] {
+	if ep.mousePrimaryClicked(mouse) {
 		if ep.commandMode == CommandModeDrawRoute {
 			pos := transforms.LatLongFromWindowP(mouse.Pos)
 			ep.drawRoutePoints = append(ep.drawRoutePoints, pos)
@@ -149,19 +150,17 @@ type CommandStatus struct {
 func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (status CommandStatus) {
 	original := cmdLine.String()
 
-	// Check for embedded location from clicking while typing
-	var hasClick bool
-	var mousePosition [2]float32
-	var posIsLatLong bool
-	if loc, ok := tryExtractLocation(cmdLine); ok {
-		hasClick = true
-		posIsLatLong = true // coordinates are already lat/long from embedded location
-		mousePosition = [2]float32{loc[0], loc[1]}
-		// Keep the location symbol in the text - the parser will match it positionally
+	// Extract all embedded locations from clicking while typing
+	var mousePositions [][2]float32
+	for _, ic := range cmdLine {
+		if string(ic.char) == locationSymbol {
+			mousePositions = append(mousePositions, ic.location)
+		}
 	}
+	hasClick := len(mousePositions) > 0
 
 	// First try the new parser-based command system
-	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, nil, hasClick, mousePosition, posIsLatLong, radar.ScopeTransformations{}); handled {
+	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, nil, hasClick, mousePositions, true, radar.ScopeTransformations{}); handled {
 		status.clear = newStatus.clear
 		status.output = newStatus.output
 		status.bigOutput = newStatus.bigOutput
@@ -170,31 +169,6 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	}
 
 	return
-}
-
-func (ep *ERAMPane) numberToLLDirection(ctx *panes.Context, cmd byte) math.CardinalOrdinalDirection {
-	var dir math.CardinalOrdinalDirection
-	switch cmd {
-	case '1':
-		dir = math.SouthWest
-	case '2':
-		dir = math.South
-	case '3':
-		dir = math.SouthEast
-	case '4':
-		dir = math.West
-	case '5':
-		dir = math.NorthEast
-	case '6':
-		dir = math.East
-	case '7':
-		dir = math.NorthWest
-	case '8':
-		dir = math.North
-	case '9':
-		dir = math.NorthEast
-	}
-	return dir
 }
 
 func (ep *ERAMPane) deleteFLightplan(ctx *panes.Context, trk sim.Track) {
@@ -228,6 +202,22 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.Fl
 		ep.bigOutput.displayError(ep.currentPrefs(), ErrERAMIllegalACID)
 		return
 	}
+
+	if trk.FlightPlan != nil {
+		if spec.Scratchpad.IsSet {
+			trk.FlightPlan.Scratchpad = spec.Scratchpad.Value
+			if spec.Scratchpad.Value == "" {
+				trk.FlightPlan.PriorScratchpad = ""
+			}
+		}
+		if spec.SecondaryScratchpad.IsSet {
+			trk.FlightPlan.SecondaryScratchpad = spec.SecondaryScratchpad.Value
+			if spec.SecondaryScratchpad.Value == "" {
+				trk.FlightPlan.PriorSecondaryScratchpad = ""
+			}
+		}
+	}
+
 	acid := sim.ACID(trk.ADSBCallsign)
 	ctx.Client.ModifyFlightPlan(acid, spec,
 		func(err error) {
@@ -242,12 +232,17 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.Fl
 	if alt := spec.AssignedAltitude.Value + spec.InterimAlt.Value; alt > 0 { // Only one will be set
 		var cmd string
 		state := ep.TrackState[trk.ADSBCallsign]
-		if alt > int(state.track.TransponderAltitude) {
+		if alt > int(state.Track.TransponderAltitude) {
 			cmd = "C" + fmt.Sprint(alt/100)
 		} else {
 			cmd = "D" + fmt.Sprint(alt/100)
 		}
 		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
+	}
+	if spec.SecondaryScratchpad.IsSet {
+		if _, err := strconv.Atoi(spec.SecondaryScratchpad.Value[1:]); err == nil {
+			ep.runAircraftCommands(ctx, trk.ADSBCallsign, spec.SecondaryScratchpad.Value)
+		}
 	}
 }
 
@@ -356,7 +351,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 	original := cmdLine.String()
 
 	// Use the new parser-based command system for clicked commands
-	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, trk, true, [2]float32{}, false, transforms); handled {
+	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, trk, true, nil, false, transforms); handled {
 		status.clear = newStatus.clear
 		status.output = newStatus.output
 		status.bigOutput = newStatus.bigOutput
@@ -371,13 +366,52 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string, acid sim.ACID) (*av.Controller, error) {
 	// Look at the length of the controller string passed in. If it's one character, ERAM would have to find which controller it goes to.
 	// That is not here yet, so return an error.
-	if len(controller) == 1 {
-		return nil, ErrERAMSectorNotActive
-	}
-
 	for _, control := range ctx.Client.State.Controllers {
-		if control.ERAMID() == controller {
-			return control, nil
+		switch len(controller) {
+		case 1: // Cannot do anything with single characters in ERAM yet. TODO: fix pairs
+			return nil, ErrERAMSectorNotActive
+		case 2: // Handing off to other sectors within the same ARTCC
+			if control.FacilityIdentifier == "" {
+				if control.Position == controller {
+					return control, nil
+				}
+			}
+		case 3: // Handing off to a TRACON with a single char stars ID or another ARTCC
+			// Get full STARS ID
+			var prefix string
+			for _, id := range ctx.Client.State.HandoffIDs {
+				if id.SingleCharStarsID == string(controller[0]) {
+					prefix = id.StarsID
+					break
+				}
+				if id.Prefix == string(controller[0]) {
+					prefix = id.Prefix
+					break
+				}
+			}
+
+			if control.FacilityIdentifier == prefix && control.Position == controller[1:] {
+				return control, nil
+			}
+		case 4: // Handing off to a TRACON with a two char stars ID
+			// Get full STARS ID
+			var prefix string
+			for _, id := range ctx.Client.State.HandoffIDs {
+				if id.TwoCharStarsID == controller[:2] {
+					prefix = id.StarsID
+					break
+				}
+			}
+
+			if control.FacilityIdentifier == prefix && control.Position == controller[2:] {
+				return control, nil
+			}
+		case 5: // Handing off to a TRACON with a full STARS
+			if controller == control.ERAMID() {
+				return control, nil
+			}
+		default: // Invalid input
+			return nil, ErrERAMSectorNotActive
 		}
 	}
 	return nil, ErrERAMSectorNotActive

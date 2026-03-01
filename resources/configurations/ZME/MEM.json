@@ -1,0 +1,28 @@
+{
+    "control_positions": {
+        "1T": {
+            "callsign": "MEM_1_TWR",
+            "frequency": 128425,
+            "radio_name": "Memphis Tower"
+        },
+        "2T": {
+            "callsign": "MEM_2_TWR",
+            "frequency": 119700,
+            "radio_name": "Memphis Tower"
+        },
+        "3T": {
+            "callsign": "MEM_N_TWR",
+            "frequency": 118300,
+            "radio_name": "Memphis Tower"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "ZME",
+            "prefix": "M"
+        }
+    ]
+}

@@ -27,7 +27,6 @@ type simSession struct {
 	sim                *sim.Sim
 	password           string
 	connectionsByToken map[string]*connectionState
-	voiceAssigner      *VoiceAssigner
 
 	lg *log.Logger
 	mu util.LoggingMutex
@@ -45,7 +44,6 @@ func makeSimSession(name, scenarioGroup, scenario, password string, s *sim.Sim, 
 		password:           password,
 		lg:                 lg,
 		connectionsByToken: make(map[string]*connectionState),
-		voiceAssigner:      NewVoiceAssigner(),
 	}
 }
 
@@ -61,7 +59,6 @@ type connectionState struct {
 	lastUpdateCall      time.Time
 	warnedNoUpdateCalls bool
 	stateUpdateEventSub *sim.EventsSubscription
-	ttsEventSub         *sim.EventsSubscription // Separate subscription for TTS events
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -72,17 +69,12 @@ func (ss *simSession) AddHumanController(token string, tcw sim.TCW, initials str
 	ss.mu.Lock(ss.lg)
 	defer ss.mu.Unlock(ss.lg)
 
-	// Create a separate subscription for TTS rather than using stateUpdateEventSub so it doesn't
-	// miss updates after state update calls drain the event stream updates.
-	ttsEventSub := ss.sim.Subscribe()
-
 	ss.connectionsByToken[token] = &connectionState{
 		token:               token,
 		tcw:                 tcw,
 		initials:            initials,
 		lastUpdateCall:      time.Now(),
 		stateUpdateEventSub: sub,
-		ttsEventSub:         ttsEventSub,
 	}
 
 	// Update pause state - may unpause sim now that a human is connected
@@ -112,9 +104,6 @@ func (ss *simSession) SignOff(token string) (signOffResult, bool) {
 	// Unsubscribe from events before deleting
 	if conn.stateUpdateEventSub != nil {
 		conn.stateUpdateEventSub.Unsubscribe()
-	}
-	if conn.ttsEventSub != nil {
-		conn.ttsEventSub.Unsubscribe()
 	}
 
 	delete(ss.connectionsByToken, token)
@@ -179,9 +168,9 @@ func (ss *simSession) updateSimPauseState() {
 ///////////////////////////////////////////////////////////////////////////
 // State Updates and Controller Context
 
-// GetStateUpdate populates the update with session state and processes TTS.
+// GetStateUpdate populates the update with session state.
 // This is the main entry point for periodic state updates from a controller.
-func (ss *simSession) GetStateUpdate(token string, tts sim.TTSProvider) *SimStateUpdate {
+func (ss *simSession) GetStateUpdate(token string) *SimStateUpdate {
 	ss.mu.Lock(ss.lg)
 	conn, ok := ss.connectionsByToken[token]
 	if !ok {
@@ -203,42 +192,12 @@ func (ss *simSession) GetStateUpdate(token string, tts sim.TTSProvider) *SimStat
 
 	tcw := conn.tcw
 	eventSub := conn.stateUpdateEventSub
-	ttsEvents := conn.ttsEventSub.Get()
 	ss.mu.Unlock(ss.lg)
 
-	// Synthesize TTS for pilot-initiated transmissions (not readbacks, which are handled via RPC)
-	// TTS is always synthesized; the client discards it if TTS is disabled at runtime.
-	var radioSpeech []sim.PilotSpeech
-	if tts != nil {
-		ss.voiceAssigner.TryInit(tts, ss.lg)
-
-		for _, e := range ss.sim.PrepareRadioTransmissionsForTCW(tcw, ttsEvents) {
-			if e.Type != sim.RadioTransmissionEvent || e.DestinationTCW != tcw {
-				continue
-			}
-			// Skip readbacks - those are handled via RunAircraftCommands RPC
-			if e.RadioTransmissionType == av.RadioTransmissionReadback {
-				continue
-			}
-			if e.SpokenText == "" {
-				continue
-			}
-
-			// Synthesize TTS synchronously with timeout
-			if speech := SynthesizeSpeechWithTimeout(
-				ss.voiceAssigner, tts, e.ADSBCallsign,
-				e.RadioTransmissionType, e.SpokenText, ss.sim.SimTime(),
-				2*time.Second, ss.lg); speech != nil {
-				radioSpeech = append(radioSpeech, *speech)
-			}
-		}
-	}
-
 	return &SimStateUpdate{
-		StateUpdate: ss.sim.GetStateUpdate(),
+		StateUpdate: ss.sim.GetStateUpdate(tcw),
 		ActiveTCWs:  ss.GetActiveTCWs(),
 		Events:      ss.sim.PrepareRadioTransmissionsForTCW(tcw, eventSub.Get()),
-		RadioSpeech: radioSpeech,
 	}
 }
 
@@ -304,4 +263,35 @@ func (ss *simSession) GetActiveTCWs() []sim.TCW {
 	defer ss.mu.Unlock(ss.lg)
 
 	return ss.getActiveTCWs()
+}
+
+// RequestContact pops the next pending contact for the TCW, generates the transmission
+// with current aircraft state, and returns text + voice name for client-side synthesis.
+// Returns empty values if no contact is pending.
+func (ss *simSession) RequestContact(tcw sim.TCW) (text string, voiceName string, callsign av.ADSBCallsign, ty av.RadioTransmissionType) {
+	// Get all positions controlled by this TCW (primary + consolidated secondaries)
+	cons := ss.sim.State.CurrentConsolidation[tcw]
+	if cons == nil {
+		return "", "", "", 0
+	}
+	positions := cons.OwnedPositions()
+
+	// Try pending contacts from any of the controlled positions
+	for {
+		pc := ss.sim.PopReadyContact(positions)
+		if pc == nil {
+			return "", "", "", 0
+		}
+
+		// Generate the contact transmission with current aircraft state
+		spokenText, _ := ss.sim.GenerateContactTransmission(pc)
+		if spokenText == "" {
+			// Aircraft may be gone or invalid - try the next one
+			continue
+		}
+
+		voiceName := ss.sim.VoiceAssigner.GetVoice(pc.ADSBCallsign, ss.sim.Rand)
+
+		return spokenText, voiceName, pc.ADSBCallsign, av.RadioTransmissionContact
+	}
 }

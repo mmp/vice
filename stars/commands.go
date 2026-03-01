@@ -212,7 +212,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 	}
 
 	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
-		if !ctx.TCWIsPrivileged(ctx.UserTCW) && input != "" {
+		if !ctx.TCWIsPrivileged(ctx.UserTCW) && (input != "" || len(ctx.Keyboard.Pressed) > 0) {
 			// As long as text is being entered, hold radio transmissions
 			// for the coming few seconds.
 			ctx.Client.HoldRadioTransmissions()
@@ -622,12 +622,20 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 		}
 	}
 
+	// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
+	// On macOS, physical Ctrl-click is delivered as a right-click by Cocoa,
+	// and physical Ctrl maps to KeySuper() due to the Ctrl/Super swap.
+	// So we check both: primary release + KeyControl (Cmd-Shift-Click on macOS,
+	// Ctrl-Shift-Click elsewhere) and secondary release + KeySuper (physical
+	// Ctrl-Shift-Click on macOS).
+	if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() &&
+		((ctx.Mouse.Released[platform.MouseButtonPrimary] && ctx.Keyboard.KeyControl()) ||
+			(ctx.Mouse.Released[platform.MouseButtonSecondary] && ctx.Keyboard.KeySuper())) {
+		mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
+		ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
+	}
+
 	if ctx.Mouse.Released[platform.MouseButtonPrimary] {
-		if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() && ctx.Keyboard.KeyControl() {
-			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
-			mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
-			ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
-		}
 
 		if ctx.Keyboard != nil && ctx.Keyboard.KeyControl() {
 			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
@@ -720,7 +728,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 			style := renderer.TextStyle{
 				Font:        font,
-				Color:       ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
+				Color:       ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.List),
 				LineSpacing: 0}
 
 			// Track position in window coordinates
@@ -766,10 +774,8 @@ func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
 	sp.resetInputState(ctx)
 	sp.commandMode = mode
 
-	if mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
+	if mode == CommandModeTargetGen || mode == CommandModeTargetGenLock {
 		ctx.Client.HoldRadioTransmissions()
-	} else {
-		ctx.Client.AllowRadioTransmissions()
 	}
 }
 
@@ -786,8 +792,6 @@ func (sp *STARSPane) resetInputState(ctx *panes.Context) {
 	sp.activeSpinner = nil
 
 	sp.drawRoutePoints = nil
-
-	ctx.Client.AllowRadioTransmissions()
 
 	ctx.Platform.EndCaptureMouse()
 	ctx.Platform.StopMouseDeltaMode()
@@ -891,10 +895,10 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 	}
 
 	if haveTrianglePrefix {
-		// Triangle prefix: ∆N4P format - facility identifier + sector ID
+		// Triangle prefix: ∆N4P format - facility identifier + position
 		if len(id) == 3 {
 			return findController(func(ctrl *av.Controller) bool {
-				return ctrl.SectorID == id[1:] && ctrl.FacilityIdentifier == string(id[0])
+				return ctrl.Position == id[1:] && ctrl.FacilityIdentifier == string(id[0])
 			})
 		}
 		return nil
@@ -904,8 +908,8 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 	if len(id) == 1 && len(userSectorId) >= 2 {
 		if ctrl := findController(func(ctrl *av.Controller) bool {
 			return ctrl.FacilityIdentifier == "" &&
-				ctrl.SectorID[0] == userSectorId[0] &&
-				ctrl.SectorID[1] == id[0]
+				ctrl.Position[0] == userSectorId[0] &&
+				ctrl.Position[1] == id[0]
 		}); ctrl != nil {
 			return ctrl
 		}
@@ -914,7 +918,7 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 	// Two chars: same facility lookup
 	if len(id) == 2 {
 		if ctrl := findController(func(ctrl *av.Controller) bool {
-			return ctrl.SectorID == id && ctrl.FacilityIdentifier == ""
+			return ctrl.Position == id && ctrl.FacilityIdentifier == ""
 		}); ctrl != nil {
 			return ctrl
 		}
@@ -922,7 +926,7 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 
 	// Fallback: ERAM facility
 	return findController(func(ctrl *av.Controller) bool {
-		return ctrl.ERAMFacility && ctrl.SectorID == id
+		return ctrl.ERAMFacility && string(ctrl.PositionId()) == id
 	})
 }
 
@@ -941,7 +945,7 @@ func lookupControllerWithAirspace(ctx *panes.Context, id string, trk *sim.Track)
 		return nil
 	}
 
-	return lookupControllerByTCP(ctx.Client.State.Controllers, id, ctx.UserController().SectorID)
+	return lookupControllerByTCP(ctx.Client.State.Controllers, id, ctx.UserController().Position)
 }
 
 func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms radar.ScopeTransformations) (*sim.Track, float32) {

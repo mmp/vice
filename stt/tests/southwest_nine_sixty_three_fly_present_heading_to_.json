@@ -1,0 +1,648 @@
+{
+  "time": "2026-02-01T01:54:38.540703038Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Southwest nine sixty three fly present heading to cena maintain seven thousand",
+  "whisper_duration_ms": 561.43,
+  "audio_duration_ms": 3784,
+  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "SWA963",
+  "command": "H A70",
+  "stt_aircraft": {
+    "Alaska 98 79": {
+      "Callsign": "ASA9879",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Mutey": "MUTEE",
+        "Piglet": "PGLET"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "HUDAD2",
+      "STAR": "",
+      "Altitude": 6322,
+      "State": "departure",
+      "ControllerFrequency": "1Z",
+      "TrackingController": "1Z",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Envoy 99 56": {
+      "Callsign": "ENY9956",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Bossy": "BOSSI",
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Deetz": "DIETZ",
+        "Headman": "HEDMN",
+        "Jiffy": "JIFFY",
+        "Penny": "PENNY",
+        "Tack": "TACKE",
+        "Wards": "WARDZ",
+        "Whoot": "WHOOT",
+        "Zing": "ZINGG"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 17C",
+      "SID": "",
+      "STAR": "BEREE3",
+      "Altitude": 15716,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    },
+    "Southwest 35 30": {
+      "Callsign": "SWA3530",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Bacher": "BACHR",
+        "Dallas Love": "KDAL",
+        "Love": "KDAL",
+        "Love Field": "KDAL",
+        "Nate": "NNATE",
+        "Quinn": "QUYNN",
+        "Redden": "REDDN",
+        "Wades": "WADES"
+      },
+      "CandidateApproaches": {
+        "I L S runway one three left": "I3L",
+        "I L S runway one three right": "I3R",
+        "r-nav whiskey runway one three left": "W3L",
+        "r-nav whiskey runway one three right": "W3R",
+        "r-nav x-ray runway one three left": "X3L",
+        "r-nav x-ray runway one three right": "X3R",
+        "r-nav yankee runway one three left": "Y3L",
+        "r-nav yankee runway one three right": "Y3R",
+        "r-nav zulu runway one three left": "Z3L",
+        "r-nav zulu runway one three right": "Z3R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Nate": "NNATE",
+          "Wades": "WADES"
+        },
+        "I3R": {
+          "Laura": "LAURA",
+          "Lippy": "LIPPI"
+        },
+        "W3L": {
+          "Ebare": "EBARE",
+          "Hexov": "HEXOV",
+          "Kumte": "KUMTE",
+          "Nokme": "NOKME",
+          "Segep": "CEGEP",
+          "Wenop": "WENOP",
+          "Wupag": "WUPAG"
+        },
+        "W3R": {
+          "Ebare": "EBARE",
+          "Hexov": "HEXOV",
+          "Inapt": "INAPT",
+          "Laych": "LAICH",
+          "Nokme": "NOKME",
+          "Wenop": "WENOP",
+          "Wupag": "WUPAG",
+          "Wurem": "WUREM"
+        },
+        "X3L": {
+          "Netney": "NETNE",
+          "Tunde": "TUNDE",
+          "Vealy": "VEALY",
+          "Zunam": "ZUNAM"
+        },
+        "X3R": {
+          "Freddom": "FRDDM",
+          "Netney": "NETNE",
+          "Obude": "OBUDE",
+          "To Fly": "TOFLY"
+        },
+        "Y3L": {
+          "Apake": "APAKE",
+          "Binay": "BINAY",
+          "Camso": "CAMSO",
+          "Slant": "SLANT"
+        },
+        "Y3R": {
+          "Apake": "APAKE",
+          "Binay": "BINAY",
+          "Camso": "CAMSO",
+          "Slant": "SLANT"
+        },
+        "Z3L": {
+          "Nate": "NNATE",
+          "Tasked": "TSKED",
+          "Wades": "WADES"
+        },
+        "Z3R": {
+          "Laura": "LAURA",
+          "Lippy": "LIPPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 13L",
+      "SID": "",
+      "STAR": "BACHR4",
+      "Altitude": 6923,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 55 78": {
+      "Callsign": "SWA5578",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Bacher": "BACHR",
+        "Big Tex": "BGTEX",
+        "Breeze": "BREES",
+        "Dallas Love": "KDAL",
+        "Knead": "KNEAD",
+        "Love": "KDAL",
+        "Love Field": "KDAL",
+        "Nate": "NNATE",
+        "Punky": "PUNKY",
+        "Quinn": "QUYNN",
+        "Ravley": "RVLEY",
+        "Redden": "REDDN",
+        "To fit": "TUFIT",
+        "Wades": "WADES"
+      },
+      "CandidateApproaches": {
+        "I L S runway one three left": "I3L",
+        "I L S runway one three right": "I3R",
+        "r-nav whiskey runway one three left": "W3L",
+        "r-nav whiskey runway one three right": "W3R",
+        "r-nav x-ray runway one three left": "X3L",
+        "r-nav x-ray runway one three right": "X3R",
+        "r-nav yankee runway one three left": "Y3L",
+        "r-nav yankee runway one three right": "Y3R",
+        "r-nav zulu runway one three left": "Z3L",
+        "r-nav zulu runway one three right": "Z3R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Nate": "NNATE",
+          "Wades": "WADES"
+        },
+        "I3R": {
+          "Laura": "LAURA",
+          "Lippy": "LIPPI"
+        },
+        "W3L": {
+          "Ebare": "EBARE",
+          "Hexov": "HEXOV",
+          "Kumte": "KUMTE",
+          "Nokme": "NOKME",
+          "Segep": "CEGEP",
+          "Wenop": "WENOP",
+          "Wupag": "WUPAG"
+        },
+        "W3R": {
+          "Ebare": "EBARE",
+          "Hexov": "HEXOV",
+          "Inapt": "INAPT",
+          "Laych": "LAICH",
+          "Nokme": "NOKME",
+          "Wenop": "WENOP",
+          "Wupag": "WUPAG",
+          "Wurem": "WUREM"
+        },
+        "X3L": {
+          "Netney": "NETNE",
+          "Tunde": "TUNDE",
+          "Vealy": "VEALY",
+          "Zunam": "ZUNAM"
+        },
+        "X3R": {
+          "Freddom": "FRDDM",
+          "Netney": "NETNE",
+          "Obude": "OBUDE",
+          "To Fly": "TOFLY"
+        },
+        "Y3L": {
+          "Apake": "APAKE",
+          "Binay": "BINAY",
+          "Camso": "CAMSO",
+          "Slant": "SLANT"
+        },
+        "Y3R": {
+          "Apake": "APAKE",
+          "Binay": "BINAY",
+          "Camso": "CAMSO",
+          "Slant": "SLANT"
+        },
+        "Z3L": {
+          "Nate": "NNATE",
+          "Tasked": "TSKED",
+          "Wades": "WADES"
+        },
+        "Z3R": {
+          "Laura": "LAURA",
+          "Lippy": "LIPPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 13L",
+      "SID": "",
+      "STAR": "BACHR4",
+      "Altitude": 17399,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 75 12": {
+      "Callsign": "SWA7512",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Bacher": "BACHR",
+        "Dallas Love": "KDAL",
+        "Love": "KDAL",
+        "Love Field": "KDAL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one three left": "I3L",
+        "I L S runway one three right": "I3R",
+        "r-nav whiskey runway one three left": "W3L",
+        "r-nav whiskey runway one three right": "W3R",
+        "r-nav x-ray runway one three left": "X3L",
+        "r-nav x-ray runway one three right": "X3R",
+        "r-nav yankee runway one three left": "Y3L",
+        "r-nav yankee runway one three right": "Y3R",
+        "r-nav zulu runway one three left": "Z3L",
+        "r-nav zulu runway one three right": "Z3R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Nate": "NNATE",
+          "Wades": "WADES"
+        },
+        "I3R": {
+          "Laura": "LAURA",
+          "Lippy": "LIPPI"
+        },
+        "W3L": {
+          "Ebare": "EBARE",
+          "Hexov": "HEXOV",
+          "Kumte": "KUMTE",
+          "Nokme": "NOKME",
+          "Segep": "CEGEP",
+          "Wenop": "WENOP",
+          "Wupag": "WUPAG"
+        },
+        "W3R": {
+          "Ebare": "EBARE",
+          "Hexov": "HEXOV",
+          "Inapt": "INAPT",
+          "Laych": "LAICH",
+          "Nokme": "NOKME",
+          "Wenop": "WENOP",
+          "Wupag": "WUPAG",
+          "Wurem": "WUREM"
+        },
+        "X3L": {
+          "Netney": "NETNE",
+          "Tunde": "TUNDE",
+          "Vealy": "VEALY",
+          "Zunam": "ZUNAM"
+        },
+        "X3R": {
+          "Freddom": "FRDDM",
+          "Netney": "NETNE",
+          "Obude": "OBUDE",
+          "To Fly": "TOFLY"
+        },
+        "Y3L": {
+          "Apake": "APAKE",
+          "Binay": "BINAY",
+          "Camso": "CAMSO",
+          "Slant": "SLANT"
+        },
+        "Y3R": {
+          "Apake": "APAKE",
+          "Binay": "BINAY",
+          "Camso": "CAMSO",
+          "Slant": "SLANT"
+        },
+        "Z3L": {
+          "Nate": "NNATE",
+          "Tasked": "TSKED",
+          "Wades": "WADES"
+        },
+        "Z3R": {
+          "Laura": "LAURA",
+          "Lippy": "LIPPI"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MNNDO4",
+      "Altitude": 4639,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 75 zero five": {
+      "Callsign": "SWA7505",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Dallas Love": "KDAL",
+        "Love": "KDAL",
+        "Love Field": "KDAL",
+        "Nate": "NNATE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one three left": "I3L",
+        "I L S runway one three right": "I3R",
+        "r-nav whiskey runway one three left": "W3L",
+        "r-nav whiskey runway one three right": "W3R",
+        "r-nav x-ray runway one three left": "X3L",
+        "r-nav x-ray runway one three right": "X3R",
+        "r-nav yankee runway one three left": "Y3L",
+        "r-nav yankee runway one three right": "Y3R",
+        "r-nav zulu runway one three left": "Z3L",
+        "r-nav zulu runway one three right": "Z3R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Nate": "NNATE",
+          "Wades": "WADES"
+        },
+        "I3R": {
+          "Laura": "LAURA",
+          "Lippy": "LIPPI"
+        },
+        "W3L": {
+          "Ebare": "EBARE",
+          "Hexov": "HEXOV",
+          "Kumte": "KUMTE",
+          "Nokme": "NOKME",
+          "Segep": "CEGEP",
+          "Wenop": "WENOP",
+          "Wupag": "WUPAG"
+        },
+        "W3R": {
+          "Ebare": "EBARE",
+          "Hexov": "HEXOV",
+          "Inapt": "INAPT",
+          "Laych": "LAICH",
+          "Nokme": "NOKME",
+          "Wenop": "WENOP",
+          "Wupag": "WUPAG",
+          "Wurem": "WUREM"
+        },
+        "X3L": {
+          "Netney": "NETNE",
+          "Tunde": "TUNDE",
+          "Vealy": "VEALY",
+          "Zunam": "ZUNAM"
+        },
+        "X3R": {
+          "Freddom": "FRDDM",
+          "Netney": "NETNE",
+          "Obude": "OBUDE",
+          "To Fly": "TOFLY"
+        },
+        "Y3L": {
+          "Apake": "APAKE",
+          "Binay": "BINAY",
+          "Camso": "CAMSO",
+          "Slant": "SLANT"
+        },
+        "Y3R": {
+          "Apake": "APAKE",
+          "Binay": "BINAY",
+          "Camso": "CAMSO",
+          "Slant": "SLANT"
+        },
+        "Z3L": {
+          "Nate": "NNATE",
+          "Tasked": "TSKED",
+          "Wades": "WADES"
+        },
+        "Z3R": {
+          "Laura": "LAURA",
+          "Lippy": "LIPPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 13L",
+      "SID": "",
+      "STAR": "HERBZ1",
+      "Altitude": 2997,
+      "State": "on approach",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest niner 63": {
+      "Callsign": "SWA963",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Dallas Love": "KDAL",
+        "Finger": "FINGR",
+        "Hibble": "HIBIL",
+        "Love": "KDAL",
+        "Love Field": "KDAL",
+        "Nate": "NNATE",
+        "Slant": "SLANT",
+        "Wades": "WADES"
+      },
+      "CandidateApproaches": {
+        "I L S runway one three left": "I3L",
+        "I L S runway one three right": "I3R",
+        "r-nav whiskey runway one three left": "W3L",
+        "r-nav whiskey runway one three right": "W3R",
+        "r-nav x-ray runway one three left": "X3L",
+        "r-nav x-ray runway one three right": "X3R",
+        "r-nav yankee runway one three left": "Y3L",
+        "r-nav yankee runway one three right": "Y3R",
+        "r-nav zulu runway one three left": "Z3L",
+        "r-nav zulu runway one three right": "Z3R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Nate": "NNATE",
+          "Wades": "WADES"
+        },
+        "I3R": {
+          "Laura": "LAURA",
+          "Lippy": "LIPPI"
+        },
+        "W3L": {
+          "Ebare": "EBARE",
+          "Hexov": "HEXOV",
+          "Kumte": "KUMTE",
+          "Nokme": "NOKME",
+          "Segep": "CEGEP",
+          "Wenop": "WENOP",
+          "Wupag": "WUPAG"
+        },
+        "W3R": {
+          "Ebare": "EBARE",
+          "Hexov": "HEXOV",
+          "Inapt": "INAPT",
+          "Laych": "LAICH",
+          "Nokme": "NOKME",
+          "Wenop": "WENOP",
+          "Wupag": "WUPAG",
+          "Wurem": "WUREM"
+        },
+        "X3L": {
+          "Netney": "NETNE",
+          "Tunde": "TUNDE",
+          "Vealy": "VEALY",
+          "Zunam": "ZUNAM"
+        },
+        "X3R": {
+          "Freddom": "FRDDM",
+          "Netney": "NETNE",
+          "Obude": "OBUDE",
+          "To Fly": "TOFLY"
+        },
+        "Y3L": {
+          "Apake": "APAKE",
+          "Binay": "BINAY",
+          "Camso": "CAMSO",
+          "Slant": "SLANT"
+        },
+        "Y3R": {
+          "Apake": "APAKE",
+          "Binay": "BINAY",
+          "Camso": "CAMSO",
+          "Slant": "SLANT"
+        },
+        "Z3L": {
+          "Nate": "NNATE",
+          "Tasked": "TSKED",
+          "Wades": "WADES"
+        },
+        "Z3R": {
+          "Laura": "LAURA",
+          "Lippy": "LIPPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 13L",
+      "SID": "",
+      "STAR": "HIBIL3",
+      "Altitude": 9947,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Southwest nine sixty three fly present heading to cena maintain seven thousand\"",
+    "[local-stt] normalized words: [southwest 9 63 fly present heading to cena maintain 7 thousand]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"southwest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"963\" Type=1 Value=963",
+    "[local-stt]   token[2]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"present\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"cena\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"70\" Type=2 Value=70",
+    "[local-stt] MatchCallsign: 9 tokens, 7 aircraft",
+    "[local-stt]   candidate \"Southwest 35 30\" (ICAO=\"SWA3530\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"Envoy 99 56\" (ICAO=\"ENY9956\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 75 zero five\" (ICAO=\"SWA7505\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"Southwest 55 78\" (ICAO=\"SWA5578\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"Alaska 98 79\" (ICAO=\"ASA9879\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 75 12\" (ICAO=\"SWA7512\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"Southwest niner 63\" (ICAO=\"SWA963\"): score=1.10 consumed=2",
+    "[local-stt]   candidate \"Southwest niner 63\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
+    "[local-stt]   accepted: \"SWA963\" (conf=1.10, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"SWA963\" SpokenKey=\"Southwest niner 63\" Conf=1.10 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=9947 Fixes=8 Approaches=10 AssignedApproach=\"ILS Runway 13L\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Finger\" -\u003e \"FINGR\"",
+    "[local-stt]   fix: \"Slant\" -\u003e \"SLANT\"",
+    "[local-stt]   fix: \"Hibble\" -\u003e \"HIBIL\"",
+    "[local-stt]   fix: \"Love\" -\u003e \"KDAL\"",
+    "[local-stt]   fix: \"Love Field\" -\u003e \"KDAL\"",
+    "[local-stt]   fix: \"Dallas Love\" -\u003e \"KDAL\"",
+    "[local-stt]   fix: \"Wades\" -\u003e \"WADES\"",
+    "[local-stt]   fix: \"Nate\" -\u003e \"NNATE\"",
+    "[local-stt]   approach: \"r-nav whiskey runway one three left\" -\u003e \"W3L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway one three left\" -\u003e \"X3L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one three left\" -\u003e \"Z3L\"",
+    "[local-stt]   approach: \"r-nav whiskey runway one three right\" -\u003e \"W3R\"",
+    "[local-stt]   approach: \"I L S runway one three right\" -\u003e \"I3R\"",
+    "[local-stt]   approach: \"I L S runway one three left\" -\u003e \"I3L\"",
+    "[local-stt]   approach: \"r-nav yankee runway one three left\" -\u003e \"Y3L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway one three right\" -\u003e \"X3R\"",
+    "[local-stt]   approach: \"r-nav zulu runway one three right\" -\u003e \"Z3R\"",
+    "[local-stt]   approach: \"r-nav yankee runway one three right\" -\u003e \"Y3R\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"present\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"cena\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"70\" Type=2 Value=70",
+    "[local-stt]   position ID: found command keyword \"fly\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   matched command: \"H\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   skipping filler word: \"to\"",
+    "[local-stt]   no match at token[4]=\"cena\", skipping",
+    "[local-stt]   matched command: \"A70\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[H A70] (avgConf=1.00)",
+    "[local-stt] parsed commands: [H A70] (conf=1.00)",
+    "[local-stt] validated commands: [H A70] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA963 H A70\" (conf=1.10, time=512.3µs) ==="
+  ]
+}

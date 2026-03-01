@@ -1,10 +1,10 @@
 package eram
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
+	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
@@ -29,7 +29,7 @@ var (
 const numMapColors = 8
 
 var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
-	[numMapColors]renderer.RGB{ // Group A
+	{ // Group A
 		renderer.RGBFromUInt8(140, 140, 140),
 		renderer.RGBFromUInt8(0, 255, 255),
 		renderer.RGBFromUInt8(255, 0, 255),
@@ -39,7 +39,7 @@ var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
 		renderer.RGBFromUInt8(218, 165, 32),
 		renderer.RGBFromUInt8(72, 118, 255),
 	},
-	[numMapColors]renderer.RGB{ // Group B
+	{ // Group B
 		renderer.RGBFromUInt8(140, 140, 140),
 		renderer.RGBFromUInt8(132, 112, 255),
 		renderer.RGBFromUInt8(118, 238, 198),
@@ -55,9 +55,10 @@ type ERAMPane struct {
 	ERAMPreferenceSets map[string]*PrefrenceSet        `json:"PreferenceSets,omitempty"`
 	prefSet            *PrefrenceSet                   `json:"-"`
 	tempSavedNames     [numSavedPreferenceSets]string  `json:"-"`
-	TrackState         map[av.ADSBCallsign]*TrackState `json:"-"`
+	TrackState         map[av.ADSBCallsign]*TrackState `json:"TrackState,omitempty"`
 
 	DisableERAMtoRadio bool `json:"-"`
+	FlipNumericKeypad  bool
 
 	events *sim.EventsSubscription `json:"-"`
 
@@ -66,6 +67,15 @@ type ERAMPane struct {
 	allVideoMaps    []radar.ERAMVideoMap `json:"-"`
 	videoMapLabel   string               `json:"-"`
 	currentFacility string               `json:"-"`
+
+	eramCursorSelection string           `json:"-"`
+	eramCursorPath      string           `json:"-"`
+	eramCursor          *platform.Cursor `json:"-"`
+	eramCursorLoadErr   string           `json:"-"`
+
+	cursorOverrideSelection string    `json:"-"`
+	cursorOverrideUntil     time.Time `json:"-"`
+	cursorRollbackSelection string    `json:"-"` // Cursor to use after temporary cursor expires
 
 	InboundPointOuts  map[string]string `json:"-"`
 	OutboundPointOuts map[string]string `json:"-"`
@@ -99,7 +109,7 @@ type ERAMPane struct {
 	tearoffMenuLightToolbar2 map[string][4][2]float32 `json:"-"` // cached secondary backgrounds (MAP BRIGHT)
 	tearoffMenuOrder         []string                 `json:"-"` // draw/input order for tearoff menus (oldest -> newest)
 
-	velocityTime int `json:"-"` // 0, 1, 4, or 8 minutes
+	VelocityTime int // 0, 1, 4, or 8 minutes
 
 	dbLastAlternateTime time.Time `json:"-"` // Alternates every 6 seconds
 	dbAlternate         bool      `json:"-"`
@@ -127,7 +137,7 @@ type ERAMPane struct {
 	}
 
 	// CRR state (session)
-	crrGroups        map[string]*CRRGroup                         `json:"-"`
+	CRRGroups        map[string]*CRRGroup                         `json:"CRRGroups,omitempty"`
 	crrMenuOpen      bool                                         `json:"-"`
 	crrFixRects      map[string]math.Extent2D                     `json:"-"`
 	crrLabelRects    map[string]math.Extent2D                     `json:"-"`
@@ -142,6 +152,7 @@ type ERAMPane struct {
 }
 
 func NewERAMPane() *ERAMPane {
+	InitCommands()
 	return &ERAMPane{}
 }
 
@@ -161,8 +172,8 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	if ep.aircraftFixCoordinates == nil {
 		ep.aircraftFixCoordinates = make(map[string]aircraftFixCoordinates)
 	}
-	if ep.crrGroups == nil {
-		ep.crrGroups = make(map[string]*CRRGroup)
+	if ep.CRRGroups == nil {
+		ep.CRRGroups = make(map[string]*CRRGroup)
 	}
 	if ep.crrFixRects == nil {
 		ep.crrFixRects = make(map[string]math.Extent2D)
@@ -207,18 +218,77 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	}
 }
 
-func init() {
-	panes.RegisterUnmarshalPane("ERAMPane", func(d []byte) (panes.Pane, error) {
-		var p ERAMPane
-		err := json.Unmarshal(d, &p)
-		return &p, err
-	})
-}
-
 func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
+
+func (ep *ERAMPane) updateCursorOverride(ctx *panes.Context) {
+	if ep.prefSet == nil {
+		return
+	}
+
+	desiredCursor := ""
+	if ep.cursorOverrideSelection != "" {
+		if !ep.cursorOverrideUntil.IsZero() && ctx.Now.After(ep.cursorOverrideUntil) {
+			// Temporary cursor is over. Check the rollback cursor (if it exists).
+			if ep.cursorRollbackSelection != "" { // If there is a rollback selected
+				ep.cursorOverrideSelection = ep.cursorRollbackSelection
+				ep.cursorOverrideUntil = time.Time{} // Keep indefinitely until changed
+				ep.cursorRollbackSelection = ""      // Clear rollback after using it
+				desiredCursor = ep.cursorOverrideSelection
+			} else { // No rollback cursor. Default to the cursor selected in the CURSOR menu.
+				ep.cursorOverrideSelection = ""
+				ep.cursorOverrideUntil = time.Time{}
+			}
+		} else {
+			desiredCursor = ep.cursorOverrideSelection
+		}
+	}
+
+	if desiredCursor == "" {
+		cursorSize := ep.currentPrefs().CursorSize
+		if cursorSize > 0 {
+			desiredCursor = fmt.Sprintf("Eram%d", cursorSize)
+		} else {
+			ep.eramCursorSelection = ""
+			ep.eramCursorPath = ""
+			ep.eramCursor = nil
+			ep.eramCursorLoadErr = ""
+			return
+		}
+	}
+
+	if desiredCursor != ep.eramCursorSelection {
+		ep.eramCursorSelection = desiredCursor
+		ep.eramCursorPath = ""
+		ep.eramCursor = nil
+		ep.eramCursorLoadErr = ""
+		resolvedPath, err := ep.resolveCursorPath(desiredCursor)
+		if err != nil {
+			ep.eramCursorLoadErr = err.Error()
+			if ctx.Lg != nil {
+				ctx.Lg.Warnf("ERAM cursor %q: %v", desiredCursor, err)
+			}
+			return
+		}
+		cursor, err := ctx.Platform.LoadCursorFromFile(resolvedPath)
+		if err != nil {
+			ep.eramCursorLoadErr = err.Error()
+			if ctx.Lg != nil {
+				ctx.Lg.Warnf("ERAM cursor %q: %v", resolvedPath, err)
+			}
+			return
+		}
+		ep.eramCursorPath = resolvedPath
+		ep.eramCursor = cursor
+	}
+
+	if ctx.Mouse != nil && ep.eramCursor != nil {
+		ctx.Platform.SetCursorOverride(ep.eramCursor)
+	}
+}
 
 func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.processEvents(ctx)
+	ep.updateCursorOverride(ctx)
 
 	ps := ep.currentPrefs()
 
@@ -288,10 +358,6 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// handleCapture
 	// updateAudio
 	ep.drawPauseOverlay(ctx, cb)
-}
-
-func (ep *ERAMPane) Hide() bool {
-	return false
 }
 
 func (ep *ERAMPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
@@ -369,6 +435,9 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	if ep.prefSet.Current.clockPosition == ([2]float32{}) {
 		ep.prefSet.Current.clockPosition = def.clockPosition
 	}
+	if ep.prefSet.Current.CursorSize == 0 {
+		ep.prefSet.Current.CursorSize = def.CursorSize
+	}
 	// Fill in CRR defaults if this preference set was created before CRR existed
 	if ep.prefSet.Current.CRR.ColorBright == nil {
 		ep.prefSet.Current.CRR.ColorBright = def.CRR.ColorBright
@@ -431,7 +500,10 @@ func (inp *inputText) Add(str string, color renderer.RGB, location [2]float32) {
 }
 
 func (inp *inputText) AddLocation(ps *Preferences, location [2]float32) {
-	inp.Add(locationSymbol, ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
+	str := inp.String()
+	str = strings.TrimRightFunc(str, unicode.IsSpace)
+	inp.Set(ps, str)
+	inp.Add(" "+locationSymbol+"", ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
 }
 
 // No formatting needed
@@ -445,8 +517,8 @@ func (inp *inputText) AddBasic(ps *Preferences, str string) {
 }
 
 func formatInput(str string) string {
-	output := strings.ReplaceAll(str, "`", "y")
-	output = strings.ReplaceAll(output, "~", "z")
+	output := strings.ReplaceAll(str, "`", circleClear)
+	output = strings.ReplaceAll(output, "~", circleFilled)
 	return output
 }
 
@@ -557,7 +629,10 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 					ep.tearoffIsReposition = false
 					ctx.Platform.EndCaptureMouse()
 				}
-				ep.deleteTearoffMode = false
+				if ep.deleteTearoffMode {
+					ep.deleteTearoffMode = false
+					ep.ClearTemporaryCursor()
+				}
 				break
 			}
 			// Clear the input
@@ -580,16 +655,16 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.Input.Set(ps, "TG ")
 			}
 		case imgui.KeyPageUp: // velocity vector *2
-			if ep.velocityTime == 0 {
-				ep.velocityTime = 1
-			} else if ep.velocityTime < 8 {
-				ep.velocityTime *= 2
+			if ep.VelocityTime == 0 {
+				ep.VelocityTime = 1
+			} else if ep.VelocityTime < 8 {
+				ep.VelocityTime *= 2
 			}
 		case imgui.KeyPageDown: // velocity vector /2
-			if ep.velocityTime > 0 {
-				ep.velocityTime /= 2
+			if ep.VelocityTime > 0 {
+				ep.VelocityTime /= 2
 			} else {
-				ep.velocityTime = 0
+				ep.VelocityTime = 0
 			}
 		}
 	}
@@ -663,7 +738,6 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	ss := client.State
 	ps := ep.currentPrefs()
 	vmf, err := ep.getVideoMapLibrary(ss, client)
-	// fmt.Println(vmf.ERAMMapGroups, "VMFOKAY")
 	if err != nil {
 		lg.Errorf("%v", err)
 		return
@@ -739,4 +813,90 @@ func combine(x, y string) string {
 	}
 	return x + " " + y
 
+}
+
+// Mouse button helpers:
+// When UseRightClick is set, logical primary = physical right button click, logical tertiary = physical left button click.
+func (ep *ERAMPane) mousePrimaryClicked(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Clicked[platform.MouseButtonSecondary]
+	}
+	return m.Clicked[platform.MouseButtonPrimary]
+}
+
+func (ep *ERAMPane) mousePrimaryDown(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Down[platform.MouseButtonSecondary]
+	}
+	return m.Down[platform.MouseButtonPrimary]
+}
+
+func (ep *ERAMPane) mousePrimaryReleased(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Released[platform.MouseButtonSecondary]
+	}
+	return m.Released[platform.MouseButtonPrimary]
+}
+
+func (ep *ERAMPane) mouseTertiaryClicked(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Clicked[platform.MouseButtonPrimary]
+	}
+	return m.Clicked[platform.MouseButtonTertiary]
+}
+
+func (ep *ERAMPane) mouseTertiaryDown(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Down[platform.MouseButtonPrimary]
+	}
+	return m.Down[platform.MouseButtonTertiary]
+}
+
+func (ep *ERAMPane) mouseTertiaryReleased(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Released[platform.MouseButtonPrimary]
+	}
+	return m.Released[platform.MouseButtonTertiary]
+}
+
+// clearMousePrimaryConsumed clears the physical button used for logical primary so the click is not processed again.
+func (ep *ERAMPane) clearMousePrimaryConsumed(m *platform.MouseState) {
+	if m == nil {
+		return
+	}
+	if ep.currentPrefs().UseRightClick {
+		m.Clicked[platform.MouseButtonSecondary] = false
+	} else {
+		m.Clicked[platform.MouseButtonPrimary] = false
+	}
+}
+
+// clearMouseTertiaryConsumed clears the physical button used for logical tertiary.
+func (ep *ERAMPane) clearMouseTertiaryConsumed(m *platform.MouseState) {
+	if m == nil {
+		return
+	}
+	if ep.currentPrefs().UseRightClick {
+		m.Clicked[platform.MouseButtonPrimary] = false
+	} else {
+		m.Clicked[platform.MouseButtonTertiary] = false
+	}
 }

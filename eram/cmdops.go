@@ -18,7 +18,7 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-func init() {
+func registerOpsCommands() {
 	// QQ - Interim altitude
 	// Keyboard: QQ [ALT] [FLID] or QQ [FLID] to clear
 	// Clicked: QQ [ALT][SLEW] or QQ[SLEW] to clear
@@ -55,11 +55,44 @@ func init() {
 	// QF - Flight Plan Display
 	registerCommand(CommandModeNone, "QF [FLID]|QF[SLEW]", handleFlightPlanReadout)
 
+	// QS - HSF (Heading / Speed-Mach / Free-text) scratchpad handling
+	// Keyboard:
+	//   QS `<text> <FLID>    - set free text (backtick is clear-weather symbol)
+	//   QS <heading> <FLID>  - set heading (1-4 chars; not validated)
+	//   QS /<speedSpec> <FLID> - set speed or mach (see HSF_SPEED parser)
+	//   QS */ <FLID>         - delete heading
+	//   QS /* <FLID>         - delete speed/mach
+	//   QS * <FLID>          - delete all HSF data
+	//   QS <FLID>            - toggle display of HSF data
+	// Clicked: replace <FLID> with [SLEW]
+	registerCommand(CommandModeNone, "QS [HSF_TEXT] [FLID]|QS [HSF_TEXT][SLEW]", handleQSFreeText)
+	registerCommand(CommandModeNone, "QS [HSF_SPEED] [FLID]|QS [HSF_SPEED][SLEW]", handleQSSpeed)
+	registerCommand(CommandModeNone, "QS [HSF_HDG] [FLID]|QS [HSF_HDG][SLEW]", handleQSHeading)
+	registerCommand(CommandModeNone, "QS */ [FLID]|QS */[SLEW]", handleQSDeleteHeading)
+	registerCommand(CommandModeNone, "QS /* [FLID]|QS /*[SLEW]", handleQSDeleteSpeed)
+	registerCommand(CommandModeNone, "QS * [FLID]|QS *[SLEW]", handleQSDeleteAll)
+	registerCommand(CommandModeNone, "QS [FLID]|QS[SLEW]", handleQSToggleHSF)
+
 	// MR - Map request (keyboard only)
 	// MR: List available map groups
 	// MR [GROUP]: Load map group
 	registerCommand(CommandModeNone, "MR", handleMapRequestList)
 	registerCommand(CommandModeNone, "MR [FIELD]", handleMapRequestLoad)
+
+	// LA
+	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM]", handleLALocLoc)
+	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM]", handleLATrkLoc)
+	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] /[NUM]", handleLALocLocSpeed)
+	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM] /[NUM]", handleLATrkLocSpeed)
+	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] T/[NUM]", handleLALocLocTrueSpeed)
+	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM] T/[NUM]", handleLATrkLocTrueSpeed)
+	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] T", handleLALocLocTrue)
+	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM] T", handleLATrkLocTrue)
+
+	// LB
+	registerCommand(CommandModeNone, "LB [FIX] [LOC_SYM]", handleLBFixLoc)
+	registerCommand(CommandModeNone, "LB [FIX] [FLID]", handleLBFixTrk)
+	registerCommand(CommandModeNone, "LB [FIX]/[NUM] [FLID]", handleLBFixSpeedTrk)
 
 	// LF - CRR (Continuous Range Readout)
 	// LF //FIX [LABEL]: Create new CRR group at fix location
@@ -97,6 +130,10 @@ func init() {
 	registerCommand(CommandModeNone, "[FLID]|[SLEW]", handleDefaultTrack)
 	registerCommand(CommandModeNone, "[SECTOR_ID] [FLID]|[SECTOR_ID][SLEW]", handleInitiateHandoff)
 	registerCommand(CommandModeNone, "[#] [FLID]|[#][SLEW]", handleLeaderLine)
+
+	// Leader line length commands
+	// /[0-3] [FLID] or /[0-3][SLEW]: Set leader line length (0=no line, 1=normal, 2=2x, 3=3x)
+	registerCommand(CommandModeNone, "/[NUM] [FLID]|/[NUM][SLEW]", handleLeaderLineLength)
 
 	// .DRAWROUTE - Custom command for drawing routes
 	registerCommand(CommandModeNone, ".DRAWROUTE", handleDrawRouteMode)
@@ -237,7 +274,7 @@ func handleJRing(ep *ERAMPane, trk *sim.Track) CommandStatus {
 func handleReducedJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 	state := ep.TrackState[trk.ADSBCallsign]
 
-	if state.track.TransponderAltitude > 23000 {
+	if state.Track.TransponderAltitude > 23000 {
 		return CommandStatus{}, NewERAMError("REJECT - %s NOT ELIGIBLE\nFOR REDUCED SEPARATION\nREQ/DELETE DRI %s", trk.FlightPlan.CID, trk.ADSBCallsign)
 	}
 
@@ -334,6 +371,113 @@ func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (C
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// LA - Range/Bearing Between Two Points
+
+// formatRangeBearing computes distance/bearing and returns (detail string for secondary output).
+func formatRangeBearing(from, to math.Point2LL, nmPerLon, magVar float32, trueBrg bool, speed float32) string {
+	dist := math.NMDistance2LL(from, to)
+
+	var magCorr float32
+	brgLabel := "MAG"
+	if trueBrg {
+		brgLabel = "TRUE"
+	} else {
+		magCorr = magVar
+	}
+	brg := math.Heading2LL(from, to, nmPerLon, magCorr)
+
+	s := fmt.Sprintf("RANGE * %.1f NM\nBEARING * %03.0f DEG %s", dist, brg, brgLabel)
+	if speed > 0 {
+		time := (dist / speed) * 60
+		s += fmt.Sprintf("\nGS * %.0f  TIME * %.1f", speed, time)
+	}
+	return s
+}
+
+func handleLALocLoc(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32) CommandStatus {
+	from := math.Point2LL{pos1[0], pos1[1]}
+	to := math.Point2LL{pos2[0], pos2[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, 0))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLATrkLoc(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32) CommandStatus {
+	to := math.Point2LL{pos[0], pos[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, trk.Groundspeed))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLALocLocSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32, speed int) CommandStatus {
+	from := math.Point2LL{pos1[0], pos1[1]}
+	to := math.Point2LL{pos2[0], pos2[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLATrkLocSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32, speed int) CommandStatus {
+	to := math.Point2LL{pos[0], pos[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLALocLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32, speed int) CommandStatus {
+	from := math.Point2LL{pos1[0], pos1[1]}
+	to := math.Point2LL{pos2[0], pos2[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, float32(speed)))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLATrkLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32, speed int) CommandStatus {
+	to := math.Point2LL{pos[0], pos[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, float32(speed)))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLALocLocTrue(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32) CommandStatus {
+	from := math.Point2LL{pos1[0], pos1[1]}
+	to := math.Point2LL{pos2[0], pos2[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, 0))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLATrkLocTrue(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32) CommandStatus {
+	to := math.Point2LL{pos[0], pos[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, 0))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// LB - Range/Bearing From Fix
+
+func handleLBFixLoc(ep *ERAMPane, ctx *panes.Context, fix string, pos [2]float32) (CommandStatus, error) {
+	fixPos, ok := ctx.Client.State.Locate(fix)
+	if !ok {
+		return CommandStatus{}, ErrERAMIllegalValue
+	}
+	to := math.Point2LL{pos[0], pos[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(fixPos, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, 0))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}, nil
+}
+
+func handleLBFixTrk(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Track) (CommandStatus, error) {
+	fixPos, ok := ctx.Client.State.Locate(fix)
+	if !ok {
+		return CommandStatus{}, ErrERAMIllegalValue
+	}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(fixPos, trk.Location, ctx.NmPerLongitude, ctx.MagneticVariation, false, trk.Groundspeed))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}, nil
+}
+
+func handleLBFixSpeedTrk(ep *ERAMPane, ctx *panes.Context, fix string, speed int, trk *sim.Track) (CommandStatus, error) {
+	fixPos, ok := ctx.Client.State.Locate(fix)
+	if !ok {
+		return CommandStatus{}, ErrERAMIllegalValue
+	}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(fixPos, trk.Location, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}, nil
+}
+
+///////////////////////////////////////////////////////////////////////////
 // LF - CRR (Continuous Range Readout) Handlers
 
 func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocation, label string, aircraftStr string) (CommandStatus, error) {
@@ -343,10 +487,10 @@ func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocati
 	}
 
 	// Check if group already exists
-	if ep.crrGroups == nil {
-		ep.crrGroups = make(map[string]*CRRGroup)
+	if ep.CRRGroups == nil {
+		ep.CRRGroups = make(map[string]*CRRGroup)
 	}
-	if _, ok := ep.crrGroups[label]; ok {
+	if _, ok := ep.CRRGroups[label]; ok {
 		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP LABEL\n ALREADY EXISTS\nCONT RANGE\nLF %s %s", loc.Token, label)
 	}
 
@@ -357,7 +501,7 @@ func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocati
 		Color:    ep.currentPrefs().CRR.SelectedColor,
 		Aircraft: make(map[av.ADSBCallsign]struct{}),
 	}
-	ep.crrGroups[label] = g
+	ep.CRRGroups[label] = g
 
 	// Add aircraft if specified
 	if aircraftStr != "" {
@@ -396,11 +540,11 @@ func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, pos [2]float32, label
 	loc := math.Point2LL{pos[0], pos[1]}
 
 	// Check if group exists
-	g := ep.crrGroups[label]
+	g := ep.CRRGroups[label]
 	if g == nil {
 		// Create new group at clicked position
-		if ep.crrGroups == nil {
-			ep.crrGroups = make(map[string]*CRRGroup)
+		if ep.CRRGroups == nil {
+			ep.CRRGroups = make(map[string]*CRRGroup)
 		}
 		g = &CRRGroup{
 			Label:    label,
@@ -408,7 +552,7 @@ func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, pos [2]float32, label
 			Color:    ep.currentPrefs().CRR.SelectedColor,
 			Aircraft: make(map[av.ADSBCallsign]struct{}),
 		}
-		ep.crrGroups[label] = g
+		ep.CRRGroups[label] = g
 
 		return CommandStatus{
 			bigOutput: fmt.Sprintf("ACCEPT\nCRR GROUP %s CREATED", label),
@@ -440,7 +584,7 @@ func handleCRRToggleMembership(ep *ERAMPane, ctx *panes.Context, label string, a
 	}
 
 	// Find existing group
-	g := ep.crrGroups[label]
+	g := ep.CRRGroups[label]
 	if g == nil {
 		return CommandStatus{}, ErrCommandFormat
 	}
@@ -571,7 +715,7 @@ func handleDefaultTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (Comma
 	}
 
 	state := ep.TrackState[trk.ADSBCallsign]
-	state.eFDB = !state.eFDB
+	state.EFDB = !state.EFDB
 	state.DisplayJRing = false
 	state.DisplayReducedJRing = false
 
@@ -593,7 +737,7 @@ func handleInitiateHandoff(ep *ERAMPane, ctx *panes.Context, sector string, trk 
 }
 
 func handleLeaderLine(ep *ERAMPane, ctx *panes.Context, dir int, trk *sim.Track) (CommandStatus, error) {
-	direction := numberToLLDirection(dir)
+	direction := ep.numberToLLDirection(dir)
 	callsign := trk.ADSBCallsign
 	dbType := ep.datablockType(ctx, *trk)
 
@@ -603,35 +747,85 @@ func handleLeaderLine(ep *ERAMPane, ctx *panes.Context, dir int, trk *sim.Track)
 		}
 	}
 
-	ep.TrackState[callsign].leaderLineDirection = &direction
+	ep.TrackState[callsign].LeaderLineDirection = &direction
 
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", callsign, trk.FlightPlan.CID),
 	}, nil
 }
 
-func numberToLLDirection(cmd int) math.CardinalOrdinalDirection {
-	switch cmd {
-	case 1:
-		return math.SouthWest
-	case 2:
-		return math.South
-	case 3:
-		return math.SouthEast
-	case 4:
-		return math.West
-	case 5:
-		return math.NorthEast
-	case 6:
-		return math.East
-	case 7:
-		return math.NorthWest
-	case 8:
-		return math.North
-	case 9:
-		return math.NorthEast
-	default:
-		return math.East
+func (ep *ERAMPane) numberToLLDirection(cmd int) math.CardinalOrdinalDirection {
+	if ep.FlipNumericKeypad {
+		// Inverted layout: 1=NW (top-left on physical numpad)
+		switch cmd {
+		case 1:
+			return math.NorthWest
+		case 2:
+			return math.North
+		case 3:
+			return math.NorthEast
+		case 4:
+			return math.West
+		case 5:
+			return math.NorthEast
+		case 6:
+			return math.East
+		case 7:
+			return math.SouthWest
+		case 8:
+			return math.South
+		case 9:
+			return math.SouthEast
+		default:
+			return math.East
+		}
+	} else {
+		// Default layout: 1=SW (bottom-left on physical numpad)
+		switch cmd {
+		case 1:
+			return math.SouthWest
+		case 2:
+			return math.South
+		case 3:
+			return math.SouthEast
+		case 4:
+			return math.West
+		case 5:
+			return math.NorthEast
+		case 6:
+			return math.East
+		case 7:
+			return math.NorthWest
+		case 8:
+			return math.North
+		case 9:
+			return math.NorthEast
+		default:
+			return math.East
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Leader Line Length Handlers
+
+func handleLeaderLineLength(ep *ERAMPane, ctx *panes.Context, length int, trk *sim.Track) CommandStatus {
+	// Validate length is 0-3
+	if length < 0 || length > 3 {
+		return CommandStatus{
+			err: fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		}
+	}
+
+	// Update track state
+	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
+
+	// Update default preference
+	ps := ep.currentPrefs()
+	ps.FDBLdrLength = length
+
+	return CommandStatus{
+		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
 	}
 }
 
@@ -668,4 +862,102 @@ func handleDrawRoutePoint(ep *ERAMPane, ctx *panes.Context, pos [2]float32) Comm
 
 func isDigit(r rune) bool {
 	return unicode.IsDigit(r)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// QS - HSF (Heading / Speed-Mach / Free-text) Handlers
+
+func qsFDBDataAcceptMsg(trk *sim.Track) string {
+	if trk == nil || trk.FlightPlan == nil {
+		return ""
+	}
+	return fmt.Sprintf("ACCEPT\nFDB DATA\n%s/%s", trk.ADSBCallsign.String(), trk.FlightPlan.CID)
+}
+
+func handleQSToggleHSF(ep *ERAMPane, trk *sim.Track) CommandStatus {
+	if trk == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+	state := ep.TrackState[trk.ADSBCallsign]
+	if state == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+	state.HSFHide = !state.HSFHide
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSDeleteHeading(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
+	var fp sim.FlightPlanSpecifier
+	fp.Scratchpad.Set("")
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSDeleteSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+	var fp sim.FlightPlanSpecifier
+	fp.SecondaryScratchpad.Set("")
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSDeleteAll(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+	var fp sim.FlightPlanSpecifier
+	fp.Scratchpad.Set("")
+	fp.SecondaryScratchpad.Set("")
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSHeading(ep *ERAMPane, ctx *panes.Context, heading string, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
+	var fp sim.FlightPlanSpecifier
+	fp.Scratchpad.Set(heading)
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSSpeed(ep *ERAMPane, ctx *panes.Context, speed string, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
+	var fp sim.FlightPlanSpecifier
+	fp.SecondaryScratchpad.Set(speed)
+	if isQSFreeText(trk.FlightPlan.Scratchpad) {
+		fp.Scratchpad.Set("")
+	}
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSFreeText(ep *ERAMPane, ctx *panes.Context, freeText string, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
+	var fp sim.FlightPlanSpecifier
+	fp.Scratchpad.Set(freeText)
+	fp.SecondaryScratchpad.Set("")
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func isQSFreeText(s string) bool {
+	return strings.HasPrefix(s, circleClear)
 }

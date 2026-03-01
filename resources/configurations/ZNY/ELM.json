@@ -1,0 +1,48 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "ELM_S_APP",
+            "frequency": 128425,
+            "radio_name": "Elmira Approach"
+        },
+        "1I": {
+            "callsign": "ELM_N_APP",
+            "frequency": 124300,
+            "radio_name": "Elmira Approach"
+        },
+        "1T": {
+            "callsign": "ELM_TWR",
+            "frequency": 121100,
+            "radio_name": "Elmira Tower"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "BGM",
+            "prefix": "3"
+        },
+        {
+            "id": "ROC",
+            "prefix": "4"
+        },
+        {
+            "id": "SYR",
+            "prefix": "5"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "B"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

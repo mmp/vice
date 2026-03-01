@@ -1,0 +1,220 @@
+{
+    "control_positions": {
+        "1T": {
+            "callsign": "CHS_TWR",
+            "frequency": 126000,
+            "radio_name": "Charleston Tower"
+        },
+        "1J": {
+            "callsign": "JZI_TWR",
+            "frequency": 122800,
+            "radio_name": "Executive Tower"
+        },
+        "1W": {
+            "callsign": "CHS_W_APP",
+            "frequency": 120700,
+            "radio_name": "Charleston Approach"
+        },
+        "1E": {
+            "callsign": "CHS_E_APP",
+            "frequency": 121275,
+            "radio_name": "Charleston Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "AMYLU3": "1E",
+                    "BAGGY3": "1W",
+                    "OSPRI7": "1W"
+                },
+                "departure_assignments": {
+                    "KCHS": "1W",
+                    "KJZI": "1W"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "KCHS",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "CHSNOCA",
+                    "description": "CHS CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "radius": 4,
+                    "ceiling": 3000,
+                    "center": "KCHS"
+                },
+                {
+                    "id": "JZINOCA",
+                    "description": "JZI CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "radius": 4,
+                    "ceiling": 2000,
+                    "center": "KJZI"
+                }
+            ]
+        },
+        "coordination_lists": [
+            {
+                "name": ".    JZI",
+                "id": "J",
+                "airports": [
+                    "KJZI"
+                ]
+            }
+        ],
+        "scratchpads": {
+            "GIPPL": "LGR",
+            "LGRHD": "LGR",
+            "VANNC": "MLT",
+            "JYMSE": "MLT",
+            "MLTRE": "MLT",
+            "CRE": "PLM",
+            "PLMTO": "PLM",
+            "DBN": "STU",
+            "STUNO": "STU",
+            "IRQ": "STU",
+            "ALD": "STU",
+            "FILLI": "SWP",
+            "SWPFX": "SWP"
+        },
+        "significant_points": {
+            "ALD": {},
+            "CRE": {},
+            "DBN": {},
+            "FILLI": {},
+            "GIPPL": {},
+            "IRQ": {},
+            "JYMSE": {},
+            "LGRHD": {},
+            "MLTRE": {},
+            "PLMTO": {},
+            "STUNO": {},
+            "SWPFX": {},
+            "VANNC": {}
+        },
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "GIPPL",
+                    "LGRHD",
+                    "STUNO",
+                    "DBN",
+                    "IRQ",
+                    "ALD"
+                ],
+                "receiving_controller": "C74"
+            },
+            {
+                "fixes": [
+                    "MLTRE",
+                    "VANNC",
+                    "JYMSE",
+                    "ASHEL",
+                    "FLO"
+                ],
+                "receiving_controller": "C72"
+            },
+            {
+                "fixes": [
+                    "CRE",
+                    "PLMTO",
+                    "FILLI",
+                    "SWPFX"
+                ],
+                "receiving_controller": "C73"
+            }
+        ],
+        "coordination_fixes": {
+            "NINJA": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "BAGGY": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "WILIT": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "CHS SHELF",
+                    "CHS NO SHELF",
+                    "33_3",
+                    "15_21",
+                    "CHS MVA 3NM",
+                    "STARS_N",
+                    "STARS S",
+                    "CHS MVA 5NM",
+                    "CHS VICTOR AIRWAYS",
+                    "CHS RNAV Y03",
+                    "CHS RNAV Y15",
+                    "CHS RNAV Y21",
+                    "CHS RNAV Y33",
+                    "CHS RNAV Z RWY 33",
+                    "CHS RNAV Z RWY 15",
+                    "CHS RNAV Z RWY 21",
+                    "CHS RNAV Z RWY 33",
+                    "CHS LGRHD",
+                    "CHS PLFMD",
+                    "CHS MLTRE",
+                    "CHS SWPFX",
+                    "CHS PLMTO",
+                    "CHS HIGHWAYS",
+                    "CHS STADIUMS",
+                    "CHS COPTER",
+                    "JZI FINALS"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CAE",
+            "prefix": "2"
+        },
+        {
+            "id": "MYR",
+            "prefix": "3"
+        },
+        {
+            "id": "NBC",
+            "prefix": "4"
+        },
+        {
+            "id": "SAV",
+            "prefix": "1"
+        },
+        {
+            "id": "SSC",
+            "prefix": "5"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "C"
+        }
+    ]
+}

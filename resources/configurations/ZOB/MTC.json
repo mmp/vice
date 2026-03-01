@@ -1,0 +1,27 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "MTC_APP",
+            "frequency": 132350,
+            "radio_name": "Selfridge Approach"
+        },
+        "1T": {
+            "callsign": "MTC_TWR",
+            "frequency": 120150,
+            "radio_name": "Selfridge Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "D21",
+            "prefix": "1"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

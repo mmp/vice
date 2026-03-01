@@ -19,7 +19,7 @@ import (
 	"github.com/goforj/godump"
 )
 
-func init() {
+func registerCustomCommands() {
 	registerCommand(CommandModeNone, ".BOUNDS", func(sp *STARSPane) { sp.showTRACONBoundary = !sp.showTRACONBoundary })
 
 	// Mode-switching commands

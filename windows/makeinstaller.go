@@ -127,6 +127,15 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
           <Component Id="libstdcpp" Guid='a7080cc5-8ddf-45b9-bf09-466652cc8b06'>
             <File KeyPath="yes" Source="windows/libstdc++-6.dll"></File>
           </Component>
+          <Component Id="libwinpthread" Guid='b2c3d4e5-f6a7-4b89-0c1d-2e3f4a5b6c7d'>
+            <File KeyPath="yes" Source="windows/libwinpthread-1.dll"></File>
+          </Component>
+          <Component Id="sherpaonnx" Guid='f3a1b2c4-d5e6-4f78-9a0b-1c2d3e4f5a6b'>
+            <File KeyPath="yes" Source="windows/sherpa-onnx-c-api.dll"></File>
+          </Component>
+          <Component Id="onnxruntime" Guid='a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d'>
+            <File KeyPath="yes" Source="windows/onnxruntime.dll"></File>
+          </Component>
           <Directory Id="MyFontsFolder" Name="fonts">
             <Component Id="FontsId" Guid="333b7858-8503-4310-b039-e1341613dada">
 {{range .FontFiles}}                <File Id="{{.Id}}" Source="{{.Source}}" {{if .KeyPath}}KeyPath="yes" {{end}}/>
@@ -201,6 +210,9 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
       <ComponentRef Id="SDLDLL" />
       <ComponentRef Id="gccseh" />
       <ComponentRef Id="libstdcpp" />
+      <ComponentRef Id="libwinpthread" />
+      <ComponentRef Id="sherpaonnx" />
+      <ComponentRef Id="onnxruntime" />
       <ComponentRef Id="FontsId" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ApplicationShortcutDesktop" />

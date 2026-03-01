@@ -1,0 +1,36 @@
+{
+    "control_positions": {
+        "1J": {
+            "callsign": "SJT_APP",
+            "frequency": 125350,
+            "radio_name": "San Angelo Approach"
+        },
+        "1N": {
+            "callsign": "MAF_N_APP",
+            "frequency": 124600,
+            "radio_name": "Midland Approach"
+        },
+        "1T": {
+            "callsign": "MAF_TWR",
+            "frequency": 118700,
+            "radio_name": "Midland Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ABI",
+            "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "prefix": "C"
+        },
+        {
+            "id": "ZHU",
+            "prefix": "H"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

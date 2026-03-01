@@ -1,0 +1,389 @@
+{
+  "time": "2026-01-29T04:11:24.79116115Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "roto six ten turn right heading two five zero",
+  "whisper_duration_ms": 431.439,
+  "audio_duration_ms": 2632,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "CNS610",
+  "command": "R250",
+  "stt_aircraft": {
+    "Avianca niner 34 heavy": {
+      "Callsign": "AVA934",
+      "AircraftType": "B788",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Boutique three zero seven": {
+      "Callsign": "BTQ307",
+      "AircraftType": "B350",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Lawrence": "LWRNC",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4156,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Chronos six 10": {
+      "Callsign": "CNS610",
+      "AircraftType": "PC12",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Vocus": "VOCUS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Delta 61": {
+      "Callsign": "DAL61",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Ada": "ADDDA",
+        "Boston": "KBOS",
+        "Bridget": "BRGIT",
+        "Leezi": "LEEZI",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 8739,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Frontier Flight three 12": {
+      "Callsign": "FFT312",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "United 64": {
+      "Callsign": "UAL64",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Harris": "HRRIS",
+        "Islay": "ISLAY",
+        "Lowland": "LWLND",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wintah": "WINTA",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 5046,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"roto six ten turn right heading two five zero\"",
+    "[local-stt] normalized words: [right 6 10 turn right heading 2 5 0]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"610\" Type=1 Value=610",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"250\" Type=1 Value=250",
+    "[local-stt] MatchCallsign: 6 tokens, 6 aircraft",
+    "[local-stt]   candidate \"United 64\" (ICAO=\"UAL64\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Avianca niner 34 heavy\" (ICAO=\"AVA934\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 61\" (ICAO=\"DAL61\"): score=0.73 consumed=2",
+    "[local-stt]   candidate \"Boutique three zero seven\" (ICAO=\"BTQ307\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Chronos six 10\" (ICAO=\"CNS610\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"Frontier Flight three 12\" (ICAO=\"FFT312\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Chronos six 10\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
+    "[local-stt]   accepted: \"CNS610\" (conf=0.80, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"CNS610\" SpokenKey=\"Chronos six 10\" Conf=0.80 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=2000 Fixes=2 Approaches=3 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Vocus\" -\u003e \"VOCUS\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt]   approach: \"r-nav yankee runway two two left\" -\u003e \"Y2L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -\u003e \"X2L\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"250\" Type=1 Value=250",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   matched command: \"R250\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[R250] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R250] (conf=1.00)",
+    "[local-stt] validated commands: [R250] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"CNS610 R250\" (conf=0.80, time=248.083µs) ==="
+  ]
+}

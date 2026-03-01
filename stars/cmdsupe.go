@@ -10,7 +10,7 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-func init() {
+func registerSupeCommands() {
 	// 8.1 Enable / inhibit CA system-wide
 	registerCommand(CommandModeCollisionAlert, "AE", func(ps *Preferences) CommandStatus {
 		if !ps.DisableCAWarnings {
@@ -65,26 +65,26 @@ func init() {
 
 	// 8.7 Enable / inhibit runway pair configuration system-wide
 	enableInhibitRunwayPair := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap string, idx int, mode string) (CommandStatus, error) {
-		if len(sp.ConvergingRunways) == 0 {
+		if len(sp.CRDAPairs) == 0 {
 			return CommandStatus{}, ErrSTARSIllegalFunction
 		}
-		for i, pair := range sp.ConvergingRunways {
+		for i, pair := range sp.CRDAPairs {
 			if pair.Airport == ap && pair.Index == idx {
 				ps.CRDAStatusList.Visible = true
 
 				if mode == "D" {
 					ps.CRDA.RunwayPairState[i].Enabled = false
-					return CommandStatus{Output: ap + " " + pair.getRunwaysString() + " INHIBITED"}, nil
+					return CommandStatus{Output: ap + " " + pair.getRegionsString() + " INHIBITED"}, nil
 				} else {
-					// Check that neither runway is already enabled in another pair
+					// Check that neither region is already enabled in another pair
 					for j, pairState := range ps.CRDA.RunwayPairState {
 						if !pairState.Enabled {
 							continue
 						}
-						if sp.ConvergingRunways[j].Runways[0] == pair.Runways[0] ||
-							sp.ConvergingRunways[j].Runways[0] == pair.Runways[1] ||
-							sp.ConvergingRunways[j].Runways[1] == pair.Runways[0] ||
-							sp.ConvergingRunways[j].Runways[1] == pair.Runways[1] {
+						if sp.CRDAPairs[j].Regions[0] == pair.Regions[0] ||
+							sp.CRDAPairs[j].Regions[0] == pair.Regions[1] ||
+							sp.CRDAPairs[j].Regions[1] == pair.Regions[0] ||
+							sp.CRDAPairs[j].Regions[1] == pair.Regions[1] {
 							return CommandStatus{}, ErrSTARSIllegalRunway
 						}
 					}
@@ -95,7 +95,7 @@ func init() {
 						ps.CRDA.RunwayPairState[i].Mode = CRDAModeStagger
 					}
 					ps.CRDA.RunwayPairState[i].Enabled = true
-					return CommandStatus{Output: ap + " " + pair.getRunwaysString() + " ENABLED"}, nil
+					return CommandStatus{Output: ap + " " + pair.getRegionsString() + " ENABLED"}, nil
 				}
 			}
 		}
@@ -108,10 +108,11 @@ func init() {
 	registerCommand(CommandModeMultiFunc, "NP[NUM]T",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) (CommandStatus, error) {
 			ctrl := ctx.UserController()
-			if len(ctrl.DefaultAirport) == 0 {
+			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
+			if da == "" {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			ap := ctrl.DefaultAirport[1:]
+			ap := da[1:]
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "T")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]S",
@@ -121,10 +122,11 @@ func init() {
 	registerCommand(CommandModeMultiFunc, "NP[NUM]S",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) (CommandStatus, error) {
 			ctrl := ctx.UserController()
-			if len(ctrl.DefaultAirport) == 0 {
+			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
+			if da == "" {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			ap := ctrl.DefaultAirport[1:]
+			ap := da[1:]
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "S")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]D",
@@ -134,10 +136,11 @@ func init() {
 	registerCommand(CommandModeMultiFunc, "NP[NUM]D",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) (CommandStatus, error) {
 			ctrl := ctx.UserController()
-			if len(ctrl.DefaultAirport) == 0 {
+			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
+			if da == "" {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			ap := ctrl.DefaultAirport[1:]
+			ap := da[1:]
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "D")
 		})
 
@@ -190,9 +193,29 @@ func init() {
 	// registerCommand(CommandModeMultiFunc, "2T[TEXT] D", ...)
 
 	// 8.37 Enable / inhibit flight data auto-modify (FDAM) system-wide
-	// registerCommand(CommandModeMultiFunc, "2X", ...)
-	// registerCommand(CommandModeMultiFunc, "2XE", ...)
-	// registerCommand(CommandModeMultiFunc, "2XI", ...)
+	configureFDAM := func(sp *STARSPane, ctx *panes.Context, op sim.FDAMConfigOp, regionId string) error {
+		ctx.Client.ConfigureFDAM(op, regionId,
+			func(output string, err error) {
+				if err != nil {
+					sp.displayError(err, ctx, "")
+				} else {
+					sp.previewAreaOutput = output
+				}
+			})
+		return nil
+	}
+	registerCommand(CommandModeMultiFunc, "2X",
+		func(sp *STARSPane, ctx *panes.Context) error {
+			return configureFDAM(sp, ctx, sim.FDAMToggleSystem, "")
+		})
+	registerCommand(CommandModeMultiFunc, "2XE",
+		func(sp *STARSPane, ctx *panes.Context) error {
+			return configureFDAM(sp, ctx, sim.FDAMEnableSystem, "")
+		})
+	registerCommand(CommandModeMultiFunc, "2XI",
+		func(sp *STARSPane, ctx *panes.Context) error {
+			return configureFDAM(sp, ctx, sim.FDAMInhibitSystem, "")
+		})
 
 	// 8.38 Enable / disable ATPA system-wide
 	hasATPAVolumes := func(ctx *panes.Context) bool {

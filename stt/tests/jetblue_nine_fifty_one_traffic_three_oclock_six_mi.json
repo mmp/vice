@@ -1,0 +1,437 @@
+{
+  "time": "2026-01-29T18:36:21.088046137Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "JetBlue nine fifty one traffic three o'clock six miles point seven three seven five thousand eight five thousand nine hundred descending report in sight",
+  "whisper_duration_ms": 1301.038,
+  "audio_duration_ms": 10440,
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4151MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "JBU951",
+  "command": "TRAFFIC/3/6/59",
+  "stt_aircraft": {
+    "American one 60": {
+      "Callsign": "AAL160",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Frontier Flight 56 61": {
+      "Callsign": "FFT5661",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Fadi": "FADDI",
+        "Jambob": "JMBOB",
+        "Mera": "MERRA",
+        "Piedra de Cal": "PIE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19R",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "JetBlue 49": {
+      "Callsign": "JBU49",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Tampa": "KTPA",
+        "slop": "SCLOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 5417,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "JetBlue niner 51": {
+      "Callsign": "JBU951",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest 19 11": {
+      "Callsign": "SWA1911",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Lisa F": "LISAF",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 6029,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest 49 79": {
+      "Callsign": "SWA4979",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 696,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"JetBlue nine fifty one traffic three o'clock six miles point seven three seven five thousand eight five thousand nine hundred descending report in sight\"",
+    "[local-stt] normalized words: [jetblue 9 51 traffic 3 oclock 6 miles point 7 3 7 5 thousand 8 5 thousand 9 hundred descend heading report in sight]",
+    "[local-stt] tokens: 15",
+    "[local-stt]   token[0]: Text=\"jetblue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"951\" Type=1 Value=951",
+    "[local-stt]   token[2]: Text=\"traffic\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"3\" Type=1 Value=3",
+    "[local-stt]   token[4]: Text=\"oclock\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"6\" Type=1 Value=6",
+    "[local-stt]   token[6]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"73750\" Type=2 Value=73750",
+    "[local-stt]   token[9]: Text=\"859\" Type=2 Value=859",
+    "[local-stt]   token[10]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"report\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"in\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"sight\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 15 tokens, 6 aircraft",
+    "[local-stt]   candidate \"Southwest 19 11\" (ICAO=\"SWA1911\"): score=0.58 consumed=2",
+    "[local-stt]   candidate \"JetBlue niner 51\" (ICAO=\"JBU951\"): score=1.10 consumed=2",
+    "[local-stt]   candidate \"Southwest 49 79\" (ICAO=\"SWA4979\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Frontier Flight 56 61\" (ICAO=\"FFT5661\"): score=0.58 consumed=2",
+    "[local-stt]   candidate \"JetBlue 49\" (ICAO=\"JBU49\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"American one 60\" (ICAO=\"AAL160\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue niner 51\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
+    "[local-stt]   accepted: \"JBU951\" (conf=1.10, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"JBU951\" SpokenKey=\"JetBlue niner 51\" Conf=1.10 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=3000 Fixes=3 Approaches=4 AssignedApproach=\"ILS Runway 19L\" LAHSORunways=[10 28 10 28]",
+    "[local-stt]   fix: \"Bucks\" -\u003e \"BUCCS\"",
+    "[local-stt]   fix: \"Pomse\" -\u003e \"POMSE\"",
+    "[local-stt]   fix: \"Tampa\" -\u003e \"KTPA\"",
+    "[local-stt]   approach: \"r-nav runway one niner left\" -\u003e \"R9L\"",
+    "[local-stt]   approach: \"I L S runway one niner left\" -\u003e \"I9L\"",
+    "[local-stt]   approach: \"I L S runway one niner right\" -\u003e \"I9R\"",
+    "[local-stt]   approach: \"r-nav runway one niner right\" -\u003e \"R9R\"",
+    "[local-stt] command tokens after disregard: 13",
+    "[local-stt]   token[0]: Text=\"traffic\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"3\" Type=1 Value=3",
+    "[local-stt]   token[2]: Text=\"oclock\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"6\" Type=1 Value=6",
+    "[local-stt]   token[4]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"73750\" Type=2 Value=73750",
+    "[local-stt]   token[7]: Text=\"859\" Type=2 Value=859",
+    "[local-stt]   token[8]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"report\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"in\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"sight\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"descend\" at position 8 - not just position ID",
+    "[local-stt] ParseCommands: 13 tokens",
+    "[local-stt]   matched command: \"TRAFFIC/3/6/73750\" (conf=1.00, consumed=7, isThen=false)",
+    "[local-stt]   no match at token[7]=\"859\", skipping",
+    "[local-stt]   no match at token[8]=\"descend\", skipping",
+    "[local-stt]   matched command: \"SAYAGAIN/HEADING\" (conf=0.50, consumed=1, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"in\" against 3 fixes",
+    "[local-stt]   extractFix: no match found for \"in\"",
+    "[local-stt]   no match at token[10]=\"report\", skipping",
+    "[local-stt]   no match at token[11]=\"in\", skipping",
+    "[local-stt]   no match at token[12]=\"sight\", skipping",
+    "[local-stt] ParseCommands: result=[TRAFFIC/3/6/73750 SAYAGAIN/HEADING] (avgConf=0.75)",
+    "[local-stt] parsed commands: [TRAFFIC/3/6/73750 SAYAGAIN/HEADING] (conf=0.75)",
+    "[local-stt] validated commands: [TRAFFIC/3/6/73750 SAYAGAIN/HEADING] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU951 TRAFFIC/3/6/73750 SAYAGAIN/HEADING\" (conf=0.83, time=1.1077ms) ==="
+  ]
+}

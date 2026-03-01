@@ -1,0 +1,311 @@
+{
+  "time": "2026-01-29T11:38:03.002151123Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "ExecJet 67 86 speed one eight zero turn left heading three six zero",
+  "whisper_duration_ms": 124.619,
+  "audio_duration_ms": 6344,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "EJA6786",
+  "command": "S180 L360",
+  "stt_aircraft": {
+    "Delta four 54": {
+      "Callsign": "DAL454",
+      "AircraftType": "B739",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 2658,
+      "State": "on approach",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "ExecJet 67 86": {
+      "Callsign": "EJA6786",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Chant": "CHANT",
+        "Deer Park": "DPK",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Meals": "MEALS",
+        "Zachs": "ZACHS"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31L",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "JetBlue 32": {
+      "Callsign": "JBU32",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "JetBlue four 18": {
+      "Callsign": "JBU418",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"ExecJet 67 86 speed one eight zero turn left heading three six zero\"",
+    "[local-stt] normalized words: [execjet 67 86 speed 1 8 0 turn left heading 3 6 0]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"execjet\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"67\" Type=1 Value=67",
+    "[local-stt]   token[2]: Text=\"86\" Type=1 Value=86",
+    "[local-stt]   token[3]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[5]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"360\" Type=1 Value=360",
+    "[local-stt] MatchCallsign: 9 tokens, 4 aircraft",
+    "[local-stt]   exact match: \"execjet 67 86\" -\u003e \"EJA6786\" (consumed 3)",
+    "[local-stt] callsign match: Callsign=\"EJA6786\" SpokenKey=\"ExecJet 67 86\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=6 Approaches=4 AssignedApproach=\"ILS Runway 31L\" LAHSORunways=[4L 22R 4L 22R 4R 22L]",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Chant\" -\u003e \"CHANT\"",
+    "[local-stt]   fix: \"Zachs\" -\u003e \"ZACHS\"",
+    "[local-stt]   fix: \"Meals\" -\u003e \"MEALS\"",
+    "[local-stt]   fix: \"Deer Park\" -\u003e \"DPK\"",
+    "[local-stt]   approach: \"I L S runway three one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"r-nav runway three one left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"I L S runway three one right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"r-nav runway three one right\" -\u003e \"R1R\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"360\" Type=1 Value=360",
+    "[local-stt]   position ID: found command keyword \"speed\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   matched command: \"L360\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt] ParseCommands: result=[L360] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L360] (conf=1.00)",
+    "[local-stt] validated commands: [L360] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"EJA6786 L360\" (conf=1.00, time=0s) ==="
+  ]
+}

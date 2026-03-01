@@ -1,0 +1,602 @@
+{
+    "control_positions": {
+        "00": {
+            "callsign": "ZLA 00 Maintenance",
+            "frequency": 118000,
+            "radio_name": "Maintenance"
+        },
+        "03": {
+            "callsign": "ZLA Sector 03",
+            "frequency": 127100,
+            "radio_name": "Los Angeles Center"
+        },
+        "04": {
+            "callsign": "ZLA Sector 04",
+            "frequency": 125800,
+            "radio_name": "Los Angeles Center"
+        },
+        "06": {
+            "callsign": "ZLA Sector 06",
+            "frequency": 134650,
+            "radio_name": "Los Angeles Center"
+        },
+        "07": {
+            "callsign": "ZLA Sector 07",
+            "frequency": 124200,
+            "radio_name": "Los Angeles Center"
+        },
+        "08": {
+            "callsign": "ZLA Sector 08",
+            "frequency": 124850,
+            "radio_name": "Los Angeles Center"
+        },
+        "09": {
+            "callsign": "ZLA Sector 09",
+            "frequency": 128600,
+            "radio_name": "Los Angeles Center"
+        },
+        "10": {
+            "callsign": "ZLA Sector 10",
+            "frequency": 128150,
+            "radio_name": "Los Angeles Center"
+        },
+        "12": {
+            "callsign": "ZLA Sector 12",
+            "frequency": 125650,
+            "radio_name": "Los Angeles Center"
+        },
+        "13": {
+            "callsign": "ZLA Sector 13",
+            "frequency": 132600,
+            "radio_name": "Los Angeles Center"
+        },
+        "14": {
+            "callsign": "ZLA Sector 14",
+            "frequency": 135500,
+            "radio_name": "Los Angeles Center"
+        },
+        "15": {
+            "callsign": "ZLA Sector 15",
+            "frequency": 119050,
+            "radio_name": "Los Angeles Center"
+        },
+        "16": {
+            "callsign": "ZLA Sector 16",
+            "frequency": 124625,
+            "radio_name": "Los Angeles Center"
+        },
+        "17": {
+            "callsign": "ZLA Sector 17",
+            "frequency": 132500,
+            "radio_name": "Los Angeles Center"
+        },
+        "18": {
+            "callsign": "ZLA Sector 18",
+            "frequency": 125275,
+            "radio_name": "Los Angeles Center"
+        },
+        "19": {
+            "callsign": "ZLA Sector 19",
+            "frequency": 126350,
+            "radio_name": "Los Angeles Center"
+        },
+        "20": {
+            "callsign": "ZLA Sector 20",
+            "frequency": 133750,
+            "radio_name": "Los Angeles Center"
+        },
+        "21": {
+            "callsign": "ZLA Sector 21",
+            "frequency": 132850,
+            "radio_name": "Los Angeles Center"
+        },
+        "22": {
+            "callsign": "ZLA Sector 22",
+            "frequency": 134575,
+            "radio_name": "Los Angeles Center"
+        },
+        "25": {
+            "callsign": "ZLA Sector 25",
+            "frequency": 126525,
+            "radio_name": "Los Angeles Center"
+        },
+        "26": {
+            "callsign": "ZLA Sector 26",
+            "frequency": 135300,
+            "radio_name": "Los Angeles Center"
+        },
+        "27": {
+            "callsign": "ZLA Sector 27",
+            "frequency": 128375,
+            "radio_name": "Los Angeles Center"
+        },
+        "28": {
+            "callsign": "ZLA Sector 28",
+            "frequency": 132150,
+            "radio_name": "Los Angeles Center"
+        },
+        "30": {
+            "callsign": "ZLA Sector 30",
+            "frequency": 119950,
+            "radio_name": "Los Angeles Center"
+        },
+        "31": {
+            "callsign": "ZLA Sector 31",
+            "frequency": 126775,
+            "radio_name": "Los Angeles Center"
+        },
+        "34": {
+            "callsign": "ZLA Sector 34",
+            "frequency": 132625,
+            "radio_name": "Los Angeles Center"
+        },
+        "35": {
+            "callsign": "ZLA Sector 35",
+            "frequency": 128075,
+            "radio_name": "Los Angeles Center"
+        },
+        "36": {
+            "callsign": "ZLA Sector 36",
+            "frequency": 127350,
+            "radio_name": "Los Angeles Center"
+        },
+        "37": {
+            "callsign": "ZLA Sector 37",
+            "frequency": 133550,
+            "radio_name": "Los Angeles Center"
+        },
+        "38": {
+            "callsign": "ZLA Sector 38",
+            "frequency": 125725,
+            "radio_name": "Los Angeles Center"
+        },
+        "39": {
+            "callsign": "ZLA Sector 39",
+            "frequency": 133200,
+            "radio_name": "Los Angeles Center"
+        },
+        "40": {
+            "callsign": "ZLA Sector 40",
+            "frequency": 127525,
+            "radio_name": "Los Angeles Center"
+        },
+        "53": {
+            "callsign": "ZLA Sector 53",
+            "frequency": 118025,
+            "radio_name": "Los Angeles Center"
+        },
+        "54": {
+            "callsign": "ZLA Sector 54",
+            "frequency": 135250,
+            "radio_name": "Los Angeles Center"
+        },
+        "55": {
+            "callsign": "ZLA Sector 55",
+            "frequency": 135550,
+            "radio_name": "Los Angeles Center"
+        },
+        "60": {
+            "callsign": "ZLA Sector 60",
+            "frequency": 134475,
+            "radio_name": "Los Angeles Center"
+        },
+        "99": {
+            "callsign": "ZLA 99 TMU",
+            "frequency": 123450,
+            "radio_name": "Traffic Management"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "HUULL2": "14",
+                    "RUKKI1/BAUBB3": "14",
+                    "RYDRR2.ELKEY": "14",
+                    "RYDRR2.SNAXX": "14"
+                },
+                "default_consolidation": {
+                    "14": []
+                }
+            },
+            "ZLA": {
+                "inbound_assignments": {
+                    "SIZLR4": "18",
+                    "ZIGGY8": "18"
+                },
+                "default_consolidation": {
+                    "18": []
+                }
+            }
+        },
+        "center": "KWANG",
+        "range": 60,
+        "video_map_file": "videomaps/ZLA-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "CHOWW": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "ZLLDA": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "WHIGG": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "GAMES": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "ISHEE": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "WAPID": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "LARKK": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "FABLE": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "RKSTR": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "RNDRZ": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "ANJLL": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "HLYWD": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "MDOTS": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "COWWS": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "RUKKI": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "GOATZ": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "GNZZO": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "SOLAY": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "ALMST": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "CYNDE": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "GNKEE": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "DUNNN": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "CHURO": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "PCIFC": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "PMD": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "PEPRZ": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "THRNE": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "GRRIT": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "OHIGH": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "CMA": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "KIMMO": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "LRSON": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "MCHNE": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "ARRAN": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "BITTY": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "COMIX": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "HNAHH": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ],
+            "ISEMN": [
+                {
+                    "type": "route",
+                    "to": "SCT",
+                    "from": "ZLA"
+                }
+            ]
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "BFL",
+            "stars_id": "MMM",
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MM",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "FAT",
+            "stars_id": "FAT",
+            "two_char_stars_id": "FA",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "JCF",
+            "stars_id": "JJJ",
+            "single_char_stars_id": "J",
+            "two_char_stars_id": "JJ",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "L30",
+            "stars_id": "ZZZ",
+            "single_char_stars_id": "Z",
+            "two_char_stars_id": "ZZ",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "LSV",
+            "stars_id": "EEE",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "EE",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NCT",
+            "stars_id": "NCT",
+            "field_e_format": "FullStarsIdOnly"
+        },
+        {
+            "id": "NFG",
+            "stars_id": "QQQ",
+            "single_char_stars_id": "Q",
+            "two_char_stars_id": "QQ",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NLC",
+            "stars_id": "NLC",
+            "two_char_stars_id": "NL",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "NSI",
+            "stars_id": "PPP",
+            "two_char_stars_id": "PP",
+            "field_e_format": "TwoLettersAndSubset"
+        },
+        {
+            "id": "NTD",
+            "stars_id": "NNN",
+            "single_char_stars_id": "N",
+            "two_char_stars_id": "NN",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NUC",
+            "stars_id": "FFF",
+            "single_char_stars_id": "F",
+            "two_char_stars_id": "FF",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "NYL",
+            "stars_id": "YYY",
+            "single_char_stars_id": "Y",
+            "two_char_stars_id": "YY",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "RIV",
+            "stars_id": "RRR",
+            "single_char_stars_id": "R",
+            "two_char_stars_id": "RR",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "SBA",
+            "stars_id": "AAA",
+            "single_char_stars_id": "G",
+            "two_char_stars_id": "AA",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "SCT",
+            "stars_id": "TTT",
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "TT",
+            "field_e_format": "OneLetterAndSubset"
+        },
+        {
+            "id": "ZAB",
+            "prefix": "A"
+        },
+        {
+            "id": "ZDV",
+            "prefix": "D"
+        },
+        {
+            "id": "ZLC",
+            "prefix": "U"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "O"
+        }
+    ]
+}

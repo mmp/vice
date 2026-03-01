@@ -1,0 +1,44 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "CKB_APP",
+            "frequency": 121150,
+            "radio_name": "Clarksburg Approach"
+        },
+        "1T": {
+            "callsign": "CKB_TWR",
+            "frequency": 126700,
+            "radio_name": "Clarksburg Tower"
+        },
+        "1Z": {
+            "callsign": "CKB_T_APP",
+            "frequency": 123450,
+            "radio_name": "Clarksburg Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "JST",
+            "prefix": "2"
+        },
+        {
+            "id": "PIT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "W"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

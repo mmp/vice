@@ -1,0 +1,364 @@
+{
+  "time": "2026-01-31T14:26:12.938060998Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Qantas five fifty one heavy turn left heading two correction three four zero join localizer",
+  "whisper_duration_ms": 154.085,
+  "audio_duration_ms": 5192,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "QFA551",
+  "command": "L340 I",
+  "stt_aircraft": {
+    "Alaska 47": {
+      "Callsign": "ASA47",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Chant": "CHANT",
+        "Deer Park": "DPK",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Meals": "MEALS",
+        "Zachs": "ZACHS"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31L",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Endeavor 20 58": {
+      "Callsign": "EDV2058",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 2836,
+      "State": "on approach",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "German Cargo seven 50 heavy": {
+      "Callsign": "BOX750",
+      "AircraftType": "B77L",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "JetBlue 94": {
+      "Callsign": "JBU94",
+      "AircraftType": "A320",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Qantas five 51 heavy": {
+      "Callsign": "QFA551",
+      "AircraftType": "B789",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Qantas five fifty one heavy turn left heading two correction three four zero join localizer\"",
+    "[local-stt] normalized words: [qantas 5 51 heavy turn left heading 2 correction 3 4 0 join localizer]",
+    "[local-stt] tokens: 11",
+    "[local-stt]   token[0]: Text=\"qantas\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"551\" Type=1 Value=551",
+    "[local-stt]   token[2]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"2\" Type=1 Value=2",
+    "[local-stt]   token[7]: Text=\"correction\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"340\" Type=1 Value=340",
+    "[local-stt]   token[9]: Text=\"join\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 11 tokens, 5 aircraft",
+    "[local-stt]   candidate \"Alaska 47\" (ICAO=\"ASA47\"): score=0.53 consumed=2",
+    "[local-stt]   candidate \"German Cargo seven 50 heavy\" (ICAO=\"BOX750\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 94\" (ICAO=\"JBU94\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Qantas five 51 heavy\" (ICAO=\"QFA551\"): score=1.10 consumed=3",
+    "[local-stt]   candidate \"Endeavor 20 58\" (ICAO=\"EDV2058\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Qantas five 51 heavy\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   accepted: \"QFA551\" (conf=1.10, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"QFA551\" SpokenKey=\"Qantas five 51 heavy\" Conf=1.10 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=2 Approaches=4 AssignedApproach=\"\" LAHSORunways=[4L 22R 4L 22R 4R 22L]",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   approach: \"I L S runway three one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"r-nav runway three one left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"I L S runway three one right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"r-nav runway three one right\" -\u003e \"R1R\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"340\" Type=1 Value=340",
+    "[local-stt]   token[1]: Text=\"join\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   no match at token[0]=\"340\", skipping",
+    "[local-stt]   matched command: \"I\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[I] (avgConf=1.00)",
+    "[local-stt] parsed commands: [I] (conf=1.00)",
+    "[local-stt] validated commands: [I] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"QFA551 I\" (conf=1.10, time=503.4µs) ==="
+  ]
+}

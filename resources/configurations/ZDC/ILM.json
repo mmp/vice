@@ -1,0 +1,52 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "ILM_E_APP",
+            "frequency": 135750,
+            "radio_name": "Wilmington Approach"
+        },
+        "1T": {
+            "callsign": "ILM_TWR",
+            "frequency": 119900,
+            "radio_name": "Wilmington Tower"
+        },
+        "1W": {
+            "callsign": "ILM_W_APP",
+            "frequency": 118250,
+            "radio_name": "Wilmington Approach"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "FAY",
+            "prefix": "2"
+        },
+        {
+            "id": "FLO",
+            "prefix": "5"
+        },
+        {
+            "id": "GSB",
+            "prefix": "3"
+        },
+        {
+            "id": "MYR",
+            "prefix": "1"
+        },
+        {
+            "id": "NKT",
+            "prefix": "4"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "C"
+        },
+        {
+            "id": "ZJX",
+            "prefix": "J"
+        }
+    ]
+}

@@ -1,0 +1,184 @@
+{
+    "control_positions": {
+        "1W": {
+            "callsign": "AVL_W_APP",
+            "frequency": 124650,
+            "radio_name": "Asheville Approach"
+        },
+        "1E": {
+            "callsign": "AVL_E_APP",
+            "frequency": 125800,
+            "radio_name": "Asheville Approach"
+        },
+        "1T": {
+            "callsign": "AVL_TWR",
+            "frequency": 121100,
+            "radio_name": "Asheville Tower"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "BARRD": "1W",
+                    "JONEB": "1E",
+                    "LEAVI": "1E",
+                    "OBURY": "1E",
+                    "PUPDG": "1W",
+                    "TUSRE": "1E"
+                },
+                "departure_assignments": {
+                    "KAVL": "1W"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "KAVL",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "B NOCA1",
+                    "description": "BHM CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3500,
+                    "vertices": [
+                        "-86.897208,33.532504",
+                        "-86.641151,33.677967",
+                        "-86.584176,33.611529",
+                        "-86.839472,33.462847"
+                    ]
+                },
+                {
+                    "id": "B NOCA2",
+                    "description": "BHM CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3500,
+                    "vertices": [
+                        "-86.695616,33.672883",
+                        "-86.695274,33.453065",
+                        "-86.79461,33.453311",
+                        "-86.794879,33.672271"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "BHM": {
+                "char": "B",
+                "position": "33.573611,-86.75611",
+                "elevation": 705,
+                "primary_range": 100,
+                "secondary_range": 150,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "VXV": "VXV",
+            "SOT": "SOT",
+            "BZM": "BZM",
+            "SPA": "SPA",
+            "IRQ": "IRQ",
+            "MHONY": "MHO",
+            "JJENY": "JEN"
+        },
+        "significant_points": {
+            "BZM": {},
+            "IRQ": {},
+            "JJENY": {},
+            "MHONY": {},
+            "SOT": {},
+            "SPA": {},
+            "VXV": {}
+        },
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "coordination_fixes": {
+            "LEAVI": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "JONEB": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "TUSRE": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "OBURY": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "PUPDG": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "BARRD": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "AVL CLASS C / SECTORS",
+                    "AVL SECTORS",
+                    "AVL AIRSPACE",
+                    "AVL RNAV (GPS) RWY 17/35 APPROACHES",
+                    "AVL TOWER",
+                    "RUNWAY 17",
+                    "RUNWAY 35",
+                    "AVL MINIMUM VECTORING ALTITUDES",
+                    "AVL EMERGENCY OBSTRUCTION VIDEO MAP",
+                    "AVL Cab"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "GSP",
+            "prefix": "1"
+        },
+        {
+            "id": "TRI",
+            "prefix": "2"
+        },
+        {
+            "id": "TYS",
+            "prefix": "3"
+        },
+        {
+            "id": "ZID",
+            "prefix": "I"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "C"
+        }
+    ]
+}

@@ -1,0 +1,257 @@
+{
+  "time": "2026-02-06T03:18:54.305241787Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": ",delta seventy six expect the i l s for right",
+  "whisper_duration_ms": 387.501,
+  "audio_duration_ms": 5192,
+  "processor": "GPU: NVIDIA GeForce GTX 1660 Ti with Max-Q Design (6180MB)",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "DAL76",
+  "command": "EI4R",
+  "stt_aircraft": {
+    "Delta 29 95": {
+      "Callsign": "DAL2995",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Ernie": "ERNEI",
+        "Goshi": "GOSHI",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Sofie": "SOFEE",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 10699,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Delta 76": {
+      "Callsign": "DAL76",
+      "AircraftType": "B712",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Ernie": "ERNEI",
+        "Goshi": "GOSHI",
+        "Jody": "JOODY",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Provi": "PROVI",
+        "Robuck": "ROBUC",
+        "Sofie": "SOFEE",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 15025,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \",delta seventy six expect the i l s for right\"",
+    "[local-stt] normalized words: [delta 76 expect the ils for right]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"76\" Type=1 Value=76",
+    "[local-stt]   token[2]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 7 tokens, 2 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 7 tokens, 2 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Delta 76\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Delta 76\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Delta 76\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Delta 76\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"Delta 29 95\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta 76\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta 76\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Delta 76\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Delta 76\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"DAL76\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Delta 76\")",
+    "[local-stt] callsign match: Callsign=\"DAL76\" SpokenKey=\"Delta 76\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=15025 Fixes=10 Approaches=6 AssignedApproach=\"ILS Runway 4R\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L 9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Robuck\" -\u003e \"ROBUC\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   fix: \"Nabbo\" -\u003e \"NABBO\"",
+    "[local-stt]   fix: \"Provi\" -\u003e \"PROVI\"",
+    "[local-stt]   fix: \"Jody\" -\u003e \"JOODY\"",
+    "[local-stt]   fix: \"Sofie\" -\u003e \"SOFEE\"",
+    "[local-stt]   fix: \"Ernie\" -\u003e \"ERNEI\"",
+    "[local-stt]   fix: \"Goshi\" -\u003e \"GOSHI\"",
+    "[local-stt]   fix: \"Winnie\" -\u003e \"WINNI\"",
+    "[local-stt]   fix: \"Milt\" -\u003e \"MILTT\"",
+    "[local-stt]   approach: \"I L S runway one five right then visual approach left traffic to runway four left\" -\u003e \"I5RC\"",
+    "[local-stt]   approach: \"r-nav runway four right\" -\u003e \"R4R\"",
+    "[local-stt]   approach: \"I L S runway four right\" -\u003e \"I4R\"",
+    "[local-stt]   approach: \"Visual Approach runway four right\" -\u003e \"VA4R\"",
+    "[local-stt]   approach: \"Visual Approach runway four left\" -\u003e \"VA4L\"",
+    "[local-stt]   approach: \"r-nav runway four left\" -\u003e \"R4L\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   matchApproachByTypeAndNumber: no valid runway, falling back to assigned approach \"I4R\" (type=\"ils\" dir=R)",
+    "[local-stt]   matched command: \"EI4R\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt]   adding 4 fixes from approach I4R to aircraft context",
+    "[local-stt] ParseCommands: result=[EI4R] (avgConf=1.00)",
+    "[local-stt] parsed commands: [EI4R] (conf=1.00)",
+    "[local-stt] validated commands: [EI4R] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL76 EI4R\" (conf=1.00, time=1.1033ms) ==="
+  ]
+}

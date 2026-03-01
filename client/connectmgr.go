@@ -17,7 +17,6 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
-	"github.com/mmp/vice/wx"
 )
 
 type ConnectionManager struct {
@@ -30,9 +29,6 @@ type ConnectionManager struct {
 	lastRunningSimsUpdate  time.Time
 	updateRunningSimsCall  *pendingCall
 	updateRunningSimsError error
-
-	// METAR fetch state
-	pendingMETARCall *pendingCall
 
 	LocalServer   *Server
 	RemoteServer  *Server
@@ -75,12 +71,11 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 				errorLogger.Error(err)
 			} else {
 				cm.LocalServer = &Server{
-					RPCClient:           client,
-					HaveTTS:             cr.HaveTTS,
-					AvailableWXByTRACON: cr.AvailableWXByTRACON,
-					name:                "Local (Single controller)",
-					catalogs:            cr.ScenarioCatalogs,
-					runningSims:         cr.RunningSims,
+					RPCClient:             client,
+					AvailableWXByFacility: cr.AvailableWXByFacility,
+					name:                  "Local (Single controller)",
+					catalogs:              cr.ScenarioCatalogs,
+					runningSims:           cr.RunningSims,
 				}
 			}
 		}
@@ -95,11 +90,13 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.L
 	}
 
 	var result server.NewSimResult
-	if err := cm.LocalServer.Call(server.AddLocalRPC, s, &result); err != nil {
+	req := server.AddLocalRequest{Sim: s, Initials: initials}
+	if err := cm.LocalServer.Call(server.AddLocalRPC, &req, &result); err != nil {
 		return nil, err
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.LocalServer.HaveTTS, cm.disableTTSPtr, initials, cm.LocalServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.disableTTSPtr, initials,
+		cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
 	// Set remote server for STT log reporting (local sims report to remote server)
@@ -135,7 +132,8 @@ func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResu
 		cm.client.Disconnect()
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, srv.HaveTTS, cm.disableTTSPtr, initials, srv.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.disableTTSPtr, initials,
+		srv.RPCClient, lg)
 
 	cm.connectionStartTime = time.Now()
 
@@ -246,6 +244,8 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 			if cm.client != nil && cm.ClientIsLocal() {
 				cm.client.SetRemoteServer(cm.RemoteServer.RPCClient)
 			}
+			// Set crash report client so crashes are reported to the remote server
+			lg.SetCrashReportClient(cm.RemoteServer.RPCClient.Client)
 		}
 
 	default:
@@ -254,11 +254,6 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 	if cm.RemoteServer == nil && time.Since(cm.lastRemoteServerAttempt) > 10*time.Second && !cm.serverRPCVersionMismatch {
 		cm.lastRemoteServerAttempt = time.Now()
 		cm.remoteSimServerChan = TryConnectRemoteServer(cm.serverAddress, lg)
-	}
-
-	if cm.pendingMETARCall != nil && cm.pendingMETARCall.CheckFinished() {
-		cm.pendingMETARCall.InvokeCallback(nil, nil)
-		cm.pendingMETARCall = nil
 	}
 
 	if cm.client != nil {
@@ -285,28 +280,4 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 				}
 			})
 	}
-}
-
-func (cm *ConnectionManager) GetMETAR(srv *Server, airports []string, callback func(map[string][]wx.METAR, error)) {
-	if srv == nil || srv.RPCClient == nil {
-		callback(nil, errors.New("no server available"))
-		return
-	}
-
-	// Cancel any pending METAR call
-	cm.pendingMETARCall = nil
-
-	var soaMETAR map[string]wx.METARSOA
-	cm.pendingMETARCall = makeRPCCall(srv.Go(server.GetMETARRPC, airports, &soaMETAR, nil),
-		func(err error) {
-			if err != nil {
-				callback(nil, err)
-			} else {
-				m := make(map[string][]wx.METAR)
-				for ap, soa := range soaMETAR {
-					m[ap] = soa.Decode()
-				}
-				callback(m, nil)
-			}
-		})
 }

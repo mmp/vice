@@ -1,0 +1,32 @@
+{
+    "control_positions": {
+        "1G": {
+            "callsign": "NFL_APP",
+            "frequency": 120850,
+            "radio_name": "Fallon Final"
+        },
+        "1E": {
+            "callsign": "NFL_D_APP",
+            "frequency": 120850,
+            "radio_name": "Fallon Desert"
+        },
+        "1T": {
+            "callsign": "NFL_TWR",
+            "frequency": 119250,
+            "radio_name": "Navy Fallon Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "NCT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZOA",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

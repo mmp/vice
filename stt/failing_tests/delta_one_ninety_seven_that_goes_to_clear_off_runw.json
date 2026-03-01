@@ -1,0 +1,265 @@
+{
+  "time": "2026-02-06T03:31:04.292739118Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta One Ninety Seven that goes to clear off runway four right approach maintain two one zero knots",
+  "whisper_duration_ms": 417.024,
+  "audio_duration_ms": 4552,
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16045MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "DAL197",
+  "command": "CI4R S210",
+  "stt_aircraft": {
+    "Delta one 97": {
+      "Callsign": "DAL197",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Goshi": "GOSHI",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 6565,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue eight 13": {
+      "Callsign": "JBU813",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Gabe": "GGABE",
+        "Goshi": "GOSHI",
+        "Jobee": "JOBEE",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 6365,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta One Ninety Seven that goes to clear off runway four right approach maintain two one zero knots\"",
+    "[local-stt] normalized words: [delta 1 97 that goes to cleared off runway 4 right approach maintain 2 1 0 knots]",
+    "[local-stt] tokens: 14",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"197\" Type=1 Value=197",
+    "[local-stt]   token[2]: Text=\"that\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"goes\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"off\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"4\" Type=1 Value=4",
+    "[local-stt]   token[9]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   token[13]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 14 tokens, 2 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 14 tokens, 2 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Delta one 97\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Delta one 97\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"JetBlue eight 13\" (airline=0.565, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta one 97\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta one 97\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Delta one 97\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Delta one 97\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"DAL197\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Delta one 97\")",
+    "[local-stt] callsign match: Callsign=\"DAL197\" SpokenKey=\"Delta one 97\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6565 Fixes=5 Approaches=6 AssignedApproach=\"ILS Runway 4R\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L 9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   fix: \"Winnie\" -\u003e \"WINNI\"",
+    "[local-stt]   fix: \"Nabbo\" -\u003e \"NABBO\"",
+    "[local-stt]   fix: \"Milt\" -\u003e \"MILTT\"",
+    "[local-stt]   fix: \"Goshi\" -\u003e \"GOSHI\"",
+    "[local-stt]   approach: \"r-nav runway four left\" -\u003e \"R4L\"",
+    "[local-stt]   approach: \"Visual Approach runway four right\" -\u003e \"VA4R\"",
+    "[local-stt]   approach: \"I L S runway four right\" -\u003e \"I4R\"",
+    "[local-stt]   approach: \"r-nav runway four right\" -\u003e \"R4R\"",
+    "[local-stt]   approach: \"Visual Approach runway four left\" -\u003e \"VA4L\"",
+    "[local-stt]   approach: \"I L S runway one five right then visual approach left traffic to runway four left\" -\u003e \"I5RC\"",
+    "[local-stt] command tokens after disregard: 12",
+    "[local-stt]   token[0]: Text=\"that\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"goes\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"off\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"4\" Type=1 Value=4",
+    "[local-stt]   token[7]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   token[11]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 12 tokens",
+    "[local-stt]   no match at token[0]=\"that\", skipping",
+    "[local-stt]   no match at token[1]=\"goes\", skipping",
+    "[local-stt]   skipping filler word: \"to\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"runway\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"runway\"",
+    "[local-stt]   matched command: \"CR4R\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt]   no match at token[8]=\"approach\", skipping",
+    "[local-stt]   matched command: \"S210\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   no match at token[11]=\"knots\", skipping",
+    "[local-stt] ParseCommands: result=[CR4R S210] (avgConf=1.00)",
+    "[local-stt] parsed commands: [CR4R S210] (conf=1.00)",
+    "[local-stt] validated commands: [CR4R S210] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL197 CR4R S210\" (conf=1.00, time=1.1407ms) ==="
+  ]
+}

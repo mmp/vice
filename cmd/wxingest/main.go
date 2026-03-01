@@ -13,9 +13,11 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
+	"github.com/vmihailenco/msgpack/v5"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -23,7 +25,8 @@ var dryRun = flag.Bool("dryrun", false, "Don't upload to GCS or archive local fi
 var nWorkers = flag.Int("nworkers", 16, "Number of worker goroutines for concurrent uploads")
 var profile = flag.Bool("profile", false, "Profile CPU/heap usage")
 var hrrrQuick = flag.Bool("hrrrquick", false, "Fast-path HRRR run, no upload")
-var validateGrid = flag.Bool("validate-grid", false, "Validate that HRRR grid returns same points as exhaustive search")
+var localOutput = flag.String("local-output", "", "Write output to local directory instead of GCS (for testing)")
+var singleTime = flag.String("single-time", "", "Process only a single timestamp (format: 2006-01-02T15:04:05Z)")
 
 // Cleanup coordination for signal handlers
 var (
@@ -60,6 +63,8 @@ func setupSignalHandler() {
 }
 
 func main() {
+	initZstdEncoders()
+
 	const bucketName = "vice-wx"
 
 	flag.Parse()
@@ -87,12 +92,26 @@ func main() {
 	if err != nil {
 		LogFatal("%v", err)
 	}
-	sb := StorageBackend(gcsBackend)
-	if *dryRun {
-		sb = &DryRunBackend{g: sb}
+
+	var sb StorageBackend
+	var localBackend *LocalBackend
+
+	if *localOutput != "" {
+		// Use local backend for writes, GCS for reads (to get METAR/precip times)
+		localBackend, err = MakeLocalBackend(*localOutput, gcsBackend)
+		if err != nil {
+			LogFatal("%v", err)
+		}
+		sb = localBackend
+		LogInfo("Using local output directory: %s", *localOutput)
+	} else {
+		sb = gcsBackend
+		if *dryRun {
+			sb = &DryRunBackend{g: sb}
+		}
+		// Wrap with tracking backend to track bytes uploaded/downloaded
+		sb = NewTrackingBackend(sb)
 	}
-	// Wrap with tracking backend to track bytes uploaded/downloaded
-	sb = NewTrackingBackend(sb)
 	defer sb.Close()
 
 	launchHTTPServer()
@@ -122,7 +141,9 @@ func main() {
 	}
 
 	// Report the total bytes transferred
-	if tb, ok := sb.(*TrackingBackend); ok {
+	if localBackend != nil {
+		localBackend.ReportStats()
+	} else if tb, ok := sb.(*TrackingBackend); ok {
 		tb.ReportStats()
 	}
 
@@ -154,6 +175,42 @@ func LogError(msg string, args ...any) {
 func LogFatal(msg string, args ...any) {
 	log.Printf("FATAL "+msg, args...)
 	os.Exit(1)
+}
+
+func retry(attempts int, sleep time.Duration, fn func() error) error {
+	var err error
+	for range attempts {
+		if err = fn(); err == nil {
+			return nil
+		}
+		LogError("retryable error (will retry in %s): %v", sleep, err)
+		time.Sleep(sleep)
+		sleep *= 2
+	}
+	return err
+}
+
+// storeObjectLocal writes a msgpack+zstd encoded object to a local file.
+// Used as a fallback when GCS uploads fail.
+func storeObjectLocal(localPath string, object any) error {
+	f, err := os.Create(localPath)
+	if err != nil {
+		return err
+	}
+
+	zw := <-zstdEncoders
+	defer func() { zstdEncoders <- zw }()
+	zw.Reset(f)
+
+	if err := msgpack.NewEncoder(zw).Encode(object); err != nil {
+		f.Close()
+		return err
+	}
+	if err := zw.Close(); err != nil {
+		f.Close()
+		return err
+	}
+	return f.Close()
 }
 
 func launchHTTPServer() {

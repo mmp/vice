@@ -1,0 +1,58 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "ROC_E_APP",
+            "frequency": 119550,
+            "radio_name": "Rochester Approach"
+        },
+        "1F": {
+            "callsign": "ROC_F_APP",
+            "frequency": 120700,
+            "radio_name": "Rochester Approach"
+        },
+        "1L": {
+            "callsign": "ROC_TWR",
+            "frequency": 118300,
+            "radio_name": "Rochester Tower"
+        },
+        "1W": {
+            "callsign": "ROC_W_APP",
+            "frequency": 123700,
+            "radio_name": "Rochester Approach"
+        },
+        "1Z": {
+            "callsign": "ROC_T_APP",
+            "frequency": 123450,
+            "radio_name": "Rochester Approach"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "BUF",
+            "prefix": "1"
+        },
+        {
+            "id": "ELM",
+            "prefix": "3"
+        },
+        {
+            "id": "SYR",
+            "prefix": "2"
+        },
+        {
+            "id": "ZBW",
+            "prefix": "B"
+        },
+        {
+            "id": "ZNY",
+            "prefix": "N"
+        },
+        {
+            "id": "ZOB",
+            "prefix": "C"
+        }
+    ]
+}

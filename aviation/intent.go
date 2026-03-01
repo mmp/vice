@@ -190,17 +190,33 @@ const (
 	SpeedCancel
 	SpeedSlowestPractical
 	SpeedMaximumForward
+	SpeedPresentSpeed
 	SpeedUntilFinal // speed restriction until 5 mile final
 )
+
+// SpeedUntil specifies when a speed restriction ends.
+// Only one field should be set at a time.
+type SpeedUntil struct {
+	Fix       string // fix name (e.g., "ROSLY")
+	DME       int    // DME distance (e.g., 5 for "5 DME")
+	MileFinal int    // mile final (e.g., 6 for "6 mile final")
+}
 
 // SpeedIntent represents speed assignment commands
 type SpeedIntent struct {
 	Speed         float32
 	Type          SpeedType
-	AfterAltitude *float32 // speed change conditional on reaching this altitude
+	AfterAltitude *float32    // speed change conditional on reaching this altitude
+	Until         *SpeedUntil // what the speed restriction is "until"
+	Mach          bool
 }
 
 func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	if s.Mach {
+		s.renderMach(rt, r)
+		return
+	}
+
 	switch s.Type {
 	case SpeedCancel:
 		rt.Add("cancel speed restrictions")
@@ -208,8 +224,20 @@ func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		rt.Add("[slowest practical speed|slowing as much as we can]")
 	case SpeedMaximumForward:
 		rt.Add("[maximum forward speed|maintaining maximum forward speed]")
+	case SpeedPresentSpeed:
+		rt.Add("[maintain present speed|present speed we'll keep it at {spd}|maintaining {spd}]", s.Speed)
 	case SpeedUntilFinal:
-		rt.Add("{spd} until 5 mile final", s.Speed)
+		if s.Until != nil {
+			if s.Until.Fix != "" {
+				rt.Add("{spd} until {fix}", s.Speed, s.Until.Fix)
+			} else if s.Until.DME > 0 {
+				rt.Add("{spd} until {num} D M E", s.Speed, s.Until.DME)
+			} else if s.Until.MileFinal > 0 {
+				rt.Add("{spd} until {num} mile final", s.Speed, s.Until.MileFinal)
+			}
+		} else {
+			rt.Add("[speed {spd} for now|we'll keep it at {spd} for now]", s.Speed)
+		}
 	case SpeedReduce:
 		if s.AfterAltitude != nil {
 			rt.Add("[at {alt} maintain {spd}|at {alt} {spd}|{alt} then {spd}]", *s.AfterAltitude, s.Speed)
@@ -231,7 +259,32 @@ func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	}
 }
 
-// ReportSpeedIntent represents "say speed" responses
+func (s SpeedIntent) renderMach(rt *RadioTransmission, r *rand.Rand) {
+	switch s.Type {
+	case SpeedCancel:
+		rt.Add("cancel speed restrictions")
+	case SpeedReduce:
+		if s.AfterAltitude != nil {
+			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
+		} else {
+			rt.Add("[reduce to {mach}|{mach}|slow to {mach}]", s.Speed)
+		}
+	case SpeedIncrease:
+		if s.AfterAltitude != nil {
+			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
+		} else {
+			rt.Add("[increase to {mach}|{mach}|maintain {mach}]", s.Speed)
+		}
+	case SpeedAssign:
+		if s.AfterAltitude != nil {
+			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
+		} else {
+			rt.Add("[{mach}|maintain {mach}]", s.Speed)
+		}
+	}
+}
+
+// ReportSpeedIntent represents "say speed" responses (IAS)
 type ReportSpeedIntent struct {
 	Current  float32
 	Assigned *float32
@@ -248,6 +301,28 @@ func (r ReportSpeedIntent) Render(rt *RadioTransmission, rnd *rand.Rand) {
 		}
 	} else {
 		rt.Add("[maintaining {spd}|at {spd}]", r.Current)
+	}
+}
+
+// ReportMachIntent represents "say mach" or mach-regime "say speed" responses
+type ReportMachIntent struct {
+	Current  float32  // current mach (e.g., 0.78)
+	Assigned *float32 // assigned mach, if any
+}
+
+func (r ReportMachIntent) Render(rt *RadioTransmission, rnd *rand.Rand) {
+	if r.Assigned != nil {
+		cur := int(r.Current*100 + 0.5)
+		asgn := int(*r.Assigned*100 + 0.5)
+		if asgn < cur {
+			rt.Add("[at {mach} slowing to {mach}|{mach} down to {mach}]", r.Current, *r.Assigned)
+		} else if asgn > cur {
+			rt.Add("[at {mach} speeding up to {mach}|{mach} increasing to {mach}]", r.Current, *r.Assigned)
+		} else {
+			rt.Add("[maintaining {mach}|at {mach}]", r.Current)
+		}
+	} else {
+		rt.Add("[maintaining {mach}|at {mach}]", r.Current)
 	}
 }
 
@@ -395,6 +470,7 @@ type NavigationIntent struct {
 	HoldLegLength  string               // e.g., "2 mile" or "1 minute"
 	AltRestriction *AltitudeRestriction // for CrossFixAt
 	Speed          *float32             // for CrossFixAt
+	Mach           *float32             // for CrossFixAt
 }
 
 func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
@@ -420,6 +496,8 @@ func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		}
 		if n.Speed != nil {
 			rt.Add("at {spd}", *n.Speed)
+		} else if n.Mach != nil {
+			rt.Add("at {mach}", *n.Mach)
 		}
 	case NavResumeOwnNav:
 		rt.Add("[own navigation|resuming own navigation]")
@@ -438,6 +516,7 @@ const (
 	ApproachIntercept
 	ApproachJoin // for non-ILS approaches
 	ApproachAtFixCleared
+	ApproachAtFixIntercept
 	ApproachCancel
 )
 
@@ -446,20 +525,26 @@ type ApproachIntent struct {
 	Type         ApproachIntentType
 	ApproachName string // full name of the approach (e.g., "ILS Runway 22L")
 	Fix          string // for AtFixCleared
+	LAHSORunway  string // runway to hold short of (for LAHSO operations)
 }
 
 func (a ApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	switch a.Type {
 	case ApproachExpect:
 		rt.Add("[we'll expect the|expecting the|we'll plan for the] {appr} approach", a.ApproachName)
+		if a.LAHSORunway != "" {
+			rt.Add("[and we'll hold short of|hold short of] runway {rwy}", a.LAHSORunway)
+		}
 	case ApproachIntercept:
 		rt.Add("[intercepting the {appr} approach|intercepting {appr}]", a.ApproachName)
 	case ApproachJoin:
 		rt.Add("[joining the {appr} approach course|joining {appr}]", a.ApproachName)
 	case ApproachAtFixCleared:
 		rt.Add("at {fix} cleared {appr}", a.Fix, a.ApproachName)
+	case ApproachAtFixIntercept:
+		rt.Add("[intercept at {fix}|at {fix} intercept the localizer|at {fix} join the localizer]", a.Fix)
 	case ApproachCancel:
-		rt.Add("cancel approach clearance.")
+		rt.Add("cancel approach clearance")
 	}
 }
 
@@ -578,18 +663,60 @@ func (t TransponderIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 ///////////////////////////////////////////////////////////////////////////
 // Special Intents
 
-// GoAroundIntent represents a go-around instruction
-type GoAroundIntent struct{}
-
-func (g GoAroundIntent) Render(rt *RadioTransmission, r *rand.Rand) {
-	rt.Add("[going around|on the go]")
-}
-
 // ContactTowerIntent represents contact tower command
 type ContactTowerIntent struct{}
 
 func (c ContactTowerIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	rt.Add("[contact|over to|] tower")
+}
+
+// ATISIntent represents the pilot's acknowledgment of the ATIS letter.
+type ATISIntent struct {
+	Letter string
+}
+
+func (a ATISIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	rt.Add("[we'll pick up {ch}|we'll get {ch}]", a.Letter)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Traffic Advisory Intent
+
+// TrafficAdvisoryResponse represents the pilot's response to a traffic advisory
+type TrafficAdvisoryResponse int
+
+const (
+	TrafficResponseIMC         TrafficAdvisoryResponse = iota // In IMC, can't see traffic
+	TrafficResponseLooking                                    // No traffic visible, will look
+	TrafficResponseTrafficSeen                                // Traffic is in sight
+)
+
+// TrafficAdvisoryIntent represents a pilot's response to a traffic advisory
+type TrafficAdvisoryIntent struct {
+	Response               TrafficAdvisoryResponse
+	WillMaintainSeparation bool // If true, add "will maintain visual separation"
+}
+
+func (t TrafficAdvisoryIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	switch t.Response {
+	case TrafficResponseIMC:
+		rt.Add("[we're in IMC|we're IMC|in the clouds|IMC]")
+	case TrafficResponseLooking:
+		rt.Add("[looking|we're looking|looking for traffic|we'll keep an eye out]")
+	case TrafficResponseTrafficSeen:
+		if t.WillMaintainSeparation {
+			rt.Add("[we have the traffic, will maintain visual separation|traffic in sight, we'll maintain visual|we see the traffic, will maintain visual separation]")
+		} else {
+			rt.Add("[we have the traffic|traffic in sight|we see the traffic|got the traffic]")
+		}
+	}
+}
+
+// VisualSeparationIntent represents a pilot's acknowledgment of visual separation responsibility
+type VisualSeparationIntent struct{}
+
+func (v VisualSeparationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	rt.Add("[will maintain visual separation|we'll maintain visual separation|maintaining visual separation|visual separation]")
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -651,54 +778,6 @@ func (m MixUpIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		AlwaysFullCallsign: true,
 	}
 	rt.Add("sorry, was that for {callsign}?", csArg)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Initial Contact Intents
-
-type InitialContactType int
-
-const (
-	InitialContactDeparture InitialContactType = iota
-	InitialContactArrival
-	InitialContactVFR
-)
-
-// InitialContactIntent represents pilot's initial contact on frequency
-type InitialContactIntent struct {
-	Type            InitialContactType
-	CurrentAltitude float32
-	TargetAltitude  *float32         // if climbing/descending
-	Heading         *float32         // if on assigned heading
-	STAR            string           // if on a STAR
-	AircraftType    string           // for VFR contacts
-	ReportingPoints []ReportingPoint // for position reports
-}
-
-func (i InitialContactIntent) Render(rt *RadioTransmission, r *rand.Rand) {
-	switch i.Type {
-	case InitialContactDeparture:
-		if i.TargetAltitude != nil && *i.TargetAltitude-i.CurrentAltitude > 100 {
-			rt.Add("[at|] {alt} climbing {alt}", i.CurrentAltitude, *i.TargetAltitude)
-		} else {
-			rt.Add("[at|] {alt}", i.CurrentAltitude)
-		}
-	case InitialContactArrival:
-		if i.Heading != nil {
-			rt.Add("[heading {hdg}|on a {hdg} heading]", *i.Heading)
-		} else if i.STAR != "" {
-			if i.TargetAltitude == nil {
-				rt.Add("descending on the {star}", i.STAR)
-			} else {
-				rt.Add("on the {star}", i.STAR)
-			}
-		}
-		if i.TargetAltitude != nil && *i.TargetAltitude != i.CurrentAltitude {
-			rt.Add("[at|] {alt} for {alt} [assigned|]", i.CurrentAltitude, *i.TargetAltitude)
-		}
-	case InitialContactVFR:
-		rt.Add("[VFR request|with a VFR request]")
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

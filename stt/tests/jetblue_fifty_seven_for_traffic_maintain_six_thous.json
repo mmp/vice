@@ -1,0 +1,162 @@
+{
+  "time": "2026-02-05T01:15:32.913580206Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "JetBlue Fifty Seven for traffic maintain six thousand",
+  "whisper_duration_ms": 93.242,
+  "audio_duration_ms": 2888,
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15889MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "JBU57",
+  "command": "A60",
+  "stt_aircraft": {
+    "JetBlue 57": {
+      "Callsign": "JBU57",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Avon": "AVONN",
+        "Cossy": "COSSY",
+        "Marthas Vineyard": "MVY",
+        "Providence": "PVD"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2951,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "citation two tango brahvo": {
+      "Callsign": "N852TB",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Cutzarondiro": "ACK",
+        "Dolphin": "DLPHN",
+        "Nantucket": "KACK",
+        "Obube": "OBUBE",
+        "Tarif": "TARIF",
+        "Towbt": "TOWBT",
+        "Vesel": "VESSL",
+        "Waivs": "WAIVS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24"
+      },
+      "ApproachFixes": {
+        "I24": {
+          "Nantucket": "ACK",
+          "Obube": "OBUBE",
+          "Waivs": "WAIVS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "DEEPO2",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "15",
+        "33"
+      ]
+    },
+    "november eight five two tango brahvo": {
+      "Callsign": "N852TB",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Cutzarondiro": "ACK",
+        "Dolphin": "DLPHN",
+        "Nantucket": "KACK",
+        "Obube": "OBUBE",
+        "Tarif": "TARIF",
+        "Towbt": "TOWBT",
+        "Vesel": "VESSL",
+        "Waivs": "WAIVS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24"
+      },
+      "ApproachFixes": {
+        "I24": {
+          "Nantucket": "ACK",
+          "Obube": "OBUBE",
+          "Waivs": "WAIVS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "DEEPO2",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"JetBlue Fifty Seven for traffic maintain six thousand\"",
+    "[local-stt] normalized words: [jetblue 57 for traffic maintain 6 thousand]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"jetblue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"57\" Type=1 Value=57",
+    "[local-stt]   token[2]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"traffic\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"60\" Type=2 Value=60",
+    "[local-stt] MatchCallsign: 6 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"JetBlue 57\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"JetBlue 57\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"JetBlue 57\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"JetBlue 57\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 1 results",
+    "[local-stt]     result 0: \"JetBlue 57\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"JetBlue 57\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"JetBlue 57\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"JetBlue 57\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"JBU57\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"JetBlue 57\")",
+    "[local-stt] callsign match: Callsign=\"JBU57\" SpokenKey=\"JetBlue 57\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=2951 Fixes=4 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Cossy\" -\u003e \"COSSY\"",
+    "[local-stt]   fix: \"Avon\" -\u003e \"AVONN\"",
+    "[local-stt]   fix: \"Providence\" -\u003e \"PVD\"",
+    "[local-stt]   fix: \"Marthas Vineyard\" -\u003e \"MVY\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"traffic\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"60\" Type=2 Value=60",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   no match at token[0]=\"for\", skipping",
+    "[local-stt]   no match at token[1]=\"traffic\", skipping",
+    "[local-stt]   matched command: \"A60\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[A60] (avgConf=1.00)",
+    "[local-stt] parsed commands: [A60] (conf=1.00)",
+    "[local-stt] validated commands: [A60] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU57 A60\" (conf=1.00, time=1.0486ms) ==="
+  ]
+}

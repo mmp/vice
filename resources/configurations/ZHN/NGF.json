@@ -1,0 +1,31 @@
+{
+    "control_positions": {
+        "1A": {
+            "callsign": "NGF_APP",
+            "frequency": 125000,
+            "radio_name": "Kaneohe Approach"
+        },
+        "1T": {
+            "callsign": "NGF_TWR",
+            "frequency": 120700,
+            "radio_name": "Marine Kaneohe Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "HNL",
+            "prefix": "1"
+        },
+        {
+            "id": "OGG",
+            "prefix": "2"
+        },
+        {
+            "id": "ZHN",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

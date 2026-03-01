@@ -1,0 +1,396 @@
+{
+  "time": "2026-01-30T03:54:51.645022562Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "November nine hotel lima descend and maintain four thousand at hail cleared via alfa air bridge.",
+  "whisper_duration_ms": 371.128,
+  "audio_duration_ms": 6728,
+  "processor": "GPU: AMD Radeon RX 5600 XT (6128MB)",
+  "whisper_model": "ggml-base.en-jlvatc-q5_0.bin",
+  "callsign": "N809HL",
+  "command": "D40 AHAILE/CVORA",
+  "stt_aircraft": {
+    "Alaska four zero eight": {
+      "Callsign": "ASA408",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Clomn": "KLOMN",
+        "Lindy": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "San Diego": "KSAN",
+        "Sijhi": "CIJHI",
+        "Vida": "VYDDA",
+        "Zemans": "XMANS",
+        "reebo": "REEBO"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ApproachFixes": {
+        "L27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RY7": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RZ7": {
+          "Carsner": "CRSNR",
+          "Catdog": "CATDG",
+          "Clomn": "KLOMN",
+          "Jade": "AJADE",
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sayae": "SAYAE",
+          "Sijhi": "CIJHI",
+          "Tokyo": "TOKOE",
+          "Vida": "VYDDA"
+        },
+        "V27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "reebo": "REEBO"
+        }
+      },
+      "AssignedApproach": "RNAV Y Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 9604,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "B E thirty-six niner hotel lima": {
+      "Callsign": "N809HL",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Brown Field Municipal": "KSDM",
+        "Finley": "FINLE",
+        "Haile": "HAILE",
+        "Zeklu": "ZEKLU"
+      },
+      "CandidateApproaches": {
+        "V O R runway two six right": "VORA"
+      },
+      "ApproachFixes": {
+        "VORA": {
+          "Finley": "FINLE",
+          "Haile": "HAILE",
+          "Mission Bay": "MZB",
+          "Zeklu": "ZEKLU"
+        }
+      },
+      "AssignedApproach": "VOR Runway 26R",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "B E thirty-six one uniform brahvo": {
+      "Callsign": "N891UB",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Julian": "JLI",
+        "Ramona": "KRNM"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven": "RB"
+      },
+      "ApproachFixes": {
+        "RB": {
+          "Julian": "JLI",
+          "Rice": "RICCE",
+          "enobe": "ENOBE",
+          "meddy": "MEDDI"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "Southwest four 60": {
+      "Callsign": "SWA460",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Gwyn": "GYWNN",
+        "Hofmann": "HFMNN",
+        "Kernel": "KERNL",
+        "Padrz": "PADRZ"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "PADRZ2",
+      "STAR": "",
+      "Altitude": 5061,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "bonanza niner hotel lima": {
+      "Callsign": "N809HL",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Brown Field Municipal": "KSDM",
+        "Finley": "FINLE",
+        "Haile": "HAILE",
+        "Zeklu": "ZEKLU"
+      },
+      "CandidateApproaches": {
+        "V O R runway two six right": "VORA"
+      },
+      "ApproachFixes": {
+        "VORA": {
+          "Finley": "FINLE",
+          "Haile": "HAILE",
+          "Mission Bay": "MZB",
+          "Zeklu": "ZEKLU"
+        }
+      },
+      "AssignedApproach": "VOR Runway 26R",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "bonanza one uniform brahvo": {
+      "Callsign": "N891UB",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Julian": "JLI",
+        "Ramona": "KRNM"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven": "RB"
+      },
+      "ApproachFixes": {
+        "RB": {
+          "Julian": "JLI",
+          "Rice": "RICCE",
+          "enobe": "ENOBE",
+          "meddy": "MEDDI"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation one kilo kilo": {
+      "Callsign": "N631KK",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Chicken": "CHKNN",
+        "Gwyn": "GYWNN",
+        "Hofmann": "HFMNN",
+        "Padrz": "PADRZ"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "PADRZ2",
+      "STAR": "",
+      "Altitude": 8015,
+      "State": "departure",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "november eight niner one uniform brahvo": {
+      "Callsign": "N891UB",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Julian": "JLI",
+        "Ramona": "KRNM"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven": "RB"
+      },
+      "ApproachFixes": {
+        "RB": {
+          "Julian": "JLI",
+          "Rice": "RICCE",
+          "enobe": "ENOBE",
+          "meddy": "MEDDI"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november eight zero niner hotel lima": {
+      "Callsign": "N809HL",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Brown Field Municipal": "KSDM",
+        "Finley": "FINLE",
+        "Haile": "HAILE",
+        "Zeklu": "ZEKLU"
+      },
+      "CandidateApproaches": {
+        "V O R runway two six right": "VORA"
+      },
+      "ApproachFixes": {
+        "VORA": {
+          "Finley": "FINLE",
+          "Haile": "HAILE",
+          "Mission Bay": "MZB",
+          "Zeklu": "ZEKLU"
+        }
+      },
+      "AssignedApproach": "VOR Runway 26R",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november six three one kilo kilo": {
+      "Callsign": "N631KK",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Chicken": "CHKNN",
+        "Gwyn": "GYWNN",
+        "Hofmann": "HFMNN",
+        "Padrz": "PADRZ"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "PADRZ2",
+      "STAR": "",
+      "Altitude": 8015,
+      "State": "departure",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"November nine hotel lima descend and maintain four thousand at hail cleared via alfa air bridge.\"",
+    "[local-stt] normalized words: [november 9 hotel lima descend and maintain 4 thousand at hail cleared via alfa air bridge]",
+    "[local-stt] tokens: 15",
+    "[local-stt]   token[0]: Text=\"november\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"9\" Type=1 Value=9",
+    "[local-stt]   token[2]: Text=\"hotel\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"lima\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"40\" Type=2 Value=40",
+    "[local-stt]   token[8]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"hail\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"via\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"alfa\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"bridge\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 15 tokens, 10 aircraft",
+    "[local-stt]   candidate \"Southwest four 60\" (ICAO=\"SWA460\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Alaska four zero eight\" (ICAO=\"ASA408\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november eight zero niner hotel lima\" (ICAO=\"N809HL\"): score=1.02 consumed=4",
+    "[local-stt]   candidate \"B E thirty-six niner hotel lima\" (ICAO=\"N809HL\"): score=0.68 consumed=4",
+    "[local-stt]   candidate \"bonanza one uniform brahvo\" (ICAO=\"N891UB\"): score=0.65 consumed=4",
+    "[local-stt]   candidate \"november six three one kilo kilo\" (ICAO=\"N631KK\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"citation one kilo kilo\" (ICAO=\"N631KK\"): score=0.52 consumed=4",
+    "[local-stt]   candidate \"bonanza niner hotel lima\" (ICAO=\"N809HL\"): score=0.68 consumed=4",
+    "[local-stt]   candidate \"november eight niner one uniform brahvo\" (ICAO=\"N891UB\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"B E thirty-six one uniform brahvo\" (ICAO=\"N891UB\"): score=0.65 consumed=4",
+    "[local-stt]   accepted: \"N809HL\" (conf=1.02, consumed=4, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"N809HL\" SpokenKey=\"november eight zero niner hotel lima\" Conf=1.02 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=4 Approaches=1 AssignedApproach=\"VOR Runway 26R\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Haile\" -\u003e \"HAILE\"",
+    "[local-stt]   fix: \"Finley\" -\u003e \"FINLE\"",
+    "[local-stt]   fix: \"Zeklu\" -\u003e \"ZEKLU\"",
+    "[local-stt]   fix: \"Brown Field Municipal\" -\u003e \"KSDM\"",
+    "[local-stt]   approach: \"V O R runway two six right\" -\u003e \"VORA\"",
+    "[local-stt] command tokens after disregard: 11",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"40\" Type=2 Value=40",
+    "[local-stt]   token[4]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"hail\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"via\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"alfa\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"bridge\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"descend\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 11 tokens",
+    "[local-stt]   matched command: \"D40\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"hail\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"hail\" -\u003e \"HAILE\" (fuzzy 0.96)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"hail\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"hail\" -\u003e \"HAILE\" (fuzzy 0.96)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"hail\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"hail\" -\u003e \"HAILE\" (fuzzy 0.96)",
+    "[local-stt]   no match at token[4]=\"at\", skipping",
+    "[local-stt]   no match at token[5]=\"hail\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"via\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"via\"",
+    "[local-stt]   matched command: \"SAYAGAIN/APPROACH\" (conf=0.50, consumed=1, isThen=false)",
+    "[local-stt]   no match at token[7]=\"via\", skipping",
+    "[local-stt]   no match at token[8]=\"alfa\", skipping",
+    "[local-stt]   no match at token[9]=\"air\", skipping",
+    "[local-stt]   no match at token[10]=\"bridge\", skipping",
+    "[local-stt] ParseCommands: result=[D40 SAYAGAIN/APPROACH] (avgConf=0.75)",
+    "[local-stt] parsed commands: [D40 SAYAGAIN/APPROACH] (conf=0.75)",
+    "[local-stt] validated commands: [D40 SAYAGAIN/APPROACH] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"N809HL D40 SAYAGAIN/APPROACH\" (conf=0.76, time=1.0247ms) ==="
+  ]
+}

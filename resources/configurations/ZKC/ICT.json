@@ -1,0 +1,27 @@
+{
+    "control_positions": {
+        "1W": {
+            "callsign": "ICT_APP",
+            "frequency": 126700,
+            "radio_name": "Wichita Approach"
+        },
+        "1L": {
+            "callsign": "ICT_TWR",
+            "frequency": 118200,
+            "radio_name": "Wichita Tower"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "END",
+            "prefix": "1"
+        },
+        {
+            "id": "ZKC",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

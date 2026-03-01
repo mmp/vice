@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/radar"
@@ -95,8 +96,17 @@ var userCommands = make(map[CommandMode][]userCommand)
 // Track registered command strings to detect duplicates
 var registeredCommands = make(map[CommandMode]map[string]bool)
 
+var initCommandsOnce sync.Once
+
+func InitCommands() {
+	initCommandsOnce.Do(func() {
+		registerOpsCommands()
+		toolbarDrawState.mouseYetReleased = true
+	})
+}
+
 // registerCommand is used to register all of the supported ERAM commands at startup time via
-// init() functions in the cmd*.go files.
+// the register*Commands() functions in the cmd*.go files.
 func registerCommand(m CommandMode, c string, f any) {
 	if registeredCommands[m] == nil {
 		registeredCommands[m] = make(map[string]bool)
@@ -185,11 +195,11 @@ type CommandInput struct {
 	text string
 
 	// Track / position information for click-based commands
-	clickedTrack  *sim.Track
-	hasClick      bool
-	mousePosition [2]float32
-	posIsLatLong  bool // true if mousePosition is already lat/long (from embedded location)
-	transforms    radar.ScopeTransformations
+	clickedTrack   *sim.Track
+	hasClick       bool
+	mousePositions [][2]float32
+	posIsLatLong   bool // true if mousePositions are already lat/long (from embedded locations)
+	transforms     radar.ScopeTransformations
 }
 
 // matchCandidate represents a userCommand and the WIP state from attempting to match its
@@ -229,7 +239,7 @@ func (c matchCandidate) advance(m matcher, r matchResult) matchCandidate {
 // tryExecuteUserCommand attempts to execute a command using the registered commands
 // for the current command mode.
 func (ep *ERAMPane) tryExecuteUserCommand(ctx *panes.Context, cmd string, clickedTrack *sim.Track, hasClick bool,
-	mousePosition [2]float32, posIsLatLong bool, transforms radar.ScopeTransformations) (CommandStatus, error, bool) {
+	mousePositions [][2]float32, posIsLatLong bool, transforms radar.ScopeTransformations) (CommandStatus, error, bool) {
 	// Get commands for current mode
 	cmds, ok := userCommands[ep.commandMode]
 	if !ok || len(cmds) == 0 {
@@ -237,12 +247,12 @@ func (ep *ERAMPane) tryExecuteUserCommand(ctx *panes.Context, cmd string, clicke
 	}
 
 	input := &CommandInput{
-		text:          cmd,
-		clickedTrack:  clickedTrack,
-		hasClick:      hasClick,
-		mousePosition: mousePosition,
-		posIsLatLong:  posIsLatLong,
-		transforms:    transforms,
+		text:           cmd,
+		clickedTrack:   clickedTrack,
+		hasClick:       hasClick,
+		mousePositions: mousePositions,
+		posIsLatLong:   posIsLatLong,
+		transforms:     transforms,
 	}
 
 	return ep.dispatchCommand(ctx, cmds, input)

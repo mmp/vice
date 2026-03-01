@@ -92,9 +92,9 @@ func tryExtractLocation(it inputText) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
-// parseCRRLocation parses location tokens used by LF: //FIX, //FRD,
+// parseLocation parses location tokens used by LF: //FIX, //FRD,
 // //lat/long. Returns true if a location was resolved.
-func parseCRRLocation(ctx *panes.Context, token string) (math.Point2LL, bool) {
+func parseLocation(ctx *panes.Context, token string) (math.Point2LL, bool) {
 	s := strings.TrimPrefix(strings.ToUpper(token), "//")
 	// FRD?
 	if m := reFRD.FindStringSubmatch(s); len(m) == 4 {
@@ -152,8 +152,8 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	// Ensure session state.
-	if ep.crrGroups == nil {
-		ep.crrGroups = make(map[string]*CRRGroup)
+	if ep.CRRGroups == nil {
+		ep.CRRGroups = make(map[string]*CRRGroup)
 	}
 
 	// Sizing and styling
@@ -183,8 +183,8 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	// Sort group labels
-	labels := make([]string, 0, len(ep.crrGroups))
-	for label := range ep.crrGroups {
+	labels := make([]string, 0, len(ep.CRRGroups))
+	for label := range ep.CRRGroups {
 		labels = append(labels, label)
 	}
 	sort.Strings(labels)
@@ -197,7 +197,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 		if contentLines >= maxLines {
 			break
 		}
-		g := ep.crrGroups[label]
+		g := ep.CRRGroups[label]
 		if g == nil {
 			continue
 		}
@@ -250,7 +250,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 		bodyP0 := math.Add2f(p0, [2]float32{0, -titleH})
 		bodyP1 := math.Add2f(bodyP0, [2]float32{width, 0})
 		bodyP2 := math.Add2f(bodyP1, [2]float32{0, -bodyHeight})
-		bodyP3 := math.Add2f(bodyP0, [2]float32{-width, -bodyHeight})
+		bodyP3 := math.Add2f(bodyP0, [2]float32{0, -bodyHeight})
 		trid.AddQuad(bodyP0, bodyP1, bodyP2, bodyP3, renderer.RGB{R: 0, G: 0, B: 0})
 	}
 
@@ -366,11 +366,14 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	// Clicks for title buttons (mouse.Pos is already in pane-local window coordinates)
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 		switch {
 		case mRect.Inside(mouse.Pos):
 			ctx.SetMousePosition(math.Add2f(mouse.Pos, [2]float32{width * 1.5, 0}))
 			ep.crrMenuOpen = !ep.crrMenuOpen
+			// Consume the click so the config menu doesn't process it
+			// on the same frame (e.g. X button or click-outside dismiss).
+			mouse.Clicked = [platform.MouseButtonCount]bool{}
 		case minRect.Inside(mouse.Pos):
 			ps.CRR.Visible = false
 		case titleRect.Inside(mouse.Pos) && !ep.crrReposition:
@@ -404,7 +407,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 	// Menu, if open (drawn to the right side of the title by default)
 	if ep.crrMenuOpen {
 		menuOrigin := math.Add2f(titleP3, [2]float32{width, titleH})
-		ep.drawCRRMenu(ctx, menuOrigin, 150, cb)
+		ep.drawCRRMenu(ctx, transforms, menuOrigin, 150, cb)
 	}
 
 	// Draw groups
@@ -418,7 +421,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 		x := cursor[0]
 		y := cursor[1]
 		for _, label := range labels {
-			g := ep.crrGroups[label]
+			g := ep.CRRGroups[label]
 			if g == nil {
 				continue
 			}
@@ -450,17 +453,17 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 		ld.GenerateCommands(cb)
 		td.GenerateCommands(cb)
 		// Handle clicks on panel labels
-		if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+		if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 			for label, rect := range ep.crrLabelRects {
 				if rect.Inside(mouse.Pos) {
-					if mouse.Clicked[platform.MouseButtonPrimary] {
+					if ep.mousePrimaryClicked(mouse) {
 						ep.Input.Set(ps, "LF "+strings.ToUpper(label)+" ")
 					} else {
-						if g := ep.crrGroups[label]; g != nil {
+						if g := ep.CRRGroups[label]; g != nil {
 							if len(g.Aircraft) > 0 {
 								g.Aircraft = make(map[av.ADSBCallsign]struct{})
 							} else {
-								delete(ep.crrGroups, label)
+								delete(ep.CRRGroups, label)
 							}
 						}
 					}
@@ -475,7 +478,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 		if linesRemaining <= 0 {
 			break
 		}
-		g := ep.crrGroups[label]
+		g := ep.CRRGroups[label]
 		if g == nil {
 			continue
 		}
@@ -540,20 +543,20 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	// Handle clicks on labels and aircraft rows after layout
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 		// Group labels
 		for label, rect := range ep.crrLabelRects {
 			if rect.Inside(mouse.Pos) {
-				if mouse.Clicked[platform.MouseButtonPrimary] {
+				if ep.mousePrimaryClicked(mouse) {
 					// Seed LF command
 					ep.Input.Set(ps, "LF "+strings.ToUpper(label)+" ")
 				} else {
 					// Middle click: delete contents or group
-					if g := ep.crrGroups[label]; g != nil {
+					if g := ep.CRRGroups[label]; g != nil {
 						if len(g.Aircraft) > 0 {
 							g.Aircraft = make(map[av.ADSBCallsign]struct{})
 						} else {
-							delete(ep.crrGroups, label)
+							delete(ep.CRRGroups, label)
 						}
 					}
 				}
@@ -565,7 +568,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 			for cs, rect := range rows {
 				if rect.Inside(mouse.Pos) {
 					// Toggle remove on either primary or middle click
-					if g := ep.crrGroups[label]; g != nil && g.Aircraft != nil {
+					if g := ep.CRRGroups[label]; g != nil && g.Aircraft != nil {
 						if _, ok := g.Aircraft[cs]; ok {
 							delete(g.Aircraft, cs)
 						}
@@ -584,225 +587,43 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 }
 
 // drawCRRMenu draws the CRR configuration menu when ep.crrMenuOpen is true.
-func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width float32, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, transforms radar.ScopeTransformations, origin [2]float32, width float32, cb *renderer.CommandBuffer) {
 	if !ep.crrMenuOpen {
 		return
 	}
 	ps := ep.currentPrefs()
 
-	font := ep.ERAMToolbarFont()
-	itemH := float32(18)
 	textColor := renderer.RGB{R: 1, G: 1, B: 1}
 	baseBg := eramGray
 	greenBg := CRRGreen.BrightRGB(radar.Brightness(100))
 	blackBg := renderer.RGB{R: 0, G: 0, B: 0}
 
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	trid := renderer.GetColoredTrianglesDrawBuilder()
-	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-	cursor := origin
-	// Create title row for menu
-
-	{
-		rp0 := cursor
-		rp1 := math.Add2f(cursor, [2]float32{width, 0})
-		rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
-		rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
-		trid.AddQuad(rp0, rp1, rp2, rp3, baseBg)
-		ld.AddLine(rp0, rp1, eramGray.Scale(.25))
-		style := renderer.TextStyle{
-			Font:        font,
-			Color:       textColor,
-			LineSpacing: 0,
-		}
-		title := "CRR"
-		centerX := rp0[0] + width/2
-		centerY := rp0[1] - itemH/2
-		td.AddTextCentered(title, [2]float32{centerX, centerY}, style)
-		// Now, bring the cursor to the side to draw the X box
-		label := "X"
-		textStyle := renderer.TextStyle{
-			Font:        font,
-			Color:       textColor,
-			LineSpacing: 0,
-		}
-		dw, _ := font.BoundText(label, textStyle.LineSpacing)
-		right := math.Add2f(cursor, [2]float32{width, -itemH})
-		distPos := math.Add2f(cursor, [2]float32{right[0] - (cursor[0] + float32(dw)), -1})
-		td.AddText(label, distPos, textStyle)
-		ld.AddLine(cursor, [2]float32{cursor[0], right[1]}, blackBg)
-		cursor = rp3
-	}
-
-	// Helper to draw a full-width row
-
-	isFirstRow := true
-	row := func(label string, bg renderer.RGB, color renderer.RGB, centered bool) math.Extent2D {
-		rp0 := cursor
-		rp1 := math.Add2f(cursor, [2]float32{width, 0})
-		rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
-		rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
-		trid.AddQuad(rp0, rp1, rp2, rp3, bg)
-		style := renderer.TextStyle{
-			Font:        font,
-			Color:       color,
-			LineSpacing: 0,
-		}
-		if centered {
-			centerX := rp0[0] + width/2
-			centerY := rp0[1] - itemH/2
-			td.AddTextCentered(label, [2]float32{centerX, centerY}, style)
-		} else {
-			td.AddText(label, math.Add2f(rp0, [2]float32{4, -itemH + 12}), style)
-		}
-
-		cursor = rp3
-		extent := math.Extent2D{P0: rp3, P1: rp1}
-
-		dimColor := eramGray.Scale(.25)
-		brightColor := eramGray.Scale(.8)
-		hovered := ctx.Mouse != nil && extent.Inside(ctx.Mouse.Pos)
-
-		if hovered {
-			// draw box
-			ld.AddLine(rp0, rp1, brightColor)
-			ld.AddLine(rp3, rp2, brightColor)
-			ld.AddLine(rp0, rp3, brightColor)
-			ld.AddLine(rp1, rp2, brightColor)
-		} else {
-			if isFirstRow {
-				ld.AddLine(rp0, rp1, dimColor)
-			}
-			ld.AddLine(rp3, rp2, dimColor)
-		}
-
-		isFirstRow = false
-		return extent
-	}
-
 	rtLabel := "T"
-	rtBcg := blackBg
+	rtBg := blackBg
 	if ps.CRR.Opaque {
 		rtLabel = "O"
-		rtBcg = baseBg
-	}
-	rt := row(rtLabel, rtBcg, textColor, true)
-	rb := row("BORDER", baseBg, textColor, false)
-	rLines := row("LINES "+strconv.Itoa(ps.CRR.Lines), greenBg, textColor, false)
-	rFont := row("FONT "+strconv.Itoa(ps.CRR.Font), greenBg, textColor, false)
-	rBright := row("BRIGHT "+strconv.Itoa(ps.CRR.Bright), greenBg, textColor, false)
-	rList := row("LIST", baseBg, textColor, false)
-
-	rColor := row("COLOR "+strconv.Itoa(ps.CRR.ColorBright[ps.CRR.SelectedColor]), blackBg, CRRGreen.BrightRGB(radar.Brightness(90)), false)
-	type swatch struct {
-		c   CRRColor
-		x0  float32
-		x1  float32
-		box math.Extent2D
-	}
-	var swatches []swatch
-	swCols := 2
-	swH := itemH
-	swColors := []CRRColor{CRRGreen, CRRMagenta, CRRWhite, CRRAmber}
-	swRows := (len(swColors) + swCols - 1) / swCols
-
-	// Button size and gaps between buttons
-	swatchW := float32(60)
-	swatchH := float32(12)
-	swatchGap := float32(8) // horizontal gap
-
-	totalSwatchWidth := swatchW*float32(swCols) + swatchGap*float32(swCols-1)
-	startX := origin[0] + (width-totalSwatchWidth)/2
-
-	// Background behind swatches
-	bgP0 := cursor
-	bgP1 := math.Add2f(bgP0, [2]float32{width, 0})
-	bgP2 := math.Add2f(bgP1, [2]float32{0, -float32(swRows) * swH})
-	bgP3 := math.Add2f(bgP0, [2]float32{0, -float32(swRows) * swH})
-	trid.AddQuad(bgP0, bgP1, bgP2, bgP3, blackBg)
-
-	for i, c := range swColors {
-		rowIdx := i / swCols
-		colIdx := i % swCols
-		// Position from the centered starting point
-		x0 := startX + float32(colIdx)*(swatchW+swatchGap)
-		yTop := cursor[1] - float32(rowIdx)*swH
-		yOffset := (swH - swatchH) / 2
-		sp0 := [2]float32{x0, yTop - yOffset}
-		sp1 := [2]float32{x0 + swatchW, yTop - yOffset}
-		sp2 := [2]float32{x0 + swatchW, yTop - yOffset - swatchH}
-		sp3 := [2]float32{x0, yTop - yOffset - swatchH}
-		trid.AddQuad(sp0, sp1, sp2, sp3, c.BrightRGB(radar.Brightness(ps.CRR.ColorBright[c])))
-		if ps.CRR.SelectedColor == c {
-			ld.AddLineLoop(renderer.RGB{R: 1, G: 1, B: 1}, [][2]float32{sp0, sp1, sp2, sp3})
-		}
-		// P0 = min corner, P1 = max corner for Inside to work
-		swatches = append(swatches, swatch{
-			c: c,
-			box: math.Extent2D{
-				P0: [2]float32{sp3[0], sp2[1]},
-				P1: [2]float32{sp1[0], sp0[1]},
-			},
-		})
-	}
-	cursor = math.Add2f(cursor, [2]float32{0, -float32(swRows) * swH})
-
-	// CRR group labels section
-	groupLabels := make([]string, 0, len(ep.crrGroups))
-	for l := range ep.crrGroups {
-		groupLabels = append(groupLabels, l)
-	}
-	sort.Strings(groupLabels)
-	groupRows := make(map[string]math.Extent2D)
-	for _, l := range groupLabels {
-		groupRows[l] = row(strings.ToUpper(l), blackBg, ep.crrGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ep.crrGroups[l].Color]), 0, 100))), false)
-	}
-	// Draw border around the entire menu
-	p0 := origin
-	p1 := [2]float32{origin[0] + width, origin[1]}
-	p2 := [2]float32{origin[0] + width, cursor[1]}
-	p3 := [2]float32{origin[0], cursor[1]}
-	ld.AddLineLoop(renderer.RGB{R: 1, G: 1, B: 1}, [][2]float32{p0, p1, p2, p3})
-
-	// Create a pane extent for the entire menu. If clicked outside, close the menu.
-	menuExtent := math.Extent2D{
-		P0: p3,
-		P1: p1,
+		rtBg = baseBg
 	}
 
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
-		if !menuExtent.Inside(mouse.Pos) {
-			ep.crrMenuOpen = false
-		}
-	}
-
-	trid.GenerateCommands(cb)
-	ld.GenerateCommands(cb)
-	td.GenerateCommands(cb)
-
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
-		// O/T
-		if rt.Inside(mouse.Pos) {
+	rows := []ERAMMenuItem{
+		{Label: rtLabel, BgColor: rtBg, Color: textColor, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
 			ps.CRR.Opaque = !ps.CRR.Opaque
-			return
-		}
-		if rb.Inside(mouse.Pos) {
+			return false
+		}},
+		{Label: "BORDER", BgColor: baseBg, Color: textColor, OnClick: func(ct ERAMMenuClickType) bool {
 			ps.CRR.ShowBorder = !ps.CRR.ShowBorder
-			return
-		}
-		if rLines.Inside(mouse.Pos) {
-			if mouse.Clicked[platform.MouseButtonPrimary] {
+			return false
+		}},
+		{Label: "LINES " + strconv.Itoa(ps.CRR.Lines), BgColor: greenBg, Color: textColor, OnClick: func(ct ERAMMenuClickType) bool {
+			if ct == MenuClickPrimary {
 				ps.CRR.Lines = int(math.Clamp(float32(ps.CRR.Lines-1), 1, 100))
 			} else {
 				ps.CRR.Lines = int(math.Clamp(float32(ps.CRR.Lines+1), 1, 100))
 			}
-			return
-		}
-		if rFont.Inside(mouse.Pos) {
-			if mouse.Clicked[platform.MouseButtonPrimary] {
+			return false
+		}},
+		{Label: "FONT " + strconv.Itoa(ps.CRR.Font), BgColor: greenBg, Color: textColor, OnClick: func(ct ERAMMenuClickType) bool {
+			if ct == MenuClickPrimary {
 				ps.CRR.Font--
 				if ps.CRR.Font < 1 {
 					ps.CRR.Font = 4
@@ -813,46 +634,155 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width flo
 					ps.CRR.Font = 1
 				}
 			}
-			return
-		}
-		if rBright.Inside(mouse.Pos) {
-			if mouse.Clicked[platform.MouseButtonPrimary] {
+			return false
+		}},
+		{Label: "BRIGHT " + strconv.Itoa(ps.CRR.Bright), BgColor: greenBg, Color: textColor, OnClick: func(ct ERAMMenuClickType) bool {
+			if ct == MenuClickPrimary {
 				ps.CRR.Bright = int(math.Clamp(float32(ps.CRR.Bright-1), 0, 100))
 			} else {
 				ps.CRR.Bright = int(math.Clamp(float32(ps.CRR.Bright+1), 0, 100))
 			}
-			return
-		}
-		if rList.Inside(mouse.Pos) {
+			return false
+		}},
+		{Label: "LIST", BgColor: baseBg, Color: textColor, OnClick: func(ct ERAMMenuClickType) bool {
 			ps.CRR.ListMode = !ps.CRR.ListMode
-			return
-		}
-		if rColor.Inside(mouse.Pos) {
-			// Adjust brightness of selected color
-			if mouse.Clicked[platform.MouseButtonPrimary] {
-				ps.CRR.ColorBright[ps.CRR.SelectedColor] = int(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]-1), 0, 100))
-			} else {
-				ps.CRR.ColorBright[ps.CRR.SelectedColor] = int(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]+1), 0, 100))
-			}
-			return
-		}
-		// Swatch select
-		for _, s := range swatches {
-			if s.box.Inside(mouse.Pos) {
-				ps.CRR.SelectedColor = s.c
-				return
-			}
-		}
-		// Assign color to group
-		for label, ex := range groupRows {
-			if ex.Inside(mouse.Pos) {
-				if g := ep.crrGroups[label]; g != nil {
-					g.Color = ps.CRR.SelectedColor
+			return false
+		}},
+		{Label: "COLOR " + strconv.Itoa(ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: blackBg,
+			Color: CRRGreen.BrightRGB(radar.Brightness(90)), OnClick: func(ct ERAMMenuClickType) bool {
+				if ct == MenuClickPrimary {
+					ps.CRR.ColorBright[ps.CRR.SelectedColor] = int(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]-1), 0, 100))
+				} else {
+					ps.CRR.ColorBright[ps.CRR.SelectedColor] = int(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]+1), 0, 100))
 				}
-				return
-			}
-		}
+				return false
+			}},
 	}
+
+	// Sort group labels for the custom content closure below.
+	groupLabels := make([]string, 0, len(ep.CRRGroups))
+	for l := range ep.CRRGroups {
+		groupLabels = append(groupLabels, l)
+	}
+	sort.Strings(groupLabels)
+
+	cfg := ERAMMenuConfig{
+		Title:                 "CRR",
+		OnClose:               func() { ep.crrMenuOpen = false },
+		Width:                 width,
+		ShowBorder:            true,
+		BorderColor:           renderer.RGB{R: 1, G: 1, B: 1},
+		DismissOnClickOutside: true,
+		Rows:                  rows,
+
+		// Color swatches + group label rows drawn between the static rows and
+		// the menu border, preserving the original visual order.
+		CustomContent: func(cursor [2]float32, w float32,
+			trid *renderer.ColoredTrianglesDrawBuilder,
+			ld *renderer.ColoredLinesDrawBuilder,
+			td *renderer.TextDrawBuilder,
+			mouse *platform.MouseState) [2]float32 {
+
+			itemH := float32(18)
+			font := ep.ERAMToolbarFont()
+
+			// Color swatches
+			swCols := 2
+			swColors := []CRRColor{CRRGreen, CRRMagenta, CRRWhite, CRRAmber}
+			swRows := (len(swColors) + swCols - 1) / swCols
+			swH := itemH
+			swatchW := float32(60)
+			swatchH := float32(12)
+			swatchGap := float32(8)
+
+			totalSwatchWidth := swatchW*float32(swCols) + swatchGap*float32(swCols-1)
+			startX := cursor[0] + (w-totalSwatchWidth)/2
+
+			bgP0 := cursor
+			bgP1 := math.Add2f(bgP0, [2]float32{w, 0})
+			bgP2 := math.Add2f(bgP1, [2]float32{0, -float32(swRows) * swH})
+			bgP3 := math.Add2f(bgP0, [2]float32{0, -float32(swRows) * swH})
+			trid.AddQuad(bgP0, bgP1, bgP2, bgP3, blackBg)
+
+			type swatchInfo struct {
+				c   CRRColor
+				box math.Extent2D
+			}
+			var swatches []swatchInfo
+
+			for i, c := range swColors {
+				rowIdx := i / swCols
+				colIdx := i % swCols
+				x0 := startX + float32(colIdx)*(swatchW+swatchGap)
+				yTop := cursor[1] - float32(rowIdx)*swH
+				yOffset := (swH - swatchH) / 2
+				sp0 := [2]float32{x0, yTop - yOffset}
+				sp1 := [2]float32{x0 + swatchW, yTop - yOffset}
+				sp2 := [2]float32{x0 + swatchW, yTop - yOffset - swatchH}
+				sp3 := [2]float32{x0, yTop - yOffset - swatchH}
+				trid.AddQuad(sp0, sp1, sp2, sp3, c.BrightRGB(radar.Brightness(ps.CRR.ColorBright[c])))
+				if ps.CRR.SelectedColor == c {
+					ld.AddLineLoop(renderer.RGB{R: 1, G: 1, B: 1}, [][2]float32{sp0, sp1, sp2, sp3})
+				}
+				swatches = append(swatches, swatchInfo{
+					c:   c,
+					box: math.Extent2D{P0: [2]float32{sp3[0], sp2[1]}, P1: [2]float32{sp1[0], sp0[1]}},
+				})
+			}
+			cursor = math.Add2f(cursor, [2]float32{0, -float32(swRows) * swH})
+
+			// Group label rows
+			dimColor := eramGray.Scale(.25)
+			brightColor := eramGray.Scale(.8)
+
+			groupExtents := make(map[string]math.Extent2D)
+			for _, l := range groupLabels {
+				rp0 := cursor
+				rp1 := math.Add2f(cursor, [2]float32{w, 0})
+				rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
+				rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
+				trid.AddQuad(rp0, rp1, rp2, rp3, blackBg)
+				style := renderer.TextStyle{Font: font,
+					Color: ep.CRRGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ep.CRRGroups[l].Color]), 0, 100)))}
+				td.AddText(strings.ToUpper(l), math.Add2f(rp0, [2]float32{4, -itemH + 12}), style)
+				cursor = rp3
+				extent := math.Extent2D{P0: rp3, P1: rp1}
+				groupExtents[l] = extent
+
+				hovered := mouse != nil && extent.Inside(mouse.Pos)
+				if hovered {
+					ld.AddLine(rp0, rp1, brightColor)
+					ld.AddLine(rp3, rp2, brightColor)
+					ld.AddLine(rp0, rp3, brightColor)
+					ld.AddLine(rp1, rp2, brightColor)
+				} else {
+					ld.AddLine(rp3, rp2, dimColor)
+				}
+			}
+
+			// Click handling for swatches and group labels
+			if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
+				for _, s := range swatches {
+					if mouse != nil && s.box.Inside(mouse.Pos) {
+						ps.CRR.SelectedColor = s.c
+						return cursor
+					}
+				}
+				for _, l := range groupLabels {
+					if mouse != nil && groupExtents[l].Inside(mouse.Pos) {
+						if g := ep.CRRGroups[l]; g != nil {
+							g.Color = ps.CRR.SelectedColor
+						}
+						return cursor
+					}
+				}
+			}
+
+			return cursor
+		},
+	}
+
+	ep.DrawERAMMenu(ctx, transforms, cb, origin, cfg)
 }
 
 // drawCRRFixes draws clickable CRR fix labels when enabled under ATC TOOLS.
@@ -870,13 +800,13 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 	ep.crrFixRects = make(map[string]math.Extent2D)
 
 	// Show existing CRR groups as neon-green asterisk plus label at group location.
-	fixLabels := make([]string, 0, len(ep.crrGroups))
-	for l := range ep.crrGroups {
+	fixLabels := make([]string, 0, len(ep.CRRGroups))
+	for l := range ep.CRRGroups {
 		fixLabels = append(fixLabels, l)
 	}
 	sort.Strings(fixLabels)
 	for _, l := range fixLabels {
-		g := ep.crrGroups[l]
+		g := ep.CRRGroups[l]
 		if g == nil {
 			continue
 		}
@@ -902,7 +832,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 	td.GenerateCommands(cb)
 
 	// Handle click to seed LF if input is empty
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) && len(ep.Input) == 0 {
+	if mouse := ctx.Mouse; (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && len(ep.Input) == 0 {
 		for id, ex := range ep.crrFixRects {
 			if ex.Inside(mouse.Pos) {
 				ep.Input.Set(ps, "LF "+strings.ToUpper(id)+" ")
@@ -921,7 +851,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 // CRR group the aircraft belongs to.
 func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	if ep.crrGroups == nil || len(ep.crrGroups) == 0 {
+	if ep.CRRGroups == nil || len(ep.CRRGroups) == 0 {
 		return
 	}
 
@@ -933,10 +863,10 @@ func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeT
 	acCRR := make(map[av.ADSBCallsign]crrEntry)
 
 	for _, trk := range ep.visibleTracks(ctx) {
-		for _, g := range ep.crrGroups {
+		for _, g := range ep.CRRGroups {
 			if _, ok := g.Aircraft[trk.ADSBCallsign]; ok {
 				trkState := ep.TrackState[trk.ADSBCallsign]
-				dist := math.NMDistance2LL(trkState.track.Location, g.Location)
+				dist := math.NMDistance2LL(trkState.Track.Location, g.Location)
 				acCRR[trk.ADSBCallsign] = crrEntry{group: g, distNM: dist}
 				break // aircraft can only be in one group
 			}
@@ -964,7 +894,7 @@ func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeT
 		}
 
 		// Get position below the track target
-		location := state.track.Location
+		location := state.Track.Location
 		trackWin := transforms.WindowFromLatLongP(location)
 
 		// Position the distance text below and to the left of the track

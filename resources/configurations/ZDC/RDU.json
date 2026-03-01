@@ -1,0 +1,206 @@
+{
+    "control_positions": {
+        "1Z": {
+            "callsign": "RDU_W_TWR",
+            "frequency": 119300,
+            "radio_name": "Raleigh Tower"
+        },
+        "1T": {
+            "callsign": "RDU_E_TWR",
+            "frequency": 127450,
+            "radio_name": "Raleigh Tower"
+        },
+        "1N": {
+            "callsign": "RDU_N_DEP",
+            "frequency": 132350,
+            "radio_name": "Raleigh Departure"
+        },
+        "1S": {
+            "callsign": "RDU_S_DEP",
+            "frequency": 125300,
+            "radio_name": "Raleigh Departure"
+        },
+        "1E": {
+            "callsign": "RDU_E_APP",
+            "frequency": 124950,
+            "radio_name": "Raleigh Approach"
+        },
+        "1W": {
+            "callsign": "RDU_W_APP",
+            "frequency": 128300,
+            "radio_name": "Raleigh Approach"
+        },
+        "1U": {
+            "callsign": "RDU_U_APP",
+            "frequency": 124800,
+            "radio_name": "Raleigh Approach"
+        },
+        "1Y": {
+            "callsign": "RDU_Y_APP",
+            "frequency": 135150,
+            "radio_name": "Raleigh Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "ALDAN4": "1W",
+                    "BLOGS3": "1E",
+                    "DMSTR2": "1W",
+                    "TAQLE2": "1E"
+                },
+                "departure_assignments": {
+                    "KRDU": "1N"
+                },
+                "default_consolidation": {
+                    "1E": [
+                        "1N",
+                        "1W"
+                    ]
+                }
+            }
+        },
+        "center": "KRDU",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "RDUNOCA",
+                    "description": "RDU CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "N035.42.46.007,W079.11.12.637",
+                        "N035.35.44.146,W079.02.38.999",
+                        "N036.05.24.893,W078.25.34.487",
+                        "N036.09.55.596,W078.31.03.363"
+                    ]
+                }
+            ]
+        },
+        "scratchpads": {
+            "BOUSY": "BEX",
+            "BEXGO": "BEX",
+            "DAWTS": "HKZ",
+            "HOOKZ": "HKZ",
+            "FEBEL": "HRC",
+            "HURIC": "HRC",
+            "DBRAH": "LWD",
+            "DANCO": "LWD",
+            "LWOOD": "LWD",
+            "CARML": "OXF",
+            "OXFRD": "OXF",
+            "ROZBO": "ROZ",
+            "SHPRD": "SHP"
+        },
+        "significant_points": {
+            "BEXGO": {},
+            "BOUSY": {},
+            "CARML": {},
+            "DANCO": {},
+            "DAWTS": {},
+            "DBRAH": {},
+            "FEBEL": {},
+            "HOOKZ": {},
+            "HURIC": {},
+            "LWOOD": {},
+            "OXFRD": {},
+            "ROZBO": {},
+            "SHPRD": {}
+        },
+        "video_map_file": "videomaps/ZDC-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "LWOOD",
+                    "DBRAH",
+                    "DANCO"
+                ],
+                "receiving_controller": "C32"
+            },
+            {
+                "fixes": [
+                    "OXFRD",
+                    "CARML",
+                    "BEXGO",
+                    "BOUSY",
+                    "BEXGO"
+                ],
+                "receiving_controller": "C20"
+            },
+            {
+                "fixes": [
+                    "DAWTS",
+                    "HOOKZ",
+                    "ROZBO",
+                    "SHPRD",
+                    "FEBEL",
+                    "HURIC"
+                ],
+                "receiving_controller": "C09"
+            }
+        ],
+        "coordination_fixes": {
+            "FAVKO": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "VEJAY": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "DMSTR": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "TAQLE": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "RDU NE RVM",
+                    "RDU SW RVM",
+                    "RDU MVA"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "FAY",
+            "prefix": "2"
+        },
+        {
+            "id": "GSB",
+            "prefix": "1"
+        },
+        {
+            "id": "GSO",
+            "prefix": "3"
+        },
+        {
+            "id": "ZDC",
+            "prefix": "C"
+        },
+        {
+            "id": "ZTL",
+            "prefix": "T"
+        }
+    ]
+}

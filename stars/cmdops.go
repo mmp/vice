@@ -19,7 +19,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func init() {
+func registerOpsCommands() {
 	// 5.1.1 Initiate handoff (implied)
 	// 5.1.5 Redirect handoff (implied)
 	handoffOrRedirectTrack := func(sp *STARSPane, ctx *panes.Context, tcp string, trk *sim.Track) error {
@@ -173,8 +173,8 @@ func init() {
 			dep.Released = true // hack for instant update pending the next server update
 			ctx.Client.ReleaseDeparture(dep.ADSBCallsign,
 				func(err error) { sp.displayError(err, ctx, "") })
-		} else {
-			sp.TrackState[dep.ADSBCallsign].ReleaseDeleted = true
+		} else if ts := sp.TrackState[dep.ADSBCallsign]; ts != nil {
+			ts.ReleaseDeleted = true
 		}
 		return nil
 	}

@@ -1,0 +1,358 @@
+{
+    "control_positions": {
+        "1B": {
+            "callsign": "CVG_B_DEP",
+            "frequency": 128700,
+            "radio_name": "Cincinnati Departure"
+        },
+        "1W": {
+            "callsign": "CVG_W_DEP",
+            "frequency": 126650,
+            "radio_name": "Cincinnati Approach"
+        },
+        "1L": {
+            "callsign": "CVG_L_APP",
+            "frequency": 121000,
+            "radio_name": "Cincinnati Approach"
+        },
+        "1N": {
+            "callsign": "CVG_N_APP",
+            "frequency": 123870,
+            "radio_name": "Cincinnati Approach"
+        },
+        "1S": {
+            "callsign": "CVG_S_APP",
+            "frequency": 119700,
+            "radio_name": "Cincinnati Approach"
+        },
+        "1F": {
+            "callsign": "CVG_F_APP",
+            "frequency": 124700,
+            "radio_name": "Cincinnati Approach"
+        },
+        "1V": {
+            "callsign": "CVG_V_APP",
+            "frequency": 127720,
+            "radio_name": "Cincinnati Approach"
+        }
+    },
+    "config": {
+        "center": "KCVG",
+        "allow_long_scratchpad": true,
+        "controller_configs": {
+            "1B": {},
+            "1F": {
+                "range": 33
+            },
+            "1L": {},
+            "1N": {},
+            "1S": {},
+            "1V": {
+                "range": 33
+            },
+            "1W": {
+                "flight_following_airspace": []
+            }
+        },
+        "configurations": {
+            "CVG": {
+                "departure_assignments": {
+                    "KCVG/JBNCH6": "1W",
+                    "KCVG/SILKS6": "1W",
+                    "KCVG/CHCLL6": "1W",
+                    "KCVG/LOVEY8": "1W",
+                    "KCVG/HAGOL5": "1B",
+                    "KCVG/BNGLE5": "1B",
+                    "KCVG/ROCKT4": "1B",
+                    "KCVG/GIPLE7": "1B",
+                    "KCVG/KENLN6": "1B",
+                    "KLUK": "1L"
+                },
+                "inbound_assignments": {
+                    "ARBAS RID MEEKR": "1N",
+                    "CEGRM7": "1N",
+                    "FLM": "1L",
+                    "GAVNN7": "1S",
+                    "HEDEE1": "1N",
+                    "JAKIE6": "1S",
+                    "JIMUR": "1N",
+                    "JIMUR DLAMP": "1N",
+                    "LODLL HICKS FIITZ": "1S",
+                    "MXQ": "1N",
+                    "SARGO4": "1S",
+                    "SARGO ROYYZ": "1S",
+                    "TIGRR4": "1N"
+                },
+                "default_consolidation": {
+                    "1F": [
+                        "1B",
+                        "1L",
+                        "1N",
+                        "1S",
+                        "1V",
+                        "1W"
+                    ]
+                }
+            },
+            "WDR": {
+                "departure_assignments": {
+                    "KCVG": "1W",
+                    "KLUK": "1W"
+                },
+                "inbound_assignments": {
+                    "KLUK": "1W"
+                },
+                "default_consolidation": {
+                    "1W": []
+                }
+            },
+            "NAR": {
+                "inbound_assignments": {
+                    "ARBAS RID MEEKR": "1N",
+                    "CEGRM7": "1N",
+                    "FLM": "1N",
+                    "GAVNN7": "1N",
+                    "HEDEE1": "1N",
+                    "JAKIE6": "1N",
+                    "JIMUR": "1N",
+                    "JIMUR DLAMP": "1N",
+                    "LODLL HICKS FIITZ": "1N",
+                    "MXQ": "1N",
+                    "SARGO4": "1N",
+                    "SARGO ROYYZ": "1N",
+                    "TIGRR4": "1N"
+                },
+                "default_consolidation": {
+                    "1N": []
+                }
+            },
+            "SAR": {
+                "inbound_assignments": {
+                    "ARBAS RID MEEKR": "1S",
+                    "CEGRM7": "1S",
+                    "FLM": "1S",
+                    "GAVNN7": "1S",
+                    "HEDEE1": "1S",
+                    "JAKIE6": "1S",
+                    "JIMUR": "1S",
+                    "JIMUR DLAMP": "1S",
+                    "LODLL HICKS FIITZ": "1S",
+                    "MXQ": "1S",
+                    "SARGO4": "1S",
+                    "SARGO ROYYZ": "1S",
+                    "TIGRR4": "1S"
+                },
+                "default_consolidation": {
+                    "1S": []
+                }
+            },
+            "NF": {
+                "inbound_assignments": {
+                    "CEGRM7.NFINAL": "1F",
+                    "GAVNN7.NFINAL": "1F",
+                    "JAKIE6.NFINAL": "1F",
+                    "SARGO4.NFINAL": "1F",
+                    "TIGRR4.NFINAL": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "SF": {
+                "inbound_assignments": {
+                    "CEGRM7.SFINAL": "1F",
+                    "GAVNN7.SFINAL": "1F",
+                    "JAKIE6.SFINAL": "1F",
+                    "SARGO4.SFINAL": "1F",
+                    "TIGRR4.SFINAL": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "CVGNOCA",
+                    "description": "CVG CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1,
+                    "radius": 5,
+                    "center": "KCVG"
+                }
+            ]
+        },
+        "radar_sites": {
+            "CVG": {
+                "char": "A",
+                "position": "39.04121,-84.65238",
+                "elevation": 961,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            },
+            "LUK": {
+                "char": "B",
+                "position": "39.06261,-84.252247",
+                "elevation": 474,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            }
+        },
+        "significant_points": {
+            "WWSHR": {},
+            "RIKLE": {},
+            "BNGLE": {},
+            "RAMRD": {},
+            "SKAMR": {},
+            "BUSYY": {},
+            "CHCLL": {},
+            "HAGOL": {},
+            "HVQ": {},
+            "SITTR": {},
+            "JODUB": {},
+            "GIPLE": {},
+            "PLASH": {},
+            "RINTE": {},
+            "BARKS": {},
+            "SNKPT": {},
+            "JBNCH": {},
+            "SHIPR": {},
+            "KENLN": {},
+            "CADIZ": {},
+            "HELIS": {},
+            "LOVEY": {},
+            "MACES": {},
+            "AHTIY": {},
+            "ARRAY": {},
+            "TRFWA": {},
+            "SARGO": {},
+            "ROYYZ": {},
+            "FLM": {},
+            "ARBAS": {},
+            "MEEKR": {},
+            "JIMUR": {},
+            "DLAMP": {},
+            "LODLL": {},
+            "FIITZ": {}
+        },
+        "video_map_file": "videomaps/ZID-videomaps.gob.zst",
+        "coordination_fixes": {
+            "ARIVR": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "ZID"
+                }
+            ],
+            "ICKEY": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "ZID"
+                }
+            ],
+            "HRMBE": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "ZID"
+                }
+            ],
+            "THERE": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "ZID"
+                }
+            ],
+            "JARSO": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "ZID"
+                }
+            ],
+            "MXQ": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "CMH"
+                }
+            ],
+            "ARBAS": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "CMH"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "North Base",
+                    "South Base",
+                    "CVG 5 NM MVA",
+                    "CVG Class B",
+                    "Bengals TFR",
+                    "CVG Reds TFR",
+                    "CVG ROADS",
+                    "Bearcats TFR",
+                    "CVG V Airways with Fixes",
+                    "CVG VORs",
+                    "CVG RNAVs",
+                    "CVG RNAV Fixes",
+                    "BNGLE SID",
+                    "CHCLL SID",
+                    "GIPLE SID",
+                    "HAGOL SID",
+                    "JBNCH SID",
+                    "KENLN SID",
+                    "LOVEY SID",
+                    "ROCKT SID",
+                    "CEGRM STAR",
+                    "GAVNN STAR",
+                    "JAKIE STAR",
+                    "SARGO STAR",
+                    "TIGRR STAR",
+                    "CVG ILS RWY 18L - 18C Fixes",
+                    "CVG ILS RWY 18R Fixes",
+                    "CVG SAT ILS",
+                    "CVG SAT Airports",
+                    "CVG ILS RWY 9 Fixes",
+                    "CVG ILS RWY 27 Fixes",
+                    "East Base",
+                    "West Base"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CMH",
+            "prefix": "1"
+        },
+        {
+            "id": "IND",
+            "prefix": "4"
+        },
+        {
+            "id": "LEX",
+            "prefix": "2"
+        },
+        {
+            "id": "SDF",
+            "prefix": "3"
+        },
+        {
+            "id": "ZID",
+            "prefix": "C"
+        }
+    ]
+}

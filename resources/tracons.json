@@ -531,18 +531,18 @@
     "Longitude": -111.3706,
     "Radius": 75
   },
-  "HNL": {
-    "Name": "Honolulu TRACON",
-    "ARTCC": "ZHN",
-    "Latitude": 21.3209,
-    "Longitude": -157.9266,
-    "Radius": 128
-  },
   "HLN": {
     "Name": "Helena TRACON",
     "ARTCC": "ZLC",
     "Latitude": 46.6068,
     "Longitude": -111.9832,
+    "Radius": 128
+  },
+  "HNL": {
+    "Name": "Honolulu TRACON",
+    "ARTCC": "ZHN",
+    "Latitude": 21.3209,
+    "Longitude": -157.9266,
     "Radius": 128
   },
   "HSV": {

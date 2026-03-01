@@ -1,6 +1,9 @@
 *~
 \#*#
 .DS_Store
+resources/models/*.bin
+resources/models/.synced
+resources/models/kokoro-multi-lang-v1_0/
 *.pprof
 *.prof
 /cdocs
@@ -10,12 +13,13 @@
 CLAUDE.md
 SDL2.dll
 Vice.App/
+cmd/vice/manifest.json
 __debug_*
 dump*.txt
 icon.icns
 icon.iconset/
 installer.wixobj
-manifest.json
+/manifest.json
 notarize.out
 osx/Vice*.dmg
 osx/Vice.app/
@@ -30,3 +34,7 @@ vice-logs/
 vice.exe
 vice.slog
 vice.zip
+ext/sherpa-import-libs/
+libsherpa-onnx-c-api.so
+libsherpa-onnx-cxx-api.so
+libonnxruntime.so

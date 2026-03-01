@@ -1,4 +1,4 @@
-// pkg/aviation/db.go
+// aviation/db.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -13,9 +13,11 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"io/fs"
 	"maps"
 	"net/http"
 	"os"
+	"path"
 	"slices"
 	"strconv"
 	"strings"
@@ -47,9 +49,10 @@ type StaticDatabase struct {
 	Airlines            map[string]Airline
 	MagneticGrid        MagneticGrid
 	ARTCCs              map[string]ARTCC
-	ERAMAdaptations     map[string]ERAMAdaptation
 	TRACONs             map[string]TRACON
+	ATCTs               map[string]ATCT
 	MVAs                map[string][]MVA // TRACON -> MVAs
+	ERAMAdaptations     map[string]ERAMAdaptation
 	BravoAirspace       map[string][]AirspaceVolume
 	CharlieAirspace     map[string][]AirspaceVolume
 	DeltaAirspace       map[string][]AirspaceVolume
@@ -67,21 +70,29 @@ type FAAAirport struct {
 	ARTCC      string
 }
 
-type TRACON struct {
+// Facility represents a geographic facility with a center point and radius.
+// Both TRACONs and ARTCCs use this structure for weather data handling.
+type Facility struct {
 	Name      string
-	ARTCC     string
 	Latitude  float32
 	Longitude float32
 	Radius    float32
 }
 
-func (t TRACON) Center() math.Point2LL {
-	return math.Point2LL{t.Longitude, t.Latitude}
+func (f Facility) Center() math.Point2LL {
+	return math.Point2LL{f.Longitude, f.Latitude}
 }
 
-type ARTCC struct {
-	Name string
+// ARTCC is a type alias for Facility representing an Air Route Traffic Control Center.
+type ARTCC = Facility
+
+// TRACON represents a Terminal Radar Approach Control facility.
+type TRACON struct {
+	Facility
+	ARTCC string
 }
+
+type ATCT TRACON
 
 type Navaid struct {
 	Id       string
@@ -162,9 +173,46 @@ func (d StaticDatabase) LookupAirport(name string) (FAAAirport, bool) {
 			return ap, true
 		} else if ap, ok := d.Airports["P"+name]; ok {
 			return ap, true
+		} else if ap, ok := d.Airports["T"+name]; ok {
+			return ap, true
 		}
 	}
 	return FAAAirport{}, false
+}
+
+// LookupFacility returns a Facility for the given id, checking
+// TRACONs, ATCTs, and ARTCCs.
+func (d StaticDatabase) LookupFacility(id string) (Facility, bool) {
+	if tracon, ok := d.TRACONs[id]; ok {
+		return tracon.Facility, true
+	}
+	if atct, ok := d.ATCTs[id]; ok {
+		return atct.Facility, true
+	}
+	if artcc, ok := d.ARTCCs[id]; ok {
+		return artcc, true
+	}
+	return Facility{}, false
+}
+
+// IsFacility returns true if id is a known ARTCC, TRACON, or ATCT.
+func (d StaticDatabase) IsFacility(id string) bool {
+	return d.IsARTCC(id) || d.IsTRACON(id) || d.IsATCT(id)
+}
+
+func (d StaticDatabase) IsARTCC(id string) bool {
+	_, ok := d.ARTCCs[id]
+	return ok
+}
+
+func (d StaticDatabase) IsTRACON(id string) bool {
+	_, ok := d.TRACONs[id]
+	return ok
+}
+
+func (d StaticDatabase) IsATCT(id string) bool {
+	_, ok := d.ATCTs[id]
+	return ok
 }
 
 type AircraftPerformance struct {
@@ -282,7 +330,7 @@ func InitDB() {
 	var hpfEnroute map[string][]Hold
 	wg.Go(func() { hpfEnroute = parseHPF() })
 	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
-	wg.Go(func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs() })
+	wg.Go(func() { db.ARTCCs, db.TRACONs, db.ATCTs = parseFacilities() })
 	wg.Go(func() { db.MVAs = parseMVAs() })
 	wg.Go(func() { db.ERAMAdaptations = parseAdaptations() })
 	wg.Go(func() {
@@ -374,12 +422,20 @@ func mungeCSV(filename string, r io.Reader, fields []string, callback func([]str
 func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 	airports := make(map[string]FAAAirport)
 
-	// FAA database
-	r := util.LoadResource("airports.csv.zst") // https://ourairports.com/data/
+	// https://ourairports.com/data/
+	// Only load airports that have ICAO gps_codes so that we don't
+	// pick up minor foreign airports with local_codes that conflict
+	// with US fix/VOR names.
+	r := util.LoadResource("airports.csv.zst")
 	defer r.Close()
 	mungeCSV("airports", r,
-		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "local_code", "name", "iso_country", "type"},
+		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "name", "iso_country", "type"},
 		func(s []string) {
+			id := s[3] // gps_code
+			if id == "" || s[6] == "closed" {
+				return
+			}
+
 			atof := func(s string) float64 {
 				v, err := util.Atof(s)
 				if err != nil {
@@ -388,29 +444,14 @@ func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 				return v
 			}
 
-			if s[7] == "closed" { // type == closed
-				return
-			}
-
 			elevation := float64(0)
 			if s[2] != "" && s[2] != "NA" {
 				elevation = atof(s[2])
 			}
-			loc := math.Point2LL{float32(atof(s[1])), float32(atof(s[0]))}
-			id := util.Select(s[3] != "", s[3], s[4])
 
-			// There are some foreign airports with 5-character ids; make
-			// sure not to include them since they can conflict with US fix
-			// names.
-			if (len(id) == 3 || len(id) == 4) && id != "4V4" { // Memory hole the rw 4V4 to make way for AAC
-				ap := FAAAirport{Id: id, Name: s[5], Country: s[6], Location: loc, Elevation: int(elevation)}
-				// US-based takes priority in case of a conflict. When
-				// there are multiple US-based airports with the same id
-				// (e.g. 5MO), then the last one we see takes precedence.
-				if _, ok := airports[id]; !ok || ap.Country == "US" {
-					airports[id] = ap
-				}
-			}
+			loc := math.Point2LL{float32(atof(s[1])), float32(atof(s[0]))}
+			ap := FAAAirport{Id: id, Name: s[4], Country: s[5], Location: loc, Elevation: int(elevation)}
+			airports[id] = ap
 		})
 
 	// Custom airports/runways
@@ -724,32 +765,6 @@ func parseMagneticGrid() MagneticGrid {
 	return mg
 }
 
-func parseAdaptations() map[string]ERAMAdaptation {
-	adaptations := make(map[string]ERAMAdaptation)
-
-	r := util.LoadResource("adaptations.json")
-	defer r.Close()
-	if err := util.UnmarshalJSON(r, &adaptations); err != nil {
-		fmt.Fprintf(os.Stderr, "adaptations.json: %v\n", err)
-		os.Exit(1)
-	}
-
-	// Wire up names in the structs
-	for artcc, adapt := range adaptations {
-		adapt.ARTCC = artcc
-
-		for fix, fixes := range adapt.CoordinationFixes {
-			for i := range fixes {
-				fixes[i].Name = fix
-			}
-		}
-
-		adaptations[artcc] = adapt
-	}
-
-	return adaptations
-}
-
 func (mg *MagneticGrid) Lookup(p math.Point2LL) (float32, error) {
 	if p[0] < mg.MinLongitude || p[0] > mg.MaxLongitude ||
 		p[1] < mg.MinLatitude || p[1] > mg.MaxLatitude {
@@ -957,7 +972,7 @@ func parseMVAs() map[string][]MVA {
 	return mvas
 }
 
-func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
+func parseFacilities() (map[string]ARTCC, map[string]TRACON, map[string]ATCT) {
 	ar := util.LoadResource("artccs.json")
 	defer ar.Close()
 	var artccs map[string]ARTCC
@@ -986,7 +1001,76 @@ func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
 		}
 	}
 
-	return artccs, tracons
+	at := util.LoadResource("atcts.json")
+	defer at.Close()
+	var atcts map[string]ATCT
+	if err := util.UnmarshalJSON(at, &atcts); err != nil {
+		fmt.Fprintf(os.Stderr, "atcts.json: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Validate that all of the ATCT ARTCCs are known.
+	for name, atct := range atcts {
+		if _, ok := artccs[atct.ARTCC]; !ok {
+			fmt.Fprintln(os.Stderr, atct.ARTCC+": ARTCC unknown for ATCT "+name)
+			os.Exit(1)
+		}
+	}
+
+	return artccs, tracons, atcts
+}
+
+func parseAdaptations() map[string]ERAMAdaptation {
+	adaptations := make(map[string]ERAMAdaptation)
+
+	resourcesFS := util.GetResourcesFS()
+	entries, err := fs.ReadDir(resourcesFS, "configurations")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "configurations directory: %v\n", err)
+		os.Exit(1)
+	}
+
+	type artccConfig struct {
+		StarsConfig struct {
+			CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
+		} `json:"config"`
+	}
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		artcc := entry.Name()
+		if len(artcc) != 3 || artcc[0] != 'Z' {
+			continue
+		}
+
+		configPath := path.Join("configurations", artcc, artcc+".json")
+		r := util.LoadResource(configPath)
+
+		var config artccConfig
+		if err := util.UnmarshalJSON(r, &config); err != nil {
+			r.Close()
+			fmt.Fprintf(os.Stderr, "%s: %v\n", configPath, err)
+			os.Exit(1)
+		}
+		r.Close()
+
+		adapt := ERAMAdaptation{
+			ARTCC:             artcc,
+			CoordinationFixes: config.StarsConfig.CoordinationFixes,
+		}
+
+		for fix, fixes := range adapt.CoordinationFixes {
+			for i := range fixes {
+				fixes[i].Name = fix
+			}
+		}
+
+		adaptations[artcc] = adapt
+	}
+
+	return adaptations
 }
 
 func parseAirspace(filename string) map[string][]AirspaceVolume {
@@ -1124,17 +1208,20 @@ func (t *TFRCache) Sync(timeout time.Duration, lg *log.Logger) {
 func (t *TFRCache) TFRsForTRACON(tracon string, lg *log.Logger) []TFR {
 	t.Sync(3*time.Second, lg)
 
-	if tr, ok := DB.TRACONs[tracon]; !ok {
-		return nil
+	var artcc string
+	if tr, ok := DB.TRACONs[tracon]; ok {
+		artcc = tr.ARTCC
 	} else {
-		var tfrs []TFR
-		for _, tfr := range util.SortedMap(t.TFRs) {
-			if tfr.ARTCC == tr.ARTCC {
-				tfrs = append(tfrs, tfr)
-			}
-		}
-		return tfrs
+		return nil
 	}
+
+	var tfrs []TFR
+	for _, tfr := range util.SortedMap(t.TFRs) {
+		if tfr.ARTCC == artcc {
+			tfrs = append(tfrs, tfr)
+		}
+	}
+	return tfrs
 }
 
 type TFRListJSON struct {
@@ -1386,61 +1473,6 @@ func decodeTFRXML(url string, r io.Reader, lg *log.Logger) (TFR, error) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
-// CWTApproachSeparation returns the required separation between aircraft of the two
-// given CWT categories. If 0 is returned, minimum radar separation should be used.
-func CWTApproachSeparation(front, back string) float32 {
-	if len(front) != 1 || (front[0] < 'A' && front[0] > 'I') {
-		return 10
-	}
-	if len(back) != 1 || (back[0] < 'A' && back[0] > 'I') {
-		return 10
-	}
-
-	f, b := front[0]-'A', back[0]-'A'
-
-	// 7110.126B TBL 5-5-2
-	cwtOnApproachLookUp := [9][9]float32{ // [front][back]
-		{0, 5, 6, 6, 7, 7, 7, 8, 8},       // Behind A
-		{0, 3, 4, 4, 5, 5, 5, 5, 6},       // Behind B
-		{0, 0, 0, 0, 3.5, 3.5, 3.5, 5, 6}, // Behind C
-		{0, 3, 4, 4, 5, 5, 5, 6, 6},       // Behind D
-		{0, 0, 0, 0, 0, 0, 0, 0, 4},       // Behind E
-		{0, 0, 0, 0, 0, 0, 0, 0, 4},       // Behind F
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind G
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind H
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind I
-	}
-	return cwtOnApproachLookUp[f][b]
-}
-
-// CWTDirectlyBehindSeparation returns the required separation between
-// aircraft of the two given CWT categories. If 0 is returned, minimum
-// radar separation should be used.
-func CWTDirectlyBehindSeparation(front, back string) float32 {
-	if len(front) != 1 || (front[0] < 'A' && front[0] > 'I') {
-		return 10
-	}
-	if len(back) != 1 || (back[0] < 'A' && back[0] > 'I') {
-		return 10
-	}
-
-	f, b := front[0]-'A', back[0]-'A'
-
-	// 7110.126B TBL 5-5-1
-	cwtBehindLookup := [9][9]float32{ // [front][back]
-		{0, 5, 6, 6, 7, 7, 7, 8, 8},       // Behind A
-		{0, 3, 4, 4, 5, 5, 5, 5, 5},       // Behind B
-		{0, 0, 0, 0, 3.5, 3.5, 3.5, 5, 5}, // Behind C
-		{0, 3, 4, 4, 5, 5, 5, 5, 5},       // Behind D
-		{0, 0, 0, 0, 0, 0, 0, 0, 4},       // Behind E
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind F
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind G
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind H
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind I
-	}
-	return cwtBehindLookup[f][b]
-}
 
 func inAirspace(airspace map[string][]AirspaceVolume, p math.Point2LL, alt int) bool {
 	for _, vols := range airspace {

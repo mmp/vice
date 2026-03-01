@@ -13,6 +13,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -29,7 +30,8 @@ type DynamicState struct {
 
 	SimTime time.Time // this is our fake time--accounting for pauses & simRate..
 
-	METAR map[string]wx.METAR
+	METAR      map[string]wx.METAR
+	ATISLetter map[string]string // airport ICAO -> single letter "A"-"Z"
 
 	LaunchConfig LaunchConfig
 
@@ -81,6 +83,8 @@ type CommonState struct {
 
 	SimDescription string
 
+	HandoffIDs []HandoffID
+
 	VideoMapLibraryHash []byte
 }
 
@@ -113,6 +117,7 @@ type UserState struct {
 type StateUpdate struct {
 	DynamicState
 	DerivedState
+	FlightStripACIDs []ACID
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -171,6 +176,7 @@ func makeDerivedState(s *Sim) DerivedState {
 			FiledAltitude:             ac.FlightPlan.Altitude,
 			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
+			ClearedForApproach:        ac.Nav.Approach.Cleared,
 			Approach:                  approach,
 			Fixes:                     ac.GetSTTFixes(),
 			SID:                       ac.SID,
@@ -180,6 +186,10 @@ func makeDerivedState(s *Sim) DerivedState {
 			MissingFlightPlan:         ac.MissingFlightPlan,
 			ATPAVolume:                ac.ATPAVolume(),
 			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
+		}
+
+		if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
+			rt.CWTCategory = perf.Category.CWT
 		}
 
 		for _, wp := range ac.Nav.Waypoints {
@@ -208,7 +218,7 @@ func makeDerivedState(s *Sim) DerivedState {
 }
 
 func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model,
-	metar map[string][]wx.METAR, lg *log.Logger) *CommonState {
+	metar map[string][]wx.METAR, r *rand.Rand, lg *log.Logger) *CommonState {
 	// Roll back the start time to account for prespawn
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
 
@@ -216,7 +226,8 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		DynamicState: DynamicState{
 			CurrentConsolidation: make(map[TCW]*TCPConsolidation),
 
-			METAR: make(map[string]wx.METAR),
+			METAR:      make(map[string]wx.METAR),
+			ATISLetter: make(map[string]string),
 
 			LaunchConfig: config.LaunchConfig,
 
@@ -251,13 +262,16 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
 		SimDescription:    config.Description,
+
+		HandoffIDs: config.HandoffIDs,
 	}
 
-	// Grab initial METAR for each airport
+	// Grab initial METAR for each airport and assign initial ATIS letters
 	for ap, m := range metar {
 		if len(m) > 0 {
 			ss.METAR[ap] = m[0]
 		}
+		ss.ATISLetter[ap] = string(rune('A' + r.Intn(26)))
 	}
 
 	if manifest != nil {

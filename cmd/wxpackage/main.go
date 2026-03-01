@@ -8,6 +8,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -23,12 +24,16 @@ import (
 	"cloud.google.com/go/storage"
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
+	"google.golang.org/api/option"
 )
 
 var (
 	dateRange = flag.String("dates", "", "Date range to package (format: 2025-08-01/2025-09-01). If not specified, all available data is used.")
 	outputDir = flag.String("output", "resources/wx", "Output directory for packaged weather data")
 )
+
+// gcsReadTimeout is the per-operation timeout for individual GCS reads.
+const gcsReadTimeout = 2 * time.Minute
 
 func main() {
 	flag.Parse()
@@ -61,7 +66,7 @@ func main() {
 
 	av.InitDB()
 
-	// Load scenarios to find active airports/TRACONs
+	// Load scenarios to find active airports and facilities (TRACONs + ARTCCs)
 	var e util.ErrorLogger
 	lg := log.New(false, "warn", "")
 	scenarioGroups, _, _, _ := server.LoadScenarioGroups("", "", true /* skipVideoMaps */, &e, lg)
@@ -70,16 +75,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Extract all active airports from scenarios
 	airports := make(map[string]bool)
-	tracons := make(map[string]bool)
+	facilities := make(map[string]bool)
 
-	for tracon, scenarios := range scenarioGroups {
-		if tracon == "" { // ERAM scenario; ignore for now
-			continue
-		}
-
-		tracons[tracon] = true
+	for facility, scenarios := range scenarioGroups {
+		facilities[facility] = true
 		for _, sg := range scenarios {
 			for icao := range sg.Airports {
 				airports[icao] = true
@@ -87,11 +87,25 @@ func main() {
 		}
 	}
 
-	fmt.Printf("Found %d active airports across %d TRACONs\n", len(airports), len(tracons))
+	// Also add all facilities from the atmos lists (some may not have
+	// scenarios yet but we still want their data bundled).
+	for _, tracon := range wx.AtmosTRACONs {
+		facilities[tracon] = true
+	}
+	for _, artcc := range wx.AtmosARTCCs {
+		facilities[artcc] = true
+	}
+
+	fmt.Printf("Found %d active airports across %d facilities (TRACONs + ARTCCs)\n", len(airports), len(facilities))
 
 	// Initialize GCS client
 	ctx := context.Background()
-	client, err := storage.NewClient(ctx)
+	credsJSON := os.Getenv("VICE_GCS_CREDENTIALS")
+	if credsJSON == "" {
+		fmt.Fprintf(os.Stderr, "VICE_GCS_CREDENTIALS environment variable not set")
+		os.Exit(1)
+	}
+	client, err := storage.NewClient(ctx, option.WithCredentialsJSON([]byte(credsJSON)))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create GCS client: %v", err)
 		os.Exit(1)
@@ -124,8 +138,8 @@ func main() {
 	}
 
 	// Process atmospheric data
-	fmt.Printf("Processing atmospheric data for %d TRACONs\n", len(tracons))
-	if err := processAtmos(ctx, bucket, tracons, startDate, endDate, atmosDir); err != nil {
+	fmt.Printf("Processing atmospheric data for %d facilities\n", len(facilities))
+	if err := processAtmos(ctx, bucket, facilities, startDate, endDate, atmosDir); err != nil {
 		fmt.Printf("Failed to process atmospheric data: %v\n", err)
 		os.Exit(1)
 	}
@@ -133,9 +147,46 @@ func main() {
 	fmt.Printf("Weather package created successfully in %s\n", *outputDir)
 }
 
+// gcsNewReader opens a GCS object for reading with a per-operation timeout
+// and retries with exponential backoff on transient failures. The returned
+// reader's context is kept alive until Close is called.
+func gcsNewReader(ctx context.Context, bucket *storage.BucketHandle, path string) (io.ReadCloser, error) {
+	var r *storage.Reader
+	var cancel context.CancelFunc
+	err := retry(ctx, 3, 10*time.Second, func() error {
+		var readCtx context.Context
+		readCtx, cancel = context.WithTimeout(ctx, gcsReadTimeout)
+
+		var err error
+		r, err = bucket.Object(path).NewReader(readCtx)
+		if err != nil {
+			cancel()
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to read %s: %w", path, err)
+	}
+	return &readerWithCancel{ReadCloser: r, cancel: cancel}, nil
+}
+
+// readerWithCancel wraps a ReadCloser and calls cancel when closed,
+// ensuring the context stays alive for the duration of the read.
+type readerWithCancel struct {
+	io.ReadCloser
+	cancel context.CancelFunc
+}
+
+func (r *readerWithCancel) Close() error {
+	err := r.ReadCloser.Close()
+	r.cancel()
+	return err
+}
+
 func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports map[string]bool, start, end time.Time, outputDir string) error {
 	// Download the full METAR file
-	r, err := bucket.Object(wx.METARFilename).NewReader(ctx)
+	r, err := gcsNewReader(ctx, bucket, wx.METARFilename)
 	if err != nil {
 		return err
 	}
@@ -192,22 +243,37 @@ func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports ma
 	return nil
 }
 
-func processAtmos(ctx context.Context, bucket *storage.BucketHandle, tracons map[string]bool, startDate, endDate time.Time, outputDir string) error {
-	var eg errgroup.Group
+func processAtmos(ctx context.Context, bucket *storage.BucketHandle, facilities map[string]bool, startDate, endDate time.Time, outputDir string) error {
+	// Download the manifest once and share it across all workers.
+	r, err := gcsNewReader(ctx, bucket, wx.ManifestPath("atmos"))
+	if err != nil {
+		return err
+	}
+	manifest, err := wx.LoadManifest(r)
+	r.Close()
+	if err != nil {
+		return fmt.Errorf("failed to load atmos manifest: %w", err)
+	}
+
+	eg, ctx := errgroup.WithContext(ctx)
 
 	ch := make(chan string)
 	eg.Go(func() error {
-		for t := range tracons {
-			ch <- t
+		defer close(ch)
+		for fac := range facilities {
+			select {
+			case ch <- fac:
+			case <-ctx.Done():
+				return ctx.Err()
+			}
 		}
-		close(ch)
 		return nil
 	})
 
 	for range 16 { // workers
 		eg.Go(func() error {
-			for tracon := range ch {
-				if err := processTraconAtmos(ctx, bucket, tracon, startDate, endDate, outputDir); err != nil {
+			for facilityID := range ch {
+				if err := processFacilityAtmos(ctx, bucket, manifest, facilityID, startDate, endDate, outputDir); err != nil {
 					return err
 				}
 			}
@@ -218,40 +284,30 @@ func processAtmos(ctx context.Context, bucket *storage.BucketHandle, tracons map
 	return eg.Wait()
 }
 
-func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, tracon string, startDate, endDate time.Time, outputDir string) error {
+func processFacilityAtmos(ctx context.Context, bucket *storage.BucketHandle, manifest *wx.Manifest, facilityID string, startDate, endDate time.Time, outputDir string) error {
 	// Load existing atmospheric data if it exists
-	traconAtmos := wx.AtmosByTime{
+	facilityAtmos := wx.AtmosByTime{
 		SampleStacks: make(map[time.Time]*wx.AtmosSampleStack),
 	}
 
-	outputPath := filepath.Join(outputDir, tracon+".msgpack.zst")
-	traconAtmos, err := loadExistingAtmosData(outputPath)
+	outputPath := filepath.Join(outputDir, facilityID+".msgpack.zst")
+	facilityAtmos, err := loadExistingAtmosData(outputPath)
 	if err == nil {
-		fmt.Printf("Loaded existing atmospheric data for %s with %d time entries\n", tracon, len(traconAtmos.SampleStacks))
-	} else if os.IsNotExist(err) {
-		traconAtmos = wx.AtmosByTime{
+		fmt.Printf("Loaded existing atmospheric data for %s with %d time entries\n", facilityID, len(facilityAtmos.SampleStacks))
+	} else {
+		if !os.IsNotExist(err) {
+			// Corrupt file from a previous interrupted run; warn and start fresh.
+			fmt.Printf("%s: failed to load existing data (%v), starting fresh\n", facilityID, err)
+		}
+		facilityAtmos = wx.AtmosByTime{
 			SampleStacks: make(map[time.Time]*wx.AtmosSampleStack),
 		}
-	} else {
-		return err
 	}
 
-	// Read the atmos manifest to see what's available.
-	manifestPath := wx.ManifestPath("atmos")
-	manifestReader, err := bucket.Object(manifestPath).NewReader(ctx)
-	if err != nil {
-		return fmt.Errorf("failed to read manifest %s: %w", manifestPath, err)
-	}
-	manifest, err := wx.LoadManifest(manifestReader)
-	manifestReader.Close()
-	if err != nil {
-		return fmt.Errorf("failed to load manifest: %w", err)
-	}
-
-	// Get timestamps for this TRACON from the manifest
-	allTimestamps, ok := manifest.GetTimestamps(tracon)
+	// Get timestamps for this facility from the manifest
+	allTimestamps, ok := manifest.GetTimestamps(facilityID)
 	if !ok {
-		fmt.Printf("%s: no data in manifest, skipping\n", tracon)
+		fmt.Printf("%s: no data in manifest, skipping\n", facilityID)
 		return nil
 	}
 
@@ -263,42 +319,42 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 			continue
 		}
 		// Skip if we already have data for this time
-		if _, ok := traconAtmos.SampleStacks[ts]; ok {
+		if _, ok := facilityAtmos.SampleStacks[ts]; ok {
 			continue
 		}
 		timestampsToDownload = append(timestampsToDownload, ts)
 	}
 
 	if len(timestampsToDownload) == 0 {
-		fmt.Printf("%s: no new data to download (have %d entries already)\n", tracon, len(traconAtmos.SampleStacks))
+		fmt.Printf("%s: no new data to download (have %d entries already)\n", facilityID, len(facilityAtmos.SampleStacks))
 		return nil
 	}
 
 	fmt.Printf("%s: downloading %d atmos objects (have %d already, manifest has %d total)\n",
-		tracon, len(timestampsToDownload), len(traconAtmos.SampleStacks), len(allTimestamps))
+		facilityID, len(timestampsToDownload), len(facilityAtmos.SampleStacks), len(allTimestamps))
 
 	// Download and process atmos data at each timestamp
 	for _, timestamp := range timestampsToDownload {
-		objectPath := wx.BuildObjectPath("atmos", tracon, timestamp)
+		objectPath := wx.BuildObjectPath("atmos", facilityID, timestamp)
 
 		// Download and process this atmos file
-		r, err := bucket.Object(objectPath).NewReader(ctx)
+		r, err := gcsNewReader(ctx, bucket, objectPath)
 		if err != nil {
-			return fmt.Errorf("failed to read %s: %w", objectPath, err)
+			return err
 		}
 
 		// Decompress and deserialize
 		zr, err := zstd.NewReader(r)
 		if err != nil {
 			r.Close()
-			return err
+			return fmt.Errorf("%s: zstd decompress %s: %w", facilityID, objectPath, err)
 		}
 
 		var atmosSOA wx.AtmosByPointSOA
 		if err := msgpack.NewDecoder(zr).Decode(&atmosSOA); err != nil {
 			zr.Close()
 			r.Close()
-			return err
+			return fmt.Errorf("%s: msgpack decode %s: %w", facilityID, objectPath, err)
 		}
 		zr.Close()
 		r.Close()
@@ -306,13 +362,13 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 		// Convert SOA to regular Atmos object and store the averaged stack
 		atmos := atmosSOA.ToAOS()
 		_, avgStack := atmos.Average()
-		traconAtmos.SampleStacks[timestamp] = avgStack
+		facilityAtmos.SampleStacks[timestamp] = avgStack
 	}
 
-	fmt.Printf("%s: processed %d entries\n", tracon, len(traconAtmos.SampleStacks))
+	fmt.Printf("%s: processed %d entries\n", facilityID, len(facilityAtmos.SampleStacks))
 
 	// Convert AtmosByTime to SOA format for storage
-	traconAtmosSOA, err := traconAtmos.ToSOA()
+	facilityAtmosSOA, err := facilityAtmos.ToSOA()
 	if err != nil {
 		return err
 	}
@@ -325,7 +381,7 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 	zw, err := zstd.NewWriter(f)
 	if err != nil {
 		return err
-	} else if err := msgpack.NewEncoder(zw).Encode(traconAtmosSOA); err != nil {
+	} else if err := msgpack.NewEncoder(zw).Encode(facilityAtmosSOA); err != nil {
 		return err
 	} else if err := zw.Close(); err != nil {
 		return err
@@ -333,7 +389,7 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 		return err
 	}
 
-	fmt.Printf("Wrote atmospheric data for %s\n", tracon)
+	fmt.Printf("Wrote atmospheric data for %s\n", facilityID)
 
 	return nil
 }
@@ -360,4 +416,22 @@ func loadExistingAtmosData(path string) (wx.AtmosByTime, error) {
 
 	// Convert SOA back to AtmosByTime
 	return atmosSOA.ToAOS(), nil
+}
+
+// retry calls fn up to attempts times with exponential backoff starting at sleep.
+// It stops early if ctx is cancelled.
+func retry(ctx context.Context, attempts int, sleep time.Duration, fn func() error) error {
+	var err error
+	for range attempts {
+		if err = fn(); err == nil {
+			return nil
+		}
+		if ctx.Err() != nil {
+			return err
+		}
+		fmt.Printf("retryable error (will retry in %s): %v\n", sleep, err)
+		time.Sleep(sleep)
+		sleep *= 2
+	}
+	return err
 }

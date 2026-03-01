@@ -1,0 +1,273 @@
+{
+    "control_positions": {
+        "1H": {
+            "callsign": "HIO Tower",
+            "frequency": 119300,
+            "radio_name": "Hillsboro Tower"
+        },
+        "1W": {
+            "callsign": "PDX Tower North",
+            "frequency": 118700,
+            "radio_name": "Portland Tower"
+        },
+        "1O": {
+            "callsign": "PDX Tower South",
+            "frequency": 123775,
+            "radio_name": "Portland Tower"
+        },
+        "1Y": {
+            "callsign": "TTD_TWR",
+            "frequency": 120900,
+            "radio_name": "Troutdale Tower"
+        },
+        "1N": {
+            "callsign": "North (1N)",
+            "frequency": 124350,
+            "radio_name": "Portland Approach"
+        },
+        "1D": {
+            "callsign": "Hood (1D)",
+            "frequency": 118100,
+            "radio_name": "Portland Approach"
+        },
+        "1F": {
+            "callsign": "Final (1F)",
+            "frequency": 126900,
+            "radio_name": "Portland Approach"
+        },
+        "1V": {
+            "callsign": "Newburg (1V)",
+            "frequency": 126000,
+            "radio_name": "Portland Approach"
+        }
+    },
+    "config": {
+        "configurations": {
+            "KPD": {
+                "inbound_assignments": {
+                    "HELNS": "1N",
+                    "HHOOD5East": "1N",
+                    "Hawaii": "1D",
+                    "KRATR2East": "1N",
+                    "OCITY3East": "1D",
+                    "TMBERS3East": "1D",
+                    "TOU": "1N",
+                    "V112.W": "1N",
+                    "V165.S": "1N"
+                },
+                "departure_assignments": {
+                    "KHIO": "1V",
+                    "KPDX": "1N",
+                    "KSLE": "1D"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1V",
+                        "1N"
+                    ]
+                }
+            },
+            "KP1": {
+                "inbound_assignments": {
+                    "HHOOD5East_Final": "1F",
+                    "KRATR2East_Final": "1F",
+                    "TMBERS3East_Final": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "KP2": {
+                "inbound_assignments": {
+                    "HHOOD5West_Final": "1F",
+                    "KRATR2West_Final": "1F",
+                    "TMBERS3West_Final": "1F"
+                },
+                "default_consolidation": {
+                    "1F": []
+                }
+            },
+            "KP3": {
+                "inbound_assignments": {
+                    "HELNS": "1N",
+                    "HHOOD5West": "1N",
+                    "Hawaii": "1D",
+                    "KRATR2West": "1N",
+                    "OCITY3West": "1D",
+                    "TMBERS3West": "1D",
+                    "TOU": "1N",
+                    "V112.W": "1N",
+                    "V165.S": "1N"
+                },
+                "departure_assignments": {
+                    "KHIO": "1V",
+                    "KPDX": "1N",
+                    "KSLE": "1D"
+                },
+                "default_consolidation": {
+                    "1D": [
+                        "1V",
+                        "1N"
+                    ]
+                }
+            }
+        },
+        "altimeters": [
+            "KPDX",
+            "KHIO",
+            "KUAO"
+        ],
+        "center": "KPDX",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "P80NOCA",
+                    "description": "P80 INHIBIT CA",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "N045.38.23.132,W122.51.08.289",
+                        "N045.42.19.736,W122.44.24.761",
+                        "N045.29.11.632,W122.13.18.788",
+                        "N045.25.43.331,W122.16.25.693",
+                        "N045.38.23.132,W122.51.08.289"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "PDX": {
+                "char": "W",
+                "position": "KPDX",
+                "elevation": 161,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "TOU": "TOU",
+            "SEA": "SEA",
+            "OLM": "OLM",
+            "YKM": "YKM",
+            "PDT": "LVA",
+            "LTJ": "LTJ",
+            "DSD": "CSM",
+            "EUG": "EUG",
+            "ONP": "ONP",
+            "UBG": "UBG",
+            "AST": "AST",
+            "OTH": "OTH",
+            "OED": "OED",
+            "LMT": "LMT",
+            "IMB": "WMY",
+            "KOATA": "WMY",
+            "SUNED": "LVA",
+            "ARRIE": "ARI",
+            "LAVAA": "LVA",
+            "COUGA": "COU",
+            "WHAMY": "WMY",
+            "CHISM": "CSM",
+            "PUHTS": "CSM",
+            "SYNKR": "CSM",
+            "JUDAH": "CSM",
+            "HRMNS": "HRM",
+            "HYJOE": "HRM",
+            "MINNE": "MNE",
+            "EASON": "MNE",
+            "FAMUK": "MNE",
+            "HISKU": "MNE",
+            "EASON.H": "BER",
+            "EUG.H": "BER",
+            "FAMUK.H": "BER",
+            "HARPR": "BER"
+        },
+        "video_map_file": "videomaps/ZSE-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "LAVAA",
+                    "YKM",
+                    "PDT",
+                    "SUNED"
+                ],
+                "receiving_controller": "C34"
+            },
+            {
+                "fixes": [
+                    "MINNE",
+                    "FAMUK",
+                    "EASON",
+                    "HISKU",
+                    "ONP",
+                    "UBG",
+                    "EUG",
+                    "OED"
+                ],
+                "receiving_controller": "C06"
+            },
+            {
+                "fixes": [
+                    "COUGA",
+                    "AST",
+                    "TOU"
+                ],
+                "receiving_controller": "C32"
+            },
+            {
+                "fixes": [
+                    "ARRIE",
+                    "OLM"
+                ],
+                "receiving_controller": "C02"
+            },
+            {
+                "fixes": [
+                    "HRMNS",
+                    "CHISM",
+                    "DSD",
+                    "WHAMY",
+                    "SYNKR",
+                    "PUHTS",
+                    "JUDAH",
+                    "IMB",
+                    "KOATA",
+                    "TIMEE"
+                ],
+                "receiving_controller": "C05"
+            }
+        ],
+        "area_configs": {
+            "1": {
+                "video_maps": [
+                    "RWY 10",
+                    "RWY 28",
+                    "3 NM BUFFER MVA",
+                    "RWY 28 FIXES",
+                    "RWY 10 FIXES",
+                    "VFRLABL",
+                    "PDX Class-C",
+                    "CASCADE RNAV SID",
+                    "WHAMY RNAV SID",
+                    "PDX HRMNS SID",
+                    "PDX LAVAA/MINNE SIDS",
+                    "RNP RWY 10R",
+                    "RNP RWY 28L",
+                    "RNP RWY 28R",
+                    "DELTA AIRSPACES",
+                    "SATFNLS",
+                    "FINAL 10",
+                    "FINAL 28"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "ZSE",
+            "prefix": "C"
+        }
+    ]
+}

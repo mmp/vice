@@ -1,0 +1,573 @@
+{
+  "time": "2026-02-05T02:01:26.814386086Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "JetBlue Forty One Ninety Four route of speed two one seven zero",
+  "whisper_duration_ms": 232.248,
+  "audio_duration_ms": 3016,
+  "processor": "GPU: AMD Radeon RX 7800 XT (16368MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "JBU4194",
+  "command": "S170",
+  "stt_aircraft": {
+    "Air Canada 11": {
+      "Callsign": "ACA11",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Boeing": "BOENG",
+        "Cord": "CORDE",
+        "Denver": "KDEN"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five left": "I5L",
+        "I L S runway three five right": "I5R",
+        "I L S runway three four right": "I4R",
+        "r-nav yankee runway three five left": "RY5L",
+        "r-nav yankee runway three five right": "RY5R",
+        "r-nav yankee runway three four right": "RY4R",
+        "r-nav zulu runway three five left": "RZ5L",
+        "r-nav zulu runway three five right": "RZ5R",
+        "r-nav zulu runway three four right": "RZ4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Be free": "BFREE",
+          "Be haapy": "BHAPY",
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Boss": "BOSSS",
+          "Breck": "BREKK",
+          "Cord": "CORDE",
+          "Eldora": "LDORA",
+          "Fluff": "FLUFF",
+          "Paas": "PAAAS",
+          "Teller": "TELLR"
+        },
+        "I5L": {
+          "Boss": "BOSSS",
+          "Carve": "KARVE",
+          "Celbi": "CELBI",
+          "Chapp": "CHAPP",
+          "Chola": "CHOLA",
+          "Copper": "CPPER",
+          "Crup": "CRUUP",
+          "Dymon": "DYMON",
+          "Eldora": "LDORA",
+          "Epic": "EPICC",
+          "Teller": "TELLR",
+          "Vail": "VAIIL"
+        },
+        "I5R": {
+          "Boss": "BOSSS",
+          "Dashy": "DASHY",
+          "Dean": "DEANE",
+          "Ditse": "DITSE",
+          "Dorry": "DORRY",
+          "Dove": "DOVVE",
+          "Drats": "DRATS",
+          "Drum": "DRUMM",
+          "Eldora": "LDORA",
+          "Fronz": "FRONZ",
+          "Purr": "PURRL",
+          "Teller": "TELLR",
+          "Vail": "VAIIL"
+        },
+        "RY4R": {
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Cadko": "CADKO",
+          "Cord": "CORDE"
+        },
+        "RY5L": {
+          "Celbi": "CELBI",
+          "Chola": "CHOLA",
+          "Crup": "CRUUP",
+          "Dapage": "DAPGE",
+          "Dymon": "DYMON"
+        },
+        "RY5R": {
+          "Dean": "DEANE",
+          "Dorry": "DORRY",
+          "Drum": "DRUMM",
+          "Fronz": "FRONZ",
+          "Noe": "NOEEE"
+        },
+        "RZ4R": {
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Cord": "CORDE",
+          "HiMom": "HIMOM",
+          "Kugln": "KUGLN",
+          "McMull": "MCMUL",
+          "Sane": "BSAYN"
+        },
+        "RZ5L": {
+          "Celbi": "CELBI",
+          "Chola": "CHOLA",
+          "Crup": "CRUUP",
+          "Dymon": "DYMON"
+        },
+        "RZ5R": {
+          "Dean": "DEANE",
+          "Dog": "DOGGG",
+          "Dorry": "DORRY",
+          "Drum": "DRUMM",
+          "Fronz": "FRONZ",
+          "Msims": "MSIMS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 34R",
+      "SID": "",
+      "STAR": "FLATI5",
+      "Altitude": 9000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 41 94": {
+      "Callsign": "JBU4194",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Bengal": "BENGL",
+        "Boeing": "BOENG",
+        "Cord": "CORDE",
+        "Denver": "KDEN"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five left": "I5L",
+        "I L S runway three five right": "I5R",
+        "I L S runway three four right": "I4R",
+        "r-nav yankee runway three five left": "RY5L",
+        "r-nav yankee runway three five right": "RY5R",
+        "r-nav yankee runway three four right": "RY4R",
+        "r-nav zulu runway three five left": "RZ5L",
+        "r-nav zulu runway three five right": "RZ5R",
+        "r-nav zulu runway three four right": "RZ4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Be free": "BFREE",
+          "Be haapy": "BHAPY",
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Boss": "BOSSS",
+          "Breck": "BREKK",
+          "Cord": "CORDE",
+          "Eldora": "LDORA",
+          "Fluff": "FLUFF",
+          "Paas": "PAAAS",
+          "Teller": "TELLR"
+        },
+        "I5L": {
+          "Boss": "BOSSS",
+          "Carve": "KARVE",
+          "Celbi": "CELBI",
+          "Chapp": "CHAPP",
+          "Chola": "CHOLA",
+          "Copper": "CPPER",
+          "Crup": "CRUUP",
+          "Dymon": "DYMON",
+          "Eldora": "LDORA",
+          "Epic": "EPICC",
+          "Teller": "TELLR",
+          "Vail": "VAIIL"
+        },
+        "I5R": {
+          "Boss": "BOSSS",
+          "Dashy": "DASHY",
+          "Dean": "DEANE",
+          "Ditse": "DITSE",
+          "Dorry": "DORRY",
+          "Dove": "DOVVE",
+          "Drats": "DRATS",
+          "Drum": "DRUMM",
+          "Eldora": "LDORA",
+          "Fronz": "FRONZ",
+          "Purr": "PURRL",
+          "Teller": "TELLR",
+          "Vail": "VAIIL"
+        },
+        "RY4R": {
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Cadko": "CADKO",
+          "Cord": "CORDE"
+        },
+        "RY5L": {
+          "Celbi": "CELBI",
+          "Chola": "CHOLA",
+          "Crup": "CRUUP",
+          "Dapage": "DAPGE",
+          "Dymon": "DYMON"
+        },
+        "RY5R": {
+          "Dean": "DEANE",
+          "Dorry": "DORRY",
+          "Drum": "DRUMM",
+          "Fronz": "FRONZ",
+          "Noe": "NOEEE"
+        },
+        "RZ4R": {
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Cord": "CORDE",
+          "HiMom": "HIMOM",
+          "Kugln": "KUGLN",
+          "McMull": "MCMUL",
+          "Sane": "BSAYN"
+        },
+        "RZ5L": {
+          "Celbi": "CELBI",
+          "Chola": "CHOLA",
+          "Crup": "CRUUP",
+          "Dymon": "DYMON"
+        },
+        "RZ5R": {
+          "Dean": "DEANE",
+          "Dog": "DOGGG",
+          "Dorry": "DORRY",
+          "Drum": "DRUMM",
+          "Fronz": "FRONZ",
+          "Msims": "MSIMS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 34R",
+      "SID": "",
+      "STAR": "SSKII4",
+      "Altitude": 10140,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 46 77": {
+      "Callsign": "SWA4677",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Be free": "BFREE",
+        "Be haapy": "BHAPY",
+        "Bengal": "BENGL",
+        "Boeing": "BOENG",
+        "Boo-boo": "BOOBU",
+        "Boss": "BOSSS",
+        "Breck": "BREKK",
+        "Cord": "CORDE",
+        "Denver": "KDEN",
+        "Eldora": "LDORA",
+        "Fluff": "FLUFF",
+        "Paas": "PAAAS",
+        "Teller": "TELLR"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five left": "I5L",
+        "I L S runway three five right": "I5R",
+        "I L S runway three four right": "I4R",
+        "r-nav yankee runway three five left": "RY5L",
+        "r-nav yankee runway three five right": "RY5R",
+        "r-nav yankee runway three four right": "RY4R",
+        "r-nav zulu runway three five left": "RZ5L",
+        "r-nav zulu runway three five right": "RZ5R",
+        "r-nav zulu runway three four right": "RZ4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Be free": "BFREE",
+          "Be haapy": "BHAPY",
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Boss": "BOSSS",
+          "Breck": "BREKK",
+          "Cord": "CORDE",
+          "Eldora": "LDORA",
+          "Fluff": "FLUFF",
+          "Paas": "PAAAS",
+          "Teller": "TELLR"
+        },
+        "I5L": {
+          "Boss": "BOSSS",
+          "Carve": "KARVE",
+          "Celbi": "CELBI",
+          "Chapp": "CHAPP",
+          "Chola": "CHOLA",
+          "Copper": "CPPER",
+          "Crup": "CRUUP",
+          "Dymon": "DYMON",
+          "Eldora": "LDORA",
+          "Epic": "EPICC",
+          "Teller": "TELLR",
+          "Vail": "VAIIL"
+        },
+        "I5R": {
+          "Boss": "BOSSS",
+          "Dashy": "DASHY",
+          "Dean": "DEANE",
+          "Ditse": "DITSE",
+          "Dorry": "DORRY",
+          "Dove": "DOVVE",
+          "Drats": "DRATS",
+          "Drum": "DRUMM",
+          "Eldora": "LDORA",
+          "Fronz": "FRONZ",
+          "Purr": "PURRL",
+          "Teller": "TELLR",
+          "Vail": "VAIIL"
+        },
+        "RY4R": {
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Cadko": "CADKO",
+          "Cord": "CORDE"
+        },
+        "RY5L": {
+          "Celbi": "CELBI",
+          "Chola": "CHOLA",
+          "Crup": "CRUUP",
+          "Dapage": "DAPGE",
+          "Dymon": "DYMON"
+        },
+        "RY5R": {
+          "Dean": "DEANE",
+          "Dorry": "DORRY",
+          "Drum": "DRUMM",
+          "Fronz": "FRONZ",
+          "Noe": "NOEEE"
+        },
+        "RZ4R": {
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Cord": "CORDE",
+          "HiMom": "HIMOM",
+          "Kugln": "KUGLN",
+          "McMull": "MCMUL",
+          "Sane": "BSAYN"
+        },
+        "RZ5L": {
+          "Celbi": "CELBI",
+          "Chola": "CHOLA",
+          "Crup": "CRUUP",
+          "Dymon": "DYMON"
+        },
+        "RZ5R": {
+          "Dean": "DEANE",
+          "Dog": "DOGGG",
+          "Dorry": "DORRY",
+          "Drum": "DRUMM",
+          "Fronz": "FRONZ",
+          "Msims": "MSIMS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 34R",
+      "SID": "",
+      "STAR": "LONGZ4",
+      "Altitude": 9682,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest one zero five": {
+      "Callsign": "SWA105",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Be free": "BFREE",
+        "Be haapy": "BHAPY",
+        "Bengal": "BENGL",
+        "Boeing": "BOENG",
+        "Boo-boo": "BOOBU",
+        "Cord": "CORDE",
+        "Crag": "CRAGG",
+        "Denver": "KDEN",
+        "Gnarly": "NARLE",
+        "Teller": "TELLR"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five left": "I5L",
+        "I L S runway three five right": "I5R",
+        "I L S runway three four right": "I4R",
+        "r-nav yankee runway three five left": "RY5L",
+        "r-nav yankee runway three five right": "RY5R",
+        "r-nav yankee runway three four right": "RY4R",
+        "r-nav zulu runway three five left": "RZ5L",
+        "r-nav zulu runway three five right": "RZ5R",
+        "r-nav zulu runway three four right": "RZ4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Be free": "BFREE",
+          "Be haapy": "BHAPY",
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Boss": "BOSSS",
+          "Breck": "BREKK",
+          "Cord": "CORDE",
+          "Eldora": "LDORA",
+          "Fluff": "FLUFF",
+          "Paas": "PAAAS",
+          "Teller": "TELLR"
+        },
+        "I5L": {
+          "Boss": "BOSSS",
+          "Carve": "KARVE",
+          "Celbi": "CELBI",
+          "Chapp": "CHAPP",
+          "Chola": "CHOLA",
+          "Copper": "CPPER",
+          "Crup": "CRUUP",
+          "Dymon": "DYMON",
+          "Eldora": "LDORA",
+          "Epic": "EPICC",
+          "Teller": "TELLR",
+          "Vail": "VAIIL"
+        },
+        "I5R": {
+          "Boss": "BOSSS",
+          "Dashy": "DASHY",
+          "Dean": "DEANE",
+          "Ditse": "DITSE",
+          "Dorry": "DORRY",
+          "Dove": "DOVVE",
+          "Drats": "DRATS",
+          "Drum": "DRUMM",
+          "Eldora": "LDORA",
+          "Fronz": "FRONZ",
+          "Purr": "PURRL",
+          "Teller": "TELLR",
+          "Vail": "VAIIL"
+        },
+        "RY4R": {
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Cadko": "CADKO",
+          "Cord": "CORDE"
+        },
+        "RY5L": {
+          "Celbi": "CELBI",
+          "Chola": "CHOLA",
+          "Crup": "CRUUP",
+          "Dapage": "DAPGE",
+          "Dymon": "DYMON"
+        },
+        "RY5R": {
+          "Dean": "DEANE",
+          "Dorry": "DORRY",
+          "Drum": "DRUMM",
+          "Fronz": "FRONZ",
+          "Noe": "NOEEE"
+        },
+        "RZ4R": {
+          "Bengal": "BENGL",
+          "Boeing": "BOENG",
+          "Boo-boo": "BOOBU",
+          "Cord": "CORDE",
+          "HiMom": "HIMOM",
+          "Kugln": "KUGLN",
+          "McMull": "MCMUL",
+          "Sane": "BSAYN"
+        },
+        "RZ5L": {
+          "Celbi": "CELBI",
+          "Chola": "CHOLA",
+          "Crup": "CRUUP",
+          "Dymon": "DYMON"
+        },
+        "RZ5R": {
+          "Dean": "DEANE",
+          "Dog": "DOGGG",
+          "Dorry": "DORRY",
+          "Drum": "DRUMM",
+          "Fronz": "FRONZ",
+          "Msims": "MSIMS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 34R",
+      "SID": "",
+      "STAR": "SSKII4",
+      "Altitude": 14657,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"JetBlue Forty One Ninety Four route of speed two one seven zero\"",
+    "[local-stt] normalized words: [jetblue 41 94 right of speed 2 1 7 0]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"jetblue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"41\" Type=1 Value=41",
+    "[local-stt]   token[2]: Text=\"94\" Type=1 Value=94",
+    "[local-stt]   token[3]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"of\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"2170\" Type=1 Value=2170",
+    "[local-stt] MatchCallsign: 7 tokens, 4 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 7 tokens, 4 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"JetBlue 41 94\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"JetBlue 41 94\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"JetBlue 41 94\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"JetBlue 41 94\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 3 results",
+    "[local-stt]     result 0: \"Southwest one zero five\" (airline=0.476, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"JetBlue 41 94\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Southwest 46 77\" (airline=0.476, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"JetBlue 41 94\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"JetBlue 41 94\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"JetBlue 41 94\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"JBU4194\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"JetBlue 41 94\")",
+    "[local-stt] callsign match: Callsign=\"JBU4194\" SpokenKey=\"JetBlue 41 94\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=10140 Fixes=4 Approaches=9 AssignedApproach=\"ILS Runway 34R\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Bengal\" -\u003e \"BENGL\"",
+    "[local-stt]   fix: \"Boeing\" -\u003e \"BOENG\"",
+    "[local-stt]   fix: \"Cord\" -\u003e \"CORDE\"",
+    "[local-stt]   fix: \"Denver\" -\u003e \"KDEN\"",
+    "[local-stt]   approach: \"r-nav yankee runway three four right\" -\u003e \"RY4R\"",
+    "[local-stt]   approach: \"r-nav zulu runway three four right\" -\u003e \"RZ4R\"",
+    "[local-stt]   approach: \"I L S runway three five left\" -\u003e \"I5L\"",
+    "[local-stt]   approach: \"r-nav yankee runway three five right\" -\u003e \"RY5R\"",
+    "[local-stt]   approach: \"r-nav zulu runway three five right\" -\u003e \"RZ5R\"",
+    "[local-stt]   approach: \"I L S runway three four right\" -\u003e \"I4R\"",
+    "[local-stt]   approach: \"r-nav zulu runway three five left\" -\u003e \"RZ5L\"",
+    "[local-stt]   approach: \"r-nav yankee runway three five left\" -\u003e \"RY5L\"",
+    "[local-stt]   approach: \"I L S runway three five right\" -\u003e \"I5R\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"of\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"2170\" Type=1 Value=2170",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   no match at token[0]=\"right\", skipping",
+    "[local-stt]   no match at token[1]=\"of\", skipping",
+    "[local-stt]   matched command: \"S217\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[S217] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S217] (conf=1.00)",
+    "[local-stt] validated commands: [S217] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU4194 S217\" (conf=1.00, time=527.3µs) ==="
+  ]
+}

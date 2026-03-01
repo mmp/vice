@@ -1,0 +1,57 @@
+{
+    "control_positions": {
+        "1B": {
+            "callsign": "LSV_B_APP",
+            "frequency": 123550,
+            "radio_name": "Blackjack"
+        },
+        "1F": {
+            "callsign": "LSV_F_APP",
+            "frequency": 124950,
+            "radio_name": "Nellis Approach"
+        },
+        "1G": {
+            "callsign": "LSV_G_APP",
+            "frequency": 118125,
+            "radio_name": "Nellis Approach"
+        },
+        "1L": {
+            "callsign": "LSV_L_APP",
+            "frequency": 119350,
+            "radio_name": "Nellis Control"
+        },
+        "1M": {
+            "callsign": "LSV_M_APP",
+            "frequency": 126150,
+            "radio_name": "Dreamland Approach"
+        },
+        "1S": {
+            "callsign": "LSV_S_APP",
+            "frequency": 126650,
+            "radio_name": "Nellis Control"
+        },
+        "1T": {
+            "callsign": "LSV_TWR",
+            "frequency": 132550,
+            "radio_name": "Nellis Tower"
+        },
+        "1W": {
+            "callsign": "LSV_W_DEP",
+            "frequency": 135100,
+            "radio_name": "Nellis Departure"
+        }
+    },
+    "config": {
+        "configurations": {}
+    },
+    "handoff_ids": [
+        {
+            "id": "L30",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "prefix": "C"
+        }
+    ]
+}

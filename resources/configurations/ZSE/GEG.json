@@ -1,0 +1,42 @@
+{
+    "control_positions": {
+        "1E": {
+            "callsign": "GEG_E_APP",
+            "frequency": 133350,
+            "radio_name": "Spokane Approach"
+        },
+        "1G": {
+            "callsign": "GEG_TWR",
+            "frequency": 118300,
+            "radio_name": "Spokane Tower"
+        },
+        "1P": {
+            "callsign": "PSC_APP",
+            "frequency": 128750,
+            "radio_name": "Spokane Approach"
+        },
+        "1W": {
+            "callsign": "GEG_W_APP",
+            "frequency": 123750,
+            "radio_name": "Spokane Approach"
+        },
+        "1Y": {
+            "callsign": "YKM_APP",
+            "frequency": 123800,
+            "radio_name": "Spokane Approach"
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "MWH",
+            "prefix": "1"
+        },
+        {
+            "id": "ZSE",
+            "prefix": "C"
+        }
+    ],
+    "config": {
+        "configurations": {}
+    }
+}

@@ -1,0 +1,243 @@
+{
+    "control_positions": {
+        "4T": {
+            "callsign": "SDF_E_TWR",
+            "frequency": 124200,
+            "radio_name": "Louisville Tower"
+        },
+        "4L": {
+            "callsign": "SDF_W_TWR",
+            "frequency": 135200,
+            "radio_name": "Louisville Tower"
+        },
+        "4A": {
+            "callsign": "SDF_A_APP",
+            "frequency": 134150,
+            "radio_name": "Louisville Approach"
+        },
+        "4I": {
+            "callsign": "SDF_I_APP",
+            "frequency": 132325,
+            "radio_name": "Louisville Approach"
+        },
+        "4E": {
+            "callsign": "SDF_E_APP",
+            "frequency": 135775,
+            "radio_name": "Louisville Approach"
+        },
+        "4W": {
+            "callsign": "SDF_W_APP",
+            "frequency": 120300,
+            "radio_name": "Louisville Approach"
+        },
+        "4D": {
+            "callsign": "SDF_D_DEP",
+            "frequency": 132075,
+            "radio_name": "Louisville Departure"
+        },
+        "4B": {
+            "callsign": "SDF_B_DEP",
+            "frequency": 123675,
+            "radio_name": "Louisville Departure"
+        }
+    },
+    "config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "DLAMP8": "4A",
+                    "LEDDL1": "4A",
+                    "MBELL5": "4I"
+                },
+                "departure_assignments": {
+                    "KSDF": "4B"
+                },
+                "default_consolidation": {
+                    "4B": [
+                        "4D"
+                    ],
+                    "4I": [
+                        "4A",
+                        "4B",
+                        "4W"
+                    ],
+                    "4W": [
+                        "4E"
+                    ]
+                }
+            }
+        },
+        "center": "KSDF",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "SDFNOCA",
+                    "description": "SDF CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 4000,
+                    "vertices": [
+                        "N038.37.17.709,W085.56.13.818",
+                        "N038.39.24.518,W085.49.26.143",
+                        "N037.43.21.933,W085.31.09.131",
+                        "N037.43.08.282,W085.36.38.226"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "SDF": {
+                "char": "A",
+                "position": "38.18611,-85.72694",
+                "elevation": 564,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            },
+            "CVG": {
+                "char": "B",
+                "position": "39.04121,-84.65238",
+                "elevation": 961,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            },
+            "LEX": {
+                "char": "D",
+                "position": "38.03675,-84.60864",
+                "elevation": 1040,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            },
+            "HNB": {
+                "char": "E",
+                "position": "38.31398,-87.070681",
+                "elevation": 667,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "APALO": "APA",
+            "CRRGO": "CRG",
+            "SHIPR": "FED",
+            "OHAGI": "FED",
+            "STREP": "STR"
+        },
+        "significant_points": {
+            "APALO": {},
+            "CRRGO": {
+                "short_name": "CRG"
+            },
+            "SHIPR": {},
+            "STREP": {}
+        },
+        "video_map_file": "videomaps/ZID-videomaps.gob.zst",
+        "coordination_fixes": {
+            "CHERI": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "NERVE": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "CVG"
+                }
+            ],
+            "FRIZN": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "MAUDD": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "MBELL": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ]
+        },
+        "area_configs": {
+            "4": {
+                "default_airport": "KSDF",
+                "video_maps": [
+                    "RWY 17s BASE",
+                    "RWY 35s BASE",
+                    "RWY 29 BASE",
+                    "SDF 3 NM MVA",
+                    "SDF Class C",
+                    "FRIZN STAR",
+                    "CHERI STAR",
+                    "DAMEN STAR",
+                    "DARBY STAR",
+                    "MAUDD STAR",
+                    "RDSTN STAR",
+                    "DLAMP STAR",
+                    "MBELL STAR",
+                    "APALO SID",
+                    "CRRGO SID",
+                    "FEDRA  SID",
+                    "STREP SID",
+                    "LOU RNAV 24/33",
+                    "FTK RNAV 15/18/36",
+                    "JVY RNAV 18/36",
+                    "BRY RNAV 3/21",
+                    "EKX RNAV 5/23",
+                    "IMS RNAV 3/21",
+                    "FRH RNAV 8/26",
+                    "6I2 RNAV 11/29",
+                    "I93 RNAV RWY 10-28",
+                    "SDF VFR",
+                    "IR618 Training Route",
+                    "Rivers",
+                    "Stadiums"
+                ]
+            }
+        }
+    },
+    "handoff_ids": [
+        {
+            "id": "CVG",
+            "prefix": "1"
+        },
+        {
+            "id": "EVV",
+            "prefix": "3"
+        },
+        {
+            "id": "HUF",
+            "prefix": "4"
+        },
+        {
+            "id": "IND",
+            "prefix": "5"
+        },
+        {
+            "id": "LEX",
+            "prefix": "2"
+        },
+        {
+            "id": "ZID",
+            "prefix": "C"
+        }
+    ]
+}
