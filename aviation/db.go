@@ -173,6 +173,8 @@ func (d StaticDatabase) LookupAirport(name string) (FAAAirport, bool) {
 			return ap, true
 		} else if ap, ok := d.Airports["P"+name]; ok {
 			return ap, true
+		} else if ap, ok := d.Airports["T"+name]; ok {
+			return ap, true
 		}
 	}
 	return FAAAirport{}, false
