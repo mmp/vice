@@ -217,19 +217,17 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-routes">Aircraft Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airlines-aircraft">Airlines and Aircraft</a></li>
           <li class="nav-item"><a class="nav-link scrollto" href="#fe-facility-config">Facility Configuration</a></li>
-          <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenario-groups">Scenario Groups</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airports">Airports</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-approaches">Approaches</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-departures">Departures</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-arrivals">Arrivals and Overflights</a>
+          <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenario-groups">Scenario Groups</a>
 	    <ul class="submenu">
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-arrivals-section">Arrivals</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-overflights">Overflights</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-airports">Airports</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-approaches">Approaches</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-departures">Departures</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-arrivals">Arrivals and Overflights</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-vfr">VFR Aircraft</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-airspace">Controller Airspace</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-scenarios">Scenarios</a></li>
 	    </ul>
 	  </li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-vfr">VFR Aircraft</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airspace">Controller Airspace</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenarios">Scenarios</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-emergencies">Emergencies</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-stars-videomaps">STARS and Video Maps</a>
 	    <ul class="submenu">
@@ -7583,7 +7581,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
           </section><!--//section-->
 
           <section class="docs-section" id="fe-airports">
-            <h2 class="section-heading">Airports</h2>
+            <h3 class="section-heading">Airports</h3>
 
             <p>The airports in a scenario group are specified via the "airports" member of the scenario group.
               Each airports is a separate member, named according to the airport's ICAO code (e.g., "KJFK").
@@ -7799,7 +7797,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
           </section><!--//section-->
 
           <section class="docs-section" id="fe-approaches">
-            <h2 class="section-heading">Approaches</h2>
+            <h3 class="section-heading">Approaches</h3>
 
             <p>The member names in the airport "approaches" object give the abbreviated name of each approach,
             as used in <i>vice</i>'s <a href="#atc-commands">ATC commands</a>.</p>
@@ -7898,7 +7896,7 @@ Given the id, the approach can be specified with:</p>
             </section>
 
           <section class="docs-section" id="fe-departures">
-            <h2 class="section-heading">Departures</h2>
+            <h3 class="section-heading">Departures</h3>
 
             <p>There are two pieces for specifying departures: their initial route leaving the airport, which depends on the active departure runway,
               and their subsequent route out of the TRACON, which does not. These two parts are specified separately.</p>
@@ -8104,7 +8102,7 @@ Given the id, the approach can be specified with:</p>
           </section>
 
           <section class="docs-section" id="fe-arrivals">
-            <h2 class="section-heading">Arrivals and Overflights</h2>
+            <h3 class="section-heading">Arrivals and Overflights</h3>
 
             <p><i>Note: until recently, overflights were not supported and
                 arrivals were specified using the "arrival_groups" variable, which is no longer available.</i></p>
@@ -8123,7 +8121,7 @@ Given the id, the approach can be specified with:</p>
                   together as well.
                 </p>
 
-                <h3 id="fe-arrivals-section">Arrivals</h3>
+                <h4 id="fe-arrivals-section">Arrivals</h4>
 
                 <p>Each object stored in the "arrivals" array corresponds to a STAR.
                   These objects have the following members:
@@ -8350,7 +8348,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
   },
             </pre>
 
-            <h3 id="fe-overflights">Overflights</h3>
+            <h4 id="fe-overflights">Overflights</h4>
 
                 <p>An overflight is an aircraft that enters the TRACON already airborne, and flies through it
                   without landing. Overflights are also specified in "inbound_flows" in the "overflights"
@@ -8479,7 +8477,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
           </section>
 
           <section class="docs-section" id="fe-vfr">
-            <h2 class="section-heading">VFR Aircraft</h2>
+            <h3 class="section-heading">VFR Aircraft</h3>
 
             <p><i>vice</i> allows the specification of VFR "distractor" aircraft in scenarios;
               this provides realistic extra clutter in the scope and sometimes aircraft that need to be
@@ -8580,7 +8578,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
 
 
           <section class="docs-section" id="fe-airspace">
-            <h2 class="section-heading">Controller Airspace</h2>
+            <h3 class="section-heading">Controller Airspace</h3>
 
             <p>Airspace volumes representing areas that particular controllers are responsible for may optionally be specified
               using the "airspace" object in the scenario group. If specified, <i>vice</i> will show an
@@ -8682,7 +8680,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
           </section><!--//section-->
 
           <section class="docs-section" id="fe-scenarios">
-            <h2 class="section-heading">Scenarios</h2>
+            <h3 class="section-heading">Scenarios</h3>
 
             <p>Scenarios pull together components from the definitions in scenario groups in order to present specific
               control scenarios to the user.  The scenarios object's members are the names of the scenarios.
