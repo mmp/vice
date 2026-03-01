@@ -274,7 +274,7 @@ func registerToolsCommands() {
 	// 6.6.3 Create and display restriction area closed polygon and text
 	startRAPolygon := func(sp *STARSPane, ctx *panes.Context, pos math.Point2LL, closed bool) CommandStatus {
 		sp.wipRestrictionArea = &av.RestrictionArea{
-			Closed:   false,
+			Closed:   closed,
 			Vertices: [][]math.Point2LL{{pos}},
 		}
 		if ctx.Mouse != nil {
