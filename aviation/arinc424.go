@@ -539,6 +539,14 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	case "DF": // direct to fix from unspecified point
 		break
 
+	case "FC": // track from fix for distance; fix already added by preceding TF/IF, data used via parseTransitions
+		ok = false
+		return
+
+	case "CI": // course to intercept; no fix, handled in parseTransitions
+		ok = false
+		return
+
 	case "VI": // heading to intercept or next leg. ignore for now?
 		ok = false
 		return
@@ -644,6 +652,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r ssaRecord) bool,
 	terminate func(r ssaRecord, transitions map[string]WaypointArray) bool) map[string]WaypointArray {
 	transitions := make(map[string]WaypointArray)
+	lastFCDistance := make(map[string][]byte) // routeDistance from the last FC record, keyed by transition
 
 	for _, rec := range recs {
 		if log(rec) {
@@ -656,12 +665,32 @@ func parseTransitions(recs []ssaRecord, log func(r ssaRecord) bool, skip func(r 
 			break
 		}
 
+		if rec.pathAndTermination == "FC" {
+			lastFCDistance[rec.transition] = rec.routeDistance
+		}
+
 		if string(rec.pathAndTermination) == "FM" || string(rec.pathAndTermination) == "VM" {
 			hdg := parseInt(rec.outboundMagneticCourse)
 			if n := len(transitions[rec.transition]); n == 0 {
 				panic("FM as first waypoint in transition?")
 			} else {
 				transitions[rec.transition][n-1].Heading = int16((hdg + 5) / 10)
+			}
+		} else if rec.pathAndTermination == "CI" {
+			// CI (course to intercept) paired with a preceding FC defines a procedure turn.
+			// Attach the procedure turn to the previous waypoint in this transition.
+			if n := len(transitions[rec.transition]); n > 0 {
+				pt := &ProcedureTurn{
+					Type:       PTStandard45,
+					RightTurns: rec.turnDirection != 'L',
+				}
+				if dist, ok := lastFCDistance[rec.transition]; ok && !empty(dist) {
+					pt.NmLimit = float32(parseInt(dist)) / 10
+				}
+				if !empty(rec.alt0) {
+					pt.ExitAltitude = parseAltitude(rec.alt0)
+				}
+				transitions[rec.transition][n-1].InitExtra().ProcedureTurn = pt
 			}
 		} else {
 			wp, arc, ok := rec.GetWaypoint()
