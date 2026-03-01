@@ -360,7 +360,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					}
 				}
 
-				if appr := parseApproach(recs); appr != nil {
+				if appr := parseApproach(recs, result.Fixes, result.Navaids); appr != nil {
 					// Note: database.Airports isn't initialized yet but
 					// the CIFP file is sorted so we get the airports
 					// before the approaches..
@@ -632,9 +632,8 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 			fmt.Printf("%s/%s/%s: HF no alt0?\n", r.icao, r.id, r.fix)
 		}
 		pt := &ProcedureTurn{
-			Type:       PTType(util.Select(r.pathAndTermination == "HF", PTRacetrack, PTStandard45)),
-			RightTurns: r.turnDirection != 'L',
-			// TODO: when do we set Entry180NoPt /nopt180?
+			Type:         PTType(util.Select(r.pathAndTermination == "HF", PTRacetrack, PTStandard45)),
+			RightTurns:   r.turnDirection != 'L',
 			ExitAltitude: alt0,
 		}
 
@@ -782,7 +781,102 @@ func spliceTransition(tr WaypointArray, base WaypointArray) WaypointArray {
 	return append(WaypointArray(tr), base[idx+1:]...)
 }
 
-func parseApproach(recs []ssaRecord) *Approach {
+// fixLocation looks up a fix's location in the fixes map, falling back to navaids.
+func fixLocation(name string, fixes map[string]Fix, navaids map[string]Navaid) (math.Point2LL, bool) {
+	if f, ok := fixes[name]; ok {
+		return f.Location, true
+	}
+	if n, ok := navaids[name]; ok {
+		return n.Location, true
+	}
+	return math.Point2LL{}, false
+}
+
+// markTBarNoPT detects T-bar approach patterns and sets Entry180NoPT on
+// the procedure turn of the central fix in the base transition. A T-bar
+// approach has a central IF/IAF fix with an HF racetrack, flanked by two
+// IAF transitions at roughly ±90° from the final approach course.
+func markTBarNoPT(transitions map[string]WaypointArray, recs []ssaRecord, fixes map[string]Fix, navaids map[string]Navaid) {
+	base := transitions[""]
+	if len(base) == 0 {
+		return
+	}
+
+	// Find an HF record to get the inbound course and the central fix name.
+	var hfFix string
+	var inboundCourse float32
+	for _, rec := range recs {
+		if rec.pathAndTermination == "HF" && !empty(rec.outboundMagneticCourse) {
+			hfFix = rec.fix
+			inboundCourse = float32(parseInt(rec.outboundMagneticCourse)) / 10
+			break
+		}
+	}
+	if hfFix == "" {
+		return
+	}
+
+	// In CIFP data, T-bar approaches have:
+	//   - A self-named transition (name == fix) with the HF procedure turn
+	//   - The base ("") starting at the central fix (common tail)
+	//   - Two flanking IAF transitions ending at the central fix
+	// Find the self-named transition containing the PT.
+	selfTransition := transitions[hfFix]
+	if len(selfTransition) == 0 {
+		return
+	}
+	ptIdx := -1
+	for i := range selfTransition {
+		if selfTransition[i].Fix == hfFix && selfTransition[i].ProcedureTurn() != nil {
+			ptIdx = i
+			break
+		}
+	}
+	if ptIdx == -1 {
+		return
+	}
+
+	// Count flanking transitions: named transitions (other than the self-named
+	// one) whose last fix matches the central fix.
+	var flankingTransitions []string
+	for t, w := range util.SortedMap(transitions) {
+		if t == "" || t == hfFix || len(w) == 0 {
+			continue
+		}
+		if w[len(w)-1].Fix == hfFix {
+			flankingTransitions = append(flankingTransitions, t)
+		}
+	}
+	if len(flankingTransitions) != 2 {
+		return
+	}
+
+	// Look up the central fix location.
+	centralLoc, ok := fixLocation(hfFix, fixes, navaids)
+	if !ok {
+		return
+	}
+	nmPerLongitude := math.NMPerLatitude * math.Cos(math.Radians(centralLoc[1]))
+
+	// Check that each flanking IAF is roughly ±90° from the inbound course.
+	for _, t := range flankingTransitions {
+		w := transitions[t]
+		flankLoc, ok := fixLocation(w[0].Fix, fixes, navaids)
+		if !ok {
+			return
+		}
+		bearing := math.Heading2LL(centralLoc, flankLoc, nmPerLongitude, 0)
+		diff := math.HeadingDifference(bearing, inboundCourse)
+		if diff < 45 || diff > 135 {
+			return
+		}
+	}
+
+	// Both flanking IAFs pass; set Entry180NoPT on the self-named transition's PT.
+	selfTransition[ptIdx].InitExtra().ProcedureTurn.Entry180NoPT = true
+}
+
+func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Navaid) *Approach {
 	transitions := parseTransitions(recs,
 		func(r ssaRecord) bool { return false },                                          // log
 		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
@@ -837,6 +931,8 @@ func parseApproach(recs []ssaRecord) *Approach {
 			}
 		}
 	*/
+
+	markTBarNoPT(transitions, recs, fixes, navaids)
 
 	if len(transitions) == 1 {
 		appr.Waypoints = []WaypointArray{transitions[""]}
