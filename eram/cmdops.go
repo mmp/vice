@@ -109,6 +109,19 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "LF [CRR_LABEL]", handleCRRLabelOnly) // LF LABEL without click or aircraft
 	registerCommand(CommandModeNone, "LF", handleCRREmpty)                 // LF alone
 
+	// AR - Add airport to ALTIM SET list
+	// AR [ICAO]: Add 4-letter ICAO code (e.g., AR KMCO)
+	// AR [IATA]: Add 3-letter IATA code, auto-prepends K (e.g., AR MCO → KMCO)
+	registerCommand(CommandModeNone, "AR [FIELD]", handleAltimAdd)
+
+	// WR - Weather report commands
+	// WR [ICAO]: Add 4-letter ICAO code to WX REPORT list (e.g., WR KMCO)
+	// WR [IATA]: Add 3-letter IATA code, auto-prepends K (e.g., WR MCO → KMCO)
+	// WR R [ICAO]: Display station's weather report in Response Area (e.g., WR R KMCO)
+	// WR R [IATA]: Display with 3-letter IATA code (e.g., WR R MCO → KMCO)
+	registerCommand(CommandModeNone, "WR R [FIELD]", handleWXReportDisplay)
+	registerCommand(CommandModeNone, "WR [FIELD]", handleWXReportAdd)
+
 	// // - Toggle VCI (on-frequency indicator)
 	// Keyboard: //[FLID] or // [FLID]
 	// Clicked: //[SLEW]
@@ -820,10 +833,6 @@ func handleLeaderLineLength(ep *ERAMPane, ctx *panes.Context, length int, trk *s
 	// Update track state
 	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
 
-	// Update default preference
-	ps := ep.currentPrefs()
-	ps.FDBLdrLength = length
-
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
 	}
@@ -960,4 +969,138 @@ func handleQSFreeText(ep *ERAMPane, ctx *panes.Context, freeText string, trk *si
 
 func isQSFreeText(s string) bool {
 	return strings.HasPrefix(s, circleClear)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// AR - ALTIM SET Add Airport Handler
+
+func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
+	airport = strings.ToUpper(strings.TrimSpace(airport))
+	if len(airport) == 0 {
+		return CommandStatus{}, NewERAMError("REJECT - AR - MISSING AIRPORT")
+	}
+	if len(airport) != 3 && len(airport) != 4 {
+		return CommandStatus{}, NewERAMError("REJECT - AR - INVALID AIRPORT CODE")
+	}
+
+	// Convert 3-letter IATA to ICAO by prepending K (US convention).
+	icao := airport
+	if len(airport) == 3 {
+		icao = "K" + airport
+	}
+
+	// Confirm airport exists in the database
+	if _, ok := av.DB.Airports[icao]; !ok {
+		return CommandStatus{}, NewERAMError("REJECT - AR - UNKNOWN AIRPORT")
+	}
+
+	// Toggle: if already in the list, remove it.
+	for i, existing := range ep.AltimSetAirports {
+		if existing == icao {
+			ep.AltimSetAirports = append(ep.AltimSetAirports[:i], ep.AltimSetAirports[i+1:]...)
+			// Adjust scroll offset if needed after removal
+			ps := ep.currentPrefs()
+			maxOffset := len(ep.AltimSetAirports) - ps.AltimSet.Lines
+			if maxOffset < 0 {
+				maxOffset = 0
+			}
+			if ep.altimSetScrollOffset > maxOffset {
+				ep.altimSetScrollOffset = maxOffset
+			}
+			return CommandStatus{bigOutput: "ACCEPT\nALTIMETER REQ"}, nil
+		}
+	}
+
+	ep.AltimSetAirports = append([]string{icao}, ep.AltimSetAirports...)
+
+	// Make the window visible when the first airport is added.
+	ps := ep.currentPrefs()
+	ps.AltimSet.Visible = true
+
+	return CommandStatus{bigOutput: "ACCEPT\nALTIMETER REQ"}, nil
+}
+
+// WR - WX REPORT Add Airport Handler
+
+func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
+	airport = strings.ToUpper(strings.TrimSpace(airport))
+	if len(airport) == 0 {
+		return CommandStatus{}, NewERAMError("REJECT - WR - MISSING AIRPORT")
+	}
+	if len(airport) != 3 && len(airport) != 4 {
+		return CommandStatus{}, NewERAMError("REJECT - WR - INVALID AIRPORT CODE")
+	}
+
+	// Convert 3-letter IATA to ICAO by prepending K (US convention).
+	icao := airport
+	if len(airport) == 3 {
+		icao = "K" + airport
+	}
+
+	// Confirm airport exists in the database
+	if _, ok := av.DB.Airports[icao]; !ok {
+		return CommandStatus{}, NewERAMError("REJECT - WR - UNKNOWN AIRPORT")
+	}
+	for i, existing := range ep.WXReportStations {
+		if existing == icao {
+			ep.WXReportStations = append(ep.WXReportStations[:i], ep.WXReportStations[i+1:]...)
+			// Adjust scroll offset if needed after removal
+			ps := ep.currentPrefs()
+			maxOffset := len(ep.WXReportStations) - ps.WX.Lines
+			if maxOffset < 0 {
+				maxOffset = 0
+			}
+			if ep.wxScrollOffset > maxOffset {
+				ep.wxScrollOffset = maxOffset
+			}
+			return CommandStatus{bigOutput: "ACCEPT\nWEATHER STAT REQ"}, nil
+		}
+	}
+
+	ep.WXReportStations = append([]string{icao}, ep.WXReportStations...)
+
+	// Make the window visible when the first airport is added.
+	ps := ep.currentPrefs()
+	ps.WX.Visible = true
+
+	return CommandStatus{bigOutput: "ACCEPT\nWEATHER STAT REQ"}, nil
+}
+
+// WR R - WX REPORT Display (show METAR in Response Area)
+
+func handleWXReportDisplay(ep *ERAMPane, ctx *panes.Context, airport string) (CommandStatus, error) {
+	airport = strings.ToUpper(strings.TrimSpace(airport))
+	if len(airport) == 0 {
+		return CommandStatus{}, NewERAMError("REJECT - WR R - MISSING AIRPORT")
+	}
+	if len(airport) != 3 && len(airport) != 4 {
+		return CommandStatus{}, NewERAMError("REJECT - WR R - INVALID AIRPORT CODE")
+	}
+
+	// Convert 3-letter IATA to ICAO by prepending K (US convention).
+	icao := airport
+	if len(airport) == 3 {
+		icao = "K" + airport
+	}
+
+	// Confirm airport exists in the database
+	if _, ok := av.DB.Airports[icao]; !ok {
+		return CommandStatus{}, NewERAMError("REJECT - WR R - UNKNOWN AIRPORT")
+	}
+
+	// Get METAR from the pre-populated wx system
+	metar, hasMetar := ctx.Client.State.METAR[icao]
+
+	// Determine what to display
+	var displayText string
+	if hasMetar && metar.Raw != "" {
+		displayText = metar.Raw
+	} else {
+		displayText = fmt.Sprintf("NO DATA\n%s", icao)
+	}
+
+	ps := ep.currentPrefs()
+	ep.smallOutput.Set(ps, displayText)
+
+	return CommandStatus{}, nil
 }
