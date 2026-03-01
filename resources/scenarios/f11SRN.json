@@ -3031,12 +3031,8 @@
         "X04": {
             "approaches": {
                 "RVA": {
-                    "runway": "15",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "SHIMM/iaf/a2000/nopt MODIN/if/iaf/a2000/hilpt/nopt180 JUZTN/a1700/faf X04-15",
-                        "WORMS/iaf/a2000/nopt OXAGE MODIN/if/iaf/a2000/hilpt/nopt180 JUZTN/a1700/faf X04-15"
-                    ]
+                    "cifp_id": "RANV",
+                    "runway": "15"
                 },
                 "RVB": {
                     "runway": "33",
@@ -3232,20 +3228,12 @@
         "X23": {
             "approaches": {
                 "RVB": {
-                    "runway": "19",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "ZASIM/iaf/nopt JOKEG/if/iaf/a3000/nopt180/hilpt YUDPU/faf X23-19",
-                        "WOSIV/iaf/nopt JOKEG/if/iaf/a3000/nopt180/hilpt YUDPU/faf X23-19"
-                    ]
+                    "cifp_id": "RBNV",
+                    "runway": "19"
                 },
                 "RVA": {
-                    "runway": "1",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "OTIZY/iaf/a2000/nopt TENUY/if/iaf/a2000/nopt180/hilpt JATGA/a1800/faf X23-1",
-                        "WOBUV/iaf/a2000/nopt TENUY/if/iaf/a2000/nopt180/hilpt JATGA/a1800/faf X23-1"
-                    ]
+                    "cifp_id": "RANV",
+                    "runway": "1"
                 }
             },
             "departure_routes": {

@@ -11,11 +11,7 @@
                     ]
                 },
                 "I8R": {
-                    "runway": "8R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "KROME/a3000/if/iaf/hilpt1min COPRA/a3000 LAWNN/a1500/faf"
-                    ]
+                    "cifp_id": "I8R"
                 },
                 "I9": {
                     "runway": "9",
@@ -25,11 +21,7 @@
                     ]
                 },
                 "I12": {
-                    "runway": "12",
-                    "type": "ILS",
-                    "waypoints": [
-                        "GLRIA/a3000-5000/if/iaf/lhilpt1min PIANA/a3000 VEPCO/a2000/faf"
-                    ]
+                    "cifp_id": "I12"
                 },
                 "I6L": {
                     "runway": "26L",
@@ -919,33 +911,16 @@
         "KFLL": {
             "approaches": {
                 "I0L": {
-                    "runway": "10L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "HOLID/a5000/if/iaf/lhilpt1min GAMVE/a4000 WAROR/a3000 NOVAE/a1800/faf"
-                    ]
+                    "cifp_id": "I10L"
                 },
                 "I0R": {
-                    "runway": "10R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "BUNKR/a5000/iaf/nopt BEZER/a4000/if/iaf/lhilpt1min BLAIM/a3000 LORII/a1800/faf"
-                    ]
+                    "cifp_id": "I10R"
                 },
                 "I8L": {
-                    "runway": "28L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "ZADIL/iaf/a5000/nopt WIKIR/if/iaf/a2500/hilpt1min YOBUS/a2000/faf",
-                        "CRNVL/iaf/a5000/nopt WIKIR/if/iaf/a2500/hilpt1min YOBUS/a2000/faf"
-                    ]
+                    "cifp_id": "I28L"
                 },
                 "I8R": {
-                    "runway": "28R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "CRNVL/a5000/iaf/nopt FUZYY/a4000/if/iaf/hilpt1min SNAPE/a2000/faf"
-                    ]
+                    "cifp_id": "I28R"
                 }
             },
             "departure_routes": {
@@ -1555,12 +1530,7 @@
                     ]
                 },
                 "R9L": {
-                    "runway": "9L",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "DHP/nopt JULED/a2000/if/hilpt HASDU/a1500/faf JOGNO/a500",
-                        "VKZ/nopt JULED/a2000/if/hilpt HASDU/a1500/faf JOGNO/a500"
-                    ]
+                    "cifp_id": "R9L"
                 },
                 "R7L": {
                     "runway": "27L",

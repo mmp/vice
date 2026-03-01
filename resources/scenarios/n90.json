@@ -6382,12 +6382,7 @@
         "KBDR": {
             "approaches": {
                 "I6": {
-                    "full_name": "ILS Runway 6",
-                    "runway": "6",
-                    "type": "ILS",
-                    "waypoints": [
-                        "CCC STANE/iaf/a1800/nopt180/hilpt/faf"
-                    ]
+                    "cifp_id": "I6"
                 },
                 "R24": {
                     "cifp_id": "R24"

@@ -794,12 +794,7 @@
         "KLNK": {
             "approaches": {
                 "I18": {
-                    "full_name": "ILS Runway 18",
-                    "runway": "18",
-                    "type": "ILS",
-                    "waypoints": [
-                        "HUSKR/iaf ESACO/a3200+/if CLONE/a2900+/faf ROROC"
-                    ]
+                    "cifp_id": "IY18"
                 },
                 "I36": {
                     "cifp_id": "IY36"

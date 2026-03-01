@@ -3411,24 +3411,12 @@
         "X23": {
             "approaches": {
                 "RA": {
-                    "runway": "1",
-                    "type": "RNAV",
-                    "full_name": "RNAV A Circling Runway 1",
-                    "waypoints": [
-                        "TENUY/a2000/nopt180/hilpt/if/iaf JATGA/a1800/faf",
-                        "WOBUV/iaf/a2000/nopt TENUY/a2000/nopt180/hilpt/if/iaf JATGA/a1800/faf",
-                        "OTIZY/iaf/a2000/nopt TENUY/a2000/nopt180/hilpt/if/iaf JATGA/a1800/faf"
-                    ]
+                    "cifp_id": "RANV",
+                    "runway": "1"
                 },
                 "RB": {
-                    "runway": "19",
-                    "type": "RNAV",
-                    "full_name": "RNAV B Circling Runway 19",
-                    "waypoints": [
-                        "JOKEG/a3000/nopt180/hilpt/if/iaf YUDPU/a1800/faf",
-                        "ZASIM/nopt/iaf JOKEG/a3000/nopt180/hilpt/if/iaf YUDPU/a1800/faf",
-                        "WOSIV/iaf/nopt JOKEG/a3000/nopt180/hilpt/if/iaf YUDPU/a1800/faf"
-                    ]
+                    "cifp_id": "RBNV",
+                    "runway": "19"
                 }
             },
             "departure_routes": {

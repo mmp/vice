@@ -4932,20 +4932,10 @@
                     "cifp_id": "R30R"
                 },
                 "V0R": {
-                    "runway": "30R",
-                    "type": "RNAV",
-                    "full_name": "VOR Runway 30R",
-                    "waypoints": [
-                        "BIZEN/iaf/nopt180/hilpt/a7000/faf CANED/a6360"
-                    ]
+                    "cifp_id": "D30R"
                 },
                 "V0L": {
-                    "runway": "30R",
-                    "type": "RNAV",
-                    "full_name": "VOR Runway 30L",
-                    "waypoints": [
-                        "BIZEN/iaf/nopt180/hilpt/a7000/faf CANED/a6360"
-                    ]
+                    "cifp_id": "D30L"
                 },
                 "R0L": {
                     "cifp_id": "R30L"

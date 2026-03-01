@@ -4,40 +4,16 @@
         "KAVL": {
             "approaches": {
                 "I17": {
-                    "runway": "17",
-                    "type": "ILS",
-                    "waypoints": [
-                        "SOT/iaf/a6600 JUNOE/if/a5000 WUGAG/a5000 KEANS/faf/a4100",
-                        "JUNOE/if/a5000 WUGAG/a5000 KEANS/faf/a4100",
-                        "KEANS/iaf/pt45/a5600 WUGAG/a5000 KEANS/faf/a4100"
-                    ]
+                    "cifp_id": "I17"
                 },
                 "I35": {
-                    "runway": "35",
-                    "type": "ILS",
-                    "waypoints": [
-                        "TUXDO/iaf/nopt/a5100 NURUE/if/hilpt UMUXE/faf/a4000",
-                        "NURUE/iaf/hilpt UMUXE/faf/a4000"
-                    ]
+                    "cifp_id": "I35"
                 },
                 "R17": {
-                    "full_name": "RNAV GPS Runway 17",
-                    "runway": "17",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "OPIME/iaf/nopt/a6400 ONZIQ/if/hilpt7nm/nopt180/a6400 LUYGI/a4500 STOSS/faf/a4000 JIRDU/a2920",
-                        "ONZIQ/iaf/hilpt7nm/nopt180/a6400 LUYGI/a4500 STOSS/faf/a4000 JIRDU/a2920"
-                    ]
+                    "cifp_id": "R17"
                 },
                 "R35": {
-                    "full_name": "RNAV GPS Runway 35",
-                    "runway": "35",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "ZIKOL/iaf/nopt/a6200 AVEBE/if/hilpt7nm/nopt180/a6200 ZICZU/a4200 UMUXE/faf/a4000 OBOVE/a3140",
-                        "FIMOV/iaf/nopt/a6200 AVEBE/if/hilpt7nm/nopt180/a6200 ZICZU/a4200 UMUXE/faf/a4000 OBOVE/a3140",
-                        "AVEBE/iaf/hilpt7nm/nopt180/a6200 ZICZU/a4200 UMUXE/faf/a4000 OBOVE/a3140"
-                    ]
+                    "cifp_id": "R35"
                 }
             },
             "departure_routes": {

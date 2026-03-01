@@ -7597,13 +7597,8 @@
           ]
         },
         "VRA": {
-          "runway": "1",
-          "full_name": "VOR-A into the El Monte Airport (runway 1)",
-          "type": "RNAV",
-          "waypoints": [
-            "PDZ/nopt/a4000 POM/if/iaf/a4000/hilpt/nopt180 FLYIN/a3700 SELAW/a3000/faf N034.05.37.664,W118.05.07.012 N034.03.22.024,W118.06.19.275 N034.02.47.033,W118.03.08.580",
-            "PRADO/iaf/a4000/nopt POM/if/iaf/a4000/hilpt/nopt180 FLYIN/a3700 SELAW/a3000/faf N034.05.37.664,W118.05.07.012 N034.03.22.024,W118.06.19.275 N034.02.47.033,W118.03.08.580"
-          ]
+          "cifp_id": "VAOR",
+          "runway": "1"
         }
       },
       "departure_routes": {

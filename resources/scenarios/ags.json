@@ -10,34 +10,13 @@
                     "cifp_id": "I35"
                 },
                 "R17": {
-                    "full_name": "RNAV GPS Runway 17",
-                    "runway": "17",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "WASAP/iaf/nopt/a2400 CARDO/if/hilpt/nopt180/a2400 HOGEM/faf/a1800",
-                        "CARDO/iaf/hilpt/nopt180/a2400 HOGEM/faf/a1800",
-                        "POGEE/iaf/nopt/a2400 CARDO/if/hilpt/nopt180/a2400 HOGEM/faf/a1800"
-                    ]
+                    "cifp_id": "R17"
                 },
                 "R26": {
-                    "full_name": "RNAV GPS Runway 26",
-                    "runway": "26",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "JUXER/iaf/nopt/a2500 BEKAC/if/hilpt/nopt180/a2500 KELRE/faf/a2500 GAPTE/a1020",
-                        "BEKAC/iaf/hilpt/nopt180/a2500 KELRE/faf/a2500 GAPTE/a1020",
-                        "HIKAL/iaf/nopt/a2500 BEKAC/if/hilpt/nopt180/a2500 KELRE/faf/a2500 GAPTE/a1020"
-                    ]
+                    "cifp_id": "R26"
                 },
                 "R35": {
-                    "full_name": "RNAV GPS Runway 35",
-                    "runway": "35",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "ZOXOM/iaf/nopt/a2100 HOMRU/if/hilpt/a2100 WATEM/faf/a1700",
-                        "YALRU/iaf/nopt/a2100 HOMRU/if/hilpt/a2100 WATEM/faf/a1700",
-                        "HOMRU/iaf/hilpt/nopt180/a2100 WATEM/faf/a1700"
-                    ]
+                    "cifp_id": "R35"
                 },
                 "RY8": {
                     "cifp_id": "RY8"

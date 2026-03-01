@@ -1565,12 +1565,8 @@
                     ]
                 },
                 "VC": {
-                    "runway": "35L",
-                    "type": "ILS",
-                    "full_name": "VOR C Runway 35L",
-                    "waypoints": [
-                        "BLD/iaf/hilpt/pta60 AGNUT/a5700/faf CIXOG/a4840 COCAB"
-                    ]
+                    "cifp_id": "VCOR",
+                    "runway": "35L"
                 }
             },
             "departure_routes": {
