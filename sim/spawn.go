@@ -428,6 +428,8 @@ func (s *Sim) Prespawn() {
 
 	s.setInitialSpawnTimes(s.State.SimTime)
 
+	s.mu.Lock(s.lg)
+
 	// Prime the pump before the user gets involved
 	s.prespawn = true
 	for i := range initialSimSeconds {
@@ -462,6 +464,8 @@ func (s *Sim) Prespawn() {
 		delay := max(5*time.Minute, randomInitialWait(s.State.LaunchConfig.EmergencyAircraftRate, s.Rand))
 		s.NextEmergencyTime = s.State.SimTime.Add(delay)
 	}
+
+	s.mu.Unlock(s.lg)
 
 	s.lg.Info("finished aircraft prespawn")
 	fmt.Printf("Prespawn in %s, rates: dep %f arrival %f overflight %f\n", time.Since(start),

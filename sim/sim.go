@@ -1148,7 +1148,7 @@ func (s *Sim) Update() {
 	// last update that wasn't accounted for.
 	elapsed := time.Since(s.lastUpdateTime)
 	elapsed = time.Duration(s.State.SimRate * float32(elapsed))
-	if s.Step(elapsed) {
+	if s.step(elapsed) {
 		// Don't bother with this if we didn't change any aircraft state
 		for _, ac := range s.Aircraft {
 			ac.Check(s.lg)
@@ -1158,9 +1158,15 @@ func (s *Sim) Update() {
 }
 
 // Step advances the simulation by the given elapsed time duration.
-// This method encapsulates the core simulation stepping logic that was
-// previously inline in Update().
+// It acquires the sim mutex for the duration of the step.
 func (s *Sim) Step(elapsed time.Duration) bool {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.step(elapsed)
+}
+
+// step is the inner implementation of Step; the caller must hold s.mu.
+func (s *Sim) step(elapsed time.Duration) bool {
 	elapsed += s.updateTimeSlop
 
 	// Run the sim for this many seconds
@@ -1300,6 +1306,12 @@ func (s *Sim) updateState() {
 							nav.NavLog(string(callsign), s.State.SimTime, nav.NavLogCommand, "aircraft=%s success", callsign)
 						}
 
+						// Log updated route and waypoint state after commands
+						nav.LogRoute(string(callsign), s.State.SimTime, ac.Nav.Waypoints)
+						nav.NavLog(string(callsign), s.State.SimTime, nav.NavLogCommand,
+							"aircraft=%s post-cmd nwaypoints=%d approach_cleared=%v approach_id=%s",
+							callsign, len(ac.Nav.Waypoints), ac.Nav.Approach.Cleared, ac.Nav.Approach.AssignedId)
+
 						s.mu.Lock(s.lg)
 					}
 				}
@@ -1429,6 +1441,8 @@ func (s *Sim) updateState() {
 				}
 
 				if passedWaypoint.Delete() {
+					nav.NavLog(string(callsign), s.State.SimTime, nav.NavLogCommand,
+						"aircraft=%s DELETING at waypoint=%s", callsign, passedWaypoint.Fix)
 					s.lg.Debug("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
 					s.deleteAircraft(ac)
 				}
