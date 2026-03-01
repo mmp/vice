@@ -544,7 +544,7 @@ func (a ApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	case ApproachAtFixIntercept:
 		rt.Add("[intercept at {fix}|at {fix} intercept the localizer|at {fix} join the localizer]", a.Fix)
 	case ApproachCancel:
-		rt.Add("cancel approach clearance.")
+		rt.Add("cancel approach clearance")
 	}
 }
 

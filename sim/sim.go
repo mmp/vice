@@ -1033,12 +1033,12 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 			}
 			var tr *av.RadioTransmission
 			if ac.TypeOfFlight == av.FlightTypeDeparture {
-				tr = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
+				tr = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper, ctrl, csArg)
 			} else {
-				tr = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
+				tr = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
 			}
-			events[i].WrittenText = tr.Written(s.Rand) + e.WrittenText
-			events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
+			events[i].WrittenText = tr.Written(s.Rand) + ", " + e.WrittenText
+			events[i].SpokenText = strings.TrimSuffix(tr.Spoken(s.Rand), ".") + ", " + e.SpokenText
 		case av.RadioTransmissionMixUp:
 			// No additional formatting for mix-up transmissions; the callsign is already in there.
 		case av.RadioTransmissionNoId:
@@ -1048,9 +1048,9 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 				Callsign:    ac.ADSBCallsign,
 				IsEmergency: ac.EmergencyState != nil,
 			}
-			tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", csArg)
-			events[i].WrittenText = e.WrittenText + tr.Written(s.Rand)
-			events[i].SpokenText = e.SpokenText + tr.Spoken(s.Rand)
+			tr := av.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
+			events[i].WrittenText = e.WrittenText + ", " + tr.Written(s.Rand)
+			events[i].SpokenText = strings.TrimSuffix(e.SpokenText, ".") + ", " + tr.Spoken(s.Rand)
 		}
 	}
 
@@ -1700,16 +1700,16 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 		return "", "", 0, false
 	}
 
-	rt := av.MakeContactTransmission("[we're a|] {actype}, ", ac.FlightPlan.AircraftType)
+	rt := av.MakeContactTransmission("[we're a|] {actype}", ac.FlightPlan.AircraftType)
 
 	rpdesc, rpdir, dist, isap := closestReportingPoint(ac)
 	if math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 2 {
-		rt.Add("departing {airport}, ", ac.FlightPlan.DepartureAirport)
+		rt.Add("departing {airport}", ac.FlightPlan.DepartureAirport)
 	} else if dist < 1 {
 		if isap {
-			rt.Add("overhead {airport}, ", rpdesc)
+			rt.Add("overhead {airport}", rpdesc)
 		} else {
-			rt.Add("overhead " + rpdesc + ", ")
+			rt.Add("overhead " + rpdesc)
 		}
 	} else {
 		nm := int(dist + 0.5)
@@ -1720,9 +1720,9 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 			loc = strconv.Itoa(int(dist+0.5)) + " miles " + rpdir
 		}
 		if isap {
-			rt.Add(loc+" of {airport}, ", rpdesc)
+			rt.Add(loc+" of {airport}", rpdesc)
 		} else {
-			rt.Add(loc + " of " + rpdesc + ", ")
+			rt.Add(loc + " of " + rpdesc)
 		}
 	}
 
@@ -1734,10 +1734,10 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 	// Check if we're in a climb or descent (more than 100 feet difference)
 	if currentAlt < targetAlt {
 		// Report current altitude and target altitude when climbing or descending
-		alt = av.MakeContactTransmission("[at|] {alt} for {alt}, ", currentAlt, targetAlt)
+		alt = av.MakeContactTransmission("[at|] {alt} for {alt}", currentAlt, targetAlt)
 	} else {
 		// Just report current altitude if we're level
-		alt = av.MakeContactTransmission("at {alt}, ", currentAlt)
+		alt = av.MakeContactTransmission("at {alt}", currentAlt)
 	}
 	earlyAlt := s.Rand.Bool()
 	if earlyAlt {
@@ -1746,7 +1746,7 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission
 
 	if s.Rand.Bool() {
 		// Heading only sometimes
-		rt.Add(math.Compass(ac.Heading()) + "bound, ")
+		rt.Add(math.Compass(ac.Heading()) + "bound")
 	}
 
 	rt.Add("[looking for flight-following|request flight-following|request radar advisories|request advisories] to {airport}",

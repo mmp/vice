@@ -158,11 +158,14 @@ func (rt RadioTransmission) Spoken(r *rand.Rand) string {
 	var result []string
 
 	for i := range rt.Strings {
-		s := rt.Strings[i].Spoken(r, rt.Args[i])
-		result = append(result, s)
+		s := strings.TrimSpace(rt.Strings[i].Spoken(r, rt.Args[i]))
+		s = strings.TrimRight(s, ",.")
+		if s != "" {
+			result = append(result, s)
+		}
 	}
 
-	return strings.Join(result, " ") + "."
+	return strings.Join(result, ", ") + "."
 }
 
 // Written returns a string corresponding to how the transmission should be
@@ -171,8 +174,11 @@ func (rt RadioTransmission) Written(r *rand.Rand) string {
 	var result []string
 
 	for i := range rt.Strings {
-		s := rt.Strings[i].Written(r, rt.Args[i])
-		result = append(result, strings.TrimSuffix(strings.TrimSpace(s), ","))
+		s := strings.TrimSpace(rt.Strings[i].Written(r, rt.Args[i]))
+		s = strings.TrimRight(s, ",.")
+		if s != "" {
+			result = append(result, s)
+		}
 	}
 
 	return strings.Join(result, ", ")
