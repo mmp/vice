@@ -361,9 +361,13 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	}
 
 	passedWaypoint := false
-	if wp.FlyOver() || wp.ProcedureTurn() != nil || nav.Prespawn {
-		// Waypoints with procedure turns are implicitly "fly over"; we also treat all wps as
-		// flyover during the prespawn phase to avoid the expense of shouldTurnForOutbound.
+	if wp.FlyOver() || nav.Prespawn {
+		// We treat all wps as flyover during the prespawn phase to avoid the expense of
+		// shouldTurnForOutbound.
+		passedWaypoint = nav.ETA(wp.Location) < 2
+	} else if pt := wp.ProcedureTurn(); pt != nil && pt.Type == av.PTStandard45 {
+		// Also, waypoints with standard 45 degree procedure turns are implicitly "fly over";
+		// we don't want aircraft to start the turn early.
 		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
 		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, av.TurnClosest, wxs)
