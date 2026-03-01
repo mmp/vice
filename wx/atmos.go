@@ -580,16 +580,20 @@ func (s WindSample) WindSpeed() float32 { // returns knots
 	return l * 3600 /* seconds -> hour */
 }
 
-// Deflection calculates the heading correction needed to compensate for wind.
-// Given a velocity vector v, it returns the deflection angle that should be
-// subtracted from the heading to fly into the wind.
+// Deflection calculates the crab angle needed to compensate for wind.
+// v is the desired ground track velocity vector (direction * groundspeed, in nm/hr).
+// Returns the angle that should be subtracted from the track heading to get
+// the aircraft heading that achieves that ground track.
 func (s WindSample) Deflection(v [2]float32) float32 {
 	wvec := s.WindVec()
-	vp := math.Add2f(v, math.Scale2f(wvec, 3600))
+	// air_velocity = ground_velocity - wind, since ground = air + wind.
+	vAir := math.Sub2f(v, math.Scale2f(wvec, 3600))
 
-	vn, vpn := math.Normalize2f(v), math.Normalize2f(vp)
-	deflection := math.Degrees(math.AngleBetween(vn, vpn))
-	if vn[0]*vpn[1]-vn[1]*vpn[0] > 0 {
+	vn, vAirN := math.Normalize2f(v), math.Normalize2f(vAir)
+	deflection := math.Degrees(math.AngleBetween(vn, vAirN))
+	// If air velocity is to the left of the track (negative cross product),
+	// the deflection should be positive so that hdg -= deflection turns left.
+	if vn[0]*vAirN[1]-vn[1]*vAirN[0] < 0 {
 		deflection = -deflection
 	}
 
