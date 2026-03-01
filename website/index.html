@@ -1678,7 +1678,7 @@ how it simulates aircraft or the STARS interface.
                   </ul></li>
               <li>Facility engineering
                 <ul>
-                  <li>Added "max_distance" field for when far-away aircraft are culled (125nm default)</li>
+                  <li>Added "max_distance" field for when far-away aircraft are culled (125nm default for STARS, 400nm for ERAM)</li>
                   <li>"solo_controller" and "multi_controllers" are both gone: "configuration"s are now specified in "config"; they give which arrival/departure flows go to which controller. Then each scenario has a "configuration" field as well; it references a configuration from "config" and also provides a default consolidation: the controller hierarchy.</li>
                   <li>Removed deprecated "arrivals" for specifying arrival rates; this is now "inbound_rates".</li>
               </ul></li>
@@ -9334,7 +9334,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"max_distance"</td>
                 <td>Number</td>
-                <td>Maximum distance in nautical miles from center before aircraft are deleted. If unspecified, a 125 nautical mile maximum distance is used.</td>
+                <td>Maximum distance in nautical miles from center before aircraft are deleted. If unspecified, the default is 125 nautical miles for STARS facilities and 400 nautical miles for ERAM facilities.</td>
               </tr>
               <tr>
                 <td>"restriction_areas"</td>
