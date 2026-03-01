@@ -1091,10 +1091,8 @@ func (sp *STARSPane) drawHoldPattern(ctx *panes.Context, transforms radar.ScopeT
 	// Outbound vector (pointing away from fix)
 	outboundVec := [2]float32{-inboundVec[0], -inboundVec[1]}
 
-	// Calculate turn radius for standard rate turn at 120 knots
-	// Turn radius = speed / (turning rate in rad/s) / 60
-	// At 120 knots, standard rate (3°/s): radius ≈ 0.67 nm
-	turnRadius := float32(0.67)
+	// Use 1nm turn radius to match the racetrack drawing in DrawWaypoints.
+	turnRadius := float32(1)
 
 	// Perpendicular vector for turn offset (depends on turn direction)
 	var perpVec [2]float32
