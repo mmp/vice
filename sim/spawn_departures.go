@@ -585,18 +585,25 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 		return nil, fmt.Errorf("no airlines for departure at %q", departureAirport)
 	}
 
+	// Filter callsigns that are currently in use. 
+	callsigns := s.currentCallsigns()
+	available := make([]av.DepartureAirline, 0, len(dep.Airlines))
+	for _, al := range dep.Airlines {
+		if al.Callsign == "" || !av.CallsignClashesWithExisting(callsigns, al.Callsign, s.EnforceUniqueCallsignSuffix) {
+			available = append(available, al)
+		}
+	}
+	if len(available) == 0 {
+		return nil, fmt.Errorf("unable to sample a valid aircraft for departures at %q", departureAirport)
+	}
+
+	airline := rand.SampleSlice(s.Rand, available)
 	var ac *Aircraft
 	var acType string
-	for range 50 {
-		airline := rand.SampleSlice(s.Rand, dep.Airlines)
-		if airline.Callsign != "" {
-			ac, acType = s.sampleAircraftWithAirlineCallsign(airline.AirlineSpecifier, departureAirport, dep.Destination, s.lg)
-		} else {
-			ac, acType = s.sampleAircraft(airline.AirlineSpecifier, departureAirport, dep.Destination, s.lg)
-		}
-		if ac != nil {
-			break
-		}
+	if airline.Callsign != "" {
+		ac, acType = s.sampleAircraftWithAirlineCallsign(airline.AirlineSpecifier, departureAirport, dep.Destination, s.lg)
+	} else {
+		ac, acType = s.sampleAircraft(airline.AirlineSpecifier, departureAirport, dep.Destination, s.lg)
 	}
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft for departures at %q", departureAirport)
