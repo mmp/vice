@@ -359,33 +359,33 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	if fa.Range == 0 {
 		fa.Range = 50
 	}
-	if fa.HandoffAcceptFlashDuration == 0 {
-		fa.HandoffAcceptFlashDuration = 5
+	if fa.Datablocks.FDB.AcceptFlashDuration == 0 {
+		fa.Datablocks.FDB.AcceptFlashDuration = 5
 	}
 
 	// PDB mutual exclusion.
-	if fa.PDB.SplitGSAndCWT && fa.PDB.ShowAircraftType {
+	if fa.Datablocks.PDB.SplitGSAndCWT && fa.Datablocks.PDB.ShowAircraftType {
 		e.ErrorString(`Both "split_gs_and_cwt" and "show_aircraft_type" cannot be specified for "pdb" adaption.`)
 	}
-	if fa.PDB.SplitGSAndCWT && fa.PDB.HideGroundspeed {
+	if fa.Datablocks.PDB.SplitGSAndCWT && fa.Datablocks.PDB.HideGroundspeed {
 		e.ErrorString(`Both "split_gs_and_cwt" and "hide_gs" cannot be specified for "pdb" adaption.`)
 	}
-	if fa.PDB.DisplayCustomSPCs && len(fa.CustomSPCs) == 0 {
+	if fa.Datablocks.PDB.DisplayCustomSPCs && len(fa.CustomSPCs) == 0 {
 		e.ErrorString(`"display_custom_spcs" was set but none were defined in "custom_spcs".`)
 	}
 
 	// Scratchpad1 mutual exclusion.
 	disp := make(map[string]any)
-	if fa.Scratchpad1.DisplayExitFix {
+	if fa.Datablocks.Scratchpad1.DisplayExitFix {
 		disp["display_exit_fix"] = nil
 	}
-	if fa.Scratchpad1.DisplayExitFix1 {
+	if fa.Datablocks.Scratchpad1.DisplayExitFix1 {
 		disp["display_exit_fix_1"] = nil
 	}
-	if fa.Scratchpad1.DisplayExitGate {
+	if fa.Datablocks.Scratchpad1.DisplayExitGate {
 		disp["display_exit_gate"] = nil
 	}
-	if fa.Scratchpad1.DisplayAltExitGate {
+	if fa.Datablocks.Scratchpad1.DisplayAltExitGate {
 		disp["display_alternate_exit_gate"] = nil
 	}
 	if len(disp) > 1 {
@@ -438,7 +438,7 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 
 	// Coordination lists: name/id required, id uniqueness.
 	seenIds := make(map[string][]string)
-	for _, list := range fa.CoordinationLists {
+	for _, list := range fa.Lists.Coordination {
 		e.Push(`"coordination_lists" ` + list.Name)
 
 		if list.Name == "" {

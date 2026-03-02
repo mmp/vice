@@ -1277,43 +1277,6 @@
             }
         },
         "center": "N41.58.34.897,W87.54.27.062",
-        "coordination_lists": [
-            {
-                "name": "PWK",
-                "id": "A",
-                "airports": [
-                    "KPWK"
-                ]
-            },
-            {
-                "name": "DPA",
-                "id": "B",
-                "airports": [
-                    "KDPA"
-                ]
-            },
-            {
-                "name": "GYY",
-                "id": "C",
-                "airports": [
-                    "KGYY"
-                ]
-            },
-            {
-                "name": "ARR",
-                "id": "D",
-                "airports": [
-                    "KARR"
-                ]
-            },
-            {
-                "name": "LOT",
-                "id": "E",
-                "airports": [
-                    "KLOT"
-                ]
-            }
-        ],
         "filters": {
             "inhibit_ca": [
                 {
@@ -1571,6 +1534,45 @@
                     "ZAU C90 NSAT RNAV"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "PWK",
+                    "id": "A",
+                    "airports": [
+                        "KPWK"
+                    ]
+                },
+                {
+                    "name": "DPA",
+                    "id": "B",
+                    "airports": [
+                        "KDPA"
+                    ]
+                },
+                {
+                    "name": "GYY",
+                    "id": "C",
+                    "airports": [
+                        "KGYY"
+                    ]
+                },
+                {
+                    "name": "ARR",
+                    "id": "D",
+                    "airports": [
+                        "KARR"
+                    ]
+                },
+                {
+                    "name": "LOT",
+                    "id": "E",
+                    "airports": [
+                        "KLOT"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

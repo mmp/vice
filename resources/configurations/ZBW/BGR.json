@@ -34,15 +34,6 @@
                 }
             }
         },
-        "coordination_lists": [
-            {
-                "name": "BHB",
-                "id": "A",
-                "airports": [
-                    "KBHB"
-                ]
-            }
-        ],
         "center": "KBGR",
         "controller_configs": {
             "1B": {
@@ -76,6 +67,17 @@
                     "BGR RVM"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "BHB",
+                    "id": "A",
+                    "airports": [
+                        "KBHB"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

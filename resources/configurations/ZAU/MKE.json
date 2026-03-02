@@ -177,36 +177,6 @@
             }
         },
         "center": "KMKE",
-        "coordination_lists": [
-            {
-                "name": "OSH",
-                "id": "A",
-                "airports": [
-                    "KOSH"
-                ]
-            },
-            {
-                "name": "MWC",
-                "id": "B",
-                "airports": [
-                    "KMWC"
-                ]
-            },
-            {
-                "name": "UES",
-                "id": "C",
-                "airports": [
-                    "KUES"
-                ]
-            },
-            {
-                "name": "ENW",
-                "id": "D",
-                "airports": [
-                    "KENW"
-                ]
-            }
-        ],
         "filters": {
             "inhibit_ca": [
                 {
@@ -318,6 +288,38 @@
                     "MKE RWY 25L"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "OSH",
+                    "id": "A",
+                    "airports": [
+                        "KOSH"
+                    ]
+                },
+                {
+                    "name": "MWC",
+                    "id": "B",
+                    "airports": [
+                        "KMWC"
+                    ]
+                },
+                {
+                    "name": "UES",
+                    "id": "C",
+                    "airports": [
+                        "KUES"
+                    ]
+                },
+                {
+                    "name": "ENW",
+                    "id": "D",
+                    "airports": [
+                        "KENW"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

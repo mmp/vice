@@ -485,7 +485,7 @@ func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {
 	releaseAircraft := ctx.Client.State.GetSTARSReleaseDepartures()
 
 	fa := ctx.FacilityAdaptation
-	for _, list := range fa.CoordinationLists {
+	for _, list := range fa.Lists.Coordination {
 		// Get the aircraft that should be included in this list.
 		deps := util.FilterSlice(releaseAircraft,
 			func(dep sim.ReleaseDeparture) bool {

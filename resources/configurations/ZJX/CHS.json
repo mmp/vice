@@ -63,15 +63,6 @@
                 }
             ]
         },
-        "coordination_lists": [
-            {
-                "name": ".    JZI",
-                "id": "J",
-                "airports": [
-                    "KJZI"
-                ]
-            }
-        ],
         "scratchpads": {
             "GIPPL": "LGR",
             "LGRHD": "LGR",
@@ -189,6 +180,17 @@
                     "JZI FINALS"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": ".    JZI",
+                    "id": "J",
+                    "airports": [
+                        "KJZI"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

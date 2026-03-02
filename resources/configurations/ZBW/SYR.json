@@ -87,15 +87,6 @@
             }
         },
         "center": "N043.06.43.349,W076.06.22.928",
-        "coordination_lists": [
-            {
-                "name": "GRIFFISS",
-                "id": "A",
-                "airports": [
-                    "KRME"
-                ]
-            }
-        ],
         "radar_sites": {
             "KSYR": {
                 "char": "S",
@@ -233,6 +224,17 @@
                     "RME D"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "GRIFFISS",
+                    "id": "A",
+                    "airports": [
+                        "KRME"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

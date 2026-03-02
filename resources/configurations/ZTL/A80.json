@@ -522,50 +522,6 @@
         "center": "N33.38.24.846,W84.25.42.088",
         "force_ql_self": true,
         "allow_long_scratchpad": true,
-        "coordination_lists": [
-            {
-                "name": "FULTON COUNTY",
-                "id": "FTY",
-                "airports": [
-                    "KFTY"
-                ]
-            },
-            {
-                "name": "PEACHTREE DEKALB",
-                "id": "PDK",
-                "airports": [
-                    "KPDK"
-                ]
-            },
-            {
-                "name": "GWINNETT COUNTY",
-                "id": "LZU",
-                "airports": [
-                    "KLZU"
-                ]
-            },
-            {
-                "name": "COLUMBUS",
-                "id": "CSG",
-                "airports": [
-                    "KCSG"
-                ]
-            },
-            {
-                "name": "ATHENS",
-                "id": "AHN",
-                "airports": [
-                    "KAHN"
-                ]
-            },
-            {
-                "name": "MACON",
-                "id": "MCN",
-                "airports": [
-                    "KMCN"
-                ]
-            }
-        ],
         "controller_configs": {
             "1H": {
                 "default_maps": [
@@ -1677,6 +1633,52 @@
                     "type": "route",
                     "to": "A80",
                     "from": "ZTL"
+                }
+            ]
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "FULTON COUNTY",
+                    "id": "FTY",
+                    "airports": [
+                        "KFTY"
+                    ]
+                },
+                {
+                    "name": "PEACHTREE DEKALB",
+                    "id": "PDK",
+                    "airports": [
+                        "KPDK"
+                    ]
+                },
+                {
+                    "name": "GWINNETT COUNTY",
+                    "id": "LZU",
+                    "airports": [
+                        "KLZU"
+                    ]
+                },
+                {
+                    "name": "COLUMBUS",
+                    "id": "CSG",
+                    "airports": [
+                        "KCSG"
+                    ]
+                },
+                {
+                    "name": "ATHENS",
+                    "id": "AHN",
+                    "airports": [
+                        "KAHN"
+                    ]
+                },
+                {
+                    "name": "MACON",
+                    "id": "MCN",
+                    "airports": [
+                        "KMCN"
+                    ]
                 }
             ]
         }

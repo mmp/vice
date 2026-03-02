@@ -717,22 +717,6 @@
                 }
             ]
         },
-        "coordination_lists": [
-            {
-                "name": "Palo Alto",
-                "id": "P",
-                "airports": [
-                    "KPAO"
-                ]
-            },
-            {
-                "name": "Salinas",
-                "id": "Y",
-                "airports": [
-                    "KSNS"
-                ]
-            }
-        ],
         "radar_sites": {
             "NUQ": {
                 "char": "N",
@@ -1831,6 +1815,24 @@
                 "center": "KSJC",
                 "range": 45
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "Palo Alto",
+                    "id": "P",
+                    "airports": [
+                        "KPAO"
+                    ]
+                },
+                {
+                    "name": "Salinas",
+                    "id": "Y",
+                    "airports": [
+                        "KSNS"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

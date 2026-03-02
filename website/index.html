@@ -220,7 +220,16 @@
 	    <ul class="submenu">
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-config-common">Common</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-config-eram">ERAM</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-config-stars">STARS</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-config-stars">STARS</a>
+	        <ul class="submenu">
+	          <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-datablocks">Datablocks</a></li>
+	          <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-lists">Lists</a></li>
+	          <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-restriction-areas">Restriction Areas</a></li>
+	          <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-filters">Filter Regions</a></li>
+	          <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-fdam">FDAM Regions</a></li>
+	          <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-list-format">List Formatting</a></li>
+	        </ul>
+	      </li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-video-maps">Video Maps</a></li>
 	    </ul>
 	  </li>
@@ -7384,24 +7393,52 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>"control_positions"</td>
                 <td>Object</td>
                 <td><p>Information about all of the controllers at the facility.
-                Each member specifies a controller for the named position/sector.
+                Each member specifies a controller for the named position/sector;
+                the sector id of the control position is the key of the object.
                 For each position, the following members should be specified:</p>
-                  <ul>
-                    <li>the sector id of the control position would be the key of the object.</li>
-                    <li>"callsign": (<i>Optional</i>) a human-readable callsign for the position (e.g., "PHL_NA_APP").</li>
-                    <li>"radio_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
-                    <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
-                    <li>"facility": (<i>Optional</i>) a string giving the STARS facility identifier for the controller.</li>
-                    <li>"area": (<i>Optional</i>) the area for this controller. For TRACON controllers, this is auto-derived
-                      from the first digit of the position id. For ERAM controllers, it must be specified manually.</li>
-                    <li>"scope_char":  (<i>Optional</i>) a string giving a single character for the STARS position symbol for tracks owned by this position (e.g., "C"). If unset, the position symbol is generated automatically by:
-                      <ul>
-                        <li>For local positions, the last character of the TCP id: "4P" gets "P", for example.</li>
-                        <li>For positions at external facilities, the numeric "facility_id".</li>
-                        <li>For enroute controllers (in ARTCC configs), the first character of their sector id: "N56" gets "N" by default.</li>
-                      </ul>
-                      An error is issued if the given "scope_char" is the same as <i>vice</i> would have automatically selected.</li>
-                  </ul>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"callsign"</td>
+                      <td>String</td>
+                      <td>(<i>Optional</i>) A human-readable callsign for the position (e.g., "PHL_NA_APP").</td>
+                    </tr>
+                    <tr>
+                      <td>"radio_name"</td>
+                      <td>String</td>
+                      <td>The name of the control position, used in radio readbacks (e.g., "Philadelphia approach").</td>
+                    </tr>
+                    <tr>
+                      <td>"frequency"</td>
+                      <td>Number</td>
+                      <td>The controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325).</td>
+                    </tr>
+                    <tr>
+                      <td>"facility"</td>
+                      <td>String</td>
+                      <td>(<i>Optional</i>) The STARS facility identifier for the controller.</td>
+                    </tr>
+                    <tr>
+                      <td>"area"</td>
+                      <td>String</td>
+                      <td>(<i>Optional</i>) The area for this controller. For TRACON controllers, this is auto-derived
+                        from the first digit of the position id. For ERAM controllers, it must be specified manually.</td>
+                    </tr>
+                    <tr>
+                      <td>"scope_char"</td>
+                      <td>String</td>
+                      <td>(<i>Optional</i>) A single character for the STARS position symbol for tracks owned by this position (e.g., "C").
+                        If unset, the position symbol is generated automatically:
+                        for local positions, the last character of the TCP id ("4P" gets "P");
+                        for positions at external facilities, the numeric "facility_id";
+                        for enroute controllers (in ARTCC configs), the first character of their sector id ("N56" gets "N").
+                        An error is issued if the given "scope_char" is the same as <i>vice</i> would have automatically selected.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -7473,13 +7510,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>Array of objects</td>
                 <td><p>Defines fix pair rules for fine-grained aircraft routing assignments.
                   Each object specifies an entry/exit fix combination with optional constraints:</p>
-                  <ul>
-                    <li>"entry_fix": string giving the entry fix name. Empty string matches any entry fix.</li>
-                    <li>"exit_fix": string giving the exit fix name. Empty string matches any exit fix.</li>
-                    <li>"flight_type": (<i>Optional</i>) "A" for arrivals, "P" for departures, "E" for overflights. If omitted, matches any type.</li>
-                    <li>"altitude_range": (<i>Optional</i>) array of two numbers [floor, ceiling] in feet. If omitted or [0,0], no altitude constraint.</li>
-                    <li>"priority": a number giving the match priority; lower numbers are higher priority. Must be unique per configuration.</li>
-                  </ul>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"entry_fix"</td>
+                      <td>String</td>
+                      <td>The entry fix name. Empty string matches any entry fix.</td>
+                    </tr>
+                    <tr>
+                      <td>"exit_fix"</td>
+                      <td>String</td>
+                      <td>The exit fix name. Empty string matches any exit fix.</td>
+                    </tr>
+                    <tr>
+                      <td>"flight_type"</td>
+                      <td>String</td>
+                      <td>(<i>Optional</i>) "A" for arrivals, "P" for departures, "E" for overflights. If omitted, matches any type.</td>
+                    </tr>
+                    <tr>
+                      <td>"altitude_range"</td>
+                      <td>Array of two numbers</td>
+                      <td>(<i>Optional</i>) Altitude range [floor, ceiling] in feet. If omitted or [0,0], no altitude constraint.</td>
+                    </tr>
+                    <tr>
+                      <td>"priority"</td>
+                      <td>Number</td>
+                      <td>The match priority; lower numbers are higher priority. Must be unique per configuration.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
             </tbody>
@@ -7523,39 +7585,68 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>Defines facility configurations that can be referenced by scenarios.
                   Each key is a short identifier (maximum 3 characters) for the configuration,
                   and the value is an object with the following members:
-                  <ul>
-                    <li>"inbound_assignments": An object that maps inbound flow names to the TCP
-                    that handles them. This determines where handoffs of inbound aircraft go.</li>
-                    <li>"departure_assignments": An object that maps from strings denoting departures
-                      to the TCP responsible for them. Each string can be an airport name
-                      ("KJFK"), a slash-separated airport name and runway
-                      ("KJFK/22R"), or a slash-separated airport name and
-                      SID ("KJFK/SKORR5"). It is not allowed to specify runway and SID departure selections
-                      at an airport, however the airport name alone may be given as a catch-all
-                      for any unspecified runways/SIDs if that method is used.</li>
-                    <li>"go_around_assignments": An optional object that maps airports or airport/runway
-                      combinations to the TCP that should handle go-arounds. Keys can be
-                      airport name ("KJFK") or airport/runway ("KJFK/22L") for per-runway
-                      specification. If not specified for an airport/runway, the departure
-                      controller for that airport is used.</li>
-                    <li>"default_consolidation": An object that defines the consolidation hierarchy. Each key is a parent TCP,
-                      and its value is an array of TCPs that are consolidated into it.
-                      For example: <code>{"1A": ["1B", "1C"], "1C": ["1D"]}</code> means 1B and 1C are consolidated
-                      into 1A, and 1D is consolidated into 1C (and transitively into 1A).
-                      All positions that are covered by humans must be present exactly once in the consolidation hierarchy.
-                      All positions must eventually consolidate into a single <i>root</i> position; this
-                      is the primary controller for the scenario.</li>
-                    <li>"fix_pair_assignments": (<i>Optional</i>) An array of objects mapping fix pair rules to controllers.
-                      Each object has "tcp" (the controller to assign) and "priority" (matching priority; lower is higher).
-                      These reference the fix pair definitions from the top-level "fix_pairs" in the facility config.</li>
-                    <li>"scratchpad_leader_line_directions": (<i>Optional</i>) An object that maps
-                      primary scratchpad values to leader line directions. Keys are scratchpad
-                      strings (subject to standard scratchpad validation rules) and values are
-                      cardinal/ordinal direction strings: "N", "NE", "E", "SE", "S", "SW", "W",
-                      or "NW". When an aircraft has a matching primary scratchpad, the specified
-                      direction is used for the leader line. This takes effect after per-aircraft
-                      and FDAM direction overrides but before controller default directions.</li>
-                  </ul>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"inbound_assignments"</td>
+                      <td>Object</td>
+                      <td>Maps inbound flow names to the TCP
+                        that handles them. This determines where handoffs of inbound aircraft go.</td>
+                    </tr>
+                    <tr>
+                      <td>"departure_assignments"</td>
+                      <td>Object</td>
+                      <td>Maps from strings denoting departures
+                        to the TCP responsible for them. Each string can be an airport name
+                        ("KJFK"), a slash-separated airport name and runway
+                        ("KJFK/22R"), or a slash-separated airport name and
+                        SID ("KJFK/SKORR5"). It is not allowed to specify runway and SID departure selections
+                        at an airport, however the airport name alone may be given as a catch-all
+                        for any unspecified runways/SIDs if that method is used.</td>
+                    </tr>
+                    <tr>
+                      <td>"go_around_assignments"</td>
+                      <td>Object</td>
+                      <td>(<i>Optional</i>) Maps airports or airport/runway
+                        combinations to the TCP that should handle go-arounds. Keys can be
+                        airport name ("KJFK") or airport/runway ("KJFK/22L") for per-runway
+                        specification. If not specified for an airport/runway, the departure
+                        controller for that airport is used.</td>
+                    </tr>
+                    <tr>
+                      <td>"default_consolidation"</td>
+                      <td>Object</td>
+                      <td>Defines the consolidation hierarchy. Each key is a parent TCP,
+                        and its value is an array of TCPs that are consolidated into it.
+                        For example: <code>{"1A": ["1B", "1C"], "1C": ["1D"]}</code> means 1B and 1C are consolidated
+                        into 1A, and 1D is consolidated into 1C (and transitively into 1A).
+                        All positions that are covered by humans must be present exactly once in the consolidation hierarchy.
+                        All positions must eventually consolidate into a single <i>root</i> position; this
+                        is the primary controller for the scenario.</td>
+                    </tr>
+                    <tr>
+                      <td>"fix_pair_assignments"</td>
+                      <td>Array of objects</td>
+                      <td>(<i>Optional</i>) Maps fix pair rules to controllers.
+                        Each object has "tcp" (the controller to assign) and "priority" (matching priority; lower is higher).
+                        These reference the fix pair definitions from the top-level "fix_pairs" in the facility config.</td>
+                    </tr>
+                    <tr>
+                      <td>"scratchpad_leader_line_directions"</td>
+                      <td>Object</td>
+                      <td>(<i>Optional</i>) Maps
+                        primary scratchpad values to leader line directions. Keys are scratchpad
+                        strings (subject to standard scratchpad validation rules) and values are
+                        cardinal/ordinal direction strings: "N", "NE", "E", "SE", "S", "SW", "W",
+                        or "NW". When an aircraft has a matching primary scratchpad, the specified
+                        direction is used for the leader line. This takes effect after per-aircraft
+                        and FDAM direction overrides but before controller default directions.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                   These configurations allow multiple scenarios to share the same assignment definitions,
                   reducing duplication when only the consolidation hierarchy differs between scenarios.
                   The TCPs referenced in assignments must exist in <a href="#fe-facility-config">"control_positions"</a> in the facility configuration.
@@ -7567,62 +7658,128 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <tr>
                 <td>"controller_configs"</td>
                 <td>Object</td>
-                <td>Each entry specifies controller-specific configuration properties.
+                <td><p>Each entry specifies controller-specific configuration properties.
                   The applicable control positions are specified via members given as a TCP position
-                  (e.g., "2G"). The following properties may be specified for each one:
-                  <br>
-                  <ul>
-                    <li>"beacon_code_blocks": a string containing a comma-separated list of beacon code banks
-                      (two digits) or discrete beacon codes (four digits) that should be monitored by default.</li>
-                    <li>"center": the initial center of the controller's STARS scope.
-                      This takes highest priority, overriding "area_configs" center and the top-level center.</li>
-                    <li>"default_maps": an array of strings that specifies which maps in "video_maps"
-                      should be initially displayed.</li>
-                    <li>"flight_following_airspace": an array of regions of airspace (both lateral and vertical)
-                      following the form that is used for defining <a href="#fe-stars-filters">filter regions</a>.
-                      (In this case, "id" and "description" are optional.") Only VFR aircraft within the specified
-                      region will call the controller for flight following.</li>
-                    <li>"range": the initial range for the controller's scope in nautical miles.
-                      This takes highest priority, overriding "area_configs" range and the top-level range.</li>
-                    <li>"video_maps": an array of strings specifying which video maps should be displayed
-                      in the DCB for the controller. If specified, these override the area-level "video_maps"
-                      in "area_configs".</li>
-                  </ul>
+                  (e.g., "2G"). The following properties may be specified for each one:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"beacon_code_blocks"</td>
+                      <td>String</td>
+                      <td>A comma-separated list of beacon code banks
+                        (two digits) or discrete beacon codes (four digits) that should be monitored by default.</td>
+                    </tr>
+                    <tr>
+                      <td>"center"</td>
+                      <td>String</td>
+                      <td>The initial center of the controller's STARS scope.
+                        This takes highest priority, overriding "area_configs" center and the top-level center.</td>
+                    </tr>
+                    <tr>
+                      <td>"default_maps"</td>
+                      <td>Array of strings</td>
+                      <td>Specifies which maps in "video_maps" should be initially displayed.</td>
+                    </tr>
+                    <tr>
+                      <td>"flight_following_airspace"</td>
+                      <td>Array of objects</td>
+                      <td>Regions of airspace (both lateral and vertical)
+                        following the form that is used for defining <a href="#fe-stars-filters">filter regions</a>.
+                        (In this case, "id" and "description" are optional.) Only VFR aircraft within the specified
+                        region will call the controller for flight following.</td>
+                    </tr>
+                    <tr>
+                      <td>"range"</td>
+                      <td>Number</td>
+                      <td>The initial range for the controller's scope in nautical miles.
+                        This takes highest priority, overriding "area_configs" range and the top-level range.</td>
+                    </tr>
+                    <tr>
+                      <td>"video_maps"</td>
+                      <td>Array of strings</td>
+                      <td>Specifies which video maps should be displayed
+                        in the DCB for the controller. If specified, these override the area-level "video_maps"
+                        in "area_configs".</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
                 <td>"area_configs"</td>
                 <td>Object</td>
-                <td>Defines per-area configuration for TRACON areas.
+                <td><p>Defines per-area configuration for TRACON areas.
                   Each key is the area number (e.g., "1", "2", "3") corresponding to the first digit
                   of the control positions assigned to that area.
-                  The following properties may be specified for each area:
-                  <ul>
-                    <li>"video_maps": an array of strings specifying the available video maps shown in the
-                      STARS DCB for controllers in this area.
-                      The first 6 are shown in the main DCB and all are available under the "MAPS" sub-menu.
-                      An empty string, <code>""</code>, may be given to specify an empty map button in the DCB.
-                      No more than 38 maps may be specified.
-                      Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the
-                      available maps for an ARTCC.</li>
-                    <li>"default_maps": an array of strings specifying which of the video maps should be
-                      initially displayed.</li>
-                    <li>"center": the initial center of the STARS scope for controllers in this area.
-                      This is overridden by any center specified in "controller_configs" and overrides
-                      the top-level "center" in the facility configuration.</li>
-                    <li>"range": the initial range for the scope in nautical miles.
-                      This is overridden by any range specified in "controller_configs" and overrides
-                      the top-level "range" in the facility configuration.</li>
-                    <li>"beacon_code_blocks": a string of comma-separated beacon code banks or discrete codes
-                      to monitor by default for controllers in this area.</li>
-                    <li>"default_airport": the CRDA default airport for this area.</li>
-                    <li>"flight_following_airspace": an array of airspace volumes for flight following
-                      in this area.</li>
-                    <li>"coordination_lists": an array of coordination list objects for this area,
-                      following the same format as the top-level "coordination_lists".</li>
-                    <li>"airspace": an object mapping controller identifiers to arrays of airspace volumes.
-                      Used to define controller-specific airspace boundaries for the area.</li>
-                  </ul>
+                  The following properties may be specified for each area:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"video_maps"</td>
+                      <td>Array of strings</td>
+                      <td>The available video maps shown in the
+                        STARS DCB for controllers in this area.
+                        The first 6 are shown in the main DCB and all are available under the "MAPS" sub-menu.
+                        An empty string, <code>""</code>, may be given to specify an empty map button in the DCB.
+                        No more than 38 maps may be specified.
+                        Run <code>vice.exe -listmaps [path-to-XXX-videomaps.gob.zst]</code> to list the
+                        available maps for an ARTCC.</td>
+                    </tr>
+                    <tr>
+                      <td>"default_maps"</td>
+                      <td>Array of strings</td>
+                      <td>Specifies which of the video maps should be initially displayed.</td>
+                    </tr>
+                    <tr>
+                      <td>"center"</td>
+                      <td>String</td>
+                      <td>The initial center of the STARS scope for controllers in this area.
+                        This is overridden by any center specified in "controller_configs" and overrides
+                        the top-level "center" in the facility configuration.</td>
+                    </tr>
+                    <tr>
+                      <td>"range"</td>
+                      <td>Number</td>
+                      <td>The initial range for the scope in nautical miles.
+                        This is overridden by any range specified in "controller_configs" and overrides
+                        the top-level "range" in the facility configuration.</td>
+                    </tr>
+                    <tr>
+                      <td>"beacon_code_blocks"</td>
+                      <td>String</td>
+                      <td>Comma-separated beacon code banks or discrete codes
+                        to monitor by default for controllers in this area.</td>
+                    </tr>
+                    <tr>
+                      <td>"default_airport"</td>
+                      <td>String</td>
+                      <td>The CRDA default airport for this area.</td>
+                    </tr>
+                    <tr>
+                      <td>"flight_following_airspace"</td>
+                      <td>Array of objects</td>
+                      <td>Airspace volumes for flight following in this area.</td>
+                    </tr>
+                    <tr>
+                      <td>"coordination_lists"</td>
+                      <td>Array of objects</td>
+                      <td>Coordination list objects for this area,
+                        following the same format as the top-level <a href="#fe-stars-lists">"coordination"</a> lists.</td>
+                    </tr>
+                    <tr>
+                      <td>"airspace"</td>
+                      <td>Object</td>
+                      <td>Maps controller identifiers to arrays of airspace volumes.
+                        Used to define controller-specific airspace boundaries for the area.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -7674,19 +7831,35 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <tr>
                 <td>"airspace_awareness"</td>
                 <td>Array of objects</td>
-                <td>Each of these objects specify an airspace awareness rule for a TRACON. Each object has the
-                  following memebers. <br>
-                  <ul>
-                    <li>"fixes": an array of strings that represent that different fixes an aircraft could be filled
-                      on to apply for this rule. If "ALL" is given, </li>
-                    <li>"altitude_range": (<i>Optional</i>) an array of two numbers that represent the different cruising altitude that
-                      an airplane has to have to
-                      apply for this rule.
-                    </li>
-                    <li>"receiving_controller": the sector ID of the controller that will be receiving this rule.</li>
-                    <li>"aircraft_type": (<i>Optional</i>) an array of strings giving allowed aircraft types for the rule: "P" for props, "T" for turboprop/ turboshafts, and "J"
-                      for jets.</li>
-                  </ul>
+                <td><p>Each of these objects specifies an airspace awareness rule for a TRACON. Each object has the
+                  following members:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"fixes"</td>
+                      <td>Array of strings</td>
+                      <td>The fixes an aircraft could be filed on for this rule to apply. If "ALL" is given, all fixes match.</td>
+                    </tr>
+                    <tr>
+                      <td>"altitude_range"</td>
+                      <td>Array of two numbers</td>
+                      <td>(<i>Optional</i>) The cruising altitude range an aircraft must have for this rule to apply.</td>
+                    </tr>
+                    <tr>
+                      <td>"receiving_controller"</td>
+                      <td>String</td>
+                      <td>The sector ID of the controller that will receive aircraft matching this rule.</td>
+                    </tr>
+                    <tr>
+                      <td>"aircraft_type"</td>
+                      <td>Array of strings</td>
+                      <td>(<i>Optional</i>) Allowed aircraft types for the rule: "P" for props, "T" for turboprops/turboshafts, and "J" for jets.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -7705,48 +7878,37 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </td>
               </tr>
               <tr>
-                <td>"coast_suspend_list"</td>
-                <td>Object</td>
-                <td>Configures the coast/suspend list display format. The following property may be specified:
-                  <ul>
-                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the list.
-                      See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.
-                      If not specified, the default format <code>"[INDEX] [ACID] S [BEACON] [ALT]"</code> is used.
-                    </li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
                 <td>"coordination_fixes"</td>
                 <td>Object</td>
-                <td>Each member maps a fix name to an array of coordination fix definitions.
-                  Each definition has the following members:
-                  <ul>
-                    <li>"type": the type of coordination (e.g., "route", "radar").</li>
-                    <li>"to": the controller receiving the handoff.</li>
-                    <li>"from": the controller initiating the handoff.</li>
-                    <li>"altitude": an array of two numbers giving the altitude range [floor, ceiling] in feet.</li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>"coordination_lists"</td>
-                <td>Array of objects</td>
-                <td>Each entry specifies a coordination list used for releasing departures from one or more airports.
-                  The following properties should be specified for each one:
-                  <br>
-                  <ul>
-                    <li>"name": a string giving the list name. This is shown at the top of the list when it is visible in the STARS window.</li>
-                    <li>"id": a string giving the list's identifier. The id must be 1&ndash;3 alphanumeric characters and cannot be
-                    the number "1", "2", or "3". It is used to identify the list when entering STARS commands.</li>
-                    <li>"airports": an array of strings giving the airports managed by the list. Any airport with "hold_for_release"
-                    set to "true" must be in exactly one coordination
-                      list.</li>
-                    <li>"yellow_entries": (<i>Optional</i>) if true, entries in the list are drawn in yellow rather than green.
-                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the coordination list.
-                      See <a href="#fe-stars-list-format">List Formatting</a> for details.
-                      If not specified, a default format is used.
-                  </ul>
+                <td><p>Each member maps a fix name to an array of coordination fix definitions.
+                  Each definition has the following members:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"type"</td>
+                      <td>String</td>
+                      <td>The type of coordination (e.g., "route", "radar").</td>
+                    </tr>
+                    <tr>
+                      <td>"to"</td>
+                      <td>String</td>
+                      <td>The controller receiving the handoff.</td>
+                    </tr>
+                    <tr>
+                      <td>"from"</td>
+                      <td>String</td>
+                      <td>The controller initiating the handoff.</td>
+                    </tr>
+                    <tr>
+                      <td>"altitude"</td>
+                      <td>Array of two numbers</td>
+                      <td>The altitude range [floor, ceiling] in feet.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -7756,10 +7918,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   in yellow at the top of the datablock (e.g., "PJ" is used at some facilities for parachute jumps.)</td>
               </tr>
               <tr>
-                <td>"display_handoff_facility_only"</td>
-                <td>Boolean</td>
-                <td>If true, then the sector id of external facilities is not shown in the datablock
-                  for inbound and outbound handoffs.</td>
+                <td>"datablocks"</td>
+                <td>Object</td>
+                <td>Configures datablock display behavior.
+                  See <a href="#fe-stars-datablocks">Datablocks</a> for details.</td>
               </tr>
               <tr>
                 <td>"display_rnav_symbol"</td>
@@ -7768,83 +7930,120 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   will cause the RNAV flag to be set in aircraft flight plans when they spawn.</td>
               </tr>
               <tr>
-                <td>"fdb"</td>
-                <td>Object</td>
-                <td>Allows specifying various adapted configurations for full datablocks.
-                  The following members are available (both are "false" by default):
-                  <ul>
-                    <li>"display_requested_altitude": (Boolean value) if true, the requested altitudes of aircraft that
-                      have them in their flight plans are shown in the datablock (multiplexed with
-                      aircraft type and groundspeed).</li>
-                    <li>"scratchpad2_on_line3": (Boolean value) if true, when scratchpad 2 is set, it is displayed
-                      in the third line of the datablock (and timeshares with assigned altitude, if set) rather than
-                      timesharing with altitude and the first scratchpad in the second line of the datablock.</li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
                 <td>"filters"</td>
                 <td>Objects</td>
-                <td>Each member of this object defines a <a href="#fe-stars-filters">filter region</a> inside
-                  which STARS applies special rules to aircraft. The following types of filters may be specified:
-                  <ul>
-		    <li>"auto_acquisition": when an aircraft enters this filter region, its flight plan
-                      associates (if available), even if it is still controlled by an external controller
-                      and a handoff hasn't been initiated.</li>
-		    <li>"arrival_drop": when an arrival enters one of the specified filters, their flight
-                      plan disassociates from the aircraft and is deleted. A default volume 3f 2nm radius up to 500' AGL
-                      around each arrival airport is generated if no filters are specified.</li>
-		    <li>"departure": if a departing flight in a departure filter is squawking a code other than 1200
-                      and there is no flight plan for that squawk code, "WHO" is displayed in its datablock.
-                      The default volumes are 3nm circles from ground level to 500' AGL around the airport.</li>
-                    <li>"inhibit_ca": collision alerts are disabled for aircraft within the filter's volume.
-                      These are especially useful around airports so that alerts aren't issued for aircraft
-                      arriving/departing on parallel runways, for example.
-                      If not specified, a default volume of a circle with a 5nm radius going up to 3,000' AGL
-                      around each airport is used.</li>
-                    <li>"inhibit_msaw": minimum safe altitude warnings (MSAW) are disabled for aircraft
-                      within the filter's volume. Like "inhibit_ca", this is also useful around airports and
-                      a volume of a 5nm radius circle going up to 3,000' AGL around each airport is used
-                      if none are specified. </li>
-                    <li>"quicklook": the full datablock of any tracks owned by another controller is displayed
-                      rather than the partial datablock for tracks in the filter region.</li>
-		    <li>"secondary_drop": if an associated <b>exits</b> a secondary drop filter region, is controlled
-                      by a controller outside of the TRACON, and was previously controlled by a controller
-                      inside the current TRACON, its flight plan disassociates and is deleted.
-                      (Note that the test is that it exits the region, unlike the others that check for being
-                      inside the region. Secondary drop region are thus often specified along the boundary of
-                      a TRACON.)
-                      There are no default "secondary_drop" filters.</li>
-                    <li>"surface_tracking": defines a region of airspace off the ground at airports where
-                      radar tracks are not shown. By default, up to 250' AGL 1.5nm around each airport.</li>
-                    <li>"vfr_inhibit": random VFR routes will not be generated through this filter's airspace.</li>
-                    <li>"fdam": Flight Data Auto-Modify regions. When an associated
-                      track enters an enabled FDAM region and matches its qualifying
-                      attributes, adapted entry actions are automatically applied
-                      (scratchpad changes, leader direction changes, handoff initiation,
-                      ownership transfer, or force quicklook). When the track exits,
-                      selected changes can be reverted. See the
-                      <a href="#fe-stars-fdam">FDAM section</a> below for the full list
-                      of fields.</li>
-                  </ul>
+                <td><p>Each member of this object defines a <a href="#fe-stars-filters">filter region</a> inside
+                  which STARS applies special rules to aircraft. The following types of filters may be specified:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"auto_acquisition"</td>
+                      <td>When an aircraft enters this filter region, its flight plan
+                        associates (if available), even if it is still controlled by an external controller
+                        and a handoff hasn't been initiated.</td>
+                    </tr>
+                    <tr>
+                      <td>"arrival_drop"</td>
+                      <td>When an arrival enters one of the specified filters, their flight
+                        plan disassociates from the aircraft and is deleted. A default volume of 2nm radius up to 500' AGL
+                        around each arrival airport is generated if no filters are specified.</td>
+                    </tr>
+                    <tr>
+                      <td>"departure"</td>
+                      <td>If a departing flight in a departure filter is squawking a code other than 1200
+                        and there is no flight plan for that squawk code, "WHO" is displayed in its datablock.
+                        The default volumes are 3nm circles from ground level to 500' AGL around the airport.</td>
+                    </tr>
+                    <tr>
+                      <td>"inhibit_ca"</td>
+                      <td>Collision alerts are disabled for aircraft within the filter's volume.
+                        These are especially useful around airports so that alerts aren't issued for aircraft
+                        arriving/departing on parallel runways, for example.
+                        If not specified, a default volume of a circle with a 5nm radius going up to 3,000' AGL
+                        around each airport is used.</td>
+                    </tr>
+                    <tr>
+                      <td>"inhibit_msaw"</td>
+                      <td>Minimum safe altitude warnings (MSAW) are disabled for aircraft
+                        within the filter's volume. Like "inhibit_ca", this is also useful around airports and
+                        a volume of a 5nm radius circle going up to 3,000' AGL around each airport is used
+                        if none are specified.</td>
+                    </tr>
+                    <tr>
+                      <td>"quicklook"</td>
+                      <td>The full datablock of any tracks owned by another controller is displayed
+                        rather than the partial datablock for tracks in the filter region.</td>
+                    </tr>
+                    <tr>
+                      <td>"secondary_drop"</td>
+                      <td>If an associated track <b>exits</b> a secondary drop filter region, is controlled
+                        by a controller outside of the TRACON, and was previously controlled by a controller
+                        inside the current TRACON, its flight plan disassociates and is deleted.
+                        (Note that the test is that it exits the region, unlike the others that check for being
+                        inside the region. Secondary drop regions are thus often specified along the boundary of
+                        a TRACON.)
+                        There are no default "secondary_drop" filters.</td>
+                    </tr>
+                    <tr>
+                      <td>"surface_tracking"</td>
+                      <td>Defines a region of airspace off the ground at airports where
+                        radar tracks are not shown. By default, up to 250' AGL 1.5nm around each airport.</td>
+                    </tr>
+                    <tr>
+                      <td>"vfr_inhibit"</td>
+                      <td>Random VFR routes will not be generated through this filter's airspace.</td>
+                    </tr>
+                    <tr>
+                      <td>"fdam"</td>
+                      <td>Flight Data Auto-Modify regions. When an associated
+                        track enters an enabled FDAM region and matches its qualifying
+                        attributes, adapted entry actions are automatically applied
+                        (scratchpad changes, leader direction changes, handoff initiation,
+                        ownership transfer, or force quicklook). When the track exits,
+                        selected changes can be reverted. See the
+                        <a href="#fe-stars-fdam">FDAM section</a> below for the full list
+                        of fields.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
                 <td>"flight_plan"</td>
                 <td>Object</td>
-                <td>Allows specifying various adapted configurations for STARS flight plans.
-                  The following members are available:
-                  <ul>
-                    <li>"acid_expansions": an object mapping single-character abbreviations to ACID prefixes.
-                      When an aircraft ACID starts with one of the specified characters, the character
-                      is expanded to the full prefix. Valid abbreviation characters are A-Z, 0-9, +, ., *, ^, or /.</li>
-                    <li>"modify_after_display": Boolean value; if set, then after a flight plan is
-                      displayed with the <code>[MULTIFUNC]D</code> command, an element in the flight
-                      plan can be immediately modified, as if <code>[MULTIFUNC]M</code> had been entered.</li>
-                    <li>"quick_acid": string that gives the up-to-3 character callsign that is used
-                      when a quick flight plan is generated for an aircraft by entering "Y" and slewing it.
-                      A unique integer identifier is added to this ACID. If unset, "VCE" is used by default.</li>
-                  </ul>
+                <td><p>Allows specifying various adapted configurations for STARS flight plans.
+                  The following members are available:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"acid_expansions"</td>
+                      <td>Object</td>
+                      <td>Maps single-character abbreviations to ACID prefixes.
+                        When an aircraft ACID starts with one of the specified characters, the character
+                        is expanded to the full prefix. Valid abbreviation characters are A-Z, 0-9, +, ., *, ^, or /.</td>
+                    </tr>
+                    <tr>
+                      <td>"modify_after_display"</td>
+                      <td>Boolean</td>
+                      <td>If set, then after a flight plan is
+                        displayed with the <code>[MULTIFUNC]D</code> command, an element in the flight
+                        plan can be immediately modified, as if <code>[MULTIFUNC]M</code> had been entered.</td>
+                    </tr>
+                    <tr>
+                      <td>"quick_acid"</td>
+                      <td>String</td>
+                      <td>The up-to-3 character callsign that is used
+                        when a quick flight plan is generated for an aircraft by entering "Y" and slewing it.
+                        A unique integer identifier is added to this ACID. If unset, "VCE" is used by default.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -7852,31 +8051,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>Boolean</td>
                 <td>Indicates whether controllers may enter <code>**[SLEW]</code> to make a track appear yellow
                 on their own scope.</td>
-              </tr>
-              <tr>
-                <td>"full_ldb_seconds"</td>
-                <td>Number</td>
-                <td>If non-zero, gives the number of seconds that a full datablock is displayed
-                  after being expanded from a limited datablock (via <code>[MULTIFUNC]L</code>)
-                  before reverting to the limited datablock.</td>
-              </tr>
-              <tr>
-                <td>"handoff_acceptance_flash_duration"</td>
-                <td>Number</td>
-                <td>If non-zero, gives the number of seconds that the datablock should flash after a handoff is accepted.
-                  If unset, datablocks will flash for 5 seconds.</td>
-              </tr>
-              <tr>
-                <td>"handoff_sector_display_duration"</td>
-                <td>Number</td>
-                <td>If non-zero, gives the number of seconds that the sector id for a handoff to/from an
-                  external facilities is shown in the datablock after the handoff has been accepted.</td>
-              </tr>
-              <tr>
-                <td>"keep_ldb"</td>
-                <td>Boolean</td>
-                <td>If true, limited datablocks are retained for tracks that have been
-                  given the limited datablock display rather than reverting to the partial datablock.</td>
               </tr>
               <tr>
                 <td>"map_labels"</td>
@@ -7888,16 +8062,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </td>
               </tr>
               <tr>
-                <td>"mci_suppression_list"</td>
+                <td>"lists"</td>
                 <td>Object</td>
-                <td>Configures the MCI suppression list display format. The following property may be specified:
-                  <ul>
-                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the list.
-                      See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.
-                      If not specified, the default format <code>"[ACID] [BEACON]  [SUPP_BEACON]"</code> is used.
-                    </li>
-                  </ul>
-                </td>
+                <td>Configures system lists (coordination, VFR, TAB, tower, etc.).
+                  See <a href="#fe-stars-lists">Lists</a> for details.</td>
               </tr>
               <tr>
                 <td>"monitor"</td>
@@ -7907,101 +8075,62 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </td>
               </tr>
               <tr>
-                <td>"pdb"</td>
-                <td>Object</td>
-                <td>Allows specifying various adapted configurations for partial datablocks.
-                  The following members are available (all are "false" by default):
-                  <ul>
-                    <li>"display_custom_spcs": if true, custom SPCs (defined via "custom_spcs") are shown in partial datablocks.</li>
-                    <li>"hide_gs": if true, groundspeed is not shown in the PDB.</li>
-                    <li>"show_aircraft_type": if true, the aircraft type is shown, time-shared with the groundspeed.</li>
-                    <li>"show_scratchpad2": if true, the contents of scratchpad 2 are shown, time-shared with altitude
-                    and the first scratchpad.</li>
-                    <li>"split_gs_and_cwt": if true, groundspeed and the flight rules / CWT category are shown separately,
-                    timesliced, rather than together.</li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
                 <td>"radar_sites"</td>
                 <td>Array of objects (<i>Optional</i>)</td>
-                <td>Specification of all of the radar sites.
+                <td><p>Specification of all of the radar sites.
                   (If not specified, then STARS Fused mode is the only radar mode available.)
                   Each object member describes a radar site; the member's name gives the site's identifier.
-                  Each radar site has the following configuration values:
-                  <ul>
-                    <li>"char": a single character string identifier for the radar</li>
-                    <li>"elevation": an integer giving the radar site's
-                    elevation in feet. (Not required if the position is
-                    specified using an airport ICAO code.)</li>
-                    <li>"position": the radar's lateral position</li>
-                    <li>"primary_range": an integer giving the range in nautical miles at which the radar can pick up a primary track (typically, 60)</li>
-                    <li>"secondary_range": an integer giving the range in nautical miles at which the radar can pick up a secondary track (typically, 120)</li>
-                    <li>"silence_angle": the spread angle in degrees of the radar's "cone of silence"&mdash;the volume above it where aircraft cannot be tracked (typically, 30)</li>
-                    <li>"slope_angle": the angle in degrees with respect to the ground that the base of radar coverage increases as a function of distance from the radar site (typically, 0.175)</li>
-                  </ul>
+                  Each radar site has the following configuration values:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"char"</td>
+                      <td>String</td>
+                      <td>A single character identifier for the radar.</td>
+                    </tr>
+                    <tr>
+                      <td>"elevation"</td>
+                      <td>Number</td>
+                      <td>The radar site's elevation in feet. (Not required if the position is
+                        specified using an airport ICAO code.)</td>
+                    </tr>
+                    <tr>
+                      <td>"position"</td>
+                      <td>String</td>
+                      <td>The radar's lateral position.</td>
+                    </tr>
+                    <tr>
+                      <td>"primary_range"</td>
+                      <td>Number</td>
+                      <td>The range in nautical miles at which the radar can pick up a primary track (typically, 60).</td>
+                    </tr>
+                    <tr>
+                      <td>"secondary_range"</td>
+                      <td>Number</td>
+                      <td>The range in nautical miles at which the radar can pick up a secondary track (typically, 120).</td>
+                    </tr>
+                    <tr>
+                      <td>"silence_angle"</td>
+                      <td>Number</td>
+                      <td>The spread angle in degrees of the radar's "cone of silence"&mdash;the volume above it where aircraft cannot be tracked (typically, 30).</td>
+                    </tr>
+                    <tr>
+                      <td>"slope_angle"</td>
+                      <td>Number</td>
+                      <td>The angle in degrees with respect to the ground that the base of radar coverage increases as a function of distance from the radar site (typically, 0.175).</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
                 <td>"restriction_areas"</td>
                 <td>Array of objects</td>
-                <td>Allows specifying restriction areas that controllers may display in the STARS window.
-                  The following members are available for all types of restriction area (text-only, circular, polygonal):
-                  <ul>
-                    <li>"title" (string): gives the restriction area title that is displayed in the "GEO RESTRICTIONS" list.</li>
-                    <li>"text" (array of two strings, <i>optional</i>): if provided, each string defines a line of text that can
-                      be displayed with the restriction area.</li>
-                    <li>"blinking_text" (Boolean, <i>optional</i>): if true, the given text will flash when displayed in STARS.</li>
-                    <li>"hide_id" (Boolean, <i>optional</i>): if true, the numeric restriction area is not displayed before
-                      the text when the restriction area is visible.</li>
-                    <li>"text_position" (location, <i>optional for circular and polygonal</i>):
-                      the center point of the text, specified using one of the encodings
-                      in <a href="fe-locations">Specifying Locations</a>.</li>
-                    <li>"color" (number, <i>optional</i>): the color index for the restriction area display.</li>
-                  </ul>
-                  For circular restriction areas, two additional parameters must be specified:
-                  <ul>
-                    <li>"circle_radius" (number): the radius of the circular region in nautical miles.</li>
-                    <li>"circle_center" (location): the location of the center of the circle. If "text_position" is not
-                    specified for a circular area, "circle_center" will be used for it.</li>
-                  </ul>
-                  For polygonal areas, there are three additional parameters:
-                  <ul>
-                    <li>"vertices" (string): the locations of the vertices of the polygon. At least two locations must be
-                    given for open regions and three for closed regions.</li>
-                    <li>"closed" (Boolean, <i>optional</i>): indicates whether the region is closed (i.e., the last vertex is connected
-                    to the first.)</li>
-                    <li>"shade_region" (Boolean, <i>optional</i>): indicates whether the region's interior should be shaded.
-                      This setting is only available for closed regions.
-                    </li>
-                  </ul>
-                  If "text_position" is not specified for a polygonal region, the center point of all of its vertices is used.
-                </td>
-              </tr>
-              <tr>
-                <td>"scratchpad1"</td>
-                <td>Object</td>
-                <td>Allows specifying various adapted configurations to
-                  display in place for the first scratchpad in full and
-                  partial datablocks.
-                  The following members are available (all are "false" by default):
-                  <ul>
-                    <li>"display_exit_fix": if true, the datablock displays a three-character identifier
-                      for the exit fix where the identifier is found from the "short_name" entry for the
-                      fix in "significant_points".</li>
-                    <li>"display_exit_fix1": if true, the datablock displays a one-character identifier
-                      for the exit fix where the identifier is found from the "abbreviation" entry for the
-                      fix in "significant_points".</li>
-                    <li>"display_exit_gate": if true, the datablock displays a single-character identifier
-                      for the exit gate and then two digits giving the requested altitude in thousands of feet.
-                      The exit gate should be listed in "significant_points"; its "abbreviation" value is used
-                      for the identifier. If four-character scratchpads are adapted, three digits giving the
-                      altitude in hundreds of feet are displayed.</li>
-                    <li>"display_alternate_exit_gate": if true, the datablock displays the requested altitude
-                      followed by a single-character identifier for the exit gate. All other details follow
-                      "display_exit_gate".</li>
-                  </ul>
-                </td>
+                <td>Defines restriction areas that controllers may display in the STARS window.
+                  See <a href="#fe-stars-restriction-areas">Restriction Areas</a> for details.</td>
               </tr>
               <tr>
                 <td>"scratchpads"</td>
@@ -8011,19 +8140,40 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <tr>
                 <td>"significant_points"</td>
                 <td>Object</td>
-                <td>Each entry specifies information about a fix that is used in the scenario&mdash;for example, as an exit fix or as an airport.
-                  The following values may be specified as the object's members, though all are optional.
-                  <ul>
-                    <li>"abbreviation": a single-character abbreviation used to refer to the fix. If unspecified, the first
-                      character of "short_name" is used.</li>
-                    <li>"description": a brief text description of the fix.</li>
-                    <li>"location": the latitude-longitude location of the fix. This is normally set automatically based on the fix's name.</li>
-                    <li>"short_name": A three-letter abbreviation for the fix that is used when it is shown as the scratchpad in datablocks.
-                      If not specified, then if the fix's name has four letters and starts with a "K" (i.e., it's an airport),
-                      the last three letters are used. Otherwise the first three letters of the fix's name are used.
-                      No two fixes may have the same short "short_name".
-                      (May only be specified for fixes with more than three characters in their name.)</li>
-                  </ul>
+                <td><p>Each entry specifies information about a fix that is used in the scenario&mdash;for example, as an exit fix or as an airport.
+                  The following values may be specified as the object's members, though all are optional:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"abbreviation"</td>
+                      <td>String</td>
+                      <td>A single-character abbreviation used to refer to the fix. If unspecified, the first
+                        character of "short_name" is used.</td>
+                    </tr>
+                    <tr>
+                      <td>"description"</td>
+                      <td>String</td>
+                      <td>A brief text description of the fix.</td>
+                    </tr>
+                    <tr>
+                      <td>"location"</td>
+                      <td>String</td>
+                      <td>The latitude-longitude location of the fix. This is normally set automatically based on the fix's name.</td>
+                    </tr>
+                    <tr>
+                      <td>"short_name"</td>
+                      <td>String</td>
+                      <td>A three-letter abbreviation for the fix that is used when it is shown as the scratchpad in datablocks.
+                        If not specified, then if the fix's name has four letters and starts with a "K" (i.e., it's an airport),
+                        the last three letters are used. Otherwise the first three letters of the fix's name are used.
+                        No two fixes may have the same "short_name".
+                        (May only be specified for fixes with more than three characters in their name.)</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -8035,67 +8185,65 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <tr>
                 <td>"ssr_codes"</td>
                 <td>Object</td>
-                <td>This defines Secondary Surveillance Radar (SSR) codes for the facility; these are
+                <td><p>This defines Secondary Surveillance Radar (SSR) codes for the facility; these are
                   various ranges of beacon codes that are assigned to local aircraft or have other
-                  special meanings. Its members are:
-                  <ul>
-                    <li>"auto_assignable_codes": object specifying beacon codes available for local VFR and IFR
-                      flight plans. It has the members "vfr" and "ifr", which are used for VFR and IFR flight plans,
-                      respectively, and "1", "2", "3", and "4", which specify beacon code banks that can be assigned
-                      with syntax like <code>/1</code> when specifying a flight plan. Each of these objects has these members:
-                      <ul>
-                        <li>"ranges": array of strings, each specifying a single beacon code or a range of beacon codes (inclusive).
-                          Example: ["1200", "0301-0377", "5501-5577"]. This allows specifying multiple non-contiguous ranges for a single pool.
-                        </li>
-                        <li>"flight_rules": string, either "v" or "i", indicating VFR or IFR, respectively. This may only
-                          be specified for the numbered pools; it is predetermined for the "vfr" and "ifr" pools.
-                        </li>
-                        <li>"backup_pool_list": optional string specifying one or more backup pools to use if the initial
-                          pool tried has no more remaining codes. Only numbered pools may be given.
-                          Example: "234".
-                        </li>
-                      </ul>
-                    </li>
-                    <li>"beacon_code_table": object with a single member, "vfr_codes", which is an array of strings specifying
-                      beacon codes or beacon code ranges used for VFR aircraft without STARS flight plans.
-                      Codes in these ranges cannot be manually assigned to flight plans. Default: 1200-1277.
-                    </li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>"tab_list"</td>
-                <td>Object</td>
-                <td>Configures the TAB (flight plan) list display format. The following property may be specified:
-                  <ul>
-                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the TAB list.
-                      See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.
-                      If not specified, the default format <code>"[INDEX] [ACID_MSAWCA][DUPE_BEACON] [BEACON] [DEP_EXIT_FIX]"</code> is used.
-                    </li>
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <td>"tower_list"</td>
-                <td>Object</td>
-                <td>Configures the tower list display format. The following property may be specified:
-                  <ul>
-                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the list.
-                      See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.
-                      If not specified, the default format <code>"[ACID] [ACTYPE]"</code> is used.
-                    </li>
-                  </ul>
+                  special meanings. Its members are:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"auto_assignable_codes"</td>
+                      <td>Object</td>
+                      <td><p>Specifies beacon codes available for local VFR and IFR
+                        flight plans. It has the members "vfr" and "ifr", which are used for VFR and IFR flight plans,
+                        respectively, and "1", "2", "3", and "4", which specify beacon code banks that can be assigned
+                        with syntax like <code>/1</code> when specifying a flight plan. Each of these objects has these members:</p>
+                        <ul>
+                          <li>"ranges": array of strings, each specifying a single beacon code or a range of beacon codes (inclusive).
+                            Example: ["1200", "0301-0377", "5501-5577"]. This allows specifying multiple non-contiguous ranges for a single pool.</li>
+                          <li>"flight_rules": string, either "v" or "i", indicating VFR or IFR, respectively. This may only
+                            be specified for the numbered pools; it is predetermined for the "vfr" and "ifr" pools.</li>
+                          <li>"backup_pool_list": (optional) string giving one or more backup pools to use if the initial
+                            pool tried has no more remaining codes. Only numbered pools may be given.
+                            Example: "234".</li>
+                        </ul>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>"beacon_code_table"</td>
+                      <td>Object</td>
+                      <td>Has a single member, "vfr_codes", which is an array of strings specifying
+                        beacon codes or beacon code ranges used for VFR aircraft without STARS flight plans.
+                        Codes in these ranges cannot be manually assigned to flight plans. Default: 1200-1277.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
                 <td>"untracked_position_symbol_overrides"</td>
                 <td>Object</td>
-                <td>Allows customizing the position symbol displayed for unassociated tracks based on their transponder beacon codes. The object contains:
-                  <ul>
-                    <li>"beacon_codes": a string containing comma-separated beacon codes and ranges (e.g., "1200,1300-1377"). Ranges are inclusive.</li>
-                    <li>"symbol": a single character to display as the position symbol for aircraft with matching beacon codes (e.g., "=").</li>
-                  </ul>
-                  If this is not set, untracked aircraft display standard symbols: "*" for Mode C, "+" for Mode A, or a diamond for standby.
+                <td><p>Allows customizing the position symbol displayed for unassociated tracks based on their transponder beacon codes.
+                  If this is not set, untracked aircraft display standard symbols: "*" for Mode C, "+" for Mode A, or a diamond for standby.</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"beacon_codes"</td>
+                      <td>String</td>
+                      <td>Comma-separated beacon codes and ranges (e.g., "1200,1300-1377"). Ranges are inclusive.</td>
+                    </tr>
+                    <tr>
+                      <td>"symbol"</td>
+                      <td>String</td>
+                      <td>A single character to display as the position symbol for aircraft with matching beacon codes (e.g., "=").</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -8103,25 +8251,326 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>Boolean</td>
                 <td>If "true", causes the legacy STARS font to be used in the STARS display.</td>
               </tr>
+            </tbody>
+            </table>
+
+            <h4 id="fe-stars-datablocks">Datablocks</h4>
+
+            <p>The "datablocks" object configures how full, partial, and limited datablocks are displayed.
+              It contains the following sub-objects:</p>
+
+            <h5>"fdb" &mdash; Full Datablock</h5>
+            <table class="table">
+            <thead>
+              <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
               <tr>
-                <td>"vfr_list"</td>
-                <td>Object</td>
-                <td>Configures the VFR list display format. The following property may be specified:
-                  <ul>
-                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the VFR list.
-                      See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.
-                      If not specified, the default format <code>"[INDEX] [ACID_MSAWCA][BEACON]"</code> is used.
-                    </li>
-                  </ul>
-                </td>
+                <td>"display_requested_altitude"</td>
+                <td>Boolean</td>
+                <td>If true, the requested altitudes of aircraft that
+                  have them in their flight plans are shown in the datablock (multiplexed with
+                  aircraft type and groundspeed). Default: false.</td>
+              </tr>
+              <tr>
+                <td>"scratchpad2_on_line3"</td>
+                <td>Boolean</td>
+                <td>If true, when scratchpad 2 is set, it is displayed
+                  in the third line of the datablock (and timeshares with assigned altitude, if set) rather than
+                  timesharing with altitude and the first scratchpad in the second line. Default: false.</td>
+              </tr>
+              <tr>
+                <td>"display_facility_only"</td>
+                <td>Boolean</td>
+                <td>If true, the sector id of external facilities is not shown in the datablock
+                  for inbound and outbound handoffs. Default: false.</td>
+              </tr>
+              <tr>
+                <td>"accept_flash_duration"</td>
+                <td>Number</td>
+                <td>The number of seconds that the datablock flashes after a handoff is accepted.
+                  Default: 5.</td>
+              </tr>
+              <tr>
+                <td>"sector_display_duration"</td>
+                <td>Number</td>
+                <td>If non-zero, gives the number of seconds that the sector id for a handoff to/from an
+                  external facility is shown in the datablock after the handoff has been accepted.</td>
               </tr>
             </tbody>
             </table>
 
+            <h5>"pdb" &mdash; Partial Datablock</h5>
+            <table class="table">
+            <thead>
+              <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"display_custom_spcs"</td>
+                <td>Boolean</td>
+                <td>If true, custom SPCs (defined via "custom_spcs") are shown in partial datablocks. Default: false.</td>
+              </tr>
+              <tr>
+                <td>"hide_gs"</td>
+                <td>Boolean</td>
+                <td>If true, groundspeed is not shown in the PDB. Default: false.</td>
+              </tr>
+              <tr>
+                <td>"show_aircraft_type"</td>
+                <td>Boolean</td>
+                <td>If true, the aircraft type is shown, time-shared with the groundspeed. Default: false.</td>
+              </tr>
+              <tr>
+                <td>"show_scratchpad2"</td>
+                <td>Boolean</td>
+                <td>If true, the contents of scratchpad 2 are shown, time-shared with altitude
+                  and the first scratchpad. Default: false.</td>
+              </tr>
+              <tr>
+                <td>"split_gs_and_cwt"</td>
+                <td>Boolean</td>
+                <td>If true, groundspeed and the flight rules / CWT category are shown separately,
+                  timesliced, rather than together. Default: false.</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <h5>"ldb" &mdash; Limited Datablock</h5>
+            <table class="table">
+            <thead>
+              <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"keep_after_slew"</td>
+                <td>Boolean</td>
+                <td>If true, limited datablocks are retained for tracks that have been
+                  given the limited datablock display rather than reverting to the partial datablock. Default: false.</td>
+              </tr>
+              <tr>
+                <td>"full_seconds"</td>
+                <td>Number</td>
+                <td>If non-zero, gives the number of seconds that a full datablock is displayed
+                  after being expanded from a limited datablock (via <code>[MULTIFUNC]L</code>)
+                  before reverting to the limited datablock.</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <h5>"scratchpad1" &mdash; Scratchpad 1 Display</h5>
+            <table class="table">
+            <thead>
+              <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"display_exit_fix"</td>
+                <td>Boolean</td>
+                <td>If true, the datablock displays a three-character identifier
+                  for the exit fix where the identifier is found from the "short_name" entry for the
+                  fix in "significant_points". Default: false.</td>
+              </tr>
+              <tr>
+                <td>"display_exit_fix_1"</td>
+                <td>Boolean</td>
+                <td>If true, the datablock displays a one-character identifier
+                  for the exit fix where the identifier is found from the "abbreviation" entry for the
+                  fix in "significant_points". Default: false.</td>
+              </tr>
+              <tr>
+                <td>"display_exit_gate"</td>
+                <td>Boolean</td>
+                <td>If true, the datablock displays a single-character identifier
+                  for the exit gate and then two digits giving the requested altitude in thousands of feet.
+                  The exit gate should be listed in "significant_points"; its "abbreviation" value is used
+                  for the identifier. If four-character scratchpads are adapted, three digits giving the
+                  altitude in hundreds of feet are displayed. Default: false.</td>
+              </tr>
+              <tr>
+                <td>"display_alternate_exit_gate"</td>
+                <td>Boolean</td>
+                <td>If true, the datablock displays the requested altitude
+                  followed by a single-character identifier for the exit gate. All other details follow
+                  "display_exit_gate". Default: false.</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <h4 id="fe-stars-lists">Lists</h4>
+
+            <p>The "lists" object configures the various system lists.
+              See <a href="#fe-stars-list-format">List Formatting</a> for the format specifiers available
+              for customizing list entry formats.</p>
+
+            <h5>"coordination" &mdash; Coordination Lists</h5>
+            <p>An array of objects, each specifying a coordination list used for releasing departures
+              from one or more airports. Each object has the following members:</p>
+            <table class="table">
+            <thead>
+              <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"name"</td>
+                <td>String</td>
+                <td>The list name, shown at the top of the list when it is visible in the STARS window.</td>
+              </tr>
+              <tr>
+                <td>"id"</td>
+                <td>String</td>
+                <td>The list's identifier (1&ndash;3 alphanumeric characters; cannot be "1", "2", or "3").
+                  Used to identify the list when entering STARS commands.</td>
+              </tr>
+              <tr>
+                <td>"airports"</td>
+                <td>Array of strings</td>
+                <td>The airports managed by the list. Any airport with "hold_for_release"
+                  set to "true" must be in exactly one coordination list.</td>
+              </tr>
+              <tr>
+                <td>"yellow_entries"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, entries in the list are drawn in yellow rather than green.</td>
+              </tr>
+              <tr>
+                <td>"format"</td>
+                <td>String</td>
+                <td>(<i>Optional</i>) The format of each entry.
+                  See <a href="#fe-stars-list-format">List Formatting</a> for details.
+                  If not specified, a default format is used.</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <h5>Format-Only Lists</h5>
+            <p>The following lists are configured with a single "format" property.
+              See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.</p>
+            <table class="table">
+            <thead>
+              <tr><th>List</th><th>Default Format</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"vfr"</td>
+                <td><code>"[INDEX] [ACID_MSAWCA][BEACON]"</code></td>
+              </tr>
+              <tr>
+                <td>"tab"</td>
+                <td><code>"[INDEX] [ACID_MSAWCA][DUPE_BEACON] [BEACON] [DEP_EXIT_FIX]"</code></td>
+              </tr>
+              <tr>
+                <td>"coast_suspend"</td>
+                <td><code>"[INDEX] [ACID] S [BEACON] [ALT]"</code></td>
+              </tr>
+              <tr>
+                <td>"mci_suppression"</td>
+                <td><code>"[ACID] [BEACON]  [SUPP_BEACON]"</code></td>
+              </tr>
+              <tr>
+                <td>"tower"</td>
+                <td><code>"[ACID] [ACTYPE]"</code></td>
+              </tr>
+            </tbody>
+            </table>
+
+            <h4 id="fe-stars-restriction-areas">Restriction Areas</h4>
+
+            <p>The "restriction_areas" array specifies restriction areas that controllers may display in the STARS window.
+              There are three types: text-only, circular, and polygonal.</p>
+
+            <h5>Common Fields</h5>
+            <p>The following fields are available for all restriction area types:</p>
+            <table class="table">
+            <thead>
+              <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"title"</td>
+                <td>String</td>
+                <td>The restriction area title displayed in the "GEO RESTRICTIONS" list.</td>
+              </tr>
+              <tr>
+                <td>"text"</td>
+                <td>Array of two strings</td>
+                <td>(<i>Optional</i>) Each string defines a line of text displayed with the restriction area.</td>
+              </tr>
+              <tr>
+                <td>"blinking_text"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, the text flashes when displayed.</td>
+              </tr>
+              <tr>
+                <td>"hide_id"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, the numeric restriction area id is not displayed before the text.</td>
+              </tr>
+              <tr>
+                <td>"text_position"</td>
+                <td>Location</td>
+                <td>(<i>Optional for circular and polygonal</i>) The center point of the text,
+                  specified using one of the encodings in <a href="#fe-locations">Specifying Locations</a>.</td>
+              </tr>
+              <tr>
+                <td>"color"</td>
+                <td>Number</td>
+                <td>(<i>Optional</i>) The color index for the restriction area display.</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <h5>Circular Restriction Areas</h5>
+            <table class="table">
+            <thead>
+              <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"circle_radius"</td>
+                <td>Number</td>
+                <td>The radius of the circular region in nautical miles.</td>
+              </tr>
+              <tr>
+                <td>"circle_center"</td>
+                <td>Location</td>
+                <td>The location of the center of the circle. If "text_position" is not
+                  specified, "circle_center" is used for it.</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <h5>Polygonal Restriction Areas</h5>
+            <table class="table">
+            <thead>
+              <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"vertices"</td>
+                <td>String</td>
+                <td>The locations of the vertices of the polygon. At least two locations must be
+                  given for open regions and three for closed regions.</td>
+              </tr>
+              <tr>
+                <td>"closed"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, the last vertex is connected to the first.</td>
+              </tr>
+              <tr>
+                <td>"shade_region"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, the region's interior is shaded. Only available for closed regions.</td>
+              </tr>
+            </tbody>
+            </table>
+            <p>If "text_position" is not specified for a polygonal region, the center point of all of its vertices is used.</p>
+
             <h4 id="fe-stars-list-format">List Formatting</h4>
 
-            <p>STARS system lists display information about aircraft in various contexts. 
-              The format of entries in these lists can be customized using the "format" field for the corresponding list in "config".
+            <p>STARS system lists display information about aircraft in various contexts.
+              The format of entries in these lists can be customized using the "format" field for the corresponding list
+              in <a href="#fe-stars-lists">"lists"</a>.
               The format string consists of literal text and format specifiers enclosed in square brackets.</p>
 
             <p>The following format specifiers are available for all system lists:</p>
@@ -8742,13 +9191,26 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <tr>
                 <td>"vfr_reporting_points"</td>
                 <td>Array of objects</td>
-                <td>Each object specifies a VFR reporting point. VFR aicraft that call for flight following will
+                <td><p>Each object specifies a VFR reporting point. VFR aircraft that call for flight following will
                   report their position referencing one of these points, a nearby airport, or a nearby VOR.
-                  Each object has two members:
-                  <ul>
-                    <li>"description": string giving the location aircraft reference when they report their position.</li>
-                    <li>"location": the location of the reference point.</li>
-                  </ul>
+                  Each object has two members:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"description"</td>
+                      <td>String</td>
+                      <td>The location aircraft reference when they report their position.</td>
+                    </tr>
+                    <tr>
+                      <td>"location"</td>
+                      <td>String</td>
+                      <td>The location of the reference point.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               
@@ -8791,33 +9253,83 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <p>The approach path can be defined in one of two ways (mutually exclusive):</p>
 
                   <p><b>Straight-line reference</b> (for simple runway-aligned paths):</p>
-                  <ul>
-                    <li>"reference_point": position with respect to which the lateral and vertical extents are defined. (Often, the threshold
-                      of the runway.)</li>
-                    <li>"reference_heading": heading that is opposite to the approach heading.</li>
-                    <li>"reference_length": length in nm of the reference line.</li>
-                  </ul>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"reference_point"</td>
+                      <td>String</td>
+                      <td>Position with respect to which the lateral and vertical extents are defined. (Often, the threshold of the runway.)</td>
+                    </tr>
+                    <tr>
+                      <td>"reference_heading"</td>
+                      <td>Number</td>
+                      <td>Heading that is opposite to the approach heading.</td>
+                    </tr>
+                    <tr>
+                      <td>"reference_length"</td>
+                      <td>Number</td>
+                      <td>Length in nm of the reference line.</td>
+                    </tr>
+                  </tbody>
+                  </table>
 
                   <p><b>Route-based reference</b> (for curved approaches, converging fixes, etc.):</p>
-                  <ul>
-                    <li>"reference_route": a string specifying the path as a series of fix names (or lat-long
-                      positions), optionally with <code>/arc</code> qualifiers for curved segments.
-                      Unlike approach/departure routes, only fix names and <code>/arc</code> are supported;
-                      other waypoint qualifiers (altitude restrictions, speed, handoff, etc.) are not allowed.
-                      Example: <code>"MERIT ROSLY/arc5.0JFK CATOD"</code>.
-                      When this is specified, "reference_point", "reference_heading", and "reference_length" must not be given.</li>
-                  </ul>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"reference_route"</td>
+                      <td>String</td>
+                      <td>The path as a series of fix names (or lat-long
+                        positions), optionally with <code>/arc</code> qualifiers for curved segments.
+                        Unlike approach/departure routes, only fix names and <code>/arc</code> are supported;
+                        other waypoint qualifiers (altitude restrictions, speed, handoff, etc.) are not allowed.
+                        Example: <code>"MERIT ROSLY/arc5.0JFK CATOD"</code>.
+                        When this is specified, "reference_point", "reference_heading", and "reference_length" must not be given.</td>
+                    </tr>
+                  </tbody>
+                  </table>
 
                   <p>The following members apply to both path types and specify the lateral
                     qualification region&mdash;the volume an aircraft must be inside for a ghost to be generated:</p>
-                  <ul>
-                    <li>"heading_tolerance": maximum difference between an aircraft's heading and the local path heading for a ghost aircraft to be displayed.</li>
-                    <li>"near_distance": distance along the path from the start where the lateral volume begins.</li>
-                    <li>"near_half_width": half of the width of the region at the near distance.</li>
-                    <li>"region_length": length of the lateral volume along the path, starting from the near distance.
-                      Must not be specified with "reference_route" (the route length is used automatically).</li>
-                    <li>"far_half_width": half of the width of the region at the far distance.</li>
-                  </ul>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"heading_tolerance"</td>
+                      <td>Number</td>
+                      <td>Maximum difference between an aircraft's heading and the local path heading for a ghost aircraft to be displayed.</td>
+                    </tr>
+                    <tr>
+                      <td>"near_distance"</td>
+                      <td>Number</td>
+                      <td>Distance along the path from the start where the lateral volume begins.</td>
+                    </tr>
+                    <tr>
+                      <td>"near_half_width"</td>
+                      <td>Number</td>
+                      <td>Half of the width of the region at the near distance.</td>
+                    </tr>
+                    <tr>
+                      <td>"region_length"</td>
+                      <td>Number</td>
+                      <td>Length of the lateral volume along the path, starting from the near distance.
+                        Must not be specified with "reference_route" (the route length is used automatically).</td>
+                    </tr>
+                    <tr>
+                      <td>"far_half_width"</td>
+                      <td>Number</td>
+                      <td>Half of the width of the region at the far distance.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                   <p>These members specify the vertical qualification region&mdash;the
                     altitude envelope an aircraft must be inside for a ghost to be
                     generated. There are two modes:</p>
@@ -8843,13 +9355,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     point. The tolerances define a band around this sloping
                     profile.</p>
 
-                  <ul>
-                    <li>"descent_distance": distance along the path where the descent profile levels off. Set to 0 for a fixed altitude range.</li>
-                    <li>"descent_altitude": expected altitude at the descent distance (or the center of the fixed band when "descent_distance" is 0).</li>
-                    <li>"reference_altitude": expected altitude at the path origin. Only used when "descent_distance" is nonzero.</li>
-                    <li>"above_altitude_tolerance": maximum feet above the expected altitude at any point along the path for an aircraft to still qualify.</li>
-                    <li>"below_altitude_tolerance": maximum feet below the expected altitude at any point along the path for an aircraft to still qualify.</li>
-                  </ul>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"descent_distance"</td>
+                      <td>Number</td>
+                      <td>Distance along the path where the descent profile levels off. Set to 0 for a fixed altitude range.</td>
+                    </tr>
+                    <tr>
+                      <td>"descent_altitude"</td>
+                      <td>Number</td>
+                      <td>Expected altitude at the descent distance (or the center of the fixed band when "descent_distance" is 0).</td>
+                    </tr>
+                    <tr>
+                      <td>"reference_altitude"</td>
+                      <td>Number</td>
+                      <td>Expected altitude at the path origin. Only used when "descent_distance" is nonzero.</td>
+                    </tr>
+                    <tr>
+                      <td>"above_altitude_tolerance"</td>
+                      <td>Number</td>
+                      <td>Maximum feet above the expected altitude at any point along the path for an aircraft to still qualify.</td>
+                    </tr>
+                    <tr>
+                      <td>"below_altitude_tolerance"</td>
+                      <td>Number</td>
+                      <td>Maximum feet below the expected altitude at any point along the path for an aircraft to still qualify.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                   <p>Optionally, "scratchpad_patterns" may be specified as an array of strings; if present, only
                     aircraft whose scratchpad contains one of the given patterns will generate ghosts.</p>
                 </td>
@@ -8857,55 +9394,128 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <tr>
                 <td>"atpa_volumes"</td>
                 <td>Object</td>
-              <td>Each member is a string with a runway name and an associated object that  specifies the region of space where
-                the STARS automated terminal proximity alert (ATPA) feature is active for the runway.  (If not specified, a default
-                volume is generated along the runway's extended centerline.) The following members define the region of space:
-                <ul>
-                  <li>"id": an optional string naming the volume. If not specified, the runway is used.</li>
-	          <li>"runway_threshold": position of the runway threshold or point at which should be used for the start of the volume.</li>
-	          <li>"heading": runway heading or orientation of the volume.</li>
-	          <li>"max_heading_deviation": maximum deviation between an aircraft's heading and the ATPA volume heading allowed for an
-                  aircraft to be included in ATPA.</li>
-	          <li>"floor": bottom altitude of the volume, in feet.</li>
-	          <li>"ceiling": top altitude of the volume, in feet.</li>
-	          <li>"length": length of the volume, from "runway_threshold" in direction "heading", given in nautical miles.</li>
-	          <li>"left_width": width the volume extends to the left of the extended centerline, where "left" is with respect to an
-                  aircraft flying the approach.</li>
-	          <li>"right_width": width the volume extends to the right of the extended centerline.</li>
-	          <li>"filtered_scratchpads": aircraft scratchpads that do not receive ATPA warnings/alerts but that do still
-                    participate in ATPA calculations for other aircraft. (Thus, this should include for example aircraft cleared
-                    for visual approaches that should not themselves receive alerts but where other non-visual aircraft must still
-                    be separated from them.)</li>
-	          <li>"excluded_scratchpads": aircraft scratchpads that do not participate at all in ATPA for this runway.
-                    This should include scratchpads of aircraft arriving on parallel runways, for example.</li>
-	          <li>"enable_2.5nm": a Boolean value that indicates whether reduced 2.5nm separation is allowed on final approach.</li>
-	          <li>"2.5nm_distance": distance from runway threshold at which 2.5nm separation is allowed, if "enable_2.5nm" is true.</li>
-                </ul>
+              <td><p>Each member is a string with a runway name and an associated object that specifies the region of space where
+                the STARS automated terminal proximity alert (ATPA) feature is active for the runway. (If not specified, a default
+                volume is generated along the runway's extended centerline.)</p>
+                <table class="table">
+                <thead>
+                  <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>"id"</td>
+                    <td>String</td>
+                    <td>(<i>Optional</i>) Name of the volume. If not specified, the runway is used.</td>
+                  </tr>
+                  <tr>
+                    <td>"runway_threshold"</td>
+                    <td>String</td>
+                    <td>Position of the runway threshold or point to use for the start of the volume.</td>
+                  </tr>
+                  <tr>
+                    <td>"heading"</td>
+                    <td>Number</td>
+                    <td>Runway heading or orientation of the volume.</td>
+                  </tr>
+                  <tr>
+                    <td>"max_heading_deviation"</td>
+                    <td>Number</td>
+                    <td>Maximum deviation between an aircraft's heading and the ATPA volume heading allowed for an
+                      aircraft to be included in ATPA.</td>
+                  </tr>
+                  <tr>
+                    <td>"floor"</td>
+                    <td>Number</td>
+                    <td>Bottom altitude of the volume, in feet.</td>
+                  </tr>
+                  <tr>
+                    <td>"ceiling"</td>
+                    <td>Number</td>
+                    <td>Top altitude of the volume, in feet.</td>
+                  </tr>
+                  <tr>
+                    <td>"length"</td>
+                    <td>Number</td>
+                    <td>Length of the volume, from "runway_threshold" in direction "heading", given in nautical miles.</td>
+                  </tr>
+                  <tr>
+                    <td>"left_width"</td>
+                    <td>Number</td>
+                    <td>Width the volume extends to the left of the extended centerline, where "left" is with respect to an
+                      aircraft flying the approach.</td>
+                  </tr>
+                  <tr>
+                    <td>"right_width"</td>
+                    <td>Number</td>
+                    <td>Width the volume extends to the right of the extended centerline.</td>
+                  </tr>
+                  <tr>
+                    <td>"filtered_scratchpads"</td>
+                    <td>Array of strings</td>
+                    <td>Aircraft scratchpads that do not receive ATPA warnings/alerts but that do still
+                      participate in ATPA calculations for other aircraft. (Thus, this should include for example aircraft cleared
+                      for visual approaches that should not themselves receive alerts but where other non-visual aircraft must still
+                      be separated from them.)</td>
+                  </tr>
+                  <tr>
+                    <td>"excluded_scratchpads"</td>
+                    <td>Array of strings</td>
+                    <td>Aircraft scratchpads that do not participate at all in ATPA for this runway.
+                      This should include scratchpads of aircraft arriving on parallel runways, for example.</td>
+                  </tr>
+                  <tr>
+                    <td>"enable_2.5nm"</td>
+                    <td>Boolean</td>
+                    <td>Indicates whether reduced 2.5nm separation is allowed on final approach.</td>
+                  </tr>
+                  <tr>
+                    <td>"2.5nm_distance"</td>
+                    <td>Number</td>
+                    <td>Distance from runway threshold at which 2.5nm separation is allowed, if "enable_2.5nm" is true.</td>
+                  </tr>
+                </tbody>
+                </table>
               </td>
               </tr>
               <tr>
                 <td>"crda_pairs"</td>
                 <td>Array of objects</td>
-                <td>Each object specifies a pair of converging CRDA regions that
+                <td><p>Each object specifies a pair of converging CRDA regions that
                   will be included in the STARS CRDA list. Each object has
-                  the following members:
-                  <ul>
-                    <li>"crda_regions": array of two strings referencing two regions
-                      defined in "crda_regions".</li>
-                    <li>"leader_directions": array of two strings
-                      specifying the compass direction ("N", "NE", "E",
-                      ...) that will be used for leader lines for ghost
-                      aircraft from the two respective regions.</li>
-                    <li>"tie_symbol": A single-character string giving the
-                    symbol to use on the STARS display for ghost aircraft
-                    when CRDA "tie" mode is used.</li>
-                    <li>"stagger_symbol": A single-character string giving the
-                    symbol to use on the STARS display for ghost aircraft
-                    when CRDA "stagger" mode is used.</li>
-                    <li>"tie_offset": number giving an offset in nautical
-                      miles to add to ghost aircraft's distance from the convergence point when
-                      "tie" mode is used.</li>
-                  </ul>
+                  the following members:</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"crda_regions"</td>
+                      <td>Array of two strings</td>
+                      <td>References two regions defined in "crda_regions".</td>
+                    </tr>
+                    <tr>
+                      <td>"leader_directions"</td>
+                      <td>Array of two strings</td>
+                      <td>Compass directions ("N", "NE", "E", ...) used for leader lines for ghost
+                        aircraft from the two respective regions.</td>
+                    </tr>
+                    <tr>
+                      <td>"tie_symbol"</td>
+                      <td>String</td>
+                      <td>A single character for ghost aircraft when CRDA "tie" mode is used.</td>
+                    </tr>
+                    <tr>
+                      <td>"stagger_symbol"</td>
+                      <td>String</td>
+                      <td>A single character for ghost aircraft when CRDA "stagger" mode is used.</td>
+                    </tr>
+                    <tr>
+                      <td>"tie_offset"</td>
+                      <td>Number</td>
+                      <td>Offset in nautical miles to add to ghost aircraft's distance from the convergence point when "tie" mode is used.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -9676,33 +10286,74 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <tr>
                   <td>"random_routes"</td>
                   <td>Object</td>
-                  <td>Specifies that the airport should have VFR departures that fly to one of the other VFR airports
+                  <td><p>Specifies that the airport should have VFR departures that fly to one of the other VFR airports
                     (or possibly, back to the originating airport). Routes between the airports are randomized so that
-                    different aircraft follow slightly different routes, even if they are going to the same destination airport. 
-                    Two members may be specified.
-                    <ul>
-                      <li>"rate" (Number): the average number of VFR departures per hour.</li>
-                      <li>"fleet" (String, <i>Optional</i>): which general aviation aircraft fleet to use.
-                        Current options are: "default", "GAsinglepiston", "GAjet", "GAmultipiston", "GAturbine", "cessna", "lightGA", and "fastGA".
-                        See the section for "General Aviation USA" in the <code>openscope-airlines.json</code> file in the <i>vice</i>
-                        distribution for which aircraft types are in each of these fleets.</li>
-                    </ul>
+                    different aircraft follow slightly different routes, even if they are going to the same destination airport.</p>
+                    <table class="table">
+                    <thead>
+                      <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>"rate"</td>
+                        <td>Number</td>
+                        <td>The average number of VFR departures per hour.</td>
+                      </tr>
+                      <tr>
+                        <td>"fleet"</td>
+                        <td>String</td>
+                        <td>(<i>Optional</i>) Which general aviation aircraft fleet to use.
+                          Current options are: "default", "GAsinglepiston", "GAjet", "GAmultipiston", "GAturbine", "cessna", "lightGA", and "fastGA".
+                          See the section for "General Aviation USA" in the <code>openscope-airlines.json</code> file in the <i>vice</i>
+                          distribution for which aircraft types are in each of these fleets.</td>
+                      </tr>
+                    </tbody>
+                    </table>
                   </td>
                 </tr>
                 <tr>
                   <td>"routes"</td>
                   <td>Array of objects</td>
-                  <td>Each entry specifies a VFR flow to a specific destination airport with a specified route.
-                    This offers more control than "random_routes" but requires a bit more work.
-                    <ul>
-                      <li>"name" (String): a brief description of the route.</li>
-                      <li>"rate" (Number): the average number of departures along this route per hour.</li>
-                      <li>"fleet" (String): which GA aircraft fleet to use; see "fleet" above for the current options.</li>
-                      <li>"waypoints" (String): waypoints that describe the route that should be flown between the current
-                        airport and the destination airport.</li>
-                      <li>"destination" (String): destination airport.</li>
-                      <li>"description" (String, <i>Optional</i>): description of the entry. Not used by <i>vice</i> but useful to remind yourself what a series of lat-longs represents.</li>
-                    </ul>
+                  <td><p>Each entry specifies a VFR flow to a specific destination airport with a specified route.
+                    This offers more control than "random_routes" but requires a bit more work.</p>
+                    <table class="table">
+                    <thead>
+                      <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>"name"</td>
+                        <td>String</td>
+                        <td>A brief description of the route.</td>
+                      </tr>
+                      <tr>
+                        <td>"rate"</td>
+                        <td>Number</td>
+                        <td>The average number of departures along this route per hour.</td>
+                      </tr>
+                      <tr>
+                        <td>"fleet"</td>
+                        <td>String</td>
+                        <td>Which GA aircraft fleet to use; see "fleet" above for the current options.</td>
+                      </tr>
+                      <tr>
+                        <td>"waypoints"</td>
+                        <td>String</td>
+                        <td>Waypoints that describe the route that should be flown between the current
+                          airport and the destination airport.</td>
+                      </tr>
+                      <tr>
+                        <td>"destination"</td>
+                        <td>String</td>
+                        <td>Destination airport.</td>
+                      </tr>
+                      <tr>
+                        <td>"description"</td>
+                        <td>String</td>
+                        <td>(<i>Optional</i>) Description of the entry. Not used by <i>vice</i> but useful to remind yourself what a series of lat-longs represents.</td>
+                      </tr>
+                    </tbody>
+                    </table>
                   </td>
                 </tr>
             </tbody>
@@ -9875,22 +10526,59 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"arrival_runways"</td>
                 <td>Array of objects</td>
-                <td>Each object specifies an airport, one of its runways, and an optional go-around procedure:
-                  <ul>
-                    <li>"airport": string that gives an airport name</li>
-                    <li>"runway": string that specifies a runway at the given airport</li>
-                    <li>"go_around": (<i>Optional</i>) object defining the go-around procedure for this runway:
-                      <ul>
-                        <li>"heading": integer heading in degrees (1-360). If omitted or 0, runway heading is used.</li>
-                        <li>"altitude": integer altitude in feet (e.g., 2000, 3000).</li>
-                        <li>"handoff_controller": (<i>Optional</i>) TCP that should handle the go-around aircraft.</li>
-                        <li>"hold_departures": (<i>Optional</i>) array of runway strings on which departures
-                          should be held for one minute after a go-around.</li>
-                      </ul>
-                    </li>
-                  </ul>
+                <td><p>Each object specifies an airport, one of its runways, and an optional go-around procedure.
                   The specified airport must be present in the "airports" member of the scenario group,
-                  and the specified runway must be one of its runways.
+                  and the specified runway must be one of its runways.</p>
+                  <table class="table">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"airport"</td>
+                      <td>String</td>
+                      <td>An airport name.</td>
+                    </tr>
+                    <tr>
+                      <td>"runway"</td>
+                      <td>String</td>
+                      <td>A runway at the given airport.</td>
+                    </tr>
+                    <tr>
+                      <td>"go_around"</td>
+                      <td>Object</td>
+                      <td>(<i>Optional</i>) Defines the go-around procedure for this runway:
+                        <table class="table">
+                        <thead>
+                          <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>"heading"</td>
+                            <td>Number</td>
+                            <td>Heading in degrees (1-360). If omitted or 0, runway heading is used.</td>
+                          </tr>
+                          <tr>
+                            <td>"altitude"</td>
+                            <td>Number</td>
+                            <td>Altitude in feet (e.g., 2000, 3000).</td>
+                          </tr>
+                          <tr>
+                            <td>"handoff_controller"</td>
+                            <td>String</td>
+                            <td>(<i>Optional</i>) TCP that should handle the go-around aircraft.</td>
+                          </tr>
+                          <tr>
+                            <td>"hold_departures"</td>
+                            <td>Array of strings</td>
+                            <td>(<i>Optional</i>) Runways on which departures should be held for one minute after a go-around.</td>
+                          </tr>
+                        </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -9916,14 +10604,33 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"departure_runways"</td>
                 <td>Array of objects</td>
                 <td>Each object specifies information about departures at a runway at an airport in the scenario.
-                  <ul>
-                    <li>"airport": string giving the airport's name</li>
-                    <li>"runway": string specifying one of the airport's runways</li>
-                    <li>"rate": number giving the number of departures per hour</li>
-                    <li>"category": an optional string that specifies an exit category. If present, then only departures that have an exit
-                      that is associated with the category will be launched from this runway.
-                    </li>
-                    </ul>
+                  <table class="subtable">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"airport"</td>
+                      <td>String</td>
+                      <td>The airport's name.</td>
+                    </tr>
+                    <tr>
+                      <td>"runway"</td>
+                      <td>String</td>
+                      <td>One of the airport's runways.</td>
+                    </tr>
+                    <tr>
+                      <td>"rate"</td>
+                      <td>Number</td>
+                      <td>Number of departures per hour.</td>
+                    </tr>
+                    <tr>
+                      <td>"category"</td>
+                      <td>String</td>
+                      <td>(<i>Optional</i>) Exit category. If present, only departures with an exit associated with the category will be launched from this runway.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -9942,15 +10649,23 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"configuration"</td>
                 <td>Object</td>
                 <td>References a controller assignment configuration from the facility config.
-                  The following member is available:
-                  <ul>
-                    <li>"config_id": A short identifier (maximum 3 characters) that references a configuration
-                      defined in <a href="#fe-config-common">"configurations"</a> under "config".
-                      The referenced configuration provides the inbound and departure assignments
-                      and the default consolidation hierarchy for this scenario.
-                      The selected configuration must have assignments for all of the scenario's active
-                      arrivals and departures.</li>
-                  </ul>
+                  <table class="subtable">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"config_id"</td>
+                      <td>String</td>
+                      <td>A short identifier (maximum 3 characters) that references a configuration
+                        defined in <a href="#fe-config-common">"configurations"</a> under "config".
+                        The referenced configuration provides the inbound and departure assignments
+                        and the default consolidation hierarchy for this scenario.
+                        The selected configuration must have assignments for all of the scenario's active
+                        arrivals and departures.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                 </td>
               </tr>
               <tr>
@@ -9967,17 +10682,28 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"wind"</td>
                 <td>Object</td>
                 <td>Specifies constraints for selecting wind conditions for the scenario. When a scenario is loaded, <i>vice</i> will randomly select historical weather data that matches the specified wind.
-                  <ul>
-                    <li>"direction" (optional): Wind direction range in degrees. Ranges must be less than 180 degrees wide and can wrap through north (e.g., "340-20" for a 40-degree range).</li>
-                    <li>"speed" (optional): Wind speed constraint in knots. Formats:
-                      <ul>
-                        <li>"N+": greater than N knots (e.g., "5+" for winds &gt; 5 knots)</li>
-                        <li>"N-": less than N knots (e.g., "10-" for winds &lt; 10 knots)</li>
-                        <li>"N-M": between N and M knots (e.g., "5-15" for 5-15 knots)</li>
-                      </ul>
-                    </li>
-                    <li>"flight_rules" (optional): "VMC" for Visual Meteorological Conditions or "IMC" for Instrument Meteorological Conditions.</li>
-                    </ul>
+                  <table class="subtable">
+                  <thead>
+                    <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"direction"</td>
+                      <td>String</td>
+                      <td>(<i>Optional</i>) Wind direction range in degrees. Ranges must be less than 180 degrees wide and can wrap through north (e.g., "340-20" for a 40-degree range).</td>
+                    </tr>
+                    <tr>
+                      <td>"speed"</td>
+                      <td>String</td>
+                      <td>(<i>Optional</i>) Wind speed constraint in knots. Formats: "N+" for greater than N knots (e.g., "5+"), "N-" for less than N knots (e.g., "10-"), "N-M" for between N and M knots (e.g., "5-15").</td>
+                    </tr>
+                    <tr>
+                      <td>"flight_rules"</td>
+                      <td>String</td>
+                      <td>(<i>Optional</i>) "VMC" for Visual Meteorological Conditions or "IMC" for Instrument Meteorological Conditions.</td>
+                    </tr>
+                  </tbody>
+                  </table>
                   If no wind specifier is provided, vice will automatically select weather compatible with the scenario's runway configuration.
                   <p>
                   The wind can be visualized in STARS by typing ".WIND" and pressing <code>[Enter]</code>.

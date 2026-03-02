@@ -343,7 +343,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				if outbound {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
-					dur := time.Duration(ctx.FacilityAdaptation.HandoffAcceptFlashDuration) * time.Second
+					dur := time.Duration(ctx.FacilityAdaptation.Datablocks.FDB.AcceptFlashDuration) * time.Second
 					state.OutboundHandoffFlashEnd = time.Now().Add(dur)
 					state.DisplayFDB = true
 
@@ -353,7 +353,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				}
 				if outbound || inbound {
 					state.AcceptedHandoffSector = string(util.Select(outbound, event.ToController, event.FromController))
-					dur := time.Duration(ctx.FacilityAdaptation.HOSectorDisplayDuration) * time.Second
+					dur := time.Duration(ctx.FacilityAdaptation.Datablocks.FDB.SectorDisplayDuration) * time.Second
 					state.AcceptedHandoffDisplayEnd = time.Now().Add(dur)
 				}
 			}

@@ -106,22 +106,6 @@
                 "slope_angle": 0.175
             }
         },
-        "coordination_lists": [
-            {
-                "name": ".       CXY",
-                "id": "A",
-                "airports": [
-                    "KCXY"
-                ]
-            },
-            {
-                "name": ".       LNS",
-                "id": "B",
-                "airports": [
-                    "KLNS"
-                ]
-            }
-        ],
         "scratchpads": {
             "GAAPP": "GAA",
             "SEG": "SEG",
@@ -423,6 +407,24 @@
                     "MDT-006 (WEST FLOW)"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": ".       CXY",
+                    "id": "A",
+                    "airports": [
+                        "KCXY"
+                    ]
+                },
+                {
+                    "name": ".       LNS",
+                    "id": "B",
+                    "airports": [
+                        "KLNS"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

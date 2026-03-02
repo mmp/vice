@@ -28,7 +28,7 @@ func (ss *SimState) GetRegularReleaseDepartures() []sim.ReleaseDeparture {
 				return false
 			}
 
-			for _, cl := range ss.FacilityAdaptation.CoordinationLists {
+			for _, cl := range ss.FacilityAdaptation.Lists.Coordination {
 				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					// It'll be in a STARS coordination list
 					return false
@@ -41,7 +41,7 @@ func (ss *SimState) GetRegularReleaseDepartures() []sim.ReleaseDeparture {
 func (ss *SimState) GetSTARSReleaseDepartures() []sim.ReleaseDeparture {
 	return util.FilterSlice(ss.ReleaseDepartures,
 		func(dep sim.ReleaseDeparture) bool {
-			for _, cl := range ss.FacilityAdaptation.CoordinationLists {
+			for _, cl := range ss.FacilityAdaptation.Lists.Coordination {
 				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					return true
 				}

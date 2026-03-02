@@ -445,36 +445,6 @@
                 }
             ]
         },
-        "coordination_lists": [
-            {
-                "name": "SDL",
-                "id": "D",
-                "airports": [
-                    "KSDL"
-                ]
-            },
-            {
-                "name": "IWA",
-                "id": "W",
-                "airports": [
-                    "KIWA"
-                ]
-            },
-            {
-                "name": "FLG",
-                "id": "F",
-                "airports": [
-                    "KFLG"
-                ]
-            },
-            {
-                "name": "PRC",
-                "id": "P",
-                "airports": [
-                    "KPRC"
-                ]
-            }
-        ],
         "range": 45,
         "scratchpads": {
             "BROAK": "BRK",
@@ -641,6 +611,38 @@
                     "PHX366 LUFOPEN"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "SDL",
+                    "id": "D",
+                    "airports": [
+                        "KSDL"
+                    ]
+                },
+                {
+                    "name": "IWA",
+                    "id": "W",
+                    "airports": [
+                        "KIWA"
+                    ]
+                },
+                {
+                    "name": "FLG",
+                    "id": "F",
+                    "airports": [
+                        "KFLG"
+                    ]
+                },
+                {
+                    "name": "PRC",
+                    "id": "P",
+                    "airports": [
+                        "KPRC"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

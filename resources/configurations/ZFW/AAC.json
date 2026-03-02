@@ -196,8 +196,6 @@
         },
         "force_ql_self": true,
         "center": "KAAC",
-        "display_handoff_facility_only": true,
-        "handoff_sector_display_duration": 5,
         "filters": {
             "inhibit_ca": [
                 {
@@ -249,9 +247,6 @@
             "MAYES.RNAV": "RMA",
             "NOBLE.RNAV": "RNO",
             "SHAWN.RNAV": "RSH"
-        },
-        "scratchpad1": {
-            "display_exit_gate": true
         },
         "significant_points": {
             "COLIN": {
@@ -333,6 +328,15 @@
                     "SID"
                 ],
                 "center": "KAAC"
+            }
+        },
+        "datablocks": {
+            "scratchpad1": {
+                "display_exit_gate": true
+            },
+            "fdb": {
+                "display_facility_only": true,
+                "sector_display_duration": 5
             }
         }
     },

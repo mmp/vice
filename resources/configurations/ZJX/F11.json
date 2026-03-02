@@ -414,11 +414,6 @@
         },
         "center": "N028.25.45.781,W081.18.32.260",
         "force_ql_self": true,
-        "pdb": {
-            "hide_gs": true
-        },
-        "handoff_acceptance_flash_duration": 10,
-        "handoff_sector_display_duration": 10,
         "use_legacy_font": true,
         "altimeters": [
             "KMLB",
@@ -427,43 +422,6 @@
             "KMCO",
             "KTIX",
             "KSFB"
-        ],
-        "coordination_lists": [
-            {
-                "name": ".      ORL COORD",
-                "id": "T",
-                "airports": [
-                    "KORL"
-                ]
-            },
-            {
-                "name": ".      MLB COORD",
-                "id": "B",
-                "airports": [
-                    "KMLB"
-                ]
-            },
-            {
-                "name": ".      ISM COORD",
-                "id": "K",
-                "airports": [
-                    "KISM"
-                ]
-            },
-            {
-                "name": ".      TIX COORD",
-                "id": "S",
-                "airports": [
-                    "KTIX"
-                ]
-            },
-            {
-                "name": ".      COF COORD",
-                "id": "P",
-                "airports": [
-                    "KCOF"
-                ]
-            }
         ],
         "filters": {
             "inhibit_ca": [
@@ -1118,6 +1076,54 @@
                 ],
                 "center": "N028.25.45.781,W081.18.32.260"
             }
+        },
+        "datablocks": {
+            "pdb": {
+                "hide_gs": true
+            },
+            "fdb": {
+                "accept_flash_duration": 10,
+                "sector_display_duration": 10
+            }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": ".      ORL COORD",
+                    "id": "T",
+                    "airports": [
+                        "KORL"
+                    ]
+                },
+                {
+                    "name": ".      MLB COORD",
+                    "id": "B",
+                    "airports": [
+                        "KMLB"
+                    ]
+                },
+                {
+                    "name": ".      ISM COORD",
+                    "id": "K",
+                    "airports": [
+                        "KISM"
+                    ]
+                },
+                {
+                    "name": ".      TIX COORD",
+                    "id": "S",
+                    "airports": [
+                        "KTIX"
+                    ]
+                },
+                {
+                    "name": ".      COF COORD",
+                    "id": "P",
+                    "airports": [
+                        "KCOF"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

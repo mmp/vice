@@ -264,22 +264,6 @@
                 "slope_angle": 0.175
             }
         },
-        "coordination_lists": [
-            {
-                "name": "HENDERSON",
-                "id": "H",
-                "airports": [
-                    "KHND"
-                ]
-            },
-            {
-                "name": "NORTH VEGAS",
-                "id": "V",
-                "airports": [
-                    "KVGT"
-                ]
-            }
-        ],
         "scratchpads": {
             "VERKN": "GID",
             "TUKRR": "GID",
@@ -490,6 +474,24 @@
                     "059 LSV L30"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "HENDERSON",
+                    "id": "H",
+                    "airports": [
+                        "KHND"
+                    ]
+                },
+                {
+                    "name": "NORTH VEGAS",
+                    "id": "V",
+                    "airports": [
+                        "KVGT"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

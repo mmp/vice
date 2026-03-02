@@ -40,15 +40,6 @@
             }
         },
         "center": "N038.47.36.733,W104.35.10.501",
-        "coordination_lists": [
-            {
-                "name": "Meadow Lake",
-                "id": "A",
-                "airports": [
-                    "KFLY"
-                ]
-            }
-        ],
         "filters": {
             "inhibit_ca": [
                 {
@@ -116,6 +107,17 @@
                     "COS Z 35R"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "Meadow Lake",
+                    "id": "A",
+                    "airports": [
+                        "KFLY"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

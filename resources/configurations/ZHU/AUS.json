@@ -151,22 +151,6 @@
             "SJT": {},
             "ZENZI": {}
         },
-        "coordination_lists": [
-            {
-                "name": "SAN MARCOS",
-                "id": "A",
-                "airports": [
-                    "KHYI"
-                ]
-            },
-            {
-                "name": "GEORGETOWN",
-                "id": "B",
-                "airports": [
-                    "KGTU"
-                ]
-            }
-        ],
         "force_ql_self": true,
         "video_map_file": "videomaps/ZHU-videomaps.gob.zst",
         "airspace_awareness": [
@@ -288,6 +272,24 @@
                     "AUS VFR"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "SAN MARCOS",
+                    "id": "A",
+                    "airports": [
+                        "KHYI"
+                    ]
+                },
+                {
+                    "name": "GEORGETOWN",
+                    "id": "B",
+                    "airports": [
+                        "KGTU"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

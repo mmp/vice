@@ -1149,36 +1149,6 @@
                 "center": "KDEN"
             }
         },
-        "coordination_lists": [
-            {
-                "name": "Centennial",
-                "id": "A",
-                "airports": [
-                    "KAPA"
-                ]
-            },
-            {
-                "name": "Metro",
-                "id": "B",
-                "airports": [
-                    "KBJC"
-                ]
-            },
-            {
-                "name": "NoCo",
-                "id": "C",
-                "airports": [
-                    "KFNL"
-                ]
-            },
-            {
-                "name": "Greely",
-                "id": "D",
-                "airports": [
-                    "KGXY"
-                ]
-            }
-        ],
         "force_ql_self": true,
         "airspace_awareness": [
             {
@@ -1289,6 +1259,38 @@
             "2": {
                 "center": "KDEN"
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "Centennial",
+                    "id": "A",
+                    "airports": [
+                        "KAPA"
+                    ]
+                },
+                {
+                    "name": "Metro",
+                    "id": "B",
+                    "airports": [
+                        "KBJC"
+                    ]
+                },
+                {
+                    "name": "NoCo",
+                    "id": "C",
+                    "airports": [
+                        "KFNL"
+                    ]
+                },
+                {
+                    "name": "Greely",
+                    "id": "D",
+                    "airports": [
+                        "KGXY"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

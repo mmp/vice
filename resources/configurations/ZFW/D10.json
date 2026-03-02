@@ -808,10 +808,6 @@
             }
         },
         "center": "KDFW",
-        "pdb": {
-            "hide_gs": true,
-            "show_scratchpad2": false
-        },
         "filters": {
             "inhibit_ca": [
                 {
@@ -966,9 +962,6 @@
                 "slope_angle": 0.3
             }
         },
-        "scratchpad1": {
-            "display_alternate_exit_gate": true
-        },
         "scratchpads": {
             "MLC": "AKU",
             "ALIAN": "RBT",
@@ -1090,6 +1083,15 @@
                     "RVMD10053S",
                     "RVMD10054S"
                 ]
+            }
+        },
+        "datablocks": {
+            "pdb": {
+                "hide_gs": true,
+                "show_scratchpad2": false
+            },
+            "scratchpad1": {
+                "display_alternate_exit_gate": true
             }
         }
     },

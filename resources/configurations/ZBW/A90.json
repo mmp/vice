@@ -842,39 +842,6 @@
         "custom_spcs": [
             "ME"
         ],
-        "pdb": {
-            "hide_gs": true
-        },
-        "scratchpad1": {
-            "display_exit_gate": true
-        },
-        "display_handoff_facility_only": true,
-        "fdb": {
-            "scratchpad2_on_line3": true
-        },
-        "coordination_lists": [
-            {
-                "name": ".     PBVY -",
-                "id": "BVY",
-                "airports": [
-                    "KBVY"
-                ]
-            },
-            {
-                "name": ".     PLWM -",
-                "id": "LWM",
-                "airports": [
-                    "KLWM"
-                ]
-            },
-            {
-                "name": ".     POWD -",
-                "id": "OWD",
-                "airports": [
-                    "KOWD"
-                ]
-            }
-        ],
         "controller_configs": {
             "1B": {
                 "flight_following_airspace": [
@@ -1160,6 +1127,43 @@
                     "MHT RWY 35 ROZZE STAR"
                 ]
             }
+        },
+        "datablocks": {
+            "fdb": {
+                "scratchpad2_on_line3": true,
+                "display_facility_only": true
+            },
+            "pdb": {
+                "hide_gs": true
+            },
+            "scratchpad1": {
+                "display_exit_gate": true
+            }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": ".     PBVY -",
+                    "id": "BVY",
+                    "airports": [
+                        "KBVY"
+                    ]
+                },
+                {
+                    "name": ".     PLWM -",
+                    "id": "LWM",
+                    "airports": [
+                        "KLWM"
+                    ]
+                },
+                {
+                    "name": ".     POWD -",
+                    "id": "OWD",
+                    "airports": [
+                        "KOWD"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

@@ -167,40 +167,12 @@
             ]
         },
         "allow_long_scratchpad": true,
-        "pdb": {
-            "hide_gs": true
-        },
         "force_ql_self": true,
-        "display_handoff_facility_only": false,
-        "handoff_sector_display_duration": 5,
         "scratchpads": {
             "PUT": "PUT",
             "PVD_PUT": "PUT",
             "JUMPR": "7TN"
         },
-        "coordination_lists": [
-            {
-                "name": ".     PVD D DEP",
-                "id": "D",
-                "airports": [
-                    "KPVD"
-                ]
-            },
-            {
-                "name": ".     EWB DEP",
-                "id": "N",
-                "airports": [
-                    "KEWB"
-                ]
-            },
-            {
-                "name": ".     OQU DEP",
-                "id": "Q",
-                "airports": [
-                    "KOQU"
-                ]
-            }
-        ],
         "significant_points": {
             "PUT": {},
             "JUMPR": {
@@ -252,6 +224,40 @@
                     "RVMPVD028S"
                 ]
             }
+        },
+        "datablocks": {
+            "pdb": {
+                "hide_gs": true
+            },
+            "fdb": {
+                "display_facility_only": false,
+                "sector_display_duration": 5
+            }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": ".     PVD D DEP",
+                    "id": "D",
+                    "airports": [
+                        "KPVD"
+                    ]
+                },
+                {
+                    "name": ".     EWB DEP",
+                    "id": "N",
+                    "airports": [
+                        "KEWB"
+                    ]
+                },
+                {
+                    "name": ".     OQU DEP",
+                    "id": "Q",
+                    "airports": [
+                        "KOQU"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

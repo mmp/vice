@@ -272,29 +272,6 @@
                 ]
             }
         },
-        "coordination_lists": [
-            {
-                "name": "NEW BRAUNFELS",
-                "id": "A",
-                "airports": [
-                    "KBAZ"
-                ]
-            },
-            {
-                "name": "KELLY FLD",
-                "id": "B",
-                "airports": [
-                    "KSKF"
-                ]
-            },
-            {
-                "name": "STINSON",
-                "id": "C",
-                "airports": [
-                    "KSSF"
-                ]
-            }
-        ],
         "video_map_file": "videomaps/SAT-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -343,6 +320,31 @@
                     "SAT CLASS AIRSPACES"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "NEW BRAUNFELS",
+                    "id": "A",
+                    "airports": [
+                        "KBAZ"
+                    ]
+                },
+                {
+                    "name": "KELLY FLD",
+                    "id": "B",
+                    "airports": [
+                        "KSKF"
+                    ]
+                },
+                {
+                    "name": "STINSON",
+                    "id": "C",
+                    "airports": [
+                        "KSSF"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

@@ -106,22 +106,6 @@
             }
         },
         "center": "KDAB",
-        "coordination_lists": [
-            {
-                "name": ".      OMN COORD",
-                "id": "O",
-                "airports": [
-                    "KOMN"
-                ]
-            },
-            {
-                "name": ".      EVB COORD",
-                "id": "B",
-                "airports": [
-                    "KEVB"
-                ]
-            }
-        ],
         "radar_sites": {
             "DAB": {
                 "char": "D",
@@ -449,6 +433,24 @@
                     "WARNING AREA 497"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": ".      OMN COORD",
+                    "id": "O",
+                    "airports": [
+                        "KOMN"
+                    ]
+                },
+                {
+                    "name": ".      EVB COORD",
+                    "id": "B",
+                    "airports": [
+                        "KEVB"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

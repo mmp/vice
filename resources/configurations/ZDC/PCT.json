@@ -918,10 +918,6 @@
             "SWANN": {}
         },
         "video_map_file": "videomaps/ZDC-videomaps.gob.zst",
-        "pdb": {
-            "hide_gs": true,
-            "show_scratchpad2": true
-        },
         "radar_sites": {
             "DCA": {
                 "char": "D",
@@ -1248,6 +1244,12 @@
             "3": {
                 "default_airport": "KIAD",
                 "video_maps": []
+            }
+        },
+        "datablocks": {
+            "pdb": {
+                "hide_gs": true,
+                "show_scratchpad2": true
             }
         }
     },

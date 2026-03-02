@@ -379,15 +379,9 @@ type FacilityAdaptation struct {
 	VideoMapFile      string                        `json:"video_map_file"`
 	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
 	SingleCharAIDs    map[string]string             `json:"single_char_aids"`
-	KeepLDB           bool                          `json:"keep_ldb"`
-	FullLDBSeconds    int                           `json:"full_ldb_seconds"`
 	Monitor           string                        `json:"monitor"`
 
 	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes"`
-
-	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
-	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
-	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
 
 	AirportCodes map[string]string `json:"airport_codes"`
 
@@ -397,44 +391,53 @@ type FacilityAdaptation struct {
 		ModifyAfterDisplay bool              `json:"modify_after_display"`
 	} `json:"flight_plan"`
 
-	PDB struct {
-		ShowScratchpad2   bool `json:"show_scratchpad2"`
-		HideGroundspeed   bool `json:"hide_gs"`
-		ShowAircraftType  bool `json:"show_aircraft_type"`
-		SplitGSAndCWT     bool `json:"split_gs_and_cwt"`
-		DisplayCustomSPCs bool `json:"display_custom_spcs"`
-	} `json:"pdb"`
-
-	FDB struct {
-		DisplayRequestedAltitude bool `json:"display_requested_altitude"`
-		Scratchpad2OnLine3       bool `json:"scratchpad2_on_line3"`
-	} `json:"fdb"`
-
-	Scratchpad1 struct {
-		DisplayExitFix     bool `json:"display_exit_fix"`
-		DisplayExitFix1    bool `json:"display_exit_fix_1"`
-		DisplayExitGate    bool `json:"display_exit_gate"`
-		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
-	} `json:"scratchpad1"`
+	Datablocks struct {
+		FDB struct {
+			DisplayRequestedAltitude bool `json:"display_requested_altitude"`
+			Scratchpad2OnLine3       bool `json:"scratchpad2_on_line3"`
+			DisplayFacilityOnly      bool `json:"display_facility_only"`
+			AcceptFlashDuration      int  `json:"accept_flash_duration"`
+			SectorDisplayDuration    int  `json:"sector_display_duration"`
+		} `json:"fdb"`
+		PDB struct {
+			ShowScratchpad2   bool `json:"show_scratchpad2"`
+			HideGroundspeed   bool `json:"hide_gs"`
+			ShowAircraftType  bool `json:"show_aircraft_type"`
+			SplitGSAndCWT     bool `json:"split_gs_and_cwt"`
+			DisplayCustomSPCs bool `json:"display_custom_spcs"`
+		} `json:"pdb"`
+		LDB struct {
+			KeepAfterSlew bool `json:"keep_after_slew"`
+			FullSeconds   int  `json:"full_seconds"`
+		} `json:"ldb"`
+		Scratchpad1 struct {
+			DisplayExitFix     bool `json:"display_exit_fix"`
+			DisplayExitFix1    bool `json:"display_exit_fix_1"`
+			DisplayExitGate    bool `json:"display_exit_gate"`
+			DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
+		} `json:"scratchpad1"`
+	} `json:"datablocks"`
 
 	CustomSPCs []string `json:"custom_spcs"`
 
-	CoordinationLists []CoordinationList `json:"coordination_lists"`
-	VFRList           struct {
-		Format string `json:"format"`
-	} `json:"vfr_list"`
-	TABList struct {
-		Format string `json:"format"`
-	} `json:"tab_list"`
-	CoastSuspendList struct {
-		Format string `json:"format"`
-	} `json:"coast_suspend_list"`
-	MCISuppressionList struct {
-		Format string `json:"format"`
-	} `json:"mci_suppression_list"`
-	TowerList struct {
-		Format string `json:"format"`
-	} `json:"tower_list"`
+	Lists struct {
+		Coordination []CoordinationList `json:"coordination"`
+		VFR          struct {
+			Format string `json:"format"`
+		} `json:"vfr"`
+		TAB struct {
+			Format string `json:"format"`
+		} `json:"tab"`
+		CoastSuspend struct {
+			Format string `json:"format"`
+		} `json:"coast_suspend"`
+		MCISuppression struct {
+			Format string `json:"format"`
+		} `json:"mci_suppression"`
+		Tower struct {
+			Format string `json:"format"`
+		} `json:"tower"`
+	} `json:"lists"`
 	RestrictionAreas  []av.RestrictionArea `json:"restriction_areas"`
 	UseLegacyFont     bool                 `json:"use_legacy_font"`
 	DisplayRNAVSymbol bool                 `json:"display_rnav_symbol"`
@@ -1717,56 +1720,56 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 	e.Pop()
 
-	e.Push(`"tab_list"`)
-	if fa.TABList.Format == "" {
-		fa.TABList.Format = "[INDEX] [ACID_MSAWCA][DUPE_BEACON] [BEACON] [DEP_EXIT_FIX]"
+	e.Push(`"tab"`)
+	if fa.Lists.TAB.Format == "" {
+		fa.Lists.TAB.Format = "[INDEX] [ACID_MSAWCA][DUPE_BEACON] [BEACON] [DEP_EXIT_FIX]"
 	}
-	if err := validateListFormat(fa.TABList.Format, "DUPE_BEACON"); err != nil {
-		e.ErrorString("Invalid format string %q: %v", fa.TABList.Format, err)
-	}
-	e.Pop()
-
-	e.Push(`"vfr_list"`)
-	if fa.VFRList.Format == "" {
-		fa.VFRList.Format = "[INDEX] [ACID_MSAWCA][BEACON]"
-	}
-	if err := validateListFormat(fa.VFRList.Format); err != nil {
-		e.ErrorString("Invalid format string %q: %v", fa.VFRList.Format, err)
+	if err := validateListFormat(fa.Lists.TAB.Format, "DUPE_BEACON"); err != nil {
+		e.ErrorString("Invalid format string %q: %v", fa.Lists.TAB.Format, err)
 	}
 	e.Pop()
 
-	e.Push(`"coast_suspend_list"`)
-	if fa.CoastSuspendList.Format == "" {
-		fa.CoastSuspendList.Format = "[INDEX] [ACID] S [BEACON] [ALT]"
+	e.Push(`"vfr"`)
+	if fa.Lists.VFR.Format == "" {
+		fa.Lists.VFR.Format = "[INDEX] [ACID_MSAWCA][BEACON]"
 	}
-	if err := validateListFormat(fa.CoastSuspendList.Format, "ALT"); err != nil {
-		e.ErrorString("Invalid format string %q: %v", fa.CoastSuspendList.Format, err)
-	}
-	e.Pop()
-
-	e.Push(`"mci_suppression_list"`)
-	if fa.MCISuppressionList.Format == "" {
-		fa.MCISuppressionList.Format = "[ACID] [BEACON]  [SUPP_BEACON]"
-	}
-	if err := validateListFormat(fa.MCISuppressionList.Format, "SUPP_BEACON"); err != nil {
-		e.ErrorString("Invalid format string %q: %v", fa.MCISuppressionList.Format, err)
+	if err := validateListFormat(fa.Lists.VFR.Format); err != nil {
+		e.ErrorString("Invalid format string %q: %v", fa.Lists.VFR.Format, err)
 	}
 	e.Pop()
 
-	e.Push(`"tower_list"`)
-	if fa.TowerList.Format == "" {
-		fa.TowerList.Format = "[ACID] [ACTYPE]"
+	e.Push(`"coast_suspend"`)
+	if fa.Lists.CoastSuspend.Format == "" {
+		fa.Lists.CoastSuspend.Format = "[INDEX] [ACID] S [BEACON] [ALT]"
 	}
-	if err := validateListFormat(fa.TowerList.Format); err != nil {
-		e.ErrorString("Invalid format string %q: %v", fa.TowerList.Format, err)
+	if err := validateListFormat(fa.Lists.CoastSuspend.Format, "ALT"); err != nil {
+		e.ErrorString("Invalid format string %q: %v", fa.Lists.CoastSuspend.Format, err)
 	}
 	e.Pop()
 
-	e.Push(`"coordination_lists"`)
-	for i, cl := range fa.CoordinationLists {
+	e.Push(`"mci_suppression"`)
+	if fa.Lists.MCISuppression.Format == "" {
+		fa.Lists.MCISuppression.Format = "[ACID] [BEACON]  [SUPP_BEACON]"
+	}
+	if err := validateListFormat(fa.Lists.MCISuppression.Format, "SUPP_BEACON"); err != nil {
+		e.ErrorString("Invalid format string %q: %v", fa.Lists.MCISuppression.Format, err)
+	}
+	e.Pop()
+
+	e.Push(`"tower"`)
+	if fa.Lists.Tower.Format == "" {
+		fa.Lists.Tower.Format = "[ACID] [ACTYPE]"
+	}
+	if err := validateListFormat(fa.Lists.Tower.Format); err != nil {
+		e.ErrorString("Invalid format string %q: %v", fa.Lists.Tower.Format, err)
+	}
+	e.Pop()
+
+	e.Push(`"coordination"`)
+	for i, cl := range fa.Lists.Coordination {
 		if cl.Format == "" {
 			// Default format
-			fa.CoordinationLists[i].Format = "[INDEX][ACKED]    [ACID] [ACTYPE] [BEACON]   [EXIT_FIX] [REQ_ALT]"
+			fa.Lists.Coordination[i].Format = "[INDEX][ACKED]    [ACID] [ACTYPE] [BEACON]   [EXIT_FIX] [REQ_ALT]"
 		}
 
 		if err := validateListFormat(cl.Format, "ACKED"); err != nil {

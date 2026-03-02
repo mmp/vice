@@ -1363,7 +1363,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	// Hold for release validation (require sg.Airports).
 	for airport, ap := range sg.Airports {
 		var matches []string
-		for _, list := range s.CoordinationLists {
+		for _, list := range s.Lists.Coordination {
 			if slices.Contains(list.Airports, airport) {
 				matches = append(matches, list.Name)
 			}
@@ -1391,7 +1391,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	}
 
 	// Coordination list airports (require sg.Airports).
-	for _, list := range s.CoordinationLists {
+	for _, list := range s.Lists.Coordination {
 		e.Push(`"coordination_lists" ` + list.Name)
 		for _, ap := range list.Airports {
 			if _, ok := sg.Airports[ap]; !ok {
@@ -1956,7 +1956,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			for _, ap := range sg.FacilityAdaptation.Altimeters {
 				addFromSibling(ap)
 			}
-			for _, cl := range sg.FacilityAdaptation.CoordinationLists {
+			for _, cl := range sg.FacilityAdaptation.Lists.Coordination {
 				for _, ap := range cl.Airports {
 					addFromSibling(ap)
 					// Airports in coordination lists must be hold for release.
