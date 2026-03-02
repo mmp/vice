@@ -339,19 +339,19 @@ type FacilityAdaptation struct {
 	// These define which TCP handles each inbound flow and departure airport/runway/SID.
 	Configurations map[string]*FacilityConfiguration `json:"configurations"`
 
-	AirspaceAwareness   []AirspaceAwareness                        `json:"airspace_awareness" scope:"stars"`
-	ForceQLToSelf       bool                                       `json:"force_ql_self" scope:"stars"`
-	AllowLongScratchpad bool                                       `json:"allow_long_scratchpad" scope:"stars"`
+	AirspaceAwareness   []AirspaceAwareness                        `json:"airspace_awareness"`
+	ForceQLToSelf       bool                                       `json:"force_ql_self"`
+	AllowLongScratchpad bool                                       `json:"allow_long_scratchpad"`
 	VideoMapLabels      map[string]string                          `json:"map_labels"`
 	ControllerConfigs   map[ControlPosition]*STARSControllerConfig `json:"controller_configs"`
 	AreaConfigs         map[string]*STARSAreaConfig                `json:"area_configs,omitempty"`
-	RadarSites          map[string]*av.RadarSite                   `json:"radar_sites" scope:"stars"`
+	RadarSites          map[string]*av.RadarSite                   `json:"radar_sites"`
 	Center              math.Point2LL                              `json:"-"`
 	CenterString        string                                     `json:"center"`
 	MaxDistance         float32                                    `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm STARS, 400nm ERAM)
 	Range               float32                                    `json:"range"`
-	Scratchpads         map[string]string                          `json:"scratchpads" scope:"stars"`
-	SignificantPoints   map[string]SignificantPoint                `json:"significant_points" scope:"stars"`
+	Scratchpads         map[string]string                          `json:"scratchpads"`
+	SignificantPoints   map[string]SignificantPoint                `json:"significant_points"`
 	Altimeters          []string                                   `json:"altimeters"`
 
 	// Airpsace filters
@@ -366,7 +366,7 @@ type FacilityAdaptation struct {
 		SecondaryDrop   FilterRegions    `json:"secondary_drop"`
 		SurfaceTracking FilterRegions    `json:"surface_tracking"`
 		VFRInhibit      FilterRegions    `json:"vfr_inhibit"`
-	} `json:"filters" scope:"stars"` //Should this be STARS or justy parts of it?
+	} `json:"filters"`
 
 	MonitoredBeaconCodeBlocksString  *string
 	MonitoredBeaconCodeBlocks        []av.Squawk
@@ -374,28 +374,28 @@ type FacilityAdaptation struct {
 		CodeRangesString string         `json:"beacon_codes"`
 		CodeRanges       [][2]av.Squawk // inclusive
 		Symbol           string         `json:"symbol"`
-	} `json:"untracked_position_symbol_overrides" scope:"stars"`
+	} `json:"untracked_position_symbol_overrides"`
 
 	VideoMapFile      string                        `json:"video_map_file"`
-	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes" scope:"stars"`
-	SingleCharAIDs    map[string]string             `json:"single_char_aids" scope:"stars"` // Char to airport. TODO: Check if this is for ERAM as well.
-	KeepLDB           bool                          `json:"keep_ldb" scope:"stars"`
-	FullLDBSeconds    int                           `json:"full_ldb_seconds" scope:"stars"`
-	Monitor           string                        `json:"monitor" scope:"stars"`
+	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
+	SingleCharAIDs    map[string]string             `json:"single_char_aids"`
+	KeepLDB           bool                          `json:"keep_ldb"`
+	FullLDBSeconds    int                           `json:"full_ldb_seconds"`
+	Monitor           string                        `json:"monitor"`
 
-	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes" scope:"stars"`
+	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes"`
 
-	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration" scope:"stars"`
-	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only" scope:"stars"`
-	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration" scope:"stars"`
+	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
+	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
+	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
 
-	AirportCodes map[string]string `json:"airport_codes" scope:"eram"`
+	AirportCodes map[string]string `json:"airport_codes"`
 
 	FlightPlan struct {
 		QuickACID          string            `json:"quick_acid"`
 		ACIDExpansions     map[string]string `json:"acid_expansions"`
 		ModifyAfterDisplay bool              `json:"modify_after_display"`
-	} `json:"flight_plan" scope:"stars"`
+	} `json:"flight_plan"`
 
 	PDB struct {
 		ShowScratchpad2   bool `json:"show_scratchpad2"`
@@ -403,40 +403,40 @@ type FacilityAdaptation struct {
 		ShowAircraftType  bool `json:"show_aircraft_type"`
 		SplitGSAndCWT     bool `json:"split_gs_and_cwt"`
 		DisplayCustomSPCs bool `json:"display_custom_spcs"`
-	} `json:"pdb" scope:"stars"`
+	} `json:"pdb"`
 
 	FDB struct {
 		DisplayRequestedAltitude bool `json:"display_requested_altitude"`
 		Scratchpad2OnLine3       bool `json:"scratchpad2_on_line3"`
-	} `json:"fdb" scope:"stars"`
+	} `json:"fdb"`
 
 	Scratchpad1 struct {
 		DisplayExitFix     bool `json:"display_exit_fix"`
 		DisplayExitFix1    bool `json:"display_exit_fix_1"`
 		DisplayExitGate    bool `json:"display_exit_gate"`
 		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
-	} `json:"scratchpad1" scope:"stars"`
+	} `json:"scratchpad1"`
 
 	CustomSPCs []string `json:"custom_spcs"`
 
-	CoordinationLists []CoordinationList `json:"coordination_lists" scope:"stars"`
+	CoordinationLists []CoordinationList `json:"coordination_lists"`
 	VFRList           struct {
 		Format string `json:"format"`
-	} `json:"vfr_list" scope:"stars"`
+	} `json:"vfr_list"`
 	TABList struct {
 		Format string `json:"format"`
-	} `json:"tab_list" scope:"stars"`
+	} `json:"tab_list"`
 	CoastSuspendList struct {
 		Format string `json:"format"`
-	} `json:"coast_suspend_list" scope:"stars"`
+	} `json:"coast_suspend_list"`
 	MCISuppressionList struct {
 		Format string `json:"format"`
-	} `json:"mci_suppression_list" scope:"stars"`
+	} `json:"mci_suppression_list"`
 	TowerList struct {
 		Format string `json:"format"`
-	} `json:"tower_list" scope:"stars"`
-	RestrictionAreas  []av.RestrictionArea `json:"restriction_areas" scope:"stars"`
-	UseLegacyFont     bool                 `json:"use_legacy_font" scope:"stars"`
+	} `json:"tower_list"`
+	RestrictionAreas  []av.RestrictionArea `json:"restriction_areas"`
+	UseLegacyFont     bool                 `json:"use_legacy_font"`
 	DisplayRNAVSymbol bool                 `json:"display_rnav_symbol"`
 }
 

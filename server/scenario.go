@@ -29,9 +29,9 @@ import (
 )
 
 type scenarioGroup struct {
-	ARTCC              string                     `json:"artcc" scope:"eram"`
-	Area               string                     `json:"area" scope:"eram"`
-	TRACON             string                     `json:"tracon" scope:"stars"`
+	ARTCC              string                     `json:"artcc"`
+	Area               string                     `json:"area"`
+	TRACON             string                     `json:"tracon"`
 	Name               string                     `json:"name"`
 	Airports           map[string]*av.Airport     `json:"airports"`
 	Fixes              map[string]math.Point2LL   `json:"-"`
@@ -43,7 +43,7 @@ type scenarioGroup struct {
 	VFRReportingPoints []av.VFRReportingPoint     `json:"vfr_reporting_points"`
 
 	AllowFixRedefinitions bool   `json:"allow_fix_redefinitions"`
-	PrimaryAirport        string `json:"primary_airport" scope:"stars"`
+	PrimaryAirport        string `json:"primary_airport"`
 
 	ReportingPointStrings []string            `json:"reporting_points"`
 	ReportingPoints       []av.ReportingPoint // not in JSON
@@ -87,7 +87,7 @@ type scenario struct {
 	CenterString    string        `json:"center"`
 	Range           float32       `json:"range"`
 	DefaultMaps     []string      `json:"default_maps"`
-	DefaultMapGroup string        `json:"default_map_group" scope:"eram"`
+	DefaultMapGroup string        `json:"default_map_group"`
 	VFRRateScale    *float32      `json:"vfr_rate_scale"`
 }
 
