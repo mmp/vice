@@ -7340,7 +7340,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <tr>
                   <td>"callsign"</td>
                   <td>String</td>
-                  <td>A specific callsign (eg. AAL123) to use for an aircraft flying this route. (Both callsigns and ICAO cannot be specified at the same time.)</td>
+                  <td>A specific callsign (eg. AAL123) to use for an aircraft flying this route. ("callsign" and "icao" cannot both be specified; the ICAO code is inferred from the callsign.)</td>
                 </tr>
                 <tr>
                   <td>"fleet"</td>
@@ -8028,9 +8028,7 @@ Given the id, the approach can be specified with:</p>
         {
           "fleet": "long",
           "icao": "AFR"
-        }
-      ],
-      "callsigns": [
+        },
         {
           "callsign": "AFR1021",
           "types": ["A320"]
