@@ -78,7 +78,6 @@
                 }
             ]
         },
-        "force_ql_self": true,
         "scratchpads": {
             "AEX": "",
             "BDOCK": "",
@@ -171,6 +170,9 @@
                     "NEW NPA 07 MAP"
                 ]
             }
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

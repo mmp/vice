@@ -520,8 +520,6 @@
             }
         },
         "center": "N33.38.24.846,W84.25.42.088",
-        "force_ql_self": true,
-        "allow_long_scratchpad": true,
         "controller_configs": {
             "1H": {
                 "default_maps": [
@@ -1681,6 +1679,10 @@
                     ]
                 }
             ]
+        },
+        "datablocks": {
+            "allow_long_scratchpad": true,
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

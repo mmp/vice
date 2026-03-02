@@ -674,7 +674,6 @@
             }
         },
         "center": "KBOS",
-        "allow_long_scratchpad": true,
         "filters": {
             "inhibit_ca": [
                 {
@@ -706,7 +705,6 @@
                 }
             ]
         },
-        "force_ql_self": true,
         "scratchpads": {
             "CCC": "PRT",
             "NELIE": "PRT",
@@ -808,11 +806,6 @@
             "WEEZE": {}
         },
         "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
-        "altimeters": [
-            "KBOS",
-            "KFMH",
-            "KMHT"
-        ],
         "ssr_codes": {
             "auto_assignable_codes": {
                 "1": {
@@ -839,9 +832,6 @@
                 ]
             }
         },
-        "custom_spcs": [
-            "ME"
-        ],
         "controller_configs": {
             "1B": {
                 "flight_following_airspace": [
@@ -1138,7 +1128,12 @@
             },
             "scratchpad1": {
                 "display_exit_gate": true
-            }
+            },
+            "allow_long_scratchpad": true,
+            "force_ql_self": true,
+            "custom_spcs": [
+                "ME"
+            ]
         },
         "lists": {
             "coordination": [
@@ -1163,7 +1158,14 @@
                         "KOWD"
                     ]
                 }
-            ]
+            ],
+            "ssa": {
+                "altimeters": [
+                    "KBOS",
+                    "KFMH",
+                    "KMHT"
+                ]
+            }
         }
     },
     "handoff_ids": [

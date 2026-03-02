@@ -112,11 +112,6 @@
                 }
             }
         },
-        "altimeters": [
-            "KPDX",
-            "KHIO",
-            "KUAO"
-        ],
         "center": "KPDX",
         "filters": {
             "inhibit_ca": [
@@ -260,6 +255,15 @@
                     "SATFNLS",
                     "FINAL 10",
                     "FINAL 28"
+                ]
+            }
+        },
+        "lists": {
+            "ssa": {
+                "altimeters": [
+                    "KPDX",
+                    "KHIO",
+                    "KUAO"
                 ]
             }
         }

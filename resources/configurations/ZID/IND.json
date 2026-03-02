@@ -91,7 +91,6 @@
             }
         },
         "center": "KIND",
-        "allow_long_scratchpad": true,
         "filters": {
             "inhibit_ca": [
                 {
@@ -335,6 +334,9 @@
                     "RNP FIXES RWY 32"
                 ]
             }
+        },
+        "datablocks": {
+            "allow_long_scratchpad": true
         }
     },
     "handoff_ids": [

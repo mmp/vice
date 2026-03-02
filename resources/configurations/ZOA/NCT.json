@@ -521,12 +521,6 @@
             }
         },
         "center": "KSJC",
-        "altimeters": [
-            "KSJC",
-            "KMRY",
-            "KSNS",
-            "KPAO"
-        ],
         "controller_configs": {
             "1M": {
                 "flight_following_airspace": [
@@ -1832,7 +1826,15 @@
                         "KSNS"
                     ]
                 }
-            ]
+            ],
+            "ssa": {
+                "altimeters": [
+                    "KSJC",
+                    "KMRY",
+                    "KSNS",
+                    "KPAO"
+                ]
+            }
         }
     },
     "handoff_ids": [

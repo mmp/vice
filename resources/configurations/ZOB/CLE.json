@@ -172,7 +172,6 @@
                 }
             }
         },
-        "force_ql_self": true,
         "center": "KCLE",
         "filters": {
             "inhibit_ca": [
@@ -392,6 +391,9 @@
                     "CLE-058 (SATELLITE SIDS)"
                 ]
             }
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

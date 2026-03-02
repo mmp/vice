@@ -38,7 +38,6 @@
     },
     "config": {
         "center": "KCVG",
-        "allow_long_scratchpad": true,
         "controller_configs": {
             "1B": {},
             "1F": {
@@ -331,6 +330,9 @@
                     "West Base"
                 ]
             }
+        },
+        "datablocks": {
+            "allow_long_scratchpad": true
         }
     },
     "handoff_ids": [

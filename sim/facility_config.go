@@ -370,7 +370,7 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	if fa.Datablocks.PDB.SplitGSAndCWT && fa.Datablocks.PDB.HideGroundspeed {
 		e.ErrorString(`Both "split_gs_and_cwt" and "hide_gs" cannot be specified for "pdb" adaption.`)
 	}
-	if fa.Datablocks.PDB.DisplayCustomSPCs && len(fa.CustomSPCs) == 0 {
+	if fa.Datablocks.PDB.DisplayCustomSPCs && len(fa.Datablocks.CustomSPCs) == 0 {
 		e.ErrorString(`"display_custom_spcs" was set but none were defined in "custom_spcs".`)
 	}
 
@@ -395,7 +395,7 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	}
 
 	// Custom SPCs.
-	for _, spc := range fa.CustomSPCs {
+	for _, spc := range fa.Datablocks.CustomSPCs {
 		if len(spc) != 2 || spc[0] < 'A' || spc[0] > 'Z' || spc[1] < 'A' || spc[1] > 'Z' {
 			e.ErrorString(`Invalid "custom_spcs" code %q: must be two characters between A-Z`, spc)
 		}

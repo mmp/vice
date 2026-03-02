@@ -1351,10 +1351,10 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	e.Pop()
 
 	// Altimeters (require sg.Airports).
-	if len(s.Altimeters) > 6 {
-		e.ErrorString(`Only 6 airports may be specified for "altimeters"; %d were given`, len(s.Altimeters))
+	if len(s.Lists.SSA.Altimeters) > 6 {
+		e.ErrorString(`Only 6 airports may be specified for "altimeters"; %d were given`, len(s.Lists.SSA.Altimeters))
 	}
-	for _, ap := range s.Altimeters {
+	for _, ap := range s.Lists.SSA.Altimeters {
 		if _, ok := sg.Airports[ap]; !ok {
 			e.ErrorString(`Airport %q in "altimeters" not found in scenario group "airports"`, ap)
 		}
@@ -1953,7 +1953,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 					}
 				}
 			}
-			for _, ap := range sg.FacilityAdaptation.Altimeters {
+			for _, ap := range sg.FacilityAdaptation.Lists.SSA.Altimeters {
 				addFromSibling(ap)
 			}
 			for _, cl := range sg.FacilityAdaptation.Lists.Coordination {

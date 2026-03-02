@@ -151,7 +151,6 @@
             "SJT": {},
             "ZENZI": {}
         },
-        "force_ql_self": true,
         "video_map_file": "videomaps/ZHU-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -290,6 +289,9 @@
                     ]
                 }
             ]
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

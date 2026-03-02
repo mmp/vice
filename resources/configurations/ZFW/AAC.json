@@ -194,7 +194,6 @@
                 }
             }
         },
-        "force_ql_self": true,
         "center": "KAAC",
         "filters": {
             "inhibit_ca": [
@@ -337,7 +336,8 @@
             "fdb": {
                 "display_facility_only": true,
                 "sector_display_duration": 5
-            }
+            },
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

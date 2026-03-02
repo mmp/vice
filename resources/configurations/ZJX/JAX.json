@@ -420,7 +420,6 @@
             }
         },
         "center": "KJAX",
-        "force_ql_self": true,
         "controller_configs": {
             "1S": {
                 "flight_following_airspace": [
@@ -779,6 +778,9 @@
                     "GNV RNAV APPROACHES"
                 ]
             }
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

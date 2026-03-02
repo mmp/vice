@@ -1149,7 +1149,6 @@
                 "center": "KDEN"
             }
         },
-        "force_ql_self": true,
         "airspace_awareness": [
             {
                 "fixes": [
@@ -1291,6 +1290,9 @@
                     ]
                 }
             ]
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

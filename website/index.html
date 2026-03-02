@@ -4212,7 +4212,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tr>
               </tbody>
             </table>
-            <p>It is also possible to add custom codes for a facility via "custom_spcs" in <a href="#fe-config-stars">"config"</a>.
+            <p>It is also possible to add custom codes for a facility via "custom_spcs" in <a href="#fe-stars-datablocks">"datablocks"</a>.
             Custom SPCs are shown in yellow.</p>
 
             <h3 id="stars-leader-lines">Leader Lines and Positioning Datablocks</h3>
@@ -7863,21 +7863,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </td>
               </tr>
               <tr>
-                <td>"allow_long_scratchpad"</td>
-                <td>Boolean</td>
-                <td>This indicates whether aircraft scratchpads may be four characters long (rather than the default of three).
-                </td>
-              </tr>
-              <tr>
-                <td>"altimeters"</td>
-                <td>Array of strings</td>
-                <td>If specified, lists the airports whose altimeters are displayed in the SSA list; no more than 6 airports can be given.
-                  The first altimeter value is also shown at the top of the list.
-                  If "altimeters" is not specified and if there are more than 6 airports in a scenario, only altimeters for the
-                  first 6 in alphabetical order will be shown and the first one will be shown at the top of the list.
-                </td>
-              </tr>
-              <tr>
                 <td>"coordination_fixes"</td>
                 <td>Object</td>
                 <td><p>Each member maps a fix name to an array of coordination fix definitions.
@@ -7912,22 +7897,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </td>
               </tr>
               <tr>
-                <td>"custom_spcs"</td>
-                <td>Array of strings</td>
-                <td>Custom special purpose codes for the facility. When assigned to an aircraft, these are displayed
-                  in yellow at the top of the datablock (e.g., "PJ" is used at some facilities for parachute jumps.)</td>
-              </tr>
-              <tr>
                 <td>"datablocks"</td>
                 <td>Object</td>
                 <td>Configures datablock display behavior.
                   See <a href="#fe-stars-datablocks">Datablocks</a> for details.</td>
-              </tr>
-              <tr>
-                <td>"display_rnav_symbol"</td>
-                <td>Boolean</td>
-                <td>(<i>Optional</i>) If true, the "is_rnav" setting in departure routes, arrivals, and overflights
-                  will cause the RNAV flag to be set in aircraft flight plans when they spawn.</td>
               </tr>
               <tr>
                 <td>"filters"</td>
@@ -8045,12 +8018,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   </tbody>
                   </table>
                 </td>
-              </tr>
-              <tr>
-                <td>"force_ql_self"</td>
-                <td>Boolean</td>
-                <td>Indicates whether controllers may enter <code>**[SLEW]</code> to make a track appear yellow
-                on their own scope.</td>
               </tr>
               <tr>
                 <td>"map_labels"</td>
@@ -8397,6 +8364,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </tbody>
             </table>
 
+            <h5>Other Datablock Settings</h5>
+            <table class="table">
+            <thead>
+              <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"allow_long_scratchpad"</td>
+                <td>Boolean</td>
+                <td>This indicates whether aircraft scratchpads may be four characters long (rather than the default of three).</td>
+              </tr>
+              <tr>
+                <td>"custom_spcs"</td>
+                <td>Array of strings</td>
+                <td>Custom special purpose codes for the facility. When assigned to an aircraft, these are displayed
+                  in yellow at the top of the datablock (e.g., "PJ" is used at some facilities for parachute jumps.)</td>
+              </tr>
+              <tr>
+                <td>"display_rnav_symbol"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, the "is_rnav" setting in departure routes, arrivals, and overflights
+                  will cause the RNAV flag to be set in aircraft flight plans when they spawn.</td>
+              </tr>
+              <tr>
+                <td>"force_ql_self"</td>
+                <td>Boolean</td>
+                <td>Indicates whether controllers may enter <code>**[SLEW]</code> to make a track appear yellow
+                on their own scope.</td>
+              </tr>
+            </tbody>
+            </table>
+
             <h4 id="fe-stars-lists">Lists</h4>
 
             <p>The "lists" object configures the various system lists.
@@ -8439,6 +8438,24 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>(<i>Optional</i>) The format of each entry.
                   See <a href="#fe-stars-list-format">List Formatting</a> for details.
                   If not specified, a default format is used.</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <h5>"ssa" &mdash; System Status Area</h5>
+            <table class="table">
+            <thead>
+              <tr><th>Element</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"altimeters"</td>
+                <td>Array of strings</td>
+                <td>If specified, lists the airports whose altimeters are displayed in the SSA list; no more than 6 airports can be given.
+                  The first altimeter value is also shown at the top of the list.
+                  If "altimeters" is not specified and if there are more than 6 airports in a scenario, only altimeters for the
+                  first 6 in alphabetical order will be shown and the first one will be shown at the top of the list.
+                </td>
               </tr>
             </tbody>
             </table>

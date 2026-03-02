@@ -58,8 +58,6 @@
                 }
             }
         },
-        "force_ql_self": true,
-        "allow_long_scratchpad": true,
         "center": "KPIT",
         "filters": {
             "inhibit_ca": [
@@ -181,6 +179,10 @@
                     "PIT-135 (JESEY)"
                 ]
             }
+        },
+        "datablocks": {
+            "allow_long_scratchpad": true,
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

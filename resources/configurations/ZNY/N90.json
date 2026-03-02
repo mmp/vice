@@ -2041,7 +2041,6 @@
                 "slope_angle": 0.175
             }
         },
-        "force_ql_self": true,
         "controller_configs": {
             "2G": {
                 "flight_following_airspace": [
@@ -2114,14 +2113,6 @@
                 ]
             }
         },
-        "altimeters": [
-            "KJFK",
-            "KLGA",
-            "KEWR",
-            "KTEB",
-            "KISP",
-            "KHPN"
-        ],
         "airspace_awareness": [
             {
                 "fixes": [
@@ -2829,7 +2820,8 @@
             },
             "scratchpad1": {
                 "display_exit_fix": true
-            }
+            },
+            "force_ql_self": true
         },
         "lists": {
             "coordination": [
@@ -2861,7 +2853,17 @@
                         "KOXC"
                     ]
                 }
-            ]
+            ],
+            "ssa": {
+                "altimeters": [
+                    "KJFK",
+                    "KLGA",
+                    "KEWR",
+                    "KTEB",
+                    "KISP",
+                    "KHPN"
+                ]
+            }
         }
     },
     "fix_pairs": [

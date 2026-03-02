@@ -413,16 +413,7 @@
             }
         },
         "center": "N028.25.45.781,W081.18.32.260",
-        "force_ql_self": true,
         "use_legacy_font": true,
-        "altimeters": [
-            "KMLB",
-            "KISM",
-            "KLEE",
-            "KMCO",
-            "KTIX",
-            "KSFB"
-        ],
         "filters": {
             "inhibit_ca": [
                 {
@@ -1084,7 +1075,8 @@
             "fdb": {
                 "accept_flash_duration": 10,
                 "sector_display_duration": 10
-            }
+            },
+            "force_ql_self": true
         },
         "lists": {
             "coordination": [
@@ -1123,7 +1115,17 @@
                         "KCOF"
                     ]
                 }
-            ]
+            ],
+            "ssa": {
+                "altimeters": [
+                    "KMLB",
+                    "KISM",
+                    "KLEE",
+                    "KMCO",
+                    "KTIX",
+                    "KSFB"
+                ]
+            }
         }
     },
     "handoff_ids": [

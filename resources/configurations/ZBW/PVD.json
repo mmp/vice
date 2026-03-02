@@ -129,9 +129,6 @@
                 }
             }
         },
-        "altimeters": [
-            "KPVD"
-        ],
         "center": "N041.43.29.033,W071.25.35.559",
         "radar_sites": {
             "PVD": {
@@ -166,8 +163,6 @@
                 }
             ]
         },
-        "allow_long_scratchpad": true,
-        "force_ql_self": true,
         "scratchpads": {
             "PUT": "PUT",
             "PVD_PUT": "PUT",
@@ -232,7 +227,9 @@
             "fdb": {
                 "display_facility_only": false,
                 "sector_display_duration": 5
-            }
+            },
+            "allow_long_scratchpad": true,
+            "force_ql_self": true
         },
         "lists": {
             "coordination": [
@@ -257,7 +254,12 @@
                         "KOQU"
                     ]
                 }
-            ]
+            ],
+            "ssa": {
+                "altimeters": [
+                    "KPVD"
+                ]
+            }
         }
     },
     "handoff_ids": [

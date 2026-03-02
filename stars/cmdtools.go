@@ -652,7 +652,7 @@ func registerToolsCommands() {
 		if trk.IsUnassociated() {
 			return ErrSTARSIllegalTrack
 		}
-		if !ctx.FacilityAdaptation.ForceQLToSelf || !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
+		if !ctx.FacilityAdaptation.Datablocks.ForceQLToSelf || !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
 			return ErrSTARSIllegalPosition
 		}
 		state := sp.TrackState[trk.ADSBCallsign]

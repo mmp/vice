@@ -339,20 +339,17 @@ type FacilityAdaptation struct {
 	// These define which TCP handles each inbound flow and departure airport/runway/SID.
 	Configurations map[string]*FacilityConfiguration `json:"configurations"`
 
-	AirspaceAwareness   []AirspaceAwareness                        `json:"airspace_awareness"`
-	ForceQLToSelf       bool                                       `json:"force_ql_self"`
-	AllowLongScratchpad bool                                       `json:"allow_long_scratchpad"`
-	VideoMapLabels      map[string]string                          `json:"map_labels"`
-	ControllerConfigs   map[ControlPosition]*STARSControllerConfig `json:"controller_configs"`
-	AreaConfigs         map[string]*STARSAreaConfig                `json:"area_configs,omitempty"`
-	RadarSites          map[string]*av.RadarSite                   `json:"radar_sites"`
-	Center              math.Point2LL                              `json:"-"`
-	CenterString        string                                     `json:"center"`
-	MaxDistance         float32                                    `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm STARS, 400nm ERAM)
-	Range               float32                                    `json:"range"`
-	Scratchpads         map[string]string                          `json:"scratchpads"`
-	SignificantPoints   map[string]SignificantPoint                `json:"significant_points"`
-	Altimeters          []string                                   `json:"altimeters"`
+	AirspaceAwareness []AirspaceAwareness                        `json:"airspace_awareness"`
+	VideoMapLabels    map[string]string                          `json:"map_labels"`
+	ControllerConfigs map[ControlPosition]*STARSControllerConfig `json:"controller_configs"`
+	AreaConfigs       map[string]*STARSAreaConfig                `json:"area_configs,omitempty"`
+	RadarSites        map[string]*av.RadarSite                   `json:"radar_sites"`
+	Center            math.Point2LL                              `json:"-"`
+	CenterString      string                                     `json:"center"`
+	MaxDistance       float32                                    `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm STARS, 400nm ERAM)
+	Range             float32                                    `json:"range"`
+	Scratchpads       map[string]string                          `json:"scratchpads"`
+	SignificantPoints map[string]SignificantPoint                `json:"significant_points"`
 
 	// Airpsace filters
 	Filters struct {
@@ -416,13 +413,18 @@ type FacilityAdaptation struct {
 			DisplayExitGate    bool `json:"display_exit_gate"`
 			DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
 		} `json:"scratchpad1"`
+		AllowLongScratchpad bool     `json:"allow_long_scratchpad"`
+		ForceQLToSelf       bool     `json:"force_ql_self"`
+		CustomSPCs          []string `json:"custom_spcs"`
+		DisplayRNAVSymbol   bool     `json:"display_rnav_symbol"`
 	} `json:"datablocks"`
-
-	CustomSPCs []string `json:"custom_spcs"`
 
 	Lists struct {
 		Coordination []CoordinationList `json:"coordination"`
-		VFR          struct {
+		SSA          struct {
+			Altimeters []string `json:"altimeters"`
+		} `json:"ssa"`
+		VFR struct {
 			Format string `json:"format"`
 		} `json:"vfr"`
 		TAB struct {
@@ -438,9 +440,8 @@ type FacilityAdaptation struct {
 			Format string `json:"format"`
 		} `json:"tower"`
 	} `json:"lists"`
-	RestrictionAreas  []av.RestrictionArea `json:"restriction_areas"`
-	UseLegacyFont     bool                 `json:"use_legacy_font"`
-	DisplayRNAVSymbol bool                 `json:"display_rnav_symbol"`
+	RestrictionAreas []av.RestrictionArea `json:"restriction_areas"`
+	UseLegacyFont    bool                 `json:"use_legacy_font"`
 }
 
 type FilterRegion struct {
@@ -1783,9 +1784,9 @@ func (fa FacilityAdaptation) CheckScratchpad(sp string) bool {
 	lc := len([]rune(sp))
 
 	// 5-148
-	if fa.AllowLongScratchpad && lc > 4 {
+	if fa.Datablocks.AllowLongScratchpad && lc > 4 {
 		return false
-	} else if !fa.AllowLongScratchpad && lc > 3 {
+	} else if !fa.Datablocks.AllowLongScratchpad && lc > 3 {
 		return false
 	}
 

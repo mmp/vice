@@ -464,13 +464,6 @@
             "FGT": {},
             "GEP": {}
         },
-        "altimeters": [
-            "KMSP",
-            "KFCM",
-            "KANE",
-            "KSTP",
-            "KMIC"
-        ],
         "video_map_file": "videomaps/ZMP-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -583,6 +576,17 @@
                     "M98 330 RNP 30",
                     "M98 ZMPEVNT",
                     "M98 112 AIRWAYS"
+                ]
+            }
+        },
+        "lists": {
+            "ssa": {
+                "altimeters": [
+                    "KMSP",
+                    "KFCM",
+                    "KANE",
+                    "KSTP",
+                    "KMIC"
                 ]
             }
         }

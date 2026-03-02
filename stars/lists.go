@@ -121,7 +121,7 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 		},
 		"EXIT_GATE": func(fp *sim.NASFlightPlan) string {
 			exit := rewriteFixForList(fp.ExitFix)
-			if ctx.FacilityAdaptation.AllowLongScratchpad {
+			if ctx.FacilityAdaptation.Datablocks.AllowLongScratchpad {
 				return exit + fmt.Sprintf("%03d", fp.RequestedAltitude/100)
 			} else {
 				return exit + fmt.Sprintf("%02d", fp.RequestedAltitude/1000)
@@ -617,7 +617,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 	}
 
 	if filter.All || filter.AirportWeather {
-		airports := ctx.FacilityAdaptation.Altimeters
+		airports := ctx.FacilityAdaptation.Lists.SSA.Altimeters
 		if len(airports) == 0 {
 			airports = util.SortedMapKeys(ctx.Client.State.Airports)
 

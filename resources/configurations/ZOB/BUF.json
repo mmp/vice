@@ -57,8 +57,6 @@
                 }
             }
         },
-        "force_ql_self": true,
-        "allow_long_scratchpad": true,
         "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
         "center": "KBUF",
         "filters": {
@@ -216,6 +214,10 @@
                     "BUF-001 (5 FLOW)"
                 ]
             }
+        },
+        "datablocks": {
+            "allow_long_scratchpad": true,
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

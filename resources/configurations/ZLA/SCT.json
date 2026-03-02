@@ -1063,12 +1063,6 @@
             }
         },
         "center": "JAZEE",
-        "altimeters": [
-            "KBUR",
-            "KVNY",
-            "KWHP",
-            "KSMO"
-        ],
         "controller_configs": {
             "1M": {
                 "flight_following_airspace": [
@@ -1612,7 +1606,6 @@
             "SLI": {}
         },
         "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
-        "force_ql_self": true,
         "airspace_awareness": [
             {
                 "fixes": [
@@ -2237,7 +2230,18 @@
                         "KBUR"
                     ]
                 }
-            ]
+            ],
+            "ssa": {
+                "altimeters": [
+                    "KBUR",
+                    "KVNY",
+                    "KWHP",
+                    "KSMO"
+                ]
+            }
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

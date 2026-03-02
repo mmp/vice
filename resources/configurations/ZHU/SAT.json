@@ -113,7 +113,6 @@
                 "slope_angle": 0.5
             }
         },
-        "force_ql_self": true,
         "scratchpads": {
             "BRENI": "YEN",
             "ZANNI": "LVA",
@@ -130,13 +129,6 @@
             "LEJON": "TAT",
             "JUMBO": "HEN"
         },
-        "altimeters": [
-            "KSAT",
-            "KBAZ",
-            "KSSF",
-            "KSKF",
-            "5C1"
-        ],
         "controller_configs": {
             "1N": {
                 "flight_following_airspace": [
@@ -344,7 +336,19 @@
                         "KSSF"
                     ]
                 }
-            ]
+            ],
+            "ssa": {
+                "altimeters": [
+                    "KSAT",
+                    "KBAZ",
+                    "KSSF",
+                    "KSKF",
+                    "5C1"
+                ]
+            }
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

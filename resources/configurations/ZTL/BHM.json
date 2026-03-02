@@ -103,7 +103,6 @@
                 "slope_angle": 0.3
             }
         },
-        "allow_long_scratchpad": true,
         "scratchpads": {
             "RHETT": "RHET",
             "MRICA": "MRCA",
@@ -231,6 +230,9 @@
                     "BHM SAT BOUNDARY"
                 ]
             }
+        },
+        "datablocks": {
+            "allow_long_scratchpad": true
         }
     },
     "handoff_ids": [
