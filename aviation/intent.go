@@ -7,6 +7,7 @@ package aviation
 import (
 	"reflect"
 	"slices"
+	"strings"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
@@ -531,7 +532,11 @@ type ApproachIntent struct {
 func (a ApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	switch a.Type {
 	case ApproachExpect:
-		rt.Add("[we'll expect the|expecting the|we'll plan for the] {appr} approach", a.ApproachName)
+		suffix := " approach"
+		if strings.Contains(strings.ToLower(a.ApproachName), "approach") {
+			suffix = ""
+		}
+		rt.Add("[we'll expect the|expecting the|we'll plan for the] {appr}"+suffix, a.ApproachName)
 		if a.LAHSORunway != "" {
 			rt.Add("[and we'll hold short of|hold short of] runway {rwy}", a.LAHSORunway)
 		}
@@ -561,10 +566,17 @@ func (c ClearedApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		prefix = "cancel [the|] hold, "
 	}
 
+	// Visual approaches include "approach" in the name (e.g. "visual approach runway 22L"),
+	// so skip the trailing [approach|] to avoid "approach approach".
+	suffix := " [approach|]"
+	if strings.Contains(strings.ToLower(c.Approach), "approach") {
+		suffix = ""
+	}
+
 	if c.StraightIn {
-		rt.Add(prefix+"cleared straight in {appr} [approach|]", c.Approach)
+		rt.Add(prefix+"cleared straight in {appr}"+suffix, c.Approach)
 	} else {
-		rt.Add(prefix+"cleared {appr} [approach|]", c.Approach)
+		rt.Add(prefix+"cleared {appr}"+suffix, c.Approach)
 	}
 }
 
@@ -781,7 +793,24 @@ func (m MixUpIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// RenderIntents
+// FieldInSight Intent
+
+// FieldInSightIntent represents a pilot's response to an AP (airport advisory) command.
+// The pilot may report "field in sight", "looking", or an IMC response.
+type FieldInSightIntent struct {
+	HasField bool // true if pilot can see the airport
+	Looking  bool // true if pilot says "looking" (can't see yet but not IMC)
+}
+
+func (f FieldInSightIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	if f.HasField {
+		rt.Add("[field in sight|we have the field in sight|we have the airport in sight]")
+	} else if f.Looking {
+		rt.Add("[looking|looking for it]")
+	} else {
+		rt.Add("[we're in the clouds|we're IMC|we don't have the field]")
+	}
+}
 
 // RenderIntents converts a slice of CommandIntents into a single coherent RadioTransmission.
 // It handles merging related intents (e.g., altitude + expedite), PTACs, etc., for more

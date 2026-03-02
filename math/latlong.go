@@ -25,6 +25,7 @@ func NMPerLongitudeAt(p Point2LL) float32 {
 
 const NauticalMilesToFeet = 6076.12
 const FeetToNauticalMiles = 1 / NauticalMilesToFeet
+const StatuteMilesToNauticalMiles = 1 / 1.15078
 
 // Point2LL represents a 2D point on the Earth in latitude-longitude.
 // Important: 0 (x) is longitude, 1 (y) is latitude

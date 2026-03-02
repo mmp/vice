@@ -119,6 +119,27 @@ type Aircraft struct {
 	TrafficInSight      bool      // True if aircraft has reported traffic in sight
 	TrafficInSightTime  time.Time // When traffic was reported in sight
 	TrafficLookingUntil time.Time // If non-zero, aircraft may report traffic in sight before this time
+
+	// FieldInSight is set when the pilot has confirmed the airport is in sight
+	// (either via AP command response or spontaneous report).
+	FieldInSight bool
+	// FieldLookingUntil is non-zero when the pilot said "looking" in response
+	// to an AP command and may report "field in sight" before this time.
+	FieldLookingUntil time.Time
+
+	// RequestedVisual is set when the pilot has spontaneously requested
+	// the visual approach (field in sight). Prevents repeated requests.
+	RequestedVisual bool
+	// WantsVisual is decided at aircraft creation: whether this pilot
+	// spontaneously reports field in sight when eligible.
+	WantsVisual bool
+	// WantsVisualRequest is decided at aircraft creation: whether this
+	// pilot spontaneously requests the visual approach (implies field in sight).
+	WantsVisualRequest bool
+	// VisualRequestTime is when the pilot will key the mic to report the
+	// field in sight, set once the field first comes into view (adds a short
+	// random delay to simulate identification and reaction time).
+	VisualRequestTime time.Time
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {
@@ -144,6 +165,15 @@ func (ac *Aircraft) GetSTTFixes() []string {
 
 	isValidFix := func(fix string) bool {
 		return len(fix) >= 3 && len(fix) <= 5 && fix[0] != '_'
+	}
+
+	// Include arrival and departure airports so STT can match airport
+	// names (e.g. "Kennedy 12 o'clock 12 miles" for AP command).
+	if ac.FlightPlan.ArrivalAirport != "" {
+		fixes = append(fixes, ac.FlightPlan.ArrivalAirport)
+	}
+	if ac.FlightPlan.DepartureAirport != "" {
+		fixes = append(fixes, ac.FlightPlan.DepartureAirport)
 	}
 
 	for _, wp := range ac.Nav.AssignedWaypoints() {
@@ -336,6 +366,10 @@ func (ac *Aircraft) AtFixIntercept(fix string, lg *log.Logger) av.CommandIntent 
 
 func (ac *Aircraft) ClearedApproach(id string, simTime time.Time, lg *log.Logger) (av.CommandIntent, bool) {
 	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, false, simTime)
+}
+
+func (ac *Aircraft) ClearedDirectVisual(runway string, simTime time.Time) (av.CommandIntent, bool) {
+	return ac.Nav.ClearedDirectVisual(runway, simTime)
 }
 
 func (ac *Aircraft) ClearedStraightInApproach(id string, simTime time.Time, lg *log.Logger) (av.CommandIntent, bool) {
