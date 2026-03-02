@@ -7338,6 +7338,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <td>The ICAO code of the airline (which must be present in <i>vice</i>'s <code><a href="https://github.com/mmp/vice/blob/master/resources/openscope-airlines.json">openscope-airlines.json</a></code> file.)</td>
                 </tr>
                 <tr>
+                  <td>"callsign"</td>
+                  <td>String</td>
+                  <td>A specific callsign (eg. AAL123) to use for an aircraft flying this route. ("callsign" and "icao" cannot both be specified; the ICAO code is inferred from the callsign.)</td>
+                </tr>
+                <tr>
                   <td>"fleet"</td>
                   <td>String</td>
                   <td>(<i>Optional</i>) If specified, gives the fleet of the airline's aircraft
@@ -8023,6 +8028,10 @@ Given the id, the approach can be specified with:</p>
         {
           "fleet": "long",
           "icao": "AFR"
+        },
+        {
+          "callsign": "AFR1021",
+          "types": ["A320"]
         }
       ],
       "destination": "LPFG",
@@ -8048,6 +8057,7 @@ Given the id, the approach can be specified with:</p>
                 <td>Each object specifies an airline and the types of aircraft it flies on the route. See <a href="#fe-airlines-aircraft">Airlines
                     and Aircraft</a> for the form of the airline objects.</td>
               </tr>
+              
               <tr>
                 <td>"destination"</td>
                 <td>String</td>
@@ -8144,6 +8154,7 @@ Given the id, the approach can be specified with:</p>
                   "icao", "fleet", and "types" members of the airline object documented in <a href="#fe-airlines-aircraft">Airlines and Aircraft</a>
                   as well as some additional fields. See the example below.</td>
               </tr>
+              
               <tr>
                 <td>"assigned_altitude"</td>
                 <td>Number</td>
@@ -8371,6 +8382,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Specification of the airlines flying the overflight and their departure/arrival airports. See the
                   example below.</td>
               </tr>
+              
               <tr>
                 <td>"assigned_altitude"</td>
                 <td>Number</td>

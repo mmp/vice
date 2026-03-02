@@ -127,6 +127,7 @@ type Arrival struct {
 
 type AirlineSpecifier struct {
 	ICAO          string   `json:"icao"`
+	Callsign      string   `json:"callsign,omitempty"`
 	Fleet         string   `json:"fleet,omitempty"`
 	AircraftTypes []string `json:"types,omitempty"`
 }
@@ -159,22 +160,68 @@ func (a AirlineSpecifier) Aircraft() []FleetAircraft {
 	}
 }
 
+func CallsignClashesWithExisting(currentCallsigns []ADSBCallsign, proposed string, uniqueSuffix bool) bool {
+	if uniqueSuffix {
+		// Reject if the last 2 characters of callsign match an existing callsign.
+		suffixMatches := func(cs ADSBCallsign) bool {
+			return len(proposed) >= 2 && strings.HasSuffix(string(cs), proposed[len(proposed)-2:])
+		}
+		return slices.ContainsFunc(currentCallsigns, suffixMatches)
+	}
+	// Reject only if there's an exact match
+	return slices.Contains(currentCallsigns, ADSBCallsign(proposed))
+}
+
 func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	e.Push("Airline " + a.ICAO)
 	defer e.Pop()
 
-	al, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
-	if !ok {
-		e.ErrorString("airline not known")
+	a.ICAO = strings.ToUpper(strings.TrimSpace(a.ICAO))
+	a.Callsign = strings.ToUpper(strings.TrimSpace(a.Callsign))
+
+	if a.Callsign != "" {
+		for _, ch := range a.Callsign {
+			if (ch < 'A' || ch > 'Z') && (ch < '0' || ch > '9') {
+				e.ErrorString("callsign has invalid character %q", ch)
+				break
+			}
+		}
+	}
+
+	if a.Callsign != "" && a.ICAO != "" {
+		e.ErrorString("cannot specify both \"callsign\" and \"icao\"")
 		return
+	}
+	if a.ICAO == "" && a.Callsign != "" {
+		if icao := icaoFromCallsign(a.Callsign); icao != "" {
+			a.ICAO = icao
+		}
+	}
+
+	var al Airline
+	if a.ICAO != "" {
+		var ok bool
+		al, ok = DB.Airlines[a.ICAO]
+		if !ok {
+			e.ErrorString("airline not known")
+			return
+		}
 	}
 
 	if a.Fleet == "" && len(a.AircraftTypes) == 0 {
+		if a.ICAO == "" {
+			e.ErrorString("must specify \"types\" when no \"icao\" is provided")
+			return
+		}
 		a.Fleet = "default"
 	}
 	if a.Fleet != "" {
+		if a.ICAO == "" {
+			e.ErrorString("must specify \"icao\" when \"fleet\" is set")
+			return
+		}
 		if len(a.AircraftTypes) != 0 {
 			e.ErrorString(`cannot specify both "fleet" and "types"`)
 			return
@@ -201,6 +248,84 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 		}
 		e.Pop()
 	}
+}
+
+func (a AirlineSpecifier) sampleAcType(r *rand.Rand, departureAirport, arrivalAirport string, lg *log.Logger) string {
+	if a.ICAO == "" {
+		if len(a.AircraftTypes) == 0 {
+			lg.Errorf("No aircraft types available for callsign %q", a.Callsign)
+			return ""
+		}
+		actype := rand.SampleSlice(r, a.AircraftTypes)
+		if _, ok := DB.AircraftPerformance[actype]; !ok {
+			lg.Errorf("Aircraft %q not found in performance database for callsign %q", actype, a.Callsign)
+			return ""
+		}
+		return actype
+	}
+	if _, ok := DB.Airlines[strings.ToUpper(a.ICAO)]; !ok {
+		// TODO: this should be caught at load validation time...
+		lg.Errorf("Airline %q not found in database", a.ICAO)
+		return ""
+	}
+
+	// Calculate flight distance to filter aircraft by CWT category
+	dep, arr := DB.Airports[departureAirport], DB.Airports[arrivalAirport]
+	flightDistance := math.NMDistance2LL(dep.Location, arr.Location)
+
+	// Sample according to fleet count, filtering by maximum distance for CWT category
+	var actype string
+
+	// First attempt: filter aircraft by distance and sample weighted by fleet count
+	filteredAircraft := make([]FleetAircraft, 0)
+	for _, ac := range a.Aircraft() {
+		// Filter based on flight distance and aircraft CWT category
+		if flightDistance > 0 && !slices.Contains(extraLongRange, ac.ICAO) {
+			if perf, ok := DB.AircraftPerformance[ac.ICAO]; ok {
+				if maxRange, ok := cwtMaxRanges[perf.Category.CWT]; ok {
+					// Check if flight distance exceeds category maximum (0 means no limit)
+					if maxRange > 0 && flightDistance > maxRange {
+						continue
+					}
+				}
+			}
+		}
+		filteredAircraft = append(filteredAircraft, ac)
+	}
+
+	if len(filteredAircraft) > 0 {
+		sampled, ok := rand.SampleWeighted(r, filteredAircraft, func(ac FleetAircraft) float32 {
+			return float32(ac.Count)
+		})
+
+		if ok {
+			actype = sampled.ICAO
+		}
+	}
+
+	if actype == "" {
+		// Try again without considering range.
+		sampled, ok := rand.SampleWeighted(r, a.Aircraft(), func(ac FleetAircraft) float32 {
+			return float32(ac.Count)
+		})
+
+		if ok {
+			actype = sampled.ICAO
+		}
+	}
+	if actype != "" {
+		if _, ok := DB.AircraftPerformance[actype]; !ok {
+			// TODO: validation stage...
+			lg.Errorf("Aircraft %q not found in performance database for airline %+v",
+				actype, a)
+			return ""
+		}
+	}
+	return actype
+}
+
+func (a AirlineSpecifier) SampleAcType(r *rand.Rand, departureAirport, arrivalAirport string, lg *log.Logger) string {
+	return a.sampleAcType(r, departureAirport, arrivalAirport, lg)
 }
 
 var badCallsigns map[string]any = map[string]any{
@@ -262,66 +387,28 @@ var extraLongRange = []string{"A35K", "A359"}
 
 // currentCallsigns will be empty if we don't care about unique suffixes.
 func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, uniqueSuffix bool, departureAirport, arrivalAirport string, lg *log.Logger) (actype, callsign string) {
+	actype = a.sampleAcType(r, departureAirport, arrivalAirport, lg)
+	if actype == "" {
+		return "", ""
+	}
+
+	if a.Callsign != "" {
+		callsign = strings.ToUpper(strings.TrimSpace(a.Callsign))
+		if callsign == "" {
+			return "", ""
+		}
+		if _, ok := badCallsigns[callsign]; ok {
+			return "", ""
+		}
+		if CallsignClashesWithExisting(currentCallsigns, callsign, uniqueSuffix) {
+			return "", ""
+		}
+		return actype, callsign
+	}
+
 	dbAirline, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
 	if !ok {
-		// TODO: this should be caught at load validation time...
-		lg.Errorf("Airline %q not found in database", a.ICAO)
 		return "", ""
-	}
-
-	// Calculate flight distance to filter aircraft by CWT category
-	dep, arr := DB.Airports[departureAirport], DB.Airports[arrivalAirport]
-	flightDistance := math.NMDistance2LL(dep.Location, arr.Location)
-
-	// Sample according to fleet count, filtering by maximum distance for CWT category
-	acCount := 0
-	for _, ac := range a.Aircraft() {
-		// Filter based on flight distance and aircraft CWT category
-		if flightDistance > 0 && !slices.Contains(extraLongRange, ac.ICAO) {
-			if perf, ok := DB.AircraftPerformance[ac.ICAO]; ok {
-				if maxRange, ok := cwtMaxRanges[perf.Category.CWT]; ok {
-					// Check if flight distance exceeds category maximum (0 means no limit)
-					if maxRange > 0 && flightDistance > maxRange {
-						continue
-					}
-				}
-			}
-		}
-
-		// Reservoir sampling...
-		acCount += ac.Count
-		if r.Float32() < float32(ac.Count)/float32(acCount) {
-			actype = ac.ICAO
-		}
-	}
-	if actype == "" {
-		// Try again without considering range.
-		for _, ac := range a.Aircraft() {
-			acCount += ac.Count
-			if r.Float32() < float32(ac.Count)/float32(acCount) {
-				actype = ac.ICAO
-			}
-		}
-	}
-
-	if _, ok := DB.AircraftPerformance[actype]; !ok {
-		// TODO: validation stage...
-		lg.Errorf("Aircraft %q not found in performance database for airline %+v",
-			actype, a)
-		return "", ""
-	}
-
-	callsignClashesWithExisting := func(proposed string) bool {
-		if uniqueSuffix {
-			// Reject if the last 2 characters of callsign match an existing callsign.
-			suffixMatches := func(cs ADSBCallsign) bool {
-				return strings.HasSuffix(string(cs), proposed[len(proposed)-2:])
-			}
-			return slices.ContainsFunc(currentCallsigns, suffixMatches)
-		} else {
-			// Reject only if there's an exact match
-			return slices.Contains(currentCallsigns, ADSBCallsign(proposed))
-		}
 	}
 
 	// random callsign
@@ -367,7 +454,7 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 		} else if slices.Contains(currentCallsigns, ADSBCallsign(cs.String())) {
 			cs.Reset()
 			continue
-		} else if callsignClashesWithExisting(cs.String()) {
+		} else if CallsignClashesWithExisting(currentCallsigns, cs.String(), uniqueSuffix) {
 			cs.Reset()
 			continue
 		}
@@ -375,6 +462,19 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 	}
 
 	return "", ""
+}
+
+func icaoFromCallsign(callsign string) string {
+	if len(callsign) < 3 {
+		return ""
+	}
+	for i := range 3 {
+		ch := callsign[i]
+		if ch < 'A' || ch > 'Z' {
+			return ""
+		}
+	}
+	return callsign[:3]
 }
 
 type Runway struct {
@@ -866,6 +966,11 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			}
 		}
 
+		if len(ar.Airlines) == 0 {
+			e.ErrorString("no \"airlines\" specified for arrivals")
+			return
+		}
+
 		for icao := range ar.Airlines {
 			airport, ok := DB.Airports[icao]
 			if !ok {
@@ -1063,7 +1168,9 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 					`airport %q is listed in "expect_approach" but is not in arrival airports`,
 					airport,
 				)
-			} else if ap, ok := airports[airport]; ok {
+				continue
+			}
+			if ap, ok := airports[airport]; ok {
 				if _, ok := ap.Approaches[appr]; !ok {
 					e.ErrorString(
 						`arrival airport %q doesn't have a %q approach for "expect_approach"`,
