@@ -927,7 +927,7 @@
 <td>"field_e_format"</td>
 <td>String</td>
 <td>Specifies the Field E format for identifying a TRACON neighbor from an ARTCC.
-                        Must be "OneLetterAndSubset" or "OneLetterAndStarsIdOnly".</td>
+                        Must be one of: "OneLetterAndSubset", "OneLetterAndStarsIdOnly", "TwoLetters", "TwoLettersAndSubset", or "FullStarsIdOnly".</td>
 </tr>
 <tr>
 <td>"field_e_letter"</td>
@@ -2869,8 +2869,20 @@
 </table>
 </details>
 
-<p>Optionally, "scratchpad_patterns" may be specified as an array of strings; if present, only
-                    aircraft whose scratchpad contains one of the given patterns will generate ghosts.</p>
+<details class="json-fields"><summary>Scratchpad filter</summary>
+<table class="table">
+<thead>
+<tr><th>Element</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>"scratchpad_patterns"</td>
+<td>Array of strings</td>
+<td>Optional. If present, only aircraft whose scratchpad contains one of the given patterns will generate ghosts.</td>
+</tr>
+</tbody>
+</table>
+</details>
 </details>
 </td></tr>
 <tr>
