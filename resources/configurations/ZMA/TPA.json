@@ -65,7 +65,7 @@
             "scope_char": "T"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "FIN": {
                 "inbound_assignments": {
@@ -239,7 +239,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "TPA-101S NORTH HI",

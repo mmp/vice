@@ -257,9 +257,7 @@
                     "KBIL": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KBIL",
@@ -296,9 +294,7 @@
                     "KBIL": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KBIL",

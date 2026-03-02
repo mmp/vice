@@ -46,7 +46,7 @@
             "radio_name": "Lincoln Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "LNK": {
                 "inbound_assignments": {
@@ -332,7 +332,7 @@
                 "receiving_controller": "C27"
             }
         ],
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "R90 001 MAIN",

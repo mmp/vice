@@ -14234,9 +14234,7 @@
                     "KLEE": 0
                 }
             },
-            "configuration": {
-                "config_id": "MCS"
-            },
+            "configuration": "MCS",
             "departure_runways": [
                 {
                     "airport": "KMCO",
@@ -14556,9 +14554,7 @@
                     "KLEE": 0
                 }
             },
-            "configuration": {
-                "config_id": "MCN"
-            },
+            "configuration": "MCN",
             "departure_runways": [
                 {
                     "airport": "KMCO",
@@ -14680,9 +14676,7 @@
                     "MCOAPP"
                 ]
             },
-            "configuration": {
-                "config_id": "MC5"
-            },
+            "configuration": "MC5",
             "departure_runways": [
                 {
                     "airport": "KMCO",
@@ -14779,9 +14773,7 @@
                     "KMCO": 7
                 }
             },
-            "configuration": {
-                "config_id": "MC9"
-            },
+            "configuration": "MC9",
             "wind": {
                 "direction": "145-205"
             }
@@ -14806,9 +14798,7 @@
                     "KMCO": 10
                 }
             },
-            "configuration": {
-                "config_id": "MCB"
-            },
+            "configuration": "MCB",
             "wind": {
                 "direction": "150-210"
             }
@@ -14847,9 +14837,7 @@
                     "KMCO": 10
                 }
             },
-            "configuration": {
-                "config_id": "MC1"
-            },
+            "configuration": "MC1",
             "wind": {
                 "direction": "145-205"
             }
@@ -14877,9 +14865,7 @@
                     "KMCO": 10
                 }
             },
-            "configuration": {
-                "config_id": "MC3"
-            },
+            "configuration": "MC3",
             "wind": {
                 "direction": "140-200"
             }
@@ -14904,9 +14890,7 @@
                     "KMCO": 10
                 }
             },
-            "configuration": {
-                "config_id": "MCA"
-            },
+            "configuration": "MCA",
             "wind": {
                 "direction": "330-30"
             }
@@ -14945,9 +14929,7 @@
                     "KMCO": 5
                 }
             },
-            "configuration": {
-                "config_id": "MCO"
-            },
+            "configuration": "MCO",
             "wind": {
                 "direction": "325-25"
             }
@@ -14975,9 +14957,7 @@
                     "KMCO": 10
                 }
             },
-            "configuration": {
-                "config_id": "MC2"
-            },
+            "configuration": "MC2",
             "wind": {
                 "direction": "320-20"
             }
@@ -15012,9 +14992,7 @@
                     "KMCO": 15
                 }
             },
-            "configuration": {
-                "config_id": "MC6"
-            },
+            "configuration": "MC6",
             "wind": {
                 "direction": "325-25"
             }
@@ -15027,9 +15005,7 @@
                     "MCO_E2_APP"
                 ]
             },
-            "configuration": {
-                "config_id": "MC8"
-            },
+            "configuration": "MC8",
             "departure_runways": [
                 {
                     "airport": "KMCO",

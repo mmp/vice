@@ -264,9 +264,7 @@
                     "KPWM": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KPWM",
@@ -294,9 +292,7 @@
                     "KPWM": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KPWM",

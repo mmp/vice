@@ -1526,9 +1526,7 @@
                     "KBNA": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "BNA_SOUTH FLOW"
             ],
@@ -1579,9 +1577,7 @@
                     "KBNA": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "BNA_NORTH FLOW"
             ],

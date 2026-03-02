@@ -7310,9 +7310,7 @@
                     "overflights": 1
                 }
             },
-            "configuration": {
-                "config_id": "PCT"
-            },
+            "configuration": "PCT",
             "default_maps": [
                 "PCT MEGA Combined"
             ],
@@ -7518,9 +7516,7 @@
                     "KCHO": 2
                 }
             },
-            "configuration": {
-                "config_id": "PCT"
-            },
+            "configuration": "PCT",
             "default_maps": [
                 "PCT MEGA Combined"
             ],

@@ -238,9 +238,7 @@
     "default_scenario": "19",
     "scenarios": {
         "19": {
-            "configuration": {
-                "config_id": "ZBW"
-            },
+            "configuration": "ZBW",
             "default_maps": [
                 "TRACON",
                 "HIGH SCTRS",

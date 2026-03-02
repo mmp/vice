@@ -1368,9 +1368,7 @@
                     "KSBN": 10
                 }
             },
-            "configuration": {
-                "config_id": "SBN"
-            },
+            "configuration": "SBN",
             "default_maps": [
                 "SBN RVM"
             ],
@@ -1414,9 +1412,7 @@
                     "KSBN": 10
                 }
             },
-            "configuration": {
-                "config_id": "SB1"
-            },
+            "configuration": "SB1",
             "default_maps": [
                 "SBN RVM"
             ],
@@ -1460,9 +1456,7 @@
                     "KSBN": 10
                 }
             },
-            "configuration": {
-                "config_id": "SBN"
-            },
+            "configuration": "SBN",
             "default_maps": [
                 "SBN RVM"
             ],
@@ -1506,9 +1500,7 @@
                     "KSBN": 10
                 }
             },
-            "configuration": {
-                "config_id": "SBN"
-            },
+            "configuration": "SBN",
             "default_maps": [
                 "SBN RVM"
             ],

@@ -794,7 +794,7 @@
 <tbody>
 
 <tr>
-<td>"config"</td>
+<td>"facility_adaptations"</td>
 <td>Object</td>
 <td>Defines settings and configurations for the facility.
                   See the <a href="#fe-config-common">Common</a>, <a href="#fe-config-eram">ERAM</a>,
@@ -968,7 +968,7 @@
 </table>
 <section class="docs-section" id="fe-config-common">
 <h3 class="section-heading">Common</h3>
-<p>The following settings in the "config" object of the
+<p>The following settings in the "facility_adaptations" object of the
               <a href="#fe-facility-config">facility configuration file</a> apply to all scope types:
               </p>
 <table class="table">
@@ -982,7 +982,7 @@
 <tbody>
 
 <tr>
-<td>"area_configs"</td>
+<td>"areas"</td>
 <td>Object</td>
 <td><p>Defines per-area configuration for TRACON areas.
                   Each key is the area number (e.g., "1", "2", "3") corresponding to the first digit
@@ -992,7 +992,7 @@
 </td>
 </tr>
 <tr><td colspan="3">
-<details class="json-fields"><summary>"area_configs" members</summary>
+<details class="json-fields"><summary>"areas" members</summary>
 <table class="table">
 <thead>
 <tr><th>Element</th><th>Type</th><th>Description</th></tr>
@@ -1015,7 +1015,7 @@
 <td>"center"</td>
 <td>String</td>
 <td>The initial center of the STARS scope for controllers in this area.
-                        This is overridden by any center specified in "controller_configs" and overrides
+                        This is overridden by any center specified in "controllers" and overrides
                         the top-level "center" in the facility configuration.</td>
 </tr>
 <tr>
@@ -1043,7 +1043,7 @@
 <td>"range"</td>
 <td>Number</td>
 <td>The initial range for the scope in nautical miles.
-                        This is overridden by any range specified in "controller_configs" and overrides
+                        This is overridden by any range specified in "controllers" and overrides
                         the top-level "range" in the facility configuration.</td>
 </tr>
 <tr>
@@ -1149,7 +1149,7 @@
 </details>
 </td></tr>
 <tr>
-<td>"controller_configs"</td>
+<td>"controllers"</td>
 <td>Object</td>
 <td><p>Each entry specifies controller-specific configuration properties.
                   The applicable control positions are specified via members given as a TCP position
@@ -1158,7 +1158,7 @@
 </td>
 </tr>
 <tr><td colspan="3">
-<details class="json-fields"><summary>"controller_configs" members</summary>
+<details class="json-fields"><summary>"controllers" members</summary>
 <table class="table">
 <thead>
 <tr><th>Element</th><th>Type</th><th>Description</th></tr>
@@ -1174,7 +1174,7 @@
 <td>"center"</td>
 <td>String</td>
 <td>The initial center of the controller's STARS scope.
-                        This takes highest priority, overriding "area_configs" center and the top-level center.</td>
+                        This takes highest priority, overriding "areas" center and the top-level center.</td>
 </tr>
 <tr>
 <td>"default_maps"</td>
@@ -1193,14 +1193,14 @@
 <td>"range"</td>
 <td>Number</td>
 <td>The initial range for the controller's scope in nautical miles.
-                        This takes highest priority, overriding "area_configs" range and the top-level range.</td>
+                        This takes highest priority, overriding "areas" range and the top-level range.</td>
 </tr>
 <tr>
 <td>"video_maps"</td>
 <td>Array of strings</td>
 <td>Specifies which video maps should be displayed
                         in the DCB for the controller. If specified, these override the area-level "video_maps"
-                        in "area_configs".</td>
+                        in "areas".</td>
 </tr>
 </tbody>
 </table>
@@ -1226,7 +1226,7 @@
 </section><!--//section-->
 <section class="docs-section" id="fe-config-eram">
 <h3 class="section-heading">ERAM</h3>
-<p>The following setting in the "config" object is specific to the ERAM radar scope:</p>
+<p>The following setting in the "facility_adaptations" object is specific to the ERAM radar scope:</p>
 <table class="table">
 <thead>
 <tr>
@@ -1246,7 +1246,7 @@
 </section><!--//section-->
 <section class="docs-section" id="fe-config-stars">
 <h3 class="section-heading">STARS</h3>
-<p>The following settings in the "config" object are specific to the STARS radar scope:</p><div class="json-controls"><button class="expand-all">Expand All</button> <button class="collapse-all">Collapse All</button></div>
+<p>The following settings in the "facility_adaptations" object are specific to the STARS radar scope:</p><div class="json-controls"><button class="expand-all">Expand All</button> <button class="collapse-all">Collapse All</button></div>
 <table class="table">
 <thead>
 <tr>
@@ -1998,7 +1998,7 @@
 <td>Map of strings to strings</td>
 <td>Allows overriding the labels used for video maps in the
                   STARS DCB. Each entry is the name of a video map (as would
-                  be specified in "video_maps" within "area_configs") and its value is the label
+                  be specified in "video_maps" within "areas") and its value is the label
                   that should be assigned to it.
                 </td>
 </tr>
@@ -2908,7 +2908,7 @@
 <td>"hold_for_release"</td>
 <td>Boolean</td>
 <td>(<i>Optional</i>) If true, departures from the airport must be released by a controller.
-                  If the airport is listed in "coordination_lists" in <a href="#fe-config-stars">"config"</a>,
+                  If the airport is listed in "coordination_lists" in <a href="#fe-config-stars">"facility_adaptations"</a>,
                   then the release will be managed using STARS coordination lists; otherwise it will appear
                   in the <i>Launch Control</i> window.
                 </td>
@@ -3100,7 +3100,7 @@ Given the id, the approach can be specified with:</p>
 <td>"hold_for_release"</td>
 <td>Boolean</td>
 <td>(<i>Optional</i>) If true, departures on this route must be released by a controller.
-                  If the airport is listed in "coordination_lists" in <a href="#fe-config-stars">"config"</a>,
+                  If the airport is listed in "coordination_lists" in <a href="#fe-config-stars">"facility_adaptations"</a>,
                   then the release will be managed using STARS coordination lists; otherwise it will appear
                   in the <i>Launch Control</i> window.
                 </td>
@@ -3194,7 +3194,7 @@ Given the id, the approach can be specified with:</p>
 <td>String</td>
 <td>(<i>Optional</i>) If specified, this gives the aircraft's initial scratchpad. Otherwise, the scratchpad
                   is set based on the exit, either using the "scratchpads" dictionary in the <a href="#fe-facility-config">facility configuration</a> or
-                  via "display_exit_gate" or "display_alternate_exit_gate" in "config".</td>
+                  via "display_exit_gate" or "display_alternate_exit_gate" in "facility_adaptations".</td>
 </tr>
 <tr>
 <td>"secondary_scratchpad"</td>
@@ -3933,32 +3933,15 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
 </tr>
 <tr>
 <td>"configuration"</td>
-<td>Object</td>
-<td>References a controller assignment configuration from the facility config.
-                  
-</td>
-</tr>
-<tr><td colspan="3">
-<details class="json-fields"><summary>"configuration" members</summary>
-<table class="table subtable">
-<thead>
-<tr><th>Element</th><th>Type</th><th>Description</th></tr>
-</thead>
-<tbody>
-<tr>
-<td>"config_id"</td>
 <td>String</td>
 <td>A short identifier (maximum 3 characters) that references a configuration
-                        defined in <a href="#fe-config-common">"configurations"</a> under "config".
-                        The referenced configuration provides the inbound and departure assignments
-                        and the default consolidation hierarchy for this scenario.
-                        The selected configuration must have assignments for all of the scenario's active
-                        arrivals and departures.</td>
+                  defined in <a href="#fe-config-common">"configurations"</a> under "facility_adaptations".
+                  The referenced configuration provides the inbound and departure assignments
+                  and the default consolidation hierarchy for this scenario.
+                  The selected configuration must have assignments for all of the scenario's active
+                  arrivals and departures.
+</td>
 </tr>
-</tbody>
-</table>
-</details>
-</td></tr>
 <tr>
 <td>"default_map_group"</td>
 <td>String</td>
@@ -3968,8 +3951,8 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
 <td>"default_maps"</td>
 <td>Array of strings</td>
 <td>The names of the initial video maps that should be displayed when this scenario is selected.
-                  Note that "default_maps" may not be used if "video_maps" is specified in "controller_configs"
-                  or "area_configs"; in that case controller- or area-specific default maps can be specified there.
+                  Note that "default_maps" may not be used if "video_maps" is specified in "controllers"
+                  or "areas"; in that case controller- or area-specific default maps can be specified there.
                 </td>
 </tr>
 <tr>

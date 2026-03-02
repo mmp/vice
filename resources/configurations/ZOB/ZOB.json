@@ -236,7 +236,7 @@
             "radio_name": "Cleveland Center"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "coordination_fixes": {
             "BRWNZ": [
                 {

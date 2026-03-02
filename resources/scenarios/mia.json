@@ -5185,9 +5185,7 @@
                     "KMIA": 8
                 }
             },
-            "configuration": {
-                "config_id": "KMI"
-            },
+            "configuration": "KMI",
             "default_maps": [
                 "MIA-001S EAST OPERATIONS ARRIVAL",
                 "MIA-003S MIA DEPARTURE EAST",
@@ -5273,9 +5271,7 @@
                     "KMIA": 8
                 }
             },
-            "configuration": {
-                "config_id": "KM2"
-            },
+            "configuration": "KM2",
             "default_maps": [
                 "MIA-002S WEST OPERATIONS ARRIVAL",
                 "MIA-036S MIA DEPARTURE WEST",
@@ -5390,9 +5386,7 @@
                     "KMIA": 6
                 }
             },
-            "configuration": {
-                "config_id": "KM1"
-            },
+            "configuration": "KM1",
             "default_maps": [
                 "MIA-001S EAST OPERATIONS ARRIVAL",
                 "MIA-003S MIA DEPARTURE EAST",
@@ -5522,9 +5516,7 @@
                     "KMIA": 6
                 }
             },
-            "configuration": {
-                "config_id": "KM3"
-            },
+            "configuration": "KM3",
             "default_maps": [
                 "MIA-002S WEST OPERATIONS ARRIVAL",
                 "MIA-036S MIA DEPARTURE WEST",

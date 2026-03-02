@@ -2741,9 +2741,7 @@
                     "KEVB": 2
                 }
             },
-            "configuration": {
-                "config_id": "DAE"
-            },
+            "configuration": "DAE",
             "default_maps": [
                 "DAB EAST FLOW"
             ],
@@ -2972,9 +2970,7 @@
                     "KEVB": 2
                 }
             },
-            "configuration": {
-                "config_id": "DAW"
-            },
+            "configuration": "DAW",
             "default_maps": [
                 "DAB WEST FLOW"
             ],

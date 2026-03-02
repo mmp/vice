@@ -628,9 +628,7 @@
                     "KBDL": 18
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "Y90 RWY 6/33",
                 "BDL_TWR 6/33",
@@ -711,9 +709,7 @@
                     "KBDL": 15
                 }
             },
-            "configuration": {
-                "config_id": "CNW"
-            },
+            "configuration": "CNW",
             "default_maps": [
                 "Y90 RWY 24/33",
                 "BDL_TWR 24/33",

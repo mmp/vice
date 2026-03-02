@@ -478,9 +478,7 @@
                     "KLGA": 4
                 }
             },
-            "configuration": {
-                "config_id": "HRP"
-            },
+            "configuration": "HRP",
             "default_maps": [
                 "LGA-HPN ARR/DEP"
             ],
@@ -543,9 +541,7 @@
                     "KLGA": 4
                 }
             },
-            "configuration": {
-                "config_id": "HRP"
-            },
+            "configuration": "HRP",
             "default_maps": [
                 "LGA-HPN ARR/DEP"
             ],

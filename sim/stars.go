@@ -339,17 +339,17 @@ type FacilityAdaptation struct {
 	// These define which TCP handles each inbound flow and departure airport/runway/SID.
 	Configurations map[string]*FacilityConfiguration `json:"configurations"`
 
-	AirspaceAwareness []AirspaceAwareness                        `json:"airspace_awareness"`
-	VideoMapLabels    map[string]string                          `json:"map_labels"`
-	ControllerConfigs map[ControlPosition]*STARSControllerConfig `json:"controller_configs"`
-	AreaConfigs       map[string]*STARSAreaConfig                `json:"area_configs,omitempty"`
-	RadarSites        map[string]*av.RadarSite                   `json:"radar_sites"`
-	Center            math.Point2LL                              `json:"-"`
-	CenterString      string                                     `json:"center"`
-	MaxDistance       float32                                    `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm STARS, 400nm ERAM)
-	Range             float32                                    `json:"range"`
-	Scratchpads       map[string]string                          `json:"scratchpads"`
-	SignificantPoints map[string]SignificantPoint                `json:"significant_points"`
+	AirspaceAwareness []AirspaceAwareness                  `json:"airspace_awareness"`
+	VideoMapLabels    map[string]string                    `json:"map_labels"`
+	Controllers       map[ControlPosition]*STARSController `json:"controllers"`
+	Areas             map[string]*STARSArea                `json:"areas,omitempty"`
+	RadarSites        map[string]*av.RadarSite             `json:"radar_sites"`
+	Center            math.Point2LL                        `json:"-"`
+	CenterString      string                               `json:"center"`
+	MaxDistance       float32                              `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm STARS, 400nm ERAM)
+	Range             float32                              `json:"range"`
+	Scratchpads       map[string]string                    `json:"scratchpads"`
+	SignificantPoints map[string]SignificantPoint          `json:"significant_points"`
 
 	// Airpsace filters
 	Filters struct {
@@ -870,7 +870,7 @@ func (r FDAMRegions) HaveId(s string) bool {
 	return slices.ContainsFunc(r, func(r FDAMRegion) bool { return s == r.Id })
 }
 
-type STARSControllerConfig struct {
+type STARSController struct {
 	VideoMapNames                   []string      `json:"video_maps"`
 	DefaultMaps                     []string      `json:"default_maps"`
 	Center                          math.Point2LL `json:"-"`
@@ -881,10 +881,10 @@ type STARSControllerConfig struct {
 	FlightFollowingAirspace         []av.AirspaceVolume `json:"flight_following_airspace"`
 }
 
-// STARSAreaConfig provides default configuration for all controllers
-// within a TRACON area. Controller-specific configs in ControllerConfigs
+// STARSArea provides default configuration for all controllers
+// within a TRACON area. Controller-specific settings in Controllers
 // override or append these defaults.
-type STARSAreaConfig struct {
+type STARSArea struct {
 	DefaultAirport                  string                         `json:"default_airport,omitempty"` // CRDA default airport for this area
 	VideoMapNames                   []string                       `json:"video_maps,omitempty"`
 	DefaultMaps                     []string                       `json:"default_maps,omitempty"`
@@ -905,7 +905,7 @@ func (fa *FacilityAdaptation) DefaultAirportForArea(area string) string {
 	if area == "" {
 		return ""
 	}
-	if ac, ok := fa.AreaConfigs[area]; ok {
+	if ac, ok := fa.Areas[area]; ok {
 		return ac.DefaultAirport
 	}
 	return ""
@@ -1432,9 +1432,9 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 		fa.Center = pos
 	}
 
-	if len(fa.ControllerConfigs) > 0 {
+	if len(fa.Controllers) > 0 {
 		// Handle beacon code blocks
-		for tcp, config := range fa.ControllerConfigs {
+		for tcp, config := range fa.Controllers {
 			for i := range config.FlightFollowingAirspace {
 				if config.FlightFollowingAirspace[i].Id == "" {
 					config.FlightFollowingAirspace[i].Id = "FF" + string(tcp) + strconv.Itoa(i+1)
@@ -1464,8 +1464,8 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 
 	// Process area configs similarly to controller configs.
-	for areaNum, ac := range fa.AreaConfigs {
-		e.Push(fmt.Sprintf("area_configs[%s]", areaNum))
+	for areaNum, ac := range fa.Areas {
+		e.Push(fmt.Sprintf("areas[%s]", areaNum))
 
 		for i := range ac.FlightFollowingAirspace {
 			if ac.FlightFollowingAirspace[i].Id == "" {

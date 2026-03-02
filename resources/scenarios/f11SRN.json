@@ -12637,9 +12637,7 @@
     "primary_airport": "KLEE",
     "scenarios": {
         "(SR) Seminole (MCO S)": {
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "arrival_runways": [
                 {
                     "airport": "KLEE",

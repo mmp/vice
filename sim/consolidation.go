@@ -72,13 +72,9 @@ func (tc *TCPConsolidation) OwnedPositions() []ControlPosition {
 // ControllerConfiguration
 
 // ControllerConfiguration defines which facility configuration to use for a scenario.
-// The scenario JSON only contains config_id; all other fields are populated at runtime
-// from the referenced configuration in the facility config file.
+// All fields are populated at runtime from the referenced configuration in the
+// facility config file.
 type ControllerConfiguration struct {
-	// ConfigId references a configuration in config.configurations in the
-	// facility config file. This is the only field from JSON.
-	ConfigId string `json:"config_id"`
-
 	// DefaultConsolidation defines the consolidation tree. It is always
 	// populated from the referenced facility configuration during
 	// post-deserialization. Scenarios cannot override this field.

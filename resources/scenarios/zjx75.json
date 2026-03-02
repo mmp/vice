@@ -931,9 +931,7 @@
     "default_scenario": "75",
     "scenarios": {
         "75": {
-            "configuration": {
-                "config_id": "ZST"
-            },
+            "configuration": "ZST",
             "default_maps": [
                 "ZJX HI"
             ],
@@ -1001,9 +999,7 @@
             ]
         },
         "75 (UH Online)": {
-            "configuration": {
-                "config_id": "ZST"
-            },
+            "configuration": "ZST",
             "default_maps": [
                 "ZJX HI"
             ],

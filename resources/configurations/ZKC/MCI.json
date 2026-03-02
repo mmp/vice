@@ -66,7 +66,7 @@
             "radio_name": "Wheeler Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "KMC": {
                 "inbound_assignments": {
@@ -229,7 +229,7 @@
                 "receiving_controller": "C48"
             }
         ],
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "KC North Flow",

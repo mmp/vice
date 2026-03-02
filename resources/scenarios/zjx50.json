@@ -1127,9 +1127,7 @@
     "default_scenario": "49 Moultrie + 50 Alma",
     "scenarios": {
         "49 Moultrie + 50 Alma": {
-            "configuration": {
-                "config_id": "ZJX"
-            },
+            "configuration": "ZJX",
             "default_maps": [
                 "ZJX HI"
             ],
@@ -1204,9 +1202,7 @@
             ]
         },
         "65 Ridgeway + 66 Aiken": {
-            "configuration": {
-                "config_id": "ZJX"
-            },
+            "configuration": "ZJX",
             "default_maps": [
                 "ZJX HI"
             ],

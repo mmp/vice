@@ -9686,9 +9686,7 @@
                     "KCLT": 6
                 }
             },
-            "configuration": {
-                "config_id": "KCL"
-            },
+            "configuration": "KCL",
             "default_maps": [
                 "CLT SOUTH",
                 "CLT TRACON EXTERNAL BOUNDARY",
@@ -9785,9 +9783,7 @@
                     "KCLT": 6
                 }
             },
-            "configuration": {
-                "config_id": "KCL"
-            },
+            "configuration": "KCL",
             "default_maps": [
                 "CLT NORTH",
                 "CLT TRACON EXTERNAL BOUNDARY"
@@ -9854,9 +9850,7 @@
                     "KCLT": 10
                 }
             },
-            "configuration": {
-                "config_id": "KC1"
-            },
+            "configuration": "KC1",
             "default_maps": [
                 "CLT FINAL APPROACH COURSES NORTH",
                 "CLT LOCAL AIRSPACE",
@@ -9907,9 +9901,7 @@
                     "KCLT": 10
                 }
             },
-            "configuration": {
-                "config_id": "36R"
-            },
+            "configuration": "36R",
             "default_maps": [
                 "CLT FINAL APPROACH COURSES NORTH",
                 "CLT LOCAL AIRSPACE",
@@ -9970,9 +9962,7 @@
                     "KCLT": 10
                 }
             },
-            "configuration": {
-                "config_id": "KC1"
-            },
+            "configuration": "KC1",
             "default_maps": [
                 "CLT FINAL APPROACH COURSES NORTH",
                 "CLT LOCAL AIRSPACE",
@@ -10008,9 +9998,7 @@
                     "KCLT": 8
                 }
             },
-            "configuration": {
-                "config_id": "KC2"
-            },
+            "configuration": "KC2",
             "default_maps": [
                 "CLT TRACON EXTERNAL BOUNDARY",
                 "NOISE 2NM/4NM LINES (SOUTH)",
@@ -10045,9 +10033,7 @@
                     "KCLT": 10
                 }
             },
-            "configuration": {
-                "config_id": "18L"
-            },
+            "configuration": "18L",
             "default_maps": [
                 "CLT TRACON EXTERNAL BOUNDARY",
                 "NOISE 2NM/4NM LINES (SOUTH)",
@@ -10091,9 +10077,7 @@
                     "KCLT": 10
                 }
             },
-            "configuration": {
-                "config_id": "KC2"
-            },
+            "configuration": "KC2",
             "default_maps": [
                 "CLT TRACON EXTERNAL BOUNDARY",
                 "NOISE 2NM/4NM LINES (SOUTH)",

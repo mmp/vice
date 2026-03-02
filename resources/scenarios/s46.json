@@ -2358,9 +2358,7 @@
                     "KSEA": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "ZSE__S46N"
             ],
@@ -2421,9 +2419,7 @@
                     "KSEA": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "ZSE__S46S"
             ],

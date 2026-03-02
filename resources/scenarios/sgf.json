@@ -629,9 +629,7 @@
                     "KLBO": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "SGF Primary Map"
             ],
@@ -697,9 +695,7 @@
                     "KLBO": 2
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "SGF Primary Map"
             ],

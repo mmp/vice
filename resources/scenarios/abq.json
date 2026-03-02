@@ -839,9 +839,7 @@
                     "KABQ": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "A001 East Flow"
             ],
@@ -880,9 +878,7 @@
                     "KABQ": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "A002 West Flow"
             ],
@@ -926,9 +922,7 @@
                     "KABQ": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "A001 East Flow"
             ],
@@ -967,9 +961,7 @@
                     "KABQ": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "A002 West Flow"
             ],

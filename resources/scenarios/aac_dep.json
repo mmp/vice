@@ -6486,9 +6486,7 @@
                     "overflights": 8
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "BASE",
                 "STARS"

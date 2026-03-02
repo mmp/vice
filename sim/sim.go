@@ -226,6 +226,7 @@ type NewSimConfiguration struct {
 	ControllerAirspace      map[TCP][]string
 	VirtualControllers      []TCP
 	ControllerConfiguration *ControllerConfiguration
+	ConfigurationId         string
 
 	TFRs               []av.TFR
 	FacilityAdaptation FacilityAdaptation
@@ -922,13 +923,13 @@ func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, 
 	tcp := s.State.PrimaryPositionForTCW(tcw)
 
 	// First check controller-specific config.
-	if config, ok := fa.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
+	if config, ok := fa.Controllers[tcp]; ok && len(config.VideoMapNames) > 0 {
 		return config.VideoMapNames, config.DefaultMaps, config.MonitoredBeaconCodeBlocks
 	}
 
 	// Fall back to area-level config.
 	if ctrl, ok := s.ControlPositions[tcp]; ok && ctrl.Area != "" {
-		if ac, ok := fa.AreaConfigs[ctrl.Area]; ok && len(ac.VideoMapNames) > 0 {
+		if ac, ok := fa.Areas[ctrl.Area]; ok && len(ac.VideoMapNames) > 0 {
 			dm := s.State.ScenarioDefaultVideoMaps
 			if len(dm) == 0 {
 				dm = ac.DefaultMaps
@@ -1629,7 +1630,7 @@ func (s *Sim) requestRandomFlightFollowing() error {
 			continue
 		}
 
-		for tcpStr, cc := range s.State.FacilityAdaptation.ControllerConfigs {
+		for tcpStr, cc := range s.State.FacilityAdaptation.Controllers {
 			tcp := s.State.ResolveController(TCP(tcpStr))
 			if s.isVirtualController(tcp) {
 				continue

@@ -54,7 +54,7 @@
             "scope_char": "F"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "CNW": {
                 "inbound_assignments": {
@@ -151,7 +151,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "Y90 RWY 6/33",

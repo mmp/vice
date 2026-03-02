@@ -21,7 +21,7 @@
             "radio_name": "Albuqueque Approach"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -42,7 +42,7 @@
             }
         },
         "center": "KABQ",
-        "controller_configs": {
+        "controllers": {
             "1N": {
                 "flight_following_airspace": [
                     {
@@ -102,7 +102,7 @@
             "FLAVA": "FLA"
         },
         "video_map_file": "videomaps/ZAB-videomaps.gob.zst",
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "A001 East Flow",

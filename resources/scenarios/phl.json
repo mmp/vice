@@ -5439,9 +5439,7 @@
                     "KPHL": 20
                 }
             },
-            "configuration": {
-                "config_id": "21X"
-            },
+            "configuration": "21X",
             "center": "N039.55.00.306,W074.59.15.972",
             "range": 30,
             "default_maps": [
@@ -5528,9 +5526,7 @@
                     "overflights": 5
                 }
             },
-            "configuration": {
-                "config_id": "27L"
-            },
+            "configuration": "27L",
             "default_maps": [
                 "PHL West"
             ],
@@ -5622,9 +5618,7 @@
                     "overflights": 5
                 }
             },
-            "configuration": {
-                "config_id": "27L"
-            },
+            "configuration": "27L",
             "default_maps": [
                 "PHL East"
             ],

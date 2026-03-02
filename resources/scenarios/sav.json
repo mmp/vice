@@ -1501,9 +1501,7 @@
                     "KTBR": 2
                 }
             },
-            "configuration": {
-                "config_id": "10X"
-            },
+            "configuration": "10X",
             "default_maps": [
                 "RADAR MAP"
             ],
@@ -1580,9 +1578,7 @@
                     "KTBR": 2
                 }
             },
-            "configuration": {
-                "config_id": "28X"
-            },
+            "configuration": "28X",
             "default_maps": [
                 "RADAR MAP"
             ],
@@ -1659,9 +1655,7 @@
                     "KTBR": 2
                 }
             },
-            "configuration": {
-                "config_id": "10X"
-            },
+            "configuration": "10X",
             "default_maps": [
                 "RADAR MAP"
             ],
@@ -1738,9 +1732,7 @@
                     "KTBR": 2
                 }
             },
-            "configuration": {
-                "config_id": "10X"
-            },
+            "configuration": "10X",
             "default_maps": [
                 "RADAR MAP"
             ],

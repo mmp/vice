@@ -4083,9 +4083,7 @@
                     "overflights": 2
                 }
             },
-            "configuration": {
-                "config_id": "KJA"
-            },
+            "configuration": "KJA",
             "default_maps": [
                 "EAST FLOW"
             ],
@@ -4229,9 +4227,7 @@
                     "overflights": 2
                 }
             },
-            "configuration": {
-                "config_id": "KJ3"
-            },
+            "configuration": "KJ3",
             "default_maps": [
                 "WEST FLOW"
             ],
@@ -4405,9 +4401,7 @@
                     "overflights": 2
                 }
             },
-            "configuration": {
-                "config_id": "KJ5"
-            },
+            "configuration": "KJ5",
             "default_maps": [
                 "WEST FLOW"
             ],
@@ -4591,9 +4585,7 @@
                     "overflights": 2
                 }
             },
-            "configuration": {
-                "config_id": "KJ2"
-            },
+            "configuration": "KJ2",
             "default_maps": [
                 "EAST FLOW"
             ],

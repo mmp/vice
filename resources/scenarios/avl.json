@@ -619,9 +619,7 @@
                     "KAVL": 3
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "AVL AIRSPACE",
                 "RUNWAY 17"
@@ -672,9 +670,7 @@
                     "KAVL": 3
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "AVL AIRSPACE",
                 "RUNWAY 35"

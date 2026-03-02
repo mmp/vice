@@ -226,7 +226,7 @@
             "radio_name": "Jacksonville Center"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {

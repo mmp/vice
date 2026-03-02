@@ -2025,9 +2025,7 @@
                     "KOQU": 0
                 }
             },
-            "configuration": {
-                "config_id": "23X"
-            },
+            "configuration": "23X",
             "default_maps": [
                 "RVMPVD011S"
             ],
@@ -2084,9 +2082,7 @@
                     "KOQU": 0
                 }
             },
-            "configuration": {
-                "config_id": "23X"
-            },
+            "configuration": "23X",
             "default_maps": [
                 "RVMPVD011S"
             ],
@@ -2140,9 +2136,7 @@
                     "KPVD": 3
                 }
             },
-            "configuration": {
-                "config_id": "05X"
-            },
+            "configuration": "05X",
             "default_maps": [
                 "RVMPVD113S"
             ],
@@ -2176,9 +2170,7 @@
                     "KOQU": 10
                 }
             },
-            "configuration": {
-                "config_id": "21X"
-            },
+            "configuration": "21X",
             "default_maps": [
                 "RVMPVD011S",
                 "RVMPVD019S"
@@ -2218,9 +2210,7 @@
                     "KOQU": 10
                 }
             },
-            "configuration": {
-                "config_id": "PVD"
-            },
+            "configuration": "PVD",
             "default_maps": [
                 "RVMPVD011S",
                 "RVMPVD019S"
@@ -2260,9 +2250,7 @@
                     "KOQU": 10
                 }
             },
-            "configuration": {
-                "config_id": "51X"
-            },
+            "configuration": "51X",
             "default_maps": [
                 "RVMPVD113S",
                 "RVMPVD006S"
@@ -2302,9 +2290,7 @@
                     "KOQU": 10
                 }
             },
-            "configuration": {
-                "config_id": "53X"
-            },
+            "configuration": "53X",
             "default_maps": [
                 "RVMPVD113S",
                 "RVMPVD006S"

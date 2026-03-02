@@ -26,7 +26,7 @@
             "radio_name": "Hilton Head Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "10X": {
                 "inbound_assignments": {
@@ -133,7 +133,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "RADAR MAP",

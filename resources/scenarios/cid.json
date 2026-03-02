@@ -581,9 +581,7 @@
                     "KIOW": 2
                 }
             },
-            "configuration": {
-                "config_id": "27X"
-            },
+            "configuration": "27X",
             "default_maps": [
                 "CID RVM"
             ],
@@ -631,9 +629,7 @@
                     "KIOW": 2
                 }
             },
-            "configuration": {
-                "config_id": "9XX"
-            },
+            "configuration": "9XX",
             "default_maps": [
                 "CID RVM"
             ],

@@ -46,7 +46,7 @@
             "radio_name": "Pensacola tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -142,7 +142,7 @@
                 "receiving_controller": "C10"
             }
         ],
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "NEW NPA 25 MAP",

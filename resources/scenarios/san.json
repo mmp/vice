@@ -3578,9 +3578,7 @@
           "overflights": 6
         }
       },
-      "configuration": {
-        "config_id": "SA1"
-      },
+      "configuration": "SA1",
       "default_maps": ["500S SB WEST SCT"],
       "departure_runways": [
         {
@@ -3666,9 +3664,7 @@
           "overflights": 6
         }
       },
-      "configuration": {
-        "config_id": "SAN"
-      },
+      "configuration": "SAN",
       "default_maps": ["501S SB EAST SCT"],
       "departure_runways": [
         {
@@ -3748,9 +3744,7 @@
           "overflights": 6
         }
       },
-      "configuration": {
-        "config_id": "92X"
-      },
+      "configuration": "92X",
       "default_maps": ["501S SB EAST SCT"],
       "departure_runways": [
         {

@@ -1964,9 +1964,7 @@
     "magnetic_adjustment": 11,
     "scenarios": {
         "ZLA Sector 14 (West Flow)": {
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "LOW WEST"
             ],

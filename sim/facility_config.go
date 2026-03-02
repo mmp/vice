@@ -21,7 +21,7 @@ import (
 // fix pair definitions for a facility (TRACON or ARTCC).
 type FacilityConfig struct {
 	ControlPositions   map[TCP]*av.Controller `json:"control_positions"`
-	FacilityAdaptation FacilityAdaptation     `json:"config"`
+	FacilityAdaptation FacilityAdaptation     `json:"facility_adaptations"`
 	HandoffIDs         []HandoffID            `json:"handoff_ids"`
 	FixPairs           []FixPairDefinition    `json:"fix_pairs"`
 }
@@ -244,7 +244,7 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 
 func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
-	e.Push("config")
+	e.Push("facility_adaptations")
 	defer e.Pop()
 
 	// Validate configurations (facility configurations).
@@ -327,7 +327,7 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 
 	// Collect all video map names across all area configs.
 	var allAreaVideoMaps []string
-	for _, ac := range fa.AreaConfigs {
+	for _, ac := range fa.Areas {
 		allAreaVideoMaps = append(allAreaVideoMaps, ac.VideoMapNames...)
 	}
 
@@ -339,21 +339,21 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	}
 
 	// controller_configs TCP existence.
-	if len(fa.ControllerConfigs) > 0 {
-		for tcp := range fa.ControllerConfigs {
+	if len(fa.Controllers) > 0 {
+		for tcp := range fa.Controllers {
 			if ctrl, ok := fc.ControlPositions[TCP(tcp)]; !ok {
-				e.ErrorString(`Control position %q in "controller_configs" not defined in "control_positions"`, tcp)
+				e.ErrorString(`Control position %q in "controllers" not defined in "control_positions"`, tcp)
 			} else if ctrl.IsExternal() {
-				e.ErrorString(`Control position %q in "controller_configs" is external and not in this TRACON.`, tcp)
+				e.ErrorString(`Control position %q in "controllers" is external and not in this TRACON.`, tcp)
 			}
 		}
 		var err error
-		fa.ControllerConfigs, err = util.CommaKeyExpand(fa.ControllerConfigs)
+		fa.Controllers, err = util.CommaKeyExpand(fa.Controllers)
 		if err != nil {
 			e.Error(err)
 		}
 	} else if len(allAreaVideoMaps) == 0 {
-		e.ErrorString(`must specify either "controller_configs" or "video_maps" in "area_configs"`)
+		e.ErrorString(`must specify either "controllers" or "video_maps" in "areas"`)
 	}
 
 	if fa.Range == 0 {
@@ -493,16 +493,16 @@ func (fc *FacilityConfig) validateERAMAdaptation(e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
 
 	// Validate area configs if present.
-	if len(fa.AreaConfigs) > 0 {
+	if len(fa.Areas) > 0 {
 		usedAreas := make(map[string]bool)
 		for _, ctrl := range fc.ControlPositions {
 			if ctrl.Area != "" {
 				usedAreas[ctrl.Area] = true
 			}
 		}
-		for areaNum := range fa.AreaConfigs {
+		for areaNum := range fa.Areas {
 			if !usedAreas[areaNum] {
-				e.ErrorString("area_configs: area %s has no controllers assigned to it", areaNum)
+				e.ErrorString("areas: area %s has no controllers assigned to it", areaNum)
 			}
 		}
 	}

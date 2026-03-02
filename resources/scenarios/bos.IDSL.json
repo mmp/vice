@@ -81357,9 +81357,7 @@
                 }
             ],
             "inbound_rates": {},
-            "configuration": {
-                "config_id": "33X"
-            },
+            "configuration": "33X",
             "default_maps": [
                 "A90 BASE",
                 "BOS 33L",

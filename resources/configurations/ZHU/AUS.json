@@ -38,7 +38,7 @@
             "scope_char": "T"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -94,7 +94,7 @@
                 }
             ]
         },
-        "controller_configs": {
+        "controllers": {
             "1W": {
                 "flight_following_airspace": [
                     {
@@ -247,7 +247,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "AUS BASE",

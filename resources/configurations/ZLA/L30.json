@@ -56,7 +56,7 @@
             "radio_name": "North Las Vegas Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "1XX": {
                 "inbound_assignments": {
@@ -205,7 +205,7 @@
             }
         },
         "center": "N36.4.59.17,W115.8.53.52",
-        "controller_configs": {
+        "controllers": {
             "1F": {
                 "flight_following_airspace": [
                     {
@@ -433,7 +433,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "default_airport": "KLAS",
                 "video_maps": [

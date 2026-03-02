@@ -2533,9 +2533,7 @@
                     "overflights": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KBWI",
@@ -2601,9 +2599,7 @@
                     "overflights": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KBWI",
@@ -2669,9 +2665,7 @@
                     "overflights": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KBWI",
@@ -2733,9 +2727,7 @@
                     "overflights": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KBWI",

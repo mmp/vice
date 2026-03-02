@@ -7345,9 +7345,7 @@
                     "KLUK": 5
                 }
             },
-            "configuration": {
-                "config_id": "CVG"
-            },
+            "configuration": "CVG",
             "default_maps": [
                 "North Base"
             ],
@@ -7530,9 +7528,7 @@
                     "KLUK": 5
                 }
             },
-            "configuration": {
-                "config_id": "CVG"
-            },
+            "configuration": "CVG",
             "default_maps": [
                 "South Base"
             ],
@@ -7635,9 +7631,7 @@
                     "DEPARTURE_N"
                 ]
             },
-            "configuration": {
-                "config_id": "WDR"
-            },
+            "configuration": "WDR",
             "default_maps": [
                 "North Base"
             ],
@@ -7740,9 +7734,7 @@
                     "DEPARTURE_S"
                 ]
             },
-            "configuration": {
-                "config_id": "WDR"
-            },
+            "configuration": "WDR",
             "default_maps": [
                 "South Base"
             ],
@@ -7868,9 +7860,7 @@
                     "runway": "3"
                 }
             ],
-            "configuration": {
-                "config_id": "NAR"
-            },
+            "configuration": "NAR",
             "default_maps": [
                 "North Base"
             ],
@@ -7950,9 +7940,7 @@
                     "runway": "21"
                 }
             ],
-            "configuration": {
-                "config_id": "SAR"
-            },
+            "configuration": "SAR",
             "default_maps": [
                 "South Base"
             ],
@@ -8025,9 +8013,7 @@
                     "runway": "27"
                 }
             ],
-            "configuration": {
-                "config_id": "NF"
-            },
+            "configuration": "NF",
             "default_maps": [
                 "North Base"
             ],
@@ -8064,9 +8050,7 @@
                     "runway": "27"
                 }
             ],
-            "configuration": {
-                "config_id": "SF"
-            },
+            "configuration": "SF",
             "default_maps": [
                 "South Base"
             ],

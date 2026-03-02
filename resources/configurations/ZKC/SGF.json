@@ -27,7 +27,7 @@
             "scope_char": "L"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -62,7 +62,7 @@
             "CATIL": "CAT"
         },
         "video_map_file": "videomaps/ZKC-videomaps.gob.zst",
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "SGF Primary Map",

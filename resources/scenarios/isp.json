@@ -2482,9 +2482,7 @@
                     "KOXC": 2
                 }
             },
-            "configuration": {
-                "config_id": "ISP"
-            },
+            "configuration": "ISP",
             "default_maps": [
                 "ISP ARR/DEP"
             ],
@@ -2636,9 +2634,7 @@
                     "KHPN": 5
                 }
             },
-            "configuration": {
-                "config_id": "ISP"
-            },
+            "configuration": "ISP",
             "default_maps": [
                 "ISP ARR/DEP"
             ],
@@ -2790,9 +2786,7 @@
                     "KHPN": 5
                 }
             },
-            "configuration": {
-                "config_id": "ISP"
-            },
+            "configuration": "ISP",
             "default_maps": [
                 "ISP ARR/DEP"
             ],
@@ -2944,9 +2938,7 @@
                     "KHPN": 5
                 }
             },
-            "configuration": {
-                "config_id": "ISP"
-            },
+            "configuration": "ISP",
             "default_maps": [
                 "ISP ARR/DEP"
             ],

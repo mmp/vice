@@ -811,9 +811,7 @@
     "default_scenario": "ZNY Area D Combined",
     "scenarios": {
         "ZNY Area D Combined": {
-            "configuration": {
-                "config_id": "ZNS"
-            },
+            "configuration": "ZNS",
             "default_maps": [],
             "default_map_group": "ZNYMAP",
             "departure_runways": [

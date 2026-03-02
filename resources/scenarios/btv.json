@@ -281,9 +281,7 @@
                     "KBTV": 10
                 }
             },
-            "configuration": {
-                "config_id": "15X"
-            },
+            "configuration": "15X",
             "departure_runways": [
                 {
                     "airport": "KBTV",
@@ -328,9 +326,7 @@
                     "KBTV": 0
                 }
             },
-            "configuration": {
-                "config_id": "33X"
-            },
+            "configuration": "33X",
             "departure_runways": [
                 {
                     "airport": "KBTV",

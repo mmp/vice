@@ -12,7 +12,7 @@
             "scope_char": "1"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -46,7 +46,7 @@
             "LHO": {}
         },
         "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "CPR BASE",

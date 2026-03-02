@@ -1552,9 +1552,7 @@
     "default_scenario": "ZNY Sector 25",
     "scenarios": {
         "ZNY Sector 25": {
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "BASE MAP",
                 "LOW SECTOR"

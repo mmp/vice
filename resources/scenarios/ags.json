@@ -411,9 +411,7 @@
                     "KAGS": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "MAIN"
             ],
@@ -467,9 +465,7 @@
                     "KAGS": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "MAIN"
             ],

@@ -1806,9 +1806,7 @@
     "magnetic_adjustment": 11,
     "scenarios": {
         "ZLA Sector 18 (West Flow)": {
-            "configuration": {
-                "config_id": "ZLA"
-            },
+            "configuration": "ZLA",
             "default_maps": [
                 "LOW WEST"
             ],
