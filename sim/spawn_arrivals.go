@@ -107,7 +107,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		return nil, fmt.Errorf("no airlines for arrival group %s airport %s", group, arrivalAirport)
 	}
 
-	// Filter callsigns that are currently in use. 
+	// Filter callsigns that are currently in use.
 	callsigns := s.currentCallsigns()
 	available := make([]av.ArrivalAirline, 0, len(airlines))
 	for _, al := range airlines {

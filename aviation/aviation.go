@@ -308,7 +308,7 @@ func (a AirlineSpecifier) sampleAcType(r *rand.Rand, departureAirport, arrivalAi
 		sampled, ok := rand.SampleWeighted(r, a.Aircraft(), func(ac FleetAircraft) float32 {
 			return float32(ac.Count)
 		})
-		
+
 		if ok {
 			actype = sampled.ICAO
 		}

@@ -585,7 +585,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 		return nil, fmt.Errorf("no airlines for departure at %q", departureAirport)
 	}
 
-	// Filter callsigns that are currently in use. 
+	// Filter callsigns that are currently in use.
 	callsigns := s.currentCallsigns()
 	available := make([]av.DepartureAirline, 0, len(dep.Airlines))
 	for _, al := range dep.Airlines {
