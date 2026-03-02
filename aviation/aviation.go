@@ -190,6 +190,10 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 		}
 	}
 
+	if a.Callsign != "" && a.ICAO != "" {
+		e.ErrorString("cannot specify both \"callsign\" and \"icao\"")
+		return
+	}
 	if a.ICAO == "" && a.Callsign != "" {
 		if icao := icaoFromCallsign(a.Callsign); icao != "" {
 			a.ICAO = icao
