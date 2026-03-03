@@ -1782,18 +1782,16 @@ func (s *Sim) checkDelayedTrafficInSight(ac *Aircraft) {
 		return
 	}
 
-	// Random chance each update to report traffic in sight (roughly 1/20 chance per second at 10 updates/sec)
-	if s.Rand.Intn(200) != 0 {
-		return
+	// Random chance each update to report traffic in sight
+	if s.Rand.Float32() < 0.1 {
+		// Report traffic in sight
+		ac.TrafficInSight = true
+		ac.TrafficInSightTime = s.State.SimTime
+		ac.TrafficLookingUntil = time.Time{} // Clear the looking window
+
+		// Queue the transmission
+		s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionTrafficInSight)
 	}
-
-	// Report traffic in sight
-	ac.TrafficInSight = true
-	ac.TrafficInSightTime = s.State.SimTime
-	ac.TrafficLookingUntil = time.Time{} // Clear the looking window
-
-	// Queue the transmission
-	s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionTrafficInSight)
 }
 
 // MaintainVisualSeparation handles "maintain visual separation from the traffic" command.
