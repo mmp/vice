@@ -289,6 +289,8 @@ func (nav *Nav) AssignHeading(hdg float32, turn av.TurnDirection, simTime time.T
 }
 
 func (nav *Nav) assignHeading(hdg float32, turn av.TurnDirection, simTime time.Time) {
+	approachCleared := nav.Approach.Cleared
+
 	if _, ok := nav.AssignedHeading(); !ok {
 		// Only cancel approach clearance if the aircraft wasn't on a
 		// heading and now we're giving them one.
@@ -311,7 +313,7 @@ func (nav *Nav) assignHeading(hdg float32, turn av.TurnDirection, simTime time.T
 
 	// Don't carry this from a waypoint we may have previously passed.
 	nav.Approach.NoPT = false
-	nav.EnqueueHeading(hdg, turn, simTime)
+	nav.EnqueueHeading(hdg, turn, approachCleared, simTime)
 }
 
 func (nav *Nav) FlyPresentHeading(simTime time.Time) av.CommandIntent {
