@@ -67,7 +67,8 @@ import (
 // 57: rework contact radio transmission management
 // 58: STT fin rev?
 // 59: server-side flightstrip management
-const ViceSerializeVersion = 59
+// 60: restructure scenario JSON
+const ViceSerializeVersion = 60
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion
