@@ -1369,6 +1369,16 @@
                     "2A": []
                 }
             },
+            "JF4": {
+                "inbound_assignments": {
+                    "PUCKY1.Finals4": "2A",
+                    "PARCH4.Finals4": "2A",
+                    "CAMRN5.Finals4": "2A"
+                },
+                "default_consolidation": {
+                    "2A": [ "2G" ]
+                }
+            },
             "JFK": {
                 "inbound_assignments": {
                     "BOUNO5": "1X",
