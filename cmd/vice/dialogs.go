@@ -174,6 +174,11 @@ func (m *ModalDialogBox) Draw() {
 	topMargin := vpSize.Y * 0.05
 	imgui.SetNextWindowPosV(imgui.Vec2{vpPos.X + vpSize.X/2, vpPos.Y + topMargin}, imgui.CondAlways, imgui.Vec2{0.5, 0})
 
+	// Force the modal into the main viewport so it doesn't become a
+	// separate OS window (which can end up behind the main window when
+	// ConfigViewportsNoAutoMerge is enabled).
+	imgui.SetNextWindowViewport(mainVP.ID())
+
 	if imgui.BeginPopupModalV(title, nil, flags) {
 		if !m.isOpen {
 			imgui.SetKeyboardFocusHere()
