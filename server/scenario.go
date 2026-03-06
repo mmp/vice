@@ -1613,8 +1613,9 @@ var facilityConfigCache = make(map[string]*sim.FacilityConfig)
 
 // loadFacilityConfig loads and unmarshals a facility configuration file.
 // Results are cached so that shared facilities (like N90, referenced by
-// jfk.json, lga.json, etc.) are only loaded once. Validation is NOT
-// performed here; call PostDeserialize separately.
+// jfk.json, lga.json, etc.) are only loaded once. JSON validation
+// (duplicate keys, unknown fields) is performed here; call PostDeserialize
+// separately for semantic validation.
 func loadFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *sim.FacilityConfig {
 	if fc, ok := facilityConfigCache[path]; ok {
 		return fc
@@ -1637,6 +1638,11 @@ func loadFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *sim
 				e.ErrorString("duplicate JSON key %q at root level", d.Key)
 			}
 		}
+	}
+
+	util.CheckJSON[sim.FacilityConfig](contents, e)
+	if e.HaveErrors() {
+		return nil
 	}
 
 	var fc sim.FacilityConfig

@@ -1046,15 +1046,24 @@ func parseAdaptations() map[string]ERAMAdaptation {
 		}
 
 		configPath := path.Join("configurations", artcc, artcc+".json")
-		r := util.LoadResource(configPath)
+		contents := util.LoadResourceBytes(configPath)
+
+		if dups := util.FindDuplicateJSONKeys(contents); len(dups) > 0 {
+			for _, d := range dups {
+				if d.Path != "" {
+					fmt.Fprintf(os.Stderr, "%s: duplicate JSON key %q in %s\n", configPath, d.Key, d.Path)
+				} else {
+					fmt.Fprintf(os.Stderr, "%s: duplicate JSON key %q at root level\n", configPath, d.Key)
+				}
+			}
+			os.Exit(1)
+		}
 
 		var config artccConfig
-		if err := util.UnmarshalJSON(r, &config); err != nil {
-			r.Close()
+		if err := util.UnmarshalJSONBytes(contents, &config); err != nil {
 			fmt.Fprintf(os.Stderr, "%s: %v\n", configPath, err)
 			os.Exit(1)
 		}
-		r.Close()
 
 		adapt := ERAMAdaptation{
 			ARTCC:             artcc,
