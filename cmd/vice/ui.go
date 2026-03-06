@@ -65,9 +65,9 @@ var (
 		audioCaptureWarningLogged bool      // only log audio capture failure once
 
 		// Test PTT state
-		testPTTActive  bool
-		testPTTLevelMu sync.Mutex
-		testPTTLevels  [6]float32 // ring buffer of ~50ms RMS values
+		testPTTActive   bool
+		testPTTLevelMu  sync.Mutex
+		testPTTLevels   [6]float32 // ring buffer of ~50ms RMS values
 		testPTTLevelIdx int
 	}
 
