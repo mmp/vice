@@ -15837,9 +15837,7 @@
                             },
                             {
                                 "icao": "ANA",
-                                "types": [
-                                    "A35K"
-                                ],
+                                "fleet": "long",
                                 "airport": "RJTT"
                             },
                             {
