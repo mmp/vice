@@ -7065,9 +7065,7 @@
                     "KACK": 5
                 }
             },
-            "configuration": {
-                "config_id": "A92"
-            },
+            "configuration": "A92",
             "default_maps": [
                 "A90 BASE",
                 "BOS 4R/L",
@@ -7277,9 +7275,7 @@
                     "KACK": 10
                 }
             },
-            "configuration": {
-                "config_id": "A90"
-            },
+            "configuration": "A90",
             "default_maps": [
                 "A90 BASE",
                 "BOS 27/22",
@@ -7489,9 +7485,7 @@
                     "KACK": 10
                 }
             },
-            "configuration": {
-                "config_id": "A90"
-            },
+            "configuration": "A90",
             "default_maps": [
                 "A90 BASE",
                 "BOS 27",
@@ -7693,9 +7687,7 @@
                     "KACK": 10
                 }
             },
-            "configuration": {
-                "config_id": "A90"
-            },
+            "configuration": "A90",
             "default_maps": [
                 "A90 BASE",
                 "BOS 15R",
@@ -7803,9 +7795,7 @@
                     "KMHT": 2
                 }
             },
-            "configuration": {
-                "config_id": "A91"
-            },
+            "configuration": "A91",
             "default_maps": [
                 "A90 BASE",
                 "BOS 4R/L"
@@ -7892,9 +7882,7 @@
                     "KMHT": 2
                 }
             },
-            "configuration": {
-                "config_id": "90X"
-            },
+            "configuration": "90X",
             "default_maps": [
                 "A90 BASE",
                 "BOS 27/22"
@@ -7985,9 +7973,7 @@
                     "KMHT": 2
                 }
             },
-            "configuration": {
-                "config_id": "90X"
-            },
+            "configuration": "90X",
             "default_maps": [
                 "A90 BASE",
                 "BOS 27"
@@ -8074,9 +8060,7 @@
                     "KMHT": 2
                 }
             },
-            "configuration": {
-                "config_id": "90X"
-            },
+            "configuration": "90X",
             "default_maps": [
                 "A90 BASE",
                 "BOS 15R"

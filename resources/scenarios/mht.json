@@ -809,9 +809,7 @@
                     "KPSM": 10
                 }
             },
-            "configuration": {
-                "config_id": "KM1"
-            },
+            "configuration": "KM1",
             "default_maps": [
                 "MHT MAIN"
             ],
@@ -863,9 +861,7 @@
                     "KPSM": 10
                 }
             },
-            "configuration": {
-                "config_id": "KMH"
-            },
+            "configuration": "KMH",
             "default_maps": [
                 "MHT MAIN"
             ],

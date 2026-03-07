@@ -1126,9 +1126,7 @@
                     "PANC": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "A11 RVM"
             ],
@@ -1171,9 +1169,7 @@
                     "PANC": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "A11 RVM"
             ],
@@ -1214,9 +1210,7 @@
                     "PANC": 15
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "A11 RVM"
             ],
@@ -1255,9 +1249,7 @@
                     "PANC": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "A11 RVM"
             ],

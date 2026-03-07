@@ -1888,9 +1888,7 @@
     "default_scenario": "ZDV Area 3",
     "scenarios": {
         "ZDV Area 3": {
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "HIGH BDRY",
                 "LOW BDRY"

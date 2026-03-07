@@ -2068,9 +2068,7 @@
                     "KGLS": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "I90 BASE MAP"
             ],
@@ -2301,9 +2299,7 @@
                     "KGLS": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "I90 BASE MAP"
             ],
@@ -2492,9 +2488,7 @@
                     "KIAH": 10
                 }
             },
-            "configuration": {
-                "config_id": "IAH"
-            },
+            "configuration": "IAH",
             "default_maps": [
                 "IAH FINAL WEST FLOW ALT"
             ],

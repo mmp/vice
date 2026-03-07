@@ -232,6 +232,24 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 		}
 	}
 
+	// This flags errors in many scenarios; disabled for now pending a future fixup.
+	// https://github.com/mmp/vice/issues/827
+	/*
+		for _, ty := range a.AircraftTypes {
+			var valid []string
+			for _, fac := range al.Fleets {
+				for _, ac := range fac {
+					valid = append(valid, ac.ICAO)
+				}
+			}
+			if !slices.Contains(valid, ty) {
+				slices.Sort(valid)
+				valid = slices.Compact(valid)
+				e.ErrorString("aircraft type %q is not in any of the airline's fleets. Options: %s", ty, strings.Join(valid, " "))
+			}
+		}
+	*/
+
 	for _, ac := range a.Aircraft() {
 		e.Push("Aircraft " + ac.ICAO)
 		if perf, ok := DB.AircraftPerformance[ac.ICAO]; !ok {

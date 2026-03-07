@@ -124,6 +124,12 @@ func (a *audioEngine) TryEnqueueSpeechPCM(pcm []int16, finished func()) error {
 	return nil
 }
 
+func (a *audioEngine) AppendSpeechPCM(pcm []int16) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	a.speechq = append(a.speechq, pcm...)
+}
+
 func (a *audioEngine) SetAudioVolume(vol int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()

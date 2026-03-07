@@ -782,9 +782,7 @@
     "magnetic_adjustment": -6.6,
     "scenarios": {
         "58 St. Augustine": {
-            "configuration": {
-                "config_id": "ZJS"
-            },
+            "configuration": "ZJS",
             "default_maps": [
                 "ZJX HI"
             ],

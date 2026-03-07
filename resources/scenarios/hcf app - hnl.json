@@ -3775,9 +3775,7 @@
                     "PHNL": 3
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "COAST__COASTLINES",
                 "HNL RVM BASE",
@@ -3838,9 +3836,7 @@
                     "PHNL": 3
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "COAST__COASTLINES",
                 "HNL RVM BASE",

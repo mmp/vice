@@ -317,9 +317,7 @@
                     "KCPR": 4
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "CPR BASE"
             ],
@@ -372,9 +370,7 @@
                     "KCPR": 4
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "CPR BASE"
             ],

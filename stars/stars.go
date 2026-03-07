@@ -742,7 +742,7 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 }
 
 func (sp *STARSPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
-	sp.DisplayRequestedAltitude = client.State.FacilityAdaptation.FDB.DisplayRequestedAltitude
+	sp.DisplayRequestedAltitude = client.State.FacilityAdaptation.Datablocks.FDB.DisplayRequestedAltitude
 
 	sp.initPrefsForLoadedSim(client.State, pl)
 

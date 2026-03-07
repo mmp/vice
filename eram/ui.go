@@ -416,7 +416,7 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 				imgui.Text(ap)
 			}
 
-			cl := util.DuplicateSlice(c.State.FacilityAdaptation.CoordinationLists)
+			cl := util.DuplicateSlice(c.State.FacilityAdaptation.Lists.Coordination)
 			slices.SortFunc(cl, func(a, b sim.CoordinationList) int { return strings.Compare(a.Id, b.Id) })
 
 			for _, list := range cl {

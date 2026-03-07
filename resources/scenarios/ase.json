@@ -374,9 +374,7 @@
                     "KASE": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "ASE BASE"
             ],

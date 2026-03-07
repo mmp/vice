@@ -3001,9 +3001,7 @@
     "primary_airport": "KEWR",
     "scenarios": {
         "Liberty Combined - JFK Owns Coney": {
-            "configuration": {
-                "config_id": "LIB"
-            },
+            "configuration": "LIB",
             "default_maps": [
                 "LIBERTY DEP"
             ],
@@ -3095,9 +3093,7 @@
             }
         },
         "Liberty Combined - LGA Owns Coney": {
-            "configuration": {
-                "config_id": "LIB"
-            },
+            "configuration": "LIB",
             "default_maps": [
                 "LIBERTY DEP"
             ],
@@ -3184,9 +3180,7 @@
             }
         },
         "Liberty East": {
-            "configuration": {
-                "config_id": "LIB"
-            },
+            "configuration": "LIB",
             "default_maps": [
                 "LIBERTY DEP"
             ],
@@ -3290,9 +3284,7 @@
             ]
         },
         "Liberty North": {
-            "configuration": {
-                "config_id": "LIB"
-            },
+            "configuration": "LIB",
             "default_maps": [
                 "LIBERTY DEP"
             ],
@@ -3377,9 +3369,7 @@
             ]
         },
         "Liberty South JFK Owns Coney": {
-            "configuration": {
-                "config_id": "LIB"
-            },
+            "configuration": "LIB",
             "default_maps": [
                 "LIBERTY DEP"
             ],
@@ -3461,9 +3451,7 @@
             }
         },
         "Liberty South LGA Owns Coney": {
-            "configuration": {
-                "config_id": "LIB"
-            },
+            "configuration": "LIB",
             "default_maps": [
                 "LIBERTY DEP"
             ],
@@ -3539,9 +3527,7 @@
             }
         },
         "Liberty West": {
-            "configuration": {
-                "config_id": "LIB"
-            },
+            "configuration": "LIB",
             "default_maps": [
                 "LIBERTY DEP"
             ],

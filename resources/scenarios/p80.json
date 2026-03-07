@@ -5953,9 +5953,7 @@
                     "KPDX": 1
                 }
             },
-            "configuration": {
-                "config_id": "KP3"
-            },
+            "configuration": "KP3",
             "default_maps": [
                 "RWY 28",
                 "3 NM BUFFER MVA"
@@ -6046,9 +6044,7 @@
                     "KPDX": 1
                 }
             },
-            "configuration": {
-                "config_id": "KPD"
-            },
+            "configuration": "KPD",
             "default_maps": [
                 "RWY 10",
                 "3 NM BUFFER MVA"
@@ -6106,9 +6102,7 @@
                     "KPDX": 5
                 }
             },
-            "configuration": {
-                "config_id": "KP2"
-            },
+            "configuration": "KP2",
             "wind": {
                 "direction": "250-310"
             },
@@ -6144,9 +6138,7 @@
                     "KPDX": 5
                 }
             },
-            "configuration": {
-                "config_id": "KP1"
-            },
+            "configuration": "KP1",
             "wind": {
                 "direction": "70-130"
             },

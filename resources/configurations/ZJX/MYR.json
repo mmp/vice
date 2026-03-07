@@ -21,7 +21,7 @@
             "radio_name": "Strand Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -116,7 +116,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "5J9 APPROACHES",

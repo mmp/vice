@@ -789,9 +789,7 @@
                     "KIND": 6
                 }
             },
-            "configuration": {
-                "config_id": "KI1"
-            },
+            "configuration": "KI1",
             "default_maps": [
                 "RWY 23s",
                 "Class C/D",
@@ -842,9 +840,7 @@
                     "KIND": 6
                 }
             },
-            "configuration": {
-                "config_id": "KIN"
-            },
+            "configuration": "KIN",
             "default_maps": [
                 "RWY 5s",
                 "Class C/D",
@@ -891,9 +887,7 @@
                     "KIND": 3
                 }
             },
-            "configuration": {
-                "config_id": "KI1"
-            },
+            "configuration": "KI1",
             "default_maps": [
                 "RWY 32",
                 "Class C/D",
@@ -935,9 +929,7 @@
                     "KIND": 3
                 }
             },
-            "configuration": {
-                "config_id": "KI1"
-            },
+            "configuration": "KI1",
             "default_maps": [
                 "RWY 14",
                 "Class C/D",

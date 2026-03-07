@@ -60,7 +60,7 @@ type CommonState struct {
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
 
-	ConfigurationId string // Short identifier for the configuration (from ControllerConfiguration.ConfigId)
+	ConfigurationId string // Short identifier for the configuration (from scenario's "configuration" field)
 
 	Airspace map[ControlPosition]map[string][]av.ControllerAirspaceVolume // position -> vol name -> definition
 
@@ -243,7 +243,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		Fixes:       config.Fixes,
 		VFRRunways:  make(map[string]av.Runway),
 
-		ConfigurationId: config.ControllerConfiguration.ConfigId,
+		ConfigurationId: config.ConfigurationId,
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,

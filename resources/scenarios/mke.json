@@ -1899,9 +1899,7 @@
                     "overflights": 5
                 }
             },
-            "configuration": {
-                "config_id": "MI1"
-            },
+            "configuration": "MI1",
             "default_maps": [
                 "MKE RWY 1L"
             ],
@@ -1998,9 +1996,7 @@
                     "overflights": 5
                 }
             },
-            "configuration": {
-                "config_id": "MIL"
-            },
+            "configuration": "MIL",
             "default_maps": [
                 "MKE RWY 1L"
             ],
@@ -2097,9 +2093,7 @@
                     "overflights": 5
                 }
             },
-            "configuration": {
-                "config_id": "MI2"
-            },
+            "configuration": "MI2",
             "default_maps": [
                 "MKE RWY 1L"
             ],
@@ -2196,9 +2190,7 @@
                     "overflights": 5
                 }
             },
-            "configuration": {
-                "config_id": "MIL"
-            },
+            "configuration": "MIL",
             "default_maps": [
                 "MKE RWY 1L"
             ],
@@ -2253,9 +2245,7 @@
                     "KMKE": 5
                 }
             },
-            "configuration": {
-                "config_id": "19R"
-            },
+            "configuration": "19R",
             "default_maps": [
                 "MKE RWY 19R"
             ],
@@ -2287,9 +2277,7 @@
                     "KMKE": 5
                 }
             },
-            "configuration": {
-                "config_id": "1LX"
-            },
+            "configuration": "1LX",
             "default_maps": [
                 "MKE RWY 1L"
             ],

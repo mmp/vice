@@ -1874,9 +1874,7 @@
           "overflights": 25
         }
       },
-      "configuration": {
-        "config_id": "CF1"
-      },
+      "configuration": "CF1",
       "default_maps": ["100S BURB LW SCT"],
       "departure_runways": [
         {
@@ -1958,9 +1956,7 @@
           "overflights": 25
         }
       },
-      "configuration": {
-        "config_id": "CF2"
-      },
+      "configuration": "CF2",
       "default_maps": ["101S BURB LE SCT"],
       "departure_runways": [
         {
@@ -2056,9 +2052,7 @@
           "overflights": 25
         }
       },
-      "configuration": {
-        "config_id": "CF3"
-      },
+      "configuration": "CF3",
       "default_maps": ["100S BURB LW SCT"],
       "departure_runways": [
         {
@@ -2136,9 +2130,7 @@
           "overflights": 25
         }
       },
-      "configuration": {
-        "config_id": "CF4"
-      },
+      "configuration": "CF4",
       "default_maps": ["101S BURB LE SCT"],
       "departure_runways": [
         {

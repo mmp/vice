@@ -21,7 +21,7 @@
             "radio_name": "Springs tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -40,15 +40,6 @@
             }
         },
         "center": "N038.47.36.733,W104.35.10.501",
-        "coordination_lists": [
-            {
-                "name": "Meadow Lake",
-                "id": "A",
-                "airports": [
-                    "KFLY"
-                ]
-            }
-        ],
         "filters": {
             "inhibit_ca": [
                 {
@@ -89,7 +80,7 @@
             "FQF": "FQF"
         },
         "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "COS NORTH",
@@ -116,6 +107,17 @@
                     "COS Z 35R"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "Meadow Lake",
+                    "id": "A",
+                    "airports": [
+                        "KFLY"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

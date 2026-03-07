@@ -1596,9 +1596,7 @@
                     "KJZI": 3
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "CHS SHELF"
             ],
@@ -1647,9 +1645,7 @@
                     "KJZI": 3
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "CHS SHELF"
             ],

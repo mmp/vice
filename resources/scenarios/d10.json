@@ -15837,9 +15837,7 @@
                             },
                             {
                                 "icao": "ANA",
-                                "types": [
-                                    "A35K"
-                                ],
+                                "fleet": "long",
                                 "airport": "RJTT"
                             },
                             {
@@ -16993,9 +16991,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DSA"
-            },
+            "configuration": "DSA",
             "default_maps": [
                 "RVMD10139S"
             ],
@@ -17234,9 +17230,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DNA"
-            },
+            "configuration": "DNA",
             "default_maps": [
                 "RVMD10140S"
             ],
@@ -17408,9 +17402,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "D10"
-            },
+            "configuration": "D10",
             "default_maps": [
                 "RVMD10139S"
             ],
@@ -17533,9 +17525,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "10X"
-            },
+            "configuration": "10X",
             "default_maps": [
                 "RVMD10140S"
             ],
@@ -17622,9 +17612,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DF4"
-            },
+            "configuration": "DF4",
             "default_maps": [
                 "RVMD10103S"
             ],
@@ -17672,9 +17660,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DF3"
-            },
+            "configuration": "DF3",
             "default_maps": [
                 "RVMD10102S"
             ],
@@ -17714,9 +17700,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DFW"
-            },
+            "configuration": "DFW",
             "default_maps": [
                 "RVMD10102S"
             ],
@@ -17756,9 +17740,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DF1"
-            },
+            "configuration": "DF1",
             "default_maps": [
                 "RVMD10103S"
             ],
@@ -17798,9 +17780,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DF5"
-            },
+            "configuration": "DF5",
             "default_maps": [
                 "RVMD10102S"
             ],
@@ -17840,9 +17820,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DF6"
-            },
+            "configuration": "DF6",
             "default_maps": [
                 "RVMD10103S"
             ],
@@ -17890,9 +17868,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DF2"
-            },
+            "configuration": "DF2",
             "default_maps": [
                 "RVMD10102S",
                 "RVMD10011S"
@@ -17960,9 +17936,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DEP"
-            },
+            "configuration": "DEP",
             "default_maps": [
                 "RVMD10119S",
                 "RVMD10050S"
@@ -18099,9 +18073,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DEP"
-            },
+            "configuration": "DEP",
             "default_maps": [
                 "RVMD10118S",
                 "RVMD10050S"
@@ -18270,9 +18242,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "ME2"
-            },
+            "configuration": "ME2",
             "default_maps": [
                 "RVMD10122S"
             ],
@@ -18405,9 +18375,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "ME3"
-            },
+            "configuration": "ME3",
             "default_maps": [
                 "RVMD10123S"
             ],
@@ -18554,9 +18522,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "ME4"
-            },
+            "configuration": "ME4",
             "default_maps": [
                 "RVMD10122S"
             ],
@@ -18718,9 +18684,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "MEA"
-            },
+            "configuration": "MEA",
             "default_maps": [
                 "RVMD10122S"
             ],
@@ -18876,9 +18840,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "ME1"
-            },
+            "configuration": "ME1",
             "default_maps": [
                 "RVMD10123S"
             ],
@@ -19007,9 +18969,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DAW"
-            },
+            "configuration": "DAW",
             "default_maps": [
                 "RVMD10123S"
             ],
@@ -19211,9 +19171,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DAL"
-            },
+            "configuration": "DAL",
             "default_maps": [
                 "RVMD10122S"
             ],
@@ -19421,9 +19379,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "DA2"
-            },
+            "configuration": "DA2",
             "default_maps": [
                 "RVMD10122S"
             ],
@@ -19551,9 +19507,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "EAS"
-            },
+            "configuration": "EAS",
             "default_maps": [
                 "RVMD10122S"
             ],
@@ -19696,9 +19650,7 @@
                     "KDFW": 0
                 }
             },
-            "configuration": {
-                "config_id": "EA1"
-            },
+            "configuration": "EA1",
             "default_maps": [
                 "RVMD10123S"
             ],

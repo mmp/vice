@@ -1013,9 +1013,7 @@
                     "KSMX": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "116S COMPOSITE OF MAPS SBA",
                 "112S RWY 7 OVERLAY SBA"
@@ -1099,9 +1097,7 @@
                     "KSMX": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "116S COMPOSITE OF MAPS SBA",
                 "113S RWY 25 OVERLAY SBA"

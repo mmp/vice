@@ -3173,9 +3173,7 @@
                     "KDET": 2
                 }
             },
-            "configuration": {
-                "config_id": "43X"
-            },
+            "configuration": "43X",
             "default_maps": [
                 "DTW-009 (NF-ARR FEEDER)",
                 "DTW-014 (4L Z)",
@@ -3286,9 +3284,7 @@
                     "KDET": 2
                 }
             },
-            "configuration": {
-                "config_id": "43X"
-            },
+            "configuration": "43X",
             "default_maps": [
                 "DTW-009 (NF-ARR FEEDER)",
                 "DTW-014 (4L Z)",
@@ -3396,9 +3392,7 @@
                     "KDET": 2
                 }
             },
-            "configuration": {
-                "config_id": "SOU"
-            },
+            "configuration": "SOU",
             "default_maps": [
                 "DTW-007 (SF-ARR FEEDER)",
                 "DTW-013 (22R Z)",
@@ -3509,9 +3503,7 @@
                     "KDET": 2
                 }
             },
-            "configuration": {
-                "config_id": "22X"
-            },
+            "configuration": "22X",
             "default_maps": [
                 "DTW-007 (SF-ARR FEEDER)",
                 "DTW-015 (22L)",
@@ -3619,9 +3611,7 @@
                     "KDET": 2
                 }
             },
-            "configuration": {
-                "config_id": "WES"
-            },
+            "configuration": "WES",
             "default_maps": [
                 "DTW-011 (WF-ARR FEEDER)",
                 "DTW-019 (27R)",
@@ -3695,9 +3685,7 @@
                     "KDTW": 5
                 }
             },
-            "configuration": {
-                "config_id": "SO1"
-            },
+            "configuration": "SO1",
             "default_maps": [
                 "DTW-007 (SF-ARR FEEDER)",
                 "DTW-013 (22R Z)",
@@ -3744,9 +3732,7 @@
                     "KDTW": 5
                 }
             },
-            "configuration": {
-                "config_id": "NOR"
-            },
+            "configuration": "NOR",
             "default_maps": [
                 "DTW-009 (NF-ARR FEEDER)",
                 "DTW-014 (4L Z)",
@@ -3793,9 +3779,7 @@
                     "KDTW": 5
                 }
             },
-            "configuration": {
-                "config_id": "WE1"
-            },
+            "configuration": "WE1",
             "default_maps": [
                 "DTW-011 (WF-ARR FEEDER)",
                 "DTW-019 (27R)",

@@ -85376,9 +85376,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CNE"
-            },
+            "configuration": "CNE",
             "default_maps": [
                 "A90 BASE",
                 "BOS 4R/L",
@@ -85558,9 +85556,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CNE"
-            },
+            "configuration": "CNE",
             "default_maps": [
                 "A90 BASE",
                 "BOS 4R/L",
@@ -85758,9 +85754,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CNE"
-            },
+            "configuration": "CNE",
             "default_maps": [
                 "A90 BASE",
                 "BOS_TWR 4R/15RC",
@@ -85932,9 +85926,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CSE"
-            },
+            "configuration": "CSE",
             "default_maps": [
                 "A90 BASE",
                 "BOS 15R",
@@ -86095,9 +86087,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CNW"
-            },
+            "configuration": "CNW",
             "default_maps": [
                 "A90 BASE",
                 "BOS 27"
@@ -86251,9 +86241,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CNW"
-            },
+            "configuration": "CNW",
             "default_maps": [
                 "A90 BASE",
                 "BOS 33L"
@@ -86419,9 +86407,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CSW"
-            },
+            "configuration": "CSW",
             "default_maps": [
                 "A90 BASE",
                 "BOS 22L"
@@ -86575,9 +86561,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CSW"
-            },
+            "configuration": "CSW",
             "default_maps": [
                 "A90 BASE",
                 "BOS 22L"
@@ -86731,9 +86715,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CSW"
-            },
+            "configuration": "CSW",
             "default_maps": [
                 "A90 BASE",
                 "BOS 22L",
@@ -86888,9 +86870,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CSW"
-            },
+            "configuration": "CSW",
             "default_maps": [
                 "A90 BASE",
                 "BOS 27/22"
@@ -87044,9 +87024,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CNW"
-            },
+            "configuration": "CNW",
             "default_maps": [
                 "A90 BASE",
                 "BOS 27/32"
@@ -87210,9 +87188,7 @@
                     "KPSM": 0
                 }
             },
-            "configuration": {
-                "config_id": "CNW"
-            },
+            "configuration": "CNW",
             "default_maps": [
                 "A90 BASE",
                 "BOS 33L/32"
@@ -87301,9 +87277,7 @@
                     "KBOS": 4
                 }
             },
-            "configuration": {
-                "config_id": "44X"
-            },
+            "configuration": "44X",
             "default_maps": [
                 "A90 BASE",
                 "BOS 4R/L",
@@ -87363,9 +87337,7 @@
                     "KBOS": 4
                 }
             },
-            "configuration": {
-                "config_id": "22X"
-            },
+            "configuration": "22X",
             "default_maps": [
                 "A90 BASE",
                 "BOS 22L",

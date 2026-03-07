@@ -46,7 +46,7 @@
             "radio_name": "Daytona Beach tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "DAE": {
                 "inbound_assignments": {
@@ -106,22 +106,6 @@
             }
         },
         "center": "KDAB",
-        "coordination_lists": [
-            {
-                "name": ".      OMN COORD",
-                "id": "O",
-                "airports": [
-                    "KOMN"
-                ]
-            },
-            {
-                "name": ".      EVB COORD",
-                "id": "B",
-                "airports": [
-                    "KEVB"
-                ]
-            }
-        ],
         "radar_sites": {
             "DAB": {
                 "char": "D",
@@ -398,7 +382,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "DAB APPROACH FIXES",
@@ -449,6 +433,24 @@
                     "WARNING AREA 497"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": ".      OMN COORD",
+                    "id": "O",
+                    "airports": [
+                        "KOMN"
+                    ]
+                },
+                {
+                    "name": ".      EVB COORD",
+                    "id": "B",
+                    "airports": [
+                        "KEVB"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

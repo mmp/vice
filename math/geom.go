@@ -319,11 +319,94 @@ func CirclePoints(nsegs int) [][2]float32 {
 	return circlePoints[nsegs]
 }
 
+// segmentIntersectParam returns the parametric t,u values for the
+// intersection of segments (p1,p2) and (p3,p4), plus the intersection
+// point. Returns ok=false if the segments are parallel or don't intersect
+// in their interiors (i.e., t and u must both be strictly between 0 and 1).
+func segmentIntersectParam(p1, p2, p3, p4 Point2LL) (t, u float32, p Point2LL, ok bool) {
+	// Work in float64 for numerical stability.
+	ax, ay := float64(p2[0]-p1[0]), float64(p2[1]-p1[1])
+	bx, by := float64(p4[0]-p3[0]), float64(p4[1]-p3[1])
+
+	denom := ax*by - ay*bx
+	if gomath.Abs(denom) < 1e-10 {
+		return 0, 0, Point2LL{}, false
+	}
+
+	cx, cy := float64(p3[0]-p1[0]), float64(p3[1]-p1[1])
+	tf := (cx*by - cy*bx) / denom
+	uf := (cx*ay - cy*ax) / denom
+
+	const eps = 1e-6
+	if tf <= eps || tf >= 1-eps || uf <= eps || uf >= 1-eps {
+		return 0, 0, Point2LL{}, false
+	}
+
+	px := float64(p1[0]) + tf*ax
+	py := float64(p1[1]) + tf*ay
+	return float32(tf), float32(uf), Point2LL{float32(px), float32(py)}, true
+}
+
+// SplitSelfIntersectingPolygon decomposes a possibly self-intersecting
+// polygon into a slice of simple (non-self-intersecting) polygons. If the
+// polygon is already simple, it is returned as a single-element slice.
+func SplitSelfIntersectingPolygon(poly []Point2LL) [][]Point2LL {
+	n := len(poly)
+	if n < 4 {
+		return [][]Point2LL{poly}
+	}
+
+	// Check all pairs of non-adjacent edges for intersection.
+	for i := range n {
+		inext := (i + 1) % n
+		for j := i + 2; j < n; j++ {
+			jnext := (j + 1) % n
+			// Skip adjacent edges (they share a vertex).
+			if jnext == i {
+				continue
+			}
+
+			_, _, p, ok := segmentIntersectParam(poly[i], poly[inext], poly[j], poly[jnext])
+			if !ok {
+				continue
+			}
+
+			// Build sub-polygon 1: vertices from inext..j, then P.
+			var sub1 []Point2LL
+			for k := inext; ; k = (k + 1) % n {
+				sub1 = append(sub1, poly[k])
+				if k == j {
+					break
+				}
+			}
+			sub1 = append(sub1, p)
+
+			// Build sub-polygon 2: vertices from jnext..i, then P.
+			var sub2 []Point2LL
+			for k := jnext; ; k = (k + 1) % n {
+				sub2 = append(sub2, poly[k])
+				if k == i {
+					break
+				}
+			}
+			sub2 = append(sub2, p)
+
+			// Recursively split each sub-polygon.
+			result := SplitSelfIntersectingPolygon(sub1)
+			result = append(result, SplitSelfIntersectingPolygon(sub2)...)
+			return result
+		}
+	}
+
+	// No intersections found; polygon is simple.
+	return [][]Point2LL{poly}
+}
+
 // https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
 func ConvexHull(points [][2]float32) [][2]float32 {
 	n := len(points)
 	if n <= 1 {
-		return append([][2]float32{}, points...)
+		return slices.Clone(points)
 	}
 
 	sort.Slice(points, func(i, j int) bool {

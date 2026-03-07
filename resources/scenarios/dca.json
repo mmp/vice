@@ -4463,9 +4463,7 @@
                     "KBWI": 10
                 }
             },
-            "configuration": {
-                "config_id": "MT1"
-            },
+            "configuration": "MT1",
             "default_maps": [
                 "MTV North"
             ],
@@ -4525,9 +4523,7 @@
                     "KBWI": 10
                 }
             },
-            "configuration": {
-                "config_id": "MT3"
-            },
+            "configuration": "MT3",
             "default_maps": [
                 "MTV South"
             ],
@@ -4572,9 +4568,7 @@
                     "KDCA": 15
                 }
             },
-            "configuration": {
-                "config_id": "MT8"
-            },
+            "configuration": "MT8",
             "default_maps": [
                 "MTV South"
             ],
@@ -4607,9 +4601,7 @@
                     "KDCA": 15
                 }
             },
-            "configuration": {
-                "config_id": "MT8"
-            },
+            "configuration": "MT8",
             "default_maps": [
                 "MTV North"
             ],
@@ -4629,9 +4621,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "MT4"
-            },
+            "configuration": "MT4",
             "default_maps": [
                 "MTV South"
             ]
@@ -4648,9 +4638,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "MT4"
-            },
+            "configuration": "MT4",
             "default_maps": [
                 "MTV North"
             ]
@@ -4674,9 +4662,7 @@
                     "overflights": 10
                 }
             },
-            "configuration": {
-                "config_id": "MT6"
-            },
+            "configuration": "MT6",
             "default_maps": [
                 "MTV South"
             ],
@@ -4715,9 +4701,7 @@
                     "overflights": 10
                 }
             },
-            "configuration": {
-                "config_id": "MT6"
-            },
+            "configuration": "MT6",
             "default_maps": [
                 "MTV North"
             ],
@@ -4755,9 +4739,7 @@
                     "KDCA": 15
                 }
             },
-            "configuration": {
-                "config_id": "MTV"
-            },
+            "configuration": "MTV",
             "default_maps": [
                 "MTV North"
             ],
@@ -4783,9 +4765,7 @@
                     "KDCA": 15
                 }
             },
-            "configuration": {
-                "config_id": "MT2"
-            },
+            "configuration": "MT2",
             "default_maps": [
                 "MTV South"
             ],

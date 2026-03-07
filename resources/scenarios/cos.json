@@ -836,9 +836,7 @@
                     "KCOS": 2
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "COS NORTH"
             ],
@@ -893,9 +891,7 @@
                     "KCOS": 2
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "COS SOUTH"
             ],

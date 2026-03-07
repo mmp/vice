@@ -46,7 +46,7 @@
             "radio_name": "Griffiss Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -87,15 +87,6 @@
             }
         },
         "center": "N043.06.43.349,W076.06.22.928",
-        "coordination_lists": [
-            {
-                "name": "GRIFFISS",
-                "id": "A",
-                "airports": [
-                    "KRME"
-                ]
-            }
-        ],
         "radar_sites": {
             "KSYR": {
                 "char": "S",
@@ -122,7 +113,7 @@
             "RKA": "RKA"
         },
         "video_map_file": "videomaps/SYR-videomaps.gob.zst",
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "SW SATS",
@@ -233,6 +224,17 @@
                     "RME D"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "GRIFFISS",
+                    "id": "A",
+                    "airports": [
+                        "KRME"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

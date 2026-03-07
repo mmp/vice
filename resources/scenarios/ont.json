@@ -2950,9 +2950,7 @@
                     "KSBD": 1
                 }
             },
-            "configuration": {
-                "config_id": "EM4"
-            },
+            "configuration": "EM4",
             "default_maps": [
                 "300S EMPB LW SCT"
             ],
@@ -3057,9 +3055,7 @@
                     "KSBD": 1
                 }
             },
-            "configuration": {
-                "config_id": "EM3"
-            },
+            "configuration": "EM3",
             "default_maps": [
                 "300S EMPB LW SCT"
             ],
@@ -3110,9 +3106,7 @@
                     "KPSP": 7
                 }
             },
-            "configuration": {
-                "config_id": "13R"
-            },
+            "configuration": "13R",
             "default_maps": [
                 "300S EMPB LW SCT"
             ],
@@ -3153,9 +3147,7 @@
                     "KPSP": 7
                 }
             },
-            "configuration": {
-                "config_id": "13R"
-            },
+            "configuration": "13R",
             "default_maps": [
                 "301S EMPB LE SCT"
             ],
@@ -3241,9 +3233,7 @@
                     "KSBD": 1
                 }
             },
-            "configuration": {
-                "config_id": "EMP"
-            },
+            "configuration": "EMP",
             "default_maps": [
                 "301S EMPB LE SCT"
             ],
@@ -3344,9 +3334,7 @@
                     "KSBD": 1
                 }
             },
-            "configuration": {
-                "config_id": "EM1"
-            },
+            "configuration": "EM1",
             "default_maps": [
                 "301S EMPB LE SCT"
             ],
@@ -3413,9 +3401,7 @@
                     "KSBD": 1
                 }
             },
-            "configuration": {
-                "config_id": "EM2"
-            },
+            "configuration": "EM2",
             "default_maps": [
                 "302S EMPB LO SCT"
             ],

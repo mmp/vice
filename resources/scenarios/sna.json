@@ -3118,9 +3118,7 @@
                     "KLAX": 15
                 }
             },
-            "configuration": {
-                "config_id": "CO4"
-            },
+            "configuration": "CO4",
             "default_maps": [
                 "400S CB LWSS SCT"
             ],
@@ -3195,9 +3193,7 @@
                     "KSNA": 9
                 }
             },
-            "configuration": {
-                "config_id": "CO3"
-            },
+            "configuration": "CO3",
             "default_maps": [
                 "401S CB LESS SCT"
             ],
@@ -3290,9 +3286,7 @@
                     "KLAX": 15
                 }
             },
-            "configuration": {
-                "config_id": "CO1"
-            },
+            "configuration": "CO1",
             "default_maps": [
                 "402S CB LWSN SCT"
             ],
@@ -3367,9 +3361,7 @@
                     "KSNA": 9
                 }
             },
-            "configuration": {
-                "config_id": "COA"
-            },
+            "configuration": "COA",
             "default_maps": [
                 "403S CB LESN SCT"
             ],
@@ -3405,9 +3397,7 @@
                     "KSNA": 9
                 }
             },
-            "configuration": {
-                "config_id": "CO2"
-            },
+            "configuration": "CO2",
             "default_maps": [
                 "400S CB LWSS SCT"
             ],

@@ -1093,9 +1093,7 @@
                     "KBAZ": 3
                 }
             },
-            "configuration": {
-                "config_id": "13R"
-            },
+            "configuration": "13R",
             "default_maps": [
                 "SAT BASE",
                 "SAT 13 SPLIT"
@@ -1205,9 +1203,7 @@
                     "KBAZ": 3
                 }
             },
-            "configuration": {
-                "config_id": "31L"
-            },
+            "configuration": "31L",
             "default_maps": [
                 "SAT BASE",
                 "SAT 31 SPLIT"
@@ -1309,9 +1305,7 @@
                     "KBAZ": 3
                 }
             },
-            "configuration": {
-                "config_id": "13R"
-            },
+            "configuration": "13R",
             "default_maps": [
                 "SAT BASE",
                 "SAT 13 SPLIT"
@@ -1417,9 +1411,7 @@
                     "KBAZ": 3
                 }
             },
-            "configuration": {
-                "config_id": "31L"
-            },
+            "configuration": "31L",
             "default_maps": [
                 "SAT BASE",
                 "SAT 31 SPLIT"

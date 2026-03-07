@@ -2172,9 +2172,7 @@
                     "KRME": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "TEST1"
             ],
@@ -2295,9 +2293,7 @@
                     "KRME": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "TEST1"
             ],

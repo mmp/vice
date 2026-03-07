@@ -9081,9 +9081,7 @@
                     "KEWR": 0
                 }
             },
-            "configuration": {
-                "config_id": "EWR"
-            },
+            "configuration": "EWR",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -9163,9 +9161,7 @@
                     "KLGA": 0
                 }
             },
-            "configuration": {
-                "config_id": "EWD"
-            },
+            "configuration": "EWD",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -9211,9 +9207,7 @@
             }
         },
         "KEWR 4L Departure": {
-            "configuration": {
-                "config_id": "EWD"
-            },
+            "configuration": "EWD",
             "arrival_runways": [
                 {
                     "airport": "KEWR",
@@ -9367,9 +9361,7 @@
                     "KEWR": 0
                 }
             },
-            "configuration": {
-                "config_id": "EWR"
-            },
+            "configuration": "EWR",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -9482,9 +9474,7 @@
                     "KLGA": 30
                 }
             },
-            "configuration": {
-                "config_id": "EWU"
-            },
+            "configuration": "EWU",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -9569,9 +9559,7 @@
                     "KLGA": 0
                 }
             },
-            "configuration": {
-                "config_id": "EWU"
-            },
+            "configuration": "EWU",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -9628,9 +9616,7 @@
                     "KEWR": 1
                 }
             },
-            "configuration": {
-                "config_id": "EWP"
-            },
+            "configuration": "EWP",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -9705,9 +9691,7 @@
                     "KLGA": 0
                 }
             },
-            "configuration": {
-                "config_id": "EWP"
-            },
+            "configuration": "EWP",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -9813,9 +9797,7 @@
                     "KLGA": 0
                 }
             },
-            "configuration": {
-                "config_id": "EWD"
-            },
+            "configuration": "EWD",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -9904,9 +9886,7 @@
                     "KLGA": 31
                 }
             },
-            "configuration": {
-                "config_id": "EWA"
-            },
+            "configuration": "EWA",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -10020,9 +10000,7 @@
                     "KLGA": 0
                 }
             },
-            "configuration": {
-                "config_id": "EWA"
-            },
+            "configuration": "EWA",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -10076,9 +10054,7 @@
                     "KEWR": 23
                 }
             },
-            "configuration": {
-                "config_id": "EWA"
-            },
+            "configuration": "EWA",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -10142,9 +10118,7 @@
                     "KTEB": 10
                 }
             },
-            "configuration": {
-                "config_id": "EWP"
-            },
+            "configuration": "EWP",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -10226,9 +10200,7 @@
                     "METRO_NE"
                 ]
             },
-            "configuration": {
-                "config_id": "EWP"
-            },
+            "configuration": "EWP",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -10278,9 +10250,7 @@
                     "KEWR": 15
                 }
             },
-            "configuration": {
-                "config_id": "EWA"
-            },
+            "configuration": "EWA",
             "default_maps": [
                 "EWR ARR/DEP"
             ],
@@ -10372,9 +10342,7 @@
                     "FINAL_VECTORS_4"
                 ]
             },
-            "configuration": {
-                "config_id": "EWD"
-            },
+            "configuration": "EWD",
             "default_maps": [
                 "EWR ARR/DEP"
             ],

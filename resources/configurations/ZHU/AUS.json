@@ -38,7 +38,7 @@
             "scope_char": "T"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -94,7 +94,7 @@
                 }
             ]
         },
-        "controller_configs": {
+        "controllers": {
             "1W": {
                 "flight_following_airspace": [
                     {
@@ -151,23 +151,6 @@
             "SJT": {},
             "ZENZI": {}
         },
-        "coordination_lists": [
-            {
-                "name": "SAN MARCOS",
-                "id": "A",
-                "airports": [
-                    "KHYI"
-                ]
-            },
-            {
-                "name": "GEORGETOWN",
-                "id": "B",
-                "airports": [
-                    "KGTU"
-                ]
-            }
-        ],
-        "force_ql_self": true,
         "video_map_file": "videomaps/ZHU-videomaps.gob.zst",
         "airspace_awareness": [
             {
@@ -264,7 +247,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "AUS BASE",
@@ -288,6 +271,27 @@
                     "AUS VFR"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "SAN MARCOS",
+                    "id": "A",
+                    "airports": [
+                        "KHYI"
+                    ]
+                },
+                {
+                    "name": "GEORGETOWN",
+                    "id": "B",
+                    "airports": [
+                        "KGTU"
+                    ]
+                }
+            ]
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

@@ -701,9 +701,7 @@
                     "KINT": 3
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "RUNWAY 5L/R BASE MAP"
             ],
@@ -766,9 +764,7 @@
                     "KINT": 3
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "RUNWAY 23L/R BASE MAP"
             ],

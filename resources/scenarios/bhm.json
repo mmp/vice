@@ -795,9 +795,7 @@
                     "KBHM": 6
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "BHM MAIN"
             ],
@@ -856,9 +854,7 @@
                     "KBHM": 6
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "BHM MAIN"
             ],

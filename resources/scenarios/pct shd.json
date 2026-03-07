@@ -6749,9 +6749,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "30X"
-            },
+            "configuration": "30X",
             "departure_runways": [
                 {
                     "airport": "KIAD",
@@ -6852,9 +6850,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "SH1"
-            },
+            "configuration": "SH1",
             "departure_runways": [
                 {
                     "airport": "KIAD",
@@ -6943,9 +6939,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "SH4"
-            },
+            "configuration": "SH4",
             "departure_runways": [
                 {
                     "airport": "KIAD",
@@ -7033,9 +7027,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "SH4"
-            },
+            "configuration": "SH4",
             "departure_runways": [
                 {
                     "airport": "KIAD",
@@ -7124,9 +7116,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "12X"
-            },
+            "configuration": "12X",
             "departure_runways": [
                 {
                     "airport": "KIAD",
@@ -7207,9 +7197,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "30X"
-            },
+            "configuration": "30X",
             "departure_runways": [
                 {
                     "airport": "KIAD",
@@ -7265,9 +7253,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "SH3"
-            },
+            "configuration": "SH3",
             "wind": {
                 "direction": "340-40"
             },
@@ -7307,9 +7293,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "SH2"
-            },
+            "configuration": "SH2",
             "wind": {
                 "direction": "340-40"
             },
@@ -7353,9 +7337,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "SHD"
-            },
+            "configuration": "SHD",
             "wind": {
                 "direction": "160-220"
             },
@@ -7399,9 +7381,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "13X"
-            },
+            "configuration": "13X",
             "wind": {
                 "direction": "160-220"
             },

@@ -2598,9 +2598,7 @@
                     "KOMA": 4
                 }
             },
-            "configuration": {
-                "config_id": "OMA"
-            },
+            "configuration": "OMA",
             "default_maps": [
                 "R90 001 MAIN",
                 "R90 004 RWY 36",
@@ -2813,9 +2811,7 @@
                     "KOMA": 4
                 }
             },
-            "configuration": {
-                "config_id": "OM1"
-            },
+            "configuration": "OM1",
             "default_maps": [
                 "R90 001 MAIN",
                 "R90 003 S FLOW",
@@ -3014,9 +3010,7 @@
                     "KLNK": 2
                 }
             },
-            "configuration": {
-                "config_id": "LNK"
-            },
+            "configuration": "LNK",
             "default_maps": [
                 "R90 001 MAIN",
                 "R90 004 RWY 36",
@@ -3131,9 +3125,7 @@
                     "KLNK": 2
                 }
             },
-            "configuration": {
-                "config_id": "LNK"
-            },
+            "configuration": "LNK",
             "default_maps": [
                 "R90 001 MAIN",
                 "R90 004 RWY 36",
@@ -3321,9 +3313,7 @@
                     "KOFF": 1
                 }
             },
-            "configuration": {
-                "config_id": "90X"
-            },
+            "configuration": "90X",
             "default_maps": [
                 "R90 001 MAIN",
                 "R90 004 RWY 36",
@@ -3733,9 +3723,7 @@
                     "KOFF": 1
                 }
             },
-            "configuration": {
-                "config_id": "R90"
-            },
+            "configuration": "R90",
             "default_maps": [
                 "R90 001 MAIN",
                 "R90 004 RWY 36",
@@ -4087,9 +4075,7 @@
                     "KOFF": 1
                 }
             },
-            "configuration": {
-                "config_id": "OFF"
-            },
+            "configuration": "OFF",
             "default_maps": [
                 "R90 001 MAIN",
                 "R90 004 RWY 36",
@@ -4213,9 +4199,7 @@
                     "KOFF": 1
                 }
             },
-            "configuration": {
-                "config_id": "OFF"
-            },
+            "configuration": "OFF",
             "default_maps": [
                 "R90 001 MAIN",
                 "R90 004 RWY 36",

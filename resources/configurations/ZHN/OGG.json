@@ -16,7 +16,7 @@
             "radio_name": "Maui Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "CF1": {
                 "inbound_assignments": {
@@ -52,7 +52,7 @@
             }
         },
         "center": "OGG",
-        "controller_configs": {
+        "controllers": {
             "1S": {
                 "flight_following_airspace": [
                     {
@@ -319,7 +319,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "OGG TRACON",

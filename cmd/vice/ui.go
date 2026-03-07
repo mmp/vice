@@ -9,9 +9,11 @@ import (
 	_ "embed"
 	"fmt"
 	"image/png"
+	gomath "math"
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/mmp/vice/client"
@@ -61,6 +63,12 @@ var (
 		pttCapture                bool      // capturing new PTT key assignment
 		pttPressTime              time.Time // for latency logging
 		audioCaptureWarningLogged bool      // only log audio capture failure once
+
+		// Test PTT state
+		testPTTActive   bool
+		testPTTLevelMu  sync.Mutex
+		testPTTLevels   [6]float32 // ring buffer of ~50ms RMS values
+		testPTTLevelIdx int
 	}
 
 	//go:embed icons/tower-256x256.png
@@ -74,6 +82,10 @@ func imguiInit() *imgui.Context {
 	// Enable multi-viewport support so imgui windows can float outside the main window.
 	io := imgui.CurrentIO()
 	io.SetConfigFlags(io.ConfigFlags() | imgui.ConfigFlagsViewportsEnable)
+
+	// Prevent subwindows from merging back into the main viewport when
+	// they overlap it; they are always separate OS windows.
+	io.SetConfigViewportsNoAutoMerge(true)
 
 	// Disable the nav windowing popup (Ctrl+Tab/Cmd+Tab window switcher) by
 	// clearing the shortcut keys that trigger it.
@@ -875,6 +887,73 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 			imgui.EndCombo()
 		}
 
+		// Test PTT button
+		if ui.testPTTActive {
+			imgui.PushStyleColorVec4(imgui.ColButton, imgui.Vec4{0.8, 0.2, 0.2, 1})
+		}
+		imgui.Button("Test PTT (Hold)")
+		if ui.testPTTActive {
+			imgui.PopStyleColor()
+		}
+
+		// Handle Test PTT press (click starts, mouse-up ends)
+		if imgui.IsItemClicked() && !ui.testPTTActive && !ui.pttRecording {
+			ui.testPTTActive = true
+			ui.testPTTLevelMu.Lock()
+			ui.testPTTLevels = [6]float32{}
+			ui.testPTTLevelIdx = 0
+			ui.testPTTLevelMu.Unlock()
+
+			if err := p.StartAudioRecordingWithDevice(config.SelectedMicrophone); err != nil {
+				lg.Errorf("Test PTT: failed to start recording: %v", err)
+				ui.testPTTActive = false
+			} else {
+				p.SetAudioStreamCallback(func(samples []int16) {
+					// Update level meter
+					ui.testPTTLevelMu.Lock()
+					const windowSize = 800 // ~50ms at 16kHz
+					for offset := 0; offset < len(samples); offset += windowSize {
+						end := offset + windowSize
+						if end > len(samples) {
+							end = len(samples)
+						}
+						window := samples[offset:end]
+						var sumSq float64
+						for _, s := range window {
+							f := float64(s) / 32768.0
+							sumSq += f * f
+						}
+						rms := float32(gomath.Sqrt(sumSq / float64(len(window))))
+						ui.testPTTLevels[ui.testPTTLevelIdx%len(ui.testPTTLevels)] = rms
+						ui.testPTTLevelIdx++
+					}
+					ui.testPTTLevelMu.Unlock()
+
+					// Resample and play back in real time
+					resampled := resample16kTo44k(samples)
+					p.AppendSpeechPCM(resampled)
+				})
+			}
+		}
+
+		// Handle Test PTT release (any mouse-up ends it)
+		if ui.testPTTActive && !imgui.IsMouseDown(0) {
+			ui.testPTTActive = false
+			p.SetAudioStreamCallback(nil)
+
+			if p.IsAudioRecording() {
+				p.StopAudioRecording()
+			}
+		}
+
+		// Sound meter and recording indicator (shown while Test PTT is held)
+		if ui.testPTTActive {
+			imgui.SameLine()
+			uiDrawAudioMeter()
+			imgui.SameLine()
+			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
+		}
+
 		// Whisper model selection dropdown
 		if modelName := client.GetWhisperModelName(); modelName != "" {
 			imgui.Text("Model:")
@@ -916,9 +995,9 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 			}
 		}
 
-		if p.IsAudioRecording() {
+		if p.IsAudioRecording() && !ui.testPTTActive {
 			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
-		} else {
+		} else if !p.IsAudioRecording() {
 			if transcription := c.GetLastTranscription(); transcription != "" {
 				durationMs := c.GetLastWhisperDurationMs()
 				imgui.Text(fmt.Sprintf("Last transcription (%dms):", durationMs))
@@ -1021,7 +1100,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 	}
 
 	// Start on initial press (ignore repeats by checking our own flags)
-	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling && !ui.pttMicFailed {
+	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling && !ui.pttMicFailed && !ui.testPTTActive {
 		if p.IsPlayingSpeech() {
 			// Audio is playing - garble it instead of recording
 			p.SetSpeechGarbled(true)
@@ -1097,4 +1176,100 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			lg.Infof("Push-to-talk: Stopped recording, processing streaming result...")
 		}
 	}
+}
+
+// uiDrawAudioMeter draws a horizontal audio level meter using the current
+// test PTT level data. During recording, levels come from the live stream
+// callback. During playback, levels are read from pre-computed data
+// advancing in real time.
+func uiDrawAudioMeter() {
+	ui.testPTTLevelMu.Lock()
+	var currentRMS, peakRMS float32
+	if ui.testPTTLevelIdx > 0 {
+		currentRMS = ui.testPTTLevels[(ui.testPTTLevelIdx-1)%len(ui.testPTTLevels)]
+		// Peak: max of last 5 entries (~250ms at 50ms per entry)
+		count := min(ui.testPTTLevelIdx, 5)
+		for i := range count {
+			rms := ui.testPTTLevels[(ui.testPTTLevelIdx-1-i)%len(ui.testPTTLevels)]
+			if rms > peakRMS {
+				peakRMS = rms
+			}
+		}
+	}
+	ui.testPTTLevelMu.Unlock()
+
+	currentNorm := rmsToNormalized(currentRMS)
+	peakNorm := rmsToNormalized(peakRMS)
+
+	meterWidth := float32(200)
+	meterHeight := float32(14)
+	cursor := imgui.CursorScreenPos()
+	// Vertically center the meter within the line
+	yOffset := (imgui.FrameHeight() - meterHeight) / 2
+	cursor.Y += yOffset
+	drawList := imgui.WindowDrawList()
+
+	pMax := imgui.Vec2{X: cursor.X + meterWidth, Y: cursor.Y + meterHeight}
+
+	// Background
+	drawList.AddRectFilled(cursor, pMax,
+		imgui.ColorU32Vec4(imgui.Vec4{0.15, 0.15, 0.15, 1}))
+
+	// Current level bar (green)
+	if currentNorm > 0 {
+		drawList.AddRectFilled(cursor,
+			imgui.Vec2{X: cursor.X + meterWidth*currentNorm, Y: cursor.Y + meterHeight},
+			imgui.ColorU32Vec4(imgui.Vec4{0.2, 0.8, 0.2, 1}))
+	}
+
+	// Peak marker (yellow vertical line)
+	if peakNorm > 0 {
+		peakX := cursor.X + meterWidth*peakNorm
+		drawList.AddLineV(
+			imgui.Vec2{X: peakX, Y: cursor.Y},
+			imgui.Vec2{X: peakX, Y: cursor.Y + meterHeight},
+			imgui.ColorU32Vec4(imgui.Vec4{1, 1, 0, 1}), 2)
+	}
+
+	// Border
+	drawList.AddRect(cursor, pMax,
+		imgui.ColorU32Vec4(imgui.Vec4{0.4, 0.4, 0.4, 1}))
+
+	imgui.Dummy(imgui.Vec2{X: meterWidth, Y: meterHeight})
+}
+
+// rmsToNormalized converts an RMS amplitude (0-1 range) to a normalized
+// 0-1 value using a dB scale, mapping -60dB..0dB to 0..1.
+func rmsToNormalized(rms float32) float32 {
+	if rms < 1e-6 {
+		return 0
+	}
+	db := 20 * gomath.Log10(float64(rms))
+	normalized := float32((db + 60) / 60)
+	if normalized < 0 {
+		return 0
+	}
+	if normalized > 1 {
+		return 1
+	}
+	return normalized
+}
+
+// resample16kTo44k resamples int16 PCM audio from 16kHz to 44.1kHz using
+// linear interpolation.
+func resample16kTo44k(input []int16) []int16 {
+	ratio := float64(platform.AudioSampleRate) / float64(platform.AudioInputSampleRate)
+	outputLen := int(float64(len(input)) * ratio)
+	output := make([]int16, outputLen)
+	for i := range output {
+		srcPos := float64(i) / ratio
+		idx := int(srcPos)
+		frac := srcPos - float64(idx)
+		if idx+1 < len(input) {
+			output[i] = int16(float64(input[idx])*(1-frac) + float64(input[idx+1])*frac)
+		} else if idx < len(input) {
+			output[i] = input[idx]
+		}
+	}
+	return output
 }

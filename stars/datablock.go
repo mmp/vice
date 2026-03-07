@@ -570,7 +570,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 			adapt := ctx.FacilityAdaptation
 			falt := func() string {
 				alt := sfp.RequestedAltitude
-				if adapt.AllowLongScratchpad {
+				if adapt.Datablocks.AllowLongScratchpad {
 					return fmt.Sprintf("%03d", alt/100)
 				} else {
 					return fmt.Sprintf("%02d", alt/1000)
@@ -611,15 +611,15 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 					sp1 = sfp.ExitFix
 				}
 			} else {
-				if adapt.Scratchpad1.DisplayExitFix {
+				if adapt.Datablocks.Scratchpad1.DisplayExitFix {
 					sp1 = shortExit()
-				} else if adapt.Scratchpad1.DisplayExitFix1 {
+				} else if adapt.Datablocks.Scratchpad1.DisplayExitFix1 {
 					sp1 = abbrevExit()
-				} else if adapt.Scratchpad1.DisplayExitGate {
+				} else if adapt.Datablocks.Scratchpad1.DisplayExitGate {
 					if ex := abbrevExit(); ex != "" {
 						sp1 = ex + falt()
 					}
-				} else if adapt.Scratchpad1.DisplayAltExitGate {
+				} else if adapt.Datablocks.Scratchpad1.DisplayAltExitGate {
 					if ex := abbrevExit(); ex != "" {
 						sp1 = falt() + ex
 					}
@@ -717,7 +717,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 		// Combined with:
 		// Field 2: receiving TCP if being handed off or + if sp2 is shown.
 		// TODO: * if field 1 is showing pilot-reported altitude
-		field1Length := util.Select(fa.AllowLongScratchpad, 4, 3)
+		field1Length := util.Select(fa.Datablocks.AllowLongScratchpad, 4, 3)
 		fmt1 := func(s string) string {
 			for len([]rune(s)) < field1Length {
 				s += " "
@@ -734,7 +734,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 			formatDBText(db.field12[1][:], fmt1(sp1)+handoffId, color, false)
 			f12Idx++
 		}
-		if fa.PDB.ShowScratchpad2 && sfp.SecondaryScratchpad != "" {
+		if fa.Datablocks.PDB.ShowScratchpad2 && sfp.SecondaryScratchpad != "" {
 			formatDBText(db.field12[f12Idx][:], fmt1(sfp.SecondaryScratchpad)+"+", color, false)
 		}
 
@@ -747,19 +747,19 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 			rulesCategory = "E"
 		}
 		cwt := util.Select(sfp.CWTCategory != "", sfp.CWTCategory, " ")
-		if fa.PDB.SplitGSAndCWT {
+		if fa.Datablocks.PDB.SplitGSAndCWT {
 			// [GS, CWT] timesliced
 			formatDBText(db.field3[0][:], groundspeed, color, false)
 			formatDBText(db.field3[1][:], rulesCategory+cwt, color, false)
 		} else {
-			if fa.PDB.HideGroundspeed {
+			if fa.Datablocks.PDB.HideGroundspeed {
 				// [CWT]
 				formatDBText(db.field3[0][:], rulesCategory+cwt, color, false)
 			} else {
 				// [GS CWT]
 				formatDBText(db.field3[0][:], groundspeed+rulesCategory+cwt, color, false)
 			}
-			if fa.PDB.ShowAircraftType {
+			if fa.Datablocks.PDB.ShowAircraftType {
 				// [ACTYPE]
 				formatDBText(db.field3[1][:], actype, color, false)
 			}
@@ -826,7 +826,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 		// Fields 3 and 4: 3 is altitude plus possibly other stuff; 4 is
 		// special indicators, possible associated with 3, so they're a
 		// single field
-		field3Length := util.Select(fa.AllowLongScratchpad, 4, 3)
+		field3Length := util.Select(fa.Datablocks.AllowLongScratchpad, 4, 3)
 		fmt3 := func(s string) string {
 			for len([]rune(s)) < field3Length {
 				s += " "
@@ -848,9 +848,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 			formatDBText(db.field34[idx34][:], fmt3(sp1)+handoffId, color, false)
 			idx34++
 		}
-		if handoffTCP != "" && !fa.DisplayHOFacilityOnly {
+		if handoffTCP != "" && !fa.Datablocks.FDB.DisplayFacilityOnly {
 			formatDBText(db.field34[idx34][:], fmt3(handoffTCP)+handoffId, color, false)
-		} else if sfp.SecondaryScratchpad != "" && !ctx.FacilityAdaptation.FDB.Scratchpad2OnLine3 { // don't show secondary if we're showing a center
+		} else if sfp.SecondaryScratchpad != "" && !ctx.FacilityAdaptation.Datablocks.FDB.Scratchpad2OnLine3 { // don't show secondary if we're showing a center
 			// TODO: confirm no handoffId here
 			formatDBText(db.field34[idx34][:], fmt3(sfp.SecondaryScratchpad)+"+", color, false)
 		}
@@ -944,7 +944,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 		}
 
 		// Field 7: assigned altitude, assigned beacon if mismatch, secondary scratchpad on line 3 if enabled
-		if ctx.FacilityAdaptation.FDB.Scratchpad2OnLine3 {
+		if ctx.FacilityAdaptation.Datablocks.FDB.Scratchpad2OnLine3 {
 			altSet := sfp.AssignedAltitude != 0
 			sp2 := sfp.SecondaryScratchpad
 			sp2Set := sp2 != ""
@@ -1423,9 +1423,9 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtyp
 	} else if dbtype == PartialDatablock {
 		fa := ctx.FacilityAdaptation
 
-		if sfp.SPCOverride != "" && fa.PDB.DisplayCustomSPCs {
+		if sfp.SPCOverride != "" && fa.Datablocks.PDB.DisplayCustomSPCs {
 			// We only care about adapted alerts
-			if slices.Contains(fa.CustomSPCs, sfp.SPCOverride) {
+			if slices.Contains(fa.Datablocks.CustomSPCs, sfp.SPCOverride) {
 				addAlert(sfp.SPCOverride, !state.SPCAcknowledged, false)
 			}
 		}

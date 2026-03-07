@@ -1153,9 +1153,7 @@
                     "KSLC": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KSLC",
@@ -1205,9 +1203,7 @@
                     "KSLC": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KSLC",

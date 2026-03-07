@@ -57,7 +57,7 @@
             "field_e_format": "OneLetterAndSubset"
         }
     ],
-    "config": {
+    "facility_adaptations": {
         "configurations": {}
     }
 }

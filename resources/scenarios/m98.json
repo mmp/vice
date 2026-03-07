@@ -11506,9 +11506,7 @@
                     "KMSP": 1
                 }
             },
-            "configuration": {
-                "config_id": "12S"
-            },
+            "configuration": "12S",
             "default_maps": [
                 "M98 204 12 B"
             ],
@@ -11568,9 +11566,7 @@
                     "KMSP": 1
                 }
             },
-            "configuration": {
-                "config_id": "30S"
-            },
+            "configuration": "30S",
             "default_maps": [
                 "M98 203 30 B"
             ],
@@ -11630,9 +11626,7 @@
                     "KMSP": 1
                 }
             },
-            "configuration": {
-                "config_id": "117"
-            },
+            "configuration": "117",
             "default_maps": [
                 "M98 227 12-17 B"
             ],
@@ -11697,9 +11691,7 @@
                     "KMSP": 1
                 }
             },
-            "configuration": {
-                "config_id": "317"
-            },
+            "configuration": "317",
             "default_maps": [
                 "M98 229 30-17 B"
             ],
@@ -11760,9 +11752,7 @@
                     "KMSP": 1
                 }
             },
-            "configuration": {
-                "config_id": "135"
-            },
+            "configuration": "135",
             "default_maps": [
                 "M98 223 35-12 B"
             ],
@@ -11826,9 +11816,7 @@
                     "KMSP": 1
                 }
             },
-            "configuration": {
-                "config_id": "335"
-            },
+            "configuration": "335",
             "default_maps": [
                 "M98 231 30-35 B"
             ],

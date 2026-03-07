@@ -3874,9 +3874,7 @@
                     "KMFD": 2
                 }
             },
-            "configuration": {
-                "config_id": "KC4"
-            },
+            "configuration": "KC4",
             "default_maps": [
                 "CLE-003 (RY6)"
             ],
@@ -3937,9 +3935,7 @@
                     "KCLE": 10
                 }
             },
-            "configuration": {
-                "config_id": "KC3"
-            },
+            "configuration": "KC3",
             "default_maps": [
                 "CLE-001 (RY24)"
             ],
@@ -3973,9 +3969,7 @@
                     "KCLE": 10
                 }
             },
-            "configuration": {
-                "config_id": "KC1"
-            },
+            "configuration": "KC1",
             "default_maps": [
                 "CLE-001 (RY24)"
             ],
@@ -4009,9 +4003,7 @@
                     "KCLE": 10
                 }
             },
-            "configuration": {
-                "config_id": "KCL"
-            },
+            "configuration": "KCL",
             "default_maps": [
                 "CLE-003 (RY6)"
             ],
@@ -4045,9 +4037,7 @@
                     "KCLE": 10
                 }
             },
-            "configuration": {
-                "config_id": "KC2"
-            },
+            "configuration": "KC2",
             "default_maps": [
                 "CLE-003 (RY6)"
             ],
@@ -4136,9 +4126,7 @@
                     "KMFD": 2
                 }
             },
-            "configuration": {
-                "config_id": "KC5"
-            },
+            "configuration": "KC5",
             "default_maps": [
                 "CLE-001 (RY24)"
             ],

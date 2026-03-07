@@ -3175,9 +3175,7 @@
                     "KHHR": 4
                 }
             },
-            "configuration": {
-                "config_id": "LA1"
-            },
+            "configuration": "LA1",
             "default_maps": [
                 "201S LAAB LE SCT"
             ],
@@ -3219,9 +3217,7 @@
                     "KLAX": 5
                 }
             },
-            "configuration": {
-                "config_id": "LA5"
-            },
+            "configuration": "LA5",
             "default_maps": [
                 "200S LAAB LW SCT"
             ],
@@ -3262,9 +3258,7 @@
                     "KHHR": 3
                 }
             },
-            "configuration": {
-                "config_id": "LA3"
-            },
+            "configuration": "LA3",
             "default_maps": [
                 "202S LAAB LO SCT"
             ],
@@ -3293,9 +3287,7 @@
                     "KLAX": 5
                 }
             },
-            "configuration": {
-                "config_id": "LA2"
-            },
+            "configuration": "LA2",
             "default_maps": [
                 "202S LAAB LO SCT"
             ],
@@ -3331,9 +3323,7 @@
                     "KHHR": 2
                 }
             },
-            "configuration": {
-                "config_id": "LA4"
-            },
+            "configuration": "LA4",
             "default_maps": [
                 "200S LAAB LW SCT"
             ],
@@ -3368,9 +3358,7 @@
                     "KLAX": 10
                 }
             },
-            "configuration": {
-                "config_id": "LAX"
-            },
+            "configuration": "LAX",
             "default_maps": [
                 "201S LAAB LE SCT"
             ],

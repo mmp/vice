@@ -1165,9 +1165,7 @@
                     "KAGC": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "PIT-001 (WEST FLOW)"
             ],
@@ -1248,9 +1246,7 @@
                     "KAGC": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "PIT-001 (WEST FLOW)"
             ],
@@ -1318,9 +1314,7 @@
                     "KPIT": 9
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "PIT-002 (EAST FLOW)"
             ],

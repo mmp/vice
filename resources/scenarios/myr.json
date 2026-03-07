@@ -869,9 +869,7 @@
                     "KCRE": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "BASE MAP"
             ],
@@ -943,9 +941,7 @@
                     "KCRE": 1
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "BASE MAP"
             ],

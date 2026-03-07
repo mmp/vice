@@ -36,7 +36,7 @@
             "radio_name": "Quonset Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "05X": {
                 "inbound_assignments": {
@@ -129,9 +129,6 @@
                 }
             }
         },
-        "altimeters": [
-            "KPVD"
-        ],
         "center": "N041.43.29.033,W071.25.35.559",
         "radar_sites": {
             "PVD": {
@@ -166,41 +163,11 @@
                 }
             ]
         },
-        "allow_long_scratchpad": true,
-        "pdb": {
-            "hide_gs": true
-        },
-        "force_ql_self": true,
-        "display_handoff_facility_only": false,
-        "handoff_sector_display_duration": 5,
         "scratchpads": {
             "PUT": "PUT",
             "PVD_PUT": "PUT",
             "JUMPR": "7TN"
         },
-        "coordination_lists": [
-            {
-                "name": ".     PVD D DEP",
-                "id": "D",
-                "airports": [
-                    "KPVD"
-                ]
-            },
-            {
-                "name": ".     EWB DEP",
-                "id": "N",
-                "airports": [
-                    "KEWB"
-                ]
-            },
-            {
-                "name": ".     OQU DEP",
-                "id": "Q",
-                "airports": [
-                    "KOQU"
-                ]
-            }
-        ],
         "significant_points": {
             "PUT": {},
             "JUMPR": {
@@ -211,7 +178,7 @@
             }
         },
         "video_map_file": "videomaps/PVD-videomaps.gob.zst",
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "RVMPVD005S",
@@ -250,6 +217,47 @@
                     "RVMPVD012S",
                     "RVMPVD024S",
                     "RVMPVD028S"
+                ]
+            }
+        },
+        "datablocks": {
+            "pdb": {
+                "hide_gs": true
+            },
+            "fdb": {
+                "display_facility_only": false,
+                "sector_display_duration": 5
+            },
+            "allow_long_scratchpad": true,
+            "force_ql_self": true
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": ".     PVD D DEP",
+                    "id": "D",
+                    "airports": [
+                        "KPVD"
+                    ]
+                },
+                {
+                    "name": ".     EWB DEP",
+                    "id": "N",
+                    "airports": [
+                        "KEWB"
+                    ]
+                },
+                {
+                    "name": ".     OQU DEP",
+                    "id": "Q",
+                    "airports": [
+                        "KOQU"
+                    ]
+                }
+            ],
+            "ssa": {
+                "altimeters": [
+                    "KPVD"
                 ]
             }
         }

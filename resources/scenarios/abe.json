@@ -762,9 +762,7 @@
                     "KABE": 14
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "ABE-101 (MAP 5)"
             ],
@@ -803,9 +801,7 @@
                     "KABE": 14
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "ABE-101 (MAP 5)"
             ],

@@ -4141,9 +4141,7 @@
                     "overflights": 4
                 }
             },
-            "configuration": {
-                "config_id": "DE1"
-            },
+            "configuration": "DE1",
             "default_maps": [
                 "603S DB LE SCT"
             ],
@@ -4217,9 +4215,7 @@
                     "overflights": 4
                 }
             },
-            "configuration": {
-                "config_id": "DEL"
-            },
+            "configuration": "DEL",
             "default_maps": [
                 "603S DB LE SCT"
             ],
@@ -4283,9 +4279,7 @@
                     "overflights": 4
                 }
             },
-            "configuration": {
-                "config_id": "DE3"
-            },
+            "configuration": "DE3",
             "default_maps": [
                 "600S DB LW SCT"
             ],
@@ -4362,9 +4356,7 @@
                     "overflights": 4
                 }
             },
-            "configuration": {
-                "config_id": "DE2"
-            },
+            "configuration": "DE2",
             "default_maps": [
                 "602S DB LWSN SCT"
             ],
@@ -4412,9 +4404,7 @@
                 }
             },
             "vfr_rate_scale": 0.3,
-            "configuration": {
-                "config_id": "DE4"
-            },
+            "configuration": "DE4",
             "default_maps": [
                 "601S DB LO SCT"
             ],

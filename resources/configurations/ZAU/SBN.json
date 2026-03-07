@@ -39,7 +39,7 @@
             "scope_char": "1"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "SBN": {
                 "inbound_assignments": {
@@ -145,7 +145,7 @@
                 "receiving_controller": "C35"
             }
         ],
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "SBN MVA",

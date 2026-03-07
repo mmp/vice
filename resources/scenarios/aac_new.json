@@ -8351,9 +8351,7 @@
                     "KAAC": 2
                 }
             },
-            "configuration": {
-                "config_id": "WES"
-            },
+            "configuration": "WES",
             "default_maps": [
                 "BASE"
             ],
@@ -8437,9 +8435,7 @@
                     "KAAC": 10
                 }
             },
-            "configuration": {
-                "config_id": "CTO"
-            },
+            "configuration": "CTO",
             "default_maps": [
                 "BASE",
                 "STARS"
@@ -8466,9 +8462,7 @@
                     "KAAC": 10
                 }
             },
-            "configuration": {
-                "config_id": "3XX"
-            },
+            "configuration": "3XX",
             "default_maps": [
                 "BASE",
                 "STARS"
@@ -8498,9 +8492,7 @@
                     "KAAC": 3
                 }
             },
-            "configuration": {
-                "config_id": "4XX"
-            },
+            "configuration": "4XX",
             "default_maps": [
                 "BASE",
                 "STARS"
@@ -8527,9 +8519,7 @@
                     "KAAC": 11
                 }
             },
-            "configuration": {
-                "config_id": "6XX"
-            },
+            "configuration": "6XX",
             "default_maps": [
                 "BASE",
                 "STARS"
@@ -8592,9 +8582,7 @@
                     "KAAC": 0
                 }
             },
-            "configuration": {
-                "config_id": "CWT"
-            },
+            "configuration": "CWT",
             "default_maps": [
                 "BASE",
                 "STARS"
@@ -8624,9 +8612,7 @@
                     "KAAC": 0
                 }
             },
-            "configuration": {
-                "config_id": "NOR"
-            },
+            "configuration": "NOR",
             "default_maps": [
                 "BASE",
                 "STARS"
@@ -8662,9 +8648,7 @@
                     "4Y3": 25
                 }
             },
-            "configuration": {
-                "config_id": "SCA"
-            },
+            "configuration": "SCA",
             "default_maps": [
                 "BASE",
                 "STARS"

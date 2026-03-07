@@ -21,7 +21,7 @@
             "radio_name": "Charleston Approach"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -63,15 +63,6 @@
                 }
             ]
         },
-        "coordination_lists": [
-            {
-                "name": ".    JZI",
-                "id": "J",
-                "airports": [
-                    "KJZI"
-                ]
-            }
-        ],
         "scratchpads": {
             "GIPPL": "LGR",
             "LGRHD": "LGR",
@@ -158,7 +149,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "CHS SHELF",
@@ -189,6 +180,17 @@
                     "JZI FINALS"
                 ]
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": ".    JZI",
+                    "id": "J",
+                    "airports": [
+                        "KJZI"
+                    ]
+                }
+            ]
         }
     },
     "handoff_ids": [

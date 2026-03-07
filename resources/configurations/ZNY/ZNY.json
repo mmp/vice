@@ -3,82 +3,82 @@
         "08": {
             "callsign": "ZNY 08 BRNAN",
             "frequency": 124775,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "09": {
             "callsign": "ZNY 09 Westminster",
             "frequency": 134325,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "10": {
             "callsign": "ZNY 10 Harrisburg",
             "frequency": 133475,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "25": {
             "callsign": "ZNY 25 Modena",
             "frequency": 135450,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "26": {
             "callsign": "ZNY 26 Lancaster",
             "frequency": 120025,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "27": {
             "callsign": "ZNY 27 Middletown",
             "frequency": 120025,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "34": {
             "callsign": "ZNY 34 Elmira",
             "frequency": 132175,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "35": {
             "callsign": "ZNY 35 Huguenot",
             "frequency": 132600,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "36": {
             "callsign": "ZNY 36 Sparta",
             "frequency": 133150,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "39": {
             "callsign": "ZNY 39 PARKE",
             "frequency": 132100,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "42": {
             "callsign": "ZNY 42 East Texas",
             "frequency": 127175,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "49": {
             "callsign": "ZNY 49 Stony Fork",
             "frequency": 121320,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "50": {
             "callsign": "ZNY 50 Binghamton",
             "frequency": 133350,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "51": {
             "callsign": "ZNY 51 Lake Henry",
             "frequency": 134450,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "55": {
             "callsign": "ZNY 55 Yardley",
             "frequency": 134600,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "56": {
             "callsign": "ZNY 56 Kennedy",
             "frequency": 125325,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "57": {
             "callsign": "ZNY 57 TMU",
@@ -98,27 +98,27 @@
         "68": {
             "callsign": "ZNY 68 DIXIE",
             "frequency": 132100,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "72": {
             "callsign": "ZNY 72 Selinsgrove",
             "frequency": 127725,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "73": {
             "callsign": "ZNY 73 Philpsburg",
             "frequency": 132875,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "74": {
             "callsign": "ZNY 74 Broadway",
             "frequency": 132150,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "75": {
             "callsign": "ZNY 75 Milton",
             "frequency": 128570,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "80": {
             "callsign": "ZNY 80 COCOA",
@@ -153,17 +153,17 @@
         "91": {
             "callsign": "ZNY 91 Williamsport",
             "frequency": 134800,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "92": {
             "callsign": "ZNY 92 Pottstown",
             "frequency": 124625,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "93": {
             "callsign": "ZNY 93 Swissdale",
             "frequency": 123625,
-            "radio_name": "New York center"
+            "radio_name": "New York Center"
         },
         "99": {
             "callsign": "ZNY 99 Guard",
@@ -171,9 +171,16 @@
             "radio_name": "ZNY Guard"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
+                "inbound_assignments": {},
+                "departure_assignments": {},
+                "default_consolidation": {
+                    "56": []
+                }
+            },
+            "ZNA": {
                 "inbound_assignments": {},
                 "departure_assignments": {},
                 "default_consolidation": {
@@ -202,10 +209,132 @@
                 "default_consolidation": {
                     "72": []
                 }
+            },
+            "N42": {
+                "inbound_assignments": {
+                    "TRISH4 (42)": "42",
+                    "CLIPR3 (NELIE 42)": "42",
+                    "HYPER9 (FILGA)": "42",
+                    "HYPER9 (GANDE)": "42",
+                    "Overflights": "42"
+                },
+                "default_consolidation": {
+                    "42": []
+                }
+            },
+            "425": {
+                "inbound_assignments": {
+                    "TRISH4 (42)": "42",
+                    "CLIPR3 (BIGGY)": "55",
+                    "CLIPR3 (NELIE 42)": "42",
+                    "HYPER9 (RBV - 55)": "55",
+                    "HYPER9 (FILGA)": "42",
+                    "HYPER9 (GANDE)": "42",
+                    "Overflights": "42"
+                },
+                "default_consolidation": {
+                    "55": ["42"]
+                }
+            },
+            "N56": {
+                "inbound_assignments": {
+
+                    "ROBUC3 (RBV)": "56",
+                    "ROBUC3 (Q133)": "56",
+                    "DPK3 (Q419)": "56",
+                    "DPK3 (Q481)": "56"
+                },
+                "default_consolidation": {
+                    "56": []
+                }
+            },
+            "N55": {
+                "inbound_assignments": {
+
+                    "CLIPR3 (NELIE)": "55",
+                    "CLIPR3 (BIGGY)": "55",
+                    "TRISH4": "55",
+                    "HYPER9 (RBV - 55)": "55"
+                },
+                "default_consolidation": {
+                    "55": []
+                }
+            },
+            "N39": {
+                "inbound_assignments": {
+                    "HYPER9 (RBV - 39)": "39",
+                    "HYPER9 (PARKE)": "39",
+                    "HYPER9 (GANDE/FILGA - 39)": "39"
+                },
+                "default_consolidation": {
+                    "39": []
+                }
+            },
+            "N68": {
+                "inbound_assignments": {
+                    "CAMRN5": "68",
+                    "OWENZ": "68"
+                },
+                "default_consolidation": {
+                    "68": []
+                }
+            },
+            "345": {
+                "inbound_assignments": {
+                    "TRISH4 (42)": "42",
+                    "CLIPR3 (BIGGY)": "55",
+                    "CLIPR3 (NELIE 42)": "42",
+                    "HYPER9 (RBV - 55)": "55",
+                    "HYPER9 (PARKE)": "39",
+                    "HYPER9 (FILGA)": "42",
+                    "HYPER9 (GANDE)": "42",
+                    "Overflights": "42"
+                },
+                "default_consolidation": {
+                    "55": ["42"],
+                    "42": ["39"]
+                }
+            },
+            "568": {
+                "inbound_assignments": {
+                    "ROBUC3 (RBV)": "56",
+                    "ROBUC3 (Q133)": "56",
+                    "DPK3 (Q419)": "56",
+                    "DPK3 (Q481)": "56",
+                    "CAMRN5": "68",
+                    "OWENZ": "68"
+                },
+                "default_consolidation": {
+                    "56": ["68"]
+                }
+            },
+            "NYB": {
+                "inbound_assignments": {
+                    "ROBUC3 (RBV)": "56",
+                    "ROBUC3 (Q133)": "56",
+                    "DPK3 (Q419)": "56",
+                    "DPK3 (Q481)": "56",
+                    "CAMRN5": "68",
+                    "OWENZ": "68",
+                    "TRISH4 (42)": "42",
+                    "CLIPR3 (BIGGY)": "55",
+                    "CLIPR3 (NELIE 42)": "42",
+                    "HYPER9 (RBV - 55)": "55",
+                    "HYPER9 (PARKE)": "39",
+                    "HYPER9 (FILGA)": "42",
+                    "HYPER9 (GANDE)": "42",
+                    "Overflights": "42"
+                },
+                "default_consolidation": {
+                    "56": ["68"],
+                    "68": ["55"],
+                    "55": ["42"],
+                    "42": ["39"]
+                }
             }
         },
-        "center": "N039.47.39.800,W076.10.50.300",
-        "range": 150,
+        "center": "N040.43.16.220,W075.15.20.983",
+        "range": 200,
         "video_map_file": "videomaps/ZNY-eram-videomaps.gob.zst",
         "coordination_fixes": {
             "FLOSI": [

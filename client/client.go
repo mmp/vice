@@ -463,7 +463,7 @@ func (c *ControlClient) StringIsSPC(s string) bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	return av.StringIsSPC(s) || slices.Contains(c.State.FacilityAdaptation.CustomSPCs, s)
+	return av.StringIsSPC(s) || slices.Contains(c.State.FacilityAdaptation.Datablocks.CustomSPCs, s)
 }
 
 func (c *ControlClient) RadioIsActive() bool {

@@ -1599,9 +1599,7 @@
                     "KOKC": 5
                 }
             },
-            "configuration": {
-                "config_id": "KO1"
-            },
+            "configuration": "KO1",
             "default_maps": [
                 "OKC012S SOUTH FLOW"
             ],
@@ -1651,9 +1649,7 @@
                     "KOKC": 5
                 }
             },
-            "configuration": {
-                "config_id": "KOK"
-            },
+            "configuration": "KOK",
             "default_maps": [
                 "OKC013S NORTH FLOW"
             ],

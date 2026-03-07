@@ -90,9 +90,7 @@
     "default_scenario": "ZLC C Comb 44",
     "scenarios": {
         "ZLC C Comb 44": {
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "*SEC"
             ],

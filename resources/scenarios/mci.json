@@ -2479,9 +2479,7 @@
                     "KMKC": 1
                 }
             },
-            "configuration": {
-                "config_id": "KM1"
-            },
+            "configuration": "KM1",
             "default_maps": [
                 "KC North Flow"
             ],
@@ -2562,9 +2560,7 @@
                     "KMCI": 10
                 }
             },
-            "configuration": {
-                "config_id": "KM1"
-            },
+            "configuration": "KM1",
             "default_maps": [
                 "KC South Flow"
             ],
@@ -2641,9 +2637,7 @@
                     "KMCI": 10
                 }
             },
-            "configuration": {
-                "config_id": "KMC"
-            },
+            "configuration": "KMC",
             "default_maps": [
                 "KC East Flow"
             ],
@@ -2715,9 +2709,7 @@
                     "KMCI": 10
                 }
             },
-            "configuration": {
-                "config_id": "KM1"
-            },
+            "configuration": "KM1",
             "default_maps": [
                 "KC South Flow"
             ],

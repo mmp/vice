@@ -142,7 +142,7 @@
             "radio_name": "Denver Approach"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -442,7 +442,7 @@
             "SNY": {}
         },
         "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
-        "controller_configs": {
+        "controllers": {
             "1I": {
                 "video_maps": [
                     "ARRIVAL BASE",
@@ -1149,37 +1149,6 @@
                 "center": "KDEN"
             }
         },
-        "coordination_lists": [
-            {
-                "name": "Centennial",
-                "id": "A",
-                "airports": [
-                    "KAPA"
-                ]
-            },
-            {
-                "name": "Metro",
-                "id": "B",
-                "airports": [
-                    "KBJC"
-                ]
-            },
-            {
-                "name": "NoCo",
-                "id": "C",
-                "airports": [
-                    "KFNL"
-                ]
-            },
-            {
-                "name": "Greely",
-                "id": "D",
-                "airports": [
-                    "KGXY"
-                ]
-            }
-        ],
-        "force_ql_self": true,
         "airspace_awareness": [
             {
                 "fixes": [
@@ -1236,7 +1205,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "ARSPC__CYS AIRSPACE",
@@ -1289,6 +1258,41 @@
             "2": {
                 "center": "KDEN"
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "Centennial",
+                    "id": "A",
+                    "airports": [
+                        "KAPA"
+                    ]
+                },
+                {
+                    "name": "Metro",
+                    "id": "B",
+                    "airports": [
+                        "KBJC"
+                    ]
+                },
+                {
+                    "name": "NoCo",
+                    "id": "C",
+                    "airports": [
+                        "KFNL"
+                    ]
+                },
+                {
+                    "name": "Greely",
+                    "id": "D",
+                    "airports": [
+                        "KGXY"
+                    ]
+                }
+            ]
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

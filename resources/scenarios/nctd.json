@@ -6304,9 +6304,7 @@
                 }
             },
             "vfr_rate_scale": 0.7,
-            "configuration": {
-                "config_id": "22X"
-            },
+            "configuration": "22X",
             "default_maps": [
                 "RVMNCT901S"
             ],
@@ -6374,9 +6372,7 @@
                 }
             },
             "vfr_rate_scale": 0.5,
-            "configuration": {
-                "config_id": "AR4"
-            },
+            "configuration": "AR4",
             "default_maps": [
                 "RVMNCT902S"
             ],
@@ -6442,9 +6438,7 @@
                 }
             },
             "vfr_rate_scale": 0.6,
-            "configuration": {
-                "config_id": "28X"
-            },
+            "configuration": "28X",
             "default_maps": [
                 "RVMNCT901S"
             ],
@@ -6519,9 +6513,7 @@
                 }
             },
             "vfr_rate_scale": 0.5,
-            "configuration": {
-                "config_id": "NCT"
-            },
+            "configuration": "NCT",
             "default_maps": [
                 "RVMNCT901S"
             ],

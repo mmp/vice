@@ -102,7 +102,7 @@
             "field_e_format": "TwoLetters"
         }
     ],
-    "config": {
+    "facility_adaptations": {
         "configurations": {}
     }
 }

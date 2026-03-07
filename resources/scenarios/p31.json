@@ -835,9 +835,7 @@
                     "KPNS": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "NPA07/PNS & NSE"
             ],
@@ -870,9 +868,7 @@
                     "KPNS": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "NPA25/PNS & NSE"
             ],

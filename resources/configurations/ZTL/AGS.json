@@ -16,7 +16,7 @@
             "radio_name": "Augusta Approach"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -122,7 +122,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "AGS BASE MAP",

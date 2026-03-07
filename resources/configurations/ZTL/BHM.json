@@ -32,7 +32,7 @@
             "radio_name": "Birmingham Approach"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -103,7 +103,6 @@
                 "slope_angle": 0.3
             }
         },
-        "allow_long_scratchpad": true,
         "scratchpads": {
             "RHETT": "RHET",
             "MRICA": "MRCA",
@@ -205,7 +204,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "BHM MAIN",
@@ -231,6 +230,9 @@
                     "BHM SAT BOUNDARY"
                 ]
             }
+        },
+        "datablocks": {
+            "allow_long_scratchpad": true
         }
     },
     "handoff_ids": [

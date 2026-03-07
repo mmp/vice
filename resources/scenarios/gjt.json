@@ -597,9 +597,7 @@
                     "KGJT": 3
                 }
             },
-            "configuration": {
-                "config_id": "GJT"
-            },
+            "configuration": "GJT",
             "default_maps": [
                 "GJT BASE"
             ],
@@ -641,9 +639,7 @@
                     "KGJT": 3
                 }
             },
-            "configuration": {
-                "config_id": "GJT"
-            },
+            "configuration": "GJT",
             "default_maps": [
                 "GJT BASE"
             ],

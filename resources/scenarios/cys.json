@@ -390,9 +390,7 @@
                     "KCYS": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "ARSPC__CYS AIRSPACE"
             ],
@@ -442,9 +440,7 @@
                     "KCYS": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "ARSPC__CYS AIRSPACE"
             ],

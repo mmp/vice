@@ -255,7 +255,7 @@
             "radio_name": "New York approach"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -1352,10 +1352,10 @@
                     "Finals-HAARP-RX31": "1F"
                 },
                 "default_consolidation": {
-                    "1F": [ ]
+                    "1F": []
                 }
             },
-          "JFF": {
+            "JFF": {
                 "inbound_assignments": {
                     "CAMRN/PUCKY1.Finals22": "2A",
                     "CAMRN/PUCKY1.Finals31": "2A",
@@ -1363,12 +1363,22 @@
                     "PARCH4.Finals13": "2A",
                     "PARCH4.Finals22": "2A",
                     "PARCH4.Finals31": "2A",
-                  "PUCKY1.Finals13": "2A"
+                    "PUCKY1.Finals13": "2A"
                 },
-            "default_consolidation": {
-              "2A": [ ]
-            }
-          },
+                "default_consolidation": {
+                    "2A": []
+                }
+            },
+            "JF4": {
+                "inbound_assignments": {
+                    "PUCKY1.Finals4": "2A",
+                    "PARCH4.Finals4": "2A",
+                    "CAMRN5.Finals4": "2A"
+                },
+                "default_consolidation": {
+                    "2A": [ "2G" ]
+                }
+            },
             "JFK": {
                 "inbound_assignments": {
                     "BOUNO5": "1X",
@@ -1611,7 +1621,7 @@
                     ]
                 }
             },
-          "ISP": {
+            "ISP": {
                 "inbound_assignments": {
                     "BOUNO5": "1X",
                     "COATE": "4S",
@@ -2041,41 +2051,7 @@
                 "slope_angle": 0.175
             }
         },
-        "coordination_lists": [
-            {
-                "name": "HVN.",
-                "id": "A",
-                "airports": [
-                    "KHVN"
-                ]
-            },
-            {
-                "name": "BDR.",
-                "id": "B",
-                "airports": [
-                    "KBDR"
-                ]
-            },
-            {
-                "name": "FOK.",
-                "id": "C",
-                "airports": [
-                    "KFOK"
-                ]
-            },
-            {
-                "name": "OXC.",
-                "id": "D",
-                "airports": [
-                    "KOXC"
-                ]
-            }
-        ],
-        "force_ql_self": true,
-        "scratchpad1": {
-            "display_exit_fix": true
-        },
-        "controller_configs": {
+        "controllers": {
             "2G": {
                 "flight_following_airspace": [
                     {
@@ -2147,20 +2123,6 @@
                 ]
             }
         },
-        "pdb": {
-            "hide_gs": true
-        },
-        "fdb": {
-            "display_requested_altitude": true
-        },
-        "altimeters": [
-            "KJFK",
-            "KLGA",
-            "KEWR",
-            "KTEB",
-            "KISP",
-            "KHPN"
-        ],
         "airspace_awareness": [
             {
                 "fixes": [
@@ -2667,7 +2629,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "default_airport": "KLGA",
                 "video_maps": [
@@ -2820,42 +2782,96 @@
             "5": {
                 "default_airport": "KSWF",
                 "video_maps": [
-                  "",
-                  "",
-                  "",
-                  "",
-                  "",
-                  "",
-                  "LIBERTY DEP",
-                  "CATSKILL AREA",
-                  "LGA-HPN ARR/DEP",
-                  "JFK ARR/DEP",
-                  "ISP ARR/DEP",
-                  "EWR ARR/DEP",
-                  "SWF/MSV",
-                  "POU/MGJ",
-                  "SAT GPS",
-                  "",
-                  "",
-                  "",
-                  "N90 TFR",
-                  "",
-                  "",
-                  "MVA",
-                  "JFK ARR/DEP RWY 4L/R",
-                  "JFK ARR/DEP RWY 13L/R",
-                  "JFK ARR/DEP RWY 22L/R",
-                  "JFK ARR/DEP RWY 31L/R",
-                  "",
-                  "",
-                  "",
-                  "",
-                  "",
-                  "",
-                  "Coast",
-                  "EOVM",
-                  "",
-                  ""
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "LIBERTY DEP",
+                    "CATSKILL AREA",
+                    "LGA-HPN ARR/DEP",
+                    "JFK ARR/DEP",
+                    "ISP ARR/DEP",
+                    "EWR ARR/DEP",
+                    "SWF/MSV",
+                    "POU/MGJ",
+                    "SAT GPS",
+                    "",
+                    "",
+                    "",
+                    "N90 TFR",
+                    "",
+                    "",
+                    "MVA",
+                    "JFK ARR/DEP RWY 4L/R",
+                    "JFK ARR/DEP RWY 13L/R",
+                    "JFK ARR/DEP RWY 22L/R",
+                    "JFK ARR/DEP RWY 31L/R",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "Coast",
+                    "EOVM",
+                    "",
+                    ""
+                ]
+            }
+        },
+        "datablocks": {
+            "fdb": {
+                "display_requested_altitude": true
+            },
+            "pdb": {
+                "hide_gs": true
+            },
+            "scratchpad1": {
+                "display_exit_fix": true
+            },
+            "force_ql_self": true
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "HVN.",
+                    "id": "A",
+                    "airports": [
+                        "KHVN"
+                    ]
+                },
+                {
+                    "name": "BDR.",
+                    "id": "B",
+                    "airports": [
+                        "KBDR"
+                    ]
+                },
+                {
+                    "name": "FOK.",
+                    "id": "C",
+                    "airports": [
+                        "KFOK"
+                    ]
+                },
+                {
+                    "name": "OXC.",
+                    "id": "D",
+                    "airports": [
+                        "KOXC"
+                    ]
+                }
+            ],
+            "ssa": {
+                "altimeters": [
+                    "KJFK",
+                    "KLGA",
+                    "KEWR",
+                    "KTEB",
+                    "KISP",
+                    "KHPN"
                 ]
             }
         }

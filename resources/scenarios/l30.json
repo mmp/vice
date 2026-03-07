@@ -5647,9 +5647,7 @@
                     "KHND": 1
                 }
             },
-            "configuration": {
-                "config_id": "1XX"
-            },
+            "configuration": "1XX",
             "default_maps": [
                 "281 BM1M L30",
                 "059 LSV L30"
@@ -5778,9 +5776,7 @@
                     "KHND": 1
                 }
             },
-            "configuration": {
-                "config_id": "2XX"
-            },
+            "configuration": "2XX",
             "default_maps": [
                 "282 BM2M L30",
                 "059 LSV L30"
@@ -5894,9 +5890,7 @@
                     "KHND": 1
                 }
             },
-            "configuration": {
-                "config_id": "3XX"
-            },
+            "configuration": "3XX",
             "default_maps": [
                 "283 BM3M L30",
                 "059 LSV L30"
@@ -6019,9 +6013,7 @@
                     "KHND": 1
                 }
             },
-            "configuration": {
-                "config_id": "4XX"
-            },
+            "configuration": "4XX",
             "default_maps": [
                 "284 BM4M L30",
                 "059 LSV L30"

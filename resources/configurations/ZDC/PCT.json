@@ -251,7 +251,7 @@
             "radio_name": "Salisbury Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -740,7 +740,7 @@
             }
         },
         "center": "KBWI",
-        "controller_configs": {
+        "controllers": {
             "1S": {
                 "flight_following_airspace": [
                     {
@@ -918,10 +918,6 @@
             "SWANN": {}
         },
         "video_map_file": "videomaps/ZDC-videomaps.gob.zst",
-        "pdb": {
-            "hide_gs": true,
-            "show_scratchpad2": true
-        },
         "radar_sites": {
             "DCA": {
                 "char": "D",
@@ -1176,7 +1172,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "default_airport": "KDCA",
                 "video_maps": [
@@ -1248,6 +1244,12 @@
             "3": {
                 "default_airport": "KIAD",
                 "video_maps": []
+            }
+        },
+        "datablocks": {
+            "pdb": {
+                "hide_gs": true,
+                "show_scratchpad2": true
             }
         }
     },

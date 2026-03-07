@@ -960,7 +960,7 @@ func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 			// Per 6.12.6: force QL to the owning TCW's display requires
 			// that the entering TCW owns the flight and ForceQLToSelf is adapted.
 			if s.State.TCWControlsPosition(fp.OwningTCW, ControlPosition(controller)) {
-				if !s.State.FacilityAdaptation.ForceQLToSelf || fp.OwningTCW != tcw {
+				if !s.State.FacilityAdaptation.Datablocks.ForceQLToSelf || fp.OwningTCW != tcw {
 					return ErrIllegalPosition
 				}
 			}
@@ -1782,18 +1782,16 @@ func (s *Sim) checkDelayedTrafficInSight(ac *Aircraft) {
 		return
 	}
 
-	// Random chance each update to report traffic in sight (roughly 1/20 chance per second at 10 updates/sec)
-	if s.Rand.Intn(200) != 0 {
-		return
+	// Random chance each update to report traffic in sight
+	if s.Rand.Float32() < 0.1 {
+		// Report traffic in sight
+		ac.TrafficInSight = true
+		ac.TrafficInSightTime = s.State.SimTime
+		ac.TrafficLookingUntil = time.Time{} // Clear the looking window
+
+		// Queue the transmission
+		s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionTrafficInSight)
 	}
-
-	// Report traffic in sight
-	ac.TrafficInSight = true
-	ac.TrafficInSightTime = s.State.SimTime
-	ac.TrafficLookingUntil = time.Time{} // Clear the looking window
-
-	// Queue the transmission
-	s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionTrafficInSight)
 }
 
 // MaintainVisualSeparation handles "maintain visual separation from the traffic" command.

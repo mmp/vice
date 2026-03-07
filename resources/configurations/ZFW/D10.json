@@ -151,7 +151,7 @@
             "scope_char": "T"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "10X": {
                 "inbound_assignments": {
@@ -808,10 +808,6 @@
             }
         },
         "center": "KDFW",
-        "pdb": {
-            "hide_gs": true,
-            "show_scratchpad2": false
-        },
         "filters": {
             "inhibit_ca": [
                 {
@@ -872,7 +868,7 @@
                 }
             ]
         },
-        "controller_configs": {
+        "controllers": {
             "1D": {
                 "flight_following_airspace": [
                     {
@@ -966,9 +962,6 @@
                 "slope_angle": 0.3
             }
         },
-        "scratchpad1": {
-            "display_alternate_exit_gate": true
-        },
         "scratchpads": {
             "MLC": "AKU",
             "ALIAN": "RBT",
@@ -1045,9 +1038,8 @@
             "WINDU": {},
             "ZALEA": {}
         },
-        "force_ql_self": true,
         "video_map_file": "videomaps/ZFW-videomaps.gob.zst",
-        "area_configs": {
+        "areas": {
             "1": {
                 "default_airport": "KDFW",
                 "video_maps": [
@@ -1091,6 +1083,16 @@
                     "RVMD10054S"
                 ]
             }
+        },
+        "datablocks": {
+            "pdb": {
+                "hide_gs": true,
+                "show_scratchpad2": false
+            },
+            "scratchpad1": {
+                "display_alternate_exit_gate": true
+            },
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

@@ -80,11 +80,16 @@ func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
 	ps := sp.currentPrefs()
 	// Sigh; on windows we want the button size in pixels on high DPI displays
 	ds := ctx.DrawPixelScale
-	// Scale based on width or height available depending on DCB position
+	width := ds*ctx.PaneExtent.Width() - 4
+	height := ds*ctx.PaneExtent.Height() - 4
 	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
-		return min(ds, (ds*ctx.PaneExtent.Width()-4)/(numDCBSlots*dcbButtonSize))
+		mainScale := width / (numDCBSlots * dcbButtonSize)
+		crossScale := height / dcbButtonSize
+		return min(ds, mainScale, crossScale)
 	} else {
-		return min(ds, (ds*ctx.PaneExtent.Height()-4)/(numDCBSlots*dcbButtonSize))
+		mainScale := height / (numDCBSlots * dcbButtonSize)
+		crossScale := width / dcbButtonSize
+		return min(ds, mainScale, crossScale)
 	}
 }
 

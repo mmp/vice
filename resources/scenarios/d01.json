@@ -13204,9 +13204,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "ALL"
-            },
+            "configuration": "ALL",
             "departure_runways": [
                 {
                     "airport": "KDEN",
@@ -13422,9 +13420,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "ALL"
-            },
+            "configuration": "ALL",
             "departure_runways": [
                 {
                     "airport": "KDEN",
@@ -13640,9 +13636,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "ALL"
-            },
+            "configuration": "ALL",
             "departure_runways": [
                 {
                     "airport": "KDEN",
@@ -13858,9 +13852,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "ALL"
-            },
+            "configuration": "ALL",
             "departure_runways": [
                 {
                     "airport": "KDEN",
@@ -14068,9 +14060,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "ALL"
-            },
+            "configuration": "ALL",
             "departure_runways": [
                 {
                     "airport": "KDEN",
@@ -14278,9 +14268,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "ALL"
-            },
+            "configuration": "ALL",
             "departure_runways": [
                 {
                     "airport": "KDEN",
@@ -14500,9 +14488,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "ALL"
-            },
+            "configuration": "ALL",
             "departure_runways": [
                 {
                     "airport": "KDEN",
@@ -14722,9 +14708,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "ALL"
-            },
+            "configuration": "ALL",
             "departure_runways": [
                 {
                     "airport": "KDEN",
@@ -14944,9 +14928,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "ALL"
-            },
+            "configuration": "ALL",
             "departure_runways": [
                 {
                     "airport": "KDEN",
@@ -15166,9 +15148,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "ALL"
-            },
+            "configuration": "ALL",
             "departure_runways": [
                 {
                     "airport": "KDEN",
@@ -15276,9 +15256,7 @@
                     "KDEN": 10
                 }
             },
-            "configuration": {
-                "config_id": "FRN"
-            },
+            "configuration": "FRN",
             "wind": {
                 "direction": "315-15"
             }
@@ -15318,9 +15296,7 @@
                     "KDEN": 10
                 }
             },
-            "configuration": {
-                "config_id": "FRS"
-            },
+            "configuration": "FRS",
             "wind": {
                 "direction": "135-195"
             }
@@ -15356,9 +15332,7 @@
                     "KDEN": 8
                 }
             },
-            "configuration": {
-                "config_id": "FRW"
-            },
+            "configuration": "FRW",
             "wind": {
                 "direction": "225-285"
             }
@@ -15394,9 +15368,7 @@
                     "KDEN": 7
                 }
             },
-            "configuration": {
-                "config_id": "FRE"
-            },
+            "configuration": "FRE",
             "wind": {
                 "direction": "45-105"
             }
@@ -15503,9 +15475,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "SRN"
-            },
+            "configuration": "SRN",
             "departure_runways": [
                 {
                     "airport": "KAPA",
@@ -15640,9 +15610,7 @@
                     "KGXY": 1
                 }
             },
-            "configuration": {
-                "config_id": "SRS"
-            },
+            "configuration": "SRS",
             "departure_runways": [
                 {
                     "airport": "KAPA",

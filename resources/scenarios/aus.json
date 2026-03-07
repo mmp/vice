@@ -1437,9 +1437,7 @@
                     "overflights": 2
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "AUS BASE"
             ],
@@ -1551,9 +1549,7 @@
                     "overflights": 2
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "AUS BASE"
             ],

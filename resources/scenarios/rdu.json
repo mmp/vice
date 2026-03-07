@@ -1716,9 +1716,7 @@
                     "KRDU": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "RDU NE RVM"
             ],
@@ -1765,9 +1763,7 @@
                     "KRDU": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "RDU SW RVM"
             ],

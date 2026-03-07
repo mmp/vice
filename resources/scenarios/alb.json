@@ -1084,9 +1084,7 @@
                     "KSCH": 5
                 }
             },
-            "configuration": {
-                "config_id": "EAS"
-            },
+            "configuration": "EAS",
             "departure_runways": [
                 {
                     "airport": "KALB",
@@ -1128,9 +1126,7 @@
                     "KSCH": 5
                 }
             },
-            "configuration": {
-                "config_id": "EAS"
-            },
+            "configuration": "EAS",
             "departure_runways": [
                 {
                     "airport": "KALB",
@@ -1172,9 +1168,7 @@
                     "KSCH": 5
                 }
             },
-            "configuration": {
-                "config_id": "EAS"
-            },
+            "configuration": "EAS",
             "departure_runways": [
                 {
                     "airport": "KALB",
@@ -1216,9 +1210,7 @@
                     "KSCH": 5
                 }
             },
-            "configuration": {
-                "config_id": "EAS"
-            },
+            "configuration": "EAS",
             "departure_runways": [
                 {
                     "airport": "KALB",
@@ -1253,9 +1245,7 @@
                     "KALB": 10
                 }
             },
-            "configuration": {
-                "config_id": "NOR"
-            },
+            "configuration": "NOR",
             "wind": {
                 "direction": "340-40"
             },
@@ -1278,9 +1268,7 @@
                     "KALB": 10
                 }
             },
-            "configuration": {
-                "config_id": "SOU"
-            },
+            "configuration": "SOU",
             "wind": {
                 "direction": "160-220"
             },
@@ -1303,9 +1291,7 @@
                     "KALB": 10
                 }
             },
-            "configuration": {
-                "config_id": "EA1"
-            },
+            "configuration": "EA1",
             "wind": {
                 "direction": "70-130"
             },
@@ -1328,9 +1314,7 @@
                     "KALB": 10
                 }
             },
-            "configuration": {
-                "config_id": "WES"
-            },
+            "configuration": "WES",
             "wind": {
                 "direction": "250-310"
             },

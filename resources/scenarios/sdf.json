@@ -668,9 +668,7 @@
                     "KSDF": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "RWY 17s BASE"
             ],
@@ -727,9 +725,7 @@
                     "KSDF": 10
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "RWY 35s BASE"
             ],

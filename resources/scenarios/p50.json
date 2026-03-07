@@ -3562,9 +3562,7 @@
                     "KIWA": 3
                 }
             },
-            "configuration": {
-                "config_id": "P51"
-            },
+            "configuration": "P51",
             "default_maps": [
                 "PHX668 RWY2526"
             ],
@@ -3634,9 +3632,7 @@
                     "KIWA": 3
                 }
             },
-            "configuration": {
-                "config_id": "50X"
-            },
+            "configuration": "50X",
             "default_maps": [
                 "PHX667 RWY7R_8"
             ],
@@ -3690,9 +3686,7 @@
                     "KSEZ": 2
                 }
             },
-            "configuration": {
-                "config_id": "P50"
-            },
+            "configuration": "P50",
             "default_maps": [
                 "PRC414 NAZ_ASP"
             ],
@@ -3746,9 +3740,7 @@
                     "KSEZ": 2
                 }
             },
-            "configuration": {
-                "config_id": "P50"
-            },
+            "configuration": "P50",
             "default_maps": [
                 "PRC414 NAZ_ASP"
             ],
@@ -3798,9 +3790,7 @@
                     "KPHX": 8
                 }
             },
-            "configuration": {
-                "config_id": "PHX"
-            },
+            "configuration": "PHX",
             "default_maps": [
                 "PHX170 EFINSAT"
             ],
@@ -3833,9 +3823,7 @@
                     "KPHX": 8
                 }
             },
-            "configuration": {
-                "config_id": "PH1"
-            },
+            "configuration": "PH1",
             "default_maps": [
                 "PHX171 WFINSAT"
             ],

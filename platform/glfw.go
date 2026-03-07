@@ -934,6 +934,10 @@ func (g *glfwPlatform) GetAudioInputDevices() []string {
 	return GetAudioInputDevices()
 }
 
+func (g *glfwPlatform) AppendSpeechPCM(pcm []int16) {
+	g.audioEngine.AppendSpeechPCM(pcm)
+}
+
 func (g *glfwPlatform) SetAudioStreamCallback(cb func([]int16)) {
 	g.audioRecorder.SetStreamCallback(cb)
 }

@@ -257,7 +257,7 @@
             "radio_name": "Fullerton Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "CF2": {
                 "inbound_assignments": {
@@ -1063,13 +1063,7 @@
             }
         },
         "center": "JAZEE",
-        "altimeters": [
-            "KBUR",
-            "KVNY",
-            "KWHP",
-            "KSMO"
-        ],
-        "controller_configs": {
+        "controllers": {
             "1M": {
                 "flight_following_airspace": [
                     {
@@ -1612,86 +1606,6 @@
             "SLI": {}
         },
         "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
-        "coordination_lists": [
-            {
-                "name": "SANTA MONICA",
-                "id": "64",
-                "airports": [
-                    "KSMO"
-                ]
-            },
-            {
-                "name": "LAX",
-                "id": "61",
-                "airports": [
-                    "KLAX"
-                ]
-            },
-            {
-                "name": "LONG BEACH",
-                "id": "66",
-                "airports": [
-                    "KLGB"
-                ]
-            },
-            {
-                "name": "TORRANCE",
-                "id": "43",
-                "airports": [
-                    "KTOA"
-                ]
-            },
-            {
-                "name": "HAWTHORNE",
-                "id": "65",
-                "airports": [
-                    "KHHR"
-                ]
-            },
-            {
-                "name": "PALM SPRINGS",
-                "id": "32",
-                "airports": [
-                    "KPSP"
-                ]
-            },
-            {
-                "name": "MONTGOMERY",
-                "id": "55",
-                "airports": [
-                    "KMYF"
-                ]
-            },
-            {
-                "name": "PALOMAR",
-                "id": "52",
-                "airports": [
-                    "KCRQ"
-                ]
-            },
-            {
-                "name": "BROWN",
-                "id": "54",
-                "airports": [
-                    "KSDM"
-                ]
-            },
-            {
-                "name": "VAN NUYS",
-                "id": "12",
-                "airports": [
-                    "KVNY"
-                ]
-            },
-            {
-                "name": "BURBANK",
-                "id": "11",
-                "airports": [
-                    "KBUR"
-                ]
-            }
-        ],
-        "force_ql_self": true,
         "airspace_awareness": [
             {
                 "fixes": [
@@ -1999,7 +1913,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "701S FUS 3NM MVA SCT",
@@ -2236,6 +2150,98 @@
                 "center": "N033.41.38.744,W118.21.53.717",
                 "range": 30
             }
+        },
+        "lists": {
+            "coordination": [
+                {
+                    "name": "SANTA MONICA",
+                    "id": "64",
+                    "airports": [
+                        "KSMO"
+                    ]
+                },
+                {
+                    "name": "LAX",
+                    "id": "61",
+                    "airports": [
+                        "KLAX"
+                    ]
+                },
+                {
+                    "name": "LONG BEACH",
+                    "id": "66",
+                    "airports": [
+                        "KLGB"
+                    ]
+                },
+                {
+                    "name": "TORRANCE",
+                    "id": "43",
+                    "airports": [
+                        "KTOA"
+                    ]
+                },
+                {
+                    "name": "HAWTHORNE",
+                    "id": "65",
+                    "airports": [
+                        "KHHR"
+                    ]
+                },
+                {
+                    "name": "PALM SPRINGS",
+                    "id": "32",
+                    "airports": [
+                        "KPSP"
+                    ]
+                },
+                {
+                    "name": "MONTGOMERY",
+                    "id": "55",
+                    "airports": [
+                        "KMYF"
+                    ]
+                },
+                {
+                    "name": "PALOMAR",
+                    "id": "52",
+                    "airports": [
+                        "KCRQ"
+                    ]
+                },
+                {
+                    "name": "BROWN",
+                    "id": "54",
+                    "airports": [
+                        "KSDM"
+                    ]
+                },
+                {
+                    "name": "VAN NUYS",
+                    "id": "12",
+                    "airports": [
+                        "KVNY"
+                    ]
+                },
+                {
+                    "name": "BURBANK",
+                    "id": "11",
+                    "airports": [
+                        "KBUR"
+                    ]
+                }
+            ],
+            "ssa": {
+                "altimeters": [
+                    "KBUR",
+                    "KVNY",
+                    "KWHP",
+                    "KSMO"
+                ]
+            }
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

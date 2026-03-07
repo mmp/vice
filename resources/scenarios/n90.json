@@ -9902,9 +9902,7 @@
                     "KBDR": 1
                 }
             },
-            "configuration": {
-                "config_id": "N90"
-            },
+            "configuration": "N90",
             "departure_runways": [
                 {
                     "airport": "KMMU",
@@ -10378,9 +10376,7 @@
                     "KBDR": 1
                 }
             },
-            "configuration": {
-                "config_id": "N90"
-            },
+            "configuration": "N90",
             "departure_runways": [
                 {
                     "airport": "KMMU",
@@ -10844,9 +10840,7 @@
                     "KBDR": 1
                 }
             },
-            "configuration": {
-                "config_id": "N90"
-            },
+            "configuration": "N90",
             "departure_runways": [
                 {
                     "airport": "KMMU",
@@ -11320,9 +11314,7 @@
                     "KBDR": 1
                 }
             },
-            "configuration": {
-                "config_id": "N90"
-            },
+            "configuration": "N90",
             "departure_runways": [
                 {
                     "airport": "KMMU",

@@ -31,7 +31,7 @@
             "radio_name": "Allegheny Tower"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -58,8 +58,6 @@
                 }
             }
         },
-        "force_ql_self": true,
-        "allow_long_scratchpad": true,
         "center": "KPIT",
         "filters": {
             "inhibit_ca": [
@@ -163,7 +161,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "default_airport": "KPIT",
                 "video_maps": [
@@ -181,6 +179,10 @@
                     "PIT-135 (JESEY)"
                 ]
             }
+        },
+        "datablocks": {
+            "allow_long_scratchpad": true,
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

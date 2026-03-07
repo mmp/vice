@@ -1186,9 +1186,7 @@
                     "KCHO": 2
                 }
             },
-            "configuration": {
-                "config_id": "JRV"
-            },
+            "configuration": "JRV",
             "departure_runways": [
                 {
                     "airport": "KRIC",
@@ -1252,9 +1250,7 @@
                     "KCHO": 2
                 }
             },
-            "configuration": {
-                "config_id": "JR1"
-            },
+            "configuration": "JR1",
             "departure_runways": [
                 {
                     "airport": "KRIC",

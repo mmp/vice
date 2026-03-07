@@ -71,7 +71,7 @@
             "radio_name": "Detroit Approach"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "configurations": {
             "KCL": {
                 "inbound_assignments": {
@@ -172,7 +172,6 @@
                 }
             }
         },
-        "force_ql_self": true,
         "center": "KCLE",
         "filters": {
             "inhibit_ca": [
@@ -347,7 +346,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "CLE-001 (RY24)",
@@ -392,6 +391,9 @@
                     "CLE-058 (SATELLITE SIDS)"
                 ]
             }
+        },
+        "datablocks": {
+            "force_ql_self": true
         }
     },
     "handoff_ids": [

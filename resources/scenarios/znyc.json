@@ -1067,9 +1067,7 @@
     "default_scenario": "ZNY Sector 36",
     "scenarios": {
         "ZNY Sector 36": {
-            "configuration": {
-                "config_id": "ZNY"
-            },
+            "configuration": "ZNY",
             "default_maps": [
                 "BASE MAP",
                 "LOW SECTOR"

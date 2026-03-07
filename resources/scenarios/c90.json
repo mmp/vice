@@ -6584,9 +6584,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "KOA"
-            },
+            "configuration": "KOA",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -6733,9 +6731,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "22L"
-            },
+            "configuration": "22L",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -6900,9 +6896,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "KOD"
-            },
+            "configuration": "KOD",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -7124,9 +7118,7 @@
                     "KGYY": 3
                 }
             },
-            "configuration": {
-                "config_id": "31R"
-            },
+            "configuration": "31R",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -7404,9 +7396,7 @@
                     "KGYY": 3
                 }
             },
-            "configuration": {
-                "config_id": "31R"
-            },
+            "configuration": "31R",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -7645,9 +7635,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "KOE"
-            },
+            "configuration": "KOE",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -7818,9 +7806,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "22L"
-            },
+            "configuration": "22L",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -7951,9 +7937,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "4XX"
-            },
+            "configuration": "4XX",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -8077,9 +8061,7 @@
                     "KMDW": 10
                 }
             },
-            "configuration": {
-                "config_id": "KO3"
-            },
+            "configuration": "KO3",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -8221,9 +8203,7 @@
                     "KPWK": 3
                 }
             },
-            "configuration": {
-                "config_id": "KO5"
-            },
+            "configuration": "KO5",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -8403,9 +8383,7 @@
                     "KGYY": 3
                 }
             },
-            "configuration": {
-                "config_id": "KO4"
-            },
+            "configuration": "KO4",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -8581,9 +8559,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "22X"
-            },
+            "configuration": "22X",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -8711,9 +8687,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "KOR"
-            },
+            "configuration": "KOR",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -8859,9 +8833,7 @@
                     "KMDW": 10
                 }
             },
-            "configuration": {
-                "config_id": "KO2"
-            },
+            "configuration": "KO2",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -9072,9 +9044,7 @@
                     "KGYY": 3
                 }
             },
-            "configuration": {
-                "config_id": "KO1"
-            },
+            "configuration": "KO1",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -9288,9 +9258,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "KO6"
-            },
+            "configuration": "KO6",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -9437,9 +9405,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "4RX"
-            },
+            "configuration": "4RX",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -9591,9 +9557,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "4RX"
-            },
+            "configuration": "4RX",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -9791,9 +9755,7 @@
                     "KGYY": 3
                 }
             },
-            "configuration": {
-                "config_id": "KO8"
-            },
+            "configuration": "KO8",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -10063,9 +10025,7 @@
                     "KGYY": 3
                 }
             },
-            "configuration": {
-                "config_id": "KO7"
-            },
+            "configuration": "KO7",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -10292,9 +10252,7 @@
                     "KORD": 10
                 }
             },
-            "configuration": {
-                "config_id": "16X"
-            },
+            "configuration": "16X",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -10394,9 +10352,7 @@
                     "KMDW": 10
                 }
             },
-            "configuration": {
-                "config_id": "13L"
-            },
+            "configuration": "13L",
             "default_maps": [
                 "C90 SSAT MDW 31C"
             ],
@@ -10441,9 +10397,7 @@
                     "KMDW": 10
                 }
             },
-            "configuration": {
-                "config_id": "13L"
-            },
+            "configuration": "13L",
             "default_maps": [
                 "C90 SSAT MDW 4R"
             ],
@@ -10488,9 +10442,7 @@
                     "KMDW": 10
                 }
             },
-            "configuration": {
-                "config_id": "13L"
-            },
+            "configuration": "13L",
             "default_maps": [
                 "C90 SSAT MDW 13C"
             ],
@@ -10535,9 +10487,7 @@
                     "KMDW": 10
                 }
             },
-            "configuration": {
-                "config_id": "13L"
-            },
+            "configuration": "13L",
             "default_maps": [
                 "C90 SSAT MDW 22L"
             ],
@@ -10569,9 +10519,7 @@
                     "KORD": 30
                 }
             },
-            "configuration": {
-                "config_id": "KOF"
-            },
+            "configuration": "KOF",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -10596,9 +10544,7 @@
                     "KORD": 30
                 }
             },
-            "configuration": {
-                "config_id": "KO9"
-            },
+            "configuration": "KO9",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -10626,9 +10572,7 @@
                     "KORD": 15
                 }
             },
-            "configuration": {
-                "config_id": "KOB"
-            },
+            "configuration": "KOB",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -10675,9 +10619,7 @@
                     "KORD": 15
                 }
             },
-            "configuration": {
-                "config_id": "KOC"
-            },
+            "configuration": "KOC",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -10705,9 +10647,7 @@
                     "KORD": 20
                 }
             },
-            "configuration": {
-                "config_id": "KOG"
-            },
+            "configuration": "KOG",
             "default_maps": [
                 "C90 MAIN"
             ],
@@ -10813,9 +10753,7 @@
                     "KLOT": 3
                 }
             },
-            "configuration": {
-                "config_id": "SAT"
-            },
+            "configuration": "SAT",
             "default_maps": [
                 "C90 MAIN"
             ],

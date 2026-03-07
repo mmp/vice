@@ -256,9 +256,7 @@
                     "KBOI": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KBOI",
@@ -295,9 +293,7 @@
                     "KBOI": 5
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "departure_runways": [
                 {
                     "airport": "KBOI",

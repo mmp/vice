@@ -276,9 +276,7 @@
     "magnetic_adjustment": -6.6,
     "scenarios": {
         "30 Nepta": {
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "ZJX HI"
             ],

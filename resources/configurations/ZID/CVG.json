@@ -36,10 +36,9 @@
             "radio_name": "Cincinnati Approach"
         }
     },
-    "config": {
+    "facility_adaptations": {
         "center": "KCVG",
-        "allow_long_scratchpad": true,
-        "controller_configs": {
+        "controllers": {
             "1B": {},
             "1F": {
                 "range": 33
@@ -293,7 +292,7 @@
                 }
             ]
         },
-        "area_configs": {
+        "areas": {
             "1": {
                 "video_maps": [
                     "North Base",
@@ -331,6 +330,9 @@
                     "West Base"
                 ]
             }
+        },
+        "datablocks": {
+            "allow_long_scratchpad": true
         }
     },
     "handoff_ids": [

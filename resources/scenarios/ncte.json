@@ -2763,9 +2763,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "AR5"
-            },
+            "configuration": "AR5",
             "default_maps": [
                 "RVMNCT902S"
             ],
@@ -2840,9 +2838,7 @@
                     "overflights": 20
                 }
             },
-            "configuration": {
-                "config_id": "NCA"
-            },
+            "configuration": "NCA",
             "default_maps": [
                 "RVMNCT901S"
             ],
@@ -2905,9 +2901,7 @@
                     "KRNO": 5
                 }
             },
-            "configuration": {
-                "config_id": "AR3"
-            },
+            "configuration": "AR3",
             "default_maps": [
                 "RVMNCT901S"
             ],
@@ -2960,9 +2954,7 @@
                     "KRNO": 5
                 }
             },
-            "configuration": {
-                "config_id": "NAR"
-            },
+            "configuration": "NAR",
             "default_maps": [
                 "RVMNCT902S"
             ],

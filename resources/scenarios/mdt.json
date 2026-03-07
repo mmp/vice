@@ -3214,9 +3214,7 @@
                     "overflights": 0
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "MDT-006 (WEST FLOW)"
             ],
@@ -3293,9 +3291,7 @@
                     "overflights": 0
                 }
             },
-            "configuration": {
-                "config_id": "STD"
-            },
+            "configuration": "STD",
             "default_maps": [
                 "MDT-005 (EAST FLOW)"
             ],

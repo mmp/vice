@@ -49149,9 +49149,7 @@
                     "KOPN": 0
                 }
             },
-            "configuration": {
-                "config_id": "A80"
-            },
+            "configuration": "A80",
             "departure_runways": [
                 {
                     "airport": "KATL",
@@ -49778,9 +49776,7 @@
                     "KOPN": 0
                 }
             },
-            "configuration": {
-                "config_id": "80X"
-            },
+            "configuration": "80X",
             "departure_runways": [
                 {
                     "airport": "KATL",
@@ -50216,9 +50212,7 @@
                     "KATL": 10
                 }
             },
-            "configuration": {
-                "config_id": "KA3"
-            },
+            "configuration": "KA3",
             "departure_runways": [
                 {
                     "airport": "KATL",
@@ -50519,9 +50513,7 @@
                     "KATL": 10
                 }
             },
-            "configuration": {
-                "config_id": "KAT"
-            },
+            "configuration": "KAT",
             "departure_runways": [
                 {
                     "airport": "KATL",
@@ -50665,9 +50657,7 @@
                     "KATL": 6
                 }
             },
-            "configuration": {
-                "config_id": "KA1"
-            },
+            "configuration": "KA1",
             "wind": {
                 "direction": "235-295"
             }
@@ -50704,9 +50694,7 @@
                     "KATL": 20
                 }
             },
-            "configuration": {
-                "config_id": "KA2"
-            },
+            "configuration": "KA2",
             "wind": {
                 "direction": "235-295"
             }
@@ -50750,9 +50738,7 @@
                     "KATL": 25
                 }
             },
-            "configuration": {
-                "config_id": "KA5"
-            },
+            "configuration": "KA5",
             "wind": {
                 "direction": "240-300"
             }
@@ -50792,9 +50778,7 @@
                     "KATL": 13
                 }
             },
-            "configuration": {
-                "config_id": "KA4"
-            },
+            "configuration": "KA4",
             "wind": {
                 "direction": "235-295"
             }
