@@ -395,14 +395,54 @@
           "KSWF": "5H"
         },
         "default_consolidation": {
-          "4P": ["4A", "4N", "4M", "4Q", "4U", "4W"],
-          "4U": ["4H", "4S"],
-          "2G": ["2J", "2E", "2M", "2K", "1V", "3H", "5W", "4P"],
-          "2K": ["2A"],
-          "1V": ["1D", "1L", "1F", "1X", "1Y"],
-          "3H": ["3B", "3I", "3N", "3O", "3R", "3Z"],
-          "5E": ["5T"],
-          "5W": ["5S", "5E", "5H"]
+          "4P": [
+            "4A",
+            "4N",
+            "4M",
+            "4Q",
+            "4U",
+            "4W"
+          ],
+          "4U": [
+            "4H",
+            "4S"
+          ],
+          "2G": [
+            "2J",
+            "2E",
+            "2M",
+            "2K",
+            "1V",
+            "3H",
+            "5W",
+            "4P"
+          ],
+          "2K": [
+            "2A"
+          ],
+          "1V": [
+            "1D",
+            "1L",
+            "1F",
+            "1X",
+            "1Y"
+          ],
+          "3H": [
+            "3B",
+            "3I",
+            "3N",
+            "3O",
+            "3R",
+            "3Z"
+          ],
+          "5E": [
+            "5T"
+          ],
+          "5W": [
+            "5S",
+            "5E",
+            "5H"
+          ]
         },
         "fix_pair_assignments": [
           {
@@ -557,12 +597,49 @@
           "KSWF": "5H"
         },
         "default_consolidation": {
-          "4P": ["4A", "4N", "4M", "4Q", "4U", "4W"],
-          "4U": ["4H", "4S"],
-          "3H": ["3B", "3I", "3N", "3O", "3R", "3Z", "5H"],
-          "2G": ["4P", "3H", "2A", "2J", "2E", "2K", "1V", "5E", "5T", "5S", "5W"],
-          "2K": ["2M"],
-          "1V": ["1L", "1D", "1F", "1X", "1Y"]
+          "4P": [
+            "4A",
+            "4M",
+            "4N",
+            "4Q",
+            "4U",
+            "4W"
+          ],
+          "4U": [
+            "4H",
+            "4S"
+          ],
+          "3H": [
+            "3B",
+            "3I",
+            "3N",
+            "3O",
+            "3R",
+            "3Z",
+            "5H"
+          ],
+          "2G": [
+            "1V",
+            "2A",
+            "2J",
+            "2K",
+            "3H",
+            "4P",
+            "NY_LE_DEP",
+            "NY_LN_DEP",
+            "NY_LS_DEP",
+            "NY_LW_DEP"
+          ],
+          "2K": [
+            "2M"
+          ],
+          "1V": [
+            "1D",
+            "1F",
+            "1X",
+            "LGA_DEP",
+            "LGA_Y_DEP"
+          ]
         }
       },
       "EWR": {
@@ -679,8 +756,17 @@
           "KSWF": "5H"
         },
         "default_consolidation": {
-          "4P": ["4A", "4M", "4N", "4U", "4W"],
-          "4U": ["4H", "4S"]
+          "4P": [
+            "4A",
+            "4M",
+            "4N",
+            "4U",
+            "4W"
+          ],
+          "4U": [
+            "4H",
+            "4S"
+          ]
         }
       },
       "EWD": {
@@ -1265,7 +1351,11 @@
           "KSWF": "5H"
         },
         "default_consolidation": {
-          "1V": ["1D", "1L", "1F", "1X"]
+          "1V": [
+            "1D",
+            "1F",
+            "LGA_DEP"
+          ]
         }
       },
       "LGF": {
@@ -1308,7 +1398,7 @@
           "CAMRN5.Finals4": "2A"
         },
         "default_consolidation": {
-          "2A": ["2G"]
+          "2A": []
         }
       },
       "JFK": {
@@ -1418,8 +1508,16 @@
           "KSWF": "5H"
         },
         "default_consolidation": {
-          "2G": ["2J", "2E", "2M", "2K"],
-          "2K": ["2A"]
+          "2G": [
+            "2A",
+            "2J",
+            "2K",
+            "3H"
+          ],
+          "2K": [
+            "2E",
+            "2M"
+          ]
         }
       },
       "LIB": {
@@ -1536,8 +1634,13 @@
           "KSWF": "5H"
         },
         "default_consolidation": {
-          "5W": ["5S", "5E", "5H"],
-          "5E": ["5T"]
+          "5E": [
+            "5T",
+            "5W"
+          ],
+          "5W": [
+            "5S"
+          ]
         }
       },
       "ISP": {
@@ -1654,7 +1757,18 @@
           "KSWF": "5H"
         },
         "default_consolidation": {
-          "3H": ["3B", "3I", "3N", "3O", "3R", "3Z"]
+          "3B": [
+            "3I"
+          ],
+          "3H": [
+            "3B",
+            "3N",
+            "3Z"
+          ],
+          "3Z": [
+            "3O",
+            "3R"
+          ]
         }
       },
       "HRP": {
@@ -1771,7 +1885,835 @@
           "KSWF": "5H"
         },
         "default_consolidation": {
-          "1V": ["1X", "1Y"]
+          "1V": [
+            "1X",
+            "1Y"
+          ]
+        }
+      },
+      "J22": {
+        "default_consolidation": {
+          "2G": [
+            "2E",
+            "2J",
+            "2K",
+            "3H"
+          ],
+          "2K": [
+            "2A",
+            "2M"
+          ]
+        },
+        "inbound_assignments": {
+          "BOUNO5": "1X",
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "HAARP4": "1V",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "RICED4": "1X",
+          "VALRE5": "1X",
+          "WRI": "4P",
+          "WRI DIXIE": "5S",
+          "Finals-EMPYR-ILS13": "1F",
+          "Finals-HAARP-ILS13": "1F",
+          "Finals-EMPYR-ILS22/D13": "1F",
+          "Finals-HAARP-ILS22": "1F",
+          "Finals-EMPYR-ILS22/D31": "1F",
+          "Finals-EMPYR-ILS4": "1F",
+          "Finals-HAARP-L4/D13": "1F",
+          "Finals-HAARP-L4/D31": "1F",
+          "Finals-EMPYR-LOC31": "1F",
+          "Finals-HAARP-LOC31": "1F",
+          "Finals-EMPYR-RX31": "1F",
+          "Finals-HAARP-RX31": "1F",
+          "JAIKE4 MUGZY NE": "4U",
+          "JAIKE4 MUGZY SW": "4U",
+          "MAZIE MUGZY NE": "4U",
+          "MAZIE MUGZY SW": "4U",
+          "PHL Prop": "4P",
+          "BOUNO5.ISP": "3O",
+          "DENNA1": "3R",
+          "Intra-TRACON Via BDR": "3O",
+          "Intra-TRACON Via CCC": "3B",
+          "Intra-TRACON Via CREAM": "3B",
+          "Intra-TRACON Via DENNA": "3Z",
+          "Intra-TRACON Via HFD": "3O",
+          "Intra-TRACON Via HTO": "3B",
+          "Intra-TRACON Via JFK": "3H",
+          "Intra-TRACON Via LOVES": "3R",
+          "Intra-TRACON Via MAD": "3O",
+          "Intra-TRACON Via SARDI": "3H",
+          "LOVES1": "3R",
+          "NELIE4": "3B",
+          "KBDR": "3Z",
+          "KFOK": "3I",
+          "KHVN": "3Z",
+          "KISP": "3H",
+          "KOXC": "3Z",
+          "CAMRN5": "2G",
+          "Intra-TRACON (ISP/HVN)": "3H",
+          "Intra-TRACON (JFK/FRG East)": "2K",
+          "Intra-TRACON (JFK/FRG West)": "2G",
+          "OWENZ": "2G",
+          "PARCH4": "2K",
+          "PUCKY1": "2E",
+          "HAARP3": "1V",
+          "KORRY4": "1D",
+          "MIP4": "1D",
+          "(ISP) HFD T216 SALEM CCC": "3B",
+          "(ISP) Q439 SARDI": "3H",
+          "(ISP) SEY ORCHA CCC": "3B",
+          "(ISP) T224 JFK": "5S",
+          "(ISP) T303 BELTT": "3O",
+          "(ISPN) DVANY T303 HFD": "3Z",
+          "(ISPN) SEY V34 CREAM": "3B",
+          "(ISPN) T320 RICED KEYED": "3B",
+          "(JFK) ZIGGI": "2G",
+          "BDR1": "3R",
+          "HUD4": "5H",
+          "NOBBI5": "1X",
+          "PARCH3": "2K",
+          "South 22 background": "4P",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "MIP4 LGA background 4": "1D",
+          "HAARP LGA background 4/13": "1V",
+          "HAARP LGA background 4/31": "1V",
+          "North": "4P",
+          "South": "4A",
+          "South29": "4A",
+          "COATE TEB SW": "4P"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KHPN": "1Y",
+          "KMMU": "4N",
+          "KTEB": "4N",
+          "KFRG": "2K",
+          "KHVN": "3H",
+          "KISP": "3H",
+          "KJFK": "2J",
+          "KLGA": "1L",
+          "KBDR": "3Z",
+          "KDXR": "1Y",
+          "KFOK": "3I",
+          "KJPX": "3I",
+          "KOXC": "3Z",
+          "KPOU": "5H",
+          "KSWF": "5H"
+        }
+      },
+      "J31": {
+        "default_consolidation": {
+          "2G": [
+            "2A",
+            "2E",
+            "2J",
+            "2K",
+            "3H"
+          ],
+          "2K": [
+            "2M"
+          ]
+        },
+        "inbound_assignments": {
+          "BOUNO5": "1X",
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "HAARP4": "1V",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "RICED4": "1X",
+          "VALRE5": "1X",
+          "WRI": "4P",
+          "WRI DIXIE": "5S",
+          "Finals-EMPYR-ILS13": "1F",
+          "Finals-HAARP-ILS13": "1F",
+          "Finals-EMPYR-ILS22/D13": "1F",
+          "Finals-HAARP-ILS22": "1F",
+          "Finals-EMPYR-ILS22/D31": "1F",
+          "Finals-EMPYR-ILS4": "1F",
+          "Finals-HAARP-L4/D13": "1F",
+          "Finals-HAARP-L4/D31": "1F",
+          "Finals-EMPYR-LOC31": "1F",
+          "Finals-HAARP-LOC31": "1F",
+          "Finals-EMPYR-RX31": "1F",
+          "Finals-HAARP-RX31": "1F",
+          "JAIKE4 MUGZY NE": "4U",
+          "JAIKE4 MUGZY SW": "4U",
+          "MAZIE MUGZY NE": "4U",
+          "MAZIE MUGZY SW": "4U",
+          "PHL Prop": "4P",
+          "BOUNO5.ISP": "3O",
+          "DENNA1": "3R",
+          "Intra-TRACON Via BDR": "3O",
+          "Intra-TRACON Via CCC": "3B",
+          "Intra-TRACON Via CREAM": "3B",
+          "Intra-TRACON Via DENNA": "3Z",
+          "Intra-TRACON Via HFD": "3O",
+          "Intra-TRACON Via HTO": "3B",
+          "Intra-TRACON Via JFK": "3H",
+          "Intra-TRACON Via LOVES": "3R",
+          "Intra-TRACON Via MAD": "3O",
+          "Intra-TRACON Via SARDI": "3H",
+          "LOVES1": "3R",
+          "NELIE4": "3B",
+          "KBDR": "3Z",
+          "KFOK": "3I",
+          "KHVN": "3Z",
+          "KISP": "3H",
+          "KOXC": "3Z",
+          "CAMRN5": "2G",
+          "Intra-TRACON (ISP/HVN)": "3H",
+          "Intra-TRACON (JFK/FRG East)": "2K",
+          "Intra-TRACON (JFK/FRG West)": "2G",
+          "OWENZ": "2G",
+          "PARCH4": "2K",
+          "PUCKY1": "2E",
+          "HAARP3": "1V",
+          "KORRY4": "1D",
+          "MIP4": "1D",
+          "(ISP) HFD T216 SALEM CCC": "3B",
+          "(ISP) Q439 SARDI": "3H",
+          "(ISP) SEY ORCHA CCC": "3B",
+          "(ISP) T224 JFK": "5S",
+          "(ISP) T303 BELTT": "3O",
+          "(ISPN) DVANY T303 HFD": "3Z",
+          "(ISPN) SEY V34 CREAM": "3B",
+          "(ISPN) T320 RICED KEYED": "3B",
+          "(JFK) ZIGGI": "2G",
+          "BDR1": "3R",
+          "HUD4": "5H",
+          "NOBBI5": "1X",
+          "PARCH3": "2K",
+          "South 22 background": "4P",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "MIP4 LGA background 4": "1D",
+          "HAARP LGA background 4/13": "1V",
+          "HAARP LGA background 4/31": "1V",
+          "North": "4P",
+          "South": "4A",
+          "South29": "4A",
+          "COATE TEB SW": "4P"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KHPN": "1Y",
+          "KMMU": "4N",
+          "KTEB": "4N",
+          "KFRG": "2K",
+          "KHVN": "3H",
+          "KISP": "3H",
+          "KJFK": "2J",
+          "KLGA": "1L",
+          "KBDR": "3Z",
+          "KDXR": "1Y",
+          "KFOK": "3I",
+          "KJPX": "3I",
+          "KOXC": "3Z",
+          "KPOU": "5H",
+          "KSWF": "5H"
+        }
+      },
+      "J04": {
+        "default_consolidation": {
+          "2G": [
+            "2A",
+            "2K",
+            "3H"
+          ],
+          "2K": [
+            "2E",
+            "2J",
+            "2M"
+          ]
+        },
+        "inbound_assignments": {
+          "BOUNO5": "1X",
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "HAARP4": "1V",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "RICED4": "1X",
+          "VALRE5": "1X",
+          "WRI": "4P",
+          "WRI DIXIE": "5S",
+          "Finals-EMPYR-ILS13": "1F",
+          "Finals-HAARP-ILS13": "1F",
+          "Finals-EMPYR-ILS22/D13": "1F",
+          "Finals-HAARP-ILS22": "1F",
+          "Finals-EMPYR-ILS22/D31": "1F",
+          "Finals-EMPYR-ILS4": "1F",
+          "Finals-HAARP-L4/D13": "1F",
+          "Finals-HAARP-L4/D31": "1F",
+          "Finals-EMPYR-LOC31": "1F",
+          "Finals-HAARP-LOC31": "1F",
+          "Finals-EMPYR-RX31": "1F",
+          "Finals-HAARP-RX31": "1F",
+          "JAIKE4 MUGZY NE": "4U",
+          "JAIKE4 MUGZY SW": "4U",
+          "MAZIE MUGZY NE": "4U",
+          "MAZIE MUGZY SW": "4U",
+          "PHL Prop": "4P",
+          "BOUNO5.ISP": "3O",
+          "DENNA1": "3R",
+          "Intra-TRACON Via BDR": "3O",
+          "Intra-TRACON Via CCC": "3B",
+          "Intra-TRACON Via CREAM": "3B",
+          "Intra-TRACON Via DENNA": "3Z",
+          "Intra-TRACON Via HFD": "3O",
+          "Intra-TRACON Via HTO": "3B",
+          "Intra-TRACON Via JFK": "3H",
+          "Intra-TRACON Via LOVES": "3R",
+          "Intra-TRACON Via MAD": "3O",
+          "Intra-TRACON Via SARDI": "3H",
+          "LOVES1": "3R",
+          "NELIE4": "3B",
+          "KBDR": "3Z",
+          "KFOK": "3I",
+          "KHVN": "3Z",
+          "KISP": "3H",
+          "KOXC": "3Z",
+          "CAMRN5": "2G",
+          "Intra-TRACON (ISP/HVN)": "3H",
+          "Intra-TRACON (JFK/FRG East)": "2K",
+          "Intra-TRACON (JFK/FRG West)": "2G",
+          "OWENZ": "2G",
+          "PARCH4": "2K",
+          "PUCKY1": "2E",
+          "HAARP3": "1V",
+          "KORRY4": "1D",
+          "MIP4": "1D",
+          "(ISP) HFD T216 SALEM CCC": "3B",
+          "(ISP) Q439 SARDI": "3H",
+          "(ISP) SEY ORCHA CCC": "3B",
+          "(ISP) T224 JFK": "5S",
+          "(ISP) T303 BELTT": "3O",
+          "(ISPN) DVANY T303 HFD": "3Z",
+          "(ISPN) SEY V34 CREAM": "3B",
+          "(ISPN) T320 RICED KEYED": "3B",
+          "(JFK) ZIGGI": "2G",
+          "BDR1": "3R",
+          "HUD4": "5H",
+          "NOBBI5": "1X",
+          "PARCH3": "2K",
+          "South 22 background": "4P",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "MIP4 LGA background 4": "1D",
+          "HAARP LGA background 4/13": "1V",
+          "HAARP LGA background 4/31": "1V",
+          "North": "4P",
+          "South": "4A",
+          "South29": "4A",
+          "COATE TEB SW": "4P"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KHPN": "1Y",
+          "KMMU": "4N",
+          "KTEB": "4N",
+          "KFRG": "2K",
+          "KHVN": "3H",
+          "KISP": "3H",
+          "KJFK": "2J",
+          "KLGA": "1L",
+          "KBDR": "3Z",
+          "KDXR": "1Y",
+          "KFOK": "3I",
+          "KJPX": "3I",
+          "KOXC": "3Z",
+          "KPOU": "5H",
+          "KSWF": "5H"
+        }
+      },
+      "LBE": {
+        "default_consolidation": {
+          "5E": []
+        },
+        "inbound_assignments": {
+          "BOUNO5": "1X",
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "HAARP4": "1V",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "RICED4": "1X",
+          "VALRE5": "1X",
+          "WRI": "4P",
+          "CAMRN/PUCKY1.Finals22": "2A",
+          "CAMRN/PUCKY1.Finals31": "2A",
+          "CAMRN5.Finals13": "2A",
+          "PARCH4.Finals13": "2A",
+          "PARCH4.Finals22": "2A",
+          "PARCH4.Finals31": "2A",
+          "PUCKY1.Finals13": "2A",
+          "WRI DIXIE": "5S",
+          "Finals-EMPYR-ILS13": "1F",
+          "Finals-HAARP-ILS13": "1F",
+          "Finals-EMPYR-ILS22/D13": "1F",
+          "Finals-HAARP-ILS22": "1F",
+          "Finals-EMPYR-ILS22/D31": "1F",
+          "Finals-EMPYR-ILS4": "1F",
+          "Finals-HAARP-L4/D13": "1F",
+          "Finals-HAARP-L4/D31": "1F",
+          "Finals-EMPYR-LOC31": "1F",
+          "Finals-HAARP-LOC31": "1F",
+          "Finals-EMPYR-RX31": "1F",
+          "Finals-HAARP-RX31": "1F",
+          "JAIKE4 MUGZY NE": "4U",
+          "JAIKE4 MUGZY SW": "4U",
+          "MAZIE MUGZY NE": "4U",
+          "MAZIE MUGZY SW": "4U",
+          "PHL Prop": "4P",
+          "BOUNO5.ISP": "3O",
+          "DENNA1": "3R",
+          "Intra-TRACON Via BDR": "3O",
+          "Intra-TRACON Via CCC": "3B",
+          "Intra-TRACON Via CREAM": "3B",
+          "Intra-TRACON Via DENNA": "3Z",
+          "Intra-TRACON Via HFD": "3O",
+          "Intra-TRACON Via HTO": "3B",
+          "Intra-TRACON Via JFK": "3H",
+          "Intra-TRACON Via LOVES": "3R",
+          "Intra-TRACON Via MAD": "3O",
+          "Intra-TRACON Via SARDI": "3H",
+          "LOVES1": "3R",
+          "NELIE4": "3B",
+          "KBDR": "3Z",
+          "KFOK": "3I",
+          "KHVN": "3Z",
+          "KISP": "3H",
+          "KOXC": "3Z",
+          "CAMRN5": "2G",
+          "Intra-TRACON (ISP/HVN)": "3H",
+          "Intra-TRACON (JFK/FRG East)": "2K",
+          "Intra-TRACON (JFK/FRG West)": "2G",
+          "OWENZ": "2G",
+          "PARCH4": "2K",
+          "PUCKY1": "2E",
+          "HAARP3": "1V",
+          "KORRY4": "1D",
+          "MIP4": "1D",
+          "(ISP) HFD T216 SALEM CCC": "3B",
+          "(ISP) Q439 SARDI": "3H",
+          "(ISP) SEY ORCHA CCC": "3B",
+          "(ISP) T224 JFK": "5S",
+          "(ISP) T303 BELTT": "3O",
+          "(ISPN) DVANY T303 HFD": "3Z",
+          "(ISPN) SEY V34 CREAM": "3B",
+          "(ISPN) T320 RICED KEYED": "3B",
+          "(JFK) ZIGGI": "2G",
+          "BDR1": "3R",
+          "HUD4": "5H",
+          "NOBBI5": "1X",
+          "PARCH3": "2K",
+          "South 22 background": "4P",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "MIP4 LGA background 4": "1D",
+          "HAARP LGA background 4/13": "1V",
+          "HAARP LGA background 4/31": "1V",
+          "North": "4P",
+          "South": "4A",
+          "South29": "4A",
+          "COATE TEB SW": "4P"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KHPN": "1Y",
+          "KMMU": "4N",
+          "KTEB": "4N",
+          "KFRG": "2K",
+          "KHVN": "3H",
+          "KISP": "3H",
+          "KJFK": "2J",
+          "KLGA": "1L",
+          "KBDR": "3Z",
+          "KDXR": "1Y",
+          "KFOK": "3I",
+          "KJPX": "3I",
+          "KOXC": "3Z",
+          "KPOU": "5H",
+          "KSWF": "5H"
+        }
+      },
+      "LBN": {
+        "default_consolidation": {
+          "5T": []
+        },
+        "inbound_assignments": {
+          "BOUNO5": "1X",
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "HAARP4": "1V",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "RICED4": "1X",
+          "VALRE5": "1X",
+          "WRI": "4P",
+          "CAMRN/PUCKY1.Finals22": "2A",
+          "CAMRN/PUCKY1.Finals31": "2A",
+          "CAMRN5.Finals13": "2A",
+          "PARCH4.Finals13": "2A",
+          "PARCH4.Finals22": "2A",
+          "PARCH4.Finals31": "2A",
+          "PUCKY1.Finals13": "2A",
+          "WRI DIXIE": "5S",
+          "Finals-EMPYR-ILS13": "1F",
+          "Finals-HAARP-ILS13": "1F",
+          "Finals-EMPYR-ILS22/D13": "1F",
+          "Finals-HAARP-ILS22": "1F",
+          "Finals-EMPYR-ILS22/D31": "1F",
+          "Finals-EMPYR-ILS4": "1F",
+          "Finals-HAARP-L4/D13": "1F",
+          "Finals-HAARP-L4/D31": "1F",
+          "Finals-EMPYR-LOC31": "1F",
+          "Finals-HAARP-LOC31": "1F",
+          "Finals-EMPYR-RX31": "1F",
+          "Finals-HAARP-RX31": "1F",
+          "JAIKE4 MUGZY NE": "4U",
+          "JAIKE4 MUGZY SW": "4U",
+          "MAZIE MUGZY NE": "4U",
+          "MAZIE MUGZY SW": "4U",
+          "PHL Prop": "4P",
+          "BOUNO5.ISP": "3O",
+          "DENNA1": "3R",
+          "Intra-TRACON Via BDR": "3O",
+          "Intra-TRACON Via CCC": "3B",
+          "Intra-TRACON Via CREAM": "3B",
+          "Intra-TRACON Via DENNA": "3Z",
+          "Intra-TRACON Via HFD": "3O",
+          "Intra-TRACON Via HTO": "3B",
+          "Intra-TRACON Via JFK": "3H",
+          "Intra-TRACON Via LOVES": "3R",
+          "Intra-TRACON Via MAD": "3O",
+          "Intra-TRACON Via SARDI": "3H",
+          "LOVES1": "3R",
+          "NELIE4": "3B",
+          "KBDR": "3Z",
+          "KFOK": "3I",
+          "KHVN": "3Z",
+          "KISP": "3H",
+          "KOXC": "3Z",
+          "CAMRN5": "2G",
+          "Intra-TRACON (ISP/HVN)": "3H",
+          "Intra-TRACON (JFK/FRG East)": "2K",
+          "Intra-TRACON (JFK/FRG West)": "2G",
+          "OWENZ": "2G",
+          "PARCH4": "2K",
+          "PUCKY1": "2E",
+          "HAARP3": "1V",
+          "KORRY4": "1D",
+          "MIP4": "1D",
+          "(ISP) HFD T216 SALEM CCC": "3B",
+          "(ISP) Q439 SARDI": "3H",
+          "(ISP) SEY ORCHA CCC": "3B",
+          "(ISP) T224 JFK": "5S",
+          "(ISP) T303 BELTT": "3O",
+          "(ISPN) DVANY T303 HFD": "3Z",
+          "(ISPN) SEY V34 CREAM": "3B",
+          "(ISPN) T320 RICED KEYED": "3B",
+          "(JFK) ZIGGI": "2G",
+          "BDR1": "3R",
+          "HUD4": "5H",
+          "NOBBI5": "1X",
+          "PARCH3": "2K",
+          "South 22 background": "4P",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "MIP4 LGA background 4": "1D",
+          "HAARP LGA background 4/13": "1V",
+          "HAARP LGA background 4/31": "1V",
+          "North": "4P",
+          "South": "4A",
+          "South29": "4A",
+          "COATE TEB SW": "4P"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KHPN": "1Y",
+          "KMMU": "4N",
+          "KTEB": "4N",
+          "KFRG": "2K",
+          "KHVN": "3H",
+          "KISP": "3H",
+          "KJFK": "2J",
+          "KLGA": "1L",
+          "KBDR": "3Z",
+          "KDXR": "1Y",
+          "KFOK": "3I",
+          "KJPX": "3I",
+          "KOXC": "3Z",
+          "KPOU": "5H",
+          "KSWF": "5H"
+        }
+      },
+      "LBS": {
+        "default_consolidation": {
+          "5S": []
+        },
+        "inbound_assignments": {
+          "BOUNO5": "1X",
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "HAARP4": "1V",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "RICED4": "1X",
+          "VALRE5": "1X",
+          "WRI": "4P",
+          "CAMRN/PUCKY1.Finals22": "2A",
+          "CAMRN/PUCKY1.Finals31": "2A",
+          "CAMRN5.Finals13": "2A",
+          "PARCH4.Finals13": "2A",
+          "PARCH4.Finals22": "2A",
+          "PARCH4.Finals31": "2A",
+          "PUCKY1.Finals13": "2A",
+          "WRI DIXIE": "5S",
+          "Finals-EMPYR-ILS13": "1F",
+          "Finals-HAARP-ILS13": "1F",
+          "Finals-EMPYR-ILS22/D13": "1F",
+          "Finals-HAARP-ILS22": "1F",
+          "Finals-EMPYR-ILS22/D31": "1F",
+          "Finals-EMPYR-ILS4": "1F",
+          "Finals-HAARP-L4/D13": "1F",
+          "Finals-HAARP-L4/D31": "1F",
+          "Finals-EMPYR-LOC31": "1F",
+          "Finals-HAARP-LOC31": "1F",
+          "Finals-EMPYR-RX31": "1F",
+          "Finals-HAARP-RX31": "1F",
+          "JAIKE4 MUGZY NE": "4U",
+          "JAIKE4 MUGZY SW": "4U",
+          "MAZIE MUGZY NE": "4U",
+          "MAZIE MUGZY SW": "4U",
+          "PHL Prop": "4P",
+          "BOUNO5.ISP": "3O",
+          "DENNA1": "3R",
+          "Intra-TRACON Via BDR": "3O",
+          "Intra-TRACON Via CCC": "3B",
+          "Intra-TRACON Via CREAM": "3B",
+          "Intra-TRACON Via DENNA": "3Z",
+          "Intra-TRACON Via HFD": "3O",
+          "Intra-TRACON Via HTO": "3B",
+          "Intra-TRACON Via JFK": "3H",
+          "Intra-TRACON Via LOVES": "3R",
+          "Intra-TRACON Via MAD": "3O",
+          "Intra-TRACON Via SARDI": "3H",
+          "LOVES1": "3R",
+          "NELIE4": "3B",
+          "KBDR": "3Z",
+          "KFOK": "3I",
+          "KHVN": "3Z",
+          "KISP": "3H",
+          "KOXC": "3Z",
+          "CAMRN5": "2G",
+          "Intra-TRACON (ISP/HVN)": "3H",
+          "Intra-TRACON (JFK/FRG East)": "2K",
+          "Intra-TRACON (JFK/FRG West)": "2G",
+          "OWENZ": "2G",
+          "PARCH4": "2K",
+          "PUCKY1": "2E",
+          "HAARP3": "1V",
+          "KORRY4": "1D",
+          "MIP4": "1D",
+          "(ISP) HFD T216 SALEM CCC": "3B",
+          "(ISP) Q439 SARDI": "3H",
+          "(ISP) SEY ORCHA CCC": "3B",
+          "(ISP) T224 JFK": "5S",
+          "(ISP) T303 BELTT": "3O",
+          "(ISPN) DVANY T303 HFD": "3Z",
+          "(ISPN) SEY V34 CREAM": "3B",
+          "(ISPN) T320 RICED KEYED": "3B",
+          "(JFK) ZIGGI": "2G",
+          "BDR1": "3R",
+          "HUD4": "5H",
+          "NOBBI5": "1X",
+          "PARCH3": "2K",
+          "South 22 background": "4P",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "MIP4 LGA background 4": "1D",
+          "HAARP LGA background 4/13": "1V",
+          "HAARP LGA background 4/31": "1V",
+          "North": "4P",
+          "South": "4A",
+          "South29": "4A",
+          "COATE TEB SW": "4P"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KHPN": "1Y",
+          "KMMU": "4N",
+          "KTEB": "4N",
+          "KFRG": "2K",
+          "KHVN": "3H",
+          "KISP": "3H",
+          "KJFK": "2J",
+          "KLGA": "1L",
+          "KBDR": "3Z",
+          "KDXR": "1Y",
+          "KFOK": "3I",
+          "KJPX": "3I",
+          "KOXC": "3Z",
+          "KPOU": "5H",
+          "KSWF": "5H"
+        }
+      },
+      "LBW": {
+        "default_consolidation": {
+          "5W": []
+        },
+        "inbound_assignments": {
+          "BOUNO5": "1X",
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4W",
+          "HAARP4": "1V",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "RICED4": "1X",
+          "VALRE5": "1X",
+          "WRI": "4P",
+          "CAMRN/PUCKY1.Finals22": "2A",
+          "CAMRN/PUCKY1.Finals31": "2A",
+          "CAMRN5.Finals13": "2A",
+          "PARCH4.Finals13": "2A",
+          "PARCH4.Finals22": "2A",
+          "PARCH4.Finals31": "2A",
+          "PUCKY1.Finals13": "2A",
+          "WRI DIXIE": "5S",
+          "Finals-EMPYR-ILS13": "1F",
+          "Finals-HAARP-ILS13": "1F",
+          "Finals-EMPYR-ILS22/D13": "1F",
+          "Finals-HAARP-ILS22": "1F",
+          "Finals-EMPYR-ILS22/D31": "1F",
+          "Finals-EMPYR-ILS4": "1F",
+          "Finals-HAARP-L4/D13": "1F",
+          "Finals-HAARP-L4/D31": "1F",
+          "Finals-EMPYR-LOC31": "1F",
+          "Finals-HAARP-LOC31": "1F",
+          "Finals-EMPYR-RX31": "1F",
+          "Finals-HAARP-RX31": "1F",
+          "JAIKE4 MUGZY NE": "4U",
+          "JAIKE4 MUGZY SW": "4U",
+          "MAZIE MUGZY NE": "4U",
+          "MAZIE MUGZY SW": "4U",
+          "PHL Prop": "4P",
+          "BOUNO5.ISP": "3O",
+          "DENNA1": "3R",
+          "Intra-TRACON Via BDR": "3O",
+          "Intra-TRACON Via CCC": "3B",
+          "Intra-TRACON Via CREAM": "3B",
+          "Intra-TRACON Via DENNA": "3Z",
+          "Intra-TRACON Via HFD": "3O",
+          "Intra-TRACON Via HTO": "3B",
+          "Intra-TRACON Via JFK": "3H",
+          "Intra-TRACON Via LOVES": "3R",
+          "Intra-TRACON Via MAD": "3O",
+          "Intra-TRACON Via SARDI": "3H",
+          "LOVES1": "3R",
+          "NELIE4": "3B",
+          "KBDR": "3Z",
+          "KFOK": "3I",
+          "KHVN": "3Z",
+          "KISP": "3H",
+          "KOXC": "3Z",
+          "CAMRN5": "2G",
+          "Intra-TRACON (ISP/HVN)": "3H",
+          "Intra-TRACON (JFK/FRG East)": "2K",
+          "Intra-TRACON (JFK/FRG West)": "2G",
+          "OWENZ": "2G",
+          "PARCH4": "2K",
+          "PUCKY1": "2E",
+          "HAARP3": "1V",
+          "KORRY4": "1D",
+          "MIP4": "1D",
+          "(ISP) HFD T216 SALEM CCC": "3B",
+          "(ISP) Q439 SARDI": "3H",
+          "(ISP) SEY ORCHA CCC": "3B",
+          "(ISP) T224 JFK": "5S",
+          "(ISP) T303 BELTT": "3O",
+          "(ISPN) DVANY T303 HFD": "3Z",
+          "(ISPN) SEY V34 CREAM": "3B",
+          "(ISPN) T320 RICED KEYED": "3B",
+          "(JFK) ZIGGI": "2G",
+          "BDR1": "3R",
+          "HUD4": "5H",
+          "NOBBI5": "1X",
+          "PARCH3": "2K",
+          "South 22 background": "4P",
+          "TEB 22 background": "4P",
+          "MIP4 LGA background 22/13": "1D",
+          "MIP4 LGA background 22/31": "1D",
+          "MIP4 LGA background 4": "1D",
+          "HAARP LGA background 4/13": "1V",
+          "HAARP LGA background 4/31": "1V",
+          "North": "4P",
+          "South": "4A",
+          "South29": "4A",
+          "COATE TEB SW": "4P"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KHPN": "1Y",
+          "KMMU": "4N",
+          "KTEB": "4N",
+          "KFRG": "2K",
+          "KHVN": "3H",
+          "KISP": "3H",
+          "KJFK": "2J",
+          "KLGA": "1L",
+          "KBDR": "3Z",
+          "KDXR": "1Y",
+          "KFOK": "3I",
+          "KJPX": "3I",
+          "KOXC": "3Z",
+          "KPOU": "5H",
+          "KSWF": "5H"
         }
       }
     },
@@ -1992,144 +2934,323 @@
     "ssr_codes": {
       "auto_assignable_codes": {
         "1": {
-          "ranges": ["0401-0477"],
+          "ranges": [
+            "0401-0477"
+          ],
           "backup_pool_list": "234"
         },
         "2": {
-          "ranges": ["0501-0577"],
+          "ranges": [
+            "0501-0577"
+          ],
           "backup_pool_list": "234"
         },
         "3": {
-          "ranges": ["0601-0677"],
+          "ranges": [
+            "0601-0677"
+          ],
           "backup_pool_list": "234"
         },
         "4": {
-          "ranges": ["0701-0777"],
+          "ranges": [
+            "0701-0777"
+          ],
           "backup_pool_list": "123"
         },
         "ifr": {
-          "ranges": ["1501-1677"]
+          "ranges": [
+            "1501-1677"
+          ]
         },
         "vfr": {
-          "ranges": ["0301-0377"]
+          "ranges": [
+            "0301-0377"
+          ]
         }
       },
       "beacon_code_table": {
-        "vfr_codes": ["1200-1202"]
+        "vfr_codes": [
+          "1200-1202"
+        ]
       }
     },
     "airspace_awareness": [
       {
-        "fixes": ["MERIT", "BAYYS", "GREKI", "DEEZZ", "BAYYS", "BDR", "HIDAL", "STUBY", "PWL", "IGN"],
-        "altitude_range": [13000, 999000],
+        "fixes": [
+          "MERIT",
+          "BAYYS",
+          "GREKI",
+          "DEEZZ",
+          "BAYYS",
+          "BDR",
+          "HIDAL",
+          "STUBY",
+          "PWL",
+          "IGN"
+        ],
+        "altitude_range": [
+          13000,
+          999000
+        ],
         "receiving_controller": "B19"
       },
       {
-        "fixes": ["DIXIE"],
-        "altitude_range": [0, 8000],
-        "aircraft_type": ["J"],
+        "fixes": [
+          "DIXIE"
+        ],
+        "altitude_range": [
+          0,
+          8000
+        ],
+        "aircraft_type": [
+          "J"
+        ],
         "receiving_controller": "51Y"
       },
       {
-        "fixes": ["DIXIE"],
-        "altitude_range": [0, 6000],
-        "aircraft_type": ["P", "T"],
+        "fixes": [
+          "DIXIE"
+        ],
+        "altitude_range": [
+          0,
+          6000
+        ],
+        "aircraft_type": [
+          "P",
+          "T"
+        ],
         "receiving_controller": "51Y"
       },
       {
-        "fixes": ["DIXIE"],
-        "altitude_range": [11000, 999999],
+        "fixes": [
+          "DIXIE"
+        ],
+        "altitude_range": [
+          11000,
+          999999
+        ],
         "receiving_controller": "C68"
       },
       {
-        "fixes": ["WHITE", "COL", "VALRE"],
-        "altitude_range": [9000, 999999],
+        "fixes": [
+          "WHITE",
+          "COL",
+          "VALRE"
+        ],
+        "altitude_range": [
+          9000,
+          999999
+        ],
         "receiving_controller": "C68"
       },
       {
-        "fixes": ["RBV"],
-        "altitude_range": [14000, 999999],
-        "aircraft_type": ["J"],
+        "fixes": [
+          "RBV"
+        ],
+        "altitude_range": [
+          14000,
+          999999
+        ],
+        "aircraft_type": [
+          "J"
+        ],
         "receiving_controller": "C34"
       },
       {
-        "fixes": ["ARD"],
-        "altitude_range": [14000, 999999],
-        "aircraft_type": ["P", "T"],
+        "fixes": [
+          "ARD"
+        ],
+        "altitude_range": [
+          14000,
+          999999
+        ],
+        "aircraft_type": [
+          "P",
+          "T"
+        ],
         "receiving_controller": "C34"
       },
       {
-        "fixes": ["COATE", "GAYEL", "NEION", "HNK", "WEARD", "HUO"],
-        "altitude_range": [16000, 999999],
-        "aircraft_type": ["J"],
+        "fixes": [
+          "COATE",
+          "GAYEL",
+          "NEION",
+          "HNK",
+          "WEARD",
+          "HUO"
+        ],
+        "altitude_range": [
+          16000,
+          999999
+        ],
+        "aircraft_type": [
+          "J"
+        ],
         "receiving_controller": "C35"
       },
       {
-        "fixes": ["COATE", "HNK", "WEARD", "HUO"],
-        "altitude_range": [11000, 14000],
+        "fixes": [
+          "COATE",
+          "HNK",
+          "WEARD",
+          "HUO"
+        ],
+        "altitude_range": [
+          11000,
+          14000
+        ],
         "receiving_controller": "C51"
       },
       {
-        "fixes": ["GAYEL", "HNK", "WEARD", "HUO"],
-        "altitude_range": [14000, 14000],
-        "aircraft_type": ["P", "T"],
+        "fixes": [
+          "GAYEL",
+          "HNK",
+          "WEARD",
+          "HUO"
+        ],
+        "altitude_range": [
+          14000,
+          14000
+        ],
+        "aircraft_type": [
+          "P",
+          "T"
+        ],
         "receiving_controller": "C51"
       },
       {
-        "fixes": ["HAAYS"],
-        "altitude_range": [12000, 12000],
+        "fixes": [
+          "HAAYS"
+        ],
+        "altitude_range": [
+          12000,
+          12000
+        ],
         "receiving_controller": "C51"
       },
       {
-        "fixes": ["COATE"],
-        "altitude_range": [8000, 10000],
+        "fixes": [
+          "COATE"
+        ],
+        "altitude_range": [
+          8000,
+          10000
+        ],
         "receiving_controller": "71B"
       },
       {
-        "fixes": ["SAX"],
-        "altitude_range": [8000, 8000],
+        "fixes": [
+          "SAX"
+        ],
+        "altitude_range": [
+          8000,
+          8000
+        ],
         "receiving_controller": "71B"
       },
       {
-        "fixes": ["HAAYS"],
-        "altitude_range": [9000, 10000],
+        "fixes": [
+          "HAAYS"
+        ],
+        "altitude_range": [
+          9000,
+          10000
+        ],
         "receiving_controller": "71B"
       },
       {
-        "fixes": ["PARKE", "ELIOT", "SBJ"],
-        "altitude_range": [14000, 99999],
+        "fixes": [
+          "PARKE",
+          "ELIOT",
+          "SBJ"
+        ],
+        "altitude_range": [
+          14000,
+          99999
+        ],
         "receiving_controller": "C39"
       },
       {
-        "fixes": ["NEWEL", "ZIMMZ"],
-        "altitude_range": [17000, 99999],
+        "fixes": [
+          "NEWEL",
+          "ZIMMZ"
+        ],
+        "altitude_range": [
+          17000,
+          99999
+        ],
         "receiving_controller": "C39"
       },
       {
-        "fixes": ["BIGGY"],
-        "altitude_range": [14000, 99999],
+        "fixes": [
+          "BIGGY"
+        ],
+        "altitude_range": [
+          14000,
+          99999
+        ],
         "receiving_controller": "C34"
       },
       {
-        "fixes": ["BIGGY"],
-        "altitude_range": [17000, 99999],
+        "fixes": [
+          "BIGGY"
+        ],
+        "altitude_range": [
+          17000,
+          99999
+        ],
         "receiving_controller": "C34"
       },
       {
-        "fixes": ["SHIPP", "WAVEY", "HFD", "BRISS", "LOVES", "MOONI"],
-        "aircraft_type": ["J"],
-        "altitude_range": [12000, 99999],
+        "fixes": [
+          "SHIPP",
+          "WAVEY",
+          "HFD",
+          "BRISS",
+          "LOVES",
+          "MOONI"
+        ],
+        "aircraft_type": [
+          "J"
+        ],
+        "altitude_range": [
+          12000,
+          99999
+        ],
         "receiving_controller": "C66"
       },
       {
-        "fixes": ["SHIPP", "WAVEY", "HFD", "BRISS", "LOVES", "MOONI"],
-        "aircraft_type": ["P", "T"],
-        "altitude_range": [10000, 99999],
+        "fixes": [
+          "SHIPP",
+          "WAVEY",
+          "HFD",
+          "BRISS",
+          "LOVES",
+          "MOONI"
+        ],
+        "aircraft_type": [
+          "P",
+          "T"
+        ],
+        "altitude_range": [
+          10000,
+          99999
+        ],
         "receiving_controller": "C66"
       },
       {
-        "fixes": ["BETTE", "HAPIE", "HTO", "BDR", "MAD", "BEADS"],
-        "altitude_range": [11000, 99999],
+        "fixes": [
+          "BETTE",
+          "HAPIE",
+          "HTO",
+          "BDR",
+          "MAD",
+          "BEADS"
+        ],
+        "altitude_range": [
+          11000,
+          99999
+        ],
         "receiving_controller": "B17"
       }
     ],
@@ -2568,26 +3689,41 @@
         {
           "name": "HVN.",
           "id": "A",
-          "airports": ["KHVN"]
+          "airports": [
+            "KHVN"
+          ]
         },
         {
           "name": "BDR.",
           "id": "B",
-          "airports": ["KBDR"]
+          "airports": [
+            "KBDR"
+          ]
         },
         {
           "name": "FOK.",
           "id": "C",
-          "airports": ["KFOK"]
+          "airports": [
+            "KFOK"
+          ]
         },
         {
           "name": "OXC.",
           "id": "D",
-          "airports": ["KOXC"]
+          "airports": [
+            "KOXC"
+          ]
         }
       ],
       "ssa": {
-        "altimeters": ["KJFK", "KLGA", "KEWR", "KTEB", "KISP", "KHPN"]
+        "altimeters": [
+          "KJFK",
+          "KLGA",
+          "KEWR",
+          "KTEB",
+          "KISP",
+          "KHPN"
+        ]
       }
     }
   },

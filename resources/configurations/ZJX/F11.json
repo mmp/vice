@@ -263,7 +263,31 @@
           "X23": "1N"
         },
         "default_consolidation": {
-          "1A": ["1B", "1D", "1E", "1G", "1K", "1L", "1M", "MG", "MM", "1N", "1P", "1R", "1V", "1W", "1X"]
+          "1A": [
+            "1K"
+          ],
+          "1B": [
+            "1L"
+          ],
+          "1D": [
+            "1A",
+            "1N"
+          ],
+          "1E": [
+            "1B",
+            "1D",
+            "1R",
+            "1W"
+          ],
+          "1M": [
+            "1G"
+          ],
+          "1N": [
+            "1V"
+          ],
+          "1W": [
+            "1M"
+          ]
         }
       },
       "MCS": {
@@ -315,7 +339,31 @@
           "X23": "1N"
         },
         "default_consolidation": {
-          "1A": ["1B", "1D", "1E", "1G", "1K", "1L", "1M", "MG", "MM", "1N", "1P", "1R", "1V", "1W", "1X"]
+          "1A": [
+            "1K"
+          ],
+          "1B": [
+            "1L"
+          ],
+          "1D": [
+            "1A",
+            "1N"
+          ],
+          "1E": [
+            "1B",
+            "1D",
+            "1R",
+            "1W"
+          ],
+          "1M": [
+            "1G"
+          ],
+          "1N": [
+            "1V"
+          ],
+          "1W": [
+            "1M"
+          ]
         }
       },
       "MC8": {
@@ -376,7 +424,7 @@
           "X23": "1S"
         },
         "default_consolidation": {
-          "1S": []
+          "SR-Seminole": []
         }
       }
     },
@@ -390,7 +438,12 @@
           "type": "polygon",
           "floor": 0,
           "ceiling": 3500,
-          "vertices": ["28.41091, -81.36375", "28.42071, -81.24334", "28.27062, -81.24346", "28.26492, -81.36209"]
+          "vertices": [
+            "28.41091, -81.36375",
+            "28.42071, -81.24334",
+            "28.27062, -81.24346",
+            "28.26492, -81.36209"
+          ]
         },
         {
           "id": "NF2NOCA",
@@ -398,7 +451,12 @@
           "type": "polygon",
           "floor": 1500,
           "ceiling": 5500,
-          "vertices": ["28.26492, -81.36209", "28.270617, -81.243458", "28.174966, -81.243933", "28.162737, -81.363028"]
+          "vertices": [
+            "28.26492, -81.36209",
+            "28.270617, -81.243458",
+            "28.174966, -81.243933",
+            "28.162737, -81.363028"
+          ]
         },
         {
           "id": "SF1NOCA",
@@ -699,28 +757,69 @@
     "range": 30,
     "airspace_awareness": [
       {
-        "fixes": ["BORRD", "VALKA", "JIPOD", "ZALEN", "ETECK", "FAROV", "LENDS", "MLB", "DDANY"],
-        "altitude_range": [0, 999000],
+        "fixes": [
+          "BORRD",
+          "VALKA",
+          "JIPOD",
+          "ZALEN",
+          "ETECK",
+          "FAROV",
+          "LENDS",
+          "MLB",
+          "DDANY"
+        ],
+        "altitude_range": [
+          0,
+          999000
+        ],
         "receiving_controller": "R23"
       },
       {
-        "fixes": ["VIYAP", "PAINN", "WORMS"],
-        "altitude_range": [12000, 999000],
+        "fixes": [
+          "VIYAP",
+          "PAINN",
+          "WORMS"
+        ],
+        "altitude_range": [
+          12000,
+          999000
+        ],
         "receiving_controller": "C57"
       },
       {
-        "fixes": ["VIYAP", "PAINN", "WORMS"],
-        "altitude_range": [0, 11000],
+        "fixes": [
+          "VIYAP",
+          "PAINN",
+          "WORMS"
+        ],
+        "altitude_range": [
+          0,
+          11000
+        ],
         "receiving_controller": "31N"
       },
       {
-        "fixes": ["PLUMR", "FSHUN"],
-        "altitude_range": [0, 999000],
+        "fixes": [
+          "PLUMR",
+          "FSHUN"
+        ],
+        "altitude_range": [
+          0,
+          999000
+        ],
         "receiving_controller": "R67"
       },
       {
-        "fixes": ["JFRYS", "REMIS", "CIGAR", "VIZTA"],
-        "altitude_range": [0, 999000],
+        "fixes": [
+          "JFRYS",
+          "REMIS",
+          "CIGAR",
+          "VIZTA"
+        ],
+        "altitude_range": [
+          0,
+          999000
+        ],
         "receiving_controller": "C14"
       }
     ],
@@ -1000,31 +1099,48 @@
         {
           "name": ".      ORL COORD",
           "id": "T",
-          "airports": ["KORL"]
+          "airports": [
+            "KORL"
+          ]
         },
         {
           "name": ".      MLB COORD",
           "id": "B",
-          "airports": ["KMLB"]
+          "airports": [
+            "KMLB"
+          ]
         },
         {
           "name": ".      ISM COORD",
           "id": "K",
-          "airports": ["KISM"]
+          "airports": [
+            "KISM"
+          ]
         },
         {
           "name": ".      TIX COORD",
           "id": "S",
-          "airports": ["KTIX"]
+          "airports": [
+            "KTIX"
+          ]
         },
         {
           "name": ".      COF COORD",
           "id": "P",
-          "airports": ["KCOF"]
+          "airports": [
+            "KCOF"
+          ]
         }
       ],
       "ssa": {
-        "altimeters": ["KMLB", "KISM", "KLEE", "KMCO", "KTIX", "KSFB"]
+        "altimeters": [
+          "KMLB",
+          "KISM",
+          "KLEE",
+          "KMCO",
+          "KTIX",
+          "KSFB"
+        ]
       }
     }
   },

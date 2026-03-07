@@ -58,7 +58,7 @@
           "KPNS": "1E"
         },
         "default_consolidation": {
-          "1E": ["1W"]
+          "1E": ["1A", "1F", "1K", "1P", "1S", "1W", "1Z"]
         }
       }
     },

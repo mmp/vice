@@ -3174,7 +3174,11 @@
         }
       },
       "configuration": "43X",
-      "default_maps": ["DTW-009 (NF-ARR FEEDER)", "DTW-014 (4L Z)", "DTW-018 (3R)"],
+      "default_maps": [
+        "DTW-009 (NF-ARR FEEDER)",
+        "DTW-014 (4L Z)",
+        "DTW-018 (3R)"
+      ],
       "departure_runways": [
         {
           "airport": "KDTW",
@@ -3280,8 +3284,13 @@
           "KDET": 2
         }
       },
-      "configuration": "43X",
-      "default_maps": ["DTW-009 (NF-ARR FEEDER)", "DTW-014 (4L Z)", "DTW-016 (4R)", "DTW-018 (3R)"],
+      "configuration": "43Z",
+      "default_maps": [
+        "DTW-009 (NF-ARR FEEDER)",
+        "DTW-014 (4L Z)",
+        "DTW-016 (4R)",
+        "DTW-018 (3R)"
+      ],
       "departure_runways": [
         {
           "airport": "KDTW",
@@ -3384,7 +3393,11 @@
         }
       },
       "configuration": "SOU",
-      "default_maps": ["DTW-007 (SF-ARR FEEDER)", "DTW-013 (22R Z)", "DTW-017 (21L)"],
+      "default_maps": [
+        "DTW-007 (SF-ARR FEEDER)",
+        "DTW-013 (22R Z)",
+        "DTW-017 (21L)"
+      ],
       "departure_runways": [
         {
           "airport": "KDTW",
@@ -3491,7 +3504,12 @@
         }
       },
       "configuration": "22X",
-      "default_maps": ["DTW-007 (SF-ARR FEEDER)", "DTW-015 (22L)", "DTW-013 (22R Z)", "DTW-017 (21L)"],
+      "default_maps": [
+        "DTW-007 (SF-ARR FEEDER)",
+        "DTW-015 (22L)",
+        "DTW-013 (22R Z)",
+        "DTW-017 (21L)"
+      ],
       "departure_runways": [
         {
           "airport": "KDTW",
@@ -3594,7 +3612,11 @@
         }
       },
       "configuration": "WES",
-      "default_maps": ["DTW-011 (WF-ARR FEEDER)", "DTW-019 (27R)", "DTW-020 (27L)"],
+      "default_maps": [
+        "DTW-011 (WF-ARR FEEDER)",
+        "DTW-019 (27R)",
+        "DTW-020 (27L)"
+      ],
       "departure_runways": [
         {
           "airport": "KDTW",
@@ -3664,7 +3686,11 @@
         }
       },
       "configuration": "SO1",
-      "default_maps": ["DTW-007 (SF-ARR FEEDER)", "DTW-013 (22R Z)", "DTW-017 (21L)"],
+      "default_maps": [
+        "DTW-007 (SF-ARR FEEDER)",
+        "DTW-013 (22R Z)",
+        "DTW-017 (21L)"
+      ],
       "wind": {
         "direction": "185-245"
       }
@@ -3707,7 +3733,11 @@
         }
       },
       "configuration": "NOR",
-      "default_maps": ["DTW-009 (NF-ARR FEEDER)", "DTW-014 (4L Z)", "DTW-018 (3R)"],
+      "default_maps": [
+        "DTW-009 (NF-ARR FEEDER)",
+        "DTW-014 (4L Z)",
+        "DTW-018 (3R)"
+      ],
       "wind": {
         "direction": "5-65"
       }
@@ -3750,7 +3780,11 @@
         }
       },
       "configuration": "WE1",
-      "default_maps": ["DTW-011 (WF-ARR FEEDER)", "DTW-019 (27R)", "DTW-020 (27L)"],
+      "default_maps": [
+        "DTW-011 (WF-ARR FEEDER)",
+        "DTW-019 (27R)",
+        "DTW-020 (27L)"
+      ],
       "wind": {
         "direction": "240-300"
       }

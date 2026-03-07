@@ -35,7 +35,8 @@
           "KABQ": "1N"
         },
         "default_consolidation": {
-          "1N": ["1S"]
+          "1N": ["1S"],
+          "1S": ["1F"]
         }
       }
     },

@@ -61,7 +61,8 @@
           "KSLE": "1D"
         },
         "default_consolidation": {
-          "1D": ["1V", "1N"]
+          "1D": ["1N", "1V"],
+          "1N": ["1F"]
         }
       },
       "KP1": {
@@ -102,7 +103,8 @@
           "KSLE": "1D"
         },
         "default_consolidation": {
-          "1D": ["1V", "1N"]
+          "1D": ["1N", "1V"],
+          "1N": ["1F"]
         }
       }
     },

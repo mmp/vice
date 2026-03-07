@@ -58,7 +58,9 @@
           "KBNA/TIPPN4": "1Y"
         },
         "default_consolidation": {
-          "1E": ["1W", "1X", "1Y"]
+          "1E": ["1F"],
+          "1W": ["1B", "1E"],
+          "1X": ["1W", "1Y"]
         }
       }
     },

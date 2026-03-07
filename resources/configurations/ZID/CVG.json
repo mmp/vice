@@ -83,7 +83,18 @@
           "TIGRR4": "1N"
         },
         "default_consolidation": {
-          "1F": ["1B", "1L", "1N", "1S", "1V", "1W"]
+          "1F": [
+            "1V"
+          ],
+          "1N": [
+            "1F",
+            "1S"
+          ],
+          "1W": [
+            "1B",
+            "1L",
+            "1N"
+          ]
         }
       },
       "WDR": {
@@ -95,7 +106,10 @@
           "KLUK": "1W"
         },
         "default_consolidation": {
-          "1W": []
+          "1W": [
+            "1B",
+            "1L"
+          ]
         }
       },
       "NAR": {
@@ -115,7 +129,9 @@
           "TIGRR4": "1N"
         },
         "default_consolidation": {
-          "1N": []
+          "1N": [
+            "1S"
+          ]
         }
       },
       "SAR": {
@@ -135,7 +151,9 @@
           "TIGRR4": "1S"
         },
         "default_consolidation": {
-          "1S": []
+          "1S": [
+            "1N"
+          ]
         }
       },
       "NF": {
@@ -147,7 +165,9 @@
           "TIGRR4.NFINAL": "1F"
         },
         "default_consolidation": {
-          "1F": []
+          "1F": [
+            "1V"
+          ]
         }
       },
       "SF": {
@@ -159,7 +179,52 @@
           "TIGRR4.SFINAL": "1F"
         },
         "default_consolidation": {
-          "1F": []
+          "1F": [
+            "1V"
+          ]
+        }
+      },
+      "CVS": {
+        "default_consolidation": {
+          "1F": [
+            "1V"
+          ],
+          "1S": [
+            "1F",
+            "1N"
+          ],
+          "1W": [
+            "1B",
+            "1L",
+            "1S"
+          ]
+        },
+        "inbound_assignments": {
+          "ARBAS RID MEEKR": "1N",
+          "CEGRM7": "1N",
+          "FLM": "1L",
+          "GAVNN7": "1S",
+          "HEDEE1": "1N",
+          "JAKIE6": "1S",
+          "JIMUR": "1N",
+          "JIMUR DLAMP": "1N",
+          "LODLL HICKS FIITZ": "1S",
+          "MXQ": "1N",
+          "SARGO4": "1S",
+          "SARGO ROYYZ": "1S",
+          "TIGRR4": "1N"
+        },
+        "departure_assignments": {
+          "KCVG/JBNCH6": "1W",
+          "KCVG/SILKS6": "1W",
+          "KCVG/CHCLL6": "1W",
+          "KCVG/LOVEY8": "1W",
+          "KCVG/HAGOL5": "1B",
+          "KCVG/BNGLE5": "1B",
+          "KCVG/ROCKT4": "1B",
+          "KCVG/GIPLE7": "1B",
+          "KCVG/KENLN6": "1B",
+          "KLUK": "1L"
         }
       }
     },

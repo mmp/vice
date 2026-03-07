@@ -59,7 +59,8 @@
           "PHNL": "1L"
         },
         "default_consolidation": {
-          "1H": ["1L"]
+          "1H": ["1L"],
+          "1L": ["1V"]
         }
       }
     },

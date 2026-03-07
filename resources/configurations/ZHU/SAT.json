@@ -72,7 +72,8 @@
           "KSSF": "1S"
         },
         "default_consolidation": {
-          "1K": ["1N", "1Q", "1S", "1W"]
+          "1N": ["1Q", "1S", "1W"],
+          "1S": ["1K", "1R"]
         }
       },
       "31L": {
@@ -89,7 +90,8 @@
           "KSSF": "1S"
         },
         "default_consolidation": {
-          "1N": ["1S", "1W"]
+          "1N": ["1S", "1W"],
+          "1S": ["1K", "1L", "1R"]
         }
       }
     },

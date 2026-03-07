@@ -55,7 +55,7 @@
           "KMDT": "1H"
         },
         "default_consolidation": {
-          "1L": ["1R", "1H"]
+          "1H": ["1L", "1R"]
         }
       }
     },

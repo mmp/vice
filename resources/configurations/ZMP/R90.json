@@ -61,7 +61,7 @@
           "KLNK": "1L"
         },
         "default_consolidation": {
-          "1L": []
+          "1L": ["1F"]
         }
       },
       "OFF": {
@@ -100,7 +100,9 @@
           "KOMA": "1X"
         },
         "default_consolidation": {
-          "1W": ["1X"]
+          "1L": ["1F"],
+          "1W": ["1L", "1O", "1X"],
+          "1X": ["1V"]
         }
       },
       "OM1": {
@@ -118,7 +120,9 @@
           "KOMA": "1W"
         },
         "default_consolidation": {
-          "1W": ["1X"]
+          "1L": ["1F"],
+          "1W": ["1L", "1O", "1X"],
+          "1X": ["1V"]
         }
       },
       "90X": {
@@ -155,7 +159,9 @@
           "KOMA": "1X"
         },
         "default_consolidation": {
-          "1L": ["1O", "1W", "1X"]
+          "1L": ["1F"],
+          "1W": ["1L", "1O", "1X"],
+          "1X": ["1V"]
         }
       },
       "R90": {
@@ -192,7 +198,9 @@
           "KOMA": "1W"
         },
         "default_consolidation": {
-          "1L": ["1O", "1W", "1X"]
+          "1L": ["1F"],
+          "1W": ["1L", "1O", "1X"],
+          "1X": ["1V"]
         }
       }
     },

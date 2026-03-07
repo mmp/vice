@@ -70,7 +70,7 @@
           "KORH": "1E"
         },
         "default_consolidation": {
-          "1B": ["1E", "1H", "1W"]
+          "1B": ["1E", "1F", "1H", "1W"]
         }
       },
       "STD": {
@@ -87,7 +87,7 @@
           "KORH": "1E"
         },
         "default_consolidation": {
-          "1B": ["1E", "1H", "1W"]
+          "1B": ["1E", "1F", "1H", "1W"]
         }
       }
     },

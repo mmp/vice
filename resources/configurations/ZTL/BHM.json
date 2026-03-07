@@ -55,7 +55,7 @@
           "KBHM": "1S"
         },
         "default_consolidation": {
-          "1N": ["1S"]
+          "1S": ["1F", "1N"]
         }
       }
     },

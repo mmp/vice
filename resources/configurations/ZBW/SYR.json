@@ -80,7 +80,7 @@
           "KSYR": "1S"
         },
         "default_consolidation": {
-          "1R": ["1S"]
+          "1S": ["1R"]
         }
       }
     },

@@ -30,7 +30,7 @@
           "KABE": "1D"
         },
         "default_consolidation": {
-          "1D": []
+          "1A": ["1D"]
         }
       }
     },

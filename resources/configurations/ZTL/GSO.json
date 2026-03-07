@@ -47,7 +47,8 @@
           "KINT": "1W"
         },
         "default_consolidation": {
-          "1H": ["1S", "1W"]
+          "1S": ["1H"],
+          "1W": ["1S"]
         }
       }
     },

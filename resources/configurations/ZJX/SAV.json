@@ -41,7 +41,12 @@
           "KTBR": "1W"
         },
         "default_consolidation": {
-          "1N": ["1S", "1W"]
+          "1N": [
+            "1W"
+          ],
+          "1W": [
+            "1S"
+          ]
         }
       },
       "28X": {
@@ -57,7 +62,12 @@
           "KTBR": "1W"
         },
         "default_consolidation": {
-          "1N": ["1S", "1W"]
+          "1N": [
+            "1W"
+          ],
+          "1W": [
+            "1S"
+          ]
         }
       }
     },

@@ -65,7 +65,7 @@
           "KPVD": "1A"
         },
         "default_consolidation": {
-          "1A": ["1D"]
+          "1D": ["1A"]
         }
       },
       "21X": {
@@ -91,7 +91,7 @@
           "KPVD": "1D"
         },
         "default_consolidation": {
-          "1A": ["1D"]
+          "1D": ["1A"]
         }
       },
       "51X": {

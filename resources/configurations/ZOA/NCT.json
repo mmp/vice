@@ -238,7 +238,8 @@
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1L": ["1M", "1S", "1T"]
+          "1L": ["1T"],
+          "1M": ["1L", "1S"]
         }
       },
       "AR1": {
@@ -261,7 +262,9 @@
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1K": ["1L", "1M", "1Q", "1S", "1T"]
+          "1L": ["1K", "1T"],
+          "1M": ["1L", "1Q", "1S"],
+          "1S": ["1F"]
         }
       },
       "AR2": {
@@ -284,7 +287,8 @@
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1L": ["1M", "1S", "1T"]
+          "1L": ["1T"],
+          "1M": ["1L", "1S"]
         }
       },
       "11X": {
@@ -301,7 +305,9 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": ["2G", "2W", "2Z"]
+          "2B": ["2G", "2W", "2Z"],
+          "2W": ["2F"],
+          "2Z": ["2N"]
         }
       },
       "01X": {
@@ -322,7 +328,9 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": ["2G", "2W", "2Z"]
+          "2B": ["2G", "2W", "2Z"],
+          "2W": ["2F"],
+          "2Z": ["2N"]
         }
       },
       "22X": {
@@ -337,7 +345,8 @@
           "KSFO": "4R"
         },
         "default_consolidation": {
-          "4Q": ["4R"]
+          "4R": ["4D", "4F"],
+          "4U": ["4Q", "4R"]
         }
       },
       "28X": {
@@ -352,7 +361,8 @@
           "KSFO": "4U"
         },
         "default_consolidation": {
-          "4Q": ["4R", "4U"]
+          "4R": ["4D", "4F"],
+          "4U": ["4Q", "4R"]
         }
       },
       "AR3": {
@@ -368,7 +378,7 @@
           "KRNO": "8S"
         },
         "default_consolidation": {
-          "8N": ["8S"]
+          "8S": ["8N"]
         }
       },
       "NCT": {
@@ -382,7 +392,8 @@
           "KSFO": "4R"
         },
         "default_consolidation": {
-          "4Q": ["4R", "4U"]
+          "4R": ["4D", "4F"],
+          "4U": ["4Q", "4R"]
         }
       },
       "NCA": {
@@ -400,7 +411,9 @@
           "KSMF": "5X"
         },
         "default_consolidation": {
-          "5B": ["5D", "5P", "5X"]
+          "5E": ["5B"],
+          "5P": ["5E", "5X"],
+          "5X": ["5D"]
         }
       },
       "NAR": {
@@ -416,7 +429,7 @@
           "KRNO": "8N"
         },
         "default_consolidation": {
-          "8N": ["8S"]
+          "8S": ["8N"]
         }
       },
       "AR0": {
@@ -434,7 +447,9 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": ["2F", "2G", "2W", "2Z"]
+          "2B": ["2G", "2W", "2Z"],
+          "2W": ["2F"],
+          "2Z": ["2N"]
         }
       },
       "AR4": {
@@ -448,7 +463,8 @@
           "KSFO": "4U"
         },
         "default_consolidation": {
-          "4R": ["4U"]
+          "4R": ["4D", "4F"],
+          "4U": ["4R"]
         }
       },
       "AR5": {
@@ -466,7 +482,9 @@
           "KSMF": "5E"
         },
         "default_consolidation": {
-          "5B": ["5D", "5E", "5P", "5X"]
+          "5E": ["5B"],
+          "5P": ["5E", "5X"],
+          "5X": ["5D"]
         }
       }
     },

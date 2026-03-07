@@ -37,7 +37,7 @@
           "KIOW": "1A"
         },
         "default_consolidation": {
-          "1D": ["1A"]
+          "1A": ["1D"]
         }
       },
       "9XX": {
@@ -53,7 +53,7 @@
           "KIOW": "1A"
         },
         "default_consolidation": {
-          "1D": ["1A"]
+          "1A": ["1D"]
         }
       }
     },

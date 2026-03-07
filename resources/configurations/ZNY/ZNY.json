@@ -177,7 +177,7 @@
         "inbound_assignments": {},
         "departure_assignments": {},
         "default_consolidation": {
-          "56": []
+          "25": []
         }
       },
       "ZNA": {
@@ -207,7 +207,7 @@
           "WLKES": "72"
         },
         "default_consolidation": {
-          "72": []
+          "ZNY Selinsgrove 72": []
         }
       },
       "N42": {
@@ -233,7 +233,9 @@
           "Overflights": "42"
         },
         "default_consolidation": {
-          "55": ["42"]
+          "55": [
+            "42"
+          ]
         }
       },
       "N56": {
@@ -289,8 +291,12 @@
           "Overflights": "42"
         },
         "default_consolidation": {
-          "55": ["42"],
-          "42": ["39"]
+          "55": [
+            "42"
+          ],
+          "42": [
+            "39"
+          ]
         }
       },
       "568": {
@@ -303,7 +309,9 @@
           "OWENZ": "68"
         },
         "default_consolidation": {
-          "56": ["68"]
+          "56": [
+            "68"
+          ]
         }
       },
       "NYB": {
@@ -324,10 +332,18 @@
           "Overflights": "42"
         },
         "default_consolidation": {
-          "56": ["68"],
-          "68": ["55"],
-          "55": ["42"],
-          "42": ["39"]
+          "56": [
+            "68"
+          ],
+          "68": [
+            "55"
+          ],
+          "55": [
+            "42"
+          ],
+          "42": [
+            "39"
+          ]
         }
       }
     },
@@ -592,13 +608,19 @@
           "type": "route",
           "to": "N90",
           "from": "PHL",
-          "altitude": [7000, 7000]
+          "altitude": [
+            7000,
+            7000
+          ]
         },
         {
           "type": "route",
           "to": "N90",
           "from": "WRI",
-          "altitude": [6000, 6000]
+          "altitude": [
+            6000,
+            6000
+          ]
         }
       ],
       "MUGZY": [
@@ -662,13 +684,19 @@
           "type": "route",
           "to": "ABE",
           "from": "PHL",
-          "altitude": [4000, 4000]
+          "altitude": [
+            4000,
+            4000
+          ]
         },
         {
           "type": "route",
           "to": "ABE",
           "from": "N90",
-          "altitude": [4000, 4000]
+          "altitude": [
+            4000,
+            4000
+          ]
         }
       ],
       "BOYER": [

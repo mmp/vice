@@ -2415,7 +2415,9 @@
         {
           "airlines": [
             {
-              "types": ["B753"],
+              "types": [
+                "B753"
+              ],
               "icao": "UAL"
             }
           ],
@@ -3000,7 +3002,9 @@
   "scenarios": {
     "Liberty Combined - JFK Owns Coney": {
       "configuration": "LIB",
-      "default_maps": ["LIBERTY DEP"],
+      "default_maps": [
+        "LIBERTY DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3090,7 +3094,9 @@
     },
     "Liberty Combined - LGA Owns Coney": {
       "configuration": "LIB",
-      "default_maps": ["LIBERTY DEP"],
+      "default_maps": [
+        "LIBERTY DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3174,8 +3180,10 @@
       }
     },
     "Liberty East": {
-      "configuration": "LIB",
-      "default_maps": ["LIBERTY DEP"],
+      "configuration": "LBE",
+      "default_maps": [
+        "LIBERTY DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3276,8 +3284,10 @@
       ]
     },
     "Liberty North": {
-      "configuration": "LIB",
-      "default_maps": ["LIBERTY DEP"],
+      "configuration": "LBN",
+      "default_maps": [
+        "LIBERTY DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3359,8 +3369,10 @@
       ]
     },
     "Liberty South JFK Owns Coney": {
-      "configuration": "LIB",
-      "default_maps": ["LIBERTY DEP"],
+      "configuration": "LBS",
+      "default_maps": [
+        "LIBERTY DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3439,8 +3451,10 @@
       }
     },
     "Liberty South LGA Owns Coney": {
-      "configuration": "LIB",
-      "default_maps": ["LIBERTY DEP"],
+      "configuration": "LBS",
+      "default_maps": [
+        "LIBERTY DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3513,8 +3527,10 @@
       }
     },
     "Liberty West": {
-      "configuration": "LIB",
-      "default_maps": ["LIBERTY DEP"],
+      "configuration": "LBW",
+      "default_maps": [
+        "LIBERTY DEP"
+      ],
       "departure_runways": [
         {
           "airport": "KEWR",

@@ -29,7 +29,7 @@
           "PHOG": "1N"
         },
         "default_consolidation": {
-          "1N": ["1S"]
+          "1S": ["1N"]
         }
       },
       "CF2": {
@@ -43,7 +43,7 @@
           "PHOG": "1S"
         },
         "default_consolidation": {
-          "1N": ["1S"]
+          "1S": ["1N"]
         }
       }
     },

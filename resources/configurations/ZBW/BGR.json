@@ -30,7 +30,7 @@
           "KBHB": "1B"
         },
         "default_consolidation": {
-          "1B": []
+          "1B": ["1S"]
         }
       }
     },
