@@ -80,26 +80,7 @@
     "1P": {
       "callsign": "MHT_P_APP",
       "frequency": 125825,
-      "radio_name": "Boston Approach",
-      "video_maps": [
-        "A90 MVA",
-        "B, C, D, AIRSPACE",
-        "A90 SAT FINALS",
-        "A90 COASTLINE",
-        "A90 EOVM",
-        "MHT MAIN",
-        "MHT RWY 6 ROZZE STAR",
-        "MHT RWY 17 ROZZE STAR",
-        "MHT RWY 24 ROZZE STAR",
-        "MHT RWY 35 ROZZE STAR",
-        "A90 SAT GPS 2",
-        "A90 SAT GPS 3",
-        "A90 SAT GPS 4",
-        "A90 SAT GPS 5",
-        "ZBW SPLIT 1",
-        "ZBW SPLIT 2",
-        "ZBW SPLIT 3"
-      ]
+      "radio_name": "Boston Approach"
     },
     "1J": {
       "callsign": "MHT_J_APP",
@@ -169,74 +150,17 @@
     "1E": {
       "callsign": "MHT_E_APP",
       "frequency": 125050,
-      "radio_name": "Boston Approach",
-      "video_maps": [
-        "A90 MVA",
-        "B, C, D, AIRSPACE",
-        "A90 SAT FINALS",
-        "A90 COASTLINE",
-        "A90 EOVM",
-        "MHT MAIN",
-        "MHT RWY 6 ROZZE STAR",
-        "MHT RWY 17 ROZZE STAR",
-        "MHT RWY 24 ROZZE STAR",
-        "MHT RWY 35 ROZZE STAR",
-        "A90 SAT GPS 2",
-        "A90 SAT GPS 3",
-        "A90 SAT GPS 4",
-        "A90 SAT GPS 5",
-        "ZBW SPLIT 1",
-        "ZBW SPLIT 2",
-        "ZBW SPLIT 3"
-      ]
+      "radio_name": "Boston Approach"
     },
     "1Z": {
       "callsign": "MHT_Z_APP",
       "frequency": 124900,
-      "radio_name": "Boston Approach",
-      "video_maps": [
-        "A90 MVA",
-        "B, C, D, AIRSPACE",
-        "A90 SAT FINALS",
-        "A90 COASTLINE",
-        "A90 EOVM",
-        "MHT MAIN",
-        "MHT RWY 6 ROZZE STAR",
-        "MHT RWY 17 ROZZE STAR",
-        "MHT RWY 24 ROZZE STAR",
-        "MHT RWY 35 ROZZE STAR",
-        "A90 SAT GPS 2",
-        "A90 SAT GPS 3",
-        "A90 SAT GPS 4",
-        "A90 SAT GPS 5",
-        "ZBW SPLIT 1",
-        "ZBW SPLIT 2",
-        "ZBW SPLIT 3"
-      ]
+      "radio_name": "Boston Approach"
     },
     "1W": {
       "callsign": "MHT_W_APP",
       "frequency": 134750,
-      "radio_name": "Boston Approach",
-      "video_maps": [
-        "A90 MVA",
-        "B, C, D, AIRSPACE",
-        "A90 SAT FINALS",
-        "A90 COASTLINE",
-        "A90 EOVM",
-        "MHT MAIN",
-        "MHT RWY 6 ROZZE STAR",
-        "MHT RWY 17 ROZZE STAR",
-        "MHT RWY 24 ROZZE STAR",
-        "MHT RWY 35 ROZZE STAR",
-        "A90 SAT GPS 2",
-        "A90 SAT GPS 3",
-        "A90 SAT GPS 4",
-        "A90 SAT GPS 5",
-        "ZBW SPLIT 1",
-        "ZBW SPLIT 2",
-        "ZBW SPLIT 3"
-      ]
+      "radio_name": "Boston Approach"
     }
   },
   "facility_adaptations": {
@@ -264,11 +188,24 @@
           "KMHT": "1J"
         },
         "default_consolidation": {
-          "1D": ["1N", "1J"],
-          "1F": ["1I"],
-          "1N": ["1F", "1S"],
-          "1J": ["1Z"],
-          "1Z": ["1E", "1W"]
+          "1D": [
+            "1N",
+            "1J"
+          ],
+          "1F": [
+            "1I"
+          ],
+          "1N": [
+            "1F",
+            "1S"
+          ],
+          "1J": [
+            "1Z"
+          ],
+          "1Z": [
+            "1E",
+            "1W"
+          ]
         }
       },
       "A90": {
@@ -309,16 +246,42 @@
           "KPSM": "1P"
         },
         "default_consolidation": {
-          "1K": ["1O"],
-          "1N": ["1K", "1B", "1F"],
-          "1O": ["1Y"],
-          "1S": ["1A", "1L"],
-          "1Y": ["1S"],
-          "1D": ["1N", "1U", "1J"],
-          "1F": ["1I"],
-          "1E": ["1P"],
-          "1J": ["1Z"],
-          "1Z": ["1E", "1W"]
+          "1K": [
+            "1O"
+          ],
+          "1N": [
+            "1K",
+            "1B",
+            "1F"
+          ],
+          "1O": [
+            "1Y"
+          ],
+          "1S": [
+            "1A",
+            "1L"
+          ],
+          "1Y": [
+            "1S"
+          ],
+          "1D": [
+            "1N",
+            "1U",
+            "1J"
+          ],
+          "1F": [
+            "1I"
+          ],
+          "1E": [
+            "1P"
+          ],
+          "1J": [
+            "1Z"
+          ],
+          "1Z": [
+            "1E",
+            "1W"
+          ]
         }
       },
       "A91": {
@@ -344,10 +307,22 @@
           "KMHT": "1Z"
         },
         "default_consolidation": {
-          "1D": ["1N", "1Z"],
-          "1F": ["1I"],
-          "1N": ["1F", "1S"],
-          "1Z": ["1E", "1J", "1W"]
+          "1D": [
+            "1N",
+            "1Z"
+          ],
+          "1F": [
+            "1I"
+          ],
+          "1N": [
+            "1F",
+            "1S"
+          ],
+          "1Z": [
+            "1E",
+            "1J",
+            "1W"
+          ]
         }
       },
       "A92": {
@@ -388,15 +363,40 @@
           "KPSM": "1P"
         },
         "default_consolidation": {
-          "1K": ["1O"],
-          "1N": ["1K", "1B", "1F"],
-          "1O": ["1Y"],
-          "1S": ["1A", "1L"],
-          "1Y": ["1S"],
-          "1D": ["1N", "1U", "1Z"],
-          "1F": ["1I"],
-          "1E": ["1P"],
-          "1Z": ["1E", "1J", "1W"]
+          "1K": [
+            "1O"
+          ],
+          "1N": [
+            "1K",
+            "1B",
+            "1F"
+          ],
+          "1O": [
+            "1Y"
+          ],
+          "1S": [
+            "1A",
+            "1L"
+          ],
+          "1Y": [
+            "1S"
+          ],
+          "1D": [
+            "1N",
+            "1U",
+            "1Z"
+          ],
+          "1F": [
+            "1I"
+          ],
+          "1E": [
+            "1P"
+          ],
+          "1Z": [
+            "1E",
+            "1J",
+            "1W"
+          ]
         }
       },
       "STD": {
@@ -408,7 +408,9 @@
           "KMVY": "1K"
         },
         "default_consolidation": {
-          "1K": ["1N"]
+          "1K": [
+            "1N"
+          ]
         }
       },
       "33X": {
@@ -417,7 +419,9 @@
           "KBOS": "1D"
         },
         "default_consolidation": {
-          "1D": ["1U"]
+          "1D": [
+            "1U"
+          ]
         }
       },
       "CNE": {
@@ -456,10 +460,21 @@
           "KOWD": "1L"
         },
         "default_consolidation": {
-          "1D": ["1R", "1U"],
-          "1F": ["1I"],
-          "1M": ["1L"],
-          "1R": ["1B", "1F", "1M"]
+          "1D": [
+            "1R",
+            "1U"
+          ],
+          "1F": [
+            "1I"
+          ],
+          "1M": [
+            "1L"
+          ],
+          "1R": [
+            "1B",
+            "1F",
+            "1M"
+          ]
         }
       },
       "CNW": {
@@ -498,10 +513,21 @@
           "KOWD": "1L"
         },
         "default_consolidation": {
-          "1D": ["1R", "1U"],
-          "1F": ["1I"],
-          "1M": ["1L"],
-          "1R": ["1B", "1F", "1M"]
+          "1D": [
+            "1R",
+            "1U"
+          ],
+          "1F": [
+            "1I"
+          ],
+          "1M": [
+            "1L"
+          ],
+          "1R": [
+            "1B",
+            "1F",
+            "1M"
+          ]
         }
       },
       "CSE": {
@@ -540,10 +566,21 @@
           "KOWD": "1L"
         },
         "default_consolidation": {
-          "1D": ["1R", "1U"],
-          "1F": ["1I"],
-          "1M": ["1L"],
-          "1R": ["1B", "1F", "1M"]
+          "1D": [
+            "1R",
+            "1U"
+          ],
+          "1F": [
+            "1I"
+          ],
+          "1M": [
+            "1L"
+          ],
+          "1R": [
+            "1B",
+            "1F",
+            "1M"
+          ]
         }
       },
       "CSW": {
@@ -582,10 +619,21 @@
           "KOWD": "1L"
         },
         "default_consolidation": {
-          "1D": ["1R", "1U"],
-          "1F": ["1I"],
-          "1M": ["1L"],
-          "1R": ["1B", "1F", "1M"]
+          "1D": [
+            "1R",
+            "1U"
+          ],
+          "1F": [
+            "1I"
+          ],
+          "1M": [
+            "1L"
+          ],
+          "1R": [
+            "1B",
+            "1F",
+            "1M"
+          ]
         }
       },
       "44X": {
@@ -600,7 +648,9 @@
           "KBOS": "1F"
         },
         "default_consolidation": {
-          "1F": ["1I"]
+          "1F": [
+            "1I"
+          ]
         }
       },
       "22X": {
@@ -615,7 +665,9 @@
           "KBOS": "1F"
         },
         "default_consolidation": {
-          "1F": ["1I"]
+          "1F": [
+            "1I"
+          ]
         }
       },
       "KMH": {
@@ -630,8 +682,14 @@
           "KPSM": "1P"
         },
         "default_consolidation": {
-          "1E": ["1P"],
-          "1Z": ["1E", "1J", "1W"]
+          "1E": [
+            "1P"
+          ],
+          "1Z": [
+            "1E",
+            "1J",
+            "1W"
+          ]
         }
       },
       "KM1": {
@@ -646,9 +704,16 @@
           "KPSM": "1P"
         },
         "default_consolidation": {
-          "1E": ["1P"],
-          "1J": ["1Z"],
-          "1Z": ["1E", "1W"]
+          "1E": [
+            "1P"
+          ],
+          "1J": [
+            "1Z"
+          ],
+          "1Z": [
+            "1E",
+            "1W"
+          ]
         }
       }
     },
@@ -788,19 +853,27 @@
     "ssr_codes": {
       "auto_assignable_codes": {
         "1": {
-          "ranges": ["0206-0437"],
+          "ranges": [
+            "0206-0437"
+          ],
           "flight_rules": "v"
         },
         "ifr": {
-          "ranges": ["0101-0177"]
+          "ranges": [
+            "0101-0177"
+          ]
         },
         "vfr": {
-          "ranges": ["5120-5174"],
+          "ranges": [
+            "5120-5174"
+          ],
           "backup_pool_list": "1"
         }
       },
       "beacon_code_table": {
-        "vfr_codes": ["1200-1277"]
+        "vfr_codes": [
+          "1200-1277"
+        ]
       }
     },
     "controllers": {
@@ -825,48 +898,115 @@
     },
     "airspace_awareness": [
       {
-        "fixes": ["HYLND", "CON", "MANCH"],
-        "altitude_range": [11000, 999000],
+        "fixes": [
+          "HYLND",
+          "CON",
+          "MANCH"
+        ],
+        "altitude_range": [
+          11000,
+          999000
+        ],
         "receiving_controller": "C37"
       },
       {
-        "fixes": ["HYLND", "CON", "MANCH"],
-        "altitude_range": [0, 10000],
+        "fixes": [
+          "HYLND",
+          "CON",
+          "MANCH"
+        ],
+        "altitude_range": [
+          0,
+          10000
+        ],
         "receiving_controller": "1Z"
       },
       {
-        "fixes": ["BLZZR", "PATSS", "REVSS", "BOSOX", "GLYDE", "PUT"],
-        "altitude_range": [0, 999000],
+        "fixes": [
+          "BLZZR",
+          "PATSS",
+          "REVSS",
+          "BOSOX",
+          "GLYDE",
+          "PUT"
+        ],
+        "altitude_range": [
+          0,
+          999000
+        ],
         "receiving_controller": "C47"
       },
       {
-        "fixes": ["BRUWN", "CELTK", "PVC", "LFV", "DUNKK"],
-        "altitude_range": [11000, 99999000],
+        "fixes": [
+          "BRUWN",
+          "CELTK",
+          "PVC",
+          "LFV",
+          "DUNKK"
+        ],
+        "altitude_range": [
+          11000,
+          99999000
+        ],
         "receiving_controller": "C18"
       },
       {
-        "fixes": ["BRUWN", "PVC", "LFV", "DUNKK"],
-        "altitude_range": [0, 10000],
+        "fixes": [
+          "BRUWN",
+          "PVC",
+          "LFV",
+          "DUNKK"
+        ],
+        "altitude_range": [
+          0,
+          10000
+        ],
         "receiving_controller": "1N"
       },
       {
-        "fixes": ["CELTK", "LBSTA", "PEASE", "ENE"],
-        "altitude_range": [0, 10000],
+        "fixes": [
+          "CELTK",
+          "LBSTA",
+          "PEASE",
+          "ENE"
+        ],
+        "altitude_range": [
+          0,
+          10000
+        ],
         "receiving_controller": "1E"
       },
       {
-        "fixes": ["CELTK", "LBSTA", "PEASE", "ENE"],
-        "altitude_range": [11000, 99999000],
+        "fixes": [
+          "CELTK",
+          "LBSTA",
+          "PEASE",
+          "ENE"
+        ],
+        "altitude_range": [
+          11000,
+          99999000
+        ],
         "receiving_controller": "C16"
       },
       {
-        "fixes": ["SSOXS"],
-        "altitude_range": [11000, 999000],
+        "fixes": [
+          "SSOXS"
+        ],
+        "altitude_range": [
+          11000,
+          999000
+        ],
         "receiving_controller": "C18"
       },
       {
-        "fixes": ["SSOXS"],
-        "altitude_range": [0, 10000],
+        "fixes": [
+          "SSOXS"
+        ],
+        "altitude_range": [
+          0,
+          10000
+        ],
         "receiving_controller": "11D"
       }
     ],
@@ -1032,28 +1172,40 @@
       },
       "allow_long_scratchpad": true,
       "force_ql_self": true,
-      "custom_spcs": ["ME"]
+      "custom_spcs": [
+        "ME"
+      ]
     },
     "lists": {
       "coordination": [
         {
           "name": ".     PBVY -",
           "id": "BVY",
-          "airports": ["KBVY"]
+          "airports": [
+            "KBVY"
+          ]
         },
         {
           "name": ".     PLWM -",
           "id": "LWM",
-          "airports": ["KLWM"]
+          "airports": [
+            "KLWM"
+          ]
         },
         {
           "name": ".     POWD -",
           "id": "OWD",
-          "airports": ["KOWD"]
+          "airports": [
+            "KOWD"
+          ]
         }
       ],
       "ssa": {
-        "altimeters": ["KBOS", "KFMH", "KMHT"]
+        "altimeters": [
+          "KBOS",
+          "KFMH",
+          "KMHT"
+        ]
       }
     }
   },

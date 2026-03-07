@@ -245,8 +245,12 @@
           "KJAX": "15"
         },
         "default_consolidation": {
-          "30": ["66"],
-          "66": ["15"]
+          "30": [
+            "66"
+          ],
+          "66": [
+            "15"
+          ]
         }
       },
       "ZJX": {
@@ -713,96 +717,6 @@
           "from": "ZJX"
         }
       ]
-    },
-    "areas": {
-      "3": {
-        "video_maps": [
-          "BOUND",
-          "ZJX LO",
-          "ZJX UH",
-          "HIGH AWAYS",
-          "FIN APP CRS",
-          "MOA",
-          "Y M L ROUTES",
-          "AR ROUTES",
-          "ATCT",
-          "ZJX HI",
-          "HI 2-WAY",
-          "LOW AWAYS",
-          "CLASS ASPACE",
-          "WARNING",
-          "MIA",
-          "T ROUTES",
-          "CAMAN",
-          "GEO"
-        ]
-      },
-      "5": {
-        "video_maps": [
-          "BOUND",
-          "ZJX LO",
-          "ZJX UH",
-          "HIGH AWAYS",
-          "FIN APP CRS",
-          "MOA",
-          "Y M L ROUTES",
-          "AR ROUTES",
-          "ATCT",
-          "ZJX HI",
-          "HI 2-WAY",
-          "LOW AWAYS",
-          "CLASS ASPACE",
-          "WARNING",
-          "MIA",
-          "T ROUTES",
-          "CAMAN",
-          "GEO"
-        ]
-      },
-      "6": {
-        "video_maps": [
-          "BOUND",
-          "ZJX LO",
-          "ZJX UH",
-          "HIGH AWAYS",
-          "FIN APP CRS",
-          "MOA",
-          "Y M L ROUTES",
-          "AR ROUTES",
-          "ATCT",
-          "ZJX HI",
-          "HI 2-WAY",
-          "LOW AWAYS",
-          "CLASS ASPACE",
-          "WARNING",
-          "MIA",
-          "T ROUTES",
-          "CAMAN",
-          "GEO"
-        ]
-      },
-      "7": {
-        "video_maps": [
-          "BOUND",
-          "ZJX LO",
-          "ZJX UH",
-          "HIGH AWAYS",
-          "FIN APP CRS",
-          "MOA",
-          "Y M L ROUTES",
-          "AR ROUTES",
-          "ATCT",
-          "ZJX HI",
-          "HI 2-WAY",
-          "LOW AWAYS",
-          "CLASS ASPACE",
-          "WARNING",
-          "MIA",
-          "T ROUTES",
-          "CAMAN",
-          "GEO"
-        ]
-      }
     }
   },
   "handoff_ids": [

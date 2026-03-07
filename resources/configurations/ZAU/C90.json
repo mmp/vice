@@ -132,12 +132,12 @@
           "KMDW": "1U"
         },
         "default_consolidation": {
-          "SSAT Sector 1 (S)": [
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ]
         }
       },
@@ -158,37 +158,37 @@
           "KORD/ORD8.W": "1G"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -212,37 +212,37 @@
           "KORD/ORD8.W": "1G"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -277,37 +277,37 @@
           "KPWK": "1D"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -335,37 +335,37 @@
           "KPWK": "1D"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -386,37 +386,37 @@
           "KORD/ORD8.W": "1G"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -440,37 +440,37 @@
           "KORD/ORD8.W": "1G"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -505,37 +505,37 @@
           "KPWK": "1A"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -563,37 +563,37 @@
           "KPWK": "1A"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -615,37 +615,37 @@
           "KORD/ORD8.W": "1G"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -670,37 +670,37 @@
           "KORD/ORD8.W": "1G"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -736,37 +736,37 @@
           "KPWK": "1D"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -802,37 +802,37 @@
           "KPWK": "1D"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -858,37 +858,37 @@
           "KPWK": "1D"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -897,7 +897,7 @@
           "FYTTE7_FINALNE": "1F"
         },
         "default_consolidation": {
-          "F": []
+          "1F": []
         }
       },
       "KOA": {
@@ -918,37 +918,37 @@
           "KORD/ORD8.W": "1G"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -958,7 +958,7 @@
           "WATSN4": "1Z"
         },
         "default_consolidation": {
-          "Z": []
+          "1Z": []
         }
       },
       "KOC": {
@@ -970,7 +970,7 @@
           "WATSN4": "1Z"
         },
         "default_consolidation": {
-          "Z": []
+          "1Z": []
         }
       },
       "22L": {
@@ -994,37 +994,37 @@
           "KORD/ORD8.W": "1G"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -1060,37 +1060,37 @@
           "KPWK": "1D"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -1119,37 +1119,37 @@
           "KPWK": "1D"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -1175,37 +1175,37 @@
           "KPWK": "1D"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       },
@@ -1214,7 +1214,7 @@
           "FYTTE7_FINALNW": "1F"
         },
         "default_consolidation": {
-          "F": []
+          "1F": []
         }
       },
       "KOG": {
@@ -1223,7 +1223,7 @@
           "VEECK5_FINALWW": "1W"
         },
         "default_consolidation": {
-          "W": []
+          "1W": []
         }
       },
       "SAT": {
@@ -1241,37 +1241,37 @@
           "KPWK": "1D"
         },
         "default_consolidation": {
-          "East Departure (B)": [
-            "North Departure (D)",
-            "SSAT Sector 1 (S)",
-            "South Departure (M)"
+          "1B": [
+            "1D",
+            "1M",
+            "1S"
           ],
-          "FARMM (Y)": [
-            "KUBBS (J)"
+          "1Y": [
+            "1J"
           ],
-          "PLANO (X)": [
-            "FARMM (Y)",
-            "OKK (E)"
+          "1X": [
+            "1E",
+            "1Y"
           ],
-          "SSAT Sector 1 (S)": [
-            "North Satellite (A)",
-            "SSAT Sector 2 (P)",
-            "SSAT Sector 4 (U)"
+          "1S": [
+            "1A",
+            "1P",
+            "1U"
           ],
-          "SSAT Sector 2 (P)": [
-            "SSAT Sector 3 (L)"
+          "1P": [
+            "1L"
           ],
-          "South Departure (M)": [
-            "West Departure (G)"
+          "1M": [
+            "1G"
           ],
-          "W": [
-            "H"
+          "1W": [
+            "1H"
           ],
-          "Z": [
-            "East Departure (B)",
-            "F",
-            "PLANO (X)",
-            "W"
+          "1Z": [
+            "1B",
+            "1F",
+            "1W",
+            "1X"
           ]
         }
       }

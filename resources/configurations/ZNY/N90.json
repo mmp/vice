@@ -69,19 +69,7 @@
     "1X": {
       "callsign": "LGA_X_APP",
       "frequency": 126400,
-      "radio_name": "New York approach",
-      "video_maps": [
-        "LGA-HPN ARR/DEP",
-        "Coast",
-        "NY Class B",
-        "MVA",
-        "LGA RNAV",
-        "NE HELI RNAV ROUTES",
-        "HPN 16/34 GPS FIXES",
-        "NK78 GPS",
-        "LGA LOC 31",
-        "R5001/HELI GPS"
-      ]
+      "radio_name": "New York approach"
     },
     "5H": {
       "callsign": "SWF_APP",
@@ -161,19 +149,7 @@
     "1Y": {
       "callsign": "LGA_Y_APP",
       "frequency": 120550,
-      "radio_name": "New York departure",
-      "video_maps": [
-        "LGA-HPN ARR/DEP",
-        "Coast",
-        "NY Class B",
-        "MVA",
-        "LGA RNAV",
-        "NE HELI RNAV ROUTES",
-        "HPN 16/34 GPS FIXES",
-        "NK78 GPS",
-        "LGA LOC 31",
-        "R5001/HELI GPS"
-      ]
+      "radio_name": "New York departure"
     },
     "OT": {
       "callsign": "OXC_TWR",
@@ -625,10 +601,10 @@
             "2K",
             "3H",
             "4P",
-            "NY_LE_DEP",
-            "NY_LN_DEP",
-            "NY_LS_DEP",
-            "NY_LW_DEP"
+            "5E",
+            "5S",
+            "5T",
+            "5W"
           ],
           "2K": [
             "2M"
@@ -636,9 +612,9 @@
           "1V": [
             "1D",
             "1F",
+            "1L",
             "1X",
-            "LGA_DEP",
-            "LGA_Y_DEP"
+            "1Y"
           ]
         }
       },
@@ -1354,7 +1330,7 @@
           "1V": [
             "1D",
             "1F",
-            "LGA_DEP"
+            "1L"
           ]
         }
       },

@@ -119,26 +119,26 @@
           "KVQQ": "1W"
         },
         "default_consolidation": {
-          "Radar Arrival": [
-            "Radar West"
+          "1R": [
+            "1W"
           ],
-          "Radar Gainesville": [
-            "Radar Palatka"
+          "1G": [
+            "1A"
           ],
-          "Radar North": [
-            "Radar Arrival",
-            "Radar Final"
+          "1N": [
+            "1J",
+            "1R"
           ],
-          "Radar Satellite": [
-            "Radar North",
-            "Radar Vitts"
+          "1S": [
+            "1N",
+            "1V"
           ],
-          "Radar Vitts": [
-            "Radar Dunnellon",
-            "Radar Gainesville"
+          "1V": [
+            "1D",
+            "1G"
           ],
-          "Radar West": [
-            "Radar East"
+          "1W": [
+            "1E"
           ]
         }
       },
@@ -209,26 +209,26 @@
           "KOCF": "1V"
         },
         "default_consolidation": {
-          "Radar Arrival": [
-            "Radar West"
+          "1R": [
+            "1W"
           ],
-          "Radar Gainesville": [
-            "Radar Palatka"
+          "1G": [
+            "1A"
           ],
-          "Radar North": [
-            "Radar Arrival",
-            "Radar Final"
+          "1N": [
+            "1J",
+            "1R"
           ],
-          "Radar Satellite": [
-            "Radar North",
-            "Radar Vitts"
+          "1S": [
+            "1N",
+            "1V"
           ],
-          "Radar Vitts": [
-            "Radar Dunnellon",
-            "Radar Gainesville"
+          "1V": [
+            "1D",
+            "1G"
           ],
-          "Radar West": [
-            "Radar East"
+          "1W": [
+            "1E"
           ]
         }
       },
@@ -261,26 +261,26 @@
           "KVQQ": "1W"
         },
         "default_consolidation": {
-          "Radar Arrival": [
-            "Radar West"
+          "1R": [
+            "1W"
           ],
-          "Radar Gainesville": [
-            "Radar Palatka"
+          "1G": [
+            "1A"
           ],
-          "Radar North": [
-            "Radar Arrival",
-            "Radar Final"
+          "1N": [
+            "1J",
+            "1R"
           ],
-          "Radar Satellite": [
-            "Radar North",
-            "Radar Vitts"
+          "1S": [
+            "1N",
+            "1V"
           ],
-          "Radar Vitts": [
-            "Radar Dunnellon",
-            "Radar Gainesville"
+          "1V": [
+            "1D",
+            "1G"
           ],
-          "Radar West": [
-            "Radar East"
+          "1W": [
+            "1E"
           ]
         }
       },
@@ -354,26 +354,26 @@
           "KGNV": "1G"
         },
         "default_consolidation": {
-          "Radar Arrival": [
-            "Radar West"
+          "1R": [
+            "1W"
           ],
-          "Radar Gainesville": [
-            "Radar Palatka"
+          "1G": [
+            "1A"
           ],
-          "Radar North": [
-            "Radar Arrival",
-            "Radar Final"
+          "1N": [
+            "1J",
+            "1R"
           ],
-          "Radar Satellite": [
-            "Radar North",
-            "Radar Vitts"
+          "1S": [
+            "1N",
+            "1V"
           ],
-          "Radar Vitts": [
-            "Radar Dunnellon",
-            "Radar Gainesville"
+          "1V": [
+            "1D",
+            "1G"
           ],
-          "Radar West": [
-            "Radar East"
+          "1W": [
+            "1E"
           ]
         }
       },

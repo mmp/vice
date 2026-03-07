@@ -3,57 +3,27 @@
     "1B": {
       "callsign": "BWI_B_APP",
       "frequency": 125525,
-      "radio_name": "Potomac Approach",
-      "video_maps": [
-        "CHP Approaches",
-        "PCT MVA",
-        "CHP SIDSTAR",
-        "CHP Approaches"
-      ]
+      "radio_name": "Potomac Approach"
     },
     "1H": {
       "callsign": "BWI_H_APP",
       "frequency": 133850,
-      "radio_name": "Potomac Approach",
-      "video_maps": [
-        "CHP Approaches",
-        "PCT MVA",
-        "CHP SIDSTAR",
-        "CHP Approaches"
-      ]
+      "radio_name": "Potomac Approach"
     },
     "1W": {
       "callsign": "BWI_W_APP",
       "frequency": 128700,
-      "radio_name": "Potomac Approach",
-      "video_maps": [
-        "CHP Approaches",
-        "PCT MVA",
-        "CHP SIDSTAR",
-        "CHP Approaches"
-      ]
+      "radio_name": "Potomac Approach"
     },
     "1G": {
       "callsign": "BWI_G_APP",
       "frequency": 124550,
-      "radio_name": "Potomac Approach",
-      "video_maps": [
-        "CHP Approaches",
-        "PCT MVA",
-        "CHP SIDSTAR",
-        "CHP Approaches"
-      ]
+      "radio_name": "Potomac Approach"
     },
     "1P": {
       "callsign": "BWI_P_APP",
       "frequency": 133750,
-      "radio_name": "Potomac Approach",
-      "video_maps": [
-        "CHP Approaches",
-        "PCT MVA",
-        "CHP SIDSTAR",
-        "CHP Approaches"
-      ]
+      "radio_name": "Potomac Approach"
     },
     "1N": {
       "callsign": "BWI_N_APP",
@@ -63,13 +33,7 @@
     "1S": {
       "callsign": "BWI_S_APP",
       "frequency": 119700,
-      "radio_name": "Potomac Approach",
-      "video_maps": [
-        "CHP Approaches",
-        "PCT MVA",
-        "CHP SIDSTAR",
-        "CHP Approaches"
-      ]
+      "radio_name": "Potomac Approach"
     },
     "1Z": {
       "callsign": "BWI_Z_APP",
@@ -834,7 +798,7 @@
             "1Y"
           ],
           "1L": [
-            "DCA_F_DEP"
+            "1F"
           ],
           "1Y": [
             "1L"

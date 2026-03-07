@@ -207,7 +207,7 @@
           "WLKES": "72"
         },
         "default_consolidation": {
-          "ZNY Selinsgrove 72": []
+          "72": []
         }
       },
       "N42": {
@@ -755,110 +755,6 @@
           "from": "ZNY"
         }
       ]
-    },
-    "areas": {
-      "3": {
-        "video_maps": [
-          "BASE MAP",
-          "HIGH SECTOR",
-          "LOW SECTOR",
-          "HIGH AIRWAY",
-          "LOW AIRWAY",
-          "APCH BDRY",
-          "3NM BDRY",
-          "MIA",
-          "HPAS",
-          "MIL",
-          "MOA",
-          "STARS",
-          "ZNY IAP",
-          "CLASS B",
-          "MVA",
-          "N90 RVM",
-          "N90 LIB RVM",
-          "PHL-W RVM",
-          "PHL-E RVM",
-          "MINOR RVM",
-          "EWR RVM",
-          "LGA RVM",
-          "JFK CFG",
-          "ISP RVM",
-          "ABE RVM",
-          "AVP RVM",
-          "BGM RVM",
-          "ELM RVM",
-          "MDT RVM",
-          "WRI RVM"
-        ]
-      },
-      "5": {
-        "video_maps": [
-          "BASE MAP",
-          "HIGH SECTOR",
-          "LOW SECTOR",
-          "HIGH AIRWAY",
-          "LOW AIRWAY",
-          "APCH BDRY",
-          "3NM BDRY",
-          "MIA",
-          "HPAS",
-          "MIL",
-          "MOA",
-          "STARS",
-          "ZNY IAP",
-          "CLASS B",
-          "MVA",
-          "N90 RVM",
-          "N90 LIB RVM",
-          "PHL-W RVM",
-          "PHL-E RVM",
-          "MINOR RVM",
-          "EWR RVM",
-          "LGA RVM",
-          "JFK CFG",
-          "ISP RVM",
-          "ABE RVM",
-          "AVP RVM",
-          "BGM RVM",
-          "ELM RVM",
-          "MDT RVM",
-          "WRI RVM"
-        ]
-      },
-      "7": {
-        "video_maps": [
-          "BASE MAP",
-          "HIGH SECTOR",
-          "LOW SECTOR",
-          "HIGH AIRWAY",
-          "LOW AIRWAY",
-          "APCH BDRY",
-          "3NM BDRY",
-          "MIA",
-          "HPAS",
-          "MIL",
-          "MOA",
-          "STARS",
-          "ZNY IAP",
-          "CLASS B",
-          "MVA",
-          "N90 RVM",
-          "N90 LIB RVM",
-          "PHL-W RVM",
-          "PHL-E RVM",
-          "MINOR RVM",
-          "EWR RVM",
-          "LGA RVM",
-          "JFK CFG",
-          "ISP RVM",
-          "ABE RVM",
-          "AVP RVM",
-          "BGM RVM",
-          "ELM RVM",
-          "MDT RVM",
-          "WRI RVM"
-        ]
-      }
     }
   },
   "handoff_ids": [
