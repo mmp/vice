@@ -385,6 +385,14 @@
           "from": "ZBW"
         }
       ]
+    },
+    "areas": {
+      "1": {
+        "video_maps": ["TRACON"]
+      },
+      "3": {
+        "video_maps": ["TRACON"]
+      }
     }
   },
   "handoff_ids": [

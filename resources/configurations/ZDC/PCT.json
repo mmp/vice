@@ -3,27 +3,32 @@
     "1B": {
       "callsign": "BWI_B_APP",
       "frequency": 125525,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "video_maps": ["CHP Approaches", "PCT MVA", "CHP SIDSTAR", "CHP Approaches"]
     },
     "1H": {
       "callsign": "BWI_H_APP",
       "frequency": 133850,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "video_maps": ["CHP Approaches", "PCT MVA", "CHP SIDSTAR", "CHP Approaches"]
     },
     "1W": {
       "callsign": "BWI_W_APP",
       "frequency": 128700,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "video_maps": ["CHP Approaches", "PCT MVA", "CHP SIDSTAR", "CHP Approaches"]
     },
     "1G": {
       "callsign": "BWI_G_APP",
       "frequency": 124550,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "video_maps": ["CHP Approaches", "PCT MVA", "CHP SIDSTAR", "CHP Approaches"]
     },
     "1P": {
       "callsign": "BWI_P_APP",
       "frequency": 133750,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "video_maps": ["CHP Approaches", "PCT MVA", "CHP SIDSTAR", "CHP Approaches"]
     },
     "1N": {
       "callsign": "BWI_N_APP",
@@ -33,7 +38,8 @@
     "1S": {
       "callsign": "BWI_S_APP",
       "frequency": 119700,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "video_maps": ["CHP Approaches", "PCT MVA", "CHP SIDSTAR", "CHP Approaches"]
     },
     "1Z": {
       "callsign": "BWI_Z_APP",
@@ -1082,7 +1088,40 @@
       },
       "3": {
         "default_airport": "KIAD",
-        "video_maps": []
+        "video_maps": [
+          "SHD Base",
+          "SHD South",
+          "PCT MVA",
+          "SHD North",
+          "SHD South 12",
+          "SHD IAD NSTAR",
+          "SHD IAD SSTAR",
+          "SHD SAT STAR",
+          "SHD IAD RNAV Vis 30",
+          "SHD Sat Approach",
+          "SHD Fixes",
+          "PCT ClassD",
+          "PCT Helo Route",
+          "PCT Roads",
+          "PCT JAirway",
+          "PCT TAirway",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "SHD IAD SID",
+          "SHD HEF SID",
+          "SHD Hold Areas",
+          "SHD Sat GPS Approach",
+          "PCT ClassB",
+          "PCT SFRA",
+          "PCT Zones",
+          "PCT Coastlines",
+          "PCT QAirway",
+          "PCT VAirway"
+        ]
       }
     },
     "datablocks": {

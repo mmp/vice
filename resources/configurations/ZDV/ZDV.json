@@ -432,6 +432,31 @@
           "from": "ZDV"
         }
       ]
+    },
+    "areas": {
+      "2": {
+        "video_maps": [
+          "HIGH BDRY",
+          "JET ROUTE",
+          "",
+          "SIAP",
+          "ARPT",
+          "AR ORBIT",
+          "SKI",
+          "RNAV",
+          "MIA",
+          "",
+          "LOW BDRY",
+          "VICTOR AIRWAY",
+          "LEGACY",
+          "",
+          "STATES",
+          "IR",
+          "RANGE RINGS",
+          "",
+          "MIA LABELS"
+        ]
+      }
     }
   },
   "handoff_ids": [

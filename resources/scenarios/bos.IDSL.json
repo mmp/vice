@@ -57552,7 +57552,7 @@
       ],
       "inbound_rates": {},
       "configuration": "33X",
-      "default_maps": ["A90 BASE", "BOS 33L", "A90 COASTLINE"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",

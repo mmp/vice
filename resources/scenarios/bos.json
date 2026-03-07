@@ -60587,7 +60587,7 @@
         }
       },
       "configuration": "CNE",
-      "default_maps": ["A90 BASE", "BOS 4R/L", "A90 COASTLINE"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -60763,7 +60763,7 @@
         }
       },
       "configuration": "CNE",
-      "default_maps": ["A90 BASE", "BOS 4R/L", "A90 COASTLINE"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -60957,7 +60957,7 @@
         }
       },
       "configuration": "CNE",
-      "default_maps": ["A90 BASE", "BOS_TWR 4R/15RC", "A90 COASTLINE"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/15RC", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -61125,7 +61125,7 @@
         }
       },
       "configuration": "CSE",
-      "default_maps": ["A90 BASE", "BOS 15R", "A90 COASTLINE"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 15R", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -61282,7 +61282,7 @@
         }
       },
       "configuration": "CNW",
-      "default_maps": ["A90 BASE", "BOS 27"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -61433,7 +61433,7 @@
         }
       },
       "configuration": "CNW",
-      "default_maps": ["A90 BASE", "BOS 33L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -61596,7 +61596,7 @@
         }
       },
       "configuration": "CSW",
-      "default_maps": ["A90 BASE", "BOS 22L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -61747,7 +61747,7 @@
         }
       },
       "configuration": "CSW",
-      "default_maps": ["A90 BASE", "BOS 22L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -61898,7 +61898,7 @@
         }
       },
       "configuration": "CSW",
-      "default_maps": ["A90 BASE", "BOS 22L", "BOS RNAV GPS Y 22L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L", "RNAV 22L Y"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -62049,7 +62049,7 @@
         }
       },
       "configuration": "CSW",
-      "default_maps": ["A90 BASE", "BOS 27/22"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27/22L"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -62200,7 +62200,7 @@
         }
       },
       "configuration": "CNW",
-      "default_maps": ["A90 BASE", "BOS 27/32"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27/32"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -62361,7 +62361,7 @@
         }
       },
       "configuration": "CNW",
-      "default_maps": ["A90 BASE", "BOS 33L/32"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L/32"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -62447,7 +62447,7 @@
         }
       },
       "configuration": "44X",
-      "default_maps": ["A90 BASE", "BOS 4R/L", "A90 COASTLINE"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -62503,7 +62503,7 @@
         }
       },
       "configuration": "22X",
-      "default_maps": ["A90 BASE", "BOS 22L", "A90 COASTLINE"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
