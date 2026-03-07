@@ -583,8 +583,13 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		ep.buttonVerticalOffset(ctx)
 		toolbarDrawState.buttonCursor[1] += buttonSize(buttonFull, scale)[1] + 3
 		p0 := toolbarDrawState.buttonCursor
-		if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, false, false) {
-			// handle ALTIM SET
+		{
+			ps := ep.currentPrefs()
+			altimActive := ps.AltimSet.Visible || ep.altimSetMenuOpen
+			if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, altimActive, false) {
+				ep.altimSetMenuOpen = false
+				ps.AltimSet.Visible = !ps.AltimSet.Visible
+			}
 		}
 
 		if ep.drawToolbarFullButton(ctx, "AUTO HO\nINHIB", 0, scale, false, false) {
@@ -654,8 +659,13 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		if ep.drawToolbarFullButton(ctx, "UA", 0, scale, false, false) {
 			// handle UA
 		}
-		if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, false, false) {
-			// handle WX REPORT
+		{
+			wxPs := ep.currentPrefs()
+			wxActive := wxPs.WX.Visible || ep.wxMenuOpen
+			if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, wxActive, false) {
+				ep.wxMenuOpen = false
+				wxPs.WX.Visible = !wxPs.WX.Visible
+			}
 		}
 		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
 		p2[0] = p1[0]
@@ -2299,6 +2309,9 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	// Normalize through display text so older saved keys like "CRR FIX" still work.
 	display := ep.getTornOffButtonText(buttonName)
 	switch cleanButtonName(display) {
+	case "ALTIM\nSET", "ALTIM SET", "ALTIMSET":
+		ep.altimSetMenuOpen = false
+		ps.AltimSet.Visible = !ps.AltimSet.Visible
 	case "DRAW":
 		// Handle DRAW button
 	case "ATC\nTOOLS":
@@ -2343,6 +2356,9 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		// Handle RADAR FILTER
 	case "PREFSET":
 		// Handle PREFSET
+	case "WX\nREPORT", "WX REPORT", "WXREPORT":
+		ep.wxMenuOpen = false
+		ps.WX.Visible = !ps.WX.Visible
 	case "CRR\nFIX":
 		ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
 	case "DELETE\nTEAROFF":

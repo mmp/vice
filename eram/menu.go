@@ -243,7 +243,9 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 				centerY := rp0[1] - itemH/2
 				td.AddTextCentered(item.Label, [2]float32{centerX, centerY}, style)
 			} else {
-				td.AddText(item.Label, math.Add2f(rp0, [2]float32{4, -itemH + 12}), style)
+				_, th := font.BoundText(item.Label, 0)
+				textY := rp0[1] - itemH/2 + float32(th)/2
+				td.AddText(item.Label, [2]float32{rp0[0] + 4, textY}, style)
 			}
 
 			cursor = rp3
@@ -373,7 +375,9 @@ func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, f
 		}
 
 		style := renderer.TextStyle{Font: font, Color: subItem.Color}
-		td.AddText(subItem.Label, math.Add2f([2]float32{cursor[0], y}, [2]float32{4, -itemH + 12}), style)
+		_, th := font.BoundText(subItem.Label, 0)
+		textY := y - itemH/2 + float32(th)/2
+		td.AddText(subItem.Label, [2]float32{cursor[0] + 4, textY}, style)
 	}
 
 	// Scroll arrows (right side)
