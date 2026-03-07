@@ -1,1478 +1,1457 @@
 {
-    "tracon": "SAT",
-    "airports": {
-        "KSAT": {
-            "approaches": {
-                "I04": {
-                    "cifp_id": "I4"
-                },
-                "I3R": {
-                    "cifp_id": "I13R"
-                },
-                "I1L": {
-                    "cifp_id": "I31L"
-                },
-                "R04": {
-                    "cifp_id": "RZ4",
-                    "full_name": "RNAV RNP Runway 04"
-                },
-                "R3R": {
-                    "cifp_id": "RZ13R",
-                    "full_name": "RNAV RNP Runway 13R"
-                },
-                "R22": {
-                    "cifp_id": "RX22",
-                    "full_name": "RNAV RNP Runway 22"
-                },
-                "R1L": {
-                    "cifp_id": "RZ31L",
-                    "full_name": "RNAV RNP Runway 31L"
-                }
-            },
-            "departure_routes": {
-                "13R": {
-                    "BRENI": {
-                        "cleared_altitude": 5000,
-                        "sid": "SLENA1",
-                        "waypoints": "_SAT_13R/h128 YENNS/a5000 LILJO SLENA BRENI"
-                    },
-                    "ZANNI": {
-                        "cleared_altitude": 5000,
-                        "sid": "TJANO1",
-                        "waypoints": "_SAT_13R/h128 LVACA/a5000 TJANO TEEPY ZANNI"
-                    },
-                    "WHAEL": {
-                        "cleared_altitude": 5000,
-                        "sid": "SNIDR1",
-                        "waypoints": "_SAT_13R/h128 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
-                    },
-                    "CRP": {
-                        "cleared_altitude": 5000,
-                        "sid": "BOWIE7",
-                        "waypoints": "_SAT_13R/h128 SAT YENNS THX CRP"
-                    },
-                    "LRD": {
-                        "cleared_altitude": 5000,
-                        "sid": "BOWIE7",
-                        "waypoints": "_SAT_13R/h128 SAT MILET LRD"
-                    },
-                    "AGJ": {
-                        "cleared_altitude": 5000,
-                        "sid": "ALAMO4",
-                        "waypoints": "_SAT_13R/h128 SAT GOBBY AGJ"
-                    },
-                    "KAHAN": {
-                        "cleared_altitude": 5000,
-                        "sid": "TJANO1",
-                        "waypoints": "_SAT_13R/h128 LVACA/a5000 TJANO TEEPY KAHAN"
-                    }
-                },
-                "4": {
-                    "WHAEL": {
-                        "cleared_altitude": 5000,
-                        "sid": "SNIDR1",
-                        "waypoints": "_SAT_04/h037 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
-                    },
-                    "KLNGR": {
-                        "cleared_altitude": 5000,
-                        "sid": "YODUH1",
-                        "waypoints": "_SAT_04/h037 SITHH/a5000 YODUH KLNGR"
-                    },
-                    "ALISS": {
-                        "cleared_altitude": 5000,
-                        "sid": "ALISS6",
-                        "waypoints": "_SAT_04/h037 TREVA/a5000 TATAR ALISS"
-                    },
-                    "YODUH": {
-                        "cleared_altitude": 5000,
-                        "sid": "YODUH1",
-                        "waypoints": "_SAT_04/h037 SITHH/a5000 YODUH"
-                    }
-                },
-                "31L": {
-                    "BRENI": {
-                        "cleared_altitude": 5000,
-                        "sid": "SLENA1",
-                        "waypoints": "_SAT_31L/h308 YENNS/a5000 LILJO SLENA BRENI"
-                    },
-                    "ZANNI": {
-                        "cleared_altitude": 5000,
-                        "sid": "TJANO1",
-                        "waypoints": "_SAT_31L/h308 LVACA/a5000 TJANO TEEPY ZANNI"
-                    },
-                    "WHAEL": {
-                        "cleared_altitude": 5000,
-                        "sid": "SNIDR1",
-                        "waypoints": "_SAT_31L/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
-                    },
-                    "CRP": {
-                        "cleared_altitude": 5000,
-                        "sid": "BOWIE7",
-                        "waypoints": "_SAT_31L/h308 SAT YENNS THX CRP"
-                    },
-                    "LRD": {
-                        "cleared_altitude": 5000,
-                        "sid": "BOWIE7",
-                        "waypoints": "_SAT_31L/h308 SAT MILET LRD"
-                    },
-                    "AGJ": {
-                        "cleared_altitude": 5000,
-                        "sid": "ALAMO4",
-                        "waypoints": "_SAT_31L/h308 SAT GOBBY AGJ"
-                    },
-                    "KAHAN": {
-                        "cleared_altitude": 5000,
-                        "sid": "TJANO1",
-                        "waypoints": "_SAT_31L/h308 LVACA/a5000 TJANO TEEPY KAHAN"
-                    }
-                },
-                "31R": {
-                    "WHAEL": {
-                        "cleared_altitude": 5000,
-                        "sid": "SNIDR1",
-                        "waypoints": "_SAT_31R/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
-                    },
-                    "KLNGR": {
-                        "cleared_altitude": 5000,
-                        "sid": "YODUH1",
-                        "waypoints": "_SAT_31R/h308 SITHH/a5000 YODUH KLNGR"
-                    },
-                    "ALISS": {
-                        "cleared_altitude": 5000,
-                        "sid": "ALISS6",
-                        "waypoints": "_SAT_31R/h308 TREVA/a5000 TATAR ALISS"
-                    },
-                    "YODUH": {
-                        "cleared_altitude": 5000,
-                        "sid": "YODUH1",
-                        "waypoints": "_SAT_31R/h308 SITHH/a5000 YODUH"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KHOU",
-                    "exit": "WHAEL",
-                    "route": "WHAEL BELLR5"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KDAL",
-                    "exit": "YODUH",
-                    "route": "YODUH DITSY BACHR4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "MMMX",
-                    "exit": "KAHAN",
-                    "route": "KAHAN LRD NLD UJ11 MTY UJ81 KERGA UT132 DARAN DARA2A"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "UAL"
-                        }
-                    ],
-                    "destination": "KSFO",
-                    "exit": "ALISS",
-                    "route": "ALISS FST J86 ELP ITUCO BXK J212 DECAS PMD AVE MAKRS SERFR SERFR4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KATL",
-                    "exit": "WHAEL",
-                    "route": "WHAEL Q24 PAYTN SHYRE HOBTT2"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "NKS"
-                        }
-                    ],
-                    "destination": "KBNA",
-                    "exit": "WHAEL",
-                    "route": "WHAEL IAH J29 MEM CHSNE2"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KOKC",
-                    "exit": "KLNGR",
-                    "route": "KLNGR MQP YUCKS YUCKS3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KPHX",
-                    "exit": "ALISS",
-                    "route": "ALISS FST ELP DRRVR PINNG1"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "DAL"
-                        }
-                    ],
-                    "destination": "KDTW",
-                    "exit": "KLNGR",
-                    "route": "KLNGR CVE LIT J131 PXV WWODD HANBL3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "NKS"
-                        }
-                    ],
-                    "destination": "KLAX",
-                    "exit": "ALISS",
-                    "route": "ALISS FST ELP J50 SSO J4 WLVRN ESTWD HLYWD1"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "DAL"
-                        }
-                    ],
-                    "destination": "KLAX",
-                    "exit": "ALISS",
-                    "route": "ALISS FST ELP J50 SSO J4 WLVRN ESTWD HLYWD1"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "LXJ"
-                        }
-                    ],
-                    "destination": "KHRL",
-                    "exit": "CRP",
-                    "route": "CRP"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "ENY"
-                        }
-                    ],
-                    "destination": "KDFW",
-                    "exit": "YODUH",
-                    "route": "YODUH GUTZZ BOOVE7"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KGLS",
-                    "exit": "BRENI",
-                    "route": "BRENI"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KLRD",
-                    "exit": "KAHAN",
-                    "route": "KAHAN"
-                }
-            ],
-            "exit_categories": {
-                "BRENI": "Southeast",
-                "ZANNI": "Southwest",
-                "WHAEL": "East",
-                "KLNGR": "Northeast",
-                "ALISS": "Northwest",
-                "CRP": "Southeast",
-                "LRD": "Southwest",
-                "AGJ": "Northeast",
-                "YODUH": "Northeast",
-                "KAHAN": "Southwest"
-            },
-            "tower_list": 1
+  "tracon": "SAT",
+  "airports": {
+    "KSAT": {
+      "approaches": {
+        "I04": {
+          "cifp_id": "I4"
         },
-        "KBAZ": {
-            "hold_for_release": true,
-            "approaches": {
-                "R13": {
-                    "cifp_id": "R13"
-                },
-                "R17": {
-                    "cifp_id": "R17"
-                },
-                "R31": {
-                    "cifp_id": "R31"
-                },
-                "R35": {
-                    "cifp_id": "R35"
-                }
-            },
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            },
-            "departure_routes": {
-                "31": {
-                    "ALISS": {
-                        "cleared_altitude": 5000,
-                        "sid": "ALISS6",
-                        "waypoints": "_BAZ_31/h308 TREVA/a5000 TATAR ALISS"
-                    },
-                    "BRENI": {
-                        "cleared_altitude": 5000,
-                        "sid": "SLENA1",
-                        "waypoints": "_BAZ_31/h308 YENNS/a5000 LILJO SLENA BRENI"
-                    },
-                    "ZANNI": {
-                        "cleared_altitude": 5000,
-                        "sid": "TJANO1",
-                        "waypoints": "_BAZ_31/h308 LVACA/a5000 TJANO TEEPY ZANNI"
-                    },
-                    "KLNGR": {
-                        "cleared_altitude": 5000,
-                        "sid": "YODUH1",
-                        "waypoints": "_BAZ_31/h308 SITHH/a5000 YODUH KLNGR"
-                    },
-                    "YENNS": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_BAZ_31/h308 YENNS"
-                    }
-                },
-                "13": {
-                    "ALISS": {
-                        "cleared_altitude": 5000,
-                        "sid": "ALISS6",
-                        "waypoints": "_BAZ_13/h128 TREVA/a5000 TATAR ALISS"
-                    },
-                    "BRENI": {
-                        "cleared_altitude": 5000,
-                        "sid": "SLENA1",
-                        "waypoints": "_BAZ_13/h128 YENNS/a5000 LILJO SLENA BRENI"
-                    },
-                    "ZANNI": {
-                        "cleared_altitude": 5000,
-                        "sid": "TJANO1",
-                        "waypoints": "_BAZ_13/h128 LVACA/a5000 TJANO TEEPY ZANNI"
-                    },
-                    "KLNGR": {
-                        "cleared_altitude": 5000,
-                        "sid": "YODUH1",
-                        "waypoints": "_BAZ_13/h128 SITHH/a5000 YODUH KLNGR"
-                    },
-                    "YENNS": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_BAZ_13/h128 YENNS"
-                    },
-                    "CHURN": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_BAZ_13/h128 CHURN"
-                    }
-                },
-                "35": {
-                    "ALISS": {
-                        "cleared_altitude": 5000,
-                        "sid": "ALISS6",
-                        "waypoints": "_BAZ_35/h353 TREVA/a5000 TATAR ALISS"
-                    },
-                    "BRENI": {
-                        "cleared_altitude": 5000,
-                        "sid": "SLENA1",
-                        "waypoints": "_BAZ_35/h353 YENNS/a5000 LILJO SLENA BRENI"
-                    },
-                    "ZANNI": {
-                        "cleared_altitude": 5000,
-                        "sid": "TJANO1",
-                        "waypoints": "_BAZ_35/h353 LVACA/a5000 TJANO TEEPY ZANNI"
-                    },
-                    "KLNGR": {
-                        "cleared_altitude": 5000,
-                        "sid": "YODUH1",
-                        "waypoints": "_BAZ_35/h353 SITHH/a5000 YODUH KLNGR"
-                    },
-                    "YENNS": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_BAZ_35/h353 YENNS"
-                    }
-                },
-                "17": {
-                    "ALISS": {
-                        "cleared_altitude": 5000,
-                        "sid": "ALISS6",
-                        "waypoints": "_BAZ_17/h173 TREVA/a5000 TATAR ALISS"
-                    },
-                    "BRENI": {
-                        "cleared_altitude": 5000,
-                        "sid": "SLENA1",
-                        "waypoints": "_BAZ_17/h173 YENNS/a5000 LILJO SLENA BRENI"
-                    },
-                    "ZANNI": {
-                        "cleared_altitude": 5000,
-                        "sid": "TJANO1",
-                        "waypoints": "_BAZ_17/h173 LVACA/a5000 TJANO TEEPY ZANNI"
-                    },
-                    "KLNGR": {
-                        "cleared_altitude": 5000,
-                        "sid": "YODUH1",
-                        "waypoints": "_BAZ_17/h173 SITHH/a5000 YODUH KLNGR"
-                    },
-                    "YENNS": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_BAZ_17/h173 YENNS"
-                    },
-                    "CHURN": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_BAZ_17/h173 CHURN"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KCRP",
-                    "exit": "YENNS",
-                    "route": "YENNS V163 CRP"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KAXH",
-                    "exit": "CHURN",
-                    "route": "CHURN T256 LDRET"
-                }
-            ],
-            "exit_categories": {
-                "BRENI": "Southeast",
-                "ZANNI": "Southwest",
-                "KLNGR": "Northeast",
-                "ALISS": "Northwest",
-                "YENNS": "Southeast",
-                "CHURN": "East"
-            },
-            "tower_list": 2
+        "I3R": {
+          "cifp_id": "I13R"
         },
-        "KSKF": {
-            "hold_for_release": true,
-            "approaches": {
-                "I16": {
-                    "runway": "16",
-                    "type": "ILS",
-                    "waypoints": [
-                        "FAMDO/if/a3100 FEGSA/a2400+ FEPET/faf/a1360+",
-                        "TASME/iaf/a3100-4100/arc12KSY FAMDO/if/a3100 FEGSA/a2400+ FEPET/faf/a1360+"
-                    ]
-                },
-                "R16": {
-                    "runway": "16",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "FAMDO/iaf/a3000 ZILEN/faf/a2400",
-                        "SODEE/iaf/a3100+ FAMDO/if/a3000 ZILEN/faf/a2400",
-                        "REUBE SODEE/iaf/a3100+ FAMDO/if/a3000 ZILEN/faf/a2400",
-                        "WURON/iaf/a4100+ ODUYU FAMDO/if/a3000 ZILEN/faf/a2400",
-                        "KICED WURON/iaf/a4100+ ODUYU FAMDO/if/a3000 ZILEN/faf/a2400"
-                    ]
-                },
-                "I34": {
-                    "runway": "34",
-                    "type": "ILS",
-                    "waypoints": [
-                        "CEPRO/iaf/a2700/lhilpt5nm ICCAP/a2200+ LANCO/faf/a1100+"
-                    ]
-                },
-                "R34": {
-                    "runway": "34",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "CEPRO/iaf/a2700/lhilpt5nm WUKEN/faf/a2600+",
-                        "ZEGVI/iaf CEPRO/iaf/a2700 WUKEN/faf/a2600+"
-                    ]
-                }
-            },
-            "vfr": {
-                "random_routes": {
-                    "rate": 3
-                }
-            },
-            "departure_routes": {
-                "16": {
-                    "KHYI": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_SKF_16/h158 KHYI"
-                    },
-                    "TATAR": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_SKF_16/h158 TATAR"
-                    },
-                    "GOBBY": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_SKF_16/h158 GOBBY"
-                    },
-                    "KLNGR": {
-                        "cleared_altitude": 5000,
-                        "sid": "YODUH1",
-                        "waypoints": "_SKF_16/h158 SITHH/a5000+ YODUH KLNGR"
-                    }
-                },
-                "34": {
-                    "KHYI": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_SKF_34/h338 KHYI"
-                    },
-                    "TATAR": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_SKF_34/h338 TATAR"
-                    },
-                    "GOBBY": {
-                        "cleared_altitude": 5000,
-                        "waypoints": "_SKF_34/h338 GOBBY"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KHYI",
-                    "exit": "KHYI",
-                    "route": "KHYI"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KSLC",
-                    "exit": "TATAR",
-                    "route": "TATAR LEJON JCT SJT TXO ALS LOPEC JNC J12 HELPR JAZZZ1"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KTKI",
-                    "exit": "GOBBY",
-                    "route": "GOBBY AGJ DITSY SWVAY4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KSLG",
-                    "exit": "GOBBY",
-                    "route": "GOBBY KLNGR FUZ"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KJEF",
-                    "exit": "KLNGR",
-                    "route": "KLNGR",
-                    "altitude": [
-                        37000,
-                        39000,
-                        41000
-                    ]
-                }
-            ],
-            "tower_list": 3
+        "I1L": {
+          "cifp_id": "I31L"
         },
-        "KSSF": {
-            "hold_for_release": true,
-            "approaches": {
-                "R32": {
-                    "cifp_id": "R32"
-                }
-            },
-            "vfr": {
-                "random_routes": {
-                    "rate": 4
-                }
-            },
-            "departure_routes": {
-                "32": {
-                    "YODUH": {
-                        "cleared_altitude": 5000,
-                        "sid": "YODUH1",
-                        "waypoints": "_SSF_32/h317 SITHH/a5000 YODUH"
-                    },
-                    "LEJON": {
-                        "cleared_altitude": 5000,
-                        "sid": "LEJON4",
-                        "waypoints": "_SSF_32/h317 SAT TATAR LEJON"
-                    },
-                    "JUMBO": {
-                        "cleared_altitude": 5000,
-                        "sid": "ALAMO4",
-                        "waypoints": "_SSF_32/h317 SAT HENLY JUMBO"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KBRD",
-                    "exit": "YODUH",
-                    "route": "YODUH DITSY SWVAY4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KGBD",
-                    "exit": "LEJON",
-                    "route": "LEJON HBR"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KDTO",
-                    "exit": "JUMBO",
-                    "route": "JUMBO TTT"
-                }
-            ]
+        "R04": {
+          "cifp_id": "RZ4",
+          "full_name": "RNAV RNP Runway 04"
         },
-        "5C1": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 1
-                }
-            }
+        "R3R": {
+          "cifp_id": "RZ13R",
+          "full_name": "RNAV RNP Runway 13R"
         },
-        "1T8": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 1
-                }
-            }
+        "R22": {
+          "cifp_id": "RX22",
+          "full_name": "RNAV RNP Runway 22"
         },
-        "1T7": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 1
-                }
-            }
-        },
-        "E70": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 1
-                }
-            }
-        },
-        "74R": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 1
-                }
-            }
-        },
-        "53T": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 1
-                }
-            }
+        "R1L": {
+          "cifp_id": "RZ31L",
+          "full_name": "RNAV RNP Runway 31L"
         }
+      },
+      "departure_routes": {
+        "13R": {
+          "BRENI": {
+            "cleared_altitude": 5000,
+            "sid": "SLENA1",
+            "waypoints": "_SAT_13R/h128 YENNS/a5000 LILJO SLENA BRENI"
+          },
+          "ZANNI": {
+            "cleared_altitude": 5000,
+            "sid": "TJANO1",
+            "waypoints": "_SAT_13R/h128 LVACA/a5000 TJANO TEEPY ZANNI"
+          },
+          "WHAEL": {
+            "cleared_altitude": 5000,
+            "sid": "SNIDR1",
+            "waypoints": "_SAT_13R/h128 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
+          },
+          "CRP": {
+            "cleared_altitude": 5000,
+            "sid": "BOWIE7",
+            "waypoints": "_SAT_13R/h128 SAT YENNS THX CRP"
+          },
+          "LRD": {
+            "cleared_altitude": 5000,
+            "sid": "BOWIE7",
+            "waypoints": "_SAT_13R/h128 SAT MILET LRD"
+          },
+          "AGJ": {
+            "cleared_altitude": 5000,
+            "sid": "ALAMO4",
+            "waypoints": "_SAT_13R/h128 SAT GOBBY AGJ"
+          },
+          "KAHAN": {
+            "cleared_altitude": 5000,
+            "sid": "TJANO1",
+            "waypoints": "_SAT_13R/h128 LVACA/a5000 TJANO TEEPY KAHAN"
+          }
+        },
+        "4": {
+          "WHAEL": {
+            "cleared_altitude": 5000,
+            "sid": "SNIDR1",
+            "waypoints": "_SAT_04/h037 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
+          },
+          "KLNGR": {
+            "cleared_altitude": 5000,
+            "sid": "YODUH1",
+            "waypoints": "_SAT_04/h037 SITHH/a5000 YODUH KLNGR"
+          },
+          "ALISS": {
+            "cleared_altitude": 5000,
+            "sid": "ALISS6",
+            "waypoints": "_SAT_04/h037 TREVA/a5000 TATAR ALISS"
+          },
+          "YODUH": {
+            "cleared_altitude": 5000,
+            "sid": "YODUH1",
+            "waypoints": "_SAT_04/h037 SITHH/a5000 YODUH"
+          }
+        },
+        "31L": {
+          "BRENI": {
+            "cleared_altitude": 5000,
+            "sid": "SLENA1",
+            "waypoints": "_SAT_31L/h308 YENNS/a5000 LILJO SLENA BRENI"
+          },
+          "ZANNI": {
+            "cleared_altitude": 5000,
+            "sid": "TJANO1",
+            "waypoints": "_SAT_31L/h308 LVACA/a5000 TJANO TEEPY ZANNI"
+          },
+          "WHAEL": {
+            "cleared_altitude": 5000,
+            "sid": "SNIDR1",
+            "waypoints": "_SAT_31L/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
+          },
+          "CRP": {
+            "cleared_altitude": 5000,
+            "sid": "BOWIE7",
+            "waypoints": "_SAT_31L/h308 SAT YENNS THX CRP"
+          },
+          "LRD": {
+            "cleared_altitude": 5000,
+            "sid": "BOWIE7",
+            "waypoints": "_SAT_31L/h308 SAT MILET LRD"
+          },
+          "AGJ": {
+            "cleared_altitude": 5000,
+            "sid": "ALAMO4",
+            "waypoints": "_SAT_31L/h308 SAT GOBBY AGJ"
+          },
+          "KAHAN": {
+            "cleared_altitude": 5000,
+            "sid": "TJANO1",
+            "waypoints": "_SAT_31L/h308 LVACA/a5000 TJANO TEEPY KAHAN"
+          }
+        },
+        "31R": {
+          "WHAEL": {
+            "cleared_altitude": 5000,
+            "sid": "SNIDR1",
+            "waypoints": "_SAT_31R/h308 WRKIT/a5000 CHURN SNIDR SEEDS WEMAR FFSSH WHAEL"
+          },
+          "KLNGR": {
+            "cleared_altitude": 5000,
+            "sid": "YODUH1",
+            "waypoints": "_SAT_31R/h308 SITHH/a5000 YODUH KLNGR"
+          },
+          "ALISS": {
+            "cleared_altitude": 5000,
+            "sid": "ALISS6",
+            "waypoints": "_SAT_31R/h308 TREVA/a5000 TATAR ALISS"
+          },
+          "YODUH": {
+            "cleared_altitude": 5000,
+            "sid": "YODUH1",
+            "waypoints": "_SAT_31R/h308 SITHH/a5000 YODUH"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KHOU",
+          "exit": "WHAEL",
+          "route": "WHAEL BELLR5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KDAL",
+          "exit": "YODUH",
+          "route": "YODUH DITSY BACHR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "MMMX",
+          "exit": "KAHAN",
+          "route": "KAHAN LRD NLD UJ11 MTY UJ81 KERGA UT132 DARAN DARA2A"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KSFO",
+          "exit": "ALISS",
+          "route": "ALISS FST J86 ELP ITUCO BXK J212 DECAS PMD AVE MAKRS SERFR SERFR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "WHAEL",
+          "route": "WHAEL Q24 PAYTN SHYRE HOBTT2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "NKS"
+            }
+          ],
+          "destination": "KBNA",
+          "exit": "WHAEL",
+          "route": "WHAEL IAH J29 MEM CHSNE2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KOKC",
+          "exit": "KLNGR",
+          "route": "KLNGR MQP YUCKS YUCKS3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KPHX",
+          "exit": "ALISS",
+          "route": "ALISS FST ELP DRRVR PINNG1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KDTW",
+          "exit": "KLNGR",
+          "route": "KLNGR CVE LIT J131 PXV WWODD HANBL3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "NKS"
+            }
+          ],
+          "destination": "KLAX",
+          "exit": "ALISS",
+          "route": "ALISS FST ELP J50 SSO J4 WLVRN ESTWD HLYWD1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KLAX",
+          "exit": "ALISS",
+          "route": "ALISS FST ELP J50 SSO J4 WLVRN ESTWD HLYWD1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "KHRL",
+          "exit": "CRP",
+          "route": "CRP"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KDFW",
+          "exit": "YODUH",
+          "route": "YODUH GUTZZ BOOVE7"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KGLS",
+          "exit": "BRENI",
+          "route": "BRENI"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KLRD",
+          "exit": "KAHAN",
+          "route": "KAHAN"
+        }
+      ],
+      "exit_categories": {
+        "BRENI": "Southeast",
+        "ZANNI": "Southwest",
+        "WHAEL": "East",
+        "KLNGR": "Northeast",
+        "ALISS": "Northwest",
+        "CRP": "Southeast",
+        "LRD": "Southwest",
+        "AGJ": "Northeast",
+        "YODUH": "Northeast",
+        "KAHAN": "Southwest"
+      },
+      "tower_list": 1
     },
-    "inbound_flows": {
-        "DNKIN2": {
-            "arrivals": [
-                {
-                    "spawn": "MOPPP",
-                    "cruise_altitude": 29000,
-                    "star": "DNKIN2",
-                    "initial_altitude": 24000,
-                    "initial_controller": "C85",
-                    "initial_speed": 280,
-                    "airlines": {
-                        "KSAT": [
-                            {
-                                "icao": "SWA",
-                                "airport": "KELP"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KSAN"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "spawn": "MOPPP",
-                    "cruise_altitude": 29000,
-                    "star": "DNKIN2",
-                    "initial_altitude": 24000,
-                    "initial_controller": "C85",
-                    "initial_speed": 280,
-                    "airlines": {
-                        "KSKF": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KTUS"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KSLC"
-                            }
-                        ],
-                        "KBAZ": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KTUS"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KSLC"
-                            }
-                        ]
-                    }
-                }
+    "KBAZ": {
+      "hold_for_release": true,
+      "approaches": {
+        "R13": {
+          "cifp_id": "R13"
+        },
+        "R17": {
+          "cifp_id": "R17"
+        },
+        "R31": {
+          "cifp_id": "R31"
+        },
+        "R35": {
+          "cifp_id": "R35"
+        }
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      },
+      "departure_routes": {
+        "31": {
+          "ALISS": {
+            "cleared_altitude": 5000,
+            "sid": "ALISS6",
+            "waypoints": "_BAZ_31/h308 TREVA/a5000 TATAR ALISS"
+          },
+          "BRENI": {
+            "cleared_altitude": 5000,
+            "sid": "SLENA1",
+            "waypoints": "_BAZ_31/h308 YENNS/a5000 LILJO SLENA BRENI"
+          },
+          "ZANNI": {
+            "cleared_altitude": 5000,
+            "sid": "TJANO1",
+            "waypoints": "_BAZ_31/h308 LVACA/a5000 TJANO TEEPY ZANNI"
+          },
+          "KLNGR": {
+            "cleared_altitude": 5000,
+            "sid": "YODUH1",
+            "waypoints": "_BAZ_31/h308 SITHH/a5000 YODUH KLNGR"
+          },
+          "YENNS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_BAZ_31/h308 YENNS"
+          }
+        },
+        "13": {
+          "ALISS": {
+            "cleared_altitude": 5000,
+            "sid": "ALISS6",
+            "waypoints": "_BAZ_13/h128 TREVA/a5000 TATAR ALISS"
+          },
+          "BRENI": {
+            "cleared_altitude": 5000,
+            "sid": "SLENA1",
+            "waypoints": "_BAZ_13/h128 YENNS/a5000 LILJO SLENA BRENI"
+          },
+          "ZANNI": {
+            "cleared_altitude": 5000,
+            "sid": "TJANO1",
+            "waypoints": "_BAZ_13/h128 LVACA/a5000 TJANO TEEPY ZANNI"
+          },
+          "KLNGR": {
+            "cleared_altitude": 5000,
+            "sid": "YODUH1",
+            "waypoints": "_BAZ_13/h128 SITHH/a5000 YODUH KLNGR"
+          },
+          "YENNS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_BAZ_13/h128 YENNS"
+          },
+          "CHURN": {
+            "cleared_altitude": 5000,
+            "waypoints": "_BAZ_13/h128 CHURN"
+          }
+        },
+        "35": {
+          "ALISS": {
+            "cleared_altitude": 5000,
+            "sid": "ALISS6",
+            "waypoints": "_BAZ_35/h353 TREVA/a5000 TATAR ALISS"
+          },
+          "BRENI": {
+            "cleared_altitude": 5000,
+            "sid": "SLENA1",
+            "waypoints": "_BAZ_35/h353 YENNS/a5000 LILJO SLENA BRENI"
+          },
+          "ZANNI": {
+            "cleared_altitude": 5000,
+            "sid": "TJANO1",
+            "waypoints": "_BAZ_35/h353 LVACA/a5000 TJANO TEEPY ZANNI"
+          },
+          "KLNGR": {
+            "cleared_altitude": 5000,
+            "sid": "YODUH1",
+            "waypoints": "_BAZ_35/h353 SITHH/a5000 YODUH KLNGR"
+          },
+          "YENNS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_BAZ_35/h353 YENNS"
+          }
+        },
+        "17": {
+          "ALISS": {
+            "cleared_altitude": 5000,
+            "sid": "ALISS6",
+            "waypoints": "_BAZ_17/h173 TREVA/a5000 TATAR ALISS"
+          },
+          "BRENI": {
+            "cleared_altitude": 5000,
+            "sid": "SLENA1",
+            "waypoints": "_BAZ_17/h173 YENNS/a5000 LILJO SLENA BRENI"
+          },
+          "ZANNI": {
+            "cleared_altitude": 5000,
+            "sid": "TJANO1",
+            "waypoints": "_BAZ_17/h173 LVACA/a5000 TJANO TEEPY ZANNI"
+          },
+          "KLNGR": {
+            "cleared_altitude": 5000,
+            "sid": "YODUH1",
+            "waypoints": "_BAZ_17/h173 SITHH/a5000 YODUH KLNGR"
+          },
+          "YENNS": {
+            "cleared_altitude": 5000,
+            "waypoints": "_BAZ_17/h173 YENNS"
+          },
+          "CHURN": {
+            "cleared_altitude": 5000,
+            "waypoints": "_BAZ_17/h173 CHURN"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KCRP",
+          "exit": "YENNS",
+          "route": "YENNS V163 CRP"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KAXH",
+          "exit": "CHURN",
+          "route": "CHURN T256 LDRET"
+        }
+      ],
+      "exit_categories": {
+        "BRENI": "Southeast",
+        "ZANNI": "Southwest",
+        "KLNGR": "Northeast",
+        "ALISS": "Northwest",
+        "YENNS": "Southeast",
+        "CHURN": "East"
+      },
+      "tower_list": 2
+    },
+    "KSKF": {
+      "hold_for_release": true,
+      "approaches": {
+        "I16": {
+          "runway": "16",
+          "type": "ILS",
+          "waypoints": [
+            "FAMDO/if/a3100 FEGSA/a2400+ FEPET/faf/a1360+",
+            "TASME/iaf/a3100-4100/arc12KSY FAMDO/if/a3100 FEGSA/a2400+ FEPET/faf/a1360+"
+          ]
+        },
+        "R16": {
+          "runway": "16",
+          "type": "RNAV",
+          "waypoints": [
+            "FAMDO/iaf/a3000 ZILEN/faf/a2400",
+            "SODEE/iaf/a3100+ FAMDO/if/a3000 ZILEN/faf/a2400",
+            "REUBE SODEE/iaf/a3100+ FAMDO/if/a3000 ZILEN/faf/a2400",
+            "WURON/iaf/a4100+ ODUYU FAMDO/if/a3000 ZILEN/faf/a2400",
+            "KICED WURON/iaf/a4100+ ODUYU FAMDO/if/a3000 ZILEN/faf/a2400"
+          ]
+        },
+        "I34": {
+          "runway": "34",
+          "type": "ILS",
+          "waypoints": ["CEPRO/iaf/a2700/lhilpt5nm ICCAP/a2200+ LANCO/faf/a1100+"]
+        },
+        "R34": {
+          "runway": "34",
+          "type": "RNAV",
+          "waypoints": ["CEPRO/iaf/a2700/lhilpt5nm WUKEN/faf/a2600+", "ZEGVI/iaf CEPRO/iaf/a2700 WUKEN/faf/a2600+"]
+        }
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      },
+      "departure_routes": {
+        "16": {
+          "KHYI": {
+            "cleared_altitude": 5000,
+            "waypoints": "_SKF_16/h158 KHYI"
+          },
+          "TATAR": {
+            "cleared_altitude": 5000,
+            "waypoints": "_SKF_16/h158 TATAR"
+          },
+          "GOBBY": {
+            "cleared_altitude": 5000,
+            "waypoints": "_SKF_16/h158 GOBBY"
+          },
+          "KLNGR": {
+            "cleared_altitude": 5000,
+            "sid": "YODUH1",
+            "waypoints": "_SKF_16/h158 SITHH/a5000+ YODUH KLNGR"
+          }
+        },
+        "34": {
+          "KHYI": {
+            "cleared_altitude": 5000,
+            "waypoints": "_SKF_34/h338 KHYI"
+          },
+          "TATAR": {
+            "cleared_altitude": 5000,
+            "waypoints": "_SKF_34/h338 TATAR"
+          },
+          "GOBBY": {
+            "cleared_altitude": 5000,
+            "waypoints": "_SKF_34/h338 GOBBY"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KHYI",
+          "exit": "KHYI",
+          "route": "KHYI"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KSLC",
+          "exit": "TATAR",
+          "route": "TATAR LEJON JCT SJT TXO ALS LOPEC JNC J12 HELPR JAZZZ1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KTKI",
+          "exit": "GOBBY",
+          "route": "GOBBY AGJ DITSY SWVAY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KSLG",
+          "exit": "GOBBY",
+          "route": "GOBBY KLNGR FUZ"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KJEF",
+          "exit": "KLNGR",
+          "route": "KLNGR",
+          "altitude": [37000, 39000, 41000]
+        }
+      ],
+      "tower_list": 3
+    },
+    "KSSF": {
+      "hold_for_release": true,
+      "approaches": {
+        "R32": {
+          "cifp_id": "R32"
+        }
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 4
+        }
+      },
+      "departure_routes": {
+        "32": {
+          "YODUH": {
+            "cleared_altitude": 5000,
+            "sid": "YODUH1",
+            "waypoints": "_SSF_32/h317 SITHH/a5000 YODUH"
+          },
+          "LEJON": {
+            "cleared_altitude": 5000,
+            "sid": "LEJON4",
+            "waypoints": "_SSF_32/h317 SAT TATAR LEJON"
+          },
+          "JUMBO": {
+            "cleared_altitude": 5000,
+            "sid": "ALAMO4",
+            "waypoints": "_SSF_32/h317 SAT HENLY JUMBO"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KBRD",
+          "exit": "YODUH",
+          "route": "YODUH DITSY SWVAY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KGBD",
+          "exit": "LEJON",
+          "route": "LEJON HBR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KDTO",
+          "exit": "JUMBO",
+          "route": "JUMBO TTT"
+        }
+      ]
+    },
+    "5C1": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "1T8": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "1T7": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "E70": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "74R": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "53T": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "DNKIN2": {
+      "arrivals": [
+        {
+          "spawn": "MOPPP",
+          "cruise_altitude": 29000,
+          "star": "DNKIN2",
+          "initial_altitude": 24000,
+          "initial_controller": "C85",
+          "initial_speed": 280,
+          "airlines": {
+            "KSAT": [
+              {
+                "icao": "SWA",
+                "airport": "KELP"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KSAN"
+              }
             ]
+          }
+        },
+        {
+          "spawn": "MOPPP",
+          "cruise_altitude": 29000,
+          "star": "DNKIN2",
+          "initial_altitude": 24000,
+          "initial_controller": "C85",
+          "initial_speed": 280,
+          "airlines": {
+            "KSKF": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KTUS"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KPHX"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KSLC"
+              }
+            ],
+            "KBAZ": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KTUS"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KPHX"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KSLC"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "POPPO2": {
+      "arrivals": [
+        {
+          "spawn": "PPNUT",
+          "cruise_altitude": 27000,
+          "star": "POPPO2",
+          "initial_altitude": 22000,
+          "initial_speed": 280,
+          "initial_controller": "C50",
+          "airlines": {
+            "KSAT": [
+              {
+                "icao": "SWA",
+                "airport": "KDAL"
+              },
+              {
+                "icao": "ASA",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KSFO"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KOKC"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "PPNUT",
+          "cruise_altitude": 27000,
+          "star": "POPPO2",
+          "initial_altitude": 22000,
+          "initial_speed": 280,
+          "initial_controller": "C50",
+          "airlines": {
+            "KSSF": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KDAL"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KSFO"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KOKC"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "QERVO3": {
+      "arrivals": [
+        {
+          "spawn": "HOSAY",
+          "cruise_altitude": 28000,
+          "star": "QERVO3",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "initial_controller": "C96",
+          "airlines": {
+            "KSAT": [
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "FDX",
+                "airport": "KMEM"
+              },
+              {
+                "icao": "UPS",
+                "airport": "KSDF"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "HOSAY",
+          "cruise_altitude": 28000,
+          "star": "QERVO3",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "initial_controller": "C96",
+          "airlines": {
+            "KSKF": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KATL"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KJAX"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KMEM"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KCHS"
+              }
+            ],
+            "KBAZ": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KATL"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KJAX"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KMEM"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KCHS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CRVZA2": {
+      "arrivals": [
+        {
+          "spawn": "CRVZA",
+          "cruise_altitude": 28000,
+          "star": "CRVZA2",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "initial_controller": "C56",
+          "airlines": {
+            "KSAT": [
+              {
+                "icao": "AMX",
+                "airport": "MMMX"
+              },
+              {
+                "icao": "SCX",
+                "airport": "MMUN"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KMIA"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "CRVZA",
+          "cruise_altitude": 28000,
+          "star": "CRVZA2",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "initial_controller": "C56",
+          "airlines": {
+            "KSSF": [
+              {
+                "icao": "xa",
+                "fleet": "fastGA",
+                "airport": "MMMX"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "MMUN"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KCRP"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KHRL"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "SAT DEP 13R + 04 LAND 13R",
+  "fixes": {
+    "_SAT_13R": "29.527223,-98.46555366",
+    "_SAT_04": "29.54094245,-98.452436533",
+    "_SAT_31L": "29.542745916666668,98.48554113333333",
+    "_SAT_31R": "29.540299,98.47769833333334",
+    "_BAZ_31": "29.71511,98.04994053333333",
+    "_BAZ_13": "29.70230555,98.03564445",
+    "_BAZ_35": "29.70951645,98.04363333333333",
+    "_BAZ_17": "29.694768466666666,98.04384191666666",
+    "_SKF_16": "29.369116666666667,98.57555833333333",
+    "_SKF_34": "29.39935,98.586675",
+    "_SSF_32": "29.341560966666666,98.47202061666667"
+  },
+  "name": "KSAT",
+  "primary_airport": "KSAT",
+  "scenarios": {
+    "SAT DEP 13R + 04 LAND 13R": {
+      "arrival_runways": [
+        {
+          "airport": "KSAT",
+          "runway": "13R"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "13"
+        },
+        {
+          "airport": "KSKF",
+          "runway": "16"
+        },
+        {
+          "airport": "KSSF",
+          "runway": "32"
+        }
+      ],
+      "inbound_rates": {
+        "CRVZA2": {
+          "KSAT": 5,
+          "KSSF": 3
+        },
+        "DNKIN2": {
+          "KSAT": 6,
+          "KSKF": 3,
+          "KBAZ": 4
         },
         "POPPO2": {
-            "arrivals": [
-                {
-                    "spawn": "PPNUT",
-                    "cruise_altitude": 27000,
-                    "star": "POPPO2",
-                    "initial_altitude": 22000,
-                    "initial_speed": 280,
-                    "initial_controller": "C50",
-                    "airlines": {
-                        "KSAT": [
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "ASA",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KOKC"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "spawn": "PPNUT",
-                    "cruise_altitude": 27000,
-                    "star": "POPPO2",
-                    "initial_altitude": 22000,
-                    "initial_speed": 280,
-                    "initial_controller": "C50",
-                    "airlines": {
-                        "KSSF": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KOKC"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KSAT": 6,
+          "KSSF": 2
         },
         "QERVO3": {
-            "arrivals": [
-                {
-                    "spawn": "HOSAY",
-                    "cruise_altitude": 28000,
-                    "star": "QERVO3",
-                    "initial_altitude": 24000,
-                    "initial_speed": 280,
-                    "initial_controller": "C96",
-                    "airlines": {
-                        "KSAT": [
-                            {
-                                "icao": "DAL",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "ENY",
-                                "airport": "KMIA"
-                            },
-                            {
-                                "icao": "FDX",
-                                "airport": "KMEM"
-                            },
-                            {
-                                "icao": "UPS",
-                                "airport": "KSDF"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "spawn": "HOSAY",
-                    "cruise_altitude": 28000,
-                    "star": "QERVO3",
-                    "initial_altitude": 24000,
-                    "initial_speed": 280,
-                    "initial_controller": "C96",
-                    "airlines": {
-                        "KSKF": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KJAX"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KMEM"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KCHS"
-                            }
-                        ],
-                        "KBAZ": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KJAX"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KMEM"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KCHS"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KSAT": 5,
+          "KSKF": 2,
+          "KBAZ": 3
+        }
+      },
+      "configuration": "13R",
+      "default_maps": ["SAT BASE", "SAT 13 SPLIT"],
+      "departure_runways": [
+        {
+          "airport": "KSAT",
+          "runway": "13R",
+          "rate": 12,
+          "category": "East"
         },
+        {
+          "airport": "KSAT",
+          "runway": "13R",
+          "rate": 8,
+          "category": "Southwest"
+        },
+        {
+          "airport": "KSAT",
+          "runway": "4",
+          "rate": 12,
+          "category": "Northeast"
+        },
+        {
+          "airport": "KSAT",
+          "runway": "4",
+          "rate": 8,
+          "category": "East"
+        },
+        {
+          "airport": "KSAT",
+          "runway": "4",
+          "rate": 8,
+          "category": "Northwest"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "35",
+          "rate": 4,
+          "category": "Southeast"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "35",
+          "rate": 4,
+          "category": "East"
+        },
+        {
+          "airport": "KSKF",
+          "runway": "16",
+          "rate": 3
+        },
+        {
+          "airport": "KSSF",
+          "runway": "32",
+          "rate": 1
+        }
+      ],
+      "wind": {
+        "direction": "55-115"
+      }
+    },
+    "SAT DEP 31L/R LAND 31L + 4": {
+      "arrival_runways": [
+        {
+          "airport": "KSAT",
+          "runway": "31L"
+        },
+        {
+          "airport": "KSAT",
+          "runway": "4"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "31"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "35"
+        },
+        {
+          "airport": "KSKF",
+          "runway": "34"
+        },
+        {
+          "airport": "KSSF",
+          "runway": "32"
+        }
+      ],
+      "inbound_rates": {
         "CRVZA2": {
-            "arrivals": [
-                {
-                    "spawn": "CRVZA",
-                    "cruise_altitude": 28000,
-                    "star": "CRVZA2",
-                    "initial_altitude": 11000,
-                    "initial_speed": 250,
-                    "initial_controller": "C56",
-                    "airlines": {
-                        "KSAT": [
-                            {
-                                "icao": "AMX",
-                                "airport": "MMMX"
-                            },
-                            {
-                                "icao": "SCX",
-                                "airport": "MMUN"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KMCO"
-                            },
-                            {
-                                "icao": "ENY",
-                                "airport": "KMIA"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "spawn": "CRVZA",
-                    "cruise_altitude": 28000,
-                    "star": "CRVZA2",
-                    "initial_altitude": 11000,
-                    "initial_speed": 250,
-                    "initial_controller": "C56",
-                    "airlines": {
-                        "KSSF": [
-                            {
-                                "icao": "xa",
-                                "fleet": "fastGA",
-                                "airport": "MMMX"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "MMUN"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KCRP"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KHRL"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KSAT": 5,
+          "KSSF": 3
+        },
+        "DNKIN2": {
+          "KSAT": 6,
+          "KSKF": 3,
+          "KBAZ": 4
+        },
+        "POPPO2": {
+          "KSAT": 6,
+          "KSSF": 2
+        },
+        "QERVO3": {
+          "KSAT": 5,
+          "KSKF": 2,
+          "KBAZ": 3
         }
-    },
-    "default_scenario": "SAT DEP 13R + 04 LAND 13R",
-    "fixes": {
-        "_SAT_13R": "29.527223,-98.46555366",
-        "_SAT_04": "29.54094245,-98.452436533",
-        "_SAT_31L": "29.542745916666668,98.48554113333333",
-        "_SAT_31R": "29.540299,98.47769833333334",
-        "_BAZ_31": "29.71511,98.04994053333333",
-        "_BAZ_13": "29.70230555,98.03564445",
-        "_BAZ_35": "29.70951645,98.04363333333333",
-        "_BAZ_17": "29.694768466666666,98.04384191666666",
-        "_SKF_16": "29.369116666666667,98.57555833333333",
-        "_SKF_34": "29.39935,98.586675",
-        "_SSF_32": "29.341560966666666,98.47202061666667"
-    },
-    "name": "KSAT",
-    "primary_airport": "KSAT",
-    "scenarios": {
-        "SAT DEP 13R + 04 LAND 13R": {
-            "arrival_runways": [
-                {
-                    "airport": "KSAT",
-                    "runway": "13R"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "13"
-                },
-                {
-                    "airport": "KSKF",
-                    "runway": "16"
-                },
-                {
-                    "airport": "KSSF",
-                    "runway": "32"
-                }
-            ],
-            "inbound_rates": {
-                "CRVZA2": {
-                    "KSAT": 5,
-                    "KSSF": 3
-                },
-                "DNKIN2": {
-                    "KSAT": 6,
-                    "KSKF": 3,
-                    "KBAZ": 4
-                },
-                "POPPO2": {
-                    "KSAT": 6,
-                    "KSSF": 2
-                },
-                "QERVO3": {
-                    "KSAT": 5,
-                    "KSKF": 2,
-                    "KBAZ": 3
-                }
-            },
-            "configuration": "13R",
-            "default_maps": [
-                "SAT BASE",
-                "SAT 13 SPLIT"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KSAT",
-                    "runway": "13R",
-                    "rate": 12,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "13R",
-                    "rate": 8,
-                    "category": "Southwest"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "4",
-                    "rate": 12,
-                    "category": "Northeast"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "4",
-                    "rate": 8,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "4",
-                    "rate": 8,
-                    "category": "Northwest"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "35",
-                    "rate": 4,
-                    "category": "Southeast"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "35",
-                    "rate": 4,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSKF",
-                    "runway": "16",
-                    "rate": 3
-                },
-                {
-                    "airport": "KSSF",
-                    "runway": "32",
-                    "rate": 1
-                }
-            ],
-            "wind": {
-                "direction": "55-115"
-            }
+      },
+      "configuration": "31L",
+      "default_maps": ["SAT BASE", "SAT 31 SPLIT"],
+      "departure_runways": [
+        {
+          "airport": "KSAT",
+          "runway": "31L",
+          "rate": 12,
+          "category": "East"
         },
-        "SAT DEP 31L/R LAND 31L + 4": {
-            "arrival_runways": [
-                {
-                    "airport": "KSAT",
-                    "runway": "31L"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "4"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "31"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "35"
-                },
-                {
-                    "airport": "KSKF",
-                    "runway": "34"
-                },
-                {
-                    "airport": "KSSF",
-                    "runway": "32"
-                }
-            ],
-            "inbound_rates": {
-                "CRVZA2": {
-                    "KSAT": 5,
-                    "KSSF": 3
-                },
-                "DNKIN2": {
-                    "KSAT": 6,
-                    "KSKF": 3,
-                    "KBAZ": 4
-                },
-                "POPPO2": {
-                    "KSAT": 6,
-                    "KSSF": 2
-                },
-                "QERVO3": {
-                    "KSAT": 5,
-                    "KSKF": 2,
-                    "KBAZ": 3
-                }
-            },
-            "configuration": "31L",
-            "default_maps": [
-                "SAT BASE",
-                "SAT 31 SPLIT"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KSAT",
-                    "runway": "31L",
-                    "rate": 12,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "31L",
-                    "rate": 8,
-                    "category": "Southwest"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "31R",
-                    "rate": 12,
-                    "category": "Northeast"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "31R",
-                    "rate": 8,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "31R",
-                    "rate": 8,
-                    "category": "Northwest"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "35",
-                    "rate": 4,
-                    "category": "Southeast"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "35",
-                    "rate": 4,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSKF",
-                    "runway": "34",
-                    "rate": 3
-                },
-                {
-                    "airport": "KSSF",
-                    "runway": "32",
-                    "rate": 1
-                }
-            ],
-            "wind": {
-                "direction": "290-350"
-            }
+        {
+          "airport": "KSAT",
+          "runway": "31L",
+          "rate": 8,
+          "category": "Southwest"
         },
-        "SAT LAND/DEP 13R": {
-            "arrival_runways": [
-                {
-                    "airport": "KSAT",
-                    "runway": "13R"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "13"
-                },
-                {
-                    "airport": "KSKF",
-                    "runway": "16"
-                },
-                {
-                    "airport": "KSSF",
-                    "runway": "32"
-                }
-            ],
-            "inbound_rates": {
-                "CRVZA2": {
-                    "KSAT": 5,
-                    "KSSF": 3
-                },
-                "DNKIN2": {
-                    "KSAT": 6,
-                    "KSKF": 3,
-                    "KBAZ": 4
-                },
-                "POPPO2": {
-                    "KSAT": 6,
-                    "KSSF": 2
-                },
-                "QERVO3": {
-                    "KSAT": 5,
-                    "KSKF": 2,
-                    "KBAZ": 3
-                }
-            },
-            "configuration": "13R",
-            "default_maps": [
-                "SAT BASE",
-                "SAT 13 SPLIT"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KSAT",
-                    "runway": "13R",
-                    "rate": 12,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "13R",
-                    "rate": 8,
-                    "category": "Southwest"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "13R",
-                    "rate": 12,
-                    "category": "Northeast"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "13R",
-                    "rate": 8,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "13R",
-                    "rate": 8,
-                    "category": "Northwest"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "17",
-                    "rate": 4,
-                    "category": "Southeast"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "13",
-                    "rate": 4,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSKF",
-                    "runway": "16",
-                    "rate": 3
-                },
-                {
-                    "airport": "KSSF",
-                    "runway": "32",
-                    "rate": 1
-                }
-            ],
-            "wind": {
-                "direction": "100-160"
-            }
+        {
+          "airport": "KSAT",
+          "runway": "31R",
+          "rate": 12,
+          "category": "Northeast"
         },
-        "SAT LAND/DEP 31L": {
-            "arrival_runways": [
-                {
-                    "airport": "KSAT",
-                    "runway": "31L"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "31"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "35"
-                },
-                {
-                    "airport": "KSKF",
-                    "runway": "34"
-                },
-                {
-                    "airport": "KSSF",
-                    "runway": "32"
-                }
-            ],
-            "inbound_rates": {
-                "CRVZA2": {
-                    "KSAT": 5,
-                    "KSSF": 3
-                },
-                "DNKIN2": {
-                    "KSAT": 6,
-                    "KSKF": 3,
-                    "KBAZ": 4
-                },
-                "POPPO2": {
-                    "KSAT": 6,
-                    "KSSF": 2
-                },
-                "QERVO3": {
-                    "KSAT": 5,
-                    "KSKF": 2,
-                    "KBAZ": 3
-                }
-            },
-            "configuration": "31L",
-            "default_maps": [
-                "SAT BASE",
-                "SAT 31 SPLIT"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KSAT",
-                    "runway": "31L",
-                    "rate": 12,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSAT",
-                    "runway": "31L",
-                    "rate": 8,
-                    "category": "Southwest"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "35",
-                    "rate": 4,
-                    "category": "Southeast"
-                },
-                {
-                    "airport": "KBAZ",
-                    "runway": "35",
-                    "rate": 4,
-                    "category": "East"
-                },
-                {
-                    "airport": "KSKF",
-                    "runway": "34",
-                    "rate": 3
-                },
-                {
-                    "airport": "KSSF",
-                    "runway": "32",
-                    "rate": 1
-                }
-            ],
-            "wind": {
-                "direction": "280-340"
-            }
+        {
+          "airport": "KSAT",
+          "runway": "31R",
+          "rate": 8,
+          "category": "East"
+        },
+        {
+          "airport": "KSAT",
+          "runway": "31R",
+          "rate": 8,
+          "category": "Northwest"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "35",
+          "rate": 4,
+          "category": "Southeast"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "35",
+          "rate": 4,
+          "category": "East"
+        },
+        {
+          "airport": "KSKF",
+          "runway": "34",
+          "rate": 3
+        },
+        {
+          "airport": "KSSF",
+          "runway": "32",
+          "rate": 1
         }
+      ],
+      "wind": {
+        "direction": "290-350"
+      }
     },
-    "vfr_reporting_points": [
+    "SAT LAND/DEP 13R": {
+      "arrival_runways": [
         {
-            "location": "N029.47.53.123,W098.25.09.246",
-            "description": "Highways 46 & 281"
+          "airport": "KSAT",
+          "runway": "13R"
         },
         {
-            "location": "N029.41.51.014,W098.07.37.745",
-            "description": "New Braunfels"
+          "airport": "KBAZ",
+          "runway": "13"
         },
         {
-            "location": "N029.41.51.708,W098.07.35.850",
-            "description": "Seguin"
+          "airport": "KSKF",
+          "runway": "16"
         },
         {
-            "location": "N029.12.06.498,W098.09.58.150",
-            "description": "Floresville"
+          "airport": "KSSF",
+          "runway": "32"
         }
-    ]
+      ],
+      "inbound_rates": {
+        "CRVZA2": {
+          "KSAT": 5,
+          "KSSF": 3
+        },
+        "DNKIN2": {
+          "KSAT": 6,
+          "KSKF": 3,
+          "KBAZ": 4
+        },
+        "POPPO2": {
+          "KSAT": 6,
+          "KSSF": 2
+        },
+        "QERVO3": {
+          "KSAT": 5,
+          "KSKF": 2,
+          "KBAZ": 3
+        }
+      },
+      "configuration": "13R",
+      "default_maps": ["SAT BASE", "SAT 13 SPLIT"],
+      "departure_runways": [
+        {
+          "airport": "KSAT",
+          "runway": "13R",
+          "rate": 12,
+          "category": "East"
+        },
+        {
+          "airport": "KSAT",
+          "runway": "13R",
+          "rate": 8,
+          "category": "Southwest"
+        },
+        {
+          "airport": "KSAT",
+          "runway": "13R",
+          "rate": 12,
+          "category": "Northeast"
+        },
+        {
+          "airport": "KSAT",
+          "runway": "13R",
+          "rate": 8,
+          "category": "East"
+        },
+        {
+          "airport": "KSAT",
+          "runway": "13R",
+          "rate": 8,
+          "category": "Northwest"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "17",
+          "rate": 4,
+          "category": "Southeast"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "13",
+          "rate": 4,
+          "category": "East"
+        },
+        {
+          "airport": "KSKF",
+          "runway": "16",
+          "rate": 3
+        },
+        {
+          "airport": "KSSF",
+          "runway": "32",
+          "rate": 1
+        }
+      ],
+      "wind": {
+        "direction": "100-160"
+      }
+    },
+    "SAT LAND/DEP 31L": {
+      "arrival_runways": [
+        {
+          "airport": "KSAT",
+          "runway": "31L"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "31"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "35"
+        },
+        {
+          "airport": "KSKF",
+          "runway": "34"
+        },
+        {
+          "airport": "KSSF",
+          "runway": "32"
+        }
+      ],
+      "inbound_rates": {
+        "CRVZA2": {
+          "KSAT": 5,
+          "KSSF": 3
+        },
+        "DNKIN2": {
+          "KSAT": 6,
+          "KSKF": 3,
+          "KBAZ": 4
+        },
+        "POPPO2": {
+          "KSAT": 6,
+          "KSSF": 2
+        },
+        "QERVO3": {
+          "KSAT": 5,
+          "KSKF": 2,
+          "KBAZ": 3
+        }
+      },
+      "configuration": "31L",
+      "default_maps": ["SAT BASE", "SAT 31 SPLIT"],
+      "departure_runways": [
+        {
+          "airport": "KSAT",
+          "runway": "31L",
+          "rate": 12,
+          "category": "East"
+        },
+        {
+          "airport": "KSAT",
+          "runway": "31L",
+          "rate": 8,
+          "category": "Southwest"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "35",
+          "rate": 4,
+          "category": "Southeast"
+        },
+        {
+          "airport": "KBAZ",
+          "runway": "35",
+          "rate": 4,
+          "category": "East"
+        },
+        {
+          "airport": "KSKF",
+          "runway": "34",
+          "rate": 3
+        },
+        {
+          "airport": "KSSF",
+          "runway": "32",
+          "rate": 1
+        }
+      ],
+      "wind": {
+        "direction": "280-340"
+      }
+    }
+  },
+  "vfr_reporting_points": [
+    {
+      "location": "N029.47.53.123,W098.25.09.246",
+      "description": "Highways 46 & 281"
+    },
+    {
+      "location": "N029.41.51.014,W098.07.37.745",
+      "description": "New Braunfels"
+    },
+    {
+      "location": "N029.41.51.708,W098.07.35.850",
+      "description": "Seguin"
+    },
+    {
+      "location": "N029.12.06.498,W098.09.58.150",
+      "description": "Floresville"
+    }
+  ]
 }

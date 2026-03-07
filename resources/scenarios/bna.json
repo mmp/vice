@@ -1,1603 +1,1599 @@
 {
-    "tracon": "BNA",
-    "airports": {
-        "KBNA": {
-            "atpa_volumes": {
-                "2L": {
-                    "runway_threshold": "KBNA-2L",
-                    "heading": 274,
-                    "max_heading_deviation": 21,
-                    "floor": 100,
-                    "ceiling": 700,
-                    "length": 40,
-                    "left_width": 2000,
-                    "right_width": 2000
-                },
-                "2R": {
-                    "runway_threshold": "KBNA-2R",
-                    "heading": 274,
-                    "max_heading_deviation": 21,
-                    "floor": 100,
-                    "ceiling": 700,
-                    "length": 30,
-                    "left_width": 2000,
-                    "right_width": 2000
-                },
-                "20L": {
-                    "runway_threshold": "KBNA-20L",
-                    "heading": 274,
-                    "max_heading_deviation": 201,
-                    "floor": 100,
-                    "ceiling": 700,
-                    "length": 30,
-                    "left_width": 2000,
-                    "right_width": 2000
-                },
-                "20R": {
-                    "runway_threshold": "KBNA-20R",
-                    "heading": 274,
-                    "max_heading_deviation": 201,
-                    "floor": 100,
-                    "ceiling": 700,
-                    "length": 30,
-                    "left_width": 2000,
-                    "right_width": 2000
-                }
-            },
-            "approaches": {
-                "I0L": {
-                    "cifp_id": "I20L"
-                },
-                "I0R": {
-                    "cifp_id": "I20R"
-                },
-                "I2L": {
-                    "cifp_id": "I2L"
-                },
-                "I2R": {
-                    "cifp_id": "I2R"
-                },
-                "I31": {
-                    "cifp_id": "I31"
-                },
-                "R13": {
-                    "cifp_id": "R13"
-                },
-                "Y0L": {
-                    "cifp_id": "RY20L"
-                },
-                "Y0R": {
-                    "cifp_id": "RY20R"
-                },
-                "Y2L": {
-                    "cifp_id": "RY2L"
-                },
-                "Y2R": {
-                    "cifp_id": "RY2R"
-                },
-                "Y31": {
-                    "cifp_id": "RY31"
-                },
-                "Z0L": {
-                    "cifp_id": "RZ20L"
-                },
-                "Z0R": {
-                    "cifp_id": "RZ20R"
-                },
-                "Z2L": {
-                    "cifp_id": "RZ2L"
-                },
-                "Z2R": {
-                    "cifp_id": "RZ2R"
-                },
-                "Z31": {
-                    "cifp_id": "RZ31"
-                },
-                "Y2C": {
-                    "cifp_id": "RY2C"
-                }
-            },
-            "departure_routes": {
-                "2L": {
-                    "CHADM": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+"
-                    },
-                    "MUNNY": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+ CHADM AVERY"
-                    },
-                    "DANLS": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+"
-                    },
-                    "TPEEE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+ DANLS"
-                    },
-                    "DRURY": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+"
-                    },
-                    "JALAR": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
-                    },
-                    "HAIGE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
-                    },
-                    "FLAME": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
-                    },
-                    "GENDE": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
-                    },
-                    "GDOGG": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-20R JATII/a5000+ KNNGG/a10000+"
-                    },
-                    "FAPER": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-20R JATII/a5000+ KNNGG/a10000+ GDOGG"
-                    },
-                    "KRSTA": {
-                        "cleared_altitude" :15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-20R JATII/a5000+ CERAH/a10000+"
-                    },
-                    "OLSIE": {
-                        "cleared_altitude": 15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-20R JATII/a5000+ CERAH/a10000+ KRSTA"
-                    },
-                    "PARDN": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+"
-                    },
-                    "NAKIY": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "HODJS": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "TAZMO": {
-                        "cleared_altitude": 15000,
-                        "sid" :"TAZMO4",
-                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+"
-                    },
-                    "BURME": {
-                        "cleared_altitude": 15000,
-                        "sid": "TAZMO4",
-                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+ TAZMO"
-                    },
-                    "TIPPN": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+"
-                    },
-                    "DENST": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+ TIPPN"
-                    }
-                },
-                "2C": {
-                       "CHADM": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+"
-                    },
-                    "MUNNY": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+ CHADM AVERY"
-                    },
-                    "DANLS": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+"
-                    },
-                    "TPEEE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+ DANLS"
-                    },
-                    "DRURY": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+"
-                    },
-                    "JALAR": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
-                    },
-                    "HAIGE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
-                    },
-                    "FLAME": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
-                    },
-                    "GENDE": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
-                    },
-                    "GDOGG": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-20C JATII/a5000+ KNNGG/a10000+"
-                    },
-                    "FAPER": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-20C JATII/a5000+ KNNGG/a10000+ GDOGG"
-                    },
-                    "KRSTA": {
-                        "cleared_altitude" :15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-20C JATII/a5000+ CERAH/a10000+"
-                    },
-                    "OLSIE": {
-                        "cleared_altitude": 15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-20C JATII/a5000+ CERAH/a10000+ KRSTA"
-                    },
-                    "PARDN": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+"
-                    },
-                    "NAKIY": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "HODJS": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "TAZMO": {
-                        "cleared_altitude": 15000,
-                        "sid" :"TAZMO4",
-                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+"
-                    },
-                    "BURME": {
-                        "cleared_altitude": 15000,
-                        "sid": "TAZMO4",
-                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+ TAZMO"
-                    },
-                    "TIPPN": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+"
-                    },
-                    "DENST": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+ TIPPN"
-                    }
-                },
-                "2R": {
-                       "CHADM": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+"
-                    },
-                    "MUNNY": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+ CHADM AVERY"
-                    },
-                    "DANLS": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+"
-                    },
-                    "TPEEE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+ DANLS"
-                    },
-                    "DRURY": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+"
-                    },
-                    "JALAR": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
-                    },
-                    "HAIGE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
-                    },
-                    "FLAME": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
-                    },
-                    "GENDE": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
-                    },
-                    "GDOGG": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-20L JATII/a5000+ KNNGG/a10000+"
-                    },
-                    "FAPER": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-20L JATII/a5000+ KNNGG/a10000+ GDOGG"
-                    },
-                    "KRSTA": {
-                        "cleared_altitude" :15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-20L JATII/a5000+ CERAH/a10000+"
-                    },
-                    "OLSIE": {
-                        "cleared_altitude": 15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-20L JATII/a5000+ CERAH/a10000+ KRSTA"
-                    },
-                    "PARDN": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+"
-                    },
-                    "NAKIY": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "HODJS": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "TAZMO": {
-                        "cleared_altitude": 15000,
-                        "sid" :"TAZMO4",
-                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+"
-                    },
-                    "BURME": {
-                        "cleared_altitude": 15000,
-                        "sid": "TAZMO4",
-                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+ TAZMO"
-                    },
-                    "TIPPN": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+"
-                    },
-                    "DENST": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+ TIPPN"
-                    }
-                },
-                "20L": {
-                       "CHADM": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+"
-                    },
-                    "MUNNY": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+ CHADM AVERY"
-                    },
-                    "DANLS": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 BGDDY/a10000+"
-                    },
-                    "TPEEE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 BGDDY/a10000+ DANLS"
-                    },
-                    "DRURY": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-2R DIXII/a5000+ GRCHN/a12000+"
-                    },
-                    "JALAR": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-2R DIXII/a5000+ GRCHN/a12000+ DRURY"
-                    },
-                    "HAIGE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-2R DIXII/a5000+ GRCHN/a12000+ DRURY"
-                    },
-                    "FLAME": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-2R DIXII/a5000+ FLAME/a12000+"
-                    },
-                    "GENDE": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-2R DIXII/a5000+ FLAME/a12000+"
-                    },
-                    "GDOGG": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+"
-                    },
-                    "FAPER": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+ GDOGG"
-                    },
-                    "KRSTA": {
-                        "cleared_altitude" :15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+ CERAH/a10000+"
-                    },
-                    "OLSIE": {
-                        "cleared_altitude": 15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+  CERAH/a10000+ KRSTA"
-                    },
-                    "PARDN": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 KELLO/a10000+"
-                    },
-                    "NAKIY": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "HODJS": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "TAZMO": {
-                        "cleared_altitude": 15000,
-                        "sid" :"TAZMO4",
-                        "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+"
-                    },
-                    "BURME": {
-                        "cleared_altitude": 15000,
-                        "sid": "TAZMO4",
-                        "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+ TAZMO"
-                    },
-                    "TIPPN": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-2R DIXII/a5000+ RORRY/a12000+"
-                    },
-                    "DENST": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-2R DIXII/a5000+ RORRY/a12000+ TIPPN"
-                    }
-                },
-                "20C": {
-                     "CHADM": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+"
-                    },
-                    "MUNNY": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+ CHADM AVERY"
-                    },
-                    "DANLS": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 BGDDY/a10000+"
-                    },
-                    "TPEEE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 BGDDY/a10000+ DANLS"
-                    },
-                    "DRURY": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-2C DIXII/a5000+ GRCHN/a12000+"
-                    },
-                    "JALAR": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-2C DIXII/a5000+ GRCHN/a12000+ DRURY"
-                    },
-                    "HAIGE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-2C DIXII/a5000+ GRCHN/a12000+ DRURY"
-                    },
-                    "FLAME": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-2C DIXII/a5000+ FLAME/a12000+"
-                    },
-                    "GENDE": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-2C DIXII/a5000+ FLAME/a12000+"
-                    },
-                    "GDOGG": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+"
-                    },
-                    "FAPER": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+ GDOGG"
-                    },
-                    "KRSTA": {
-                        "cleared_altitude" :15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+ CERAH/a10000+"
-                    },
-                    "OLSIE": {
-                        "cleared_altitude": 15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+  CERAH/a10000+ KRSTA"
-                    },
-                    "PARDN": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 KELLO/a10000+"
-                    },
-                    "NAKIY": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "HODJS": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "TAZMO": {
-                        "cleared_altitude": 15000,
-                        "sid" :"TAZMO4",
-                        "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+"
-                    },
-                    "BURME": {
-                        "cleared_altitude": 15000,
-                        "sid": "TAZMO4",
-                        "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+ TAZMO"
-                    },
-                    "TIPPN": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-2C DIXII/a5000+ RORRY/a12000+"
-                    },
-                    "DENST": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-2C DIXII/a5000+ RORRY/a12000+ TIPPN"
-                    }
-                },
-                "20R": {
-                     "CHADM": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+"
-                    },
-                    "MUNNY": {
-                        "cleared_altitude": 15000,
-                        "sid": "CHADM4",
-                        "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+ CHADM AVERY"
-                    },
-                    "DANLS": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 BGDDY/a10000+"
-                    },
-                    "TPEEE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DANLS4",
-                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 BGDDY/a10000+ DANLS"
-                    },
-                    "DRURY": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-2L DIXII/a5000+ GRCHN/a12000+"
-                    },
-                    "JALAR": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-2L DIXII/a5000+ GRCHN/a12000+ DRURY"
-                    },
-                    "HAIGE": {
-                        "cleared_altitude": 15000,
-                        "sid": "DRURY4",
-                        "waypoints": "KBNA-2L DIXII/a5000+ GRCHN/a12000+ DRURY"
-                    },
-                    "FLAME": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-2L DIXII/a5000+ FLAME/a12000+"
-                    },
-                    "GENDE": {
-                        "cleared_altitude": 15000,
-                        "sid": "FLAME4",
-                        "waypoints": "KBNA-2L DIXII/a5000+ FLAME/a12000+"
-                    },
-                    "GDOGG": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+"
-                    },
-                    "FAPER": {
-                        "cleared_altitude": 15000,
-                        "sid" :"GDOGG4",
-                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+ GDOGG"
-                    },
-                    "KRSTA": {
-                        "cleared_altitude" :15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+ CERAH/a10000+"
-                    },
-                    "OLSIE": {
-                        "cleared_altitude": 15000,
-                        "sid": "KRSTA4",
-                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+  CERAH/a10000+ KRSTA"
-                    },
-                    "PARDN": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 KELLO/a10000+"
-                    },
-                    "NAKIY": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "HODJS": {
-                        "cleared_altitude": 15000,
-                        "sid": "PARDN4",
-                        "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
-                    },
-                    "TAZMO": {
-                        "cleared_altitude": 15000,
-                        "sid" :"TAZMO4",
-                        "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+"
-                    },
-                    "BURME": {
-                        "cleared_altitude": 15000,
-                        "sid": "TAZMO4",
-                        "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+ TAZMO"
-                    },
-                    "TIPPN": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-2L DIXII/a5000+ RORRY/a12000+"
-                    },
-                    "DENST": {
-                        "cleared_altitude": 15000,
-                        "sid": "TIPPN4",
-                        "waypoints": "KBNA-2L DIXII/a5000+ RORRY/a12000+ TIPPN"
-                    }
-                }
-            },
-            "departures": [
-               {
-                    "airlines": [
-                        {
-                            "icao": "JIA"
-                        },
-                        {
-                            "icao": "SKW"
-                        },
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KDCA",
-                    "exit": "MUNNY",
-                    "route": "CHADM4 MUNNY TONIO Q34 SITTR TRUPS5"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "types": ["BCS1"]
-                        },
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "RPA"
-                        },
-                        {
-                            "icao": "EDV"
-                        }
-                    ],
-                    "destination": "KLGA",
-                    "exit": "OLSIE",
-                    "route": "KRSTA4 OLSIE IIU Q139 CREEP Q29 WWSHR TEESY J146 ETG MIP4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "FFT"
-                        },
-                        {
-                            "icao": "NKS"
-                        }
-                    ],
-                    "destination": "KMCO",
-                    "exit": "DENST",
-                    "route": "TIPPN4 DENST THRSR ZJAYX GRNCH5"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "FFT"
-                        },
-                        {
-                            "icao": "UAL",
-                            "types": ["B738", "B739"]
-                        },
-                        {
-                            "icao": "EJA"
-                        }
-                    ],
-                    "destination": "KDEN",
-                    "exit": "NAKIY",
-                    "route": "PARDN4 NAKIY HYS J24 OATHE CLASH5"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "DAL",
-                            "types": ["B738", "B739"]
-                        }
-                    ],
-                    "destination": "KATL",
-                    "exit": "DENST",
-                    "route": "TIPPN4 DENST CHPPR CHPPR1"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "SKW"
-                        },
-                        {
-                            "icao": "ENY"
-                        }
-                    ],
-                    "destination": "KORD",
-                    "exit": "OLSIE",
-                    "route": "KRSTA4 OLSIE IIU HEVAN BONNT VEECK5"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "SKW"
-                        }
-                    ],
-                    "destination": "KAUS",
-                    "exit": "JALAR",
-                    "route": "DRURY4 JALAR LFK WEEED WLEEE7"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "AAL",
-                            "types": ["B738", "B739", "A319", "A320", "A321"]
-                        },
-                        {
-                            "icao": "JIA"
-                        }
-                    ],
-                    "destination": "KCLT",
-                    "exit": "BURME",
-                    "route": "TAZMO4 BURME VXV COMDY FLIPZ4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "EJA"
-                        },
-                        {
-                            "icao": "JRE"
-                        },
-                        {
-                            "icao": "LXJ"
-                        },
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KDAL",
-                    "exit": "HODJS",
-                    "route": "PARDN4 HODJS CIVKI Q66 LITTR DIRRK HIBIL3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "AAL",
-                            "types": ["B738", "B38M"]
-                        }
-                    ],
-                    "destination": "KPHX",
-                    "exit": "HODJS",
-                    "route": "PARDN4 HODJS RZC YARNS ROLLS NOSEW ZUN EAGUL6"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "RPA"
-                        },
-                        {
-                            "icao": "JRE"
-                        },
-                        {
-                            "icao": "EDV"
-                        }
-                    ],
-                    "destination": "KRDU",
-                    "exit": "BURME",
-                    "route": "TAZMO4 BURME VXV KPASS ALDAN4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "WUP"
-                        },
-                        {
-                            "icao": "ENY"
-                        },
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KTPA",
-                    "exit": "TIPPN",
-                    "route": "TIPPN4 TIPPN RMG SOONE HEPAR BAAMF DADES2"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "FFT"
-                        },
-                        {
-                            "icao": "AAL",
-                            "types": ["B738", "B739", "A319", "A320", "A321"]
-                        },
-                        {
-                            "icao": "RPA"
-                        }
-                    ],
-                    "destination": "KPHL",
-                    "exit": "OLSIE",
-                    "route": "OLSIE IIU Q139 CREEEP BLISS J152 JST BOJID4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "types": ["B738", "B739", "A319", "A320", "A321"]
-                        },
-                        {
-                            "icao": "FFT"
-                        }
-                    ],
-                    "destination": "KDFW",
-                    "exit": "HODJS",
-                    "route": "HODJS CIVKI Q66 LITTR MEEOW FEWWW SEEVR4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "NKS"
-                        }
-                    ],
-                    "destination": "KLAS",
-                    "exit": "HODJS",
-                    "route": "PARDN4 HODJS IGLOO IRW J78 CRUSR GUP HAHAA RKSTR4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "ENY"
-                        },
-                        {
-                            "icao": "AAL",
-                            "types": ["B738", "B739", "A319", "A320", "A321"]
-                        }
-                    ],
-                    "destination": "KMIA",
-                    "exit": "GENDE",
-                    "route": "FLAME4 GENDE ACORI FROGZ4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "JBU"
-                        },
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "RPA"
-                        }
-                    ],
-                    "destination": "KBOS",
-                    "exit": "CHADM",
-                    "route": "CHADM4 CHADM ALEAN Q40 MAULS Q34 DUALY Q34 RBV Q419 JFK ROBUC3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "LXJ"
-                        }
-                    ],
-                    "destination": "KHOU",
-                    "exit": "DRURY",
-                    "route": "DRURY4 DRURY MHZ AEX WAPPL7"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "RPA"
-                        },
-                        {
-                            "icao": "EDV"
-                        },
-                        {
-                            "icao": "JBU"
-                        }
-                    ],
-                    "destination": "KJFK",
-                    "exit": "BURME",
-                    "route": "TAZMO4 BURME VXV IDDAA Q64 SAWED Q108 SIE CAMRN5"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "AAL",
-                            "types": ["B738", "B739", "A319", "A320", "A321"]
-                        },
-                        {
-                            "icao": "DAL",
-                            "types": ["B738", "B739"]
-                        }
-                    ],
-                    "destination": "KLAX",
-                    "exit": "HODJS",
-                    "route": "PARDN4 HODJS FAM PENUT KD51Y PUB DAAYE WOHCI NAVJO Q90 DNERO ANJLL4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "DAL",
-                            "types": ["B738", "B739", "B712"]
-                        }
-                    ],
-                    "destination": "KDTW",
-                    "exit": "FAPER",
-                    "route": "GDOGG4 FAPER IMPEL WWODD HANBL3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KMDW",
-                    "exit": "OLSIE",
-                    "route": "KRSTA4 OLSIE IIU DROSE FISSK7"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KMSY",
-                    "exit": "JALAR",
-                    "route": "DRURY4 JALAR MERDN TRSSH1"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "SCX"
-                        }
-                    ],
-                    "destination": "KMCI",
-                    "exit": "NAKIY",
-                    "route": "PARDN4 NAKIY KRTNY NELVY MHOMS3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KSTL",
-                    "exit": "HODJS",
-                    "route": "PARDN4 HODJS VISQA BOOSH3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "SCX"
-                        },
-                        {
-                            "icao": "DAL",
-                            "types": ["B738", "A320"]
-                        }
-                    ],
-                    "destination": "KMSP",
-                    "exit": "NAKIY",
-                    "route": "PARDN4 NAKIY DENNI ENL IOW MNOSO BLUEM4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        },
-                        {
-                            "icao": "LXJ"
-                        }
-                    ],
-                    "destination": "KJAX",
-                    "exit": "DENST",
-                    "route": "TIPPN4 DENST LGC DUCHY OHDEA2"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SKW"
-                        },
-                        {
-                            "icao": "UAL",
-                            "types": ["B737", "A320"]
-                        }
-                    ],
-                    "destination": "KIAH",
-                    "exit": "DANLS",
-                    "route": "DANL4 DANLS UJM Q31 DHART Q33 SWEUP ZEEKK3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "ENY"
-                        },
-                        {
-                            "icao": "EJA"
-                        },
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KCLE",
-                    "exit": "OLSIE",
-                    "route": "KRSTA4 OLSIE IIU DRUGA ROKNN4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KMKE",
-                    "exit": "KRSTA",
-                    "route": "KRSTA4 KRSTA BWG TTH DNV JOT LEEDN GOPAC3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "KSAN",
-                    "exit": "HODJS",
-                    "route": "PARDN4 HODJS HUMBO PROWL OLLII GATTY WILSY PENUT DUUZE KD45S NAVJO TBC PLNDL Q86 TTRUE LUCKI1"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao" : "JZA"
-                        },
-                        {
-                            "icao": "ACA",
-                            "types": ["BCS3"]
-                        }
-                    ],
-                    "destination": "CYYZ",
-                    "exit": "OLSIE",
-                    "route": "KRSTA4 OLSIE IIU Q139 RINTE QWERI NUBER6"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SWA"
-                        }
-                    ],
-                    "destination": "MMUN",
-                    "exit": "DRURY",
-                    "route": "DRURY4 DRURY MEI HRV LEV L214 IRDOV UL214 NUDIS UT38 LEVAT ITLOM VOMAR"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "BAW",
-                            "types": ["B789"]
-                        }
-                    ],
-                    "destination": "EGLL",
-                    "exit": "OLSIE",
-                    "route": "KRSTA4 OLSIE IIU AIR PSB HNK MIILS N371B JOOPY NATS 4900N/05000W NATS DOGAL NATS BEXET ENJEX AVZAC INFEC JETZI AMFUL ORZEB P2 SIRIC SIRIC1H"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "JZA"
-                        }
-                    ],
-                    "destination": "CYUL",
-                    "exit": "BURME",
-                    "route": "TAZMO4 BURME ECB CKB ELZ MIGLO HABBS7"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "EIN",
-                            "types": ["A21N"]
-                        }
-                    ],
-                    "destination": "EIDW",
-                    "exit": "MUNNY",
-                    "route": "CHADM4 MUNNY TONIO HVQ SLT SYR SSENA CEFOU N445B ELSIR NATR RESNO NATR NETKI OLAPO OLAPO4L"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "AAY"
-                        }
-                    ],
-                    "destination": "KPIE",
-                    "exit": "DENST",
-                    "route": "TIPPN4 DENST LGC HONID BANGZ2"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "AAY"
-                        }
-                    ],
-                    "destination": "KSFB",
-                    "exit": "DENST",
-                    "route": "TIPPN4 DENST THRSR Q79 ZPLEN BIGDE SHREK2"
-                }
-            ],
-            "exit_categories": {
-                "CHADM": "East",
-                "MUNNY": "East",
-                "DANLS": "West",
-                "TPEEE": "West",
-                "DRURY": "West",
-                "JALAR": "West",
-                "HAIGE": "West",
-                "FLAME": "East",
-                "GENDE": "East",
-                "GDOGG": "West",
-                "FAPER": "West",
-                "KRSTA": "West",
-                "OLSIE": "West",
-                "PARDN": "West",
-                "NAKIY": "West",
-                "HODJS": "West",
-                "TAZMO": "East",
-                "BURME": "East",
-                "TIPPN": "East",
-                "DENST": "East"
-            }
+  "tracon": "BNA",
+  "airports": {
+    "KBNA": {
+      "atpa_volumes": {
+        "2L": {
+          "runway_threshold": "KBNA-2L",
+          "heading": 274,
+          "max_heading_deviation": 21,
+          "floor": 100,
+          "ceiling": 700,
+          "length": 40,
+          "left_width": 2000,
+          "right_width": 2000
+        },
+        "2R": {
+          "runway_threshold": "KBNA-2R",
+          "heading": 274,
+          "max_heading_deviation": 21,
+          "floor": 100,
+          "ceiling": 700,
+          "length": 30,
+          "left_width": 2000,
+          "right_width": 2000
+        },
+        "20L": {
+          "runway_threshold": "KBNA-20L",
+          "heading": 274,
+          "max_heading_deviation": 201,
+          "floor": 100,
+          "ceiling": 700,
+          "length": 30,
+          "left_width": 2000,
+          "right_width": 2000
+        },
+        "20R": {
+          "runway_threshold": "KBNA-20R",
+          "heading": 274,
+          "max_heading_deviation": 201,
+          "floor": 100,
+          "ceiling": 700,
+          "length": 30,
+          "left_width": 2000,
+          "right_width": 2000
         }
-    },
-    "inbound_flows": {
-        "CHSNE3": {
-            "arrivals": [
-                {
-                    "spawn": "KNEEY@0.5",
-                    "cruise_altitude": 19000,
-                    "star": "CHSNE3",
-                    "initial_controller": "C42",
-                    "initial_altitude": 15000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KBNA": [
-                            {
-                                "icao": "ENY",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "short",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "ASH",
-                                "airport": "KIAH"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "short",
-                                "airport": "KIAH"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "short",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "FFT",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "NKS",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "VIV",
-                                "airport": "MMUN"
-                            }
-                        ]
-                    }
-                }
+      },
+      "approaches": {
+        "I0L": {
+          "cifp_id": "I20L"
+        },
+        "I0R": {
+          "cifp_id": "I20R"
+        },
+        "I2L": {
+          "cifp_id": "I2L"
+        },
+        "I2R": {
+          "cifp_id": "I2R"
+        },
+        "I31": {
+          "cifp_id": "I31"
+        },
+        "R13": {
+          "cifp_id": "R13"
+        },
+        "Y0L": {
+          "cifp_id": "RY20L"
+        },
+        "Y0R": {
+          "cifp_id": "RY20R"
+        },
+        "Y2L": {
+          "cifp_id": "RY2L"
+        },
+        "Y2R": {
+          "cifp_id": "RY2R"
+        },
+        "Y31": {
+          "cifp_id": "RY31"
+        },
+        "Z0L": {
+          "cifp_id": "RZ20L"
+        },
+        "Z0R": {
+          "cifp_id": "RZ20R"
+        },
+        "Z2L": {
+          "cifp_id": "RZ2L"
+        },
+        "Z2R": {
+          "cifp_id": "RZ2R"
+        },
+        "Z31": {
+          "cifp_id": "RZ31"
+        },
+        "Y2C": {
+          "cifp_id": "RY2C"
+        }
+      },
+      "departure_routes": {
+        "2L": {
+          "CHADM": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+"
+          },
+          "MUNNY": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+ CHADM AVERY"
+          },
+          "DANLS": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+"
+          },
+          "TPEEE": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+ DANLS"
+          },
+          "DRURY": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+"
+          },
+          "JALAR": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
+          },
+          "HAIGE": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
+          },
+          "FLAME": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
+          },
+          "GENDE": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
+          },
+          "GDOGG": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-20R JATII/a5000+ KNNGG/a10000+"
+          },
+          "FAPER": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-20R JATII/a5000+ KNNGG/a10000+ GDOGG"
+          },
+          "KRSTA": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-20R JATII/a5000+ CERAH/a10000+"
+          },
+          "OLSIE": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-20R JATII/a5000+ CERAH/a10000+ KRSTA"
+          },
+          "PARDN": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+"
+          },
+          "NAKIY": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "HODJS": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-20R FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "TAZMO": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+"
+          },
+          "BURME": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+ TAZMO"
+          },
+          "TIPPN": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+"
+          },
+          "DENST": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-20R SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+ TIPPN"
+          }
+        },
+        "2C": {
+          "CHADM": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+"
+          },
+          "MUNNY": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+ CHADM AVERY"
+          },
+          "DANLS": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+"
+          },
+          "TPEEE": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+ DANLS"
+          },
+          "DRURY": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+"
+          },
+          "JALAR": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
+          },
+          "HAIGE": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
+          },
+          "FLAME": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
+          },
+          "GENDE": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
+          },
+          "GDOGG": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-20C JATII/a5000+ KNNGG/a10000+"
+          },
+          "FAPER": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-20C JATII/a5000+ KNNGG/a10000+ GDOGG"
+          },
+          "KRSTA": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-20C JATII/a5000+ CERAH/a10000+"
+          },
+          "OLSIE": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-20C JATII/a5000+ CERAH/a10000+ KRSTA"
+          },
+          "PARDN": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+"
+          },
+          "NAKIY": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "HODJS": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-20C FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "TAZMO": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+"
+          },
+          "BURME": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+ TAZMO"
+          },
+          "TIPPN": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+"
+          },
+          "DENST": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-20C SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+ TIPPN"
+          }
+        },
+        "2R": {
+          "CHADM": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+"
+          },
+          "MUNNY": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 OZCAR/a10000+ CHADM AVERY"
+          },
+          "DANLS": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+"
+          },
+          "TPEEE": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 BGDDY/a10000+ DANLS"
+          },
+          "DRURY": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+"
+          },
+          "JALAR": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
+          },
+          "HAIGE": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 EVETE/a12000+ GRCHN/a12000+ DRURY"
+          },
+          "FLAME": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
+          },
+          "GENDE": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ FLAME/a12000+"
+          },
+          "GDOGG": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-20L JATII/a5000+ KNNGG/a10000+"
+          },
+          "FAPER": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-20L JATII/a5000+ KNNGG/a10000+ GDOGG"
+          },
+          "KRSTA": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-20L JATII/a5000+ CERAH/a10000+"
+          },
+          "OLSIE": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-20L JATII/a5000+ CERAH/a10000+ KRSTA"
+          },
+          "PARDN": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+"
+          },
+          "NAKIY": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "HODJS": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-20L FRNCS/a4000+ RRETT/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "TAZMO": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+"
+          },
+          "BURME": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 SAAMY/a10000+ TAZMO"
+          },
+          "TIPPN": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+"
+          },
+          "DENST": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-20L SHWIT/a4000+ KKAYS/a5000-7000 TBUGG/a10000+ RORRY/a12000+ TIPPN"
+          }
+        },
+        "20L": {
+          "CHADM": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+"
+          },
+          "MUNNY": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+ CHADM AVERY"
+          },
+          "DANLS": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 BGDDY/a10000+"
+          },
+          "TPEEE": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 BGDDY/a10000+ DANLS"
+          },
+          "DRURY": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-2R DIXII/a5000+ GRCHN/a12000+"
+          },
+          "JALAR": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-2R DIXII/a5000+ GRCHN/a12000+ DRURY"
+          },
+          "HAIGE": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-2R DIXII/a5000+ GRCHN/a12000+ DRURY"
+          },
+          "FLAME": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-2R DIXII/a5000+ FLAME/a12000+"
+          },
+          "GENDE": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-2R DIXII/a5000+ FLAME/a12000+"
+          },
+          "GDOGG": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+"
+          },
+          "FAPER": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+ GDOGG"
+          },
+          "KRSTA": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+ CERAH/a10000+"
+          },
+          "OLSIE": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 JAEXX/a10000+  CERAH/a10000+ KRSTA"
+          },
+          "PARDN": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 KELLO/a10000+"
+          },
+          "NAKIY": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "HODJS": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-2R BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "TAZMO": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+"
+          },
+          "BURME": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-2R FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+ TAZMO"
+          },
+          "TIPPN": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-2R DIXII/a5000+ RORRY/a12000+"
+          },
+          "DENST": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-2R DIXII/a5000+ RORRY/a12000+ TIPPN"
+          }
+        },
+        "20C": {
+          "CHADM": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+"
+          },
+          "MUNNY": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+ CHADM AVERY"
+          },
+          "DANLS": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 BGDDY/a10000+"
+          },
+          "TPEEE": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 BGDDY/a10000+ DANLS"
+          },
+          "DRURY": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-2C DIXII/a5000+ GRCHN/a12000+"
+          },
+          "JALAR": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-2C DIXII/a5000+ GRCHN/a12000+ DRURY"
+          },
+          "HAIGE": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-2C DIXII/a5000+ GRCHN/a12000+ DRURY"
+          },
+          "FLAME": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-2C DIXII/a5000+ FLAME/a12000+"
+          },
+          "GENDE": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-2C DIXII/a5000+ FLAME/a12000+"
+          },
+          "GDOGG": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+"
+          },
+          "FAPER": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+ GDOGG"
+          },
+          "KRSTA": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+ CERAH/a10000+"
+          },
+          "OLSIE": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 JAEXX/a10000+  CERAH/a10000+ KRSTA"
+          },
+          "PARDN": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 KELLO/a10000+"
+          },
+          "NAKIY": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "HODJS": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-2C BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "TAZMO": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+"
+          },
+          "BURME": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-2C FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+ TAZMO"
+          },
+          "TIPPN": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-2C DIXII/a5000+ RORRY/a12000+"
+          },
+          "DENST": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-2C DIXII/a5000+ RORRY/a12000+ TIPPN"
+          }
+        },
+        "20R": {
+          "CHADM": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+"
+          },
+          "MUNNY": {
+            "cleared_altitude": 15000,
+            "sid": "CHADM4",
+            "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 OZCAR/a10000+ CHADM AVERY"
+          },
+          "DANLS": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 BGDDY/a10000+"
+          },
+          "TPEEE": {
+            "cleared_altitude": 15000,
+            "sid": "DANLS4",
+            "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 BGDDY/a10000+ DANLS"
+          },
+          "DRURY": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-2L DIXII/a5000+ GRCHN/a12000+"
+          },
+          "JALAR": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-2L DIXII/a5000+ GRCHN/a12000+ DRURY"
+          },
+          "HAIGE": {
+            "cleared_altitude": 15000,
+            "sid": "DRURY4",
+            "waypoints": "KBNA-2L DIXII/a5000+ GRCHN/a12000+ DRURY"
+          },
+          "FLAME": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-2L DIXII/a5000+ FLAME/a12000+"
+          },
+          "GENDE": {
+            "cleared_altitude": 15000,
+            "sid": "FLAME4",
+            "waypoints": "KBNA-2L DIXII/a5000+ FLAME/a12000+"
+          },
+          "GDOGG": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+"
+          },
+          "FAPER": {
+            "cleared_altitude": 15000,
+            "sid": "GDOGG4",
+            "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+ KNNGG/a10000+ GDOGG"
+          },
+          "KRSTA": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+ CERAH/a10000+"
+          },
+          "OLSIE": {
+            "cleared_altitude": 15000,
+            "sid": "KRSTA4",
+            "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 JAEXX/a10000+  CERAH/a10000+ KRSTA"
+          },
+          "PARDN": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 KELLO/a10000+"
+          },
+          "NAKIY": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "HODJS": {
+            "cleared_altitude": 15000,
+            "sid": "PARDN4",
+            "waypoints": "KBNA-2L BUBYY MEMMY/a5000-7000 KELLO/a10000+ PARDN"
+          },
+          "TAZMO": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+"
+          },
+          "BURME": {
+            "cleared_altitude": 15000,
+            "sid": "TAZMO4",
+            "waypoints": "KBNA-2L FIDLL/a4000+ ARRUU/a5000-7000 SAAMY/a10000+ TAZMO"
+          },
+          "TIPPN": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-2L DIXII/a5000+ RORRY/a12000+"
+          },
+          "DENST": {
+            "cleared_altitude": 15000,
+            "sid": "TIPPN4",
+            "waypoints": "KBNA-2L DIXII/a5000+ RORRY/a12000+ TIPPN"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            },
+            {
+              "icao": "SKW"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KDCA",
+          "exit": "MUNNY",
+          "route": "CHADM4 MUNNY TONIO Q34 SITTR TRUPS5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "types": ["BCS1"]
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "RPA"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "OLSIE",
+          "route": "KRSTA4 OLSIE IIU Q139 CREEP Q29 WWSHR TEESY J146 ETG MIP4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "NKS"
+            }
+          ],
+          "destination": "KMCO",
+          "exit": "DENST",
+          "route": "TIPPN4 DENST THRSR ZJAYX GRNCH5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "UAL",
+              "types": ["B738", "B739"]
+            },
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "NAKIY",
+          "route": "PARDN4 NAKIY HYS J24 OATHE CLASH5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "DAL",
+              "types": ["B738", "B739"]
+            }
+          ],
+          "destination": "KATL",
+          "exit": "DENST",
+          "route": "TIPPN4 DENST CHPPR CHPPR1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SKW"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KORD",
+          "exit": "OLSIE",
+          "route": "KRSTA4 OLSIE IIU HEVAN BONNT VEECK5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KAUS",
+          "exit": "JALAR",
+          "route": "DRURY4 JALAR LFK WEEED WLEEE7"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "AAL",
+              "types": ["B738", "B739", "A319", "A320", "A321"]
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "BURME",
+          "route": "TAZMO4 BURME VXV COMDY FLIPZ4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "JRE"
+            },
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KDAL",
+          "exit": "HODJS",
+          "route": "PARDN4 HODJS CIVKI Q66 LITTR DIRRK HIBIL3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "AAL",
+              "types": ["B738", "B38M"]
+            }
+          ],
+          "destination": "KPHX",
+          "exit": "HODJS",
+          "route": "PARDN4 HODJS RZC YARNS ROLLS NOSEW ZUN EAGUL6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "RPA"
+            },
+            {
+              "icao": "JRE"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KRDU",
+          "exit": "BURME",
+          "route": "TAZMO4 BURME VXV KPASS ALDAN4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "WUP"
+            },
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KTPA",
+          "exit": "TIPPN",
+          "route": "TIPPN4 TIPPN RMG SOONE HEPAR BAAMF DADES2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "AAL",
+              "types": ["B738", "B739", "A319", "A320", "A321"]
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KPHL",
+          "exit": "OLSIE",
+          "route": "OLSIE IIU Q139 CREEEP BLISS J152 JST BOJID4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL",
+              "types": ["B738", "B739", "A319", "A320", "A321"]
+            },
+            {
+              "icao": "FFT"
+            }
+          ],
+          "destination": "KDFW",
+          "exit": "HODJS",
+          "route": "HODJS CIVKI Q66 LITTR MEEOW FEWWW SEEVR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "NKS"
+            }
+          ],
+          "destination": "KLAS",
+          "exit": "HODJS",
+          "route": "PARDN4 HODJS IGLOO IRW J78 CRUSR GUP HAHAA RKSTR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "AAL",
+              "types": ["B738", "B739", "A319", "A320", "A321"]
+            }
+          ],
+          "destination": "KMIA",
+          "exit": "GENDE",
+          "route": "FLAME4 GENDE ACORI FROGZ4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KBOS",
+          "exit": "CHADM",
+          "route": "CHADM4 CHADM ALEAN Q40 MAULS Q34 DUALY Q34 RBV Q419 JFK ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "KHOU",
+          "exit": "DRURY",
+          "route": "DRURY4 DRURY MHZ AEX WAPPL7"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
+            },
+            {
+              "icao": "EDV"
+            },
+            {
+              "icao": "JBU"
+            }
+          ],
+          "destination": "KJFK",
+          "exit": "BURME",
+          "route": "TAZMO4 BURME VXV IDDAA Q64 SAWED Q108 SIE CAMRN5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "AAL",
+              "types": ["B738", "B739", "A319", "A320", "A321"]
+            },
+            {
+              "icao": "DAL",
+              "types": ["B738", "B739"]
+            }
+          ],
+          "destination": "KLAX",
+          "exit": "HODJS",
+          "route": "PARDN4 HODJS FAM PENUT KD51Y PUB DAAYE WOHCI NAVJO Q90 DNERO ANJLL4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "DAL",
+              "types": ["B738", "B739", "B712"]
+            }
+          ],
+          "destination": "KDTW",
+          "exit": "FAPER",
+          "route": "GDOGG4 FAPER IMPEL WWODD HANBL3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KMDW",
+          "exit": "OLSIE",
+          "route": "KRSTA4 OLSIE IIU DROSE FISSK7"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KMSY",
+          "exit": "JALAR",
+          "route": "DRURY4 JALAR MERDN TRSSH1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SCX"
+            }
+          ],
+          "destination": "KMCI",
+          "exit": "NAKIY",
+          "route": "PARDN4 NAKIY KRTNY NELVY MHOMS3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KSTL",
+          "exit": "HODJS",
+          "route": "PARDN4 HODJS VISQA BOOSH3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SCX"
+            },
+            {
+              "icao": "DAL",
+              "types": ["B738", "A320"]
+            }
+          ],
+          "destination": "KMSP",
+          "exit": "NAKIY",
+          "route": "PARDN4 NAKIY DENNI ENL IOW MNOSO BLUEM4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "KJAX",
+          "exit": "DENST",
+          "route": "TIPPN4 DENST LGC DUCHY OHDEA2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            },
+            {
+              "icao": "UAL",
+              "types": ["B737", "A320"]
+            }
+          ],
+          "destination": "KIAH",
+          "exit": "DANLS",
+          "route": "DANL4 DANLS UJM Q31 DHART Q33 SWEUP ZEEKK3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KCLE",
+          "exit": "OLSIE",
+          "route": "KRSTA4 OLSIE IIU DRUGA ROKNN4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KMKE",
+          "exit": "KRSTA",
+          "route": "KRSTA4 KRSTA BWG TTH DNV JOT LEEDN GOPAC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KSAN",
+          "exit": "HODJS",
+          "route": "PARDN4 HODJS HUMBO PROWL OLLII GATTY WILSY PENUT DUUZE KD45S NAVJO TBC PLNDL Q86 TTRUE LUCKI1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JZA"
+            },
+            {
+              "icao": "ACA",
+              "types": ["BCS3"]
+            }
+          ],
+          "destination": "CYYZ",
+          "exit": "OLSIE",
+          "route": "KRSTA4 OLSIE IIU Q139 RINTE QWERI NUBER6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "MMUN",
+          "exit": "DRURY",
+          "route": "DRURY4 DRURY MEI HRV LEV L214 IRDOV UL214 NUDIS UT38 LEVAT ITLOM VOMAR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "BAW",
+              "types": ["B789"]
+            }
+          ],
+          "destination": "EGLL",
+          "exit": "OLSIE",
+          "route": "KRSTA4 OLSIE IIU AIR PSB HNK MIILS N371B JOOPY NATS 4900N/05000W NATS DOGAL NATS BEXET ENJEX AVZAC INFEC JETZI AMFUL ORZEB P2 SIRIC SIRIC1H"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JZA"
+            }
+          ],
+          "destination": "CYUL",
+          "exit": "BURME",
+          "route": "TAZMO4 BURME ECB CKB ELZ MIGLO HABBS7"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EIN",
+              "types": ["A21N"]
+            }
+          ],
+          "destination": "EIDW",
+          "exit": "MUNNY",
+          "route": "CHADM4 MUNNY TONIO HVQ SLT SYR SSENA CEFOU N445B ELSIR NATR RESNO NATR NETKI OLAPO OLAPO4L"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KPIE",
+          "exit": "DENST",
+          "route": "TIPPN4 DENST LGC HONID BANGZ2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KSFB",
+          "exit": "DENST",
+          "route": "TIPPN4 DENST THRSR Q79 ZPLEN BIGDE SHREK2"
+        }
+      ],
+      "exit_categories": {
+        "CHADM": "East",
+        "MUNNY": "East",
+        "DANLS": "West",
+        "TPEEE": "West",
+        "DRURY": "West",
+        "JALAR": "West",
+        "HAIGE": "West",
+        "FLAME": "East",
+        "GENDE": "East",
+        "GDOGG": "West",
+        "FAPER": "West",
+        "KRSTA": "West",
+        "OLSIE": "West",
+        "PARDN": "West",
+        "NAKIY": "West",
+        "HODJS": "West",
+        "TAZMO": "East",
+        "BURME": "East",
+        "TIPPN": "East",
+        "DENST": "East"
+      }
+    }
+  },
+  "inbound_flows": {
+    "CHSNE3": {
+      "arrivals": [
+        {
+          "spawn": "KNEEY@0.5",
+          "cruise_altitude": 19000,
+          "star": "CHSNE3",
+          "initial_controller": "C42",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "ENY",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "ASH",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KDAL"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "VIV",
+                "airport": "MMUN"
+              }
             ]
+          }
+        }
+      ]
+    },
+    "PASLY5": {
+      "arrivals": [
+        {
+          "spawn": "PASLY",
+          "cruise_altitude": 20000,
+          "star": "PASLY5",
+          "initial_controller": "C40",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "JBU",
+                "airport": "KJFK"
+              },
+              {
+                "icao": "WJA",
+                "airport": "CYYZ"
+              },
+              {
+                "icao": "ACA",
+                "fleet": "short",
+                "airport": "CYYZ"
+              },
+              {
+                "icao": "BAW",
+                "fleet": "long",
+                "airport": "EGLL"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KDAL"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KDFW"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "RYYMN3": {
+      "arrivals": [
+        {
+          "spawn": "RYYMN",
+          "cruise_altitude": 19000,
+          "star": "RYYMN3",
+          "initial_controller": "C41",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KDAL"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "ASA",
+                "airport": "KSEA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SWFFT3": {
+      "arrivals": [
+        {
+          "spawn": "SWFFT",
+          "cruise_altitude": 20000,
+          "star": "SWFFT3",
+          "initial_controller": "C60",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "JBU",
+                "airport": "KJFK"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KDAL"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KFLL"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "KBNA South",
+  "name": "KBNA",
+  "primary_airport": "KBNA",
+  "scenarios": {
+    "KBNA South": {
+      "arrival_runways": [
+        {
+          "airport": "KBNA",
+          "runway": "20L"
+        },
+        {
+          "airport": "KBNA",
+          "runway": "20R"
+        }
+      ],
+      "inbound_rates": {
+        "CHSNE3": {
+          "KBNA": 10
         },
         "PASLY5": {
-            "arrivals": [
-                {
-                    "spawn": "PASLY",
-                    "cruise_altitude": 20000,
-                    "star": "PASLY5",
-                    "initial_controller": "C40",
-                    "initial_altitude": 15000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KBNA": [
-                            {
-                                "icao": "JBU",
-                                "airport": "KJFK"
-                            },
-                            {
-                                "icao": "WJA",
-                                "airport": "CYYZ"
-                            },
-                            {
-                                "icao": "ACA",
-                                "fleet": "short",
-                                "airport": "CYYZ"
-                            },
-                            {
-                                "icao": "BAW",
-                                "fleet": "long",
-                                "airport": "EGLL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "short",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "short",
-                                "airport": "KIAH"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "short",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "FFT",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "NKS",
-                                "airport": "KDFW"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KBNA": 10
         },
         "RYYMN3": {
-            "arrivals": [
-                {
-                    "spawn": "RYYMN",
-                    "cruise_altitude": 19000,
-                    "star": "RYYMN3",
-                    "initial_controller": "C41",
-                    "initial_altitude": 15000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KBNA": [
-                            {
-                                "icao": "AAL",
-                                "fleet": "short",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "short",
-                                "airport": "KIAH"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "short",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "FFT",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "NKS",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "ASA",
-                                "airport": "KSEA"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KBNA": 10
         },
         "SWFFT3": {
-            "arrivals": [
-                {
-                    "spawn": "SWFFT",
-                    "cruise_altitude": 20000,
-                    "star": "SWFFT3",
-                    "initial_controller": "C60",
-                    "initial_altitude": 15000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KBNA": [
-                            {
-                                "icao": "JBU",
-                                "airport": "KJFK"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "short",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "short",
-                                "airport": "KIAH"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "short",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "FFT",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "NKS",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KFLL"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KBNA": 10
         }
-    },
-    "default_scenario": "KBNA South",
-    "name": "KBNA",
-    "primary_airport": "KBNA",
-    "scenarios": {
-        "KBNA South": {
-            "arrival_runways": [
-                {
-                    "airport": "KBNA",
-                    "runway": "20L"
-                },
-                {
-                    "airport": "KBNA",
-                    "runway": "20R"
-                }
-            ],
-            "inbound_rates": {
-                "CHSNE3": {
-                    "KBNA": 10
-                },
-                "PASLY5": {
-                    "KBNA": 10
-                },
-                "RYYMN3": {
-                    "KBNA": 10
-                },
-                "SWFFT3": {
-                    "KBNA": 10
-                }
-            },
-            "configuration": "STD",
-            "default_maps": [
-                "BNA_SOUTH FLOW"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KBNA",
-                    "rate": 20,
-                    "runway": "20C",
-                    "category": "East"
-                },
-                {
-                    "airport": "KBNA",
-                    "rate": 20,
-                    "runway": "20R",
-                    "category": "West"
-                }
-            ],
-            "wind": {
-                "direction": "170-230"
-            }
+      },
+      "configuration": "STD",
+      "default_maps": ["BNA_SOUTH FLOW"],
+      "departure_runways": [
+        {
+          "airport": "KBNA",
+          "rate": 20,
+          "runway": "20C",
+          "category": "East"
         },
-        "KBNA North": {
-            "arrival_runways": [
-                {
-                    "airport": "KBNA",
-                    "runway": "2L"
-                },
-                {
-                    "airport": "KBNA",
-                    "runway": "2C"
-                },
-                {
-                    "airport": "KBNA",
-                    "runway": "2R"
-                }
-            ],
-            "inbound_rates": {
-                "CHSNE3": {
-                    "KBNA": 10
-                },
-                "PASLY5": {
-                    "KBNA": 10
-                },
-                "RYYMN3": {
-                    "KBNA": 10
-                },
-                "SWFFT3": {
-                    "KBNA": 10
-                }
-            },
-            "configuration": "STD",
-            "default_maps": [
-                "BNA_NORTH FLOW"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KBNA",
-                    "rate": 20,
-                    "runway": "2R",
-                    "category": "East"
-                },
-                {
-                    "airport": "KBNA",
-                    "rate": 20,
-                    "runway": "2L",
-                    "category": "West"
-                }
-            ],
-            "wind": {
-                "direction": "350-50"
-            }
+        {
+          "airport": "KBNA",
+          "rate": 20,
+          "runway": "20R",
+          "category": "West"
         }
+      ],
+      "wind": {
+        "direction": "170-230"
+      }
+    },
+    "KBNA North": {
+      "arrival_runways": [
+        {
+          "airport": "KBNA",
+          "runway": "2L"
+        },
+        {
+          "airport": "KBNA",
+          "runway": "2C"
+        },
+        {
+          "airport": "KBNA",
+          "runway": "2R"
+        }
+      ],
+      "inbound_rates": {
+        "CHSNE3": {
+          "KBNA": 10
+        },
+        "PASLY5": {
+          "KBNA": 10
+        },
+        "RYYMN3": {
+          "KBNA": 10
+        },
+        "SWFFT3": {
+          "KBNA": 10
+        }
+      },
+      "configuration": "STD",
+      "default_maps": ["BNA_NORTH FLOW"],
+      "departure_runways": [
+        {
+          "airport": "KBNA",
+          "rate": 20,
+          "runway": "2R",
+          "category": "East"
+        },
+        {
+          "airport": "KBNA",
+          "rate": 20,
+          "runway": "2L",
+          "category": "West"
+        }
+      ],
+      "wind": {
+        "direction": "350-50"
+      }
     }
+  }
 }

@@ -716,43 +716,43 @@
       ]
     },
     "Overflights": {
-        "overflights": [
+      "overflights": [
+        {
+          "airlines": [
             {
-                    "airlines": [
-                    {
-                        "departure_airport": "KMHT",
-                        "arrival_airport": "KTPA",
-                        "icao": "N",
-                        "fleet": "fastGA"
-                    },
-                    {
-                        "departure_airport": "EHAM",
-                        "arrival_airport": "KATL",
-                        "icao": "KLM"
-                    },
-                    {
-                        "departure_airport": "EHAM",
-                        "arrival_airport": "KATL",
-                        "icao": "DAL"
-                    },
-                    {
-                        "departure_airport": "KBOS",
-                        "arrival_airport": "KATL",
-                        "icao": "SWA"
-                    },
-                    {
-                        "departure_airport": "EGLL",
-                        "arrival_airport": "KATL",
-                        "icao": "DAL"
-                    }
-                ],
-                    "initial_altitude": 34000,
-                    "assigned_altitude": 34000,
-                    "initial_controller": "B20",
-                    "initial_speed": 300,
-                    "waypoints": "WEETS/ho42 J6 HYPER/delete"
+              "departure_airport": "KMHT",
+              "arrival_airport": "KTPA",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "EHAM",
+              "arrival_airport": "KATL",
+              "icao": "KLM"
+            },
+            {
+              "departure_airport": "EHAM",
+              "arrival_airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KATL",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KATL",
+              "icao": "DAL"
             }
-        ]
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "B20",
+          "initial_speed": 300,
+          "waypoints": "WEETS/ho42 J6 HYPER/delete"
+        }
+      ]
     }
   },
   "default_scenario": "ZNY Area B Consolidated",
@@ -761,8 +761,7 @@
       "configuration": "N56",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [
-      ],
+      "departure_runways": [],
       "arrival_runways": [
         {
           "airport": "KBOS",
@@ -797,8 +796,7 @@
       "configuration": "N42",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [
-      ],
+      "departure_runways": [],
       "arrival_runways": [
         {
           "airport": "KBWI",
@@ -830,8 +828,7 @@
       "configuration": "N39",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [
-      ],
+      "departure_runways": [],
       "arrival_runways": [
         {
           "airport": "KIAD",
@@ -859,8 +856,7 @@
       "configuration": "425",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [
-      ],
+      "departure_runways": [],
       "arrival_runways": [
         {
           "airport": "KBWI",
@@ -908,8 +904,7 @@
       "configuration": "N55",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [
-      ],
+      "departure_runways": [],
       "arrival_runways": [
         {
           "airport": "KDCA",
@@ -948,8 +943,7 @@
       "configuration": "N68",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [
-      ],
+      "departure_runways": [],
       "arrival_runways": [
         {
           "airport": "KJFK",
@@ -974,8 +968,7 @@
       "configuration": "345",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [
-      ],
+      "departure_runways": [],
       "arrival_runways": [
         {
           "airport": "KBWI",
@@ -1026,8 +1019,7 @@
       "configuration": "568",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [
-      ],
+      "departure_runways": [],
       "arrival_runways": [
         {
           "airport": "KJFK",
@@ -1072,8 +1064,7 @@
       "configuration": "NYB",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [
-      ],
+      "departure_runways": [],
       "arrival_runways": [
         {
           "airport": "KJFK",

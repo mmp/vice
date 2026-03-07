@@ -1,27 +1,27 @@
 {
-    "control_positions": {
-        "1L": {
-            "callsign": "LMT_APP",
-            "frequency": 123675,
-            "radio_name": "Kingsley Approach"
-        },
-        "1T": {
-            "callsign": "LMT_TWR",
-            "frequency": 133975,
-            "radio_name": "Kingsley Tower"
-        }
+  "control_positions": {
+    "1L": {
+      "callsign": "LMT_APP",
+      "frequency": 123675,
+      "radio_name": "Kingsley Approach"
     },
-    "handoff_ids": [
-        {
-            "id": "EUG",
-            "prefix": "1"
-        },
-        {
-            "id": "ZSE",
-            "prefix": "C"
-        }
-    ],
-    "facility_adaptations": {
-        "configurations": {}
+    "1T": {
+      "callsign": "LMT_TWR",
+      "frequency": 133975,
+      "radio_name": "Kingsley Tower"
     }
+  },
+  "handoff_ids": [
+    {
+      "id": "EUG",
+      "prefix": "1"
+    },
+    {
+      "id": "ZSE",
+      "prefix": "C"
+    }
+  ],
+  "facility_adaptations": {
+    "configurations": {}
+  }
 }

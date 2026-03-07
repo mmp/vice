@@ -1,122 +1,106 @@
 {
-    "artcc": "ZLC",
-    "area": "Area C",
-    "name": "ZLC Area C",
-    "airports": {
-        "KSLC": {
-            "approaches": {
-                "I34L": {
-                    "cifp_id": "I34L"
-                },
-                "I34R": {
-                    "cifp_id": "I34R"
-                },
-                "X35": {
-                    "cifp_id": "X35"
-                }
-            }
+  "artcc": "ZLC",
+  "area": "Area C",
+  "name": "ZLC Area C",
+  "airports": {
+    "KSLC": {
+      "approaches": {
+        "I34L": {
+          "cifp_id": "I34L"
+        },
+        "I34R": {
+          "cifp_id": "I34R"
+        },
+        "X35": {
+          "cifp_id": "X35"
         }
-    },
-    "inbound_flows": {
-        "QWENN6.MLF": {
-            "arrivals": [
-                {
-                    "waypoints": "BLIPP/ho Q842 WINEN MLF BEVRR DTA UINTA FRNZY/a14000/s250 QWENN/a11000/s230",
-                    "cruise_altitude": 35000,
-                    "star": "QWENN6",
-                    "route": "QWENN6",
-                    "initial_controller": "L16",
-                    "initial_altitude": 35000,
-                    "initial_speed": 300,
-                    "airlines": {
-                        "KSLC": [
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "DAL",
-                                "types": [
-                                    "B38M",
-                                    "B39M",
-                                    "B737",
-                                    "B738"
-                                ],
-                                "airport": "KLAX"
-                            }
-                        ]
-                    }
-                }
+      }
+    }
+  },
+  "inbound_flows": {
+    "QWENN6.MLF": {
+      "arrivals": [
+        {
+          "waypoints": "BLIPP/ho Q842 WINEN MLF BEVRR DTA UINTA FRNZY/a14000/s250 QWENN/a11000/s230",
+          "cruise_altitude": 35000,
+          "star": "QWENN6",
+          "route": "QWENN6",
+          "initial_controller": "L16",
+          "initial_altitude": 35000,
+          "initial_speed": 300,
+          "airlines": {
+            "KSLC": [
+              {
+                "icao": "ASA",
+                "types": ["B39M"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B38M", "B39M", "B737", "B738"],
+                "airport": "KLAX"
+              }
             ]
+          }
+        }
+      ]
+    },
+    "QWENN6.BCE": {
+      "arrivals": [
+        {
+          "waypoints": "N037.15.00.851,W111.57.07.542/ho BCE RRICH MARNN NEEBO/a14000/s250 QWENN/a11000/s230",
+          "cruise_altitude": 35000,
+          "star": "QWENN6",
+          "route": "QWENN6",
+          "initial_controller": "L16",
+          "initial_altitude": 35000,
+          "initial_speed": 300,
+          "airlines": {
+            "KSLC": [
+              {
+                "icao": "ASA",
+                "types": ["B39M"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B38M", "B39M", "B737", "B738"],
+                "airport": "KLAX"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "ZLC C Comb 44",
+  "scenarios": {
+    "ZLC C Comb 44": {
+      "configuration": "STD",
+      "default_maps": ["*SEC"],
+      "default_map_group": "MAIN",
+      "arrival_runways": [
+        {
+          "airport": "KSLC",
+          "runway": "34L"
+        },
+        {
+          "airport": "KSLC",
+          "runway": "35"
+        }
+      ],
+      "inbound_rates": {
+        "QWENN6.MLF": {
+          "KSLC": 20
         },
         "QWENN6.BCE": {
-            "arrivals": [
-                {
-                    "waypoints": "N037.15.00.851,W111.57.07.542/ho BCE RRICH MARNN NEEBO/a14000/s250 QWENN/a11000/s230",
-                    "cruise_altitude": 35000,
-                    "star": "QWENN6",
-                    "route": "QWENN6",
-                    "initial_controller": "L16",
-                    "initial_altitude": 35000,
-                    "initial_speed": 300,
-                    "airlines": {
-                        "KSLC": [
-                            {
-                                "icao": "ASA",
-                                "types": [
-                                    "B39M"
-                                ],
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "DAL",
-                                "types": [
-                                    "B38M",
-                                    "B39M",
-                                    "B737",
-                                    "B738"
-                                ],
-                                "airport": "KLAX"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KSLC": 20
         }
-    },
-    "default_scenario": "ZLC C Comb 44",
-    "scenarios": {
-        "ZLC C Comb 44": {
-            "configuration": "STD",
-            "default_maps": [
-                "*SEC"
-            ],
-            "default_map_group": "MAIN",
-            "arrival_runways": [
-                {
-                    "airport": "KSLC",
-                    "runway": "34L"
-                },
-                {
-                    "airport": "KSLC",
-                    "runway": "35"
-                }
-            ],
-            "inbound_rates": {
-                "QWENN6.MLF": {
-                    "KSLC": 20
-                },
-                "QWENN6.BCE": {
-                    "KSLC": 20
-                }
-            },
-            "wind": {
-                "direction": "210-230",
-                "speed": "2+"
-            }
-        }
+      },
+      "wind": {
+        "direction": "210-230",
+        "speed": "2+"
+      }
     }
+  }
 }

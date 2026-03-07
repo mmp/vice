@@ -1,12 +1,12 @@
 {
-    "control_positions": {},
-    "facility_adaptations": {
-        "configurations": {}
-    },
-    "handoff_ids": [
-        {
-            "id": "ZKC",
-            "prefix": "K"
-        }
-    ]
+  "control_positions": {},
+  "facility_adaptations": {
+    "configurations": {}
+  },
+  "handoff_ids": [
+    {
+      "id": "ZKC",
+      "prefix": "K"
+    }
+  ]
 }
