@@ -10,6 +10,7 @@ import (
 	"maps"
 	gomath "math"
 	"slices"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -101,16 +102,20 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	}
 	arr := arrivals[idx]
 
-	airline := rand.SampleSlice(s.Rand, arr.Airlines[arrivalAirport])
-	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, airline.Airport, arrivalAirport, s.lg)
-	if ac == nil {
-		return nil, fmt.Errorf("unable to sample a valid aircraft for airline %+v at %q", airline,
-			arrivalAirport)
+	airlines := arr.Airlines[arrivalAirport]
+	if len(airlines) == 0 {
+		return nil, fmt.Errorf("no airlines for arrival group %s airport %s", group, arrivalAirport)
 	}
 
-	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.Airport, arrivalAirport)
+	ac, err := filterAndSampleAircraft(s, airlines,
+		func(al av.ArrivalAirline) av.AirlineSpecifier { return al.AirlineSpecifier },
+		func(al av.ArrivalAirline) (string, string) { return al.Airport, arrivalAirport },
+		fmt.Sprintf("arrivals to %q", arrivalAirport))
+	if err != nil {
+		return nil, err
+	}
 
-	err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr,
+	err = ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
@@ -162,12 +167,17 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	return ac, err
 }
 
-func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAirport string, lg *log.Logger) (*Aircraft, string) {
-	// Collect all currently in-use or soon-to-be in-use callsigns.
+func (s *Sim) currentCallsigns() []av.ADSBCallsign {
 	callsigns := slices.Collect(maps.Keys(s.Aircraft))
 	for _, fp := range s.STARSComputer.FlightPlans {
 		callsigns = append(callsigns, av.ADSBCallsign(fp.ACID))
 	}
+	return callsigns
+}
+
+func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAirport string, lg *log.Logger) (*Aircraft, string) {
+	// Collect all currently in-use or soon-to-be in-use callsigns.
+	callsigns := s.currentCallsigns()
 
 	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, callsigns, s.EnforceUniqueCallsignSuffix, departureAirport, arrivalAirport, lg)
 
@@ -179,6 +189,60 @@ func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAi
 		ADSBCallsign: av.ADSBCallsign(callsign),
 		Mode:         av.TransponderModeAltitude,
 	}, actype
+}
+func (s *Sim) sampleAircraftWithAirlineCallsign(al av.AirlineSpecifier, departureAirport, arrivalAirport string, lg *log.Logger) (*Aircraft, string) {
+	callsign := strings.ToUpper(strings.TrimSpace(al.Callsign))
+	if callsign == "" {
+		return nil, ""
+	}
+
+	callsigns := s.currentCallsigns()
+	if av.CallsignClashesWithExisting(callsigns, callsign, s.EnforceUniqueCallsignSuffix) {
+		return nil, ""
+	}
+
+	actype := al.SampleAcType(s.Rand, departureAirport, arrivalAirport, lg)
+	if actype == "" {
+		return nil, ""
+	}
+
+	return &Aircraft{
+		ADSBCallsign: av.ADSBCallsign(callsign),
+		Mode:         av.TransponderModeAltitude,
+	}, actype
+}
+
+// Generic function to sample an aicraft given the callsigns given and current callsigns
+func filterAndSampleAircraft[T any](s *Sim, airlines []T, specifier func(T) av.AirlineSpecifier,
+	airports func(T) (string, string), errContext string) (*Aircraft, error) {
+	callsigns := s.currentCallsigns()
+	available := make([]T, 0, len(airlines))
+	for _, al := range airlines {
+		spec := specifier(al)
+		if spec.Callsign == "" || !av.CallsignClashesWithExisting(callsigns, spec.Callsign, s.EnforceUniqueCallsignSuffix) {
+			available = append(available, al)
+		}
+	}
+	if len(available) == 0 {
+		return nil, fmt.Errorf("unable to sample a valid aircraft for %s", errContext)
+	}
+
+	airline := rand.SampleSlice(s.Rand, available)
+	spec := specifier(airline)
+	dep, arr := airports(airline)
+	var ac *Aircraft
+	var acType string
+	if spec.Callsign != "" {
+		ac, acType = s.sampleAircraftWithAirlineCallsign(spec, dep, arr, s.lg)
+	} else {
+		ac, acType = s.sampleAircraft(spec, dep, arr, s.lg)
+	}
+	if ac == nil {
+		return nil, fmt.Errorf("unable to sample a valid aircraft for %s", errContext)
+	}
+
+	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, dep, arr)
+	return ac, nil
 }
 
 // assignSquawk allocates an enroute squawk code and assigns it to both the
@@ -263,13 +327,17 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	overflights := s.State.InboundFlows[group].Overflights
 	of := rand.SampleSlice(s.Rand, overflights)
 
-	airline := rand.SampleSlice(s.Rand, of.Airlines)
-	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, airline.DepartureAirport, airline.ArrivalAirport, s.lg)
-	if ac == nil {
-		return nil, fmt.Errorf("unable to sample a valid aircraft for overflight %+v in %q", airline, group)
+	if len(of.Airlines) == 0 {
+		return nil, fmt.Errorf("no airlines for overflights in %q", group)
 	}
 
-	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.DepartureAirport, airline.ArrivalAirport)
+	ac, err := filterAndSampleAircraft(s, of.Airlines,
+		func(al av.OverflightAirline) av.AirlineSpecifier { return al.AirlineSpecifier },
+		func(al av.OverflightAirline) (string, string) { return al.DepartureAirport, al.ArrivalAirport },
+		fmt.Sprintf("overflight in %q", group))
+	if err != nil {
+		return nil, err
+	}
 
 	if err := ac.InitializeOverflight(&of, s.State.NmPerLongitude, s.State.MagneticVariation,
 		s.wxModel, s.State.SimTime, s.lg); err != nil {
@@ -299,7 +367,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
 	}
 
-	_, err := s.STARSComputer.CreateFlightPlan(nasFp)
+	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
 
 	return ac, err
 }

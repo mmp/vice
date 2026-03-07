@@ -581,17 +581,20 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 	}
 	dep := &ap.Departures[idx]
 
-	airline := rand.SampleSlice(s.Rand, dep.Airlines)
-	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, departureAirport, dep.Destination, s.lg)
-	if ac == nil {
-		return nil, fmt.Errorf("unable to sample a valid aircraft for airline %+v at %q", airline,
-			departureAirport)
+	if len(dep.Airlines) == 0 {
+		return nil, fmt.Errorf("no airlines for departure at %q", departureAirport)
 	}
 
-	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, departureAirport, dep.Destination)
+	ac, err := filterAndSampleAircraft(s, dep.Airlines,
+		func(al av.DepartureAirline) av.AirlineSpecifier { return al.AirlineSpecifier },
+		func(al av.DepartureAirline) (string, string) { return departureAirport, dep.Destination },
+		fmt.Sprintf("departures at %q", departureAirport))
+	if err != nil {
+		return nil, err
+	}
 
 	exitRoute := exitRoutes[dep.Exit]
-	err := ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, s.State.NmPerLongitude,
+	err = ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
