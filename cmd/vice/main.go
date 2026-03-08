@@ -264,7 +264,7 @@ func runSimulation(lg *log.Logger) error {
 	}
 
 	newSimConfig.Emergencies = emergencies
-	s := sim.NewSim(*newSimConfig, nil /*manifest*/, lg)
+	s := sim.NewSim(*newSimConfig, lg)
 
 	// Sign on as instructor if waypoint commands are specified
 	instructor := *waypointCommands != ""

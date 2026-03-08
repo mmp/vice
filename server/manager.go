@@ -193,8 +193,7 @@ func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
 	lg := sm.lg.With(slog.String("sim_name", req.NewSimName))
 
 	if nsc := sm.makeSimConfiguration(req, lg); nsc != nil {
-		manifest := sm.mapManifests[nsc.FacilityAdaptation.VideoMapFile]
-		s := sim.NewSim(*nsc, manifest, lg)
+		s := sim.NewSim(*nsc, lg)
 		session := makeSimSession(req.NewSimName, req.GroupName, req.ScenarioName, req.Password, s, sm.lg)
 		pos := s.ScenarioRootPosition()
 		return sm.Add(session, result, pos, req.Initials, req.Privileged, true)

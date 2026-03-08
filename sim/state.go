@@ -84,8 +84,6 @@ type CommonState struct {
 	SimDescription string
 
 	HandoffIDs []HandoffID
-
-	VideoMapLibraryHash []byte
 }
 
 // DerivedState collects state used on the client-side that is derived from Sim state that is not
@@ -217,7 +215,7 @@ func makeDerivedState(s *Sim) DerivedState {
 	return ds
 }
 
-func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model,
+func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.Model,
 	metar map[string][]wx.METAR, r *rand.Rand, lg *log.Logger) *CommonState {
 	// Roll back the start time to account for prespawn
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
@@ -272,10 +270,6 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 			ss.METAR[ap] = m[0]
 		}
 		ss.ATISLetter[ap] = string(rune('A' + r.Intn(26)))
-	}
-
-	if manifest != nil {
-		ss.VideoMapLibraryHash, _ = manifest.Hash()
 	}
 
 	if len(config.ControllerAirspace) > 0 {
