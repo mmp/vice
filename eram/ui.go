@@ -432,7 +432,12 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 		}
 	}
 
-	if aa := c.State.FacilityAdaptation.AirspaceAwareness; len(aa) > 0 {
+	userPos := c.State.PrimaryPositionForTCW(c.State.UserTCW)
+	userArea := ""
+	if ctrl, ok := c.State.Controllers[userPos]; ok {
+		userArea = ctrl.Area
+	}
+	if aa := c.State.FacilityAdaptation.AirspaceAwarenessForArea(userArea); len(aa) > 0 {
 		if imgui.CollapsingHeaderBoolPtr("Airspace Awareness", nil) {
 			if imgui.BeginTableV("awareness", 4, tableFlags, imgui.Vec2{}, 0) {
 				imgui.TableSetupColumn("Fix")

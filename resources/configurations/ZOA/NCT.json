@@ -1771,7 +1771,75 @@
           "RVMNCT946S"
         ],
         "center": "KSJC",
-        "range": 45
+        "range": 45,
+        "airspace_awareness": [
+          {
+            "fixes": [
+              "NTELL",
+              "JFREE",
+              "VLREE",
+              "TECKY"
+            ],
+            "altitude_range": [
+              19000,
+              27000
+            ],
+            "receiving_controller": "C11"
+          },
+          {
+            "fixes": [
+              "ALCOA",
+              "CINNY",
+              "BEBOP",
+              "MOLEN",
+              "STINS",
+              "AMAKR"
+            ],
+            "altitude_range": [
+              0,
+              19000
+            ],
+            "receiving_controller": "4U"
+          },
+          {
+            "fixes": [
+              "GRTFL",
+              "DEDHD",
+              "HRNER",
+              "RBL",
+              "SGD",
+              "ENI",
+              "PYE",
+              "SUU",
+              "CCR",
+              "RAGGS",
+              "BURDE"
+            ],
+            "altitude_range": [
+              15000,
+              23000
+            ],
+            "receiving_controller": "4Q"
+          },
+          {
+            "fixes": [
+              "ORRCA",
+              "MOGEE",
+              "TIPRE",
+              "SYRAH",
+              "ORANG",
+              "FTHIL",
+              "FROGO",
+              "HNW",
+              "FRA"
+            ],
+            "altitude_range": [
+              15000,
+              29000
+            ],
+            "receiving_controller": "4Q"
+          }
+        ]
       },
       "2": {
         "video_maps": [
@@ -1897,7 +1965,94 @@
           "RVMNCT946S"
         ],
         "center": "KMHR",
-        "range": 65
+        "range": 65,
+        "airspace_awareness": [
+          {
+            "fixes": [
+              "RBL"
+            ],
+            "altitude_range": [
+              19000,
+              23000
+            ],
+            "receiving_controller": "C42"
+          },
+          {
+            "fixes": [
+              "CINNY",
+              "BEBOP",
+              "SGD",
+              "ENI",
+              "PYE",
+              "SUU",
+              "CCR",
+              "RAGGS",
+              "BURDE"
+            ],
+            "altitude_range": [
+              11000,
+              23000
+            ],
+            "receiving_controller": "C41"
+          },
+          {
+            "fixes": [
+              "FTHIL",
+              "FROGO",
+              "HNW",
+              "FRA"
+            ],
+            "altitude_range": [
+              19000,
+              29000
+            ],
+            "receiving_controller": "C29"
+          },
+          {
+            "fixes": [
+              "MACUS",
+              "SHUFL",
+              "RALEY",
+              "MVA",
+              "OAL",
+              "DUDES",
+              "DARBI",
+              "MRLET",
+              "SWR"
+            ],
+            "altitude_range": [
+              19000,
+              23000
+            ],
+            "receiving_controller": "C44"
+          },
+          {
+            "fixes": [
+              "PYGOW",
+              "CRDDZ",
+              "HALLE",
+              "BLKJK",
+              "LLC",
+              "FMG"
+            ],
+            "altitude_range": [
+              19000,
+              29000
+            ],
+            "receiving_controller": "C45"
+          },
+          {
+            "fixes": [
+              "YERIN",
+              "PEKSE"
+            ],
+            "altitude_range": [
+              19000,
+              23000
+            ],
+            "receiving_controller": "C46"
+          }
+        ]
       },
       "3": {
         "video_maps": [

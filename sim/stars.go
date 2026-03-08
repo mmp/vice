@@ -896,6 +896,7 @@ type STARSArea struct {
 	FlightFollowingAirspace         []av.AirspaceVolume            `json:"flight_following_airspace,omitempty"`
 	Scratchpads                     map[string]string              `json:"scratchpads,omitempty"`
 	CoordinationLists               []CoordinationList             `json:"coordination_lists,omitempty"`
+	AirspaceAwareness               []AirspaceAwareness            `json:"airspace_awareness,omitempty"`
 	Airspace                        map[string][]av.AirspaceVolume `json:"airspace,omitempty"`
 }
 
@@ -927,6 +928,19 @@ func (fa *FacilityAdaptation) ScratchpadForFix(fix string, area string) (string,
 		return sp, true
 	}
 	return "", false
+}
+
+// AirspaceAwarenessForArea returns the airspace awareness rules for a
+// given area. Area-level entries come first so they take priority (since
+// calculateAirspace returns on the first match), with facility-level
+// entries as fallback.
+func (fa *FacilityAdaptation) AirspaceAwarenessForArea(area string) []AirspaceAwareness {
+	if area != "" {
+		if ac, ok := fa.Areas[area]; ok && len(ac.AirspaceAwareness) > 0 {
+			return slices.Concat(ac.AirspaceAwareness, fa.AirspaceAwareness)
+		}
+	}
+	return fa.AirspaceAwareness
 }
 
 type CoordinationList struct {

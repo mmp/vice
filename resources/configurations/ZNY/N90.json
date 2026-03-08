@@ -3174,7 +3174,7 @@
         "aircraft_type": [
           "J"
         ],
-        "receiving_controller": "C34"
+        "receiving_controller": "C55"
       },
       {
         "fixes": [
@@ -3188,7 +3188,7 @@
           "P",
           "T"
         ],
-        "receiving_controller": "C34"
+        "receiving_controller": "C55"
       },
       {
         "fixes": [
@@ -3309,7 +3309,7 @@
           14000,
           99999
         ],
-        "receiving_controller": "C34"
+        "receiving_controller": "C55"
       },
       {
         "fixes": [
@@ -3319,7 +3319,7 @@
           17000,
           99999
         ],
-        "receiving_controller": "C34"
+        "receiving_controller": "C55"
       },
       {
         "fixes": [
@@ -3671,7 +3671,49 @@
           "",
           "LGA-HPN ARR/DEP"
         ],
-        "center": "KJFK"
+        "center": "KJFK",
+        "airspace_awareness": [
+          {
+            "fixes": [
+              "SHIPP",
+              "WAVEY"
+            ],
+            "aircraft_type": [
+              "J"
+            ],
+            "altitude_range": [
+              12000,
+              99999
+            ],
+            "receiving_controller": "C86"
+          },
+          {
+            "fixes": [
+              "SHIPP",
+              "WAVEY"
+            ],
+            "aircraft_type": [
+              "P",
+              "T"
+            ],
+            "altitude_range": [
+              10000,
+              99999
+            ],
+            "receiving_controller": "C86"
+          },
+          {
+            "fixes": [
+              "BETTE",
+              "HAPIE"
+            ],
+            "altitude_range": [
+              11000,
+              99999
+            ],
+            "receiving_controller": "B17"
+          }
+        ]
       },
       "3": {
         "default_airport": "KISP",
@@ -3748,7 +3790,106 @@
           "JFK ARR/DEP RWY 31L/R"
         ],
         "center": "N040.43.34.389,W074.28.54.713",
-        "range": 60
+        "range": 60,
+        "airspace_awareness": [
+          {
+            "fixes": [
+              "DIXIE"
+            ],
+            "altitude_range": [
+              0,
+              8000
+            ],
+            "aircraft_type": [
+              "J"
+            ],
+            "receiving_controller": "51Y"
+          },
+          {
+            "fixes": [
+              "DIXIE"
+            ],
+            "altitude_range": [
+              0,
+              6000
+            ],
+            "aircraft_type": [
+              "P",
+              "T"
+            ],
+            "receiving_controller": "51Y"
+          },
+          {
+            "fixes": [
+              "COATE"
+            ],
+            "altitude_range": [
+              8000,
+              10000
+            ],
+            "receiving_controller": "71B"
+          },
+          {
+            "fixes": [
+              "SAX"
+            ],
+            "altitude_range": [
+              8000,
+              8000
+            ],
+            "receiving_controller": "4H"
+          },
+          {
+            "fixes": [
+              "HAAYS"
+            ],
+            "altitude_range": [
+              9000,
+              10000
+            ],
+            "receiving_controller": "71B"
+          },
+          {
+            "fixes": [
+              "DEEZZ"
+            ],
+            "altitude_range": [
+              13000,
+              999000
+            ],
+            "receiving_controller": "C36"
+          },
+          {
+            "fixes": [
+              "SOARS"
+            ],
+            "altitude_range": [
+              11000,
+              999000
+            ],
+            "receiving_controller": "B06"
+          },
+          {
+            "fixes": [
+              "LANNA"
+            ],
+            "altitude_range": [
+              17000,
+              999999
+            ],
+            "receiving_controller": "C55"
+          },
+          {
+            "fixes": [
+              "JUDDS"
+            ],
+            "altitude_range": [
+              10000,
+              999999
+            ],
+            "receiving_controller": "81B"
+          }
+        ]
       },
       "5": {
         "default_airport": "KSWF",

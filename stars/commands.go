@@ -844,7 +844,8 @@ func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
 // returns the controller responsible for the aircraft given its altitude
 // and route.
 func calculateAirspace(ctx *panes.Context, trk *sim.Track) (string, error) {
-	for _, rules := range ctx.FacilityAdaptation.AirspaceAwareness {
+	area := ctx.UserController().Area
+	for _, rules := range ctx.FacilityAdaptation.AirspaceAwarenessForArea(area) {
 		fp := trk.FlightPlan
 		for _, fix := range rules.Fix {
 			// Does the fix in the rules match the route?

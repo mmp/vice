@@ -1097,6 +1097,15 @@
                                   Same format as the top-level scratchpads map.</td>
                               </tr>
                               <tr>
+                                <td>"airspace_awareness"</td>
+                                <td>Array of objects</td>
+                                <td>Per-area airspace awareness rules that take priority over the facility-level
+                                  <a href="#fe-airspace-awareness">"airspace_awareness"</a> for controllers in this area.
+                                  Same format as the top-level airspace awareness array.
+                                  Area entries are checked first; facility-level entries are used as fallback
+                                  for fixes not matched by area entries.</td>
+                              </tr>
+                              <tr>
                                 <td>"video_maps"</td>
                                 <td>Array of strings</td>
                                 <td>The available video maps shown in the

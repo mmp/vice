@@ -251,6 +251,11 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	for _, aa := range sg.FacilityAdaptation.AirspaceAwareness {
 		addController(sim.TCP(aa.ReceivingController))
 	}
+	for _, area := range sg.FacilityAdaptation.Areas {
+		for _, aa := range area.AirspaceAwareness {
+			addController(sim.TCP(aa.ReceivingController))
+		}
+	}
 
 	airportExits := make(map[string]map[string]any) // airport -> exit -> is it covered
 	for _, rwy := range s.DepartureRunways {
@@ -1111,6 +1116,11 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	for i := range fa.AirspaceAwareness {
 		rewriteString(&fa.AirspaceAwareness[i].ReceivingController)
 	}
+	for _, area := range fa.Areas {
+		for i := range area.AirspaceAwareness {
+			rewriteString(&area.AirspaceAwareness[i].ReceivingController)
+		}
+	}
 	for position, config := range fa.Controllers {
 		// Rewrite controller
 		delete(fa.Controllers, position)
@@ -1415,6 +1425,32 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 				e.ErrorString(`%q: invalid "aircraft_type". Expected "J", "T", or "P".`, t)
 			}
 		}
+	}
+	for areaID, area := range s.Areas {
+		e.Push("areas[" + areaID + "].airspace_awareness")
+		for _, aa := range area.AirspaceAwareness {
+			for _, fix := range aa.Fix {
+				if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
+					e.ErrorString("%s : fix unknown", fix)
+				}
+			}
+
+			if aa.AltitudeRange[0] > aa.AltitudeRange[1] {
+				e.ErrorString(`lower end of "altitude_range" %d above upper end %d`,
+					aa.AltitudeRange[0], aa.AltitudeRange[1])
+			}
+
+			if _, ok := sg.ControlPositions[sg.resolveController(sim.TCP(aa.ReceivingController))]; !ok {
+				e.ErrorString("%s: controller unknown", aa.ReceivingController)
+			}
+
+			for _, t := range aa.AircraftType {
+				if t != "J" && t != "T" && t != "P" {
+					e.ErrorString(`%q: invalid "aircraft_type". Expected "J", "T", or "P".`, t)
+				}
+			}
+		}
+		e.Pop()
 	}
 
 	// Restriction areas: vertex resolution and spatial checks (require Locator).

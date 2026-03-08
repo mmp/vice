@@ -1421,6 +1421,67 @@
           "PCT Coastlines",
           "PCT QAirway",
           "PCT VAirway"
+        ],
+        "airspace_awareness": [
+          {
+            "fixes": [
+              "RAMAY",
+              "OTTTO"
+            ],
+            "altitude_range": [
+              10000,
+              23000
+            ],
+            "receiving_controller": "1L"
+          },
+          {
+            "fixes": [
+              "SCOOB",
+              "COLIN",
+              "SWANN",
+              "AGARD"
+            ],
+            "altitude_range": [
+              10000,
+              17000
+            ],
+            "receiving_controller": "1K"
+          },
+          {
+            "fixes": [
+              "MAULS",
+              "FLASK",
+              "MELTN",
+              "RRSIN",
+              "GLANC"
+            ],
+            "altitude_range": [
+              10000,
+              23000
+            ],
+            "receiving_controller": "1F"
+          },
+          {
+            "fixes": [
+              "JERES",
+              "MCRAY"
+            ],
+            "altitude_range": [
+              11000,
+              17000
+            ],
+            "receiving_controller": "1H"
+          },
+          {
+            "fixes": [
+              "WOOLY"
+            ],
+            "altitude_range": [
+              10000,
+              17000
+            ],
+            "receiving_controller": "1W"
+          }
         ]
       }
     },

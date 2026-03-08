@@ -2007,7 +2007,7 @@
           "BLH"
         ],
         "altitude_range": [
-          15000,
+          13000,
           23000
         ],
         "receiving_controller": "C10"
@@ -2047,7 +2047,7 @@
           "PMD"
         ],
         "altitude_range": [
-          15000,
+          13000,
           23000
         ],
         "receiving_controller": "C19"
@@ -2384,6 +2384,59 @@
           "TRM": "TRE",
           "ZELMA": "MYK"
         },
+        "airspace_awareness": [
+          {
+            "fixes": [
+              "TNP",
+              "BLH"
+            ],
+            "altitude_range": [
+              15000,
+              23000
+            ],
+            "receiving_controller": "C10"
+          },
+          {
+            "fixes": [
+              "AVRRY",
+              "MTBAL",
+              "OTAYY",
+              "DINTY",
+              "MALIT",
+              "SXC"
+            ],
+            "altitude_range": [
+              14000,
+              23000
+            ],
+            "receiving_controller": "C12"
+          },
+          {
+            "fixes": [
+              "EHF",
+              "COREZ",
+              "LAS",
+              "MISEN",
+              "GMN",
+              "POM"
+            ],
+            "altitude_range": [
+              14000,
+              23000
+            ],
+            "receiving_controller": "C18"
+          },
+          {
+            "fixes": [
+              "PMD"
+            ],
+            "altitude_range": [
+              15000,
+              23000
+            ],
+            "receiving_controller": "C19"
+          }
+        ],
         "center": "N033.59.51.732,W116.58.48.726",
         "range": 40
       },
