@@ -2836,8 +2836,8 @@
           "description": "ISP CONFLICT SUPPRESS",
           "type": "circle",
           "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
+          "ceiling": 1500,
+          "radius": 3,
           "center": "KISP"
         },
         {
@@ -2845,8 +2845,8 @@
           "description": "HVN CONFLICT SUPPRESS",
           "type": "circle",
           "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
+          "ceiling": 1500,
+          "radius": 3,
           "center": "KHVN"
         },
         {
@@ -2854,9 +2854,63 @@
           "description": "TEB CONFLICT SUPPRESS",
           "type": "circle",
           "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
+          "ceiling": 1500,
+          "radius": 3,
           "center": "KTEB"
+        },
+        {
+          "id": "HPNNOCA",
+          "description": "HPN CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1500,
+          "radius": 3,
+          "center": "KHPN"
+        },
+        {
+          "id": "MMUNOCA",
+          "description": "MMU CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1500,
+          "radius": 3,
+          "center": "KMMU"
+        },
+        {
+          "id": "DXRNOCA",
+          "description": "DXR CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1500,
+          "radius": 3,
+          "center": "KDXR"
+        },
+        {
+          "id": "CDWNOCA",
+          "description": "CDW CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1500,
+          "radius": 3,
+          "center": "KCDW"
+        },
+        {
+          "id": "SWFNOCA",
+          "description": "SWF CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1500,
+          "radius": 3,
+          "center": "KSWF"
+        },
+        {
+          "id": "POUNOCA",
+          "description": "POU CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1500,
+          "radius": 3,
+          "center": "KPOU"
         }
       ],
       "quicklook": [

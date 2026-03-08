@@ -390,6 +390,15 @@
             "N040.24.47.562,W104.45.01.098",
             "N040.24.22.019,W104.31.03.253"
           ]
+        },
+        {
+          "id": "CYSNOCA",
+          "description": "CYS CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 9500,
+          "radius": 10,
+          "center": "N041.09.19.519,W104.48.39.012"
         }
       ],
       "vfr_inhibit": [

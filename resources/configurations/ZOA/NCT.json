@@ -238,8 +238,13 @@
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1L": ["1T"],
-          "1M": ["1L", "1S"]
+          "1L": [
+            "1T"
+          ],
+          "1M": [
+            "1L",
+            "1S"
+          ]
         }
       },
       "AR1": {
@@ -262,9 +267,18 @@
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1L": ["1K", "1T"],
-          "1M": ["1L", "1Q", "1S"],
-          "1S": ["1F"]
+          "1L": [
+            "1K",
+            "1T"
+          ],
+          "1M": [
+            "1L",
+            "1Q",
+            "1S"
+          ],
+          "1S": [
+            "1F"
+          ]
         }
       },
       "AR2": {
@@ -287,8 +301,13 @@
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1L": ["1T"],
-          "1M": ["1L", "1S"]
+          "1L": [
+            "1T"
+          ],
+          "1M": [
+            "1L",
+            "1S"
+          ]
         }
       },
       "11X": {
@@ -305,9 +324,17 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": ["2G", "2W", "2Z"],
-          "2W": ["2F"],
-          "2Z": ["2N"]
+          "2B": [
+            "2G",
+            "2W",
+            "2Z"
+          ],
+          "2W": [
+            "2F"
+          ],
+          "2Z": [
+            "2N"
+          ]
         }
       },
       "01X": {
@@ -328,9 +355,17 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": ["2G", "2W", "2Z"],
-          "2W": ["2F"],
-          "2Z": ["2N"]
+          "2B": [
+            "2G",
+            "2W",
+            "2Z"
+          ],
+          "2W": [
+            "2F"
+          ],
+          "2Z": [
+            "2N"
+          ]
         }
       },
       "22X": {
@@ -345,8 +380,14 @@
           "KSFO": "4R"
         },
         "default_consolidation": {
-          "4R": ["4D", "4F"],
-          "4U": ["4Q", "4R"]
+          "4R": [
+            "4D",
+            "4F"
+          ],
+          "4U": [
+            "4Q",
+            "4R"
+          ]
         }
       },
       "28X": {
@@ -361,8 +402,14 @@
           "KSFO": "4U"
         },
         "default_consolidation": {
-          "4R": ["4D", "4F"],
-          "4U": ["4Q", "4R"]
+          "4R": [
+            "4D",
+            "4F"
+          ],
+          "4U": [
+            "4Q",
+            "4R"
+          ]
         }
       },
       "AR3": {
@@ -378,7 +425,9 @@
           "KRNO": "8S"
         },
         "default_consolidation": {
-          "8S": ["8N"]
+          "8S": [
+            "8N"
+          ]
         }
       },
       "NCT": {
@@ -392,8 +441,14 @@
           "KSFO": "4R"
         },
         "default_consolidation": {
-          "4R": ["4D", "4F"],
-          "4U": ["4Q", "4R"]
+          "4R": [
+            "4D",
+            "4F"
+          ],
+          "4U": [
+            "4Q",
+            "4R"
+          ]
         }
       },
       "NCA": {
@@ -411,9 +466,16 @@
           "KSMF": "5X"
         },
         "default_consolidation": {
-          "5E": ["5B"],
-          "5P": ["5E", "5X"],
-          "5X": ["5D"]
+          "5E": [
+            "5B"
+          ],
+          "5P": [
+            "5E",
+            "5X"
+          ],
+          "5X": [
+            "5D"
+          ]
         }
       },
       "NAR": {
@@ -429,7 +491,9 @@
           "KRNO": "8N"
         },
         "default_consolidation": {
-          "8S": ["8N"]
+          "8S": [
+            "8N"
+          ]
         }
       },
       "AR0": {
@@ -447,9 +511,17 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": ["2G", "2W", "2Z"],
-          "2W": ["2F"],
-          "2Z": ["2N"]
+          "2B": [
+            "2G",
+            "2W",
+            "2Z"
+          ],
+          "2W": [
+            "2F"
+          ],
+          "2Z": [
+            "2N"
+          ]
         }
       },
       "AR4": {
@@ -463,8 +535,13 @@
           "KSFO": "4U"
         },
         "default_consolidation": {
-          "4R": ["4D", "4F"],
-          "4U": ["4R"]
+          "4R": [
+            "4D",
+            "4F"
+          ],
+          "4U": [
+            "4R"
+          ]
         }
       },
       "AR5": {
@@ -482,9 +559,16 @@
           "KSMF": "5E"
         },
         "default_consolidation": {
-          "5E": ["5B"],
-          "5P": ["5E", "5X"],
-          "5X": ["5D"]
+          "5E": [
+            "5B"
+          ],
+          "5P": [
+            "5E",
+            "5X"
+          ],
+          "5X": [
+            "5D"
+          ]
         }
       }
     },
@@ -533,6 +617,22 @@
             "N036.33.45.508,W121.41.43.674",
             "N036.31.00.575,W121.39.46.834",
             "N036.28.41.214,W121.45.51.828"
+          ]
+        },
+        {
+          "id": "Q81",
+          "description": "TOGA-SUTRO QUICKLOOK",
+          "type": "polygon",
+          "floor": 5000,
+          "ceiling": 21000,
+          "vertices": [
+            "N037.22.54.060,W122.08.24.135",
+            "N037.29.06.002,W122.09.55.184",
+            "N037.33.05.737,W122.02.52.787",
+            "N037.28.43.370,W121.43.03.544",
+            "N037.13.01.732,W121.21.35.178",
+            "N037.02.07.276,W121.34.16.063",
+            "N037.08.08.287,W121.54.11.431"
           ]
         }
       ],
@@ -589,6 +689,32 @@
             "N036.30.18.827,W121.44.01.442",
             "N036.37.44.213,W121.43.51.170"
           ]
+        },
+        {
+          "id": "RNONOCA",
+          "description": "RNO CONFLICT SUPPRESS",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 9500,
+          "vertices": [
+            "N039.32.56.316,W119.49.19.716",
+            "N039.27.04.534,W119.51.36.551",
+            "N039.27.06.512,W119.41.00.031",
+            "N039.33.44.780,W119.41.42.575"
+          ]
+        },
+        {
+          "id": "SMFNOCA",
+          "description": "SMF CONFLICT SUPPRESS",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 9500,
+          "vertices": [
+            "N038.48.53.569,W121.39.29.531",
+            "N038.38.04.043,W121.38.43.965",
+            "N038.37.10.375,W121.32.06.095",
+            "N038.47.13.071,W121.31.19.486"
+          ]
         }
       ],
       "inhibit_msaw": [
@@ -610,7 +736,7 @@
           "description": "OAK MSAW SUPPRESS",
           "type": "polygon",
           "floor": 0,
-          "ceiling": 2000,
+          "ceiling": 3000,
           "vertices": [
             "N037.52.49.775,W122.17.57.264",
             "N037.40.51.887,W122.21.36.276",
@@ -624,13 +750,13 @@
           "description": "SJC MSAW SUPPRESS",
           "type": "polygon",
           "floor": 0,
-          "ceiling": 2000,
+          "ceiling": 3900,
           "vertices": [
-            "N037.11.57.269,W121.46.27.863",
-            "N037.23.03.673,W122.01.49.176",
-            "N037.26.54.413,W121.59.11.934",
-            "N037.26.30.902,W121.52.58.729",
-            "N037.14.24.280,W121.42.56.239"
+            "N037.11.55.264,W121.46.35.498",
+            "N037.23.00.377,W122.01.49.808",
+            "N037.27.50.800,W121.57.13.200",
+            "N037.26.33.017,W121.52.58.234",
+            "N037.14.26.313,W121.43.03.242"
           ]
         },
         {
@@ -666,6 +792,68 @@
             "N036.30.18.827,W121.44.01.442",
             "N036.37.44.213,W121.43.51.170"
           ]
+        },
+        {
+          "id": "BRIXMVA",
+          "description": "BRIXX STAR SEGMENT MSAW",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 4700,
+          "vertices": [
+            "N037.15.06.632,W122.04.44.078",
+            "N037.16.34.908,W121.54.04.564",
+            "N037.13.13.377,W121.49.11.394",
+            "N037.08.51.024,W122.01.31.323"
+          ]
+        },
+        {
+          "id": "FRLNMVA",
+          "description": "FRLON STAR SEGMENT MSAW",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 2000,
+          "vertices": [
+            "N037.24.35.230,W122.07.15.580",
+            "N037.27.39.155,W121.58.20.134",
+            "N037.25.44.183,W121.56.54.550",
+            "N037.23.14.906,W122.06.01.367"
+          ]
+        },
+        {
+          "id": "SMFMSAW",
+          "description": "SMF MSAW SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1700,
+          "center": "KSMF",
+          "radius": 5
+        },
+        {
+          "id": "SACMSAW",
+          "description": "SAC MSAW SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1700,
+          "center": "KSAC",
+          "radius": 5
+        },
+        {
+          "id": "MHRMSAW",
+          "description": "MHR MSAW SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1700,
+          "center": "KMHR",
+          "radius": 5
+        },
+        {
+          "id": "RNOMSAW",
+          "description": "RNO MSAW SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 8400,
+          "center": "KRNO",
+          "radius": 8
         }
       ],
       "auto_acquisition": [
@@ -674,6 +862,14 @@
           "description": "NCT AUTO-ACQUISITION",
           "type": "polygon",
           "vertices": "N035.50.34.039,W121.11.18.790 N035.59.06.345,W123.46.41.403 N039.40.47.959,W123.13.06.511 N040.55.06.321,W119.43.59.080 N039.46.43.642,W117.36.56.079 N037.27.46.007,W118.27.10.151 N036.15.02.938,W119.30.02.005",
+          "floor": 0,
+          "ceiling": 30000
+        },
+        {
+          "id": "ACQ2",
+          "description": "NCT AUTO-ACQUISITION",
+          "type": "polygon",
+          "vertices": "N035.36.36.826,W121.24.53.728 N035.31.38.190,W122.24.56.063 N036.57.57.117,W124.02.02.140 N038.25.54.908,W123.11.06.897 N039.49.38.681,W121.55.53.878 N040.43.53.189,W118.26.18.652 N038.50.36.744,W117.52.26.099 N038.01.06.879,W119.06.15.979 N036.20.39.134,W118.40.44.815",
           "floor": 0,
           "ceiling": 30000
         }
@@ -1140,33 +1336,101 @@
     "video_map_file": "videomaps/ZOA-videomaps.gob.zst",
     "airspace_awareness": [
       {
-        "fixes": ["NTELL", "KAYEX", "SUSEY", "KTINA", "JFREE", "VLREE", "TECKY"],
-        "altitude_range": [19000, 27000],
+        "fixes": [
+          "NTELL",
+          "KAYEX",
+          "SUSEY",
+          "KTINA",
+          "JFREE",
+          "VLREE",
+          "TECKY"
+        ],
+        "altitude_range": [
+          19000,
+          27000
+        ],
         "receiving_controller": "C11"
       },
       {
-        "fixes": ["YYUNG", "LIBBO", "BSR", "SXC", "FLW", "GVO"],
-        "altitude_range": [19000, 999000],
+        "fixes": [
+          "YYUNG",
+          "LIBBO",
+          "BSR",
+          "SXC",
+          "FLW",
+          "GVO"
+        ],
+        "altitude_range": [
+          19000,
+          999000
+        ],
         "receiving_controller": "C14"
       },
       {
-        "fixes": ["ALCOA", "CINNY", "BEBOP", "MOLEN", "STINS", "AMAKR"],
-        "altitude_range": [0, 999000],
+        "fixes": [
+          "ALCOA",
+          "CINNY",
+          "BEBOP",
+          "MOLEN",
+          "STINS",
+          "AMAKR"
+        ],
+        "altitude_range": [
+          0,
+          999000
+        ],
         "receiving_controller": "C35"
       },
       {
-        "fixes": ["GRTFL", "DEDHD", "HRNER", "RBL", "SGD", "ENI", "PYE", "SUU", "CCR", "RAGGS", "BURDE"],
-        "altitude_range": [19000, 23000],
+        "fixes": [
+          "GRTFL",
+          "DEDHD",
+          "HRNER",
+          "RBL",
+          "SGD",
+          "ENI",
+          "PYE",
+          "SUU",
+          "CCR",
+          "RAGGS",
+          "BURDE"
+        ],
+        "altitude_range": [
+          19000,
+          23000
+        ],
         "receiving_controller": "C41"
       },
       {
-        "fixes": ["SGD", "ENI", "PYE", "SUU", "CCR"],
-        "altitude_range": [0, 10000],
+        "fixes": [
+          "SGD",
+          "ENI",
+          "PYE",
+          "SUU",
+          "CCR"
+        ],
+        "altitude_range": [
+          0,
+          10000
+        ],
         "receiving_controller": "11S"
       },
       {
-        "fixes": ["ORRCA", "MOGEE", "TIPRE", "SYRAH", "ORANG", "FTHIL", "FROGO", "HNW", "FRA"],
-        "altitude_range": [19000, 29000],
+        "fixes": [
+          "ORRCA",
+          "MOGEE",
+          "TIPRE",
+          "SYRAH",
+          "ORANG",
+          "FTHIL",
+          "FROGO",
+          "HNW",
+          "FRA"
+        ],
+        "altitude_range": [
+          19000,
+          29000
+        ],
         "receiving_controller": "C29"
       }
     ],
@@ -1725,16 +1989,25 @@
         {
           "name": "Palo Alto",
           "id": "P",
-          "airports": ["KPAO"]
+          "airports": [
+            "KPAO"
+          ]
         },
         {
           "name": "Salinas",
           "id": "Y",
-          "airports": ["KSNS"]
+          "airports": [
+            "KSNS"
+          ]
         }
       ],
       "ssa": {
-        "altimeters": ["KSJC", "KMRY", "KSNS", "KPAO"]
+        "altimeters": [
+          "KSJC",
+          "KMRY",
+          "KSNS",
+          "KPAO"
+        ]
       }
     }
   },
