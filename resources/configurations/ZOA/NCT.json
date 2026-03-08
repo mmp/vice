@@ -1999,6 +1999,27 @@
           "airports": [
             "KSNS"
           ]
+        },
+        {
+          "name": "San Carlos",
+          "id": "S",
+          "airports": [
+            "KSQL"
+          ]
+        },
+        {
+          "name": "MHR",
+          "id": "M",
+          "airports": [
+            "KMHR"
+          ]
+        },
+        {
+          "name": "SAC",
+          "id": "Z",
+          "airports": [
+            "KSAC"
+          ]
         }
       ],
       "ssa": {

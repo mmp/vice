@@ -3807,31 +3807,17 @@
     "lists": {
       "coordination": [
         {
-          "name": "HVN.",
+          "name": ".    TEB",
           "id": "A",
           "airports": [
-            "KHVN"
+            "KTEB"
           ]
         },
         {
-          "name": "BDR.",
+          "name": ".    MMU",
           "id": "B",
           "airports": [
-            "KBDR"
-          ]
-        },
-        {
-          "name": "FOK.",
-          "id": "C",
-          "airports": [
-            "KFOK"
-          ]
-        },
-        {
-          "name": "OXC.",
-          "id": "D",
-          "airports": [
-            "KOXC"
+            "KMMU"
           ]
         }
       ],

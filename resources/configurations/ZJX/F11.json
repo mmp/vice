@@ -1097,13 +1097,6 @@
     "lists": {
       "coordination": [
         {
-          "name": ".      ORL COORD",
-          "id": "T",
-          "airports": [
-            "KORL"
-          ]
-        },
-        {
           "name": ".      MLB COORD",
           "id": "B",
           "airports": [

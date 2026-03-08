@@ -1271,6 +1271,13 @@
     "lists": {
       "coordination": [
         {
+          "name": ".     PBED -",
+          "id": "BED",
+          "airports": [
+            "KBED"
+          ]
+        },
+        {
           "name": ".     PBVY -",
           "id": "BVY",
           "airports": [

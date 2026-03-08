@@ -2549,80 +2549,45 @@
     "lists": {
       "coordination": [
         {
-          "name": "SANTA MONICA",
-          "id": "64",
+          "name": ".    SAN BERNADINO",
+          "id": "B",
           "airports": [
-            "KSMO"
-          ]
-        },
-        {
-          "name": "LAX",
-          "id": "61",
-          "airports": [
-            "KLAX"
-          ]
-        },
-        {
-          "name": "LONG BEACH",
-          "id": "66",
-          "airports": [
-            "KLGB"
-          ]
-        },
-        {
-          "name": "TORRANCE",
-          "id": "43",
-          "airports": [
-            "KTOA"
+            "KSBD"
           ]
         },
         {
           "name": "HAWTHORNE",
-          "id": "65",
+          "id": "J",
           "airports": [
             "KHHR"
           ]
         },
         {
-          "name": "PALM SPRINGS",
-          "id": "32",
+          "name": "SANTA MONICA",
+          "id": "O",
           "airports": [
-            "KPSP"
+            "KSMO"
           ]
         },
         {
-          "name": "MONTGOMERY",
-          "id": "55",
+          "name": "LONG BEACH",
+          "id": "V",
           "airports": [
-            "KMYF"
+            "KLGB"
           ]
         },
         {
-          "name": "PALOMAR",
-          "id": "52",
-          "airports": [
-            "KCRQ"
-          ]
-        },
-        {
-          "name": "BROWN",
-          "id": "54",
-          "airports": [
-            "KSDM"
-          ]
-        },
-        {
-          "name": "VAN NUYS",
-          "id": "12",
+          "name": "VNY",
+          "id": "Y",
           "airports": [
             "KVNY"
           ]
         },
         {
-          "name": "BURBANK",
-          "id": "11",
+          "name": ".    PALM SPRINGS",
+          "id": "Z",
           "airports": [
-            "KBUR"
+            "KPSP"
           ]
         }
       ],
