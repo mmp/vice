@@ -852,19 +852,29 @@
       "ACK": {},
       "BAF": {},
       "BLZZR": {
-        "short_name": "BLZ"
+        "short_name": "BLZ",
+        "abbreviation": "X"
       },
       "BOGEY": {
         "short_name": "BOG"
       },
       "BOSOX": {
-        "short_name": "BOX"
+        "short_name": "BOX",
+        "abbreviation": "B"
       },
-      "BRUWN": {},
+      "BRUWN": {
+        "short_name": "BRU",
+        "abbreviation": "T"
+      },
+      "BURDY": {
+        "short_name": "BUR",
+        "abbreviation": "K"
+      },
       "CAM": {},
       "CCC": {},
       "CELTK": {
-        "short_name": "FRI"
+        "short_name": "CEL",
+        "abbreviation": "C"
       },
       "CLOWW": {},
       "CON": {},
@@ -872,20 +882,30 @@
       "DUNKK": {},
       "ENE": {},
       "FREDO": {},
+      "GLYDE": {
+        "short_name": "GLY",
+        "abbreviation": "G"
+      },
       "HANNA": {},
       "HYA": {
         "location": "KHYA"
       },
       "HYLND": {
-        "short_name": "LUR"
+        "short_name": "HYL",
+        "abbreviation": "M"
       },
       "KEWB": {
         "short_name": "KEW"
       },
       "LBSTA": {
+        "short_name": "LBS",
         "abbreviation": "P"
       },
       "LFV": {},
+      "LURCH": {
+        "short_name": "LUR",
+        "abbreviation": "M"
+      },
       "MANCH": {
         "short_name": "MHT"
       },
@@ -894,23 +914,31 @@
         "short_name": "PRT"
       },
       "PATSS": {
-        "short_name": "PAT"
+        "short_name": "PAT",
+        "abbreviation": "Y"
       },
       "PEASE": {
-        "short_name": "PSM"
+        "short_name": "PSM",
+        "abbreviation": "P"
       },
       "POMPY": {
         "short_name": "PMP"
       },
+      "PUT": {
+        "abbreviation": "Z"
+      },
       "PVC": {},
       "PVD": {},
       "REVSS": {
-        "short_name": "REV"
+        "short_name": "REV",
+        "abbreviation": "W"
       },
       "SSOXS": {
-        "short_name": "SSO"
+        "short_name": "SSO",
+        "abbreviation": "S"
       },
       "STEVO": {},
+      "SWANN": {},
       "WEEZE": {}
     },
     "video_map_file": "videomaps/A90-videomaps.gob.zst",

@@ -1874,17 +1874,74 @@
       "YELAH": "ZMM"
     },
     "significant_points": {
+      "ARRMY": {},
+      "AVE": {},
+      "AVRRY": {},
+      "BAKEL": {},
+      "BEALE": {
+        "short_name": "BEL"
+      },
+      "BLAZN": {},
+      "BLCKD": {},
       "BLH": {},
-      "COREZ": {},
-      "CSTRO": {},
+      "BOILE": {},
+      "CENZA": {},
+      "CHKNN": {},
+      "CIVET": {},
+      "CLEEE": {},
+      "CNERY": {
+        "short_name": "CNR"
+      },
+      "COREZ": {
+        "short_name": "COZ"
+      },
+      "CSTRO": {
+        "short_name": "CTO"
+      },
+      "CSTWY": {
+        "short_name": "CWY"
+      },
       "DAG": {},
+      "DINTY": {},
+      "EHF": {},
       "GMN": {},
-      "HAILO": {},
+      "HAILO": {
+        "short_name": "HAL"
+      },
       "HEC": {},
+      "IKAYE": {},
+      "IPL": {},
+      "JLI": {},
       "LAS": {},
       "LAX": {},
-      "MISEN": {},
-      "SLI": {}
+      "MALIT": {},
+      "MISEN": {
+        "short_name": "MIS"
+      },
+      "MTBAL": {},
+      "NIKKL": {},
+      "OCN": {},
+      "OROSZ": {},
+      "OTAYY": {},
+      "PDZ": {},
+      "PEELR": {},
+      "PMD": {},
+      "POM": {},
+      "RAVON": {},
+      "ROBNN": {},
+      "RRIZE": {},
+      "SCTRR": {},
+      "SLI": {},
+      "SXC": {},
+      "TANNR": {},
+      "TCATE": {},
+      "TIFNI": {},
+      "TNP": {},
+      "VNY": {},
+      "WAGAV": {},
+      "WIILD": {},
+      "WYZEE": {},
+      "YELAH": {}
     },
     "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
     "airspace_awareness": [

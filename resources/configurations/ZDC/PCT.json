@@ -1045,17 +1045,21 @@
         "short_name": "BFR"
       },
       "DQO": {},
+      "DUCXS": {},
       "FLASK": {},
       "GLANC": {},
+      "HOUKY": {},
       "JERES": {},
       "MAULS": {},
       "MELTN": {},
       "OTTTO": {
-        "short_name": "FXO"
+        "short_name": "OTO"
       },
+      "POWTN": {},
       "RAMAY": {},
       "RRSIN": {},
       "SCOOB": {},
+      "SPIDR": {},
       "SWANN": {}
     },
     "video_map_file": "videomaps/ZDC-videomaps.gob.zst",

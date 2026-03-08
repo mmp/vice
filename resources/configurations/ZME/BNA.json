@@ -58,9 +58,17 @@
           "KBNA/TIPPN4": "1Y"
         },
         "default_consolidation": {
-          "1E": ["1F"],
-          "1W": ["1B", "1E"],
-          "1X": ["1W", "1Y"]
+          "1E": [
+            "1F"
+          ],
+          "1W": [
+            "1B",
+            "1E"
+          ],
+          "1X": [
+            "1W",
+            "1Y"
+          ]
         }
       }
     },
@@ -106,8 +114,6 @@
       "EVVAN": "EVN",
       "HGGRD": "HGG",
       "ACKEE": "GRC",
-      "BRXTN": "ROR",
-      "JJEFF": "KEL",
       "SPKER": "BGD",
       "SWAPP": "OZC",
       "TINGS": "MER"
@@ -140,19 +146,44 @@
     "video_map_file": "videomaps/ZME-videomaps.gob.zst",
     "airspace_awareness": [
       {
-        "fixes": ["CHADM", "MUNNY", "KRSTA", "OLSIE"],
+        "fixes": [
+          "CHADM",
+          "MUNNY",
+          "KRSTA",
+          "OLSIE"
+        ],
         "receiving_controller": "C40"
       },
       {
-        "fixes": ["GDOGG", "FAPER", "HODJS", "NAKIY", "PARDN"],
+        "fixes": [
+          "GDOGG",
+          "FAPER",
+          "HODJS",
+          "NAKIY",
+          "PARDN"
+        ],
         "receiving_controller": "C41"
       },
       {
-        "fixes": ["DANLS", "TPEEE", "DRURY", "HAGIE", "JALAR", "FLAME", "GENDE"],
+        "fixes": [
+          "DANLS",
+          "TPEEE",
+          "DRURY",
+          "HAGIE",
+          "JALAR",
+          "FLAME",
+          "GENDE"
+        ],
         "receiving_controller": "C42"
       },
       {
-        "fixes": ["BURME", "TAZMO", "BURME", "DENST", "TIPPN"],
+        "fixes": [
+          "BURME",
+          "TAZMO",
+          "BURME",
+          "DENST",
+          "TIPPN"
+        ],
         "receiving_controller": "C60"
       }
     ],
