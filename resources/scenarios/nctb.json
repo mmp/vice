@@ -4806,7 +4806,7 @@
         }
       },
       "vfr_rate_scale": 0.6,
-      "configuration": "AR0",
+      "configuration": "AR6",
       "default_maps": ["RVMNCT902S"],
       "departure_runways": [
         {

@@ -570,6 +570,34 @@
             "5D"
           ]
         }
+      },
+      "AR6": {
+        "inbound_assignments": {
+          "ALWYS3": "2Z",
+          "BDEGA4": "2B",
+          "PIRAT3": "2B",
+          "PYE3.SFOE": "2F",
+          "REBAS1": "2Z",
+          "RISTI1.ORRCA": "2Z",
+          "RISTI1.TIPRE": "2Z",
+          "SERFR4": "2G"
+        },
+        "departure_assignments": {
+          "KSQL": "2W"
+        },
+        "default_consolidation": {
+          "2B": [
+            "2G",
+            "2W",
+            "2Z"
+          ],
+          "2W": [
+            "2F"
+          ],
+          "2Z": [
+            "2N"
+          ]
+        }
       }
     },
     "center": "KSJC",
@@ -2135,8 +2163,8 @@
           "RVMNCT944S",
           "RVMNCT946S"
         ],
-        "center": "KSJC",
-        "range": 45
+        "center": "KMHR",
+        "range": 65
       }
     },
     "lists": {

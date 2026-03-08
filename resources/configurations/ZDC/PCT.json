@@ -1387,6 +1387,7 @@
         "range": 75
       },
       "3": {
+        "center": "KIAD",
         "default_airport": "KIAD",
         "video_maps": [
           "SHD Base",
