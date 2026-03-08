@@ -894,6 +894,7 @@ type STARSArea struct {
 	MonitoredBeaconCodeBlocksString *string                        `json:"beacon_code_blocks,omitempty"`
 	MonitoredBeaconCodeBlocks       []av.Squawk                    `json:"-"`
 	FlightFollowingAirspace         []av.AirspaceVolume            `json:"flight_following_airspace,omitempty"`
+	Scratchpads                     map[string]string              `json:"scratchpads,omitempty"`
 	CoordinationLists               []CoordinationList             `json:"coordination_lists,omitempty"`
 	Airspace                        map[string][]av.AirspaceVolume `json:"airspace,omitempty"`
 }
@@ -909,6 +910,23 @@ func (fa *FacilityAdaptation) DefaultAirportForArea(area string) string {
 		return ac.DefaultAirport
 	}
 	return ""
+}
+
+// ScratchpadForFix returns the scratchpad code for a given fix,
+// checking area-specific scratchpads first, then falling back to
+// facility-level scratchpads.
+func (fa *FacilityAdaptation) ScratchpadForFix(fix string, area string) (string, bool) {
+	if area != "" {
+		if ac, ok := fa.Areas[area]; ok && ac.Scratchpads != nil {
+			if sp, ok := ac.Scratchpads[fix]; ok {
+				return sp, true
+			}
+		}
+	}
+	if sp, ok := fa.Scratchpads[fix]; ok {
+		return sp, true
+	}
+	return "", false
 }
 
 type CoordinationList struct {
@@ -1504,6 +1522,12 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 				}
 			}
 			ac.Airspace[name] = volumes
+		}
+
+		for _, sp := range ac.Scratchpads {
+			if !fa.CheckScratchpad(sp) {
+				e.ErrorString(`%s: invalid scratchpad in area "scratchpads"`, sp)
+			}
 		}
 
 		e.Pop()

@@ -104,7 +104,13 @@
       "TIPPN": "TPN",
       "DENST": "TPN",
       "EVVAN": "EVN",
-      "HGGRD": "HGG"
+      "HGGRD": "HGG",
+      "ACKEE": "GRC",
+      "BRXTN": "ROR",
+      "JJEFF": "KEL",
+      "SPKER": "BGD",
+      "SWAPP": "OZC",
+      "TINGS": "MER"
     },
     "significant_points": {
       "ACKEE": {},

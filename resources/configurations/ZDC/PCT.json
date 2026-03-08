@@ -997,7 +997,10 @@
       "MCRAY": "MCR",
       "GLANC": "SCR",
       "SWANN": "SWN",
-      "AGARD": "DKA"
+      "AGARD": "DKA",
+      "BUFFR": "BFR",
+      "DQO": "DQO",
+      "JERES": "JS2"
     },
     "significant_points": {
       "AGARD": {},

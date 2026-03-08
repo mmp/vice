@@ -1010,7 +1010,17 @@
       "HAGRD": "HAG",
       "FUULL": "FLL",
       "JAGWA": "JAG",
-      "ALTAM": "ALT"
+      "ALTAM": "ALT",
+      "DEDHD.28RT": "DHD",
+      "GRTFL.28": "GRT",
+      "GRTFL.28RT": "GRT",
+      "MOGEE.28RT": "MOG",
+      "ORRCA.28RT": "ORR",
+      "PYE": "PYE",
+      "SYRAH.28": "SRH",
+      "SYRAH.28RT": "SRH",
+      "TIPRE.28RT": "TIP",
+      "YYUNG.28": "FOI"
     },
     "significant_points": {
       "ALCOA": {},

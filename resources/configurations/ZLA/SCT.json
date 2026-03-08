@@ -1489,7 +1489,48 @@
       "DAG": "VRA",
       "LAX": "LAX",
       "SLI": "SLI",
-      "GMN": "GMN"
+      "GMN": "GMN",
+      "ARRMY": "ZMM",
+      "AVE": "AVE",
+      "AVRRY": "STY",
+      "BEALE": "FIN",
+      "BLAZN": "ZMM",
+      "BLCKD": "FTR",
+      "CENZA": "CEN",
+      "CHKNN": "CHK",
+      "CIVET": "CIV",
+      "CLEEE": "CLE",
+      "CNERY": "STY",
+      "CSTWY": "PIG",
+      "DINTY": "SHL",
+      "EHF": "HRC",
+      "IKAYE": "HRY",
+      "IPL": "IPL",
+      "JLI": "JLI",
+      "MALIT": "MAL",
+      "MTBAL": "PIG",
+      "MZB": "MZB",
+      "NIKKL": "NIK",
+      "OCN": "OCN",
+      "OROSZ": "HRC",
+      "OTAYY": "STY",
+      "PDZ": "PDZ",
+      "PEELR": "FTR",
+      "PMD": "SOG",
+      "POM": "POM",
+      "RAVON": "RVN",
+      "RRIZE": "RZE",
+      "SCTRR": "SCT",
+      "SXC": "DTY",
+      "TANNR": "TAN",
+      "TCATE": "STY",
+      "TIFNI": "TIF",
+      "TNP": "TNP",
+      "VNY": "VNY",
+      "WAGAV": "PIG",
+      "WIILD": "PIG",
+      "WYZEE": "ZMM",
+      "YELAH": "ZMM"
     },
     "significant_points": {
       "BLH": {},
@@ -1822,6 +1863,11 @@
           "740S EMERGENCY SCT",
           "221S LAA GPS SCT"
         ],
+        "scratchpads": {
+          "BEALE": "BEL",
+          "CNERY": "CNR",
+          "EHF": "EHF"
+        },
         "center": "N034.01.46.059,W117.57.17.869",
         "range": 35
       },
@@ -1862,6 +1908,17 @@
           "323S PSP SPECIAL RNAV 31L SCT",
           "240S LAX W SCT"
         ],
+        "scratchpads": {
+          "AVRRY": "MTB",
+          "BEALE": "NVY",
+          "EED": "MYK",
+          "FUSBL": "MYK",
+          "MTBAL": "MTB",
+          "OTAYY": "OTY",
+          "PMD": "YUC",
+          "TRM": "TRE",
+          "ZELMA": "MYK"
+        },
         "center": "N033.59.51.732,W116.58.48.726",
         "range": 40
       },
@@ -1903,6 +1960,21 @@
           "740S EMERGENCY SCT",
           "724S AIRWAY SCT"
         ],
+        "scratchpads": {
+          "AVRRY": "PIG",
+          "AVRRY.S": "STY",
+          "BEALE.N": "HOB",
+          "BLCKD": "FRT",
+          "CNERY": "PIG",
+          "CNERY.S": "STY",
+          "HHERO": "MIK",
+          "MISEN.N": "HOB",
+          "OTAYY": "PIG",
+          "OTAYY.S": "STY",
+          "PEELR": "FRT",
+          "TCATE": "PIG",
+          "TCATE.S": "STY"
+        },
         "center": "N033.35.35.426,W117.48.13.524",
         "range": 30
       },
@@ -1942,6 +2014,23 @@
           "",
           "560S SAN 296 SCT"
         ],
+        "scratchpads": {
+          "BAKEL": "BAK",
+          "CENZA": "ZOM",
+          "CHKNN": "PAD",
+          "DINTY": "PAD",
+          "EHF": "PAD",
+          "GBN": "ZOI",
+          "HOGGZ": "ZOI",
+          "IKAYE": "PAD",
+          "IPL": "SAI",
+          "MALIT": "PAD",
+          "MTBAL": "ZOP",
+          "OROSZ": "PAD",
+          "ROBNN": "RBN",
+          "SXC": "SXC",
+          "TGOLD": "ZOI"
+        },
         "center": "ZOKOS",
         "range": 40
       },
@@ -1980,6 +2069,14 @@
           "100S BURB LW SCT",
           ""
         ],
+        "scratchpads": {
+          "AVE": "GMN",
+          "BEALE": "OSH",
+          "CLEEE": "DOT",
+          "CNERY": "DOT",
+          "EHF": "GMN",
+          "SCTRR": "SMR"
+        },
         "center": "N033.41.38.744,W118.21.53.717",
         "range": 30
       }

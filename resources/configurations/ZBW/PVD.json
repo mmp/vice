@@ -157,6 +157,7 @@
     },
     "scratchpads": {
       "PUT": "PUT",
+      "PVD": "PUT",
       "PVD_PUT": "PUT",
       "JUMPR": "7TN"
     },
