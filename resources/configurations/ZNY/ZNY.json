@@ -174,15 +174,6 @@
   "facility_adaptations": {
     "configurations": {
       "STD": {
-        "inbound_assignments": {},
-        "departure_assignments": {},
-        "default_consolidation": {
-          "25": []
-        }
-      },
-      "ZNA": {
-        "inbound_assignments": {},
-        "departure_assignments": {},
         "default_consolidation": {
           "25": []
         }
@@ -214,8 +205,6 @@
         "inbound_assignments": {
           "TRISH4 (42)": "42",
           "CLIPR3 (NELIE 42)": "42",
-          "HYPER9 (FILGA)": "42",
-          "HYPER9 (GANDE)": "42",
           "Overflights": "42"
         },
         "default_consolidation": {

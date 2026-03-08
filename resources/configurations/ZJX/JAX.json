@@ -112,7 +112,6 @@
           "KFHB": "1N",
           "KHEG": "1W",
           "KJAX/8": "1N",
-          "KJAX/14": "1S",
           "KNIP": "1S",
           "KNRB": "1S",
           "KSGJ": "1S",
@@ -142,39 +141,6 @@
           ]
         }
       },
-      "KJ1": {
-        "inbound_assignments": {
-          "ALLMA": "1R",
-          "ESENT": "1N",
-          "LUNNI2_E": "1N",
-          "MARQO3": "1R",
-          "OHDEA2": "1R",
-          "OMN": "1E",
-          "ORLNOV": "1W",
-          "QUBEN2": "1E",
-          "TEBOW2": "1W",
-          "V159_S": "1N",
-          "V51": "1E"
-        },
-        "departure_assignments": {
-          "KCRG": "1S",
-          "KFHB": "1N",
-          "KHEG": "1W",
-          "KJAX": "1S",
-          "KNIP": "1W",
-          "KNRB": "1N",
-          "KSGJ": "1S",
-          "KVQQ": "1W"
-        },
-        "default_consolidation": {
-          "1R": [
-            "1E",
-            "1N",
-            "1S",
-            "1W"
-          ]
-        }
-      },
       "KJ2": {
         "inbound_assignments": {
           "ALLMA": "1R",
@@ -200,7 +166,6 @@
           "KFHB": "1N",
           "KHEG": "1W",
           "KJAX/8": "1N",
-          "KJAX/14": "1S",
           "KNIP": "1S",
           "KNRB": "1S",
           "KSGJ": "1S",
@@ -284,39 +249,6 @@
           ]
         }
       },
-      "KJ4": {
-        "inbound_assignments": {
-          "ALLMA": "1R",
-          "ESENT": "1N",
-          "LUNNI2_W": "1N",
-          "MARQO3": "1R",
-          "OHDEA2": "1R",
-          "OMN": "1E",
-          "ORLNOV": "1W",
-          "QUBEN2": "1E",
-          "TEBOW2": "1W",
-          "V159_S": "1R",
-          "V51": "1E"
-        },
-        "departure_assignments": {
-          "KCRG": "1S",
-          "KFHB": "1N",
-          "KHEG": "1W",
-          "KJAX": "1N",
-          "KNIP": "1W",
-          "KNRB": "1N",
-          "KSGJ": "1S",
-          "KVQQ": "1W"
-        },
-        "default_consolidation": {
-          "1R": [
-            "1E",
-            "1N",
-            "1S",
-            "1W"
-          ]
-        }
-      },
       "KJ5": {
         "inbound_assignments": {
           "ALLMA": "1R",
@@ -374,47 +306,6 @@
           ],
           "1W": [
             "1E"
-          ]
-        }
-      },
-      "KJ6": {
-        "inbound_assignments": {
-          "ALLMA": "1R",
-          "ESENT": "1N",
-          "LUNNI2_W": "1N",
-          "MARQO3": "1R",
-          "OHDEA2": "1R",
-          "OMN": "1E",
-          "ORL": "1D",
-          "QUBEN2": "1E",
-          "SHREK2": "1D",
-          "TEBOW2": "1W",
-          "V159": "1D",
-          "V159_S": "1R",
-          "V441 North": "1D",
-          "V441 South": "1A",
-          "V51": "1E",
-          "V537 East": "1A",
-          "V537 West": "1A"
-        },
-        "departure_assignments": {
-          "KCRG": "1S",
-          "KFHB": "1N",
-          "KHEG": "1W",
-          "KJAX": "1W",
-          "KNIP": "1W",
-          "KNRB": "1N",
-          "KSGJ": "1S",
-          "KVQQ": "1W"
-        },
-        "default_consolidation": {
-          "1R": [
-            "1D",
-            "1E",
-            "1N",
-            "1A",
-            "1S",
-            "1W"
           ]
         }
       }

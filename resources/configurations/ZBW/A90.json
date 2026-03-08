@@ -165,256 +165,7 @@
   },
   "facility_adaptations": {
     "configurations": {
-      "90X": {
-        "inbound_assignments": {
-          "CON": "1W",
-          "ENE": "1E",
-          "FREDO.6K": "1S",
-          "FREDO.8K": "1S",
-          "GDM": "1W",
-          "GDM.7K": "1R",
-          "GDM.9K": "1R",
-          "JFUND2": "1R",
-          "MANCH..LWRNC": "1R",
-          "OOSHN5": "1R",
-          "PSM..LWRNC": "1R",
-          "ROBUC3": "1S",
-          "ROZZE2": "1W",
-          "WOONS.5K": "1D",
-          "WOONS.7K": "1D"
-        },
-        "departure_assignments": {
-          "KBOS": "1D",
-          "KMHT": "1J"
-        },
-        "default_consolidation": {
-          "1D": [
-            "1N",
-            "1J"
-          ],
-          "1F": [
-            "1I"
-          ],
-          "1N": [
-            "1F",
-            "1S"
-          ],
-          "1J": [
-            "1Z"
-          ],
-          "1Z": [
-            "1E",
-            "1W"
-          ]
-        }
-      },
-      "A90": {
-        "inbound_assignments": {
-          "CON": "1W",
-          "DEEPO2": "1N",
-          "DREEM3.BED": "1B",
-          "DREEM3.BVY": "1B",
-          "DREEM3.LWM": "1B",
-          "ENE": "1E",
-          "FREDO.4K": "1S",
-          "FREDO.6K": "1S",
-          "FREDO.8K": "1S",
-          "GDM": "1W",
-          "GDM.7K": "1R",
-          "GDM.9K": "1R",
-          "JFUND2": "1R",
-          "MANCH..LWRNC": "1R",
-          "MANCH..LWRNC.SAT": "1R",
-          "OOSHN5": "1R",
-          "PSM..LWRNC": "1R",
-          "PSM..LWRNC.SAT": "1R",
-          "ROBUC3": "1S",
-          "ROZZE2": "1W",
-          "WOONS.3K": "1U",
-          "WOONS.5K": "1U",
-          "WOONS.7K": "1U",
-          "ZELKA2.BED": "1B",
-          "ZELKA2.BVY": "1B",
-          "ZELKA2.LWM": "1B"
-        },
-        "departure_assignments": {
-          "KACK": "1K",
-          "KBED": "1B",
-          "KBOS": "1D",
-          "KMHT": "1J",
-          "KMVY": "1K",
-          "KPSM": "1P"
-        },
-        "default_consolidation": {
-          "1K": [
-            "1O"
-          ],
-          "1N": [
-            "1K",
-            "1B",
-            "1F"
-          ],
-          "1O": [
-            "1Y"
-          ],
-          "1S": [
-            "1A",
-            "1L"
-          ],
-          "1Y": [
-            "1S"
-          ],
-          "1D": [
-            "1N",
-            "1U",
-            "1J"
-          ],
-          "1F": [
-            "1I"
-          ],
-          "1E": [
-            "1P"
-          ],
-          "1J": [
-            "1Z"
-          ],
-          "1Z": [
-            "1E",
-            "1W"
-          ]
-        }
-      },
-      "A91": {
-        "inbound_assignments": {
-          "CON": "1W",
-          "ENE": "1E",
-          "FREDO.6K": "1S",
-          "FREDO.8K": "1S",
-          "GDM": "1W",
-          "GDM.7K": "1R",
-          "GDM.9K": "1R",
-          "JFUND2": "1R",
-          "MANCH..LWRNC": "1R",
-          "OOSHN5": "1R",
-          "PSM..LWRNC": "1R",
-          "ROBUC3": "1S",
-          "ROZZE2": "1W",
-          "WOONS.5K": "1D",
-          "WOONS.7K": "1D"
-        },
-        "departure_assignments": {
-          "KBOS": "1D",
-          "KMHT": "1Z"
-        },
-        "default_consolidation": {
-          "1D": [
-            "1N",
-            "1Z"
-          ],
-          "1F": [
-            "1I"
-          ],
-          "1N": [
-            "1F",
-            "1S"
-          ],
-          "1Z": [
-            "1E",
-            "1J",
-            "1W"
-          ]
-        }
-      },
-      "A92": {
-        "inbound_assignments": {
-          "CON": "1W",
-          "DEEPO2": "1N",
-          "DREEM3.BED": "1B",
-          "DREEM3.BVY": "1B",
-          "DREEM3.LWM": "1B",
-          "ENE": "1E",
-          "FREDO.4K": "1S",
-          "FREDO.6K": "1S",
-          "FREDO.8K": "1S",
-          "GDM": "1W",
-          "GDM.7K": "1R",
-          "GDM.9K": "1R",
-          "JFUND2": "1R",
-          "MANCH..LWRNC": "1R",
-          "MANCH..LWRNC.SAT": "1R",
-          "OOSHN5": "1R",
-          "PSM..LWRNC": "1R",
-          "PSM..LWRNC.SAT": "1R",
-          "ROBUC3": "1S",
-          "ROZZE2": "1W",
-          "WOONS.3K": "1U",
-          "WOONS.5K": "1U",
-          "WOONS.7K": "1U",
-          "ZELKA2.BED": "1B",
-          "ZELKA2.BVY": "1B",
-          "ZELKA2.LWM": "1B"
-        },
-        "departure_assignments": {
-          "KACK": "1K",
-          "KBED": "1B",
-          "KBOS": "1D",
-          "KMHT": "1Z",
-          "KMVY": "1K",
-          "KPSM": "1P"
-        },
-        "default_consolidation": {
-          "1K": [
-            "1O"
-          ],
-          "1N": [
-            "1K",
-            "1B",
-            "1F"
-          ],
-          "1O": [
-            "1Y"
-          ],
-          "1S": [
-            "1A",
-            "1L"
-          ],
-          "1Y": [
-            "1S"
-          ],
-          "1D": [
-            "1N",
-            "1U",
-            "1Z"
-          ],
-          "1F": [
-            "1I"
-          ],
-          "1E": [
-            "1P"
-          ],
-          "1Z": [
-            "1E",
-            "1J",
-            "1W"
-          ]
-        }
-      },
-      "STD": {
-        "inbound_assignments": {
-          "DEEPO2": "1N"
-        },
-        "departure_assignments": {
-          "KACK": "1K",
-          "KMVY": "1K"
-        },
-        "default_consolidation": {
-          "1K": [
-            "1N"
-          ]
-        }
-      },
       "33X": {
-        "inbound_assignments": {},
         "departure_assignments": {
           "KBOS": "1D"
         },
@@ -429,24 +180,11 @@
           "DREEM3": "1B",
           "FREDO": "1M",
           "GDM": "1R",
-          "GDM.15R": "1R",
-          "JFUND2.15R": "1R",
-          "JFUND2.22L": "1R",
-          "JFUND2.27": "1R",
-          "JFUND2.33L": "1R",
           "JFUND2.4R": "1R",
           "KLANE": "1R",
           "LWRNC": "1R",
           "LWRNC.SAT": "1R",
-          "OOSHN5.15R": "1R",
-          "OOSHN5.22L": "1R",
-          "OOSHN5.27": "1R",
-          "OOSHN5.33L": "1R",
           "OOSHN5.4R": "1R",
-          "ROBUC3.15R": "1M",
-          "ROBUC3.22L": "1M",
-          "ROBUC3.27": "1M",
-          "ROBUC3.33L": "1M",
           "ROBUC3.4R": "1M",
           "WOONS": "1U",
           "WOONS.LO": "1L",
@@ -482,25 +220,15 @@
           "DREEM3": "1B",
           "FREDO": "1M",
           "GDM": "1R",
-          "GDM.15R": "1R",
-          "JFUND2.15R": "1R",
-          "JFUND2.22L": "1R",
           "JFUND2.27": "1R",
           "JFUND2.33L": "1R",
-          "JFUND2.4R": "1R",
           "KLANE": "1R",
           "LWRNC": "1R",
           "LWRNC.SAT": "1R",
-          "OOSHN5.15R": "1R",
-          "OOSHN5.22L": "1R",
           "OOSHN5.27": "1R",
           "OOSHN5.33L": "1R",
-          "OOSHN5.4R": "1R",
-          "ROBUC3.15R": "1M",
-          "ROBUC3.22L": "1M",
           "ROBUC3.27": "1M",
           "ROBUC3.33L": "1M",
-          "ROBUC3.4R": "1M",
           "WOONS": "1U",
           "WOONS.LO": "1L",
           "ZELKA2": "1B"
@@ -534,26 +262,13 @@
         "inbound_assignments": {
           "DREEM3": "1B",
           "FREDO": "1M",
-          "GDM": "1R",
           "GDM.15R": "1R",
           "JFUND2.15R": "1R",
-          "JFUND2.22L": "1R",
-          "JFUND2.27": "1R",
-          "JFUND2.33L": "1R",
-          "JFUND2.4R": "1R",
           "KLANE": "1R",
           "LWRNC": "1R",
           "LWRNC.SAT": "1R",
           "OOSHN5.15R": "1R",
-          "OOSHN5.22L": "1R",
-          "OOSHN5.27": "1R",
-          "OOSHN5.33L": "1R",
-          "OOSHN5.4R": "1R",
           "ROBUC3.15R": "1M",
-          "ROBUC3.22L": "1M",
-          "ROBUC3.27": "1M",
-          "ROBUC3.33L": "1M",
-          "ROBUC3.4R": "1M",
           "WOONS": "1U",
           "WOONS.LO": "1L",
           "ZELKA2": "1B"
@@ -588,25 +303,15 @@
           "DREEM3": "1B",
           "FREDO": "1M",
           "GDM": "1R",
-          "GDM.15R": "1R",
-          "JFUND2.15R": "1R",
           "JFUND2.22L": "1R",
           "JFUND2.27": "1R",
-          "JFUND2.33L": "1R",
-          "JFUND2.4R": "1R",
           "KLANE": "1R",
           "LWRNC": "1R",
           "LWRNC.SAT": "1R",
-          "OOSHN5.15R": "1R",
           "OOSHN5.22L": "1R",
           "OOSHN5.27": "1R",
-          "OOSHN5.33L": "1R",
-          "OOSHN5.4R": "1R",
-          "ROBUC3.15R": "1M",
           "ROBUC3.22L": "1M",
           "ROBUC3.27": "1M",
-          "ROBUC3.33L": "1M",
-          "ROBUC3.4R": "1M",
           "WOONS": "1U",
           "WOONS.LO": "1L",
           "ZELKA2": "1B"

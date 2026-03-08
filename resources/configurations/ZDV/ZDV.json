@@ -179,9 +179,6 @@
   "facility_adaptations": {
     "configurations": {
       "STD": {
-        "departure_assignments": {
-          "KCOS": "29"
-        },
         "inbound_assignments": {
           "CLASH5.OATHE": "29",
           "CLASH5.KIISS": "29",

@@ -102,9 +102,6 @@
           "KCVG": "1W",
           "KLUK": "1W"
         },
-        "inbound_assignments": {
-          "KLUK": "1W"
-        },
         "default_consolidation": {
           "1W": [
             "1B",

@@ -108,17 +108,27 @@
         "departure_assignments": {
           "KMSP/12L": "1D",
           "KMSP/12R_17": "1L",
-          "KMSP/17_12s": "1R",
-          "KFCM": "1E",
-          "KSTP": "1G",
-          "KMIC": "1K",
-          "KANE": "1K"
+          "KMSP/17_12s": "1R"
         },
         "default_consolidation": {
-          "1H": ["1I", "1N", "1R"],
-          "1R": ["1D", "1E", "1L"],
-          "1N": ["1J", "1S"],
-          "1E": ["1G", "1K"]
+          "1H": [
+            "1I",
+            "1N",
+            "1R"
+          ],
+          "1R": [
+            "1D",
+            "1E",
+            "1L"
+          ],
+          "1N": [
+            "1J",
+            "1S"
+          ],
+          "1E": [
+            "1G",
+            "1K"
+          ]
         }
       },
       "135": {
@@ -135,17 +145,27 @@
         },
         "departure_assignments": {
           "KMSP/12R": "1R",
-          "KMSP/12L": "1D",
-          "KFCM": "1E",
-          "KSTP": "1G",
-          "KMIC": "1K",
-          "KANE": "1K"
+          "KMSP/12L": "1D"
         },
         "default_consolidation": {
-          "1H": ["1I", "1N", "1R"],
-          "1R": ["1D", "1E", "1L"],
-          "1N": ["1J", "1S"],
-          "1E": ["1G", "1K"]
+          "1H": [
+            "1I",
+            "1N",
+            "1R"
+          ],
+          "1R": [
+            "1D",
+            "1E",
+            "1L"
+          ],
+          "1N": [
+            "1J",
+            "1S"
+          ],
+          "1E": [
+            "1G",
+            "1K"
+          ]
         }
       },
       "317": {
@@ -163,17 +183,27 @@
         "departure_assignments": {
           "KMSP/30L_17": "1R",
           "KMSP/30R": "1D",
-          "KMSP/17_30s": "1R",
-          "KFCM": "1E",
-          "KSTP": "1G",
-          "KMIC": "1K",
-          "KANE": "1K"
+          "KMSP/17_30s": "1R"
         },
         "default_consolidation": {
-          "1H": ["1I", "1N", "1R"],
-          "1R": ["1D", "1E", "1L"],
-          "1N": ["1J", "1S"],
-          "1E": ["1G", "1K"]
+          "1H": [
+            "1I",
+            "1N",
+            "1R"
+          ],
+          "1R": [
+            "1D",
+            "1E",
+            "1L"
+          ],
+          "1N": [
+            "1J",
+            "1S"
+          ],
+          "1E": [
+            "1G",
+            "1K"
+          ]
         }
       },
       "335": {
@@ -190,17 +220,27 @@
         },
         "departure_assignments": {
           "KMSP/30L": "1R",
-          "KMSP/30R": "1D",
-          "KFCM": "1E",
-          "KSTP": "1G",
-          "KMIC": "1K",
-          "KANE": "1K"
+          "KMSP/30R": "1D"
         },
         "default_consolidation": {
-          "1H": ["1I", "1N", "1R"],
-          "1R": ["1D", "1E", "1L"],
-          "1N": ["1J", "1S"],
-          "1E": ["1G", "1K"]
+          "1H": [
+            "1I",
+            "1N",
+            "1R"
+          ],
+          "1R": [
+            "1D",
+            "1E",
+            "1L"
+          ],
+          "1N": [
+            "1J",
+            "1S"
+          ],
+          "1E": [
+            "1G",
+            "1K"
+          ]
         }
       },
       "12S": {
@@ -217,17 +257,27 @@
         },
         "departure_assignments": {
           "KMSP/12L": "1D",
-          "KMSP/12R": "1R",
-          "KFCM": "1E",
-          "KSTP": "1G",
-          "KMIC": "1K",
-          "KANE": "1K"
+          "KMSP/12R": "1R"
         },
         "default_consolidation": {
-          "1H": ["1I", "1N", "1R"],
-          "1R": ["1D", "1E", "1L"],
-          "1N": ["1J", "1S"],
-          "1E": ["1G", "1K"]
+          "1H": [
+            "1I",
+            "1N",
+            "1R"
+          ],
+          "1R": [
+            "1D",
+            "1E",
+            "1L"
+          ],
+          "1N": [
+            "1J",
+            "1S"
+          ],
+          "1E": [
+            "1G",
+            "1K"
+          ]
         }
       },
       "30S": {
@@ -244,17 +294,27 @@
         },
         "departure_assignments": {
           "KMSP/30L": "1R",
-          "KMSP/30R": "1D",
-          "KFCM": "1E",
-          "KSTP": "1G",
-          "KMIC": "1K",
-          "KANE": "1K"
+          "KMSP/30R": "1D"
         },
         "default_consolidation": {
-          "1H": ["1I", "1N", "1R"],
-          "1R": ["1D", "1E", "1L"],
-          "1N": ["1J", "1S"],
-          "1E": ["1G", "1K"]
+          "1H": [
+            "1I",
+            "1N",
+            "1R"
+          ],
+          "1R": [
+            "1D",
+            "1E",
+            "1L"
+          ],
+          "1N": [
+            "1J",
+            "1S"
+          ],
+          "1E": [
+            "1G",
+            "1K"
+          ]
         }
       }
     },
@@ -383,31 +443,72 @@
     "video_map_file": "videomaps/ZMP-videomaps.gob.zst",
     "airspace_awareness": [
       {
-        "fixes": ["SNINE", "LSE", "STILS", "TAXEE", "JEDET", "EAU"],
-        "altitude_range": [0, 7000],
+        "fixes": [
+          "SNINE",
+          "LSE",
+          "STILS",
+          "TAXEE",
+          "JEDET",
+          "EAU"
+        ],
+        "altitude_range": [
+          0,
+          7000
+        ],
         "receiving_controller": "C05"
       },
       {
-        "fixes": ["LSE", "TAXEE", "JEDET"],
-        "altitude_range": [8000, 99999],
+        "fixes": [
+          "LSE",
+          "TAXEE",
+          "JEDET"
+        ],
+        "altitude_range": [
+          8000,
+          99999
+        ],
         "receiving_controller": "C05"
       },
       {
-        "fixes": ["SNINE", "STILS", "EAU"],
-        "altitude_range": [8000, 99999],
+        "fixes": [
+          "SNINE",
+          "STILS",
+          "EAU"
+        ],
+        "altitude_range": [
+          8000,
+          99999
+        ],
         "receiving_controller": "C06"
       },
       {
-        "fixes": ["FGT", "FOBUG"],
-        "altitude_range": [10000, 99999],
+        "fixes": [
+          "FGT",
+          "FOBUG"
+        ],
+        "altitude_range": [
+          10000,
+          99999
+        ],
         "receiving_controller": "C07"
       },
       {
-        "fixes": ["ABR", "JURNY", "HUGIR", "TONCA", "ZOGAP"],
+        "fixes": [
+          "ABR",
+          "JURNY",
+          "HUGIR",
+          "TONCA",
+          "ZOGAP"
+        ],
         "receiving_controller": "C09"
       },
       {
-        "fixes": ["BRNRD", "DLH", "GEP", "HRBEK"],
+        "fixes": [
+          "BRNRD",
+          "DLH",
+          "GEP",
+          "HRBEK"
+        ],
         "receiving_controller": "C10"
       }
     ],
@@ -456,7 +557,13 @@
     },
     "lists": {
       "ssa": {
-        "altimeters": ["KMSP", "KFCM", "KANE", "KSTP", "KMIC"]
+        "altimeters": [
+          "KMSP",
+          "KFCM",
+          "KANE",
+          "KSTP",
+          "KMIC"
+        ]
       }
     }
   },

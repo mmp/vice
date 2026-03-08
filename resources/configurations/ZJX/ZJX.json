@@ -239,11 +239,6 @@
           "OHDEA2": "30",
           "TTHOR3": "66"
         },
-        "departure_assignments": {
-          "KMCO": "15",
-          "KDAB": "15",
-          "KJAX": "15"
-        },
         "default_consolidation": {
           "30": [
             "66"
@@ -255,14 +250,6 @@
       },
       "ZJX": {
         "inbound_assignments": {
-          "BAGGY3": "50",
-          "CAMJO": "50",
-          "DADES2": "50",
-          "GRNCH5": "50",
-          "LUBBR3": "50",
-          "OHDEA2": "50",
-          "SHRKS": "50",
-          "TTHOR3": "50",
           "50_BAGGY3": "50",
           "50_CAMJO": "50",
           "50_DADES2": "50",
