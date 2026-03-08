@@ -941,6 +941,22 @@ func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, 
 	return nil, s.State.ScenarioDefaultVideoMaps, fa.MonitoredBeaconCodeBlocks
 }
 
+// GetControllerVideoMapFile returns the effective video map file for
+// the given TCW by resolving the controller's area and checking for
+// an area-level override.
+func (s *Sim) GetControllerVideoMapFile(tcw TCW) string {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	fa := &s.State.FacilityAdaptation
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+
+	if ctrl, ok := s.ControlPositions[tcp]; ok {
+		return fa.VideoMapFileForArea(ctrl.Area)
+	}
+	return fa.VideoMapFile
+}
+
 // GetDepartureController returns the TCP responsible for a departure given the
 // airport, runway, and SID. Checks in order: airport/SID, airport/runway, airport only.
 func (s *Sim) GetDepartureController(airport, runway, sid string) TCP {

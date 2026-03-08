@@ -173,6 +173,8 @@ type SimState struct {
 	ControllerVideoMaps                 []string
 	ControllerDefaultVideoMaps          []string
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
+	ControllerVideoMapFile              string
+	ControllerVideoMapLibraryHash       []byte
 
 	UserIsPrivileged bool // Whether this user has elevated privileges (can control any aircraft)
 
@@ -347,6 +349,12 @@ func (sm *SimManager) checkTCWAvailable(ss *simSession, tcw sim.TCW) error {
 func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token string) *NewSimResult {
 	videoMaps, defaultMaps, beaconCodes := session.sim.GetControllerVideoMaps(tcw)
 
+	vmFile := session.sim.GetControllerVideoMapFile(tcw)
+	var vmHash []byte
+	if manifest, ok := sm.mapManifests[vmFile]; ok {
+		vmHash, _ = manifest.Hash()
+	}
+
 	return &NewSimResult{
 		SimState: &SimState{
 			UserState:                           *session.sim.GetUserState(),
@@ -355,6 +363,8 @@ func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token 
 			ControllerVideoMaps:                 videoMaps,
 			ControllerDefaultVideoMaps:          defaultMaps,
 			ControllerMonitoredBeaconCodeBlocks: beaconCodes,
+			ControllerVideoMapFile:              vmFile,
+			ControllerVideoMapLibraryHash:       vmHash,
 			UserIsPrivileged:                    session.sim.TCWIsPrivileged(tcw),
 		},
 		ControllerToken: token,

@@ -886,6 +886,7 @@ type STARSController struct {
 // override or append these defaults.
 type STARSArea struct {
 	DefaultAirport                  string                         `json:"default_airport,omitempty"` // CRDA default airport for this area
+	VideoMapFile                    string                         `json:"video_map_file,omitempty"`
 	VideoMapNames                   []string                       `json:"video_maps,omitempty"`
 	DefaultMaps                     []string                       `json:"default_maps,omitempty"`
 	Center                          math.Point2LL                  `json:"-"`
@@ -941,6 +942,18 @@ func (fa *FacilityAdaptation) AirspaceAwarenessForArea(area string) []AirspaceAw
 		}
 	}
 	return fa.AirspaceAwareness
+}
+
+// VideoMapFileForArea returns the effective video map file for a given
+// area. If the area has its own VideoMapFile, it is used; otherwise
+// the facility-level VideoMapFile is returned.
+func (fa *FacilityAdaptation) VideoMapFileForArea(area string) string {
+	if area != "" {
+		if ac, ok := fa.Areas[area]; ok && ac.VideoMapFile != "" {
+			return ac.VideoMapFile
+		}
+	}
+	return fa.VideoMapFile
 }
 
 type CoordinationList struct {

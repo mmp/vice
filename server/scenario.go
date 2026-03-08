@@ -748,7 +748,7 @@ var (
 )
 
 func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[string]*ScenarioCatalog,
-	manifest *sim.VideoMapManifest) {
+	manifest *sim.VideoMapManifest, mapManifests map[string]*sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Rewrite legacy files to be TCP-based.
@@ -842,7 +842,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		e.Pop()
 	}
 
-	PostDeserializeFacilityAdaptation(&sg.FacilityAdaptation, e, sg, manifest)
+	PostDeserializeFacilityAdaptation(&sg.FacilityAdaptation, e, sg, manifest, mapManifests)
 
 	for name, volumes := range sg.Airspace.Volumes {
 		for i, vol := range volumes {
@@ -1167,7 +1167,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 // require the scenario group's Locator, manifest, or airport data. Self-contained
 // validation is done earlier in FacilityAdaptation.ValidateConfig.
 func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *scenarioGroup,
-	manifest *sim.VideoMapManifest) {
+	manifest *sim.VideoMapManifest, mapManifests map[string]*sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	e.Push("facility_adaptations")
@@ -1201,17 +1201,39 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		e.Pop()
 	}
 
-	// Video maps: validate area-level video_maps against manifest
+	// manifestForArea returns the effective manifest for an area: the area's
+	// own manifest if it has a video_map_file, otherwise the facility-level one.
+	manifestForArea := func(ac *sim.STARSArea) *sim.VideoMapManifest {
+		if ac.VideoMapFile != "" && mapManifests != nil {
+			if m, ok := mapManifests[ac.VideoMapFile]; ok {
+				return m
+			}
+		}
+		return manifest
+	}
+
+	// Validate area-level video_map_file entries exist in mapManifests.
 	for areaNum, ac := range s.Areas {
-		if manifest != nil {
-			for _, m := range ac.VideoMapNames {
-				if m != "" && !manifest.HasMap(m) {
-					e.ErrorString(`video map %q in area %s "video_maps" is not a valid video map`, m, areaNum)
+		if ac.VideoMapFile != "" && mapManifests != nil {
+			if _, ok := mapManifests[ac.VideoMapFile]; !ok {
+				e.ErrorString(`video_map_file %q in area %s not found. Options: %s`,
+					ac.VideoMapFile, areaNum, strings.Join(util.SortedMapKeys(mapManifests), ", "))
+			}
+		}
+	}
+
+	// Video maps: validate area-level video_maps against the effective manifest.
+	for areaNum, ac := range s.Areas {
+		m := manifestForArea(ac)
+		if m != nil {
+			for _, name := range ac.VideoMapNames {
+				if name != "" && !m.HasMap(name) {
+					e.ErrorString(`video map %q in area %s "video_maps" is not a valid video map`, name, areaNum)
 				}
 			}
-			for _, m := range ac.DefaultMaps {
-				if m != "" && !manifest.HasMap(m) {
-					e.ErrorString(`video map %q in area %s "default_maps" is not a valid video map`, m, areaNum)
+			for _, name := range ac.DefaultMaps {
+				if name != "" && !m.HasMap(name) {
+					e.ErrorString(`video map %q in area %s "default_maps" is not a valid video map`, name, areaNum)
 				}
 			}
 		}
@@ -1242,15 +1264,22 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 
 		for tcp, config := range s.Controllers {
-			if manifest != nil {
+			// Resolve the controller's area to find the appropriate manifest.
+			ctrlManifest := manifest
+			if ctrl, ok := sg.ControlPositions[tcp]; ok && ctrl.Area != "" {
+				if ac, ok := s.Areas[ctrl.Area]; ok {
+					ctrlManifest = manifestForArea(ac)
+				}
+			}
+			if ctrlManifest != nil {
 				for _, name := range config.DefaultMaps {
-					if !manifest.HasMap(name) {
+					if !ctrlManifest.HasMap(name) {
 						e.ErrorString(`video map %q in "default_maps" for controller %q is not a valid video map`,
 							name, tcp)
 					}
 				}
 				for _, name := range config.VideoMapNames {
-					if name != "" && !manifest.HasMap(name) {
+					if name != "" && !ctrlManifest.HasMap(name) {
 						e.ErrorString(`video map %q in "video_maps" for controller %q is not a valid video map`,
 							name, tcp)
 					}
@@ -2034,7 +2063,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			if skipVideoMaps {
 				// When skipping video maps, still call PostDeserialize but with nil manifest
 				// to initialize catalogs and set default values
-				sgroup.PostDeserialize(e, catalogs, nil)
+				sgroup.PostDeserialize(e, catalogs, nil, nil)
 			} else {
 				// Make sure we have what we need in terms of video maps
 				fa := &sgroup.FacilityAdaptation
@@ -2044,7 +2073,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 					e.ErrorString("no manifest for video map %q found. Options: %s", vf,
 						strings.Join(util.SortedMapKeys(mapManifests), ", "))
 				} else {
-					sgroup.PostDeserialize(e, catalogs, manifest)
+					sgroup.PostDeserialize(e, catalogs, manifest, mapManifests)
 				}
 			}
 
@@ -2059,7 +2088,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		if skipVideoMaps {
 			// When skipping video maps, still call PostDeserialize but with nil manifest
 			var extraE util.ErrorLogger
-			extraScenario.PostDeserialize(&extraE, catalogs, nil)
+			extraScenario.PostDeserialize(&extraE, catalogs, nil, nil)
 			if scenarioGroups[extraScenarioFacility] == nil {
 				scenarioGroups[extraScenarioFacility] = make(map[string]*scenarioGroup)
 			}
@@ -2078,7 +2107,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				extraE.ErrorString("no manifest for video map %q found. Options: %s", vf,
 					strings.Join(util.SortedMapKeys(mapManifests), ", "))
 			} else {
-				extraScenario.PostDeserialize(&extraE, catalogs, manifest)
+				extraScenario.PostDeserialize(&extraE, catalogs, manifest, mapManifests)
 			}
 
 			extraE.Pop() // Scenario group
