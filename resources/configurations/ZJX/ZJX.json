@@ -90,11 +90,6 @@
       "frequency": 133625,
       "radio_name": "Jacksonville Center"
     },
-    "49": {
-      "callsign": "ZJX 49 Central",
-      "frequency": 133300,
-      "radio_name": "Jacksonville Center"
-    },
     "50": {
       "callsign": "ZJX 50 Alma",
       "frequency": 135975,
@@ -116,7 +111,7 @@
       "radio_name": "Jacksonville Center"
     },
     "54": {
-      "callsign": "ZJX 54 Jekyl",
+      "callsign": "ZJX 54 Jekyll",
       "frequency": 124675,
       "radio_name": "Jacksonville Center"
     },
@@ -166,7 +161,7 @@
       "radio_name": "Jacksonville Center"
     },
     "74": {
-      "callsign": "ZJX 74 Charleston ",
+      "callsign": "ZJX 74 Charleston",
       "frequency": 134375,
       "radio_name": "Jacksonville Center"
     },
@@ -181,7 +176,7 @@
       "radio_name": "JAX Center"
     },
     "77": {
-      "callsign": "ZJX 77 Talyor",
+      "callsign": "ZJX 77 Taylor",
       "frequency": 125375,
       "radio_name": "Jacksonville Center"
     },
@@ -209,21 +204,6 @@
       "callsign": "ZJX 88 Darbs",
       "frequency": 128050,
       "radio_name": "JAX Center"
-    },
-    "96": {
-      "callsign": "ZJX 96 ZJX Guard",
-      "frequency": 121500,
-      "radio_name": "ZJX GUARD"
-    },
-    "98": {
-      "callsign": "ZJX 98 Landline",
-      "frequency": 132650,
-      "radio_name": "Jacksonville Center"
-    },
-    "99": {
-      "callsign": "ZJX 99 TMU",
-      "frequency": 136975,
-      "radio_name": "Jacksonville Center"
     }
   },
   "facility_adaptations": {
@@ -239,17 +219,26 @@
           "OHDEA2": "30",
           "TTHOR3": "66"
         },
+        "departure_assignments": {
+          "KMCO": "15",
+          "KDAB": "15",
+          "KJAX": "15"
+        },
         "default_consolidation": {
-          "30": [
-            "66"
-          ],
-          "66": [
-            "15"
-          ]
+          "30": ["66"],
+          "66": ["15"]
         }
       },
       "ZJX": {
         "inbound_assignments": {
+          "BAGGY3": "50",
+          "CAMJO": "50",
+          "DADES2": "50",
+          "GRNCH5": "50",
+          "LUBBR3": "50",
+          "OHDEA2": "50",
+          "SHRKS": "50",
+          "TTHOR3": "50",
           "50_BAGGY3": "50",
           "50_CAMJO": "50",
           "50_DADES2": "50",
@@ -261,6 +250,32 @@
         },
         "default_consolidation": {
           "50": []
+        }
+      },
+      "J11": {
+        "inbound_assignments": {
+          "DEFUN": "11",
+          "J2": "11",
+          "BULZI CEW IRUBE": "11",
+          "MAATY5 (DEFUN)": "11",
+          "BANGZ2 (DEFUN)": "11",
+          "FROGZ4 (DEFUN)": "11",
+          "GRNCH5 (DEFUN)": "11",
+          "MARQO3 (CATLN)": "11",
+          "MARQO3 (DEFUN)": "11",
+          "CEW": "11",
+          "LOXLY": "11",
+          "CABLO": "11",
+          "SJI": "11"
+        },
+        "departure_assignments": {
+          "KPNS": "11",
+          "KECP": "11",
+          "KVPS": "11",
+          "KTLH": "11"
+        },
+        "default_consolidation": {
+          "11": []
         }
       },
       "ZJS": {
