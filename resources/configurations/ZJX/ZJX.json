@@ -90,6 +90,11 @@
       "frequency": 133625,
       "radio_name": "Jacksonville Center"
     },
+    "49": {
+      "callsign": "ZJX 49 Central",
+      "frequency": 133300,
+      "radio_name": "Jacksonville Center"
+    },
     "50": {
       "callsign": "ZJX 50 Alma",
       "frequency": 135975,
@@ -227,6 +232,19 @@
         "default_consolidation": {
           "30": ["66"],
           "66": ["15"]
+        }
+      },
+      "ZJG": {
+        "inbound_assignments": {
+          "GRNCH5": "15",
+          "DADES2": "15",
+          "KTLH": "14",
+          "TEBOW2": "14",
+          "LUBBR3": "15",
+          "SHREK2": "15"
+        },
+        "default_consolidation": {
+          "15": ["14"]
         }
       },
       "ZJX": {
