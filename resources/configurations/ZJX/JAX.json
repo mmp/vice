@@ -118,27 +118,12 @@
           "KVQQ": "1W"
         },
         "default_consolidation": {
-          "1R": [
-            "1W"
-          ],
-          "1G": [
-            "1A"
-          ],
-          "1N": [
-            "1J",
-            "1R"
-          ],
-          "1S": [
-            "1N",
-            "1V"
-          ],
-          "1V": [
-            "1D",
-            "1G"
-          ],
-          "1W": [
-            "1E"
-          ]
+          "1R": ["1W"],
+          "1G": ["1A"],
+          "1N": ["1J", "1R"],
+          "1S": ["1N", "1V"],
+          "1V": ["1D", "1G"],
+          "1W": ["1E"]
         }
       },
       "KJ2": {
@@ -174,27 +159,12 @@
           "KOCF": "1V"
         },
         "default_consolidation": {
-          "1R": [
-            "1W"
-          ],
-          "1G": [
-            "1A"
-          ],
-          "1N": [
-            "1J",
-            "1R"
-          ],
-          "1S": [
-            "1N",
-            "1V"
-          ],
-          "1V": [
-            "1D",
-            "1G"
-          ],
-          "1W": [
-            "1E"
-          ]
+          "1R": ["1W"],
+          "1G": ["1A"],
+          "1N": ["1J", "1R"],
+          "1S": ["1N", "1V"],
+          "1V": ["1D", "1G"],
+          "1W": ["1E"]
         }
       },
       "KJ3": {
@@ -226,27 +196,12 @@
           "KVQQ": "1W"
         },
         "default_consolidation": {
-          "1R": [
-            "1W"
-          ],
-          "1G": [
-            "1A"
-          ],
-          "1N": [
-            "1J",
-            "1R"
-          ],
-          "1S": [
-            "1N",
-            "1V"
-          ],
-          "1V": [
-            "1D",
-            "1G"
-          ],
-          "1W": [
-            "1E"
-          ]
+          "1R": ["1W"],
+          "1G": ["1A"],
+          "1N": ["1J", "1R"],
+          "1S": ["1N", "1V"],
+          "1V": ["1D", "1G"],
+          "1W": ["1E"]
         }
       },
       "KJ5": {
@@ -286,27 +241,12 @@
           "KGNV": "1G"
         },
         "default_consolidation": {
-          "1R": [
-            "1W"
-          ],
-          "1G": [
-            "1A"
-          ],
-          "1N": [
-            "1J",
-            "1R"
-          ],
-          "1S": [
-            "1N",
-            "1V"
-          ],
-          "1V": [
-            "1D",
-            "1G"
-          ],
-          "1W": [
-            "1E"
-          ]
+          "1R": ["1W"],
+          "1G": ["1A"],
+          "1N": ["1J", "1R"],
+          "1S": ["1N", "1V"],
+          "1V": ["1D", "1G"],
+          "1W": ["1E"]
         }
       }
     },
@@ -493,63 +433,28 @@
     "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
     "airspace_awareness": [
       {
-        "fixes": [
-          "OCF",
-          "GNV"
-        ],
-        "altitude_range": [
-          0,
-          999000
-        ],
+        "fixes": ["OCF", "GNV"],
+        "altitude_range": [0, 999000],
         "receiving_controller": "C15"
       },
       {
-        "fixes": [
-          "ALLMA",
-          "BAXLY",
-          "AYS",
-          "HABLE"
-        ],
-        "altitude_range": [
-          0,
-          999000
-        ],
+        "fixes": ["ALLMA", "BAXLY", "AYS", "HABLE"],
+        "altitude_range": [0, 999000],
         "receiving_controller": "C30"
       },
       {
-        "fixes": [
-          "WISPR",
-          "VIYAP",
-          "SSI"
-        ],
-        "altitude_range": [
-          0,
-          999000
-        ],
+        "fixes": ["WISPR", "VIYAP", "SSI"],
+        "altitude_range": [0, 999000],
         "receiving_controller": "C54"
       },
       {
-        "fixes": [
-          "EXBOX",
-          "OMN",
-          "SAWGY"
-        ],
-        "altitude_range": [
-          0,
-          999000
-        ],
+        "fixes": ["EXBOX", "OMN", "SAWGY"],
+        "altitude_range": [0, 999000],
         "receiving_controller": "C57"
       },
       {
-        "fixes": [
-          "CAPPS",
-          "JAYJA",
-          "TAY"
-        ],
-        "altitude_range": [
-          0,
-          999000
-        ],
+        "fixes": ["CAPPS", "JAYJA", "TAY"],
+        "altitude_range": [0, 999000],
         "receiving_controller": "C77"
       }
     ],

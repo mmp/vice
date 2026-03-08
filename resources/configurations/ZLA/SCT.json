@@ -280,17 +280,9 @@
           "KWHP": "1F"
         },
         "default_consolidation": {
-          "1M": [
-            "1F",
-            "1V"
-          ],
-          "1V": [
-            "1W",
-            "1X"
-          ],
-          "1X": [
-            "1J"
-          ]
+          "1M": ["1F", "1V"],
+          "1V": ["1W", "1X"],
+          "1X": ["1J"]
         }
       },
       "CF1": {
@@ -314,17 +306,9 @@
           "KWHP": "1F"
         },
         "default_consolidation": {
-          "1M": [
-            "1F",
-            "1V"
-          ],
-          "1V": [
-            "1W",
-            "1X"
-          ],
-          "1X": [
-            "1J"
-          ]
+          "1M": ["1F", "1V"],
+          "1V": ["1W", "1X"],
+          "1X": ["1J"]
         }
       },
       "CF4": {
@@ -344,17 +328,9 @@
           "KWHP": "1F"
         },
         "default_consolidation": {
-          "1M": [
-            "1F",
-            "1V"
-          ],
-          "1V": [
-            "1W",
-            "1X"
-          ],
-          "1X": [
-            "1J"
-          ]
+          "1M": ["1F", "1V"],
+          "1V": ["1W", "1X"],
+          "1X": ["1J"]
         }
       },
       "CF3": {
@@ -374,17 +350,9 @@
           "KWHP": "1F"
         },
         "default_consolidation": {
-          "1M": [
-            "1F",
-            "1V"
-          ],
-          "1V": [
-            "1W",
-            "1X"
-          ],
-          "1X": [
-            "1J"
-          ]
+          "1M": ["1F", "1V"],
+          "1V": ["1W", "1X"],
+          "1X": ["1J"]
         }
       },
       "DEL": {
@@ -402,13 +370,8 @@
           "KLAX": "6S"
         },
         "default_consolidation": {
-          "6S": [
-            "6N",
-            "6X"
-          ],
-          "6X": [
-            "6K"
-          ]
+          "6S": ["6N", "6X"],
+          "6X": ["6K"]
         }
       },
       "DE1": {
@@ -426,13 +389,8 @@
           "KLAX": "6S"
         },
         "default_consolidation": {
-          "6S": [
-            "6N",
-            "6X"
-          ],
-          "6X": [
-            "6K"
-          ]
+          "6S": ["6N", "6X"],
+          "6X": ["6K"]
         }
       },
       "DE2": {
@@ -459,14 +417,8 @@
           "KSMO": "6N"
         },
         "default_consolidation": {
-          "6S": [
-            "6L",
-            "6N",
-            "6X"
-          ],
-          "6X": [
-            "6K"
-          ]
+          "6S": ["6L", "6N", "6X"],
+          "6X": ["6K"]
         }
       },
       "DE3": {
@@ -484,14 +436,8 @@
           "KSMO": "6N"
         },
         "default_consolidation": {
-          "6S": [
-            "6L",
-            "6N",
-            "6X"
-          ],
-          "6X": [
-            "6K"
-          ]
+          "6S": ["6L", "6N", "6X"],
+          "6X": ["6K"]
         }
       },
       "DE4": {
@@ -499,9 +445,7 @@
           "KLAX": "6S"
         },
         "default_consolidation": {
-          "6S": [
-            "6X"
-          ]
+          "6S": ["6X"]
         }
       },
       "EMP": {
@@ -524,19 +468,10 @@
           "KSBD": "3N"
         },
         "default_consolidation": {
-          "3N": [
-            "3V"
-          ],
-          "3P": [
-            "3I",
-            "3N"
-          ],
-          "3V": [
-            "3S"
-          ],
-          "3S": [
-            "3D"
-          ]
+          "3N": ["3V"],
+          "3P": ["3I", "3N"],
+          "3V": ["3S"],
+          "3S": ["3D"]
         }
       },
       "EM1": {
@@ -559,15 +494,8 @@
           "KSBD": "3N"
         },
         "default_consolidation": {
-          "3N": [
-            "3I",
-            "3P",
-            "3S",
-            "3V"
-          ],
-          "3S": [
-            "3D"
-          ]
+          "3N": ["3I", "3P", "3S", "3V"],
+          "3S": ["3D"]
         }
       },
       "EM2": {
@@ -584,11 +512,7 @@
           "KSBD": "3N"
         },
         "default_consolidation": {
-          "3N": [
-            "3I",
-            "3P",
-            "3V"
-          ]
+          "3N": ["3I", "3P", "3V"]
         }
       },
       "EM3": {
@@ -611,17 +535,9 @@
           "KSBD": "3N"
         },
         "default_consolidation": {
-          "3N": [
-            "3I",
-            "3S",
-            "3V"
-          ],
-          "3P": [
-            "3N"
-          ],
-          "3S": [
-            "3D"
-          ]
+          "3N": ["3I", "3S", "3V"],
+          "3P": ["3N"],
+          "3S": ["3D"]
         }
       },
       "EM4": {
@@ -644,19 +560,10 @@
           "KSBD": "3N"
         },
         "default_consolidation": {
-          "3N": [
-            "3V"
-          ],
-          "3P": [
-            "3I",
-            "3N"
-          ],
-          "3V": [
-            "3S"
-          ],
-          "3S": [
-            "3D"
-          ]
+          "3N": ["3V"],
+          "3P": ["3I", "3N"],
+          "3V": ["3S"],
+          "3S": ["3D"]
         }
       },
       "13R": {
@@ -668,9 +575,7 @@
           "KPSP": "3D"
         },
         "default_consolidation": {
-          "3S": [
-            "3D"
-          ]
+          "3S": ["3D"]
         }
       },
       "92X": {
@@ -688,13 +593,7 @@
           "KSAN": "5Z"
         },
         "default_consolidation": {
-          "5W": [
-            "5D",
-            "5E",
-            "5M",
-            "5N",
-            "5Z"
-          ]
+          "5W": ["5D", "5E", "5M", "5N", "5Z"]
         }
       },
       "SAN": {
@@ -712,13 +611,7 @@
           "KSAN": "5E"
         },
         "default_consolidation": {
-          "5W": [
-            "5D",
-            "5E",
-            "5M",
-            "5N",
-            "5Z"
-          ]
+          "5W": ["5D", "5E", "5M", "5N", "5Z"]
         }
       },
       "SA1": {
@@ -740,15 +633,8 @@
           "KSAN": "5W"
         },
         "default_consolidation": {
-          "5E": [
-            "5D"
-          ],
-          "5W": [
-            "5E",
-            "5M",
-            "5N",
-            "5Z"
-          ]
+          "5E": ["5D"],
+          "5W": ["5E", "5M", "5N", "5Z"]
         }
       },
       "81X": {
@@ -806,49 +692,18 @@
           "KWHP": "1M"
         },
         "default_consolidation": {
-          "1M": [
-            "1V"
-          ],
-          "1V": [
-            "1W"
-          ],
-          "2D": [
-            "2F",
-            "2U"
-          ],
-          "6S": [
-            "6N",
-            "6X"
-          ],
-          "2U": [
-            "2Z"
-          ],
-          "3N": [
-            "3P"
-          ],
-          "3P": [
-            "3S"
-          ],
-          "5E": [
-            "5N"
-          ],
-          "5N": [
-            "5D"
-          ],
-          "5W": [
-            "5E"
-          ],
-          "6G": [
-            "1M",
-            "2D",
-            "3N",
-            "4T",
-            "5W",
-            "6S"
-          ],
-          "4T": [
-            "4Y"
-          ]
+          "1M": ["1V"],
+          "1V": ["1W"],
+          "2D": ["2F", "2U"],
+          "6S": ["6N", "6X"],
+          "2U": ["2Z"],
+          "3N": ["3P"],
+          "3P": ["3S"],
+          "5E": ["5N"],
+          "5N": ["5D"],
+          "5W": ["5E"],
+          "6G": ["1M", "2D", "3N", "4T", "5W", "6S"],
+          "4T": ["4Y"]
         }
       },
       "SCT": {
@@ -881,21 +736,9 @@
           "KVNY": "1M"
         },
         "default_consolidation": {
-          "6S": [
-            "6X"
-          ],
-          "3N": [
-            "3P"
-          ],
-          "6G": [
-            "1M",
-            "2F",
-            "2U",
-            "3N",
-            "4Y",
-            "5E",
-            "6S"
-          ]
+          "6S": ["6X"],
+          "3N": ["3P"],
+          "6G": ["1M", "2F", "2U", "3N", "4Y", "5E", "6S"]
         }
       },
       "LAX": {
@@ -905,9 +748,7 @@
           "ZUUMA4_FINAL": "2U"
         },
         "default_consolidation": {
-          "2D": [
-            "2U"
-          ]
+          "2D": ["2U"]
         }
       },
       "LA1": {
@@ -918,15 +759,9 @@
           "ZUUMA4": "2Z"
         },
         "default_consolidation": {
-          "2D": [
-            "2F"
-          ],
-          "2F": [
-            "2Z"
-          ],
-          "2Z": [
-            "2U"
-          ]
+          "2D": ["2F"],
+          "2F": ["2Z"],
+          "2Z": ["2U"]
         }
       },
       "LA2": {
@@ -947,9 +782,7 @@
           "ZUUMA4": "2U"
         },
         "default_consolidation": {
-          "2F": [
-            "2U"
-          ]
+          "2F": ["2U"]
         }
       },
       "LA4": {
@@ -959,9 +792,7 @@
           "IRNMN2/RYDRR2_FINAL": "2U"
         },
         "default_consolidation": {
-          "2D": [
-            "2U"
-          ]
+          "2D": ["2U"]
         }
       },
       "LA5": {
@@ -973,15 +804,9 @@
           "RYDRR2": "2Z"
         },
         "default_consolidation": {
-          "2D": [
-            "2F"
-          ],
-          "2F": [
-            "2Z"
-          ],
-          "2Z": [
-            "2U"
-          ]
+          "2D": ["2F"],
+          "2F": ["2Z"],
+          "2Z": ["2U"]
         }
       },
       "COA": {
@@ -999,17 +824,9 @@
           "KSNA": "4A"
         },
         "default_consolidation": {
-          "4R": [
-            "4B",
-            "4T"
-          ],
-          "4S": [
-            "4A"
-          ],
-          "4Y": [
-            "4R",
-            "4S"
-          ]
+          "4R": ["4B", "4T"],
+          "4S": ["4A"],
+          "4Y": ["4R", "4S"]
         }
       },
       "CO1": {
@@ -1028,17 +845,9 @@
           "KSNA": "4A"
         },
         "default_consolidation": {
-          "4R": [
-            "4B",
-            "4T"
-          ],
-          "4S": [
-            "4A"
-          ],
-          "4Y": [
-            "4R",
-            "4S"
-          ]
+          "4R": ["4B", "4T"],
+          "4S": ["4A"],
+          "4Y": ["4R", "4S"]
         }
       },
       "CO2": {
@@ -1065,17 +874,9 @@
           "KSNA": "4Y"
         },
         "default_consolidation": {
-          "4R": [
-            "4B",
-            "4T"
-          ],
-          "4S": [
-            "4A"
-          ],
-          "4Y": [
-            "4R",
-            "4S"
-          ]
+          "4R": ["4B", "4T"],
+          "4S": ["4A"],
+          "4Y": ["4R", "4S"]
         }
       },
       "CO4": {
@@ -1094,17 +895,9 @@
           "KSNA": "4Y"
         },
         "default_consolidation": {
-          "4R": [
-            "4B",
-            "4T"
-          ],
-          "4S": [
-            "4A"
-          ],
-          "4Y": [
-            "4R",
-            "4S"
-          ]
+          "4R": ["4B", "4T"],
+          "4S": ["4A"],
+          "4Y": ["4R", "4S"]
         }
       },
       "SC2": {
@@ -1162,49 +955,18 @@
           "KWHP": "1M"
         },
         "default_consolidation": {
-          "1M": [
-            "1V"
-          ],
-          "1V": [
-            "1W"
-          ],
-          "2D": [
-            "2F",
-            "2U"
-          ],
-          "6S": [
-            "6N",
-            "6X"
-          ],
-          "2U": [
-            "2Z"
-          ],
-          "3N": [
-            "3P"
-          ],
-          "3P": [
-            "3S"
-          ],
-          "5E": [
-            "5N"
-          ],
-          "5N": [
-            "5D"
-          ],
-          "5W": [
-            "5E"
-          ],
-          "6G": [
-            "1M",
-            "2D",
-            "3N",
-            "4T",
-            "5W",
-            "6S"
-          ],
-          "4T": [
-            "4Y"
-          ]
+          "1M": ["1V"],
+          "1V": ["1W"],
+          "2D": ["2F", "2U"],
+          "6S": ["6N", "6X"],
+          "2U": ["2Z"],
+          "3N": ["3P"],
+          "3P": ["3S"],
+          "5E": ["5N"],
+          "5N": ["5D"],
+          "5W": ["5E"],
+          "6G": ["1M", "2D", "3N", "4T", "5W", "6S"],
+          "4T": ["4Y"]
         }
       }
     },
@@ -1255,9 +1017,7 @@
       "5W": {
         "center": "ZOKOS",
         "range": 40,
-        "default_maps": [
-          "500S SB WEST SCT"
-        ],
+        "default_maps": ["500S SB WEST SCT"],
         "video_maps": [
           "701S FUS 3NM MVA SCT",
           "711S EOVM SCT",
@@ -1297,9 +1057,7 @@
       "5E": {
         "center": "ZOKOS",
         "range": 40,
-        "default_maps": [
-          "500S SB WEST SCT"
-        ],
+        "default_maps": ["500S SB WEST SCT"],
         "video_maps": [
           "701S FUS 3NM MVA SCT",
           "711S EOVM SCT",
@@ -1339,9 +1097,7 @@
       "5M": {
         "center": "ZOKOS",
         "range": 40,
-        "default_maps": [
-          "500S SB WEST SCT"
-        ],
+        "default_maps": ["500S SB WEST SCT"],
         "video_maps": [
           "701S FUS 3NM MVA SCT",
           "711S EOVM SCT",
@@ -1381,9 +1137,7 @@
       "5N": {
         "center": "ZOKOS",
         "range": 40,
-        "default_maps": [
-          "500S SB WEST SCT"
-        ],
+        "default_maps": ["500S SB WEST SCT"],
         "video_maps": [
           "701S FUS 3NM MVA SCT",
           "711S EOVM SCT",
@@ -1423,9 +1177,7 @@
       "5Z": {
         "center": "ZOKOS",
         "range": 40,
-        "default_maps": [
-          "500S SB WEST SCT"
-        ],
+        "default_maps": ["500S SB WEST SCT"],
         "video_maps": [
           "701S FUS 3NM MVA SCT",
           "711S EOVM SCT",
@@ -1465,9 +1217,7 @@
       "5D": {
         "center": "ZOKOS",
         "range": 40,
-        "default_maps": [
-          "500S SB WEST SCT"
-        ],
+        "default_maps": ["500S SB WEST SCT"],
         "video_maps": [
           "701S FUS 3NM MVA SCT",
           "711S EOVM SCT",
@@ -1943,110 +1693,43 @@
     "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
     "airspace_awareness": [
       {
-        "fixes": [
-          "CNERY",
-          "CLEEE",
-          "DOTSS",
-          "CAHIL",
-          "BEALE"
-        ],
-        "altitude_range": [
-          13000,
-          23000
-        ],
+        "fixes": ["CNERY", "CLEEE", "DOTSS", "CAHIL", "BEALE"],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C21"
       },
       {
-        "fixes": [
-          "SCTRR",
-          "STOKD",
-          "MCKEY",
-          "HHERO",
-          "RIZIN",
-          "DARRK",
-          "IKAYE",
-          "DINTY",
-          "FICKY"
-        ],
-        "altitude_range": [
-          13000,
-          23000
-        ],
+        "fixes": ["SCTRR", "STOKD", "MCKEY", "HHERO", "RIZIN", "DARRK", "IKAYE", "DINTY", "FICKY"],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C14"
       },
       {
-        "fixes": [
-          "OROSZ",
-          "EHF",
-          "COREZ",
-          "CSTRO"
-        ],
-        "altitude_range": [
-          13000,
-          23000
-        ],
+        "fixes": ["OROSZ", "EHF", "COREZ", "CSTRO"],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C15"
       },
       {
-        "fixes": [
-          "LAS",
-          "MISEN"
-        ],
-        "altitude_range": [
-          13000,
-          23000
-        ],
+        "fixes": ["LAS", "MISEN"],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C18"
       },
       {
-        "fixes": [
-          "TNP",
-          "BLH"
-        ],
-        "altitude_range": [
-          13000,
-          23000
-        ],
+        "fixes": ["TNP", "BLH"],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C10"
       },
       {
-        "fixes": [
-          "AVRRY",
-          "MTBAL",
-          "OTAYY",
-          "DINTY",
-          "MALIT",
-          "SXC"
-        ],
-        "altitude_range": [
-          13000,
-          23000
-        ],
+        "fixes": ["AVRRY", "MTBAL", "OTAYY", "DINTY", "MALIT", "SXC"],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C12"
       },
       {
-        "fixes": [
-          "EHF",
-          "COREZ",
-          "LAS",
-          "MISEN",
-          "GMN",
-          "POM"
-        ],
-        "altitude_range": [
-          13000,
-          23000
-        ],
+        "fixes": ["EHF", "COREZ", "LAS", "MISEN", "GMN", "POM"],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C18"
       },
       {
-        "fixes": [
-          "PMD"
-        ],
-        "altitude_range": [
-          13000,
-          23000
-        ],
+        "fixes": ["PMD"],
+        "altitude_range": [13000, 23000],
         "receiving_controller": "C19"
       }
     ],
@@ -2383,54 +2066,23 @@
         },
         "airspace_awareness": [
           {
-            "fixes": [
-              "TNP",
-              "BLH"
-            ],
-            "altitude_range": [
-              15000,
-              23000
-            ],
+            "fixes": ["TNP", "BLH"],
+            "altitude_range": [15000, 23000],
             "receiving_controller": "C10"
           },
           {
-            "fixes": [
-              "AVRRY",
-              "MTBAL",
-              "OTAYY",
-              "DINTY",
-              "MALIT",
-              "SXC"
-            ],
-            "altitude_range": [
-              14000,
-              23000
-            ],
+            "fixes": ["AVRRY", "MTBAL", "OTAYY", "DINTY", "MALIT", "SXC"],
+            "altitude_range": [14000, 23000],
             "receiving_controller": "C12"
           },
           {
-            "fixes": [
-              "EHF",
-              "COREZ",
-              "LAS",
-              "MISEN",
-              "GMN",
-              "POM"
-            ],
-            "altitude_range": [
-              14000,
-              23000
-            ],
+            "fixes": ["EHF", "COREZ", "LAS", "MISEN", "GMN", "POM"],
+            "altitude_range": [14000, 23000],
             "receiving_controller": "C18"
           },
           {
-            "fixes": [
-              "PMD"
-            ],
-            "altitude_range": [
-              15000,
-              23000
-            ],
+            "fixes": ["PMD"],
+            "altitude_range": [15000, 23000],
             "receiving_controller": "C19"
           }
         ],
@@ -2601,53 +2253,36 @@
         {
           "name": ".    SAN BERNADINO",
           "id": "B",
-          "airports": [
-            "KSBD"
-          ]
+          "airports": ["KSBD"]
         },
         {
           "name": "HAWTHORNE",
           "id": "J",
-          "airports": [
-            "KHHR"
-          ]
+          "airports": ["KHHR"]
         },
         {
           "name": "SANTA MONICA",
           "id": "O",
-          "airports": [
-            "KSMO"
-          ]
+          "airports": ["KSMO"]
         },
         {
           "name": "LONG BEACH",
           "id": "V",
-          "airports": [
-            "KLGB"
-          ]
+          "airports": ["KLGB"]
         },
         {
           "name": "VNY",
           "id": "Y",
-          "airports": [
-            "KVNY"
-          ]
+          "airports": ["KVNY"]
         },
         {
           "name": ".    PALM SPRINGS",
           "id": "Z",
-          "airports": [
-            "KPSP"
-          ]
+          "airports": ["KPSP"]
         }
       ],
       "ssa": {
-        "altimeters": [
-          "KBUR",
-          "KVNY",
-          "KWHP",
-          "KSMO"
-        ]
+        "altimeters": ["KBUR", "KVNY", "KWHP", "KSMO"]
       }
     },
     "datablocks": {

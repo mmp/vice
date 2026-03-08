@@ -238,13 +238,8 @@
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1L": [
-            "1T"
-          ],
-          "1M": [
-            "1L",
-            "1S"
-          ]
+          "1L": ["1T"],
+          "1M": ["1L", "1S"]
         }
       },
       "AR1": {
@@ -267,18 +262,9 @@
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1L": [
-            "1K",
-            "1T"
-          ],
-          "1M": [
-            "1L",
-            "1Q",
-            "1S"
-          ],
-          "1S": [
-            "1F"
-          ]
+          "1L": ["1K", "1T"],
+          "1M": ["1L", "1Q", "1S"],
+          "1S": ["1F"]
         }
       },
       "AR2": {
@@ -301,13 +287,8 @@
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1L": [
-            "1T"
-          ],
-          "1M": [
-            "1L",
-            "1S"
-          ]
+          "1L": ["1T"],
+          "1M": ["1L", "1S"]
         }
       },
       "11X": {
@@ -324,17 +305,9 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": [
-            "2G",
-            "2W",
-            "2Z"
-          ],
-          "2W": [
-            "2F"
-          ],
-          "2Z": [
-            "2N"
-          ]
+          "2B": ["2G", "2W", "2Z"],
+          "2W": ["2F"],
+          "2Z": ["2N"]
         }
       },
       "01X": {
@@ -355,17 +328,9 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": [
-            "2G",
-            "2W",
-            "2Z"
-          ],
-          "2W": [
-            "2F"
-          ],
-          "2Z": [
-            "2N"
-          ]
+          "2B": ["2G", "2W", "2Z"],
+          "2W": ["2F"],
+          "2Z": ["2N"]
         }
       },
       "22X": {
@@ -380,14 +345,8 @@
           "KSFO": "4R"
         },
         "default_consolidation": {
-          "4R": [
-            "4D",
-            "4F"
-          ],
-          "4U": [
-            "4Q",
-            "4R"
-          ]
+          "4R": ["4D", "4F"],
+          "4U": ["4Q", "4R"]
         }
       },
       "28X": {
@@ -402,14 +361,8 @@
           "KSFO": "4U"
         },
         "default_consolidation": {
-          "4R": [
-            "4D",
-            "4F"
-          ],
-          "4U": [
-            "4Q",
-            "4R"
-          ]
+          "4R": ["4D", "4F"],
+          "4U": ["4Q", "4R"]
         }
       },
       "AR3": {
@@ -425,9 +378,7 @@
           "KRNO": "8S"
         },
         "default_consolidation": {
-          "8S": [
-            "8N"
-          ]
+          "8S": ["8N"]
         }
       },
       "NCT": {
@@ -441,14 +392,8 @@
           "KSFO": "4R"
         },
         "default_consolidation": {
-          "4R": [
-            "4D",
-            "4F"
-          ],
-          "4U": [
-            "4Q",
-            "4R"
-          ]
+          "4R": ["4D", "4F"],
+          "4U": ["4Q", "4R"]
         }
       },
       "NCA": {
@@ -466,16 +411,9 @@
           "KSMF": "5X"
         },
         "default_consolidation": {
-          "5E": [
-            "5B"
-          ],
-          "5P": [
-            "5E",
-            "5X"
-          ],
-          "5X": [
-            "5D"
-          ]
+          "5E": ["5B"],
+          "5P": ["5E", "5X"],
+          "5X": ["5D"]
         }
       },
       "NAR": {
@@ -491,9 +429,7 @@
           "KRNO": "8N"
         },
         "default_consolidation": {
-          "8S": [
-            "8N"
-          ]
+          "8S": ["8N"]
         }
       },
       "AR4": {
@@ -507,13 +443,8 @@
           "KSFO": "4U"
         },
         "default_consolidation": {
-          "4R": [
-            "4D",
-            "4F"
-          ],
-          "4U": [
-            "4R"
-          ]
+          "4R": ["4D", "4F"],
+          "4U": ["4R"]
         }
       },
       "AR5": {
@@ -531,16 +462,9 @@
           "KSMF": "5E"
         },
         "default_consolidation": {
-          "5E": [
-            "5B"
-          ],
-          "5P": [
-            "5E",
-            "5X"
-          ],
-          "5X": [
-            "5D"
-          ]
+          "5E": ["5B"],
+          "5P": ["5E", "5X"],
+          "5X": ["5D"]
         }
       },
       "AR6": {
@@ -558,17 +482,9 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": [
-            "2G",
-            "2W",
-            "2Z"
-          ],
-          "2W": [
-            "2F"
-          ],
-          "2Z": [
-            "2N"
-          ]
+          "2B": ["2G", "2W", "2Z"],
+          "2W": ["2F"],
+          "2Z": ["2N"]
         }
       }
     },
@@ -1336,101 +1252,33 @@
     "video_map_file": "videomaps/ZOA-videomaps.gob.zst",
     "airspace_awareness": [
       {
-        "fixes": [
-          "NTELL",
-          "KAYEX",
-          "SUSEY",
-          "KTINA",
-          "JFREE",
-          "VLREE",
-          "TECKY"
-        ],
-        "altitude_range": [
-          19000,
-          27000
-        ],
+        "fixes": ["NTELL", "KAYEX", "SUSEY", "KTINA", "JFREE", "VLREE", "TECKY"],
+        "altitude_range": [19000, 27000],
         "receiving_controller": "C11"
       },
       {
-        "fixes": [
-          "YYUNG",
-          "LIBBO",
-          "BSR",
-          "SXC",
-          "FLW",
-          "GVO"
-        ],
-        "altitude_range": [
-          19000,
-          999000
-        ],
+        "fixes": ["YYUNG", "LIBBO", "BSR", "SXC", "FLW", "GVO"],
+        "altitude_range": [19000, 999000],
         "receiving_controller": "C14"
       },
       {
-        "fixes": [
-          "ALCOA",
-          "CINNY",
-          "BEBOP",
-          "MOLEN",
-          "STINS",
-          "AMAKR"
-        ],
-        "altitude_range": [
-          0,
-          999000
-        ],
+        "fixes": ["ALCOA", "CINNY", "BEBOP", "MOLEN", "STINS", "AMAKR"],
+        "altitude_range": [0, 999000],
         "receiving_controller": "C35"
       },
       {
-        "fixes": [
-          "GRTFL",
-          "DEDHD",
-          "HRNER",
-          "RBL",
-          "SGD",
-          "ENI",
-          "PYE",
-          "SUU",
-          "CCR",
-          "RAGGS",
-          "BURDE"
-        ],
-        "altitude_range": [
-          19000,
-          23000
-        ],
+        "fixes": ["GRTFL", "DEDHD", "HRNER", "RBL", "SGD", "ENI", "PYE", "SUU", "CCR", "RAGGS", "BURDE"],
+        "altitude_range": [19000, 23000],
         "receiving_controller": "C41"
       },
       {
-        "fixes": [
-          "SGD",
-          "ENI",
-          "PYE",
-          "SUU",
-          "CCR"
-        ],
-        "altitude_range": [
-          0,
-          10000
-        ],
+        "fixes": ["SGD", "ENI", "PYE", "SUU", "CCR"],
+        "altitude_range": [0, 10000],
         "receiving_controller": "11S"
       },
       {
-        "fixes": [
-          "ORRCA",
-          "MOGEE",
-          "TIPRE",
-          "SYRAH",
-          "ORANG",
-          "FTHIL",
-          "FROGO",
-          "HNW",
-          "FRA"
-        ],
-        "altitude_range": [
-          19000,
-          29000
-        ],
+        "fixes": ["ORRCA", "MOGEE", "TIPRE", "SYRAH", "ORANG", "FTHIL", "FROGO", "HNW", "FRA"],
+        "altitude_range": [19000, 29000],
         "receiving_controller": "C29"
       }
     ],
@@ -1774,69 +1622,23 @@
         "range": 45,
         "airspace_awareness": [
           {
-            "fixes": [
-              "NTELL",
-              "JFREE",
-              "VLREE",
-              "TECKY"
-            ],
-            "altitude_range": [
-              19000,
-              27000
-            ],
+            "fixes": ["NTELL", "JFREE", "VLREE", "TECKY"],
+            "altitude_range": [19000, 27000],
             "receiving_controller": "C11"
           },
           {
-            "fixes": [
-              "ALCOA",
-              "CINNY",
-              "BEBOP",
-              "MOLEN",
-              "STINS",
-              "AMAKR"
-            ],
-            "altitude_range": [
-              0,
-              19000
-            ],
+            "fixes": ["ALCOA", "CINNY", "BEBOP", "MOLEN", "STINS", "AMAKR"],
+            "altitude_range": [0, 19000],
             "receiving_controller": "4U"
           },
           {
-            "fixes": [
-              "GRTFL",
-              "DEDHD",
-              "HRNER",
-              "RBL",
-              "SGD",
-              "ENI",
-              "PYE",
-              "SUU",
-              "CCR",
-              "RAGGS",
-              "BURDE"
-            ],
-            "altitude_range": [
-              15000,
-              23000
-            ],
+            "fixes": ["GRTFL", "DEDHD", "HRNER", "RBL", "SGD", "ENI", "PYE", "SUU", "CCR", "RAGGS", "BURDE"],
+            "altitude_range": [15000, 23000],
             "receiving_controller": "4Q"
           },
           {
-            "fixes": [
-              "ORRCA",
-              "MOGEE",
-              "TIPRE",
-              "SYRAH",
-              "ORANG",
-              "FTHIL",
-              "FROGO",
-              "HNW",
-              "FRA"
-            ],
-            "altitude_range": [
-              15000,
-              29000
-            ],
+            "fixes": ["ORRCA", "MOGEE", "TIPRE", "SYRAH", "ORANG", "FTHIL", "FROGO", "HNW", "FRA"],
+            "altitude_range": [15000, 29000],
             "receiving_controller": "4Q"
           }
         ]
@@ -1968,88 +1770,33 @@
         "range": 65,
         "airspace_awareness": [
           {
-            "fixes": [
-              "RBL"
-            ],
-            "altitude_range": [
-              19000,
-              23000
-            ],
+            "fixes": ["RBL"],
+            "altitude_range": [19000, 23000],
             "receiving_controller": "C42"
           },
           {
-            "fixes": [
-              "CINNY",
-              "BEBOP",
-              "SGD",
-              "ENI",
-              "PYE",
-              "SUU",
-              "CCR",
-              "RAGGS",
-              "BURDE"
-            ],
-            "altitude_range": [
-              11000,
-              23000
-            ],
+            "fixes": ["CINNY", "BEBOP", "SGD", "ENI", "PYE", "SUU", "CCR", "RAGGS", "BURDE"],
+            "altitude_range": [11000, 23000],
             "receiving_controller": "C41"
           },
           {
-            "fixes": [
-              "FTHIL",
-              "FROGO",
-              "HNW",
-              "FRA"
-            ],
-            "altitude_range": [
-              19000,
-              29000
-            ],
+            "fixes": ["FTHIL", "FROGO", "HNW", "FRA"],
+            "altitude_range": [19000, 29000],
             "receiving_controller": "C29"
           },
           {
-            "fixes": [
-              "MACUS",
-              "SHUFL",
-              "RALEY",
-              "MVA",
-              "OAL",
-              "DUDES",
-              "DARBI",
-              "MRLET",
-              "SWR"
-            ],
-            "altitude_range": [
-              19000,
-              23000
-            ],
+            "fixes": ["MACUS", "SHUFL", "RALEY", "MVA", "OAL", "DUDES", "DARBI", "MRLET", "SWR"],
+            "altitude_range": [19000, 23000],
             "receiving_controller": "C44"
           },
           {
-            "fixes": [
-              "PYGOW",
-              "CRDDZ",
-              "HALLE",
-              "BLKJK",
-              "LLC",
-              "FMG"
-            ],
-            "altitude_range": [
-              19000,
-              29000
-            ],
+            "fixes": ["PYGOW", "CRDDZ", "HALLE", "BLKJK", "LLC", "FMG"],
+            "altitude_range": [19000, 29000],
             "receiving_controller": "C45"
           },
           {
-            "fixes": [
-              "YERIN",
-              "PEKSE"
-            ],
-            "altitude_range": [
-              19000,
-              23000
-            ],
+            "fixes": ["YERIN", "PEKSE"],
+            "altitude_range": [19000, 23000],
             "receiving_controller": "C46"
           }
         ]
@@ -2144,46 +1891,31 @@
         {
           "name": "Palo Alto",
           "id": "P",
-          "airports": [
-            "KPAO"
-          ]
+          "airports": ["KPAO"]
         },
         {
           "name": "Salinas",
           "id": "Y",
-          "airports": [
-            "KSNS"
-          ]
+          "airports": ["KSNS"]
         },
         {
           "name": "San Carlos",
           "id": "S",
-          "airports": [
-            "KSQL"
-          ]
+          "airports": ["KSQL"]
         },
         {
           "name": "MHR",
           "id": "M",
-          "airports": [
-            "KMHR"
-          ]
+          "airports": ["KMHR"]
         },
         {
           "name": "SAC",
           "id": "Z",
-          "airports": [
-            "KSAC"
-          ]
+          "airports": ["KSAC"]
         }
       ],
       "ssa": {
-        "altimeters": [
-          "KSJC",
-          "KMRY",
-          "KSNS",
-          "KPAO"
-        ]
+        "altimeters": ["KSJC", "KMRY", "KSNS", "KPAO"]
       }
     }
   },

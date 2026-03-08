@@ -276,20 +276,10 @@
           "KBWI/TERPZ8": "1W"
         },
         "default_consolidation": {
-          "1B": [
-            "1W"
-          ],
-          "1G": [
-            "1P"
-          ],
-          "1S": [
-            "1B",
-            "1G",
-            "1N"
-          ],
-          "1W": [
-            "1H"
-          ]
+          "1B": ["1W"],
+          "1G": ["1P"],
+          "1S": ["1B", "1G", "1N"],
+          "1W": ["1H"]
         }
       },
       "MTV": {
@@ -316,23 +306,10 @@
           "KDCA": "1K"
         },
         "default_consolidation": {
-          "1J": [
-            "1E",
-            "1K",
-            "1R",
-            "1V"
-          ],
-          "1K": [
-            "1A",
-            "1D",
-            "1Y"
-          ],
-          "1L": [
-            "1F"
-          ],
-          "1Y": [
-            "1L"
-          ]
+          "1J": ["1E", "1K", "1R", "1V"],
+          "1K": ["1A", "1D", "1Y"],
+          "1L": ["1F"],
+          "1Y": ["1L"]
         }
       },
       "MT2": {
@@ -358,23 +335,10 @@
           "KDCA": "1K"
         },
         "default_consolidation": {
-          "1J": [
-            "1E",
-            "1K",
-            "1R",
-            "1V"
-          ],
-          "1K": [
-            "1A",
-            "1D",
-            "1Y"
-          ],
-          "1L": [
-            "1F"
-          ],
-          "1Y": [
-            "1L"
-          ]
+          "1J": ["1E", "1K", "1R", "1V"],
+          "1K": ["1A", "1D", "1Y"],
+          "1L": ["1F"],
+          "1Y": ["1L"]
         }
       },
       "MT4": {
@@ -398,9 +362,7 @@
           "KDCA": "1K"
         },
         "default_consolidation": {
-          "1K": [
-            "1Y"
-          ]
+          "1K": ["1Y"]
         }
       },
       "MT8": {
@@ -424,12 +386,8 @@
           "IADFW.S DUALS": "3U"
         },
         "default_consolidation": {
-          "3U": [
-            "3S"
-          ],
-          "3X": [
-            "3U"
-          ]
+          "3U": ["3S"],
+          "3X": ["3U"]
         }
       },
       "SHD": {
@@ -439,12 +397,8 @@
           "IADFW.S TRIPS": "3U"
         },
         "default_consolidation": {
-          "3U": [
-            "3S"
-          ],
-          "3X": [
-            "3U"
-          ]
+          "3U": ["3S"],
+          "3X": ["3U"]
         }
       },
       "SH1": {
@@ -463,29 +417,12 @@
           "KIAD": "3T"
         },
         "default_consolidation": {
-          "3A": [
-            "3T"
-          ],
-          "3B": [
-            "3O"
-          ],
-          "3M": [
-            "3A",
-            "3B",
-            "3E",
-            "3G",
-            "3N",
-            "3V"
-          ],
-          "3N": [
-            "3X"
-          ],
-          "3U": [
-            "3S"
-          ],
-          "3X": [
-            "3U"
-          ]
+          "3A": ["3T"],
+          "3B": ["3O"],
+          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
+          "3N": ["3X"],
+          "3U": ["3S"],
+          "3X": ["3U"]
         }
       },
       "SH2": {
@@ -495,12 +432,8 @@
           "IADFW.N DUALS": "3U"
         },
         "default_consolidation": {
-          "3U": [
-            "3S"
-          ],
-          "3X": [
-            "3U"
-          ]
+          "3U": ["3S"],
+          "3X": ["3U"]
         }
       },
       "SH3": {
@@ -510,12 +443,8 @@
           "IADFW.N TRIPS": "3U"
         },
         "default_consolidation": {
-          "3U": [
-            "3S"
-          ],
-          "3X": [
-            "3U"
-          ]
+          "3U": ["3S"],
+          "3X": ["3U"]
         }
       },
       "30X": {
@@ -534,29 +463,12 @@
           "KIAD": "3A"
         },
         "default_consolidation": {
-          "3A": [
-            "3T"
-          ],
-          "3B": [
-            "3O"
-          ],
-          "3M": [
-            "3A",
-            "3B",
-            "3E",
-            "3G",
-            "3N",
-            "3V"
-          ],
-          "3N": [
-            "3X"
-          ],
-          "3U": [
-            "3S"
-          ],
-          "3X": [
-            "3U"
-          ]
+          "3A": ["3T"],
+          "3B": ["3O"],
+          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
+          "3N": ["3X"],
+          "3U": ["3S"],
+          "3X": ["3U"]
         }
       },
       "SH4": {
@@ -575,29 +487,12 @@
           "KIAD": "3A"
         },
         "default_consolidation": {
-          "3A": [
-            "3T"
-          ],
-          "3B": [
-            "3O"
-          ],
-          "3M": [
-            "3A",
-            "3B",
-            "3E",
-            "3G",
-            "3N",
-            "3V"
-          ],
-          "3N": [
-            "3X"
-          ],
-          "3U": [
-            "3S"
-          ],
-          "3X": [
-            "3U"
-          ]
+          "3A": ["3T"],
+          "3B": ["3O"],
+          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
+          "3N": ["3X"],
+          "3U": ["3S"],
+          "3X": ["3U"]
         }
       },
       "12X": {
@@ -616,29 +511,12 @@
           "KIAD": "3T"
         },
         "default_consolidation": {
-          "3A": [
-            "3T"
-          ],
-          "3B": [
-            "3O"
-          ],
-          "3M": [
-            "3A",
-            "3B",
-            "3E",
-            "3G",
-            "3N",
-            "3V"
-          ],
-          "3N": [
-            "3X"
-          ],
-          "3U": [
-            "3S"
-          ],
-          "3X": [
-            "3U"
-          ]
+          "3A": ["3T"],
+          "3B": ["3O"],
+          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
+          "3N": ["3X"],
+          "3U": ["3S"],
+          "3X": ["3U"]
         }
       },
       "JRV": {
@@ -656,20 +534,10 @@
           "KRIC": "2L"
         },
         "default_consolidation": {
-          "2E": [
-            "2W"
-          ],
-          "2L": [
-            "2E",
-            "2F",
-            "2P"
-          ],
-          "2P": [
-            "2M"
-          ],
-          "2M": [
-            "2X"
-          ]
+          "2E": ["2W"],
+          "2L": ["2E", "2F", "2P"],
+          "2P": ["2M"],
+          "2M": ["2X"]
         }
       },
       "JR1": {
@@ -687,20 +555,10 @@
           "KRIC": "2P"
         },
         "default_consolidation": {
-          "2E": [
-            "2W"
-          ],
-          "2L": [
-            "2E",
-            "2F",
-            "2P"
-          ],
-          "2P": [
-            "2M"
-          ],
-          "2M": [
-            "2X"
-          ]
+          "2E": ["2W"],
+          "2L": ["2E", "2F", "2P"],
+          "2P": ["2M"],
+          "2M": ["2X"]
         }
       },
       "PCT": {
@@ -766,77 +624,24 @@
           "KRIC/RVS": "2P"
         },
         "default_consolidation": {
-          "1B": [
-            "1W"
-          ],
-          "1G": [
-            "1P"
-          ],
-          "1S": [
-            "1B",
-            "1G",
-            "1N"
-          ],
-          "1W": [
-            "1H"
-          ],
-          "2E": [
-            "2W"
-          ],
-          "1J": [
-            "1E",
-            "1K",
-            "1R",
-            "1S",
-            "1V",
-            "2L",
-            "3M"
-          ],
-          "1K": [
-            "1A",
-            "1D",
-            "1Y"
-          ],
-          "1L": [
-            "1F"
-          ],
-          "1Y": [
-            "1L"
-          ],
-          "3A": [
-            "3T"
-          ],
-          "3B": [
-            "3O"
-          ],
-          "3M": [
-            "3A",
-            "3B",
-            "3E",
-            "3G",
-            "3N",
-            "3V"
-          ],
-          "3N": [
-            "3X"
-          ],
-          "3U": [
-            "3S"
-          ],
-          "3X": [
-            "3U"
-          ],
-          "2L": [
-            "2E",
-            "2F",
-            "2P"
-          ],
-          "2P": [
-            "2M"
-          ],
-          "2M": [
-            "2X"
-          ]
+          "1B": ["1W"],
+          "1G": ["1P"],
+          "1S": ["1B", "1G", "1N"],
+          "1W": ["1H"],
+          "2E": ["2W"],
+          "1J": ["1E", "1K", "1R", "1S", "1V", "2L", "3M"],
+          "1K": ["1A", "1D", "1Y"],
+          "1L": ["1F"],
+          "1Y": ["1L"],
+          "3A": ["3T"],
+          "3B": ["3O"],
+          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
+          "3N": ["3X"],
+          "3U": ["3S"],
+          "3X": ["3U"],
+          "2L": ["2E", "2F", "2P"],
+          "2P": ["2M"],
+          "2M": ["2X"]
         }
       }
     },
@@ -1193,62 +998,28 @@
     },
     "airspace_awareness": [
       {
-        "fixes": [
-          "RAMAY",
-          "OTTTO"
-        ],
-        "altitude_range": [
-          10000,
-          17000
-        ],
+        "fixes": ["RAMAY", "OTTTO"],
+        "altitude_range": [10000, 17000],
         "receiving_controller": "C01"
       },
       {
-        "fixes": [
-          "SCOOB",
-          "COLIN"
-        ],
-        "altitude_range": [
-          10000,
-          19000
-        ],
+        "fixes": ["SCOOB", "COLIN"],
+        "altitude_range": [10000, 19000],
         "receiving_controller": "C12"
       },
       {
-        "fixes": [
-          "MAULS",
-          "FLASK",
-          "MELTN",
-          "RRSIN",
-          "GLANC"
-        ],
-        "altitude_range": [
-          10000,
-          23000
-        ],
+        "fixes": ["MAULS", "FLASK", "MELTN", "RRSIN", "GLANC"],
+        "altitude_range": [10000, 23000],
         "receiving_controller": "C32"
       },
       {
-        "fixes": [
-          "JERES",
-          "MCRAY"
-        ],
-        "altitude_range": [
-          11000,
-          17000
-        ],
+        "fixes": ["JERES", "MCRAY"],
+        "altitude_range": [11000, 17000],
         "receiving_controller": "1H"
       },
       {
-        "fixes": [
-          "SWANN",
-          "AGARD",
-          "DQO"
-        ],
-        "altitude_range": [
-          10000,
-          19000
-        ],
+        "fixes": ["SWANN", "AGARD", "DQO"],
+        "altitude_range": [10000, 19000],
         "receiving_controller": "C17"
       }
     ],
@@ -1425,62 +1196,28 @@
         ],
         "airspace_awareness": [
           {
-            "fixes": [
-              "RAMAY",
-              "OTTTO"
-            ],
-            "altitude_range": [
-              10000,
-              23000
-            ],
+            "fixes": ["RAMAY", "OTTTO"],
+            "altitude_range": [10000, 23000],
             "receiving_controller": "1L"
           },
           {
-            "fixes": [
-              "SCOOB",
-              "COLIN",
-              "SWANN",
-              "AGARD"
-            ],
-            "altitude_range": [
-              10000,
-              17000
-            ],
+            "fixes": ["SCOOB", "COLIN", "SWANN", "AGARD"],
+            "altitude_range": [10000, 17000],
             "receiving_controller": "1K"
           },
           {
-            "fixes": [
-              "MAULS",
-              "FLASK",
-              "MELTN",
-              "RRSIN",
-              "GLANC"
-            ],
-            "altitude_range": [
-              10000,
-              23000
-            ],
+            "fixes": ["MAULS", "FLASK", "MELTN", "RRSIN", "GLANC"],
+            "altitude_range": [10000, 23000],
             "receiving_controller": "1F"
           },
           {
-            "fixes": [
-              "JERES",
-              "MCRAY"
-            ],
-            "altitude_range": [
-              11000,
-              17000
-            ],
+            "fixes": ["JERES", "MCRAY"],
+            "altitude_range": [11000, 17000],
             "receiving_controller": "1H"
           },
           {
-            "fixes": [
-              "WOOLY"
-            ],
-            "altitude_range": [
-              10000,
-              17000
-            ],
+            "fixes": ["WOOLY"],
+            "altitude_range": [10000, 17000],
             "receiving_controller": "1W"
           }
         ]

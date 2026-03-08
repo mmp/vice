@@ -208,36 +208,14 @@
           "KGXY": "1D"
         },
         "default_consolidation": {
-          "1E": [
-            "1T"
-          ],
-          "1I": [
-            "1H",
-            "1L",
-            "1W",
-            "1X"
-          ],
-          "1J": [
-            "1A",
-            "1D"
-          ],
-          "1L": [
-            "1J",
-            "1N",
-            "1R"
-          ],
-          "1R": [
-            "1S"
-          ],
-          "1T": [
-            "1O"
-          ],
-          "1W": [
-            "1E"
-          ],
-          "1X": [
-            "1G"
-          ]
+          "1E": ["1T"],
+          "1I": ["1H", "1L", "1W", "1X"],
+          "1J": ["1A", "1D"],
+          "1L": ["1J", "1N", "1R"],
+          "1R": ["1S"],
+          "1T": ["1O"],
+          "1W": ["1E"],
+          "1X": ["1G"]
         }
       },
       "FRE": {
@@ -263,13 +241,8 @@
           "Final-TBARR-LN": "1T"
         },
         "default_consolidation": {
-          "1E": [
-            "1O"
-          ],
-          "1W": [
-            "1E",
-            "1T"
-          ]
+          "1E": ["1O"],
+          "1W": ["1E", "1T"]
         }
       },
       "FRS": {
@@ -282,13 +255,8 @@
           "Final-SW-Gates-LS": "1W"
         },
         "default_consolidation": {
-          "1E": [
-            "1O"
-          ],
-          "1W": [
-            "1E",
-            "1T"
-          ]
+          "1E": ["1O"],
+          "1W": ["1E", "1T"]
         }
       },
       "FRW": {
@@ -564,10 +532,7 @@
           "DR LNW",
           "DR LEW"
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1H": {
@@ -611,10 +576,7 @@
           "DR LNW",
           "DR LEW"
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1G": {
@@ -658,10 +620,7 @@
           "DR LNW",
           "DR LEW"
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1X": {
@@ -705,10 +664,7 @@
           "DR LNW",
           "DR LEW"
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1W": {
@@ -752,10 +708,7 @@
           "",
           ""
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1E": {
@@ -799,10 +752,7 @@
           "",
           ""
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1O": {
@@ -846,10 +796,7 @@
           "",
           ""
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1T": {
@@ -893,10 +840,7 @@
           "",
           ""
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1L": {
@@ -940,10 +884,7 @@
           "W SID 17",
           "ALL DEPARTURE SIDS"
         ],
-        "default_maps": [
-          "DR BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["DR BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1N": {
@@ -987,10 +928,7 @@
           "W SID 17",
           "ALL DEPARTURE SIDS"
         ],
-        "default_maps": [
-          "DR BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["DR BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1R": {
@@ -1034,10 +972,7 @@
           "W SID 17",
           "ALL DEPARTURE SIDS"
         ],
-        "default_maps": [
-          "DR BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["DR BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1S": {
@@ -1081,10 +1016,7 @@
           "W SID 17",
           "ALL DEPARTURE SIDS"
         ],
-        "default_maps": [
-          "DR BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["DR BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "5J": {
@@ -1128,10 +1060,7 @@
           "",
           ""
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1D": {
@@ -1175,10 +1104,7 @@
           "",
           ""
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
       "1A": {
@@ -1222,57 +1148,25 @@
           "",
           ""
         ],
-        "default_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT"
-        ],
+        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       }
     },
     "airspace_awareness": [
       {
-        "fixes": [
-          "TEHRU",
-          "HBU",
-          "WERNR",
-          "CONNR",
-          "VOAXA",
-          "CHNGY"
-        ],
+        "fixes": ["TEHRU", "HBU", "WERNR", "CONNR", "VOAXA", "CHNGY"],
         "receiving_controller": "C06"
       },
       {
-        "fixes": [
-          "CHUWY",
-          "DDRTH",
-          "JOBBA",
-          "SAABR",
-          "XXWNG"
-        ],
+        "fixes": ["CHUWY", "DDRTH", "JOBBA", "SAABR", "XXWNG"],
         "receiving_controller": "C21"
       },
       {
-        "fixes": [
-          "EEONS",
-          "WYNDM",
-          "EMMYS",
-          "ZIRKL",
-          "GAETR",
-          "DUUZE",
-          "EXTAN",
-          "SHAYK"
-        ],
+        "fixes": ["EEONS", "WYNDM", "EMMYS", "ZIRKL", "GAETR", "DUUZE", "EXTAN", "SHAYK"],
         "receiving_controller": "C07"
       },
       {
-        "fixes": [
-          "JOPLN",
-          "VRONI",
-          "SLEEK",
-          "DAAYE",
-          "RAITT",
-          "SUDDZ"
-        ],
+        "fixes": ["JOPLN", "VRONI", "SLEEK", "DAAYE", "RAITT", "SUDDZ"],
         "receiving_controller": "C41"
       }
     ],
@@ -1344,37 +1238,27 @@
         {
           "name": "Centennial",
           "id": "A",
-          "airports": [
-            "KAPA"
-          ]
+          "airports": ["KAPA"]
         },
         {
           "name": "Metro",
           "id": "B",
-          "airports": [
-            "KBJC"
-          ]
+          "airports": ["KBJC"]
         },
         {
           "name": "NoCo",
           "id": "C",
-          "airports": [
-            "KFNL"
-          ]
+          "airports": ["KFNL"]
         },
         {
           "name": "Greely",
           "id": "D",
-          "airports": [
-            "KGXY"
-          ]
+          "airports": ["KGXY"]
         },
         {
           "name": "Junction",
           "id": "G",
-          "airports": [
-            "KGJT"
-          ]
+          "airports": ["KGJT"]
         }
       ]
     },

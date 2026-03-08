@@ -810,9 +810,7 @@
         }
       },
       "configuration": "KM1",
-      "default_maps": [
-        "ODO BOS MHT PSM"
-      ],
+      "default_maps": ["ODO BOS MHT PSM"],
       "departure_runways": [
         {
           "airport": "KMHT",
@@ -862,9 +860,7 @@
         }
       },
       "configuration": "KMH",
-      "default_maps": [
-        "ODO BOS MHT PSM"
-      ],
+      "default_maps": ["ODO BOS MHT PSM"],
       "departure_runways": [
         {
           "airport": "KMHT",
