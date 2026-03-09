@@ -871,6 +871,7 @@ func (r FDAMRegions) HaveId(s string) bool {
 }
 
 type STARSController struct {
+	VideoMapFile                    string        `json:"video_map_file,omitempty"`
 	VideoMapNames                   []string      `json:"video_maps"`
 	DefaultMaps                     []string      `json:"default_maps"`
 	Center                          math.Point2LL `json:"-"`

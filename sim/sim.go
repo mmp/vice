@@ -942,14 +942,18 @@ func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, 
 }
 
 // GetControllerVideoMapFile returns the effective video map file for
-// the given TCW by resolving the controller's area and checking for
-// an area-level override.
+// the given TCW by resolving controller > area > facility priority.
 func (s *Sim) GetControllerVideoMapFile(tcw TCW) string {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	fa := &s.State.FacilityAdaptation
 	tcp := s.State.PrimaryPositionForTCW(tcw)
+
+	// Check controller-specific video_map_file first.
+	if config, ok := fa.Controllers[tcp]; ok && config.VideoMapFile != "" {
+		return config.VideoMapFile
+	}
 
 	if ctrl, ok := s.ControlPositions[tcp]; ok {
 		return fa.VideoMapFileForArea(ctrl.Area)

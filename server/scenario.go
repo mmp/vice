@@ -1264,9 +1264,16 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 
 		for tcp, config := range s.Controllers {
-			// Resolve the controller's area to find the appropriate manifest.
+			// Resolve manifest: controller video_map_file > area > facility.
 			ctrlManifest := manifest
-			if ctrl, ok := sg.ControlPositions[tcp]; ok && ctrl.Area != "" {
+			if config.VideoMapFile != "" && mapManifests != nil {
+				if m, ok := mapManifests[config.VideoMapFile]; ok {
+					ctrlManifest = m
+				} else {
+					e.ErrorString(`video_map_file %q for controller %q not found. Options: %s`,
+						config.VideoMapFile, tcp, strings.Join(util.SortedMapKeys(mapManifests), ", "))
+				}
+			} else if ctrl, ok := sg.ControlPositions[tcp]; ok && ctrl.Area != "" {
 				if ac, ok := s.Areas[ctrl.Area]; ok {
 					ctrlManifest = manifestForArea(ac)
 				}

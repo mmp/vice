@@ -1262,11 +1262,20 @@
                                   This takes highest priority, overriding "areas" range and the top-level range.</td>
                               </tr>
                               <tr>
+                                <td>"video_map_file"</td>
+                                <td>String</td>
+                                <td>Overrides the video map file for this controller.
+                                  Takes priority over the area-level and facility-level <code>"video_map_file"</code>.
+                                  Use this when a controller's video maps come from a different file
+                                  than the rest of the facility (e.g., "videomaps/ZBW-videomaps.gob.zst").</td>
+                              </tr>
+                              <tr>
                                 <td>"video_maps"</td>
                                 <td>Array of strings</td>
                                 <td>Specifies which video maps should be displayed
                                   in the DCB for the controller. If specified, these override the area-level "video_maps"
-                                  in "areas".</td>
+                                  in "areas". When "video_map_file" is also specified, the map names are
+                                  validated against that file's manifest.</td>
                               </tr>
                             </tbody>
                           </table>
