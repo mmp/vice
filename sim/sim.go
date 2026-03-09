@@ -63,6 +63,8 @@ type Sim struct {
 
 	// Airport -> runway -> state
 	DepartureState map[string]map[av.RunwayID]*RunwayLaunchState
+	// Airport -> pattern state
+	PatternState map[string]*PatternState
 	// Key is inbound flow group name
 	NextInboundSpawn map[string]time.Time
 	NextVFFRequest   time.Time
@@ -100,6 +102,7 @@ type Sim struct {
 
 	prespawn                 bool
 	prespawnUncontrolledOnly bool
+	prespawnPatternEligible  bool
 
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
@@ -259,6 +262,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
 
 		DepartureState:   make(map[string]map[av.RunwayID]*RunwayLaunchState),
+		PatternState:     make(map[string]*PatternState),
 		NextInboundSpawn: make(map[string]time.Time),
 
 		ControlPositions:     config.ControlPositions,
@@ -1407,8 +1411,32 @@ func (s *Sim) updateState() {
 				}
 
 				if passedWaypoint.Delete() {
-					s.lg.Debug("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
-					s.deleteAircraft(ac)
+					if ac.TouchAndGosRemaining > 0 {
+						// Pattern aircraft: touch-and-go instead of deleting.
+						ac.TouchAndGosRemaining--
+
+						runway := s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport)
+						s.recordPatternTouchAndGo(ac, ac.FlightPlan.ArrivalAirport, runway)
+						s.resetPatternLap(ac)
+						s.lg.Debug("pattern touch-and-go",
+							slog.String("callsign", string(ac.ADSBCallsign)),
+							slog.Int("remaining", ac.TouchAndGosRemaining))
+					} else {
+						if passedWaypoint.VFRPhase != av.VFRPhaseNone {
+							airport := ac.FlightPlan.ArrivalAirport
+							runway := s.bestRunwayForWind(airport)
+							if depState, ok := s.DepartureState[airport]; ok {
+								for rwyID, rwyState := range depState {
+									if rwyID.Base() == runway {
+										rwyState.LastArrivalLandingTime = s.State.SimTime
+										rwyState.LastArrivalFlightRules = ac.FlightPlan.Rules
+									}
+								}
+							}
+						}
+						s.lg.Debug("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
+						s.deleteAircraft(ac)
+					}
 				}
 
 				if passedWaypoint.Land() {
@@ -1418,23 +1446,18 @@ func (s *Sim) updateState() {
 					// If we're more than 200 feet AGL, go around.
 					lowEnough := alt == nil || ac.Altitude() <= alt.TargetAltitude(ac.Altitude())+200
 					if lowEnough {
-						s.lg.Debug("deleting landing at waypoint", slog.Any("waypoint", passedWaypoint))
+						// Determine the runway for sequencing records.
+						var runway string
+						if ac.Nav.Approach.Assigned != nil {
+							runway = ac.Nav.Approach.Assigned.Runway
+						} else {
+							runway = s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport)
+						}
 
-						// Record the landing if necessary for scheduling departures.
+						s.lg.Debug("landing at waypoint", slog.Any("waypoint", passedWaypoint))
+
+						// Record the landing for scheduling departures.
 						if depState, ok := s.DepartureState[ac.FlightPlan.ArrivalAirport]; ok {
-							var runway string
-							if ac.Nav.Approach.Assigned != nil {
-								// IFR aircraft with assigned approach
-								runway = ac.Nav.Approach.Assigned.Runway
-							} else {
-								// VFR aircraft - select best runway based on wind
-								ap := av.DB.Airports[ac.FlightPlan.ArrivalAirport]
-								as := s.wxModel.Lookup(ap.Location, float32(ap.Elevation), s.State.SimTime)
-								if rwy, _ := ap.SelectBestRunway(as.WindDirection(), s.State.MagneticVariation); rwy != nil {
-									runway = rwy.Id
-								}
-							}
-
 							for rwyID, rwyState := range depState {
 								if rwyID.Base() == runway {
 									rwyState.LastArrivalLandingTime = s.State.SimTime
@@ -1447,6 +1470,10 @@ func (s *Sim) updateState() {
 					} else {
 						s.goAround(ac)
 					}
+				}
+
+				if passedWaypoint.SequenceVFRLanding() {
+					s.sequenceVFRLanding(ac)
 				}
 			}
 
@@ -1524,6 +1551,7 @@ func (s *Sim) updateState() {
 		// Check for spacing violations on final approach
 		s.checkFinalApproachSpacing()
 
+		s.updatePatternPhases()
 		s.spawnAircraft()
 
 		s.ERAMComputer.Update(s)
@@ -1589,6 +1617,9 @@ func (s *Sim) requestRandomFlightFollowing() error {
 		}
 		if ac.WillDoAirwork() {
 			// Aircraft doing airwork won't call in for flight following.
+			continue
+		}
+		if ac.TouchAndGosRemaining > 0 {
 			continue
 		}
 

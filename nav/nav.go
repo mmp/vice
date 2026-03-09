@@ -245,7 +245,7 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan,
 	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime time.Time, lg *log.Logger) *Nav {
 	randomizeAltitudeRange := fp.Rules == av.FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, arr.Waypoints, randomizeAltitudeRange, nmPerLongitude,
-		magneticVariation, model, simTime, lg); nav != nil {
+		magneticVariation, lg); nav != nil {
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if arr.AssignedAltitude > 0 {
@@ -272,7 +272,7 @@ func MakeDepartureNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.Aircra
 	assignedAlt, clearedAlt, speedRestriction int, wp []av.Waypoint, randomizeAltitudeRange bool,
 	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime time.Time, lg *log.Logger) *Nav {
 	if nav := makeNav(callsign, fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
-		model, simTime, lg); nav != nil {
+		lg); nav != nil {
 		if assignedAlt != 0 {
 			alt := float32(min(assignedAlt, fp.Altitude))
 			nav.Altitude.Assigned = &alt
@@ -295,7 +295,7 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.Flight
 	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime time.Time, lg *log.Logger) *Nav {
 	randomizeAltitudeRange := fp.Rules == av.FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, of.Waypoints, randomizeAltitudeRange, nmPerLongitude,
-		magneticVariation, model, simTime, lg); nav != nil {
+		magneticVariation, lg); nav != nil {
 		spd := of.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if of.AssignedAltitude > 0 {
@@ -320,8 +320,8 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.Flight
 }
 
 func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerformance, wp []av.Waypoint,
-	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.Model,
-	simTime time.Time, lg *log.Logger) *Nav {
+	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32,
+	lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),
@@ -330,26 +330,18 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 	}
 
 	// Copy the provided waypoints so that any local modifications we make don't pollute the
-	// waypoints stored for the scenario. Try to size the allocation so that reallocation
-	// isn't necessary: for IFR we just have the destination airport to add but for VFR we may
-	// need a number of extra ones to join the pattern and land.
-	nav.Waypoints = make([]av.Waypoint, len(wp)+util.Select(fp.Rules == av.FlightRulesIFR, 1, 12))
+	// waypoints stored for the scenario. Add a small buffer for the destination airport waypoint.
+	nav.Waypoints = make([]av.Waypoint, len(wp)+1)
 	copy(nav.Waypoints, wp)
 
 	av.RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, lg)
 
-	landIdx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Land() })
-	if landIdx != -1 {
-		if fp.Rules == av.FlightRulesIFR {
-			lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
-				slog.Any("flightplan", fp))
-		} else {
-			ap := av.DB.Airports[fp.ArrivalAirport]
-			as := model.Lookup(ap.Location, float32(ap.Elevation), simTime)
-			nav.Waypoints = av.AppendVFRLanding(nav.Waypoints[:landIdx+1], nav.Perf, fp.ArrivalAirport,
-				as.WindDirection(), nmPerLongitude, magneticVariation, lg)
-		}
+	// VFR routes end at their SequenceVFRLanding waypoint; truncate any
+	// trailing slots (including the +1 buffer allocated above).
+	seqIdx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.SequenceVFRLanding() })
+	if seqIdx != -1 {
+		nav.Waypoints = nav.Waypoints[:seqIdx+1]
 	}
 
 	nav.FlightState = FlightState{
@@ -388,13 +380,16 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 		nav.FlightState.ArrivalAirportLocation = ap.Location
 		nav.FlightState.ArrivalAirportElevation = float32(ap.Elevation)
 
-		// Squirrel away the arrival airport as a fix and add it to the end
-		// of the waypoints.
 		nav.FlightState.ArrivalAirport = av.Waypoint{
 			Fix:      fp.ArrivalAirport,
 			Location: ap.Location,
 		}
-		nav.Waypoints = append(nav.Waypoints, nav.FlightState.ArrivalAirport)
+		// VFR routes with SequenceVFRLanding get dynamic landing
+		// waypoints when they reach the sequencing point; don't
+		// append the arrival airport after it.
+		if seqIdx == -1 {
+			nav.Waypoints = append(nav.Waypoints, nav.FlightState.ArrivalAirport)
+		}
 	}
 
 	return nav

@@ -433,6 +433,8 @@ func (s *Sim) Prespawn() {
 	for i := range initialSimSeconds {
 		// Controlled only at the tail end.
 		s.prespawnUncontrolledOnly = i < initialSimSeconds-initialSimControlledSeconds
+		// Pattern aircraft only need a few minutes to get established.
+		s.prespawnPatternEligible = i >= initialSimSeconds-180
 
 		// At the transition to controlled mode, clear Prespawn for IFR
 		// aircraft so they resume full-fidelity simulation.
@@ -452,7 +454,7 @@ func (s *Sim) Prespawn() {
 	for _, ac := range s.Aircraft {
 		ac.Nav.Prespawn = false
 	}
-	s.prespawnUncontrolledOnly, s.prespawn = false, false
+	s.prespawnUncontrolledOnly, s.prespawn, s.prespawnPatternEligible = false, false, false
 
 	s.lastUpdateTime = time.Now()
 
@@ -521,6 +523,11 @@ func (s *Sim) setInitialSpawnTimes(now time.Time) {
 			}
 			state.VFRSpawnRate = scaleRate(vfrRate, s.State.LaunchConfig.VFRDepartureRateScale)
 			state.NextVFRSpawn = randomDelay(state.VFRSpawnRate)
+
+			// Initialize pattern state for airports with VFR activity
+			s.PatternState[name] = &PatternState{
+				NextSpawn: now.Add(randomWait(patternSpawnRate, false, s.Rand)),
+			}
 		}
 	}
 }
@@ -590,6 +597,11 @@ func (s *Sim) spawnAircraft() {
 	}
 	if s.State.LaunchConfig.DepartureMode == LaunchAutomatic {
 		s.spawnDepartures()
+	}
+	// Pattern aircraft complete a lap in well under a minute, so only
+	// spawn them during the last 3 minutes of prespawn (and always after).
+	if !s.prespawn || s.prespawnPatternEligible {
+		s.spawnPatternAircraft()
 	}
 	s.updateDepartureSequence()
 }

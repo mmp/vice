@@ -119,6 +119,8 @@ type Aircraft struct {
 	TrafficInSight      bool      // True if aircraft has reported traffic in sight
 	TrafficInSightTime  time.Time // When traffic was reported in sight
 	TrafficLookingUntil time.Time // If non-zero, aircraft may report traffic in sight before this time
+
+	TouchAndGosRemaining int // >0 means pattern aircraft; decremented each lap
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {

@@ -183,7 +183,7 @@ func (s *Sim) launchSequencedDeparture(depState *RunwayLaunchState, airport stri
 	}
 
 	considerExit := len(depState.Sequenced) == 1
-	if !s.canLaunch(depState, depState.Sequenced[0], considerExit, depRunway) {
+	if !s.canLaunch(depState, depState.Sequenced[0], considerExit, airport, depRunway) {
 		return
 	}
 
@@ -256,7 +256,7 @@ func (s *Sim) sameGroupRunways(airport string, depRwy av.RunwayID) iter.Seq2[av.
 }
 
 // canLaunch checks whether we can go ahead and launch dep.
-func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, considerExit bool, runway av.RunwayID) bool {
+func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, considerExit bool, airport string, runway av.RunwayID) bool {
 	// Check if departures are held due to a go-around
 	if s.State.SimTime.Before(depState.GoAroundHoldUntil) {
 		return false
@@ -296,6 +296,11 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 				return false
 			}
 		}
+	}
+
+	// Don't launch yet if a pattern aircraft is about to land or just departed.
+	if s.patternConflictsWithLaunch(airport) {
+		return false
 	}
 
 	return true
@@ -687,7 +692,10 @@ func makeDepartureAircraft(ac *Aircraft, simTime time.Time, model *wx.Model, r *
 
 func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, routeWps []av.Waypoint, simTime time.Time) (*Aircraft, string, error) {
 	depap, arrap := av.DB.Airports[depart], av.DB.Airports[arrive]
-	rwy := s.State.VFRRunways[depart]
+	rwy, _, ok := s.currentVFRRunway(depart)
+	if !ok {
+		return nil, "", fmt.Errorf("%s: unable to find current VFR runway", depart)
+	}
 
 	ac, acType := s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, depart, arrive, s.lg)
 	if ac == nil {
@@ -716,7 +724,10 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	mid := math.Mid2f(depap.Location, arrap.Location)
 	if arrive == depart {
 		dist := float32(10 + s.Rand.Intn(20))
-		hdg := float32(1 + s.Rand.Intn(360))
+		// Bias heading to within ±90° of the departure runway heading so
+		// the aircraft flies away from the airport before sightseeing,
+		// rather than immediately looping back over the field.
+		hdg := rwy.Heading + float32(-90+s.Rand.Intn(181))
 		v := [2]float32{dist * math.Sin(math.Radians(hdg)), dist * math.Cos(math.Radians(hdg))}
 		dnm := math.LL2NM(depap.Location, s.State.NmPerLongitude)
 		midnm := math.Add2f(dnm, v)
@@ -827,7 +838,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	// Adjust route for MVA requirements
 	wps = s.adjustRouteForMVA(string(ac.ADSBCallsign), wps)
 
-	wps[len(wps)-1].SetLand(true)
+	wps[len(wps)-1].SetSequenceVFRLanding(true)
 
 	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, randomizeAltitudeRange,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, simTime, s.lg); err != nil {
@@ -843,7 +854,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		simNav.FlightState.Altitude, simTime)
 	for i := range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
 		if wp := simNav.UpdateWithWeather("", prespawnWxs, &simFP,
-			simTime, nil); wp != nil && wp.Delete() {
+			simTime, nil); wp != nil && (wp.Delete() || wp.SequenceVFRLanding()) {
 			return ac, rwy.Id, nil
 		}
 
