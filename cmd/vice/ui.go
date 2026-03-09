@@ -83,10 +83,6 @@ func imguiInit() *imgui.Context {
 	io := imgui.CurrentIO()
 	io.SetConfigFlags(io.ConfigFlags() | imgui.ConfigFlagsViewportsEnable)
 
-	// Prevent subwindows from merging back into the main viewport when
-	// they overlap it; they are always separate OS windows.
-	io.SetConfigViewportsNoAutoMerge(true)
-
 	// Disable the nav windowing popup (Ctrl+Tab/Cmd+Tab window switcher) by
 	// clearing the shortcut keys that trigger it.
 	context.SetConfigNavWindowingKeyNext(imgui.KeyChord(imgui.KeyNone))
