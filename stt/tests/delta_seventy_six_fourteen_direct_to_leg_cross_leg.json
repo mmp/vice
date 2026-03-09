@@ -1,0 +1,264 @@
+{
+  "time": "2026-03-07T02:45:33.456175227Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:672:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta Seventy Six Fourteen direct to leg cross leg at four thousandth",
+  "whisper_duration_ms": 204.331,
+  "audio_duration_ms": 3656,
+  "processor": "GPU: NVIDIA GeForce RTX 3070 (8232MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "DAL7614",
+  "command": "DLLEGG CLLEGG/A40",
+  "stt_aircraft": {
+    "Delta 76 14": {
+      "Callsign": "DAL7614",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Art": "ARRTT",
+        "Asere": "ACERE",
+        "Aspen": "ASPPN",
+        "Frogz": "FROGZ",
+        "Ines": "INESS",
+        "Jamas": "JAMAS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "PB Jay": "PBJAY",
+        "grit": "GRITT",
+        "scar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 14465,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "JetBlue 92": {
+      "Callsign": "JBU92",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Adobe": "ADUBE",
+        "Bahia": "BHHIA",
+        "Bezer": "BEZER",
+        "Blame": "BLAIM",
+        "Bunker": "BUNKR",
+        "Fort Lauderdale": "FLL",
+        "Hulky": "HULKY",
+        "Kera": "KERRA",
+        "Lori": "LORII",
+        "Twinkle": "TWNKL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10R",
+      "SID": "",
+      "STAR": "BHHIA3",
+      "Altitude": 12878,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Lan Chile six 64": {
+      "Callsign": "LAN664",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Haslam": "HASLM",
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "Morea": "MOREA",
+        "grit": "GRITT",
+        "sandbar": "SNDBR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 14307,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta Seventy Six Fourteen direct to leg cross leg at four thousandth\"",
+    "[local-stt] normalized words: [delta 76 14 direct to leg cross leg at 4 thousandth]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"76\" Type=1 Value=76",
+    "[local-stt]   token[2]: Text=\"14\" Type=1 Value=14",
+    "[local-stt]   token[3]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"leg\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"cross\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"leg\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"40\" Type=2 Value=40",
+    "[local-stt] MatchCallsign: 10 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 10 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Delta 76 14\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Delta 76 14\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Delta 76 14\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Delta 76 14\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"JetBlue 92\" (airline=0.565, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta 76 14\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta 76 14\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Delta 76 14\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Delta 76 14\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"DAL7614\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Delta 76 14\")",
+    "[local-stt] callsign match: Callsign=\"DAL7614\" SpokenKey=\"Delta 76 14\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=14465 Fixes=11 Approaches=3 AssignedApproach=\"ILS Runway 9\" LAHSORunways=[8L 26R 8R 26L 9 27 12 30 12 30]",
+    "[local-stt]   fix: \"PB Jay\" -\u003e \"PBJAY\"",
+    "[local-stt]   fix: \"Asere\" -\u003e \"ACERE\"",
+    "[local-stt]   fix: \"Leg\" -\u003e \"LLEGG\"",
+    "[local-stt]   fix: \"Miami\" -\u003e \"KMIA\"",
+    "[local-stt]   fix: \"grit\" -\u003e \"GRITT\"",
+    "[local-stt]   fix: \"Art\" -\u003e \"ARRTT\"",
+    "[local-stt]   fix: \"Aspen\" -\u003e \"ASPPN\"",
+    "[local-stt]   fix: \"scar\" -\u003e \"SCHAR\"",
+    "[local-stt]   fix: \"Ines\" -\u003e \"INESS\"",
+    "[local-stt]   fix: \"Jamas\" -\u003e \"JAMAS\"",
+    "[local-stt]   fix: \"Frogz\" -\u003e \"FROGZ\"",
+    "[local-stt]   approach: \"I L S runway one two\" -\u003e \"I12\"",
+    "[local-stt]   approach: \"r-nav runway eight left\" -\u003e \"R8L\"",
+    "[local-stt]   approach: \"I L S runway niner\" -\u003e \"I9\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"leg\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"cross\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"leg\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"40\" Type=2 Value=40",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"DLLEGG\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"CLLEGG/A40\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[DLLEGG CLLEGG/A40] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DLLEGG CLLEGG/A40] (conf=1.00)",
+    "[local-stt] validated commands: [DLLEGG CLLEGG/A40] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL7614 DLLEGG CLLEGG/A40\" (conf=1.00, time=1.0011ms) ==="
+  ]
+}
