@@ -955,44 +955,49 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		}
 
 		// Whisper model selection dropdown
-		if modelName := client.GetWhisperModelName(); modelName != "" {
-			imgui.Text("Model:")
-			imgui.SameLine()
+		imgui.Text("Model:")
+		imgui.SameLine()
+		modelName := client.GetWhisperModelName()
+		var displayName string
+		if modelName != "" {
 			// Format display name (remove ggml- prefix and .bin suffix for readability)
-			displayName := modelName
-			displayName = strings.TrimPrefix(displayName, "ggml-")
+			displayName = strings.TrimPrefix(modelName, "ggml-")
 			displayName = strings.TrimSuffix(displayName, ".bin")
-			if imgui.BeginComboV("##whispermodel", displayName, 0) {
-				// Auto option runs benchmark
-				if imgui.SelectableBoolV("Auto (Benchmark)", false, 0, imgui.Vec2{}) {
-					client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
-						config.WhisperModelName = modelName
-						config.WhisperDeviceID = deviceID
-						config.WhisperBenchmarkIndex = benchmarkIndex
-						config.WhisperRealtimeFactor = realtimeFactor
-					})
-					benchClient := &rebenchmarkModalClient{config: config, lg: lg}
-					uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
-				}
-				imgui.Separator()
-				// Individual model options
-				for _, model := range client.GetWhisperModelTiers() {
-					modelDisplay := strings.TrimPrefix(model, "ggml-")
-					modelDisplay = strings.TrimSuffix(modelDisplay, ".bin")
-					isSelected := model == modelName
-					if imgui.SelectableBoolV(modelDisplay, isSelected, 0, imgui.Vec2{}) {
-						if model != modelName {
-							client.SelectWhisperModel(lg, model, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
-								config.WhisperModelName = modelName
-								config.WhisperDeviceID = deviceID
-								config.WhisperBenchmarkIndex = benchmarkIndex
-								config.WhisperRealtimeFactor = realtimeFactor
-							})
-						}
+		} else if !client.IsWhisperBenchmarkDone() {
+			displayName = client.GetWhisperBenchmarkStatus()
+		} else {
+			displayName = "(no model)"
+		}
+		if imgui.BeginComboV("##whispermodel", displayName, 0) {
+			// Auto option runs benchmark
+			if imgui.SelectableBoolV("Auto (Benchmark)", false, 0, imgui.Vec2{}) {
+				client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
+					config.WhisperModelName = modelName
+					config.WhisperDeviceID = deviceID
+					config.WhisperBenchmarkIndex = benchmarkIndex
+					config.WhisperRealtimeFactor = realtimeFactor
+				})
+				benchClient := &rebenchmarkModalClient{config: config, lg: lg}
+				uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
+			}
+			imgui.Separator()
+			// Individual model options
+			for _, model := range client.GetWhisperModelTiers() {
+				modelDisplay := strings.TrimPrefix(model, "ggml-")
+				modelDisplay = strings.TrimSuffix(modelDisplay, ".bin")
+				isSelected := model == modelName
+				if imgui.SelectableBoolV(modelDisplay, isSelected, 0, imgui.Vec2{}) {
+					if model != modelName {
+						client.SelectWhisperModel(lg, model, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
+							config.WhisperModelName = modelName
+							config.WhisperDeviceID = deviceID
+							config.WhisperBenchmarkIndex = benchmarkIndex
+							config.WhisperRealtimeFactor = realtimeFactor
+						})
 					}
 				}
-				imgui.EndCombo()
 			}
+			imgui.EndCombo()
 		}
 
 		if p.IsAudioRecording() && !ui.testPTTActive {

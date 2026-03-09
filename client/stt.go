@@ -789,6 +789,15 @@ func WhisperModelError() error {
 	return whisperModelErr
 }
 
+// GetWhisperModelError returns the model loading error without blocking.
+// Returns nil if benchmarking is still in progress or if no error occurred.
+func GetWhisperModelError() error {
+	if !IsWhisperBenchmarkDone() {
+		return nil
+	}
+	return whisperModelErr
+}
+
 // IsSTTAvailable returns true if speech-to-text is available.
 // This blocks until the whisper model finishes loading.
 func IsSTTAvailable() bool {
