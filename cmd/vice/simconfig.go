@@ -464,7 +464,7 @@ func formatFacilityLabel(facility string) string {
 // getAreaKey returns the area identifier for grouping scenarios.
 // For TRACONs, returns the groupName; for ARTCCs, returns the trimmed Area field.
 func getAreaKey(facility, groupName string, catalog *server.ScenarioCatalog) string {
-	if av.DB.IsTRACON(facility) || av.DB.IsARTCC(facility) {
+	if av.DB.IsTRACON(facility) {
 		return groupName
 	}
 	return trimFacilityName(catalog.Area, "Area")
