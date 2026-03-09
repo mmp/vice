@@ -655,9 +655,9 @@ func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty
 	radioSeed := uint32(util.HashString64(string(callsign)))
 	if pcm, err := tts.SynthesizeContactTTS(text, voice, radioSeed); err != nil {
 		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)
-		return
 	} else if pcm != nil {
 		c.lg.Infof("Synthesized contact for %s: %q (%d samples)", callsign, text, len(pcm))
 		c.transmissions.EnqueueTransmissionPCM(callsign, ty, pcm)
 	}
+	c.transmissions.SetContactRequested(false)
 }
