@@ -201,6 +201,13 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 	s.STARSComputer.HoldForRelease = slices.DeleteFunc(s.STARSComputer.HoldForRelease,
 		func(a *Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })
 
+	// Clean up pattern state
+	for _, ps := range s.PatternState {
+		ps.Aircraft = slices.DeleteFunc(ps.Aircraft, func(pa PatternAircraft) bool {
+			return pa.ADSBCallsign == ac.ADSBCallsign
+		})
+	}
+
 	fp := ac.NASFlightPlan
 	if fp == nil {
 		fp = s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign))

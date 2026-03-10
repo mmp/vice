@@ -532,7 +532,17 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		if len(spec.Waypoints) == 0 {
 			e.ErrorString(`must specify "waypoints"`)
 		} else {
-			spec.Waypoints[len(spec.Waypoints)-1].SetLand(true)
+			// Convert any /land from route parsing to SequenceVFRLanding;
+			// we know these are VFR routes so Land is never appropriate.
+			for j := range spec.Waypoints {
+				if spec.Waypoints[j].Land() {
+					spec.Waypoints[j].SetLand(false)
+					spec.Waypoints[j].SetSequenceVFRLanding(true)
+				}
+			}
+			// Ensure the last waypoint always has it, even if /land
+			// wasn't specified in the route.
+			spec.Waypoints[len(spec.Waypoints)-1].SetSequenceVFRLanding(true)
 		}
 		if _, ok := DB.Airports[spec.Destination]; !ok {
 			e.ErrorString("Destination airport %q unknown", spec.Destination)
