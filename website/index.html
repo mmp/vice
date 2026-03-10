@@ -1499,7 +1499,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.14.0/Vice-v0.14.0-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.0 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.14.1/Vice-v0.14.1-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.1 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1508,7 +1508,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.14.0/Vice-v0.14.0-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.0 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.14.1/Vice-v0.14.1-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.1 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1537,9 +1537,11 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
-            <h3 id="release-0.14.1">0.14.1 (TBD)</h3>
+            <h3 id="release-0.14.1">0.14.1 (9 Mar 2026)</h3>
             <ul>
-              <li>New scenario: ZJX Consolidated (Jake Magee).</li>
+              <li>New scenarios: ZJX Consolidated (Jake Magee), ZNY Area B (Ryan G), ZJX areas 11 + 21 (manaphy), ZJX areas 14 + 15 (Michael Knight).</li>
+              <li>Scenario updates: ZLA and ZHN (Ketan K), ZNY area A (Ryan G), JFK4 finals (Ryan G).</li>
+              <li>Updated to latest AIRAC (Michael Knight).</li>
               <li>Long requested: you can actually move sub-windows outside of the main window.
                 <ul>
                   <li>The flight strip and messages windows are now sub-windows and now its just the radar scope in the main window.</li>
@@ -1548,36 +1550,46 @@ how it simulates aircraft or the STARS interface.
               <li>Text to speech now runs locally on your computer rather than in the cloud.</li>
               <li>Added ATIS simulation: see the ATIS/METAR tab in the scenario info window for what's current.
                 <ul>
-              <li>Aircraft will call in with the current ATIS; if it's changed and they call in with the old one, STT supports "information X is now current," "advise you have information X", etc., or with the keyboard you can issue the command <code>ATIS/X</code> to tell them X is current.</li>
+                  <li>Aircraft will call in with the current ATIS; if it's changed and they call in with the old one, STT supports "information X is now current," "advise you have information X", etc., or with the keyboard you can issue the command <code>ATIS/X</code> to tell them X is current.</li>
                 </ul>
               </li>
               <li>Lots of small improvements to speech-to-text.</li>
+              <li>Improved simulation of radio static / distortion.</li>
+              <li>Added PTT test button (shows strength, plays back as it records).</li>
               <li>ERAM
                 <ul>
-                  <li>Added support for giving aircraft speeds in mach (Michael Trokel)</li>
+                  <li>Added support for giving aircraft speeds in mach (Michael Trokel).</li>
                 </ul>
               </li>
               <li>Bugfixes:
                 <ul>
                   <li>Handle Pacific "P" and Carribean "T" airports better.</li>
-                  <li>Use sim time, not wallclock time for delayed heading changes so it works better when sped up (Jordan Williams).</li>
+                  <li>Use sim time, not wallclock time for delayed changes heading so it works better when sped up (Jordan Williams).</li>
                   <li>"CSI" for cleared straight in approach without specifying the approach works now.</li>
                   <li>STARS force quicklook was unintentionally being applied to all controllers.</li>
                   <li>Handing off tracks before they call in should work better; they will still call in to your frequency first.</li>
                   <li>Fixed long stalls after clicking a new ARTCC/TRACON in the new sim window.</li>
                   <li>Fixed issues with crosswinds pushing aircraft off of the localizer/final approach course.</li>
                   <li>Fixed longstanding bug where aircraft sent direct to a fix on an approach but not cleared would start descending anyway (Jordan Williams).</li>
-                  <li>Fixed bug where aircraft couldn't climb past FL322.</li>
+                  <li>Fixed bug where aircraft couldn't climb past FL332.</li>
+                  <li>Fixed bug with ERAM cursor not displaying and STARS cursor disappearing over the DCB.</li>
+                  <li>Fixed bug with characters doubled up in text entry boxes (Jordan Williams).</li>
+                  <li>Fixed bug that caused delayed readbacks after contact transmissions.</li>
+                  <li>Fixed bug with departures not being climbed by virtual controllers.</li>
+                  <li>STARS DCBs are scaled better on screens where they don't fit normally.</li>
                 </ul>
               </li>
               <li>Flight strips have been reworked; right click to get a menu to push them to the next controller.</li>
               <li>Facility engineering updates:
                 <ul>
-                  <li>Major rework of how facility-specific data is managed; see (Michael Trokel)</li>
+                  <li>Major rework of how facility-specific data is managed (Michael Trokel).</li>
                   <li>Added support for STARS FDAM (flight data auto-modify) filters: this allows setting things like scratchpad, leader line direction, for (selected) aircraft in a filter region.</li>
                   <li>Added qualifying attributes to quicklook filter regions: it can now depend on owning TCP, scratchpad, flight type, flight rules, CWT category, and a bunch of other things.</li>
                   <li>CRDA: no longer has to be tied to runways. Paths can include arcs and don't have to be straight lines. Convergence points can be arbitrary, don't have to be runway intersections.</li>
-                  <li>Added "go_around" object to "arrival_runways" specifiers: can specify heading, altitude, and handoff controller for each arrival runway.</li>
+                  <li>Added "go_around" object to "arrival_runways" specifiers: can specify heading, altitude, and handoff controller for each arrival runway. If spacing is too tight on final, tower will send the trailing aircraft around.</li>
+                  <li>The default "max_distance" for ARTCC scenarios is now 400nm.</li>
+                  <li>Departures/arrivals can be assigned specific callsigns, not just an airline ICAO (Michael Trokel).</li>
+                  <li>"areas" can now have video_maps, video_map_file, center, and radius.</li>
                   <li>Added "monitor" option under "config" in facility configuration types to specify a display monitor type to simulate;
                     for STARS this determines the color scheme. Options are "legacy", "mdm3", and "mdm4".</li>
                 </ul>
