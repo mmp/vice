@@ -409,7 +409,37 @@ func PhoneticMatch(w1, w2 string) bool {
 		}
 	}
 
+	// Subsequence matching: handles STT errors that interleave extra sounds
+	// throughout a word (e.g., "lampstand" LMPSTNT contains "lobstah" LPST
+	// as a subsequence). All core phonetic elements are preserved in order.
+	// Guards: shorter code >= 4 chars, at least 2 extra chars in longer code
+	// (to avoid near-identical pairs like "claimed" KLMT / "climbed" KLMPT),
+	// same first char, and JW >= 0.70.
+	if minPLen >= 4 && maxPLen-minPLen >= 2 {
+		shorter, longer := p1, p2
+		if len(p1) > len(p2) {
+			shorter, longer = p2, p1
+		}
+		if shorter[0] == longer[0] && isSubsequence(shorter, longer) {
+			if JaroWinkler(w1, w2) >= 0.70 {
+				return true
+			}
+		}
+	}
+
 	return false
+}
+
+// isSubsequence returns true if every character of short appears in long
+// in order (not necessarily contiguously).
+func isSubsequence(short, long string) bool {
+	si := 0
+	for li := 0; li < len(long) && si < len(short); li++ {
+		if short[si] == long[li] {
+			si++
+		}
+	}
+	return si == len(short)
 }
 
 // fuzzyMatchBlocklist contains pairs of words that should NOT fuzzy-match.
