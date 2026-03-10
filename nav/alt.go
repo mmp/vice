@@ -290,6 +290,13 @@ func (nav *Nav) TargetAltitude() (float32, float32) {
 				// necessary. (But then go a little faster than we think we
 				// need to, to be safe.)
 				return c.Altitude, rate * 1.5
+			} else if ar := nav.Altitude.Restriction; ar != nil {
+				// We haven't reached the point where we'd normally
+				// start descending for the next fix, but we have a
+				// carried restriction from a previously-passed fix
+				// that wasn't met. Continue descending toward it
+				// immediately rather than leveling off.
+				return ar.TargetAltitude(nav.FlightState.Altitude), MaximumRate
 			} else {
 				// Stay where we are for now.
 				return nav.FlightState.Altitude, 0

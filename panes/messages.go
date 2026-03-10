@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"slices"
 	"strings"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
@@ -44,6 +45,7 @@ type MessagesPane struct {
 	messages         []Message
 	alertAudioIndex  map[string]int
 	shouldAutoScroll bool
+	lastDrawTime     time.Time
 }
 
 func NewMessagesPane() *MessagesPane {
@@ -118,7 +120,14 @@ func (msg *Message) ImguiColor() imgui.Vec4 {
 }
 
 func (mp *MessagesPane) DrawWindow(show *bool, c *client.ControlClient, p platform.Platform, lg *log.Logger) {
-	mp.processEvents(c, p, lg)
+	// Only play sounds if the window has been continuously visible. If
+	// more than 250ms have elapsed since the last DrawWindow call, we
+	// must have missed frames (window was hidden), so drain accumulated
+	// events silently to avoid spamming audio for the backlog.
+	now := time.Now()
+	playSound := !mp.lastDrawTime.IsZero() && now.Sub(mp.lastDrawTime) < 250*time.Millisecond
+	mp.lastDrawTime = now
+	mp.processEvents(playSound, c, p, lg)
 
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{4096, 4096})
 	if mp.font != nil {
@@ -145,9 +154,10 @@ func (mp *MessagesPane) DrawWindow(show *bool, c *client.ControlClient, p platfo
 	if mp.font != nil {
 		imgui.PopFont()
 	}
+
 }
 
-func (mp *MessagesPane) processEvents(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
+func (mp *MessagesPane) processEvents(playSound bool, c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	for _, event := range mp.events.Get() {
 		switch event.Type {
 		case sim.RadioTransmissionEvent:
@@ -166,7 +176,7 @@ func (mp *MessagesPane) processEvents(c *client.ControlClient, p platform.Platfo
 			var msg Message
 			if event.RadioTransmissionType == av.RadioTransmissionContact {
 				msg = Message{contents: prefix + event.WrittenText}
-				if mp.ContactTransmissionsAlert {
+				if playSound && mp.ContactTransmissionsAlert {
 					p.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
 				}
 			} else {
@@ -177,7 +187,7 @@ func (mp *MessagesPane) processEvents(c *client.ControlClient, p platform.Platfo
 					contents: prefix + event.WrittenText,
 					error:    event.RadioTransmissionType == av.RadioTransmissionUnexpected || event.RadioTransmissionType == av.RadioTransmissionMixUp,
 				}
-				if mp.ReadbackTransmissionsAlert {
+				if playSound && mp.ReadbackTransmissionsAlert {
 					p.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
 				}
 			}

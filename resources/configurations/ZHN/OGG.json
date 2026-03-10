@@ -16,7 +16,7 @@
       "radio_name": "Maui Tower"
     }
   },
-  "config": {
+  "facility_adaptations": {
     "configurations": {
       "CF1": {
         "inbound_assignments": {
@@ -29,7 +29,7 @@
           "PHOG": "1N"
         },
         "default_consolidation": {
-          "1N": ["1S"]
+          "1S": ["1N"]
         }
       },
       "CF2": {
@@ -43,12 +43,12 @@
           "PHOG": "1S"
         },
         "default_consolidation": {
-          "1N": ["1S"]
+          "1S": ["1N"]
         }
       }
     },
     "center": "OGG",
-    "controller_configs": {
+    "controllers": {
       "1S": {
         "flight_following_airspace": [
           {
@@ -271,35 +271,6 @@
         "short_name": "PAL"
       }
     },
-    "stars_maps": [
-      "OGG TRACON",
-      "OGG MVA__MAUI MINIMUM VEC ALT",
-      "TRACON__TRACON OUTLINES",
-      "OGG RVM__MAUI RADAR VEC MAP",
-      "SPLIT__TRACON SPLITS",
-      "COAST__COASTLINES",
-      "ARWYS__AIRWAYS",
-      "CTR__CENTER SPLITS",
-      "OGG_FIX_ARR",
-      "OGG_FIX_I2",
-      "OGG_FIX_R2",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "APRTS__AIRPORTS",
-      "ZHN Airspace Classes",
-      "",
-      "OGG_FIX_20",
-      "OGG_FIX_23"
-    ],
     "video_map_file": "videomaps/ZHN-videomaps.gob.zst",
     "coordination_fixes": {
       "BARBY": [
@@ -337,6 +308,39 @@
           "from": "ZHN"
         }
       ]
+    },
+    "areas": {
+      "1": {
+        "video_maps": [
+          "OGG TRACON",
+          "OGG MVA__MAUI MINIMUM VEC ALT",
+          "TRACON__TRACON OUTLINES",
+          "OGG RVM__MAUI RADAR VEC MAP",
+          "SPLIT__TRACON SPLITS",
+          "COAST__COASTLINES",
+          "ARWYS__AIRWAYS",
+          "CTR__CENTER SPLITS",
+          "OGG_FIX_ARR",
+          "OGG_FIX_I2",
+          "OGG_FIX_R2",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "APRTS__AIRPORTS",
+          "ZHN Airspace Classes",
+          "",
+          "OGG_FIX_20",
+          "OGG_FIX_23"
+        ]
+      }
     }
   },
   "handoff_ids": [

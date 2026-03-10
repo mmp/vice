@@ -1,0 +1,621 @@
+{
+  "time": "2026-03-08T14:17:53.021272558Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:858:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Endeavor Thirty Forty Seven at Golfs cleared ILS runway one seven left approach maintain one seven zero knots till five mile five",
+  "whisper_duration_ms": 509.656,
+  "audio_duration_ms": 6984,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "EDV3047",
+  "command": "AGOLFS/CI7L S170/U5",
+  "stt_aircraft": {
+    "American 16 71": {
+      "Callsign": "AAL1671",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Dawks": "DAWKS",
+        "Filum": "FILUM",
+        "Flap": "FLAPP",
+        "Iveyi": "IVEYI",
+        "Roha": "ROHAA",
+        "Will Rogers World": "KOKC"
+      },
+      "CandidateApproaches": {
+        "I L S runway one seven left": "I7L",
+        "I L S runway one seven right": "I7R",
+        "r-nav yankee runway one seven left": "Y7L",
+        "r-nav yankee runway one seven right": "Y7R",
+        "r-nav zulu runway one seven left": "Z7L",
+        "r-nav zulu runway one seven right": "Z7R"
+      },
+      "ApproachFixes": {
+        "I7L": {
+          "Atrec": "ATREC",
+          "Hangs": "HANGS",
+          "golfs": "GOLFS"
+        },
+        "I7R": {
+          "Filum": "FILUM",
+          "Iveyi": "IVEYI",
+          "Roha": "ROHAA"
+        },
+        "Y7L": {
+          "Atrec": "ATREC",
+          "Biskt": "BISKT",
+          "Dawks": "DAWKS",
+          "Hangs": "HANGS",
+          "Ruriq": "RURIQ",
+          "beery": "BEERY",
+          "golfs": "GOLFS"
+        },
+        "Y7R": {
+          "Biskt": "BISKT",
+          "Cotox": "COTOX",
+          "Filum": "FILUM",
+          "Iveyi": "IVEYI",
+          "Roha": "ROHAA"
+        },
+        "Z7L": {
+          "Adwow": "ADWOW",
+          "Atrec": "ATREC",
+          "Donmo": "DONMO",
+          "Flap": "FLAPP",
+          "Hamdo": "HAMDO",
+          "Hypes": "HIPES",
+          "Isake": "ISAKE",
+          "Jinta": "JINTA",
+          "Merty": "MERTE",
+          "Palmer": "PALMR",
+          "Siwhu": "SIWHU",
+          "golfs": "GOLFS",
+          "story": "SCORY",
+          "will": "WWILL",
+          "woovma": "WUVMA"
+        },
+        "Z7R": {
+          "Adwow": "ADWOW",
+          "Cole": "COLWE",
+          "Filum": "FILUM",
+          "Flap": "FLAPP",
+          "Harer": "HARER",
+          "Hypes": "HIPES",
+          "Isake": "ISAKE",
+          "Jildi": "JILDI",
+          "Mabku": "MABCU",
+          "Merty": "MERTE",
+          "Palmer": "PALMR",
+          "Pros": "PROSS",
+          "Roha": "ROHAA",
+          "will": "WWILL",
+          "woovma": "WUVMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 17R",
+      "SID": "",
+      "STAR": "CAMET3",
+      "Altitude": 11419,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "American one 67": {
+      "Callsign": "AAL167",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Para": "PHARA",
+        "funnel": "FUNNL"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "FUNNL3",
+      "STAR": "",
+      "Altitude": 6530,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "C51",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Endeavor 30 47": {
+      "Callsign": "EDV3047",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Hangs": "HANGS",
+        "Will Rogers World": "KOKC",
+        "golfs": "GOLFS"
+      },
+      "CandidateApproaches": {
+        "I L S runway one seven left": "I7L",
+        "I L S runway one seven right": "I7R",
+        "r-nav yankee runway one seven left": "Y7L",
+        "r-nav yankee runway one seven right": "Y7R",
+        "r-nav zulu runway one seven left": "Z7L",
+        "r-nav zulu runway one seven right": "Z7R"
+      },
+      "ApproachFixes": {
+        "I7L": {
+          "Atrec": "ATREC",
+          "Hangs": "HANGS",
+          "golfs": "GOLFS"
+        },
+        "I7R": {
+          "Filum": "FILUM",
+          "Iveyi": "IVEYI",
+          "Roha": "ROHAA"
+        },
+        "Y7L": {
+          "Atrec": "ATREC",
+          "Biskt": "BISKT",
+          "Dawks": "DAWKS",
+          "Hangs": "HANGS",
+          "Ruriq": "RURIQ",
+          "beery": "BEERY",
+          "golfs": "GOLFS"
+        },
+        "Y7R": {
+          "Biskt": "BISKT",
+          "Cotox": "COTOX",
+          "Filum": "FILUM",
+          "Iveyi": "IVEYI",
+          "Roha": "ROHAA"
+        },
+        "Z7L": {
+          "Adwow": "ADWOW",
+          "Atrec": "ATREC",
+          "Donmo": "DONMO",
+          "Flap": "FLAPP",
+          "Hamdo": "HAMDO",
+          "Hypes": "HIPES",
+          "Isake": "ISAKE",
+          "Jinta": "JINTA",
+          "Merty": "MERTE",
+          "Palmer": "PALMR",
+          "Siwhu": "SIWHU",
+          "golfs": "GOLFS",
+          "story": "SCORY",
+          "will": "WWILL",
+          "woovma": "WUVMA"
+        },
+        "Z7R": {
+          "Adwow": "ADWOW",
+          "Cole": "COLWE",
+          "Filum": "FILUM",
+          "Flap": "FLAPP",
+          "Harer": "HARER",
+          "Hypes": "HIPES",
+          "Isake": "ISAKE",
+          "Jildi": "JILDI",
+          "Mabku": "MABCU",
+          "Merty": "MERTE",
+          "Palmer": "PALMR",
+          "Pros": "PROSS",
+          "Roha": "ROHAA",
+          "will": "WWILL",
+          "woovma": "WUVMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 17L",
+      "SID": "",
+      "STAR": "MURAH3",
+      "Altitude": 5879,
+      "State": "cleared approach",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Frontier Flight four 79": {
+      "Callsign": "FFT479",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Atrec": "ATREC",
+        "Becta": "BECTA",
+        "Hangs": "HANGS",
+        "Will Rogers World": "KOKC",
+        "golfs": "GOLFS"
+      },
+      "CandidateApproaches": {
+        "I L S runway one seven left": "I7L",
+        "I L S runway one seven right": "I7R",
+        "r-nav yankee runway one seven left": "Y7L",
+        "r-nav yankee runway one seven right": "Y7R",
+        "r-nav zulu runway one seven left": "Z7L",
+        "r-nav zulu runway one seven right": "Z7R"
+      },
+      "ApproachFixes": {
+        "I7L": {
+          "Atrec": "ATREC",
+          "Hangs": "HANGS",
+          "golfs": "GOLFS"
+        },
+        "I7R": {
+          "Filum": "FILUM",
+          "Iveyi": "IVEYI",
+          "Roha": "ROHAA"
+        },
+        "Y7L": {
+          "Atrec": "ATREC",
+          "Biskt": "BISKT",
+          "Dawks": "DAWKS",
+          "Hangs": "HANGS",
+          "Ruriq": "RURIQ",
+          "beery": "BEERY",
+          "golfs": "GOLFS"
+        },
+        "Y7R": {
+          "Biskt": "BISKT",
+          "Cotox": "COTOX",
+          "Filum": "FILUM",
+          "Iveyi": "IVEYI",
+          "Roha": "ROHAA"
+        },
+        "Z7L": {
+          "Adwow": "ADWOW",
+          "Atrec": "ATREC",
+          "Donmo": "DONMO",
+          "Flap": "FLAPP",
+          "Hamdo": "HAMDO",
+          "Hypes": "HIPES",
+          "Isake": "ISAKE",
+          "Jinta": "JINTA",
+          "Merty": "MERTE",
+          "Palmer": "PALMR",
+          "Siwhu": "SIWHU",
+          "golfs": "GOLFS",
+          "story": "SCORY",
+          "will": "WWILL",
+          "woovma": "WUVMA"
+        },
+        "Z7R": {
+          "Adwow": "ADWOW",
+          "Cole": "COLWE",
+          "Filum": "FILUM",
+          "Flap": "FLAPP",
+          "Harer": "HARER",
+          "Hypes": "HIPES",
+          "Isake": "ISAKE",
+          "Jildi": "JILDI",
+          "Mabku": "MABCU",
+          "Merty": "MERTE",
+          "Palmer": "PALMR",
+          "Pros": "PROSS",
+          "Roha": "ROHAA",
+          "will": "WWILL",
+          "woovma": "WUVMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 17L",
+      "SID": "",
+      "STAR": "MURAH3",
+      "Altitude": 9995,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "SkyWest four 80 kilo": {
+      "Callsign": "SKW480K",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Buffy": "BFFFY",
+        "Stephen": "STPHN",
+        "Zeewe": "ZEEWE",
+        "squirrel": "SQRRL"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "STPHN3",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United 12 zero zero": {
+      "Callsign": "UAL1200",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Dawks": "DAWKS",
+        "Filum": "FILUM",
+        "Flap": "FLAPP",
+        "Iveyi": "IVEYI",
+        "Roha": "ROHAA",
+        "Will Rogers World": "KOKC"
+      },
+      "CandidateApproaches": {
+        "I L S runway one seven left": "I7L",
+        "I L S runway one seven right": "I7R",
+        "r-nav yankee runway one seven left": "Y7L",
+        "r-nav yankee runway one seven right": "Y7R",
+        "r-nav zulu runway one seven left": "Z7L",
+        "r-nav zulu runway one seven right": "Z7R"
+      },
+      "ApproachFixes": {
+        "I7L": {
+          "Atrec": "ATREC",
+          "Hangs": "HANGS",
+          "golfs": "GOLFS"
+        },
+        "I7R": {
+          "Filum": "FILUM",
+          "Iveyi": "IVEYI",
+          "Roha": "ROHAA"
+        },
+        "Y7L": {
+          "Atrec": "ATREC",
+          "Biskt": "BISKT",
+          "Dawks": "DAWKS",
+          "Hangs": "HANGS",
+          "Ruriq": "RURIQ",
+          "beery": "BEERY",
+          "golfs": "GOLFS"
+        },
+        "Y7R": {
+          "Biskt": "BISKT",
+          "Cotox": "COTOX",
+          "Filum": "FILUM",
+          "Iveyi": "IVEYI",
+          "Roha": "ROHAA"
+        },
+        "Z7L": {
+          "Adwow": "ADWOW",
+          "Atrec": "ATREC",
+          "Donmo": "DONMO",
+          "Flap": "FLAPP",
+          "Hamdo": "HAMDO",
+          "Hypes": "HIPES",
+          "Isake": "ISAKE",
+          "Jinta": "JINTA",
+          "Merty": "MERTE",
+          "Palmer": "PALMR",
+          "Siwhu": "SIWHU",
+          "golfs": "GOLFS",
+          "story": "SCORY",
+          "will": "WWILL",
+          "woovma": "WUVMA"
+        },
+        "Z7R": {
+          "Adwow": "ADWOW",
+          "Cole": "COLWE",
+          "Filum": "FILUM",
+          "Flap": "FLAPP",
+          "Harer": "HARER",
+          "Hypes": "HIPES",
+          "Isake": "ISAKE",
+          "Jildi": "JILDI",
+          "Mabku": "MABCU",
+          "Merty": "MERTE",
+          "Palmer": "PALMR",
+          "Pros": "PROSS",
+          "Roha": "ROHAA",
+          "will": "WWILL",
+          "woovma": "WUVMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 17R",
+      "SID": "",
+      "STAR": "CAMET3",
+      "Altitude": 4465,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "United 19": {
+      "Callsign": "UAL19",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Adwow": "ADWOW",
+        "Dight": "DIGHT",
+        "Filum": "FILUM",
+        "Iveyi": "IVEYI",
+        "Roha": "ROHAA",
+        "Walls": "WALLS",
+        "Will Rogers World": "KOKC",
+        "will": "WWILL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one seven left": "I7L",
+        "I L S runway one seven right": "I7R",
+        "r-nav yankee runway one seven left": "Y7L",
+        "r-nav yankee runway one seven right": "Y7R",
+        "r-nav zulu runway one seven left": "Z7L",
+        "r-nav zulu runway one seven right": "Z7R"
+      },
+      "ApproachFixes": {
+        "I7L": {
+          "Atrec": "ATREC",
+          "Hangs": "HANGS",
+          "golfs": "GOLFS"
+        },
+        "I7R": {
+          "Filum": "FILUM",
+          "Iveyi": "IVEYI",
+          "Roha": "ROHAA"
+        },
+        "Y7L": {
+          "Atrec": "ATREC",
+          "Biskt": "BISKT",
+          "Dawks": "DAWKS",
+          "Hangs": "HANGS",
+          "Ruriq": "RURIQ",
+          "beery": "BEERY",
+          "golfs": "GOLFS"
+        },
+        "Y7R": {
+          "Biskt": "BISKT",
+          "Cotox": "COTOX",
+          "Filum": "FILUM",
+          "Iveyi": "IVEYI",
+          "Roha": "ROHAA"
+        },
+        "Z7L": {
+          "Adwow": "ADWOW",
+          "Atrec": "ATREC",
+          "Donmo": "DONMO",
+          "Flap": "FLAPP",
+          "Hamdo": "HAMDO",
+          "Hypes": "HIPES",
+          "Isake": "ISAKE",
+          "Jinta": "JINTA",
+          "Merty": "MERTE",
+          "Palmer": "PALMR",
+          "Siwhu": "SIWHU",
+          "golfs": "GOLFS",
+          "story": "SCORY",
+          "will": "WWILL",
+          "woovma": "WUVMA"
+        },
+        "Z7R": {
+          "Adwow": "ADWOW",
+          "Cole": "COLWE",
+          "Filum": "FILUM",
+          "Flap": "FLAPP",
+          "Harer": "HARER",
+          "Hypes": "HIPES",
+          "Isake": "ISAKE",
+          "Jildi": "JILDI",
+          "Mabku": "MABCU",
+          "Merty": "MERTE",
+          "Palmer": "PALMR",
+          "Pros": "PROSS",
+          "Roha": "ROHAA",
+          "will": "WWILL",
+          "woovma": "WUVMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 17R",
+      "SID": "",
+      "STAR": "GHOST3",
+      "Altitude": 10637,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Endeavor Thirty Forty Seven at Golfs cleared ILS runway one seven left approach maintain one seven zero knots till five mile five\"",
+    "[local-stt] normalized words: [endeavor 30 47 at golfs cleared ils runway 1 7 left approach maintain 1 7 0 knots till 5 mile 5]",
+    "[local-stt] tokens: 18",
+    "[local-stt]   token[0]: Text=\"endeavor\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"30\" Type=1 Value=30",
+    "[local-stt]   token[2]: Text=\"47\" Type=1 Value=47",
+    "[local-stt]   token[3]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"golfs\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"17\" Type=1 Value=17",
+    "[local-stt]   token[9]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"170\" Type=1 Value=170",
+    "[local-stt]   token[13]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"till\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[16]: Text=\"mile\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"5\" Type=1 Value=5",
+    "[local-stt] MatchCallsign: 18 tokens, 7 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 18 tokens, 7 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Endeavor 30 47\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Endeavor 30 47\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Endeavor 30 47\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Endeavor 30 47\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 7 results",
+    "[local-stt]     result 0: \"United 19\" (airline=0.514, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"SkyWest four 80 kilo\" (airline=0.423, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Frontier Flight four 79\" (airline=0.583, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"American 16 71\" (airline=0.500, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Endeavor 30 47\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Endeavor 30 47\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Endeavor 30 47\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Endeavor 30 47\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"EDV3047\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Endeavor 30 47\")",
+    "[local-stt] callsign match: Callsign=\"EDV3047\" SpokenKey=\"Endeavor 30 47\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=5879 Fixes=3 Approaches=6 AssignedApproach=\"ILS Runway 17L\" LAHSORunways=[13 31]",
+    "[local-stt]   fix: \"golfs\" -\u003e \"GOLFS\"",
+    "[local-stt]   fix: \"Hangs\" -\u003e \"HANGS\"",
+    "[local-stt]   fix: \"Will Rogers World\" -\u003e \"KOKC\"",
+    "[local-stt]   approach: \"r-nav zulu runway one seven left\" -\u003e \"Z7L\"",
+    "[local-stt]   approach: \"I L S runway one seven left\" -\u003e \"I7L\"",
+    "[local-stt]   approach: \"r-nav yankee runway one seven left\" -\u003e \"Y7L\"",
+    "[local-stt]   approach: \"r-nav yankee runway one seven right\" -\u003e \"Y7R\"",
+    "[local-stt]   approach: \"I L S runway one seven right\" -\u003e \"I7R\"",
+    "[local-stt]   approach: \"r-nav zulu runway one seven right\" -\u003e \"Z7R\"",
+    "[local-stt] command tokens after disregard: 15",
+    "[local-stt]   token[0]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"golfs\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"17\" Type=1 Value=17",
+    "[local-stt]   token[6]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"170\" Type=1 Value=170",
+    "[local-stt]   token[10]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"till\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[13]: Text=\"mile\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"5\" Type=1 Value=5",
+    "[local-stt] ParseCommands: 15 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"golfs\" against 3 fixes",
+    "[local-stt]   extractFix: matched \"golfs\" -\u003e \"GOLFS\" (exact)",
+    "[local-stt]   extractFix: matched \"golfs\" -\u003e \"GOLFS\" (fuzzy 1.00)",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" variant=\"\" runway=\"one seven left\" -\u003e \"I7L\" (consumed=4)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"golfs\" against 3 fixes",
+    "[local-stt]   extractFix: matched \"golfs\" -\u003e \"GOLFS\" (exact)",
+    "[local-stt]   extractFix: matched \"golfs\" -\u003e \"GOLFS\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"golfs\" against 3 fixes",
+    "[local-stt]   extractFix: matched \"golfs\" -\u003e \"GOLFS\" (exact)",
+    "[local-stt]   extractFix: matched \"golfs\" -\u003e \"GOLFS\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"AGOLFS/CI7L\" (conf=1.00, consumed=7, isThen=false)",
+    "[local-stt]   no match at token[7]=\"approach\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"5\" against 3 fixes",
+    "[local-stt]   extractFix: no match found for \"5\"",
+    "[local-stt]   matched command: \"S170/U5\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt]   no match at token[13]=\"mile\", skipping",
+    "[local-stt]   no match at token[14]=\"5\", skipping",
+    "[local-stt] ParseCommands: result=[AGOLFS/CI7L S170/U5] (avgConf=1.00)",
+    "[local-stt] parsed commands: [AGOLFS/CI7L S170/U5] (conf=1.00)",
+    "[local-stt] validated commands: [AGOLFS/CI7L S170/U5] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"EDV3047 AGOLFS/CI7L S170/U5\" (conf=1.00, time=1.6572ms) ==="
+  ]
+}

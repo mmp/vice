@@ -586,17 +586,20 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 	}
 	dep := &ap.Departures[idx]
 
-	airline := rand.SampleSlice(s.Rand, dep.Airlines)
-	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, departureAirport, dep.Destination, s.lg)
-	if ac == nil {
-		return nil, fmt.Errorf("unable to sample a valid aircraft for airline %+v at %q", airline,
-			departureAirport)
+	if len(dep.Airlines) == 0 {
+		return nil, fmt.Errorf("no airlines for departure at %q", departureAirport)
 	}
 
-	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, departureAirport, dep.Destination)
+	ac, err := filterAndSampleAircraft(s, dep.Airlines,
+		func(al av.DepartureAirline) av.AirlineSpecifier { return al.AirlineSpecifier },
+		func(al av.DepartureAirline) (string, string) { return departureAirport, dep.Destination },
+		fmt.Sprintf("departures at %q", departureAirport))
+	if err != nil {
+		return nil, err
+	}
 
 	exitRoute := exitRoutes[dep.Exit]
-	err := ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, s.State.NmPerLongitude,
+	err = ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
@@ -604,17 +607,17 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 	ac.ReportDepartureHeading = exitRoutesHaveVariedHeadings(exitRoutes)
 
 	shortExit := dep.Exit.Base()
-	_, isTRACON := av.DB.TRACONs[s.State.Facility]
+	isTRACON := av.DB.IsTRACON(s.State.Facility)
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeDeparture)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:],
 		ac.FlightPlan.DepartureAirport)
 	nasFp.ExitFix = shortExit
-	nasFp.Scratchpad = util.Select(dep.Scratchpad != "", dep.Scratchpad, s.State.FacilityAdaptation.Scratchpads[shortExit])
+	nasFp.Scratchpad = dep.Scratchpad
 	nasFp.SecondaryScratchpad = dep.SecondaryScratchpad
 	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.FlightPlan.Altitude, 0)
-	nasFp.RNAV = s.State.FacilityAdaptation.DisplayRNAVSymbol && exitRoute.IsRNAV
+	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && exitRoute.IsRNAV
 
 	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
 	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, string(runway))

@@ -21,7 +21,7 @@ import (
 // fix pair definitions for a facility (TRACON or ARTCC).
 type FacilityConfig struct {
 	ControlPositions   map[TCP]*av.Controller `json:"control_positions"`
-	FacilityAdaptation FacilityAdaptation     `json:"config"`
+	FacilityAdaptation FacilityAdaptation     `json:"facility_adaptations"`
 	HandoffIDs         []HandoffID            `json:"handoff_ids"`
 	FixPairs           []FixPairDefinition    `json:"fix_pairs"`
 }
@@ -244,7 +244,7 @@ func (fc *FacilityConfig) PostDeserialize(facility string, e *util.ErrorLogger) 
 
 func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
-	e.Push("config")
+	e.Push("facility_adaptations")
 	defer e.Pop()
 
 	// Validate configurations (facility configurations).
@@ -325,67 +325,67 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
 
-	// Video map labels must reference known stars_maps.
+	// Collect all video map names across all area configs.
+	var allAreaVideoMaps []string
+	for _, ac := range fa.Areas {
+		allAreaVideoMaps = append(allAreaVideoMaps, ac.VideoMapNames...)
+	}
+
+	// Video map labels must reference a known video map in some area.
 	for m := range fa.VideoMapLabels {
-		if !slices.Contains(fa.VideoMapNames, m) {
-			e.ErrorString(`video map %q in "map_labels" is not in "stars_maps"`, m)
+		if !slices.Contains(allAreaVideoMaps, m) {
+			e.ErrorString(`video map %q in "map_labels" is not in any area's "video_maps"`, m)
 		}
 	}
 
 	// controller_configs TCP existence.
-	if len(fa.ControllerConfigs) > 0 {
-		for tcp := range fa.ControllerConfigs {
+	if len(fa.Controllers) > 0 {
+		for tcp := range fa.Controllers {
 			if ctrl, ok := fc.ControlPositions[TCP(tcp)]; !ok {
-				e.ErrorString(`Control position %q in "controller_configs" not defined in "control_positions"`, tcp)
+				e.ErrorString(`Control position %q in "controllers" not defined in "control_positions"`, tcp)
 			} else if ctrl.IsExternal() {
-				e.ErrorString(`Control position %q in "controller_configs" is external and not in this TRACON.`, tcp)
+				e.ErrorString(`Control position %q in "controllers" is external and not in this TRACON.`, tcp)
 			}
 		}
-	} else if len(fa.VideoMapNames) == 0 {
-		e.ErrorString(`Must specify either "controller_configs" or "stars_maps"`)
-	}
-
-	if len(fa.VideoMapNames) == 0 {
-		if len(fa.ControllerConfigs) == 0 {
-			e.ErrorString(`must provide one of "stars_maps" or "controller_configs" with "video_maps" in "config"`)
-		}
 		var err error
-		fa.ControllerConfigs, err = util.CommaKeyExpand(fa.ControllerConfigs)
+		fa.Controllers, err = util.CommaKeyExpand(fa.Controllers)
 		if err != nil {
 			e.Error(err)
 		}
+	} else if len(allAreaVideoMaps) == 0 {
+		e.ErrorString(`must specify either "controllers" or "video_maps" in "areas"`)
 	}
 
 	if fa.Range == 0 {
 		fa.Range = 50
 	}
-	if fa.HandoffAcceptFlashDuration == 0 {
-		fa.HandoffAcceptFlashDuration = 5
+	if fa.Datablocks.FDB.AcceptFlashDuration == 0 {
+		fa.Datablocks.FDB.AcceptFlashDuration = 5
 	}
 
 	// PDB mutual exclusion.
-	if fa.PDB.SplitGSAndCWT && fa.PDB.ShowAircraftType {
+	if fa.Datablocks.PDB.SplitGSAndCWT && fa.Datablocks.PDB.ShowAircraftType {
 		e.ErrorString(`Both "split_gs_and_cwt" and "show_aircraft_type" cannot be specified for "pdb" adaption.`)
 	}
-	if fa.PDB.SplitGSAndCWT && fa.PDB.HideGroundspeed {
+	if fa.Datablocks.PDB.SplitGSAndCWT && fa.Datablocks.PDB.HideGroundspeed {
 		e.ErrorString(`Both "split_gs_and_cwt" and "hide_gs" cannot be specified for "pdb" adaption.`)
 	}
-	if fa.PDB.DisplayCustomSPCs && len(fa.CustomSPCs) == 0 {
+	if fa.Datablocks.PDB.DisplayCustomSPCs && len(fa.Datablocks.CustomSPCs) == 0 {
 		e.ErrorString(`"display_custom_spcs" was set but none were defined in "custom_spcs".`)
 	}
 
 	// Scratchpad1 mutual exclusion.
 	disp := make(map[string]any)
-	if fa.Scratchpad1.DisplayExitFix {
+	if fa.Datablocks.Scratchpad1.DisplayExitFix {
 		disp["display_exit_fix"] = nil
 	}
-	if fa.Scratchpad1.DisplayExitFix1 {
+	if fa.Datablocks.Scratchpad1.DisplayExitFix1 {
 		disp["display_exit_fix_1"] = nil
 	}
-	if fa.Scratchpad1.DisplayExitGate {
+	if fa.Datablocks.Scratchpad1.DisplayExitGate {
 		disp["display_exit_gate"] = nil
 	}
-	if fa.Scratchpad1.DisplayAltExitGate {
+	if fa.Datablocks.Scratchpad1.DisplayAltExitGate {
 		disp["display_alternate_exit_gate"] = nil
 	}
 	if len(disp) > 1 {
@@ -395,7 +395,7 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	}
 
 	// Custom SPCs.
-	for _, spc := range fa.CustomSPCs {
+	for _, spc := range fa.Datablocks.CustomSPCs {
 		if len(spc) != 2 || spc[0] < 'A' || spc[0] > 'Z' || spc[1] < 'A' || spc[1] > 'Z' {
 			e.ErrorString(`Invalid "custom_spcs" code %q: must be two characters between A-Z`, spc)
 		}
@@ -438,7 +438,7 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 
 	// Coordination lists: name/id required, id uniqueness.
 	seenIds := make(map[string][]string)
-	for _, list := range fa.CoordinationLists {
+	for _, list := range fa.Lists.Coordination {
 		e.Push(`"coordination_lists" ` + list.Name)
 
 		if list.Name == "" {
@@ -493,16 +493,16 @@ func (fc *FacilityConfig) validateERAMAdaptation(e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
 
 	// Validate area configs if present.
-	if len(fa.AreaConfigs) > 0 {
+	if len(fa.Areas) > 0 {
 		usedAreas := make(map[string]bool)
 		for _, ctrl := range fc.ControlPositions {
 			if ctrl.Area != "" {
 				usedAreas[ctrl.Area] = true
 			}
 		}
-		for areaNum := range fa.AreaConfigs {
+		for areaNum := range fa.Areas {
 			if !usedAreas[areaNum] {
-				e.ErrorString("area_configs: area %s has no controllers assigned to it", areaNum)
+				e.ErrorString("areas: area %s has no controllers assigned to it", areaNum)
 			}
 		}
 	}

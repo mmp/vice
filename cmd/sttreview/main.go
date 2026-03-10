@@ -600,17 +600,18 @@ func render(screen tcell.Screen, state *AppState) {
 	indent := 4
 	col1Width := 50 // Transcript
 	col2Width := 30 // Callsign + Command
-	col3Width := 25 // Correction
 
 	// Adjust widths based on screen size
-	totalColWidth := col1Width + col2Width + col3Width + 8 // separators
-	if totalColWidth > width {
-		col1Width = width - col2Width - col3Width - 8
+	if col1Width+col2Width+8 > width {
+		col1Width = width - col2Width - 8
 		if col1Width < 30 {
 			col1Width = 30
-			col2Width = width - col1Width - col3Width - 8
+			col2Width = width - col1Width - 8
 		}
 	}
+
+	// Correction column gets all remaining width
+	col3Width := width - 3 - col1Width - 3 - col2Width - 3
 
 	headerLine := fmt.Sprintf("   %-*s │ %-*s │ %-*s",
 		col1Width, "TRANSCRIPT",

@@ -36,7 +36,7 @@
       "radio_name": "Honolulu Tower"
     }
   },
-  "config": {
+  "facility_adaptations": {
     "configurations": {
       "STD": {
         "inbound_assignments": {
@@ -59,12 +59,13 @@
           "PHNL": "1L"
         },
         "default_consolidation": {
-          "1H": ["1L"]
+          "1H": ["1L"],
+          "1L": ["1V"]
         }
       }
     },
     "center": "PHNL",
-    "controller_configs": {
+    "controllers": {
       "1H": {
         "flight_following_airspace": [
           {
@@ -287,40 +288,6 @@
         "short_name": "PAL"
       }
     },
-    "stars_maps": [
-      "HNL MVA__HONOLULU MINIMUM VEC ALT",
-      "COAST__COASTLINES",
-      "APRTS__AIRPORTS",
-      "HNL RVM BASE",
-      "CTR__CENTER SPLITS",
-      "ARWYS__AIRWAYS",
-      "Honolulu TRACON Airspace",
-      "HNL TRACON E SPLIT",
-      "HNL_8R",
-      "HNL_26L",
-      "JRF_4R",
-      "HCF FIX DEP",
-      "HNL_FIX_VOR",
-      "HHI_FIX",
-      "JRF_FIX_4R",
-      "",
-      "ZHN Airspace Classes",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "HNL TRACON W SPLIT",
-      "HNL_8L",
-      "HNL 4R RVM",
-      "HHI_RNAV",
-      "HCF_FIX_ARR",
-      "HNL FIX 8L",
-      "HNL_FIX_8R",
-      "HNL_FIX_4L",
-      "HNL_FIX_4R",
-      "HNL_FIX_26L"
-    ],
     "video_map_file": "videomaps/ZHN-videomaps.gob.zst",
     "coordination_fixes": {
       "BAMBO": [
@@ -330,6 +297,44 @@
           "from": "ZHN"
         }
       ]
+    },
+    "areas": {
+      "1": {
+        "video_maps": [
+          "HNL MVA__HONOLULU MINIMUM VEC ALT",
+          "COAST__COASTLINES",
+          "APRTS__AIRPORTS",
+          "HNL RVM BASE",
+          "CTR__CENTER SPLITS",
+          "ARWYS__AIRWAYS",
+          "Honolulu TRACON Airspace",
+          "HNL TRACON E SPLIT",
+          "HNL_8R",
+          "HNL_26L",
+          "JRF_4R",
+          "HCF FIX DEP",
+          "HNL_FIX_VOR",
+          "HHI_FIX",
+          "JRF_FIX_4R",
+          "",
+          "ZHN Airspace Classes",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "HNL TRACON W SPLIT",
+          "HNL_8L",
+          "HNL 4R RVM",
+          "HHI_RNAV",
+          "HCF_FIX_ARR",
+          "HNL FIX 8L",
+          "HNL_FIX_8R",
+          "HNL_FIX_4L",
+          "HNL_FIX_4R",
+          "HNL_FIX_26L"
+        ]
+      }
     }
   },
   "handoff_ids": [

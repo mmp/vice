@@ -2279,9 +2279,7 @@
           "PHOG": 2
         }
       },
-      "configuration": {
-        "config_id": "CF1"
-      },
+      "configuration": "CF1",
       "default_maps": ["COAST__COASTLINES", "OGG TRACON", "OGG RVM__MAUI RADAR VEC MAP"],
       "departure_runways": [
         {
@@ -2331,9 +2329,7 @@
           "PHOG": 2
         }
       },
-      "configuration": {
-        "config_id": "CF2"
-      },
+      "configuration": "CF2",
       "default_maps": ["COAST__COASTLINES", "OGG TRACON", "OGG RVM__MAUI RADAR VEC MAP"],
       "departure_runways": [
         {

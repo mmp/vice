@@ -28,7 +28,7 @@ func (ss *SimState) GetRegularReleaseDepartures() []sim.ReleaseDeparture {
 				return false
 			}
 
-			for _, cl := range ss.FacilityAdaptation.CoordinationLists {
+			for _, cl := range ss.FacilityAdaptation.Lists.Coordination {
 				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					// It'll be in a STARS coordination list
 					return false
@@ -41,7 +41,7 @@ func (ss *SimState) GetRegularReleaseDepartures() []sim.ReleaseDeparture {
 func (ss *SimState) GetSTARSReleaseDepartures() []sim.ReleaseDeparture {
 	return util.FilterSlice(ss.ReleaseDepartures,
 		func(dep sim.ReleaseDeparture) bool {
-			for _, cl := range ss.FacilityAdaptation.CoordinationLists {
+			for _, cl := range ss.FacilityAdaptation.Lists.Coordination {
 				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					return true
 				}
@@ -117,15 +117,35 @@ func (ss *SimState) GetFlightPlanForACID(acid sim.ACID) *sim.NASFlightPlan {
 }
 
 func (ss *SimState) GetInitialRange() float32 {
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.PrimaryPositionForTCW(ss.UserTCW)]; ok && config.Range != 0 {
+	tcp := ss.PrimaryPositionForTCW(ss.UserTCW)
+	fa := &ss.FacilityAdaptation
+
+	// Controller-specific config takes priority.
+	if config, ok := fa.Controllers[tcp]; ok && config.Range != 0 {
 		return config.Range
+	}
+	// Then area-level config.
+	if ctrl, ok := ss.Controllers[tcp]; ok && ctrl.Area != "" {
+		if ac, ok := fa.Areas[ctrl.Area]; ok && ac.Range != 0 {
+			return ac.Range
+		}
 	}
 	return ss.Range
 }
 
 func (ss *SimState) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.PrimaryPositionForTCW(ss.UserTCW)]; ok && !config.Center.IsZero() {
+	tcp := ss.PrimaryPositionForTCW(ss.UserTCW)
+	fa := &ss.FacilityAdaptation
+
+	// Controller-specific config takes priority.
+	if config, ok := fa.Controllers[tcp]; ok && !config.Center.IsZero() {
 		return config.Center
+	}
+	// Then area-level config.
+	if ctrl, ok := ss.Controllers[tcp]; ok && ctrl.Area != "" {
+		if ac, ok := fa.Areas[ctrl.Area]; ok && !ac.Center.IsZero() {
+			return ac.Center
+		}
 	}
 	return ss.Center
 }

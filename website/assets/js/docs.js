@@ -122,7 +122,7 @@ submenuLinks.forEach((submenuLink) => {
 /* Ref: https://github.com/cferdinandi/gumshoe  */
 // Initialize Gumshoe
 var spy = new Gumshoe('#docs-nav a', {
-	offset: 69 //sticky header height
+	offset: 75 //sticky header height + small margin so active link updates on click-to-scroll
 });
 
 

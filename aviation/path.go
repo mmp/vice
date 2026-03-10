@@ -197,7 +197,7 @@ func PathFromRoutePoints(pts []CRDARoutePoint, nmPerLongitude float32) Path {
 
 			// Determine sweep based on clockwise/counterclockwise
 			sweep := endAngle - startAngle
-			if arc.Clockwise {
+			if arc.Direction.IsClockwise() {
 				// CW = negative sweep
 				if sweep > 0 {
 					sweep -= 2 * math.Pi

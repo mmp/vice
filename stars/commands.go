@@ -485,7 +485,7 @@ func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {
 	releaseAircraft := ctx.Client.State.GetSTARSReleaseDepartures()
 
 	fa := ctx.FacilityAdaptation
-	for _, list := range fa.CoordinationLists {
+	for _, list := range fa.Lists.Coordination {
 		// Get the aircraft that should be included in this list.
 		deps := util.FilterSlice(releaseAircraft,
 			func(dep sim.ReleaseDeparture) bool {
@@ -622,12 +622,20 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 		}
 	}
 
+	// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
+	// On macOS, physical Ctrl-click is delivered as a right-click by Cocoa,
+	// and physical Ctrl maps to KeySuper() due to the Ctrl/Super swap.
+	// So we check both: primary release + KeyControl (Cmd-Shift-Click on macOS,
+	// Ctrl-Shift-Click elsewhere) and secondary release + KeySuper (physical
+	// Ctrl-Shift-Click on macOS).
+	if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() &&
+		((ctx.Mouse.Released[platform.MouseButtonPrimary] && ctx.Keyboard.KeyControl()) ||
+			(ctx.Mouse.Released[platform.MouseButtonSecondary] && ctx.Keyboard.KeySuper())) {
+		mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
+		ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
+	}
+
 	if ctx.Mouse.Released[platform.MouseButtonPrimary] {
-		if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() && ctx.Keyboard.KeyControl() {
-			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
-			mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
-			ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
-		}
 
 		if ctx.Keyboard != nil && ctx.Keyboard.KeyControl() {
 			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
@@ -836,7 +844,8 @@ func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
 // returns the controller responsible for the aircraft given its altitude
 // and route.
 func calculateAirspace(ctx *panes.Context, trk *sim.Track) (string, error) {
-	for _, rules := range ctx.FacilityAdaptation.AirspaceAwareness {
+	area := ctx.UserController().Area
+	for _, rules := range ctx.FacilityAdaptation.AirspaceAwarenessForArea(area) {
 		fp := trk.FlightPlan
 		for _, fix := range rules.Fix {
 			// Does the fix in the rules match the route?

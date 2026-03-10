@@ -208,7 +208,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime time.Time)
 			angle := math.VectorHeading(v) // x, y, as elsewhere..
 
 			// Choose a point a bit farther ahead on the arc
-			angle += float32(util.Select(arc.Clockwise, 10, -10))
+			angle += float32(util.Select(arc.Direction.IsClockwise(), 10, -10))
 			p := math.Add2f(pc, math.Scale2f(math.SinCos(math.Radians(angle)), arc.Radius))
 			pTarget = math.NM2LL(p, nav.FlightState.NmPerLongitude)
 		} else {
@@ -362,6 +362,12 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 
 	passedWaypoint := false
 	if wp.FlyOver() || nav.Prespawn {
+		// We treat all wps as flyover during the prespawn phase to avoid the expense of
+		// shouldTurnForOutbound.
+		passedWaypoint = nav.ETA(wp.Location) < 2
+	} else if pt := wp.ProcedureTurn(); pt != nil && pt.Type == av.PTStandard45 {
+		// Also, waypoints with standard 45 degree procedure turns are implicitly "fly over";
+		// we don't want aircraft to start the turn early.
 		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
 		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, av.TurnClosest, wxs)

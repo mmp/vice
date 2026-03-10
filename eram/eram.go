@@ -738,7 +738,6 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	ss := client.State
 	ps := ep.currentPrefs()
 	vmf, err := ep.getVideoMapLibrary(ss, client)
-	// fmt.Println(vmf.ERAMMapGroups, "VMFOKAY")
 	if err != nil {
 		lg.Errorf("%v", err)
 		return
@@ -771,8 +770,8 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 }
 
 func (ep *ERAMPane) getVideoMapLibrary(ss client.SimState, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
-	filename := ss.FacilityAdaptation.VideoMapFile
-	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
+	filename := ss.ControllerVideoMapFile
+	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.ControllerVideoMapLibraryHash); err == nil {
 		return ml, nil
 	}
 	return client.GetVideoMapLibrary(filename)

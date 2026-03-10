@@ -173,6 +173,8 @@ type SimState struct {
 	ControllerVideoMaps                 []string
 	ControllerDefaultVideoMaps          []string
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
+	ControllerVideoMapFile              string
+	ControllerVideoMapLibraryHash       []byte
 
 	UserIsPrivileged bool // Whether this user has elevated privileges (can control any aircraft)
 
@@ -191,8 +193,7 @@ func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
 	lg := sm.lg.With(slog.String("sim_name", req.NewSimName))
 
 	if nsc := sm.makeSimConfiguration(req, lg); nsc != nil {
-		manifest := sm.mapManifests[nsc.FacilityAdaptation.VideoMapFile]
-		s := sim.NewSim(*nsc, manifest, lg)
+		s := sim.NewSim(*nsc, lg)
 		session := makeSimSession(req.NewSimName, req.GroupName, req.ScenarioName, req.Password, s, sm.lg)
 		pos := s.ScenarioRootPosition()
 		return sm.Add(session, result, pos, req.Initials, req.Privileged, true)
@@ -249,7 +250,8 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 		ControllerAirspace:          sc.Airspace,
 		ControlPositions:            sg.ControlPositions,
 		VirtualControllers:          sc.VirtualControllers,
-		ControllerConfiguration:     sc.ControllerConfiguration,
+		ControllerConfiguration:     &sc.ControllerConfiguration,
+		ConfigurationId:             sc.ConfigurationString,
 		WXProvider:                  wxp,
 		Emergencies:                 req.Emergencies,
 		StartTime:                   req.StartTime,
@@ -346,6 +348,12 @@ func (sm *SimManager) checkTCWAvailable(ss *simSession, tcw sim.TCW) error {
 func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token string) *NewSimResult {
 	videoMaps, defaultMaps, beaconCodes := session.sim.GetControllerVideoMaps(tcw)
 
+	vmFile := session.sim.GetControllerVideoMapFile(tcw)
+	var vmHash []byte
+	if manifest, ok := sm.mapManifests[vmFile]; ok {
+		vmHash, _ = manifest.Hash()
+	}
+
 	return &NewSimResult{
 		SimState: &SimState{
 			UserState:                           *session.sim.GetUserState(),
@@ -354,6 +362,8 @@ func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token 
 			ControllerVideoMaps:                 videoMaps,
 			ControllerDefaultVideoMaps:          defaultMaps,
 			ControllerMonitoredBeaconCodeBlocks: beaconCodes,
+			ControllerVideoMapFile:              vmFile,
+			ControllerVideoMapLibraryHash:       vmHash,
 			UserIsPrivileged:                    session.sim.TCWIsPrivileged(tcw),
 		},
 		ControllerToken: token,

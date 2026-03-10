@@ -197,7 +197,7 @@ func registerSlewCommands() {
 			// Beacon Readout −− unassociated track
 			if trk.IsUnassociated() {
 				// 6.13.2 Beacon readout - unassociated track (implied)
-				s := ctx.FacilityAdaptation.FullLDBSeconds
+				s := ctx.FacilityAdaptation.Datablocks.LDB.FullSeconds
 				if s == 0 {
 					s = 5
 				}

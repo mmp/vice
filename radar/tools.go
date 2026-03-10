@@ -224,7 +224,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				a := a0
 				pprev := waypoints[i].Location
 				for i := 1; i < n-1; i++ {
-					if wp.Arc().Clockwise {
+					if wp.Arc().Direction.IsClockwise() {
 						a += 1
 					} else {
 						a -= 1
@@ -238,7 +238,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 
 					if i == n/2 {
 						// Draw an arrow at the midpoint showing the arc's direction
-						drawArrow(math.Add2f(pc, v), util.Select(wp.Arc().Clockwise, math.Radians(a+90), math.Radians(a-90)))
+						drawArrow(math.Add2f(pc, v), util.Select(wp.Arc().Direction.IsClockwise(), math.Radians(a+90), math.Radians(a-90)))
 					}
 				}
 				ld.AddLine(pprev, waypoints[i+1].Location, color)

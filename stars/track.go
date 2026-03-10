@@ -158,7 +158,7 @@ const (
 )
 
 const (
-	FPMThreshold = 8400 / 100
+	FPMThreshold = 8400
 )
 
 func (ts *TrackState) TrackDeltaAltitude() int {
@@ -343,7 +343,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				if outbound {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
-					dur := time.Duration(ctx.FacilityAdaptation.HandoffAcceptFlashDuration) * time.Second
+					dur := time.Duration(ctx.FacilityAdaptation.Datablocks.FDB.AcceptFlashDuration) * time.Second
 					state.OutboundHandoffFlashEnd = time.Now().Add(dur)
 					state.DisplayFDB = true
 
@@ -353,7 +353,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				}
 				if outbound || inbound {
 					state.AcceptedHandoffSector = string(util.Select(outbound, event.ToController, event.FromController))
-					dur := time.Duration(ctx.FacilityAdaptation.HOSectorDisplayDuration) * time.Second
+					dur := time.Duration(ctx.FacilityAdaptation.Datablocks.FDB.SectorDisplayDuration) * time.Second
 					state.AcceptedHandoffDisplayEnd = time.Now().Add(dur)
 				}
 			}
@@ -564,17 +564,15 @@ func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
 		return
 	}
 
-	changeInAltitude := float64(state.previousTrack.TransponderAltitude - state.track.TransponderAltitude)
-	changeInTime := state.previousTrackTime.Sub(state.trackTime)
-	changeInTimeSeconds := changeInTime.Seconds()
+	deltaAlt := state.previousTrack.TransponderAltitude - state.track.TransponderAltitude
+	deltaMinutes := state.previousTrackTime.Sub(state.trackTime).Minutes()
 
-	var change float64
-
-	if changeInTimeSeconds != 0 {
-		change = changeInAltitude / changeInTimeSeconds
+	if deltaMinutes == 0 {
+		return
 	}
 
-	if change > FPMThreshold || change < -FPMThreshold {
+	rate := math.Abs(deltaAlt / float32(deltaMinutes))
+	if rate > FPMThreshold {
 		state.UnreasonableModeC = true
 		state.ConsecutiveNormalTracks = 0
 	} else if state.UnreasonableModeC {

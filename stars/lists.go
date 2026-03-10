@@ -121,7 +121,7 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 		},
 		"EXIT_GATE": func(fp *sim.NASFlightPlan) string {
 			exit := rewriteFixForList(fp.ExitFix)
-			if ctx.FacilityAdaptation.AllowLongScratchpad {
+			if ctx.FacilityAdaptation.Datablocks.AllowLongScratchpad {
 				return exit + fmt.Sprintf("%03d", fp.RequestedAltitude/100)
 			} else {
 				return exit + fmt.Sprintf("%02d", fp.RequestedAltitude/1000)
@@ -617,7 +617,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 	}
 
 	if filter.All || filter.AirportWeather {
-		airports := ctx.FacilityAdaptation.Altimeters
+		airports := ctx.FacilityAdaptation.Lists.SSA.Altimeters
 		if len(airports) == 0 {
 			airports = util.SortedMapKeys(ctx.Client.State.Airports)
 
@@ -830,7 +830,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, paneExtent math.Extent2D, s
 		Entries:    len(vfr),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			fp := vfr[idx]
-			format := ctx.FacilityAdaptation.VFRList.Format
+			format := ctx.FacilityAdaptation.Lists.VFR.Format
 			// TODO: default after INDEX: + in-out-in flight, / dupe acid, * DM message on departure
 			sb.WriteString(sp.formatListEntry(ctx, format, fp, nil))
 		},
@@ -889,7 +889,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, paneExtent math.Extent2D, s
 			fp := plans[idx]
 			// TODO: after INDEX, + in-out-in flight, / dupe acid, * DM message on departure
 			haveCode := fp.Rules == av.FlightRulesIFR || ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
-			sb.WriteString(sp.formatListEntry(ctx, ctx.FacilityAdaptation.TABList.Format, fp, map[string]func() string{
+			sb.WriteString(sp.formatListEntry(ctx, ctx.FacilityAdaptation.Lists.TAB.Format, fp, map[string]func() string{
 				"DUPE_BEACON": func() string {
 					if _, ok := dupes[fp.AssignedSquawk]; ok && haveCode {
 						return "/"
@@ -1025,7 +1025,7 @@ func (sp *STARSPane) drawCoastList(ctx *panes.Context, paneExtent math.Extent2D,
 		FormatLine: func(idx int, sb *strings.Builder) {
 			trk := tracks[idx]
 			fp := trk.FlightPlan
-			sb.WriteString(sp.formatListEntry(ctx, ctx.FacilityAdaptation.CoastSuspendList.Format, fp,
+			sb.WriteString(sp.formatListEntry(ctx, ctx.FacilityAdaptation.Lists.CoastSuspend.Format, fp,
 				map[string]func() string{
 					"ALT": func() string {
 						// For suspended, we always just show altitude (of one sort or another)
@@ -1227,7 +1227,7 @@ func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, paneExtent math.
 		FormatLine: func(idx int, sb *strings.Builder) {
 			trk := mciTracks[idx]
 			fp := trk.FlightPlan
-			sb.WriteString(sp.formatListEntry(ctx, ctx.FacilityAdaptation.MCISuppressionList.Format, fp,
+			sb.WriteString(sp.formatListEntry(ctx, ctx.FacilityAdaptation.Lists.MCISuppression.Format, fp,
 				map[string]func() string{
 					"SUPP_BEACON": func() string { return trk.FlightPlan.MCISuppressedCode.String() },
 				}))
@@ -1253,7 +1253,7 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, paneExtent math.Extent2D,
 			dist := math.NMDistance2LL(loc, trk.Location)
 			// We'll punt on the chance that two aircraft have the
 			// exact same distance to the airport...
-			m[dist] = sp.formatListEntry(ctx, ctx.FacilityAdaptation.TowerList.Format, trk.FlightPlan, nil)
+			m[dist] = sp.formatListEntry(ctx, ctx.FacilityAdaptation.Lists.Tower.Format, trk.FlightPlan, nil)
 		}
 	}
 
@@ -1307,7 +1307,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 
 	var allBounds []math.Extent2D
 	fa := ctx.FacilityAdaptation
-	for i, cl := range fa.CoordinationLists {
+	for i, cl := range fa.Lists.Coordination {
 		listStyle := renderer.TextStyle{
 			Font:  font,
 			Color: ps.Brightness.Lists.ScaleRGB(util.Select(cl.YellowEntries, sp.Colors.TextWarning, sp.Colors.List)),

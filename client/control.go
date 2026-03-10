@@ -480,24 +480,30 @@ func (c *ControlClient) RequestContactTransmission() {
 		ControllerToken: c.controllerToken,
 	}, &result, nil),
 		func(err error) {
-			c.transmissions.SetContactRequested(false)
-
 			if err != nil {
+				c.transmissions.SetContactRequested(false)
 				c.lg.Errorf("RequestContactTransmission: %v", err)
 				return
 			}
 
-			if result.ContactText != "" {
-				if *c.disableTTSPtr {
-					// Contact was processed on server (pilot joins frequency, text event posted)
-					// but user doesn't want audio. Set a hold to maintain pacing.
-					c.transmissions.HoldAfterSilentContact(result.ContactCallsign)
-					return
-				}
-
-				go c.synthesizeAndEnqueueContact(result.ContactCallsign, result.ContactType,
-					result.ContactText, result.ContactVoiceName)
+			if result.ContactText == "" {
+				c.transmissions.SetContactRequested(false)
+				return
 			}
+
+			if *c.disableTTSPtr {
+				c.transmissions.SetContactRequested(false)
+				// Contact was processed on server (pilot joins frequency, text event posted)
+				// but user doesn't want audio. Set a hold to maintain pacing.
+				c.transmissions.HoldAfterSilentContact(result.ContactCallsign)
+				return
+			}
+
+			// For the TTS path, contactRequested stays true until synthesis
+			// completes, preventing additional contacts from being requested
+			// during synthesis.
+			go c.synthesizeAndEnqueueContact(result.ContactCallsign, result.ContactType,
+				result.ContactText, result.ContactVoiceName)
 		}))
 }
 

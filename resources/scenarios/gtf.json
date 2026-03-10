@@ -1,173 +1,168 @@
 {
-    "tracon": "GTF",
-    "airports": {
-        "KGTF": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            },
-            "approaches": {
-                "I3": {
-                    "cifp_id": "I3"
-                }
-            },
-            "departure_routes": {
-                "3": {
-                    "GTF": {
-                        "assigned_altitude": 13000,
-                        "waypoints": "KGTF-3/h30"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "SKW"
-                        }
-                    ],
-                    "destination": "KSLC",
-                    "exit": "GTF",
-                    "route": "GTF DBS NORDK6",
-                    "scratchpad": "GTF"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SKW"
-                        }
-                    ],
-                    "destination": "KDEN",
-                    "exit": "GTF",
-                    "route": "GTF TOFUU FLATI3",
-                    "scratchpad": "GTF"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "QXE"
-                        }
-                    ],
-                    "destination": "KPDX",
-                    "exit": "GTF",
-                    "route": "GTF J36 MLP JORAD HHOOD4",
-                    "scratchpad": "GTF"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "QXE"
-                        }
-                    ],
-                    "destination": "KSEA",
-                    "exit": "GTF",
-                    "route": "GTF MLP GLASR3",
-                    "scratchpad": "GTF"
-                }
-            ],
-            "tower_list": 1
+  "tracon": "GTF",
+  "airports": {
+    "KGTF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
         }
-    },
-    "inbound_flows": {
-        "North": {
-            "arrivals": [
-                {
-                    "waypoints": "N048.02.18.441,W111.44.31.655/ho gtf",
-                    "route": "N048.02.18.441,W111.44.31.655 GTF",
-                    "initial_controller": "C03",
-                    "initial_altitude": 13000,
-                    "initial_speed": 270,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KGTF": [
-                            {
-                                "icao": "SKW",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KAPA"
-                            },
-                            {
-                                "icao": "ENY",
-                                "airport": "KDFW"
-                            }
-                        ]
-                    }
-                }
-            ]
+      },
+      "approaches": {
+        "I3": {
+          "cifp_id": "I3"
+        }
+      },
+      "departure_routes": {
+        "3": {
+          "GTF": {
+            "assigned_altitude": 13000,
+            "waypoints": "KGTF-3/h30"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KSLC",
+          "exit": "GTF",
+          "route": "GTF DBS NORDK6",
+          "scratchpad": "GTF"
         },
-        "South": {
-            "arrivals": [
-                {
-                    "waypoints": "N046.51.34.683,W111.16.52.966/ho gtf",
-                    "route": "N046.51.34.683,W111.16.52.9665 GTF",
-                    "initial_controller": "C03",
-                    "initial_altitude": 13000,
-                    "initial_speed": 270,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KGTF": [
-                            {
-                                "icao": "SKW",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KAPA"
-                            },
-                            {
-                                "icao": "ENY",
-                                "airport": "KDFW"
-                            }
-                        ]
-                    }
-                }
-            ]
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "GTF",
+          "route": "GTF TOFUU FLATI3",
+          "scratchpad": "GTF"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "QXE"
+            }
+          ],
+          "destination": "KPDX",
+          "exit": "GTF",
+          "route": "GTF J36 MLP JORAD HHOOD4",
+          "scratchpad": "GTF"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "QXE"
+            }
+          ],
+          "destination": "KSEA",
+          "exit": "GTF",
+          "route": "GTF MLP GLASR3",
+          "scratchpad": "GTF"
         }
-    },
-    "default_scenario": "Land North",
-    "name": "GTF",
-    "primary_airport": "KGTF",
-    "scenarios": {
-        "Land North": {
-            "arrival_runways": [
-                {
-                    "airport": "KGTF",
-                    "runway": "3"
-                }
-            ],
-            "inbound_rates": {
-                "North": {
-                    "KGTF": 5
-                }
-            },
-            "configuration": {
-                "config_id": "STD"
-            },
-            "departure_runways": [
-                {
-                    "airport": "KGTF",
-                    "rate": 10,
-                    "runway": "3"
-                }
-            ],
-            "wind": {
-                "direction": "0-60"
-            },
-            "default_maps": [
-                "STARS-BIL_MVA__Minimum Vectoring Altitudes",
-                "STARS-BIL_W-FLOW__West Flow Map"
-            ]
-        }
+      ],
+      "tower_list": 1
     }
+  },
+  "inbound_flows": {
+    "North": {
+      "arrivals": [
+        {
+          "waypoints": "N048.02.18.441,W111.44.31.655/ho gtf",
+          "route": "N048.02.18.441,W111.44.31.655 GTF",
+          "initial_controller": "C03",
+          "initial_altitude": 13000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KGTF": [
+              {
+                "icao": "SKW",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KAPA"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KDFW"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "South": {
+      "arrivals": [
+        {
+          "waypoints": "N046.51.34.683,W111.16.52.966/ho gtf",
+          "route": "N046.51.34.683,W111.16.52.9665 GTF",
+          "initial_controller": "C03",
+          "initial_altitude": 13000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KGTF": [
+              {
+                "icao": "SKW",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KAPA"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KDFW"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "Land North",
+  "name": "GTF",
+  "primary_airport": "KGTF",
+  "scenarios": {
+    "Land North": {
+      "arrival_runways": [
+        {
+          "airport": "KGTF",
+          "runway": "3"
+        }
+      ],
+      "inbound_rates": {
+        "North": {
+          "KGTF": 5
+        }
+      },
+      "configuration": "STD",
+      "departure_runways": [
+        {
+          "airport": "KGTF",
+          "rate": 10,
+          "runway": "3"
+        }
+      ],
+      "wind": {
+        "direction": "0-60"
+      },
+      "default_maps": ["STARS-BIL_MVA__Minimum Vectoring Altitudes", "STARS-BIL_W-FLOW__West Flow Map"]
+    }
+  }
 }

@@ -1,0 +1,4076 @@
+{
+  "06FA": {
+    "Name": "Gwinn ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 26.90839958190918,
+    "Longitude": -80.32890319824219,
+    "Radius": 75
+  },
+  "ABY": {
+    "Name": "Southwest Georgia Regional",
+    "ARTCC": "ZJX",
+    "Latitude": 31.5355278,
+    "Longitude": -84.1944722,
+    "Radius": 75
+  },
+  "ACK": {
+    "Name": "Nantucket ATCT",
+    "ARTCC": "ZBW",
+    "Latitude": 41.257067,
+    "Longitude": -70.063366,
+    "Radius": 75
+  },
+  "ADM": {
+    "Name": "Ardmore ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 34.30006512787449,
+    "Longitude": -97.02711989682913,
+    "Radius": 75
+  },
+  "ADQ": {
+    "Name": "Kodiak ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 57.7469,
+    "Longitude": -152.4934,
+    "Radius": 75
+  },
+  "ADS": {
+    "Name": "Addison ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.96730197787956,
+    "Longitude": -96.83816795491192,
+    "Radius": 75
+  },
+  "ADW": {
+    "Name": "Andrews ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 38.80522,
+    "Longitude": -76.87771,
+    "Radius": 75
+  },
+  "AEG": {
+    "Name": "Double Eagle ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 35.15420199890103,
+    "Longitude": -106.79804698112592,
+    "Radius": 75
+  },
+  "AEX": {
+    "Name": "Alexandria ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 31.322994,
+    "Longitude": -92.542074,
+    "Radius": 75
+  },
+  "AFF": {
+    "Name": "USAF Academy Field ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 38.972219813002,
+    "Longitude": -104.819509912394,
+    "Radius": 75
+  },
+  "AFW": {
+    "Name": "Alliance ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.98609647889285,
+    "Longitude": -97.3127663505623,
+    "Radius": 75
+  },
+  "AGC": {
+    "Name": "Allegheny ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 40.354401,
+    "Longitude": -79.930199,
+    "Radius": 75
+  },
+  "AHN": {
+    "Name": "Athens FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 33.95171673327939,
+    "Longitude": -83.32466556224774,
+    "Radius": 75
+  },
+  "AID": {
+    "Name": "Anderson Muni ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 40.1098865,
+    "Longitude": -85.6127348,
+    "Radius": 75
+  },
+  "AKN": {
+    "Name": "King Salmon ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 58.6766,
+    "Longitude": -156.656,
+    "Radius": 75
+  },
+  "ALN": {
+    "Name": "Alton Regional Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.89108,
+    "Longitude": -90.05465,
+    "Radius": 75
+  },
+  "ALW": {
+    "Name": "Walla Walla ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 46.092191675355664,
+    "Longitude": -118.27893154882564,
+    "Radius": 75
+  },
+  "ANC": {
+    "Name": "Anchorage ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 61.1767,
+    "Longitude": -149.983,
+    "Radius": 75
+  },
+  "ANE": {
+    "Name": "Anoka FCT",
+    "ARTCC": "ZMP",
+    "Latitude": 45.14202943677687,
+    "Longitude": -93.21559447943508,
+    "Radius": 75
+  },
+  "APA": {
+    "Name": "Centennial ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 39.5751238687961,
+    "Longitude": -104.84532303836,
+    "Radius": 75
+  },
+  "APC": {
+    "Name": "Napa Co ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 38.2132,
+    "Longitude": -122.280998,
+    "Radius": 75
+  },
+  "APF": {
+    "Name": "Naples ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 26.1525993347,
+    "Longitude": -81.7752990723,
+    "Radius": 75
+  },
+  "APN": {
+    "Name": "Alpena ATCT/RAPCON",
+    "ARTCC": "ZMP",
+    "Latitude": 45.07958301469385,
+    "Longitude": -83.56585978305054,
+    "Radius": 75
+  },
+  "ARA": {
+    "Name": "Acadiana ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.030187,
+    "Longitude": -91.876216,
+    "Radius": 75
+  },
+  "ARB": {
+    "Name": "Ann Arbor ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 42.2229995728,
+    "Longitude": -83.74559783939999,
+    "Radius": 75
+  },
+  "ARR": {
+    "Name": "Aurora ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 41.76821718143721,
+    "Longitude": -88.4670551964753,
+    "Radius": 75
+  },
+  "ASG": {
+    "Name": "Springdale ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 36.17393755218401,
+    "Longitude": -94.12337490952214,
+    "Radius": 75
+  },
+  "ASH": {
+    "Name": "Nashua FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.78011,
+    "Longitude": -71.51583,
+    "Radius": 75
+  },
+  "ATL": {
+    "Name": "Atlanta ATCT",
+    "ARTCC": "ZTL",
+    "Latitude": 33.64174195530205,
+    "Longitude": -84.42172663433638,
+    "Radius": 75
+  },
+  "ATW": {
+    "Name": "Appleton FCT",
+    "ARTCC": "ZMP",
+    "Latitude": 44.259212674723315,
+    "Longitude": -88.51145139352826,
+    "Radius": 75
+  },
+  "AUO": {
+    "Name": "Auburn FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 32.620211464088754,
+    "Longitude": -85.43352429827722,
+    "Radius": 75
+  },
+  "BAB": {
+    "Name": "Beale ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 39.1389598,
+    "Longitude": -121.4281042,
+    "Radius": 75
+  },
+  "BAD": {
+    "Name": "Barksdale ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.50189,
+    "Longitude": -93.66326,
+    "Radius": 75
+  },
+  "BAF": {
+    "Name": "Westfield-Barnes FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.15861,
+    "Longitude": -72.71821,
+    "Radius": 75
+  },
+  "BAK": {
+    "Name": "Columbus Muni ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 39.2555106,
+    "Longitude": -85.8971916,
+    "Radius": 75
+  },
+  "BAZ": {
+    "Name": "New Braunfels ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.698626,
+    "Longitude": -98.03901,
+    "Radius": 75
+  },
+  "BBG": {
+    "Name": "Branson Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 36.52991,
+    "Longitude": -93.20354,
+    "Radius": 75
+  },
+  "BCT": {
+    "Name": "Boca Raton ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 26.3785,
+    "Longitude": -80.107697,
+    "Radius": 75
+  },
+  "BDL": {
+    "Name": "Bradley ATCT",
+    "ARTCC": "ZBW",
+    "Latitude": 41.9456,
+    "Longitude": -72.68847,
+    "Radius": 75
+  },
+  "BDR": {
+    "Name": "Bridgeport ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 41.163393,
+    "Longitude": -73.128292,
+    "Radius": 75
+  },
+  "BEC": {
+    "Name": "Beech Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 37.6947,
+    "Longitude": -97.21677,
+    "Radius": 75
+  },
+  "BED": {
+    "Name": "Hanscom ATCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.46518,
+    "Longitude": -71.28857,
+    "Radius": 75
+  },
+  "BET": {
+    "Name": "Bethel ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 60.7773,
+    "Longitude": -161.8449,
+    "Radius": 75
+  },
+  "BFI": {
+    "Name": "Boeing Field ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 47.529164,
+    "Longitude": -122.304291,
+    "Radius": 75
+  },
+  "BFM": {
+    "Name": "Mobile International ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.630777099171574,
+    "Longitude": -88.06928129593524,
+    "Radius": 75
+  },
+  "BIF": {
+    "Name": "Biggs Army ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 31.844043294357526,
+    "Longitude": -106.3713368589477,
+    "Radius": 75
+  },
+  "BIG": {
+    "Name": "Allen Army Airfield ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 63.9889,
+    "Longitude": -145.7235,
+    "Radius": 75
+  },
+  "BIX": {
+    "Name": "Keesler ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.40746,
+    "Longitude": -88.923554,
+    "Radius": 75
+  },
+  "BJC": {
+    "Name": "Metro ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 39.9064798101004,
+    "Longitude": -105.120826058263,
+    "Radius": 75
+  },
+  "BKF": {
+    "Name": "Buckley Space Force Base ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 39.7068028743086,
+    "Longitude": -104.750386730457,
+    "Radius": 75
+  },
+  "BKH": {
+    "Name": "Barking Sands ATCT",
+    "ARTCC": "ZHN",
+    "Latitude": 22.0228,
+    "Longitude": -159.785004,
+    "Radius": 75
+  },
+  "BKL": {
+    "Name": "Lakefront ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 41.51750183105469,
+    "Longitude": -81.68329620361328,
+    "Radius": 75
+  },
+  "BKT": {
+    "Name": "Blackstone ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 37.0747673,
+    "Longitude": -77.9565984,
+    "Radius": 75
+  },
+  "BKV": {
+    "Name": "Brooksville ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 28.47360039,
+    "Longitude": -82.45539856,
+    "Radius": 75
+  },
+  "BLI": {
+    "Name": "Bellingham ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 48.79423111151584,
+    "Longitude": -122.5320458949553,
+    "Radius": 75
+  },
+  "BLV": {
+    "Name": "Scott AFB Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.54681,
+    "Longitude": -89.83546,
+    "Radius": 75
+  },
+  "BMG": {
+    "Name": "Bloomington ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 39.1478427,
+    "Longitude": -86.6128461,
+    "Radius": 75
+  },
+  "BMI": {
+    "Name": "Bloomington Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 40.46978,
+    "Longitude": -88.90526,
+    "Radius": 75
+  },
+  "BOS": {
+    "Name": "Boston ATCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.365852,
+    "Longitude": -71.01854,
+    "Radius": 75
+  },
+  "BOW": {
+    "Name": "Bartow Executive ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 27.943399,
+    "Longitude": -81.783401,
+    "Radius": 75
+  },
+  "BPT": {
+    "Name": "Beaumont ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.955836,
+    "Longitude": -94.020438,
+    "Radius": 75
+  },
+  "BRO": {
+    "Name": "Brownsville/South Padre Island ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 25.90786,
+    "Longitude": -97.42473,
+    "Radius": 75
+  },
+  "BSF": {
+    "Name": "Bradshaw Army Airfield",
+    "ARTCC": "ZHN",
+    "Latitude": 19.7600134,
+    "Longitude": -155.5537662,
+    "Radius": 75
+  },
+  "BTL": {
+    "Name": "Battle Creek ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 42.305411060100894,
+    "Longitude": -85.24973913955357,
+    "Radius": 75
+  },
+  "BUR": {
+    "Name": "Burbank Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.199911,
+    "Longitude": -118.35446,
+    "Radius": 75
+  },
+  "BVI": {
+    "Name": "Beaver County ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 40.772499,
+    "Longitude": -80.391403,
+    "Radius": 75
+  },
+  "BVY": {
+    "Name": "Beverly FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.5855,
+    "Longitude": -70.91251,
+    "Radius": 75
+  },
+  "BWI": {
+    "Name": "Baltimore Washington ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 39.17919,
+    "Longitude": -76.66839,
+    "Radius": 75
+  },
+  "BZN": {
+    "Name": "Bozeman ATCT | Big Sky TRACON",
+    "ARTCC": "ZLC",
+    "Latitude": 45.77526,
+    "Longitude": -111.15639,
+    "Radius": 75
+  },
+  "CBM": {
+    "Name": "Columbus ATCT/RAPCON",
+    "ARTCC": "ZME",
+    "Latitude": 33.63874098995869,
+    "Longitude": -88.45116829724793,
+    "Radius": 75
+  },
+  "CCO": {
+    "Name": "Coweta County Temporary ATCT",
+    "ARTCC": "ZTL",
+    "Latitude": 33.3164,
+    "Longitude": -84.7724,
+    "Radius": 75
+  },
+  "CCR": {
+    "Name": "Concord ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.9897,
+    "Longitude": -122.056999,
+    "Radius": 75
+  },
+  "CDW": {
+    "Name": "Caldwell ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.875895,
+    "Longitude": -74.27764,
+    "Radius": 75
+  },
+  "CEF": {
+    "Name": "Westover ATCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.19644,
+    "Longitude": -72.53604,
+    "Radius": 75
+  },
+  "CFO": {
+    "Name": "Space Port ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 39.78639097985,
+    "Longitude": -104.53573695414,
+    "Radius": 75
+  },
+  "CGF": {
+    "Name": "County ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 41.5651016235,
+    "Longitude": -81.4863967896,
+    "Radius": 75
+  },
+  "CGI": {
+    "Name": "Cape Girardeau ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 37.22724030724098,
+    "Longitude": -89.56489143688631,
+    "Radius": 75
+  },
+  "CHD": {
+    "Name": "Chandler ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 33.27106278877707,
+    "Longitude": -111.81425563051341,
+    "Radius": 75
+  },
+  "CHO": {
+    "Name": "Charlottesville ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 38.13888,
+    "Longitude": -78.4498,
+    "Radius": 75
+  },
+  "CIC": {
+    "Name": "Chico Muni FCT",
+    "ARTCC": "ZOA",
+    "Latitude": 39.795595,
+    "Longitude": -121.857716,
+    "Radius": 75
+  },
+  "CLL": {
+    "Name": "Easterwood Field ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.590254,
+    "Longitude": -96.358847,
+    "Radius": 75
+  },
+  "CMA": {
+    "Name": "Camarillo Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.213699,
+    "Longitude": -119.094002,
+    "Radius": 75
+  },
+  "CMY": {
+    "Name": "Sparta ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 43.955054707719015,
+    "Longitude": -90.73490215742713,
+    "Radius": 75
+  },
+  "CNO": {
+    "Name": "Chino Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.97470093,
+    "Longitude": -117.637001,
+    "Radius": 75
+  },
+  "CNW": {
+    "Name": "TSTC Waco ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 31.641129,
+    "Longitude": -97.073335,
+    "Radius": 75
+  },
+  "COE": {
+    "Name": "Coeur D'Alene (TEMP TWR)",
+    "ARTCC": "ZSE",
+    "Latitude": 47.778541561221225,
+    "Longitude": -116.82331265666437,
+    "Radius": 75
+  },
+  "COF": {
+    "Name": "Patrick Space Force Base",
+    "ARTCC": "ZJX",
+    "Latitude": 28.2350067,
+    "Longitude": -80.6099781,
+    "Radius": 75
+  },
+  "COU": {
+    "Name": "Columbia Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.81655,
+    "Longitude": -92.21349,
+    "Radius": 75
+  },
+  "CPS": {
+    "Name": "St. Louis Downtown Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.57205,
+    "Longitude": -90.16572,
+    "Radius": 75
+  },
+  "CRE": {
+    "Name": "Grand Strand",
+    "ARTCC": "ZJX",
+    "Latitude": 33.8116989136,
+    "Longitude": -78.72389984130001,
+    "Radius": 75
+  },
+  "CRG": {
+    "Name": "Jacksonville Executive at Craig ATCT",
+    "ARTCC": "ZJX",
+    "Latitude": 30.336,
+    "Longitude": -81.514,
+    "Radius": 75
+  },
+  "CRQ": {
+    "Name": "Palomar Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.1283,
+    "Longitude": -117.279999,
+    "Radius": 75
+  },
+  "CSG": {
+    "Name": "Columbus ATCT",
+    "ARTCC": "ZTL",
+    "Latitude": 32.51820703797243,
+    "Longitude": -84.93960206090217,
+    "Radius": 75
+  },
+  "CSM": {
+    "Name": "Clinton Sherman ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 35.3398017883,
+    "Longitude": -99.20050048830001,
+    "Radius": 75
+  },
+  "CVS": {
+    "Name": "Cannon ATCT/RAPCON",
+    "ARTCC": "ZAB",
+    "Latitude": 34.38,
+    "Longitude": -103.32,
+    "Radius": 75
+  },
+  "CWA": {
+    "Name": "Central Wisconsin Airport FCT",
+    "ARTCC": "ZMP",
+    "Latitude": 44.78415986491093,
+    "Longitude": -89.66854167065009,
+    "Radius": 75
+  },
+  "CWF": {
+    "Name": "Chennault ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.213583,
+    "Longitude": -93.152422,
+    "Radius": 75
+  },
+  "CXO": {
+    "Name": "Conroe/North Houston ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.35499,
+    "Longitude": -95.418583,
+    "Radius": 75
+  },
+  "CXY": {
+    "Name": "Capital City ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.220524,
+    "Longitude": -76.853476,
+    "Radius": 75
+  },
+  "CYS": {
+    "Name": "CYS RAPCON",
+    "ARTCC": "ZDV",
+    "Latitude": 41.1589929448901,
+    "Longitude": -104.814365592517,
+    "Radius": 75
+  },
+  "DAA": {
+    "Name": "Davison ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 38.71441,
+    "Longitude": -77.17729,
+    "Radius": 75
+  },
+  "DAL": {
+    "Name": "Dallas Love ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.84520871111796,
+    "Longitude": -96.84937477182804,
+    "Radius": 75
+  },
+  "DBQ": {
+    "Name": "Dubuque ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 42.40564463765894,
+    "Longitude": -90.70568008241457,
+    "Radius": 75
+  },
+  "DCA": {
+    "Name": "Washington National ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 38.854629453117276,
+    "Longitude": -77.04358633612874,
+    "Radius": 75
+  },
+  "DEC": {
+    "Name": "Decatur ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 39.83473599514995,
+    "Longitude": -88.87710824740546,
+    "Radius": 75
+  },
+  "DEN": {
+    "Name": "Denver ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 39.8624747996526,
+    "Longitude": -104.673740140131,
+    "Radius": 75
+  },
+  "DET": {
+    "Name": "Detroit City ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 42.40919876,
+    "Longitude": -83.00990295,
+    "Radius": 75
+  },
+  "DFW": {
+    "Name": "DFW ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.89686573853369,
+    "Longitude": -97.04035558629492,
+    "Radius": 75
+  },
+  "DHN": {
+    "Name": "Dothan Regional",
+    "ARTCC": "ZJX",
+    "Latitude": 31.3187,
+    "Longitude": -85.45277,
+    "Radius": 75
+  },
+  "DLF": {
+    "Name": "Laughlin ATCT/RAPCON",
+    "ARTCC": "ZHU",
+    "Latitude": 29.358707,
+    "Longitude": -100.785592,
+    "Radius": 75
+  },
+  "DMA": {
+    "Name": "Davis Monthan ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 32.1665000916,
+    "Longitude": -110.883003235,
+    "Radius": 75
+  },
+  "DOV": {
+    "Name": "Dover ATCT/RAPCON",
+    "ARTCC": "ZDC",
+    "Latitude": 39.1277,
+    "Longitude": -75.4684,
+    "Radius": 75
+  },
+  "DPA": {
+    "Name": "Dupage ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 41.90677537184367,
+    "Longitude": -88.25553463837343,
+    "Radius": 75
+  },
+  "DTN": {
+    "Name": "Shreveport Downtown ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.54091,
+    "Longitude": -93.74535,
+    "Radius": 75
+  },
+  "DTO": {
+    "Name": "Denton ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 33.201769,
+    "Longitude": -97.197983,
+    "Radius": 75
+  },
+  "DTS": {
+    "Name": "Destin Executive",
+    "ARTCC": "ZJX",
+    "Latitude": 30.4000547,
+    "Longitude": -86.4714722,
+    "Radius": 75
+  },
+  "DTW": {
+    "Name": "Metro ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 42.21377,
+    "Longitude": -83.353786,
+    "Radius": 75
+  },
+  "DVT": {
+    "Name": "Deer Valley ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 33.69294681375772,
+    "Longitude": -112.0834244893303,
+    "Radius": 75
+  },
+  "DWH": {
+    "Name": "David Wayne Hooks ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.066912,
+    "Longitude": -95.555981,
+    "Radius": 75
+  },
+  "DXR": {
+    "Name": "Danbury ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 41.372633,
+    "Longitude": -73.484965,
+    "Radius": 75
+  },
+  "DYS": {
+    "Name": "Dyess ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.420799,
+    "Longitude": -99.854599,
+    "Radius": 75
+  },
+  "EAU": {
+    "Name": "Eau Claire FCT",
+    "ARTCC": "ZMP",
+    "Latitude": 44.8635713690369,
+    "Longitude": -91.49264551714178,
+    "Radius": 75
+  },
+  "ECG": {
+    "Name": "Elizabeth City ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 36.2605756,
+    "Longitude": -76.1745672,
+    "Radius": 75
+  },
+  "ECP": {
+    "Name": "Northwest Florida Beaches International",
+    "ARTCC": "ZJX",
+    "Latitude": 30.3582408,
+    "Longitude": -85.7956022,
+    "Radius": 75
+  },
+  "EDC": {
+    "Name": "Austin Executive ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.39392,
+    "Longitude": -97.565938,
+    "Radius": 75
+  },
+  "EDF": {
+    "Name": "Elmendorf ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 61.2495,
+    "Longitude": -149.7999,
+    "Radius": 75
+  },
+  "EDW": {
+    "Name": "Edwards AFB Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.905399,
+    "Longitude": -117.884003,
+    "Radius": 75
+  },
+  "EFD": {
+    "Name": "Ellington ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.605486,
+    "Longitude": -95.169282,
+    "Radius": 75
+  },
+  "EGE": {
+    "Name": "Eagle ATCT TRACON",
+    "ARTCC": "ZDV",
+    "Latitude": 39.6454434533277,
+    "Longitude": -106.918387075449,
+    "Radius": 75
+  },
+  "EGI": {
+    "Name": "Duke Field (Egline AF Aux Nr 3)",
+    "ARTCC": "ZJX",
+    "Latitude": 30.6485869,
+    "Longitude": -86.5219594,
+    "Radius": 75
+  },
+  "EIL": {
+    "Name": "Eielson ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 64.6619,
+    "Longitude": -147.0883,
+    "Radius": 75
+  },
+  "EKM": {
+    "Name": "Elkhart ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 41.72410537090094,
+    "Longitude": -85.99654116620616,
+    "Radius": 75
+  },
+  "EMT": {
+    "Name": "El Monte Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.086102,
+    "Longitude": -118.035004,
+    "Radius": 75
+  },
+  "ENA": {
+    "Name": "Kenai ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 60.5691,
+    "Longitude": -151.241,
+    "Radius": 75
+  },
+  "END": {
+    "Name": "Vance ATCT/RAPCON",
+    "ARTCC": "ZKC",
+    "Latitude": 36.341068267822266,
+    "Longitude": -97.9070053100586,
+    "Radius": 75
+  },
+  "ENW": {
+    "Name": "Kenosha ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 42.593874290808316,
+    "Longitude": -87.92894383720537,
+    "Radius": 75
+  },
+  "EOD": {
+    "Name": "Sabre AAF",
+    "ARTCC": "ZME",
+    "Latitude": 36.571371708253196,
+    "Longitude": -87.48355692440234,
+    "Radius": 75
+  },
+  "ESN": {
+    "Name": "Easton ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 38.80592,
+    "Longitude": -76.06998,
+    "Radius": 75
+  },
+  "EVB": {
+    "Name": "New Smyrna Beach Municipal",
+    "ARTCC": "ZJX",
+    "Latitude": 29.05924,
+    "Longitude": -80.94401,
+    "Radius": 75
+  },
+  "EWB": {
+    "Name": "New Bedford FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 41.67389,
+    "Longitude": -70.95816,
+    "Radius": 75
+  },
+  "EWN": {
+    "Name": "Coastal Carolina ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 35.07665,
+    "Longitude": -77.04359,
+    "Radius": 75
+  },
+  "EYW": {
+    "Name": "Key West ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 24.553729990205987,
+    "Longitude": -81.75644901448159,
+    "Radius": 75
+  },
+  "EZM": {
+    "Name": "Heart of Georgia Regional",
+    "ARTCC": "ZJX",
+    "Latitude": 32.2163889,
+    "Longitude": -83.1286667,
+    "Radius": 75
+  },
+  "F70": {
+    "Name": "French Valley Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.576794,
+    "Longitude": -117.129828,
+    "Radius": 75
+  },
+  "FACSFAC SD": {
+    "Name": "Beaver",
+    "ARTCC": "ZLA",
+    "Latitude": 32.71237,
+    "Longitude": -117.19272,
+    "Radius": 200
+  },
+  "FACSFAC HI": {
+    "Name": "Beaver",
+    "ARTCC": "ZHN",
+    "Latitude": 32.71237,
+    "Longitude": -117.19272,
+    "Radius": 200
+  },
+  "FAF": {
+    "Name": "Felker ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 37.13414,
+    "Longitude": -76.60747,
+    "Radius": 75
+  },
+  "FBG": {
+    "Name": "Simmons ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 35.134,
+    "Longitude": -78.93887,
+    "Radius": 75
+  },
+  "FBK": {
+    "Name": "Ladd Army Airfield ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 64.8397,
+    "Longitude": -147.6176,
+    "Radius": 75
+  },
+  "FCM": {
+    "Name": "Flying Cloud ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 44.82174243534449,
+    "Longitude": -93.45833624302568,
+    "Radius": 75
+  },
+  "FCS": {
+    "Name": "Butts AHP ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 38.6822980876507,
+    "Longitude": -104.766493795024,
+    "Radius": 75
+  },
+  "FDK": {
+    "Name": "Frederick ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 39.415131,
+    "Longitude": -77.368039,
+    "Radius": 75
+  },
+  "FFO": {
+    "Name": "Patterson ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 39.8222015,
+    "Longitude": -84.0372163,
+    "Radius": 75
+  },
+  "FFZ": {
+    "Name": "Falcon Field ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 33.45763405962422,
+    "Longitude": -111.72701214697601,
+    "Radius": 75
+  },
+  "FHU": {
+    "Name": "Libby ATCT/RAPCON",
+    "ARTCC": "ZAB",
+    "Latitude": 31.59,
+    "Longitude": -110.34,
+    "Radius": 75
+  },
+  "FIN": {
+    "Name": "Flagler Executive",
+    "ARTCC": "ZJX",
+    "Latitude": 29.46422,
+    "Longitude": -81.20182,
+    "Radius": 75
+  },
+  "FLD": {
+    "Name": "Fond Du Lac",
+    "ARTCC": "ZAU",
+    "Latitude": 43.7693098,
+    "Longitude": -88.4924753,
+    "Radius": 75
+  },
+  "FLG": {
+    "Name": "Flagstaff ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 35.14129647613732,
+    "Longitude": -111.67161953728505,
+    "Radius": 75
+  },
+  "FLL": {
+    "Name": "Fort Lauderdale ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 26.07046189802212,
+    "Longitude": -80.15630516236746,
+    "Radius": 75
+  },
+  "FMH": {
+    "Name": "Cape Cod Coast Guard ATCT",
+    "ARTCC": "ZBW",
+    "Latitude": 41.652,
+    "Longitude": -70.52057,
+    "Radius": 75
+  },
+  "FMN": {
+    "Name": "Farmington ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 36.7392997301744,
+    "Longitude": -108.227585610352,
+    "Radius": 75
+  },
+  "FMY": {
+    "Name": "Page Field ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 26.58659935,
+    "Longitude": -81.86329650879999,
+    "Radius": 75
+  },
+  "FNL": {
+    "Name": "Northern Colorado Regional Airport",
+    "ARTCC": "ZDV",
+    "Latitude": 40.4468844922772,
+    "Longitude": -105.00731479918,
+    "Radius": 75
+  },
+  "FOE": {
+    "Name": "Topeka Regional Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.95184,
+    "Longitude": -95.67265,
+    "Radius": 75
+  },
+  "FOK": {
+    "Name": "Suffolk County ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.839815,
+    "Longitude": -72.641018,
+    "Radius": 75
+  },
+  "FPR": {
+    "Name": "Fort Pierce ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 27.49510002,
+    "Longitude": -80.36830139,
+    "Radius": 75
+  },
+  "FRG": {
+    "Name": "Republic ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.72739060261005,
+    "Longitude": -73.4178045580969,
+    "Radius": 75
+  },
+  "FRN": {
+    "Name": "Bryant Army Airfield ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 61.2633,
+    "Longitude": -149.6601,
+    "Radius": 75
+  },
+  "FSI": {
+    "Name": "Henry Post AAF RAPCON",
+    "ARTCC": "ZFW",
+    "Latitude": 34.65045543034513,
+    "Longitude": -98.39913935595617,
+    "Radius": 75
+  },
+  "FTK": {
+    "Name": "Godman ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 37.9062295,
+    "Longitude": -85.9666123,
+    "Radius": 75
+  },
+  "FTW": {
+    "Name": "Forth Worth Meacham ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.819801,
+    "Longitude": -97.362396,
+    "Radius": 75
+  },
+  "FTY": {
+    "Name": "Fulton County FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 33.775838443978365,
+    "Longitude": -84.52008116869524,
+    "Radius": 75
+  },
+  "FUL": {
+    "Name": "Fullerton Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.8720016479,
+    "Longitude": -117.980003357,
+    "Radius": 75
+  },
+  "FVA": {
+    "Name": "French Valley",
+    "ARTCC": "ZLA",
+    "Latitude": 33.576794,
+    "Longitude": -117.129828,
+    "Radius": 75
+  },
+  "FWS": {
+    "Name": "Fort Worth Spinks ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.565201,
+    "Longitude": -97.308098,
+    "Radius": 75
+  },
+  "FXE": {
+    "Name": "Fort Lauderdale Executive ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 26.195871643984418,
+    "Longitude": -80.17375023248212,
+    "Radius": 75
+  },
+  "FYV": {
+    "Name": "Drake ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 36.01091090644947,
+    "Longitude": -94.1676853712715,
+    "Radius": 75
+  },
+  "GBG": {
+    "Name": "Galesburg",
+    "ARTCC": "ZAU",
+    "Latitude": 40.9380005,
+    "Longitude": -90.4311236,
+    "Radius": 75
+  },
+  "GCK": {
+    "Name": "Garden City Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 37.9275016785,
+    "Longitude": -100.723999023,
+    "Radius": 75
+  },
+  "GCN": {
+    "Name": "Grand Canyon",
+    "ARTCC": "ZLA",
+    "Latitude": 35.9523611,
+    "Longitude": -112.1469722,
+    "Radius": 75
+  },
+  "GEU": {
+    "Name": "Glendale ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 33.52748329155442,
+    "Longitude": -112.29821565690318,
+    "Radius": 75
+  },
+  "GFK": {
+    "Name": "Grand Forks ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 47.94885212409947,
+    "Longitude": -97.17389038482636,
+    "Radius": 75
+  },
+  "GJT": {
+    "Name": "Junction ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 39.1215275112268,
+    "Longitude": -108.524899799569,
+    "Radius": 75
+  },
+  "GKY": {
+    "Name": "Arlington ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.66389846801758,
+    "Longitude": -97.09429931640625,
+    "Radius": 75
+  },
+  "GLH": {
+    "Name": "Greenville ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 33.48078001731069,
+    "Longitude": -90.99001281212702,
+    "Radius": 75
+  },
+  "GLS": {
+    "Name": "Galveston/Scholes ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.263138,
+    "Longitude": -94.856177,
+    "Radius": 75
+  },
+  "GMU": {
+    "Name": "Greenville FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 34.850403961239564,
+    "Longitude": -82.35131716345764,
+    "Radius": 75
+  },
+  "GNV": {
+    "Name": "Gainesville Regional",
+    "ARTCC": "ZJX",
+    "Latitude": 29.69,
+    "Longitude": -82.272,
+    "Radius": 75
+  },
+  "GON": {
+    "Name": "Groton FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 41.33174,
+    "Longitude": -72.04574,
+    "Radius": 75
+  },
+  "GOV": {
+    "Name": "Grayling ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 44.67972542624649,
+    "Longitude": -84.72323288266963,
+    "Radius": 75
+  },
+  "GPI": {
+    "Name": "Glacier Park ATCT",
+    "ARTCC": "ZLC",
+    "Latitude": 48.312812,
+    "Longitude": -114.261095,
+    "Radius": 75
+  },
+  "GPM": {
+    "Name": "Grand Prairie ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.698799,
+    "Longitude": -97.046898,
+    "Radius": 75
+  },
+  "GRF": {
+    "Name": "Gray Field ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 47.080046732185835,
+    "Longitude": -122.58470722887259,
+    "Radius": 75
+  },
+  "GRI": {
+    "Name": "Grand Island FCT",
+    "ARTCC": "ZMP",
+    "Latitude": 40.9708792230977,
+    "Longitude": -98.31828436354776,
+    "Radius": 75
+  },
+  "GRK": {
+    "Name": "Robert Gray AAF ATCT/RAPCON",
+    "ARTCC": "ZFW",
+    "Latitude": 31.073130708436793,
+    "Longitude": -97.83737739215974,
+    "Radius": 75
+  },
+  "GSB": {
+    "Name": "Seymour Johnson ATCT/RAPCON",
+    "ARTCC": "ZDC",
+    "Latitude": 35.3449,
+    "Longitude": -77.95983,
+    "Radius": 75
+  },
+  "GTB": {
+    "Name": "Wheeler-Sack ATCT/RAPCON",
+    "ARTCC": "ZBW",
+    "Latitude": 44.05892,
+    "Longitude": -75.71094,
+    "Radius": 75
+  },
+  "GTR": {
+    "Name": "Golden Triangle ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 33.45084431466547,
+    "Longitude": -88.5882379531194,
+    "Radius": 75
+  },
+  "GTU": {
+    "Name": "Georgetown ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.679139,
+    "Longitude": -97.675785,
+    "Radius": 75
+  },
+  "GUR": {
+    "Name": "Camp Guernsey ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 42.2629554620094,
+    "Longitude": -104.732438237381,
+    "Radius": 75
+  },
+  "GUS": {
+    "Name": "Grissom ATCT/RAPCON",
+    "ARTCC": "ZAU",
+    "Latitude": 40.66018280968986,
+    "Longitude": -86.14213812142485,
+    "Radius": 75
+  },
+  "GVT": {
+    "Name": "Majors ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 33.0677986145,
+    "Longitude": -96.0652999878,
+    "Radius": 75
+  },
+  "GWO": {
+    "Name": "Greenwood ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 33.49315691492782,
+    "Longitude": -90.08510133171593,
+    "Radius": 75
+  },
+  "GXF": {
+    "Name": "Gila Bend Air Force Auxiliary",
+    "ARTCC": "ZAB",
+    "Latitude": 32.887501,
+    "Longitude": -112.720001,
+    "Radius": 75
+  },
+  "GYH": {
+    "Name": "Donaldson FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 34.758301,
+    "Longitude": -82.376404,
+    "Radius": 75
+  },
+  "GYI": {
+    "Name": "North Texas Rgnl/Perrin Field ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 33.7141,
+    "Longitude": -96.673698,
+    "Radius": 75
+  },
+  "GYR": {
+    "Name": "Goodyear ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 33.426803597841115,
+    "Longitude": -112.36875557735112,
+    "Radius": 75
+  },
+  "GYY": {
+    "Name": "Gary ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 41.61278162872419,
+    "Longitude": -87.41418346400226,
+    "Radius": 75
+  },
+  "HBE": {
+    "Name": "Himsel Army Airfield ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 39.3435575,
+    "Longitude": -86.0278796,
+    "Radius": 75
+  },
+  "HDC": {
+    "Name": "Hammond ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.521909,
+    "Longitude": -90.421509,
+    "Radius": 75
+  },
+  "HEF": {
+    "Name": "Manassas ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 38.721,
+    "Longitude": -77.51935,
+    "Radius": 75
+  },
+  "HFD": {
+    "Name": "Hartford FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 41.73496,
+    "Longitude": -72.65148,
+    "Radius": 75
+  },
+  "HFF": {
+    "Name": "Mackall ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 35.03002,
+    "Longitude": -79.5021,
+    "Radius": 75
+  },
+  "HGR": {
+    "Name": "Hagerstown ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 39.71056,
+    "Longitude": -77.73066,
+    "Radius": 75
+  },
+  "HHI": {
+    "Name": "Wheeler ATCT",
+    "ARTCC": "ZHN",
+    "Latitude": 21.481637,
+    "Longitude": -158.037048,
+    "Radius": 75
+  },
+  "HHR": {
+    "Name": "Hawthorne Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.922798,
+    "Longitude": -118.334999,
+    "Radius": 75
+  },
+  "HIF": {
+    "Name": "Hill Air Force Base NFCT",
+    "ARTCC": "ZLC",
+    "Latitude": 41.12281,
+    "Longitude": -111.97737,
+    "Radius": 75
+  },
+  "HIO": {
+    "Name": "Hillsboro ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 45.537547572848446,
+    "Longitude": -122.95069242824707,
+    "Radius": 75
+  },
+  "HKS": {
+    "Name": "Hawkins ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 32.3386599350513,
+    "Longitude": -90.22827601549565,
+    "Radius": 75
+  },
+  "HKY": {
+    "Name": "Hickory FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 35.74110031,
+    "Longitude": -81.38950348,
+    "Radius": 75
+  },
+  "HLG": {
+    "Name": "Wheeling ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 40.1749992371,
+    "Longitude": -80.6463012695,
+    "Radius": 75
+  },
+  "HLR": {
+    "Name": "Yoakum-Defrenn AHP",
+    "ARTCC": "ZFW",
+    "Latitude": 31.1387,
+    "Longitude": -97.7145,
+    "Radius": 75
+  },
+  "HMN": {
+    "Name": "Holloman ATCT/RAPCON",
+    "ARTCC": "ZAB",
+    "Latitude": 32.85335517604067,
+    "Longitude": -106.10999959126279,
+    "Radius": 75
+  },
+  "HND": {
+    "Name": "Henderson Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 35.96932312850776,
+    "Longitude": -115.13833436145899,
+    "Radius": 75
+  },
+  "HOB": {
+    "Name": "Hobbs ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.6875,
+    "Longitude": -103.217003,
+    "Radius": 75
+  },
+  "HOP": {
+    "Name": "Fort Campbell ATCT/ARAC RAPCON",
+    "ARTCC": "ZME",
+    "Latitude": 36.67095860149812,
+    "Longitude": -87.50405161179134,
+    "Radius": 75
+  },
+  "HOU": {
+    "Name": "William P Hobby ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.645318,
+    "Longitude": -95.288155,
+    "Radius": 75
+  },
+  "HPN": {
+    "Name": "Westchester ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 41.062713,
+    "Longitude": -73.710986,
+    "Radius": 75
+  },
+  "HQZ": {
+    "Name": "Mesquite ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.747002,
+    "Longitude": -96.530403,
+    "Radius": 75
+  },
+  "HRL": {
+    "Name": "Harlingen ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 26.226454,
+    "Longitude": -97.661596,
+    "Radius": 75
+  },
+  "HRT": {
+    "Name": "Hurlburt Field",
+    "ARTCC": "ZJX",
+    "Latitude": 30.427799,
+    "Longitude": -86.689301,
+    "Radius": 75
+  },
+  "HSA": {
+    "Name": "Stennis ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.369478,
+    "Longitude": -89.451378,
+    "Radius": 75
+  },
+  "HST": {
+    "Name": "Homestead RAPCON",
+    "ARTCC": "ZMA",
+    "Latitude": 25.4885506,
+    "Longitude": -80.3835664,
+    "Radius": 75
+  },
+  "HUA": {
+    "Name": "Redstone ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 34.67377239725254,
+    "Longitude": -86.68161111340514,
+    "Radius": 75
+  },
+  "HUM": {
+    "Name": "Houma ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.566225,
+    "Longitude": -90.663788,
+    "Radius": 75
+  },
+  "HUT": {
+    "Name": "Hutchinson Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.068181,
+    "Longitude": -97.860952,
+    "Radius": 75
+  },
+  "HVN": {
+    "Name": "New Haven ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 41.265732,
+    "Longitude": -72.88471,
+    "Radius": 75
+  },
+  "HWD": {
+    "Name": "Hayward Exec ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.659198761,
+    "Longitude": -122.122001648,
+    "Radius": 75
+  },
+  "HWO": {
+    "Name": "North Perry ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 25.996681632956548,
+    "Longitude": -80.24219511242094,
+    "Radius": 75
+  },
+  "HXD": {
+    "Name": "Hilton Head ATCT",
+    "ARTCC": "ZJX",
+    "Latitude": 32.224,
+    "Longitude": -80.697,
+    "Radius": 75
+  },
+  "HYA": {
+    "Name": "Hyannis FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 41.66607,
+    "Longitude": -70.2857,
+    "Radius": 75
+  },
+  "HYI": {
+    "Name": "San Marcos ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.888951,
+    "Longitude": -97.865374,
+    "Radius": 75
+  },
+  "IAB": {
+    "Name": "McConnell Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 37.6264223,
+    "Longitude": -97.2618928,
+    "Radius": 75
+  },
+  "IAD": {
+    "Name": "Washington Dulles ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 38.93905,
+    "Longitude": -77.44875,
+    "Radius": 75
+  },
+  "IAG": {
+    "Name": "Niagara ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 43.1073,
+    "Longitude": -78.946198,
+    "Radius": 75
+  },
+  "IAH": {
+    "Name": "George Bush Intcntl ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.984135,
+    "Longitude": -95.328179,
+    "Radius": 75
+  },
+  "IDA": {
+    "Name": "Idaho Falls ATCT",
+    "ARTCC": "ZLC",
+    "Latitude": 43.51531,
+    "Longitude": -112.06765,
+    "Radius": 75
+  },
+  "IFP": {
+    "Name": "Bullhead Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 35.157398,
+    "Longitude": -114.559998,
+    "Radius": 75
+  },
+  "ILG": {
+    "Name": "Wilmington ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 39.674279,
+    "Longitude": -75.601347,
+    "Radius": 75
+  },
+  "ILI": {
+    "Name": "Iliamna FSS",
+    "ARTCC": "ZAN",
+    "Latitude": 59.754398,
+    "Longitude": -154.910996,
+    "Radius": 75
+  },
+  "ILN": {
+    "Name": "Wilmington ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 39.4308124,
+    "Longitude": -83.7877598,
+    "Radius": 75
+  },
+  "INS": {
+    "Name": "Creech AFB",
+    "ARTCC": "ZLA",
+    "Latitude": 36.5863438,
+    "Longitude": -115.6773706,
+    "Radius": 75
+  },
+  "INT": {
+    "Name": "Winston-Salem FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 36.13705172259893,
+    "Longitude": -80.22836697335816,
+    "Radius": 75
+  },
+  "IPT": {
+    "Name": "Williamsport ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 41.242126,
+    "Longitude": -76.92245,
+    "Radius": 75
+  },
+  "ISM": {
+    "Name": "Kissimmee Gateway",
+    "ARTCC": "ZJX",
+    "Latitude": 28.29,
+    "Longitude": -81.437,
+    "Radius": 75
+  },
+  "ISO": {
+    "Name": "Kinston ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 35.32539,
+    "Longitude": -77.61073,
+    "Radius": 75
+  },
+  "ISP": {
+    "Name": "Islip ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.789407,
+    "Longitude": -73.102151,
+    "Radius": 75
+  },
+  "ITH": {
+    "Name": "Ithaca ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 42.49095260801814,
+    "Longitude": -76.46196096173901,
+    "Radius": 75
+  },
+  "IWA": {
+    "Name": "Phoenix-Mesa Gateway ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 33.30507569991343,
+    "Longitude": -111.6653092889368,
+    "Radius": 75
+  },
+  "IXD": {
+    "Name": "New Century Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.83887,
+    "Longitude": -94.89533,
+    "Radius": 75
+  },
+  "JAC": {
+    "Name": "Jackson Hole ATCT",
+    "ARTCC": "ZLC",
+    "Latitude": 43.607865,
+    "Longitude": -110.742373,
+    "Radius": 75
+  },
+  "JCF": {
+    "Name": "Joshua Control Facility TRACON",
+    "ARTCC": "ZLA",
+    "Latitude": 35.6857004,
+    "Longitude": -117.6921095,
+    "Radius": 75
+  },
+  "JEF": {
+    "Name": "Jefferson City Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.59451,
+    "Longitude": -92.1545,
+    "Radius": 75
+  },
+  "JFK": {
+    "Name": "Kennedy ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.642506,
+    "Longitude": -73.781258,
+    "Radius": 75
+  },
+  "JKA": {
+    "Name": "Gulf Shores International Airport/Jack Edwards",
+    "ARTCC": "ZJX",
+    "Latitude": 30.2896389,
+    "Longitude": -87.6717778,
+    "Radius": 75
+  },
+  "JLN": {
+    "Name": "Joplin Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 37.1592883,
+    "Longitude": -94.5009029,
+    "Radius": 75
+  },
+  "JNU": {
+    "Name": "Juneau ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 58.3589,
+    "Longitude": -134.5839,
+    "Radius": 75
+  },
+  "JPX": {
+    "Name": "East Hampton",
+    "ARTCC": "ZNY",
+    "Latitude": 40.959954,
+    "Longitude": -72.25105,
+    "Radius": 75
+  },
+  "JQF": {
+    "Name": "Concord FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 35.38560755251728,
+    "Longitude": -80.71238403172595,
+    "Radius": 75
+  },
+  "JRF": {
+    "Name": "Kalaeloa ATCT",
+    "ARTCC": "ZHN",
+    "Latitude": 21.3074,
+    "Longitude": -158.070009,
+    "Radius": 75
+  },
+  "JST": {
+    "Name": "Johnstown ATCT/RAPCON",
+    "ARTCC": "ZOB",
+    "Latitude": 40.3196415477623,
+    "Longitude": -78.83575018099101,
+    "Radius": 75
+  },
+  "JVL": {
+    "Name": "Janesville ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 42.622909521626234,
+    "Longitude": -89.0418605086902,
+    "Radius": 75
+  },
+  "JWN": {
+    "Name": "John Tune ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 36.182917671707365,
+    "Longitude": -86.88363369280158,
+    "Radius": 75
+  },
+  "JXN": {
+    "Name": "Jackson ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 42.260509,
+    "Longitude": -84.463019,
+    "Radius": 75
+  },
+  "JYO": {
+    "Name": "Leesburg ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 39.0779,
+    "Longitude": -77.55527,
+    "Radius": 75
+  },
+  "KOA": {
+    "Name": "Kona FCT",
+    "ARTCC": "ZHN",
+    "Latitude": 19.743915,
+    "Longitude": -156.040982,
+    "Radius": 75
+  },
+  "KWA": {
+    "Name": "Bucholz ATCT RAPCON",
+    "ARTCC": "ZOA",
+    "Latitude": 8.72714564354963,
+    "Longitude": 167.741668658306,
+    "Radius": 75
+  },
+  "LAF": {
+    "Name": "Lafayette ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 40.41478907973206,
+    "Longitude": -86.93332809464094,
+    "Radius": 75
+  },
+  "LAL": {
+    "Name": "Lakeland Linder ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 27.987656,
+    "Longitude": -82.018776,
+    "Radius": 75
+  },
+  "LAS": {
+    "Name": "Las Vegas Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 36.08495650849585,
+    "Longitude": -115.14159852574397,
+    "Radius": 75
+  },
+  "LAW": {
+    "Name": "Lawton Rgnl ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 34.567699,
+    "Longitude": -98.416603,
+    "Radius": 75
+  },
+  "LAX": {
+    "Name": "Los Angeles Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.94400388289919,
+    "Longitude": -118.40383021896014,
+    "Radius": 75
+  },
+  "LBE": {
+    "Name": "Arnold Palmer Regional ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 40.2731005,
+    "Longitude": -79.4103256,
+    "Radius": 75
+  },
+  "LCK": {
+    "Name": "Rickenbacker ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 39.8163769,
+    "Longitude": -82.9331432,
+    "Radius": 75
+  },
+  "LCQ": {
+    "Name": "Lake City Gateway",
+    "ARTCC": "ZJX",
+    "Latitude": 30.1820556,
+    "Longitude": -82.5768611,
+    "Radius": 75
+  },
+  "LEB": {
+    "Name": "Lebanon FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 43.62899,
+    "Longitude": -72.31043,
+    "Radius": 75
+  },
+  "LEE": {
+    "Name": "Leesburg International",
+    "ARTCC": "ZJX",
+    "Latitude": 28.8228981,
+    "Longitude": -81.8084175,
+    "Radius": 75
+  },
+  "LFI": {
+    "Name": "Langley ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 37.07845,
+    "Longitude": -76.35756,
+    "Radius": 75
+  },
+  "LGA": {
+    "Name": "LaGuardia ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.7735,
+    "Longitude": -73.87383,
+    "Radius": 75
+  },
+  "LGB": {
+    "Name": "Long Beach Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.816523,
+    "Longitude": -118.149891,
+    "Radius": 75
+  },
+  "LGF": {
+    "Name": "Laguna Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 32.86000061,
+    "Longitude": -114.3970032,
+    "Radius": 75
+  },
+  "LHW": {
+    "Name": "Wright Army Airfield/Midcoast Regional",
+    "ARTCC": "ZJX",
+    "Latitude": 31.8878194,
+    "Longitude": -81.562655,
+    "Radius": 75
+  },
+  "LIH": {
+    "Name": "Lihue FCT",
+    "ARTCC": "ZHN",
+    "Latitude": 21.976,
+    "Longitude": -159.339005,
+    "Radius": 75
+  },
+  "LMT": {
+    "Name": "Kingsley ATCT/TRACON",
+    "ARTCC": "ZSE",
+    "Latitude": 42.158767,
+    "Longitude": -121.728568,
+    "Radius": 75
+  },
+  "LNK": {
+    "Name": "Lincoln ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 40.84824637214578,
+    "Longitude": -96.75743522642509,
+    "Radius": 75
+  },
+  "LNS": {
+    "Name": "Lancaster ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.124813,
+    "Longitude": -76.297367,
+    "Radius": 75
+  },
+  "LOT": {
+    "Name": "Lewis University ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 41.60419848490672,
+    "Longitude": -88.0933964022852,
+    "Radius": 75
+  },
+  "LOU": {
+    "Name": "Bowman ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 38.22733,
+    "Longitude": -85.66055,
+    "Radius": 75
+  },
+  "LRD": {
+    "Name": "Laredo ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 27.54075680811654,
+    "Longitude": -99.46875311350387,
+    "Radius": 75
+  },
+  "LRF": {
+    "Name": "Little Rock ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 34.91179772880777,
+    "Longitude": -92.14010166756819,
+    "Radius": 75
+  },
+  "LSE": {
+    "Name": "La Crosse FCT",
+    "ARTCC": "ZMP",
+    "Latitude": 43.873300004184145,
+    "Longitude": -91.25276004215065,
+    "Radius": 75
+  },
+  "LSF": {
+    "Name": "Lawson ATCT",
+    "ARTCC": "ZTL",
+    "Latitude": 32.332546,
+    "Longitude": -84.988003,
+    "Radius": 75
+  },
+  "LSV": {
+    "Name": "Nellis RAPCON",
+    "ARTCC": "ZLA",
+    "Latitude": 36.2362,
+    "Longitude": -115.0342556,
+    "Radius": 75
+  },
+  "LTS": {
+    "Name": "Altus ATCT/RAPCON",
+    "ARTCC": "ZFW",
+    "Latitude": 34.66351305607937,
+    "Longitude": -99.28167074800248,
+    "Radius": 75
+  },
+  "LUF": {
+    "Name": "Luke ATCT/RAPCON",
+    "ARTCC": "ZAB",
+    "Latitude": 33.53346991108564,
+    "Longitude": -112.3754294727165,
+    "Radius": 75
+  },
+  "LUK": {
+    "Name": "Lunken ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 39.107264,
+    "Longitude": -84.4229877,
+    "Radius": 75
+  },
+  "LVK": {
+    "Name": "Livermore Muni ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.6934013367,
+    "Longitude": -121.819999695,
+    "Radius": 75
+  },
+  "LWB": {
+    "Name": "Lewisburg ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 37.85654,
+    "Longitude": -80.40451,
+    "Radius": 75
+  },
+  "LWM": {
+    "Name": "Lawrence FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.71458,
+    "Longitude": -71.12018,
+    "Radius": 75
+  },
+  "LWS": {
+    "Name": "Lewiston ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 46.37567586312152,
+    "Longitude": -117.0086470632557,
+    "Radius": 75
+  },
+  "LYH": {
+    "Name": "Lynchburg ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 37.32875,
+    "Longitude": -79.20254,
+    "Radius": 75
+  },
+  "LZU": {
+    "Name": "Gwinnett FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 33.97809982,
+    "Longitude": -83.96240234,
+    "Radius": 75
+  },
+  "MC1": {
+    "Name": "Sacramento TRACON",
+    "ARTCC": "ZOA",
+    "Latitude": 38.506843,
+    "Longitude": -121.496608,
+    "Radius": 75
+  },
+  "MCC": {
+    "Name": "Mc Clellan Airfield Temporary FCT",
+    "ARTCC": "ZOA",
+    "Latitude": 38.667599,
+    "Longitude": -121.401001,
+    "Radius": 75
+  },
+  "MCF": {
+    "Name": "MacDill AFB",
+    "ARTCC": "ZMA",
+    "Latitude": 27.8493,
+    "Longitude": -82.521202,
+    "Radius": 75
+  },
+  "MCN": {
+    "Name": "Macon FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 32.69279861450195,
+    "Longitude": -83.64920043945312,
+    "Radius": 75
+  },
+  "MCO": {
+    "Name": "Orlando International ATCT",
+    "ARTCC": "ZJX",
+    "Latitude": 28.429399490356445,
+    "Longitude": -81.30899810791016,
+    "Radius": 75
+  },
+  "MDH": {
+    "Name": "Southern Illinois Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 37.7782221,
+    "Longitude": -89.2503003,
+    "Radius": 75
+  },
+  "MDW": {
+    "Name": "Midway ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 41.78024486579285,
+    "Longitude": -87.75242362845026,
+    "Radius": 75
+  },
+  "MEI": {
+    "Name": "Key Field ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 32.333064868303794,
+    "Longitude": -88.74703640464223,
+    "Radius": 75
+  },
+  "MEM": {
+    "Name": "Memphis ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 35.049638922759726,
+    "Longitude": -89.98158337146658,
+    "Radius": 75
+  },
+  "MER": {
+    "Name": "Atwater Castle ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.38050079,
+    "Longitude": -120.5680008,
+    "Radius": 75
+  },
+  "MFE": {
+    "Name": "McAllen ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 26.178897,
+    "Longitude": -98.23899,
+    "Radius": 75
+  },
+  "MFR": {
+    "Name": "Medford ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 42.370341318244535,
+    "Longitude": -122.87538813216173,
+    "Radius": 75
+  },
+  "MGE": {
+    "Name": "Dobbins ATCT",
+    "ARTCC": "ZTL",
+    "Latitude": 33.915401,
+    "Longitude": -84.516296,
+    "Radius": 75
+  },
+  "MGW": {
+    "Name": "Morgantown ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 39.643305,
+    "Longitude": -79.917598,
+    "Radius": 75
+  },
+  "MHK": {
+    "Name": "Manhattan Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 39.1414167,
+    "Longitude": -96.6715556,
+    "Radius": 75
+  },
+  "MHR": {
+    "Name": "Sacramento Mather ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 38.554744,
+    "Longitude": -121.297989,
+    "Radius": 75
+  },
+  "MHT": {
+    "Name": "Manchester ATCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.92839,
+    "Longitude": -71.44216,
+    "Radius": 75
+  },
+  "MHV": {
+    "Name": "Mojave Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 35.05939865,
+    "Longitude": -118.1520004,
+    "Radius": 75
+  },
+  "MIB": {
+    "Name": "Minot ATCT/RAPCON",
+    "ARTCC": "ZMP",
+    "Latitude": 48.40972262784527,
+    "Longitude": -101.35266846859403,
+    "Radius": 75
+  },
+  "MIC": {
+    "Name": "Crystal ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 45.06076923121214,
+    "Longitude": -93.35565281886056,
+    "Radius": 75
+  },
+  "MIE": {
+    "Name": "Muncie ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 40.240065,
+    "Longitude": -85.3911452,
+    "Radius": 75
+  },
+  "MKC": {
+    "Name": "Kansas City Downtown Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 39.1241701,
+    "Longitude": -94.5928393,
+    "Radius": 75
+  },
+  "MKK": {
+    "Name": "Molokai FCT",
+    "ARTCC": "ZHN",
+    "Latitude": 21.152901,
+    "Longitude": -157.095993,
+    "Radius": 75
+  },
+  "MKL": {
+    "Name": "Jackson ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 35.60632481316672,
+    "Longitude": -88.91715544674504,
+    "Radius": 75
+  },
+  "MLB": {
+    "Name": "Melbourne Orlando ATCT",
+    "ARTCC": "ZJX",
+    "Latitude": 28.103,
+    "Longitude": -80.645,
+    "Radius": 75
+  },
+  "MMT": {
+    "Name": "Mc Entire Joint National Guard Base",
+    "ARTCC": "ZJX",
+    "Latitude": 33.9207704,
+    "Longitude": -80.8011422,
+    "Radius": 75
+  },
+  "MMU": {
+    "Name": "Morristown ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.797179,
+    "Longitude": -74.419552,
+    "Radius": 75
+  },
+  "MOD": {
+    "Name": "Modesto FCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.625801,
+    "Longitude": -120.954002,
+    "Radius": 75
+  },
+  "MOT": {
+    "Name": "Magic City ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 48.255215831377775,
+    "Longitude": -101.28623115607411,
+    "Radius": 75
+  },
+  "MQY": {
+    "Name": "Smyrna ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 36.00676551679145,
+    "Longitude": -86.50851504172935,
+    "Radius": 75
+  },
+  "MR1": {
+    "Name": "Monterrey ATCT TRACON",
+    "ARTCC": "ZOA",
+    "Latitude": 36.5874475134031,
+    "Longitude": -121.853114640326,
+    "Radius": 75
+  },
+  "MRB": {
+    "Name": "Martinsburg ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 39.40471,
+    "Longitude": -77.98978,
+    "Radius": 75
+  },
+  "MRI": {
+    "Name": "Merrill ATCT",
+    "ARTCC": "ZAN",
+    "Latitude": 61.2173,
+    "Longitude": -149.8439,
+    "Radius": 75
+  },
+  "MRY": {
+    "Name": "Monterey Regl ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 36.5874475134031,
+    "Longitude": -121.853114640326,
+    "Radius": 75
+  },
+  "MSO": {
+    "Name": "Missoula ATCT | Spokane TRACON",
+    "ARTCC": "ZLC",
+    "Latitude": 46.91865,
+    "Longitude": -114.08365,
+    "Radius": 75
+  },
+  "MSP": {
+    "Name": "Minneapolis ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 44.88827400465343,
+    "Longitude": -93.22170032635461,
+    "Radius": 75
+  },
+  "MTC": {
+    "Name": "Selfridge ATCT/RAPCON",
+    "ARTCC": "ZOB",
+    "Latitude": 42.60895801162594,
+    "Longitude": -82.84594173910182,
+    "Radius": 75
+  },
+  "MTN": {
+    "Name": "Martin State ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 39.32944,
+    "Longitude": -76.42105,
+    "Radius": 75
+  },
+  "MUI": {
+    "Name": "Muir ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.437851,
+    "Longitude": -76.567109,
+    "Radius": 75
+  },
+  "MUO": {
+    "Name": "Mountain Home NFCT/RAPCON",
+    "ARTCC": "ZLC",
+    "Latitude": 43.0435972,
+    "Longitude": -115.8724333,
+    "Radius": 75
+  },
+  "MVY": {
+    "Name": "Martha's Vineyard FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 41.38969,
+    "Longitude": -70.61199,
+    "Radius": 75
+  },
+  "MWA": {
+    "Name": "Marion Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 37.7596169,
+    "Longitude": -89.0120349,
+    "Radius": 75
+  },
+  "MWC": {
+    "Name": "Timmerman ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 43.109290148697326,
+    "Longitude": -88.02924606200749,
+    "Radius": 75
+  },
+  "MXF": {
+    "Name": "Maxwell ATCT",
+    "ARTCC": "ZTL",
+    "Latitude": 32.3829,
+    "Longitude": -86.365799,
+    "Radius": 75
+  },
+  "MYF": {
+    "Name": "Montgomery Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 32.82,
+    "Longitude": -117.14,
+    "Radius": 75
+  },
+  "NBC": {
+    "Name": "Beaufort Marine Corps Air Station (Merritt Field) ATCT/RAPCON",
+    "ARTCC": "ZJX",
+    "Latitude": 32.47592,
+    "Longitude": -80.73065,
+    "Radius": 75
+  },
+  "NBG": {
+    "Name": "Navy New Orleans ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.825259,
+    "Longitude": -90.028319,
+    "Radius": 75
+  },
+  "NCA": {
+    "Name": "New River ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 34.71802,
+    "Longitude": -77.4412,
+    "Radius": 75
+  },
+  "NDZ": {
+    "Name": "Whiting Field Naval Air Station South",
+    "ARTCC": "ZJX",
+    "Latitude": 30.6985731,
+    "Longitude": -87.0144086,
+    "Radius": 75
+  },
+  "NEL": {
+    "Name": "Lakehurst ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.03202,
+    "Longitude": -74.346422,
+    "Radius": 75
+  },
+  "NEN": {
+    "Name": "Whitehouse Naval Outlying",
+    "ARTCC": "ZJX",
+    "Latitude": 30.349495,
+    "Longitude": -81.8669894,
+    "Radius": 75
+  },
+  "NEW": {
+    "Name": "Lakefront ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.042176,
+    "Longitude": -90.025784,
+    "Radius": 75
+  },
+  "NFG": {
+    "Name": "Camp Pendleton RAPCON",
+    "ARTCC": "ZLA",
+    "Latitude": 33.30203422449705,
+    "Longitude": -117.34849383386195,
+    "Radius": 75
+  },
+  "NFJ": {
+    "Name": "Choctaw Naval Outlying",
+    "ARTCC": "ZJX",
+    "Latitude": 30.5069444,
+    "Longitude": -86.9597222,
+    "Radius": 75
+  },
+  "NFL": {
+    "Name": "NAS Fallon RAPCON",
+    "ARTCC": "ZOA",
+    "Latitude": 39.4178306,
+    "Longitude": -118.6985883,
+    "Radius": 75
+  },
+  "NFW": {
+    "Name": "Fort Worth Naval Air Station JRB (Carswell Field)",
+    "ARTCC": "ZFW",
+    "Latitude": 32.77131143923823,
+    "Longitude": -97.43406018891869,
+    "Radius": 75
+  },
+  "NGF": {
+    "Name": "Kaneohe Bay ATCT/RAPCON",
+    "ARTCC": "ZHN",
+    "Latitude": 21.4504556,
+    "Longitude": -157.7679486,
+    "Radius": 75
+  },
+  "NGP": {
+    "Name": "Navy Corpus ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 27.69432,
+    "Longitude": -97.283281,
+    "Radius": 75
+  },
+  "NGU": {
+    "Name": "Chambers ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 36.93299,
+    "Longitude": -76.2843,
+    "Radius": 75
+  },
+  "NGW": {
+    "Name": "Navy Cabaniss ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 27.705263,
+    "Longitude": -97.437559,
+    "Radius": 75
+  },
+  "NHK": {
+    "Name": "Patuxent ATCT/RAPCON",
+    "ARTCC": "ZDC",
+    "Latitude": 38.287591,
+    "Longitude": -76.425927,
+    "Radius": 75
+  },
+  "NID": {
+    "Name": "China Lake Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 35.6853981,
+    "Longitude": -117.6920013,
+    "Radius": 75
+  },
+  "NIP": {
+    "Name": "Jacksonville Naval Air Station",
+    "ARTCC": "ZJX",
+    "Latitude": 30.233706,
+    "Longitude": -81.6760572,
+    "Radius": 75
+  },
+  "NJK": {
+    "Name": "El Centro NAF",
+    "ARTCC": "ZLA",
+    "Latitude": 32.829201,
+    "Longitude": -115.671996,
+    "Radius": 75
+  },
+  "NJM": {
+    "Name": "Bogue ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 34.69252,
+    "Longitude": -77.02903,
+    "Radius": 75
+  },
+  "NJW": {
+    "Name": "Joe Williams ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 32.793134388940466,
+    "Longitude": -88.83362343929524,
+    "Radius": 75
+  },
+  "NKT": {
+    "Name": "Cherry Point ATCT/RAPCON",
+    "ARTCC": "ZDC",
+    "Latitude": 34.90255,
+    "Longitude": -76.88628,
+    "Radius": 75
+  },
+  "NKX": {
+    "Name": "Miramar",
+    "ARTCC": "ZLA",
+    "Latitude": 32.86840057,
+    "Longitude": -117.1429977,
+    "Radius": 75
+  },
+  "NLC": {
+    "Name": "NAS Lemoore RAPCON",
+    "ARTCC": "ZOA",
+    "Latitude": 36.3331268,
+    "Longitude": -119.9521616,
+    "Radius": 75
+  },
+  "NOG": {
+    "Name": "Navy Orange ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 27.899971,
+    "Longitude": -98.048505,
+    "Radius": 75
+  },
+  "NPA": {
+    "Name": "Pensacola Naval Air Station (Forrest Sherman Field)",
+    "ARTCC": "ZJX",
+    "Latitude": 30.3532728,
+    "Longitude": -87.3179711,
+    "Radius": 75
+  },
+  "NQA": {
+    "Name": "Millington ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 35.34994977,
+    "Longitude": -89.86988073,
+    "Radius": 75
+  },
+  "NQI": {
+    "Name": "Kingsville ATCT/RATCF RAPCON",
+    "ARTCC": "ZHU",
+    "Latitude": 27.505593,
+    "Longitude": -97.814798,
+    "Radius": 75
+  },
+  "NQX": {
+    "Name": "NAS Key West RATCF RAPCON",
+    "ARTCC": "ZMA",
+    "Latitude": 24.553729990205987,
+    "Longitude": -81.75644901448159,
+    "Radius": 75
+  },
+  "NRB": {
+    "Name": "Mayport Naval Station (Adm David L. McDonald Field)",
+    "ARTCC": "ZJX",
+    "Latitude": 30.3913742,
+    "Longitude": -81.4245212,
+    "Radius": 75
+  },
+  "NRS": {
+    "Name": "Imperial Beach Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 32.5667,
+    "Longitude": -117.116997,
+    "Radius": 75
+  },
+  "NSE": {
+    "Name": "Whiting Field Naval Air Station North",
+    "ARTCC": "ZJX",
+    "Latitude": 30.7224722,
+    "Longitude": -87.0239031,
+    "Radius": 75
+  },
+  "NSI": {
+    "Name": "San Nicolas Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.23979949951172,
+    "Longitude": -119.45800018310547,
+    "Radius": 75
+  },
+  "NTD": {
+    "Name": "Point Mugu RAPCON",
+    "ARTCC": "ZLA",
+    "Latitude": 34.11743816076807,
+    "Longitude": -119.11850912551935,
+    "Radius": 75
+  },
+  "NTU": {
+    "Name": "Oceana ATCT/RAPCON",
+    "ARTCC": "ZDC",
+    "Latitude": 36.81838,
+    "Longitude": -76.0275,
+    "Radius": 75
+  },
+  "NUC": {
+    "Name": "San Clemente Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.02270126,
+    "Longitude": -118.5879974,
+    "Radius": 75
+  },
+  "NUI": {
+    "Name": "Navy Webster ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 38.146,
+    "Longitude": -76.4284722,
+    "Radius": 75
+  },
+  "NUQ": {
+    "Name": "Moffett Federal Afld ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.4161,
+    "Longitude": -122.049004,
+    "Radius": 75
+  },
+  "NUW": {
+    "Name": "Whidbey Island ATCT/RAPCON",
+    "ARTCC": "ZSE",
+    "Latitude": 48.344786,
+    "Longitude": -122.668777,
+    "Radius": 75
+  },
+  "NWL": {
+    "Name": "Navy Waldron ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 27.63237932,
+    "Longitude": -97.3118088,
+    "Radius": 75
+  },
+  "NXP": {
+    "Name": "Twentynine Palms Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.2962,
+    "Longitude": -116.162003,
+    "Radius": 75
+  },
+  "NYG": {
+    "Name": "Quantico ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 38.50689,
+    "Longitude": -77.30674,
+    "Radius": 75
+  },
+  "NYL": {
+    "Name": "Yuma RAPCON",
+    "ARTCC": "ZLA",
+    "Latitude": 32.6565739,
+    "Longitude": -114.6059872,
+    "Radius": 75
+  },
+  "NZY": {
+    "Name": "North Island Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 32.69919968,
+    "Longitude": -117.2149963,
+    "Radius": 75
+  },
+  "O90": {
+    "Name": "Oakland Bay TRACON",
+    "ARTCC": "ZOA",
+    "Latitude": 37.3596784324412,
+    "Longitude": -121.931669400935,
+    "Radius": 75
+  },
+  "OAJ": {
+    "Name": "Ellis ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 34.82817,
+    "Longitude": -77.6087,
+    "Radius": 75
+  },
+  "OAK": {
+    "Name": "Oakland Intl ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.7195055336878,
+    "Longitude": -122.221906994449,
+    "Radius": 75
+  },
+  "OCF": {
+    "Name": "Ocala International Airport-Jim Taylor Field",
+    "ARTCC": "ZJX",
+    "Latitude": 29.17259979,
+    "Longitude": -82.22419739,
+    "Radius": 75
+  },
+  "OFF": {
+    "Name": "Offutt AFB ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 41.12372354602579,
+    "Longitude": -95.90974918288414,
+    "Radius": 75
+  },
+  "OGD": {
+    "Name": "Ogden ATCT",
+    "ARTCC": "ZLC",
+    "Latitude": 41.19359,
+    "Longitude": -112.00824,
+    "Radius": 75
+  },
+  "OJC": {
+    "Name": "Executive Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.8481,
+    "Longitude": -94.74116,
+    "Radius": 75
+  },
+  "OLM": {
+    "Name": "Olympia ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 46.97382588110557,
+    "Longitude": -122.90846412775298,
+    "Radius": 75
+  },
+  "OLV": {
+    "Name": "Olive Branch ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 34.97874047640256,
+    "Longitude": -89.78994888975326,
+    "Radius": 75
+  },
+  "OMA": {
+    "Name": "Omaha ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 41.30073145404771,
+    "Longitude": -95.89889874731907,
+    "Radius": 75
+  },
+  "OMN": {
+    "Name": "Ormond Beach Municipal",
+    "ARTCC": "ZJX",
+    "Latitude": 29.30455,
+    "Longitude": -81.11698,
+    "Radius": 75
+  },
+  "ONT": {
+    "Name": "Ontario Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.051377,
+    "Longitude": -117.599721,
+    "Radius": 75
+  },
+  "OPF": {
+    "Name": "Miami-Opa Locka Executive ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 25.90829735950671,
+    "Longitude": -80.27308413541971,
+    "Radius": 75
+  },
+  "OQU": {
+    "Name": "Quonset ATCT",
+    "ARTCC": "ZBW",
+    "Latitude": 41.59347,
+    "Longitude": -71.41214,
+    "Radius": 75
+  },
+  "ORD": {
+    "Name": "O'Hare ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 41.97733890974094,
+    "Longitude": -87.90437449657573,
+    "Radius": 75
+  },
+  "ORH": {
+    "Name": "Worcester FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.2626,
+    "Longitude": -71.87044,
+    "Radius": 75
+  },
+  "ORL": {
+    "Name": "Orlando Executive ATCT",
+    "ARTCC": "ZJX",
+    "Latitude": 28.5455,
+    "Longitude": -81.332901,
+    "Radius": 75
+  },
+  "OSH": {
+    "Name": "Oshkosh ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 43.98091,
+    "Longitude": -88.56245,
+    "Radius": 75
+  },
+  "OSU": {
+    "Name": "Ohio State ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 40.0751199,
+    "Longitude": -83.0709948,
+    "Radius": 75
+  },
+  "OTH": {
+    "Name": "North Bend ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 43.4180071448796,
+    "Longitude": -124.2477968161363,
+    "Radius": 75
+  },
+  "OUN": {
+    "Name": "University of Oklahoma Westheimer ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 35.2456,
+    "Longitude": -97.472099,
+    "Radius": 75
+  },
+  "OWB": {
+    "Name": "Owensboro ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 37.746749,
+    "Longitude": -87.1630897,
+    "Radius": 75
+  },
+  "OWD": {
+    "Name": "Norwood FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.18642,
+    "Longitude": -71.17655,
+    "Radius": 75
+  },
+  "OXC": {
+    "Name": "Oxford ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 41.479899557246796,
+    "Longitude": -73.13858167930222,
+    "Radius": 75
+  },
+  "OXR": {
+    "Name": "Oxnard Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.200801849365,
+    "Longitude": -119.20700073242,
+    "Radius": 75
+  },
+  "OZR": {
+    "Name": "Cairns Army Air ATCT/RAPCON",
+    "ARTCC": "ZJX",
+    "Latitude": 31.86,
+    "Longitude": -86.0138889,
+    "Radius": 75
+  },
+  "PAE": {
+    "Name": "Paine ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 47.909056869290126,
+    "Longitude": -122.27902351531574,
+    "Radius": 75
+  },
+  "PAH": {
+    "Name": "Paducah ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 37.0576324802926,
+    "Longitude": -88.77177387621204,
+    "Radius": 75
+  },
+  "PAM": {
+    "Name": "Tyndall Air Force Base ATCT/TRACON",
+    "ARTCC": "ZJX",
+    "Latitude": 30.06655,
+    "Longitude": -85.58118,
+    "Radius": 75
+  },
+  "PAO": {
+    "Name": "Palo Alto ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.461101532,
+    "Longitude": -122.114997864,
+    "Radius": 75
+  },
+  "PCA": {
+    "Name": "Picacho ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 32.66487341214442,
+    "Longitude": -111.48983267272389,
+    "Radius": 75
+  },
+  "PDK": {
+    "Name": "Peachtree ATCT",
+    "ARTCC": "ZTL",
+    "Latitude": 33.876555151309695,
+    "Longitude": -84.30418943999848,
+    "Radius": 75
+  },
+  "PDT": {
+    "Name": "Pendleton ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 45.68938551481613,
+    "Longitude": -118.83974466713447,
+    "Radius": 75
+  },
+  "PDX": {
+    "Name": "Portland ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 45.587557309225375,
+    "Longitude": -122.58909156836972,
+    "Radius": 75
+  },
+  "PGD": {
+    "Name": "Punta Gorda ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 26.9202,
+    "Longitude": -81.990501,
+    "Radius": 75
+  },
+  "PHF": {
+    "Name": "Newport News Williamsburg ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 37.12983,
+    "Longitude": -76.50443,
+    "Radius": 75
+  },
+  "PHX": {
+    "Name": "Phoenix ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 33.435385328715874,
+    "Longitude": -112.00589337868877,
+    "Radius": 75
+  },
+  "PIE": {
+    "Name": "St Pete-Clearwater ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 27.9102,
+    "Longitude": -82.687401,
+    "Radius": 75
+  },
+  "PIH": {
+    "Name": "Pocatello ATCT",
+    "ARTCC": "ZLC",
+    "Latitude": 42.907065,
+    "Longitude": -112.587255,
+    "Radius": 75
+  },
+  "PKB": {
+    "Name": "Parkersburg ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 39.3445666,
+    "Longitude": -81.4337604,
+    "Radius": 75
+  },
+  "PMD": {
+    "Name": "Palmdale Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.629398,
+    "Longitude": -118.084999,
+    "Radius": 75
+  },
+  "PMP": {
+    "Name": "Pompano Beach ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 26.243571293620793,
+    "Longitude": -80.11389721024227,
+    "Radius": 75
+  },
+  "PNE": {
+    "Name": "Northeast Philadelphia ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.081809,
+    "Longitude": -75.005889,
+    "Radius": 75
+  },
+  "PNS": {
+    "Name": "Pensacola ATCT",
+    "ARTCC": "ZJX",
+    "Latitude": 30.4734167,
+    "Longitude": -87.1866111,
+    "Radius": 75
+  },
+  "POB": {
+    "Name": "Pope ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 35.16916,
+    "Longitude": -79.00953,
+    "Radius": 75
+  },
+  "POC": {
+    "Name": "Brackett Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.0931706893239,
+    "Longitude": -117.7821958678199,
+    "Radius": 75
+  },
+  "POE": {
+    "Name": "Polk ATCT/ARAC RAPCON",
+    "ARTCC": "ZHU",
+    "Latitude": 31.046688,
+    "Longitude": -93.189796,
+    "Radius": 75
+  },
+  "POU": {
+    "Name": "Poughkeepsie ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 41.624925,
+    "Longitude": -73.881993,
+    "Radius": 75
+  },
+  "PQL": {
+    "Name": "Trent Lott ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 30.461427,
+    "Longitude": -88.530997,
+    "Radius": 75
+  },
+  "PRC": {
+    "Name": "Prescott ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 34.649880379154986,
+    "Longitude": -112.42085950958325,
+    "Radius": 75
+  },
+  "PSM": {
+    "Name": "Portsmouth ATCT",
+    "ARTCC": "ZBW",
+    "Latitude": 43.08434,
+    "Longitude": -70.81889,
+    "Radius": 75
+  },
+  "PSP": {
+    "Name": "Palm Springs Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.82698376186288,
+    "Longitude": -116.50869956620673,
+    "Radius": 75
+  },
+  "PTK": {
+    "Name": "Pontiac ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 42.665500640869,
+    "Longitude": -83.420097351074,
+    "Radius": 75
+  },
+  "PUB": {
+    "Name": "Pueblo ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 38.2838798983797,
+    "Longitude": -104.49436630524,
+    "Radius": 75
+  },
+  "PVU": {
+    "Name": "Provo ATCT",
+    "ARTCC": "ZLC",
+    "Latitude": 40.216255,
+    "Longitude": -111.726635,
+    "Radius": 75
+  },
+  "PWA": {
+    "Name": "Wiley Post ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 35.53419876,
+    "Longitude": -97.64710236,
+    "Radius": 75
+  },
+  "PWK": {
+    "Name": "Chicago Executive ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 42.11631863790219,
+    "Longitude": -87.89829272278244,
+    "Radius": 75
+  },
+  "RAL": {
+    "Name": "Riverside Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.94981651298277,
+    "Longitude": -117.44000942964834,
+    "Radius": 75
+  },
+  "RAP": {
+    "Name": "Rapid City ATCT",
+    "ARTCC": "ZDV",
+    "Latitude": 44.0364454960012,
+    "Longitude": -103.056490214026,
+    "Radius": 75
+  },
+  "RBD": {
+    "Name": "Dallas Executive ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.6809005737,
+    "Longitude": -96.8682022095,
+    "Radius": 75
+  },
+  "RCA": {
+    "Name": "Ellsworth RAPCON/ATCT RAPCON",
+    "ARTCC": "ZDV",
+    "Latitude": 44.137282646605,
+    "Longitude": -103.109643208189,
+    "Radius": 75
+  },
+  "RDD": {
+    "Name": "Redding Muni FCT",
+    "ARTCC": "ZOA",
+    "Latitude": 40.50899887,
+    "Longitude": -122.2929993,
+    "Radius": 75
+  },
+  "RDM": {
+    "Name": "Redmond ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 44.254499905551086,
+    "Longitude": -121.15907875797546,
+    "Radius": 75
+  },
+  "RDR": {
+    "Name": "Grand Forks AFB ATCT/RAPCON",
+    "ARTCC": "ZMP",
+    "Latitude": 47.9582483429644,
+    "Longitude": -97.39018695002311,
+    "Radius": 75
+  },
+  "RHV": {
+    "Name": "Reid-Hillview ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.332901001,
+    "Longitude": -121.819000244,
+    "Radius": 75
+  },
+  "RIC": {
+    "Name": "Richmond ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 37.5134,
+    "Longitude": -77.33264,
+    "Radius": 75
+  },
+  "RIV": {
+    "Name": "March Air Reserve Base RAPCON",
+    "ARTCC": "ZLA",
+    "Latitude": 33.8819433,
+    "Longitude": -117.2590169,
+    "Radius": 75
+  },
+  "RME": {
+    "Name": "Griffiss FCT",
+    "ARTCC": "ZBW",
+    "Latitude": 43.22675,
+    "Longitude": -75.40592,
+    "Radius": 75
+  },
+  "RND": {
+    "Name": "Randolph ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.524625,
+    "Longitude": -98.27528,
+    "Radius": 75
+  },
+  "RNM": {
+    "Name": "Ramona Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.0392,
+    "Longitude": -116.915001,
+    "Radius": 75
+  },
+  "RNO": {
+    "Name": "Reno Tahoe ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 39.4993653564106,
+    "Longitude": -119.762840229207,
+    "Radius": 75
+  },
+  "RNT": {
+    "Name": "Renton ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 47.49194542958004,
+    "Longitude": -122.21733780498174,
+    "Radius": 75
+  },
+  "ROG": {
+    "Name": "Rogers ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 36.370548708979726,
+    "Longitude": -94.11054968778927,
+    "Radius": 75
+  },
+  "RVS": {
+    "Name": "Riverside Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 36.03587,
+    "Longitude": -95.99037,
+    "Radius": 75
+  },
+  "RYM": {
+    "Name": "Miller AAF ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 46.093759344154876,
+    "Longitude": -94.35957177719098,
+    "Radius": 75
+  },
+  "RYN": {
+    "Name": "Ryan Field ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 32.13949938981699,
+    "Longitude": -111.17408991341877,
+    "Radius": 75
+  },
+  "RYY": {
+    "Name": "McCollum FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 34.015292086499514,
+    "Longitude": -84.59865184459437,
+    "Radius": 75
+  },
+  "SAC": {
+    "Name": "Sacramento Exec FCT",
+    "ARTCC": "ZOA",
+    "Latitude": 38.5125007629,
+    "Longitude": -121.492996216,
+    "Radius": 75
+  },
+  "SAF": {
+    "Name": "Santa Fe ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 35.61827875151839,
+    "Longitude": -106.08461121174743,
+    "Radius": 75
+  },
+  "SAN": {
+    "Name": "Lindbergh Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 32.736509139588385,
+    "Longitude": -117.18795067549628,
+    "Radius": 75
+  },
+  "SAW": {
+    "Name": "Sawyer FCT",
+    "ARTCC": "ZMP",
+    "Latitude": 46.35395645874997,
+    "Longitude": -87.38960554303115,
+    "Radius": 75
+  },
+  "SBD": {
+    "Name": "San Bernardino Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.095402,
+    "Longitude": -117.235001,
+    "Radius": 75
+  },
+  "SBP": {
+    "Name": "San Luis Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 35.236801147499996,
+    "Longitude": -120.641998291,
+    "Radius": 75
+  },
+  "SBY": {
+    "Name": "Salisbury ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 38.34247,
+    "Longitude": -75.51577,
+    "Radius": 75
+  },
+  "SC1": {
+    "Name": "Stockton ATCT TRACON",
+    "ARTCC": "ZOA",
+    "Latitude": 37.899087,
+    "Longitude": -121.233545,
+    "Radius": 75
+  },
+  "SCH": {
+    "Name": "Schenectady ATCT",
+    "ARTCC": "ZBW",
+    "Latitude": 42.85332,
+    "Longitude": -73.93374,
+    "Radius": 75
+  },
+  "SCK": {
+    "Name": "Stockton Metro ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.893279,
+    "Longitude": -121.238079,
+    "Radius": 75
+  },
+  "SDL": {
+    "Name": "Scottsdale ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 33.62165296009984,
+    "Longitude": -111.91012348222584,
+    "Radius": 75
+  },
+  "SDM": {
+    "Name": "Brown Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 32.572639,
+    "Longitude": -116.980019,
+    "Radius": 75
+  },
+  "SEA": {
+    "Name": "Seattle ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 47.45572467594646,
+    "Longitude": -122.30137408756394,
+    "Radius": 75
+  },
+  "SEE": {
+    "Name": "Gillespie Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 32.826198577881,
+    "Longitude": -116.97200012207,
+    "Radius": 75
+  },
+  "SEM": {
+    "Name": "Craig NFCT",
+    "ARTCC": "ZTL",
+    "Latitude": 32.343898773193,
+    "Longitude": -86.987800598145,
+    "Radius": 75
+  },
+  "SFB": {
+    "Name": "Orlando Sanford ATCT",
+    "ARTCC": "ZJX",
+    "Latitude": 28.7771781,
+    "Longitude": -81.2349136,
+    "Radius": 75
+  },
+  "SFF": {
+    "Name": "Felts Field ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 47.68067290744298,
+    "Longitude": -117.31947459014233,
+    "Radius": 75
+  },
+  "SFO": {
+    "Name": "San Francisco Intl ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.6158857747142,
+    "Longitude": -122.383783957093,
+    "Radius": 75
+  },
+  "SGJ": {
+    "Name": "Northeast Florida Regional Airport",
+    "ARTCC": "ZJX",
+    "Latitude": 29.959,
+    "Longitude": -81.34,
+    "Radius": 75
+  },
+  "SGR": {
+    "Name": "Sugar Land ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.624961,
+    "Longitude": -95.659021,
+    "Radius": 75
+  },
+  "SGU": {
+    "Name": "St. George Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 37.038888836964844,
+    "Longitude": -113.51292068523165,
+    "Radius": 75
+  },
+  "SJC": {
+    "Name": "San Jose Intl ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.3596784324412,
+    "Longitude": -121.931669400935,
+    "Radius": 75
+  },
+  "SJT": {
+    "Name": "San Angelo ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 31.35770034790039,
+    "Longitude": -100.49600219726562,
+    "Radius": 75
+  },
+  "SKA": {
+    "Name": "Fairchild AFB ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 47.61121339831346,
+    "Longitude": -117.65424879409028,
+    "Radius": 75
+  },
+  "SKF": {
+    "Name": "Kelly ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.385185,
+    "Longitude": -98.585794,
+    "Radius": 75
+  },
+  "SLC": {
+    "Name": "Salt Lake City ATCT",
+    "ARTCC": "ZLC",
+    "Latitude": 40.796543,
+    "Longitude": -111.985547,
+    "Radius": 75
+  },
+  "SLE": {
+    "Name": "Salem ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 44.90963256130453,
+    "Longitude": -123.00752074364239,
+    "Radius": 75
+  },
+  "SLI": {
+    "Name": "Los Alamitos Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.79000092,
+    "Longitude": -118.052002,
+    "Radius": 75
+  },
+  "SLN": {
+    "Name": "Salina Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.7927541,
+    "Longitude": -97.6548661,
+    "Radius": 75
+  },
+  "SMF": {
+    "Name": "Sacramento Intl ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 38.6906391562107,
+    "Longitude": -121.591011954215,
+    "Radius": 75
+  },
+  "SMO": {
+    "Name": "Santa Monica Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.0158,
+    "Longitude": -118.450996,
+    "Radius": 75
+  },
+  "SMX": {
+    "Name": "Santa Maria Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.898899,
+    "Longitude": -120.457001,
+    "Radius": 75
+  },
+  "SNA": {
+    "Name": "John Wayne Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.675701,
+    "Longitude": -117.867996,
+    "Radius": 75
+  },
+  "SNS": {
+    "Name": "Salinas Muni FCT",
+    "ARTCC": "ZOA",
+    "Latitude": 36.662799835205,
+    "Longitude": -121.60600280762,
+    "Radius": 75
+  },
+  "SPG": {
+    "Name": "Albert Whitted ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 27.7651,
+    "Longitude": -82.626999,
+    "Radius": 75
+  },
+  "SPS": {
+    "Name": "Wichita Falls AFB ATCT/RAPCON",
+    "ARTCC": "ZFW",
+    "Latitude": 33.98322959748894,
+    "Longitude": -98.49968720795114,
+    "Radius": 75
+  },
+  "SQL": {
+    "Name": "San Carlos FCT",
+    "ARTCC": "ZOA",
+    "Latitude": 37.51313,
+    "Longitude": -122.250838,
+    "Radius": 75
+  },
+  "SRQ": {
+    "Name": "Sarasota/Bradenton ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 27.39324291201777,
+    "Longitude": -82.55967883638084,
+    "Radius": 75
+  },
+  "SSC": {
+    "Name": "Shaw Air Force ATCT/RAPCON",
+    "ARTCC": "ZJX",
+    "Latitude": 33.972724,
+    "Longitude": -80.4705644,
+    "Radius": 75
+  },
+  "SSF": {
+    "Name": "Stinson ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.336057,
+    "Longitude": -98.470695,
+    "Radius": 75
+  },
+  "STC": {
+    "Name": "St. Cloud FCT",
+    "ARTCC": "ZMP",
+    "Latitude": 45.54102242558805,
+    "Longitude": -94.05751317578638,
+    "Radius": 75
+  },
+  "STJ": {
+    "Name": "St. Joseph Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 39.7735367,
+    "Longitude": -94.9084107,
+    "Radius": 75
+  },
+  "STL": {
+    "Name": "St. Louis Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.7499,
+    "Longitude": -90.3748,
+    "Radius": 75
+  },
+  "STP": {
+    "Name": "St. Paul ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 44.93332436667927,
+    "Longitude": -93.06466765835,
+    "Radius": 75
+  },
+  "STS": {
+    "Name": "Schulz-Sonoma Co ATCT",
+    "ARTCC": "ZOA",
+    "Latitude": 38.50899887,
+    "Longitude": -122.8130035,
+    "Radius": 75
+  },
+  "SUA": {
+    "Name": "Stuart ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 27.18169975,
+    "Longitude": -80.22109985,
+    "Radius": 75
+  },
+  "SUN": {
+    "Name": "Hailey ATCT",
+    "ARTCC": "ZLC",
+    "Latitude": 43.507745,
+    "Longitude": -114.2981,
+    "Radius": 75
+  },
+  "SUS": {
+    "Name": "Spirit of St. Louis Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 38.6625335,
+    "Longitude": -90.6459449,
+    "Radius": 75
+  },
+  "SUU": {
+    "Name": "Travis AFB RAPCON",
+    "ARTCC": "ZOA",
+    "Latitude": 38.2645367,
+    "Longitude": -121.9241315,
+    "Radius": 75
+  },
+  "SVN": {
+    "Name": "Hunter Army Airfield",
+    "ARTCC": "ZJX",
+    "Latitude": 32.00999832,
+    "Longitude": -81.14569855,
+    "Radius": 75
+  },
+  "SWF": {
+    "Name": "Stewart ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 41.510294,
+    "Longitude": -74.094767,
+    "Radius": 75
+  },
+  "SWO": {
+    "Name": "Stillwater Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 36.15789576947812,
+    "Longitude": -97.08393902122044,
+    "Radius": 75
+  },
+  "SZL": {
+    "Name": "Whiteman ATCT/RAPCON",
+    "ARTCC": "ZKC",
+    "Latitude": 38.72968,
+    "Longitude": -93.5546088,
+    "Radius": 75
+  },
+  "TBN": {
+    "Name": "Forney Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 37.739739,
+    "Longitude": -92.1391958,
+    "Radius": 75
+  },
+  "TCL": {
+    "Name": "Tuscaloosa FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 33.223977777959924,
+    "Longitude": -87.6082988146243,
+    "Radius": 75
+  },
+  "TCM": {
+    "Name": "McChord ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 47.137366976675665,
+    "Longitude": -122.4817160118722,
+    "Radius": 75
+  },
+  "TEB": {
+    "Name": "Teterboro ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.852398,
+    "Longitude": -74.055369,
+    "Radius": 75
+  },
+  "TIK": {
+    "Name": "Tinker ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 35.4147,
+    "Longitude": -97.386597,
+    "Radius": 75
+  },
+  "TIW": {
+    "Name": "Tacoma ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 47.269282562203486,
+    "Longitude": -122.57478096160914,
+    "Radius": 75
+  },
+  "TIX": {
+    "Name": "Space Coast Regional",
+    "ARTCC": "ZJX",
+    "Latitude": 28.5148056,
+    "Longitude": -80.7992222,
+    "Radius": 75
+  },
+  "TKI": {
+    "Name": "McKinney ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 33.177898,
+    "Longitude": -96.5905,
+    "Radius": 75
+  },
+  "TMB": {
+    "Name": "Miami Executive ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 25.64856531973148,
+    "Longitude": -80.43243064424081,
+    "Radius": 75
+  },
+  "TME": {
+    "Name": "Houston Executive ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 29.804938,
+    "Longitude": -95.903054,
+    "Radius": 75
+  },
+  "TNX": {
+    "Name": "Tonopah Test Range",
+    "ARTCC": "ZLA",
+    "Latitude": 37.7988014221,
+    "Longitude": -116.78099823,
+    "Radius": 75
+  },
+  "TOA": {
+    "Name": "Torrance Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 33.803398132324,
+    "Longitude": -118.33999633789,
+    "Radius": 75
+  },
+  "TOI": {
+    "Name": "Troy Municipal at N Kenneth Campbell",
+    "ARTCC": "ZJX",
+    "Latitude": 31.86,
+    "Longitude": -86.0138889,
+    "Radius": 75
+  },
+  "TOP": {
+    "Name": "Topeka Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 39.069188,
+    "Longitude": -95.6220519,
+    "Radius": 75
+  },
+  "TRK": {
+    "Name": "Truckee-Tahoe NFCT",
+    "ARTCC": "ZOA",
+    "Latitude": 39.318628,
+    "Longitude": -120.140562,
+    "Radius": 75
+  },
+  "TTD": {
+    "Name": "Troutdale ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 45.550590824089205,
+    "Longitude": -122.39914705264518,
+    "Radius": 75
+  },
+  "TTN": {
+    "Name": "Trenton Mercer ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.277801,
+    "Longitude": -74.815712,
+    "Radius": 75
+  },
+  "TTS": {
+    "Name": "Space Florida Launch and Landing Facility",
+    "ARTCC": "ZJX",
+    "Latitude": 28.6148889,
+    "Longitude": -80.6943611,
+    "Radius": 75
+  },
+  "TUP": {
+    "Name": "Tupelo ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 34.26483949518349,
+    "Longitude": -88.76685940399554,
+    "Radius": 75
+  },
+  "TUS": {
+    "Name": "Tucson ATCT",
+    "ARTCC": "ZAB",
+    "Latitude": 32.11106406286236,
+    "Longitude": -110.94548392461562,
+    "Radius": 75
+  },
+  "TVC": {
+    "Name": "Traverse City ATCT",
+    "ARTCC": "ZMP",
+    "Latitude": 44.744314158215175,
+    "Longitude": -85.58279376405065,
+    "Radius": 75
+  },
+  "TXK": {
+    "Name": "Texarkana ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 33.453701,
+    "Longitude": -93.990997,
+    "Radius": 75
+  },
+  "TXKF": {
+    "Name": "Bermuda ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 32.3668,
+    "Longitude": -64.6774,
+    "Radius": 75
+  },
+  "TYR": {
+    "Name": "Tyler ATCT",
+    "ARTCC": "ZFW",
+    "Latitude": 32.35409927368164,
+    "Longitude": -95.40239715576172,
+    "Radius": 75
+  },
+  "TZR": {
+    "Name": "Bolton ATCT",
+    "ARTCC": "ZID",
+    "Latitude": 39.904901,
+    "Longitude": -83.1375223,
+    "Radius": 75
+  },
+  "UAO": {
+    "Name": "Aurora ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 45.24893,
+    "Longitude": -122.76783,
+    "Radius": 75
+  },
+  "UES": {
+    "Name": "Waukesha ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 43.03790682216584,
+    "Longitude": -88.23135024185129,
+    "Radius": 75
+  },
+  "UGN": {
+    "Name": "Waukegan ATCT",
+    "ARTCC": "ZAU",
+    "Latitude": 42.417029416254195,
+    "Longitude": -87.8659357239672,
+    "Radius": 75
+  },
+  "UNV": {
+    "Name": "University Park ATCT",
+    "ARTCC": "ZNY",
+    "Latitude": 40.85,
+    "Longitude": -77.8475833,
+    "Radius": 75
+  },
+  "VAD": {
+    "Name": "Moody Air Force Base",
+    "ARTCC": "ZJX",
+    "Latitude": 30.9687,
+    "Longitude": -83.1929639,
+    "Radius": 75
+  },
+  "VBG": {
+    "Name": "Vandenberg Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.737301,
+    "Longitude": -120.584,
+    "Radius": 75
+  },
+  "VCT": {
+    "Name": "Victoria ATCT",
+    "ARTCC": "ZHU",
+    "Latitude": 28.848715,
+    "Longitude": -96.924573,
+    "Radius": 75
+  },
+  "VCV": {
+    "Name": "Victorville Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.597499847399995,
+    "Longitude": -117.383003235,
+    "Radius": 75
+  },
+  "VGT": {
+    "Name": "North Las Vegas Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 36.21014604737883,
+    "Longitude": -115.1892585938879,
+    "Radius": 75
+  },
+  "VLD": {
+    "Name": "Valdosta Regional ATCT/TRACON",
+    "ARTCC": "ZJX",
+    "Latitude": 30.7813722,
+    "Longitude": -83.2762194,
+    "Radius": 75
+  },
+  "VNY": {
+    "Name": "Van Nuys Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.20769096158481,
+    "Longitude": -118.49191776807157,
+    "Radius": 75
+  },
+  "VOK": {
+    "Name": "Volk ATCT/RAPCON",
+    "ARTCC": "ZAU",
+    "Latitude": 43.93429975569928,
+    "Longitude": -90.25632458988586,
+    "Radius": 75
+  },
+  "VPS": {
+    "Name": "Eglin Air Force base/Destin-Fort Walton Beach TRACON",
+    "ARTCC": "ZJX",
+    "Latitude": 30.4000547,
+    "Longitude": -86.4714722,
+    "Radius": 75
+  },
+  "VQQ": {
+    "Name": "Cecil",
+    "ARTCC": "ZJX",
+    "Latitude": 30.2187778,
+    "Longitude": -81.8771667,
+    "Radius": 75
+  },
+  "VRB": {
+    "Name": "Vero Beach ATCT",
+    "ARTCC": "ZMA",
+    "Latitude": 27.6556,
+    "Longitude": -80.417901,
+    "Radius": 75
+  },
+  "VUJ": {
+    "Name": "Stanly County FCT",
+    "ARTCC": "ZTL",
+    "Latitude": 35.416698455811,
+    "Longitude": -80.150802612305,
+    "Radius": 75
+  },
+  "WAL": {
+    "Name": "Wallops ATCT",
+    "ARTCC": "ZDC",
+    "Latitude": 37.94103,
+    "Longitude": -75.46637,
+    "Radius": 75
+  },
+  "WDG": {
+    "Name": "Woodring Regional Tower",
+    "ARTCC": "ZKC",
+    "Latitude": 36.384719,
+    "Longitude": -97.786049,
+    "Radius": 75
+  },
+  "WHP": {
+    "Name": "Whiteman Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.2593,
+    "Longitude": -118.413002,
+    "Radius": 75
+  },
+  "WJF": {
+    "Name": "Lancaster Gen Fox Tower",
+    "ARTCC": "ZLA",
+    "Latitude": 34.7411,
+    "Longitude": -118.219002,
+    "Radius": 75
+  },
+  "WRB": {
+    "Name": "Robins ATCT",
+    "ARTCC": "ZTL",
+    "Latitude": 32.640099,
+    "Longitude": -83.591904,
+    "Radius": 75
+  },
+  "XMR": {
+    "Name": "Cape Canaveral  Space Force Station Skid Strip",
+    "ARTCC": "ZJX",
+    "Latitude": 28.47756,
+    "Longitude": -80.57689,
+    "Radius": 75
+  },
+  "XNA": {
+    "Name": "Northwest Arkansas ATCT",
+    "ARTCC": "ZME",
+    "Latitude": 36.279360901684605,
+    "Longitude": -94.30230517542584,
+    "Radius": 75
+  },
+  "XTA": {
+    "Name": "Homey (Groom Lake)",
+    "ARTCC": "ZLA",
+    "Latitude": 37.2405100950946,
+    "Longitude": -115.80885634075611,
+    "Radius": 75
+  },
+  "YIP": {
+    "Name": "Willow Run ATCT",
+    "ARTCC": "ZOB",
+    "Latitude": 42.23789978,
+    "Longitude": -83.53040314,
+    "Radius": 75
+  },
+  "YKM": {
+    "Name": "Yakima ATCT",
+    "ARTCC": "ZSE",
+    "Latitude": 46.57068603509764,
+    "Longitude": -120.5383967611999,
+    "Radius": 75
+  }
+}

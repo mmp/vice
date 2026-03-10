@@ -742,7 +742,7 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 }
 
 func (sp *STARSPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
-	sp.DisplayRequestedAltitude = client.State.FacilityAdaptation.FDB.DisplayRequestedAltitude
+	sp.DisplayRequestedAltitude = client.State.FacilityAdaptation.Datablocks.FDB.DisplayRequestedAltitude
 
 	sp.initPrefsForLoadedSim(client.State, pl)
 
@@ -1102,8 +1102,8 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 }
 
 func (sp *STARSPane) getVideoMapLibrary(ss client.SimState, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
-	filename := ss.FacilityAdaptation.VideoMapFile
-	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
+	filename := ss.ControllerVideoMapFile
+	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.ControllerVideoMapLibraryHash); err == nil {
 		return ml, nil
 	} else {
 		return client.GetVideoMapLibrary(filename)
@@ -1292,7 +1292,7 @@ func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.Sco
 		return
 	}
 
-	tracon, ok := av.DB.TRACONs[ctx.Client.State.Facility]
+	facility, ok := av.DB.LookupFacility(ctx.Client.State.Facility)
 	if !ok {
 		return
 	}
@@ -1301,7 +1301,7 @@ func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.Sco
 	ld := renderer.GetLinesDrawBuilder()
 	defer renderer.ReturnLinesDrawBuilder(ld)
 
-	ld.AddLatLongCircle(tracon.Center(), ctx.NmPerLongitude, tracon.Radius, 360)
+	ld.AddLatLongCircle(facility.Center(), ctx.NmPerLongitude, facility.Radius, 360)
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)

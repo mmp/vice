@@ -290,6 +290,14 @@ func (g *glfwPlatform) NewFrame() {
 	implglfw.NewFrame()
 	clampMonitorWorkBounds()
 
+	// Re-apply the macOS Ctrl↔Super swap. The imgui GLFW backend's
+	// callbacks call ImGui_ImplGlfw_UpdateKeyModifiers which maps
+	// physical keys directly (Control→ModCtrl, Super→ModSuper),
+	// overwriting the swap we set in our own callbacks. We re-apply
+	// it here so the correct mapping is in effect for the rest of
+	// the frame.
+	g.updateKeyModifiers()
+
 	if g.multisample {
 		gl.Enable(gl.MULTISAMPLE)
 	}
@@ -924,6 +932,10 @@ func (g *glfwPlatform) IsAudioRecording() bool {
 
 func (g *glfwPlatform) GetAudioInputDevices() []string {
 	return GetAudioInputDevices()
+}
+
+func (g *glfwPlatform) AppendSpeechPCM(pcm []int16) {
+	g.audioEngine.AppendSpeechPCM(pcm)
 }
 
 func (g *glfwPlatform) SetAudioStreamCallback(cb func([]int16)) {

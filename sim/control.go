@@ -967,7 +967,7 @@ func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 			// Per 6.12.6: force QL to the owning TCW's display requires
 			// that the entering TCW owns the flight and ForceQLToSelf is adapted.
 			if s.State.TCWControlsPosition(fp.OwningTCW, ControlPosition(controller)) {
-				if !s.State.FacilityAdaptation.ForceQLToSelf || fp.OwningTCW != tcw {
+				if !s.State.FacilityAdaptation.Datablocks.ForceQLToSelf || fp.OwningTCW != tcw {
 					return ErrIllegalPosition
 				}
 			}
@@ -1789,18 +1789,16 @@ func (s *Sim) checkDelayedTrafficInSight(ac *Aircraft) {
 		return
 	}
 
-	// Random chance each update to report traffic in sight (roughly 1/20 chance per second at 10 updates/sec)
-	if s.Rand.Intn(200) != 0 {
-		return
+	// Random chance each update to report traffic in sight
+	if s.Rand.Float32() < 0.1 {
+		// Report traffic in sight
+		ac.TrafficInSight = true
+		ac.TrafficInSightTime = s.State.SimTime
+		ac.TrafficLookingUntil = time.Time{} // Clear the looking window
+
+		// Queue the transmission
+		s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionTrafficInSight)
 	}
-
-	// Report traffic in sight
-	ac.TrafficInSight = true
-	ac.TrafficInSightTime = s.State.SimTime
-	ac.TrafficLookingUntil = time.Time{} // Clear the looking window
-
-	// Queue the transmission
-	s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionTrafficInSight)
 }
 
 // MaintainVisualSeparation handles "maintain visual separation from the traffic" command.
@@ -1888,8 +1886,10 @@ func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, stri
 	s.postReadbackTransmission(callsign, *tr, tcw)
 
 	// Return spoken text with callsign suffix for TTS synthesis
-	spokenText := tr.Spoken(s.Rand) + s.readbackCallsignSuffix(callsign, tcw)
-	return callsign, spokenText, nil
+	if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
+		tr.Merge(suffix)
+	}
+	return callsign, tr.Spoken(s.Rand), nil
 }
 
 // SayNotCleared is called when the controller issues "contact tower" to an arrival
@@ -1903,8 +1903,10 @@ func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign,
 	s.postReadbackTransmission(callsign, *tr, tcw)
 
 	// Return spoken text with callsign suffix for TTS synthesis
-	spokenText := tr.Spoken(s.Rand) + s.readbackCallsignSuffix(callsign, tcw)
-	return callsign, spokenText, nil
+	if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
+		tr.Merge(suffix)
+	}
+	return callsign, tr.Spoken(s.Rand), nil
 }
 
 // SayAgainCommand returns an intent for when STT partially parsed a command but
@@ -2308,13 +2310,13 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt = s.generateFlightFollowingMessage(ac)
 
 	case PendingTransmissionGoAround:
-		rt = av.MakeContactTransmission("[going around|on the go], ")
+		rt = av.MakeContactTransmission("[going around|on the go]")
 		targetAlt, _ := ac.Nav.TargetAltitude()
 		currentAlt := ac.Altitude()
 		if currentAlt < targetAlt {
-			rt.Add("[at|] {alt} [climbing|for] {alt}, ", currentAlt, targetAlt)
+			rt.Add("[at|] {alt} [climbing|for] {alt}", currentAlt, targetAlt)
 		} else {
-			rt.Add("[at|] {alt}, ", currentAlt)
+			rt.Add("[at|] {alt}", currentAlt)
 		}
 		if ac.GoAroundOnRunwayHeading {
 			rt.Add("[runway heading|on a runway heading]")
@@ -2322,7 +2324,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 			rt.Add("heading {hdg}", int(*ac.Nav.Heading.Assigned+0.5))
 		}
 		if ac.SentAroundForSpacing {
-			rt.Add(", [tower sent us around for spacing|we were sent around for spacing]")
+			rt.Add("[tower sent us around for spacing|we were sent around for spacing]")
 			ac.SentAroundForSpacing = false
 		}
 		rt.Type = av.RadioTransmissionUnexpected
@@ -2390,13 +2392,14 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	var prefix *av.RadioTransmission
 	if ac.TypeOfFlight == av.FlightTypeDeparture {
-		prefix = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
+		prefix = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper, ctrl, csArg)
 	} else {
-		prefix = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
+		prefix = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
 	}
 
-	spokenText = prefix.Spoken(s.Rand) + baseSpoken
-	writtenText = prefix.Written(s.Rand) + baseWritten
+	prefix.Merge(rt)
+	spokenText = prefix.Spoken(s.Rand)
+	writtenText = prefix.Written(s.Rand)
 	return spokenText, writtenText
 }
 
@@ -2589,21 +2592,22 @@ func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents [
 	if rt := av.RenderIntents(intents, s.Rand); rt != nil {
 		s.postReadbackTransmission(callsign, *rt, tcw)
 		// MixUp transmissions already include the callsign in the message
-		if rt.Type == av.RadioTransmissionMixUp {
-			return rt.Spoken(s.Rand)
+		if rt.Type != av.RadioTransmissionMixUp {
+			if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
+				rt.Merge(suffix)
+			}
 		}
-		// Return spoken text with callsign suffix for TTS synthesis
-		return rt.Spoken(s.Rand) + s.readbackCallsignSuffix(callsign, tcw)
+		return rt.Spoken(s.Rand)
 	}
 	return ""
 }
 
-// readbackCallsignSuffix generates the ", [callsign] [heavy/super]." suffix for readbacks.
+// readbackCallsignSuffix generates a RadioTransmission for the callsign suffix in readbacks.
 // This is used both for synchronous TTS and matches what prepareRadioTransmissions does for events.
-func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) string {
+func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) *av.RadioTransmission {
 	ac, ok := s.Aircraft[callsign]
 	if !ok {
-		return ""
+		return nil
 	}
 
 	primaryTCP := s.State.PrimaryPositionForTCW(tcw)
@@ -2635,8 +2639,7 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) string {
 			IsEmergency: ac.EmergencyState != nil,
 		}
 	}
-	tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", csArg)
-	return tr.Spoken(s.Rand)
+	return av.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
 }
 
 // parseHold parses a hold command string in the format "FIX/[option]/[option]"

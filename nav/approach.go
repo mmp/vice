@@ -480,12 +480,9 @@ func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool, simT
 	// Cleared approach also cancels speed restrictions.
 	nav.Speed = NavSpeed{}
 
-	// Follow LNAV instructions more quickly given an approach clearance;
-	// assume that at this point they are expecting them and ready to dial things in.
+	// Minimal delay for heading changes given an approach clearance.
 	if dh := nav.DeferredNavHeading; dh != nil {
-		if dh.Time.Sub(simTime) > 6*time.Second {
-			dh.Time = simTime.Add(time.Duration((3 + 3*nav.Rand.Float32()) * float32(time.Second)))
-		}
+		dh.Time = simTime.Add(time.Duration((1 + 2*nav.Rand.Float32()) * float32(time.Second)))
 	}
 
 	nav.flyProcedureTurnIfNecessary()
