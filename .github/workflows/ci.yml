@@ -96,7 +96,15 @@ jobs:
     - name: Build vice
       run: ./build.sh
 
+    - name: Cache videomaps
+      id: cache-videomaps
+      uses: actions/cache@v4
+      with:
+        path: resources/videomaps
+        key: videomaps-${{ hashFiles('resources/videomaps/**') }}
+
     - name: Fetch videomaps for linting
+      if: steps.cache-videomaps.outputs.cache-hit != 'true'
       run: |
         git lfs install
         git lfs pull --include="resources/videomaps/*"
