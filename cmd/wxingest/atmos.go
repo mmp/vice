@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"iter"
-	"maps"
 	"os"
 	"slices"
 	"strings"
@@ -408,7 +407,10 @@ func ingestHRRRForTime(gribPath string, t time.Time, targetFacilities []string, 
 	}
 
 	// Build grid once for all facilities
-	grid := buildGridFromGRIB2(records)
+	grid, err := buildGridFromGRIB2(records)
+	if err != nil {
+		return err
+	}
 
 	var eg errgroup.Group
 	var totalUploads, totalUploadBytes int64
@@ -509,38 +511,27 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string
 
 	_, isARTCC := av.DB.ARTCCs[facilityID]
 
-	var pointRefIter iter.Seq[PointRef]
-	if !isARTCC {
-		// TRACON: all points in range
-		pointRefIter = grid.QueryCircle(center, radius)
-	} else {
-		// ARTCC: downsample
-		allPointRefs := slices.Collect(grid.QueryCircle(center, radius))
+	// Collect matching points (now unique — one entry per grid location).
+	matchingRefs := slices.Collect(grid.QueryCircle(center, radius))
 
-		// Dedupe locations (the same location appears once per GRIB2 parameter)
-		locationSet := make(map[math.Point2LL]bool)
-		for _, pr := range allPointRefs {
-			locationSet[pr.Location] = true
+	if isARTCC {
+		// Downsample for ARTCCs.
+		locations := make([]math.Point2LL, len(matchingRefs))
+		for i, ref := range matchingRefs {
+			locations[i] = ref.Location
 		}
-		locationList := slices.Collect(maps.Keys(locationSet))
 
-		// Select well-distributed subset
 		rate := artccAtmosDownsampleRate(radius)
-		targetCount := max(1, len(locationList)/rate)
-		selectedLocations := math.SelectDistributedPoints(locationList, targetCount)
+		targetCount := max(1, len(locations)/rate)
+		selectedLocations := math.SelectDistributedPoints(locations, targetCount)
 
 		LogInfo("%s: KD-tree selected %d of %d locations (rate=%d)",
-			facilityID, len(selectedLocations), len(locationList), rate)
+			facilityID, len(selectedLocations), len(locations), rate)
 
-		pointRefIter = func(yield func(PointRef) bool) {
-			for _, ref := range allPointRefs {
-				if _, ok := selectedLocations[ref.Location]; ok {
-					if !yield(ref) {
-						return
-					}
-				}
-			}
-		}
+		matchingRefs = util.FilterSlice(matchingRefs, func(ref PointRef) bool {
+			_, ok := selectedLocations[ref.Location]
+			return ok
+		})
 	}
 
 	var arena []wx.AtmosSampleStack
@@ -554,46 +545,44 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string
 	}
 
 	at := wx.MakeAtmosByPoint()
-	processedPoints := 0
 
-	// Pass 2 (or single pass for TRACONs): gather data for selected locations
-	for ref := range pointRefIter {
-		processedPoints++
+	// Pre-allocate stacks for all matching locations.
+	for _, ref := range matchingRefs {
+		at.SampleStacks[ref.Location] = allocStack()
+	}
 
-		record := records[ref.RecordIdx()]
-		value := record.Data[ref.PointIdx()]
-
-		// Get the level index (should already have been validated during filtering)
+	// Record-major iteration: for each record, fill in matching points.
+	for _, record := range records {
 		levelIndex := wx.LevelIndexFromId([]byte(record.Level))
 		if levelIndex == -1 {
 			return nil, fmt.Errorf("GRIB2: param=%s, level=%q -> invalid levelIndex", record.Parameter.ShortName(), record.Level)
 		}
 
-		stack, ok := at.SampleStacks[ref.Location]
-		if !ok {
-			stack = allocStack()
-			at.SampleStacks[ref.Location] = stack
-		}
+		paramName := record.Parameter.ShortName()
 
-		switch record.Parameter.ShortName() {
-		case "UGRD":
-			stack.Levels[levelIndex].UComponent = value
-		case "VGRD":
-			stack.Levels[levelIndex].VComponent = value
-		case "TMP":
-			stack.Levels[levelIndex].Temperature = value
-		case "DPT":
-			stack.Levels[levelIndex].Dewpoint = value
-		case "HGT":
-			stack.Levels[levelIndex].Height = value
-		default:
-			return nil, errors.New("unexpected parameter: " + record.Parameter.ShortName())
-		}
-	}
+		for _, ref := range matchingRefs {
+			value := record.Data[ref.PointIdx]
+			if squall.IsMissing(value) {
+				continue
+			}
 
-	if false {
-		LogInfo("GRIB2 %s: processed %d points -> %d unique locations",
-			facilityID, processedPoints, len(at.SampleStacks))
+			stack := at.SampleStacks[ref.Location]
+
+			switch paramName {
+			case "UGRD":
+				stack.Levels[levelIndex].UComponent = value
+			case "VGRD":
+				stack.Levels[levelIndex].VComponent = value
+			case "TMP":
+				stack.Levels[levelIndex].Temperature = value
+			case "DPT":
+				stack.Levels[levelIndex].Dewpoint = value
+			case "HGT":
+				stack.Levels[levelIndex].Height = value
+			default:
+				return nil, errors.New("unexpected parameter: " + paramName)
+			}
+		}
 	}
 
 	return &at, nil
@@ -627,31 +616,12 @@ type GridCell struct {
 	LatCell, LonCell int
 }
 
-// PointRef references a specific data point in the GRIB2 records.
+// PointRef references a specific data point in the GRIB2 grid.
+// All GRIB2 records share the same lat/lon grid, so we only need
+// the point index (not a record index).
 type PointRef struct {
-	RecordPointIdx uint32        // high 8 bits for the record index, low 24 for for the point index
-	Location       math.Point2LL // cached location for quick access
-}
-
-func MakePointRef(p math.Point2LL, recordIdx int, pointIdx int) PointRef {
-	if recordIdx > 255 {
-		panic(fmt.Sprintf("recordIdx %d > 255", recordIdx))
-	}
-	if pointIdx >= 1<<24 {
-		panic(fmt.Sprintf("pointIdx %d >= 1<<24", pointIdx))
-	}
-	return PointRef{
-		RecordPointIdx: uint32(recordIdx)<<24 | uint32(pointIdx),
-		Location:       p,
-	}
-}
-
-func (p PointRef) RecordIdx() int {
-	return int(p.RecordPointIdx >> 24)
-}
-
-func (p PointRef) PointIdx() int {
-	return int(p.RecordPointIdx & ((1 << 24) - 1))
+	PointIdx uint32
+	Location math.Point2LL
 }
 
 // Grid divides the lat-lon space into uniform (w.r.t. degrees) cells.
@@ -677,10 +647,10 @@ func (sg *Grid) cellForPoint(pt math.Point2LL) GridCell {
 	}
 }
 
-// AddPoint adds a point reference to the  grid.
-func (sg *Grid) AddPoint(p math.Point2LL, recordIdx, pointIdx int) {
+// AddPoint adds a point reference to the grid.
+func (sg *Grid) AddPoint(p math.Point2LL, pointIdx int) {
 	cell := sg.cellForPoint(p)
-	sg.Cells[cell] = append(sg.Cells[cell], MakePointRef(p, recordIdx, pointIdx))
+	sg.Cells[cell] = append(sg.Cells[cell], PointRef{PointIdx: uint32(pointIdx), Location: p})
 }
 
 // QueryCircle returns an iterator over all points within radiusNM of center.
@@ -768,86 +738,40 @@ func (sg *Grid) PointCount() int {
 	return total
 }
 
-// MergeAll merges multiple grids into a single grid with preallocated slices.
-// This is more efficient than sequential merges as it counts total points per cell
-// first, then allocates exactly the right amount of space.
-func MergeAll(grids []*Grid) *Grid {
-	if len(grids) == 0 {
-		return NewGrid(0.5)
-	} else if len(grids) == 1 {
-		return grids[0]
-	}
-
-	cellCounts := make(map[GridCell]int)
-	for _, grid := range grids {
-		for cell, points := range grid.Cells {
-			cellCounts[cell] += len(points)
+// buildGridFromGRIB2 constructs a grid index from a single GRIB2 record.
+// All HRRR records share the same lat/lon grid, so we only need to index
+// one. After building the grid, Latitudes and Longitudes are nilled out on
+// all records to free ~3 GB of memory.
+func buildGridFromGRIB2(records []*squall.GRIB2) (*Grid, error) {
+	// Verify all records share the same grid. HRRR files always do, but
+	// check so we don't silently produce wrong results if that changes.
+	ref := records[0]
+	for i, r := range records[1:] {
+		if !slices.Equal(r.Latitudes, ref.Latitudes) || !slices.Equal(r.Longitudes, ref.Longitudes) {
+			return nil, fmt.Errorf("GRIB2 grid mismatch: record %d has different lat/lon grid than record 0", i+1)
 		}
 	}
 
-	result := NewGrid(grids[0].CellSize)
-	for i, grid := range grids {
-		for cell, points := range grid.Cells {
-			if result.Cells[cell] == nil {
-				result.Cells[cell] = make([]PointRef, 0, cellCounts[cell])
-			}
-			result.Cells[cell] = append(result.Cells[cell], points...)
+	grid := NewGrid(0.5) // 0.5 degrees ~ 30-35nm at mid-latitudes
+
+	for ptIdx := range ref.NumPoints {
+		lon := ref.Longitudes[ptIdx]
+		if lon > 180 {
+			lon -= 360
 		}
-		grids[i] = nil // throw the GC a bone
+		pt := math.Point2LL{lon, ref.Latitudes[ptIdx]}
+		grid.AddPoint(pt, ptIdx)
 	}
 
-	return result
-}
+	LogInfo("Built grid: %d cells, %d points", len(grid.Cells), grid.PointCount())
 
-// buildGridFromGRIB2 constructs a grid index from GRIB2 records.
-// This index can be reused across multiple TRACON queries.
-func buildGridFromGRIB2(records []*squall.GRIB2) *Grid {
-	numWorkers := min(*nWorkers, len(records))
-
-	// Partition records across workers
-	recordsPerWorker := (len(records) + numWorkers - 1) / numWorkers
-
-	partialGrids := make([]*Grid, numWorkers)
-	var eg errgroup.Group
-
-	for i := range numWorkers {
-		eg.Go(func() error {
-			grid := NewGrid(0.5) // 0.5 degrees ~ 30-35nm at mid-latitudes
-			start := i * recordsPerWorker
-			end := min(start+recordsPerWorker, len(records))
-
-			for recIdx := start; recIdx < end; recIdx++ {
-				record := records[recIdx]
-				for ptIdx := range record.NumPoints {
-					// Skip missing values
-					if squall.IsMissing(record.Data[ptIdx]) {
-						continue
-					}
-
-					lon := record.Longitudes[ptIdx]
-					if lon > 180 {
-						lon -= 360
-					}
-					pt := math.Point2LL{lon, record.Latitudes[ptIdx]}
-
-					grid.AddPoint(pt, recIdx, ptIdx)
-				}
-			}
-
-			partialGrids[i] = grid
-			return nil
-		})
+	// Free lat/lon arrays on all records now that the grid holds locations.
+	for _, r := range records {
+		r.Latitudes = nil
+		r.Longitudes = nil
 	}
 
-	if err := eg.Wait(); err != nil {
-		panic(err) // shouldn't happen in grid building
-	}
-
-	// Merge all partial grids at once with preallocation
-	finalGrid := MergeAll(partialGrids)
-
-	LogInfo("Built grid: %d cells, %d points", len(finalGrid.Cells), finalGrid.PointCount())
-	return finalGrid
+	return grid, nil
 }
 
 // ingestHRRRSingleTime processes HRRR data for a single specified time.
