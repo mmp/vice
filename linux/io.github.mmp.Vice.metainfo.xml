@@ -45,6 +45,29 @@
   </branding>
 
   <releases>
+    <release version="0.14.1" date="2026-03-09">
+      <url type="details">https://pharr.org/vice/#release-0.14.1</url>
+      <description>
+        <ul>
+          <li>New scenario: ZJX Consolidated (Jake Magee)</li>
+          <li>Text to speech now runs locally on your computer rather than in the cloud</li>
+          <li>Lots of small improvements to speech-to-text</li>
+          <li>Flight strips have been reworked; right click to get a menu to push them to the next controller</li>
+        </ul>
+        <p>Long requested: you can actually move sub-windows outside of the main window</p>
+        <ul>
+          <li>The flight strip and messages windows are now sub-windows and now its just the radar scope in the main window</li>
+        </ul>
+        <p>Added ATIS simulation: see the ATIS/METAR tab in the scenario info window for what's current</p>
+        <ul>
+          <li>Aircraft will call in with the current ATIS; if it's changed and they call in with the old one, STT supports "information X is now current," "advise you have information X", etc., or with the keyboard you can issue the command <code>ATIS/X</code> to tell them X is current</li>
+        </ul>
+        <p>ERAM updates:</p>
+        <ul>
+          <li>Added support for giving aircraft speeds in mach (Michael Trokel)</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.14.0" date="2026-02-06">
       <url type="details">https://pharr.org/vice/#release-0.14.0</url>
       <description>
