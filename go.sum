@@ -147,8 +147,8 @@ github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455 h1:/AxzYVHa
 github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455/go.mod h1:MkS9NR03VwHgqjtFN3J7r/aprTsePJeH8u2gk6wKBOs=
 github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1 h1:66v6hpjwL8B4BlXqjKYP5Jq6cEREybX6WEWNhVZJ7QU=
 github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1/go.mod h1:XfYVUZbso7LBMWg+gjzI2hDDWclB13A9z/+KIPO4GBQ=
-github.com/mmp/squall v0.0.0-20251115001828-473aad92aceb h1:H1APegcSUM5LandZEGxrV4kAIT0+gHa9Vt7/phnomcY=
-github.com/mmp/squall v0.0.0-20251115001828-473aad92aceb/go.mod h1:5LrdlELOcESfNbncCQcU0AH1NcRS3rt6SPPAaO0WhG8=
+github.com/mmp/squall v0.0.0-20260310141042-e3ce8bc98323 h1:umANwIF39T/eAiVPWF2qNVVFxIcCirhD5DMexF5pMNM=
+github.com/mmp/squall v0.0.0-20260310141042-e3ce8bc98323/go.mod h1:5LrdlELOcESfNbncCQcU0AH1NcRS3rt6SPPAaO0WhG8=
 github.com/ncruces/zenity v0.10.14 h1:OBFl7qfXcvsdo1NUEGxTlZvAakgWMqz9nG38TuiaGLI=
 github.com/ncruces/zenity v0.10.14/go.mod h1:ZBW7uVe/Di3IcRYH0Br8X59pi+O6EPnNIOU66YHpOO4=
 github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 h1:KoWmjvw+nsYOo29YJK9vDA65RGE3NrOnUtO7a+RF9HU=
