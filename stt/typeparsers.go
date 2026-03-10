@@ -332,6 +332,20 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 				}
 			}
 
+			// Handle "to" + 2-digit value as garbled "two" prefix.
+			// "speed to one zero" → tokens: ..., "to", "10" → speed 210.
+			// "to" sounds like "two" and was consumed as optional [to] or
+			// skipped as filler, but it was really the leading digit.
+			if t.Value >= 10 && t.Value <= 40 && i > 0 {
+				if strings.ToLower(tokens[i-1].Text) == "to" {
+					combined := 200 + t.Value
+					rounded := (combined / 10) * 10
+					if rounded >= 100 && rounded <= 400 {
+						return rounded, i - pos + 1, ""
+					}
+				}
+			}
+
 		}
 	}
 

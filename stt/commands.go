@@ -311,6 +311,19 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 					bestLength = length
 				}
 			}
+			// Try consonant cluster normalization for sound-alike patterns
+			// (e.g., "sachs" should match "socks" — "ch" and "ck" sound the same)
+			consPhrase := normalizeConsonantClusters(phrase)
+			consSpoken := normalizeConsonantClusters(spokenName)
+			if consPhrase != phrase || consSpoken != spokenName {
+				consScore := JaroWinkler(consPhrase, consSpoken)
+				adjustedScore := consScore * 0.95
+				if consScore >= 0.78 && (adjustedScore > bestScore || (adjustedScore == bestScore && fixID < bestFix)) {
+					bestFix = fixID
+					bestScore = adjustedScore
+					bestLength = length
+				}
+			}
 			// Try consonant-only matching for fix names with vowel STT errors
 			// (e.g., "zizou" should match "zzooo" since both have consonants "zz")
 			if len(phrase) >= 3 && len(spokenName) >= 3 {

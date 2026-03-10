@@ -518,6 +518,16 @@ func normalizeVowels(s string) string {
 	return s
 }
 
+// normalizeConsonantClusters normalizes consonant clusters that sound alike.
+// Handles cases where STT uses a different spelling for the same sound
+// (e.g., "sachs" vs "socks" — "ch" and "ck" both produce a /k/ sound).
+func normalizeConsonantClusters(s string) string {
+	s = strings.ToLower(s)
+	s = strings.ReplaceAll(s, "ck", "k")
+	s = strings.ReplaceAll(s, "ch", "k")
+	return s
+}
+
 // CleanWord removes non-alphanumeric characters from a word.
 func CleanWord(w string) string {
 	var sb strings.Builder

@@ -875,6 +875,18 @@ func postProcessNormalized(tokens []string) []string {
 			continue
 		}
 
+		// Handle garbled ILS letter spelling: "i" "l" + garbled "s".
+		// STT sometimes garbles the letter "S" to "fs", "es", "ess", etc.
+		// The exact "i l s" case is already handled by matchMultiToken above.
+		if tokens[i] == "i" && i+2 < len(tokens) && tokens[i+1] == "l" {
+			t2 := tokens[i+2]
+			if t2 != "s" && len(t2) >= 2 && len(t2) <= 3 && strings.HasSuffix(t2, "s") {
+				result = append(result, "ils")
+				skip = 2
+				continue
+			}
+		}
+
 		// Handle "turn [word] to N" where the word is garbage and "to" is garbled "two".
 		// e.g., "turn navigation to 7 0" → "turn heading 270"
 		if tokens[i] == "turn" && i+3 < len(tokens) && tokens[i+2] == "to" {
