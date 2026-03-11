@@ -1697,7 +1697,10 @@ func (s *Sim) requestRandomFlightFollowing() error {
 		return ErrNoVFRAircraftForFlightFollowing
 	}
 
-	ac, _ := rand.SampleSeq(s.Rand, maps.Keys(candidates))
+	ac, ok := rand.SampleSeq(s.Rand, maps.Keys(candidates))
+	if !ok {
+		return ErrNoVFRAircraftForFlightFollowing
+	}
 
 	s.requestFlightFollowing(ac, candidates[ac])
 

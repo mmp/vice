@@ -513,11 +513,21 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 				imgui.Text(fmt.Sprintf("VFR Departures: %d total", ndep))
 
+				if !lc.client.State.LaunchConfig.HaveVFRReportingRegions {
+					imgui.BeginDisabled()
+				}
 				if imgui.Button("Request Flight Following") {
 					lc.client.RequestFlightFollowing()
 				}
 				if imgui.IsItemHovered() {
-					imgui.SetTooltip("Request VFR flight following from a random VFR aircraft")
+					if lc.client.State.LaunchConfig.HaveVFRReportingRegions {
+						imgui.SetTooltip("Request VFR flight following from a random VFR aircraft")
+					} else {
+						imgui.SetTooltip("No flight following airspace configured for this scenario")
+					}
+				}
+				if !lc.client.State.LaunchConfig.HaveVFRReportingRegions {
+					imgui.EndDisabled()
 				}
 
 				nColumns := min(2, len(lc.vfrDepartures))
