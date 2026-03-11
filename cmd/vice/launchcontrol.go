@@ -40,12 +40,14 @@ type LaunchAircraft struct {
 	LastLaunchCallsign av.ADSBCallsign
 	LastLaunchTime     time.Time
 	TotalLaunches      int
+	Spawning           bool // true when a Create RPC is in-flight
 }
 
 func (la *LaunchAircraft) Reset() {
 	la.LastLaunchCallsign = ""
 	la.LastLaunchTime = time.Time{}
 	la.TotalLaunches = 0
+	la.Spawning = false
 }
 
 type LaunchDeparture struct {
@@ -108,8 +110,13 @@ func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *Laun
 }
 
 func (lc *LaunchControlWindow) spawnIFRDeparture(dep *LaunchDeparture) {
+	if dep.Spawning {
+		return
+	}
+	dep.Spawning = true
 	lc.client.CreateDeparture(dep.Airport, string(dep.Runway), dep.Category, av.FlightRulesIFR, &dep.Aircraft,
 		func(err error) {
+			dep.Spawning = false
 			if err != nil {
 				lc.lg.Warnf("CreateDeparture: %v", err)
 			}
@@ -117,8 +124,13 @@ func (lc *LaunchControlWindow) spawnIFRDeparture(dep *LaunchDeparture) {
 }
 
 func (lc *LaunchControlWindow) spawnVFRDeparture(dep *LaunchDeparture) {
+	if dep.Spawning {
+		return
+	}
+	dep.Spawning = true
 	lc.client.CreateDeparture(dep.Airport, string(dep.Runway), dep.Category, av.FlightRulesVFR, &dep.Aircraft,
 		func(err error) {
+			dep.Spawning = false
 			if err != nil && server.TryDecodeError(err) != sim.ErrViolatedAirspace {
 				lc.lg.Warnf("CreateDeparture: %v", err)
 			}
@@ -126,9 +138,14 @@ func (lc *LaunchControlWindow) spawnVFRDeparture(dep *LaunchDeparture) {
 }
 
 func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflight) {
+	if lac.Spawning {
+		return
+	}
+	lac.Spawning = true
 	if lac.Airport != "overflights" {
 		lc.client.CreateArrival(lac.Group, lac.Airport, &lac.Aircraft,
 			func(err error) {
+				lac.Spawning = false
 				if err != nil {
 					lc.lg.Warnf("CreateArrival: %v", err)
 				}
@@ -136,6 +153,7 @@ func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflig
 	} else {
 		lc.client.CreateOverflight(lac.Group, &lac.Aircraft,
 			func(err error) {
+				lac.Spawning = false
 				if err != nil {
 					lc.lg.Warnf("CreateOverflight: %v", err)
 				}
