@@ -689,6 +689,9 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		stats.redraws++
 
 		plat.NewFrame()
+		if imgui.CurrentPlatformIO().Monitors().Size == 0 {
+			continue
+		}
 		imgui.NewFrame()
 
 		// Generate and render vice draw lists
