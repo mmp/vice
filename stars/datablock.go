@@ -985,6 +985,16 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 				targetField := util.Select(altSet, 1, 0) // if no alt, show spad2 in slot 0
 				formatDBText(db.field7[targetField][startIdx:], text, color, false)
 			}
+
+			if beaconMismatch {
+				for idx := range db.field7 {
+					if fieldEmpty(db.field7[idx][:]) {
+						startIdx := util.Select(sp.getLeaderLineDirection(ctx, trk) >= math.South, 1, 0)
+						formatDBText(db.field7[idx][startIdx:], sfp.AssignedSquawk.String(), color, true)
+						break
+					}
+				}
+			}
 		} else {
 			// === Default behavior: Assigned altitude + squawk mismatch ===
 			if alt := sfp.AssignedAltitude; alt != 0 {
