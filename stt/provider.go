@@ -391,6 +391,7 @@ func (p *Transcriber) BuildAircraftContext(
 		if trk.IsDeparture() {
 			sttAc.State = "departure"
 			sttAc.SID = trk.SID
+			sttAc.STAR = trk.STAR // Local departures may have a STAR
 		} else if trk.IsArrival() {
 			if trk.ClearedForApproach {
 				sttAc.State = "cleared approach"
@@ -402,8 +403,10 @@ func (p *Transcriber) BuildAircraftContext(
 			sttAc.State = "overflight"
 		}
 
-		// Build candidate approaches for arrivals
-		if trk.IsArrival() && trk.ArrivalAirport != "" {
+		// Build candidate approaches for arrivals and local departures
+		// (departures arriving at a TRACON airport need approach commands too)
+		_, arrivingLocally := state.ArrivalAirports[trk.ArrivalAirport]
+		if trk.ArrivalAirport != "" && (trk.IsArrival() || arrivingLocally) {
 			sttAc.CandidateApproaches = make(map[string]string)
 			sttAc.ApproachFixes = make(map[string]map[string]string)
 			if trk.Approach != "" {

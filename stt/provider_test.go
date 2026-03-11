@@ -798,6 +798,19 @@ func TestNavigationCommands(t *testing.T) {
 			expected: "AAL870 DPUCKY/H180",
 		},
 		{
+			name:       "local departure expect approach",
+			transcript: "Cactus 491 expect I L S runway nine",
+			aircraft: map[string]Aircraft{
+				"Cactus 491": {
+					Callsign:            "AWE491",
+					Altitude:            5000,
+					State:               "departure",
+					CandidateApproaches: map[string]string{"i l s runway nine": "I9"},
+				},
+			},
+			expected: "AWE491 EI9",
+		},
+		{
 			name:       "at fix cleared approach",
 			transcript: "Delta 8499 at Fergi clear for the River Visual runway one niner approach",
 			aircraft: map[string]Aircraft{
@@ -2191,12 +2204,20 @@ func TestValidateCommands(t *testing.T) {
 			expectErrors: false,
 		},
 		{
-			name:         "expect approach invalid for departure",
-			commands:     []string{"EILS22L"},
-			ac:           Aircraft{State: "departure"},
-			expectedLen:  0,
-			minConf:      0.0,
-			expectErrors: true,
+			name:         "expect approach valid for local departure with approaches",
+			commands:     []string{"EI22L"},
+			ac:           Aircraft{State: "departure", CandidateApproaches: map[string]string{"i l s runway two two left": "I22L"}},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
+		},
+		{
+			name:         "expedite descent valid for local departure with approaches",
+			commands:     []string{"ED"},
+			ac:           Aircraft{Altitude: 10000, State: "departure", CandidateApproaches: map[string]string{"i l s runway two two left": "I22L"}},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
 		},
 		{
 			name:         "altitude discretion only valid for VFR",

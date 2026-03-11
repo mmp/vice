@@ -118,7 +118,7 @@ var validationRules = []validationRule{
 	// ED → expedite descent
 	{match: func(cmd string) bool { return cmd == "ED" },
 		validate: func(_ string, ac Aircraft) string {
-			if ac.State == "departure" {
+			if ac.State == "departure" && len(ac.CandidateApproaches) == 0 {
 				return "expedite descent unlikely for departure"
 			}
 			return ""
@@ -171,7 +171,7 @@ func validateSCommand(cmd string, ac Aircraft) string {
 	case strings.HasPrefix(cmd, "SQ"):
 		return "" // Squawk commands
 	case strings.HasPrefix(cmd, "SAYAGAIN"):
-		if cmd == "SAYAGAIN/APPROACH" && ac.State == "departure" {
+		if cmd == "SAYAGAIN/APPROACH" && ac.State == "departure" && len(ac.CandidateApproaches) == 0 {
 			return "departure aircraft cannot expect approach"
 		}
 		return ""
@@ -274,15 +274,9 @@ func validateClearedApproach(_ string, _ Aircraft) string {
 	return ""
 }
 
-func validateExpectApproach(_ string, ac Aircraft) string {
+func validateExpectApproach(_ string, _ Aircraft) string {
 	// Expect approach is valid when assigned_approach is empty
 	// (actually valid in both cases, but more common when empty)
-
-	// Must not be departure or overflight
-	if ac.State == "departure" {
-		return "departure aircraft cannot expect approach"
-	}
-
 	return ""
 }
 
@@ -386,6 +380,9 @@ func isSpeedError(err string) bool {
 
 // ValidateCommandsForState filters commands based on aircraft state likelihood.
 // Returns commands that are appropriate for the current state.
+// Note: the "departure" filtering rejects approach commands (E, C+letters),
+// which doesn't account for local departures arriving at TRACON airports.
+// Those are handled by ValidateCommands, which has access to CandidateApproaches.
 func ValidateCommandsForState(commands []string, state string) []string {
 	var filtered []string
 
