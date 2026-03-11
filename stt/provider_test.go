@@ -699,6 +699,30 @@ func TestVFRCommands(t *testing.T) {
 			expected: "N345 GA",
 		},
 		{
+			name:       "callsign plus facility name implies go ahead",
+			transcript: "November 345 boston approach",
+			aircraft: map[string]Aircraft{
+				"November 345": {Callsign: "N345", State: "vfr flight following"},
+			},
+			expected: "N345 GA",
+		},
+		{
+			name:       "callsign plus departure facility implies go ahead for VFR",
+			transcript: "Cessna 345 new york departure",
+			aircraft: map[string]Aircraft{
+				"Cessna 345": {Callsign: "N345", State: "vfr flight following"},
+			},
+			expected: "N345 GA",
+		},
+		{
+			name:       "callsign plus facility name for IFR returns empty",
+			transcript: "American 421 boston approach",
+			aircraft: map[string]Aircraft{
+				"American 421": {Callsign: "AAL421", State: "arrival"},
+			},
+			expected: "",
+		},
+		{
 			name:       "radar services terminated",
 			transcript: "November 123AB radar services terminated squawk VFR frequency change approved",
 			aircraft: map[string]Aircraft{

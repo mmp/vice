@@ -163,8 +163,18 @@ func (p *Transcriber) decodeInternal(
 	// Strip informational phrases (position ID prefix, radar contact, altimeter setting)
 	commandTokens = stripInformational(commandTokens)
 
-	// If no tokens remain after stripping, controller just identified themselves
+	// If no tokens remain after stripping, controller just identified themselves.
+	// For VFR aircraft, treat this as an implicit "go ahead" — the pilot is
+	// checking in on frequency with just their callsign + facility name.
 	if len(commandTokens) == 0 {
+		if ac.State == "vfr flight following" {
+			output := callsign + " GA"
+			elapsed := time.Since(start)
+			logLocalStt("VFR aircraft with position ID only, treating as implicit go ahead")
+			logLocalStt(`=== DecodeTranscript END: %q (implicit GA, time=%s) ===`, output, elapsed)
+			p.logInfo(`local STT: %q -> %q (implicit GA, time=%s)`, transcript, output, elapsed)
+			return output, nil
+		}
 		logLocalStt("no tokens after stripping prefixes, returning empty")
 		elapsed := time.Since(start)
 		logLocalStt(`=== DecodeTranscript END: "" (position ID only, time=%s) ===`, elapsed)
