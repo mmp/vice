@@ -270,12 +270,18 @@ func main() {
 	// R2 (not in git) so they're not found when walking the resources
 	// directory. We have their hashes in resources/models/manifest.json,
 	// so we merge those entries with the appropriate path prefix.
+	// Skip the kokoro zip entry: it exists only for build.sh's
+	// download-and-extract workflow. The runtime downloads the individual
+	// extracted files instead.
 	if modelsJSON, err := os.ReadFile(modelsManifestPath); err == nil {
 		var modelsManifest map[string]manifestEntry
 		if err := json.Unmarshal(modelsJSON, &modelsManifest); err != nil {
 			log.Fatalf("Failed to parse models manifest: %v", err)
 		}
 		for filename, entry := range modelsManifest {
+			if filename == "kokoro-multi-lang-v1_0.zip" {
+				continue
+			}
 			manifest["models/"+filename] = entry
 		}
 		fmt.Printf("Merged %d entries from models manifest\n", len(modelsManifest))

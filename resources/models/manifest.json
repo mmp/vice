@@ -3,17 +3,17 @@
     "hash": "5125f0232e2ad85e9101173a69691d10884899d881b636af7376a34aaf36b702",
     "size": 55308851
   },
-  "ggml-small.en-jlvatc-q5_0.bin": {
-    "hash": "b861692c042876ce3134e607292d8f90bed2bc1eb5a1e74500576e8ca89d85f1",
-    "size": 175222905
-  },
   "ggml-medium.en-jlvatc-q5_0.bin": {
     "hash": "c009de99eca9a979340e33a288528a491d5ecb79d007879685b1483957779367",
     "size": 539225533
   },
+  "ggml-small.en-jlvatc-q5_0.bin": {
+    "hash": "b861692c042876ce3134e607292d8f90bed2bc1eb5a1e74500576e8ca89d85f1",
+    "size": 175222905
+  },
   "kokoro-multi-lang-v1_0.zip": {
     "hash": "7b707d8cbac62846e829f32fae31ba02eeedeabfa0ab387a553daaf064a35b73",
-    "size": 0
+    "size": 344635133
   },
   "kokoro-multi-lang-v1_0/LICENSE": {
     "hash": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
