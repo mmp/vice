@@ -192,7 +192,7 @@
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#airspace">Controller Airspace</a></li>
 	    </ul>
 	  </li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-configuration">STARS Configuration</a>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-configuration">Configuration</a>
 	    <ul class="submenu">
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-range-center">Range and Center</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-character-size">Character Size</a></li>
@@ -213,6 +213,8 @@
 	    </ul>
 	  </li>
 
+	  <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-eram"><span class="theme-icon-holder me-2"><svg><use xlink:href="#radar"></use></svg></span>ERAM</a></li>
+
 	</ul>
       </nav><!--//docs-nav-->
     </div><!--//docs-sidebar-->
@@ -228,18 +230,29 @@
 	    <h1 class="docs-heading">About Vice</h1>
 
 	    <section class="docs-intro">
-                <p><i>vice</i> is an air traffic control simulator, focused on TRACON.
-                It presents a STARS-like interface, but with simulated traffic and other controllers.
-                It also supports multiple users, where each person controls a different position at a facility.
+              <p>
+                <i>vice</i> is an air traffic control simulator, focused on TRACON and enroute scenarios; it provides an accurate simulation of the STARS system for TRACON and the ERAM system for enroute.
+                Simulations have simulated traffic and virtual controllers covering other positions.
+                Instructions may be given to aircraft verbally or via the keyboard; pilot responses are generated using speech synthesis.
+                <i>vice</i> also supports multiple-user scenarios, where each person controls a different position at a facility.
+                Pilot readbacks are generated via speech synthesis.
               </p>
               <p><i>vice</i> supports departure and arrival control
-                scenarios in numerous TRACONs and ATCT/TRACONs, currently:
-A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, BTV, BUF, C90, CHS, CID, CLE, CLT, COS, CPR, CVG, D01, D10, D21, DAB, F11, GSO, GSP, GTF, HNL, I90, IND, JAX, L30, M98, MCI, MDT, MIA, MKE, MYR, N90, NCT, OGG, OKC, P31, P50, P80, PCT, PHL, PIT, PVD, PWM, R90, RDU, S46, S56, SAT, SAV, SBA, SBN, SCT, SDF, SGF, SYR, TPA, and Y90.
+                scenarios in numerous TRACONs and ATCT/TRACONs:
+A11 A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, BTV, BUF, C90, CHS,
+CID, CLE, CLT, COS, CPR, CVG, D01, D10, D21, DAB, F11, GSO, GSP, GTF, HNL, I90, IND, JAX, L30, M98,
+MCI, MDT, MIA, MKE, MYR, N90, NCT, OGG, OKC, P31, P50, P80, PCT, PHL, PIT, PVD, PWM, R90, RDU, S46,
+S56, SAT, SAV, SBA, SBN, SCT, SDF, SGF, SYR, TPA, and
+Y90.
+Enroute scenarios are available for 
+ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 New scenarios are regularly added.
+              </p>
+              <p>
                 Adding scenarios at additional airports is a matter of writing JSON configuration files that describe them;
-                see <a href="facility-engineering.html">the Facility Engineering guide</a> for
+                see the <a href="facility-engineering.html">Facility Engineering Guide</a> for
                 documentation about how scenarios are defined.</p>
-              <p>There is a <i>discord</i> server for <i>vice</i>: the <a href="https://discord.gg/y993vgQxhY">Vice ATC Simulator</a> server,
+              <p>There is a <a href="https://discord.gg/y993vgQxhY">vice discord server</a>
                 for general discussion, bug reports and feature requests, and for discussing facility engineering.
               </p>
                 <p>Documentation for the current beta build of vice (may be) found <a href="beta/index.html">here.</a></p>
@@ -248,7 +261,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
 
 	  <section class="docs-section" id="started">
             <h2 class="section-heading">Getting Started</h2>
-            <p>The radar client interface that <i>vice</i> provides is based on STARS.
+            <p>The radar client interfaces that <i>vice</i> provides are based on STARS and ERAM.
               For familiarity to VATSIM controllers, <i>vice</i> generally follows the keyboard command scheme implemented
               in <a href="https://crc.virtualnas.net/docs/#/">CRC's STARS implementation</a>; see
               the discussion of <a href="#section-stars"><i>vice</i>'s STARS
@@ -3292,8 +3305,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
             <p>The main DCB menu offers the following controls:</p>
               <ul>
-                <li>RANGE: sets the range of the radar scope (see <a href="#stars-range-center">STARS Configuration</a>).</li>
-                <li>PLACE CNTR/OFF CNTR: controls to set the center point of the radar scope (see <a href="#stars-range-center">STARS Configuration</a>).</li>
+                <li>RANGE: sets the range of the radar scope (see <a href="#stars-range-center">Configuration</a>).</li>
+                <li>PLACE CNTR/OFF CNTR: controls to set the center point of the radar scope (see <a href="#stars-range-center">Configuration</a>).</li>
                 <li>RR/PLACE RR/RR CNTR: controls for <a href="#stars-range-rings">range rings</a> that are shown on the display</li>
                 <li>MAPS (and the six buttons to the right): controls the <a href="#stars-video-maps">visible video maps</a>.</li>
                 <li>WX*: controls which levels of <a href="#stars-weather">weather intensity</a> are displayed.</li>
@@ -6035,7 +6048,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
 	  <section class="docs-section" id="stars-configuration">
 
-            <h2 class="section-heading">STARS Configuration</h2>
+            <h2 class="section-heading">Configuration</h2>
 
             <h3 id="stars-range-center">Range and Center</h3>
 
@@ -6924,11 +6937,97 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
           </article>
 
+        <article class="docs-article" id="section-eram">
+          <header class="docs-header">
+            <h1 class="docs-heading">ERAM</h1>
+
+            <section class="docs-intro">
+              <p><i>vice's</i> support for ERAM and enroute scenarios is relatively new; it was first released on November 5, 2025.
+                Development is ongoing, though the current implementation is stable and well fleshed-out (though documentation is incomplete.)
+              </p>
+              <p>Inbound handoffs are accepted by slewing the track;
+                an outbound handoff is recalled by slewing. For an owned
+                track, slewing it toggles display of its full datablock.
+              </p>
+              <p>To hand off a track to another controller, either enter the controller's sector id and slew the track, or enter the sector id, a space, and the aircraft's flight id.</p>
+              <p>Entering a number and slewing an owned track sets the leader line direction accordingly.</p>
+              <p>The following is an (incomplete) list of the currently-supported ERAM commands:
+              </p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:30%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>//</code></td>
+                    <td>Toggle VCI (on-frequency indicator)</td>
+                  </tr>
+                  <tr>
+                    <td><code>/</code></td>
+                    <td>Leader line length</td>
+                  </tr>
+                  <tr>
+                    <td><code>LA</code></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><code>LB</code></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><code>LF</code></td>
+                    <td>Continuous range readout</td>
+                  </tr>
+                  <tr>
+                    <td><code>MR</code></td>
+                    <td>Map request</td>
+                  </tr>
+                  <tr>
+                    <td><code>TG</code></td>
+                    <td>"Target gen": used for issuing instructions to aircraft using <i>vice</i>'s <a href="#atc-commands">keyboard instruction commands</a>.</td>
+                  </tr>
+                  <tr>
+                    <td><code>QQ</code></td>
+                    <td>Set interim altitude.</td>
+                  </tr>
+                  <tr>
+                    <td><code>QZ</code></td>
+                    <td>Set assigned altitude.</td>
+                  </tr>
+                  <tr>
+                    <td><code>QX</code></td>
+                    <td>Drop track.</td>
+                  </tr>
+                  <tr>
+                    <td><code>QU</code></td>
+                    <td>Direct to fix / route display / clear all route displays</td>
+                  </tr>
+                  <tr>
+                    <td><code>QP</code></td>
+                    <td>J rings</td>
+                  </tr>
+                  <tr>
+                    <td><code>QF</code></td>
+                    <td>Flight plan display</td>
+                  </tr>
+                  <tr>
+                    <td><code>QS</code></td>
+                    <td>Heading / speed-mach / free-text scratchpad handling</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </header>
+        </article>
+
         <footer class="footer">
           <div class="container text-center py-5">
             <!-- Bootstrap template licensed from themes.3rdwavemedia.com -->
             <small class="copyright">
-              <i>vice</i> documentation (c)2023-2024 Matt Pharr, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0 License</a>.</small>
+              <i>vice</i> documentation (c)2023-2026 <i>vice</i> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0 License</a>.</small>
           </div>
         </footer>
       </div> 
