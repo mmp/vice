@@ -665,7 +665,13 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	if execResult.Error != nil {
 		result.ErrorMessage = execResult.Error.Error()
 	}
-	setReadback(execResult.ReadbackSpokenText)
+	// Use execResult's callsign for voice lookup (not the local callsign, which may be "ROLLBACK")
+	if cmds.EnableTTS && execResult.ReadbackSpokenText != "" {
+		cs := execResult.ReadbackCallsign
+		result.ReadbackText = execResult.ReadbackSpokenText
+		result.ReadbackVoiceName = c.sim.VoiceAssigner.GetVoice(cs, c.sim.Rand)
+		result.ReadbackCallsign = cs
+	}
 
 	// Log whisper STT commands (WhisperDuration is non-zero for voice commands)
 	if cmds.WhisperDuration > 0 {
