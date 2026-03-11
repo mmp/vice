@@ -123,83 +123,14 @@ func (p *Transcriber) decodeInternal(
 		}
 		logLocalStt("found aircraft context for callsign %q", callsign)
 	} else {
-		// Check for "negative, that was for {callsign}" correction pattern BEFORE callsign matching
-		// e.g., "Negative that was for Delta 456. Delta 456, turn left heading 270"
-		// This triggers a ROLLBACK of the last command, then processes the rest for the correct aircraft
-		// The wrong aircraft's callsign should NOT be in the transcript (to avoid confusing them)
-		if tokensAfterNegative, found := detectNegativeThatWasFor(tokens); found {
-			logLocalStt("detected 'negative that was for' correction pattern at start")
-			// Match the correct callsign from the tokens after the correction phrase
-			correctMatch, correctRemaining := MatchCallsign(tokensAfterNegative, aircraft)
-			if correctMatch.Callsign != "" {
-				logLocalStt("correct callsign match: Callsign=%q SpokenKey=%q Conf=%.2f",
-					correctMatch.Callsign, correctMatch.SpokenKey, correctMatch.Confidence)
-
-				// Get aircraft context for the correct callsign
-				var correctAc Aircraft
-				if correctMatch.SpokenKey != "" {
-					correctAc = aircraft[correctMatch.SpokenKey]
-				}
-
-				// Parse and validate commands for the correct callsign
-				commands, cmdConf := ParseCommands(correctRemaining, correctAc)
-				logLocalStt("parsed commands for correct callsign: %v (conf=%.2f)", commands, cmdConf)
-				validation := ValidateCommands(commands, correctAc)
-				logLocalStt("validated commands: %v", validation.ValidCommands)
-
-				// Build output: ROLLBACK + commands for correct callsign
-				var output string
-				if len(validation.ValidCommands) > 0 {
-					output = "ROLLBACK " + correctMatch.Callsign + " " + strings.Join(validation.ValidCommands, " ")
-				} else {
-					// Just ROLLBACK if no valid commands were parsed
-					output = "ROLLBACK"
-				}
-
-				elapsed := time.Since(start)
-				logLocalStt("=== DecodeTranscript END: %q (negative correction, time=%s) ===", output, elapsed)
-				p.logInfo("local STT: %q -> %q (negative correction, time=%s)", transcript, output, elapsed)
-				return strings.TrimSpace(output), nil
-			}
-			// Couldn't match correct callsign, just return ROLLBACK
-			logLocalStt("couldn't match correct callsign after 'negative that was for', returning just ROLLBACK")
-			elapsed := time.Since(start)
-			p.logInfo("local STT: %q -> ROLLBACK (negative correction, no new callsign, time=%s)", transcript, elapsed)
-			return "ROLLBACK", nil
+		var earlyResult string
+		callsign, ac, commandTokens, callsignConfidence, earlyResult =
+			p.resolveCallsign(tokens, aircraft, transcript, start)
+		if earlyResult != "" {
+			return earlyResult, nil
 		}
-
-		// Layer 3: Callsign matching
-		callsignMatch, remainingTokens := MatchCallsign(tokens, aircraft)
-		logLocalStt("callsign match: Callsign=%q SpokenKey=%q Conf=%.2f Consumed=%d",
-			callsignMatch.Callsign, callsignMatch.SpokenKey, callsignMatch.Confidence, callsignMatch.Consumed)
-
-		if callsignMatch.Callsign == "" {
-			// No callsign identified - just ignore the transmission
-			logLocalStt("no callsign match for %q, ignoring", transcript)
+		if callsign == "" {
 			return "", nil
-		}
-
-		// Check for "not for you" correction pattern
-		// e.g., "479, that was not for you, Virgin 47 Foxtrot, expect..."
-		// If found, re-match callsign from the tokens after the correction phrase
-		if tokensAfterCorrection, found := detectNotForYouCorrection(remainingTokens); found {
-			logLocalStt("detected 'not for you' correction, re-matching callsign")
-			newMatch, newRemaining := MatchCallsign(tokensAfterCorrection, aircraft)
-			if newMatch.Callsign != "" {
-				logLocalStt("new callsign match: Callsign=%q SpokenKey=%q Conf=%.2f Consumed=%d",
-					newMatch.Callsign, newMatch.SpokenKey, newMatch.Confidence, newMatch.Consumed)
-				callsignMatch = newMatch
-				remainingTokens = newRemaining
-			}
-		}
-
-		callsign = callsignMatch.Callsign
-		callsignConfidence = callsignMatch.Confidence
-		commandTokens = remainingTokens
-
-		// Get aircraft context for the matched callsign
-		if callsignMatch.SpokenKey != "" {
-			ac = aircraft[callsignMatch.SpokenKey]
 		}
 	}
 
@@ -306,6 +237,89 @@ func (p *Transcriber) decodeInternal(
 	}
 
 	return strings.TrimSpace(output), nil
+}
+
+// resolveCallsign handles callsign identification for the non-fallback path.
+// It detects "negative that was for" corrections, performs callsign matching,
+// and handles "not for you" corrections.
+// Returns earlyResult non-empty when the function should return immediately (e.g., ROLLBACK).
+// Returns callsign="" when no callsign could be matched.
+func (p *Transcriber) resolveCallsign(
+	tokens []Token, aircraft map[string]Aircraft, transcript string, start time.Time,
+) (callsign string, ac Aircraft, cmdTokens []Token, confidence float64, earlyResult string) {
+	confidence = 1.0
+
+	// Check for "negative, that was for {callsign}" correction pattern BEFORE callsign matching.
+	// e.g., "Negative that was for Delta 456. Delta 456, turn left heading 270"
+	// This triggers a ROLLBACK of the last command, then processes the rest for the correct aircraft.
+	if tokensAfterNegative, found := detectNegativeThatWasFor(tokens); found {
+		logLocalStt("detected 'negative that was for' correction pattern at start")
+		correctMatch, correctRemaining := MatchCallsign(tokensAfterNegative, aircraft)
+		if correctMatch.Callsign != "" {
+			logLocalStt("correct callsign match: Callsign=%q SpokenKey=%q Conf=%.2f",
+				correctMatch.Callsign, correctMatch.SpokenKey, correctMatch.Confidence)
+
+			var correctAc Aircraft
+			if correctMatch.SpokenKey != "" {
+				correctAc = aircraft[correctMatch.SpokenKey]
+			}
+
+			commands, cmdConf := ParseCommands(correctRemaining, correctAc)
+			logLocalStt("parsed commands for correct callsign: %v (conf=%.2f)", commands, cmdConf)
+			validation := ValidateCommands(commands, correctAc)
+			logLocalStt("validated commands: %v", validation.ValidCommands)
+
+			var output string
+			if len(validation.ValidCommands) > 0 {
+				output = "ROLLBACK " + correctMatch.Callsign + " " + strings.Join(validation.ValidCommands, " ")
+			} else {
+				output = "ROLLBACK"
+			}
+
+			elapsed := time.Since(start)
+			logLocalStt("=== DecodeTranscript END: %q (negative correction, time=%s) ===", output, elapsed)
+			p.logInfo("local STT: %q -> %q (negative correction, time=%s)", transcript, output, elapsed)
+			earlyResult = strings.TrimSpace(output)
+			return
+		}
+		logLocalStt("couldn't match correct callsign after 'negative that was for', returning just ROLLBACK")
+		elapsed := time.Since(start)
+		p.logInfo("local STT: %q -> ROLLBACK (negative correction, no new callsign, time=%s)", transcript, elapsed)
+		earlyResult = "ROLLBACK"
+		return
+	}
+
+	// Layer 3: Callsign matching
+	callsignMatch, remainingTokens := MatchCallsign(tokens, aircraft)
+	logLocalStt("callsign match: Callsign=%q SpokenKey=%q Conf=%.2f Consumed=%d",
+		callsignMatch.Callsign, callsignMatch.SpokenKey, callsignMatch.Confidence, callsignMatch.Consumed)
+
+	if callsignMatch.Callsign == "" {
+		logLocalStt("no callsign match for %q, ignoring", transcript)
+		return // callsign is "", earlyResult is ""
+	}
+
+	// Check for "not for you" correction pattern
+	// e.g., "479, that was not for you, Virgin 47 Foxtrot, expect..."
+	if tokensAfterCorrection, found := detectNotForYouCorrection(remainingTokens); found {
+		logLocalStt("detected 'not for you' correction, re-matching callsign")
+		newMatch, newRemaining := MatchCallsign(tokensAfterCorrection, aircraft)
+		if newMatch.Callsign != "" {
+			logLocalStt("new callsign match: Callsign=%q SpokenKey=%q Conf=%.2f Consumed=%d",
+				newMatch.Callsign, newMatch.SpokenKey, newMatch.Confidence, newMatch.Consumed)
+			callsignMatch = newMatch
+			remainingTokens = newRemaining
+		}
+	}
+
+	callsign = callsignMatch.Callsign
+	confidence = callsignMatch.Confidence
+	cmdTokens = remainingTokens
+
+	if callsignMatch.SpokenKey != "" {
+		ac = aircraft[callsignMatch.SpokenKey]
+	}
+	return
 }
 
 // DecodeFromState decodes a transcript using the simulation state directly.

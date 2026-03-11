@@ -597,6 +597,193 @@ var fillerWords = map[string]bool{
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords
 }
 
+// normalizeContext holds state for the word normalization pipeline.
+type normalizeContext struct {
+	words  []string // raw input words (may be mutated by processors, e.g. "or" → "thousand")
+	result []string // accumulated output tokens
+	i      int      // current index into words
+}
+
+// wordProcessor tries to handle a word during normalization.
+// Returns (replacement tokens, extra words to skip, handled).
+// Processors may read/write ctx.words and ctx.result for context-dependent decisions.
+type wordProcessor func(w string, ctx *normalizeContext) ([]string, int, bool)
+
+// wordProcessors are applied in order during normalization. First match wins.
+// Order is critical — multi-token raw patterns must precede single-word lookups,
+// and exact lookups must precede fuzzy/phonetic matching.
+var wordProcessors = []wordProcessor{
+	processMultiTokenRaw,
+	processSplitTextNumber,
+	processDigitWord,
+	processNumberWord,
+	processCommandKeyword,
+	processPhraseExpansion,
+	processMergedNATO,
+	processMergedCommand,
+	processPhoneticCommand,
+	processLocalizerPattern,
+	processOrNoise,
+	processAndDigit,
+}
+
+// processMultiTokenRaw checks for multi-token patterns on raw words BEFORE phonetic matching.
+// This catches patterns like "time riding" → "turn right" before "riding" gets
+// normalized to "heading" via phonetic match.
+func processMultiTokenRaw(w string, ctx *normalizeContext) ([]string, int, bool) {
+	if ctx.i+1 >= len(ctx.words) {
+		return nil, 0, false
+	}
+	rawNext := CleanWord(ctx.words[ctx.i+1])
+	key := w + " " + rawNext
+	if replacement, ok := multiTokenReplacements[key]; ok {
+		return replacement, 1, true
+	}
+	return nil, 0, false
+}
+
+// processSplitTextNumber splits concatenated callsigns like "alaska8383" → ["alaska", "8383"].
+func processSplitTextNumber(w string, _ *normalizeContext) ([]string, int, bool) {
+	if parts := splitTextNumber(w); len(parts) > 1 {
+		var out []string
+		for _, part := range parts {
+			if part != "" {
+				out = append(out, part)
+			}
+		}
+		return out, 0, true
+	}
+	return nil, 0, false
+}
+
+// processDigitWord normalizes digit words: "zero" → "0", "niner" → "9", etc.
+func processDigitWord(w string, _ *normalizeContext) ([]string, int, bool) {
+	if digit, ok := digitWords[w]; ok {
+		return []string{digit}, 0, true
+	}
+	return nil, 0, false
+}
+
+// processNumberWord normalizes number words: "twenty" → "20", "thirty" → "30", etc.
+func processNumberWord(w string, _ *normalizeContext) ([]string, int, bool) {
+	if num, ok := numberWords[w]; ok {
+		return []string{num}, 0, true
+	}
+	return nil, 0, false
+}
+
+// NOTE: NATO alphabet conversion is NOT done here because words like
+// "delta" could be airline names (Delta Air Lines). NATO conversion is
+// deferred to scoreGACallsign() and scoreFlightNumberMatch() where the
+// context makes it clear we're building a callsign from phonetics.
+
+// processCommandKeyword normalizes command keywords: "descending" → "descend", etc.
+func processCommandKeyword(w string, _ *normalizeContext) ([]string, int, bool) {
+	if norm, ok := commandKeywords[w]; ok {
+		return []string{norm}, 0, true
+	}
+	return nil, 0, false
+}
+
+// processPhraseExpansion expands single STT words to multiple words:
+// "flighting" → ["fly", "heading"], etc. Checked BEFORE phonetic matching
+// so exact table matches take priority.
+func processPhraseExpansion(w string, _ *normalizeContext) ([]string, int, bool) {
+	if expansion, ok := phraseExpansions[w]; ok {
+		return expansion, 0, true
+	}
+	return nil, 0, false
+}
+
+// processMergedNATO splits merged NATO phonetic letters: "echowiski" → ["echo", "whiskey"].
+func processMergedNATO(w string, _ *normalizeContext) ([]string, int, bool) {
+	if natoSplit := trySplitMergedNATO(w); natoSplit != nil {
+		return natoSplit, 0, true
+	}
+	return nil, 0, false
+}
+
+// processMergedCommand splits merged command words: "turnwright" → ["turn", "right"].
+// Checked BEFORE phonetic matching since long merged words may partially match
+// a single keyword but should actually be split into multiple words.
+func processMergedCommand(w string, _ *normalizeContext) ([]string, int, bool) {
+	if cmdSplit := trySplitMergedCommand(w); cmdSplit != nil {
+		return cmdSplit, 0, true
+	}
+	return nil, 0, false
+}
+
+// processPhoneticCommand matches words phonetically to command keywords: "hitting" → "heading".
+func processPhoneticCommand(w string, _ *normalizeContext) ([]string, int, bool) {
+	if phoneticMatch := tryPhoneticCommandMatch(w); phoneticMatch != "" {
+		return []string{phoneticMatch}, 0, true
+	}
+	return nil, 0, false
+}
+
+// processLocalizerPattern detects garbled "intercept localizer" patterns:
+// words containing "lok"/"lawk" with certain prefixes (e.g., "zapulokwizer").
+func processLocalizerPattern(w string, _ *normalizeContext) ([]string, int, bool) {
+	if isLocalizerPattern(w) {
+		return []string{"intercept", "localizer"}, 0, true
+	}
+	return nil, 0, false
+}
+
+// processOrNoise handles "or" as STT noise in various contexts.
+// Skips "or" between digits and between "turn" and direction words.
+// May mutate ctx.words (converting "1000" to "thousand" for "9 or 1000").
+func processOrNoise(w string, ctx *normalizeContext) ([]string, int, bool) {
+	if w != "or" || len(ctx.result) == 0 || ctx.i+1 >= len(ctx.words) {
+		return nil, 0, false
+	}
+	prev := ctx.result[len(ctx.result)-1]
+	nextWord := CleanWord(ctx.words[ctx.i+1])
+
+	// Skip "or" between digits (e.g., "two nine or zero" for "two niner zero")
+	prevIsDigit := IsNumber(prev)
+	_, nextIsDigitWord := digitWords[nextWord]
+	nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
+	if prevIsDigit && nextIsDigit {
+		// Special case: "9 or 1000" means "niner thousand" - convert 1000 to thousand
+		if nextWord == "1000" {
+			ctx.words[ctx.i+1] = "thousand"
+		}
+		return nil, 0, true // skip "or"
+	}
+
+	// Skip "or" between "turn" and "left"/"right" (STT transcribes pause as "or")
+	if prev == "turn" && (nextWord == "left" || nextWord == "right" ||
+		PhoneticMatch(nextWord, "left") || PhoneticMatch(nextWord, "right")) {
+		return nil, 0, true // skip "or"
+	}
+	return nil, 0, false
+}
+
+// processAndDigit handles "and" between digits: STT mishears "one" as "and".
+// e.g., "two and zero" → "two one zero" (210).
+// But "two nine and zero" → "290" (and is filler, not replacing one).
+func processAndDigit(w string, ctx *normalizeContext) ([]string, int, bool) {
+	if w != "and" || len(ctx.result) == 0 || ctx.i+1 >= len(ctx.words) {
+		return nil, 0, false
+	}
+	prev := ctx.result[len(ctx.result)-1]
+	nextWord := CleanWord(ctx.words[ctx.i+1])
+
+	prevIsDigit := IsNumber(prev)
+	_, nextIsDigitWord := digitWords[nextWord]
+	nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
+	if prevIsDigit && nextIsDigit {
+		// In a multi-digit sequence (prev-prev is also a digit), skip "and" as filler.
+		// Otherwise convert to "1".
+		if len(ctx.result) >= 2 && IsNumber(ctx.result[len(ctx.result)-2]) {
+			return nil, 0, true // skip "and" in multi-digit sequence
+		}
+		return []string{"1"}, 0, true // "and" → "1"
+	}
+	return nil, 0, false
+}
+
 // NormalizeTranscript normalizes a raw STT transcript for parsing.
 // Handles phonetic corrections and cleanup. Disregard handling is done
 // at a higher level after callsign matching.
@@ -615,10 +802,10 @@ func NormalizeTranscript(transcript string) []string {
 		return nil
 	}
 
-	// Normalize each word
-	result := make([]string, 0, len(words))
+	// Normalize each word through the processor pipeline
+	ctx := &normalizeContext{words: words}
 	skipCount := 0
-	for i := 0; i < len(words); i++ {
+	for i := range len(words) {
 		if skipCount > 0 {
 			skipCount--
 			continue
@@ -629,138 +816,23 @@ func NormalizeTranscript(transcript string) []string {
 			continue
 		}
 
-		// Check for multi-token patterns on raw words BEFORE phonetic matching
-		// This catches patterns like "time riding" → "turn right" before "riding" gets
-		// normalized to "heading" via phonetic match
-		if i+1 < len(words) {
-			rawNext := CleanWord(words[i+1])
-			key := w + " " + rawNext
-			if replacement, ok := multiTokenReplacements[key]; ok {
-				result = append(result, replacement...)
-				skipCount = 1
-				continue
+		ctx.i = i
+		handled := false
+		for _, proc := range wordProcessors {
+			if replacement, skip, ok := proc(w, ctx); ok {
+				ctx.result = append(ctx.result, replacement...)
+				skipCount = skip
+				handled = true
+				break
 			}
 		}
-
-		// Split concatenated callsigns like "alaska8383" → ["alaska", "8383"]
-		// This handles STT transcriptions that omit the space between airline and flight number
-		if parts := splitTextNumber(w); len(parts) > 1 {
-			for _, part := range parts {
-				if part != "" {
-					result = append(result, part)
-				}
-			}
-			continue
+		if !handled {
+			ctx.result = append(ctx.result, w)
 		}
-
-		// Try digit word normalization
-		if digit, ok := digitWords[w]; ok {
-			result = append(result, digit)
-			continue
-		}
-
-		// Try number word normalization (twenty, thirty, etc.)
-		if num, ok := numberWords[w]; ok {
-			result = append(result, num)
-			continue
-		}
-
-		// NOTE: NATO alphabet conversion is NOT done here because words like
-		// "delta" could be airline names (Delta Air Lines). NATO conversion is
-		// deferred to scoreGACallsign() and scoreFlightNumberMatch() where the
-		// context makes it clear we're building a callsign from phonetics.
-
-		// Try command keyword normalization (single word → single word)
-		if norm, ok := commandKeywords[w]; ok {
-			result = append(result, norm)
-			continue
-		}
-
-		// Try phrase expansions (single word → multiple words)
-		// Note: Check this BEFORE phonetic matching so exact table matches take priority
-		if expansion, ok := phraseExpansions[w]; ok {
-			result = append(result, expansion...)
-			continue
-		}
-
-		// Try to split merged NATO phonetic letters (e.g., "echowiski" → "echo whiskey")
-		if natoSplit := trySplitMergedNATO(w); natoSplit != nil {
-			result = append(result, natoSplit...)
-			continue
-		}
-
-		// Try to split merged command words (e.g., "turnwright" → "turn right")
-		// Note: Check BEFORE phonetic matching since long merged words may partially
-		// match a single keyword but should actually be split into multiple words
-		if cmdSplit := trySplitMergedCommand(w); cmdSplit != nil {
-			result = append(result, cmdSplit...)
-			continue
-		}
-
-		// Try phonetic matching for command keywords (e.g., "hitting" → "heading")
-		if phoneticMatch := tryPhoneticCommandMatch(w); phoneticMatch != "" {
-			result = append(result, phoneticMatch)
-			continue
-		}
-
-		// Check for "intercept localizer" pattern: words containing "lok" or "lawk"
-		// with certain prefixes (e.g., "zapulokwizer", "zapulawkwizer")
-		if isLocalizerPattern(w) {
-			result = append(result, "intercept", "localizer")
-			continue
-		}
-
-		// Handle "or" as STT noise in various contexts.
-		if w == "or" && len(result) > 0 && i+1 < len(words) {
-			prev := result[len(result)-1]
-			nextWord := CleanWord(words[i+1])
-
-			// Skip "or" between digits (e.g., "two nine or zero" for "two niner zero")
-			prevIsDigit := IsNumber(prev)
-			_, nextIsDigitWord := digitWords[nextWord]
-			nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
-			if prevIsDigit && nextIsDigit {
-				// Special case: "9 or 1000" means "niner thousand" - convert 1000 to thousand
-				if nextWord == "1000" {
-					words[i+1] = "thousand"
-				}
-				continue // Skip "or" between digits
-			}
-
-			// Skip "or" between "turn" and "left"/"right" (STT transcribes pause as "or")
-			if prev == "turn" && (nextWord == "left" || nextWord == "right" ||
-				PhoneticMatch(nextWord, "left") || PhoneticMatch(nextWord, "right")) {
-				continue // Skip "or" between turn and direction
-			}
-		}
-
-		// Handle "and" between digits: STT mishears "one" as "and"
-		// e.g., "two and zero" means "two one zero" (210)
-		// But "two nine and zero" should be "290" (and is filler, not replacing one)
-		if w == "and" && len(result) > 0 && i+1 < len(words) {
-			prev := result[len(result)-1]
-			nextWord := CleanWord(words[i+1])
-
-			prevIsDigit := IsNumber(prev)
-			_, nextIsDigitWord := digitWords[nextWord]
-			nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
-			if prevIsDigit && nextIsDigit {
-				// Check if we're in a multi-digit sequence (prev-prev is also a digit)
-				// If so, skip "and" (it's filler). Otherwise convert to "1".
-				if len(result) >= 2 && IsNumber(result[len(result)-2]) {
-					continue // Skip "and" in multi-digit sequence like "two nine and zero"
-				}
-				result = append(result, "1") // "and" → "1" in "two and zero"
-				continue
-			}
-		}
-
-		// Keep as-is
-		result = append(result, w)
 	}
 
 	// Post-process: combine tens+units (e.g., "30 2" → "32"), join letter sequences, fix multi-word errors
-	result = combineTensAndUnits(result)
+	result := combineTensAndUnits(ctx.result)
 	result = postProcessNormalized(result)
 
 	return result
@@ -862,6 +934,114 @@ func IsSingleDigit19(s string) bool {
 	return len(s) == 1 && s[0] >= '1' && s[0] <= '9'
 }
 
+// postProcessor tries to handle a token during post-processing.
+// Returns (replacement tokens, extra tokens to skip, handled).
+type postProcessor func(tokens []string, i int) ([]string, int, bool)
+
+// postProcessors are applied in order during post-processing. First match wins.
+var postProcessors = []postProcessor{
+	postProcessMultiToken,
+	postProcessGarbledILS,
+	postProcessTurnGarbled,
+	postProcessRunwayDesig,
+	postProcessDegreesTurn,
+}
+
+// postProcessMultiToken handles table-driven multi-token replacements (longest match first).
+func postProcessMultiToken(tokens []string, i int) ([]string, int, bool) {
+	if matched, replacement, consumed := matchMultiToken(tokens[i:]); matched {
+		return replacement, consumed - 1, true
+	}
+	return nil, 0, false
+}
+
+// postProcessGarbledILS handles garbled ILS letter spelling: "i" "l" + garbled "s".
+// STT sometimes garbles the letter "S" to "fs", "es", "ess", etc.
+// The exact "i l s" case is already handled by postProcessMultiToken above.
+func postProcessGarbledILS(tokens []string, i int) ([]string, int, bool) {
+	if tokens[i] == "i" && i+2 < len(tokens) && tokens[i+1] == "l" {
+		t2 := tokens[i+2]
+		if t2 != "s" && len(t2) >= 2 && len(t2) <= 3 && strings.HasSuffix(t2, "s") {
+			return []string{"ils"}, 2, true
+		}
+	}
+	return nil, 0, false
+}
+
+// postProcessTurnGarbled handles "turn [word] to N" where the word is garbage
+// and "to" is garbled "two". e.g., "turn navigation to 7 0" → "turn heading 270"
+func postProcessTurnGarbled(tokens []string, i int) ([]string, int, bool) {
+	if tokens[i] != "turn" || i+3 >= len(tokens) || tokens[i+2] != "to" {
+		return nil, 0, false
+	}
+	garbageWord := tokens[i+1]
+	if garbageWord == "left" || garbageWord == "right" || garbageWord == "heading" {
+		return nil, 0, false
+	}
+	digitCount := 0
+	for j := i + 3; j < len(tokens) && IsNumber(tokens[j]); j++ {
+		digitCount++
+	}
+	if digitCount < 1 {
+		return nil, 0, false
+	}
+	var digitStr string
+	for j := i + 3; j < i+3+digitCount; j++ {
+		digitStr += tokens[j]
+	}
+	nextNum := ParseNumber(digitStr)
+	if nextNum >= 10 && nextNum <= 99 {
+		combined := 200 + nextNum
+		if combined <= 360 {
+			return []string{"turn", "heading", strconv.Itoa(combined)}, 2 + digitCount, true
+		}
+	}
+	return nil, 0, false
+}
+
+// postProcessRunwayDesig handles runway designators: "13l" → "13" "left", etc.
+// This handles cases where Whisper transcribes "one three left" as "13L".
+func postProcessRunwayDesig(tokens []string, i int) ([]string, int, bool) {
+	tok := tokens[i]
+	if len(tok) < 2 {
+		return nil, 0, false
+	}
+	lastChar := tok[len(tok)-1]
+	numPart := tok[:len(tok)-1]
+	if !IsNumber(numPart) {
+		return nil, 0, false
+	}
+	switch lastChar {
+	case 'l':
+		return []string{numPart, "left"}, 0, true
+	case 'r':
+		return []string{numPart, "right"}, 0, true
+	case 'c':
+		return []string{numPart, "center"}, 0, true
+	}
+	return nil, 0, false
+}
+
+// postProcessDegreesTurn handles "<number> degrees [to the] left/right" without "turn".
+// e.g., "20 degrees to the right" → "turn" "20" "degrees to the right".
+// Returns "turn" + the current token (number); does NOT consume extra tokens.
+func postProcessDegreesTurn(tokens []string, i int) ([]string, int, bool) {
+	if !IsNumber(tokens[i]) {
+		return nil, 0, false
+	}
+	num := ParseNumber(tokens[i])
+	if num < 1 || num > 45 || i+1 >= len(tokens) || tokens[i+1] != "degrees" {
+		return nil, 0, false
+	}
+	// Look ahead for "left" or "right" within the next few tokens
+	for j := i + 2; j < len(tokens) && j < i+6; j++ {
+		if tokens[j] == "left" || tokens[j] == "right" {
+			return []string{"turn", tokens[i]}, 0, true
+		}
+	}
+	return nil, 0, false
+}
+
 // postProcessNormalized handles multi-word STT errors and letter joining.
 func postProcessNormalized(tokens []string) []string {
 	result := make([]string, 0, len(tokens))
@@ -873,94 +1053,18 @@ func postProcessNormalized(tokens []string) []string {
 			continue
 		}
 
-		// Try table-driven multi-token replacements (longest match first)
-		if matched, replacement, consumed := matchMultiToken(tokens[i:]); matched {
-			result = append(result, replacement...)
-			skip = consumed - 1 // -1 because loop will advance by 1
-			continue
-		}
-
-		// Handle garbled ILS letter spelling: "i" "l" + garbled "s".
-		// STT sometimes garbles the letter "S" to "fs", "es", "ess", etc.
-		// The exact "i l s" case is already handled by matchMultiToken above.
-		if tokens[i] == "i" && i+2 < len(tokens) && tokens[i+1] == "l" {
-			t2 := tokens[i+2]
-			if t2 != "s" && len(t2) >= 2 && len(t2) <= 3 && strings.HasSuffix(t2, "s") {
-				result = append(result, "ils")
-				skip = 2
-				continue
+		handled := false
+		for _, proc := range postProcessors {
+			if replacement, extraSkip, ok := proc(tokens, i); ok {
+				result = append(result, replacement...)
+				skip = extraSkip
+				handled = true
+				break
 			}
 		}
-
-		// Handle "turn [word] to N" where the word is garbage and "to" is garbled "two".
-		// e.g., "turn navigation to 7 0" → "turn heading 270"
-		if tokens[i] == "turn" && i+3 < len(tokens) && tokens[i+2] == "to" {
-			garbageWord := tokens[i+1]
-			if garbageWord != "left" && garbageWord != "right" && garbageWord != "heading" {
-				digitCount := 0
-				for j := i + 3; j < len(tokens) && IsNumber(tokens[j]); j++ {
-					digitCount++
-				}
-				if digitCount >= 1 {
-					var digitStr string
-					for j := i + 3; j < i+3+digitCount; j++ {
-						digitStr += tokens[j]
-					}
-					nextNum := ParseNumber(digitStr)
-					if nextNum >= 10 && nextNum <= 99 {
-						combined := 200 + nextNum
-						if combined <= 360 {
-							result = append(result, "turn", "heading", strconv.Itoa(combined))
-							skip = 2 + digitCount
-							continue
-						}
-					}
-				}
-			}
+		if !handled {
+			result = append(result, tokens[i])
 		}
-
-		// Handle runway designators: "13l" → "13" "left", "22r" → "22" "right", "9c" → "9" "center"
-		// This handles cases where Whisper transcribes "one three left" as "13L"
-		if len(tokens[i]) >= 2 {
-			lastChar := tokens[i][len(tokens[i])-1]
-			numPart := tokens[i][:len(tokens[i])-1]
-			if IsNumber(numPart) && (lastChar == 'l' || lastChar == 'r' || lastChar == 'c') {
-				result = append(result, numPart)
-				switch lastChar {
-				case 'l':
-					result = append(result, "left")
-				case 'r':
-					result = append(result, "right")
-				case 'c':
-					result = append(result, "center")
-				}
-				continue
-			}
-		}
-
-		// Handle "<number> degrees [to the] left/right" pattern without "turn" keyword.
-		// e.g., "20 degrees to the right" → "turn 20 degrees to the right"
-		// Only applies when number is a valid degree value (1-45) and followed by "degrees".
-		if IsNumber(tokens[i]) {
-			num := ParseNumber(tokens[i])
-			if num >= 1 && num <= 45 && i+1 < len(tokens) && tokens[i+1] == "degrees" {
-				// Look ahead for "left" or "right" within the next few tokens
-				hasDirection := false
-				for j := i + 2; j < len(tokens) && j < i+6; j++ {
-					if tokens[j] == "left" || tokens[j] == "right" {
-						hasDirection = true
-						break
-					}
-				}
-				if hasDirection {
-					result = append(result, "turn")
-					// Continue to add the number below
-				}
-			}
-		}
-
-		// Default: keep the token as-is
-		result = append(result, tokens[i])
 	}
 
 	return result

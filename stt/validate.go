@@ -72,143 +72,114 @@ func ValidateCommands(commands []string, ac Aircraft) ValidationResult {
 	}
 }
 
+// validationRule maps a command pattern to a validation function. First match wins.
+type validationRule struct {
+	match    func(cmd string) bool
+	validate func(cmd string, ac Aircraft) string
+}
+
+// validationRules defines command validation dispatch, tried in order.
+var validationRules = []validationRule{
+	// D + digits → descend altitude
+	{match: func(cmd string) bool { return cmd[0] == 'D' && len(cmd) > 1 && IsNumber(cmd[1:]) },
+		validate: func(cmd string, ac Aircraft) string { return validateDescend(cmd[1:], ac) }},
+	// D + letters → direct to fix, no validation
+	{match: func(cmd string) bool { return cmd[0] == 'D' },
+		validate: func(string, Aircraft) string { return "" }},
+	// CVS → climb via SID
+	{match: func(cmd string) bool { return strings.HasPrefix(cmd, "CVS") },
+		validate: func(_ string, ac Aircraft) string { return validateClimbViaSID(ac) }},
+	// CAC → cancel approach clearance
+	{match: func(cmd string) bool { return strings.HasPrefix(cmd, "CAC") },
+		validate: func(_ string, ac Aircraft) string { return validateCancelApproach(ac) }},
+	// C + / → cross fix, no validation
+	{match: func(cmd string) bool { return cmd[0] == 'C' && len(cmd) > 1 && strings.Contains(cmd[1:], "/") },
+		validate: func(string, Aircraft) string { return "" }},
+	// C + digits → climb altitude
+	{match: func(cmd string) bool { return cmd[0] == 'C' && len(cmd) > 1 && IsNumber(cmd[1:]) },
+		validate: func(cmd string, ac Aircraft) string { return validateClimb(cmd[1:], ac) }},
+	// C + letters → cleared approach
+	{match: func(cmd string) bool { return cmd[0] == 'C' && len(cmd) > 1 },
+		validate: func(cmd string, ac Aircraft) string { return validateClearedApproach(cmd[1:], ac) }},
+	// A alone → VFR altitude discretion
+	{match: func(cmd string) bool { return cmd == "A" },
+		validate: func(_ string, ac Aircraft) string { return validateVFRAltitude(ac) }},
+	// A + anything → maintain altitude or complex, no validation
+	{match: func(cmd string) bool { return cmd[0] == 'A' },
+		validate: func(string, Aircraft) string { return "" }},
+	// EC → expedite climb
+	{match: func(cmd string) bool { return cmd == "EC" },
+		validate: func(_ string, ac Aircraft) string {
+			if ac.State == "arrival" || ac.State == "cleared approach" {
+				return "expedite climb unlikely for arrival/approach"
+			}
+			return ""
+		}},
+	// ED → expedite descent
+	{match: func(cmd string) bool { return cmd == "ED" },
+		validate: func(_ string, ac Aircraft) string {
+			if ac.State == "departure" {
+				return "expedite descent unlikely for departure"
+			}
+			return ""
+		}},
+	// E + letters → expect approach
+	{match: func(cmd string) bool { return cmd[0] == 'E' && len(cmd) > 1 },
+		validate: func(cmd string, ac Aircraft) string { return validateExpectApproach(cmd[1:], ac) }},
+	// TO → contact tower
+	{match: func(cmd string) bool { return cmd == "TO" },
+		validate: func(_ string, ac Aircraft) string { return validateContactTower(ac) }},
+	// T → turn/then commands, no validation
+	{match: func(cmd string) bool { return cmd[0] == 'T' },
+		validate: func(string, Aircraft) string { return "" }},
+	// L, R, H → heading commands, no validation
+	{match: func(cmd string) bool { return cmd[0] == 'L' || cmd[0] == 'R' || cmd[0] == 'H' },
+		validate: func(string, Aircraft) string { return "" }},
+	// S-prefix commands
+	{match: func(cmd string) bool { return cmd[0] == 'S' },
+		validate: validateSCommand},
+	// F → frequency change, no validation
+	{match: func(cmd string) bool { return cmd[0] == 'F' },
+		validate: func(string, Aircraft) string { return "" }},
+	// GA → go ahead
+	{match: func(cmd string) bool { return cmd == "GA" },
+		validate: func(_ string, ac Aircraft) string { return validateGoAhead(ac) }},
+	// I → intercept localizer / ident, no validation
+	{match: func(cmd string) bool { return cmd[0] == 'I' },
+		validate: func(string, Aircraft) string { return "" }},
+}
+
 // validateCommand validates a single command against aircraft state.
 // Returns empty string if valid, or an error message if invalid.
 func validateCommand(cmd string, ac Aircraft) string {
 	if len(cmd) == 0 {
 		return "empty command"
 	}
-
-	switch cmd[0] {
-	case 'D':
-		// D could be Descend (D{ALT}) or Direct (D{FIX})
-		if len(cmd) > 1 {
-			rest := cmd[1:]
-			if IsNumber(rest) {
-				// Descend command - validate altitude
-				return validateDescend(rest, ac)
-			}
-			// Direct to fix - no state validation needed
+	for _, rule := range validationRules {
+		if rule.match(cmd) {
+			return rule.validate(cmd, ac)
 		}
-
-	case 'C':
-		// C could be Climb (C{ALT}), Cleared approach (C{APPR}), or Cross fix
-		if len(cmd) > 1 {
-			rest := cmd[1:]
-
-			// Check for special cases first
-			if strings.HasPrefix(rest, "VS") {
-				// CVS - climb via SID
-				return validateClimbViaSID(ac)
-			}
-			if strings.HasPrefix(rest, "AC") {
-				// CAC - cancel approach clearance
-				return validateCancelApproach(ac)
-			}
-
-			// Check if it contains a slash (cross fix command)
-			if strings.Contains(rest, "/") {
-				// Cross fix command - no special validation
-				return ""
-			}
-
-			// Check if all digits (altitude) or approach code
-			if IsNumber(rest) {
-				return validateClimb(rest, ac)
-			}
-
-			// Otherwise it's a cleared approach
-			return validateClearedApproach(rest, ac)
-		}
-
-	case 'A':
-		// A alone = VFR altitude discretion
-		// A{ALT} = maintain altitude
-		// A{FIX}/C{APPR} = at fix cleared approach
-		// A{FIX}/I = at fix intercept localizer
-		if len(cmd) == 1 {
-			return validateVFRAltitude(ac)
-		}
-		// A{ALT} or complex - no special validation
-		return ""
-
-	case 'E':
-		// E could be: EC (expedite climb), ED (expedite descent), or E{APPR} (expect approach)
-		if cmd == "EC" {
-			// Expedite climb - valid for departures, overflights
-			if ac.State == "arrival" || ac.State == "cleared approach" {
-				return "expedite climb unlikely for arrival/approach"
-			}
-			return ""
-		}
-		if cmd == "ED" {
-			// Expedite descent - valid for arrivals, overflights
-			if ac.State == "departure" {
-				return "expedite descent unlikely for departure"
-			}
-			return ""
-		}
-		// Expect approach (E{APPR})
-		if len(cmd) > 1 {
-			return validateExpectApproach(cmd[1:], ac)
-		}
-
-	case 'T':
-		// T could be turn degrees (T{N}L/R), contact tower (TO), or then commands
-		if cmd == "TO" {
-			return validateContactTower(ac)
-		}
-		// Turn degrees, TC, TD, TS - no special validation
-		return ""
-
-	case 'L', 'R', 'H':
-		// Heading commands - generally valid for any state
-		return ""
-
-	case 'S':
-		// Speed commands
-		if cmd == "SA" || cmd == "SH" || cmd == "SS" {
-			// Say commands - always valid
-			return ""
-		}
-		if strings.HasPrefix(cmd, "SQ") {
-			// Squawk commands - always valid
-			return ""
-		}
-		if strings.HasPrefix(cmd, "SAYAGAIN") {
-			// SAYAGAIN/* commands - mostly valid, but some need state validation.
-			// SAYAGAIN/APPROACH should not be issued for departures since they can't expect approaches.
-			if cmd == "SAYAGAIN/APPROACH" && ac.State == "departure" {
-				return "departure aircraft cannot expect approach"
-			}
-			return ""
-		}
-		if cmd == "S" || cmd == "SS" || cmd == "SI" || cmd == "SM" || cmd == "SMIN" || cmd == "SMAX" || cmd == "SPRES" {
-			// Cancel speed restriction, say speed/indicated/mach, slowest practical, max speed, present speed - always valid
-			return ""
-		}
-		// S{SPD} - validate against aircraft performance
-		if len(cmd) > 1 {
-			return validateSpeed(cmd[1:], ac)
-		}
-		return ""
-
-	case 'F':
-		// FC - frequency change: always allow if clearly heard.
-		// The sim handles invalid situations (e.g., "unable" readback).
-		return ""
-
-	case 'G':
-		// GA - go ahead
-		if cmd == "GA" {
-			return validateGoAhead(ac)
-		}
-
-	case 'I':
-		// I - intercept localizer, ID - ident
-		return ""
 	}
+	return ""
+}
 
+// validateSCommand handles the S-prefix sub-cases.
+func validateSCommand(cmd string, ac Aircraft) string {
+	switch {
+	case cmd == "SA" || cmd == "SH" || cmd == "SS":
+		return "" // Say commands
+	case strings.HasPrefix(cmd, "SQ"):
+		return "" // Squawk commands
+	case strings.HasPrefix(cmd, "SAYAGAIN"):
+		if cmd == "SAYAGAIN/APPROACH" && ac.State == "departure" {
+			return "departure aircraft cannot expect approach"
+		}
+		return ""
+	case cmd == "S" || cmd == "SI" || cmd == "SM" || cmd == "SMIN" || cmd == "SMAX" || cmd == "SPRES":
+		return "" // Cancel speed / say speed variants
+	case len(cmd) > 1:
+		return validateSpeed(cmd[1:], ac)
+	}
 	return ""
 }
 
