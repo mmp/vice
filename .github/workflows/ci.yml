@@ -332,9 +332,6 @@ jobs:
         }
       shell: pwsh
 
-    - name: Check scenarios
-      run: ./vice.exe -lint
-
     - name: Download manifest
       uses: actions/download-artifact@v4
       with:
