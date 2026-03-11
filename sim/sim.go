@@ -1200,12 +1200,21 @@ func (s *Sim) step(elapsed time.Duration) bool {
 		s.lg.Warn("unexpected hitch in update rate", slog.Duration("elapsed", elapsed),
 			slog.Int("steps", ns), slog.Duration("slop", s.updateTimeSlop))
 	}
+
+	// Cap steps to prevent runaway when sim rate is high and updates are slow.
+	const maxSteps = 10
+	ns = min(ns, maxSteps)
+
 	for range ns {
 		s.State.SimTime = s.State.SimTime.Add(time.Second)
 		s.updateState()
 	}
 
-	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
+	// If we were capped, discard excess time to prevent accumulation.
+	s.updateTimeSlop = elapsed - time.Duration(ns)*time.Second
+	if s.updateTimeSlop > time.Second {
+		s.updateTimeSlop = 0
+	}
 
 	if ns > 0 {
 		// Don't bother with this if we didn't change any aircraft state
