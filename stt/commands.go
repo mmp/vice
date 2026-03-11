@@ -335,14 +335,20 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 					bestLength = length
 				}
 			}
-			// Try phonetic matching against the fix identifier itself.
+			// Try matching against the fix identifier itself.
 			// STT may transcribe the identifier pronunciation rather than the
-			// spoken form (e.g., "bacal" for fix BAKEL, spoken as "bake").
+			// spoken form (e.g., "betel" for fix BAKEL, spoken as "bake").
 			fixIDLower := strings.ToLower(fixID)
 			if fixIDLower != strings.ToLower(spokenName) {
 				if PhoneticMatch(phrase, fixIDLower) && (bestScore < 0.78 || (bestScore == 0.78 && fixID < bestFix)) {
 					bestFix = fixID
 					bestScore = 0.78
+					bestLength = length
+				}
+				idScore := JaroWinkler(phrase, fixIDLower)
+				if idScore >= 0.75 && (idScore > bestScore || (idScore == bestScore && fixID < bestFix)) {
+					bestFix = fixID
+					bestScore = idScore
 					bestLength = length
 				}
 			}

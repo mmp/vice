@@ -538,6 +538,11 @@ var multiTokenReplacements = map[string][]string{
 	"r nav":       {"rnav"},
 	"fly level":   {"flight", "level"},
 	"time riding": {"turn", "right"},
+	"seven e":     {"70"},
+	"eight e":     {"80"},
+	"nine e":      {"90"},
+	"six e":       {"60"},
+	"five e":      {"50"},
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
@@ -974,7 +979,7 @@ var commandBoundaryKeywords = map[string]bool{
 	// Altitude-related
 	"maintain": true, "descend": true, "climb": true, "altitude": true,
 	// Heading-related
-	"heading": true, "turn": true,
+	"heading": true, "turn": true, "left": true, "right": true,
 	// Navigation
 	"direct": true, "proceed": true,
 	// Approach

@@ -703,9 +703,13 @@ func applyDisregard(tokens []Token) []Token {
 
 			// Just numbers after correction (e.g., frequency) - only discard preceding numbers
 			// e.g., "contact departure 12, correction 126.8"
+			// Also skip unit words (miles, knots, degrees) that follow the number
+			// e.g., "until 8 miles correction 7 miles"
 			numStart := i
 			for j := i - 1; j >= 0; j-- {
-				if tokens[j].Type == TokenNumber || strings.ToLower(tokens[j].Text) == "point" {
+				w := strings.ToLower(tokens[j].Text)
+				if tokens[j].Type == TokenNumber || w == "point" ||
+					w == "miles" || w == "knots" || w == "degrees" {
 					numStart = j
 				} else {
 					break

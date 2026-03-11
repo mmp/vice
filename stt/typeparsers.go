@@ -205,6 +205,17 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 			}
 		}
 
+		// Handle leading-zero 4-digit values where the trailing digit is noise.
+		// ATC headings use leading zeros for headings < 100 ("zero one zero").
+		// A trailing digit that makes the heading not a multiple of 5 is
+		// almost certainly noise (headings are always multiples of 5 or 10).
+		if t.Type == TokenNumber && len(t.Text) == 4 && t.Text[0] == '0' && t.Value%5 != 0 {
+			hdg := ParseNumber(t.Text[:3])
+			if hdg >= 1 {
+				return hdg, i - pos + 1, ""
+			}
+		}
+
 		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
 			hdg := t.Value
 
