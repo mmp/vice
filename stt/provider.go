@@ -305,6 +305,19 @@ func (p *Transcriber) resolveCallsign(
 		callsignMatch.Callsign, callsignMatch.SpokenKey, callsignMatch.Confidence, callsignMatch.Consumed)
 
 	if callsignMatch.Callsign == "" {
+		// Check for "negative, {commands}" without callsign.
+		// Skip validation since we don't know the target aircraft context.
+		if remaining, found := detectNegativePrefix(tokens); found {
+			commands, _ := ParseCommands(remaining, Aircraft{})
+			if len(commands) > 0 {
+				output := "ROLLBACK " + strings.Join(commands, " ")
+				elapsed := time.Since(start)
+				logLocalStt("=== DecodeTranscript END: %q (negative without callsign, time=%s) ===", output, elapsed)
+				p.logInfo("local STT: %q -> %q (negative without callsign, time=%s)", transcript, output, elapsed)
+				earlyResult = output
+				return
+			}
+		}
 		logLocalStt("no callsign match for %q, ignoring", transcript)
 		return // callsign is "", earlyResult is ""
 	}
@@ -652,6 +665,20 @@ func detectNegativeThatWasFor(tokens []Token) ([]Token, bool) {
 		}
 	}
 	return tokens, false
+}
+
+// detectNegativePrefix checks if tokens start with "negative" or "no" (without
+// "that was for" / "was for" following). Returns the remaining tokens after the
+// negative word. This is used for "negative, {commands}" without callsign.
+func detectNegativePrefix(tokens []Token) ([]Token, bool) {
+	if len(tokens) < 2 {
+		return nil, false
+	}
+	w := strings.ToLower(tokens[0].Text)
+	if w != "negative" && w != "no" {
+		return nil, false
+	}
+	return tokens[1:], true
 }
 
 // applyDisregard handles "disregard" or "correction" in tokens.

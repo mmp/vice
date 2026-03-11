@@ -3282,3 +3282,68 @@ func TestNegativeThatWasForFullParse(t *testing.T) {
 		})
 	}
 }
+
+func TestNegativeWithoutCallsign(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "negative heading",
+			transcript: "negative heading 320",
+			aircraft: map[string]Aircraft{
+				"United 123": {Callsign: "UAL123", State: "arrival"},
+			},
+			expected: "ROLLBACK H320",
+		},
+		{
+			name:       "negative descend and maintain",
+			transcript: "negative descend and maintain 4000",
+			aircraft: map[string]Aircraft{
+				"Delta 456": {Callsign: "DAL456", Altitude: 10000, State: "arrival"},
+			},
+			expected: "ROLLBACK D40",
+		},
+		{
+			name:       "negative multiple commands",
+			transcript: "negative fly heading 320 descend and maintain 4000",
+			aircraft: map[string]Aircraft{
+				"United 123": {Callsign: "UAL123", Altitude: 10000, State: "arrival"},
+			},
+			expected: "ROLLBACK H320 D40",
+		},
+		{
+			name:       "bare negative not actionable",
+			transcript: "negative",
+			aircraft: map[string]Aircraft{
+				"United 123": {Callsign: "UAL123", State: "arrival"},
+			},
+			expected: "",
+		},
+		{
+			name:       "negative roger not actionable",
+			transcript: "negative roger",
+			aircraft: map[string]Aircraft{
+				"United 123": {Callsign: "UAL123", State: "arrival"},
+			},
+			expected: "",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
