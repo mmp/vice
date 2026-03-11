@@ -11,6 +11,7 @@ import (
 	"image/png"
 	gomath "math"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -102,13 +103,23 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
+// fixedFontSize returns a font size for the fixed-width font that is
+// slightly larger than the given base size, by picking the size 2 slots
+// ahead in the available sizes for the font.
+func fixedFontSize(baseSize int) int {
+	sizes := renderer.AvailableFontSizes(renderer.RobotoMono)
+	idx := slices.IndexFunc(sizes, func(s int) bool { return s >= baseSize })
+	idx = min(idx+2, len(sizes)-1)
+	return sizes[idx]
+}
+
 func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.EventStream, lg *log.Logger) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
 
 	ui.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: config.UIFontSize})
-	ui.fixedFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: config.UIFontSize + 2 /* better match regular size */})
+	ui.fixedFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: fixedFontSize(config.UIFontSize)})
 	ui.aboutFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 18})
 	ui.aboutFontSmall = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 14})
 	ui.eventsSubscription = es.Subscribe()
@@ -790,6 +801,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 			if imgui.SelectableBoolV(strconv.Itoa(size), size == config.UIFontSize, 0, imgui.Vec2{}) {
 				config.UIFontSize = size
 				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: config.UIFontSize})
+				ui.fixedFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: fixedFontSize(config.UIFontSize)})
 			}
 		}
 		imgui.EndCombo()
