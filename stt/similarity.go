@@ -469,6 +469,9 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"redo":         {"right"},             // "redo speed" should not match "turn right"
 	"san":          {"say"},               // "san juan" should not match "say"
 	"intermittent": {"ident"},             // noise word should not match "ident" command
+	"claimed":      {"climbed", "climb"},  // STT noise vs altitude command
+	"maintained":   {"maintain"},          // STT echo after "maintain" should not re-match
+	"hitting":      {"heading"},           // garbled word should not match heading command
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold

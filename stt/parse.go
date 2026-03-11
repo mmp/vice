@@ -1,7 +1,6 @@
 package stt
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 )
@@ -20,24 +19,16 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 	excludeCategories := make(map[string]bool) // Track categories already matched
 
 	for pos < len(tokens) {
-		// Check for "then" keyword
-		if tokens[pos].Text == "then" {
-			logLocalStt("  found 'then' keyword at position %d", pos)
+		// Check for "then" keyword.
+		// Also treat "the" as "then" when followed by a command keyword and we
+		// already have at least one command — STT often garbles "then" as "the".
+		// Must check BEFORE filler word skip since "the" is a filler word.
+		if tokens[pos].Text == "then" || (len(commands) > 0 && tokens[pos].Text == "the" && pos+1 < len(tokens) &&
+			(tokens[pos+1].Text == "descend" || tokens[pos+1].Text == "climb" || tokens[pos+1].Text == "maintain")) {
+			logLocalStt("  found 'then' (or 'the' as then) at position %d", pos)
 			isThen = true
 			pos++
 			continue
-		}
-
-		// Check for "the" followed by descent/climb keywords - STT often garbles "then" as "the"
-		// Must check BEFORE filler word skip since "the" is a filler word.
-		if len(commands) > 0 && tokens[pos].Text == "the" && pos+1 < len(tokens) {
-			nextText := strings.ToLower(tokens[pos+1].Text)
-			if nextText == "descend" || nextText == "climb" || nextText == "maintain" {
-				logLocalStt("  found 'the' + descent/climb keyword at position %d, treating as 'then'", pos)
-				isThen = true
-				pos++
-				continue
-			}
 		}
 
 		// Skip filler words
@@ -47,68 +38,12 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 			continue
 		}
 
-		// Skip "radar contact" phrase (informational, not a command)
-		if strings.ToLower(tokens[pos].Text) == "radar" && pos+1 < len(tokens) &&
-			strings.ToLower(tokens[pos+1].Text) == "contact" {
-			logLocalStt("  skipping 'radar contact' phrase at position %d", pos)
+		// Check for "at {altitude}" pattern - implicit "then" trigger
+		if tokens[pos].Text == "at" && pos+1 < len(tokens) && looksLikeAltitude(tokens[pos+1]) {
+			logLocalStt("  found 'at {altitude}' pattern at position %d, triggering then", pos)
+			isThen = true
 			pos += 2
 			continue
-		}
-
-		// Check for "at {altitude}" pattern - implicit "then" trigger
-		if tokens[pos].Text == "at" && pos+1 < len(tokens) {
-			nextToken := tokens[pos+1]
-			if nextToken.Type == TokenAltitude ||
-				(nextToken.Type == TokenNumber && nextToken.Value >= 100 && nextToken.Value <= 600) ||
-				(nextToken.Type == TokenNumber && nextToken.Value >= 1000 && nextToken.Value <= 60000 && nextToken.Value%100 == 0) {
-				logLocalStt("  found 'at {altitude}' pattern at position %d, triggering then", pos)
-				isThen = true
-				pos += 2
-				continue
-			}
-		}
-
-		// Check for "{altitude} until established" pattern
-		if isAltitudeToken(tokens[pos]) && pos+2 < len(tokens) {
-			if strings.ToLower(tokens[pos+1].Text) == "until" &&
-				FuzzyMatch(tokens[pos+2].Text, "established", 0.8) {
-				alt := extractAltitudeValue(tokens[pos])
-				if alt > 0 {
-					cmd := fmt.Sprintf("A%d", alt)
-					logLocalStt("  found '{altitude} until established' pattern: %s", cmd)
-					commands = append(commands, cmd)
-					totalConf += 1.0
-					pos += 3
-					// Skip "on the localizer"
-					for pos < len(tokens) {
-						text := strings.ToLower(tokens[pos].Text)
-						if text == "on" || text == "the" || text == "localizer" ||
-							text == "glide" || text == "slope" || text == "glideslope" {
-							pos++
-						} else {
-							break
-						}
-					}
-					continue
-				}
-			}
-		}
-
-		// Skip "expect further clearance" phrase
-		if tokens[pos].Text == "expect" && pos+2 < len(tokens) {
-			if strings.ToLower(tokens[pos+1].Text) == "further" &&
-				strings.ToLower(tokens[pos+2].Text) == "clearance" {
-				logLocalStt("  skipping 'expect further clearance' at position %d", pos)
-				pos += 3
-				for pos < len(tokens) {
-					if tokens[pos].Type == TokenNumber || IsDigit(tokens[pos].Text) {
-						pos++
-					} else {
-						break
-					}
-				}
-				continue
-			}
 		}
 
 		// Try to match a command

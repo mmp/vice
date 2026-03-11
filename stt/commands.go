@@ -101,142 +101,21 @@ func getCommandCategory(cmd string) string {
 	return ""
 }
 
-// extractAltitude extracts an altitude value from tokens.
-func extractAltitude(tokens []Token) (int, int) {
-	if len(tokens) == 0 {
-		return 0, 0
+// looksLikeAltitude returns true if a token looks like an altitude value.
+// Used for the "at {altitude}" implicit-then pattern in ParseCommands.
+func looksLikeAltitude(t Token) bool {
+	if t.Type == TokenAltitude {
+		return true
 	}
-
-	// Check for altitude token
-	for i, t := range tokens {
-		if i > 3 { // Don't look too far
-			break
+	if t.Type == TokenNumber {
+		if t.Value >= 100 && t.Value <= 600 {
+			return true
 		}
-
-		// Skip numbers followed by "mile" or "miles" - those are distances, not altitudes
-		if i+1 < len(tokens) {
-			nextText := strings.ToLower(tokens[i+1].Text)
-			if nextText == "mile" || nextText == "miles" {
-				continue
-			}
-		}
-
-		if t.Type == TokenAltitude {
-			return t.Value, i + 1
-		}
-		if t.Type == TokenNumber {
-			// Heuristic: if it looks like altitude encoding (2-3 digits, reasonable value).
-			// Exclude the speed range (100-400) since those are ambiguous and more likely
-			// to be speeds. Flight levels in that range are handled by the allowFlightLevel
-			// variant called from climb/descend templates.
-			if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
-				return t.Value, i + 1
-			}
-			// Large number might be raw feet
-			if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
-				return t.Value / 100, i + 1
-			}
-			// Handle 3-digit values that are likely thousands with decimal artifacts
-			// e.g., "9.00" → 900 means 9000 feet, "5.00" → 500 means 5000 feet
-			// These are outside the ambiguous speed range (100-400)
-			if t.Value >= 500 && t.Value <= 900 && t.Value%100 == 0 {
-				encoded := t.Value / 10
-				logLocalStt("  extractAltitude: interpreted %d as %d000 ft (encoded %d)", t.Value, t.Value/100, encoded)
-				return encoded, i + 1
-			}
-			// Single digit 1-9 in altitude context means thousands
-			// e.g., "descend and maintain niner" -> 9 means 9000 feet = 90 encoded
-			if t.Value >= 1 && t.Value <= 9 {
-				logLocalStt("  extractAltitude: single digit %d interpreted as %d000 ft (encoded %d)",
-					t.Value, t.Value, t.Value*10)
-				return t.Value * 10, i + 1
-			}
+		if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
+			return true
 		}
 	}
-
-	return 0, 0
-}
-
-// extractHeading extracts a heading value (1-360) from tokens.
-// Only called after command context has determined a heading is expected.
-func extractHeading(tokens []Token) (int, int) {
-	if len(tokens) == 0 {
-		return 0, 0
-	}
-
-	for i, t := range tokens {
-		if i > 3 {
-			break
-		}
-
-		// Skip numbers that follow "speed" keyword - those are speed values, not headings.
-		// This prevents "left approach speed 180" from matching as heading 180.
-		if i > 0 && strings.ToLower(tokens[i-1].Text) == "speed" {
-			continue
-		}
-
-		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
-			hdg := t.Value
-
-			// Headings are always spoken as 3 digits and almost always multiples of 10.
-			// Use Token.Text to determine if user said leading zero:
-			// - "020" (Text starts with 0) = unambiguous heading 020
-			// - "36" (2 digits, doesn't end in 0) = trailing zero dropped, heading 360
-			// - "10" (2 digits, ends in 0) = ambiguous, could be 010 or 100, be conservative
-			text := t.Text
-			hasLeadingZero := len(text) > 0 && text[0] == '0'
-
-			if hasLeadingZero {
-				// User said "zero two zero" - unambiguous, use value as-is
-				// For single digit after leading zero (e.g., "08"), multiply by 10 for heading 080
-				if hdg < 10 {
-					hdg *= 10
-				}
-				logLocalStt("  extractHeading: %d from %q (has leading zero, unambiguous)", hdg, text)
-			} else if len(text) == 2 && hdg >= 10 && hdg <= 36 && hdg%10 != 0 {
-				// 2-digit number not ending in 0 (like 36, 27, 14): trailing zero was likely dropped
-				// Headings are almost always multiples of 10, so "two seven" is much more likely
-				// to be 270 than 027. If they meant 027, they would say "zero two seven".
-				expanded := hdg * 10
-				logLocalStt("  extractHeading: expanded %d -> %d (2-digit %q, trailing zero dropped)", hdg, expanded, text)
-				hdg = expanded
-			} else if hdg < 10 {
-				// Single digit without leading zero context - assume "zero X" = 0X0
-				hdg *= 10
-			}
-			// For 2-digit numbers ending in 0 (10, 20, 30): ambiguous, use as-is (conservative)
-			return hdg, i + 1
-		}
-	}
-
-	return 0, 0
-}
-
-// extractSpeed extracts a speed value from tokens.
-// Only called after command context has determined a speed is expected.
-func extractSpeed(tokens []Token) (int, int) {
-	if len(tokens) == 0 {
-		return 0, 0
-	}
-
-	for i, t := range tokens {
-		if i > 3 {
-			break
-		}
-		if t.Type == TokenNumber {
-			// Normal speed range (100-400 knots)
-			// Round down to nearest 10 - ATC speeds are always multiples of 10.
-			if t.Value >= 100 && t.Value <= 400 {
-				rounded := (t.Value / 10) * 10
-				if rounded != t.Value {
-					logLocalStt("  extractSpeed: rounded %d -> %d (to nearest 10)", t.Value, rounded)
-				}
-				return rounded, i + 1
-			}
-		}
-	}
-
-	return 0, 0
+	return false
 }
 
 // extractFix extracts a fix name from tokens by matching against known fixes.
@@ -2244,50 +2123,6 @@ func skipExpectFurtherClearance(tokens []Token, start int) int {
 	}
 
 	return consumed
-}
-
-// isAltitudeToken returns true if the token represents an altitude value.
-func isAltitudeToken(t Token) bool {
-	if t.Type == TokenAltitude {
-		return true
-	}
-	if t.Type == TokenNumber {
-		// Encoded altitude (10-600 means 1000-60000 ft)
-		// But exclude speed range (100-400) to avoid ambiguity
-		if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
-			return true
-		}
-		// Raw feet value
-		if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
-			return true
-		}
-	}
-	return false
-}
-
-// extractAltitudeValue extracts the encoded altitude from a token.
-// Returns the altitude in hundreds of feet (e.g., 40 for 4000 ft).
-func extractAltitudeValue(t Token) int {
-	if t.Type == TokenAltitude {
-		return t.Value
-	}
-	if t.Type == TokenNumber {
-		// Already encoded (10-600), excluding speed range (100-400)
-		if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
-			return t.Value
-		}
-		// Raw feet - convert to encoded
-		if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
-			return t.Value / 100
-		}
-		// Handle 3-digit values that are likely thousands with decimal artifacts
-		// e.g., "9.00" → 900 means 9000 feet, "5.00" → 500 means 5000 feet
-		// These are outside the ambiguous speed range (100-400)
-		if t.Value >= 500 && t.Value <= 900 && t.Value%100 == 0 {
-			return t.Value / 10
-		}
-	}
-	return 0
 }
 
 // speedUntilResult represents the result of extracting a speed "until" specification.

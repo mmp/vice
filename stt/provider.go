@@ -212,16 +212,6 @@ func (p *Transcriber) decodeInternal(
 		logLocalStt("  approach: %q -> %q", spokenName, apprID)
 	}
 
-	// Check if "disregard" is the only command (meaning "ignore this transmission")
-	// e.g., "Blue Streak 4193, disregard." should return empty, not AGAIN
-	if isDisregardOnly(commandTokens) {
-		logLocalStt("detected disregard-only command, returning empty")
-		elapsed := time.Since(start)
-		logLocalStt(`=== DecodeTranscript END: "" (disregard, time=%s) ===`, elapsed)
-		p.logInfo(`local STT: %q -> "" (disregard, time=%s)`, transcript, elapsed)
-		return "", nil
-	}
-
 	// Handle "disregard" or "correction" in remaining tokens
 	// This discards previous command attempts but preserves callsign
 	commandTokens = applyDisregard(commandTokens)
@@ -230,25 +220,17 @@ func (p *Transcriber) decodeInternal(
 		logLocalStt("  token[%d]: Text=%q Type=%d Value=%d", i, t.Text, t.Type, t.Value)
 	}
 
-	// Check if remaining tokens are just acknowledgment filler words (roger, wilco, copy)
-	// These need no response - return empty
-	if isAcknowledgmentOnly(commandTokens) {
-		logLocalStt("detected acknowledgment only (roger/wilco/copy), returning empty")
+	// Classify and early-return for non-command transmissions
+	if kind := classifyTransmission(commandTokens); kind != transmissionCommand {
+		logLocalStt("classified as %s, returning empty", kind)
 		elapsed := time.Since(start)
-		logLocalStt(`=== DecodeTranscript END: "" (acknowledgment, time=%s) ===`, elapsed)
-		p.logInfo(`local STT: %q -> "" (acknowledgment, time=%s)`, transcript, elapsed)
+		logLocalStt(`=== DecodeTranscript END: "" (%s, time=%s) ===`, kind, elapsed)
+		p.logInfo(`local STT: %q -> "" (%s, time=%s)`, transcript, kind, elapsed)
 		return "", nil
 	}
 
-	// Strip position identification prefix if present (e.g., "New York departure")
-	// This appears right after callsign when controller identifies themselves
-	commandTokens = stripPositionIDPrefix(commandTokens)
-
-	// Strip "radar contact" prefix if present (informational, not a command)
-	commandTokens = stripRadarContactPrefix(commandTokens)
-
-	// Strip altimeter setting suffix if present (informational, not a command)
-	commandTokens = stripAltimeterSuffix(commandTokens)
+	// Strip informational phrases (position ID prefix, radar contact, altimeter setting)
+	commandTokens = stripInformational(commandTokens)
 
 	// If no tokens remain after stripping, controller just identified themselves
 	if len(commandTokens) == 0 {
@@ -259,23 +241,13 @@ func (p *Transcriber) decodeInternal(
 		return "", nil
 	}
 
-	// Check if command tokens are just "radar contact" with noise around it
-	// e.g., "in radar contact" — the "in" prevented prefix stripping
-	if isRadarContactOnly(commandTokens) {
-		logLocalStt("detected radar contact only, returning empty")
+	// Re-classify after stripping — position ID removal may reveal an
+	// acknowledgment-only or radar-contact-only transmission.
+	if kind := classifyTransmission(commandTokens); kind != transmissionCommand {
+		logLocalStt("classified as %s after stripping, returning empty", kind)
 		elapsed := time.Since(start)
-		logLocalStt(`=== DecodeTranscript END: "" (radar contact, time=%s) ===`, elapsed)
-		p.logInfo(`local STT: %q -> "" (radar contact, time=%s)`, transcript, elapsed)
-		return "", nil
-	}
-
-	// Check again for acknowledgment-only after stripping position ID and radar contact
-	// e.g., "Callsign Lone Star Approach roger" -> after stripping, just "roger" remains
-	if isAcknowledgmentOnly(commandTokens) {
-		logLocalStt("detected acknowledgment only after stripping prefixes, returning empty")
-		elapsed := time.Since(start)
-		logLocalStt(`=== DecodeTranscript END: "" (acknowledgment, time=%s) ===`, elapsed)
-		p.logInfo(`local STT: %q -> "" (acknowledgment, time=%s)`, transcript, elapsed)
+		logLocalStt(`=== DecodeTranscript END: "" (%s, time=%s) ===`, kind, elapsed)
+		p.logInfo(`local STT: %q -> "" (%s, time=%s)`, transcript, kind, elapsed)
 		return "", nil
 	}
 
@@ -795,21 +767,98 @@ func findCommandTypeKeyword(tokens []Token) string {
 	return altitudeKeyword
 }
 
-// isDisregardOnly returns true if the tokens consist only of "disregard"
-// (possibly with filler words). This indicates the controller is telling
-// the pilot to ignore the previous transmission, and no command should be sent.
-func isDisregardOnly(tokens []Token) bool {
+// transmissionKind categorizes a transmission for early-return decisions.
+type transmissionKind int
+
+const (
+	transmissionCommand        transmissionKind = iota // Contains actionable commands
+	transmissionDisregard                              // "disregard" only
+	transmissionAcknowledgment                         // roger, wilco, copy, etc.
+	transmissionRadarContact                           // "radar contact" with no real commands
+)
+
+func (k transmissionKind) String() string {
+	switch k {
+	case transmissionDisregard:
+		return "disregard"
+	case transmissionAcknowledgment:
+		return "acknowledgment"
+	case transmissionRadarContact:
+		return "radar contact"
+	default:
+		return "command"
+	}
+}
+
+// classifyTransmission returns the kind of transmission represented by tokens.
+// Non-command transmissions (disregard, acknowledgment, radar contact) should
+// be returned as empty strings without parsing commands.
+func classifyTransmission(tokens []Token) transmissionKind {
+	if len(tokens) == 0 {
+		return transmissionCommand
+	}
+
+	acknowledgmentWords := map[string]bool{
+		"roger": true, "wilco": true, "copy": true, "affirm": true, "affirmative": true,
+		"hello": true, "hey": true, "hi": true, "howdy": true,
+	}
+
 	hasDisregard := false
-	for _, t := range tokens {
+	hasAcknowledgment := false
+	hasRadarContact := false
+	allFillerOrSpecial := true
+
+	for i, t := range tokens {
 		text := strings.ToLower(t.Text)
-		if text == "disregard" {
+		switch {
+		case text == "disregard":
 			hasDisregard = true
-		} else if !IsFillerWord(text) {
-			// Found a non-filler, non-disregard token
-			return false
+		case acknowledgmentWords[text]:
+			hasAcknowledgment = true
+		case text == "radar" && i+1 < len(tokens) && strings.ToLower(tokens[i+1].Text) == "contact":
+			hasRadarContact = true
+		case text == "contact" && i > 0 && strings.ToLower(tokens[i-1].Text) == "radar":
+			// Already counted as part of "radar contact" pair
+		case IsFillerWord(text):
+			// Filler words don't affect classification
+		default:
+			allFillerOrSpecial = false
 		}
 	}
-	return hasDisregard
+
+	if !allFillerOrSpecial {
+		// If there's a radar contact phrase but also other non-filler,
+		// non-special tokens, check if any are command keywords.
+		if hasRadarContact {
+			hasCommandKeyword := false
+			for _, t := range tokens {
+				text := strings.ToLower(t.Text)
+				if text == "radar" || text == "contact" {
+					continue
+				}
+				if IsCommandKeyword(text) {
+					hasCommandKeyword = true
+					break
+				}
+			}
+			if !hasCommandKeyword {
+				return transmissionRadarContact
+			}
+		}
+		return transmissionCommand
+	}
+
+	// All tokens are filler/special — classify by what special words we found
+	if hasDisregard {
+		return transmissionDisregard
+	}
+	if hasAcknowledgment {
+		return transmissionAcknowledgment
+	}
+	if hasRadarContact {
+		return transmissionRadarContact
+	}
+	return transmissionCommand
 }
 
 // containsGreeting returns true if any token is a greeting word.
@@ -824,81 +873,28 @@ func containsGreeting(tokens []Token) bool {
 	return false
 }
 
-// isAcknowledgmentOnly returns true if the tokens contain only acknowledgment
-// words (roger, wilco, copy) and filler words. These are pilot readbacks that
-// need no further action from the controller.
-func isAcknowledgmentOnly(tokens []Token) bool {
-	if len(tokens) == 0 {
-		return false
-	}
-
-	acknowledgmentWords := map[string]bool{
-		"roger": true, "wilco": true, "copy": true, "affirm": true, "affirmative": true,
-		"hello": true, "hey": true, "hi": true, "howdy": true,
-	}
-
-	hasAcknowledgment := false
-	for _, t := range tokens {
-		text := strings.ToLower(t.Text)
-		if acknowledgmentWords[text] {
-			hasAcknowledgment = true
-		} else if !IsFillerWord(text) {
-			// Non-acknowledgment, non-filler word found
-			return false
-		}
-	}
-
-	return hasAcknowledgment
-}
-
-// isRadarContactOnly returns true if the tokens contain "radar contact"
-// and no command keywords besides "radar" and "contact" themselves. This
-// handles cases where noise words (e.g., callsign fragments) appear
-// before "radar contact".
-func isRadarContactOnly(tokens []Token) bool {
-	hasRadarContact := false
-	for i, t := range tokens {
-		text := strings.ToLower(t.Text)
-		if text == "radar" && i+1 < len(tokens) &&
-			strings.ToLower(tokens[i+1].Text) == "contact" {
-			hasRadarContact = true
-			break
-		}
-	}
-	if !hasRadarContact {
-		return false
-	}
-
-	// Reject if any other token is a command keyword, which would
-	// indicate real commands mixed in with radar contact.
-	for _, t := range tokens {
-		text := strings.ToLower(t.Text)
-		if text == "radar" || text == "contact" {
-			continue
-		}
-		if IsCommandKeyword(text) {
-			return false
-		}
-	}
-	return true
+// stripInformational applies all informational prefix/suffix strippers in sequence:
+// position ID prefix, radar contact prefix, and altimeter setting suffix.
+func stripInformational(tokens []Token) []Token {
+	tokens = stripPositionIDPrefix(tokens)
+	tokens = stripRadarContactPrefix(tokens)
+	tokens = stripAltimeterSuffix(tokens)
+	return tokens
 }
 
 // stripPositionIDPrefix removes a controller position identification prefix
 // from the tokens (e.g., "New York departure", "Boston approach").
 // This appears right after the callsign when the controller identifies themselves.
 // Only strips if no command keyword appears before the position suffix.
-// Returns the remaining tokens after stripping the prefix.
 func stripPositionIDPrefix(tokens []Token) []Token {
 	if len(tokens) == 0 {
 		return tokens
 	}
 
-	// Position suffixes that indicate controller identification
 	positionSuffixes := map[string]bool{
 		"departure": true, "approach": true, "center": true,
 	}
 
-	// Command keywords that indicate actual commands (not position ID)
 	commandKeywords := map[string]bool{
 		"climb": true, "climbing": true, "descend": true, "descending": true,
 		"maintain": true, "turn": true, "heading": true, "speed": true,
@@ -909,25 +905,18 @@ func stripPositionIDPrefix(tokens []Token) []Token {
 		"resume": true, "vectors": true, "go": true, "standby": true,
 	}
 
-	// Find position suffix in the first few tokens (position ID is at the start)
 	for i, t := range tokens {
 		text := strings.ToLower(t.Text)
-
-		// If we hit a command keyword, this isn't a position ID prefix
 		if commandKeywords[text] {
 			return tokens
 		}
-
 		if positionSuffixes[text] {
-			// Found position suffix with no command keyword before it - strip
 			remaining := tokens[i+1:]
 			if len(remaining) < len(tokens) {
 				logLocalStt("stripped position ID prefix: %d tokens", i+1)
 			}
 			return remaining
 		}
-
-		// Stop searching after a few tokens - position ID should be at the start
 		if i >= 4 {
 			break
 		}
@@ -937,7 +926,6 @@ func stripPositionIDPrefix(tokens []Token) []Token {
 }
 
 // stripRadarContactPrefix removes "radar contact" from the start of tokens.
-// This is informational and not a command.
 func stripRadarContactPrefix(tokens []Token) []Token {
 	if len(tokens) >= 2 &&
 		strings.ToLower(tokens[0].Text) == "radar" &&
@@ -956,25 +944,17 @@ func stripAltimeterSuffix(tokens []Token) []Token {
 		if strings.ToLower(t.Text) != "altimeter" {
 			continue
 		}
-
-		// "altimeter" must be followed by a number (the setting).
 		if i+1 >= len(tokens) || tokens[i+1].Type != TokenNumber {
 			continue
 		}
-
-		// Nothing actionable should follow the setting.
 		if i+2 < len(tokens) {
 			continue
 		}
-
-		// The word before "altimeter" is typically an airport name
-		// (e.g., "kennedy"); strip it too if it's a plain word.
 		start := i
 		if start > 0 && tokens[start-1].Type == TokenWord &&
 			!IsCommandKeyword(strings.ToLower(tokens[start-1].Text)) {
 			start--
 		}
-
 		logLocalStt("stripped altimeter suffix: %d tokens", len(tokens)-start)
 		return tokens[:start]
 	}

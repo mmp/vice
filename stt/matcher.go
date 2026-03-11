@@ -63,6 +63,10 @@ func (m *literalMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords [
 	}
 
 	for _, kw := range m.keywords {
+		// Skip fuzzy matching when lengths are too different
+		if len(text) > 2*len(kw) || len(kw) > 2*len(text) {
+			continue
+		}
 		if FuzzyMatch(text, kw, threshold) {
 			return matchResult{consumed: pos + 1}
 		}

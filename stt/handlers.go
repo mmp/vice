@@ -59,6 +59,22 @@ func registerAllCommands() {
 		WithPriority(1), // Very low priority - only matches if nothing else does
 	)
 
+	// "{altitude} until established [on] [the] [localizer|glide|slope|glideslope]"
+	registerSTTCommand(
+		"{standalone_altitude} until established|establishing [on] [the] [localizer|glide|slope|glideslope]",
+		func(alt int) string { return fmt.Sprintf("A%d", alt) },
+		WithName("altitude_until_established"),
+		WithPriority(12),
+	)
+
+	// Absorb "expect further clearance" so it doesn't trigger "expect approach"
+	registerSTTCommand(
+		"expect further clearance",
+		func() string { return "" },
+		WithName("expect_further_clearance"),
+		WithPriority(25),
+	)
+
 	registerSTTCommand(
 		"expedite descent|descend|your",
 		func() string { return "ED" },
