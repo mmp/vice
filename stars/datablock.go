@@ -458,12 +458,64 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 		return nil
 	}
 
-	// Check if the track is being handed off.
-	//
-	// handoffTCP is only set if it's coming from an enroute position or
-	// from a different facility; otherwise we just show the
-	// single-character id.
-	handoffId, handoffTCP := " ", ""
+	handoffId, handoffTCP := sp.resolveHandoff(ctx, sfp, state)
+
+	// Various other values that will be repeatedly useful below...
+	beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(imgui.KeyF1) && ctx.Keyboard.KeyControl() && trk.ADSBCallsign != ""
+	var actype string
+	if sfp != nil {
+		actype = sfp.AircraftType
+	}
+	squawkingSPC, _ := trk.Squawk.IsSPC()
+
+	altitude, pilotReportedAltitude := formatAltitude(trk, sfp,
+		state != nil && state.UnreasonableModeC)
+
+	displayBeaconCode := ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && trk.Squawk == sp.DisplayBeaconCode
+
+	groundspeed := fmt.Sprintf("%02d", int(trk.Groundspeed+5)/10)
+	if state != nil {
+		groundspeed = fmt.Sprintf("%02d", int(state.track.Groundspeed+5)/10)
+	}
+	beaconMismatch := trk.IsAssociated() && trk.Squawk != sfp.AssignedSquawk && !squawkingSPC && !trk.IsUnsupportedDB() &&
+		trk.Mode != av.TransponderModeStandby
+
+	sp1 := sp.resolveScratchpad1(ctx, trk, sfp, state)
+
+	switch sp.datablockType(ctx, trk) {
+	case LimitedDatablock:
+		return sp.buildLimitedDatablock(ctx, trk, color, brightness,
+			beaconator, displayBeaconCode, groundspeed)
+
+	case PartialDatablock:
+		return sp.buildPartialDatablock(ctx, trk, sfp, color,
+			altitude, sp1, groundspeed, handoffId, actype,
+			pilotReportedAltitude)
+
+	case FullDatablock:
+		return sp.buildFullDatablock(ctx, trk, sfp, color, brightness,
+			altitude, sp1, groundspeed, handoffId, handoffTCP, actype,
+			pilotReportedAltitude, beaconator, beaconMismatch,
+			displayBeaconCode)
+
+	case SuspendedDatablock:
+		db := sp.sdbArena.AllocClear()
+
+		s := strconv.Itoa(sfp.CoastSuspendIndex)
+		if sp.currentPrefs().DisplaySuspendedTrackAltitude ||
+			state.SuspendedShowAltitudeEndTime.After(ctx.Now) && trk.Mode == av.TransponderModeAltitude {
+			s += " " + altitude
+		}
+		formatDBText(db.field0[:], s, color, false)
+		return db
+	}
+
+	return nil
+}
+
+func (sp *STARSPane) resolveHandoff(ctx *panes.Context, sfp *sim.NASFlightPlan,
+	state *TrackState) (handoffId, handoffTCP string) {
+	handoffId = " "
 	if sfp != nil {
 		toTCP := util.Select(sfp.RedirectedHandoff.RedirectedTo != "",
 			sfp.RedirectedHandoff.RedirectedTo, sfp.HandoffController)
@@ -514,515 +566,518 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 	if state != nil && handoffTCP == "" && ctx.Now.Before(state.AcceptedHandoffDisplayEnd) {
 		handoffTCP = state.AcceptedHandoffSector
 	}
+	return
+}
 
-	// Various other values that will be repeatedly useful below...
-	beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(imgui.KeyF1) && ctx.Keyboard.KeyControl() && trk.ADSBCallsign != ""
-	var actype string
-	if sfp != nil {
-		actype = sfp.AircraftType
+func formatAltitude(trk sim.Track, sfp *sim.NASFlightPlan, unreasonableModeC bool) (altitude string, pilotReported bool) {
+	if trk.IsUnsupportedDB() {
+		return "", false
 	}
-	squawkingSPC, _ := trk.Squawk.IsSPC()
 
-	// Note: this is only for PDBs and FDBs. LDBs don't have pilot reported
-	// altitude or inhibit mode C.
-	var altitude string
-	var pilotReportedAltitude bool
-	if !trk.IsUnsupportedDB() {
-		haveTransponderAltitude := trk.Mode == av.TransponderModeAltitude && (sfp == nil || !sfp.InhibitModeCAltitudeDisplay)
-		if haveTransponderAltitude && state.UnreasonableModeC {
-			altitude = "XXX"
-		} else if haveTransponderAltitude {
-			if trk.TransponderAltitude < 0 {
-				altitude = fmt.Sprintf("N%02d", int(-trk.TransponderAltitude+50)/100)
-			} else {
-				altitude = fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
+	haveTransponderAltitude := trk.Mode == av.TransponderModeAltitude && (sfp == nil || !sfp.InhibitModeCAltitudeDisplay)
+	if haveTransponderAltitude && unreasonableModeC {
+		return "XXX", false
+	}
+	if haveTransponderAltitude {
+		if trk.TransponderAltitude < 0 {
+			return fmt.Sprintf("N%02d", int(-trk.TransponderAltitude+50)/100), false
+		}
+		return fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100), false
+	}
+	if sfp != nil && sfp.PilotReportedAltitude != 0 {
+		return fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100), true
+	}
+	if sfp != nil && sfp.InhibitModeCAltitudeDisplay {
+		return "***", false
+	}
+	if trk.Mode == av.TransponderModeStandby {
+		return "RDR", false
+	}
+	return "   ", false
+}
+
+func (sp *STARSPane) resolveScratchpad1(ctx *panes.Context, trk sim.Track,
+	sfp *sim.NASFlightPlan, state *TrackState) string {
+	if sfp == nil {
+		return ""
+	}
+	if sfp.Scratchpad != "" {
+		return sfp.Scratchpad
+	}
+	if state != nil && state.ClearedScratchpadAlternate {
+		return ""
+	}
+
+	adapt := ctx.FacilityAdaptation
+	falt := func() string {
+		alt := sfp.RequestedAltitude
+		if adapt.Datablocks.AllowLongScratchpad {
+			return fmt.Sprintf("%03d", alt/100)
+		}
+		return fmt.Sprintf("%02d", alt/1000)
+	}
+	shortExit := func() string {
+		e := sfp.ExitFix
+		if e == "" {
+			return ""
+		}
+		e, _, _ = strings.Cut(e, ".")
+		if sigPt, ok := sp.significantPoints[e]; ok {
+			if sigPt.ShortName != "" {
+				return sigPt.ShortName
+			} else if len(e) > 3 {
+				return e[:3]
 			}
-		} else if sfp != nil && sfp.PilotReportedAltitude != 0 {
-			altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
-			pilotReportedAltitude = true
-		} else if sfp != nil && sfp.InhibitModeCAltitudeDisplay {
-			altitude = "***"
-		} else if trk.Mode == av.TransponderModeStandby {
+			return e
+		}
+		return ""
+	}
+	abbrevExit := func() string {
+		e := sfp.ExitFix
+		if e == "" {
+			return ""
+		}
+		e, _, _ = strings.Cut(e, ".")
+		if sigPt, ok := sp.significantPoints[e]; ok {
+			if sigPt.Abbreviation != "" {
+				return sigPt.Abbreviation
+			}
+			return e[:1]
+		}
+		return ""
+	}
+
+	if trk.IsArrival() {
+		// Note arrivalAirport is only set if it should be shown when there is no scratchpad set
+		ap, ok := ctx.Client.State.Airports[trk.ArrivalAirport]
+		if ok && !ap.OmitArrivalScratchpad {
+			return sfp.ExitFix
+		}
+		return ""
+	}
+
+	if adapt.Datablocks.Scratchpad1.DisplayExitFix {
+		return shortExit()
+	} else if adapt.Datablocks.Scratchpad1.DisplayExitFix1 {
+		return abbrevExit()
+	} else if adapt.Datablocks.Scratchpad1.DisplayExitGate {
+		if ex := abbrevExit(); ex != "" {
+			return ex + falt()
+		}
+	} else if adapt.Datablocks.Scratchpad1.DisplayAltExitGate {
+		if ex := abbrevExit(); ex != "" {
+			return falt() + ex
+		}
+	}
+	return ""
+}
+
+func flightRulesIndicator(sfp *sim.NASFlightPlan) string {
+	if sfp.Rules == av.FlightRulesVFR {
+		return "V"
+	}
+	if sfp.TypeOfFlight == av.FlightTypeOverflight {
+		return "E"
+	}
+	return " "
+}
+
+func (sp *STARSPane) buildLimitedDatablock(ctx *panes.Context, trk sim.Track,
+	color renderer.RGB, brightness radar.Brightness,
+	beaconator, displayBeaconCode bool, groundspeed string) *limitedDatablock {
+	state := sp.TrackState[trk.ADSBCallsign]
+	db := sp.ldbArena.AllocClear()
+
+	// Field 0: CA, MCI, and squawking special codes
+	alerts := sp.getDatablockAlerts(ctx, trk, LimitedDatablock)
+	copy(db.field0[:], alerts[:])
+
+	extended := state.FullLDBEndTime.After(ctx.Now)
+	sqspc, _ := trk.Squawk.IsSPC()
+	extended = extended || (trk.Mode != av.TransponderModeStandby && sqspc)
+
+	who := trk.MissingFlightPlan && !state.MissingFlightPlanAcknowledged
+
+	if len(alerts) == 0 && trk.Mode == av.TransponderModeOn && !extended {
+		return nil
+	}
+
+	ps := sp.currentPrefs()
+	if trk.Mode != av.TransponderModeStandby {
+		mci := !ps.DisableMCIWarnings && slices.ContainsFunc(sp.MCIAircraft, func(mci CAAircraft) bool {
+			trk0, ok := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
+			return ok && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode != trk.Squawk &&
+				mci.ADSBCallsigns[1] == trk.ADSBCallsign
+		})
+
+		if mci || beaconator || who || extended || trk.Ident || ps.DisplayLDBBeaconCodes ||
+			state.DisplayLDBBeaconCode || displayBeaconCode {
+			// Field 1: reported beacon code
+			// TODO: Field 1: WHO if unassociated and no flight plan
+			var f1 int
+			if displayBeaconCode { // flashing yellow
+				f1 = formatDBText(db.field1[:], trk.Squawk.String(), brightness.ScaleRGB(sp.Colors.TextWarning), true)
+			} else {
+				f1 = formatDBText(db.field1[:], trk.Squawk.String(), color, false)
+			}
+			if who {
+				formatDBText(db.field1[f1:], "WHO", color, true)
+			} else if trk.Ident {
+				// Field 1: flashing ID after beacon code if ident.
+				formatDBText(db.field1[f1:], "ID", color, true)
+			}
+		}
+	}
+
+	// Field 3: mode C altitude (intentionally different from formatAltitude)
+	altitude := fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
+	if trk.TransponderAltitude < 0 {
+		altitude = fmt.Sprintf("N%02d", int(-trk.TransponderAltitude+50)/100)
+	}
+	if trk.Mode == av.TransponderModeStandby {
+		if extended {
 			altitude = "RDR"
 		} else {
-			// Display an empty field
-			altitude = "   "
-		}
-	}
-
-	displayBeaconCode := ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && trk.Squawk == sp.DisplayBeaconCode
-
-	groundspeed := fmt.Sprintf("%02d", int(trk.Groundspeed+5)/10)
-	if state != nil {
-		groundspeed = fmt.Sprintf("%02d", int(state.track.Groundspeed+5)/10)
-	}
-	beaconMismatch := trk.IsAssociated() && trk.Squawk != sfp.AssignedSquawk && !squawkingSPC && !trk.IsUnsupportedDB() &&
-		trk.Mode != av.TransponderModeStandby
-
-	// Figure out what to display for scratchpad 1 (used in both FDB and PDBs)
-	sp1 := ""
-	if sfp != nil {
-		sp1 = sfp.Scratchpad
-
-		// If it hasn't been set to something and the adapted scratchpad hasn't
-		// been cleared, show an adapted one, if appropriate.
-		if sp1 == "" && (state == nil || !state.ClearedScratchpadAlternate) {
-			adapt := ctx.FacilityAdaptation
-			falt := func() string {
-				alt := sfp.RequestedAltitude
-				if adapt.Datablocks.AllowLongScratchpad {
-					return fmt.Sprintf("%03d", alt/100)
-				} else {
-					return fmt.Sprintf("%02d", alt/1000)
-				}
-			}
-			shortExit := func() string {
-				if e := sfp.ExitFix; e != "" {
-					e, _, _ = strings.Cut(e, ".")
-					if sp, ok := sp.significantPoints[e]; ok {
-						if sp.ShortName != "" {
-							return sp.ShortName
-						} else if len(e) > 3 {
-							return e[:3]
-						} else {
-							return e
-						}
-					}
-				}
-				return ""
-			}
-			abbrevExit := func() string {
-				if e := sfp.ExitFix; e != "" {
-					e, _, _ = strings.Cut(e, ".")
-					if sp, ok := sp.significantPoints[e]; ok {
-						if sp.Abbreviation != "" {
-							return sp.Abbreviation
-						}
-						return e[:1]
-					}
-				}
-				return ""
-			}
-
-			if trk.IsArrival() {
-				// Note arrivalAirport is only set if it should be shown when there is no scratchpad set
-				ap, ok := ctx.Client.State.Airports[trk.ArrivalAirport]
-				if ok && !ap.OmitArrivalScratchpad {
-					sp1 = sfp.ExitFix
-				}
-			} else {
-				if adapt.Datablocks.Scratchpad1.DisplayExitFix {
-					sp1 = shortExit()
-				} else if adapt.Datablocks.Scratchpad1.DisplayExitFix1 {
-					sp1 = abbrevExit()
-				} else if adapt.Datablocks.Scratchpad1.DisplayExitGate {
-					if ex := abbrevExit(); ex != "" {
-						sp1 = ex + falt()
-					}
-				} else if adapt.Datablocks.Scratchpad1.DisplayAltExitGate {
-					if ex := abbrevExit(); ex != "" {
-						sp1 = falt() + ex
-					}
-				}
-			}
-		}
-	}
-
-	switch sp.datablockType(ctx, trk) {
-	case LimitedDatablock:
-		db := sp.ldbArena.AllocClear()
-
-		// Field 0: CA, MCI, and squawking special codes
-		alerts := sp.getDatablockAlerts(ctx, trk, LimitedDatablock)
-		copy(db.field0[:], alerts[:])
-
-		extended := state.FullLDBEndTime.After(ctx.Now)
-		sqspc, _ := trk.Squawk.IsSPC()
-		extended = extended || (trk.Mode != av.TransponderModeStandby && sqspc)
-
-		who := trk.MissingFlightPlan && !state.MissingFlightPlanAcknowledged
-
-		if len(alerts) == 0 && trk.Mode == av.TransponderModeOn && !extended {
-			return nil
-		}
-
-		ps := sp.currentPrefs()
-		if trk.Mode != av.TransponderModeStandby {
-			mci := !ps.DisableMCIWarnings && slices.ContainsFunc(sp.MCIAircraft, func(mci CAAircraft) bool {
-				trk0, ok := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
-				return ok && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode != trk.Squawk &&
-					mci.ADSBCallsigns[1] == trk.ADSBCallsign
-			})
-
-			if mci || beaconator || who || extended || trk.Ident || ps.DisplayLDBBeaconCodes ||
-				state.DisplayLDBBeaconCode || displayBeaconCode {
-				// Field 1: reported beacon code
-				// TODO: Field 1: WHO if unassociated and no flight plan
-				var f1 int
-				if displayBeaconCode { // flashing yellow
-					f1 = formatDBText(db.field1[:], trk.Squawk.String(), brightness.ScaleRGB(sp.Colors.TextWarning), true)
-				} else {
-					f1 = formatDBText(db.field1[:], trk.Squawk.String(), color, false)
-				}
-				if who {
-					formatDBText(db.field1[f1:], "WHO", color, true)
-				} else if trk.Ident {
-					// Field 1: flashing ID after beacon code if ident.
-					formatDBText(db.field1[f1:], "ID", color, true)
-				}
-			}
-		}
-
-		// Field 3: mode C altitude
-		altitude := fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
-		if trk.TransponderAltitude < 0 {
-			altitude = fmt.Sprintf("N%02d", int(-trk.TransponderAltitude+50)/100)
-		}
-		if trk.Mode == av.TransponderModeStandby {
-			if extended {
-				altitude = "RDR"
-			} else {
-				altitude = ""
-			}
-		} else if trk.Mode == av.TransponderModeOn { // mode-a; altitude is blank
 			altitude = ""
 		}
-
-		formatDBText(db.field3[:], altitude, color, false)
-
-		if extended {
-			// Field 5: groundspeed
-			formatDBText(db.field5[:], groundspeed, color, false)
-		}
-
-		if (extended || beaconator) && trk.Mode != av.TransponderModeStandby {
-			// Field 6: ACID
-			formatDBText(db.field6[:], string(trk.ADSBCallsign), color, false)
-		}
-
-		return db
-
-	case PartialDatablock:
-		fa := ctx.FacilityAdaptation
-		db := sp.pdbArena.AllocClear()
-
-		// Field0: TODO cautions in yellow
-		// TODO: 2-69 doesn't list CA/MCI, so should this be blank even in
-		// those cases? (Note that SPC upgrades partial to full datablocks.)
-		alerts := sp.getDatablockAlerts(ctx, trk, PartialDatablock)
-		copy(db.field0[:], alerts[:])
-
-		// Field 1: a) mode-c or pilot reported altitude, b) scratchpad 1
-		// or possibly arrival airport (adapted), c) scratchpad 2 (adapted)
-		// Combined with:
-		// Field 2: receiving TCP if being handed off or + if sp2 is shown.
-		// TODO: * if field 1 is showing pilot-reported altitude
-		field1Length := util.Select(fa.Datablocks.AllowLongScratchpad, 4, 3)
-		fmt1 := func(s string) string {
-			for len([]rune(s)) < field1Length {
-				s += " "
-			}
-			return s
-		}
-		if pilotReportedAltitude {
-			formatDBText(db.field12[0][:], fmt1(altitude+"*"), color, false)
-		} else {
-			formatDBText(db.field12[0][:], fmt1(altitude)+handoffId, color, false)
-		}
-		f12Idx := 1
-		if sp1 != "" {
-			formatDBText(db.field12[1][:], fmt1(sp1)+handoffId, color, false)
-			f12Idx++
-		}
-		if fa.Datablocks.PDB.ShowScratchpad2 && sfp.SecondaryScratchpad != "" {
-			formatDBText(db.field12[f12Idx][:], fmt1(sfp.SecondaryScratchpad)+"+", color, false)
-		}
-
-		// Field 3: by default, groundspeed and/or "V" for VFR, "E" for overflight, followed by CWT,
-		// but may be adapted.
-		rulesCategory := " "
-		if sfp.Rules == av.FlightRulesVFR {
-			rulesCategory = "V"
-		} else if sfp.TypeOfFlight == av.FlightTypeOverflight {
-			rulesCategory = "E"
-		}
-		cwt := util.Select(sfp.CWTCategory != "", sfp.CWTCategory, " ")
-		if fa.Datablocks.PDB.SplitGSAndCWT {
-			// [GS, CWT] timesliced
-			formatDBText(db.field3[0][:], groundspeed, color, false)
-			formatDBText(db.field3[1][:], rulesCategory+cwt, color, false)
-		} else {
-			if fa.Datablocks.PDB.HideGroundspeed {
-				// [CWT]
-				formatDBText(db.field3[0][:], rulesCategory+cwt, color, false)
-			} else {
-				// [GS CWT]
-				formatDBText(db.field3[0][:], groundspeed+rulesCategory+cwt, color, false)
-			}
-			if fa.Datablocks.PDB.ShowAircraftType {
-				// [ACTYPE]
-				formatDBText(db.field3[1][:], actype, color, false)
-			}
-		}
-
-		// Field 4: ident
-		if trk.Ident {
-			formatDBText(db.field4[:], "ID", color, true)
-		}
-
-		return db
-
-	case FullDatablock:
-		fa := ctx.FacilityAdaptation
-		db := sp.fdbArena.AllocClear()
-
-		// Line 0
-		// Field 0: special conditions, safety alerts (red), cautions (yellow)
-		alerts := sp.getDatablockAlerts(ctx, trk, FullDatablock)
-		copy(db.field0[:], alerts[:])
-
-		// Line 1
-		// Field 1: ACID (or squawk if beaconator)
-		if beaconator && trk.Mode != av.TransponderModeStandby {
-			formatDBText(db.field1[:], trk.Squawk.String(), color, false)
-		} else {
-			formatDBText(db.field1[:], string(sfp.ACID), color, false)
-		}
-
-		// Field 2: various symbols for inhibited stuff
-		if state != nil { // FIXME: these should live in NASFlightPlan
-			if state.InhibitMSAW || sfp.DisableMSAW {
-				if sfp.DisableCA {
-					formatDBText(db.field2[:], "+", color, false)
-				} else {
-					formatDBText(db.field2[:], "*", color, false)
-				}
-			} else if sfp.DisableCA || sfp.MCISuppressedCode != 0 {
-				formatDBText(db.field2[:], STARSTriangleCharacter, color, false)
-			}
-		}
-
-		// Field 8: point out, rejected pointout, redirected
-		// handoffs... Some flash, some don't.
-		if state != nil {
-			if tcps, ok := sp.PointOuts[sfp.ACID]; ok && ctx.UserControlsPosition(tcps.To) {
-				formatDBText(db.field8[:], "PO", color, false)
-			} else if ok && ctx.UserControlsPosition(tcps.From) {
-				id := tcps.To
-				if len(id) > 1 && id[0] >= '0' && id[0] <= '9' {
-					id = id[1:]
-				}
-				formatDBText(db.field8[:], "PO"+string(id), color, false)
-			} else if ctx.Now.Before(state.UNFlashingEndTime) {
-				formatDBText(db.field8[:], "UN", color, true)
-			} else if state.POFlashingEndTime.After(ctx.Now) {
-				formatDBText(db.field8[:], "PO", color, true)
-			} else if sfp.RedirectedHandoff.ShowRDIndicator(ctx.UserPrimaryPosition(), state.RDIndicatorEnd) {
-				formatDBText(db.field8[:], "RD", color, false)
-			}
-		}
-
-		// Line 2
-		// Fields 3 and 4: 3 is altitude plus possibly other stuff; 4 is
-		// special indicators, possible associated with 3, so they're a
-		// single field
-		field3Length := util.Select(fa.Datablocks.AllowLongScratchpad, 4, 3)
-		fmt3 := func(s string) string {
-			for len([]rune(s)) < field3Length {
-				s += " "
-			}
-			return s
-		}
-
-		idx34 := 0
-		if altitude != "" || handoffId != " " {
-			if pilotReportedAltitude {
-				formatDBText(db.field34[idx34][:], fmt3(altitude+"*"), color, false)
-				idx34++
-			} else {
-				formatDBText(db.field34[idx34][:], fmt3(altitude)+handoffId, color, false)
-				idx34++
-			}
-		}
-		if sp1 != "" {
-			formatDBText(db.field34[idx34][:], fmt3(sp1)+handoffId, color, false)
-			idx34++
-		}
-		if handoffTCP != "" && !fa.Datablocks.FDB.DisplayFacilityOnly {
-			formatDBText(db.field34[idx34][:], fmt3(handoffTCP)+handoffId, color, false)
-		} else if sfp.SecondaryScratchpad != "" && !ctx.FacilityAdaptation.Datablocks.FDB.Scratchpad2OnLine3 { // don't show secondary if we're showing a center
-			// TODO: confirm no handoffId here
-			formatDBText(db.field34[idx34][:], fmt3(sfp.SecondaryScratchpad)+"+", color, false)
-		}
-
-		// Field 5: groundspeed
-		rulesCategory := " "
-		if sfp.Rules == av.FlightRulesVFR {
-			rulesCategory = "V"
-		} else if sfp.TypeOfFlight == av.FlightTypeOverflight {
-			rulesCategory = "E"
-		}
-		rulesCategory += util.Select(sfp.CWTCategory != "", sfp.CWTCategory, " ")
-		rulesCategory += " "
-
-		field5Idx := 0
-		// 6-107 force display / inhibit ac type display
-		inhibitACType := sfp.InhibitACTypeDisplay ||
-			(state != nil && state.InhibitACTypeDisplay != nil && *state.InhibitACTypeDisplay)
-		forceACType := ctx.Now.Before(sfp.ForceACTypeDisplayEndTime) ||
-			(state != nil && ctx.Now.Before(state.ForceACTypeDisplayEndTime))
-		if state != nil && (!forceACType || inhibitACType || actype == "" || trk.Ident) && !trk.IsUnsupportedDB() {
-			if state.IFFlashing {
-				if trk.Ident {
-					formatDBText(db.field5[0][:], "IF"+"ID", color, true)
-				} else {
-					formatDBText(db.field5[0][:], "IF"+rulesCategory, color, true)
-				}
-			} else {
-				gs := util.Select(sfp.HoldState, "HL", groundspeed)
-				idx := formatDBText(db.field5[0][:], gs, color, false)
-				if trk.Ident {
-					formatDBText(db.field5[0][idx:], "ID", color, true)
-				} else {
-					formatDBText(db.field5[0][idx:], rulesCategory, color, false)
-				}
-			}
-			field5Idx++
-		}
-		// Field 5: +aircraft type and possibly requested altitude, if not
-		// identing.
-		if !trk.Ident {
-			if actype != "" && !inhibitACType {
-				rnav := util.Select(sfp.RNAV, "^", " ")
-				formatDBText(db.field5[field5Idx][:], actype+rnav, color, false)
-				field5Idx++
-			}
-
-			if !forceACType && (state == nil || (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
-				(state.DisplayRequestedAltitude == nil && sp.DisplayRequestedAltitude)) {
-				if alt := sfp.RequestedAltitude; alt != 0 {
-					// FIXME: 2-67: with 2-char TCPs, the "R" goes in the
-					// second place in field 4 when requested altitude is
-					// being displayed--i.e., it is always in the 5th
-					// column of this row of the datablock.
-					formatDBText(db.field5[field5Idx][:], fmt.Sprintf("R%03d ", alt/100), color, false)
-					field5Idx++
-				}
-			}
-		}
-
-		// Field 6: ATPA info and possibly beacon code; doesn't apply to unsupported DB
-		idx6 := 0
-		if !trk.IsUnsupportedDB() {
-			if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
-				formatDBText(db.field6[idx6][:], "*TPA", color, false)
-				idx6++
-			} else if state.IntrailDistance != 0 && sp.currentPrefs().DisplayATPAInTrailDist && !state.InhibitDisplayInTrailDist {
-				distColor := color
-				if state.ATPAStatus == ATPAStatusWarning {
-					distColor = sp.Colors.ATPAWarning
-				} else if state.ATPAStatus == ATPAStatusAlert {
-					distColor = sp.Colors.ATPAAlert
-				}
-				if sfp.CWTCategory == "" {
-					formatDBText(db.field6[idx6][:], "NOWGT", distColor, false)
-				} else {
-					formatDBText(db.field6[idx6][:], fmt.Sprintf("%.2f", state.IntrailDistance), distColor, false)
-				}
-				idx6++
-			}
-			if displayBeaconCode {
-				formatDBText(db.field6[idx6][:], trk.Squawk.String(), brightness.ScaleRGB(sp.Colors.TextWarning), true)
-				idx6++
-			} else if beaconMismatch {
-				formatDBText(db.field6[idx6][:], trk.Squawk.String(), color, false)
-				idx6++
-			} else if _, ok := sp.DuplicateBeacons[trk.Squawk]; ok && state.DBAcknowledged != trk.Squawk {
-				formatDBText(db.field6[idx6][:], "DB", color, false)
-				idx6++
-			}
-		}
-
-		// Field 7: assigned altitude, assigned beacon if mismatch, secondary scratchpad on line 3 if enabled
-		if ctx.FacilityAdaptation.Datablocks.FDB.Scratchpad2OnLine3 {
-			altSet := sfp.AssignedAltitude != 0
-			sp2 := sfp.SecondaryScratchpad
-			sp2Set := sp2 != ""
-
-			if altSet {
-				leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
-				altText := fmt.Sprintf("A%03d", sfp.AssignedAltitude/100)
-				startAltIdx := 0
-				if leaderLineDirection < math.South {
-					startAltIdx = 1 // N–SE leader → indent one char
-				}
-				for i, ch := range altText {
-					if startAltIdx+i >= len(db.field7[0]) {
-						break
-					}
-					db.field7[0][startAltIdx+i] = dbChar{ch: ch, color: color, flashing: false}
-				}
-			}
-
-			if sp2Set {
-				leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
-				runes := []rune(sp2)
-				if len(runes) > 3 {
-					runes = runes[:4]
-				}
-				for len(runes) < 4 {
-					runes = append(runes, ' ')
-				}
-				text := string(runes) + "+"
-
-				startIdx := 0
-				if leaderLineDirection >= math.South {
-					startIdx = 5 - len([]rune(text)) // char 6
-				} else {
-					startIdx = 2
-				}
-
-				targetField := util.Select(altSet, 1, 0) // if no alt, show spad2 in slot 0
-				formatDBText(db.field7[targetField][startIdx:], text, color, false)
-			}
-
-			if beaconMismatch {
-				for idx := range db.field7 {
-					if fieldEmpty(db.field7[idx][:]) {
-						startIdx := util.Select(sp.getLeaderLineDirection(ctx, trk) >= math.South, 1, 0)
-						formatDBText(db.field7[idx][startIdx:], sfp.AssignedSquawk.String(), color, true)
-						break
-					}
-				}
-			}
-		} else {
-			// === Default behavior: Assigned altitude + squawk mismatch ===
-			if alt := sfp.AssignedAltitude; alt != 0 {
-				formatDBText(db.field7[0][:], fmt.Sprintf("A%03d", alt/100), color, false)
-			}
-			if beaconMismatch {
-				idx := util.Select(fieldEmpty(db.field7[0][:]), 0, 1)
-				// In S-NW (right-justified) leaders, offset ABC by one to shift RBC left.
-				startIdx := util.Select(sp.getLeaderLineDirection(ctx, trk) >= math.South, 1, 0)
-				formatDBText(db.field7[idx][startIdx:], sfp.AssignedSquawk.String(), color, true)
-			}
-		}
-
-		return db
-
-	case SuspendedDatablock:
-		db := sp.sdbArena.AllocClear()
-
-		s := strconv.Itoa(sfp.CoastSuspendIndex)
-		if sp.currentPrefs().DisplaySuspendedTrackAltitude ||
-			state.SuspendedShowAltitudeEndTime.After(ctx.Now) && trk.Mode == av.TransponderModeAltitude {
-			s += " " + altitude
-		}
-		formatDBText(db.field0[:], s, color, false)
-		return db
+	} else if trk.Mode == av.TransponderModeOn { // mode-a; altitude is blank
+		altitude = ""
 	}
 
-	return nil
+	formatDBText(db.field3[:], altitude, color, false)
+
+	if extended {
+		// Field 5: groundspeed
+		formatDBText(db.field5[:], groundspeed, color, false)
+	}
+
+	if (extended || beaconator) && trk.Mode != av.TransponderModeStandby {
+		// Field 6: ACID
+		formatDBText(db.field6[:], string(trk.ADSBCallsign), color, false)
+	}
+
+	return db
+}
+
+func (sp *STARSPane) buildPartialDatablock(ctx *panes.Context, trk sim.Track,
+	sfp *sim.NASFlightPlan, color renderer.RGB,
+	altitude, sp1, groundspeed, handoffId, actype string,
+	pilotReportedAltitude bool) *partialDatablock {
+	fa := ctx.FacilityAdaptation
+	db := sp.pdbArena.AllocClear()
+
+	// Field0: TODO cautions in yellow
+	// TODO: 2-69 doesn't list CA/MCI, so should this be blank even in
+	// those cases? (Note that SPC upgrades partial to full datablocks.)
+	alerts := sp.getDatablockAlerts(ctx, trk, PartialDatablock)
+	copy(db.field0[:], alerts[:])
+
+	// Field 1: a) mode-c or pilot reported altitude, b) scratchpad 1
+	// or possibly arrival airport (adapted), c) scratchpad 2 (adapted)
+	// Combined with:
+	// Field 2: receiving TCP if being handed off or + if sp2 is shown.
+	// TODO: * if field 1 is showing pilot-reported altitude
+	field1Length := util.Select(fa.Datablocks.AllowLongScratchpad, 4, 3)
+	fmt1 := func(s string) string {
+		for len([]rune(s)) < field1Length {
+			s += " "
+		}
+		return s
+	}
+	if pilotReportedAltitude {
+		formatDBText(db.field12[0][:], fmt1(altitude+"*"), color, false)
+	} else {
+		formatDBText(db.field12[0][:], fmt1(altitude)+handoffId, color, false)
+	}
+	f12Idx := 1
+	if sp1 != "" {
+		formatDBText(db.field12[1][:], fmt1(sp1)+handoffId, color, false)
+		f12Idx++
+	}
+	if fa.Datablocks.PDB.ShowScratchpad2 && sfp.SecondaryScratchpad != "" {
+		formatDBText(db.field12[f12Idx][:], fmt1(sfp.SecondaryScratchpad)+"+", color, false)
+	}
+
+	// Field 3: by default, groundspeed and/or "V" for VFR, "E" for overflight, followed by CWT,
+	// but may be adapted.
+	rulesCategory := flightRulesIndicator(sfp)
+	cwt := util.Select(sfp.CWTCategory != "", sfp.CWTCategory, " ")
+	if fa.Datablocks.PDB.SplitGSAndCWT {
+		// [GS, CWT] timesliced
+		formatDBText(db.field3[0][:], groundspeed, color, false)
+		formatDBText(db.field3[1][:], rulesCategory+cwt, color, false)
+	} else {
+		if fa.Datablocks.PDB.HideGroundspeed {
+			// [CWT]
+			formatDBText(db.field3[0][:], rulesCategory+cwt, color, false)
+		} else {
+			// [GS CWT]
+			formatDBText(db.field3[0][:], groundspeed+rulesCategory+cwt, color, false)
+		}
+		if fa.Datablocks.PDB.ShowAircraftType {
+			// [ACTYPE]
+			formatDBText(db.field3[1][:], actype, color, false)
+		}
+	}
+
+	// Field 4: ident
+	if trk.Ident {
+		formatDBText(db.field4[:], "ID", color, true)
+	}
+
+	return db
+}
+
+func (sp *STARSPane) buildFullDatablock(ctx *panes.Context, trk sim.Track,
+	sfp *sim.NASFlightPlan, color renderer.RGB, brightness radar.Brightness,
+	altitude, sp1, groundspeed, handoffId, handoffTCP, actype string,
+	pilotReportedAltitude, beaconator, beaconMismatch,
+	displayBeaconCode bool) *fullDatablock {
+	fa := ctx.FacilityAdaptation
+	state := sp.TrackState[trk.ADSBCallsign]
+	db := sp.fdbArena.AllocClear()
+
+	// Line 0
+	// Field 0: special conditions, safety alerts (red), cautions (yellow)
+	alerts := sp.getDatablockAlerts(ctx, trk, FullDatablock)
+	copy(db.field0[:], alerts[:])
+
+	// Line 1
+	// Field 1: ACID (or squawk if beaconator)
+	if beaconator && trk.Mode != av.TransponderModeStandby {
+		formatDBText(db.field1[:], trk.Squawk.String(), color, false)
+	} else {
+		formatDBText(db.field1[:], string(sfp.ACID), color, false)
+	}
+
+	// Field 2: various symbols for inhibited stuff
+	if state != nil { // FIXME: these should live in NASFlightPlan
+		if state.InhibitMSAW || sfp.DisableMSAW {
+			if sfp.DisableCA {
+				formatDBText(db.field2[:], "+", color, false)
+			} else {
+				formatDBText(db.field2[:], "*", color, false)
+			}
+		} else if sfp.DisableCA || sfp.MCISuppressedCode != 0 {
+			formatDBText(db.field2[:], STARSTriangleCharacter, color, false)
+		}
+	}
+
+	// Field 8: point out, rejected pointout, redirected
+	// handoffs... Some flash, some don't.
+	if state != nil {
+		if tcps, ok := sp.PointOuts[sfp.ACID]; ok && ctx.UserControlsPosition(tcps.To) {
+			formatDBText(db.field8[:], "PO", color, false)
+		} else if ok && ctx.UserControlsPosition(tcps.From) {
+			id := tcps.To
+			if len(id) > 1 && id[0] >= '0' && id[0] <= '9' {
+				id = id[1:]
+			}
+			formatDBText(db.field8[:], "PO"+string(id), color, false)
+		} else if ctx.Now.Before(state.UNFlashingEndTime) {
+			formatDBText(db.field8[:], "UN", color, true)
+		} else if state.POFlashingEndTime.After(ctx.Now) {
+			formatDBText(db.field8[:], "PO", color, true)
+		} else if sfp.RedirectedHandoff.ShowRDIndicator(ctx.UserPrimaryPosition(), state.RDIndicatorEnd) {
+			formatDBText(db.field8[:], "RD", color, false)
+		}
+	}
+
+	// Line 2
+	// Fields 3 and 4: 3 is altitude plus possibly other stuff; 4 is
+	// special indicators, possible associated with 3, so they're a
+	// single field
+	field3Length := util.Select(fa.Datablocks.AllowLongScratchpad, 4, 3)
+	fmt3 := func(s string) string {
+		for len([]rune(s)) < field3Length {
+			s += " "
+		}
+		return s
+	}
+
+	idx34 := 0
+	if altitude != "" || handoffId != " " {
+		if pilotReportedAltitude {
+			formatDBText(db.field34[idx34][:], fmt3(altitude+"*"), color, false)
+			idx34++
+		} else {
+			formatDBText(db.field34[idx34][:], fmt3(altitude)+handoffId, color, false)
+			idx34++
+		}
+	}
+	if sp1 != "" {
+		formatDBText(db.field34[idx34][:], fmt3(sp1)+handoffId, color, false)
+		idx34++
+	}
+	if handoffTCP != "" && !fa.Datablocks.FDB.DisplayFacilityOnly {
+		formatDBText(db.field34[idx34][:], fmt3(handoffTCP)+handoffId, color, false)
+	} else if sfp.SecondaryScratchpad != "" && !fa.Datablocks.FDB.Scratchpad2OnLine3 { // don't show secondary if we're showing a center
+		// TODO: confirm no handoffId here
+		formatDBText(db.field34[idx34][:], fmt3(sfp.SecondaryScratchpad)+"+", color, false)
+	}
+
+	// Field 5
+	sp.fillFDBField5(ctx, trk, sfp, db, color, groundspeed, actype)
+
+	// Field 6: ATPA info and possibly beacon code; doesn't apply to unsupported DB
+	idx6 := 0
+	if !trk.IsUnsupportedDB() {
+		if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
+			formatDBText(db.field6[idx6][:], "*TPA", color, false)
+			idx6++
+		} else if state.IntrailDistance != 0 && sp.currentPrefs().DisplayATPAInTrailDist && !state.InhibitDisplayInTrailDist {
+			distColor := color
+			if state.ATPAStatus == ATPAStatusWarning {
+				distColor = sp.Colors.ATPAWarning
+			} else if state.ATPAStatus == ATPAStatusAlert {
+				distColor = sp.Colors.ATPAAlert
+			}
+			if sfp.CWTCategory == "" {
+				formatDBText(db.field6[idx6][:], "NOWGT", distColor, false)
+			} else {
+				formatDBText(db.field6[idx6][:], fmt.Sprintf("%.2f", state.IntrailDistance), distColor, false)
+			}
+			idx6++
+		}
+		if displayBeaconCode {
+			formatDBText(db.field6[idx6][:], trk.Squawk.String(), brightness.ScaleRGB(sp.Colors.TextWarning), true)
+			idx6++
+		} else if beaconMismatch {
+			formatDBText(db.field6[idx6][:], trk.Squawk.String(), color, false)
+			idx6++
+		} else if _, ok := sp.DuplicateBeacons[trk.Squawk]; ok && state.DBAcknowledged != trk.Squawk {
+			formatDBText(db.field6[idx6][:], "DB", color, false)
+			idx6++
+		}
+	}
+
+	// Field 7
+	sp.fillFDBField7(ctx, trk, sfp, db, color, beaconMismatch)
+
+	return db
+}
+
+func (sp *STARSPane) fillFDBField5(ctx *panes.Context, trk sim.Track,
+	sfp *sim.NASFlightPlan, db *fullDatablock, color renderer.RGB,
+	groundspeed, actype string) {
+	state := sp.TrackState[trk.ADSBCallsign]
+	rulesCategory := flightRulesIndicator(sfp)
+	rulesCategory += util.Select(sfp.CWTCategory != "", sfp.CWTCategory, " ")
+	rulesCategory += " "
+
+	field5Idx := 0
+	// 6-107 force display / inhibit ac type display
+	inhibitACType := sfp.InhibitACTypeDisplay ||
+		(state != nil && state.InhibitACTypeDisplay != nil && *state.InhibitACTypeDisplay)
+	forceACType := ctx.Now.Before(sfp.ForceACTypeDisplayEndTime) ||
+		(state != nil && ctx.Now.Before(state.ForceACTypeDisplayEndTime))
+	if state != nil && (!forceACType || inhibitACType || actype == "" || trk.Ident) && !trk.IsUnsupportedDB() {
+		if state.IFFlashing {
+			if trk.Ident {
+				formatDBText(db.field5[0][:], "IF"+"ID", color, true)
+			} else {
+				formatDBText(db.field5[0][:], "IF"+rulesCategory, color, true)
+			}
+		} else {
+			gs := util.Select(sfp.HoldState, "HL", groundspeed)
+			idx := formatDBText(db.field5[0][:], gs, color, false)
+			if trk.Ident {
+				formatDBText(db.field5[0][idx:], "ID", color, true)
+			} else {
+				formatDBText(db.field5[0][idx:], rulesCategory, color, false)
+			}
+		}
+		field5Idx++
+	}
+	// Field 5: +aircraft type and possibly requested altitude, if not
+	// identing.
+	if !trk.Ident {
+		if actype != "" && !inhibitACType {
+			rnav := util.Select(sfp.RNAV, "^", " ")
+			formatDBText(db.field5[field5Idx][:], actype+rnav, color, false)
+			field5Idx++
+		}
+
+		if !forceACType && (state == nil || (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
+			(state.DisplayRequestedAltitude == nil && sp.DisplayRequestedAltitude)) {
+			if alt := sfp.RequestedAltitude; alt != 0 {
+				// FIXME: 2-67: with 2-char TCPs, the "R" goes in the
+				// second place in field 4 when requested altitude is
+				// being displayed--i.e., it is always in the 5th
+				// column of this row of the datablock.
+				formatDBText(db.field5[field5Idx][:], fmt.Sprintf("R%03d ", alt/100), color, false)
+				field5Idx++
+			}
+		}
+	}
+}
+
+func (sp *STARSPane) fillFDBField7(ctx *panes.Context, trk sim.Track,
+	sfp *sim.NASFlightPlan, db *fullDatablock, color renderer.RGB,
+	beaconMismatch bool) {
+	if ctx.FacilityAdaptation.Datablocks.FDB.Scratchpad2OnLine3 {
+		altSet := sfp.AssignedAltitude != 0
+		sp2 := sfp.SecondaryScratchpad
+		sp2Set := sp2 != ""
+
+		if altSet {
+			leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
+			altText := fmt.Sprintf("A%03d", sfp.AssignedAltitude/100)
+			startAltIdx := 0
+			if leaderLineDirection < math.South {
+				startAltIdx = 1 // N–SE leader → indent one char
+			}
+			for i, ch := range altText {
+				if startAltIdx+i >= len(db.field7[0]) {
+					break
+				}
+				db.field7[0][startAltIdx+i] = dbChar{ch: ch, color: color, flashing: false}
+			}
+		}
+
+		if sp2Set {
+			leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
+			runes := []rune(sp2)
+			if len(runes) > 3 {
+				runes = runes[:4]
+			}
+			for len(runes) < 4 {
+				runes = append(runes, ' ')
+			}
+			text := string(runes) + "+"
+
+			startIdx := 0
+			if leaderLineDirection >= math.South {
+				startIdx = 5 - len([]rune(text)) // char 6
+			} else {
+				startIdx = 2
+			}
+
+			targetField := util.Select(altSet, 1, 0) // if no alt, show spad2 in slot 0
+			formatDBText(db.field7[targetField][startIdx:], text, color, false)
+		}
+
+		if beaconMismatch {
+			for idx := range db.field7 {
+				if fieldEmpty(db.field7[idx][:]) {
+					startIdx := util.Select(sp.getLeaderLineDirection(ctx, trk) >= math.South, 1, 0)
+					formatDBText(db.field7[idx][startIdx:], sfp.AssignedSquawk.String(), color, true)
+					break
+				}
+			}
+		}
+	} else {
+		// === Default behavior: Assigned altitude + squawk mismatch ===
+		if alt := sfp.AssignedAltitude; alt != 0 {
+			formatDBText(db.field7[0][:], fmt.Sprintf("A%03d", alt/100), color, false)
+		}
+		if beaconMismatch {
+			idx := util.Select(fieldEmpty(db.field7[0][:]), 0, 1)
+			// In S-NW (right-justified) leaders, offset ABC by one to shift RBC left.
+			startIdx := util.Select(sp.getLeaderLineDirection(ctx, trk) >= math.South, 1, 0)
+			formatDBText(db.field7[idx][startIdx:], sfp.AssignedSquawk.String(), color, true)
+		}
+	}
 }
 
 func (sp *STARSPane) getGhostDatablock(ctx *panes.Context, ghost *av.GhostTrack, color renderer.RGB) ghostDatablock {

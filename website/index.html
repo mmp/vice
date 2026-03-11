@@ -4613,7 +4613,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                       Example: <code>N123AB 6502 ∆ARR +R22 280</code>.</td>
                   </tr>
                   <tr>
-                    <td><code>[INIT CTRL](ACID)&nbsp;(BEACON)</code></td>
+                    <td><code>[INIT CTNL](ACID)&nbsp;(BEACON)</code></td>
                     <td>Create a flight plan with a specified beacon code.
                       Optional additional fields: <code>∆(SP1)</code> <code>+(SP2)</code> <code>(#/AC TYPE/EQ)</code>.</td>
                   </tr>
@@ -4658,7 +4658,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <code>(ASSIGNED ALT)</code>, and <code>(#/AC TYPE/EQ)</code>.</td>
                 </tr>
                 <tr>
-                  <td><code>[INIT CTRL](ACID)[SLEW]</code></td>
+                  <td><code>[INIT CTNL](ACID)[SLEW]</code></td>
                   <td>Create a new flight plan and associate it with the track.
                     Optional additional parameters:<code>(BEACON)</code>, <code>∆(SP1)</code>, <code>+(SP2)</code>,
                     <code>(ASSIGNED ALT)</code>, and <code>(#/AC TYPE/EQ)</code>.</td>
@@ -4688,7 +4688,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[INIT CTRL](FLT ID)[SLEW]</code></td>
+                    <td><code>[INIT CTNL](FLT ID)[SLEW]</code></td>
                     <td>Activate the identified flight plan and associate it with the slewed track.
                     Takes the following optional parameters to modify the flight plan before it
                     is associated: <code>(SP1)</code>,  <code>∆(SP1)</code>, <code>(+SP2)</code>,
@@ -5030,7 +5030,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <td>Suspend the selected flight plan.</td>
                 </tr>
                 <tr>
-                  <td><code>[INIT CTRL][SLEW]</code> /<br><code>[INIT CTRL](FLT ID)</code></td>
+                  <td><code>[INIT CTNL][SLEW]</code> /<br><code>[INIT CTNL](FLT ID)</code></td>
                   <td>Activates the selected suspended flight plan. The following optional parameters
                     may also be specified to modify the flight plan as it is unsuspended:
                     <code>(SP1)</code>, <code>∆(SP1)</code>, or <code>+(SP2)</code>.
@@ -5102,7 +5102,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </thead>
               <tbody>
                 <tr>
-                  <td><code>[INIT CTRL](FLT ID)[SCOPE]</code></td>
+                  <td><code>[INIT CTNL](FLT ID)[SCOPE]</code></td>
                   <td>Create an unsupported datablock at the clicked position on the scope, <code>[SCOPE]</code>
                     from an existing flight plan. The following additional arguments to modify the
                     unsupported datablock's flight plan may also be specified,
