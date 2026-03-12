@@ -14,7 +14,7 @@
   "audio_duration_ms": 6088,
   "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
-  "callsign": "DAL541",
+  "callsign": "NKS5118",
   "command": "D40 S200",
   "stt_aircraft": {
     "Allegiant 30 76": {

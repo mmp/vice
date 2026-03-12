@@ -483,6 +483,7 @@ var commandKeywords = map[string]string{
 	"clearance":   "clearance",
 	"visual":      "visual",
 	"ils":         "ils",
+	"isle":        "ils",
 	"rnav":        "rnav",
 	"vor":         "vor",
 	"runway":      "runway",

@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce GTX 1650 (4151MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "SWA8221",
-  "command": "A30 CI1L S180",
+  "command": "A30 CI1L S180/U5",
   "stt_aircraft": {
     "Southwest 17 24": {
       "Callsign": "SWA1724",

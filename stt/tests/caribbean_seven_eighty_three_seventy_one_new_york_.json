@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 3060 (12108MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "BWA371",
-  "command": "EI2R S250",
+  "command": "EI2L S250",
   "stt_aircraft": {
     "AeroMexico three 35 heavy": {
       "Callsign": "AMX335",
