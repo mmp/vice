@@ -67,7 +67,7 @@
     },
     "1D": {
       "callsign": "MIA_D_DEP",
-      "frequency": 119450,
+      "frequency": 126850,
       "radio_name": "Miami Departure"
     },
     "1W": {
@@ -85,14 +85,24 @@
       "frequency": 133770,
       "radio_name": "Miami Approach"
     },
+    "1G": {
+      "callsign": "MIA_G_APP",
+      "frequency": 119700,
+      "radio_name": "Miami Approach"
+    },
     "1J": {
       "callsign": "MIA_J_APP",
-      "frequency": 118100,
+      "frequency": 118650,
       "radio_name": "Miami Approach"
     },
     "1F": {
       "callsign": "MIA_F_APP",
       "frequency": 133720,
+      "radio_name": "Miami Approach"
+    },
+    "1Z": {
+      "callsign": "MIA_Z_APP",
+      "frequency": 128600,
       "radio_name": "Miami Approach"
     }
   },
@@ -100,54 +110,93 @@
     "configurations": {
       "KMI": {
         "inbound_assignments": {
-          "BHHIA3 NOSATS EAST": "1N",
+          "BHHIA3 NOSATS EAST": "1R",
           "BNFSH3 NOSATS EAST": "1N",
           "CSTAL3 NOSATS EAST": "1N",
           "CUUDA3 NOSATS EAST": "1R",
-          "FROGZ4 NOSATS EAST": "1N",
+          "FROGZ4 NOSATS EAST": "1S",
           "OLAHS3 NOSATS EAST": "1D",
           "SNDBR3 NOSATS EAST": "1S",
-          "TEEKY3 NOSATS EAST": "1J",
+          "TEEKY3 NOSATS EAST": "1R",
           "VIICE2 NOSATS EAST": "1S"
         },
         "departure_assignments": {
-          "KFLL": "1D",
-          "KMIA": "1W"
+          "KFLL/AGERS1": "1L",
+          "KFLL/BNICE2": "1L",
+          "KFLL/DORRL2": "1L",
+          "KFLL/FEALX2": "1L",
+          "KFLL/FRSBE2": "1L",
+          "KFLL/GLADZ4": "1L",
+          "KFLL/HROCK2": "1L",
+          "KFLL/LIFRR2": "1L",
+          "KFLL/REGAE2": "1D",
+          "KFLL/SNAPR2": "1D",
+          "KFLL/MAYNR3": "1D",
+          "KMIA/ALTNN2": "1D",
+          "KMIA/BNGOS4": "1D",
+          "KMIA/FLMGO2": "1D",
+          "KMIA/FOLZZ3": "1D",
+          "KMIA/GLADZ4": "1D",
+          "KMIA/HURCN4": "1D",
+          "KMIA/GWAVA2": "1W",
+          "KMIA/KLADA2": "1W",
+          "KMIA/MAYNR3": "1W"
         },
         "default_consolidation": {
-          "1D": ["1L", "1V", "1W"],
-          "1L": ["1R"],
+          "1D": ["1L", "1Z", "1V", "1W"],
+          "1L": ["1R", "1G"],
           "1R": ["1F", "1J"],
           "1S": ["1A"],
-          "1V": ["1N", "1S"]
+          "1V": ["1N", "1S"],
+          "1W": ["1H"],
+          "1Z": ["1Q"]
         }
       },
       "KM1": {
         "inbound_assignments": {
-          "BHHIA3": "1N",
+          "BHHIA3": "1R",
           "BNFSH3": "1N",
           "CSTAL3": "1N",
           "CUUDA3": "1R",
-          "FROGZ4": "1N",
+          "FROGZ4": "1S",
           "OLAHS3": "1D",
           "SNDBR3": "1S",
-          "TEEKY3": "1J",
+          "TEEKY3": "1R",
           "VIICE2": "1S"
         },
         "departure_assignments": {
-          "KFLL": "1L",
-          "KFXE": "1Q",
-          "KMIA": "1D",
-          "KOPF": "1Q",
+          "KFLL/AGERS1": "1L",
+          "KFLL/BNICE2": "1L",
+          "KFLL/DORRL2": "1L",
+          "KFLL/FEALX2": "1L",
+          "KFLL/FRSBE2": "1L",
+          "KFLL/GLADZ4": "1L",
+          "KFLL/HROCK2": "1L",
+          "KFLL/LIFRR2": "1L",
+          "KFLL/REGAE2": "1D",
+          "KFLL/SNAPR2": "1D",
+          "KFLL/MAYNR3": "1D",
+          "KMIA/ALTNN2": "1D",
+          "KMIA/BNGOS4": "1D",
+          "KMIA/FLMGO2": "1D",
+          "KMIA/FOLZZ3": "1D",
+          "KMIA/GLADZ4": "1D",
+          "KMIA/HURCN4": "1D",
+          "KMIA/GWAVA2": "1W",
+          "KMIA/KLADA2": "1W",
+          "KMIA/MAYNR3": "1W",
+          "KFXE": "1G",
+          "KOPF": "1Z",
           "KTMB": "1H"
         },
         "default_consolidation": {
-          "1D": ["1L", "1Q", "1V", "1W"],
-          "1L": ["1R"],
+          "1D": ["1L", "1Z", "1V", "1W"],
+          "1L": ["1R", "1G"],
           "1R": ["1F", "1J"],
           "1S": ["1A"],
           "1V": ["1N", "1S"],
-          "1W": ["1H"]
+          "1W": ["1H"],
+          "1Z": ["1Q"]
         }
       },
       "KM2": {
@@ -157,21 +206,41 @@
           "CSTAL3 NOSATS WEST": "1N",
           "CUUDA3 NOSATS WEST": "1R",
           "FROGZ4 NOSATS WEST": "1S",
-          "OLAHS3 NOSATS WEST": "1J",
+          "OLAHS3 NOSATS WEST": "1Z",
           "SNDBR3 NOSATS WEST": "1S",
           "TEEKY3 NOSATS WEST": "1R",
           "VIICE2 NOSATS WEST": "1S"
         },
         "departure_assignments": {
-          "KFLL": "1D",
-          "KMIA": "1D"
+          "KFLL/AGERS1": "1L",
+          "KFLL/BNICE2": "1L",
+          "KFLL/DORRL2": "1L",
+          "KFLL/FEALX2": "1L",
+          "KFLL/FRSBE2": "1L",
+          "KFLL/HROCK2": "1L",
+          "KFLL/LIFRR2": "1L",
+          "KFLL/REGAE2": "1L",
+          "KFLL/SNAPR2": "1L",
+          "KFLL/GLADZ4": "1D",
+          "KFLL/MAYNR3": "1D",
+          "KMIA/ALTNN2": "1D",
+          "KMIA/BNGOS4": "1D",
+          "KMIA/FLMGO2": "1D",
+          "KMIA/FOLZZ3": "1D",
+          "KMIA/HURCN4": "1D",
+          "KMIA/GLADZ4": "1W",
+          "KMIA/GWAVA2": "1W",
+          "KMIA/KLADA2": "1W",
+          "KMIA/MAYNR3": "1W"
         },
         "default_consolidation": {
-          "1D": ["1L", "1V", "1W"],
-          "1L": ["1R"],
+          "1D": ["1L", "1Z", "1V", "1W"],
+          "1L": ["1R", "1G"],
           "1R": ["1F", "1J"],
           "1S": ["1A"],
-          "1V": ["1N", "1S"]
+          "1V": ["1N", "1S"],
+          "1W": ["1H"],
+          "1Z": ["1Q"]
         }
       },
       "KM3": {
@@ -181,25 +250,44 @@
           "CSTAL3": "1N",
           "CUUDA3": "1R",
           "FROGZ4": "1S",
-          "OLAHS3": "1J",
+          "OLAHS3": "1Z",
           "SNDBR3": "1S",
           "TEEKY3": "1R",
           "VIICE2": "1S"
         },
         "departure_assignments": {
-          "KFLL": "1L",
-          "KFXE": "1Q",
-          "KMIA": "1W",
+          "KFLL/AGERS1": "1L",
+          "KFLL/BNICE2": "1L",
+          "KFLL/DORRL2": "1L",
+          "KFLL/FEALX2": "1L",
+          "KFLL/FRSBE2": "1L",
+          "KFLL/HROCK2": "1L",
+          "KFLL/LIFRR2": "1L",
+          "KFLL/REGAE2": "1L",
+          "KFLL/SNAPR2": "1L",
+          "KFLL/GLADZ4": "1D",
+          "KFLL/MAYNR3": "1D",
+          "KMIA/ALTNN2": "1D",
+          "KMIA/BNGOS4": "1D",
+          "KMIA/FLMGO2": "1D",
+          "KMIA/FOLZZ3": "1D",
+          "KMIA/HURCN4": "1D",
+          "KMIA/GLADZ4": "1W",
+          "KMIA/GWAVA2": "1W",
+          "KMIA/KLADA2": "1W",
+          "KMIA/MAYNR3": "1W",
+          "KFXE": "1G",
           "KOPF": "1Q",
           "KTMB": "1H"
         },
         "default_consolidation": {
-          "1D": ["1L", "1Q", "1V", "1W"],
-          "1L": ["1R"],
+          "1D": ["1L", "1Z", "1V", "1W"],
+          "1L": ["1R", "1G"],
           "1R": ["1F", "1J"],
           "1S": ["1A"],
           "1V": ["1N", "1S"],
-          "1W": ["1H"]
+          "1W": ["1H"],
+          "1Z": ["1Q"]
         }
       }
     },
@@ -448,8 +536,8 @@
         "video_maps": [
           "MIA-001S EAST OPERATIONS ARRIVAL",
           "MIA-002S WEST OPERATIONS ARRIVAL",
+          "MIA-049S EMERGENCY MAP",
           "MIA-003S MIA DEPARTURE EAST",
-          "MIA-036S MIA DEPARTURE WEST",
           "FLL-001S EAST OPERATIONS",
           "FLL-002S WEST OPERATIONS",
           "MIA-850S CLASS D AIRSPACE",
@@ -471,7 +559,7 @@
           "FLL-006S FLL GEO MAP",
           "FLL-013S BRITE 2/FLL",
           "MIA-004S EMERGENCY-ILS MONITOR",
-          "MIA-049S EMERGENCY MAP",
+          "MIA-036S MIA DEPARTURE WEST",
           "MIA-301S FLL DEP EAST",
           "MIA-300S FLL DEP WEST",
           "MIA-304S MIA NORTH DEP EAST",
@@ -520,6 +608,20 @@
           "FLL-016S G EAST AIRSPACE",
           "FLL-021S G WEST AIRSPACE"
         ]
+      }
+    },
+    "controllers": {
+      "1L": {
+        "center": "N026.04.18.679,W080.09.01.076"
+      },
+      "1R": {
+        "center": "N026.04.18.679,W080.09.01.076"
+      },
+      "1F": {
+        "center": "N026.04.18.679,W080.09.01.076"
+      },
+      "1J": {
+        "center": "N026.04.18.679,W080.09.01.076"
       }
     }
   },

@@ -5128,7 +5128,7 @@
         }
       },
       "configuration": "KMI",
-      "default_maps": ["MIA-001S EAST OPERATIONS ARRIVAL", "MIA-003S MIA DEPARTURE EAST", "FLL-001S EAST OPERATIONS"],
+      "default_maps": ["MIA-001S EAST OPERATIONS ARRIVAL", "FLL-001S EAST OPERATIONS"],
       "departure_runways": [
         {
           "airport": "KMIA",
@@ -5210,7 +5210,7 @@
         }
       },
       "configuration": "KM2",
-      "default_maps": ["MIA-002S WEST OPERATIONS ARRIVAL", "MIA-036S MIA DEPARTURE WEST", "FLL-002S WEST OPERATIONS"],
+      "default_maps": ["MIA-002S WEST OPERATIONS ARRIVAL", "FLL-002S WEST OPERATIONS"],
       "departure_runways": [
         {
           "airport": "KMIA",
@@ -5321,7 +5321,7 @@
         }
       },
       "configuration": "KM1",
-      "default_maps": ["MIA-001S EAST OPERATIONS ARRIVAL", "MIA-003S MIA DEPARTURE EAST", "FLL-001S EAST OPERATIONS"],
+      "default_maps": ["MIA-001S EAST OPERATIONS ARRIVAL", "FLL-001S EAST OPERATIONS"],
       "departure_runways": [
         {
           "airport": "KMIA",
@@ -5447,7 +5447,7 @@
         }
       },
       "configuration": "KM3",
-      "default_maps": ["MIA-002S WEST OPERATIONS ARRIVAL", "MIA-036S MIA DEPARTURE WEST", "FLL-002S WEST OPERATIONS"],
+      "default_maps": ["MIA-002S WEST OPERATIONS ARRIVAL", "FLL-002S WEST OPERATIONS"],
       "departure_runways": [
         {
           "airport": "KMIA",
