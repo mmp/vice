@@ -1,5 +1,5 @@
 {
-  "time": "2026-03-10T22:30:22.002036021Z",
+  "time": "2026-03-10T22:33:22.427934303Z",
   "level": "INFO",
   "msg": "STT command",
   "callstack": [
@@ -9,13 +9,13 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "United Fifty Five Sixty short approach right of contact expect ILS one eight right approach information kilos current",
-  "whisper_duration_ms": 497.636,
-  "audio_duration_ms": 6088,
+  "transcript": "Air Shuttle 41 91 speed one one six zero",
+  "whisper_duration_ms": 490.799,
+  "audio_duration_ms": 5960,
   "processor": "GPU: NVIDIA GeForce RTX 4060 (8171MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
-  "callsign": "UAL5560",
-  "command": "EI8R ATIS/K",
+  "callsign": "ASH4191",
+  "command": "S160",
   "stt_aircraft": {
     "Air Shuttle 24 87": {
       "Callsign": "ASH2487",
@@ -25,8 +25,6 @@
         "Charlotte Douglas": "KCLT",
         "Emers": "EMERS",
         "Jhunt": "JHUNT",
-        "Nella": "NELLA",
-        "Rudkey": "RUDKY",
         "Woven": "WOVEN"
       },
       "CandidateApproaches": {
@@ -63,8 +61,8 @@
       "AssignedApproach": "ILS Runway 18R",
       "SID": "",
       "STAR": "JONZE5",
-      "Altitude": 6000,
-      "State": "arrival",
+      "Altitude": 5865,
+      "State": "cleared approach",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
       "AddressingForm": 0,
@@ -76,9 +74,7 @@
       "Fixes": {
         "Awed": "AUUDD",
         "Charlotte Douglas": "KCLT",
-        "Emers": "EMERS",
-        "Jhunt": "JHUNT",
-        "Woven": "WOVEN"
+        "Jhunt": "JHUNT"
       },
       "CandidateApproaches": {
         "I L S runway one eight center": "I8C",
@@ -114,67 +110,16 @@
       "AssignedApproach": "ILS Runway 18R",
       "SID": "",
       "STAR": "JONZE5",
-      "Altitude": 6000,
+      "Altitude": 4059,
       "State": "cleared approach",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
       "AddressingForm": 0,
       "LAHSORunways": null
     },
-    "Blue Streak 86 56": {
-      "Callsign": "JIA8656",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Awed": "AUUDD",
-        "Charlotte Douglas": "KCLT",
-        "Emers": "EMERS",
-        "Jhunt": "JHUNT",
-        "Woven": "WOVEN"
-      },
-      "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
-      },
-      "ApproachFixes": {
-        "I8C": {
-          "Fersa": "FERSA",
-          "Haggle": "HAGUL",
-          "Jedko": "JEDKO",
-          "Lerdy": "LERDY",
-          "Ozeji": "OZEJI",
-          "Silo": "CYLOW",
-          "Tommy": "TOMME"
-        },
-        "I8L": {
-          "Cavey": "CAVVI",
-          "Eagle": "EGUUL",
-          "Gilge": "GILGE",
-          "Quewed": "QUWED",
-          "Snack": "SNAKK"
-        },
-        "I8R": {
-          "Awed": "AUUDD",
-          "Emers": "EMERS",
-          "Jhunt": "JHUNT",
-          "Nella": "NELLA",
-          "Rudkey": "RUDKY",
-          "Woven": "WOVEN"
-        }
-      },
-      "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
-      "STAR": "JONZE5",
-      "Altitude": 6000,
-      "State": "cleared approach",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
-    },
-    "Delta 26": {
-      "Callsign": "DAL26",
-      "AircraftType": "B712",
+    "Air Shuttle 80 61": {
+      "Callsign": "ASH8061",
+      "AircraftType": "E75L",
       "Fixes": {
         "Awed": "AUUDD",
         "Charlotte Douglas": "KCLT",
@@ -219,177 +164,16 @@
       "AssignedApproach": "ILS Runway 18R",
       "SID": "",
       "STAR": "JONZE5",
-      "Altitude": 6262,
+      "Altitude": 6888,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
       "AddressingForm": 0,
       "LAHSORunways": null
     },
-    "Spirit Wings 95 32": {
-      "Callsign": "NKS9532",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Awed": "AUUDD",
-        "Charlotte Douglas": "KCLT",
-        "Emers": "EMERS",
-        "Jhunt": "JHUNT",
-        "Jorden": "JRDEN",
-        "Nella": "NELLA",
-        "Rudkey": "RUDKY",
-        "Woven": "WOVEN"
-      },
-      "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
-      },
-      "ApproachFixes": {
-        "I8C": {
-          "Fersa": "FERSA",
-          "Haggle": "HAGUL",
-          "Jedko": "JEDKO",
-          "Lerdy": "LERDY",
-          "Ozeji": "OZEJI",
-          "Silo": "CYLOW",
-          "Tommy": "TOMME"
-        },
-        "I8L": {
-          "Cavey": "CAVVI",
-          "Eagle": "EGUUL",
-          "Gilge": "GILGE",
-          "Quewed": "QUWED",
-          "Snack": "SNAKK"
-        },
-        "I8R": {
-          "Awed": "AUUDD",
-          "Emers": "EMERS",
-          "Jhunt": "JHUNT",
-          "Nella": "NELLA",
-          "Rudkey": "RUDKY",
-          "Woven": "WOVEN"
-        }
-      },
-      "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
-      "STAR": "JONZE5",
-      "Altitude": 7495,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
-    },
-    "United 20 96": {
-      "Callsign": "UAL2096",
+    "American three 59": {
+      "Callsign": "AAL359",
       "AircraftType": "B738",
-      "Fixes": {
-        "Awed": "AUUDD",
-        "Charlotte Douglas": "KCLT",
-        "Emers": "EMERS",
-        "Jhunt": "JHUNT",
-        "Nella": "NELLA",
-        "Rudkey": "RUDKY",
-        "Woven": "WOVEN"
-      },
-      "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
-      },
-      "ApproachFixes": {
-        "I8C": {
-          "Fersa": "FERSA",
-          "Haggle": "HAGUL",
-          "Jedko": "JEDKO",
-          "Lerdy": "LERDY",
-          "Ozeji": "OZEJI",
-          "Silo": "CYLOW",
-          "Tommy": "TOMME"
-        },
-        "I8L": {
-          "Cavey": "CAVVI",
-          "Eagle": "EGUUL",
-          "Gilge": "GILGE",
-          "Quewed": "QUWED",
-          "Snack": "SNAKK"
-        },
-        "I8R": {
-          "Awed": "AUUDD",
-          "Emers": "EMERS",
-          "Jhunt": "JHUNT",
-          "Nella": "NELLA",
-          "Rudkey": "RUDKY",
-          "Woven": "WOVEN"
-        }
-      },
-      "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
-      "STAR": "JONZE5",
-      "Altitude": 6000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
-    },
-    "United 55 60": {
-      "Callsign": "UAL5560",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Awed": "AUUDD",
-        "Charlotte Douglas": "KCLT",
-        "Emers": "EMERS",
-        "Jhunt": "JHUNT",
-        "Jorden": "JRDEN",
-        "Nella": "NELLA",
-        "Rudkey": "RUDKY",
-        "Woven": "WOVEN"
-      },
-      "CandidateApproaches": {
-        "I L S runway one eight center": "I8C",
-        "I L S runway one eight left": "I8L",
-        "I L S runway one eight right": "I8R"
-      },
-      "ApproachFixes": {
-        "I8C": {
-          "Fersa": "FERSA",
-          "Haggle": "HAGUL",
-          "Jedko": "JEDKO",
-          "Lerdy": "LERDY",
-          "Ozeji": "OZEJI",
-          "Silo": "CYLOW",
-          "Tommy": "TOMME"
-        },
-        "I8L": {
-          "Cavey": "CAVVI",
-          "Eagle": "EGUUL",
-          "Gilge": "GILGE",
-          "Quewed": "QUWED",
-          "Snack": "SNAKK"
-        },
-        "I8R": {
-          "Awed": "AUUDD",
-          "Emers": "EMERS",
-          "Jhunt": "JHUNT",
-          "Nella": "NELLA",
-          "Rudkey": "RUDKY",
-          "Woven": "WOVEN"
-        }
-      },
-      "AssignedApproach": "ILS Runway 18R",
-      "SID": "",
-      "STAR": "JONZE5",
-      "Altitude": 9490,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": null
-    },
-    "United niner": {
-      "Callsign": "UAL9",
-      "AircraftType": "A319",
       "Fixes": {
         "Awed": "AUUDD",
         "Charlotte Douglas": "KCLT",
@@ -434,7 +218,318 @@
       "AssignedApproach": "ILS Runway 18R",
       "SID": "",
       "STAR": "FLIPZ4",
-      "Altitude": 8801,
+      "Altitude": 7495,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 86 56": {
+      "Callsign": "JIA8656",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Awed": "AUUDD",
+        "Charlotte Douglas": "KCLT",
+        "Jhunt": "JHUNT"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight center": "I8C",
+        "I L S runway one eight left": "I8L",
+        "I L S runway one eight right": "I8R"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Fersa": "FERSA",
+          "Haggle": "HAGUL",
+          "Jedko": "JEDKO",
+          "Lerdy": "LERDY",
+          "Ozeji": "OZEJI",
+          "Silo": "CYLOW",
+          "Tommy": "TOMME"
+        },
+        "I8L": {
+          "Cavey": "CAVVI",
+          "Eagle": "EGUUL",
+          "Gilge": "GILGE",
+          "Quewed": "QUWED",
+          "Snack": "SNAKK"
+        },
+        "I8R": {
+          "Awed": "AUUDD",
+          "Emers": "EMERS",
+          "Jhunt": "JHUNT",
+          "Nella": "NELLA",
+          "Rudkey": "RUDKY",
+          "Woven": "WOVEN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "JONZE5",
+      "Altitude": 3799,
+      "State": "cleared approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 26": {
+      "Callsign": "DAL26",
+      "AircraftType": "B712",
+      "Fixes": {
+        "Awed": "AUUDD",
+        "Charlotte Douglas": "KCLT",
+        "Emers": "EMERS",
+        "Jhunt": "JHUNT",
+        "Nella": "NELLA",
+        "Rudkey": "RUDKY",
+        "Woven": "WOVEN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight center": "I8C",
+        "I L S runway one eight left": "I8L",
+        "I L S runway one eight right": "I8R"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Fersa": "FERSA",
+          "Haggle": "HAGUL",
+          "Jedko": "JEDKO",
+          "Lerdy": "LERDY",
+          "Ozeji": "OZEJI",
+          "Silo": "CYLOW",
+          "Tommy": "TOMME"
+        },
+        "I8L": {
+          "Cavey": "CAVVI",
+          "Eagle": "EGUUL",
+          "Gilge": "GILGE",
+          "Quewed": "QUWED",
+          "Snack": "SNAKK"
+        },
+        "I8R": {
+          "Awed": "AUUDD",
+          "Emers": "EMERS",
+          "Jhunt": "JHUNT",
+          "Nella": "NELLA",
+          "Rudkey": "RUDKY",
+          "Woven": "WOVEN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "JONZE5",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 95 32": {
+      "Callsign": "NKS9532",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Awed": "AUUDD",
+        "Charlotte Douglas": "KCLT",
+        "Emers": "EMERS",
+        "Jhunt": "JHUNT",
+        "Nella": "NELLA",
+        "Rudkey": "RUDKY",
+        "Woven": "WOVEN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight center": "I8C",
+        "I L S runway one eight left": "I8L",
+        "I L S runway one eight right": "I8R"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Fersa": "FERSA",
+          "Haggle": "HAGUL",
+          "Jedko": "JEDKO",
+          "Lerdy": "LERDY",
+          "Ozeji": "OZEJI",
+          "Silo": "CYLOW",
+          "Tommy": "TOMME"
+        },
+        "I8L": {
+          "Cavey": "CAVVI",
+          "Eagle": "EGUUL",
+          "Gilge": "GILGE",
+          "Quewed": "QUWED",
+          "Snack": "SNAKK"
+        },
+        "I8R": {
+          "Awed": "AUUDD",
+          "Emers": "EMERS",
+          "Jhunt": "JHUNT",
+          "Nella": "NELLA",
+          "Rudkey": "RUDKY",
+          "Woven": "WOVEN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "JONZE5",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United 20 96": {
+      "Callsign": "UAL2096",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Awed": "AUUDD",
+        "Charlotte Douglas": "KCLT",
+        "Emers": "EMERS",
+        "Jhunt": "JHUNT"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight center": "I8C",
+        "I L S runway one eight left": "I8L",
+        "I L S runway one eight right": "I8R"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Fersa": "FERSA",
+          "Haggle": "HAGUL",
+          "Jedko": "JEDKO",
+          "Lerdy": "LERDY",
+          "Ozeji": "OZEJI",
+          "Silo": "CYLOW",
+          "Tommy": "TOMME"
+        },
+        "I8L": {
+          "Cavey": "CAVVI",
+          "Eagle": "EGUUL",
+          "Gilge": "GILGE",
+          "Quewed": "QUWED",
+          "Snack": "SNAKK"
+        },
+        "I8R": {
+          "Awed": "AUUDD",
+          "Emers": "EMERS",
+          "Jhunt": "JHUNT",
+          "Nella": "NELLA",
+          "Rudkey": "RUDKY",
+          "Woven": "WOVEN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "JONZE5",
+      "Altitude": 5022,
+      "State": "cleared approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United 55 60": {
+      "Callsign": "UAL5560",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Awed": "AUUDD",
+        "Charlotte Douglas": "KCLT",
+        "Emers": "EMERS",
+        "Jhunt": "JHUNT",
+        "Nella": "NELLA",
+        "Rudkey": "RUDKY",
+        "Woven": "WOVEN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight center": "I8C",
+        "I L S runway one eight left": "I8L",
+        "I L S runway one eight right": "I8R"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Fersa": "FERSA",
+          "Haggle": "HAGUL",
+          "Jedko": "JEDKO",
+          "Lerdy": "LERDY",
+          "Ozeji": "OZEJI",
+          "Silo": "CYLOW",
+          "Tommy": "TOMME"
+        },
+        "I8L": {
+          "Cavey": "CAVVI",
+          "Eagle": "EGUUL",
+          "Gilge": "GILGE",
+          "Quewed": "QUWED",
+          "Snack": "SNAKK"
+        },
+        "I8R": {
+          "Awed": "AUUDD",
+          "Emers": "EMERS",
+          "Jhunt": "JHUNT",
+          "Nella": "NELLA",
+          "Rudkey": "RUDKY",
+          "Woven": "WOVEN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "JONZE5",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United niner": {
+      "Callsign": "UAL9",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Awed": "AUUDD",
+        "Charlotte Douglas": "KCLT",
+        "Emers": "EMERS",
+        "Jhunt": "JHUNT",
+        "Nella": "NELLA",
+        "Rudkey": "RUDKY",
+        "Woven": "WOVEN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight center": "I8C",
+        "I L S runway one eight left": "I8L",
+        "I L S runway one eight right": "I8R"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Fersa": "FERSA",
+          "Haggle": "HAGUL",
+          "Jedko": "JEDKO",
+          "Lerdy": "LERDY",
+          "Ozeji": "OZEJI",
+          "Silo": "CYLOW",
+          "Tommy": "TOMME"
+        },
+        "I8L": {
+          "Cavey": "CAVVI",
+          "Eagle": "EGUUL",
+          "Gilge": "GILGE",
+          "Quewed": "QUWED",
+          "Snack": "SNAKK"
+        },
+        "I8R": {
+          "Awed": "AUUDD",
+          "Emers": "EMERS",
+          "Jhunt": "JHUNT",
+          "Nella": "NELLA",
+          "Rudkey": "RUDKY",
+          "Woven": "WOVEN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "FLIPZ4",
+      "Altitude": 6000,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
@@ -444,85 +539,52 @@
   },
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
-    "[local-stt] input transcript: \"United Fifty Five Sixty short approach right of contact expect ILS one eight right approach information kilos current\"",
-    "[local-stt] normalized words: [united 55 60 short approach right of contact expect ils 1 8 right approach information kilos current]",
-    "[local-stt] tokens: 16",
-    "[local-stt]   token[0]: Text=\"united\" Type=0 Value=-1",
-    "[local-stt]   token[1]: Text=\"55\" Type=1 Value=55",
-    "[local-stt]   token[2]: Text=\"60\" Type=1 Value=60",
-    "[local-stt]   token[3]: Text=\"short\" Type=0 Value=-1",
-    "[local-stt]   token[4]: Text=\"approach\" Type=0 Value=-1",
-    "[local-stt]   token[5]: Text=\"right\" Type=0 Value=-1",
-    "[local-stt]   token[6]: Text=\"of\" Type=0 Value=-1",
-    "[local-stt]   token[7]: Text=\"contact\" Type=0 Value=-1",
-    "[local-stt]   token[8]: Text=\"expect\" Type=0 Value=-1",
-    "[local-stt]   token[9]: Text=\"ils\" Type=0 Value=-1",
-    "[local-stt]   token[10]: Text=\"18\" Type=1 Value=18",
-    "[local-stt]   token[11]: Text=\"right\" Type=0 Value=-1",
-    "[local-stt]   token[12]: Text=\"approach\" Type=0 Value=-1",
-    "[local-stt]   token[13]: Text=\"information\" Type=0 Value=-1",
-    "[local-stt]   token[14]: Text=\"kilos\" Type=0 Value=-1",
-    "[local-stt]   token[15]: Text=\"current\" Type=0 Value=-1",
-    "[local-stt] MatchCallsign: 16 tokens, 8 aircraft",
-    "[local-stt] matchCallsignWithPatterns: 16 tokens, 8 aircraft",
+    "[local-stt] input transcript: \"Air Shuttle 41 91 speed one one six zero\"",
+    "[local-stt] normalized words: [air shuttle 41 91 speed 1 1 6 0]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"shuttle\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"41\" Type=1 Value=41",
+    "[local-stt]   token[3]: Text=\"91\" Type=1 Value=91",
+    "[local-stt]   token[4]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"1160\" Type=1 Value=1160",
+    "[local-stt] MatchCallsign: 6 tokens, 10 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 10 aircraft",
     "[local-stt]   pattern \"exact_phrase\": 1 results",
-    "[local-stt]     result 0: \"United 55 60\" (airline=1.000, flight=1.000, skip=0)",
-    "[local-stt]     pattern \"exact_phrase\": selected \"United 55 60\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]     result 0: \"Air Shuttle 41 91\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Air Shuttle 41 91\" (airline=1.00, flight=1.00, skip=0)",
     "[local-stt]   pattern \"ga_suffix\": no results",
     "[local-stt]   pattern \"airline_flight\": 1 results",
-    "[local-stt]     result 0: \"United 55 60\" (airline=1.000, flight=1.000, skip=0)",
-    "[local-stt]     pattern \"airline_flight\": selected \"United 55 60\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]     result 0: \"Air Shuttle 41 91\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Air Shuttle 41 91\" (airline=1.00, flight=1.00, skip=0)",
     "[local-stt]   pattern \"airline_only\": 7 results",
-    "[local-stt]     result 0: \"Delta 26\" (airline=0.456, flight=0.000, skip=0)",
-    "[local-stt]     result 1: \"United 20 96\" (airline=1.000, flight=0.000, skip=0)",
-    "[local-stt]     result 2: \"United 55 60\" (airline=1.000, flight=0.000, skip=0)",
-    "[local-stt]     result 3: \"United niner\" (airline=1.000, flight=0.000, skip=0)",
-    "[local-stt]     result 4: \"Air Shuttle 41 91\" (airline=0.500, flight=0.000, skip=0)",
-    "[local-stt]     pattern \"airline_only\": selected \"United 55 60\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]     result 0: \"Air Shuttle 80 61\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"United 20 96\" (airline=0.500, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Air Shuttle 24 87\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Air Shuttle 41 91\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"United 55 60\" (airline=0.500, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Air Shuttle 41 91\" (airline=1.00, flight=0.00, skip=0)",
     "[local-stt]   pattern \"ga_november\": no results",
     "[local-stt]   pattern \"flight_only\": 1 results",
-    "[local-stt]     result 0: \"United 55 60\" (airline=0.500, flight=1.000, skip=0)",
-    "[local-stt]     pattern \"flight_only\": selected \"United 55 60\" (airline=0.50, flight=1.00, skip=0)",
-    "[local-stt]   pattern \"exact_phrase\" matched: \"UAL5560\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"United 55 60\")",
-    "[local-stt] callsign match: Callsign=\"UAL5560\" SpokenKey=\"United 55 60\" Conf=1.00 Consumed=3",
-    "[local-stt] aircraft context: State=\"arrival\" Altitude=9490 Fixes=8 Approaches=3 AssignedApproach=\"ILS Runway 18R\" LAHSORunways=[]",
-    "[local-stt]   fix: \"Rudkey\" -> \"RUDKY\"",
-    "[local-stt]   fix: \"Nella\" -> \"NELLA\"",
-    "[local-stt]   fix: \"Woven\" -> \"WOVEN\"",
-    "[local-stt]   fix: \"Emers\" -> \"EMERS\"",
+    "[local-stt]     result 0: \"Air Shuttle 41 91\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Air Shuttle 41 91\" (airline=0.50, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"ASH4191\" (conf=1.00, consumed=4, addressingForm=0, spokenKey=\"Air Shuttle 41 91\")",
+    "[local-stt] callsign match: Callsign=\"ASH4191\" SpokenKey=\"Air Shuttle 41 91\" Conf=1.00 Consumed=4",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=4059 Fixes=3 Approaches=3 AssignedApproach=\"ILS Runway 18R\" LAHSORunways=[]",
     "[local-stt]   fix: \"Jhunt\" -> \"JHUNT\"",
     "[local-stt]   fix: \"Awed\" -> \"AUUDD\"",
-    "[local-stt]   fix: \"Jorden\" -> \"JRDEN\"",
     "[local-stt]   fix: \"Charlotte Douglas\" -> \"KCLT\"",
-    "[local-stt]   approach: \"I L S runway one eight center\" -> \"I8C\"",
     "[local-stt]   approach: \"I L S runway one eight left\" -> \"I8L\"",
     "[local-stt]   approach: \"I L S runway one eight right\" -> \"I8R\"",
-    "[local-stt] command tokens after disregard: 13",
-    "[local-stt]   token[0]: Text=\"short\" Type=0 Value=-1",
-    "[local-stt]   token[1]: Text=\"approach\" Type=0 Value=-1",
-    "[local-stt]   token[2]: Text=\"right\" Type=0 Value=-1",
-    "[local-stt]   token[3]: Text=\"of\" Type=0 Value=-1",
-    "[local-stt]   token[4]: Text=\"contact\" Type=0 Value=-1",
-    "[local-stt]   token[5]: Text=\"expect\" Type=0 Value=-1",
-    "[local-stt]   token[6]: Text=\"ils\" Type=0 Value=-1",
-    "[local-stt]   token[7]: Text=\"18\" Type=1 Value=18",
-    "[local-stt]   token[8]: Text=\"right\" Type=0 Value=-1",
-    "[local-stt]   token[9]: Text=\"approach\" Type=0 Value=-1",
-    "[local-stt]   token[10]: Text=\"information\" Type=0 Value=-1",
-    "[local-stt]   token[11]: Text=\"kilos\" Type=0 Value=-1",
-    "[local-stt]   token[12]: Text=\"current\" Type=0 Value=-1",
-    "[local-stt] stripped position ID prefix: 2 tokens",
-    "[local-stt] ParseCommands: 11 tokens",
-    "[local-stt]   no match at token[0]=\"right\", skipping",
-    "[local-stt]   no match at token[1]=\"of\", skipping",
-    "[local-stt]   matched command: \"TO\" (conf=1.00, consumed=3, isThen=false)",
-    "[local-stt]   no match at token[5]=\"18\", skipping",
-    "[local-stt]   no match at token[6]=\"right\", skipping",
-    "[local-stt]   no match at token[7]=\"approach\", skipping",
-    "[local-stt]   matched command: \"ATIS/K\" (conf=1.00, consumed=3, isThen=false)",
-    "[local-stt] ParseCommands: result=[TO ATIS/K] (avgConf=1.00)",
-    "[local-stt] parsed commands: [TO ATIS/K] (conf=1.00)",
-    "[local-stt] validated commands: [TO ATIS/K] (conf=1.00)",
-    "[local-stt] === DecodeTranscript END: \"UAL5560 TO ATIS/K\" (conf=1.00, time=1.1858ms) ==="
+    "[local-stt]   approach: \"I L S runway one eight center\" -> \"I8C\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"1160\" Type=1 Value=1160",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   matched command: \"S116\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[S116] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S116] (conf=1.00)",
+    "[local-stt] validated commands: [S116] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ASH4191 S116\" (conf=1.00, time=627.4\u00b5s) ==="
   ]
 }

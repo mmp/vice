@@ -1,0 +1,524 @@
+{
+  "time": "2026-03-07T05:21:54.939254506Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:672:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Halfway Forty Six Fifty Eight turn right heading one five zero mid eight three thousand till established when the localizer cleared ILS runway one eight right",
+  "whisper_duration_ms": 514.515,
+  "audio_duration_ms": 6856,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12113MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "ENY4658",
+  "command": "R150 D30 CI8R",
+  "stt_aircraft": {
+    "Alaska 19 zero two": {
+      "Callsign": "ASA1902",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Legree": "LEGRE",
+        "Nettie": "NETEE",
+        "Yohan": "YOHAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "VKTRY2",
+      "Altitude": 3000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    },
+    "American 51 26 heavy": {
+      "Callsign": "AAL5126",
+      "AircraftType": "B772",
+      "Fixes": {
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Fop": "PHAUP",
+        "Ickle": "ICKEL",
+        "Legree": "LEGRE",
+        "Nettie": "NETEE",
+        "Victory": "VKTRY",
+        "Yohan": "YOHAN",
+        "Zman": "ZMMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "VKTRY2",
+      "Altitude": 12192,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    },
+    "American two 38": {
+      "Callsign": "AAL238",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Be one": "BEONE",
+        "Boove": "BOOVE",
+        "Curly": "CURLE",
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Darb": "DARRB",
+        "Delmo": "DELMO",
+        "Ickle": "ICKEL",
+        "Legree": "LEGRE",
+        "Lori": "LREEE",
+        "Mow": "MOWWW",
+        "Nettie": "NETEE",
+        "Shemp": "SHMPP",
+        "Yohan": "YOHAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "BOOVE7",
+      "Altitude": 21873,
+      "State": "arrival",
+      "ControllerFrequency": "1Y",
+      "TrackingController": "1Y",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    },
+    "Delta two 43": {
+      "Callsign": "DAL243",
+      "AircraftType": "B712",
+      "Fixes": {
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Fop": "PHAUP",
+        "Ickle": "ICKEL",
+        "Legree": "LEGRE",
+        "Nettie": "NETEE",
+        "Yohan": "YOHAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "VKTRY2",
+      "Altitude": 5331,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    },
+    "Envoy 46 58": {
+      "Callsign": "ENY4658",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Be one": "BEONE",
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Ickle": "ICKEL",
+        "Legree": "LEGRE",
+        "Nettie": "NETEE",
+        "Yohan": "YOHAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "BOOVE7",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1Y",
+      "TrackingController": "1Y",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    },
+    "Frontier Flight 48 21": {
+      "Callsign": "FFT4821",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Be one": "BEONE",
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Ickle": "ICKEL",
+        "Legree": "LEGRE",
+        "Lori": "LREEE",
+        "Nettie": "NETEE",
+        "Yohan": "YOHAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "BOOVE7",
+      "Altitude": 10833,
+      "State": "arrival",
+      "ControllerFrequency": "1Y",
+      "TrackingController": "1Y",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    },
+    "Volaris niner 26": {
+      "Callsign": "VOI926",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Be one": "BEONE",
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Delmo": "DELMO",
+        "Ickle": "ICKEL",
+        "Legree": "LEGRE",
+        "Lori": "LREEE",
+        "Mow": "MOWWW",
+        "Nettie": "NETEE",
+        "Yohan": "YOHAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "BOOVE7",
+      "Altitude": 14247,
+      "State": "arrival",
+      "ControllerFrequency": "1Y",
+      "TrackingController": "1Y",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Halfway Forty Six Fifty Eight turn right heading one five zero mid eight three thousand till established when the localizer cleared ILS runway one eight right\"",
+    "[local-stt] normalized words: [halfway 46 58 turn right heading 1 5 0 mid 8 3 thousand till established when the localizer cleared ils runway 1 8 right]",
+    "[local-stt] tokens: 19",
+    "[local-stt]   token[0]: Text=\"halfway\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"46\" Type=1 Value=46",
+    "[local-stt]   token[2]: Text=\"58\" Type=1 Value=58",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"150\" Type=1 Value=150",
+    "[local-stt]   token[7]: Text=\"mid\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"830\" Type=2 Value=830",
+    "[local-stt]   token[9]: Text=\"till\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"established\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"when\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"18\" Type=1 Value=18",
+    "[local-stt]   token[18]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 19 tokens, 7 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 19 tokens, 7 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Envoy 46 58\" (airline=0.448, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Envoy 46 58\" (airline=0.45, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 6 results",
+    "[local-stt]     result 0: \"Envoy 46 58\" (airline=0.448, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"American two 38\" (airline=0.512, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Frontier Flight 48 21\" (airline=0.423, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Alaska 19 zero two\" (airline=0.643, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Delta two 43\" (airline=0.562, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Envoy 46 58\" (airline=0.45, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Envoy 46 58\"",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Envoy 46 58\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Envoy 46 58\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"ENY4658\" (conf=0.89, consumed=3, addressingForm=0, spokenKey=\"Envoy 46 58\")",
+    "[local-stt] callsign match: Callsign=\"ENY4658\" SpokenKey=\"Envoy 46 58\" Conf=0.89 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=7 Approaches=4 AssignedApproach=\"ILS Runway 18R\" LAHSORunways=[13L 31R 13L 31R]",
+    "[local-stt]   fix: \"Be one\" -> \"BEONE\"",
+    "[local-stt]   fix: \"Dallas Fort Worth\" -> \"KDFW\"",
+    "[local-stt]   fix: \"D F W\" -> \"KDFW\"",
+    "[local-stt]   fix: \"Ickle\" -> \"ICKEL\"",
+    "[local-stt]   fix: \"Yohan\" -> \"YOHAN\"",
+    "[local-stt]   fix: \"Legree\" -> \"LEGRE\"",
+    "[local-stt]   fix: \"Nettie\" -> \"NETEE\"",
+    "[local-stt]   approach: \"I L S runway one seven left\" -> \"I7L\"",
+    "[local-stt]   approach: \"I L S runway one eight right\" -> \"I8R\"",
+    "[local-stt]   approach: \"I L S runway one three right\" -> \"I3R\"",
+    "[local-stt]   approach: \"I L S runway one seven center\" -> \"I7C\"",
+    "[local-stt] command tokens after disregard: 16",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"150\" Type=1 Value=150",
+    "[local-stt]   token[4]: Text=\"mid\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"830\" Type=2 Value=830",
+    "[local-stt]   token[6]: Text=\"till\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"established\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"when\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"18\" Type=1 Value=18",
+    "[local-stt]   token[15]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 16 tokens",
+    "[local-stt]   matched command: \"R150\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[4]=\"mid\", skipping",
+    "[local-stt]   matched command: \"A830\" (conf=1.00, consumed=1, isThen=false)",
+    "[local-stt]   no match at token[6]=\"till\", skipping",
+    "[local-stt]   no match at token[7]=\"established\", skipping",
+    "[local-stt]   no match at token[8]=\"when\", skipping",
+    "[local-stt]   skipping filler word: \"the\"",
+    "[local-stt]   matched command: \"CI8R\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt] ParseCommands: result=[R150 A830 CI8R] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R150 A830 CI8R] (conf=1.00)",
+    "[local-stt] validated commands: [R150 A830 CI8R] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ENY4658 R150 A830 CI8R\" (conf=0.89, time=2.5491ms) ==="
+  ]
+}
