@@ -17,7 +17,7 @@ var digitWords = map[string]string{
 	// ATC phonetic
 	"niner": "9", "fower": "4", "fife": "5", "tree": "3",
 	// Common homophones
-	"won": "1", "wun": "1",
+	"won": "1", "wun": "1", "ones": "1",
 	"too":  "2",             // "to" is intentionally excluded - it's a common word
 	"fore": "4",             // "for" is intentionally excluded - it's a common word
 	"ate":  "8", "ait": "8", // Homophone for "eight"
@@ -485,6 +485,7 @@ var commandKeywords = map[string]string{
 	"ils":         "ils",
 	"isle":        "ils",
 	"rnav":        "rnav",
+	"arnav":       "rnav",
 	"vor":         "vor",
 	"runway":      "runway",
 
@@ -530,6 +531,7 @@ var commandKeywords = map[string]string{
 var phraseExpansions = map[string][]string{
 	"flighting":  {"fly", "heading"},
 	"centimeter": {"descend", "maintain"},
+	"sediment":   {"descend", "maintain"},
 	"fl":         {"flight", "level"},
 }
 

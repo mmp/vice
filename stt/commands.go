@@ -918,6 +918,40 @@ func matchApproachByTypeAndNumberWithFallback(tokens []Token, approaches map[str
 				}
 			}
 		}
+		// No assigned approach fallback worked. If we have a type+variant and
+		// exactly one candidate approach matches, use it. This handles garbled
+		// runway numbers (e.g., "rnav zulu approach from ITN" where "from ITN"
+		// is a garbled "twenty seven" but there's only one RNAV Zulu approach).
+		if allowFallback && approachVariant != "" {
+			var matches []string
+			for spokenName, apprID := range approaches {
+				spokenLower := strings.ToLower(spokenName)
+				if approachTypeMatches(spokenLower, approachType) && approachVariantMatches(apprID, approachVariant) {
+					matches = append(matches, apprID)
+				}
+			}
+			if len(matches) == 1 {
+				// Consume the garbled runway tokens that follow the variant.
+				// Scan forward past "approach", "runway", filler, and non-keyword
+				// words that are part of the garbled runway reference.
+				consumed := typeConsumed + variantConsumed
+				for j := 0; j < len(remainingTokens); j++ {
+					w := strings.ToLower(remainingTokens[j].Text)
+					if w == "approach" || w == "runway" || IsFillerWord(w) {
+						consumed++
+						continue
+					}
+					if IsCommandKeyword(w) {
+						break
+					}
+					consumed++ // garbled runway token
+				}
+				logLocalStt("  matchApproachByTypeAndNumber: garbled runway, unique type+variant match %q (type=%q variant=%q)",
+					matches[0], approachType, approachVariant)
+				return matches[0], 0.85, consumed
+			}
+		}
+
 		return "", 0, 0
 	}
 

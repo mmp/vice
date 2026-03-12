@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+
+	av "github.com/mmp/vice/aviation"
 )
 
 // typeParser is the interface for type-specific value extraction.
@@ -279,6 +281,43 @@ func headingByRemovingDuplicateDigit(text string) (int, bool) {
 	return 0, false
 }
 
+// adjustSpeedForPerformance checks if a parsed speed is below the aircraft's
+// minimum speed and, if so, tries bumping by +100/+200/+300 to find a
+// plausible speed. This handles cases where the leading digit was garbled
+// or lost in transcription (e.g., "one one zero" when the controller said
+// "two one zero").
+func adjustSpeedForPerformance(speed int, ac Aircraft) int {
+	if ac.AircraftType == "" || av.DB == nil {
+		return speed
+	}
+	perf, ok := av.DB.AircraftPerformance[ac.AircraftType]
+	if !ok {
+		return speed
+	}
+	minSpeed := perf.Speed.Min
+	if minSpeed <= 0 || float32(speed) >= minSpeed {
+		return speed
+	}
+
+	// Speed is below aircraft min; the leading digit was likely garbled.
+	// Try bumping by 100 at a time to find the lowest plausible speed.
+	for bump := 100; bump <= 300; bump += 100 {
+		candidate := speed + bump
+		if candidate > 400 {
+			break
+		}
+		if float32(candidate) >= minSpeed {
+			// Below 10,000' the speed limit is 250 kts; prefer
+			// candidates that respect this when possible.
+			if ac.Altitude > 0 && ac.Altitude < 10000 && candidate > 250 {
+				continue
+			}
+			return candidate
+		}
+	}
+	return speed
+}
+
 // speedParser extracts speed values (100-400 knots).
 type speedParser struct{}
 
@@ -310,7 +349,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 			// Round down to nearest 10 - ATC speeds are always multiples of 10.
 			if t.Value >= 100 && t.Value <= 400 {
 				rounded := (t.Value / 10) * 10
-				return rounded, i - pos + 1, ""
+				return adjustSpeedForPerformance(rounded, ac), i - pos + 1, ""
 			}
 
 			// 4-digit starting with 2 and ending in 0: the leading "2"
@@ -319,7 +358,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 			if t.Value >= 2000 && t.Value < 3000 && t.Value%10 == 0 {
 				last3 := t.Value % 1000
 				if last3 >= 100 && last3 <= 400 {
-					return last3, i - pos + 1, ""
+					return adjustSpeedForPerformance(last3, ac), i - pos + 1, ""
 				}
 			}
 
@@ -327,7 +366,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 			if t.Value > 400 {
 				corrected := t.Value / 10
 				if corrected >= 100 && corrected <= 400 {
-					return corrected, i - pos + 1, ""
+					return adjustSpeedForPerformance(corrected, ac), i - pos + 1, ""
 				}
 			}
 
@@ -338,7 +377,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 				if next.Type == TokenNumber && next.Value == 0 {
 					combined := t.Value * 10
 					if combined >= 100 && combined <= 400 {
-						return combined, i - pos + 2, ""
+						return adjustSpeedForPerformance(combined, ac), i - pos + 2, ""
 					}
 				}
 			}
@@ -352,7 +391,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 					combined := 200 + t.Value
 					rounded := (combined / 10) * 10
 					if rounded >= 100 && rounded <= 400 {
-						return rounded, i - pos + 1, ""
+						return adjustSpeedForPerformance(rounded, ac), i - pos + 1, ""
 					}
 				}
 			}
