@@ -16,6 +16,7 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 	var totalConf float64
 	pos := 0
 	isThen := false
+	matchedAny := false                        // Track if any command pattern matched (including empty-command patterns)
 	excludeCategories := make(map[string]bool) // Track categories already matched
 
 	for pos < len(tokens) {
@@ -51,6 +52,7 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 		if newPos > pos {
 			logLocalStt("  matched command: %q (conf=%.2f, consumed=%d, isThen=%v)",
 				match.Command, match.Confidence, newPos-pos, isThen)
+			matchedAny = true
 			if match.Command != "" {
 				commands = append(commands, match.Command)
 				totalConf += match.Confidence
@@ -99,6 +101,13 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 	}
 
 	if len(commands) == 0 {
+		if matchedAny {
+			// A command pattern matched but produced no output (e.g., "standby
+			// for the approach") — return empty commands with positive
+			// confidence so the caller doesn't treat this as a failed parse.
+			logLocalStt("ParseCommands: matched but no commands to issue")
+			return nil, 1
+		}
 		logLocalStt("ParseCommands: no commands found")
 		return nil, 0
 	}

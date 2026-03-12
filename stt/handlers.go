@@ -599,17 +599,11 @@ func registerAllCommands() {
 		WithSayAgainOnFail(), // "expect [approach]" should ask for clarification if approach unrecognized
 	)
 
+	// "standby for the approach" is informational — swallow it silently.
 	registerSTTCommand(
 		"standby [for] [the] approach",
-		func() string { return "E" },
+		func() string { return "" },
 		WithName("standby_approach"),
-		WithPriority(14),
-	)
-
-	registerSTTCommand(
-		"expect [the] approach",
-		func() string { return "E" },
-		WithName("expect_the_approach"),
 		WithPriority(14),
 	)
 

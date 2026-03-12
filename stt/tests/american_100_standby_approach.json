@@ -1,7 +1,7 @@
 {
   "transcript": "American 100 standby approach",
   "callsign": "AAL100",
-  "command": "E",
+  "command": "",
   "stt_aircraft": {
     "American 100": {
       "Callsign": "AAL100",
