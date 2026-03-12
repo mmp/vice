@@ -492,12 +492,12 @@ func registerAllCommands() {
 		WithPriority(10),
 	)
 
-	// "cleared direct [fix]" - high priority pattern with SAYAGAIN when fix is garbled
+	// "cleared direct [fix]" - SAYAGAIN when fix is garbled.
 	registerSTTCommand(
 		"cleared direct {fix}",
 		func(fix string) string { return fmt.Sprintf("D%s", fix) },
 		WithName("cleared_direct_fix_explicit"),
-		WithPriority(12), // Higher than cleared_approach so "cleared direct [garbled]" becomes SAYAGAIN/FIX
+		WithPriority(12),
 		WithSayAgainOnFail(),
 	)
 
@@ -620,8 +620,9 @@ func registerAllCommands() {
 		"cleared [approach] [for] {approach}",
 		func(appr string) string { return fmt.Sprintf("C%s", appr) },
 		WithName("cleared_approach"),
-		WithPriority(8),
+		WithPriority(13),
 		WithSayAgainOnFail(), // Garbled approach clearances should ask for clarification
+		WithSayAgainMinTokens(2), // Require approach type keyword, not just "cleared"
 	)
 
 	registerSTTCommand(

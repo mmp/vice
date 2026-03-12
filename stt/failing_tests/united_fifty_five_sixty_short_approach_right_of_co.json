@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 4060 (8171MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "UAL5560",
-  "command": "TO ATIS/K",
+  "command": "TO EI8R ATIS/K",
   "stt_aircraft": {
     "Air Shuttle 24 87": {
       "Callsign": "ASH2487",

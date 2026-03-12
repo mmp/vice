@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "DAL58",
-  "command": "CI4L S170/U5DME",
+  "command": "CI4R S170/U5DME",
   "stt_aircraft": {
     "Delta 58 heavy": {
       "Callsign": "DAL58",

@@ -54,20 +54,16 @@ var categoryRules = []categoryRule{
 	}, category: "depart_heading"},
 	// D + letter → navigation (direct-to-fix)
 	{match: func(cmd string) bool { return cmd[0] == 'D' }, category: "navigation"},
+	// A with / → cleared_approach (at fix cleared approach: AHOLID/CI0L, AHOLID/I)
+	{match: func(cmd string) bool {
+		return cmd[0] == 'A' && strings.Contains(cmd, "/")
+	}, category: "cleared_approach"},
 	// A + letter → navigation
 	{match: func(cmd string) bool { return cmd[0] == 'A' }, category: "navigation"},
-	// C with /A → altitude (crossing restriction)
-	{match: func(cmd string) bool {
-		return cmd[0] == 'C' && strings.Contains(cmd, "/A")
-	}, category: "altitude"},
-	// C with /S or /M → speed (crossing restriction)
-	{match: func(cmd string) bool {
-		return cmd[0] == 'C' && (strings.Contains(cmd, "/S") || strings.Contains(cmd, "/M"))
-	}, category: "speed"},
-	// C with / → navigation (other crossing restrictions)
+	// C with / → crossing (cross fix at altitude/speed/mach: CFIX/A40, CFIX/S250, CFIX/M80)
 	{match: func(cmd string) bool {
 		return cmd[0] == 'C' && strings.Contains(cmd, "/")
-	}, category: "navigation"},
+	}, category: "crossing"},
 	// C + letter without / → cleared_approach (CI9L)
 	{match: func(cmd string) bool { return cmd[0] == 'C' }, category: "cleared_approach"},
 	// SAYAGAIN → no category
@@ -858,6 +854,23 @@ func matchApproachByTypeAndNumberWithFallback(tokens []Token, approaches map[str
 
 	// Look for runway number anywhere in the remaining tokens
 	runwayNum, runwayDir, numPos := extractRunwayNumber(remainingTokens)
+
+	// If we found a runway number but no explicit direction, try phonetic inference
+	// on the next token. STT often garbles "left"/"right" into short words like "at".
+	// Compare the metaphone encoding of the next token against direction words and
+	// pick the best match if it's clearly better than the alternatives.
+	if runwayNum != "" && runwayDir == "" && numPos+1 < len(remainingTokens) {
+		nextText := strings.ToLower(remainingTokens[numPos+1].Text)
+		// Don't try phonetic inference on command keywords — "direct", "cleared",
+		// etc. are real words, not garbled direction words.
+		if !IsCommandKeyword(nextText) {
+			if dir := inferRunwayDirectionPhonetic(nextText); dir != "" {
+				logLocalStt("  matchApproachByTypeAndNumber: inferred direction %q from garbled %q", dir, nextText)
+				runwayDir = dir
+			}
+		}
+	}
+
 	if runwayNum == "" {
 		// No valid runway number found, but if we have an assigned approach with matching
 		// type and direction, use it. This handles cases like "ils turn 918 right" where
@@ -1214,6 +1227,44 @@ func extractRunwayNumber(tokens []Token) (string, string, int) {
 		}
 	}
 	return "", "", -1
+}
+
+// inferRunwayDirectionPhonetic tries to infer a runway direction ("left", "right", "center")
+// from a garbled word by comparing metaphone encodings. Returns the best direction if one
+// is clearly better than the others, or "" if no confident inference can be made.
+func inferRunwayDirectionPhonetic(word string) string {
+	wordPrimary, _ := DoubleMetaphone(word)
+	if wordPrimary == "" {
+		return ""
+	}
+
+	type dirScore struct {
+		dir   string
+		score float64
+	}
+
+	dirs := []dirScore{
+		{"left", JaroWinkler(wordPrimary, func() string { p, _ := DoubleMetaphone("left"); return p }())},
+		{"right", JaroWinkler(wordPrimary, func() string { p, _ := DoubleMetaphone("right"); return p }())},
+		{"center", JaroWinkler(wordPrimary, func() string { p, _ := DoubleMetaphone("center"); return p }())},
+	}
+
+	// Find best and second-best
+	var best, secondBest dirScore
+	for _, d := range dirs {
+		if d.score > best.score {
+			secondBest = best
+			best = d
+		} else if d.score > secondBest.score {
+			secondBest = d
+		}
+	}
+
+	// Require a minimum score and clear margin over the runner-up
+	if best.score >= 0.5 && best.score > secondBest.score+0.05 {
+		return best.dir
+	}
+	return ""
 }
 
 // approachTypeMatches checks if a spoken approach name contains the given approach type.
