@@ -1,0 +1,387 @@
+{
+  "time": "2026-03-11T15:40:36.81117613Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:867:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Air Shuttle thirty six eighty eight rarely approach route romeo three zero one seven expect i l s five left",
+  "whisper_duration_ms": 379.59,
+  "audio_duration_ms": 5576,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 16GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "ASH3688",
+  "command": "R301 EI5L",
+  "stt_aircraft": {
+    "Air Shuttle 36 88": {
+      "Callsign": "ASH3688",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Boula": "BOULE",
+        "Chudder": "CHWDR",
+        "Demstr": "DMSTR",
+        "Ottos": "OTTOS",
+        "Raleigh Durham": "KRDU",
+        "Wepas": "WEPAS",
+        "shoe": "SCHOO"
+      },
+      "CandidateApproaches": {
+        "I L S runway five left": "I5L",
+        "I L S runway five right": "I5R",
+        "r-nav yankee runway five left": "Y5L",
+        "r-nav yankee runway five right": "Y5R",
+        "r-nav zulu runway five left": "Z5L",
+        "r-nav zulu runway five right": "Z5R"
+      },
+      "ApproachFixes": {
+        "I5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "shoe": "SCHOO"
+        },
+        "I5R": {
+          "Beach": "BEICH",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "peck it": "PECIT"
+        },
+        "Y5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "shoe": "SCHOO"
+        },
+        "Y5R": {
+          "Amort": "AMORT",
+          "Beach": "BEICH",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "peck it": "PECIT"
+        },
+        "Z5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Jemy": "JEMMY",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "Zosap": "ZOSAP",
+          "heave": "HEAVE",
+          "shoe": "SCHOO"
+        },
+        "Z5R": {
+          "Beach": "BEICH",
+          "Cats": "CATTZ",
+          "Defer": "DEFER",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "Stint": "STINT",
+          "Wosbo": "WOSBO",
+          "peck it": "PECIT"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "DMSTR2",
+      "Altitude": 15000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "14",
+        "32"
+      ]
+    },
+    "American 17": {
+      "Callsign": "AAL17",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Boula": "BOULE",
+        "Cabed": "CABED",
+        "Chudder": "CHWDR",
+        "Ochre": "OCHRE",
+        "Orlac": "ORLAC",
+        "Ottos": "OTTOS",
+        "Raleigh Durham": "KRDU",
+        "Stint": "STINT",
+        "Wepas": "WEPAS",
+        "blogs": "BLOGS",
+        "shoe": "SCHOO"
+      },
+      "CandidateApproaches": {
+        "I L S runway five left": "I5L",
+        "I L S runway five right": "I5R",
+        "r-nav yankee runway five left": "Y5L",
+        "r-nav yankee runway five right": "Y5R",
+        "r-nav zulu runway five left": "Z5L",
+        "r-nav zulu runway five right": "Z5R"
+      },
+      "ApproachFixes": {
+        "I5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "shoe": "SCHOO"
+        },
+        "I5R": {
+          "Beach": "BEICH",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "peck it": "PECIT"
+        },
+        "Y5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "shoe": "SCHOO"
+        },
+        "Y5R": {
+          "Amort": "AMORT",
+          "Beach": "BEICH",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "peck it": "PECIT"
+        },
+        "Z5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Jemy": "JEMMY",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "Zosap": "ZOSAP",
+          "heave": "HEAVE",
+          "shoe": "SCHOO"
+        },
+        "Z5R": {
+          "Beach": "BEICH",
+          "Cats": "CATTZ",
+          "Defer": "DEFER",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "Stint": "STINT",
+          "Wosbo": "WOSBO",
+          "peck it": "PECIT"
+        }
+      },
+      "AssignedApproach": "ILS Runway 5L",
+      "SID": "",
+      "STAR": "BLOGS3",
+      "Altitude": 13539,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "14",
+        "32"
+      ]
+    },
+    "Delta three 67": {
+      "Callsign": "DAL367",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Lwood": "LWOOD",
+        "Opus": "OPUSS"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "LWOOD5",
+      "STAR": "",
+      "Altitude": 5783,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "SkyWest three 97 charlie": {
+      "Callsign": "SKW397C",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Aldan": "ALDAN",
+        "Billa": "BILLA",
+        "Boula": "BOULE",
+        "Chudder": "CHWDR",
+        "Favko": "FAVKO",
+        "Gable": "GABLR",
+        "Ottos": "OTTOS",
+        "Raleigh Durham": "KRDU",
+        "Wepas": "WEPAS",
+        "blanker": "BLNKR",
+        "heave": "HEAVE",
+        "shoe": "SCHOO"
+      },
+      "CandidateApproaches": {
+        "I L S runway five left": "I5L",
+        "I L S runway five right": "I5R",
+        "r-nav yankee runway five left": "Y5L",
+        "r-nav yankee runway five right": "Y5R",
+        "r-nav zulu runway five left": "Z5L",
+        "r-nav zulu runway five right": "Z5R"
+      },
+      "ApproachFixes": {
+        "I5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "shoe": "SCHOO"
+        },
+        "I5R": {
+          "Beach": "BEICH",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "peck it": "PECIT"
+        },
+        "Y5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "shoe": "SCHOO"
+        },
+        "Y5R": {
+          "Amort": "AMORT",
+          "Beach": "BEICH",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "peck it": "PECIT"
+        },
+        "Z5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Jemy": "JEMMY",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "Zosap": "ZOSAP",
+          "heave": "HEAVE",
+          "shoe": "SCHOO"
+        },
+        "Z5R": {
+          "Beach": "BEICH",
+          "Cats": "CATTZ",
+          "Defer": "DEFER",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "Stint": "STINT",
+          "Wosbo": "WOSBO",
+          "peck it": "PECIT"
+        }
+      },
+      "AssignedApproach": "ILS Runway 5L",
+      "SID": "",
+      "STAR": "ALDAN4",
+      "Altitude": 12854,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "14",
+        "32"
+      ]
+    },
+    "Southwest 27 14": {
+      "Callsign": "SWA2714",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Shepherd": "SHPRD"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "SHPRD4",
+      "STAR": "",
+      "Altitude": 9092,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Air Shuttle thirty six eighty eight rarely approach route romeo three zero one seven expect i l s five left\"",
+    "[local-stt] normalized words: [air shuttle 36 88 rarely approach right romeo 3 0 1 7 expect ils 5 left]",
+    "[local-stt] tokens: 13",
+    "[local-stt]   token[0]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"shuttle\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"36\" Type=1 Value=36",
+    "[local-stt]   token[3]: Text=\"88\" Type=1 Value=88",
+    "[local-stt]   token[4]: Text=\"rarely\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"romeo\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"3017\" Type=1 Value=3017",
+    "[local-stt]   token[9]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[12]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 13 tokens, 5 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 13 tokens, 5 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Air Shuttle 36 88\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Air Shuttle 36 88\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Air Shuttle 36 88\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Air Shuttle 36 88\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"American 17\" (airline=0.712, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Air Shuttle 36 88\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Air Shuttle 36 88\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Air Shuttle 36 88\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Air Shuttle 36 88\" (airline=0.50, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"ASH3688\" (conf=1.00, consumed=4, addressingForm=0, spokenKey=\"Air Shuttle 36 88\")",
+    "[local-stt] callsign match: Callsign=\"ASH3688\" SpokenKey=\"Air Shuttle 36 88\" Conf=1.00 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=15000 Fixes=2 Approaches=6 AssignedApproach=\"\" LAHSORunways=[14 32]",
+    "[local-stt]   fix: \"Demstr\" -> \"DMSTR\"",
+    "[local-stt]   fix: \"Raleigh Durham\" -> \"KRDU\"",
+    "[local-stt]   approach: \"r-nav yankee runway five left\" -> \"Y5L\"",
+    "[local-stt]   approach: \"r-nav zulu runway five left\" -> \"Z5L\"",
+    "[local-stt]   approach: \"I L S runway five left\" -> \"I5L\"",
+    "[local-stt]   approach: \"r-nav zulu runway five right\" -> \"Z5R\"",
+    "[local-stt]   approach: \"r-nav yankee runway five right\" -> \"Y5R\"",
+    "[local-stt]   approach: \"I L S runway five right\" -> \"I5R\"",
+    "[local-stt] command tokens after disregard: 9",
+    "[local-stt]   token[0]: Text=\"rarely\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"romeo\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"3017\" Type=1 Value=3017",
+    "[local-stt]   token[5]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[8]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] stripped position ID prefix: 2 tokens",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   matched command: \"R301\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" variant=\"\" runway=\"five left\" -> \"I5L\" (consumed=3)",
+    "[local-stt]   matched command: \"EI5L\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   adding 5 fixes from approach I5L to aircraft context",
+    "[local-stt] ParseCommands: result=[R301 EI5L] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R301 EI5L] (conf=1.00)",
+    "[local-stt] validated commands: [R301 EI5L] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ASH3688 R301 EI5L\" (conf=1.00, time=821\u00b5s) ==="
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "time": "2026-02-06T03:09:58.078501543Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Brickyard Eleven correction fourteen eleven descend maintain three thousand",
+  "whisper_duration_ms": 253.292,
+  "audio_duration_ms": 4296,
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16045MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "RPA1411",
+  "command": "D30",
+  "stt_aircraft": {
+    "Brickyard 14 11": {
+      "Callsign": "RPA1411",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Goshi": "GOSHI",
+        "Jobee": "JOBEE",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 6111,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Delta 32 50": {
+      "Callsign": "DAL3250",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 3674,
+      "State": "cleared approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue seven 98": {
+      "Callsign": "JBU798",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Milt": "MILTT"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 2612,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Brickyard Eleven correction fourteen eleven descend maintain three thousand\"",
+    "[local-stt] normalized words: [brickyard 11 correction 14 11 descend maintain 3 thousand]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"brickyard\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"11\" Type=1 Value=11",
+    "[local-stt]   token[2]: Text=\"correction\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"14\" Type=1 Value=14",
+    "[local-stt]   token[4]: Text=\"11\" Type=1 Value=11",
+    "[local-stt]   token[5]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"30\" Type=2 Value=30",
+    "[local-stt] MatchCallsign: 8 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Brickyard 14 11\" (airline=1.000, flight=0.850, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Brickyard 14 11\" (airline=1.00, flight=0.85, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 3 results",
+    "[local-stt]     result 0: \"Brickyard 14 11\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"JetBlue seven 98\" (airline=0.418, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Delta 32 50\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Brickyard 14 11\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Brickyard 14 11\" (airline=0.500, flight=1.000, skip=2)",
+    "[local-stt]     pattern \"flight_only\": selected \"Brickyard 14 11\" (airline=0.50, flight=1.00, skip=2)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"RPA1411\" (conf=0.97, consumed=2, addressingForm=0, spokenKey=\"Brickyard 14 11\")",
+    "[local-stt] callsign match: Callsign=\"RPA1411\" SpokenKey=\"Brickyard 14 11\" Conf=0.97 Consumed=2",
+    "[local-stt] detected 'not for you' correction, re-matching callsign",
+    "[local-stt] MatchCallsign: 5 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 5 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": no results",
+    "[local-stt]   pattern \"airline_only\": 3 results",
+    "[local-stt]     result 0: \"Brickyard 14 11\" (airline=0.503, flight=0.000, skip=2)",
+    "[local-stt]     result 1: \"JetBlue seven 98\" (airline=0.524, flight=0.000, skip=2)",
+    "[local-stt]     result 2: \"Delta 32 50\" (airline=0.650, flight=0.000, skip=2)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta 32 50\" (airline=0.65, flight=0.00, skip=2)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Delta 32 50\"",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Brickyard 14 11\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Brickyard 14 11\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\" matched: \"RPA1411\" (conf=0.70, consumed=2, addressingForm=0, spokenKey=\"Brickyard 14 11\")",
+    "[local-stt] new callsign match: Callsign=\"RPA1411\" SpokenKey=\"Brickyard 14 11\" Conf=0.70 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6111 Fixes=6 Approaches=6 AssignedApproach=\"ILS Runway 4R\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L 9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Goshi\" -\u003e \"GOSHI\"",
+    "[local-stt]   fix: \"Winnie\" -\u003e \"WINNI\"",
+    "[local-stt]   fix: \"Nabbo\" -\u003e \"NABBO\"",
+    "[local-stt]   fix: \"Milt\" -\u003e \"MILTT\"",
+    "[local-stt]   fix: \"Jobee\" -\u003e \"JOBEE\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   approach: \"I L S runway one five right then visual approach left traffic to runway four left\" -\u003e \"I5RC\"",
+    "[local-stt]   approach: \"r-nav runway four left\" -\u003e \"R4L\"",
+    "[local-stt]   approach: \"Visual Approach runway four right\" -\u003e \"VA4R\"",
+    "[local-stt]   approach: \"Visual Approach runway four left\" -\u003e \"VA4L\"",
+    "[local-stt]   approach: \"I L S runway four right\" -\u003e \"I4R\"",
+    "[local-stt]   approach: \"r-nav runway four right\" -\u003e \"R4R\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"30\" Type=2 Value=30",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   matched command: \"D30\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[D30] (avgConf=1.00)",
+    "[local-stt] parsed commands: [D30] (conf=1.00)",
+    "[local-stt] validated commands: [D30] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"RPA1411 D30\" (conf=0.70, time=1.0798ms) ==="
+  ]
+}

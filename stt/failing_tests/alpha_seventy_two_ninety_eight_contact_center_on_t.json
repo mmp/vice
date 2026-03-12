@@ -1,0 +1,371 @@
+{
+  "time": "2026-03-10T21:16:51.033143425Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:867:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Alpha Seventy Two Ninety Eight contact center on thirty three forty two",
+  "whisper_duration_ms": 333.98,
+  "audio_duration_ms": 3144,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12329MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "UPS29",
+  "command": "FC",
+  "stt_aircraft": {
+    "Blue Streak 77 37": {
+      "Callsign": "JIA7737",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Louisville Muhammad Ali": "KSDF"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five left": "I5L",
+        "I L S runway three five right": "I5R"
+      },
+      "ApproachFixes": {
+        "I5L": {
+          "Awlee": "AWLEE",
+          "Bourbon": "BRBON",
+          "Cardinal": "CRDNL",
+          "Red bird": "RDBRD",
+          "knox": "KNNOX"
+        },
+        "I5R": {
+          "Ohna": "OHNNA",
+          "Parcel": "PARCL",
+          "Pegasus": "PGSUS",
+          "Upsco": "UPSCO",
+          "meeko": "MEEKO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LEDDL1",
+      "Altitude": 8224,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29",
+        "11",
+        "29"
+      ]
+    },
+    "Blue Streak 82 56": {
+      "Callsign": "JIA8256",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Louisville Muhammad Ali": "KSDF"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five left": "I5L",
+        "I L S runway three five right": "I5R"
+      },
+      "ApproachFixes": {
+        "I5L": {
+          "Awlee": "AWLEE",
+          "Bourbon": "BRBON",
+          "Cardinal": "CRDNL",
+          "Red bird": "RDBRD",
+          "knox": "KNNOX"
+        },
+        "I5R": {
+          "Ohna": "OHNNA",
+          "Parcel": "PARCL",
+          "Pegasus": "PGSUS",
+          "Upsco": "UPSCO",
+          "meeko": "MEEKO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MBELL5",
+      "Altitude": 9909,
+      "State": "arrival",
+      "ControllerFrequency": "4I",
+      "TrackingController": "4I",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29",
+        "11",
+        "29"
+      ]
+    },
+    "Brickyard 61 22": {
+      "Callsign": "RPA6122",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Louisville Muhammad Ali": "KSDF"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five left": "I5L",
+        "I L S runway three five right": "I5R"
+      },
+      "ApproachFixes": {
+        "I5L": {
+          "Awlee": "AWLEE",
+          "Bourbon": "BRBON",
+          "Cardinal": "CRDNL",
+          "Red bird": "RDBRD",
+          "knox": "KNNOX"
+        },
+        "I5R": {
+          "Ohna": "OHNNA",
+          "Parcel": "PARCL",
+          "Pegasus": "PGSUS",
+          "Upsco": "UPSCO",
+          "meeko": "MEEKO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "DLAMP8",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29",
+        "11",
+        "29"
+      ]
+    },
+    "Delta eight 94": {
+      "Callsign": "DAL894",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Louisville Muhammad Ali": "KSDF",
+        "Parcel": "PARCL",
+        "Upsco": "UPSCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five left": "I5L",
+        "I L S runway three five right": "I5R"
+      },
+      "ApproachFixes": {
+        "I5L": {
+          "Awlee": "AWLEE",
+          "Bourbon": "BRBON",
+          "Cardinal": "CRDNL",
+          "Red bird": "RDBRD",
+          "knox": "KNNOX"
+        },
+        "I5R": {
+          "Ohna": "OHNNA",
+          "Parcel": "PARCL",
+          "Pegasus": "PGSUS",
+          "Upsco": "UPSCO",
+          "meeko": "MEEKO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 35R",
+      "SID": "",
+      "STAR": "LEDDL1",
+      "Altitude": 3000,
+      "State": "cleared approach",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29",
+        "11",
+        "29"
+      ]
+    },
+    "SkyWest 36 89": {
+      "Callsign": "SKW3689",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Strep": "STREP"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "STREP5",
+      "STAR": "",
+      "Altitude": 7894,
+      "State": "departure",
+      "ControllerFrequency": "4B",
+      "TrackingController": "4B",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 82 98": {
+      "Callsign": "SWA8298",
+      "AircraftType": "",
+      "Fixes": {
+        "Shipper": "SHIPR"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 13000,
+      "State": "",
+      "ControllerFrequency": "4B",
+      "TrackingController": "",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "U.P.S. 29": {
+      "Callsign": "UPS29",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Cargo": "CRRGO"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "CRRGO4",
+      "STAR": "",
+      "Altitude": 9221,
+      "State": "departure",
+      "ControllerFrequency": "4B",
+      "TrackingController": "4B",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "U.P.S. 91 36 heavy": {
+      "Callsign": "UPS9136",
+      "AircraftType": "B748",
+      "Fixes": {
+        "Strep": "STREP"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "STREP5",
+      "STAR": "",
+      "Altitude": 8108,
+      "State": "departure",
+      "ControllerFrequency": "4B",
+      "TrackingController": "4B",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "U.P.S. six 31 heavy": {
+      "Callsign": "UPS631",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Bubba": "BUHBA",
+        "Cargo": "CRRGO"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "CRRGO4",
+      "STAR": "",
+      "Altitude": 4229,
+      "State": "departure",
+      "ControllerFrequency": "4B",
+      "TrackingController": "4B",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United five zero two": {
+      "Callsign": "UAL502",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Louisville Muhammad Ali": "KSDF"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five left": "I5L",
+        "I L S runway three five right": "I5R"
+      },
+      "ApproachFixes": {
+        "I5L": {
+          "Awlee": "AWLEE",
+          "Bourbon": "BRBON",
+          "Cardinal": "CRDNL",
+          "Red bird": "RDBRD",
+          "knox": "KNNOX"
+        },
+        "I5R": {
+          "Ohna": "OHNNA",
+          "Parcel": "PARCL",
+          "Pegasus": "PGSUS",
+          "Upsco": "UPSCO",
+          "meeko": "MEEKO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MBELL5",
+      "Altitude": 14000,
+      "State": "arrival",
+      "ControllerFrequency": "4I",
+      "TrackingController": "4I",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29",
+        "11",
+        "29"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Alpha Seventy Two Ninety Eight contact center on thirty three forty two\"",
+    "[local-stt] normalized words: [alpha 72 98 contact center on 33 42]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"alpha\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"72\" Type=1 Value=72",
+    "[local-stt]   token[2]: Text=\"98\" Type=1 Value=98",
+    "[local-stt]   token[3]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"center\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"on\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"33\" Type=1 Value=33",
+    "[local-stt]   token[7]: Text=\"42\" Type=1 Value=42",
+    "[local-stt] MatchCallsign: 8 tokens, 10 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 10 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"U.P.S. 29\" (airline=0.456, flight=0.833, skip=0)",
+    "[local-stt]     result 1: \"Southwest 82 98\" (airline=0.437, flight=0.833, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"U.P.S. 29\" (airline=0.46, flight=0.83, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 8 results",
+    "[local-stt]     result 0: \"Brickyard 61 22\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"U.P.S. 91 36 heavy\" (airline=0.456, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"U.P.S. six 31 heavy\" (airline=0.456, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Southwest 82 98\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Blue Streak 77 37\" (airline=0.483, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"U.P.S. 29\" (airline=0.46, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"U.P.S. 29\"",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"U.P.S. 29\" (airline=0.500, flight=0.650, skip=0)",
+    "[local-stt]     result 1: \"Southwest 82 98\" (airline=0.500, flight=0.833, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Southwest 82 98\" (airline=0.50, flight=0.83, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"UPS29\" (conf=0.86, consumed=3, addressingForm=0, spokenKey=\"U.P.S. 29\")",
+    "[local-stt] callsign match: Callsign=\"UPS29\" SpokenKey=\"U.P.S. 29\" Conf=0.86 Consumed=3",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=9221 Fixes=1 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Cargo\" -> \"CRRGO\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"center\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"on\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"33\" Type=1 Value=33",
+    "[local-stt]   token[4]: Text=\"42\" Type=1 Value=42",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   matched command: \"FC\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   no match at token[2]=\"on\", skipping",
+    "[local-stt]   no match at token[3]=\"33\", skipping",
+    "[local-stt]   no match at token[4]=\"42\", skipping",
+    "[local-stt] ParseCommands: result=[FC] (avgConf=1.00)",
+    "[local-stt] parsed commands: [FC] (conf=1.00)",
+    "[local-stt] validated commands: [FC] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UPS29 FC\" (conf=0.86, time=2.5901ms) ==="
+  ]
+}

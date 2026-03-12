@@ -1,0 +1,279 @@
+{
+  "time": "2026-03-11T04:28:55.714262655Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:867:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "SW 1672 information kilo is correct expect the ARNAV Zulu approach from ITN",
+  "whisper_duration_ms": 189.846,
+  "audio_duration_ms": 6472,
+  "processor": "GPU: NVIDIA GeForce RTX 5060 Ti (16050MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SWA1672",
+  "command": "ATIS/K ERZ7",
+  "stt_aircraft": {
+    "Air Canada 95": {
+      "Callsign": "ACA95",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Carsner": "CRSNR",
+        "Catdog": "CATDG",
+        "Clomn": "KLOMN",
+        "Jade": "AJADE",
+        "Lindy": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "San Diego": "KSAN",
+        "Sayae": "SAYAE",
+        "Sijhi": "CIJHI",
+        "Tokyo": "TOKOE",
+        "Vida": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ApproachFixes": {
+        "L27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RY7": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RZ7": {
+          "Carsner": "CRSNR",
+          "Catdog": "CATDG",
+          "Clomn": "KLOMN",
+          "Jade": "AJADE",
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sayae": "SAYAE",
+          "Sijhi": "CIJHI",
+          "Tokyo": "TOKOE",
+          "Vida": "VYDDA"
+        },
+        "V27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 7119,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "SkyWest 86 37": {
+      "Callsign": "SKW8637",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Carif": "CARIF",
+        "Mission Bay": "MZB",
+        "San Diego": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ApproachFixes": {
+        "L27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RY7": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RZ7": {
+          "Carsner": "CRSNR",
+          "Catdog": "CATDG",
+          "Clomn": "KLOMN",
+          "Jade": "AJADE",
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sayae": "SAYAE",
+          "Sijhi": "CIJHI",
+          "Tokyo": "TOKOE",
+          "Vida": "VYDDA"
+        },
+        "V27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LAXX1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 16 72": {
+      "Callsign": "SWA1672",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Clomn": "KLOMN",
+        "Comics": "COMIX",
+        "Naddo": "NADDO",
+        "San Diego": "KSAN",
+        "Zemans": "XMANS",
+        "flush": "FLSHH",
+        "lantern": "LNTRN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ApproachFixes": {
+        "L27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RY7": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RZ7": {
+          "Carsner": "CRSNR",
+          "Catdog": "CATDG",
+          "Clomn": "KLOMN",
+          "Jade": "AJADE",
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sayae": "SAYAE",
+          "Sijhi": "CIJHI",
+          "Tokyo": "TOKOE",
+          "Vida": "VYDDA"
+        },
+        "V27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 15419,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"SW 1672 information kilo is correct expect the ARNAV Zulu approach from ITN\"",
+    "[local-stt] normalized words: [sw 1672 information kilo is correct expect the arnav zulu approach from itn]",
+    "[local-stt] tokens: 13",
+    "[local-stt]   token[0]: Text=\"sw\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"1672\" Type=1 Value=1672",
+    "[local-stt]   token[2]: Text=\"information\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"kilo\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"correct\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"arnav\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"zulu\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"itn\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 13 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 13 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Southwest 16 72\" (airline=0.583, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Southwest 16 72\" (airline=0.58, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"Southwest 16 72\" (airline=0.583, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"SkyWest 86 37\" (airline=0.786, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Southwest 16 72\" (airline=0.58, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Southwest 16 72\"",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Southwest 16 72\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Southwest 16 72\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"SWA1672\" (conf=0.92, consumed=2, addressingForm=0, spokenKey=\"Southwest 16 72\")",
+    "[local-stt] callsign match: Callsign=\"SWA1672\" SpokenKey=\"Southwest 16 72\" Conf=0.92 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=15419 Fixes=7 Approaches=4 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Comics\" -\u003e \"COMIX\"",
+    "[local-stt]   fix: \"flush\" -\u003e \"FLSHH\"",
+    "[local-stt]   fix: \"lantern\" -\u003e \"LNTRN\"",
+    "[local-stt]   fix: \"Zemans\" -\u003e \"XMANS\"",
+    "[local-stt]   fix: \"Clomn\" -\u003e \"KLOMN\"",
+    "[local-stt]   fix: \"Naddo\" -\u003e \"NADDO\"",
+    "[local-stt]   fix: \"San Diego\" -\u003e \"KSAN\"",
+    "[local-stt]   approach: \"r-nav yankee runway two seven\" -\u003e \"RY7\"",
+    "[local-stt]   approach: \"r-nav zulu runway two seven\" -\u003e \"RZ7\"",
+    "[local-stt]   approach: \"Visual runway two seven\" -\u003e \"V27\"",
+    "[local-stt]   approach: \"Localizer runway two seven\" -\u003e \"L27\"",
+    "[local-stt] command tokens after disregard: 11",
+    "[local-stt]   token[0]: Text=\"information\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"kilo\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"correct\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"arnav\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"zulu\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"itn\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 11 tokens",
+    "[local-stt]   matched command: \"ATIS/K\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   matched command: \"E\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt]   no match at token[9]=\"from\", skipping",
+    "[local-stt]   matched command: \"ID\" (conf=1.00, consumed=1, isThen=false)",
+    "[local-stt] ParseCommands: result=[ATIS/K E ID] (avgConf=1.00)",
+    "[local-stt] parsed commands: [ATIS/K E ID] (conf=1.00)",
+    "[local-stt] validated commands: [ATIS/K E ID] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA1672 ATIS/K E ID\" (conf=0.92, time=518.9µs) ==="
+  ]
+}

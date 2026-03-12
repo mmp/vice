@@ -1,0 +1,260 @@
+{
+  "time": "2026-02-06T03:31:16.682643323Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta One Ninety Seven at Goshi cleared ILS runway four right approach",
+  "whisper_duration_ms": 345.587,
+  "audio_duration_ms": 4296,
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16045MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "DAL197",
+  "command": "AGOSHI/CI4R",
+  "stt_aircraft": {
+    "Delta one 97": {
+      "Callsign": "DAL197",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Goshi": "GOSHI",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 6448,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue eight 13": {
+      "Callsign": "JBU813",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Gabe": "GGABE",
+        "Goshi": "GOSHI",
+        "Jobee": "JOBEE",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 6191,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta One Ninety Seven at Goshi cleared ILS runway four right approach\"",
+    "[local-stt] normalized words: [delta 1 97 at goshi cleared ils runway 4 right approach]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"197\" Type=1 Value=197",
+    "[local-stt]   token[2]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"goshi\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"4\" Type=1 Value=4",
+    "[local-stt]   token[8]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 10 tokens, 2 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 10 tokens, 2 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Delta one 97\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Delta one 97\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"JetBlue eight 13\" (airline=0.565, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta one 97\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta one 97\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Delta one 97\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Delta one 97\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"DAL197\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Delta one 97\")",
+    "[local-stt] callsign match: Callsign=\"DAL197\" SpokenKey=\"Delta one 97\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6448 Fixes=5 Approaches=6 AssignedApproach=\"ILS Runway 4R\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L 9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Goshi\" -\u003e \"GOSHI\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   fix: \"Winnie\" -\u003e \"WINNI\"",
+    "[local-stt]   fix: \"Nabbo\" -\u003e \"NABBO\"",
+    "[local-stt]   fix: \"Milt\" -\u003e \"MILTT\"",
+    "[local-stt]   approach: \"Visual Approach runway four left\" -\u003e \"VA4L\"",
+    "[local-stt]   approach: \"I L S runway one five right then visual approach left traffic to runway four left\" -\u003e \"I5RC\"",
+    "[local-stt]   approach: \"r-nav runway four left\" -\u003e \"R4L\"",
+    "[local-stt]   approach: \"Visual Approach runway four right\" -\u003e \"VA4R\"",
+    "[local-stt]   approach: \"r-nav runway four right\" -\u003e \"R4R\"",
+    "[local-stt]   approach: \"I L S runway four right\" -\u003e \"I4R\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"goshi\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"4\" Type=1 Value=4",
+    "[local-stt]   token[6]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"goshi\" against 5 fixes",
+    "[local-stt]   extractFix: matched \"goshi\" -\u003e \"GOSHI\" (exact)",
+    "[local-stt]   extractFix: matched \"goshi\" -\u003e \"GOSHI\" (fuzzy 1.00)",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" variant=\"\" runway=\"four right\" -\u003e \"I4R\" (consumed=4)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"goshi\" against 5 fixes",
+    "[local-stt]   extractFix: matched \"goshi\" -\u003e \"GOSHI\" (exact)",
+    "[local-stt]   extractFix: matched \"goshi\" -\u003e \"GOSHI\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"goshi\" against 5 fixes",
+    "[local-stt]   extractFix: matched \"goshi\" -\u003e \"GOSHI\" (exact)",
+    "[local-stt]   extractFix: matched \"goshi\" -\u003e \"GOSHI\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"AGOSHI/CI4R\" (conf=1.00, consumed=7, isThen=false)",
+    "[local-stt]   no match at token[7]=\"approach\", skipping",
+    "[local-stt] ParseCommands: result=[AGOSHI/CI4R] (avgConf=1.00)",
+    "[local-stt] parsed commands: [AGOSHI/CI4R] (conf=1.00)",
+    "[local-stt] validated commands: [AGOSHI/CI4R] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL197 AGOSHI/CI4R\" (conf=1.00, time=504.2µs) ==="
+  ]
+}

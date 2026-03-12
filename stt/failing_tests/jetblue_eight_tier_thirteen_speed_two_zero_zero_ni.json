@@ -1,0 +1,406 @@
+{
+  "time": "2026-02-06T03:25:36.422330818Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "JetBlue Eight Tier Thirteen Speed Two Zero Zero Nine",
+  "whisper_duration_ms": 103.052,
+  "audio_duration_ms": 3016,
+  "processor": "GPU: NVIDIA GeForce RTX 4080 (16048MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "JBU813",
+  "command": "TO S200",
+  "stt_aircraft": {
+    "Delta 86 zero one heavy": {
+      "Callsign": "DAL8601",
+      "AircraftType": "B764",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Goshi": "GOSHI",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 9106,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Delta one 43": {
+      "Callsign": "DAL143",
+      "AircraftType": "",
+      "Fixes": {
+        "Alfomso Mengo": "CAM",
+        "Paige": "PAYGE"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "",
+      "ControllerFrequency": "1D",
+      "TrackingController": "",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 27 58": {
+      "Callsign": "EJA2758",
+      "AircraftType": "C68A",
+      "Fixes": {
+        "Hyland": "HYLND"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "HYLND7",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Flexjet 51": {
+      "Callsign": "LXJ51",
+      "AircraftType": "E545",
+      "Fixes": {
+        "Blazer": "BLZZR",
+        "Claw": "CLAWW",
+        "Deadham": "DEDHM",
+        "Fenway": "FENWY",
+        "Gullet": "GLLET",
+        "Wyometh": "WYMTH"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BLZZR6",
+      "STAR": "",
+      "Altitude": 1253,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 44 86": {
+      "Callsign": "JBU4486",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Autumn": "AUTUM",
+        "Boston": "KBOS",
+        "Gabe": "GGABE",
+        "Goshi": "GOSHI",
+        "Grifi": "GRIFI",
+        "Harris": "HRRIS",
+        "Jobee": "JOBEE",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Space-eyed": "SPYSD",
+        "Winnie": "WINNI",
+        "Wintah": "WINTA"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 13115,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue eight 13": {
+      "Callsign": "JBU813",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Gabe": "GGABE",
+        "Goshi": "GOSHI",
+        "Grifi": "GRIFI",
+        "Harris": "HRRIS",
+        "Jobee": "JOBEE",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Space-eyed": "SPYSD",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "Visual Approach runway four left": "VA4L",
+        "Visual Approach runway four right": "VA4R",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "I5RC": {
+          "Adams": "AADMS",
+          "Maldy": "MALDY",
+          "Swig": "SWIGG",
+          "Woobur": "WOBUR"
+        },
+        "R4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN",
+          "Nunzo": "NUNZO",
+          "Woons": "WOONS"
+        },
+        "R4R": {
+          "Goshi": "GOSHI",
+          "Irisew": "IRSEW",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        },
+        "VA4L": {
+          "Al": "AAALL",
+          "Leverown": "LVRON",
+          "Matapan": "MTAPN"
+        },
+        "VA4R": {
+          "Goshi": "GOSHI",
+          "Milt": "MILTT",
+          "Nabbo": "NABBO",
+          "Winnie": "WINNI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 8393,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L",
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"JetBlue Eight Tier Thirteen Speed Two Zero Zero Nine\"",
+    "[local-stt] normalized words: [jetblue 8 tier 13 speed 2 0 0 9]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"jetblue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"8\" Type=1 Value=8",
+    "[local-stt]   token[2]: Text=\"tier\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"13\" Type=1 Value=13",
+    "[local-stt]   token[4]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"2009\" Type=1 Value=2009",
+    "[local-stt] MatchCallsign: 6 tokens, 6 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 6 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 3 results",
+    "[local-stt]     result 0: \"JetBlue eight 13\" (airline=1.000, flight=0.800, skip=0)",
+    "[local-stt]     result 1: \"ExecJet 27 58\" (airline=0.524, flight=0.850, skip=0)",
+    "[local-stt]     result 2: \"Delta 86 zero one heavy\" (airline=0.565, flight=0.775, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"JetBlue eight 13\" (airline=1.00, flight=0.80, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 6 results",
+    "[local-stt]     result 0: \"Delta 86 zero one heavy\" (airline=0.565, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Flexjet 51\" (airline=0.524, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"JetBlue eight 13\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Delta one 43\" (airline=0.565, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"JetBlue 44 86\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"ExecJet 27 58\" (airline=0.52, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"ExecJet 27 58\"",
+    "[local-stt]   pattern \"flight_only\": no results",
+    "[local-stt]   pattern \"airline_flight\" matched: \"JBU813\" (conf=0.96, consumed=2, addressingForm=0, spokenKey=\"JetBlue eight 13\")",
+    "[local-stt] callsign match: Callsign=\"JBU813\" SpokenKey=\"JetBlue eight 13\" Conf=0.96 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=8393 Fixes=10 Approaches=6 AssignedApproach=\"ILS Runway 4R\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L 9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Grifi\" -> \"GRIFI\"",
+    "[local-stt]   fix: \"Jobee\" -> \"JOBEE\"",
+    "[local-stt]   fix: \"Boston\" -> \"KBOS\"",
+    "[local-stt]   fix: \"Nabbo\" -> \"NABBO\"",
+    "[local-stt]   fix: \"Harris\" -> \"HRRIS\"",
+    "[local-stt]   fix: \"Space-eyed\" -> \"SPYSD\"",
+    "[local-stt]   fix: \"Gabe\" -> \"GGABE\"",
+    "[local-stt]   fix: \"Goshi\" -> \"GOSHI\"",
+    "[local-stt]   fix: \"Winnie\" -> \"WINNI\"",
+    "[local-stt]   fix: \"Milt\" -> \"MILTT\"",
+    "[local-stt]   approach: \"Visual Approach runway four right\" -> \"VA4R\"",
+    "[local-stt]   approach: \"r-nav runway four left\" -> \"R4L\"",
+    "[local-stt]   approach: \"I L S runway one five right then visual approach left traffic to runway four left\" -> \"I5RC\"",
+    "[local-stt]   approach: \"Visual Approach runway four left\" -> \"VA4L\"",
+    "[local-stt]   approach: \"I L S runway four right\" -> \"I4R\"",
+    "[local-stt]   approach: \"r-nav runway four right\" -> \"R4R\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"tier\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"13\" Type=1 Value=13",
+    "[local-stt]   token[2]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"2009\" Type=1 Value=2009",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   matched command: \"TO\" (conf=1.00, consumed=1, isThen=false)",
+    "[local-stt]   no match at token[1]=\"13\", skipping",
+    "[local-stt]   matched command: \"S200\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[TO S200] (avgConf=1.00)",
+    "[local-stt] parsed commands: [TO S200] (conf=1.00)",
+    "[local-stt] validated commands: [TO S200] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU813 TO S200\" (conf=0.96, time=1.0001ms) ==="
+  ]
+}
