@@ -275,6 +275,10 @@ func (nav *Nav) AtFixCleared(fix, id string) av.CommandIntent {
 		}
 	}
 
+	if nav.Approach.AtFixClearedRoute == nil {
+		return av.MakeUnableIntent("unable. {fix} is not on the {appr} approach", fix, ap.FullName)
+	}
+
 	return av.ApproachIntent{
 		Type:         av.ApproachAtFixCleared,
 		ApproachName: ap.FullName,

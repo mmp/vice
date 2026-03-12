@@ -572,6 +572,8 @@ func registerAllCommands() {
 		func(fix, appr string) string { return fmt.Sprintf("A%s/C%s", fix, appr) },
 		WithName("at_fix_cleared_approach"),
 		WithPriority(15),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
 	)
 
 	// These templates handle "at FIX intercept the localizer" with varying runway info

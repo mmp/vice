@@ -210,7 +210,13 @@ func tryMatchCommand(tokens []Token, startPos int, cmd sttCommand, ac Aircraft, 
 				// When the parser has tokens but can't match them, i > 0 suffices.
 				// When at end of tokens, require >1 consumed token to avoid false
 				// triggers from single stray keywords (e.g., "cleared" alone).
-				enoughContext := (pos < len(tokens) && i > 0) || pos-startPos > 1
+				// Commands with sayAgainMinTokens require more tokens consumed
+				// (e.g., "at {fix} cleared {approach}" needs the fix to match).
+				minTokens := cmd.sayAgainMinTokens
+				if minTokens <= 0 {
+					minTokens = 1
+				}
+				enoughContext := pos-startPos >= minTokens && ((pos < len(tokens) && i > 0) || pos-startPos > 1)
 				if res.sayAgain != "" && enoughContext && cmd.sayAgainOnFail {
 					return CommandMatch{
 						Command:    "SAYAGAIN/" + res.sayAgain,
