@@ -484,8 +484,11 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 
 	switch sp.datablockType(ctx, trk) {
 	case LimitedDatablock:
-		return sp.buildLimitedDatablock(ctx, trk, color, brightness,
-			beaconator, displayBeaconCode, groundspeed)
+		if ldb := sp.buildLimitedDatablock(ctx, trk, color, brightness,
+			beaconator, displayBeaconCode, groundspeed); ldb != nil {
+			return ldb
+		}
+		return nil
 
 	case PartialDatablock:
 		return sp.buildPartialDatablock(ctx, trk, sfp, color,
