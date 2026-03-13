@@ -349,6 +349,13 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 			// Round down to nearest 10 - ATC speeds are always multiples of 10.
 			if t.Value >= 100 && t.Value <= 400 {
 				rounded := (t.Value / 10) * 10
+				// STT teen/ty confusion: e.g., "one eighteen" (118) when
+				// the controller said "one eighty" (180). If the last two
+				// digits are 11-19, reinterpret as the -ty form.
+				lastTwo := t.Value % 100
+				if lastTwo >= 11 && lastTwo <= 19 {
+					rounded = (t.Value/100)*100 + (t.Value%10)*10
+				}
 				return adjustSpeedForPerformance(rounded, ac), i - pos + 1, ""
 			}
 

@@ -23,6 +23,7 @@ var digitWords = map[string]string{
 	"ate":  "8", "ait": "8", // Homophone for "eight"
 	"oh":   "0", // Common way to say zero
 	"zeri": "0", // Whisper STT transcription of "zero"
+	"fire": "5", // STT mishearing of "five" (/faɪr/ ≈ /faɪv/)
 }
 
 // numberWords maps multi-digit number words to values.
@@ -557,6 +558,7 @@ var multiTokenReplacements = map[string][]string{
 	"r on a":       {"runway"},
 	"right a star": {"via", "star"},
 	"i dead":       {"ident"},
+	"i file":       {"5", "mile"}, // STT error: "five mile" transcribed as "I file"
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.

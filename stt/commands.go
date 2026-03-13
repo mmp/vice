@@ -2358,11 +2358,24 @@ func extractMileFinal(tokens []Token) (int, int) {
 		return 0, 0
 	}
 
-	// First token should be a number
-	if tokens[0].Type != TokenNumber || tokens[0].Value < 1 || tokens[0].Value > 20 {
+	// First token should be a number. If it's a word, try fuzzy matching
+	// against digit words — in the structural pattern [word] mile final,
+	// the first position must be a number semantically.
+	var num int
+	if tokens[0].Type == TokenNumber && tokens[0].Value >= 1 && tokens[0].Value <= 20 {
+		num = tokens[0].Value
+	} else if tokens[0].Type == TokenWord && len(tokens) >= 3 {
+		next1 := strings.ToLower(tokens[1].Text)
+		next2 := strings.ToLower(tokens[2].Text)
+		if (next1 == "mile" || next1 == "miles") && next2 == "final" {
+			if v := fuzzyMatchDigitWord(tokens[0].Text); v > 0 {
+				num = v
+			}
+		}
+	}
+	if num == 0 {
 		return 0, 0
 	}
-	num := tokens[0].Value
 	consumed := 1
 
 	if consumed >= len(tokens) {
@@ -2386,6 +2399,30 @@ func extractMileFinal(tokens []Token) (int, int) {
 	}
 
 	return 0, 0
+}
+
+// fuzzyMatchDigitWord tries to fuzzy-match a garbled word against digit words
+// 1-10. Returns the digit value on match, or 0 if no match exceeds the threshold.
+func fuzzyMatchDigitWord(word string) int {
+	word = strings.ToLower(word)
+	targets := []struct {
+		word  string
+		value int
+	}{
+		{"one", 1}, {"two", 2}, {"three", 3}, {"four", 4}, {"five", 5},
+		{"six", 6}, {"seven", 7}, {"eight", 8}, {"nine", 9}, {"ten", 10},
+	}
+
+	bestVal := 0
+	bestScore := 0.65 // minimum threshold
+	for _, t := range targets {
+		score := JaroWinkler(word, t.word)
+		if score > bestScore {
+			bestScore = score
+			bestVal = t.value
+		}
+	}
+	return bestVal
 }
 
 // isAircraftTypeNumber returns true if the number matches a common aircraft type.
