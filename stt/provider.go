@@ -477,15 +477,21 @@ func (p *Transcriber) BuildAircraftContext(
 			}
 
 			// If there's an assigned approach, merge its fixes into the main Fixes map
-			// so they're available for matching "proceed direct" commands
+			// so they're available for matching "proceed direct" commands.
+			// AssignedApproach is a full name (e.g., "ILS Runway 22L") but
+			// ApproachFixes is keyed by short code (e.g., "I2L"). Convert
+			// via GetApproachTelephony + CandidateApproaches.
 			if sttAc.AssignedApproach != "" {
-				if approachFixes, ok := sttAc.ApproachFixes[sttAc.AssignedApproach]; ok {
-					if sttAc.Fixes == nil {
-						sttAc.Fixes = make(map[string]string)
-					}
-					for spoken, fix := range approachFixes {
-						if _, exists := sttAc.Fixes[spoken]; !exists {
-							sttAc.Fixes[spoken] = fix
+				telephony := av.GetApproachTelephony(sttAc.AssignedApproach)
+				if code, ok := sttAc.CandidateApproaches[telephony]; ok {
+					if approachFixes, ok := sttAc.ApproachFixes[code]; ok {
+						if sttAc.Fixes == nil {
+							sttAc.Fixes = make(map[string]string)
+						}
+						for spoken, fix := range approachFixes {
+							if _, exists := sttAc.Fixes[spoken]; !exists {
+								sttAc.Fixes[spoken] = fix
+							}
 						}
 					}
 				}
@@ -731,22 +737,32 @@ func applyDisregard(tokens []Token) []Token {
 				return afterCorrection
 			}
 
-			// Just numbers after correction (e.g., frequency) - only discard preceding numbers
-			// e.g., "contact departure 12, correction 126.8"
-			// Also skip unit words (miles, knots, degrees) that follow the number
-			// e.g., "until 8 miles correction 7 miles"
-			numStart := i
+			// No command keywords after correction - this is a value correction.
+			// Scan backward to find and replace the corrected value.
+			// Handle both numeric values (e.g., "contact departure 12, correction 126.8")
+			// and plain words like fix names (e.g., "direct lever correction haupt").
+			valStart := i
 			for j := i - 1; j >= 0; j-- {
 				w := strings.ToLower(tokens[j].Text)
 				if tokens[j].Type == TokenNumber || w == "point" ||
 					w == "miles" || w == "knots" || w == "degrees" {
-					numStart = j
+					valStart = j
 				} else {
 					break
 				}
 			}
-			// Keep tokens before the corrected numbers, add tokens after "correction"
-			return append(tokens[:numStart], afterCorrection...)
+			// If no numbers were stripped and the token directly before "correction"
+			// is a plain word (not a command keyword), strip that single word.
+			// This handles fix name corrections like "direct lever correction haupt"
+			// where "lever" (the mis-spoken fix) should be replaced by "haupt".
+			if valStart == i && i > 0 {
+				prev := strings.ToLower(tokens[i-1].Text)
+				if tokens[i-1].Type == TokenWord && !IsCommandKeyword(prev) {
+					valStart = i - 1
+				}
+			}
+			// Keep tokens before the corrected value, add tokens after "correction"
+			return append(tokens[:valStart], afterCorrection...)
 		}
 	}
 	return tokens

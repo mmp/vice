@@ -24,19 +24,20 @@ type STTTestFile struct {
 	Callsign    string `json:"callsign"`
 	Command     string `json:"command"`
 	STTAircraft map[string]struct {
-		Callsign            string            `json:"Callsign"`
-		AircraftType        string            `json:"AircraftType"`
-		Fixes               map[string]string `json:"Fixes"`
-		CandidateApproaches map[string]string `json:"CandidateApproaches"`
-		AssignedApproach    string            `json:"AssignedApproach"`
-		SID                 string            `json:"SID"`
-		STAR                string            `json:"STAR"`
-		Altitude            int               `json:"Altitude"`
-		State               string            `json:"State"`
-		ControllerFrequency string            `json:"ControllerFrequency"`
-		TrackingController  string            `json:"TrackingController"`
-		AddressingForm      int               `json:"AddressingForm"`
-		LAHSORunways        []string          `json:"LAHSORunways"`
+		Callsign            string                       `json:"Callsign"`
+		AircraftType        string                       `json:"AircraftType"`
+		Fixes               map[string]string            `json:"Fixes"`
+		CandidateApproaches map[string]string            `json:"CandidateApproaches"`
+		ApproachFixes       map[string]map[string]string `json:"ApproachFixes"`
+		AssignedApproach    string                       `json:"AssignedApproach"`
+		SID                 string                       `json:"SID"`
+		STAR                string                       `json:"STAR"`
+		Altitude            int                          `json:"Altitude"`
+		State               string                       `json:"State"`
+		ControllerFrequency string                       `json:"ControllerFrequency"`
+		TrackingController  string                       `json:"TrackingController"`
+		AddressingForm      int                          `json:"AddressingForm"`
+		LAHSORunways        []string                     `json:"LAHSORunways"`
 	} `json:"stt_aircraft"`
 }
 
@@ -72,10 +73,29 @@ func main() {
 		if form == sim.AddressingFormTypeTrailing3 && !strings.HasSuffix(callsign, "/T") {
 			callsign += "/T"
 		}
+		// Merge assigned approach fixes into the Fixes map, mirroring
+		// the production behavior in provider.go.
+		fixes := ac.Fixes
+		if ac.AssignedApproach != "" && len(ac.ApproachFixes) > 0 {
+			telephony := av.GetApproachTelephony(ac.AssignedApproach)
+			if code, ok := ac.CandidateApproaches[telephony]; ok {
+				if approachFixes, ok := ac.ApproachFixes[code]; ok {
+					if fixes == nil {
+						fixes = make(map[string]string)
+					}
+					for spoken, fix := range approachFixes {
+						if _, exists := fixes[spoken]; !exists {
+							fixes[spoken] = fix
+						}
+					}
+				}
+			}
+		}
+
 		aircraft[key] = stt.Aircraft{
 			Callsign:            callsign,
 			AircraftType:        ac.AircraftType,
-			Fixes:               ac.Fixes,
+			Fixes:               fixes,
 			CandidateApproaches: ac.CandidateApproaches,
 			AssignedApproach:    ac.AssignedApproach,
 			SID:                 ac.SID,

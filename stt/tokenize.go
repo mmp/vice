@@ -207,6 +207,12 @@ func parseAltitudePattern(words []string) (int, int) {
 			consumed++
 		} else if n, err := strconv.Atoi(words[consumed]); err == nil && n < 100 {
 			if n > 60 {
+				// Numbers 61-99 before "thousand" represent garbled altitudes
+				// like "76 thousand" (STT for "seven thousand six hundred" = 7,600 ft).
+				// The tens digit is thousands and the units digit is hundreds.
+				if consumed+1 < len(words) && FuzzyMatch(words[consumed+1], "thousand", 0.90) {
+					return n, consumed + 2
+				}
 				break
 			}
 			thousands = n
@@ -292,6 +298,15 @@ func parseDigitSequence(words []string) (int, string, int) {
 			// pattern like "18 3 thousand" where "3 thousand" means 3000 feet.
 			if num > 0 && consumed+1 < len(words) && words[consumed+1] == "thousand" {
 				break // Let this digit be parsed with "thousand" as an altitude
+			}
+			// Don't merge a single digit if "mile"/"miles" follows and we already
+			// have a meaningful number. This prevents "speed 180 5 miles final"
+			// from merging "5" into the speed (producing 1805).
+			if num >= 10 && consumed+1 < len(words) {
+				next := words[consumed+1]
+				if next == "mile" || next == "miles" {
+					break // Let this digit be parsed as a distance
+				}
 			}
 			num = candidate
 			text += w

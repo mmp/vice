@@ -621,7 +621,7 @@ func registerAllCommands() {
 		func(appr string) string { return fmt.Sprintf("C%s", appr) },
 		WithName("cleared_approach"),
 		WithPriority(13),
-		WithSayAgainOnFail(), // Garbled approach clearances should ask for clarification
+		WithSayAgainOnFail(),     // Garbled approach clearances should ask for clarification
 		WithSayAgainMinTokens(2), // Require approach type keyword, not just "cleared"
 	)
 
@@ -693,6 +693,15 @@ func registerAllCommands() {
 		func() string { return "I" },
 		WithName("intercept_localizer"),
 		WithPriority(10),
+	)
+	// Pattern: "intercept the final approach course" - ATC equivalent of
+	// "intercept the localizer". Controllers sometimes say "final approach course"
+	// instead of "localizer" to mean the same thing.
+	registerSTTCommand(
+		"intercept|join|set [the] final approach [course]",
+		func() string { return "I" },
+		WithName("intercept_final_approach_course"),
+		WithPriority(11),
 	)
 	// Pattern: standalone "localizer" without "intercept" keyword.
 	// When "localizer" appears alone (e.g., after a heading command), it means
