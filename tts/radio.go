@@ -156,22 +156,20 @@ func addRadioEffect(pcm []int16, sampleRate int, seed uint32, scale float32) {
 	params.Seed(uint64(seed))
 
 	hpCutoff := float32(220 + params.Intn(100))        // 220-320 Hz
-	lpCutoff := float32(2800 + params.Intn(400))       // 2800-3200 Hz
+	lpCutoff := float32(3200 + params.Intn(400))       // 3200-3600 Hz
 	engineLpCutoff := float32(250 + params.Intn(200))  // 250-450 Hz engine rumble
 	noiseGain := float32(0.04) + params.Float32()*0.06 // 0.04-0.10 static level
-	engineGain := float32(0.15) + params.Float32()*0.5 // 0.08-0.20 engine level
-	compDrive := float32(1.3) + params.Float32()*0.7   // 1.3-2.0 compression
+	engineGain := float32(0.05) + params.Float32()*0.1 // 0.05-0.15 engine level
+	compDrive := float32(1.1) + params.Float32()*0.4   // 1.1-1.5 compression
 	targetPeak := float32(0.65) + params.Float32()*0.1 // 0.65-0.75 normalized peak
 
 	// Scale noise levels; filtering and compression always apply.
 	noiseGain *= scale
 	engineGain *= scale
 
-	// Speech filters: highpass → lowpass → lowpass (cascaded for ~24 dB/oct
-	// HF rolloff, matching measured AM aviation radio characteristics).
+	// Speech filters: highpass → lowpass (~12 dB/oct HF rolloff).
 	hp := highpassBiquad(sampleRate, hpCutoff)
-	lp1 := lowpassBiquad(sampleRate, lpCutoff)
-	lp2 := lowpassBiquad(sampleRate, lpCutoff)
+	lp := lowpassBiquad(sampleRate, lpCutoff)
 
 	// Pass 1: bandpass filter speech and find peak amplitude.
 	buf := make([]float32, len(pcm))
@@ -179,8 +177,7 @@ func addRadioEffect(pcm []int16, sampleRate int, seed uint32, scale float32) {
 	for i, v := range pcm {
 		x := float32(v) / 32767
 		x = hp.process(x)
-		x = lp1.process(x)
-		x = lp2.process(x)
+		x = lp.process(x)
 		buf[i] = x
 		if a := math.Abs(x); a > peak {
 			peak = a
