@@ -67,6 +67,28 @@ func Tokenize(words []string) []Token {
 			}
 		}
 
+		// Check for standalone "N hundred" pattern (not part of "N thousand M hundred").
+		// e.g., "two hundred knots" -> "2 hundred" -> TokenNumber 200.
+		// parseAltitudePattern above requires "thousand", so if we're here,
+		// this is a standalone "N hundred".
+		if (IsDigit(w) || IsNumber(w)) && i+1 < len(words) && words[i+1] == "hundred" {
+			n := 0
+			if IsDigit(w) {
+				n = ParseDigit(w)
+			} else if v, err := strconv.Atoi(w); err == nil {
+				n = v
+			}
+			if n >= 1 && n <= 9 {
+				tokens = append(tokens, Token{
+					Text:  strconv.Itoa(n * 100),
+					Type:  TokenNumber,
+					Value: n * 100,
+				})
+				i += 2
+				continue
+			}
+		}
+
 		// Check for multi-digit numbers (callsign parts, squawk codes, etc.)
 		// Type classification (heading, speed) is deferred to command parsing
 		// where context determines meaning.

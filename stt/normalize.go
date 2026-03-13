@@ -427,6 +427,7 @@ var commandKeywords = map[string]string{
 	// Speed
 	"speed":    "speed",
 	"reduce":   "reduce",
+	"ready":    "reduce",
 	"increase": "increase",
 	"slow":     "slow",
 	"slowest":  "slowest",
@@ -530,6 +531,7 @@ var commandKeywords = map[string]string{
 // phraseExpansions maps single STT words to multiple normalized words.
 var phraseExpansions = map[string][]string{
 	"flighting":  {"fly", "heading"},
+	"fighting":   {"fly", "heading"},
 	"centimeter": {"descend", "maintain"},
 	"sediment":   {"descend", "maintain"},
 	"fl":         {"flight", "level"},
