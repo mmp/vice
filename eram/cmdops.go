@@ -146,6 +146,10 @@ func registerOpsCommands() {
 // QQ - Interim Altitude Handlers
 
 func handleInterimAltitude(ep *ERAMPane, ctx *panes.Context, alt InterimAltitude, trk *sim.Track) (CommandStatus, error) {
+	if trk.FlightPlan == nil {
+		return CommandStatus{}, ErrERAMIllegalACID
+	}
+
 	fp := sim.FlightPlanSpecifier{}
 	fp.InterimAlt.Set(alt.Altitude)
 	if alt.Type != "" {
@@ -164,6 +168,10 @@ func handleInterimAltitude(ep *ERAMPane, ctx *panes.Context, alt InterimAltitude
 }
 
 func handleClearInterimAltitude(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	if trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
 	fp := sim.FlightPlanSpecifier{}
 	fp.InterimAlt.Set(0)
 
@@ -182,6 +190,10 @@ func handleClearInterimAltitude(ep *ERAMPane, ctx *panes.Context, trk *sim.Track
 // QZ - Assigned Altitude Handler
 
 func handleAssignedAltitude(ep *ERAMPane, ctx *panes.Context, alt int, trk *sim.Track) CommandStatus {
+	if trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
 	fp := sim.FlightPlanSpecifier{}
 	fp.AssignedAltitude.Set(alt)
 
@@ -200,6 +212,10 @@ func handleAssignedAltitude(ep *ERAMPane, ctx *panes.Context, alt int, trk *sim.
 // QX - Drop Track Handler
 
 func handleDropTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
+	if trk.FlightPlan == nil {
+		return CommandStatus{}, ErrERAMIllegalACID
+	}
+
 	if !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
 		return CommandStatus{}, ErrERAMIllegalACID // TODO: proper "NO CONTROL" error
 	}
@@ -220,6 +236,10 @@ func handleClearRouteDisplay(ep *ERAMPane) {
 
 // Either displays the route for 20 minutes ahead or clears the route display
 func handleDefaultRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	if trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
 	// Check if the route is currently displayed
 	if _, ok := ep.aircraftFixCoordinates[trk.ADSBCallsign.String()]; ok {
 		delete(ep.aircraftFixCoordinates, trk.ADSBCallsign.String())
@@ -235,6 +255,10 @@ func handleDefaultRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track)
 }
 
 func handleMaxRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	if trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
 	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), -1)
 
 	return CommandStatus{
@@ -243,6 +267,10 @@ func handleMaxRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) Com
 }
 
 func handleRouteDisplayMinutes(ep *ERAMPane, ctx *panes.Context, minutes int, trk *sim.Track) CommandStatus {
+	if trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
 	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), minutes)
 
 	return CommandStatus{
@@ -251,6 +279,10 @@ func handleRouteDisplayMinutes(ep *ERAMPane, ctx *panes.Context, minutes int, tr
 }
 
 func handleDirectToFix(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Track) CommandStatus {
+	if trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
 	ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fix)
 
 	return CommandStatus{
@@ -262,6 +294,10 @@ func handleDirectToFix(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Tr
 // QP - J Ring Handlers
 
 func handleJRing(ep *ERAMPane, trk *sim.Track) CommandStatus {
+	if trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
 	state := ep.TrackState[trk.ADSBCallsign]
 	state.DisplayJRing = !state.DisplayJRing
 	state.DisplayReducedJRing = false // clear reduced J ring
@@ -272,6 +308,10 @@ func handleJRing(ep *ERAMPane, trk *sim.Track) CommandStatus {
 }
 
 func handleReducedJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
+	if trk.FlightPlan == nil {
+		return CommandStatus{}, ErrERAMIllegalACID
+	}
+
 	state := ep.TrackState[trk.ADSBCallsign]
 
 	if state.Track.TransponderAltitude > 23000 {
@@ -293,7 +333,7 @@ func handleFlightPlanReadout(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) C
 	fp := trk.FlightPlan
 	if fp == nil {
 		return CommandStatus{
-			err: fmt.Errorf("REJECT - NO FLIGHT PLAN\nFLIGHT PLAN READOUT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID), // TODO: find the correct error message
+			err: fmt.Errorf("REJECT - NO FLIGHT PLAN\nFLIGHT PLAN READOUT\n%s", trk.ADSBCallsign), // TODO: find the correct error message
 		}
 	}
 	/*
@@ -617,6 +657,10 @@ func handleCRREmpty() (CommandStatus, error) {
 // // - Toggle VCI Handler
 
 func handleToggleVCI(ep *ERAMPane, trk *sim.Track) CommandStatus {
+	if trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
 	state := ep.TrackState[trk.ADSBCallsign]
 	state.DisplayVCI = !state.DisplayVCI
 
@@ -725,6 +769,10 @@ func handleDefaultTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (Comma
 }
 
 func handleInitiateHandoff(ep *ERAMPane, ctx *panes.Context, sector string, trk *sim.Track) (CommandStatus, error) {
+	if trk.FlightPlan == nil {
+		return CommandStatus{}, ErrERAMIllegalACID
+	}
+
 	acid := sim.ACID(trk.ADSBCallsign)
 	err := ep.handoffTrack(ctx, acid, sector)
 	if err != nil {
@@ -737,6 +785,10 @@ func handleInitiateHandoff(ep *ERAMPane, ctx *panes.Context, sector string, trk 
 }
 
 func handleLeaderLine(ep *ERAMPane, ctx *panes.Context, dir int, trk *sim.Track) (CommandStatus, error) {
+	if trk.FlightPlan == nil {
+		return CommandStatus{}, ErrERAMIllegalACID
+	}
+
 	direction := ep.numberToLLDirection(dir)
 	callsign := trk.ADSBCallsign
 	dbType := ep.datablockType(ctx, *trk)
@@ -810,6 +862,10 @@ func (ep *ERAMPane) numberToLLDirection(cmd int) math.CardinalOrdinalDirection {
 // Leader Line Length Handlers
 
 func handleLeaderLineLength(ep *ERAMPane, ctx *panes.Context, length int, trk *sim.Track) CommandStatus {
+	if trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
 	// Validate length is 0-3
 	if length < 0 || length > 3 {
 		return CommandStatus{
