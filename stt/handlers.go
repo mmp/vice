@@ -572,6 +572,8 @@ func registerAllCommands() {
 		func(fix, appr string) string { return fmt.Sprintf("A%s/C%s", fix, appr) },
 		WithName("at_fix_cleared_approach"),
 		WithPriority(15),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
 	)
 
 	// These templates handle "at FIX intercept the localizer" with varying runway info
@@ -597,17 +599,11 @@ func registerAllCommands() {
 		WithSayAgainOnFail(), // "expect [approach]" should ask for clarification if approach unrecognized
 	)
 
+	// "standby for the approach" is informational — swallow it silently.
 	registerSTTCommand(
 		"standby [for] [the] approach",
-		func() string { return "E" },
+		func() string { return "" },
 		WithName("standby_approach"),
-		WithPriority(14),
-	)
-
-	registerSTTCommand(
-		"expect [the] approach",
-		func() string { return "E" },
-		WithName("expect_the_approach"),
 		WithPriority(14),
 	)
 

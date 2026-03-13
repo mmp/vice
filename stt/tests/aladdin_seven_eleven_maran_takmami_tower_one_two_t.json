@@ -1,0 +1,840 @@
+{
+  "time": "2026-03-08T02:11:38.002159374Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:858:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Aladdin Seven Eleven Maran Takmami tower one two three point niner",
+  "whisper_duration_ms": 238.177,
+  "audio_duration_ms": 3784,
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "LAN711",
+  "command": "TO",
+  "stt_aircraft": {
+    "American 68 98 heavy": {
+      "Callsign": "AAL6898",
+      "AircraftType": "B788",
+      "Fixes": {
+        "Folz": "FOLZZ",
+        "Kay bola": "KBOLA",
+        "Mark": "MARCK"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "Altitude": 4970,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 80 82": {
+      "Callsign": "AAL8082",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Blimy": "BLYMY",
+        "Bnfsh": "BNFSH",
+        "Chum": "CHUUM",
+        "Dolphin": "DHP",
+        "Fende": "FENDE",
+        "Gloria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Madonna": "MDONA",
+        "Manny": "RMANI",
+        "Miami": "KMIA",
+        "Vepco": "VEPCO",
+        "piano": "PIANA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 11392,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "American 97 66": {
+      "Callsign": "AAL9766",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Asere": "ACERE",
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "PB Jay": "PBJAY",
+        "grit": "GRITT",
+        "scar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 9627,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "American three 66 heavy": {
+      "Callsign": "AAL366",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Chum": "CHUUM",
+        "Dolphin": "DHP",
+        "Gloria": "GLRIA",
+        "Kpone": "KPONE",
+        "Madonna": "MDONA",
+        "Manny": "RMANI",
+        "Miami": "KMIA",
+        "Vepco": "VEPCO",
+        "piano": "PIANA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 8295,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "Av-ianca three 91": {
+      "Callsign": "AVA391",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Banty": "BANTY",
+        "Bezer": "BEZER",
+        "Blame": "BLAIM",
+        "Bunker": "BUNKR",
+        "Fort Lauderdale": "FLL",
+        "Heeze": "HEEZE",
+        "Lori": "LORII"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10R",
+      "SID": "",
+      "STAR": "TEEKY3",
+      "Altitude": 10597,
+      "State": "arrival",
+      "ControllerFrequency": "1J",
+      "TrackingController": "1J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta five 41": {
+      "Callsign": "DAL541",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Fort Lauderdale": "KFLL",
+        "Nova": "NOVAE",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 4000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Frontier Flight 64 69": {
+      "Callsign": "FFT6469",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "JetBlue 19 86": {
+      "Callsign": "JBU1986",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Fort Lauderdale": "FLL",
+        "Holid": "HOLID",
+        "Nova": "NOVAE",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 53 zero five": {
+      "Callsign": "JBU5305",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Fort Lauderdale": "FLL",
+        "Holid": "HOLID",
+        "Nova": "NOVAE",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "OLAHS3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 86": {
+      "Callsign": "JBU86",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Adobe": "ADUBE",
+        "Bahia": "BHHIA",
+        "Bezer": "BEZER",
+        "Blame": "BLAIM",
+        "Bunker": "BUNKR",
+        "Fort Lauderdale": "FLL",
+        "Lori": "LORII"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10R",
+      "SID": "",
+      "STAR": "BHHIA3",
+      "Altitude": 7110,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue seven 82": {
+      "Callsign": "JBU782",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Bepac": "BEPAC",
+        "Fort Lauderdale": "FLL",
+        "Holid": "HOLID",
+        "Nova": "NOVAE",
+        "Serif": "SERIF",
+        "Wanar": "WANAR",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Lan Chile seven 11": {
+      "Callsign": "LAN711",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Miami": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 1354,
+      "State": "cleared approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "Southwest four zero eight": {
+      "Callsign": "SWA408",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "E-teck": "ETECK"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "FEALX2",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 26 83": {
+      "Callsign": "NKS2683",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Agers": "AGERS",
+        "Alton": "ALTNN",
+        "perts": "PERTS"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ALTNN2",
+      "STAR": "",
+      "Altitude": 13000,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 51 18": {
+      "Callsign": "NKS5118",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Ines": "INESS",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 3591,
+      "State": "cleared approach",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "Spirit Wings 52 94": {
+      "Callsign": "NKS5294",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Hrock": "HROCK",
+        "Jones": "JOENZ"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "HROCK2",
+      "STAR": "",
+      "Altitude": 8083,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 57 83": {
+      "Callsign": "NKS5783",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Blame": "BLAIM",
+        "Fort Lauderdale": "KFLL",
+        "Lori": "LORII"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10R",
+      "SID": "",
+      "STAR": "TEEKY3",
+      "Altitude": 4244,
+      "State": "cleared approach",
+      "ControllerFrequency": "1J",
+      "TrackingController": "1J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 64 12": {
+      "Callsign": "NKS6412",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Bongos": "BNGOS",
+        "Moreno": "MRENO",
+        "Niblet": "NIBLT"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BNGOS4",
+      "STAR": "",
+      "Altitude": 4157,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Surinam 97 51": {
+      "Callsign": "SLM9751",
+      "AircraftType": "B733",
+      "Fixes": {
+        "Bills": "BILZZ",
+        "Costio": "CSTIO",
+        "Dahlia": "DAHLA",
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 9125,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Aladdin Seven Eleven Maran Takmami tower one two three point niner\"",
+    "[local-stt] normalized words: [aladdin 7 11 maran takmami tower 1 2 3 point 9]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"aladdin\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"711\" Type=1 Value=711",
+    "[local-stt]   token[2]: Text=\"maran\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"takmami\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"tower\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"123\" Type=1 Value=123",
+    "[local-stt]   token[6]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"9\" Type=1 Value=9",
+    "[local-stt] MatchCallsign: 8 tokens, 19 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 19 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 3 results",
+    "[local-stt]     result 0: \"Lan Chile seven 11\" (airline=0.484, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Surinam 97 51\" (airline=0.524, flight=0.722, skip=0)",
+    "[local-stt]     result 2: \"Spirit Wings 51 18\" (airline=0.437, flight=0.722, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Lan Chile seven 11\" (airline=0.48, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 8 results",
+    "[local-stt]     result 0: \"American three 66 heavy\" (airline=0.641, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Surinam 97 51\" (airline=0.524, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Delta five 41\" (airline=0.562, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"American 68 98 heavy\" (airline=0.641, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Av-ianca three 91\" (airline=0.646, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Lan Chile seven 11\" (airline=0.48, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Lan Chile seven 11\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Lan Chile seven 11\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Lan Chile seven 11\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"LAN711\" (conf=0.90, consumed=2, addressingForm=0, spokenKey=\"Lan Chile seven 11\")",
+    "[local-stt] callsign match: Callsign=\"LAN711\" SpokenKey=\"Lan Chile seven 11\" Conf=0.90 Consumed=2",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=1354 Fixes=1 Approaches=3 AssignedApproach=\"ILS Runway 9\" LAHSORunways=[8L 26R 8R 26L 9 27 12 30 12 30]",
+    "[local-stt]   fix: \"Miami\" -\u003e \"KMIA\"",
+    "[local-stt]   approach: \"I L S runway one two\" -\u003e \"I12\"",
+    "[local-stt]   approach: \"r-nav runway eight left\" -\u003e \"R8L\"",
+    "[local-stt]   approach: \"I L S runway niner\" -\u003e \"I9\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"maran\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"takmami\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"tower\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"123\" Type=1 Value=123",
+    "[local-stt]   token[4]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"9\" Type=1 Value=9",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   matched command: \"TO\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[3]=\"123\", skipping",
+    "[local-stt]   no match at token[4]=\"point\", skipping",
+    "[local-stt]   no match at token[5]=\"9\", skipping",
+    "[local-stt] ParseCommands: result=[TO] (avgConf=1.00)",
+    "[local-stt] parsed commands: [TO] (conf=1.00)",
+    "[local-stt] validated commands: [TO] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"LAN711 TO\" (conf=0.90, time=5.6575ms) ==="
+  ]
+}

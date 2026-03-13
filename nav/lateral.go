@@ -384,6 +384,9 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 				nav.Approach.NoPT = true
 			}
 			nav.Waypoints = append(nav.Approach.AtFixClearedRoute, nav.FlightState.ArrivalAirport)
+			nav.Approach.AtFixClearedRoute = nil
+			nav.Approach.StandbyApproach = false
+			nav.flyProcedureTurnIfNecessary()
 		}
 		// Check if this is an "at fix intercept" fix
 		if nav.Approach.AtFixInterceptFix == wp.Fix && nav.Approach.Assigned != nil {

@@ -16,6 +16,7 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 	var totalConf float64
 	pos := 0
 	isThen := false
+	matchedAny := false                        // Track if any command pattern matched (including empty-command patterns)
 	excludeCategories := make(map[string]bool) // Track categories already matched
 
 	for pos < len(tokens) {
@@ -51,6 +52,7 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 		if newPos > pos {
 			logLocalStt("  matched command: %q (conf=%.2f, consumed=%d, isThen=%v)",
 				match.Command, match.Confidence, newPos-pos, isThen)
+			matchedAny = true
 			if match.Command != "" {
 				commands = append(commands, match.Command)
 				totalConf += match.Confidence
@@ -99,6 +101,13 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 	}
 
 	if len(commands) == 0 {
+		if matchedAny {
+			// A command pattern matched but produced no output (e.g., "standby
+			// for the approach") — return empty commands with positive
+			// confidence so the caller doesn't treat this as a failed parse.
+			logLocalStt("ParseCommands: matched but no commands to issue")
+			return nil, 1
+		}
 		logLocalStt("ParseCommands: no commands found")
 		return nil, 0
 	}
@@ -210,7 +219,13 @@ func tryMatchCommand(tokens []Token, startPos int, cmd sttCommand, ac Aircraft, 
 				// When the parser has tokens but can't match them, i > 0 suffices.
 				// When at end of tokens, require >1 consumed token to avoid false
 				// triggers from single stray keywords (e.g., "cleared" alone).
-				enoughContext := (pos < len(tokens) && i > 0) || pos-startPos > 1
+				// Commands with sayAgainMinTokens require more tokens consumed
+				// (e.g., "at {fix} cleared {approach}" needs the fix to match).
+				minTokens := cmd.sayAgainMinTokens
+				if minTokens <= 0 {
+					minTokens = 1
+				}
+				enoughContext := pos-startPos >= minTokens && ((pos < len(tokens) && i > 0) || pos-startPos > 1)
 				if res.sayAgain != "" && enoughContext && cmd.sayAgainOnFail {
 					return CommandMatch{
 						Command:    "SAYAGAIN/" + res.sayAgain,

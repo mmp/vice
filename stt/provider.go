@@ -222,17 +222,21 @@ func (p *Transcriber) decodeInternal(
 
 	// Generate output
 	var output string
+	// cmdConf > 0 with no commands means a pattern matched but intentionally
+	// produced no output (e.g., "standby for the approach"). Treat as
+	// understood — return just the callsign, not AGAIN.
+	noCommands := len(validation.ValidCommands) == 0 && cmdConf == 0
 	if isFallback {
-		// For fallback mode, return just the commands (caller will prepend callsign)
-		if len(validation.ValidCommands) == 0 {
+		if noCommands {
 			output = "AGAIN"
 		} else {
 			output = strings.Join(validation.ValidCommands, " ")
 		}
 	} else {
-		if len(validation.ValidCommands) == 0 {
-			// Callsign matched but couldn't parse commands - ask for say again
+		if noCommands {
 			output = callsign + " AGAIN"
+		} else if len(validation.ValidCommands) == 0 {
+			output = callsign
 		} else {
 			output = callsign + " " + strings.Join(validation.ValidCommands, " ")
 		}

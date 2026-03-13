@@ -1,7 +1,7 @@
 {
   "transcript": "United 452 expect the approach",
   "callsign": "UAL452",
-  "command": "E",
+  "command": "SAYAGAIN/APPROACH",
   "stt_aircraft": {
     "United 452": {
       "Callsign": "UAL452",

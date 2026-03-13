@@ -1,7 +1,7 @@
 {
   "transcript": "Delta Forty Three standby for the approach",
   "callsign": "DAL43",
-  "command": "E",
+  "command": "",
   "stt_aircraft": {
     "Delta 43": {
       "Callsign": "DAL43",
