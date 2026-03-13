@@ -169,7 +169,7 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 		// where "to" is STT mishearing of "two" → heading 290.
 		if t.Type == TokenWord && i+1 < len(tokens) && tokens[i+1].Type == TokenNumber {
 			text := strings.ToLower(t.Text)
-			if text == "to" || text == "too" || text == "tu" {
+			if text == "to" || text == "too" || text == "tu" || text == "t" {
 				nextVal := tokens[i+1].Value
 				// Try prepending 2: "to 90" → 290, "to 70" → 270
 				if nextVal >= 0 && nextVal <= 160 {

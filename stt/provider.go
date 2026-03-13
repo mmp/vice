@@ -621,9 +621,26 @@ func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
 			}
 		}
 
-		// Check for bare "correction" keyword
+		// Check for bare "correction" keyword, but only when the next
+		// meaningful token is NOT a command keyword. When a command keyword
+		// follows (e.g., "correction descend and maintain..."), this is a
+		// command self-correction handled by applyDisregard, not a callsign
+		// re-addressing.
 		if strings.ToLower(tokens[i].Text) == "correction" {
-			return tokens[i+1:], true
+			followedByCommand := false
+			for j := i + 1; j < len(tokens); j++ {
+				w := strings.ToLower(tokens[j].Text)
+				if IsFillerWord(w) {
+					continue
+				}
+				if IsCommandKeyword(w) {
+					followedByCommand = true
+				}
+				break
+			}
+			if !followedByCommand {
+				return tokens[i+1:], true
+			}
 		}
 	}
 	return tokens, false

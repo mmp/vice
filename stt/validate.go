@@ -195,10 +195,11 @@ func validateDescend(altStr string, ac Aircraft) string {
 	altFeet := alt * 100
 
 	// Descend target must be at or below current altitude (with tolerance).
-	// Allow small overshoot because the aircraft may already be descending toward
-	// the target and the altimeter reads slightly below it.
-	// E.g., aircraft at 3901 ft descending to 4000 ft — essentially at altitude.
-	if altFeet > ac.Altitude+200 {
+	// Allow overshoot because the aircraft may already be descending toward
+	// the target and the altimeter reads slightly below it, or the controller
+	// may be re-clearing the aircraft to level at a nearby altitude.
+	// E.g., aircraft at 3738 ft, "descend and maintain 4000" is valid.
+	if altFeet > ac.Altitude+500 {
 		return "descend target must be below current altitude"
 	}
 
@@ -220,9 +221,10 @@ func validateClimb(altStr string, ac Aircraft) string {
 	altFeet := alt * 100
 
 	// Climb target must be at or above current altitude (with tolerance).
-	// Allow small overshoot because the aircraft may already be climbing toward
-	// the target and the altimeter reads slightly above it.
-	if altFeet < ac.Altitude-200 {
+	// Allow overshoot because the aircraft may already be climbing toward
+	// the target and the altimeter reads slightly above it, or the controller
+	// may be re-clearing the aircraft to level at a nearby altitude.
+	if altFeet < ac.Altitude-500 {
 		return "climb target must be above current altitude"
 	}
 
