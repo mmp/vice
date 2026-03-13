@@ -194,12 +194,21 @@ func parseAltitudePattern(words []string) (int, int) {
 	var thousands int
 	consumed := 0
 
-	// Handle multi-digit thousands (e.g., "1 1" for 11, or "11" as word)
+	// Handle multi-digit thousands (e.g., "1 1" for 11, or "11" as word).
+	// Cap at 60 (FL600 = 60,000 ft ceiling) to prevent greedy accumulation
+	// like "8 3 thousand" → 830 instead of correctly splitting "3 thousand" → 30.
 	for consumed < len(words) {
 		if IsDigit(words[consumed]) {
-			thousands = thousands*10 + ParseDigit(words[consumed])
+			candidate := thousands*10 + ParseDigit(words[consumed])
+			if candidate > 60 {
+				break
+			}
+			thousands = candidate
 			consumed++
 		} else if n, err := strconv.Atoi(words[consumed]); err == nil && n < 100 {
+			if n > 60 {
+				break
+			}
 			thousands = n
 			consumed++
 			break

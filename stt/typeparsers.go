@@ -362,11 +362,24 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 				}
 			}
 
-			// 4-digit with extra digit (e.g., 1909 → 190)
+			// 4-digit with extra digit: try both /10 (drop trailing) and
+			// %1000 (drop leading). Prefer the one that's a multiple of 10.
+			// e.g., 1160: /10=116 (not round), %1000=160 (round) → 160
 			if t.Value > 400 {
-				corrected := t.Value / 10
-				if corrected >= 100 && corrected <= 400 {
-					return adjustSpeedForPerformance(corrected, ac), i - pos + 1, ""
+				div10 := t.Value / 10
+				mod1000 := t.Value % 1000
+				div10Valid := div10 >= 100 && div10 <= 400
+				mod1000Valid := mod1000 >= 100 && mod1000 <= 400
+				if div10Valid && mod1000Valid {
+					// Both valid: prefer the one that's a multiple of 10
+					if mod1000%10 == 0 && div10%10 != 0 {
+						return adjustSpeedForPerformance(mod1000, ac), i - pos + 1, ""
+					}
+					return adjustSpeedForPerformance(div10, ac), i - pos + 1, ""
+				} else if mod1000Valid {
+					return adjustSpeedForPerformance(mod1000, ac), i - pos + 1, ""
+				} else if div10Valid {
+					return adjustSpeedForPerformance(div10, ac), i - pos + 1, ""
 				}
 			}
 
@@ -375,6 +388,14 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 			if t.Value >= 10 && t.Value <= 40 && i+1 < len(tokens) {
 				next := tokens[i+1]
 				if next.Type == TokenNumber && next.Value == 0 {
+					combined := t.Value * 10
+					if combined >= 100 && combined <= 400 {
+						return adjustSpeedForPerformance(combined, ac), i - pos + 2, ""
+					}
+				}
+				// Filler word after 2-digit speed: garbled zero
+				// e.g., "one seven day" → 17, "day" is garbled "zero" → 170
+				if IsFillerWord(next.Text) {
 					combined := t.Value * 10
 					if combined >= 100 && combined <= 400 {
 						return adjustSpeedForPerformance(combined, ac), i - pos + 2, ""

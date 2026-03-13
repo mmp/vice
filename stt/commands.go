@@ -340,8 +340,14 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 	// This helps prefer approaches matching the spoken direction.
 	spokenDir := extractSpokenDirection(tokens)
 
+	// Skip fuzzy loop when the first token is "runway" — there's no approach type
+	// info to match against, so JW scores against full candidate names are misleading
+	// (e.g., "runway" gets a Winkler prefix boost against "r-nav"). The runway
+	// fallback below handles this correctly.
+	skipFuzzyLoop := len(tokens) > 0 && strings.ToLower(tokens[0].Text) == "runway"
+
 	// Build candidate phrases (1-7 words for approach names, since spoken numbers expand)
-	for length := min(7, len(tokens)); length >= 1; length-- {
+	for length := min(7, len(tokens)); length >= 1 && !skipFuzzyLoop; length-- {
 		var parts []string
 		for i := range length {
 			// Expand numeric tokens to spoken form to match telephony
@@ -493,7 +499,7 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 
 			// When disambiguating between multiple runway matches, pick the best match.
 			// When the prefix is garbled, prefer the assigned approach when available.
-			if bestMatch != "" && bestMatchScore >= 0.30 {
+			if bestMatch != "" && (bestMatchScore >= 0.30 || prefixPhrase == "") {
 				// If we have an assigned approach, check if one of the matching
 				// approaches matches the assigned approach's type. This handles
 				// garbled prefixes like "off" for "ILS".
@@ -1947,6 +1953,20 @@ func extractTraffic(tokens []Token) (int, int, int, int) {
 			}
 			alt = t.Value
 			consumed++
+
+			// Check if a nearby token refines this altitude (adds hundreds).
+			// e.g., "5 thousand [noise] 5 thousand 9 hundred" → tokens 50, [8], 59.
+			// Pick 59 over 50 since it's a more precise reading of the same altitude.
+			for j := consumed; j < len(tokens) && j < consumed+3; j++ {
+				if tokens[j].Type == TokenAltitude && tokens[j].Value > alt &&
+					tokens[j].Value <= 600 && tokens[j].Value/10 == alt/10 {
+					logLocalStt("  extractTraffic: refined altitude %d -> %d", alt, tokens[j].Value)
+					alt = tokens[j].Value
+					consumed = j + 1
+					break
+				}
+			}
+
 			break
 		}
 

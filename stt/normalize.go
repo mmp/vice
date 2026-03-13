@@ -534,6 +534,7 @@ var phraseExpansions = map[string][]string{
 	"fighting":   {"fly", "heading"},
 	"centimeter": {"descend", "maintain"},
 	"sediment":   {"descend", "maintain"},
+	"decimate":   {"descend", "maintain"},
 	"fl":         {"flight", "level"},
 }
 

@@ -15,7 +15,7 @@
   "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
   "callsign": "AAL1733",
-  "command": "CI4R S170",
+  "command": "CI4R S170/UMILTT",
   "stt_aircraft": {
     "American 17 33": {
       "Callsign": "AAL1733",
