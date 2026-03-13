@@ -548,6 +548,7 @@ func normalizeVowels(s string) string {
 	s = strings.ReplaceAll(s, "eye", "i")
 	s = strings.ReplaceAll(s, "oye", "oi")
 	s = strings.ReplaceAll(s, "uye", "ui")
+	s = strings.ReplaceAll(s, "er", "i")
 	return s
 }
 

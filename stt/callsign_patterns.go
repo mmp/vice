@@ -54,7 +54,6 @@ func registerAllCallsignPatterns() {
 	RegisterCallsignPattern("{skip:2} {ga_november}",
 		WithCallsignName("ga_november"),
 		WithCallsignPriority(55),
-		WithCallsignConfidence(0.75),
 		WithCallsignRequire(func(ac Aircraft) bool {
 			return strings.HasPrefix(string(ac.Callsign), "N")
 		}),

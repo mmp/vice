@@ -441,6 +441,13 @@ func buildCallsignMatch(result *callsignMatchResult, pattern CallsignPattern, to
 		conf *= (1.0 - 0.1*float64(result.Skip))
 	}
 
+	// A perfect flight number match is strong evidence of the correct
+	// callsign; ensure it isn't dragged below 0.90 by a weak airline
+	// score or skip penalty.
+	if result.FlightScore >= 1.0 {
+		conf = max(conf, 0.90)
+	}
+
 	return CallsignMatch{
 		Callsign:       string(result.AC.Callsign),
 		SpokenKey:      result.SpokenKey,
