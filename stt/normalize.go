@@ -426,6 +426,7 @@ var commandKeywords = map[string]string{
 
 	// Speed
 	"speed":    "speed",
+	"space":    "speed", // STT mishears "speed" as "space"
 	"reduce":   "reduce",
 	"ready":    "reduce",
 	"increase": "increase",

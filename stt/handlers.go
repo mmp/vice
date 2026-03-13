@@ -360,6 +360,56 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
+		"[maintain] {speed} [knots] or less {speed_until}",
+		func(spd int, until speedUntilResult) string {
+			return fmt.Sprintf("S%d-/U%s", spd, until.suffix)
+		},
+		WithName("speed_or_less_until"),
+		WithPriority(15),
+	)
+
+	registerSTTCommand(
+		"[maintain] {speed} [knots] or less",
+		func(spd int) string { return fmt.Sprintf("S%d-", spd) },
+		WithName("speed_or_less"),
+		WithPriority(12),
+		WithThenVariant("TS%d-"),
+	)
+
+	registerSTTCommand(
+		"speed [to] {speed} [knots] or less {speed_until}",
+		func(spd int, until speedUntilResult) string {
+			return fmt.Sprintf("S%d-/U%s", spd, until.suffix)
+		},
+		WithName("speed_keyword_or_less_until"),
+		WithPriority(15),
+	)
+
+	registerSTTCommand(
+		"speed [to] {speed} [knots] or less",
+		func(spd int) string { return fmt.Sprintf("S%d-", spd) },
+		WithName("speed_keyword_or_less"),
+		WithPriority(12),
+		WithThenVariant("TS%d-"),
+	)
+
+	registerSTTCommand(
+		"reduce|slow [speed] [to] {speed} [knots] or less",
+		func(spd int) string { return fmt.Sprintf("S%d-", spd) },
+		WithName("reduce_speed_or_less"),
+		WithPriority(12),
+		WithThenVariant("TS%d-"),
+	)
+
+	registerSTTCommand(
+		"increase [speed] [to] {speed} [knots] or less",
+		func(spd int) string { return fmt.Sprintf("S%d-", spd) },
+		WithName("increase_speed_or_less"),
+		WithPriority(12),
+		WithThenVariant("TS%d-"),
+	)
+
+	registerSTTCommand(
 		"do not exceed {speed}",
 		func(spd int) string { return fmt.Sprintf("S%d-", spd) },
 		WithName("do_not_exceed"),

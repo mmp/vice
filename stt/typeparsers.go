@@ -401,6 +401,17 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 						return adjustSpeedForPerformance(combined, ac), i - pos + 2, ""
 					}
 				}
+				// "knots" after 2-digit speed: "two zero knots" → 200
+				// The word "knots" confirms speed context and implies a dropped
+				// trailing zero. Require combined >= 150 to avoid false positives
+				// with ambiguous values like "one zero" (10 → 100, below min
+				// speed for most aircraft). Don't consume "knots".
+				if strings.ToLower(next.Text) == "knots" {
+					combined := t.Value * 10
+					if combined >= 150 && combined <= 400 {
+						return adjustSpeedForPerformance(combined, ac), i - pos + 1, ""
+					}
+				}
 			}
 
 			// Handle "to" + 2-digit value as garbled "two" prefix.

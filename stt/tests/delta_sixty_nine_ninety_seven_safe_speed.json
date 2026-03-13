@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 4090 (24138MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "UAL6997",
-  "command": "S",
+  "command": "SS",
   "stt_aircraft": {
     "Alaska 58": {
       "Callsign": "ASA58",

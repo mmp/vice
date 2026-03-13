@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 4060 (8171MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "NKS9532",
-  "command": "S200 DNELLA CI8R",
+  "command": "S200- DNELLA CI8R",
   "stt_aircraft": {
     "Air Shuttle 24 87": {
       "Callsign": "ASH2487",

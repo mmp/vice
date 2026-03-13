@@ -29,15 +29,25 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 	}
 
 	// Phase 1: Weight class filtering
-	// If "heavy" or "super" found in early tokens, filter to matching aircraft
+	// If "heavy" or "super" found in early tokens, filter to matching aircraft.
+	// Also try all aircraft in case the controller said "heavy" but the
+	// aircraft's spoken key doesn't include it (controller misstatement).
 	if weightClassIdx := findWeightClassTokenIndex(tokens); weightClassIdx != -1 {
 		weightClass := tokens[weightClassIdx].Text
 		if filtered := filterByWeightClass(aircraft, weightClass); len(filtered) > 0 && len(filtered) < len(aircraft) {
 			logLocalStt("  detected %q in callsign region, filtering to %d aircraft", weightClass, len(filtered))
-			// Only pass the tokens up to and including heavy/super
-			match, _ := MatchCallsign(tokens[:weightClassIdx+1], filtered)
-			// Return the tokens following heavy/super with the match
-			return match, tokens[weightClassIdx+1:]
+			// Try matching against weight-class-filtered aircraft (tokens including weight class)
+			filteredMatch, _ := matchCallsignWithPatterns(tokens[:weightClassIdx+1], filtered)
+			// Also try all aircraft (tokens excluding weight class) in case the
+			// spoken key doesn't include the weight class
+			allMatch, _ := matchCallsignWithPatterns(tokens[:weightClassIdx], aircraft)
+			match := filteredMatch
+			if allMatch.Confidence >= 0.95 && allMatch.Confidence > filteredMatch.Confidence {
+				match = allMatch
+			}
+			if match.Callsign != "" {
+				return match, tokens[weightClassIdx+1:]
+			}
 		}
 	}
 

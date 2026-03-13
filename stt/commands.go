@@ -2310,7 +2310,7 @@ func isUntilKeyword(text string) bool {
 // For example: "maintain 180 knots or greater until 5 mile final" - skip "knots", "or", "greater".
 func isSpeedFillerWord(text string) bool {
 	switch text {
-	case "knots", "kts", "knot", "or", "greater", "better":
+	case "knots", "kts", "knot", "or", "greater", "better", "less":
 		return true
 	}
 	return false
