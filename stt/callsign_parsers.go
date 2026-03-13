@@ -385,6 +385,14 @@ func parseAirlineParts(spokenName string) []string {
 			airlineEndIdx = i
 			break
 		}
+		if _, ok := digitWords[part]; ok {
+			airlineEndIdx = i
+			break
+		}
+		if _, ok := numberWords[part]; ok {
+			airlineEndIdx = i
+			break
+		}
 		airlineEndIdx = i + 1
 	}
 

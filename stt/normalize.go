@@ -473,6 +473,7 @@ var commandKeywords = map[string]string{
 
 	// Approach
 	"cleared":     "cleared",
+	"secured":     "cleared",
 	"expect":      "expect",
 	"vectors":     "vectors",
 	"approach":    "approach",
@@ -549,6 +550,7 @@ var multiTokenReplacements = map[string][]string{
 	"nine e":      {"90"},
 	"six e":       {"60"},
 	"five e":      {"50"},
+	"r on a":      {"runway"},
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.

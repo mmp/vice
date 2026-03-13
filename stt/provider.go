@@ -733,6 +733,34 @@ func applyDisregard(tokens []Token) []Token {
 						return append([]Token{keywordToken}, afterCorrection...)
 					}
 				}
+				// Check for partial correction: afterCorrection starts with a command
+				// keyword (e.g., "maintain 3000") and there are commands of a different
+				// category before "correction" (e.g., "turn left heading 150 maintain
+				// 5000 correction maintain 3000"). In this case only the same-category
+				// command is corrected; earlier different-category commands are kept.
+				if len(afterCorrection) > 0 {
+					firstWord := strings.ToLower(afterCorrection[0].Text)
+					if cat := correctionKeywordCategory(firstWord); cat != "" {
+						// Scan backward from "correction" to find the nearest
+						// same-category keyword and check for different-category ones.
+						sameCatIdx := -1
+						hasDifferentCat := false
+						for j := i - 1; j >= 0; j-- {
+							w := strings.ToLower(tokens[j].Text)
+							if c := correctionKeywordCategory(w); c != "" {
+								if c == cat && sameCatIdx < 0 {
+									sameCatIdx = j
+								} else if c != cat {
+									hasDifferentCat = true
+								}
+							}
+						}
+						if sameCatIdx >= 0 && hasDifferentCat {
+							logLocalStt("  correction: partial correction — keeping tokens before index %d, replacing %s command", sameCatIdx, cat)
+							return append(tokens[:sameCatIdx], afterCorrection...)
+						}
+					}
+				}
 				// Full command correction - discard everything before
 				return afterCorrection
 			}
@@ -839,6 +867,22 @@ func findCommandTypeKeyword(tokens []Token) string {
 
 	// Return altitude keyword if found (maintain, but descend/climb would have returned early)
 	return altitudeKeyword
+}
+
+// correctionKeywordCategory returns the command category for a keyword used in
+// partial-correction detection: "altitude", "heading", or "speed". Returns ""
+// if the word is not a category-relevant keyword.
+func correctionKeywordCategory(word string) string {
+	switch word {
+	case "maintain", "descend", "climb", "altitude":
+		return "altitude"
+	case "heading", "turn", "fly":
+		return "heading"
+	case "speed", "reduce", "slow", "increase":
+		return "speed"
+	default:
+		return ""
+	}
 }
 
 // transmissionKind categorizes a transmission for early-return decisions.
