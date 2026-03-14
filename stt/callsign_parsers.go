@@ -96,6 +96,14 @@ func (m *flightMatcher) match(ctx *callsignMatchContext) []callsignMatchResult {
 		}
 
 		exact, consumed, score := matchFlightNumber(remaining, flightNum)
+		if consumed == 0 && len(remaining) > 1 &&
+			remaining[0].Type == TokenWord &&
+			!IsCommandKeyword(remaining[0].Text) {
+			exact, consumed, score = matchFlightNumber(remaining[1:], flightNum)
+			if consumed > 0 {
+				consumed++ // account for skipped garbage token
+			}
+		}
 		if consumed == 0 {
 			continue
 		}

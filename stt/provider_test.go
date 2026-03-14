@@ -1013,6 +1013,19 @@ func TestCallsignMatchingPriority(t *testing.T) {
 			},
 			expected: "DAL2991 L270",
 		},
+		{
+			name:       "garbage word between airline and flight number",
+			transcript: "JetBlue leaf thirteen cleared ILS runway four right approach",
+			aircraft: map[string]Aircraft{
+				"JetBlue eight 13": {Callsign: "JBU813", State: "arrival",
+					CandidateApproaches: map[string]string{"I L S runway four right": "I4R"},
+					AssignedApproach:    "ILS Runway 4R"},
+				"JetBlue 44 86": {Callsign: "JBU4486", State: "arrival",
+					CandidateApproaches: map[string]string{"I L S runway four right": "I4R"},
+					AssignedApproach:    "ILS Runway 4R"},
+			},
+			expected: "JBU813 CI4R",
+		},
 	}
 
 	provider := NewTranscriber(nil)
