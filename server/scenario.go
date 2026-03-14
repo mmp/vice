@@ -1221,6 +1221,13 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 	}
 
+	// A TRACON scenario's facility config must define either controllers or
+	// video maps in areas to drive a STARS display. ARTCC scenarios use
+	// ERAM and don't need these.
+	if sg.ARTCC == "" && len(s.Controllers) == 0 && len(allAreaVideoMaps) == 0 {
+		e.ErrorString(`must specify either "controllers" or "video_maps" in "areas"`)
+	}
+
 	// Controller config centers and video maps (require Locator + manifest).
 	if len(s.Controllers) > 0 {
 		for ctrl, config := range s.Controllers {
@@ -1939,20 +1946,28 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	lg.Infof("scenario/video map manifest load time: %s\n", time.Since(start))
 
-	// Phase 1: Load and validate all facility configs. Each config is
-	// loaded once (cached) and validated via PostDeserialize. This must
-	// complete before neighbor loading or scenario group PostDeserialize
-	// so that all configs are known-good.
+	// Phase 1: Load and validate all facility configs by walking the
+	// configurations/ directory. Every .json file is loaded and validated
+	// via PostDeserialize, regardless of whether a scenario references it.
 	resourcesFS := util.GetResourcesFS()
-	for _, tracon := range scenarioGroups {
-		for _, sg := range tracon {
-			fc := loadFacilityConfig(resourcesFS, facilityConfigPath(sg), e)
-			if fc == nil {
-				continue
-			}
-			facilityName := strings.TrimSuffix(filepath.Base(facilityConfigPath(sg)), ".json")
+	err = util.WalkResources("configurations", func(path string, d fs.DirEntry, filesystem fs.FS, err error) error {
+		if err != nil {
+			lg.Errorf("error walking configurations/: %v", err)
+			return nil
+		}
+		if d.IsDir() || filepath.Ext(path) != ".json" {
+			return nil
+		}
+
+		fc := loadFacilityConfig(filesystem, path, e)
+		if fc != nil {
+			facilityName := strings.TrimSuffix(filepath.Base(path), ".json")
 			fc.PostDeserialize(facilityName, e)
 		}
+		return nil
+	})
+	if err != nil {
+		e.Error(err)
 	}
 	if e.HaveErrors() {
 		return nil, nil, nil, ""

@@ -392,8 +392,6 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		if err != nil {
 			e.Error(err)
 		}
-	} else if len(allAreaVideoMaps) == 0 {
-		e.ErrorString(`must specify either "controllers" or "video_maps" in "areas"`)
 	}
 
 	if fa.Range == 0 {
