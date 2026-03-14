@@ -555,6 +555,11 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>DLENDY/H180</code></td>
                   </tr>
                   <tr>
+                    <td><code>D</code><i>fix</i><code>/D</code><i>fix2</i></td>
+                    <td>Directs the aircraft to depart the specified fix and proceed direct to the second fix.</td>
+                    <td><code>DLENDY/DWAVEY</code></td>
+                  </tr>
+                  <tr>
                     <td><code>H</code><i>fix</i></td>
                     <td><p>Directs the aircraft to hold at the specified fix using a published holding pattern.
                         (The specified fix must be in the aircraft's flight plan; for one that is not, first give them <code>D</code><i>fix</i>
@@ -660,10 +665,10 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>EC</code></td>
                   </tr>
                   <tr>
-                    <td><code>C</code><i>fix</i><code>/A</code><i>altitude</i><code>/S</code><i>speed</i></td>
-                    <td><p>Directs the aircraft to cross the specified fix at the given altitude and speed.
-                      Either one or both of <code>A</code>
-                        and <code>S</code> may be specified.</p>
+                    <td><code>C</code><i>fix</i><code>/A</code><i>altitude</i><code>/S</code><i>speed</i><code>/M</code><i>mach</i></td>
+                    <td><p>Directs the aircraft to cross the specified fix at the given altitude, speed, and/or mach.
+                      Any combination of <code>A</code>,
+                        <code>S</code>, and <code>M</code> may be specified.</p>
                       <p>Altitudes may be given as single altitudes (corresponding to
                       "at"), an altitude and a plus sign ("at or above"),
                       an altitude and a minus sign ("at or below"), or a
@@ -754,6 +759,12 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>S</code><i>kts</i><code>-</code></td>
                     <td>Assigns a speed ceiling: aircraft should not exceed the specified speed. Currently treated as a standard speed assignment.</td>
                     <td><code>S180-</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>S</code><i>kts</i><code>/U</code><i>spec</i></td>
+                    <td>Assigns a speed restriction for an aircraft cleared for an approach until a specified point.
+                      The specification may be a fix name, a number (for mile final), or a number followed by <code>DME</code>.</td>
+                    <td><code>S210/U5</code>, <code>S210/U5DME</code>, <code>S210/UROSLY</code></td>
                   </tr>
                   <tr>
                     <td><code>SS</code></td>
@@ -968,6 +979,11 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                   </tr>
                 </thead>
                 <tbody>
+                  <tr>
+                    <td><code>VISSEP</code></td>
+                    <td>Instructs the aircraft to maintain visual separation.</td>
+                    <td><code>VISSEP</code></td>
+                  </tr>
                   <tr>
                     <td><code>X</code></td>
                     <td>Deletes the specified aircraft from the simulation. This command is useful when one starts going down the tubes.</td>
