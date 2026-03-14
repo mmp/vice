@@ -1,5 +1,5 @@
 {
-  "time": "2026-01-29T04:09:01.18868057Z",
+  "time": "2026-01-29T04:07:26.535859805Z",
   "level": "INFO",
   "msg": "STT command",
   "callstack": [
@@ -9,21 +9,19 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Brickyard forty five eleven reduce speed to ah one five zero until hokus",
-  "whisper_duration_ms": 416.322,
-  "audio_duration_ms": 5448,
+  "transcript": "Frontier flight three twelve correction descend and maintain four tas",
+  "whisper_duration_ms": 404.631,
+  "audio_duration_ms": 4040,
   "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
-  "callsign": "RPA4511",
-  "command": "S150",
+  "callsign": "FFT312",
+  "command": "ROLLBACK D40",
   "stt_aircraft": {
-    "Boutique three zero seven": {
-      "Callsign": "BTQ307",
-      "AircraftType": "B350",
+    "Brickyard 45 11": {
+      "Callsign": "RPA4511",
+      "AircraftType": "E75S",
       "Fixes": {
         "Boston": "KBOS",
-        "Lawrence": "LWRNC",
-        "Noley": "NOLEY",
         "Vocus": "VOCUS",
         "Wyane": "WYANE"
       },
@@ -54,59 +52,8 @@
       },
       "AssignedApproach": "ILS Runway 22L",
       "SID": "",
-      "STAR": "",
-      "Altitude": 6000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": [
-        "9",
-        "27",
-        "14",
-        "32",
-        "15L",
-        "33R",
-        "15R",
-        "33L"
-      ]
-    },
-    "Brickyard 45 11": {
-      "Callsign": "RPA4511",
-      "AircraftType": "E75S",
-      "Fixes": {
-        "Boston": "KBOS",
-        "Vocus": "VOCUS"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L",
-        "r-nav x-ray runway two two left": "X2L",
-        "r-nav yankee runway two two left": "Y2L"
-      },
-      "ApproachFixes": {
-        "I2L": {
-          "Noley": "NOLEY",
-          "Vocus": "VOCUS",
-          "Wyane": "WYANE"
-        },
-        "X2L": {
-          "Noley": "NOLEY",
-          "Vocus": "VOCUS",
-          "Wyane": "WYANE",
-          "Zumol": "ZUMOL"
-        },
-        "Y2L": {
-          "Chelc": "CHELC",
-          "Egg Roll": "EGGRL",
-          "Kelys": "KELYS",
-          "Sandbah": "SNDBA",
-          "Sirino": "SRINO"
-        }
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
       "STAR": "JFUND2",
-      "Altitude": 2634,
+      "Altitude": 3135,
       "State": "on approach",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
@@ -159,8 +106,59 @@
       "AssignedApproach": "ILS Runway 22L",
       "SID": "",
       "STAR": "",
-      "Altitude": 2725,
+      "Altitude": 5000,
       "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Delta 79": {
+      "Callsign": "DAL79",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Vocus": "VOCUS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 2712,
+      "State": "on approach",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
       "AddressingForm": 0,
@@ -214,64 +212,7 @@
       "AssignedApproach": "ILS Runway 22L",
       "SID": "",
       "STAR": "ROBUC3",
-      "Altitude": 3000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0,
-      "LAHSORunways": [
-        "9",
-        "27",
-        "14",
-        "32",
-        "15L",
-        "33R",
-        "15R",
-        "33L"
-      ]
-    },
-    "United 64": {
-      "Callsign": "UAL64",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Boston": "KBOS",
-        "Harris": "HRRIS",
-        "Islay": "ISLAY",
-        "Lowland": "LWLND",
-        "Noley": "NOLEY",
-        "Vocus": "VOCUS",
-        "Wintah": "WINTA",
-        "Wyane": "WYANE"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L",
-        "r-nav x-ray runway two two left": "X2L",
-        "r-nav yankee runway two two left": "Y2L"
-      },
-      "ApproachFixes": {
-        "I2L": {
-          "Noley": "NOLEY",
-          "Vocus": "VOCUS",
-          "Wyane": "WYANE"
-        },
-        "X2L": {
-          "Noley": "NOLEY",
-          "Vocus": "VOCUS",
-          "Wyane": "WYANE",
-          "Zumol": "ZUMOL"
-        },
-        "Y2L": {
-          "Chelc": "CHELC",
-          "Egg Roll": "EGGRL",
-          "Kelys": "KELYS",
-          "Sandbah": "SNDBA",
-          "Sirino": "SRINO"
-        }
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "JFUND2",
-      "Altitude": 9800,
+      "Altitude": 3901,
       "State": "arrival",
       "ControllerFrequency": "1F",
       "TrackingController": "1F",
@@ -290,44 +231,51 @@
   },
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
-    "[local-stt] input transcript: \"Brickyard forty five eleven reduce speed to ah one five zero until hokus\"",
-    "[local-stt] normalized words: [brickyard 45 11 reduce speed to ah 1 5 0 until hokus]",
-    "[local-stt] tokens: 10",
-    "[local-stt]   token[0]: Text=\"brickyard\" Type=0 Value=-1",
-    "[local-stt]   token[1]: Text=\"45\" Type=1 Value=45",
-    "[local-stt]   token[2]: Text=\"11\" Type=1 Value=11",
-    "[local-stt]   token[3]: Text=\"reduce\" Type=0 Value=-1",
-    "[local-stt]   token[4]: Text=\"speed\" Type=0 Value=-1",
-    "[local-stt]   token[5]: Text=\"to\" Type=0 Value=-1",
-    "[local-stt]   token[6]: Text=\"ah\" Type=0 Value=-1",
-    "[local-stt]   token[7]: Text=\"150\" Type=1 Value=150",
-    "[local-stt]   token[8]: Text=\"until\" Type=0 Value=-1",
-    "[local-stt]   token[9]: Text=\"hokus\" Type=0 Value=-1",
-    "[local-stt] MatchCallsign: 10 tokens, 5 aircraft",
-    "[local-stt]   exact match: \"brickyard 45 11\" -\u003e \"RPA4511\" (consumed 3)",
-    "[local-stt] callsign match: Callsign=\"RPA4511\" SpokenKey=\"Brickyard 45 11\" Conf=1.00 Consumed=3",
-    "[local-stt] aircraft context: State=\"on approach\" Altitude=2634 Fixes=2 Approaches=3 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L]",
-    "[local-stt]   fix: \"Vocus\" -\u003e \"VOCUS\"",
-    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
-    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -\u003e \"X2L\"",
-    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
-    "[local-stt]   approach: \"r-nav yankee runway two two left\" -\u003e \"Y2L\"",
-    "[local-stt] command tokens after disregard: 7",
-    "[local-stt]   token[0]: Text=\"reduce\" Type=0 Value=-1",
-    "[local-stt]   token[1]: Text=\"speed\" Type=0 Value=-1",
-    "[local-stt]   token[2]: Text=\"to\" Type=0 Value=-1",
-    "[local-stt]   token[3]: Text=\"ah\" Type=0 Value=-1",
-    "[local-stt]   token[4]: Text=\"150\" Type=1 Value=150",
-    "[local-stt]   token[5]: Text=\"until\" Type=0 Value=-1",
-    "[local-stt]   token[6]: Text=\"hokus\" Type=0 Value=-1",
-    "[local-stt]   position ID: found command keyword \"reduce\" at position 0 - not just position ID",
-    "[local-stt] ParseCommands: 7 tokens",
-    "[local-stt]   matched command: \"S150\" (conf=1.00, consumed=5, isThen=false)",
-    "[local-stt]   no match at token[5]=\"until\", skipping",
-    "[local-stt]   no match at token[6]=\"hokus\", skipping",
-    "[local-stt] ParseCommands: result=[S150] (avgConf=1.00)",
-    "[local-stt] parsed commands: [S150] (conf=1.00)",
-    "[local-stt] validated commands: [S150] (conf=1.00)",
-    "[local-stt] === DecodeTranscript END: \"RPA4511 S150\" (conf=1.00, time=460.667µs) ==="
+    "[local-stt] input transcript: \"Frontier flight three twelve correction descend and maintain four tas\"",
+    "[local-stt] normalized words: [frontier flight 3 12 correction descend and maintain 4 tas]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"frontier\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"flight\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"312\" Type=1 Value=312",
+    "[local-stt]   token[3]: Text=\"correction\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"4\" Type=1 Value=4",
+    "[local-stt]   token[8]: Text=\"tas\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 9 tokens, 4 aircraft",
+    "[local-stt]   candidate \"Brickyard 45 11\" (ICAO=\"RPA4511\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Frontier Flight three 12\" (ICAO=\"FFT312\"): score=1.10 consumed=3",
+    "[local-stt]   candidate \"Delta 79\" (ICAO=\"DAL79\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Chronos six 10\" (ICAO=\"CNS610\"): score=0.48 consumed=1",
+    "[local-stt]   candidate \"Frontier Flight three 12\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   candidate \"Frontier Flight three 12\" at pos 2: score=0.80 (adjusted=0.64) consumed=1",
+    "[local-stt]   accepted: \"FFT312\" (conf=1.10, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"FFT312\" SpokenKey=\"Frontier Flight three 12\" Conf=1.10 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=3901 Fixes=6 Approaches=3 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Patrick\" -> \"PTRIK\"",
+    "[local-stt]   fix: \"Tale\" -> \"TAALE\"",
+    "[local-stt]   fix: \"Boston\" -> \"KBOS\"",
+    "[local-stt]   fix: \"Noley\" -> \"NOLEY\"",
+    "[local-stt]   fix: \"Wyane\" -> \"WYANE\"",
+    "[local-stt]   fix: \"Vocus\" -> \"VOCUS\"",
+    "[local-stt]   approach: \"r-nav yankee runway two two left\" -> \"Y2L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -> \"X2L\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -> \"I2L\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"4\" Type=1 Value=4",
+    "[local-stt]   token[4]: Text=\"tas\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"descend\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   matched command: \"D40\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[4]=\"tas\", skipping",
+    "[local-stt] ParseCommands: result=[D40] (avgConf=1.00)",
+    "[local-stt] parsed commands: [D40] (conf=1.00)",
+    "[local-stt] validated commands: [SAYAGAIN/ALTITUDE] (conf=0.85)",
+    "[local-stt] validation errors: [descend target must be below current altitude]",
+    "[local-stt] === DecodeTranscript END: \"FFT312 SAYAGAIN/ALTITUDE\" (conf=0.94, time=396.25\u00b5s) ==="
   ]
 }

@@ -14,8 +14,8 @@
   "audio_duration_ms": 3144,
   "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
-  "callsign": "VIR835E",
-  "command": "CI4R",
+  "callsign": "",
+  "command": "",
   "stt_aircraft": {
     "American 38 46": {
       "Callsign": "AAL3846",
