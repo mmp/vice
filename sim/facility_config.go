@@ -280,6 +280,46 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 			}
 		}
 
+		// Check for exactly one root position.
+		if _, err := config.DefaultConsolidation.RootPosition(); err != nil {
+			e.Error(err)
+		}
+
+		// Check for cycles (a position can't be its own ancestor).
+		getConsolidatedInto := func(tcp TCP) TCP {
+			for parent, children := range config.DefaultConsolidation {
+				if slices.Contains(children, tcp) {
+					return parent
+				}
+			}
+			return ""
+		}
+		for tcp := range config.DefaultConsolidation {
+			visited := make(map[TCP]bool)
+			current := tcp
+			for current != "" {
+				if visited[current] {
+					e.ErrorString("cycle detected in consolidation hierarchy involving %q", tcp)
+					break
+				}
+				visited[current] = true
+				current = getConsolidatedInto(current)
+			}
+		}
+
+		// Check that no position appears as a child of multiple parents.
+		childParent := make(map[TCP]TCP)
+		for parent, children := range config.DefaultConsolidation {
+			for _, child := range children {
+				if existingParent, ok := childParent[child]; ok {
+					e.ErrorString(`position %q appears as a child of both %q and %q in "default_consolidation"`,
+						child, existingParent, parent)
+				} else {
+					childParent[child] = parent
+				}
+			}
+		}
+
 		// Resolve scratchpad leader line direction strings to native directions.
 		if len(config.ScratchpadLeaderLineDirectionStrings) > 0 {
 			config.ScratchpadLeaderLineDirections = make(map[string]math.CardinalOrdinalDirection,
@@ -352,8 +392,6 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		if err != nil {
 			e.Error(err)
 		}
-	} else if len(allAreaVideoMaps) == 0 {
-		e.ErrorString(`must specify either "controllers" or "video_maps" in "areas"`)
 	}
 
 	if fa.Range == 0 {

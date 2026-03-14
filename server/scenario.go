@@ -1172,35 +1172,6 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 	e.Push("facility_adaptations")
 
-	// Validate configurations (controller assignments)
-	if s.Configurations == nil {
-		e.ErrorString(`must provide "configurations"`)
-	}
-	for configId, config := range s.Configurations {
-		e.Push("configurations: " + configId)
-
-		// Config IDs must be max 3 characters
-		if len(configId) > 3 {
-			e.ErrorString("configuration id %q must be at most 3 characters", configId)
-		}
-
-		// Validate that all TCPs in assignments exist in control_positions
-		for flow, tcp := range config.InboundAssignments {
-			if _, ok := sg.ControlPositions[tcp]; !ok {
-				e.ErrorString(`inbound_assignments: flow %q assigns to %q which is not in "control_positions"`, flow, tcp)
-			}
-		}
-		for spec, tcp := range config.DepartureAssignments {
-			if _, ok := sg.ControlPositions[tcp]; !ok {
-				e.ErrorString(`departure_assignments: %q assigns to %q which is not in "control_positions"`, spec, tcp)
-			}
-		}
-		// go_around_assignments validation happens at scenario level
-		// where we have access to the consolidation tree for human position validation
-
-		e.Pop()
-	}
-
 	// manifestForArea returns the effective manifest for an area: the area's
 	// own manifest if it has a video_map_file, otherwise the facility-level one.
 	manifestForArea := func(ac *sim.STARSArea) *sim.VideoMapManifest {
@@ -1248,6 +1219,13 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		if !slices.Contains(allAreaVideoMaps, m) {
 			e.ErrorString(`video map %q in "map_labels" is not in any area's "video_maps"`, m)
 		}
+	}
+
+	// A TRACON scenario's facility config must define either controllers or
+	// video maps in areas to drive a STARS display. ARTCC scenarios use
+	// ERAM and don't need these.
+	if sg.ARTCC == "" && len(s.Controllers) == 0 && len(allAreaVideoMaps) == 0 {
+		e.ErrorString(`must specify either "controllers" or "video_maps" in "areas"`)
 	}
 
 	// Controller config centers and video maps (require Locator + manifest).
@@ -1968,20 +1946,28 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	lg.Infof("scenario/video map manifest load time: %s\n", time.Since(start))
 
-	// Phase 1: Load and validate all facility configs. Each config is
-	// loaded once (cached) and validated via PostDeserialize. This must
-	// complete before neighbor loading or scenario group PostDeserialize
-	// so that all configs are known-good.
+	// Phase 1: Load and validate all facility configs by walking the
+	// configurations/ directory. Every .json file is loaded and validated
+	// via PostDeserialize, regardless of whether a scenario references it.
 	resourcesFS := util.GetResourcesFS()
-	for _, tracon := range scenarioGroups {
-		for _, sg := range tracon {
-			fc := loadFacilityConfig(resourcesFS, facilityConfigPath(sg), e)
-			if fc == nil {
-				continue
-			}
-			facilityName := strings.TrimSuffix(filepath.Base(facilityConfigPath(sg)), ".json")
+	err = util.WalkResources("configurations", func(path string, d fs.DirEntry, filesystem fs.FS, err error) error {
+		if err != nil {
+			lg.Errorf("error walking configurations/: %v", err)
+			return nil
+		}
+		if d.IsDir() || filepath.Ext(path) != ".json" {
+			return nil
+		}
+
+		fc := loadFacilityConfig(filesystem, path, e)
+		if fc != nil {
+			facilityName := strings.TrimSuffix(filepath.Base(path), ".json")
 			fc.PostDeserialize(facilityName, e)
 		}
+		return nil
+	})
+	if err != nil {
+		e.Error(err)
 	}
 	if e.HaveErrors() {
 		return nil, nil, nil, ""
