@@ -1172,35 +1172,6 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 	e.Push("facility_adaptations")
 
-	// Validate configurations (controller assignments)
-	if s.Configurations == nil {
-		e.ErrorString(`must provide "configurations"`)
-	}
-	for configId, config := range s.Configurations {
-		e.Push("configurations: " + configId)
-
-		// Config IDs must be max 3 characters
-		if len(configId) > 3 {
-			e.ErrorString("configuration id %q must be at most 3 characters", configId)
-		}
-
-		// Validate that all TCPs in assignments exist in control_positions
-		for flow, tcp := range config.InboundAssignments {
-			if _, ok := sg.ControlPositions[tcp]; !ok {
-				e.ErrorString(`inbound_assignments: flow %q assigns to %q which is not in "control_positions"`, flow, tcp)
-			}
-		}
-		for spec, tcp := range config.DepartureAssignments {
-			if _, ok := sg.ControlPositions[tcp]; !ok {
-				e.ErrorString(`departure_assignments: %q assigns to %q which is not in "control_positions"`, spec, tcp)
-			}
-		}
-		// go_around_assignments validation happens at scenario level
-		// where we have access to the consolidation tree for human position validation
-
-		e.Pop()
-	}
-
 	// manifestForArea returns the effective manifest for an area: the area's
 	// own manifest if it has a video_map_file, otherwise the facility-level one.
 	manifestForArea := func(ac *sim.STARSArea) *sim.VideoMapManifest {

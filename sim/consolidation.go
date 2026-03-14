@@ -153,58 +153,12 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 	e.Push(`"configuration"`)
 	defer e.Pop()
 
-	// Check that all positions are valid control positions
+	// Check that all positions are valid control positions.
+	// This must remain here because the scenario's control positions may
+	// differ from the facility config's (due to neighbor loading).
 	for _, tcp := range cc.AllPositions() {
 		if _, ok := controlPositions[tcp]; !ok {
 			e.ErrorString(`position %q not found in "control_positions"`, tcp)
-		}
-	}
-
-	// Check for exactly one root
-	root, err := cc.RootPosition()
-	if err != nil {
-		e.Error(err)
-	} else {
-		// Check that root is in default_consolidation map (as a key with possibly empty children)
-		if _, ok := cc.DefaultConsolidation[root]; !ok {
-			e.ErrorString(`root position %q must be a key in "default_consolidation"`, root)
-		}
-	}
-
-	// Check for cycles (a position can't be its own ancestor)
-	// Inline the GetConsolidatedInto logic here
-	getConsolidatedInto := func(tcp TCP) TCP {
-		for parent, children := range cc.DefaultConsolidation {
-			if slices.Contains(children, tcp) {
-				return parent
-			}
-		}
-		return ""
-	}
-
-	for tcp := range cc.DefaultConsolidation {
-		visited := make(map[TCP]bool)
-		current := tcp
-		for current != "" {
-			if visited[current] {
-				e.ErrorString("cycle detected in consolidation hierarchy involving %q", tcp)
-				break
-			}
-			visited[current] = true
-			current = getConsolidatedInto(current)
-		}
-	}
-
-	// Check that no position appears as a child of multiple parents
-	childParent := make(map[TCP]TCP)
-	for parent, children := range cc.DefaultConsolidation {
-		for _, child := range children {
-			if existingParent, ok := childParent[child]; ok {
-				e.ErrorString(`position %q appears as a child of both %q and %q in "default_consolidation"`,
-					child, existingParent, parent)
-			} else {
-				childParent[child] = parent
-			}
 		}
 	}
 
