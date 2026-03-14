@@ -562,6 +562,23 @@ func normalizeConsonantClusters(s string) string {
 	return s
 }
 
+// normalizeCK normalizes C/K equivalence for phonetically identical sounds.
+// STT may use K for a hard C sound or vice versa (e.g., "kelse" for "Celtic").
+func normalizeCK(s string) string {
+	return strings.ReplaceAll(strings.ToLower(s), "c", "k")
+}
+
+// hasInitialCKSwap returns true if one string starts with 'c' and the other
+// starts with 'k' (case-insensitive), indicating an initial C/K substitution.
+func hasInitialCKSwap(a, b string) bool {
+	if len(a) == 0 || len(b) == 0 {
+		return false
+	}
+	aFirst := strings.ToLower(a[:1])
+	bFirst := strings.ToLower(b[:1])
+	return (aFirst == "c" && bFirst == "k") || (aFirst == "k" && bFirst == "c")
+}
+
 // CleanWord removes non-alphanumeric characters from a word.
 func CleanWord(w string) string {
 	var sb strings.Builder

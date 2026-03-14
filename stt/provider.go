@@ -234,7 +234,13 @@ func (p *Transcriber) decodeInternal(
 		}
 	} else {
 		if noCommands {
-			output = callsign + " AGAIN"
+			// Only emit AGAIN when the callsign match is confident enough.
+			// A weak airline match combined with a coincidental flight
+			// number can produce a false callsign; requesting a repeat
+			// from the wrong aircraft is worse than silence.
+			if callsignConfidence >= 0.93 {
+				output = callsign + " AGAIN"
+			}
 		} else if len(validation.ValidCommands) == 0 {
 			output = callsign
 		} else {

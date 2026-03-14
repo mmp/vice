@@ -578,9 +578,15 @@ func matchFlightNumber(tokens []Token, expectedNum string) (exact bool, consumed
 		return false, consumed, 0.85
 	}
 
-	// Check if expected is a suffix of built (overshot)
+	// Check if expected is a suffix of built (overshot). Require the
+	// expected number to be at least half the length of the built number;
+	// otherwise the match is too weak (e.g., "6662" ending in "2" matches
+	// 1-in-10 random numbers). Scale score by the length ratio.
 	if strings.HasSuffix(built, expectedNum) {
-		return false, consumed, 0.8
+		ratio := float64(len(expectedNum)) / float64(len(built))
+		if ratio >= 0.5 {
+			return false, consumed, 0.8 * ratio
+		}
 	}
 
 	// Fuzzy match on the number

@@ -192,6 +192,22 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 					bestLength = length
 				}
 			}
+			// Try C/K equivalence normalization for initial hard/soft C
+			// confusion (e.g., "kelse" should match "celtic" — STT may
+			// use K for a hard C sound). Only apply when one word starts
+			// with 'c' and the other with 'k', to avoid false positives
+			// from incidental mid-word c→k changes.
+			if hasInitialCKSwap(phrase, spokenName) {
+				ckPhrase := normalizeCK(phrase)
+				ckSpoken := normalizeCK(spokenName)
+				ckScore := JaroWinkler(ckPhrase, ckSpoken)
+				adjustedScore := ckScore * 0.95
+				if ckScore >= 0.78 && (adjustedScore > bestScore || (adjustedScore == bestScore && fixID < bestFix)) {
+					bestFix = fixID
+					bestScore = adjustedScore
+					bestLength = length
+				}
+			}
 			// Try consonant-only matching for fix names with vowel STT errors
 			// (e.g., "zizou" should match "zzooo" since both have consonants "zz")
 			if len(phrase) >= 3 && len(spokenName) >= 3 {
@@ -249,6 +265,19 @@ checkSpelling:
 			// Spelling contradicts match - prefer spelling (more explicit)
 			logLocalStt("  extractFix: spelling %q overrides spoken match %q", spelledFix, bestFix)
 			return spelledFix, spellingConf, totalConsumed
+		}
+	}
+
+	// Try NATO spelling from the very start of tokens. This handles cases
+	// where the controller spells out the entire fix name and the first NATO
+	// letter word coincidentally fuzzy-matches a different fix (e.g.,
+	// "sierra sierra oscar xray sierra" = SSOXS, where the first "sierra"
+	// might fuzzy-match fix "SEY").
+	if bestScore < 1.0 {
+		spelledFix, spellingConf, spellingConsumed := extractSpelledFix(tokens, fixes)
+		if spelledFix != "" {
+			logLocalStt("  extractFix: full NATO spelling from start %q overrides fuzzy match %q", spelledFix, bestFix)
+			return spelledFix, spellingConf, spellingConsumed
 		}
 	}
 
