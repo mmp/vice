@@ -31,7 +31,7 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.4.1
 	golang.org/x/exp v0.0.0-20251017212417-90e834f514db
 	golang.org/x/oauth2 v0.30.0
-	golang.org/x/sync v0.18.0
+	golang.org/x/sync v0.20.0
 	golang.org/x/sys v0.42.0
 	google.golang.org/api v0.235.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
@@ -104,10 +104,10 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.43.0 // indirect
 	go.opentelemetry.io/otel/trace v1.43.0 // indirect
 	golang.org/x/crypto v0.45.0 // indirect
-	golang.org/x/image v0.20.0 // indirect
+	golang.org/x/image v0.38.0 // indirect
 	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/term v0.37.0 // indirect
-	golang.org/x/text v0.31.0 // indirect
+	golang.org/x/text v0.35.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	google.golang.org/genproto v0.0.0-20250505200425-f936aa4a68b2 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250505200425-f936aa4a68b2 // indirect
