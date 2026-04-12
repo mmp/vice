@@ -3893,7 +3893,7 @@
         }
       ]
     },
-    "FROGZ4": {
+    "FROGZ5": {
       "arrivals": [
         {
           "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
@@ -3916,7 +3916,7 @@
             }
           },
           "cruise_altitude": 35000,
-          "star": "FROGZ4",
+          "star": "FROGZ5",
           "initial_controller": "C24",
           "initial_altitude": 21000,
           "initial_speed": 280,
@@ -3995,7 +3995,7 @@
         }
       ]
     },
-    "FROGZ4 NOSATS EAST": {
+    "FROGZ5 NOSATS EAST": {
       "arrivals": [
         {
           "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
@@ -4012,7 +4012,7 @@
             }
           },
           "cruise_altitude": 35000,
-          "star": "FROGZ4",
+          "star": "FROGZ5",
           "initial_controller": "C24",
           "initial_altitude": 21000,
           "initial_speed": 280,
@@ -4082,7 +4082,7 @@
         }
       ]
     },
-    "FROGZ4 NOSATS WEST": {
+    "FROGZ5 NOSATS WEST": {
       "arrivals": [
         {
           "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
@@ -4099,7 +4099,7 @@
             }
           },
           "cruise_altitude": 35000,
-          "star": "FROGZ4",
+          "star": "FROGZ5",
           "initial_controller": "C24",
           "initial_altitude": 21000,
           "initial_speed": 280,
@@ -5117,7 +5117,7 @@
         "BNFSH3 NOSATS EAST": {
           "KMIA": 12
         },
-        "FROGZ4 NOSATS EAST": {
+        "FROGZ5 NOSATS EAST": {
           "KMIA": 10
         },
         "SNDBR3 NOSATS EAST": {
@@ -5199,7 +5199,7 @@
         "BNFSH3 NOSATS WEST": {
           "KMIA": 12
         },
-        "FROGZ4 NOSATS WEST": {
+        "FROGZ5 NOSATS WEST": {
           "KMIA": 10
         },
         "SNDBR3 NOSATS WEST": {
@@ -5308,7 +5308,7 @@
         "BNFSH3": {
           "KMIA": 10
         },
-        "FROGZ4": {
+        "FROGZ5": {
           "KMIA": 8,
           "KTMB": 2
         },
@@ -5434,7 +5434,7 @@
         "BNFSH3": {
           "KMIA": 10
         },
-        "FROGZ4": {
+        "FROGZ5": {
           "KMIA": 8,
           "KTMB": 2
         },

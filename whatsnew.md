@@ -1,4 +1,4 @@
-- Scenario updates: ZNY (Ryan G), SCT (Ketan K), ZJX, F11 (manaphy)
+- Scenario updates: ZNY (Ryan G), SCT (Ketan K), ZJX, F11 (manaphy), MIA (Gecko)
 - Navigation / flight model:
   - Handle "at or above/at or below" speed restrictions more reasonably (don't treat them all as "at")
   - Added support for intercepting RNAV t-segments
