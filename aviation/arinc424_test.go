@@ -6,6 +6,7 @@ package aviation
 
 import (
 	"math"
+	"strings"
 	"testing"
 )
 
@@ -100,4 +101,28 @@ func holdsEqual(a, b Hold) bool {
 		a.MaximumAltitude == b.MaximumAltitude &&
 		a.HoldingSpeed == b.HoldingSpeed &&
 		a.Procedure == b.Procedure
+}
+
+func TestParseARINC424LocalizerNavaid(t *testing.T) {
+	line := []byte(strings.Repeat(" ", 132))
+	copy(line[0:], "SUSA")
+	line[4] = 'P'
+	copy(line[6:], "KEWR")
+	copy(line[10:], "K6")
+	line[12] = 'I'
+	copy(line[13:], "IEZA")
+	copy(line[32:], "N40414355")
+	copy(line[41:], "W074094163")
+	result := ParseARINC424(strings.NewReader(string(line) + "\r\n"))
+
+	nav, ok := result.Navaids["IEZA"]
+	if !ok {
+		t.Fatal("expected IEZA localizer navaid")
+	}
+	if nav.Type != "LOC" {
+		t.Fatalf("expected LOC navaid type, got %q", nav.Type)
+	}
+	if nav.Location.IsZero() {
+		t.Fatal("expected IEZA localizer location")
+	}
 }

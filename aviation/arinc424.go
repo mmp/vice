@@ -305,6 +305,16 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				*/
 				result.Fixes[id] = Fix{Id: id, Location: location}
 
+			case 'I': // localizer/glide slope record 4.1.11
+				id := strings.TrimSpace(string(line[13:17]))
+				if id != "" && !empty(line[32:51]) {
+					result.Navaids[id] = Navaid{
+						Id:       id,
+						Type:     "LOC",
+						Location: parseLatLong(line[32:41], line[41:51]),
+					}
+				}
+
 			case 'D': // SID 4.1.9
 				recs = matchingSSARecs(line, recs)
 				id := recs[0].id
