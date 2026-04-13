@@ -111,6 +111,7 @@ func TestParseARINC424LocalizerNavaid(t *testing.T) {
 	copy(line[10:], "K6")
 	line[12] = 'I'
 	copy(line[13:], "IEZA")
+	line[21] = '1' // continuation record number: primary record
 	copy(line[32:], "N40414355")
 	copy(line[41:], "W074094163")
 	result := ParseARINC424(strings.NewReader(string(line) + "\r\n"))

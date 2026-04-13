@@ -172,8 +172,12 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 		sectionCode := line[4]
 		switch sectionCode {
 		case 'D':
-			subsectionCode := line[6]
+			subsectionCode := line[5]
 			if subsectionCode == ' ' /* VOR */ || subsectionCode == 'B' /* NDB */ {
+				continuation := line[21]
+				if continuation != '0' && continuation != '1' {
+					break
+				}
 				id := strings.TrimSpace(string(line[13:17]))
 				if len(id) < 3 {
 					break
@@ -306,6 +310,10 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				result.Fixes[id] = Fix{Id: id, Location: location}
 
 			case 'I': // localizer/glide slope record 4.1.11
+				continuation := line[21]
+				if continuation != '0' && continuation != '1' {
+					continue
+				}
 				id := strings.TrimSpace(string(line[13:17]))
 				if id != "" && !empty(line[32:51]) {
 					result.Navaids[id] = Navaid{
