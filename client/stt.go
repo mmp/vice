@@ -21,6 +21,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
 	"golang.org/x/sys/cpu"
 )
@@ -38,6 +39,7 @@ type TransmissionManager struct {
 	holdCount    int       // explicit holds (e.g., during STT recording/processing)
 	holdUntil    time.Time // time-based hold for post-transmission pauses
 	lastCallsign av.ADSBCallsign
+	lastRepeat   *queuedTransmission
 	eventStream  *sim.EventStream
 	lg           *log.Logger
 
@@ -50,7 +52,8 @@ type TransmissionManager struct {
 type queuedTransmission struct {
 	Callsign       av.ADSBCallsign
 	Type           av.RadioTransmissionType
-	PCM            []int16 // Pre-decoded PCM audio
+	RawPCM         []int16 // PCM audio before radio effect is applied
+	RadioSeed      uint32
 	PTTReleaseTime time.Time
 }
 
@@ -96,9 +99,10 @@ func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty a
 	})
 
 	qt := queuedTransmission{
-		Callsign: callsign,
-		Type:     ty,
-		PCM:      pcm,
+		Callsign:  callsign,
+		Type:      ty,
+		RawPCM:    slices.Clone(pcm),
+		RadioSeed: uint32(util.HashString64(string(callsign))),
 	}
 	// Insert at front - readbacks have priority
 	tm.queue = append([]queuedTransmission{qt}, tm.queue...)
@@ -115,9 +119,10 @@ func (tm *TransmissionManager) EnqueueTransmissionPCM(callsign av.ADSBCallsign, 
 	}
 
 	qt := queuedTransmission{
-		Callsign: callsign,
-		Type:     ty,
-		PCM:      pcm,
+		Callsign:  callsign,
+		Type:      ty,
+		RawPCM:    slices.Clone(pcm),
+		RadioSeed: uint32(util.HashString64(string(callsign))),
 	}
 	tm.queue = append(tm.queue, qt)
 }
@@ -143,14 +148,33 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 		return
 	}
 
-	// Can't play if already playing or nothing to play
-	if tm.playing || len(tm.queue) == 0 {
+	if tm.playing {
 		return
 	}
 
 	// Get next speech to play
-	qt := tm.queue[0]
-	tm.queue = tm.queue[1:]
+	var qt queuedTransmission
+	repeat := false
+	if len(tm.queue) > 0 {
+		qt = tm.queue[0]
+		tm.queue = tm.queue[1:]
+		tm.lastRepeat = &queuedTransmission{
+			Callsign:  qt.Callsign,
+			Type:      qt.Type,
+			RawPCM:    slices.Clone(qt.RawPCM),
+			RadioSeed: qt.RadioSeed,
+		}
+	} else if tm.lastRepeat != nil {
+		qt = queuedTransmission{
+			Callsign:  tm.lastRepeat.Callsign,
+			Type:      tm.lastRepeat.Type,
+			RawPCM:    tm.lastRepeat.RawPCM,
+			RadioSeed: tm.lastRepeat.RadioSeed,
+		}
+		repeat = true
+	} else {
+		return
+	}
 
 	// Track whether this is a contact (vs readback)
 	isContact := qt.Type == av.RadioTransmissionContact
@@ -163,6 +187,11 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 		tm.lastCallsign = qt.Callsign
 		tm.lastWasContact = isContact
 
+		if repeat {
+			tm.holdUntil = time.Now().Add(750 * time.Millisecond)
+			return
+		}
+
 		// Different hold times based on transmission type:
 		// - After contact: 8 seconds (controller needs time to respond)
 		// - After readback: 3 seconds (brief pause before next contact)
@@ -173,8 +202,10 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 		}
 	}
 
-	// Enqueue pre-decoded PCM for playback
-	if err := p.TryEnqueueSpeechPCM(qt.PCM, finishedCallback); err == nil {
+	// Apply the radio effect when playback starts so repeats use the
+	// current debug settings rather than stale transformed audio.
+	pcm := tts.ApplyRadioEffect(qt.RawPCM, platform.AudioSampleRate, qt.RadioSeed)
+	if err := p.TryEnqueueSpeechPCM(pcm, finishedCallback); err == nil {
 		tm.playing = true
 	}
 }

@@ -76,9 +76,74 @@
 package tts
 
 import (
+	"slices"
+	"sync/atomic"
+
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 )
+
+const (
+	// pilotNoiseAmount is normalized for the debug slider: 0 is no additive
+	// noise and 1 is intentionally overwhelming. The default maps to the
+	// current tuned noise bed.
+	defaultPilotNoiseAmount float32 = 0.125
+	maxPilotNoiseGain       float32 = 3
+
+	// pilotSpeechMuffle controls how much separately-lowpassed speech is
+	// blended into the normal radio-bandpassed speech.
+	defaultPilotSpeechMuffle float32 = 0.5
+
+	defaultPilotMuffleCutoffHz float32 = 2600
+)
+
+type RadioEffectSettings struct {
+	NoiseAmount    float32
+	MuffleAmount   float32
+	MuffleCutoffHz float32
+}
+
+var (
+	radioNoiseAmountBits    atomic.Uint32
+	radioMuffleAmountBits   atomic.Uint32
+	radioMuffleCutoffHzBits atomic.Uint32
+)
+
+func init() {
+	SetRadioEffectSettings(DefaultRadioEffectSettings())
+}
+
+func DefaultRadioEffectSettings() RadioEffectSettings {
+	return RadioEffectSettings{
+		NoiseAmount:    defaultPilotNoiseAmount,
+		MuffleAmount:   defaultPilotSpeechMuffle,
+		MuffleCutoffHz: defaultPilotMuffleCutoffHz,
+	}
+}
+
+func SetRadioEffectSettings(settings RadioEffectSettings) {
+	settings.NoiseAmount = math.Clamp(settings.NoiseAmount, 0, 1)
+	settings.MuffleAmount = math.Clamp(settings.MuffleAmount, 0, 1)
+	settings.MuffleCutoffHz = math.Clamp(settings.MuffleCutoffHz, 100, 3600)
+
+	radioNoiseAmountBits.Store(math.FloatToBits(settings.NoiseAmount))
+	radioMuffleAmountBits.Store(math.FloatToBits(settings.MuffleAmount))
+	radioMuffleCutoffHzBits.Store(math.FloatToBits(settings.MuffleCutoffHz))
+}
+
+func GetRadioEffectSettings() RadioEffectSettings {
+	return RadioEffectSettings{
+		NoiseAmount:    math.BitsToFloat(radioNoiseAmountBits.Load()),
+		MuffleAmount:   math.BitsToFloat(radioMuffleAmountBits.Load()),
+		MuffleCutoffHz: math.BitsToFloat(radioMuffleCutoffHzBits.Load()),
+	}
+}
+
+func ApplyRadioEffect(pcm []int16, sampleRate int, seed uint32) []int16 {
+	out := slices.Clone(pcm)
+	addRadioEffect(out, sampleRate, seed, 1)
+	return out
+}
 
 // biquad implements a second-order IIR (biquad) digital filter.
 type biquad struct {
@@ -154,6 +219,7 @@ func addRadioEffect(pcm []int16, sampleRate int, seed uint32, scale float32) {
 	// Derive per-aircraft characteristics deterministically from seed.
 	params := &rand.Rand{}
 	params.Seed(uint64(seed))
+	settings := GetRadioEffectSettings()
 
 	hpCutoff := float32(220 + params.Intn(100))        // 220-320 Hz
 	lpCutoff := float32(3200 + params.Intn(400))       // 3200-3600 Hz
@@ -164,12 +230,16 @@ func addRadioEffect(pcm []int16, sampleRate int, seed uint32, scale float32) {
 	targetPeak := float32(0.65) + params.Float32()*0.1 // 0.65-0.75 normalized peak
 
 	// Scale noise levels; filtering and compression always apply.
-	noiseGain *= scale
-	engineGain *= scale
+	noiseGain *= settings.NoiseAmount * maxPilotNoiseGain * scale
+	engineGain *= settings.NoiseAmount * maxPilotNoiseGain * scale
 
-	// Speech filters: highpass → lowpass (~12 dB/oct HF rolloff).
+	// Speech filters: highpass → lowpass (~12 dB/oct HF rolloff) for
+	// the baseline radio passband. A separate lowpass path controls
+	// muffling: its cutoff sets where high-frequency speech is rolled off,
+	// and the muffle amount blends between the normal and muffled speech.
 	hp := highpassBiquad(sampleRate, hpCutoff)
 	lp := lowpassBiquad(sampleRate, lpCutoff)
+	muffleLp := lowpassBiquad(sampleRate, settings.MuffleCutoffHz)
 
 	// Pass 1: bandpass filter speech and find peak amplitude.
 	buf := make([]float32, len(pcm))
@@ -178,6 +248,7 @@ func addRadioEffect(pcm []int16, sampleRate int, seed uint32, scale float32) {
 		x := float32(v) / 32767
 		x = hp.process(x)
 		x = lp.process(x)
+		x = math.Lerp(settings.MuffleAmount, x, muffleLp.process(x))
 		buf[i] = x
 		if a := math.Abs(x); a > peak {
 			peak = a

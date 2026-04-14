@@ -22,6 +22,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stars"
+	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -63,6 +64,11 @@ type ConfigNoSim struct {
 	NotifiedTargetGenMode  bool
 	DisableTextToSpeech    bool
 	EnableTowerGoArounds   bool
+
+	RadioEffectSettingsConfigured bool
+	RadioEffectNoiseAmount        float32
+	RadioEffectMuffleAmount       float32
+	RadioEffectMuffleCutoffHz     float32
 
 	UserWorkstation    string
 	ControllerInitials string
@@ -197,16 +203,20 @@ func getDefaultConfig() *Config {
 			Config: platform.Config{
 				InitialWindowPosition: [2]int{100, 100},
 			},
-			Version:               server.ViceSerializeVersion,
-			WhatsNewIndex:         len(whatsNew),
-			NotifiedTargetGenMode: true, // don't warn for new installs
-			UserPTTKey:            imgui.KeySemicolon,
-			STARSPane:             stars.NewSTARSPane(),
-			ERAMPane:              eram.NewERAMPane(),
-			MessagesPane:          panes.NewMessagesPane(),
-			FlightStripPane:       panes.NewFlightStripPane(),
-			ShowMessages:          true,
-			ShowFlightStrips:      true,
+			Version:                       server.ViceSerializeVersion,
+			WhatsNewIndex:                 len(whatsNew),
+			NotifiedTargetGenMode:         true, // don't warn for new installs
+			UserPTTKey:                    imgui.KeySemicolon,
+			STARSPane:                     stars.NewSTARSPane(),
+			ERAMPane:                      eram.NewERAMPane(),
+			MessagesPane:                  panes.NewMessagesPane(),
+			FlightStripPane:               panes.NewFlightStripPane(),
+			ShowMessages:                  true,
+			ShowFlightStrips:              true,
+			RadioEffectSettingsConfigured: true,
+			RadioEffectNoiseAmount:        tts.DefaultRadioEffectSettings().NoiseAmount,
+			RadioEffectMuffleAmount:       tts.DefaultRadioEffectSettings().MuffleAmount,
+			RadioEffectMuffleCutoffHz:     tts.DefaultRadioEffectSettings().MuffleCutoffHz,
 		},
 	}
 }
@@ -279,7 +289,15 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	if config.UIFontSize == 0 {
 		config.UIFontSize = 16
 	}
+	if !config.RadioEffectSettingsConfigured {
+		settings := tts.DefaultRadioEffectSettings()
+		config.RadioEffectSettingsConfigured = true
+		config.RadioEffectNoiseAmount = settings.NoiseAmount
+		config.RadioEffectMuffleAmount = settings.MuffleAmount
+		config.RadioEffectMuffleCutoffHz = settings.MuffleCutoffHz
+	}
 	config.Version = server.ViceSerializeVersion
+	tts.SetRadioEffectSettings(config.RadioEffectSettings())
 
 	imgui.LoadIniSettingsFromMemory(config.ImGuiSettings)
 
@@ -292,4 +310,12 @@ func (c *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream 
 	c.ERAMPane.Activate(r, p, eventStream, lg)
 	c.MessagesPane.Activate(r, p, eventStream, lg)
 	c.FlightStripPane.Activate(r, p, eventStream, lg)
+}
+
+func (c *ConfigNoSim) RadioEffectSettings() tts.RadioEffectSettings {
+	return tts.RadioEffectSettings{
+		NoiseAmount:    c.RadioEffectNoiseAmount,
+		MuffleAmount:   c.RadioEffectMuffleAmount,
+		MuffleCutoffHz: c.RadioEffectMuffleCutoffHz,
+	}
 }

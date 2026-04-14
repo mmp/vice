@@ -22,6 +22,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -820,6 +821,17 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 	applyPinWindowClass("Settings", config, p)
 	imgui.BeginV("Settings", &ui.showSettings, imgui.WindowFlagsAlwaysAutoResize)
 	drawPinButton("Settings", config, p)
+
+	radioEffectChanged := false
+	radioEffectChanged = imgui.SliderFloatV("Pilot radio noise", &config.RadioEffectNoiseAmount, 0, 1, "%.3f", 0) || radioEffectChanged
+	radioEffectChanged = imgui.SliderFloatV("Pilot radio muffle amount", &config.RadioEffectMuffleAmount, 0, 1, "%.3f", 0) || radioEffectChanged
+	radioEffectChanged = imgui.SliderFloatV("Pilot radio muffle cutoff", &config.RadioEffectMuffleCutoffHz, 100, 3600, "%.0f Hz", 0) || radioEffectChanged
+	if radioEffectChanged {
+		config.RadioEffectSettingsConfigured = true
+		tts.SetRadioEffectSettings(config.RadioEffectSettings())
+	}
+
+	imgui.Separator()
 
 	if imgui.SliderFloatV("Simulation speed", &c.State.SimRate, 1, 20, "%.1f", 0) {
 		c.SetSimRate(c.State.SimRate)

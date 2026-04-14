@@ -181,7 +181,6 @@ func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts,
 	tailSamples := t.targetSampleRate * (100 + r.Intn(200)) / 1000 // 0.1-0.3s
 	pcm = append(pcm, make([]int16, tailSamples)...)
 
-	addRadioEffect(pcm, t.targetSampleRate, radioSeed, 1)
 	return pcm, nil
 }
 
