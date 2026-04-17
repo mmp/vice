@@ -1022,15 +1022,14 @@ func (m MixUpIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 // AltimeterReadback Intent
 
 // AltimeterReadbackIntent renders a pilot's readback of an altimeter setting
-// issued by the controller, e.g., "altimeter three zero zero two, American 123".
+// issued by the controller, e.g., "altimeter three zero zero two".
 type AltimeterReadbackIntent struct {
 	SettingHundredths int // e.g., 3002 for 30.02
 }
 
 func (a AltimeterReadbackIntent) Render(rt *RadioTransmission, r *rand.Rand) {
-	whole := a.SettingHundredths / 100
-	hundredths := a.SettingHundredths % 100
-	rt.Add("[{num} {num}|altimeter {num} {num}|roger {num} {num}]", whole, hundredths)
+	digits := sayDigits(a.SettingHundredths, 4)
+	rt.Add("[altimeter " + digits + "|" + digits + "|roger " + digits + "]")
 }
 
 ///////////////////////////////////////////////////////////////////////////

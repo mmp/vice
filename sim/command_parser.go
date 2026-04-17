@@ -465,7 +465,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				return nil, nil // silently ignore malformed
 			}
 			if ac, ok := s.Aircraft[callsign]; ok {
-				s.handleAltimeterSetting(ac, setting)
+				return s.handleAltimeterSetting(ac, setting), nil
 			}
 			return nil, nil
 		} else {

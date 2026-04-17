@@ -90,14 +90,15 @@ func TestAltimeterBiasShiftsScopedAltitude(t *testing.T) {
 		t.Errorf("near KABE after settle: altitude = %v, want ~4900 (delta %v)", ac.Nav.FlightState.Altitude, d)
 	}
 
-	// Issue an altimeter-setting command. This goes through the dispatcher
-	// and the readback render, which mutates PilotAltim.
-	s.handleAltimeterSetting(ac, 2995)
-	pc := s.popReadyContact([]TCP{TCP(ac.ControllerFrequency)})
-	if pc == nil {
-		t.Fatal("expected a pending altimeter readback contact")
+	// Issue an altimeter-setting command. The dispatcher mutates PilotAltim
+	// immediately and returns a readback intent.
+	intent := s.handleAltimeterSetting(ac, 2995)
+	if intent == nil {
+		t.Fatal("expected an AltimeterReadbackIntent, got nil")
 	}
-	s.GenerateContactTransmission(pc) // triggers the render-switch state mutation
+	if _, ok := intent.(av.AltimeterReadbackIntent); !ok {
+		t.Fatalf("expected AltimeterReadbackIntent, got %T", intent)
+	}
 
 	if math.Abs(ac.PilotAltim-29.95) > 0.001 {
 		t.Errorf("after readback: PilotAltim = %v, want 29.95", ac.PilotAltim)
