@@ -1949,6 +1949,12 @@ func TestNormalizeTranscript(t *testing.T) {
 	}
 }
 
+// tokenize is a test helper that runs NormalizeTranscript + Tokenize on a
+// raw string, mirroring the real processing pipeline.
+func tokenize(s string) []Token {
+	return Tokenize(NormalizeTranscript(s))
+}
+
 func TestTokenize(t *testing.T) {
 	tests := []struct {
 		input    []string
@@ -1969,6 +1975,35 @@ func TestTokenize(t *testing.T) {
 		if tt.numToks > 0 && result[0].Value != tt.firstVal {
 			t.Errorf("Tokenize(%v)[0].Value = %d, want %d", tt.input, result[0].Value, tt.firstVal)
 		}
+	}
+}
+
+func TestExtractAltimeterSuffix(t *testing.T) {
+	tests := []struct {
+		name           string
+		input          string
+		wantHundredths int
+		wantOK         bool
+	}{
+		{"altimeter four-digit", "altimeter 3002", 3002, true},
+		{"altimeter spaced", "altimeter 30 02", 3002, true},
+		{"altimeter spelled-out", "altimeter three zero zero two", 3002, true},
+		{"altimeter spoken thirty oh two", "altimeter thirty oh two", 3002, true},
+		{"no altimeter", "turn left heading 270", 0, false},
+		{"altimeter alone", "altimeter", 0, false},
+		{"junk after altimeter number", "altimeter 3002 climb", 0, false},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			tokens := tokenize(tc.input)
+			_, hundredths, ok := extractAltimeterSuffix(tokens)
+			if ok != tc.wantOK {
+				t.Fatalf("ok = %v, want %v", ok, tc.wantOK)
+			}
+			if ok && hundredths != tc.wantHundredths {
+				t.Errorf("hundredths = %d, want %d", hundredths, tc.wantHundredths)
+			}
+		})
 	}
 }
 

@@ -1,6 +1,7 @@
 package stt
 
 import (
+	"strconv"
 	"strings"
 	"time"
 
@@ -1035,7 +1036,11 @@ func containsGreeting(tokens []Token) bool {
 func stripInformational(tokens []Token) []Token {
 	tokens = stripPositionIDPrefix(tokens)
 	tokens = stripRadarContactPrefix(tokens)
-	tokens = stripAltimeterSuffix(tokens)
+	var altimSetting int
+	var altimOK bool
+	tokens, altimSetting, altimOK = extractAltimeterSuffix(tokens)
+	_ = altimSetting // wired up by Task 9
+	_ = altimOK
 	return tokens
 }
 
@@ -1093,10 +1098,15 @@ func stripRadarContactPrefix(tokens []Token) []Token {
 	return tokens
 }
 
-// stripAltimeterSuffix removes an altimeter setting from the end of the
-// token stream. Controllers often append "(airport) altimeter (setting)"
-// as informational; it is not an actionable command.
-func stripAltimeterSuffix(tokens []Token) []Token {
+// extractAltimeterSuffix removes an altimeter setting from the end of the
+// token stream and returns the parsed value (hundredths of inHg, e.g., 3002
+// for 30.02). Returns ok=false if no altimeter setting is found at the end.
+//
+// Recognized forms (after the optional "altimeter" keyword):
+//   - one number token: "3002" → 3002
+//   - two number tokens: "30 02" → 3002 (or "29 95" → 2995)
+//   - spelled-out digits parsed by the upstream tokenizer.
+func extractAltimeterSuffix(tokens []Token) ([]Token, int, bool) {
 	for i, t := range tokens {
 		if strings.ToLower(t.Text) != "altimeter" {
 			continue
@@ -1104,18 +1114,63 @@ func stripAltimeterSuffix(tokens []Token) []Token {
 		if i+1 >= len(tokens) || tokens[i+1].Type != TokenNumber {
 			continue
 		}
-		if i+2 < len(tokens) {
+
+		// Peek ahead: must be the trailing region of the transmission.
+		// Either one number token at the very end, or two number tokens at the end.
+		var settingTokens []Token
+		switch len(tokens) - i {
+		case 2: // "altimeter 3002"
+			settingTokens = tokens[i+1 : i+2]
+		case 3: // "altimeter 30 02"
+			if tokens[i+2].Type != TokenNumber {
+				continue
+			}
+			settingTokens = tokens[i+1 : i+3]
+		default:
 			continue
 		}
+
+		hundredths, ok := parseAltimeterTokens(settingTokens)
+		if !ok {
+			continue
+		}
+
+		// Trim the optional "(airport)" prefix word if present, to mirror
+		// the legacy stripAltimeterSuffix behavior.
 		start := i
 		if start > 0 && tokens[start-1].Type == TokenWord &&
 			!IsCommandKeyword(strings.ToLower(tokens[start-1].Text)) {
 			start--
 		}
-		logLocalStt("stripped altimeter suffix: %d tokens", len(tokens)-start)
-		return tokens[:start]
+		logLocalStt("extracted altimeter suffix: %d hundredths, %d tokens consumed",
+			hundredths, len(tokens)-start)
+		return tokens[:start], hundredths, true
 	}
-	return tokens
+	return tokens, 0, false
+}
+
+// parseAltimeterTokens converts one or two number tokens to hundredths-of-inHg.
+// "3002" → 3002; "30" + "02" → 3002.
+func parseAltimeterTokens(toks []Token) (int, bool) {
+	switch len(toks) {
+	case 1:
+		n, err := strconv.Atoi(toks[0].Text)
+		if err != nil || n < 2500 || n > 3200 {
+			return 0, false
+		}
+		return n, true
+	case 2:
+		whole, err := strconv.Atoi(toks[0].Text)
+		if err != nil || whole < 25 || whole > 32 {
+			return 0, false
+		}
+		hundredths, err := strconv.Atoi(toks[1].Text)
+		if err != nil || hundredths < 0 || hundredths > 99 {
+			return 0, false
+		}
+		return whole*100 + hundredths, true
+	}
+	return 0, false
 }
 
 // logging helpers
