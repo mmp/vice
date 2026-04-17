@@ -18,6 +18,7 @@ var knownTestAirportLocations = map[string]math.Point2LL{
 	"KJFK": {-73.78, 40.64},
 	"KLGA": {-73.87, 40.77},
 	"KEWR": {-74.17, 40.69},
+	"KABE": {-75.44, 40.65},
 }
 
 func newTestSimWithMETAR(t *testing.T, settings map[string]float32) *Sim {
