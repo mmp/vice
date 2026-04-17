@@ -346,14 +346,17 @@ func (nav *Nav) SayHeading() av.CommandIntent {
 	return intent
 }
 
-func (nav *Nav) SayAltitude() av.CommandIntent {
-	currentAltitude := nav.FlightState.Altitude
-	intent := av.ReportAltitudeIntent{Current: currentAltitude}
+// SayAltitude reports the pilot's *indicated* altitude. The pilot reads
+// off their altimeter, which is offset from true altitude by altimBiasFeet
+// when the pilot's setting differs from the local actual.
+func (nav *Nav) SayAltitude(altimBiasFeet float32) av.CommandIntent {
+	indicatedAltitude := nav.FlightState.Altitude - altimBiasFeet
+	intent := av.ReportAltitudeIntent{Current: indicatedAltitude}
 	if nav.Altitude.Assigned != nil {
 		intent.Assigned = nav.Altitude.Assigned
-		if *nav.Altitude.Assigned < currentAltitude {
+		if *nav.Altitude.Assigned < indicatedAltitude {
 			intent.Direction = av.AltitudeDescend
-		} else if *nav.Altitude.Assigned > currentAltitude {
+		} else if *nav.Altitude.Assigned > indicatedAltitude {
 			intent.Direction = av.AltitudeClimb
 		} else {
 			intent.Direction = av.AltitudeMaintain

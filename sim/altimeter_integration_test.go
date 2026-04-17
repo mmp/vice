@@ -47,13 +47,7 @@ func (s *Sim) tickOnce() {
 	s.State.SimTime = s.State.SimTime.Add(time.Second)
 	stubModel := &wx.Model{}
 	for _, ac := range s.Aircraft {
-		var bias float32
-		if s.State.FacilityAdaptation.SimulatePilotAltimeter &&
-			ac.Nav.IsAirborne() && ac.Altitude() < 18000 {
-			actual := s.nearestActualAltim(ac.Position())
-			bias = altimBiasFeet(actual, ac.PilotAltim)
-		}
-		ac.Update(stubModel, bias, s.State.SimTime, nil, nil)
+		ac.Update(stubModel, s.altimBiasFor(ac), s.State.SimTime, nil, nil)
 	}
 }
 

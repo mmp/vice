@@ -361,8 +361,8 @@ func (ac *Aircraft) SayHeading() av.CommandIntent {
 	return ac.Nav.SayHeading()
 }
 
-func (ac *Aircraft) SayAltitude() av.CommandIntent {
-	return ac.Nav.SayAltitude()
+func (ac *Aircraft) SayAltitude(altimBiasFeet float32) av.CommandIntent {
+	return ac.Nav.SayAltitude(altimBiasFeet)
 }
 
 func (ac *Aircraft) ExpediteDescent() av.CommandIntent {

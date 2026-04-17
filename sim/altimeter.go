@@ -101,6 +101,20 @@ func altimBiasFeet(nearestActualInHg, pilotInHg float32) float32 {
 	return (nearestActualInHg - pilotInHg) * 1000
 }
 
+// altimBiasFor returns the current altimeter bias for ac, applying the same
+// gating as the per-tick update loop (feature on, airborne, below FL180).
+// Returns 0 when the bias should not apply.
+func (s *Sim) altimBiasFor(ac *Aircraft) float32 {
+	if !s.State.FacilityAdaptation.SimulatePilotAltimeter {
+		return 0
+	}
+	if !ac.Nav.IsAirborne() || ac.Altitude() >= 18000 {
+		return 0
+	}
+	actual := s.nearestActualAltim(ac.Position())
+	return altimBiasFeet(actual, ac.PilotAltim)
+}
+
 // nearestActualAltim returns the altimeter (inHg) at the METAR-reporting
 // station geographically closest to pos. Returns 0 if no usable METAR is
 // available; callers treat 0 as "skip bias entirely".

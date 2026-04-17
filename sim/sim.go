@@ -968,13 +968,7 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			var bias float32
-			if s.State.FacilityAdaptation.SimulatePilotAltimeter &&
-				ac.Nav.IsAirborne() &&
-				ac.Altitude() < 18000 {
-				actual := s.nearestActualAltim(ac.Position())
-				bias = altimBiasFeet(actual, ac.PilotAltim)
-			}
+			bias := s.altimBiasFor(ac)
 			updateResult := ac.Update(s.wxModel, bias, s.State.SimTime, s.bravoAirspace, nil /* s.lg*/)
 			passedWaypoint := updateResult.PassedWaypoint
 			s.refreshSeenTraffic(ac)

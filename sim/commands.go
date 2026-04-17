@@ -162,7 +162,7 @@ func (s *Sim) SayAltitude(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, 
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.SayAltitude()
+			return ac.SayAltitude(s.altimBiasFor(ac))
 		})
 }
 

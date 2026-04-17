@@ -121,7 +121,7 @@ func TestSayAltitudeReportsPendingAssignedAltitude(t *testing.T) {
 	})
 
 	f.AssignAltitude(3000)
-	intent, ok := f.nav.SayAltitude().(av.ReportAltitudeIntent)
+	intent, ok := f.nav.SayAltitude(0).(av.ReportAltitudeIntent)
 	if !ok {
 		t.Fatalf("expected ReportAltitudeIntent, got %T", intent)
 	}
