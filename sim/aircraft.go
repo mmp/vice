@@ -144,6 +144,11 @@ type Aircraft struct {
 	// field is in sight. Set to zero after the check (requested or given up) to prevent retries.
 	VisualApproachRequestDistance float32
 
+	// Altimeter setting simulation. PilotAltim == 0 is the "feature off /
+	// not initialized" sentinel; bias math short-circuits to 0 in that case.
+	PilotAltim      float32
+	PilotAltimSetAt Time
+
 	TouchAndGosRemaining int // >0 means pattern aircraft; decremented each lap
 }
 

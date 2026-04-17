@@ -52,6 +52,7 @@ type FacilityAdaptation struct {
 	Range             float32                              `json:"range"`
 	Scratchpads       map[string]string                    `json:"scratchpads"`
 	SignificantPoints map[string]SignificantPoint          `json:"significant_points"`
+	SimulatePilotAltimeter bool                            `json:"simulate_pilot_altimeter"`
 
 	// Airpsace filters
 	Filters struct {
