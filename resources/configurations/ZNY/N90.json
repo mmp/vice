@@ -714,6 +714,7 @@
     },
     "center": "41.0669531,-73.7075661",
     "range": 60,
+    "simulate_pilot_altimeter": true,
     "significant_points": {
       "ARD": {},
       "BAYYS": {},
