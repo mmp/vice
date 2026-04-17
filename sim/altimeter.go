@@ -101,6 +101,30 @@ func altimBiasFeet(nearestActualInHg, pilotInHg float32) float32 {
 	return (nearestActualInHg - pilotInHg) * 1000
 }
 
+// tunePilotAltimToATISAirport sets the pilot's altimeter to the METAR for
+// the airport whose ATIS the pilot just acknowledged. Arrivals prefer the
+// arrival airport; everything else prefers the departure airport. No-op
+// when the feature is off or no METAR is available.
+func (s *Sim) tunePilotAltimToATISAirport(ac *Aircraft) {
+	if !s.State.FacilityAdaptation.SimulatePilotAltimeter {
+		return
+	}
+	candidates := []string{ac.FlightPlan.ArrivalAirport, ac.FlightPlan.DepartureAirport}
+	if ac.TypeOfFlight != av.FlightTypeArrival {
+		candidates = []string{ac.FlightPlan.DepartureAirport, ac.FlightPlan.ArrivalAirport}
+	}
+	for _, icao := range candidates {
+		if icao == "" {
+			continue
+		}
+		if m, ok := s.State.METAR[icao]; ok {
+			ac.PilotAltim = m.Altimeter_inHg()
+			ac.PilotAltimSetAt = s.State.SimTime
+			return
+		}
+	}
+}
+
 // altimBiasFor returns the current altimeter bias for ac, applying the same
 // gating as the per-tick update loop (feature on, airborne, below FL180).
 // Returns 0 when the bias should not apply.

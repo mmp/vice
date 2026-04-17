@@ -405,7 +405,9 @@ func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign, freq av.Frequency)
 
 // ATISCommand handles the controller telling a pilot the current ATIS letter.
 // If the aircraft already reported the correct ATIS, no readback is needed.
-// Otherwise the pilot responds with "we'll pick up (letter)".
+// Otherwise the pilot responds with "we'll pick up (letter)" and (when the
+// altimeter-sim feature is on) tunes their altimeter to the corresponding
+// airport's current METAR.
 func (s *Sim) ATISCommand(tcw TCW, callsign av.ADSBCallsign, letter string) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -416,6 +418,7 @@ func (s *Sim) ATISCommand(tcw TCW, callsign av.ADSBCallsign, letter string) (av.
 				return nil
 			}
 			ac.ReportedATIS = letter
+			s.tunePilotAltimToATISAirport(ac)
 			return av.ATISIntent{Letter: letter}
 		})
 }
