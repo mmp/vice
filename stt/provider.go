@@ -173,7 +173,16 @@ func (p *Transcriber) decodeInternal(
 	// If no tokens remain after stripping, controller just identified themselves.
 	// For VFR aircraft, treat this as an implicit "go ahead" — the pilot is
 	// checking in on frequency with just their callsign + facility name.
+	// Altimeter-only transmissions dispatch just the ALT synthetic command.
 	if len(commandTokens) == 0 {
+		if altimOK {
+			output := callsign + " " + fmt.Sprintf("ALT/%d", altimSetting)
+			elapsed := time.Since(start)
+			logLocalStt("altimeter-only transmission, dispatching %s", output)
+			logLocalStt(`=== DecodeTranscript END: %q (altimeter only, time=%s) ===`, output, elapsed)
+			p.logInfo(`local STT: %q -> %q (altimeter only, time=%s)`, transcript, output, elapsed)
+			return output, nil
+		}
 		if ac.State == "vfr flight following" {
 			output := callsign + " GA"
 			elapsed := time.Since(start)
@@ -1042,15 +1051,15 @@ func containsGreeting(tokens []Token) bool {
 }
 
 // stripInformational applies all informational prefix/suffix strippers in sequence:
-// position ID prefix, radar contact prefix, and altimeter setting suffix.
+// position ID prefix, radar contact prefix, and altimeter setting.
 // Returns the stripped tokens plus the altimeter setting in hundredths of inHg
-// (e.g. 3002 for 30.02) and ok=true if an altimeter suffix was found.
+// (e.g. 3002 for 30.02) and ok=true if an altimeter setting was found.
 func stripInformational(tokens []Token) ([]Token, int, bool) {
 	tokens = stripPositionIDPrefix(tokens)
 	tokens = stripRadarContactPrefix(tokens)
 	var altimSetting int
 	var altimOK bool
-	tokens, altimSetting, altimOK = extractAltimeterSuffix(tokens)
+	tokens, altimSetting, altimOK = extractAltimeterSetting(tokens)
 	return tokens, altimSetting, altimOK
 }
 
@@ -1108,55 +1117,78 @@ func stripRadarContactPrefix(tokens []Token) []Token {
 	return tokens
 }
 
-// extractAltimeterSuffix removes an altimeter setting from the end of the
-// token stream and returns the parsed value (hundredths of inHg, e.g., 3002
-// for 30.02). Returns ok=false if no altimeter setting is found at the end.
+// extractAltimeterSetting finds an altimeter setting anywhere in the token
+// stream (not just at the end), splices out the matched tokens, and returns
+// the parsed value in hundredths of inHg (e.g., 3002 for 30.02). Returns
+// ok=false when no altimeter setting is found.
 //
-// Recognized forms (after the optional "altimeter" keyword):
+// Recognized forms after the "altimeter" keyword (fuzzy-matched to tolerate
+// STT mis-transcriptions like "altometer", "altimeters"):
 //   - one number token: "3002" → 3002
-//   - two number tokens: "30 02" → 3002 (or "29 95" → 2995)
-//   - spelled-out digits parsed by the upstream tokenizer.
-func extractAltimeterSuffix(tokens []Token) ([]Token, int, bool) {
+//   - two number tokens: "30 02" → 3002
+//   - "point" form: "30 point 02" → 3002
+//
+// If a single bare word (airport/station name) immediately precedes
+// "altimeter" and is not a command keyword, it is spliced out along with
+// the altimeter phrase so it doesn't confuse downstream parsing.
+func extractAltimeterSetting(tokens []Token) ([]Token, int, bool) {
 	for i, t := range tokens {
-		if strings.ToLower(t.Text) != "altimeter" {
+		if !isAltimeterKeyword(t.Text) {
 			continue
 		}
-		if i+1 >= len(tokens) || tokens[i+1].Type != TokenNumber {
-			continue
-		}
-
-		// Peek ahead: must be the trailing region of the transmission.
-		// Either one number token at the very end, or two number tokens at the end.
-		var settingTokens []Token
-		switch len(tokens) - i {
-		case 2: // "altimeter 3002"
-			settingTokens = tokens[i+1 : i+2]
-		case 3: // "altimeter 30 02"
-			if tokens[i+2].Type != TokenNumber {
-				continue
-			}
-			settingTokens = tokens[i+1 : i+3]
-		default:
-			continue
-		}
-
-		hundredths, ok := parseAltimeterTokens(settingTokens)
+		hundredths, consumed, ok := parseAltimeterForms(tokens[i+1:])
 		if !ok {
 			continue
 		}
-
-		// Trim the optional "(airport)" prefix word if present, to mirror
-		// the legacy stripAltimeterSuffix behavior.
 		start := i
 		if start > 0 && tokens[start-1].Type == TokenWord &&
 			!IsCommandKeyword(strings.ToLower(tokens[start-1].Text)) {
 			start--
 		}
-		logLocalStt("extracted altimeter suffix: %d hundredths, %d tokens consumed",
-			hundredths, len(tokens)-start)
-		return tokens[:start], hundredths, true
+		end := i + 1 + consumed
+		logLocalStt("extracted altimeter setting: %d hundredths, tokens[%d:%d]",
+			hundredths, start, end)
+		remaining := make([]Token, 0, len(tokens)-(end-start))
+		remaining = append(remaining, tokens[:start]...)
+		remaining = append(remaining, tokens[end:]...)
+		return remaining, hundredths, true
 	}
 	return tokens, 0, false
+}
+
+// isAltimeterKeyword reports whether text is a reasonable transcription of
+// "altimeter". Accepts the canonical spelling and common whisper
+// mis-transcriptions via Jaro-Winkler fuzzy matching.
+func isAltimeterKeyword(text string) bool {
+	if strings.EqualFold(text, "altimeter") {
+		return true
+	}
+	return FuzzyMatch(text, "altimeter", 0.85)
+}
+
+// parseAltimeterForms parses the token sequence immediately after "altimeter"
+// and returns the setting in hundredths of inHg plus the number of tokens
+// consumed. Tries three forms in order: single four-digit (3002),
+// "N point NN" (30 point 02), and two-token "N NN" (30 02).
+func parseAltimeterForms(after []Token) (int, int, bool) {
+	if len(after) == 0 || after[0].Type != TokenNumber {
+		return 0, 0, false
+	}
+	if h, ok := parseAltimeterTokens(after[:1]); ok {
+		return h, 1, true
+	}
+	if len(after) >= 3 && strings.EqualFold(after[1].Text, "point") &&
+		after[2].Type == TokenNumber {
+		if h, ok := parseAltimeterTokens([]Token{after[0], after[2]}); ok {
+			return h, 3, true
+		}
+	}
+	if len(after) >= 2 && after[1].Type == TokenNumber {
+		if h, ok := parseAltimeterTokens(after[:2]); ok {
+			return h, 2, true
+		}
+	}
+	return 0, 0, false
 }
 
 // parseAltimeterTokens converts one or two number tokens to hundredths-of-inHg.

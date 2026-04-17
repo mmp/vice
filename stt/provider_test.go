@@ -1978,30 +1978,53 @@ func TestTokenize(t *testing.T) {
 	}
 }
 
-func TestExtractAltimeterSuffix(t *testing.T) {
+func TestExtractAltimeterSetting(t *testing.T) {
 	tests := []struct {
 		name           string
 		input          string
 		wantHundredths int
 		wantOK         bool
+		wantRemaining  string // expected TokensToString of remaining tokens
 	}{
-		{"altimeter four-digit", "altimeter 3002", 3002, true},
-		{"altimeter spaced", "altimeter 30 02", 3002, true},
-		{"altimeter spelled-out", "altimeter three zero zero two", 3002, true},
-		{"altimeter spoken thirty oh two", "altimeter thirty oh two", 3002, true},
-		{"no altimeter", "turn left heading 270", 0, false},
-		{"altimeter alone", "altimeter", 0, false},
-		{"junk after altimeter number", "altimeter 3002 climb", 0, false},
+		{"altimeter four-digit", "altimeter 3002", 3002, true, ""},
+		{"altimeter spaced", "altimeter 30 02", 3002, true, ""},
+		{"altimeter spelled-out", "altimeter three zero zero two", 3002, true, ""},
+		{"altimeter spoken thirty oh two", "altimeter thirty oh two", 3002, true, ""},
+		{"no altimeter", "turn left heading 270", 0, false, "turn left heading 270"},
+		{"altimeter alone", "altimeter", 0, false, "altimeter"},
+
+		// Mid-sentence extraction: trailing tokens survive.
+		{"altimeter before command", "altimeter 3002 climb", 3002, true, "climb"},
+		{"altimeter mid-sentence with station", "kennedy altimeter 3002 expect ils",
+			3002, true, "expect ils"},
+		{"altimeter after descent", "descend and maintain 5000 altimeter 3002",
+			3002, true, "descend and maintain 5000"},
+
+		// "point" form.
+		{"altimeter point form", "altimeter 30 point 02", 3002, true, ""},
+		{"altimeter point form mid-sentence", "altimeter 30 point 14 climb",
+			3014, true, "climb"},
+
+		// Fuzzy match for whisper mis-transcriptions.
+		{"altimeters (plural)", "altimeters 3002", 3002, true, ""},
+		{"altometer (missing i)", "altometer 3002", 3002, true, ""},
+
+		// Out-of-range values are rejected.
+		{"out-of-range low", "altimeter 2400", 0, false, "altimeter 2400"},
+		{"out-of-range high", "altimeter 3500", 0, false, "altimeter 3500"},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			tokens := tokenize(tc.input)
-			_, hundredths, ok := extractAltimeterSuffix(tokens)
+			remaining, hundredths, ok := extractAltimeterSetting(tokens)
 			if ok != tc.wantOK {
 				t.Fatalf("ok = %v, want %v", ok, tc.wantOK)
 			}
 			if ok && hundredths != tc.wantHundredths {
 				t.Errorf("hundredths = %d, want %d", hundredths, tc.wantHundredths)
+			}
+			if got := TokensToString(remaining); got != tc.wantRemaining {
+				t.Errorf("remaining = %q, want %q", got, tc.wantRemaining)
 			}
 		})
 	}
