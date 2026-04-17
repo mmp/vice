@@ -331,6 +331,25 @@ func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt
 	})
 }
 
+// handleAltimeterSetting processes an "altimeter X.XX" command issued by a
+// controller. If the feature toggle is off, silently accepts the command and
+// no-ops. Otherwise enqueues a pilot readback that will mutate PilotAltim
+// when rendered.
+func (s *Sim) handleAltimeterSetting(ac *Aircraft, settingHundredths int) {
+	if !s.State.FacilityAdaptation.SimulatePilotAltimeter {
+		return
+	}
+	if ac.ControllerFrequency == "" {
+		return
+	}
+	s.addPendingContact(PendingContact{
+		ADSBCallsign:        ac.ADSBCallsign,
+		TCP:                 TCP(ac.ControllerFrequency),
+		Type:                PendingTransmissionAltimeterReadback,
+		AltimeterHundredths: settingHundredths,
+	})
+}
+
 // cancelPendingInitialContact removes any pending Departure or Arrival contact
 // for the given aircraft. Called when a controller issues a command to an
 // aircraft that hasn't checked in yet, preventing stale check-ins.
