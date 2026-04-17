@@ -457,6 +457,17 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.AirportAdvisory(tcw, callsign, oclock, miles)
 		} else if letter, ok := strings.CutPrefix(command, "ATIS/"); ok {
 			return s.ATISCommand(tcw, callsign, letter)
+		} else if rest, ok := strings.CutPrefix(command, "ALT/"); ok {
+			// ALT/<hundredths> — altimeter setting in hundredths of inHg (e.g. "ALT/3002" for 30.02).
+			// Produced by the STT pipeline when the controller says "altimeter X.XX".
+			setting, err := strconv.Atoi(rest)
+			if err != nil {
+				return nil, nil // silently ignore malformed
+			}
+			if ac, ok := s.Aircraft[callsign]; ok {
+				s.handleAltimeterSetting(ac, setting)
+			}
+			return nil, nil
 		} else {
 			components := strings.Split(command, "/")
 			if len(components) != 2 || len(components[1]) == 0 {

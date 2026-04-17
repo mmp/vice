@@ -1,6 +1,7 @@
 package stt
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -165,7 +166,9 @@ func (p *Transcriber) decodeInternal(
 	}
 
 	// Strip informational phrases (position ID prefix, radar contact, altimeter setting)
-	commandTokens = stripInformational(commandTokens)
+	var altimSetting int
+	var altimOK bool
+	commandTokens, altimSetting, altimOK = stripInformational(commandTokens)
 
 	// If no tokens remain after stripping, controller just identified themselves.
 	// For VFR aircraft, treat this as an implicit "go ahead" — the pilot is
@@ -205,6 +208,13 @@ func (p *Transcriber) decodeInternal(
 	logLocalStt("validated commands: %v (conf=%.2f)", validation.ValidCommands, validation.Confidence)
 	if len(validation.Errors) > 0 {
 		logLocalStt("validation errors: %v", validation.Errors)
+	}
+
+	// Append ALT/<hundredths> synthetic command when an altimeter setting suffix
+	// was extracted. This routes to handleAltimeterSetting in the sim layer.
+	if altimOK {
+		validation.ValidCommands = append(validation.ValidCommands, fmt.Sprintf("ALT/%d", altimSetting))
+		logLocalStt("appended altimeter command ALT/%d", altimSetting)
 	}
 
 	// Compute overall confidence
@@ -1033,15 +1043,15 @@ func containsGreeting(tokens []Token) bool {
 
 // stripInformational applies all informational prefix/suffix strippers in sequence:
 // position ID prefix, radar contact prefix, and altimeter setting suffix.
-func stripInformational(tokens []Token) []Token {
+// Returns the stripped tokens plus the altimeter setting in hundredths of inHg
+// (e.g. 3002 for 30.02) and ok=true if an altimeter suffix was found.
+func stripInformational(tokens []Token) ([]Token, int, bool) {
 	tokens = stripPositionIDPrefix(tokens)
 	tokens = stripRadarContactPrefix(tokens)
 	var altimSetting int
 	var altimOK bool
 	tokens, altimSetting, altimOK = extractAltimeterSuffix(tokens)
-	_ = altimSetting // wired up by Task 9
-	_ = altimOK
-	return tokens
+	return tokens, altimSetting, altimOK
 }
 
 // stripPositionIDPrefix removes a controller position identification prefix

@@ -15,7 +15,7 @@
   "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "DAL735",
-  "command": "D160",
+  "command": "D160 ALT/2979",
   "stt_aircraft": {
     "American 48": {
       "Callsign": "AAL48",
