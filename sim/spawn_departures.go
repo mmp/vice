@@ -713,7 +713,7 @@ func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, r *rand.
 	start := ac.Position()
 	d.MinSeparation = 120 * time.Second // just in case
 	for i := range 120 {
-		simAc.Update(model, simTime, nil, nil /* lg */)
+		simAc.Update(model, 0, simTime, nil, nil /* lg */)
 		// We need 6,000' and airborne, but we'll add a bit of slop
 		if simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
 			d.MinSeparation = time.Duration(i) * time.Second
@@ -886,7 +886,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		simNav.FlightState.Altitude, simTime.Time())
 	for i := range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
 		if wp := simNav.UpdateWithWeather("", prespawnWxs, &simFP,
-			simTime.NavTime(), nil).PassedWaypoint; wp != nil {
+			0, simTime.NavTime(), nil).PassedWaypoint; wp != nil {
 			if wp.Delete() {
 				return ac, rwy.Id, nil
 			}

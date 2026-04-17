@@ -180,7 +180,7 @@ func TestExpectDirectReducesDelay(t *testing.T) {
 	// Wait for heading to take effect
 	for i := 0; i < 10; i++ {
 		wxs := fNoExpect.weather(fNoExpect.nav.FlightState.Altitude)
-		fNoExpect.nav.UpdateWithWeather(fNoExpect.callsign, wxs, &fNoExpect.fp, fNoExpect.simTime, nil)
+		fNoExpect.nav.UpdateWithWeather(fNoExpect.callsign, wxs, &fNoExpect.fp, 0, fNoExpect.simTime, nil)
 		fNoExpect.simTime = fNoExpect.simTime.Add(1e9) // 1 second
 	}
 	fNoExpect.nav.DirectFix("DETGY", av.TurnClosest, fNoExpect.simTime, 0)
@@ -191,7 +191,7 @@ func TestExpectDirectReducesDelay(t *testing.T) {
 	fExpect.nav.AssignHeading(math.MagneticHeading(360), av.TurnClosest, fExpect.simTime, 0)
 	for i := 0; i < 10; i++ {
 		wxs := fExpect.weather(fExpect.nav.FlightState.Altitude)
-		fExpect.nav.UpdateWithWeather(fExpect.callsign, wxs, &fExpect.fp, fExpect.simTime, nil)
+		fExpect.nav.UpdateWithWeather(fExpect.callsign, wxs, &fExpect.fp, 0, fExpect.simTime, nil)
 		fExpect.simTime = fExpect.simTime.Add(1e9)
 	}
 	fExpect.nav.ExpectDirect("DETGY")

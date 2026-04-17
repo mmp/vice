@@ -968,7 +968,7 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			updateResult := ac.Update(s.wxModel, s.State.SimTime, s.bravoAirspace, nil /* s.lg*/)
+			updateResult := ac.Update(s.wxModel, 0, s.State.SimTime, s.bravoAirspace, nil /* s.lg*/)
 			passedWaypoint := updateResult.PassedWaypoint
 			s.refreshSeenTraffic(ac)
 
