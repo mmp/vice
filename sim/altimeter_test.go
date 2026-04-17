@@ -86,25 +86,8 @@ func TestNearestActualAltimEmptyMap(t *testing.T) {
 	}
 }
 
-func TestInitPilotAltimDisabledIsNoop(t *testing.T) {
-	s := &Sim{
-		State: &CommonState{
-			DynamicState: DynamicState{
-				METAR: map[string]wx.METAR{"KJFK": {Altimeter: 30.05 / 0.02953}},
-			},
-			FacilityAdaptation: FacilityAdaptation{SimulatePilotAltimeter: false},
-		},
-	}
-	ac := &Aircraft{}
-	s.initPilotAltim(ac)
-	if ac.PilotAltim != 0 {
-		t.Errorf("toggle off: PilotAltim = %v, want 0", ac.PilotAltim)
-	}
-}
-
 func TestInitPilotAltimSetsCorrectForArrival(t *testing.T) {
 	s := newTestSimWithMETAR(t, map[string]float32{"KJFK": 30.05})
-	s.State.FacilityAdaptation.SimulatePilotAltimeter = true
 	ac := &Aircraft{TypeOfFlight: av.FlightTypeArrival}
 	ac.Nav.FlightState.Position = math.Point2LL{-73.78, 40.64} // near KJFK
 	s.initPilotAltim(ac)

@@ -332,11 +332,8 @@ func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt
 // handleAltimeterSetting processes an "altimeter X.XX" command issued by a
 // controller. Mutates the pilot's altimeter setting and returns a readback
 // intent so the acknowledgment joins any other readbacks from the same
-// transmission. Returns nil when the feature toggle is off.
+// transmission.
 func (s *Sim) handleAltimeterSetting(ac *Aircraft, settingHundredths int) av.CommandIntent {
-	if !s.State.FacilityAdaptation.SimulatePilotAltimeter {
-		return nil
-	}
 	ac.PilotAltim = float32(settingHundredths) / 100
 	ac.PilotAltimSetAt = s.State.SimTime
 	return av.AltimeterReadbackIntent{SettingHundredths: settingHundredths}

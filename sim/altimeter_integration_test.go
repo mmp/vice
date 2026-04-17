@@ -59,7 +59,6 @@ func TestAltimeterBiasShiftsScopedAltitude(t *testing.T) {
 		"KJFK": 30.05,
 		"KABE": 29.95, // ~70 NM west, lower altimeter
 	})
-	s.State.FacilityAdaptation.SimulatePilotAltimeter = true
 	// Initialize runtime-only fields that GenerateContactTransmission needs.
 	s.Rand = rand.Make()
 	s.eventStream = NewEventStream(nil)
