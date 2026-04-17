@@ -55,6 +55,7 @@ const (
 	PendingTransmissionRequestVisual                                           // Spontaneous "field in sight, requesting visual"
 	PendingTransmissionRequestVectors                                          // Pilot requesting vectors (overshot localizer)
 	PendingTransmissionRequestAltitude                                         // Pilot requesting altitude after being vectored off STAR
+	PendingTransmissionAltimeterReadback                                       // After controller issues "altimeter X.XX"
 )
 
 // FutureFrequencyChange represents a pilot switching to a new frequency.
@@ -76,6 +77,7 @@ type PendingContact struct {
 	HasQueuedEmergency     bool                    // For departures: trigger emergency after contact
 	PrebuiltTransmission   *av.RadioTransmission   // For emergency transmissions: pre-built message
 	FirstInFacility        bool                    // For arrivals: first contact in this TRACON facility
+	AltimeterHundredths    int                     // For PendingTransmissionAltimeterReadback: e.g., 3002 for 30.02
 }
 
 // hasPendingCheckIn reports whether the aircraft has a pending arrival or
@@ -419,6 +421,15 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 			ac.EmergencyState.CurrentStage = 0
 			s.runEmergencyStage(ac)
 		}
+
+	case PendingTransmissionAltimeterReadback:
+		setting := pc.AltimeterHundredths
+		ac.PilotAltim = float32(setting) / 100
+		ac.PilotAltimSetAt = s.State.SimTime
+		whole := setting / 100
+		hundredths := setting % 100
+		rt = av.MakeContactTransmission("[{num} {num}|altimeter {num} {num}|roger {num} {num}]",
+			whole, hundredths)
 
 	case PendingTransmissionTrafficInSight:
 		rt = av.MakeContactTransmission("[we've got the traffic|we have the traffic in sight|traffic in sight now]")
