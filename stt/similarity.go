@@ -474,6 +474,8 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"maintained":   {"maintain"},          // STT echo after "maintain" should not re-match
 	"hitting":      {"heading"},           // garbled word should not match heading command
 	"information":  {"uniform"},           // "information X" is the ATIS keyword, not NATO letter U
+	"say":          {"stop"},              // "say altitude" vs "stop altitude squawk"
+	"stop":         {"say"},               // "stop altitude squawk" vs "say altitude"
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold
