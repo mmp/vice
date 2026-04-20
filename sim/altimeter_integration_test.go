@@ -65,8 +65,7 @@ func TestAltimeterBiasShiftsScopedAltitude(t *testing.T) {
 
 	ac := newTestAircraftAtAltitude(t, 5000)
 	ac.Nav.FlightState.Position = math.Point2LL{-73.78, 40.64} // KJFK
-	ac.PilotAltim = 30.05
-	ac.PilotAltimSetAt = s.State.SimTime
+	ac.setPilotAltim(s.State.SimTime, 30.05)
 	if s.Aircraft == nil {
 		s.Aircraft = make(map[av.ADSBCallsign]*Aircraft)
 	}

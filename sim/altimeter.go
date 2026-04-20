@@ -17,39 +17,30 @@ import (
 //   - Arrival / IFR overflight / VFR with flight-following: nearest METAR at spawn
 //   - VFR overflight without flight-following: 70% nearest, 30% random within 100 NM
 func (s *Sim) initPilotAltim(ac *Aircraft) {
+	ac.setPilotAltim(s.State.SimTime, s.initialPilotAltimValue(ac))
+}
+
+func (s *Sim) initialPilotAltimValue(ac *Aircraft) float32 {
 	pos := ac.Nav.FlightState.Position
+
+	if ac.TypeOfFlight == av.FlightTypeDeparture {
+		if dep := ac.FlightPlan.DepartureAirport; dep != "" {
+			if m, ok := s.State.METAR[dep]; ok {
+				return m.Altimeter_inHg()
+			}
+		}
+		return s.nearestActualAltim(pos)
+	}
 
 	wrongEligible := ac.TypeOfFlight == av.FlightTypeOverflight &&
 		ac.FlightPlan.Rules == av.FlightRulesVFR &&
 		!ac.RequestedFlightFollowing
-
-	if ac.TypeOfFlight == av.FlightTypeDeparture {
-		// Departure: use the departure airport's METAR if available.
-		if dep := ac.FlightPlan.DepartureAirport; dep != "" {
-			if m, ok := s.State.METAR[dep]; ok {
-				ac.PilotAltim = m.Altimeter_inHg()
-				ac.PilotAltimSetAt = s.State.SimTime
-				return
-			}
-		}
-		// Fallback to nearest METAR.
-		ac.PilotAltim = s.nearestActualAltim(pos)
-		ac.PilotAltimSetAt = s.State.SimTime
-		return
-	}
-
 	if wrongEligible && s.Rand.Float32() < 0.30 {
-		// 30% chance: pick a random METAR within 100 NM.
 		if alt, ok := s.randomMETARWithin(pos, 100); ok {
-			ac.PilotAltim = alt
-			ac.PilotAltimSetAt = s.State.SimTime
-			return
+			return alt
 		}
 	}
-
-	// Default: nearest METAR.
-	ac.PilotAltim = s.nearestActualAltim(pos)
-	ac.PilotAltimSetAt = s.State.SimTime
+	return s.nearestActualAltim(pos)
 }
 
 // randomMETARWithin returns the altimeter from a uniformly random METAR
@@ -111,8 +102,7 @@ func (s *Sim) tunePilotAltimToATISAirport(ac *Aircraft) {
 			continue
 		}
 		if m, ok := s.State.METAR[icao]; ok {
-			ac.PilotAltim = m.Altimeter_inHg()
-			ac.PilotAltimSetAt = s.State.SimTime
+			ac.setPilotAltim(s.State.SimTime, m.Altimeter_inHg())
 			return
 		}
 	}

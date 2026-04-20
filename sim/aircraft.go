@@ -152,6 +152,11 @@ type Aircraft struct {
 	TouchAndGosRemaining int // >0 means pattern aircraft; decremented each lap
 }
 
+func (ac *Aircraft) setPilotAltim(simTime Time, inHg float32) {
+	ac.PilotAltim = inHg
+	ac.PilotAltimSetAt = simTime
+}
+
 func (ac *Aircraft) GetRadarTrack(now Time) av.RadarTrack {
 	return av.RadarTrack{
 		ADSBCallsign:        ac.ADSBCallsign,
