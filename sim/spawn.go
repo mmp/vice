@@ -394,7 +394,9 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 	}
 
 	s.Aircraft[ac.ADSBCallsign] = &ac
-	s.initPilotAltim(&ac)
+	if s.SimulateIncorrectAltimeters {
+		s.initPilotAltim(&ac)
+	}
 
 	ac.Nav.Prespawn = s.prespawn && ac.FlightPlan.Rules == av.FlightRulesVFR
 

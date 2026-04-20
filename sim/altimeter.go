@@ -112,7 +112,7 @@ func (s *Sim) tunePilotAltimToATISAirport(ac *Aircraft) {
 // gating as the per-tick update loop (airborne, below FL180). Returns 0
 // when the bias should not apply.
 func (s *Sim) altimBiasFor(ac *Aircraft) float32 {
-	if !ac.Nav.IsAirborne() || ac.Altitude() >= 18000 {
+	if !s.SimulateIncorrectAltimeters || !ac.Nav.IsAirborne() || ac.Altitude() >= 18000 {
 		return 0
 	}
 	actual := s.nearestActualAltim(ac.Position())

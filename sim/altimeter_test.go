@@ -50,7 +50,10 @@ func newTestSimWithMETAR(t *testing.T, settings map[string]float32) *Sim {
 			delete(av.DB.Airports, icao)
 		}
 	})
-	return &Sim{State: &CommonState{DynamicState: DynamicState{METAR: metar}}}
+	return &Sim{
+		State:                       &CommonState{DynamicState: DynamicState{METAR: metar}},
+		SimulateIncorrectAltimeters: true,
+	}
 }
 
 func TestAltimBiasFeet(t *testing.T) {

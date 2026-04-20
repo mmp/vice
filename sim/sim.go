@@ -78,6 +78,7 @@ type Sim struct {
 	FDAMSystemInhibited         bool
 	DisabledFDAMRegions         map[string]struct{} // keyed by region ID
 	EnforceUniqueCallsignSuffix bool
+	SimulateIncorrectAltimeters bool
 
 	PendingContacts        map[TCP][]PendingContact
 	FutureFrequencyChanges []FutureFrequencyChange
@@ -161,6 +162,7 @@ type NewSimConfiguration struct {
 	DisableTFRRestrictionAreas bool
 
 	EnforceUniqueCallsignSuffix bool
+	SimulateIncorrectAltimeters bool
 
 	ReportingPoints   []av.ReportingPoint
 	MagneticVariation float32
@@ -218,6 +220,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		ReportingPoints: config.ReportingPoints,
 
 		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
+		SimulateIncorrectAltimeters: config.SimulateIncorrectAltimeters,
 
 		PilotErrorInterval: time.Duration(config.PilotErrorInterval * float32(time.Minute)),
 		LastPilotError:     NewSimTime(config.StartTime),
