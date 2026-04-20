@@ -1327,7 +1327,17 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	imgui.SliderFloatV("##errorInterval", &c.PilotErrorInterval, 0, 30,
 		util.Select(c.PilotErrorInterval == 0, "never", "%.1f min"), imgui.SliderFlagsNone)
 
-	imgui.Checkbox("Simulate incorrect altimeters", &c.NewSimRequest.SimulateIncorrectAltimeters)
+	imgui.Text("Incorrect altimeter chance:")
+	imgui.SameLine()
+	imgui.SetNextItemWidth(200)
+	imgui.SliderFloatV("##altimChance", &c.NewSimRequest.IncorrectAltimeterChance, 0, 100,
+		util.Select(c.NewSimRequest.IncorrectAltimeterChance == 0, "off", "%.0f%%"), imgui.SliderFlagsNone)
+
+	imgui.Text("Faulty transponder chance:")
+	imgui.SameLine()
+	imgui.SetNextItemWidth(200)
+	imgui.SliderFloatV("##xpndrChance", &c.NewSimRequest.FaultyTransponderChance, 0, 100,
+		util.Select(c.NewSimRequest.FaultyTransponderChance == 0, "off", "%.0f%%"), imgui.SliderFlagsNone)
 	imgui.Spacing()
 
 	// WEATHER & TIME section

@@ -10,12 +10,11 @@ import (
 )
 
 // initPilotAltim sets ac.PilotAltim and ac.PilotAltimSetAt according to the
-// hybrid spawn rule.
+// spawn rule.
 //
-// Categories:
-//   - Departure: local field altimeter (or nearest METAR if airport has no METAR)
-//   - Arrival / IFR overflight / VFR with flight-following: nearest METAR at spawn
-//   - VFR overflight without flight-following: 70% nearest, 30% random within 100 NM
+//   - Departure: always local field altimeter (pilot just got the tower ATIS).
+//   - All other aircraft: roll vs. IncorrectAltimeterChance — on a hit, use a
+//     different nearby station's altimeter; otherwise use the correct local one.
 func (s *Sim) initPilotAltim(ac *Aircraft) {
 	ac.setPilotAltim(s.State.SimTime, s.initialPilotAltimValue(ac))
 }
@@ -32,10 +31,7 @@ func (s *Sim) initialPilotAltimValue(ac *Aircraft) float32 {
 		return s.nearestActualAltim(pos)
 	}
 
-	wrongEligible := ac.TypeOfFlight == av.FlightTypeOverflight &&
-		ac.FlightPlan.Rules == av.FlightRulesVFR &&
-		!ac.RequestedFlightFollowing
-	if wrongEligible && s.Rand.Float32() < 0.30 {
+	if s.IncorrectAltimeterChance > 0 && s.Rand.Float32()*100 < s.IncorrectAltimeterChance {
 		if alt, ok := s.randomMETARWithin(pos, 100); ok {
 			return alt
 		}
@@ -112,7 +108,7 @@ func (s *Sim) tunePilotAltimToATISAirport(ac *Aircraft) {
 // gating as the per-tick update loop (airborne, below FL180). Returns 0
 // when the bias should not apply.
 func (s *Sim) altimBiasFor(ac *Aircraft) float32 {
-	if !s.SimulateIncorrectAltimeters || !ac.Nav.IsAirborne() || ac.Altitude() >= 18000 {
+	if s.IncorrectAltimeterChance == 0 || !ac.Nav.IsAirborne() || ac.Altitude() >= 18000 {
 		return 0
 	}
 	actual := s.nearestActualAltim(ac.Position())

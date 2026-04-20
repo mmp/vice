@@ -9,6 +9,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/wx"
 )
 
@@ -51,8 +52,9 @@ func newTestSimWithMETAR(t *testing.T, settings map[string]float32) *Sim {
 		}
 	})
 	return &Sim{
-		State:                       &CommonState{DynamicState: DynamicState{METAR: metar}},
-		SimulateIncorrectAltimeters: true,
+		State:                    &CommonState{DynamicState: DynamicState{METAR: metar}},
+		IncorrectAltimeterChance: 100,
+		Rand:                     rand.Make(),
 	}
 }
 

@@ -149,6 +149,11 @@ type Aircraft struct {
 	PilotAltim      float32
 	PilotAltimSetAt Time
 
+	// TransponderAltOffset is a persistent Mode C encoder error assigned at
+	// spawn when the faulty-transponder roll hits. Added to the reported
+	// altitude on the scope; zero means the encoder is working correctly.
+	TransponderAltOffset float32
+
 	TouchAndGosRemaining int // >0 means pattern aircraft; decremented each lap
 }
 
@@ -164,7 +169,7 @@ func (ac *Aircraft) GetRadarTrack(now Time) av.RadarTrack {
 		Mode:                ac.Mode,
 		Ident:               ac.Mode != av.TransponderModeStandby && now.After(ac.IdentStartTime) && now.Before(ac.IdentEndTime),
 		TrueAltitude:        ac.Altitude(),
-		TransponderAltitude: util.Select(ac.Mode == av.TransponderModeAltitude, ac.Altitude(), 0),
+		TransponderAltitude: util.Select(ac.Mode == av.TransponderModeAltitude, ac.Altitude()+ac.TransponderAltOffset, 0),
 		Location:            ac.Position(),
 		Heading:             ac.Heading(),
 		Groundspeed:         ac.GS(),
