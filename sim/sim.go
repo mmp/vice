@@ -1244,9 +1244,16 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 	if ac, ok := s.Aircraft[callsign]; !ok {
 		return AircraftDisplayState{}, ErrNoMatchingFlight
 	} else {
+		summary := ac.NavSummary(s.wxModel, s.State.SimTime, s.lg)
+		if ac.PilotAltim > 0 {
+			bias := s.altimBiasFor(ac)
+			indicated := ac.Altitude() - bias
+			summary += fmt.Sprintf("\nPilot altimeter %.2f inHg, indicated altitude %.0f",
+				ac.PilotAltim, indicated)
+		}
 		return AircraftDisplayState{
 			Spew:        godump.DumpStr(ac),
-			FlightState: ac.NavSummary(s.wxModel, s.State.SimTime, s.lg),
+			FlightState: summary,
 		}, nil
 	}
 }
