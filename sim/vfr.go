@@ -276,6 +276,36 @@ func (s *Sim) ChangeTransponderMode(tcw TCW, callsign av.ADSBCallsign, mode av.T
 		})
 }
 
+// StopAltitudeSquawk handles the "stop altitude squawk" command. Aircraft
+// switches from Mode C to Mode A; readback uses the specific phraseology
+// rather than the generic "squawk on".
+func (s *Sim) StopAltitudeSquawk(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			s.enqueueTransponderChange(ac.ADSBCallsign, ac.Squawk, av.TransponderModeOn)
+			return av.StopAltitudeSquawkIntent{}
+		})
+}
+
+// ReportReaching handles the "report reaching {altitude}" command. The
+// pilot acknowledges immediately; the actual "reaching" call is fired
+// later by the per-tick nav update when the aircraft levels off at the
+// target. Only one pending target is tracked; a new request replaces it,
+// as does any new altitude assignment.
+func (s *Sim) ReportReaching(tcw TCW, callsign av.ADSBCallsign, altitude float32) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			ac.Nav.ReportReachingAltitude = &altitude
+			return av.ReportReachingIntent{Altitude: altitude}
+		})
+}
+
 func (s *Sim) Ident(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

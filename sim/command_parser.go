@@ -837,6 +837,14 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.ChangeTransponderMode(tcw, callsign, av.TransponderModeAltitude)
 		} else if command == "SQON" {
 			return s.ChangeTransponderMode(tcw, callsign, av.TransponderModeOn)
+		} else if command == "SQSTOP" {
+			return s.StopAltitudeSquawk(tcw, callsign)
+		} else if strings.HasPrefix(command, "RR") {
+			alt, err := strconv.Atoi(command[2:])
+			if err != nil {
+				return nil, err
+			}
+			return s.ReportReaching(tcw, callsign, float32(alt))
 		} else if len(command) == 6 && command[:2] == "SQ" {
 			sq, err := av.ParseSquawk(command[2:])
 			if err != nil {

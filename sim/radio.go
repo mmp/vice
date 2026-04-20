@@ -55,6 +55,7 @@ const (
 	PendingTransmissionRequestVisual                                           // Spontaneous "field in sight, requesting visual"
 	PendingTransmissionRequestVectors                                          // Pilot requesting vectors (overshot localizer)
 	PendingTransmissionRequestAltitude                                         // Pilot requesting altitude after being vectored off STAR
+	PendingTransmissionReachingAltitude                                        // Pilot reporting reaching a previously requested altitude
 )
 
 // FutureFrequencyChange represents a pilot switching to a new frequency.
@@ -329,6 +330,19 @@ func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt
 	})
 }
 
+// enqueueReachingAltitudeTransmission enqueues the unsolicited "reaching
+// NNNN" pilot call fired when an aircraft levels off at a previously
+// requested "report reaching" altitude. The message is built at trigger
+// time since the exact altitude is captured when we detect level-off.
+func (s *Sim) enqueueReachingAltitudeTransmission(callsign av.ADSBCallsign, tcp TCP, rt *av.RadioTransmission) {
+	s.addPendingContact(PendingContact{
+		ADSBCallsign:         callsign,
+		TCP:                  tcp,
+		Type:                 PendingTransmissionReachingAltitude,
+		PrebuiltTransmission: rt,
+	})
+}
+
 // handleAltimeterSetting processes an "altimeter X.XX" command issued by a
 // controller. Mutates the pilot's altimeter setting and returns a readback
 // intent so the acknowledgment joins any other readbacks from the same
@@ -491,6 +505,13 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		}
 		rt = pc.PrebuiltTransmission
 		rt.Type = av.RadioTransmissionUnexpected // Mark as urgent for display
+
+	case PendingTransmissionReachingAltitude:
+		if pc.PrebuiltTransmission == nil {
+			return "", ""
+		}
+		rt = pc.PrebuiltTransmission
+		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestVisual:
 		// If the aircraft was cleared for an approach between enqueue and

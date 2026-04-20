@@ -859,6 +859,38 @@ func (t TransponderIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	}
 }
 
+// StopAltitudeSquawkIntent represents the pilot acknowledging a "stop
+// altitude squawk" command (controller has observed the Mode C readout
+// disagrees with the pilot-reported altitude). The aircraft switches from
+// Mode C to Mode A.
+type StopAltitudeSquawkIntent struct{}
+
+func (StopAltitudeSquawkIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	rt.Add("[stopping altitude squawk|stop altitude squawk]")
+}
+
+// ReportReachingIntent represents the pilot acknowledging a "report
+// reaching (altitude)" instruction. The actual reaching-the-altitude call
+// is issued later when the aircraft levels off.
+type ReportReachingIntent struct {
+	Altitude float32
+}
+
+func (r ReportReachingIntent) Render(rt *RadioTransmission, rnd *rand.Rand) {
+	rt.Add("[wilco|will do|will report reaching {alt}]", r.Altitude)
+}
+
+// ReachingAltitudeIntent is the unsolicited pilot transmission fired when
+// the aircraft levels off at a previously requested "report reaching"
+// altitude.
+type ReachingAltitudeIntent struct {
+	Altitude float32
+}
+
+func (r ReachingAltitudeIntent) Render(rt *RadioTransmission, rnd *rand.Rand) {
+	rt.Add("[reaching|leveling off at|level] {alt}", r.Altitude)
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Special Intents
 

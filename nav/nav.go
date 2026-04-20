@@ -67,6 +67,12 @@ type Nav struct {
 
 	PendingWaypointActionEvents []av.WaypointActionEvent
 
+	// ReportReachingAltitude stores the most-recent "report reaching NNNN"
+	// target. Cleared when a new altitude is assigned, and cleared when the
+	// aircraft levels off within tolerance (the leveling-off triggers a
+	// reaching-altitude transmission).
+	ReportReachingAltitude *float32
+
 	Rand *rand.Rand
 }
 

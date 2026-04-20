@@ -1469,6 +1469,33 @@ func registerAllCommands() {
 		WithPriority(12),
 	)
 
+	// "Stop altitude squawk" — controller has observed that Mode C altitude
+	// disagrees with pilot-reported altitude. Aircraft switches to Mode A.
+	// The "altitude differs NNN feet" tail is absorbed as informational.
+	registerSTTCommand(
+		"stop altitude squawk [altitude differs {num:1-9999} [hundred|thousand] [feet|foot]]",
+		func(_ *int) string { return "SQSTOP" },
+		WithName("stop_altitude_squawk_with_delta"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"stop altitude squawk",
+		func() string { return "SQSTOP" },
+		WithName("stop_altitude_squawk"),
+		WithPriority(12),
+	)
+
+	// "Report reaching {altitude}" — pilot acknowledges now, transmits the
+	// actual "reaching" call later when the aircraft levels off. Both the
+	// "report" lead-in and a "reaching|leveling off at|level at" body are
+	// required so we don't fuzzy-match spurious "approach {alt}" fragments.
+	registerSTTCommand(
+		"report reaching|leveling|level {altitude}",
+		func(alt int) string { return fmt.Sprintf("RR%d", alt) },
+		WithName("report_reaching"),
+		WithPriority(10),
+	)
+
 	registerSTTCommand(
 		"squawk vfr|victor",
 		func() string { return "" }, // Ignored - VFR squawk is informational

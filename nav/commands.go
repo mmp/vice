@@ -32,6 +32,9 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool, simTime Time, delay
 	if !ok {
 		return intent
 	}
+	// A new controller-issued altitude supersedes any pending "report
+	// reaching" target.
+	nav.ReportReachingAltitude = nil
 	nav.enqueueAssignedAltitude(alt, simTime, delayReduction)
 	return intent
 }
