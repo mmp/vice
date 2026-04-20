@@ -1003,7 +1003,7 @@ func (s *Sim) updateState() {
 				target := *ac.Nav.ReportReachingAltitude
 				if ac.Nav.FlightState.AltitudeRate == 0 && math.Abs(ac.Altitude()-target) < 100 {
 					ac.Nav.ReportReachingAltitude = nil
-					rt := av.MakeContactTransmission("")
+					rt := av.MakeReadbackTransmission("")
 					av.ReachingAltitudeIntent{Altitude: target}.Render(rt, s.Rand)
 					s.enqueueReachingAltitudeTransmission(callsign, TCP(ac.ControllerFrequency), rt)
 				}
