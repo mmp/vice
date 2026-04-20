@@ -149,7 +149,7 @@ func MakeNewSimRequest() NewSimRequest {
 		NewSimName:               rand.Make().AdjectiveNoun(),
 		PilotErrorInterval:       0,
 		IncorrectAltimeterChance: 30,
-		FaultyTransponderChance:  0,
+		FaultyTransponderChance:  5,
 	}
 }
 
