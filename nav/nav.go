@@ -68,6 +68,12 @@ type Nav struct {
 	PendingWaypointActionEvents []av.WaypointActionEvent
 
 	Rand *rand.Rand
+
+	// PendingConditionalCommand stores a single deferred LV/RC action
+	// (e.g., "leaving 3,000, fly heading 010"). Cleared when the trigger
+	// fires or when a new LV/RC command is installed. Not cleared on
+	// new altitude/heading/speed assignments or on handoff.
+	PendingConditionalCommand *PendingConditionalCommand
 }
 
 type UpdateResult struct {

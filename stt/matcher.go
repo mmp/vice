@@ -37,12 +37,23 @@ func (m *literalMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords [
 		return matchResult{}
 	}
 
-	// Skip filler words
+	// Skip filler words, but don't skip a token that exactly matches one of this
+	// matcher's target keywords. This allows filler-listed words like "leaving" to
+	// be recognized when used as actual command keywords (e.g., in "leaving|passing").
 	for pos < len(tokens) {
 		text := strings.ToLower(tokens[pos].Text)
 		if IsFillerWord(text) {
-			pos++
-			continue
+			isOwnKeyword := false
+			for _, kw := range m.keywords {
+				if text == kw {
+					isOwnKeyword = true
+					break
+				}
+			}
+			if !isOwnKeyword {
+				pos++
+				continue
+			}
 		}
 		break
 	}

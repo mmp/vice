@@ -4,12 +4,15 @@
 package sim
 
 import (
+	"errors"
+	"reflect"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/rand"
 )
 
 func TestParseHold(t *testing.T) {
@@ -348,5 +351,375 @@ func TestRunOneControlCommandAtFixClearedStraightInApproach(t *testing.T) {
 	}
 	if s.Aircraft[callsign].Nav.Approach.AtFixClearedRoute == nil {
 		t.Fatal("AtFixClearedRoute was not populated")
+	}
+}
+
+func TestTriggerReachable(t *testing.T) {
+	cases := []struct {
+		name     string
+		kind     nav.ConditionalKind
+		trigger  float32
+		current  float32
+		assigned *float32
+		want     bool
+	}{
+		// LV: within 500ft slack even if direction is wrong
+		{"LV aircraft at 3050 climbing past", nav.ConditionalLeaving, 3000, 3050, ptr[float32](5000), true},
+		{"LV aircraft far past", nav.ConditionalLeaving, 3000, 5000, ptr[float32](7000), false},
+		{"LV trigger in path", nav.ConditionalLeaving, 3000, 1000, ptr[float32](5000), true},
+		{"LV no target, far from trigger", nav.ConditionalLeaving, 3000, 8000, nil, false},
+		// RC: trigger must be between current and assigned target
+		{"RC target is trigger", nav.ConditionalReaching, 10000, 5000, ptr[float32](10000), true},
+		{"RC trigger above target", nav.ConditionalReaching, 12000, 5000, ptr[float32](10000), false},
+		{"RC no target but close", nav.ConditionalReaching, 10000, 9900, nil, true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			ac := &Aircraft{}
+			ac.Nav.FlightState.Altitude = tc.current
+			ac.Nav.Altitude.Assigned = tc.assigned
+			got := triggerReachable(ac, tc.kind, tc.trigger)
+			if got != tc.want {
+				t.Errorf("want %v got %v", tc.want, got)
+			}
+		})
+	}
+}
+
+func TestParseConditionalAltitude(t *testing.T) {
+	cases := []struct {
+		in      string
+		want    float32
+		wantErr bool
+	}{
+		{"30", 3000, false},       // hundreds-of-feet
+		{"130", 13000, false},
+		{"100", 10000, false},
+		{"1000", 1000, false},     // >600 && %100==0 → already feet
+		{"13000", 13000, false},   // ditto
+		{"", 0, true},
+		{"abc", 0, true},
+	}
+	for _, tc := range cases {
+		got, err := parseConditionalAltitude(tc.in)
+		if (err != nil) != tc.wantErr {
+			t.Errorf("parseConditionalAltitude(%q) err=%v wantErr=%v", tc.in, err, tc.wantErr)
+			continue
+		}
+		if !tc.wantErr && got != tc.want {
+			t.Errorf("parseConditionalAltitude(%q) = %v, want %v", tc.in, got, tc.want)
+		}
+	}
+}
+
+func setupTestSimWithAircraftAt(t *testing.T, altitude, assigned float32) (*Sim, av.ADSBCallsign, TCW) {
+	t.Helper()
+	lg := log.New(true, "error", t.TempDir())
+	callsign := av.ADSBCallsign("TEST123")
+	tcw := TCW("TCW1")
+	s := &Sim{
+		State: &CommonState{
+			DynamicState: DynamicState{
+				CurrentConsolidation: map[TCW]*TCPConsolidation{
+					tcw: {PrimaryTCP: "1A"},
+				},
+			},
+		},
+		Aircraft: map[av.ADSBCallsign]*Aircraft{
+			callsign: {
+				ADSBCallsign:        callsign,
+				ControllerFrequency: "1A",
+				Nav: nav.Nav{
+					FlightState: nav.FlightState{
+						Altitude: altitude,
+					},
+					Altitude: nav.NavAltitude{
+						Assigned: ptr[float32](assigned),
+					},
+				},
+			},
+		},
+		PendingContacts: map[TCP][]PendingContact{},
+		PrivilegedTCWs:  map[TCW]bool{tcw: true},
+		lg:              lg,
+	}
+	return s, callsign, tcw
+}
+
+func TestAssignConditionalInstallsSlot(t *testing.T) {
+	s, callsign, tcw := setupTestSimWithAircraftAt(t, 2000, 7000)
+	action := nav.ConditionalHeading{Heading: 10, Turn: av.TurnClosest}
+	intent, err := s.AssignConditional(tcw, callsign, nav.ConditionalLeaving, 3000, action)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if intent == nil {
+		t.Fatalf("expected non-nil intent")
+	}
+	if _, ok := intent.(av.ConditionalCommandIntent); !ok {
+		t.Fatalf("expected ConditionalCommandIntent, got %T", intent)
+	}
+	pc := s.Aircraft[callsign].Nav.PendingConditionalCommand
+	if pc == nil {
+		t.Fatalf("expected PendingConditionalCommand installed")
+	}
+	if pc.Altitude != 3000 {
+		t.Fatalf("wrong altitude: %v", pc.Altitude)
+	}
+	if pc.Kind != nav.ConditionalLeaving {
+		t.Fatalf("wrong kind: %v", pc.Kind)
+	}
+}
+
+func TestAssignConditionalRejectsUnreachable(t *testing.T) {
+	// Aircraft at 5000 level (assigned also 5000); trigger 3000 -> unreachable.
+	s, callsign, tcw := setupTestSimWithAircraftAt(t, 5000, 5000)
+	action := nav.ConditionalHeading{Heading: 10, Turn: av.TurnClosest}
+	intent, err := s.AssignConditional(tcw, callsign, nav.ConditionalLeaving, 3000, action)
+	if err != nil {
+		t.Fatalf("unexpected dispatch error: %v", err)
+	}
+	if _, ok := intent.(av.UnableIntent); !ok {
+		t.Fatalf("expected UnableIntent for unreachable trigger, got %T", intent)
+	}
+	if s.Aircraft[callsign].Nav.PendingConditionalCommand != nil {
+		t.Fatalf("expected no slot installed after unable")
+	}
+}
+
+func TestAssignConditionalSupersedes(t *testing.T) {
+	s, callsign, tcw := setupTestSimWithAircraftAt(t, 2000, 7000)
+	first := nav.ConditionalHeading{Heading: 10, Turn: av.TurnClosest}
+	second := nav.ConditionalDirectFix{Fix: "AAC", Turn: av.TurnClosest}
+	if _, err := s.AssignConditional(tcw, callsign, nav.ConditionalLeaving, 3000, first); err != nil {
+		t.Fatalf("first assign: %v", err)
+	}
+	if _, err := s.AssignConditional(tcw, callsign, nav.ConditionalReaching, 6000, second); err != nil {
+		t.Fatalf("second assign: %v", err)
+	}
+	pc := s.Aircraft[callsign].Nav.PendingConditionalCommand
+	if pc == nil {
+		t.Fatalf("expected superseded slot, got nil")
+	}
+	if pc.Kind == nav.ConditionalLeaving {
+		t.Fatalf("old Leaving kind not replaced")
+	}
+	if pc.Kind != nav.ConditionalReaching || pc.Altitude != 6000 {
+		t.Fatalf("expected superseded slot: reaching 6000, got %+v", pc)
+	}
+}
+
+func TestParseConditionalAction(t *testing.T) {
+	cases := []struct {
+		in        string
+		wantType  string // type name of returned ConditionalAction
+		wantProps map[string]any
+		wantErr   bool
+	}{
+		{"H010", "ConditionalHeading", map[string]any{"Heading": 10, "Turn": av.TurnClosest}, false},
+		{"L100", "ConditionalHeading", map[string]any{"Heading": 100, "Turn": av.TurnLeft}, false},
+		{"R100", "ConditionalHeading", map[string]any{"Heading": 100, "Turn": av.TurnRight}, false},
+		{"L20D", "ConditionalHeading", map[string]any{"ByDegrees": 20, "Turn": av.TurnLeft}, false},
+		{"R30D", "ConditionalHeading", map[string]any{"ByDegrees": 30, "Turn": av.TurnRight}, false},
+		{"DAAC", "ConditionalDirectFix", map[string]any{"Fix": "AAC", "Turn": av.TurnClosest}, false},
+		{"LDAAC", "ConditionalDirectFix", map[string]any{"Fix": "AAC", "Turn": av.TurnLeft}, false},
+		{"RDAAC", "ConditionalDirectFix", map[string]any{"Fix": "AAC", "Turn": av.TurnRight}, false},
+		{"S210", "ConditionalSpeed", nil, false},
+		{"M78", "ConditionalMach", map[string]any{"Mach": float32(0.78)}, false},
+
+		// Rejections: altitude-changing inners, unknowns, malformed
+		{"C50", "", nil, true},
+		{"CVS", "", nil, true},
+		{"DVS", "", nil, true},
+		{"X010", "", nil, true},
+		{"", "", nil, true},
+		{"H", "", nil, true},
+		{"HXYZ", "", nil, true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.in, func(t *testing.T) {
+			got, err := parseConditionalAction(tc.in)
+			if (err != nil) != tc.wantErr {
+				t.Fatalf("parseConditionalAction(%q) err=%v wantErr=%v", tc.in, err, tc.wantErr)
+			}
+			if tc.wantErr {
+				return
+			}
+			typeName := reflect.TypeOf(got).Name()
+			if typeName != tc.wantType {
+				t.Fatalf("parseConditionalAction(%q) type = %s, want %s", tc.in, typeName, tc.wantType)
+			}
+			v := reflect.ValueOf(got)
+			for k, want := range tc.wantProps {
+				field := v.FieldByName(k)
+				if !field.IsValid() {
+					t.Errorf("no field %s on %s", k, typeName)
+					continue
+				}
+				if !reflect.DeepEqual(field.Interface(), want) {
+					t.Errorf("%s.%s = %v, want %v", typeName, k, field.Interface(), want)
+				}
+			}
+		})
+	}
+}
+
+func TestRunOneControlCommandLV(t *testing.T) {
+	s, callsign, tcw := setupTestSimWithAircraftAt(t, 2000, 7000)
+	intent, err := s.runOneControlCommand(tcw, callsign, "LV30/H010", 0)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if _, ok := intent.(av.ConditionalCommandIntent); !ok {
+		t.Fatalf("expected ConditionalCommandIntent, got %T", intent)
+	}
+	ac := s.Aircraft[callsign]
+	if ac.Nav.PendingConditionalCommand == nil {
+		t.Fatalf("slot not installed")
+	}
+	if ac.Nav.PendingConditionalCommand.Altitude != 3000 {
+		t.Fatalf("wrong altitude %v", ac.Nav.PendingConditionalCommand.Altitude)
+	}
+}
+
+func TestRunOneControlCommandLVRejectsMalformed(t *testing.T) {
+	cases := []struct {
+		cmd        string
+		wantSyntax bool
+	}{
+		{"LV", true},         // bare command, too short
+		{"LV30H010", true},   // missing slash
+		{"LV/H010", true},    // empty altitude
+		{"LV30/", true},      // empty inner
+		{"LVABC/H010", false}, // non-numeric altitude (strconv error)
+		{"LV30/X010", true},  // unknown inner command
+		{"LV30/C50", true},   // altitude-changing inner rejected by parseConditionalAction
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			s, callsign, tcw := setupTestSimWithAircraftAt(t, 2000, 7000)
+			_, err := s.runOneControlCommand(tcw, callsign, tc.cmd, 0)
+			if err == nil {
+				t.Fatalf("expected error for %q, got nil", tc.cmd)
+			}
+			if tc.wantSyntax && !errors.Is(err, ErrInvalidCommandSyntax) {
+				t.Fatalf("expected ErrInvalidCommandSyntax for %q, got %v", tc.cmd, err)
+			}
+		})
+	}
+}
+
+func TestRunOneControlCommandRC(t *testing.T) {
+	s, callsign, tcw := setupTestSimWithAircraftAt(t, 5000, 10000)
+	intent, err := s.runOneControlCommand(tcw, callsign, "RC100/DAAC", 0)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if _, ok := intent.(av.ConditionalCommandIntent); !ok {
+		t.Fatalf("expected ConditionalCommandIntent, got %T", intent)
+	}
+	ac := s.Aircraft[callsign]
+	if ac.Nav.PendingConditionalCommand == nil {
+		t.Fatalf("slot not installed")
+	}
+	if ac.Nav.PendingConditionalCommand.Altitude != 10000 {
+		t.Fatalf("wrong altitude %v", ac.Nav.PendingConditionalCommand.Altitude)
+	}
+	if ac.Nav.PendingConditionalCommand.Kind != nav.ConditionalReaching {
+		t.Fatalf("wrong kind %v", ac.Nav.PendingConditionalCommand.Kind)
+	}
+}
+
+func TestRunOneControlCommandRCRejectsMalformed(t *testing.T) {
+	cases := []struct {
+		cmd        string
+		wantSyntax bool
+	}{
+		{"RC", true},          // bare command, too short
+		{"RC100H010", true},   // missing slash
+		{"RC/H010", true},     // empty altitude
+		{"RC100/", true},      // empty inner
+		{"RCABC/H010", false}, // non-numeric altitude (strconv error)
+		{"RC100/X010", true},  // unknown inner command
+		{"RC100/C50", true},   // altitude-changing inner rejected by parseConditionalAction
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			s, callsign, tcw := setupTestSimWithAircraftAt(t, 5000, 10000)
+			_, err := s.runOneControlCommand(tcw, callsign, tc.cmd, 0)
+			if err == nil {
+				t.Fatalf("expected error for %q, got nil", tc.cmd)
+			}
+			if tc.wantSyntax && !errors.Is(err, ErrInvalidCommandSyntax) {
+				t.Fatalf("expected ErrInvalidCommandSyntax for %q, got %v", tc.cmd, err)
+			}
+		})
+	}
+}
+
+func TestFireConditionalIfTriggeredFiresAndClearsSlot(t *testing.T) {
+	// Aircraft climbing through 3000 with a pending LV 3000/H010 command.
+	s, callsign, _ := setupTestSimWithAircraftAt(t, 3100, 7000)
+	ac := s.Aircraft[callsign]
+	ac.NASFlightPlan = &NASFlightPlan{} // make IsAssociated() return true
+	ac.Nav.Rand = rand.Make()           // needed by EnqueueHeading for pilot-delay jitter
+	ac.Nav.FlightState.AltitudeRate = 500 // climbing
+	ac.Nav.PendingConditionalCommand = &nav.PendingConditionalCommand{
+		Kind:     nav.ConditionalLeaving,
+		Altitude: 3000,
+		Action:   nav.ConditionalHeading{Heading: 10, Turn: av.TurnClosest},
+	}
+
+	s.fireConditionalIfTriggered(ac, av.Temperature{})
+
+	if ac.Nav.PendingConditionalCommand != nil {
+		t.Fatalf("expected slot cleared after firing, still got %+v", ac.Nav.PendingConditionalCommand)
+	}
+	if hdg, ok := ac.Nav.AssignedHeading(); !ok || hdg != 10 {
+		t.Fatalf("expected assigned heading 10, got ok=%v hdg=%v", ok, hdg)
+	}
+}
+
+func TestFireConditionalIfTriggeredHoldsSlotWhenNotTriggered(t *testing.T) {
+	// Aircraft at 2000 climbing — has not yet reached 3000 trigger.
+	s, callsign, _ := setupTestSimWithAircraftAt(t, 2000, 7000)
+	ac := s.Aircraft[callsign]
+	ac.NASFlightPlan = &NASFlightPlan{} // make IsAssociated() return true
+	ac.Nav.FlightState.AltitudeRate = 500
+	pc := &nav.PendingConditionalCommand{
+		Kind:     nav.ConditionalLeaving,
+		Altitude: 3000,
+		Action:   nav.ConditionalHeading{Heading: 10, Turn: av.TurnClosest},
+	}
+	ac.Nav.PendingConditionalCommand = pc
+
+	s.fireConditionalIfTriggered(ac, av.Temperature{})
+
+	if ac.Nav.PendingConditionalCommand != pc {
+		t.Fatalf("expected slot still installed (not triggered yet)")
+	}
+	if _, ok := ac.Nav.AssignedHeading(); ok {
+		t.Fatalf("expected no heading assigned before trigger fires")
+	}
+}
+
+func TestFireConditionalIfTriggeredSkipsWhenUnassociated(t *testing.T) {
+	// Setup sim and aircraft state that WOULD trigger, but aircraft has no
+	// NASFlightPlan so IsAssociated() returns false.
+	s, callsign, _ := setupTestSimWithAircraftAt(t, 3100, 7000)
+	ac := s.Aircraft[callsign]
+	// NASFlightPlan is nil by default from setupTestSimWithAircraftAt — unassociated.
+	ac.Nav.FlightState.AltitudeRate = 500
+	pc := &nav.PendingConditionalCommand{
+		Kind:     nav.ConditionalLeaving,
+		Altitude: 3000,
+		Action:   nav.ConditionalHeading{Heading: 10, Turn: av.TurnClosest},
+	}
+	ac.Nav.PendingConditionalCommand = pc
+
+	s.fireConditionalIfTriggered(ac, av.Temperature{})
+
+	if ac.Nav.PendingConditionalCommand != pc {
+		t.Fatalf("expected slot preserved when unassociated")
 	}
 }

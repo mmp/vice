@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/wx"
 )
 
@@ -92,6 +93,77 @@ func (s *Sim) AssignCompoundSpeed(tcw TCW, callsign av.ADSBCallsign, segments []
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			return ac.AssignCompoundSpeed(segments)
 		})
+}
+
+// AssignConditional installs a deferred LV/RC action on the aircraft's
+// nav state. Fires silently when sim.updateState observes the altitude
+// trigger. Returns an UnableIntent if the trigger is not reachable from
+// the aircraft's current vertical state; the outer error is reserved for
+// lookup/authorization failures.
+func (s *Sim) AssignConditional(tcw TCW, callsign av.ADSBCallsign,
+	kind nav.ConditionalKind, altitude float32, action nav.ConditionalAction) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			if !triggerReachable(ac, kind, altitude) {
+				return av.MakeUnableIntent("unable. {alt} is out of our climb/descent path.", altitude)
+			}
+			ac.Nav.PendingConditionalCommand = &nav.PendingConditionalCommand{
+				Kind:     kind,
+				Altitude: altitude,
+				Action:   action,
+			}
+			return av.ConditionalCommandIntent{
+				Kind:     kind,
+				Altitude: altitude,
+				Action:   action,
+			}
+		})
+}
+
+// triggerReachable reports whether a LV/RC trigger altitude is
+// reasonably reachable from the aircraft's current vertical state,
+// allowing the controller command to be accepted.
+//
+// For ConditionalLeaving: accepted if the aircraft is within 500 ft of
+// the trigger (so "leaving 3,000" works even for an aircraft at 3,050),
+// or if the trigger lies between current altitude and assigned target.
+//
+// For ConditionalReaching: accepted if the trigger lies between current
+// altitude and assigned target, or (if no target assigned) the aircraft
+// is within 500 ft of the trigger.
+func triggerReachable(ac *Aircraft, kind nav.ConditionalKind, trigger float32) bool {
+	cur := ac.Nav.FlightState.Altitude
+	target := ac.Nav.Altitude.Assigned
+	diff := math.Abs(cur - trigger)
+	switch kind {
+	case nav.ConditionalLeaving:
+		if diff <= 500 {
+			return true
+		}
+		if target == nil {
+			return false
+		}
+		return betweenAlt(trigger, cur, *target)
+	case nav.ConditionalReaching:
+		if target == nil {
+			return diff <= 500
+		}
+		return betweenAlt(trigger, cur, *target)
+	}
+	return false
+}
+
+// betweenAlt reports whether v lies between a and b (inclusive), in
+// either ordering.
+func betweenAlt(v, a, b float32) bool {
+	lo, hi := a, b
+	if lo > hi {
+		lo, hi = hi, lo
+	}
+	return v >= lo && v <= hi
 }
 
 func (s *Sim) MaintainSlowestPractical(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {

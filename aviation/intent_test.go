@@ -168,6 +168,44 @@ func TestContactTowerReadback(t *testing.T) {
 	}
 }
 
+type stubConditionalAction struct{ text string }
+
+func (s stubConditionalAction) Render(rt *RadioTransmission, r *rand.Rand) {
+	rt.Add(s.text)
+}
+
+func TestConditionalCommandIntentRender(t *testing.T) {
+	t.Run("leaving", func(t *testing.T) {
+		intent := ConditionalCommandIntent{
+			Kind:     ConditionalLeaving,
+			Altitude: 3000,
+			Action:   stubConditionalAction{text: "fly heading 010"},
+		}
+		for seed := uint64(1); seed <= 20; seed++ {
+			readback := renderIntentForTest(intent, seed)
+			assertContainsAny(t, readback, "leaving", "passing")
+			if !strings.Contains(readback, "fly heading 010") {
+				t.Fatalf("leaving readback missing action text: %q", readback)
+			}
+		}
+	})
+
+	t.Run("reaching", func(t *testing.T) {
+		intent := ConditionalCommandIntent{
+			Kind:     ConditionalReaching,
+			Altitude: 10000,
+			Action:   stubConditionalAction{text: "fly heading 010"},
+		}
+		for seed := uint64(1); seed <= 20; seed++ {
+			readback := renderIntentForTest(intent, seed)
+			assertContainsAny(t, readback, "reaching", "level at", "on reaching")
+			if !strings.Contains(readback, "fly heading 010") {
+				t.Fatalf("reaching readback missing action text: %q", readback)
+			}
+		}
+	})
+}
+
 func TestCompoundSpeedReadbackIncludesQualifiers(t *testing.T) {
 	above := MakeAtOrAboveSpeedRestriction(250)
 	below := MakeAtOrBelowSpeedRestriction(210)

@@ -1463,4 +1463,304 @@ func registerAllCommands() {
 		WithName("airport_in_sight_inquiry"),
 		WithPriority(10),
 	)
+
+	// === CONDITIONAL COMMANDS: LEAVING/PASSING {alt}, {inner} ===
+	// Fires the inner command when aircraft crosses the given altitude.
+
+	// LV{alt}/H{hdg}: "leaving three thousand fly heading 010"
+	registerSTTCommand(
+		"leaving|passing {altitude} fly heading {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("LV%d/H%03d", alt, hdg) },
+		WithName("conditional_lv_fly_heading"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"leaving|passing {altitude} heading {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("LV%d/H%03d", alt, hdg) },
+		WithName("conditional_lv_heading"),
+		WithPriority(13),
+	)
+
+	// LV{alt}/L{hdg}, LV{alt}/R{hdg}: "leaving five thousand turn left 270"
+	registerSTTCommand(
+		"leaving|passing {altitude} [turn] [to] left {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("LV%d/L%03d", alt, hdg) },
+		WithName("conditional_lv_turn_left_heading"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"leaving|passing {altitude} [turn] [to] right {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("LV%d/R%03d", alt, hdg) },
+		WithName("conditional_lv_turn_right_heading"),
+		WithPriority(13),
+	)
+
+	// LV{alt}/L{deg}D, LV{alt}/R{deg}D: "leaving three thousand turn left 20 degrees"
+	registerSTTCommand(
+		"leaving|passing {altitude} turn {degrees}",
+		func(alt int, dr degreesResult) string {
+			dir := "L"
+			if dr.direction == "right" {
+				dir = "R"
+			}
+			return fmt.Sprintf("LV%d/%s%dD", alt, dir, dr.degrees)
+		},
+		WithName("conditional_lv_turn_degrees"),
+		WithPriority(13),
+	)
+
+	// LV{alt}/D{fix}, LV{alt}/LD{fix}, LV{alt}/RD{fix}
+	// SayAgainOnFail: when "leaving|passing {alt} direct|proceed" matches but
+	// {fix} can't be resolved, emit SAYAGAIN instead of silently falling through
+	// to the standalone_altitude handler (which would produce a misleading
+	// A{alt}). MinTokens(3) requires keyword+altitude+direct/proceed to all
+	// match before triggering — prevents false positives where "leave" or
+	// "passing" fuzzy-matches unrelated words.
+	registerSTTCommand(
+		"leaving|passing {altitude} direct|proceed [direct] [to] [at] {fix}",
+		func(alt int, fix string) string { return fmt.Sprintf("LV%d/D%s", alt, fix) },
+		WithName("conditional_lv_direct"),
+		WithPriority(13),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
+	)
+	registerSTTCommand(
+		"leaving|passing {altitude} [proceed] left [turn] direct [to] [at] {fix}",
+		func(alt int, fix string) string { return fmt.Sprintf("LV%d/LD%s", alt, fix) },
+		WithName("conditional_lv_left_direct"),
+		WithPriority(14),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
+	)
+	registerSTTCommand(
+		"leaving|passing {altitude} [proceed] right [turn] direct [to] [at] {fix}",
+		func(alt int, fix string) string { return fmt.Sprintf("LV%d/RD%s", alt, fix) },
+		WithName("conditional_lv_right_direct"),
+		WithPriority(14),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
+	)
+
+	// LV{alt}/S{spd}: "leaving five thousand reduce speed to 210"
+	registerSTTCommand(
+		"leaving|passing {altitude} reduce|slow [speed] [to] {speed}",
+		func(alt int, spd int) string { return fmt.Sprintf("LV%d/S%d", alt, spd) },
+		WithName("conditional_lv_reduce_speed"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"leaving|passing {altitude} maintain|increase [speed] [to] {speed}",
+		func(alt int, spd int) string { return fmt.Sprintf("LV%d/S%d", alt, spd) },
+		WithName("conditional_lv_maintain_speed"),
+		WithPriority(13),
+	)
+
+	// LV{alt}/M{mach}: "leaving flight level 300 maintain mach 78"
+	registerSTTCommand(
+		"leaving|passing {altitude} maintain mach [point] {mach}",
+		func(alt int, mach int) string { return fmt.Sprintf("LV%d/M%d", alt, mach) },
+		WithName("conditional_lv_maintain_mach"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"leaving|passing {altitude} mach [point] {mach}",
+		func(alt int, mach int) string { return fmt.Sprintf("LV%d/M%d", alt, mach) },
+		WithName("conditional_lv_mach"),
+		WithPriority(13),
+	)
+
+	// === CONDITIONAL COMMANDS: REACHING/LEVEL AT/ON REACHING {alt}, {inner} ===
+	// Fires the inner command when aircraft first crosses within ~100 ft of the
+	// given altitude (ConditionalReaching). Mirror of the LV section above.
+	//
+	// "reaching|level at|on reaching" cannot be expressed as a single template
+	// because the template parser splits on spaces — "level at" and "on reaching"
+	// are two-word phrases. Instead each inner command is registered twice:
+	//   - trigger_a: "[on] reaching {altitude} ..."  (matches "reaching X" and "on reaching X")
+	//   - trigger_b: "level [at] {altitude} ..."     (matches "level X" and "level at X")
+
+	// RC{alt}/H{hdg}: "reaching three thousand fly heading 010"
+	registerSTTCommand(
+		"[on] reaching {altitude} fly heading {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("RC%d/H%03d", alt, hdg) },
+		WithName("conditional_rc_fly_heading"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} fly heading {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("RC%d/H%03d", alt, hdg) },
+		WithName("conditional_rc_fly_heading_level"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"[on] reaching {altitude} heading {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("RC%d/H%03d", alt, hdg) },
+		WithName("conditional_rc_heading"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} heading {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("RC%d/H%03d", alt, hdg) },
+		WithName("conditional_rc_heading_level"),
+		WithPriority(13),
+	)
+
+	// RC{alt}/L{hdg}, RC{alt}/R{hdg}: "reaching five thousand turn left 270"
+	registerSTTCommand(
+		"[on] reaching {altitude} [turn] [to] left {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("RC%d/L%03d", alt, hdg) },
+		WithName("conditional_rc_turn_left_heading"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} [turn] [to] left {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("RC%d/L%03d", alt, hdg) },
+		WithName("conditional_rc_turn_left_heading_level"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"[on] reaching {altitude} [turn] [to] right {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("RC%d/R%03d", alt, hdg) },
+		WithName("conditional_rc_turn_right_heading"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} [turn] [to] right {heading}",
+		func(alt int, hdg int) string { return fmt.Sprintf("RC%d/R%03d", alt, hdg) },
+		WithName("conditional_rc_turn_right_heading_level"),
+		WithPriority(13),
+	)
+
+	// RC{alt}/L{deg}D, RC{alt}/R{deg}D: "reaching three thousand turn left 20 degrees"
+	registerSTTCommand(
+		"[on] reaching {altitude} turn {degrees}",
+		func(alt int, dr degreesResult) string {
+			dir := "L"
+			if dr.direction == "right" {
+				dir = "R"
+			}
+			return fmt.Sprintf("RC%d/%s%dD", alt, dir, dr.degrees)
+		},
+		WithName("conditional_rc_turn_degrees"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} turn {degrees}",
+		func(alt int, dr degreesResult) string {
+			dir := "L"
+			if dr.direction == "right" {
+				dir = "R"
+			}
+			return fmt.Sprintf("RC%d/%s%dD", alt, dir, dr.degrees)
+		},
+		WithName("conditional_rc_turn_degrees_level"),
+		WithPriority(13),
+	)
+
+	// RC{alt}/D{fix}, RC{alt}/LD{fix}, RC{alt}/RD{fix}
+	// SayAgainOnFail: when "reaching|level at {alt} direct|proceed" matches but
+	// {fix} can't be resolved, emit SAYAGAIN instead of silently falling
+	// through to the standalone_altitude handler (which would produce a
+	// misleading A{alt}). MinTokens(3) requires keyword+altitude+direct/proceed
+	// to all match before triggering.
+	registerSTTCommand(
+		"[on] reaching {altitude} direct|proceed [direct] [to] [at] {fix}",
+		func(alt int, fix string) string { return fmt.Sprintf("RC%d/D%s", alt, fix) },
+		WithName("conditional_rc_direct"),
+		WithPriority(13),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} direct|proceed [direct] [to] [at] {fix}",
+		func(alt int, fix string) string { return fmt.Sprintf("RC%d/D%s", alt, fix) },
+		WithName("conditional_rc_direct_level"),
+		WithPriority(13),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
+	)
+	registerSTTCommand(
+		"[on] reaching {altitude} [proceed] left [turn] direct [to] [at] {fix}",
+		func(alt int, fix string) string { return fmt.Sprintf("RC%d/LD%s", alt, fix) },
+		WithName("conditional_rc_left_direct"),
+		WithPriority(14),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} [proceed] left [turn] direct [to] [at] {fix}",
+		func(alt int, fix string) string { return fmt.Sprintf("RC%d/LD%s", alt, fix) },
+		WithName("conditional_rc_left_direct_level"),
+		WithPriority(14),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
+	)
+	registerSTTCommand(
+		"[on] reaching {altitude} [proceed] right [turn] direct [to] [at] {fix}",
+		func(alt int, fix string) string { return fmt.Sprintf("RC%d/RD%s", alt, fix) },
+		WithName("conditional_rc_right_direct"),
+		WithPriority(14),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} [proceed] right [turn] direct [to] [at] {fix}",
+		func(alt int, fix string) string { return fmt.Sprintf("RC%d/RD%s", alt, fix) },
+		WithName("conditional_rc_right_direct_level"),
+		WithPriority(14),
+		WithSayAgainOnFail(),
+		WithSayAgainMinTokens(3),
+	)
+
+	// RC{alt}/S{spd}: "reaching five thousand reduce speed to 210"
+	registerSTTCommand(
+		"[on] reaching {altitude} reduce|slow [speed] [to] {speed}",
+		func(alt int, spd int) string { return fmt.Sprintf("RC%d/S%d", alt, spd) },
+		WithName("conditional_rc_reduce_speed"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} reduce|slow [speed] [to] {speed}",
+		func(alt int, spd int) string { return fmt.Sprintf("RC%d/S%d", alt, spd) },
+		WithName("conditional_rc_reduce_speed_level"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"[on] reaching {altitude} maintain|increase [speed] [to] {speed}",
+		func(alt int, spd int) string { return fmt.Sprintf("RC%d/S%d", alt, spd) },
+		WithName("conditional_rc_maintain_speed"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} maintain|increase [speed] [to] {speed}",
+		func(alt int, spd int) string { return fmt.Sprintf("RC%d/S%d", alt, spd) },
+		WithName("conditional_rc_maintain_speed_level"),
+		WithPriority(13),
+	)
+
+	// RC{alt}/M{mach}: "reaching flight level 300 maintain mach 78"
+	registerSTTCommand(
+		"[on] reaching {altitude} maintain mach [point] {mach}",
+		func(alt int, mach int) string { return fmt.Sprintf("RC%d/M%d", alt, mach) },
+		WithName("conditional_rc_maintain_mach"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} maintain mach [point] {mach}",
+		func(alt int, mach int) string { return fmt.Sprintf("RC%d/M%d", alt, mach) },
+		WithName("conditional_rc_maintain_mach_level"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"[on] reaching {altitude} mach [point] {mach}",
+		func(alt int, mach int) string { return fmt.Sprintf("RC%d/M%d", alt, mach) },
+		WithName("conditional_rc_mach"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"level [at] {altitude} mach [point] {mach}",
+		func(alt int, mach int) string { return fmt.Sprintf("RC%d/M%d", alt, mach) },
+		WithName("conditional_rc_mach_level"),
+		WithPriority(13),
+	)
 }

@@ -981,6 +981,11 @@ func (s *Sim) updateState() {
 				s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestVectors)
 			}
 
+			if ac.Nav.PendingConditionalCommand != nil {
+				temp := s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime.Time()).Temperature()
+				s.fireConditionalIfTriggered(ac, temp)
+			}
+
 			if ac.FirstSeen.IsZero() && s.isRadarVisible(ac) {
 				ac.FirstSeen = s.State.SimTime
 			}
@@ -1462,6 +1467,24 @@ func (s *Sim) AnnotateFlightStrip(tcw TCW, acid ACID, annotations [9]string) err
 
 	fp.StripAnnotations = annotations
 	return nil
+}
+
+// fireConditionalIfTriggered executes and clears the aircraft's pending
+// conditional command if the trigger condition is now met. The slot is
+// cleared BEFORE Execute runs so a follow-on conditional installed by
+// Execute cannot fire on the same tick. temp is only consulted by the
+// Mach variant; other actions ignore it.
+func (s *Sim) fireConditionalIfTriggered(ac *Aircraft, temp av.Temperature) {
+	pc := ac.Nav.PendingConditionalCommand
+	if pc == nil || !ac.IsAssociated() {
+		return
+	}
+	if !nav.ConditionalTriggered(&ac.Nav, pc) {
+		return
+	}
+	action := pc.Action
+	ac.Nav.PendingConditionalCommand = nil
+	action.Execute(&ac.Nav, s.State.SimTime.NavTime(), temp)
 }
 
 func (s *Sim) GlobalMessage(tcw TCW, message string) {

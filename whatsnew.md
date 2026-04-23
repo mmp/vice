@@ -8,6 +8,7 @@
   - Fixed a few bugs with "at {fix}, cleared straight in {approach}"
   - Added "after {fix}, climb/descend and maintain {altitude}"
   - Added "after {fix}, reduce/maintain/increase {speed}"
+  - Added "leaving/reaching {altitude}, {action}" controller commands. Examples: `LV30/H010` ("leaving 3,000, fly heading 010"), `RC100/DAAC` ("reaching 10,000, direct AAC"). Supported inner actions: headings, turns by degrees, direct-to-fix, speed, and mach.
   - Added "speed {speed1} until {fix1}, then {speed2} until {fix2}, then {speed3}", etc.
   - Added "cross {fix} {miles} miles {direction} of {fix}"
   - Added "good rate" for climbs/descents: "descend and maintain 3,000, good rate through 5,000", etc.

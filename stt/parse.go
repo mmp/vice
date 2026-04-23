@@ -36,6 +36,30 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 			continue
 		}
 
+		// Check for "leaving|passing {altitude} ..." pattern BEFORE filler-word skip.
+		// "leaving" is a filler word (to prevent fuzzy match with "heading"), but it
+		// also starts the conditional LV command. When followed by an altitude, treat
+		// it as a command keyword rather than filler.
+		if (tokens[pos].Text == "leaving" || tokens[pos].Text == "passing") &&
+			pos+1 < len(tokens) && looksLikeAltitude(tokens[pos+1]) {
+			logLocalStt("  found %q before altitude at position %d, treating as LV command start", tokens[pos].Text, pos)
+			match, newPos := matchCommandNew(tokens, pos, ac, isThen, excludeCategories)
+			if newPos > pos {
+				logLocalStt("  matched LV command: %q (conf=%.2f, consumed=%d)", match.Command, match.Confidence, newPos-pos)
+				matchedAny = true
+				if match.Command != "" {
+					commands = append(commands, match.Command)
+					totalConf += match.Confidence
+					if category := getCommandCategory(match.Command); category != "" {
+						excludeCategories[category] = true
+					}
+				}
+				pos = newPos
+				isThen = false
+				continue
+			}
+		}
+
 		// Skip filler words
 		if IsFillerWord(tokens[pos].Text) {
 			logLocalStt("  skipping filler word: %q", tokens[pos].Text)

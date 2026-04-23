@@ -882,6 +882,46 @@ func (a ATISIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	rt.Add("[we'll pick up {ch}|we'll get {ch}]", a.Letter)
 }
 
+// ConditionalKind identifies which altitude event fires a deferred
+// controller command (LV = leaving, RC = reaching). Declared in aviation
+// because ConditionalCommandIntent needs it; nav aliases this type.
+type ConditionalKind uint8
+
+const (
+	ConditionalLeaving ConditionalKind = iota
+	ConditionalReaching
+)
+
+// ConditionalActionRender is the readback-only subset of
+// nav.ConditionalAction. Declared here to avoid an import cycle (nav
+// imports aviation, not the other way around); nav's ConditionalAction
+// interface embeds Render with a compatible signature, so concrete nav
+// actions satisfy this interface.
+type ConditionalActionRender interface {
+	Render(rt *RadioTransmission, r *rand.Rand)
+}
+
+// ConditionalCommandIntent is the readback for a "leaving/reaching {alt},
+// do X" command. It composes with the inner action's own Render so
+// phraseology stays consistent with non-conditional variants.
+type ConditionalCommandIntent struct {
+	Kind     ConditionalKind
+	Altitude float32
+	Action   ConditionalActionRender
+}
+
+func (c ConditionalCommandIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	switch c.Kind {
+	case ConditionalLeaving:
+		rt.Add("[leaving|passing] {alt}, ", c.Altitude)
+	case ConditionalReaching:
+		rt.Add("[reaching|level at|on reaching] {alt}, ", c.Altitude)
+	}
+	if c.Action != nil {
+		c.Action.Render(rt, r)
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Traffic Advisory Intent
 

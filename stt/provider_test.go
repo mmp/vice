@@ -4173,3 +4173,190 @@ func TestNegativeWithoutCallsign(t *testing.T) {
 		})
 	}
 }
+
+func TestSTTLeavingPatterns(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		expected   string
+	}{
+		{
+			name:       "leaving thousand fly heading",
+			transcript: "Delta 43 leaving three thousand fly heading zero one zero",
+			expected:   "DAL43 LV30/H010",
+		},
+		{
+			name:       "passing thousand right heading",
+			transcript: "American 17 passing one three thousand right one zero zero",
+			expected:   "AAL17 LV130/R100",
+		},
+		{
+			name:       "leaving thousand turn left heading",
+			transcript: "Delta 43 leaving five thousand turn left two seven zero",
+			expected:   "DAL43 LV50/L270",
+		},
+		{
+			name:       "leaving thousand turn left degrees",
+			transcript: "Delta 43 leaving three thousand turn left twenty degrees",
+			expected:   "DAL43 LV30/L20D",
+		},
+		{
+			name:       "leaving thousand turn right degrees",
+			transcript: "Delta 43 leaving three thousand turn right thirty degrees",
+			expected:   "DAL43 LV30/R30D",
+		},
+		{
+			name:       "leaving thousand direct fix",
+			transcript: "Delta 43 leaving three thousand direct alpha alpha charlie",
+			expected:   "DAL43 LV30/DAAC",
+		},
+		{
+			name:       "leaving thousand reduce speed",
+			transcript: "Delta 43 leaving five thousand reduce speed to two one zero",
+			expected:   "DAL43 LV50/S210",
+		},
+		{
+			name:       "leaving thousand left direct fix",
+			transcript: "Delta 43 leaving three thousand left direct alpha alpha charlie",
+			expected:   "DAL43 LV30/LDAAC",
+		},
+		{
+			name:       "leaving thousand right direct fix",
+			transcript: "Delta 43 leaving three thousand right direct alpha alpha charlie",
+			expected:   "DAL43 LV30/RDAAC",
+		},
+		{
+			name:       "leaving thousand maintain speed",
+			transcript: "Delta 43 leaving five thousand maintain speed two five zero",
+			expected:   "DAL43 LV50/S250",
+		},
+		{
+			name:       "leaving flight level maintain mach",
+			transcript: "American 17 leaving flight level three zero zero maintain mach point seven eight",
+			expected:   "AAL17 LV300/M78",
+		},
+	}
+
+	aircraft := map[string]Aircraft{
+		"Delta 43": {
+			Callsign: "DAL43",
+			Altitude: 2000,
+			State:    "departure",
+			Fixes:    map[string]string{"alpha alpha charlie": "AAC"},
+		},
+		"American 17": {
+			Callsign: "AAL17",
+			Altitude: 10000,
+			State:    "departure",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := provider.DecodeTranscript(aircraft, tt.transcript, "")
+			if err != nil {
+				t.Fatalf("DecodeTranscript: %v", err)
+			}
+			if got != tt.expected {
+				t.Errorf("got %q, want %q", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestSTTReachingPatterns(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		expected   string
+	}{
+		{
+			name:       "reaching thousand fly heading",
+			transcript: "Delta 43 reaching one zero thousand fly heading zero one zero",
+			expected:   "DAL43 RC100/H010",
+		},
+		{
+			name:       "level at thousand heading",
+			transcript: "Delta 43 level at five thousand heading two seven zero",
+			expected:   "DAL43 RC50/H270",
+		},
+		{
+			name:       "on reaching thousand turn left heading",
+			transcript: "Delta 43 on reaching three thousand turn left two seven zero",
+			expected:   "DAL43 RC30/L270",
+		},
+		{
+			name:       "reaching thousand turn right heading",
+			transcript: "Delta 43 reaching five thousand turn right one eight zero",
+			expected:   "DAL43 RC50/R180",
+		},
+		{
+			name:       "reaching thousand turn left degrees",
+			transcript: "Delta 43 reaching three thousand turn left twenty degrees",
+			expected:   "DAL43 RC30/L20D",
+		},
+		{
+			name:       "reaching thousand turn right degrees",
+			transcript: "Delta 43 reaching three thousand turn right thirty degrees",
+			expected:   "DAL43 RC30/R30D",
+		},
+		{
+			name:       "reaching thousand direct fix",
+			transcript: "Delta 43 reaching three thousand direct alpha alpha charlie",
+			expected:   "DAL43 RC30/DAAC",
+		},
+		{
+			name:       "reaching thousand left direct fix",
+			transcript: "Delta 43 reaching three thousand left direct alpha alpha charlie",
+			expected:   "DAL43 RC30/LDAAC",
+		},
+		{
+			name:       "reaching thousand right direct fix",
+			transcript: "Delta 43 reaching three thousand right direct alpha alpha charlie",
+			expected:   "DAL43 RC30/RDAAC",
+		},
+		{
+			name:       "reaching thousand reduce speed",
+			transcript: "Delta 43 reaching five thousand reduce speed to two one zero",
+			expected:   "DAL43 RC50/S210",
+		},
+		{
+			name:       "reaching thousand maintain speed",
+			transcript: "Delta 43 reaching five thousand maintain speed two five zero",
+			expected:   "DAL43 RC50/S250",
+		},
+		{
+			name:       "reaching flight level maintain mach",
+			transcript: "American 17 reaching flight level three zero zero maintain mach point seven eight",
+			expected:   "AAL17 RC300/M78",
+		},
+	}
+
+	aircraft := map[string]Aircraft{
+		"Delta 43": {
+			Callsign: "DAL43",
+			Altitude: 15000,
+			State:    "arrival",
+			Fixes:    map[string]string{"alpha alpha charlie": "AAC"},
+		},
+		"American 17": {
+			Callsign: "AAL17",
+			Altitude: 35000,
+			State:    "arrival",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := provider.DecodeTranscript(aircraft, tt.transcript, "")
+			if err != nil {
+				t.Fatalf("DecodeTranscript: %v", err)
+			}
+			if got != tt.expected {
+				t.Errorf("got %q, want %q", got, tt.expected)
+			}
+		})
+	}
+}
