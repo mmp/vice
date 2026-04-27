@@ -55,6 +55,7 @@ const (
 	PendingTransmissionRequestVisual                                           // Spontaneous "field in sight, requesting visual"
 	PendingTransmissionRequestVectors                                          // Pilot requesting vectors (overshot localizer)
 	PendingTransmissionRequestAltitude                                         // Pilot requesting altitude after being vectored off STAR
+	PendingTransmissionTrafficWhere                                            // Pilot proactively asks "where's that traffic" after 30-60s of looking
 )
 
 // FutureFrequencyChange represents a pilot switching to a new frequency.
@@ -422,6 +423,10 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	case PendingTransmissionTrafficInSight:
 		rt = av.MakeContactTransmission("[we've got the traffic|we have the traffic in sight|traffic in sight now]")
+
+	case PendingTransmissionTrafficWhere:
+		rt = av.MakeContactTransmission("[where's that traffic|request update on that traffic|we still don't have the traffic]")
+		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionFieldInSight:
 		rt = av.MakeContactTransmission("[we have the field in sight now|field in sight|we have the airport in sight now]")

@@ -44,8 +44,9 @@ type SeenAircraft struct {
 }
 
 type UnseenTrafficCall struct {
-	Callsign   av.ADSBCallsign
-	CalledTime Time
+	Callsign         av.ADSBCallsign
+	CalledTime       Time
+	WhereAskFireTime Time // If non-zero and passed, pilot proactively asks "where's that traffic"
 }
 
 type Aircraft struct {

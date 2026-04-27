@@ -490,39 +490,27 @@ func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles int, traffic
 		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseIMC}
 	}
 
-	// Convert o'clock to heading offset from aircraft heading
-	// 12 o'clock = 0 degrees, 3 o'clock = 90 degrees, etc.
-	oclockHeading := math.MagneticHeading((oclock % 12) * 30) // 0, 30, 60, 90... 330
-	trafficHeading := math.NormalizeHeading(ac.Heading() + oclockHeading)
+	kind, trafficFound, actualOclock := s.findAdvisoryTraffic(ac, oclock, miles, trafficAltFeet)
 
-	// Calculate the approximate position of the reported traffic
-	nmPerLong := ac.NmPerLongitude()
-	magVar := ac.MagneticVariation()
-	trafficPos := math.Offset2LL(ac.Position(), math.MagneticToTrue(trafficHeading, magVar), float32(miles), nmPerLong)
-
-	// Search for actual traffic near the reported position
-	// Tolerance: +/- 2 miles horizontal, +/- 1000 feet vertical
-	const horizontalToleranceNM = 2.0
-	const verticalToleranceFeet = 1000.0
-
-	var trafficFound av.ADSBCallsign
-	trafficDist := float32(999999)
-	for cs, other := range s.Aircraft {
-		if cs == ac.ADSBCallsign {
-			continue // Skip self
+	switch kind {
+	case advisoryMatchWrongQuadrant:
+		// Real traffic nearby but at a different o'clock than reported — pilot
+		// reports it at the corrected clock position.
+		sighting := ac.RecordSighting(trafficFound, s.State.SimTime)
+		sighting.OfferedToMaintainSeparation = false
+		ac.clearUnseenTrafficCall()
+		return av.TrafficAdvisoryIntent{
+			Response:     av.TrafficResponseWrongQuadrant,
+			ActualOclock: actualOclock,
 		}
 
-		dist := math.NMDistance2LL(trafficPos, other.Position())
-		altDiff := math.Abs(other.Altitude() - trafficAltFeet)
-
-		if dist <= horizontalToleranceNM && altDiff <= verticalToleranceFeet && dist < trafficDist {
-			trafficFound = cs
-			trafficDist = dist
+	case advisoryMatchNone:
+		// No traffic anywhere nearby — respond "looking" and schedule the
+		// proactive "where's that traffic" follow-up.
+		ac.UnseenTrafficCall = &UnseenTrafficCall{
+			CalledTime:       s.State.SimTime,
+			WhereAskFireTime: s.State.SimTime.Add(s.Rand.DurationRange(30*time.Second, 60*time.Second)),
 		}
-	}
-
-	if trafficFound == "" {
-		// No traffic found - respond "looking"
 		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseLooking}
 	}
 
@@ -557,9 +545,95 @@ func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles int, traffic
 		}
 	}
 
-	// "Looking" - schedule possible delayed traffic-in-sight call
+	// "Looking" - schedule possible delayed traffic-in-sight call, plus a
+	// longer "where's that traffic" follow-up if they never spot it.
 	s.enqueueFutureTrafficInSight(ac.ADSBCallsign, trafficFound)
+	ac.UnseenTrafficCall.WhereAskFireTime = s.State.SimTime.Add(s.Rand.DurationRange(30*time.Second, 60*time.Second))
 	return av.TrafficAdvisoryIntent{Response: av.TrafficResponseLooking}
+}
+
+type advisoryMatchKind int
+
+const (
+	advisoryMatchNone          advisoryMatchKind = iota // no plausible traffic anywhere nearby
+	advisoryMatchExact                                  // traffic at the reported point (within 2 NM, 1000 ft)
+	advisoryMatchWrongQuadrant                          // traffic nearby but in a different o'clock (within 15°-60° of the reported bearing)
+)
+
+// findAdvisoryTraffic walks s.Aircraft once looking for traffic that matches
+// the controller-issued advisory. Returns:
+//   - advisoryMatchExact when the closest target within ±2 NM and ±1000 ft of
+//     the reported point qualifies.
+//   - advisoryMatchWrongQuadrant when no exact match exists but the closest
+//     target within (5 + 0.5*miles) NM and ±1000 ft sits at a bearing 15-60°
+//     off the reported one. Returns the actual o'clock the pilot sees.
+//   - advisoryMatchNone otherwise.
+func (s *Sim) findAdvisoryTraffic(ac *Aircraft, reportedOclock, reportedMiles int, trafficAltFeet float32) (advisoryMatchKind, av.ADSBCallsign, int) {
+	const horizontalToleranceNM = 2.0
+	const verticalToleranceFeet = 1000.0
+	const wqMinAngle = 15.0 // below this, treat as exact (same o'clock bin)
+	const wqMaxAngle = 60.0 // above this, too far off to be "that" traffic
+	wqMaxRangeNM := float32(5) + 0.5*float32(reportedMiles)
+
+	nmPerLong := ac.NmPerLongitude()
+	magVar := ac.MagneticVariation()
+
+	// Reported bearing from ac (true), and the corresponding target point.
+	reportedRelHeading := math.MagneticHeading((reportedOclock % 12) * 30)
+	reportedHeadingMag := math.NormalizeHeading(ac.Heading() + reportedRelHeading)
+	reportedHeadingTrue := math.MagneticToTrue(reportedHeadingMag, magVar)
+	reportedPos := math.Offset2LL(ac.Position(), reportedHeadingTrue, float32(reportedMiles), nmPerLong)
+
+	var (
+		exactCS   av.ADSBCallsign
+		exactDist = float32(999999)
+		wqCS      av.ADSBCallsign
+		wqDist    = float32(999999)
+	)
+
+	for cs, other := range s.Aircraft {
+		if cs == ac.ADSBCallsign {
+			continue
+		}
+		if math.Abs(other.Altitude()-trafficAltFeet) > verticalToleranceFeet {
+			continue
+		}
+
+		// Exact match: close to the reported point.
+		distFromReported := math.NMDistance2LL(reportedPos, other.Position())
+		if distFromReported <= horizontalToleranceNM && distFromReported < exactDist {
+			exactCS = cs
+			exactDist = distFromReported
+		}
+
+		// Wrong-quadrant candidate: within the wider radius from ac itself, at
+		// a bearing offset from the reported one.
+		distFromAc := math.NMDistance2LL(ac.Position(), other.Position())
+		if distFromAc > wqMaxRangeNM {
+			continue
+		}
+		bearingTrue := math.Heading2LL(ac.Position(), other.Position(), nmPerLong)
+		angleOff := math.HeadingDifference(bearingTrue, reportedHeadingTrue)
+		if angleOff < wqMinAngle || angleOff > wqMaxAngle {
+			continue
+		}
+		if distFromAc < wqDist {
+			wqCS = cs
+			wqDist = distFromAc
+		}
+	}
+
+	if exactCS != "" {
+		return advisoryMatchExact, exactCS, reportedOclock
+	}
+	if wqCS != "" {
+		other := s.Aircraft[wqCS]
+		bearingTrue := math.Heading2LL(ac.Position(), other.Position(), nmPerLong)
+		bearingMag := math.TrueToMagnetic(bearingTrue, magVar)
+		rel := math.NormalizeHeading(float32(bearingMag) - float32(ac.Heading()))
+		return advisoryMatchWrongQuadrant, wqCS, math.HeadingAsHour(rel)
+	}
+	return advisoryMatchNone, "", 0
 }
 
 // nearestMETAR returns the METAR and airport elevation for the reporting

@@ -1351,8 +1351,8 @@ func TestTrafficAdvisoryClearsOfferedStateButKeepsSightingHistory(t *testing.T) 
 	if sighting.OfferedToMaintainSeparation {
 		t.Fatal("new traffic advisory should clear stale offered-to-maintain state")
 	}
-	if vs.AC.UnseenTrafficCall != nil {
-		t.Fatal("no-traffic advisory response should clear the unresolved unseen traffic call")
+	if utc := vs.AC.UnseenTrafficCall; utc != nil && utc.Callsign == "DAL456" {
+		t.Fatal("no-traffic advisory response should clear the prior unresolved unseen traffic call (for DAL456)")
 	}
 	if len(vs.Sim.FutureTrafficInSights) != 0 {
 		t.Fatal("new traffic advisory should cancel stale delayed traffic-in-sight events")

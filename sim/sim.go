@@ -1162,11 +1162,22 @@ func (s *Sim) updateState() {
 			if math.NMDistance2LL(ac.Position(), s.State.Center) > maxDist {
 				s.lg.Debug("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
 				s.deleteAircraft(ac)
+				continue
 			}
 
 			// Enqueue a spontaneous "field in sight" transmission if the pilot
 			// wants to report and the field is currently visible.
 			s.checkSpontaneousVisualRequest(ac)
+
+			// Pilot proactively asks "where's that traffic" 30-60s after a
+			// "looking" reply if they still haven't sighted it.
+			if utc := ac.UnseenTrafficCall; utc != nil && !utc.WhereAskFireTime.IsZero() &&
+				s.State.SimTime.After(utc.WhereAskFireTime) {
+				utc.WhereAskFireTime = Time{}
+				if ac.ControllerFrequency != "" {
+					s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionTrafficWhere)
+				}
+			}
 		}
 
 		s.possiblyRequestFlightFollowing()

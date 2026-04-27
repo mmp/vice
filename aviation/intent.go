@@ -889,16 +889,18 @@ func (a ATISIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 type TrafficAdvisoryResponse int
 
 const (
-	TrafficResponseIMC          TrafficAdvisoryResponse = iota // In IMC, can't see traffic
-	TrafficResponseLooking                                     // No traffic visible, will look
-	TrafficResponseTrafficSeen                                 // Traffic is in sight
-	TrafficResponseAcknowledged                                // Other traffic is maintaining visual separation
+	TrafficResponseIMC           TrafficAdvisoryResponse = iota // In IMC, can't see traffic
+	TrafficResponseLooking                                      // No traffic visible, will look
+	TrafficResponseTrafficSeen                                  // Traffic is in sight
+	TrafficResponseAcknowledged                                 // Other traffic is maintaining visual separation
+	TrafficResponseWrongQuadrant                                // Pilot sees traffic, but at a different o'clock than reported
 )
 
 // TrafficAdvisoryIntent represents a pilot's response to a traffic advisory
 type TrafficAdvisoryIntent struct {
 	Response               TrafficAdvisoryResponse
 	WillMaintainSeparation bool // If true, add "will maintain visual separation"
+	ActualOclock           int  // For TrafficResponseWrongQuadrant: the o'clock at which the pilot actually sees the traffic
 }
 
 func (t TrafficAdvisoryIntent) Render(rt *RadioTransmission, r *rand.Rand) {
@@ -915,6 +917,9 @@ func (t TrafficAdvisoryIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		}
 	case TrafficResponseAcknowledged:
 		rt.Add("[roger|copy the traffic|roger, we have the traffic]")
+	case TrafficResponseWrongQuadrant:
+		rt.Add("[traffic at our {num} o'clock in sight|we have traffic at our {num} o'clock]",
+			t.ActualOclock)
 	}
 }
 
