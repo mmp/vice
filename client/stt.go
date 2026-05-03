@@ -188,6 +188,16 @@ func (tm *TransmissionManager) HoldAfterTransmission() {
 	tm.holdUntil = time.Now().Add(2 * time.Second)
 }
 
+// HoldForRetransmit defers check-ins for 3 seconds after a silent STT
+// failure (empty transcript or no command decoded), giving the controller
+// a chance to retransmit before another aircraft checks in.
+func (tm *TransmissionManager) HoldForRetransmit() {
+	tm.mu.Lock()
+	defer tm.mu.Unlock()
+
+	tm.holdUntil = time.Now().Add(3 * time.Second)
+}
+
 // HoldAfterSilentContact sets a hold period after processing a contact without
 // audio playback (when TTS is disabled). This maintains proper pacing of contacts.
 func (tm *TransmissionManager) HoldAfterSilentContact(callsign av.ADSBCallsign) {
@@ -1056,6 +1066,9 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 
 		if finalText == "" || finalText == "[BLANK_AUDIO]" {
 			c.transmissions.Unhold()
+			if audioDuration >= 2*time.Second {
+				c.transmissions.HoldForRetransmit()
+			}
 			c.postSTTEvent("", "", "")
 			return
 		}
@@ -1095,6 +1108,9 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		if decoded == "" {
 			lg.Infof("STT: no command decoded from %q", finalText)
 			c.transmissions.Unhold()
+			if audioDuration >= 2*time.Second {
+				c.transmissions.HoldForRetransmit()
+			}
 			c.postSTTEvent(finalText, decoded, timingStr)
 		} else {
 			// Parse callsign and command from decoded result
