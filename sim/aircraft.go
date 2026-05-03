@@ -464,28 +464,24 @@ func (ac *Aircraft) AfterFixAltitude(fix string, alt float32) av.CommandIntent {
 	return ac.Nav.AfterFixAltitude(strings.ToUpper(fix), alt)
 }
 
-func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport, lahsoRunway string, lg *log.Logger) av.CommandIntent {
-	return ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints, lahsoRunway, lg)
+func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport) av.CommandIntent {
+	return ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints)
 }
 
 func (ac *Aircraft) AtFixCleared(fix, approach string, simTime Time, delayReduction time.Duration, straightIn bool) av.CommandIntent {
 	return ac.Nav.AtFixCleared(fix, approach, simTime.NavTime(), delayReduction, straightIn)
 }
 
-func (ac *Aircraft) AtFixIntercept(fix string, simTime Time, delayReduction time.Duration, lg *log.Logger) av.CommandIntent {
-	return ac.Nav.AtFixIntercept(fix, ac.FlightPlan.ArrivalAirport, simTime.NavTime(), delayReduction, lg)
+func (ac *Aircraft) AtFixIntercept(fix string, simTime Time, delayReduction time.Duration) av.CommandIntent {
+	return ac.Nav.AtFixIntercept(fix, simTime.NavTime(), delayReduction)
 }
 
-func (ac *Aircraft) ClearedApproach(id string, simTime Time, lg *log.Logger) av.CommandIntent {
-	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, false, simTime.NavTime())
+func (ac *Aircraft) ClearedApproach(id string, simTime Time, follow *nav.FollowTraffic) av.CommandIntent {
+	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), false)
 }
 
-func (ac *Aircraft) ClearedVisualApproach(runway string, follow *nav.FollowTraffic, refs []*av.Approach, lahsoRunway string, simTime Time) av.CommandIntent {
-	return ac.Nav.ClearedVisualApproach(runway, follow, refs, lahsoRunway, simTime.NavTime())
-}
-
-func (ac *Aircraft) ClearedStraightInApproach(id string, simTime Time, lg *log.Logger) av.CommandIntent {
-	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, true, simTime.NavTime())
+func (ac *Aircraft) ClearedStraightInApproach(id string, simTime Time, follow *nav.FollowTraffic) av.CommandIntent {
+	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), true)
 }
 
 func (ac *Aircraft) CancelApproachClearance() av.CommandIntent {
@@ -570,12 +566,10 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 	ac.Nav = *nav
 
 	if arr.ExpectApproach.A != nil {
-		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
-		ac.ExpectApproach(*arr.ExpectApproach.A, ap, "", lg)
+		ac.ExpectApproach(*arr.ExpectApproach.A, ap)
 	} else if arr.ExpectApproach.B != nil {
 		if app, ok := (*arr.ExpectApproach.B)[ac.FlightPlan.ArrivalAirport]; ok {
-			lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
-			ac.ExpectApproach(app, ap, "", lg)
+			ac.ExpectApproach(app, ap)
 		}
 	}
 

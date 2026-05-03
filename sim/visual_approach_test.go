@@ -144,10 +144,17 @@ func (vs *VisualScenario) AirportAdvisory(oclock, miles int) av.CommandIntent {
 	return intent
 }
 
-// ClearedVisual issues a CVA command and returns the intent.
+// ClearedVisual issues a CVA command and returns the intent. Issues an
+// ExpectApproach for the synthesized visual first if the aircraft has not
+// already been told to expect this visual, since the new clearance flow
+// requires Assigned/VisualReferences to be set up.
 func (vs *VisualScenario) ClearedVisual(runway string) (av.CommandIntent, error) {
 	vs.t.Helper()
-	return vs.Sim.ClearedVisualApproach(vs.tcw, vs.callsign, runway, "")
+	id := "_VIS" + runway
+	if vs.AC.Nav.Approach.AssignedId != id {
+		_, _ = vs.Sim.ExpectApproach(vs.tcw, vs.callsign, id)
+	}
+	return vs.Sim.ClearedApproach(vs.tcw, vs.callsign, id, true)
 }
 
 // AdvanceTime moves sim time forward by d.
@@ -673,15 +680,22 @@ func TestVisualApproachWaypoints(t *testing.T) {
 					ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 				},
 				Approach: nav.NavApproach{
-					AssignedId: "V36",
-					Assigned:   &av.Approach{Type: av.ChartedVisualApproach, Runway: "36"},
+					AssignedId: "_VIS36",
+					Assigned: &av.Approach{
+						Type:     av.VisualApproach,
+						Runway:   "36",
+						FullName: "Visual Approach Runway 36",
+					},
 				},
 			}
 			if tt.assigned != nil {
 				n.Heading.Assigned = tt.assigned
 			}
 
-			intent := n.ClearedVisualApproach("36", nil, []*av.Approach{reference}, "", nav.Time{})
+			n.Approach.AssignedId = "_VIS36"
+			n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+			n.Approach.VisualReferences = []*av.Approach{reference}
+			intent := n.ClearedVisualApproach(nil, "")
 			if tt.wantNil {
 				if _, unable := intent.(av.UnableIntent); !unable {
 					t.Fatalf("expected UnableIntent, got %T: %v", intent, intent)
@@ -785,7 +799,10 @@ func TestVisualApproachWaypointsUseReferenceApproachDogleg(t *testing.T) {
 		},
 	}
 
-	_ = n.ClearedVisualApproach("36", nil, []*av.Approach{reference}, "", nav.Time{})
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	n.Approach.VisualReferences = []*av.Approach{reference}
+	_ = n.ClearedVisualApproach(nil, "")
 
 	if len(n.Waypoints) < 5 {
 		t.Fatalf("expected projection, intermediate dogleg fixes, 3nm final, and threshold; got %v", wpNames(n.Waypoints))
@@ -847,7 +864,10 @@ func TestVisualApproachInsertsTODWaypoint(t *testing.T) {
 		},
 	}
 
-	intent := n.ClearedVisualApproach("36", nil, []*av.Approach{reference}, "", nav.Time{})
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	n.Approach.VisualReferences = []*av.Approach{reference}
+	intent := n.ClearedVisualApproach(nil, "")
 	if _, unable := intent.(av.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
@@ -931,7 +951,10 @@ func TestVisualApproachTODFollowsAssignedDescent(t *testing.T) {
 		Altitude: nav.NavAltitude{Assigned: &assigned},
 	}
 
-	intent := n.ClearedVisualApproach("36", nil, []*av.Approach{reference}, "", nav.Time{})
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	n.Approach.VisualReferences = []*av.Approach{reference}
+	intent := n.ClearedVisualApproach(nil, "")
 	if _, unable := intent.(av.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
@@ -991,7 +1014,10 @@ func TestVisualApproachJoinIsFAFWhenPastNaturalTOD(t *testing.T) {
 		},
 	}
 
-	intent := n.ClearedVisualApproach("36", nil, []*av.Approach{reference}, "", nav.Time{})
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	n.Approach.VisualReferences = []*av.Approach{reference}
+	intent := n.ClearedVisualApproach(nil, "")
 	if _, unable := intent.(av.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
@@ -1061,7 +1087,10 @@ func TestVisualApproachDropsNonDescentAssignment(t *testing.T) {
 		Altitude: nav.NavAltitude{Assigned: &maintain, ActiveAssigned: &maintain},
 	}
 
-	intent := n.ClearedVisualApproach("36", nil, []*av.Approach{reference}, "", nav.Time{})
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	n.Approach.VisualReferences = []*av.Approach{reference}
+	intent := n.ClearedVisualApproach(nil, "")
 	if _, unable := intent.(av.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
@@ -1127,7 +1156,10 @@ func TestVisualApproachTODHonorsPendingDescent(t *testing.T) {
 		},
 	}
 
-	intent := n.ClearedVisualApproach("36", nil, []*av.Approach{reference}, "", nav.Time{})
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	n.Approach.VisualReferences = []*av.Approach{reference}
+	intent := n.ClearedVisualApproach(nil, "")
 	if _, unable := intent.(av.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
@@ -1191,7 +1223,10 @@ func TestVisualApproachDropsAssignedDescentBelowProfile(t *testing.T) {
 		Altitude: nav.NavAltitude{Assigned: &belowProfile, ActiveAssigned: &belowProfile},
 	}
 
-	intent := n.ClearedVisualApproach("36", nil, []*av.Approach{reference}, "", nav.Time{})
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	n.Approach.VisualReferences = []*av.Approach{reference}
+	intent := n.ClearedVisualApproach(nil, "")
 	if _, unable := intent.(av.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
@@ -1250,7 +1285,10 @@ func TestVisualApproachLowAircraftKeepsFAFOn3NMFinal(t *testing.T) {
 		},
 	}
 
-	intent := n.ClearedVisualApproach("36", nil, []*av.Approach{reference}, "", nav.Time{})
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	n.Approach.VisualReferences = []*av.Approach{reference}
+	intent := n.ClearedVisualApproach(nil, "")
 	if _, unable := intent.(av.UnableIntent); unable {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
@@ -1268,31 +1306,6 @@ func TestVisualApproachLowAircraftKeepsFAFOn3NMFinal(t *testing.T) {
 	}
 	if !n.Waypoints[finalIdx].FAF() {
 		t.Error("_36_3NM_FINAL should have FAF in the legacy fallback case")
-	}
-}
-
-func TestVisualReferenceApproachSelection(t *testing.T) {
-	ac := &Aircraft{
-		FlightPlan: av.FlightPlan{ArrivalAirport: "KTEST"},
-		Nav: nav.Nav{Approach: nav.NavApproach{
-			Assigned: &av.Approach{Type: av.RNAVApproach, Runway: "36", Waypoints: []av.WaypointArray{{{}, {}}}},
-		}},
-	}
-	s := &Sim{State: &CommonState{Airports: map[string]*av.Airport{"KTEST": {
-		Approaches: map[string]*av.Approach{
-			"R36": {Type: av.RNAVApproach, Runway: "36", Waypoints: []av.WaypointArray{{{}, {}}}},
-			"V36": {Type: av.VORApproach, Runway: "36", Waypoints: []av.WaypointArray{{{}, {}}}},
-			"I35": {Type: av.ILSApproach, Runway: "35", Waypoints: []av.WaypointArray{{{}, {}}}},
-		},
-	}}}}
-
-	if got := s.visualReferenceApproaches(ac, "36", nil); len(got) != 1 || got[0] != ac.Nav.Approach.Assigned {
-		t.Fatalf("assigned matching approach should win, got %+v", got)
-	}
-
-	ac.Nav.Approach.Assigned = nil
-	if got := s.visualReferenceApproaches(ac, "36", nil); len(got) != 1 || got[0].Type != av.VORApproach {
-		t.Fatalf("fallback approach type = %v, want VOR", got)
 	}
 }
 
@@ -1345,7 +1358,10 @@ func TestVisualApproachFollowingTrafficTurnsBase(t *testing.T) {
 			{Fix: "RW36", Location: math.Point2LL{0, 0}},
 		}},
 	}
-	_ = n.ClearedVisualApproach("36", &nav.FollowTraffic{Position: trafficPos}, []*av.Approach{reference}, "", nav.Time{})
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	n.Approach.VisualReferences = []*av.Approach{reference}
+	_ = n.ClearedVisualApproach(&nav.FollowTraffic{Position: trafficPos}, "")
 
 	wps := n.Waypoints
 	if len(wps) != 4 {
@@ -1447,7 +1463,9 @@ func TestVisualApproachFollowingTrafficCopiesRemainingTrafficRoute(t *testing.T)
 	}
 	threshold.SetLand(true)
 	trafficRoute := av.WaypointArray{final3NM, threshold, n.FlightState.ArrivalAirport}
-	_ = n.ClearedVisualApproach("36", &nav.FollowTraffic{Position: trafficPos, Route: trafficRoute}, nil, "", nav.Time{})
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	_ = n.ClearedVisualApproach(&nav.FollowTraffic{Position: trafficPos, Route: trafficRoute}, "")
 	if got := wpNames(n.Waypoints); !slices.Equal(got, []string{"_36_FOLLOW_TRAFFIC", "_36_3NM_FINAL", "RW36", "KTEST"}) {
 		t.Fatalf("route = %v, want traffic, 3nm final, threshold, airport", got)
 	}
@@ -1477,9 +1495,11 @@ func TestVisualApproachFollowingTrafficRejectsNearThresholdLeader(t *testing.T) 
 		},
 	}
 
-	intent := n.ClearedVisualApproach("36",
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = &av.Approach{Type: av.VisualApproach, Runway: "36", FullName: "Visual Approach Runway 36"}
+	intent := n.ClearedVisualApproach(
 		&nav.FollowTraffic{Position: trafficPos, Route: av.WaypointArray{threshold, n.FlightState.ArrivalAirport}},
-		nil, "", nav.Time{})
+		"")
 	if _, ok := intent.(av.UnableIntent); !ok {
 		t.Fatalf("expected UnableIntent when leader is inside 0.5nm of threshold, got %T", intent)
 	}
@@ -1918,55 +1938,6 @@ func TestCVARequiresFieldInSight(t *testing.T) {
 	}
 }
 
-func TestEVACommandReturnsGenericExpect(t *testing.T) {
-	// EVA commands should return a generic "Visual Runway XX" expect intent,
-	// NOT resolve to a charted visual approach name like "Belmont Visual".
-	tests := []struct {
-		name      string
-		command   string // e.g. "EVA22L"
-		wantRwy   string // expected in ApproachName
-		wantLAHSO string
-	}{
-		{"EVA22L", "EVA22L", "22L", ""},
-		{"EVA13R", "EVA13R", "13R", ""},
-		{"EVA31", "EVA31", "31", ""},
-		{"EVA4R", "EVA4R", "4R", ""},
-		{"EVA22L with LAHSO", "EVA22L/LAHSO26", "22L", "26"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			// Simulate the EVA handler logic from RunAircraftCommands.
-			if !strings.HasPrefix(tt.command, "EVA") || len(tt.command) <= 3 {
-				t.Fatal("bad test command")
-			}
-			runway, lahsoRunway := parseLAHSOSuffix(tt.command[3:])
-			intent := av.ApproachIntent{
-				Type:         av.ApproachExpect,
-				ApproachName: "Visual Runway " + runway,
-				LAHSORunway:  lahsoRunway,
-			}
-
-			if intent.Type != av.ApproachExpect {
-				t.Errorf("intent type = %v, want ApproachExpect", intent.Type)
-			}
-			wantName := "Visual Runway " + tt.wantRwy
-			if intent.ApproachName != wantName {
-				t.Errorf("ApproachName = %q, want %q", intent.ApproachName, wantName)
-			}
-			if intent.LAHSORunway != tt.wantLAHSO {
-				t.Errorf("LAHSORunway = %q, want %q", intent.LAHSORunway, tt.wantLAHSO)
-			}
-			// Must NOT contain charted visual names.
-			for _, bad := range []string{"Belmont", "River", "Expressway"} {
-				if strings.Contains(intent.ApproachName, bad) {
-					t.Errorf("ApproachName %q should not contain charted visual name %q", intent.ApproachName, bad)
-				}
-			}
-		})
-	}
-}
-
 func TestSpontaneousTransmissionsUseContactType(t *testing.T) {
 	// Pilot-initiated transmissions (field in sight, traffic in sight,
 	// visual request) should use MakeContactTransmission, not
@@ -2183,6 +2154,46 @@ func TestScenarioEVAInactiveRunwayIsUnable(t *testing.T) {
 	}
 	if strings.Contains(strings.ToLower(res.ReadbackSpokenText), "expect") {
 		t.Fatalf("inactive EVA runway should not produce expect readback, got %q", res.ReadbackSpokenText)
+	}
+}
+
+// TestScenarioCVAWithoutEVASynthesizesAssignment verifies that bare CVA
+// (no preceding EVA) succeeds when the pilot has spontaneously reported the
+// field in sight: the sim layer bridges the gate by synthesizing the visual
+// assignment so nav.ClearedApproach has the references it needs.
+func TestScenarioCVAWithoutEVASynthesizesAssignment(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "22L", Heading: 220, Threshold: airportLoc, Elevation: 13})
+
+	vs := NewVisualScenario(t, airportLoc, "22L", math.Point2LL{0, 5.0 / 60}, 180)
+	vs.AC.FieldInSight = true
+	vs.AC.Nav.Approach = nav.NavApproach{}
+
+	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "CVA22L", 0)
+	if strings.Contains(strings.ToLower(res.ReadbackSpokenText), "unable") {
+		t.Fatalf("CVA with FieldInSight=true should not be unable: %q", res.ReadbackSpokenText)
+	}
+	if !vs.AC.Nav.Approach.Cleared {
+		t.Error("approach should be cleared after CVA")
+	}
+	if vs.AC.Nav.Approach.AssignedId != "_VIS22L" {
+		t.Errorf("AssignedId = %q, want _VIS22L", vs.AC.Nav.Approach.AssignedId)
+	}
+}
+
+// TestScenarioCVAWithoutEVANoFieldInSight verifies the gate still triggers:
+// without FieldInSight or RequestedVisualApproach or in-sight approach
+// traffic, bare CVA returns "unable, we don't have the field in sight".
+func TestScenarioCVAWithoutEVANoFieldInSight(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "22L", Heading: 220, Threshold: airportLoc, Elevation: 13})
+
+	vs := NewVisualScenario(t, airportLoc, "22L", math.Point2LL{0, 5.0 / 60}, 180)
+	vs.AC.Nav.Approach = nav.NavApproach{}
+
+	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "CVA22L", 0)
+	if !strings.Contains(strings.ToLower(res.ReadbackSpokenText), "field in sight") {
+		t.Fatalf("expected 'field in sight' unable, got %q", res.ReadbackSpokenText)
 	}
 }
 

@@ -1,12 +1,12 @@
-// nav/approaches.go
+// nav/approach.go
 // Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package nav
 
 import (
-	"log/slog"
 	"slices"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -21,7 +21,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 	heading, turn = *nav.Heading.Assigned, av.TurnClosest
 
 	ap := nav.Approach.Assigned
-	hasLocalizer := ap.Type == av.ILSApproach || ap.Type == av.LocalizerApproach
+	hasLocalizer := nav.Approach.HasLocalizer()
 
 	// Determine the course and line to intercept.
 	var courseTrue math.TrueHeading
@@ -250,23 +250,67 @@ func (nav *Nav) approachOvershootRequestVectors() {
 	nav.Approach.RequestVectors = true
 }
 
-func (nav *Nav) getApproach(airport *av.Airport, id string, lg *log.Logger) (*av.Approach, error) {
+func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av.Approach, error) {
 	if id == "" {
-		return nil, ErrInvalidApproach
+		return nil, nil, ErrInvalidApproach
+	}
+
+	if runway, visual := strings.CutPrefix(id, "_VIS"); visual {
+		arrICAO := nav.FlightState.ArrivalAirport.Fix
+		rwy, ok := av.LookupRunway(arrICAO, runway)
+		if !ok {
+			return nil, nil, ErrInvalidApproach
+		}
+		opp, ok := av.LookupOppositeRunway(arrICAO, runway)
+		if !ok {
+			opp.Threshold = rwy.Threshold
+		}
+
+		references := selectVisualReferences(airport, runway)
+		if len(references) == 0 {
+			return nil, nil, ErrInvalidApproach
+		}
+
+		var allApproachRoutes []av.WaypointArray
+		for _, ref := range references {
+			for _, route := range ref.Waypoints {
+				allApproachRoutes = append(allApproachRoutes, stripProcedureTurns(route))
+			}
+		}
+
+		return &av.Approach{
+			Id:                "_VIS" + runway,
+			FullName:          "Visual Approach Runway " + runway,
+			Type:              av.VisualApproach,
+			Runway:            runway,
+			Threshold:         rwy.Threshold,
+			OppositeThreshold: opp.Threshold,
+			Waypoints:         allApproachRoutes,
+		}, references, nil
 	}
 
 	for name, appr := range airport.Approaches {
 		if name == id {
-			return appr, nil
+			return appr, nil, nil
 		}
 	}
-	return nil, ErrUnknownApproach
+	return nil, nil, ErrUnknownApproach
 }
 
-func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints map[string]av.WaypointArray,
-	lahsoRunway string, lg *log.Logger) av.CommandIntent {
-	ap, err := nav.getApproach(airport, id, lg)
+func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypoints map[string]av.WaypointArray) av.CommandIntent {
+	id, lahsoRunway, _ := strings.Cut(approach, "/LAHSO")
+
+	if lahsoRunway != "" {
+		if _, ok := av.LookupRunway(nav.FlightState.ArrivalAirport.Fix, lahsoRunway); !ok {
+			return av.MakeUnableIntent("unable, we don't know that hold-short runway")
+		}
+	}
+
+	ap, refs, err := nav.getApproach(airport, id)
 	if err != nil {
+		if rwy, visual := strings.CutPrefix(id, "_VIS"); visual {
+			return av.MakeUnableIntent("unable, we don't know runway " + rwy)
+		}
 		return av.MakeUnableIntent("unable. We don't know the {appr} approach.", id)
 	}
 
@@ -281,10 +325,11 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 
 	requestAltitude := nav.Approach.RequestAltitude
 	nav.Approach = NavApproach{
-		Assigned:        ap,
-		AssignedId:      id,
-		ATPAVolume:      airport.ATPAVolumes[ap.Runway],
-		RequestAltitude: requestAltitude,
+		Assigned:         ap,
+		AssignedId:       id,
+		ATPAVolume:       airport.ATPAVolumes[ap.Runway],
+		RequestAltitude:  requestAltitude,
+		VisualReferences: refs,
 	}
 
 	if waypoints := runwayWaypoints[ap.Runway]; len(waypoints) > 0 {
@@ -344,9 +389,6 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 				// waypoints but leave them on their current heading; then
 				// it's over to the controller to either vector them or
 				// send them direct somewhere reasonable...
-				lg.Info("aircraft waypoints don't match up with arrival runway waypoints. splicing...",
-					slog.Any("aircraft", nav.Waypoints),
-					slog.Any("runway", waypoints))
 				nav.Waypoints = append(util.DuplicateSlice(waypoints), nav.FlightState.ArrivalAirport)
 
 				hdg := nav.FlightState.Heading
@@ -380,7 +422,7 @@ func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) av.CommandInte
 	}
 
 	ap := nav.Approach.Assigned
-	if ap.Type == av.ILSApproach || ap.Type == av.LocalizerApproach {
+	if nav.Approach.HasLocalizer() {
 		return av.ApproachIntent{
 			Type:         av.ApproachIntercept,
 			ApproachName: ap.FullName,
@@ -393,25 +435,51 @@ func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) av.CommandInte
 }
 
 // routeDirectIfNeeded ensures the named fix is in the aircraft's route.
-// If it's already in AssignedWaypoints, this is a no-op. Otherwise it tries
-// to route direct using directFixWaypoints (which searches the assigned
-// approach's waypoints), and on success enqueues the route via
+// If it's already in AssignedWaypoints, this is a no-op for the route itself.
+// Otherwise it tries to route direct using directFixWaypoints (which searches
+// the assigned approach's waypoints), and on success enqueues the route via
 // EnqueueDirectFix. Returns true if the fix is now (or already was) in the
 // route.
+//
+// In either case, under a synthesized visual approach the fix may live on an
+// ILS/Localizer reference; we record that reference so a later cleared-visual
+// flies the localizer route rather than synthesizing a curved descent.
 func (nav *Nav) routeDirectIfNeeded(fix string, simTime Time, delayReduction time.Duration) bool {
-	if slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return wp.Fix == fix }) {
-		return true
+	if !slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return wp.Fix == fix }) {
+		wps, source, err := nav.directFixWaypoints(fix)
+		if err != nil || wps == nil {
+			return false
+		}
+		nav.EnqueueDirectFix(wps, av.TurnClosest, simTime, delayReduction)
+		nav.Approach.NoPT = false
+		if source == waypointSourceApproach && !nav.Approach.Cleared {
+			nav.Approach.InterceptState = OnApproachCourse
+		}
 	}
-	wps, source, err := nav.directFixWaypoints(fix)
-	if err != nil || wps == nil {
-		return false
-	}
-	nav.EnqueueDirectFix(wps, av.TurnClosest, simTime, delayReduction)
-	nav.Approach.NoPT = false
-	if source == waypointSourceApproach && !nav.Approach.Cleared {
-		nav.Approach.InterceptState = OnApproachCourse
+	if !nav.Approach.Cleared {
+		nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
 	}
 	return true
+}
+
+// visualReferenceForFix returns the ILS or Localizer reference approach
+// (from VisualReferences) that contains the given fix, or nil if none.
+// Used under a synthesized visual to identify when the aircraft has been
+// committed to an ILS-style route.
+func (nav *Nav) visualReferenceForFix(fix string) *av.Approach {
+	for _, ref := range nav.Approach.VisualReferences {
+		if ref.Type != av.ILSApproach && ref.Type != av.LocalizerApproach {
+			continue
+		}
+		for _, route := range ref.Waypoints {
+			for _, wp := range route {
+				if wp.Fix == fix {
+					return ref
+				}
+			}
+		}
+	}
+	return nil
 }
 
 func (nav *Nav) AtFixCleared(fix, id string, simTime Time, delayReduction time.Duration, straightIn bool) av.CommandIntent {
@@ -454,7 +522,7 @@ func (nav *Nav) AtFixCleared(fix, id string, simTime Time, delayReduction time.D
 	}
 }
 
-func (nav *Nav) AtFixIntercept(fix, airport string, simTime Time, delayReduction time.Duration, lg *log.Logger) av.CommandIntent {
+func (nav *Nav) AtFixIntercept(fix string, simTime Time, delayReduction time.Duration) av.CommandIntent {
 	if nav.Approach.AssignedId == "" {
 		return av.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
@@ -475,7 +543,7 @@ func (nav *Nav) AtFixIntercept(fix, airport string, simTime Time, delayReduction
 		Type:         av.ApproachAtFixIntercept,
 		ApproachName: ap.FullName,
 		Fix:          fix,
-		HasLocalizer: ap.Type == av.ILSApproach || ap.Type == av.LocalizerApproach,
+		HasLocalizer: nav.Approach.HasLocalizer(),
 	}
 }
 
@@ -587,17 +655,27 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 	return nil
 }
 
-func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool, simTime Time) av.CommandIntent {
+// FollowTraffic describes a leader aircraft to sequence behind on a visual approach. Route (when
+// non-empty) is the leader's own waypoints, used for tight in-trail spacing; Position alone is used
+// as a join-point override on the reference approach.
+type FollowTraffic struct {
+	Position math.Point2LL
+	Route    av.WaypointArray
+}
+
+func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime Time, straightIn bool) av.CommandIntent {
 	ap := nav.Approach.Assigned
 	if ap == nil {
 		return av.MakeUnableIntent("unable. We haven't been told to expect an approach")
 	}
+
+	id, lahsoRunway, _ := strings.Cut(approach, "/LAHSO")
 	if id != "" && nav.Approach.AssignedId != id {
 		return av.MakeUnableIntent("unable. We were told to expect the {appr} approach.", ap.FullName)
 	}
 
-	if ap := nav.Approach.Assigned; ap.Type == av.VisualApproach {
-		return nav.ClearedVisualApproach(ap.Runway, nil, []*av.Approach{ap}, "", simTime)
+	if ap.Type == av.VisualApproach {
+		return nav.ClearedVisualApproach(traffic, lahsoRunway)
 	}
 
 	if nav.Approach.Cleared {
@@ -606,9 +684,10 @@ func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool, simT
 			nav.Approach.NoPT = true
 		}
 		return av.ClearedApproachIntent{
-			Approach:   ap.FullName,
-			StraightIn: straightIn,
-			CancelHold: cancelHold,
+			Approach:    ap.FullName,
+			StraightIn:  straightIn,
+			CancelHold:  cancelHold,
+			LAHSORunway: lahsoRunway,
 		}
 	}
 
@@ -636,10 +715,202 @@ func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool, simT
 	nav.flyProcedureTurnIfNecessary()
 
 	return av.ClearedApproachIntent{
-		Approach:   ap.FullName,
-		StraightIn: straightIn,
-		CancelHold: cancelHold,
+		Approach:    ap.FullName,
+		StraightIn:  straightIn,
+		CancelHold:  cancelHold,
+		LAHSORunway: lahsoRunway,
 	}
+}
+
+// ClearedVisualApproach finalizes a non-charted visual approach clearance for
+// the runway named on Nav.Approach.Assigned (a synthesized VisualApproach). It
+// picks the route the aircraft will fly:
+//
+//   - If the aircraft has been committed to an ILS/Localizer reference (via
+//     "direct {fix}" or "at {fix} intercept the localizer"), the reference's
+//     own routes are installed so the localizer altitudes/centerline take
+//     effect.
+//   - Otherwise, when a leader's route is supplied via follow.Route, tight
+//     in-trail sequencing along that route is attempted first.
+//   - Otherwise, a synthetic descent profile (TOD/_3NM_FINAL anchors) is
+//     constructed from the visual references.
+func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string) av.CommandIntent {
+	ap := nav.Approach.Assigned
+	if ap == nil || ap.Type != av.VisualApproach {
+		return av.MakeUnableIntent("unable. We haven't been told to expect a visual approach")
+	}
+	runway := ap.Runway
+
+	// Re-issued clearance on an already-cleared visual: just re-acknowledge,
+	// don't recompute the route or altitude profile.
+	if nav.Approach.Cleared {
+		cancelHold := nav.applyClearedApproachState()
+		return av.ClearedApproachIntent{
+			Approach:    ap.FullName,
+			CancelHold:  cancelHold,
+			LAHSORunway: lahsoRunway,
+		}
+	}
+
+	// Aircraft has been routed onto an ILS/Localizer reference; fly that.
+	if ref := nav.Approach.InterceptedReference; ref != nil &&
+		(ref.Type == av.ILSApproach || ref.Type == av.LocalizerApproach) {
+		// Deep-copy + strip procedure turns: don't alias airport.Approaches[id].Waypoints,
+		// and a cleared visual shouldn't fly the underlying ILS's PT.
+		out := make([]av.WaypointArray, len(ref.Waypoints))
+		for i, route := range ref.Waypoints {
+			out[i] = stripProcedureTurns(route)
+		}
+		ap.Waypoints = out
+		cancelHold := nav.applyClearedApproachState()
+		if nav.Approach.PassedApproachFix || nav.Approach.InterceptState == OnApproachCourse {
+			nav.clearAltitudeForApproach()
+			if nav.Approach.InterceptState == OnApproachCourse {
+				nav.Approach.NoPT = true
+			}
+		}
+		return av.ClearedApproachIntent{
+			Approach:    ap.FullName,
+			CancelHold:  cancelHold,
+			LAHSORunway: lahsoRunway,
+		}
+	}
+
+	// Otherwise, construct the route either from the leader (in-trail) or a
+	// synthesized descent profile across the references.
+	var wps []av.Waypoint
+	if follow != nil && len(follow.Route) > 0 {
+		wps = nav.visualApproachRouteFollowingTraffic(runway, follow.Position, follow.Route)
+	}
+	if wps == nil {
+		var joinPos *math.Point2LL
+		if follow != nil {
+			joinPos = &follow.Position
+		}
+		wps = nav.visualApproachRouteFromReferences(runway, joinPos, nav.Approach.VisualReferences)
+	}
+	if wps == nil {
+		return av.MakeUnableIntent("unable, we don't know runway " + runway)
+	}
+
+	cancelHold := nav.applyClearedApproachState()
+	nav.Waypoints = append(wps, nav.FlightState.ArrivalAirport)
+	// Narrow Assigned.Waypoints to the cleared route so FAFSegment / route
+	// queries see only what the aircraft is now flying.
+	ap.Waypoints = []av.WaypointArray{util.DuplicateSlice(wps)}
+
+	// Visual-approach clearance installs a full precomputed route, so clear
+	// any lingering heading nav state. Preserve a controller-assigned descent
+	// only when it sits above the visual profile's _3NM_FINAL anchor
+	// (rwy.Elevation + 900) so "descend and maintain 3000" still completes
+	// before the aircraft holds for the TOD; lateral.go's
+	// clearAltitudeForApproach at each cleared-approach waypoint crossing
+	// finishes cleaning up the descent assignment after that.
+	nav.Heading = NavHeading{}
+	nav.DeferredNavHeading = nil
+	rwy, _ := av.LookupRunway(nav.FlightState.ArrivalAirport.Fix, runway)
+	profileFloor := float32(rwy.Elevation) + 900
+	preserved := NavAltitude{}
+	if a := nav.Altitude.Assigned; a != nil && *a < nav.FlightState.Altitude && *a >= profileFloor {
+		preserved.Assigned = nav.Altitude.Assigned
+		preserved.ActiveAssigned = nav.Altitude.ActiveAssigned
+		preserved.ActivateAt = nav.Altitude.ActivateAt
+	}
+	nav.Altitude = preserved
+
+	return av.ClearedApproachIntent{
+		Approach:    ap.FullName,
+		CancelHold:  cancelHold,
+		LAHSORunway: lahsoRunway,
+	}
+}
+
+// selectVisualReferences picks the reference approaches whose geometry will
+// seed a synthesized non-charted visual to runway. ILS and Localizer
+// approaches are always included when present so direct-to-fix and at-fix
+// intercepts against a localizer route work after EVA. The "visual-style"
+// component is chosen by priority: VisualApproach if any are charted for the
+// runway, else VOR, else RNAV, else ChartedVisual. Returns an empty slice
+// when no approaches at all are defined for the runway base.
+func selectVisualReferences(airport *av.Airport, runway string) []*av.Approach {
+	runwayBase := av.RunwayID(runway).Base()
+	matches := func(types ...av.ApproachType) []*av.Approach {
+		var out []*av.Approach
+		for ap := range util.SortedMapValues(airport.Approaches) {
+			if av.RunwayID(ap.Runway).Base() != runwayBase {
+				continue
+			}
+			if slices.Contains(types, ap.Type) {
+				out = append(out, ap)
+			}
+		}
+		return out
+	}
+
+	refs := matches(av.ILSApproach, av.LocalizerApproach)
+	for _, t := range []av.ApproachType{av.VisualApproach, av.VORApproach, av.RNAVApproach, av.ChartedVisualApproach} {
+		if extras := matches(t); len(extras) > 0 {
+			refs = append(refs, extras...)
+			break
+		}
+	}
+	return refs
+}
+
+// stripProcedureTurns returns a deep copy of route with ProcedureTurn metadata
+// cleared. Used when aggregating an ILS/Localizer reference's routes into a
+// synthesized non-charted visual: a procedure turn would otherwise propagate
+// into prepareForApproach / flyProcedureTurnIfNecessary.
+func stripProcedureTurns(route av.WaypointArray) av.WaypointArray {
+	out := make(av.WaypointArray, len(route))
+	for i, wp := range route {
+		if wp.Extra != nil && wp.Extra.ProcedureTurn != nil {
+			extra := *wp.Extra
+			extra.ProcedureTurn = nil
+			wp.Extra = &extra
+		}
+		out[i] = wp
+	}
+	return out
+}
+
+// visualApproachRouteFollowingTraffic returns waypoints to sequence the
+// aircraft tightly behind the leader, starting at the leader's current
+// position and following its remaining route (minus the destination airport
+// appended by nav.Waypoints). Returns nil when the geometry is infeasible:
+// the leader is more than 90° off the follower's heading, or already inside
+// 0.5 nm of its own threshold.
+func (nav *Nav) visualApproachRouteFollowingTraffic(runway string, trafficPosition math.Point2LL,
+	trafficRoute av.WaypointArray) []av.Waypoint {
+	if len(trafficRoute) == 0 {
+		return nil
+	}
+
+	// The leader's nav.Waypoints ends with the destination airport appended
+	// after the threshold; drop the airport so the threshold is the route's
+	// final point.
+	trafficRoute = trafficRoute[:len(trafficRoute)-1]
+	if len(trafficRoute) == 0 {
+		return nil
+	}
+
+	nmPerLong := nav.FlightState.NmPerLongitude
+	magVar := nav.FlightState.MagneticVariation
+	bearingToTraffic := math.Heading2LL(nav.FlightState.Position, trafficPosition, nmPerLong)
+	if math.HeadingDifference(bearingToTraffic, math.MagneticToTrue(nav.FlightState.Heading, magVar)) > 90 {
+		return nil
+	}
+	if math.NMDistance2LLFast(trafficPosition, trafficRoute[len(trafficRoute)-1].Location, nmPerLong) <= 0.5 {
+		return nil
+	}
+
+	join := av.Waypoint{
+		Fix:      "_" + runway + "_FOLLOW_TRAFFIC",
+		Location: trafficPosition,
+	}
+	join.SetOnApproach(true)
+
+	return append([]av.Waypoint{join}, trafficRoute...)
 }
 
 // applyClearedApproachState performs the nav-state reset common to every
@@ -983,119 +1254,4 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 		wps[i].SetOnApproach(true)
 	}
 	return wps
-}
-
-func (nav *Nav) visualApproachRouteFollowingTraffic(runway string, trafficPosition math.Point2LL, trafficRoute av.WaypointArray) []av.Waypoint {
-	if len(trafficRoute) == 0 {
-		return nil
-	}
-
-	// trafficRoute is the traffic aircraft's Waypoints, which ends with
-	// the destination airport appended after the threshold; drop the
-	// airport so the threshold is the route's final point.
-	trafficRoute = trafficRoute[:len(trafficRoute)-1]
-	if len(trafficRoute) == 0 {
-		return nil
-	}
-
-	nmPerLong := nav.FlightState.NmPerLongitude
-	magVar := nav.FlightState.MagneticVariation
-	bearingToTraffic := math.Heading2LL(nav.FlightState.Position, trafficPosition, nmPerLong)
-	if math.HeadingDifference(bearingToTraffic, math.MagneticToTrue(nav.FlightState.Heading, magVar)) > 90 {
-		return nil
-	}
-	if math.NMDistance2LLFast(trafficPosition, trafficRoute[len(trafficRoute)-1].Location, nmPerLong) <= 0.5 {
-		return nil
-	}
-
-	join := av.Waypoint{
-		Fix:      "_" + runway + "_FOLLOW_TRAFFIC",
-		Location: trafficPosition,
-	}
-	join.SetOnApproach(true)
-
-	return append([]av.Waypoint{join}, trafficRoute...)
-}
-
-// FollowTraffic describes a leader aircraft to sequence behind on a visual approach. Route (when
-// non-empty) is the leader's own waypoints, used for tight in-trail spacing; Position alone is used
-// as a join-point override on the reference approach.
-type FollowTraffic struct {
-	Position math.Point2LL
-	Route    av.WaypointArray
-}
-
-// ClearedVisualApproach sets up the aircraft to fly a visual approach to the runway threshold. When
-// follow is non-nil and has a Route, it first tries tight in-trail sequencing along the leader's
-// route; if that's not geometrically viable, or follow has only a Position, it falls back to
-// reference-approach geometry using Position as a join-point override.
-func (nav *Nav) ClearedVisualApproach(runway string, follow *FollowTraffic, refs []*av.Approach, lahsoRunway string, _ Time) av.CommandIntent {
-	if follow != nil && len(follow.Route) > 0 {
-		if wps := nav.visualApproachRouteFollowingTraffic(runway, follow.Position, follow.Route); wps != nil {
-			return nav.clearedVisualApproach(runway, lahsoRunway, wps)
-		}
-	}
-
-	var joinPos *math.Point2LL
-	if follow != nil {
-		joinPos = &follow.Position
-	}
-	wps := nav.visualApproachRouteFromReferences(runway, joinPos, refs)
-	if wps == nil {
-		return av.MakeUnableIntent("unable, we don't know runway " + runway)
-	}
-
-	return nav.clearedVisualApproach(runway, lahsoRunway, wps)
-}
-
-func (nav *Nav) clearedVisualApproach(runway string, lahsoRunway string, wps []av.Waypoint) av.CommandIntent {
-	cancelHold := nav.applyClearedApproachState()
-
-	nav.Waypoints = append(wps, nav.FlightState.ArrivalAirport)
-
-	rwy, _ := av.LookupRunway(nav.FlightState.ArrivalAirport.Fix, runway)
-	opp, ok := av.LookupOppositeRunway(nav.FlightState.ArrivalAirport.Fix, runway)
-	if !ok {
-		opp.Threshold = rwy.Threshold
-	}
-
-	// Visual approaches are different in that their route is only finally set once they are cleared
-	// for the approach.
-	nav.Approach.Assigned = &av.Approach{
-		Id:                "VIS" + runway,
-		FullName:          "Visual Approach Runway " + runway,
-		Type:              av.VisualApproach,
-		Runway:            runway,
-		Threshold:         rwy.Threshold,
-		OppositeThreshold: opp.Threshold,
-		Waypoints:         []av.WaypointArray{util.DuplicateSlice(wps)},
-	}
-	nav.Approach.AssignedId = nav.Approach.Assigned.Id
-
-	// Visual-approach clearance installs a full precomputed route, so clear any
-	// lingering heading nav state beyond the shared reset. Preserve a controller-
-	// assigned descent only when it sits above the visual profile's _3NM_FINAL
-	// anchor (rwy.Elevation + 900) so "descend and maintain 3000" still completes
-	// at standard rate before the aircraft holds for the TOD. Drop maintain/climb
-	// assignments and any descent that would dive below the profile, since
-	// TargetAltitude's activeAssignedAltitude check would otherwise shadow the
-	// route's altitude restrictions. lateral.go's clearAltitudeForApproach at
-	// each cleared-approach waypoint crossing finishes cleaning up the descent
-	// assignment once the aircraft has reached it.
-	nav.Heading = NavHeading{}
-	nav.DeferredNavHeading = nil
-	profileFloor := float32(rwy.Elevation) + 900
-	preserved := NavAltitude{}
-	if a := nav.Altitude.Assigned; a != nil && *a < nav.FlightState.Altitude && *a >= profileFloor {
-		preserved.Assigned = nav.Altitude.Assigned
-		preserved.ActiveAssigned = nav.Altitude.ActiveAssigned
-		preserved.ActivateAt = nav.Altitude.ActivateAt
-	}
-	nav.Altitude = preserved
-
-	return av.ClearedApproachIntent{
-		Approach:    "Visual Approach Runway " + runway,
-		CancelHold:  cancelHold,
-		LAHSORunway: lahsoRunway,
-	}
 }

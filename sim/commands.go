@@ -363,7 +363,7 @@ func (s *Sim) AtFixIntercept(tcw TCW, callsign av.ADSBCallsign, fix string, dela
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.AtFixIntercept(fix, s.State.SimTime, delayReduction, s.lg)
+			return ac.AtFixIntercept(fix, s.State.SimTime, delayReduction)
 		})
 }
 

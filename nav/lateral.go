@@ -321,6 +321,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 
 	return
 }
+
 func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPlan, simTime Time) UpdateResult {
 	if len(nav.Waypoints) == 0 {
 		return UpdateResult{}
@@ -401,7 +402,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 
 		if wp.ClearApproach() {
 			if fp != nil {
-				_ = nav.ClearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false, simTime)
+				_ = nav.ClearedApproach(nav.Approach.AssignedId, nil, simTime, false)
 			}
 		}
 

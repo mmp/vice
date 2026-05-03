@@ -657,6 +657,9 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 			if source == waypointSourceApproach && !nav.Approach.Cleared {
 				nav.Approach.InterceptState = OnApproachCourse
 			}
+			if !nav.Approach.Cleared {
+				nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
+			}
 			return av.NavigationIntent{
 				Type:      av.NavDirectFixFromHold,
 				Fix:       hold.Hold.Fix,
@@ -673,6 +676,9 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 				nav.Approach.InterceptState = OnApproachCourse
 			} else {
 				nav.Approach.InterceptState = NotIntercepting
+			}
+			if !nav.Approach.Cleared {
+				nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
 			}
 			return av.NavigationIntent{
 				Type: av.NavDirectFix,

@@ -232,6 +232,23 @@ type NavApproach struct {
 	AtFixInterceptFix           string           // fix where aircraft should intercept the localizer
 	InterceptCourseLine         [2]math.Point2LL // cached course line for non-ILS intercepts
 	InterceptWaypoints          []av.Waypoint    // cached remaining waypoints for non-ILS intercepts
+
+	VisualReferences     []*av.Approach // Reference approaches for non-charted visual approach
+	InterceptedReference *av.Approach   // Approach giving the committed-to route for a non-charted visual approach
+}
+
+// HasLocalizer reports whether the aircraft is currently flying localizer-style
+// course geometry.
+func (na *NavApproach) HasLocalizer() bool {
+	if na.Assigned != nil &&
+		(na.Assigned.Type == av.ILSApproach || na.Assigned.Type == av.LocalizerApproach) {
+		return true
+	}
+	if na.InterceptedReference != nil &&
+		(na.InterceptedReference.Type == av.ILSApproach || na.InterceptedReference.Type == av.LocalizerApproach) {
+		return true
+	}
+	return false
 }
 
 type NavFixAssignment struct {

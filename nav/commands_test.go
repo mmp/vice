@@ -54,7 +54,7 @@ func TestCommandValidation(t *testing.T) {
 
 	t.Run("ClearedApproachWithoutExpect", func(t *testing.T) {
 		f := makeNav(t)
-		intent := f.nav.ClearedApproach(f.fp.ArrivalAirport, "I22L", false, f.simTime)
+		intent := f.nav.ClearedApproach("I22L", nil, f.simTime, false)
 		AssertUnable(t, intent)
 	})
 

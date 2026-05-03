@@ -7,6 +7,7 @@ package sim
 import (
 	"maps"
 	"slices"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -189,7 +190,7 @@ func (s *Sim) cancelFutureTrafficCheck(callsign av.ADSBCallsign) {
 	delete(s.FutureTrafficChecks, callsign)
 }
 
-func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach, lahsoRunway string) (av.CommandIntent, error) {
+func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -203,49 +204,8 @@ func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach, lahsoR
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.ExpectApproach(approach, ap, lahsoRunway, s.lg)
+			return ac.ExpectApproach(approach, ap)
 		})
-}
-
-func (s *Sim) ExpectVisualApproach(tcw TCW, callsign av.ADSBCallsign, runway string, lahsoRunway string) (av.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			airport := ac.FlightPlan.ArrivalAirport
-			if _, ok := av.LookupRunway(airport, runway); !ok {
-				return av.MakeUnableIntent("unable, we don't know that runway")
-			}
-			if !s.activeArrivalRunway(airport, runway) {
-				return av.MakeUnableIntent("unable, that runway isn't active")
-			}
-			if lahsoRunway != "" {
-				if _, ok := av.LookupRunway(airport, lahsoRunway); !ok {
-					return av.MakeUnableIntent("unable, we don't know that hold-short runway")
-				}
-			}
-			return av.ApproachIntent{
-				Type:         av.ApproachExpect,
-				ApproachName: "Visual Approach Runway " + runway,
-				LAHSORunway:  lahsoRunway,
-			}
-		})
-}
-
-func (s *Sim) activeArrivalRunway(airport string, runway string) bool {
-	hasArrivalRunways := false
-	runwayBase := av.RunwayID(runway).Base()
-	for _, ar := range s.State.ArrivalRunways {
-		if ar.Airport != airport {
-			continue
-		}
-		hasArrivalRunways = true
-		if ar.Runway.Base() == runwayBase {
-			return true
-		}
-	}
-	return !hasArrivalRunways
 }
 
 func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string, straightIn bool) (av.CommandIntent, error) {
@@ -254,104 +214,40 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			var following *nav.FollowTraffic
+			if id, visual := strings.CutPrefix(approach, "_VIS"); visual {
+				rwy, _, _ := strings.Cut(id, "/LAHSO")
+				// Pilot must have the field or approach-cleared preceding
+				// traffic in sight before accepting a visual approach clearance.
+				if traffic := s.recentApproachTrafficInSightForRunway(ac, rwy); traffic != nil {
+					following = &nav.FollowTraffic{
+						Position: traffic.Position(),
+						Route:    traffic.Nav.Waypoints,
+					}
+				} else if !ac.FieldInSight && !ac.RequestedVisualApproach {
+					return av.MakeUnableIntent("unable, we don't have the field in sight")
+				}
+
+				// Spontaneous "field in sight" / requested-visual / approach-traffic-
+				// in-sight allows bare CVA without a preceding EVA: synthesize the
+				// visual assignment so nav.ClearedApproach has the references it
+				// needs.
+				if ac.Nav.Approach.AssignedId != approach {
+					ap := s.State.Airports[ac.FlightPlan.ArrivalAirport]
+					if intent := ac.ExpectApproach(approach, ap); intent != nil {
+						if _, unable := intent.(av.UnableIntent); unable {
+							return intent
+						}
+					}
+				}
+			}
+
 			if straightIn {
-				return ac.ClearedStraightInApproach(approach, s.State.SimTime, s.lg)
+				return ac.ClearedStraightInApproach(approach, s.State.SimTime, following)
 			} else {
-				return ac.ClearedApproach(approach, s.State.SimTime, s.lg)
+				return ac.ClearedApproach(approach, s.State.SimTime, following)
 			}
 		})
-}
-
-// ClearedVisualApproach clears the aircraft for a visual approach to the
-// specified runway. Command format is "CVA<runway>" (e.g. "CVA13L"). The
-// aircraft uses the assigned approach, or the best known approach for the
-// runway, as a visual route template when one is available. For charted visual
-// approaches (e.g., Belmont Visual), use the C command with the approach ID instead.
-func (s *Sim) ClearedVisualApproach(tcw TCW, callsign av.ADSBCallsign, runway string, lahsoRunway string) (av.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	intent, err := s.dispatchAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) error {
-			if !s.TCWCanCommandAircraft(tcw, ac) {
-				return av.ErrOtherControllerHasTrack
-			}
-			return nil
-		},
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			if runway == "" {
-				return av.MakeUnableIntent("unable, which runway?")
-			}
-			if _, ok := av.LookupRunway(ac.FlightPlan.ArrivalAirport, runway); !ok {
-				return av.MakeUnableIntent("unable, we don't know runway " + runway)
-			}
-
-			// Pilot must have the field or approach-cleared preceding
-			// traffic in sight before accepting a visual approach clearance.
-			traffic := s.recentApproachTrafficInSightForRunway(ac, runway)
-			if !ac.FieldInSight && !ac.RequestedVisualApproach && traffic == nil {
-				return av.MakeUnableIntent("unable, we don't have the field in sight")
-			}
-
-			return s.clearForVisualApproach(ac, runway, lahsoRunway, traffic)
-		})
-
-	// Keep parity with dispatchControlledAircraftCommand behavior:
-	// any successfully-dispatched command (even an "unable" intent)
-	// suppresses stale initial check-ins.
-	if err == nil {
-		s.cancelPendingInitialContact(callsign)
-	}
-	return intent, err
-}
-
-// clearForVisualApproach dispatches the nav-layer clearance for a visual
-// approach. When traffic is non-nil, the nav layer handles tight in-trail
-// sequencing along the leader's route and its geometric fallbacks.
-func (s *Sim) clearForVisualApproach(ac *Aircraft, runway, lahsoRunway string, traffic *Aircraft) av.CommandIntent {
-	var follow *nav.FollowTraffic
-	if traffic != nil {
-		follow = &nav.FollowTraffic{Position: traffic.Position(), Route: traffic.Nav.Waypoints}
-	}
-	refs := s.visualReferenceApproaches(ac, runway, traffic)
-	return ac.ClearedVisualApproach(runway, follow, refs, lahsoRunway, s.State.SimTime)
-}
-
-// visualReferenceApproaches picks one or more approaches whose geometry can serve as the reference
-// for a visual to runway. When traffic is non-nil, its assigned approach is preferred so the
-// follower shares the leader's geometry.
-func (s *Sim) visualReferenceApproaches(ac *Aircraft, runway string, traffic *Aircraft) []*av.Approach {
-	runwayBase := av.RunwayID(runway).Base()
-
-	if traffic != nil {
-		if ap := traffic.Nav.Approach.Assigned; ap != nil &&
-			av.RunwayID(ap.Runway).Base() == runwayBase &&
-			len(ap.Waypoints) > 0 {
-			return []*av.Approach{ap}
-		}
-	}
-
-	if ap := ac.Nav.Approach.Assigned; ap != nil &&
-		av.RunwayID(ap.Runway).Base() == runwayBase &&
-		len(ap.Waypoints) > 0 {
-		return []*av.Approach{ap}
-	}
-
-	airport := s.State.Airports[ac.FlightPlan.ArrivalAirport]
-
-	prioritizedTypes := []av.ApproachType{av.VisualApproach, av.ILSApproach, av.LocalizerApproach,
-		av.VORApproach, av.RNAVApproach, av.ChartedVisualApproach}
-	for _, ty := range prioritizedTypes {
-		matches := slices.Collect(util.FilterSeq(util.SortedMapValues(airport.Approaches),
-			func(ap *av.Approach) bool {
-				return ap.Type == ty && av.RunwayID(ap.Runway).Base() == runwayBase
-			}))
-		if len(matches) > 0 {
-			return matches
-		}
-	}
-	// This should not happen...
-	return nil
 }
 
 func (s *Sim) InterceptApproach(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
@@ -521,8 +417,7 @@ func (ac *Aircraft) canRequestVisualApproach() bool {
 		return false
 	}
 	appr := ac.Nav.Approach.Assigned
-	// Already on a visual — nothing to request.
-	return appr != nil && appr.Type != av.ChartedVisualApproach
+	return appr != nil && appr.Type != av.ChartedVisualApproach && appr.Type != av.VisualApproach
 }
 
 type visualEligibilityReason int
