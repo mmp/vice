@@ -9057,68 +9057,14 @@
           "assigned_altitude": 12000,
           "initial_speed": 250,
           "route": "/. PARCH4",
-          "waypoints": "PARCH/ho CCC/a12000/s250",
+          "waypoints": "PARCH/ho CCC/a12000/s250 ROBER",
           "runway_waypoints": {
-            "KFRG": {
-              "1,14,19,32": "CCC/a12000/s250 KMANN/h283"
-            },
             "KJFK": {
-              "22L,22R": "CCC/a12000/s250 ROBER CRAIL/h283",
-              "4L,4R,13L,13R,31L,31R": "CCC/a12000/s250 ROBER JFK/h278"
+              "22L,22R": "ROBER CRAIL/h283",
+              "4L,4R,13L,13R,31L,31R": "ROBER JFK/h278"
             }
           },
-          "expect_approach": null,
           "airlines": {
-            "KFRG": [
-              {
-                "icao": "EJA",
-                "airport": "KHYA"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KHYA"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KMVY"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KMVY"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KACK"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KACK"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KBGR"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KBGR"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KBTV"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KBTV"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KMHT"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KMHT"
-              }
-            ],
             "KJFK": [
               {
                 "icao": "EIN",
@@ -9479,6 +9425,72 @@
                 "icao": "UZB",
                 "types": ["B788"],
                 "airport": "UTTT"
+              }
+            ]
+          }
+        },
+        {
+          "initial_controller": "B46",
+          "initial_altitude": 15000,
+          "assigned_altitude": 12000,
+          "initial_speed": 250,
+          "route": "/. PARCH4",
+          "waypoints": "PARCH/ho CCC/a12000/s250",
+          "runway_waypoints": {
+            "KFRG": {
+              "1,14,19,32": "CCC/a12000/s250 KMANN/h283"
+            }
+          },
+          "expect_approach": null,
+          "airlines": {
+            "KFRG": [
+              {
+                "icao": "EJA",
+                "airport": "KHYA"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KHYA"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KMVY"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KMVY"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KACK"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KACK"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KBGR"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KBGR"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KBTV"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KBTV"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KMHT"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KMHT"
               }
             ]
           }
