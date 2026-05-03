@@ -1158,7 +1158,9 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                   <td>
                     <i>Cross (fix) at (altitude)</i> /  <i>Cross (fix) at or above (altitude)</i> /
                     <i>Cross (distance) miles (direction) of (fix) at (altitude)</i> /
-                    <i>Cross (distance) DME at (altitude)</i> (on a cleared visual approach, optionally combined with <i>cleared visual approach runway (runway)</i>)
+                    <i>Cross (distance) DME at (altitude)</i> /
+                    <i>Cross (distance) DME at or above (altitude)</i> /
+                    <i>Cross (distance) DME at or below (altitude)</i> (DME forms apply on a cleared visual approach, optionally combined with <i>cleared visual approach runway (runway)</i>)
                   </td>
                 </tr>
                 <tr><td>Altitude after Speed</td>
@@ -1198,7 +1200,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
               <tbody>
                 <tr><td>Climb/Descend Via</td>
                   <td>
-                    <i>Climb via the (SID)</i> /  <i>Climb via SID</i> /  <i>Descend via the (STAR)</i> /  <i>Descend via STAR</i>
+                    <i>Climb via the (SID)</i> /  <i>Climb via SID</i> /  <i>Descend via the (STAR)</i> /  <i>Descend via STAR</i> /  <i>Descend via the arrival</i>
                   </td>
                 </tr>
               </tbody>
@@ -1259,15 +1261,28 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 <tr><td>Speed at Fix</td>
                   <td>
                     <i>Cross (fix) at (speed) knots</i> / <i>Cross (fix) at Mach (mach)</i> /
+                    <i>Cross (fix) at (speed) or greater</i> / <i>Cross (fix) at do not exceed (speed)</i> /
                     <i>Cross (distance) miles (direction) of (fix) at (speed) knots</i> /
-                    <i>Cross (distance) miles (direction) of (fix) at Mach (mach)</i>
+                    <i>Cross (distance) miles (direction) of (fix) at Mach (mach)</i> /
+                    <i>Cross (distance) miles (direction) of (fix) at (speed) or greater</i> /
+                    <i>Cross (distance) miles (direction) of (fix) at do not exceed (speed)</i>
+                  </td>
+                </tr>
+                <tr><td>Combined Altitude and Speed at Fix</td>
+                  <td>
+                    <i>Cross (fix) at (altitude) and (speed) knots</i> / <i>Cross (fix) at (altitude) and Mach (mach)</i> /
+                    <i>Cross (fix) at or above (altitude) and (speed) knots</i> /
+                    <i>Cross (distance) miles (direction) of (fix) at (altitude) and (speed) knots</i>.
+                    The altitude and speed clauses may appear in either order; the speed clause may also be expressed as <i>(speed) or greater</i> or <i>do not exceed (speed)</i>.
                   </td>
                 </tr>
                 <tr><td>Speed after Fix</td>
                   <td>
                     <i>After (fix), maintain (speed) knots</i> /
+                    <i>After (fix), reduce/increase speed to (speed) knots</i> /
+                    <i>After (fix), (speed) knots</i> /
                     <i>After (fix), (speed) knots or greater</i> /
-                    <i>After (fix), (speed) knots or less</i>
+                    <i>After (fix), (speed) knots or less</i>. (<i>at (fix)</i> may be used in place of <i>after (fix)</i>.)
                   </td>
                 </tr>
                 <tr><td>Compound Speed</td>
@@ -1309,9 +1324,10 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <i>Maintain present speed</i> / <i>Present speed</i>
                   </td>
                 </tr>
-                <tr><td>Speed Or Greater</td>
+                <tr><td>Speed Or Greater/Less</td>
                   <td>
-                    <i>Maintain (speed) or greater</i> / <i>(speed) or better</i>
+                    <i>Maintain (speed) or greater</i> / <i>(speed) or better</i> / <i>Maintain (speed) or less</i>.
+                    The "until" qualifiers below may be appended.
                   </td>
                 </tr>
                 <tr><td>Do Not Exceed</td>
@@ -1343,7 +1359,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
               <li>"... until X DME"</li>
               <li>"... until (fix)" (generally, the FAF).</li>
             </ul>
-            <h3>Altitude</h3>
+            <h3>Routing and Holds</h3>
             <table class="table">
               <thead>
                 <tr>
@@ -1399,12 +1415,13 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </tr>
                 <tr><td>Cleared Approach</td>
                   <td>
-                    <i>Cleared (approach)</i> /  <i>Cleared straight in (approach)</i> /  <i>At (fix) cleared (approach)</i>. Note: a speed assignment after an approach clearance is interpreted as until 5 DME.
+                    <i>Cleared (approach)</i> /  <i>Cleared straight in (approach)</i> /  <i>At (fix) cleared (approach)</i> /  <i>At (fix) cleared straight in (approach)</i>. Note: a speed assignment after an approach clearance is interpreted as until 5 DME.
                   </td>
                 </tr>
-                <tr><td>Intercept Localizer</td>
+                <tr><td>Intercept Localizer / Approach Course</td>
                   <td>
-                    <i>Intercept the localizer</i> /  <i>Join the localizer</i> /  <i>At (fix) intercept the localizer</i>
+                    <i>Intercept the localizer</i> /  <i>Join the localizer</i> /  <i>At (fix) intercept the localizer</i> /  <i>Direct (fix) intercept the localizer</i>.
+                    For non-localizer (e.g. RNAV) approaches, <i>intercept the (final) approach course</i> is also accepted (with the same <i>at (fix)</i> / <i>direct (fix)</i> prefix variants).
                   </td>
                 </tr>
                   <tr><td>Standby Approach</td>
@@ -1429,7 +1446,14 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </tr>
                 <tr><td>Airport Advisory</td>
                   <td>
-                    <i>Airport (N) o'clock (N) miles</i> /  <i>Field (N) o'clock (N) miles</i>
+                    <i>Airport (N) o'clock (N) miles</i> /  <i>Field (N) o'clock (N) miles</i> /
+                    <i>(airport name) is at your (N) o'clock (N) miles</i> /
+                  </td>
+                </tr>
+                <tr><td>Airport in Sight Inquiry</td>
+                  <td>
+                    <i>Do you have the (field|airport) in sight?</i> /  <i>Report the (field|airport) in sight</i>.
+                    Whether the pilot reports the airport in sight depends on distance and the effective visual range.
                   </td>
                 </tr>
               </tbody>
@@ -1512,7 +1536,14 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
               <tbody>
                 <tr><td>Traffic Advisory</td>
                   <td>
-                    <i>Traffic (o'clock), (miles), (aircraft type), (altitude)</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), report in sight</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), they have you in sight and will maintain visual separation</i>
+                    <i>Traffic (o'clock), (miles), (aircraft type), (altitude)</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), report in sight</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), they have you in sight and will maintain visual separation</i>.
+                    The variant <i>Traffic landing the parallel, (o'clock), (miles), ...</i> is also accepted.
+                  </td>
+                </tr>
+                <tr><td>Traffic in Sight Inquiry</td>
+                  <td>
+                    <i>Do you have the traffic in sight?</i> /  <i>Report the traffic in sight</i>: re-asks the pilot whether previously-called traffic (or an obvious nearby aircraft) is in sight.
+                    The combined form <i>Report the traffic and the (field|airport) in sight</i> issues both this inquiry and an airport-in-sight inquiry at once.
                   </td>
                 </tr>
                 <tr><td>Caution Wake Turbulence</td>
