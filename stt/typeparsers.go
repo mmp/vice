@@ -757,6 +757,39 @@ func (p *trafficParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 	return nil, 0, ""
 }
 
+// trafficVisualSepParser recognizes a descriptor-position traffic advisory
+// whose only actionable content is "(other aircraft) has you in sight and
+// will maintain visual separation". The controller gives a non-o'clock
+// position ("off your left", "from the north", etc.); the pilot has no
+// command to issue. Pattern is registered with an empty-string handler so
+// the simulator treats it as informational chatter.
+type trafficVisualSepParser struct{}
+
+func (p *trafficVisualSepParser) identifier() string   { return "traffic_visual_sep" }
+func (p *trafficVisualSepParser) goType() reflect.Type { return reflect.TypeOf(true) }
+
+func (p *trafficVisualSepParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	if pos >= len(tokens) {
+		return nil, 0, ""
+	}
+
+	cur, ok := consumeTrafficPositionDescriptor(tokens, pos)
+	if !ok {
+		return nil, 0, ""
+	}
+
+	// Search forward for the visual-sep phrase, allowing intervening filler
+	// such as "landing the parallel runway", aircraft type words, the
+	// subject pronoun, etc. Bounded so we don't scan unrelated phrasing.
+	end := min(cur+14, len(tokens))
+	for try := cur; try < end; try++ {
+		if next, ok := consumeOtherAircraftMaintainsVisualSeparation(tokens, try); ok {
+			return true, next - pos, ""
+		}
+	}
+	return nil, 0, ""
+}
+
 // holdParser extracts hold parameters.
 type holdParser struct{}
 
@@ -1125,6 +1158,8 @@ func getTypeParser(typeID string) typeParser {
 		return &starParser{}
 	case "traffic":
 		return &trafficParser{}
+	case "traffic_visual_sep":
+		return &trafficVisualSepParser{}
 	case "hold":
 		return &holdParser{}
 	case "text":

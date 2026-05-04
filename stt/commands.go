@@ -2023,6 +2023,7 @@ func extractTraffic(tokens []Token) (int, int, int, bool, bool, int) {
 	// The altitude is the current position of the traffic. If followed by "climbing/descending XXXX",
 	// we use the first altitude (current), not the target.
 	// Altitudes are multiples of 100 feet; aircraft types like 787 are not.
+	otherAircraftWillMaintainVisualSeparation := false
 	for consumed < len(tokens) && consumed < 40 {
 		t := tokens[consumed]
 
@@ -2159,17 +2160,32 @@ func extractTraffic(tokens []Token) (int, int, int, bool, bool, int) {
 			}
 		}
 
+		// No altitude detected at this token. Before consuming it as
+		// noise, check if it begins the "(other aircraft) has you in
+		// sight and will maintain visual separation" phrase — if so,
+		// we're past the altitude (none was given) and need to stop
+		// here so the post-loop trailing-word consumer doesn't run
+		// over it.
+		if next, ok := consumeOtherAircraftMaintainsVisualSeparation(tokens, consumed); ok {
+			otherAircraftWillMaintainVisualSeparation = true
+			consumed = next
+			break
+		}
+
 		consumed++
 	}
 
+	// If we got o'clock and miles but no altitude, treat altitude as unknown.
+	// Controllers commonly omit altitude for parallel-final or pop-up traffic.
 	if alt == 0 && !altUnknown {
-		return 0, 0, 0, false, false, 0
+		altUnknown = true
 	}
 
-	otherAircraftWillMaintainVisualSeparation := false
-	if next, ok := consumeOtherAircraftMaintainsVisualSeparation(tokens, consumed); ok {
-		otherAircraftWillMaintainVisualSeparation = true
-		consumed = next
+	if !otherAircraftWillMaintainVisualSeparation {
+		if next, ok := consumeOtherAircraftMaintainsVisualSeparation(tokens, consumed); ok {
+			otherAircraftWillMaintainVisualSeparation = true
+			consumed = next
+		}
 	}
 
 	// Consume trailing traffic advisory words that follow the altitude.
@@ -2231,18 +2247,20 @@ func consumeAltitudeUnknown(tokens []Token, pos int) (int, bool) {
 }
 
 // consumeOtherAircraftMaintainsVisualSeparation recognizes the phrase
-// "they have you in sight and will maintain visual separation" at the end of
-// a traffic advisory. STT transcription is noisy, so we fuzzy-match each word,
-// tolerate a dropped word by advancing the phrase, and tolerate an extra
-// spurious token by skipping it. The phrase is accepted if at least 8 of its
-// 10 words match.
+// "...you in sight and will maintain visual separation" at the end of a
+// traffic advisory. The leading subject ("they have", "(callsign) has", "it
+// has", etc.) is absorbed by the skip-token branch, since real transcripts
+// vary the subject pronoun and verb form. STT transcription is noisy, so we
+// fuzzy-match each word, tolerate a dropped word by advancing the phrase,
+// and tolerate extra spurious tokens by skipping them. The phrase is
+// accepted if at least 7 of its 8 words match.
 func consumeOtherAircraftMaintainsVisualSeparation(tokens []Token, pos int) (int, bool) {
-	phrase := []string{"they", "have", "you", "in", "sight", "and", "will", "maintain", "visual", "separation"}
+	phrase := []string{"you", "in", "sight", "and", "will", "maintain", "visual", "separation"}
 
 	phraseIdx, tokenIdx := 0, pos
 	matches := 0
 	lastMatchedTokenIdx := pos - 1
-	endTokenIdx := min(pos+len(phrase)+5, len(tokens))
+	endTokenIdx := min(pos+len(phrase)+3, len(tokens))
 
 	for phraseIdx < len(phrase) && tokenIdx < endTokenIdx {
 		text := tokens[tokenIdx].Text
@@ -2266,10 +2284,54 @@ func consumeOtherAircraftMaintainsVisualSeparation(tokens []Token, pos int) (int
 		tokenIdx++
 	}
 
-	if matches < 8 {
+	if matches < 7 {
 		return pos, false
 	}
 	return lastMatchedTokenIdx + 1, true
+}
+
+// consumeTrafficPositionDescriptor recognizes a descriptor-style traffic
+// position phrase that does not include an o'clock value. Used for traffic
+// advisories where the controller gives only relative direction:
+//   - "[off|to] [your] left|right|nose|tail"
+//   - "[from] [the] {compass_dir}" (north, south, east, west, ...)
+//
+// Note: "off", "to", "your", and "the" are filler words elsewhere in the
+// pipeline and may already have been stripped before reaching this point,
+// so this function also accepts the bare direction word.
+func consumeTrafficPositionDescriptor(tokens []Token, pos int) (int, bool) {
+	if pos >= len(tokens) {
+		return pos, false
+	}
+
+	cur := pos
+	// Optional "off" / "to" / "from".
+	if t := strings.ToLower(tokens[cur].Text); t == "off" || t == "to" || t == "from" {
+		cur++
+	}
+	// Optional "your" / "the".
+	if cur < len(tokens) {
+		if t := strings.ToLower(tokens[cur].Text); t == "your" || t == "the" {
+			cur++
+		}
+	}
+	if cur >= len(tokens) {
+		return pos, false
+	}
+
+	t := strings.ToLower(tokens[cur].Text)
+	if t == "left" || t == "right" || t == "nose" || t == "tail" {
+		return cur + 1, true
+	}
+	if _, ok := compassDirections[t]; ok {
+		return cur + 1, true
+	}
+	for long := range compassDirections {
+		if len(t) >= 3 && FuzzyMatch(t, long, 0.8) {
+			return cur + 1, true
+		}
+	}
+	return pos, false
 }
 
 func consumeTrafficLandingParallel(tokens []Token, pos int) (int, bool) {
@@ -2289,8 +2351,12 @@ func consumeTrafficLandingParallel(tokens []Token, pos int) (int, bool) {
 	if next >= len(tokens) || !FuzzyMatch(tokens[next].Text, "parallel", 0.8) {
 		return pos, false
 	}
+	next++
 
-	return next + 1, true
+	if next < len(tokens) && FuzzyMatch(tokens[next].Text, "runway", 0.8) {
+		next++
+	}
+	return next, true
 }
 
 // extractHoldParams extracts hold parameters from tokens for controller-specified holds.

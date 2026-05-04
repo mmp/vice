@@ -2948,6 +2948,45 @@ func TestTrafficAdvisorySTTPatterns(t *testing.T) {
 			},
 			expected: "AAL123 TRAFFIC/10/3/UNK",
 		},
+		{
+			// "landing the parallel runway" with no altitude given
+			name:       "parallel runway no altitude",
+			transcript: "American 123 traffic one o'clock five miles north eastbound a seven thirty seven landing the parallel runway report traffic in sight",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123 TRAFFIC/1/5/UNK",
+		},
+		{
+			// "has you in sight" instead of "they have you in sight",
+			// plus "landing parallel runway" and no altitude.
+			name:       "parallel runway has you in sight",
+			transcript: "American 123 traffic nine o'clock three miles a Cessna four oh two landing parallel runway has you in sight and will maintain visual separation",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123 TRAFFIC/9/3/UNK/VISSEP",
+		},
+		{
+			// Descriptor-position advisory ("off your left"), no o'clock,
+			// no miles, no altitude. Pilot has nothing to do — pattern
+			// emits empty command, framework returns just the callsign.
+			name:       "descriptor position off your left visual sep",
+			transcript: "American 123 traffic off your left landing the parallel a twin Cessna has you in sight and will maintain visual separation",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123",
+		},
+		{
+			// Same shape, "from the north" descriptor.
+			name:       "descriptor position from the north visual sep",
+			transcript: "American 123 traffic from the north landing the parallel a twin Cessna has you in sight and will maintain visual separation",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123",
+		},
 	}
 
 	for _, tt := range tests {
