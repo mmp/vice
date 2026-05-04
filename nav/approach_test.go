@@ -1114,6 +1114,42 @@ func TestExpectVisualApproachResetsExpectApproachState(t *testing.T) {
 	}
 }
 
+// TestInterceptApproachUnderEVAOnHeadingCommitsToLocalizer verifies that
+// "intercept the localizer" issued while on a heading under a synthesized
+// visual approach commits the aircraft to the ILS reference and yields an
+// intent whose readback will mention the localizer.
+func TestInterceptApproachUnderEVAOnHeadingCommitsToLocalizer(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectVisualApproach("22L")
+	f.AssignHeading(250, av.TurnLeft)
+
+	intent := f.InterceptApproach()
+	ai, ok := intent.(av.ApproachIntent)
+	if !ok {
+		t.Fatalf("InterceptApproach returned %T, want ApproachIntent", intent)
+	}
+	if ai.Type != av.ApproachIntercept {
+		t.Errorf("Type = %v, want ApproachIntercept", ai.Type)
+	}
+	if !ai.HasLocalizer {
+		t.Error("HasLocalizer = false, want true")
+	}
+	if ref := f.nav.Approach.InterceptedReference; ref == nil {
+		t.Error("InterceptedReference is nil; expected I22L ILS reference")
+	} else if ref.Type != av.ILSApproach {
+		t.Errorf("InterceptedReference.Type = %v, want ILSApproach", ref.Type)
+	}
+}
+
 // TestSelectVisualReferencesPrioritization verifies that ILS/Localizer are
 // always included, and the visual-style component is picked by priority:
 // VisualApproach > VOR > RNAV > ChartedVisual.

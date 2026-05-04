@@ -712,7 +712,11 @@ func (a ApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add("[and we'll hold short of|hold short of] runway {rwy}", a.LAHSORunway)
 		}
 	case ApproachIntercept:
-		rt.Add("[intercepting the {appr} approach|intercepting {appr}]", a.ApproachName)
+		if a.HasLocalizer {
+			rt.Add("[intercepting the localizer|joining the localizer]")
+		} else {
+			rt.Add("[intercepting the {appr} approach|intercepting {appr}]", a.ApproachName)
+		}
 	case ApproachJoin:
 		rt.Add("[joining the {appr} approach course|joining {appr}]", a.ApproachName)
 	case ApproachAtFixCleared:

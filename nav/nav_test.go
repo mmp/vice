@@ -698,9 +698,9 @@ func (f *FlightTest) AtFixIntercept(fix string) av.CommandIntent {
 	return f.nav.AtFixIntercept(fix, f.simTime, 0)
 }
 
-func (f *FlightTest) InterceptApproach() {
+func (f *FlightTest) InterceptApproach() av.CommandIntent {
 	f.t.Helper()
-	f.nav.InterceptApproach(f.fp.ArrivalAirport, nil)
+	return f.nav.InterceptApproach(f.fp.ArrivalAirport, nil)
 }
 
 // SetWind configures a constant wind from the given direction (degrees true)

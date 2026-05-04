@@ -422,10 +422,21 @@ func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) av.CommandInte
 	}
 
 	ap := nav.Approach.Assigned
+	// Under a synthesized visual, "intercept" commits the aircraft to fly
+	// the localizer route when an ILS/Localizer reference is available.
+	if ap.Type == av.VisualApproach && nav.Approach.InterceptedReference == nil {
+		for _, ref := range nav.Approach.VisualReferences {
+			if ref.Type == av.ILSApproach || ref.Type == av.LocalizerApproach {
+				nav.Approach.InterceptedReference = ref
+				break
+			}
+		}
+	}
 	if nav.Approach.HasLocalizer() {
 		return av.ApproachIntent{
 			Type:         av.ApproachIntercept,
 			ApproachName: ap.FullName,
+			HasLocalizer: true,
 		}
 	}
 	return av.ApproachIntent{
