@@ -155,9 +155,16 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 	// Track whether this is a contact (vs readback)
 	isContact := qt.Type == av.RadioTransmissionContact
 
+	// Compute audio duration: PCM is 44.1kHz mono int16.
+	durationMs := int64(len(qt.PCM)) * 1000 / platform.AudioSampleRate
+	startTime := time.Now()
+
 	finishedCallback := func() {
 		tm.mu.Lock()
 		defer tm.mu.Unlock()
+
+		tm.lg.Infof("SPEECH playback finished: %s (%s, played %dms)", qt.Callsign, qt.Type,
+			time.Since(startTime).Milliseconds())
 
 		tm.playing = false
 		tm.lastCallsign = qt.Callsign
@@ -176,6 +183,13 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 	// Enqueue pre-decoded PCM for playback
 	if err := p.TryEnqueueSpeechPCM(qt.PCM, finishedCallback); err == nil {
 		tm.playing = true
+		tm.lg.Infof("SPEECH playback started: %s (%s, %dms audio, %d queued behind)",
+			qt.Callsign, qt.Type, durationMs, len(tm.queue))
+	} else {
+		// Audio engine refused (already playing). Put it back at the front
+		// so we'll retry on the next Update.
+		tm.queue = append([]queuedTransmission{qt}, tm.queue...)
+		tm.lg.Warnf("SPEECH playback refused for %s: %v (requeued)", qt.Callsign, err)
 	}
 }
 

@@ -1174,6 +1174,11 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			// Audio is playing - garble it instead of recording
 			p.SetSpeechGarbled(true)
 			ui.pttGarbling = true
+			if controlClient != nil {
+				// Hold further pilot transmissions so queued items don't
+				// start playing while the user is holding PTT.
+				controlClient.BeginGarble()
+			}
 			lg.Infof("Push-to-talk: Garbling audio (pressed during playback)")
 		} else {
 			ui.pttPressTime = time.Now()
@@ -1224,6 +1229,9 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			// Was garbling - stop garbling
 			p.SetSpeechGarbled(false)
 			ui.pttGarbling = false
+			if controlClient != nil {
+				controlClient.EndGarble()
+			}
 			lg.Infof("Push-to-talk: Stopped garbling")
 		}
 		if ui.pttRecording {
