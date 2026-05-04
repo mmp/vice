@@ -24,20 +24,21 @@ type STTTestFile struct {
 	Callsign    string `json:"callsign"`
 	Command     string `json:"command"`
 	STTAircraft map[string]struct {
-		Callsign            string                       `json:"Callsign"`
-		AircraftType        string                       `json:"AircraftType"`
-		Fixes               map[string]string            `json:"Fixes"`
-		CandidateApproaches map[string]string            `json:"CandidateApproaches"`
-		ApproachFixes       map[string]map[string]string `json:"ApproachFixes"`
-		AssignedApproach    string                       `json:"AssignedApproach"`
-		SID                 string                       `json:"SID"`
-		STAR                string                       `json:"STAR"`
-		Altitude            int                          `json:"Altitude"`
-		State               string                       `json:"State"`
-		ControllerFrequency string                       `json:"ControllerFrequency"`
-		TrackingController  string                       `json:"TrackingController"`
-		AddressingForm      int                          `json:"AddressingForm"`
-		LAHSORunways        []string                     `json:"LAHSORunways"`
+		Callsign                  string                       `json:"Callsign"`
+		AircraftType              string                       `json:"AircraftType"`
+		Fixes                     map[string]string            `json:"Fixes"`
+		CandidateApproaches       map[string]string            `json:"CandidateApproaches"`
+		CandidateVisualApproaches map[string]string            `json:"CandidateVisualApproaches"`
+		ApproachFixes             map[string]map[string]string `json:"ApproachFixes"`
+		AssignedApproach          string                       `json:"AssignedApproach"`
+		SID                       string                       `json:"SID"`
+		STAR                      string                       `json:"STAR"`
+		Altitude                  int                          `json:"Altitude"`
+		State                     string                       `json:"State"`
+		ControllerFrequency       string                       `json:"ControllerFrequency"`
+		TrackingController        string                       `json:"TrackingController"`
+		AddressingForm            int                          `json:"AddressingForm"`
+		LAHSORunways              []string                     `json:"LAHSORunways"`
 	} `json:"stt_aircraft"`
 }
 
@@ -93,19 +94,20 @@ func main() {
 		}
 
 		aircraft[key] = stt.Aircraft{
-			Callsign:            callsign,
-			AircraftType:        ac.AircraftType,
-			Fixes:               fixes,
-			CandidateApproaches: ac.CandidateApproaches,
-			AssignedApproach:    ac.AssignedApproach,
-			SID:                 ac.SID,
-			STAR:                ac.STAR,
-			Altitude:            ac.Altitude,
-			State:               ac.State,
-			ControllerFrequency: ac.ControllerFrequency,
-			TrackingController:  ac.TrackingController,
-			AddressingForm:      form,
-			LAHSORunways:        ac.LAHSORunways,
+			Callsign:                  callsign,
+			AircraftType:              ac.AircraftType,
+			Fixes:                     fixes,
+			CandidateApproaches:       ac.CandidateApproaches,
+			CandidateVisualApproaches: ac.CandidateVisualApproaches,
+			AssignedApproach:          ac.AssignedApproach,
+			SID:                       ac.SID,
+			STAR:                      ac.STAR,
+			Altitude:                  ac.Altitude,
+			State:                     ac.State,
+			ControllerFrequency:       ac.ControllerFrequency,
+			TrackingController:        ac.TrackingController,
+			AddressingForm:            form,
+			LAHSORunways:              ac.LAHSORunways,
 		}
 	}
 
