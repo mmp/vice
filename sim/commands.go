@@ -533,7 +533,7 @@ func (s *Sim) trafficIsVisible(ac, traffic *Aircraft) bool {
 		} else if traffic.Altitude() < ac.Altitude()-500 {
 			p *= 0.7
 		}
-		p = math.Clamp(p, 0.2, 0.95)
+		p = math.Clamp(p, 0.2, 1)
 	}
 
 	return s.Rand.Float32() < p
