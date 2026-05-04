@@ -53,10 +53,10 @@ func registerOpsCommands() {
 	registerCommand(CommandModeHandOff, "[TCP1] [TRK_ACID]|[TCP2] [TRK_ACID]", handoffOrRedirectTrack)
 	registerCommand(CommandModeHandOff, "[TCP1] [TRK_BCN]|[TCP2] [TRK_BCN]", handoffOrRedirectTrack)
 
-	// 5.1.10 Accept handoff (p. 5-20) ([SLEW] variants are handled in cmdslew.go)
+	// 5.1.10 Accept handoff (p. 5-20) (implied [SLEW] variants are handled in cmdslew.go)
 	// 5.1.17 Recall handoff (p. 5-33)
 	// 5.1.19 Recall redirected handoff
-	registerCommand(CommandModeHandOff, "[TRK_ACID]|[TRK_BCN]",
+	registerCommand(CommandModeHandOff, "[TRK_ACID]|[TRK_BCN]|[SLEW]",
 		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrSTARSIllegalTrack
