@@ -989,9 +989,10 @@ func (s *Sim) updateState() {
 
 			if ac.Nav.Approach.RequestAltitude && ac.IsAssociated() {
 				ac.Nav.Approach.RequestAltitude = false
-				if ac.Nav.Altitude.Assigned == nil {
+				if ac.Nav.Altitude.Assigned == nil && ac.Nav.Altitude.AfterSpeed == nil {
 					// An altitude may have been subsequently assigned (e.g., fly heading 120,
-					// maintain 5000); skip the transmission if so.
+					// maintain 5000); skip the transmission if so. AfterSpeed counts too —
+					// the altitude is assigned, just deferred until the speed change completes.
 					s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestAltitude)
 				}
 			}

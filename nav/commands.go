@@ -481,8 +481,11 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 
 		// If an arrival is given a heading off of a route with altitude
 		// constraints, set its cleared altitude to its current altitude
-		// for now.
-		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR() || nav.Waypoints[0].OnApproach()) && nav.Altitude.Assigned == nil {
+		// for now. AfterSpeed counts as an explicit assignment too — the
+		// controller has assigned an altitude, it's just deferred until
+		// the speed change completes.
+		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR() || nav.Waypoints[0].OnApproach()) &&
+			nav.Altitude.Assigned == nil && nav.Altitude.AfterSpeed == nil {
 			if _, ok := nav.findAltitudeTarget(); ok {
 				// Don't take a direct pointer to nav.FlightState.Altitude!
 				alt := nav.FlightState.Altitude
