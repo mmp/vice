@@ -55617,21 +55617,6 @@
                 "airport": "KPHL"
               },
               {
-                "icao": "WUP",
-                "types": ["B350"],
-                "airport": "KBWI"
-              },
-              {
-                "icao": "GPD",
-                "types": ["PC12"],
-                "airport": "KTEB"
-              },
-              {
-                "icao": "GPD",
-                "types": ["PC12"],
-                "airport": "KOXC"
-              },
-              {
                 "icao": "IBE",
                 "types": ["A332"],
                 "airport": "LEBL"
@@ -56487,11 +56472,6 @@
                 "airport": "CYYZ"
               },
               {
-                "icao": "MTN",
-                "types": ["C208"],
-                "airport": "KEWR"
-              },
-              {
                 "icao": "NKS",
                 "types": ["A319"],
                 "airport": "KMYR"
@@ -56565,36 +56545,6 @@
                 "icao": "PDT",
                 "types": ["E145"],
                 "airport": "KPHL"
-              },
-              {
-                "icao": "POE",
-                "types": ["DH8D"],
-                "airport": "CYTZ"
-              },
-              {
-                "icao": "POE",
-                "types": ["DH8D"],
-                "airport": "CYTZ"
-              },
-              {
-                "icao": "POE",
-                "types": ["DH8D"],
-                "airport": "CYTZ"
-              },
-              {
-                "icao": "POE",
-                "types": ["DH8D"],
-                "airport": "CYTZ"
-              },
-              {
-                "icao": "POE",
-                "types": ["DH8D"],
-                "airport": "CYTZ"
-              },
-              {
-                "icao": "POE",
-                "types": ["DH8D"],
-                "airport": "CYTZ"
               },
               {
                 "icao": "RPA",
@@ -57370,11 +57320,6 @@
                 "icao": "UPS",
                 "types": ["B763"],
                 "airport": "KPHL"
-              },
-              {
-                "icao": "WEN",
-                "types": ["DH8D"],
-                "airport": "CYYZ"
               }
             ]
           }
@@ -57447,6 +57392,10 @@
               {
                 "airport": "KMCO",
                 "icao": "TAI"
+              },
+              {
+                "airport": "KMCO",
+                "icao": "TAM"
               },
               {
                 "airport": "KMCO",
@@ -76021,7 +75970,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CNE",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/L", "A90 SHORLINE B"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/L", "A90 SHORLINE B", "BOS 4R AIRSPACE EXTENSION"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -76075,7 +76024,185 @@
         }
       ],
       "wind": {
-        "direction": "35-95"
+        "direction": "10-150"
+      }
+    },
+    "BOS 4/9 LIMC": {
+      "arrival_runways": [
+        {
+          "airport": "KBOS",
+          "runway": "4R"
+        },
+        {
+          "airport": "KBOS",
+          "runway": "4L"
+        },
+        {
+          "airport": "KBED",
+          "runway": "11"
+        },
+        {
+          "airport": "KLWM",
+          "runway": "5"
+        },
+        {
+          "airport": "KLWM",
+          "runway": "14"
+        },
+        {
+          "airport": "KBVY",
+          "runway": "16"
+        },
+        {
+          "airport": "KBVY",
+          "runway": "9"
+        },
+        {
+          "airport": "KOWD",
+          "runway": "35"
+        },
+        {
+          "airport": "KPSM",
+          "runway": "34"
+        },
+        {
+          "airport": "KMHT",
+          "runway": "35"
+        },
+        {
+          "airport": "KASH",
+          "runway": "32"
+        },
+        {
+          "airport": "KACK",
+          "runway": "6"
+        },
+        {
+          "airport": "KMVY",
+          "runway": "6"
+        },
+        {
+          "airport": "KHYA",
+          "runway": "6"
+        },
+        {
+          "airport": "KFMH",
+          "runway": "5"
+        }
+      ],
+      "inbound_rates": {
+        "JFUND2.4R": {
+          "KBOS": 0
+        },
+        "ROBUC3.4R": {
+          "KBOS": 0
+        },
+        "OOSHN5.4R": {
+          "KBOS": 0
+        },
+        "DREEM3": {
+          "KBED": 0,
+          "KBVY": 0,
+          "KLWM": 0
+        },
+        "ZELKA2": {
+          "KBED": 0,
+          "KBVY": 0,
+          "KLWM": 0
+        },
+        "WOONS.LO": {
+          "KBED": 0,
+          "KOWD": 0,
+          "KLWM": 0,
+          "KBVY": 0
+        },
+        "WOONS": {
+          "KBOS": 0,
+          "KPSM": 0,
+          "KMHT": 0,
+          "KASH": 0
+        },
+        "GDM": {
+          "KBOS": 0,
+          "KBED": 0,
+          "KOWD": 0,
+          "KLWM": 0,
+          "KBVY": 0
+        },
+        "FREDO": {
+          "KBOS": 0
+        },
+        "LWRNC": {
+          "KBOS": 0
+        },
+        "LWRNC.SAT": {
+          "KBED": 0,
+          "KOWD": 0,
+          "KLWM": 0,
+          "KBVY": 0
+        },
+        "KLANE": {
+          "KPSM": 0
+        }
+      },
+      "vfr_rate_scale": 0.2,
+      "configuration": "CNE",
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/L", "A90 SHORLINE B", "BOS 4R AIRSPACE EXTENSION"],
+      "departure_runways": [
+        {
+          "airport": "KBOS",
+          "rate": 2,
+          "runway": "4R",
+          "category": "Secondary.4/9"
+        },
+        {
+          "airport": "KBOS",
+          "rate": 45,
+          "runway": "9",
+          "category": "Primary.4/9"
+        },
+        {
+          "airport": "KBOS",
+          "rate": 5,
+          "runway": "4L",
+          "category": "PROP.4/9"
+        },
+        {
+          "airport": "KBOS",
+          "rate": 5,
+          "runway": "9",
+          "category": "PROP.4/9"
+        },
+        {
+          "airport": "KBOS",
+          "rate": 20,
+          "runway": "15R",
+          "category": "Secondary.4/9"
+        },
+        {
+          "airport": "KBED",
+          "rate": 0,
+          "runway": "11"
+        },
+        {
+          "airport": "KLWM",
+          "rate": 0,
+          "runway": "5"
+        },
+        {
+          "airport": "KOWD",
+          "rate": 0,
+          "runway": "35"
+        },
+        {
+          "airport": "KBVY",
+          "rate": 0,
+          "runway": "9"
+        }
+      ],
+      "wind": {
+        "direction": "01-150",
+        "flight_rules": "IMC"
       }
     },
     "BOS 4L/9+4R": {
@@ -76198,7 +76325,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CNE",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/L", "A90 SHORLINE B"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/L", "A90 SHORLINE B", "BOS 4R AIRSPACE EXTENSION"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -76393,7 +76520,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CNE",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/15RC", "A90 SHORLINE B"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/15RC", "A90 SHORLINE B", "BOS 4R AIRSPACE EXTENSION"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -76447,7 +76574,8 @@
         }
       ],
       "wind": {
-        "direction": "35-95"
+        "direction": "10-160",
+        "flight_rules": "VMC"
       }
     },
     "BOS 15/9": {
@@ -76720,7 +76848,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CNW",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -76872,7 +77000,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CNW",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -77036,7 +77164,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CSW",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -77188,7 +77316,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CSW",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -77340,7 +77468,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CSW",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L", "RNAV 22L Y"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L", "RNAV 22L Y", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -77492,7 +77620,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CSW",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27/22L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27/22L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -77528,7 +77656,8 @@
         }
       ],
       "wind": {
-        "direction": "185-245"
+        "direction": "180-310",
+        "flight_rules": "VMC"
       }
     },
     "BOS 27+32/33": {
@@ -77644,7 +77773,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CNW",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27/32"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27/32", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -77686,7 +77815,8 @@
         }
       ],
       "wind": {
-        "direction": "315-15"
+        "direction": "270-15",
+        "flight_rules": "VMC"
       }
     },
     "BOS 33+32/27": {
@@ -77806,7 +77936,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "CNW",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L/32"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L/32", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -77892,7 +78022,13 @@
         }
       },
       "configuration": "44X",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 4R/L", "A90 SHORLINE B"],
+      "default_maps": [
+        "A90 MASTER BASE MAP A",
+        "RWY 4R/L",
+        "A90 SHORLINE B",
+        "BOS 4R OFFSET REFERENCE LINE",
+        "BOS 4R AIRSPACE EXTENSION"
+      ],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -77920,7 +78056,7 @@
         }
       ],
       "wind": {
-        "direction": "330-130",
+        "direction": "325-144",
         "flight_rules": "VMC"
       }
     },
@@ -78001,7 +78137,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "22Y",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L", "RNAV 22L Y"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L", "RNAV 22L Y", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -78066,7 +78202,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "78X",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27/22L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 27/22L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -78147,7 +78283,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "33R",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -78190,7 +78326,7 @@
       },
       "vfr_rate_scale": 0.8,
       "configuration": "33L",
-      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L"],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 33L", "A90 SHORLINE B"],
       "departure_runways": [
         {
           "airport": "KBOS",
@@ -78200,7 +78336,8 @@
         }
       ],
       "wind": {
-        "direction": "280-020"
+        "direction": "280-020",
+        "flight_rules": "VMC"
       }
     }
   }
