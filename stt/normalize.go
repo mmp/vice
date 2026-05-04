@@ -564,6 +564,8 @@ var multiTokenReplacements = map[string][]string{
 	"for left":     {"4", "left"},   // STT error: "four left" transcribed as "for left"
 	"for right":    {"4", "right"},  // STT error: "four right" transcribed as "for right"
 	"for center":   {"4", "center"}, // STT error: "four center" transcribed as "for center"
+	"vector as":    {"vector"},      // STT error: "vector for/to the" transcribed as "vector as"
+	"vectors as":   {"vectors"},
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
