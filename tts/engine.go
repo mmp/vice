@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 )
 
@@ -143,8 +142,7 @@ func CheckTTSLoadError() (error, bool) {
 	}
 }
 
-func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts,
-	text, voice string, radioSeed uint32) ([]int16, error) {
+func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, text, voice string, radioSeed uint32) ([]int16, error) {
 	<-t.done
 
 	if ttsEngine == nil || text == "" {
@@ -171,14 +169,13 @@ func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts,
 	// engine noise as the squelch gate opens, matching real radio
 	// transmissions and keeping the audio stream active for Bluetooth
 	// devices that suspend during silence.
-	prerollSamples := t.targetSampleRate * 200 / 1000 // 200ms
+	prerollSamples := t.targetSampleRate * 20 / 1000 // 20ms
 	pcm = append(make([]int16, prerollSamples), pcm...)
 
 	// Append silence to simulate the pilot holding the transmit key
 	// briefly after finishing speaking. addRadioEffect fills this with
 	// noise and engine rumble before the squelch tail fades it out.
-	r := rand.Make()
-	tailSamples := t.targetSampleRate * (100 + r.Intn(200)) / 1000 // 0.1-0.3s
+	tailSamples := t.targetSampleRate * 20 / 1000 // 20ms
 	pcm = append(pcm, make([]int16, tailSamples)...)
 
 	addRadioEffect(pcm, t.targetSampleRate, radioSeed, 1)
