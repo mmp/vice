@@ -1611,24 +1611,14 @@ func registerAllCommands() {
 	// === TRAFFIC ADVISORY ===
 	registerSTTCommand(
 		"traffic [at] [your] {traffic}",
-		func(tr trafficResult) string {
-			if tr.otherTrafficMaintainsVisual {
-				return fmt.Sprintf("TRAFFIC/%d/%d/%d/VISSEP", tr.oclock, tr.miles, tr.altitude)
-			}
-			return fmt.Sprintf("TRAFFIC/%d/%d/%d", tr.oclock, tr.miles, tr.altitude)
-		},
+		formatTrafficCommand,
 		WithName("traffic_advisory"),
 		WithPriority(10),
 	)
 
 	registerSTTCommand(
 		"traffic landing [the] parallel [at] [your] {traffic}",
-		func(tr trafficResult) string {
-			if tr.otherTrafficMaintainsVisual {
-				return fmt.Sprintf("TRAFFIC/%d/%d/%d/VISSEP", tr.oclock, tr.miles, tr.altitude)
-			}
-			return fmt.Sprintf("TRAFFIC/%d/%d/%d", tr.oclock, tr.miles, tr.altitude)
-		},
+		formatTrafficCommand,
 		WithName("traffic_advisory"),
 		WithPriority(10),
 	)
@@ -1765,4 +1755,15 @@ func registerAllCommands() {
 		WithName("traffic_and_airport_in_sight"),
 		WithPriority(15),
 	)
+}
+
+func formatTrafficCommand(tr trafficResult) string {
+	alt := fmt.Sprintf("%d", tr.altitude)
+	if tr.altitudeUnknown {
+		alt = "UNK"
+	}
+	if tr.otherTrafficMaintainsVisual {
+		return fmt.Sprintf("TRAFFIC/%d/%d/%s/VISSEP", tr.oclock, tr.miles, alt)
+	}
+	return fmt.Sprintf("TRAFFIC/%d/%d/%s", tr.oclock, tr.miles, alt)
 }

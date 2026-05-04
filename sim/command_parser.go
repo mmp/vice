@@ -870,6 +870,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.TrafficInSightInquiry(tcw, callsign)
 		} else if trafficSpec, ok := strings.CutPrefix(command, "TRAFFIC/"); ok {
 			// Parse the command: TRAFFIC/oclock/miles/altitude[/VISSEP]
+			// Altitude may be the literal "UNK" if the controller said
+			// "altitude unknown".
 			args := strings.Split(trafficSpec, "/")
 			if len(args) != 3 && len(args) != 4 {
 				return nil, ErrInvalidCommandSyntax
@@ -892,12 +894,16 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				return nil, ErrInvalidCommandSyntax
 			}
 
-			trafficAlt, err := strconv.Atoi(args[2])
-			if err != nil {
-				return nil, ErrInvalidCommandSyntax
+			altUnknown := args[2] == "UNK"
+			var trafficAlt int
+			if !altUnknown {
+				trafficAlt, err = strconv.Atoi(args[2])
+				if err != nil {
+					return nil, ErrInvalidCommandSyntax
+				}
 			}
 
-			return s.TrafficAdvisory(tcw, callsign, oclock, miles, trafficAlt*100, otherMaintainsVisual)
+			return s.TrafficAdvisory(tcw, callsign, oclock, miles, trafficAlt*100, altUnknown, otherMaintainsVisual)
 		} else if command == "TO" || strings.HasPrefix(command, "TO/") {
 			var freq av.Frequency
 			if strings.HasPrefix(command, "TO/") {

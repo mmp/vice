@@ -1735,7 +1735,7 @@ func TestFutureTrafficInSightSupersededByNewAdvisory(t *testing.T) {
 	}
 
 	// Any new advisory path must purge the stale entry.
-	if _, err := vs.Sim.TrafficAdvisory(vs.tcw, vs.callsign, 12, 5, int(vs.AC.Altitude()), false); err != nil {
+	if _, err := vs.Sim.TrafficAdvisory(vs.tcw, vs.callsign, 12, 5, int(vs.AC.Altitude()), false, false); err != nil {
 		t.Fatalf("TrafficAdvisory returned error: %v", err)
 	}
 
@@ -1824,7 +1824,7 @@ func TestTrafficAdvisoryClearsOfferedStateButKeepsSightingHistory(t *testing.T) 
 		vs.callsign: {TrafficCallsign: "DAL456", Time: vs.Sim.State.SimTime.Add(10 * time.Second)},
 	}
 
-	intent, err := vs.Sim.TrafficAdvisory(vs.tcw, vs.callsign, 12, 5, int(vs.AC.Altitude()), false)
+	intent, err := vs.Sim.TrafficAdvisory(vs.tcw, vs.callsign, 12, 5, int(vs.AC.Altitude()), false, false)
 	if err != nil {
 		t.Fatalf("TrafficAdvisory returned error: %v", err)
 	}

@@ -2908,6 +2908,46 @@ func TestTrafficAdvisorySTTPatterns(t *testing.T) {
 			},
 			expected: "AAL123 TRAFFIC/10/2/30/VISSEP",
 		},
+		{
+			name:       "altitude unknown",
+			transcript: "American 123 traffic at your three o'clock three miles altitude unknown",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123 TRAFFIC/3/3/UNK",
+		},
+		{
+			name:       "unknown altitude word order swap",
+			transcript: "American 123 traffic twelve o'clock five miles unknown altitude",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123 TRAFFIC/12/5/UNK",
+		},
+		{
+			name:       "altitude unknown with report in sight",
+			transcript: "American 123 traffic nine o'clock four miles altitude unknown report in sight",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123 TRAFFIC/9/4/UNK",
+		},
+		{
+			name:       "altitude unknown with vissep",
+			transcript: "American 123 traffic at your two o'clock six miles altitude unknown they have you in sight and will maintain visual separation",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123 TRAFFIC/2/6/UNK/VISSEP",
+		},
+		{
+			name:       "landing the parallel altitude unknown",
+			transcript: "American 123 traffic landing the parallel ten o'clock three miles altitude unknown",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123 TRAFFIC/10/3/UNK",
+		},
 	}
 
 	for _, tt := range tests {

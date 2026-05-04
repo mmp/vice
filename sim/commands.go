@@ -419,7 +419,7 @@ func (s *Sim) ATISCommand(tcw TCW, callsign av.ADSBCallsign, letter string) (av.
 }
 
 // TrafficAdvisory handles controller-issued traffic advisories.
-func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles, trafficAlt int, otherMaintainsVisual bool) (av.CommandIntent, error) {
+func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles, trafficAlt int, altUnknown, otherMaintainsVisual bool) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -434,7 +434,7 @@ func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles, 
 			if otherMaintainsVisual {
 				return av.TrafficAdvisoryIntent{Response: av.TrafficResponseAcknowledged}
 			}
-			return s.handleTrafficAdvisory(ac, oclock, miles, trafficAlt)
+			return s.handleTrafficAdvisory(ac, oclock, miles, trafficAlt, altUnknown)
 		})
 }
 
@@ -443,7 +443,7 @@ func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles, 
 //  2. Presence of traffic (if no traffic in area -> "looking")
 //  3. Pilot see-probability derived from METAR effective visual range, with a
 //     relative-altitude boost/penalty (above against sky, below against ground)
-func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles, callAlt int) av.CommandIntent {
+func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles, callAlt int, altUnknown bool) av.CommandIntent {
 	nearestMETAR, _ := s.nearestMETAR(ac.Position())
 	if nearestMETAR.ICAO != "" && !nearestMETAR.IsVMC() {
 		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseIMC}
@@ -471,10 +471,13 @@ func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles, callAlt int
 				continue // Skip self
 			}
 
-			// Use altitude as a strict cutoff selector.
-			altDiff := math.Abs(candidate.Altitude() - float32(callAlt))
-			if altDiff > verticalToleranceFeet {
-				continue
+			// Use altitude as a strict cutoff selector. Skipped when the
+			// controller said "altitude unknown" — pick by position alone.
+			if !altUnknown {
+				altDiff := math.Abs(candidate.Altitude() - float32(callAlt))
+				if altDiff > verticalToleranceFeet {
+					continue
+				}
 			}
 
 			// Distance must be in range; then we take the closest if there are multiple

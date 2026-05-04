@@ -1947,16 +1947,18 @@ func extractDegrees(tokens []Token) (int, string, int) {
 
 // extractTraffic extracts traffic advisory components: o'clock position, distance in miles, and altitude.
 // Pattern: "(N) o'clock, (M) miles, (direction), (aircraft type), (at) (altitude)"
-// Returns o'clock (1-12), miles, encoded altitude (in 100s of feet), whether
-// other traffic will maintain visual separation, and tokens consumed. The
+// Returns o'clock (1-12), miles, encoded altitude (in 100s of feet),
+// whether the altitude was given as "altitude unknown", whether other
+// traffic will maintain visual separation, and tokens consumed. The
 // direction and aircraft type are ignored.
-func extractTraffic(tokens []Token) (int, int, int, bool, int) {
+func extractTraffic(tokens []Token) (int, int, int, bool, bool, int) {
 	if len(tokens) == 0 {
-		return 0, 0, 0, false, 0
+		return 0, 0, 0, false, false, 0
 	}
 
 	consumed := 0
 	var oclock, miles, alt int
+	var altUnknown bool
 
 	// Phase 1: Find o'clock position (1-12)
 	for consumed < len(tokens) && consumed < 10 {
@@ -1983,7 +1985,7 @@ func extractTraffic(tokens []Token) (int, int, int, bool, int) {
 	}
 
 	if oclock == 0 {
-		return 0, 0, 0, false, 0
+		return 0, 0, 0, false, false, 0
 	}
 
 	// Phase 2: Find distance in miles
@@ -2014,7 +2016,7 @@ func extractTraffic(tokens []Token) (int, int, int, bool, int) {
 	}
 
 	if miles == 0 {
-		return 0, 0, 0, false, 0
+		return 0, 0, 0, false, false, 0
 	}
 
 	// Phase 3: Skip direction, runway relationship, and aircraft type; find altitude.
@@ -2027,6 +2029,13 @@ func extractTraffic(tokens []Token) (int, int, int, bool, int) {
 		if next, ok := consumeTrafficLandingParallel(tokens, consumed); ok {
 			consumed = next
 			continue
+		}
+
+		// Check for "altitude unknown" / "unknown altitude" phrasing.
+		if next, ok := consumeAltitudeUnknown(tokens, consumed); ok {
+			altUnknown = true
+			consumed = next
+			break
 		}
 
 		// Check for altitude pattern (TokenAltitude from "N thousand" parsing)
@@ -2153,8 +2162,8 @@ func extractTraffic(tokens []Token) (int, int, int, bool, int) {
 		consumed++
 	}
 
-	if alt == 0 {
-		return 0, 0, 0, false, 0
+	if alt == 0 && !altUnknown {
+		return 0, 0, 0, false, false, 0
 	}
 
 	otherAircraftWillMaintainVisualSeparation := false
@@ -2194,7 +2203,31 @@ func extractTraffic(tokens []Token) (int, int, int, bool, int) {
 		}
 	}
 
-	return oclock, miles, alt, otherAircraftWillMaintainVisualSeparation, consumed
+	return oclock, miles, alt, altUnknown, otherAircraftWillMaintainVisualSeparation, consumed
+}
+
+// consumeAltitudeUnknown recognizes "[at] altitude unknown" or
+// "unknown altitude" — the controller is reporting traffic from a primary
+// return without Mode C. STT transcription is noisy, so each word is matched
+// fuzzily. Returns the new token index and true if matched.
+func consumeAltitudeUnknown(tokens []Token, pos int) (int, bool) {
+	// Skip a leading "at".
+	start := pos
+	if start < len(tokens) && strings.ToLower(tokens[start].Text) == "at" {
+		start++
+	}
+	if start+1 >= len(tokens) {
+		return pos, false
+	}
+
+	a, b := tokens[start].Text, tokens[start+1].Text
+	if FuzzyMatch(a, "altitude", 0.8) && FuzzyMatch(b, "unknown", 0.8) {
+		return start + 2, true
+	}
+	if FuzzyMatch(a, "unknown", 0.8) && FuzzyMatch(b, "altitude", 0.8) {
+		return start + 2, true
+	}
+	return pos, false
 }
 
 // consumeOtherAircraftMaintainsVisualSeparation recognizes the phrase
