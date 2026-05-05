@@ -1,0 +1,1824 @@
+{
+  "tracon": "EUG",
+  "airports": {
+    "KEUG": {
+      "atpa_volumes": {
+        "16L": {
+          "runway_threshold": "KEUG-34L",
+          "heading": 344,
+          "max_heading_deviation": 30,
+          "floor": 0,
+          "ceiling": 6000,
+          "length": 20,
+          "left_width": 3000,
+          "right_width": 3000
+        },
+        "34L": {
+          "runway_threshold": "KEUG-16R",
+          "heading": 164,
+          "max_heading_deviation": 30,
+          "floor": 0,
+          "ceiling": 6000,
+          "length": 20,
+          "left_width": 3000,
+          "right_width": 3000
+        },
+        "34R": {
+          "runway_threshold": "KEUG-16L",
+          "heading": 164,
+          "max_heading_deviation": 30,
+          "floor": 0,
+          "ceiling": 6000,
+          "length": 20,
+          "left_width": 3000,
+          "right_width": 3000
+        },
+        "16R": {
+          "runway_threshold": "KEUG-34R",
+          "heading": 344,
+          "max_heading_deviation": 30,
+          "floor": 0,
+          "ceiling": 6000,
+          "length": 20,
+          "left_width": 3000,
+          "right_width": 3000
+        }
+      },
+      "approaches": {
+        "I6L": { "cifp_id": "I16L" },
+        "I6R": { "cifp_id": "I16R" },
+        "L6L": { "cifp_id": "L16L" },
+        "L6R": { "cifp_id": "L16R" },
+        "Y6L": { "cifp_id": "RY16L" },
+        "Y6R": { "cifp_id": "RY16R" },
+        "Y4R": { "cifp_id": "RY34R" },
+        "Y4L": { "cifp_id": "RY34L" },
+        "Z6L": { "cifp_id": "RZ16L" },
+        "Z6R": { "cifp_id": "RZ16R" },
+        "Z4L": { "cifp_id": "RZ34L" },
+        "Z4R": { "cifp_id": "RZ34R" },
+        "V4L": { "cifp_id": "S34L" }
+      },
+      "departure_routes": {
+        "34L": {
+          "ZEMAM": {
+            "cleared_altitude": 3000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 ZEMAM"
+          },
+          "SNOKY": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 SNOKY"
+          },
+          "LMT.J": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 LMT"
+          },
+          "LMT.T": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 LMT"
+          },
+          "CHEEZ": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 CHEEZ"
+          },
+          "HOCUM": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 HOCUM"
+          },
+          "CITYY": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 CITYY"
+          },
+          "BALDY": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 BALDY"
+          },
+          "RBG": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 RBG"
+          },
+          "YERIN": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 YERIN"
+          },
+          "UBG.8": {
+            "cleared_altitude": 8000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 CVO V495 UBG"
+          },
+          "OTH.7": {
+            "cleared_altitude": 7000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 OTH"
+          },
+          "CVO.4": {
+            "cleared_altitude": 4000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 CVO"
+          },
+          "ONP.6": {
+            "cleared_altitude": 6000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 ONP"
+          },
+          "DSD.J": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 DSD"
+          },
+          "UBG.4": {
+            "cleared_altitude": 4000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 CVO V495 UBG"
+          },
+          "UBG.6": {
+            "cleared_altitude": 6000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-16R/h344 CVO V495 UBG"
+          }
+        },
+        "16R": {
+          "ZEMAM": {
+            "cleared_altitude": 3000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 ZEMAM"
+          },
+          "SNOKY": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 SNOKY"
+          },
+          "LMT.T": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 LMT"
+          },
+          "LMT.J": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 LMT"
+          },
+          "CHEEZ": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 CHEEZ"
+          },
+          "HOCUM": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 HOCUM"
+          },
+          "CITYY": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 CITYY"
+          },
+          "BALDY": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 BALDY"
+          },
+          "RBG": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 RBG"
+          },
+          "YERIN": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 YERIN"
+          },
+          "UBG.8": {
+            "cleared_altitude": 8000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 CVO V495 UBG"
+          },
+          "OTH.7": {
+            "cleared_altitude": 7000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 OTH"
+          },
+          "CVO.4": {
+            "cleared_altitude": 4000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 CVO"
+          },
+          "ONP.6": {
+            "cleared_altitude": 6000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 ONP"
+          },
+          "DSD.J": {
+            "cleared_altitude": 9000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 DSD"
+          },
+          "UBG.4": {
+            "cleared_altitude": 4000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 CVO V495 UBG"
+          },
+          "UBG.6": {
+            "cleared_altitude": 6000,
+            "sid": "EUG1",
+            "waypoints": "KEUG-34L/h164 CVO V495 UBG"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "KEUG",
+          "exit": "ZEMAM",
+          "route": "ZEMAM",
+          "altitude": 3000
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "77S",
+          "exit": "ZEMAM",
+          "route": "ZEMAM",
+          "altitude": 3000
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "KCVO",
+          "exit": "CVO.4",
+          "route": "CVO",
+          "altitude": 4000
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "KHIO",
+          "exit": "UBG.4",
+          "route": "UBG",
+          "altitude": 4000
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "KVUO",
+          "exit": "UBG.6",
+          "route": "UBG",
+          "altitude": 6000
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "destination": "KUAO",
+          "exit": "UBG.8",
+          "route": "UBG",
+          "altitude": 8000
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            }
+          ],
+          "destination": "KTUS",
+          "exit": "YERIN",
+          "route": "YERIN BTY EED PXR DINGO6"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            }
+          ],
+          "destination": "KCCR",
+          "exit": "RBG",
+          "route": "RBG"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KTRM",
+          "exit": "RBG",
+          "route": "RBG OYVEY SIZLR4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "destination": "KSUN",
+          "exit": "DSD.T",
+          "route": "DSD BOI PRESN"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            }
+          ],
+          "destination": "KSUN",
+          "exit": "DSD.J",
+          "route": "DSD BOI PRESN"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "KOTH",
+          "exit": "OTH.7",
+          "altitude": 7000,
+          "route": "OTH"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "destination": "KLMT",
+          "exit": "LMT.T",
+          "altitude": 15000,
+          "route": "LMT"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            }
+          ],
+          "destination": "KLMT",
+          "exit": "LMT.J",
+          "altitude": 15000,
+          "route": "LMT"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            },
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "KONP",
+          "exit": "ONP.6",
+          "altitude": 6000,
+          "route": "ONP"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAmultipiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "KSTS",
+          "exit": "OTH.7",
+          "altitude": 7000,
+          "route": "OTH V27 ENI FREES ROZZA"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "KSPB",
+          "exit": "UBG.6",
+          "route": "UBG",
+          "altitude": 6000
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KPHX",
+          "exit": "CHEEZ",
+          "route": "CHEEZ V452 MANSN LMT SUNBE LOMIA KENNO BTY WOTRO BRUSR1"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "EJA"
+            },
+            {
+              "fleet": "default",
+              "icao": "SKW"
+            },
+            {
+              "fleet": "default",
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KSAN",
+          "exit": "RBG",
+          "route": "RBG OED J126 SAC AVE J1 LAX COMIX2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "EJA"
+            },
+            {
+              "fleet": "default",
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KOAK",
+          "exit": "RBG",
+          "route": "RBG HUPTU SPAMY WNDSR2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "ASA"
+            },
+            {
+              "fleet": "default",
+              "icao": "QXE"
+            },
+            {
+              "fleet": "default",
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KPDX",
+          "exit": "CITYY",
+          "route": "CITYY"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "ASA"
+            },
+            {
+              "fleet": "default",
+              "icao": "QXE"
+            },
+            {
+              "fleet": "default",
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KSEA",
+          "exit": "CITYY",
+          "route": "CITYY"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KIWA",
+          "exit": "LMT",
+          "route": "LMT J92 KADDY J92 PRFUM KIDDR DSERT2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "SWA"
+            },
+            {
+              "fleet": "default",
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KLAS",
+          "exit": "LMT",
+          "route": "LMT YERIN TQILA COKTL4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "SCX"
+            },
+            {
+              "fleet": "default",
+              "icao": "ASA"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KLAX",
+          "exit": "RBG",
+          "route": "RBG OED J126 RBL J126 SAC BURGL IRNMN2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "EJA"
+            },
+            {
+              "fleet": "default",
+              "icao": "LXJ"
+            },
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KSJC",
+          "exit": "RBG",
+          "route": "RBG HUPTU FRLON FRLON2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "LXJ"
+            },
+            {
+              "fleet": "default",
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KBOI",
+          "exit": "DSD.J",
+          "route": "DSD DEVLE KYAAN4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            }
+          ],
+          "destination": "KBDN",
+          "exit": "SNOKY",
+          "route": "SNOKY"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "destination": "KBDN",
+          "exit": "DSD.T",
+          "route": "DSD"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "destination": "KBZN",
+          "exit": "DSD.T",
+          "route": "DSD IMB BKE HIA"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "SWA"
+            },
+            {
+              "fleet": "short",
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "DSD.J",
+          "route": "DSD BOI LYONS TCH KAMPR LONGZ4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KBUR",
+          "exit": "RBG",
+          "route": "RBG OED SAC RDHOT ROKKR3"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "short",
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KSFO",
+          "exit": "RBG",
+          "route": "RBG MLBEC BDEGA4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KSNA",
+          "exit": "RBG",
+          "route": "RBG OED J126 SAC REBRG OHSEA3"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAjet",
+              "icao": "N"
+            },
+            {
+              "fleet": "default",
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KSMF",
+          "exit": "RBG",
+          "route": "RBG OED RBL TUDOR2"
+        },
+        {
+          "airlines": [
+            {
+              "types": ["C208"],
+              "icao": "CFS"
+            },
+            {
+              "types": ["B190", "BE99"],
+              "icao": "AMF"
+            }
+          ],
+          "destination": "KPDX",
+          "exit": "UBG.6",
+          "route": "UBG"
+        },
+        {
+          "airlines": [
+            {
+              "types": ["E75L"],
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KSLC",
+          "exit": "BALDY",
+          "route": "BALDY ALKAL BYI SKEES6"
+        }
+      ],
+      "exit_categories": {
+        "ZEMAM": "Internal",
+        "OTH.7": "Internal",
+        "ONP.6": "Props North",
+        "UBG.4": "Props North",
+        "UBG.6": "Props North",
+        "UBG.8": "Props North",
+        "CVO.4": "Props North",
+        "CITYY": "Jets North",
+        "RBG": "Jets South",
+        "SNOKY": "Jets North",
+        "LMT.J": "Jets South",
+        "LMT.T": "Props South",
+        "CHEEZ": "Jets South",
+        "HOCUM": "Jets South",
+        "BALDY": "Jets East",
+        "YERIN": "Jets South",
+        "DSD.J": "Jets North",
+        "DSD.T": "Props North"
+      },
+      "tower_list": 1
+    },
+    "KCVO": {
+      "hold_for_release": true,
+      "vfr": {
+        "random_routes": { "fleet": "GAsinglepiston", "rate": 1 }
+      },
+      "approaches": {
+        "I17": { "cifp_id": "I17" },
+        "R17": { "cifp_id": "R17" },
+        "R35": { "cifp_id": "R35" },
+        "V17": { "cifp_id": "S17" }
+      },
+      "departure_routes": {
+        "10": {
+          "SHEDD": {
+            "cleared_altitude": 3000,
+            "sid": "SHEDD4",
+            "waypoints": "SHEDD"
+          }
+        },
+        "17": {
+          "SHEDD": {
+            "cleared_altitude": 3000,
+            "sid": "SHEDD4",
+            "waypoints": "SHEDD"
+          }
+        },
+        "28": {
+          "SHEDD": {
+            "cleared_altitude": 3000,
+            "sid": "SHEDD4",
+            "waypoints": "SHEDD"
+          }
+        },
+        "35": {
+          "SHEDD": {
+            "cleared_altitude": 3000,
+            "sid": "SHEDD4",
+            "waypoints": "SHEDD"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "types": ["C208"],
+              "icao": "CFS"
+            },
+            {
+              "types": ["BE99"],
+              "icao": "AMF"
+            }
+          ],
+          "destination": "KPDX",
+          "exit": "SHEDD",
+          "route": "SHEDD UBG",
+          "altitude": 6000
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "KVUO",
+          "exit": "SHEDD",
+          "route": "SHEDD UBG",
+          "altitude": 6000
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "destination": "KUAO",
+          "exit": "SHEDD",
+          "route": "SHEDD UBG",
+          "altitude": 8000
+        }
+      ],
+      "tower_list": 2
+    },
+    "KSLE": {
+      "approaches": {
+        "I31": { "cifp_id": "I31" }
+      },
+      "vfr": {
+        "random_routes": { "fleet": "GAmultipiston", "rate": 1 }
+      },
+      "departure_routes": {
+        "31": {
+          "CVO": {
+            "assigned_altitude": 5000,
+            "sid": "SALEM 4",
+            "handoff_controller": "1E",
+            "departure_controller": "S06",
+            "waypoints": "KSLE-13/ho CVO"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "destination": "KRDD",
+          "exit": "CVO",
+          "route": "CVO RBG RBL"
+        }
+      ]
+    },
+    "77S": {
+      "vfr": {
+        "random_routes": { "fleet": "GAsinglepiston", "rate": 1 }
+      },
+      "approaches": {
+        "R16": { "cifp_id": "R16" }
+      }
+    },
+    "S12": {
+      "vfr": {
+        "random_routes": { "fleet": "GAsinglepiston", "rate": 2 }
+      }
+    },
+    "KOTH": {
+      "vfr": {
+        "random_routes": { "fleet": "GAsinglepiston", "rate": 1 }
+      }
+    },
+    "KONP": {
+      "vfr": {
+        "random_routes": { "fleet": "GAsinglepiston", "rate": 1 }
+      }
+    },
+    "7S5": {
+      "vfr": {
+        "random_routes": { "fleet": "GAsinglepiston", "rate": 1 }
+      }
+    },
+    "S30": {
+      "vfr": {
+        "random_routes": { "fleet": "GAsinglepiston", "rate": 1 }
+      }
+    }
+  },
+  "airspace": {
+    "boundaries": {
+      "MFR": [
+        "+424400.000-1232300.000",
+        "+425600.000-1230500.000",
+        "+424200.000-1222500.000",
+        "+420000.000-1222500.000",
+        "+420000.000-1231400.000",
+        "+421900.000-1232900.000",
+        "+424400.000-1232300.000"
+      ],
+      "EUG": [
+        "+444500.000-1233000.000",
+        "+444545.000-1231210.000",
+        "+443355.000-1225940.000",
+        "+443300.000-1225300.000",
+        "+440900.000-1223000.000",
+        "+435800.000-1223400.000",
+        "+435200.000-1223700.000",
+        "+434000.000-1225200.000",
+        "+433600.000-1230800.000",
+        "+433600.000-1231900.000",
+        "+433700.000-1232600.000",
+        "+434100.000-1233900.000",
+        "+435600.000-1235800.000",
+        "+444500.000-1233000.000"
+      ]
+    },
+    "volumes": {
+      "Radar East": [
+        {
+          "boundaries": ["EUG"],
+          "lower": 0,
+          "label": "Radar East (1E) SFC-090",
+          "upper": 9000
+        },
+        {
+          "boundaries": ["MFR"],
+          "lower": 0,
+          "label": "Radar Medford (1M) SFC-110",
+          "upper": 11000
+        }
+      ]
+    }
+  },
+  "inbound_flows": {
+    "JAIME": {
+      "arrivals": [
+        {
+          "waypoints": "DSD JAIME/clearapp",
+          "initial_controller": "S06",
+          "route": "KSLE",
+          "initial_altitude": 20000,
+          "assigned_altitude": 5000,
+          "expect_approach": "I31",
+          "initial_speed": 250,
+          "airlines": {
+            "KSLE": [
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KBJC"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "RBG": {
+      "arrivals": [
+        {
+          "waypoints": "RBG/ho CVO",
+          "initial_controller": "S36",
+          "route": "CVO",
+          "initial_altitude": 6000,
+          "assigned_altitude": 6000,
+          "initial_speed": 150,
+          "airlines": {
+            "KCVO": [
+              {
+                "icao": "CFS",
+                "types": ["C208"],
+                "airport": "KRBG"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "LKV": {
+      "arrivals": [
+        {
+          "waypoints": "N043.22.21.993,W121.58.25.297 N043.35.08.139,W122.19.40.563/ho EUG",
+          "initial_controller": "S36",
+          "route": "LKV EUG",
+          "initial_altitude": 24200,
+          "assigned_altitude": 10000,
+          "initial_speed": 300,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KSGU"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DSD.T": {
+      "arrivals": [
+        {
+          "waypoints": "DSD N044.12.15.699,W121.59.56.374/ho EUG",
+          "initial_controller": "S06",
+          "route": "DSD EUG",
+          "initial_altitude": 14000,
+          "assigned_altitude": 10000,
+          "initial_speed": 230,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "AMF",
+                "types": ["B190"],
+                "airport": "KRDM"
+              },
+              {
+                "icao": "CFS",
+                "types": ["C208"],
+                "airport": "KRDM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DSD.J": {
+      "arrivals": [
+        {
+          "waypoints": "DSD N044.12.15.699,W121.59.56.374/ho EUG",
+          "initial_controller": "S06",
+          "route": "DSD EUG",
+          "initial_altitude": 26600,
+          "assigned_altitude": 10000,
+          "initial_speed": 300,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "SKW",
+                "fleet": "default",
+                "airport": "KSLC"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "MOURN.N": {
+      "overflights": [
+        {
+          "waypoints": "OED BTG",
+          "cruise_altitude": 10000,
+          "initial_controller": "S36",
+          "initial_altitude": 2500,
+          "assigned_altitude": 10000,
+          "initial_speed": 150,
+          "airlines": [
+            {
+              "icao": "AMF",
+              "types": ["BE99"],
+              "departure_airport": "KMFR",
+              "arrival_airport": "KPDX"
+            }
+          ]
+        }
+      ],
+      "arrivals": [
+        {
+          "waypoints": "MOURN N043.13.04.025,W123.03.01.961/ho CURTI SAGIN",
+          "initial_controller": "S36",
+          "route": "MOURN V23 SAGIN",
+          "initial_altitude": 21000,
+          "assigned_altitude": 10000,
+          "initial_speed": 300,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "LXJ",
+                "fleet": "default",
+                "airport": "KSJC"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KSJC"
+              },
+              {
+                "icao": "AMF",
+                "fleet": "default",
+                "airport": "KMFR"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "default",
+                "airport": "KSFO"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KSMF"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "MOURN.S": {
+      "overflights": [
+        {
+          "waypoints": "OED BTG",
+          "cruise_altitude": 10000,
+          "initial_controller": "S36",
+          "initial_altitude": 2500,
+          "assigned_altitude": 10000,
+          "initial_speed": 150,
+          "airlines": [
+            {
+              "icao": "AMF",
+              "types": ["BE99"],
+              "departure_airport": "KMFR",
+              "arrival_airport": "KPDX"
+            }
+          ]
+        }
+      ],
+      "arrivals": [
+        {
+          "waypoints": "MOURN N043.13.04.025,W123.03.01.961/ho CURTI SAGIN",
+          "initial_controller": "S36",
+          "route": "MOURN V23 SAGIN",
+          "initial_altitude": 23000,
+          "assigned_altitude": 10000,
+          "initial_speed": 300,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "LXJ",
+                "fleet": "default",
+                "airport": "KSJC"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KSAN"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KSJC"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KSMF"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CEC": {
+      "arrivals": [
+        {
+          "waypoints": "N043.10.44.554,W123.37.51.615 N043.22.33.680,W123.32.48.228/ho N043.38.56.682,W123.25.37.838/a10000 EUG",
+          "initial_controller": "S06",
+          "route": "CEC",
+          "initial_altitude": 16000,
+          "initial_speed": 250,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KCEC"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BOI": {
+      "arrivals": [
+        {
+          "waypoints": "N043.59.37.285,W121.38.04.854 N044.02.13.140,W122.10.50.994/ho EUG",
+          "initial_controller": "S06",
+          "route": "BOI",
+          "initial_altitude": 25000,
+          "assigned_altitude": 10000,
+          "initial_speed": 300,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KDEN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "LMT.S": {
+      "arrivals": [
+        {
+          "waypoints": "N043.05.44.503,W122.26.35.462 N043.21.45.848,W122.38.45.888/ho EUG",
+          "initial_controller": "S36",
+          "route": "LMT EUG",
+          "initial_altitude": 27000,
+          "assigned_altitude": 10000,
+          "initial_speed": 300,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "default",
+                "airport": "KPHX"
+              },
+              {
+                "icao": "AAY",
+                "fleet": "default",
+                "airport": "KSNA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "LMT.N": {
+      "arrivals": [
+        {
+          "waypoints": "N043.05.44.503,W122.26.35.462 N043.21.45.848,W122.38.45.888/ho EUG",
+          "initial_controller": "S36",
+          "route": "LMT EUG",
+          "initial_altitude": 25000,
+          "assigned_altitude": 10000,
+          "initial_speed": 300,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "AAY",
+                "fleet": "default",
+                "airport": "KSNA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BTG.J": {
+      "arrivals": [
+        {
+          "waypoints": "BTG N044.51.13.905,W122.56.18.790/ho N044.36.31.497,W123.02.00.492/a10000 EUG",
+          "initial_controller": "S06",
+          "route": "EUG",
+          "initial_altitude": 18000,
+          "initial_speed": 290,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "QXE",
+                "fleet": "default",
+                "airport": "KPDX"
+              },
+              {
+                "icao": "SKW",
+                "fleet": "default",
+                "airport": "KPDX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BTG.T": {
+      "arrivals": [
+        {
+          "waypoints": "BTG N044.51.13.905,W122.56.18.790/ho EUG",
+          "initial_controller": "S06",
+          "route": "EUG",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 230,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "CFS",
+                "types": ["C208"],
+                "airport": "KPDX"
+              },
+              {
+                "icao": "AMF",
+                "fleet": "default",
+                "airport": "KPDX"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KPDX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DRAIN.S": {
+      "arrivals": [
+        {
+          "waypoints": "OED N043.24.05.237,W123.12.57.447/ho DRAIN/a10000-13000 EUG/a10000",
+          "initial_controller": "S36",
+          "route": "EUG",
+          "initial_altitude": 29000,
+          "initial_speed": 300,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KOAK"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KOAK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DRAIN.N": {
+      "arrivals": [
+        {
+          "waypoints": "OED N043.24.05.237,W123.12.57.447/ho N043.37.36.880,W123.17.27.216/a10000 DRAIN EUG",
+          "initial_controller": "S36",
+          "route": "EUG",
+          "initial_altitude": 29000,
+          "initial_speed": 300,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KOAK"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KOAK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "OTH": {
+      "overflights": [
+        {
+          "waypoints": "OTH BTG",
+          "cruise_altitude": 10000,
+          "initial_controller": "S36",
+          "initial_altitude": 1200,
+          "assigned_altitude": 10000,
+          "initial_speed": 150,
+          "airlines": [
+            {
+              "icao": "AMF",
+              "types": ["BE99"],
+              "departure_airport": "KOTH",
+              "arrival_airport": "KPDX"
+            }
+          ]
+        }
+      ],
+      "arrivals": [
+        {
+          "waypoints": "N043.23.07.257,W124.12.19.709 OTH/ho",
+          "initial_controller": "S36",
+          "route": "OTH",
+          "initial_altitude": 8000,
+          "assigned_altitude": 8000,
+          "initial_speed": 240,
+          "airlines": {
+            "KCVO": [
+              {
+                "icao": "AMF",
+                "types": ["BE99"],
+                "airport": "KCEC"
+              }
+            ],
+            "KEUG": [
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KOTH"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BTG.P": {
+      "arrivals": [
+        {
+          "waypoints": "BTG N044.51.13.905,W122.56.18.790/ho EUG",
+          "initial_controller": "S06",
+          "route": "EUG",
+          "initial_altitude": 7000,
+          "assigned_altitude": 5000,
+          "initial_speed": 160,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KVUO"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "UBG": {
+      "overflights": [
+        {
+          "waypoints": "UBG/ho OTH CEC",
+          "cruise_altitude": 9000,
+          "initial_controller": "S06",
+          "initial_altitude": 3500,
+          "assigned_altitude": 9000,
+          "initial_speed": 150,
+          "airlines": [
+            {
+              "icao": "AMF",
+              "types": ["BE99"],
+              "departure_airport": "KPDX",
+              "arrival_airport": "KCEC"
+            }
+          ]
+        },
+        {
+          "waypoints": "UBG/ho OTH CEC",
+          "cruise_altitude": 7000,
+          "initial_controller": "S06",
+          "initial_altitude": 3500,
+          "assigned_altitude": 7000,
+          "initial_speed": 150,
+          "airlines": [
+            {
+              "icao": "CFS",
+              "types": ["C208"],
+              "departure_airport": "KPDX",
+              "arrival_airport": "KOTH"
+            }
+          ]
+        }
+      ],
+      "arrivals": [
+        {
+          "waypoints": "UBG/ho V495 CVO",
+          "initial_controller": "S06",
+          "route": "CVO",
+          "initial_altitude": 7000,
+          "assigned_altitude": 5000,
+          "initial_speed": 160,
+          "airlines": {
+            "KCVO": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KTTD"
+              }
+            ],
+            "77S": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KTTD"
+              }
+            ],
+            "KEUG": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KTTD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "FEPOT": {
+      "arrivals": [
+        {
+          "waypoints": "N045.27.07.857,W123.15.55.673 N045.01.11.740,W123.16.37.531/ho N044.37.17.736,W123.17.22.547/a10000 CVO",
+          "initial_controller": "S06",
+          "route": "CVO",
+          "initial_altitude": 15000,
+          "initial_speed": 290,
+          "airlines": {
+            "KEUG": [
+              {
+                "icao": "QXE",
+                "fleet": "default",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "ASA",
+                "fleet": "default",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "SKW",
+                "fleet": "default",
+                "airport": "KSEA"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "South",
+  "name": "Eugene",
+  "primary_airport": "KEUG",
+  "scenarios": {
+    "North": {
+      "configuration": "RE",
+      "arrival_runways": [
+        {
+          "airport": "KEUG",
+          "runway": "34R"
+        },
+        {
+          "airport": "77S",
+          "runway": "16"
+        },
+        {
+          "airport": "KSLE",
+          "runway": "31"
+        },
+        {
+          "airport": "KEUG",
+          "runway": "34L"
+        },
+        {
+          "airport": "KCVO",
+          "runway": "35"
+        }
+      ],
+      "airspace": {
+        "1E": ["Radar East"]
+      },
+      "inbound_rates": {
+        "JAIME": {
+          "KSLE": 1
+        },
+        "DRAIN.N": {
+          "KEUG": 2
+        },
+        "CEC": {
+          "KEUG": 1
+        },
+        "MOURN.N": {
+          "KEUG": 1,
+          "overflights": 1
+        },
+        "RBG": {
+          "KCVO": 1
+        },
+        "DSD.T": {
+          "KEUG": 1
+        },
+        "DSD.J": {
+          "KEUG": 1
+        },
+        "BOI": {
+          "KEUG": 1
+        },
+        "OTH": {
+          "KEUG": 1,
+          "KCVO": 1,
+          "overflights": 1
+        },
+        "FEPOT": {
+          "KEUG": 1
+        },
+        "LMT.N": {
+          "KEUG": 1
+        },
+        "LKV": {
+          "KEUG": 1
+        },
+        "BTG.J": {
+          "KEUG": 1
+        },
+        "BTG.T": {
+          "KEUG": 1
+        },
+        "BTG.P": {
+          "KEUG": 1
+        },
+        "UBG": {
+          "KCVO": 1,
+          "KEUG": 1,
+          "77S": 0,
+          "overflights": 1
+        }
+      },
+      "default_maps": ["BASE MAP", "EUG RNAV RWY 34L", "MVA 3NM", "EUG-BASEMAP"],
+      "departure_runways": [
+        {
+          "airport": "KEUG",
+          "rate": 0,
+          "runway": "34L",
+          "category": "Internal"
+        },
+        {
+          "airport": "KEUG",
+          "rate": 3,
+          "runway": "34L",
+          "category": "Jets North"
+        },
+        {
+          "airport": "KEUG",
+          "rate": 5,
+          "runway": "34L",
+          "category": "Jets South"
+        },
+        {
+          "airport": "KEUG",
+          "rate": 3,
+          "runway": "34L",
+          "category": "Props North"
+        },
+        {
+          "airport": "KSLE",
+          "rate": 1,
+          "runway": "31"
+        },
+        {
+          "airport": "KCVO",
+          "rate": 2,
+          "runway": "35"
+        },
+        {
+          "airport": "KCVO",
+          "rate": 0,
+          "runway": "28"
+        }
+      ],
+      "wind": {
+        "direction": "300-050"
+      }
+    },
+    "South": {
+      "arrival_runways": [
+        {
+          "airport": "KEUG",
+          "runway": "16R"
+        },
+        {
+          "airport": "77S",
+          "runway": "16"
+        },
+        {
+          "airport": "KEUG",
+          "runway": "16L"
+        },
+        {
+          "airport": "KSLE",
+          "runway": "31"
+        },
+        {
+          "airport": "KCVO",
+          "runway": "17"
+        }
+      ],
+      "airspace": {
+        "1E": ["Radar East"]
+      },
+      "inbound_rates": {
+        "JAIME": {
+          "KSLE": 1
+        },
+        "DRAIN.S": {
+          "KEUG": 2
+        },
+        "CEC": {
+          "KEUG": 1
+        },
+        "RBG": {
+          "KCVO": 1
+        },
+        "MOURN.S": {
+          "KEUG": 1,
+          "overflights": 1
+        },
+        "DSD.T": {
+          "KEUG": 1
+        },
+        "DSD.J": {
+          "KEUG": 1
+        },
+        "BOI": {
+          "KEUG": 1
+        },
+        "OTH": {
+          "KEUG": 1,
+          "KCVO": 1,
+          "overflights": 1
+        },
+        "FEPOT": {
+          "KEUG": 1
+        },
+        "LMT.S": {
+          "KEUG": 1
+        },
+        "LKV": {
+          "KEUG": 1
+        },
+        "BTG.J": {
+          "KEUG": 1
+        },
+        "BTG.T": {
+          "KEUG": 1
+        },
+        "BTG.P": {
+          "KEUG": 1
+        },
+        "UBG": {
+          "KCVO": 1,
+          "KEUG": 1,
+          "77S": 0,
+          "overflights": 1
+        }
+      },
+      "configuration": "RE",
+      "default_maps": ["BASE MAP", "MVA 3NM", "EUG ILS RWY 16R", "EUG-BASEMAP"],
+      "departure_runways": [
+        {
+          "airport": "KEUG",
+          "rate": 0,
+          "runway": "16R",
+          "category": "Internal"
+        },
+        {
+          "airport": "KSLE",
+          "rate": 1,
+          "runway": "31"
+        },
+        {
+          "airport": "KEUG",
+          "rate": 3,
+          "runway": "16R",
+          "category": "Jets North"
+        },
+        {
+          "airport": "KEUG",
+          "rate": 4,
+          "runway": "16R",
+          "category": "Jets South"
+        },
+        {
+          "airport": "KEUG",
+          "rate": 3,
+          "runway": "16R",
+          "category": "Props North"
+        },
+        {
+          "airport": "KCVO",
+          "rate": 2,
+          "runway": "17"
+        },
+        {
+          "airport": "KCVO",
+          "rate": 0,
+          "runway": "10"
+        }
+      ],
+      "wind": {
+        "direction": "080-240"
+      }
+    }
+  }
+}
