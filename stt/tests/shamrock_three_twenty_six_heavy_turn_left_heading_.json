@@ -1,0 +1,571 @@
+{
+  "time": "2026-05-04T14:43:57.719359-07:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:725:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": "Shamrock Three Twenty Six heavy turn left heading zero three zero climbing maintain one one thousand contact new york departure one two six point eight good",
+  "whisper_duration_ms": 526.891,
+  "audio_duration_ms": 9032,
+  "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "EIN326",
+  "command": "L030 C110 FC",
+  "stt_aircraft": {
+    "American 16 80": {
+      "Callsign": "AAL1680",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Assault": "ASALT",
+        "Canarsie": "CNRSE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lisa": "LEISA",
+        "Los Angeles": "KLAX",
+        "Pucky": "PUCKY",
+        "Robje": "ROBJE",
+        "Silgy": "SILJY",
+        "Vadder": "VADDR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway one three left": "I3L",
+        "I L S runway two two left": "I2L",
+        "Parkway Visual runway one three Left": "PVL",
+        "V O R runway one three Left": "V3L",
+        "Visual runway one three Left": "VIS13L",
+        "r-nav x-ray runway two two left": "RX2L",
+        "r-nav yankee runway two two left": "RY2L",
+        "r-nav zulu runway one three Left": "R3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX"
+        },
+        "PVL": {
+          "Canarsie": "CRI"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "RX2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "RY2L": {
+          "Deer Park": "DPK",
+          "Nayik": "NAYIK",
+          "Zalpo": "ZALPO"
+        },
+        "V3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CRI",
+          "Demyhl": "DMYHL"
+        },
+        "VIS13L": {
+          "Assault": "ASALT",
+          "Buzz-on": "BUZON",
+          "Canarsie": "CNRSE",
+          "Caxun": "CAXUN",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY",
+          "Telex": "TELEX"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 13 Left",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 19000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R"
+      ]
+    },
+    "American eight 53 heavy": {
+      "Callsign": "AAL853",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Assault": "ASALT",
+        "Canarsie": "CNRSE",
+        "Guarulhos - Governador André Franco Montoro": "SBGR",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lisa": "LEISA",
+        "Robje": "ROBJE",
+        "Silgy": "SILJY"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway one three left": "I3L",
+        "I L S runway two two left": "I2L",
+        "Parkway Visual runway one three Left": "PVL",
+        "V O R runway one three Left": "V3L",
+        "Visual runway one three Left": "VIS13L",
+        "r-nav x-ray runway two two left": "RX2L",
+        "r-nav yankee runway two two left": "RY2L",
+        "r-nav zulu runway one three Left": "R3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX"
+        },
+        "PVL": {
+          "Canarsie": "CRI"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "RX2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "RY2L": {
+          "Deer Park": "DPK",
+          "Nayik": "NAYIK",
+          "Zalpo": "ZALPO"
+        },
+        "V3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CRI",
+          "Demyhl": "DMYHL"
+        },
+        "VIS13L": {
+          "Assault": "ASALT",
+          "Buzz-on": "BUZON",
+          "Canarsie": "CNRSE",
+          "Caxun": "CAXUN",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY",
+          "Telex": "TELEX"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 13 Left",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3036,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R"
+      ]
+    },
+    "JetBlue 13": {
+      "Callsign": "JBU13",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Blue": "BLUUU",
+        "Doggers": "DOGRS",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Princess Juliana": "TNCM",
+        "Ship": "SHIPP",
+        "speedy": "SPDEY"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 2374,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "C86",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 68": {
+      "Callsign": "JBU68",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Assault": "ASALT",
+        "Cameron": "CAMRN",
+        "Canarsie": "CNRSE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lisa": "LEISA",
+        "Robje": "ROBJE",
+        "Silgy": "SILJY",
+        "V C Bird": "TAPA",
+        "cars": "KARRS"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway one three left": "I3L",
+        "I L S runway two two left": "I2L",
+        "Parkway Visual runway one three Left": "PVL",
+        "V O R runway one three Left": "V3L",
+        "Visual runway one three Left": "VIS13L",
+        "r-nav x-ray runway two two left": "RX2L",
+        "r-nav yankee runway two two left": "RY2L",
+        "r-nav zulu runway one three Left": "R3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one three left": "13L",
+        "visual approach runway two two left": "22L",
+        "visual one three left": "13L",
+        "visual runway one three left": "13L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX"
+        },
+        "PVL": {
+          "Canarsie": "CRI"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "RX2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "RY2L": {
+          "Deer Park": "DPK",
+          "Nayik": "NAYIK",
+          "Zalpo": "ZALPO"
+        },
+        "V3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CRI",
+          "Demyhl": "DMYHL"
+        },
+        "VIS13L": {
+          "Assault": "ASALT",
+          "Buzz-on": "BUZON",
+          "Canarsie": "CNRSE",
+          "Caxun": "CAXUN",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY",
+          "Telex": "TELEX"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 13 Left",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "13L",
+        "31R"
+      ]
+    },
+    "Shamrock three 26 heavy": {
+      "Callsign": "EIN326",
+      "AircraftType": "A333",
+      "Fixes": {
+        "Dublin": "EIDW",
+        "Greki": "GREKI",
+        "J F K": "KJFK",
+        "Judds": "JUDDS",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 4632,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "5E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "cessna skymaster seven five eight": {
+      "Callsign": "N758/T",
+      "AircraftType": "C337",
+      "Fixes": {
+        "Danbury": "KDXR",
+        "Farmingdale": "KFRG",
+        "Republic": "KFRG"
+      },
+      "CandidateApproaches": {},
+      "CandidateVisualApproaches": {},
+      "ApproachFixes": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1830,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "november seven five eight": {
+      "Callsign": "N758",
+      "AircraftType": "C337",
+      "Fixes": {
+        "Danbury": "KDXR",
+        "Farmingdale": "KFRG",
+        "Republic": "KFRG"
+      },
+      "CandidateApproaches": {},
+      "CandidateVisualApproaches": {},
+      "ApproachFixes": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1830,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "skymaster seven five eight": {
+      "Callsign": "N758/T",
+      "AircraftType": "C337",
+      "Fixes": {
+        "Danbury": "KDXR",
+        "Farmingdale": "KFRG",
+        "Republic": "KFRG"
+      },
+      "CandidateApproaches": {},
+      "CandidateVisualApproaches": {},
+      "ApproachFixes": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1830,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Shamrock Three Twenty Six heavy turn left heading zero three zero climbing maintain one one thousand contact new york departure one two six point eight good\"",
+    "[local-stt] normalized words: [shamrock 3 26 heavy turn left heading 0 3 0 climb maintain 1 1 thousand contact new york departure 1 2 6 point 8 good]",
+    "[local-stt] tokens: 18",
+    "[local-stt]   token[0]: Text=\"shamrock\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"326\" Type=1 Value=326",
+    "[local-stt]   token[2]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"030\" Type=1 Value=30",
+    "[local-stt]   token[7]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"110\" Type=2 Value=110",
+    "[local-stt]   token[10]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"126\" Type=1 Value=126",
+    "[local-stt]   token[15]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"8\" Type=1 Value=8",
+    "[local-stt]   token[17]: Text=\"good\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 18 tokens, 8 aircraft",
+    "[local-stt]   detected \"heavy\" in callsign region, filtering to 2 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 3 tokens, 2 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Shamrock three 26 heavy\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Shamrock three 26 heavy\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 4 results",
+    "[local-stt]     result 0: \"Shamrock three 26 heavy\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"American eight 53 heavy\" (airline=0.667, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Shamrock three 26 heavy\" (airline=0.550, flight=0.000, skip=2)",
+    "[local-stt]     result 3: \"American eight 53 heavy\" (airline=0.383, flight=0.000, skip=2)",
+    "[local-stt]     pattern \"airline_only\": selected \"Shamrock three 26 heavy\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Shamrock three 26 heavy\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Shamrock three 26 heavy\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Shamrock three 26 heavy\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"EIN326\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Shamrock three 26 heavy\")",
+    "[local-stt] matchCallsignWithPatterns: 2 tokens, 8 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Shamrock three 26 heavy\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Shamrock three 26 heavy\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 3 results",
+    "[local-stt]     result 0: \"Shamrock three 26 heavy\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"American 16 80\" (airline=0.667, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"American eight 53 heavy\" (airline=0.667, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Shamrock three 26 heavy\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Shamrock three 26 heavy\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Shamrock three 26 heavy\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Shamrock three 26 heavy\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"EIN326\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Shamrock three 26 heavy\")",
+    "[local-stt] callsign match: Callsign=\"EIN326\" SpokenKey=\"Shamrock three 26 heavy\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=4632 Fixes=5 Approaches=0 VisualApproaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Dublin\" -\u003e \"EIDW\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Greki\" -\u003e \"GREKI\"",
+    "[local-stt]   fix: \"Judds\" -\u003e \"JUDDS\"",
+    "[local-stt] command tokens after disregard: 15",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"030\" Type=1 Value=30",
+    "[local-stt]   token[4]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"110\" Type=2 Value=110",
+    "[local-stt]   token[7]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"126\" Type=1 Value=126",
+    "[local-stt]   token[12]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"8\" Type=1 Value=8",
+    "[local-stt]   token[14]: Text=\"good\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 15 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"turn\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"turn\"",
+    "[local-stt]   matched command: \"L030\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"climb\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"climb\"",
+    "[local-stt]   matched command: \"C110\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"contact\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"contact\"",
+    "[local-stt]   matched command: \"FC\" (conf=1.00, consumed=7, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"good\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"good\"",
+    "[local-stt]   no match at token[14]=\"good\", skipping",
+    "[local-stt] ParseCommands: result=[L030 C110 FC] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L030 C110 FC] (conf=1.00)",
+    "[local-stt] validated commands: [L030 C110 FC] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"EIN326 L030 C110 FC\" (conf=1.00, time=1.262125ms) ==="
+  ]
+}
