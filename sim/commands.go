@@ -5,10 +5,12 @@
 package sim
 
 import (
+	"log/slog"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
@@ -445,8 +447,18 @@ func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles, 
 //     relative-altitude boost/penalty (above against sky, below against ground)
 func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles, callAlt int, altUnknown bool) av.CommandIntent {
 	nearestMETAR, _ := s.nearestMETAR(ac.Position())
+
+	tlg := s.lg.With(slog.Any("looking_aircraft", ac),
+		slog.Int("oclock", oclock), slog.Int("miles", miles),
+		slog.Int("call_altitude_ft", callAlt), slog.Bool("alt_unknown", altUnknown),
+		slog.Any("metar", nearestMETAR))
+	logResult := func(intent av.TrafficAdvisoryIntent) av.CommandIntent {
+		tlg.Info("traffic_advisory", slog.String("result", intent.String()))
+		return intent
+	}
+
 	if nearestMETAR.ICAO != "" && !nearestMETAR.IsVMC() {
-		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseIMC}
+		return logResult(av.TrafficAdvisoryIntent{Response: av.TrafficResponseIMC})
 	}
 
 	// Convert o'clock to heading offset from aircraft heading
@@ -495,26 +507,33 @@ func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles, callAlt int
 	if traffic == nil {
 		// Nothing there; the pilot will report that they're looking but we won't re-check in the
 		// future since there's no identified aircraft to check...
-		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseLooking}
+		return logResult(av.TrafficAdvisoryIntent{Response: av.TrafficResponseLooking})
 	}
 
+	tlg = tlg.With(
+		slog.String("traffic_callsign", string(traffic.ADSBCallsign)),
+		slog.Float64("traffic_altitude_ft", float64(traffic.Altitude())),
+		slog.Float64("traffic_distance_nm",
+			float64(math.NMDistance2LL(ac.Position(), traffic.Position()))))
 	if s.trafficIsVisible(ac, traffic) {
 		sighting := ac.RecordSighting(traffic.ADSBCallsign, s.State.SimTime)
 		sighting.OfferedToMaintainSeparation = s.Rand.Float32() < 0.3
-		return av.TrafficAdvisoryIntent{
+		return logResult(av.TrafficAdvisoryIntent{
 			Response:               av.TrafficResponseTrafficSeen,
 			WillMaintainSeparation: sighting.OfferedToMaintainSeparation,
-		}
+		})
 	} else {
 		// "Looking" - schedule a recheck
 		s.enqueueFutureTrafficCheck(ac.ADSBCallsign, traffic.ADSBCallsign)
-		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseLooking}
+		return logResult(av.TrafficAdvisoryIntent{Response: av.TrafficResponseLooking})
 	}
 }
 
 func (s *Sim) trafficIsVisible(ac, traffic *Aircraft) bool {
 	nearestMETAR, nearestElev := s.nearestMETAR(ac.Position())
+
 	if nearestMETAR.ICAO != "" && !nearestMETAR.IsVMC() {
+		s.lg.Infof("trafficIsVisible: %s -> %s: IMC", ac.ADSBCallsign, traffic.ADSBCallsign)
 		return false
 	}
 
@@ -522,7 +541,9 @@ func (s *Sim) trafficIsVisible(ac, traffic *Aircraft) bool {
 	trafficAltAGL := max(traffic.Altitude()-nearestElev, 0)
 	acAltAGL := max(ac.Altitude()-nearestElev, 0)
 	dist := math.NMDistance2LL(ac.Position(), traffic.Position())
-	p := pilotSeeProb(nearestMETAR.EffectiveVisualRange(acAltAGL, trafficAltAGL), dist)
+	effRange := nearestMETAR.EffectiveVisualRange(acAltAGL, trafficAltAGL)
+	baseProb := pilotSeeProb(effRange, dist)
+	p := baseProb
 
 	// Only apply altitude modulation + floor clamp if the target is within
 	// effective visual range; otherwise the pilot simply can't see it.
@@ -536,7 +557,20 @@ func (s *Sim) trafficIsVisible(ac, traffic *Aircraft) bool {
 		p = math.Clamp(p, 0.2, 1)
 	}
 
-	return s.Rand.Float32() < p
+	roll := s.Rand.Float32()
+	seen := roll < p
+	s.lg.Info("trafficIsVisible",
+		slog.Any("ac", ac), slog.Any("traffic", traffic),
+		slog.Any("metar", nearestMETAR),
+		slog.Float64("distance_nm", float64(dist)),
+		slog.Float64("aircraft_agl_ft", float64(acAltAGL)),
+		slog.Float64("traffic_agl_ft", float64(trafficAltAGL)),
+		slog.Float64("effective_range_nm", float64(effRange)),
+		slog.Float64("base_prob", float64(baseProb)),
+		slog.Float64("adjusted_prob", float64(p)),
+		slog.Float64("roll", float64(roll)),
+		slog.String("result", util.Select(seen, "seen", "not_seen")))
+	return seen
 }
 
 // nearestMETAR returns the METAR and airport elevation for the reporting

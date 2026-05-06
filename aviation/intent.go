@@ -906,6 +906,24 @@ type TrafficAdvisoryIntent struct {
 	WillMaintainSeparation bool // If true, add "will maintain visual separation"
 }
 
+func (t TrafficAdvisoryIntent) String() string {
+	wm := util.Select(t.WillMaintainSeparation, " + will maintain separation", "")
+	switch t.Response {
+	case TrafficResponseIMC:
+		return "IMC" + wm
+	case TrafficResponseLooking:
+		return "Looking" + wm
+	case TrafficResponseTrafficSeen:
+		return "TrafficSeen" + wm
+	case TrafficResponseAcknowledged:
+		return "Acknowledged" + wm
+	case TrafficResponseWhereWasIt:
+		return "WhereWasIt" + wm
+	default:
+		return "(invalid)"
+	}
+}
+
 func (t TrafficAdvisoryIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	switch t.Response {
 	case TrafficResponseIMC:

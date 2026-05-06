@@ -152,7 +152,9 @@ func (s *Sim) handleAirportAdvisory(ac *Aircraft, oclock int, miles int) av.Comm
 		}
 	}
 
-	if s.Rand.Float32() < pilotSeeProb(elig.MaxRange, elig.Distance) {
+	r, p := s.Rand.Float32(), pilotSeeProb(elig.MaxRange, elig.Distance)
+	s.lg.Infof("%s: airport visibility check r=%f, p=%f", ac.ADSBCallsign, r, p)
+	if r < p {
 		ac.FieldInSight = true
 		return av.LookForFieldFound
 	}
