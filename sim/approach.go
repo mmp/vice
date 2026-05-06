@@ -70,6 +70,12 @@ func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) av.CommandIntent {
 		}
 	}
 
+	// The geometric fallback below trusts the call when one nearby aircraft
+	// matches; in IMC the pilot can't possibly see it, so report IMC instead.
+	if metar, _ := s.nearestMETAR(ac.Position()); metar.ICAO != "" && !metar.IsVMC() {
+		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseIMC}
+	}
+
 	// Look for a single aircraft within 3 NM, ±1000 ft, and ±45 degrees of the aircraft's nose.
 	matches := slices.Collect(util.FilterSeq(maps.Values(s.Aircraft), func(candidate *Aircraft) bool {
 		const horizontalNM = 3
