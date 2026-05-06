@@ -76,7 +76,8 @@ import (
 // 66: Waypoint SpeedRestriction
 // 67: visual approach v2
 // 68: sim.Future{Field,Traffic}Checks -> map
-const ViceSerializeVersion = 68
+// 69: METAR JSON shape: WindDir round-trips via custom Marshal/UnmarshalJSON; ICAO populated by Decode
+const ViceSerializeVersion = 69
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

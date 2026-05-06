@@ -38,14 +38,11 @@ type METAR struct {
 	Temperature av.Temperature `json:"temp"`
 	Dewpoint    av.Temperature `json:"dewp"`
 	Altimeter   float32        `json:"altim"`
-	WindDir     *int           `json:"-"` // nil for variable winds, otherwise heading 0-360
+	WindDir     *int           `json:"-"` // nil for variable winds; emitted/consumed as "wdir" by Marshal/UnmarshalJSON
 	WindSpeed   int            `json:"wspd"`
 	WindGust    *int           `json:"wgst"`
 	Raw         string         `json:"rawOb"`
-
-	// WindDirRaw and ReportTime are used for JSON unmarshaling only
-	WindDirRaw any    `json:"wdir"` // nil or string "VRB" for variable, else number for heading
-	ReportTime string `json:"reportTime"`
+	ReportTime  string         `json:"reportTime"`
 }
 
 func (m METAR) Altimeter_inHg() float32 {
@@ -53,21 +50,32 @@ func (m METAR) Altimeter_inHg() float32 {
 	return 0.02953 * m.Altimeter
 }
 
-// UnmarshalJSON handles converting WindDirRaw to WindDir
+// MarshalJSON emits "wdir" from WindDir so JSON round-trips preserve direction.
+func (m METAR) MarshalJSON() ([]byte, error) {
+	type Alias METAR
+	aux := struct {
+		Alias
+		Wdir any `json:"wdir"`
+	}{Alias: Alias(m)}
+	if m.WindDir != nil {
+		aux.Wdir = *m.WindDir
+	}
+	return json.Marshal(aux)
+}
+
+// UnmarshalJSON reads "wdir" (number / "VRB" / null) and parses ReportTime.
 func (m *METAR) UnmarshalJSON(data []byte) error {
 	type Alias METAR
 	aux := &struct {
 		*Alias
-	}{
-		Alias: (*Alias)(m),
-	}
+		Wdir any `json:"wdir"`
+	}{Alias: (*Alias)(m)}
 
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := json.Unmarshal(data, aux); err != nil {
 		return err
 	}
 
-	// Convert WindDirRaw to WindDir
-	switch v := m.WindDirRaw.(type) {
+	switch v := aux.Wdir.(type) {
 	case nil:
 		m.WindDir = nil
 	case string:
@@ -83,10 +91,9 @@ func (m *METAR) UnmarshalJSON(data []byte) error {
 		dir := int(v)
 		m.WindDir = &dir
 	default:
-		return fmt.Errorf("unexpected wind direction type %T: %v", m.WindDirRaw, m.WindDirRaw)
+		return fmt.Errorf("unexpected wind direction type %T: %v", v, v)
 	}
 
-	// Parse time
 	var err error
 	m.Time, err = parseMETARTime(m.ReportTime)
 
@@ -372,7 +379,7 @@ func MakeMETARSOA(recs []METAR) (METARSOA, error) {
 	return soa, nil
 }
 
-func (soa METARSOA) Decode() []METAR {
+func (soa METARSOA) Decode(icao string) []METAR {
 	var m []METAR
 
 	reportTime := util.DeltaDecodeBytesSlice(soa.ReportTime)
@@ -385,6 +392,7 @@ func (soa METARSOA) Decode() []METAR {
 
 	for i := range soa.ReportTime {
 		cm := METAR{
+			ICAO:        icao,
 			ReportTime:  string(reportTime[i]),
 			Temperature: av.MakeTemperatureFromCelsius(float32(temp[i]) / 10),
 			Dewpoint:    av.MakeTemperatureFromCelsius(float32(dewp[i]) / 10),
@@ -416,8 +424,8 @@ func (soa METARSOA) Decode() []METAR {
 	return m
 }
 
-func (soa METARSOA) Check(orig []METAR) error {
-	check := soa.Decode()
+func (soa METARSOA) Check(icao string, orig []METAR) error {
+	check := soa.Decode(icao)
 
 	if len(orig) != len(check) {
 		return fmt.Errorf("Record count mismatch: %d - %d", len(orig), len(check))
@@ -426,6 +434,9 @@ func (soa METARSOA) Check(orig []METAR) error {
 	for i := range len(orig) {
 		mo, mc := orig[i], check[i]
 
+		if mo.ICAO != mc.ICAO {
+			return fmt.Errorf("ICAO mismatch: %s - %s", mo.ICAO, mc.ICAO)
+		}
 		if mo.ReportTime != mc.ReportTime {
 			return fmt.Errorf("ReportTime mismatch: %s - %s", mo.ReportTime, mc.ReportTime)
 		}
@@ -559,7 +570,7 @@ func (cm CompressedMETAR) GetAirportMETAR(icao string) ([]METAR, error) {
 	if err != nil {
 		return nil, err
 	}
-	return soa.Decode(), nil
+	return soa.Decode(icao), nil
 }
 
 func (cm CompressedMETAR) GetAirportMETARSOA(icao string) (METARSOA, error) {
@@ -588,7 +599,7 @@ func (cm CompressedMETAR) SetAirportMETAR(icao string, metar []METAR) error {
 	if err != nil {
 		return err
 	}
-	if err := soa.Check(metar); err != nil {
+	if err := soa.Check(icao, metar); err != nil {
 		return err
 	}
 

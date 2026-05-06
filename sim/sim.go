@@ -260,7 +260,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		lg.Errorf("%v", err)
 	} else {
 		for ap, msoa := range apmetar {
-			metar := msoa.Decode()
+			metar := msoa.Decode(ap)
 			idx, ok := slices.BinarySearchFunc(metar, config.StartTime, func(m wx.METAR, t time.Time) int {
 				return m.Time.Compare(t)
 			})

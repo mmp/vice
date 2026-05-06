@@ -296,7 +296,7 @@ func (c *NewSimConfiguration) fetchMETAR() {
 	// Decode SOA to regular METAR slices
 	metars := make(map[string][]wx.METAR)
 	for ap, soa := range metarSOA {
-		metars[ap] = soa.Decode()
+		metars[ap] = soa.Decode(ap)
 	}
 
 	c.airportMETAR = metars

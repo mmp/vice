@@ -429,7 +429,7 @@ func createFallbackAtmos(primaryAirport string, t time.Time) (*AtmosByPointSOA, 
 		return nil, fmt.Errorf("no METAR data for %s", primaryAirport)
 	}
 
-	metars := metarSOA.Decode()
+	metars := metarSOA.Decode(primaryAirport)
 	if len(metars) == 0 {
 		return nil, fmt.Errorf("no METAR data for %s", primaryAirport)
 	}
