@@ -2222,9 +2222,6 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
 			c.updateStartTimeForRunways()
 		}
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Select random time matching weather filters")
-		}
 
 		// METAR
 		imgui.TableNextRow()
