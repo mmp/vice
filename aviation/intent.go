@@ -919,7 +919,7 @@ func (t TrafficAdvisoryIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add("[we have the traffic|traffic in sight|we see the traffic|got the traffic]")
 		}
 	case TrafficResponseAcknowledged:
-		rt.Add("[roger|copy the traffic|roger, we have the traffic]")
+		rt.Add("[roger|copy the traffic]")
 	case TrafficResponseWhereWasIt:
 		rt.Add("[where was that traffic|where was the traffic|where was that traffic again|say again on the traffic]")
 	}
