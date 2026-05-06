@@ -432,10 +432,9 @@ func (s *Sim) makeNewVFRDeparture(depart string, runway av.RunwayID) (ac *Aircra
 					s.lg.Errorf("%s: unable to sample VFR destination airport???", depart)
 					continue
 				}
-				ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, sampledRandoms.Fleet, nil, s.State.SimTime)
+				ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, &av.VFRRouteSpec{Fleet: sampledRandoms.Fleet, CommonAircraft: sampledRandoms.CommonAircraft}, s.State.SimTime)
 			} else if sampledRoute != nil {
-				ac, _, err = s.createUncontrolledVFRDeparture(depart, sampledRoute.Destination, sampledRoute.Fleet,
-					sampledRoute.Waypoints, s.State.SimTime)
+				ac, _, err = s.createUncontrolledVFRDeparture(depart, sampledRoute.Destination, sampledRoute, s.State.SimTime)
 			}
 
 			if err == nil && ac != nil {
@@ -693,7 +692,7 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 			// This shouldn't happen...
 			return nil, nil
 		} else {
-			ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil, s.State.SimTime)
+			ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, &av.VFRRouteSpec{Fleet: ap.VFR.Randoms.Fleet, CommonAircraft: ap.VFR.Randoms.CommonAircraft}, s.State.SimTime)
 			return ac, err
 		}
 	}
@@ -724,14 +723,34 @@ func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, r *rand.
 	return d
 }
 
-func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, routeWps []av.Waypoint, simTime Time) (*Aircraft, string, error) {
+func (s *Sim) createUncontrolledVFRDeparture(depart, arrive string, route *av.VFRRouteSpec, simTime Time) (*Aircraft, string, error) {
 	depap, arrap := av.DB.Airports[depart], av.DB.Airports[arrive]
 	rwy, _, ok := s.currentVFRRunway(depart)
 	if !ok {
 		return nil, "", fmt.Errorf("%s: unable to find current VFR runway", depart)
 	}
 
-	ac, acType := s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, depart, arrive, s.lg)
+	var ac *Aircraft
+	var acType string
+	if len(route.CommonAircraft) > 0 {
+		ca := route.CommonAircraft[s.Rand.Intn(len(route.CommonAircraft))]
+		if ca.Callsign != "" {
+			callsigns := s.currentCallsigns()
+			if av.CallsignClashesWithExisting(callsigns, ca.Callsign, s.EnforceUniqueCallsignSuffix) {
+				return nil, "", fmt.Errorf("callsign %s already in use", ca.Callsign)
+			}
+			ac = &Aircraft{ADSBCallsign: av.ADSBCallsign(ca.Callsign), Mode: av.TransponderModeAltitude}
+			acType = ca.Type
+		} else {
+			var types []string
+			if ca.Type != "" {
+				types = []string{ca.Type}
+			}
+			ac, acType = s.sampleAircraft(av.AirlineSpecifier{ICAO: ca.Airline, AircraftTypes: types}, depart, arrive, s.lg)
+		}
+	} else {
+		ac, acType = s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: route.Fleet}, depart, arrive, s.lg)
+	}
 	if ac == nil {
 		return nil, "", fmt.Errorf("unable to sample a valid aircraft")
 	}
@@ -781,8 +800,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	// Fly a downwind if needed
 	var hdg math.TrueHeading
-	if len(routeWps) > 0 {
-		hdg = math.Heading2LL(opp, routeWps[0].Location, s.State.NmPerLongitude)
+	if len(route.Waypoints) > 0 {
+		hdg = math.Heading2LL(opp, route.Waypoints[0].Location, s.State.NmPerLongitude)
 	} else {
 		hdg = math.Heading2LL(opp, mid, s.State.NmPerLongitude)
 	}
@@ -800,8 +819,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	}
 
 	var randomizeAltitudeRange bool
-	if len(routeWps) > 0 {
-		wps = append(wps, routeWps...)
+	if len(route.Waypoints) > 0 {
+		wps = append(wps, route.Waypoints...)
 		randomizeAltitudeRange = true
 	} else {
 		randomizeAltitudeRange = false

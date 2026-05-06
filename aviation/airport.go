@@ -46,17 +46,25 @@ type Airport struct {
 }
 
 type VFRRandomsSpec struct {
-	Rate  int    `json:"rate"`
-	Fleet string `json:"fleet"`
+	Rate           int                 `json:"rate"`
+	Fleet          string              `json:"fleet"`
+	CommonAircraft []VFRCommonAircraft `json:"common_aircraft,omitempty"`
+}
+
+type VFRCommonAircraft struct {
+	Airline  string `json:"airline,omitempty"`
+	Callsign string `json:"callsign,omitempty"`
+	Type     string `json:"type,omitempty"`
 }
 
 type VFRRouteSpec struct {
-	Name        string        `json:"name"`
-	Rate        int           `json:"rate"`
-	Fleet       string        `json:"fleet"`
-	Waypoints   WaypointArray `json:"waypoints"`
-	Destination string        `json:"destination"`
-	Description string        `json:"description"`
+	Name           string               `json:"name"`
+	Rate           int                  `json:"rate"`
+	Fleet          string               `json:"fleet"`
+	CommonAircraft []VFRCommonAircraft  `json:"common_aircraft,omitempty"`
+	Waypoints      WaypointArray        `json:"waypoints"`
+	Destination    string               `json:"destination"`
+	Description    string               `json:"description"`
 }
 
 type CRDAPair struct {
@@ -488,6 +496,29 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			e.ErrorString(`"fleet" specified for "vfr" "random_routes" but "rate" is not specified or is zero.`)
 		}
 	}
+	for j, ca := range ap.VFR.Randoms.CommonAircraft {
+		if ca.Airline == "" && ca.Callsign == "" {
+			e.ErrorString(`random_routes common_aircraft[%d]: must specify "airline" or "callsign"`, j)
+			continue
+		}
+		if ca.Airline != "" && ca.Callsign != "" {
+			e.ErrorString(`random_routes common_aircraft[%d]: cannot specify both "airline" and "callsign"`, j)
+			continue
+		}
+		if ca.Callsign != "" && ca.Type == "" {
+			e.ErrorString(`random_routes common_aircraft[%d]: must specify "type" when "callsign" is set`, j)
+		}
+		if ca.Airline != "" {
+			if _, ok := DB.Airlines[strings.ToUpper(ca.Airline)]; !ok {
+				e.ErrorString(`random_routes common_aircraft[%d]: airline %q unknown`, j, ca.Airline)
+			}
+		}
+		if ca.Type != "" {
+			if _, ok := DB.AircraftPerformance[ca.Type]; !ok {
+				e.ErrorString(`random_routes common_aircraft[%d]: aircraft type %q unknown`, j, ca.Type)
+			}
+		}
+	}
 	for i := range ap.VFR.Routes {
 		ap.VFR.Routes[i].Waypoints =
 			ap.VFR.Routes[i].Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
@@ -519,6 +550,29 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 		if _, ok := DB.Airports[spec.Destination]; !ok {
 			e.ErrorString("Destination airport %q unknown", spec.Destination)
+		}
+		for j, ca := range spec.CommonAircraft {
+			if ca.Airline == "" && ca.Callsign == "" {
+				e.ErrorString(`common_aircraft[%d]: must specify "airline" or "callsign"`, j)
+				continue
+			}
+			if ca.Airline != "" && ca.Callsign != "" {
+				e.ErrorString(`common_aircraft[%d]: cannot specify both "airline" and "callsign"`, j)
+				continue
+			}
+			if ca.Callsign != "" && ca.Type == "" {
+				e.ErrorString(`common_aircraft[%d]: must specify "type" when "callsign" is set`, j)
+			}
+			if ca.Airline != "" {
+				if _, ok := DB.Airlines[strings.ToUpper(ca.Airline)]; !ok {
+					e.ErrorString(`common_aircraft[%d]: airline %q unknown`, j, ca.Airline)
+				}
+			}
+			if ca.Type != "" {
+				if _, ok := DB.AircraftPerformance[ca.Type]; !ok {
+					e.ErrorString(`common_aircraft[%d]: aircraft type %q unknown`, j, ca.Type)
+				}
+			}
 		}
 		e.Pop()
 	}

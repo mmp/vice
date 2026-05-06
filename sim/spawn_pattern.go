@@ -189,7 +189,18 @@ func (s *Sim) spawnPatternAircraft() {
 		var ac *Aircraft
 		var acType string
 		for range 20 {
-			ac, acType = s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: ap.VFR.Randoms.Fleet}, name, name, s.lg)
+			spec := av.AirlineSpecifier{ICAO: "N", Fleet: ap.VFR.Randoms.Fleet}
+			if len(ap.VFR.Randoms.CommonAircraft) > 0 {
+				ca := ap.VFR.Randoms.CommonAircraft[s.Rand.Intn(len(ap.VFR.Randoms.CommonAircraft))]
+				if ca.Callsign == "" {
+					var types []string
+					if ca.Type != "" {
+						types = []string{ca.Type}
+					}
+					spec = av.AirlineSpecifier{ICAO: ca.Airline, AircraftTypes: types}
+				}
+			}
+			ac, acType = s.sampleAircraft(spec, name, name, s.lg)
 			if ac == nil {
 				continue
 			}
