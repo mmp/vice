@@ -1,0 +1,1271 @@
+{
+  "time": "2026-05-06T11:43:53.163319154Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:851:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Surface five twenty nine cross Jersey flight zero two eight zero",
+  "whisper_duration_ms": 430.1,
+  "audio_duration_ms": 3656,
+  "processor": "GPU: AMD Radeon(TM) Graphics (16234MB)",
+  "whisper_model": "ggml-base.en-jlvatc-q5_0.bin",
+  "callsign": "SWA529",
+  "command": "CJERSY/A280",
+  "stt_aircraft": {
+    "Air Canada 71 65": {
+      "Callsign": "ACA7165",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Biley": "BILEY",
+        "LaGuardia": "KLGA",
+        "Marc": "MARRC",
+        "Milton": "MIP",
+        "Philipsburg": "PSB",
+        "Toronto Lester B. Pearson": "CYYZ",
+        "Vibes": "VIBES"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two": "22",
+        "visual runway two two": "22",
+        "visual two two": "22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MIP4",
+      "Altitude": 33000,
+      "State": "arrival",
+      "ControllerFrequency": "72",
+      "TrackingController": "72",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Air Portugal six zero five tango heavy": {
+      "Callsign": "TAP605T",
+      "AircraftType": "A339",
+      "Fixes": {
+        "Humberto Delgado Airport (Lisbon Portela Airport)": "LPPT",
+        "Isles": "ISLES",
+        "Jenny": "JENYY",
+        "Newark": "KEWR",
+        "Owen": "OWENZ",
+        "Popon": "POPPN",
+        "whup": "WHTUP"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "EWR5",
+      "STAR": "",
+      "Altitude": 23447,
+      "State": "departure",
+      "ControllerFrequency": "66",
+      "TrackingController": "66",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 28": {
+      "Callsign": "AAL28",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Binghamton": "CFB",
+        "Buffy": "BUFFY",
+        "Detroit Metro": "KDTW",
+        "Gayel": "GAYEL",
+        "LaGuardia": "KLGA",
+        "Metro": "KDTW",
+        "Muslin": "MSLIN",
+        "stomp": "STOMP"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 30550,
+      "State": "overflight",
+      "ControllerFrequency": "35",
+      "TrackingController": "35",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 32 75": {
+      "Callsign": "AAL3275",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Cleveland Hopkins": "KCLE",
+        "Cofax": "COFAX",
+        "Harrisburg": "HAR",
+        "Lancaster": "LRP",
+        "Lomon": "LOMON",
+        "Philadelphia": "KPHL",
+        "Philly": "KPHL",
+        "Tragg": "TRAGG"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two seven right": "27R",
+        "visual runway two seven right": "27R",
+        "visual two seven right": "27R"
+      },
+      "ApproachFixes": {
+        "I7R": {
+          "Enzew": "ENZEW",
+          "Jalto": "JALTO",
+          "Martin": "MRTIN"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BOJID4",
+      "Altitude": 25000,
+      "State": "arrival",
+      "ControllerFrequency": "27",
+      "TrackingController": "27",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "American three 22": {
+      "Callsign": "AAL322",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Coate": "COATE",
+        "D Graf": "DGRAF",
+        "Harry Reid": "KLAS",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lake": "LAAYK",
+        "Matcaf": "MTCAF",
+        "Yost": "YYOST"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 24679,
+      "State": "overflight",
+      "ControllerFrequency": "35",
+      "TrackingController": "35",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 85 97": {
+      "Callsign": "JIA8597",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Bradley": "KBDL",
+        "Deer Park": "DPK",
+        "Kennedy": "JFK",
+        "Lauren": "LAURN",
+        "Robbinsville": "RBV",
+        "Ronald Reagan Washington National": "KDCA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two four": "24",
+        "visual runway two four": "24",
+        "visual two four": "24"
+      },
+      "ApproachFixes": {
+        "I24": {
+          "Kibbe": "KIBBE",
+          "Motel": "MOTEL",
+          "Surley": "SURLE"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "DPK3",
+      "Altitude": 31000,
+      "State": "arrival",
+      "ControllerFrequency": "56",
+      "TrackingController": "56",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33"
+      ]
+    },
+    "Brickyard 46 43": {
+      "Callsign": "RPA4643",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Delro": "DELRO",
+        "Joanne": "JOANE",
+        "LaGuardia": "KLGA",
+        "Lancaster": "LRP",
+        "Lurch": "LIRCH",
+        "Sara": "SARAA",
+        "Washington Dulles": "KIAD"
+      },
+      "CandidateApproaches": {
+        "I L S runway one right": "I1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one right": "1R",
+        "visual one right": "1R",
+        "visual runway one right": "1R"
+      },
+      "ApproachFixes": {
+        "I1R": {
+          "Edsco": "EDSCO",
+          "Ella": "ELLLA",
+          "Errors": "EERRS",
+          "Estin": "ESTYN",
+          "Fowler": "FAWLR",
+          "Helmz": "HELMZ",
+          "Huff": "HUFFF",
+          "Jamatz": "JMATZ",
+          "Laser": "LAZER",
+          "Laws": "LAWWS",
+          "Trea": "TREAA",
+          "Twoot": "TWOOT",
+          "Waxin": "WAXIN",
+          "grasp": "GRASK"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "HYPER9",
+      "Altitude": 20000,
+      "State": "arrival",
+      "ControllerFrequency": "39",
+      "TrackingController": "39",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Brickyard 83 15": {
+      "Callsign": "RPA8315",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Candor": "CANDR",
+        "Chicago O'Hare": "KORD",
+        "Dinner": "DANNR",
+        "Giants": "GYNTS",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Newel": "NEWEL",
+        "Ravine": "RAV"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 29061,
+      "State": "departure",
+      "ControllerFrequency": "36",
+      "TrackingController": "36",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 27": {
+      "Callsign": "DAL27",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Detroit Metro": "KDTW",
+        "Hayed": "HAYED",
+        "Metro": "KDTW",
+        "Newark": "KEWR",
+        "Penns": "PENNS",
+        "Racki": "RACKI",
+        "Williamsport": "FQM",
+        "megs": "MEGSS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "FQM3",
+      "Altitude": 31173,
+      "State": "arrival",
+      "ControllerFrequency": "72",
+      "TrackingController": "72",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Delta 89": {
+      "Callsign": "DAL89",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "JFK",
+        "Magio": "MAGIO",
+        "Pucky": "PUCKY",
+        "Salt Lake City": "KSLC",
+        "Vadder": "VADDR",
+        "Wilkes": "WLKES"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Ebee": "EBBEE",
+          "Zetal": "ZETAL"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 35000,
+      "State": "arrival",
+      "ControllerFrequency": "49",
+      "TrackingController": "49",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R"
+      ]
+    },
+    "Delta one 58": {
+      "Callsign": "DAL158",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Allentown": "FJC",
+        "Beauty": "BEUTY",
+        "Biley": "BILEY",
+        "Detroit Metro": "KDTW",
+        "LaGuardia": "KLGA",
+        "Lizzi": "LIZZI",
+        "Metro": "KDTW",
+        "Vibes": "VIBES"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two": "22",
+        "visual runway two two": "22",
+        "visual two two": "22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MIP4",
+      "Altitude": 18389,
+      "State": "arrival",
+      "ControllerFrequency": "72",
+      "TrackingController": "72",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Endeavor 31 32": {
+      "Callsign": "EDV3132",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Candor": "CANDR",
+        "Cleveland Hopkins": "KCLE",
+        "Deez": "DEEZZ",
+        "Dinner": "DANNR",
+        "Giants": "GYNTS",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Newel": "NEWEL"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 8549,
+      "State": "departure",
+      "ControllerFrequency": "36",
+      "TrackingController": "36",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Endeavor 91 62": {
+      "Callsign": "EDV9162",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Bank": "BANKK",
+        "Delro": "DELRO",
+        "J F K": "KJFK",
+        "Joanne": "JOANE",
+        "Kennedy": "KJFK",
+        "Lancaster": "LRP",
+        "Washington Dulles": "KIAD",
+        "hikes": "HIKES"
+      },
+      "CandidateApproaches": {
+        "I L S runway one right": "I1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one right": "1R",
+        "visual one right": "1R",
+        "visual runway one right": "1R"
+      },
+      "ApproachFixes": {
+        "I1R": {
+          "Edsco": "EDSCO",
+          "Ella": "ELLLA",
+          "Errors": "EERRS",
+          "Estin": "ESTYN",
+          "Fowler": "FAWLR",
+          "Helmz": "HELMZ",
+          "Huff": "HUFFF",
+          "Jamatz": "JMATZ",
+          "Laser": "LAZER",
+          "Laws": "LAWWS",
+          "Trea": "TREAA",
+          "Twoot": "TWOOT",
+          "Waxin": "WAXIN",
+          "grasp": "GRASK"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "HYPER9",
+      "Altitude": 19090,
+      "State": "arrival",
+      "ControllerFrequency": "55",
+      "TrackingController": "55",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Envoy 55 zero two": {
+      "Callsign": "ENY5502",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Biggy": "BIGGY",
+        "Boston": "KBOS",
+        "Copes": "COPES",
+        "Jersey": "JERSY",
+        "Modena": "MXE",
+        "Ronald Reagan Washington National": "KDCA",
+        "Solberg": "SBJ"
+      },
+      "CandidateApproaches": {
+        "I L S runway one": "I1"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one": "1",
+        "visual one": "1",
+        "visual runway one": "1"
+      },
+      "ApproachFixes": {
+        "I1": {
+          "Badden": "BADDN",
+          "Katrin": "KATRN"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CLIPR3",
+      "Altitude": 33754,
+      "State": "arrival",
+      "ControllerFrequency": "42",
+      "TrackingController": "42",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "Flexjet one 90": {
+      "Callsign": "LXJ190",
+      "AircraftType": "CL30",
+      "Fixes": {
+        "Binghamton": "CFB",
+        "Buffy": "BUFFY",
+        "Downtown St. Paul": "KSTP",
+        "Kelly": "KELIE",
+        "St. Paul Downtown": "KSTP",
+        "View": "VIEEW",
+        "Westchester": "KHPN",
+        "White Plains": "KHPN",
+        "Wozee": "WOZEE"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 37000,
+      "State": "overflight",
+      "ControllerFrequency": "35",
+      "TrackingController": "35",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Jazz five 45": {
+      "Callsign": "JZA545",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Hayed": "HAYED",
+        "Newark": "KEWR",
+        "Racki": "RACKI",
+        "Slate Run": "SLT",
+        "Toronto Lester B. Pearson": "CYYZ",
+        "Williamsport": "FQM",
+        "megs": "MEGSS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "FQM3",
+      "Altitude": 33000,
+      "State": "arrival",
+      "ControllerFrequency": "72",
+      "TrackingController": "72",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Jazz six 92": {
+      "Callsign": "JZA692",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Allentown": "FJC",
+        "Biley": "BILEY",
+        "LaGuardia": "KLGA",
+        "Marc": "MARRC",
+        "Milton": "MIP",
+        "Toronto Lester B. Pearson": "CYYZ",
+        "Vibes": "VIBES"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two": "22",
+        "visual runway two two": "22",
+        "visual two two": "22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MIP4",
+      "Altitude": 33000,
+      "State": "arrival",
+      "ControllerFrequency": "72",
+      "TrackingController": "72",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Jazz two 69": {
+      "Callsign": "JZA269",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Hayed": "HAYED",
+        "Newark": "KEWR",
+        "Penns": "PENNS",
+        "Racki": "RACKI",
+        "Toronto Lester B. Pearson": "CYYZ",
+        "Williamsport": "FQM",
+        "megs": "MEGSS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "FQM3",
+      "Altitude": 33000,
+      "State": "arrival",
+      "ControllerFrequency": "72",
+      "TrackingController": "72",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "JetBlue 36 44": {
+      "Callsign": "JBU3644",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Felix": "FEXXX",
+        "Jacksonville": "KJAX",
+        "Kennedy": "JFK",
+        "Lauren": "LAURN",
+        "Newes": "NEWES",
+        "Robbinsville": "RBV"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 33000,
+      "State": "arrival",
+      "ControllerFrequency": "68",
+      "TrackingController": "56",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue 41 54": {
+      "Callsign": "JBU4154",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Fernz": "FERNZ",
+        "Jenny": "JENYY",
+        "Luis Munoz Marin": "TJSJ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 36000,
+      "State": "arrival",
+      "ControllerFrequency": "65",
+      "TrackingController": "65",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue 68": {
+      "Callsign": "JBU68",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Chubby": "CHUBY",
+        "Hoboh": "HOBOH",
+        "Luis Munoz Marin": "TJSJ",
+        "Saucer": "SAUCR",
+        "Silly": "SILLY",
+        "Stern": "STERN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 36000,
+      "State": "overflight",
+      "ControllerFrequency": "86",
+      "TrackingController": "86",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Southwest five 29": {
+      "Callsign": "SWA529",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Baltimore/Washington International Thurgood Marshall": "KBWI",
+        "Biggy": "BIGGY",
+        "Copes": "COPES",
+        "Farley": "FARLE",
+        "Jersey": "JERSY",
+        "Manchester": "KMHT",
+        "Solberg": "SBJ"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three three left": "33L",
+        "visual runway three three left": "33L",
+        "visual three three left": "33L"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Cools": "KOOLZ",
+          "Grafe": "GRAFE",
+          "Janns": "JANNS",
+          "Splat": "SPLAT"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "TRISH4",
+      "Altitude": 34000,
+      "State": "arrival",
+      "ControllerFrequency": "42",
+      "TrackingController": "42",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "United 13": {
+      "Callsign": "UAL13",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Botels": "BOTLS",
+        "Frankfurt": "EDDF",
+        "Jets": "JETTZ",
+        "Joanne": "JOANE",
+        "Lancaster": "LRP",
+        "Sara": "SARAA",
+        "Washington Dulles": "KIAD"
+      },
+      "CandidateApproaches": {
+        "I L S runway one right": "I1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one right": "1R",
+        "visual one right": "1R",
+        "visual runway one right": "1R"
+      },
+      "ApproachFixes": {
+        "I1R": {
+          "Edsco": "EDSCO",
+          "Ella": "ELLLA",
+          "Errors": "EERRS",
+          "Estin": "ESTYN",
+          "Fowler": "FAWLR",
+          "Helmz": "HELMZ",
+          "Huff": "HUFFF",
+          "Jamatz": "JMATZ",
+          "Laser": "LAZER",
+          "Laws": "LAWWS",
+          "Trea": "TREAA",
+          "Twoot": "TWOOT",
+          "Waxin": "WAXIN",
+          "grasp": "GRASK"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "HYPER9",
+      "Altitude": 33311,
+      "State": "arrival",
+      "ControllerFrequency": "42",
+      "TrackingController": "42",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United four 57": {
+      "Callsign": "UAL457",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Allentown": "FJC",
+        "Biley": "BILEY",
+        "LaGuardia": "KLGA",
+        "Marc": "MARRC",
+        "Milton": "MIP",
+        "San Francisco": "KSFO",
+        "Vibes": "VIBES"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two": "22",
+        "visual runway two two": "22",
+        "visual two two": "22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MIP4",
+      "Altitude": 30879,
+      "State": "arrival",
+      "ControllerFrequency": "72",
+      "TrackingController": "72",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "United niner": {
+      "Callsign": "UAL9",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Dixie": "DIXIE",
+        "Las Américas": "MDSD",
+        "Newark": "KEWR",
+        "Ohrin": "OHRYN",
+        "Owen": "OWENZ",
+        "Popon": "POPPN",
+        "whup": "WHTUP"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "EWR5",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "departure",
+      "ControllerFrequency": "66",
+      "TrackingController": "66",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "citation X eight eight zulu": {
+      "Callsign": "N5388Z/T",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Binghamton": "CFB",
+        "Bozeman Yellowstone": "KBZN",
+        "Buffy": "BUFFY",
+        "Kelly": "KELIE",
+        "Teterboro": "KTEB",
+        "View": "VIEEW",
+        "Wozee": "WOZEE"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 33000,
+      "State": "overflight",
+      "ControllerFrequency": "35",
+      "TrackingController": "35",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation eight eight zulu": {
+      "Callsign": "N5388Z/T",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Binghamton": "CFB",
+        "Bozeman Yellowstone": "KBZN",
+        "Buffy": "BUFFY",
+        "Kelly": "KELIE",
+        "Teterboro": "KTEB",
+        "View": "VIEEW",
+        "Wozee": "WOZEE"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 33000,
+      "State": "overflight",
+      "ControllerFrequency": "35",
+      "TrackingController": "35",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation mustang seven zero juliet": {
+      "Callsign": "N9070J/T",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Kayne": "KAYNE",
+        "Manchester": "KMHT",
+        "Park": "PARKE",
+        "Sparta": "SAX",
+        "Tampa": "KTPA",
+        "Towin": "TOWIN"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 34000,
+      "State": "overflight",
+      "ControllerFrequency": "42",
+      "TrackingController": "42",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation ten eight eight zulu": {
+      "Callsign": "N5388Z/T",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Binghamton": "CFB",
+        "Bozeman Yellowstone": "KBZN",
+        "Buffy": "BUFFY",
+        "Kelly": "KELIE",
+        "Teterboro": "KTEB",
+        "View": "VIEEW",
+        "Wozee": "WOZEE"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 33000,
+      "State": "overflight",
+      "ControllerFrequency": "35",
+      "TrackingController": "35",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "mustang seven zero juliet": {
+      "Callsign": "N9070J/T",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Kayne": "KAYNE",
+        "Manchester": "KMHT",
+        "Park": "PARKE",
+        "Sparta": "SAX",
+        "Tampa": "KTPA",
+        "Towin": "TOWIN"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 34000,
+      "State": "overflight",
+      "ControllerFrequency": "42",
+      "TrackingController": "42",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "november five three eight eight zulu": {
+      "Callsign": "N5388Z",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Binghamton": "CFB",
+        "Bozeman Yellowstone": "KBZN",
+        "Buffy": "BUFFY",
+        "Kelly": "KELIE",
+        "Teterboro": "KTEB",
+        "View": "VIEEW",
+        "Wozee": "WOZEE"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 33000,
+      "State": "overflight",
+      "ControllerFrequency": "35",
+      "TrackingController": "35",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november niner zero seven zero juliet": {
+      "Callsign": "N9070J",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Kayne": "KAYNE",
+        "Manchester": "KMHT",
+        "Park": "PARKE",
+        "Sparta": "SAX",
+        "Tampa": "KTPA",
+        "Towin": "TOWIN"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 34000,
+      "State": "overflight",
+      "ControllerFrequency": "42",
+      "TrackingController": "42",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Surface five twenty nine cross Jersey flight zero two eight zero\"",
+    "[local-stt] normalized words: [surface 5 29 cross jersey flight 0 2 8 0]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"surface\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"529\" Type=1 Value=529",
+    "[local-stt]   token[2]: Text=\"cross\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"jersey\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"flight\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"0280\" Type=1 Value=280",
+    "[local-stt] MatchCallsign: 6 tokens, 32 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 32 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 4 results",
+    "[local-stt]     result 0: \"Blue Streak 85 97\" (airline=0.464, flight=0.722, skip=0)",
+    "[local-stt]     result 1: \"Southwest five 29\" (airline=0.629, flight=1.000, skip=0)",
+    "[local-stt]     result 2: \"American 28\" (airline=0.442, flight=0.911, skip=2)",
+    "[local-stt]     result 3: \"American 28\" (airline=0.528, flight=0.911, skip=3)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Southwest five 29\" (airline=0.63, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 53 results",
+    "[local-stt]     result 0: \"American three 22\" (airline=0.490, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"United niner\" (airline=0.540, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Delta one 58\" (airline=0.448, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Delta 89\" (airline=0.448, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Brickyard 83 15\" (airline=0.476, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"American 28\" (airline=0.49, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"American 28\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Southwest five 29\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest five 29\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Southwest five 29\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"SWA529\" (conf=0.93, consumed=2, addressingForm=0, spokenKey=\"Southwest five 29\")",
+    "[local-stt] callsign match: Callsign=\"SWA529\" SpokenKey=\"Southwest five 29\" Conf=0.93 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=34000 Fixes=7 Approaches=1 VisualApproaches=3 AssignedApproach=\"\" LAHSORunways=[10 28]",
+    "[local-stt]   fix: \"Manchester\" -\u003e \"KMHT\"",
+    "[local-stt]   fix: \"Farley\" -\u003e \"FARLE\"",
+    "[local-stt]   fix: \"Jersey\" -\u003e \"JERSY\"",
+    "[local-stt]   fix: \"Solberg\" -\u003e \"SBJ\"",
+    "[local-stt]   fix: \"Biggy\" -\u003e \"BIGGY\"",
+    "[local-stt]   fix: \"Copes\" -\u003e \"COPES\"",
+    "[local-stt]   fix: \"Baltimore/Washington International Thurgood Marshall\" -\u003e \"KBWI\"",
+    "[local-stt]   approach: \"I L S runway three three left\" -\u003e \"I3L\"",
+    "[local-stt]   visual approach: \"visual runway three three left\" -\u003e \"33L\"",
+    "[local-stt]   visual approach: \"visual approach runway three three left\" -\u003e \"33L\"",
+    "[local-stt]   visual approach: \"visual three three left\" -\u003e \"33L\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"cross\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"jersey\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"flight\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"0280\" Type=1 Value=280",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"jersey\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (exact)",
+    "[local-stt]   extractFix: matched \"jersey\" -\u003e \"JERSY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"cross\" against 7 fixes",
+    "[local-stt]   extractFix: matched \"cross\" -\u003e \"JERSY\" (fuzzy 0.80)",
+    "[local-stt]   matched command: \"CJERSY/S280\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[CJERSY/S280] (avgConf=1.00)",
+    "[local-stt] parsed commands: [CJERSY/S280] (conf=1.00)",
+    "[local-stt] validated commands: [CJERSY/S280] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA529 CJERSY/S280\" (conf=0.93, time=20.7999ms) ==="
+  ]
+}
