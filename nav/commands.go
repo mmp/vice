@@ -191,14 +191,14 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) av.Comm
 
 	if speed < nav.Perf.Speed.Landing {
 		return av.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
-	} else if speed > maxIAS && speed < av.MaxSpeed {
+	} else if speed > maxIAS {
 		return av.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
 	}
 
 	if !exact {
 		// Range restriction: no afterAltitude deferral
 		nav.Speed = NavSpeed{Assigned: sr}
-		if sr.Range[0] > 0 && sr.Range[1] == av.MaxSpeed {
+		if sr.Range[0] > 0 && sr.Range[1] == av.MaxRestrictionSpeed {
 			return av.SpeedIntent{Speed: sr.Range[0], Type: av.SpeedAtOrAbove}
 		}
 		return av.SpeedIntent{Speed: sr.Range[1], Type: av.SpeedAtOrBelow}
@@ -261,13 +261,13 @@ func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *av.SpeedUntil) 
 
 	if speed < nav.Perf.Speed.Landing {
 		return av.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
-	} else if speed > maxIAS && speed < av.MaxSpeed {
+	} else if speed > maxIAS {
 		return av.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
 	}
 
 	nav.Speed = NavSpeed{Assigned: sr}
 	if !exact {
-		if sr.Range[0] > 0 && sr.Range[1] == av.MaxSpeed {
+		if sr.Range[0] > 0 && sr.Range[1] == av.MaxRestrictionSpeed {
 			return av.SpeedIntent{Speed: sr.Range[0], Type: av.SpeedAtOrAbove, Until: until}
 		}
 		return av.SpeedIntent{Speed: sr.Range[1], Type: av.SpeedAtOrBelow, Until: until}
@@ -1204,7 +1204,7 @@ func (nav *Nav) AssignCompoundSpeed(segments []av.CompoundSpeedSegment) av.Comma
 		}
 		if speed < nav.Perf.Speed.Landing {
 			return av.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
-		} else if speed > maxIAS && speed < av.MaxSpeed {
+		} else if speed > maxIAS {
 			return av.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
 		}
 

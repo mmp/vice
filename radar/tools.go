@@ -483,7 +483,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 					speedText = fmt.Sprintf("%.0fK", sr.Range[0])
 				} else if sr.Range[0] == 0 {
 					speedText = fmt.Sprintf("%.0fK", sr.Range[1])
-				} else if sr.Range[1] == av.MaxSpeed {
+				} else if sr.Range[1] == av.MaxRestrictionSpeed {
 					speedText = fmt.Sprintf("%.0fK", sr.Range[0])
 				} else {
 					speedText = fmt.Sprintf("%.0fK", sr.Range[1])
@@ -491,7 +491,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				p1 := td.AddText(speedText, p, style)
 				p1[1] -= float32(style.Font.Size)
 
-				if sr.Range[1] != av.MaxSpeed {
+				if sr.Range[1] != av.MaxRestrictionSpeed {
 					// At or below (or at): line above
 					ldr.AddLine([2]float32{p0[0], p0[1] + 2}, [2]float32{p1[0], p0[1] + 2}, color)
 				}

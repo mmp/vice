@@ -826,7 +826,7 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 	for i, wp := range wa {
 		e.Push(wp.Fix)
 		if sr := wp.SpeedRestriction(); sr != nil {
-			if sr.Range[0] < 0 || (sr.Range[1] > 300 && sr.Range[1] != MaxSpeed) {
+			if sr.Range[0] < 0 || (sr.Range[1] > 300 && sr.Range[1] != MaxRestrictionSpeed) {
 				e.ErrorString("invalid speed restriction %s", sr.Encoded())
 			}
 		}
@@ -2091,8 +2091,10 @@ func (a AltitudeRestriction) Encoded() string {
 ///////////////////////////////////////////////////////////////////////////
 // SpeedRestriction
 
-// MaxSpeed is used as the upper bound for "at or above" speed restrictions.
-const MaxSpeed float32 = 1000
+// MaxRestrictionSpeed is the sentinel value used as the upper bound for
+// "at or above" speed restrictions. It is not a real airspeed limit;
+// compare against aircraft performance for actual maxima.
+const MaxRestrictionSpeed float32 = 1000
 
 type SpeedRestriction struct {
 	NavigationRestriction
@@ -2111,7 +2113,7 @@ func MakeMachRestriction(mach float32) SpeedRestriction {
 }
 
 func MakeAtOrAboveSpeedRestriction(speed float32) SpeedRestriction {
-	return SpeedRestriction{NavigationRestriction: NavigationRestriction{Range: [2]float32{speed, MaxSpeed}}}
+	return SpeedRestriction{NavigationRestriction: NavigationRestriction{Range: [2]float32{speed, MaxRestrictionSpeed}}}
 }
 
 func MakeAtOrBelowSpeedRestriction(speed float32) SpeedRestriction {
@@ -2167,7 +2169,7 @@ func (s SpeedRestriction) Encoded() string {
 		}
 		return fmt.Sprintf("M%02d", int(s.Range[0]*100+.5))
 	}
-	return s.encoded(MaxSpeed)
+	return s.encoded(MaxRestrictionSpeed)
 }
 
 // CheckJSON implements util.JSONChecker so the JSON type checker accepts

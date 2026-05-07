@@ -330,7 +330,7 @@ func (nav *Nav) restrictedSpeed(sr *av.SpeedRestriction, natural float32) float3
 	if lo > 0 { // lo==0 means no floor
 		innerLo = lo + margin
 	}
-	if hi < av.MaxSpeed { // MaxSpeed means no ceiling
+	if hi < av.MaxRestrictionSpeed { // sentinel means no ceiling
 		innerHi = hi - margin
 	}
 

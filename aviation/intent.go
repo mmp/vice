@@ -384,7 +384,7 @@ func (c CompoundSpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			}
 		}
 
-		isAbove := !exact && seg.Speed.Range[0] > 0 && seg.Speed.Range[1] == MaxSpeed
+		isAbove := !exact && seg.Speed.Range[0] > 0 && seg.Speed.Range[1] == MaxRestrictionSpeed
 		isBelow := !exact && seg.Speed.Range[0] == 0
 
 		suffix := ""

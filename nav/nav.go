@@ -962,9 +962,9 @@ func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string,
 	if sr := nav.Speed.Assigned; sr != nil {
 		if spd, exact := sr.ExactValue(); exact {
 			resp.Add("[assigned {spd}|{spd} knots]", spd)
-		} else if sr.Range[0] > 0 && sr.Range[1] == av.MaxSpeed {
+		} else if sr.Range[0] > 0 && sr.Range[1] == av.MaxRestrictionSpeed {
 			resp.Add("[{spd} or greater|at or above {spd}]", sr.Range[0])
-		} else if sr.Range[0] == 0 && sr.Range[1] < av.MaxSpeed {
+		} else if sr.Range[0] == 0 && sr.Range[1] < av.MaxRestrictionSpeed {
 			resp.Add("[not exceeding {spd}|at or below {spd}]", sr.Range[1])
 		}
 	}
@@ -1091,10 +1091,10 @@ func crossingSpeedFormat(crossing *contactCrossingRestriction) (string, []any) {
 		if spd, exact := crossing.Speed.ExactValue(); exact {
 			return " and {spd}", []any{spd}
 		}
-		if crossing.Speed.Range[0] > 0 && crossing.Speed.Range[1] == av.MaxSpeed {
+		if crossing.Speed.Range[0] > 0 && crossing.Speed.Range[1] == av.MaxRestrictionSpeed {
 			return " at {spd} or greater", []any{crossing.Speed.Range[0]}
 		}
-		if crossing.Speed.Range[0] == 0 && crossing.Speed.Range[1] < av.MaxSpeed {
+		if crossing.Speed.Range[0] == 0 && crossing.Speed.Range[1] < av.MaxRestrictionSpeed {
 			return " at {spd} or less", []any{crossing.Speed.Range[1]}
 		}
 		return " between {spd} and {spd}", []any{crossing.Speed.Range[0], crossing.Speed.Range[1]}
