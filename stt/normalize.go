@@ -1126,6 +1126,7 @@ var commandBoundaryKeywords = map[string]bool{
 	"direct": true, "proceed": true,
 	// Approach
 	"cleared": true, "expect": true, "vectors": true, "approach": true,
+	"intercept": true,
 	// Other commands
 	"contact": true, "squawk": true, "ident": true,
 }
