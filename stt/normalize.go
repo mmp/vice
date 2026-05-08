@@ -486,6 +486,7 @@ var commandKeywords = map[string]string{
 	"localize":    "localizer", // STT drops trailing 'r'
 	"intercept":   "intercept",
 	"intercepted": "intercept",
+	"interceptor": "intercept", // STT error: "intercept" transcribed as "interceptor"
 	"clearance":   "clearance",
 	"visual":      "visual",
 	"ils":         "ils",
