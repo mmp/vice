@@ -294,6 +294,35 @@ func TestAtFixInterceptApproachOnlyFix(t *testing.T) {
 	}
 }
 
+func TestAtFixInterceptSkipsRouteHeadingAtApproachFix(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "ERNEI/a7000-8000 GOSHI/a6000/s210/h035",
+		DepartureAirport: "KDCA",
+		ArrivalAirport:   "KBOS",
+		AircraftType:     "B738",
+		InitialAltitude:  6000,
+		InitialSpeed:     210,
+		AssignedAltitude: 6000,
+	})
+	f.SetWind(360, 27)
+	f.ExpectApproach("I4R")
+	f.AtFixIntercept("GOSHI")
+
+	f.AtFix("GOSHI", func(f *FlightTest) {
+		if f.nav.Heading.Assigned != nil {
+			t.Fatalf("at-fix intercept left aircraft on heading %03.0f, want LNAV", *f.nav.Heading.Assigned)
+		}
+		if f.nav.Approach.InterceptState != OnApproachCourse {
+			t.Fatalf("InterceptState = %d, want OnApproachCourse", f.nav.Approach.InterceptState)
+		}
+		if len(f.nav.Waypoints) == 0 || f.nav.Waypoints[0].Fix != "WINNI" {
+			t.Fatalf("next waypoint = %v, want WINNI", f.nav.Waypoints)
+		}
+	})
+
+	f.Run()
+}
+
 // TestAtFixClearedApproachOnlyFix verifies the same approach-only-fix
 // relaxation for AtFixCleared.
 func TestAtFixClearedApproachOnlyFix(t *testing.T) {

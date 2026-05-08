@@ -388,12 +388,20 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Approach.StandbyApproach = false
 			nav.flyProcedureTurnIfNecessary()
 		}
+		interceptedAtFix := false
 		// Check if this is an "at fix intercept" fix
 		if nav.Approach.AtFixInterceptFix == wp.Fix && nav.Approach.Assigned != nil {
 			// Start intercepting the localizer. prepareForApproach handles
 			// both cases: if on a heading, it sets InterceptState = InitialHeading;
 			// if direct to approach fix, it splices the routes.
-			nav.prepareForApproach(false)
+			_, assignedHeading := nav.AssignedHeading()
+			if nav.prepareForApproach(false) == nil {
+				if !assignedHeading {
+					nav.Approach.InterceptState = OnApproachCourse
+					nav.Approach.NoPT = true
+				}
+				interceptedAtFix = true
+			}
 			nav.Approach.AtFixInterceptFix = "" // Clear so we don't trigger again
 		}
 		if nav.Heading.Arc != nil {
@@ -468,6 +476,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.assignAltitudeNow(*nfa.Depart.Altitude, false)
 		}
 
+		skipWaypointNavigation := clearedAtFix || interceptedAtFix
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 			// Controller-assigned heading
 			hdg := *nfa.Depart.Heading
@@ -479,12 +488,12 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 				nav.Waypoints = append([]av.Waypoint{*wp}, wps...)
 				nav.Heading.Turn = nfa.Depart.Turn // may be nil (TurnClosest)
 			}
-		} else if len(wp.ActionGroups()) > 0 && !clearedAtFix {
+		} else if len(wp.ActionGroups()) > 0 && !skipWaypointNavigation {
 			nav.Heading = NavHeading{Maneuvers: nav.makeActionGroupManeuvers(wp.Fix, wp.ActionGroups())}
 			if event := nav.activateWaypointActions(wp.Fix, wp.ActionGroups()[0].Actions); event != nil {
 				nav.PendingWaypointActionEvents = append(nav.PendingWaypointActionEvents, *event)
 			}
-		} else if wp.Heading != 0 && !clearedAtFix {
+		} else if wp.Heading != 0 && !skipWaypointNavigation {
 			hdg := wp.MagneticHeading()
 			turn := wp.Turn()
 			if wp.HeadingIsTrack() {
@@ -498,12 +507,12 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			} else {
 				nav.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
 			}
-		} else if wp.PresentHeading() && !clearedAtFix {
+		} else if wp.PresentHeading() && !skipWaypointNavigation {
 			// Round to nearest 5 degrees
 			hdg := math.MagneticHeading(5 * int((float32(nav.FlightState.Heading)+2.5)/5))
 			hdg = math.NormalizeHeading(hdg)
 			nav.Heading = NavHeading{Assigned: &hdg}
-		} else if wp.Arc() != nil {
+		} else if wp.Arc() != nil && !interceptedAtFix {
 			// Fly the DME arc
 			nav.Heading = NavHeading{Arc: wp.Arc(), JoiningArc: true}
 		}
