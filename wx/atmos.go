@@ -312,13 +312,7 @@ func (at AtmosByTime) ToSOA() (AtmosByTimeSOA, error) {
 	times := slices.Collect(maps.Keys(at.SampleStacks))
 	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
 
-	// Convert times to Unix timestamps
-	for _, t := range times {
-		soa.Times = append(soa.Times, t.UTC().Unix())
-	}
-
-	// Delta encode the Unix timestamps
-	soa.Times = util.DeltaEncode(soa.Times)
+	soa.Times = util.DeltaEncodeTimes(times)
 
 	var err error
 	soa.Levels, err = convertStacksToSOALevels(at.SampleStacks, times)
@@ -328,14 +322,7 @@ func (at AtmosByTime) ToSOA() (AtmosByTimeSOA, error) {
 func (atsoa AtmosByTimeSOA) ToAOS() AtmosByTime {
 	at := AtmosByTime{SampleStacks: make(map[time.Time]*AtmosSampleStack)}
 
-	// Delta decode the Unix timestamps
-	decodedTimestamps := util.DeltaDecode(atsoa.Times)
-
-	// Convert Unix timestamps back to time.Time
-	var times []time.Time
-	for _, timestamp := range decodedTimestamps {
-		times = append(times, time.Unix(timestamp, 0).UTC())
-	}
+	times := util.DeltaDecodeTimes(atsoa.Times)
 
 	stacks, err := convertSOALevelsToStacks(atsoa.Levels, times)
 	if err != nil {

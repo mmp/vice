@@ -5,6 +5,8 @@
 package util
 
 import (
+	"time"
+
 	"golang.org/x/exp/constraints"
 )
 
@@ -36,6 +38,42 @@ func DeltaDecode[T constraints.Integer](d []T) []T {
 	}
 
 	return r
+}
+
+// UnixTimestamps converts times to Unix timestamps in seconds.
+func UnixTimestamps(times []time.Time) []int64 {
+	if len(times) == 0 {
+		return nil
+	}
+
+	timestamps := make([]int64, len(times))
+	for i, t := range times {
+		timestamps[i] = t.UTC().Unix()
+	}
+	return timestamps
+}
+
+// TimesFromUnixTimestamps converts Unix timestamps in seconds to UTC times.
+func TimesFromUnixTimestamps(timestamps []int64) []time.Time {
+	if len(timestamps) == 0 {
+		return nil
+	}
+
+	times := make([]time.Time, len(timestamps))
+	for i, timestamp := range timestamps {
+		times[i] = time.Unix(timestamp, 0).UTC()
+	}
+	return times
+}
+
+// DeltaEncodeTimes converts times to Unix timestamps in seconds and delta-encodes them.
+func DeltaEncodeTimes(times []time.Time) []int64 {
+	return DeltaEncode(UnixTimestamps(times))
+}
+
+// DeltaDecodeTimes delta-decodes Unix timestamps in seconds and converts them to UTC times.
+func DeltaDecodeTimes(encoded []int64) []time.Time {
+	return TimesFromUnixTimestamps(DeltaDecode(encoded))
 }
 
 func DeltaEncodeBytes(ref, next []byte) []byte {

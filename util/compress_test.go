@@ -7,6 +7,7 @@ package util
 import (
 	"slices"
 	"testing"
+	"time"
 )
 
 func TestDeltaEncodeDecode(t *testing.T) {
@@ -61,6 +62,57 @@ func TestDeltaEncodeNil(t *testing.T) {
 func TestDeltaDecodeNil(t *testing.T) {
 	if got := DeltaDecode[int](nil); got != nil {
 		t.Errorf("DeltaDecode(nil) = %v, want nil", got)
+	}
+}
+
+func TestUnixTimestampConversions(t *testing.T) {
+	loc := time.FixedZone("test", -5*60*60)
+	times := []time.Time{
+		time.Date(2025, time.August, 1, 12, 30, 15, 999, loc),
+		time.Date(2025, time.August, 1, 13, 45, 0, 0, time.UTC),
+	}
+	timestamps := UnixTimestamps(times)
+	wantTimestamps := []int64{times[0].Unix(), times[1].Unix()}
+	if !slices.Equal(timestamps, wantTimestamps) {
+		t.Fatalf("UnixTimestamps() = %v, want %v", timestamps, wantTimestamps)
+	}
+
+	roundTrip := TimesFromUnixTimestamps(timestamps)
+	for i, got := range roundTrip {
+		want := time.Unix(wantTimestamps[i], 0).UTC()
+		if !got.Equal(want) || got.Location() != time.UTC {
+			t.Errorf("TimesFromUnixTimestamps()[%d] = %v, want %v in UTC", i, got, want)
+		}
+	}
+}
+
+func TestDeltaEncodeDecodeTimes(t *testing.T) {
+	times := []time.Time{
+		time.Date(2025, time.August, 1, 12, 0, 0, 0, time.UTC),
+		time.Date(2025, time.August, 1, 13, 0, 0, 0, time.UTC),
+		time.Date(2025, time.August, 1, 15, 30, 0, 0, time.UTC),
+	}
+
+	encoded := DeltaEncodeTimes(times)
+	wantEncoded := []int64{times[0].Unix(), 3600, 9000}
+	if !slices.Equal(encoded, wantEncoded) {
+		t.Fatalf("DeltaEncodeTimes() = %v, want %v", encoded, wantEncoded)
+	}
+
+	decoded := DeltaDecodeTimes(encoded)
+	for i, got := range decoded {
+		if !got.Equal(times[i]) || got.Location() != time.UTC {
+			t.Errorf("DeltaDecodeTimes()[%d] = %v, want %v in UTC", i, got, times[i])
+		}
+	}
+}
+
+func TestDeltaEncodeDecodeTimesNil(t *testing.T) {
+	if got := DeltaEncodeTimes(nil); got != nil {
+		t.Errorf("DeltaEncodeTimes(nil) = %v, want nil", got)
+	}
+	if got := DeltaDecodeTimes(nil); got != nil {
+		t.Errorf("DeltaDecodeTimes(nil) = %v, want nil", got)
 	}
 }
 
