@@ -455,8 +455,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			}
 
 			return s.AirportAdvisory(tcw, callsign, oclock, miles)
-		} else if strings.HasPrefix(command, "ATIS/") {
-			return s.ATISCommand(tcw, callsign, command[5:])
+		} else if letter, ok := strings.CutPrefix(command, "ATIS/"); ok {
+			return s.ATISCommand(tcw, callsign, letter)
 		} else {
 			components := strings.Split(command, "/")
 			if len(components) != 2 || len(components[1]) == 0 {
@@ -466,9 +466,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			fix := strings.ToUpper(components[0][1:])
 			switch components[1][0] {
 			case 'C':
-				rest := components[1][1:]
-				straightIn := strings.HasPrefix(rest, "SI")
-				rest = strings.TrimPrefix(rest, "SI")
+				rest, straightIn := strings.CutPrefix(components[1][1:], "SI")
 				if util.IsAllNumbers(rest) && len(rest) > 0 {
 					alt, err := strconv.Atoi(rest)
 					if err != nil {
@@ -509,8 +507,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.ClimbViaSID(tcw, callsign)
 		} else if id, ok := strings.CutPrefix(command, "CVA"); ok && len(id) > 0 {
 			return s.ClearedApproach(tcw, callsign, "_VIS"+id, true)
-		} else if strings.HasPrefix(command, "CDME") && len(command) > 4 {
-			distStr, rest, _ := strings.Cut(command[4:], "/")
+		} else if spec, ok := strings.CutPrefix(command, "CDME"); ok && len(spec) > 0 {
+			distStr, rest, _ := strings.Cut(spec, "/")
 			d, err := strconv.Atoi(distStr)
 			if err != nil {
 				return nil, ErrInvalidCommandSyntax
@@ -547,8 +545,10 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				return nil, ErrInvalidCommandSyntax
 			}
 			return s.CrossDMEAt(tcw, callsign, float32(d), ar, sr)
-		} else if command == "CSI" || (strings.HasPrefix(command, "CSI") && !util.IsAllNumbers(command[3:])) {
-			return s.ClearedApproach(tcw, callsign, command[3:], true)
+		} else if command == "CSI" {
+			return s.ClearedApproach(tcw, callsign, "", true) // clear "expect"ed approach
+		} else if appr, ok := strings.CutPrefix(command, "CSI"); ok && !util.IsAllNumbers(appr) {
+			return s.ClearedApproach(tcw, callsign, appr, true)
 		} else if components := strings.Split(command, "/"); len(components) > 1 {
 			fix := components[0][1:]
 			var ar *av.AltitudeRestriction
@@ -591,12 +591,11 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				return s.CrossDistanceFromFixAt(tcw, callsign, fix, dist, dir, ar, sr)
 			}
 			return s.CrossFixAt(tcw, callsign, fix, ar, sr)
-		} else if strings.HasPrefix(command, "CT") && len(command) > 2 {
+		} else if tcp, ok := strings.CutPrefix(command, "CT"); ok && len(tcp) > 0 {
 			// Only treat as contact command if the TCP exists as a valid controller;
 			// otherwise treat as cleared approach (e.g., "CTTL" -> cleared for TTL approach)
-			tcp := TCP(command[2:])
-			if _, ok := s.State.Controllers[tcp]; ok {
-				return s.ContactController(tcw, ACID(callsign), tcp)
+			if _, ok := s.State.Controllers[TCP(tcp)]; ok {
+				return s.ContactController(tcw, ACID(callsign), TCP(tcp))
 			}
 			return s.ClearedApproach(tcw, callsign, command[1:], false)
 		} else {
@@ -630,8 +629,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 	case 'E':
 		if command == "ED" {
 			return s.ExpediteDescent(tcw, callsign)
-		} else if strings.HasPrefix(command, "ED") && len(command) > 2 {
-			alt, err := strconv.Atoi(command[2:])
+		} else if a, ok := strings.CutPrefix(command, "ED"); ok && len(a) > 0 {
+			alt, err := strconv.Atoi(a)
 			if err == nil {
 				return s.ExpediteDescentThrough(tcw, callsign, float32(alt*100))
 			}
@@ -639,8 +638,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		}
 		if command == "EC" {
 			return s.ExpediteClimb(tcw, callsign)
-		} else if strings.HasPrefix(command, "EC") && len(command) > 2 {
-			alt, err := strconv.Atoi(command[2:])
+		} else if a, ok := strings.CutPrefix(command, "EC"); ok && len(a) > 0 {
+			alt, err := strconv.Atoi(a)
 			if err == nil {
 				return s.ExpediteClimbThrough(tcw, callsign, float32(alt*100))
 			}
@@ -648,8 +647,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		}
 		if id, ok := strings.CutPrefix(command, "EVA"); ok && len(id) > 0 { // Expect visual
 			return s.ExpectApproach(tcw, callsign, "_VIS"+id)
-		} else if strings.HasPrefix(command, "EXPDIR") && len(command) > 6 {
-			return s.ExpectDirect(tcw, callsign, command[6:])
+		} else if fix, ok := strings.CutPrefix(command, "EXPDIR"); ok && len(fix) > 0 {
+			return s.ExpectDirect(tcw, callsign, fix)
 		} else if len(command) > 1 {
 			return s.ExpectApproach(tcw, callsign, command[1:])
 		} else if command == "E" {
@@ -685,8 +684,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.GoodRateDescent(tcw, callsign)
 		} else if command == "GRC" {
 			return s.GoodRateClimb(tcw, callsign)
-		} else if strings.HasPrefix(command, "GR") && len(command) > 2 {
-			alt, err := strconv.Atoi(command[2:])
+		} else if a, ok := strings.CutPrefix(command, "GR"); ok && len(a) > 0 {
+			alt, err := strconv.Atoi(a)
 			if err != nil {
 				return nil, ErrInvalidCommandSyntax
 			}
@@ -837,8 +836,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.SayHeading(tcw, callsign)
 		} else if command == "SA" {
 			return s.SayAltitude(tcw, callsign)
-		} else if strings.HasPrefix(command, "SAYAGAIN/") {
-			return s.SayAgainCommand(tcw, callsign, command[9:])
+		} else if what, ok := strings.CutPrefix(command, "SAYAGAIN/"); ok {
+			return s.SayAgainCommand(tcw, callsign, what)
 		} else if speedStr, untilStr, ok := strings.Cut(command[1:], "/U"); ok {
 			// Check for compound format: S250/UFIX1/210/UFIX2/180
 			// After the first Cut on "/U", if untilStr contains another "/",
@@ -904,12 +903,12 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			}
 
 			return s.TrafficAdvisory(tcw, callsign, oclock, miles, trafficAlt*100, altUnknown, otherMaintainsVisual)
-		} else if command == "TO" || strings.HasPrefix(command, "TO/") {
+		} else if command == "TO" {
+			return s.ContactTower(tcw, callsign, av.Frequency(0))
+		} else if f, ok := strings.CutPrefix(command, "TO/"); ok {
 			var freq av.Frequency
-			if strings.HasPrefix(command, "TO/") {
-				if n, err := strconv.Atoi(command[3:]); err == nil {
-					freq = av.Frequency(n)
-				}
+			if n, err := strconv.Atoi(f); err == nil {
+				freq = av.Frequency(n)
 			}
 			return s.ContactTower(tcw, callsign, freq)
 		} else if n := len(command); n > 2 {
