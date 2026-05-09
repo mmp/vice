@@ -6,10 +6,9 @@ package wx
 
 import (
 	"bytes"
+	"fmt"
 	"io/fs"
-	"path/filepath"
-	"slices"
-	"strings"
+	"os"
 	"sync"
 	"time"
 
@@ -32,7 +31,6 @@ var (
 	}
 	atmosCache struct {
 		done    chan struct{}
-		byTime  map[string]*AtmosByTime        // keyed by facility (TRACON or ARTCC)
 		timeInt map[string][]util.TimeInterval // keyed by facility
 	}
 	tfrCache struct {
@@ -74,36 +72,29 @@ func initResources() {
 	atmosCache.done = make(chan struct{})
 	go func() {
 		defer close(atmosCache.done)
-		atmosCache.byTime = make(map[string]*AtmosByTime)
 		atmosCache.timeInt = make(map[string][]util.TimeInterval)
+		path := "wx/" + ManifestPath("atmos")
+		f, err := fs.ReadFile(util.GetResourcesFS(), path)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s: %v\n", path, err)
+			return
+		}
+		manifest, err := LoadManifest(bytes.NewReader(f))
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s: %v\n", path, err)
+			return
+		}
 
-		util.WalkResources("wx/atmos", func(path string, d fs.DirEntry, filesystem fs.FS, err error) error {
-			if err != nil || d.IsDir() {
-				return nil
+		for _, facility := range manifest.Facilities() {
+			times, ok := manifest.GetTimestamps(facility)
+			if !ok {
+				continue
 			}
-
-			filename := filepath.Base(path)
-			facility := strings.TrimSuffix(filename, ".msgpack.zst")
-
-			atmosByTime, err := loadAtmosByTime(facility)
-			if err != nil {
-				return nil
-			}
-			atmosCache.byTime[facility] = atmosByTime
-
-			var atmosTimes []time.Time
-			for t := range atmosByTime.SampleStacks {
-				atmosTimes = append(atmosTimes, t)
-			}
-			slices.SortFunc(atmosTimes, func(a, b time.Time) int { return a.Compare(b) })
-
-			intervals := MergeAndAlignToMidnight(AtmosIntervals(atmosTimes))
+			intervals := MergeAndAlignToMidnight(AtmosIntervals(times))
 			if len(intervals) > 0 {
 				atmosCache.timeInt[facility] = intervals
 			}
-
-			return nil
-		})
+		}
 	}()
 }
 
@@ -239,11 +230,6 @@ func GetARTCCTimeIntervals() map[string][]util.TimeInterval {
 // GetAtmosByTime returns atmospheric data for a facility from bundled resources.
 func GetAtmosByTime(facility string) (*AtmosByTime, error) {
 	Init()
-	<-atmosCache.done
-	if abt, ok := atmosCache.byTime[facility]; ok {
-		return abt, nil
-	}
-	// Not in cache (no atmos file for this facility); load directly.
 	return loadAtmosByTime(facility)
 }
 
@@ -256,7 +242,7 @@ func loadAtmosByTime(facility string) (*AtmosByTime, error) {
 		return nil, err
 	}
 
-	zr, err := zstd.NewReader(bytes.NewReader(f))
+	zr, err := zstd.NewReader(bytes.NewReader(f), zstd.WithDecoderConcurrency(1))
 	if err != nil {
 		return nil, err
 	}
