@@ -9878,11 +9878,12 @@
     "PARCH4.Finals31": {
       "arrivals": [
         {
-          "waypoints": "CCC/s250 ROBER/ho JFK/h278",
+          "waypoints": "CCC/s250 ROBER/ho/h229 JFK/h278",
           "route": "/. PARCH4",
           "initial_controller": "2K",
-          "initial_altitude": 9000,
-          "initial_speed": 240,
+          "initial_altitude": 12000,
+          "assigned_altitude": 5000,
+          "initial_speed": 250,
           "expect_approach": "I1R",
           "scratchpad": "I1R",
           "airlines": {
@@ -10255,10 +10256,11 @@
     "PARCH4.Finals13": {
       "arrivals": [
         {
-          "waypoints": "CCC/s250 ROBER/ho JFK/h278",
+          "waypoints": "CCC/s250 ROBER/ho/h280",
           "route": "/. PARCH4",
           "initial_controller": "2K",
-          "initial_altitude": 9000,
+          "initial_altitude": 12000,
+          "assigned_altitude": 5000,
           "initial_speed": 250,
           "expect_approach": "R3L",
           "scratchpad": "R3L",
@@ -10632,10 +10634,11 @@
     "PARCH4.Finals4": {
       "arrivals": [
         {
-          "waypoints": "CCC/a12000/s250 ROBER/ho JFK/h278",
+          "waypoints": "CCC/a12000/s250 N040.44.28.702,W072.58.44.606/a5000+ ROBER N040.36.11.118,W073.07.18.656/a4000/ho2J N040.19.44.051,W073.38.10.374/ho2G N040.16.39.453,W073.28.30.461 N040.19.44.051,W073.38.10.374/ho",
           "route": "/. PARCH4",
           "initial_controller": "2K",
           "initial_altitude": 12000,
+          "assigned_altitude": 3000,
           "initial_speed": 250,
           "expect_approach": "I4R",
           "scratchpad": "I4R",
