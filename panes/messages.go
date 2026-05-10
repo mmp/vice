@@ -103,6 +103,17 @@ func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Play audio alert after pilot readback transmissions", &mp.ReadbackTransmissionsAlert)
 }
 
+func (mp *MessagesPane) joinedMessages() string {
+	var sb strings.Builder
+	for i, msg := range mp.messages {
+		if i > 0 {
+			sb.WriteByte('\n')
+		}
+		sb.WriteString(msg.contents)
+	}
+	return sb.String()
+}
+
 func (msg *Message) Color() renderer.RGB {
 	switch {
 	case msg.error:
@@ -137,15 +148,25 @@ func (mp *MessagesPane) DrawWindow(show *bool, c *client.ControlClient, p platfo
 	imgui.BeginV("Messages", show, 0)
 	DrawPinButton("Messages", unpinnedWindows, p)
 	if imgui.BeginChildStrV("##messages_scroll", imgui.Vec2{}, 0, 0) {
-		for _, msg := range mp.messages {
+		for i, msg := range mp.messages {
 			color := msg.ImguiColor()
 			imgui.PushStyleColorVec4(imgui.ColText, color)
 			imgui.PushTextWrapPos()
 			imgui.TextUnformatted(msg.contents)
 			imgui.PopTextWrapPos()
 			imgui.PopStyleColor()
+
+			if imgui.BeginPopupContextItemV(fmt.Sprintf("##msg_ctx_%d", i),
+				imgui.PopupFlagsMouseButtonRight) {
+				if imgui.SelectableBool("Copy message") {
+					imgui.SetClipboardText(msg.contents)
+				}
+				if imgui.SelectableBool("Copy all messages") {
+					imgui.SetClipboardText(mp.joinedMessages())
+				}
+				imgui.EndPopup()
+			}
 		}
-		// Auto-scroll when new messages arrive
 		if mp.shouldAutoScroll {
 			imgui.SetScrollHereYV(1.0)
 			mp.shouldAutoScroll = false
