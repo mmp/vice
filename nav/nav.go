@@ -750,7 +750,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 	targetAltitude, _, _ := nav.TargetAltitude()
 	lines = append(lines, fmt.Sprintf("IAS %d GS %d TAS %d", int(nav.FlightState.IAS),
 		int(nav.FlightState.GS), int(nav.TAS(wxs.Temperature()))))
-	ias, _ := nav.TargetSpeed(targetAltitude, &fp, wxs, nil)
+	ias, _ := nav.TargetSpeed(targetAltitude, &fp, wxs, nil, nil)
 	if nav.Speed.MaintainSlowestPractical {
 		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))
 	} else if nav.Speed.MaintainMaximumForward {

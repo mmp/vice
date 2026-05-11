@@ -121,13 +121,17 @@ func (nav *Nav) Check(lg *log.Logger) {
 }
 
 func (nav *Nav) Update(callsign string, model *wx.Model, fp *av.FlightPlan, simTime Time, bravo *av.AirspaceGrid) UpdateResult {
-	// Perform single weather lookup at the start
 	wxs := model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime.Time())
-	return nav.UpdateWithWeather(callsign, wxs, fp, simTime, bravo)
+	var arrivalMETAR *wx.METAR
+	if fp != nil && fp.ArrivalAirport != "" {
+		arrivalMETAR = model.AirportMETARForTime(fp.ArrivalAirport, simTime.Time())
+	}
+	return nav.UpdateWithWeather(callsign, wxs, arrivalMETAR, fp, simTime, bravo)
 }
 
-// UpdateWithWeather is a helper for simulations that use pre-fetched weather
-func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, fp *av.FlightPlan, simTime Time, bravo *av.AirspaceGrid) UpdateResult {
+// UpdateWithWeather is a helper for simulations that use pre-fetched weather.
+// arrivalMETAR, if non-nil, is used for the approach speed wind additive.
+func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *wx.METAR, fp *av.FlightPlan, simTime Time, bravo *av.AirspaceGrid) UpdateResult {
 	nav.PendingWaypointActionEvents = nil
 	nav.activatePendingAltitude(simTime)
 
@@ -139,7 +143,7 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, fp *av.FlightP
 		nav.FlightState.BankAngle, nav.FlightState.AltitudeRate)
 
 	targetAltitude, altitudeRate, geometricDescent := nav.TargetAltitude()
-	deltaKts, slowingTo250 := nav.updateAirspeed(callsign, targetAltitude, geometricDescent, fp, wxs, simTime, bravo)
+	deltaKts, slowingTo250 := nav.updateAirspeed(callsign, targetAltitude, geometricDescent, fp, wxs, arrivalMETAR, simTime, bravo)
 	nav.updateAltitude(callsign, targetAltitude, altitudeRate, geometricDescent, deltaKts, slowingTo250, wxs, simTime)
 	nav.updateHeading(callsign, wxs, simTime)
 	nav.updatePositionAndGS(wxs)
@@ -722,7 +726,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 	// Don't simulate the turn longer than it will take to do it.
 	n := int(1 + turnAngle/3)
 	for range n {
-		nav2.UpdateWithWeather("", wxs, nil, Time{}, nil)
+		nav2.UpdateWithWeather("", wxs, nil, nil, Time{}, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position,
 			nav2.FlightState.NmPerLongitude),
 			p0, p1)
@@ -778,7 +782,7 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading
 	n := int(1 + turnAngle)
 	lastDist := initialDist
 	for range n {
-		nav2.UpdateWithWeather("", wxs, nil, Time{}, nil)
+		nav2.UpdateWithWeather("", wxs, nil, nil, Time{}, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0nm, p1)
 
 		intercepted := math.Abs(curDist) < 0.02

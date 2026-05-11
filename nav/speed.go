@@ -10,11 +10,11 @@ import (
 	"github.com/mmp/vice/wx"
 )
 
-func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bool, fp *av.FlightPlan, wxs wx.Sample, simTime Time, bravo *av.AirspaceGrid) (float32, bool) {
+func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bool, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, simTime Time, bravo *av.AirspaceGrid) (float32, bool) {
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.
-	targetSpeed, targetRate := nav.TargetSpeed(alt, fp, wxs, bravo)
+	targetSpeed, targetRate := nav.TargetSpeed(alt, fp, wxs, arrivalMETAR, bravo)
 
 	// Stay within the aircraft's capabilities
 	targetSpeed = math.Clamp(targetSpeed, nav.Perf.Speed.Min, MaxIAS)
@@ -100,7 +100,7 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bo
 		return 0, false
 	}
 }
-func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sample, bravo *av.AirspaceGrid) (float32, float32) {
+func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, bravo *av.AirspaceGrid) (float32, float32) {
 	if nav.Airwork != nil {
 		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
 			return spd, rate
@@ -253,7 +253,21 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 	// last half mile before touchdown.
 	if nav.Speed.Assigned == nil && fd != 0 && fd < 10 {
 		hdg := nav.Approach.Assigned.RunwayHeading(nav.FlightState.NmPerLongitude)
-		approachSpeed := nav.Perf.ApproachSpeed(float32(wxs.WindDirection()), wxs.WindSpeed(), 0 /* FIXME: GUST */, float32(hdg))
+		var approachSpeed float32
+		if arrivalMETAR != nil {
+			windDir := float32(0) // treat variable winds as unknown direction (zero headwind component)
+			if arrivalMETAR.WindDir != nil {
+				windDir = float32(*arrivalMETAR.WindDir)
+			}
+			windSpeed := float32(arrivalMETAR.WindSpeed)
+			windGust := windSpeed // default: no gust above steady wind
+			if arrivalMETAR.WindGust != nil && *arrivalMETAR.WindGust > arrivalMETAR.WindSpeed {
+				windGust = float32(*arrivalMETAR.WindGust)
+			}
+			approachSpeed = nav.Perf.ApproachSpeed(windDir, windSpeed, windGust, float32(hdg))
+		} else {
+			approachSpeed = nav.Perf.ApproachSpeed(float32(wxs.WindDirection()), wxs.WindSpeed(), 0, float32(hdg))
+		}
 
 		if fd < 0.5 {
 			// Short final: slow down to landing speed.
