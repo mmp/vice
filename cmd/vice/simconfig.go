@@ -941,6 +941,15 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 				}
 			}
 		}
+		if desc := c.ScenarioSpec.Description; desc != "" {
+			imgui.Spacing()
+			imgui.Separator()
+			imgui.Spacing()
+			if imgui.BeginChildStrV("scenario_desc", imgui.Vec2{0, 0}, imgui.ChildFlagsBorders|imgui.ChildFlagsAutoResizeY, 0) {
+				imgui.TextWrapped(desc)
+			}
+			imgui.EndChild()
+		}
 		// Configuration options (initials, checkboxes, METAR) are now on Screen 2
 	} else {
 		// Join remote
