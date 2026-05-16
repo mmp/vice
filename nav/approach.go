@@ -805,6 +805,10 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 	}
 
 	cancelHold := nav.applyClearedApproachState()
+	// Synthesized visuals never set InterceptState=OnApproachCourse, so OnApproach()
+	// — and thus MVAsApply / MSAW suppression — would otherwise wait for the first
+	// route waypoint to be overflown.
+	nav.Approach.PassedApproachFix = true
 	nav.Waypoints = append(wps, nav.FlightState.ArrivalAirport)
 	// Narrow Assigned.Waypoints to the cleared route so FAFSegment / route
 	// queries see only what the aircraft is now flying.
