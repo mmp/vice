@@ -5,8 +5,13 @@
       "frequency": 118100,
       "radio_name": "Boise Tower"
     },
-    "1W": {
+    "1G": {
       "callsign": "BOI_APP",
+      "frequency": 119600,
+      "radio_name": "Big Sky Approach"
+    },
+    "1F": {
+      "callsign": "BOI_F_APP",
       "frequency": 126900,
       "radio_name": "Big Sky Approach"
     }
@@ -15,16 +20,18 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "KOURT4": "1W",
-          "KYAAN4": "1W",
-          "SADYL4": "1W",
-          "SPUUD4": "1W"
+          "KOURT4": "1G",
+          "KYAAN4": "1G",
+          "SADYL4": "1G",
+          "SPUUD4": "1G",
+          "BEWTE4": "1G",
+          "BEWTE4.COLLR": "1G"
         },
         "departure_assignments": {
-          "KBOI": "1W"
+          "KBOI": "1G"
         },
         "default_consolidation": {
-          "1W": []
+          "1G": ["1F"]
         }
       }
     },

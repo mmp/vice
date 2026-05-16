@@ -3,30 +3,108 @@
   "airports": {
     "KBOI": {
       "approaches": {
-        "R8L": {
-          "cifp_id": "RX28L"
-        },
-        "I8R": {
-          "cifp_id": "I28R"
+        "V0L": {
+          "cifp_id": "S10L"
         },
         "I0R": {
           "cifp_id": "IY10R"
         },
-        "R0L": {
+        "VY8L": {
+          "cifp_id": "SY28L"
+        },
+        "I8R": {
+          "cifp_id": "I28R"
+        },
+        "RZ0L": {
+          "cifp_id": "RZ10L"
+        },
+        "RZ0R": {
+          "cifp_id": "RZ10R"
+        },
+        "RZ8L": {
+          "cifp_id": "RZ28L"
+        },
+        "RZ8R": {
+          "cifp_id": "RZ28R"
+        },
+        "RY0L": {
           "cifp_id": "RY10L"
+        },
+        "RY0R": {
+          "cifp_id": "RY10R"
+        },
+        "RY8L": {
+          "cifp_id": "RY28L"
+        },
+        "RY8R": {
+          "cifp_id": "RY28R"
+        },
+        "RX8L": {
+          "cifp_id": "RX28L"
+        },
+        "RX8R": {
+          "cifp_id": "RX28R"
         }
       },
       "departure_routes": {
         "10L": {
-          "HYVAL, SAILL, OLAAH, VALYY, BARNR, FETHR, ROARR": {
+          "HYVAL": {
             "assigned_altitude": 16000,
-            "waypoints": "KBOI-28R/h100"
+            "waypoints": "KBOI-28R/h100 HYVAL"
+          },
+          "SAILL": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-28R/h100 SAILL"
+          },
+          "OLAAH": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-28R/h100 OLAAH"
+          },
+          "VALYY": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-28R/h100 VALYY"
+          },
+          "BARNR": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-28R/h100 BARNR"
+          },
+          "FETHR": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-28R/h100 FETHR"
+          },
+          "ROARR": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-28R/h100 ROARR"
           }
         },
         "28R": {
-          "HYVAL, SAILL, OLAAH, VALYY, BARNR, FETHR, ROARR": {
+          "HYVAL": {
             "assigned_altitude": 16000,
-            "waypoints": "KBOI-10L/h280"
+            "waypoints": "KBOI-10L/h280 HYVAL"
+          },
+          "SAILL": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-10L/h280 SAILL"
+          },
+          "OLAAH": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-10L/h280 OLAAH"
+          },
+          "VALYY": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-10L/h280 VALYY"
+          },
+          "BARNR": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-10L/h280 BARNR"
+          },
+          "FETHR": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-10L/h280 FETHR"
+          },
+          "ROARR": {
+            "assigned_altitude": 16000,
+            "waypoints": "KBOI-10L/h280 ROARR"
           }
         }
       },
@@ -128,7 +206,7 @@
           "spawn": "DERSO@0.2",
           "star": "KOURT4",
           "initial_controller": "C17",
-          "initial_altitude": 15000,
+          "initial_altitude": 14000,
           "initial_speed": 260,
           "expect_approach": null,
           "airlines": {
@@ -205,11 +283,11 @@
     "SPUUD4": {
       "arrivals": [
         {
-          "spawn": "ORYDA@0.9",
+          "spawn": "BROPH@0.9",
           "star": "SPUUD4",
           "initial_controller": "C17",
-          "initial_altitude": 13000,
-          "initial_speed": 250,
+          "initial_altitude": 17000,
+          "initial_speed": 300,
           "expect_approach": null,
           "airlines": {
             "KBOI": [
@@ -229,6 +307,78 @@
           }
         }
       ]
+    },
+    "BEWTE4": {
+      "arrivals": [
+        {
+          "spawn": "SUMOQ@0.5",
+          "star": "BEWTE4",
+          "initial_controller": "C17",
+          "initial_altitude": 15000,
+          "initial_speed": 260,
+          "expect_approach": null,
+          "airlines": {
+            "KBOI": [
+              {
+                "icao": "ASA",
+                "airport": "KPDX"
+              },
+              {
+                "icao": "QXE",
+                "airport": "KPDX"
+              },
+              {
+                "icao": "ASA",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KOAK"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KSFO"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KLAX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BEWTE4.COLLR": {
+      "arrivals": [
+        {
+          "spawn": "COLLR@0.3",
+          "star": "BEWTE4",
+          "initial_controller": "C17",
+          "initial_altitude": 15000,
+          "initial_speed": 260,
+          "expect_approach": null,
+          "airlines": {
+            "KBOI": [
+              {
+                "icao": "SWA",
+                "airport": "KSLC"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KSLC"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "FDX",
+                "airport": "KMEM"
+              }
+            ]
+          }
+        }
+      ]
     }
   },
   "default_scenario": "Land West",
@@ -240,6 +390,10 @@
         {
           "airport": "KBOI",
           "runway": "28L"
+        },
+        {
+          "airport": "KBOI",
+          "runway": "28R"
         }
       ],
       "inbound_rates": {
@@ -254,6 +408,12 @@
         },
         "SPUUD4": {
           "KBOI": 5
+        },
+        "BEWTE4": {
+          "KBOI": 5
+        },
+        "BEWTE4.COLLR": {
+          "KBOI": 3
         }
       },
       "configuration": "STD",
@@ -274,6 +434,10 @@
         {
           "airport": "KBOI",
           "runway": "10R"
+        },
+        {
+          "airport": "KBOI",
+          "runway": "10L"
         }
       ],
       "inbound_rates": {
@@ -288,6 +452,12 @@
         },
         "SPUUD4": {
           "KBOI": 5
+        },
+        "BEWTE4": {
+          "KBOI": 5
+        },
+        "BEWTE4.COLLR": {
+          "KBOI": 3
         }
       },
       "configuration": "STD",

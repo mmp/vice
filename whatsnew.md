@@ -1,2 +1,3 @@
+- Scenario updates: BOI (Elliot B)
 - STARS
  - Fixed bug where aircraft on visual approaches could have unwanted MSAW alerts
