@@ -1,0 +1,875 @@
+{
+  "time": "2026-05-02T15:52:40.883126022Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:888:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American Five Fifty Six direct leg cross leg at four thousand at one eight zero knots your cleared ILS niner",
+  "whisper_duration_ms": 243.466,
+  "audio_duration_ms": 7752,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 Ti (11994MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "AAL556",
+  "command": "DLLEGG CLLEGG/A40/S180 CI9",
+  "stt_aircraft": {
+    "Air Canada 73 86": {
+      "Callsign": "ACA7386",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Blimy": "BLYMY",
+        "Bnfsh": "BNFSH",
+        "Cast": "CASTT",
+        "Chum": "CHUUM",
+        "Dolphin": "DHP",
+        "Fende": "FENDE",
+        "Gloria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Madonna": "MDONA",
+        "Manny": "RMANI",
+        "Miami": "KMIA",
+        "Vepco": "VEPCO",
+        "piano": "PIANA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 12078,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "Air France three zero niner heavy": {
+      "Callsign": "AFR309",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Chum": "CHUUM",
+        "Dolphin": "DHP",
+        "Gloria": "GLRIA",
+        "Kpone": "KPONE",
+        "Miami": "KMIA",
+        "Vepco": "VEPCO",
+        "piano": "PIANA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 7206,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "American 14 93": {
+      "Callsign": "AAL1493",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 3000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "American 47 97": {
+      "Callsign": "AAL4797",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 14119,
+      "State": "cleared approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "American 93 heavy": {
+      "Callsign": "AAL93",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 5962,
+      "State": "cleared approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "American five 56": {
+      "Callsign": "AAL556",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Art": "ARRTT",
+        "Asere": "ACERE",
+        "Aspen": "ASPPN",
+        "Frogz": "FROGZ",
+        "Ines": "INESS",
+        "Jamas": "JAMAS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "PB Jay": "PBJAY",
+        "grit": "GRITT",
+        "scar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 16258,
+      "State": "cleared approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "Caribbean Airlines one 93": {
+      "Callsign": "BWA193",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Bills": "BILZZ",
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 6155,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "Frontier Flight eight 62": {
+      "Callsign": "FFT862",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Bills": "BILZZ",
+        "Costio": "CSTIO",
+        "Dahlia": "DAHLA",
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "Nekne": "NEKNE",
+        "Raben": "RAEBN",
+        "Vice": "VIICE",
+        "gamey": "GAMEY",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 17051,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "JetBlue 53 25": {
+      "Callsign": "JBU5325",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Bepac": "BEPAC",
+        "Fort Lauderdale": "FLL",
+        "Holid": "HOLID",
+        "Nova": "NOVAE",
+        "Serif": "SERIF",
+        "Wanar": "WANAR",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 68": {
+      "Callsign": "JBU68",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Fort Lauderdale": "FLL",
+        "Holid": "HOLID",
+        "Nova": "NOVAE",
+        "Wanar": "WANAR",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 71 84": {
+      "Callsign": "SWA7184",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 1004,
+      "State": "cleared approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "Speedbird eight 16 uniform heavy": {
+      "Callsign": "BAW816U",
+      "AircraftType": "B78X",
+      "Fixes": {
+        "Blimy": "BLYMY",
+        "Chum": "CHUUM",
+        "Dolphin": "DHP",
+        "Gloria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Madonna": "MDONA",
+        "Manny": "RMANI",
+        "Miami": "KMIA",
+        "Vepco": "VEPCO",
+        "piano": "PIANA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    },
+    "Spirit Wings 83 59": {
+      "Callsign": "NKS8359",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Bezer": "BEZER",
+        "Blame": "BLAIM",
+        "Bunker": "BUNKR",
+        "Fort Lauderdale": "KFLL",
+        "Lori": "LORII"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10R",
+      "SID": "",
+      "STAR": "TEEKY4",
+      "Altitude": 4715,
+      "State": "cleared approach",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Sunwing seven 80": {
+      "Callsign": "SWG780",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Chum": "CHUUM",
+        "Dolphin": "DHP",
+        "Gloria": "GLRIA",
+        "Kpone": "KPONE",
+        "Miami": "KMIA",
+        "Vepco": "VEPCO",
+        "piano": "PIANA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I12": {
+          "Dolphin": "DHP",
+          "Gloria": "GLRIA",
+          "Vepco": "VEPCO",
+          "piano": "PIANA"
+        },
+        "I9": {
+          "Ines": "INESS",
+          "Leg": "LLEGG",
+          "grit": "GRITT"
+        },
+        "R8L": {
+          "Kacde": "KACDE",
+          "Vicuv": "VICUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "CSTAL3",
+      "Altitude": 4914,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27",
+        "12",
+        "30",
+        "12",
+        "30"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American Five Fifty Six direct leg cross leg at four thousand at one eight zero knots your cleared ILS niner\"",
+    "[local-stt] normalized words: [american 5 56 direct leg cross leg at 4 thousand at 1 8 0 knots your cleared ils 9]",
+    "[local-stt] tokens: 15",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"556\" Type=1 Value=556",
+    "[local-stt]   token[2]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"leg\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"cross\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"leg\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"40\" Type=2 Value=40",
+    "[local-stt]   token[8]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[10]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"your\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"9\" Type=1 Value=9",
+    "[local-stt] MatchCallsign: 15 tokens, 14 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 15 tokens, 14 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"American five 56\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"American five 56\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 12 results",
+    "[local-stt]     result 0: \"Frontier Flight eight 62\" (airline=0.500, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Air Canada 73 86\" (airline=0.712, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"American 14 93\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Air France three zero niner heavy\" (airline=0.712, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"American 93 heavy\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"American five 56\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"American five 56\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"American five 56\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"AAL556\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"American five 56\")",
+    "[local-stt] callsign match: Callsign=\"AAL556\" SpokenKey=\"American five 56\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=16258 Fixes=11 Approaches=3 AssignedApproach=\"ILS Runway 9\" LAHSORunways=[8L 26R 8R 26L 9 27 12 30 12 30]",
+    "[local-stt]   fix: \"Jamas\" -\u003e \"JAMAS\"",
+    "[local-stt]   fix: \"Frogz\" -\u003e \"FROGZ\"",
+    "[local-stt]   fix: \"Asere\" -\u003e \"ACERE\"",
+    "[local-stt]   fix: \"grit\" -\u003e \"GRITT\"",
+    "[local-stt]   fix: \"Ines\" -\u003e \"INESS\"",
+    "[local-stt]   fix: \"Miami\" -\u003e \"KMIA\"",
+    "[local-stt]   fix: \"Art\" -\u003e \"ARRTT\"",
+    "[local-stt]   fix: \"Aspen\" -\u003e \"ASPPN\"",
+    "[local-stt]   fix: \"PB Jay\" -\u003e \"PBJAY\"",
+    "[local-stt]   fix: \"scar\" -\u003e \"SCHAR\"",
+    "[local-stt]   fix: \"Leg\" -\u003e \"LLEGG\"",
+    "[local-stt]   approach: \"I L S runway one two\" -\u003e \"I12\"",
+    "[local-stt]   approach: \"r-nav runway eight left\" -\u003e \"R8L\"",
+    "[local-stt]   approach: \"I L S runway niner\" -\u003e \"I9\"",
+    "[local-stt] command tokens after disregard: 13",
+    "[local-stt]   token[0]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"leg\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"cross\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"leg\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"40\" Type=2 Value=40",
+    "[local-stt]   token[6]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[8]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"your\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"9\" Type=1 Value=9",
+    "[local-stt] ParseCommands: 13 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"DLLEGG\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"CLLEGG/S180\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt]   no match at token[8]=\"knots\", skipping",
+    "[local-stt]   skipping filler word: \"your\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"ils\" against 11 fixes",
+    "[local-stt]   extractFix: no match found for \"ils\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"9\" against 11 fixes",
+    "[local-stt]   extractFix: no match found for \"9\"",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" variant=\"\" runway=\"niner\" -\u003e \"I9\" (consumed=2)",
+    "[local-stt]   matched command: \"CI9\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[DLLEGG CLLEGG/S180 CI9] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DLLEGG CLLEGG/S180 CI9] (conf=1.00)",
+    "[local-stt] validated commands: [DLLEGG CLLEGG/S180 CI9] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL556 DLLEGG CLLEGG/S180 CI9\" (conf=1.00, time=6.1381ms) ==="
+  ]
+}
