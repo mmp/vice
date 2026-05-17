@@ -25,6 +25,9 @@ type Model struct {
 
 	mu sync.Mutex
 	lg *log.Logger
+
+	metarCache   map[string][]METAR
+	metarCacheMu sync.Mutex
 }
 
 type AtmosResult struct {
@@ -152,4 +155,31 @@ func (m *Model) GetAtmosGrid() *AtmosGrid {
 	}
 
 	return m.grids[0]
+}
+
+// AirportMETARForTime returns the METAR closest to t for the given airport
+// ICAO. Returns nil if no METAR data is available. The decoded METAR slice
+// is cached per airport after the first lookup.
+func (m *Model) AirportMETARForTime(icao string, t time.Time) *METAR {
+	m.metarCacheMu.Lock()
+	if m.metarCache == nil {
+		m.metarCache = make(map[string][]METAR)
+	}
+	metars, cached := m.metarCache[icao]
+	if !cached {
+		metarMap, err := GetMETAR([]string{icao})
+		if err == nil {
+			if soa, ok := metarMap[icao]; ok {
+				metars = soa.Decode(icao)
+			}
+		}
+		m.metarCache[icao] = metars
+	}
+	m.metarCacheMu.Unlock()
+
+	if len(metars) == 0 {
+		return nil
+	}
+	metar := METARForTime(metars, t)
+	return &metar
 }
