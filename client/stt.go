@@ -29,14 +29,14 @@ import (
 // TransmissionManager
 
 // TransmissionManager manages queuing and playback of radio transmissions.
-// It centralizes the logic for playing PCM in the correct order and gating
-// playback on the shared TCW radio bus (RadioHoldUntil) plus per-entry
-// PlayAt scheduling.
+// It centralizes the logic for playing MP3s in the correct order and handling
+// playback state like holds after transmissions.
 type TransmissionManager struct {
 	mu           sync.Mutex
 	queue        []queuedTransmission // pending transmissions
 	playing      bool
-	holdCount    int // explicit holds (e.g., during STT recording/processing)
+	holdCount    int       // explicit holds (e.g., during STT recording/processing)
+	holdUntil    time.Time // time-based hold for post-transmission pauses
 	lastCallsign av.ADSBCallsign
 	eventStream  *sim.EventStream
 	lg           *log.Logger
@@ -46,21 +46,12 @@ type TransmissionManager struct {
 	contactRequested bool
 }
 
-// pcmSink is the small subset of platform.Platform that
-// TransmissionManager.Update needs. Decoupled so unit tests can stub it
-// without implementing the full Platform interface.
-type pcmSink interface {
-	TryEnqueueSpeechPCM(pcm []int16, finished func()) error
-}
-
 // queuedTransmission holds a transmission ready for playback with pre-decoded PCM audio.
-// PlayAt is the sim-time at which playback should start; the TM defers
-// dequeueing until SimTime >= PlayAt.
 type queuedTransmission struct {
-	Callsign av.ADSBCallsign
-	Type     av.RadioTransmissionType
-	PCM      []int16  // Pre-decoded PCM audio
-	PlayAt   sim.Time // Sim-time at which playback should start
+	Callsign       av.ADSBCallsign
+	Type           av.RadioTransmissionType
+	PCM            []int16 // Pre-decoded PCM audio
+	PTTReleaseTime time.Time
 }
 
 // NewTransmissionManager creates a new TransmissionManager.
@@ -78,10 +69,8 @@ func (tm *TransmissionManager) SetEventStream(es *sim.EventStream) {
 	tm.eventStream = es
 }
 
-// EnqueueReadbackPCM adds a readback with pre-decoded PCM to the front of
-// the queue (high priority). playAt is the sim-time at which playback
-// should start.
-func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty av.RadioTransmissionType, pcm []int16, playAt sim.Time) {
+// EnqueueReadbackPCM adds a readback with pre-decoded PCM to the front of the queue (high priority).
+func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty av.RadioTransmissionType, pcm []int16) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
@@ -90,10 +79,13 @@ func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty a
 		tm.holdCount--
 	}
 
+	// Clear any post-transmission hold timer. After a contact plays, an
+	// 8-second hold gives the controller time to respond; once the
+	// controller has responded and we have a readback, that hold is moot.
+	tm.holdUntil = time.Time{}
+
 	if len(pcm) == 0 {
-		if tm.lg != nil {
-			tm.lg.Warnf("Skipping readback for %s due to empty PCM", callsign)
-		}
+		tm.lg.Warnf("Skipping readback for %s due to empty PCM", callsign)
 		return
 	}
 
@@ -107,22 +99,18 @@ func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty a
 		Callsign: callsign,
 		Type:     ty,
 		PCM:      pcm,
-		PlayAt:   playAt,
 	}
 	// Insert at front - readbacks have priority
 	tm.queue = append([]queuedTransmission{qt}, tm.queue...)
 }
 
-// EnqueueTransmissionPCM adds a pilot transmission with pre-decoded PCM to
-// the queue. playAt is the sim-time at which playback should start.
-func (tm *TransmissionManager) EnqueueTransmissionPCM(callsign av.ADSBCallsign, ty av.RadioTransmissionType, pcm []int16, playAt sim.Time) {
+// EnqueueTransmissionPCM adds a pilot transmission with pre-decoded PCM to the queue.
+func (tm *TransmissionManager) EnqueueTransmissionPCM(callsign av.ADSBCallsign, ty av.RadioTransmissionType, pcm []int16) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
 	if len(pcm) == 0 {
-		if tm.lg != nil {
-			tm.lg.Warnf("Skipping transmission for %s due to empty PCM", callsign)
-		}
+		tm.lg.Warnf("Skipping transmission for %s due to empty PCM", callsign)
 		return
 	}
 
@@ -130,15 +118,13 @@ func (tm *TransmissionManager) EnqueueTransmissionPCM(callsign av.ADSBCallsign, 
 		Callsign: callsign,
 		Type:     ty,
 		PCM:      pcm,
-		PlayAt:   playAt,
 	}
 	tm.queue = append(tm.queue, qt)
 }
 
-// Update manages playback state, called each frame. Gates on the shared
-// TCW RadioHoldUntil and on the per-entry PlayAt; both come from the
-// server, so requester and observers stay in sync.
-func (tm *TransmissionManager) Update(p pcmSink, paused, sttActive bool, simTime sim.Time, tcw *sim.TCWDisplayState) {
+// Update manages playback state, called each frame.
+// It handles hold timeouts and initiates playback when appropriate.
+func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive bool) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
@@ -152,21 +138,13 @@ func (tm *TransmissionManager) Update(p pcmSink, paused, sttActive bool, simTime
 		return
 	}
 
-	// Shared TCW radio bus: any active TX or post-event quiet on this
-	// TCW pauses playback. Source of truth for inter-transmission timing
-	// now lives server-side in sim/radio.go and sim/voice.go.
-	if tcw != nil && simTime.Before(tcw.RadioHoldUntil) {
+	// Check if we're in a time-based hold period (post-transmission pause)
+	if time.Now().Before(tm.holdUntil) {
 		return
 	}
 
 	// Can't play if already playing or nothing to play
 	if tm.playing || len(tm.queue) == 0 {
-		return
-	}
-
-	// Per-entry PlayAt gating: defer until SimTime >= PlayAt so the
-	// requester and observers start audio at the same moment.
-	if simTime.Before(tm.queue[0].PlayAt) {
 		return
 	}
 
@@ -191,6 +169,15 @@ func (tm *TransmissionManager) Update(p pcmSink, paused, sttActive bool, simTime
 		tm.playing = false
 		tm.lastCallsign = qt.Callsign
 		tm.lastWasContact = isContact
+
+		// Different hold times based on transmission type:
+		// - After contact: 8 seconds (controller needs time to respond)
+		// - After readback: 3 seconds (brief pause before next contact)
+		if isContact {
+			tm.holdUntil = time.Now().Add(8 * time.Second)
+		} else {
+			tm.holdUntil = time.Now().Add(3 * time.Second)
+		}
 	}
 
 	// Enqueue pre-decoded PCM for playback
@@ -273,21 +260,16 @@ func (tm *TransmissionManager) IsPlaying() bool {
 }
 
 // ShouldRequestContact returns true if the client should request a contact from the server.
-// It checks that we're not playing, not held, queue is empty, and no
-// request is pending. The shared TCW radio bus (RadioHoldUntil) is also
-// honored: while the bus is busy or in post-event quiet, we defer the
-// request so contacts pace correctly across all observers.
-func (tm *TransmissionManager) ShouldRequestContact(simTime sim.Time, tcw *sim.TCWDisplayState) bool {
+// It checks that we're not playing, not held, queue is empty, and no request is pending.
+func (tm *TransmissionManager) ShouldRequestContact() bool {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
 	if tm.contactRequested || tm.playing || tm.holdCount > 0 || len(tm.queue) > 0 {
 		return false
 	}
-	if tcw != nil && simTime.Before(tcw.RadioHoldUntil) {
-		return false
-	}
-	return true
+
+	return time.Now().After(tm.holdUntil)
 }
 
 // SetContactRequested marks that we've sent a contact request and are waiting.

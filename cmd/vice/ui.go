@@ -1186,12 +1186,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			// Ask the server for the talker slot before doing any local
 			// work. If denied (someone else on this TCW is already
 			// transmitting), play the heterodyne tone and short-circuit.
-			var granted bool
-			if controlClient != nil {
-				granted = controlClient.PTTRelay().Press()
-			} else {
-				granted = true // local-only sims have no peer to step on
-			}
+			granted := true
 			if !granted {
 				ui.pttDenied = true
 				tone := client.GenerateHeterodyne(250)
@@ -1214,10 +1209,6 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 					}
 					ShowErrorDialog(p, lg, "Unable to access microphone: %v\n\n%s", err, hint)
 					ui.pttMicFailed = true
-					// Release the slot we just acquired since we can't actually transmit.
-					if controlClient != nil {
-						controlClient.PTTRelay().Release()
-					}
 				} else {
 					ui.pttRecording = true
 					if controlClient != nil {
@@ -1226,14 +1217,10 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 						} else {
 							if len(preroll) > 0 {
 								controlClient.FeedAudioToStreaming(preroll)
-								// Note: preroll is intentionally NOT sent to PTTRelay.
-								// Listeners shouldn't hear audio from before the
-								// talker keyed up.
 								lg.Debugf("Fed %d preroll samples to transcriber", len(preroll))
 							}
 							p.SetAudioStreamCallback(func(samples []int16) {
 								controlClient.FeedAudioToStreaming(samples)
-								controlClient.PTTRelay().SendChunk(samples)
 							})
 						}
 					}
@@ -1263,7 +1250,6 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 
 			if controlClient != nil {
 				controlClient.StopStreamingSTT(lg)
-				controlClient.PTTRelay().Release()
 			}
 
 			ui.pttRecording = false

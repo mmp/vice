@@ -32,9 +32,6 @@ type ControlClient struct {
 
 	// Speech/TTS management
 	transmissions         *TransmissionManager
-	peerVoice             *PeerVoicePlayback
-	pilotVoice            *PilotVoicePlayback
-	pttRelay              *PTTRelay
 	disableTTSPtr         *bool
 	sttActive             bool
 	LastTranscription     string
@@ -119,17 +116,6 @@ func (s *SessionStats) Update(ss *SimState) {
 
 func (c *ControlClient) RPCClient() *RPCClient {
 	return c.client
-}
-
-// PTTRelay returns the talker-side PTT relay, lazily constructing it on
-// first call. Safe to call before GetUpdates.
-func (c *ControlClient) PTTRelay() *PTTRelay {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	if c.pttRelay == nil {
-		c.pttRelay = NewPTTRelay(c.client, c.controllerToken, c.lg)
-	}
-	return c.pttRelay
 }
 
 func (c *ControlClient) SetRemoteServer(remote *RPCClient) {
@@ -292,19 +278,6 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	// Store eventStream for STT event posting and TTS latency tracking
 	c.eventStream = eventStream
 	c.transmissions.SetEventStream(eventStream)
-	if c.peerVoice == nil {
-		c.peerVoice = NewPeerVoicePlayback(c.lg)
-	}
-	c.peerVoice.SetEventStream(eventStream)
-
-	if c.pilotVoice == nil {
-		c.pilotVoice = NewPilotVoicePlayback(c.lg, c.controllerToken)
-		c.pilotVoice.synthesize = func(cs av.ADSBCallsign, ty av.RadioTransmissionType, text, voice string, playAt sim.Time) {
-			go c.synthesizeAndEnqueueObserved(cs, ty, text, voice, playAt)
-		}
-	}
-	c.pilotVoice.SetMyToken(c.controllerToken)
-	c.pilotVoice.SetEventStream(eventStream)
 
 	if c.updateCall != nil {
 		if c.updateCall.CheckFinished() {
@@ -323,7 +296,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	// has disabled TTS locally. This ensures pilots still join the frequency
 	// and text transmissions appear. Audio playback is controlled separately.
 	// The actual request is made after releasing the lock.
-	shouldRequestContact := c.transmissions.ShouldRequestContact(c.State.SimTime, c.State.TCWDisplay)
+	shouldRequestContact := c.transmissions.ShouldRequestContact()
 
 	if callbackErr == nil {
 		completedCalls, callbackErr = c.checkPendingRPCs(eventStream)
@@ -372,15 +345,8 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 }
 
 func (c *ControlClient) updateSpeech(p platform.Platform) {
-	// Delegate to TransmissionManager. Pass SimTime + shared TCW display
-	// so it can gate playback on RadioHoldUntil and per-entry PlayAt.
-	c.transmissions.Update(p, c.State.Paused, c.sttActive, c.State.SimTime, c.State.TCWDisplay)
-	if c.peerVoice != nil {
-		c.peerVoice.Update(p)
-	}
-	if c.pilotVoice != nil {
-		c.pilotVoice.Update()
-	}
+	// Delegate to TransmissionManager
+	c.transmissions.Update(p, c.State.Paused, c.sttActive)
 }
 
 func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream) ([]*pendingCall, error) {
@@ -682,10 +648,7 @@ func (c *ControlClient) GetLastWhisperDurationMs() int64 {
 // synthesizeAndEnqueueReadback synthesizes text and enqueues it as a readback.
 // Called from a goroutine. On failure, Unhold() is called because RunAircraftCommands
 // calls Hold() before issuing the command to prevent contacts while waiting for the readback.
-// playAt is the sim-time at which the requester should start playback,
-// stamped on the underlying RadioTransmissionEvent so requester and
-// observers play in sync.
-func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, text, voice string, playAt sim.Time) {
+func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, text, voice string) {
 	radioSeed := uint32(util.HashString64(string(callsign)))
 	if pcm, err := tts.SynthesizeReadbackTTS(text, voice, radioSeed); err != nil {
 		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)
@@ -702,9 +665,8 @@ func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, t
 
 // synthesizeAndEnqueueContact synthesizes text and enqueues it as a contact transmission.
 // Called from a goroutine. Unlike readbacks, no Hold() is acquired before requesting
-// contacts, so no Unhold() is needed on failure. playAt rides the entry
-// to align with the server-stamped RadioTransmissionEvent.
-func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty av.RadioTransmissionType, text, voice string, playAt sim.Time) {
+// contacts, so no Unhold() is needed on failure.
+func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty av.RadioTransmissionType, text, voice string) {
 	radioSeed := uint32(util.HashString64(string(callsign)))
 	if pcm, err := tts.SynthesizeContactTTS(text, voice, radioSeed); err != nil {
 		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)
@@ -714,29 +676,4 @@ func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty
 		c.transmissions.EnqueueTransmissionPCM(callsign, ty, pcm)
 	}
 	c.transmissions.SetContactRequested(false)
-}
-
-// synthesizeAndEnqueueObserved synthesizes a pilot transmission observed
-// by this client (one whose RPC-result path produced audio elsewhere).
-// Driven by PilotVoicePlayback. Skipped entirely when local TTS is
-// disabled. Routes contact transmissions through EnqueueTransmissionPCM
-// (queue tail) and readbacks through EnqueueReadbackPCM (queue head) so
-// observer-side ordering matches the requester.
-func (c *ControlClient) synthesizeAndEnqueueObserved(callsign av.ADSBCallsign, ty av.RadioTransmissionType, text, voice string, playAt sim.Time) {
-	if c.disableTTSPtr != nil && *c.disableTTSPtr {
-		return
-	}
-	radioSeed := uint32(util.HashString64(string(callsign)))
-	pcm, err := tts.SynthesizeReadbackTTS(text, voice, radioSeed)
-	if err != nil || pcm == nil {
-		if err != nil {
-			c.lg.Errorf("Observed TTS synth error for %s: %v", callsign, err)
-		}
-		return
-	}
-	if ty == av.RadioTransmissionContact {
-		c.transmissions.EnqueueTransmissionPCM(callsign, ty, pcm, playAt)
-	} else {
-		c.transmissions.EnqueueReadbackPCM(callsign, ty, pcm, playAt)
-	}
 }

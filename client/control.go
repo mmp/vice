@@ -475,7 +475,7 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 
 			// Synthesize readback locally if text was returned
 			if enableTTS && result.ReadbackText != "" {
-				go c.synthesizeAndEnqueueReadback(result.ReadbackCallsign, result.ReadbackText, result.ReadbackVoiceName, result.ReadbackPlayAt)
+				go c.synthesizeAndEnqueueReadback(result.ReadbackCallsign, result.ReadbackText, result.ReadbackVoiceName)
 			} else if enableTTS {
 				// No readback text - release hold
 				c.transmissions.Unhold()
@@ -524,7 +524,7 @@ func (c *ControlClient) RequestContactTransmission() {
 			// completes, preventing additional contacts from being requested
 			// during synthesis.
 			go c.synthesizeAndEnqueueContact(result.ContactCallsign, result.ContactType,
-				result.ContactText, result.ContactVoiceName, result.ContactPlayAt)
+				result.ContactText, result.ContactVoiceName)
 		}))
 }
 
