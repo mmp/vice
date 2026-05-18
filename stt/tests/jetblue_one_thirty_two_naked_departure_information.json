@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 5060 Ti (16050MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "JBU132",
-  "command": "ATIS/A EI2L",
+  "command": "ATIS/A EI2L ALT/3022",
   "stt_aircraft": {
     "JetBlue one 32": {
       "Callsign": "JBU132",

@@ -52,7 +52,7 @@ func TestHoldTurningInboundDoesNotFlyAwayAfterOvershoot(t *testing.T) {
 	}}
 
 	f.nav.UpdateWithWeather(f.callsign, wx.MakeStandardSampleForAltitude(f.nav.FlightState.Altitude),
-		&f.fp, f.simTime, nil)
+		&f.fp, 0, f.simTime, nil)
 	f.simTime = f.simTime.Add(time.Second)
 	if f.nav.Heading.Hold == nil {
 		t.Fatal("hold unexpectedly ended")
@@ -65,7 +65,7 @@ func TestHoldTurningInboundDoesNotFlyAwayAfterOvershoot(t *testing.T) {
 
 	for range 90 {
 		f.nav.UpdateWithWeather(f.callsign, wx.MakeStandardSampleForAltitude(f.nav.FlightState.Altitude),
-			&f.fp, f.simTime, nil)
+			&f.fp, 0, f.simTime, nil)
 		f.simTime = f.simTime.Add(time.Second)
 	}
 
@@ -124,7 +124,7 @@ func TestHoldInboundTurnDistanceMatchesOutboundTurn(t *testing.T) {
 	previousStep := hold.currentStep()
 
 	for tick := range 300 {
-		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), &f.fp, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), &f.fp, 0, f.simTime, nil)
 		f.simTime = f.simTime.Add(time.Second)
 
 		step := hold.currentStep()
@@ -191,7 +191,7 @@ func TestFQM3HoldInboundTurnCompletesNearExpectedTrack(t *testing.T) {
 	flyFixStep := "fly toward fix until fix"
 
 	for tick := range 2000 {
-		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), &f.fp, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), &f.fp, 0, f.simTime, nil)
 		f.simTime = f.simTime.Add(time.Second)
 
 		if f.nav.Heading.Hold != nil && hold == nil {
@@ -311,7 +311,7 @@ func TestHoldInboundTurnCompletesAfterHalfCircuitWithStrongWind(t *testing.T) {
 	inboundTurnStartTick := -1
 
 	for tick := range 240 {
-		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), &f.fp, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), &f.fp, 0, f.simTime, nil)
 		f.simTime = f.simTime.Add(time.Second)
 
 		step := hold.currentStep()

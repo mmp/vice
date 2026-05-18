@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 3060 (12329MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "ASA43",
-  "command": "EI2L",
+  "command": "EI2L ALT/2978",
   "stt_aircraft": {
     "Alaska 43": {
       "Callsign": "ASA43",

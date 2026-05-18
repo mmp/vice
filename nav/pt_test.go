@@ -146,7 +146,7 @@ func TestStandard45ProcedureTurnCompletes(t *testing.T) {
 	f := makePTFlight(t, "FORMU/pt45/flyover ZIVUX WENGA", 3000, 180)
 
 	wxs := f.weather(f.nav.FlightState.Altitude)
-	f.nav.UpdateWithWeather(f.callsign, wxs, &f.fp, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, wxs, &f.fp, 0, f.simTime, nil)
 	f.simTime = f.simTime.Add(time.Second)
 
 	f.nav.flyProcedureTurnIfNecessary()
@@ -180,7 +180,7 @@ func TestRacetrackPTCreatesManeuvers(t *testing.T) {
 	f := makePTFlight(t, "FORMU/hilpt4.0nm/flyover ZIVUX WENGA", 3000, 180)
 
 	wxs := f.weather(f.nav.FlightState.Altitude)
-	f.nav.UpdateWithWeather(f.callsign, wxs, &f.fp, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, wxs, &f.fp, 0, f.simTime, nil)
 	f.simTime = f.simTime.Add(time.Second)
 
 	f.nav.flyProcedureTurnIfNecessary()
@@ -231,7 +231,7 @@ func TestProcedureTurnDescendsToExitAltitude(t *testing.T) {
 	f := makePTFlight(t, "FORMU/pt45/pta2000/flyover ZIVUX WENGA", 3000, 180)
 
 	wxs := f.weather(f.nav.FlightState.Altitude)
-	f.nav.UpdateWithWeather(f.callsign, wxs, &f.fp, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, wxs, &f.fp, 0, f.simTime, nil)
 	f.simTime = f.simTime.Add(time.Second)
 
 	f.nav.flyProcedureTurnIfNecessary()

@@ -457,6 +457,17 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.AirportAdvisory(tcw, callsign, oclock, miles)
 		} else if letter, ok := strings.CutPrefix(command, "ATIS/"); ok {
 			return s.ATISCommand(tcw, callsign, letter)
+		} else if rest, ok := strings.CutPrefix(command, "ALT/"); ok {
+			// ALT/<hundredths> — altimeter setting in hundredths of inHg (e.g. "ALT/3002" for 30.02).
+			// Produced by the STT pipeline when the controller says "altimeter X.XX".
+			setting, err := strconv.Atoi(rest)
+			if err != nil {
+				return nil, nil // silently ignore malformed
+			}
+			if ac, ok := s.Aircraft[callsign]; ok {
+				return s.handleAltimeterSetting(ac, setting), nil
+			}
+			return nil, nil
 		} else {
 			components := strings.Split(command, "/")
 			if len(components) != 2 || len(components[1]) == 0 {
@@ -778,6 +789,15 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.ResumeOwnNavigation(tcw, callsign)
 		} else if command == "RST" {
 			return s.RadarServicesTerminated(tcw, callsign)
+		} else if strings.HasPrefix(command, "RR") && len(command) > 2 && util.IsAllNumbers(command[2:]) {
+			alt, err := strconv.Atoi(command[2:])
+			if err != nil {
+				return nil, err
+			}
+			if alt > 600 && alt%100 == 0 {
+				alt /= 100
+			}
+			return s.ReportReaching(tcw, callsign, float32(100*alt))
 		} else if len(command) >= 5 && command[1] == 'D' {
 			return s.DirectFix(tcw, callsign, command[2:], av.TurnRight, delayReduction)
 		} else if l := len(command); l > 2 && command[l-1] == 'D' {
@@ -826,6 +846,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.ChangeTransponderMode(tcw, callsign, av.TransponderModeAltitude)
 		} else if command == "SQON" {
 			return s.ChangeTransponderMode(tcw, callsign, av.TransponderModeOn)
+		} else if command == "SQSTOP" {
+			return s.StopAltitudeSquawk(tcw, callsign)
 		} else if len(command) == 6 && command[:2] == "SQ" {
 			sq, err := av.ParseSquawk(command[2:])
 			if err != nil {

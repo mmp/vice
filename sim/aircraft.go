@@ -144,7 +144,22 @@ type Aircraft struct {
 	// field is in sight. Set to zero after the check (requested or given up) to prevent retries.
 	VisualApproachRequestDistance float32
 
+	// Altimeter setting simulation. PilotAltim == 0 is the "feature off /
+	// not initialized" sentinel; bias math short-circuits to 0 in that case.
+	PilotAltim      float32
+	PilotAltimSetAt Time
+
+	// TransponderAltOffset is a persistent Mode C encoder error assigned at
+	// spawn when the faulty-transponder roll hits. Added to the reported
+	// altitude on the scope; zero means the encoder is working correctly.
+	TransponderAltOffset float32
+
 	TouchAndGosRemaining int // >0 means pattern aircraft; decremented each lap
+}
+
+func (ac *Aircraft) setPilotAltim(simTime Time, inHg float32) {
+	ac.PilotAltim = inHg
+	ac.PilotAltimSetAt = simTime
 }
 
 func (ac *Aircraft) GetRadarTrack(now Time) av.RadarTrack {
@@ -154,7 +169,7 @@ func (ac *Aircraft) GetRadarTrack(now Time) av.RadarTrack {
 		Mode:                ac.Mode,
 		Ident:               ac.Mode != av.TransponderModeStandby && now.After(ac.IdentStartTime) && now.Before(ac.IdentEndTime),
 		TrueAltitude:        ac.Altitude(),
-		TransponderAltitude: util.Select(ac.Mode == av.TransponderModeAltitude, ac.Altitude(), 0),
+		TransponderAltitude: util.Select(ac.Mode == av.TransponderModeAltitude, ac.Altitude()+ac.TransponderAltOffset, 0),
 		Location:            ac.Position(),
 		Heading:             ac.Heading(),
 		Groundspeed:         ac.GS(),
@@ -286,12 +301,12 @@ func (ac *Aircraft) TAS(temp av.Temperature) float32 {
 ///////////////////////////////////////////////////////////////////////////
 // Navigation and simulation
 
-func (ac *Aircraft) Update(model *wx.Model, simTime Time, bravo *av.AirspaceGrid, lg *log.Logger) nav.UpdateResult {
+func (ac *Aircraft) Update(model *wx.Model, altimBiasFeet float32, simTime Time, bravo *av.AirspaceGrid, lg *log.Logger) nav.UpdateResult {
 	if lg != nil {
 		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
 
-	navUpdate := ac.Nav.Update(string(ac.ADSBCallsign), model, &ac.FlightPlan, simTime.NavTime(), bravo)
+	navUpdate := ac.Nav.Update(string(ac.ADSBCallsign), model, &ac.FlightPlan, altimBiasFeet, simTime.NavTime(), bravo)
 	if navUpdate.PassedWaypoint != nil && lg != nil {
 		lg.Debug("passed", slog.Any("waypoint", navUpdate.PassedWaypoint))
 	}
@@ -356,8 +371,8 @@ func (ac *Aircraft) SayHeading() av.CommandIntent {
 	return ac.Nav.SayHeading()
 }
 
-func (ac *Aircraft) SayAltitude() av.CommandIntent {
-	return ac.Nav.SayAltitude()
+func (ac *Aircraft) SayAltitude(altimBiasFeet float32) av.CommandIntent {
+	return ac.Nav.SayAltitude(altimBiasFeet)
 }
 
 func (ac *Aircraft) ExpediteDescent() av.CommandIntent {

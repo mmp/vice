@@ -78,6 +78,8 @@ type Sim struct {
 	FDAMSystemInhibited         bool
 	DisabledFDAMRegions         map[string]struct{} // keyed by region ID
 	EnforceUniqueCallsignSuffix bool
+	IncorrectAltimeterChance    float32 // 0-100% chance a non-departure spawns with a nearby-but-wrong altimeter
+	FaultyTransponderChance     float32 // 0-100% chance an aircraft spawns with a persistent Mode C offset
 
 	PendingContacts        map[TCP][]PendingContact
 	FutureFrequencyChanges []FutureFrequencyChange
@@ -161,6 +163,8 @@ type NewSimConfiguration struct {
 	DisableTFRRestrictionAreas bool
 
 	EnforceUniqueCallsignSuffix bool
+	IncorrectAltimeterChance    float32
+	FaultyTransponderChance     float32
 
 	ReportingPoints   []av.ReportingPoint
 	MagneticVariation float32
@@ -218,6 +222,8 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		ReportingPoints: config.ReportingPoints,
 
 		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
+		IncorrectAltimeterChance:    config.IncorrectAltimeterChance,
+		FaultyTransponderChance:     config.FaultyTransponderChance,
 
 		PilotErrorInterval: time.Duration(config.PilotErrorInterval * float32(time.Minute)),
 		LastPilotError:     NewSimTime(config.StartTime),
@@ -968,7 +974,8 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			updateResult := ac.Update(s.wxModel, s.State.SimTime, s.bravoAirspace, nil /* s.lg*/)
+			bias := s.altimBiasFor(ac)
+			updateResult := ac.Update(s.wxModel, bias, s.State.SimTime, s.bravoAirspace, nil /* s.lg*/)
 			passedWaypoint := updateResult.PassedWaypoint
 			s.refreshSeenTraffic(ac)
 
@@ -985,6 +992,21 @@ func (s *Sim) updateState() {
 			if ac.Nav.Approach.RequestVectors && ac.IsAssociated() {
 				ac.Nav.Approach.RequestVectors = false
 				s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestVectors)
+			}
+
+			// "Report reaching {altitude}" — fire the unsolicited pilot call
+			// when the aircraft has leveled off within tolerance of the
+			// requested altitude. AltitudeRate is clamped to 0 once the nav
+			// system settles on level flight, so an exact-zero check plus a
+			// loose altitude tolerance catches the level-off.
+			if ac.Nav.ReportReachingAltitude != nil && ac.IsAssociated() {
+				target := *ac.Nav.ReportReachingAltitude
+				if ac.Nav.FlightState.AltitudeRate == 0 && math.Abs(ac.Altitude()-target) < 100 {
+					ac.Nav.ReportReachingAltitude = nil
+					rt := av.MakeReadbackTransmission("")
+					av.ReachingAltitudeIntent{Altitude: target}.Render(rt, s.Rand)
+					s.enqueueReachingAltitudeTransmission(callsign, TCP(ac.ControllerFrequency), rt)
+				}
 			}
 
 			if ac.Nav.Approach.RequestAltitude && ac.IsAssociated() {
@@ -1243,9 +1265,16 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 	if ac, ok := s.Aircraft[callsign]; !ok {
 		return AircraftDisplayState{}, ErrNoMatchingFlight
 	} else {
+		summary := ac.NavSummary(s.wxModel, s.State.SimTime, s.lg)
+		if ac.PilotAltim > 0 {
+			bias := s.altimBiasFor(ac)
+			indicated := ac.Altitude() - bias
+			summary += fmt.Sprintf("\nPilot altimeter %.2f inHg, indicated altitude %.0f",
+				ac.PilotAltim, indicated)
+		}
 		return AircraftDisplayState{
 			Spew:        godump.DumpStr(ac),
-			FlightState: ac.NavSummary(s.wxModel, s.State.SimTime, s.lg),
+			FlightState: summary,
 		}, nil
 	}
 }

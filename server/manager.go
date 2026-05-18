@@ -137,14 +137,19 @@ type NewSimRequest struct {
 
 	PilotErrorInterval float32
 
+	IncorrectAltimeterChance float32 // 0-100%
+	FaultyTransponderChance  float32 // 0-100%
+
 	Initials   string // Controller initials (e.g., "XX")
 	Privileged bool
 }
 
 func MakeNewSimRequest() NewSimRequest {
 	return NewSimRequest{
-		NewSimName:         rand.Make().AdjectiveNoun(),
-		PilotErrorInterval: 0,
+		NewSimName:               rand.Make().AdjectiveNoun(),
+		PilotErrorInterval:       0,
+		IncorrectAltimeterChance: 30,
+		FaultyTransponderChance:  5,
 	}
 }
 
@@ -220,6 +225,8 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 		DisableTFRRestrictionAreas:  sg.FacilityConfig.DisableTFRRestrictionAreas,
 		EnforceUniqueCallsignSuffix: req.EnforceUniqueCallsignSuffix,
 		PilotErrorInterval:          req.PilotErrorInterval,
+		IncorrectAltimeterChance:    req.IncorrectAltimeterChance,
+		FaultyTransponderChance:     req.FaultyTransponderChance,
 		DepartureRunways:            sc.DepartureRunways,
 		ArrivalRunways:              sc.ArrivalRunways,
 		VFRReportingPoints:          sg.VFRReportingPoints,

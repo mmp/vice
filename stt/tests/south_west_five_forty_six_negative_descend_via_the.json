@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce GTX 1660 Ti with Max-Q Design (6180MB)",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
   "callsign": "SWA546",
-  "command": "DVS EI6",
+  "command": "DVS EI6 ALT/3014",
   "stt_aircraft": {
     "Southwest five 46": {
       "Callsign": "SWA546",
