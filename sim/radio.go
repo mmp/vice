@@ -465,7 +465,11 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestVectors:
-		rt = av.MakeContactTransmission("[we're going to overshoot the localizer, request vectors|we're gonna be unable to intercept, request new heading|we're going to miss the localizer, request vectors]")
+		if ac.Nav.Approach.HasLocalizer() {
+			rt = av.MakeContactTransmission("[we're going to overshoot the localizer, request vectors|we're gonna be unable to intercept, request new heading|we're going to miss the localizer, request vectors]")
+		} else {
+			rt = av.MakeContactTransmission("[we're going to overshoot the final approach course, request vectors|we're gonna be unable to intercept, request new heading|we're going to miss final, request vectors]")
+		}
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestAltitude:
