@@ -198,8 +198,8 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 		func(fcs FutureChangeSquawk) bool { return fcs.ADSBCallsign == ac.ADSBCallsign })
 	s.FutureEmergencyUpdates = slices.DeleteFunc(s.FutureEmergencyUpdates,
 		func(feu FutureEmergencyUpdate) bool { return feu.ADSBCallsign == ac.ADSBCallsign })
-	s.cancelFutureFieldInSight(ac.ADSBCallsign)
-	s.cancelFutureTrafficInSight(ac.ADSBCallsign)
+	s.cancelFutureFieldCheck(ac.ADSBCallsign)
+	s.cancelFutureTrafficCheck(ac.ADSBCallsign)
 
 	s.STARSComputer.HoldForRelease = slices.DeleteFunc(s.STARSComputer.HoldForRelease,
 		func(a *Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })

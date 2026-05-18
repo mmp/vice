@@ -1,0 +1,615 @@
+{
+  "time": "2026-04-20T14:46:18.867201126Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:888:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "JetBlue three thirty depart bris heading zero two zero",
+  "whisper_duration_ms": 395.396,
+  "audio_duration_ms": 3528,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 Ti SUPER (16061MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "JBU330",
+  "command": "DBRISS/H020",
+  "stt_aircraft": {
+    "Delta 71": {
+      "Callsign": "DAL71",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Bradley": "KBDL",
+        "Kibbe": "KIBBE",
+        "Motel": "MOTEL",
+        "Surley": "SURLE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three": "I33",
+        "I L S runway two four": "I24"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I24": {
+          "Kibbe": "KIBBE",
+          "Motel": "MOTEL",
+          "Surley": "SURLE"
+        },
+        "I33": {
+          "Hadux": "HADUX",
+          "homey": "HOMEY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "DPK3",
+      "Altitude": 3000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1H",
+      "TrackingController": "1H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "6",
+        "24"
+      ]
+    },
+    "ExecJet 54 zero three": {
+      "Callsign": "EJA5403",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BDL6",
+      "STAR": "",
+      "Altitude": 9048,
+      "State": "departure",
+      "ControllerFrequency": "1B",
+      "TrackingController": "43H",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Grumman Cheetah six x-ray kebeck": {
+      "Callsign": "N126XQ/T",
+      "AircraftType": "AA5",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6309,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "Grumman Tiger six x-ray kebeck": {
+      "Callsign": "N126XQ/T",
+      "AircraftType": "AA5",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6309,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "JetBlue three 30": {
+      "Callsign": "JBU330",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Bradley": "KBDL",
+        "Kibbe": "KIBBE",
+        "Motel": "MOTEL",
+        "Surley": "SURLE",
+        "bris": "BRISS"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three": "I33",
+        "I L S runway two four": "I24"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I24": {
+          "Kibbe": "KIBBE",
+          "Motel": "MOTEL",
+          "Surley": "SURLE"
+        },
+        "I33": {
+          "Hadux": "HADUX",
+          "homey": "HOMEY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "DPK3",
+      "Altitude": 8280,
+      "State": "arrival",
+      "ControllerFrequency": "1H",
+      "TrackingController": "1H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "6",
+        "24"
+      ]
+    },
+    "Southwest two 82": {
+      "Callsign": "SWA282",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Bradley": "KBDL",
+        "Kibbe": "KIBBE",
+        "Motel": "MOTEL",
+        "Surley": "SURLE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three": "I33",
+        "I L S runway two four": "I24"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I24": {
+          "Kibbe": "KIBBE",
+          "Motel": "MOTEL",
+          "Surley": "SURLE"
+        },
+        "I33": {
+          "Hadux": "HADUX",
+          "homey": "HOMEY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "DPK3",
+      "Altitude": 4000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1H",
+      "TrackingController": "1H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "6",
+        "24"
+      ]
+    },
+    "Southwest two zero one": {
+      "Callsign": "SWA201",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Bradley": "KBDL",
+        "Kibbe": "KIBBE",
+        "Motel": "MOTEL",
+        "Surley": "SURLE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three": "I33",
+        "I L S runway two four": "I24"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I24": {
+          "Kibbe": "KIBBE",
+          "Motel": "MOTEL",
+          "Surley": "SURLE"
+        },
+        "I33": {
+          "Hadux": "HADUX",
+          "homey": "HOMEY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "DPK3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1H",
+      "TrackingController": "1H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "6",
+        "24"
+      ]
+    },
+    "cessna one eighty-two niner x-ray foxtrot": {
+      "Callsign": "N139XF/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5826,
+      "State": "departure",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "cessna one seventy-two three zulu brahvo": {
+      "Callsign": "N493ZB/T",
+      "AircraftType": "C172",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5223,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "cessna skylane niner x-ray foxtrot": {
+      "Callsign": "N139XF/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5826,
+      "State": "departure",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "cherokee niner niner eight": {
+      "Callsign": "N73998/T",
+      "AircraftType": "P28A",
+      "Fixes": {
+        "Cambridge": "CAM",
+        "Chester": "CTR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BDL6",
+      "STAR": "",
+      "Altitude": 4207,
+      "State": "departure",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation X four eight uniform": {
+      "Callsign": "N4248U/T",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation four eight uniform": {
+      "Callsign": "N4248U/T",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation ten four eight uniform": {
+      "Callsign": "N4248U/T",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "november four niner three zulu brahvo": {
+      "Callsign": "N493ZB",
+      "AircraftType": "C172",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5223,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november four two four eight uniform": {
+      "Callsign": "N4248U",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november one three niner x-ray foxtrot": {
+      "Callsign": "N139XF",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5826,
+      "State": "departure",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november one two six x-ray kebeck": {
+      "Callsign": "N126XQ",
+      "AircraftType": "AA5",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6309,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november seven three niner niner eight": {
+      "Callsign": "N73998",
+      "AircraftType": "P28A",
+      "Fixes": {
+        "Cambridge": "CAM",
+        "Chester": "CTR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BDL6",
+      "STAR": "",
+      "Altitude": 4207,
+      "State": "departure",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "piper cherokee niner niner eight": {
+      "Callsign": "N73998/T",
+      "AircraftType": "P28A",
+      "Fixes": {
+        "Cambridge": "CAM",
+        "Chester": "CTR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BDL6",
+      "STAR": "",
+      "Altitude": 4207,
+      "State": "departure",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "skyhawk three zulu brahvo": {
+      "Callsign": "N493ZB/T",
+      "AircraftType": "C172",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5223,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "skylane niner x-ray foxtrot": {
+      "Callsign": "N139XF/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5826,
+      "State": "departure",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"JetBlue three thirty depart bris heading zero two zero\"",
+    "[local-stt] normalized words: [jetblue 3 30 depart bris heading 0 2 0]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"jetblue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"330\" Type=1 Value=330",
+    "[local-stt]   token[2]: Text=\"depart\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"bris\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"020\" Type=1 Value=20",
+    "[local-stt] MatchCallsign: 6 tokens, 22 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 22 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"JetBlue three 30\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"JetBlue three 30\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 5 results",
+    "[local-stt]     result 0: \"Southwest two 82\" (airline=0.476, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"ExecJet 54 zero three\" (airline=0.524, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Southwest two zero one\" (airline=0.476, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Delta 71\" (airline=0.565, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"JetBlue three 30\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"JetBlue three 30\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"JetBlue three 30\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"JetBlue three 30\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"JBU330\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"JetBlue three 30\")",
+    "[local-stt] callsign match: Callsign=\"JBU330\" SpokenKey=\"JetBlue three 30\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=8280 Fixes=5 Approaches=2 AssignedApproach=\"ILS Runway 24\" LAHSORunways=[15 33 6 24]",
+    "[local-stt]   fix: \"bris\" -\u003e \"BRISS\"",
+    "[local-stt]   fix: \"Bradley\" -\u003e \"KBDL\"",
+    "[local-stt]   fix: \"Kibbe\" -\u003e \"KIBBE\"",
+    "[local-stt]   fix: \"Surley\" -\u003e \"SURLE\"",
+    "[local-stt]   fix: \"Motel\" -\u003e \"MOTEL\"",
+    "[local-stt]   approach: \"I L S runway two four\" -\u003e \"I24\"",
+    "[local-stt]   approach: \"I L S runway three three\" -\u003e \"I33\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"depart\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"bris\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"020\" Type=1 Value=20",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"bris\" against 5 fixes",
+    "[local-stt]   extractFix: matched \"bris\" -\u003e \"BRISS\" (exact)",
+    "[local-stt]   extractFix: matched \"bris\" -\u003e \"BRISS\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"DBRISS/H020\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[DBRISS/H020] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DBRISS/H020] (conf=1.00)",
+    "[local-stt] validated commands: [DBRISS/H020] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU330 DBRISS/H020\" (conf=1.00, time=9.0865ms) ==="
+  ]
+}

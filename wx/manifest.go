@@ -73,7 +73,7 @@ func MakeManifestFromMap(m map[string][]time.Time) (*Manifest, error) {
 
 // SetFacilityTimestamps stores timestamps for a facility (TRACON or ARTCC).
 func (m *Manifest) SetFacilityTimestamps(facilityID string, times []time.Time) error {
-	timestamps := util.MapSlice(times, func(t time.Time) int64 { return t.Unix() })
+	timestamps := util.UnixTimestamps(times)
 
 	// Sort and compress
 	slices.Sort(timestamps)
@@ -144,11 +144,7 @@ func (m *Manifest) GetTimestamps(identifier string) ([]time.Time, bool) {
 		return nil, false
 	}
 
-	// Convert to time.Time
-	times := make([]time.Time, len(timestamps))
-	for i, ts := range timestamps {
-		times[i] = time.Unix(ts, 0).UTC()
-	}
+	times := util.TimesFromUnixTimestamps(timestamps)
 
 	// Cache the result
 	m.cache.Add(identifier, times)

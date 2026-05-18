@@ -94,6 +94,22 @@ func Overlaps(a Extent2D, b Extent2D) bool {
 	return x && y
 }
 
+// Intersect returns the rectangle that is the intersection of a and b. If
+// the inputs do not overlap, the returned extent has P1 < P0 and IsEmpty
+// returns true.
+func Intersect(a, b Extent2D) Extent2D {
+	return Extent2D{
+		P0: [2]float32{max(a.P0[0], b.P0[0]), max(a.P0[1], b.P0[1])},
+		P1: [2]float32{min(a.P1[0], b.P1[0]), min(a.P1[1], b.P1[1])},
+	}
+}
+
+// IsEmpty returns true if the extent has no positive area; i.e., its
+// width or height is zero or negative.
+func (e Extent2D) IsEmpty() bool {
+	return e.P1[0] <= e.P0[0] || e.P1[1] <= e.P0[1]
+}
+
 func Union(e Extent2D, p [2]float32) Extent2D {
 	e.P0[0] = min(e.P0[0], p[0])
 	e.P0[1] = min(e.P0[1], p[1])

@@ -15,7 +15,7 @@
   "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
   "callsign": "AAL33",
-  "command": "DKOENN I",
+  "command": "DKOENN AKOENN/I",
   "stt_aircraft": {
     "American 33": {
       "Callsign": "AAL33",

@@ -6,6 +6,7 @@ package nav
 
 import (
 	gomath "math"
+	"slices"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
@@ -22,6 +23,7 @@ func TestSelectVisualApproachRouteUsesLaterViableIntercept(t *testing.T) {
 			MagneticVariation: 0,
 		},
 	}
+	n.Perf.Category.CWT = "F" // commercial jet → stabilized-final filter applies
 
 	ref := &av.Approach{
 		Type:      av.RNAVApproach,
@@ -49,6 +51,82 @@ func TestSelectVisualApproachRouteUsesLaterViableIntercept(t *testing.T) {
 	}
 	if join.segment != 0 {
 		t.Fatalf("segment = %d, want 0 for the base segment", join.segment)
+	}
+}
+
+// TestSelectVisualApproachRouteJFK13L is a regression test for the VIV3852
+// case: aircraft south of BUZON-TELEX, heading 040°, cleared for the JFK
+// 13L visual. The two reference routes (northern: BUZON-TELEX-CAXUN; southern:
+// ASALT-CNRSE-LEISA-SILJY-ROBJE) both end at RW13L. The aircraft's heading
+// crosses BUZON-TELEX with distanceToThreshold ~9 nm — previously rejected
+// by a `> 8` cap, falling through to a synthesized 3-NM final that visually
+// looked like joining the southern reference. The fix is selecting the
+// northern intercept.
+func TestSelectVisualApproachRouteJFK13L(t *testing.T) {
+	faa, ok := av.DB.Airports["KJFK"]
+	if !ok {
+		t.Fatal("KJFK not in aviation DB")
+	}
+	nmPerLong := math.NMPerLongitudeAt(faa.Location)
+	magVar, err := av.DB.MagneticGrid.Lookup(faa.Location)
+	if err != nil {
+		t.Fatalf("magnetic grid lookup: %v", err)
+	}
+
+	northern := parseRoute(t, "BUZON/a2900/iaf TELEX/a2100+/if CAXUN/a1500+/faf")
+	southern := parseRoute(t, "ASALT/if/a3000/s210 CNRSE/a2000+/faf LEISA/a1246+ SILJY/a835+ ROBJE/a450+")
+	rwy, ok := av.LookupRunway("KJFK", "13L")
+	if !ok {
+		t.Fatal("KJFK 13L not found")
+	}
+	thresholdWP := av.Waypoint{Fix: "RW13L", Location: rwy.Threshold}
+	northern = append(northern, thresholdWP)
+	southern = append(southern, thresholdWP)
+
+	ref := &av.Approach{
+		Type:      av.VisualApproach,
+		Runway:    "13L",
+		Threshold: rwy.Threshold,
+		Waypoints: []av.WaypointArray{southern, northern},
+	}
+
+	// Aircraft south of BUZON-TELEX line, roughly between BUZON and TELEX,
+	// heading 040° toward the segment. Position is in NM offsets from BUZON.
+	var buzon math.Point2LL
+	for _, wp := range northern {
+		if wp.Fix == "BUZON" {
+			buzon = wp.Location
+		}
+	}
+	bNM := math.LL2NM(buzon, nmPerLong)
+	pos := math.NM2LL([2]float32{bNM[0] + 1.76, bNM[1] - 0.69}, nmPerLong)
+
+	n := Nav{
+		FlightState: FlightState{
+			Position:          pos,
+			Heading:           40,
+			NmPerLongitude:    nmPerLong,
+			MagneticVariation: magVar,
+		},
+	}
+	n.Perf.Category.CWT = "F" // commercial jet (A320)
+
+	join := n.selectVisualApproachRoute(nil, []*av.Approach{ref})
+	if join == nil {
+		t.Fatal("expected a visual join")
+	}
+	if join.finalPoint {
+		t.Errorf("expected an intercept, got synthesized 3-NM final")
+	}
+	if join.route[0].Fix != "BUZON" {
+		t.Errorf("joined the wrong reference: route[0]=%s, want BUZON (northern)",
+			join.route[0].Fix)
+	}
+	if join.segment != 0 {
+		t.Errorf("segment = %d, want 0 (BUZON-TELEX intercept)", join.segment)
+	}
+	if join.distanceToThreshold < 3 || join.distanceToThreshold > 10 {
+		t.Errorf("distanceToThreshold = %.2f, want roughly 6-10 nm", join.distanceToThreshold)
 	}
 }
 
@@ -181,6 +259,89 @@ func TestAtFixClearedApproach(t *testing.T) {
 	})
 
 	f.Run()
+}
+
+// TestAtFixInterceptApproachOnlyFix verifies that "at FIX intercept the
+// localizer" works when the named fix is on the assigned approach but not
+// yet in the aircraft's route (e.g., aircraft is being vectored). The
+// command should splice the direct-to-fix route in via directFixWaypoints
+// and arm the at-fix intercept.
+func TestAtFixInterceptApproachOnlyFix(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectApproach("I22L")
+	intent := f.AtFixIntercept("ROSLY")
+	if _, ok := intent.(av.UnableIntent); ok {
+		t.Fatalf("AtFixIntercept returned unable: %+v", intent)
+	}
+
+	if f.nav.Approach.AtFixInterceptFix != "ROSLY" {
+		t.Errorf("AtFixInterceptFix = %q, want ROSLY", f.nav.Approach.AtFixInterceptFix)
+	}
+	if f.nav.Approach.InterceptState != OnApproachCourse {
+		t.Errorf("expected OnApproachCourse, got %d", f.nav.Approach.InterceptState)
+	}
+	if f.nav.Approach.Cleared {
+		t.Errorf("approach should not be cleared")
+	}
+}
+
+func TestAtFixInterceptSkipsRouteHeadingAtApproachFix(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "ERNEI/a7000-8000 GOSHI/a6000/s210/h035",
+		DepartureAirport: "KDCA",
+		ArrivalAirport:   "KBOS",
+		AircraftType:     "B738",
+		InitialAltitude:  6000,
+		InitialSpeed:     210,
+		AssignedAltitude: 6000,
+	})
+	f.SetWind(360, 27)
+	f.ExpectApproach("I4R")
+	f.AtFixIntercept("GOSHI")
+
+	f.AtFix("GOSHI", func(f *FlightTest) {
+		if f.nav.Heading.Assigned != nil {
+			t.Fatalf("at-fix intercept left aircraft on heading %03.0f, want LNAV", *f.nav.Heading.Assigned)
+		}
+		if f.nav.Approach.InterceptState != OnApproachCourse {
+			t.Fatalf("InterceptState = %d, want OnApproachCourse", f.nav.Approach.InterceptState)
+		}
+		if len(f.nav.Waypoints) == 0 || f.nav.Waypoints[0].Fix != "WINNI" {
+			t.Fatalf("next waypoint = %v, want WINNI", f.nav.Waypoints)
+		}
+	})
+
+	f.Run()
+}
+
+// TestAtFixClearedApproachOnlyFix verifies the same approach-only-fix
+// relaxation for AtFixCleared.
+func TestAtFixClearedApproachOnlyFix(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectApproach("I22L")
+	f.AtFixCleared("ROSLY", "I22L", false)
+
+	if f.nav.Approach.AtFixClearedRoute == nil {
+		t.Errorf("AtFixClearedRoute should be populated for approach-only fix")
+	}
 }
 
 // TestApproachWindCorrectionOnLocalizer verifies that an aircraft tracks
@@ -467,6 +628,53 @@ func TestLocalizerOvershootRecovery(t *testing.T) {
 	f.Run()
 }
 
+func TestReissuedApproachClearanceDuringLocalizerCapture(t *testing.T) {
+	apg := LookupApproachGeometry(t, "KJFK", "I22L")
+	pos := apg.ThresholdOffset(10, -0.5)
+
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString() + " HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  3000,
+		InitialSpeed:     180,
+		InitialHeading:   200,
+	})
+
+	f.ExpectApproach("I22L")
+	f.ClearedApproach("I22L")
+
+	reissued := false
+	for tick := 1; tick <= 300; tick++ {
+		f.AfterTicks(tick, func(f *FlightTest) {
+			if !reissued && f.nav.Approach.InterceptState == TurningToJoin {
+				state := f.nav.Approach.InterceptState
+				f.ClearedApproach("I22L")
+				if f.nav.Approach.InterceptState != state {
+					t.Fatalf("reissued clearance changed intercept state from %d to %d",
+						state, f.nav.Approach.InterceptState)
+				}
+				reissued = true
+			}
+			if f.nav.Approach.RequestVectors {
+				t.Fatalf("tick %d: RequestVectors unexpectedly set", tick)
+			}
+		})
+	}
+
+	f.AtFix("ZALPO", func(f *FlightTest) {
+		if !reissued {
+			t.Fatal("approach clearance was never reissued during capture")
+		}
+		if f.nav.Approach.InterceptState != OnApproachCourse {
+			t.Errorf("expected OnApproachCourse by ZALPO, got %d", f.nav.Approach.InterceptState)
+		}
+	})
+
+	f.Run()
+}
+
 // TestLocalizerOvershootNearFAF verifies that an aircraft that overshoots
 // the localizer too close to the FAF (within 2nm along the approach course)
 // cannot recover and requests vectors instead.
@@ -717,5 +925,387 @@ func TestFAFOffset(t *testing.T) {
 	fafDeviation := math.PointLineDistance(fafNM, threshNM, farNM)
 	if fafDeviation > 0.1 {
 		t.Errorf("FAF is %.3f nm off extended centerline (want <0.1)", fafDeviation)
+	}
+}
+
+// TestExpectVisualApproachSynthesizesAssigned verifies that EVA{runway}
+// synthesizes a VisualApproach with aggregated waypoints from the airport's
+// VisualApproach and ILS/Localizer references, and assigns it.
+func TestExpectVisualApproachSynthesizesAssigned(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+	})
+
+	intent := f.ExpectVisualApproach("22L")
+	if _, ok := intent.(av.UnableIntent); ok {
+		t.Fatalf("ExpectVisualApproach returned unable: %+v", intent)
+	}
+
+	if got := f.nav.Approach.AssignedId; got != "_VIS22L" {
+		t.Errorf("AssignedId = %q, want _VIS22L", got)
+	}
+	ap := f.nav.Approach.Assigned
+	if ap == nil {
+		t.Fatal("Assigned is nil after EVA")
+	}
+	if ap.Type != av.VisualApproach {
+		t.Errorf("Assigned.Type = %v, want VisualApproach", ap.Type)
+	}
+	if ap.Runway != "22L" {
+		t.Errorf("Assigned.Runway = %q, want 22L", ap.Runway)
+	}
+	if (ap.Threshold == math.Point2LL{}) {
+		t.Error("Assigned.Threshold is zero")
+	}
+	if len(ap.Waypoints) == 0 {
+		t.Fatal("Assigned has no Waypoints")
+	}
+
+	// VisualReferences should include at least the I22L (ILS) approach.
+	var sawILS bool
+	for _, ref := range f.nav.Approach.VisualReferences {
+		if ref.Type == av.ILSApproach {
+			sawILS = true
+		}
+	}
+	if !sawILS {
+		t.Errorf("VisualReferences did not include any ILSApproach; got %d refs", len(f.nav.Approach.VisualReferences))
+	}
+}
+
+// TestExpectVisualApproachStripsProcedureTurns verifies that ProcedureTurn
+// metadata is cleared in the synthesized waypoints so that
+// flyProcedureTurnIfNecessary / prepareForApproach do not try to fly an ILS
+// procedure turn under a visual.
+func TestExpectVisualApproachStripsProcedureTurns(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+	})
+
+	f.ExpectVisualApproach("22L")
+
+	for _, route := range f.nav.Approach.Assigned.Waypoints {
+		for _, wp := range route {
+			if wp.ProcedureTurn() != nil {
+				t.Errorf("waypoint %s has ProcedureTurn set in synthesized visual", wp.Fix)
+			}
+		}
+	}
+}
+
+// TestDirectFixOnILSAfterEVA verifies the user's "direct {ils-fix}" workflow
+// after EVA: the aircraft routes via the ILS waypoints, InterceptState becomes
+// OnApproachCourse, and InterceptedReference is set to the ILS approach.
+func TestDirectFixOnILSAfterEVA(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectVisualApproach("22L")
+	// ROSLY is on the I22L approach (not in the route).
+	f.DirectFix("ROSLY")
+
+	if f.nav.Approach.InterceptState != OnApproachCourse {
+		t.Errorf("InterceptState = %d, want OnApproachCourse", f.nav.Approach.InterceptState)
+	}
+	if ref := f.nav.Approach.InterceptedReference; ref == nil {
+		t.Error("InterceptedReference is nil; expected I22L ILS approach")
+	} else if ref.Type != av.ILSApproach {
+		t.Errorf("InterceptedReference.Type = %v, want ILSApproach", ref.Type)
+	}
+	if f.nav.Approach.Cleared {
+		t.Error("approach should not be cleared")
+	}
+}
+
+// TestAtFixInterceptILSAfterEVA verifies "at {fix} intercept the localizer"
+// after EVA: AtFixInterceptFix is armed and InterceptedReference points at
+// the ILS reference.
+func TestAtFixInterceptILSAfterEVA(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectVisualApproach("22L")
+	intent := f.AtFixIntercept("ROSLY")
+	if _, ok := intent.(av.UnableIntent); ok {
+		t.Fatalf("AtFixIntercept returned unable: %+v", intent)
+	}
+
+	if f.nav.Approach.AtFixInterceptFix != "ROSLY" {
+		t.Errorf("AtFixInterceptFix = %q, want ROSLY", f.nav.Approach.AtFixInterceptFix)
+	}
+	if ref := f.nav.Approach.InterceptedReference; ref == nil {
+		t.Error("InterceptedReference is nil; expected I22L ILS approach")
+	} else if ref.Type != av.ILSApproach {
+		t.Errorf("InterceptedReference.Type = %v, want ILSApproach", ref.Type)
+	}
+}
+
+// TestClearedVisualAlongILSUsesILSGeometry verifies that when CVA is issued
+// after the aircraft has been committed to an ILS reference, the cleared
+// visual flies the ILS route geometry — Assigned.Threshold/OppositeThreshold
+// match the runway, and there are no synthetic _TOD/_3NM_FINAL waypoints.
+func TestClearedVisualAlongILSUsesILSGeometry(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectVisualApproach("22L")
+	f.DirectFix("ROSLY") // commits to the I22L route
+	intent := f.ClearedVisualApproach("22L")
+	if _, ok := intent.(av.UnableIntent); ok {
+		t.Fatalf("ClearedVisualApproach returned unable: %+v", intent)
+	}
+
+	if !f.nav.Approach.Cleared {
+		t.Error("approach should be cleared")
+	}
+	ap := f.nav.Approach.Assigned
+	if ap == nil {
+		t.Fatal("Assigned is nil after CVA")
+	}
+	if ap.Type != av.VisualApproach {
+		t.Errorf("Assigned.Type = %v, want VisualApproach", ap.Type)
+	}
+	if ap.FullName != "Visual Approach Runway 22L" {
+		t.Errorf("Assigned.FullName = %q, want %q", ap.FullName, "Visual Approach Runway 22L")
+	}
+	for _, route := range ap.Waypoints {
+		for _, wp := range route {
+			if len(wp.Fix) > 0 && wp.Fix[0] == '_' {
+				// Allow _RW prefixes (threshold) but not synthetic _TOD/_3NM_FINAL
+				if wp.Fix == "_22L_TOD" || wp.Fix == "_22L_3NM_FINAL" || wp.Fix == "_22L_APPROACH_JOIN" {
+					t.Errorf("Assigned.Waypoints contains synthetic visual waypoint %q; expected ILS-only route", wp.Fix)
+				}
+			}
+		}
+	}
+}
+
+// TestExpectVisualApproachResetsExpectApproachState verifies that EVA after
+// a prior ExpectApproach clears any stale ILS state (InterceptState,
+// AtFixInterceptFix, etc.).
+func TestExpectVisualApproachResetsExpectApproachState(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+	})
+
+	f.ExpectApproach("I22L")
+	f.AtFixIntercept("ROSLY")
+	if f.nav.Approach.AtFixInterceptFix == "" {
+		t.Fatal("setup error: AtFixInterceptFix not set")
+	}
+
+	f.ExpectVisualApproach("22L")
+
+	if f.nav.Approach.AtFixInterceptFix != "" {
+		t.Errorf("AtFixInterceptFix = %q after EVA, want \"\"", f.nav.Approach.AtFixInterceptFix)
+	}
+	if f.nav.Approach.InterceptedReference != nil {
+		t.Error("InterceptedReference should be cleared after EVA")
+	}
+	if f.nav.Approach.AssignedId != "_VIS22L" {
+		t.Errorf("AssignedId = %q, want _VIS22L", f.nav.Approach.AssignedId)
+	}
+}
+
+// TestInterceptApproachUnderEVAOnHeadingCommitsToLocalizer verifies that
+// "intercept the localizer" issued while on a heading under a synthesized
+// visual approach commits the aircraft to the ILS reference and yields an
+// intent whose readback will mention the localizer.
+func TestInterceptApproachUnderEVAOnHeadingCommitsToLocalizer(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectVisualApproach("22L")
+	f.AssignHeading(250, av.TurnLeft)
+
+	intent := f.InterceptApproach()
+	ai, ok := intent.(av.ApproachIntent)
+	if !ok {
+		t.Fatalf("InterceptApproach returned %T, want ApproachIntent", intent)
+	}
+	if ai.Type != av.ApproachIntercept {
+		t.Errorf("Type = %v, want ApproachIntercept", ai.Type)
+	}
+	if !ai.HasLocalizer {
+		t.Error("HasLocalizer = false, want true")
+	}
+	if ref := f.nav.Approach.InterceptedReference; ref == nil {
+		t.Error("InterceptedReference is nil; expected I22L ILS reference")
+	} else if ref.Type != av.ILSApproach {
+		t.Errorf("InterceptedReference.Type = %v, want ILSApproach", ref.Type)
+	}
+}
+
+// TestSelectVisualReferencesPrioritization verifies that ILS/Localizer are
+// always included, and the visual-style component is picked by priority:
+// VisualApproach > VOR > RNAV > ChartedVisual.
+func TestSelectVisualReferencesPrioritization(t *testing.T) {
+	mk := func(ty av.ApproachType, rwy string) *av.Approach {
+		return &av.Approach{Type: ty, Runway: rwy}
+	}
+	hasType := func(refs []*av.Approach, ty av.ApproachType) bool {
+		for _, r := range refs {
+			if r.Type == ty {
+				return true
+			}
+		}
+		return false
+	}
+
+	tests := []struct {
+		name     string
+		approach map[string]*av.Approach
+		want     []av.ApproachType // expected types present (order-insensitive)
+		notWant  []av.ApproachType // types that must not be present
+	}{
+		{
+			name: "ILS and Visual together",
+			approach: map[string]*av.Approach{
+				"I22L": mk(av.ILSApproach, "22L"),
+				"V22L": mk(av.VisualApproach, "22L"),
+				"R22L": mk(av.RNAVApproach, "22L"),
+			},
+			want:    []av.ApproachType{av.ILSApproach, av.VisualApproach},
+			notWant: []av.ApproachType{av.RNAVApproach},
+		},
+		{
+			name: "ILS only — used alone",
+			approach: map[string]*av.Approach{
+				"I22L": mk(av.ILSApproach, "22L"),
+			},
+			want:    []av.ApproachType{av.ILSApproach},
+			notWant: nil,
+		},
+		{
+			name: "no ILS, VOR + RNAV — VOR wins by priority",
+			approach: map[string]*av.Approach{
+				"V22L": mk(av.VORApproach, "22L"),
+				"R22L": mk(av.RNAVApproach, "22L"),
+			},
+			want:    []av.ApproachType{av.VORApproach},
+			notWant: []av.ApproachType{av.RNAVApproach, av.ILSApproach},
+		},
+		{
+			name: "no ILS, no VOR, RNAV + Charted — RNAV wins",
+			approach: map[string]*av.Approach{
+				"R22L":   mk(av.RNAVApproach, "22L"),
+				"BVL22L": mk(av.ChartedVisualApproach, "22L"),
+			},
+			want:    []av.ApproachType{av.RNAVApproach},
+			notWant: []av.ApproachType{av.ChartedVisualApproach},
+		},
+		{
+			name: "different runway base ignored",
+			approach: map[string]*av.Approach{
+				"I31R": mk(av.ILSApproach, "31R"),
+			},
+			want:    nil,
+			notWant: []av.ApproachType{av.ILSApproach},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			refs := selectVisualReferences(&av.Airport{Approaches: tt.approach}, "22L")
+			for _, ty := range tt.want {
+				if !hasType(refs, ty) {
+					t.Errorf("missing %v in references; got %d refs", ty, len(refs))
+				}
+			}
+			for _, ty := range tt.notWant {
+				if hasType(refs, ty) {
+					t.Errorf("unexpected %v in references", ty)
+				}
+			}
+			if len(tt.want) == 0 && len(refs) != 0 {
+				t.Errorf("expected empty references, got %d", len(refs))
+			}
+		})
+	}
+}
+
+// TestClearedVisualReissuedDoesNotRecomputeRoute verifies that a re-issued
+// CVA on an already-cleared visual approach is a no-op for the route — it
+// re-acknowledges the clearance without rebuilding the descent geometry.
+func TestClearedVisualReissuedDoesNotRecomputeRoute(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+	})
+
+	f.ExpectVisualApproach("22L")
+	if intent := f.ClearedVisualApproach("22L"); intent == nil {
+		t.Fatal("first CVA returned nil intent")
+	}
+	if !f.nav.Approach.Cleared {
+		t.Fatal("setup: approach not cleared after first CVA")
+	}
+
+	before := slices.Clone(f.nav.Waypoints)
+	beforeAp := f.nav.Approach.Assigned
+
+	if intent := f.ClearedVisualApproach("22L"); intent == nil {
+		t.Fatal("second CVA returned nil intent")
+	}
+
+	if f.nav.Approach.Assigned != beforeAp {
+		t.Error("Assigned was rebuilt by second CVA")
+	}
+	if len(f.nav.Waypoints) != len(before) {
+		t.Errorf("Waypoints length changed: before=%d after=%d", len(before), len(f.nav.Waypoints))
+	} else {
+		for i := range before {
+			if before[i].Fix != f.nav.Waypoints[i].Fix ||
+				before[i].Location != f.nav.Waypoints[i].Location {
+				t.Errorf("Waypoint[%d] mutated: before=%+v after=%+v", i, before[i], f.nav.Waypoints[i])
+			}
+		}
 	}
 }

@@ -266,7 +266,7 @@ func (ep *ERAMPane) initPrefsForLoadedSim(ss client.SimState) *Preferences {
 	p.CurrentCenter = p.Center
 	p.VideoMapGroup = ss.ScenarioDefaultVideoGroup
 	p.ARTCC = ss.Facility
-	p.Range = ss.Range
+	p.Range = ss.GetInitialRange()
 	return p
 }
 

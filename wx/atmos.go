@@ -18,13 +18,13 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// vice -listscenarios 2>/dev/null | cut -d / -f 1 | uniq
+// vice -listscenarios 2>/dev/null | cut -d / -f 1 | uniq (ex FAT, OGG, HNL)
 var AtmosTRACONs = []string{
 	"A11", "A80", "A90", "AAC", "ABE", "ABQ", "AGS", "ALB", "ASE", "AUS", "AVL", "BGR", "BHM", "BIL", "BNA", "BOI",
-	"BTV", "BUF", "C90", "CHS", "CID", "CLE", "CLT", "COS", "CPR", "D01", "D10", "D21", "DAB", "EWR", "F11", "GSO",
-	"GSP", "GTF", "I90", "IND", "JAX", "L30", "M98", "MCI", "MDT", "MIA", "MKE", "N90", "NCT", "OKC", "P31", "P50",
+	"BTV", "BUF", "C90", "CHS", "CID", "CLE", "CLT", "COS", "CPR", "CVG", "D01", "D10", "D21", "DAB", "EWR", "F11", "GSO",
+	"GSP", "GTF", "I90", "IND", "JAX", "L30", "LBB", "M98", "MCI", "MDT", "MIA", "MKE", "MYR", "N90", "NCT", "OKC", "ORF", "P31", "P50",
 	"P80", "PCT", "PHL", "PIT", "PVD", "PWM", "R90", "RDU", "S46", "S56", "SAT", "SAV", "SBA", "SBN", "SCT", "SDF",
-	"SGF", "SYR", "TPA", "Y90",
+	"SGF", "SYR", "TPA", "TYS", "Y90",
 	// not currently needed but let's save ourselves the trouble of
 	// downloading all the Alaska gribs again just in case.
 	"FAI",
@@ -312,13 +312,7 @@ func (at AtmosByTime) ToSOA() (AtmosByTimeSOA, error) {
 	times := slices.Collect(maps.Keys(at.SampleStacks))
 	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
 
-	// Convert times to Unix timestamps
-	for _, t := range times {
-		soa.Times = append(soa.Times, t.UTC().Unix())
-	}
-
-	// Delta encode the Unix timestamps
-	soa.Times = util.DeltaEncode(soa.Times)
+	soa.Times = util.DeltaEncodeTimes(times)
 
 	var err error
 	soa.Levels, err = convertStacksToSOALevels(at.SampleStacks, times)
@@ -328,14 +322,7 @@ func (at AtmosByTime) ToSOA() (AtmosByTimeSOA, error) {
 func (atsoa AtmosByTimeSOA) ToAOS() AtmosByTime {
 	at := AtmosByTime{SampleStacks: make(map[time.Time]*AtmosSampleStack)}
 
-	// Delta decode the Unix timestamps
-	decodedTimestamps := util.DeltaDecode(atsoa.Times)
-
-	// Convert Unix timestamps back to time.Time
-	var times []time.Time
-	for _, timestamp := range decodedTimestamps {
-		times = append(times, time.Unix(timestamp, 0).UTC())
-	}
+	times := util.DeltaDecodeTimes(atsoa.Times)
 
 	stacks, err := convertSOALevelsToStacks(atsoa.Levels, times)
 	if err != nil {

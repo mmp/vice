@@ -97,6 +97,12 @@ type STARSPane struct {
 
 	LockDisplay bool
 
+	// DCBScaleToFit, when true, sizes DCB buttons to exactly fill the pane's
+	// main axis instead of using the platform DPI. The button size is based
+	// on the maximum slot count across menus so the bar's cross-axis
+	// thickness doesn't change between menus, and scrolling is disabled.
+	DCBScaleToFit bool
+
 	// a/c callsign -> controllers
 	PointOuts         map[sim.ACID]PointOutControllers
 	RejectedPointOuts map[sim.ACID]any
@@ -159,6 +165,22 @@ type STARSPane struct {
 	previewAreaOutput string
 	previewAreaInput  string
 	dcbShowAux        bool
+
+	// dcbScroll is the horizontal/vertical scroll offset (in pane-local
+	// pixels) applied to the DCB when the pane is too narrow to show every
+	// button at the fixed button size. Clamped to [0, content - visible]
+	// each frame; mouse wheel over the DCB bar adjusts it.
+	dcbScroll float32
+
+	// dcbContentSize is the main-axis extent (in pane-local pixels) that
+	// the previous frame's DCB drawing actually used. Lets dcbMaxScroll
+	// stop at the last real button so the user can't scroll into empty bar.
+	dcbContentSize float32
+
+	// dcbLastMenu is the DCB layout that was rendered last frame. drawDCB
+	// resets dcbScroll when this changes so a scroll offset from a wider
+	// menu doesn't carry into a narrower submenu.
+	dcbLastMenu dcbMenuID
 
 	lastTrackUpdate        sim.Time
 	lastHistoryTrackUpdate sim.Time
@@ -873,6 +895,7 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 	sp.LastATIS = client.State.ATIS
 	sp.LastGIText = client.State.GIText
 	sp.FlashATIS = [10]bool{}
+	sp.highlightedLocationEndTime = sim.Time{}
 
 	sp.lastTrackUpdate = sim.Time{} // force update
 	sp.lastHistoryTrackUpdate = sim.Time{}

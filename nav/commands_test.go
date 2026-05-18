@@ -54,7 +54,7 @@ func TestCommandValidation(t *testing.T) {
 
 	t.Run("ClearedApproachWithoutExpect", func(t *testing.T) {
 		f := makeNav(t)
-		intent := f.nav.ClearedApproach(f.fp.ArrivalAirport, "I22L", false, f.simTime)
+		intent := f.nav.ClearedApproach("I22L", nil, f.simTime, false)
 		AssertUnable(t, intent)
 	})
 
@@ -591,7 +591,7 @@ func TestAtFixClearedInvalidFix(t *testing.T) {
 	})
 
 	f.ExpectApproach("I22L")
-	intent := f.nav.AtFixCleared("BOGUS", "I22L", false)
+	intent := f.nav.AtFixCleared("BOGUS", "I22L", f.simTime, 0, false)
 	AssertUnable(t, intent)
 }
 
@@ -852,6 +852,65 @@ func TestCrossDMEAtUsesDeferredWaypoints(t *testing.T) {
 	if slicesIndex(f.nav.DeferredNavHeading.Waypoints, "_22L_5DME") < 0 {
 		t.Errorf("expected _22L_5DME in deferred route, got %v",
 			waypointFixes(f.nav.DeferredNavHeading.Waypoints))
+	}
+}
+
+// TestHeadingAfterAltitudeDeferredBySpeedDoesNotRequestAltitude verifies
+// that when a controller issues "descend and maintain X" followed by a
+// speed reduction large enough to defer the altitude into AfterSpeed mode,
+// then issues a heading off the STAR, the pilot does NOT ask "what altitude
+// do you want us at?" — the altitude is still assigned, just deferred.
+func TestHeadingAfterAltitudeDeferredBySpeedDoesNotRequestAltitude(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL/a10000/star DETGY/a7000/star HAUPT/a6000/star LEFER/a4000/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  9000,
+		InitialSpeed:     250,
+		OnSTAR:           true,
+	})
+
+	f.AssignAltitude(3000)
+	if f.nav.Altitude.Assigned == nil || *f.nav.Altitude.Assigned != 3000 {
+		t.Fatalf("expected Assigned=3000 after AssignAltitude, got %v", f.nav.Altitude.Assigned)
+	}
+
+	// Speed delta of 60kt > 20kt threshold, which moves the assigned
+	// altitude into AfterSpeed and clears Altitude.Assigned.
+	f.AssignSpeed(190)
+	if f.nav.Altitude.AfterSpeed == nil || *f.nav.Altitude.AfterSpeed != 3000 {
+		t.Fatalf("expected AfterSpeed=3000 after AssignSpeed, got %v", f.nav.Altitude.AfterSpeed)
+	}
+	if f.nav.Altitude.Assigned != nil {
+		t.Fatalf("expected Assigned=nil after deferral, got %v", *f.nav.Altitude.Assigned)
+	}
+
+	f.AssignHeading(310, av.TurnRight)
+
+	if f.nav.Approach.RequestAltitude {
+		t.Error("pilot should not request altitude after heading: 3000 was already assigned (deferred via AfterSpeed)")
+	}
+}
+
+// TestHeadingOffSTARWithNoAltitudeRequestsAltitude is the positive control
+// for TestHeadingAfterAltitudeDeferredBySpeedDoesNotRequestAltitude: with
+// no altitude assigned at all, the pilot should ask.
+func TestHeadingOffSTARWithNoAltitudeRequestsAltitude(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL/a10000/star DETGY/a7000/star HAUPT/a6000/star LEFER/a4000/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  9000,
+		InitialSpeed:     250,
+		OnSTAR:           true,
+	})
+
+	f.AssignHeading(310, av.TurnRight)
+
+	if !f.nav.Approach.RequestAltitude {
+		t.Error("pilot should request altitude when vectored off STAR with no assigned altitude")
 	}
 }
 

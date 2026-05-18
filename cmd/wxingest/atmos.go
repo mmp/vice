@@ -589,6 +589,12 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string
 }
 
 func uploadWeatherAtmos(at *wx.AtmosByPoint, facilityID string, t time.Time, st StorageBackend) (int64, error) {
+	if len(at.SampleStacks) == 0 {
+		LogError("%s-%s: no sample stacks; skipping upload (facility likely not covered by HRRR grid)",
+			facilityID, t.Format(time.RFC3339))
+		return 0, nil
+	}
+
 	soa, err := at.ToSOA()
 	if err != nil {
 		return 0, err

@@ -73,6 +73,8 @@ type CommonState struct {
 
 	Center                    math.Point2LL
 	Range                     float32
+	ScenarioCenter            math.Point2LL
+	ScenarioRange             float32
 	ScenarioDefaultVideoMaps  []string
 	ScenarioDefaultVideoGroup string
 
@@ -302,6 +304,8 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 
 		Center:                    config.Center,
 		Range:                     config.Range,
+		ScenarioCenter:            config.ScenarioCenter,
+		ScenarioRange:             config.ScenarioRange,
 		ScenarioDefaultVideoMaps:  config.DefaultMaps,
 		ScenarioDefaultVideoGroup: config.DefaultMapGroup,
 

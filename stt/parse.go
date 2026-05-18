@@ -58,30 +58,34 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 				match.Command, match.Confidence, newPos-pos, isThen)
 			matchedAny = true
 			if match.Command != "" {
-				commands = append(commands, match.Command)
-				totalConf += match.Confidence
+				// A handler may emit multiple space-separated commands
+				// (e.g., "D{fix} A{fix}/I"). Split so each is tracked,
+				// categorized, and post-processed individually.
+				for _, cmd := range strings.Fields(match.Command) {
+					commands = append(commands, cmd)
+					totalConf += match.Confidence
 
-				// Track this command's category to prevent duplicate types
-				if category := getCommandCategory(match.Command); category != "" {
-					excludeCategories[category] = true
-				}
-
-				// If this is an expect approach command, add the approach's fixes
-				// to the aircraft context for subsequent command parsing.
-				if strings.HasPrefix(match.Command, "E") && len(match.Command) > 1 {
-					approachID := match.Command[1:]
-					// Strip LAHSO suffix if present (e.g., "I22L/LAHSO26" -> "I22L")
-					if idx := strings.Index(approachID, "/LAHSO"); idx != -1 {
-						approachID = approachID[:idx]
+					if category := getCommandCategory(cmd); category != "" {
+						excludeCategories[category] = true
 					}
-					if approachFixes, ok := ac.ApproachFixes[approachID]; ok {
-						logLocalStt("  adding %d fixes from approach %s to aircraft context", len(approachFixes), approachID)
-						if ac.Fixes == nil {
-							ac.Fixes = make(map[string]string)
+
+					// If this is an expect approach command, add the approach's fixes
+					// to the aircraft context for subsequent command parsing.
+					if strings.HasPrefix(cmd, "E") && len(cmd) > 1 {
+						approachID := cmd[1:]
+						// Strip LAHSO suffix if present (e.g., "I22L/LAHSO26" -> "I22L")
+						if idx := strings.Index(approachID, "/LAHSO"); idx != -1 {
+							approachID = approachID[:idx]
 						}
-						for spoken, fix := range approachFixes {
-							if _, exists := ac.Fixes[spoken]; !exists {
-								ac.Fixes[spoken] = fix
+						if approachFixes, ok := ac.ApproachFixes[approachID]; ok {
+							logLocalStt("  adding %d fixes from approach %s to aircraft context", len(approachFixes), approachID)
+							if ac.Fixes == nil {
+								ac.Fixes = make(map[string]string)
+							}
+							for spoken, fix := range approachFixes {
+								if _, exists := ac.Fixes[spoken]; !exists {
+									ac.Fixes[spoken] = fix
+								}
 							}
 						}
 					}

@@ -1,4 +1,4 @@
-// pkg/math/heading.go
+// math/heading.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -208,10 +208,10 @@ func OppositeHeading[T HeadingT](h T) T {
 	return NormalizeHeading(h + 180)
 }
 
-// OffsetHeading adds a float32 angular delta to a heading and normalizes
-// the result, preserving the heading's type.
-func OffsetHeading[T ~float32](h T, delta float32) T {
-	return T(NormalizeHeading(float32(h) + delta))
+// OffsetHeading adds an angular delta to a heading and normalizes the result, preserving the
+// heading's type.
+func OffsetHeading[T ~float32, D ~float32 | ~int](h T, delta D) T {
+	return T(NormalizeHeading(float32(h) + float32(delta)))
 }
 
 // IsHeadingBetween checks if heading h is between h1 and h2 (clockwise from h1 to h2).

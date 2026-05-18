@@ -529,6 +529,11 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact, requesterToken str
 		rt = av.MakeContactTransmission("[we've got the traffic|we have the traffic in sight|traffic in sight now]")
 
 	case PendingTransmissionFieldInSight:
+		// If the aircraft was cleared for an approach between enqueue and
+		// dispatch, drop the now-redundant "field in sight" call.
+		if ac.Nav.Approach.Cleared {
+			return "", ""
+		}
 		rt = av.MakeContactTransmission("[we have the field in sight now|field in sight|we have the airport in sight now]")
 
 	case PendingTransmissionFieldNegativeContact:
@@ -565,7 +570,11 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact, requesterToken str
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestVectors:
-		rt = av.MakeContactTransmission("[we're going to overshoot the localizer, request vectors|we're gonna be unable to intercept, request new heading|we're going to miss the localizer, request vectors]")
+		if ac.Nav.Approach.HasLocalizer() {
+			rt = av.MakeContactTransmission("[we're going to overshoot the localizer, request vectors|we're gonna be unable to intercept, request new heading|we're going to miss the localizer, request vectors]")
+		} else {
+			rt = av.MakeContactTransmission("[we're going to overshoot the final approach course, request vectors|we're gonna be unable to intercept, request new heading|we're going to miss final, request vectors]")
+		}
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestAltitude:
@@ -580,6 +589,11 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact, requesterToken str
 		rt.Type = av.RadioTransmissionUnexpected // Mark as urgent for display
 
 	case PendingTransmissionRequestVisual:
+		// If the aircraft was cleared for an approach between enqueue and
+		// dispatch, drop the now-redundant visual approach request.
+		if ac.Nav.Approach.Cleared {
+			return "", ""
+		}
 		runway := ""
 		if ac.Nav.Approach.Assigned != nil {
 			runway = ac.Nav.Approach.Assigned.Runway
@@ -589,7 +603,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact, requesterToken str
 		// it's the controller's decision whether to clear a plain visual
 		// (CVA) or a charted visual procedure (C).
 		rt = av.MakeContactTransmission(
-			"[field in sight|we have the airport in sight], [requesting the visual|can we get the visual] [approach |]runway {rwy}",
+			"[field in sight|we have the airport in sight], [request visual|requesting the visual|can we get the visual] [approach |]runway {rwy}",
 			runway)
 
 	default:
@@ -677,7 +691,7 @@ func (s *Sim) enqueueTransponderChange(callsign av.ADSBCallsign, code av.Squawk,
 		FutureChangeSquawk{ADSBCallsign: callsign, Code: code, Mode: mode, Time: s.State.SimTime.Add(wait)})
 }
 
-func (s *Sim) processFutureChangeSquawk() {
+func (s *Sim) processFutureSquawkChanges() {
 	s.FutureSquawkChanges = util.FilterSliceInPlace(s.FutureSquawkChanges,
 		func(fcs FutureChangeSquawk) bool {
 			if s.State.SimTime.After(fcs.Time) {

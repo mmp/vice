@@ -289,7 +289,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				e.Pop()
 			}
 		}
-		requireFAF := appr.Type != ChartedVisualApproach
+		requireFAF := appr.Type != ChartedVisualApproach && appr.Type != VisualApproach
 		CheckApproaches(e, appr.Waypoints, requireFAF, controlPositions, checkScratchpad)
 
 		if appr.FullName == "" {

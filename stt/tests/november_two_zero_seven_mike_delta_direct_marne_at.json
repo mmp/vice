@@ -1,0 +1,694 @@
+{
+  "time": "2026-05-01T21:58:35.590133913Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:888:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "November two zero seven Mike Delta direct Marne at Marne cleared the runway one three",
+  "whisper_duration_ms": 580.881,
+  "audio_duration_ms": 4680,
+  "processor": "GPU: NVIDIA GeForce RTX 3050 (8256MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "N207MD",
+  "command": "DMARNE AMARNE/CR13",
+  "stt_aircraft": {
+    "H-A four twenty Honda-jet eight juliet november": {
+      "Callsign": "N8JN/T",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Lily": "LILJO",
+        "Selena": "SLENA",
+        "Skids": "SKIDS",
+        "Yens": "YENNS"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "1Q",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "H-A four twenty Honda-jet zero romeo lima": {
+      "Callsign": "N690RL/T",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 10816,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "Honda-jet eight juliet november": {
+      "Callsign": "N8JN/T",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Lily": "LILJO",
+        "Selena": "SLENA",
+        "Skids": "SKIDS",
+        "Yens": "YENNS"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "1Q",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "Honda-jet zero romeo lima": {
+      "Callsign": "N690RL/T",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 10816,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "Southwest six 59": {
+      "Callsign": "SWA659",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Churn": "CHURN",
+        "Seeds": "SEEDS",
+        "Wemar": "WEMAR",
+        "Wrkit": "WRKIT",
+        "snider": "SNIDR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "SNIDR1",
+      "STAR": "",
+      "Altitude": 3220,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest two 39": {
+      "Callsign": "SWA239",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Seeds": "SEEDS",
+        "Wemar": "WEMAR",
+        "snider": "SNIDR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "SNIDR1",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United two": {
+      "Callsign": "UAL2",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Alice": "ALISS",
+        "Tartar": "TATAR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ALISS6",
+      "STAR": "",
+      "Altitude": 8465,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "embraer phenom three hundred five eight delta": {
+      "Callsign": "N6858D/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Felma": "FELMA",
+        "Halke": "HALKE",
+        "Jablo": "JABLO",
+        "Lemig": "LEMIG",
+        "Mafpy": "MAFPY",
+        "Somer": "SOMER",
+        "Stinson Municipal": "KSSF",
+        "brown": "BRAUN",
+        "ganly": "GANLE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway three two": "R32"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R32": {
+          "Felma": "FELMA",
+          "Halke": "HALKE",
+          "Jablo": "JABLO",
+          "Lemig": "LEMIG",
+          "Mafpy": "MAFPY",
+          "Somer": "SOMER",
+          "brown": "BRAUN",
+          "ganly": "GANLE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 32",
+      "SID": "",
+      "STAR": "CRVZA2",
+      "Altitude": 5134,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "embraer phenom three hundred niner golf foxtrot": {
+      "Callsign": "N269GF/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "QERVO3",
+      "Altitude": 13818,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "embraer phenom three hundred seven mike delta": {
+      "Callsign": "N207MD/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 16884,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "november eight juliet november": {
+      "Callsign": "N8JN",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Lily": "LILJO",
+        "Selena": "SLENA",
+        "Skids": "SKIDS",
+        "Yens": "YENNS"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "1Q",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november four zero seven yankee mike": {
+      "Callsign": "N407YM",
+      "AircraftType": "",
+      "Fixes": {},
+      "CandidateApproaches": {
+        "I L S runway one six": "I16",
+        "r-nav runway one six": "R16"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I16": {
+          "Famdo": "FAMDO",
+          "Fegsa": "FEGSA",
+          "Fepet": "FEPET",
+          "Tasmy": "TASME"
+        },
+        "R16": {
+          "Famdo": "FAMDO",
+          "Kiced": "KICED",
+          "Oduyu": "ODUYU",
+          "Reuben": "REUBE",
+          "Sody": "SODEE",
+          "Wuron": "WURON",
+          "Zilen": "ZILEN"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2500,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november six eight five eight delta": {
+      "Callsign": "N6858D",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Felma": "FELMA",
+        "Halke": "HALKE",
+        "Jablo": "JABLO",
+        "Lemig": "LEMIG",
+        "Mafpy": "MAFPY",
+        "Somer": "SOMER",
+        "Stinson Municipal": "KSSF",
+        "brown": "BRAUN",
+        "ganly": "GANLE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway three two": "R32"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R32": {
+          "Felma": "FELMA",
+          "Halke": "HALKE",
+          "Jablo": "JABLO",
+          "Lemig": "LEMIG",
+          "Mafpy": "MAFPY",
+          "Somer": "SOMER",
+          "brown": "BRAUN",
+          "ganly": "GANLE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 32",
+      "SID": "",
+      "STAR": "CRVZA2",
+      "Altitude": 5134,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "november six niner zero romeo lima": {
+      "Callsign": "N690RL",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 10816,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "november two six niner golf foxtrot": {
+      "Callsign": "N269GF",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "QERVO3",
+      "Altitude": 13818,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "november two zero seven mike delta": {
+      "Callsign": "N207MD",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 16884,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "phenom three hundred five eight delta": {
+      "Callsign": "N6858D/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Felma": "FELMA",
+        "Halke": "HALKE",
+        "Jablo": "JABLO",
+        "Lemig": "LEMIG",
+        "Mafpy": "MAFPY",
+        "Somer": "SOMER",
+        "Stinson Municipal": "KSSF",
+        "brown": "BRAUN",
+        "ganly": "GANLE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway three two": "R32"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R32": {
+          "Felma": "FELMA",
+          "Halke": "HALKE",
+          "Jablo": "JABLO",
+          "Lemig": "LEMIG",
+          "Mafpy": "MAFPY",
+          "Somer": "SOMER",
+          "brown": "BRAUN",
+          "ganly": "GANLE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 32",
+      "SID": "",
+      "STAR": "CRVZA2",
+      "Altitude": 5134,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "phenom three hundred niner golf foxtrot": {
+      "Callsign": "N269GF/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "QERVO3",
+      "Altitude": 13818,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "phenom three hundred seven mike delta": {
+      "Callsign": "N207MD/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 16884,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"November two zero seven Mike Delta direct Marne at Marne cleared the runway one three\"",
+    "[local-stt] normalized words: [november 2 0 7 mike delta direct marne at marne cleared the runway 1 3]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"november\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"207\" Type=1 Value=207",
+    "[local-stt]   token[2]: Text=\"mike\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"marne\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"marne\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"13\" Type=1 Value=13",
+    "[local-stt] MatchCallsign: 12 tokens, 19 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 12 tokens, 19 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 5 results",
+    "[local-stt]     result 0: \"november four zero seven yankee mike\" (airline=1.000, flight=0.733, skip=0)",
+    "[local-stt]     result 1: \"november two zero seven mike delta\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     result 2: \"phenom three hundred seven mike delta\" (airline=0.597, flight=1.000, skip=0)",
+    "[local-stt]     result 3: \"United two\" (airline=0.528, flight=0.760, skip=0)",
+    "[local-stt]     result 4: \"embraer phenom three hundred seven mike delta\" (airline=0.780, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"november two zero seven mike delta\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 3 results",
+    "[local-stt]     result 0: \"Southwest two 39\" (airline=0.491, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest six 59\" (airline=0.491, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"United two\" (airline=0.528, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"United two\" (airline=0.53, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"United two\"",
+    "[local-stt]   pattern \"ga_november\": 2 results",
+    "[local-stt]     result 0: \"november four zero seven yankee mike\" (airline=0.800, flight=0.620, skip=0)",
+    "[local-stt]     result 1: \"november two zero seven mike delta\" (airline=0.800, flight=0.750, skip=0)",
+    "[local-stt]     pattern \"ga_november\": selected \"november two zero seven mike delta\" (airline=0.80, flight=0.75, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 3 results",
+    "[local-stt]     result 0: \"november two zero seven mike delta\" (airline=0.500, flight=0.907, skip=0)",
+    "[local-stt]     result 1: \"phenom three hundred seven mike delta\" (airline=0.500, flight=0.907, skip=0)",
+    "[local-stt]     result 2: \"embraer phenom three hundred seven mike delta\" (airline=0.500, flight=0.907, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"november two zero seven mike delta\" (airline=0.50, flight=0.91, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"N207MD\" (conf=1.00, consumed=4, addressingForm=0, spokenKey=\"november two zero seven mike delta\")",
+    "[local-stt] callsign match: Callsign=\"N207MD\" SpokenKey=\"november two zero seven mike delta\" Conf=1.00 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=16884 Fixes=4 Approaches=1 AssignedApproach=\"RNAV Runway 13\" LAHSORunways=[17 35]",
+    "[local-stt]   fix: \"Wughe\" -\u003e \"WUGHE\"",
+    "[local-stt]   fix: \"New Braunfels Municipal\" -\u003e \"KBAZ\"",
+    "[local-stt]   fix: \"Marne\" -\u003e \"MARNE\"",
+    "[local-stt]   fix: \"Ekivy\" -\u003e \"EKIVY\"",
+    "[local-stt]   approach: \"r-nav runway one three\" -\u003e \"R13\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"marne\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"marne\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"13\" Type=1 Value=13",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"marne\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"marne\" -\u003e \"MARNE\" (exact)",
+    "[local-stt]   extractFix: matched \"marne\" -\u003e \"MARNE\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"DMARNE\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"marne\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"marne\" -\u003e \"MARNE\" (exact)",
+    "[local-stt]   extractFix: matched \"marne\" -\u003e \"MARNE\" (fuzzy 1.00)",
+    "[local-stt]   extractApproach: unique runway match \"one three\" -\u003e \"R13\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"marne\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"marne\" -\u003e \"MARNE\" (exact)",
+    "[local-stt]   extractFix: matched \"marne\" -\u003e \"MARNE\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"marne\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"marne\" -\u003e \"MARNE\" (exact)",
+    "[local-stt]   extractFix: matched \"marne\" -\u003e \"MARNE\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"AMARNE/CR13\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt] ParseCommands: result=[DMARNE AMARNE/CR13] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DMARNE AMARNE/CR13] (conf=1.00)",
+    "[local-stt] validated commands: [DMARNE AMARNE/CR13] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"N207MD DMARNE AMARNE/CR13\" (conf=1.00, time=18.4439ms) ==="
+  ]
+}

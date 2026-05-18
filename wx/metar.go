@@ -27,8 +27,8 @@ import (
 )
 
 const (
-	maxVisualRangeNM  = float32(25)   // absolute cap on field-in-sight range
-	hazeScaleHeightFt = float32(2500) // aerosol extinction e-folding height
+	maxVisualRangeNM  = 25   // absolute cap on field-in-sight range
+	hazeScaleHeightFt = 2500 // aerosol extinction e-folding height
 )
 
 // This is as much of the METAR as we need at runtime.
@@ -38,14 +38,11 @@ type METAR struct {
 	Temperature av.Temperature `json:"temp"`
 	Dewpoint    av.Temperature `json:"dewp"`
 	Altimeter   float32        `json:"altim"`
-	WindDir     *int           `json:"-"` // nil for variable winds, otherwise heading 0-360
+	WindDir     *int           `json:"-"` // nil for variable winds; emitted/consumed as "wdir" by Marshal/UnmarshalJSON
 	WindSpeed   int            `json:"wspd"`
 	WindGust    *int           `json:"wgst"`
 	Raw         string         `json:"rawOb"`
-
-	// WindDirRaw and ReportTime are used for JSON unmarshaling only
-	WindDirRaw any    `json:"wdir"` // nil or string "VRB" for variable, else number for heading
-	ReportTime string `json:"reportTime"`
+	ReportTime  string         `json:"reportTime"`
 }
 
 func (m METAR) Altimeter_inHg() float32 {
@@ -53,21 +50,32 @@ func (m METAR) Altimeter_inHg() float32 {
 	return 0.02953 * m.Altimeter
 }
 
-// UnmarshalJSON handles converting WindDirRaw to WindDir
+// MarshalJSON emits "wdir" from WindDir so JSON round-trips preserve direction.
+func (m METAR) MarshalJSON() ([]byte, error) {
+	type Alias METAR
+	aux := struct {
+		Alias
+		Wdir any `json:"wdir"`
+	}{Alias: Alias(m)}
+	if m.WindDir != nil {
+		aux.Wdir = *m.WindDir
+	}
+	return json.Marshal(aux)
+}
+
+// UnmarshalJSON reads "wdir" (number / "VRB" / null) and parses ReportTime.
 func (m *METAR) UnmarshalJSON(data []byte) error {
 	type Alias METAR
 	aux := &struct {
 		*Alias
-	}{
-		Alias: (*Alias)(m),
-	}
+		Wdir any `json:"wdir"`
+	}{Alias: (*Alias)(m)}
 
-	if err := json.Unmarshal(data, &aux); err != nil {
+	if err := json.Unmarshal(data, aux); err != nil {
 		return err
 	}
 
-	// Convert WindDirRaw to WindDir
-	switch v := m.WindDirRaw.(type) {
+	switch v := aux.Wdir.(type) {
 	case nil:
 		m.WindDir = nil
 	case string:
@@ -83,10 +91,9 @@ func (m *METAR) UnmarshalJSON(data []byte) error {
 		dir := int(v)
 		m.WindDir = &dir
 	default:
-		return fmt.Errorf("unexpected wind direction type %T: %v", m.WindDirRaw, m.WindDirRaw)
+		return fmt.Errorf("unexpected wind direction type %T: %v", v, v)
 	}
 
-	// Parse time
 	var err error
 	m.Time, err = parseMETARTime(m.ReportTime)
 
@@ -166,41 +173,50 @@ func (m METAR) Ceiling() (int, error) {
 	return 12000, nil
 }
 
-// EffectiveVisualRange returns the maximum distance (in nautical miles) at
-// which an observer at altitudeAGL can identify a ground-level target, based
-// on the METAR's surface visibility.
+// EffectiveVisualRange returns the maximum distance (in nautical miles) at which an observer at
+// observerAltitudeAGL can identify a target at targetAltitudeAGL, based on the METAR's surface
+// visibility.
 //
-// METAR visibility is a ground-level measurement. Aerosol concentration (and
-// thus the extinction coefficient σ) decays exponentially with altitude:
-// σ(z) = σ₀ × exp(-z/H), where H is the haze scale height (~2500 ft in the
-// boundary layer). Integrating σ along the slant path from the aircraft at
-// altitude h to the ground (Beer-Lambert law), and using Koschmieder to
-// convert METAR visibility to σ₀ (σ₀ = 3.912/V_surface), gives:
+// METAR visibility is a ground-level measurement. Aerosol concentration (and thus the extinction
+// coefficient σ) decays exponentially with altitude: σ(z) = σ₀ × exp(-z/H), where H is the haze
+// scale height (~2500 ft in the boundary layer). Integrating σ along the slant path between the
+// observer and target (Beer-Lambert law), and using Koschmieder to convert METAR visibility to σ₀
+// (σ₀ = 3.912/V_surface), gives:
 //
-//	effectiveRange = surfaceVisibility × h / (H × (1 - exp(-h/H)))
+//	effectiveRange = surfaceVisibility / average(exp(-z/H))
 //
-// As h→0 this reduces to surfaceVisibility (L'Hôpital). At altitude the
-// observer looks through proportionally less of the dense haze layer, so
-// effective range increases. The result is capped at maxVisualRangeNM. A
+// where the average is taken along the line of sight.  The result is capped at maxVisualRangeNM. A
 // 15% penalty is applied when the METAR reports obscuration phenomena.
-func (m METAR) EffectiveVisualRange(altitudeAGL float32) float32 {
+func (m METAR) EffectiveVisualRange(observerAltitudeAGL, targetAltitudeAGL float32) float32 {
 	vis, err := m.Visibility()
 	if err != nil {
 		return maxVisualRangeNM
 	}
-	// In automated U.S. METARs, 10SM means "10 or more"; model it as 15SM.
+	// In automated U.S. METARs, 10SM means "10 or more"; model it as 20SM.
 	if vis >= 10 {
-		vis = 15
+		vis = 20
 	}
 	visNM := vis * math.StatuteMilesToNauticalMiles
 	if m.HasObscuration() {
 		visNM *= 0.85
 	}
 
-	// Apply the slant-path extinction integral.
-	if altitudeAGL > 1 {
-		tau := 1 - math.FastExp(-altitudeAGL/hazeScaleHeightFt)
-		visNM *= altitudeAGL / (hazeScaleHeightFt * tau)
+	observerAltitudeAGL = max(observerAltitudeAGL, 0)
+	targetAltitudeAGL = max(targetAltitudeAGL, 0)
+
+	// Apply the line-of-sight extinction integral; note that this only increases the visual
+	// range since the metar reports surface visibility and it only gets better from there.
+	altitudeDelta := targetAltitudeAGL - observerAltitudeAGL
+	var averageExtinction float32
+	if math.Abs(altitudeDelta) <= 1 {
+		averageExtinction = math.FastExp(-observerAltitudeAGL / hazeScaleHeightFt)
+	} else {
+		observerSigma := math.FastExp(-observerAltitudeAGL / hazeScaleHeightFt)
+		targetSigma := math.FastExp(-targetAltitudeAGL / hazeScaleHeightFt)
+		averageExtinction = hazeScaleHeightFt / altitudeDelta * (observerSigma - targetSigma)
+	}
+	if averageExtinction > 0 {
+		visNM /= averageExtinction
 	}
 
 	return min(visNM, maxVisualRangeNM)
@@ -363,7 +379,7 @@ func MakeMETARSOA(recs []METAR) (METARSOA, error) {
 	return soa, nil
 }
 
-func (soa METARSOA) Decode() []METAR {
+func (soa METARSOA) Decode(icao string) []METAR {
 	var m []METAR
 
 	reportTime := util.DeltaDecodeBytesSlice(soa.ReportTime)
@@ -376,6 +392,7 @@ func (soa METARSOA) Decode() []METAR {
 
 	for i := range soa.ReportTime {
 		cm := METAR{
+			ICAO:        icao,
 			ReportTime:  string(reportTime[i]),
 			Temperature: av.MakeTemperatureFromCelsius(float32(temp[i]) / 10),
 			Dewpoint:    av.MakeTemperatureFromCelsius(float32(dewp[i]) / 10),
@@ -407,8 +424,8 @@ func (soa METARSOA) Decode() []METAR {
 	return m
 }
 
-func (soa METARSOA) Check(orig []METAR) error {
-	check := soa.Decode()
+func (soa METARSOA) Check(icao string, orig []METAR) error {
+	check := soa.Decode(icao)
 
 	if len(orig) != len(check) {
 		return fmt.Errorf("Record count mismatch: %d - %d", len(orig), len(check))
@@ -417,6 +434,9 @@ func (soa METARSOA) Check(orig []METAR) error {
 	for i := range len(orig) {
 		mo, mc := orig[i], check[i]
 
+		if mo.ICAO != mc.ICAO {
+			return fmt.Errorf("ICAO mismatch: %s - %s", mo.ICAO, mc.ICAO)
+		}
 		if mo.ReportTime != mc.ReportTime {
 			return fmt.Errorf("ReportTime mismatch: %s - %s", mo.ReportTime, mc.ReportTime)
 		}
@@ -550,7 +570,7 @@ func (cm CompressedMETAR) GetAirportMETAR(icao string) ([]METAR, error) {
 	if err != nil {
 		return nil, err
 	}
-	return soa.Decode(), nil
+	return soa.Decode(icao), nil
 }
 
 func (cm CompressedMETAR) GetAirportMETARSOA(icao string) (METARSOA, error) {
@@ -579,7 +599,7 @@ func (cm CompressedMETAR) SetAirportMETAR(icao string, metar []METAR) error {
 	if err != nil {
 		return err
 	}
-	if err := soa.Check(metar); err != nil {
+	if err := soa.Check(icao, metar); err != nil {
 		return err
 	}
 

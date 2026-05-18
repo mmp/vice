@@ -1,0 +1,796 @@
+{
+  "time": "2026-05-01T21:59:57.010353723Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:888:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Alaska Four Seventy Eight is going to turn around and approach expect RNAF runway one three right",
+  "whisper_duration_ms": 565.066,
+  "audio_duration_ms": 5704,
+  "processor": "GPU: NVIDIA GeForce RTX 3050 (8256MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "ASA478",
+  "command": "ER3R",
+  "stt_aircraft": {
+    "Alaska four 78": {
+      "Callsign": "ASA478",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Alamo": "ALAMO",
+        "Diamond": "DIAMN",
+        "Janis": "JNISS",
+        "Ladron": "LDRON",
+        "Nilda": "NCLDA",
+        "Nugget": "NUGIT",
+        "Ocilo": "OCILO",
+        "Pelican": "PLCAN",
+        "Poppo": "POPPO",
+        "Robinson": "RBNSN",
+        "Salza": "SALZA",
+        "San Antonio": "KSAT",
+        "Ucapi": "UCAPI",
+        "Vich": "VIICH",
+        "swupz": "SWUPZ",
+        "worm": "WORMM"
+      },
+      "CandidateApproaches": {
+        "I L S runway one three right": "I3R",
+        "r-nav RNP runway one three right": "R3R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I3R": {
+          "Alamo": "ALAMO",
+          "Ladron": "LDRON",
+          "Nilda": "NCLDA",
+          "Nugget": "NUGIT",
+          "Queso": "QUESO",
+          "Robinson": "RBNSN",
+          "Sarah": "SARAI",
+          "swupz": "SWUPZ",
+          "worm": "WORMM"
+        },
+        "R3R": {
+          "Alamo": "ALAMO",
+          "Diamond": "DIAMN",
+          "Janis": "JNISS",
+          "Ladron": "LDRON",
+          "Nilda": "NCLDA",
+          "Nugget": "NUGIT",
+          "Ocilo": "OCILO",
+          "Pelican": "PLCAN",
+          "Robinson": "RBNSN",
+          "Salza": "SALZA",
+          "Ucapi": "UCAPI",
+          "swupz": "SWUPZ",
+          "worm": "WORMM"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "POPPO2",
+      "Altitude": 12584,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "H-A four twenty Honda-jet eight juliet november": {
+      "Callsign": "N8JN/T",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Lily": "LILJO",
+        "Selena": "SLENA",
+        "Sinto": "SINTO",
+        "Skids": "SKIDS",
+        "Yens": "YENNS"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "C56",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "H-A four twenty Honda-jet zero romeo lima": {
+      "Callsign": "N690RL/T",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 9564,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "Honda-jet eight juliet november": {
+      "Callsign": "N8JN/T",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Lily": "LILJO",
+        "Selena": "SLENA",
+        "Sinto": "SINTO",
+        "Skids": "SKIDS",
+        "Yens": "YENNS"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "C56",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "Honda-jet zero romeo lima": {
+      "Callsign": "N690RL/T",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 9564,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "Southwest one 39": {
+      "Callsign": "SWA139",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Alice": "ALISS",
+        "Tartar": "TATAR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ALISS6",
+      "STAR": "",
+      "Altitude": 3847,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest six 59": {
+      "Callsign": "SWA659",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Seeds": "SEEDS",
+        "Wemar": "WEMAR",
+        "snider": "SNIDR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "SNIDR1",
+      "STAR": "",
+      "Altitude": 5921,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest two 39": {
+      "Callsign": "SWA239",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Fish": "FFSSH",
+        "Seeds": "SEEDS",
+        "Wemar": "WEMAR",
+        "snider": "SNIDR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "SNIDR1",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 44 75": {
+      "Callsign": "NKS4475",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Churn": "CHURN",
+        "Seeds": "SEEDS",
+        "Wrkit": "WRKIT",
+        "snider": "SNIDR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "SNIDR1",
+      "STAR": "",
+      "Altitude": 1670,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United two": {
+      "Callsign": "UAL2",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Alice": "ALISS",
+        "Tartar": "TATAR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ALISS6",
+      "STAR": "",
+      "Altitude": 10783,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "C85",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "embraer phenom three hundred five eight delta": {
+      "Callsign": "N6858D/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Felma": "FELMA",
+        "Halke": "HALKE",
+        "Jablo": "JABLO",
+        "Lemig": "LEMIG",
+        "Mafpy": "MAFPY",
+        "Somer": "SOMER",
+        "Stinson Municipal": "KSSF",
+        "brown": "BRAUN",
+        "ganly": "GANLE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway three two": "R32"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R32": {
+          "Felma": "FELMA",
+          "Halke": "HALKE",
+          "Jablo": "JABLO",
+          "Lemig": "LEMIG",
+          "Mafpy": "MAFPY",
+          "Somer": "SOMER",
+          "brown": "BRAUN",
+          "ganly": "GANLE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 32",
+      "SID": "",
+      "STAR": "CRVZA2",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "embraer phenom three hundred niner golf foxtrot": {
+      "Callsign": "N269GF/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "QERVO3",
+      "Altitude": 10812,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "embraer phenom three hundred seven mike delta": {
+      "Callsign": "N207MD/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 15140,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "november eight juliet november": {
+      "Callsign": "N8JN",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Lily": "LILJO",
+        "Selena": "SLENA",
+        "Sinto": "SINTO",
+        "Skids": "SKIDS",
+        "Yens": "YENNS"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "C56",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november four zero seven yankee mike": {
+      "Callsign": "N407YM",
+      "AircraftType": "",
+      "Fixes": {},
+      "CandidateApproaches": {
+        "I L S runway one six": "I16",
+        "r-nav runway one six": "R16"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I16": {
+          "Famdo": "FAMDO",
+          "Fegsa": "FEGSA",
+          "Fepet": "FEPET",
+          "Tasmy": "TASME"
+        },
+        "R16": {
+          "Famdo": "FAMDO",
+          "Kiced": "KICED",
+          "Oduyu": "ODUYU",
+          "Reuben": "REUBE",
+          "Sody": "SODEE",
+          "Wuron": "WURON",
+          "Zilen": "ZILEN"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1991,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november six eight five eight delta": {
+      "Callsign": "N6858D",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Felma": "FELMA",
+        "Halke": "HALKE",
+        "Jablo": "JABLO",
+        "Lemig": "LEMIG",
+        "Mafpy": "MAFPY",
+        "Somer": "SOMER",
+        "Stinson Municipal": "KSSF",
+        "brown": "BRAUN",
+        "ganly": "GANLE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway three two": "R32"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R32": {
+          "Felma": "FELMA",
+          "Halke": "HALKE",
+          "Jablo": "JABLO",
+          "Lemig": "LEMIG",
+          "Mafpy": "MAFPY",
+          "Somer": "SOMER",
+          "brown": "BRAUN",
+          "ganly": "GANLE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 32",
+      "SID": "",
+      "STAR": "CRVZA2",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "november six niner zero romeo lima": {
+      "Callsign": "N690RL",
+      "AircraftType": "HDJT",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 9564,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "november two six niner golf foxtrot": {
+      "Callsign": "N269GF",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "QERVO3",
+      "Altitude": 10812,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "november two zero seven mike delta": {
+      "Callsign": "N207MD",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 15140,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "phenom three hundred five eight delta": {
+      "Callsign": "N6858D/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Felma": "FELMA",
+        "Halke": "HALKE",
+        "Jablo": "JABLO",
+        "Lemig": "LEMIG",
+        "Mafpy": "MAFPY",
+        "Somer": "SOMER",
+        "Stinson Municipal": "KSSF",
+        "brown": "BRAUN",
+        "ganly": "GANLE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway three two": "R32"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R32": {
+          "Felma": "FELMA",
+          "Halke": "HALKE",
+          "Jablo": "JABLO",
+          "Lemig": "LEMIG",
+          "Mafpy": "MAFPY",
+          "Somer": "SOMER",
+          "brown": "BRAUN",
+          "ganly": "GANLE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 32",
+      "SID": "",
+      "STAR": "CRVZA2",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "phenom three hundred niner golf foxtrot": {
+      "Callsign": "N269GF/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "QERVO3",
+      "Altitude": 10812,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "phenom three hundred seven mike delta": {
+      "Callsign": "N207MD/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Ekivy": "EKIVY",
+        "Marne": "MARNE",
+        "New Braunfels Municipal": "KBAZ",
+        "Wughe": "WUGHE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one three": "R13"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R13": {
+          "Ekivy": "EKIVY",
+          "Marne": "MARNE",
+          "Wughe": "WUGHE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 13",
+      "SID": "",
+      "STAR": "DNKIN2",
+      "Altitude": 15140,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Alaska Four Seventy Eight is going to turn around and approach expect RNAF runway one three right\"",
+    "[local-stt] normalized words: [alaska 4 78 is going to turn around and approach expect rnaf runway 1 3 right]",
+    "[local-stt] tokens: 14",
+    "[local-stt]   token[0]: Text=\"alaska\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"478\" Type=1 Value=478",
+    "[local-stt]   token[2]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"going\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"around\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"rnaf\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"13\" Type=1 Value=13",
+    "[local-stt]   token[13]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 14 tokens, 22 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 14 tokens, 22 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Alaska four 78\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Alaska four 78\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 4 results",
+    "[local-stt]     result 0: \"Southwest one 39\" (airline=0.426, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest two 39\" (airline=0.426, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Southwest six 59\" (airline=0.426, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Alaska four 78\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Alaska four 78\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Alaska four 78\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Alaska four 78\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"ASA478\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Alaska four 78\")",
+    "[local-stt] callsign match: Callsign=\"ASA478\" SpokenKey=\"Alaska four 78\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=12584 Fixes=3 Approaches=2 AssignedApproach=\"\" LAHSORunways=[4 22]",
+    "[local-stt]   fix: \"Poppo\" -\u003e \"POPPO\"",
+    "[local-stt]   fix: \"Vich\" -\u003e \"VIICH\"",
+    "[local-stt]   fix: \"San Antonio\" -\u003e \"KSAT\"",
+    "[local-stt]   approach: \"r-nav RNP runway one three right\" -\u003e \"R3R\"",
+    "[local-stt]   approach: \"I L S runway one three right\" -\u003e \"I3R\"",
+    "[local-stt] command tokens after disregard: 12",
+    "[local-stt]   token[0]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"going\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"around\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"rnaf\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"13\" Type=1 Value=13",
+    "[local-stt]   token[11]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 12 tokens",
+    "[local-stt]   skipping filler word: \"is\"",
+    "[local-stt]   no match at token[1]=\"going\", skipping",
+    "[local-stt]   skipping filler word: \"to\"",
+    "[local-stt]   no match at token[3]=\"turn\", skipping",
+    "[local-stt]   no match at token[4]=\"around\", skipping",
+    "[local-stt]   skipping filler word: \"and\"",
+    "[local-stt]   no match at token[6]=\"approach\", skipping",
+    "[local-stt]   matched command: \"ER3R\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt]   adding 13 fixes from approach R3R to aircraft context",
+    "[local-stt] ParseCommands: result=[ER3R] (avgConf=1.00)",
+    "[local-stt] parsed commands: [ER3R] (conf=1.00)",
+    "[local-stt] validated commands: [ER3R] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ASA478 ER3R\" (conf=1.00, time=17.1437ms) ==="
+  ]
+}

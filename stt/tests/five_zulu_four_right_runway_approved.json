@@ -1,0 +1,298 @@
+{
+  "time": "2026-04-20T07:38:51.969977237Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:888:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "five Zulu four right runway approved",
+  "whisper_duration_ms": 1566.317,
+  "audio_duration_ms": 5704,
+  "processor": "GPU: Apple M2, 8 CPU / 8 GPU cores, 8GB",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "Alaska one 93": {
+      "Callsign": "ASA193",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Molokai": "MKK"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "MKK5",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "All Nippon three super": {
+      "Callsign": "ANA3",
+      "AircraftType": "A388",
+      "Fixes": {
+        "Pupi": "PUPPI"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "KEOLA3",
+      "STAR": "",
+      "Altitude": 38000,
+      "State": "departure",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Hawaiian six 87 heavy": {
+      "Callsign": "HAL687",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Keola": "KEOLA"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "KEOLA3",
+      "STAR": "",
+      "Altitude": 6631,
+      "State": "departure",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Hawaiian three 53 heavy": {
+      "Callsign": "HAL353",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Apack": "APACK"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "MKK5",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Japan Air two heavy": {
+      "Callsign": "JAL2",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Pupi": "PUPPI"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "KEOLA3",
+      "STAR": "",
+      "Altitude": 24000,
+      "State": "departure",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Sawtooth eight 23": {
+      "Callsign": "STT823",
+      "AircraftType": "PC12",
+      "Fixes": {
+        "Daniel K Inouye": "PHNL"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight left": "I8L",
+        "I L S yankee runway four right": "IY4R",
+        "I L S zulu runway four right": "IZ4R",
+        "r-nav runway eight right": "R8R",
+        "r-nav runway four left": "R4L",
+        "r-nav yankee runway eight left": "Y8L",
+        "r-nav yankee runway four right": "Y4R",
+        "r-nav zulu runway eight left": "Z8L",
+        "r-nav zulu runway four right": "Z4R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I8L": {
+          "Figure": "FGTRE",
+          "Ookah": "OOKAH",
+          "Pako": "PAKOE",
+          "Selic": "SELIC"
+        },
+        "IY4R": {
+          "Alana": "ALANA",
+          "Debry": "DEBRY",
+          "Hogro": "HOGRO",
+          "Hubap": "HUBAP",
+          "Yepgu": "YEPGU",
+          "pearly": "PERLY"
+        },
+        "IZ4R": {
+          "Alana": "ALANA",
+          "Debry": "DEBRY",
+          "Harry": "HAURY",
+          "Yepgu": "YEPGU",
+          "pearly": "PERLY"
+        },
+        "R4L": {
+          "Alana": "ALANA",
+          "Book": "BOOKE",
+          "Fexan": "FEXAN",
+          "Gecko": "GECKO",
+          "Gidmy": "GIDME",
+          "Makai": "MAKAI"
+        },
+        "R8R": {
+          "Alana": "ALANA",
+          "Book": "BOOKE",
+          "Colis": "COLIS",
+          "Eveve": "EVEVE",
+          "Gecko": "GECKO",
+          "Hadig": "HADIG",
+          "Huxor": "HUXOR",
+          "Kitke": "KITKE",
+          "Penre": "PENRE"
+        },
+        "Y4R": {
+          "Gecko": "GECKO",
+          "Harry": "HAURY",
+          "Hubap": "HUBAP",
+          "Jogob": "JOGOB",
+          "Julie": "JULLE",
+          "Keola": "KEOLA",
+          "Luyev": "LUYEV",
+          "Richew": "RCHEW",
+          "pearly": "PERLY"
+        },
+        "Y8L": {
+          "Book": "BOOKE",
+          "Capvi": "CAPVI",
+          "Gecko": "GECKO",
+          "Jungle": "JUNGL",
+          "Ookah": "OOKAH",
+          "Pako": "PAKOE",
+          "Selic": "SELIC"
+        },
+        "Z4R": {
+          "Alana": "ALANA",
+          "Cixop": "CIXOP",
+          "Debry": "DEBRY",
+          "Harry": "HAURY",
+          "Hubap": "HUBAP",
+          "Lajy": "ULAJY",
+          "Wikur": "WIKUR",
+          "Yetuc": "YETUC",
+          "Zepas": "ZEPAS",
+          "Zumwe": "XUMWE",
+          "pearly": "PERLY",
+          "worub": "WORUB"
+        },
+        "Z8L": {
+          "Figure": "FGTRE",
+          "Jibni": "JIBNI",
+          "Makoa": "MAKOA",
+          "Ookah": "OOKAH",
+          "Selic": "SELIC",
+          "Zobux": "ZOBUX",
+          "Zusly": "XUSLY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "JULLE5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8L",
+        "26R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "november eight eight seven victor romeo": {
+      "Callsign": "N887VR",
+      "AircraftType": "",
+      "Fixes": {},
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 9500,
+      "State": "",
+      "ControllerFrequency": "1H",
+      "TrackingController": "",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november seven zero seven three golf": {
+      "Callsign": "N7073G",
+      "AircraftType": "",
+      "Fixes": {},
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "",
+      "ControllerFrequency": "1H",
+      "TrackingController": "",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"five Zulu four right runway approved\"",
+    "[local-stt] normalized words: [5 zulu 4 right runway approved]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[1]: Text=\"zulu\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"4\" Type=1 Value=4",
+    "[local-stt]   token[3]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"approved\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 6 tokens, 8 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 8 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": no results",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"Alaska one 93\" (airline=0.472, flight=0.000, skip=1)",
+    "[local-stt]     result 1: \"All Nippon three super\" (airline=0.528, flight=0.000, skip=1)",
+    "[local-stt]     pattern \"airline_only\": selected \"All Nippon three super\" (airline=0.53, flight=0.00, skip=1)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"All Nippon three super\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": no results",
+    "[local-stt] callsign match: Callsign=\"\" SpokenKey=\"\" Conf=0.00 Consumed=0",
+    "[local-stt] no callsign match for \"five Zulu four right runway approved\", ignoring"
+  ]
+}

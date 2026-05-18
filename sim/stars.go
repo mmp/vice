@@ -372,11 +372,23 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 		fa.Center = pos
 	}
 
-	// Locator-dependent controller flight following airspace validation.
-	for _, config := range fa.Controllers {
+	// Locator-dependent controller config validation.
+	for tcp, config := range fa.Controllers {
+		e.Push(fmt.Sprintf("controllers[%s]", tcp))
+
+		if config.CenterString != "" {
+			if pos, ok := loc.Locate(config.CenterString); ok {
+				config.Center = pos
+			} else {
+				e.ErrorString("unknown location %q specified for controller center", config.CenterString)
+			}
+		}
+
 		for i := range config.FlightFollowingAirspace {
 			config.FlightFollowingAirspace[i].PostDeserialize(loc, e)
 		}
+
+		e.Pop()
 	}
 
 	// Locator-dependent area config validation.

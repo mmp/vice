@@ -1,24 +1,24 @@
 {
   "control_positions": {
+    "1T": {
+      "frequency": 118900,
+      "callsign": "Eugene Tower (EUG)",
+      "radio_name": "Eugene Tower"
+    },
     "1E": {
-      "callsign": "EUG_E_APP",
       "frequency": 119600,
+      "callsign": "Radar East (EUG)",
       "radio_name": "Cascade Approach"
     },
     "1M": {
-      "callsign": "MFR_APP",
       "frequency": 124300,
+      "callsign": "Radar Medford (MFR)",
       "radio_name": "Cascade Approach"
     },
-    "1T": {
-      "callsign": "EUG_W_TWR",
-      "frequency": 118900,
-      "radio_name": "Eugene Tower"
-    },
-    "1W": {
-      "callsign": "EUG_W_APP",
-      "frequency": 123450,
-      "radio_name": "Cascade Approach"
+    "1R": {
+      "frequency": 119400,
+      "callsign": "Medford Tower (MFR)",
+      "radio_name": "Medford Tower"
     }
   },
   "handoff_ids": [
@@ -28,10 +28,157 @@
     },
     {
       "id": "ZSE",
-      "prefix": "C"
+      "prefix": "S"
     }
   ],
   "facility_adaptations": {
-    "configurations": {}
+    "video_map_file": "videomaps/ZSE-videomaps.gob.zst",
+    "areas": {
+      "1": {
+        "video_maps": [
+          "EUG ILS RWY 16R",
+          "EUG ILS RWY 16L",
+          "EUG VOR RWY 34L",
+          "EUG RNAV RWY 16R",
+          "EUG RNAV RWY 16L",
+          "EUG RNAV RWY 34R",
+          "EUG RNAV RWY 34L",
+          "EUG RNP RWY 16R",
+          "EUG RNP RWY 16L",
+          "EUG RNP RWY 34L",
+          "EUG RNP RWY 34R",
+          "CVO RNAV RWY 35",
+          "CVO ILS RWY 17",
+          "77S APPROACH",
+          "RNP WEST",
+          "DOWNWIND",
+          "GPS-ALL",
+          "MVA 3NM",
+          "EUG-BASEMAP",
+          "AIRWAYS",
+          "VFR",
+          "BASE MAP"
+        ]
+      }
+    },
+    "center": "KEUG",
+    "lists": {
+      "coordination": [
+        {
+          "name": "Medford Tower",
+          "id": "1R",
+          "airports": ["KMFR"]
+        }
+      ]
+    },
+    "airspace_awareness": [
+      {
+        "fixes": ["ONP", "CVO", "UBG", "CITYY", "SNOKY", "DSD", "BALDY", "SHEDD"],
+        "receiving_controller": "S06"
+      },
+      {
+        "fixes": ["FMG", "LMT", "RBL"],
+        "altitude_range": [12000, 60000],
+        "receiving_controller": "S30"
+      },
+      {
+        "fixes": ["RBG", "OTH", "CHEEZ", "LMT", "YERIN", "CUTTR", "LOKEY", "EUG", "MOXEE"],
+        "receiving_controller": "S36"
+      }
+    ],
+    "radar_sites": {
+      "EUG": {
+        "char": "E",
+        "position": "KEUG",
+        "elevation": 300,
+        "primary_range": 80,
+        "secondary_range": 120,
+        "silence_angle": 50.4,
+        "slope_angle": 0.3
+      },
+      "MFR": {
+        "char": "M",
+        "position": "KMFR",
+        "elevation": 1355,
+        "primary_range": 80,
+        "secondary_range": 120,
+        "silence_angle": 50.4,
+        "slope_angle": 0.3
+      }
+    },
+    "scratchpads": {
+      "ONP.6": "ONP",
+      "CVO.4": "CVO",
+      "UBG.4": "UBG",
+      "UBG.6": "UBG",
+      "UBG.8": "UBG",
+      "CITYY": "CIT",
+      "SNOKY": "SNO",
+      "DSD.J": "DSD",
+      "DSD.T": "DSD",
+      "BALDY": "BAL",
+      "SHEDD": "SHE",
+      "RBG": "RBG",
+      "OTH.7": "OTH",
+      "CHEEZ": "CHE",
+      "LMT.J": "LMT",
+      "LMT.T": "LMT",
+      "YERIN": "YER"
+    },
+    "max_distance": 225,
+    "controllers": {
+      "1M": {
+        "center": "OED",
+        "range": 50
+      }
+    },
+    "configurations": {
+      "RM": {
+        "inbound_assignments": {
+          "N": "1M",
+          "E": "1M",
+          "S": "1M",
+          "LOW": "1M"
+        },
+        "departure_assignments": {
+          "KMFR": "1M",
+          "3S8": "1M"
+        },
+        "default_consolidation": {
+          "1M": []
+        }
+      },
+      "RE": {
+        "inbound_assignments": {
+          "JAIME": "1E",
+          "RBG": "1E",
+          "LKV": "1E",
+          "DSD.T": "1E",
+          "DSD.J": "1E",
+          "MOURN.N": "1E",
+          "MOURN.S": "1E",
+          "CEC": "1E",
+          "OTH": "1E",
+          "UBG": "1E",
+          "FEPOT": "1E",
+          "LMT.S": "1E",
+          "LMT.N": "1E",
+          "BTG.J": "1E",
+          "BTG.T": "1E",
+          "BTG.P": "1E",
+          "DRAIN.S": "1E",
+          "DRAIN.N": "1E",
+          "BOI": "1E"
+        },
+        "departure_assignments": {
+          "KEUG": "1E",
+          "KSLE": "1E",
+          "KCVO": "1E"
+        },
+        "default_consolidation": {
+          "1E": []
+        }
+      }
+    }
   }
 }

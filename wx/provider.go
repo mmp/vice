@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/util"
 
+	"github.com/hashicorp/golang-lru/v2/expirable"
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
 )
@@ -24,9 +25,10 @@ import (
 // Provider is the public WX entry point for accessing historical weather data, handling
 // fallbacks based on the local capabilities (network availability, GCS credentials, etc.)
 type Provider struct {
-	lg        *log.Logger
-	backend   weatherBackend
-	resources *resourcesBackend
+	lg             *log.Logger
+	backend        weatherBackend
+	resources      *resourcesBackend
+	atmosGridCache *expirable.LRU[atmosGridCacheKey, atmosGridResult]
 }
 
 // weatherBackend is the package-local abstraction for some of the mechanics of
@@ -43,7 +45,17 @@ type atmosGridResult struct {
 	err      error
 }
 
-const backendFallbackTimeout = 2 * time.Second
+type atmosGridCacheKey struct {
+	facility       string
+	primaryAirport string
+	time           time.Time
+}
+
+const (
+	backendFallbackTimeout = 2 * time.Second
+	atmosGridCacheSize     = 24
+	atmosGridCacheTTL      = time.Hour
+)
 
 func newProvider(lg *log.Logger, backend weatherBackend) *Provider {
 	resources := newResourcesBackend(lg)
@@ -52,9 +64,10 @@ func newProvider(lg *log.Logger, backend weatherBackend) *Provider {
 	}
 
 	return &Provider{
-		lg:        lg,
-		backend:   backend,
-		resources: resources,
+		lg:             lg,
+		backend:        backend,
+		resources:      resources,
+		atmosGridCache: expirable.NewLRU[atmosGridCacheKey, atmosGridResult](atmosGridCacheSize, nil, atmosGridCacheTTL),
 	}
 }
 
@@ -104,14 +117,60 @@ func (p *Provider) GetPrecipURL(facility string, t time.Time) (string, time.Time
 // If primaryAirport is non-empty and no atmos data is available, creates a
 // fallback grid from the primary airport's METAR wind data.
 func (p *Provider) GetAtmosGrid(facility string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error) {
-	ar := p.getAtmosGridFromBackend(facility, t, primaryAirport)
-	atmos, atmosTime, nextTime, err := ar.atmos, ar.time, ar.nextTime, ar.err
-	if err == nil || p.backend == p.resources {
-		return atmos, atmosTime, nextTime, err
+	if ar, ok := p.lookupAtmosGridCache(facility, t, primaryAirport); ok {
+		return ar.atmos, ar.time, ar.nextTime, nil
 	}
 
-	p.lg.Warnf("Falling back to local atmos resources: %v", err)
-	return p.resources.getAtmosGrid(facility, t, primaryAirport)
+	ar := p.getAtmosGridFromBackend(facility, t, primaryAirport)
+	if ar.err != nil && p.backend != p.resources {
+		p.lg.Warnf("Falling back to local atmos resources: %v", ar.err)
+		ar.atmos, ar.time, ar.nextTime, ar.err = p.resources.getAtmosGrid(facility, t, primaryAirport)
+	}
+
+	if ar.err == nil {
+		p.cacheAtmosGrid(facility, primaryAirport, ar)
+	}
+	return ar.atmos, ar.time, ar.nextTime, ar.err
+}
+
+func (p *Provider) lookupAtmosGridCache(facility string, t time.Time, primaryAirport string) (atmosGridResult, bool) {
+	if p.atmosGridCache == nil {
+		return atmosGridResult{}, false
+	}
+
+	t = t.UTC()
+	for _, key := range p.atmosGridCache.Keys() {
+		if key.facility != facility || key.primaryAirport != primaryAirport {
+			continue
+		}
+
+		ar, ok := p.atmosGridCache.Get(key)
+		if !ok || ar.atmos == nil || ar.err != nil || ar.time.After(t) {
+			continue
+		}
+		if ar.nextTime.IsZero() {
+			if ar.time.Equal(t) {
+				return ar, true
+			}
+		} else if t.Before(ar.nextTime) {
+			return ar, true
+		}
+	}
+	return atmosGridResult{}, false
+}
+
+func (p *Provider) cacheAtmosGrid(facility, primaryAirport string, ar atmosGridResult) {
+	if p.atmosGridCache == nil || ar.atmos == nil || ar.time.IsZero() {
+		return
+	}
+	key := atmosGridCacheKey{
+		facility:       facility,
+		primaryAirport: primaryAirport,
+		time:           ar.time.UTC(),
+	}
+	ar.time = ar.time.UTC()
+	ar.nextTime = ar.nextTime.UTC()
+	p.atmosGridCache.Add(key, ar)
 }
 
 func (p *Provider) getAtmosGridFromBackend(facility string, t time.Time, primaryAirport string) atmosGridResult {
@@ -429,7 +488,7 @@ func createFallbackAtmos(primaryAirport string, t time.Time) (*AtmosByPointSOA, 
 		return nil, fmt.Errorf("no METAR data for %s", primaryAirport)
 	}
 
-	metars := metarSOA.Decode()
+	metars := metarSOA.Decode(primaryAirport)
 	if len(metars) == 0 {
 		return nil, fmt.Errorf("no METAR data for %s", primaryAirport)
 	}

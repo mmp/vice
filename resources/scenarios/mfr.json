@@ -1,0 +1,657 @@
+{
+  "tracon": "EUG",
+  "magnetic_adjustment": -2,
+  "fixes": {
+    "FJSHO": "N041.48.48.680,W122.58.54.768",
+    "PDXSPWN": "N043.43.40.912,W122.47.10.023",
+    "PDXHO": "N043.12.34.074,W122.50.19.152",
+    "GRTFLOEDSPWN": "N040.46.24.649,W122.37.48.978",
+    "GRTFLSAMSPWN": "N040.47.19.883,W122.40.42.370",
+    "GRTFLOEDHO": "N041.26.15.398,W122.44.24.349",
+    "GRTFLSAMHO": "N041.16.25.226,W122.45.59.738",
+    "JKSNJINT": "N042.21.49.226,W122.55.43.936",
+    "JKSNP322": "N042.21.56.189,W122.54.00.609",
+    "JKSNPINT": "N042.24.14.150,W122.55.24.490",
+    "NTELLHO": "N041.19.24.701,W122.17.03.074",
+    "NTELLSPWN": "N040.49.56.040,W122.01.12.317",
+    "LOKEYSPWN": "N041.56.22.594,W121.35.36.566",
+    "LOKEYHO": "N042.03.28.891,W121.50.08.221",
+    "FEPOTHO": "N043.28.33.414,W123.03.10.612",
+    "V23HO": "N043.11.33.086,W123.02.42.954",
+    "FEPOTSPWN": "N043.46.00.726,W123.03.56.810"
+  },
+  "airports": {
+    "KMFR": {
+      "hold_for_release": true,
+      "approaches": {
+        "V14": { "cifp_id": "D14" },
+        "Z14": { "cifp_id": "RZ14" },
+        "Z32": { "cifp_id": "RZ32" },
+        "I14": { "cifp_id": "I14" },
+        "L14": { "cifp_id": "L14" },
+        "Y14": { "cifp_id": "RY14" },
+        "Y32": { "cifp_id": "RY32" }
+      },
+      "departure_routes": {
+        "14": {
+          "EUG.JKSNP": {
+            "cleared_altitude": 10000,
+            "sid": "JKSN1",
+            "waypoints": "KMFR-32 JKSNP322 JKSNPINT OED"
+          },
+          "OTH.JKSNP": {
+            "cleared_altitude": 8000,
+            "sid": "JKSN1",
+            "waypoints": "KMFR-32 JKSNP322 JKSNPINT OED"
+          },
+          "LMT.JKSNP": {
+            "cleared_altitude": 9000,
+            "sid": "JKSN1",
+            "waypoints": "KMFR-32 JKSNP322 JKSNPINT OED"
+          },
+          "RBL.JKSN,LMT.JKSN,CUTTR.JKSN,MOXEE.JKSN,EUG.JKSN,OTH.JKSN,FMG.JKSN,LOKEY.JKSN": {
+            "cleared_altitude": 11000,
+            "sid": "JKSN1",
+            "waypoints": "KMFR-32 JKSNJINT OED"
+          },
+          "LMT.MFR": {
+            "cleared_altitude": 11000,
+            "sid": "MFR1",
+            "waypoints": "BDONA/flyover JOWEL KRETS LMT"
+          }
+        },
+        "32": {
+          "RBL.JKSN,LMT.JKSN,CUTTR.JKSN,MOXEE.JKSN,EUG.JKSN,OTH.JKSN,FMG.JKSN,LOKEY.JKSN,MLBEC.JKSN": {
+            "cleared_altitude": 11000,
+            "sid": "JKSN1",
+            "waypoints": "N042.25.16.429,W122.53.48.964 OED"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KSFO",
+          "exit": "MLBEC.JKSN",
+          "altitude": 31000,
+          "route": "OED MLBEC BDEGA4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KSNA",
+          "exit": "RBL.JKSN",
+          "altitude": 35000,
+          "route": "OED LANKS RBL J126 SAC RDHOT OHSEA3"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "AAY"
+            }
+          ],
+          "destination": "KLAS",
+          "altitude": 39000,
+          "exit": "FMG.JKSN",
+          "route": "OED LANKS FMG J92 OAL TQILA COKTL4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "QXE"
+            }
+          ],
+          "destination": "KSEA",
+          "exit": "CUTTR.JKSN",
+          "altitude": 30000,
+          "route": "OED V595 CUTTR BTG HAWKZ8"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "QXE"
+            }
+          ],
+          "destination": "KPDX",
+          "exit": "CUTTR.JKSN",
+          "altitude": 24000,
+          "route": "OED V595 CUTTR MOXEE TMBRS3"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "SKW"
+            },
+            {
+              "fleet": "short",
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "LOKEY.JKSN",
+          "altitude": 35000,
+          "route": "OED LOKEY BVL TCH KAMPR LONGZ4"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "QXE"
+            }
+          ],
+          "destination": "KLAX",
+          "exit": "RBL.JKSN",
+          "altitude": 33000,
+          "route": "OED V595 CUTTR RBL J126 SAC BURGL IRNMN2"
+        },
+        {
+          "airlines": [
+            {
+              "types": ["C208", "AT72"],
+              "icao": "CFS"
+            }
+          ],
+          "destination": "KPDX",
+          "exit": "EUG.JKSNP",
+          "altitude": 10000,
+          "route": "OED V23 EUG V481 CVO V495 UBG"
+        },
+        {
+          "airlines": [
+            {
+              "types": ["C208"],
+              "icao": "CFS"
+            }
+          ],
+          "destination": "KOTH",
+          "exit": "OTH.JKSNP",
+          "altitude": 8000,
+          "route": "OED V287 OTH"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "default",
+              "icao": "AMF"
+            }
+          ],
+          "destination": "KPDX",
+          "exit": "MOXEE.JKSN",
+          "altitude": 20000,
+          "route": "OED MOXEE OCITY3"
+        },
+        {
+          "airlines": [
+            {
+              "types": ["B190"],
+              "icao": "AMF"
+            },
+            {
+              "types": ["C208"],
+              "icao": "CFS"
+            }
+          ],
+          "destination": "KLMT",
+          "exit": "LMT.JKSNP",
+          "altitude": 9000,
+          "route": "OED V122 LMT"
+        },
+        {
+          "airlines": [
+            {
+              "types": ["E75L"],
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KSLC",
+          "exit": "LMT.MFR",
+          "altitude": 37000,
+          "route": "LMT SUNBE BVL YUTES2"
+        },
+        {
+          "airlines": [
+            {
+              "types": ["CRJ7"],
+              "icao": "SKW"
+            },
+            {
+              "types": ["E170"],
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KPHX",
+          "exit": "LMT.MFR",
+          "altitude": 33000,
+          "route": "LMT OAL CENIT JEDNA LAS BLD WOTRO BRUSR1"
+        }
+      ],
+      "exit_categories": {
+        "RBL": "ALL"
+      },
+      "tower_list": 1
+    },
+    "3S8": {
+      "hold_for_release": true,
+      "vfr": {
+        "random_routes": { "fleet": "GAsinglepiston", "rate": 1 }
+      },
+      "approaches": {
+        "R13": { "cifp_id": "R13" }
+      },
+      "departure_routes": {
+        "13": {
+          "OED": {
+            "cleared_altitude": 7000,
+            "waypoints": "OED"
+          }
+        },
+        "31": {
+          "RBG": {
+            "cleared_altitude": 8000,
+            "waypoints": "RBG"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N"
+            }
+          ],
+          "destination": "KVUO",
+          "exit": "RBG",
+          "route": "RBG V495 UBG",
+          "altitude": 8000
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "GAturbine",
+              "icao": "N"
+            }
+          ],
+          "destination": "KUAO",
+          "exit": "RBG",
+          "route": "RBG UBG",
+          "altitude": 16000
+        }
+      ],
+      "tower_list": 2
+    }
+  },
+  "airspace": {
+    "boundaries": {
+      "MFR": [
+        "+424400.000-1232300.000",
+        "+425600.000-1230500.000",
+        "+424200.000-1222500.000",
+        "+420000.000-1222500.000",
+        "+420000.000-1231400.000",
+        "+421900.000-1232900.000",
+        "+424400.000-1232300.000"
+      ],
+      "EUG": [
+        "+444500.000-1233000.000",
+        "+444545.000-1231210.000",
+        "+443355.000-1225940.000",
+        "+443300.000-1225300.000",
+        "+440900.000-1223000.000",
+        "+435800.000-1223400.000",
+        "+435200.000-1223700.000",
+        "+434000.000-1225200.000",
+        "+433600.000-1230800.000",
+        "+433600.000-1231900.000",
+        "+433700.000-1232600.000",
+        "+434100.000-1233900.000",
+        "+435600.000-1235800.000",
+        "+444500.000-1233000.000"
+      ]
+    },
+    "volumes": {
+      "Radar Medford": [
+        {
+          "boundaries": ["EUG"],
+          "lower": 0,
+          "label": "Radar East (1E) SFC-090",
+          "upper": 9000
+        },
+        {
+          "boundaries": ["MFR"],
+          "lower": 0,
+          "label": "Radar Medford (1M) SFC-110",
+          "upper": 11000
+        }
+      ]
+    }
+  },
+  "inbound_flows": {
+    "LOW": {
+      "overflights": [
+        {
+          "waypoints": "FJS FJSHO/ho BAYTS V495 UBG",
+          "cruise_altitude": 10000,
+          "initial_controller": "S30",
+          "initial_altitude": 10000,
+          "assigned_altitude": 10000,
+          "initial_speed": 140,
+          "scratchpad": "HIO",
+          "airlines": [
+            {
+              "fleet": "GAsinglepiston",
+              "icao": "N",
+              "departure_airport": "KCCR",
+              "arrival_airport": "KHIO"
+            }
+          ]
+        }
+      ]
+    },
+    "N": {
+      "arrivals": [
+        {
+          "waypoints": "EUG V23 CURTI V23HO/ho MOURN/a12000-14000 OED KMFR",
+          "cruise_altitude": 25000,
+          "route": "/. OED",
+          "initial_controller": "S36",
+          "initial_altitude": 25000,
+          "assigned_altitude": 12000,
+          "initial_speed": 290,
+          "scratchpad": "MFR",
+          "expect_approach": null,
+          "airlines": {
+            "KMFR": [
+              {
+                "icao": "QXE",
+                "airport": "KPDX"
+              },
+              {
+                "icao": "AMF",
+                "airport": "KPDX"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "PDXSPWN PDXHO/ho OED KMFR",
+          "cruise_altitude": 25000,
+          "route": "/. OED",
+          "initial_controller": "S36",
+          "initial_altitude": 17000,
+          "assigned_altitude": 12000,
+          "initial_speed": 250,
+          "scratchpad": "MFR",
+          "expect_approach": null,
+          "airlines": {
+            "KMFR": [
+              {
+                "icao": "CFS",
+                "types": ["AT72"],
+                "airport": "KPDX"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "EUG V23 CURTI V23HO/ho OED KMFR",
+          "cruise_altitude": 9000,
+          "route": "/. OED",
+          "initial_controller": "S36",
+          "initial_altitude": 9000,
+          "assigned_altitude": 9000,
+          "scratchpad": "MFR",
+          "initial_speed": 150,
+          "expect_approach": null,
+          "airlines": {
+            "KMFR": [
+              {
+                "icao": "CFS",
+                "types": ["C208"],
+                "airport": "KPDX"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "FEPOTSPWN FEPOTHO/ho SAMIE KMFR",
+          "cruise_altitude": 33000,
+          "route": "/. SAMIE",
+          "initial_controller": "S36",
+          "initial_altitude": 27000,
+          "assigned_altitude": 12000,
+          "initial_speed": 290,
+          "scratchpad": "SAM",
+          "expect_approach": null,
+          "airlines": {
+            "KMFR": [
+              {
+                "icao": "QXE",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KSEA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "S": {
+      "arrivals": [
+        {
+          "waypoints": "GRTFLOEDSPWN GRTFLOEDHO/ho OED KMFR",
+          "cruise_altitude": 32000,
+          "route": "/. OED",
+          "initial_controller": "S30",
+          "initial_altitude": 30000,
+          "assigned_altitude": 12000,
+          "scratchpad": "MFR",
+          "initial_speed": 290,
+          "expect_approach": null,
+          "airlines": {
+            "KMFR": [
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KSFO"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "NTELLSPWN NTELLHO/ho OED KMFR",
+          "cruise_altitude": 36000,
+          "route": "/. OED",
+          "initial_controller": "S30",
+          "initial_altitude": 32000,
+          "assigned_altitude": 12000,
+          "initial_speed": 290,
+          "scratchpad": "MFR",
+          "expect_approach": null,
+          "airlines": {
+            "KMFR": [
+              {
+                "icao": "QXE",
+                "airport": "KSAN"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "NTELLSPWN NTELLHO/ho SAMIE KMFR",
+          "cruise_altitude": 33000,
+          "route": "/. SAMIE",
+          "initial_controller": "S36",
+          "initial_altitude": 27000,
+          "assigned_altitude": 12000,
+          "initial_speed": 290,
+          "scratchpad": "SAM",
+          "expect_approach": null,
+          "airlines": {
+            "KMFR": [
+              {
+                "icao": "SKW",
+                "airport": "KLAX"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "GRTFLSAMSPWN GRTFLSAMHO/ho SAMIE KMFR",
+          "cruise_altitude": 32000,
+          "route": "/. OED",
+          "initial_controller": "S30",
+          "initial_altitude": 30000,
+          "assigned_altitude": 12000,
+          "scratchpad": "SAM",
+          "initial_speed": 290,
+          "expect_approach": null,
+          "airlines": {
+            "KMFR": [
+              {
+                "icao": "SKW",
+                "airport": "KSFO"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "E": {
+      "arrivals": [
+        {
+          "waypoints": "LOKEYSPWN LOKEYHO/ho SAMIE KMFR",
+          "cruise_altitude": 34000,
+          "route": "/. SAMIE",
+          "initial_controller": "S36",
+          "initial_altitude": 28000,
+          "assigned_altitude": 12000,
+          "initial_speed": 290,
+          "expect_approach": null,
+          "scratchpad": "SAM",
+          "airlines": {
+            "KMFR": [
+              {
+                "icao": "SKW",
+                "airport": "KSLC"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KPHX"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "14",
+  "name": "Medford",
+  "primary_airport": "KMFR",
+  "scenarios": {
+    "14": {
+      "configuration": "RM",
+      "arrival_runways": [
+        {
+          "airport": "KMFR",
+          "runway": "14"
+        }
+      ],
+      "airspace": {
+        "1M": ["Radar Medford"]
+      },
+      "inbound_rates": {
+        "N": {
+          "KMFR": 7
+        },
+        "E": {
+          "KMFR": 3
+        },
+        "LOW": {
+          "overflights": 1
+        },
+        "S": {
+          "KMFR": 5
+        }
+      },
+      "default_maps": ["MVA 3NM", "MFR-BASEMAP"],
+      "departure_runways": [
+        {
+          "airport": "3S8",
+          "rate": 1,
+          "runway": "13"
+        },
+        {
+          "airport": "KMFR",
+          "rate": 13,
+          "runway": "14"
+        }
+      ],
+      "wind": {
+        "direction": "100-220"
+      }
+    },
+    "32": {
+      "arrival_runways": [
+        {
+          "airport": "KMFR",
+          "runway": "32"
+        }
+      ],
+      "airspace": {
+        "1M": ["Radar Medford"]
+      },
+      "inbound_rates": {
+        "N": {
+          "KMFR": 7
+        },
+        "E": {
+          "KMFR": 3
+        },
+        "LOW": {
+          "overflights": 1
+        },
+        "S": {
+          "KMFR": 5
+        }
+      },
+      "configuration": "RM",
+      "default_maps": ["MVA 3NM", "MFR-BASEMAP"],
+      "departure_runways": [
+        {
+          "airport": "3S8",
+          "rate": 1,
+          "runway": "31"
+        },
+        {
+          "airport": "KMFR",
+          "rate": 13,
+          "runway": "32"
+        }
+      ],
+      "wind": {
+        "direction": "250-050"
+      }
+    }
+  }
+}

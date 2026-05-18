@@ -45,6 +45,41 @@
   </branding>
 
   <releases>
+    <release version="0.14.3" date="2026-05-08">
+      <url type="details">https://pharr.org/vice/#release-0.14.3</url>
+      <description>
+        <ul>
+          <li>New scenarios: EUG, MFR (Mike Fries)</li>
+          <li>Scenario updates: ZNY, Y90 (Ryan G), SCT (Ketan K), ZJX, F11, N90 (manaphy), MIA (Gecko)</li>
+          <li>Updated radio static/muffling model (radarcontacto)</li>
+          <li>Added support for visual approaches (Jordan Williams)</li>
+          <li>Fixed bugs with localizer intercept and approach clearance</li>
+          <li>Fixed bug where aircraft would sometimes spontaneously leave holds (Jud Lopez)</li>
+          <li>Handle &quot;at or above/at or below&quot; speed restrictions more reasonably (don't treat them all as &quot;at&quot;)</li>
+          <li>Added support for &quot;join the approach&quot; for non-ILS/LOC approaches</li>
+          <li>Fixed a few bugs with &quot;at {fix}, cleared straight in {approach}&quot;</li>
+          <li>Added &quot;after {fix}, climb/descend and maintain {altitude}&quot;</li>
+          <li>Added &quot;after {fix}, reduce/maintain/increase {speed}&quot;</li>
+          <li>Added &quot;speed {speed1} until {fix1}, then {speed2} until {fix2}, then {speed3}&quot;, etc.</li>
+          <li>Added &quot;cross {fix} {miles} miles {direction} of {fix}&quot;</li>
+          <li>Added &quot;good rate&quot; for climbs/descents: &quot;descend and maintain 3,000, good rate through 5,000&quot;, etc.</li>
+          <li>Added optional altitudes to expedite to: &quot;expedite through 5,000&quot;, etc.</li>
+          <li>Added &quot;cross {miles} DME at {altitude/speed}&quot; instruction for visual approaches</li>
+          <li>Aircraft now ask for an altitude if vectored off an arrival without being assigned one (Michael Knight)</li>
+          <li>Added UI option to force (realistic) square windows for STARS/ERAM radar displays</li>
+          <li>Fixed bug where aircraft would be at bogus altitudes/speeds after prespawn</li>
+          <li>ERAM: Added ALTIM SET and WX REPORT floating windows, including AR/WR keyboard commands (Michael Knight)</li>
+          <li>ERAM: Fixed bug where far-away fixes weren't known for control instructions</li>
+          <li>STARS: Added support for &quot;Create interfacility VFR flight plan from active local track&quot;</li>
+          <li>STARS: GI and ATIS text in the SSA list is managed by the server (so updates are shared among controllers)</li>
+          <li>STARS: Allow scrolling the DCB if it's too big to fit the screen (Jud Lopez)</li>
+          <li>Facility engineering: Support &quot;at or above/at or below&quot; speed restrictions</li>
+          <li>Facility engineering: Added &quot;flight_type&quot; for overflights so aircraft flight types can be specified as &quot;departure&quot; or &quot;arrival&quot; (rather than always being &quot;overflight&quot;)</li>
+          <li>Facility engineering: Added support for actions at waypoints until reaching an altitude or DME from a fix, e.g. &quot;FIX/h090@a30/h120&quot; departs fix at an 090 heading until reaching 3,000', then flies 120.</li>
+          <li>Facility engineering: Candidate visual approach courses can be specified in scenarios as &quot;type&quot;: &quot;Visual&quot; (we now use &quot;ChartedVisual&quot; for charted visual approaches)</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.14.2" date="2026-03-29">
       <url type="details">https://pharr.org/vice/#release-0.14.2</url>
       <description>

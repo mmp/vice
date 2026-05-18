@@ -1,0 +1,341 @@
+{
+  "time": "2026-04-20T14:21:17.161171625Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:888:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "ExecJet 87 30 turn left heading one six zero for traffic",
+  "whisper_duration_ms": 394.611,
+  "audio_duration_ms": 4680,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 Ti SUPER (16061MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "EJA8730",
+  "command": "L160",
+  "stt_aircraft": {
+    "B E thirty-six five four foxtrot": {
+      "Callsign": "N5654F/T",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 7000,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "Delta 71": {
+      "Callsign": "DAL71",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Bradley": "KBDL",
+        "Kibbe": "KIBBE",
+        "Madison": "MAD",
+        "Motel": "MOTEL",
+        "Surley": "SURLE",
+        "bris": "BRISS"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three": "I33",
+        "I L S runway two four": "I24"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I24": {
+          "Kibbe": "KIBBE",
+          "Motel": "MOTEL",
+          "Surley": "SURLE"
+        },
+        "I33": {
+          "Hadux": "HADUX",
+          "homey": "HOMEY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "DPK3",
+      "Altitude": 13215,
+      "State": "arrival",
+      "ControllerFrequency": "1H",
+      "TrackingController": "1H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "6",
+        "24"
+      ]
+    },
+    "ExecJet 87 30": {
+      "Callsign": "EJA8730",
+      "AircraftType": "F2TH",
+      "Fixes": {
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BDL6",
+      "STAR": "",
+      "Altitude": 5292,
+      "State": "departure",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest two 82": {
+      "Callsign": "SWA282",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Bradley": "KBDL",
+        "Kibbe": "KIBBE",
+        "Motel": "MOTEL",
+        "Surley": "SURLE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three": "I33",
+        "I L S runway two four": "I24"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I24": {
+          "Kibbe": "KIBBE",
+          "Motel": "MOTEL",
+          "Surley": "SURLE"
+        },
+        "I33": {
+          "Hadux": "HADUX",
+          "homey": "HOMEY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "DPK3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1H",
+      "TrackingController": "1H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "15",
+        "33",
+        "6",
+        "24"
+      ]
+    },
+    "bonanza five four foxtrot": {
+      "Callsign": "N5654F/T",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 7000,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation four seven zulu": {
+      "Callsign": "N1647Z/T",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11472,
+      "State": "departure",
+      "ControllerFrequency": "1E",
+      "TrackingController": "C36",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation one lima brahvo": {
+      "Callsign": "N421LB/T",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Hartford Brainard": "KHFD",
+        "Thumb": "THUMB"
+      },
+      "CandidateApproaches": {
+        "CT River Visual runway two zero": "RV20"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "RV20": {
+          "Crv": "CRV"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "november five six five four foxtrot": {
+      "Callsign": "N5654F",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 7000,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november four two one lima brahvo": {
+      "Callsign": "N421LB",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Hartford Brainard": "KHFD",
+        "Thumb": "THUMB"
+      },
+      "CandidateApproaches": {
+        "CT River Visual runway two zero": "RV20"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "RV20": {
+          "Crv": "CRV"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "november one six four seven zulu": {
+      "Callsign": "N1647Z",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Belt": "BELTT",
+        "Islip": "KISP",
+        "MacArthur": "KISP",
+        "Madison": "MAD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11472,
+      "State": "departure",
+      "ControllerFrequency": "1E",
+      "TrackingController": "C36",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"ExecJet 87 30 turn left heading one six zero for traffic\"",
+    "[local-stt] normalized words: [execjet 87 30 turn left heading 1 6 0 for traffic]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"execjet\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"87\" Type=1 Value=87",
+    "[local-stt]   token[2]: Text=\"30\" Type=1 Value=30",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"160\" Type=1 Value=160",
+    "[local-stt]   token[7]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"traffic\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 9 tokens, 10 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 9 tokens, 10 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"ExecJet 87 30\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"ExecJet 87 30\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"ExecJet 87 30\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"ExecJet 87 30\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"Delta 71\" (airline=0.448, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"ExecJet 87 30\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"ExecJet 87 30\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"ExecJet 87 30\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"ExecJet 87 30\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"EJA8730\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"ExecJet 87 30\")",
+    "[local-stt] callsign match: Callsign=\"EJA8730\" SpokenKey=\"ExecJet 87 30\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=5292 Fixes=1 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Madison\" -\u003e \"MAD\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"160\" Type=1 Value=160",
+    "[local-stt]   token[4]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"traffic\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   matched command: \"L160\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[4]=\"for\", skipping",
+    "[local-stt]   no match at token[5]=\"traffic\", skipping",
+    "[local-stt] ParseCommands: result=[L160] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L160] (conf=1.00)",
+    "[local-stt] validated commands: [L160] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"EJA8730 L160\" (conf=1.00, time=3.6521ms) ==="
+  ]
+}

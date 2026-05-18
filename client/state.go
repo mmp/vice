@@ -124,7 +124,10 @@ func (ss *SimState) GetInitialRange() float32 {
 	if config, ok := fa.Controllers[tcp]; ok && config.Range != 0 {
 		return config.Range
 	}
-	// Then area-level config.
+	// Then scenario, then area, then facility.
+	if ss.ScenarioRange != 0 {
+		return ss.ScenarioRange
+	}
 	if ctrl, ok := ss.Controllers[tcp]; ok && ctrl.Area != "" {
 		if ac, ok := fa.Areas[ctrl.Area]; ok && ac.Range != 0 {
 			return ac.Range
@@ -141,7 +144,10 @@ func (ss *SimState) GetInitialCenter() math.Point2LL {
 	if config, ok := fa.Controllers[tcp]; ok && !config.Center.IsZero() {
 		return config.Center
 	}
-	// Then area-level config.
+	// Then scenario, then area, then facility.
+	if !ss.ScenarioCenter.IsZero() {
+		return ss.ScenarioCenter
+	}
 	if ctrl, ok := ss.Controllers[tcp]; ok && ctrl.Area != "" {
 		if ac, ok := fa.Areas[ctrl.Area]; ok && !ac.Center.IsZero() {
 			return ac.Center

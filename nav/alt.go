@@ -405,9 +405,9 @@ func (nav *Nav) controllerAltitudeRestriction(wp *av.Waypoint) *av.AltitudeRestr
 	return nil
 }
 
-func (nav *Nav) hasControllerAltitudeRestriction() bool {
-	for i := range nav.Waypoints {
-		if nav.controllerAltitudeRestriction(&nav.Waypoints[i]) != nil {
+func (nav *Nav) hasControllerAltitudeRestriction(wps []av.Waypoint) bool {
+	for i := range wps {
+		if nav.controllerAltitudeRestriction(&wps[i]) != nil {
 			return true
 		}
 	}
@@ -423,23 +423,36 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 		return altitudeTarget{}, false
 	}
 
+	// Don't consider restrictions after an upcoming hold
+	wps := nav.Waypoints
+	for i := range wps {
+		if hold := nav.Heading.Hold; hold != nil && hold.Hold.Fix == wps[i].Fix {
+			wps = wps[:i+1]
+			break
+		}
+		if nfa, ok := nav.FixAssignments[wps[i].Fix]; ok && nfa.Hold != nil {
+			wps = wps[:i+1]
+			break
+		}
+	}
+
 	if nav.Prespawn {
 		// Simplified forward scan for prespawn: find the first waypoint
 		// with an actionable restriction. Skips FixAssignment lookups
 		// and the reverse walk with ClampRange for intermediate waypoints.
-		for i := range nav.Waypoints {
-			ar := nav.Waypoints[i].AltitudeRestriction()
+		for i := range wps {
+			ar := wps[i].AltitudeRestriction()
 			if ar == nil || ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
 				continue
 			}
 			alt := util.Select(ar.Range[1] != av.MaxAltitude, ar.Range[1], nav.FinalAltitude)
-			return altitudeTarget{altitude: alt, fix: nav.Waypoints[i].Fix}, true
+			return altitudeTarget{altitude: alt, fix: wps[i].Fix}, true
 		}
 		return altitudeTarget{}, false
 	}
 
 	interceptedButNotCleared := nav.InterceptedButNotCleared()
-	if interceptedButNotCleared && !nav.hasControllerAltitudeRestriction() {
+	if interceptedButNotCleared && !nav.hasControllerAltitudeRestriction(wps) {
 		// Track the uncleared approach laterally, but don't descend to charted
 		// approach restrictions until the aircraft is actually cleared.
 		return altitudeTarget{}, false
@@ -447,7 +460,7 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 
 	haveFixAssignments := len(nav.FixAssignments) > 0
 	getChartedRestriction := func(i int) *av.AltitudeRestriction {
-		wp := &nav.Waypoints[i]
+		wp := &wps[i]
 
 		if ar := nav.controllerAltitudeRestriction(wp); ar != nil {
 			return ar
@@ -462,8 +475,8 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 				// future waypoint, ignore the charted altitude restriction.
 				// Explicit loop avoids slices.ContainsFunc which copies the
 				// large Waypoint struct by value for each element via the closure.
-				for j := i + 1; j < len(nav.Waypoints); j++ {
-					if fa, ok := nav.FixAssignments[nav.Waypoints[j].Fix]; ok && fa.Arrive.Altitude != nil {
+				for j := i + 1; j < len(wps); j++ {
+					if fa, ok := nav.FixAssignments[wps[j].Fix]; ok && fa.Arrive.Altitude != nil {
 						return nil
 					}
 				}
@@ -480,7 +493,7 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 	// stay high because the restriction is technically satisfied.
 	getRestriction := func(i int) *av.AltitudeRestriction {
 		ar := getChartedRestriction(i)
-		if ar != nil && nav.Approach.Cleared && nav.Waypoints[i].OnApproach() &&
+		if ar != nil && nav.Approach.Cleared && wps[i].OnApproach() &&
 			ar.Range[1] == av.MaxAltitude && ar.Range[0] > 0 {
 			adjusted := av.MakeAtAltitudeRestriction(ar.Range[0])
 			return &adjusted
@@ -491,7 +504,7 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 	// Find the *last* waypoint that has an altitude restriction that
 	// applies to the aircraft.
 	lastWp := -1
-	for i := len(nav.Waypoints) - 1; i >= 0; i-- {
+	for i := len(wps) - 1; i >= 0; i-- {
 		// Skip restrictions that don't apply (e.g. "at or above" if we're
 		// already above.) I think(?) we would actually bail out and return
 		// nil if we find one that doesn't apply, under the principle that
@@ -525,9 +538,9 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 
 	// Loop over waypoints in reverse starting at the one before the last
 	// one with a waypoint restriction.
-	fix := nav.Waypoints[lastWp].Fix // first one with an alt restriction
+	fix := wps[lastWp].Fix // first one with an alt restriction
 	for i := lastWp - 1; i >= 0; i-- {
-		sumDist += math.NMDistance2LLFast(nav.Waypoints[i+1].Location, nav.Waypoints[i].Location,
+		sumDist += math.NMDistance2LLFast(wps[i+1].Location, wps[i].Location,
 			nav.FlightState.NmPerLongitude)
 
 		// Does this one have a relevant altitude restriction?
@@ -542,7 +555,7 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 			continue
 		}
 
-		fix = nav.Waypoints[i].Fix
+		fix = wps[i].Fix
 
 		// TODO: account for decreasing GS with altitude?
 		// TODO: incorporate a simple wind model in GS?

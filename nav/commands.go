@@ -191,14 +191,14 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) av.Comm
 
 	if speed < nav.Perf.Speed.Landing {
 		return av.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
-	} else if speed > maxIAS && speed < av.MaxSpeed {
+	} else if speed > maxIAS {
 		return av.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
 	}
 
 	if !exact {
 		// Range restriction: no afterAltitude deferral
 		nav.Speed = NavSpeed{Assigned: sr}
-		if sr.Range[0] > 0 && sr.Range[1] == av.MaxSpeed {
+		if sr.Range[0] > 0 && sr.Range[1] == av.MaxRestrictionSpeed {
 			return av.SpeedIntent{Speed: sr.Range[0], Type: av.SpeedAtOrAbove}
 		}
 		return av.SpeedIntent{Speed: sr.Range[1], Type: av.SpeedAtOrBelow}
@@ -261,13 +261,13 @@ func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *av.SpeedUntil) 
 
 	if speed < nav.Perf.Speed.Landing {
 		return av.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
-	} else if speed > maxIAS && speed < av.MaxSpeed {
+	} else if speed > maxIAS {
 		return av.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
 	}
 
 	nav.Speed = NavSpeed{Assigned: sr}
 	if !exact {
-		if sr.Range[0] > 0 && sr.Range[1] == av.MaxSpeed {
+		if sr.Range[0] > 0 && sr.Range[1] == av.MaxRestrictionSpeed {
 			return av.SpeedIntent{Speed: sr.Range[0], Type: av.SpeedAtOrAbove, Until: until}
 		}
 		return av.SpeedIntent{Speed: sr.Range[1], Type: av.SpeedAtOrBelow, Until: until}
@@ -481,8 +481,11 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 
 		// If an arrival is given a heading off of a route with altitude
 		// constraints, set its cleared altitude to its current altitude
-		// for now.
-		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR() || nav.Waypoints[0].OnApproach()) && nav.Altitude.Assigned == nil {
+		// for now. AfterSpeed counts as an explicit assignment too — the
+		// controller has assigned an altitude, it's just deferred until
+		// the speed change completes.
+		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR() || nav.Waypoints[0].OnApproach()) &&
+			nav.Altitude.Assigned == nil && nav.Altitude.AfterSpeed == nil {
 			if _, ok := nav.findAltitudeTarget(); ok {
 				// Don't take a direct pointer to nav.FlightState.Altitude!
 				alt := nav.FlightState.Altitude
@@ -657,6 +660,9 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 			if source == waypointSourceApproach && !nav.Approach.Cleared {
 				nav.Approach.InterceptState = OnApproachCourse
 			}
+			if !nav.Approach.Cleared {
+				nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
+			}
 			return av.NavigationIntent{
 				Type:      av.NavDirectFixFromHold,
 				Fix:       hold.Hold.Fix,
@@ -673,6 +679,9 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 				nav.Approach.InterceptState = OnApproachCourse
 			} else {
 				nav.Approach.InterceptState = NotIntercepting
+			}
+			if !nav.Approach.Cleared {
+				nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
 			}
 			return av.NavigationIntent{
 				Type: av.NavDirectFix,
@@ -749,12 +758,13 @@ func (nav *Nav) makeFlyHold(callsign string, hold av.Hold) *FlyHold {
 	NavLog(callsign, Time{}, NavLogHold, "makeFlyHold: headingToFix=%.1f hold_inbound=%.1f turn=%s -> %s",
 		hdg, hold.InboundCourse, hold.TurnDirection, hold.Entry(hdg).String())
 
-	return &FlyHold{
+	fh := &FlyHold{
 		Hold:        hold,
 		FixLocation: pHold,
-		State:       HoldStateApproaching,
 		Entry:       hold.Entry(hdg),
 	}
+	fh.Maneuvers = fh.entryManeuvers()
+	return fh
 }
 
 func (nav *Nav) DepartFixDirect(fixa string, fixb string) av.CommandIntent {
@@ -1194,7 +1204,7 @@ func (nav *Nav) AssignCompoundSpeed(segments []av.CompoundSpeedSegment) av.Comma
 		}
 		if speed < nav.Perf.Speed.Landing {
 			return av.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
-		} else if speed > maxIAS && speed < av.MaxSpeed {
+		} else if speed > maxIAS {
 			return av.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
 		}
 

@@ -5,8 +5,10 @@
 package nav
 
 import (
+	"reflect"
 	"testing"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/wx"
 )
@@ -49,5 +51,97 @@ func TestManeuverCompleteUntilDME(t *testing.T) {
 	nav.FlightState.Position = crossed
 	if !mc.Done(nav, Time{}, wx.Sample{}, 0) {
 		t.Fatal("expected DME completion at target slant distance")
+	}
+}
+
+func TestRacetrackEntryManeuvers(t *testing.T) {
+	fix := math.Point2LL{-75.109550, 40.880634}
+	entryLeg := func(track math.MagneticHeading) LateralManeuver {
+		return flyTrackForTime(track, 70)
+	}
+
+	for _, tc := range []struct {
+		name    string
+		entry   av.HoldEntry
+		inbound math.MagneticHeading
+		turn    av.TurnDirection
+		want    []LateralManeuver
+	}{
+		{
+			name:    "direct",
+			entry:   av.HoldEntryDirect,
+			inbound: 90,
+			turn:    av.TurnRight,
+			want: []LateralManeuver{
+				flyTowardFix(fix),
+			},
+		},
+		{
+			name:    "right parallel",
+			entry:   av.HoldEntryParallel,
+			inbound: 90,
+			turn:    av.TurnRight,
+			want: []LateralManeuver{
+				flyTowardFix(fix),
+				turnToTrack(270, av.TurnClosest),
+				flyTrackForTime(270, 70),
+				turnToTrack(50, av.TurnLeft),
+				flyTrackUntilIntercept(50, av.TurnRight, fix, 90),
+				turnToTrack(90, av.TurnRight),
+				flyTowardFix(fix),
+			},
+		},
+		{
+			name:    "right teardrop",
+			entry:   av.HoldEntryTeardrop,
+			inbound: 90,
+			turn:    av.TurnRight,
+			want: []LateralManeuver{
+				flyTowardFix(fix),
+				turnToTrack(240, av.TurnClosest),
+				flyTrackForTime(240, 70),
+				turnToTrack(60, av.TurnRight),
+				flyTrackUntilIntercept(60, av.TurnRight, fix, 90),
+				turnToTrack(90, av.TurnRight),
+				flyTowardFix(fix),
+			},
+		},
+		{
+			name:    "left parallel",
+			entry:   av.HoldEntryParallel,
+			inbound: 90,
+			turn:    av.TurnLeft,
+			want: []LateralManeuver{
+				flyTowardFix(fix),
+				turnToTrack(270, av.TurnClosest),
+				flyTrackForTime(270, 70),
+				turnToTrack(130, av.TurnRight),
+				flyTrackUntilIntercept(130, av.TurnLeft, fix, 90),
+				turnToTrack(90, av.TurnLeft),
+				flyTowardFix(fix),
+			},
+		},
+		{
+			name:    "left teardrop",
+			entry:   av.HoldEntryTeardrop,
+			inbound: 90,
+			turn:    av.TurnLeft,
+			want: []LateralManeuver{
+				flyTowardFix(fix),
+				turnToTrack(300, av.TurnClosest),
+				flyTrackForTime(300, 70),
+				turnToTrack(120, av.TurnLeft),
+				flyTrackUntilIntercept(120, av.TurnLeft, fix, 90),
+				turnToTrack(90, av.TurnLeft),
+				flyTowardFix(fix),
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			got := racetrackEntryManeuvers(tc.entry, fix, tc.inbound, tc.turn, entryLeg)
+			if !reflect.DeepEqual(got, tc.want) {
+				t.Fatalf("unexpected maneuvers:\ngot:  %#v\nwant: %#v", got, tc.want)
+			}
+		})
 	}
 }

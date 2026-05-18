@@ -47,6 +47,8 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
 
+	imgui.Checkbox("Scale DCB to fit", &sp.DCBScaleToFit)
+
 	imgui.Checkbox("Invert numeric keypad", &sp.FlipNumericKeypad)
 
 	if imgui.BeginComboV("TGT GEN Key", string(sp.TgtGenKey), imgui.ComboFlagsHeightLarge) {

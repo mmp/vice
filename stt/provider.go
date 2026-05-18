@@ -245,7 +245,12 @@ func (p *Transcriber) decodeInternal(
 				output = callsign + " AGAIN"
 			}
 		} else if len(validation.ValidCommands) == 0 {
-			output = callsign
+			// A pattern matched but produced no command (informational
+			// transmission). Emit just the callsign when confident; stay
+			// silent for low-confidence matches for the same reason as AGAIN.
+			if callsignConfidence >= 0.93 {
+				output = callsign
+			}
 		} else {
 			output = callsign + " " + strings.Join(validation.ValidCommands, " ")
 		}

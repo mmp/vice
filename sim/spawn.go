@@ -395,7 +395,7 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 
 	s.Aircraft[ac.ADSBCallsign] = &ac
 
-	ac.Nav.Prespawn = s.prespawn && (ac.FlightPlan.Rules == av.FlightRulesVFR || s.prespawnUncontrolledOnly)
+	ac.Nav.Prespawn = s.prespawn && ac.FlightPlan.Rules == av.FlightRulesVFR
 
 	ac.Nav.Check(s.lg)
 
@@ -437,16 +437,6 @@ func (s *Sim) Prespawn() {
 		s.prespawnUncontrolledOnly = i < initialSimSeconds-initialSimControlledSeconds
 		// Pattern aircraft only need a few minutes to get established.
 		s.prespawnPatternEligible = i >= initialSimSeconds-180
-
-		// At the transition to controlled mode, clear Prespawn for IFR
-		// aircraft so they resume full-fidelity simulation.
-		if i == initialSimSeconds-initialSimControlledSeconds {
-			for _, ac := range s.Aircraft {
-				if ac.FlightPlan.Rules == av.FlightRulesIFR {
-					ac.Nav.Prespawn = false
-				}
-			}
-		}
 
 		s.State.SimTime = s.State.SimTime.Add(time.Second)
 

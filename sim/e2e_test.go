@@ -198,6 +198,40 @@ func TestE2E_STTToSim(t *testing.T) {
 			wantCommand:   "DAL43 EVA22L",
 			notInReadback: "approach approach",
 		},
+		{
+			// Naming a charted visual ("Mount Vernon visual …") must emit
+			// the charted-visual code (E{code}) — not the generic EVA{rwy}
+			// command that the priority-17 visual pattern would produce
+			// if its parser's slack let it skip past "Mount Vernon".
+			name:       "expect named charted visual → charted approach code",
+			transcript: "Delta forty three expect Mount Vernon visual runway two two left",
+			sttAircraft: map[string]stt.Aircraft{
+				"Delta 43": {
+					Callsign:     "DAL43",
+					AircraftType: "A321",
+					CandidateApproaches: map[string]string{
+						"I L S runway two two left":               "I22L",
+						"Mount Vernon Visual runway two two left": "MTV",
+					},
+					CandidateVisualApproaches: map[string]string{
+						"visual runway two two left":          "22L",
+						"visual approach runway two two left": "22L",
+						"visual two two left":                 "22L",
+					},
+					State:    "arrival",
+					Altitude: 6000,
+				},
+			},
+			wantCommand: "DAL43 EMTV",
+			simSetup: func(s *sim.Sim) {
+				ap := s.State.Airports["KJFK"]
+				ap.Approaches["MTV"] = &av.Approach{
+					Type:     av.ChartedVisualApproach,
+					Runway:   "22L",
+					FullName: "Mount Vernon Visual Runway 22L",
+				}
+			},
+		},
 	}
 
 	for _, tt := range tests {

@@ -401,7 +401,7 @@
           "X23": "1S"
         },
         "default_consolidation": {
-          "1N": []
+          "1S": []
         }
       }
     },

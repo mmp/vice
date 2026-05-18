@@ -504,6 +504,24 @@ func (c *ControlClient) RadioIsActive() bool {
 	return c.transmissions.IsPlaying()
 }
 
+func (c *ControlClient) HoldRadioTransmissions() {
+	c.transmissions.HoldAfterTransmission()
+}
+
+// BeginGarble holds pilot transmissions while the user has PTT pressed
+// during ongoing audio playback (garble mode). This prevents queued
+// transmissions from starting playback while the user is still holding PTT
+// trying to interrupt. Pair with EndGarble on PTT release.
+func (c *ControlClient) BeginGarble() {
+	c.transmissions.Hold()
+	c.lg.Info("SPEECH: garble hold acquired")
+}
+
+func (c *ControlClient) EndGarble() {
+	c.transmissions.Unhold()
+	c.lg.Info("SPEECH: garble hold released")
+}
+
 func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
 	return c.transmissions.LastTransmissionCallsign()
 }
@@ -676,8 +694,9 @@ func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, t
 		// TTS not available, silently unhold
 		c.transmissions.Unhold()
 	} else {
-		c.lg.Infof("Synthesized readback for %s: %q (%d samples)", callsign, text, len(pcm))
-		c.transmissions.EnqueueReadbackPCM(callsign, av.RadioTransmissionReadback, pcm, playAt)
+		durationMs := int64(len(pcm)) * 1000 / platform.AudioSampleRate
+		c.lg.Infof("SPEECH queued readback: %s (%dms audio) %q", callsign, durationMs, text)
+		c.transmissions.EnqueueReadbackPCM(callsign, av.RadioTransmissionReadback, pcm)
 	}
 }
 
@@ -690,8 +709,9 @@ func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty
 	if pcm, err := tts.SynthesizeContactTTS(text, voice, radioSeed); err != nil {
 		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)
 	} else if pcm != nil {
-		c.lg.Infof("Synthesized contact for %s: %q (%d samples)", callsign, text, len(pcm))
-		c.transmissions.EnqueueTransmissionPCM(callsign, ty, pcm, playAt)
+		durationMs := int64(len(pcm)) * 1000 / platform.AudioSampleRate
+		c.lg.Infof("SPEECH queued contact: %s (%dms audio) %q", callsign, durationMs, text)
+		c.transmissions.EnqueueTransmissionPCM(callsign, ty, pcm)
 	}
 	c.transmissions.SetContactRequested(false)
 }

@@ -532,9 +532,22 @@ func (p *approachParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 	return appr, consumed, ""
 }
 
+// anchoredParser is an optional extension of typeParser. Parsers that
+// implement it and return true from anchored() require the matcher to find
+// their keyword at the exact starting position; the typedMatcher slack
+// mechanism is skipped. This prevents the slack from skipping over tokens
+// that legitimately belong to a different command's payload (e.g., a
+// charted-visual approach name preceding "visual").
+type anchoredParser interface {
+	typeParser
+	anchored() bool
+}
+
 type visualApproachParser struct {
 	allowLAHSO bool
 }
+
+func (p *visualApproachParser) anchored() bool { return true }
 
 func (p *visualApproachParser) identifier() string {
 	return "visual_approach"
@@ -720,6 +733,7 @@ type trafficResult struct {
 	oclock                      int
 	miles                       int
 	altitude                    int
+	altitudeUnknown             bool
 	otherTrafficMaintainsVisual bool
 }
 
@@ -729,16 +743,50 @@ func (p *trafficParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 	}
 
 	// Delegate to existing extractTraffic function
-	oclock, miles, alt, otherTrafficMaintainsVisual, consumed := extractTraffic(tokens[pos:])
+	oclock, miles, alt, altUnknown, otherTrafficMaintainsVisual, consumed := extractTraffic(tokens[pos:])
 	if consumed > 0 {
 		return trafficResult{
 			oclock:                      oclock,
 			miles:                       miles,
 			altitude:                    alt,
+			altitudeUnknown:             altUnknown,
 			otherTrafficMaintainsVisual: otherTrafficMaintainsVisual,
 		}, consumed, ""
 	}
 
+	return nil, 0, ""
+}
+
+// trafficVisualSepParser recognizes a descriptor-position traffic advisory
+// whose only actionable content is "(other aircraft) has you in sight and
+// will maintain visual separation". The controller gives a non-o'clock
+// position ("off your left", "from the north", etc.); the pilot has no
+// command to issue. Pattern is registered with an empty-string handler so
+// the simulator treats it as informational chatter.
+type trafficVisualSepParser struct{}
+
+func (p *trafficVisualSepParser) identifier() string   { return "traffic_visual_sep" }
+func (p *trafficVisualSepParser) goType() reflect.Type { return reflect.TypeOf(true) }
+
+func (p *trafficVisualSepParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	if pos >= len(tokens) {
+		return nil, 0, ""
+	}
+
+	cur, ok := consumeTrafficPositionDescriptor(tokens, pos)
+	if !ok {
+		return nil, 0, ""
+	}
+
+	// Search forward for the visual-sep phrase, allowing intervening filler
+	// such as "landing the parallel runway", aircraft type words, the
+	// subject pronoun, etc. Bounded so we don't scan unrelated phrasing.
+	end := min(cur+14, len(tokens))
+	for try := cur; try < end; try++ {
+		if next, ok := consumeOtherAircraftMaintainsVisualSeparation(tokens, try); ok {
+			return true, next - pos, ""
+		}
+	}
 	return nil, 0, ""
 }
 
@@ -811,6 +859,12 @@ func (p *atisLetterParser) parse(tokens []Token, pos int, ac Aircraft) (value an
 	}
 
 	word := strings.ToLower(tokens[pos].Text)
+
+	// "information" is the ATIS keyword itself, never a NATO letter — it
+	// otherwise fuzzy-matches "uniform" via phonetic prefix.
+	if word == "information" {
+		return nil, 0, ""
+	}
 
 	// Exact NATO match.
 	if letter, ok := ConvertNATOLetter(word); ok {
@@ -1104,6 +1158,8 @@ func getTypeParser(typeID string) typeParser {
 		return &starParser{}
 	case "traffic":
 		return &trafficParser{}
+	case "traffic_visual_sep":
+		return &trafficVisualSepParser{}
 	case "hold":
 		return &holdParser{}
 	case "text":

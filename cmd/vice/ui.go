@@ -415,7 +415,7 @@ func showAboutDialog() {
 	credits := `Additional credits:
 - Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Michael Knight, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, Jordan Williams, and Yi Zhang.
 - Timely feedback: radarcontacto.
-- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Gecko, Thomas Halpin, Jason Helkenberg, Trey Hensley, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Jake Magee, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
+- Facility engineering: Connor Allen, anguse, Elliot B, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Gecko, Thomas Halpin, Jason Helkenberg, Trey Hensley, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Jake Magee, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs and to the FAA, from whence the original maps came.
 - Additionally: OpenScope for the aircraft performance and airline databases, ourairports.com for the airport database, and for the FAA for being awesome about providing the CIFP, MVA specifications, and other useful aviation data digitally.
 - One more thing: see the file CREDITS.txt in the vice source code distribution for third-party software, fonts, sounds, etc.`
@@ -1174,6 +1174,11 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 		if p.IsPlayingSpeech() {
 			p.SetSpeechGarbled(true)
 			ui.pttGarbling = true
+			if controlClient != nil {
+				// Hold further pilot transmissions so queued items don't
+				// start playing while the user is holding PTT.
+				controlClient.BeginGarble()
+			}
 			lg.Infof("Push-to-talk: Garbling audio (pressed during playback)")
 		} else {
 			ui.pttPressTime = time.Now()
@@ -1244,6 +1249,9 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 		if ui.pttGarbling {
 			p.SetSpeechGarbled(false)
 			ui.pttGarbling = false
+			if controlClient != nil {
+				controlClient.EndGarble()
+			}
 			lg.Infof("Push-to-talk: Stopped garbling")
 		}
 		if ui.pttRecording {

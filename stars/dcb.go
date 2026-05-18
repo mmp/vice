@@ -18,7 +18,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-const dcbButtonSize = 84
+const dcbButtonSize = 72
 
 const (
 	regularDCBSlots        = 22
@@ -26,7 +26,7 @@ const (
 	mapsMainDCBColumns     = 5
 	mainDCBMapColumns      = 3
 	mapsSubmenuControlCols = 1
-	mapsSubmenuMapColumns  = 16
+	mapsSubmenuMapColumns  = 15
 )
 
 type dcbFlags int
@@ -82,24 +82,38 @@ type dcbSpinner interface {
 	ModeAfter() CommandMode
 }
 
+// dcbButtonScale returns the multiplier on dcbButtonSize used for buttons
+// in the current frame. Default behavior returns the platform DPI scale,
+// so each button is the same physical size on every monitor and overflow
+// is handled by scrolling (sp.dcbScroll). When sp.DCBScaleToFit is true,
+// buttons are sized so the widest possible menu (sp.dcbSlots()) fills the
+// main axis exactly — the scale uses the maximum slot count so the bar's
+// cross-axis thickness doesn't change when switching between menus of
+// different widths.
 func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
-	ps := sp.currentPrefs()
-	numDCBSlots := float32(sp.dcbSlots())
-	// Sigh; on windows we want the button size in pixels on high DPI displays
-	ds := ctx.DrawPixelScale
-	width := ds*ctx.PaneExtent.Width() - 4
-	height := ds*ctx.PaneExtent.Height() - 4
-	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
-		mainScale := width / (numDCBSlots * dcbButtonSize)
-		crossScale := height / dcbButtonSize
-		return min(ds, mainScale, crossScale)
-	} else {
-		mainScale := height / (numDCBSlots * dcbButtonSize)
-		crossScale := width / dcbButtonSize
-		return min(ds, mainScale, crossScale)
+	if !sp.DCBScaleToFit {
+		return ctx.DrawPixelScale
 	}
+	ps := sp.currentPrefs()
+	var mainAvail, crossAvail float32
+	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
+		mainAvail, crossAvail = ctx.PaneExtent.Width(), ctx.PaneExtent.Height()
+	} else {
+		mainAvail, crossAvail = ctx.PaneExtent.Height(), ctx.PaneExtent.Width()
+	}
+	// buttonSize() rounds scale*dcbButtonSize to the nearest int, so
+	// mainAvail/(n*dcbButtonSize) can round each button up by half a
+	// pixel and overflow the bar by up to n/2 pixels. Floor the per-button
+	// width first and back-derive the scale so the rounded total fits.
+	perButtonPx := float32(int(mainAvail / float32(sp.dcbSlots())))
+	main := perButtonPx / dcbButtonSize
+	cross := crossAvail / dcbButtonSize
+	return min(ctx.DrawPixelScale, main, cross)
 }
 
+// dcbSlots returns the maximum number of main-axis slots needed across
+// every menu the user can switch to. Used for scale-to-fit sizing so a
+// narrower submenu doesn't change the bar's cross-axis thickness.
 func (sp *STARSPane) dcbSlots() int {
 	return max(regularDCBSlots, mapsMainDCBColumns+sp.mapsSubmenuColumns())
 }
@@ -111,6 +125,78 @@ func (sp *STARSPane) mapsSubmenuColumns() int {
 func (sp *STARSPane) mapsSubmenuCategoryColumns() int {
 	_, ncat := sp.videoMapCategories()
 	return 1 + ncat/2
+}
+
+// dcbBarExtent returns the rectangle (in pane-local coordinates) that the
+// DCB bar occupies for the current preference's DCB position. The scroll
+// offset does not shift the bar itself — only the buttons inside it — so
+// this always returns the full, non-scrolled rectangle.
+func (sp *STARSPane) dcbBarExtent(ctx *panes.Context) math.Extent2D {
+	ps := sp.currentPrefs()
+	bs := float32(int(sp.dcbButtonScale(ctx)*dcbButtonSize + 0.5))
+	w, h := ctx.PaneExtent.Width(), ctx.PaneExtent.Height()
+	switch ps.DCBPosition {
+	case dcbPositionTop:
+		return math.Extent2D{P0: [2]float32{0, h - bs}, P1: [2]float32{w, h}}
+	case dcbPositionBottom:
+		return math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{w, bs}}
+	case dcbPositionLeft:
+		return math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{bs, h}}
+	case dcbPositionRight:
+		return math.Extent2D{P0: [2]float32{w - bs, 0}, P1: [2]float32{w, h}}
+	}
+	return math.Extent2D{}
+}
+
+// dcbMaxScroll returns the maximum scroll offset needed to reach the end
+// of the DCB content (buttons past the visible region). Uses the actual
+// content size measured by the previous frame's draw so submenus with
+// fewer slots don't allow scrolling past their last button into empty
+// bar area.
+func (sp *STARSPane) dcbMaxScroll(ctx *panes.Context) float32 {
+	ps := sp.currentPrefs()
+	var visible float32
+	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
+		visible = ctx.PaneExtent.Width()
+	} else {
+		visible = ctx.PaneExtent.Height()
+	}
+	return max(0, sp.dcbContentSize-visible)
+}
+
+// dcbMenuID identifies one of the DCB layouts: the main DCB, the aux DCB,
+// or one of the submenus reachable from those. The submenu field is
+// CommandModeNone when no submenu is active.
+type dcbMenuID struct {
+	aux     bool
+	submenu CommandMode
+}
+
+// dcbCurrentMenu returns an identifier for the currently-displayed DCB
+// layout. It changes when the user enters or exits a submenu, or toggles
+// between main and aux. drawDCB resets sp.dcbScroll on transitions so a
+// scroll offset from a wider menu doesn't leak into a narrower one.
+func (sp *STARSPane) dcbCurrentMenu() dcbMenuID {
+	var sub CommandMode
+	switch sp.commandMode {
+	case CommandModeMaps:
+		sub = CommandModeMaps
+	case CommandModeBrite, CommandModeBriteSpinner:
+		sub = CommandModeBrite
+	case CommandModeCharSize, CommandModeCharSizeSpinner:
+		sub = CommandModeCharSize
+	case CommandModeSite:
+		sub = CommandModeSite
+	case CommandModePref, CommandModeSavePrefAs:
+		sub = CommandModePref
+	case CommandModeSSAFilter:
+		sub = CommandModeSSAFilter
+	case CommandModeGITextFilter:
+		sub = CommandModeGITextFilter
+	case CommandModeTPA:
+		sub = CommandModeTPA
+	}
+	return dcbMenuID{aux: sp.dcbShowAux, submenu: sub}
 }
 
 func (sp *STARSPane) videoMapCategories() ([VideoMapNumCategories]bool, int) {
@@ -137,13 +223,43 @@ func videoMapButtonIndex(base, columns, i int) int {
 func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
 	ps := sp.currentPrefs()
 
-	// Find a scale factor so that the buttons all fit in the window, if necessary
 	buttonScale := sp.dcbButtonScale(ctx)
 
-	sp.startDrawDCB(ctx, buttonScale, transforms, cb)
+	// If the displayed menu has changed since the previous frame, reset
+	// scroll so a stale offset from a wider menu doesn't carry over. Also
+	// drop the cached content size so the same-frame max is forced to 0
+	// (no scroll on the transition frame).
+	if cur := sp.dcbCurrentMenu(); cur != sp.dcbLastMenu {
+		sp.dcbScroll = 0
+		sp.dcbContentSize = 0
+		sp.dcbLastMenu = cur
+	}
+
+	// Under scale-to-fit, content fits exactly so any leftover scroll
+	// (from before the toggle, or a stale frame) gets pinned to 0.
+	// Otherwise, absorb mouse-wheel input over the DCB bar (but not while
+	// a spinner is active, since those consume the wheel themselves). One
+	// full wheel notch advances exactly one button; the per-frame
+	// magnitude is clamped to ±1 so a fast trackpad swipe scrolls at most
+	// one button per frame instead of flying past several.
+	if sp.DCBScaleToFit {
+		sp.dcbScroll = 0
+	} else {
+		maxScroll := sp.dcbMaxScroll(ctx)
+		barExtent := sp.dcbBarExtent(ctx)
+		if ctx.Mouse != nil && sp.activeSpinner == nil &&
+			ctx.Mouse.Wheel[1] != 0 && barExtent.Inside(ctx.Mouse.Pos) {
+			bs := buttonScale * dcbButtonSize
+			sp.dcbScroll += math.Clamp(ctx.Mouse.Wheel[1], -1, 1) * bs
+		}
+		sp.dcbScroll = math.Clamp(sp.dcbScroll, 0, maxScroll)
+	}
+
+	sp.startDrawDCB(ctx, transforms, cb)
 
 	// Bundle up the final cleanup so that code below can return directly.
 	defer func() {
+		sp.drawDCBScrollIndicators(ctx, cb)
 		sp.endDrawDCB()
 
 		sz := buttonSize(buttonFull, buttonScale)
@@ -804,9 +920,17 @@ var dcbDrawState struct {
 	style        renderer.TextStyle
 	brightness   radar.Brightness
 	position     int
+	// barExtent is the DCB bar rectangle in pane-local coordinates. Per-button
+	// scissors are intersected with this so buttons scrolled past the edge
+	// don't bleed into the radar area.
+	barExtent math.Extent2D
+	// contentMain accumulates the maximum main-axis extent reached by any
+	// drawn button this frame, measured relative to the unscrolled bar
+	// origin. endDrawDCB commits this to sp.dcbContentSize.
+	contentMain float32
 }
 
-func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, transforms radar.ScopeTransformations,
+func (sp *STARSPane) startDrawDCB(ctx *panes.Context, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	dcbDrawState.cb = cb
 	dcbDrawState.mouse = ctx.Mouse
@@ -814,6 +938,8 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 	ps := sp.currentPrefs()
 	dcbDrawState.brightness = ps.Brightness.DCB
 	dcbDrawState.position = ps.DCBPosition
+	dcbDrawState.barExtent = sp.dcbBarExtent(ctx)
+	dcbDrawState.contentMain = 0
 	buttonSize := float32(int(sp.dcbButtonScale(ctx)*dcbButtonSize + 0.5))
 	var drawEndPos [2]float32
 	switch dcbDrawState.position {
@@ -834,8 +960,6 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 		drawEndPos = [2]float32{ctx.PaneExtent.Width(), 0}
 	}
 
-	dcbDrawState.cursor = dcbDrawState.drawStartPos
-
 	dcbDrawState.style = renderer.TextStyle{
 		Font:        sp.dcbFont(ctx, ps.CharSize.DCB),
 		Color:       sp.Colors.DCBText,
@@ -845,7 +969,7 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 
-	// Draw background color quad
+	// Draw background color quad (covers the full bar — always the non-scrolled region)
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	trid.AddQuad(dcbDrawState.drawStartPos, [2]float32{drawEndPos[0], dcbDrawState.drawStartPos[1]},
@@ -853,9 +977,97 @@ func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, trans
 		sp.Colors.DCBBackground)
 	trid.GenerateCommands(cb)
 
+	// Apply the horizontal/vertical scroll offset so that buttons drawn
+	// relative to drawStartPos shift with sp.dcbScroll. The bar background
+	// above is not shifted — only the button cursor.
+	if sp.dcbScroll != 0 {
+		switch dcbDrawState.position {
+		case dcbPositionTop, dcbPositionBottom:
+			dcbDrawState.drawStartPos[0] -= sp.dcbScroll
+		case dcbPositionLeft, dcbPositionRight:
+			dcbDrawState.drawStartPos[1] += sp.dcbScroll
+		}
+	}
+	dcbDrawState.cursor = dcbDrawState.drawStartPos
+
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
 		dcbDrawState.mouseDownPos = ctx.Mouse.Pos[:]
 	}
+}
+
+// drawDCBScrollIndicators draws small triangles near the bar edges when
+// there is content scrolled past either edge, pointing toward the
+// off-screen direction. Skipped under scale-to-fit (no overflow).
+func (sp *STARSPane) drawDCBScrollIndicators(ctx *panes.Context, cb *renderer.CommandBuffer) {
+	if sp.DCBScaleToFit {
+		return
+	}
+	maxScroll := sp.dcbMaxScroll(ctx)
+	showStart := sp.dcbScroll > 0
+	showEnd := sp.dcbScroll < maxScroll
+	if !showStart && !showEnd {
+		return
+	}
+
+	// Widen scissor to the whole bar; otherwise the per-button scissor
+	// from the last drawn button would clip the indicators. Window
+	// matrices loaded by startDrawDCB are still in effect.
+	bar := dcbDrawState.barExtent
+	barWin := math.Extent2D{
+		P0: math.Add2f(bar.P0, ctx.PaneExtent.P0),
+		P1: math.Add2f(bar.P1, ctx.PaneExtent.P0),
+	}
+	cb.SetScissorBounds(barWin, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+
+	half := 5 * ctx.DrawPixelScale
+	depth := 8 * ctx.DrawPixelScale
+	margin := 4 * ctx.DrawPixelScale
+	color := dcbDrawState.brightness.ScaleRGB(sp.Colors.DCBText)
+
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
+
+	if dcbDrawState.position == dcbPositionTop || dcbDrawState.position == dcbPositionBottom {
+		cy := (bar.P0[1] + bar.P1[1]) / 2
+		if showStart {
+			x := bar.P0[0] + margin
+			trid.AddTriangle(
+				[2]float32{x, cy},
+				[2]float32{x + depth, cy + half},
+				[2]float32{x + depth, cy - half},
+				color)
+		}
+		if showEnd {
+			x := bar.P1[0] - margin
+			trid.AddTriangle(
+				[2]float32{x, cy},
+				[2]float32{x - depth, cy + half},
+				[2]float32{x - depth, cy - half},
+				color)
+		}
+	} else {
+		cx := (bar.P0[0] + bar.P1[0]) / 2
+		if showStart {
+			// scroll>0 on left/right DCB shifts buttons up, so off-screen
+			// content is at the top of the bar.
+			y := bar.P1[1] - margin
+			trid.AddTriangle(
+				[2]float32{cx, y},
+				[2]float32{cx - half, y - depth},
+				[2]float32{cx + half, y - depth},
+				color)
+		}
+		if showEnd {
+			y := bar.P0[1] + margin
+			trid.AddTriangle(
+				[2]float32{cx, y},
+				[2]float32{cx - half, y + depth},
+				[2]float32{cx + half, y + depth},
+				color)
+		}
+	}
+
+	trid.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) endDrawDCB() {
@@ -867,6 +1079,8 @@ func (sp *STARSPane) endDrawDCB() {
 			dcbDrawState.mouseDownPos = nil
 		}
 	}
+
+	sp.dcbContentSize = dcbDrawState.contentMain
 }
 
 func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float32, color renderer.RGB) {
@@ -910,11 +1124,14 @@ func (sp *STARSPane) drawDCBButton(ctx *panes.Context, text string, flags dcbFla
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
 	p3 := math.Add2f(p2, [2]float32{-sz[0], 0})
 
-	ext := math.Extent2DFromPoints([][2]float32{p0, p2})
+	// Clip the hit-test extent to the DCB bar so scrolled-off portions of a
+	// partially visible button don't steal clicks from the radar area.
+	hitExt := math.Intersect(math.Extent2DFromPoints([][2]float32{p0, p2}), dcbDrawState.barExtent)
+	hitVisible := !hitExt.IsEmpty()
 	mouse := dcbDrawState.mouse
-	mouseInside := mouse != nil && ext.Inside(mouse.Pos)
-	mouseDownInside := dcbDrawState.mouseDownPos != nil &&
-		ext.Inside([2]float32{dcbDrawState.mouseDownPos[0], dcbDrawState.mouseDownPos[1]}) &&
+	mouseInside := hitVisible && mouse != nil && hitExt.Inside(mouse.Pos)
+	mouseDownInside := hitVisible && dcbDrawState.mouseDownPos != nil &&
+		hitExt.Inside([2]float32{dcbDrawState.mouseDownPos[0], dcbDrawState.mouseDownPos[1]}) &&
 		flags&buttonDisabled == 0
 
 	var buttonColor, textColor renderer.RGB
@@ -972,14 +1189,36 @@ func (sp *STARSPane) drawDCBButton(ctx *panes.Context, text string, flags dcbFla
 		ld.AddLine(shiftp(p2, 0, fi), shiftp(p3, fi, fi), bottomRightBevelColor)
 	}
 
-	// Scissor to just the extent of the button. Note that we need to give
-	// this in window coordinates, not our local pane coordinates, so
-	// translating by ctx.PaneExtent.p0 is needed...
-	winBase := math.Add2f(dcbDrawState.cursor, ctx.PaneExtent.P0)
-	dcbDrawState.cb.SetScissorBounds(math.Extent2D{
-		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
-		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
-	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	// Scissor to just the extent of the button — clipped to the DCB bar so
+	// buttons scrolled past the edge don't bleed into the radar area. Note
+	// that we need to give this in window coordinates, not our local pane
+	// coordinates, so translating by ctx.PaneExtent.p0 is needed...
+	btnLocal := math.Extent2D{
+		P0: [2]float32{dcbDrawState.cursor[0], dcbDrawState.cursor[1] - sz[1]},
+		P1: [2]float32{dcbDrawState.cursor[0] + sz[0], dcbDrawState.cursor[1]},
+	}
+	clipped := math.Intersect(btnLocal, dcbDrawState.barExtent)
+	winScissor := math.Extent2D{
+		P0: math.Add2f(clipped.P0, ctx.PaneExtent.P0),
+		P1: math.Add2f(clipped.P1, ctx.PaneExtent.P0),
+	}
+	dcbDrawState.cb.SetScissorBounds(winScissor,
+		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+
+	// Track the furthest main-axis extent reached by any drawn button so
+	// dcbMaxScroll can stop exactly at the last button of the current menu
+	// rather than at a fixed 22-slot assumption.
+	var reached float32
+	switch dcbDrawState.position {
+	case dcbPositionTop, dcbPositionBottom:
+		reached = btnLocal.P1[0] - dcbDrawState.drawStartPos[0]
+	case dcbPositionLeft, dcbPositionRight:
+		reached = dcbDrawState.drawStartPos[1] - btnLocal.P0[1]
+	}
+	if reached > dcbDrawState.contentMain {
+		dcbDrawState.contentMain = reached
+	}
+
 	moveDCBCursor(flags, sz, ctx)
 
 	trid.GenerateCommands(dcbDrawState.cb)
@@ -1114,7 +1353,14 @@ func dcbCaptureMouseFromRegion(ctx *panes.Context, buttonScale float32) {
 	} else {
 		p1[0] += sz[0]
 	}
-	dcbCaptureMouse(ctx, math.Extent2DFromPoints([][2]float32{dcbCaptureMouseP0, p1}))
+	// Clip to the visible DCB bar so mouse lock follows the DCB rather than
+	// extending into the radar area when content is scrolled off-screen.
+	clipped := math.Intersect(math.Extent2DFromPoints([][2]float32{dcbCaptureMouseP0, p1}),
+		dcbDrawState.barExtent)
+	if clipped.IsEmpty() {
+		return
+	}
+	dcbCaptureMouse(ctx, clipped)
 }
 
 func dcbCaptureMouse(ctx *panes.Context, bounds math.Extent2D) {

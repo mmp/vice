@@ -1,4 +1,4 @@
-// pkg/server/server.go
+// server/server.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -74,7 +74,10 @@ import (
 // 64: stars datablock intervals
 // 65: TFR ingest pipeline
 // 66: Waypoint SpeedRestriction
-const ViceSerializeVersion = 66
+// 67: visual approach v2
+// 68: sim.Future{Field,Traffic}Checks -> map
+// 69: METAR JSON shape: WindDir round-trips via custom Marshal/UnmarshalJSON; ICAO populated by Decode
+const ViceSerializeVersion = 69
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

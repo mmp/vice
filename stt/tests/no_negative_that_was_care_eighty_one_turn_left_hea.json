@@ -1,0 +1,551 @@
+{
+  "time": "2026-04-30T21:56:57.543654-04:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:725:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": "no negative that was care eighty one turn left heading three two zero",
+  "whisper_duration_ms": 135.851,
+  "audio_duration_ms": 4680,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "whisper_model": "ggml-base.en-jlvatc-q5_0.bin",
+  "callsign": "KAP81",
+  "command": "L320",
+  "stt_aircraft": {
+    "Cair 81": {
+      "Callsign": "KAP81",
+      "AircraftType": "C402",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Nantucket": "KACK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "Visual Approach runway three three right": "VA3R",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three three left": "33L",
+        "visual approach runway three three right": "33R",
+        "visual runway three three left": "33L",
+        "visual runway three three right": "33R",
+        "visual three three left": "33L",
+        "visual three three right": "33R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY"
+        },
+        "X3L": {
+          "Bog": "BBOGG",
+          "Brunel": "BRUNL",
+          "Calm": "CALMM",
+          "Carlton": "CRLTN",
+          "Feast": "FEEST",
+          "Fisk": "FSSKK",
+          "Hexus": "HEXUS",
+          "Murmur": "MURMR",
+          "Peaceful": "PCFUL",
+          "People": "PEOPL",
+          "Quiet": "KWIET",
+          "Rylan": "RYLAN",
+          "Shush": "SHUSH",
+          "Tracy": "TRCIE",
+          "Yaz": "YAAZZ",
+          "You UK": "YOUUK",
+          "canoli": "CNOLI",
+          "serene": "SRENE"
+        },
+        "Z3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY",
+          "Reduke": "RDUKE"
+        }
+      },
+      "AssignedApproach": "Visual Approach Runway 33R",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1I",
+      "TrackingController": "1X",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "9",
+        "27",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Cair niner 69": {
+      "Callsign": "KAP969",
+      "AircraftType": "C402",
+      "Fixes": {
+        "Bar Harbor": "KBHB",
+        "Boston": "KBOS"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "Visual Approach runway three three right": "VA3R",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three three left": "33L",
+        "visual approach runway three three right": "33R",
+        "visual runway three three left": "33L",
+        "visual runway three three right": "33R",
+        "visual three three left": "33L",
+        "visual three three right": "33R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY"
+        },
+        "X3L": {
+          "Bog": "BBOGG",
+          "Brunel": "BRUNL",
+          "Calm": "CALMM",
+          "Carlton": "CRLTN",
+          "Feast": "FEEST",
+          "Fisk": "FSSKK",
+          "Hexus": "HEXUS",
+          "Murmur": "MURMR",
+          "Peaceful": "PCFUL",
+          "People": "PEOPL",
+          "Quiet": "KWIET",
+          "Rylan": "RYLAN",
+          "Shush": "SHUSH",
+          "Tracy": "TRCIE",
+          "Yaz": "YAAZZ",
+          "You UK": "YOUUK",
+          "canoli": "CNOLI",
+          "serene": "SRENE"
+        },
+        "Z3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY",
+          "Reduke": "RDUKE"
+        }
+      },
+      "AssignedApproach": "Visual Approach Runway 33R",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1I",
+      "TrackingController": "1X",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "9",
+        "27",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Delta 10 36": {
+      "Callsign": "DAL1036",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Ben": "BENNN",
+        "Bog": "BBOGG",
+        "Boston": "KBOS",
+        "Cohass": "COHAS",
+        "Neemoy": "NIMOY",
+        "Orlando": "KMCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "Visual Approach runway three three right": "VA3R",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three three left": "33L",
+        "visual approach runway three three right": "33R",
+        "visual runway three three left": "33L",
+        "visual runway three three right": "33R",
+        "visual three three left": "33L",
+        "visual three three right": "33R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY"
+        },
+        "X3L": {
+          "Bog": "BBOGG",
+          "Brunel": "BRUNL",
+          "Calm": "CALMM",
+          "Carlton": "CRLTN",
+          "Feast": "FEEST",
+          "Fisk": "FSSKK",
+          "Hexus": "HEXUS",
+          "Murmur": "MURMR",
+          "Peaceful": "PCFUL",
+          "People": "PEOPL",
+          "Quiet": "KWIET",
+          "Rylan": "RYLAN",
+          "Shush": "SHUSH",
+          "Tracy": "TRCIE",
+          "Yaz": "YAAZZ",
+          "You UK": "YOUUK",
+          "canoli": "CNOLI",
+          "serene": "SRENE"
+        },
+        "Z3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY",
+          "Reduke": "RDUKE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 6805,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "9",
+        "27",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Delta 32": {
+      "Callsign": "DAL32",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Ben": "BENNN",
+        "Boston": "KBOS",
+        "Cohass": "COHAS",
+        "Hartsfield": "KATL",
+        "Neemoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "Visual Approach runway three three right": "VA3R",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three three left": "33L",
+        "visual approach runway three three right": "33R",
+        "visual runway three three left": "33L",
+        "visual runway three three right": "33R",
+        "visual three three left": "33L",
+        "visual three three right": "33R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY"
+        },
+        "X3L": {
+          "Bog": "BBOGG",
+          "Brunel": "BRUNL",
+          "Calm": "CALMM",
+          "Carlton": "CRLTN",
+          "Feast": "FEEST",
+          "Fisk": "FSSKK",
+          "Hexus": "HEXUS",
+          "Murmur": "MURMR",
+          "Peaceful": "PCFUL",
+          "People": "PEOPL",
+          "Quiet": "KWIET",
+          "Rylan": "RYLAN",
+          "Shush": "SHUSH",
+          "Tracy": "TRCIE",
+          "Yaz": "YAAZZ",
+          "You UK": "YOUUK",
+          "canoli": "CNOLI",
+          "serene": "SRENE"
+        },
+        "Z3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY",
+          "Reduke": "RDUKE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 2000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "9",
+        "27",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "JetBlue eight 94": {
+      "Callsign": "JBU894",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Ben": "BENNN",
+        "Boston": "KBOS",
+        "Cohass": "COHAS",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Neemoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "Visual Approach runway three three right": "VA3R",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three three left": "33L",
+        "visual approach runway three three right": "33R",
+        "visual runway three three left": "33L",
+        "visual runway three three right": "33R",
+        "visual three three left": "33L",
+        "visual three three right": "33R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY"
+        },
+        "X3L": {
+          "Bog": "BBOGG",
+          "Brunel": "BRUNL",
+          "Calm": "CALMM",
+          "Carlton": "CRLTN",
+          "Feast": "FEEST",
+          "Fisk": "FSSKK",
+          "Hexus": "HEXUS",
+          "Murmur": "MURMR",
+          "Peaceful": "PCFUL",
+          "People": "PEOPL",
+          "Quiet": "KWIET",
+          "Rylan": "RYLAN",
+          "Shush": "SHUSH",
+          "Tracy": "TRCIE",
+          "Yaz": "YAAZZ",
+          "You UK": "YOUUK",
+          "canoli": "CNOLI",
+          "serene": "SRENE"
+        },
+        "Z3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY",
+          "Reduke": "RDUKE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 3120,
+      "State": "cleared approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "9",
+        "27",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Swiss 60 uniform echo heavy": {
+      "Callsign": "SWR60UE",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Bech": "BECHH",
+        "Ben": "BENNN",
+        "Boston": "KBOS",
+        "Cohass": "COHAS",
+        "Copenhagen Kastrup": "EKCH",
+        "Neemoy": "NIMOY",
+        "Pilgrim": "PLGRM",
+        "Scitu": "SCITU",
+        "Water": "WAATR"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "Visual Approach runway three three right": "VA3R",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three three left": "33L",
+        "visual approach runway three three right": "33R",
+        "visual runway three three left": "33L",
+        "visual runway three three right": "33R",
+        "visual three three left": "33L",
+        "visual three three right": "33R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY"
+        },
+        "X3L": {
+          "Bog": "BBOGG",
+          "Brunel": "BRUNL",
+          "Calm": "CALMM",
+          "Carlton": "CRLTN",
+          "Feast": "FEEST",
+          "Fisk": "FSSKK",
+          "Hexus": "HEXUS",
+          "Murmur": "MURMR",
+          "Peaceful": "PCFUL",
+          "People": "PEOPL",
+          "Quiet": "KWIET",
+          "Rylan": "RYLAN",
+          "Shush": "SHUSH",
+          "Tracy": "TRCIE",
+          "Yaz": "YAAZZ",
+          "You UK": "YOUUK",
+          "canoli": "CNOLI",
+          "serene": "SRENE"
+        },
+        "Z3L": {
+          "Ben": "BENNN",
+          "Cohass": "COHAS",
+          "Neemoy": "NIMOY",
+          "Reduke": "RDUKE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 8957,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "9",
+        "27",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"no negative that was care eighty one turn left heading three two zero\"",
+    "[local-stt] normalized words: [no negative that was care 81 turn left heading 3 2 0]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"no\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"negative\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"that\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"was\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"care\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"81\" Type=1 Value=81",
+    "[local-stt]   token[6]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"320\" Type=1 Value=320",
+    "[local-stt] MatchCallsign: 10 tokens, 6 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 10 tokens, 6 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 3 results",
+    "[local-stt]     result 0: \"Cair 81\" (airline=0.583, flight=1.000, skip=1)",
+    "[local-stt]     result 1: \"Cair 81\" (airline=0.500, flight=1.000, skip=2)",
+    "[local-stt]     result 2: \"Cair 81\" (airline=0.528, flight=1.000, skip=3)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Cair 81\" (airline=0.58, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"airline_only\": 14 results",
+    "[local-stt]     result 0: \"Delta 10 36\" (airline=0.547, flight=0.000, skip=1)",
+    "[local-stt]     result 1: \"JetBlue eight 94\" (airline=0.601, flight=0.000, skip=1)",
+    "[local-stt]     result 2: \"Delta 32\" (airline=0.547, flight=0.000, skip=1)",
+    "[local-stt]     result 3: \"Swiss 60 uniform echo heavy\" (airline=0.442, flight=0.000, skip=1)",
+    "[local-stt]     result 4: \"Cair niner 69\" (airline=0.583, flight=0.000, skip=1)",
+    "[local-stt]     pattern \"airline_only\": selected \"Cair 81\" (airline=0.58, flight=0.00, skip=1)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Cair 81\"",
+    "[local-stt]   pattern \"flight_only\": no results",
+    "[local-stt]   pattern \"airline_flight\" matched: \"KAP81\" (conf=0.90, consumed=6, addressingForm=0, spokenKey=\"Cair 81\")",
+    "[local-stt] callsign match: Callsign=\"KAP81\" SpokenKey=\"Cair 81\" Conf=0.90 Consumed=6",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=3000 Fixes=2 Approaches=4 VisualApproaches=6 AssignedApproach=\"Visual Approach Runway 33R\" LAHSORunways=[4L 22R 4R 22L 9 27 4L 22R 4R 22L]",
+    "[local-stt]   fix: \"Nantucket\" -\u003e \"KACK\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   approach: \"Visual Approach runway three three right\" -\u003e \"VA3R\"",
+    "[local-stt]   approach: \"I L S runway three three left\" -\u003e \"I3L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway three three left\" -\u003e \"X3L\"",
+    "[local-stt]   approach: \"r-nav zulu runway three three left\" -\u003e \"Z3L\"",
+    "[local-stt]   visual approach: \"visual three three left\" -\u003e \"33L\"",
+    "[local-stt]   visual approach: \"visual runway three three right\" -\u003e \"33R\"",
+    "[local-stt]   visual approach: \"visual approach runway three three right\" -\u003e \"33R\"",
+    "[local-stt]   visual approach: \"visual three three right\" -\u003e \"33R\"",
+    "[local-stt]   visual approach: \"visual runway three three left\" -\u003e \"33L\"",
+    "[local-stt]   visual approach: \"visual approach runway three three left\" -\u003e \"33L\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"320\" Type=1 Value=320",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"turn\" against 2 fixes",
+    "[local-stt]   extractFix: no match found for \"turn\"",
+    "[local-stt]   matched command: \"L320\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[L320] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L320] (conf=1.00)",
+    "[local-stt] validated commands: [L320] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"KAP81 L320\" (conf=0.90, time=2.222041ms) ==="
+  ]
+}

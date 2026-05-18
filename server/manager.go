@@ -238,6 +238,8 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 		PrimaryAirport:              sg.PrimaryAirport,
 		Center:                      util.Select(sc.Center.IsZero(), sg.FacilityConfig.FacilityAdaptation.Center, sc.Center),
 		Range:                       util.Select(sc.Range == 0, sg.FacilityConfig.FacilityAdaptation.Range, sc.Range),
+		ScenarioCenter:              sc.Center,
+		ScenarioRange:               sc.Range,
 		DefaultMaps:                 sc.DefaultMaps,
 		DefaultMapGroup:             sc.DefaultMapGroup,
 		InboundFlows:                sg.InboundFlows,
@@ -268,8 +270,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 		if isARTCC(req.Facility) {
 			nsc.TFRs, err = wx.GetCachedTFRsForARTCC(artcc, req.StartTime)
 		} else {
-			nsc.TFRs, err = wx.GetCachedTFRsForTRACON(artcc, nsc.Center, nsc.Range,
-				req.StartTime)
+			nsc.TFRs, err = wx.GetCachedTFRsForTRACON(artcc, nsc.Center, nsc.Range, req.StartTime)
 		}
 		if err != nil {
 			lg.Warnf("unable to load TFRs for %s: %v", artcc, err)

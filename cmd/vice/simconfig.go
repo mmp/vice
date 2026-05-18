@@ -296,7 +296,7 @@ func (c *NewSimConfiguration) fetchMETAR() {
 	// Decode SOA to regular METAR slices
 	metars := make(map[string][]wx.METAR)
 	for ap, soa := range metarSOA {
-		metars[ap] = soa.Decode()
+		metars[ap] = soa.Decode(ap)
 	}
 
 	c.airportMETAR = metars
@@ -2221,9 +2221,6 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.SameLine()
 		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
 			c.updateStartTimeForRunways()
-		}
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Select random time matching weather filters")
 		}
 
 		// METAR

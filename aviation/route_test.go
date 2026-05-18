@@ -27,6 +27,59 @@ func (tl testLocator) LocateDME(fix string) (math.Point2LL, int, bool) {
 	return p, 33, ok
 }
 
+func TestHoldEntry(t *testing.T) {
+	for _, tc := range []struct {
+		name         string
+		turn         TurnDirection
+		headingToFix math.MagneticHeading
+		want         HoldEntry
+	}{
+		{
+			name:         "right direct",
+			turn:         TurnRight,
+			headingToFix: 100,
+			want:         HoldEntryDirect,
+		},
+		{
+			name:         "right parallel",
+			turn:         TurnRight,
+			headingToFix: 330,
+			want:         HoldEntryParallel,
+		},
+		{
+			name:         "right teardrop",
+			turn:         TurnRight,
+			headingToFix: 250,
+			want:         HoldEntryTeardrop,
+		},
+		{
+			name:         "left direct",
+			turn:         TurnLeft,
+			headingToFix: 20,
+			want:         HoldEntryDirect,
+		},
+		{
+			name:         "left parallel",
+			turn:         TurnLeft,
+			headingToFix: 220,
+			want:         HoldEntryParallel,
+		},
+		{
+			name:         "left teardrop",
+			turn:         TurnLeft,
+			headingToFix: 310,
+			want:         HoldEntryTeardrop,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			hold := Hold{InboundCourse: 90, TurnDirection: tc.turn}
+			if got := hold.Entry(tc.headingToFix); got != tc.want {
+				t.Fatalf("Entry(%v) = %v, want %v", tc.headingToFix, got, tc.want)
+			}
+		})
+	}
+}
+
 func TestParseWaypointActionGroups(t *testing.T) {
 	oldDB := DB
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}

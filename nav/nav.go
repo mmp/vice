@@ -232,6 +232,23 @@ type NavApproach struct {
 	AtFixInterceptFix           string           // fix where aircraft should intercept the localizer
 	InterceptCourseLine         [2]math.Point2LL // cached course line for non-ILS intercepts
 	InterceptWaypoints          []av.Waypoint    // cached remaining waypoints for non-ILS intercepts
+
+	VisualReferences     []*av.Approach // Reference approaches for non-charted visual approach
+	InterceptedReference *av.Approach   // Approach giving the committed-to route for a non-charted visual approach
+}
+
+// HasLocalizer reports whether the aircraft is currently flying localizer-style
+// course geometry.
+func (na *NavApproach) HasLocalizer() bool {
+	if na.Assigned != nil &&
+		(na.Assigned.Type == av.ILSApproach || na.Assigned.Type == av.LocalizerApproach) {
+		return true
+	}
+	if na.InterceptedReference != nil &&
+		(na.InterceptedReference.Type == av.ILSApproach || na.InterceptedReference.Type == av.LocalizerApproach) {
+		return true
+	}
+	return false
 }
 
 type NavFixAssignment struct {
@@ -706,8 +723,8 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 		}
 	}
 	if hold := nav.Heading.Hold; hold != nil {
-		lines = append(lines, fmt.Sprintf("Flying hold at %s, %s entry, state: %s",
-			hold.Hold.DisplayName(), hold.Entry.String(), hold.State.String()))
+		lines = append(lines, fmt.Sprintf("Flying hold at %s, %s entry, step: %s",
+			hold.Hold.DisplayName(), hold.Entry.String(), hold.currentStep()))
 	}
 	if dh := nav.DeferredNavHeading; dh != nil {
 		if len(dh.Waypoints) > 0 {
@@ -945,9 +962,9 @@ func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string,
 	if sr := nav.Speed.Assigned; sr != nil {
 		if spd, exact := sr.ExactValue(); exact {
 			resp.Add("[assigned {spd}|{spd} knots]", spd)
-		} else if sr.Range[0] > 0 && sr.Range[1] == av.MaxSpeed {
+		} else if sr.Range[0] > 0 && sr.Range[1] == av.MaxRestrictionSpeed {
 			resp.Add("[{spd} or greater|at or above {spd}]", sr.Range[0])
-		} else if sr.Range[0] == 0 && sr.Range[1] < av.MaxSpeed {
+		} else if sr.Range[0] == 0 && sr.Range[1] < av.MaxRestrictionSpeed {
 			resp.Add("[not exceeding {spd}|at or below {spd}]", sr.Range[1])
 		}
 	}
@@ -1074,10 +1091,10 @@ func crossingSpeedFormat(crossing *contactCrossingRestriction) (string, []any) {
 		if spd, exact := crossing.Speed.ExactValue(); exact {
 			return " and {spd}", []any{spd}
 		}
-		if crossing.Speed.Range[0] > 0 && crossing.Speed.Range[1] == av.MaxSpeed {
+		if crossing.Speed.Range[0] > 0 && crossing.Speed.Range[1] == av.MaxRestrictionSpeed {
 			return " at {spd} or greater", []any{crossing.Speed.Range[0]}
 		}
-		if crossing.Speed.Range[0] == 0 && crossing.Speed.Range[1] < av.MaxSpeed {
+		if crossing.Speed.Range[0] == 0 && crossing.Speed.Range[1] < av.MaxRestrictionSpeed {
 			return " at {spd} or less", []any{crossing.Speed.Range[1]}
 		}
 		return " between {spd} and {spd}", []any{crossing.Speed.Range[0], crossing.Speed.Range[1]}

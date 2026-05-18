@@ -486,6 +486,7 @@ var commandKeywords = map[string]string{
 	"localize":    "localizer", // STT drops trailing 'r'
 	"intercept":   "intercept",
 	"intercepted": "intercept",
+	"interceptor": "intercept", // STT error: "intercept" transcribed as "interceptor"
 	"clearance":   "clearance",
 	"visual":      "visual",
 	"ils":         "ils",
@@ -542,12 +543,14 @@ var phraseExpansions = map[string][]string{
 	"sediment":   {"descend", "maintain"},
 	"decimate":   {"descend", "maintain"},
 	"fl":         {"flight", "level"},
+	"insight":    {"in", "sight"}, // STT: "in sight" rendered as one word
 }
 
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
 var multiTokenReplacements = map[string][]string{
 	"i l s":        {"ils"},
 	"r nav":        {"rnav"},
+	"air nav":      {"rnav"}, // STT error: "R-Nav" transcribed as "Air Nav"
 	"fly level":    {"flight", "level"},
 	"time riding":  {"turn", "right"},
 	"seven e":      {"70"},
@@ -558,7 +561,12 @@ var multiTokenReplacements = map[string][]string{
 	"r on a":       {"runway"},
 	"right a star": {"via", "star"},
 	"i dead":       {"ident"},
-	"i file":       {"5", "mile"}, // STT error: "five mile" transcribed as "I file"
+	"i file":       {"5", "mile"},   // STT error: "five mile" transcribed as "I file"
+	"for left":     {"4", "left"},   // STT error: "four left" transcribed as "for left"
+	"for right":    {"4", "right"},  // STT error: "four right" transcribed as "for right"
+	"for center":   {"4", "center"}, // STT error: "four center" transcribed as "for center"
+	"vector as":    {"vector"},      // STT error: "vector for/to the" transcribed as "vector as"
+	"vectors as":   {"vectors"},
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
@@ -779,6 +787,9 @@ func processOrNoise(w string, ctx *normalizeContext) ([]string, int, bool) {
 // processAndDigit handles "and" between digits: STT mishears "one" as "and".
 // e.g., "two and zero" → "two one zero" (210).
 // But "two nine and zero" → "290" (and is filler, not replacing one).
+// And when either side is already a multi-digit number (e.g., "8000 and 250"),
+// "and" is a natural-language connector between distinct values, not a misheard
+// "one"; drop it as filler.
 func processAndDigit(w string, ctx *normalizeContext) ([]string, int, bool) {
 	if w != "and" || len(ctx.result) == 0 || ctx.i+1 >= len(ctx.words) {
 		return nil, 0, false
@@ -791,9 +802,19 @@ func processAndDigit(w string, ctx *normalizeContext) ([]string, int, bool) {
 	nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
 	if prevIsDigit && nextIsDigit {
 		// In a multi-digit sequence (prev-prev is also a digit), skip "and" as filler.
-		// Otherwise convert to "1".
 		if len(ctx.result) >= 2 && IsNumber(ctx.result[len(ctx.result)-2]) {
-			return nil, 0, true // skip "and" in multi-digit sequence
+			return nil, 0, true
+		}
+		// digitWords entries always map to a single-digit string; bare numeric
+		// tokens carry their own length. The "and→1" mishearing only makes sense
+		// in pure single-digit sequences (e.g., "two and zero" → "210"). When
+		// either side is multi-digit, "and" is a connector — drop it as filler.
+		nextLen := 1
+		if IsNumber(nextWord) {
+			nextLen = len(nextWord)
+		}
+		if len(prev) > 1 || nextLen > 1 {
+			return nil, 0, true
 		}
 		return []string{"1"}, 0, true // "and" → "1"
 	}
@@ -1106,6 +1127,7 @@ var commandBoundaryKeywords = map[string]bool{
 	"direct": true, "proceed": true,
 	// Approach
 	"cleared": true, "expect": true, "vectors": true, "approach": true,
+	"intercept": true,
 	// Other commands
 	"contact": true, "squawk": true, "ident": true,
 }

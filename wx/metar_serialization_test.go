@@ -31,7 +31,9 @@ func TestCompressedMETARMsgpackSerialization(t *testing.T) {
 	if err := cm.SetAirportMETAR("KJFK", testMETARs); err != nil {
 		t.Fatalf("SetAirportMETAR failed: %v", err)
 	}
-	if err := cm.SetAirportMETAR("KLAX", testMETARs); err != nil {
+	laxMETARs := []METAR{testMETARs[0]}
+	laxMETARs[0].ICAO = "KLAX"
+	if err := cm.SetAirportMETAR("KLAX", laxMETARs); err != nil {
 		t.Fatalf("SetAirportMETAR failed: %v", err)
 	}
 
@@ -66,8 +68,9 @@ func TestCompressedMETARMsgpackSerialization(t *testing.T) {
 		t.Errorf("Expected 1 METAR, got %d", len(metars))
 	}
 
-	// Note: ICAO field is not preserved in METARSOA encoding - it's stored as the map key
-	// Verify other fields are preserved
+	if metars[0].ICAO != "KJFK" {
+		t.Errorf("Expected ICAO 'KJFK', got '%s'", metars[0].ICAO)
+	}
 	if metars[0].Temperature.Celsius() != 15.5 {
 		t.Errorf("Expected Temperature 15.5, got %f", metars[0].Temperature.Celsius())
 	}
@@ -97,7 +100,9 @@ func TestCompressedMETARSaveLoad(t *testing.T) {
 	if err := cm.SetAirportMETAR("KORD", testMETARs); err != nil {
 		t.Fatalf("SetAirportMETAR failed: %v", err)
 	}
-	if err := cm.SetAirportMETAR("KBOS", testMETARs); err != nil {
+	bosMETARs := []METAR{testMETARs[0]}
+	bosMETARs[0].ICAO = "KBOS"
+	if err := cm.SetAirportMETAR("KBOS", bosMETARs); err != nil {
 		t.Fatalf("SetAirportMETAR failed: %v", err)
 	}
 
@@ -132,8 +137,9 @@ func TestCompressedMETARSaveLoad(t *testing.T) {
 		t.Errorf("Expected 1 METAR, got %d", len(metars))
 	}
 
-	// Note: ICAO field is not preserved in METARSOA encoding - it's stored as the map key
-	// Verify other fields are preserved
+	if metars[0].ICAO != "KORD" {
+		t.Errorf("Expected ICAO 'KORD', got '%s'", metars[0].ICAO)
+	}
 	if metars[0].Temperature.Celsius() != 5.0 {
 		t.Errorf("Expected Temperature 5.0, got %f", metars[0].Temperature.Celsius())
 	}

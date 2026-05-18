@@ -826,7 +826,7 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 	for i, wp := range wa {
 		e.Push(wp.Fix)
 		if sr := wp.SpeedRestriction(); sr != nil {
-			if sr.Range[0] < 0 || (sr.Range[1] > 300 && sr.Range[1] != MaxSpeed) {
+			if sr.Range[0] < 0 || (sr.Range[1] > 300 && sr.Range[1] != MaxRestrictionSpeed) {
 				e.ErrorString("invalid speed restriction %s", sr.Encoded())
 			}
 		}
@@ -1966,74 +1966,6 @@ type ProcedureTurn struct {
 	Entry180NoPT bool    `json:",omitempty"`
 }
 
-type RacetrackPTEntry int
-
-const (
-	DirectEntryShortTurn = iota
-	DirectEntryLongTurn
-	ParallelEntry
-	TeardropEntry
-)
-
-func (e RacetrackPTEntry) String() string {
-	return []string{"direct short", "direct long", "parallel", "teardrop"}[int(e)]
-}
-
-func (e RacetrackPTEntry) MarshalJSON() ([]byte, error) {
-	s := `"` + e.String() + `"`
-	return []byte(s), nil
-}
-
-func (e *RacetrackPTEntry) UnmarshalJSON(b []byte) error {
-	if len(b) < 2 {
-		return fmt.Errorf("invalid HILPT")
-	}
-
-	switch string(b[1 : len(b)-1]) {
-	case "direct short":
-		*e = DirectEntryShortTurn
-	case "direct long":
-		*e = DirectEntryLongTurn
-	case "parallel":
-		*e = ParallelEntry
-	case "teardrop":
-		*e = TeardropEntry
-	default:
-		return fmt.Errorf("%s: malformed HILPT JSON", string(b))
-	}
-	return nil
-}
-
-func (pt *ProcedureTurn) SelectRacetrackEntry(inboundHeading math.MagneticHeading, aircraftFixHeading math.MagneticHeading) RacetrackPTEntry {
-	// Rotate so we can treat inboundHeading as 0.
-	hdg := aircraftFixHeading - inboundHeading
-	if hdg < 0 {
-		hdg += 360
-	}
-
-	if pt.RightTurns {
-		if hdg > 290 {
-			return DirectEntryLongTurn
-		} else if hdg < 110 {
-			return DirectEntryShortTurn
-		} else if hdg > 180 {
-			return ParallelEntry
-		} else {
-			return TeardropEntry
-		}
-	} else {
-		if hdg > 250 {
-			return DirectEntryShortTurn
-		} else if hdg < 70 {
-			return DirectEntryLongTurn
-		} else if hdg < 180 {
-			return ParallelEntry
-		} else {
-			return TeardropEntry
-		}
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // NavigationRestriction
 
@@ -2159,8 +2091,10 @@ func (a AltitudeRestriction) Encoded() string {
 ///////////////////////////////////////////////////////////////////////////
 // SpeedRestriction
 
-// MaxSpeed is used as the upper bound for "at or above" speed restrictions.
-const MaxSpeed float32 = 1000
+// MaxRestrictionSpeed is the sentinel value used as the upper bound for
+// "at or above" speed restrictions. It is not a real airspeed limit;
+// compare against aircraft performance for actual maxima.
+const MaxRestrictionSpeed float32 = 1000
 
 type SpeedRestriction struct {
 	NavigationRestriction
@@ -2179,7 +2113,7 @@ func MakeMachRestriction(mach float32) SpeedRestriction {
 }
 
 func MakeAtOrAboveSpeedRestriction(speed float32) SpeedRestriction {
-	return SpeedRestriction{NavigationRestriction: NavigationRestriction{Range: [2]float32{speed, MaxSpeed}}}
+	return SpeedRestriction{NavigationRestriction: NavigationRestriction{Range: [2]float32{speed, MaxRestrictionSpeed}}}
 }
 
 func MakeAtOrBelowSpeedRestriction(speed float32) SpeedRestriction {
@@ -2235,7 +2169,7 @@ func (s SpeedRestriction) Encoded() string {
 		}
 		return fmt.Sprintf("M%02d", int(s.Range[0]*100+.5))
 	}
-	return s.encoded(MaxSpeed)
+	return s.encoded(MaxRestrictionSpeed)
 }
 
 // CheckJSON implements util.JSONChecker so the JSON type checker accepts

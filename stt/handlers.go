@@ -798,6 +798,153 @@ func registerAllCommands() {
 		WithPriority(10),
 	)
 
+	// Combined altitude + speed crossing restrictions: all combinations of
+	// (plain | at-or-above) altitude × (plain | or-greater | do-not-exceed)
+	// speed, plus mach variants, in both word orders. Outputs match the
+	// keyboard /A.../S.../M... grammar accepted by sim/command_parser.go.
+	// Priority follows the +2-per-modifier ladder used by single-constraint
+	// handlers (15 base) so more-specific patterns win over less-specific
+	// ones for inputs containing modifier keywords like "above" / "or
+	// greater" / "do not exceed".
+
+	// Altitude-first: plain altitude × speed variants
+	registerSTTCommand(
+		"cross {fix} [at] {altitude} [and] [at] {speed}",
+		func(fix string, alt int, spd int) string {
+			return fmt.Sprintf("C%s/A%d/S%d", fix, alt, spd)
+		},
+		WithName("cross_fix_altitude_speed"),
+		WithPriority(15),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] {altitude} [and] [at] {speed} or greater|better",
+		func(fix string, alt int, spd int) string {
+			return fmt.Sprintf("C%s/A%d/S%d+", fix, alt, spd)
+		},
+		WithName("cross_fix_altitude_speed_or_greater"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] {altitude} [and] [at] [do] not [to] exceed {speed}",
+		func(fix string, alt int, spd int) string {
+			return fmt.Sprintf("C%s/A%d/S%d-", fix, alt, spd)
+		},
+		WithName("cross_fix_altitude_do_not_exceed"),
+		WithPriority(17),
+	)
+
+	// Altitude-first: at-or-above altitude × speed variants
+	registerSTTCommand(
+		"cross {fix} [at] [or] above {altitude} [and] [at] {speed}",
+		func(fix string, alt int, spd int) string {
+			return fmt.Sprintf("C%s/A%d+/S%d", fix, alt, spd)
+		},
+		WithName("cross_fix_at_or_above_speed"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] [or] above {altitude} [and] [at] {speed} or greater|better",
+		func(fix string, alt int, spd int) string {
+			return fmt.Sprintf("C%s/A%d+/S%d+", fix, alt, spd)
+		},
+		WithName("cross_fix_at_or_above_speed_or_greater"),
+		WithPriority(19),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] [or] above {altitude} [and] [at] [do] not [to] exceed {speed}",
+		func(fix string, alt int, spd int) string {
+			return fmt.Sprintf("C%s/A%d+/S%d-", fix, alt, spd)
+		},
+		WithName("cross_fix_at_or_above_do_not_exceed"),
+		WithPriority(19),
+	)
+
+	// Speed-first: speed variants × plain altitude
+	registerSTTCommand(
+		"cross {fix} [at] {speed} [and] [at] {altitude}",
+		func(fix string, spd int, alt int) string {
+			return fmt.Sprintf("C%s/A%d/S%d", fix, alt, spd)
+		},
+		WithName("cross_fix_speed_altitude"),
+		WithPriority(15),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] {speed} or greater|better [and] [at] {altitude}",
+		func(fix string, spd int, alt int) string {
+			return fmt.Sprintf("C%s/A%d/S%d+", fix, alt, spd)
+		},
+		WithName("cross_fix_speed_or_greater_altitude"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] [do] not [to] exceed {speed} [and] [at] {altitude}",
+		func(fix string, spd int, alt int) string {
+			return fmt.Sprintf("C%s/A%d/S%d-", fix, alt, spd)
+		},
+		WithName("cross_fix_do_not_exceed_altitude"),
+		WithPriority(17),
+	)
+
+	// Speed-first: speed variants × at-or-above altitude
+	registerSTTCommand(
+		"cross {fix} [at] {speed} [and] [at] [or] above {altitude}",
+		func(fix string, spd int, alt int) string {
+			return fmt.Sprintf("C%s/A%d+/S%d", fix, alt, spd)
+		},
+		WithName("cross_fix_speed_at_or_above"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] {speed} or greater|better [and] [at] [or] above {altitude}",
+		func(fix string, spd int, alt int) string {
+			return fmt.Sprintf("C%s/A%d+/S%d+", fix, alt, spd)
+		},
+		WithName("cross_fix_speed_or_greater_at_or_above"),
+		WithPriority(19),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] [do] not [to] exceed {speed} [and] [at] [or] above {altitude}",
+		func(fix string, spd int, alt int) string {
+			return fmt.Sprintf("C%s/A%d+/S%d-", fix, alt, spd)
+		},
+		WithName("cross_fix_do_not_exceed_at_or_above"),
+		WithPriority(19),
+	)
+
+	// Mach combinations (no spd-modifier — mach IS the speed type)
+	registerSTTCommand(
+		"cross {fix} [at] {altitude} [and] [at] mach [point] {mach}",
+		func(fix string, alt int, mach int) string {
+			return fmt.Sprintf("C%s/A%d/M%d", fix, alt, mach)
+		},
+		WithName("cross_fix_altitude_mach"),
+		WithPriority(15),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] [or] above {altitude} [and] [at] mach [point] {mach}",
+		func(fix string, alt int, mach int) string {
+			return fmt.Sprintf("C%s/A%d+/M%d", fix, alt, mach)
+		},
+		WithName("cross_fix_at_or_above_mach"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] mach [point] {mach} [and] [at] {altitude}",
+		func(fix string, mach int, alt int) string {
+			return fmt.Sprintf("C%s/A%d/M%d", fix, alt, mach)
+		},
+		WithName("cross_fix_mach_altitude"),
+		WithPriority(15),
+	)
+	registerSTTCommand(
+		"cross {fix} [at] mach [point] {mach} [and] [at] [or] above {altitude}",
+		func(fix string, mach int, alt int) string {
+			return fmt.Sprintf("C%s/A%d+/M%d", fix, alt, mach)
+		},
+		WithName("cross_fix_mach_at_or_above"),
+		WithPriority(17),
+	)
+
 	registerSTTCommand(
 		"cross {num:1-99} miles|mile {compass_dir} [of] {fix} [at] [and] [maintain] {altitude_fl}",
 		func(dist int, dir string, fix string, alt int) string {
@@ -841,6 +988,79 @@ func registerAllCommands() {
 		},
 		WithName("cross_distance_direction_fix_mach"),
 		WithPriority(14),
+	)
+
+	// Combined dist/dir altitude + speed crossing restrictions. Mirrors the
+	// single-constraint dist/dir handlers (no at-or-above-altitude variant
+	// exists for dist/dir, so combined dist/dir uses plain altitude only).
+	// Priority +2 per speed modifier above the 18 base.
+
+	// Altitude-first
+	registerSTTCommand(
+		"cross {num:1-99} miles|mile {compass_dir} [of] {fix} [at] [and] [maintain] {altitude_fl} [and] [at] {speed}",
+		func(dist int, dir string, fix string, alt int, spd int) string {
+			return fmt.Sprintf("C%s/%d%s/A%d/S%d", fix, dist, dir, alt, spd)
+		},
+		WithName("cross_distance_direction_fix_altitude_speed"),
+		WithPriority(18),
+	)
+	registerSTTCommand(
+		"cross {num:1-99} miles|mile {compass_dir} [of] {fix} [at] [and] [maintain] {altitude_fl} [and] [at] {speed} or greater|better",
+		func(dist int, dir string, fix string, alt int, spd int) string {
+			return fmt.Sprintf("C%s/%d%s/A%d/S%d+", fix, dist, dir, alt, spd)
+		},
+		WithName("cross_distance_direction_fix_altitude_speed_or_greater"),
+		WithPriority(20),
+	)
+	registerSTTCommand(
+		"cross {num:1-99} miles|mile {compass_dir} [of] {fix} [at] [and] [maintain] {altitude_fl} [and] [at] [do] not [to] exceed {speed}",
+		func(dist int, dir string, fix string, alt int, spd int) string {
+			return fmt.Sprintf("C%s/%d%s/A%d/S%d-", fix, dist, dir, alt, spd)
+		},
+		WithName("cross_distance_direction_fix_altitude_do_not_exceed"),
+		WithPriority(20),
+	)
+	registerSTTCommand(
+		"cross {num:1-99} miles|mile {compass_dir} [of] {fix} [at] [and] [maintain] {altitude_fl} [and] [at] mach [point] {mach}",
+		func(dist int, dir string, fix string, alt int, mach int) string {
+			return fmt.Sprintf("C%s/%d%s/A%d/M%d", fix, dist, dir, alt, mach)
+		},
+		WithName("cross_distance_direction_fix_altitude_mach"),
+		WithPriority(18),
+	)
+
+	// Speed-first
+	registerSTTCommand(
+		"cross {num:1-99} miles|mile {compass_dir} [of] {fix} [at] {speed} [and] [at] {altitude_fl}",
+		func(dist int, dir string, fix string, spd int, alt int) string {
+			return fmt.Sprintf("C%s/%d%s/A%d/S%d", fix, dist, dir, alt, spd)
+		},
+		WithName("cross_distance_direction_fix_speed_altitude"),
+		WithPriority(18),
+	)
+	registerSTTCommand(
+		"cross {num:1-99} miles|mile {compass_dir} [of] {fix} [at] {speed} or greater|better [and] [at] {altitude_fl}",
+		func(dist int, dir string, fix string, spd int, alt int) string {
+			return fmt.Sprintf("C%s/%d%s/A%d/S%d+", fix, dist, dir, alt, spd)
+		},
+		WithName("cross_distance_direction_fix_speed_or_greater_altitude"),
+		WithPriority(20),
+	)
+	registerSTTCommand(
+		"cross {num:1-99} miles|mile {compass_dir} [of] {fix} [at] [do] not [to] exceed {speed} [and] [at] {altitude_fl}",
+		func(dist int, dir string, fix string, spd int, alt int) string {
+			return fmt.Sprintf("C%s/%d%s/A%d/S%d-", fix, dist, dir, alt, spd)
+		},
+		WithName("cross_distance_direction_fix_do_not_exceed_altitude"),
+		WithPriority(20),
+	)
+	registerSTTCommand(
+		"cross {num:1-99} miles|mile {compass_dir} [of] {fix} [at] mach [point] {mach} [and] [at] {altitude_fl}",
+		func(dist int, dir string, fix string, mach int, alt int) string {
+			return fmt.Sprintf("C%s/%d%s/A%d/M%d", fix, dist, dir, alt, mach)
+		},
+		WithName("cross_distance_direction_fix_mach_altitude"),
+		WithPriority(18),
 	)
 
 	// Cross N DME commands. These apply to a cleared visual approach; the
@@ -1024,6 +1244,29 @@ func registerAllCommands() {
 		"at {fix} intercept|join [the] [final] approach [course]",
 		func(fix string) string { return fmt.Sprintf("A%s/I", fix) },
 		WithName("at_fix_intercept_approach"),
+		WithPriority(15),
+	)
+
+	// "[proceed] direct FIX intercept the localizer" — preserves the explicit
+	// "direct" instruction and adds an at-fix intercept. Emits two commands:
+	// D{fix} routes the aircraft (also handles approach-only fixes via
+	// directFixWaypoints), A{fix}/I sets up the intercept-at-fix trigger.
+	registerSTTCommand(
+		"direct|proceed [direct] [to] [at] {fix} intercept [the] localizer",
+		func(fix string) string { return fmt.Sprintf("D%s A%s/I", fix, fix) },
+		WithName("direct_fix_intercept_localizer"),
+		WithPriority(15),
+	)
+	registerSTTCommand(
+		"direct|proceed [direct] [to] [at] {fix} intercept [the] [runway] {num:1-36} [left|right|center] localizer",
+		func(fix string, _ int) string { return fmt.Sprintf("D%s A%s/I", fix, fix) },
+		WithName("direct_fix_intercept_localizer_runway"),
+		WithPriority(16),
+	)
+	registerSTTCommand(
+		"direct|proceed [direct] [to] [at] {fix} intercept|join [the] [final] approach [course]",
+		func(fix string) string { return fmt.Sprintf("D%s A%s/I", fix, fix) },
+		WithName("direct_fix_intercept_approach"),
 		WithPriority(15),
 	)
 
@@ -1368,26 +1611,43 @@ func registerAllCommands() {
 	// === TRAFFIC ADVISORY ===
 	registerSTTCommand(
 		"traffic [at] [your] {traffic}",
-		func(tr trafficResult) string {
-			if tr.otherTrafficMaintainsVisual {
-				return fmt.Sprintf("TRAFFIC/%d/%d/%d/VISSEP", tr.oclock, tr.miles, tr.altitude)
-			}
-			return fmt.Sprintf("TRAFFIC/%d/%d/%d", tr.oclock, tr.miles, tr.altitude)
-		},
+		formatTrafficCommand,
 		WithName("traffic_advisory"),
 		WithPriority(10),
 	)
 
 	registerSTTCommand(
 		"traffic landing [the] parallel [at] [your] {traffic}",
-		func(tr trafficResult) string {
-			if tr.otherTrafficMaintainsVisual {
-				return fmt.Sprintf("TRAFFIC/%d/%d/%d/VISSEP", tr.oclock, tr.miles, tr.altitude)
-			}
-			return fmt.Sprintf("TRAFFIC/%d/%d/%d", tr.oclock, tr.miles, tr.altitude)
-		},
+		formatTrafficCommand,
 		WithName("traffic_advisory"),
 		WithPriority(10),
+	)
+
+	// Descriptor-position visual-sep advisory: controller calls traffic by
+	// relative direction ("off your left", "from the north") rather than
+	// o'clock, and reports that the other aircraft has us in sight and will
+	// maintain visual separation. The pilot has nothing to do — emit no
+	// command so the framework treats it as informational chatter.
+	registerSTTCommand(
+		"traffic {traffic_visual_sep}",
+		func(_ bool) string { return "" },
+		WithName("traffic_descriptor_visual_sep"),
+		WithPriority(11),
+	)
+
+	// "traffic <position> no factor" — informational chatter; the controller is
+	// announcing traffic that is not a separation factor, no command intended.
+	registerSTTCommand(
+		"traffic [at|to] [your] {num:1-12} [o'clock] no factor",
+		func(_ int) string { return "" },
+		WithName("traffic_no_factor"),
+		WithPriority(11),
+	)
+	registerSTTCommand(
+		"traffic no factor",
+		func() string { return "" },
+		WithName("traffic_no_factor_bare"),
+		WithPriority(11),
 	)
 
 	registerSTTCommand(
@@ -1416,6 +1676,13 @@ func registerAllCommands() {
 		"advise [you] have information {atis_letter}",
 		func(letter string) string { return "ATIS/" + letter },
 		WithName("advise_have_information"),
+		WithPriority(15),
+	)
+
+	registerSTTCommand(
+		"{atis_letter} [is] [now] current",
+		func(letter string) string { return "ATIS/" + letter },
+		WithName("atis_letter_current"),
 		WithPriority(15),
 	)
 
@@ -1454,13 +1721,61 @@ func registerAllCommands() {
 		WithName("airport_advisory_named"),
 		WithPriority(9), // Lower priority so explicit "airport"/"field" patterns win
 	)
-	// "do you have the field/airport in sight" — bare inquiry with no o'clock
-	// or distance. The probability of sighting depends on distance vs. the
-	// weather-influenced effective visual range.
+	// "do you have the field/airport [in sight]" — bare inquiry with no o'clock
+	// or distance. The "in sight" suffix is optional so this also covers
+	// "do you have the field". The probability of sighting depends on distance
+	// vs. the weather-influenced effective visual range.
 	registerSTTCommand(
-		"[do] have field|airport in sight",
+		"[do] have [the] field|airport [in sight]",
 		func() string { return "AP" },
 		WithName("airport_in_sight_inquiry"),
 		WithPriority(10),
 	)
+	registerSTTCommand(
+		"report [the] field|airport in sight",
+		func() string { return "AP" },
+		WithName("airport_in_sight_report"),
+		WithPriority(10),
+	)
+
+	// === TRAFFIC IN-SIGHT INQUIRY ===
+	// Bare traffic inquiries with no o'clock/distance/altitude — the controller
+	// is asking whether the pilot has previously-called or obvious nearby
+	// traffic in sight. The TRAFFIC command re-evaluates any queued
+	// FutureTrafficCheck and, failing that, looks for a single nearby aircraft
+	// in front of the asker.
+	registerSTTCommand(
+		"[do] have [the] traffic [in sight]",
+		func() string { return "TRAFFIC" },
+		WithName("traffic_in_sight_inquiry"),
+		WithPriority(10),
+	)
+	registerSTTCommand(
+		"report [the] traffic in sight",
+		func() string { return "TRAFFIC" },
+		WithName("traffic_in_sight_report"),
+		WithPriority(10),
+	)
+
+	// Compound: "report [the] traffic and [the] field|airport in sight" —
+	// emits both commands. Higher priority than the individual patterns so it
+	// wins when both clauses are present (otherwise the field/airport pattern
+	// would slack-skip past "traffic" and emit only AP).
+	registerSTTCommand(
+		"report [the] traffic [and] [the] field|airport in sight",
+		func() string { return "TRAFFIC AP" },
+		WithName("traffic_and_airport_in_sight"),
+		WithPriority(15),
+	)
+}
+
+func formatTrafficCommand(tr trafficResult) string {
+	alt := fmt.Sprintf("%d", tr.altitude)
+	if tr.altitudeUnknown {
+		alt = "UNK"
+	}
+	if tr.otherTrafficMaintainsVisual {
+		return fmt.Sprintf("TRAFFIC/%d/%d/%s/VISSEP", tr.oclock, tr.miles, alt)
+	}
+	return fmt.Sprintf("TRAFFIC/%d/%d/%s", tr.oclock, tr.miles, alt)
 }

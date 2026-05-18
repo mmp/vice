@@ -568,6 +568,15 @@
           "type": "RNAV",
           "waypoints": ["ASALT/if/a3000/s210 CNRSE/a2000+/faf LEISA/a1246+ SILJY/a835+ ROBJE/a450+"]
         },
+        "VIS13L": {
+          "full_name": "Visual Runway 13 Left",
+          "runway": "13L",
+          "type": "Visual",
+          "waypoints": [
+            "ASALT/if/a3000/s210 CNRSE/a2000+/faf LEISA/a1246+ SILJY/a835+ ROBJE/a450+",
+            "BUZON/a2900/iaf TELEX/a2100+/if CAXUN/a1500+/faf"
+          ]
+        },
         "V3L": {
           "full_name": "VOR Runway 13 Left",
           "runway": "13L",
@@ -588,6 +597,12 @@
           "full_name": "RNAV Z Runway 13 Right",
           "runway": "13R",
           "type": "RNAV",
+          "waypoints": ["ASALT/if/a3000/s210 NUCRI/a2000+/faf PEEBO/a921+ MAYMA/a520+"]
+        },
+        "VIS13R": {
+          "full_name": "Visual Runway 13 Right",
+          "runway": "13R",
+          "type": "Visual",
           "waypoints": ["ASALT/if/a3000/s210 NUCRI/a2000+/faf PEEBO/a921+ MAYMA/a520+"]
         },
         "V3R": {
@@ -9037,67 +9052,19 @@
     "PARCH4": {
       "arrivals": [
         {
-          "spawn": "PARCH",
-          "cruise_altitude": 36000,
-          "star": "PARCH4",
           "initial_controller": "B46",
-          "initial_altitude": 18000,
+          "initial_altitude": 15000,
           "assigned_altitude": 12000,
-          "initial_speed": 275,
-          "speed_restriction": 250,
-          "description": "PARCH4",
-          "expect_approach": null,
+          "initial_speed": 250,
+          "route": "/. PARCH4",
+          "waypoints": "PARCH/ho CCC/a12000/s250 ROBER",
+          "runway_waypoints": {
+            "KJFK": {
+              "22L,22R": "ROBER CRAIL/h283",
+              "4L,4R,13L,13R,31L,31R": "ROBER JFK/h278"
+            }
+          },
           "airlines": {
-            "KFRG": [
-              {
-                "icao": "EJA",
-                "airport": "KHYA"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KHYA"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KMVY"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KMVY"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KACK"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KACK"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KBGR"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KBGR"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KBTV"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KBTV"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KMHT"
-              },
-              {
-                "icao": "LXJ",
-                "airport": "KMHT"
-              }
-            ],
             "KJFK": [
               {
                 "icao": "EIN",
@@ -9461,20 +9428,84 @@
               }
             ]
           }
+        },
+        {
+          "initial_controller": "B46",
+          "initial_altitude": 15000,
+          "assigned_altitude": 12000,
+          "initial_speed": 250,
+          "route": "/. PARCH4",
+          "waypoints": "PARCH/ho CCC/a12000/s250",
+          "runway_waypoints": {
+            "KFRG": {
+              "1,14,19,32": "CCC/a12000/s250 KMANN/h283"
+            }
+          },
+          "expect_approach": null,
+          "airlines": {
+            "KFRG": [
+              {
+                "icao": "EJA",
+                "airport": "KHYA"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KHYA"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KMVY"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KMVY"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KACK"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KACK"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KBGR"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KBGR"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KBTV"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KBTV"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KMHT"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KMHT"
+              }
+            ]
+          }
         }
       ]
     },
     "PARCH4.Finals22": {
       "arrivals": [
         {
-          "waypoints": "CCC ROBER/ho/h270",
-          "cruise_altitude": 36000,
-          "star": "PARCH4",
+          "waypoints": "CCC/a12000/s250 ROBER/ho CRAIL/h283",
+          "route": "/. PARCH4",
           "initial_controller": "2K",
           "initial_altitude": 12000,
           "assigned_altitude": 5000,
           "initial_speed": 250,
-          "description": "PARCH4",
           "expect_approach": "I2L",
           "scratchpad": "I2L",
           "airlines": {
@@ -9847,13 +9878,12 @@
     "PARCH4.Finals31": {
       "arrivals": [
         {
-          "waypoints": "CCC/a9000 ROBER/a5000/ho/h250",
-          "cruise_altitude": 36000,
-          "star": "PARCH4",
+          "waypoints": "CCC/s250 ROBER/ho/h229 JFK/h278",
+          "route": "/. PARCH4",
           "initial_controller": "2K",
-          "initial_altitude": 9000,
+          "initial_altitude": 12000,
+          "assigned_altitude": 5000,
           "initial_speed": 250,
-          "description": "PARCH4",
           "expect_approach": "I1R",
           "scratchpad": "I1R",
           "airlines": {
@@ -10226,13 +10256,12 @@
     "PARCH4.Finals13": {
       "arrivals": [
         {
-          "waypoints": "CCC/a9000 ROBER/a5000 N040.30.07.731,W073.24.25.383/a3000/ho/h250",
-          "cruise_altitude": 36000,
-          "star": "PARCH4",
+          "waypoints": "CCC/s250 ROBER/ho/h280",
+          "route": "/. PARCH4",
           "initial_controller": "2K",
-          "initial_altitude": 9000,
+          "initial_altitude": 12000,
+          "assigned_altitude": 5000,
           "initial_speed": 250,
-          "description": "PARCH4",
           "expect_approach": "R3L",
           "scratchpad": "R3L",
           "airlines": {
@@ -10605,13 +10634,12 @@
     "PARCH4.Finals4": {
       "arrivals": [
         {
-          "waypoints": "CCC/a12000/d90 ROBER/a5000 N040.30.07.731,W073.24.25.383/a3000/ho/h250",
-          "cruise_altitude": 36000,
-          "star": "PARCH4",
+          "waypoints": "CCC/a12000/s250 N040.44.28.702,W072.58.44.606/a5000+ ROBER N040.36.11.118,W073.07.18.656/a4000/ho2J N040.19.44.051,W073.38.10.374/ho2G N040.16.39.453,W073.28.30.461 N040.19.44.051,W073.38.10.374/ho",
+          "route": "/. PARCH4",
           "initial_controller": "2K",
           "initial_altitude": 12000,
+          "assigned_altitude": 3000,
           "initial_speed": 250,
-          "description": "PARCH4",
           "expect_approach": "I4R",
           "scratchpad": "I4R",
           "airlines": {

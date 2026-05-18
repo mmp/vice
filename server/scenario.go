@@ -166,13 +166,20 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			return flow.HasHumanHandoff()
 		}
 
-		// Check that every flow with generic /ho handoffs has an assignment.
+		// Check that every flow with generic /ho handoffs has an assignment to
+		// a human position in default_consolidation.
 		// Note: It is NOT an error if the configuration has excess assignments that the scenario doesn't use.
+		humanPositions := s.ControllerConfiguration.AllPositions()
 		for flowName := range s.InboundFlowDefaultRates {
-			if flow, ok := sg.InboundFlows[flowName]; ok && flowNeedsHumanAssignment(flow) {
-				if _, ok := s.ControllerConfiguration.InboundAssignments[flowName]; !ok {
-					e.ErrorString(`inbound flow %q needs human controller but has no assignment in "inbound_assignments"`, flowName)
-				}
+			flow, ok := sg.InboundFlows[flowName]
+			if !ok || !flowNeedsHumanAssignment(flow) {
+				continue
+			}
+			tcp, ok := s.ControllerConfiguration.InboundAssignments[flowName]
+			if !ok {
+				e.ErrorString(`inbound flow %q needs human controller but has no assignment in "inbound_assignments"`, flowName)
+			} else if !slices.Contains(humanPositions, tcp) {
+				e.ErrorString(`inbound_assignments in %q: flow %q assigns to %q which is not a human position in "default_consolidation"`, s.ConfigurationString, flowName, tcp)
 			}
 		}
 		// departure_assignments validation is done below, after activeAirportSIDs/Runways maps are built
@@ -418,7 +425,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	assignedRunways := make(map[string]map[string]any) // airport -> set of runways
 	hasAirportFallback := make(map[string]bool)        // airport -> has plain airport assignment
 
-	for spec := range s.ControllerConfiguration.DepartureAssignments {
+	for spec, tcp := range s.ControllerConfiguration.DepartureAssignments {
 		ap, sidRunway, haveSIDRunway := strings.Cut(spec, "/")
 
 		// Only process assignments for airports that are active in this scenario
@@ -429,6 +436,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			continue
 		}
 
+		relevant := false
 		if haveSIDRunway {
 			// Track assigned SIDs and runways per airport (only if active in this scenario)
 			_, okSID := sids[sidRunway]
@@ -439,12 +447,14 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 					assignedSIDs[ap] = make(map[string]any)
 				}
 				assignedSIDs[ap][sidRunway] = nil
+				relevant = true
 			}
 			if okRunway {
 				if assignedRunways[ap] == nil {
 					assignedRunways[ap] = make(map[string]any)
 				}
 				assignedRunways[ap][sidRunway] = nil
+				relevant = true
 			}
 			// Note: If neither okSID nor okRunway, this assignment is for a SID/runway
 			// not active in this scenario, which is fine (excess assignments are OK)
@@ -457,6 +467,11 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		} else {
 			// Plain airport assignment (fallback)
 			hasAirportFallback[ap] = true
+			relevant = true
+		}
+
+		if relevant && !humanPositionsSet[tcp] {
+			e.ErrorString(`departure_assignments in %q: %q assigns to %q which is not a human position in "default_consolidation"`, s.ConfigurationString, spec, tcp)
 		}
 	}
 
@@ -2396,6 +2411,8 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		WindSpecifier:           scenario.WindSpecifier,
 		Center:                  util.Select(scenario.Center.IsZero(), scenarioGroup.FacilityConfig.FacilityAdaptation.Center, scenario.Center),
 		Range:                   util.Select(scenario.Range == 0, scenarioGroup.FacilityConfig.FacilityAdaptation.Range, scenario.Range),
+		ScenarioCenter:          scenario.Center,
+		ScenarioRange:           scenario.Range,
 		DefaultMaps:             scenario.DefaultMaps,
 		DefaultMapGroup:         scenario.DefaultMapGroup,
 		Airspace:                scenarioGroup.Airspace,

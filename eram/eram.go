@@ -442,7 +442,7 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 		ep.prefSet.Current.ARTCC = ss.Facility
 	}
 	if ep.prefSet.Current.Range == 0 {
-		ep.prefSet.Current.Range = ss.Range
+		ep.prefSet.Current.Range = ss.GetInitialRange()
 	}
 
 	def := makeDefaultPreferences()

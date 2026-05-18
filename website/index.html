@@ -115,6 +115,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
+      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.3">0.14.3</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.2">0.14.2</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.1">0.14.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.0">0.14.0</a></li>
@@ -1158,7 +1159,9 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                   <td>
                     <i>Cross (fix) at (altitude)</i> /  <i>Cross (fix) at or above (altitude)</i> /
                     <i>Cross (distance) miles (direction) of (fix) at (altitude)</i> /
-                    <i>Cross (distance) DME at (altitude)</i> (on a cleared visual approach, optionally combined with <i>cleared visual approach runway (runway)</i>)
+                    <i>Cross (distance) DME at (altitude)</i> /
+                    <i>Cross (distance) DME at or above (altitude)</i> /
+                    <i>Cross (distance) DME at or below (altitude)</i> (DME forms apply on a cleared visual approach, optionally combined with <i>cleared visual approach runway (runway)</i>)
                   </td>
                 </tr>
                 <tr><td>Altitude after Speed</td>
@@ -1198,7 +1201,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
               <tbody>
                 <tr><td>Climb/Descend Via</td>
                   <td>
-                    <i>Climb via the (SID)</i> /  <i>Climb via SID</i> /  <i>Descend via the (STAR)</i> /  <i>Descend via STAR</i>
+                    <i>Climb via the (SID)</i> /  <i>Climb via SID</i> /  <i>Descend via the (STAR)</i> /  <i>Descend via STAR</i> /  <i>Descend via the arrival</i>
                   </td>
                 </tr>
               </tbody>
@@ -1259,15 +1262,28 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 <tr><td>Speed at Fix</td>
                   <td>
                     <i>Cross (fix) at (speed) knots</i> / <i>Cross (fix) at Mach (mach)</i> /
+                    <i>Cross (fix) at (speed) or greater</i> / <i>Cross (fix) at do not exceed (speed)</i> /
                     <i>Cross (distance) miles (direction) of (fix) at (speed) knots</i> /
-                    <i>Cross (distance) miles (direction) of (fix) at Mach (mach)</i>
+                    <i>Cross (distance) miles (direction) of (fix) at Mach (mach)</i> /
+                    <i>Cross (distance) miles (direction) of (fix) at (speed) or greater</i> /
+                    <i>Cross (distance) miles (direction) of (fix) at do not exceed (speed)</i>
+                  </td>
+                </tr>
+                <tr><td>Combined Altitude and Speed at Fix</td>
+                  <td>
+                    <i>Cross (fix) at (altitude) and (speed) knots</i> / <i>Cross (fix) at (altitude) and Mach (mach)</i> /
+                    <i>Cross (fix) at or above (altitude) and (speed) knots</i> /
+                    <i>Cross (distance) miles (direction) of (fix) at (altitude) and (speed) knots</i>.
+                    The altitude and speed clauses may appear in either order; the speed clause may also be expressed as <i>(speed) or greater</i> or <i>do not exceed (speed)</i>.
                   </td>
                 </tr>
                 <tr><td>Speed after Fix</td>
                   <td>
                     <i>After (fix), maintain (speed) knots</i> /
+                    <i>After (fix), reduce/increase speed to (speed) knots</i> /
+                    <i>After (fix), (speed) knots</i> /
                     <i>After (fix), (speed) knots or greater</i> /
-                    <i>After (fix), (speed) knots or less</i>
+                    <i>After (fix), (speed) knots or less</i>. (<i>at (fix)</i> may be used in place of <i>after (fix)</i>.)
                   </td>
                 </tr>
                 <tr><td>Compound Speed</td>
@@ -1309,9 +1325,10 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <i>Maintain present speed</i> / <i>Present speed</i>
                   </td>
                 </tr>
-                <tr><td>Speed Or Greater</td>
+                <tr><td>Speed Or Greater/Less</td>
                   <td>
-                    <i>Maintain (speed) or greater</i> / <i>(speed) or better</i>
+                    <i>Maintain (speed) or greater</i> / <i>(speed) or better</i> / <i>Maintain (speed) or less</i>.
+                    The "until" qualifiers below may be appended.
                   </td>
                 </tr>
                 <tr><td>Do Not Exceed</td>
@@ -1343,7 +1360,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
               <li>"... until X DME"</li>
               <li>"... until (fix)" (generally, the FAF).</li>
             </ul>
-            <h3>Altitude</h3>
+            <h3>Routing and Holds</h3>
             <table class="table">
               <thead>
                 <tr>
@@ -1399,12 +1416,13 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </tr>
                 <tr><td>Cleared Approach</td>
                   <td>
-                    <i>Cleared (approach)</i> /  <i>Cleared straight in (approach)</i> /  <i>At (fix) cleared (approach)</i>. Note: a speed assignment after an approach clearance is interpreted as until 5 DME.
+                    <i>Cleared (approach)</i> /  <i>Cleared straight in (approach)</i> /  <i>At (fix) cleared (approach)</i> /  <i>At (fix) cleared straight in (approach)</i>. Note: a speed assignment after an approach clearance is interpreted as until 5 DME.
                   </td>
                 </tr>
-                <tr><td>Intercept Localizer</td>
+                <tr><td>Intercept Localizer / Approach Course</td>
                   <td>
-                    <i>Intercept the localizer</i> /  <i>Join the localizer</i> /  <i>At (fix) intercept the localizer</i>
+                    <i>Intercept the localizer</i> /  <i>Join the localizer</i> /  <i>At (fix) intercept the localizer</i> /  <i>Direct (fix) intercept the localizer</i>.
+                    For non-localizer (e.g. RNAV) approaches, <i>intercept the (final) approach course</i> is also accepted (with the same <i>at (fix)</i> / <i>direct (fix)</i> prefix variants).
                   </td>
                 </tr>
                   <tr><td>Standby Approach</td>
@@ -1429,7 +1447,14 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </tr>
                 <tr><td>Airport Advisory</td>
                   <td>
-                    <i>Airport (N) o'clock (N) miles</i> /  <i>Field (N) o'clock (N) miles</i>
+                    <i>Airport (N) o'clock (N) miles</i> /  <i>Field (N) o'clock (N) miles</i> /
+                    <i>(airport name) is at your (N) o'clock (N) miles</i> /
+                  </td>
+                </tr>
+                <tr><td>Airport in Sight Inquiry</td>
+                  <td>
+                    <i>Do you have the (field|airport) in sight?</i> /  <i>Report the (field|airport) in sight</i>.
+                    Whether the pilot reports the airport in sight depends on distance and the effective visual range.
                   </td>
                 </tr>
               </tbody>
@@ -1512,7 +1537,15 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
               <tbody>
                 <tr><td>Traffic Advisory</td>
                   <td>
-                    <i>Traffic (o'clock), (miles), (aircraft type), (altitude)</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), report in sight</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), they have you in sight and will maintain visual separation</i>
+                    <i>Traffic (o'clock), (miles), (aircraft type), (altitude)</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), report in sight</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), they have you in sight and will maintain visual separation</i>.
+                    The variant <i>Traffic landing the parallel, (o'clock), (miles), ...</i> is also accepted.
+                    The phrase <i>altitude unknown</i> (or <i>unknown altitude</i>) may be substituted for the numeric altitude when calling primary-only traffic; the simulator will identify the target by position alone.
+                  </td>
+                </tr>
+                <tr><td>Traffic in Sight Inquiry</td>
+                  <td>
+                    <i>Do you have the traffic in sight?</i> /  <i>Report the traffic in sight</i>: re-asks the pilot whether previously-called traffic (or an obvious nearby aircraft) is in sight.
+                    The combined form <i>Report the traffic and the (field|airport) in sight</i> issues both this inquiry and an airport-in-sight inquiry at once.
                   </td>
                 </tr>
                 <tr><td>Caution Wake Turbulence</td>
@@ -1619,7 +1652,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.14.2/Vice-v0.14.2-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.2 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.14.3/Vice-v0.14.3-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.3 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1628,7 +1661,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Ventura or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.14.2/Vice-v0.14.2-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.2 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.14.3/Vice-v0.14.3-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.3 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1656,6 +1689,62 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.14.3">0.14.3 (8 May 2026)</h3>
+            <ul>
+              <li>New scenarios: EUG, MFR (Mike Fries)</li>
+              <li>Scenario updates: ZNY, Y90 (Ryan G), SCT (Ketan K), ZJX, F11, N90 (manaphy), MIA (Gecko)</li>
+              <li>Updated radio static/muffling model (radarcontacto)</li>
+              <li>Navigation / flight model:
+                <ul>
+                  <li>Added support for visual approaches (Jordan Williams)</li>
+                  <li>Fixed bugs with localizer intercept and approach clearance</li>
+                  <li>Fixed bug where aircraft would sometimes spontaneously leave holds (Jud Lopez)</li>
+                  <li>Handle &quot;at or above/at or below&quot; speed restrictions more reasonably (don't treat them all as &quot;at&quot;)</li>
+                  <li>Added support for &quot;join the approach&quot; for non-ILS/LOC approaches</li>
+                  <li>Fixed a few bugs with &quot;at {fix}, cleared straight in {approach}&quot;</li>
+                  <li>Added &quot;after {fix}, climb/descend and maintain {altitude}&quot;</li>
+                  <li>Added &quot;after {fix}, reduce/maintain/increase {speed}&quot;</li>
+                  <li>Added &quot;speed {speed1} until {fix1}, then {speed2} until {fix2}, then {speed3}&quot;, etc.</li>
+                  <li>Added &quot;cross {fix} {miles} miles {direction} of {fix}&quot;</li>
+                  <li>Added &quot;good rate&quot; for climbs/descents: &quot;descend and maintain 3,000, good rate through 5,000&quot;, etc.</li>
+                  <li>Added optional altitudes to expedite to: &quot;expedite through 5,000&quot;, etc.</li>
+                  <li>Added &quot;cross {miles} DME at {altitude/speed}&quot; instruction for visual approaches</li>
+                  <li>Added support for &quot;traffic has you in sight and will maintain visual separation&quot;</li>
+                  <li>Handle &quot;caution wake turbulence&quot; in control instruction</li>
+                  <li>Fixed bugs with aircraft on approach not descending as much as they should.</li>
+                  <li>Aircraft now ask for an altitude if vectored off an arrival without being assigned one (Michael Knight)</li>
+                </ul>
+              </li>
+              <li>Added UI option to force (realistic) square windows for STARS/ERAM radar displays</li>
+              <li>Fixed bug where aircraft would be at bogus altitudes/speeds after prespawn</li>
+              <li>Fixed some bugs in speed assignment readbacks</li>
+              <li>ERAM
+                <ul>
+                  <li>Added ALTIM SET and WX REPORT floating windows, including AR/WR keyboard commands and configurable window menus (Michael Knight)</li>
+                  <li>Fixed bug where far-away fixes weren't known for control instructions</li>
+                </ul>
+              </li>
+              <li>STARS
+                <ul>
+                  <li>Added support for &quot;Create interfacility VFR flight plan from active local track&quot;</li>
+                  <li>GI and ATIS text in the SSA list is managed by the server (so updates are shared among controllers)</li>
+                  <li>Allow scrolling the DCB if it's too big to fit the screen (Jud Lopez)</li>
+                </ul>
+              </li>
+              <li>Facility engineering:
+                <ul>
+                  <li>Support &quot;at or above/at or below&quot; speed restrictions</li>
+                  <li>Removed &quot;speed_restriction&quot; from departure routes; this was unused/redundant</li>
+                  <li>Added &quot;thick_20nm_range_ring&quot; STARS adaptation</li>
+                  <li>Added &quot;flight_type&quot; for overflights so aircraft flight types can be specified as &quot;departure&quot; or &quot;arrival&quot; (rather than always being &quot;overflight&quot;)</li>
+                  <li>Added &quot;flash_on_atis_update&quot; adaptation for STARS SSA lists</li>
+                  <li>Added support for actions at waypoints until reaching an altitude or DME from a fix, e.g. &quot;FIX/h090@a30/h120&quot; departs fix at an 090 heading until reaching 3,000', then flies 120.</li>
+                  <li>Candidate visual approach courses can be specified in scenarios as <code>&quot;type&quot;: &quot;Visual&quot;</code> (we now use &quot;ChartedVisual&quot; for charted visual approaches)</li>
+                </ul>
+              </li>
+            </ul>
+
 
             <h3 id="release-0.14.2">0.14.2 (30 Mar 2026)</h3>
             <ul>
@@ -3636,8 +3725,13 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[SLEW]</code></td>
+                    <td><code>[SLEW]</code> / <code>[HND OFF][SLEW]</code></td>
                     <td>Accepts the handoff of the slewed aircraft (if it is being handed off!).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[HND OFF](FLT ID)</code></td>
+                    <td>Accepts the handoff of the aircraft with the specified flight ID.
                     </td>
                   </tr>
                   <tr>

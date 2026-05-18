@@ -1,0 +1,529 @@
+{
+  "time": "2026-04-20T11:25:57.906502945Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:888:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "X-ray Jet Sixteen Thirty Three Newark Approach uh Teterboro Altimeter Two Niner Eight Six expect factors ILS runway one niner eight is bravo is current",
+  "whisper_duration_ms": 1211.941,
+  "audio_duration_ms": 12488,
+  "processor": "GPU: NVIDIA GeForce GTX 1660 (6180MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "EJA1633",
+  "command": "EI19 ATIS/B",
+  "stt_aircraft": {
+    "ExecJet 16 33": {
+      "Callsign": "EJA1633",
+      "AircraftType": "GLEX",
+      "Fixes": {
+        "Hearty": "HARTY",
+        "Mugzy": "MUGZY",
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Stillwater": "STW",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LVZ4",
+      "Altitude": 16283,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    },
+    "ExecJet 55 21": {
+      "Callsign": "EJA5521",
+      "AircraftType": "C680",
+      "Fixes": {
+        "Apart": "APART",
+        "Caldwell": "KCDW",
+        "Dowdy": "DOWDY",
+        "Fair": "FAAIR",
+        "Gonzo": "GNNZO",
+        "Koli": "KOLLI",
+        "Solberg": "SBJ",
+        "Weld": "WELDD",
+        "Zeze": "ZEZEE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two two": "R22"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R22": {
+          "Apart": "APART",
+          "Dowdy": "DOWDY",
+          "Fair": "FAAIR",
+          "Koli": "KOLLI",
+          "Weld": "WELDD",
+          "Zeze": "ZEZEE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 22",
+      "SID": "",
+      "STAR": "JAIKE4",
+      "Altitude": 6669,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "JetBlue three 27": {
+      "Callsign": "JBU327",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Dillon": "DYLIN",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Somto": "SOMTO",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 11592,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United niner 75": {
+      "Callsign": "UAL975",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Colts Neck": "COL",
+        "Elva": "ELVAE",
+        "White": "WHITE"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "EWR5",
+      "STAR": "",
+      "Altitude": 2717,
+      "State": "departure",
+      "ControllerFrequency": "4N",
+      "TrackingController": "4N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "cessna one eighty-two one one x-ray": {
+      "Callsign": "N8911X/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    },
+    "cessna skylane one one x-ray": {
+      "Callsign": "N8911X/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    },
+    "november eight niner one one x-ray": {
+      "Callsign": "N8911X",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    },
+    "skylane one one x-ray": {
+      "Callsign": "N8911X/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"X-ray Jet Sixteen Thirty Three Newark Approach uh Teterboro Altimeter Two Niner Eight Six expect factors ILS runway one niner eight is bravo is current\"",
+    "[local-stt] normalized words: [x ray jet 16 33 newark approach uh teterboro altimeter 2 9 8 6 expect factors ils runway 1 9 8 is bravo is current]",
+    "[local-stt] tokens: 20",
+    "[local-stt]   token[0]: Text=\"x\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"ray\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"jet\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"16\" Type=1 Value=16",
+    "[local-stt]   token[4]: Text=\"33\" Type=1 Value=33",
+    "[local-stt]   token[5]: Text=\"newark\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"uh\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"teterboro\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"altimeter\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"2986\" Type=1 Value=2986",
+    "[local-stt]   token[11]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"factors\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"198\" Type=1 Value=198",
+    "[local-stt]   token[16]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"bravo\" Type=0 Value=-1",
+    "[local-stt]   token[18]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[19]: Text=\"current\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 20 tokens, 8 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 20 tokens, 8 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"ExecJet 16 33\" (airline=0.492, flight=1.000, skip=2)",
+    "[local-stt]     pattern \"airline_flight\": selected \"ExecJet 16 33\" (airline=0.49, flight=1.00, skip=2)",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"ExecJet 55 21\" (airline=0.714, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"ExecJet 16 33\" (airline=0.714, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"ExecJet 16 33\" (airline=0.71, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": below MinScore (1.21 \u003c 1.30) for \"ExecJet 16 33\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"ExecJet 16 33\" (airline=0.500, flight=1.000, skip=2)",
+    "[local-stt]     pattern \"flight_only\": selected \"ExecJet 16 33\" (airline=0.50, flight=1.00, skip=2)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"EJA1633\" (conf=0.90, consumed=5, addressingForm=0, spokenKey=\"ExecJet 16 33\")",
+    "[local-stt] callsign match: Callsign=\"EJA1633\" SpokenKey=\"ExecJet 16 33\" Conf=0.90 Consumed=5",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=16283 Fixes=4 Approaches=4 AssignedApproach=\"\" LAHSORunways=[6 24]",
+    "[local-stt]   fix: \"Mugzy\" -\u003e \"MUGZY\"",
+    "[local-stt]   fix: \"Stillwater\" -\u003e \"STW\"",
+    "[local-stt]   fix: \"Teterboro\" -\u003e \"KTEB\"",
+    "[local-stt]   fix: \"Hearty\" -\u003e \"HARTY\"",
+    "[local-stt]   approach: \"r-nav yankee runway one niner\" -\u003e \"RY9\"",
+    "[local-stt]   approach: \"r-nav zulu runway one niner\" -\u003e \"RZ9\"",
+    "[local-stt]   approach: \"I L S runway one niner\" -\u003e \"I19\"",
+    "[local-stt]   approach: \"r-nav x-ray runway one niner\" -\u003e \"RX9\"",
+    "[local-stt] command tokens after disregard: 15",
+    "[local-stt]   token[0]: Text=\"newark\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"uh\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"teterboro\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"altimeter\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"2986\" Type=1 Value=2986",
+    "[local-stt]   token[6]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"factors\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"198\" Type=1 Value=198",
+    "[local-stt]   token[11]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"bravo\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"current\" Type=0 Value=-1",
+    "[local-stt] stripped position ID prefix: 2 tokens",
+    "[local-stt] ParseCommands: 13 tokens",
+    "[local-stt]   skipping filler word: \"uh\"",
+    "[local-stt]   no match at token[1]=\"teterboro\", skipping",
+    "[local-stt]   no match at token[2]=\"altimeter\", skipping",
+    "[local-stt]   no match at token[3]=\"2986\", skipping",
+    "[local-stt]   matched command: \"EI19\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt]   adding 5 fixes from approach I19 to aircraft context",
+    "[local-stt]   skipping filler word: \"is\"",
+    "[local-stt]   no match at token[10]=\"bravo\", skipping",
+    "[local-stt]   skipping filler word: \"is\"",
+    "[local-stt]   no match at token[12]=\"current\", skipping",
+    "[local-stt] ParseCommands: result=[EI19] (avgConf=1.00)",
+    "[local-stt] parsed commands: [EI19] (conf=1.00)",
+    "[local-stt] validated commands: [EI19] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"EJA1633 EI19\" (conf=0.90, time=8.0144ms) ==="
+  ]
+}

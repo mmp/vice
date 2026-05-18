@@ -153,13 +153,12 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 
 	s.maybeSetGoAround(ac, s.State.LaunchConfig.GoAroundRate)
 
-	// Decide at creation whether this pilot will spontaneously report
-	// field in sight (~10%) and, among those, whether they will also
-	// request the visual approach (~10%). VisualRequestDistance, when
-	// set, gates the request to the first tick inside 7–15 NM.
+	// Decide at creation whether this pilot will spontaneously report field in sight and, among
+	// those, whether they will also request the visual approach. VisualRequestDistance, when set,
+	// gates the request to the first tick inside that distance.
 	ac.WantsVisualApproach = s.Rand.Float32() < visualFieldProb
 	if ac.WantsVisualApproach && s.Rand.Float32() < visualRequestProb {
-		ac.VisualApproachRequestDistance = s.Rand.Float32Range(7, 15)
+		ac.VisualApproachRequestDistance = s.Rand.Float32Range(9, 16)
 	}
 
 	if err := s.assignSquawk(ac, &nasFp); err != nil {

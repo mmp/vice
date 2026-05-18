@@ -380,7 +380,7 @@
           "KBOS": "1D"
         },
         "default_consolidation": {
-          "1F": ["1I"]
+          "1F": ["1I", "1D"]
         }
       },
       "33L": {
@@ -395,7 +395,7 @@
           "KBOS": "1D"
         },
         "default_consolidation": {
-          "1F": ["1I"]
+          "1F": ["1I", "1D"]
         }
       },
       "33R": {
@@ -410,7 +410,7 @@
           "KBOS": "1D"
         },
         "default_consolidation": {
-          "1F": ["1I"]
+          "1F": ["1I", "1D"]
         }
       },
       "KMH": {

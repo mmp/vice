@@ -291,6 +291,91 @@ func TestAssignedAltitudeOverridesSTAR(t *testing.T) {
 	f.Run()
 }
 
+func TestAltitudeTargetStopsAtQueuedHold(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY HAUPT/a6000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  10000,
+		InitialSpeed:     250,
+	})
+
+	hold := altitudeTargetTestHold("DETGY")
+	if intent := f.nav.HoldAtFix(f.callsign, "DETGY", &hold); intent != nil {
+		if _, ok := intent.(av.UnableIntent); ok {
+			t.Fatalf("unexpected unable intent: %v", intent)
+		}
+	}
+	if f.nav.Heading.Hold != nil {
+		t.Fatal("expected hold to be queued, not active")
+	}
+
+	if target, ok := f.nav.findAltitudeTarget(); ok {
+		t.Fatalf("expected no altitude target past queued hold, got %.0f at %s", target.altitude, target.fix)
+	}
+}
+
+func TestAltitudeTargetStopsAtActiveHold(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "DETGY HAUPT/a6000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  10000,
+		InitialSpeed:     250,
+	})
+
+	hold := altitudeTargetTestHold("DETGY")
+	if intent := f.nav.HoldAtFix(f.callsign, "DETGY", &hold); intent != nil {
+		if _, ok := intent.(av.UnableIntent); ok {
+			t.Fatalf("unexpected unable intent: %v", intent)
+		}
+	}
+	if f.nav.Heading.Hold == nil {
+		t.Fatal("expected active hold")
+	}
+
+	if target, ok := f.nav.findAltitudeTarget(); ok {
+		t.Fatalf("expected no altitude target past active hold, got %.0f at %s", target.altitude, target.fix)
+	}
+}
+
+func TestAltitudeTargetIncludesHoldingFixRestriction(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "DETGY/a8000 HAUPT/a6000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  10000,
+		InitialSpeed:     250,
+	})
+
+	hold := altitudeTargetTestHold("DETGY")
+	if intent := f.nav.HoldAtFix(f.callsign, "DETGY", &hold); intent != nil {
+		if _, ok := intent.(av.UnableIntent); ok {
+			t.Fatalf("unexpected unable intent: %v", intent)
+		}
+	}
+
+	target, ok := f.nav.findAltitudeTarget()
+	if !ok {
+		t.Fatal("expected altitude target at holding fix")
+	}
+	if target.fix != "DETGY" || target.altitude != 8000 {
+		t.Fatalf("expected target 8000 at DETGY, got %.0f at %s", target.altitude, target.fix)
+	}
+}
+
+func altitudeTargetTestHold(fix string) av.Hold {
+	return av.Hold{
+		Fix:           fix,
+		InboundCourse: 180,
+		TurnDirection: av.TurnRight,
+		LegMinutes:    1,
+	}
+}
+
 // TestCrossFixAtAltitude verifies that "cross fix at altitude"
 // assignments are respected when the restriction differs from charted.
 func TestCrossFixAtAltitude(t *testing.T) {

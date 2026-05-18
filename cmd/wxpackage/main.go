@@ -346,7 +346,10 @@ func processAtmos(ctx context.Context, bucket *storage.BucketHandle, facilities 
 		})
 	}
 
-	return eg.Wait()
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+	return writePackagedAtmosManifest(outputDir)
 }
 
 func processFacilityAtmos(ctx context.Context, bucket *storage.BucketHandle, manifest *wx.Manifest, facilityID string, startDate, endDate time.Time, outputDir string) error {
@@ -457,6 +460,78 @@ func processFacilityAtmos(ctx context.Context, bucket *storage.BucketHandle, man
 	fmt.Printf("Wrote atmospheric data for %s\n", facilityID)
 
 	return nil
+}
+
+type atmosTimesOnly struct {
+	Times []int64
+}
+
+func writePackagedAtmosManifest(outputDir string) error {
+	manifest := wx.NewManifest()
+
+	entries, err := os.ReadDir(outputDir)
+	if err != nil {
+		return err
+	}
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+
+		filename := entry.Name()
+		if filename == wx.ManifestFilename || !strings.HasSuffix(filename, ".msgpack.zst") {
+			continue
+		}
+
+		facility := strings.TrimSuffix(filename, ".msgpack.zst")
+		times, err := loadPackagedAtmosTimes(filepath.Join(outputDir, filename))
+		if err != nil {
+			return fmt.Errorf("%s: load atmosphere times: %w", facility, err)
+		}
+		if len(times) == 0 {
+			continue
+		}
+		if err := manifest.SetFacilityTimestamps(facility, times); err != nil {
+			return fmt.Errorf("%s: set manifest timestamps: %w", facility, err)
+		}
+	}
+
+	path := filepath.Join(outputDir, wx.ManifestFilename)
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	if err := manifest.Save(f); err != nil {
+		f.Close()
+		return err
+	}
+	if err := f.Close(); err != nil {
+		return err
+	}
+
+	fmt.Printf("Wrote atmosphere manifest: %s\n", path)
+	return nil
+}
+
+func loadPackagedAtmosTimes(path string) ([]time.Time, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	zr, err := zstd.NewReader(f)
+	if err != nil {
+		return nil, err
+	}
+	defer zr.Close()
+
+	var timesOnly atmosTimesOnly
+	if err := msgpack.NewDecoder(zr).Decode(&timesOnly); err != nil {
+		return nil, err
+	}
+
+	return util.DeltaDecodeTimes(timesOnly.Times), nil
 }
 
 // loadExistingAtmosData loads existing atmospheric data from a file

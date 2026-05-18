@@ -180,6 +180,15 @@ func (m *typedMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords []s
 		}
 	}
 
+	// Anchored parsers (e.g., visualApproachParser) must find their
+	// keyword at the exact starting position. Skipping non-filler tokens
+	// to reach it would let this pattern win over a sibling pattern
+	// whose payload includes those tokens (e.g., a charted-visual
+	// approach name preceding "visual").
+	if ap, ok := m.parser.(anchoredParser); ok && ap.anchored() {
+		return matchResult{sayAgain: sayAgain}
+	}
+
 	// Slack: skip up to 2 unrecognized tokens to find a match.
 	// If the current position is a command boundary keyword, limit slack
 	// to 1 to avoid reaching too far past a likely new command.

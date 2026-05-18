@@ -384,7 +384,7 @@ func (c CompoundSpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			}
 		}
 
-		isAbove := !exact && seg.Speed.Range[0] > 0 && seg.Speed.Range[1] == MaxSpeed
+		isAbove := !exact && seg.Speed.Range[0] > 0 && seg.Speed.Range[1] == MaxRestrictionSpeed
 		isBelow := !exact && seg.Speed.Range[0] == 0
 
 		suffix := ""
@@ -712,7 +712,11 @@ func (a ApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add("[and we'll hold short of|hold short of] runway {rwy}", a.LAHSORunway)
 		}
 	case ApproachIntercept:
-		rt.Add("[intercepting the {appr} approach|intercepting {appr}]", a.ApproachName)
+		if a.HasLocalizer {
+			rt.Add("[intercepting the localizer|joining the localizer]")
+		} else {
+			rt.Add("[intercepting the {appr} approach|intercepting {appr}]", a.ApproachName)
+		}
 	case ApproachJoin:
 		rt.Add("[joining the {appr} approach course|joining {appr}]", a.ApproachName)
 	case ApproachAtFixCleared:
@@ -893,12 +897,31 @@ const (
 	TrafficResponseLooking                                     // No traffic visible, will look
 	TrafficResponseTrafficSeen                                 // Traffic is in sight
 	TrafficResponseAcknowledged                                // Other traffic is maintaining visual separation
+	TrafficResponseWhereWasIt                                  // Pilot asks the controller to repeat the traffic call
 )
 
 // TrafficAdvisoryIntent represents a pilot's response to a traffic advisory
 type TrafficAdvisoryIntent struct {
 	Response               TrafficAdvisoryResponse
 	WillMaintainSeparation bool // If true, add "will maintain visual separation"
+}
+
+func (t TrafficAdvisoryIntent) String() string {
+	wm := util.Select(t.WillMaintainSeparation, " + will maintain separation", "")
+	switch t.Response {
+	case TrafficResponseIMC:
+		return "IMC" + wm
+	case TrafficResponseLooking:
+		return "Looking" + wm
+	case TrafficResponseTrafficSeen:
+		return "TrafficSeen" + wm
+	case TrafficResponseAcknowledged:
+		return "Acknowledged" + wm
+	case TrafficResponseWhereWasIt:
+		return "WhereWasIt" + wm
+	default:
+		return "(invalid)"
+	}
 }
 
 func (t TrafficAdvisoryIntent) Render(rt *RadioTransmission, r *rand.Rand) {
@@ -914,7 +937,9 @@ func (t TrafficAdvisoryIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add("[we have the traffic|traffic in sight|we see the traffic|got the traffic]")
 		}
 	case TrafficResponseAcknowledged:
-		rt.Add("[roger|copy the traffic|roger, we have the traffic]")
+		rt.Add("[roger|copy the traffic]")
+	case TrafficResponseWhereWasIt:
+		rt.Add("[where was that traffic|where was the traffic|where was that traffic again|say again on the traffic]")
 	}
 }
 

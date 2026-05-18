@@ -471,3 +471,34 @@ func TestSignBit(t *testing.T) {
 		}
 	}
 }
+
+func TestExtent2DIntersect(t *testing.T) {
+	a := Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{10, 10}}
+	b := Extent2D{P0: [2]float32{5, 5}, P1: [2]float32{15, 15}}
+	got := Intersect(a, b)
+	want := Extent2D{P0: [2]float32{5, 5}, P1: [2]float32{10, 10}}
+	if got != want {
+		t.Errorf("overlap: got %+v, want %+v", got, want)
+	}
+	if got.IsEmpty() {
+		t.Errorf("overlap: IsEmpty=true, want false")
+	}
+
+	// Disjoint along x: result has P1[0] < P0[0].
+	c := Extent2D{P0: [2]float32{20, 0}, P1: [2]float32{30, 10}}
+	if r := Intersect(a, c); !r.IsEmpty() {
+		t.Errorf("disjoint x: IsEmpty=false (%+v), want true", r)
+	}
+
+	// Edge-touching counts as empty (zero area).
+	d := Extent2D{P0: [2]float32{10, 0}, P1: [2]float32{20, 10}}
+	if r := Intersect(a, d); !r.IsEmpty() {
+		t.Errorf("edge-touch: IsEmpty=false (%+v), want true", r)
+	}
+
+	// One fully containing the other returns the inner.
+	inner := Extent2D{P0: [2]float32{2, 2}, P1: [2]float32{4, 4}}
+	if r := Intersect(a, inner); r != inner {
+		t.Errorf("contained: got %+v, want %+v", r, inner)
+	}
+}

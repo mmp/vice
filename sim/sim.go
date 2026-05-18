@@ -95,8 +95,8 @@ type Sim struct {
 	FutureOnCourse         []FutureOnCourse
 	FutureSquawkChanges    []FutureChangeSquawk
 	FutureEmergencyUpdates []FutureEmergencyUpdate
-	FutureFieldInSights    []FutureFieldInSight
-	FutureTrafficInSights  []FutureTrafficInSight
+	FutureFieldChecks      map[av.ADSBCallsign]*FutureFieldCheck
+	FutureTrafficChecks    map[av.ADSBCallsign]*FutureTrafficCheck
 
 	NextEmergencyTime Time
 
@@ -179,6 +179,8 @@ type NewSimConfiguration struct {
 	WindSpecifier     *wx.WindSpecifier
 	Center            math.Point2LL
 	Range             float32
+	ScenarioCenter    math.Point2LL
+	ScenarioRange     float32
 	DefaultMaps       []string
 	DefaultMapGroup   string
 	Airspace          av.Airspace
@@ -230,6 +232,9 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		PilotErrorInterval: time.Duration(config.PilotErrorInterval * float32(time.Minute)),
 		LastPilotError:     NewSimTime(config.StartTime),
 
+		FutureFieldChecks:   make(map[av.ADSBCallsign]*FutureFieldCheck),
+		FutureTrafficChecks: make(map[av.ADSBCallsign]*FutureTrafficCheck),
+
 		NextEmergencyTime: util.Select(config.LaunchConfig.EmergencyAircraftRate > 0, NewSimTime(config.StartTime), Time{}),
 
 		lastUpdateTime: time.Now(),
@@ -265,7 +270,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		lg.Errorf("%v", err)
 	} else {
 		for ap, msoa := range apmetar {
-			metar := msoa.Decode()
+			metar := msoa.Decode(ap)
 			idx, ok := slices.BinarySearchFunc(metar, config.StartTime, func(m wx.METAR, t time.Time) int {
 				return m.Time.Compare(t)
 			})
@@ -1025,9 +1030,10 @@ func (s *Sim) updateState() {
 
 			if ac.Nav.Approach.RequestAltitude && ac.IsAssociated() {
 				ac.Nav.Approach.RequestAltitude = false
-				if ac.Nav.Altitude.Assigned == nil {
+				if ac.Nav.Altitude.Assigned == nil && ac.Nav.Altitude.AfterSpeed == nil {
 					// An altitude may have been subsequently assigned (e.g., fly heading 120,
-					// maintain 5000); skip the transmission if so.
+					// maintain 5000); skip the transmission if so. AfterSpeed counts too —
+					// the altitude is assigned, just deferred until the speed change completes.
 					s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestAltitude)
 				}
 			}
@@ -1217,9 +1223,9 @@ func (s *Sim) updateState() {
 		s.processVirtualControllerContacts()
 
 		s.processFutureOnCourse()
-		s.processFutureChangeSquawk()
-		s.processFutureFieldInSight()
-		s.processFutureTrafficInSight()
+		s.processFutureSquawkChanges()
+		s.processFutureFieldChecks()
+		s.processFutureTrafficChecks()
 
 		s.updateEmergencies()
 

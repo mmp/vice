@@ -1,0 +1,578 @@
+{
+  "time": "2026-04-20T11:28:43.992028097Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:888:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Scandinavian Seven Zero Zulu turn left heading zero disregard",
+  "whisper_duration_ms": 912.455,
+  "audio_duration_ms": 5832,
+  "processor": "GPU: NVIDIA GeForce GTX 1660 (6180MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "ExecJet 16 33": {
+      "Callsign": "EJA1633",
+      "AircraftType": "GLEX",
+      "Fixes": {
+        "Hearty": "HARTY",
+        "Mugzy": "MUGZY",
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Stillwater": "STW",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "LVZ4",
+      "Altitude": 10233,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    },
+    "ExecJet 52 56": {
+      "Callsign": "EJA5256",
+      "AircraftType": "CL35",
+      "Fixes": {
+        "Coate": "COATE",
+        "Huguenot": "HUO",
+        "Lemur": "LEMOR",
+        "Newark": "KEWR",
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 8905,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    },
+    "ExecJet 55 21": {
+      "Callsign": "EJA5521",
+      "AircraftType": "C680",
+      "Fixes": {
+        "Apart": "APART",
+        "Caldwell": "KCDW",
+        "Dowdy": "DOWDY",
+        "Fair": "FAAIR",
+        "Koli": "KOLLI",
+        "Weld": "WELDD",
+        "Zeze": "ZEZEE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two two": "R22"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R22": {
+          "Apart": "APART",
+          "Dowdy": "DOWDY",
+          "Fair": "FAAIR",
+          "Koli": "KOLLI",
+          "Weld": "WELDD",
+          "Zeze": "ZEZEE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 22",
+      "SID": "",
+      "STAR": "JAIKE4",
+      "Altitude": 5679,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "JetBlue three 27": {
+      "Callsign": "JBU327",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Dillon": "DYLIN",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 8019,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Scandinavian 70 zulu": {
+      "Callsign": "SAS70Z",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Crank": "CRANK",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Shaff": "SHAFF",
+        "Sparta": "SAX",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "cessna one eighty-two one one x-ray": {
+      "Callsign": "N8911X/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 3091,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    },
+    "cessna skylane one one x-ray": {
+      "Callsign": "N8911X/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 3091,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    },
+    "november eight niner one one x-ray": {
+      "Callsign": "N8911X",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 3091,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    },
+    "skylane one one x-ray": {
+      "Callsign": "N8911X/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I19": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RX9": {
+          "Curok": "CUROK",
+          "Dune": "DUUNE",
+          "Moogs": "MOOGZ",
+          "Whole": "WHOLN"
+        },
+        "RY9": {
+          "Nippy": "NIPIE",
+          "Scooby": "SKUBY",
+          "Strad": "STRAD",
+          "Tuggs": "TUGGZ",
+          "Unveil": "UNVIL"
+        },
+        "RZ9": {
+          "Alsow": "ALSIW",
+          "Coate": "COATE",
+          "Comok": "COMOK",
+          "Hooth": "HOOTH",
+          "Lelmey": "LELME",
+          "Shot": "SHOTT",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 3091,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "6",
+        "24"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Scandinavian Seven Zero Zulu turn left heading zero disregard\"",
+    "[local-stt] normalized words: [scandinavian 7 0 zulu turn left heading 0 disregard]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"scandinavian\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"70\" Type=1 Value=70",
+    "[local-stt]   token[2]: Text=\"zulu\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"0\" Type=1 Value=0",
+    "[local-stt]   token[7]: Text=\"disregard\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 9 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 9 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Scandinavian 70 zulu\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Scandinavian 70 zulu\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Scandinavian 70 zulu\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Scandinavian 70 zulu\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 4 results",
+    "[local-stt]     result 0: \"ExecJet 16 33\" (airline=0.409, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Scandinavian 70 zulu\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"ExecJet 55 21\" (airline=0.409, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"ExecJet 52 56\" (airline=0.409, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Scandinavian 70 zulu\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": no results",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"SAS70Z\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Scandinavian 70 zulu\")",
+    "[local-stt] callsign match: Callsign=\"SAS70Z\" SpokenKey=\"Scandinavian 70 zulu\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=7000 Fixes=11 Approaches=1 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[11 29]",
+    "[local-stt]   fix: \"Izeko\" -\u003e \"IZEKO\"",
+    "[local-stt]   fix: \"Gimme\" -\u003e \"GIMEE\"",
+    "[local-stt]   fix: \"Zavpi\" -\u003e \"ZAVPI\"",
+    "[local-stt]   fix: \"Buzzed\" -\u003e \"BUZZD\"",
+    "[local-stt]   fix: \"Crank\" -\u003e \"CRANK\"",
+    "[local-stt]   fix: \"Hokir\" -\u003e \"HOKIR\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   fix: \"Shaff\" -\u003e \"SHAFF\"",
+    "[local-stt]   fix: \"Sparta\" -\u003e \"SAX\"",
+    "[local-stt]   fix: \"Philbo\" -\u003e \"PHLBO\"",
+    "[local-stt]   fix: \"Pattern\" -\u003e \"PATRN\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt] command tokens after disregard: 0",
+    "[local-stt] no tokens after stripping prefixes, returning empty",
+    "[local-stt] === DecodeTranscript END: \"\" (position ID only, time=3.3718ms) ==="
+  ]
+}
