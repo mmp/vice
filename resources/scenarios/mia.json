@@ -3,52 +3,28 @@
   "airports": {
     "KMIA": {
       "approaches": {
-        "R8L": {
-          "runway": "8L",
-          "type": "RNAV",
-          "waypoints": ["VICUV/a3000/if KACDE/a1500/faf"]
-        },
-        "I8R": {
-          "cifp_id": "I8R"
-        },
-        "I9": {
-          "runway": "9",
-          "type": "ILS",
-          "waypoints": ["LLEGG/a4000/iaf GRITT/a3000/if INESS/a1500/faf"]
-        },
-        "I12": {
-          "cifp_id": "I12"
-        },
-        "I6L": {
-          "runway": "26L",
-          "type": "ILS",
-          "waypoints": [
-            "ZILBI/a5000/iaf CIDUN/a4000 BASHO/a3000/if AGLER/a1600/faf",
-            "RHODZ/a6000/s210/iaf CIDUN/a4000 BASHO/a3000/if AGLER/a1600/faf",
-            "TUBBZ/a6000/iaf BASHO/a3000/if AGLER/a1600/faf"
-          ]
-        },
-        "R6R": {
-          "runway": "26R",
-          "type": "RNAV",
-          "waypoints": [
-            "RHODZ/a6000/s210/iaf TERRI/a4000/iaf HINKU/a3000/if JODAX/a1500/faf",
-            "TUBBZ/a6000/iaf HINKU/a3000/if JODAX/a1500/faf"
-          ]
-        },
-        "I27": {
-          "runway": "27",
-          "type": "ILS",
-          "waypoints": [
-            "HENDN/a5000/iaf JMROY/a4000 SARCO/a3000/if CHHAZ/a1800/faf",
-            "TUBBZ/a6000/iaf SARCO/a3000/if CHHAZ/a1800/faf"
-          ]
-        },
-        "I30": {
-          "runway": "30",
-          "type": "ILS",
-          "waypoints": ["SHANN/a5000/if OLDDE/a3000 BIRDD/a1600/faf"]
-        }
+        "L8L": { "cifp_id": "L8L" },
+        "RY8L": { "cifp_id": "RY8L" },
+        "RZ8L": { "cifp_id": "RZ8L" },
+        "RY8R": { "cifp_id": "RY8R" },
+        "RZ8R": { "cifp_id": "RZ8R" },
+        "I8R": { "cifp_id": "I8R" },
+        "R9": { "cifp_id": "R9" },
+        "I9": { "cifp_id": "I9" },
+        "RY12": { "cifp_id": "RY12" },
+        "RZ12": { "cifp_id": "RZ12" },
+        "I12": { "cifp_id": "I12" },
+        "RY6L": { "cifp_id": "RY26L" },
+        "RZ6L": { "cifp_id": "RZ26L" },
+        "I6L": { "cifp_id": "I26L" },
+        "R6R": { "cifp_id": "R26R" },
+        "L6R": { "cifp_id": "L26R" },
+        "RY7": { "cifp_id": "RY27" },
+        "RZ7": { "cifp_id": "RZ27" },
+        "I27": { "cifp_id": "I27" },
+        "RY3": { "cifp_id": "RY30" },
+        "RZ3": { "cifp_id": "RZ30" },
+        "I30": { "cifp_id": "I30" }
       },
       "crda_regions": {
         "12": {
@@ -892,18 +868,16 @@
     },
     "KFLL": {
       "approaches": {
-        "I0L": {
-          "cifp_id": "I10L"
-        },
-        "I0R": {
-          "cifp_id": "I10R"
-        },
-        "I8L": {
-          "cifp_id": "I28L"
-        },
-        "I8R": {
-          "cifp_id": "I28R"
-        }
+        "I0L": { "cifp_id": "I10L" },
+        "RY0L": { "cifp_id": "RY10L" },
+        "RZ0L": { "cifp_id": "RZ10L" },
+        "I0R": { "cifp_id": "I10R" },
+        "R0R": { "cifp_id": "R10R" },
+        "I8L": { "cifp_id": "I28L" },
+        "R8L": { "cifp_id": "R28L" },
+        "I8R": { "cifp_id": "I28R" },
+        "RY8R": { "cifp_id": "RY28R" },
+        "RZ8R": { "cifp_id": "RZ28R" }
       },
       "departure_routes": {
         "10L": {
@@ -1494,24 +1468,11 @@
     },
     "KTMB": {
       "approaches": {
-        "I9R": {
-          "runway": "9R",
-          "type": "ILS",
-          "waypoints": ["VKZ/a2500/iaf LAYDN/a1500/faf"]
-        },
-        "R9L": {
-          "cifp_id": "R9L"
-        },
-        "R7L": {
-          "runway": "27L",
-          "type": "RNAV",
-          "waypoints": ["LUVLY/iaf/a2000+ CACSA/a2000+/if ZAGUN/a2000/faf"]
-        },
-        "R7R": {
-          "runway": "27R",
-          "type": "RNAV",
-          "waypoints": ["LUVLY/a2000+/iaf HOTMA/a2000+/if FITOL/a2000/faf"]
-        }
+        "R9L": { "cifp_id": "R9L" },
+        "I9R": { "cifp_id": "I9R" },
+        "R9R": { "cifp_id": "R9R" },
+        "R7L": { "cifp_id": "R27L" },
+        "R7R": { "cifp_id": "R27R" }
       },
       "departure_routes": {
         "9L": {
@@ -1885,26 +1846,13 @@
     },
     "KOPF": {
       "approaches": {
-        "I9L": {
-          "runway": "9L",
-          "type": "ILS",
-          "waypoints": ["OKANE/a1600/if SAZBO/a1600/faf ZOLTA/a480"]
-        },
-        "I12": {
-          "runway": "12",
-          "type": "ILS",
-          "waypoints": ["JARNO/a1700/if ZIKNA/a1700/faf"]
-        },
-        "I7R": {
-          "runway": "27R",
-          "type": "ILS",
-          "waypoints": ["IZROZ/a1700 JOLYN/a1600/faf"]
-        },
-        "R30": {
-          "runway": "30",
-          "type": "RNAV",
-          "waypoints": ["BOHTZ/iaf/a3000+ HOWHS/a3000/if PRTAL/faf/a1600", "HOWHS/a3000/iaf PRTAL/faf/a1600"]
-        }
+        "I9L": { "cifp_id": "I9L" },
+        "R9L": { "cifp_id": "R9L" },
+        "I12": { "cifp_id": "I12" },
+        "R12": { "cifp_id": "R12" },
+        "I7R": { "cifp_id": "I27R" },
+        "R7R": { "cifp_id": "R27R" },
+        "R30": { "cifp_id": "R30" }
       },
       "departure_routes": {
         "9L": {
@@ -2302,16 +2250,9 @@
     },
     "KFXE": {
       "approaches": {
-        "I9": {
-          "runway": "9",
-          "type": "ILS",
-          "waypoints": ["ENVER/a2000/iaf PADDS/a2000/faf"]
-        },
-        "R27": {
-          "runway": "27",
-          "type": "RNAV",
-          "waypoints": ["FORSU/a2000/iaf KOKEY/a1500/faf"]
-        }
+        "I9": { "cifp_id": "I9" },
+        "R9": { "cifp_id": "R9" },
+        "R27": { "cifp_id": "R27" }
       },
       "departure_routes": {
         "9": {
@@ -5083,6 +5024,10 @@
         },
         {
           "airport": "KMIA",
+          "runway": "8R"
+        },
+        {
+          "airport": "KMIA",
           "runway": "12"
         },
         {
@@ -5159,6 +5104,10 @@
     },
     "KMIA West (No Sats)": {
       "arrival_runways": [
+        {
+          "airport": "KMIA",
+          "runway": "26L"
+        },
         {
           "airport": "KMIA",
           "runway": "26R"
@@ -5244,6 +5193,10 @@
         {
           "airport": "KMIA",
           "runway": "8L"
+        },
+        {
+          "airport": "KMIA",
+          "runway": "8R"
         },
         {
           "airport": "KMIA",
@@ -5367,6 +5320,10 @@
     },
     "KMIA West (Sats - Minor Errors)": {
       "arrival_runways": [
+        {
+          "airport": "KMIA",
+          "runway": "26L"
+        },
         {
           "airport": "KMIA",
           "runway": "26R"
