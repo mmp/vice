@@ -661,6 +661,15 @@ type AircraftCommandsResult struct {
 	ReadbackText      string          // Text for client to synthesize
 	ReadbackVoiceName string          // Voice name for synthesis (e.g., "am_adam")
 	ReadbackCallsign  av.ADSBCallsign // Callsign for the readback
+	// ReadbackPlayAt is the sim-time at which the requester should start
+	// TTS playback. Mirrors the PlayAt stamped on the corresponding
+	// RadioTransmissionEvent so requester and observers play at the same
+	// moment.
+	ReadbackPlayAt sim.Time
+	// ReadbackRequesterToken is the controllerToken of the client whose
+	// RPC produced the readback. Echoed verbatim from the request so the
+	// client can correlate its own RPC results with stamped events.
+	ReadbackRequesterToken string
 }
 
 const RunAircraftCommandsRPC = "Sim.RunAircraftCommands"
@@ -683,31 +692,33 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	}
 
 	// Helper to populate readback fields for client-side TTS synthesis.
-	setReadback := func(spokenText string) {
+	setReadback := func(spokenText string, playAt sim.Time) {
 		if cmds.EnableTTS && spokenText != "" {
 			result.ReadbackText = spokenText
 			result.ReadbackVoiceName = c.sim.VoiceAssigner.GetVoice(callsign, c.sim.Rand)
 			result.ReadbackCallsign = callsign
+			result.ReadbackPlayAt = playAt
+			result.ReadbackRequesterToken = cmds.ControllerToken
 		}
 	}
 
 	if cmds.Multiple {
-		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
+		spokenText, playAt, err := c.sim.PilotMixUp(c.tcw, callsign, cmds.ControllerToken)
 		if err != nil {
 			rewriteError(err)
 		}
-		setReadback(spokenText)
+		setReadback(spokenText, playAt)
 		return nil // don't continue with the commands
 	} else if !cmds.ClickedTrack && c.sim.ShouldTriggerPilotMixUp(callsign) {
-		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
+		spokenText, playAt, err := c.sim.PilotMixUp(c.tcw, callsign, cmds.ControllerToken)
 		if err != nil {
 			rewriteError(err)
 		}
-		setReadback(spokenText)
+		setReadback(spokenText, playAt)
 		return nil // don't continue with the commands
 	}
 
-	execResult := c.sim.RunAircraftControlCommands(c.tcw, cmds.Callsign, cmds.Commands, cmds.AudioDuration)
+	execResult := c.sim.RunAircraftControlCommands(c.tcw, cmds.Callsign, cmds.Commands, cmds.AudioDuration, cmds.ControllerToken)
 	result.RemainingInput = execResult.RemainingInput
 	if execResult.Error != nil {
 		result.ErrorMessage = execResult.Error.Error()
@@ -718,6 +729,8 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		result.ReadbackText = execResult.ReadbackSpokenText
 		result.ReadbackVoiceName = c.sim.VoiceAssigner.GetVoice(cs, c.sim.Rand)
 		result.ReadbackCallsign = cs
+		result.ReadbackPlayAt = execResult.ReadbackPlayAt
+		result.ReadbackRequesterToken = cmds.ControllerToken
 	}
 
 	// Log whisper STT commands (WhisperDuration is non-zero for voice commands)
@@ -1050,6 +1063,12 @@ type RequestContactResult struct {
 	ContactVoiceName string          // Voice name for synthesis (e.g., "am_adam")
 	ContactCallsign  av.ADSBCallsign // Callsign of the aircraft
 	ContactType      av.RadioTransmissionType
+	// ContactPlayAt is the sim-time at which the requester should start
+	// TTS playback for the generated contact transmission.
+	ContactPlayAt sim.Time
+	// ContactRequesterToken is the controllerToken of the client whose
+	// RPC produced the contact transmission, echoed verbatim.
+	ContactRequesterToken string
 }
 
 const RequestContactTransmissionRPC = "Sim.RequestContactTransmission"
@@ -1062,8 +1081,16 @@ func (sd *dispatcher) RequestContactTransmission(args *RequestContactArgs, resul
 		return ErrNoSimForControllerToken
 	}
 
-	// Request a contact from the session - returns text and voice name for client-side synthesis
-	result.ContactText, result.ContactVoiceName, result.ContactCallsign, result.ContactType = c.session.RequestContact(c.tcw)
+	// Request a contact from the session - returns text, voice name, and
+	// PlayAt for client-side synthesis. ContactRequesterToken is echoed
+	// from the args so the client can correlate.
+	text, voice, callsign, ty, playAt := c.session.RequestContact(c.tcw, args.ControllerToken)
+	result.ContactText = text
+	result.ContactVoiceName = voice
+	result.ContactCallsign = callsign
+	result.ContactType = ty
+	result.ContactPlayAt = playAt
+	result.ContactRequesterToken = args.ControllerToken
 	return nil
 }
 
@@ -1101,4 +1128,214 @@ func (sd *dispatcher) AnnotateFlightStrip(args *AnnotateFlightStripArgs, _ *stru
 		return ErrNoSimForControllerToken
 	}
 	return c.sim.AnnotateFlightStrip(c.tcw, args.ACID, args.Annotations)
+}
+
+// Shared TCW track annotation mutations. Each RPC echoes a fresh
+// SimStateUpdate so the caller's local State.TCWDisplay reflects the
+// server value immediately, without waiting for the next 1 Hz poll.
+
+type SetTrackBoolArgs struct {
+	ControllerToken string
+	Callsign        av.ADSBCallsign
+	Value           bool
+}
+
+type SetTrackTimeArgs struct {
+	ControllerToken string
+	Callsign        av.ADSBCallsign
+	Value           sim.Time
+}
+
+// Per-field MSAW / InQLRegion setters. Used by stars per-frame
+// detection paths (updateMSAWs, updateQuicklookRegionTracks) so each
+// write touches exactly one field and cannot clobber a server-driven
+// mutation of a neighboring field between 1 Hz state-update polls.
+
+const SetTrackMSAWRPC = "Sim.SetTrackMSAW"
+
+func (sd *dispatcher) SetTrackMSAW(args *SetTrackBoolArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.SetTrackMSAW(c.tcw, args.Callsign, args.Value)
+	*update = c.GetStateUpdate()
+	return nil
+}
+
+const SetTrackInhibitMSAWRPC = "Sim.SetTrackInhibitMSAW"
+
+func (sd *dispatcher) SetTrackInhibitMSAW(args *SetTrackBoolArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.SetTrackInhibitMSAW(c.tcw, args.Callsign, args.Value)
+	*update = c.GetStateUpdate()
+	return nil
+}
+
+const SetTrackMSAWAcknowledgedRPC = "Sim.SetTrackMSAWAcknowledged"
+
+func (sd *dispatcher) SetTrackMSAWAcknowledged(args *SetTrackBoolArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.SetTrackMSAWAcknowledged(c.tcw, args.Callsign, args.Value)
+	*update = c.GetStateUpdate()
+	return nil
+}
+
+const SetTrackMSAWStartRPC = "Sim.SetTrackMSAWStart"
+
+func (sd *dispatcher) SetTrackMSAWStart(args *SetTrackTimeArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.SetTrackMSAWStart(c.tcw, args.Callsign, args.Value)
+	*update = c.GetStateUpdate()
+	return nil
+}
+
+const SetTrackMSAWSoundEndRPC = "Sim.SetTrackMSAWSoundEnd"
+
+func (sd *dispatcher) SetTrackMSAWSoundEnd(args *SetTrackTimeArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.SetTrackMSAWSoundEnd(c.tcw, args.Callsign, args.Value)
+	*update = c.GetStateUpdate()
+	return nil
+}
+
+const SetTrackInQLRegionRPC = "Sim.SetTrackInQLRegion"
+
+func (sd *dispatcher) SetTrackInQLRegion(args *SetTrackBoolArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.SetTrackInQLRegion(c.tcw, args.Callsign, args.Value)
+	*update = c.GetStateUpdate()
+	return nil
+}
+
+type SetTrackAnnotationsArgs struct {
+	ControllerToken string
+	Callsign        av.ADSBCallsign
+	Annotations     sim.TrackAnnotations
+}
+
+const SetTrackAnnotationsRPC = "Sim.SetTrackAnnotations"
+
+func (sd *dispatcher) SetTrackAnnotations(args *SetTrackAnnotationsArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.SetTrackAnnotations(c.tcw, args.Callsign, args.Annotations)
+	*update = c.GetStateUpdate()
+	return nil
+}
+
+// Shared TCW scope-prefs sync. A client whose scopePrefsBaseline
+// diverges from the currently-shared blob pushes its JSON-encoded
+// STARS Preferences here; the server stores it verbatim and everyone
+// at the TCW picks it up via their next SimStateUpdate poll.
+
+type SetScopePrefsBlobArgs struct {
+	ControllerToken string
+	Blob            []byte
+}
+
+const SetScopePrefsBlobRPC = "Sim.SetScopePrefsBlob"
+
+func (sd *dispatcher) SetScopePrefsBlob(args *SetScopePrefsBlobArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.SetScopePrefsBlob(c.tcw, args.Blob)
+	*update = c.GetStateUpdate()
+	return nil
+}
+
+type SetFusedArgs struct {
+	ControllerToken string
+	Value           bool
+}
+
+const SetFusedRPC = "Sim.SetFused"
+
+func (sd *dispatcher) SetFused(args *SetFusedArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.SetFused(c.tcw, args.Value)
+	*update = c.GetStateUpdate()
+	return nil
+}
+
+//////////////////////////////////////////////////////////////////////
+// PTT voice relay (same-TCW)
+
+const StartPTTRPC = "Sim.StartPTT"
+
+type StartPTTReply struct {
+	Granted bool
+}
+
+func (sd *dispatcher) StartPTT(token string, reply *StartPTTReply) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(token)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	reply.Granted = c.sim.StartPTT(c.tcw, token)
+	return nil
+}
+
+type StreamPTTAudioArgs struct {
+	ControllerToken string
+	Samples         []int16
+}
+
+const StreamPTTAudioRPC = "Sim.StreamPTTAudio"
+
+func (sd *dispatcher) StreamPTTAudio(args *StreamPTTAudioArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.RecordPTTChunk(c.tcw, args.ControllerToken, args.Samples)
+	return nil
+}
+
+const StopPTTRPC = "Sim.StopPTT"
+
+func (sd *dispatcher) StopPTT(token string, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(token)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	c.sim.StopPTT(c.tcw, token)
+	return nil
 }

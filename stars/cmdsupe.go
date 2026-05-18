@@ -232,8 +232,9 @@ func registerSupeCommands() {
 				if err != nil {
 					sp.displayError(err, ctx, "")
 				} else {
-					// This is sort of a hack but gives us instant updates on the scope after state changes
-					sp.updateInTrailDistance(ctx)
+					// The server recomputes ATPA state once per tick and
+					// publishes it on sim.Track, so the scope will pick up
+					// the new config on its next update.
 					sp.previewAreaOutput = output
 				}
 			})
@@ -265,8 +266,13 @@ func registerSupeCommands() {
 				case 'E':
 					return configureATPA(sp, ctx, sim.ATPAEnableVolume, vol)
 				case 'I':
-					for _, state := range sp.TrackState {
-						state.DisplayATPAWarnAlert = nil
+					cb := func(err error) { sp.displayError(err, ctx, "") }
+					for _, trk := range sp.visibleTracks {
+						if trk.IsAssociated() {
+							anno := sp.annotationsForTrack(ctx, trk)
+							anno.DisplayATPAWarnAlert = nil
+							ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, cb)
+						}
 					}
 					return configureATPA(sp, ctx, sim.ATPADisableVolume, vol)
 				default:

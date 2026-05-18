@@ -42,8 +42,11 @@ func registerToolsCommands() {
 			return ErrSTARSIllegalTrack
 		}
 
-		state := sp.TrackState[trk.ADSBCallsign]
-		state.DisplayPTL = !state.DisplayPTL
+		if trk.IsAssociated() {
+			anno := sp.annotationsForTrack(ctx, *trk)
+			anno.DisplayPTL = !anno.DisplayPTL
+			ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, func(err error) { sp.displayError(err, ctx, "") })
+		}
 		return nil
 	})
 
@@ -133,20 +136,24 @@ func registerToolsCommands() {
 
 	// 6.5.4 Toggle display of a single ghost data block at this TCW/TDW
 	registerCommand(CommandModeMultiFunc, "N[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
-		state := sp.TrackState[trk.ADSBCallsign]
-		if trk.IsUnassociated() || !trackInCRDARegion(sp, ctx, trk) || state.Ghost.State != GhostStateSuppressed {
+		anno := sp.annotations(ctx, trk.ADSBCallsign)
+		if trk.IsUnassociated() || !trackInCRDARegion(sp, ctx, trk) || anno.Ghost.State != GhostStateSuppressed {
 			return CommandStatus{Output: "ILL TRK"} // informational
 		}
-		state.Ghost.State = GhostStateRegular
+		anno.Ghost.State = GhostStateRegular
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
 		return CommandStatus{}
 	})
 	registerCommand(CommandModeMultiFunc, "N[GHOST_SLEW]", func(sp *STARSPane, ctx *panes.Context, ghost *av.GhostTrack) error {
-		if state, ok := sp.TrackState[ghost.ADSBCallsign]; !ok {
+		if _, ok := sp.TrackState[ghost.ADSBCallsign]; !ok {
 			return ErrSTARSIllegalTrack
-		} else {
-			state.Ghost.State = GhostStateSuppressed
-			return nil
 		}
+		anno := sp.annotations(ctx, ghost.ADSBCallsign)
+		anno.Ghost.State = GhostStateSuppressed
+		ctx.Client.SetTrackAnnotations(ghost.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
+		return nil
 	})
 
 	// 6.5.5 Change leader line direction for ghost data blocks on specified runway
@@ -168,9 +175,11 @@ func registerToolsCommands() {
 	})
 
 	// 6.5.7 Toggle ghost data block between full and partial data block formats (implied)
-	registerCommand(CommandModeNone, "[GHOST_SLEW]", func(sp *STARSPane, ghost *av.GhostTrack) {
-		state := sp.TrackState[ghost.ADSBCallsign]
-		state.Ghost.PartialDatablock = !state.Ghost.PartialDatablock
+	registerCommand(CommandModeNone, "[GHOST_SLEW]", func(sp *STARSPane, ctx *panes.Context, ghost *av.GhostTrack) {
+		anno := sp.annotations(ctx, ghost.ADSBCallsign)
+		anno.Ghost.PartialDatablock = !anno.Ghost.PartialDatablock
+		ctx.Client.SetTrackAnnotations(ghost.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
 	})
 
 	// 6.5.8 Force / unforce ghost qualification for all tracks
@@ -655,8 +664,10 @@ func registerToolsCommands() {
 		if !ctx.FacilityAdaptation.Datablocks.ForceQLToSelf || !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
 			return ErrSTARSIllegalPosition
 		}
-		state := sp.TrackState[trk.ADSBCallsign]
-		state.ForceQL = true
+		anno := sp.annotations(ctx, trk.ADSBCallsign)
+		anno.ForceQL = true
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
 		return nil
 	}
 	registerCommand(CommandModeNone, "**[TRK_ACID]|**[TRK_BCN]|**[TRK_INDEX]", forceQLToSelf)
@@ -707,11 +718,16 @@ func registerToolsCommands() {
 
 	// 6.13.1 Specify datablock position for a single track (implied)
 	registerCommand(CommandModeNone, "[#][SLEW]",
-		func(sp *STARSPane, direction int, state *TrackState) error {
+		func(sp *STARSPane, ctx *panes.Context, direction int, trk *sim.Track) error {
 			if dir, ok := sp.numpadToDirection(direction); ok {
-				state.LeaderLineDirection = dir
-				if dir != nil {
-					state.UseGlobalLeaderLine = false
+				if trk.IsAssociated() {
+					anno := sp.annotationsForTrack(ctx, *trk)
+					anno.LeaderLineDirection = dir
+					if dir != nil {
+						anno.UseGlobalLeaderLine = false
+					}
+					ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+						func(err error) { sp.displayError(err, ctx, "") })
 				}
 				return nil
 			} else {
@@ -767,15 +783,14 @@ func registerToolsCommands() {
 	// 6.13.7 Toggle beacon code display for an unassociated track
 	// 6.13.8 Display associated track's ACID, RBC, and ABC in Preview area (p. 6-93)
 	// TODO: 5.6.15 Release assigned beacon code from inactive or suspended flight plan
-	registerCommand(CommandModeMultiFunc, "B[SLEW]", func(sp *STARSPane, trk *sim.Track) CommandStatus {
+	registerCommand(CommandModeMultiFunc, "B[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
 		if trk.IsAssociated() {
 			// Display ACID, RBC (received beacon code), ABC (assigned beacon code)
 			rbc := util.Select(trk.Mode == av.TransponderModeStandby, "    ", trk.Squawk.String())
 			return CommandStatus{Output: string(trk.FlightPlan.ACID) + " " + rbc + " " + trk.FlightPlan.AssignedSquawk.String()}
 		} else {
-			// 6.13.7 For unassociated tracks, toggle beacon code display in LDB
-			state := sp.TrackState[trk.ADSBCallsign]
-			state.DisplayLDBBeaconCode = !state.DisplayLDBBeaconCode
+			// 6.13.7 For unassociated tracks, beacon code display toggle is
+			// not synced across relief controllers (no ACID to key on).
 			return CommandStatus{}
 		}
 	})
@@ -855,16 +870,18 @@ func registerToolsCommands() {
 
 	// 6.13.17 Specify data block position for a single track
 	registerCommand(CommandModeMultiFunc, "L[#] [TRK_ACID]|L[#] [TRK_BCN]|L[#] [TRK_INDEX]|L[#][SLEW]",
-		func(sp *STARSPane, direction int, trk *sim.Track) error {
+		func(sp *STARSPane, ctx *panes.Context, direction int, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrSTARSIllegalTrack
 			}
 			if dir, ok := sp.numpadToDirection(direction); ok {
-				state := sp.TrackState[trk.ADSBCallsign]
-				state.LeaderLineDirection = dir
+				anno := sp.annotationsForTrack(ctx, *trk)
+				anno.LeaderLineDirection = dir
 				if dir != nil {
-					state.UseGlobalLeaderLine = false
+					anno.UseGlobalLeaderLine = false
 				}
+				ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+					func(err error) { sp.displayError(err, ctx, "") })
 			}
 			return nil
 		})
@@ -910,18 +927,20 @@ func registerToolsCommands() {
 				}
 				modifyFlightPlan(sp, ctx, fp.ACID, spec, false)
 			} else {
-				// Non-owned track - local state only
-				state := sp.TrackState[trk.ADSBCallsign]
-				inhibit := state.InhibitACTypeDisplay != nil && *state.InhibitACTypeDisplay
-				if !inhibit && ctx.SimTime.Before(state.ForceACTypeDisplayEndTime) {
-					state.ForceACTypeDisplayEndTime = extendTime
+				// Non-owned track - shared annotation
+				anno := sp.annotations(ctx, trk.ADSBCallsign)
+				inhibit := anno.InhibitACTypeDisplay != nil && *anno.InhibitACTypeDisplay
+				if !inhibit && ctx.SimTime.Before(anno.ForceACTypeDisplayEndTime) {
+					anno.ForceACTypeDisplayEndTime = extendTime
 				} else {
 					newInhibit := !inhibit
-					state.InhibitACTypeDisplay = &newInhibit
+					anno.InhibitACTypeDisplay = &newInhibit
 					if !newInhibit {
-						state.ForceACTypeDisplayEndTime = extendTime
+						anno.ForceACTypeDisplayEndTime = extendTime
 					}
 				}
+				ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+					func(err error) { sp.displayError(err, ctx, "") })
 			}
 			return nil
 		})
@@ -999,9 +1018,10 @@ func registerToolsCommands() {
 			if trk.FlightPlan.RequestedAltitude == 0 {
 				return ErrSTARSIllegalFunction
 			}
-			state := sp.TrackState[trk.ADSBCallsign]
 			b := true
-			state.DisplayRequestedAltitude = &b
+			anno := sp.annotationsForTrack(ctx, *trk)
+			anno.DisplayRequestedAltitude = &b
+			ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, func(err error) { sp.displayError(err, ctx, "") })
 			return nil
 		})
 	registerCommand(CommandModeMultiFunc, "RAI[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
@@ -1011,9 +1031,10 @@ func registerToolsCommands() {
 		if trk.FlightPlan.RequestedAltitude == 0 {
 			return ErrSTARSIllegalFunction
 		}
-		state := sp.TrackState[trk.ADSBCallsign]
 		b := false
-		state.DisplayRequestedAltitude = &b
+		anno := sp.annotationsForTrack(ctx, *trk)
+		anno.DisplayRequestedAltitude = &b
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, func(err error) { sp.displayError(err, ctx, "") })
 		return nil
 	})
 	registerCommand(CommandModeMultiFunc, "RA[SLEW]",
@@ -1025,12 +1046,15 @@ func registerToolsCommands() {
 				return ErrSTARSIllegalFunction
 			}
 
-			state := sp.TrackState[trk.ADSBCallsign]
-			if state.DisplayRequestedAltitude == nil {
-				b := sp.DisplayRequestedAltitude
-				state.DisplayRequestedAltitude = &b
+			anno := sp.annotationsForTrack(ctx, *trk)
+			var next bool
+			if anno.DisplayRequestedAltitude == nil {
+				next = !sp.DisplayRequestedAltitude
+			} else {
+				next = !*anno.DisplayRequestedAltitude
 			}
-			*state.DisplayRequestedAltitude = !*state.DisplayRequestedAltitude
+			anno.DisplayRequestedAltitude = &next
+			ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, func(err error) { sp.displayError(err, ctx, "") })
 			return nil
 		})
 
@@ -1090,95 +1114,134 @@ func registerToolsCommands() {
 
 	// 6.21.2 Display TPA J-Ring for a single track (implied)
 	// 6.21.3 Modify TPA J-Ring radius for single track (Implied command
-	registerCommand(CommandModeNone, "*J[TPA_FLOAT][SLEW]", func(radius float32, state *TrackState) error {
+	registerCommand(CommandModeNone, "*J[TPA_FLOAT][SLEW]", func(sp *STARSPane, ctx *panes.Context, radius float32, trk *sim.Track) error {
 		// FIXME: *J is not allowed if the track has a ghost
 
 		if radius < 1 || radius > 30 {
 			return ErrSTARSIllegalValue
 		}
-		state.JRingRadius = radius
-		state.ConeLength = 0 // can't have both
+		anno := sp.annotationsForTrack(ctx, *trk)
+		anno.JRingRadius = radius
+		anno.ConeLength = 0 // can't have both
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
 		return nil
 	})
 
 	// 6.21.4 Delete TPA J-Ring for single track (Implied command)
-	registerCommand(CommandModeNone, "*J[SLEW]", func(state *TrackState) {
-		state.JRingRadius = 0
+	registerCommand(CommandModeNone, "*J[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) {
+		anno := sp.annotationsForTrack(ctx, *trk)
+		anno.JRingRadius = 0
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
 	})
 
 	// 6.21.5 Delete TPA J-Rings for all tracks (Implied command)
-	registerCommand(CommandModeNone, "**J", func(sp *STARSPane) {
-		for _, state := range sp.TrackState {
-			state.JRingRadius = 0
+	registerCommand(CommandModeNone, "**J", func(sp *STARSPane, ctx *panes.Context) {
+		cb := func(err error) { sp.displayError(err, ctx, "") }
+		for _, trk := range sp.visibleTracks {
+			anno := sp.annotationsForTrack(ctx, trk)
+			anno.JRingRadius = 0
+			ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, cb)
 		}
 	})
 
 	// 6.21.6 Display TPA cone for single track (implied)
 	// 6.21.7 Modify TPA Cone length for single track (Implied command)
-	registerCommand(CommandModeNone, "*P[TPA_FLOAT][SLEW]", func(length float32, state *TrackState) error {
+	registerCommand(CommandModeNone, "*P[TPA_FLOAT][SLEW]", func(sp *STARSPane, ctx *panes.Context, length float32, trk *sim.Track) error {
 		if length < 1 || length > 30 {
 			return ErrSTARSIllegalValue
 		}
 		// TODO: ILL FNCT if cone length is less than allowed in-trail separation (?)
-		state.ConeLength = length
-		state.JRingRadius = 0 // can't have both
+		anno := sp.annotationsForTrack(ctx, *trk)
+		anno.ConeLength = length
+		anno.JRingRadius = 0 // can't have both
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
 		return nil
 	})
 
 	// 6.21.8 Delete TPA Cone for single track (Implied command) (p. 6-178)
-	registerCommand(CommandModeNone, "*P[SLEW]", func(state *TrackState) {
-		state.ConeLength = 0
+	registerCommand(CommandModeNone, "*P[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) {
+		anno := sp.annotationsForTrack(ctx, *trk)
+		anno.ConeLength = 0
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
 	})
 
 	// 6.21.9 Delete TPA Cones for all tracks (Implied command) (p. 6-179)
-	registerCommand(CommandModeNone, "**P", func(sp *STARSPane) {
-		for _, state := range sp.TrackState {
-			state.ConeLength = 0
+	registerCommand(CommandModeNone, "**P", func(sp *STARSPane, ctx *panes.Context) {
+		cb := func(err error) { sp.displayError(err, ctx, "") }
+		for _, trk := range sp.visibleTracks {
+			anno := sp.annotationsForTrack(ctx, trk)
+			anno.ConeLength = 0
+			ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, cb)
 		}
 	})
 
 	// 6.21.10 Toggle display of TPA / ATPA size data for single track (Implied command)
-	registerCommand(CommandModeNone, "*D+[SLEW]", func(ps *Preferences, state *TrackState) {
-		if state.DisplayTPASize == nil {
-			b := ps.DisplayTPASize // new variable; don't alias ps.DisplayTPASize!
-			state.DisplayTPASize = &b
+	registerCommand(CommandModeNone, "*D+[SLEW]", func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track) {
+		if !trk.IsAssociated() {
+			return
 		}
-		*state.DisplayTPASize = !*state.DisplayTPASize
+		anno := sp.annotationsForTrack(ctx, *trk)
+		var next bool
+		if anno.DisplayTPASize == nil {
+			next = !ps.DisplayTPASize
+		} else {
+			next = !*anno.DisplayTPASize
+		}
+		anno.DisplayTPASize = &next
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, func(err error) { sp.displayError(err, ctx, "") })
 	})
-	registerCommand(CommandModeNone, "*D+E[SLEW]", func(state *TrackState) {
+	registerCommand(CommandModeNone, "*D+E[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) {
+		if !trk.IsAssociated() {
+			return
+		}
 		b := true
-		state.DisplayTPASize = &b
+		anno := sp.annotationsForTrack(ctx, *trk)
+		anno.DisplayTPASize = &b
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, func(err error) { sp.displayError(err, ctx, "") })
 	})
-	registerCommand(CommandModeNone, "*D+I[SLEW]", func(state *TrackState) {
+	registerCommand(CommandModeNone, "*D+I[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) {
+		if !trk.IsAssociated() {
+			return
+		}
 		b := false
-		state.DisplayTPASize = &b
+		anno := sp.annotationsForTrack(ctx, *trk)
+		anno.DisplayTPASize = &b
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, func(err error) { sp.displayError(err, ctx, "") })
 	})
 
 	// 6.21.11 Toggle display of TPA / ATPA size data for all tracks (Implied command)
-	registerCommand(CommandModeNone, "*D+", func(sp *STARSPane, ps *Preferences) CommandStatus {
-		ps.DisplayTPASize = !ps.DisplayTPASize
-		for _, state := range sp.TrackState {
-			state.DisplayTPASize = nil
+	clearAllTPASizeOverrides := func(sp *STARSPane, ctx *panes.Context) {
+		cb := func(err error) { sp.displayError(err, ctx, "") }
+		for _, trk := range sp.visibleTracks {
+			if trk.IsAssociated() {
+				anno := sp.annotationsForTrack(ctx, trk)
+				anno.DisplayTPASize = nil
+				ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, cb)
+			}
 		}
+	}
+	registerCommand(CommandModeNone, "*D+", func(sp *STARSPane, ctx *panes.Context, ps *Preferences) CommandStatus {
+		ps.DisplayTPASize = !ps.DisplayTPASize
+		clearAllTPASizeOverrides(sp, ctx)
 		return CommandStatus{Output: util.Select(ps.DisplayTPASize, "TPA SIZE ON", "TPA SIZE OFF")}
 	})
-	registerCommand(CommandModeNone, "*D+E", func(sp *STARSPane, ps *Preferences) CommandStatus {
+	registerCommand(CommandModeNone, "*D+E", func(sp *STARSPane, ctx *panes.Context, ps *Preferences) CommandStatus {
 		ps.DisplayTPASize = true
-		for _, state := range sp.TrackState {
-			state.DisplayTPASize = nil
-		}
+		clearAllTPASizeOverrides(sp, ctx)
 		return CommandStatus{Output: "TPA SIZE ON"}
 	})
-	registerCommand(CommandModeNone, "*D+I", func(sp *STARSPane, ps *Preferences) CommandStatus {
+	registerCommand(CommandModeNone, "*D+I", func(sp *STARSPane, ctx *panes.Context, ps *Preferences) CommandStatus {
 		ps.DisplayTPASize = false
-		for _, state := range sp.TrackState {
-			state.DisplayTPASize = nil
-		}
+		clearAllTPASizeOverrides(sp, ctx)
 		return CommandStatus{Output: "TPA SIZE OFF"}
 	})
 
 	// 6.21.12 Enable / inhibit ATPA Warning and Alert Cones for single track (Implied command)
-	setATPAWarnAlertConeState := func(sp *STARSPane, ps *Preferences, trk *sim.Track, value bool) error {
+	setATPAWarnAlertConeState := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track, value bool) error {
 		if !ps.DisplayATPAWarningAlertCones {
 			return ErrSTARSIllegalFunction
 		}
@@ -1187,15 +1250,16 @@ func registerToolsCommands() {
 		}
 		// TODO: ILL TRK if VFR or not in an ATPA approach volume
 
-		state := sp.TrackState[trk.ADSBCallsign]
-		state.DisplayATPAWarnAlert = &value
+		anno := sp.annotationsForTrack(ctx, *trk)
+		anno.DisplayATPAWarnAlert = &value
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, func(err error) { sp.displayError(err, ctx, "") })
 		return nil
 	}
-	registerCommand(CommandModeNone, "*AE[SLEW]", func(sp *STARSPane, ps *Preferences, trk *sim.Track) error {
-		return setATPAWarnAlertConeState(sp, ps, trk, true)
+	registerCommand(CommandModeNone, "*AE[SLEW]", func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track) error {
+		return setATPAWarnAlertConeState(sp, ctx, ps, trk, true)
 	})
-	registerCommand(CommandModeNone, "*AI[SLEW]", func(sp *STARSPane, ps *Preferences, trk *sim.Track) error {
-		return setATPAWarnAlertConeState(sp, ps, trk, false)
+	registerCommand(CommandModeNone, "*AI[SLEW]", func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track) error {
+		return setATPAWarnAlertConeState(sp, ctx, ps, trk, false)
 	})
 
 	// 6.21.13 Enable / inhibit ATPA Warning and Alert Cones for this TCW/TDW (implied)
@@ -1215,8 +1279,9 @@ func registerToolsCommands() {
 			return ErrSTARSIllegalTrack
 		}
 
-		state := sp.TrackState[trk.ADSBCallsign]
-		state.DisplayATPAMonitor = &value
+		anno := sp.annotationsForTrack(ctx, *trk)
+		anno.DisplayATPAMonitor = &value
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, func(err error) { sp.displayError(err, ctx, "") })
 		return nil
 	}
 	registerCommand(CommandModeNone, "*BE[SLEW]", func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track) error {
@@ -1235,19 +1300,21 @@ func registerToolsCommands() {
 	})
 
 	// 6.21.16 Enable / inhibit in-trail distance for single track (implied)
-	setTrackDisplayInTrail := func(sp *STARSPane, ps *Preferences, trk *sim.Track, value bool) error {
+	setTrackDisplayInTrail := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track, value bool) error {
 		if !trk.IsAssociated() || trk.ATPAVolume == nil {
 			return ErrSTARSIllegalTrack
 		}
-		state := sp.TrackState[trk.ADSBCallsign]
-		state.InhibitDisplayInTrailDist = value
+		anno := sp.annotations(ctx, trk.ADSBCallsign)
+		anno.InhibitDisplayInTrailDist = value
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
 		return nil
 	}
-	registerCommand(CommandModeNone, "*DE[SLEW]", func(sp *STARSPane, ps *Preferences, trk *sim.Track) error {
-		return setTrackDisplayInTrail(sp, ps, trk, true)
+	registerCommand(CommandModeNone, "*DE[SLEW]", func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track) error {
+		return setTrackDisplayInTrail(sp, ctx, ps, trk, true)
 	})
-	registerCommand(CommandModeNone, "*DI[SLEW]", func(sp *STARSPane, ps *Preferences, trk *sim.Track) error {
-		return setTrackDisplayInTrail(sp, ps, trk, false)
+	registerCommand(CommandModeNone, "*DI[SLEW]", func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track) error {
+		return setTrackDisplayInTrail(sp, ctx, ps, trk, false)
 	})
 
 	// 6.21.17 Enable / inhibit in-trail distances for this TCW/TDW (implied)

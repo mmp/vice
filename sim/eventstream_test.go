@@ -6,6 +6,7 @@ package sim
 
 import (
 	"testing"
+	"time"
 
 	"github.com/mmp/vice/rand"
 )
@@ -86,5 +87,64 @@ func TestEventStreamCompact(t *testing.T) {
 
 	if cap(es.events) > i/2 {
 		t.Errorf("is compaction not happening? len %d cap %d", len(es.events), cap(es.events))
+	}
+}
+
+func TestPeerVoiceEventRoundTrip(t *testing.T) {
+	es := NewEventStream(nil)
+	defer es.Destroy()
+
+	sub := es.Subscribe()
+	defer sub.Unsubscribe()
+
+	es.Post(Event{
+		Type:        PeerVoiceEvent,
+		SourceTCW:   "TCW-1",
+		SenderToken: "tok-A",
+		VoiceChunk:  []int16{1, 2, 3, 4},
+		VoiceEnd:    false,
+	})
+	es.Post(Event{
+		Type:        PeerVoiceEvent,
+		SourceTCW:   "TCW-1",
+		SenderToken: "tok-A",
+		VoiceEnd:    true,
+	})
+
+	got := sub.Get()
+	if len(got) != 2 {
+		t.Fatalf("got %d events, want 2", len(got))
+	}
+	if got[0].Type != PeerVoiceEvent || string(got[0].SourceTCW) != "TCW-1" ||
+		got[0].SenderToken != "tok-A" || len(got[0].VoiceChunk) != 4 {
+		t.Errorf("event[0] = %+v", got[0])
+	}
+	if !got[1].VoiceEnd {
+		t.Errorf("event[1] should have VoiceEnd=true, got %+v", got[1])
+	}
+	if PeerVoiceEvent.String() != "PeerVoice" {
+		t.Errorf("PeerVoiceEvent.String() = %q, want %q", PeerVoiceEvent.String(), "PeerVoice")
+	}
+}
+
+func TestEvent_PlayAtRoundTrip(t *testing.T) {
+	target := NewSimTime(time.Date(2026, 5, 2, 12, 0, 0, 0, time.UTC))
+	e := Event{
+		Type:           RadioTransmissionEvent,
+		DestinationTCW: "TCW-1",
+		PlayAt:         target,
+	}
+	if !e.PlayAt.Equal(target) {
+		t.Errorf("PlayAt not preserved; want %v got %v", target, e.PlayAt)
+	}
+}
+
+func TestEvent_SpokenVoiceRoundTrip(t *testing.T) {
+	e := Event{
+		Type:        RadioTransmissionEvent,
+		SpokenVoice: "am_adam",
+	}
+	if e.SpokenVoice != "am_adam" {
+		t.Errorf("SpokenVoice not preserved; got %q", e.SpokenVoice)
 	}
 }

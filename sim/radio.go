@@ -12,11 +12,108 @@ import (
 	"github.com/mmp/vice/util"
 )
 
+// Pilot-transmission timing constants used to compute PlayAt and
+// RadioHoldUntil for events posted to the TCW radio bus. These live
+// here (single source of truth) instead of duplicated in the client
+// TransmissionManager.
+const (
+	// playAtForwardBuffer is added to SimTime when stamping PlayAt so
+	// listening peers reliably receive the event before its scheduled
+	// start. ~200ms is comfortably above typical poll cadence on LAN
+	// and Tailscale; well below the threshold of feeling delayed.
+	playAtForwardBuffer = 200 * time.Millisecond
+
+	// msPerChar approximates ATC speech rate: ~150 wpm × ~6 chars/word
+	// ÷ 60 sec ≈ 15 chars/sec ≈ 67 ms/char. Rounded up to 70 ms/char
+	// for a small safety margin.
+	msPerChar = 70 * time.Millisecond
+
+	// postReadbackPad is the silence window after a pilot readback,
+	// giving the controller time to issue the next instruction.
+	postReadbackPad = 3 * time.Second
+
+	// postContactPad is the silence window after a pilot contact (initial
+	// check-in), giving the controller longer to respond.
+	postContactPad = 8 * time.Second
+)
+
+// postEventPadFor returns the post-event silence window for the given
+// transmission type.
+func postEventPadFor(t av.RadioTransmissionType) time.Duration {
+	if t == av.RadioTransmissionContact {
+		return postContactPad
+	}
+	return postReadbackPad
+}
+
+// pilotTransmissionDurationEstimate approximates how long it takes a
+// TTS engine to render the given spoken text, based on text length.
+func pilotTransmissionDurationEstimate(spoken string) time.Duration {
+	return time.Duration(len(spoken)) * msPerChar
+}
+
+// postRadioTransmission stamps PlayAt on the event, advances the
+// destination TCW's RadioHoldUntil, and posts the event. Caller fills
+// in everything except PlayAt before calling. Acquires s.mu.
+//
+// PlayAt is anchored to max(SimTime + buffer, current RadioHoldUntil)
+// so back-to-back transmissions queue cleanly. RadioHoldUntil advances
+// monotonically -- never shrinks here -- to PlayAt + spoken-duration
+// estimate + post-event pad. Returns the stamped PlayAt so callers
+// (RPC handlers) can plumb it back to the requester.
+func (s *Sim) postRadioTransmission(e Event) Time {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.postRadioTransmissionLocked(e)
+}
+
+// postRadioTransmissionLocked is the lock-free variant for callers
+// that already hold s.mu (e.g. SayAgain, SayNotCleared, PilotMixUp,
+// GenerateContactTransmission). Caller must hold s.mu.
+func (s *Sim) postRadioTransmissionLocked(e Event) Time {
+	if e.SpokenVoice == "" && s.VoiceAssigner != nil && e.ADSBCallsign != "" {
+		e.SpokenVoice = s.VoiceAssigner.GetVoice(e.ADSBCallsign, s.Rand)
+	}
+
+	d := s.EnsureTCWDisplay(e.DestinationTCW)
+	playAtFloor := s.State.SimTime.Add(playAtForwardBuffer)
+	playAt := playAtFloor
+	if d.RadioHoldUntil.After(playAt) {
+		playAt = d.RadioHoldUntil
+	}
+	e.PlayAt = playAt
+
+	endTime := playAt.Add(pilotTransmissionDurationEstimate(e.SpokenText)).Add(postEventPadFor(e.RadioTransmissionType))
+	if endTime.After(d.RadioHoldUntil) {
+		d.RadioHoldUntil = endTime
+		d.Rev++
+	}
+
+	s.eventStream.Post(e)
+	return playAt
+}
+
 // postReadbackTransmission posts a radio event for a pilot responding to a command.
 // DestinationTCW is the specific TCW that issued the command.
 // Use this for readbacks, where the response must go to the issuing controller
-// regardless of any consolidation changes.
-func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr av.RadioTransmission, tcw TCW) {
+// regardless of any consolidation changes. Acquires s.mu.
+//
+// requesterToken is the controllerToken of the client whose RPC produced
+// the readback (empty for server-internal callers). It is stamped onto
+// the RadioTransmissionEvent so observer-side synthesizers can skip
+// events whose RPC-result path will already produce audio on the
+// requester.
+func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr av.RadioTransmission, tcw TCW, requesterToken string) Time {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.postReadbackTransmissionLocked(from, tr, tcw, requesterToken)
+}
+
+// postReadbackTransmissionLocked is the lock-free variant of
+// postReadbackTransmission. Caller must hold s.mu.
+func (s *Sim) postReadbackTransmissionLocked(from av.ADSBCallsign, tr av.RadioTransmission, tcw TCW, requesterToken string) Time {
 	tr.Validate(s.lg)
 
 	if ac, ok := s.Aircraft[from]; ok {
@@ -24,7 +121,7 @@ func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr av.RadioTransmis
 	}
 
 	tcp := s.State.PrimaryPositionForTCW(tcw)
-	s.eventStream.Post(Event{
+	return s.postRadioTransmissionLocked(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
 		ToController:          tcp,
@@ -32,6 +129,7 @@ func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr av.RadioTransmis
 		WrittenText:           tr.Written(s.Rand),
 		SpokenText:            tr.Spoken(s.Rand),
 		RadioTransmissionType: tr.Type,
+		RequesterToken:        requesterToken,
 	})
 }
 
@@ -348,15 +446,22 @@ func (s *Sim) cancelPendingInitialContact(callsign av.ADSBCallsign) {
 }
 
 // GenerateContactTransmission generates a transmission for a pending contact.
-// Returns the spoken and written text, or empty strings if the contact is invalid.
-// This is called when the client requests a contact, using current aircraft state.
-func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writtenText string) {
+// Returns the spoken and written text and the sim-time at which the
+// requester should start TTS playback (PlayAt), or empty/zero values if
+// the contact is invalid. Called when the client requests a contact,
+// using current aircraft state.
+//
+// requesterToken is the controllerToken of the client whose RPC produced
+// the contact. It is stamped onto the RadioTransmissionEvent so observer-
+// side synthesizers can skip the event on the requester (whose RPC-result
+// path already produces audio via synthesizeAndEnqueueContact).
+func (s *Sim) GenerateContactTransmission(pc *PendingContact, requesterToken string) (spokenText, writtenText string, playAt Time) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	ac, ok := s.Aircraft[pc.ADSBCallsign]
 	if !ok {
-		return "", ""
+		return "", "", Time{}
 	}
 
 	var rt *av.RadioTransmission
@@ -364,7 +469,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	switch pc.Type {
 	case PendingTransmissionDeparture:
 		if !ac.IsAssociated() {
-			return "", ""
+			return "", "", Time{}
 		}
 		sid := ""
 		if ac.ReportDepartureSID {
@@ -385,7 +490,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	case PendingTransmissionArrival:
 		if !ac.IsAssociated() {
-			return "", ""
+			return "", "", Time{}
 		}
 		rt = ac.ContactMessage(s.ReportingPoints)
 		rt.Type = av.RadioTransmissionContact
@@ -427,7 +532,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		// If the aircraft was cleared for an approach between enqueue and
 		// dispatch, drop the now-redundant "field in sight" call.
 		if ac.Nav.Approach.Cleared {
-			return "", ""
+			return "", "", Time{}
 		}
 		rt = av.MakeContactTransmission("[we have the field in sight now|field in sight|we have the airport in sight now]")
 
@@ -478,7 +583,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	case PendingTransmissionEmergency:
 		if pc.PrebuiltTransmission == nil {
-			return "", ""
+			return "", "", Time{}
 		}
 		rt = pc.PrebuiltTransmission
 		rt.Type = av.RadioTransmissionUnexpected // Mark as urgent for display
@@ -487,7 +592,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		// If the aircraft was cleared for an approach between enqueue and
 		// dispatch, drop the now-redundant visual approach request.
 		if ac.Nav.Approach.Cleared {
-			return "", ""
+			return "", "", Time{}
 		}
 		runway := ""
 		if ac.Nav.Approach.Assigned != nil {
@@ -502,11 +607,11 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 			runway)
 
 	default:
-		return "", ""
+		return "", "", Time{}
 	}
 
 	if rt == nil {
-		return "", ""
+		return "", "", Time{}
 	}
 
 	// Get the base (unprefixed) text for the event stream.
@@ -514,8 +619,16 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	baseSpoken := rt.Spoken(s.Rand)
 	baseWritten := rt.Written(s.Rand)
 
-	// Post the radio event with unprefixed text
-	s.eventStream.Post(Event{
+	// Post the radio event with unprefixed text. PlayAt is stamped and
+	// the destination TCW's RadioHoldUntil is advanced inside
+	// postRadioTransmissionLocked. We hold s.mu (acquired at function
+	// entry), so use the Locked variant to avoid double-locking.
+	//
+	// requesterToken is stamped on the event so the requester's
+	// PilotVoicePlayback skips it (the requester's RPC-result path
+	// produces audio via synthesizeAndEnqueueContact); observers see
+	// a non-matching token and synthesize.
+	playAt = s.postRadioTransmissionLocked(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          pc.ADSBCallsign,
 		ToController:          pc.TCP,
@@ -523,12 +636,13 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		WrittenText:           baseWritten,
 		SpokenText:            baseSpoken,
 		RadioTransmissionType: rt.Type,
+		RequesterToken:        requesterToken,
 	})
 
 	// Generate prefixed text for the TTS return value (not going through event stream)
 	ctrl := s.State.Controllers[pc.TCP]
 	if ctrl == nil {
-		return baseSpoken, baseWritten
+		return baseSpoken, baseWritten, playAt
 	}
 
 	var heavySuper string
@@ -561,7 +675,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	prefix.Merge(rt)
 	spokenText = prefix.Spoken(s.Rand)
 	writtenText = prefix.Written(s.Rand)
-	return spokenText, writtenText
+	return spokenText, writtenText, playAt
 }
 
 type FutureChangeSquawk struct {

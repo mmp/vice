@@ -1752,7 +1752,7 @@ func TestApprovedAcceptsVolunteeredVisualSeparationWithoutReadback(t *testing.T)
 	sighting := vs.AC.RecordSighting("DAL456", vs.Sim.State.SimTime)
 	sighting.OfferedToMaintainSeparation = true
 
-	result := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "APPROVED", 0)
+	result := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "APPROVED", 0, "")
 	if result.Error != nil {
 		t.Fatalf("APPROVED returned error: %v", result.Error)
 	}
@@ -2121,7 +2121,7 @@ func TestScenarioEVAInvalidRunwayIsUnable(t *testing.T) {
 	setupTestRunway(t, "KJFK", av.Runway{Id: "22L", Heading: 220, Threshold: airportLoc, Elevation: 13})
 
 	vs := NewVisualScenario(t, airportLoc, "22L", math.Point2LL{0, 5.0 / 60}, 180)
-	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "EVA2LL", 0)
+	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "EVA2LL", 0, "")
 
 	if res.Error != nil {
 		t.Fatalf("expected nil error (unable is an intent, not an error), got %v", res.Error)
@@ -2144,7 +2144,7 @@ func TestScenarioEVAInactiveRunwayIsUnable(t *testing.T) {
 	vs := NewVisualScenario(t, airportLoc, "22L", math.Point2LL{0, 5.0 / 60}, 180)
 	vs.Sim.State.ArrivalRunways = []ArrivalRunway{{Airport: "KJFK", Runway: "22L"}}
 
-	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "EVA31R", 0)
+	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "EVA31R", 0, "")
 
 	if res.Error != nil {
 		t.Fatalf("expected nil error (unable is an intent, not an error), got %v", res.Error)

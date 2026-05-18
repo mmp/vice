@@ -40,6 +40,7 @@ func (p *PreferenceSet) Upgrade(from, to int) {
 	}
 }
 
+// SetCurrent loads a saved/snapshot preference set into Current.
 func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *STARSPane) {
 	// Make sure we don't alias slices, maps, etc.
 	p.Current = deep.MustCopy(cur)

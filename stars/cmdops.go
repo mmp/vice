@@ -131,8 +131,7 @@ func registerOpsCommands() {
 			// from the coordination list by the controller.
 			rel = slices.DeleteFunc(rel,
 				func(dep sim.ReleaseDeparture) bool {
-					state, ok := sp.TrackState[dep.ADSBCallsign]
-					return ok && state.ReleaseDeleted
+					return sp.annotations(ctx, dep.ADSBCallsign).ReleaseDeleted
 				})
 
 			// If there is only one unacknowledged, then ack/release it.
@@ -156,8 +155,7 @@ func registerOpsCommands() {
 		// from the coordination list by the controller.
 		rel = slices.DeleteFunc(rel,
 			func(dep sim.ReleaseDeparture) bool {
-				state, ok := sp.TrackState[dep.ADSBCallsign]
-				return ok && state.ReleaseDeleted
+				return sp.annotations(ctx, dep.ADSBCallsign).ReleaseDeleted
 			})
 
 		for i, dep := range rel {
@@ -172,8 +170,11 @@ func registerOpsCommands() {
 			dep.Released = true // hack for instant update pending the next server update
 			ctx.Client.ReleaseDeparture(dep.ADSBCallsign,
 				func(err error) { sp.displayError(err, ctx, "") })
-		} else if ts := sp.TrackState[dep.ADSBCallsign]; ts != nil {
-			ts.ReleaseDeleted = true
+		} else {
+			anno := sp.annotations(ctx, dep.ADSBCallsign)
+			anno.ReleaseDeleted = true
+			ctx.Client.SetTrackAnnotations(dep.ADSBCallsign, anno,
+				func(err error) { sp.displayError(err, ctx, "") })
 		}
 		return nil
 	}
@@ -407,7 +408,7 @@ func registerOpsCommands() {
 		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrSTARSIllegalTrack
-			} else if state := sp.TrackState[trk.ADSBCallsign]; state.MSAW || state.SPCAlert {
+			} else if anno := sp.annotationsForTrack(ctx, *trk); anno.MSAW || anno.SPCAlert {
 				return ErrSTARSIllegalTrack
 			} else if slices.ContainsFunc(sp.CAAircraft,
 				func(ca CAAircraft) bool {
@@ -759,8 +760,10 @@ func registerOpsCommands() {
 
 		associateFlightPlan(sp, ctx, trk.ADSBCallsign, spec)
 
-		state := sp.TrackState[trk.ADSBCallsign]
-		state.DatablockAlert = true // yellow until slewed
+		anno := sp.annotations(ctx, trk.ADSBCallsign)
+		anno.DatablockAlert = true // yellow until slewed
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
 		return nil
 	})
 
@@ -1067,14 +1070,19 @@ func modifyFlightPlan(sp *STARSPane, ctx *panes.Context, acid sim.ACID, spec sim
 		func(err error) {
 			if err == nil {
 				if spec.RequestedAltitude.IsSet {
-					if state, ok := sp.trackStateForACID(ctx, acid); ok {
+					if trk, ok := ctx.Client.State.GetTrackByACID(acid); ok {
 						t := true
-						state.DisplayRequestedAltitude = &t
+						anno := sp.annotationsForTrack(ctx, *trk)
+						anno.DisplayRequestedAltitude = &t
+						ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, func(err error) { sp.displayError(err, ctx, "") })
 					}
 				}
 				if spec.Scratchpad.IsSet && spec.Scratchpad.Get() == "" {
-					if state, ok := sp.trackStateForACID(ctx, acid); ok {
-						state.ClearedScratchpadAlternate = true
+					if cs, ok := sp.callsignForACID(ctx, acid); ok {
+						anno := sp.annotations(ctx, cs)
+						anno.ClearedScratchpadAlternate = true
+						ctx.Client.SetTrackAnnotations(cs, anno,
+							func(err error) { sp.displayError(err, ctx, "") })
 					}
 				}
 				if display {
@@ -1099,11 +1107,6 @@ func formatFlightPlan(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan, 
 	}
 
 	// Common stuff
-	var state *TrackState
-	if trk != nil {
-		state = sp.TrackState[trk.ADSBCallsign]
-	}
-
 	var aircraftType string
 	if fp.AircraftCount > 1 {
 		aircraftType = strconv.Itoa(fp.AircraftCount) + "/"
@@ -1149,8 +1152,8 @@ func formatFlightPlan(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan, 
 		result += "\n"
 
 		result += fmtfix(fp.EntryFix)
-		if state != nil {
-			result += "E" + fmtTime(state.FirstRadarTrackTime) + " "
+		if trk != nil {
+			result += "E" + fmtTime(trk.FirstRadarTrackTime) + " "
 		} else {
 			result += "E" + fmtTime(fp.CoordinationTime) + " "
 		}
@@ -1162,7 +1165,7 @@ func formatFlightPlan(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan, 
 		// TODO: [mode S equipage] [target identification] [target address]
 
 	case av.FlightTypeDeparture:
-		if state == nil || state.FirstRadarTrackTime.IsZero() {
+		if trk == nil || trk.FirstRadarTrackTime.IsZero() {
 			// Proposed departure
 			result += aircraftType + " "
 			result += fp.AssignedSquawk.String() + " " + string(fp.TrackingController) + "\n"
@@ -1177,7 +1180,7 @@ func formatFlightPlan(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan, 
 			// Active departure
 			result += fp.AssignedSquawk.String() + " "
 			result += fmtfix(fp.EntryFix)
-			result += "D" + fmtTime(state.FirstRadarTrackTime) + " "
+			result += "D" + fmtTime(trk.FirstRadarTrackTime) + " "
 			result += trkalt() + "\n"
 
 			result += fmtfix(fp.ExitFix)
@@ -1193,8 +1196,8 @@ func formatFlightPlan(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan, 
 		result += trkalt() + "\n"
 
 		result += fmtfix(fp.EntryFix)
-		if state != nil {
-			result += "A" + fmtTime(state.FirstRadarTrackTime) + " "
+		if trk != nil {
+			result += "A" + fmtTime(trk.FirstRadarTrackTime) + " "
 		} else {
 			result += "A" + fmtTime(fp.CoordinationTime) + " "
 		}

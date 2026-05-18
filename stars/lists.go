@@ -949,15 +949,14 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, paneExtent math.Extent2D,
 	if !ps.DisableMSAW {
 		lists = append(lists, "LA")
 		for _, trk := range sp.visibleTracks {
-			if sp.TrackState[trk.ADSBCallsign].MSAW && trk.IsAssociated() && !trk.FlightPlan.DisableMSAW {
+			if sp.annotationsForTrack(ctx, trk).MSAW && trk.IsAssociated() && !trk.FlightPlan.DisableMSAW {
 				msaw = append(msaw, trk)
 			}
 		}
 
 		// Sort by start time
 		slices.SortFunc(msaw, func(a, b sim.Track) int {
-			sa, sb := sp.TrackState[a.ADSBCallsign], sp.TrackState[b.ADSBCallsign]
-			return sa.MSAWStart.Compare(sb.MSAWStart)
+			return sp.annotationsForTrack(ctx, a).MSAWStart.Compare(sp.annotationsForTrack(ctx, b).MSAWStart)
 		})
 	}
 	cmpCA := func(a, b CAAircraft) int {
@@ -992,8 +991,8 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, paneExtent math.Extent2D,
 		}
 
 		next := func() (*sim.Track, *CAAircraft, *CAAircraft) {
-			if len(msaw) > 0 && (len(ca) == 0 || sp.TrackState[msaw[0].ADSBCallsign].MSAWStart.Before(ca[0].Start)) &&
-				(len(mci) == 0 || sp.TrackState[msaw[0].ADSBCallsign].MSAWStart.Before(mci[0].Start)) {
+			if len(msaw) > 0 && (len(ca) == 0 || sp.annotations(ctx, msaw[0].ADSBCallsign).MSAWStart.Before(ca[0].Start)) &&
+				(len(mci) == 0 || sp.annotations(ctx, msaw[0].ADSBCallsign).MSAWStart.Before(mci[0].Start)) {
 				trk := msaw[0]
 				msaw = msaw[1:]
 				return &trk, nil, nil
@@ -1378,9 +1377,9 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 				if !slices.Contains(cl.Airports, dep.DepartureAirport) {
 					return false
 				}
-				for callsign, state := range sp.TrackState {
+				for callsign := range sp.TrackState {
 					if callsign == dep.ADSBCallsign {
-						return !state.ReleaseDeleted
+						return !sp.annotations(ctx, callsign).ReleaseDeleted
 					}
 				}
 				return true // shouldn't get here

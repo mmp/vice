@@ -6,7 +6,6 @@ package stars
 
 import (
 	"slices"
-	"sort"
 	"strings"
 	"time"
 
@@ -36,130 +35,29 @@ type TrackState struct {
 	// discarding previous tracks.
 	historyTracks      [10]av.RadarTrack
 	historyTracksIndex int
-
-	FullLDBEndTime           sim.Time // If the LDB displays the groundspeed. When to stop
-	DisplayRequestedAltitude *bool    // nil if unspecified
-
-	IsSelected bool // middle click
-
-	// We handed it off, the other controller accepted it, we haven't yet
-	// slewed to make it a PDB.
-	DisplayFDB bool
-
-	// Hold for release aircraft released and deleted from the coordination
-	// list by the controller.
-	ReleaseDeleted bool
-
-	// Only drawn if non-zero
-	JRingRadius    float32
-	ConeLength     float32
-	DisplayTPASize *bool // unspecified->system default if nil
-
-	DisplayATPAMonitor        *bool // unspecified->system default if nil
-	DisplayATPAWarnAlert      *bool // unspecified->system default if nil
-	IntrailDistance           float32
-	InhibitDisplayInTrailDist bool
-	ATPAStatus                ATPAStatus
-	MinimumMIT                float32
-	ATPALeadAircraftCallsign  av.ADSBCallsign
-	DrawATPAGraphics          bool
-
-	POFlashingEndTime sim.Time
-	UNFlashingEndTime sim.Time
-	IFFlashing        bool // Will continue to flash unless slewed or a successful handoff
-
-	SuspendedShowAltitudeEndTime sim.Time
-
-	AcceptedHandoffSector     string
-	AcceptedHandoffDisplayEnd sim.Time
-
-	// These are only set if a leader line direction was specified for this
-	// aircraft individually:
-	LeaderLineDirection     *math.CardinalOrdinalDirection
-	FDAMLeaderLineDirection *math.CardinalOrdinalDirection
-	UseGlobalLeaderLine     bool
-
-	Ghost struct {
-		PartialDatablock bool
-		State            GhostState
-	}
-
-	DisplayLDBBeaconCode bool
-	DisplayPTL           bool
-
-	MSAW             bool // minimum safe altitude warning
-	MSAWStart        sim.Time
-	InhibitMSAW      bool // only applies if in an alert. clear when alert is over?
-	MSAWAcknowledged bool
-	MSAWSoundEnd     sim.Time
-
-	SPCAlert        bool
-	SPCAcknowledged bool
-	SPCSoundEnd     sim.Time
-
-	MissingFlightPlanAcknowledged bool
-
-	// record the code when it was ack'ed so that if it happens again with
-	// a different code, we get a flashing DB in the datablock.
-	DBAcknowledged av.Squawk
-
-	FirstRadarTrackTime sim.Time
-	EnteredOurAirspace  bool
-
-	OutboundHandoffAccepted bool
-	OutboundHandoffFlashEnd sim.Time
-
-	RDIndicatorEnd sim.Time
-
-	// Set when the user enters a command to clear the primary scratchpad,
-	// but it is already empty. (In turn, this causes the exit
-	// fix/destination airport and the like to no longer be displayed, when
-	// it is adapted to be shown in the FDB.)
-	ClearedScratchpadAlternate bool
-
-	// This is a little messy: we maintain maps from callsign->sector id
-	// for pointouts that track the global state of them. Here we track
-	// just inbound pointouts to the current controller so that the first
-	// click acks a point out but leaves it yellow and a second clears it
-	// entirely.
-	PointOutAcknowledged bool
-	ForceQL              bool
-	InQLRegion           bool
-
-	// Unreasonable Mode-C
-	UnreasonableModeC       bool
-	ConsecutiveNormalTracks int
-
-	// This is for [FLT DATA][SLEW] of an unowned FDB in which case it only
-	// applies locally; for owned tracks, the flight plan is modified so it
-	// applies globally.
-	InhibitACTypeDisplay      *bool
-	ForceACTypeDisplayEndTime sim.Time
-
-	// Draw the datablock in yellow (until cleared); currently only used for
-	// [MF]Y[SLEW] quick flight plans
-	DatablockAlert bool
 }
 
-type ATPAStatus int
+// ATPAStatus now lives in sim (see sim/atpa.go) because it is computed
+// server-side and published via sim.Track. The alias + const re-exports
+// keep existing stars.ATPAStatus callers working.
+type ATPAStatus = sim.ATPAStatus
 
 const (
-	ATPAStatusUnset = iota
-	ATPAStatusMonitor
-	ATPAStatusWarning
-	ATPAStatusAlert
+	ATPAStatusUnset   = sim.ATPAStatusUnset
+	ATPAStatusMonitor = sim.ATPAStatusMonitor
+	ATPAStatusWarning = sim.ATPAStatusWarning
+	ATPAStatusAlert   = sim.ATPAStatusAlert
 )
 
-type GhostState int
+// GhostState now lives in sim (see sim/track_ghost.go) because it is
+// part of per-ACID annotations that are synchronized server-side. The
+// alias + const re-exports keep existing stars.GhostState callers working.
+type GhostState = sim.GhostState
 
 const (
-	GhostStateRegular = iota
-	GhostStateSuppressed
-	GhostStateForced
-)
-
-const (
-	FPMThreshold = 8400
+	GhostStateRegular    = sim.GhostStateRegular
+	GhostStateSuppressed = sim.GhostStateSuppressed
+	GhostStateForced     = sim.GhostStateForced
 )
 
 func (ts *TrackState) TrackDeltaAltitude() int {
@@ -210,6 +108,34 @@ func (sp *STARSPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*Trac
 	return nil, false
 }
 
+// annotations returns the shared TCW annotations for the given
+// callsign, or a zero-value TrackAnnotations if no entry exists.
+// Callers read fields unconditionally; the zero value is the semantic
+// default for every synced field.
+func (sp *STARSPane) annotations(ctx *panes.Context, callsign av.ADSBCallsign) sim.TrackAnnotations {
+	d := ctx.Client.State.TCWDisplay
+	if d == nil || d.Annotations == nil {
+		return sim.TrackAnnotations{}
+	}
+	return d.Annotations[callsign]
+}
+
+// callsignForACID resolves an ACID to its ADSBCallsign via State.GetTrackByACID.
+// Returns ("", false) if no associated track is found.
+func (sp *STARSPane) callsignForACID(ctx *panes.Context, acid sim.ACID) (av.ADSBCallsign, bool) {
+	if trk, ok := ctx.Client.State.GetTrackByACID(acid); ok {
+		return trk.ADSBCallsign, true
+	}
+	return "", false
+}
+
+// annotationsForTrack returns the shared TCW annotations for a track.
+// ADSBCallsign is always present on a track (associated or not) so no
+// IsAssociated guard is needed.
+func (sp *STARSPane) annotationsForTrack(ctx *panes.Context, trk sim.Track) sim.TrackAnnotations {
+	return sp.annotations(ctx, trk.ADSBCallsign)
+}
+
 func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	for i := range ctx.Client.State.ATIS {
 		if sp.LastATIS[i] != ctx.Client.State.ATIS[i] || sp.LastGIText[i] != ctx.Client.State.GIText[i] {
@@ -232,20 +158,24 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	for _, trk := range ctx.Client.State.Tracks {
 		if _, ok := sp.TrackState[trk.ADSBCallsign]; !ok {
 			// First we've seen it; create the *AircraftState for it
-			sa := &TrackState{}
-			if trk.IsAssociated() {
-				sa.UseGlobalLeaderLine = trk.FlightPlan.GlobalLeaderLineDirection != nil
+			sp.TrackState[trk.ADSBCallsign] = &TrackState{}
+			if trk.IsAssociated() && trk.FlightPlan.GlobalLeaderLineDirection != nil {
+				anno := sp.annotations(ctx, trk.ADSBCallsign)
+				anno.UseGlobalLeaderLine = true
+				ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+					func(err error) { sp.displayError(err, ctx, "") })
 			}
-
-			sp.TrackState[trk.ADSBCallsign] = sa
 		}
 
-		if ok, _ := trk.Squawk.IsSPC(); ok && !sp.TrackState[trk.ADSBCallsign].SPCAlert {
+		if ok, _ := trk.Squawk.IsSPC(); ok && !sp.annotations(ctx, trk.ADSBCallsign).SPCAlert {
 			// First we've seen it squawking the SPC
-			state := sp.TrackState[trk.ADSBCallsign]
-			state.SPCAlert = true
-			state.SPCAcknowledged = false
-			state.SPCSoundEnd = ctx.SimTime.Add(AlertAudioDuration)
+			// TODO(shared-tcw-display): move SPC detection server-side so the annotation can be shared.
+			anno := sp.annotations(ctx, trk.ADSBCallsign)
+			anno.SPCAlert = true
+			anno.SPCAcknowledged = false
+			anno.SPCSoundEnd = ctx.SimTime.Add(AlertAudioDuration)
+			ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+				func(err error) { sp.displayError(err, ctx, "") })
 		}
 	}
 
@@ -314,11 +244,15 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.AcknowledgedPointOutEvent:
 			if tcps, ok := sp.PointOuts[event.ACID]; ok {
-				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					if ctx.UserControlsPosition(tcps.From) {
-						state.POFlashingEndTime = ctx.SimTime.Add(5 * time.Second)
-					} else if ctx.UserControlsPosition(tcps.To) {
-						state.PointOutAcknowledged = true
+				// Note: PointOutAcknowledged is written server-side in
+				// Sim.AcknowledgePointOut (see commit 75cecb9a); the client
+				// only handles the flash timer on the sender.
+				if ctx.UserControlsPosition(tcps.From) {
+					if cs, ok := sp.callsignForACID(ctx, event.ACID); ok {
+						anno := sp.annotations(ctx, cs)
+						anno.POFlashingEndTime = ctx.SimTime.Add(5 * time.Second)
+						ctx.Client.SetTrackAnnotations(cs, anno,
+							func(err error) { sp.displayError(err, ctx, "") })
 					}
 				}
 				delete(sp.PointOuts, event.ACID)
@@ -330,8 +264,11 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		case sim.RejectedPointOutEvent:
 			if tcps, ok := sp.PointOuts[event.ACID]; ok && ctx.UserControlsPosition(tcps.From) {
 				sp.RejectedPointOuts[event.ACID] = nil
-				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					state.UNFlashingEndTime = ctx.SimTime.Add(5 * time.Second)
+				if cs, ok := sp.callsignForACID(ctx, event.ACID); ok {
+					anno := sp.annotations(ctx, cs)
+					anno.UNFlashingEndTime = ctx.SimTime.Add(5 * time.Second)
+					ctx.Client.SetTrackAnnotations(cs, anno,
+						func(err error) { sp.displayError(err, ctx, "") })
 				}
 			}
 			delete(sp.PointOuts, event.ACID)
@@ -339,12 +276,14 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		case sim.FlightPlanAssociatedEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil {
 				if ctx.UserOwnsFlightPlan(fp) {
-					if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-						state.DisplayFDB = true
-
+					if trk, ok := ctx.Client.State.GetTrackByACID(event.ACID); ok {
+						anno := sp.annotationsForTrack(ctx, *trk)
+						anno.DisplayFDB = true
 						if fp.QuickFlightPlan {
-							state.DatablockAlert = true // display in yellow until slewed
+							anno.DatablockAlert = true // display in yellow until slewed
 						}
+						ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+							func(err error) { sp.displayError(err, ctx, "") })
 					}
 				}
 			}
@@ -355,27 +294,39 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
-			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
+			if cs, ok := sp.callsignForACID(ctx, event.ACID); ok {
 				outbound := ctx.UserControlsPosition(event.FromController) && !ctx.UserControlsPosition(event.ToController)
 				inbound := !ctx.UserControlsPosition(event.FromController) && ctx.UserControlsPosition(event.ToController)
+
+				// Collect annotation changes so we issue a single
+				// read-modify-write per logical event.
+				anno := sp.annotations(ctx, cs)
+				dirty := false
+
 				if outbound {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
-					state.OutboundHandoffAccepted = true
-					dur := time.Duration(ctx.FacilityAdaptation.Datablocks.FDB.AcceptFlashDuration) * time.Second
-					state.OutboundHandoffFlashEnd = ctx.SimTime.Add(dur)
-					state.DisplayFDB = true
+					// Note: OutboundHandoffAccepted + OutboundHandoffFlashEnd are
+					// written server-side in Sim.AcceptHandoff (see commit 75cecb9a).
+					anno.DisplayFDB = true
+					dirty = true
 
 					if event.Type == sim.AcceptedRedirectedHandoffEvent {
-						state.RDIndicatorEnd = ctx.SimTime.Add(30 * time.Second)
+						anno.RDIndicatorEnd = ctx.SimTime.Add(30 * time.Second)
 					}
 				}
 				if outbound || inbound {
 					otherPos := util.Select(outbound, event.ToController, event.FromController)
 					if otherCtrl := ctx.GetResolvedController(otherPos); otherCtrl != nil && otherCtrl.IsExternal() {
-						state.AcceptedHandoffSector = string(otherPos)
+						anno.AcceptedHandoffSector = string(otherPos)
 						dur := time.Duration(ctx.FacilityAdaptation.Datablocks.FDB.SectorDisplayDuration) * time.Second
-						state.AcceptedHandoffDisplayEnd = ctx.SimTime.Add(dur)
+						anno.AcceptedHandoffDisplayEnd = ctx.SimTime.Add(dur)
+						dirty = true
 					}
+				}
+
+				if dirty {
+					ctx.Client.SetTrackAnnotations(cs, anno,
+						func(err error) { sp.displayError(err, ctx, "") })
 				}
 			}
 			// Clean up if a point out was instead taken as a handoff.
@@ -383,15 +334,21 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.SetGlobalLeaderLineEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil {
-				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					state.UseGlobalLeaderLine = fp.GlobalLeaderLineDirection != nil
+				if trk, ok := ctx.Client.State.GetTrackByACID(event.ACID); ok {
+					anno := sp.annotationsForTrack(ctx, *trk)
+					anno.UseGlobalLeaderLine = fp.GlobalLeaderLineDirection != nil
+					ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+						func(err error) { sp.displayError(err, ctx, "") })
 				}
 			}
 
 		case sim.FDAMLeaderLineEvent:
 			if ctx.UserControlsPosition(event.ToController) {
-				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					state.FDAMLeaderLineDirection = event.LeaderLineDirection
+				if trk, ok := ctx.Client.State.GetTrackByACID(event.ACID); ok {
+					anno := sp.annotationsForTrack(ctx, *trk)
+					anno.FDAMLeaderLineDirection = event.LeaderLineDirection
+					ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+						func(err error) { sp.displayError(err, ctx, "") })
 				}
 			}
 
@@ -404,14 +361,20 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 
 		case sim.TransferRejectedEvent:
-			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-				state.IFFlashing = true
+			if cs, ok := sp.callsignForACID(ctx, event.ACID); ok {
+				anno := sp.annotations(ctx, cs)
+				anno.IFFlashing = true
+				ctx.Client.SetTrackAnnotations(cs, anno,
+					func(err error) { sp.displayError(err, ctx, "") })
 				ctx.Client.CancelHandoff(event.ACID, func(err error) { sp.displayError(err, ctx, "") })
 			}
 
 		case sim.TransferAcceptedEvent:
-			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-				state.IFFlashing = false
+			if cs, ok := sp.callsignForACID(ctx, event.ACID); ok {
+				anno := sp.annotations(ctx, cs)
+				anno.IFFlashing = false
+				ctx.Client.SetTrackAnnotations(cs, anno,
+					func(err error) { sp.displayError(err, ctx, "") })
 			}
 		}
 	}
@@ -434,50 +397,52 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 	return ok
 }
 
+// TODO(shared-tcw-display): move MSAW detection server-side so the annotation can be shared.
 func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
-		if !trk.MVAsApply {
-			state.MSAW = false
-			continue
+		cur := sp.annotationsForTrack(ctx, trk)
+
+		// Compute whether the track is in an MSAW warning state. Any
+		// early-out clears MSAW; the suppression filters / altitude
+		// checks use the same shared anno snapshot.
+		warn := false
+		if trk.MVAsApply && trk.IsAssociated() {
+			pilotAlt := trk.FlightPlan.PilotReportedAltitude
+			modeCUsable := !(trk.FlightPlan.InhibitModeCAltitudeDisplay || trk.Mode != av.TransponderModeAltitude)
+			if modeCUsable || pilotAlt != 0 {
+				alt := util.Select(pilotAlt != 0, pilotAlt, int(trk.TransponderAltitude))
+
+				msawFilter := ctx.Client.State.FacilityAdaptation.Filters.InhibitMSAW
+				if !msawFilter.Inside(state.track.Location, alt) {
+					mva := sp.mvaGrid.GetMVA(state.track.Location)
+					warn = mva > 0 && alt < mva
+				}
+			}
 		}
 
-		if trk.IsUnassociated() {
-			// No MSAW for unassociated tracks.
-			state.MSAW = false
-			continue
-		}
+		cb := func(err error) { sp.displayError(err, ctx, "") }
 
-		pilotAlt := trk.FlightPlan.PilotReportedAltitude
-		if (trk.FlightPlan.InhibitModeCAltitudeDisplay || trk.Mode != av.TransponderModeAltitude) && pilotAlt == 0 {
-			// We can use pilot reported for low altitude alerts: 5-167.
-			state.MSAW = false
-			continue
-		}
-
-		alt := util.Select(pilotAlt != 0, pilotAlt, int(trk.TransponderAltitude))
-
-		// Check MSAW suppression filters
-		msawFilter := ctx.Client.State.FacilityAdaptation.Filters.InhibitMSAW
-		if msawFilter.Inside(state.track.Location, alt) {
-			state.MSAW = false
-			continue
-		}
-
-		mva := sp.mvaGrid.GetMVA(state.track.Location)
-		warn := mva > 0 && alt < mva
-
-		if !warn && state.InhibitMSAW {
+		// Compare against the current snapshot and issue per-field
+		// writes only for fields that actually changed this tick.
+		// Routing through per-field setters (rather than a single
+		// SetTrackAnnotations whole-struct push) avoids clobbering
+		// server-driven transitions (handoff accept, pointout ack,
+		// etc.) that may have mutated neighboring annotation fields
+		// between 1 Hz state-update polls.
+		if !warn && cur.InhibitMSAW {
 			// The warning has cleared, so the inhibit is disabled (p.7-25)
-			state.InhibitMSAW = false
+			ctx.Client.SetTrackInhibitMSAW(trk.ADSBCallsign, false, cb)
 		}
-		if warn && !state.MSAW {
+		if warn && !cur.MSAW {
 			// It's a new alert
-			state.MSAWAcknowledged = false
-			state.MSAWSoundEnd = ctx.SimTime.Add(AlertAudioDuration)
-			state.MSAWStart = ctx.SimTime
+			ctx.Client.SetTrackMSAWAcknowledged(trk.ADSBCallsign, false, cb)
+			ctx.Client.SetTrackMSAWSoundEnd(trk.ADSBCallsign, ctx.SimTime.Add(AlertAudioDuration), cb)
+			ctx.Client.SetTrackMSAWStart(trk.ADSBCallsign, ctx.SimTime, cb)
 		}
-		state.MSAW = warn
+		if warn != cur.MSAW {
+			ctx.Client.SetTrackMSAW(trk.ADSBCallsign, warn, cb)
+		}
 	}
 }
 
@@ -509,7 +474,8 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 		state.track = trk.RadarTrack
 		state.trackTime = ctx.SimTime
 
-		sp.checkUnreasonableModeC(state)
+		// UnreasonableModeC is computed server-side by (*sim.Sim).updateModeC
+		// and read from trk.UnreasonableModeC where needed.
 	}
 
 	// Check quicklook regions
@@ -541,7 +507,6 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 	}
 
 	sp.updateCAAircraft(ctx)
-	sp.updateInTrailDistance(ctx)
 }
 
 func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context) {
@@ -572,46 +537,25 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context) {
 					fp, userPositions, acType, fa.SignificantPoints)
 			})
 
-		if inRegion && !state.InQLRegion {
+		anno := sp.annotationsForTrack(ctx, trk)
+		cb := func(err error) { sp.displayError(err, ctx, "") }
+		// Route the InQLRegion bit through its per-field setter to
+		// avoid clobbering server-driven neighboring annotation
+		// fields between 1 Hz state-update polls.
+		if inRegion && !anno.InQLRegion {
 			// Entry: track just entered a quicklook region.
-			state.DisplayFDB = true
-			state.InQLRegion = true
-		} else if !inRegion && state.InQLRegion {
+			anno.DisplayFDB = true
+			ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, cb)
+			ctx.Client.SetTrackInQLRegion(trk.ADSBCallsign, true, cb)
+		} else if !inRegion && anno.InQLRegion {
 			// Exit: track just left a quicklook region.
 			// Don't clear DisplayFDB if it's being maintained by the
 			// outbound handoff acceptance logic.
-			if !state.OutboundHandoffAccepted {
-				state.DisplayFDB = false
+			if !anno.OutboundHandoffAccepted {
+				anno.DisplayFDB = false
+				ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, cb)
 			}
-			state.InQLRegion = false
-		}
-	}
-}
-
-func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
-	if state.track.Mode != av.TransponderModeAltitude || state.track.TransponderAltitude == 0 ||
-		state.previousTrack.TransponderAltitude == 0 {
-		state.UnreasonableModeC = false
-		state.ConsecutiveNormalTracks = 0
-		return
-	}
-
-	deltaAlt := state.previousTrack.TransponderAltitude - state.track.TransponderAltitude
-	deltaMinutes := state.previousTrackTime.Sub(state.trackTime).Minutes()
-
-	if deltaMinutes == 0 {
-		return
-	}
-
-	rate := math.Abs(deltaAlt / float32(deltaMinutes))
-	if rate > FPMThreshold {
-		state.UnreasonableModeC = true
-		state.ConsecutiveNormalTracks = 0
-	} else if state.UnreasonableModeC {
-		state.ConsecutiveNormalTracks++
-		if state.ConsecutiveNormalTracks >= 5 {
-			state.UnreasonableModeC = false
-			state.ConsecutiveNormalTracks = 0
+			ctx.Client.SetTrackInQLRegion(trk.ADSBCallsign, false, cb)
 		}
 	}
 }
@@ -773,10 +717,11 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 					continue
 				}
 				state := sp.TrackState[trk.ADSBCallsign]
+				anno := sp.annotationsForTrack(ctx, trk)
 
 				// Create a ghost track if appropriate, add it to the
 				// ghosts slice, and draw its radar track.
-				force := state.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
+				force := anno.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
 				heading := util.Select(state.HaveHeading(),
 					float32(math.TrueToMagnetic(state.TrackHeading(nmPerLongitude), ctx.MagneticVariation)),
 					float32(trk.Heading))
@@ -810,9 +755,9 @@ func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, tra
 
 	var strBuilder strings.Builder
 	for _, ghost := range ghosts {
-		state := sp.TrackState[ghost.ADSBCallsign]
+		anno := sp.annotations(ctx, ghost.ADSBCallsign)
 
-		if state.Ghost.State == GhostStateSuppressed {
+		if anno.Ghost.State == GhostStateSuppressed {
 			continue
 		}
 
@@ -1048,14 +993,11 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][
 		return nil, false
 	}
 
-	state := sp.TrackState[trk.ADSBCallsign]
 	vols := ctx.Client.AirspaceForTCW(ctx.UserTCW)
 
-	inside, alts := av.InAirspace(state.track.Location, state.track.TrueAltitude, vols)
-	if state.EnteredOurAirspace && !inside {
+	inside, alts := av.InAirspace(trk.Location, trk.TrueAltitude, vols)
+	if trk.EnteredOurAirspace && !inside {
 		return alts, true
-	} else if inside {
-		state.EnteredOurAirspace = true
 	}
 	return nil, false
 }
@@ -1220,196 +1162,6 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context) {
 	}
 }
 
-func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context) {
-	nmPerLongitude := ctx.NmPerLongitude
-	magneticVariation := ctx.MagneticVariation
-
-	// Zero out the previous distance
-	for _, trk := range sp.visibleTracks {
-		state := sp.TrackState[trk.ADSBCallsign]
-		state.IntrailDistance = 0
-		state.MinimumMIT = 0
-		state.ATPAStatus = ATPAStatusUnset
-		state.ATPALeadAircraftCallsign = ""
-		state.DrawATPAGraphics = false
-	}
-
-	// Skip ATPA processing if disabled system-wide
-	if !ctx.Client.State.ATPAEnabled {
-		return
-	}
-
-	// For simplicity, we always compute all of the necessary distances
-	// here, regardless of things like both ps.DisplayATPAWarningAlertCones
-	// and ps.DisplayATPAMonitorCones being disabled. Later, when it's time
-	// to display things (or not), we account for both that as well as all
-	// of the potential per-aircraft overrides. This does mean that
-	// sometimes the work here is fully wasted.
-
-	// Loop over each ATPA volume at arrival airports and process all
-	// aircraft inside it.
-	ss := ctx.Client.State
-	for icao, apVolState := range ss.ATPAVolumeState {
-		for id, volState := range apVolState {
-			if volState.Disabled {
-				continue
-			}
-			vol := ss.Airports[icao].ATPAVolumes[id]
-
-			// Get all aircraft on approach to this runway
-			runwayAircraft := util.FilterSlice(sp.visibleTracks, func(trk sim.Track) bool {
-				if !trk.IsAssociated() {
-					return false
-				}
-
-				if trk.ATPAVolume == nil || trk.ATPAVolume.Id != vol.Id || trk.ATPAVolume.Threshold != vol.Threshold {
-					return false
-				}
-
-				// Excluded scratchpad -> aircraft doesn't participate in the party whatsoever.
-				if trk.FlightPlan.Scratchpad != "" && slices.Contains(vol.ExcludedScratchpads, trk.FlightPlan.Scratchpad) {
-					return false
-				}
-
-				state := sp.TrackState[trk.ADSBCallsign]
-				return vol.Inside(state.track.Location, state.track.TransponderAltitude,
-					math.TrueToMagnetic(state.TrackHeading(nmPerLongitude), magneticVariation),
-					nmPerLongitude, magneticVariation)
-			})
-
-			// Sort by distance to threshold (there will be some redundant lookups of TrackState
-			// and distance computations here, but it's straightforward to implement it like this
-			// and we shouldn't have many aircraft in runwayAircraft anyway...
-			sort.Slice(runwayAircraft, func(i, j int) bool {
-				pi := sp.TrackState[runwayAircraft[i].ADSBCallsign].track.Location
-				pj := sp.TrackState[runwayAircraft[j].ADSBCallsign].track.Location
-				return math.NMDistance2LL(pi, vol.Threshold) < math.NMDistance2LL(pj, vol.Threshold)
-			})
-
-			for i := range runwayAircraft {
-				if i == 0 {
-					// The first one doesn't have anyone in front...
-					continue
-				}
-				leading, trailing := runwayAircraft[i-1], runwayAircraft[i]
-				leadingState, trailingState := sp.TrackState[leading.ADSBCallsign], sp.TrackState[trailing.ADSBCallsign]
-				trailingState.IntrailDistance =
-					math.NMDistance2LL(leadingState.track.Location, trailingState.track.Location)
-				trailingState.DrawATPAGraphics = true
-				sp.checkInTrailCwtSeparation(ctx, trailing, leading)
-			}
-		}
-	}
-}
-
-type ModeledAircraft struct {
-	callsign     av.ADSBCallsign
-	p            [2]float32 // nm coords
-	v            [2]float32 // nm, normalized
-	gs           float32
-	alt          float32
-	dalt         float32    // per second
-	threshold    [2]float32 // nm
-	landingSpeed float32
-}
-
-func MakeModeledAircraft(ctx *panes.Context, trk sim.Track, state *TrackState, threshold math.Point2LL) ModeledAircraft {
-	nmPerLongitude := ctx.NmPerLongitude
-	magneticVariation := ctx.MagneticVariation
-
-	ma := ModeledAircraft{
-		callsign:  trk.ADSBCallsign,
-		p:         math.LL2NM(trk.Location, nmPerLongitude),
-		gs:        trk.Groundspeed,
-		alt:       trk.TransponderAltitude,
-		dalt:      float32(state.TrackDeltaAltitude()),
-		threshold: math.LL2NM(threshold, nmPerLongitude),
-	}
-	// Note: assuming it's associated...
-	if perf, ok := av.DB.AircraftPerformance[trk.FlightPlan.AircraftType]; ok {
-		ma.landingSpeed = perf.Speed.Landing
-	} else {
-		ma.landingSpeed = 120 // ....
-	}
-	ma.v = state.HeadingVector(nmPerLongitude, magneticVariation)
-	ma.v = math.LL2NM(ma.v, nmPerLongitude)
-	ma.v = math.Normalize2f(ma.v)
-	return ma
-}
-
-// estimated altitude s seconds in the future
-func (ma *ModeledAircraft) EstimatedAltitude(s float32) float32 {
-	// simple linear model
-	return ma.alt + s*ma.dalt
-}
-
-// Return estimated position 1s in the future
-func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
-	gs := ma.gs // current speed
-	td := math.Distance2f(p, ma.threshold)
-	if td < 2 {
-		gs = min(gs, ma.landingSpeed)
-	} else if td < 5 {
-		t := (td - 2) / 3 // [0,1]
-		// lerp from current speed down to landing speed
-		gs = math.Lerp(t, ma.landingSpeed, gs)
-	}
-
-	gs /= 3600 // nm / second
-	return math.Add2f(p, math.Scale2f(ma.v, gs))
-}
-
-func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front sim.Track) {
-	if front.IsUnassociated() || back.IsUnassociated() {
-		return
-	}
-
-	state := sp.TrackState[back.ADSBCallsign]
-	vol := back.ATPAVolume
-
-	eligible25nm := vol.Enable25nmApproach &&
-		ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) &&
-		math.NMDistance2LL(vol.Threshold, back.Location) < vol.Dist25nmApproach &&
-		back.OnExtendedCenterline && front.OnExtendedCenterline
-	cwtSeparation := av.CWTApproachSeparation(
-		front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory, eligible25nm)
-
-	state.MinimumMIT = cwtSeparation
-	state.ATPALeadAircraftCallsign = front.ADSBCallsign
-	state.ATPAStatus = ATPAStatusMonitor // baseline
-
-	// If the aircraft's scratchpad is filtered, then it doesn't get
-	// warnings or alerts but is still here for the aircraft behind it.
-	if back.IsAssociated() && back.FlightPlan.Scratchpad != "" &&
-		slices.Contains(vol.FilteredScratchpads, back.FlightPlan.Scratchpad) {
-		return
-	}
-
-	// front, back aircraft
-	frontModel := MakeModeledAircraft(ctx, front, sp.TrackState[front.ADSBCallsign], vol.Threshold)
-	backModel := MakeModeledAircraft(ctx, back, state, vol.Threshold)
-
-	// Will there be a MIT violation s seconds in the future?  (Note that
-	// we don't include altitude separation here since what we need is
-	// distance separation by the threshold...)
-	frontPosition, backPosition := frontModel.p, backModel.p
-	for s := range 45 {
-		frontPosition, backPosition = frontModel.NextPosition(frontPosition), backModel.NextPosition(backPosition)
-		distance := math.Distance2f(frontPosition, backPosition)
-		if distance < cwtSeparation { // no bueno
-			if s <= 24 {
-				// Error if conflict expected within 24 seconds (6-159).
-				state.ATPAStatus = ATPAStatusAlert
-				return
-			} else {
-				// Warning if conflict expected within 45 seconds (6-159).
-				state.ATPAStatus = ATPAStatusWarning
-				return
-			}
-		}
-	}
-}
-
 func (sp *STARSPane) diverging(ctx *panes.Context, a, b *sim.Track) bool {
 	nmPerLongitude := ctx.NmPerLongitude
 	magneticVariation := ctx.MagneticVariation
@@ -1476,20 +1228,20 @@ func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, dbs map[av.ADSBCallsign
 
 func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) math.CardinalOrdinalDirection {
 	ps := sp.currentPrefs()
-	state := sp.TrackState[trk.ADSBCallsign]
 
 	if trk.IsAssociated() {
 		sfp := trk.FlightPlan
+		anno := sp.annotations(ctx, trk.ADSBCallsign)
 		if sfp.Suspended {
 			// Suspended are always north, evidently.
 			return math.North
-		} else if state.UseGlobalLeaderLine && sfp.GlobalLeaderLineDirection != nil {
+		} else if anno.UseGlobalLeaderLine && sfp.GlobalLeaderLineDirection != nil {
 			return *sfp.GlobalLeaderLineDirection
-		} else if state.LeaderLineDirection != nil {
+		} else if anno.LeaderLineDirection != nil {
 			// The direction was specified for the aircraft specifically
-			return *state.LeaderLineDirection
-		} else if state.FDAMLeaderLineDirection != nil {
-			return *state.FDAMLeaderLineDirection
+			return *anno.LeaderLineDirection
+		} else if anno.FDAMLeaderLineDirection != nil {
+			return *anno.FDAMLeaderLineDirection
 		}
 
 		// Check if the active configuration specifies a leader line
@@ -1519,10 +1271,9 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 			return *ps.OtherControllerLeaderLineDirection
 		}
 	} else { // unassociated
-		if state.LeaderLineDirection != nil {
-			// The direction was specified for the aircraft specifically
-			return *state.LeaderLineDirection
-		} else if ps.UnassociatedLeaderLineDirection != nil {
+		// Per-track leader line direction is not available for
+		// unassociated tracks (no ACID to key shared annotations on).
+		if ps.UnassociatedLeaderLineDirection != nil {
 			return *ps.UnassociatedLeaderLineDirection
 		}
 	}

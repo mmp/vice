@@ -73,6 +73,16 @@ type Sim struct {
 
 	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
 
+	// TCWDisplay holds per-TCW shared display state for relief
+	// controllers; lazily created the first time a human signs in
+	// to a TCW. Not serialized to disk.
+	TCWDisplay map[TCW]*TCWDisplayState
+
+	// activeTalker tracks which controller token holds the PTT slot for
+	// each TCW. Guarded by s.mu. See sim/voice.go.
+	activeTalker        map[TCW]string
+	dbgVoiceChunkCount  int // temporary: counts RecordPTTChunk calls for sampled logging
+
 	ReportingPoints []av.ReportingPoint
 
 	FDAMSystemInhibited         bool
@@ -626,6 +636,33 @@ func (s *Sim) PrepareRadioTransmissionsForTCW(tcw TCW, events []Event) []Event {
 	return s.prepareRadioTransmissions(tcw, events)
 }
 
+// PrepareRadioTransmissionsForTCWAndToken processes events for delivery to
+// a specific connection (token) on a specific TCW. It does everything
+// PrepareRadioTransmissionsForTCW does, then filters out PeerVoiceEvents
+// that should not reach this listener (different TCW, or same talker).
+func (s *Sim) PrepareRadioTransmissionsForTCWAndToken(tcw TCW, token string, events []Event) []Event {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	events = s.prepareRadioTransmissions(tcw, events)
+
+	out := events[:0]
+	for _, e := range events {
+		if e.Type == PeerVoiceEvent {
+			if e.SourceTCW != tcw {
+				s.lg.Warnf("DBG_VOICE: filter drop wrong-tcw listener_tcw=%q event_tcw=%q sender=%s", tcw, e.SourceTCW, e.SenderToken[:min(8, len(e.SenderToken))])
+				continue
+			}
+			if e.SenderToken == token {
+				s.lg.Warnf("DBG_VOICE: filter drop self-echo tcw=%q token=%s", tcw, token[:min(8, len(token))])
+				continue
+			}
+		}
+		out = append(out, e)
+	}
+	return out
+}
+
 func (s *Sim) GetStateUpdate(tcw TCW) StateUpdate {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -634,8 +671,9 @@ func (s *Sim) GetStateUpdate(tcw TCW) StateUpdate {
 
 	update := StateUpdate{
 		DynamicState:     s.State.DynamicState,
-		DerivedState:     makeDerivedState(s),
+		DerivedState:     makeDerivedState(s, tcw),
 		FlightStripACIDs: s.flightStripACIDsForTCW(tcw),
+		TCWDisplay:       s.TCWDisplay[tcw],
 	}
 
 	if util.SizeOf(update, os.Stderr, false, 1024*1024) > 256*1024*1024 {
@@ -920,6 +958,9 @@ func (s *Sim) updateState() {
 				fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
 				fp.HandoffController = ""
 
+				// Record handoff-accepted flash on the outbound TCW.
+				s.noteHandoffAccepted(previousTrackingController, ac)
+
 				if ac != nil {
 					haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
 						func(wp av.Waypoint) bool { return wp.HasTransferCommsAction() })
@@ -1012,7 +1053,8 @@ func (s *Sim) updateState() {
 						// Execute waypoint commands using the waypoint commands controller (typically an instructor)
 						nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s fix=%s commands=%s", callsign, passedWaypoint.Fix, cmds)
 						s.lg.Infof("Waypoint commands: Aircraft %s passed %s, executing: %s", callsign, passedWaypoint.Fix, cmds)
-						result := s.RunAircraftControlCommands(TCW(tcp), callsign, cmds, 0)
+						// Server-internal waypoint commands have no requester token.
+						result := s.RunAircraftControlCommands(TCW(tcp), callsign, cmds, 0, "")
 						if result.Error != nil {
 							nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s error=%v remaining=%s", callsign, result.Error,
 								result.RemainingInput)
@@ -1218,6 +1260,11 @@ func (s *Sim) updateState() {
 			}
 		}
 	}
+
+	s.updateATPA()
+	s.updateModeC()
+	s.updateVisibility()
+	s.pruneTCWDisplayAnnotations()
 }
 
 func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
@@ -1782,7 +1829,7 @@ func (s *Sim) GetUserState() *UserState {
 
 	state := UserState{
 		CommonState:  *s.State,
-		DerivedState: makeDerivedState(s),
+		DerivedState: makeDerivedState(s, ""),
 	}
 
 	// Make a deep copy so that any state changes after the lock is released aren't included.

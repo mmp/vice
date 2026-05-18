@@ -169,6 +169,11 @@ type SimState struct {
 	UserIsPrivileged bool // Whether this user has elevated privileges (can control any aircraft)
 
 	FlightStripACIDs []sim.ACID
+
+	// TCWDisplay is the latest snapshot of shared display state for
+	// the user's TCW. Replaced wholesale on every poll-based update;
+	// nil until the first SimStateUpdate.Apply that carries one.
+	TCWDisplay *sim.TCWDisplayState
 }
 
 // TCWIsPrivileged returns whether the given TCW has elevated privileges.
@@ -631,6 +636,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RunningSim) erro
 // controllerContext holds the context for a connected controller, returned by LookupController.
 // A nil value indicates the controller was not found.
 type controllerContext struct {
+	token    string
 	tcw      sim.TCW
 	initials string
 	sim      *sim.Sim
@@ -685,6 +691,13 @@ func (su *SimStateUpdate) Apply(state *SimState, eventStream *sim.EventStream) {
 	state.ActiveTCWs = su.ActiveTCWs
 	state.FlightStripACIDs = su.FlightStripACIDs
 
+	// TCWDisplay is snapshotted on every poll; later snapshots
+	// replace earlier ones wholesale. Nil snapshots leave existing
+	// state in place (e.g., if the server has not yet seeded one).
+	if su.TCWDisplay != nil {
+		state.TCWDisplay = su.TCWDisplay
+	}
+
 	// Post events after updating state so they reflect current state.
 	if eventStream != nil {
 		for _, e := range su.Events {
@@ -698,7 +711,7 @@ func (c *controllerContext) GetStateUpdate() SimStateUpdate {
 	return SimStateUpdate{
 		StateUpdate: c.sim.GetStateUpdate(c.tcw),
 		ActiveTCWs:  c.session.GetActiveTCWs(),
-		Events:      c.sim.PrepareRadioTransmissionsForTCW(c.tcw, c.eventSub.Get()),
+		Events:      c.sim.PrepareRadioTransmissionsForTCWAndToken(c.tcw, c.token, c.eventSub.Get()),
 	}
 }
 

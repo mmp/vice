@@ -513,9 +513,10 @@ func (c *ControlClient) RequestContactTransmission() {
 
 			if *c.disableTTSPtr {
 				c.transmissions.SetContactRequested(false)
-				// Contact was processed on server (pilot joins frequency, text event posted)
-				// but user doesn't want audio. Set a hold to maintain pacing.
-				c.transmissions.HoldAfterSilentContact(result.ContactCallsign)
+				// Contact was processed on server (pilot joins frequency, text
+				// event posted) but user doesn't want audio. The shared TCW
+				// RadioHoldUntil already advanced when the server posted the
+				// event, so contact pacing is preserved without a local hold.
 				return
 			}
 
@@ -592,4 +593,89 @@ func (c *ControlClient) AnnotateFlightStrip(acid sim.ACID, annotations [9]string
 		ACID:            acid,
 		Annotations:     annotations,
 	}, nil, nil), nil))
+}
+
+// Shared per-ACID track annotation mutations. Each RPC's echoed
+// SimStateUpdate carries the fresh TCWDisplay snapshot, which the call
+// machinery applies to the local State so subsequent reads see the
+// new value immediately.
+
+func (c *ControlClient) setTrackBool(rpcName string, callsign av.ADSBCallsign, v bool, callback func(error)) {
+	var update server.SimStateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(rpcName, &server.SetTrackBoolArgs{
+		ControllerToken: c.controllerToken,
+		Callsign:        callsign,
+		Value:           v,
+	}, &update, nil), &update, callback))
+}
+
+func (c *ControlClient) setTrackTime(rpcName string, callsign av.ADSBCallsign, v sim.Time, callback func(error)) {
+	var update server.SimStateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(rpcName, &server.SetTrackTimeArgs{
+		ControllerToken: c.controllerToken,
+		Callsign:        callsign,
+		Value:           v,
+	}, &update, nil), &update, callback))
+}
+
+// Per-field MSAW / InQLRegion setters. Used by stars per-frame
+// detection paths (updateMSAWs, updateQuicklookRegionTracks) so each
+// write touches exactly one field and cannot clobber a server-driven
+// mutation of a neighboring field between 1 Hz state-update polls.
+
+func (c *ControlClient) SetTrackMSAW(callsign av.ADSBCallsign, v bool, callback func(error)) {
+	c.setTrackBool(server.SetTrackMSAWRPC, callsign, v, callback)
+}
+
+func (c *ControlClient) SetTrackInhibitMSAW(callsign av.ADSBCallsign, v bool, callback func(error)) {
+	c.setTrackBool(server.SetTrackInhibitMSAWRPC, callsign, v, callback)
+}
+
+func (c *ControlClient) SetTrackMSAWAcknowledged(callsign av.ADSBCallsign, v bool, callback func(error)) {
+	c.setTrackBool(server.SetTrackMSAWAcknowledgedRPC, callsign, v, callback)
+}
+
+func (c *ControlClient) SetTrackMSAWStart(callsign av.ADSBCallsign, v sim.Time, callback func(error)) {
+	c.setTrackTime(server.SetTrackMSAWStartRPC, callsign, v, callback)
+}
+
+func (c *ControlClient) SetTrackMSAWSoundEnd(callsign av.ADSBCallsign, v sim.Time, callback func(error)) {
+	c.setTrackTime(server.SetTrackMSAWSoundEndRPC, callsign, v, callback)
+}
+
+func (c *ControlClient) SetTrackInQLRegion(callsign av.ADSBCallsign, v bool, callback func(error)) {
+	c.setTrackBool(server.SetTrackInQLRegionRPC, callsign, v, callback)
+}
+
+// SetTrackAnnotations overwrites the shared per-ACID annotation entry
+// wholesale with `annot`. Used by stars read-modify-write paths where
+// a single logical change touches multiple fields (so a single
+// round-trip replaces the entry).
+func (c *ControlClient) SetTrackAnnotations(callsign av.ADSBCallsign, annot sim.TrackAnnotations, callback func(error)) {
+	var update server.SimStateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.SetTrackAnnotationsRPC, &server.SetTrackAnnotationsArgs{
+		ControllerToken: c.controllerToken,
+		Callsign:        callsign,
+		Annotations:     annot,
+	}, &update, nil), &update, callback))
+}
+
+// SetScopePrefs pushes a caller-encoded STARS preferences blob to the
+// TCW's shared state. STARS callers encode their current prefs via
+// the stars-local snapshot helper; the server stores the bytes
+// verbatim and fans them out to every controller at the TCW.
+func (c *ControlClient) SetScopePrefs(blob []byte, callback func(error)) {
+	var update server.SimStateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.SetScopePrefsBlobRPC, &server.SetScopePrefsBlobArgs{
+		ControllerToken: c.controllerToken,
+		Blob:            blob,
+	}, &update, nil), &update, callback))
+}
+
+func (c *ControlClient) SetFused(v bool, callback func(error)) {
+	var update server.SimStateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.SetFusedRPC, &server.SetFusedArgs{
+		ControllerToken: c.controllerToken,
+		Value:           v,
+	}, &update, nil), &update, callback))
 }

@@ -122,14 +122,53 @@ type StateUpdate struct {
 	DynamicState
 	DerivedState
 	FlightStripACIDs []ACID
+
+	// TCWDisplay is the shared display state for the caller's TCW,
+	// or nil if none exists. Populated by Sim.GetStateUpdate.
+	TCWDisplay *TCWDisplayState
+}
+
+// GetInitialRangeForTCW returns the initial scope range for a TCW,
+// preferring controller-specific then area-level config from the
+// FacilityAdaptation, falling back to the scenario-default Range.
+// Mirrors client.SimState.GetInitialRange for use server-side where
+// no UserTCW is available.
+func (cs *CommonState) GetInitialRangeForTCW(tcw TCW) float32 {
+	tcp := cs.PrimaryPositionForTCW(tcw)
+	fa := &cs.FacilityAdaptation
+	if config, ok := fa.Controllers[tcp]; ok && config.Range != 0 {
+		return config.Range
+	}
+	if ctrl, ok := cs.Controllers[tcp]; ok && ctrl.Area != "" {
+		if ac, ok := fa.Areas[ctrl.Area]; ok && ac.Range != 0 {
+			return ac.Range
+		}
+	}
+	return cs.Range
+}
+
+// GetInitialCenterForTCW mirrors GetInitialRangeForTCW for the scope center.
+func (cs *CommonState) GetInitialCenterForTCW(tcw TCW) math.Point2LL {
+	tcp := cs.PrimaryPositionForTCW(tcw)
+	fa := &cs.FacilityAdaptation
+	if config, ok := fa.Controllers[tcp]; ok && !config.Center.IsZero() {
+		return config.Center
+	}
+	if ctrl, ok := cs.Controllers[tcp]; ok && ctrl.Area != "" {
+		if ac, ok := fa.Areas[ctrl.Area]; ok && !ac.Center.IsZero() {
+			return ac.Center
+		}
+	}
+	return cs.Center
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
 // makeDerivedState creates a DerivedState from the current simulation state.  It builds Tracks from
 // Aircraft and gathers flight plan information from STARSComputer. This is called when preparing
-// state updates for clients.
-func makeDerivedState(s *Sim) DerivedState {
+// state updates for clients. The tcw argument selects which TCW's per-viewer bits (currently
+// EnteredOurAirspace) are populated onto each Track; passing "" leaves those bits zero.
+func makeDerivedState(s *Sim, tcw TCW) DerivedState {
 	ds := DerivedState{
 		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
 	}
@@ -191,6 +230,14 @@ func makeDerivedState(s *Sim) DerivedState {
 			ATPAVolume:                ac.ATPAVolume(),
 			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
 			RequestedFlightFollowing:  ac.RequestedFlightFollowing,
+			IntrailDistance:           ac.ATPADerived.IntrailDistance,
+			MinimumMIT:                ac.ATPADerived.MinimumMIT,
+			ATPAStatus:                ac.ATPADerived.ATPAStatus,
+			ATPALeadAircraftCallsign:  ac.ATPADerived.ATPALeadAircraftCallsign,
+			DrawATPAGraphics:          ac.ATPADerived.DrawATPAGraphics,
+			UnreasonableModeC:         ac.UnreasonableModeC,
+			FirstRadarTrackTime:       ac.FirstRadarTrackTime,
+			EnteredOurAirspace:        tcw != "" && ac.EnteredAirspace[tcw],
 		}
 
 		if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
@@ -543,4 +590,29 @@ type Track struct {
 	IsTentative               bool   // first 5 seconds after first contact
 	CWTCategory               string // True CWT from aircraft performance DB, not from NAS flight plan
 	RequestedFlightFollowing  bool   // VFR aircraft that has requested flight following
+
+	// ATPA state, computed server-side once per tick in (*Sim).updateATPA
+	// and copied through from Aircraft.ATPADerived. Clients just read it.
+	IntrailDistance          float32
+	MinimumMIT               float32
+	ATPAStatus               ATPAStatus
+	ATPALeadAircraftCallsign av.ADSBCallsign
+	DrawATPAGraphics         bool
+
+	// UnreasonableModeC is flagged server-side once per tick by
+	// (*Sim).updateModeC when the implied altitude rate exceeds
+	// FPMThreshold. Clients render it; they do not compute it.
+	UnreasonableModeC bool
+
+	// FirstRadarTrackTime is stamped by (*Sim).updateVisibility on the
+	// first sim tick the aircraft is radar-visible. Zero until then.
+	FirstRadarTrackTime Time
+
+	// EnteredOurAirspace reports whether the aircraft has ever been
+	// inside any airspace volume owned by the consumer's TCW (the one
+	// passed to makeDerivedState). Backed server-side by
+	// Aircraft.EnteredAirspace[tcw]; each TCW has its own monotonic
+	// bit so a handoff target does not inherit the previous owner's
+	// latched-true value.
+	EnteredOurAirspace bool
 }

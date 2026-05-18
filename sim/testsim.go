@@ -11,7 +11,8 @@ import (
 )
 
 // NewTestSim creates a minimal Sim suitable for command dispatch tests.
-// Exported only to _test packages via Go's export_test.go convention.
+// Public so cross-package tests (e.g. server/) can build a Sim without
+// going through NewSim's heavyweight METAR/airspace setup.
 func NewTestSim(lg *log.Logger) *Sim {
 	tcw := TCW("TEST")
 	freq := ControlPosition("125.0")
@@ -31,6 +32,7 @@ func NewTestSim(lg *log.Logger) *Sim {
 		Aircraft:        map[av.ADSBCallsign]*Aircraft{},
 		PendingContacts: make(map[TCP][]PendingContact),
 		PrivilegedTCWs:  map[TCW]bool{tcw: true},
+		STARSComputer:   &STARSComputer{},
 	}
 }
 
@@ -67,3 +69,11 @@ func MakeTestAircraft(callsign av.ADSBCallsign, runway string) *Aircraft {
 
 // E2ETCW returns the TCW used by NewTestSim.
 func E2ETCW() TCW { return TCW("TEST") }
+
+// PruneTCWDisplayAnnotationsForTest runs the prune pass cross-package
+// tests would otherwise trigger via the private tick loop.
+func (s *Sim) PruneTCWDisplayAnnotationsForTest() {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	s.pruneTCWDisplayAnnotations()
+}

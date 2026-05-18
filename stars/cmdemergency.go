@@ -31,8 +31,10 @@ func registerEmergencyCommands() {
 				return ErrSTARSIllegalFunctionAlertActive
 			}
 
-			state := sp.TrackState[trk.ADSBCallsign]
-			state.SPCAcknowledged = false
+			anno := sp.annotations(ctx, trk.ADSBCallsign)
+			anno.SPCAcknowledged = false
+			ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+				func(err error) { sp.displayError(err, ctx, "") })
 			var spec sim.FlightPlanSpecifier
 			if spc == trk.FlightPlan.SPCOverride { // matches, so turn it off
 				spec.SPCOverride.Set("")
@@ -85,8 +87,10 @@ func registerEmergencyCommands() {
 			return ErrSTARSIllegalTrack
 		}
 
-		state := sp.TrackState[trk.ADSBCallsign]
-		state.InhibitMSAW = true
+		anno := sp.annotations(ctx, trk.ADSBCallsign)
+		anno.InhibitMSAW = true
+		ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+			func(err error) { sp.displayError(err, ctx, "") })
 		return nil
 	})
 

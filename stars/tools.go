@@ -133,9 +133,10 @@ func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms radar.ScopeTr
 	ld := renderer.GetLinesDrawBuilder()
 	defer renderer.ReturnLinesDrawBuilder(ld)
 
+	rrr := ps.RangeRingRadius
 	for i := 1; i < 40; i++ {
 		// Radius of this ring in pixels
-		r := float32(i) * float32(ps.RangeRingRadius) / pixelDistanceNm
+		r := float32(i) * float32(rrr) / pixelDistanceNm
 		ld.AddCircle(centerWindow, r, 360)
 	}
 
@@ -709,14 +710,15 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, transforms radar.ScopeTransfor
 			continue
 		}
 
-		if trk.IsUnassociated() && !state.DisplayPTL {
+		displayPTL := sp.annotationsForTrack(ctx, trk).DisplayPTL
+		if trk.IsUnassociated() && !displayPTL {
 			// untracked only PTLs if they're individually enabled (I think); 6-13.
 			continue
 		}
 		// We have it or it's an inbound handoff to us.
 		ourTrack := trk.IsAssociated() && (ctx.UserOwnsFlightPlan(trk.FlightPlan) ||
 			ctx.UserControlsPosition(trk.FlightPlan.HandoffController))
-		if !state.DisplayPTL && !ps.PTLAll && !(ps.PTLOwn && ourTrack) {
+		if !displayPTL && !ps.PTLAll && !(ps.PTLOwn && ourTrack) {
 			continue
 		}
 
@@ -754,6 +756,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 	for _, trk := range sp.visibleTracks {
 		color := ps.Brightness.TPA.ScaleRGB(sp.Colors.JRingCone)
 		state := sp.TrackState[trk.ADSBCallsign]
+		anno := sp.annotationsForTrack(ctx, trk)
 
 		// Format a radius/length for printing, ditching the ".0" if it's
 		// an integer value.
@@ -765,13 +768,13 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 			}
 		}
 
-		if state.JRingRadius > 0 {
+		if anno.JRingRadius > 0 {
 			const nsegs = 360
 			pc := transforms.WindowFromLatLongP(state.track.Location)
-			radius := state.JRingRadius / transforms.PixelDistanceNM(ctx.NmPerLongitude)
+			radius := anno.JRingRadius / transforms.PixelDistanceNM(ctx.NmPerLongitude)
 			ld.AddCircle(pc, radius, nsegs, color)
 
-			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
+			if ps.DisplayTPASize || (anno.DisplayTPASize != nil && *anno.DisplayTPASize) {
 				// draw the ring size around 7.5 o'clock
 				// vector from center to the circle there
 				v := [2]float32{-.707106 * radius, -.707106 * radius} // -sqrt(2)/2
@@ -779,36 +782,36 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 				v[1] += float32(font.Size) + 3
 				pt := math.Add2f(pc, v)
 				textStyle := renderer.TextStyle{Font: font, Color: color}
-				td.AddText(format(state.JRingRadius), pt, textStyle)
+				td.AddText(format(anno.JRingRadius), pt, textStyle)
 			}
 		}
 
-		atpaStatus := state.ATPAStatus // this may change
+		atpaStatus := trk.ATPAStatus // this may change
 
 		// Don't draw any ATPA graphics if ATPA is disabled.
-		if !state.DrawATPAGraphics {
+		if !trk.DrawATPAGraphics {
 			atpaStatus = ATPAStatusUnset
 		}
 
 		// If warning/alert cones are inhibited but monitor cones are not,
 		// we may still draw a monitor cone.
 		if (atpaStatus == ATPAStatusWarning || atpaStatus == ATPAStatusAlert) &&
-			(!ps.DisplayATPAWarningAlertCones || (state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert)) {
+			(!ps.DisplayATPAWarningAlertCones || (anno.DisplayATPAWarnAlert != nil && !*anno.DisplayATPAWarnAlert)) {
 			atpaStatus = ATPAStatusMonitor
 		}
 
 		drawATPAMonitor := atpaStatus == ATPAStatusMonitor && ps.DisplayATPAMonitorCones &&
-			(state.DisplayATPAMonitor == nil || *state.DisplayATPAMonitor) &&
-			state.IntrailDistance-state.MinimumMIT <= 2 // monitor only if within 2nm of MIT requirement
+			(anno.DisplayATPAMonitor == nil || *anno.DisplayATPAMonitor) &&
+			trk.IntrailDistance-trk.MinimumMIT <= 2 // monitor only if within 2nm of MIT requirement
 		drawATPAWarning := atpaStatus == ATPAStatusWarning && ps.DisplayATPAWarningAlertCones &&
-			(state.DisplayATPAWarnAlert == nil || *state.DisplayATPAWarnAlert)
+			(anno.DisplayATPAWarnAlert == nil || *anno.DisplayATPAWarnAlert)
 		drawATPAAlert := atpaStatus == ATPAStatusAlert && ps.DisplayATPAWarningAlertCones &&
-			(state.DisplayATPAWarnAlert == nil || *state.DisplayATPAWarnAlert)
+			(anno.DisplayATPAWarnAlert == nil || *anno.DisplayATPAWarnAlert)
 		drawATPACone := drawATPAMonitor || drawATPAWarning || drawATPAAlert
 
-		if state.HaveHeading() && (state.ConeLength > 0 || drawATPACone) {
+		if state.HaveHeading() && (anno.ConeLength > 0 || drawATPACone) {
 			// Find the length of the cone in pixel coordinates)
-			lengthNM := max(state.ConeLength, state.MinimumMIT)
+			lengthNM := max(anno.ConeLength, trk.MinimumMIT)
 			length := lengthNM / transforms.PixelDistanceNM(ctx.NmPerLongitude)
 
 			// Form a triangle; the end of the cone is 10 pixels wide
@@ -820,7 +823,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 			var coneColor renderer.RGB
 			if drawATPACone {
 				// The cone is oriented to point toward the leading aircraft.
-				if sfront, ok := sp.TrackState[state.ATPALeadAircraftCallsign]; ok {
+				if sfront, ok := sp.TrackState[trk.ATPALeadAircraftCallsign]; ok {
 					coneHeading = float32(math.TrueToMagnetic(math.Heading2LL(state.track.Location, sfront.track.Location,
 						ctx.NmPerLongitude), ctx.MagneticVariation))
 				}
@@ -851,7 +854,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 
 			// FIXME: per 6.21.10, if disabled but dwell is enabled and the track is being dwelled,
 			// then display the size after all.
-			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
+			if ps.DisplayTPASize || (anno.DisplayTPASize != nil && *anno.DisplayTPASize) {
 				textStyle := renderer.TextStyle{Font: font, Color: coneColor}
 
 				pCenter := math.Add2f(pw, rot(math.Scale2f([2]float32{0, 0.5}, length)))
@@ -941,7 +944,7 @@ func (sp *STARSPane) drawWind(ctx *panes.Context, transforms radar.ScopeTransfor
 	const arrowLength = 25
 	const arrowheadSize = 8
 	step := 1
-	if r := ps.Range; r > 80 {
+	if r := sp.currentPrefs().Range; r > 80 {
 		step = 4
 	} else if r > 45 {
 		step = 3

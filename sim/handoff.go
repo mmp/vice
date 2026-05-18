@@ -283,6 +283,10 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			// Clean up if a point out was accepted as a handoff
 			delete(s.PointOuts, acid)
 
+			// Record handoff-accepted flash on the outbound (from) side
+			// so relief controllers at that TCW see the same state.
+			s.noteHandoffAccepted(previousTrackingController, ac)
+
 			if ac != nil {
 				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
 					func(wp av.Waypoint) bool { return wp.HasTransferCommsAction() })
@@ -296,6 +300,33 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			return nil
 		})
 	return err
+}
+
+// noteHandoffAccepted writes the outbound handoff-accepted annotation
+// on the TCW that just handed the track away so all relief controllers
+// sharing that TCW see the accept-flash state. No-op if the from-side
+// is a virtual/external controller (nothing to display).
+// Caller must hold s.mu.
+func (s *Sim) noteHandoffAccepted(fromPos ControlPosition, ac *Aircraft) {
+	if ac == nil || fromPos == "" {
+		return
+	}
+	if s.isVirtualController(fromPos) {
+		return
+	}
+	tcw := s.tcwForPosition(fromPos)
+	if tcw == "" {
+		return
+	}
+	dur := time.Duration(s.State.FacilityAdaptation.Datablocks.FDB.AcceptFlashDuration) * time.Second
+	if dur == 0 {
+		dur = 5 * time.Second
+	}
+	end := s.State.SimTime.Add(dur)
+	s.mutateTrackAnnotationLocked(tcw, ac.ADSBCallsign, func(a *TrackAnnotations) {
+		a.OutboundHandoffAccepted = true
+		a.OutboundHandoffFlashEnd = end
+	})
 }
 
 func (s *Sim) CancelHandoff(tcw TCW, acid ACID) error {
@@ -488,6 +519,14 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 				ACID:           acid,
 			})
 			fp.AddPointOutHistory(po.ToController)
+
+			// Record the ack on the accepting TCW so relief controllers
+			// at that position see the pointout as acknowledged.
+			if ac != nil {
+				s.mutateTrackAnnotationLocked(tcw, ac.ADSBCallsign, func(a *TrackAnnotations) {
+					a.PointOutAcknowledged = true
+				})
+			}
 
 			delete(s.PointOuts, acid)
 			return nil

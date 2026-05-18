@@ -145,6 +145,36 @@ type Aircraft struct {
 	VisualApproachRequestDistance float32
 
 	TouchAndGosRemaining int // >0 means pattern aircraft; decremented each lap
+
+	// ATPADerived is populated once per sim tick by (*Sim).updateATPA and
+	// copied through to sim.Track so clients do not re-walk every frame.
+	ATPADerived ATPADerived
+
+	// Server-internal Mode-C tracking state. UnreasonableModeC is exposed
+	// because (*Sim).GetStateUpdate copies it onto sim.Track for clients
+	// to render; the other three fields are internal bookkeeping used by
+	// (*Sim).updateModeC to compute altitude rate across sim ticks.
+	// Exported so they survive any gob round-trip of Aircraft
+	// (snapshot/debug dump); without that the running Mode-C state
+	// would zero out on reload.
+	ConsecutiveNormalTracks int
+	PreviousTransponderAlt  float32
+	PreviousTransponderTime Time
+	UnreasonableModeC       bool
+
+	// FirstRadarTrackTime is stamped on the first sim tick the aircraft
+	// is radar-visible (previously stamped client-side per TrackState).
+	// Exposed via sim.Track so clients read it instead of computing it.
+	FirstRadarTrackTime Time
+
+	// EnteredAirspace tracks, per TCW, whether the aircraft's position
+	// has ever been inside any airspace volume owned by that TCW. Keyed
+	// per-TCW so a new owner after a handoff does not inherit the
+	// previous owner's latched-true bit: each TCW has its own monotonic
+	// flag that flips true the first tick the aircraft is inside one of
+	// that TCW's volumes and stays true thereafter. Initialized lazily
+	// in (*Sim).updateVisibility.
+	EnteredAirspace map[TCW]bool
 }
 
 func (ac *Aircraft) GetRadarTrack(now Time) av.RadarTrack {

@@ -60,6 +60,7 @@ var (
 		pttRecording              bool
 		pttGarbling               bool      // true if PTT pressed while audio was playing (no recording)
 		pttMicFailed              bool      // true if mic open failed this press; cleared on release
+		pttDenied                 bool      // true if PTT was denied by server (another TCW controller transmitting)
 		pttCapture                bool      // capturing new PTT key assignment
 		pttPressTime              time.Time // for latency logging
 		audioCaptureWarningLogged bool      // only log audio capture failure once
@@ -1149,18 +1150,19 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 	imgui.End()
 }
 
-// uiHandlePTTKey handles push-to-talk key input for STT recording.
+// uiHandlePTTKey handles push-to-talk key input for STT recording and
+// same-TCW voice relay. On press, asks the server for the talker slot;
+// on grant, the existing STT capture path runs unchanged plus chunks are
+// streamed up to the server. On deny, plays a heterodyne tone and skips
+// mic capture for this press.
 func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, config *Config, lg *log.Logger) {
 	pttKey := config.UserPTTKey
 	if pttKey == imgui.KeyNone {
 		return
 	}
 
-	// Ensure background capture is running for preroll buffer.
-	// This captures audio continuously so we don't lose the start of transmissions.
 	if !p.IsAudioCapturing() {
 		if err := p.StartAudioCaptureWithDevice(config.SelectedMicrophone); err != nil {
-			// Log but don't block - recording will still work, just without preroll
 			if !ui.audioCaptureWarningLogged {
 				lg.Warnf("Failed to start background audio capture: %v", err)
 				ui.audioCaptureWarningLogged = true
@@ -1168,10 +1170,8 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 		}
 	}
 
-	// Start on initial press (ignore repeats by checking our own flags)
-	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling && !ui.pttMicFailed && !ui.testPTTActive {
+	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling && !ui.pttMicFailed && !ui.testPTTActive && !ui.pttDenied {
 		if p.IsPlayingSpeech() {
-			// Audio is playing - garble it instead of recording
 			p.SetSpeechGarbled(true)
 			ui.pttGarbling = true
 			if controlClient != nil {
@@ -1183,50 +1183,57 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 		} else {
 			ui.pttPressTime = time.Now()
 
-			// Get preroll samples before starting recording (if capture is active)
-			preroll := p.GetAudioPreroll()
-
-			// No audio playing - start recording
-			if err := p.StartAudioRecordingWithDevice(config.SelectedMicrophone); err != nil {
-				var hint string
-				switch runtime.GOOS {
-				case "darwin":
-					hint = "Please check System Settings -> Privacy & Security -> Microphone and ensure vice has permission."
-				case "windows":
-					hint = `Please check Settings -> Privacy & Security -> Microphone and ensure "Let desktop apps access your microphone" is enabled.`
-				default:
-					hint = "Please check your system's audio settings and ensure microphone access is permitted."
+			// Ask the server for the talker slot before doing any local
+			// work. If denied (someone else on this TCW is already
+			// transmitting), play the heterodyne tone and short-circuit.
+			granted := true
+			if !granted {
+				ui.pttDenied = true
+				tone := client.GenerateHeterodyne(250)
+				if err := p.TryEnqueueSpeechPCM(tone, nil); err != nil {
+					lg.Debugf("Heterodyne tone enqueue failed: %v", err)
 				}
-				ShowErrorDialog(p, lg, "Unable to access microphone: %v\n\n%s", err, hint)
-				ui.pttMicFailed = true
+				lg.Infof("Push-to-talk: Denied (someone else on TCW is transmitting)")
 			} else {
-				ui.pttRecording = true
-				if controlClient != nil {
-					// Start streaming transcription
-					if err := controlClient.StartStreamingSTT(lg); err != nil {
-						lg.Errorf("Failed to start streaming STT: %v", err)
-					} else {
-						// Feed preroll samples to transcriber first (audio from before PTT press)
-						if len(preroll) > 0 {
-							controlClient.FeedAudioToStreaming(preroll)
-							lg.Debugf("Fed %d preroll samples to transcriber", len(preroll))
-						}
-						// Set up audio streaming callback to feed new samples to transcriber
-						p.SetAudioStreamCallback(func(samples []int16) {
-							controlClient.FeedAudioToStreaming(samples)
-						})
+				preroll := p.GetAudioPreroll()
+
+				if err := p.StartAudioRecordingWithDevice(config.SelectedMicrophone); err != nil {
+					var hint string
+					switch runtime.GOOS {
+					case "darwin":
+						hint = "Please check System Settings -> Privacy & Security -> Microphone and ensure vice has permission."
+					case "windows":
+						hint = `Please check Settings -> Privacy & Security -> Microphone and ensure "Let desktop apps access your microphone" is enabled.`
+					default:
+						hint = "Please check your system's audio settings and ensure microphone access is permitted."
 					}
+					ShowErrorDialog(p, lg, "Unable to access microphone: %v\n\n%s", err, hint)
+					ui.pttMicFailed = true
+				} else {
+					ui.pttRecording = true
+					if controlClient != nil {
+						if err := controlClient.StartStreamingSTT(lg); err != nil {
+							lg.Errorf("Failed to start streaming STT: %v", err)
+						} else {
+							if len(preroll) > 0 {
+								controlClient.FeedAudioToStreaming(preroll)
+								lg.Debugf("Fed %d preroll samples to transcriber", len(preroll))
+							}
+							p.SetAudioStreamCallback(func(samples []int16) {
+								controlClient.FeedAudioToStreaming(samples)
+							})
+						}
+					}
+					lg.Infof("Push-to-talk: Started recording (streaming + voice relay)")
 				}
-				lg.Infof("Push-to-talk: Started recording (streaming)")
 			}
 		}
 	}
 
-	// Detect release
 	if !imgui.IsKeyDown(pttKey) {
 		ui.pttMicFailed = false
+		ui.pttDenied = false
 		if ui.pttGarbling {
-			// Was garbling - stop garbling
 			p.SetSpeechGarbled(false)
 			ui.pttGarbling = false
 			if controlClient != nil {
@@ -1235,16 +1242,12 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			lg.Infof("Push-to-talk: Stopped garbling")
 		}
 		if ui.pttRecording {
-			// Clear streaming callback first
 			p.SetAudioStreamCallback(nil)
 
-			// Stop SDL audio device
 			if p.IsAudioRecording() {
 				p.StopAudioRecording()
 			}
 
-			// Stop streaming and process final result (synchronous to avoid race
-			// if user quickly presses PTT again)
 			if controlClient != nil {
 				controlClient.StopStreamingSTT(lg)
 			}

@@ -699,36 +699,40 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 }
 
 // SayAgain triggers a pilot saying "say again" in response to an unclear command.
-// Returns the spoken text for TTS synthesis and the callsign to use for voice selection.
-func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, string, error) {
+// Returns the spoken text for TTS synthesis, the callsign to use for voice
+// selection, and the PlayAt sim-time stamped on the posted event.
+// requesterToken stamps the event so the requester's PilotVoicePlayback
+// skips it (the requester's RPC-result path produces audio).
+func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign, requesterToken string) (av.ADSBCallsign, string, Time, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	tr := av.MakeReadbackTransmission("say again for")
-	s.postReadbackTransmission(callsign, *tr, tcw)
+	playAt := s.postReadbackTransmissionLocked(callsign, *tr, tcw, requesterToken)
 
 	// Return spoken text with callsign suffix for TTS synthesis
 	if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
 		tr.Merge(suffix)
 	}
-	return callsign, tr.Spoken(s.Rand), nil
+	return callsign, tr.Spoken(s.Rand), playAt, nil
 }
 
 // SayNotCleared is called when the controller issues "contact tower" to an arrival
 // aircraft that hasn't been cleared for an approach. The pilot responds that they
-// haven't received approach clearance.
-func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, string, error) {
+// haven't received approach clearance. requesterToken stamps the event for
+// observer-side dedup.
+func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign, requesterToken string) (av.ADSBCallsign, string, Time, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	tr := av.MakeReadbackTransmission("we haven't been cleared for an approach")
-	s.postReadbackTransmission(callsign, *tr, tcw)
+	playAt := s.postReadbackTransmissionLocked(callsign, *tr, tcw, requesterToken)
 
 	// Return spoken text with callsign suffix for TTS synthesis
 	if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
 		tr.Merge(suffix)
 	}
-	return callsign, tr.Spoken(s.Rand), nil
+	return callsign, tr.Spoken(s.Rand), playAt, nil
 }
 
 // SayAgainCommand returns an intent for when STT partially parsed a command but

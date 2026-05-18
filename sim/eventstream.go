@@ -260,6 +260,7 @@ const (
 	STTCommandEvent
 	FlightPlanDirectEvent
 	FDAMLeaderLineEvent
+	PeerVoiceEvent
 )
 
 func (t EventType) String() string {
@@ -268,25 +269,52 @@ func (t EventType) String() string {
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
 		"SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
 		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect",
-		"FDAMLeaderLine"}[t]
+		"FDAMLeaderLine", "PeerVoice"}[t]
 }
 
 type Event struct {
-	Type                  EventType
-	ADSBCallsign          av.ADSBCallsign
-	ACID                  ACID
-	FromController        ControlPosition
-	ToController          ControlPosition // For radio transmissions, the controlling controller.
-	DestinationTCW        TCW             // The TCW that should receive this transmission's TTS
-	WrittenText           string
-	SpokenText            string
-	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
-	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent, FDAMLeaderLineEvent
-	WaypointInfo          []math.Point2LL
-	STTTranscript         string
-	STTCommand            string
-	STTTimings            string
-	Route                 av.WaypointArray // For QU
+	Type           EventType
+	ADSBCallsign   av.ADSBCallsign
+	ACID           ACID
+	FromController ControlPosition
+	ToController   ControlPosition // For radio transmissions, the controlling controller.
+	DestinationTCW TCW             // The TCW that should receive this transmission's TTS
+	WrittenText    string
+	SpokenText     string
+	// SpokenVoice names the TTS voice the requester (and observers) should
+	// use to render SpokenText. Set by postRadioTransmission via the sim's
+	// VoiceAssigner if the caller leaves it empty. Empty for non-radio
+	// events; consumers should fall back to a default voice if empty on a
+	// radio event (server-internal events that bypass postRadioTransmission).
+	SpokenVoice           string
+	RadioTransmissionType av.RadioTransmissionType // For radio transmissions only
+	// PlayAt is the sim-time when listening clients should start audio
+	// playback for a RadioTransmissionEvent. Server stamps this when the
+	// event is queued via postRadioTransmission. Late-arriving clients
+	// (SimTime > PlayAt) play immediately without drop. Zero when not
+	// stamped -- including non-radio events and any RadioTransmissionEvent
+	// posted by a path that has not been migrated to postRadioTransmission.
+	// Consumers must gate on Type before reading PlayAt.
+	PlayAt Time
+	// RequesterToken is the controllerToken of the client whose RPC
+	// produced this RadioTransmissionEvent (e.g., the caller of
+	// RunAircraftCommands). Empty for server-internal transmissions
+	// that have no human originator (e.g., spontaneous pilot events).
+	// Observer-side synthesizers use this to skip events whose RPC-
+	// result handler will already produce audio on the requester.
+	RequesterToken      string
+	LeaderLineDirection *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent, FDAMLeaderLineEvent
+	WaypointInfo        []math.Point2LL
+	STTTranscript       string
+	STTCommand          string
+	STTTimings          string
+	Route               av.WaypointArray // For QU
+
+	// PeerVoiceEvent fields
+	SourceTCW   TCW     // TCW the chunk originated on
+	SenderToken string  // talker's token, used to filter self
+	VoiceChunk  []int16 // 16 kHz mono PCM, ~320 samples per chunk; nil when VoiceEnd
+	VoiceEnd    bool    // true on the final event of a transmission
 }
 
 func (e *Event) String() string {
@@ -320,6 +348,13 @@ func (e Event) LogValue() slog.Value {
 	}
 	if e.SpokenText != "" {
 		attrs = append(attrs, slog.String("spoken_text", e.SpokenText))
+	}
+	if e.Type == PeerVoiceEvent {
+		attrs = append(attrs,
+			slog.String("source_tcw", string(e.SourceTCW)),
+			slog.String("sender_token", e.SenderToken),
+			slog.Int("voice_samples", len(e.VoiceChunk)),
+			slog.Bool("voice_end", e.VoiceEnd))
 	}
 	return slog.GroupValue(attrs...)
 }

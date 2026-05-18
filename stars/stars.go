@@ -186,6 +186,12 @@ type STARSPane struct {
 	lastHistoryTrackUpdate sim.Time
 	discardTracks          bool
 
+	// lastAppliedFused tracks the TCW Fused flag value we last reconciled
+	// locally. When the shared flag flips (whether from our own click or
+	// from a peer controller), Draw resets the per-ACID history ring and
+	// mirrors the new value into ps.FusedRadarMode so radarMode() agrees.
+	lastAppliedFused bool
+
 	LastATIS   [10]string
 	LastGIText [10]string
 	FlashATIS  [10]bool
@@ -263,6 +269,17 @@ type STARSPane struct {
 	pdbArena util.ObjectArena[partialDatablock]
 	ldbArena util.ObjectArena[limitedDatablock]
 	sdbArena util.ObjectArena[suspendedDatablock]
+
+	// Scope-prefs sync state -- always active whenever TCWDisplay
+	// exists. scopePrefsBaseline is the last blob we either pushed or
+	// adopted, kept so we can detect local divergence vs shared state.
+	// Cleared whenever sync is inactive (TCWDisplay nil).
+	scopePrefsBaseline    []byte
+	scopePrefsBaselineRev uint64
+	// lastScopePrefsPush rate-limits push RPCs so a user actively
+	// dragging range/pan at frame rate doesn't flood the server. The
+	// observer polls at ~100ms, so pushing faster than that is wasted.
+	lastScopePrefsPush time.Time
 }
 
 func (sp *STARSPane) notePendingATISGITextUpdate(ctx *panes.Context, line int, atis, text *string) {
@@ -1220,12 +1237,35 @@ func (sp *STARSPane) Upgrade(from, to int) {
 
 func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.processEvents(ctx)
+
+	// Reconcile the TCW-wide Fused flag before anything reads the radar
+	// mode or writes into the history ring. When the shared flag flips,
+	// clear the per-ACID history ring and mirror the value into the
+	// local preference so radarMode() returns the right mode for all
+	// other readers.
+	fused := false
+	if d := ctx.Client.State.TCWDisplay; d != nil {
+		fused = d.Fused
+	}
+	if fused != sp.lastAppliedFused {
+		for cs := range sp.TrackState {
+			sp.TrackState[cs].historyTracksIndex = 0
+			sp.TrackState[cs].historyTracks = [10]av.RadarTrack{}
+		}
+		sp.currentPrefs().FusedRadarMode = fused
+		sp.lastAppliedFused = fused
+	}
+
 	sp.updateVisibleTracks(ctx)
 
 	sp.updateRadarTracks(ctx)
 	sp.autoReleaseDepartures(ctx)
 
 	ps := sp.currentPrefs()
+
+	// Reconcile local prefs with the TCW's shared scope-prefs blob
+	// before anything reads ps this frame. No-op when sync is off.
+	sp.syncScopePrefs(ctx)
 
 	// Clear to background color
 	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(sp.Colors.Background))
@@ -1234,7 +1274,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
-		ctr, float32(ps.Range), 0)
+		ctr, ps.Range, 0)
 
 	scopeExtent := ctx.PaneExtent
 	if ps.DisplayDCB {
@@ -1839,7 +1879,6 @@ func (sp *STARSPane) updateVisibleTracks(ctx *panes.Context) {
 
 	for _, trk := range ctx.Client.State.Tracks {
 		visible := false
-		state := sp.TrackState[trk.ADSBCallsign]
 
 		if trk.IsUnsupportedDB() {
 			visible = true
@@ -1862,11 +1901,6 @@ func (sp *STARSPane) updateVisibleTracks(ctx *panes.Context) {
 
 		if visible {
 			sp.visibleTracks = append(sp.visibleTracks, *trk)
-
-			// Is this the first we've seen it?
-			if state.FirstRadarTrackTime.IsZero() {
-				state.FirstRadarTrackTime = ctx.SimTime
-			}
 		}
 	}
 
@@ -2021,9 +2055,9 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 			if trk.IsUnassociated() || trk.FlightPlan.DisableMSAW {
 				return false
 			}
-			state := sp.TrackState[trk.ADSBCallsign]
-			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW &&
-				ctx.SimTime.Before(state.MSAWSoundEnd) {
+			anno := sp.annotationsForTrack(ctx, trk)
+			if anno.MSAW && !anno.MSAWAcknowledged && !anno.InhibitMSAW &&
+				ctx.SimTime.Before(anno.MSAWSoundEnd) {
 				return true
 			}
 		}
@@ -2037,9 +2071,9 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 	// - [todo]: if unassociated, is on-screen or within an adapted distance
 	playSPCSound := func() bool {
 		for _, trk := range sp.visibleTracks {
-			state := sp.TrackState[trk.ADSBCallsign]
+			anno := sp.annotationsForTrack(ctx, trk)
 			ok, _ := trk.Squawk.IsSPC()
-			if ok && !state.SPCAcknowledged && ctx.SimTime.Before(state.SPCSoundEnd) {
+			if ok && !anno.SPCAcknowledged && ctx.SimTime.Before(anno.SPCSoundEnd) {
 				return true
 			}
 		}

@@ -60,6 +60,21 @@ build a *vice* executable.
 For better speech to text performance, you can compile vice with vulkan support if you have a vulkan compatible gpu.
 On Ubuntu, in addition to the above dependencies, install `libvulkan-dev` and then run `./build.sh --vulkan`.
 
+If you switch between `./build.sh` and `./build.sh --vulkan` after a successful build, `build.sh`
+will see `whisper.cpp/build_go/` already exists and skip rebuilding it. The cached `libggml.a`
+then mismatches the new build's `vulkan` tag, and you'll get a link error like:
+
+```
+undefined reference to `ggml_backend_vk_reg'
+```
+
+(or the reverse: missing `whisper.cpp/build_go/ggml/src/ggml-vulkan/libggml-vulkan.a`). To fix,
+delete `whisper.cpp/build_go/` and rebuild:
+
+```
+rm -rf whisper.cpp/build_go && ./build.sh --vulkan   # or omit --vulkan
+```
+
 ## Docker
 
 Docker can be used to build a binary without installing build time dependencies. To build via docker run `make docker`.

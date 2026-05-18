@@ -101,6 +101,10 @@ func (ss *simSession) SignOff(token string) (signOffResult, bool) {
 		Initials: conn.initials,
 	}
 
+	// Free any PTT slot this connection may have been holding so the slot
+	// doesn't get stranded on disconnect.
+	ss.sim.ClearTalkerForToken(token)
+
 	// Unsubscribe from events before deleting
 	if conn.stateUpdateEventSub != nil {
 		conn.stateUpdateEventSub.Unsubscribe()
@@ -197,7 +201,7 @@ func (ss *simSession) GetStateUpdate(token string) *SimStateUpdate {
 	return &SimStateUpdate{
 		StateUpdate: ss.sim.GetStateUpdate(tcw),
 		ActiveTCWs:  ss.GetActiveTCWs(),
-		Events:      ss.sim.PrepareRadioTransmissionsForTCW(tcw, eventSub.Get()),
+		Events:      ss.sim.PrepareRadioTransmissionsForTCWAndToken(tcw, token, eventSub.Get()),
 	}
 }
 
@@ -211,6 +215,7 @@ func (ss *simSession) MakeControllerContext(token string) *controllerContext {
 		return nil
 	}
 	return &controllerContext{
+		token:    token,
 		tcw:      conn.tcw,
 		initials: conn.initials,
 		sim:      ss.sim,
@@ -266,13 +271,16 @@ func (ss *simSession) GetActiveTCWs() []sim.TCW {
 }
 
 // RequestContact pops the next pending contact for the TCW, generates the transmission
-// with current aircraft state, and returns text + voice name for client-side synthesis.
-// Returns empty values if no contact is pending.
-func (ss *simSession) RequestContact(tcw sim.TCW) (text string, voiceName string, callsign av.ADSBCallsign, ty av.RadioTransmissionType) {
+// with current aircraft state, and returns text + voice name + PlayAt for
+// client-side synthesis. Returns empty/zero values if no contact is pending.
+// requesterToken is plumbed to the underlying RadioTransmissionEvent so
+// the requester's PilotVoicePlayback skips it (the requester's RPC-result
+// path produces audio via synthesizeAndEnqueueContact).
+func (ss *simSession) RequestContact(tcw sim.TCW, requesterToken string) (text string, voiceName string, callsign av.ADSBCallsign, ty av.RadioTransmissionType, playAt sim.Time) {
 	// Get all positions controlled by this TCW (primary + consolidated secondaries)
 	cons := ss.sim.State.CurrentConsolidation[tcw]
 	if cons == nil {
-		return "", "", "", 0
+		return "", "", "", 0, sim.Time{}
 	}
 	positions := cons.OwnedPositions()
 
@@ -280,11 +288,11 @@ func (ss *simSession) RequestContact(tcw sim.TCW) (text string, voiceName string
 	for {
 		pc := ss.sim.PopReadyContact(positions)
 		if pc == nil {
-			return "", "", "", 0
+			return "", "", "", 0, sim.Time{}
 		}
 
 		// Generate the contact transmission with current aircraft state
-		spokenText, _ := ss.sim.GenerateContactTransmission(pc)
+		spokenText, _, pa := ss.sim.GenerateContactTransmission(pc, requesterToken)
 		if spokenText == "" {
 			// Aircraft may be gone or invalid - try the next one
 			continue
@@ -292,6 +300,6 @@ func (ss *simSession) RequestContact(tcw sim.TCW) (text string, voiceName string
 
 		voiceName := ss.sim.VoiceAssigner.GetVoice(pc.ADSBCallsign, ss.sim.Rand)
 
-		return spokenText, voiceName, pc.ADSBCallsign, av.RadioTransmissionContact
+		return spokenText, voiceName, pc.ADSBCallsign, av.RadioTransmissionContact, pa
 	}
 }

@@ -278,7 +278,7 @@ func (fc *FuzzController) ExecuteRandomCommand(ctx *panes.Context) {
 		ctr = ps.UserCenter
 	}
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
-		ctr, float32(ps.Range), 0)
+		ctr, ps.Range, 0)
 
 	// Execute command
 	_, err, handled := fc.sp.tryExecuteUserCommand(

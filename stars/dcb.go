@@ -16,8 +16,6 @@ import (
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
-
-	"github.com/brunoga/deep"
 )
 
 const dcbButtonSize = 72
@@ -359,8 +357,10 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		// If a submenu is active, draw the full regular menu, but disabled.
 		disableMain = isMainSubmenuMode(sp.commandMode)
 
-		sp.drawDCBSpinner(ctx, makeRadarRangeSpinner(&ps.Range), CommandModeRange,
-			maybeDisable(buttonFull), buttonScale)
+		sp.drawDCBSpinner(ctx, makeRadarRangeSpinner(
+			func() float32 { return ps.Range },
+			func(v float32) { ps.Range = math.Clamp(v, 6, 256) },
+		), CommandModeRange, maybeDisable(buttonFull), buttonScale)
 		sp.drawDCBMouseDeltaButton(ctx, "PLACE\nCNTR", CommandModePlaceCenter, maybeDisable(buttonHalfVertical),
 			buttonScale,
 			func() { /* start */
@@ -372,8 +372,10 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			})
 
 		sp.toggleButton(ctx, "OFF\nCNTR", &ps.UseUserCenter, maybeDisable(buttonHalfVertical), buttonScale)
-		sp.drawDCBSpinner(ctx, makeRangeRingRadiusSpinner(&ps.RangeRingRadius), CommandModeRangeRings,
-			maybeDisable(buttonFull), buttonScale)
+		sp.drawDCBSpinner(ctx, makeRangeRingRadiusSpinner(
+			func() int { return ps.RangeRingRadius },
+			func(v int) { ps.RangeRingRadius = v },
+		), CommandModeRangeRings, maybeDisable(buttonFull), buttonScale)
 		if sp.drawDCBButton(ctx, "PLACE\nRR", maybeDisable(buttonHalfVertical), buttonScale,
 			sp.commandMode == CommandModePlaceRangeRings) {
 			if sp.commandMode == CommandModePlaceRangeRings { // disable
@@ -612,13 +614,29 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 				}
 			}
 		}
-		multi := sp.radarMode(radarSites) == RadarModeMulti
-		if sp.toggleButton(ctx, "MULTI", &multi, buttonFull, buttonScale) && multi {
-			sp.setRadarModeMulti()
+		// Fused mode is owned by the server (TCWDisplay.Fused) so it
+		// syncs across relief controllers. The FUSED button reflects
+		// the shared flag directly; the MULTI button is the inverse.
+		// Writes go through SetFused; STARSPane.Draw mirrors the value
+		// into ps.FusedRadarMode so radarMode() stays consistent for
+		// every other reader.
+		fused := false
+		if d := ctx.Client.State.TCWDisplay; d != nil {
+			fused = d.Fused
 		}
-		fused := sp.radarMode(radarSites) == RadarModeFused
-		if sp.toggleButton(ctx, "FUSED", &fused, buttonFull, buttonScale) && fused {
-			sp.setRadarModeFused()
+		// If a single site is selected, neither MULTI nor FUSED shows
+		// as lit; matches the old behavior where radarMode returned
+		// RadarModeSingle and both bools were false.
+		siteSelected := ps.RadarSiteSelected != "" && radarSites[ps.RadarSiteSelected] != nil
+		multi := !siteSelected && !fused
+		if sp.toggleButton(ctx, "MULTI", &multi, buttonFull, buttonScale) && multi {
+			ps.RadarSiteSelected = ""
+			ctx.Client.SetFused(false, func(err error) { sp.displayError(err, ctx, "") })
+		}
+		fusedBtn := !siteSelected && fused
+		if sp.toggleButton(ctx, "FUSED", &fusedBtn, buttonFull, buttonScale) && fusedBtn {
+			ps.RadarSiteSelected = ""
+			ctx.Client.SetFused(true, func(err error) { sp.displayError(err, ctx, "") })
 		}
 		if sp.selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
@@ -659,9 +677,9 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			sp.disabledButton(ctx, "RESTORE", buttonHalfVertical, buttonScale)
 		} else if sp.selectButton(ctx, "RESTORE", buttonHalfVertical, buttonScale) {
 			// 4-20: restore display settings that were in effect when we
-			// entered the PREF sub-menu.
-			sp.prefSet.Current = deep.MustCopy(*sp.RestorePreferences)
-			sp.prefSet.Current.Activate(ctx.Platform, sp)
+			// entered the PREF sub-menu. Use SetCurrent so synced fields
+			// (TCWDisplay-owned scope view) are preserved across the load.
+			sp.prefSet.SetCurrent(*sp.RestorePreferences, ctx.Platform, sp)
 			if sp.RestorePreferencesNumber == nil {
 				sp.prefSet.Selected = nil
 			} else {
@@ -1448,25 +1466,31 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 	}
 }
 
+// dcbRadarRangeSpinner reads/writes the scope range via callbacks
+// instead of a pointer. Range is server-owned (TCWDisplay), so writes
+// must go through an RPC; the get callback returns the current synced
+// value and set forwards to the RPC.
 type dcbRadarRangeSpinner struct {
-	r *float32
+	get func() float32
+	set func(float32)
 }
 
-func makeRadarRangeSpinner(r *float32) dcbSpinner {
-	return &dcbRadarRangeSpinner{r}
+func makeRadarRangeSpinner(get func() float32, set func(float32)) dcbSpinner {
+	return &dcbRadarRangeSpinner{get: get, set: set}
 }
 
 func (s dcbRadarRangeSpinner) Label() string {
-	return "RANGE\n" + strconv.Itoa(int(*s.r+0.5)) // print it as an int
+	return "RANGE\n" + strconv.Itoa(int(s.get()+0.5)) // print it as an int
 }
 
 func (s dcbRadarRangeSpinner) Equals(other dcbSpinner) bool {
-	r, ok := other.(*dcbRadarRangeSpinner)
-	return ok && r.r == s.r
+	// Only one radar-range spinner exists per pane; type identity is enough.
+	_, ok := other.(*dcbRadarRangeSpinner)
+	return ok
 }
 
 func (s *dcbRadarRangeSpinner) Delta(delta int) {
-	*s.r = math.Clamp(*s.r+float32(delta), 6, 256)
+	s.set(math.Clamp(s.get()+float32(delta), 6, 256))
 }
 
 func (s *dcbRadarRangeSpinner) MouseDelta() float32 {
@@ -1482,7 +1506,7 @@ func (s *dcbRadarRangeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	} else {
 		// Input numbers are ints but we store a float (for smoother
 		// stepping when the mouse wheel is used to zoom the scope).
-		*s.r = float32(r)
+		s.set(float32(r))
 		return CommandModeNone, nil
 	}
 }
@@ -1807,42 +1831,48 @@ func (s *dcbDwellModeSpinner) ModeAfter() CommandMode {
 	return CommandModeNone
 }
 
+// dcbRangeRingRadiusSpinner reads/writes the range-ring radius via
+// callbacks; the value is server-owned (TCWDisplay) so writes go
+// through an RPC.
 type dcbRangeRingRadiusSpinner struct {
-	r *int
+	get func() int
+	set func(int)
 }
 
-func makeRangeRingRadiusSpinner(radius *int) dcbSpinner {
-	return &dcbRangeRingRadiusSpinner{radius}
+func makeRangeRingRadiusSpinner(get func() int, set func(int)) dcbSpinner {
+	return &dcbRangeRingRadiusSpinner{get: get, set: set}
 }
 
 func (s *dcbRangeRingRadiusSpinner) Label() string {
-	return "RR\n" + strconv.Itoa(*s.r)
+	return "RR\n" + strconv.Itoa(s.get())
 }
 
 func (s *dcbRangeRingRadiusSpinner) Equals(other dcbSpinner) bool {
-	r, ok := other.(*dcbRangeRingRadiusSpinner)
-	return ok && r.r == s.r
+	// Only one range-ring-radius spinner exists per pane; type identity is enough.
+	_, ok := other.(*dcbRangeRingRadiusSpinner)
+	return ok
 }
 
 func (s *dcbRangeRingRadiusSpinner) Delta(delta int) {
 	// Range rings have 2, 5, 10, or 20 miles radii..
+	cur := s.get()
 	if delta < 0 {
-		switch *s.r {
+		switch cur {
 		case 2:
-			*s.r = 5
+			s.set(5)
 		case 5:
-			*s.r = 10
+			s.set(10)
 		case 10:
-			*s.r = 20
+			s.set(20)
 		}
 	} else if delta > 0 {
-		switch *s.r {
+		switch cur {
 		case 5:
-			*s.r = 2
+			s.set(2)
 		case 10:
-			*s.r = 5
+			s.set(5)
 		case 20:
-			*s.r = 10
+			s.set(10)
 		}
 	}
 }
@@ -1857,7 +1887,7 @@ func (s *dcbRangeRingRadiusSpinner) KeyboardInput(text string) (CommandMode, err
 	} else if v != 2 && v != 5 && v != 10 && v != 20 {
 		return CommandModeNone, ErrSTARSIllegalValue
 	} else {
-		*s.r = v
+		s.set(v)
 		return CommandModeNone, nil
 	}
 }

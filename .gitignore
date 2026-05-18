@@ -40,3 +40,6 @@ windows/*.dll
 libsherpa-onnx-c-api.so
 libsherpa-onnx-cxx-api.so
 libonnxruntime.so
+docs/superpowers/
+sim/tcw_display_test.go
+sim/voice_integration_test.go

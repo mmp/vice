@@ -214,18 +214,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 
 	if len(input) > 0 && input[0] == sp.TgtGenKey { // [TGT GEN]
 		sp.setCommandMode(ctx, CommandModeTargetGen)
-		if !ctx.TCWIsPrivileged(ctx.UserTCW) {
-			ctx.Client.HoldRadioTransmissions()
-		}
 		input = input[1:]
-	}
-
-	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
-		if !ctx.TCWIsPrivileged(ctx.UserTCW) && (input != "" || len(ctx.Keyboard.Pressed) > 0) {
-			// As long as text is being entered, hold radio transmissions
-			// for the coming few seconds.
-			ctx.Client.HoldRadioTransmissions()
-		}
 	}
 
 	// Enforce the 32-character-per-line limit
@@ -615,7 +604,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 		// Consume mouse wheel
 		if mouse.Wheel[1] != 0 {
 			r := ps.Range
-			ps.Range += func() float32 {
+			delta := func() float32 {
 				if ctx.Keyboard != nil {
 					if ctx.Keyboard.KeyControl() {
 						return 3 * mouse.Wheel[1]
@@ -623,13 +612,14 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 				}
 				return mouse.Wheel[1]
 			}()
-			ps.Range = math.Clamp(ps.Range, 6, 256) // 4-33
+			nr := math.Clamp(r+delta, 6, 256) // 4-33
+			ps.Range = nr
 
 			// We want to zoom in centered at the mouse position; this affects
 			// the scope center after the zoom, so we'll find the
 			// transformation that gives the new center position.
 			mouseLL := transforms.LatLongFromWindowP(mouse.Pos)
-			scale := ps.Range / r
+			scale := nr / r
 			centerTransform := math.Identity3x3().
 				Translate(mouseLL[0], mouseLL[1]).
 				Scale(scale, scale).
@@ -657,8 +647,11 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 
 		if ctx.Keyboard != nil && ctx.Keyboard.KeyControl() {
 			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
-				if state := sp.TrackState[trk.ADSBCallsign]; state != nil {
-					state.IsSelected = !state.IsSelected
+				if _, ok := sp.TrackState[trk.ADSBCallsign]; ok {
+					anno := sp.annotations(ctx, trk.ADSBCallsign)
+					anno.IsSelected = !anno.IsSelected
+					ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+						func(err error) { sp.displayError(err, ctx, "") })
 					return
 				}
 			}
@@ -708,8 +701,11 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 		// 6.20 Toggle track highlight (implied)
 		// TODO? ILL FNCT if in p/o or h/o to us, ILL TRK if it's suspended
 		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
-			if state := sp.TrackState[trk.ADSBCallsign]; state != nil {
-				state.IsSelected = !state.IsSelected
+			if _, ok := sp.TrackState[trk.ADSBCallsign]; ok {
+				anno := sp.annotations(ctx, trk.ADSBCallsign)
+				anno.IsSelected = !anno.IsSelected
+				ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno,
+					func(err error) { sp.displayError(err, ctx, "") })
 			}
 		}
 	}
@@ -794,10 +790,6 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
 	sp.resetInputState(ctx.Platform)
 	sp.commandMode = mode
-
-	if mode == CommandModeTargetGen || mode == CommandModeTargetGenLock {
-		ctx.Client.HoldRadioTransmissions()
-	}
 }
 
 func (sp *STARSPane) resetInputState(pl platform.Platform) {

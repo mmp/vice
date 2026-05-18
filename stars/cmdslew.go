@@ -19,7 +19,11 @@ import (
 func registerSlewCommands() {
 	registerCommand(CommandModeNone, "[SLEW]",
 		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
-			state := sp.TrackState[trk.ADSBCallsign]
+			anno := sp.annotations(ctx, trk.ADSBCallsign)
+			errCB := func(err error) { sp.displayError(err, ctx, "") }
+			writeAnno := func() {
+				ctx.Client.SetTrackAnnotations(trk.ADSBCallsign, anno, errCB)
+			}
 
 			// This is all (hopefully) following the command precedence list in 2.10
 
@@ -31,18 +35,18 @@ func registerSlewCommands() {
 						// 5.1.3 Accept handoff (implied)
 						// 5.1.4 Take control of interfacility track (implied)
 						// 5.1.10 Accept inbound handoff
-						ctx.Client.AcceptHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
+						ctx.Client.AcceptHandoff(fp.ACID, errCB)
 						return CommandStatus{}
 					} else if ctx.UserOwnsFlightPlan(fp) {
 						// 5.1.2 Recall handoff (implied)
 						// 5.1.6 Recall redirected handoff
 						// 5.1.17 Recall handoff (p. 5-33)
 						// 5.1.19 Recall redirected handoff
-						ctx.Client.CancelHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
+						ctx.Client.CancelHandoff(fp.ACID, errCB)
 						return CommandStatus{}
 					} else if ctx.UserControlsPosition(fp.RedirectedHandoff.RedirectedTo) ||
 						ctx.UserControlsPosition(fp.RedirectedHandoff.GetLastRedirector()) {
-						ctx.Client.AcceptRedirectedHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
+						ctx.Client.AcceptRedirectedHandoff(fp.ACID, errCB)
 						return CommandStatus{}
 					}
 				}
@@ -51,19 +55,20 @@ func registerSlewCommands() {
 					if ctx.UserControlsPosition(tcps.To) {
 						// 6.12.2 Accept intrafacility pointout (implied)
 						// 6.12.8 Accept interfacility pointout (implied)
-						ctx.Client.AcknowledgePointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
+						ctx.Client.AcknowledgePointOut(fp.ACID, errCB)
 						return CommandStatus{}
 					} else if ctx.UserControlsPosition(tcps.From) {
 						// 6.12.4 Recall intrafacility pointout
 						// 6.12.9 Recall interfacility pointout
-						ctx.Client.RecallPointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
+						ctx.Client.RecallPointOut(fp.ACID, errCB)
 						return CommandStatus{}
 					}
 
 				}
 				// 6.12.5 Clear pointout color (implied)
-				if state.PointOutAcknowledged {
-					state.PointOutAcknowledged = false
+				if anno.PointOutAcknowledged {
+					anno.PointOutAcknowledged = false
+					writeAnno()
 					return CommandStatus{}
 				}
 
@@ -88,18 +93,21 @@ func registerSlewCommands() {
 				sp.MCIAircraft[idx].Acknowledged = true
 				return CommandStatus{}
 			}
-			if state.MSAW && !state.MSAWAcknowledged {
-				state.MSAWAcknowledged = true
+			if anno.MSAW && !anno.MSAWAcknowledged {
+				anno.MSAWAcknowledged = true
+				writeAnno()
 				return CommandStatus{}
 			}
-			if state.SPCAlert && !state.SPCAcknowledged {
+			if anno.SPCAlert && !anno.SPCAcknowledged {
 				// Acknowledged SPC alert part 1
-				state.SPCAcknowledged = true
+				anno.SPCAcknowledged = true
+				writeAnno()
 				return CommandStatus{}
 			}
 			// 6.13.31 Remove full data block forced by special condition
-			if state.DatablockAlert {
-				state.DatablockAlert = false
+			if anno.DatablockAlert {
+				anno.DatablockAlert = false
+				writeAnno()
 				return CommandStatus{}
 			}
 
@@ -118,14 +126,16 @@ func registerSlewCommands() {
 				}
 
 				if fp.Suspended {
-					state.SuspendedShowAltitudeEndTime = ctx.SimTime.Add(5 * time.Second)
+					anno.SuspendedShowAltitudeEndTime = ctx.SimTime.Add(5 * time.Second)
+					writeAnno()
 					// 5.7.2 Display suspended track's flight plan in preview area
 					return CommandStatus{Output: formatFlightPlan(sp, ctx, trk.FlightPlan, trk)}
 				}
 
 				// 5.6.4 Inhibit duplicate beacon code indicator (implied)
-				if _, ok := sp.DuplicateBeacons[trk.Squawk]; ok && state.DBAcknowledged != trk.Squawk {
-					state.DBAcknowledged = trk.Squawk
+				if _, ok := sp.DuplicateBeacons[trk.Squawk]; ok && anno.DBAcknowledged != trk.Squawk {
+					anno.DBAcknowledged = trk.Squawk
+					writeAnno()
 					return CommandStatus{Output: formatFlightPlan(sp, ctx, trk.FlightPlan, trk)}
 				}
 			}
@@ -135,8 +145,9 @@ func registerSlewCommands() {
 			// TODO: Remove blinking Resume flight progress indicator
 
 			// 5.6.5 Remove blinking indicators and/or inhibit blinking full data block (implied)
-			if state.IFFlashing {
-				state.IFFlashing = false
+			if anno.IFFlashing {
+				anno.IFFlashing = false
+				writeAnno()
 			}
 
 			// Inhibit blinking data block at former local owner’s TCW/TDW
@@ -146,10 +157,11 @@ func registerSlewCommands() {
 			// TODO: Remove ADS−B data loss indicator
 
 			// 6.13.20 Return data block to unowned color (implied)
-			if state.OutboundHandoffAccepted {
-				state.OutboundHandoffAccepted = false
-				state.OutboundHandoffFlashEnd = ctx.SimTime
-				state.RDIndicatorEnd = sim.Time{}
+			if anno.OutboundHandoffAccepted {
+				anno.OutboundHandoffAccepted = false
+				anno.OutboundHandoffFlashEnd = ctx.SimTime
+				anno.RDIndicatorEnd = sim.Time{}
+				writeAnno()
 				return CommandStatus{}
 			}
 
@@ -162,9 +174,10 @@ func registerSlewCommands() {
 			if trk.IsAssociated() {
 				fp := trk.FlightPlan
 
-				if state.ForceQL {
+				if anno.ForceQL {
 					// Clear force ql to self. (Not listed in the precedence table)
-					state.ForceQL = false
+					anno.ForceQL = false
+					writeAnno()
 					return CommandStatus{}
 				} else if _, ok := sp.ForceQLACIDs[fp.ACID]; ok {
 					delete(sp.ForceQLACIDs, fp.ACID)
@@ -173,14 +186,16 @@ func registerSlewCommands() {
 					// 6.13.3 Beacon readout - owned and associated track (implied)
 					rbc := util.Select(trk.Mode == av.TransponderModeStandby, "    ", trk.Squawk.String())
 					return CommandStatus{Output: string(fp.ACID) + " " + rbc + " " + fp.AssignedSquawk.String()}
-				} else if fp.SPCOverride != "" && !state.SPCAcknowledged {
+				} else if fp.SPCOverride != "" && !anno.SPCAcknowledged {
 					// Remove FDB forced by SPC
 					// Acknowledged SPC alert part 2
-					state.SPCAcknowledged = true
+					anno.SPCAcknowledged = true
+					writeAnno()
 					return CommandStatus{}
 				} else {
 					// 6.13.4 Toggle quick look for a single track (implied)
-					state.DisplayFDB = !state.DisplayFDB
+					anno.DisplayFDB = !anno.DisplayFDB
+					writeAnno()
 					return CommandStatus{}
 				}
 			}
@@ -189,8 +204,9 @@ func registerSlewCommands() {
 
 			// Inhibit No flight plan alert for unassociated track
 			// 6.13.25 Inhibit no flight plan alert for unassociated track
-			if trk.MissingFlightPlan && !state.MissingFlightPlanAcknowledged {
-				state.MissingFlightPlanAcknowledged = true
+			if trk.MissingFlightPlan && !anno.MissingFlightPlanAcknowledged {
+				anno.MissingFlightPlanAcknowledged = true
+				writeAnno()
 				return CommandStatus{}
 			}
 
@@ -201,8 +217,8 @@ func registerSlewCommands() {
 				if s == 0 {
 					s = 5
 				}
-				state := sp.TrackState[trk.ADSBCallsign]
-				state.FullLDBEndTime = ctx.SimTime.Add(time.Duration(s) * time.Second)
+				anno.FullLDBEndTime = ctx.SimTime.Add(time.Duration(s) * time.Second)
+				writeAnno()
 			}
 
 			return CommandStatus{}

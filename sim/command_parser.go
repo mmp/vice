@@ -25,6 +25,11 @@ type ControlCommandsResult struct {
 	Error              error
 	ReadbackSpokenText string          // Spoken text for TTS synthesis (if readback was generated)
 	ReadbackCallsign   av.ADSBCallsign // Aircraft callsign for the readback
+	// ReadbackPlayAt is the sim-time at which the requester should start
+	// TTS playback. Mirrors the PlayAt stamped on the underlying
+	// RadioTransmissionEvent so requester and observers play in sync.
+	// Zero if no readback was generated.
+	ReadbackPlayAt Time
 }
 
 // RunAircraftControlCommands executes a space-separated string of control commands for an aircraft.
@@ -34,7 +39,11 @@ type ControlCommandsResult struct {
 // audioDuration is the length of the voice transmission (zero for typed or non-voice commands);
 // the pilot-reaction delay applied by deferred-action Nav commands is reduced by
 // (audioDuration - callsignAudioOffset), floored at zero.
-func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string, audioDuration time.Duration) ControlCommandsResult {
+// requesterToken is the controllerToken of the client whose RPC produced
+// the command (empty for server-internal/test callers). It is stamped on
+// the readback RadioTransmissionEvent so the requester's
+// PilotVoicePlayback skips the event in favor of the RPC-result path.
+func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string, audioDuration time.Duration, requesterToken string) ControlCommandsResult {
 	commands := strings.Fields(commandStr)
 
 	delayReduction := audioDuration - callsignAudioOffset
@@ -94,18 +103,20 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	if len(commands) == 1 {
 		switch commands[0] {
 		case "AGAIN":
-			cs, spokenText, err := s.SayAgain(tcw, callsign)
+			cs, spokenText, playAt, err := s.SayAgain(tcw, callsign, requesterToken)
 			return ControlCommandsResult{
 				Error:              err,
 				ReadbackSpokenText: spokenText,
 				ReadbackCallsign:   cs,
+				ReadbackPlayAt:     playAt,
 			}
 		case "NOTCLEARED":
-			cs, spokenText, err := s.SayNotCleared(tcw, callsign)
+			cs, spokenText, playAt, err := s.SayNotCleared(tcw, callsign, requesterToken)
 			return ControlCommandsResult{
 				Error:              err,
 				ReadbackSpokenText: spokenText,
 				ReadbackCallsign:   cs,
+				ReadbackPlayAt:     playAt,
 			}
 		}
 	}
@@ -124,12 +135,13 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 		intent, err := s.runOneControlCommand(tcw, callsign, command, delayReduction)
 		if err != nil {
 			// Post any collected intents before returning error
-			spokenText := s.renderAndPostReadback(callsign, tcw, intents)
+			spokenText, playAt := s.renderAndPostReadback(callsign, tcw, intents, requesterToken)
 			return ControlCommandsResult{
 				RemainingInput:     strings.Join(commands[i:], " "),
 				Error:              err,
 				ReadbackSpokenText: spokenText,
 				ReadbackCallsign:   callsign,
+				ReadbackPlayAt:     playAt,
 			}
 		}
 		if intent != nil {
@@ -138,10 +150,11 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	}
 
 	// Render all intents together as a single transmission
-	spokenText := s.renderAndPostReadback(callsign, tcw, intents)
+	spokenText, playAt := s.renderAndPostReadback(callsign, tcw, intents, requesterToken)
 	return ControlCommandsResult{
 		ReadbackSpokenText: spokenText,
 		ReadbackCallsign:   callsign,
+		ReadbackPlayAt:     playAt,
 	}
 }
 
@@ -171,19 +184,39 @@ func (s *Sim) rollbackLastCommand() error {
 // renderAndPostReadback renders a batch of command intents as a pilot readback transmission.
 // The tcw ensures the readback goes to the controller who issued the command,
 // regardless of any consolidation changes.
-// Returns the spoken text for TTS synthesis, including the callsign suffix.
-func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent) string {
+// Returns the spoken text for TTS synthesis (including the callsign suffix)
+// and the PlayAt sim-time stamped on the posted event.
+// requesterToken is propagated to the event so the requester's
+// observer-side synthesizer skips it.
+// Acquires s.mu via postReadbackTransmission. Caller must NOT hold s.mu.
+func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent, requesterToken string) (string, Time) {
 	if rt := av.RenderIntents(intents, s.Rand); rt != nil {
-		s.postReadbackTransmission(callsign, *rt, tcw)
+		playAt := s.postReadbackTransmission(callsign, *rt, tcw, requesterToken)
 		// MixUp transmissions already include the callsign in the message
 		if rt.Type != av.RadioTransmissionMixUp {
 			if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
 				rt.Merge(suffix)
 			}
 		}
-		return rt.Spoken(s.Rand)
+		return rt.Spoken(s.Rand), playAt
 	}
-	return ""
+	return "", Time{}
+}
+
+// renderAndPostReadbackLocked is the lock-free variant for callers
+// that already hold s.mu (e.g. PilotMixUp).
+func (s *Sim) renderAndPostReadbackLocked(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent, requesterToken string) (string, Time) {
+	if rt := av.RenderIntents(intents, s.Rand); rt != nil {
+		playAt := s.postReadbackTransmissionLocked(callsign, *rt, tcw, requesterToken)
+		// MixUp transmissions already include the callsign in the message
+		if rt.Type != av.RadioTransmissionMixUp {
+			if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
+				rt.Merge(suffix)
+			}
+		}
+		return rt.Spoken(s.Rand), playAt
+	}
+	return "", Time{}
 }
 
 // readbackCallsignSuffix generates a RadioTransmission for the callsign suffix in readbacks.

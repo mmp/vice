@@ -330,8 +330,10 @@ func (s *Sim) ShouldTriggerPilotMixUp(callsign av.ADSBCallsign) bool {
 }
 
 // PilotMixUp is called standalone (not as part of a command batch) so it posts its own event.
-// Returns the spoken text for TTS synthesis.
-func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) (string, error) {
+// Returns the spoken text for TTS synthesis and the PlayAt sim-time stamped
+// on the posted event. requesterToken stamps the event for observer-side
+// dedup against the requester's RPC-result-driven synthesis.
+func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign, requesterToken string) (string, Time, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -340,8 +342,8 @@ func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) (string, error) {
 			return ac.PilotMixUp()
 		})
 	if err == nil && intent != nil {
-		spokenText := s.renderAndPostReadback(callsign, tcw, []av.CommandIntent{intent})
-		return spokenText, nil
+		spokenText, playAt := s.renderAndPostReadbackLocked(callsign, tcw, []av.CommandIntent{intent}, requesterToken)
+		return spokenText, playAt, nil
 	}
-	return "", err
+	return "", Time{}, err
 }
