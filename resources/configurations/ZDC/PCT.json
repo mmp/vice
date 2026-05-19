@@ -65,21 +65,6 @@
       "frequency": 118950,
       "radio_name": "Potomac Departure"
     },
-    "3A": {
-      "callsign": "IAD_A_DEP",
-      "frequency": 120505,
-      "radio_name": "Potomac Departure"
-    },
-    "3N": {
-      "callsign": "IAD_N_APP",
-      "frequency": 120450,
-      "radio_name": "Potomac Approach"
-    },
-    "3M": {
-      "callsign": "IAD_M_APP",
-      "frequency": 126100,
-      "radio_name": "Potomac Approach"
-    },
     "12": {
       "callsign": "BWI_E_TWR",
       "frequency": 123750,
@@ -89,11 +74,6 @@
       "callsign": "MTN_TWR",
       "frequency": 121300,
       "radio_name": "Martin Tower"
-    },
-    "3T": {
-      "callsign": "IAD_T_DEP",
-      "frequency": 126650,
-      "radio_name": "Potomac Departure"
     },
     "1J": {
       "callsign": "DCA_J_APP",
@@ -140,6 +120,28 @@
       "frequency": 118400,
       "radio_name": "Andrews Tower"
     },
+    "3A": {
+      "callsign": "IAD_A_DEP",
+      "frequency": 120505,
+      "radio_name": "Potomac Departure",
+      "area": "23"
+    },
+    "3T": {
+      "callsign": "IAD_T_DEP",
+      "frequency": 126650,
+      "radio_name": "Potomac Departure",
+      "area": "23"
+    },
+    "3N": {
+      "callsign": "IAD_N_APP",
+      "frequency": 120450,
+      "radio_name": "Potomac Approach"
+    },
+    "3M": {
+      "callsign": "IAD_M_APP",
+      "frequency": 126100,
+      "radio_name": "Potomac Approach"
+    },
     "3B": {
       "callsign": "IAD_B_APP",
       "frequency": 128525,
@@ -158,20 +160,23 @@
     "3X": {
       "callsign": "IAD_X_APP",
       "frequency": 125800,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "area": "25"
     },
     "3S": {
       "callsign": "IAD_S_APP",
       "frequency": 134200,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "area": "25"
     },
     "3U": {
       "callsign": "IAD_U_APP",
       "frequency": 135770,
-      "radio_name": "Potomac Approach"
+      "radio_name": "Potomac Approach",
+      "area": "25"
     },
-    "3E": {
-      "callsign": "IAD_E_APP",
+    "3Z": {
+      "callsign": "IAD_Z_APP",
       "frequency": 126825,
       "radio_name": "Potomac Approach"
     },
@@ -195,10 +200,20 @@
       "frequency": 120100,
       "radio_name": "Dulles Tower"
     },
+    "36": {
+      "callsign": "HEF_TWR",
+      "frequency": 133100,
+      "radio_name": "Manassas Tower"
+    },
     "38": {
       "callsign": "MRB_TWR",
       "frequency": 124300,
       "radio_name": "Martinsburg Tower"
+    },
+    "39": {
+      "callsign": "HGR_TWR",
+      "frequency": 120300,
+      "radio_name": "Hagerstown Tower"
     },
     "2L": {
       "callsign": "RIC_L_APP",
@@ -253,19 +268,29 @@
   },
   "facility_adaptations": {
     "configurations": {
-      "STD": {
+      "CHP": {
         "inbound_assignments": {
           "ANTHM5": "1H",
-          "ARLFT2": "1H",
+          "ARLFT2.LUNDY": "1H",
+          "ARLFT2.COLIN": "1P",
           "CLIPR3": "1B",
           "DEALE3/MIIDY3": "1P",
+          "T495.GRACO.N": "1P",
+          "T495.GRACO.S": "1P",
           "JERES2/MCRAY2": "1H",
+          "RAVNN8.15R": "1S",
           "RAVNN8.10": "1S",
           "RAVNN8.28": "1S",
           "RAVNN8.33L": "1S",
           "SKILS5": "1B",
-          "TRISH4.DRRES": "1B",
-          "TRISH4.NUGGY": "1B"
+          "TRISH4.DRRES.N": "1B",
+          "TRISH4.NUGGY.N": "1B",
+          "TRISH4.DRRES.S": "1B",
+          "TRISH4.NUGGY.S": "1B",
+          "TRISH4.DRRES.E": "1B",
+          "TRISH4.NUGGY.E": "1B",
+          "TRISH4.DRRES.W": "1B",
+          "TRISH4.NUGGY.W": "1B"
         },
         "departure_assignments": {
           "KBWI": "1S",
@@ -276,76 +301,107 @@
           "KBWI/TERPZ8": "1W"
         },
         "default_consolidation": {
-          "1B": ["1W"],
-          "1G": ["1P"],
           "1S": ["1B", "1G", "1N"],
+          "1G": ["1P"],
+          "1B": ["1W"],
           "1W": ["1H"]
         }
       },
-      "MTV": {
+      "DCA": {
         "inbound_assignments": {
           "FINAL_ND": "1V",
           "FINAL_NNW": "1V",
-          "FINAL_NS": "1V"
+          "FINAL_NS": "1V",
+          "FINAL_SE": "1V",
+          "FINAL_SNW": "1V",
+          "FINAL_SS": "1V",
+
+          "FINAL_ND.IMC": "1V",
+          "FINAL_NNW.IMC": "1V",
+          "FINAL_NS.IMC": "1V",
+          "FINAL_SE.IMC": "1V",
+          "FINAL_SNW.IMC": "1V",
+          "FINAL_SS.IMC": "1V"
         },
         "default_consolidation": {
           "1V": []
         }
       },
-      "MT1": {
+      "MVN": {
         "inbound_assignments": {
           "BUNZZ3/RNLDI4": "1L",
-          "CAPSS3": "1J",
-          "CLIPR3/SKILS5": "1E",
+          "CAPSS4.N": "1J",
+          "CLIPR3/SKILS5.N": "1E",
           "DEALE3.N": "1E",
           "FRDMM6": "1L",
-          "RAVNN8": "1D",
+          "JCOBY4": "1K",
+          "RAVNN8.N": "1D",
           "TRUPS5": "1L",
           "JRV.TAPPA.6": "1J",
           "BWI.GRACO.4": "1K",
           "JRV.TAPPA.4": "1V",
-          "IAD.BARIN.5": "1V"
+          "IAD.BARIN.5": "1V",
+          "CONLE5.N": "1K"
         },
         "departure_assignments": {
-          "KDCA": "1K"
+          "KDCA/AMEEE1": "1K",
+          "KDCA/CLTCH3": "1Y",
+          "KDCA/DOCTR5": "1K",
+          "KDCA/SCRAM6": "1Y",
+          "KDCA/HORTO4": "1Y",
+          "KDCA/JDUBB4": "1Y",
+          "KDCA/REBLL5": "1Y",
+          "KDCA/SOOKI6": "1K",
+          "KDCA/WYNGS5": "1Y",
+          "KDAA": "1Y",
+          "KADW/JEFSN2": "1Y",
+          "KADW/LINCN2": "1Y",
+          "KADW/ADW1": "1K",
+          "KADW/MRNG1": "1K"
         },
         "default_consolidation": {
-          "1J": ["1E", "1K", "1R", "1V"],
-          "1K": ["1A", "1D", "1Y"],
-          "1L": ["1F"],
-          "1Y": ["1L"]
+          "1K": ["1Y", "1J"],
+          "1J": ["1E", "1D", "1V"],
+          "1Y": ["1F", "1L"],
+          "1D": ["1A"]
         }
       },
-      "MT2": {
+      "MVS": {
         "inbound_assignments": {
-          "FINAL_SE": "1V",
-          "FINAL_SNW": "1V",
-          "FINAL_SS": "1V"
-        },
-        "default_consolidation": {
-          "1V": []
-        }
-      },
-      "MT3": {
-        "inbound_assignments": {
-          "CAPSS3": "1J",
-          "CLIPR3/SKILS5": "1E",
+          "BUNZZ3/RNLDI4": "1L",
+          "CAPSS4.S": "1J",
+          "CLIPR3/SKILS5.S": "1E",
           "DEALE3.S": "1E",
           "FRDMM6": "1L",
-          "RAVNN8": "1D",
-          "TRUPS5": "1L"
+          "JCOBY4": "1K",
+          "RAVNN8.S": "1D",
+          "TRUPS5": "1L",
+          "CONLE5.S": "1K"
         },
         "departure_assignments": {
-          "KDCA": "1K"
+          "KDCA/AMEEE1": "1K",
+          "KDCA/CLTCH3": "1Y",
+          "KDCA/DOCTR5": "1K",
+          "KDCA/SCRAM6": "1Y",
+          "KDCA/HORTO4": "1Y",
+          "KDCA/JDUBB4": "1Y",
+          "KDCA/REBLL5": "1Y",
+          "KDCA/SOOKI6": "1K",
+          "KDCA/WYNGS5": "1Y",
+          "KDAA": "1Y",
+          "KADW/JEFSN2": "1Y",
+          "KADW/LINCN2": "1Y",
+          "KADW/ADW1": "1K",
+          "KADW/MRNG1": "1K"
         },
         "default_consolidation": {
-          "1J": ["1E", "1K", "1R", "1V"],
-          "1K": ["1A", "1D", "1Y"],
-          "1L": ["1F"],
-          "1Y": ["1L"]
+          "1K": ["1Y", "1J"],
+          "1J": ["1E", "1D", "1V"],
+          "1Y": ["1F", "1L"],
+          "1D": ["1A"]
         }
       },
-      "MT4": {
+      "FKY": {
         "inbound_assignments": {
           "CLTCH3/JDUBB4/SCRAM6.IAD": "1F",
           "FLUKY DEPARTURES.DCAN": "1F",
@@ -356,20 +412,33 @@
           "1F": []
         }
       },
-      "MT6": {
+      "TYS": {
         "inbound_assignments": {
           "CONLE5.N": "1K",
           "CONLE5.S": "1K",
           "JCOBY4": "1K"
         },
         "departure_assignments": {
-          "KDCA": "1K"
+          "KDCA/AMEEE1": "1K",
+          "KDCA/CLTCH3": "1Y",
+          "KDCA/DOCTR5": "1K",
+          "KDCA/SCRAM6": "1Y",
+          "KDCA/HORTO4": "1Y",
+          "KDCA/JDUBB4": "1Y",
+          "KDCA/REBLL5": "1Y",
+          "KDCA/SOOKI6": "1K",
+          "KDCA/WYNGS5": "1Y",
+          "KDAA": "1Y",
+          "KADW/JEFSN2": "1Y",
+          "KADW/LINCN2": "1Y",
+          "KADW/ADW1": "1K",
+          "KADW/MRNG1": "1K"
         },
         "default_consolidation": {
           "1K": ["1Y"]
         }
       },
-      "MT8": {
+      "LRY": {
         "inbound_assignments": {
           "BUNZZ3/RNLDI4": "1L",
           "FRDMM6.LN": "1L",
@@ -407,7 +476,7 @@
       },
       "SH1": {
         "inbound_assignments": {
-          "CAVLR6": "3B",
+          "CAVLR6.N": "3B",
           "GIBBZ5.BURTT": "3N",
           "GIBBZ5.MGW": "3N",
           "HYPER9": "3V",
@@ -418,12 +487,13 @@
         },
         "departure_assignments": {
           "KHEF": "3O",
+          "KJYO": "3A",
           "KIAD": "3T"
         },
         "default_consolidation": {
           "3A": ["3T"],
           "3B": ["3O"],
-          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
+          "3M": ["3A", "3B", "3Z", "3G", "3N", "3V"],
           "3N": ["3X"],
           "3U": ["3S"],
           "3X": ["3U"]
@@ -453,7 +523,8 @@
       },
       "30X": {
         "inbound_assignments": {
-          "CAVLR6": "3B",
+          "CAVLR6.N": "3B",
+          "CAVLR6.30": "3B",
           "GIBBZ5.BURTT": "3N",
           "GIBBZ5.MGW": "3N",
           "HYPER9": "3V",
@@ -464,12 +535,13 @@
         },
         "departure_assignments": {
           "KHEF": "3O",
+          "KJYO": "3A",
           "KIAD": "3A"
         },
         "default_consolidation": {
           "3A": ["3T"],
           "3B": ["3O"],
-          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
+          "3M": ["3A", "3B", "3Z", "3G", "3N", "3V"],
           "3N": ["3X"],
           "3U": ["3S"],
           "3X": ["3U"]
@@ -477,7 +549,7 @@
       },
       "SH4": {
         "inbound_assignments": {
-          "CAVLR6": "3B",
+          "CAVLR6.S": "3B",
           "GIBBZ5.BURTT": "3N",
           "GIBBZ5.MGW": "3N",
           "HYPER9": "3V",
@@ -488,12 +560,13 @@
         },
         "departure_assignments": {
           "KHEF": "3O",
+          "KJYO": "3A",
           "KIAD": "3A"
         },
         "default_consolidation": {
           "3A": ["3T"],
           "3B": ["3O"],
-          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
+          "3M": ["3A", "3B", "3Z", "3G", "3N", "3V"],
           "3N": ["3X"],
           "3U": ["3S"],
           "3X": ["3U"]
@@ -501,7 +574,7 @@
       },
       "12X": {
         "inbound_assignments": {
-          "CAVLR6": "3B",
+          "CAVLR6.S": "3B",
           "GIBBZ5.BURTT": "3N",
           "GIBBZ5.MGW": "3N",
           "HYPER9": "3V",
@@ -512,26 +585,32 @@
         },
         "departure_assignments": {
           "KHEF": "3O",
-          "KIAD": "3T"
+          "KJYO": "3A",
+          "KIAD": "3A"
         },
         "default_consolidation": {
           "3A": ["3T"],
           "3B": ["3O"],
-          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
+          "3M": ["3A", "3B", "3Z", "3G", "3N", "3V"],
           "3N": ["3X"],
           "3U": ["3S"],
           "3X": ["3U"]
         }
       },
-      "JRV": {
+      "JRN": {
         "inbound_assignments": {
           "BNTLY RIC": "2L",
+          "BNTLY WAIKS": "2L",
           "CHO NORTH ARR N": "2E",
+          "CHO WEST ARR N": "2W",
+          "CHO SOUTH ARR": "2E",
           "DUCXS5.KELCE": "2L",
           "DUCXS5.NEAVL": "2L",
           "JAMIE RIC": "2P",
           "POWTN5": "2L",
-          "SPIDR5": "2L"
+          "SPIDR5": "2L",
+          "ARLFT2": "2P",
+          "COLIN RIC N": "2M"
         },
         "departure_assignments": {
           "KCHO": "2W",
@@ -544,15 +623,20 @@
           "2M": ["2X"]
         }
       },
-      "JR1": {
+      "JRS": {
         "inbound_assignments": {
           "BNTLY RIC": "2L",
+          "BNTLY WAIKS": "2L",
           "CHO NORTH ARR S": "2E",
+          "CHO SOUTH ARR": "2E",
+          "CHO WEST ARR S": "2W",
           "DUCXS5.KELCE": "2L",
           "DUCXS5.NEAVL": "2L",
           "JAMIE RIC": "2P",
           "POWTN5": "2L",
-          "SPIDR5": "2L"
+          "SPIDR5": "2L",
+          "ARLFT2": "2P",
+          "COLIN RIC S": "2M"
         },
         "departure_assignments": {
           "KCHO": "2W",
@@ -565,11 +649,37 @@
           "2M": ["2X"]
         }
       },
+      "CHN": {
+        "inbound_assignments": {
+          "CHO NORTH ARR N": "2E",
+          "CHO SOUTH ARR": "2E",
+          "CHO WEST ARR N": "2W"
+        },
+        "departure_assignments": {
+          "KCHO": "2W"
+        },
+        "default_consolidation": {
+          "2E": ["2W"]
+        }
+      },
+      "CHS": {
+        "inbound_assignments": {
+          "CHO NORTH ARR S": "2E",
+          "CHO SOUTH ARR": "2E",
+          "CHO WEST ARR S": "2W"
+        },
+        "departure_assignments": {
+          "KCHO": "2W"
+        },
+        "default_consolidation": {
+          "2E": ["2W"]
+        }
+      },
       "PCT": {
         "inbound_assignments": {
           "ANTHM5": "1H",
           "ARLFT2": "1H",
-          "CAPSS3": "1J",
+          "CAPSS4": "1J",
           "CAVLR6": "3B",
           "CHO NORTH ARR N": "1L",
           "CHO NORTH ARR S": "1L",
@@ -609,7 +719,7 @@
           "KDCA/JDUBB4": "1Y",
           "KDCA/REBLL5": "1Y",
           "KDCA/SCRAM6": "1Y",
-          "KDCA/SOOKI5": "1K",
+          "KDCA/SOOKI6": "1K",
           "KDCA/WYNGS5": "1Y",
           "KHEF": "3O",
           "KIAD/BUNZZ3": "3T",
@@ -639,7 +749,7 @@
           "1Y": ["1L"],
           "3A": ["3T"],
           "3B": ["3O"],
-          "3M": ["3A", "3B", "3E", "3G", "3N", "3V"],
+          "3M": ["3A", "3B", "3Z", "3G", "3N", "3V"],
           "3N": ["3X"],
           "3U": ["3S"],
           "3X": ["3U"],
@@ -649,7 +759,6 @@
         }
       }
     },
-    "center": "KBWI",
     "controllers": {
       "1S": {
         "flight_following_airspace": [
@@ -668,14 +777,347 @@
             "ceiling": 11000,
             "vertices": "N039.22.37.841,W077.16.14.047 N039.29.00.550,W077.15.34.552 N039.33.21.365,W077.11.35.874 N039.52.30.453,W077.09.30.877 N039.53.20.125,W076.32.35.621 N039.48.59.556,W076.13.17.003 N039.41.25.176,W075.52.49.775 N039.34.17.423,W075.57.54.810 N039.33.00.793,W076.01.11.685 N039.28.40.925,W075.58.05.330 N039.09.38.471,W076.36.39.133 N039.15.34.030,W076.43.04.890 N039.22.17.063,W076.43.04.231"
           }
+        ],
+        "altimeters": ["KBWI", "KDMW", "KESN", "KFME", "KGAI", "KMTN"],
+        "center": "TRUSO",
+        "range": 60,
+        "default_maps": ["RVMPCT112S", "RVMPCT114S", "RVMPCT820S"],
+        "video_maps": [
+          "RVMPCT805S",
+          "RVMPCT828SMVAS",
+          "RVMPCT116S",
+          "RVMPCT115S",
+          "RVMPCT812S",
+          "RVMPCT122S",
+
+          "RVMPCT112S",
+          "RVMPCT114S",
+          "RVMPCT113S",
+          "RVMPCT115S",
+          "RVMPCT010S",
+          "RVMPCT015S",
+          "RVMPCT028S",
+          "RVMPCT033S",
+          "RVMPCT116S",
+          "RVMPCT122S",
+          "RVMPCT805S",
+          "RVMPCT803S",
+          "RVMPCT804S",
+          "RVMPCT820S",
+          "",
+          "RVMPCT816S",
+          "RVMPCT828SMVAS",
+          "RVMPCT849SEOVMS",
+          "RVMPCT802S",
+          "RVMPCT823S",
+          "RVMPCT854S",
+          "RVMPCT826S",
+          "RVMPCT809S",
+          "RVMPCT825S",
+          "RVMPCT808S",
+          "RVMPCT813S",
+          "RVMPCT806S",
+          "RVMPCT812S",
+          "RVMPCT807S",
+          "RVMPCT811S"
+        ]
+      },
+      "1N": {
+        "altimeters": ["KBWI", "KDMW", "KESN", "KFME", "KGAI", "KMTN"],
+        "center": "TRUSO",
+        "range": 60,
+        "default_maps": ["RVMPCT112S", "RVMPCT114S", "RVMPCT820S"],
+        "video_maps": [
+          "RVMPCT805S",
+          "RVMPCT828SMVAS",
+          "RVMPCT116S",
+          "RVMPCT115S",
+          "RVMPCT812S",
+          "RVMPCT122S",
+
+          "RVMPCT112S",
+          "RVMPCT114S",
+          "RVMPCT113S",
+          "RVMPCT115S",
+          "RVMPCT010S",
+          "RVMPCT015S",
+          "RVMPCT028S",
+          "RVMPCT033S",
+          "RVMPCT116S",
+          "RVMPCT122S",
+          "RVMPCT805S",
+          "RVMPCT803S",
+          "RVMPCT804S",
+          "RVMPCT820S",
+          "",
+          "RVMPCT816S",
+          "RVMPCT828SMVAS",
+          "RVMPCT849SEOVMS",
+          "RVMPCT802S",
+          "RVMPCT823S",
+          "RVMPCT854S",
+          "RVMPCT826S",
+          "RVMPCT809S",
+          "RVMPCT825S",
+          "RVMPCT808S",
+          "RVMPCT813S",
+          "RVMPCT806S",
+          "RVMPCT812S",
+          "RVMPCT807S",
+          "RVMPCT811S"
+        ]
+      },
+      "1B": {
+        "center": "SKILS",
+        "range": 40,
+        "altimeters": ["KBWI", "KDMW", "KFME", "KGAI", "KMTN"],
+        "default_maps": ["RVMPCT112S", "RVMPCT114S", "RVMPCT820S"],
+        "video_maps": [
+          "RVMPCT805S",
+          "RVMPCT828SMVAS",
+          "RVMPCT116S",
+          "RVMPCT115S",
+          "RVMPCT812S",
+          "RVMPCT122S",
+
+          "RVMPCT112S",
+          "RVMPCT114S",
+          "RVMPCT113S",
+          "RVMPCT115S",
+          "RVMPCT010S",
+          "RVMPCT015S",
+          "RVMPCT028S",
+          "RVMPCT033S",
+          "RVMPCT116S",
+          "RVMPCT122S",
+          "RVMPCT805S",
+          "RVMPCT803S",
+          "RVMPCT804S",
+          "RVMPCT820S",
+          "",
+          "RVMPCT816S",
+          "RVMPCT828SMVAS",
+          "RVMPCT849SEOVMS",
+          "RVMPCT802S",
+          "RVMPCT823S",
+          "RVMPCT854S",
+          "RVMPCT826S",
+          "RVMPCT809S",
+          "RVMPCT825S",
+          "RVMPCT808S",
+          "RVMPCT813S",
+          "RVMPCT806S",
+          "RVMPCT812S",
+          "RVMPCT807S",
+          "RVMPCT811S"
+        ]
+      },
+      "1P": {
+        "center": "SWANN",
+        "range": 40,
+        "altimeters": ["KBWI", "KESN", "KFME", "KGAI", "KMTN"],
+        "default_maps": ["RVMPCT112S", "RVMPCT114S", "RVMPCT820S"],
+        "video_maps": [
+          "RVMPCT805S",
+          "RVMPCT828SMVAS",
+          "RVMPCT116S",
+          "RVMPCT115S",
+          "RVMPCT812S",
+          "RVMPCT122S",
+
+          "RVMPCT112S",
+          "RVMPCT114S",
+          "RVMPCT113S",
+          "RVMPCT115S",
+          "RVMPCT010S",
+          "RVMPCT015S",
+          "RVMPCT028S",
+          "RVMPCT033S",
+          "RVMPCT116S",
+          "RVMPCT122S",
+          "RVMPCT805S",
+          "RVMPCT803S",
+          "RVMPCT804S",
+          "RVMPCT820S",
+          "",
+          "RVMPCT816S",
+          "RVMPCT828SMVAS",
+          "RVMPCT849SEOVMS",
+          "RVMPCT802S",
+          "RVMPCT823S",
+          "RVMPCT854S",
+          "RVMPCT826S",
+          "RVMPCT809S",
+          "RVMPCT825S",
+          "RVMPCT808S",
+          "RVMPCT813S",
+          "RVMPCT806S",
+          "RVMPCT812S",
+          "RVMPCT807S",
+          "RVMPCT811S"
+        ]
+      },
+      "1G": {
+        "center": "SWANN",
+        "range": 40,
+        "altimeters": ["KBWI", "KESN", "KFME", "KGAI", "KMTN"],
+        "default_maps": ["RVMPCT112S", "RVMPCT114S", "RVMPCT820S"],
+        "video_maps": [
+          "RVMPCT805S",
+          "RVMPCT828SMVAS",
+          "RVMPCT116S",
+          "RVMPCT115S",
+          "RVMPCT812S",
+          "RVMPCT122S",
+
+          "RVMPCT112S",
+          "RVMPCT114S",
+          "RVMPCT113S",
+          "RVMPCT115S",
+          "RVMPCT010S",
+          "RVMPCT015S",
+          "RVMPCT028S",
+          "RVMPCT033S",
+          "RVMPCT116S",
+          "RVMPCT122S",
+          "RVMPCT805S",
+          "RVMPCT803S",
+          "RVMPCT804S",
+          "RVMPCT820S",
+          "",
+          "RVMPCT816S",
+          "RVMPCT828SMVAS",
+          "RVMPCT849SEOVMS",
+          "RVMPCT802S",
+          "RVMPCT823S",
+          "RVMPCT854S",
+          "RVMPCT826S",
+          "RVMPCT809S",
+          "RVMPCT825S",
+          "RVMPCT808S",
+          "RVMPCT813S",
+          "RVMPCT806S",
+          "RVMPCT812S",
+          "RVMPCT807S",
+          "RVMPCT811S"
         ]
       },
       "1H": {
         "flight_following_airspace": [
           {
             "type": "polygon",
+            "floor": 11000,
             "ceiling": 17000,
             "vertices": "N039.17.14.197,W077.15.33.782 N039.06.07.575,W077.20.26.431 N039.04.08.867,W077.45.15.682 N039.07.45.628,W077.49.05.269 N039.13.16.289,W078.00.01.593 N039.14.36.708,W078.09.41.945 N039.30.16.204,W078.04.09.389 N039.32.05.862,W078.00.06.756 N039.34.49.324,W077.40.12.213 N039.41.30.847,W077.21.10.321 N039.32.13.840,W077.11.32.523 N039.29.02.500,W077.15.21.533"
+          }
+        ],
+        "center": "IDORE",
+        "range": 35,
+        "altimeters": ["KBWI", "KDMW", "KESN", "KGAI", "KMRB", "KMTN"],
+        "default_maps": ["RVMPCT112S", "RVMPCT114S", "RVMPCT820S"],
+        "video_maps": [
+          "RVMPCT805S",
+          "RVMPCT828SMVAS",
+          "RVMPCT116S",
+          "RVMPCT115S",
+          "RVMPCT812S",
+          "RVMPCT122S",
+
+          "RVMPCT112S",
+          "RVMPCT114S",
+          "RVMPCT113S",
+          "RVMPCT115S",
+          "RVMPCT010S",
+          "RVMPCT015S",
+          "RVMPCT028S",
+          "RVMPCT033S",
+          "RVMPCT116S",
+          "RVMPCT122S",
+          "RVMPCT805S",
+          "RVMPCT803S",
+          "RVMPCT804S",
+          "RVMPCT820S",
+          "",
+          "RVMPCT816S",
+          "RVMPCT828SMVAS",
+          "RVMPCT849SEOVMS",
+          "RVMPCT802S",
+          "RVMPCT823S",
+          "RVMPCT854S",
+          "RVMPCT826S",
+          "RVMPCT809S",
+          "RVMPCT825S",
+          "RVMPCT808S",
+          "RVMPCT813S",
+          "RVMPCT806S",
+          "RVMPCT812S",
+          "RVMPCT807S",
+          "RVMPCT811S"
+        ]
+      },
+      "1F": {
+        "center": "KHEF",
+        "range": 40
+      },
+      "1L": {
+        "center": "WYNGS",
+        "range": 35
+      },
+      "1K": {
+        "center": "CAPVC",
+        "range": 40
+      },
+      "1Y": {
+        "center": "STEAD",
+        "range": 35
+      },
+      "2L": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 12000,
+            "vertices": "N037.12.22.071,W076.55.38.360 N036.52.58.825,W077.10.45.117 N036.49.57.647,W077.30.26.586 N037.00.22.123,W077.56.58.341 N037.07.50.173,W077.56.37.741 N037.12.37.095,W078.02.07.441 N037.10.47.534,W078.26.27.634 N037.32.56.866,W078.15.39.743 N038.15.13.732,W077.43.01.869 N038.14.06.441,W077.27.08.668 N038.21.20.168,W077.10.50.527 N038.17.50.466,W076.57.04.053 N038.07.28.036,W076.48.42.033 N038.02.34.811,W076.50.04.595 N037.44.09.586,W076.22.21.265 N037.25.28.376,W076.22.34.449 N037.23.49.266,W076.45.41.116 N037.12.22.071,W076.55.38.360"
+          }
+        ]
+      },
+      "2M": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 9000,
+            "vertices": "N037.38.22.459,W076.20.50.628 N038.06.30.605,W077.01.33.713 N038.35.04.925,W076.31.44.177 N038.42.46.159,W076.09.54.799 N038.43.05.975,W075.36.55.173 N038.35.51.397,W075.41.49.167 N038.18.10.104,W075.34.15.239 N037.42.03.037,W075.58.04.286"
+          }
+        ]
+      },
+      "2E": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 12000,
+            "vertices": "N037.30.26.531,W078.08.44.185 N037.38.04.126,W078.48.40.825 N038.29.16.494,W078.09.17.748 N038.24.17.858,W077.51.22.214 N038.08.30.260,W077.40.27.236"
+          }
+        ]
+      },
+      "2W": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 10000,
+            "vertices": "N037.38.10.869,W078.50.57.522 N038.29.22.426,W078.07.04.044 N038.30.06.385,W078.11.53.095 N038.02.55.396,W079.21.01.340 N037.46.38.561,W079.23.30.040"
+          },
+          {
+            "type": "polygon",
+            "ceiling": 10000,
+            "vertices": "N037.57.45.747,W079.18.57.359 N038.22.56.367,W079.24.29.668 N038.36.00.131,W078.17.13.291 N038.30.29.869,W078.06.04.031"
+          }
+        ]
+      },
+      "3M": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 10000,
+            "vertices": "N038.28.29.802,W077.09.27.059 N038.14.13.294,W077.15.17.935 N038.09.53.687,W077.21.08.618 N038.01.09.268,W077.21.18.204 N037.59.51.375,W077.38.11.473 N038.04.11.998,W077.42.56.046 N038.04.40.137,W077.53.13.972 N038.21.59.224,W077.59.45.278 N038.31.20.062,W078.22.29.725 N038.36.00.090,W078.27.50.690 N039.17.13.676,W078.25.00.045 N039.17.18.166,W078.44.27.974 N039.40.21.125,W078.32.30.842 N039.48.31.061,W078.17.47.816 N039.54.15.400,W077.52.50.516 N039.56.18.941,W077.00.40.814 N039.52.37.566,W076.50.40.191 N039.43.41.035,W076.48.39.836 N039.33.48.460,W076.58.52.269 N039.28.45.677,W077.04.00.875 N039.20.32.926,W077.12.38.111 N039.09.45.804,W077.08.28.145 N039.02.46.250,W077.12.52.970 N038.57.29.816,W077.15.19.555 N038.35.02.632,W077.16.42.310 N038.32.13.895,W077.09.09.206"
           }
         ]
       }
@@ -749,7 +1191,7 @@
           "description": "DCA MSAW SUPRESS",
           "type": "circle",
           "center": "KDCA",
-          "radius": 6,
+          "radius": 10,
           "floor": 0,
           "ceiling": 2500
         },
@@ -771,6 +1213,15 @@
           "ceiling": 2500
         },
         {
+          "id": "RICMSAW",
+          "description": "RIC MSAW SUPRESS",
+          "type": "circle",
+          "center": "KRIC",
+          "radius": 5,
+          "floor": 0,
+          "ceiling": 2000
+        },
+        {
           "id": "HEFMSAW",
           "description": "HEF MSAW SUPRESS",
           "type": "circle",
@@ -778,6 +1229,33 @@
           "radius": 5,
           "floor": 0,
           "ceiling": 2500
+        },
+        {
+          "id": "DAAMSAW",
+          "description": "DAA MSAW SUPRESS",
+          "type": "circle",
+          "center": "KDAA",
+          "radius": 5,
+          "floor": 0,
+          "ceiling": 1700
+        },
+        {
+          "id": "ADWMSAW",
+          "description": "ADW MSAW SUPRESS",
+          "type": "circle",
+          "center": "KADW",
+          "radius": 5,
+          "floor": 0,
+          "ceiling": 2000
+        },
+        {
+          "id": "CHOMSAW",
+          "description": "CHO MSAW SUPRESS",
+          "type": "circle",
+          "center": "KCHO",
+          "radius": 10,
+          "floor": 0,
+          "ceiling": 3000
         }
       ],
       "vfr_inhibit": [
@@ -788,7 +1266,55 @@
           "center": "DCA",
           "radius": 30,
           "floor": 0,
-          "ceiling": 17900
+          "ceiling": 17999
+        }
+      ],
+      "quicklook": [
+        {
+          "id": "Q01",
+          "description": "TYSON/KRANT QUICKLOOK",
+          "type": "polygon",
+          "owning_tcp": "1Y",
+          "tcps": "1K",
+          "floor": 0,
+          "ceiling": 23000,
+          "vertices": "N041.15.31.283,W081.20.31.320 N042.26.21.866,W073.34.33.504 N036.04.50.299,W072.04.39.217 N034.56.56.981,W080.11.40.158"
+        },
+        {
+          "id": "Q02",
+          "description": "TYSON/KRANT QUICKLOOK",
+          "type": "polygon",
+          "owning_tcp": "1K",
+          "tcps": "1Y",
+          "floor": 0,
+          "ceiling": 23000,
+          "vertices": "N041.15.31.283,W081.20.31.320 N042.26.21.866,W073.34.33.504 N036.04.50.299,W072.04.39.217 N034.56.56.981,W080.11.40.158"
+        }
+      ],
+      "fdam": [
+        {
+          "id": "DCAFRS",
+          "description": "DCA SCRATCH CHANGE SOUTH",
+          "allow_scratchpad_1_override": true,
+          "new_scratchpad_1": "DCA",
+          "flight_type": "arrival",
+          "scratchpad": "CAP,DLE,FRD,TRP,SKL,CLP",
+          "floor": 0,
+          "ceiling": 4999,
+          "type": "polygon",
+          "vertices": "N038.51.31.099,W077.02.17.576 N038.53.40.449,W076.59.40.087 N039.05.19.413,W076.59.48.107 N039.08.28.721,W077.12.13.419 N039.03.18.811,W077.18.24.071 N038.49.40.357,W077.18.54.063 N038.49.46.798,W077.15.27.987 N038.47.41.045,W077.12.15.946 N038.51.31.099,W077.02.17.576"
+        },
+        {
+          "id": "DCAFRN",
+          "description": "DCA SCRATCH CHANGE NORTH",
+          "allow_scratchpad_1_override": true,
+          "new_scratchpad_1": "DCA",
+          "flight_type": "arrival",
+          "scratchpad": "CAP,DLE,FRD,TRP,SKL,CLP",
+          "floor": 0,
+          "ceiling": 4999,
+          "type": "polygon",
+          "vertices": "N038.51.26.196,W077.02.17.356 N038.47.12.316,W077.10.32.180 N038.30.56.510,W077.13.02.775 N038.18.43.777,W077.17.30.430 N038.19.51.165,W077.00.48.861 N038.18.39.204,W076.54.43.236 N038.53.20.482,W076.54.50.899 N038.51.26.196,W077.02.17.356"
         }
       ],
       "auto_acquisition": [
@@ -826,52 +1352,41 @@
         }
       ]
     },
-    "range": 63,
+    "range": 60,
+    "center": "DCA",
     "scratchpads": {
-      "COLIN": "AME",
       "SCOOB": "AME",
-      "RAMAY": "FXR",
+      "MAULS": "CLH",
+      "FLASK": "CLH",
+      "DQO": "DQO",
+      "AGARD": "DCR",
+      "JERES": "JS2",
+      "BUFFR": "BFR",
       "RRSIN": "JDB",
       "MELTN": "JDB",
-      "FLASK": "CLH",
-      "JERES.N": "JS2",
-      "BUFFR.N": "BFR",
-      "JERES.S": "JS2",
-      "BUFFR.S": "BFR",
-      "MAULS": "CLH",
-      "OTTTO": "FXO",
-      "MCRAY": "MCR",
+      "OTTTO": "OTO",
       "GLANC": "SCR",
-      "SWANN": "SWN",
-      "AGARD": "DKA",
-      "BUFFR": "BFR",
-      "DQO": "DQO",
-      "JERES": "JS2"
+      "SWANN": "SOK",
+      "RAMAY": "RAM"
     },
     "significant_points": {
-      "AGARD": {},
-      "BUFFR": {
-        "short_name": "BFR"
-      },
+      "AGARD": { "short_name": "DCR" },
+      "BUFFR": { "short_name": "BFR" },
       "DQO": {},
-      "DUCXS": {},
-      "FLASK": {},
-      "GLANC": {},
-      "HOUKY": {},
-      "JERES": {},
-      "MAULS": {},
-      "MELTN": {},
-      "OTTTO": {
-        "short_name": "OTO"
-      },
-      "POWTN": {},
-      "RAMAY": {},
-      "RRSIN": {},
-      "SCOOB": {},
-      "SPIDR": {},
-      "SWANN": {}
+      "FLASK": { "short_name": "CLH" },
+      "GLANC": { "short_name": "SCR" },
+      "HOUKY": { "short_name": "OTO" },
+      "JERES": { "short_name": "JER" },
+      "MAULS": { "short_name": "CLH" },
+      "MELTN": { "short_name": "JDB" },
+      "OTTTO": { "short_name": "OTO" },
+      "RAMAY": { "short_name": "RAM" },
+      "RRSIN": { "short_name": "JDB" },
+      "SCOOB": { "short_name": "AME" },
+      "SWANN": { "short_name": "SOK" }
     },
-    "video_map_file": "videomaps/ZDC-videomaps.gob.zst",
+    "video_map_file": "videomaps/PCT-videomaps.gob.zst",
+    "monitor": "mdm3",
     "radar_sites": {
       "DCA": {
         "char": "D",
@@ -1000,31 +1515,198 @@
         "slope_angle": 0.3
       }
     },
+    "restriction_areas": {
+      "111": {
+        "title": "JRV 6601B",
+        "text": ["B HOT"],
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N038.04.39.519,W077.10.18.228 N038.03.12.150,W077.09.34.063 N038.02.22.575,W077.11.38.373 N038.02.29.674,W077.14.39.592 N038.01.49.561,W077.16.07.703 N038.02.15.021,W077.18.03.691 N038.02.39.727,W077.18.59.062 N038.04.36.498,W077.18.43.626 N038.05.24.742,W077.17.24.772 N038.05.51.699,W077.16.28.934 N038.07.06.654,W077.14.58.791 N038.08.01.681,W077.13.58.668 N038.09.38.677,W077.12.06.910 N038.07.09.620,W077.08.39.104 N038.05.29.397,W077.09.04.592",
+        "text_position": "N038.03.57.840,W077.14.38.686"
+      },
+      "112": {
+        "title": "JRV 6601BC",
+        "text": ["BC HOT"],
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N038.04.39.519,W077.10.18.228 N038.03.12.150,W077.09.34.063 N038.02.22.575,W077.11.38.373 N038.02.29.674,W077.14.39.592 N038.01.49.561,W077.16.07.703 N038.02.15.021,W077.18.03.691 N038.02.39.727,W077.18.59.062 N038.04.36.498,W077.18.43.626 N038.05.24.742,W077.17.24.772 N038.05.51.699,W077.16.28.934 N038.07.06.654,W077.14.58.791 N038.08.01.681,W077.13.58.668 N038.09.38.677,W077.12.06.910 N038.07.09.620,W077.08.39.104 N038.05.29.397,W077.09.04.592",
+        "text_position": "N038.03.57.840,W077.14.38.686"
+      },
+      "113": {
+        "title": "FARMVILLE MOA",
+        "text": ["HOT AOB 5000"],
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "hide_id": true,
+        "vertices": "N037.14.59.327,W078.19.57.949 N037.34.58.155,W078.12.31.821 N037.29.31.188,W077.55.00.183 N036.50.29.850,W078.20.00.119 N036.46.29.675,W078.47.59.406 N036.52.30.123,W079.03.30.305 N037.14.59.835,W078.49.58.745",
+        "text_position": "N037.22.08.535,W078.10.30.889"
+      },
+      "114": {
+        "title": "SHD 6608 AREA A",
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N038.37.15.140,W077.27.43.577 N038.35.35.192,W077.27.44.126 N038.35.09.622,W077.34.06.340 N038.36.59.526,W077.34.05.764 N038.37.49.926,W077.32.18.729"
+      },
+      "115": {
+        "title": "SHD 6608 AREA B",
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N038.35.35.192,W077.27.44.126 N038.35.09.622,W077.34.06.340 N038.31.18.771,W077.34.05.516 N038.28.59.863,W077.28.44.084 N038.29.30.419,W077.27.43.000"
+      },
+      "116": {
+        "title": "SHD 6608 AREA C",
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N038.37.15.140,W077.27.43.577 N038.35.35.192,W077.27.44.126 N038.29.30.254,W077.27.44.181 N038.31.15.242,W077.24.17.254 N038.33.59.886,W077.23.58.000 N038.36.59.938,W077.25.32.345"
+      },
+      "117": {
+        "title": "SHD P40 5 MILES",
+        "color": 4,
+        "shade_region": true,
+        "closed": true,
+        "circle_center": "N039.38.53.070,W077.27.59.342",
+        "circle_radius": 5
+      },
+      "118": {
+        "title": "SHD P40 10 MILES",
+        "color": 4,
+        "shade_region": true,
+        "closed": true,
+        "circle_center": "N039.38.53.070,W077.27.59.342",
+        "circle_radius": 10
+      },
+      "119": {
+        "title": "JRV AIRSPACE A.P. HILL",
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N038.05.24.247,W077.17.25.266 N038.04.37.088,W077.18.43.159 N038.04.44.216,W077.20.57.962 N038.10.31.082,W077.22.44.089 N038.14.00.742,W077.19.03.676 N038.10.08.134,W077.16.07.181 N038.08.01.668,W077.13.59.245 N038.07.11.776,W077.14.53.243 N038.06.22.832,W077.15.50.564 N038.05.52.565,W077.16.26.654"
+      },
+      "121": {
+        "title": "CHP R4001 UNL",
+        "text": ["HOT TO UNL"],
+        "text_position": "N039.22.46.012,W076.13.43.782",
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N039.19.47.567,W076.11.33.539 N039.17.29.015,W076.12.59.479 N039.12.10.178,W076.16.29.016 N039.12.44.524,W076.22.29.533 N039.17.30.073,W076.19.43.969 N039.18.29.797,W076.21.58.524 N039.22.00.405,W076.21.58.798 N039.23.27.376,W076.20.40.686 N039.26.10.097,W076.14.48.739 N039.27.00.043,W076.12.28.635 N039.30.28.825,W076.10.00.100 N039.28.59.685,W076.07.59.251 N039.29.29.389,W076.04.58.910 N039.27.00.112,W076.00.29.937"
+      },
+      "122": {
+        "title": "CHP R4001 2999",
+        "text": ["HOT TO 2999"],
+        "text_position": "N039.22.46.012,W076.13.43.782",
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N039.19.47.567,W076.11.33.539 N039.17.29.015,W076.12.59.479 N039.12.10.178,W076.16.29.016 N039.12.44.524,W076.22.29.533 N039.17.30.073,W076.19.43.969 N039.18.29.797,W076.21.58.524 N039.22.00.405,W076.21.58.798 N039.23.27.376,W076.20.40.686 N039.26.10.097,W076.14.48.739 N039.27.00.043,W076.12.28.635 N039.30.28.825,W076.10.00.100 N039.28.59.685,W076.07.59.251 N039.29.29.389,W076.04.58.910 N039.27.00.112,W076.00.29.937"
+      },
+      "123": {
+        "title": "CHP R4001 4999",
+        "text": ["HOT TO 4999"],
+        "text_position": "N039.22.46.012,W076.13.43.782",
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N039.19.47.567,W076.11.33.539 N039.17.29.015,W076.12.59.479 N039.12.10.178,W076.16.29.016 N039.12.44.524,W076.22.29.533 N039.17.30.073,W076.19.43.969 N039.18.29.797,W076.21.58.524 N039.22.00.405,W076.21.58.798 N039.23.27.376,W076.20.40.686 N039.26.10.097,W076.14.48.739 N039.27.00.043,W076.12.28.635 N039.30.28.825,W076.10.00.100 N039.28.59.685,W076.07.59.251 N039.29.29.389,W076.04.58.910 N039.27.00.112,W076.00.29.937"
+      },
+      "124": {
+        "title": "CHP R4001 9999",
+        "text": ["HOT TO 9999"],
+        "text_position": "N039.22.46.012,W076.13.43.782",
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N039.19.47.567,W076.11.33.539 N039.17.29.015,W076.12.59.479 N039.12.10.178,W076.16.29.016 N039.12.44.524,W076.22.29.533 N039.17.30.073,W076.19.43.969 N039.18.29.797,W076.21.58.524 N039.22.00.405,W076.21.58.798 N039.23.27.376,W076.20.40.686 N039.26.10.097,W076.14.48.739 N039.27.00.043,W076.12.28.635 N039.30.28.825,W076.10.00.100 N039.28.59.685,W076.07.59.251 N039.29.29.389,W076.04.58.910 N039.27.00.112,W076.00.29.937"
+      },
+      "125": {
+        "title": "ILG TFR ACTIVE",
+        "text": ["ILG TFR ACTIVE", "MAP 830"],
+        "text_position": "N039.37.29.642,W075.57.11.634",
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N039.26.10.742,W076.07.48.319 N039.25.22.251,W076.06.57.041 N039.24.21.099,W076.05.41.976 N039.23.38.032,W076.04.45.891 N039.22.58.784,W076.03.49.504 N039.22.09.318,W076.02.35.401 N039.21.00.365,W076.00.35.705 N039.20.04.884,W075.58.44.716 N039.19.13.317,W075.56.49.222 N039.18.38.545,W075.55.18.475 N039.17.59.214,W075.53.20.289 N039.17.28.191,W075.51.33.365 N039.17.05.834,W075.50.01.904 N039.17.25.307,W075.50.04.733 N039.17.53.405,W075.50.03.524 N039.18.14.746,W075.49.53.362 N039.18.31.280,W075.49.37.157 N039.18.47.101,W075.49.15.899 N039.18.57.675,W075.48.48.515 N039.19.03.099,W075.48.10.722 N039.18.57.373,W075.47.31.501 N039.18.41.278,W075.46.55.301 N039.18.19.360,W075.46.29.895 N039.17.50.095,W075.46.16.190 N039.17.26.159,W075.46.14.734 N039.17.05.587,W075.46.19.595 N039.16.46.526,W075.46.30.307 N039.16.28.920,W075.46.47.473 N039.16.16.341,W075.45.17.138 N039.16.08.774,W075.43.54.741 N039.16.02.731,W075.42.21.687 N039.15.58.914,W075.40.43.084 N039.15.58.049,W075.39.33.266 N039.16.12.564,W075.35.00.338 N039.17.17.260,W075.29.01.772 N039.18.42.184,W075.24.20.302 N039.20.47.525,W075.19.44.216 N039.23.05.362,W075.15.47.268 N039.27.37.301,W075.10.25.506 N039.32.00.368,W075.07.02.753 N039.38.08.095,W075.04.19.963 N039.41.34.226,W075.03.44.230 N039.42.20.409,W075.03.55.272 N039.43.09.147,W075.03.37.172 N039.47.57.854,W075.03.57.332 N039.52.14.069,W075.05.11.352 N039.55.37.825,W075.06.46.823 N039.59.17.208,W075.09.25.548 N040.03.28.190,W075.13.45.320 N040.06.32.926,W075.18.19.017 N040.09.23.214,W075.24.33.431 N040.10.30.326,W075.28.02.858 N040.11.41.490,W075.34.19.030 N040.11.59.865,W075.38.06.584 N040.11.50.156,W075.43.37.904 N040.10.58.493,W075.49.37.487 N040.10.41.491,W075.50.49.914 N040.09.47.960,W075.50.27.365 N040.08.49.280,W075.50.53.622 N040.08.27.897,W075.51.33.695 N040.08.21.512,W075.52.47.880 N040.08.39.364,W075.53.34.901 N040.09.10.703,W075.54.10.469 N040.09.40.393,W075.54.21.236 N040.08.11.404,W075.58.15.162 N040.06.11.461,W076.02.02.909 N040.01.54.875,W076.07.51.862 N040.01.54.875,W076.07.51.862 N039.58.31.051,W076.10.55.883 N039.55.18.681,W076.13.01.457 N039.51.49.542,W076.14.45.333 N039.49.42.348,W076.15.29.882 N039.46.58.734,W076.16.01.770 N039.44.14.077,W076.16.11.191 N039.41.17.760,W076.15.59.545 N039.38.42.962,W076.15.29.910 N039.36.28.037,W076.14.47.283 N039.34.50.299,W076.14.09.243 N039.35.09.938,W076.13.44.633 N039.35.27.131,W076.12.57.447 N039.35.26.623,W076.11.55.045 N039.34.55.545,W076.11.01.212 N039.34.19.881,W076.10.39.266 N039.33.46.593,W076.10.37.399 N039.33.08.236,W076.11.00.580 N039.32.37.612,W076.11.39.060 N039.32.31.528,W076.12.14.848 N039.32.31.171,W076.12.56.898 N039.30.56.153,W076.11.59.989 N039.30.12.414,W076.11.25.107 N039.30.26.092,W076.10.09.603 N039.30.12.442,W076.08.50.007 N039.29.42.861,W076.07.49.198 N039.28.58.970,W076.07.08.796 N039.27.55.154,W076.06.51.712 N039.26.51.625,W076.07.08.878"
+      },
+      "126": {
+        "title": "MTV R6611 R6613",
+        "color": 5,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N038.19.15.775,W077.01.58.872 N038.21.29.561,W077.01.13.910 N038.17.30.691,W076.55.59.756 N038.15.45.552,W076.51.59.677 N038.13.30.159,W076.46.33.603 N038.09.59.441,W076.49.58.471 N038.12.59.452,W076.54.34.145"
+      },
+      "127": {
+        "title": "JRV NHKRA",
+        "color": 1,
+        "closed": true,
+        "vertices": "N037.50.28.807,W076.31.58.377 N038.05.11.036,W076.34.14.196 N038.14.59.121,W076.36.34.216 N038.17.25.719,W076.32.57.648 N038.25.39.857,W076.23.34.379 N038.21.02.686,W076.14.03.145 N038.29.57.967,W076.04.00.902 N038.36.00.859,W075.55.31.082 N038.35.59.664,W075.54.40.105 N038.41.12.019,W075.47.02.305 N038.41.16.359,W075.45.59.243 N038.32.28.933,W075.43.44.990 N038.18.59.776,W075.36.58.661 N037.44.59.601,W075.58.45.018 N037.45.01.029,W076.00.49.273 N037.41.01.898,W076.00.50.921 N037.39.59.523,W076.01.29.758 N037.39.59.633,W076.09.59.633 N037.44.59.148,W076.11.32.605 N037.44.59.945,W076.23.28.364"
+      },
+      "128": {
+        "title": "DEMO AREA",
+        "text": [""],
+        "text_position": "N038.30.19.445,W077.33.15.941",
+        "color": 4,
+        "shade_region": true,
+        "closed": true,
+        "vertices": "N038.19.59.816,W077.40.06.500 N038.19.57.715,W077.34.00.545 N038.20.06.573,W077.32.49.628 N038.24.00.582,W077.24.52.822 N038.24.21.497,W077.24.26.702 N038.24.49.787,W077.24.01.845 N038.29.59.299,W077.20.50.546 N038.30.26.394,W077.20.36.978 N038.30.55.274,W077.20.30.633 N038.33.42.885,W077.20.08.715 N038.34.29.453,W077.20.10.940 N038.34.54.351,W077.20.18.878 N038.38.28.996,W077.22.11.268 N038.39.01.433,W077.22.41.837 N038.39.25.892,W077.23.15.318 N038.39.44.458,W077.23.56.517 N038.39.55.239,W077.24.32.772 N038.40.50.569,W077.32.04.447 N038.40.48.838,W077.32.54.765 N038.40.41.807,W077.33.29.701 N038.40.31.494,W077.34.04.473 N038.39.18.998,W077.36.36.002 N038.33.58.252,W077.42.56.458 N038.33.00.697,W077.43.26.945 N038.22.48.635,W077.43.50.126 N038.22.00.693,W077.43.37.794 N038.21.19.508,W077.43.11.839 N038.20.56.135,W077.42.47.175 N038.20.23.451,W077.41.58.835 N038.20.12.382,W077.41.21.289"
+      },
+      "129": {
+        "title": "3VA3",
+        "color": 1,
+        "shade_region": true,
+        "closed": true,
+        "hide_id": true,
+        "circle_center": "N038.33.01.000,W077.42.57.000",
+        "circle_radius": 1
+      },
+      "164": {
+        "title": "HWY APA",
+        "color": 1,
+        "shade_region": true,
+        "closed": true,
+        "hide_id": true,
+        "circle_center": "N038.34.57.619,W077.42.44.236",
+        "circle_radius": 0.25
+      },
+      "166": {
+        "title": "FLYING CIRCUS",
+        "color": 1,
+        "shade_region": true,
+        "closed": true,
+        "circle_center": "N038.33.01.000,W077.42.57.000",
+        "circle_radius": 2
+      }
+    },
     "airspace_awareness": [
       {
         "fixes": ["RAMAY", "OTTTO"],
-        "altitude_range": [10000, 17000],
-        "receiving_controller": "C01"
+        "altitude_range": [0, 17000],
+        "receiving_controller": "W05"
       },
       {
         "fixes": ["SCOOB", "COLIN"],
-        "altitude_range": [10000, 19000],
-        "receiving_controller": "C12"
+        "altitude_range": [0, 19000],
+        "receiving_controller": "W11"
       },
       {
         "fixes": ["MAULS", "FLASK", "MELTN", "RRSIN", "GLANC"],
-        "altitude_range": [10000, 23000],
-        "receiving_controller": "C32"
+        "altitude_range": [0, 21000],
+        "receiving_controller": "W60"
       },
       {
         "fixes": ["JERES", "MCRAY"],
-        "altitude_range": [11000, 17000],
-        "receiving_controller": "1H"
+        "altitude_range": [0, 17000],
+        "receiving_controller": "W06"
       },
       {
         "fixes": ["SWANN", "AGARD", "DQO"],
         "altitude_range": [10000, 19000],
-        "receiving_controller": "C17"
+        "receiving_controller": "W17"
       }
     ],
     "coordination_fixes": {
@@ -1094,110 +1776,123 @@
     },
     "areas": {
       "1": {
+        "center": "HENRX",
+        "range": 50,
         "default_airport": "KDCA",
+        "altimeters": ["KADW", "KCGS", "KDAA", "KDCA"],
         "video_maps": [
-          "MTV North",
-          "MTV South",
-          "MTV ADWN",
-          "ADW South",
-          "PCT Coastlines",
-          "MTV River",
-          "PCT SFRA",
-          "PCT MVA",
-          "MTV DCA NSTAR",
-          "MTV DCA SSTAR",
-          "PCT ClassB",
-          "MTV DCA NSID",
-          "MTV DCA SSID",
-          "MTV ADW STAR",
-          "MTV ADW SID",
-          "MTV BWI STAR",
-          "MTV CGS RNAV",
-          "MTV DCA R33",
-          "MTV DCATCT",
-          "MTV Other SID",
-          "MTV River",
-          "PCT Airport",
-          "PCT ClassD"
+          "RVMPCT460S",
+          "RVMPCT461S",
+          "RVMPCT463S",
+          "RVMPCT438S",
+          "RVMPCT425S",
+          "RVMPCT828SMVAS",
+
+          "RVMPCT427S",
+          "RVMPCT428S",
+          "RVMPCT429S",
+          "RVMPCT808S",
+          "RVMPCT421S",
+          "RVMPCT422S",
+          "RVMPCT430S",
+          "RVMPCT431S",
+          "RVMPCT043S",
+          "RVMPCT462S",
+          "RVMPCT433S",
+          "",
+          "",
+          "",
+          "RVMPCT417S",
+          "RVMPCT802S",
+          "RVMPCT823S",
+          "RVMPCT849SEOVMS",
+          "RVMPCT819S",
+          "RVMPCT832S",
+          "RVMPCT806S",
+          "RVMPCT807S",
+          "RVMPCT811S",
+          "RVMPCT812S",
+          "RVMPCT805S",
+          "RVMPCT439S",
+          "RVMPCT442S",
+          "RVMPCT441S",
+          "RVMPCT444S",
+          "RVMPCT821S"
         ],
-        "center": "KDCA"
+        "scratchpads": {
+          "COLIN": "AME",
+          "SCOOB": "AME",
+          "RAMAY": "FXR",
+          "RRSIN": "JDB",
+          "MELTN": "JDB",
+          "FLASK": "CLH",
+          "JERES.N": "JS2",
+          "BUFFR.N": "BFR",
+          "JERES.S": "JS2",
+          "BUFFR.S": "BFR",
+          "MAULS": "CLH",
+          "OTTTO": "FXO",
+          "MCRAY": "MCR",
+          "GLANC": "SCR",
+          "SWANN": "SWN",
+          "AGARD": "DKA",
+          "BUFFR": "BFR",
+          "DQO": "DQO",
+          "JERES": "JS2"
+        }
       },
       "2": {
         "default_airport": "KRIC",
         "video_maps": [
-          "JRV North",
-          "JRV CSIDE",
-          "JRV STAR",
-          "JRV South",
-          "PCT MVA",
-          "JRV WIGOL STAR",
-          "RIC IAP H02-Y",
-          "RIC IAP H20-Y",
-          "JRV Sat Approaches",
-          "JRV Fixes",
-          "PCT ClassB",
-          "PCT Coastlines",
-          "PCT Zones",
-          "PCT MEGA Combined",
-          "PCT Roads",
-          "PCT TAirway",
-          "",
-          "",
-          "",
-          "",
-          "",
-          "",
-          "RIC IAP H16-Y",
-          "RIC IAP H34-Y",
-          "JRV RAREA",
-          "PCT Airport",
-          "PCT ClassD",
-          "PCT Helo Route",
-          "PCT JAirway",
-          "PCT QAirway",
-          "PCT SFRA",
-          "PCT VAirway"
+          "RVMPCT664S",
+          "RVMPCT668S",
+          "RVMPCT812S",
+          "RVMPCT849SEOVMS",
+          "RVMPCT619S",
+          "RVMPCT638S",
+
+          "RVMPCT615S",
+          "RVMPCT617S",
+          "RVMPCT664S",
+          "RVMPCT664S",
+          "RVMPCT668S",
+          "RVMPCT828SMVAS",
+          "RVMPCT663S",
+          "RVMPCT663S",
+          "RVMPCT672S",
+          "RVMPCT671S",
+          "RVMPCT670S",
+          "RVMPCT673S",
+          "RVMPCT638S",
+          "RVMPCT665S",
+          "RVMPCT639S",
+          "RVMPCT613S",
+          "RVMPCT626S",
+          "RVMPCT849SEOVMS",
+          "RVMPCT802S",
+          "RVMPCT823S",
+          "RVMPCT803S",
+          "RVMPCT619S",
+          "RVMPCT662S",
+          "RVMPCT806S",
+          "RVMPCT807S",
+          "RVMPCT820S",
+          "RVMPCT922S",
+          "RVMPCT923S",
+          "RVMPCT924S",
+          "RVMPCT674S",
+          "RVMPCT816S",
+          "RVMPCT804S"
         ],
-        "center": "KRIC",
-        "range": 75
+        "center": "NABBS",
+        "range": 75,
+        "altimeters": ["KCHO", "KRIC", "KSBY", "KWAL"]
       },
       "3": {
-        "center": "KIAD",
+        "center": "GIBBZ",
+        "range": 70,
         "default_airport": "KIAD",
-        "video_maps": [
-          "SHD Base",
-          "SHD South",
-          "PCT MVA",
-          "SHD North",
-          "SHD South 12",
-          "SHD IAD NSTAR",
-          "SHD IAD SSTAR",
-          "SHD SAT STAR",
-          "SHD IAD RNAV Vis 30",
-          "SHD Sat Approach",
-          "SHD Fixes",
-          "PCT ClassD",
-          "PCT Helo Route",
-          "PCT Roads",
-          "PCT JAirway",
-          "PCT TAirway",
-          "",
-          "",
-          "",
-          "",
-          "",
-          "",
-          "SHD IAD SID",
-          "SHD HEF SID",
-          "SHD Hold Areas",
-          "SHD Sat GPS Approach",
-          "PCT ClassB",
-          "PCT SFRA",
-          "PCT Zones",
-          "PCT Coastlines",
-          "PCT QAirway",
-          "PCT VAirway"
-        ],
+        "altimeters": ["KFDK", "KHEF", "KHGR", "KIAD", "KJYO", "KMRB"],
         "airspace_awareness": [
           {
             "fixes": ["RAMAY", "OTTTO"],
@@ -1224,9 +1919,181 @@
             "altitude_range": [10000, 17000],
             "receiving_controller": "1W"
           }
+        ],
+        "scratchpads": {
+          "COLIN": "AME",
+          "SCOOB": "AME",
+          "RAMAY": "RAM",
+          "RRSIN": "JDB",
+          "MELTN": "JDB",
+          "FLASK": "CLH",
+          "MAULS": "CLH",
+          "OTTTO": "OTO",
+          "MCRAY": "MCR",
+          "GLANC": "SCR",
+          "SWANN": "SOK",
+          "AGARD": "DCR"
+        },
+        "video_maps": [
+          "RVMPCT828SMVAS",
+          "RVMPCT805S",
+          "RVMPCT316S",
+          "RVMPCT317S",
+          "RVMPCT820S",
+          "RVMPCT338S",
+
+          "RVMPCT312S",
+          "RVMPCT849SEOVMS",
+          "RVMPCT313S",
+          "RVMPCT315S",
+          "RVMPCT392S",
+          "RVMPCT314S",
+          "RVMPCT341S",
+          "RVMPCT323S",
+          "RVMPCT342S",
+          "RVMPCT324S",
+          "RVMPCT343S",
+          "RVMPCT325S",
+          "RVMPCT368S",
+          "RVMPCT369S",
+          "RVMPCT384S",
+          "RVMPCT385S",
+          "RVMPCT807S",
+          "RVMPCT806S",
+          "RVMPCT812S",
+          "RVMPCT386S",
+          "RVMPCT372S",
+          "RVMPCT319S",
+          "RVMPCT808S",
+          "RVMPCT964S",
+          "RVMPCT321S",
+          "RVMPCT803S",
+          "RVMPCT823S",
+          "RVMPCT802S",
+          "RVMPCT825S",
+          "RVMPCT367S"
+        ]
+      },
+      "23": {
+        "video_maps": [
+          "RVMPCT828SMVAS",
+          "RVMPCT805S",
+          "RVMPCT316S",
+          "RVMPCT317S",
+          "RVMPCT820S",
+          "RVMPCT338S",
+
+          "RVMPCT312S",
+          "RVMPCT849SEOVMS",
+          "RVMPCT313S",
+          "RVMPCT315S",
+          "RVMPCT392S",
+          "RVMPCT314S",
+          "RVMPCT341S",
+          "RVMPCT323S",
+          "RVMPCT342S",
+          "RVMPCT324S",
+          "RVMPCT343S",
+          "RVMPCT325S",
+          "RVMPCT368S",
+          "RVMPCT369S",
+          "RVMPCT384S",
+          "RVMPCT385S",
+          "RVMPCT807S",
+          "RVMPCT806S",
+          "RVMPCT854S",
+          "RVMPCT383S",
+          "RVMPCT372S",
+          "RVMPCT808S",
+          "RVMPCT460S",
+          "RVMPCT461S",
+          "RVMPCT321S",
+          "RVMPCT803S",
+          "RVMPCT823S",
+          "RVMPCT802S",
+          "RVMPCT825S",
+          "RVMPCT367S"
+        ]
+      },
+      "25": {
+        "video_maps": [
+          "RVMPCT828SMVAS",
+          "RVMPCT805S",
+          "RVMPCT316S",
+          "RVMPCT317S",
+          "RVMPCT820S",
+          "RVMPCT338S",
+
+          "RVMPCT312S",
+          "RVMPCT849SEOVMS",
+          "RVMPCT313S",
+          "RVMPCT315S",
+          "RVMPCT392S",
+          "RVMPCT314S",
+          "RVMPCT341S",
+          "RVMPCT323S",
+          "RVMPCT342S",
+          "RVMPCT324S",
+          "RVMPCT343S",
+          "RVMPCT325S",
+          "RVMPCT368S",
+          "RVMPCT369S",
+          "RVMPCT384S",
+          "RVMPCT385S",
+          "RVMPCT230S",
+          "RVMPCT233S",
+          "RVMPCT231S",
+          "RVMPCT234S",
+          "RVMPCT232S",
+          "RVMPCT235S",
+          "RVMPCT237S",
+          "RVMPCT238S",
+          "RVMPCT321S",
+          "RVMPCT803S",
+          "RVMPCT823S",
+          "RVMPCT802S",
+          "RVMPCT825S",
+          "RVMPCT808S"
         ]
       }
     },
+    "lists": {
+      "coordination": [
+        {
+          "name": "ANDREWS",
+          "id": "ADW",
+          "airports": ["KADW"]
+        },
+        {
+          "name": "MANASSAS",
+          "id": "HEF",
+          "airports": ["KHEF"]
+        },
+        {
+          "name": "LEESBURG",
+          "id": "JYO",
+          "airports": ["KJYO"]
+        },
+        {
+          "name": "FT BELVOIR",
+          "id": "DAA",
+          "airports": ["KDAA"]
+        },
+        {
+          "name": "CHARLOTTESVILLE",
+          "id": "CHO",
+          "airports": ["KCHO"]
+        }
+      ]
+    },
+    "stars_macros": [
+      {
+        "input": "99[SLEW]",
+        "commands": ["[MULTI FUNC]Y+VT"],
+        "output": "",
+        "description": "+VT Scratchpad"
+      }
+    ],
     "datablocks": {
       "clock_phase": {
         "sequence": [1, 2, 1, 3],
@@ -1235,7 +2102,8 @@
       "pdb": {
         "hide_gs": true,
         "show_scratchpad2": true
-      }
+      },
+      "custom_spcs": ["LN", "ME", "MF", "OD", "OF", "AL", "FC"]
     }
   },
   "handoff_ids": [
@@ -1269,7 +2137,7 @@
     },
     {
       "id": "ZDC",
-      "prefix": "C"
+      "prefix": "W"
     },
     {
       "id": "ZNY",

@@ -253,7 +253,7 @@
       {
         "fixes": ["MRB"],
         "altitude_range": [0, 6000],
-        "receiving_controller": "63E"
+        "receiving_controller": "63Z"
       },
       {
         "fixes": ["MRB"],

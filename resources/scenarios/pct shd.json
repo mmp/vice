@@ -1,89 +1,370 @@
 {
   "tracon": "PCT",
   "airports": {
-    "KHWY": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
+    "KDCA": {},
+    "KHWY": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 7 } } },
+    "KDMW": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 3 } } },
+    "KFDK": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 8 } } },
+    "KMRB": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 6 } } },
+    "KHGR": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 5 } } },
+    "KCBE": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 3 } } },
+    "KOKV": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 4 } } },
+    "KFRR": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 3 } } },
+    "KFCI": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 7 } } },
+    "KSHD": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 7 } } },
+    "KPTB": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 4 } } },
+    "W35": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 4 } } },
+    "KLKU": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 4 } } },
+    "KCJR": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 4 } } },
+    "KRMN": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 7 } } },
+    "KEZF": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 4 } } },
+    "KOFP": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 4 } } },
+    "KBKT": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 4 } } },
+    "KLYH": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 5 } } },
+    "KLUA": { "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 4 } } },
     "KJYO": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KOKV": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KFRR": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KCJR": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KRMN": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KFDK": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KEZF": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KDMW": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KHGR": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KMRB": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KHEF": {
-      "vfr": {
-        "random_routes": {
-          "rate": 10
+      "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 10 } },
+      "approaches": {
+        "I17": {
+          "cifp_id": "I17"
+        },
+        "R17": {
+          "cifp_id": "R17"
+        },
+        "V35": {
+          "full_name": "Visual Runway 35",
+          "runway": "35",
+          "type": "Visual",
+          "waypoints": [
+            "N039.03.55.890,W077.34.43.172 N039.02.23.865,W077.34.01.809 N039.02.49.230,W077.32.37.873 N039.03.50.067,W077.33.05.723"
+          ]
         }
       },
+      "departure_routes": {
+        "17": {
+          "RAMAY,OTTTO,BUFFR,JERES,MCRAY,WOOLY": {
+            "assigned_altitude": 3000,
+            "sid": "PTOMC2",
+            "waypoints": "N039.04.03.003,W077.33.09.788/a900+/flyover PTOMC/a3000/h310"
+          },
+          "MAULS,FLASK": {
+            "assigned_altitude": 3000,
+            "sid": "CLTCH3",
+            "waypoints": "KJYO-35/h300 BUTRZ/a3000+ CLTCH KERRK"
+          },
+          "RRSIN": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KJYO-35/h300 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+          },
+          "MELTN": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KJYO-35/h300 HAFNR/a3000+ JDUBB CASLY MELTN"
+          },
+          "GLANC": {
+            "assigned_altitude": 3000,
+            "sid": "SCRAM6",
+            "waypoints": "KJYO-35/h300 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+          }
+        },
+        "35": {
+          "RAMAY,OTTTO,BUFFR,JERES,MCRAY,WOOLY": {
+            "assigned_altitude": 3000,
+            "sid": "PTOMC2",
+            "waypoints": "N039.05.35.549,W077.33.50.657/a900+/flyover PTOMC/a3000/h310"
+          },
+          "MAULS,FLASK": {
+            "assigned_altitude": 3000,
+            "sid": "CLTCH3",
+            "waypoints": "KJYO-17/h300 BUTRZ/a3000+ CLTCH KERRK"
+          },
+          "RRSIN": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KJYO-17/h300 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+          },
+          "MELTN": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KJYO-17/h300 HAFNR/a3000+ JDUBB CASLY MELTN"
+          },
+          "GLANC": {
+            "assigned_altitude": 3000,
+            "sid": "SCRAM6",
+            "waypoints": "KJYO-17/h300 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "VJA"
+            }
+          ],
+          "destination": "KMRC",
+          "route": "OTTTO Q80 FAREV",
+          "exit": "OTTTO"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VTE"
+            }
+          ],
+          "destination": "KAHN",
+          "route": "GLANC COLZI SPA",
+          "exit": "GLANC"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VTE"
+            }
+          ],
+          "destination": "KTRI",
+          "route": "MAULS Q40 ALEAN",
+          "exit": "MAULS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VJA"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KHXD",
+          "route": "RRSIN GSO CTF CANTR PLZZZ",
+          "exit": "RRSIN"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VJA"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KMTH",
+          "route": "MAULS Q40 ALEAN VXV THRSR HONID Q81 KARTR",
+          "exit": "MAULS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VJA"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KSUA",
+          "route": "RRSIN GSO Q83 JEVED Q97 PRMUS Q97 KENLL TUXXI",
+          "exit": "RRSIN"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "TWY"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KSJC",
+          "route": "MAULS Q108 DENNY FLM J134 JUDDI WELTS J24 MCI J80 CATTS CUGGA J80 FQF HERSH CRLES RUMPS KNGRY RAZRR5",
+          "exit": "MAULS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KGRR",
+          "scratchpad": "Q78",
+          "route": "BUFFR Q178 DJB J34 ALPHE",
+          "exit": "BUFFR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KTYQ",
+          "route": "RAMAY Q72 HACKS J149 ROD PENDS CLANG VHP",
+          "exit": "RAMAY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KDXR",
+          "route": "WOOLY AGARD MAEVE Q439 SARDI RICED RICED4",
+          "exit": "WOOLY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KMYR",
+          "route": "MELTN SBV RDU",
+          "exit": "MELTN"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KSYR",
+          "route": "JERES Q221 VALLO Q227 STENT CFB T335 CORTA",
+          "exit": "JERES"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KPJC",
+          "scratchpad": "JOY",
+          "route": "MCRAY Q178 LEJOY NESTO",
+          "exit": "MCRAY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KDSM",
+          "route": "RAMAY Q72 HACKS SUMET DQN FIRNA EDENS CNOTA",
+          "exit": "RAMAY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KTEB",
+          "route": "WOOLY SWANN JAIKE4",
+          "exit": "WOOLY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "icao": "JTL"
+            }
+          ],
+          "destination": "KECP",
+          "route": "GLANC LYH",
+          "exit": "GLANC"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 11000,
+          "destination": "KORF",
+          "route": "JDUBB BNTLY WAIKS",
+          "exit": "JDUBB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KFCM",
+          "route": "BUFFR Q178 DJB BAE AGUDE6",
+          "exit": "BUFFR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VTE"
+            }
+          ],
+          "destination": "KMYR",
+          "route": "MELTN SBV RDU",
+          "exit": "MELTN"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KAPF",
+          "route": "RRSIN GSO Q75 SLOJO Q103 CYNTA SHFTY6",
+          "exit": "RRSIN"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 10000,
+          "destination": "KPHL",
+          "route": "WOOLY T356 ODESA",
+          "exit": "WOOLY"
+        }
+      ]
+    },
+    "KHEF": {
+      "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 10 } },
       "approaches": {
         "I6L": {
           "cifp_id": "I16L"
@@ -398,6 +679,12 @@
         "I12": {
           "cifp_id": "I12"
         },
+        "RV3": {
+          "full_name": "RNAV Visual Runway 30",
+          "runway": "30",
+          "type": "Visual",
+          "waypoints": ["COINZ/a6000/s210- HENRX/a4000+ SHPMN/a2400+/s165-/arc4.4 DEJAY/a980+"]
+        },
         "V1L": {
           "full_name": "Visual Runway 1L",
           "runway": "1L",
@@ -484,6 +771,11 @@
             "sid": "JDUBB4",
             "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
+          "JDUBB": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB"
+          },
           "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
@@ -504,10 +796,20 @@
             "sid": "SCRAM6",
             "waypoints": "KIAD-12/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W,AGARD.W,BAL": {
+          "SWANN.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-12/h320 RAZZA WOOLY"
+            "waypoints": "KIAD-12/h320 RAZZA WOOLY SWANN"
+          },
+          "AGARD.W": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-12/h320 RAZZA WOOLY AGARD"
+          },
+          "BAL": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-12/h320 RAZZA WOOLY BAL"
           }
         },
         "30.S": {
@@ -546,6 +848,11 @@
             "sid": "JDUBB4",
             "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
+          "JDUBB": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB"
+          },
           "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
@@ -566,10 +873,20 @@
             "sid": "SCRAM6",
             "waypoints": "KIAD-12/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W,AGARD.W,BAL": {
+          "SWANN.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-12/h300 RAZZA WOOLY"
+            "waypoints": "KIAD-12/h300 RAZZA WOOLY SWANN"
+          },
+          "AGARD.W": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-12/h300 RAZZA WOOLY AGARD"
+          },
+          "BAL": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-12/h300 RAZZA WOOLY BAL"
           }
         },
         "1C": {
@@ -608,6 +925,11 @@
             "sid": "JDUBB4",
             "waypoints": "KIAD-19C/a820+/h320 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
+          "JDUBB": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KIAD-19C/a820+/h320 HAFNR/a3000+ JDUBB"
+          },
           "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
@@ -628,10 +950,20 @@
             "sid": "SCRAM6",
             "waypoints": "KIAD-19C/a820+/h320 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W,AGARD.W,BAL": {
+          "SWANN.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-19C/h345 RAZZA WOOLY"
+            "waypoints": "KIAD-19C/h345 RAZZA WOOLY SWANN"
+          },
+          "AGARD.W": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-19C/h345 RAZZA WOOLY AGARD"
+          },
+          "BAL": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-19C/h345 RAZZA WOOLY BAL"
           }
         },
         "1R": {
@@ -670,6 +1002,11 @@
             "sid": "JDUBB4",
             "waypoints": "KIAD-19L/h360 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
+          "JDUBB": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KIAD-19L/h360 HAFNR/a3000+ JDUBB"
+          },
           "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
@@ -690,10 +1027,20 @@
             "sid": "SCRAM6",
             "waypoints": "KIAD-19L/h360 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W,AGARD.W,BAL": {
+          "SWANN.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-19L/h360 RAZZA WOOLY"
+            "waypoints": "KIAD-19L/h360 RAZZA WOOLY SWANN"
+          },
+          "AGARD.W": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-19L/h360 RAZZA WOOLY AGARD"
+          },
+          "BAL": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-19L/h360 RAZZA WOOLY BAL"
           }
         },
         "19C.S": {
@@ -732,6 +1079,11 @@
             "sid": "JDUBB4",
             "waypoints": "KIAD-1C/a820+/h210 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
+          "JDUBB": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KIAD-1C/a820+/h210 HAFNR/a3000+ JDUBB"
+          },
           "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
@@ -752,10 +1104,20 @@
             "sid": "SCRAM6",
             "waypoints": "KIAD-1C/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W,AGARD.W,BAL": {
+          "SWANN.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "N038.56.43.646,W077.27.34.431/h300 RAZZA WOOLY"
+            "waypoints": "N038.56.43.646,W077.27.34.431/h300 RAZZA WOOLY SWANN"
+          },
+          "AGARD.W": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "N038.56.43.646,W077.27.34.431/h300 RAZZA WOOLY AGARD"
+          },
+          "BAL": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "N038.56.43.646,W077.27.34.431/h300 RAZZA WOOLY BAL"
           }
         },
         "19C.30": {
@@ -794,6 +1156,11 @@
             "sid": "JDUBB4",
             "waypoints": "KIAD-1C/a820+/h210 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
+          "JDUBB": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KIAD-1C/a820+/h210 HAFNR/a3000+ JDUBB"
+          },
           "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
@@ -814,10 +1181,20 @@
             "sid": "SCRAM6",
             "waypoints": "KIAD-1C/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W,AGARD.W,BAL": {
+          "SWANN.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-1C/h280 RAZZA WOOLY"
+            "waypoints": "KIAD-1C/h280 RAZZA WOOLY SWANN"
+          },
+          "AGARD.W": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-1C/h280 RAZZA WOOLY AGARD"
+          },
+          "BAL": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-1C/h280 RAZZA WOOLY BAL"
           }
         },
         "19L": {
@@ -856,6 +1233,11 @@
             "sid": "JDUBB4",
             "waypoints": "KIAD-1R/h190 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
+          "JDUBB": {
+            "assigned_altitude": 3000,
+            "sid": "JDUBB4",
+            "waypoints": "KIAD-1R/h190 HAFNR/a3000+ JDUBB"
+          },
           "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
@@ -876,14 +1258,94 @@
             "sid": "SCRAM6",
             "waypoints": "KIAD-1R/h190 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
-          "SWANN.W,AGARD.W,BAL": {
+          "SWANN.W": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-1R/h190 RAZZA WOOLY"
+            "waypoints": "KIAD-1R/h190 RAZZA WOOLY SWANN"
+          },
+          "AGARD.W": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-1R/h190 RAZZA WOOLY AGARD"
+          },
+          "BAL": {
+            "assigned_altitude": 3000,
+            "sid": "WOOLY2",
+            "waypoints": "KIAD-1R/h190 RAZZA WOOLY BAL"
           }
         }
       },
       "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "UCA"
+            },
+            {
+              "icao": "ASH"
+            }
+          ],
+          "destination": "KORF",
+          "exit": "JDUBB",
+          "route": "JDUBB BNTLY WAIKS",
+          "scratchpad": "HAF"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "UCA"
+            },
+            {
+              "icao": "ASH"
+            }
+          ],
+          "destination": "KORF",
+          "exit": "JDUBB",
+          "route": "JDUBB BNTLY WAIKS",
+          "scratchpad": "HAF"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "GJS"
+            },
+            {
+              "icao": "GJS"
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KRIC",
+          "exit": "JDUBB",
+          "route": "JDUBB BNTLY RIC",
+          "scratchpad": "HAF"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "GJS"
+            },
+            {
+              "icao": "GJS"
+            },
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KRIC",
+          "exit": "JDUBB",
+          "route": "JDUBB BNTLY RIC",
+          "scratchpad": "HAF"
+        },
         {
           "airlines": [
             {
@@ -1922,6 +2384,7 @@
         "SCOOB": "North/East",
         "RRSIN": "South/West",
         "MELTN": "South/West",
+        "JDUBB": "South/West",
         "JERES": "North/East",
         "MCRAY": "South/West",
         "OTTTO": "South/West",
@@ -1953,13 +2416,19 @@
               "34R": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
               "16R": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
               "34L": "HYPER/a10000/s250 PHATT/a9000/flyover/h230"
+            },
+            "KJYO": {
+              "17": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
+              "35": "HYPER/a10000/s250 PHATT/a9000/flyover/h230"
             }
           },
           "star": "HYPER9",
+          "secondary_scratchpad": "HYP",
           "initial_controller": "N26",
           "initial_altitude": 17000,
           "assigned_altitude": 14000,
           "initial_speed": 280,
+          "description": "Jets",
           "expect_approach": null,
           "airlines": {
             "KIAD": [
@@ -2133,6 +2602,7 @@
               },
               {
                 "icao": "N",
+                "fleet": "fastGA",
                 "airport": "KTEB"
               },
               {
@@ -2151,6 +2621,175 @@
                 "icao": "N",
                 "fleet": "fastGA",
                 "airport": "KPWM"
+              }
+            ],
+            "KJYO": [
+              {
+                "icao": "EJA",
+                "airport": "KHPN"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KTEB"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KPHL"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KTEB"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KMHT"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KDXR"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KMQS"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "DELRO N039.55.32.455,W076.42.37.946/ho LIRCH BINNS HYPER/a10000/s250",
+          "runway_waypoints": {
+            "KIAD": {
+              "19L": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
+              "19C": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
+              "19R": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
+              "1L": "HYPER/a10000/s250 CRAIN/a6000 KUKSE ELISN/flyover/h191",
+              "1C": "HYPER/a10000/s250 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191",
+              "1R": "HYPER/a10000/s250 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191",
+              "30": "HYPER/a10000/s250 CRAIN/a6000 KUKSE ELISN/flyover/h191"
+            },
+            "KHEF": {
+              "16L": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
+              "34R": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
+              "16R": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
+              "34L": "HYPER/a10000/s250 PHATT/a9000/flyover/h230"
+            },
+            "KJYO": {
+              "17": "HYPER/a10000/s250 PHATT/a9000/flyover/h230",
+              "35": "HYPER/a10000/s250 PHATT/a9000/flyover/h230"
+            }
+          },
+          "star": "HYPER9",
+          "secondary_scratchpad": "HYP",
+          "initial_controller": "N26",
+          "initial_altitude": 16000,
+          "assigned_altitude": 12000,
+          "initial_speed": 250,
+          "description": "Props",
+          "expect_approach": null,
+          "airlines": {
+            "KIAD": [
+              {
+                "icao": "CNS",
+                "airport": "KMHT"
+              },
+              {
+                "icao": "CNS",
+                "airport": "KTEB"
+              },
+              {
+                "icao": "CNS",
+                "airport": "KJFK"
+              },
+              {
+                "icao": "CNS",
+                "airport": "KHPN"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KTEB"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KALB"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KPVD"
+              },
+              {
+                "icao": "FDY",
+                "airport": "KLNS"
+              },
+              {
+                "icao": "FDY",
+                "airport": "KIPT"
+              },
+              {
+                "icao": "FDY",
+                "airport": "KIPT"
+              }
+            ],
+            "KHEF": [
+              {
+                "icao": "GPD",
+                "airport": "KHPN"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KTEB"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KABE"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KHPN"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KAVP"
+              }
+            ],
+            "KJYO": [
+              {
+                "icao": "GPD",
+                "airport": "KHPN"
+              },
+              {
+                "icao": "GPD",
+                "airport": "KTEB"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KALB"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KAVP"
+              },
+              {
+                "icao": "CNS",
+                "airport": "KTEB"
               }
             ]
           }
@@ -2173,6 +2812,7 @@
             }
           },
           "star": "PRTZL1",
+          "secondary_scratchpad": "PZL",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "assigned_altitude": 9000,
@@ -2203,23 +2843,13 @@
         }
       ]
     },
-    "CAVLR6": {
+    "CAVLR6.N": {
       "arrivals": [
         {
-          "waypoints": "N037.48.21.104,W077.29.37.835 JROBB/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250",
-          "runway_waypoints": {
-            "KIAD": {
-              "19L": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
-              "19C": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
-              "19R": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
-              "1L": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
-              "1C": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
-              "1R": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
-              "30": "CAVLR/a10000/s250 KASDY/a7000 COINZ/a6000/s210/flyover/h10"
-            }
-          },
+          "waypoints": "N037.48.21.104,W077.29.37.835 JROBB/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
           "star": "CAVLR6",
-          "initial_controller": "C20",
+          "secondary_scratchpad": "CAV",
+          "initial_controller": "W14",
           "initial_altitude": 17000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -2256,20 +2886,410 @@
           }
         },
         {
-          "waypoints": "PERKN/a22000+ KHOOD/a14000-22000/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250",
-          "runway_waypoints": {
-            "KIAD": {
-              "19L": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
-              "19C": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
-              "19R": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
-              "1L": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
-              "1C": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
-              "1R": "CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
-              "30": "CAVLR/a10000/s250 KASDY/a7000 COINZ/a6000/s210/flyover/h10"
-            }
-          },
+          "waypoints": "PERKN/a22000+ KHOOD/a14000-22000/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250 UVVAA/a9000/flyover/h026",
           "star": "CAVLR6",
-          "initial_controller": "C20",
+          "secondary_scratchpad": "CAV",
+          "initial_controller": "W14",
+          "initial_altitude": 23000,
+          "initial_speed": 300,
+          "expect_approach": null,
+          "airlines": {
+            "KIAD": [
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KATL"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KATL"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b3xm",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KJAX"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KRSW"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KTPA"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KCHS"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KMSY"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KSAT"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "TJSJ"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "TNCA"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "MKJS"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "MMUN"
+              },
+              {
+                "icao": "UCA",
+                "airport": "KMOB"
+              },
+              {
+                "icao": "UCA",
+                "airport": "KGSP"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KAPF"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KSRQ"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KSFB"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "MYNN"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KPBI"
+              },
+              {
+                "icao": "ASH",
+                "fleet": "long",
+                "airport": "KSAV"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "VOI",
+                "fleet": "jfk",
+                "airport": "MSLP"
+              },
+              {
+                "icao": "MXY",
+                "fleet": "long",
+                "airport": "KVRB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CAVLR6.S": {
+      "arrivals": [
+        {
+          "waypoints": "N037.48.21.104,W077.29.37.835 JROBB/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
+          "star": "CAVLR6",
+          "secondary_scratchpad": "CAV",
+          "initial_controller": "W14",
+          "initial_altitude": 17000,
+          "initial_speed": 300,
+          "expect_approach": null,
+          "airlines": {
+            "KIAD": [
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KORF"
+              },
+              {
+                "icao": "ASH",
+                "fleet": "long",
+                "airport": "KORF"
+              },
+              {
+                "icao": "GJS",
+                "airport": "KRIC"
+              },
+              {
+                "icao": "UCA",
+                "airport": "KRIC"
+              },
+              {
+                "icao": "ASH",
+                "fleet": "long",
+                "airport": "KRIC"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KORF"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "PERKN/a22000+ KHOOD/a14000-22000/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/flyover/h12",
+          "star": "CAVLR6",
+          "secondary_scratchpad": "CAV",
+          "initial_controller": "W14",
+          "initial_altitude": 23000,
+          "initial_speed": 300,
+          "expect_approach": null,
+          "airlines": {
+            "KIAD": [
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KATL"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KATL"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b3xm",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KJAX"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KRSW"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "KTPA"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KCHS"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KMSY"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KSAT"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "TJSJ"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "TNCA"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b73x",
+                "airport": "MKJS"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "MMUN"
+              },
+              {
+                "icao": "UCA",
+                "airport": "KMOB"
+              },
+              {
+                "icao": "UCA",
+                "airport": "KGSP"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KAPF"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KSRQ"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KSFB"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "MYNN"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KPBI"
+              },
+              {
+                "icao": "ASH",
+                "fleet": "long",
+                "airport": "KSAV"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "VOI",
+                "fleet": "jfk",
+                "airport": "MSLP"
+              },
+              {
+                "icao": "MXY",
+                "fleet": "long",
+                "airport": "KVRB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CAVLR6.30": {
+      "arrivals": [
+        {
+          "waypoints": "N037.48.21.104,W077.29.37.835 JROBB/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250 KASDY/a7000 COINZ/a6000/s210/flyover/h10",
+          "star": "CAVLR6",
+          "secondary_scratchpad": "CAV",
+          "initial_controller": "W14",
+          "initial_altitude": 17000,
+          "initial_speed": 300,
+          "expect_approach": null,
+          "airlines": {
+            "KIAD": [
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KORF"
+              },
+              {
+                "icao": "ASH",
+                "fleet": "long",
+                "airport": "KORF"
+              },
+              {
+                "icao": "GJS",
+                "airport": "KRIC"
+              },
+              {
+                "icao": "UCA",
+                "airport": "KRIC"
+              },
+              {
+                "icao": "ASH",
+                "fleet": "long",
+                "airport": "KRIC"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KORF"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "PERKN/a22000+ KHOOD/a14000-22000/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250 KASDY/a7000 COINZ/a6000/s210/flyover/h10",
+          "star": "CAVLR6",
+          "secondary_scratchpad": "CAV",
+          "initial_controller": "W14",
           "initial_altitude": 23000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -2428,7 +3448,7 @@
         {
           "waypoints": "N038.33.58.581,W078.31.53.708 LLBEE/a9000/ho TIKEE JETIS/flyover/h90",
           "star": "TIKEE4",
-          "initial_controller": "C05",
+          "initial_controller": "W05",
           "initial_altitude": 10500,
           "initial_speed": 270,
           "expect_approach": null,
@@ -2467,17 +3487,9 @@
     "TRSTN4": {
       "arrivals": [
         {
-          "waypoints": "CABRL N038.02.35.401,W077.46.02.539/ho TRSTN",
-          "runway_waypoints": {
-            "KHEF": {
-              "34R": "TRSTN MOTIE/h11",
-              "16L": "TRSTN MOTIE/h11",
-              "34L": "TRSTN MOTIE/h11",
-              "16R": "TRSTN MOTIE/h11"
-            }
-          },
+          "waypoints": "CABRL/ho2L N037.57.39.443,W077.45.17.330/d060/ho TRSTN MOTIE/h11",
           "star": "TRSTN4",
-          "initial_controller": "2L",
+          "initial_controller": "W14",
           "initial_altitude": 16000,
           "assigned_altitude": 10000,
           "initial_speed": 280,
@@ -2511,6 +3523,60 @@
               }
             ]
           }
+        },
+        {
+          "waypoints": "CABRL/ho2L N037.57.39.443,W077.45.17.330/ho TRSTN ASHLN MRB CRAIN/h87",
+          "star": "TRSTN4",
+          "initial_controller": "W14",
+          "initial_altitude": 16000,
+          "assigned_altitude": 10000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KJYO": [
+              {
+                "icao": "VTE",
+                "airport": "KMYR"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KORF"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KAPF"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KSFB"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KVPS"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KLRO"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KLRO"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KVRB"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KEQY"
+              }
+            ]
+          }
         }
       ]
     },
@@ -2527,6 +3593,7 @@
             }
           },
           "star": "WAYNZ1",
+          "secondary_scratchpad": "WNZ",
           "initial_controller": "N26",
           "initial_altitude": 15000,
           "assigned_altitude": 12000,
@@ -2625,6 +3692,7 @@
             }
           },
           "star": "WAYNZ1",
+          "secondary_scratchpad": "WNZ",
           "initial_controller": "N26",
           "initial_altitude": 15000,
           "assigned_altitude": 12000,
@@ -2725,10 +3793,15 @@
               "16L": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192",
               "34L": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192",
               "16R": "GIBBZ/a6000 SUNYJ SIYOB MIKEJ/flyover/h192"
+            },
+            "KJYO": {
+              "17": "GIBBZ/a6000 SUNYJ UDIYU KUKSE MATTC/flyover/h10",
+              "35": "GIBBZ/a6000 SUNYJ UDIYU KUKSE MATTC/flyover/h10"
             }
           },
           "star": "GIBBZ5",
-          "initial_controller": "C05",
+          "secondary_scratchpad": "GBZ",
+          "initial_controller": "W05",
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -2897,6 +3970,7 @@
               },
               {
                 "icao": "N",
+                "fleet": "fastGA",
                 "airport": "KPWK"
               },
               {
@@ -2915,6 +3989,38 @@
                 "icao": "N",
                 "fleet": "fastGA",
                 "airport": "KPWK"
+              }
+            ],
+            "KJYO": [
+              {
+                "icao": "TWY",
+                "airport": "KSJC"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KMSN"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KDET"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KJAC"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KASE"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KSTL"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KGYY"
               }
             ]
           }
@@ -2943,7 +4049,8 @@
             }
           },
           "star": "GIBBZ5",
-          "initial_controller": "C37",
+          "secondary_scratchpad": "GBZ",
+          "initial_controller": "W37",
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -3059,6 +4166,34 @@
                 "fleet": "fastGA",
                 "airport": "KIAH"
               }
+            ],
+            "KJYO": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KDTS"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KSVH"
+              },
+              {
+                "icao": "TIV",
+                "airport": "KSGU"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KDAL"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KOKC"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KBPT"
+              }
             ]
           }
         }
@@ -3075,7 +4210,7 @@
           "initial_speed": 250,
           "expect_approach": "I1R",
           "scratchpad": "R1R",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "HYP",
           "airlines": {
             "KIAD": [
               {
@@ -3342,7 +4477,7 @@
           "initial_speed": 250,
           "expect_approach": "I1R",
           "scratchpad": "R1R",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "HYP",
           "airlines": {
             "KIAD": [
               {
@@ -3609,7 +4744,7 @@
           "initial_speed": 250,
           "expect_approach": "I1L",
           "scratchpad": "R1L",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "GBZ",
           "airlines": {
             "KIAD": [
               {
@@ -3855,7 +4990,7 @@
           "initial_speed": 250,
           "expect_approach": "I1C",
           "scratchpad": "R1C",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "GBZ",
           "airlines": {
             "KIAD": [
               {
@@ -4101,7 +5236,7 @@
           "initial_speed": 280,
           "expect_approach": "I1C",
           "scratchpad": "R1C",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "CAV",
           "airlines": {
             "KIAD": [
               {
@@ -4284,7 +5419,7 @@
           "initial_speed": 280,
           "expect_approach": "I1C",
           "scratchpad": "R1C",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "CAV",
           "airlines": {
             "KIAD": [
               {
@@ -4467,7 +5602,7 @@
           "initial_speed": 250,
           "expect_approach": "I9L",
           "scratchpad": "19L",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "CAV",
           "airlines": {
             "KIAD": [
               {
@@ -4650,7 +5785,7 @@
           "initial_speed": 250,
           "expect_approach": "I9L",
           "scratchpad": "19L",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "CAV",
           "airlines": {
             "KIAD": [
               {
@@ -4833,7 +5968,7 @@
           "initial_speed": 250,
           "expect_approach": "I9R",
           "scratchpad": "19R",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "GBZ",
           "airlines": {
             "KIAD": [
               {
@@ -5079,7 +6214,7 @@
           "initial_speed": 250,
           "expect_approach": "I9C",
           "scratchpad": "19C",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "GBZ",
           "airlines": {
             "KIAD": [
               {
@@ -5326,7 +6461,7 @@
           "initial_speed": 280,
           "expect_approach": "I9C",
           "scratchpad": "19C",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "WNZ",
           "airlines": {
             "KIAD": [
               {
@@ -5410,7 +6545,7 @@
           "initial_speed": 280,
           "expect_approach": "I9C",
           "scratchpad": "19C",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "HYP",
           "airlines": {
             "KIAD": [
               {
@@ -5609,7 +6744,7 @@
           "initial_speed": 280,
           "expect_approach": "I9C",
           "scratchpad": "19C",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "WNZ",
           "airlines": {
             "KIAD": [
               {
@@ -5693,7 +6828,7 @@
           "initial_speed": 280,
           "expect_approach": "I9C",
           "scratchpad": "19C",
-          "secondary_scratchpad": "ILS",
+          "secondary_scratchpad": "HYP",
           "airlines": {
             "KIAD": [
               {
@@ -5884,8 +7019,8 @@
     "FRDMM6.LN": {
       "overflights": [
         {
-          "waypoints": "COURG/a20000-23000/s280 PLDGE/a15000-17000/s280/ho1L WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250/ho1J ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY/a4000 N038.39.18.709,W077.06.28.339 N038.39.33.719,W077.02.15.021/a3000 KATRN/a2500 BADDN/a1600 KDCA-1/a200/delete",
-          "initial_controller": "C05",
+          "waypoints": "COURG/a20000-23000/s280 PLDGE/a15000-17000/s280/ho1L WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250/ho1J ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY/a4000/s210 N038.39.18.709,W077.06.28.339 N038.39.33.719,W077.02.15.021/a3000 KATRN/a2500 BADDN/a1600 KDCA-1/a200/delete",
+          "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
           "scratchpad": "DCA",
@@ -5953,8 +7088,8 @@
     "FRDMM6.LS": {
       "overflights": [
         {
-          "waypoints": "COURG/a20000-23000/s280 PLDGE/a15000-17000/s280/ho1L WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250/ho1J ALWYZ/a10000-/s250 FRDMM/a8000/s240/ho1V STAND TGTHR FERGI/a3000 N38.58.06.375,W77.09.57.529/a2800 DARIC/a2600 N38.57.14.831,W77.08.03.123/a2400 N38.56.15.453,W77.07.14.056/a2000 N38.55.48.625,W77.06.51.540/a1800 N38.55.16.332,W77.06.24.102/a1700 N38.54.49.068,W77.06.07.164/a1500 N38.54.26.796,W77.05.31.244/a1300 N38.54.08.183,W77.04.10.808/a900 N38.54.00.828,W77.03.53.071 N38.52.21.992,W77.02.25.316/a300/delete",
-          "initial_controller": "C05",
+          "waypoints": "COURG/a20000-23000/s280 PLDGE/a15000-17000/s280/ho1L WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250/ho1J ALWYZ/a10000-/s250 FRDMM/a8000/s240/ho1V STAND/a6000/s210 TGTHR FERGI/a3000 N38.58.06.375,W77.09.57.529/a2800 DARIC/a2600 N38.57.14.831,W77.08.03.123/a2400 N38.56.15.453,W77.07.14.056/a2000 N38.55.48.625,W77.06.51.540/a1800 N38.55.16.332,W77.06.24.102/a1700 N38.54.49.068,W77.06.07.164/a1500 N38.54.26.796,W77.05.31.244/a1300 N38.54.08.183,W77.04.10.808/a900 N38.54.00.828,W77.03.53.071 N38.52.21.992,W77.02.25.316/a300/delete",
+          "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
           "scratchpad": "DCA",
@@ -6022,8 +7157,8 @@
     "TRUPS5.LN": {
       "overflights": [
         {
-          "waypoints": "PJAAE/a21000-23000 USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho1L SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 N038.52.21.224,W077.33.32.173/ho1J LETZZ/a8000 RLLLL/a6000/s250 VCTRY/a4000 N038.39.18.709,W077.06.28.339 N038.39.33.719,W077.02.15.021/a3000 KATRN/a2500 BADDN/a1600 KDCA-1/a200/delete",
-          "initial_controller": "C05",
+          "waypoints": "PJAAE/a21000-23000 USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho1L SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 N038.52.21.224,W077.33.32.173/ho1J LETZZ/a8000 RLLLL/a6000/s250 VCTRY/a4000/s210 N038.39.18.709,W077.06.28.339 N038.39.33.719,W077.02.15.021/a3000 KATRN/a2500 BADDN/a1600 KDCA-1/a200/delete",
+          "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
           "scratchpad": "DCA",
@@ -6071,8 +7206,8 @@
     "TRUPS5.LS": {
       "overflights": [
         {
-          "waypoints": "PJAAE/a21000-23000 USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho1L SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 N038.52.26.470,W077.37.14.976/ho1J FRDMM/a8000/s240/ho1V STAND TGTHR FERGI/a3000 N38.58.06.375,W77.09.57.529/a2800 DARIC/a2600 N38.57.14.831,W77.08.03.123/a2400 N38.56.15.453,W77.07.14.056/a2000 N38.55.48.625,W77.06.51.540/a1800 N38.55.16.332,W77.06.24.102/a1700 N38.54.49.068,W77.06.07.164/a1500 N38.54.26.796,W77.05.31.244/a1300 N38.54.08.183,W77.04.10.808/a900 N38.54.00.828,W77.03.53.071 N38.52.21.992,W77.02.25.316/a300/delete",
-          "initial_controller": "C05",
+          "waypoints": "PJAAE/a21000-23000 USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho1L SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 N038.52.26.470,W077.37.14.976/ho1J FRDMM/a8000/s240/ho1V STAND/a6000/s210 TGTHR FERGI/a3000 N38.58.06.375,W77.09.57.529/a2800 DARIC/a2600 N38.57.14.831,W77.08.03.123/a2400 N38.56.15.453,W77.07.14.056/a2000 N38.55.48.625,W77.06.51.540/a1800 N38.55.16.332,W77.06.24.102/a1700 N38.54.49.068,W77.06.07.164/a1500 N38.54.26.796,W77.05.31.244/a1300 N38.54.08.183,W77.04.10.808/a900 N38.54.00.828,W77.03.53.071 N38.52.21.992,W77.02.25.316/a300/delete",
+          "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
           "scratchpad": "DCA",
@@ -6117,6 +7252,144 @@
         }
       ]
     },
+    "ANTHM5.LN": {
+      "overflights": [
+        {
+          "waypoints": "LUNDY/a29000 CURBY/a21000-24000 KEESH/ho1H BUBBI/a15000-18000/s280 SHEPH/a12000- EAGLL/a12000-13000/ho1B ANTHM JABRR/a11000/s250 OLBAY/a9000-/s250 CRABZ/a5000-6000/ho1S FINNZ/a5000/s210 KEEYY/a4000/s210 ROAPS/a4000 HOOOK/a4000 N039.02.18.551,W076.31.29.456/a2500 SPLAT/a2400 GRAFE/a1500 KBWI-33L/a200/delete",
+          "initial_controller": "W15",
+          "initial_altitude": 29000,
+          "initial_speed": 280,
+          "flight_type": "arrival",
+          "scratchpad": "BWI",
+          "airlines": [
+            {
+              "icao": "SWA",
+              "departure_airport": "KMDW",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "departure_airport": "KORD",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "departure_airport": "KORD",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "departure_airport": "KMSP",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "SWA",
+              "departure_airport": "KMSP",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "SWA",
+              "departure_airport": "KMKE",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "departure_airport": "KDEN",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "SWA",
+              "departure_airport": "KDEN",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "departure_airport": "KCLE",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "SWA",
+              "departure_airport": "KCLE",
+              "arrival_airport": "KBWI"
+            }
+          ]
+        }
+      ]
+    },
+    "ANTHM5.LS": {
+      "overflights": [
+        {
+          "waypoints": "LUNDY/a29000 CURBY/a21000-24000 KEESH/ho1H BUBBI/a15000-18000/s280 SHEPH/a12000- EAGLL/a12000-13000/ho1B ANTHM ARYIA/a11000/s250 N039.29.28.331,W077.09.47.219 KYYLO/a6000 BMORE/a5000 XPRTO/a4000 KAHNN/a3000 KEVVN/a2000 KBWI-15R/a200/delete",
+          "initial_controller": "W15",
+          "initial_altitude": 29000,
+          "initial_speed": 280,
+          "flight_type": "arrival",
+          "scratchpad": "BWI",
+          "airlines": [
+            {
+              "icao": "SWA",
+              "departure_airport": "KMDW",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "departure_airport": "KORD",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "departure_airport": "KORD",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "departure_airport": "KMSP",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "SWA",
+              "departure_airport": "KMSP",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "SWA",
+              "departure_airport": "KMKE",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "departure_airport": "KDEN",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "SWA",
+              "departure_airport": "KDEN",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short",
+              "departure_airport": "KCLE",
+              "arrival_airport": "KBWI"
+            },
+            {
+              "icao": "SWA",
+              "departure_airport": "KCLE",
+              "arrival_airport": "KBWI"
+            }
+          ]
+        }
+      ]
+    },
     "DEPARTURES.DCAS": {
       "overflights": [
         {
@@ -6153,7 +7426,8 @@
           "initial_altitude": 200,
           "scratchpad": "CLH",
           "initial_controller": "1Y",
-          "initial_speed": 230,
+          "initial_speed": 160,
+          "flight_type": "departure",
           "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F BUTRZ/a3000+ CLTCH KERRK"
         },
         {
@@ -6190,7 +7464,8 @@
           "initial_altitude": 200,
           "scratchpad": "JDB",
           "initial_controller": "1Y",
-          "initial_speed": 230,
+          "initial_speed": 160,
+          "flight_type": "departure",
           "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN/delete"
         },
         {
@@ -6220,7 +7495,8 @@
           "initial_altitude": 200,
           "scratchpad": "JDB",
           "initial_controller": "1Y",
-          "initial_speed": 230,
+          "initial_speed": 160,
+          "flight_type": "departure",
           "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F HAFNR/a3000+ JDUBB CASLY MELTN/delete"
         },
         {
@@ -6252,7 +7528,8 @@
           "initial_altitude": 200,
           "scratchpad": "SCR",
           "initial_controller": "1Y",
-          "initial_speed": 230,
+          "initial_speed": 160,
+          "flight_type": "departure",
           "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F POOCH/a3000+ SCRAM DANOO WALCE GLANC/delete"
         },
         {
@@ -6332,8 +7609,9 @@
           "initial_altitude": 200,
           "scratchpad": "RAM",
           "initial_controller": "1Y",
-          "initial_speed": 250,
-          "waypoints": "KDCA-1 CAPVC GAITE LBOLT/ho1L GINYA WYNGS/a5000+ RAMAY/hoC05 BENSH GEQUE HACKS/delete"
+          "initial_speed": 160,
+          "flight_type": "departure",
+          "waypoints": "KDCA-1 CAPVC GAITE LBOLT/ho1L GINYA WYNGS/a5000+ RAMAY/hoW05 BENSH GEQUE HACKS/delete"
         },
         {
           "airlines": [
@@ -6395,8 +7673,9 @@
           "initial_altitude": 200,
           "scratchpad": "OTO",
           "initial_controller": "1Y",
-          "initial_speed": 250,
-          "waypoints": "KDCA-1 CAPVC GAITE LBOLT/ho1L TEZER REBLL/a5000+ OTTTO/hoC05 COLNS STEVY HNN/delete"
+          "initial_speed": 160,
+          "flight_type": "departure",
+          "waypoints": "KDCA-1 CAPVC GAITE LBOLT/ho1L TEZER REBLL/a5000+ OTTTO/hoW05 COLNS STEVY HNN/delete"
         }
       ]
     },
@@ -6436,7 +7715,8 @@
           "initial_altitude": 500,
           "scratchpad": "CLH",
           "initial_controller": "1Y",
-          "initial_speed": 230,
+          "initial_speed": 160,
+          "flight_type": "departure",
           "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F BRUTL BUTRZ/a3000+ CLTCH KERRK"
         },
         {
@@ -6473,7 +7753,8 @@
           "initial_altitude": 500,
           "scratchpad": "JDB",
           "initial_controller": "1Y",
-          "initial_speed": 230,
+          "initial_speed": 160,
+          "flight_type": "departure",
           "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN/delete"
         },
         {
@@ -6503,7 +7784,8 @@
           "initial_altitude": 500,
           "scratchpad": "JDB",
           "initial_controller": "1Y",
-          "initial_speed": 230,
+          "initial_speed": 160,
+          "flight_type": "departure",
           "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F HAFNR/a3000+ JDUBB CASLY MELTN/delete"
         },
         {
@@ -6535,7 +7817,8 @@
           "initial_altitude": 500,
           "scratchpad": "SCR",
           "initial_controller": "1Y",
-          "initial_speed": 230,
+          "initial_speed": 160,
+          "flight_type": "departure",
           "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F POOCH/a3000+ SCRAM DANOO WALCE GLANC/delete"
         },
         {
@@ -6615,8 +7898,9 @@
           "initial_altitude": 500,
           "scratchpad": "RAM",
           "initial_controller": "1Y",
-          "initial_speed": 250,
-          "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII MELOE/ho1L WYNGS/a5000+ RAMAY/hoC05 BENSH GEQUE HACKS/delete"
+          "initial_speed": 160,
+          "flight_type": "departure",
+          "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII MELOE/ho1L WYNGS/a5000+ RAMAY/hoW05 BENSH GEQUE HACKS/delete"
         },
         {
           "airlines": [
@@ -6678,8 +7962,9 @@
           "initial_altitude": 500,
           "scratchpad": "OTO",
           "initial_controller": "1Y",
-          "initial_speed": 250,
-          "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI N038.58.09.436,W077.19.46.935/ho1L DUDDD REBLL/a5000+ OTTTO/hoC05 COLNS STEVY HNN/delete"
+          "initial_speed": 160,
+          "flight_type": "departure",
+          "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI N038.58.09.436,W077.19.46.935/ho1L DUDDD REBLL/a5000+ OTTTO/hoW05 COLNS STEVY HNN/delete"
         }
       ]
     }
@@ -6709,47 +7994,63 @@
         {
           "airport": "KHEF",
           "runway": "34R"
+        },
+        {
+          "airport": "KJYO",
+          "runway": "35"
+        },
+        {
+          "airport": "KJYO",
+          "runway": "17"
         }
       ],
       "inbound_rates": {
         "GIBBZ5.MGW": {
-          "KIAD": 8,
-          "KHEF": 2
+          "KIAD": 7,
+          "KHEF": 2,
+          "KJYO": 1
         },
         "GIBBZ5.BURTT": {
-          "KIAD": 8,
-          "KHEF": 1
+          "KIAD": 7,
+          "KHEF": 1,
+          "KJYO": 1
         },
         "PRTZL1": {
           "KIAD": 2
         },
-        "CAVLR6": {
-          "KIAD": 15
+        "CAVLR6.N": {
+          "KIAD": 12
         },
         "TRSTN4": {
-          "KHEF": 2
+          "KHEF": 1,
+          "KJYO": 2
         },
         "TIKEE4": {
-          "KHEF": 2
+          "KHEF": 1
         },
         "HYPER9": {
-          "KIAD": 15,
-          "KHEF": 3
+          "KIAD": 12,
+          "KHEF": 2,
+          "KJYO": 2
         },
         "WAYNZ1.N": {
-          "KIAD": 8
+          "KIAD": 5
         },
         "FRDMM6.LN": {
-          "overflights": 10
+          "overflights": 6
         },
         "TRUPS5.LN": {
-          "overflights": 10
+          "overflights": 6
         },
         "DEPARTURES.DCAN": {
-          "overflights": 20
+          "overflights": 16
+        },
+        "ANTHM5.LN": {
+          "overflights": 6
         }
       },
       "configuration": "30X",
+      "default_maps": ["RVMPCT312S", "RVMPCT313S"],
       "departure_runways": [
         {
           "airport": "KIAD",
@@ -6779,12 +8080,16 @@
           "airport": "KHEF",
           "rate": 5,
           "runway": "34R"
+        },
+        {
+          "airport": "KJYO",
+          "rate": 3,
+          "runway": "35"
         }
       ],
       "wind": {
         "direction": "320-20"
-      },
-      "default_maps": ["SHD Base", "SHD North"]
+      }
     },
     "SHD - IAD North": {
       "arrival_runways": [
@@ -6807,47 +8112,63 @@
         {
           "airport": "KHEF",
           "runway": "34R"
+        },
+        {
+          "airport": "KJYO",
+          "runway": "35"
+        },
+        {
+          "airport": "KJYO",
+          "runway": "17"
         }
       ],
       "inbound_rates": {
         "GIBBZ5.MGW": {
-          "KIAD": 8,
-          "KHEF": 2
+          "KIAD": 7,
+          "KHEF": 2,
+          "KJYO": 1
         },
         "GIBBZ5.BURTT": {
-          "KIAD": 8,
-          "KHEF": 1
+          "KIAD": 7,
+          "KHEF": 1,
+          "KJYO": 1
         },
         "PRTZL1": {
           "KIAD": 2
         },
-        "CAVLR6": {
-          "KIAD": 15
+        "CAVLR6.N": {
+          "KIAD": 12
         },
         "TRSTN4": {
-          "KHEF": 2
+          "KHEF": 1,
+          "KJYO": 2
         },
         "TIKEE4": {
-          "KHEF": 2
+          "KHEF": 1
         },
         "HYPER9": {
-          "KIAD": 15,
-          "KHEF": 2
+          "KIAD": 12,
+          "KHEF": 1,
+          "KJYO": 2
         },
         "WAYNZ1.N": {
-          "KIAD": 8
+          "KIAD": 5
         },
         "FRDMM6.LN": {
-          "overflights": 10
+          "overflights": 6
         },
         "TRUPS5.LN": {
-          "overflights": 10
+          "overflights": 6
         },
         "DEPARTURES.DCAN": {
-          "overflights": 20
+          "overflights": 16
+        },
+        "ANTHM5.LN": {
+          "overflights": 6
         }
       },
       "configuration": "SH1",
+      "default_maps": ["RVMPCT312S", "RVMPCT313S"],
       "departure_runways": [
         {
           "airport": "KIAD",
@@ -6865,14 +8186,18 @@
           "airport": "KHEF",
           "rate": 5,
           "runway": "34R"
+        },
+        {
+          "airport": "KJYO",
+          "rate": 3,
+          "runway": "35"
         }
       ],
       "wind": {
         "direction": "340-40"
-      },
-      "default_maps": ["SHD Base", "SHD North"]
+      }
     },
-    "SHD - IAD South with 30": {
+    "SHD - IAD 19/30": {
       "arrival_runways": [
         {
           "airport": "KIAD",
@@ -6893,47 +8218,59 @@
         {
           "airport": "KHEF",
           "runway": "16R"
+        },
+        {
+          "airport": "KJYO",
+          "runway": "17"
         }
       ],
       "inbound_rates": {
         "GIBBZ5.MGW": {
-          "KIAD": 8,
-          "KHEF": 2
+          "KIAD": 7,
+          "KHEF": 2,
+          "KJYO": 1
         },
         "GIBBZ5.BURTT": {
-          "KIAD": 8,
-          "KHEF": 1
+          "KIAD": 7,
+          "KHEF": 1,
+          "KJYO": 1
         },
         "PRTZL1": {
           "KIAD": 2
         },
-        "CAVLR6": {
-          "KIAD": 15
+        "CAVLR6.S": {
+          "KIAD": 12
         },
         "TRSTN4": {
-          "KHEF": 2
+          "KHEF": 1,
+          "KJYO": 2
         },
         "TIKEE4": {
-          "KHEF": 2
+          "KHEF": 1
         },
         "HYPER9": {
-          "KIAD": 15,
-          "KHEF": 3
+          "KIAD": 12,
+          "KHEF": 2,
+          "KJYO": 2
         },
         "WAYNZ1.S": {
-          "KIAD": 8
+          "KIAD": 5
         },
         "FRDMM6.LS": {
-          "overflights": 10
+          "overflights": 6
         },
         "TRUPS5.LS": {
-          "overflights": 10
+          "overflights": 6
         },
         "DEPARTURES.DCAS": {
-          "overflights": 20
+          "overflights": 16
+        },
+        "ANTHM5.LS": {
+          "overflights": 6
         }
       },
       "configuration": "SH4",
+      "default_maps": ["RVMPCT312S", "RVMPCT315S"],
       "departure_runways": [
         {
           "airport": "KIAD",
@@ -6950,12 +8287,16 @@
           "airport": "KHEF",
           "rate": 5,
           "runway": "16L"
+        },
+        {
+          "airport": "KJYO",
+          "rate": 3,
+          "runway": "17"
         }
       ],
       "wind": {
         "direction": "175-235"
-      },
-      "default_maps": ["SHD Base", "SHD South"]
+      }
     },
     "SHD - IAD South": {
       "arrival_runways": [
@@ -6978,47 +8319,59 @@
         {
           "airport": "KHEF",
           "runway": "16R"
+        },
+        {
+          "airport": "KJYO",
+          "runway": "17"
         }
       ],
       "inbound_rates": {
         "GIBBZ5.MGW": {
-          "KIAD": 8,
-          "KHEF": 2
+          "KIAD": 7,
+          "KHEF": 2,
+          "KJYO": 1
         },
         "GIBBZ5.BURTT": {
-          "KIAD": 8,
-          "KHEF": 1
+          "KIAD": 7,
+          "KHEF": 1,
+          "KJYO": 1
         },
         "PRTZL1": {
           "KIAD": 2
         },
-        "CAVLR6": {
-          "KIAD": 15
+        "CAVLR6.S": {
+          "KIAD": 12
         },
         "TRSTN4": {
-          "KHEF": 2
+          "KHEF": 1,
+          "KJYO": 2
         },
         "TIKEE4": {
-          "KHEF": 2
+          "KHEF": 1
         },
         "HYPER9": {
-          "KIAD": 15,
-          "KHEF": 3
+          "KIAD": 12,
+          "KHEF": 2,
+          "KJYO": 2
         },
         "WAYNZ1.S": {
-          "KIAD": 8
+          "KIAD": 5
         },
         "FRDMM6.LS": {
-          "overflights": 10
+          "overflights": 6
         },
         "TRUPS5.LS": {
-          "overflights": 10
+          "overflights": 6
         },
         "DEPARTURES.DCAS": {
-          "overflights": 20
+          "overflights": 16
+        },
+        "ANTHM5.LS": {
+          "overflights": 6
         }
       },
       "configuration": "SH4",
+      "default_maps": ["RVMPCT312S", "RVMPCT314S"],
       "departure_runways": [
         {
           "airport": "KIAD",
@@ -7036,12 +8389,16 @@
           "airport": "KHEF",
           "rate": 5,
           "runway": "16L"
+        },
+        {
+          "airport": "KJYO",
+          "rate": 3,
+          "runway": "17"
         }
       ],
       "wind": {
         "direction": "160-220"
-      },
-      "default_maps": ["SHD Base", "SHD South"]
+      }
     },
     "SHD - IAD South with 12": {
       "arrival_runways": [
@@ -7064,47 +8421,59 @@
         {
           "airport": "KHEF",
           "runway": "16R"
+        },
+        {
+          "airport": "KJYO",
+          "runway": "17"
         }
       ],
       "inbound_rates": {
         "GIBBZ5.MGW": {
-          "KIAD": 8,
-          "KHEF": 2
+          "KIAD": 7,
+          "KHEF": 2,
+          "KJYO": 1
         },
         "GIBBZ5.BURTT": {
-          "KIAD": 8,
-          "KHEF": 1
+          "KIAD": 7,
+          "KHEF": 1,
+          "KJYO": 1
         },
         "PRTZL1": {
           "KIAD": 2
         },
-        "CAVLR6": {
-          "KIAD": 15
+        "CAVLR6.S": {
+          "KIAD": 12
         },
         "TRSTN4": {
-          "KHEF": 2
+          "KHEF": 1,
+          "KJYO": 2
         },
         "TIKEE4": {
-          "KHEF": 2
+          "KHEF": 1
         },
         "HYPER9": {
-          "KIAD": 15,
-          "KHEF": 3
+          "KIAD": 12,
+          "KHEF": 2,
+          "KJYO": 2
         },
         "WAYNZ1.S": {
-          "KIAD": 8
+          "KIAD": 5
         },
         "FRDMM6.LS": {
-          "overflights": 10
+          "overflights": 6
         },
         "TRUPS5.LS": {
-          "overflights": 10
+          "overflights": 6
         },
         "DEPARTURES.DCAS": {
-          "overflights": 20
+          "overflights": 16
+        },
+        "ANTHM5.LS": {
+          "overflights": 6
         }
       },
       "configuration": "12X",
+      "default_maps": ["RVMPCT312S", "RVMPCT314S"],
       "departure_runways": [
         {
           "airport": "KIAD",
@@ -7122,12 +8491,16 @@
           "airport": "KHEF",
           "rate": 5,
           "runway": "16L"
+        },
+        {
+          "airport": "KJYO",
+          "rate": 3,
+          "runway": "17"
         }
       ],
       "wind": {
         "direction": "145-205"
-      },
-      "default_maps": ["SHD Base", "SHD South 12"]
+      }
     },
     "SHD - IAD RWY 30 Op": {
       "arrival_runways": [
@@ -7142,47 +8515,63 @@
         {
           "airport": "KHEF",
           "runway": "34R"
+        },
+        {
+          "airport": "KJYO",
+          "runway": "35"
+        },
+        {
+          "airport": "KJYO",
+          "runway": "17"
         }
       ],
       "inbound_rates": {
         "GIBBZ5.MGW": {
           "KIAD": 6,
-          "KHEF": 2
+          "KHEF": 2,
+          "KJYO": 1
         },
         "GIBBZ5.BURTT": {
           "KIAD": 6,
-          "KHEF": 1
+          "KHEF": 1,
+          "KJYO": 1
         },
         "PRTZL1": {
           "KIAD": 2
         },
-        "CAVLR6": {
+        "CAVLR6.30": {
           "KIAD": 8
         },
         "TRSTN4": {
-          "KHEF": 2
+          "KHEF": 2,
+          "KJYO": 2
         },
         "TIKEE4": {
           "KHEF": 2
         },
         "HYPER9": {
-          "KIAD": 10,
-          "KHEF": 3
+          "KIAD": 9,
+          "KHEF": 3,
+          "KJYO": 2
         },
         "WAYNZ1.N": {
           "KIAD": 8
         },
         "FRDMM6.LN": {
-          "overflights": 10
+          "overflights": 6
         },
         "TRUPS5.LN": {
-          "overflights": 10
+          "overflights": 6
         },
         "DEPARTURES.DCAN": {
-          "overflights": 20
+          "overflights": 12
+        },
+        "ANTHM5.LN": {
+          "overflights": 6
         }
       },
       "configuration": "30X",
+      "default_maps": ["RVMPCT312S", "RVMPCT313S", "RVMPCT321S"],
       "departure_runways": [
         {
           "airport": "KIAD",
@@ -7193,12 +8582,16 @@
           "airport": "KHEF",
           "rate": 3,
           "runway": "34R"
+        },
+        {
+          "airport": "KJYO",
+          "rate": 3,
+          "runway": "35"
         }
       ],
       "wind": {
         "direction": "270-330"
-      },
-      "default_maps": ["SHD Base", "SHD North"]
+      }
     },
     "SHD - IAD North Finals (TRIPS)": {
       "arrival_runways": [
@@ -7226,20 +8619,22 @@
           "KIAD": 18
         },
         "FRDMM6.LN": {
-          "overflights": 10
+          "overflights": 6
         },
         "TRUPS5.LN": {
-          "overflights": 10
+          "overflights": 6
         },
         "DEPARTURES.DCAN": {
-          "overflights": 20
+          "overflights": 16
         }
       },
       "configuration": "SH3",
+      "center": "MOOOV",
+      "range": 25,
+      "default_maps": ["RVMPCT312S", "RVMPCT313S", "RVMPCT227S"],
       "wind": {
         "direction": "340-40"
-      },
-      "default_maps": ["SHD Base", "SHD North"]
+      }
     },
     "SHD - IAD North Finals (DUALS)": {
       "arrival_runways": [
@@ -7263,20 +8658,22 @@
           "KIAD": 15
         },
         "FRDMM6.LN": {
-          "overflights": 10
+          "overflights": 6
         },
         "TRUPS5.LN": {
-          "overflights": 10
+          "overflights": 6
         },
         "DEPARTURES.DCAN": {
-          "overflights": 20
+          "overflights": 16
         }
       },
       "configuration": "SH2",
+      "center": "MOOOV",
+      "range": 25,
+      "default_maps": ["RVMPCT312S", "RVMPCT313S"],
       "wind": {
         "direction": "340-40"
-      },
-      "default_maps": ["SHD Base", "SHD North"]
+      }
     },
     "SHD - IAD 19/30 Finals (TRIPS)": {
       "arrival_runways": [
@@ -7304,20 +8701,22 @@
           "KIAD": 15
         },
         "FRDMM6.LS": {
-          "overflights": 10
+          "overflights": 6
         },
         "TRUPS5.LS": {
-          "overflights": 10
+          "overflights": 6
         },
         "DEPARTURES.DCAS": {
-          "overflights": 20
+          "overflights": 16
         }
       },
       "configuration": "SHD",
+      "center": "CHDMN",
+      "range": 25,
+      "default_maps": ["RVMPCT312S", "RVMPCT315S", "RVMPCT226S"],
       "wind": {
         "direction": "160-220"
-      },
-      "default_maps": ["SHD Base", "SHD South"]
+      }
     },
     "SHD - IAD 19/30 Finals (DUALS)": {
       "arrival_runways": [
@@ -7345,20 +8744,22 @@
           "KIAD": 15
         },
         "FRDMM6.LS": {
-          "overflights": 10
+          "overflights": 6
         },
         "TRUPS5.LS": {
-          "overflights": 10
+          "overflights": 6
         },
         "DEPARTURES.DCAS": {
-          "overflights": 20
+          "overflights": 16
         }
       },
       "configuration": "13X",
+      "center": "CHDMN",
+      "range": 25,
+      "default_maps": ["RVMPCT312S", "RVMPCT315S"],
       "wind": {
         "direction": "160-220"
-      },
-      "default_maps": ["SHD Base", "SHD South"]
+      }
     }
   }
 }

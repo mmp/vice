@@ -7003,7 +7003,7 @@
       "icao": "twy",
       "name": "Solarius Aviation",
       "callsign": {
-        "name": "Twylight",
+        "name": "Twilight",
         "callsignFormats": ["##"]
       },
       "fleets": {
@@ -7031,7 +7031,7 @@
       "icao": "gpd",
       "name": "Tradewind Aviation",
       "callsign": {
-        "name": "Godspeed",
+        "name": "Goodspeed",
         "callsignFormats": ["##", "###"]
       },
       "fleets": {
@@ -16398,9 +16398,9 @@
     },
     {
       "icao": "uca",
-      "name": "CommutAir",
+      "name": "CommuteAir",
       "callsign": {
-        "name": "Commutair",
+        "name": "Commute Air",
         "callsignFormats": ["####"]
       },
       "fleets": {
@@ -17544,6 +17544,38 @@
           ["B38M", 58],
           ["B737", 35],
           ["B738", 55]
+        ]
+      }
+    },
+    {
+      "icao": "wmn",
+      "name": "Trident Aircraft",
+      "callsign": {
+        "name": "Waterman",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["BE20", 1],
+          ["CL35", 1],
+          ["E550", 2],
+          ["E55P", 1],
+          ["F900", 1],
+          ["G150", 1],
+          ["PC12", 1],
+          ["PC24", 1]
+        ],
+        "jets": [
+          ["CL35", 1],
+          ["E550", 2],
+          ["E55P", 1],
+          ["F900", 1],
+          ["G150", 1]
+        ],
+        "props": [
+          ["BE20", 1],
+          ["PC12", 1],
+          ["PC24", 1]
         ]
       }
     },
@@ -19278,7 +19310,7 @@
       "icao": "vv",
       "name": "USN",
       "callsign": {
-        "name": "VV",
+        "name": "Navy",
         "callsignFormats": ["#####"]
       },
       "fleets": {
@@ -19289,11 +19321,14 @@
       "icao": "vm",
       "name": "USMC",
       "callsign": {
-        "name": "VM",
-        "callsignFormats": ["#####"]
+        "name": "Marine",
+        "callsignFormats": ["###"]
       },
       "fleets": {
-        "default": [["F18S", 10]]
+        "default": [
+          ["GLF5", 10],
+          ["GLF4", 10]
+        ]
       }
     },
     {
@@ -19355,6 +19390,17 @@
       }
     },
     {
+      "icao": "roper",
+      "name": "USAF",
+      "callsign": {
+        "name": "ROPER",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["T38", 40]]
+      }
+    },
+    {
       "icao": "vandy",
       "name": "USAF",
       "callsign": {
@@ -19391,7 +19437,7 @@
       "icao": "rch",
       "name": "USAF",
       "callsign": {
-        "name": "RCH",
+        "name": "Reach",
         "callsignFormats": ["###"]
       },
       "fleets": {
@@ -19486,6 +19532,28 @@
       }
     },
     {
+      "icao": "forge",
+      "name": "Army",
+      "callsign": {
+        "name": "FORGE",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["C560", 30]]
+      }
+    },
+    {
+      "icao": "famus",
+      "name": "USAF",
+      "callsign": {
+        "name": "FAMUS",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["C17", 10]]
+      }
+    },
+    {
       "icao": "decoy",
       "name": "USAF",
       "callsign": {
@@ -19500,11 +19568,33 @@
       "icao": "pat",
       "name": "Army",
       "callsign": {
-        "name": "PAT",
+        "name": "Pat",
         "callsignFormats": ["###"]
       },
       "fleets": {
         "default": [["BE20", 10]]
+      }
+    },
+    {
+      "icao": "ENRGY",
+      "name": "US Department of Energy",
+      "callsign": {
+        "name": "ENRGY",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["B350", 10]]
+      }
+    },
+    {
+      "icao": "YANKE",
+      "name": "United States Air Force",
+      "callsign": {
+        "name": "YANKEE",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["C130", 5]]
       }
     },
     {
@@ -19572,17 +19662,6 @@
       },
       "fleets": {
         "default": [["C208", 30]]
-      }
-    },
-    {
-      "icao": "YANKE",
-      "name": "United States Air Force",
-      "callsign": {
-        "name": "YANKEE",
-        "callsignFormats": ["##"]
-      },
-      "fleets": {
-        "default": [["C130", 5]]
       }
     }
   ]

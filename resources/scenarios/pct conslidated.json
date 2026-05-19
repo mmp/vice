@@ -181,7 +181,7 @@
         "MTV": {
           "full_name": "Mount Vernon Visual Runway 1",
           "runway": "1",
-          "type": "ChartedVisual",
+          "type": "Visual",
           "waypoints": [
             "N038.36.37.183,W077.00.45.675 KATRN/a2500 BADDN/a1600 N38.45.58.752,W77.01.59.893 N38.46.47.573,W77.02.05.959 N38.47.33.857,W77.02.00.680 N38.49.49.485,W77.02.03.166"
           ]
@@ -195,7 +195,7 @@
         "RIV": {
           "full_name": "River Visual Runway 19",
           "runway": "19",
-          "type": "ChartedVisual",
+          "type": "Visual",
           "waypoints": [
             "FERGI/a3000 N38.58.06.375,W77.09.57.529/a2800 DARIC/a2600 N38.57.14.831,W77.08.03.123/a2400 N38.56.15.453,W77.07.14.056/a2000 N38.55.48.625,W77.06.51.540/a1800 N38.55.16.332,W77.06.24.102/a1700 N38.54.49.068,W77.06.07.164/a1500 N38.54.26.796,W77.05.31.244/a1300 N38.54.08.183,W77.04.10.808/a900 N38.54.00.828,W77.03.53.071 N38.52.21.992,W77.02.25.316/a300"
           ]
@@ -311,7 +311,7 @@
           },
           "SWANN": {
             "cleared_altitude": 5000,
-            "sid": "SOOKI5",
+            "sid": "SOOKI6",
             "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 PHERB SOOKI/a5000+ SWANN"
           },
           "RAMAY": {
@@ -343,7 +343,7 @@
           },
           "SWANN": {
             "cleared_altitude": 5000,
-            "sid": "SOOKI5",
+            "sid": "SOOKI6",
             "waypoints": "N038.52.08.260,W077.01.28.467 ERECA SOOKI/a5000+ SWANN"
           }
         },
@@ -410,7 +410,7 @@
           },
           "SWANN": {
             "cleared_altitude": 5000,
-            "sid": "SOOKI5",
+            "sid": "SOOKI6",
             "waypoints": "N038.50.11.613,W077.01.09.653 LEAVY FIMBI/a1500+/s230 MOTBE GDYUP RIISE SOOKI/a5000+ SWANN"
           },
           "RAMAY": {
@@ -477,7 +477,7 @@
           },
           "SWANN": {
             "cleared_altitude": 5000,
-            "sid": "SOOKI5",
+            "sid": "SOOKI6",
             "waypoints": "LEAVY FIMBI/a1500+/s230 MOTBE GDYUP RIISE SOOKI/a5000+ SWANN"
           },
           "RAMAY": {
@@ -549,7 +549,7 @@
           },
           "SWANN": {
             "cleared_altitude": 5000,
-            "sid": "SOOKI5",
+            "sid": "SOOKI6",
             "waypoints": "N038.52.18.587,W077.03.14.924/a515+ REVGE/a1500+/s220 BEBLE COVTO ALEEX DOGUE/a4000+/s250 PHERB SOOKI/a5000+ SWANN"
           },
           "RAMAY": {
@@ -4881,7 +4881,7 @@
     }
   },
   "inbound_flows": {
-    "CAPSS3": {
+    "CAPSS4": {
       "arrivals": [
         {
           "waypoints": "KSETT/a17000+ ELAPP/a14000-20000/s280/ho BULII/a13000-16000 CAPSS/a10000-13000",
@@ -4896,8 +4896,8 @@
             }
           },
           "cruise_altitude": 33000,
-          "star": "CAPSS3",
-          "initial_controller": "C20",
+          "star": "CAPSS4",
+          "initial_controller": "W20",
           "initial_altitude": 18000,
           "initial_speed": 290,
           "expect_approach": null,
@@ -5191,7 +5191,7 @@
         {
           "star": "ANTHM5",
           "spawn": "KEESH",
-          "initial_controller": "C05",
+          "initial_controller": "W05",
           "initial_altitude": 22000,
           "initial_speed": 280,
           "scratchpad": "ATM",
@@ -5337,7 +5337,7 @@
             }
           ],
           "initial_altitude": 23000,
-          "initial_controller": "C05",
+          "initial_controller": "W05",
           "initial_speed": 280,
           "scratchpad": "DOV",
           "waypoints": "CURBY/a21000-24000 KEESH/ho BUBBI/a15000-18000 MRB/a13000 WOOLY SWANN BROSS ENO ARLFT/delete"
@@ -5349,7 +5349,7 @@
         {
           "spawn": "LAFLN",
           "star": "MIIDY3",
-          "initial_controller": "C51",
+          "initial_controller": "W51",
           "initial_altitude": 18000,
           "assigned_altitude": 11000,
           "initial_speed": 280,
@@ -5409,7 +5409,7 @@
             }
           },
           "star": "DEALE3",
-          "initial_controller": "C51",
+          "initial_controller": "W51",
           "initial_altitude": 19000,
           "assigned_altitude": 11000,
           "initial_speed": 280,
@@ -5470,7 +5470,7 @@
             }
           },
           "star": "FRDMM6",
-          "initial_controller": "C05",
+          "initial_controller": "W05",
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -5533,7 +5533,7 @@
         {
           "spawn": "ACROW",
           "star": "RAVNN8",
-          "initial_controller": "C05",
+          "initial_controller": "W05",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -5600,7 +5600,7 @@
         {
           "spawn": "ECHOZ",
           "star": "RAVNN8",
-          "initial_controller": "C05",
+          "initial_controller": "W05",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": "I3L",
@@ -5680,7 +5680,7 @@
             }
           },
           "star": "TRUPS5",
-          "initial_controller": "C05",
+          "initial_controller": "W05",
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -6006,7 +6006,7 @@
             }
           },
           "star": "CAVLR6",
-          "initial_controller": "C20",
+          "initial_controller": "W20",
           "initial_altitude": 17000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -6056,7 +6056,7 @@
             }
           },
           "star": "CAVLR6",
-          "initial_controller": "C20",
+          "initial_controller": "W20",
           "initial_altitude": 23000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -6215,7 +6215,7 @@
         {
           "waypoints": "N038.33.58.581,W078.31.53.708 LLBEE/a9000/ho TIKEE JETIS/flyover/h90",
           "star": "TIKEE4",
-          "initial_controller": "C05",
+          "initial_controller": "W05",
           "initial_altitude": 10500,
           "initial_speed": 270,
           "expect_approach": null,
@@ -6515,7 +6515,7 @@
             }
           },
           "star": "GIBBZ5",
-          "initial_controller": "C05",
+          "initial_controller": "W05",
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -6730,7 +6730,7 @@
             }
           },
           "star": "GIBBZ5",
-          "initial_controller": "C37",
+          "initial_controller": "W37",
           "initial_altitude": 18000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -6856,7 +6856,7 @@
         {
           "waypoints": "JAXSN N037.01.00.301,W078.13.40.816/ho KELCE/a11000/s250 THINA DUCXS/a4000/flyover/h041",
           "star": "DUCXS5",
-          "initial_controller": "C20",
+          "initial_controller": "W20",
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -6877,7 +6877,7 @@
         {
           "waypoints": "N036.23.53.317,W078.17.45.838 N036.44.46.280,W077.58.31.285/ho NEAVL/a11000/s250 PULDY THINA DUCXS/a4000/flyover/h041",
           "star": "DUCXS5",
-          "initial_controller": "C20",
+          "initial_controller": "W20",
           "initial_altitude": 11000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -6906,7 +6906,7 @@
             }
           },
           "star": "POWTN5",
-          "initial_controller": "C32",
+          "initial_controller": "W32",
           "initial_altitude": 21000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -6944,7 +6944,7 @@
             }
           },
           "star": "SPIDR5",
-          "initial_controller": "C32",
+          "initial_controller": "W32",
           "initial_altitude": 21000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -6985,7 +6985,7 @@
         {
           "waypoints": "CAANO PAJET ZJAAY ARICE JAMIE/a12000 N037.35.18.411,W076.13.00.468/ho RIC",
           "route": "EMJAY Q167 ZJAAY ARICE JAMIE",
-          "initial_controller": "C54",
+          "initial_controller": "W54",
           "initial_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -7035,7 +7035,7 @@
         {
           "waypoints": "N038.51.17.517,W075.08.07.573 TRPOD JAMIE/a12000 N037.35.18.411,W076.13.00.468/ho RIC",
           "route": "EMJAY Q167 ZJAAY ARICE JAMIE",
-          "initial_controller": "C54",
+          "initial_controller": "W54",
           "initial_altitude": 22000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -7079,7 +7079,7 @@
         {
           "waypoints": "N039.18.51.056,W076.34.46.633 TOOBN/ho HAMMZ GVE",
           "route": "BIGGY Q75 GVE",
-          "initial_controller": "C17",
+          "initial_controller": "W17",
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
           "initial_speed": 280,
@@ -7116,7 +7116,7 @@
         {
           "waypoints": "N039.18.51.056,W076.34.46.633 TOOBN/ho HAMMZ KCHO",
           "route": "BIGGY Q75 GVE",
-          "initial_controller": "C17",
+          "initial_controller": "W17",
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
           "initial_speed": 280,
@@ -7206,7 +7206,7 @@
         }
       ],
       "inbound_rates": {
-        "CAPSS3": {
+        "CAPSS4": {
           "KDCA": 15
         },
         "DEALE3/MIIDY3": {
@@ -7287,7 +7287,6 @@
         }
       },
       "configuration": "PCT",
-      "default_maps": ["PCT MEGA Combined"],
       "wind": {
         "direction": "280-099"
       },
@@ -7410,7 +7409,7 @@
         }
       ],
       "inbound_rates": {
-        "CAPSS3": {
+        "CAPSS4": {
           "KDCA": 15
         },
         "ANTHM5": {
@@ -7491,7 +7490,6 @@
         }
       },
       "configuration": "PCT",
-      "default_maps": ["PCT MEGA Combined"],
       "wind": {
         "direction": "110-270",
         "speed": "10+"
