@@ -171,7 +171,127 @@
         }
       }
     },
-    "KBAB": {},
+    "KBAB": {
+      "approaches": {
+        "TY5": {
+          "full_name": "TACAN Y Runway 15",
+          "runway": "15",
+          "type": "VOR",
+          "waypoints": ["ZARAG/iaf/a4500+/hilpt9nm/nopt180 AHART/if/a2600+ BBEEZ/a1800+ ZINUX/a1600/faf JUMPS/a1000"]
+        },
+        "TY3": {
+          "full_name": "TACAN Y Runway 33",
+          "runway": "33",
+          "type": "VOR",
+          "waypoints": ["ZALNO/iaf/a8000+/arc15BAB COLSO/if/a3200+ SHERI/faf/a1800 SOROC/a1000"]
+        },
+        "IY5": {
+          "full_name": "ILS Y Runway 15",
+          "runway": "15",
+          "type": "ILS",
+          "waypoints": ["HAPAK/iaf/a3600+ JONUG/if/a2600+ HAMMS/a1600/faf"]
+        },
+        "IY3": {
+          "full_name": "ILS Y Runway 33",
+          "runway": "33",
+          "type": "ILS",
+          "waypoints": ["ZALNO/iaf/a8000+/arc15BAB ZUTUK/if/a3200+ ZEGSO/a1700/faf RUENZ/a1000"]
+        }
+      },
+      "departure_routes": {
+        "15": {
+          "BAB.355": {
+            "assigned_altitude": 3000,
+            "sid": "BABBOOM2",
+            "waypoints": "KBAB-33/h147 BAB N039.52.40.876,W121.18.00.999"
+          },
+          "BAB.335": {
+            "assigned_altitude": 3000,
+            "sid": "BABBOOM",
+            "waypoints": "KBAB-33/h147 BAB N040.21.37.224,W121.45.48.065"
+          },
+          "BAB.275": {
+            "assigned_altitude": 3000,
+            "sid": "BABSHTR",
+            "waypoints": "KBAB-33/h147 BAB N039.26.46.475,W122.40.08.065"
+          }
+        },
+        "33": {
+          "BAB.355": {
+            "assigned_altitude": 3000,
+            "sid": "BABBOOM2",
+            "waypoints": "KBAB-15/h327 BAB N039.52.40.876,W121.18.00.999"
+          },
+          "BAB.335": {
+            "assigned_altitude": 3000,
+            "sid": "BABBOOM",
+            "waypoints": "KBAB-15/h327 BAB N040.21.37.224,W121.45.48.065"
+          },
+          "BAB.275": {
+            "assigned_altitude": 3000,
+            "sid": "BABSHTR",
+            "waypoints": "KBAB-15/h327 BAB N039.26.46.475,W122.40.08.065"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "roper"
+            },
+            {
+              "icao": "roper"
+            },
+            {
+              "icao": "roper"
+            }
+          ],
+          "altitude": 20000,
+          "destination": "KBAB",
+          "route": "BAB ",
+          "scratchpad": "MAX",
+          "exit": "BAB.275"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "roper"
+            },
+            {
+              "icao": "roper"
+            },
+            {
+              "icao": "roper"
+            }
+          ],
+          "altitude": 20000,
+          "destination": "KBAB",
+          "route": "BAB ",
+          "scratchpad": "WHI",
+          "exit": "BAB.335"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "roper"
+            },
+            {
+              "icao": "roper"
+            },
+            {
+              "icao": "roper"
+            }
+          ],
+          "altitude": 20000,
+          "destination": "KBAB",
+          "route": "BAB ",
+          "scratchpad": "CHI",
+          "exit": "BAB.355"
+        }
+      ],
+      "tower_list": 2
+    },
     "KRNO": {
       "departure_runways_as_one": ["17L,17R", "35L,35R"],
       "approaches": {
@@ -1765,14 +1885,13 @@
         }
       ]
     },
-    "FMG ARR": {
+    "DNGLE1": {
       "arrivals": [
         {
-          "waypoints": "N038.41.55.388,W119.34.12.877 N038.47.07.853,W119.34.42.403/ho/d160 FMG",
-          "route": "CSTRO FMG",
+          "waypoints": "DNGLE/a21000-23000 N038.44.15.615,W119.31.18.964/ho NEEWW/a16000-19000 BBOOT/a14000+/s250 GOOFN/a12000+ CANYA/a10000/s230/h347",
+          "star": "DNGLE1",
           "initial_controller": "C46",
-          "initial_altitude": 24000,
-          "assigned_altitude": 20000,
+          "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
           "airlines": {
@@ -2353,13 +2472,13 @@
         }
       ]
     },
-    "TARVR1": {
+    "TARVR2": {
       "arrivals": [
         {
-          "waypoints": "N038.43.31.752,W120.12.41.407 KRKWD/ho TARVR/a14000/h347",
-          "star": "TARVR1",
+          "waypoints": "N038.43.31.752,W120.12.41.407 KRKWD/a16000+/s280/ho TARVR/a14000/s250 HVNLY/a13100+/s250 FORKK/a11300+ SPOON/a11000/s230/h347",
+          "star": "TARVR2",
           "initial_controller": "C44",
-          "initial_altitude": 19000,
+          "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
           "description": "ORRCA",
@@ -2396,10 +2515,10 @@
           }
         },
         {
-          "waypoints": "SLEAT N038.36.50.614,W119.45.51.306/ho NEUPS TARVR/a14000/h347",
-          "star": "TARVR1",
+          "waypoints": "SLEAT/a24000-26000 N038.36.50.614,W119.45.51.306/ho NEUPS/a16000+/s280 TARVR/a14000/s250 HVNLY/a13100+/s250 FORKK/a11300+ SPOON/a11000/s230/h347",
+          "star": "TARVR2",
           "initial_controller": "C44",
-          "initial_altitude": 17000,
+          "initial_altitude": 24000,
           "initial_speed": 280,
           "description": "SLEAT",
           "expect_approach": null,
@@ -2459,8 +2578,8 @@
           }
         },
         {
-          "waypoints": "PEONS/a20000-23000 N038.41.50.774,W119.32.37.983/ho VULPX/a15000-19000 TARVR/a14000/h347",
-          "star": "TARVR1",
+          "waypoints": "PEONS/a20000-23000 JBARR/a19000+/s280/ho TARVR/a14000/s250 HVNLY/a13100+/s250 FORKK/a11300+ SPOON/a11000/s230/h347",
+          "star": "TARVR2",
           "initial_controller": "C44",
           "initial_altitude": 21000,
           "initial_speed": 280,
@@ -2529,10 +2648,10 @@
           }
         },
         {
-          "waypoints": "CWALK/a20000-23000 N038.46.46.430,W119.30.31.970/ho TARVR/a14000/h347",
-          "star": "TARVR1",
+          "waypoints": "CWALK/a20000-23000/s280 N038.46.46.430,W119.30.31.970/ho TARVR/a14000/s250 HVNLY/a13100+/s250 FORKK/a11300+ SPOON/a11000/s230/h347",
+          "star": "TARVR2",
           "initial_controller": "C44",
-          "initial_altitude": 23000,
+          "initial_altitude": 22000,
           "initial_speed": 280,
           "description": "MVA",
           "expect_approach": null,
@@ -3146,6 +3265,10 @@
         {
           "airport": "KCCR",
           "runway": "19R"
+        },
+        {
+          "airport": "KBAB",
+          "runway": "33"
         }
       ],
       "inbound_rates": {
@@ -3198,6 +3321,11 @@
           "airport": "KSAC",
           "rate": 5,
           "runway": "2"
+        },
+        {
+          "airport": "KBAB",
+          "rate": 3,
+          "runway": "33"
         }
       ],
       "wind": {
@@ -3231,6 +3359,10 @@
         {
           "airport": "KCCR",
           "runway": "19R"
+        },
+        {
+          "airport": "KBAB",
+          "runway": "15"
         }
       ],
       "inbound_rates": {
@@ -3283,6 +3415,11 @@
           "airport": "KSAC",
           "rate": 5,
           "runway": "2"
+        },
+        {
+          "airport": "KBAB",
+          "rate": 3,
+          "runway": "15"
         }
       ],
       "wind": {
@@ -3305,7 +3442,7 @@
         "ANAHO2": {
           "KRNO": 2
         },
-        "FMG ARR": {
+        "DNGLE1": {
           "KRNO": 8
         },
         "KLUBS1": {
@@ -3358,7 +3495,7 @@
         "EELZA4": {
           "KRNO": 5
         },
-        "TARVR1": {
+        "TARVR2": {
           "KRNO": 12
         },
         "WADOL4": {

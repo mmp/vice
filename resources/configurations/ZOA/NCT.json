@@ -568,7 +568,8 @@
         "departure_assignments": {
           "KMHR": "5X",
           "KSAC": "5X",
-          "KSMF": "5X"
+          "KSMF": "5X",
+          "KBAB": "5E"
         },
         "default_consolidation": {
           "5E": ["5B"],
@@ -589,7 +590,8 @@
         "departure_assignments": {
           "KMHR": "5X",
           "KSAC": "5X",
-          "KSMF": "5E"
+          "KSMF": "5E",
+          "KBAB": "5E"
         },
         "default_consolidation": {
           "5E": ["5B"],
@@ -602,7 +604,7 @@
           "ANAHO2": "8N",
           "KLUBS1": "8N",
           "ORRCA1": "8S",
-          "FMG ARR": "8S",
+          "DNGLE1": "8S",
           "RYANN2": "8S",
           "SCOLA1": "8S",
           "WINRZ1": "8N"
@@ -619,7 +621,7 @@
           "ANAHO2": "8N",
           "EELZA4": "8N",
           "RYANN2": "8S",
-          "TARVR1": "8S",
+          "TARVR2": "8S",
           "WADOL4": "8N"
         },
         "departure_assignments": {
