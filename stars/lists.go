@@ -97,7 +97,7 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 			return fmt.Sprintf("%4s", fp.AircraftType)
 		},
 		"BEACON": func(fp *sim.NASFlightPlan) string {
-			haveCode := fp.Rules == av.FlightRulesIFR || ctx.SimTime.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
+			haveCode := fp.Rules == av.FlightRulesIFR || ctx.InterpolatedSimTime.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
 			if haveCode {
 				return fp.AssignedSquawk.String()
 			} else {
@@ -437,7 +437,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 	if filter.All || filter.Time || filter.Altimeter {
 		text := ""
 		if filter.All || filter.Time {
-			text += ctx.SimTime.UTC().Format("1504/05 ")
+			text += ctx.InterpolatedSimTime.UTC().Format("1504/05 ")
 		}
 		if filter.All || filter.Altimeter {
 			if metar, ok := ctx.Client.State.METAR[ctx.Client.State.PrimaryAirport]; ok {
@@ -836,7 +836,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, paneExtent math.Extent2D, s
 
 	for _, fp := range vfr {
 		if _, ok := sp.VFRFPFirstSeen[fp.ACID]; !ok {
-			sp.VFRFPFirstSeen[fp.ACID] = ctx.SimTime
+			sp.VFRFPFirstSeen[fp.ACID] = ctx.InterpolatedSimTime
 		}
 	}
 	// Prune entries for plans no longer in the unassociated list.
@@ -860,7 +860,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, paneExtent math.Extent2D, s
 			// TODO: default after INDEX: + in-out-in flight, / dupe acid, * DM message on departure
 			sb.WriteString(sp.formatListEntry(ctx, format, fp, map[string]func() string{
 				"VFR_STATUS": func() string {
-					if seen, ok := sp.VFRFPFirstSeen[fp.ACID]; ok && ctx.SimTime.Sub(seen) > 2*time.Second {
+					if seen, ok := sp.VFRFPFirstSeen[fp.ACID]; ok && ctx.InterpolatedSimTime.Sub(seen) > 2*time.Second {
 						return "VFR"
 					}
 					return "   "
@@ -881,7 +881,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, paneExtent math.Extent2D, s
 		func(fp *sim.NASFlightPlan) bool {
 			if seen, ok := sp.VFRFPFirstSeen[fp.ACID]; ok {
 				// If it's a VFR still waiting for a NAS code, don't show it yet.
-				if ctx.SimTime.Sub(seen) < 2*time.Second {
+				if ctx.InterpolatedSimTime.Sub(seen) < 2*time.Second {
 					return false
 				}
 			}
@@ -921,7 +921,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, paneExtent math.Extent2D, s
 		FormatLine: func(idx int, sb *strings.Builder) {
 			fp := plans[idx]
 			// TODO: after INDEX, + in-out-in flight, / dupe acid, * DM message on departure
-			haveCode := fp.Rules == av.FlightRulesIFR || ctx.SimTime.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
+			haveCode := fp.Rules == av.FlightRulesIFR || ctx.InterpolatedSimTime.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
 			sb.WriteString(sp.formatListEntry(ctx, ctx.FacilityAdaptation.Lists.TAB.Format, fp, map[string]func() string{
 				"DUPE_BEACON": func() string {
 					if _, ok := dupes[fp.AssignedSquawk]; ok && haveCode {

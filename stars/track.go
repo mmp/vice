@@ -245,7 +245,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			state := sp.TrackState[trk.ADSBCallsign]
 			state.SPCAlert = true
 			state.SPCAcknowledged = false
-			state.SPCSoundEnd = ctx.SimTime.Add(AlertAudioDuration)
+			state.SPCSoundEnd = ctx.InterpolatedSimTime.Add(AlertAudioDuration)
 		}
 	}
 
@@ -316,7 +316,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			if tcps, ok := sp.PointOuts[event.ACID]; ok {
 				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 					if ctx.UserControlsPosition(tcps.From) {
-						state.POFlashingEndTime = ctx.SimTime.Add(5 * time.Second)
+						state.POFlashingEndTime = ctx.InterpolatedSimTime.Add(5 * time.Second)
 					} else if ctx.UserControlsPosition(tcps.To) {
 						state.PointOutAcknowledged = true
 					}
@@ -331,7 +331,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			if tcps, ok := sp.PointOuts[event.ACID]; ok && ctx.UserControlsPosition(tcps.From) {
 				sp.RejectedPointOuts[event.ACID] = nil
 				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					state.UNFlashingEndTime = ctx.SimTime.Add(5 * time.Second)
+					state.UNFlashingEndTime = ctx.InterpolatedSimTime.Add(5 * time.Second)
 				}
 			}
 			delete(sp.PointOuts, event.ACID)
@@ -362,11 +362,11 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
 					dur := time.Duration(ctx.FacilityAdaptation.Datablocks.FDB.AcceptFlashDuration) * time.Second
-					state.OutboundHandoffFlashEnd = ctx.SimTime.Add(dur)
+					state.OutboundHandoffFlashEnd = ctx.InterpolatedSimTime.Add(dur)
 					state.DisplayFDB = true
 
 					if event.Type == sim.AcceptedRedirectedHandoffEvent {
-						state.RDIndicatorEnd = ctx.SimTime.Add(30 * time.Second)
+						state.RDIndicatorEnd = ctx.InterpolatedSimTime.Add(30 * time.Second)
 					}
 				}
 				if outbound || inbound {
@@ -374,7 +374,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					if otherCtrl := ctx.GetResolvedController(otherPos); otherCtrl != nil && otherCtrl.IsExternal() {
 						state.AcceptedHandoffSector = string(otherPos)
 						dur := time.Duration(ctx.FacilityAdaptation.Datablocks.FDB.SectorDisplayDuration) * time.Second
-						state.AcceptedHandoffDisplayEnd = ctx.SimTime.Add(dur)
+						state.AcceptedHandoffDisplayEnd = ctx.InterpolatedSimTime.Add(dur)
 					}
 				}
 			}
@@ -474,8 +474,8 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 		if warn && !state.MSAW {
 			// It's a new alert
 			state.MSAWAcknowledged = false
-			state.MSAWSoundEnd = ctx.SimTime.Add(AlertAudioDuration)
-			state.MSAWStart = ctx.SimTime
+			state.MSAWSoundEnd = ctx.InterpolatedSimTime.Add(AlertAudioDuration)
+			state.MSAWStart = ctx.InterpolatedSimTime
 		}
 		state.MSAW = warn
 	}
@@ -484,16 +484,17 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	fa := ctx.Client.State.FacilityAdaptation
+	appliedSimTime := ctx.Client.State.SimTime
 	if sp.radarMode(fa.RadarSites) == RadarModeFused {
-		if ctx.SimTime.Sub(sp.lastTrackUpdate) < 1*time.Second {
+		if appliedSimTime.Sub(sp.lastTrackUpdate) < 1*time.Second {
 			return
 		}
 	} else {
-		if ctx.SimTime.Sub(sp.lastTrackUpdate) < 5*time.Second {
+		if appliedSimTime.Sub(sp.lastTrackUpdate) < 5*time.Second {
 			return
 		}
 	}
-	sp.lastTrackUpdate = ctx.SimTime
+	sp.lastTrackUpdate = appliedSimTime
 
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
@@ -507,7 +508,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 		state.previousTrack = state.track
 		state.previousTrackTime = state.trackTime
 		state.track = trk.RadarTrack
-		state.trackTime = ctx.SimTime
+		state.trackTime = appliedSimTime
 
 		sp.checkUnreasonableModeC(state)
 	}
@@ -521,8 +522,8 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 	// History tracks are updated after a radar track update, only if
 	// H_RATE seconds have elapsed (4-94).
 	ps := sp.currentPrefs()
-	if ctx.SimTime.Sub(sp.lastHistoryTrackUpdate).Seconds() >= float64(ps.RadarTrackHistoryRate) {
-		sp.lastHistoryTrackUpdate = ctx.SimTime
+	if appliedSimTime.Sub(sp.lastHistoryTrackUpdate).Seconds() >= float64(ps.RadarTrackHistoryRate) {
+		sp.lastHistoryTrackUpdate = appliedSimTime
 		for _, trk := range sp.visibleTracks { // We only get radar tracks for visible aircraft
 			state := sp.TrackState[trk.ADSBCallsign]
 			if trk.IsTentative {
@@ -1197,8 +1198,8 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context) {
 			if caConflict(cs0, cs1) {
 				sp.CAAircraft = append(sp.CAAircraft, CAAircraft{
 					ADSBCallsigns: [2]av.ADSBCallsign{cs0, cs1},
-					SoundEnd:      ctx.SimTime.Add(AlertAudioDuration),
-					Start:         ctx.SimTime,
+					SoundEnd:      ctx.InterpolatedSimTime.Add(AlertAudioDuration),
+					Start:         ctx.InterpolatedSimTime,
 				})
 			}
 		}
@@ -1212,8 +1213,8 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context) {
 			if mciConflict(cs0, cs1) {
 				sp.MCIAircraft = append(sp.MCIAircraft, CAAircraft{
 					ADSBCallsigns: [2]av.ADSBCallsign{cs0, cs1},
-					SoundEnd:      ctx.SimTime.Add(AlertAudioDuration),
-					Start:         ctx.SimTime,
+					SoundEnd:      ctx.InterpolatedSimTime.Add(AlertAudioDuration),
+					Start:         ctx.InterpolatedSimTime,
 				})
 			}
 		}

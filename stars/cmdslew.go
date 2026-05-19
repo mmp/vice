@@ -118,7 +118,7 @@ func registerSlewCommands() {
 				}
 
 				if fp.Suspended {
-					state.SuspendedShowAltitudeEndTime = ctx.SimTime.Add(5 * time.Second)
+					state.SuspendedShowAltitudeEndTime = ctx.InterpolatedSimTime.Add(5 * time.Second)
 					// 5.7.2 Display suspended track's flight plan in preview area
 					return CommandStatus{Output: formatFlightPlan(sp, ctx, trk.FlightPlan, trk)}
 				}
@@ -148,7 +148,7 @@ func registerSlewCommands() {
 			// 6.13.20 Return data block to unowned color (implied)
 			if state.OutboundHandoffAccepted {
 				state.OutboundHandoffAccepted = false
-				state.OutboundHandoffFlashEnd = ctx.SimTime
+				state.OutboundHandoffFlashEnd = ctx.InterpolatedSimTime
 				state.RDIndicatorEnd = sim.Time{}
 				return CommandStatus{}
 			}
@@ -202,7 +202,7 @@ func registerSlewCommands() {
 					s = 5
 				}
 				state := sp.TrackState[trk.ADSBCallsign]
-				state.FullLDBEndTime = ctx.SimTime.Add(time.Duration(s) * time.Second)
+				state.FullLDBEndTime = ctx.InterpolatedSimTime.Add(time.Duration(s) * time.Second)
 			}
 
 			return CommandStatus{}

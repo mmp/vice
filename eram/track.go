@@ -129,13 +129,13 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 			}
 			state := ep.TrackState[av.ADSBCallsign(event.ACID)]
 			state.EFDB = true
-			state.OSectorEndTime = ctx.SimTime.Add(30 * time.Second)
+			state.OSectorEndTime = ctx.InterpolatedSimTime.Add(30 * time.Second)
 		case sim.FixCoordinatesEvent:
 			ac := event.ACID
 			coords := event.WaypointInfo
 			ep.aircraftFixCoordinates[string(ac)] = aircraftFixCoordinates{
 				coords:     coords,
-				deleteTime: ctx.SimTime.Add(15 * time.Second),
+				deleteTime: ctx.InterpolatedSimTime.Add(15 * time.Second),
 			}
 		case sim.FlightPlanDirectEvent:
 			ac := event.ACID
@@ -147,7 +147,7 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 			}
 			ep.aircraftFixCoordinates[string(ac)] = aircraftFixCoordinates{
 				coords:     coords,
-				deleteTime: ctx.SimTime.Add(15 * time.Second),
+				deleteTime: ctx.InterpolatedSimTime.Add(15 * time.Second),
 			}
 		}
 	}
@@ -155,15 +155,16 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 
 func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	// Update the track states based on the current radar tracks.
-	now := ctx.SimTime.Time()
-	if now.Sub(ep.dbLastAlternateTime) > 6*time.Second {
+	nowInterp := ctx.InterpolatedSimTime.Time()
+	nowApplied := ctx.Client.State.SimTime.Time()
+	if nowInterp.Sub(ep.dbLastAlternateTime) > 6*time.Second {
 		ep.dbAlternate = !ep.dbAlternate
-		ep.dbLastAlternateTime = now
+		ep.dbLastAlternateTime = nowInterp
 	}
-	if now.Sub(ep.lastTrackUpdate) < 12*time.Second {
+	if nowApplied.Sub(ep.lastTrackUpdate) < 12*time.Second {
 		return
 	}
-	ep.lastTrackUpdate = now
+	ep.lastTrackUpdate = nowApplied
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
 		if state == nil {
@@ -188,7 +189,7 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		state.PreviousAltitude = state.Track.TransponderAltitude
 		state.PreviousTrackTime = state.TrackTime
 		state.Track = trk.RadarTrack
-		state.TrackTime = now
+		state.TrackTime = nowApplied
 
 		// Update history tracks
 		idx := state.HistoryTrackIndex % len(state.HistoryTracks)
@@ -208,7 +209,7 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	}
 	// check QU lines; see if they need to be cleared. TODO: add QU to delete all lines
 	for ac, coords := range ep.aircraftFixCoordinates {
-		if coords.deleteTime.Before(ctx.SimTime) {
+		if coords.deleteTime.Before(ctx.InterpolatedSimTime) {
 			delete(ep.aircraftFixCoordinates, ac)
 		}
 	}

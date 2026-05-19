@@ -162,7 +162,7 @@ func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms radar.ScopeTr
 // run the "find" command to highlight a point in the world, draw a blinking
 // square at that point for a few seconds.
 func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
-	remaining := sp.highlightedLocationEndTime.Sub(ctx.SimTime)
+	remaining := sp.highlightedLocationEndTime.Sub(ctx.InterpolatedSimTime)
 	if remaining < 0 {
 		return
 	}

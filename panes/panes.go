@@ -130,12 +130,12 @@ type Context struct {
 	// pixel-wide lines and the like.
 	DPIScale float32
 
-	Renderer  renderer.Renderer
-	Mouse     *platform.MouseState
-	Keyboard  *platform.KeyboardState
-	HaveFocus bool
-	SimTime   sim.Time
-	Lg        *log.Logger
+	Renderer            renderer.Renderer
+	Mouse               *platform.MouseState
+	Keyboard            *platform.KeyboardState
+	HaveFocus           bool
+	InterpolatedSimTime sim.Time
+	Lg                  *log.Logger
 
 	MenuBarHeight float32
 
@@ -168,22 +168,22 @@ func (ctx *Context) InitializeMouse(p platform.Platform) {
 func NewFuzzContext(p platform.Platform, r renderer.Renderer, c *client.ControlClient, lg *log.Logger) *Context {
 	displaySize := p.DisplaySize()
 	return &Context{
-		PaneExtent:         math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
-		ParentPaneExtent:   math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
-		Platform:           p,
-		DrawPixelScale:     1,
-		PixelsPerInch:      72,
-		DPIScale:           p.DPIScale(),
-		Renderer:           r,
-		HaveFocus:          true,
-		SimTime:            c.InterpolatedSimTime(),
-		Lg:                 lg,
-		Client:             c,
-		UserTCW:            c.State.UserTCW,
-		NmPerLongitude:     c.State.NmPerLongitude,
-		MagneticVariation:  c.State.MagneticVariation,
-		FacilityAdaptation: &c.State.FacilityAdaptation,
-		displaySize:        displaySize,
+		PaneExtent:          math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
+		ParentPaneExtent:    math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
+		Platform:            p,
+		DrawPixelScale:      1,
+		PixelsPerInch:       72,
+		DPIScale:            p.DPIScale(),
+		Renderer:            r,
+		HaveFocus:           true,
+		InterpolatedSimTime: c.InterpolatedSimTime(),
+		Lg:                  lg,
+		Client:              c,
+		UserTCW:             c.State.UserTCW,
+		NmPerLongitude:      c.State.NmPerLongitude,
+		MagneticVariation:   c.State.MagneticVariation,
+		FacilityAdaptation:  &c.State.FacilityAdaptation,
+		displaySize:         displaySize,
 	}
 }
 

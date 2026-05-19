@@ -42,7 +42,7 @@ func registerCustomCommands() {
 	registerCommand(CommandModeNone, ".WIND", func(sp *STARSPane, ctx *panes.Context) CommandStatus {
 		sp.setCommandMode(ctx, CommandModeDrawWind)
 		if sp.atmosGrid == nil {
-			ctx.Client.GetAtmosGrid(ctx.SimTime.Time(),
+			ctx.Client.GetAtmosGrid(ctx.InterpolatedSimTime.Time(),
 				func(ag *wx.AtmosGrid, err error) {
 					if err != nil {
 						ctx.Lg.Errorf("%v", err)

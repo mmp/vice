@@ -1360,10 +1360,10 @@ func (sp *STARSPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBu
 func (sp *STARSPane) drawWX(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
-	if !sp.wxNextHistoryStepTime.IsZero() && ctx.SimTime.After(sp.wxNextHistoryStepTime) {
+	if !sp.wxNextHistoryStepTime.IsZero() && ctx.InterpolatedSimTime.After(sp.wxNextHistoryStepTime) {
 		sp.wxHistoryDraw--
 		if sp.wxHistoryDraw > 0 {
-			sp.wxNextHistoryStepTime = ctx.SimTime.Add(5 * time.Second)
+			sp.wxNextHistoryStepTime = ctx.InterpolatedSimTime.Add(5 * time.Second)
 		} else {
 			sp.wxNextHistoryStepTime = sim.Time{}
 			if sp.previewAreaOutput == "IN PROGRESS" {
@@ -1865,7 +1865,7 @@ func (sp *STARSPane) updateVisibleTracks(ctx *panes.Context) {
 
 			// Is this the first we've seen it?
 			if state.FirstRadarTrackTime.IsZero() {
-				state.FirstRadarTrackTime = ctx.SimTime
+				state.FirstRadarTrackTime = ctx.InterpolatedSimTime
 			}
 		}
 	}
@@ -2002,7 +2002,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 				}
 				return trk0.IsAssociated() && !trk0.FlightPlan.DisableCA &&
 					trk1.IsAssociated() && !trk1.FlightPlan.DisableCA &&
-					ctx.SimTime.Before(ca.SoundEnd)
+					ctx.InterpolatedSimTime.Before(ca.SoundEnd)
 			})
 		playCASound = playCASound || slices.ContainsFunc(sp.MCIAircraft,
 			func(ca CAAircraft) bool {
@@ -2011,7 +2011,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 				}
 				trk0, ok := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
 				return ok && trk0.IsAssociated() && !trk0.FlightPlan.DisableCA &&
-					ctx.SimTime.Before(ca.SoundEnd)
+					ctx.InterpolatedSimTime.Before(ca.SoundEnd)
 			})
 	}
 	updateContinuous(playCASound, AudioConflictAlert)
@@ -2023,7 +2023,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 			}
 			state := sp.TrackState[trk.ADSBCallsign]
 			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW &&
-				ctx.SimTime.Before(state.MSAWSoundEnd) {
+				ctx.InterpolatedSimTime.Before(state.MSAWSoundEnd) {
 				return true
 			}
 		}
@@ -2039,7 +2039,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 		for _, trk := range sp.visibleTracks {
 			state := sp.TrackState[trk.ADSBCallsign]
 			ok, _ := trk.Squawk.IsSPC()
-			if ok && !state.SPCAcknowledged && ctx.SimTime.Before(state.SPCSoundEnd) {
+			if ok && !state.SPCAcknowledged && ctx.InterpolatedSimTime.Before(state.SPCSoundEnd) {
 				return true
 			}
 		}

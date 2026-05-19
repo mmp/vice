@@ -44,7 +44,7 @@ func (w *WeatherRadar) fetchPrecipitation(ctx *panes.Context) {
 		w.errCh = make(chan error)
 	}
 
-	fetchTime := ctx.SimTime
+	fetchTime := ctx.InterpolatedSimTime
 	ctx.Client.GetPrecipURL(fetchTime, func(url string, nextTime sim.Time, err error) {
 		w.mu.Lock(ctx.Lg)
 		defer w.mu.Unlock(ctx.Lg)
@@ -280,7 +280,7 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32,
 		w.nextFetchTime = sim.Time{}
 		w.cb = [numWxHistory][NumWxLevels]*renderer.CommandBuffer{}
 	}
-	shouldFetch := ctx.SimTime.After(w.nextFetchTime) && !w.fetchInProgress
+	shouldFetch := ctx.InterpolatedSimTime.After(w.nextFetchTime) && !w.fetchInProgress
 
 	if shouldFetch {
 		w.fetchPrecipitation(ctx)

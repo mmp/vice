@@ -703,7 +703,7 @@ func registerOpsCommands() {
 		spec.ACID.Set(acid)
 		spec.SquawkAssignment.Set(sq.String())
 		spec.TypeOfFlight.Set(av.FlightTypeOverflight)
-		spec.CoordinationTime.Set(ctx.SimTime)
+		spec.CoordinationTime.Set(ctx.InterpolatedSimTime)
 		spec.Rules.Set(rules)
 		spec.PlanType.Set(sim.LocalNonEnroute)
 		createFlightPlan(sp, ctx, spec)
@@ -1023,7 +1023,7 @@ func associateFlightPlan(sp *STARSPane, ctx *panes.Context, callsign av.ADSBCall
 		spec.TrackingController.Set(ctx.UserPrimaryPosition())
 	}
 	if !spec.CoordinationTime.IsSet {
-		spec.CoordinationTime.Set(ctx.SimTime)
+		spec.CoordinationTime.Set(ctx.InterpolatedSimTime)
 	}
 
 	ctx.Client.AssociateFlightPlan(callsign, spec,
@@ -1043,7 +1043,7 @@ func createFlightPlan(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpec
 		spec.TrackingController.Set(ctx.UserPrimaryPosition())
 	}
 	if !spec.CoordinationTime.IsSet {
-		spec.CoordinationTime.Set(ctx.SimTime)
+		spec.CoordinationTime.Set(ctx.InterpolatedSimTime)
 	}
 
 	ctx.Client.CreateFlightPlan(spec,

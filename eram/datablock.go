@@ -283,7 +283,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 			}
 			fieldEText = util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), gsText)
 			dbWriteText(db.fieldE[:], fieldEText, color, true)
-		} else if ctx.SimTime.Before(state.OSectorEndTime) {
+		} else if ctx.InterpolatedSimTime.Before(state.OSectorEndTime) {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.TrackingController); ctrl != nil {
 				controller = shortERAMID(ctrl)
