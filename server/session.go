@@ -59,6 +59,11 @@ type connectionState struct {
 	lastUpdateCall      time.Time
 	warnedNoUpdateCalls bool
 	stateUpdateEventSub *sim.EventsSubscription
+
+	// lastSentGen is the most recent publication generation that has been
+	// delivered to this client via GetStateUpdate. The long-poll waits for
+	// the sim's pubGen to advance past this value.
+	lastSentGen uint64
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -124,22 +129,20 @@ func (ss *simSession) SignOff(token string) (signOffResult, bool) {
 func (ss *simSession) CullIdleControllers(sm *SimManager) {
 	ss.mu.Lock(ss.lg)
 
-	// Sign off controllers we haven't heard from in 15 seconds so that someone else can take their
-	// place.
 	var tokensToSignOff []string
 	for token, conn := range ss.connectionsByToken {
-		if time.Since(conn.lastUpdateCall) > 5*time.Second {
+		if time.Since(conn.lastUpdateCall) > StateUpdateWarn {
 			if !conn.warnedNoUpdateCalls {
 				conn.warnedNoUpdateCalls = true
-				ss.lg.Warnf("%s: no messages for 5 seconds", conn.tcw)
+				ss.lg.Warnf("%s: no messages for %s", conn.tcw, StateUpdateWarn)
 				ss.sim.PostEvent(sim.Event{
 					Type: sim.StatusMessageEvent,
-					WrittenText: fmt.Sprintf("%s (%s) has not been heard from for 5 seconds. Connection lost?",
-						string(conn.tcw), conn.initials),
+					WrittenText: fmt.Sprintf("%s (%s) has not been heard from for %s. Connection lost?",
+						string(conn.tcw), conn.initials, StateUpdateWarn),
 				})
 			}
 
-			if time.Since(conn.lastUpdateCall) > 15*time.Second {
+			if time.Since(conn.lastUpdateCall) > StateUpdateKick {
 				ss.lg.Warnf("%s (%s): signing off idle controller", conn.tcw, conn.initials)
 				// Collect tokens to sign off after releasing the lock
 				tokensToSignOff = append(tokensToSignOff, token)
@@ -168,18 +171,33 @@ func (ss *simSession) updateSimPauseState() {
 ///////////////////////////////////////////////////////////////////////////
 // State Updates and Controller Context
 
-// GetStateUpdate populates the update with session state.
-// This is the main entry point for periodic state updates from a controller.
-func (ss *simSession) GetStateUpdate(token string) *SimStateUpdate {
+// State-update timing constants.
+const (
+	// StateUpdateMaxWait is the bound past which we assume the publish loop has stalled, in which
+	// case WaitForStateUpdate returns ErrSimPublishStalled and the client surfaces a
+	// connection-lost status event.
+	StateUpdateMaxWait = 2 * time.Second
+
+	// StateUpdateWarn and StateUpdateKick are the lastUpdateCall ages at which the server
+	// respectively warns the other controllers and signs an unresponsive client off; they must
+	// exceed StateUpdateMaxWait so a healthy long-poll cycle doesn't trip them.
+	StateUpdateWarn = 5 * time.Second
+	StateUpdateKick = 15 * time.Second
+)
+
+// GetStateUpdate is the main entry point for periodic state updates from a controller. It is a
+// long-poll: when the caller's lastSentGen is already behind the sim's publication generation, it
+// returns the current snapshot immediately; otherwise it parks until the sim publishes new state,
+// the heartbeat timer fires, or the sim is destroyed.
+func (ss *simSession) GetStateUpdate(token string) (*SimStateUpdate, error) {
 	ss.mu.Lock(ss.lg)
 	conn, ok := ss.connectionsByToken[token]
 	if !ok {
 		ss.mu.Unlock(ss.lg)
 		ss.lg.Errorf("%s: unknown token for sim", token)
-		return nil
+		return nil, nil
 	}
 
-	// Update last call time and handle reconnection
 	conn.lastUpdateCall = time.Now()
 	if conn.warnedNoUpdateCalls {
 		conn.warnedNoUpdateCalls = false
@@ -192,13 +210,26 @@ func (ss *simSession) GetStateUpdate(token string) *SimStateUpdate {
 
 	tcw := conn.tcw
 	eventSub := conn.stateUpdateEventSub
+	sinceGen := conn.lastSentGen
+	ss.mu.Unlock(ss.lg)
+
+	update, gen, err := ss.sim.WaitForStateUpdate(tcw, sinceGen, StateUpdateMaxWait)
+	if err != nil {
+		return nil, err
+	}
+
+	ss.mu.Lock(ss.lg)
+	// The client may have signed off while we were waiting...
+	if conn, ok = ss.connectionsByToken[token]; ok {
+		conn.lastSentGen = gen
+	}
 	ss.mu.Unlock(ss.lg)
 
 	return &SimStateUpdate{
-		StateUpdate: ss.sim.GetStateUpdate(tcw),
+		StateUpdate: update,
 		ActiveTCWs:  ss.GetActiveTCWs(),
 		Events:      ss.sim.PrepareRadioTransmissionsForTCW(tcw, eventSub.Get()),
-	}
+	}, nil
 }
 
 // MakeControllerContext returns a ControllerContext for the given token, or nil if not found.

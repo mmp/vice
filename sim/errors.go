@@ -1,4 +1,4 @@
-// pkg/sim/errors.go
+// sim/errors.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -10,6 +10,7 @@ import (
 
 var (
 	ErrAircraftAlreadyReleased         = errors.New("Aircraft already released")
+	ErrSimPublishStalled               = errors.New("Sim publish loop has stalled")
 	ErrATPADisabled                    = errors.New("ATPA is disabled system-wide")
 	ErrBeaconMismatch                  = errors.New("Beacon code mismatch")
 	ErrControllerAlreadySignedIn       = errors.New("Controller with that callsign already signed in")

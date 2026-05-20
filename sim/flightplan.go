@@ -513,6 +513,8 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 
 	fp, err = s.STARSComputer.CreateFlightPlan(fp)
 
+	s.publish()
+
 	if err == nil {
 		err = s.postCheckFlightPlanSpecifier(spec)
 	}
@@ -569,6 +571,9 @@ func (s *Sim) CreateInterfacilityVFR(tcw TCW, acid ACID, isIntermediate bool, re
 	newFP.OwningTCW = tcw
 
 	_, err = s.STARSComputer.CreateFlightPlan(newFP)
+
+	s.publish()
+
 	return err
 }
 
@@ -657,6 +662,8 @@ func (s *Sim) ModifyFlightPlan(tcw TCW, acid ACID, spec FlightPlanSpecifier) err
 
 	fp.Update(spec, s)
 
+	s.publish()
+
 	return s.postCheckFlightPlanSpecifier(spec)
 }
 
@@ -728,6 +735,8 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 		})
 
 	if err == nil {
+		s.publish()
+
 		err = s.postCheckFlightPlanSpecifier(spec)
 	}
 	return err
@@ -765,12 +774,19 @@ func (s *Sim) ActivateFlightPlan(tcw TCW, callsign av.ADSBCallsign, acid ACID, s
 		ACID: fp.ACID,
 	})
 
+	s.publish()
+
 	return nil
 }
 
-func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
+func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) (err error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
+	defer func() {
+		if err == nil {
+			s.publish()
+		}
+	}()
 
 	s.lastControlCommandTime = time.Now()
 

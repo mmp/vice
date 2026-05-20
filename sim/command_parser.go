@@ -35,6 +35,14 @@ type ControlCommandsResult struct {
 // the pilot-reaction delay applied by deferred-action Nav commands is reduced by
 // (audioDuration - callsignAudioOffset), floored at zero.
 func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string, audioDuration time.Duration) ControlCommandsResult {
+	// This function has many early returns and runs without holding s.mu; publish unconditionally
+	// at the end so any state updates make their way out quickly.
+	defer func() {
+		s.mu.Lock(s.lg)
+		s.publish()
+		s.mu.Unlock(s.lg)
+	}()
+
 	commands := strings.Fields(commandStr)
 
 	delayReduction := audioDuration - callsignAudioOffset

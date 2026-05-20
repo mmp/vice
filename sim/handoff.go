@@ -91,6 +91,7 @@ func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p ma
 		fp.OwningTCW = tcw
 		s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans, fp)
 	}
+	s.publish()
 	return nil
 }
 
@@ -98,7 +99,7 @@ func (s *Sim) HandoffTrack(tcw TCW, acid ACID, toTCP TCP) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchTrackedFlightPlanCommand(tcw, acid,
+	if err := s.dispatchTrackedFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			// Resolve the target TCP - it may be consolidated to another controller
 			resolvedTCP := s.State.ResolveController(toTCP)
@@ -127,7 +128,11 @@ func (s *Sim) HandoffTrack(tcw TCW, acid ACID, toTCP TCP) error {
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) {
 			// Pass the original toTCP so HandoffTrackController records the actual target position
 			s.handoffTrack(fp, toTCP)
-		})
+		}); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP TCP) {
@@ -244,7 +249,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	_, err := s.dispatchFlightPlanCommand(tcw, acid,
+	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			// Check if the caller's TCW controls the HandoffTrackController TCP (consolidation-aware)
 			if s.State.TCWControlsPosition(tcw, fp.HandoffController) {
@@ -294,27 +299,34 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 				}
 			}
 			return nil
-		})
-	return err
+		}); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 func (s *Sim) CancelHandoff(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchTrackedFlightPlanCommand(tcw, acid, nil,
+	if err := s.dispatchTrackedFlightPlanCommand(tcw, acid, nil,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) {
 			delete(s.Handoffs, acid)
 			fp.HandoffController = ""
 			fp.RedirectedHandoff = RedirectedHandoff{}
-		})
+		}); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	_, err := s.dispatchFlightPlanCommand(tcw, acid,
+	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 			if octrl, ok := s.State.Controllers[controller]; !ok {
@@ -347,15 +359,18 @@ func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 			rh.RedirectedTo = TCP(octrl.PositionId())
 
 			return nil
-		})
-	return err
+		}); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 func (s *Sim) AcceptRedirectedHandoff(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	_, err := s.dispatchFlightPlanCommand(tcw, acid,
+	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			// TODO(mtrokel): need checks here that we do have an inbound
 			// redirected handoff or that we have an outbound one to
@@ -386,15 +401,18 @@ func (s *Sim) AcceptRedirectedHandoff(tcw TCW, acid ACID) error {
 			}
 
 			return nil
-		})
-	return err
+		}); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	_, err := s.dispatchFlightPlanCommand(tcw, acid,
+	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			if _, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
@@ -418,15 +436,18 @@ func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 			})
 
 			return nil
-		})
-	return err
+		}); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchTrackedFlightPlanCommand(fromTCW, acid,
+	if err := s.dispatchTrackedFlightPlanCommand(fromTCW, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			if octrl, ok := s.State.Controllers[toTCP]; !ok {
 				return av.ErrNoController
@@ -447,7 +468,11 @@ func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
 			ctrl := s.State.Controllers[fromTCP]
 			octrl := s.State.Controllers[toTCP]
 			s.pointOut(acid, ctrl, octrl)
-		})
+		}); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
@@ -469,7 +494,7 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	_, err := s.dispatchFlightPlanCommand(tcw, acid,
+	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			if po, ok := s.PointOuts[acid]; !ok || !s.State.TCWControlsPosition(tcw, po.ToController) {
 				return av.ErrNotPointedOutToMe
@@ -491,15 +516,18 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 
 			delete(s.PointOuts, acid)
 			return nil
-		})
-	return err
+		}); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 func (s *Sim) RecallPointOut(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchTrackedFlightPlanCommand(tcw, acid,
+	if err := s.dispatchTrackedFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			if po, ok := s.PointOuts[acid]; !ok || !s.State.TCWControlsPosition(tcw, po.FromController) {
 				return av.ErrNotPointedOutByMe
@@ -516,14 +544,18 @@ func (s *Sim) RecallPointOut(tcw TCW, acid ACID) error {
 			})
 
 			delete(s.PointOuts, acid)
-		})
+		}); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	_, err := s.dispatchFlightPlanCommand(tcw, acid,
+	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			if po, ok := s.PointOuts[acid]; !ok || !s.State.TCWControlsPosition(tcw, po.ToController) {
 				return av.ErrNotPointedOutToMe
@@ -544,14 +576,22 @@ func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
 			delete(s.PointOuts, acid)
 
 			return nil
-		})
-	return err
+		}); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 // TODO: Migrate to ERAM computer.
-func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID, minutes int) error {
+func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID, minutes int) (err error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
+	defer func() {
+		if err == nil {
+			s.publish()
+		}
+	}()
 
 	ac := s.Aircraft[av.ADSBCallsign(acid)]
 	if ac == nil {
@@ -648,6 +688,7 @@ func (s *Sim) FlightPlanDirect(tcp TCP, fix string, acid ACID) error {
 		Route: ac.Nav.Waypoints,
 	})
 
+	s.publish()
 	return nil
 }
 

@@ -310,6 +310,7 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 	s.lg.Info("Set launch config", slog.Any("launch_config", lc))
 
 	s.State.LaunchConfig = lc
+	s.publish()
 	return nil
 }
 
@@ -326,6 +327,7 @@ func (s *Sim) TakeOrReturnLaunchControl(tcw TCW) error {
 			WrittenText: string(tcw) + " is now controlling aircraft launches.",
 		})
 		s.lg.Debugf("%s: now controlling launches", tcw)
+		s.publish()
 		return nil
 	} else {
 		s.eventStream.Post(Event{
@@ -334,6 +336,7 @@ func (s *Sim) TakeOrReturnLaunchControl(tcw TCW) error {
 		})
 		s.lg.Debugf("%s: no longer controlling launches", tcw)
 		s.State.LaunchConfig.Controller = ""
+		s.publish()
 		return nil
 	}
 }
@@ -347,6 +350,7 @@ func (s *Sim) LaunchAircraft(ac Aircraft, departureRunway av.RunwayID) {
 	} else {
 		s.addAircraftNoLock(ac)
 	}
+	s.publish()
 }
 
 func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, manualLaunch bool) {

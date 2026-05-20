@@ -81,7 +81,11 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*Aircraft, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-	return s.createArrivalNoLock(arrivalGroup, arrivalAirport)
+	ac, err := s.createArrivalNoLock(arrivalGroup, arrivalAirport)
+	if err == nil {
+		s.publish()
+	}
+	return ac, err
 }
 
 // createArrivalNoLock creates an arrival aircraft from the specified inbound flow group.
@@ -323,7 +327,11 @@ func (s *Sim) maybeSetGoAround(ac *Aircraft, goAroundRate float32) {
 func (s *Sim) CreateOverflight(group string) (*Aircraft, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-	return s.createOverflightNoLock(group)
+	ac, err := s.createOverflightNoLock(group)
+	if err == nil {
+		s.publish()
+	}
+	return ac, err
 }
 
 // createOverflightNoLock creates an overflight aircraft from the specified inbound flow group.

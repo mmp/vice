@@ -15,7 +15,6 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
@@ -50,10 +49,9 @@ type ControlClient struct {
 	lg *log.Logger
 	mu sync.Mutex
 
-	lastUpdateRequest time.Time
+	lastUpdateApplied time.Time
 	lastReturnedTime  sim.Time
 	updateCall        *pendingCall
-	lastUpdateLatency time.Duration
 
 	pendingCalls []*pendingCall
 
@@ -172,6 +170,11 @@ func makeStateUpdateRPCCall(call *rpc.Call, update *server.SimStateUpdate, callb
 		Callback: func(es *sim.EventStream, state *SimState, err error) {
 			if err == nil {
 				update.Apply(&state.SimState, es)
+			} else {
+				es.Post(sim.Event{
+					Type:        sim.ErrorMessageEvent,
+					WrittenText: "Server state update failed: " + err.Error(),
+				})
 			}
 			if callback != nil {
 				callback(err)
@@ -201,7 +204,7 @@ func NewControlClient(ss server.SimState, controllerToken string, disableTTSPtr 
 		controllerToken:   controllerToken,
 		client:            client,
 		lg:                lg,
-		lastUpdateRequest: time.Now(),
+		lastUpdateApplied: time.Now(),
 		State:             SimState{ss},
 		transmissions:     NewTransmissionManager(lg),
 		disableTTSPtr:     disableTTSPtr,
@@ -289,6 +292,12 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		}
 	}
 
+	// State delivery is server-paced: keep exactly one GetStateUpdate outstanding.
+	if c.updateCall == nil { // First call or just got an update
+		var update server.SimStateUpdate
+		c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update, nil)
+	}
+
 	c.updateSpeech(p)
 
 	// Check if we should request a contact transmission from the server.
@@ -302,29 +311,6 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		completedCalls, callbackErr = c.checkPendingRPCs(eventStream)
 	}
 
-	// Wait in seconds between update fetches; no less than 50ms
-	rate := math.Clamp(1/c.State.SimRate, 0.05, 1)
-	if d := time.Since(c.lastUpdateRequest); d > time.Duration(rate*float32(time.Second)) {
-		if c.updateCall != nil && !util.DebuggerIsRunning() {
-			c.lg.Warnf("GetUpdates still waiting for %s on last update call", d)
-		} else {
-			c.lastUpdateRequest = time.Now()
-
-			var update server.SimStateUpdate
-			issueTime := time.Now()
-			c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update,
-				func(err error) {
-					d := time.Since(issueTime)
-					c.lastUpdateLatency = d
-					if d > 250*time.Millisecond {
-						c.lg.Warnf("Slow world update response %s", d)
-					} else {
-						c.lg.Debugf("World update response time %s", d)
-					}
-				})
-		}
-	}
-
 	c.mu.Unlock()
 
 	// Make RPC calls that need addCall after releasing the lock
@@ -332,9 +318,23 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		c.RequestContactTransmission()
 	}
 
-	// Invoke callbacks after releasing lock to avoid deadlock
+	// Invoke callbacks after releasing lock to avoid deadlock.
+	// InterpolatedSimTime extrapolates from State.SimTime + (now -
+	// lastUpdateApplied); we only re-anchor when DynamicState was
+	// actually replaced (i.e. the publication generation advanced).
+	// Otherwise repeated same-gen responses — RPC errors or the
+	// simDone path that returns the current snapshot without a fresh
+	// publish — would freeze the displayed clock until extrapolation
+	// re-catches up to where it had been.
 	if updateCallFinished != nil {
+		prevGen := c.State.GenerationIndex
 		updateCallFinished.InvokeCallback(eventStream, &c.State)
+		if c.State.GenerationIndex > prevGen {
+			now := time.Now()
+			c.mu.Lock()
+			c.lastUpdateApplied = now
+			c.mu.Unlock()
+		}
 	}
 	for _, call := range completedCalls {
 		call.InvokeCallback(eventStream, &c.State)
@@ -369,10 +369,15 @@ func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream) ([]*pendi
 }
 
 func checkTimeout(call *pendingCall, eventStream *sim.EventStream) error {
-	if time.Since(call.IssueTime) > 5*time.Second && !util.DebuggerIsRunning() {
+	// The long-poll GetStateUpdate is bounded by server.StateUpdateMaxWait
+	// and returns an error (not a hung RPC) on the server's own timeout.
+	// This check catches genuine network failures where the RPC never
+	// returns at all; StateUpdateWarn is comfortably above MaxWait.
+	if time.Since(call.IssueTime) > server.StateUpdateWarn && !util.DebuggerIsRunning() {
 		eventStream.Post(sim.Event{
-			Type:        sim.StatusMessageEvent,
-			WrittenText: "No response from server for over 5 seconds. Network connection may be lost.",
+			Type: sim.StatusMessageEvent,
+			WrittenText: fmt.Sprintf("No response from server for over %s. Network connection may be lost.",
+				server.StateUpdateWarn),
 		})
 		return server.ErrRPCTimeout
 	}
@@ -406,14 +411,10 @@ func (c *ControlClient) InterpolatedSimTime() sim.Time {
 
 	t := c.State.SimTime
 
-	if !c.State.Paused && !c.lastUpdateRequest.IsZero() {
-		d := time.Since(c.lastUpdateRequest)
-
-		// Account for RPC overhead using half of the observed latency
-		if c.lastUpdateLatency > 0 {
-			d -= c.lastUpdateLatency / 2
-		}
-		d = max(0, d)
+	if !c.State.Paused && !c.lastUpdateApplied.IsZero() {
+		// Extrapolate forward from the moment the most recent server
+		// snapshot was applied.
+		d := time.Since(c.lastUpdateApplied)
 
 		// Account for sim rate
 		d = time.Duration(float64(d) * float64(c.State.SimRate))

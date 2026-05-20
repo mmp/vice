@@ -661,7 +661,7 @@ func (sm *SimManager) GetStateUpdate(token string) (*SimStateUpdate, error) {
 	}
 	sm.mu.Unlock(sm.lg)
 
-	return session.GetStateUpdate(token), nil
+	return session.GetStateUpdate(token)
 }
 
 // SimStateUpdate wraps sim.StateUpdate and adds server-specific fields.

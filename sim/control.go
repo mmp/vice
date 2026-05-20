@@ -232,6 +232,7 @@ func (s *Sim) DeleteAircraftSlice(tcw TCW, aircraft []Aircraft) error {
 		s.deleteAircraft(&ac)
 	}
 
+	s.publish()
 	return nil
 }
 
@@ -255,6 +256,7 @@ func (s *Sim) DeleteAllAircraft(tcw TCW) error {
 	// Also clean up aircraft in HFR departure queues
 	s.clearDepartureQueues()
 
+	s.publish()
 	return nil
 }
 
@@ -296,6 +298,7 @@ func (s *Sim) ReleaseDeparture(tcw TCW, callsign av.ADSBCallsign) error {
 	if err := s.STARSComputer.ReleaseDeparture(callsign); err == nil {
 		ac.Released = true
 		ac.ReleaseTime = s.State.SimTime
+		s.publish()
 		return nil
 	} else {
 		return err
@@ -341,6 +344,7 @@ func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) (string, error) {
 		})
 	if err == nil && intent != nil {
 		spokenText := s.renderAndPostReadback(callsign, tcw, []av.CommandIntent{intent})
+		s.publish()
 		return spokenText, nil
 	}
 	return "", err

@@ -190,6 +190,7 @@ func (s *Sim) SignOn(tcw TCW, tcps []TCP) (*UserState, *EventsSubscription, erro
 		return nil, nil, av.ErrNoController
 	}
 
+	s.publish()
 	s.mu.Unlock(s.lg)
 
 	for _, tcp := range tcps {
@@ -359,6 +360,8 @@ func (s *Sim) ConsolidateTCP(receivingTCW TCW, sendingTCP TCP, consType Consolid
 		}
 	}
 
+	s.publish()
+
 	return nil
 }
 
@@ -416,6 +419,8 @@ func (s *Sim) DeconsolidateTCP(tcw TCW, tcp TCP) error {
 		}
 	}
 
+	s.publish()
+
 	s.lg.Infof("deconsolidated %s from %s", tcp, owningTCW)
 	return nil
 }
@@ -440,6 +445,7 @@ func (s *Sim) SetPrivilegedTCW(tcw TCW, privileged bool) {
 	} else {
 		delete(s.PrivilegedTCWs, tcw)
 	}
+	s.publish()
 }
 
 // TCWIsPrivileged returns whether the given TCW has elevated privileges.

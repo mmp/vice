@@ -65,7 +65,11 @@ func (s *Sim) RequestFlightFollowing() error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.requestRandomFlightFollowing()
+	if err := s.requestRandomFlightFollowing(); err != nil {
+		return err
+	}
+	s.publish()
+	return nil
 }
 
 func (s *Sim) TriggerEmergency(name string) {
@@ -78,6 +82,7 @@ func (s *Sim) TriggerEmergency(name string) {
 	} else {
 		s.triggerEmergency(idx)
 	}
+	s.publish()
 }
 
 func (s *Sim) requestRandomFlightFollowing() error {

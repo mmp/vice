@@ -127,6 +127,16 @@ type Sim struct {
 	LastSTTCommand *LastSTTCommand
 
 	AvailableStripCIDs []int
+
+	// State publication for server-paced long-poll delivery. pubGen is incremented whenever the
+	// visible sim state changes; pubCh is closed to wake parked GetStateUpdate waiters and is
+	// replaced with a fresh channel after each publication. simDoneCh is closed in Destroy() so
+	// waiters can unblock when the sim goes away. lastPublishTime drives the per-second heartbeat
+	// publish in Update().
+	pubGen          uint64
+	pubCh           chan struct{}
+	simDoneCh       chan struct{}
+	lastPublishTime time.Time
 }
 
 // LastSTTCommand stores the nav snapshot from before the most recent STT command
@@ -250,6 +260,9 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 			rand.ShuffleSlice(cids, rand.Make())
 			return cids
 		}(),
+
+		pubCh:     make(chan struct{}),
+		simDoneCh: make(chan struct{}),
 	}
 
 	s.VoiceAssigner = NewVoiceAssigner(s.Rand)
@@ -351,6 +364,7 @@ func (s *Sim) SetWaypointCommands(tcw TCW, commands string) error {
 		}
 		s.waypointCommands[tcp][fix] = cmds // TODO: validate the commands here (somehow)
 	}
+	s.publish()
 	return nil
 }
 
@@ -418,6 +432,17 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 		s.eventStream = NewEventStream(lg)
 	}
 
+	if s.pubCh == nil {
+		s.pubCh = make(chan struct{})
+	}
+	// Continue the publication-generation series from where the saved state left off.
+	if s.pubGen == 0 && s.State.GenerationIndex > 0 {
+		s.pubGen = uint64(s.State.GenerationIndex)
+	}
+	if s.simDoneCh == nil {
+		s.simDoneCh = make(chan struct{})
+	}
+
 	now := time.Now()
 	s.lastUpdateTime = now
 	s.lastControlCommandTime = now
@@ -464,6 +489,38 @@ func restoreControllerFields(controllers map[TCP]*av.Controller) {
 
 func (s *Sim) Destroy() {
 	s.eventStream.Destroy()
+
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	select {
+	case <-s.simDoneCh:
+		// already closed
+	default:
+		close(s.simDoneCh)
+	}
+}
+
+// publish bumps the publication generation and wakes any parked
+// GetStateUpdate waiters. Caller must hold s.mu.
+func (s *Sim) publish() {
+	s.pubGen++
+	if s.pubCh != nil {
+		close(s.pubCh)
+	}
+	s.pubCh = make(chan struct{})
+	s.lastPublishTime = time.Now()
+}
+
+// snapshotPub returns the current publication generation and the channel
+// that will be closed on the next publication. Caller must hold s.mu.
+func (s *Sim) snapshotPub() (uint64, chan struct{}) {
+	return s.pubGen, s.pubCh
+}
+
+// Done returns a channel that is closed when the sim has been destroyed.
+// Long-poll waiters select on it to unblock during sim teardown.
+func (s *Sim) Done() <-chan struct{} {
+	return s.simDoneCh
 }
 
 // Subscribe creates a new event subscription for this simulation.
@@ -496,6 +553,7 @@ func (s *Sim) TogglePause() {
 	s.State.Paused = !s.State.Paused
 	s.lastUpdateTime = time.Now() // ignore time passage...
 	s.lastControlCommandTime = time.Now()
+	s.publish()
 }
 
 // SetPausedByServer allows the server to pause/unpause the sim when
@@ -504,11 +562,15 @@ func (s *Sim) SetPausedByServer(paused bool) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	if s.pausedByServer == paused {
+		return
+	}
 	s.pausedByServer = paused
 	if !paused {
 		// Reset time so we don't try to catch up
 		s.lastUpdateTime = time.Now()
 	}
+	s.publish()
 }
 
 func (s *Sim) FastForward() {
@@ -522,6 +584,7 @@ func (s *Sim) FastForward() {
 	s.updateTimeSlop = 0
 	s.lastUpdateTime = time.Now()
 	s.lastControlCommandTime = time.Now()
+	s.publish()
 }
 
 func (s *Sim) IdleTime() time.Duration {
@@ -547,6 +610,7 @@ func (s *Sim) SetSimRate(tcw TCW, rate float32) error {
 	s.lastControlCommandTime = time.Now()
 
 	s.lg.Infof("sim rate set to %f", s.State.SimRate)
+	s.publish()
 	return nil
 }
 
@@ -630,7 +694,41 @@ func (s *Sim) GetStateUpdate(tcw TCW) StateUpdate {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	s.State.GenerationIndex++
+	return s.snapshot(tcw)
+}
+
+// WaitForStateUpdate waits until the publication generation advances past sinceGen or the timeout /
+// sim teardown fires, then returns the current snapshot together with the generation it was taken at.
+//
+// In healthy operation Sim.Update emits a heartbeat publish every ~1.1s, so the timeout arm never
+// fires. If it does fire, the sim's publish loop has hung (e.g. it panicked and the goroutine
+// exited); return ErrSimPublishStalled so the caller can surface a real failure rather than
+// silently delivering a stale snapshot to clients.
+func (s *Sim) WaitForStateUpdate(tcw TCW, sinceGen uint64, timeout time.Duration) (StateUpdate, uint64, error) {
+	s.mu.Lock(s.lg)
+	gen, ch := s.snapshotPub()
+	if gen > sinceGen {
+		update := s.snapshot(tcw)
+		s.mu.Unlock(s.lg)
+		return update, gen, nil
+	}
+	s.mu.Unlock(s.lg)
+
+	select {
+	case <-ch:
+	case <-time.After(timeout):
+		return StateUpdate{}, sinceGen, ErrSimPublishStalled
+	case <-s.simDoneCh:
+	}
+
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.snapshot(tcw), s.pubGen, nil
+}
+
+// snapshot builds and deep-copies a StateUpdate for the given TCW.
+func (s *Sim) snapshot(tcw TCW) StateUpdate {
+	s.State.GenerationIndex = int(s.pubGen)
 
 	update := StateUpdate{
 		DynamicState:     s.State.DynamicState,
@@ -650,7 +748,7 @@ func (s *Sim) GetStateUpdate(tcw TCW) StateUpdate {
 		panic("too big")
 	}
 
-	// While it seemed that this could be skipped, it's actually necessary
+	// While it seemed that this could be skipped, this is actually necessary
 	// to avoid races: although another copy is made as it's marshaled to be
 	// returned from RPC call, there may be other updates to the sim state
 	// between this function returning and that happening.
@@ -695,25 +793,29 @@ func (s *Sim) Update() {
 			})
 
 			s.State.Paused = true
+			s.publish()
 		}
 	}
 
-	if s.State.Paused || s.pausedByServer {
-		return
-	}
-
-	// Figure out how much time has passed since the last update: wallclock
-	// time is scaled by the sim rate, then we add in any time from the
-	// last update that wasn't accounted for.
-	elapsed := time.Since(s.lastUpdateTime)
-	elapsed = time.Duration(s.State.SimRate * float32(elapsed))
-	if s.step(elapsed) {
-		// Don't bother with this if we didn't change any aircraft state
-		for _, ac := range s.Aircraft {
-			ac.Check(s.lg)
+	if !s.State.Paused && !s.pausedByServer {
+		// Figure out how much time has passed since the last update:
+		// wallclock time is scaled by the sim rate, then we add in any
+		// time from the last update that wasn't accounted for.
+		elapsed := time.Since(s.lastUpdateTime)
+		elapsed = time.Duration(s.State.SimRate * float32(elapsed))
+		if s.step(elapsed) {
+			// Don't bother with these Check()s if we didn't change any aircraft state
+			for _, ac := range s.Aircraft {
+				ac.Check(s.lg)
+			}
+			s.publish()
 		}
+		s.lastUpdateTime = time.Now()
+	} else if time.Since(s.lastPublishTime) >= 1100*time.Millisecond {
+		// If the sim is paused, keep on publishing updates so that the client doesn't think the
+		// server has crashed.
+		s.publish()
 	}
-	s.lastUpdateTime = time.Now()
 }
 
 func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions) bool {
@@ -1459,6 +1561,7 @@ func (s *Sim) PushFlightStrip(tcw TCW, acid ACID, toTCP TCP) error {
 	}
 
 	fp.StripOwner = ControlPosition(toTCP)
+	s.publish()
 	return nil
 }
 
@@ -1473,6 +1576,7 @@ func (s *Sim) AnnotateFlightStrip(tcw TCW, acid ACID, annotations [9]string) err
 	}
 
 	fp.StripAnnotations = annotations
+	s.publish()
 	return nil
 }
 
@@ -1485,6 +1589,7 @@ func (s *Sim) GlobalMessage(tcw TCW, message string) {
 		WrittenText:    message,
 		FromController: s.State.PrimaryPositionForTCW(tcw),
 	})
+	s.publish()
 }
 
 func (s *Sim) CreateRestrictionArea(ra av.RestrictionArea) (int, error) {
@@ -1497,6 +1602,7 @@ func (s *Sim) CreateRestrictionArea(ra av.RestrictionArea) (int, error) {
 	for key := 1; key <= av.MaxRestrictionAreas; key++ {
 		if _, exists := s.State.RestrictionAreas[key]; !exists {
 			s.State.RestrictionAreas[key] = ra
+			s.publish()
 			return key, nil
 		}
 	}
@@ -1519,6 +1625,7 @@ func (s *Sim) UpdateRestrictionArea(idx int, ra av.RestrictionArea) error {
 	ra.UpdateTriangles()
 
 	s.State.RestrictionAreas[idx] = ra
+	s.publish()
 	return nil
 }
 
@@ -1534,6 +1641,7 @@ func (s *Sim) DeleteRestrictionArea(idx int) error {
 	}
 
 	delete(s.State.RestrictionAreas, idx)
+	s.publish()
 	return nil
 }
 
@@ -1548,9 +1656,14 @@ const (
 	ATPADisableReduced25
 )
 
-func (s *Sim) ConfigureATPA(op ATPAConfigOp, volumeId string) (string, error) {
+func (s *Sim) ConfigureATPA(op ATPAConfigOp, volumeId string) (msg string, err error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
+	defer func() {
+		if err == nil {
+			s.publish()
+		}
+	}()
 
 	if len(s.State.ATPAVolumeState) == 0 { // no volumes adapted
 		return "", ErrATPADisabled
@@ -1645,9 +1758,14 @@ const (
 	FDAMQueryStatus
 )
 
-func (s *Sim) ConfigureFDAM(op FDAMConfigOp, regionId string) (string, error) {
+func (s *Sim) ConfigureFDAM(op FDAMConfigOp, regionId string) (msg string, err error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
+	defer func() {
+		if err == nil {
+			s.publish()
+		}
+	}()
 
 	if len(s.State.FacilityAdaptation.Filters.FDAM) == 0 {
 		return "", ErrFDAMNoRegions
@@ -1771,6 +1889,7 @@ func (s *Sim) UpdateATISGIText(_ TCW, line int, auxiliary bool, atis *string, te
 		s.State.GIText[line] = *text
 	}
 
+	s.publish()
 	return nil
 }
 

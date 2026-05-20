@@ -569,7 +569,11 @@ func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 func (s *Sim) CreateIFRDeparture(departureAirport string, runway av.RunwayID, category string) (*Aircraft, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-	return s.createIFRDepartureNoLock(departureAirport, runway, category)
+	ac, err := s.createIFRDepartureNoLock(departureAirport, runway, category)
+	if err == nil {
+		s.publish()
+	}
+	return ac, err
 }
 
 // createIFRDepartureNoLock creates an IFR departure aircraft from the specified airport/runway.
@@ -694,6 +698,9 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 			return nil, nil
 		} else {
 			ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil, s.State.SimTime)
+			if ac != nil && err == nil {
+				s.publish()
+			}
 			return ac, err
 		}
 	}
