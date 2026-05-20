@@ -844,7 +844,14 @@ func (r *rebenchmarkModalClient) Title() string {
 func (r *rebenchmarkModalClient) Opening() {}
 
 func (r *rebenchmarkModalClient) Buttons() []ModalDialogButton {
-	return nil
+	// While benchmarking, no buttons (no way to close). Once the benchmark
+	// finishes, expose an OK button so Draw() can auto-press it via the
+	// returned selIndex — that's the mechanism the modal framework uses to
+	// actually mark the dialog closed.
+	if client.IsWhisperBenchmarking() {
+		return nil
+	}
+	return []ModalDialogButton{{text: "OK", action: func() bool { return true }}}
 }
 
 func (r *rebenchmarkModalClient) Draw() int {
@@ -859,7 +866,8 @@ func (r *rebenchmarkModalClient) Draw() int {
 
 	imgui.Text("\n")
 
-	// Close when benchmarking completes
+	// Auto-press the OK button (added by Buttons() above) the same frame
+	// benchmarking completes so the dialog closes itself.
 	if !client.IsWhisperBenchmarking() {
 		return 0
 	}
