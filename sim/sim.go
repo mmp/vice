@@ -93,9 +93,9 @@ type Sim struct {
 	PilotErrorInterval time.Duration
 	LastPilotError     Time
 
-	lastSimUpdate  Time
-	updateTimeSlop time.Duration
-	lastUpdateTime time.Time // this is w.r.t. true wallclock time
+	lastSimUpdate     Time
+	updateTimeSlop    time.Duration
+	lastSimUpdateTime time.Time // this is w.r.t. true wallclock time
 
 	pausedByServer bool // set by server when no humans are connected
 
@@ -237,7 +237,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 
 		NextEmergencyTime: util.Select(config.LaunchConfig.EmergencyAircraftRate > 0, NewSimTime(config.StartTime), Time{}),
 
-		lastUpdateTime: time.Now(),
+		lastSimUpdateTime: time.Now(),
 
 		Handoffs:  make(map[ACID]Handoff),
 		PointOuts: make(map[ACID]PointOut),
@@ -444,7 +444,7 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 	}
 
 	now := time.Now()
-	s.lastUpdateTime = now
+	s.lastSimUpdateTime = now
 	s.lastControlCommandTime = now
 
 	if s.Rand == nil {
@@ -551,7 +551,7 @@ func (s *Sim) TogglePause() {
 	defer s.mu.Unlock(s.lg)
 
 	s.State.Paused = !s.State.Paused
-	s.lastUpdateTime = time.Now() // ignore time passage...
+	s.lastSimUpdateTime = time.Now() // ignore time passage...
 	s.lastControlCommandTime = time.Now()
 	s.publish()
 }
@@ -568,7 +568,7 @@ func (s *Sim) SetPausedByServer(paused bool) {
 	s.pausedByServer = paused
 	if !paused {
 		// Reset time so we don't try to catch up
-		s.lastUpdateTime = time.Now()
+		s.lastSimUpdateTime = time.Now()
 	}
 	s.publish()
 }
@@ -582,7 +582,7 @@ func (s *Sim) FastForward() {
 		s.updateState()
 	}
 	s.updateTimeSlop = 0
-	s.lastUpdateTime = time.Now()
+	s.lastSimUpdateTime = time.Now()
 	s.lastControlCommandTime = time.Now()
 	s.publish()
 }
@@ -591,7 +591,7 @@ func (s *Sim) IdleTime() time.Duration {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return time.Since(s.lastUpdateTime)
+	return time.Since(s.lastSimUpdateTime)
 }
 
 // SimTime returns the current simulation time.
@@ -801,8 +801,9 @@ func (s *Sim) Update() {
 		// Figure out how much time has passed since the last update:
 		// wallclock time is scaled by the sim rate, then we add in any
 		// time from the last update that wasn't accounted for.
-		elapsed := time.Since(s.lastUpdateTime)
+		elapsed := time.Since(s.lastSimUpdateTime)
 		elapsed = time.Duration(s.State.SimRate * float32(elapsed))
+		s.lastSimUpdateTime = time.Now()
 		if s.step(elapsed) {
 			// Don't bother with these Check()s if we didn't change any aircraft state
 			for _, ac := range s.Aircraft {
@@ -810,7 +811,6 @@ func (s *Sim) Update() {
 			}
 			s.publish()
 		}
-		s.lastUpdateTime = time.Now()
 	} else if time.Since(s.lastPublishTime) >= 1100*time.Millisecond {
 		// If the sim is paused, keep on publishing updates so that the client doesn't think the
 		// server has crashed.

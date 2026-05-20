@@ -452,7 +452,7 @@ func (s *Sim) Prespawn() {
 	}
 	s.prespawnUncontrolledOnly, s.prespawn, s.prespawnPatternEligible = false, false, false
 
-	s.lastUpdateTime = time.Now()
+	s.lastSimUpdateTime = time.Now()
 
 	s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
 
