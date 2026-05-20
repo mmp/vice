@@ -427,11 +427,11 @@ func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log
 					"You can still use vice, but the push-to-talk voice command feature will not work.")
 			} else if errors.Is(err, client.ErrCPUNotSupported) {
 				ShowErrorDialog(plat, lg, "Speech-to-text is unavailable on this computer.\n\n"+
-					"Your CPU does not support the AVX instruction set, which is required "+
-					"for the speech recognition engine. You can still use vice, but the "+
-					"push-to-talk voice command feature will not work.\n\n"+
-					"CPUs manufactured since approximately 2011 (Intel Sandy Bridge / AMD Bulldozer) "+
-					"typically support AVX.")
+					"Your CPU does not support the instruction sets required by the "+
+					"speech recognition engine (AVX2, FMA, BMI2, F16C). You can still "+
+					"use vice, but the push-to-talk voice command feature will not work.\n\n"+
+					"CPUs from Intel Haswell (2013) / AMD Excavator (2015) and later "+
+					"typically support these instructions.")
 			}
 		}
 	}()

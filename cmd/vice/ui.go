@@ -892,7 +892,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		}
 	}
 
-	if imgui.CollapsingHeaderBoolPtr("Speech to Text", nil) {
+	if client.IsSTTAvailable() && imgui.CollapsingHeaderBoolPtr("Speech to Text", nil) {
 		// Push-to-talk key
 		if config.UserPTTKey == imgui.KeyNone {
 			config.UserPTTKey = imgui.KeySemicolon

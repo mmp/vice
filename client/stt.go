@@ -319,7 +319,8 @@ var whisperBenchmarkReportMu sync.Mutex
 var whisperBenchmarkReported bool
 
 // ErrCPUNotSupported is returned when the CPU doesn't support the required
-// instruction sets for speech-to-text (AVX on x86/amd64).
+// instruction sets for speech-to-text. The shipped binary is built with
+// AVX2/FMA/F16C/BMI2 enabled (Haswell-era and later).
 var ErrCPUNotSupported = errors.New("CPU does not support required instructions for speech-to-text")
 
 // ErrWindowsARM is returned when running on Windows ARM hardware via x86
@@ -328,7 +329,7 @@ var ErrCPUNotSupported = errors.New("CPU does not support required instructions 
 var ErrWindowsARM = errors.New("Windows on ARM is not supported for speech-to-text")
 
 // checkCPUSupport verifies that the CPU supports the instruction sets
-// required by the whisper library. Returns an error if not supported.
+// required by the whisper library.
 func checkCPUSupport() error {
 	// Detect x86 binaries running on Windows ARM via emulation. The
 	// whisper library uses AVX/AVX2 SIMD instructions that Windows'
@@ -337,13 +338,16 @@ func checkCPUSupport() error {
 		return ErrWindowsARM
 	}
 
-	// Only x86/amd64 needs AVX support check; ARM uses NEON which is always available.
+	// Only x86/amd64 needs an instruction-set check; ARM uses NEON which is always available.
 	if runtime.GOARCH != "amd64" && runtime.GOARCH != "386" {
 		return nil
 	}
 
 	// Use golang.org/x/sys/cpu for reliable cross-platform feature detection.
-	if cpu.X86.HasAVX {
+	// F16C isn't exposed by x/sys/cpu, but every x86 CPU with AVX2+FMA+BMI2
+	// also has F16C (Haswell and later), so this set is sufficient to exclude
+	// pre-Haswell CPUs that would trap on the ggml CPU backend.
+	if cpu.X86.HasAVX && cpu.X86.HasAVX2 && cpu.X86.HasFMA && cpu.X86.HasBMI2 {
 		return nil
 	}
 
@@ -831,10 +835,11 @@ func GetWhisperModelError() error {
 	return whisperModelErr
 }
 
-// IsSTTAvailable returns true if speech-to-text is available.
-// This blocks until the whisper model finishes loading.
+// IsSTTAvailable returns true if speech-to-text is available or still
+// loading. Returns false only once benchmarking has completed with an
+// error (e.g. unsupported CPU). Non-blocking; safe to call from the UI.
 func IsSTTAvailable() bool {
-	return WhisperModelError() == nil
+	return GetWhisperModelError() == nil
 }
 
 func makeWhisperPrompt(state SimState) string {
