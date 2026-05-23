@@ -75,13 +75,102 @@
     },
     "KJFK": {
       "approaches": {
-        "I2L": {
-          "cifp_id": "I22L"
-        },
         "I4R": {
           "cifp_id": "I4R"
+        },
+        "I2L": {
+          "cifp_id": "I22L"
         }
-      }
+      },
+      "departure_routes": {
+        "4L": {
+          "RBV": {
+            "cleared_altitude": 12000,
+            "sid": "JFK5",
+            "waypoints": "N040.40.22.732,W073.41.31.809 N040.37.31.002,W073.35.50.079 N040.32.25.980,W073.38.54.649 N040.29.15.258,W073.48.29.097/ho55 RBV",
+            "departure_controller": "N2J"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": 32000,
+          "destination": "KCLT",
+          "exit": "RBV",
+          "route": "RBV Q430 COPES Q75 GVE/delete AIROW CHSLY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": 28000,
+          "destination": "KLAX",
+          "exit": "RBV",
+          "route": "RBV Q430 SAAME BRNAN Q42 SNKPT/delete TILMN J24 STL Q176 WRIGL Q176 KENTO CIM DIXAN TANER INW CHILY HIPPI GABBL HLYWD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KLAX",
+          "exit": "RBV",
+          "route": "RBV Q430 SAAME BRNAN Q42 SNKPT/delete TILMN J24 STL Q176 WRIGL Q176 KENTO CIM DIXAN TANER INW CHILY HIPPI GABBL HLYWD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": 36000,
+          "destination": "KLAX",
+          "exit": "RBV",
+          "route": "RBV Q430 SAAME BRNAN Q42 SNKPT/delete TILMN J24 STL Q176 WRIGL Q176 KENTO CIM DIXAN TANER INW CHILY HIPPI GABBL HLYWD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": 28000,
+          "destination": "KMSY",
+          "exit": "RBV",
+          "route": "RBV Q430 BYRDD J48 CSN/delete FANPO Q40 NIOLA MERDN TRSSH"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 34000,
+          "destination": "KBNA",
+          "exit": "RBV",
+          "route": "RBV Q430 SAAME J6 HVQ/delete J78 IIU ULTRA RYYMN"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": 36000,
+          "destination": "KPHX",
+          "exit": "RBV",
+          "route": "RBV DANNR RAV J64 FWA WHETT DARCY EDENS LMN PWE HLC J64 PUB ALS J102 GUP EAGUL"
+        }
+      ]
     },
     "KTEB": {
       "approaches": {
@@ -103,6 +192,69 @@
           "cifp_id": "I33L"
         }
       }
+    },
+    "KPHL": {
+      "approaches": {
+        "I7R": {
+          "cifp_id": "I27R"
+        }
+      },
+      "departure_routes": {
+        "27L": {
+          "DITCH": {
+            "cleared_altitude": 12000,
+            "sid": "PHL4",
+            "waypoints": "N039.45.37.971,W075.22.16.239 N039.36.56.752,W075.16.41.019 N039.38.45.709,W075.03.31.926/ho68 DITCH",
+            "departure_controller": "P1E"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "PDT"
+            }
+          ],
+          "altitude": 33000,
+          "destination": "KBGR",
+          "exit": "DITCH",
+          "route": "DITCH T416 JIMEE WAVEY RIFLE Q439 BEEKN ENE BGR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "PDT"
+            }
+          ],
+          "altitude": 27000,
+          "destination": "KBOS",
+          "exit": "DITCH",
+          "route": "DITCH T416 JIMEE WAVEY SHIPP CCC RUIZE AWLIN BANKI ROBUC/delete"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "PDT"
+            }
+          ],
+          "altitude": 16000,
+          "destination": "KORH",
+          "exit": "DITCH",
+          "route": "DITCH T416 JIMEE WAVEY SHIPP CCC YANTC T320 GRAYM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UPS"
+            }
+          ],
+          "altitude": 39000,
+          "destination": "EDDK",
+          "exit": "DITCH",
+          "route": "DITCH T416 JIMEE WAVEY SHLEP KANNI N97B SUPRY 4600N/05000W 4800N/04000W 5000N/03000W 5130N/02000W LIMRI XETBO DOLIP ENJEX ADHAV AXNEF ZIPWE OZZIL SAWPE Q63 CPT UL9 BIG L607 KONAN KOK UL607 FERDI DENOX REMBA UL607 SPI T857 DENOV T861 ERUKI ERUKI1F"
+        }
+      ]
     }
   },
   "inbound_flows": {
@@ -144,6 +296,168 @@
               }
             ]
           }
+        }
+      ]
+    },
+    "Q448": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KMCO",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BAF Q448 BASYE/ho42 PTW J48 MOL/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            }
+          ],
+          "initial_altitude": 32000,
+          "assigned_altitude": 32000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BAF/ho42 Q448 BASYE Q448 PTW J48 CSN FANPO Q40 AEX DOOBI"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KFLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BAF/ho42 Q448 PTW J48 MOL/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KATL",
+              "icao": "DLH"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BAF/ho42 Q448 PTW J48 MOL/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            }
+          ],
+          "initial_altitude": 30000,
+          "assigned_altitude": 30000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BAF/ho42 Q448 TRIBS Q448 PTW J48 CSN FANPO Q40 AEX GESNR"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBDL",
+              "arrival_airport": "KATL",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BASYE/ho42 Q448 PTW GVE/delete"
+        }
+      ]
+    },
+    "J60": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KHPN",
+              "arrival_airport": "KMDW",
+              "icao": "SWA"
+            }
+          ],
+          "initial_altitude": 17000,
+          "assigned_altitude": 17000,
+          "initial_controller": "N5W",
+          "initial_speed": 300,
+          "waypoints": "N040.54.56.804,W074.46.37.943/ho39 NEWEL J60 DJB ASHEN PANGG"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KEWR",
+              "arrival_airport": "KSDF",
+              "icao": "UPS"
+            }
+          ],
+          "initial_altitude": 17000,
+          "assigned_altitude": 17000,
+          "initial_controller": "N5W",
+          "initial_speed": 300,
+          "waypoints": "N040.54.56.804,W074.46.37.943/ho39 NEWEL J60 PSB/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KLGA",
+              "arrival_airport": "KCLE",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 17000,
+          "assigned_altitude": 17000,
+          "initial_controller": "N5W",
+          "initial_speed": 300,
+          "waypoints": "N040.54.56.804,W074.46.37.943/ho39 NEWEL J60 PSB/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KORD",
+              "icao": "UAL"
+            }
+          ],
+          "initial_altitude": 25000,
+          "assigned_altitude": 25000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "CANDR/ho39 J60 DJB/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KEWR",
+              "arrival_airport": "KDEN",
+              "icao": "FFT"
+            }
+          ],
+          "initial_altitude": 17000,
+          "assigned_altitude": 17000,
+          "initial_controller": "N5W",
+          "initial_speed": 300,
+          "waypoints": "N040.54.56.804,W074.46.37.943/ho39 NEWEL J60 DJB/delete"
         }
       ]
     },
@@ -770,6 +1084,9 @@
         },
         "Overflights": {
           "overflights": 15
+        },
+        "Q448": {
+          "overflights": 20
         }
       },
       "wind": {
@@ -798,6 +1115,9 @@
         },
         "HYPER9 (GANDE/FILGA - 39)": {
           "KIAD": 25
+        },
+        "J60": {
+          "overflights": 20
         }
       },
       "wind": {
@@ -845,7 +1165,10 @@
           "KIAD": 15
         },
         "Overflights": {
-          "overflights": 15
+          "overflights": 5
+        },
+        "Q448": {
+          "overflights": 10
         }
       },
       "wind": {
@@ -897,7 +1220,13 @@
       "configuration": "N68",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [],
+      "departure_runways": [
+        {
+          "airport": "KPHL",
+          "runway": "27L",
+          "rate": 10
+        }
+      ],
       "arrival_runways": [
         {
           "airport": "KJFK",
@@ -957,7 +1286,13 @@
           "KIAD": 15
         },
         "Overflights": {
-          "overflights": 15
+          "overflights": 5
+        },
+        "Q448": {
+          "overflights": 10
+        },
+        "J60": {
+          "overflights": 10
         }
       },
       "wind": {
@@ -970,7 +1305,13 @@
       "configuration": "568",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [],
+      "departure_runways": [
+        {
+          "airport": "KPHL",
+          "runway": "27L",
+          "rate": 10
+        }
+      ],
       "arrival_runways": [
         {
           "airport": "KJFK",
@@ -1012,7 +1353,13 @@
       "configuration": "NYB",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [],
+      "departure_runways": [
+        {
+          "airport": "KPHL",
+          "runway": "27L",
+          "rate": 10
+        }
+      ],
       "arrival_runways": [
         {
           "airport": "KJFK",
@@ -1077,7 +1424,13 @@
           "KIAD": 15
         },
         "Overflights": {
-          "overflights": 15
+          "overflights": 5
+        },
+        "Q448": {
+          "overflights": 10
+        },
+        "J60": {
+          "overflights": 10
         }
       },
       "wind": {

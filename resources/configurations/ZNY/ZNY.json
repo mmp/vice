@@ -341,6 +341,9 @@
         },
         "default_consolidation": {
           "68": []
+        },
+        "departure_assignments": {
+          "KPHL": "68"
         }
       },
       "345": {
@@ -370,6 +373,9 @@
         },
         "default_consolidation": {
           "56": ["68"]
+        },
+        "departure_assignments": {
+          "KPHL": "68"
         }
       },
       "NYB": {
@@ -393,6 +399,9 @@
           "68": ["55"],
           "55": ["42"],
           "42": ["39"]
+        },
+        "departure_assignments": {
+          "KPHL": "68"
         }
       },
       "N08": {

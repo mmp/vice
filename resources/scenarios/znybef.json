@@ -696,6 +696,168 @@
         }
       ]
     },
+    "Q448": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KMCO",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BAF Q448 BASYE/ho42 PTW J48 MOL/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            }
+          ],
+          "initial_altitude": 32000,
+          "assigned_altitude": 32000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BAF/ho42 Q448 BASYE Q448 PTW J48 CSN FANPO Q40 AEX DOOBI"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KFLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BAF/ho42 Q448 PTW J48 MOL/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KATL",
+              "icao": "DLH"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BAF/ho42 Q448 PTW J48 MOL/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            }
+          ],
+          "initial_altitude": 30000,
+          "assigned_altitude": 30000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BAF/ho42 Q448 TRIBS Q448 PTW J48 CSN FANPO Q40 AEX GESNR"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBDL",
+              "arrival_airport": "KATL",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "BASYE/ho42 Q448 PTW GVE/delete"
+        }
+      ]
+    },
+    "J60": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KHPN",
+              "arrival_airport": "KMDW",
+              "icao": "SWA"
+            }
+          ],
+          "initial_altitude": 17000,
+          "assigned_altitude": 17000,
+          "initial_controller": "N5W",
+          "initial_speed": 300,
+          "waypoints": "N040.54.56.804,W074.46.37.943/ho39 NEWEL J60 DJB ASHEN PANGG"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KEWR",
+              "arrival_airport": "KSDF",
+              "icao": "UPS"
+            }
+          ],
+          "initial_altitude": 17000,
+          "assigned_altitude": 17000,
+          "initial_controller": "N5W",
+          "initial_speed": 300,
+          "waypoints": "N040.54.56.804,W074.46.37.943/ho39 NEWEL J60 PSB/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KLGA",
+              "arrival_airport": "KCLE",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 17000,
+          "assigned_altitude": 17000,
+          "initial_controller": "N5W",
+          "initial_speed": 300,
+          "waypoints": "N040.54.56.804,W074.46.37.943/ho39 NEWEL J60 PSB/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KORD",
+              "icao": "UAL"
+            }
+          ],
+          "initial_altitude": 25000,
+          "assigned_altitude": 25000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "CANDR/ho39 J60 DJB/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KEWR",
+              "arrival_airport": "KDEN",
+              "icao": "FFT"
+            }
+          ],
+          "initial_altitude": 17000,
+          "assigned_altitude": 17000,
+          "initial_controller": "N5W",
+          "initial_speed": 300,
+          "waypoints": "N040.54.56.804,W074.46.37.943/ho39 NEWEL J60 DJB/delete"
+        }
+      ]
+    },
     "METRO (66)": {
       "arrivals": [
         {
@@ -1745,6 +1907,12 @@
           "KJFK": 3
         },
         "Overflights (Area B)": {
+          "overflights": 5
+        },
+        "Q448": {
+          "overflights": 5
+        },
+        "J60": {
           "overflights": 5
         }
       },
