@@ -1,3 +1,3 @@
-- Scenario updates: BOI (Elliot B), MIA (manaphy), PCT, NCT (Ketan K)
+- Scenario updates: BOI (Elliot B), MIA, ZJX (manaphy), PCT, NCT (Ketan K)
 - STARS
  - Fixed bug where aircraft on visual approaches could have unwanted MSAW alerts

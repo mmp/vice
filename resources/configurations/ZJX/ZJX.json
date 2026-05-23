@@ -91,7 +91,7 @@
       "radio_name": "Jacksonville Center"
     },
     "49": {
-      "callsign": "ZJX 49 Moultrie",
+      "callsign": "ZJX 49 Moultrie/ZJX Central",
       "frequency": 133300,
       "radio_name": "Jacksonville Center"
     },
@@ -101,7 +101,7 @@
       "radio_name": "JAX Center"
     },
     "51": {
-      "callsign": "ZJX 51 KNEMO",
+      "callsign": "ZJX 51 KNEMO/ZJX Atlantic",
       "frequency": 120125,
       "radio_name": "Jacksonville Center"
     },
@@ -191,7 +191,7 @@
       "radio_name": "JAX Center"
     },
     "85": {
-      "callsign": "ZJX 85 Micanopy",
+      "callsign": "ZJX 85 Micanopy/ZJX Panhandle",
       "frequency": 128625,
       "radio_name": "Jacksonville Center"
     },
@@ -269,17 +269,18 @@
           "KVPS": "11",
           "KTLH": "11"
         },
-        "default_consolidation": { "11": [] }
+        "default_consolidation": { "11": ["21"] }
       },
       "J30": {
         "inbound_assignments": {
-          "Overflights": "30",
-          "PRICY4": "30"
+          "Y280/Q100 (West)": "30",
+          "Y290/Q102 (West)": "30",
+          "Y280 CHRGE.PRICY5": "30",
+          "Y280 CHRGE.RAYZZ3": "30",
+          "Y290 DOWRY TEEKY4": "30",
+          "Y290 DOWRY FROGZ5": "30"
         },
-        "departure_assignments": {
-          "KMCO": "30"
-        },
-        "default_consolidation": { "30": [] }
+        "default_consolidation": { "30": ["31"] }
       },
       "J50": {
         "inbound_assignments": {
