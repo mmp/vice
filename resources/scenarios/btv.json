@@ -1,36 +1,195 @@
 {
   "tracon": "BTV",
   "airports": {
-    "KPBG": {
+    "6B0": {
       "vfr": {
         "random_routes": {
-          "rate": 5
+          "fleet": "GAsinglepiston",
+          "rate": 1
+        }
+      }
+    },
+    "KGFL": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAmultipiston",
+          "rate": 1
+        }
+      }
+    },
+    "KHIE": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAmultipiston",
+          "rate": 1
+        }
+      }
+    },
+    "KCDA": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 1
+        }
+      }
+    },
+    "KPTD": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 1
+        }
+      }
+    },
+    "KMSS": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAmultipiston",
+          "rate": 1
+        }
+      }
+    },
+    "KOGS": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 1
+        }
+      }
+    },
+    "KEFK": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 1
+        }
+      }
+    },
+    "KMAL": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 1
+        }
+      }
+    },
+    "KLKP": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 2
+        }
+      }
+    },
+    "KRUT": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAmultipiston",
+          "rate": 3
+        }
+      }
+    },
+    "KMPV": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 2
         }
       },
       "approaches": {
+        "I17": {
+          "cifp_id": "I17"
+        },
         "R17": {
           "cifp_id": "R17"
-        },
-        "I35": {
-          "cifp_id": "I35"
         },
         "R35": {
           "cifp_id": "R35"
         }
+      }
+    },
+    "KSLK": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAmultipiston",
+          "rate": 2
+        }
+      },
+      "approaches": {
+        "I23": {
+          "cifp_id": "I23"
+        },
+        "R23": {
+          "cifp_id": "R23"
+        },
+        "R5": {
+          "cifp_id": "R5"
+        }
+      }
+    },
+    "4B6": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 1
+        }
+      }
+    },
+    "KFSO": {
+      "hold_for_release": true,
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 2
+        },
+        "routes": [
+          {
+            "name": "FSO SE Local Departures",
+            "fleet": "GAsinglepiston",
+            "rate": 2,
+            "destination": "KFSO",
+            "waypoints": "N044.41.57.214,W072.55.15.509/radius10/a1200-6500/airwork30m10nm"
+          },
+          {
+            "name": "FSO W Local Departures",
+            "fleet": "GAmultipiston",
+            "rate": 2,
+            "destination": "KFSO",
+            "waypoints": "N044.44.08.680,W073.35.08.770/radius10/a1200-6500/airwork30m10nm"
+          }
+        ]
+      },
+      "approaches": {
+        "R36": {
+          "cifp_id": "R36"
+        },
+        "R18": {
+          "cifp_id": "R18"
+        }
       },
       "departure_routes": {
-        "35": {
-          "BUGSY, DANZI, ALB": {
+        "36": {
+          "ENSON": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KPBG/h350"
+            "waypoints": "KFSO-18/h003@a1000/ld ENSON"
+          },
+          "MPV": {
+            "assigned_altitude": 10000,
+            "sid": null,
+            "waypoints": "KFSO-18/h003@a1000/rd MPV"
           }
         },
-        "17": {
-          "BUGSY, DANZI, ALB": {
+        "18": {
+          "ENSON": {
             "assigned_altitude": 10000,
             "sid": null,
-            "waypoints": "KPBG/h170"
+            "waypoints": "KFSO-36/h238@a2100/ld ENSON"
+          },
+          "MPV": {
+            "assigned_altitude": 10000,
+            "sid": null,
+            "waypoints": "KFSO-36/h238@a2100/ld MPV"
           }
         }
       },
@@ -39,61 +198,147 @@
           "airlines": [
             {
               "icao": "N",
-              "fleet": "cessna"
+              "fleet": "GAturbine"
             }
           ],
-          "destination": "KEWN",
-          "exit": "DANZI",
-          "scratchpad": "DAN",
-          "route": "DANZI LAAYK T295 RAYAA BAABS LOUIE SHLBK COLIN"
+          "destination": "KHPN",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU RIVVR VALRE1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "altitude": [6000, 8000, 10000],
+          "destination": "KTEB",
+          "exit": "ENSON",
+          "scratchpad": "CAM",
+          "route": "ENSON T463 CAM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ],
+          "altitude": [8000, 10000],
+          "destination": "KMMU",
+          "exit": "ENSON",
+          "scratchpad": "CAM",
+          "route": "ENSON T463 CAM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            }
+          ],
+          "altitude": [7000, 9000],
+          "destination": "KBED",
+          "exit": "MPV",
+          "scratchpad": "LEB",
+          "route": "MPV MHT"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "altitude": [8000, 10000],
+          "destination": "KRME",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU RME"
         }
       ]
     },
-    "KBTV": {
+    "KMVL": {
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 1
+        }
+      }
+    },
+    "KPBG": {
+      "hold_for_release": true,
+      "vfr": {
+        "random_routes": {
+          "fleet": "GAsinglepiston",
+          "rate": 2
+        },
+        "routes": [
+          {
+            "name": "PBG S Local Departures",
+            "fleet": "GAsinglepiston",
+            "rate": 2,
+            "destination": "KPBG",
+            "waypoints": "N044.13.57.405,W073.23.46.959/radius10/a1200-6500/airwork30m10nm"
+          },
+          {
+            "name": "PBG NE Local Departures",
+            "fleet": "GAmultipiston",
+            "rate": 2,
+            "destination": "KPBG",
+            "waypoints": "N044.47.09.432,W073.01.10.367/radius10/a1200-6500/airwork30m10nm"
+          }
+        ]
+      },
       "approaches": {
-        "I15": {
-          "cifp_id": "I15"
+        "R17": {
+          "cifp_id": "R17"
         },
-        "I33": {
-          "cifp_id": "I33"
+        "I35": {
+          "cifp_id": "I35"
         },
-        "R15": {
-          "cifp_id": "R15"
+        "L35": {
+          "cifp_id": "L35"
         },
-        "R33": {
-          "cifp_id": "RY33"
-        },
-        "S1": {
-          "cifp_id": "S1"
+        "R35": {
+          "cifp_id": "R35"
         }
       },
       "departure_routes": {
-        "15": {
-          "SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX": {
+        "35": {
+          "DENYU": {
             "assigned_altitude": 10000,
-            "sid": "BTV1",
-            "waypoints": "KBTV/h150"
+            "sid": null,
+            "waypoints": "KPBG-17/h352@a2800/ld DENYU"
+          },
+          "ENSON": {
+            "assigned_altitude": 10000,
+            "sid": null,
+            "waypoints": "KPBG-17/h352@a2800/ld ENSON"
+          },
+          "MPV": {
+            "assigned_altitude": 10000,
+            "sid": null,
+            "waypoints": "KPBG-17/h352@a2800/rd MPV"
           }
         },
-        "33": {
-          "SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX": {
+        "17": {
+          "DENYU": {
             "assigned_altitude": 10000,
-            "sid": "BTV1",
-            "waypoints": "BTV/h330"
-          }
-        },
-        "1": {
-          "SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX": {
+            "sid": null,
+            "waypoints": "KPBG-35/h172@a2500/rd DENYU"
+          },
+          "ENSON": {
             "assigned_altitude": 10000,
-            "sid": "BTV1",
-            "waypoints": "BTV/h010"
-          }
-        },
-        "19": {
-          "SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX": {
+            "sid": null,
+            "waypoints": "KPBG-35/h172@a2500/rd ENSON"
+          },
+          "MPV": {
             "assigned_altitude": 10000,
-            "sid": "BTV1",
-            "waypoints": "BTV/h190"
+            "sid": null,
+            "waypoints": "KPBG-35/h172@a2500/ld MPV"
           }
         }
       },
@@ -101,24 +346,454 @@
         {
           "airlines": [
             {
-              "icao": "JIA"
+              "icao": "N",
+              "fleet": "GAjet"
             }
           ],
-          "destination": "KDCA",
-          "exit": "BTV",
-          "route": "BTV PONCT BIZEX Q75 MXE CLIPR3",
-          "scratchpad": "BTV"
+          "destination": "KHPN",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU RIVVR VALRE1"
         },
         {
           "airlines": [
             {
-              "icao": "AAL"
+              "icao": "N",
+              "fleet": "GAjet"
+            }
+          ],
+          "destination": "KPWK",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU GONZZ"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "altitude": [6000, 8000, 10000],
+          "destination": "KTEB",
+          "exit": "ENSON",
+          "scratchpad": "CAM",
+          "route": "ENSON T463 CAM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ],
+          "altitude": [8000, 10000],
+          "destination": "KMMU",
+          "exit": "ENSON",
+          "scratchpad": "CAM",
+          "route": "ENSON T463 CAM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            }
+          ],
+          "altitude": [7000, 9000],
+          "destination": "KBED",
+          "exit": "MPV",
+          "scratchpad": "LEB",
+          "route": "MPV MHT"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            }
+          ],
+          "destination": "KPIE",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU PONCT"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            }
+          ],
+          "destination": "KFLL",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU PONCT"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY",
+              "fleet": "default"
+            }
+          ],
+          "destination": "KRDU",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU PONCT"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY",
+              "fleet": "default"
+            }
+          ],
+          "destination": "KTPA",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU PONCT"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VTE",
+              "types": ["E135"]
+            }
+          ],
+          "destination": "KIAD",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU ALB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "types": ["SF34"]
+            }
+          ],
+          "destination": "KCAK",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU GONZZ"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "types": ["C208"]
+            }
+          ],
+          "altitude": [8000, 10000],
+          "destination": "KSYR",
+          "exit": "DENYU",
+          "scratchpad": "SYR",
+          "route": "DENYU SYR"
+        }
+      ]
+    },
+    "KBTV": {
+      "approaches": {
+        "R1": {
+          "cifp_id": "R1"
+        },
+        "S1": {
+          "cifp_id": "S1"
+        },
+        "I15": {
+          "cifp_id": "I15"
+        },
+        "L15": {
+          "cifp_id": "L15"
+        },
+        "R15": {
+          "cifp_id": "R15"
+        },
+        "I33": {
+          "cifp_id": "I33"
+        },
+        "L33": {
+          "cifp_id": "L33"
+        },
+        "RY33": {
+          "cifp_id": "RY33"
+        },
+        "RZ33": {
+          "cifp_id": "RZ33"
+        }
+      },
+      "departure_routes": {
+        "15": {
+          "DENYU, SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX, PONCT": {
+            "assigned_altitude": 10000,
+            "sid": "BTV1",
+            "waypoints": "KBTV-33/h146@a1000/h190"
+          }
+        },
+        "33": {
+          "DENYU, SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX, PONCT": {
+            "assigned_altitude": 10000,
+            "sid": "BTV1",
+            "waypoints": "KBTV-15/h326"
+          }
+        },
+        "1": {
+          "DENYU, SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX, PONCT": {
+            "assigned_altitude": 10000,
+            "sid": "BTV1",
+            "waypoints": "KBTV-19/h006"
+          }
+        },
+        "19": {
+          "DENYU, SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX, PONCT": {
+            "assigned_altitude": 10000,
+            "sid": "BTV1",
+            "waypoints": "KBTV-1/h186"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAjet"
+            }
+          ],
+          "destination": "KMKE",
+          "exit": "DENYU",
+          "route": "DENYU GONZZ",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAjet"
+            }
+          ],
+          "destination": "KAPA",
+          "exit": "DENYU",
+          "route": "DENYU GONZZ",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAjet"
+            }
+          ],
+          "destination": "KFRG",
+          "exit": "DENYU",
+          "route": "DENYU PONCT PUCKY1",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAjet"
+            }
+          ],
+          "destination": "KDAB",
+          "exit": "DENYU",
+          "route": "DENYU PONCT BIZEX",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAjet"
+            }
+          ],
+          "destination": "KMHT",
+          "exit": "MPV",
+          "route": "MPV MHT",
+          "scratchpad": "LEB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ],
+          "destination": "KACK",
+          "exit": "MPV",
+          "route": "MPV MHT LFV",
+          "scratchpad": "LEB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ],
+          "destination": "KPVD",
+          "exit": "MPV",
+          "route": "MPV BAF",
+          "scratchpad": "LEB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ],
+          "destination": "KOXC",
+          "exit": "DENYU",
+          "route": "DENYU ALB",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ],
+          "destination": "KAGC",
+          "exit": "DENYU",
+          "route": "DENYU SYR",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            }
+          ],
+          "altitude": [6000, 8000, 10000],
+          "destination": "KSCH",
+          "exit": "ENSON",
+          "route": "ENSON T463 CAM",
+          "scratchpad": "CAM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            }
+          ],
+          "altitude": [8000, 10000],
+          "destination": "KFZY",
+          "exit": "DENYU",
+          "route": "DENYU SYR",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            }
+          ],
+          "altitude": [6000, 8000, 10000],
+          "destination": "KSWF",
+          "exit": "ENSON",
+          "route": "ENSON T463 CAM",
+          "scratchpad": "CAM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "altitude": [6000, 8000, 10000],
+          "destination": "KPOU",
+          "exit": "ENSON",
+          "route": "ENSON T463 CAM",
+          "scratchpad": "CAM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "altitude": [6000, 8000, 10000],
+          "destination": "KDXR",
+          "exit": "ENSON",
+          "route": "ENSON T463 CAM",
+          "scratchpad": "CAM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "altitude": [7000, 9000],
+          "destination": "KLWM",
+          "exit": "MPV",
+          "route": "MPV MHT",
+          "scratchpad": "LEB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KORD",
+          "exit": "DENYU",
+          "route": "DENYU GONZZ",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KCLT",
+          "exit": "DENYU",
+          "route": "DENYU PONCT",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "DENYU",
+          "route": "DENYU ALB VADDR1",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KDCA",
+          "exit": "DENYU",
+          "route": "DENYU PONCT BIZEX",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
             }
           ],
           "destination": "KPHL",
-          "exit": "ALB",
-          "route": "ALB DNY SPUDS7",
-          "scratchpad": "ALB"
+          "exit": "DENYU",
+          "route": "DENYU ALB DNY SPUDS7",
+          "scratchpad": "SYR"
         },
         {
           "airlines": [
@@ -127,220 +802,1274 @@
             }
           ],
           "destination": "KMCO",
-          "exit": "BIZEX",
-          "route": "BIZEX MXE Q75 FISHO Q93 GIPPL Q85 LPERD SNFLD3",
-          "scratchpad": "BIZ"
+          "exit": "DENYU",
+          "route": "DENYU PONCT BIZEX",
+          "scratchpad": "SYR"
         },
         {
           "airlines": [
             {
-              "icao": "RPA"
+              "icao": "MXY"
+            }
+          ],
+          "destination": "KRSW",
+          "exit": "DENYU",
+          "route": "DENYU PONCT BIZEX",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "types": ["A319", "A320", "B712"]
+            }
+          ],
+          "destination": "KATL",
+          "exit": "DENYU",
+          "route": "DENYU ALB",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "DENYU",
+          "route": "DENYU ALB VADDR1",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KJFK",
+          "exit": "DENYU",
+          "route": "DENYU PONCT",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KDTW",
+          "exit": "DENYU",
+          "route": "DENYU GONZZ",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KMSP",
+          "exit": "DENYU",
+          "route": "DENYU GONZZ",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SCX"
+            }
+          ],
+          "destination": "KMSP",
+          "exit": "DENYU",
+          "route": "DENYU GONZZ",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "types": ["A319", "A320", "B738"]
+            }
+          ],
+          "destination": "KORD",
+          "exit": "DENYU",
+          "route": "DENYU GONZZ",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "types": ["A319", "A320", "B738"]
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "DENYU",
+          "route": "DENYU GONZZ",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UCA"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "DENYU",
+          "route": "DENYU HANAA FLOSI4",
+          "scratchpad": "SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UCA"
             }
           ],
           "destination": "KIAD",
-          "exit": "ALB",
-          "route": "ALB HYPER9",
-          "scratchpad": "ALB"
+          "exit": "DENYU",
+          "route": "DENYU ALB HYPER9",
+          "scratchpad": "SYR"
         }
       ],
       "tower_list": 1
     }
   },
   "inbound_flows": {
-    "LBNON Arrival Land 15": {
+    "PLOTT Arrival 15/17": {
       "arrivals": [
         {
-          "waypoints": "LBNON CEVIB/ho BTV",
-          "route": "./ CEVIB BTV",
-          "initial_controller": "C37",
-          "initial_altitude": 9000,
-          "initial_speed": 270,
+          "waypoints": "N044.36.11.763,W072.00.55.618 PLOTT N044.30.34.140,W072.29.01.168/ho BTV",
+          "route": "CBIRD PLOTT BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 10000,
+          "initial_speed": 160,
           "expect_approach": null,
           "airlines": {
             "KBTV": [
               {
-                "icao": "EJA",
-                "airport": "KIAD"
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KRKD"
               },
               {
-                "icao": "JIA",
-                "airport": "KCLT"
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KBGR"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KLRG"
               },
               {
-                "icao": "UAL",
-                "airport": "KORD"
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KBHB"
+              }
+            ]
+          }
+        }
+      ],
+      "overflights": [
+        {
+          "description": "BHB-SLK",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston",
+              "departure_airport": "KBHB",
+              "arrival_airport": "KSLK"
+            }
+          ],
+          "waypoints": "N044.36.11.763,W072.00.55.618 PLOTT N044.30.34.140,W072.29.01.168/ho BTV KSLK",
+          "initial_altitude": [8000, 10000],
+          "initial_controller": "C53",
+          "initial_speed": 160
+        },
+        {
+          "description": "AUG-OGS",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston",
+              "departure_airport": "KAUG",
+              "arrival_airport": "KOGS"
+            }
+          ],
+          "waypoints": "N044.36.11.763,W072.00.55.618 PLOTT N044.34.33.669,W072.22.36.811/ho STANK T300 SSENA",
+          "initial_altitude": [8000, 10000],
+          "initial_controller": "C53",
+          "initial_speed": 160
+        }
+      ]
+    },
+    "STANK Arrival 15/17": {
+      "arrivals": [
+        {
+          "waypoints": "N044.50.24.453,W074.22.39.613 STANK/ho BTV",
+          "route": "SSENA T300 STANK BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 7000,
+          "initial_speed": 160,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KOGS"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KART"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KFZY"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KMSS"
               }
             ]
           }
         }
       ]
     },
-    "LBNON Arrival Land 33": {
+    "POROE Arrival 15/17": {
       "arrivals": [
         {
-          "waypoints": "LBNON CEVIB/ho BTV",
-          "route": "./ CEVIB BTV",
-          "initial_controller": "C37",
-          "initial_altitude": 9000,
-          "initial_speed": 270,
+          "waypoints": "DAVID T393 MPV N044.07.11.680,W072.31.51.181/ho BTV",
+          "route": "DAVID T393 BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 8000,
+          "initial_speed": 160,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KLWM"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KBED"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KPSM"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KACK"
+              }
+            ],
+            "KFSO": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KOWD"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KMVY"
+              }
+            ]
+          }
+        }
+      ],
+      "overflights": [
+        {
+          "description": "MPV-SLK",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston",
+              "departure_airport": "KLEB",
+              "arrival_airport": "KSLK"
+            }
+          ],
+          "waypoints": "DAVID T393 MPV N044.07.11.680,W072.31.51.181/ho BTV KSLK",
+          "initial_altitude": [8000, 10000],
+          "initial_controller": "C53",
+          "initial_speed": 160
+        },
+        {
+          "description": "MPV-MSS",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston",
+              "departure_airport": "KLWM",
+              "arrival_airport": "KMSS"
+            }
+          ],
+          "waypoints": "DAVID T393 MPV N044.07.11.680,W072.31.51.181/ho BTV STANK T300 SSENA",
+          "initial_altitude": [8000, 10000],
+          "initial_controller": "C53",
+          "initial_speed": 140
+        }
+      ]
+    },
+    "ENSON Arrival 15/17": {
+      "arrivals": [
+        {
+          "waypoints": "GRISS T463 ENSON/ho T463 BTV",
+          "route": "GRISS T463 BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 7000,
+          "initial_speed": 160,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KBDR"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KHVN"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KMGJ"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KHWV"
+              }
+            ],
+            "KFSO": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KALB"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KDXR"
+              }
+            ]
+          }
+        }
+      ],
+      "overflights": [
+        {
+          "description": "CDW-YHU",
+          "airlines": [
+            {
+              "icao": "CF",
+              "fleet": "lightGA",
+              "departure_airport": "KCDW",
+              "arrival_airport": "CYHU"
+            }
+          ],
+          "waypoints": "GRISS T463 ENSON/ho PBERG T705 MUTNA",
+          "initial_altitude": [5000, 7000, 9000],
+          "initial_controller": "C53",
+          "initial_speed": 160
+        },
+        {
+          "description": "SWF-YRQ",
+          "airlines": [
+            {
+              "icao": "CG",
+              "fleet": "lightGA",
+              "departure_airport": "KSWF",
+              "arrival_airport": "CYRQ"
+            }
+          ],
+          "waypoints": "GRISS T463 ENSON/ho T463 BTV",
+          "initial_altitude": [5000, 7000, 9000],
+          "initial_controller": "C53",
+          "initial_speed": 160
+        }
+      ]
+    },
+    "GRNMT Arrival 15/17": {
+      "arrivals": [
+        {
+          "waypoints": "N043.31.17.096,W073.08.52.452 N043.48.11.011,W073.02.31.501/ho GRNMT/a11000 BTV",
+          "route": "CAM GRNMT BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 17000,
+          "initial_speed": 330,
           "expect_approach": null,
           "airlines": {
             "KBTV": [
               {
                 "icao": "EJA",
-                "airport": "KIAD"
+                "airport": "KISP"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KROA"
               },
               {
                 "icao": "JIA",
                 "airport": "KCLT"
               },
               {
-                "icao": "UAL",
-                "airport": "KORD"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "RUT Arrival Land 15": {
-      "arrivals": [
-        {
-          "waypoints": "RUT ENSON/ho WEIGH WINLA BTV",
-          "route": "./ WEIGH WINLA BTV",
-          "initial_controller": "C37",
-          "initial_altitude": 9000,
-          "initial_speed": 270,
-          "expect_approach": null,
-          "airlines": {
-            "KBTV": [
+                "icao": "GJS",
+                "airport": "KEWR"
+              },
               {
-                "icao": "EDV",
+                "icao": "RPA",
+                "airport": "KPHL"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KDCA"
+              },
+              {
+                "icao": "MXY",
+                "airport": "KTPA"
+              },
+              {
+                "icao": "ENY",
                 "airport": "KLGA"
               },
               {
-                "icao": "LXJ",
-                "airport": "KMVY"
+                "icao": "UCA",
+                "airport": "KIAD"
               },
               {
-                "icao": "UAL",
-                "airport": "KDEN"
+                "icao": "DAL",
+                "airport": "KATL",
+                "types": ["A319", "A320", "B712"]
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KACY"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KPNE"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "WUP",
+                "airport": "KSAV"
+              },
+              {
+                "icao": "JAS",
+                "airport": "KPVD"
+              },
+              {
+                "icao": "MXY",
+                "airport": "KTPA"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KPIE"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KCHS"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KORF"
               }
             ]
           }
         }
       ]
     },
-    "RUT Arrival Land 33": {
+    "PLOTT Arrival 33/35": {
       "arrivals": [
         {
-          "waypoints": "RUT ENSON/ho WEIGH WINLA BTV",
-          "route": "./ WEIGH WINLA BTV",
-          "initial_controller": "C37",
-          "initial_altitude": 9000,
-          "initial_speed": 270,
+          "waypoints": "N044.36.11.763,W072.00.55.618 PLOTT N044.30.34.140,W072.29.01.168/ho BTV",
+          "route": "CBIRD PLOTT BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 10000,
+          "initial_speed": 160,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KRKD"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KBGR"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KLRG"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KBHB"
+              }
+            ]
+          }
+        }
+      ],
+      "overflights": [
+        {
+          "description": "BHB-SLK",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston",
+              "departure_airport": "KBHB",
+              "arrival_airport": "KSLK"
+            }
+          ],
+          "waypoints": "N044.36.11.763,W072.00.55.618 PLOTT N044.30.34.140,W072.29.01.168/ho BTV KSLK",
+          "initial_altitude": [8000, 10000],
+          "initial_controller": "C53",
+          "initial_speed": 160
+        },
+        {
+          "description": "AUG-OGS",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston",
+              "departure_airport": "KAUG",
+              "arrival_airport": "KOGS"
+            }
+          ],
+          "waypoints": "N044.36.11.763,W072.00.55.618 PLOTT N044.34.33.669,W072.22.36.811/ho STANK T300 SSENA",
+          "initial_altitude": [8000, 10000],
+          "initial_controller": "C53",
+          "initial_speed": 160
+        }
+      ]
+    },
+    "STANK Arrival 33/35": {
+      "arrivals": [
+        {
+          "waypoints": "N044.50.24.453,W074.22.39.613 STANK/ho BTV",
+          "route": "SSENA T300 STANK BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 7000,
+          "initial_speed": 160,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KOGS"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KART"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KFZY"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KMSS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "POROE Arrival 33/35": {
+      "arrivals": [
+        {
+          "waypoints": "DAVID T393 MPV N044.07.11.680,W072.31.51.181/ho BTV",
+          "route": "DAVID T393 BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 8000,
+          "initial_speed": 160,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KLWM"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KBED"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KPSM"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KACK"
+              }
+            ],
+            "KFSO": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KOWD"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KMVY"
+              }
+            ]
+          }
+        }
+      ],
+      "overflights": [
+        {
+          "description": "MPV-SLK",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston",
+              "departure_airport": "KLEB",
+              "arrival_airport": "KSLK"
+            }
+          ],
+          "waypoints": "DAVID T393 MPV N044.07.11.680,W072.31.51.181/ho BTV KSLK",
+          "initial_altitude": [8000, 10000],
+          "initial_controller": "C53",
+          "initial_speed": 160
+        },
+        {
+          "description": "MPV-MSS",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston",
+              "departure_airport": "KLWM",
+              "arrival_airport": "KMSS"
+            }
+          ],
+          "waypoints": "DAVID T393 MPV N044.07.11.680,W072.31.51.181/ho BTV STANK T300 SSENA",
+          "initial_altitude": [8000, 10000],
+          "initial_controller": "C53",
+          "initial_speed": 140
+        }
+      ]
+    },
+    "ENSON Arrival 33/35": {
+      "arrivals": [
+        {
+          "waypoints": "GRISS T463 ENSON/ho T463 BTV",
+          "route": "GRISS T463 BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 7000,
+          "initial_speed": 160,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KBDR"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KHVN"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KMGJ"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KHWV"
+              }
+            ],
+            "KFSO": [
+              {
+                "icao": "N",
+                "fleet": "GAsinglepiston",
+                "airport": "KALB"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KDXR"
+              }
+            ]
+          }
+        }
+      ],
+      "overflights": [
+        {
+          "description": "CDW-YHU",
+          "airlines": [
+            {
+              "icao": "CF",
+              "fleet": "lightGA",
+              "departure_airport": "KCDW",
+              "arrival_airport": "CYHU"
+            }
+          ],
+          "waypoints": "GRISS T463 ENSON/ho PBERG T705 MUTNA",
+          "initial_altitude": [5000, 7000, 9000],
+          "initial_controller": "C53",
+          "initial_speed": 160
+        },
+        {
+          "description": "SWF-YRQ",
+          "airlines": [
+            {
+              "icao": "CG",
+              "fleet": "lightGA",
+              "departure_airport": "KSWF",
+              "arrival_airport": "CYRQ"
+            }
+          ],
+          "waypoints": "GRISS T463 ENSON/ho T463 BTV",
+          "initial_altitude": [5000, 7000, 9000],
+          "initial_controller": "C53",
+          "initial_speed": 160
+        }
+      ]
+    },
+    "GRNMT Arrival 33/35": {
+      "arrivals": [
+        {
+          "waypoints": "N043.31.17.096,W073.08.52.452 N043.48.11.011,W073.02.31.501/ho GRNMT/a11000 BTV",
+          "route": "CAM GRNMT BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 17000,
+          "initial_speed": 330,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "EJA",
+                "airport": "KISP"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KROA"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "GJS",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KPHL"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KDCA"
+              },
+              {
+                "icao": "MXY",
+                "airport": "KTPA"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "UCA",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL",
+                "types": ["A319", "A320", "B712"]
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KACY"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KPNE"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "WUP",
+                "airport": "KSAV"
+              },
+              {
+                "icao": "JAS",
+                "airport": "KPVD"
+              },
+              {
+                "icao": "MXY",
+                "airport": "KTPA"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KPIE"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KCHS"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KORF"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "LAGGS Arrival 15/17": {
+      "arrivals": [
+        {
+          "waypoints": "N044.02.52.636,W074.39.47.905 LAGGS/a11000/ho BTV",
+          "route": "SYR LAGGS BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 17000,
+          "initial_speed": 330,
           "expect_approach": null,
           "airlines": {
             "KBTV": [
               {
                 "icao": "LXJ",
+                "airport": "KOMA"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KORD",
+                "types": ["A319", "A320", "B738"]
+              },
+              {
+                "icao": "JTL",
+                "airport": "KPWK"
+              },
+              {
+                "icao": "EDV",
                 "airport": "KDTW"
               },
               {
-                "icao": "JIA",
-                "airport": "KMKE"
+                "icao": "SCX",
+                "airport": "KMSP"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KDSM"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KBUF"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B752"],
+                "airport": "KSYR"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KTOL"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KDET"
+              },
+              {
+                "icao": "N",
+                "types": ["SF34"],
+                "airport": "KCAK"
+              },
+              {
+                "icao": "WUP",
+                "airport": "KCMH"
+              },
+              {
+                "icao": "TWY",
+                "airport": "KEVV"
+              }
+            ],
+            "KFSO": [
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KERI"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KDKK"
               }
             ]
           }
+        }
+      ],
+      "overflights": [
+        {
+          "description": "UES-MPV",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAjet",
+              "departure_airport": "KUES",
+              "arrival_airport": "KMPV"
+            }
+          ],
+          "waypoints": "N044.02.52.636,W074.39.47.905 N044.06.06.641,W073.56.12.171/ho N044.07.06.228,W073.42.50.306/a11000 KMPV",
+          "initial_altitude": 17000,
+          "initial_controller": "C53",
+          "initial_speed": 290
+        },
+        {
+          "description": "IAG-MPV",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine",
+              "departure_airport": "KIAG",
+              "arrival_airport": "KMPV"
+            }
+          ],
+          "waypoints": "N044.02.52.636,W074.39.47.905 N044.06.06.641,W073.56.12.171/ho N044.07.06.228,W073.42.50.306/a11000 KMPV",
+          "initial_altitude": 15000,
+          "initial_controller": "C53",
+          "initial_speed": 250
+        }
+      ]
+    },
+    "LAGGS Arrival 33/35": {
+      "arrivals": [
+        {
+          "waypoints": "N044.02.52.636,W074.39.47.905 LAGGS/a11000/ho BTV",
+          "route": "SYR LAGGS BTV",
+          "initial_controller": "C53",
+          "initial_altitude": 17000,
+          "initial_speed": 330,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "LXJ",
+                "airport": "KOMA"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KORD"
+              },
+              {
+                "icao": "JTL",
+                "airport": "KPWK"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "SCX",
+                "airport": "KMSP"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KDSM"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KBUF"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B752"],
+                "airport": "KSYR"
+              }
+            ],
+            "KPBG": [
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KTOL"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KDET"
+              },
+              {
+                "icao": "N",
+                "types": ["SF34"],
+                "airport": "KCAK"
+              },
+              {
+                "icao": "WUP",
+                "airport": "KCMH"
+              },
+              {
+                "icao": "TWY",
+                "airport": "KEVV"
+              }
+            ],
+            "KFSO": [
+              {
+                "icao": "N",
+                "fleet": "GAturbine",
+                "airport": "KERI"
+              },
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KDKK"
+              }
+            ]
+          }
+        }
+      ],
+      "overflights": [
+        {
+          "description": "UES-MPV",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAjet",
+              "departure_airport": "KUES",
+              "arrival_airport": "KMPV"
+            }
+          ],
+          "waypoints": "N044.02.52.636,W074.39.47.905 N044.06.06.641,W073.56.12.171/ho N044.07.06.228,W073.42.50.306/a11000 KMPV",
+          "initial_altitude": 17000,
+          "initial_controller": "C53",
+          "initial_speed": 290
+        },
+        {
+          "description": "IAG-MPV",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine",
+              "departure_airport": "KIAG",
+              "arrival_airport": "KMPV"
+            }
+          ],
+          "waypoints": "N044.02.52.636,W074.39.47.905 N044.06.06.641,W073.56.12.171/ho N044.07.06.228,W073.42.50.306/a11000 KMPV",
+          "initial_altitude": 15000,
+          "initial_controller": "C53",
+          "initial_speed": 250
         }
       ]
     }
   },
   "primary_airport": "KBTV",
-  "default_scenario": "BTV Land 15",
+  "default_scenario": "KBTV NORTH",
   "name": "BTV",
+  "vfr_reporting_points": [
+    {
+      "description": "Basin Harbor",
+      "location": "N044.11.30.682,W073.21.32.239"
+    },
+    {
+      "description": "Cambridge",
+      "location": "N044.40.17.514,W072.57.14.381"
+    }
+  ],
   "scenarios": {
-    "BTV Land 15": {
+    "KBTV SOUTH": {
       "arrival_runways": [
         {
           "airport": "KBTV",
           "runway": "15"
+        },
+        {
+          "airport": "KPBG",
+          "runway": "17"
+        },
+        {
+          "airport": "KFSO",
+          "runway": "18"
         }
       ],
       "inbound_rates": {
-        "LBNON Arrival Land 15": {
-          "KBTV": 10
+        "PLOTT Arrival 15/17": {
+          "KBTV": 1,
+          "KPBG": 1,
+          "overflights": 1
         },
-        "RUT Arrival Land 33": {
-          "KBTV": 0
+        "STANK Arrival 15/17": {
+          "KBTV": 1,
+          "KPBG": 1
         },
-        "LBNON Arrival Land 33": {
-          "KBTV": 0
+        "POROE Arrival 15/17": {
+          "KBTV": 1,
+          "KPBG": 1,
+          "KFSO": 1,
+          "overflights": 1
         },
-        "RUT Arrival Land 15": {
-          "KBTV": 10
+        "ENSON Arrival 15/17": {
+          "KBTV": 2,
+          "KPBG": 1,
+          "KFSO": 1,
+          "overflights": 1
+        },
+        "GRNMT Arrival 15/17": {
+          "KBTV": 4,
+          "KPBG": 1
+        },
+        "LAGGS Arrival 15/17": {
+          "KBTV": 4,
+          "KPBG": 1,
+          "KFSO": 1,
+          "overflights": 1
         }
       },
-      "configuration": "15X",
+      "configuration": "15x",
       "departure_runways": [
         {
           "airport": "KBTV",
-          "rate": 10,
+          "rate": 8,
           "runway": "15"
         },
         {
           "airport": "KPBG",
-          "rate": 10,
+          "rate": 2,
           "runway": "17"
+        },
+        {
+          "airport": "KFSO",
+          "rate": 1,
+          "runway": "18"
         }
       ],
       "wind": {
         "direction": "120-180"
       },
-      "default_maps": ["BTV MAIN"]
+      "default_maps": ["BASE"]
     },
-    "BTV Land 33": {
+    "KBTV NORTH": {
       "arrival_runways": [
         {
           "airport": "KBTV",
           "runway": "33"
         },
         {
+          "airport": "KBTV",
+          "runway": "1"
+        },
+        {
           "airport": "KPBG",
           "runway": "35"
+        },
+        {
+          "airport": "KFSO",
+          "runway": "36"
         }
       ],
       "inbound_rates": {
-        "LBNON Arrival Land 15": {
-          "KBTV": 0
+        "PLOTT Arrival 33/35": {
+          "KBTV": 1,
+          "KPBG": 1,
+          "overflights": 1
         },
-        "RUT Arrival Land 33": {
-          "KBTV": 10
+        "STANK Arrival 33/35": {
+          "KBTV": 1,
+          "KPBG": 1
         },
-        "LBNON Arrival Land 33": {
-          "KBTV": 10
+        "POROE Arrival 33/35": {
+          "KBTV": 1,
+          "KPBG": 1,
+          "KFSO": 1,
+          "overflights": 1
         },
-        "RUT Arrival Land 15": {
-          "KBTV": 0
+        "ENSON Arrival 33/35": {
+          "KBTV": 2,
+          "KPBG": 1,
+          "KFSO": 1,
+          "overflights": 1
+        },
+        "LAGGS Arrival 33/35": {
+          "KBTV": 4,
+          "KPBG": 1,
+          "KFSO": 1,
+          "overflights": 1
+        },
+        "GRNMT Arrival 33/35": {
+          "KBTV": 4,
+          "KPBG": 1
         }
       },
-      "configuration": "33X",
+      "configuration": "33x",
       "departure_runways": [
         {
           "airport": "KBTV",
-          "rate": 10,
+          "rate": 8,
           "runway": "33"
         },
         {
           "airport": "KPBG",
-          "rate": 10,
+          "rate": 2,
           "runway": "35"
+        },
+        {
+          "airport": "KFSO",
+          "rate": 1,
+          "runway": "36"
         }
       ],
       "wind": {
         "direction": "300-0"
       },
-      "default_maps": ["BTV MAIN"]
+      "default_maps": ["BASE"]
     }
   }
 }

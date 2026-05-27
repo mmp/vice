@@ -14,52 +14,105 @@
       "callsign": "BTV_E_APP",
       "frequency": 121100,
       "radio_name": "Burlington Approach"
-    },
-    "1F": {
-      "callsign": "BTV_F_APP",
-      "frequency": 120350,
-      "radio_name": "Burlington Approach"
     }
   },
   "facility_adaptations": {
+    "monitor": "mdm4",
     "configurations": {
-      "15X": {
+      "15x": {
         "inbound_assignments": {
-          "LBNON Arrival Land 15": "1W",
-          "LBNON Arrival Land 33": "1W",
-          "RUT Arrival Land 15": "1W",
-          "RUT Arrival Land 33": "1W"
-        },
-        "departure_assignments": {
-          "KBTV": "1W",
-          "KPBG": "1W"
-        },
-        "default_consolidation": {
-          "1W": []
-        }
-      },
-      "33X": {
-        "inbound_assignments": {
-          "LBNON Arrival Land 15": "1E",
-          "LBNON Arrival Land 33": "1E",
-          "RUT Arrival Land 15": "1W",
-          "RUT Arrival Land 33": "1W"
+          "PLOTT Arrival 15/17": "1E",
+          "STANK Arrival 15/17": "1W",
+          "POROE Arrival 15/17": "1E",
+          "ENSON Arrival 15/17": "1E",
+          "GRNMT Arrival 15/17": "1E",
+          "LAGGS Arrival 15/17": "1W"
         },
         "departure_assignments": {
           "KBTV": "1E",
-          "KPBG": "1W"
+          "KPBG": "1W",
+          "KFSO": "1W"
         },
         "default_consolidation": {
-          "1E": ["1F", "1W"]
+          "1E": ["1W"]
+        }
+      },
+      "33x": {
+        "inbound_assignments": {
+          "PLOTT Arrival 33/35": "1E",
+          "STANK Arrival 33/35": "1W",
+          "POROE Arrival 33/35": "1E",
+          "ENSON Arrival 33/35": "1E",
+          "GRNMT Arrival 33/35": "1E",
+          "LAGGS Arrival 33/35": "1W"
+        },
+        "departure_assignments": {
+          "KBTV": "1W",
+          "KPBG": "1W",
+          "KFSO": "1W"
+        },
+        "default_consolidation": {
+          "1E": ["1W"]
         }
       }
     },
+    "controllers": {
+      "1E": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 10000,
+            "vertices": "N043.57.57.392,W073.46.32.944 N044.35.42.086,W072.59.53.930 N044.39.34.008,W072.39.01.873 N044.32.59.502,W072.43.35.982 N044.05.21.075,W072.45.08.239 N043.56.01.184,W073.07.58.811 N043.53.00.844,W073.16.57.938 N043.53.06.735,W073.33.02.537 N043.57.57.392,W073.46.32.944"
+          }
+        ],
+        "default_maps": ["BTV_APP", "3M_MVA"],
+        "video_maps": ["BTV_APP", "3M_MVA", "SATRNAV", "EOVM", "AIRWAY", "CLASS D", "SPLIT", "BTVLBL", "SATLBL"]
+      },
+      "1W": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 10000,
+            "vertices": "N044.59.55.893,W073.58.29.197 N044.46.30.650,W074.00.48.229 N044.44.33.674,W073.52.55.048 N044.00.04.545,W073.52.20.139 N043.57.57.392,W073.46.32.944 N044.35.42.086,W072.59.53.930 N044.39.34.008,W072.39.01.873 N045.01.03.171,W072.24.06.624 N044.59.55.893,W073.58.29.197"
+          }
+        ],
+        "default_maps": ["BTV_APP", "3M_MVA"],
+        "video_maps": ["BTV_APP", "3M_MVA", "SATRNAV", "EOVM", "AIRWAY", "CLASS D", "SPLIT", "BTVLBL", "SATLBL"]
+      }
+    },
+    "coordination_fixes": {
+      "GRNMT": [
+        {
+          "type": "route",
+          "to": "BTV",
+          "from": "ZBW"
+        }
+      ],
+      "LAGGS": [
+        {
+          "type": "route",
+          "to": "BTV",
+          "from": "ZBW"
+        }
+      ]
+    },
     "center": "KBTV",
+    "radar_sites": {
+      "BTV": {
+        "char": "B",
+        "position": "KBTV",
+        "elevation": 364,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      }
+    },
     "scratchpads": {},
-    "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+    "video_map_file": "videomaps/BTV-videomaps.gob.zst",
     "areas": {
       "1": {
-        "video_maps": ["BTV RVM", "BTV MAIN", "BTV MVA", "BTV VFR", "BTV SATS"]
+        "video_maps": ["BASE", "EOVM", "BTV_APP", "SATRNAV", "3M_MVA", "AIRWAY", "CLASS D", "SPLIT", "BTVLBL", "SATLBL"]
       }
     }
   },
