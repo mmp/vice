@@ -54747,7 +54747,7 @@
             "KBOS": {
               "15R": "JFUND BADCA/a9000+/s250 WACHU/a7000/s210 SSAAM AADMS/h148",
               "22L": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS ISLAY/a6000/s220 LWLND/a6000/s210/h035",
-              "4R": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS/ho1F SPYSD/a7000/s220 GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213",
+              "4R": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250/ho1F HRRIS SPYSD/a7000/s220 GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213",
               "4L": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s220 GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213",
               "27": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s220 REVER SEHAG/a6000/s210/h093",
               "33L": "JFUND AUTUM/a11000-12000/s270 WINTA/a8000-10000/s250 HRRIS SPYSD/a7000/s210 BRODI/a6000 BECHH/a5000/s220 SCITU/a5000/s210/h150",
@@ -57447,7 +57447,7 @@
             }
           },
           "speed_restriction": 260,
-          "waypoints": "BANKI/a16000+/ho1M ROBUC/a12000-19000/s260 PROVI/a11000+ JOODY/ho1F"
+          "waypoints": "BANKI/a16000+/ho1M ROBUC/a12000-19000/s260 PROVI/a11000+/ho1F JOODY"
         }
       ]
     },
@@ -57503,10 +57503,10 @@
           "initial_altitude": 4000,
           "expect_approach": "VA4L",
           "scratchpad": "4L",
-          "initial_controller": "1R",
-          "initial_speed": 230,
+          "initial_controller": "1M",
+          "initial_speed": 200,
           "route": "FREDO KBOS",
-          "waypoints": "N041.48.06.836,W070.29.27.260 FREDO/a3000/h310/ho"
+          "waypoints": "N041.48.06.836,W070.29.27.260 FREDO/d30 N041.58.10.260,W070.45.08.871/h310/ho"
         }
       ]
     },
@@ -57525,13 +57525,13 @@
               }
             ]
           },
-          "initial_altitude": 6000,
+          "initial_altitude": 5000,
           "expect_approach": "VA4L",
           "scratchpad": "4L",
           "initial_controller": "1R",
           "initial_speed": 210,
           "route": "MANCH LWRNC KBOS",
-          "waypoints": "N042.56.08.778,W070.55.40.228 LWRNC N042.30.24.101,W071.05.26.046/ho/a5000/h220"
+          "waypoints": "N042.56.08.778,W070.55.40.228 LWRNC N042.30.54.313,W071.02.38.779/t225/ho"
         }
       ]
     },
@@ -78006,19 +78006,19 @@
       ],
       "inbound_rates": {
         "FV.JFUND.4R": {
-          "KBOS": 16
+          "KBOS": 18
         },
         "FV.ROBUC.4R": {
-          "KBOS": 16
+          "KBOS": 18
         },
         "FV.WOONS.4L": {
-          "KBOS": 4
+          "KBOS": 2
         },
         "FV.FREDO.4L": {
           "KBOS": 4
         },
         "FV.LD.4L": {
-          "KBOS": 4
+          "KBOS": 10
         }
       },
       "configuration": "44X",

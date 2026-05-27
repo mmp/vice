@@ -986,6 +986,7 @@
         "video_map_file": "videomaps/A90-videomaps.gob.zst"
       }
     },
+    "monitor": "mdm3",
     "datablocks": {
       "clock_phase": {
         "sequence": [1, 2, 3],
