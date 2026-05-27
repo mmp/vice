@@ -237,6 +237,13 @@ type NavApproach struct {
 	InterceptedReference *av.Approach   // Approach giving the committed-to route for a non-charted visual approach
 }
 
+// EffectivelyCleared reports whether the aircraft has been cleared for the
+// approach, either immediately or via an "at fix" clearance that hasn't yet
+// triggered at the fix.
+func (na *NavApproach) EffectivelyCleared() bool {
+	return na.Cleared || na.AtFixClearedRoute != nil
+}
+
 // HasLocalizer reports whether the aircraft is currently flying localizer-style
 // course geometry.
 func (na *NavApproach) HasLocalizer() bool {

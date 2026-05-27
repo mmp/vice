@@ -2214,6 +2214,28 @@ func TestScenarioSpontaneousFieldInSight(t *testing.T) {
 	}
 }
 
+// Once the controller has issued "at FIX, cleared approach", the aircraft
+// must not also spontaneously volunteer "field in sight" or request the
+// visual — even though Approach.Cleared only flips when the aircraft
+// actually crosses the fix.
+func TestScenarioSpontaneousFieldInSightSuppressedByAtFixClearance(t *testing.T) {
+	airportLoc := math.Point2LL{0, 0}
+	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc, Elevation: 13})
+
+	vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
+	vs.AC.WantsVisualApproach = true
+	vs.AC.Nav.Approach.AtFixClearedRoute = []av.Waypoint{{Fix: "FAF13L", Location: airportLoc}}
+
+	vs.CheckSpontaneousVisual()
+
+	if vs.AC.FieldInSight {
+		t.Error("FieldInSight should not be set after at-fix approach clearance")
+	}
+	if vs.HasPendingTransmission(PendingTransmissionFieldInSight) {
+		t.Error("PendingTransmissionFieldInSight should not be enqueued after at-fix approach clearance")
+	}
+}
+
 func TestScenarioSpontaneousVisualRequest(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
 	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc, Elevation: 13})

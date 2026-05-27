@@ -334,7 +334,7 @@ func (s *Sim) processFutureFieldChecks() {
 			continue
 		}
 		ac, ok := s.Aircraft[callsign]
-		if !ok || ac.FieldInSight || ac.ControllerFrequency == "" || ac.Nav.Approach.Cleared {
+		if !ok || ac.FieldInSight || ac.ControllerFrequency == "" || ac.Nav.Approach.EffectivelyCleared() {
 			delete(s.FutureFieldChecks, callsign)
 			continue
 		}
@@ -421,7 +421,7 @@ func (ac *Aircraft) canRequestVisualApproach() bool {
 	if ac.IsDeparture() || ac.FieldInSight || ac.RequestedVisualApproach || ac.ControllerFrequency == "" {
 		return false
 	}
-	if ac.Nav.Approach.AssignedId == "" || ac.Nav.Approach.Cleared {
+	if ac.Nav.Approach.AssignedId == "" || ac.Nav.Approach.EffectivelyCleared() {
 		return false
 	}
 	appr := ac.Nav.Approach.Assigned

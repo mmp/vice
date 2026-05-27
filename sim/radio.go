@@ -425,8 +425,9 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	case PendingTransmissionFieldInSight:
 		// If the aircraft was cleared for an approach between enqueue and
-		// dispatch, drop the now-redundant "field in sight" call.
-		if ac.Nav.Approach.Cleared {
+		// dispatch, drop the now-redundant "field in sight" call. Covers
+		// both immediate and "at fix" clearances.
+		if ac.Nav.Approach.EffectivelyCleared() {
 			return "", ""
 		}
 		rt = av.MakeContactTransmission("[we have the field in sight now|field in sight|we have the airport in sight now]")
@@ -485,8 +486,9 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	case PendingTransmissionRequestVisual:
 		// If the aircraft was cleared for an approach between enqueue and
-		// dispatch, drop the now-redundant visual approach request.
-		if ac.Nav.Approach.Cleared {
+		// dispatch, drop the now-redundant visual approach request. Covers
+		// both immediate and "at fix" clearances.
+		if ac.Nav.Approach.EffectivelyCleared() {
 			return "", ""
 		}
 		runway := ""
