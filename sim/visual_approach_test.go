@@ -828,7 +828,7 @@ func TestVisualApproachWaypointsUseReferenceApproachDogleg(t *testing.T) {
 	}
 }
 
-func TestVisualApproachInsertsTODWaypoint(t *testing.T) {
+func TestVisualApproachBelowNaturalTODUsesFAFOn3NMFinal(t *testing.T) {
 	rwy := av.Runway{
 		Id:                      "36",
 		Heading:                 360,
@@ -850,9 +850,10 @@ func TestVisualApproachInsertsTODWaypoint(t *testing.T) {
 	}
 
 	// Aircraft heading west across the centerline at 14 nm south, 3000 ft. Forward
-	// heading-ray intercept hits the centerline at (0, -14) — joinPoint.finalPoint
-	// is false, so the route should include a synthetic TOD between the join and
-	// the 3-NM final.
+	// heading-ray intercept hits the centerline at (0, -14). Natural TOD for 3000
+	// ft is ~9 nm — well inside the join — so the join is not the FAF and the FAF
+	// lives on _36_3NM_FINAL. The cleared-visual TargetAltitude branch drives the
+	// 3° glideslope from clearance time.
 	n := nav.Nav{
 		FlightState: nav.FlightState{
 			Position:          math.Point2LL{1.0 / nmPerLong, -14.0 / 60},
@@ -872,50 +873,28 @@ func TestVisualApproachInsertsTODWaypoint(t *testing.T) {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
 
-	todIdx := slices.IndexFunc(n.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == "_36_TOD" })
-	if todIdx == -1 {
-		t.Fatalf("expected _36_TOD waypoint; got %v", wpNames(n.Waypoints))
+	if todIdx := slices.IndexFunc(n.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == "_36_TOD" }); todIdx != -1 {
+		t.Fatalf("did not expect _36_TOD waypoint; got %v", wpNames(n.Waypoints))
 	}
-	tod := n.Waypoints[todIdx]
-	if !tod.FAF() {
-		t.Error("TOD should have FAF flag")
-	}
-	if !tod.OnApproach() {
-		t.Error("TOD should have OnApproach flag")
-	}
-	if ar := tod.AltitudeRestriction(); ar == nil {
-		t.Error("TOD should have an altitude restriction")
-	} else if ar.Range[0] != 3000 || ar.Range[1] != 3000 {
-		t.Errorf("TOD altitude restriction = %v, want at 3000", ar.Range)
-	}
-	// Standard 3° glideslope altitude crossing the threshold at 150 ft (elev 100 +
-	// TCH 50) places the TOD at (3000 - 150) / (tan(3°) * 6076.12) ≈ 8.95 nm south.
-	wantTODDist := float32(3000-150) / (math.Tan(math.Radians(float32(3))) * math.NauticalMilesToFeet)
-	todNM := math.LL2NM(tod.Location, nmPerLong)
-	if math.Abs(todNM[0]) > 0.05 {
-		t.Errorf("TOD x = %.2f, want ~0 (on centerline)", todNM[0])
-	}
-	if math.Abs(-todNM[1]-wantTODDist) > 0.1 {
-		t.Errorf("TOD distance south of threshold = %.2f nm, want %.2f", -todNM[1], wantTODDist)
+	if n.Waypoints[0].FAF() {
+		t.Errorf("join waypoint %q should not be the FAF below natural TOD; got %v", n.Waypoints[0].Fix, wpNames(n.Waypoints))
 	}
 
-	// _36_3NM_FINAL must lose its FAF flag (TOD is the FAF now) but keep the 900-ft
-	// AGL altitude restriction.
 	finalIdx := slices.IndexFunc(n.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == "_36_3NM_FINAL" })
 	if finalIdx == -1 {
 		t.Fatalf("expected _36_3NM_FINAL waypoint; got %v", wpNames(n.Waypoints))
 	}
-	if n.Waypoints[finalIdx].FAF() {
-		t.Error("_36_3NM_FINAL should not have FAF when TOD is the FAF")
+	if !n.Waypoints[finalIdx].FAF() {
+		t.Error("_36_3NM_FINAL should have FAF when the aircraft is below natural TOD")
 	}
 	if ar := n.Waypoints[finalIdx].AltitudeRestriction(); ar == nil {
-		t.Error("_36_3NM_FINAL should still have an altitude restriction")
+		t.Error("_36_3NM_FINAL should have an altitude restriction")
 	} else if ar.Range[0] != 1000 {
 		t.Errorf("_36_3NM_FINAL altitude = %v, want at %d (elev+900)", ar.Range, 100+900)
 	}
 }
 
-func TestVisualApproachTODFollowsAssignedDescent(t *testing.T) {
+func TestVisualApproachPreservesAssignedDescent(t *testing.T) {
 	rwy := av.Runway{
 		Id:                      "36",
 		Heading:                 360,
@@ -936,8 +915,10 @@ func TestVisualApproachTODFollowsAssignedDescent(t *testing.T) {
 		}},
 	}
 
-	// Aircraft at 5000 ft with controller-assigned descent to 3000. TOD altitude
-	// should follow the descent target (3000), not the current altitude (5000).
+	// Aircraft at 5000 ft with controller-assigned descent to 3000. The clearance
+	// should preserve the in-progress descent so the aircraft continues at
+	// standard rate to 3000 — activeAssignedAltitude shadows the geometric
+	// descent until the first approach fix is crossed.
 	assigned := float32(3000)
 	n := nav.Nav{
 		FlightState: nav.FlightState{
@@ -959,18 +940,6 @@ func TestVisualApproachTODFollowsAssignedDescent(t *testing.T) {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
 
-	todIdx := slices.IndexFunc(n.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == "_36_TOD" })
-	if todIdx == -1 {
-		t.Fatalf("expected _36_TOD waypoint; got %v", wpNames(n.Waypoints))
-	}
-	if ar := n.Waypoints[todIdx].AltitudeRestriction(); ar == nil {
-		t.Error("TOD should have an altitude restriction")
-	} else if ar.Range[0] != 3000 {
-		t.Errorf("TOD altitude = %v, want at 3000 (assigned descent target)", ar.Range)
-	}
-
-	// The clearance must preserve the in-progress descent so the aircraft continues
-	// at standard rate to 3000 before leveling for the TOD.
 	if n.Altitude.Assigned == nil {
 		t.Error("nav.Altitude.Assigned should be preserved after visual approach clearance")
 	} else if *n.Altitude.Assigned != 3000 {
@@ -1101,18 +1070,9 @@ func TestVisualApproachDropsNonDescentAssignment(t *testing.T) {
 	if n.Altitude.ActiveAssigned != nil {
 		t.Errorf("nav.Altitude.ActiveAssigned = %v, want nil for non-descent maintain assignment", *n.Altitude.ActiveAssigned)
 	}
-	// And the TOD should have been placed at the current altitude (3000), not
-	// gated by the (dropped) maintain assignment.
-	todIdx := slices.IndexFunc(n.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == "_36_TOD" })
-	if todIdx == -1 {
-		t.Fatalf("expected _36_TOD waypoint; got %v", wpNames(n.Waypoints))
-	}
-	if ar := n.Waypoints[todIdx].AltitudeRestriction(); ar == nil || ar.Range[0] != 3000 {
-		t.Errorf("TOD altitude = %v, want at 3000", ar)
-	}
 }
 
-func TestVisualApproachTODHonorsPendingDescent(t *testing.T) {
+func TestVisualApproachPreservesPendingDescent(t *testing.T) {
 	rwy := av.Runway{
 		Id:                      "36",
 		Heading:                 360,
@@ -1135,9 +1095,8 @@ func TestVisualApproachTODHonorsPendingDescent(t *testing.T) {
 
 	// Aircraft at 5000 ft; a "descend and maintain 3000" was just issued and is
 	// still pending activation (Assigned=3000 but ActivateAt is in the future).
-	// The visual clearance should place the TOD for 3000, not 5000 — otherwise
-	// once the descent activates a few seconds later the aircraft drops below
-	// the (high) TOD geometry.
+	// The visual clearance must preserve the pending descent so it activates as
+	// scheduled rather than getting dropped.
 	pendingDescent := float32(3000)
 	currentLevel := float32(5000)
 	n := nav.Nav{
@@ -1164,16 +1123,6 @@ func TestVisualApproachTODHonorsPendingDescent(t *testing.T) {
 		t.Fatalf("unexpected UnableIntent: %v", intent)
 	}
 
-	todIdx := slices.IndexFunc(n.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == "_36_TOD" })
-	if todIdx == -1 {
-		t.Fatalf("expected _36_TOD waypoint; got %v", wpNames(n.Waypoints))
-	}
-	if ar := n.Waypoints[todIdx].AltitudeRestriction(); ar == nil || ar.Range[0] != 3000 {
-		t.Errorf("TOD altitude = %v, want at 3000 (pending descent target)", ar)
-	}
-	// The pending assignment should be preserved so the descent activates as
-	// scheduled (and the aircraft continues at standard rate to 3000 before
-	// holding for the TOD).
 	if n.Altitude.Assigned == nil || *n.Altitude.Assigned != 3000 {
 		t.Errorf("nav.Altitude.Assigned = %v, want preserved pending 3000", n.Altitude.Assigned)
 	}
@@ -1205,11 +1154,10 @@ func TestVisualApproachDropsAssignedDescentBelowProfile(t *testing.T) {
 		}},
 	}
 
-	// Aircraft at 7000 ft assigned 4500 ft. todDist for 4500 over a 5050-ft
-	// threshold crossing is negative — the legacy fallback applies and the
-	// _3NM_FINAL keeps its 5900-ft restriction. Preserving the 4500-ft assignment
-	// would let TargetAltitude's activeAssignedAltitude shadow that restriction
-	// and command the aircraft through the visual profile's floor.
+	// Aircraft at 7000 ft assigned 4500 ft. The _3NM_FINAL anchor sits at the
+	// profile floor of 5900 ft. Preserving the 4500-ft assignment would let
+	// TargetAltitude's activeAssignedAltitude shadow that restriction and
+	// command the aircraft through the visual profile's floor.
 	belowProfile := float32(4500)
 	n := nav.Nav{
 		FlightState: nav.FlightState{
@@ -1238,16 +1186,13 @@ func TestVisualApproachDropsAssignedDescentBelowProfile(t *testing.T) {
 		t.Errorf("nav.Altitude.ActiveAssigned = %v, want nil", *n.Altitude.ActiveAssigned)
 	}
 
-	// Sanity: this scenario should land in the legacy fallback (no TOD, FAF on
-	// _3NM_FINAL). If something changes that and an in-route restriction takes
-	// over, the preservation rule above no longer matters and the test loses
-	// its meaning — fail loudly so it's noticed.
-	if todIdx := slices.IndexFunc(n.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == "_36_TOD" }); todIdx != -1 {
-		t.Fatalf("did not expect _36_TOD in this scenario; got %v", wpNames(n.Waypoints))
-	}
+	// Sanity: _3NM_FINAL is the FAF when joinIsFAF doesn't apply. If something
+	// changes that and an in-route restriction takes over, the preservation rule
+	// above no longer matters and the test loses its meaning — fail loudly so
+	// it's noticed.
 	finalIdx := slices.IndexFunc(n.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == "_36_3NM_FINAL" })
 	if finalIdx == -1 || !n.Waypoints[finalIdx].FAF() {
-		t.Fatalf("expected _36_3NM_FINAL with FAF (legacy fallback); got %v", wpNames(n.Waypoints))
+		t.Fatalf("expected _36_3NM_FINAL with FAF; got %v", wpNames(n.Waypoints))
 	}
 }
 
@@ -1272,8 +1217,8 @@ func TestVisualApproachLowAircraftKeepsFAFOn3NMFinal(t *testing.T) {
 		}},
 	}
 
-	// Aircraft at 800 ft, 6 nm out. Natural TOD is ~2.36 nm — inside the 3-NM ring,
-	// so we fall back to the legacy behavior of FAF on the _3NM_FINAL waypoint.
+	// Aircraft at 800 ft, 6 nm out. Natural TOD is ~2.36 nm — well inside the
+	// join, so joinIsFAF is false and the FAF lives on _36_3NM_FINAL.
 	n := nav.Nav{
 		FlightState: nav.FlightState{
 			Position:          math.Point2LL{1.0 / nmPerLong, -6.0 / 60},
@@ -1305,7 +1250,7 @@ func TestVisualApproachLowAircraftKeepsFAFOn3NMFinal(t *testing.T) {
 		t.Fatalf("expected _36_3NM_FINAL waypoint; got %v", wpNames(n.Waypoints))
 	}
 	if !n.Waypoints[finalIdx].FAF() {
-		t.Error("_36_3NM_FINAL should have FAF in the legacy fallback case")
+		t.Error("_36_3NM_FINAL should have FAF when joinIsFAF doesn't apply")
 	}
 }
 

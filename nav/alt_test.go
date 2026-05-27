@@ -816,3 +816,65 @@ func TestCrossDMEAtAltitude(t *testing.T) {
 
 	f.Run()
 }
+
+// TestClearedVisualBeginsDescentImmediately verifies that an aircraft cleared
+// for an uncharted visual approach gets a geometric descent target right away,
+// rather than waiting for the geometricRate-vs-descent/2 gate to clear. The
+// pre-fix code held level here because (4000-900)/9nm at 200 kts is ~1150 fpm,
+// which is below half an A320's max descent rate.
+func TestClearedVisualBeginsDescentImmediately(t *testing.T) {
+	f := setupClearedVisual(t, "22L")
+
+	target, rate, geometric := f.nav.TargetAltitude()
+
+	rwy, _ := av.LookupRunway("KJFK", "22L")
+	wantAlt := float32(rwy.Elevation) + 900
+	if target != wantAlt {
+		t.Errorf("target altitude = %.0f, want %.0f (3-nm-final restriction)", target, wantAlt)
+	}
+	if rate <= 0 {
+		t.Errorf("descent rate = %.0f, want positive", rate)
+	}
+	if !geometric {
+		t.Error("expected geometric=true for cleared-visual descent")
+	}
+}
+
+// TestClearedVisualHonorsAssignedAltitude verifies that an active
+// controller-assigned altitude still shadows the geometric descent target —
+// the cleared-visual gate must not bypass activeAssignedAltitude.
+func TestClearedVisualHonorsAssignedAltitude(t *testing.T) {
+	f := setupClearedVisual(t, "22L")
+	alt := float32(3500)
+	f.nav.Altitude.ActiveAssigned = &alt
+	f.nav.Altitude.Assigned = &alt
+
+	target, _, geometric := f.nav.TargetAltitude()
+	if target != 3500 {
+		t.Errorf("target = %.0f, want 3500 (assigned altitude overrides geometric)", target)
+	}
+	if geometric {
+		t.Error("geometric should be false while an assigned altitude is active")
+	}
+}
+
+// TestClearedVisualDescendsContinuously simulates the visual approach and
+// verifies the aircraft starts descending early and stays descending — no
+// "wait for the centerline then dump altitude" hold.
+func TestClearedVisualDescendsContinuously(t *testing.T) {
+	f := setupClearedVisual(t, "22L")
+
+	// One tick to get the descent moving — AltitudeRate ramps up from 0.
+	f.AfterTicks(15, func(f *FlightTest) {
+		f.AssertDescending()
+	})
+	// Halfway through the approach, the aircraft should be well below 4000 ft.
+	// With pre-fix behavior the required rate (~1150 fpm) was below descent/2
+	// and the aircraft would have held 4000 throughout this segment.
+	f.AfterTicks(90, func(f *FlightTest) {
+		f.AssertAltitudeBelow(3000)
+		f.AssertDescending()
+	})
+
+	f.Run()
+}

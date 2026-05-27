@@ -32,6 +32,13 @@ func (nav *Nav) activeAssignedAltitude() *float32 {
 	return nav.Altitude.Assigned
 }
 
+// onClearedVisualApproach reports whether the aircraft has been cleared for
+// an (uncharted) visual approach.
+func (nav *Nav) onClearedVisualApproach() bool {
+	return nav.Approach.Cleared && nav.Approach.Assigned != nil &&
+		nav.Approach.Assigned.Type == av.VisualApproach
+}
+
 func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float32, geometricDescent bool, deltaKts float32, slowingTo250 bool, wxs wx.Sample, simTime Time) {
 	nav.FlightState.PrevAltitude = nav.FlightState.Altitude
 
@@ -205,8 +212,10 @@ func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float
 		}
 
 		// After passing the FAF on approach, allow immediate descent rate changes
-		// to ensure aircraft can meet the runway altitude restriction
-		if nav.Approach.PassedFAF {
+		// to ensure aircraft can meet the runway altitude restriction. Cleared
+		// visuals run the same exact-geometric descent from clearance time and
+		// need the same freedom to set rate.
+		if nav.Approach.PassedFAF || nav.onClearedVisualApproach() {
 			maxRateChange = math.Abs(-descent - nav.FlightState.AltitudeRate)
 		}
 
@@ -323,7 +332,7 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 			if ok && eta > 0 {
 				geometricRate := (nav.FlightState.Altitude - target.altitude) / eta * 60
 
-				if nav.Approach.PassedFAF {
+				if nav.Approach.PassedFAF || nav.onClearedVisualApproach() {
 					return target.altitude, geometricRate, true // exact glideslope
 				}
 

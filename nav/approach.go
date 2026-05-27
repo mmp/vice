@@ -1192,19 +1192,10 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 		start = joinPoint.segment
 	}
 	if hasFinalPoint && joinPoint.distanceToThreshold > 3.25 {
-		// The geometric-descent path keys off the FAF flag, so the visual route hosts it on
-		// exactly one waypoint. Pick that waypoint here based on glideslope geometry:
-		//   - todDist past the join: aircraft is too high to fit a level segment, so the join
-		//     itself becomes the FAF, restricted to the glideslope altitude at its distance.
-		//   - todDist between the join and the 3-NM final: insert a synthetic TOD waypoint
-		//     restricted to todAlt.
-		//   - otherwise (aircraft already low): legacy fallback, FAF stays on _3NM_FINAL.
-		var todPoint *visualApproachJoinPoint
-		if 3.25 < todDist && todDist < joinPoint.distanceToThreshold {
-			if p, ok := visualRoutePointAtDistance(joinPoint.route, todDist, nmPerLong); ok {
-				todPoint = &p
-			}
-		}
+		// Visual approaches use the same pure-geometric descent the post-FAF
+		// path uses, so the FAF marker lives on the first waypoint that has a
+		// glideslope-anchored altitude restriction: the join when the aircraft
+		// is past natural TOD, otherwise _3NM_FINAL.
 		joinIsFAF := todDist >= joinPoint.distanceToThreshold
 
 		if joinIsFAF {
@@ -1226,22 +1217,12 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 			return copied
 		}
 
-		if todPoint != nil {
-			wps = append(wps, intermediates(start, todPoint.segment+1)...)
-			todWp := av.Waypoint{Fix: "_" + runway + "_TOD", Location: todPoint.location}
-			todWp.SetOnApproach(true)
-			todWp.SetFAF(true)
-			todWp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(todAlt))
-			wps = append(wps, todWp)
-			wps = append(wps, intermediates(todPoint.segment+1, finalPoint.segment+1)...)
-		} else {
-			wps = append(wps, intermediates(start, finalPoint.segment+1)...)
-		}
+		wps = append(wps, intermediates(start, finalPoint.segment+1)...)
 
 		finalWp := av.Waypoint{Fix: "_" + runway + "_3NM_FINAL", Location: finalPoint.location}
 		finalWp.SetOnApproach(true)
 		finalWp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(final3nmAlt))
-		if !joinIsFAF && todPoint == nil {
+		if !joinIsFAF {
 			finalWp.SetFAF(true)
 		}
 		wps = append(wps, finalWp)
