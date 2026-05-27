@@ -63,13 +63,6 @@ func WithCallsignRequire(fn func(Aircraft) bool) CallsignPatternOption {
 	}
 }
 
-// WithCallsignRequireUnique requires exactly one aircraft to match.
-func WithCallsignRequireUnique() CallsignPatternOption {
-	return func(p *CallsignPattern) {
-		p.RequireUnique = true
-	}
-}
-
 // RegisterCallsignPattern registers a callsign matching pattern.
 func RegisterCallsignPattern(template string, opts ...CallsignPatternOption) {
 	pattern := CallsignPattern{

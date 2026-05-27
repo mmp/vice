@@ -1,7 +1,6 @@
 package stt
 
 import (
-	"reflect"
 	"slices"
 	"strings"
 )
@@ -19,9 +18,6 @@ type matcher interface {
 	// Returns the result with consumed > 0 on success, or consumed = 0 on failure.
 	// allowSlack indicates whether the matcher can skip unrecognized tokens.
 	match(tokens []Token, pos int, ac Aircraft, skipWords []string, allowSlack bool) matchResult
-
-	// goType returns the Go type this matcher extracts (nil for non-typed matchers).
-	goType() reflect.Type
 
 	// isOptional returns true if this matcher is optional (can consume 0 tokens).
 	isOptional() bool
@@ -129,10 +125,6 @@ func (m *literalMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords [
 	return matchResult{}
 }
 
-func (m *literalMatcher) goType() reflect.Type {
-	return nil
-}
-
 func (m *literalMatcher) isOptional() bool {
 	return false
 }
@@ -219,10 +211,6 @@ func (m *typedMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords []s
 	return matchResult{sayAgain: sayAgain}
 }
 
-func (m *typedMatcher) goType() reflect.Type {
-	return m.parser.goType()
-}
-
 func (m *typedMatcher) isOptional() bool {
 	return false
 }
@@ -254,11 +242,6 @@ func (m *optionalGroupMatcher) match(tokens []Token, pos int, ac Aircraft, skipW
 		value:    values,
 		consumed: pos,
 	}
-}
-
-func (m *optionalGroupMatcher) goType() reflect.Type {
-	// Return a slice type that holds all inner types
-	return nil
 }
 
 func (m *optionalGroupMatcher) isOptional() bool {

@@ -3560,68 +3560,6 @@ func TestValidateCommands(t *testing.T) {
 	}
 }
 
-func TestValidateCommandsForState(t *testing.T) {
-	tests := []struct {
-		name     string
-		commands []string
-		state    string
-		expected []string
-	}{
-		{
-			name:     "departure rejects descend altitude",
-			commands: []string{"D80", "L270", "C100"},
-			state:    "departure",
-			expected: []string{"L270", "C100"},
-		},
-		{
-			name:     "departure rejects contact tower",
-			commands: []string{"L270", "TO"},
-			state:    "departure",
-			expected: []string{"L270"},
-		},
-		{
-			name:     "arrival rejects climb altitude",
-			commands: []string{"C100", "L270", "DVS"},
-			state:    "arrival",
-			expected: []string{"L270", "DVS"},
-		},
-		{
-			name:     "arrival rejects contact tower",
-			commands: []string{"L270", "TO"},
-			state:    "arrival",
-			expected: []string{"L270"},
-		},
-		{
-			name:     "overflight rejects contact tower",
-			commands: []string{"D80", "C100", "TO"},
-			state:    "overflight",
-			expected: []string{"D80", "C100"},
-		},
-		{
-			name:     "on approach allows all",
-			commands: []string{"TO", "S250"},
-			state:    "on approach",
-			expected: []string{"TO", "S250"},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			result := ValidateCommandsForState(tt.commands, tt.state)
-			if len(result) != len(tt.expected) {
-				t.Errorf("ValidateCommandsForState() = %v, want %v", result, tt.expected)
-				return
-			}
-			for i := range result {
-				if result[i] != tt.expected[i] {
-					t.Errorf("ValidateCommandsForState()[%d] = %q, want %q",
-						i, result[i], tt.expected[i])
-				}
-			}
-		})
-	}
-}
-
 // =============================================================================
 // Unit Tests for callsign.go
 // =============================================================================

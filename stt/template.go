@@ -2,7 +2,6 @@ package stt
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 )
 
@@ -106,10 +105,6 @@ func (m *optionalLiteralMatcher) match(tokens []Token, pos int, ac Aircraft, ski
 
 	// Didn't match, but that's ok - it's optional
 	return matchResult{consumed: pos}
-}
-
-func (m *optionalLiteralMatcher) goType() reflect.Type {
-	return nil
 }
 
 func (m *optionalLiteralMatcher) isOptional() bool {

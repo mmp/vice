@@ -506,26 +506,6 @@ func FuzzyMatch(word, target string, threshold float64) bool {
 	return false
 }
 
-// BestMatch finds the best matching string from candidates.
-// Returns the match and its score, or empty string and 0 if none found above threshold.
-func BestMatch(word string, candidates []string, threshold float64) (string, float64) {
-	var best string
-	var bestScore float64
-
-	for _, c := range candidates {
-		score := JaroWinkler(word, c)
-		if PhoneticMatch(word, c) {
-			score = max(score, 0.85) // Phonetic matches get at least 0.85
-		}
-		if score > bestScore && score >= threshold {
-			best = c
-			bestScore = score
-		}
-	}
-
-	return best, bestScore
-}
-
 // Helper functions
 
 func hasPrefix(s string, prefixes ...string) bool {

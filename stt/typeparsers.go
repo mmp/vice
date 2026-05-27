@@ -1,7 +1,6 @@
 package stt
 
 import (
-	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -11,9 +10,6 @@ import (
 
 // typeParser is the interface for type-specific value extraction.
 type typeParser interface {
-	// identifier returns the parser name (e.g., "altitude", "heading").
-	identifier() string
-
 	// parse extracts a value from tokens starting at pos.
 	// Returns (value, tokensConsumed, sayAgainType).
 	// If extraction fails, returns (nil, 0, "TYPE") for SAYAGAIN or (nil, 0, "") to fail silently.
@@ -29,10 +25,6 @@ type altitudeParser struct {
 	// allowFlightLevel allows values 100-400 that might otherwise be speeds.
 	// Set to true when in climb/descend context.
 	allowFlightLevel bool
-}
-
-func (p *altitudeParser) identifier() string {
-	return "altitude"
 }
 
 func (p *altitudeParser) goType() reflect.Type {
@@ -130,10 +122,6 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 
 // headingParser extracts heading values (1-360).
 type headingParser struct{}
-
-func (p *headingParser) identifier() string {
-	return "heading"
-}
 
 func (p *headingParser) goType() reflect.Type {
 	return reflect.TypeOf(0)
@@ -321,10 +309,6 @@ func adjustSpeedForPerformance(speed int, ac Aircraft) int {
 // speedParser extracts speed values (100-400 knots).
 type speedParser struct{}
 
-func (p *speedParser) identifier() string {
-	return "speed"
-}
-
 func (p *speedParser) goType() reflect.Type {
 	return reflect.TypeOf(0)
 }
@@ -444,10 +428,6 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 // machParser extracts mach speed values (60-99).
 type machParser struct{}
 
-func (p *machParser) identifier() string {
-	return "mach"
-}
-
 func (p *machParser) goType() reflect.Type {
 	return reflect.TypeOf(0)
 }
@@ -475,10 +455,6 @@ func (p *machParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, stri
 // fixParser extracts navigation fix names.
 type fixParser struct{}
 
-func (p *fixParser) identifier() string {
-	return "fix"
-}
-
 func (p *fixParser) goType() reflect.Type {
 	return reflect.TypeOf("")
 }
@@ -500,10 +476,6 @@ func (p *fixParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, strin
 // approachParser extracts approach names.
 type approachParser struct {
 	allowLAHSO bool
-}
-
-func (p *approachParser) identifier() string {
-	return "approach"
 }
 
 func (p *approachParser) goType() reflect.Type {
@@ -549,10 +521,6 @@ type visualApproachParser struct {
 
 func (p *visualApproachParser) anchored() bool { return true }
 
-func (p *visualApproachParser) identifier() string {
-	return "visual_approach"
-}
-
 func (p *visualApproachParser) goType() reflect.Type {
 	return reflect.TypeOf("")
 }
@@ -588,10 +556,6 @@ func (p *visualApproachParser) parse(tokens []Token, pos int, ac Aircraft) (any,
 // squawkParser extracts 4-digit squawk codes.
 type squawkParser struct{}
 
-func (p *squawkParser) identifier() string {
-	return "squawk"
-}
-
 func (p *squawkParser) goType() reflect.Type {
 	return reflect.TypeOf("")
 }
@@ -612,10 +576,6 @@ func (p *squawkParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, st
 
 // degreesParser extracts turn degrees (1-45) with direction.
 type degreesParser struct{}
-
-func (p *degreesParser) identifier() string {
-	return "degrees"
-}
 
 func (p *degreesParser) goType() reflect.Type {
 	// Returns a struct with deg and dir
@@ -644,10 +604,6 @@ func (p *degreesParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 // sidParser extracts SID names.
 type sidParser struct{}
 
-func (p *sidParser) identifier() string {
-	return "sid"
-}
-
 func (p *sidParser) goType() reflect.Type {
 	return reflect.TypeOf("")
 }
@@ -668,10 +624,6 @@ func (p *sidParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, strin
 
 // starParser extracts STAR names.
 type starParser struct{}
-
-func (p *starParser) identifier() string {
-	return "star"
-}
 
 func (p *starParser) goType() reflect.Type {
 	return reflect.TypeOf("")
@@ -697,10 +649,6 @@ type rangeParser struct {
 	maxVal int
 }
 
-func (p *rangeParser) identifier() string {
-	return fmt.Sprintf("num:%d-%d", p.minVal, p.maxVal)
-}
-
 func (p *rangeParser) goType() reflect.Type {
 	return reflect.TypeOf(0)
 }
@@ -720,10 +668,6 @@ func (p *rangeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 
 // trafficParser extracts traffic advisory components.
 type trafficParser struct{}
-
-func (p *trafficParser) identifier() string {
-	return "traffic"
-}
 
 func (p *trafficParser) goType() reflect.Type {
 	return reflect.TypeOf(trafficResult{})
@@ -765,7 +709,6 @@ func (p *trafficParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 // the simulator treats it as informational chatter.
 type trafficVisualSepParser struct{}
 
-func (p *trafficVisualSepParser) identifier() string   { return "traffic_visual_sep" }
 func (p *trafficVisualSepParser) goType() reflect.Type { return reflect.TypeOf(true) }
 
 func (p *trafficVisualSepParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -793,10 +736,6 @@ func (p *trafficVisualSepParser) parse(tokens []Token, pos int, ac Aircraft) (an
 // holdParser extracts hold parameters.
 type holdParser struct{}
 
-func (p *holdParser) identifier() string {
-	return "hold"
-}
-
 func (p *holdParser) goType() reflect.Type {
 	return reflect.TypeOf("")
 }
@@ -821,10 +760,6 @@ func (p *holdParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, stri
 // textParser extracts a single word token. Used for free-form text like facility names.
 type textParser struct{}
 
-func (p *textParser) identifier() string {
-	return "text"
-}
-
 func (p *textParser) goType() reflect.Type {
 	return reflect.TypeOf("")
 }
@@ -844,10 +779,6 @@ func (p *textParser) parse(tokens []Token, pos int, ac Aircraft) (value any, con
 // It handles exact matches, fuzzy matches against NATO words, and
 // multi-word garbles (e.g., "pop up" for "papa").
 type atisLetterParser struct{}
-
-func (p *atisLetterParser) identifier() string {
-	return "atis_letter"
-}
 
 func (p *atisLetterParser) goType() reflect.Type {
 	return reflect.TypeOf("")
@@ -908,10 +839,6 @@ func fuzzyNATOLetter(word string, threshold float64) (string, bool) {
 // Used for matching garbled facility names without accidentally consuming command keywords.
 type garbledWordParser struct{}
 
-func (p *garbledWordParser) identifier() string {
-	return "garbled_word"
-}
-
 func (p *garbledWordParser) goType() reflect.Type {
 	return reflect.TypeOf("")
 }
@@ -929,10 +856,6 @@ func (p *garbledWordParser) parse(tokens []Token, pos int, ac Aircraft) (value a
 
 // speedUntilParser extracts a speed "until" specification (fix, DME, or mile final).
 type speedUntilParser struct{}
-
-func (p *speedUntilParser) identifier() string {
-	return "speed_until"
-}
 
 func (p *speedUntilParser) goType() reflect.Type {
 	return reflect.TypeOf(speedUntilResult{})
@@ -954,10 +877,6 @@ func (p *speedUntilParser) parse(tokens []Token, pos int, ac Aircraft) (any, int
 // dmeParser extracts a DME distance like "10 DME" or "10 D M E".
 type dmeParser struct{}
 
-func (p *dmeParser) identifier() string {
-	return "dme"
-}
-
 func (p *dmeParser) goType() reflect.Type {
 	return reflect.TypeOf(0)
 }
@@ -976,10 +895,6 @@ func (p *dmeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, strin
 // standaloneAltitudeParser only matches TokenAltitude tokens (created by "thousand").
 // This is stricter than altitudeParser - it won't match plain numbers.
 type standaloneAltitudeParser struct{}
-
-func (p *standaloneAltitudeParser) identifier() string {
-	return "standalone_altitude"
-}
 
 func (p *standaloneAltitudeParser) goType() reflect.Type {
 	return reflect.TypeOf(0)
@@ -1002,10 +917,6 @@ func (p *standaloneAltitudeParser) parse(tokens []Token, pos int, ac Aircraft) (
 // It looks for tokens ending with a frequency pattern: 2-3 digit number + "point" + 1-2 digit number.
 // This handles garbled facility names like "contact for ersena one two seven point zero".
 type contactFrequencyParser struct{}
-
-func (p *contactFrequencyParser) identifier() string {
-	return "contact_frequency"
-}
 
 func (p *contactFrequencyParser) goType() reflect.Type {
 	return reflect.TypeOf("")
@@ -1062,7 +973,6 @@ func (p *contactFrequencyParser) parse(tokens []Token, pos int, ac Aircraft) (an
 // (integer with ×1000 scaling, matching av.NewFrequency).
 type frequencyValueParser struct{}
 
-func (p *frequencyValueParser) identifier() string   { return "frequency_value" }
 func (p *frequencyValueParser) goType() reflect.Type { return reflect.TypeOf(av.Frequency(0)) }
 
 func (p *frequencyValueParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
@@ -1102,7 +1012,6 @@ func (p *frequencyValueParser) parse(tokens []Token, pos int, ac Aircraft) (any,
 // Returns the short abbreviation (N, S, E, W, NE, NW, SE, SW) as a string.
 type compassDirParser struct{}
 
-func (p *compassDirParser) identifier() string   { return "compass_dir" }
 func (p *compassDirParser) goType() reflect.Type { return reflect.TypeOf("") }
 
 var compassDirections = map[string]string{
