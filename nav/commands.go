@@ -720,8 +720,7 @@ func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) av.Command
 	if len(nav.Waypoints) > 0 && nav.Waypoints[0].Fix == h.Fix && nav.Heading.Assigned == nil {
 		// We're already direct to it for the next fix; get started.
 		nav.Heading = NavHeading{Hold: nav.makeFlyHold(callsign, h)}
-	} else if nav.DeferredNavHeading != nil && len(nav.DeferredNavHeading.Waypoints) > 0 &&
-		nav.DeferredNavHeading.Waypoints[0].Fix == h.Fix {
+	} else if nav.hasDeferredRoute() && nav.DeferredNavHeading.Waypoints[0].Fix == h.Fix {
 		nav.DeferredNavHeading.Hold = nav.makeFlyHold(callsign, h)
 	} else {
 		// It's a later fix. Queue it up; we'll return to it when it's the next waypoint upcoming.
@@ -844,11 +843,10 @@ func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedR
 
 func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.CardinalOrdinalDirection,
 	ar *av.AltitudeRestriction, sr *av.SpeedRestriction) av.CommandIntent {
-	useDeferred := false
+	useDeferred := nav.hasDeferredRoute()
 	routeWps := []av.Waypoint(nav.Waypoints)
-	if dh := nav.DeferredNavHeading; dh != nil && len(dh.Waypoints) > 0 {
-		useDeferred = true
-		routeWps = dh.Waypoints
+	if useDeferred {
+		routeWps = nav.DeferredNavHeading.Waypoints
 	}
 	commitRouteWps := func() {
 		if useDeferred {
@@ -1020,18 +1018,16 @@ func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.Spee
 		return av.MakeUnableIntent("unable, that distance is out of range")
 	}
 
-	ap := nav.Approach.Assigned
-	if ap == nil || !nav.Approach.Cleared ||
-		(ap.Type != av.VisualApproach && ap.Type != av.ChartedVisualApproach) {
+	if !nav.clearedForAnyVisualApproach() {
 		return av.MakeUnableIntent("unable, we're not cleared for a visual approach")
 	}
+	ap := nav.Approach.Assigned
 	runway := ap.Runway
 
-	useDeferred := false
+	useDeferred := nav.hasDeferredRoute()
 	routeWps := []av.Waypoint(nav.Waypoints)
-	if dh := nav.DeferredNavHeading; dh != nil && len(dh.Waypoints) > 0 {
-		useDeferred = true
-		routeWps = dh.Waypoints
+	if useDeferred {
+		routeWps = nav.DeferredNavHeading.Waypoints
 	}
 	commitRouteWps := func() {
 		if useDeferred {

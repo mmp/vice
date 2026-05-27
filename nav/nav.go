@@ -258,6 +258,29 @@ func (na *NavApproach) HasLocalizer() bool {
 	return false
 }
 
+// clearedForUnchartedVisualApproach reports whether the aircraft has been
+// cleared for a synthesized (non-charted) visual approach.
+func (nav *Nav) clearedForUnchartedVisualApproach() bool {
+	return nav.Approach.Cleared && nav.Approach.Assigned != nil &&
+		nav.Approach.Assigned.Type == av.VisualApproach
+}
+
+// clearedForAnyVisualApproach reports whether the aircraft has been cleared
+// for either a synthesized visual or a charted visual approach.
+func (nav *Nav) clearedForAnyVisualApproach() bool {
+	if !nav.Approach.Cleared || nav.Approach.Assigned == nil {
+		return false
+	}
+	t := nav.Approach.Assigned.Type
+	return t == av.VisualApproach || t == av.ChartedVisualApproach
+}
+
+// hasDeferredRoute reports whether a controller-issued route assignment is
+// pending (queued in DeferredNavHeading) but not yet active.
+func (nav *Nav) hasDeferredRoute() bool {
+	return nav.DeferredNavHeading != nil && len(nav.DeferredNavHeading.Waypoints) > 0
+}
+
 type NavFixAssignment struct {
 	Arrive struct {
 		Altitude *av.AltitudeRestriction
@@ -563,8 +586,8 @@ func (nav *Nav) EnqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, 
 // hasn't passed, these are different than the waypoints currently being
 // used for navigation.
 func (nav *Nav) AssignedWaypoints() []av.Waypoint {
-	if dh := nav.DeferredNavHeading; dh != nil && len(dh.Waypoints) > 0 {
-		return dh.Waypoints
+	if nav.hasDeferredRoute() {
+		return nav.DeferredNavHeading.Waypoints
 	}
 	return nav.Waypoints
 }
@@ -843,8 +866,8 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 	}
 
 	lines = append(lines, "Route flying: "+av.WaypointArray(nav.Waypoints).Encode())
-	if dh := nav.DeferredNavHeading; dh != nil && len(dh.Waypoints) > 0 {
-		lines = append(lines, "Route assigned: "+av.WaypointArray(dh.Waypoints).Encode())
+	if nav.hasDeferredRoute() {
+		lines = append(lines, "Route assigned: "+av.WaypointArray(nav.DeferredNavHeading.Waypoints).Encode())
 	}
 
 	return strings.Join(lines, "\n")

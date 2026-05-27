@@ -371,8 +371,8 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 					// otherwise the regular ones. Arguably we'd like to
 					// defer the route change but don't have a way to do
 					// that that preserves the current assigned heading, etc.
-					if dh := nav.DeferredNavHeading; dh != nil && len(dh.Waypoints) > 0 {
-						dh.Waypoints = navwp
+					if nav.hasDeferredRoute() {
+						nav.DeferredNavHeading.Waypoints = navwp
 					} else {
 						nav.Waypoints = navwp
 					}
@@ -604,8 +604,8 @@ func (nav *Nav) prepareForApproach(straightIn bool) av.CommandIntent {
 			directApproachFix = true
 			navwps = append(navwps[:navIdx], bestRoute[bestIdx:]...)
 			navwps = append(navwps, nav.FlightState.ArrivalAirport)
-			if dh := nav.DeferredNavHeading; dh != nil && len(dh.Waypoints) > 0 {
-				dh.Waypoints = navwps
+			if nav.hasDeferredRoute() {
+				nav.DeferredNavHeading.Waypoints = navwps
 			} else {
 				nav.Waypoints = navwps
 			}
