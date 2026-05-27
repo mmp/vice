@@ -333,6 +333,30 @@ func TestBasicSpeedCommands(t *testing.T) {
 			expected: "NKS101 SMIN",
 		},
 		{
+			name:       "maintain maximum forward speed",
+			transcript: "Mountain 3588 Boston approach maintain maximum forward speed",
+			aircraft: map[string]Aircraft{
+				"Mountain 3588": {Callsign: "MTN3588", State: "arrival"},
+			},
+			expected: "MTN3588 SMAX",
+		},
+		{
+			name:       "maintain best forward speed",
+			transcript: "Mountain 3588 Boston approach maintain best forward speed",
+			aircraft: map[string]Aircraft{
+				"Mountain 3588": {Callsign: "MTN3588", State: "arrival"},
+			},
+			expected: "MTN3588 SMAX",
+		},
+		{
+			name:       "maximum forward speed no maintain",
+			transcript: "Mountain 3588 Boston approach maximum forward speed",
+			aircraft: map[string]Aircraft{
+				"Mountain 3588": {Callsign: "MTN3588", State: "arrival"},
+			},
+			expected: "MTN3588 SMAX",
+		},
+		{
 			name:       "increase speed",
 			transcript: "Delta 200 increase speed to two eight zero",
 			aircraft: map[string]Aircraft{

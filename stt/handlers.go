@@ -380,7 +380,7 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"maximum|best forward|speed",
+		"[maintain] maximum|best forward|speed",
 		func() string { return "SMAX" },
 		WithName("maximum_speed"),
 		WithPriority(12),
