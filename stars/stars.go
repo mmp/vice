@@ -637,12 +637,12 @@ var monitorColorSets = map[string]MonitorColors{
 		WXLevelStipple: [radar.NumWxLevels]int{0, 2, 0, 2, 0, 2},
 		WXStipple:      renderer.RGBFromUInt8(185, 172, 147),
 
-		DCBButton:            renderer.RGBFromUInt8(0, 10, 0),
+		DCBButton:            renderer.RGBFromUInt8(19, 47, 0),
 		DCBActiveButton:      renderer.RGBFromUInt8(57, 94, 40),
 		DCBText:              renderer.RGBFromUInt8(254, 236, 237),
 		DCBTextSelected:      renderer.RGBFromUInt8(254, 255, 50),
 		DCBUnsupportedButton: renderer.RGBFromUInt8(100, 100, 100), // ???
-		DCBUnsupportedText:   renderer.RGBFromUInt8(200, 200, 200), // ???
+		DCBUnsupportedText:   renderer.RGBFromUInt8(0, 0, 0),       // ???
 		DCBDisabledButton:    renderer.RGBFromUInt8(3, 39, 0),
 		DCBDisabledText:      renderer.RGBFromUInt8(25, 51, 8),
 		DCBBackground:        renderer.RGBFromUInt8(0, 10, 0),
