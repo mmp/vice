@@ -212,7 +212,7 @@ jobs:
   build-windows:
     name: Build Windows
     needs: bundle-resources
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
 
     steps:
     - name: Checkout source
