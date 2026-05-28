@@ -841,20 +841,76 @@ func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedR
 	return intent
 }
 
+// clearMatchingSyntheticRestrictions walks wps and, for each waypoint where
+// match(wp) returns true, clears altitude restrictions if ar != nil and speed
+// restrictions if sr != nil. Waypoints left with no inline restrictions are
+// removed entirely. Returns the (possibly shorter) slice; callers must
+// refresh any indices into the route after calling.
+func clearMatchingSyntheticRestrictions(wps []av.Waypoint, match func(*av.Waypoint) bool,
+	ar *av.AltitudeRestriction, sr *av.SpeedRestriction) []av.Waypoint {
+	for i := 0; i < len(wps); {
+		wp := &wps[i]
+		if match(wp) {
+			if ar != nil {
+				wp.ClearAltitudeRestriction()
+			}
+			if sr != nil {
+				wp.ClearSpeedRestriction()
+			}
+			if !wp.HasAltitudeRestriction() && !wp.HasSpeedRestriction() {
+				wps = slices.Delete(wps, i, i+1)
+				continue
+			}
+		}
+		i++
+	}
+	return wps
+}
+
+// newSyntheticWaypoint builds a synthetic crossing waypoint at the given
+// location. If inheritFrom is non-nil, OnSID/OnSTAR/OnApproach flags are
+// copied from it so the waypoint participates in the same route phase as its
+// neighbor.
+func newSyntheticWaypoint(name string, loc math.Point2LL, inheritFrom *av.Waypoint) av.Waypoint {
+	wp := av.Waypoint{Fix: name, Location: loc}
+	wp.SetSyntheticCrossing(true)
+	if inheritFrom != nil {
+		wp.SetOnSID(inheritFrom.OnSID())
+		wp.SetOnSTAR(inheritFrom.OnSTAR())
+		wp.SetOnApproach(inheritFrom.OnApproach())
+	}
+	return wp
+}
+
+// applyRestrictionsToSyntheticWaypoint sets the supplied altitude and speed
+// restrictions on wp (when non-nil), records them on intent, and clears the
+// corresponding nav.Altitude / nav.Speed assignments so the synthetic
+// crossing supersedes any prior controller instruction of the same type.
+func (nav *Nav) applyRestrictionsToSyntheticWaypoint(wp *av.Waypoint,
+	ar *av.AltitudeRestriction, sr *av.SpeedRestriction, intent *av.NavigationIntent) {
+	if ar != nil {
+		wp.SetAltitudeRestriction(*ar)
+		intent.AltRestriction = ar
+		nav.Altitude = NavAltitude{}
+	}
+
+	if sr != nil {
+		wp.SetSpeedRestriction(*sr)
+		if sr.IsMach {
+			intent.SpeedRestriction = sr
+		} else {
+			naturalIAS, _ := nav.targetAltitudeIAS()
+			s := nav.restrictedSpeed(sr, naturalIAS)
+			intentSpeed := av.MakeAtSpeedRestriction(s)
+			intent.SpeedRestriction = &intentSpeed
+		}
+		nav.Speed = NavSpeed{}
+	}
+}
+
 func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.CardinalOrdinalDirection,
 	ar *av.AltitudeRestriction, sr *av.SpeedRestriction) av.CommandIntent {
-	useDeferred := nav.hasDeferredRoute()
-	routeWps := []av.Waypoint(nav.Waypoints)
-	if useDeferred {
-		routeWps = nav.DeferredNavHeading.Waypoints
-	}
-	commitRouteWps := func() {
-		if useDeferred {
-			nav.DeferredNavHeading.Waypoints = routeWps
-		} else {
-			nav.Waypoints = routeWps
-		}
-	}
+	routeWps, commitRoute := nav.editAssignedWaypoints()
 
 	wps := routeWps
 	idx := slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == fix })
@@ -906,35 +962,12 @@ func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.Cardin
 		math.Lerp(t, priorLoc[1], fixLoc[1]),
 	}
 
-	clearAltitude := func(wp *av.Waypoint) {
-		wp.ClearAltitudeRestriction()
-	}
-	clearSpeed := func(wp *av.Waypoint) {
-		wp.ClearSpeedRestriction()
-	}
-	hasInlineRestrictions := func(wp *av.Waypoint) bool {
-		return wp.HasAltitudeRestriction() || wp.HasSpeedRestriction()
-	}
-
 	// 1. Remove or clear existing synthetic waypoints for this fix and restriction types.
 	removePrefix := "_" + fix + "/"
-	for i := 0; i < len(routeWps); {
-		wp := &routeWps[i]
-		if strings.HasPrefix(wp.Fix, removePrefix) {
-			if ar != nil {
-				clearAltitude(wp)
-			}
-			if sr != nil {
-				clearSpeed(wp)
-			}
-			if !hasInlineRestrictions(wp) {
-				routeWps = slices.Delete(routeWps, i, i+1)
-				continue
-			}
-		}
-		i++
-	}
-	commitRouteWps()
+	routeWps = clearMatchingSyntheticRestrictions(routeWps,
+		func(wp *av.Waypoint) bool { return strings.HasPrefix(wp.Fix, removePrefix) },
+		ar, sr)
+	commitRoute(routeWps)
 
 	// 2. Refresh index as waypoints might have shifted.
 	wps = routeWps
@@ -960,15 +993,14 @@ func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.Cardin
 			insertIdx--
 		}
 
-		wp := av.Waypoint{Fix: name, Location: loc}
-		wp.SetSyntheticCrossing(true)
+		// Inherit SID/STAR/Approach flags from the named target fix (wps[idx]),
+		// not the insertion neighbor.
+		var inherit *av.Waypoint
 		if idx < len(wps) {
-			wp.SetOnSID(wps[idx].OnSID())
-			wp.SetOnSTAR(wps[idx].OnSTAR())
-			wp.SetOnApproach(wps[idx].OnApproach())
+			inherit = &wps[idx]
 		}
-		routeWps = slices.Insert(routeWps, insertIdx, wp)
-		commitRouteWps()
+		routeWps = slices.Insert(routeWps, insertIdx, newSyntheticWaypoint(name, loc, inherit))
+		commitRoute(routeWps)
 		// Refresh wps and idx for subsequent operations.
 		wps = routeWps
 		idx = slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == fix })
@@ -985,25 +1017,8 @@ func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.Cardin
 	wp.Location = syntheticLoc
 
 	// 3. Apply new inline restrictions to the synthetic waypoint.
-	if ar != nil {
-		wp.SetAltitudeRestriction(*ar)
-		intent.AltRestriction = ar
-		nav.Altitude = NavAltitude{}
-	}
-
-	if sr != nil {
-		wp.SetSpeedRestriction(*sr)
-		if sr.IsMach {
-			intent.SpeedRestriction = sr
-		} else {
-			naturalIAS, _ := nav.targetAltitudeIAS()
-			s := nav.restrictedSpeed(sr, naturalIAS)
-			intentSpeed := av.MakeAtSpeedRestriction(s)
-			intent.SpeedRestriction = &intentSpeed
-		}
-		nav.Speed = NavSpeed{}
-	}
-	commitRouteWps()
+	nav.applyRestrictionsToSyntheticWaypoint(wp, ar, sr, &intent)
+	commitRoute(routeWps)
 
 	return intent
 }
@@ -1024,18 +1039,7 @@ func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.Spee
 	ap := nav.Approach.Assigned
 	runway := ap.Runway
 
-	useDeferred := nav.hasDeferredRoute()
-	routeWps := []av.Waypoint(nav.Waypoints)
-	if useDeferred {
-		routeWps = nav.DeferredNavHeading.Waypoints
-	}
-	commitRouteWps := func() {
-		if useDeferred {
-			nav.DeferredNavHeading.Waypoints = routeWps
-		} else {
-			nav.Waypoints = routeWps
-		}
-	}
+	routeWps, commitRoute := nav.editAssignedWaypoints()
 
 	if len(routeWps) < 2 {
 		return av.MakeUnableIntent("unable")
@@ -1043,23 +1047,11 @@ func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.Spee
 
 	// 1. Clear matching restriction categories on any existing synthetic DME
 	// waypoints for this runway; drop any that end up with no restrictions.
-	for i := 0; i < len(routeWps); {
-		wp := &routeWps[i]
-		if wpRunway, _, ok := av.ParseSyntheticDMEFix(wp.Fix); ok && wpRunway == runway {
-			if ar != nil {
-				wp.ClearAltitudeRestriction()
-			}
-			if sr != nil {
-				wp.ClearSpeedRestriction()
-			}
-			if !wp.HasAltitudeRestriction() && !wp.HasSpeedRestriction() {
-				routeWps = slices.Delete(routeWps, i, i+1)
-				continue
-			}
-		}
-		i++
-	}
-	commitRouteWps()
+	routeWps = clearMatchingSyntheticRestrictions(routeWps, func(wp *av.Waypoint) bool {
+		wpRunway, _, ok := av.ParseSyntheticDMEFix(wp.Fix)
+		return ok && wpRunway == runway
+	}, ar, sr)
+	commitRoute(routeWps)
 
 	// Deletion above can leave the threshold alone (e.g., the aircraft has
 	// passed all prior visual waypoints and the only remaining synthetic
@@ -1110,14 +1102,13 @@ func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.Spee
 		wp = &routeWps[existingIdx]
 		wp.Location = syntheticLoc
 	} else {
-		newWp := av.Waypoint{Fix: name, Location: syntheticLoc}
-		newWp.SetSyntheticCrossing(true)
+		// Inherit SID/STAR/Approach flags from the insertion neighbor — the
+		// waypoint that will sit immediately after the new one.
+		var inherit *av.Waypoint
 		if insertIdx < len(routeWps) {
-			newWp.SetOnSID(routeWps[insertIdx].OnSID())
-			newWp.SetOnSTAR(routeWps[insertIdx].OnSTAR())
-			newWp.SetOnApproach(routeWps[insertIdx].OnApproach())
+			inherit = &routeWps[insertIdx]
 		}
-		routeWps = slices.Insert(routeWps, insertIdx, newWp)
+		routeWps = slices.Insert(routeWps, insertIdx, newSyntheticWaypoint(name, syntheticLoc, inherit))
 		wp = &routeWps[insertIdx]
 	}
 
@@ -1127,25 +1118,8 @@ func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.Spee
 		Distance: dist,
 	}
 
-	if ar != nil {
-		wp.SetAltitudeRestriction(*ar)
-		intent.AltRestriction = ar
-		nav.Altitude = NavAltitude{}
-	}
-
-	if sr != nil {
-		wp.SetSpeedRestriction(*sr)
-		if sr.IsMach {
-			intent.SpeedRestriction = sr
-		} else {
-			naturalIAS, _ := nav.targetAltitudeIAS()
-			s := nav.restrictedSpeed(sr, naturalIAS)
-			intentSpeed := av.MakeAtSpeedRestriction(s)
-			intent.SpeedRestriction = &intentSpeed
-		}
-		nav.Speed = NavSpeed{}
-	}
-	commitRouteWps()
+	nav.applyRestrictionsToSyntheticWaypoint(wp, ar, sr, &intent)
+	commitRoute(routeWps)
 
 	return intent
 }
