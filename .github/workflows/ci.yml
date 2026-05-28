@@ -113,7 +113,7 @@ jobs:
       run: ./vice -lint
 
     - name: Download manifest
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: manifest-json
         path: cmd/vice/
@@ -168,7 +168,7 @@ jobs:
       run: ./build.sh
 
     - name: Download manifest
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: manifest-json
         path: cmd/vice/
@@ -212,7 +212,7 @@ jobs:
   build-windows:
     name: Build Windows
     needs: bundle-resources
-    runs-on: windows-2025-vs2026
+    runs-on: windows-latest
 
     steps:
     - name: Checkout source
@@ -334,7 +334,7 @@ jobs:
       shell: pwsh
 
     - name: Download manifest
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: manifest-json
         path: cmd/vice/
