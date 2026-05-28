@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"runtime"
 	"sync"
+	"time"
 	"unsafe"
 
 	"github.com/mmp/vice/log"
@@ -183,6 +184,12 @@ func (a *audioEngine) IsPlayingSpeech() bool {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	return len(a.speechq) > 0
+}
+
+func (a *audioEngine) RemainingSpeechDuration() time.Duration {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return time.Duration(len(a.speechq)) * time.Second / time.Duration(AudioSampleRate)
 }
 
 //export audioCallback

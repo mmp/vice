@@ -1149,6 +1149,13 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 	imgui.End()
 }
 
+// pttSpeechGraceWindow lets the controller key up at the very tail of a
+// pilot transmission without being treated as a step-on. Real-world
+// technique is to claim the frequency as the pilot is finishing; if there
+// is less than this much pilot audio left when PTT is pressed, accept the
+// instruction normally instead of entering garble mode.
+const pttSpeechGraceWindow = 750 * time.Millisecond
+
 // uiHandlePTTKey handles push-to-talk key input for STT recording.
 func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, config *Config, lg *log.Logger) {
 	pttKey := config.UserPTTKey
@@ -1170,7 +1177,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 
 	// Start on initial press (ignore repeats by checking our own flags)
 	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling && !ui.pttMicFailed && !ui.testPTTActive {
-		if p.IsPlayingSpeech() {
+		if p.IsPlayingSpeech() && p.RemainingSpeechDuration() > pttSpeechGraceWindow {
 			// Audio is playing - garble it instead of recording
 			p.SetSpeechGarbled(true)
 			ui.pttGarbling = true

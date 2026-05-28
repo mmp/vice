@@ -6,6 +6,7 @@ package platform
 
 import (
 	"errors"
+	"time"
 
 	"github.com/mmp/vice/math"
 
@@ -150,6 +151,10 @@ type Platform interface {
 
 	// IsPlayingSpeech returns true if speech audio is currently playing.
 	IsPlayingSpeech() bool
+
+	// RemainingSpeechDuration returns how much speech audio is still
+	// queued for playback. Returns 0 when no speech is playing.
+	RemainingSpeechDuration() time.Duration
 
 	// SetAudioVolume sets the volume for audio playback; the value passed
 	// should be between 0 and 10.
