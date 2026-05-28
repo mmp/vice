@@ -1460,34 +1460,11 @@ func DecodeTFRXML(url string, r io.Reader, lg *log.Logger) (TFR, error) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-func inAirspace(airspace map[string][]AirspaceVolume, p math.Point2LL, alt int) bool {
-	for _, vols := range airspace {
-		if slices.ContainsFunc(vols, func(vol AirspaceVolume) bool {
-			return vol.Inside(p, alt)
-		}) {
-			return true
-		}
-	}
-	return false
-}
-
-func InBravoAirspace(p math.Point2LL, alt int) bool {
-	return inAirspace(DB.BravoAirspace, p, alt)
-}
-
 func UnderBravoShelf(grid *AirspaceGrid, p math.Point2LL, alt int) bool {
 	if grid == nil {
 		return false
 	}
 	return grid.Below(p, alt)
-}
-
-func InCharlieAirspace(p math.Point2LL, alt int) bool {
-	return inAirspace(DB.CharlieAirspace, p, alt)
-}
-
-func InDeltaAirspace(p math.Point2LL, alt int) bool {
-	return inAirspace(DB.DeltaAirspace, p, alt)
 }
 
 ///////////////////////////////////////////////////////////////////////////

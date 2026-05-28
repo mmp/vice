@@ -1732,34 +1732,6 @@ func TestMaintainVisualSeparationMarksAircraftState(t *testing.T) {
 	}
 }
 
-func TestCVAFollowTrafficRequiresRecentApproachClearedTraffic(t *testing.T) {
-	airportLoc := math.Point2LL{0, 0}
-	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc, Elevation: 13})
-
-	vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
-	traffic := makeVisualTestAircraft(math.Point2LL{0, 4.0 / 60}, 180)
-	traffic.ADSBCallsign = "DAL456"
-	traffic.Nav.Approach.Cleared = true
-	vs.Sim.Aircraft[traffic.ADSBCallsign] = traffic
-
-	sighting := vs.AC.RecordSighting(traffic.ADSBCallsign, vs.Sim.State.SimTime.Add(-31*time.Second))
-
-	if vs.Sim.hasRecentApproachTrafficInSight(vs.AC) {
-		t.Fatal("stale traffic report should not allow follow-traffic visual")
-	}
-
-	sighting.SightedTime = vs.Sim.State.SimTime
-	traffic.Nav.Approach.Cleared = false
-	if vs.Sim.hasRecentApproachTrafficInSight(vs.AC) {
-		t.Fatal("traffic that is not approach-cleared should not allow follow-traffic visual")
-	}
-
-	traffic.Nav.Approach.Cleared = true
-	if !vs.Sim.hasRecentApproachTrafficInSight(vs.AC) {
-		t.Fatal("recent approach-cleared traffic should allow follow-traffic visual")
-	}
-}
-
 func TestTrafficAdvisoryClearsOfferedStateButKeepsSightingHistory(t *testing.T) {
 	vs := NewVisualScenario(t, math.Point2LL{0, 0}, "13L", math.Point2LL{0, 5.0 / 60}, 180)
 

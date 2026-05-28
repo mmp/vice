@@ -278,10 +278,6 @@ func (s *Sim) CancelApproachClearance(tcw TCW, callsign av.ADSBCallsign) (av.Com
 		})
 }
 
-func (s *Sim) hasRecentApproachTrafficInSight(ac *Aircraft) bool {
-	return s.recentApproachTrafficInSight(ac) != nil
-}
-
 func (s *Sim) recentApproachTrafficInSightForRunway(ac *Aircraft, runway string) *Aircraft {
 	for i := len(ac.SeenTraffic) - 1; i >= 0; i-- {
 		seen := &ac.SeenTraffic[i]
@@ -293,21 +289,6 @@ func (s *Sim) recentApproachTrafficInSightForRunway(ac *Aircraft, runway string)
 			continue
 		}
 		if traffic.Nav.Approach.Assigned.Runway == runway {
-			return traffic
-		}
-	}
-	return nil
-}
-
-func (s *Sim) recentApproachTrafficInSight(ac *Aircraft) *Aircraft {
-	for i := len(ac.SeenTraffic) - 1; i >= 0; i-- {
-		seen := &ac.SeenTraffic[i]
-		if s.State.SimTime.Sub(seen.SightedTime) > approachTrafficSightingMaxAge {
-			continue
-		}
-
-		traffic, ok := s.Aircraft[seen.Callsign]
-		if ok && traffic.Nav.Approach.Cleared {
 			return traffic
 		}
 	}

@@ -399,11 +399,6 @@ func SelectWhisperModel(lg *log.Logger, modelName string,
 	}()
 }
 
-// GetWhisperDeviceID returns the device identifier used for whisper inference.
-func GetWhisperDeviceID() string {
-	return whisper.ProcessorDescription()
-}
-
 // IsWhisperBenchmarkDone returns true if the whisper model loading/benchmarking has completed.
 func IsWhisperBenchmarkDone() bool {
 	whisperModelStartMu.Lock()

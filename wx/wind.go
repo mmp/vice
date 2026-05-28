@@ -191,19 +191,6 @@ func matchesSpeed(speedSpec string, windSpeed int) bool {
 	return false
 }
 
-// SampleMETARWithSpec randomly samples a METAR that matches the wind specifier
-func SampleMETARWithSpec(metar []METAR, intervals []util.TimeInterval, spec *WindSpecifier, magVar float32) *METAR {
-	if spec == nil || (spec.Direction == "" && spec.Speed == "" && spec.FlightRules == "") {
-		// No constraints, use default sampling with no direction constraint
-		return SampleMETAR(metar, intervals, 0)
-	}
-
-	// Filter METARs that match the specifier and sample from them
-	return SampleMatchingMETAR(metar, intervals, func(m METAR) bool {
-		return spec.Matches(m, magVar)
-	})
-}
-
 // FlightRulesFilter represents user preference for VMC/IMC
 type FlightRulesFilter int
 
@@ -345,18 +332,6 @@ func (wf *WeatherFilter) Matches(metar METAR, magVar float32) bool {
 	}
 
 	return true
-}
-
-// SampleMETARWithFilter randomly samples a METAR that matches the weather filter
-func SampleMETARWithFilter(metar []METAR, intervals []util.TimeInterval, filter *WeatherFilter, magVar float32) *METAR {
-	if filter == nil || filter.IsEmpty() {
-		// No constraints, sample any METAR
-		return SampleMatchingMETAR(metar, intervals, func(m METAR) bool { return true })
-	}
-
-	return SampleMatchingMETAR(metar, intervals, func(m METAR) bool {
-		return filter.Matches(m, magVar)
-	})
 }
 
 // matchesWindsAloftAt checks if winds aloft at the specified altitude match

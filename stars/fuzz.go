@@ -197,11 +197,6 @@ func NewFuzzController(sp *STARSPane, cfg FuzzConfig, lg *log.Logger) *FuzzContr
 	return fc
 }
 
-// Seed returns the random seed used by this controller.
-func (fc *FuzzController) Seed() uint64 {
-	return fc.seed
-}
-
 // ExecuteRandomCommand generates and executes a random command.
 func (fc *FuzzController) ExecuteRandomCommand(ctx *panes.Context) {
 	fc.commandsTried++
@@ -388,11 +383,6 @@ func (fc *FuzzController) ExecuteFrame(ctx *panes.Context, c *client.ControlClie
 // ShouldContinue returns true if fuzz testing should continue.
 func (fc *FuzzController) ShouldContinue() bool {
 	return fc.frameCount < fc.totalFrames
-}
-
-// TotalFrames returns the configured total number of frames.
-func (fc *FuzzController) TotalFrames() int {
-	return fc.totalFrames
 }
 
 // FrameCount returns the number of frames executed so far.

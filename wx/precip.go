@@ -5,10 +5,7 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
-	"image/png"
 	"io"
-	"net/http"
-	"net/url"
 	"sort"
 	"sync"
 
@@ -51,36 +48,6 @@ func (p Precip) BoundsLL() math.Extent2D {
 	// Resolution is in pixels, and we have 0.5nm per pixel (2 samples per nm)
 	widthNM := float32(p.Resolution) / 2
 	return math.BoundLatLongCircle(centerLL, widthNM/2 /* radius */)
-}
-
-func FetchRadarImage(center math.Point2LL, radius float32, resolution int) (image.Image, math.Extent2D, error) {
-	// The weather radar image comes via a WMS GetMap request from the NOAA.
-	//
-	// Relevant background:
-	// https://enterprise.arcgis.com/en/server/10.3/publish-services/windows/communicating-with-a-wms-service-in-a-web-browser.htm
-	// http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd
-	// NOAA weather: https://opengeo.ncep.noaa.gov/geoserver/www/index.html
-	// https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?service=wms&version=1.3.0&request=GetCapabilities
-	params := url.Values{}
-	params.Add("SERVICE", "WMS")
-	params.Add("REQUEST", "GetMap")
-	params.Add("FORMAT", "image/png")
-	params.Add("WIDTH", fmt.Sprintf("%d", resolution))
-	params.Add("HEIGHT", fmt.Sprintf("%d", resolution))
-	params.Add("LAYERS", "conus_bref_qcd")
-	bbox := math.BoundLatLongCircle(center, radius)
-	params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", bbox.P0[0], bbox.P0[1], bbox.P1[0], bbox.P1[1]))
-
-	url := "https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?" + params.Encode()
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, math.Extent2D{}, err
-	}
-	defer resp.Body.Close()
-
-	img, err := png.Decode(resp.Body)
-	return img, bbox, err
 }
 
 // A single scanline of this color map, converted to RGB bytes:

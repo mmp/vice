@@ -97,31 +97,6 @@ func MakeReadbackTransmission(s string, args ...any) *RadioTransmission {
 	return rt
 }
 
-// MakeUnexpectedTransmission similarly makes a single pilot
-// transmission from the provided format string and arguments, but also
-// marks the transmission as unexpected.
-func MakeUnexpectedTransmission(s string, args ...any) *RadioTransmission {
-	rt := &RadioTransmission{Type: RadioTransmissionUnexpected}
-	rt.Add(s, args...)
-	return rt
-}
-
-// MakeMixedUpTransmission creates a pilot transmission when the pilot is
-// confused about who is being addressed.
-func MakeMixedUpTransmission(s string, args ...any) *RadioTransmission {
-	rt := &RadioTransmission{Type: RadioTransmissionMixUp}
-	rt.Add(s, args...)
-	return rt
-}
-
-// MakeNoIdTransmission creates a pilot transmission where the pilot doesn't
-// identify themselves with their callsign (e.g., for saying "blocked").
-func MakeNoIdTransmission(s string, args ...any) *RadioTransmission {
-	rt := &RadioTransmission{Type: RadioTransmissionNoId}
-	rt.Add(s, args...)
-	return rt
-}
-
 // Merge takes a separately-constructed RadioTransmission and merges its
 // contents with the current one.
 func (rt *RadioTransmission) Merge(r *RadioTransmission) {
@@ -921,31 +896,6 @@ func SplitCallsign(callsign string) (prefix, number string) {
 		return callsign[:idx], callsign[idx:]
 	}
 	return callsign, ""
-}
-
-// GetTelephony returns the spoken telephony string for a callsign.
-// cwtCategory determines the heavy/super suffix: "A" = super, "B"/"C"/"D" = heavy.
-func GetTelephony(callsign string, cwtCategory string) string {
-	prefix, number := SplitCallsign(callsign)
-
-	var tele string
-	if prefix == "N" {
-		tele = "november"
-	} else if t, ok := DB.Callsigns[prefix]; ok {
-		tele = t
-	}
-
-	if number != "" {
-		tele += " " + number
-	}
-
-	if cwtCategory == "A" {
-		tele += " super"
-	} else if len(cwtCategory) > 0 && cwtCategory[0] <= 'D' {
-		tele += " heavy"
-	}
-
-	return tele
 }
 
 // GetCallsignSpoken returns the spoken telephony string for a callsign,

@@ -132,19 +132,6 @@ func LevelIndexFromId(b []byte) int {
 	}
 }
 
-func IdFromLevelIndex(i int) string {
-	switch {
-	case i == 0:
-		return "1013.2 mb"
-	case i >= 1 && i < NumSampleLevels:
-		i -= 1
-		i = 38 - i
-		return fmt.Sprintf("%d mb", 50+25*i)
-	default:
-		panic("unexpected level index " + strconv.Itoa(i))
-	}
-}
-
 // PressureFromLevelIndex returns pressure in millibars at the level.
 func PressureFromLevelIndex(i int) float32 {
 	switch {

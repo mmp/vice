@@ -1329,13 +1329,6 @@ func parseWaypointActionTermination(f string) (WaypointActionTermination, error)
 	}
 }
 
-// ParseRoute parses a waypoint string like "SAJUL/a10000 DETGY/a7000"
-// into a WaypointArray. Fix locations are not resolved; call
-// InitializeLocations on the result to set them.
-func ParseRoute(str string) (WaypointArray, error) {
-	return parseWaypoints(str)
-}
-
 func parseWaypoints(str string) (WaypointArray, error) {
 	var waypoints WaypointArray
 	var nextWaypointTurn TurnDirection

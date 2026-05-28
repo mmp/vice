@@ -85,7 +85,7 @@ func TestParseWaypointActionGroups(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	wps, err := ParseRoute("_EWR4_4La/h039@a500/r055@d4.0IEZA/l290/ho5W")
+	wps, err := parseWaypoints("_EWR4_4La/h039@a500/r055@d4.0IEZA/l290/ho5W")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,7 +129,7 @@ func TestInitializeActionGroupDMEFix(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	wps, err := ParseRoute("_EWR4_4La/r055@d4.0IEZA/l290")
+	wps, err := parseWaypoints("_EWR4_4La/r055@d4.0IEZA/l290")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -157,7 +157,7 @@ func TestParseLegacyModifierAfterActionGroup(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	wps, err := ParseRoute("_EWR4_4La/h039@a500/r055/radius2.0/land")
+	wps, err := parseWaypoints("_EWR4_4La/h039@a500/r055/radius2.0/land")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -177,7 +177,7 @@ func TestParseActionGroupClearApproachAndDuplicateAltitudes(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	wps, err := ParseRoute("_EWR4_4La/h039@a500/r055/clearapp")
+	wps, err := parseWaypoints("_EWR4_4La/h039@a500/r055/clearapp")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -189,10 +189,10 @@ func TestParseActionGroupClearApproachAndDuplicateAltitudes(t *testing.T) {
 		t.Fatal("expected clearapp in final action group")
 	}
 
-	if _, err := ParseRoute("_EWR4_4La/h039@a500/c50/c100"); err == nil {
+	if _, err := parseWaypoints("_EWR4_4La/h039@a500/c50/c100"); err == nil {
 		t.Fatal("expected duplicate climb altitude action to fail")
 	}
-	if _, err := ParseRoute("_EWR4_4La/h039@a500/d50/d100"); err == nil {
+	if _, err := parseWaypoints("_EWR4_4La/h039@a500/d50/d100"); err == nil {
 		t.Fatal("expected duplicate descend altitude action to fail")
 	}
 }
@@ -202,7 +202,7 @@ func TestParseActionGroupErrorIncludesWaypointContext(t *testing.T) {
 	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
 	t.Cleanup(func() { DB = oldDB })
 
-	_, err := ParseRoute("KJFK-13R/h314@4 SKORR")
+	_, err := parseWaypoints("KJFK-13R/h314@4 SKORR")
 	if err == nil {
 		t.Fatal("expected invalid action termination")
 	}
