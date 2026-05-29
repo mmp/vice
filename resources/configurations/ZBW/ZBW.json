@@ -170,7 +170,12 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "JFUND2-PONCT": "36"
+          "JFUND2-PONCT": "36",
+          "FORME": "36",
+          "CTR": "36"
+        },
+        "departure_assignments": {
+          "KMHT": "46"
         },
         "default_consolidation": {
           "36": []
@@ -182,6 +187,19 @@
         },
         "default_consolidation": {
           "19": []
+        }
+      },
+      "B17": {
+        "inbound_assignments": {
+          "TUSKY": "17",
+          "BRADD": "17",
+          "VITOL": "17",
+          "FERNZ": "17",
+          "PLYMM": "17",
+          "WHALE": "17"
+        },
+        "default_consolidation": {
+          "17": []
         }
       }
     },

@@ -1,0 +1,1166 @@
+{
+  "artcc": "ZBW",
+  "area": "Area D",
+  "name": "ZBW 17",
+  "airports": {
+    "KBOS": {
+      "approaches": {
+        "I2L": {
+          "cifp_id": "I22L"
+        },
+        "I4R": {
+          "cifp_id": "I4R"
+        },
+        "R4L": {
+          "cifp_id": "R4L"
+        },
+        "I27": {
+          "cifp_id": "I27"
+        },
+        "I3L": {
+          "cifp_id": "I33L"
+        },
+        "I5R": {
+          "cifp_id": "I15R"
+        },
+        "R32": {
+          "cifp_id": "R32"
+        }
+      }
+    },
+    "KBGR": {
+      "approaches": {
+        "I33": {
+          "cifp_id": "I33"
+        }
+      }
+    },
+    "KMHT": {
+      "approaches": {
+        "I17": {
+          "cifp_id": "I17"
+        }
+      }
+    },
+    "KBED": {
+      "approaches": {
+        "I29": {
+          "cifp_id": "I29"
+        },
+        "I11": {
+          "cifp_id": "I11"
+        },
+        "R23": {
+          "cifp_id": "R23"
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "TUSKY": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KIAD",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "LSZH",
+              "arrival_airport": "KIAD",
+              "icao": "SWR"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "TUSKY/ho BOS BAF/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KIAD",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "LSZH",
+              "arrival_airport": "KIAD",
+              "icao": "SWR"
+            }
+          ],
+          "initial_altitude": 30000,
+          "assigned_altitude": 30000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "TUSKY/ho BOS BAF/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KIAD",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "LSZH",
+              "arrival_airport": "KIAD",
+              "icao": "SWR"
+            }
+          ],
+          "initial_altitude": 32000,
+          "assigned_altitude": 32000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "TUSKY/ho BOS BAF/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KIAD",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "LSZH",
+              "arrival_airport": "KIAD",
+              "icao": "SWR"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "TUSKY/ho BOS BAF/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KIAD",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "LSZH",
+              "arrival_airport": "KIAD",
+              "icao": "SWR"
+            }
+          ],
+          "initial_altitude": 38000,
+          "assigned_altitude": 38000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "TUSKY/ho BOS BAF/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KIAD",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "LSZH",
+              "arrival_airport": "KIAD",
+              "icao": "SWR"
+            }
+          ],
+          "initial_altitude": 40000,
+          "assigned_altitude": 40000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "TUSKY/ho BOS BAF/delete"
+        }
+      ]
+    },
+    "BRADD": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "LSZH",
+              "arrival_airport": "KEWR",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "BIKF",
+              "arrival_airport": "KEWR",
+              "icao": "ICE"
+            },
+            {
+              "departure_airport": "BIKF",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "BIKF",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "BRADD/ho BOS NELIE/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KBOS",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KBOS",
+              "icao": "BAW"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "BRADD/ho EURRO OOSHN/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KBOS",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KBOS",
+              "icao": "BAW"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "BRADD/ho EURRO OOSHN/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KBOS",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KBOS",
+              "icao": "BAW"
+            }
+          ],
+          "initial_altitude": 32000,
+          "assigned_altitude": 32000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "BRADD/ho EURRO OOSHN/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KBOS",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KBOS",
+              "icao": "BAW"
+            }
+          ],
+          "initial_altitude": 38000,
+          "assigned_altitude": 38000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "BRADD/ho EURRO OOSHN/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KBOS",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KBOS",
+              "icao": "BAW"
+            }
+          ],
+          "initial_altitude": 40000,
+          "assigned_altitude": 40000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "BRADD/ho EURRO OOSHN/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 31000,
+          "assigned_altitude": 31000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N040.51.38.913,W070.57.08.421 ACK/ho BRADD/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N040.51.38.913,W070.57.08.421 ACK/ho BRADD/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N040.51.38.913,W070.57.08.421 ACK/ho BRADD/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N040.51.38.913,W070.57.08.421 ACK/ho BRADD/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N040.51.38.913,W070.57.08.421 ACK/ho BRADD/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 35000,
+          "assigned_altitude": 35000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N040.51.38.913,W070.57.08.421 ACK/ho BRADD/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 37000,
+          "assigned_altitude": 37000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N040.51.38.913,W070.57.08.421 ACK/ho BRADD/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 39000,
+          "assigned_altitude": 39000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N040.51.38.913,W070.57.08.421 ACK/ho BRADD/delete"
+        }
+      ]
+    },
+    "KANNI": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KBOS",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KBOS",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "LSZH",
+              "arrival_airport": "KEWR",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "BIKF",
+              "arrival_airport": "KEWR",
+              "icao": "ICE"
+            },
+            {
+              "departure_airport": "BIKF",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "BIKF",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KEWR",
+              "icao": "UAL"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "ACK/ho KANNI BRADD/delete"
+        }
+      ]
+    },
+    "VITOL": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "LPPD",
+              "arrival_airport": "KIAD",
+              "icao": "TAP"
+            },
+            {
+              "departure_airport": "LEMD",
+              "arrival_airport": "KIAD",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KIAD",
+              "icao": "BAW"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "VITOL/ho ACK Q430 RBV/delete"
+        }
+      ]
+    },
+    "WHALE": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 31000,
+          "assigned_altitude": 31000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "DEEPO/ho WHALE/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "DEEPO/ho WHALE/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 35000,
+          "assigned_altitude": 35000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "DEEPO/ho WHALE/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 37000,
+          "assigned_altitude": 37000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "DEEPO/ho WHALE/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EDDF",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "LSZH",
+              "icao": "SWR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "EGLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 39000,
+          "assigned_altitude": 39000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "DEEPO/ho WHALE/delete"
+        }
+      ]
+    },
+    "PLYMM": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "LPPD",
+              "arrival_airport": "KJFK",
+              "icao": "TAP"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KJFK",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KJFK",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KJFK",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EIDW",
+              "arrival_airport": "KJFK",
+              "icao": "EIN"
+            },
+            {
+              "departure_airport": "EIDW",
+              "arrival_airport": "KJFK",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N042.37.48.333,W066.49.36.965/ho PLYMM PVD TRAIT PARCH/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "LPPD",
+              "arrival_airport": "KJFK",
+              "icao": "TAP"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KJFK",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KJFK",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KJFK",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EIDW",
+              "arrival_airport": "KJFK",
+              "icao": "EIN"
+            },
+            {
+              "departure_airport": "EIDW",
+              "arrival_airport": "KJFK",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 32000,
+          "assigned_altitude": 32000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N042.37.48.333,W066.49.36.965/ho PLYMM PVD TRAIT PARCH/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "LPPD",
+              "arrival_airport": "KJFK",
+              "icao": "TAP"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KJFK",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KJFK",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KJFK",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EIDW",
+              "arrival_airport": "KJFK",
+              "icao": "EIN"
+            },
+            {
+              "departure_airport": "EIDW",
+              "arrival_airport": "KJFK",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 30000,
+          "assigned_altitude": 30000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N042.37.48.333,W066.49.36.965/ho PLYMM PVD TRAIT PARCH/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "LPPD",
+              "arrival_airport": "KJFK",
+              "icao": "TAP"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KJFK",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KJFK",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KJFK",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EIDW",
+              "arrival_airport": "KJFK",
+              "icao": "EIN"
+            },
+            {
+              "departure_airport": "EIDW",
+              "arrival_airport": "KJFK",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N042.37.48.333,W066.49.36.965/ho PLYMM PVD TRAIT PARCH/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "LPPD",
+              "arrival_airport": "KJFK",
+              "icao": "TAP"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KJFK",
+              "icao": "BAW"
+            },
+            {
+              "departure_airport": "EGLL",
+              "arrival_airport": "KJFK",
+              "icao": "VIR"
+            },
+            {
+              "departure_airport": "EDDF",
+              "arrival_airport": "KJFK",
+              "icao": "DLH"
+            },
+            {
+              "departure_airport": "EIDW",
+              "arrival_airport": "KJFK",
+              "icao": "EIN"
+            },
+            {
+              "departure_airport": "EIDW",
+              "arrival_airport": "KJFK",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 38000,
+          "assigned_altitude": 38000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N042.37.48.333,W066.49.36.965/ho PLYMM PVD TRAIT PARCH/delete"
+        }
+      ]
+    },
+    "FERNZ": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "TJSJ",
+              "arrival_airport": "KBOS",
+              "icao": "JBU"
+            },
+            {
+              "departure_airport": "TXKF",
+              "arrival_airport": "KBOS",
+              "icao": "BWA"
+            },
+            {
+              "departure_airport": "TXKF",
+              "arrival_airport": "KBOS",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": 30000,
+          "assigned_altitude": 28000,
+          "initial_controller": "36",
+          "initial_speed": 300,
+          "waypoints": "N040.47.42.048,W068.55.52.340/ho FERNZ LONEY/a10000 N042.30.15.847,W070.17.16.093/delete"
+        }
+      ]
+    }
+  },
+  "default_scenario": "ZBW Nantucket 17",
+  "scenarios": {
+    "ZBW Nantucket 17": {
+      "configuration": "B17",
+      "default_maps": ["TRACON", "HIGH SCTRS", "LOW SCTRS"],
+      "default_map_group": "ZBWMAP",
+      "departure_runways": [],
+      "arrival_runways": [],
+      "inbound_rates": {
+        "TUSKY": {
+          "overflights": 15
+        },
+        "BRADD": {
+          "overflights": 15
+        },
+        "VITOL": {
+          "overflights": 15
+        },
+        "FERNZ": {
+          "overflights": 15
+        },
+        "PLYMM": {
+          "overflights": 15
+        },
+        "WHALE": {
+          "overflights": 15
+        }
+      },
+      "wind": {
+        "direction": "130-180",
+        "speed": "5+",
+        "flight_rules": "VMC"
+      }
+    }
+  }
+}
