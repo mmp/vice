@@ -284,6 +284,11 @@ func TestCoalesceAfterFixAltitudes(t *testing.T) {
 			expected: []string{"CJOBAS/A57+", "AJOBAS/D30"},
 		},
 		{
+			name:     "cross fix at or below then climb",
+			input:    []string{"CJOBAS/A57-", "C90"},
+			expected: []string{"CJOBAS/A57-", "AJOBAS/C90"},
+		},
+		{
 			name:     "only transforms immediately following command",
 			input:    []string{"CROSLY/A60", "D30", "D20"},
 			expected: []string{"CROSLY/A60", "AROSLY/D30", "D20"},

@@ -137,6 +137,50 @@ func TestBasicAltitudeCommands(t *testing.T) {
 			},
 			expected: "UAL452 CIZEKO/A190",
 		},
+		{
+			name:       "cross fix at or above altitude",
+			transcript: "United 452 cross IZEKO at or above 8000",
+			aircraft: map[string]Aircraft{
+				"United 452": {
+					Callsign: "UAL452", Altitude: 28000, State: "overflight",
+					Fixes: map[string]string{"Izeko": "IZEKO"},
+				},
+			},
+			expected: "UAL452 CIZEKO/A80+",
+		},
+		{
+			name:       "cross fix at or below altitude",
+			transcript: "United 452 cross IZEKO at or below 8000",
+			aircraft: map[string]Aircraft{
+				"United 452": {
+					Callsign: "UAL452", Altitude: 28000, State: "overflight",
+					Fixes: map[string]string{"Izeko": "IZEKO"},
+				},
+			},
+			expected: "UAL452 CIZEKO/A80-",
+		},
+		{
+			name:       "cross fix below altitude (without 'at')",
+			transcript: "United 452 cross IZEKO below 8000",
+			aircraft: map[string]Aircraft{
+				"United 452": {
+					Callsign: "UAL452", Altitude: 28000, State: "overflight",
+					Fixes: map[string]string{"Izeko": "IZEKO"},
+				},
+			},
+			expected: "UAL452 CIZEKO/A80-",
+		},
+		{
+			name:       "cross fix at or below flight level",
+			transcript: "United 452 cross IZEKO at or below flight level one nine zero",
+			aircraft: map[string]Aircraft{
+				"United 452": {
+					Callsign: "UAL452", Altitude: 28000, State: "overflight",
+					Fixes: map[string]string{"Izeko": "IZEKO"},
+				},
+			},
+			expected: "UAL452 CIZEKO/A190-",
+		},
 	}
 
 	provider := NewTranscriber(nil)
@@ -197,6 +241,9 @@ func TestCrossFixAltitudeSpeedCombined(t *testing.T) {
 		{"or-above alt + plain spd",
 			"United 452 cross IZEKO at or above 8000 at 250",
 			makeAC(izeko), "UAL452 CIZEKO/A80+/S250"},
+		{"or-below alt + plain spd",
+			"United 452 cross IZEKO at or below 8000 at 250",
+			makeAC(izeko), "UAL452 CIZEKO/A80-/S250"},
 		// Dual modifiers
 		{"or-above alt + or-greater spd",
 			"United 452 cross IZEKO at or above 8000 at 250 or greater",
@@ -204,6 +251,12 @@ func TestCrossFixAltitudeSpeedCombined(t *testing.T) {
 		{"or-above alt + do-not-exceed spd",
 			"United 452 cross IZEKO at or above 8000 do not exceed 250",
 			makeAC(izeko), "UAL452 CIZEKO/A80+/S250-"},
+		{"or-below alt + or-greater spd",
+			"United 452 cross IZEKO at or below 8000 at 250 or greater",
+			makeAC(izeko), "UAL452 CIZEKO/A80-/S250+"},
+		{"or-below alt + do-not-exceed spd",
+			"United 452 cross IZEKO at or below 8000 do not exceed 250",
+			makeAC(izeko), "UAL452 CIZEKO/A80-/S250-"},
 		// Mach
 		{"plain alt + mach",
 			"United 452 cross IZEKO at 8000 mach point 80",
@@ -211,6 +264,9 @@ func TestCrossFixAltitudeSpeedCombined(t *testing.T) {
 		{"or-above alt + mach",
 			"United 452 cross IZEKO at or above 8000 mach point 80",
 			makeAC(izeko), "UAL452 CIZEKO/A80+/M80"},
+		{"or-below alt + mach",
+			"United 452 cross IZEKO at or below 8000 mach point 80",
+			makeAC(izeko), "UAL452 CIZEKO/A80-/M80"},
 		// Distance-direction
 		{"dist/dir plain alt + plain spd",
 			"United 452 cross 5 miles west of DETGY at 8000 at 250 knots",

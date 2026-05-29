@@ -1,6 +1,7 @@
 - Scenario updates: BOI (Elliot B), MIA, ZJX (manaphy), PCT, NCT (Ketan K), ZNY (Ryan G), BTV (EkimWasHere), BOS (radarcontacto)
 - STT:
   - Fixed handling of "maintian best forward speed"
+  - Added support for "cross (fix) at or below (altitude)"
 - Visual approaches
   - Fixed bugs where aircraft cleared for approaches would still report the field insight
   - Fixed descent profile for aircraft cleared for visual approaches
