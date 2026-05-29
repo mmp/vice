@@ -7,6 +7,7 @@ package sim
 import (
 	"fmt"
 	"log/slog"
+	"maps"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -98,7 +99,7 @@ type LaunchConfig struct {
 	DepartureRateScale float32
 
 	VFRDepartureRateScale   float32
-	VFRAirportRates         map[string]int // name -> VFRRateSum()
+	VFRAirportRates         map[string]float32 // name -> VFRRateSum()
 	VFFRequestRate          int32
 	HaveVFRReportingRegions bool
 
@@ -113,12 +114,12 @@ type LaunchConfig struct {
 }
 
 func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports map[string]*av.Airport,
-	inbound map[string]map[string]int, haveVFRReportingRegions bool) LaunchConfig {
+	inbound map[string]map[string]float32, haveVFRReportingRegions bool) LaunchConfig {
 	lc := LaunchConfig{
 		GoAroundRate:                0.01,
 		DepartureRateScale:          1,
 		VFRDepartureRateScale:       vfrRateScale,
-		VFRAirportRates:             make(map[string]int),
+		VFRAirportRates:             make(map[string]float32),
 		VFFRequestRate:              10,
 		HaveVFRReportingRegions:     haveVFRReportingRegions,
 		InboundFlowRateScale:        1,
@@ -140,16 +141,12 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports m
 		if _, ok := lc.DepartureRates[rwy.Airport][rwy.Runway]; !ok {
 			lc.DepartureRates[rwy.Airport][rwy.Runway] = make(map[string]float32)
 		}
-		lc.DepartureRates[rwy.Airport][rwy.Runway][rwy.Category] = float32(rwy.DefaultRate)
+		lc.DepartureRates[rwy.Airport][rwy.Runway][rwy.Category] = rwy.DefaultRate
 	}
 
-	// Convert the inbound map from int to float32 rates
 	lc.InboundFlowRates = make(map[string]map[string]float32)
 	for flow, airportOverflights := range inbound {
-		lc.InboundFlowRates[flow] = make(map[string]float32)
-		for name, rate := range airportOverflights {
-			lc.InboundFlowRates[flow][name] = float32(rate)
-		}
+		lc.InboundFlowRates[flow] = maps.Clone(airportOverflights)
 	}
 
 	return lc
@@ -273,7 +270,7 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 		}
 
 		for name, rate := range lc.VFRAirportRates {
-			r := scaleRate(float32(rate), lc.VFRDepartureRateScale)
+			r := scaleRate(rate, lc.VFRDepartureRateScale)
 			rwy := s.State.VFRRunways[name]
 			s.DepartureState[name][av.RunwayID(rwy.Id)].setVFRRate(s, r)
 		}
@@ -478,9 +475,9 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 		if rate == 0 {
 			return now.Add(365 * 24 * time.Hour)
 		}
-		avgWait := int(3600 / rate)
-		delta := s.Rand.Intn(avgWait) - avgWait/2
-		return now.Add(time.Duration(delta) * time.Second)
+		avgWait := 3600 / rate
+		delta := s.Rand.Float32Range(-avgWait/2, avgWait/2)
+		return now.Add(time.Duration(delta * float32(time.Second)))
 	}
 
 	if s.State.LaunchConfig.ArrivalPushes {
@@ -512,7 +509,7 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 		}
 
 		ap := s.State.Airports[name]
-		if vfrRate := float32(ap.VFRRateSum()); vfrRate > 0 {
+		if vfrRate := ap.VFRRateSum(); vfrRate > 0 {
 			rwy := s.State.VFRRunways[name]
 			state, ok := s.DepartureState[name][av.RunwayID(rwy.Id)]
 			if !ok {
@@ -627,7 +624,7 @@ type DepartureRunway struct {
 	Airport     string      `json:"airport"`
 	Runway      av.RunwayID `json:"runway"`
 	Category    string      `json:"category,omitempty"`
-	DefaultRate int         `json:"rate"`
+	DefaultRate float32     `json:"rate"`
 }
 
 type ArrivalRunway struct {

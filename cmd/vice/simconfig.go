@@ -1368,14 +1368,14 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 
 	// VFR Departures (collapsible)
 	if len(lc.VFRAirportRates) > 0 {
-		vfrRate := 0
+		var vfrRate float32
 		for _, rate := range lc.VFRAirportRates {
-			r := float32(rate) * lc.VFRDepartureRateScale
+			r := rate * lc.VFRDepartureRateScale
 			if r > 0 {
-				vfrRate += int(r)
+				vfrRate += r
 			}
 		}
-		headerText := fmt.Sprintf("VFR Departures (%d/hr)###vfrdepartures", vfrRate)
+		headerText := fmt.Sprintf("VFR Departures (%d/hr)###vfrdepartures", int(vfrRate+0.5))
 		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
 			drawVFRDepartureUI(lc, p)
 			imgui.Spacing()
@@ -1535,9 +1535,9 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 					}
 					imgui.TableNextColumn()
 
-					r := int32(lc.DepartureRateScale*lc.DepartureRates[airport][runway][category] + 0.5)
-					if imgui.InputIntV("##adr", &r, 0, 120, 0) {
-						lc.DepartureRates[airport][runway][category] = float32(r) / max(.01, lc.DepartureRateScale)
+					r := lc.DepartureRateScale * lc.DepartureRates[airport][runway][category]
+					if imgui.InputFloatV("##adr", &r, 0, 0, "%g", 0) {
+						lc.DepartureRates[airport][runway][category] = r / max(.01, lc.DepartureRateScale)
 						changed = true
 					}
 
@@ -1659,10 +1659,10 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 					imgui.TableNextColumn()
 					imgui.Text(group)
 					imgui.TableNextColumn()
-					r := int32(rate*lc.InboundFlowRateScale + 0.5)
-					if imgui.InputIntV("##aar-"+ap, &r, 0, 120, 0) {
+					r := rate * lc.InboundFlowRateScale
+					if imgui.InputFloatV("##aar-"+ap, &r, 0, 0, "%g", 0) {
 						changed = true
-						lc.InboundFlowRates[group][ap] = float32(r) / max(.01, lc.InboundFlowRateScale)
+						lc.InboundFlowRates[group][ap] = r / max(.01, lc.InboundFlowRateScale)
 					}
 					aarCol++
 
@@ -1717,10 +1717,10 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 			imgui.TableNextColumn()
 			imgui.Text(group)
 			imgui.TableNextColumn()
-			r := int32(lc.InboundFlowRates[group]["overflights"]*lc.InboundFlowRateScale + 0.5)
-			if imgui.InputIntV("##of-"+group, &r, 0, 120, 0) {
+			r := lc.InboundFlowRates[group]["overflights"] * lc.InboundFlowRateScale
+			if imgui.InputFloatV("##of-"+group, &r, 0, 0, "%g", 0) {
 				changed = true
-				lc.InboundFlowRates[group]["overflights"] = float32(r) / max(.01, lc.InboundFlowRateScale)
+				lc.InboundFlowRates[group]["overflights"] = r / max(.01, lc.InboundFlowRateScale)
 			}
 			ofCol++
 

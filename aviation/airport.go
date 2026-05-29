@@ -46,13 +46,13 @@ type Airport struct {
 }
 
 type VFRRandomsSpec struct {
-	Rate  int    `json:"rate"`
-	Fleet string `json:"fleet"`
+	Rate  float32 `json:"rate"`
+	Fleet string  `json:"fleet"`
 }
 
 type VFRRouteSpec struct {
 	Name        string        `json:"name"`
-	Rate        int           `json:"rate"`
+	Rate        float32       `json:"rate"`
 	Fleet       string        `json:"fleet"`
 	Waypoints   WaypointArray `json:"waypoints"`
 	Destination string        `json:"destination"`
@@ -709,7 +709,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 }
 
-func (ap Airport) VFRRateSum() int {
+func (ap Airport) VFRRateSum() float32 {
 	sum := ap.VFR.Randoms.Rate
 	for _, spec := range ap.VFR.Routes {
 		sum += spec.Rate

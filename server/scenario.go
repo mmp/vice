@@ -77,7 +77,7 @@ type scenario struct {
 
 	// Map from inbound flow names to a map from airport name to default rate,
 	// with "overflights" a special case to denote overflights
-	InboundFlowDefaultRates map[string]map[string]int `json:"inbound_rates"`
+	InboundFlowDefaultRates map[string]map[string]float32 `json:"inbound_rates"`
 
 	Airspace map[sim.TCP][]string `json:"airspace"`
 

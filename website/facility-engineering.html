@@ -3940,7 +3940,7 @@
                             <tr>
                               <td>"rate"</td>
                               <td>Number</td>
-                              <td>The average number of VFR departures per hour.</td>
+                              <td>The average number of VFR departures per hour. Fractional values are accepted.</td>
                             </tr>
                           </tbody>
                         </table>
@@ -3984,7 +3984,7 @@
                             <tr>
                               <td>"rate"</td>
                               <td>Number</td>
-                              <td>The average number of departures along this route per hour.</td>
+                              <td>The average number of departures along this route per hour. Fractional values are accepted.</td>
                             </tr>
                             <tr>
                               <td>"waypoints"</td>
@@ -4281,7 +4281,7 @@
                             <tr>
                               <td>"rate"</td>
                               <td>Number</td>
-                              <td>Number of departures per hour.</td>
+                              <td>Number of departures per hour. Fractional values are accepted.</td>
                             </tr>
                             <tr>
                               <td>"runway"</td>
@@ -4299,7 +4299,7 @@
                       specifying default rates for corresponding flows. Each entry should either be
                       the name of an airport, in which case it specifies the rate of arrivals to that
                       airport along arrivals in the flow, or the string "overflights", in which it
-                      gives the rate of overflights.
+                      gives the rate of overflights. Rates are aircraft per hour; fractional values are accepted.
                       It can be useful to specify a rate of zero—in this case, the inbound flow
                       will still be included in the UI shown to the user, which allows the user to enable it.
                     </td>

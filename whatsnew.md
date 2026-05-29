@@ -8,3 +8,5 @@
   - Suppress MSAWs for aircraft on visual approaches
 - STARS
  - Fixed bug where aircraft on visual approaches could have unwanted MSAW alerts
+- Facility engineering
+ - Fractional values (not just integers) can now be used when specifying aircraft launch rates in scenarios
