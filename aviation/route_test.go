@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 )
 
 type testLocator map[string]math.Point2LL
@@ -194,6 +195,51 @@ func TestParseActionGroupClearApproachAndDuplicateAltitudes(t *testing.T) {
 	}
 	if _, err := parseWaypoints("_EWR4_4La/h039@a500/d50/d100"); err == nil {
 		t.Fatal("expected duplicate descend altitude action to fail")
+	}
+}
+
+func TestParseInterceptApproachFlag(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	wps, err := parseWaypoints("AROSLY/intercept FORDS")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !wps[0].InterceptApproach() {
+		t.Fatal("expected /intercept to set the InterceptApproach flag")
+	}
+	if wps[1].InterceptApproach() {
+		t.Fatal("expected /intercept to apply only to its waypoint")
+	}
+
+	encoded := WaypointArray(wps).Encode()
+	if !strings.Contains(encoded, "AROSLY/intercept") {
+		t.Fatalf("expected encoded route to round-trip /intercept, got %q", encoded)
+	}
+}
+
+func TestCheckArrivalInterceptRequiresApproach(t *testing.T) {
+	oldDB := DB
+	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { DB = oldDB })
+
+	wps, err := parseWaypoints("AROSLY/intercept FORDS")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var e util.ErrorLogger
+	WaypointArray(wps).CheckArrival(&e, nil, false, func(string) bool { return true })
+	if !e.HaveErrors() {
+		t.Fatal("expected error when /intercept is used without an assigned approach")
+	}
+
+	var ok util.ErrorLogger
+	WaypointArray(wps).CheckArrival(&ok, nil, true, func(string) bool { return true })
+	if ok.HaveErrors() {
+		t.Fatalf("expected no error when an approach is assigned, got errors")
 	}
 }
 

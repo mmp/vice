@@ -414,6 +414,12 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			}
 		}
 
+		if wp.InterceptApproach() {
+			if fp != nil {
+				_ = nav.InterceptApproach(fp.ArrivalAirport, nil)
+			}
+		}
+
 		if nav.Approach.Cleared {
 			// The aircraft has made it to the approach fix they
 			// were cleared to, so they can start to descend.

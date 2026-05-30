@@ -504,6 +504,9 @@
               <p>A number of specifiers are intended for ambient traffic that's not under the control for a human:</p>
               <ul>
                 <li> <code>/clearapp</code>: the aircraft will be cleared for the assigned approach passing the fix.</li>
+                <li> <code>/intercept</code>: passing the fix, the virtual controller issues "intercept the localizer/approach course"
+                  (equivalent to the <code>I</code> command). The aircraft must already have an assigned approach (e.g., from a STAR's
+                  <code>expect_approach</code>).</li>
                 <li> <code>/ho</code>: the aircraft should be handed off from the virtual controller when it passes the fix.
                   A TCP may be specified after <code>/ho</code>, in which case the aircraft is handed off to the
                   corresponding virtual controller. If no TCP is specified, the aircraft is handed off to the

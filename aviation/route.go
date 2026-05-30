@@ -49,6 +49,7 @@ const (
 	WaypointFlagHasSpeedRestriction
 	WaypointFlagSequenceVFRLanding
 	WaypointFlagHeadingIsTrack
+	WaypointFlagInterceptApproach
 )
 
 // WaypointActionTerminationType indicates when a waypoint action group is complete.
@@ -247,19 +248,20 @@ func (wp Waypoint) MagneticHeading() math.MagneticHeading {
 }
 
 // Flag readers (value receiver)
-func (wp Waypoint) PresentHeading() bool { return wp.Flags&WaypointFlagPresentHeading != 0 }
-func (wp Waypoint) NoPT() bool           { return wp.Flags&WaypointFlagNoPT != 0 }
-func (wp Waypoint) HumanHandoff() bool   { return wp.Flags&WaypointFlagHumanHandoff != 0 }
-func (wp Waypoint) ClearApproach() bool  { return wp.Flags&WaypointFlagClearApproach != 0 }
-func (wp Waypoint) FlyOver() bool        { return wp.Flags&WaypointFlagFlyOver != 0 }
-func (wp Waypoint) Delete() bool         { return wp.Flags&WaypointFlagDelete != 0 }
-func (wp Waypoint) Land() bool           { return wp.Flags&WaypointFlagLand != 0 }
-func (wp Waypoint) IAF() bool            { return wp.Flags&WaypointFlagIAF != 0 }
-func (wp Waypoint) IF() bool             { return wp.Flags&WaypointFlagIF != 0 }
-func (wp Waypoint) FAF() bool            { return wp.Flags&WaypointFlagFAF != 0 }
-func (wp Waypoint) OnSID() bool          { return wp.Flags&WaypointFlagOnSID != 0 }
-func (wp Waypoint) OnSTAR() bool         { return wp.Flags&WaypointFlagOnSTAR != 0 }
-func (wp Waypoint) OnApproach() bool     { return wp.Flags&WaypointFlagOnApproach != 0 }
+func (wp Waypoint) PresentHeading() bool    { return wp.Flags&WaypointFlagPresentHeading != 0 }
+func (wp Waypoint) NoPT() bool              { return wp.Flags&WaypointFlagNoPT != 0 }
+func (wp Waypoint) HumanHandoff() bool      { return wp.Flags&WaypointFlagHumanHandoff != 0 }
+func (wp Waypoint) ClearApproach() bool     { return wp.Flags&WaypointFlagClearApproach != 0 }
+func (wp Waypoint) InterceptApproach() bool { return wp.Flags&WaypointFlagInterceptApproach != 0 }
+func (wp Waypoint) FlyOver() bool           { return wp.Flags&WaypointFlagFlyOver != 0 }
+func (wp Waypoint) Delete() bool            { return wp.Flags&WaypointFlagDelete != 0 }
+func (wp Waypoint) Land() bool              { return wp.Flags&WaypointFlagLand != 0 }
+func (wp Waypoint) IAF() bool               { return wp.Flags&WaypointFlagIAF != 0 }
+func (wp Waypoint) IF() bool                { return wp.Flags&WaypointFlagIF != 0 }
+func (wp Waypoint) FAF() bool               { return wp.Flags&WaypointFlagFAF != 0 }
+func (wp Waypoint) OnSID() bool             { return wp.Flags&WaypointFlagOnSID != 0 }
+func (wp Waypoint) OnSTAR() bool            { return wp.Flags&WaypointFlagOnSTAR != 0 }
+func (wp Waypoint) OnApproach() bool        { return wp.Flags&WaypointFlagOnApproach != 0 }
 func (wp Waypoint) SyntheticCrossing() bool {
 	return wp.Flags&WaypointFlagSyntheticCrossing != 0
 }
@@ -303,32 +305,30 @@ func (wp *Waypoint) setFlag(f WaypointFlags, v bool) {
 	}
 }
 
-func (wp *Waypoint) SetPresentHeading(v bool) { wp.setFlag(WaypointFlagPresentHeading, v) }
-func (wp *Waypoint) SetNoPT(v bool)           { wp.setFlag(WaypointFlagNoPT, v) }
-func (wp *Waypoint) SetHumanHandoff(v bool)   { wp.setFlag(WaypointFlagHumanHandoff, v) }
-func (wp *Waypoint) SetClearApproach(v bool)  { wp.setFlag(WaypointFlagClearApproach, v) }
-func (wp *Waypoint) SetFlyOver(v bool)        { wp.setFlag(WaypointFlagFlyOver, v) }
-func (wp *Waypoint) SetDelete(v bool)         { wp.setFlag(WaypointFlagDelete, v) }
-func (wp *Waypoint) SetLand(v bool)           { wp.setFlag(WaypointFlagLand, v) }
-func (wp *Waypoint) SetIAF(v bool)            { wp.setFlag(WaypointFlagIAF, v) }
-func (wp *Waypoint) SetIF(v bool)             { wp.setFlag(WaypointFlagIF, v) }
-func (wp *Waypoint) SetFAF(v bool)            { wp.setFlag(WaypointFlagFAF, v) }
-func (wp *Waypoint) SetOnSID(v bool)          { wp.setFlag(WaypointFlagOnSID, v) }
-func (wp *Waypoint) SetOnSTAR(v bool)         { wp.setFlag(WaypointFlagOnSTAR, v) }
-func (wp *Waypoint) SetOnApproach(v bool)     { wp.setFlag(WaypointFlagOnApproach, v) }
-func (wp *Waypoint) SetSyntheticCrossing(v bool) {
-	wp.setFlag(WaypointFlagSyntheticCrossing, v)
-}
+func (wp *Waypoint) SetPresentHeading(v bool)    { wp.setFlag(WaypointFlagPresentHeading, v) }
+func (wp *Waypoint) SetNoPT(v bool)              { wp.setFlag(WaypointFlagNoPT, v) }
+func (wp *Waypoint) SetHumanHandoff(v bool)      { wp.setFlag(WaypointFlagHumanHandoff, v) }
+func (wp *Waypoint) SetClearApproach(v bool)     { wp.setFlag(WaypointFlagClearApproach, v) }
+func (wp *Waypoint) SetInterceptApproach(v bool) { wp.setFlag(WaypointFlagInterceptApproach, v) }
+func (wp *Waypoint) SetFlyOver(v bool)           { wp.setFlag(WaypointFlagFlyOver, v) }
+func (wp *Waypoint) SetDelete(v bool)            { wp.setFlag(WaypointFlagDelete, v) }
+func (wp *Waypoint) SetLand(v bool)              { wp.setFlag(WaypointFlagLand, v) }
+func (wp *Waypoint) SetIAF(v bool)               { wp.setFlag(WaypointFlagIAF, v) }
+func (wp *Waypoint) SetIF(v bool)                { wp.setFlag(WaypointFlagIF, v) }
+func (wp *Waypoint) SetFAF(v bool)               { wp.setFlag(WaypointFlagFAF, v) }
+func (wp *Waypoint) SetOnSID(v bool)             { wp.setFlag(WaypointFlagOnSID, v) }
+func (wp *Waypoint) SetOnSTAR(v bool)            { wp.setFlag(WaypointFlagOnSTAR, v) }
+func (wp *Waypoint) SetOnApproach(v bool)        { wp.setFlag(WaypointFlagOnApproach, v) }
+func (wp *Waypoint) SetSyntheticCrossing(v bool) { wp.setFlag(WaypointFlagSyntheticCrossing, v) }
 func (wp *Waypoint) SetClearPrimaryScratchpad(v bool) {
 	wp.setFlag(WaypointFlagClearPrimaryScratchpad, v)
 }
 func (wp *Waypoint) SetClearSecondaryScratchpad(v bool) {
 	wp.setFlag(WaypointFlagClearSecondaryScratchpad, v)
 }
-func (wp *Waypoint) SetTransferComms(v bool) { wp.setFlag(WaypointFlagTransferComms, v) }
-func (wp *Waypoint) SetSequenceVFRLanding(v bool) {
-	wp.setFlag(WaypointFlagSequenceVFRLanding, v)
-}
+func (wp *Waypoint) SetTransferComms(v bool)      { wp.setFlag(WaypointFlagTransferComms, v) }
+func (wp *Waypoint) SetSequenceVFRLanding(v bool) { wp.setFlag(WaypointFlagSequenceVFRLanding, v) }
+
 func (wp *Waypoint) SetTurn(t TurnDirection) {
 	wp.Flags &^= WaypointFlagTurnLeft | WaypointFlagTurnRight
 	switch t {
@@ -546,6 +546,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	if wp.ClearApproach() {
 		attrs = append(attrs, slog.Bool("clear_approach", true))
 	}
+	if wp.InterceptApproach() {
+		attrs = append(attrs, slog.Bool("intercept_approach", true))
+	}
 	if wp.FlyOver() {
 		attrs = append(attrs, slog.Bool("fly_over", true))
 	}
@@ -673,6 +676,9 @@ func (wa WaypointArray) Encode() string {
 		}
 		if w.ClearApproach() {
 			s += "/clearapp"
+		}
+		if w.InterceptApproach() {
+			s += "/intercept"
 		}
 		if w.FlyOver() {
 			s += "/flyover"
@@ -950,6 +956,9 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 		}
 		if wp.ClearApproach() && !approachAssigned {
 			e.ErrorString("/clearapp specified but no approach has been assigned")
+		}
+		if wp.InterceptApproach() && !approachAssigned {
+			e.ErrorString("/intercept specified but no approach has been assigned")
 		}
 		if wp.HumanHandoff() {
 			haveHO = true
@@ -1434,6 +1443,8 @@ func parseWaypoints(str string) (WaypointArray, error) {
 						wp.InitExtra().HandoffController = ControlPosition(f[2:])
 					} else if f == "clearapp" {
 						wp.SetClearApproach(true)
+					} else if f == "intercept" {
+						wp.SetInterceptApproach(true)
 					} else if f == "flyover" {
 						wp.SetFlyOver(true)
 					} else if f == "delete" {
