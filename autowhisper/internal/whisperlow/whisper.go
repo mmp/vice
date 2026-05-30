@@ -8,6 +8,7 @@ import (
 
 /*
 #cgo CFLAGS: -I${SRCDIR}/../../../whisper.cpp/include -I${SRCDIR}/../../../whisper.cpp/ggml/include
+#cgo CXXFLAGS: -I${SRCDIR}/../../../whisper.cpp/include -I${SRCDIR}/../../../whisper.cpp/ggml/include
 #cgo LDFLAGS: ${SRCDIR}/../../../whisper.cpp/build_go/src/libwhisper.a ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/libggml.a ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/libggml-base.a ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/libggml-cpu.a -lm
 #cgo linux LDFLAGS: -lstdc++ -fopenmp
 #cgo darwin LDFLAGS: ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/ggml-blas/libggml-blas.a ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/ggml-metal/libggml-metal.a -framework Accelerate -framework Metal -framework Foundation -framework CoreGraphics -lstdc++
@@ -19,6 +20,17 @@ import (
 // no-op logger to silence library output
 static void cb_log_disable(enum ggml_log_level level, const char * text, void * user_data) { (void)level; (void)text; (void)user_data; }
 static void whisper_log_set_silent_bridge() { whisper_log_set(cb_log_disable, NULL); }
+
+// Try/catch-wrapped init functions defined in whisper_safe.cpp. The
+// error message (when the wrapped init throws) is written into the
+// caller-supplied err_buf on the same cgo call to avoid losing the
+// message when the goroutine is rescheduled to a different OS thread.
+struct whisper_context* whisper_safe_init_from_buffer_with_params(
+    void* buffer, size_t buffer_size, struct whisper_context_params params,
+    char* err_buf, size_t err_buf_size);
+struct whisper_context* whisper_safe_init_from_file_with_params(
+    const char* path, struct whisper_context_params params,
+    char* err_buf, size_t err_buf_size);
 
 // Forward whisper.cpp library logs into Go so they land in vice.slog.
 // callWhisperLog is declared by cgo from the //export below.
@@ -216,25 +228,40 @@ func GPUDeviceIndex() int {
 	return gpuDevice
 }
 
-func Whisper_init(path string) *Context {
+// whisperInitErrBufSize is the size of the error-message buffer
+// supplied to the C++ wrappers. Sized generously since whisper.cpp's
+// errors can include tensor names and file paths.
+const whisperInitErrBufSize = 1024
+
+// Whisper_init loads a model from a file. On failure (including a C++
+// exception thrown inside whisper.cpp), returns nil and a non-empty
+// error message.
+func Whisper_init(path string) (*Context, string) {
 	cPath := C.CString(path)
 	defer C.free(unsafe.Pointer(cPath))
 	params := C.whisper_context_params_with_gpu(C.bool(gpuEnabled), C.int(gpuDevice), C.bool(gpuFlashAttn))
-	if ctx := C.whisper_init_from_file_with_params(cPath, params); ctx != nil {
-		return (*Context)(ctx)
+	var errBuf [whisperInitErrBufSize]C.char
+	ctx := C.whisper_safe_init_from_file_with_params(cPath, params, &errBuf[0], C.size_t(len(errBuf)))
+	if ctx != nil {
+		return (*Context)(ctx), ""
 	}
-	return nil
+	return nil, C.GoString(&errBuf[0])
 }
 
-func Whisper_init_from_buffer(data []byte) *Context {
+// Whisper_init_from_buffer loads a model from a byte buffer. On failure
+// (including a C++ exception thrown inside whisper.cpp), returns nil
+// and a non-empty error message.
+func Whisper_init_from_buffer(data []byte) (*Context, string) {
 	if len(data) == 0 {
-		return nil
+		return nil, "empty buffer"
 	}
 	params := C.whisper_context_params_with_gpu(C.bool(gpuEnabled), C.int(gpuDevice), C.bool(gpuFlashAttn))
-	if ctx := C.whisper_init_from_buffer_with_params(unsafe.Pointer(&data[0]), C.size_t(len(data)), params); ctx != nil {
-		return (*Context)(ctx)
+	var errBuf [whisperInitErrBufSize]C.char
+	ctx := C.whisper_safe_init_from_buffer_with_params(unsafe.Pointer(&data[0]), C.size_t(len(data)), params, &errBuf[0], C.size_t(len(errBuf)))
+	if ctx != nil {
+		return (*Context)(ctx), ""
 	}
-	return nil
+	return nil, C.GoString(&errBuf[0])
 }
 
 // Whisper_log_set_silent disables all logging from the underlying library.

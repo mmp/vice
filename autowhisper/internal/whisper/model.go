@@ -1,6 +1,7 @@
 package whisper
 
 import (
+	"fmt"
 	"os"
 	"runtime"
 
@@ -19,22 +20,28 @@ func New(path string) (Model, error) {
 	if _, err := os.Stat(path); err != nil {
 		return nil, err
 	}
-	if ctx := whisperlow.Whisper_init(path); ctx == nil {
+	ctx, msg := whisperlow.Whisper_init(path)
+	if ctx == nil {
+		if msg != "" {
+			return nil, fmt.Errorf("%w: %s", ErrUnableToLoadModel, msg)
+		}
 		return nil, ErrUnableToLoadModel
-	} else {
-		m.ctx = ctx
-		m.path = path
 	}
+	m.ctx = ctx
+	m.path = path
 	return m, nil
 }
 
 func NewFromBytes(data []byte) (Model, error) {
 	m := new(model)
-	if ctx := whisperlow.Whisper_init_from_buffer(data); ctx == nil {
+	ctx, msg := whisperlow.Whisper_init_from_buffer(data)
+	if ctx == nil {
+		if msg != "" {
+			return nil, fmt.Errorf("%w: %s", ErrUnableToLoadModel, msg)
+		}
 		return nil, ErrUnableToLoadModel
-	} else {
-		m.ctx = ctx
 	}
+	m.ctx = ctx
 	return m, nil
 }
 
