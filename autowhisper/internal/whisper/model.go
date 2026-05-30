@@ -19,8 +19,6 @@ func New(path string) (Model, error) {
 	if _, err := os.Stat(path); err != nil {
 		return nil, err
 	}
-	// silence native logs before init
-	whisperlow.Whisper_log_set_silent()
 	if ctx := whisperlow.Whisper_init(path); ctx == nil {
 		return nil, ErrUnableToLoadModel
 	} else {
@@ -32,8 +30,6 @@ func New(path string) (Model, error) {
 
 func NewFromBytes(data []byte) (Model, error) {
 	m := new(model)
-	// silence native logs before init
-	whisperlow.Whisper_log_set_silent()
 	if ctx := whisperlow.Whisper_init_from_buffer(data); ctx == nil {
 		return nil, ErrUnableToLoadModel
 	} else {
@@ -41,6 +37,23 @@ func NewFromBytes(data []byte) (Model, error) {
 	}
 	return m, nil
 }
+
+// SetLogCallback routes whisper.cpp library log messages through the
+// supplied callback. Passing nil silences the library. The callback may
+// be invoked from any thread (whisper.cpp logs from worker threads).
+func SetLogCallback(cb func(level int, text string)) {
+	whisperlow.Whisper_log_set_forward(cb)
+}
+
+// GGML log levels (mirrors enum ggml_log_level in ggml.h).
+const (
+	LogLevelNone  = whisperlow.GGMLLogLevelNone
+	LogLevelDebug = whisperlow.GGMLLogLevelDebug
+	LogLevelInfo  = whisperlow.GGMLLogLevelInfo
+	LogLevelWarn  = whisperlow.GGMLLogLevelWarn
+	LogLevelError = whisperlow.GGMLLogLevelError
+	LogLevelCont  = whisperlow.GGMLLogLevelCont
+)
 
 func (m *model) Close() error {
 	if m.ctx != nil {

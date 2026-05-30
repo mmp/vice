@@ -40,6 +40,24 @@ func (m *Model) Close() error {
 	return nil
 }
 
+// SetLogCallback routes whisper.cpp library log messages through the
+// supplied callback. Passing nil silences the library. The callback may
+// be invoked from any thread.
+func SetLogCallback(cb func(level int, text string)) {
+	whisper.SetLogCallback(cb)
+}
+
+// Log level constants matching ggml_log_level. Use these to dispatch
+// inside the callback passed to SetLogCallback.
+const (
+	LogLevelNone  = whisper.LogLevelNone
+	LogLevelDebug = whisper.LogLevelDebug
+	LogLevelInfo  = whisper.LogLevelInfo
+	LogLevelWarn  = whisper.LogLevelWarn
+	LogLevelError = whisper.LogLevelError
+	LogLevelCont  = whisper.LogLevelCont
+)
+
 // GPUEnabled returns true if GPU acceleration is being used for inference.
 // On Windows or Linux with Vulkan support, this is true if a Vulkan GPU is available.
 // On macOS, Metal is always used (handled by the whisper.cpp library internally).

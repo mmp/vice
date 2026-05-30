@@ -431,12 +431,38 @@ func GetWhisperBenchmarkStatus() string {
 	return whisperBenchmarkStatus
 }
 
-func setWhisperBenchmarkStatus(status string) {
+func setWhisperBenchmarkStatus(lg *log.Logger, status string) {
 	whisperBenchmarkStatusMu.Lock()
 	whisperBenchmarkStatus = status
 	whisperBenchmarkStatusMu.Unlock()
-	fmt.Printf("[whisper-benchmark] %s\n", status)
+	lg.Infof("whisper-benchmark: %s", status)
 }
+
+// installWhisperLogForwarder routes whisper.cpp library log messages
+// through lg so they end up in vice.slog. The library logs from worker
+// threads; the callback is safe to call concurrently.
+func installWhisperLogForwarder(lg *log.Logger) {
+	whisperLogForwarderOnce.Do(func() {
+		whisper.SetLogCallback(func(level int, text string) {
+			text = strings.TrimRight(text, "\n")
+			if text == "" {
+				return
+			}
+			switch level {
+			case whisper.LogLevelError:
+				lg.Errorf("whisper.cpp: %s", text)
+			case whisper.LogLevelWarn:
+				lg.Warnf("whisper.cpp: %s", text)
+			case whisper.LogLevelInfo, whisper.LogLevelCont:
+				lg.Infof("whisper.cpp: %s", text)
+			default:
+				lg.Debugf("whisper.cpp: %s", text)
+			}
+		})
+	})
+}
+
+var whisperLogForwarderOnce sync.Once
 
 // ReportWhisperBenchmark sends the benchmark results to the remote server if available.
 // This should be called once the connection manager has established a connection to the
@@ -502,13 +528,13 @@ func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, device
 // 1 second of silence. Returns the minimum latency from multiple passes.
 // Multiple passes are needed because GPU performance can vary significantly
 // due to power states, thermal throttling, and system load.
-func benchmarkModel(modelName string) (latencyMs int64, model *whisper.Model, err error) {
-	setWhisperBenchmarkStatus(fmt.Sprintf("Loading %s...", modelName))
+func benchmarkModel(lg *log.Logger, modelName string) (latencyMs int64, model *whisper.Model, err error) {
+	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Loading %s...", modelName))
 
 	modelBytes := util.LoadResourceBytes("models/" + modelName)
 	model, err = whisper.LoadModelFromBytes(modelBytes)
 	if err != nil {
-		fmt.Printf("[whisper-benchmark] Failed to load %s: %v\n", modelName, err)
+		lg.Warnf("whisper-benchmark: failed to load %s: %v", modelName, err)
 		return 0, nil, err
 	}
 
@@ -526,7 +552,7 @@ func benchmarkModel(modelName string) (latencyMs int64, model *whisper.Model, er
 
 	// Warmup passes to trigger shader compilation, memory allocation,
 	// and bring GPU up to full power state.
-	setWhisperBenchmarkStatus(fmt.Sprintf("Warming up %s...", modelName))
+	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Warming up %s...", modelName))
 	for i := 0; i < 2; i++ {
 		runPass()
 	}
@@ -535,17 +561,17 @@ func benchmarkModel(modelName string) (latencyMs int64, model *whisper.Model, er
 	// The minimum represents true performance without interference from
 	// transient system issues like background processes or thermal throttling.
 	const numPasses = 3
-	setWhisperBenchmarkStatus(fmt.Sprintf("Benchmarking %s...", modelName))
+	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Benchmarking %s...", modelName))
 	var minLatency int64 = -1
 	for i := 0; i < numPasses; i++ {
 		lat := runPass()
-		fmt.Printf("[whisper-benchmark] %s pass %d: %dms\n", modelName, i+1, lat)
+		lg.Infof("whisper-benchmark: %s pass %d: %dms", modelName, i+1, lat)
 		if minLatency < 0 || lat < minLatency {
 			minLatency = lat
 		}
 	}
 
-	setWhisperBenchmarkStatus(fmt.Sprintf("%s: %dms (best of %d)", modelName, minLatency, numPasses))
+	setWhisperBenchmarkStatus(lg, fmt.Sprintf("%s: %dms (best of %d)", modelName, minLatency, numPasses))
 	return minLatency, model, nil
 }
 
@@ -578,16 +604,22 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 	whisperSaveCallback = saveCallback
 	whisperModelStartMu.Unlock()
 
+	// Route whisper.cpp library logs into vice.slog so that, if the C++
+	// load throws or fails, the breadcrumbs leading up to it are
+	// preserved.
+	installWhisperLogForwarder(lg)
+
 	go func() {
 		defer close(whisperModelDone)
+		defer lg.CatchAndReportCrash()
 
-		setWhisperBenchmarkStatus("Checking CPU compatibility...")
+		setWhisperBenchmarkStatus(lg, "Checking CPU compatibility...")
 
 		// Check CPU compatibility before attempting to load.
 		if err := checkCPUSupport(); err != nil {
 			whisperModelErr = err
 			lg.Warnf("Speech-to-text unavailable: %v", whisperModelErr)
-			setWhisperBenchmarkStatus("CPU not supported")
+			setWhisperBenchmarkStatus(lg, "CPU not supported")
 			return
 		}
 
@@ -597,33 +629,31 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 		// On macOS, Metal is always available and handled by whisper.cpp internally.
 		if runtime.GOOS != "darwin" && !whisper.GPUEnabled() {
 			modelName := whisperModelTiers[0]
-			setWhisperBenchmarkStatus("No GPU available, using " + modelName)
+			setWhisperBenchmarkStatus(lg, "No GPU available, using "+modelName)
 			lg.Infof("No GPU available, using whisper model %s", modelName)
 			if !loadModelDirect(modelName, currentDeviceID, 0, lg) {
 				whisperModelErr = fmt.Errorf("failed to load fallback whisper model %s", modelName)
-				setWhisperBenchmarkStatus("Failed to load model")
+				setWhisperBenchmarkStatus(lg, "Failed to load model")
 			}
 			return
 		}
 
 		// Check if we can use the cached model
 		if cachedModelName != "" && cachedDeviceID == currentDeviceID && cachedBenchmarkIndex >= WhisperBenchmarkIndex {
-			setWhisperBenchmarkStatus(fmt.Sprintf("Using cached model: %s", cachedModelName))
+			setWhisperBenchmarkStatus(lg, fmt.Sprintf("Using cached model: %s", cachedModelName))
 			lg.Infof("Using cached whisper model: %s (device: %s)", cachedModelName, currentDeviceID)
 			if loadModelDirect(cachedModelName, currentDeviceID, cachedRealtimeFactor, lg) {
 				return
 			}
 			// Model no longer exists (e.g., removed from distribution), fall through to benchmark
-			fmt.Printf("[whisper-benchmark] Cached model %q no longer available - re-benchmarking\n", cachedModelName)
+			lg.Infof("whisper-benchmark: cached model %q no longer available - re-benchmarking", cachedModelName)
 		} else if cachedModelName != "" {
 			if cachedDeviceID != currentDeviceID {
-				fmt.Printf("[whisper-benchmark] Device changed: was %q, now %q - re-benchmarking\n",
+				lg.Infof("whisper-benchmark: device changed: was %q, now %q - re-benchmarking",
 					cachedDeviceID, currentDeviceID)
-				lg.Infof("Whisper device changed, re-benchmarking")
 			} else if cachedBenchmarkIndex < WhisperBenchmarkIndex {
-				fmt.Printf("[whisper-benchmark] Benchmark criteria changed (index %d -> %d) - re-benchmarking\n",
+				lg.Infof("whisper-benchmark: criteria changed (index %d -> %d) - re-benchmarking",
 					cachedBenchmarkIndex, WhisperBenchmarkIndex)
-				lg.Infof("Whisper benchmark criteria changed, re-benchmarking")
 			}
 		}
 
@@ -656,7 +686,7 @@ func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, l
 		whisperModelErr = err
 		lg.Errorf("Failed to load whisper model: %v", err)
 		whisperModelMu.Unlock()
-		setWhisperBenchmarkStatus("Failed to load model")
+		setWhisperBenchmarkStatus(lg, "Failed to load model")
 		return false
 	}
 	whisperModelNameAtomic.Store(modelName)
@@ -664,12 +694,12 @@ func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, l
 	whisperModelMu.Unlock()
 
 	// Warmup pass
-	setWhisperBenchmarkStatus(fmt.Sprintf("Warming up %s...", modelName))
+	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Warming up %s...", modelName))
 	warmupT := whisper.NewTranscriber(whisperModel, &whisperModelMu, whisper.Options{Language: "en"})
 	warmupT.AddSamples(make([]int16, platform.AudioInputSampleRate)) // 1 second
 	warmupT.Stop()                                                   // Discard results for warmup
 
-	setWhisperBenchmarkStatus(fmt.Sprintf("Selected: %s", modelName))
+	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Selected: %s", modelName))
 	lg.Infof("Whisper model loaded: %s (realtimeFactor=%.3f)", modelName, cachedRealtimeFactor)
 
 	// Save to config if callback provided
@@ -681,7 +711,7 @@ func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, l
 
 // runBenchmark performs the full progressive benchmark to select the best model
 func runBenchmark(lg *log.Logger, deviceID string) {
-	setWhisperBenchmarkStatus("Starting benchmark (GPU available)")
+	setWhisperBenchmarkStatus(lg, "Starting benchmark (GPU available)")
 	lg.Info("Starting whisper model benchmark")
 
 	// Relaxed thresholds to favor larger models (better accuracy).
@@ -707,9 +737,9 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 
 	// Progressively benchmark models from smallest to largest
 	for _, modelName := range whisperModelTiers {
-		latencyMs, model, err := benchmarkModel(modelName)
+		latencyMs, model, err := benchmarkModel(lg, modelName)
 		if err != nil {
-			fmt.Printf("[whisper-benchmark] Skipping %s due to error\n", modelName)
+			lg.Warnf("whisper-benchmark: skipping %s due to error", modelName)
 			continue
 		}
 		allResults = append(allResults, benchResult{modelName, latencyMs, ""})
@@ -741,19 +771,19 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 
 		if latencyMs > continueThresholdMs {
 			// Acceptable but not fast (300-450ms) - stop here
-			fmt.Printf("[whisper-benchmark] %s acceptable (%dms), stopping\n", modelName, latencyMs)
+			lg.Infof("whisper-benchmark: %s acceptable (%dms), stopping", modelName, latencyMs)
 			break
 		}
 
 		// Fast enough (<300ms) - continue to try larger model
-		fmt.Printf("[whisper-benchmark] %s fast (%dms), trying larger\n", modelName, latencyMs)
+		lg.Infof("whisper-benchmark: %s fast (%dms), trying larger", modelName, latencyMs)
 	}
 
 	// Check if we found any usable model
 	if selectedModel == nil {
 		whisperModelErr = errors.New("all whisper models failed to load")
 		lg.Error("No whisper model could be loaded")
-		setWhisperBenchmarkStatus("No model available")
+		setWhisperBenchmarkStatus(lg, "No model available")
 		return
 	}
 
@@ -761,8 +791,8 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	// Used to enable quality features (beam search) on fast hardware
 	realtimeFactor := float64(selectedLatency) / 1000.0 // latency for 1s audio
 
-	// Print summary and build report for server
-	fmt.Printf("[whisper-benchmark] === Results Summary ===\n")
+	// Build report for server and log a summary.
+	lg.Info("whisper-benchmark: === Results Summary ===")
 	var reportResults []server.WhisperBenchmarkResult
 	for i := range allResults {
 		r := &allResults[i]
@@ -779,14 +809,14 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 			marker = " <-- SELECTED"
 			status = "selected"
 		}
-		fmt.Printf("[whisper-benchmark]   %s: %dms [%s]%s\n", r.name, r.latency, r.status, marker)
+		lg.Infof("whisper-benchmark:   %s: %dms [%s]%s", r.name, r.latency, r.status, marker)
 		reportResults = append(reportResults, server.WhisperBenchmarkResult{
 			ModelName: r.name,
 			LatencyMs: r.latency,
 			Status:    status,
 		})
 	}
-	fmt.Printf("[whisper-benchmark] Realtime factor: %.3f (%.1fx realtime)\n", realtimeFactor, 1.0/realtimeFactor)
+	lg.Infof("whisper-benchmark: realtime factor: %.3f (%.1fx realtime)", realtimeFactor, 1.0/realtimeFactor)
 
 	// Store benchmark report for later sending to server
 	whisperBenchmarkReportMu.Lock()
@@ -804,7 +834,7 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	whisperRealtimeFactor = realtimeFactor
 	whisperModelMu.Unlock()
 
-	setWhisperBenchmarkStatus(fmt.Sprintf("Selected: %s (%dms)", selectedName, selectedLatency))
+	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Selected: %s (%dms)", selectedName, selectedLatency))
 	lg.Infof("Whisper model selected: %s (%dms, realtimeFactor=%.3f)", selectedName, selectedLatency, realtimeFactor)
 
 	// Save to config if callback provided

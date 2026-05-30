@@ -20,6 +20,17 @@ import (
 static void cb_log_disable(enum ggml_log_level level, const char * text, void * user_data) { (void)level; (void)text; (void)user_data; }
 static void whisper_log_set_silent_bridge() { whisper_log_set(cb_log_disable, NULL); }
 
+// Forward whisper.cpp library logs into Go so they land in vice.slog.
+// callWhisperLog is declared by cgo from the //export below.
+extern void callWhisperLog(int level, char* text);
+static void cb_log_forward(enum ggml_log_level level, const char * text, void * user_data) {
+    (void)user_data;
+    if (text != NULL) {
+        callWhisperLog((int)level, (char*)text);
+    }
+}
+static void whisper_log_set_forward_bridge() { whisper_log_set(cb_log_forward, NULL); }
+
 extern void callNewSegment(void* user_data, int new);
 extern void callProgress(void* user_data, int progress);
 extern bool callEncoderBegin(void* user_data);
@@ -228,6 +239,45 @@ func Whisper_init_from_buffer(data []byte) *Context {
 
 // Whisper_log_set_silent disables all logging from the underlying library.
 func Whisper_log_set_silent() { C.whisper_log_set_silent_bridge() }
+
+// Whisper_log_set_forward routes whisper.cpp library logs through the
+// given callback. Pass nil to silence the library again. Once set, the
+// callback may be invoked from any thread.
+func Whisper_log_set_forward(cb func(level int, text string)) {
+	logCbMu.Lock()
+	logCb = cb
+	logCbMu.Unlock()
+	if cb == nil {
+		C.whisper_log_set_silent_bridge()
+	} else {
+		C.whisper_log_set_forward_bridge()
+	}
+}
+
+var (
+	logCbMu sync.RWMutex
+	logCb   func(level int, text string)
+)
+
+//export callWhisperLog
+func callWhisperLog(level C.int, text *C.char) {
+	logCbMu.RLock()
+	cb := logCb
+	logCbMu.RUnlock()
+	if cb != nil {
+		cb(int(level), C.GoString(text))
+	}
+}
+
+// GGML log levels (mirrors enum ggml_log_level in ggml.h).
+const (
+	GGMLLogLevelNone  = 0
+	GGMLLogLevelDebug = 1
+	GGMLLogLevelInfo  = 2
+	GGMLLogLevelWarn  = 3
+	GGMLLogLevelError = 4
+	GGMLLogLevelCont  = 5
+)
 
 func (ctx *Context) Whisper_free() { C.whisper_free((*C.struct_whisper_context)(ctx)) }
 
