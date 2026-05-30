@@ -43,6 +43,7 @@ type localTTS struct {
 	loadErr          error
 	done             chan struct{} // closed when loading completes
 	targetSampleRate int
+	uploadDone       <-chan struct{} // gate cgo load on prior crash upload; may be nil
 }
 
 // Global TTS instance
@@ -51,12 +52,17 @@ var (
 	globalTTSOnce sync.Once
 )
 
-func PreloadTTSModel(lg *log.Logger, targetSampleRate int) {
+// PreloadTTSModel kicks off background loading of the TTS model. If
+// uploadDone is non-nil, the load goroutine blocks on it before doing
+// any cgo work, so a recurring init-time crash can't kill us before
+// the prior run's crash report is shipped to the server.
+func PreloadTTSModel(lg *log.Logger, uploadDone <-chan struct{}, targetSampleRate int) {
 	globalTTSOnce.Do(func() {
 		globalTTS = &localTTS{
 			lg:               lg,
 			done:             make(chan struct{}),
 			targetSampleRate: targetSampleRate,
+			uploadDone:       uploadDone,
 		}
 		go globalTTS.load()
 	})
@@ -65,6 +71,10 @@ func PreloadTTSModel(lg *log.Logger, targetSampleRate int) {
 func (t *localTTS) load() {
 	defer close(t.done)
 	defer t.lg.CatchAndReportCrash()
+
+	if t.uploadDone != nil {
+		<-t.uploadDone
+	}
 
 	t.lg.Info("Loading Kokoro TTS model...")
 

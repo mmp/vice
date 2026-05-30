@@ -520,8 +520,9 @@ func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, device
 	whisperIsBenchmarking = true
 	whisperBenchmarkStatusMu.Unlock()
 
-	// Start fresh benchmark (pass 0 for cachedBenchmarkIndex to force rebenchmark)
-	PreloadWhisperModel(lg, "", "", 0, 0, saveCallback)
+	// Start fresh benchmark (pass 0 for cachedBenchmarkIndex to force rebenchmark).
+	// No upload gating needed here: this is user-triggered after vice is running.
+	PreloadWhisperModel(lg, nil, "", "", 0, 0, saveCallback)
 }
 
 // benchmarkModel loads a model, runs warmup passes, then benchmarks it with
@@ -592,7 +593,14 @@ var whisperModelTiers = []string{
 //
 // The saveCallback is called when a model is selected (after benchmarking)
 // to allow saving the selection to config.
-func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string, cachedBenchmarkIndex int,
+//
+// If uploadDone is non-nil, the background goroutine blocks on it
+// before doing any cgo work. This gates the model load on a prior
+// run's crash-stderr file finishing upload: a recurring init-time
+// crash inside whisper would otherwise kill us before the report is
+// shipped, stranding it forever.
+func PreloadWhisperModel(lg *log.Logger, uploadDone <-chan struct{},
+	cachedModelName, cachedDeviceID string, cachedBenchmarkIndex int,
 	cachedRealtimeFactor float64, saveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)) {
 	whisperModelStartMu.Lock()
 	if whisperModelStarted {
@@ -612,6 +620,18 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 	go func() {
 		defer close(whisperModelDone)
 		defer lg.CatchAndReportCrash()
+
+		if uploadDone != nil {
+			// Only show the wait status if we'd actually block; a
+			// closed channel receives instantly so the common
+			// "nothing to upload" case stays silent.
+			select {
+			case <-uploadDone:
+			default:
+				setWhisperBenchmarkStatus(lg, "Uploading crash report from prior run...")
+				<-uploadDone
+			}
+		}
 
 		setWhisperBenchmarkStatus(lg, "Checking CPU compatibility...")
 

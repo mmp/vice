@@ -56,20 +56,27 @@ type Logger struct {
 	systemInfo       SystemInfo
 }
 
-func New(server bool, level string, dir string) *Logger {
-	if dir == "" {
-		if server {
-			dir = "vice-logs"
-		} else {
-			var err error
-			dir, err = os.UserConfigDir()
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Unable to find user config dir: %v", err)
-				dir = "."
-			}
-			dir = filepath.Join(dir, "Vice")
-		}
+// DefaultLogDir returns the log directory the logger would pick given
+// these inputs, without actually constructing a logger. Callers need
+// this when they want to do something with the log directory (such as
+// redirecting stderr into it) before log.New runs.
+func DefaultLogDir(server bool, override string) string {
+	if override != "" {
+		return override
 	}
+	if server {
+		return "vice-logs"
+	}
+	dir, err := os.UserConfigDir()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to find user config dir: %v", err)
+		dir = "."
+	}
+	return filepath.Join(dir, "Vice")
+}
+
+func New(server bool, level string, dir string) *Logger {
+	dir = DefaultLogDir(server, dir)
 
 	var w *lumberjack.Logger
 	if server {

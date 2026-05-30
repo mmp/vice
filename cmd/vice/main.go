@@ -104,8 +104,21 @@ func initCommon() (*log.Logger, *util.Profiler) {
 		fmt.Printf("FixConsole: %v\n", err)
 	}
 
-	// Initialize the logging system first and foremost.
-	lg := log.New(*runServer, *logLevel, *logDir)
+	// On Windows GUI builds there is no attached console when launched
+	// from Explorer, so the Go runtime's pre-death stack dump (e.g. for
+	// signals raised during cgo execution) would vanish. Redirect
+	// stderr to a file in the log dir *before* constructing the
+	// logger, so the slog text handler captures the redirected
+	// os.Stderr at construction time. No-op on other platforms and on
+	// Windows when stderr already targets a real console.
+	resolvedLogDir := log.DefaultLogDir(*runServer, *logDir)
+	redirectedStderrFn := log.RedirectStderrToCrashFile(resolvedLogDir)
+
+	// Initialize the logging system.
+	lg := log.New(*runServer, *logLevel, resolvedLogDir)
+	if redirectedStderrFn != "" {
+		lg.Infof("Redirected stderr to %s", redirectedStderrFn)
+	}
 
 	// Log CPU information for debugging hardware compatibility issues.
 	if cpuInfo, err := cpu.Info(); err == nil && len(cpuInfo) > 0 {
@@ -400,10 +413,16 @@ func initPlatformAndRenderer(config *Config, lg *log.Logger) (platform.Platform,
 // startBackgroundModelLoading kicks off background loading of whisper
 // (speech-to-text) and TTS models, and starts a goroutine to check for
 // whisper CPU compatibility errors.
-func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log.Logger) {
+//
+// uploadDone, when non-nil, gates the cgo model loads on a prior
+// run's crash-stderr upload completing. A recurring init-time crash
+// inside whisper would otherwise kill the next run before the report
+// is shipped, leaving it stranded forever.
+func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log.Logger,
+	uploadDone <-chan struct{}) {
 	// Start loading the whisper model in the background so it's ready
 	// when the user first presses PTT. Use cached model if same device and benchmark index.
-	client.PreloadWhisperModel(lg, config.WhisperModelName, config.WhisperDeviceID,
+	client.PreloadWhisperModel(lg, uploadDone, config.WhisperModelName, config.WhisperDeviceID,
 		config.WhisperBenchmarkIndex, config.WhisperRealtimeFactor,
 		func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
 			config.WhisperModelName = modelName
@@ -414,7 +433,7 @@ func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log
 
 	// Start loading the TTS model in the background so it's ready
 	// when pilot readbacks or contacts are needed.
-	tts.PreloadTTSModel(lg, platform.AudioSampleRate)
+	tts.PreloadTTSModel(lg, uploadDone, platform.AudioSampleRate)
 
 	// Check for whisper model errors asynchronously and show dialog if CPU not supported.
 	go func() {
@@ -512,6 +531,14 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 	defer lg.CatchAndReportCrash()
 
+	// Ship any crash-stderr files left behind by a prior run that died
+	// via a runtime fatal (which skips the deferred crash handler).
+	// The returned channel closes once the upload work is done; we
+	// pass it to the risky model preloads below so a recurring
+	// init-time crash can't kill us before the prior report reaches
+	// the server.
+	uploadDone := lg.UploadAndDeleteCrashStderrFiles()
+
 	go func() {
 		t := time.Tick(15 * time.Second)
 		for {
@@ -539,7 +566,6 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 	av.InitDB()
 	wx.Init()
-	startBackgroundModelLoading(config, plat, lg)
 
 	// Initialize navigation logging if requested
 	nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
@@ -612,6 +638,12 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	if extraScenarioErrors != "" {
 		ShowErrorDialog(plat, lg, "Errors in additional scenario file (scenario will not be loaded):\n\n%s", extraScenarioErrors)
 	}
+
+	// Kick off whisper + TTS preload now that the connection manager
+	// exists. Its goroutines wait on uploadDone before doing any cgo
+	// work, so a recurring init-time crash in whisper can't kill us
+	// before the prior run's crash report reaches the server.
+	startBackgroundModelLoading(config, plat, lg, uploadDone)
 
 	// Wait for whisper benchmark to complete before loading saved sim.
 	// This shows a progress dialog if benchmarking is still in progress.
@@ -750,6 +782,20 @@ func main() {
 	lg, profiler := initCommon()
 	defer profiler.Cleanup()
 
+	// Only remove this run's crash-stderr file on a known clean exit.
+	// In particular, do *not* remove it during panic unwinding: a panic
+	// in CLI/server modes (or in runGUI before its CatchAndReportCrash
+	// defer is installed) propagates past us, and the runtime prints
+	// its stack to stderr *after* defers run. Removing the file here
+	// would close and delete it before that print, throwing away the
+	// only artifact we'd be uploading next run.
+	cleanExit := false
+	defer func() {
+		if cleanExit {
+			log.RemoveCurrentCrashStderrFile()
+		}
+	}()
+
 	config, configErr := loadConfig(lg)
 
 	var err error
@@ -776,6 +822,11 @@ func main() {
 	if err != nil {
 		lg.Errorf("%v", err)
 		profiler.Cleanup() // defers don't run with exit
+		// Controlled failure: remove this run's crash-stderr file so
+		// the next run doesn't upload the lg.Errorf output above as a
+		// fake "Crashed (stderr capture from prior run)" report.
+		log.RemoveCurrentCrashStderrFile()
 		os.Exit(1)
 	}
+	cleanExit = true
 }
