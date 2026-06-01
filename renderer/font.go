@@ -34,6 +34,9 @@ import "iter"
 // Font name constants
 const (
 	RobotoRegular        = "Roboto Regular"
+	RobotoBold           = "Roboto Bold"
+	RobotoItalic         = "Roboto Italic"
+	RobotoBoldItalic     = "Roboto Bold Italic"
 	RobotoMono           = "Roboto Mono"
 	RobotoMonoItalic     = "Roboto Mono Italic"
 	FlightStripPrinter   = "Flight Strip Printer"
@@ -375,6 +378,9 @@ func FontsInit(r Renderer, p platform.Platform) {
 
 	for fn, name := range map[string]string{
 		"Roboto-Regular.ttf.zst":          RobotoRegular,
+		"Roboto-Bold.ttf.zst":             RobotoBold,
+		"Roboto-Italic.ttf.zst":           RobotoItalic,
+		"Roboto-BoldItalic.ttf.zst":       RobotoBoldItalic,
 		"RobotoMono-Medium.ttf.zst":       RobotoMono,
 		"RobotoMono-MediumItalic.ttf.zst": RobotoMonoItalic,
 		"Flight-Strip-Printer.ttf.zst":    FlightStripPrinter} {
