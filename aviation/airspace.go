@@ -397,16 +397,22 @@ type ControllerAirspaceVolume struct {
 	LabelPosition math.Point2LL     `json:"label_position"`
 }
 
+// ContainsPoint reports whether p is laterally inside the volume, applying
+// the odd-winding (xor) rule across boundary rings. Altitude is ignored.
+func (v *ControllerAirspaceVolume) ContainsPoint(p math.Point2LL) bool {
+	inside := false
+	for _, pts := range v.Boundaries {
+		if math.PointInPolygon2LL(p, pts) {
+			inside = !inside
+		}
+	}
+	return inside
+}
+
 func InAirspace(p math.Point2LL, alt float32, volumes []ControllerAirspaceVolume) (bool, [][2]int) {
 	var altRanges [][2]int
 	for _, v := range volumes {
-		inside := false
-		for _, pts := range v.Boundaries {
-			if math.PointInPolygon2LL(p, pts) {
-				inside = !inside
-			}
-		}
-		if inside {
+		if v.ContainsPoint(p) {
 			altRanges = append(altRanges, [2]int{v.LowerLimit, v.UpperLimit})
 		}
 	}
