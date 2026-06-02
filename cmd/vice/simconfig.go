@@ -421,11 +421,8 @@ func getARTCCForFacility(facility string, catalog *server.ScenarioCatalog) strin
 	if catalog != nil && catalog.ARTCC != "" {
 		return catalog.ARTCC
 	}
-	if traconInfo, ok := av.DB.TRACONs[facility]; ok {
-		return traconInfo.ARTCC
-	}
-	if atctInfo, ok := av.DB.ATCTs[facility]; ok {
-		return atctInfo.ARTCC
+	if artcc := av.DB.ARTCCForFacility(facility); artcc != "" {
+		return artcc
 	}
 	return facility
 }

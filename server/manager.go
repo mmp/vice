@@ -255,11 +255,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 	// Look up historical TFRs for this facility and time.
 	artcc := sg.ARTCC
 	if artcc == "" {
-		if info, ok := av.DB.TRACONs[req.Facility]; ok {
-			artcc = info.ARTCC
-		} else if info, ok := av.DB.ATCTs[req.Facility]; ok {
-			artcc = info.ARTCC
-		}
+		artcc = av.DB.ARTCCForFacility(req.Facility)
 	}
 	if artcc != "" {
 		var err error

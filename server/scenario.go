@@ -1708,11 +1708,7 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 	}
 	artcc := sg.ARTCC
 	if artcc == "" {
-		if info, ok := av.DB.TRACONs[facility]; ok {
-			artcc = info.ARTCC
-		} else if info, ok := av.DB.ATCTs[facility]; ok {
-			artcc = info.ARTCC
-		}
+		artcc = av.DB.ARTCCForFacility(facility)
 	}
 
 	catalog := &ScenarioCatalog{
@@ -1829,11 +1825,7 @@ func facilityConfigPath(sg *scenarioGroup) string {
 	}
 	artcc := sg.ARTCC
 	if artcc == "" {
-		if info, ok := av.DB.TRACONs[sg.TRACON]; ok {
-			artcc = info.ARTCC
-		} else if info, ok := av.DB.ATCTs[sg.TRACON]; ok {
-			artcc = info.ARTCC
-		}
+		artcc = av.DB.ARTCCForFacility(sg.TRACON)
 	}
 	return "configurations/" + artcc + "/" + facility + ".json"
 }
@@ -1927,14 +1919,8 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 	}
 
 	// Determine the ARTCC for this neighbor.
-	var artcc string
-	if isARTCC(neighbor) {
-		artcc = neighbor
-	} else if tracon, ok := av.DB.TRACONs[neighbor]; ok {
-		artcc = tracon.ARTCC
-	} else if atct, ok := av.DB.ATCTs[neighbor]; ok {
-		artcc = atct.ARTCC
-	} else {
+	artcc := av.DB.ARTCCForFacility(neighbor)
+	if artcc == "" {
 		e.Push("Scenario group: " + sg.Name)
 		e.ErrorString("unknown facility %s", neighbor)
 		e.Pop()

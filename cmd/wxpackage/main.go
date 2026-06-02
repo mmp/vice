@@ -90,10 +90,8 @@ func main() {
 			} else if sg.TRACON != "" {
 				// TRACON scenarios don't set ARTCC explicitly;
 				// look up the parent ARTCC from the database.
-				if info, ok := av.DB.TRACONs[sg.TRACON]; ok {
-					artccs[info.ARTCC] = true
-				} else if info, ok := av.DB.ATCTs[sg.TRACON]; ok {
-					artccs[info.ARTCC] = true
+				if artcc := av.DB.ARTCCForFacility(sg.TRACON); artcc != "" {
+					artccs[artcc] = true
 				}
 			}
 		}

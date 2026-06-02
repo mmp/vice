@@ -209,6 +209,22 @@ func (d StaticDatabase) IsFacility(id string) bool {
 	return d.IsARTCC(id) || d.IsTRACON(id) || d.IsATCT(id)
 }
 
+// ARTCCForFacility returns the ARTCC identifier for the given facility:
+// the id itself if it is an ARTCC, the parent ARTCC for a TRACON or
+// ATCT, or "" if the id is unknown.
+func (d StaticDatabase) ARTCCForFacility(fac string) string {
+	if _, ok := d.ARTCCs[fac]; ok {
+		return fac
+	}
+	if tracon, ok := d.TRACONs[fac]; ok {
+		return tracon.ARTCC
+	}
+	if atct, ok := d.ATCTs[fac]; ok {
+		return atct.ARTCC
+	}
+	return ""
+}
+
 func (d StaticDatabase) IsARTCC(id string) bool {
 	_, ok := d.ARTCCs[id]
 	return ok
