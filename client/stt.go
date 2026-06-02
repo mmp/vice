@@ -311,7 +311,7 @@ var whisperIsBenchmarking bool // true only when actually running benchmarks, no
 const WhisperBenchmarkIndex = 4
 
 // Callback to save model selection to config
-var whisperSaveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)
+var whisperSaveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64, gpuDisabled bool)
 
 // Benchmark report data to be sent to server
 var whisperBenchmarkReport *server.WhisperBenchmarkReport
@@ -371,7 +371,7 @@ func GetWhisperModelTiers() []string {
 // SelectWhisperModel directly selects a whisper model without benchmarking.
 // This is used when the user manually chooses a model from the settings dropdown.
 func SelectWhisperModel(lg *log.Logger, modelName string,
-	saveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)) {
+	saveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64, gpuDisabled bool)) {
 	whisperModelStartMu.Lock()
 	// Close existing model if any
 	whisperModelMu.Lock()
@@ -497,7 +497,7 @@ func ReportWhisperBenchmark(remoteServer *Server, lg *log.Logger) bool {
 
 // ForceWhisperRebenchmark closes the current model and triggers a fresh benchmark.
 // This should be called when the user wants to re-run the benchmark.
-func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)) {
+func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64, gpuDisabled bool)) {
 	whisperModelStartMu.Lock()
 	// Close existing model if any
 	whisperModelMu.Lock()
@@ -601,7 +601,7 @@ var whisperModelTiers = []string{
 // shipped, stranding it forever.
 func PreloadWhisperModel(lg *log.Logger, uploadDone <-chan struct{},
 	cachedModelName, cachedDeviceID string, cachedBenchmarkIndex int,
-	cachedRealtimeFactor float64, saveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)) {
+	cachedRealtimeFactor float64, saveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64, gpuDisabled bool)) {
 	whisperModelStartMu.Lock()
 	if whisperModelStarted {
 		whisperModelStartMu.Unlock()
@@ -724,7 +724,7 @@ func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, l
 
 	// Save to config if callback provided
 	if whisperSaveCallback != nil {
-		whisperSaveCallback(modelName, deviceID, WhisperBenchmarkIndex, cachedRealtimeFactor)
+		whisperSaveCallback(modelName, deviceID, WhisperBenchmarkIndex, cachedRealtimeFactor, !whisper.GPUEnabled())
 	}
 	return true
 }
@@ -756,11 +756,18 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	var allResults []benchResult
 
 	// Progressively benchmark models from smallest to largest
+	gpuFailed := false
 	for _, modelName := range whisperModelTiers {
 		latencyMs, model, err := benchmarkModel(lg, modelName)
 		if err != nil {
-			lg.Warnf("whisper-benchmark: skipping %s due to error", modelName)
-			continue
+			// A failed GPU init can leave whisper.cpp's Vulkan backend in a
+			// half-initialized state: the next init then crashes inside C with
+			// PC=0x0. Disable GPU and stop iterating; we'll retry the smallest
+			// model below in CPU mode.
+			lg.Warnf("whisper-benchmark: %s failed (%v) - disabling GPU and falling back to CPU", modelName, err)
+			whisper.DisableGPU()
+			gpuFailed = true
+			break
 		}
 		allResults = append(allResults, benchResult{modelName, latencyMs, ""})
 
@@ -801,6 +808,18 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 
 	// Check if we found any usable model
 	if selectedModel == nil {
+		if gpuFailed {
+			// GPU init failed; try the smallest model on CPU so STT is at
+			// least available (albeit slow). loadModelDirect uses the
+			// already-disabled gpuEnabled flag and will save the cache with
+			// gpuDisabled=true so the next launch skips the GPU entirely.
+			modelName := whisperModelTiers[0]
+			setWhisperBenchmarkStatus(lg, "GPU failed; falling back to "+modelName+" on CPU")
+			lg.Infof("whisper-benchmark: GPU init failed; loading %s on CPU", modelName)
+			if loadModelDirect(modelName, deviceID, 0, lg) {
+				return
+			}
+		}
 		whisperModelErr = errors.New("all whisper models failed to load")
 		lg.Error("No whisper model could be loaded")
 		setWhisperBenchmarkStatus(lg, "No model available")
@@ -859,7 +878,7 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 
 	// Save to config if callback provided
 	if whisperSaveCallback != nil {
-		whisperSaveCallback(selectedName, deviceID, WhisperBenchmarkIndex, realtimeFactor)
+		whisperSaveCallback(selectedName, deviceID, WhisperBenchmarkIndex, realtimeFactor, !whisper.GPUEnabled())
 	}
 }
 

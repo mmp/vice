@@ -167,6 +167,17 @@ func GPUEnabled() bool {
 	return gpuEnabled
 }
 
+// DisableGPU forces subsequent model loads to use CPU only. This exists so
+// callers can recover from a GPU-init failure: whisper.cpp's Vulkan backend
+// can leave its global state partially populated when a device init throws
+// (e.g. "Unsupported device" on a card lacking 16-bit storage), and the next
+// init then crashes with a null vtable. Flipping this off makes
+// whisper_context_params_with_gpu pass use_gpu=false and bypass the broken
+// backend entirely.
+func DisableGPU() {
+	gpuEnabled = false
+}
+
 // GPUDiscrete returns true if a discrete GPU is being used for inference.
 // This is useful for deciding whether to use larger models that benefit from
 // dedicated GPU memory and compute power.

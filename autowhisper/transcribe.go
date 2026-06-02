@@ -66,6 +66,13 @@ func GPUEnabled() bool {
 	return whisper.GPUEnabled()
 }
 
+// DisableGPU forces subsequent model loads to use CPU only. Callers should
+// invoke this after observing a GPU-init failure to avoid follow-on crashes
+// from whisper.cpp's Vulkan backend leaving global state in a bad way.
+func DisableGPU() {
+	whisper.DisableGPU()
+}
+
 // GPUDiscrete returns true if a discrete GPU is being used for inference.
 // On Windows or Linux with Vulkan, this distinguishes between discrete GPUs (NVIDIA,
 // AMD Radeon, Intel Arc) and integrated GPUs (Intel UHD/Iris, AMD APU graphics).

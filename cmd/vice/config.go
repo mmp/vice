@@ -88,6 +88,7 @@ type ConfigNoSim struct {
 	WhisperDeviceID       string  // Device identifier used for benchmarking
 	WhisperBenchmarkIndex int     // Benchmark generation; rebenchmark if code's value is higher
 	WhisperRealtimeFactor float64 // Ratio of transcription time to audio duration (for quality tuning)
+	WhisperGPUDisabled    bool    // Sticky: GPU init failed on a prior run; stay on CPU
 }
 
 type ConfigSim struct {

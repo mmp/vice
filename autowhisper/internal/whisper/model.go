@@ -90,6 +90,12 @@ func GPUEnabled() bool {
 	return whisperlow.GPUEnabled()
 }
 
+// DisableGPU forces subsequent model loads to use CPU only. See
+// whisperlow.DisableGPU for the rationale.
+func DisableGPU() {
+	whisperlow.DisableGPU()
+}
+
 // GPUDiscrete returns true if a discrete GPU is being used for inference.
 func GPUDiscrete() bool {
 	return whisperlow.GPUDiscrete()

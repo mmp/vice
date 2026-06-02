@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/goforj/godump"
+	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
@@ -420,15 +421,22 @@ func initPlatformAndRenderer(config *Config, lg *log.Logger) (platform.Platform,
 // is shipped, leaving it stranded forever.
 func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log.Logger,
 	uploadDone <-chan struct{}) {
+	// If a prior run hit a GPU-init failure, stay on CPU to avoid the
+	// follow-on crash from whisper.cpp's Vulkan backend.
+	if config.WhisperGPUDisabled {
+		whisper.DisableGPU()
+	}
+
 	// Start loading the whisper model in the background so it's ready
 	// when the user first presses PTT. Use cached model if same device and benchmark index.
 	client.PreloadWhisperModel(lg, uploadDone, config.WhisperModelName, config.WhisperDeviceID,
 		config.WhisperBenchmarkIndex, config.WhisperRealtimeFactor,
-		func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
+		func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64, gpuDisabled bool) {
 			config.WhisperModelName = modelName
 			config.WhisperDeviceID = deviceID
 			config.WhisperBenchmarkIndex = benchmarkIndex
 			config.WhisperRealtimeFactor = realtimeFactor
+			config.WhisperGPUDisabled = gpuDisabled
 		})
 
 	// Start loading the TTS model in the background so it's ready

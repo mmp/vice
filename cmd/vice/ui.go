@@ -1035,11 +1035,12 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		if imgui.BeginComboV("##whispermodel", displayName, 0) {
 			// Auto option runs benchmark
 			if imgui.SelectableBoolV("Auto (Benchmark)", false, 0, imgui.Vec2{}) {
-				client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
+				client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64, gpuDisabled bool) {
 					config.WhisperModelName = modelName
 					config.WhisperDeviceID = deviceID
 					config.WhisperBenchmarkIndex = benchmarkIndex
 					config.WhisperRealtimeFactor = realtimeFactor
+					config.WhisperGPUDisabled = gpuDisabled
 				})
 				benchClient := &rebenchmarkModalClient{config: config, lg: lg}
 				uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
@@ -1052,11 +1053,12 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 				isSelected := model == modelName
 				if imgui.SelectableBoolV(modelDisplay, isSelected, 0, imgui.Vec2{}) {
 					if model != modelName {
-						client.SelectWhisperModel(lg, model, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
+						client.SelectWhisperModel(lg, model, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64, gpuDisabled bool) {
 							config.WhisperModelName = modelName
 							config.WhisperDeviceID = deviceID
 							config.WhisperBenchmarkIndex = benchmarkIndex
 							config.WhisperRealtimeFactor = realtimeFactor
+							config.WhisperGPUDisabled = gpuDisabled
 						})
 					}
 				}
