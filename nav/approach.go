@@ -804,6 +804,10 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 		return av.MakeUnableIntent("unable, we don't know runway " + runway)
 	}
 
+	// The synthesized route is built from raw reference / leader waypoints,
+	// which may still have procedure turns...
+	wps = stripProcedureTurns(wps)
+
 	cancelHold := nav.applyClearedApproachState()
 	// Synthesized visuals never set InterceptState=OnApproachCourse, so OnApproach()
 	// — and thus MVAsApply / MSAW suppression — would otherwise wait for the first

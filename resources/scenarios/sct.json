@@ -2485,7 +2485,7 @@
           "full_name": "Visual Runway 20R",
           "runway": "20R",
           "type": "ChartedVisual",
-          "waypoints": ["SAGER/hilpt1min SNAKE/a3400+ HUKEM/a2800+ LEMON/a2200+ DYERS/a1040"]
+          "waypoints": ["SAGER SNAKE/a3400+ HUKEM/a2800+ LEMON/a2200+ DYERS/a1040"]
         },
         "D0R": {
           "cifp_id": "X20R",

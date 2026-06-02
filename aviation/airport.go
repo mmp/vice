@@ -280,6 +280,10 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 			for j, wp := range appr.Waypoints[i] {
 				e.Push("Fix " + wp.Fix)
+				if wp.ProcedureTurn() != nil &&
+					(appr.Type == VisualApproach || appr.Type == ChartedVisualApproach) {
+					e.ErrorString("ProcedureTurn cannot be specified on a visual approach")
+				}
 				if wp.NoPT() {
 					if !slices.ContainsFunc(appr.Waypoints[i][j+1:],
 						func(wp Waypoint) bool { return wp.ProcedureTurn() != nil }) {
