@@ -11,3 +11,4 @@
  - Fixed bug where aircraft on visual approaches could have unwanted MSAW alerts
 - Facility engineering
  - Fractional values (not just integers) can now be used when specifying aircraft launch rates in scenarios
+ - Added "description" field to JSON to provide short descriptive text that is shown in the scenario launch window (radarcontacto)
