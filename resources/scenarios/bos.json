@@ -78217,6 +78217,7 @@
       }
     },
     "FV BOS 27 ": {
+      "description": "Give the tower either 2.5NM in-trail at the threshold or 6NM+ at the threshold.\n\nKeep an eye on how the wind affects each final (33L vs 27). It will be important to get proper spacing with arrivals requesting 33L",
       "arrival_runways": [
         {
           "airport": "KBOS",

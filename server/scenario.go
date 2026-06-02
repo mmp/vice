@@ -81,6 +81,7 @@ type scenario struct {
 
 	Airspace map[sim.TCP][]string `json:"airspace"`
 
+	Description      string                `json:"description,omitempty"`
 	DepartureRunways []sim.DepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []sim.ArrivalRunway   `json:"arrival_runways,omitempty"`
 
@@ -1742,6 +1743,7 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 		spec := &ScenarioSpec{
 			ControllerConfiguration: &scenario.ControllerConfiguration,
 			LaunchConfig:            lc,
+			Description:             scenario.Description,
 			DepartureRunways:        scenario.DepartureRunways,
 			ArrivalRunways:          scenario.ArrivalRunways,
 			PrimaryAirport:          sg.PrimaryAirport,

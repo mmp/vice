@@ -66,6 +66,7 @@ type ScenarioSpec struct {
 
 	LaunchConfig sim.LaunchConfig
 
+	Description      string
 	DepartureRunways []sim.DepartureRunway
 	ArrivalRunways   []sim.ArrivalRunway
 }
