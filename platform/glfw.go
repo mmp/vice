@@ -24,7 +24,7 @@ import (
 	implglfw "github.com/AllenDang/cimgui-go/impl/glfw"
 	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/go-gl/gl/v2.1/gl"
-	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/go-gl/glfw/v3.4/glfw"
 )
 
 // glfwPlatform implements the Platform interface using GLFW.

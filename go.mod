@@ -13,7 +13,6 @@ require (
 	github.com/brunoga/deep v1.2.3
 	github.com/gdamore/tcell/v2 v2.13.7
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6
-	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
 	github.com/goforj/godump v1.9.0
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/hugolgst/rich-go v0.0.0-20230917173849-4a4fb1d3c362
@@ -72,6 +71,7 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v1.3.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/gdamore/encoding v1.0.1 // indirect
+	github.com/go-gl/glfw/v3.4/glfw v0.1.0-pre.1
 	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect

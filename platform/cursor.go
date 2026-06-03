@@ -11,7 +11,7 @@ import (
 	"image/color"
 	"os"
 
-	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/go-gl/glfw/v3.4/glfw"
 	"github.com/mmp/vice/math"
 )
 
