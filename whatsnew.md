@@ -1,5 +1,6 @@
 - New scenario: ZBW Nantucket 17 (Ryan G), M03 (manaphy, Ryan G)
 - Scenario updates: BOI (Elliot B), MIA, ZJX (manaphy), PCT, NCT (Ketan K), ZNY (Ryan G), BTV (EkimWasHere), BOS (radarcontacto)
+- Added support for scenario briefings (only JFK and LGA for now)
 - STT:
   - Fixed handling of "maintian best forward speed"
   - Added support for "cross (fix) at or below (altitude)"
