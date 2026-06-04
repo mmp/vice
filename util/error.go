@@ -1,11 +1,12 @@
-// pkg/util/error.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// util/error.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package util
 
 import (
 	"fmt"
+	"iter"
 	"os"
 	"strings"
 
@@ -54,6 +55,18 @@ func (e *ErrorLogger) Error(err error) {
 
 func (e *ErrorLogger) HaveErrors() bool {
 	return e != nil && len(e.errors) > 0
+}
+
+func (e *ErrorLogger) Errors() iter.Seq[string] {
+	return func(yield func(s string) bool) {
+		if e != nil {
+			for _, err := range e.errors {
+				if !yield(err) {
+					return
+				}
+			}
+		}
+	}
 }
 
 func (e *ErrorLogger) PrintErrors(lg *log.Logger) {
