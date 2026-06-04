@@ -1,4 +1,4 @@
-- New scenario: ZBW Nantucket 17 (Ryan G)
+- New scenario: ZBW Nantucket 17 (Ryan G), M03 (manaphy, Ryan G)
 - Scenario updates: BOI (Elliot B), MIA, ZJX (manaphy), PCT, NCT (Ketan K), ZNY (Ryan G), BTV (EkimWasHere), BOS (radarcontacto)
 - STT:
   - Fixed handling of "maintian best forward speed"

@@ -25,11 +25,6 @@
       "frequency": 126050,
       "radio_name": "Memphis Approach"
     },
-    "1U": {
-      "callsign": "M03_U_APP",
-      "frequency": 123450,
-      "radio_name": "TRACON TMU"
-    },
     "1V": {
       "callsign": "MEM_V_DEP",
       "frequency": 124150,
@@ -40,10 +35,185 @@
       "frequency": 119100,
       "radio_name": "Memphis Approach"
     },
-    "3L": {
-      "callsign": "MEM_SI_APP",
-      "frequency": 121500,
-      "radio_name": "TRACON Supervisor"
+    "1T": {
+      "callsign": "MEM_1_TWR",
+      "frequency": 128425,
+      "radio_name": "Memphis Tower"
+    },
+    "2T": {
+      "callsign": "MEM_2_TWR",
+      "frequency": 119700,
+      "radio_name": "Memphis Tower"
+    },
+    "3T": {
+      "callsign": "MEM_3_TWR",
+      "frequency": 118300,
+      "radio_name": "Memphis Tower"
+    }
+  },
+  "facility_adaptations": {
+    "lists": {
+      "coordination": [
+        {
+          "name": ".    OLV",
+          "id": "A",
+          "airports": ["KOLV"]
+        }
+      ],
+      "ssa": {
+        "altimeters": ["KMEM", "KOLV"]
+      }
+    },
+    "configurations": {
+      "N27": {
+        "default_consolidation": {
+          "1E": ["1W", "1F", "1A"],
+          "1A": ["1V"],
+          "1F": ["1M", "1N"]
+        },
+        "departure_assignments": {
+          "KMEM": "1A",
+          "KOLV": "1N"
+        },
+        "inbound_assignments": {
+          "BLUZZ5-N": "1E",
+          "BRBBQ3-N": "1W",
+          "CONDR4": "1W",
+          "DAWGG2-N": "1W",
+          "HOBRK4-N": "1W",
+          "HYTHR3": "1E",
+          "UJM6-N": "1W",
+          "MONAA4": "1E",
+          "VANZE3-N": "1E",
+          "WLDER1-N": "1E",
+          "OLV SW": "1W",
+          "CHOOK": "1E"
+        }
+      },
+      "N09": {
+        "default_consolidation": {
+          "1E": ["1W", "1F", "1A"],
+          "1A": ["1V"],
+          "1F": ["1M", "1N"]
+        },
+        "departure_assignments": {
+          "KMEM": "1A",
+          "KOLV": "1N"
+        },
+        "inbound_assignments": {
+          "BLUZZ5-N": "1E",
+          "BRBBQ3-N": "1W",
+          "CONDR4": "1W",
+          "DAWGG2-N": "1W",
+          "HOBRK4-N": "1W",
+          "HYTHR3": "1E",
+          "UJM6-N": "1W",
+          "MONAA4": "1E",
+          "VANZE3-N": "1E",
+          "WLDER1-N": "1E",
+          "OLV SW": "1W",
+          "CHOOK": "1E"
+        }
+      },
+      "S27": {
+        "default_consolidation": {
+          "1E": ["1W", "1F", "1A"],
+          "1A": ["1V"],
+          "1F": ["1M", "1N"]
+        },
+        "departure_assignments": {
+          "KMEM": "1A",
+          "KOLV": "1N"
+        },
+        "inbound_assignments": {
+          "BLUZZ5-S": "1E",
+          "BRBBQ3-S": "1W",
+          "CONDR4": "1W",
+          "DAWGG2-S": "1W",
+          "HOBRK4-S": "1W",
+          "HYTHR3": "1E",
+          "UJM6-S": "1W",
+          "MONAA4": "1E",
+          "VANZE3-S": "1E",
+          "WLDER1-S": "1E",
+          "OLV SW": "1W",
+          "CHOOK": "1E"
+        }
+      }
+    },
+    "center": "N035.02.58.68,W089.58.53.71",
+    "range": 50,
+    "video_map_file": "videomaps/ZME-videomaps.gob.zst",
+    "areas": {
+      "1": {
+        "default_airport": "KMEM",
+        "video_maps": [
+          "M03_NORTH",
+          "M03_SOUTH",
+          "M03_36C FINAL",
+          "M03_18C FINAL",
+          "M03_9-27 FINAL BOXES",
+          "M03_SATELLITE",
+          "",
+          "M03_MVA",
+          "M03_EMERGENCY OBSTRUCTION",
+          "M03_ARTCC BOUNDARY",
+          "M03_CLASS B AIRSPACE",
+          "M03_FINAL MONITOR",
+          "M03_ZME HOLDING PROTECTION",
+          "",
+          "M03_GPS APPROACHES",
+          "M03_GPS NE",
+          "M03_GPS NW",
+          "M03_GPS SW",
+          "M03_GPS SE",
+          "M03_JET AIRWAYS",
+          "M03_IR ROUTES",
+          "M03_JET AIRWAYS",
+          "M03_MID STAR",
+          "M03_SOUTH STAR",
+          "M03_VICTOR AIRWAYS",
+          "M03_DP NORTH",
+          "M03_DP SOUTH",
+          "M03_HELIPORTS",
+          "M03_PRIVATE AIRPORTS",
+          "M03_RNAV DAY",
+          "M03_RNAV MID",
+          "",
+          "M03_OLV",
+          "M03_NQA",
+          "M03_AWM"
+        ]
+      }
+    },
+    "radar_sites": {
+      "MEM": {
+        "char": "T",
+        "elevation": 285,
+        "position": "N035.02.58.68,W089.58.53.71",
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "OLV": {
+        "char": "O",
+        "elevation": 404,
+        "position": "N034.58.43.40,W098.47.23.79",
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "NQA": {
+        "char": "N",
+        "elevation": 295,
+        "position": "N035.20.59.75,W089.52.11.62",
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      }
     }
   },
   "handoff_ids": [
@@ -51,8 +221,5 @@
       "id": "ZME",
       "prefix": "C"
     }
-  ],
-  "facility_adaptations": {
-    "configurations": {}
-  }
+  ]
 }
