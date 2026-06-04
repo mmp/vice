@@ -19,6 +19,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/brief"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
@@ -1830,6 +1831,17 @@ func facilityConfigPath(sg *scenarioGroup) string {
 	return "configurations/" + artcc + "/" + facility + ".json"
 }
 
+// scenarioBriefPath returns the expected path of the scenario brief for
+// the given facility (TRACON or ARTCC name). The convention parallels
+// facility configurations: briefs/<ARTCC>/<facility>.md.
+func scenarioBriefPath(facility string) string {
+	artcc := av.DB.ARTCCForFacility(facility)
+	if artcc == "" {
+		artcc = facility
+	}
+	return "briefs/" + artcc + "/" + facility + ".md"
+}
+
 // facilityConfigCache caches loaded facility configs so that multiple
 // scenario groups referencing the same facility (e.g., N90) share one load.
 var facilityConfigCache = make(map[string]*sim.FacilityConfig)
@@ -1969,15 +1981,16 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 // If skipVideoMaps is true, video map manifests are not loaded and video map
 // validation is skipped. This is useful for CLI tools that don't need video maps.
 //
-// Returns: scenarioGroups, catalogs, mapManifests, extraScenarioErrors
+// Returns: scenarioGroups, simConfigurations, mapManifests, scenarioBriefs, extraScenarioErrors
 // If the extra scenario file has errors, they are returned in extraScenarioErrors
 // and that scenario is not loaded, but execution continues.
-func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename string, skipVideoMaps bool,
-	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*ScenarioCatalog, map[string]*sim.VideoMapManifest, string) {
+func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename string, extraScenarioBriefFilename string, skipVideoMaps bool,
+	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*ScenarioCatalog, map[string]*sim.VideoMapManifest, *briefRegistry, string) {
 	start := time.Now()
 
 	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*scenarioGroup)
+	briefs := newBriefRegistry()
 	catalogs := make(map[string]map[string]*ScenarioCatalog)
 
 	err := util.WalkResources("scenarios", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
@@ -2013,7 +2026,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	}
 	if e.HaveErrors() {
 		// Don't keep going since we'll likely crash in the following
-		return nil, nil, nil, ""
+		return nil, nil, nil, nil, ""
 	}
 
 	// Load the scenario specified on command line, if any.
@@ -2109,6 +2122,72 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	}
 
 	lg.Infof("scenario/video map manifest load time: %s\n", time.Since(start))
+
+	// validateBriefForFacility runs the facility-has-scenarios check and the brief validation
+	// pipeline, returning the per-videomap hashes and whether the facility is known.
+	validateBriefForFacility := func(facility string, content []byte, e *util.ErrorLogger) (map[string][]byte, bool) {
+		if _, ok := scenarioGroups[facility]; !ok {
+			e.ErrorString("brief exists for facility %q which has no scenarios", facility)
+			return nil, false
+		}
+
+		e.Push(facility + ".md")
+		defer e.Pop()
+
+		parsed := brief.ParseMarkdown(content, brief.ParseOptions{})
+		for _, msg := range parsed.ParseErrors() {
+			e.ErrorString("%s", msg)
+		}
+
+		videoMapHashes := make(map[string][]byte)
+		for _, filename := range parsed.VideoMapFiles() {
+			if manifest, ok := mapManifests[filename]; !ok {
+				e.ErrorString("Unknown video map file %q referenced in brief", filename)
+			} else if hash, err := manifest.Hash(); err != nil {
+				e.ErrorString("Unable to compute hash for video map %q: %v", filename, err)
+			} else {
+				videoMapHashes[filename] = hash
+			}
+		}
+		return videoMapHashes, true
+	}
+
+	// Load facility briefs from resources/briefs/<ARTCC>/<facility>.md.
+	err = util.WalkResources("briefs", func(path string, d fs.DirEntry, filesystem fs.FS, err error) error {
+		if err != nil {
+			lg.Errorf("error walking briefs/: %v", err)
+			return nil
+		}
+
+		if d.IsDir() {
+			return nil
+		}
+
+		base := filepath.Base(path)
+		if filepath.Ext(base) != ".md" || strings.HasPrefix(base, "#") || strings.HasPrefix(base, ".#") {
+			return nil
+		}
+
+		e.Push("Brief file " + path)
+		defer e.Pop()
+
+		facility := strings.ToUpper(strings.TrimSuffix(base, ".md"))
+		if expected := scenarioBriefPath(facility); path != expected {
+			e.ErrorString("brief for %q expected at %q, found at %q", facility, expected, path)
+			return nil
+		}
+
+		if content, err := fs.ReadFile(filesystem, path); err != nil {
+			e.Error(err)
+		} else if hashes, ok := validateBriefForFacility(facility, content, e); ok {
+			briefs.register(facility, hashes, "")
+		}
+
+		return nil
+	})
+	if err != nil {
+		e.Error(err)
+	}
 
 	// Phase 1: Load and validate all facility configs by walking the
 	// configurations/ directory. Every .json file is loaded and validated
@@ -2275,6 +2354,31 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		}
 	}
 
+	// Load extra scenario brief file from command line, if any. Must run after the extra scenario
+	// (if any) has been inserted into scenarioGroups.
+	if extraScenarioBriefFilename != "" {
+		var extraE util.ErrorLogger
+		extraE.Push("Extra brief file " + extraScenarioBriefFilename)
+
+		facility := strings.ToUpper(strings.TrimSuffix(filepath.Base(extraScenarioBriefFilename), ".md"))
+
+		if content, err := os.ReadFile(extraScenarioBriefFilename); err != nil {
+			extraE.Error(err)
+		} else if hashes, ok := validateBriefForFacility(facility, content, &extraE); ok && !extraE.HaveErrors() {
+			briefs.register(facility, hashes, extraScenarioBriefFilename)
+		}
+
+		extraE.Pop()
+
+		if extraE.HaveErrors() {
+			if extraScenarioErrors != "" {
+				extraScenarioErrors += "\n"
+			}
+			extraScenarioErrors += extraE.String()
+			lg.Warnf("Extra scenario brief file has errors and will not be loaded: %s", extraScenarioBriefFilename)
+		}
+	}
+
 	// Walk all of the scenario groups to get all of the possible departing aircraft
 	// types to see where V2 is needed in the performance database..
 	acTypes := make(map[string]struct{})
@@ -2300,13 +2404,13 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	}
 	lg.Infof("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
-	return scenarioGroups, catalogs, mapManifests, extraScenarioErrors
+	return scenarioGroups, catalogs, mapManifests, briefs, extraScenarioErrors
 }
 
 // ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
 func ListAllScenarios(scenarioFilename, videoMapFilename string, lg *log.Logger) ([]string, error) {
 	var e util.ErrorLogger
-	scenarioGroups, _, _, _ := LoadScenarioGroups(scenarioFilename, videoMapFilename, true /* skipVideoMaps */, &e, lg)
+	scenarioGroups, _, _, _, _ := LoadScenarioGroups(scenarioFilename, videoMapFilename, "", true /* skipVideoMaps */, &e, lg)
 	if e.HaveErrors() {
 		return nil, fmt.Errorf("failed to load scenarios")
 	}

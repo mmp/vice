@@ -1,4 +1,4 @@
-// ui.go
+// cmd/vice/ui.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -16,6 +16,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/mmp/vice/brief"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/panes"
@@ -28,6 +29,7 @@ import (
 	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/ncruces/zenity"
 	"github.com/pkg/browser"
+	"github.com/yuin/goldmark/ast"
 )
 
 var (
@@ -55,6 +57,17 @@ var (
 		showLaunchControl bool
 		showMessages      bool
 		showFlightStrips  bool
+
+		brief struct {
+			markdown             string
+			selectedConfigs      map[string]string // group name -> currently-selected option name
+			closedHeadings       map[string]struct{}
+			disabledAirspaceTCPs map[string]map[string]bool // map label -> TCPs the user has toggled off
+			videoMapCache        *videoMapCache
+			parsed               *brief.ParsedMarkdown // cached parse output; nil ⇒ re-parse next frame
+			parseGen             int                   // state.GenerationIndex at last parse; re-parse when state advances
+			inlineTokensCache    map[ast.Node]inlineRender
+		}
 
 		// STT state
 		pttRecording              bool
@@ -217,7 +230,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 				ui.showScenarioInfo = !ui.showScenarioInfo
 			}
 			if imgui.IsItemHovered() {
-				imgui.SetTooltip("Show departures, arrivals, approaches, overflights, and airspace awareness")
+				imgui.SetTooltip("Show information about current scenario")
 			}
 		}
 
@@ -321,7 +334,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		uiDrawSettingsWindow(controlClient, config, activeRadarPane, p, lg)
 
 		if ui.showScenarioInfo {
-			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, activeRadarPane, p, lg)
+			ui.showScenarioInfo = drawScenarioInfoWindow(mgr, config, controlClient, activeRadarPane, p, lg)
 		}
 
 		if ui.showLaunchControl {
@@ -373,8 +386,9 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 	return renderer.RendererStats{}
 }
 
-func uiResetControlClient(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
+func uiResetControlClient(c *client.ControlClient, config *Config, p platform.Platform, lg *log.Logger) {
 	ui.launchControlWindow = nil
+	ui.showScenarioInfo = !config.NoBriefAtScenarioStart
 	clear(acknowledgedATIS)
 }
 
@@ -832,6 +846,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 	imgui.Checkbox("Update Discord activity status", &update)
 	config.InhibitDiscordActivity.Store(!update)
 
+	imgui.Checkbox("Do not show scenario briefs at the start of scenarios", &config.NoBriefAtScenarioStart)
+
 	imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
 	if imgui.Checkbox("Enable tower initiated go-arounds due to separation", &config.EnableTowerGoArounds) {
 		c.State.LaunchConfig.EnableTowerGoArounds = config.EnableTowerGoArounds
@@ -888,6 +904,15 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 				}
 
 				imgui.EndCombo()
+			}
+		}
+	}
+
+	// Draw settings only for the panes that are actually displayed.
+	for _, pane := range []any{config.MessagesPane, config.FlightStripPane, activeRadarPane} {
+		if draw, ok := pane.(panes.UIDrawer); ok {
+			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
+				draw.DrawUI(p, &config.Config)
 			}
 		}
 	}
@@ -1081,10 +1106,10 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		}
 	}
 
-	if imgui.CollapsingHeaderBoolPtr("Scenario Files", nil) {
+	if imgui.CollapsingHeaderBoolPtr("Facility Engineering", nil) {
 		imgui.BeginGroup()
-		imgui.Text("For testing new scenarios, an additional scenario and/or video map file can be specified.")
-		imgui.Text("Note that vice must be restarted to reload scenarios after they are changed.")
+		imgui.Text("For testing new scenarios, additional scenario, video map, and/or scenario brief files can be specified.")
+		imgui.Text("Note that vice must be restarted to reload these after they are changed.")
 		imgui.Separator()
 		imgui.Text(fmt.Sprintf("Scenario: %s", util.Select(config.ScenarioFile != "", config.ScenarioFile, "None Selected")))
 		imgui.SameLine()
@@ -1134,18 +1159,31 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 			config.VideoMapFile = ""
 		}
 		imgui.EndGroup()
-	}
 
-	if imgui.CollapsingHeaderBoolPtr(config.MessagesPane.DisplayName(), nil) {
-		config.MessagesPane.DrawUI(p, &config.Config)
-	}
-	if imgui.CollapsingHeaderBoolPtr(config.FlightStripPane.DisplayName(), nil) {
-		config.FlightStripPane.DrawUI(p, &config.Config)
-	}
-	if draw, ok := activeRadarPane.(panes.UIDrawer); ok {
-		if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
-			draw.DrawUI(p, &config.Config)
+		imgui.BeginGroup()
+		imgui.Text(fmt.Sprintf("Scenario Brief: %s", util.Select(config.ScenarioBriefFile != "", config.ScenarioBriefFile, "None Selected")))
+		imgui.SameLine()
+		if imgui.Button("Select##scenarioBrief") {
+			path, err := zenity.SelectFile(
+				zenity.Title("Select Scenario Brief Markdown File"),
+				zenity.FileFilters{
+					{
+						Name:     "Markdown Files",
+						Patterns: []string{"*.md"},
+					},
+				},
+			)
+			if err != nil {
+				fmt.Printf("Error selecting scenario brief file: %v\n", err)
+			} else {
+				config.ScenarioBriefFile = path
+			}
 		}
+		imgui.SameLine()
+		if imgui.Button("Clear##scenarioBrief") {
+			config.ScenarioBriefFile = ""
+		}
+		imgui.EndGroup()
 	}
 
 	imgui.End()

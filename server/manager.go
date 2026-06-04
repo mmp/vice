@@ -7,6 +7,7 @@ package server
 import (
 	crand "crypto/rand"
 	"encoding/base64"
+	"fmt"
 	"log/slog"
 	"maps"
 	"os"
@@ -26,9 +27,36 @@ import (
 	"github.com/brunoga/deep"
 )
 
+// briefRegistry holds the per-facility brief metadata gathered at
+// LoadScenarioGroups time and consulted at sim-creation time.
+type briefRegistry struct {
+	facilities     map[string]struct{}          // which facilities have briefs
+	videoMapHashes map[string]map[string][]byte // facility -> video map filenames -> hashes
+	pathOverrides  map[string]string            // non-canonical brief paths (set only by --scenario-brief)
+}
+
+func newBriefRegistry() *briefRegistry {
+	return &briefRegistry{
+		facilities:     make(map[string]struct{}),
+		videoMapHashes: make(map[string]map[string][]byte),
+		pathOverrides:  make(map[string]string),
+	}
+}
+
+func (r *briefRegistry) register(facility string, hashes map[string][]byte, pathOverride string) {
+	r.facilities[facility] = struct{}{}
+	if len(hashes) > 0 {
+		r.videoMapHashes[facility] = hashes
+	}
+	if pathOverride != "" {
+		r.pathOverrides[facility] = pathOverride
+	}
+}
+
 type SimManager struct {
 	scenarioGroups   map[string]map[string]*scenarioGroup
 	scenarioCatalogs map[string]map[string]*ScenarioCatalog
+	briefs           *briefRegistry
 
 	// Active sessions
 	sessionsByName  map[string]*simSession
@@ -82,17 +110,39 @@ func (s *ScenarioSpec) AllAirports() []string {
 	return util.SortedMapKeys(allAirports)
 }
 
+// loadBrief returns the markdown source for the given facility's brief,
+// or ("", nil) if no brief was registered for it at startup. The source
+// is the --scenario-brief override when present, otherwise the canonical
+// briefs/<ARTCC>/<facility>.md resource. Reads only init-immutable maps,
+// so does not acquire sm.mu.
+func (sm *SimManager) loadBrief(facility string) (string, error) {
+	if _, ok := sm.briefs.facilities[facility]; !ok {
+		return "", nil
+	}
+	if p, ok := sm.briefs.pathOverrides[facility]; ok {
+		b, err := os.ReadFile(p)
+		return string(b), err
+	}
+	path := scenarioBriefPath(facility)
+	if !util.ResourceExists(path) {
+		return "", fmt.Errorf("brief resource %q not found", path)
+	}
+	return string(util.LoadResourceBytes(path)), nil
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Constructor and Initialization
 
 func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup, scenarioCatalogs map[string]map[string]*ScenarioCatalog,
-	mapManifests map[string]*sim.VideoMapManifest, serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
+	mapManifests map[string]*sim.VideoMapManifest, briefs *briefRegistry,
+	serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
 	sm := &SimManager{
 		scenarioGroups:   scenarioGroups,
 		scenarioCatalogs: scenarioCatalogs,
 		sessionsByName:   make(map[string]*simSession),
 		sessionsByToken:  make(map[string]*simSession),
 		mapManifests:     mapManifests,
+		briefs:           briefs,
 		startTime:        time.Now(),
 		local:            isLocal,
 		providersReady:   make(chan struct{}),
@@ -112,6 +162,8 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup, scenario
 	return sm
 }
 
+// getWXProvider blocks until the weather provider is initialized.
+// Synchronization is via the providersReady channel, not sm.mu.
 func (sm *SimManager) getWXProvider() *wx.Provider {
 	<-sm.providersReady
 	return sm.wxProvider
@@ -165,7 +217,7 @@ type SimState struct {
 	ControllerDefaultVideoMaps          []string
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
 	ControllerVideoMapFile              string
-	ControllerVideoMapLibraryHash       []byte
+	VideoMapLibraryHashes               map[string][]byte
 
 	UserIsPrivileged bool // Whether this user has elevated privileges (can control any aircraft)
 
@@ -193,6 +245,8 @@ func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
 	}
 }
 
+// makeSimConfiguration only accesses read-only SimManager members that are set at
+// construction time; no mutex necessary.
 func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *sim.NewSimConfiguration {
 	facility, ok := sm.scenarioGroups[req.Facility]
 	if !ok {
@@ -208,6 +262,10 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 	if !ok {
 		lg.Errorf("%s: unknown scenario", req.ScenarioName)
 		return nil
+	}
+	briefMarkdown, err := sm.loadBrief(req.Facility)
+	if err != nil {
+		lg.Warnf("unable to load brief for %q: %v", req.Facility, err)
 	}
 
 	description := util.Select(sm.local, " "+req.ScenarioName, "@"+req.NewSimName+": "+req.ScenarioName)
@@ -226,6 +284,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 		VFRReportingPoints:          sg.VFRReportingPoints,
 		ReportingPoints:             sg.ReportingPoints,
 		Description:                 description,
+		Brief:                       briefMarkdown,
 		MagneticVariation:           sg.MagneticVariation,
 		NmPerLongitude:              sg.NmPerLongitude,
 		WindSpecifier:               sc.WindSpecifier,
@@ -330,6 +389,8 @@ func (sm *SimManager) ConnectToSim(req *JoinSimRequest, result *NewSimResult) er
 	return nil
 }
 
+// makeControllerToken touches no sm.* fields beyond the logger and so
+// does not require sm.mu.
 func (sm *SimManager) makeControllerToken() string {
 	var buf [16]byte
 	if _, err := crand.Read(buf[:]); err != nil {
@@ -359,9 +420,17 @@ func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token 
 	videoMaps, defaultMaps, beaconCodes := session.sim.GetControllerVideoMaps(tcw)
 
 	vmFile := session.sim.GetControllerVideoMapFile(tcw)
-	var vmHash []byte
-	if manifest, ok := sm.mapManifests[vmFile]; ok {
-		vmHash, _ = manifest.Hash()
+
+	// Collect hashes for every video map file the client may need: the
+	// controller's primary file plus any referenced by the scenario brief.
+	hashes := make(map[string][]byte)
+	maps.Copy(hashes, sm.briefs.videoMapHashes[session.sim.Facility()])
+	if _, present := hashes[vmFile]; !present && vmFile != "" {
+		if manifest, ok := sm.mapManifests[vmFile]; ok {
+			if h, err := manifest.Hash(); err == nil {
+				hashes[vmFile] = h
+			}
+		}
 	}
 
 	return &NewSimResult{
@@ -373,7 +442,7 @@ func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token 
 			ControllerDefaultVideoMaps:          defaultMaps,
 			ControllerMonitoredBeaconCodeBlocks: beaconCodes,
 			ControllerVideoMapFile:              vmFile,
-			ControllerVideoMapLibraryHash:       vmHash,
+			VideoMapLibraryHashes:               hashes,
 			UserIsPrivileged:                    session.sim.TCWIsPrivileged(tcw),
 		},
 		ControllerToken: token,
@@ -435,7 +504,8 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 
 	go sm.runSimUpdateLoop(session)
 
-	// Get the state after prespawn (if any) has completed.
+	// buildNewSimResult only reads init-immutable sm fields and goes
+	// through Sim accessors that take their own lock — no sm.mu needed.
 	*result = *sm.buildNewSimResult(session, tcw, token)
 
 	return nil
@@ -736,6 +806,38 @@ func (sm *SimManager) GetAtmosGrid(args wx.GetAtmosArgs, result *wx.GetAtmosResu
 	result.AtmosByPointSOA, result.Time, result.NextTime, err =
 		provider.GetAtmosGrid(args.Facility, args.Time, args.PrimaryAirport)
 	return err
+}
+
+const ReloadScenarioBriefRPC = "SimManager.ReloadScenarioBrief"
+
+type ReloadScenarioBriefArgs struct {
+	Facility string
+}
+
+type ReloadScenarioBriefResult struct {
+	Markdown string
+}
+
+// ReloadScenarioBrief returns the current on-disk contents of the brief
+// file for the given facility. It does not parse, validate, cache, or
+// propagate the result; the client is responsible for parsing the
+// markdown, validating videomap references against its local cache, and
+// rendering. Briefs are validated server-side only at startup
+// (LoadScenarioGroups).
+func (sm *SimManager) ReloadScenarioBrief(args ReloadScenarioBriefArgs, result *ReloadScenarioBriefResult) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	facility := strings.ToUpper(args.Facility)
+
+	content, err := sm.loadBrief(facility)
+	if err != nil {
+		return fmt.Errorf("failed to load brief for %q: %w", facility, err)
+	}
+	if content == "" {
+		return fmt.Errorf("no brief loaded for facility %q", facility)
+	}
+	result.Markdown = content
+	return nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

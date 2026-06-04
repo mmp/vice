@@ -42,7 +42,7 @@ type ConnectionManager struct {
 	onError     func(error)
 }
 
-func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap string, disableTTSPtr *bool, lg *log.Logger,
+func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap, additionalScenarioBrief string, disableTTSPtr *bool, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
 	cm := &ConnectionManager{
 		serverAddress:           serverAddress,
@@ -55,10 +55,11 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 
 	// Launch local server
 	rpcPort, errorLogger, extraScenarioErrors := server.LaunchServerAsync(server.ServerLaunchConfig{
-		ExtraScenario: additionalScenario,
-		ExtraVideoMap: additionalVideoMap,
-		ServerAddress: serverAddress,
-		IsLocal:       true,
+		ExtraScenario:      additionalScenario,
+		ExtraVideoMap:      additionalVideoMap,
+		ExtraScenarioBrief: additionalScenarioBrief,
+		ServerAddress:      serverAddress,
+		IsLocal:            true,
 	}, lg)
 
 	if !errorLogger.HaveErrors() {

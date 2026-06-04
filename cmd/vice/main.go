@@ -46,30 +46,31 @@ import (
 
 var (
 	// Command-line options are only used for developer features.
-	cpuprofile        = flag.String("cpuprofile", "", "write CPU profile to `file`")
-	memprofile        = flag.String("memprofile", "", "write memory profile to `file`")
-	logLevel          = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
-	logDir            = flag.String("logdir", "", "log file `directory`")
-	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
-	runServer         = flag.Bool("runserver", false, "run vice scenario server")
-	serverPort        = flag.Int("port", server.ViceServerPort, "`port` to listen on when running server")
-	serverAddress     = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
-	scenarioFilename  = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
-	videoMapFilename  = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
-	broadcastMessage  = flag.String("broadcast", "", "`message` to broadcast to all active clients on the server")
-	broadcastPassword = flag.String("password", "", "`password` to authenticate with server for broadcast message")
-	resetSim          = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
-	showRoutes        = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given `airport`")
-	listMaps          = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY-videomaps.gob.zst)")
-	listScenarios     = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
-	runSim            = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
-	navLog            = flag.Bool("navlog", false, "enable navigation logging")
-	navLogCategories  = flag.String("navlog-categories", "all", "navigation log `categories` (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
-	navLogCallsign    = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign` (empty = show all)")
-	replayMode        = flag.Bool("replay", false, "replay scenario from saved config")
-	replayDuration    = flag.String("replay-duration", "3600", "replay `duration` in seconds or 'until:CALLSIGN'")
-	waypointCommands  = flag.String("waypoint-commands", "", "waypoint `commands` in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
-	starsRandoms      = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
+	cpuprofile            = flag.String("cpuprofile", "", "write CPU profile to `file`")
+	memprofile            = flag.String("memprofile", "", "write memory profile to `file`")
+	logLevel              = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
+	logDir                = flag.String("logdir", "", "log file `directory`")
+	lintScenarios         = flag.Bool("lint", false, "check the validity of the built-in scenarios")
+	runServer             = flag.Bool("runserver", false, "run vice scenario server")
+	serverPort            = flag.Int("port", server.ViceServerPort, "`port` to listen on when running server")
+	serverAddress         = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
+	scenarioFilename      = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
+	videoMapFilename      = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
+	scenarioBriefFilename = flag.String("scenariobrief", "", "`filename` of markdown file with a scenario brief")
+	broadcastMessage      = flag.String("broadcast", "", "`message` to broadcast to all active clients on the server")
+	broadcastPassword     = flag.String("password", "", "`password` to authenticate with server for broadcast message")
+	resetSim              = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
+	showRoutes            = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given `airport`")
+	listMaps              = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY-videomaps.gob.zst)")
+	listScenarios         = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
+	runSim                = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
+	navLog                = flag.Bool("navlog", false, "enable navigation logging")
+	navLogCategories      = flag.String("navlog-categories", "all", "navigation log `categories` (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
+	navLogCallsign        = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign` (empty = show all)")
+	replayMode            = flag.Bool("replay", false, "replay scenario from saved config")
+	replayDuration        = flag.String("replay-duration", "3600", "replay `duration` in seconds or 'until:CALLSIGN'")
+	waypointCommands      = flag.String("waypoint-commands", "", "waypoint `commands` in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
+	starsRandoms          = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
 )
 
 func setupSignalHandler(profiler *util.Profiler) {
@@ -153,6 +154,9 @@ func loadConfig(lg *log.Logger) (*Config, error) {
 	if *videoMapFilename == "" && config.VideoMapFile != "" {
 		*videoMapFilename = config.VideoMapFile
 	}
+	if *scenarioBriefFilename == "" && config.ScenarioBriefFile != "" {
+		*scenarioBriefFilename = config.ScenarioBriefFile
+	}
 	return config, err
 }
 
@@ -173,7 +177,7 @@ func runLint(lg *log.Logger) error {
 	}
 
 	var e util.ErrorLogger
-	scenarioGroups, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, false /* skipVideoMaps */, &e, lg)
+	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, *scenarioBriefFilename, false /* skipVideoMaps */, &e, lg)
 
 	server.CheckArrivalSpawnAltitudes(scenarioGroups, &e)
 
@@ -244,7 +248,7 @@ func runSimulation(lg *log.Logger) error {
 	tracon, scenarioName := parts[0], parts[1]
 
 	var e util.ErrorLogger
-	scenarioGroups, configs, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, true /* skipVideoMaps */, &e, lg)
+	scenarioGroups, configs, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, *scenarioBriefFilename, true /* skipVideoMaps */, &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		return fmt.Errorf("scenario loading failed")
@@ -354,11 +358,12 @@ func runServerMode(lg *log.Logger) error {
 	nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
 
 	server.LaunchServer(server.ServerLaunchConfig{
-		Port:          *serverPort,
-		ExtraScenario: *scenarioFilename,
-		ExtraVideoMap: *videoMapFilename,
-		ServerAddress: *serverAddress,
-		IsLocal:       false,
+		Port:               *serverPort,
+		ExtraScenario:      *scenarioFilename,
+		ExtraVideoMap:      *videoMapFilename,
+		ExtraScenarioBrief: *scenarioBriefFilename,
+		ServerAddress:      *serverAddress,
+		IsLocal:            false,
 	}, lg)
 	return nil
 }
@@ -484,7 +489,7 @@ func loadSavedSim(mgr *client.ConnectionManager, config *Config,
 	isSTARSSim := av.DB.IsTRACON(c.State.Facility) || av.DB.IsATCT(c.State.Facility)
 	activeRadarPane := config.ActiveRadarPane(isSTARSSim)
 	activeRadarPane.LoadedSim(c, plat, lg)
-	uiResetControlClient(c, plat, lg)
+	uiResetControlClient(c, config, plat, lg)
 
 	// Apply waypoint commands if specified via command line
 	if *waypointCommands != "" {
@@ -589,7 +594,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	var errorLogger util.ErrorLogger
 	var extraScenarioErrors string
 	mgr, errorLogger, extraScenarioErrors = client.MakeServerManager(*serverAddress, *scenarioFilename,
-		*videoMapFilename, &config.DisableTextToSpeech, lg,
+		*videoMapFilename, *scenarioBriefFilename, &config.DisableTextToSpeech, lg,
 		func(c *client.ControlClient) { // updated client
 			if c != nil {
 				// Determine if this is a STARS or ERAM scenario
@@ -614,7 +619,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 					lg.SetCrashReportClient(mgr.LocalServer.RPCClient.Client)
 				}
 			}
-			uiResetControlClient(c, plat, lg)
+			uiResetControlClient(c, config, plat, lg)
 			controlClient = c
 		},
 		func(err error) {

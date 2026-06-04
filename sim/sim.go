@@ -150,6 +150,7 @@ type LastSTTCommand struct {
 type NewSimConfiguration struct {
 	Facility    string
 	Description string
+	Brief       string
 
 	Airports           map[string]*av.Airport
 	PrimaryAirport     string
@@ -1885,6 +1886,13 @@ func (s *Sim) UpdateATISGIText(_ TCW, line int, auxiliary bool, atis *string, te
 
 	s.publish()
 	return nil
+}
+
+func (s *Sim) Facility() string {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.State.Facility
 }
 
 // GetUserState returns a deep copy of the simulation state for a client.

@@ -342,6 +342,21 @@ func (c *ControlClient) LoadVideoMapLibrary(filename string) (*sim.VideoMapLibra
 	return &vmf, err
 }
 
+// ReloadScenarioBrief fetches the current on-disk markdown for this
+// client's facility from the server and updates the cached
+// State.ScenarioBrief.
+func (c *ControlClient) ReloadScenarioBrief() error {
+	var result server.ReloadScenarioBriefResult
+	err := c.client.callWithTimeout(server.ReloadScenarioBriefRPC, server.ReloadScenarioBriefArgs{
+		Facility: c.State.Facility,
+	}, &result)
+	if err != nil {
+		return err
+	}
+	c.State.ScenarioBrief = result.Markdown
+	return nil
+}
+
 func (c *ControlClient) GetAircraftDisplayState(callsign av.ADSBCallsign) (sim.AircraftDisplayState, error) {
 	var state sim.AircraftDisplayState
 	err := c.client.callWithTimeout(server.GetAircraftDisplayStateRPC, &server.AircraftSpecifier{

@@ -100,10 +100,15 @@
       <nav id="docs-nav" class="docs-nav navbar">
 	<ul class="section-items list-unstyled nav flex-column pb-3">
 	  <li class="nav-item section-title"><a class="nav-link scrollto" href="#section-using"><span class="theme-icon-holder me-2"><i class="fas fa-plane"></i></span>About Vice</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#started">Getting Started</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#draw-routes">Drawing Routes</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#launches">Launching Aircraft</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#multi-controller">Multiple Controllers</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#started">Getting Started</a>
+	    <ul class="submenu">
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#launching-a-simulation">Launching A Simulation</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#draw-routes">Drawing Routes</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#launches">Launching Aircraft</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#multi-controller">Multiple Controllers</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#scenario-briefs">Scenario Briefs</a></li>
+            </ul>
+          </li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Instructions (Keyboard)</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands-spoken">ATC Instructions (Spoken)</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#facility-engineering">Facility Engineering</a></li>
@@ -119,10 +124,6 @@
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.2">0.14.2</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.1">0.14.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.0">0.14.0</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.3">0.13.3</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.2">0.13.2</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.1">0.13.1</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.0">0.13.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-earlier">Earlier Releases</a></li>
 	    </ul>
 	  </li>
@@ -268,6 +269,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
               the discussion of <a href="#section-stars"><i>vice</i>'s STARS
               emulation</a> below for more information.
             </p>
+            <h3 id="launching-a-simulation">Launching A Simulation</h3>
             <p>
               The first time you launch <i>vice</i>, a window is shown for configuring the simulation.
               (After the first time, the window can be brought up by clicking the "replay" button in the menubar: <i class="fas fa-redo"></i>.)
@@ -376,7 +378,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
           </section>
 
 	  <section class="docs-section" id="draw-routes">
-            <h2 class="section-heading">Drawing Routes</h2>
+            <h3 class="section-heading">Drawing Routes</h3>
             <p><i>vice</i> can draw the active departures, approaches, and
             arrivals for the current simulation. This can be helpful when
             studying those for an airport, since they are drawn directly on
@@ -400,7 +402,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
           </section>
           
 	  <section class="docs-section" id="launches">
-            <h2 class="section-heading">Launching Aircraft</h2>
+            <h3 class="section-heading">Launching Aircraft</h3>
             <p>When a new simulation starts, <i>vice</i> automatically launches new departures and arrivals based on the
               departure and arrival rates set in the "New Simulation" window.
               During a simulation, clicking on the departing plane icon in the menubar <i class="fas fa-plane-departure"></i>
@@ -424,7 +426,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
           </section>
 
 	  <section class="docs-section" id="multi-controller">
-            <h2 class="section-heading">Multiple Controllers</h2>
+            <h3 class="section-heading">Multiple Controllers</h3>
 
             <p>With <i>vice</i> you can also have multiple controllers working aircraft together.
               Select "Create a sim on the public vice server" in the "New Simulation" window and
@@ -468,6 +470,23 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
             </div>
             <br>
 
+          </section>
+
+	  <section class="docs-section" id="scenario-briefs">
+            <h3 class="section-heading">Scenario Briefs</h3>
+
+            <p><i>vice</i> has a newly-added feature that allows scenario developers to write <i>scenario briefs</i>,
+              documents that give information about the flows, airspace, and other expectations for a scenario.
+              (Currently, only the JFK and LGA-area N90 scenarios are documented.)
+              These are shown in the scenario info window, which is displayed by clicking the
+              <i class="fas fa-question-circle"></i> button in the menubar; see the "(Facility) Procedures"
+              dropdown; the start of the N90 documentation is shown below.</p>
+            <p></p>
+<div class="text-center">
+<img src="brief-ui-example.png" srcset="brief-ui-example-2x.png 2x" width="880" height="443">
+</div><br>
+            <p>Scenario briefs include text, tables, annotated maps, and airspace diagrams.</p>
+            
           </section>
 
 	  <section class="docs-section" id="atc-commands">
@@ -1889,6 +1908,12 @@ how it simulates aircraft or the STARS interface.
               </li>
             </ul>
             
+            <div id="release-earlier" class="container">
+              <button id="toggleButton">🔍 Show Earlier Releases</button>
+              <br>
+            <div id="hiddenText" style="display:none;">
+              <br>
+          
             <h3 id="release-0.13.3">0.13.3 (29 Dec 2025)</h3>
             <ul>
               <li>New scenarios: PCT consolidated (Ketan K), MYR (Jud Lopez)</li>
@@ -2031,12 +2056,6 @@ how it simulates aircraft or the STARS interface.
               </li>
             </ul>
                 
-            <div id="release-earlier" class="container">
-              <button id="toggleButton">🔍 Show Earlier Releases</button>
-              <br>
-            <div id="hiddenText" style="display:none;">
-              <br>
-          
             <h3 id="release-0.12.2">0.12.2 (29 August 2025)</h3>
             <ul>
               <li>Scenario update: MIA (Connor Allen)</li>
@@ -7374,7 +7393,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
           <div class="container text-center py-5">
             <!-- Bootstrap template licensed from themes.3rdwavemedia.com -->
             <small class="copyright">
-              <i>vice</i> documentation (c)2023-2026 <i>vice</i> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0 License</a>.</small>
+              <i>vice</i> documentation (c) <i>vice</i> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0 License</a>.</small>
           </div>
         </footer>
       </div> 

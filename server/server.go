@@ -77,7 +77,8 @@ import (
 // 67: visual approach v2
 // 68: sim.Future{Field,Traffic}Checks -> map
 // 69: METAR JSON shape: WindDir round-trips via custom Marshal/UnmarshalJSON; ICAO populated by Decode
-const ViceSerializeVersion = 69
+// 70: scenario briefs
+const ViceSerializeVersion = 70
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion
@@ -85,11 +86,12 @@ const ViceRPCVersion = ViceSerializeVersion
 const ViceHTTPServerPort = 6502
 
 type ServerLaunchConfig struct {
-	Port          int // if 0, finds an open one
-	ExtraScenario string
-	ExtraVideoMap string
-	ServerAddress string // address to use for remote TTS provider
-	IsLocal       bool
+	Port               int // if 0, finds an open one
+	ExtraScenario      string
+	ExtraVideoMap      string
+	ExtraScenarioBrief string
+	ServerAddress      string // address to use for remote TTS provider
+	IsLocal            bool
 }
 
 func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
@@ -137,8 +139,8 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 		return 0, nil, errorLogger, ""
 	}
 
-	scenarioGroups, scenarioCatalogs, mapManifests, extraScenarioErrors :=
-		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, false /* skipVideoMaps */, &errorLogger, lg)
+	scenarioGroups, scenarioCatalogs, mapManifests, briefs, extraScenarioErrors :=
+		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, config.ExtraScenarioBrief, false /* skipVideoMaps */, &errorLogger, lg)
 	if errorLogger.HaveErrors() {
 		return 0, nil, errorLogger, ""
 	}
@@ -151,7 +153,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	serverFunc := func() {
 		server := rpc.NewServer()
 
-		sm := NewSimManager(scenarioGroups, scenarioCatalogs, mapManifests, config.ServerAddress, config.IsLocal, lg)
+		sm := NewSimManager(scenarioGroups, scenarioCatalogs, mapManifests, briefs, config.ServerAddress, config.IsLocal, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)

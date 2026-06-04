@@ -1771,7 +1771,7 @@ func controlPositionsForGroup(server *client.Server, groupName string) map[sim.T
 
 var acknowledgedATIS = make(map[string]string)
 
-func drawScenarioInfoWindow(config *Config, c *client.ControlClient, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) bool {
+func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *client.ControlClient, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) bool {
 	// Ensure that the window is wide enough to show the description
 	sz := imgui.CalcTextSize(c.State.SimDescription)
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
@@ -1872,6 +1872,8 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, activeRadar
 			imgui.EndTable()
 		}
 	}
+
+	drawScenarioBriefSection(mgr, config, c, p, lg)
 
 	if len(c.State.METAR) > 0 {
 		// Collect IFR airports: those with IFR departures or arrivals

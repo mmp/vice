@@ -86,6 +86,7 @@ type CommonState struct {
 	PrimaryAirport    string
 
 	SimDescription string
+	ScenarioBrief  string
 
 	TFRs []av.TFR
 
@@ -242,6 +243,8 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 			ATPAEnabled:     true,
 			ATPAVolumeState: initATPAVolumeState(config.Airports),
 		},
+
+		ScenarioBrief: config.Brief,
 
 		Airports:    config.Airports,
 		Controllers: maps.Clone(config.ControlPositions),

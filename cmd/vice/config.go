@@ -67,8 +67,11 @@ type ConfigNoSim struct {
 	UserWorkstation    string
 	ControllerInitials string
 
-	ScenarioFile string
-	VideoMapFile string
+	ScenarioFile      string
+	VideoMapFile      string
+	ScenarioBriefFile string
+
+	NoBriefAtScenarioStart bool
 
 	// Which child windows are open (persisted across sessions)
 	ShowSettings     bool
