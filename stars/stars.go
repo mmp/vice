@@ -916,7 +916,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	}
 
 	ss := client.State
-	vmf, err := sp.getVideoMapLibrary(ss, client)
+	vmf, err := client.LoadVideoMapLibrary(ss.ControllerVideoMapFile)
 	if err != nil {
 		lg.Errorf("%v", err)
 	}
@@ -1189,15 +1189,6 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 		} else {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, nil)
 		}
-	}
-}
-
-func (sp *STARSPane) getVideoMapLibrary(ss client.SimState, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
-	filename := ss.ControllerVideoMapFile
-	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.ControllerVideoMapLibraryHash); err == nil {
-		return ml, nil
-	} else {
-		return client.GetVideoMapLibrary(filename)
 	}
 }
 

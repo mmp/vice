@@ -377,7 +377,7 @@ func handleFlightPlanReadout(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) C
 // MR - Map Request Handlers
 
 func handleMapRequestList(ep *ERAMPane, ctx *panes.Context) (CommandStatus, error) {
-	vmf, err := ep.getVideoMapLibrary(ctx.Client.State, ctx.Client)
+	vmf, err := ctx.Client.LoadVideoMapLibrary(ctx.Client.State.ControllerVideoMapFile)
 	if err != nil {
 		return CommandStatus{}, err
 	}
@@ -393,7 +393,7 @@ func handleMapRequestList(ep *ERAMPane, ctx *panes.Context) (CommandStatus, erro
 }
 
 func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (CommandStatus, error) {
-	vmf, err := ep.getVideoMapLibrary(ctx.Client.State, ctx.Client)
+	vmf, err := ctx.Client.LoadVideoMapLibrary(ctx.Client.State.ControllerVideoMapFile)
 	if err != nil {
 		return CommandStatus{}, err
 	}

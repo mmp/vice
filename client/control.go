@@ -325,7 +325,16 @@ func (c *ControlClient) DeleteRestrictionArea(idx int, callback func(error)) {
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) GetVideoMapLibrary(filename string) (*sim.VideoMapLibrary, error) {
+// LoadVideoMapLibrary returns the video map library for filename. It first
+// tries to load from local resources, verifying against the hash advertised
+// by the server in SimState.VideoMapLibraryHashes; on hash mismatch, missing
+// file, or absent hash it falls back to fetching the full library over RPC.
+func (c *ControlClient) LoadVideoMapLibrary(filename string) (*sim.VideoMapLibrary, error) {
+	if hash, ok := c.State.VideoMapLibraryHashes[filename]; ok {
+		if lib, err := sim.HashCheckLoadVideoMap(filename, hash); err == nil {
+			return lib, nil
+		}
+	}
 	var vmf sim.VideoMapLibrary
 	err := c.client.callWithTimeout(server.GetVideoMapLibraryRPC, &server.VideoMapsArgs{
 		Filename: filename,

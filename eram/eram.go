@@ -791,7 +791,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	ss := client.State
 	ps := ep.currentPrefs()
-	vmf, err := ep.getVideoMapLibrary(ss, client)
+	vmf, err := client.LoadVideoMapLibrary(ss.ControllerVideoMapFile)
 	if err != nil {
 		lg.Errorf("%v", err)
 		return
@@ -821,14 +821,6 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 			ps.VideoMapVisible[combine(ep.allVideoMaps[idx].LabelLine1, ep.allVideoMaps[idx].LabelLine2)] = nil
 		}
 	}
-}
-
-func (ep *ERAMPane) getVideoMapLibrary(ss client.SimState, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
-	filename := ss.ControllerVideoMapFile
-	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.ControllerVideoMapLibraryHash); err == nil {
-		return ml, nil
-	}
-	return client.GetVideoMapLibrary(filename)
 }
 
 // cloneStringAnyMap returns a shallow copy of map[string]interface{}
