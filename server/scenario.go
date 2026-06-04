@@ -2140,13 +2140,15 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		}
 
 		videoMapHashes := make(map[string][]byte)
-		for _, filename := range parsed.VideoMapFiles() {
-			if manifest, ok := mapManifests[filename]; !ok {
-				e.ErrorString("Unknown video map file %q referenced in brief", filename)
-			} else if hash, err := manifest.Hash(); err != nil {
-				e.ErrorString("Unable to compute hash for video map %q: %v", filename, err)
-			} else {
-				videoMapHashes[filename] = hash
+		if !skipVideoMaps {
+			for _, filename := range parsed.VideoMapFiles() {
+				if manifest, ok := mapManifests[filename]; !ok {
+					e.ErrorString("Unknown video map file %q referenced in brief", filename)
+				} else if hash, err := manifest.Hash(); err != nil {
+					e.ErrorString("Unable to compute hash for video map %q: %v", filename, err)
+				} else {
+					videoMapHashes[filename] = hash
+				}
 			}
 		}
 		return videoMapHashes, true
