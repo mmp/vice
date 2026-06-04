@@ -285,8 +285,7 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 			oldSum *= s.State.LaunchConfig.InboundFlowRateScale
 
 			if newSum != oldSum {
-				pushActive := s.State.SimTime.Before(s.PushEnd)
-				s.NextInboundSpawn[group] = s.State.SimTime.Add(randomWait(newSum, pushActive, s.Rand))
+				s.NextInboundSpawn[group] = s.State.SimTime.Add(randomInitialWait(newSum, s.Rand))
 			}
 		}
 	}
