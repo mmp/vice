@@ -455,7 +455,7 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 			break
 		}
 	}
-	if runwayNum, runwayDir, numPos := extractRunwayNumber(searchTokens); runwayNum != "" {
+	if runwayNum, runwayDir, numPos := extractRunwayNumber(searchTokens); runwayNum != "" && numPos <= 5 {
 		runwaySpoken := runwayNum
 		if runwayDir != "" {
 			runwaySpoken += " " + runwayDir

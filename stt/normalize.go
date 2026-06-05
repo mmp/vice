@@ -479,6 +479,7 @@ var commandKeywords = map[string]string{
 	"cleared":     "cleared",
 	"secured":     "cleared",
 	"expect":      "expect",
+	"expected":    "expect",
 	"vectors":     "vectors",
 	"approach":    "approach",
 	"cancel":      "cancel",
@@ -537,13 +538,14 @@ var commandKeywords = map[string]string{
 
 // phraseExpansions maps single STT words to multiple normalized words.
 var phraseExpansions = map[string][]string{
-	"flighting":  {"fly", "heading"},
-	"fighting":   {"fly", "heading"},
-	"centimeter": {"descend", "maintain"},
-	"sediment":   {"descend", "maintain"},
-	"decimate":   {"descend", "maintain"},
-	"fl":         {"flight", "level"},
-	"insight":    {"in", "sight"}, // STT: "in sight" rendered as one word
+	"flighting":   {"fly", "heading"},
+	"fighting":    {"fly", "heading"},
+	"centimeter":  {"descend", "maintain"},
+	"sediment":    {"descend", "maintain"},
+	"decimate":    {"descend", "maintain"},
+	"disassembly": {"descend", "via"},
+	"fl":          {"flight", "level"},
+	"insight":     {"in", "sight"}, // STT: "in sight" rendered as one word
 }
 
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
@@ -567,6 +569,7 @@ var multiTokenReplacements = map[string][]string{
 	"for center":   {"4", "center"}, // STT error: "four center" transcribed as "for center"
 	"vector as":    {"vector"},      // STT error: "vector for/to the" transcribed as "vector as"
 	"vectors as":   {"vectors"},
+	"to recall":    {"direct"}, // STT error: "direct" (TRKT) transcribed as "to recall" (TRKL)
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
