@@ -164,7 +164,8 @@ func (p *Transcriber) decodeInternal(
 	}
 
 	// Strip informational phrases (position ID prefix, radar contact, altimeter setting)
-	commandTokens = stripInformational(commandTokens)
+	var facilityStripped bool
+	commandTokens, facilityStripped = stripInformational(commandTokens)
 
 	// If no tokens remain after stripping, controller just identified themselves.
 	// For VFR aircraft, treat this as an implicit "go ahead" — the pilot is
@@ -193,6 +194,17 @@ func (p *Transcriber) decodeInternal(
 		logLocalStt(`=== DecodeTranscript END: "" (%s, time=%s) ===`, kind, elapsed)
 		p.logInfo(`local STT: %q -> "" (%s, time=%s)`, transcript, kind, elapsed)
 		return "", nil
+	}
+
+	// If a facility suffix was stripped and what remains is just a sign-off
+	// phrase ("have a good one", "good day"), the controller is handing off
+	// to the named facility. Emit FC (frequency change).
+	if facilityStripped && isSignOffOnly(commandTokens) {
+		output := callsign + " FC"
+		elapsed := time.Since(start)
+		logLocalStt(`=== DecodeTranscript END: %q (handoff sign-off, time=%s) ===`, output, elapsed)
+		p.logInfo(`local STT: %q -> %q (handoff sign-off, time=%s)`, transcript, output, elapsed)
+		return output, nil
 	}
 
 	// Layer 4: Command parsing
@@ -660,7 +672,19 @@ func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
 				}
 				break
 			}
-			if !followedByCommand {
+			// Also check whether a command keyword precedes "correction".
+			// If so, this is a value/command self-correction (e.g.,
+			// "speed one eighty correction one sixty"), not a callsign
+			// re-addressing. applyDisregard handles this case.
+			precededByCommand := false
+			for j := i - 1; j >= 0; j-- {
+				w := strings.ToLower(tokens[j].Text)
+				if IsCommandKeyword(w) {
+					precededByCommand = true
+					break
+				}
+			}
+			if !followedByCommand && !precededByCommand {
 				return tokens[i+1:], true
 			}
 		}
@@ -1032,20 +1056,23 @@ func containsGreeting(tokens []Token) bool {
 
 // stripInformational applies all informational prefix/suffix strippers in sequence:
 // position ID prefix, radar contact prefix, and altimeter setting suffix.
-func stripInformational(tokens []Token) []Token {
-	tokens = stripPositionIDPrefix(tokens)
+// The bool return reports whether a facility suffix (departure/approach/center/tower)
+// was stripped from the prefix.
+func stripInformational(tokens []Token) ([]Token, bool) {
+	tokens, facilityStripped := stripPositionIDPrefix(tokens)
 	tokens = stripRadarContactPrefix(tokens)
 	tokens = stripAltimeterSuffix(tokens)
-	return tokens
+	return tokens, facilityStripped
 }
 
 // stripPositionIDPrefix removes a controller position identification prefix
 // from the tokens (e.g., "New York departure", "Boston approach").
 // This appears right after the callsign when the controller identifies themselves.
 // Only strips if no command keyword appears before the position suffix.
-func stripPositionIDPrefix(tokens []Token) []Token {
+// The bool return is true if a facility suffix was actually stripped.
+func stripPositionIDPrefix(tokens []Token) ([]Token, bool) {
 	if len(tokens) == 0 {
-		return tokens
+		return tokens, false
 	}
 
 	positionSuffixes := map[string]bool{
@@ -1065,21 +1092,49 @@ func stripPositionIDPrefix(tokens []Token) []Token {
 	for i, t := range tokens {
 		text := strings.ToLower(t.Text)
 		if commandKeywords[text] {
-			return tokens
+			return tokens, false
 		}
 		if positionSuffixes[text] {
 			remaining := tokens[i+1:]
 			if len(remaining) < len(tokens) {
 				logLocalStt("stripped position ID prefix: %d tokens", i+1)
 			}
-			return remaining
+			return remaining, true
 		}
 		if i >= 4 {
 			break
 		}
 	}
 
-	return tokens
+	return tokens, false
+}
+
+// isSignOffOnly returns true when tokens are only filler words and common
+// sign-off vocabulary ("have a good one", "good day", etc.). Used to detect
+// handoff transmissions where the controller named a facility and signed off.
+func isSignOffOnly(tokens []Token) bool {
+	if len(tokens) == 0 {
+		return false
+	}
+	signOffWords := map[string]bool{
+		"have": true, "good": true, "nice": true, "great": true,
+		"bye": true, "see": true, "later": true,
+	}
+	for _, t := range tokens {
+		text := strings.ToLower(t.Text)
+		if signOffWords[text] {
+			continue
+		}
+		if IsFillerWord(text) {
+			continue
+		}
+		// Allow the trailing "one" in "have a good one" (tokenized as number 1).
+		if t.Type == TokenNumber && t.Value == 1 {
+			continue
+		}
+		return false
+	}
+	return true
 }
 
 // stripRadarContactPrefix removes "radar contact" from the start of tokens.

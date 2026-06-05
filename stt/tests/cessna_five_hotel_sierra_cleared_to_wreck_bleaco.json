@@ -14,7 +14,7 @@
   "audio_duration_ms": 3016,
   "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
-  "callsign": "N685HS",
+  "callsign": "N685HS/T",
   "command": "DBLECO",
   "stt_aircraft": {
     "Fedex 75 84 heavy": {

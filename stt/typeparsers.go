@@ -181,6 +181,7 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 		// Handle 4-digit values where first 3 digits form valid heading (e.g., 1507 → 150)
 		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
 			hdg := t.Value / 10
+			mod1000 := t.Value % 1000
 			if hdg >= 1 && hdg <= 360 {
 				// If truncating gives a non-multiple-of-5 heading, check for
 				// a duplicate digit caused by STT stutter (e.g., "0990" where
@@ -189,9 +190,16 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 				if hdg%5 != 0 {
 					if better, ok := headingByRemovingDuplicateDigit(t.Text); ok {
 						hdg = better
+					} else if mod1000 >= 1 && mod1000 <= 360 && mod1000%5 == 0 {
+						// STT inserted an extra leading digit (e.g., "one two one
+						// zero" → 1210 where speaker said "two one zero" = 210).
+						hdg = mod1000
 					}
 				}
 				return hdg, i - pos + 1, ""
+			}
+			if mod1000 >= 1 && mod1000 <= 360 {
+				return mod1000, i - pos + 1, ""
 			}
 		}
 

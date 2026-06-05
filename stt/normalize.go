@@ -551,29 +551,30 @@ var phraseExpansions = map[string][]string{
 
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
 var multiTokenReplacements = map[string][]string{
-	"i l s":         {"ils"},
-	"r nav":         {"rnav"},
-	"air nav":       {"rnav"}, // STT error: "R-Nav" transcribed as "Air Nav"
-	"fly level":     {"flight", "level"},
-	"time riding":   {"turn", "right"},
-	"seven e":       {"70"},
-	"eight e":       {"80"},
-	"nine e":        {"90"},
-	"six e":         {"60"},
-	"five e":        {"50"},
-	"r on a":        {"runway"},
-	"right a star":  {"via", "star"},
-	"i dead":        {"ident"},
-	"i file":        {"5", "mile"},   // STT error: "five mile" transcribed as "I file"
-	"for left":      {"4", "left"},   // STT error: "four left" transcribed as "for left"
-	"for right":     {"4", "right"},  // STT error: "four right" transcribed as "for right"
-	"for center":    {"4", "center"}, // STT error: "four center" transcribed as "for center"
-	"vector as":     {"vector"},      // STT error: "vector for/to the" transcribed as "vector as"
-	"vectors as":    {"vectors"},
-	"to recall":     {"direct"},           // STT error: "direct" (TRKT) transcribed as "to recall" (TRKL)
-	"mark point":    {"mach", "point"},    // STT error: "mach" mistranscribed as "mark" before "point"
-	"ready contact": {"radar", "contact"}, // STT error: "radar" mistranscribed as "ready"
-	"i s t f":       {"ils"},              // STT error: ILS spelled out, badly garbled
+	"i l s":          {"ils"},
+	"r nav":          {"rnav"},
+	"air nav":        {"rnav"}, // STT error: "R-Nav" transcribed as "Air Nav"
+	"fly level":      {"flight", "level"},
+	"time riding":    {"turn", "right"},
+	"seven e":        {"70"},
+	"eight e":        {"80"},
+	"nine e":         {"90"},
+	"six e":          {"60"},
+	"five e":         {"50"},
+	"r on a":         {"runway"},
+	"right a star":   {"via", "star"},
+	"i dead":         {"ident"},
+	"i file":         {"5", "mile"},   // STT error: "five mile" transcribed as "I file"
+	"for left":       {"4", "left"},   // STT error: "four left" transcribed as "for left"
+	"for right":      {"4", "right"},  // STT error: "four right" transcribed as "for right"
+	"for center":     {"4", "center"}, // STT error: "four center" transcribed as "for center"
+	"vector as":      {"vector"},      // STT error: "vector for/to the" transcribed as "vector as"
+	"vectors as":     {"vectors"},
+	"to recall":      {"direct"},                // STT error: "direct" (TRKT) transcribed as "to recall" (TRKL)
+	"mark point":     {"mach", "point"},         // STT error: "mach" mistranscribed as "mark" before "point"
+	"ready contact":  {"radar", "contact"},      // STT error: "radar" mistranscribed as "ready"
+	"i s t f":        {"ils"},                   // STT error: ILS spelled out, badly garbled
+	"descend me the": {"descend", "via", "the"}, // STT error: "via" mistranscribed as "me" in "descend via the {STAR}"
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
