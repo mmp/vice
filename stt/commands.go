@@ -474,6 +474,13 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 				}{spokenName, apprID})
 			}
 		}
+		// Sort by apprID for deterministic disambiguation when scores tie.
+		slices.SortFunc(matchingApproaches, func(a, b struct {
+			spokenName string
+			apprID     string
+		}) int {
+			return strings.Compare(a.apprID, b.apprID)
+		})
 
 		if len(matchingApproaches) == 1 {
 			// Only one approach matches the runway - use it
@@ -560,7 +567,7 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 				if bestMatchScore < 0.80 && assignedApproach != "" {
 					assignedLower := strings.ToLower(assignedApproach)
 					// Extract RNAV variant from assigned approach (e.g., "z" from "rnav z runway 27")
-					assignedVariant := extractRnavVariant(assignedLower)
+					assignedVariant := extractAssignedVariant(assignedLower)
 
 					var typeMatch string // best type-only match
 					for _, ma := range matchingApproaches {
@@ -572,8 +579,10 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 							isRNAV := strings.Contains(assignedLower, "rnav") &&
 								(strings.Contains(spokenLower, "r-nav") || strings.Contains(spokenLower, "rnav"))
 							if isILS || isRNAV {
-								// For RNAV variants, also check variant letter (Z/Y/W/X)
-								if isRNAV && assignedVariant != "" {
+								// When the assigned approach has a variant letter (Z/Y/X/W),
+								// also check the candidate's variant — applies to both ILS
+								// (e.g., IZ6 for "ILS Z Runway 6") and RNAV.
+								if assignedVariant != "" {
 									idVariant := extractApproachIDVariant(ma.apprID)
 									if idVariant == assignedVariant {
 										bestMatch = ma.apprID
@@ -808,18 +817,22 @@ func matchesAssignedRunway(approachID, assignedApproach string) bool {
 	return strings.HasSuffix(assignedNum, idNum)
 }
 
-// extractRnavVariant extracts the RNAV variant letter from an assigned approach string.
-// E.g., "rnav z runway 27" → "z", "rnav yankee runway 13l" → "y".
-func extractRnavVariant(assignedLower string) string {
-	idx := strings.Index(assignedLower, "rnav")
-	if idx == -1 {
+// extractAssignedVariant extracts the variant letter (z/y/x/w) from an
+// assigned approach string. E.g., "rnav z runway 27" → "z",
+// "ils z runway 6" → "z", "rnav yankee runway 13l" → "y".
+func extractAssignedVariant(assignedLower string) string {
+	var rest string
+	if idx := strings.Index(assignedLower, "rnav"); idx != -1 {
+		rest = strings.TrimSpace(assignedLower[idx+4:])
+	} else if idx := strings.Index(assignedLower, "ils"); idx != -1 {
+		rest = strings.TrimSpace(assignedLower[idx+3:])
+	} else {
 		return ""
 	}
-	rest := strings.TrimSpace(assignedLower[idx+4:])
 	if rest == "" {
 		return ""
 	}
-	// The variant is the first word after "rnav": "z", "y", "x", "w", "zulu", "yankee", etc.
+	// The variant is the first word after the type: "z", "y", "x", "w", "zulu", "yankee", etc.
 	word := strings.Fields(rest)[0]
 	switch word {
 	case "z", "zulu":
@@ -834,11 +847,14 @@ func extractRnavVariant(assignedLower string) string {
 	return ""
 }
 
-// extractApproachIDVariant extracts the RNAV variant from an approach ID.
-// E.g., "RZ7" → "z", "RY1L" → "y", "I3R" → "".
+// extractApproachIDVariant extracts the variant letter from an approach ID.
+// E.g., "RZ7" → "z", "IZ6" → "z", "RY1L" → "y", "I3R" → "".
 func extractApproachIDVariant(approachID string) string {
 	upper := strings.ToUpper(approachID)
-	if len(upper) < 2 || upper[0] != 'R' {
+	if len(upper) < 2 {
+		return ""
+	}
+	if upper[0] != 'R' && upper[0] != 'I' {
 		return ""
 	}
 	switch upper[1] {
