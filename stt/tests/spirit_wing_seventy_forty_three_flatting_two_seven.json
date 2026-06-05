@@ -1,0 +1,779 @@
+{
+  "time": "2026-03-31T04:13:39.31386624Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:678:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Spirit Wing Seventy Forty Three Flatting Two Seven Zero and descend up eighteen five thousand",
+  "whisper_duration_ms": 470.633,
+  "audio_duration_ms": 7752,
+  "processor": "GPU: NVIDIA GeForce RTX 2070 (8220MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "NKS7043",
+  "command": "H270 D50",
+  "stt_aircraft": {
+    "B E thirty-six six four five": {
+      "Callsign": "N52645/T",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Frels": "FRELS",
+        "Kansas City": "MCI",
+        "Napoleon": "ANX",
+        "New Century AirCenter": "KIXD",
+        "Skini": "SKINI",
+        "Topeka": "TOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway three six": "I36",
+        "Visual Approach runway three six": "V36",
+        "r-nav runway three six": "R36"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I36": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "R36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        },
+        "R4": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "V36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 36",
+      "SID": "",
+      "STAR": "RUDDH3",
+      "Altitude": 12459,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "Southwest six 28": {
+      "Callsign": "SWA628",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Kansas City": "KMCI"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "I L S runway one right": "I1R",
+        "r-nav yankee runway one left": "Y1L",
+        "r-nav yankee runway one right": "Y1R",
+        "r-nav zulu runway one left": "Z1L",
+        "r-nav zulu runway one right": "Z1R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Fidus": "FIDUS",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Quwvu": "QUWVU",
+          "Scott": "SCIOT",
+          "Soxle": "SOXLE",
+          "Updey": "UPDEY",
+          "Vest": "VVEST",
+          "Warm": "WARMM",
+          "Wimpow": "WMPOW",
+          "Yekuv": "YEKUV",
+          "Yetu": "UYETU",
+          "Yilup": "YILUP",
+          "Zavub": "ZAVUB",
+          "coonie": "COONI",
+          "kicked": "KRIKT"
+        },
+        "I1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Helen": "HELAN",
+          "Iyayi": "IYAYI",
+          "Jacey": "JACEY",
+          "Ribs": "RIBBS",
+          "Sexek": "CEXEK",
+          "Slow": "SLOWE",
+          "Terky": "TERKY",
+          "Ujgav": "UJGAV",
+          "Wevog": "WEVOG",
+          "Yukgu": "YUKGU",
+          "Ziviv": "ZIVIV",
+          "Zocuf": "XOCUF",
+          "Zusgo": "ZUSGO",
+          "spicy": "SPICY",
+          "woovor": "WUVOR",
+          "wuzby": "WUZBY"
+        },
+        "V1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Wimpow": "WMPOW",
+          "Zugor": "ZUGOR"
+        },
+        "V1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Hotbi": "HOTBI",
+          "Ribs": "RIBBS",
+          "Terky": "TERKY",
+          "spicy": "SPICY"
+        },
+        "Y1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Wimpow": "WMPOW",
+          "Zugor": "ZUGOR"
+        },
+        "Y1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Hotbi": "HOTBI",
+          "Ribs": "RIBBS",
+          "Terky": "TERKY",
+          "spicy": "SPICY"
+        },
+        "Z1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Dawson": "DAUSN",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Kaleb": "KALEB",
+          "Wimpow": "WMPOW",
+          "coonie": "COONI",
+          "kicked": "KRIKT"
+        },
+        "Z1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Fidvu": "FIDVU",
+          "Jacey": "JACEY",
+          "Ribs": "RIBBS",
+          "Slow": "SLOWE",
+          "Terky": "TERKY",
+          "basket": "BRSKT",
+          "spicy": "SPICY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "WUTNG3",
+      "Altitude": 8641,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "9",
+        "27"
+      ]
+    },
+    "Spirit Wings 70 43": {
+      "Callsign": "NKS7043",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Barbecue": "BARBQ",
+        "Boner": "BAUNR",
+        "Cooked": "COOKD",
+        "Hotbi": "HOTBI",
+        "Kansas City": "KMCI",
+        "Ribs": "RIBBS",
+        "Rowland": "RWLND",
+        "Terky": "TERKY",
+        "Willie": "WILII",
+        "spicy": "SPICY"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "I L S runway one right": "I1R",
+        "r-nav yankee runway one left": "Y1L",
+        "r-nav yankee runway one right": "Y1R",
+        "r-nav zulu runway one left": "Z1L",
+        "r-nav zulu runway one right": "Z1R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Fidus": "FIDUS",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Quwvu": "QUWVU",
+          "Scott": "SCIOT",
+          "Soxle": "SOXLE",
+          "Updey": "UPDEY",
+          "Vest": "VVEST",
+          "Warm": "WARMM",
+          "Wimpow": "WMPOW",
+          "Yekuv": "YEKUV",
+          "Yetu": "UYETU",
+          "Yilup": "YILUP",
+          "Zavub": "ZAVUB",
+          "coonie": "COONI",
+          "kicked": "KRIKT"
+        },
+        "I1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Helen": "HELAN",
+          "Iyayi": "IYAYI",
+          "Jacey": "JACEY",
+          "Ribs": "RIBBS",
+          "Sexek": "CEXEK",
+          "Slow": "SLOWE",
+          "Terky": "TERKY",
+          "Ujgav": "UJGAV",
+          "Wevog": "WEVOG",
+          "Yukgu": "YUKGU",
+          "Ziviv": "ZIVIV",
+          "Zocuf": "XOCUF",
+          "Zusgo": "ZUSGO",
+          "spicy": "SPICY",
+          "woovor": "WUVOR",
+          "wuzby": "WUZBY"
+        },
+        "V1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Wimpow": "WMPOW",
+          "Zugor": "ZUGOR"
+        },
+        "V1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Hotbi": "HOTBI",
+          "Ribs": "RIBBS",
+          "Terky": "TERKY",
+          "spicy": "SPICY"
+        },
+        "Y1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Wimpow": "WMPOW",
+          "Zugor": "ZUGOR"
+        },
+        "Y1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Hotbi": "HOTBI",
+          "Ribs": "RIBBS",
+          "Terky": "TERKY",
+          "spicy": "SPICY"
+        },
+        "Z1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Dawson": "DAUSN",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Kaleb": "KALEB",
+          "Wimpow": "WMPOW",
+          "coonie": "COONI",
+          "kicked": "KRIKT"
+        },
+        "Z1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Fidvu": "FIDVU",
+          "Jacey": "JACEY",
+          "Ribs": "RIBBS",
+          "Slow": "SLOWE",
+          "Terky": "TERKY",
+          "basket": "BRSKT",
+          "spicy": "SPICY"
+        }
+      },
+      "AssignedApproach": "RNAV Y Runway 1R",
+      "SID": "",
+      "STAR": "MHOMS3",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "9",
+        "27"
+      ]
+    },
+    "bonanza six four five": {
+      "Callsign": "N52645/T",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Frels": "FRELS",
+        "Kansas City": "MCI",
+        "Napoleon": "ANX",
+        "New Century AirCenter": "KIXD",
+        "Skini": "SKINI",
+        "Topeka": "TOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway three six": "I36",
+        "Visual Approach runway three six": "V36",
+        "r-nav runway three six": "R36"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I36": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "R36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        },
+        "R4": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "V36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 36",
+      "SID": "",
+      "STAR": "RUDDH3",
+      "Altitude": 12459,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "cessna one eighty-two four juliet romeo": {
+      "Callsign": "N584JR/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Rosecrans Memorial": "KSTJ"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five": "I35",
+        "Visual Approach runway three five": "V35",
+        "r-nav runway three five": "R35"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I35": {
+          "Bowler": "BOWLR",
+          "Filux": "FILUX",
+          "Hanot": "HANOT",
+          "St Joseph": "STJ",
+          "Tario": "TARIO",
+          "Zalta": "ZALTA"
+        },
+        "R35": {
+          "Debeck": "DEBEC",
+          "Hibge": "HIBGE",
+          "Wexom": "WEXOM"
+        },
+        "V35": {
+          "Debeck": "DEBEC",
+          "Hibge": "HIBGE",
+          "Wexom": "WEXOM"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "WUTNG3",
+      "Altitude": 11505,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "cessna skylane four juliet romeo": {
+      "Callsign": "N584JR/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Rosecrans Memorial": "KSTJ"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five": "I35",
+        "Visual Approach runway three five": "V35",
+        "r-nav runway three five": "R35"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I35": {
+          "Bowler": "BOWLR",
+          "Filux": "FILUX",
+          "Hanot": "HANOT",
+          "St Joseph": "STJ",
+          "Tario": "TARIO",
+          "Zalta": "ZALTA"
+        },
+        "R35": {
+          "Debeck": "DEBEC",
+          "Hibge": "HIBGE",
+          "Wexom": "WEXOM"
+        },
+        "V35": {
+          "Debeck": "DEBEC",
+          "Hibge": "HIBGE",
+          "Wexom": "WEXOM"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "WUTNG3",
+      "Altitude": 11505,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "grumman yankee four tango charlie": {
+      "Callsign": "N34TC/T",
+      "AircraftType": "AA1",
+      "Fixes": {
+        "Charles B. Wheeler Downtown": "KMKC"
+      },
+      "CandidateApproaches": {
+        "Visual Approach runway one": "V1"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "V1": {
+          "Wetzel": "WETZL",
+          "grilled": "GRILD"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "WUTNG3",
+      "Altitude": 8664,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "november five eight four juliet romeo": {
+      "Callsign": "N584JR",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Rosecrans Memorial": "KSTJ"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five": "I35",
+        "Visual Approach runway three five": "V35",
+        "r-nav runway three five": "R35"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I35": {
+          "Bowler": "BOWLR",
+          "Filux": "FILUX",
+          "Hanot": "HANOT",
+          "St Joseph": "STJ",
+          "Tario": "TARIO",
+          "Zalta": "ZALTA"
+        },
+        "R35": {
+          "Debeck": "DEBEC",
+          "Hibge": "HIBGE",
+          "Wexom": "WEXOM"
+        },
+        "V35": {
+          "Debeck": "DEBEC",
+          "Hibge": "HIBGE",
+          "Wexom": "WEXOM"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "WUTNG3",
+      "Altitude": 11505,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "november five two six four five": {
+      "Callsign": "N52645",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Frels": "FRELS",
+        "Kansas City": "MCI",
+        "Napoleon": "ANX",
+        "New Century AirCenter": "KIXD",
+        "Skini": "SKINI",
+        "Topeka": "TOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway three six": "I36",
+        "Visual Approach runway three six": "V36",
+        "r-nav runway three six": "R36"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I36": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "R36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        },
+        "R4": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "V36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 36",
+      "SID": "",
+      "STAR": "RUDDH3",
+      "Altitude": 12459,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "november three four tango charlie": {
+      "Callsign": "N34TC",
+      "AircraftType": "AA1",
+      "Fixes": {
+        "Charles B. Wheeler Downtown": "KMKC"
+      },
+      "CandidateApproaches": {
+        "Visual Approach runway one": "V1"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "V1": {
+          "Wetzel": "WETZL",
+          "grilled": "GRILD"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "WUTNG3",
+      "Altitude": 8664,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "skylane four juliet romeo": {
+      "Callsign": "N584JR/T",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Rosecrans Memorial": "KSTJ"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five": "I35",
+        "Visual Approach runway three five": "V35",
+        "r-nav runway three five": "R35"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I35": {
+          "Bowler": "BOWLR",
+          "Filux": "FILUX",
+          "Hanot": "HANOT",
+          "St Joseph": "STJ",
+          "Tario": "TARIO",
+          "Zalta": "ZALTA"
+        },
+        "R35": {
+          "Debeck": "DEBEC",
+          "Hibge": "HIBGE",
+          "Wexom": "WEXOM"
+        },
+        "V35": {
+          "Debeck": "DEBEC",
+          "Hibge": "HIBGE",
+          "Wexom": "WEXOM"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "WUTNG3",
+      "Altitude": 11505,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Spirit Wing Seventy Forty Three Flatting Two Seven Zero and descend up eighteen five thousand\"",
+    "[local-stt] normalized words: [spirit wing 70 43 fly heading 2 7 0 and descend up 18 5 thousand]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"spirit\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"wing\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"70\" Type=1 Value=70",
+    "[local-stt]   token[3]: Text=\"43\" Type=1 Value=43",
+    "[local-stt]   token[4]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"270\" Type=1 Value=270",
+    "[local-stt]   token[7]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"up\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"18\" Type=1 Value=18",
+    "[local-stt]   token[11]: Text=\"50\" Type=2 Value=50",
+    "[local-stt] MatchCallsign: 12 tokens, 11 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 12 tokens, 11 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Spirit Wings 70 43\" (airline=0.980, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Spirit Wings 70 43\" (airline=0.98, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 1 results",
+    "[local-stt]     result 0: \"Southwest six 28\" (airline=0.567, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Southwest six 28\" (airline=0.57, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Southwest six 28\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Spirit Wings 70 43\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Spirit Wings 70 43\" (airline=0.50, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"NKS7043\" (conf=1.00, consumed=4, addressingForm=0, spokenKey=\"Spirit Wings 70 43\")",
+    "[local-stt] callsign match: Callsign=\"NKS7043\" SpokenKey=\"Spirit Wings 70 43\" Conf=1.00 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=10 Approaches=6 AssignedApproach=\"RNAV Y Runway 1R\" LAHSORunways=[9 27 9 27]",
+    "[local-stt]   fix: \"Boner\" -\u003e \"BAUNR\"",
+    "[local-stt]   fix: \"Terky\" -\u003e \"TERKY\"",
+    "[local-stt]   fix: \"Ribs\" -\u003e \"RIBBS\"",
+    "[local-stt]   fix: \"Hotbi\" -\u003e \"HOTBI\"",
+    "[local-stt]   fix: \"spicy\" -\u003e \"SPICY\"",
+    "[local-stt]   fix: \"Barbecue\" -\u003e \"BARBQ\"",
+    "[local-stt]   fix: \"Rowland\" -\u003e \"RWLND\"",
+    "[local-stt]   fix: \"Willie\" -\u003e \"WILII\"",
+    "[local-stt]   fix: \"Cooked\" -\u003e \"COOKD\"",
+    "[local-stt]   fix: \"Kansas City\" -\u003e \"KMCI\"",
+    "[local-stt]   approach: \"r-nav zulu runway one left\" -\u003e \"Z1L\"",
+    "[local-stt]   approach: \"I L S runway one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"r-nav yankee runway one left\" -\u003e \"Y1L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one right\" -\u003e \"Z1R\"",
+    "[local-stt]   approach: \"I L S runway one right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"r-nav yankee runway one right\" -\u003e \"Y1R\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"270\" Type=1 Value=270",
+    "[local-stt]   token[3]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"up\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"18\" Type=1 Value=18",
+    "[local-stt]   token[7]: Text=\"50\" Type=2 Value=50",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   matched command: \"H270\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   skipping filler word: \"and\"",
+    "[local-stt]   matched command: \"D50\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[H270 D50] (avgConf=1.00)",
+    "[local-stt] parsed commands: [H270 D50] (conf=1.00)",
+    "[local-stt] validated commands: [H270 D50] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"NKS7043 H270 D50\" (conf=1.00, time=9.9735ms) ==="
+  ]
+}

@@ -1,0 +1,492 @@
+{
+  "time": "2026-05-15T18:47:18.036596775Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:851:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "United Fourteen Thirteen caution work turbulence you're five and a half miles in travel heavy seven six seven maintain one eight zero knots until doin'",
+  "whisper_duration_ms": 433.249,
+  "audio_duration_ms": 6728,
+  "processor": "GPU: NVIDIA GeForce RTX 4090 (24138MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "UAL1413",
+  "command": "S180/UDOOIN",
+  "stt_aircraft": {
+    "Brickyard 34 55": {
+      "Callsign": "RPA3455",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Charleston": "KCHS",
+        "Doin'": "DOOIN",
+        "Griddy": "GRITY",
+        "H180": "H180",
+        "Kilma": "KILMA",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Brickyard 36 23": {
+      "Callsign": "RPA3623",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Griddy": "GRITY",
+        "H180": "H180",
+        "Kilma": "KILMA",
+        "Montreal / Pierre Elliott Trudeau": "CYUL",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 4901,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "ExecJet 45 10": {
+      "Callsign": "EJA4510",
+      "AircraftType": "GLF5",
+      "Fixes": {
+        "Dandy": "DANDY",
+        "Gonzo": "GNNZO",
+        "John Wayne Orange County": "KSNA",
+        "Leesy": "LEESY",
+        "Regal": "REGLE",
+        "Solberg": "SBJ",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 6",
+      "SID": "",
+      "STAR": "JAIKE4",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4U",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "United 14 13": {
+      "Callsign": "UAL1413",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Griddy": "GRITY",
+        "H180": "H180",
+        "Kilma": "KILMA",
+        "Montrose": "KMTJ",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 3048,
+      "State": "cleared approach",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United 26 zero three": {
+      "Callsign": "UAL2603",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Dillon": "DYLIN",
+        "Doin'": "DOOIN",
+        "Fort Lauderdale": "KFLL",
+        "Griddy": "GRITY",
+        "H180": "H180",
+        "Kilma": "KILMA",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 8062,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United eight 87": {
+      "Callsign": "UAL887",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Griddy": "GRITY",
+        "H180": "H180",
+        "Jorge Chávez": "SPJC",
+        "Kilma": "KILMA",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United one 45": {
+      "Callsign": "UAL145",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Francisco de Sá Carneiro": "LPPR",
+        "Griddy": "GRITY",
+        "H180": "H180",
+        "Kilma": "KILMA",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"United Fourteen Thirteen caution work turbulence you're five and a half miles in travel heavy seven six seven maintain one eight zero knots until doin'\"",
+    "[local-stt] normalized words: [united 14 13 caution work turbulence youre 5 and a half miles in travel heavy 7 6 7 maintain 1 8 0 knots until doin]",
+    "[local-stt] tokens: 21",
+    "[local-stt]   token[0]: Text=\"united\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"14\" Type=1 Value=14",
+    "[local-stt]   token[2]: Text=\"13\" Type=1 Value=13",
+    "[local-stt]   token[3]: Text=\"caution\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"work\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"turbulence\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"youre\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[8]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"a\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"half\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"in\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"travel\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"767\" Type=1 Value=767",
+    "[local-stt]   token[16]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[18]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[19]: Text=\"until\" Type=0 Value=-1",
+    "[local-stt]   token[20]: Text=\"doin\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 21 tokens, 7 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 21 tokens, 7 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"United 14 13\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"United 14 13\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 3 results",
+    "[local-stt]     result 0: \"United 14 13\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"United one 45\" (airline=1.000, flight=0.778, skip=0)",
+    "[local-stt]     result 2: \"United one 45\" (airline=0.532, flight=0.850, skip=3)",
+    "[local-stt]     pattern \"airline_flight\": selected \"United 14 13\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 11 results",
+    "[local-stt]     result 0: \"United 26 zero three\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Brickyard 34 55\" (airline=0.519, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Brickyard 36 23\" (airline=0.519, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"United eight 87\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"United 14 13\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Brickyard 34 55\" (airline=0.52, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Brickyard 34 55\"",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"United 14 13\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"United 14 13\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"United 14 13\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"UAL1413\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"United 14 13\")",
+    "[local-stt] callsign match: Callsign=\"UAL1413\" SpokenKey=\"United 14 13\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=3048 Fixes=6 Approaches=1 VisualApproaches=3 AssignedApproach=\"ILS Runway 4R\" LAHSORunways=[11 29]",
+    "[local-stt]   fix: \"Montrose\" -\u003e \"KMTJ\"",
+    "[local-stt]   fix: \"Griddy\" -\u003e \"GRITY\"",
+    "[local-stt]   fix: \"Doin'\" -\u003e \"DOOIN\"",
+    "[local-stt]   fix: \"Kilma\" -\u003e \"KILMA\"",
+    "[local-stt]   fix: \"H180\" -\u003e \"H180\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   approach: \"I L S runway four right\" -\u003e \"I4R\"",
+    "[local-stt]   visual approach: \"visual runway four right\" -\u003e \"4R\"",
+    "[local-stt]   visual approach: \"visual approach runway four right\" -\u003e \"4R\"",
+    "[local-stt]   visual approach: \"visual four right\" -\u003e \"4R\"",
+    "[local-stt] command tokens after disregard: 18",
+    "[local-stt]   token[0]: Text=\"caution\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"work\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"turbulence\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"youre\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[5]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"a\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"half\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"in\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"travel\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"767\" Type=1 Value=767",
+    "[local-stt]   token[13]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[15]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"until\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"doin\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 18 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"caution\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"caution\" -\u003e \"KEWR\" (fuzzy 0.80)",
+    "[local-stt]   no match at token[0]=\"caution\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"work\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"work\" -\u003e \"KEWR\" (fuzzy 0.80)",
+    "[local-stt]   no match at token[1]=\"work\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"turbulence\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"turbulence\"",
+    "[local-stt]   no match at token[2]=\"turbulence\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"youre\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"youre\"",
+    "[local-stt]   no match at token[3]=\"youre\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"5\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"5\" -\u003e \"H180\" (fuzzy 0.80)",
+    "[local-stt]   no match at token[4]=\"5\", skipping",
+    "[local-stt]   skipping filler word: \"and\"",
+    "[local-stt]   skipping filler word: \"a\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"half\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"half\"",
+    "[local-stt]   no match at token[7]=\"half\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"miles\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"miles\"",
+    "[local-stt]   no match at token[8]=\"miles\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"in\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"in\"",
+    "[local-stt]   no match at token[9]=\"in\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"travel\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"travel\"",
+    "[local-stt]   no match at token[10]=\"travel\", skipping",
+    "[local-stt]   skipping filler word: \"heavy\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"767\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"767\" -\u003e \"H180\" (fuzzy 0.80)",
+    "[local-stt]   no match at token[12]=\"767\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"doin\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"doin\" -\u003e \"DOOIN\" (fuzzy 0.96)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"doin\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"doin\" -\u003e \"DOOIN\" (fuzzy 0.96)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"doin\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"doin\" -\u003e \"DOOIN\" (fuzzy 0.96)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"doin\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"doin\" -\u003e \"DOOIN\" (fuzzy 0.96)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"maintain\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"maintain\"",
+    "[local-stt]   matched command: \"S180/UDOOIN\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt] ParseCommands: result=[S180/UDOOIN] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S180/UDOOIN] (conf=1.00)",
+    "[local-stt] validated commands: [S180/UDOOIN] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UAL1413 S180/UDOOIN\" (conf=1.00, time=3.3315ms) ==="
+  ]
+}

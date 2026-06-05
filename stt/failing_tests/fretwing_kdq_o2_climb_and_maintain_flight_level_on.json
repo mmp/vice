@@ -1,0 +1,66 @@
+{
+  "time": "2026-04-19T17:00:49.04503458Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:888:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Fretwing KDQ O2 climb and maintain flight level one niner zero",
+  "whisper_duration_ms": 640.377,
+  "audio_duration_ms": 7496,
+  "processor": "GPU: NVIDIA GeForce RTX 3050 Ti Laptop GPU (3962MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "NKS8202",
+  "command": "C190",
+  "stt_aircraft": {
+    "Spirit Wings 82 zero two": {
+      "Callsign": "NKS8202",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Caring": "CARNG",
+        "Drew": "DEREW",
+        "Sigfried": "SGFRD",
+        "Tone": "TTONE",
+        "Viv's": "VIVVS"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "NIITZ4",
+      "STAR": "",
+      "Altitude": 5419,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Fretwing KDQ O2 climb and maintain flight level one niner zero\"",
+    "[local-stt] normalized words: [fretwing kdq o2 climb and maintain flight level 1 9 0]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"fretwing\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"kdq\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"o2\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"FL190\" Type=2 Value=190",
+    "[local-stt] MatchCallsign: 7 tokens, 1 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 7 tokens, 1 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": no results",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": no results",
+    "[local-stt] callsign match: Callsign=\"\" SpokenKey=\"\" Conf=0.00 Consumed=0",
+    "[local-stt] no callsign match for \"Fretwing KDQ O2 climb and maintain flight level one niner zero\", ignoring"
+  ]
+}

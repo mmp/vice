@@ -1,0 +1,340 @@
+{
+  "time": "2026-06-04T14:09:31.067091439Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:851:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Illustrate forty five eighty three turn left heading one two zero intercept local i",
+  "whisper_duration_ms": 267.14,
+  "audio_duration_ms": 3784,
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "JIA4583",
+  "command": "L120 I",
+  "stt_aircraft": {
+    "Blue Streak 45 83": {
+      "Callsign": "JIA4583",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Bazaar": "BAZAR",
+        "Charlotte Douglas": "KCLT",
+        "Hartsfield": "KATL",
+        "Jaaj": "JAAJJ",
+        "Larry": "LARII",
+        "Schel": "SCHEL",
+        "Sneve": "SNEVE",
+        "Trape": "TRAPE"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight left": "I8L",
+        "I L S runway niner right": "I9R",
+        "I L S runway one zero": "I10"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight left": "8L",
+        "visual approach runway niner right": "9R",
+        "visual approach runway one zero": "10",
+        "visual eight left": "8L",
+        "visual niner right": "9R",
+        "visual one zero": "10",
+        "visual runway eight left": "8L",
+        "visual runway niner right": "9R",
+        "visual runway one zero": "10"
+      },
+      "ApproachFixes": {
+        "I10": {
+          "City": "CTEEE",
+          "Dewhy": "DEWHY",
+          "Zman": "ZMANN"
+        },
+        "I8L": {
+          "Bazaar": "BAZAR",
+          "Jaaj": "JAAJJ",
+          "Larry": "LARII",
+          "Schel": "SCHEL"
+        },
+        "I9R": {
+          "Andie": "ANDIY",
+          "Burny": "BURNY",
+          "Defense": "DFINS",
+          "Easy": "EEASY",
+          "Guy": "GGUYY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8L",
+      "SID": "",
+      "STAR": "OZZZI1",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 28": {
+      "Callsign": "DAL28",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Bazaar": "BAZAR",
+        "Hartsfield": "KATL",
+        "J F K": "KJFK",
+        "Jaaj": "JAAJJ",
+        "Kennedy": "KJFK",
+        "Larry": "LARII",
+        "Schel": "SCHEL",
+        "Sneve": "SNEVE",
+        "Trape": "TRAPE"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight left": "I8L",
+        "I L S runway niner right": "I9R",
+        "I L S runway one zero": "I10"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight left": "8L",
+        "visual approach runway niner right": "9R",
+        "visual approach runway one zero": "10",
+        "visual eight left": "8L",
+        "visual niner right": "9R",
+        "visual one zero": "10",
+        "visual runway eight left": "8L",
+        "visual runway niner right": "9R",
+        "visual runway one zero": "10"
+      },
+      "ApproachFixes": {
+        "I10": {
+          "City": "CTEEE",
+          "Dewhy": "DEWHY",
+          "Zman": "ZMANN"
+        },
+        "I8L": {
+          "Bazaar": "BAZAR",
+          "Jaaj": "JAAJJ",
+          "Larry": "LARII",
+          "Schel": "SCHEL"
+        },
+        "I9R": {
+          "Andie": "ANDIY",
+          "Burny": "BURNY",
+          "Defense": "DFINS",
+          "Easy": "EEASY",
+          "Guy": "GGUYY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8L",
+      "SID": "",
+      "STAR": "OZZZI1",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Frontier Flight 50 22": {
+      "Callsign": "FFT5022",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Bazaar": "BAZAR",
+        "Hartsfield": "KATL",
+        "Jaaj": "JAAJJ",
+        "LaGuardia": "KLGA",
+        "Larry": "LARII",
+        "Schel": "SCHEL"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight left": "I8L",
+        "I L S runway niner right": "I9R",
+        "I L S runway one zero": "I10"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight left": "8L",
+        "visual approach runway niner right": "9R",
+        "visual approach runway one zero": "10",
+        "visual eight left": "8L",
+        "visual niner right": "9R",
+        "visual one zero": "10",
+        "visual runway eight left": "8L",
+        "visual runway niner right": "9R",
+        "visual runway one zero": "10"
+      },
+      "ApproachFixes": {
+        "I10": {
+          "City": "CTEEE",
+          "Dewhy": "DEWHY",
+          "Zman": "ZMANN"
+        },
+        "I8L": {
+          "Bazaar": "BAZAR",
+          "Jaaj": "JAAJJ",
+          "Larry": "LARII",
+          "Schel": "SCHEL"
+        },
+        "I9R": {
+          "Andie": "ANDIY",
+          "Burny": "BURNY",
+          "Defense": "DFINS",
+          "Easy": "EEASY",
+          "Guy": "GGUYY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8L",
+      "SID": "",
+      "STAR": "OZZZI1",
+      "Altitude": 4000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "KLM 48 99 heavy": {
+      "Callsign": "KLM4899",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Amsterdam Airport Schiphol": "EHAM",
+        "Atlanta": "KATL",
+        "Bazaar": "BAZAR",
+        "Hartsfield": "KATL",
+        "Jaaj": "JAAJJ",
+        "Kungfu": "KUNFU",
+        "Larry": "LARII",
+        "Schel": "SCHEL",
+        "Sneve": "SNEVE",
+        "Trape": "TRAPE"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight left": "I8L",
+        "I L S runway niner right": "I9R",
+        "I L S runway one zero": "I10"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight left": "8L",
+        "visual approach runway niner right": "9R",
+        "visual approach runway one zero": "10",
+        "visual eight left": "8L",
+        "visual niner right": "9R",
+        "visual one zero": "10",
+        "visual runway eight left": "8L",
+        "visual runway niner right": "9R",
+        "visual runway one zero": "10"
+      },
+      "ApproachFixes": {
+        "I10": {
+          "City": "CTEEE",
+          "Dewhy": "DEWHY",
+          "Zman": "ZMANN"
+        },
+        "I8L": {
+          "Bazaar": "BAZAR",
+          "Jaaj": "JAAJJ",
+          "Larry": "LARII",
+          "Schel": "SCHEL"
+        },
+        "I9R": {
+          "Andie": "ANDIY",
+          "Burny": "BURNY",
+          "Defense": "DFINS",
+          "Easy": "EEASY",
+          "Guy": "GGUYY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8L",
+      "SID": "",
+      "STAR": "OZZZI1",
+      "Altitude": 5456,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Illustrate forty five eighty three turn left heading one two zero intercept local i\"",
+    "[local-stt] normalized words: [illustrate 45 83 turn left heading 1 2 0 intercept localizer i]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"illustrate\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"45\" Type=1 Value=45",
+    "[local-stt]   token[2]: Text=\"83\" Type=1 Value=83",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"120\" Type=1 Value=120",
+    "[local-stt]   token[7]: Text=\"intercept\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"i\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 10 tokens, 4 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 10 tokens, 4 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"KLM 48 99 heavy\" (airline=0.478, flight=0.700, skip=0)",
+    "[local-stt]     result 1: \"Blue Streak 45 83\" (airline=0.567, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Blue Streak 45 83\" (airline=0.57, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 6 results",
+    "[local-stt]     result 0: \"Frontier Flight 50 22\" (airline=0.447, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta 28\" (airline=0.633, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"KLM 48 99 heavy\" (airline=0.478, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Blue Streak 45 83\" (airline=0.567, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Blue Streak 45 83\" (airline=0.500, flight=0.000, skip=3)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta 28\" (airline=0.63, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Delta 28\"",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Blue Streak 45 83\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Blue Streak 45 83\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Blue Streak 45 83\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"JIA4583\" (conf=0.91, consumed=3, addressingForm=0, spokenKey=\"Blue Streak 45 83\")",
+    "[local-stt] callsign match: Callsign=\"JIA4583\" SpokenKey=\"Blue Streak 45 83\" Conf=0.91 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=9 Approaches=3 VisualApproaches=9 AssignedApproach=\"ILS Runway 8L\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Hartsfield\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Atlanta\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Charlotte Douglas\" -\u003e \"KCLT\"",
+    "[local-stt]   fix: \"Trape\" -\u003e \"TRAPE\"",
+    "[local-stt]   fix: \"Sneve\" -\u003e \"SNEVE\"",
+    "[local-stt]   fix: \"Larry\" -\u003e \"LARII\"",
+    "[local-stt]   fix: \"Jaaj\" -\u003e \"JAAJJ\"",
+    "[local-stt]   fix: \"Bazaar\" -\u003e \"BAZAR\"",
+    "[local-stt]   fix: \"Schel\" -\u003e \"SCHEL\"",
+    "[local-stt]   approach: \"I L S runway one zero\" -\u003e \"I10\"",
+    "[local-stt]   approach: \"I L S runway eight left\" -\u003e \"I8L\"",
+    "[local-stt]   approach: \"I L S runway niner right\" -\u003e \"I9R\"",
+    "[local-stt]   visual approach: \"visual approach runway niner right\" -\u003e \"9R\"",
+    "[local-stt]   visual approach: \"visual niner right\" -\u003e \"9R\"",
+    "[local-stt]   visual approach: \"visual approach runway one zero\" -\u003e \"10\"",
+    "[local-stt]   visual approach: \"visual eight left\" -\u003e \"8L\"",
+    "[local-stt]   visual approach: \"visual runway one zero\" -\u003e \"10\"",
+    "[local-stt]   visual approach: \"visual one zero\" -\u003e \"10\"",
+    "[local-stt]   visual approach: \"visual runway eight left\" -\u003e \"8L\"",
+    "[local-stt]   visual approach: \"visual approach runway eight left\" -\u003e \"8L\"",
+    "[local-stt]   visual approach: \"visual runway niner right\" -\u003e \"9R\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"120\" Type=1 Value=120",
+    "[local-stt]   token[4]: Text=\"intercept\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"i\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"turn\" against 9 fixes",
+    "[local-stt]   extractFix: no match found for \"turn\"",
+    "[local-stt]   matched command: \"L120\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"intercept\" against 9 fixes",
+    "[local-stt]   extractFix: no match found for \"intercept\"",
+    "[local-stt]   matched command: \"I\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   skipping filler word: \"i\"",
+    "[local-stt] ParseCommands: result=[L120 I] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L120 I] (conf=1.00)",
+    "[local-stt] validated commands: [L120 I] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JIA4583 L120 I\" (conf=0.91, time=923µs) ==="
+  ]
+}

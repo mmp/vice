@@ -1,0 +1,505 @@
+{
+  "time": "2026-05-15T20:21:21.841623523Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:725:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Airport, Fluxstair One Nine Seven descend maintain one thousand eight hundred",
+  "whisper_duration_ms": 285.489,
+  "audio_duration_ms": 2760,
+  "processor": "GPU: NVIDIA GeForce RTX 4080 (16048MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "LXJ197",
+  "command": "D18",
+  "stt_aircraft": {
+    "American 18": {
+      "Callsign": "AAL18",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Charlotte Douglas": "KCLT",
+        "Clebb": "KLEBB",
+        "Cradle": "CRADL",
+        "Ethin": "ETHYN",
+        "Noley": "NOLEY",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 10323,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Delta seven 19": {
+      "Callsign": "DAL719",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Clebb": "KLEBB",
+        "Cradle": "CRADL",
+        "Ethin": "ETHYN",
+        "Jody": "JOODY",
+        "Krann": "KRANN",
+        "Noley": "NOLEY",
+        "Orlando": "KMCO",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 14758,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Flexjet one 97": {
+      "Callsign": "LXJ197",
+      "AircraftType": "CL30",
+      "Fixes": {
+        "Beverly": "KBVY",
+        "San Antonio": "KSAT",
+        "Vovcu": "VOVCU",
+        "miaou": "MIAOU",
+        "snoop": "SNOOH"
+      },
+      "CandidateApproaches": {
+        "r-nav runway three four": "R34",
+        "r-nav runway two seven": "R27"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three four": "34",
+        "visual approach runway two seven": "27",
+        "visual runway three four": "34",
+        "visual runway two seven": "27",
+        "visual three four": "34",
+        "visual two seven": "27"
+      },
+      "ApproachFixes": {
+        "R27": {
+          "Vovcu": "VOVCU",
+          "miaou": "MIAOU",
+          "snoop": "SNOOH"
+        },
+        "R34": {
+          "Unire": "UNIRE",
+          "crocker": "CROCR",
+          "wassup": "WUSUP"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 27",
+      "SID": "",
+      "STAR": "DREEM3",
+      "Altitude": 2000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "16",
+        "34",
+        "9",
+        "27"
+      ]
+    },
+    "Godspeed one 44": {
+      "Callsign": "GPD144",
+      "AircraftType": "PC12",
+      "Fixes": {
+        "Beverly": "KBVY",
+        "San Antonio": "KSAT"
+      },
+      "CandidateApproaches": {
+        "r-nav runway three four": "R34",
+        "r-nav runway two seven": "R27"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three four": "34",
+        "visual approach runway two seven": "27",
+        "visual runway three four": "34",
+        "visual runway two seven": "27",
+        "visual three four": "34",
+        "visual two seven": "27"
+      },
+      "ApproachFixes": {
+        "R27": {
+          "Vovcu": "VOVCU",
+          "miaou": "MIAOU",
+          "snoop": "SNOOH"
+        },
+        "R34": {
+          "Unire": "UNIRE",
+          "crocker": "CROCR",
+          "wassup": "WUSUP"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "DREEM3",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "16",
+        "34",
+        "9",
+        "27"
+      ]
+    },
+    "Southwest 80 89": {
+      "Callsign": "SWA8089",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Baltimore/Washington International Thurgood Marshall": "KBWI",
+        "Boston": "KBOS",
+        "Ethin": "ETHYN",
+        "Noley": "NOLEY",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 5872,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Southwest two 83": {
+      "Callsign": "SWA283",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Baltimore/Washington International Thurgood Marshall": "KBWI",
+        "Boston": "KBOS",
+        "Harris": "HRRIS",
+        "Islay": "ISLAY",
+        "Lowland": "LWLND",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wintah": "WINTA",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual runway two two left": "22L",
+        "visual two two left": "22L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 10354,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Tecnam Traveller six five zulu": {
+      "Callsign": "N1665Z/T",
+      "AircraftType": "P212",
+      "Fixes": {
+        "Barnes": "BAF",
+        "Bedford": "KBED",
+        "Glide": "GLYDE",
+        "Hanscom": "KBED",
+        "Teterboro": "KTEB"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "HNSCM5",
+      "STAR": "",
+      "Altitude": 2170,
+      "State": "departure",
+      "ControllerFrequency": "1B",
+      "TrackingController": "C47",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "United 46": {
+      "Callsign": "UAL46",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Borrow": "BRRRO",
+        "Boston": "KBOS",
+        "George Bush Intercontinental Houston": "KIAH",
+        "Hewmo": "HEWMO",
+        "Jaite": "JAITE",
+        "Kenwi": "KENWI",
+        "Revs": "REVSS",
+        "T.J.": "TJAYY"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "REVSS6",
+      "STAR": "",
+      "Altitude": 1817,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november one six six five zulu": {
+      "Callsign": "N1665Z",
+      "AircraftType": "P212",
+      "Fixes": {
+        "Barnes": "BAF",
+        "Bedford": "KBED",
+        "Glide": "GLYDE",
+        "Hanscom": "KBED",
+        "Teterboro": "KTEB"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "HNSCM5",
+      "STAR": "",
+      "Altitude": 2170,
+      "State": "departure",
+      "ControllerFrequency": "1B",
+      "TrackingController": "C47",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Airport, Fluxstair One Nine Seven descend maintain one thousand eight hundred\"",
+    "[local-stt] normalized words: [airport fluxstair 1 9 7 descend maintain 1 thousand 8 hundred]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"airport\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"fluxstair\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"197\" Type=1 Value=197",
+    "[local-stt]   token[3]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"18\" Type=2 Value=18",
+    "[local-stt] MatchCallsign: 6 tokens, 9 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 9 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"Flexjet one 97\" (airline=0.429, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Flexjet one 97\" (airline=0.738, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Flexjet one 97\" (airline=0.74, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"airline_only\": 18 results",
+    "[local-stt]     result 0: \"Flexjet one 97\" (airline=0.429, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"American 18\" (airline=0.541, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"United 46\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Southwest two 83\" (airline=0.503, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Southwest 80 89\" (airline=0.503, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"American 18\" (airline=0.54, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"American 18\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 3 results",
+    "[local-stt]     result 0: \"Flexjet one 97\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Flexjet one 97\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     result 2: \"Flexjet one 97\" (airline=0.500, flight=1.000, skip=2)",
+    "[local-stt]     pattern \"flight_only\": selected \"Flexjet one 97\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"LXJ197\" (conf=0.90, consumed=3, addressingForm=0, spokenKey=\"Flexjet one 97\")",
+    "[local-stt] callsign match: Callsign=\"LXJ197\" SpokenKey=\"Flexjet one 97\" Conf=0.90 Consumed=3",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=2000 Fixes=5 Approaches=2 VisualApproaches=6 AssignedApproach=\"RNAV Runway 27\" LAHSORunways=[16 34 9 27]",
+    "[local-stt]   fix: \"Beverly\" -\u003e \"KBVY\"",
+    "[local-stt]   fix: \"San Antonio\" -\u003e \"KSAT\"",
+    "[local-stt]   fix: \"snoop\" -\u003e \"SNOOH\"",
+    "[local-stt]   fix: \"Vovcu\" -\u003e \"VOVCU\"",
+    "[local-stt]   fix: \"miaou\" -\u003e \"MIAOU\"",
+    "[local-stt]   approach: \"r-nav runway two seven\" -\u003e \"R27\"",
+    "[local-stt]   approach: \"r-nav runway three four\" -\u003e \"R34\"",
+    "[local-stt]   visual approach: \"visual approach runway two seven\" -\u003e \"27\"",
+    "[local-stt]   visual approach: \"visual two seven\" -\u003e \"27\"",
+    "[local-stt]   visual approach: \"visual runway three four\" -\u003e \"34\"",
+    "[local-stt]   visual approach: \"visual approach runway three four\" -\u003e \"34\"",
+    "[local-stt]   visual approach: \"visual three four\" -\u003e \"34\"",
+    "[local-stt]   visual approach: \"visual runway two seven\" -\u003e \"27\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"18\" Type=2 Value=18",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"descend\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"descend\"",
+    "[local-stt]   matched command: \"D18\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[D18] (avgConf=1.00)",
+    "[local-stt] parsed commands: [D18] (conf=1.00)",
+    "[local-stt] validated commands: [D18] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"LXJ197 D18\" (conf=0.90, time=2.581ms) ==="
+  ]
+}

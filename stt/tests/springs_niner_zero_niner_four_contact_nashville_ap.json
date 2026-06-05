@@ -1,0 +1,494 @@
+{
+  "time": "2026-06-04T22:25:06.357869458Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:851:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Springs Niner Zero Niner Four contact Nashville Approach",
+  "whisper_duration_ms": 252.528,
+  "audio_duration_ms": 3528,
+  "processor": "GPU: AMD Radeon RX 7700 XT (12272MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "Allegiant eight 28": {
+      "Callsign": "AAY828",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Fort Lauderdale": "KFLL",
+        "Nashville": "KBNA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two zero left": "I0L",
+        "I L S runway two zero right": "I0R",
+        "r-nav yankee runway two zero left": "Y0L",
+        "r-nav yankee runway two zero right": "Y0R",
+        "r-nav zulu runway two zero left": "Z0L",
+        "r-nav zulu runway two zero right": "Z0R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two zero left": "20L",
+        "visual approach runway two zero right": "20R",
+        "visual runway two zero left": "20L",
+        "visual runway two zero right": "20R",
+        "visual two zero left": "20L",
+        "visual two zero right": "20R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Cramer": "CRAMR",
+          "Jud": "JUUDD",
+          "Miranda": "MRNDA",
+          "Reaba": "REABA",
+          "Waylan": "WAYLN"
+        },
+        "I0R": {
+          "Akuf": "AKUFF",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Opery": "OPERY",
+          "pickin": "PICKN"
+        },
+        "Y0L": {
+          "Cramer": "CRAMR",
+          "Jud": "JUUDD",
+          "Miranda": "MRNDA",
+          "Reaba": "REABA",
+          "Waylan": "WAYLN",
+          "Ziyri": "XIYRI"
+        },
+        "Y0R": {
+          "Akuf": "AKUFF",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Marge": "MARJG",
+          "Opery": "OPERY",
+          "pickin": "PICKN"
+        },
+        "Z0L": {
+          "Boebo": "BOEBO",
+          "Cramer": "CRAMR",
+          "Idade": "IDADE",
+          "Joglo": "JOGLO",
+          "Jud": "JUUDD",
+          "Lick": "LICKK",
+          "Mashe": "MASHE",
+          "Miranda": "MRNDA",
+          "Pebish": "PBISH",
+          "Reaba": "REABA",
+          "Redneck": "RDNEK",
+          "Sippo": "SIPPO",
+          "Tooto": "TOOTO",
+          "Waylan": "WAYLN",
+          "Wokap": "WOKAP",
+          "turnt": "TURNT"
+        },
+        "Z0R": {
+          "Akuf": "AKUFF",
+          "Clopr": "KLOPR",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Icks": "IICKS",
+          "Idade": "IDADE",
+          "Jackie": "JAQQE",
+          "Joglo": "JOGLO",
+          "Opery": "OPERY",
+          "Poor": "POORR",
+          "Redneck": "RDNEK",
+          "Sippo": "SIPPO",
+          "Wokap": "WOKAP",
+          "flambe": "FLMBE",
+          "pickin": "PICKN",
+          "turnt": "TURNT"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "SWFFT3",
+      "Altitude": 5356,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31",
+        "13",
+        "31"
+      ]
+    },
+    "Frontier Flight seven zero six": {
+      "Callsign": "FFT706",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Cramer": "CRAMR",
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Den": "DEENN",
+        "Jud": "JUUDD",
+        "Miranda": "MRNDA",
+        "Nashville": "KBNA",
+        "Reaba": "REABA",
+        "Ryan": "RYAAN",
+        "Sippo": "SIPPO",
+        "Waylan": "WAYLN",
+        "Wemal": "WEMAL"
+      },
+      "CandidateApproaches": {
+        "I L S runway two zero left": "I0L",
+        "I L S runway two zero right": "I0R",
+        "r-nav yankee runway two zero left": "Y0L",
+        "r-nav yankee runway two zero right": "Y0R",
+        "r-nav zulu runway two zero left": "Z0L",
+        "r-nav zulu runway two zero right": "Z0R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two zero left": "20L",
+        "visual approach runway two zero right": "20R",
+        "visual runway two zero left": "20L",
+        "visual runway two zero right": "20R",
+        "visual two zero left": "20L",
+        "visual two zero right": "20R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Cramer": "CRAMR",
+          "Jud": "JUUDD",
+          "Miranda": "MRNDA",
+          "Reaba": "REABA",
+          "Waylan": "WAYLN"
+        },
+        "I0R": {
+          "Akuf": "AKUFF",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Opery": "OPERY",
+          "pickin": "PICKN"
+        },
+        "Y0L": {
+          "Cramer": "CRAMR",
+          "Jud": "JUUDD",
+          "Miranda": "MRNDA",
+          "Reaba": "REABA",
+          "Waylan": "WAYLN",
+          "Ziyri": "XIYRI"
+        },
+        "Y0R": {
+          "Akuf": "AKUFF",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Marge": "MARJG",
+          "Opery": "OPERY",
+          "pickin": "PICKN"
+        },
+        "Z0L": {
+          "Boebo": "BOEBO",
+          "Cramer": "CRAMR",
+          "Idade": "IDADE",
+          "Joglo": "JOGLO",
+          "Jud": "JUUDD",
+          "Lick": "LICKK",
+          "Mashe": "MASHE",
+          "Miranda": "MRNDA",
+          "Pebish": "PBISH",
+          "Reaba": "REABA",
+          "Redneck": "RDNEK",
+          "Sippo": "SIPPO",
+          "Tooto": "TOOTO",
+          "Waylan": "WAYLN",
+          "Wokap": "WOKAP",
+          "turnt": "TURNT"
+        },
+        "Z0R": {
+          "Akuf": "AKUFF",
+          "Clopr": "KLOPR",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Icks": "IICKS",
+          "Idade": "IDADE",
+          "Jackie": "JAQQE",
+          "Joglo": "JOGLO",
+          "Opery": "OPERY",
+          "Poor": "POORR",
+          "Redneck": "RDNEK",
+          "Sippo": "SIPPO",
+          "Wokap": "WOKAP",
+          "flambe": "FLMBE",
+          "pickin": "PICKN",
+          "turnt": "TURNT"
+        }
+      },
+      "AssignedApproach": "ILS Runway 20L",
+      "SID": "",
+      "STAR": "SWFFT3",
+      "Altitude": 4000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31",
+        "13",
+        "31"
+      ]
+    },
+    "United 28 22": {
+      "Callsign": "UAL2822",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Cramer": "CRAMR",
+        "Dang": "DAANG",
+        "George Bush Intercontinental Houston": "KIAH",
+        "Hermit": "HRMTG",
+        "Jud": "JUUDD",
+        "Miranda": "MRNDA",
+        "Nashville": "KBNA",
+        "Reaba": "REABA",
+        "Redneck": "RDNEK",
+        "Waylan": "WAYLN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two zero left": "I0L",
+        "I L S runway two zero right": "I0R",
+        "r-nav yankee runway two zero left": "Y0L",
+        "r-nav yankee runway two zero right": "Y0R",
+        "r-nav zulu runway two zero left": "Z0L",
+        "r-nav zulu runway two zero right": "Z0R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two zero left": "20L",
+        "visual approach runway two zero right": "20R",
+        "visual runway two zero left": "20L",
+        "visual runway two zero right": "20R",
+        "visual two zero left": "20L",
+        "visual two zero right": "20R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Cramer": "CRAMR",
+          "Jud": "JUUDD",
+          "Miranda": "MRNDA",
+          "Reaba": "REABA",
+          "Waylan": "WAYLN"
+        },
+        "I0R": {
+          "Akuf": "AKUFF",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Opery": "OPERY",
+          "pickin": "PICKN"
+        },
+        "Y0L": {
+          "Cramer": "CRAMR",
+          "Jud": "JUUDD",
+          "Miranda": "MRNDA",
+          "Reaba": "REABA",
+          "Waylan": "WAYLN",
+          "Ziyri": "XIYRI"
+        },
+        "Y0R": {
+          "Akuf": "AKUFF",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Marge": "MARJG",
+          "Opery": "OPERY",
+          "pickin": "PICKN"
+        },
+        "Z0L": {
+          "Boebo": "BOEBO",
+          "Cramer": "CRAMR",
+          "Idade": "IDADE",
+          "Joglo": "JOGLO",
+          "Jud": "JUUDD",
+          "Lick": "LICKK",
+          "Mashe": "MASHE",
+          "Miranda": "MRNDA",
+          "Pebish": "PBISH",
+          "Reaba": "REABA",
+          "Redneck": "RDNEK",
+          "Sippo": "SIPPO",
+          "Tooto": "TOOTO",
+          "Waylan": "WAYLN",
+          "Wokap": "WOKAP",
+          "turnt": "TURNT"
+        },
+        "Z0R": {
+          "Akuf": "AKUFF",
+          "Clopr": "KLOPR",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Icks": "IICKS",
+          "Idade": "IDADE",
+          "Jackie": "JAQQE",
+          "Joglo": "JOGLO",
+          "Opery": "OPERY",
+          "Poor": "POORR",
+          "Redneck": "RDNEK",
+          "Sippo": "SIPPO",
+          "Wokap": "WOKAP",
+          "flambe": "FLMBE",
+          "pickin": "PICKN",
+          "turnt": "TURNT"
+        }
+      },
+      "AssignedApproach": "ILS Runway 20L",
+      "SID": "",
+      "STAR": "PASLY5",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31",
+        "13",
+        "31"
+      ]
+    },
+    "United six 51": {
+      "Callsign": "UAL651",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Akuf": "AKUFF",
+        "George Bush Intercontinental Houston": "KIAH",
+        "Guitar": "GUITR",
+        "Hickory": "HIKRY",
+        "Nashville": "KBNA",
+        "Opery": "OPERY",
+        "pickin": "PICKN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two zero left": "I0L",
+        "I L S runway two zero right": "I0R",
+        "r-nav yankee runway two zero left": "Y0L",
+        "r-nav yankee runway two zero right": "Y0R",
+        "r-nav zulu runway two zero left": "Z0L",
+        "r-nav zulu runway two zero right": "Z0R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two zero left": "20L",
+        "visual approach runway two zero right": "20R",
+        "visual runway two zero left": "20L",
+        "visual runway two zero right": "20R",
+        "visual two zero left": "20L",
+        "visual two zero right": "20R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Cramer": "CRAMR",
+          "Jud": "JUUDD",
+          "Miranda": "MRNDA",
+          "Reaba": "REABA",
+          "Waylan": "WAYLN"
+        },
+        "I0R": {
+          "Akuf": "AKUFF",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Opery": "OPERY",
+          "pickin": "PICKN"
+        },
+        "Y0L": {
+          "Cramer": "CRAMR",
+          "Jud": "JUUDD",
+          "Miranda": "MRNDA",
+          "Reaba": "REABA",
+          "Waylan": "WAYLN",
+          "Ziyri": "XIYRI"
+        },
+        "Y0R": {
+          "Akuf": "AKUFF",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Marge": "MARJG",
+          "Opery": "OPERY",
+          "pickin": "PICKN"
+        },
+        "Z0L": {
+          "Boebo": "BOEBO",
+          "Cramer": "CRAMR",
+          "Idade": "IDADE",
+          "Joglo": "JOGLO",
+          "Jud": "JUUDD",
+          "Lick": "LICKK",
+          "Mashe": "MASHE",
+          "Miranda": "MRNDA",
+          "Pebish": "PBISH",
+          "Reaba": "REABA",
+          "Redneck": "RDNEK",
+          "Sippo": "SIPPO",
+          "Tooto": "TOOTO",
+          "Waylan": "WAYLN",
+          "Wokap": "WOKAP",
+          "turnt": "TURNT"
+        },
+        "Z0R": {
+          "Akuf": "AKUFF",
+          "Clopr": "KLOPR",
+          "Guitar": "GUITR",
+          "Hickory": "HIKRY",
+          "Icks": "IICKS",
+          "Idade": "IDADE",
+          "Jackie": "JAQQE",
+          "Joglo": "JOGLO",
+          "Opery": "OPERY",
+          "Poor": "POORR",
+          "Redneck": "RDNEK",
+          "Sippo": "SIPPO",
+          "Wokap": "WOKAP",
+          "flambe": "FLMBE",
+          "pickin": "PICKN",
+          "turnt": "TURNT"
+        }
+      },
+      "AssignedApproach": "ILS Runway 20R",
+      "SID": "",
+      "STAR": "RYYMN3",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31",
+        "13",
+        "31"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Springs Niner Zero Niner Four contact Nashville Approach\"",
+    "[local-stt] normalized words: [springs 9 0 9 4 contact nashville approach]",
+    "[local-stt] tokens: 5",
+    "[local-stt]   token[0]: Text=\"springs\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"9094\" Type=1 Value=9094",
+    "[local-stt]   token[2]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"nashville\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 5 tokens, 4 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 5 tokens, 4 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": no results",
+    "[local-stt]   pattern \"airline_only\": 12 results",
+    "[local-stt]     result 0: \"United six 51\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Allegiant eight 28\" (airline=0.421, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Frontier Flight seven zero six\" (airline=0.490, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"United 28 22\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"United six 51\" (airline=0.540, flight=0.000, skip=2)",
+    "[local-stt]     pattern \"airline_only\": selected \"Frontier Flight seven zero six\" (airline=0.60, flight=0.00, skip=2)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Frontier Flight seven zero six\"",
+    "[local-stt]   pattern \"flight_only\": no results",
+    "[local-stt] callsign match: Callsign=\"\" SpokenKey=\"\" Conf=0.00 Consumed=0",
+    "[local-stt] no callsign match for \"Springs Niner Zero Niner Four contact Nashville Approach\", ignoring"
+  ]
+}

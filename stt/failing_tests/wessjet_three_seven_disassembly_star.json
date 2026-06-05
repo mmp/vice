@@ -1,0 +1,140 @@
+{
+  "time": "2026-04-19T16:54:27.136398547Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:678:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Wessjet three seven disassembly star",
+  "whisper_duration_ms": 235.635,
+  "audio_duration_ms": 2888,
+  "processor": "GPU: NVIDIA GeForce RTX 4060 (7956MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "WJA37",
+  "command": "DVS",
+  "stt_aircraft": {
+    "WestJet 37": {
+      "Callsign": "WJA37",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Cocktail": "COKTL",
+        "Harry Reid": "KLAS",
+        "Zillda": "ZLLDA"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "COKTL4",
+      "Altitude": 24053,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Wessjet three seven disassembly star\"",
+    "[local-stt] normalized words: [wessjet 3 7 disassembly star]",
+    "[local-stt] tokens: 4",
+    "[local-stt]   token[0]: Text=\"wessjet\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"37\" Type=1 Value=37",
+    "[local-stt]   token[2]: Text=\"disassembly\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"star\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 4 tokens, 1 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 4 tokens, 1 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"WestJet 37\" (airline=0.933, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"WestJet 37\" (airline=0.93, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 1 results",
+    "[local-stt]     result 0: \"WestJet 37\" (airline=0.933, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"WestJet 37\" (airline=0.93, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"WestJet 37\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"WestJet 37\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"WJA37\" (conf=0.99, consumed=2, addressingForm=0, spokenKey=\"WestJet 37\")",
+    "[local-stt] callsign match: Callsign=\"WJA37\" SpokenKey=\"WestJet 37\" Conf=0.99 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=24053 Fixes=3 Approaches=5 AssignedApproach=\"\" LAHSORunways=[8L 26R 8R 26L 1L 19R 1R 19L]",
+    "[local-stt]   fix: \"Cocktail\" -\u003e \"COKTL\"",
+    "[local-stt]   fix: \"Zillda\" -\u003e \"ZLLDA\"",
+    "[local-stt]   fix: \"Harry Reid\" -\u003e \"KLAS\"",
+    "[local-stt]   approach: \"r-nav yankee runway one niner right\" -\u003e \"RY9R\"",
+    "[local-stt]   approach: \"r-nav zulu runway one niner right\" -\u003e \"RZ9R\"",
+    "[local-stt]   approach: \"I L S yankee runway two six left\" -\u003e \"Y6L\"",
+    "[local-stt]   approach: \"I L S zulu runway two six left\" -\u003e \"Z6L\"",
+    "[local-stt]   approach: \"r-nav runway two six left\" -\u003e \"R6L\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"disassembly\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"star\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   no match at token[0]=\"disassembly\", skipping",
+    "[local-stt]   no match at token[1]=\"star\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"WJA37 AGAIN\" (conf=0.99, time=522.2µs) ==="
+  ]
+}

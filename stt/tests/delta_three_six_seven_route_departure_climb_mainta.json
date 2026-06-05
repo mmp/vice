@@ -1,0 +1,280 @@
+{
+  "time": "2026-03-11T15:39:08.176990402Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:867:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta three six seven route departure climb maintain one two thousand direct Elwood",
+  "whisper_duration_ms": 345.719,
+  "audio_duration_ms": 5192,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 16GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "DAL367",
+  "command": "C120 DLWOOD",
+  "stt_aircraft": {
+    "American 17": {
+      "Callsign": "AAL17",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Cabed": "CABED",
+        "Raleigh Durham": "KRDU",
+        "blogs": "BLOGS"
+      },
+      "CandidateApproaches": {
+        "I L S runway five left": "I5L",
+        "I L S runway five right": "I5R",
+        "r-nav yankee runway five left": "Y5L",
+        "r-nav yankee runway five right": "Y5R",
+        "r-nav zulu runway five left": "Z5L",
+        "r-nav zulu runway five right": "Z5R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "shoe": "SCHOO"
+        },
+        "I5R": {
+          "Beach": "BEICH",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "peck it": "PECIT"
+        },
+        "Y5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "shoe": "SCHOO"
+        },
+        "Y5R": {
+          "Amort": "AMORT",
+          "Beach": "BEICH",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "peck it": "PECIT"
+        },
+        "Z5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Jemy": "JEMMY",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "Zosap": "ZOSAP",
+          "heave": "HEAVE",
+          "shoe": "SCHOO"
+        },
+        "Z5R": {
+          "Beach": "BEICH",
+          "Cats": "CATTZ",
+          "Defer": "DEFER",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "Stint": "STINT",
+          "Wosbo": "WOSBO",
+          "peck it": "PECIT"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BLOGS3",
+      "Altitude": 14309,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "14",
+        "32"
+      ]
+    },
+    "Delta three 67": {
+      "Callsign": "DAL367",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Epoch": "EPOCH",
+        "Lwood": "LWOOD",
+        "Opus": "OPUSS",
+        "focal": "FOCAL"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "LWOOD5",
+      "STAR": "",
+      "Altitude": 1636,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "SkyWest three 97 charlie": {
+      "Callsign": "SKW397C",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Aldan": "ALDAN",
+        "Favko": "FAVKO",
+        "Raleigh Durham": "KRDU"
+      },
+      "CandidateApproaches": {
+        "I L S runway five left": "I5L",
+        "I L S runway five right": "I5R",
+        "r-nav yankee runway five left": "Y5L",
+        "r-nav yankee runway five right": "Y5R",
+        "r-nav zulu runway five left": "Z5L",
+        "r-nav zulu runway five right": "Z5R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "shoe": "SCHOO"
+        },
+        "I5R": {
+          "Beach": "BEICH",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "peck it": "PECIT"
+        },
+        "Y5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "shoe": "SCHOO"
+        },
+        "Y5R": {
+          "Amort": "AMORT",
+          "Beach": "BEICH",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "peck it": "PECIT"
+        },
+        "Z5L": {
+          "Boula": "BOULE",
+          "Chudder": "CHWDR",
+          "Jemy": "JEMMY",
+          "Ottos": "OTTOS",
+          "Wepas": "WEPAS",
+          "Zosap": "ZOSAP",
+          "heave": "HEAVE",
+          "shoe": "SCHOO"
+        },
+        "Z5R": {
+          "Beach": "BEICH",
+          "Cats": "CATTZ",
+          "Defer": "DEFER",
+          "Ottos": "OTTOS",
+          "Purmy": "PURME",
+          "Ratty": "RATTY",
+          "Stint": "STINT",
+          "Wosbo": "WOSBO",
+          "peck it": "PECIT"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "ALDAN4",
+      "Altitude": 14662,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "14",
+        "32"
+      ]
+    },
+    "Southwest 27 14": {
+      "Callsign": "SWA2714",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Shepherd": "SHPRD"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "SHPRD4",
+      "STAR": "",
+      "Altitude": 5769,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta three six seven route departure climb maintain one two thousand direct Elwood\"",
+    "[local-stt] normalized words: [delta 3 6 7 right departure climb maintain 1 2 thousand direct elwood]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"367\" Type=1 Value=367",
+    "[local-stt]   token[2]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"120\" Type=2 Value=120",
+    "[local-stt]   token[7]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"elwood\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 9 tokens, 4 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 9 tokens, 4 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Delta three 67\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Delta three 67\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 3 results",
+    "[local-stt]     result 0: \"Delta three 67\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest 27 14\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"American 17\" (airline=0.550, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta three 67\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Delta three 67\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Delta three 67\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"DAL367\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Delta three 67\")",
+    "[local-stt] callsign match: Callsign=\"DAL367\" SpokenKey=\"Delta three 67\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=1636 Fixes=4 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"focal\" -\u003e \"FOCAL\"",
+    "[local-stt]   fix: \"Epoch\" -\u003e \"EPOCH\"",
+    "[local-stt]   fix: \"Lwood\" -\u003e \"LWOOD\"",
+    "[local-stt]   fix: \"Opus\" -\u003e \"OPUSS\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"120\" Type=2 Value=120",
+    "[local-stt]   token[5]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"elwood\" Type=0 Value=-1",
+    "[local-stt] stripped position ID prefix: 2 tokens",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   matched command: \"C120\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"elwood\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"elwood\" -\u003e \"LWOOD\" (fuzzy 0.94)",
+    "[local-stt]   matched command: \"DLWOOD\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[C120 DLWOOD] (avgConf=1.00)",
+    "[local-stt] parsed commands: [C120 DLWOOD] (conf=1.00)",
+    "[local-stt] validated commands: [C120 DLWOOD] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL367 C120 DLWOOD\" (conf=1.00, time=2.872291ms) ==="
+  ]
+}

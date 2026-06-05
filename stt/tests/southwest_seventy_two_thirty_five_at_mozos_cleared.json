@@ -1,0 +1,502 @@
+{
+  "time": "2026-04-19T17:24:51.790261302Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:678:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Southwest Seventy Two Thirty Five at Mozos cleared the R Nav Yankee runway one nine right approach",
+  "whisper_duration_ms": 330.468,
+  "audio_duration_ms": 6472,
+  "processor": "GPU: NVIDIA GeForce RTX 4060 (7956MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SWA7235",
+  "command": "AMOZOS/CRY9R",
+  "stt_aircraft": {
+    "Condor two 14 heavy": {
+      "Callsign": "CFG214",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Harry Reid": "KLAS",
+        "Lapin": "LAPIN",
+        "Mozos": "MOZOS",
+        "Stora": "STORA",
+        "Suvie": "SUVIE",
+        "Waksi": "WAKSI"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "RNAV Y Runway 19R",
+      "SID": "",
+      "STAR": "CHOWW4",
+      "Altitude": 2764,
+      "State": "cleared approach",
+      "ControllerFrequency": "1T",
+      "TrackingController": "1T",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    },
+    "Delta 60 97": {
+      "Callsign": "DAL6097",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Harry Reid": "KLAS",
+        "Lapin": "LAPIN",
+        "Mozos": "MOZOS",
+        "Stora": "STORA",
+        "Suvie": "SUVIE",
+        "Waksi": "WAKSI"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "RNAV Y Runway 19R",
+      "SID": "",
+      "STAR": "CHOWW4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1T",
+      "TrackingController": "1T",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    },
+    "Janet 49 58": {
+      "Callsign": "WWW4958",
+      "AircraftType": "B736",
+      "Fixes": {
+        "Cuevs": "CUEVS",
+        "Harry Reid": "KLAS",
+        "Koryn": "KORYN",
+        "Lapin": "LAPIN",
+        "Mozos": "MOZOS",
+        "Stora": "STORA",
+        "Suvie": "SUVIE",
+        "Waksi": "WAKSI"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "RNAV Y Runway 19R",
+      "SID": "",
+      "STAR": "JAYSN3",
+      "Altitude": 8431,
+      "State": "arrival",
+      "ControllerFrequency": "1T",
+      "TrackingController": "1T",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    },
+    "Southwest 31 97": {
+      "Callsign": "SWA3197",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Burbon": "BERBN",
+        "Deon": "DEEON",
+        "Envy": "ENNVY",
+        "Harry Reid": "KLAS",
+        "Lapin": "LAPIN",
+        "Mozos": "MOZOS",
+        "Redquin": "REDQN",
+        "Stora": "STORA",
+        "Suvie": "SUVIE",
+        "Waksi": "WAKSI",
+        "Zillda": "ZLLDA"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "RNAV Y Runway 19R",
+      "SID": "",
+      "STAR": "COKTL4",
+      "Altitude": 15890,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    },
+    "Southwest 72 35": {
+      "Callsign": "SWA7235",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Harry Reid": "KLAS",
+        "Lapin": "LAPIN",
+        "Mozos": "MOZOS",
+        "Stora": "STORA",
+        "Suvie": "SUVIE",
+        "Waksi": "WAKSI"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "RNAV Y Runway 19R",
+      "SID": "",
+      "STAR": "CHOWW4",
+      "Altitude": 5300,
+      "State": "arrival",
+      "ControllerFrequency": "1T",
+      "TrackingController": "1T",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Southwest Seventy Two Thirty Five at Mozos cleared the R Nav Yankee runway one nine right approach\"",
+    "[local-stt] normalized words: [southwest 72 35 at mozos cleared the rnav yankee runway 1 9 right approach]",
+    "[local-stt] tokens: 13",
+    "[local-stt]   token[0]: Text=\"southwest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"72\" Type=1 Value=72",
+    "[local-stt]   token[2]: Text=\"35\" Type=1 Value=35",
+    "[local-stt]   token[3]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"mozos\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"rnav\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"yankee\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[11]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 13 tokens, 5 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 13 tokens, 5 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Southwest 72 35\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Southwest 72 35\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Southwest 72 35\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Southwest 72 35\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 5 results",
+    "[local-stt]     result 0: \"Southwest 72 35\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta 60 97\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Janet 49 58\" (airline=0.374, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Southwest 31 97\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Condor two 14 heavy\" (airline=0.426, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Southwest 72 35\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Southwest 72 35\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Southwest 72 35\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"SWA7235\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Southwest 72 35\")",
+    "[local-stt] callsign match: Callsign=\"SWA7235\" SpokenKey=\"Southwest 72 35\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5300 Fixes=6 Approaches=5 AssignedApproach=\"RNAV Y Runway 19R\" LAHSORunways=[8L 26R 8R 26L 1L 19R 1R 19L]",
+    "[local-stt]   fix: \"Stora\" -\u003e \"STORA\"",
+    "[local-stt]   fix: \"Suvie\" -\u003e \"SUVIE\"",
+    "[local-stt]   fix: \"Lapin\" -\u003e \"LAPIN\"",
+    "[local-stt]   fix: \"Mozos\" -\u003e \"MOZOS\"",
+    "[local-stt]   fix: \"Waksi\" -\u003e \"WAKSI\"",
+    "[local-stt]   fix: \"Harry Reid\" -\u003e \"KLAS\"",
+    "[local-stt]   approach: \"r-nav runway two six left\" -\u003e \"R6L\"",
+    "[local-stt]   approach: \"I L S yankee runway two six left\" -\u003e \"Y6L\"",
+    "[local-stt]   approach: \"I L S zulu runway two six left\" -\u003e \"Z6L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one niner right\" -\u003e \"RZ9R\"",
+    "[local-stt]   approach: \"r-nav yankee runway one niner right\" -\u003e \"RY9R\"",
+    "[local-stt] command tokens after disregard: 10",
+    "[local-stt]   token[0]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"mozos\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"rnav\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"yankee\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[8]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 10 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"mozos\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"mozos\" -\u003e \"MOZOS\" (exact)",
+    "[local-stt]   extractFix: matched \"mozos\" -\u003e \"MOZOS\" (fuzzy 1.00)",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"rnav\" variant=\"y\" runway=\"one niner right\" -\u003e \"RY9R\" (consumed=5)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"mozos\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"mozos\" -\u003e \"MOZOS\" (exact)",
+    "[local-stt]   extractFix: matched \"mozos\" -\u003e \"MOZOS\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"mozos\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"mozos\" -\u003e \"MOZOS\" (exact)",
+    "[local-stt]   extractFix: matched \"mozos\" -\u003e \"MOZOS\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"AMOZOS/CRY9R\" (conf=1.00, consumed=9, isThen=false)",
+    "[local-stt]   no match at token[9]=\"approach\", skipping",
+    "[local-stt] ParseCommands: result=[AMOZOS/CRY9R] (avgConf=1.00)",
+    "[local-stt] parsed commands: [AMOZOS/CRY9R] (conf=1.00)",
+    "[local-stt] validated commands: [AMOZOS/CRY9R] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA7235 AMOZOS/CRY9R\" (conf=1.00, time=549.6µs) ==="
+  ]
+}

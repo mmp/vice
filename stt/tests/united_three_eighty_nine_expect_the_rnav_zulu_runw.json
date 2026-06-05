@@ -1,0 +1,487 @@
+{
+  "time": "2026-04-19T17:11:17.408227793Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:678:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "United Three Eighty Nine expect the RNAV Zulu runway one hundred approach",
+  "whisper_duration_ms": 309.303,
+  "audio_duration_ms": 4552,
+  "processor": "GPU: NVIDIA GeForce RTX 4060 (7956MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "UAL389",
+  "command": "ERZ9R",
+  "stt_aircraft": {
+    "Delta 96": {
+      "Callsign": "DAL96",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Harry Reid": "KLAS"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "COKTL4",
+      "Altitude": 13879,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    },
+    "Frontier Flight niner 42": {
+      "Callsign": "FFT942",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Cecil": "CEGIL",
+        "Gimbal": "GIMBL",
+        "Harry Reid": "KLAS",
+        "Hirer": "HIRLR",
+        "Kivey": "KIVEY",
+        "Mobby": "MOBBB",
+        "Penn": "PPENN"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 19R",
+      "SID": "",
+      "STAR": "CHOWW4",
+      "Altitude": 6000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1T",
+      "TrackingController": "1T",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    },
+    "Horizon 56 49": {
+      "Callsign": "QXE5649",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Beauty": "BUETY",
+        "Boulder City": "BLD",
+        "Burbon": "BERBN",
+        "Dicksa": "DICSA",
+        "Envy": "ENNVY",
+        "Gramma": "GRMMA",
+        "Harry Reid": "KLAS",
+        "Larry": "LARRE",
+        "Preeno": "PRINO",
+        "Redquin": "REDQN",
+        "Reelin": "RELIN",
+        "Shand": "SHAND"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 26L",
+      "SID": "",
+      "STAR": "RNDRZ4",
+      "Altitude": 16039,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    },
+    "Southwest one 70": {
+      "Callsign": "SWA170",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Burbon": "BERBN",
+        "Cecil": "CEGIL",
+        "Deon": "DEEON",
+        "Envy": "ENNVY",
+        "Gimbal": "GIMBL",
+        "Harry Reid": "KLAS",
+        "Hirer": "HIRLR",
+        "Kivey": "KIVEY",
+        "Mobby": "MOBBB",
+        "Penn": "PPENN",
+        "Redquin": "REDQN",
+        "Zillda": "ZLLDA"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 19R",
+      "SID": "",
+      "STAR": "COKTL4",
+      "Altitude": 6000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    },
+    "United three 89": {
+      "Callsign": "UAL389",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Cecil": "CEGIL",
+        "Gimbal": "GIMBL",
+        "Harry Reid": "KLAS",
+        "Hirer": "HIRLR",
+        "Kivey": "KIVEY",
+        "Mobby": "MOBBB",
+        "Penn": "PPENN"
+      },
+      "CandidateApproaches": {
+        "I L S yankee runway two six left": "Y6L",
+        "I L S zulu runway two six left": "Z6L",
+        "r-nav runway two six left": "R6L",
+        "r-nav yankee runway one niner right": "RY9R",
+        "r-nav zulu runway one niner right": "RZ9R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        },
+        "RY9R": {
+          "Lapin": "LAPIN",
+          "Mozos": "MOZOS",
+          "Stora": "STORA",
+          "Suvie": "SUVIE",
+          "Waksi": "WAKSI"
+        },
+        "RZ9R": {
+          "Cecil": "CEGIL",
+          "Gimbal": "GIMBL",
+          "Hirer": "HIRLR",
+          "Kivey": "KIVEY",
+          "Mobby": "MOBBB",
+          "Penn": "PPENN"
+        },
+        "Y6L": {
+          "Bishop": "BISHP",
+          "Burbon": "BERBN",
+          "Hogog": "HOGOG",
+          "Huxar": "HUXAR",
+          "Kodse": "KODSE",
+          "Reelin": "RELIN"
+        },
+        "Z6L": {
+          "Boulder City": "BLD",
+          "Dicksa": "DICSA",
+          "Larry": "LARRE",
+          "Preeno": "PRINO",
+          "Reelin": "RELIN",
+          "Shand": "SHAND"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 19R",
+      "SID": "",
+      "STAR": "CHOWW4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1T",
+      "TrackingController": "1T",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "1L",
+        "19R",
+        "1R",
+        "19L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"United Three Eighty Nine expect the RNAV Zulu runway one hundred approach\"",
+    "[local-stt] normalized words: [united 3 89 expect the rnav zulu runway 1 hundred approach]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"united\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"389\" Type=1 Value=389",
+    "[local-stt]   token[2]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"rnav\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"zulu\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"100\" Type=1 Value=100",
+    "[local-stt]   token[8]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 9 tokens, 5 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 9 tokens, 5 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"United three 89\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"United three 89\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 5 results",
+    "[local-stt]     result 0: \"Horizon 56 49\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"United three 89\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Delta 96\" (airline=0.456, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Frontier Flight niner 42\" (airline=0.639, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Southwest one 70\" (airline=0.611, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"United three 89\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"United three 89\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"United three 89\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"UAL389\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"United three 89\")",
+    "[local-stt] callsign match: Callsign=\"UAL389\" SpokenKey=\"United three 89\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=7 Approaches=5 AssignedApproach=\"RNAV Z Runway 19R\" LAHSORunways=[8L 26R 8R 26L 1L 19R 1R 19L]",
+    "[local-stt]   fix: \"Kivey\" -\u003e \"KIVEY\"",
+    "[local-stt]   fix: \"Mobby\" -\u003e \"MOBBB\"",
+    "[local-stt]   fix: \"Gimbal\" -\u003e \"GIMBL\"",
+    "[local-stt]   fix: \"Hirer\" -\u003e \"HIRLR\"",
+    "[local-stt]   fix: \"Cecil\" -\u003e \"CEGIL\"",
+    "[local-stt]   fix: \"Harry Reid\" -\u003e \"KLAS\"",
+    "[local-stt]   fix: \"Penn\" -\u003e \"PPENN\"",
+    "[local-stt]   approach: \"I L S zulu runway two six left\" -\u003e \"Z6L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one niner right\" -\u003e \"RZ9R\"",
+    "[local-stt]   approach: \"r-nav yankee runway one niner right\" -\u003e \"RY9R\"",
+    "[local-stt]   approach: \"r-nav runway two six left\" -\u003e \"R6L\"",
+    "[local-stt]   approach: \"I L S yankee runway two six left\" -\u003e \"Y6L\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"rnav\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"zulu\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"100\" Type=1 Value=100",
+    "[local-stt]   token[6]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   matchApproachByTypeAndNumber: garbled runway, unique type+variant match \"RZ9R\" (type=\"rnav\" variant=\"z\")",
+    "[local-stt]   matched command: \"ERZ9R\" (conf=1.00, consumed=7, isThen=false)",
+    "[local-stt]   adding 6 fixes from approach RZ9R to aircraft context",
+    "[local-stt] ParseCommands: result=[ERZ9R] (avgConf=1.00)",
+    "[local-stt] parsed commands: [ERZ9R] (conf=1.00)",
+    "[local-stt] validated commands: [ERZ9R] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UAL389 ERZ9R\" (conf=1.00, time=1.0832ms) ==="
+  ]
+}

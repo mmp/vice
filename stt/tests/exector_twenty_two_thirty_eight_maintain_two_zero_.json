@@ -1,0 +1,672 @@
+{
+  "time": "2026-03-11T10:35:44.26041979Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:867:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Exector Twenty Two Thirty Eight maintain two zero zero knots for now",
+  "whisper_duration_ms": 339.801,
+  "audio_duration_ms": 5064,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "EJA2238",
+  "command": "S200",
+  "stt_aircraft": {
+    "ExecJet 22 38": {
+      "Callsign": "EJA2238",
+      "AircraftType": "GLF4",
+      "Fixes": {
+        "Akemn": "AKEMN",
+        "Arlington": "KGKY",
+        "Irvin": "IRVNN",
+        "Ryan": "RYANE",
+        "Tony": "TONNE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway one six": "R16"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "R16": {
+          "Akemn": "AKEMN",
+          "Irvin": "IRVNN",
+          "Ryan": "RYANE",
+          "Tony": "TONNE"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 16",
+      "SID": "",
+      "STAR": "WESAT2",
+      "Altitude": 3000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Tecnam Traveller six eight kilo": {
+      "Callsign": "N9768K/T",
+      "AircraftType": "P212",
+      "Fixes": {
+        "Likes": "LIKES",
+        "Meacham": "KFTW",
+        "Muffin": "MUFIN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six": "I16",
+        "r-nav runway one six": "R16"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I16": {
+          "Muffin": "MUFIN"
+        },
+        "R16": {
+          "Bowie": "UKW",
+          "Foxeb": "FOXEB",
+          "Mesdy": "MESDE",
+          "worod": "WOROD"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16",
+      "SID": "",
+      "STAR": "LIKES3",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "VANDY 99": {
+      "Callsign": "VANDY99",
+      "AircraftType": "T38",
+      "Fixes": {
+        "Alliance": "KAFW",
+        "Argue": "ARGUE",
+        "Fort Worth Alliance": "KAFW",
+        "Scopes": "SCOPS",
+        "Sway": "SWVAY",
+        "Wigzu": "WIGZU"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six left": "I6L",
+        "r-nav runway one six left": "R6L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I6L": {
+          "Argue": "ARGUE",
+          "Wigzu": "WIGZU"
+        },
+        "R6L": {
+          "Argue": "ARGUE",
+          "Bowie": "UKW",
+          "Lovely": "LVLEE",
+          "Millsap": "MQP",
+          "Ravya": "RAVYA",
+          "Wigzu": "WIGZU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16L",
+      "SID": "",
+      "STAR": "REEKO3",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "cherokee five three victor": {
+      "Callsign": "N1453V/T",
+      "AircraftType": "P28A",
+      "Fixes": {
+        "Blecko": "BLECO",
+        "Cuzno": "CUZNO",
+        "Nander": "NANDR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "TEX5",
+      "STAR": "",
+      "Altitude": 5924,
+      "State": "departure",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation X eight six three": {
+      "Callsign": "N12863/T",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Denton": "KDTO",
+        "Pink": "PINCK"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight left": "I8L",
+        "r-nav runway one eight left": "R18L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I8L": {
+          "Pink": "PINCK"
+        },
+        "R18L": {
+          "Binks": "BENKS",
+          "Bonham": "BYP",
+          "Greg's": "GREGS",
+          "Ihzop": "IHZOP",
+          "Jidos": "JIDOS",
+          "Taddy": "TADDI",
+          "Zomlo": "ZOMLO",
+          "jeluv": "JELUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18L",
+      "SID": "",
+      "STAR": "REEKO3",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation eight six three": {
+      "Callsign": "N12863/T",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Denton": "KDTO",
+        "Pink": "PINCK"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight left": "I8L",
+        "r-nav runway one eight left": "R18L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I8L": {
+          "Pink": "PINCK"
+        },
+        "R18L": {
+          "Binks": "BENKS",
+          "Bonham": "BYP",
+          "Greg's": "GREGS",
+          "Ihzop": "IHZOP",
+          "Jidos": "JIDOS",
+          "Taddy": "TADDI",
+          "Zomlo": "ZOMLO",
+          "jeluv": "JELUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18L",
+      "SID": "",
+      "STAR": "REEKO3",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "citation ten eight six three": {
+      "Callsign": "N12863/T",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Denton": "KDTO",
+        "Pink": "PINCK"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight left": "I8L",
+        "r-nav runway one eight left": "R18L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I8L": {
+          "Pink": "PINCK"
+        },
+        "R18L": {
+          "Binks": "BENKS",
+          "Bonham": "BYP",
+          "Greg's": "GREGS",
+          "Ihzop": "IHZOP",
+          "Jidos": "JIDOS",
+          "Taddy": "TADDI",
+          "Zomlo": "ZOMLO",
+          "jeluv": "JELUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18L",
+      "SID": "",
+      "STAR": "REEKO3",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "cougar eight kilo lima": {
+      "Callsign": "N48KL/T",
+      "AircraftType": "GA7",
+      "Fixes": {
+        "Meacham": "KFTW",
+        "Muffin": "MUFIN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six": "I16",
+        "r-nav runway one six": "R16"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I16": {
+          "Muffin": "MUFIN"
+        },
+        "R16": {
+          "Bowie": "UKW",
+          "Foxeb": "FOXEB",
+          "Mesdy": "MESDE",
+          "worod": "WOROD"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16",
+      "SID": "",
+      "STAR": "LIKES3",
+      "Altitude": 4819,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "grumman american eight kilo lima": {
+      "Callsign": "N48KL/T",
+      "AircraftType": "GA7",
+      "Fixes": {
+        "Meacham": "KFTW",
+        "Muffin": "MUFIN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six": "I16",
+        "r-nav runway one six": "R16"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I16": {
+          "Muffin": "MUFIN"
+        },
+        "R16": {
+          "Bowie": "UKW",
+          "Foxeb": "FOXEB",
+          "Mesdy": "MESDE",
+          "worod": "WOROD"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16",
+      "SID": "",
+      "STAR": "LIKES3",
+      "Altitude": 4819,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "hawker four thousand one tango hotel": {
+      "Callsign": "N491TH/T",
+      "AircraftType": "HA4T",
+      "Fixes": {
+        "Alliance": "KAFW",
+        "Argue": "ARGUE",
+        "Fort Worth Alliance": "KAFW",
+        "Wigzu": "WIGZU"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six left": "I6L",
+        "r-nav runway one six left": "R6L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I6L": {
+          "Argue": "ARGUE",
+          "Wigzu": "WIGZU"
+        },
+        "R6L": {
+          "Argue": "ARGUE",
+          "Bowie": "UKW",
+          "Lovely": "LVLEE",
+          "Millsap": "MQP",
+          "Ravya": "RAVYA",
+          "Wigzu": "WIGZU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16L",
+      "SID": "",
+      "STAR": "TRUUK2",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "november four eight kilo lima": {
+      "Callsign": "N48KL",
+      "AircraftType": "GA7",
+      "Fixes": {
+        "Meacham": "KFTW",
+        "Muffin": "MUFIN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six": "I16",
+        "r-nav runway one six": "R16"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I16": {
+          "Muffin": "MUFIN"
+        },
+        "R16": {
+          "Bowie": "UKW",
+          "Foxeb": "FOXEB",
+          "Mesdy": "MESDE",
+          "worod": "WOROD"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16",
+      "SID": "",
+      "STAR": "LIKES3",
+      "Altitude": 4819,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november four eight niner yankee lima": {
+      "Callsign": "N489YL",
+      "AircraftType": "BE95",
+      "Fixes": {
+        "Denton": "KDTO",
+        "Likes": "LIKES",
+        "Slug": "SLUGG"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight left": "I8L",
+        "r-nav runway one eight left": "R18L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I8L": {
+          "Pink": "PINCK"
+        },
+        "R18L": {
+          "Binks": "BENKS",
+          "Bonham": "BYP",
+          "Greg's": "GREGS",
+          "Ihzop": "IHZOP",
+          "Jidos": "JIDOS",
+          "Taddy": "TADDI",
+          "Zomlo": "ZOMLO",
+          "jeluv": "JELUV"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LIKES3",
+      "Altitude": 6943,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november four niner one tango hotel": {
+      "Callsign": "N491TH",
+      "AircraftType": "HA4T",
+      "Fixes": {
+        "Alliance": "KAFW",
+        "Argue": "ARGUE",
+        "Fort Worth Alliance": "KAFW",
+        "Wigzu": "WIGZU"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six left": "I6L",
+        "r-nav runway one six left": "R6L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I6L": {
+          "Argue": "ARGUE",
+          "Wigzu": "WIGZU"
+        },
+        "R6L": {
+          "Argue": "ARGUE",
+          "Bowie": "UKW",
+          "Lovely": "LVLEE",
+          "Millsap": "MQP",
+          "Ravya": "RAVYA",
+          "Wigzu": "WIGZU"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16L",
+      "SID": "",
+      "STAR": "TRUUK2",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november niner seven six eight kilo": {
+      "Callsign": "N9768K",
+      "AircraftType": "P212",
+      "Fixes": {
+        "Likes": "LIKES",
+        "Meacham": "KFTW",
+        "Muffin": "MUFIN"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six": "I16",
+        "r-nav runway one six": "R16"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I16": {
+          "Muffin": "MUFIN"
+        },
+        "R16": {
+          "Bowie": "UKW",
+          "Foxeb": "FOXEB",
+          "Mesdy": "MESDE",
+          "worod": "WOROD"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16",
+      "SID": "",
+      "STAR": "LIKES3",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november one four five three victor": {
+      "Callsign": "N1453V",
+      "AircraftType": "P28A",
+      "Fixes": {
+        "Blecko": "BLECO",
+        "Cuzno": "CUZNO",
+        "Nander": "NANDR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "TEX5",
+      "STAR": "",
+      "Altitude": 5924,
+      "State": "departure",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november one two eight six three": {
+      "Callsign": "N12863",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Denton": "KDTO",
+        "Pink": "PINCK"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight left": "I8L",
+        "r-nav runway one eight left": "R18L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I8L": {
+          "Pink": "PINCK"
+        },
+        "R18L": {
+          "Binks": "BENKS",
+          "Bonham": "BYP",
+          "Greg's": "GREGS",
+          "Ihzop": "IHZOP",
+          "Jidos": "JIDOS",
+          "Taddy": "TADDI",
+          "Zomlo": "ZOMLO",
+          "jeluv": "JELUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18L",
+      "SID": "",
+      "STAR": "REEKO3",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "piper cherokee five three victor": {
+      "Callsign": "N1453V/T",
+      "AircraftType": "P28A",
+      "Fixes": {
+        "Blecko": "BLECO",
+        "Cuzno": "CUZNO",
+        "Nander": "NANDR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "TEX5",
+      "STAR": "",
+      "Altitude": 5924,
+      "State": "departure",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "travel air niner yankee lima": {
+      "Callsign": "N489YL/T",
+      "AircraftType": "BE95",
+      "Fixes": {
+        "Denton": "KDTO",
+        "Likes": "LIKES",
+        "Slug": "SLUGG"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight left": "I8L",
+        "r-nav runway one eight left": "R18L"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I8L": {
+          "Pink": "PINCK"
+        },
+        "R18L": {
+          "Binks": "BENKS",
+          "Bonham": "BYP",
+          "Greg's": "GREGS",
+          "Ihzop": "IHZOP",
+          "Jidos": "JIDOS",
+          "Taddy": "TADDI",
+          "Zomlo": "ZOMLO",
+          "jeluv": "JELUV"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LIKES3",
+      "Altitude": 6943,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Exector Twenty Two Thirty Eight maintain two zero zero knots for now\"",
+    "[local-stt] normalized words: [exector 22 38 maintain 2 0 0 knots for now]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"exector\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"22\" Type=1 Value=22",
+    "[local-stt]   token[2]: Text=\"38\" Type=1 Value=38",
+    "[local-stt]   token[3]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"200\" Type=1 Value=200",
+    "[local-stt]   token[5]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"now\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 18 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 18 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"ExecJet 22 38\" (airline=0.886, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"ExecJet 22 38\" (airline=0.89, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 1 results",
+    "[local-stt]     result 0: \"ExecJet 22 38\" (airline=0.886, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"ExecJet 22 38\" (airline=0.89, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"ExecJet 22 38\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"ExecJet 22 38\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"EJA2238\" (conf=0.98, consumed=3, addressingForm=0, spokenKey=\"ExecJet 22 38\")",
+    "[local-stt] callsign match: Callsign=\"EJA2238\" SpokenKey=\"ExecJet 22 38\" Conf=0.98 Consumed=3",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=3000 Fixes=5 Approaches=1 AssignedApproach=\"RNAV Runway 16\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Akemn\" -\u003e \"AKEMN\"",
+    "[local-stt]   fix: \"Ryan\" -\u003e \"RYANE\"",
+    "[local-stt]   fix: \"Irvin\" -\u003e \"IRVNN\"",
+    "[local-stt]   fix: \"Tony\" -\u003e \"TONNE\"",
+    "[local-stt]   fix: \"Arlington\" -\u003e \"KGKY\"",
+    "[local-stt]   approach: \"r-nav runway one six\" -\u003e \"R16\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"200\" Type=1 Value=200",
+    "[local-stt]   token[2]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"now\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   matched command: \"S200\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt] ParseCommands: result=[S200] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S200] (conf=1.00)",
+    "[local-stt] validated commands: [S200] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"EJA2238 S200\" (conf=0.98, time=8.8322ms) ==="
+  ]
+}

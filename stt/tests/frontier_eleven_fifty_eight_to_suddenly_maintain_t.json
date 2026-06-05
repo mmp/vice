@@ -1,0 +1,708 @@
+{
+  "time": "2026-05-15T13:34:08.53918052Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:851:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Frontier Eleven Fifty Eight to suddenly maintain three thousand",
+  "whisper_duration_ms": 336.508,
+  "audio_duration_ms": 3144,
+  "processor": "GPU: NVIDIA GeForce RTX 4090 (24138MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "FFT1158",
+  "command": "A30",
+  "stt_aircraft": {
+    "Brickyard 36 48": {
+      "Callsign": "RPA3648",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Griddy": "GRITY",
+        "H180": "H180",
+        "Kilma": "KILMA",
+        "Newark": "KEWR",
+        "Toronto Lester B. Pearson": "CYYZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Dash port 21 25": {
+      "Callsign": "PTR2125",
+      "AircraftType": "DH8D",
+      "Fixes": {
+        "Billy Bishop Toronto City Centre": "CYTZ",
+        "Doin'": "DOOIN",
+        "Griddy": "GRITY",
+        "H180": "H180",
+        "Kilma": "KILMA",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 3912,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "ExecJet 52 zero five": {
+      "Callsign": "EJA5205",
+      "AircraftType": "CL60",
+      "Fixes": {
+        "Dandy": "DANDY",
+        "Gonzo": "GNNZO",
+        "Leesy": "LEESY",
+        "Mazie": "MAZIE",
+        "Regal": "REGLE",
+        "Savannah Hilton Head": "KSAV",
+        "Solberg": "SBJ",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 6",
+      "SID": "",
+      "STAR": "JAIKE4",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4U",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "Frontier Flight 11 58": {
+      "Callsign": "FFT1158",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Doin'": "DOOIN",
+        "Griddy": "GRITY",
+        "H180": "H180",
+        "Hartsfield": "KATL",
+        "Kilma": "KILMA",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United 28 58": {
+      "Callsign": "UAL2858",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Griddy": "GRITY",
+        "H180": "H180",
+        "Kilma": "KILMA",
+        "Newark": "KEWR",
+        "Orlando": "KMCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 3199,
+      "State": "cleared approach",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "challenger six hundred three kebeck sierra": {
+      "Callsign": "N253QS/T",
+      "AircraftType": "CL60",
+      "Fixes": {
+        "Dillon": "DYLIN",
+        "Marcos A. Gelabert": "MPMG",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 8773,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "embraer phenom three hundred niner juliet": {
+      "Callsign": "N9J/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Dandy": "DANDY",
+        "Leesy": "LEESY",
+        "Metro": "METRO",
+        "Princess Juliana": "TNCM",
+        "Robbinsville": "RBV",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 6",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4U",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "november niner juliet": {
+      "Callsign": "N9J",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Dandy": "DANDY",
+        "Leesy": "LEESY",
+        "Metro": "METRO",
+        "Princess Juliana": "TNCM",
+        "Robbinsville": "RBV",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 6",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4U",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "november two five three kebeck sierra": {
+      "Callsign": "N253QS",
+      "AircraftType": "CL60",
+      "Fixes": {
+        "Dillon": "DYLIN",
+        "Marcos A. Gelabert": "MPMG",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four right": "4R",
+        "visual four right": "4R",
+        "visual runway four right": "4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Griddy": "GRITY",
+          "H180": "H180",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 8773,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "phenom three hundred niner juliet": {
+      "Callsign": "N9J/T",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Dandy": "DANDY",
+        "Leesy": "LEESY",
+        "Metro": "METRO",
+        "Princess Juliana": "TNCM",
+        "Robbinsville": "RBV",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Runway 6",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4U",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Frontier Eleven Fifty Eight to suddenly maintain three thousand\"",
+    "[local-stt] normalized words: [frontier 11 58 to suddenly maintain 3 thousand]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"frontier\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"11\" Type=1 Value=11",
+    "[local-stt]   token[2]: Text=\"58\" Type=1 Value=58",
+    "[local-stt]   token[3]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"suddenly\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"30\" Type=2 Value=30",
+    "[local-stt] MatchCallsign: 7 tokens, 10 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 7 tokens, 10 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Frontier Flight 11 58\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Frontier Flight 11 58\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 4 results",
+    "[local-stt]     result 0: \"United 28 58\" (airline=0.639, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Frontier Flight 11 58\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Brickyard 36 48\" (airline=0.569, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Frontier Flight 11 58\" (airline=0.542, flight=0.000, skip=3)",
+    "[local-stt]     pattern \"airline_only\": selected \"Frontier Flight 11 58\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Frontier Flight 11 58\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Frontier Flight 11 58\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Frontier Flight 11 58\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"FFT1158\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Frontier Flight 11 58\")",
+    "[local-stt] callsign match: Callsign=\"FFT1158\" SpokenKey=\"Frontier Flight 11 58\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=7 Approaches=1 VisualApproaches=3 AssignedApproach=\"ILS Runway 4R\" LAHSORunways=[11 29]",
+    "[local-stt]   fix: \"Atlanta\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Hartsfield\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Griddy\" -\u003e \"GRITY\"",
+    "[local-stt]   fix: \"Doin'\" -\u003e \"DOOIN\"",
+    "[local-stt]   fix: \"H180\" -\u003e \"H180\"",
+    "[local-stt]   fix: \"Kilma\" -\u003e \"KILMA\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   approach: \"I L S runway four right\" -\u003e \"I4R\"",
+    "[local-stt]   visual approach: \"visual four right\" -\u003e \"4R\"",
+    "[local-stt]   visual approach: \"visual runway four right\" -\u003e \"4R\"",
+    "[local-stt]   visual approach: \"visual approach runway four right\" -\u003e \"4R\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"suddenly\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"30\" Type=2 Value=30",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   skipping filler word: \"to\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"suddenly\" against 7 fixes",
+    "[local-stt]   extractFix: no match found for \"suddenly\"",
+    "[local-stt]   no match at token[1]=\"suddenly\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"maintain\" against 7 fixes",
+    "[local-stt]   extractFix: no match found for \"maintain\"",
+    "[local-stt]   matched command: \"A30\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[A30] (avgConf=1.00)",
+    "[local-stt] parsed commands: [A30] (conf=1.00)",
+    "[local-stt] validated commands: [A30] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"FFT1158 A30\" (conf=1.00, time=3.506ms) ==="
+  ]
+}

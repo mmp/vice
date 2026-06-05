@@ -1,0 +1,431 @@
+{
+  "time": "2026-05-15T12:31:58.781420112Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:851:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Southwest Four Eighty reduce speed to two one zero knots then descend and maintain two thousand",
+  "whisper_duration_ms": 189.92,
+  "audio_duration_ms": 5192,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SWA480",
+  "command": "S210 TD20",
+  "stt_aircraft": {
+    "American one zero seven": {
+      "Callsign": "AAL107",
+      "AircraftType": "A321",
+      "Fixes": {
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Dirty": "DURTE",
+        "Eelage": "ELAGE",
+        "Jacksonville": "KJAX",
+        "Jet In": "JETIN"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "JETIN2",
+      "STAR": "",
+      "Altitude": 3971,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "SkyWest 92 26": {
+      "Callsign": "SKW9226",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Dinns": "DINNS",
+        "Jacksonville": "KJAX",
+        "Libby": "LIBBY",
+        "Philadelphia": "KPHL",
+        "Philly": "KPHL"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S yankee runway one four": "I14",
+        "r-nav zulu runway eight": "RZ8",
+        "r-nav zulu runway one four": "R14"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight": "8",
+        "visual approach runway one four": "14",
+        "visual eight": "8",
+        "visual one four": "14",
+        "visual runway eight": "8",
+        "visual runway one four": "14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Ortar": "ORTAR",
+          "Wolqu": "WOLQU"
+        },
+        "I8": {
+          "Dinns": "DINNS",
+          "Libby": "LIBBY"
+        },
+        "R14": {
+          "Jixol": "JIXOL",
+          "Osbaj": "OSBAJ",
+          "Wolqu": "WOLQU",
+          "Zudli": "ZUDLI"
+        },
+        "RZ8": {
+          "Ijayu": "IJAYU",
+          "Ivtef": "IVTEF",
+          "Udaqi": "UDAQI",
+          "Zoluv": "ZOLUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8",
+      "SID": "",
+      "STAR": "LUNNI2",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8",
+        "26",
+        "14",
+        "32"
+      ]
+    },
+    "SkyWest four 90 mike": {
+      "Callsign": "SKW490M",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Dinns": "DINNS",
+        "E-gage": "EGAGE",
+        "Gwiz": "GWIIZ",
+        "Jacksonville": "KJAX",
+        "Libby": "LIBBY"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S yankee runway one four": "I14",
+        "r-nav zulu runway eight": "RZ8",
+        "r-nav zulu runway one four": "R14"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight": "8",
+        "visual approach runway one four": "14",
+        "visual eight": "8",
+        "visual one four": "14",
+        "visual runway eight": "8",
+        "visual runway one four": "14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Ortar": "ORTAR",
+          "Wolqu": "WOLQU"
+        },
+        "I8": {
+          "Dinns": "DINNS",
+          "Libby": "LIBBY"
+        },
+        "R14": {
+          "Jixol": "JIXOL",
+          "Osbaj": "OSBAJ",
+          "Wolqu": "WOLQU",
+          "Zudli": "ZUDLI"
+        },
+        "RZ8": {
+          "Ijayu": "IJAYU",
+          "Ivtef": "IVTEF",
+          "Udaqi": "UDAQI",
+          "Zoluv": "ZOLUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8",
+      "SID": "",
+      "STAR": "MARQO3",
+      "Altitude": 2000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8",
+        "26",
+        "14",
+        "32"
+      ]
+    },
+    "Southwest four 80": {
+      "Callsign": "SWA480",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Chicago Midway": "KMDW",
+        "Dinns": "DINNS",
+        "Jacksonville": "KJAX",
+        "Libby": "LIBBY"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S yankee runway one four": "I14",
+        "r-nav zulu runway eight": "RZ8",
+        "r-nav zulu runway one four": "R14"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight": "8",
+        "visual approach runway one four": "14",
+        "visual eight": "8",
+        "visual one four": "14",
+        "visual runway eight": "8",
+        "visual runway one four": "14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Ortar": "ORTAR",
+          "Wolqu": "WOLQU"
+        },
+        "I8": {
+          "Dinns": "DINNS",
+          "Libby": "LIBBY"
+        },
+        "R14": {
+          "Jixol": "JIXOL",
+          "Osbaj": "OSBAJ",
+          "Wolqu": "WOLQU",
+          "Zudli": "ZUDLI"
+        },
+        "RZ8": {
+          "Ijayu": "IJAYU",
+          "Ivtef": "IVTEF",
+          "Udaqi": "UDAQI",
+          "Zoluv": "ZOLUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8",
+      "SID": "",
+      "STAR": "OHDEA2",
+      "Altitude": 9000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8",
+        "26",
+        "14",
+        "32"
+      ]
+    },
+    "Spirit Wings 42 19": {
+      "Callsign": "NKS4219",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Cuban": "QUBEN",
+        "Dinns": "DINNS",
+        "Fort Lauderdale": "KFLL",
+        "Jacksonville": "KJAX",
+        "Libby": "LIBBY"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S yankee runway one four": "I14",
+        "r-nav zulu runway eight": "RZ8",
+        "r-nav zulu runway one four": "R14"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight": "8",
+        "visual approach runway one four": "14",
+        "visual eight": "8",
+        "visual one four": "14",
+        "visual runway eight": "8",
+        "visual runway one four": "14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Ortar": "ORTAR",
+          "Wolqu": "WOLQU"
+        },
+        "I8": {
+          "Dinns": "DINNS",
+          "Libby": "LIBBY"
+        },
+        "R14": {
+          "Jixol": "JIXOL",
+          "Osbaj": "OSBAJ",
+          "Wolqu": "WOLQU",
+          "Zudli": "ZUDLI"
+        },
+        "RZ8": {
+          "Ijayu": "IJAYU",
+          "Ivtef": "IVTEF",
+          "Udaqi": "UDAQI",
+          "Zoluv": "ZOLUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8",
+      "SID": "",
+      "STAR": "QUBEN2",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8",
+        "26",
+        "14",
+        "32"
+      ]
+    },
+    "United six 76": {
+      "Callsign": "UAL676",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Jacksonville": "KJAX",
+        "Tampa": "KTPA",
+        "Teebow": "TEBOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S yankee runway one four": "I14",
+        "r-nav zulu runway eight": "RZ8",
+        "r-nav zulu runway one four": "R14"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight": "8",
+        "visual approach runway one four": "14",
+        "visual eight": "8",
+        "visual one four": "14",
+        "visual runway eight": "8",
+        "visual runway one four": "14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Ortar": "ORTAR",
+          "Wolqu": "WOLQU"
+        },
+        "I8": {
+          "Dinns": "DINNS",
+          "Libby": "LIBBY"
+        },
+        "R14": {
+          "Jixol": "JIXOL",
+          "Osbaj": "OSBAJ",
+          "Wolqu": "WOLQU",
+          "Zudli": "ZUDLI"
+        },
+        "RZ8": {
+          "Ijayu": "IJAYU",
+          "Ivtef": "IVTEF",
+          "Udaqi": "UDAQI",
+          "Zoluv": "ZOLUV"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "TEBOW2",
+      "Altitude": 6659,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8",
+        "26",
+        "14",
+        "32"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Southwest Four Eighty reduce speed to two one zero knots then descend and maintain two thousand\"",
+    "[local-stt] normalized words: [southwest 4 80 reduce speed to 2 1 0 knots then descend and maintain 2 thousand]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"southwest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"480\" Type=1 Value=480",
+    "[local-stt]   token[2]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   token[6]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"then\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"20\" Type=2 Value=20",
+    "[local-stt] MatchCallsign: 12 tokens, 6 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 12 tokens, 6 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 3 results",
+    "[local-stt]     result 0: \"Southwest four 80\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"SkyWest four 90 mike\" (airline=0.661, flight=0.750, skip=0)",
+    "[local-stt]     result 2: \"Spirit Wings 42 19\" (airline=0.662, flight=0.722, skip=3)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Southwest four 80\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 14 results",
+    "[local-stt]     result 0: \"SkyWest four 90 mike\" (airline=0.661, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest four 80\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"United six 76\" (airline=0.611, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"SkyWest 92 26\" (airline=0.661, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"SkyWest 92 26\" (airline=0.437, flight=0.000, skip=2)",
+    "[local-stt]     pattern \"airline_only\": selected \"Southwest four 80\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Southwest four 80\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest four 80\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Southwest four 80\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"SWA480\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Southwest four 80\")",
+    "[local-stt] callsign match: Callsign=\"SWA480\" SpokenKey=\"Southwest four 80\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=9000 Fixes=4 Approaches=4 VisualApproaches=6 AssignedApproach=\"ILS Runway 8\" LAHSORunways=[8 26 14 32]",
+    "[local-stt]   fix: \"Jacksonville\" -\u003e \"KJAX\"",
+    "[local-stt]   fix: \"Chicago Midway\" -\u003e \"KMDW\"",
+    "[local-stt]   fix: \"Libby\" -\u003e \"LIBBY\"",
+    "[local-stt]   fix: \"Dinns\" -\u003e \"DINNS\"",
+    "[local-stt]   approach: \"I L S yankee runway one four\" -\u003e \"I14\"",
+    "[local-stt]   approach: \"r-nav zulu runway one four\" -\u003e \"R14\"",
+    "[local-stt]   approach: \"r-nav zulu runway eight\" -\u003e \"RZ8\"",
+    "[local-stt]   approach: \"I L S runway eight\" -\u003e \"I8\"",
+    "[local-stt]   visual approach: \"visual approach runway one four\" -\u003e \"14\"",
+    "[local-stt]   visual approach: \"visual one four\" -\u003e \"14\"",
+    "[local-stt]   visual approach: \"visual runway eight\" -\u003e \"8\"",
+    "[local-stt]   visual approach: \"visual approach runway eight\" -\u003e \"8\"",
+    "[local-stt]   visual approach: \"visual eight\" -\u003e \"8\"",
+    "[local-stt]   visual approach: \"visual runway one four\" -\u003e \"14\"",
+    "[local-stt] command tokens after disregard: 10",
+    "[local-stt]   token[0]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   token[4]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"then\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"20\" Type=2 Value=20",
+    "[local-stt] ParseCommands: 10 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"reduce\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"reduce\"",
+    "[local-stt]   matched command: \"S210\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"knots\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"knots\"",
+    "[local-stt]   no match at token[4]=\"knots\", skipping",
+    "[local-stt]   found 'then' (or 'the' as then) at position 5",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"descend\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"descend\"",
+    "[local-stt]   matched command: \"TD20\" (conf=1.00, consumed=4, isThen=true)",
+    "[local-stt] ParseCommands: result=[S210 TD20] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S210 TD20] (conf=1.00)",
+    "[local-stt] validated commands: [S210 TD20] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA480 S210 TD20\" (conf=1.00, time=2.0702ms) ==="
+  ]
+}

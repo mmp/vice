@@ -1,0 +1,746 @@
+{
+  "time": "2026-05-05T20:08:01.640234745Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:725:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American Twenty One descend to five thousand reduce speed two zero zero knots proceed direct Budme cleared ILS two five left approach",
+  "whisper_duration_ms": 241.995,
+  "audio_duration_ms": 8136,
+  "processor": "GPU: AMD Radeon RX 7900 XTX (24560MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "AAL21",
+  "command": "D50 S200 DBUDME CI5L",
+  "stt_aircraft": {
+    "Allegiant 88 51": {
+      "Callsign": "AAY8851",
+      "AircraftType": "A320",
+      "Fixes": {
+        "AJ": "AEJAY",
+        "Cadre": "KADRE",
+        "Emmy": "EMMEE",
+        "Eugene F. Kranz Toledo Express": "KTOL",
+        "G Four": "GFOUR",
+        "Gesrt": "GESRT",
+        "Hanler": "HANLR",
+        "Jonzen": "JONZN",
+        "Madog": "MADOG",
+        "Phoenix–Mesa Gateway": "KIWA",
+        "Ramin": "RAMIN",
+        "Suns": "SUNSS",
+        "squeeze": "SQUEZ"
+      },
+      "CandidateApproaches": {
+        "r-nav Visual runway three zero left": "V3L",
+        "r-nav runway three zero left": "R3L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three zero left": "30L",
+        "visual runway three zero left": "30L",
+        "visual three zero left": "30L"
+      },
+      "ApproachFixes": {
+        "R3L": {
+          "Akyiv": "AKYIV",
+          "Ball": "BBALL",
+          "Opuye": "OPUYE",
+          "Sezuw": "SEZUW",
+          "Totek": "TOTEC"
+        },
+        "V3L": {
+          "AJ": "AEJAY",
+          "Cadre": "KADRE",
+          "Emmy": "EMMEE",
+          "G Four": "GFOUR",
+          "Gesrt": "GESRT",
+          "Hanler": "HANLR",
+          "Jonzen": "JONZN",
+          "Madog": "MADOG",
+          "Ramin": "RAMIN",
+          "Suns": "SUNSS",
+          "squeeze": "SQUEZ"
+        }
+      },
+      "AssignedApproach": "RNAV Visual Runway 30L",
+      "SID": "",
+      "STAR": "HUUTY1",
+      "Altitude": 6559,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 21": {
+      "Callsign": "AAL21",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Budme": "BUDME",
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Fixar": "FIXAR",
+        "Gypsy": "GIPSE",
+        "Hamek": "HAMEK",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX",
+        "Zerlo": "ZERLO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two five left": "25L",
+        "visual approach runway two six": "26",
+        "visual runway two five left": "25L",
+        "visual runway two six": "26",
+        "visual two five left": "25L",
+        "visual two six": "26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 25L",
+      "SID": "",
+      "STAR": "PINNG1",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "1Q",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 56 44": {
+      "Callsign": "AAL5644",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Budme": "BUDME",
+        "Daniel K Inouye": "PHNL",
+        "Fixar": "FIXAR",
+        "Gypsy": "GIPSE",
+        "Hamek": "HAMEK",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX",
+        "Zerlo": "ZERLO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two five left": "25L",
+        "visual approach runway two six": "26",
+        "visual runway two five left": "25L",
+        "visual runway two six": "26",
+        "visual two five left": "25L",
+        "visual two six": "26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 25L",
+      "SID": "",
+      "STAR": "HYDRR1",
+      "Altitude": 5522,
+      "State": "arrival",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "1Q",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American one 86": {
+      "Callsign": "AAL186",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Aeropuerto Internacional Lic. Benito Juárez": "MMMX",
+        "Binard": "BNYRD",
+        "Phoenix": "KPHX",
+        "Sky Harbor": "KPHX",
+        "Storm": "STRRM"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "STRRM1",
+      "STAR": "",
+      "Altitude": 7000,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 14": {
+      "Callsign": "DAL14",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Budme": "BUDME",
+        "Chavo": "CHAVO",
+        "Fixar": "FIXAR",
+        "Gypsy": "GIPSE",
+        "Hamek": "HAMEK",
+        "Lemo": "LEMOE",
+        "Los Angeles": "KLAX",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX",
+        "Zerlo": "ZERLO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two five left": "25L",
+        "visual approach runway two six": "26",
+        "visual runway two five left": "25L",
+        "visual runway two six": "26",
+        "visual two five left": "25L",
+        "visual two six": "26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 25L",
+      "SID": "",
+      "STAR": "HYDRR1",
+      "Altitude": 10451,
+      "State": "arrival",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "1Q",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Envoy 33 39": {
+      "Callsign": "ENY3339",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Eclipse": "ECLPS",
+        "George Bush Intercontinental Houston": "KIAH",
+        "Jutak": "JUTAK",
+        "Phoenix": "KPHX",
+        "Rich": "RIICH",
+        "Sky Harbor": "KPHX",
+        "Wetal": "WETAL"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ECLPS1",
+      "STAR": "",
+      "Altitude": 5722,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 70 88": {
+      "Callsign": "SWA7088",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Budme": "BUDME",
+        "Daniel K Inouye": "PHNL",
+        "Fixar": "FIXAR",
+        "Gypsy": "GIPSE",
+        "Hamek": "HAMEK",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX",
+        "Zerlo": "ZERLO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two five left": "25L",
+        "visual approach runway two six": "26",
+        "visual runway two five left": "25L",
+        "visual runway two six": "26",
+        "visual two five left": "25L",
+        "visual two six": "26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 25L",
+      "SID": "",
+      "STAR": "HYDRR1",
+      "Altitude": 1688,
+      "State": "cleared approach",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "1Q",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest eight 39": {
+      "Callsign": "SWA839",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Budme": "BUDME",
+        "Fixar": "FIXAR",
+        "Gypsy": "GIPSE",
+        "Hamek": "HAMEK",
+        "Los Angeles": "KLAX",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX",
+        "Zerlo": "ZERLO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two five left": "25L",
+        "visual approach runway two six": "26",
+        "visual runway two five left": "25L",
+        "visual runway two six": "26",
+        "visual two five left": "25L",
+        "visual two six": "26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 25L",
+      "SID": "",
+      "STAR": "HYDRR1",
+      "Altitude": 3040,
+      "State": "cleared approach",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "1Q",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest two 77": {
+      "Callsign": "SWA277",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Agla": "AGGLA",
+        "Budme": "BUDME",
+        "Chavo": "CHAVO",
+        "Fixar": "FIXAR",
+        "Gypsy": "GIPSE",
+        "Hamek": "HAMEK",
+        "Hilo": "PHTO",
+        "Lemo": "LEMOE",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX",
+        "Zerlo": "ZERLO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two five left": "25L",
+        "visual approach runway two six": "26",
+        "visual runway two five left": "25L",
+        "visual runway two six": "26",
+        "visual two five left": "25L",
+        "visual two six": "26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 25L",
+      "SID": "",
+      "STAR": "HYDRR1",
+      "Altitude": 16293,
+      "State": "arrival",
+      "ControllerFrequency": "1Q",
+      "TrackingController": "1Q",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United five 94": {
+      "Callsign": "UAL594",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Los Angeles": "KLAX",
+        "Phoenix": "KPHX",
+        "Sky Harbor": "KPHX"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two five left": "25L",
+        "visual approach runway two six": "26",
+        "visual runway two five left": "25L",
+        "visual runway two six": "26",
+        "visual two five left": "25L",
+        "visual two six": "26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "HYDRR1",
+      "Altitude": 6533,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American Twenty One descend to five thousand reduce speed two zero zero knots proceed direct Budme cleared ILS two five left approach\"",
+    "[local-stt] normalized words: [american 21 descend to 5 thousand reduce speed 2 0 0 knots proceed direct budme cleared ils 2 5 left approach]",
+    "[local-stt] tokens: 17",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"21\" Type=1 Value=21",
+    "[local-stt]   token[2]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"50\" Type=2 Value=50",
+    "[local-stt]   token[5]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"200\" Type=1 Value=200",
+    "[local-stt]   token[8]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"budme\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"25\" Type=1 Value=25",
+    "[local-stt]   token[15]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 17 tokens, 10 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 17 tokens, 10 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"American 21\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"American 21\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"American 21\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"American 21\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 20 results",
+    "[local-stt]     result 0: \"American one 86\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"American 56 44\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Envoy 33 39\" (airline=0.442, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Delta 14\" (airline=0.550, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"American 21\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"American one 86\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"American 21\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"American 21\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"American 21\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"AAL21\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"American 21\")",
+    "[local-stt] callsign match: Callsign=\"AAL21\" SpokenKey=\"American 21\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=8000 Fixes=10 Approaches=4 VisualApproaches=6 AssignedApproach=\"ILS Runway 25L\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Phoenix\" -\u003e \"KPHX\"",
+    "[local-stt]   fix: \"Sky Harbor\" -\u003e \"KPHX\"",
+    "[local-stt]   fix: \"D F W\" -\u003e \"KDFW\"",
+    "[local-stt]   fix: \"Scade\" -\u003e \"SCADE\"",
+    "[local-stt]   fix: \"Fixar\" -\u003e \"FIXAR\"",
+    "[local-stt]   fix: \"Dallas Fort Worth\" -\u003e \"KDFW\"",
+    "[local-stt]   fix: \"Budme\" -\u003e \"BUDME\"",
+    "[local-stt]   fix: \"Hamek\" -\u003e \"HAMEK\"",
+    "[local-stt]   fix: \"Gypsy\" -\u003e \"GIPSE\"",
+    "[local-stt]   fix: \"Zerlo\" -\u003e \"ZERLO\"",
+    "[local-stt]   approach: \"I L S runway two six\" -\u003e \"I26\"",
+    "[local-stt]   approach: \"Visual runway two six\" -\u003e \"V26\"",
+    "[local-stt]   approach: \"Visual runway two five left\" -\u003e \"V5L\"",
+    "[local-stt]   approach: \"I L S runway two five left\" -\u003e \"I5L\"",
+    "[local-stt]   visual approach: \"visual two five left\" -\u003e \"25L\"",
+    "[local-stt]   visual approach: \"visual runway two six\" -\u003e \"26\"",
+    "[local-stt]   visual approach: \"visual approach runway two six\" -\u003e \"26\"",
+    "[local-stt]   visual approach: \"visual two six\" -\u003e \"26\"",
+    "[local-stt]   visual approach: \"visual runway two five left\" -\u003e \"25L\"",
+    "[local-stt]   visual approach: \"visual approach runway two five left\" -\u003e \"25L\"",
+    "[local-stt] command tokens after disregard: 15",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"50\" Type=2 Value=50",
+    "[local-stt]   token[3]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"200\" Type=1 Value=200",
+    "[local-stt]   token[6]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"budme\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"25\" Type=1 Value=25",
+    "[local-stt]   token[13]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 15 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"descend\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"descend\"",
+    "[local-stt]   matched command: \"D50\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"reduce\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"reduce\"",
+    "[local-stt]   matched command: \"S200\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"knots\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"knots\"",
+    "[local-stt]   no match at token[6]=\"knots\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"budme\" against 10 fixes",
+    "[local-stt]   extractFix: matched \"budme\" -\u003e \"BUDME\" (exact)",
+    "[local-stt]   extractFix: matched \"budme\" -\u003e \"BUDME\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"budme\" against 10 fixes",
+    "[local-stt]   extractFix: matched \"budme\" -\u003e \"BUDME\" (exact)",
+    "[local-stt]   extractFix: matched \"budme\" -\u003e \"BUDME\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"budme\" against 10 fixes",
+    "[local-stt]   extractFix: matched \"budme\" -\u003e \"BUDME\" (exact)",
+    "[local-stt]   extractFix: matched \"budme\" -\u003e \"BUDME\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"budme\" against 10 fixes",
+    "[local-stt]   extractFix: matched \"budme\" -\u003e \"BUDME\" (exact)",
+    "[local-stt]   extractFix: matched \"budme\" -\u003e \"BUDME\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"proceed\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"proceed\"",
+    "[local-stt]   matched command: \"DBUDME\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"ils\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"ils\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"25\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"25\"",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" variant=\"\" runway=\"two five left\" -\u003e \"I5L\" (consumed=3)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"cleared\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"cleared\"",
+    "[local-stt]   matched command: \"CI5L\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"approach\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"approach\"",
+    "[local-stt]   no match at token[14]=\"approach\", skipping",
+    "[local-stt] ParseCommands: result=[D50 S200 DBUDME CI5L] (avgConf=1.00)",
+    "[local-stt] parsed commands: [D50 S200 DBUDME CI5L] (conf=1.00)",
+    "[local-stt] validated commands: [D50 S200 DBUDME CI5L] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL21 D50 S200 DBUDME CI5L\" (conf=1.00, time=2.5973ms) ==="
+  ]
+}

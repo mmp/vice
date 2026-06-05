@@ -1,0 +1,426 @@
+{
+  "time": "2026-04-19T22:35:36.55875981Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:678:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Speedrun was eight eight seven seven expect the RNF  runway two six right approach proceed direct roads",
+  "whisper_duration_ms": 387.582,
+  "audio_duration_ms": 6216,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12329MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "NKS8877",
+  "command": "ER6R DRHODZ",
+  "stt_aircraft": {
+    "Air Canada 85 49": {
+      "Callsign": "ACA8549",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Fort Lauderdale": "KFLL",
+        "Wikir": "WIKIR",
+        "Yobus": "YOBUS",
+        "Zadil": "ZADIL",
+        "carnival": "CRNVL"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight left": "I8L",
+        "I L S runway two eight right": "I8R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I8L": {
+          "Fort Lauderdale": "FLL",
+          "Wikir": "WIKIR",
+          "Yobus": "YOBUS",
+          "Zadil": "ZADIL",
+          "carnival": "CRNVL"
+        },
+        "I8R": {
+          "Fort Lauderdale": "FLL",
+          "Snape": "SNAPE",
+          "carnival": "CRNVL",
+          "fuzzy": "FUZYY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Air France one 51 heavy": {
+      "Callsign": "AFR151",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Folz": "FOLZZ",
+        "Kelley": "KELEY",
+        "Mark": "MARCK",
+        "Miro": "RMIRO",
+        "Russ": "RUSSS",
+        "Squeal": "SHQIL",
+        "crocs": "KROCS"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "Altitude": 1860,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 57": {
+      "Callsign": "DAL57",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Folz": "FOLZZ",
+        "Kelley": "KELEY",
+        "Mark": "MARCK",
+        "Squeal": "SHQIL"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "Altitude": 11671,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Envoy 89 95": {
+      "Callsign": "ENY8995",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Austin": "AUSTI",
+        "Hamak": "HAMAK",
+        "Lonzo": "LONZO",
+        "Mayner": "MAYNR",
+        "cozy": "COOZY"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "MAYNR3",
+      "STAR": "",
+      "Altitude": 5871,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Frontier Flight seven 75": {
+      "Callsign": "FFT775",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Fort Lauderdale": "FLL",
+        "Wikir": "WIKIR",
+        "Yobus": "YOBUS",
+        "Zadil": "ZADIL",
+        "carnival": "CRNVL"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight left": "I8L",
+        "I L S runway two eight right": "I8R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I8L": {
+          "Fort Lauderdale": "FLL",
+          "Wikir": "WIKIR",
+          "Yobus": "YOBUS",
+          "Zadil": "ZADIL",
+          "carnival": "CRNVL"
+        },
+        "I8R": {
+          "Fort Lauderdale": "FLL",
+          "Snape": "SNAPE",
+          "carnival": "CRNVL",
+          "fuzzy": "FUZYY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28L",
+      "SID": "",
+      "STAR": "OLAHS3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1Z",
+      "TrackingController": "1Z",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 35 84": {
+      "Callsign": "NKS3584",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Bird": "BIRDD",
+        "Dump": "DUMPP",
+        "Feefa": "FEEFA",
+        "Hildy": "HILDI",
+        "Jump": "JJUMP",
+        "Miami": "KMIA",
+        "Oldie": "OLDDE",
+        "Shannon": "SHANN",
+        "Winner": "WNNER",
+        "reel": "REELN"
+      },
+      "CandidateApproaches": {
+        "I L S runway three zero": "I30",
+        "I L S runway two seven": "I27",
+        "r-nav runway two six right": "R6R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I27": {
+          "Chaz": "CHHAZ",
+          "Hendon": "HENDN",
+          "Jamroy": "JMROY",
+          "Sarco": "SARCO",
+          "Tubbs": "TUBBZ"
+        },
+        "I30": {
+          "Bird": "BIRDD",
+          "Oldie": "OLDDE",
+          "Shannon": "SHANN"
+        },
+        "R6R": {
+          "Hinku": "HINKU",
+          "Jodax": "JODAX",
+          "Rhodes": "RHODZ",
+          "Terry": "TERRI",
+          "Tubbs": "TUBBZ"
+        }
+      },
+      "AssignedApproach": "ILS Runway 30",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 14015,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "12",
+        "30",
+        "12",
+        "30",
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27"
+      ]
+    },
+    "Spirit Wings 49 29": {
+      "Callsign": "NKS4929",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Banty": "BANTY",
+        "Bepac": "BEPAC",
+        "Famba": "FAMBA",
+        "Fort Lauderdale": "FLL",
+        "Goyle": "GOYLE",
+        "Heeze": "HEEZE",
+        "Wikir": "WIKIR",
+        "Yobus": "YOBUS",
+        "Zadil": "ZADIL",
+        "carnival": "CRNVL"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight left": "I8L",
+        "I L S runway two eight right": "I8R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I8L": {
+          "Fort Lauderdale": "FLL",
+          "Wikir": "WIKIR",
+          "Yobus": "YOBUS",
+          "Zadil": "ZADIL",
+          "carnival": "CRNVL"
+        },
+        "I8R": {
+          "Fort Lauderdale": "FLL",
+          "Snape": "SNAPE",
+          "carnival": "CRNVL",
+          "fuzzy": "FUZYY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28L",
+      "SID": "",
+      "STAR": "TEEKY4",
+      "Altitude": 9711,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 88 77": {
+      "Callsign": "NKS8877",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Chaz": "CHHAZ",
+        "Cotol": "COTOL",
+        "Hendon": "HENDN",
+        "Hinku": "HINKU",
+        "Holz": "HOLEZ",
+        "Jamroy": "JMROY",
+        "Jodax": "JODAX",
+        "Macys": "MACYS",
+        "Miami": "KMIA",
+        "Rhodes": "RHODZ",
+        "Sarco": "SARCO",
+        "Sofas": "SOFAS",
+        "Terry": "TERRI",
+        "Tubbs": "TUBBZ",
+        "Veyga": "VEYGA",
+        "Winner": "WNNER",
+        "reel": "REELN"
+      },
+      "CandidateApproaches": {
+        "I L S runway three zero": "I30",
+        "I L S runway two seven": "I27",
+        "r-nav runway two six right": "R6R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I27": {
+          "Chaz": "CHHAZ",
+          "Hendon": "HENDN",
+          "Jamroy": "JMROY",
+          "Sarco": "SARCO",
+          "Tubbs": "TUBBZ"
+        },
+        "I30": {
+          "Bird": "BIRDD",
+          "Oldie": "OLDDE",
+          "Shannon": "SHANN"
+        },
+        "R6R": {
+          "Hinku": "HINKU",
+          "Jodax": "JODAX",
+          "Rhodes": "RHODZ",
+          "Terry": "TERRI",
+          "Tubbs": "TUBBZ"
+        }
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 14568,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "12",
+        "30",
+        "12",
+        "30",
+        "8L",
+        "26R",
+        "8R",
+        "26L",
+        "9",
+        "27"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Speedrun was eight eight seven seven expect the RNF  runway two six right approach proceed direct roads\"",
+    "[local-stt] normalized words: [turn was 8 8 7 7 expect the rnf runway 2 6 right approach proceed direct reduce]",
+    "[local-stt] tokens: 13",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"was\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"8877\" Type=1 Value=8877",
+    "[local-stt]   token[3]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"rnf\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"26\" Type=1 Value=26",
+    "[local-stt]   token[8]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 13 tokens, 8 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 13 tokens, 8 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Spirit Wings 88 77\" (airline=0.472, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Spirit Wings 88 77\" (airline=0.47, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 3 results",
+    "[local-stt]     result 0: \"Air France one 51 heavy\" (airline=0.528, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Frontier Flight seven 75\" (airline=0.583, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Air Canada 85 49\" (airline=0.528, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Frontier Flight seven 75\" (airline=0.58, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Frontier Flight seven 75\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Spirit Wings 88 77\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Spirit Wings 88 77\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"NKS8877\" (conf=0.90, consumed=3, addressingForm=0, spokenKey=\"Spirit Wings 88 77\")",
+    "[local-stt] callsign match: Callsign=\"NKS8877\" SpokenKey=\"Spirit Wings 88 77\" Conf=0.90 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=14568 Fixes=13 Approaches=3 AssignedApproach=\"ILS Runway 27\" LAHSORunways=[12 30 12 30 8L 26R 8R 26L 9 27]",
+    "[local-stt]   fix: \"Cotol\" -\u003e \"COTOL\"",
+    "[local-stt]   fix: \"reel\" -\u003e \"REELN\"",
+    "[local-stt]   fix: \"Miami\" -\u003e \"KMIA\"",
+    "[local-stt]   fix: \"Jamroy\" -\u003e \"JMROY\"",
+    "[local-stt]   fix: \"Sarco\" -\u003e \"SARCO\"",
+    "[local-stt]   fix: \"Veyga\" -\u003e \"VEYGA\"",
+    "[local-stt]   fix: \"Sofas\" -\u003e \"SOFAS\"",
+    "[local-stt]   fix: \"Holz\" -\u003e \"HOLEZ\"",
+    "[local-stt]   fix: \"Macys\" -\u003e \"MACYS\"",
+    "[local-stt]   fix: \"Winner\" -\u003e \"WNNER\"",
+    "[local-stt]   fix: \"Hendon\" -\u003e \"HENDN\"",
+    "[local-stt]   fix: \"Chaz\" -\u003e \"CHHAZ\"",
+    "[local-stt]   fix: \"Tubbs\" -\u003e \"TUBBZ\"",
+    "[local-stt]   approach: \"r-nav runway two six right\" -\u003e \"R6R\"",
+    "[local-stt]   approach: \"I L S runway two seven\" -\u003e \"I27\"",
+    "[local-stt]   approach: \"I L S runway three zero\" -\u003e \"I30\"",
+    "[local-stt] command tokens after disregard: 10",
+    "[local-stt]   token[0]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"rnf\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"26\" Type=1 Value=26",
+    "[local-stt]   token[5]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 10 tokens",
+    "[local-stt]   matched command: \"ER6R\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt]   adding 5 fixes from approach R6R to aircraft context",
+    "[local-stt]   no match at token[6]=\"approach\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"reduce\" against 17 fixes",
+    "[local-stt]   extractFix: matched \"reduce\" -\u003e \"RHODZ\" (fuzzy 0.80)",
+    "[local-stt]   matched command: \"DRHODZ\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[ER6R DRHODZ] (avgConf=1.00)",
+    "[local-stt] parsed commands: [ER6R DRHODZ] (conf=1.00)",
+    "[local-stt] validated commands: [ER6R DRHODZ] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"NKS8877 ER6R DRHODZ\" (conf=0.90, time=4.2484ms) ==="
+  ]
+}

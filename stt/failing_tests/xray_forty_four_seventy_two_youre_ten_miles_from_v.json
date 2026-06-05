@@ -1,0 +1,1549 @@
+{
+  "time": "2026-06-04T23:02:47.47906803Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:851:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "X-ray Forty Four Seventy Two you're ten miles from Vings maintain two thousand till established on localizer cleared alazul runway six maintain one seven zero knots until dandy",
+  "whisper_duration_ms": 469.988,
+  "audio_duration_ms": 9544,
+  "processor": "GPU: NVIDIA GeForce RTX 4090 (24138MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "EJA4472",
+  "command": "A20 CIZ6 S170/UDANDY",
+  "stt_aircraft": {
+    "ExecJet 12 14": {
+      "Callsign": "EJA1214",
+      "AircraftType": "GL5T",
+      "Fixes": {
+        "John Wayne Orange County": "KSNA",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LVZ4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "ExecJet 21 16": {
+      "Callsign": "EJA2116",
+      "AircraftType": "GALX",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Gonzo": "GNNZO",
+        "Leesy": "LEESY",
+        "Malcon": "MALCN",
+        "Palm Beach": "KPBI",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "JAIKE4",
+      "Altitude": 5132,
+      "State": "arrival",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "ExecJet 28 50": {
+      "Callsign": "EJA2850",
+      "AircraftType": "H25B",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Malcon": "MALCN",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Tampa": "KTPA",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "LVZ4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "ExecJet 31 88": {
+      "Callsign": "EJA3188",
+      "AircraftType": "H25B",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Malcon": "MALCN",
+        "Orlando": "KMCO",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2000,
+      "State": "cleared approach",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "ExecJet 35 19": {
+      "Callsign": "EJA3519",
+      "AircraftType": "GL5T",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Lynden Pindling": "MYNN",
+        "Malcon": "MALCN",
+        "Newark": "KEWR",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "ExecJet 44 72": {
+      "Callsign": "EJA4472",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Malcon": "MALCN",
+        "Raleigh Durham": "KRDU",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "LVZ4",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "ExecJet 62 63": {
+      "Callsign": "EJA6263",
+      "AircraftType": "H25B",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Charlotte Douglas": "KCLT",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Lemur": "LEMOR",
+        "Malcon": "MALCN",
+        "Newark": "KEWR",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "ExecJet 67 67": {
+      "Callsign": "EJA6767",
+      "AircraftType": "CL35",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Lemur": "LEMOR",
+        "Malcon": "MALCN",
+        "Miami": "KMIA",
+        "Newark": "KEWR",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5098,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "cessna one fifty zero uniform foxtrot": {
+      "Callsign": "N660UF/T",
+      "AircraftType": "C150",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Malcon": "MALCN",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH",
+        "Wings": "KLOM"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "cessna skymaster two three five": {
+      "Callsign": "N72235/T",
+      "AircraftType": "C337",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Malcon": "MALCN",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH",
+        "Wings": "KLOM"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 2000,
+      "State": "cleared approach",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "citation niner charlie whiskey": {
+      "Callsign": "N269CW/T",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Caldwell": "KCDW",
+        "Solberg": "SBJ",
+        "Sparta": "SAX",
+        "Wings": "KLOM",
+        "Wisal": "WISAL",
+        "Yovun": "YOVUN",
+        "Zogud": "ZOGUD"
+      },
+      "CandidateApproaches": {
+        "r-nav runway four": "R4"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four": "4",
+        "visual four": "4",
+        "visual runway four": "4"
+      },
+      "ApproachFixes": {
+        "R4": {
+          "Solberg": "SBJ",
+          "Sparta": "SAX",
+          "Wisal": "WISAL",
+          "Yovun": "YOVUN",
+          "Zogud": "ZOGUD"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 4",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "november seven two two three five": {
+      "Callsign": "N72235",
+      "AircraftType": "C337",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Malcon": "MALCN",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH",
+        "Wings": "KLOM"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 2000,
+      "State": "cleared approach",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "november six six zero uniform foxtrot": {
+      "Callsign": "N660UF",
+      "AircraftType": "C150",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Malcon": "MALCN",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH",
+        "Wings": "KLOM"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    },
+    "november two six niner charlie whiskey": {
+      "Callsign": "N269CW",
+      "AircraftType": "C550",
+      "Fixes": {
+        "Caldwell": "KCDW",
+        "Solberg": "SBJ",
+        "Sparta": "SAX",
+        "Wings": "KLOM",
+        "Wisal": "WISAL",
+        "Yovun": "YOVUN",
+        "Zogud": "ZOGUD"
+      },
+      "CandidateApproaches": {
+        "r-nav runway four": "R4"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four": "4",
+        "visual four": "4",
+        "visual runway four": "4"
+      },
+      "ApproachFixes": {
+        "R4": {
+          "Solberg": "SBJ",
+          "Sparta": "SAX",
+          "Wisal": "WISAL",
+          "Yovun": "YOVUN",
+          "Zogud": "ZOGUD"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 4",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    },
+    "skymaster two three five": {
+      "Callsign": "N72235/T",
+      "AircraftType": "C337",
+      "Fixes": {
+        "Alida": "ALIDA",
+        "Coate": "COATE",
+        "Dandy": "DANDY",
+        "Elize": "ELIZE",
+        "Leesy": "LEESY",
+        "Malcon": "MALCN",
+        "Solberg": "SBJ",
+        "Stillwater": "STW",
+        "Teterboro": "KTEB",
+        "Torby": "TORBY",
+        "Vings": "VINGS",
+        "Wawah": "WAWAH",
+        "Wings": "KLOM"
+      },
+      "CandidateApproaches": {
+        "I L S runway six": "I6",
+        "I L S zulu runway six": "IZ6",
+        "r-nav x-ray runway six": "RX6",
+        "r-nav yankee runway six": "RY6",
+        "r-nav zulu runway six": "RZ6"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway six": "6",
+        "visual runway six": "6",
+        "visual six": "6"
+      },
+      "ApproachFixes": {
+        "I6": {
+          "Dandy": "DANDY",
+          "Leesy": "LEESY",
+          "Torby": "TORBY",
+          "Vings": "VINGS"
+        },
+        "IZ6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RX6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Frankie": "FRNKI",
+          "Jersey": "JERSE",
+          "Pesme": "PESME",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Teebern": "TBERN"
+        },
+        "RY6": {
+          "Alida": "ALIDA",
+          "Coate": "COATE",
+          "Dandy": "DANDY",
+          "Elize": "ELIZE",
+          "Leesy": "LEESY",
+          "Malcon": "MALCN",
+          "Solberg": "SBJ",
+          "Stillwater": "STW",
+          "Torby": "TORBY",
+          "Vings": "VINGS",
+          "Wawah": "WAWAH"
+        },
+        "RZ6": {
+          "Awkeb": "AWKEB",
+          "Catxo": "CATXO",
+          "Coate": "COATE",
+          "Elize": "ELIZE",
+          "Evege": "EVEGE",
+          "Guzti": "GUZTI",
+          "Holler": "HOLUR",
+          "Offec": "OFFEC",
+          "Solberg": "SBJ",
+          "Stillwater": "STW"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 6",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 2000,
+      "State": "cleared approach",
+      "ControllerFrequency": "4U",
+      "TrackingController": "4U",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "1",
+        "19"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"X-ray Forty Four Seventy Two you're ten miles from Vings maintain two thousand till established on localizer cleared alazul runway six maintain one seven zero knots until dandy\"",
+    "[local-stt] normalized words: [x ray 44 72 youre 10 miles from vings maintain 2 thousand till established on localizer cleared alazul runway 6 maintain 1 7 0 knots until dandy]",
+    "[local-stt] tokens: 24",
+    "[local-stt]   token[0]: Text=\"x\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"ray\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"44\" Type=1 Value=44",
+    "[local-stt]   token[3]: Text=\"72\" Type=1 Value=72",
+    "[local-stt]   token[4]: Text=\"youre\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[6]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"vings\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"20\" Type=2 Value=20",
+    "[local-stt]   token[11]: Text=\"till\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"established\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"on\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"alazul\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[18]: Text=\"6\" Type=1 Value=6",
+    "[local-stt]   token[19]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[20]: Text=\"170\" Type=1 Value=170",
+    "[local-stt]   token[21]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[22]: Text=\"until\" Type=0 Value=-1",
+    "[local-stt]   token[23]: Text=\"dandy\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 24 tokens, 15 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 24 tokens, 15 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"ExecJet 44 72\" (airline=0.714, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"ExecJet 44 72\" (airline=0.71, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 8 results",
+    "[local-stt]     result 0: \"ExecJet 21 16\" (airline=0.714, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"ExecJet 31 88\" (airline=0.714, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"ExecJet 67 67\" (airline=0.714, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"ExecJet 28 50\" (airline=0.714, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"ExecJet 44 72\" (airline=0.714, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"ExecJet 44 72\" (airline=0.71, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": below MinScore (1.21 \u003c 1.30) for \"ExecJet 44 72\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"ExecJet 44 72\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     result 1: \"ExecJet 44 72\" (airline=0.500, flight=1.000, skip=2)",
+    "[local-stt]     pattern \"flight_only\": selected \"ExecJet 44 72\" (airline=0.50, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"EJA4472\" (conf=0.94, consumed=4, addressingForm=0, spokenKey=\"ExecJet 44 72\")",
+    "[local-stt] callsign match: Callsign=\"EJA4472\" SpokenKey=\"ExecJet 44 72\" Conf=0.94 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=2000 Fixes=13 Approaches=5 VisualApproaches=3 AssignedApproach=\"ILS Z Runway 6\" LAHSORunways=[1 19]",
+    "[local-stt]   fix: \"Alida\" -\u003e \"ALIDA\"",
+    "[local-stt]   fix: \"Wawah\" -\u003e \"WAWAH\"",
+    "[local-stt]   fix: \"Vings\" -\u003e \"VINGS\"",
+    "[local-stt]   fix: \"Dandy\" -\u003e \"DANDY\"",
+    "[local-stt]   fix: \"Torby\" -\u003e \"TORBY\"",
+    "[local-stt]   fix: \"Malcon\" -\u003e \"MALCN\"",
+    "[local-stt]   fix: \"Stillwater\" -\u003e \"STW\"",
+    "[local-stt]   fix: \"Raleigh Durham\" -\u003e \"KRDU\"",
+    "[local-stt]   fix: \"Leesy\" -\u003e \"LEESY\"",
+    "[local-stt]   fix: \"Coate\" -\u003e \"COATE\"",
+    "[local-stt]   fix: \"Elize\" -\u003e \"ELIZE\"",
+    "[local-stt]   fix: \"Solberg\" -\u003e \"SBJ\"",
+    "[local-stt]   fix: \"Teterboro\" -\u003e \"KTEB\"",
+    "[local-stt]   approach: \"I L S zulu runway six\" -\u003e \"IZ6\"",
+    "[local-stt]   approach: \"r-nav x-ray runway six\" -\u003e \"RX6\"",
+    "[local-stt]   approach: \"r-nav yankee runway six\" -\u003e \"RY6\"",
+    "[local-stt]   approach: \"r-nav zulu runway six\" -\u003e \"RZ6\"",
+    "[local-stt]   approach: \"I L S runway six\" -\u003e \"I6\"",
+    "[local-stt]   visual approach: \"visual runway six\" -\u003e \"6\"",
+    "[local-stt]   visual approach: \"visual approach runway six\" -\u003e \"6\"",
+    "[local-stt]   visual approach: \"visual six\" -\u003e \"6\"",
+    "[local-stt] command tokens after disregard: 20",
+    "[local-stt]   token[0]: Text=\"youre\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[2]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"vings\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"20\" Type=2 Value=20",
+    "[local-stt]   token[7]: Text=\"till\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"established\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"on\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"alazul\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"6\" Type=1 Value=6",
+    "[local-stt]   token[15]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"170\" Type=1 Value=170",
+    "[local-stt]   token[17]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[18]: Text=\"until\" Type=0 Value=-1",
+    "[local-stt]   token[19]: Text=\"dandy\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 20 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"youre\" against 13 fixes",
+    "[local-stt]   extractFix: no match found for \"youre\"",
+    "[local-stt]   no match at token[0]=\"youre\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"10\" against 13 fixes",
+    "[local-stt]   extractFix: no match found for \"10\"",
+    "[local-stt]   no match at token[1]=\"10\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"miles\" against 13 fixes",
+    "[local-stt]   extractFix: no match found for \"miles\"",
+    "[local-stt]   no match at token[2]=\"miles\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"from\" against 13 fixes",
+    "[local-stt]   extractFix: matched \"from\" -\u003e \"VINGS\" (fuzzy 0.80)",
+    "[local-stt]   no match at token[3]=\"from\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"vings\" against 13 fixes",
+    "[local-stt]   extractFix: matched \"vings\" -\u003e \"VINGS\" (exact)",
+    "[local-stt]   extractFix: matched \"vings\" -\u003e \"VINGS\" (fuzzy 1.00)",
+    "[local-stt]   no match at token[4]=\"vings\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"maintain\" against 13 fixes",
+    "[local-stt]   extractFix: no match found for \"maintain\"",
+    "[local-stt]   matched command: \"A20\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"till\" against 13 fixes",
+    "[local-stt]   extractFix: matched \"till\" -\u003e \"STW\" (fuzzy 0.80)",
+    "[local-stt]   no match at token[7]=\"till\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"established\" against 13 fixes",
+    "[local-stt]   extractFix: no match found for \"established\"",
+    "[local-stt]   no match at token[8]=\"established\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"on\" against 13 fixes",
+    "[local-stt]   extractFix: no match found for \"on\"",
+    "[local-stt]   no match at token[9]=\"on\", skipping",
+    "[local-stt]   extractApproach: runway match, low score (0.63), using assigned approach \"IZ6\"",
+    "[local-stt]   extractApproach: runway match with type disambiguation \"six\" -\u003e \"IZ6\" (score=0.63)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"localizer\" against 13 fixes",
+    "[local-stt]   extractFix: no match found for \"localizer\"",
+    "[local-stt]   matched command: \"CIZ6\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"dandy\" against 13 fixes",
+    "[local-stt]   extractFix: matched \"dandy\" -\u003e \"DANDY\" (exact)",
+    "[local-stt]   extractFix: matched \"dandy\" -\u003e \"DANDY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"dandy\" against 13 fixes",
+    "[local-stt]   extractFix: matched \"dandy\" -\u003e \"DANDY\" (exact)",
+    "[local-stt]   extractFix: matched \"dandy\" -\u003e \"DANDY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"dandy\" against 13 fixes",
+    "[local-stt]   extractFix: matched \"dandy\" -\u003e \"DANDY\" (exact)",
+    "[local-stt]   extractFix: matched \"dandy\" -\u003e \"DANDY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"dandy\" against 13 fixes",
+    "[local-stt]   extractFix: matched \"dandy\" -\u003e \"DANDY\" (exact)",
+    "[local-stt]   extractFix: matched \"dandy\" -\u003e \"DANDY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"maintain\" against 13 fixes",
+    "[local-stt]   extractFix: no match found for \"maintain\"",
+    "[local-stt]   matched command: \"S170/UDANDY\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt] ParseCommands: result=[A20 CIZ6 S170/UDANDY] (avgConf=1.00)",
+    "[local-stt] parsed commands: [A20 CIZ6 S170/UDANDY] (conf=1.00)",
+    "[local-stt] validated commands: [A20 CIZ6 S170/UDANDY] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"EJA4472 A20 CIZ6 S170/UDANDY\" (conf=0.94, time=9.8483ms) ==="
+  ]
+}

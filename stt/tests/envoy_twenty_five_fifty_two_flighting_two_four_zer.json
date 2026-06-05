@@ -1,0 +1,576 @@
+{
+  "time": "2026-03-31T04:02:11.80572632Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:678:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Envoy Twenty Five Fifty Two flighting two four zero",
+  "whisper_duration_ms": 410.901,
+  "audio_duration_ms": 2888,
+  "processor": "GPU: NVIDIA GeForce RTX 2070 (8220MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "ENY2552",
+  "command": "H240",
+  "stt_aircraft": {
+    "Amflight two 71": {
+      "Callsign": "AMF271",
+      "AircraftType": "SW4",
+      "Fixes": {
+        "Cyprus": "CYPRE",
+        "Dashi": "DASHI",
+        "Fidus": "FIDUS",
+        "Gaylz": "GAYLZ",
+        "Gerald": "JERLD",
+        "Jersey": "JERZE",
+        "Kansas City": "KMCI",
+        "Quwvu": "QUWVU",
+        "Scott": "SCIOT",
+        "Soxle": "SOXLE",
+        "Updey": "UPDEY",
+        "Vest": "VVEST",
+        "Warm": "WARMM",
+        "Wimpow": "WMPOW",
+        "Yekuv": "YEKUV",
+        "Yetu": "UYETU",
+        "Yilup": "YILUP",
+        "Zavub": "ZAVUB",
+        "coonie": "COONI",
+        "kicked": "KRIKT"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "I L S runway one right": "I1R",
+        "r-nav yankee runway one left": "Y1L",
+        "r-nav yankee runway one right": "Y1R",
+        "r-nav zulu runway one left": "Z1L",
+        "r-nav zulu runway one right": "Z1R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Fidus": "FIDUS",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Quwvu": "QUWVU",
+          "Scott": "SCIOT",
+          "Soxle": "SOXLE",
+          "Updey": "UPDEY",
+          "Vest": "VVEST",
+          "Warm": "WARMM",
+          "Wimpow": "WMPOW",
+          "Yekuv": "YEKUV",
+          "Yetu": "UYETU",
+          "Yilup": "YILUP",
+          "Zavub": "ZAVUB",
+          "coonie": "COONI",
+          "kicked": "KRIKT"
+        },
+        "I1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Helen": "HELAN",
+          "Iyayi": "IYAYI",
+          "Jacey": "JACEY",
+          "Ribs": "RIBBS",
+          "Sexek": "CEXEK",
+          "Slow": "SLOWE",
+          "Terky": "TERKY",
+          "Ujgav": "UJGAV",
+          "Wevog": "WEVOG",
+          "Yukgu": "YUKGU",
+          "Ziviv": "ZIVIV",
+          "Zocuf": "XOCUF",
+          "Zusgo": "ZUSGO",
+          "spicy": "SPICY",
+          "woovor": "WUVOR",
+          "wuzby": "WUZBY"
+        },
+        "V1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Wimpow": "WMPOW",
+          "Zugor": "ZUGOR"
+        },
+        "V1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Hotbi": "HOTBI",
+          "Ribs": "RIBBS",
+          "Terky": "TERKY",
+          "spicy": "SPICY"
+        },
+        "Y1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Wimpow": "WMPOW",
+          "Zugor": "ZUGOR"
+        },
+        "Y1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Hotbi": "HOTBI",
+          "Ribs": "RIBBS",
+          "Terky": "TERKY",
+          "spicy": "SPICY"
+        },
+        "Z1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Dawson": "DAUSN",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Kaleb": "KALEB",
+          "Wimpow": "WMPOW",
+          "coonie": "COONI",
+          "kicked": "KRIKT"
+        },
+        "Z1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Fidvu": "FIDVU",
+          "Jacey": "JACEY",
+          "Ribs": "RIBBS",
+          "Slow": "SLOWE",
+          "Terky": "TERKY",
+          "basket": "BRSKT",
+          "spicy": "SPICY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "JSONN4",
+      "Altitude": 6965,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "9",
+        "27"
+      ]
+    },
+    "B E thirty-six six four five": {
+      "Callsign": "N52645/T",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Frels": "FRELS",
+        "Kansas City": "MCI",
+        "Napoleon": "ANX",
+        "New Century AirCenter": "KIXD",
+        "Skini": "SKINI",
+        "Topeka": "TOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway three six": "I36",
+        "Visual Approach runway three six": "V36",
+        "r-nav runway three six": "R36"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I36": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "R36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        },
+        "R4": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "V36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 36",
+      "SID": "",
+      "STAR": "RUDDH3",
+      "Altitude": 12459,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "Envoy 25 52": {
+      "Callsign": "ENY2552",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Cyprus": "CYPRE",
+        "Dashi": "DASHI",
+        "Fidus": "FIDUS",
+        "Gaylz": "GAYLZ",
+        "Gerald": "JERLD",
+        "Gooner": "GOONR",
+        "Jersey": "JERZE",
+        "Kaleb": "KALEB",
+        "Kansas City": "KMCI",
+        "Quwvu": "QUWVU",
+        "Scott": "SCIOT",
+        "Soxle": "SOXLE",
+        "Stake": "STAKE",
+        "Updey": "UPDEY",
+        "Vest": "VVEST",
+        "Warm": "WARMM",
+        "Wimpow": "WMPOW",
+        "Yekuv": "YEKUV",
+        "Yetu": "UYETU",
+        "Yilup": "YILUP",
+        "Zavub": "ZAVUB",
+        "coonie": "COONI",
+        "kicked": "KRIKT",
+        "skis": "SDKIS"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "I L S runway one right": "I1R",
+        "r-nav yankee runway one left": "Y1L",
+        "r-nav yankee runway one right": "Y1R",
+        "r-nav zulu runway one left": "Z1L",
+        "r-nav zulu runway one right": "Z1R"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Fidus": "FIDUS",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Quwvu": "QUWVU",
+          "Scott": "SCIOT",
+          "Soxle": "SOXLE",
+          "Updey": "UPDEY",
+          "Vest": "VVEST",
+          "Warm": "WARMM",
+          "Wimpow": "WMPOW",
+          "Yekuv": "YEKUV",
+          "Yetu": "UYETU",
+          "Yilup": "YILUP",
+          "Zavub": "ZAVUB",
+          "coonie": "COONI",
+          "kicked": "KRIKT"
+        },
+        "I1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Helen": "HELAN",
+          "Iyayi": "IYAYI",
+          "Jacey": "JACEY",
+          "Ribs": "RIBBS",
+          "Sexek": "CEXEK",
+          "Slow": "SLOWE",
+          "Terky": "TERKY",
+          "Ujgav": "UJGAV",
+          "Wevog": "WEVOG",
+          "Yukgu": "YUKGU",
+          "Ziviv": "ZIVIV",
+          "Zocuf": "XOCUF",
+          "Zusgo": "ZUSGO",
+          "spicy": "SPICY",
+          "woovor": "WUVOR",
+          "wuzby": "WUZBY"
+        },
+        "V1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Wimpow": "WMPOW",
+          "Zugor": "ZUGOR"
+        },
+        "V1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Hotbi": "HOTBI",
+          "Ribs": "RIBBS",
+          "Terky": "TERKY",
+          "spicy": "SPICY"
+        },
+        "Y1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Wimpow": "WMPOW",
+          "Zugor": "ZUGOR"
+        },
+        "Y1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Hotbi": "HOTBI",
+          "Ribs": "RIBBS",
+          "Terky": "TERKY",
+          "spicy": "SPICY"
+        },
+        "Z1L": {
+          "Cyprus": "CYPRE",
+          "Dashi": "DASHI",
+          "Dawson": "DAUSN",
+          "Gaylz": "GAYLZ",
+          "Gerald": "JERLD",
+          "Jersey": "JERZE",
+          "Kaleb": "KALEB",
+          "Wimpow": "WMPOW",
+          "coonie": "COONI",
+          "kicked": "KRIKT"
+        },
+        "Z1R": {
+          "Barbecue": "BARBQ",
+          "Boner": "BAUNR",
+          "Cooked": "COOKD",
+          "Fidvu": "FIDVU",
+          "Jacey": "JACEY",
+          "Ribs": "RIBBS",
+          "Slow": "SLOWE",
+          "Terky": "TERKY",
+          "basket": "BRSKT",
+          "spicy": "SPICY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "JSONN4",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "9",
+        "27"
+      ]
+    },
+    "bonanza six four five": {
+      "Callsign": "N52645/T",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Frels": "FRELS",
+        "Kansas City": "MCI",
+        "Napoleon": "ANX",
+        "New Century AirCenter": "KIXD",
+        "Skini": "SKINI",
+        "Topeka": "TOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway three six": "I36",
+        "Visual Approach runway three six": "V36",
+        "r-nav runway three six": "R36"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I36": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "R36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        },
+        "R4": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "V36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 36",
+      "SID": "",
+      "STAR": "RUDDH3",
+      "Altitude": 12459,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "november five two six four five": {
+      "Callsign": "N52645",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Frels": "FRELS",
+        "Kansas City": "MCI",
+        "Napoleon": "ANX",
+        "New Century AirCenter": "KIXD",
+        "Skini": "SKINI",
+        "Topeka": "TOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway three six": "I36",
+        "Visual Approach runway three six": "V36",
+        "r-nav runway three six": "R36"
+      },
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": {
+        "I36": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "R36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        },
+        "R4": {
+          "Frels": "FRELS",
+          "Kansas City": "MCI",
+          "Napoleon": "ANX",
+          "Skini": "SKINI",
+          "Topeka": "TOP"
+        },
+        "V36": {
+          "Anqum": "ANQUM",
+          "Jikla": "JIKLA",
+          "Navy": "NAPVY",
+          "Unoxy": "UNOXY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 36",
+      "SID": "",
+      "STAR": "RUDDH3",
+      "Altitude": 12459,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Envoy Twenty Five Fifty Two flighting two four zero\"",
+    "[local-stt] normalized words: [envoy 25 52 fly heading 2 4 0]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"envoy\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"25\" Type=1 Value=25",
+    "[local-stt]   token[2]: Text=\"52\" Type=1 Value=52",
+    "[local-stt]   token[3]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"240\" Type=1 Value=240",
+    "[local-stt] MatchCallsign: 6 tokens, 5 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 5 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Envoy 25 52\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Envoy 25 52\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Envoy 25 52\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Envoy 25 52\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 1 results",
+    "[local-stt]     result 0: \"Envoy 25 52\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Envoy 25 52\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Envoy 25 52\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Envoy 25 52\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"ENY2552\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Envoy 25 52\")",
+    "[local-stt] callsign match: Callsign=\"ENY2552\" SpokenKey=\"Envoy 25 52\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=7000 Fixes=24 Approaches=6 AssignedApproach=\"ILS Runway 1L\" LAHSORunways=[9 27 9 27]",
+    "[local-stt]   fix: \"kicked\" -\u003e \"KRIKT\"",
+    "[local-stt]   fix: \"Soxle\" -\u003e \"SOXLE\"",
+    "[local-stt]   fix: \"skis\" -\u003e \"SDKIS\"",
+    "[local-stt]   fix: \"Kaleb\" -\u003e \"KALEB\"",
+    "[local-stt]   fix: \"Yekuv\" -\u003e \"YEKUV\"",
+    "[local-stt]   fix: \"Jersey\" -\u003e \"JERZE\"",
+    "[local-stt]   fix: \"Scott\" -\u003e \"SCIOT\"",
+    "[local-stt]   fix: \"Zavub\" -\u003e \"ZAVUB\"",
+    "[local-stt]   fix: \"Yetu\" -\u003e \"UYETU\"",
+    "[local-stt]   fix: \"Updey\" -\u003e \"UPDEY\"",
+    "[local-stt]   fix: \"Cyprus\" -\u003e \"CYPRE\"",
+    "[local-stt]   fix: \"Gaylz\" -\u003e \"GAYLZ\"",
+    "[local-stt]   fix: \"coonie\" -\u003e \"COONI\"",
+    "[local-stt]   fix: \"Stake\" -\u003e \"STAKE\"",
+    "[local-stt]   fix: \"Wimpow\" -\u003e \"WMPOW\"",
+    "[local-stt]   fix: \"Gerald\" -\u003e \"JERLD\"",
+    "[local-stt]   fix: \"Vest\" -\u003e \"VVEST\"",
+    "[local-stt]   fix: \"Yilup\" -\u003e \"YILUP\"",
+    "[local-stt]   fix: \"Warm\" -\u003e \"WARMM\"",
+    "[local-stt]   fix: \"Fidus\" -\u003e \"FIDUS\"",
+    "[local-stt]   fix: \"Gooner\" -\u003e \"GOONR\"",
+    "[local-stt]   fix: \"Kansas City\" -\u003e \"KMCI\"",
+    "[local-stt]   fix: \"Dashi\" -\u003e \"DASHI\"",
+    "[local-stt]   fix: \"Quwvu\" -\u003e \"QUWVU\"",
+    "[local-stt]   approach: \"r-nav zulu runway one left\" -\u003e \"Z1L\"",
+    "[local-stt]   approach: \"r-nav yankee runway one right\" -\u003e \"Y1R\"",
+    "[local-stt]   approach: \"r-nav zulu runway one right\" -\u003e \"Z1R\"",
+    "[local-stt]   approach: \"I L S runway one right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"I L S runway one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"r-nav yankee runway one left\" -\u003e \"Y1L\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"240\" Type=1 Value=240",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   matched command: \"H240\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[H240] (avgConf=1.00)",
+    "[local-stt] parsed commands: [H240] (conf=1.00)",
+    "[local-stt] validated commands: [H240] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ENY2552 H240\" (conf=1.00, time=997µs) ==="
+  ]
+}

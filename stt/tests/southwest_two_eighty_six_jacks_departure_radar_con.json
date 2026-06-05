@@ -1,0 +1,424 @@
+{
+  "time": "2026-05-15T12:36:30.222834473Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:851:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Southwest Two Eighty Six Jack's departure radar contact proceed right Giggles climb and maintain five thousand",
+  "whisper_duration_ms": 209.612,
+  "audio_duration_ms": 5832,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SWA286",
+  "command": "DGIGLZ C50",
+  "stt_aircraft": {
+    "Delta 27 85": {
+      "Callsign": "DAL2785",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Cincinnati Northern Kentucky": "KCVG",
+        "Dinns": "DINNS",
+        "Jacksonville": "KJAX",
+        "Libby": "LIBBY"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S yankee runway one four": "I14",
+        "r-nav zulu runway eight": "RZ8",
+        "r-nav zulu runway one four": "R14"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight": "8",
+        "visual approach runway one four": "14",
+        "visual eight": "8",
+        "visual one four": "14",
+        "visual runway eight": "8",
+        "visual runway one four": "14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Ortar": "ORTAR",
+          "Wolqu": "WOLQU"
+        },
+        "I8": {
+          "Dinns": "DINNS",
+          "Libby": "LIBBY"
+        },
+        "R14": {
+          "Jixol": "JIXOL",
+          "Osbaj": "OSBAJ",
+          "Wolqu": "WOLQU",
+          "Zudli": "ZUDLI"
+        },
+        "RZ8": {
+          "Ijayu": "IJAYU",
+          "Ivtef": "IVTEF",
+          "Udaqi": "UDAQI",
+          "Zoluv": "ZOLUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8",
+      "SID": "",
+      "STAR": "OHDEA2",
+      "Altitude": 12194,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8",
+        "26",
+        "14",
+        "32"
+      ]
+    },
+    "JetBlue 50": {
+      "Callsign": "JBU50",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Dinns": "DINNS",
+        "Jacksonville": "KJAX",
+        "LaGuardia": "KLGA",
+        "Libby": "LIBBY"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S yankee runway one four": "I14",
+        "r-nav zulu runway eight": "RZ8",
+        "r-nav zulu runway one four": "R14"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight": "8",
+        "visual approach runway one four": "14",
+        "visual eight": "8",
+        "visual one four": "14",
+        "visual runway eight": "8",
+        "visual runway one four": "14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Ortar": "ORTAR",
+          "Wolqu": "WOLQU"
+        },
+        "I8": {
+          "Dinns": "DINNS",
+          "Libby": "LIBBY"
+        },
+        "R14": {
+          "Jixol": "JIXOL",
+          "Osbaj": "OSBAJ",
+          "Wolqu": "WOLQU",
+          "Zudli": "ZUDLI"
+        },
+        "RZ8": {
+          "Ijayu": "IJAYU",
+          "Ivtef": "IVTEF",
+          "Udaqi": "UDAQI",
+          "Zoluv": "ZOLUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8",
+      "SID": "",
+      "STAR": "LUNNI2",
+      "Altitude": 10643,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8",
+        "26",
+        "14",
+        "32"
+      ]
+    },
+    "SkyWest 92 26": {
+      "Callsign": "SKW9226",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Dinns": "DINNS",
+        "Jacksonville": "KJAX",
+        "Libby": "LIBBY",
+        "Philadelphia": "KPHL",
+        "Philly": "KPHL"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S yankee runway one four": "I14",
+        "r-nav zulu runway eight": "RZ8",
+        "r-nav zulu runway one four": "R14"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight": "8",
+        "visual approach runway one four": "14",
+        "visual eight": "8",
+        "visual one four": "14",
+        "visual runway eight": "8",
+        "visual runway one four": "14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Ortar": "ORTAR",
+          "Wolqu": "WOLQU"
+        },
+        "I8": {
+          "Dinns": "DINNS",
+          "Libby": "LIBBY"
+        },
+        "R14": {
+          "Jixol": "JIXOL",
+          "Osbaj": "OSBAJ",
+          "Wolqu": "WOLQU",
+          "Zudli": "ZUDLI"
+        },
+        "RZ8": {
+          "Ijayu": "IJAYU",
+          "Ivtef": "IVTEF",
+          "Udaqi": "UDAQI",
+          "Zoluv": "ZOLUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8",
+      "SID": "",
+      "STAR": "LUNNI2",
+      "Altitude": 3276,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8",
+        "26",
+        "14",
+        "32"
+      ]
+    },
+    "Southwest four 80": {
+      "Callsign": "SWA480",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Chicago Midway": "KMDW",
+        "Dinns": "DINNS",
+        "Jacksonville": "KJAX",
+        "Libby": "LIBBY"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S yankee runway one four": "I14",
+        "r-nav zulu runway eight": "RZ8",
+        "r-nav zulu runway one four": "R14"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight": "8",
+        "visual approach runway one four": "14",
+        "visual eight": "8",
+        "visual one four": "14",
+        "visual runway eight": "8",
+        "visual runway one four": "14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Ortar": "ORTAR",
+          "Wolqu": "WOLQU"
+        },
+        "I8": {
+          "Dinns": "DINNS",
+          "Libby": "LIBBY"
+        },
+        "R14": {
+          "Jixol": "JIXOL",
+          "Osbaj": "OSBAJ",
+          "Wolqu": "WOLQU",
+          "Zudli": "ZUDLI"
+        },
+        "RZ8": {
+          "Ijayu": "IJAYU",
+          "Ivtef": "IVTEF",
+          "Udaqi": "UDAQI",
+          "Zoluv": "ZOLUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8",
+      "SID": "",
+      "STAR": "OHDEA2",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8",
+        "26",
+        "14",
+        "32"
+      ]
+    },
+    "Southwest two 86": {
+      "Callsign": "SWA286",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Baltimore/Washington International Thurgood Marshall": "KBWI",
+        "Crosby": "CROSB",
+        "Giggles": "GIGLZ",
+        "Jacksonville": "KJAX"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "CROSB2",
+      "STAR": "",
+      "Altitude": 2282,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 42 19": {
+      "Callsign": "NKS4219",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Dinns": "DINNS",
+        "Fort Lauderdale": "KFLL",
+        "Jacksonville": "KJAX",
+        "Libby": "LIBBY"
+      },
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S yankee runway one four": "I14",
+        "r-nav zulu runway eight": "RZ8",
+        "r-nav zulu runway one four": "R14"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway eight": "8",
+        "visual approach runway one four": "14",
+        "visual eight": "8",
+        "visual one four": "14",
+        "visual runway eight": "8",
+        "visual runway one four": "14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Ortar": "ORTAR",
+          "Wolqu": "WOLQU"
+        },
+        "I8": {
+          "Dinns": "DINNS",
+          "Libby": "LIBBY"
+        },
+        "R14": {
+          "Jixol": "JIXOL",
+          "Osbaj": "OSBAJ",
+          "Wolqu": "WOLQU",
+          "Zudli": "ZUDLI"
+        },
+        "RZ8": {
+          "Ijayu": "IJAYU",
+          "Ivtef": "IVTEF",
+          "Udaqi": "UDAQI",
+          "Zoluv": "ZOLUV"
+        }
+      },
+      "AssignedApproach": "ILS Runway 8",
+      "SID": "",
+      "STAR": "QUBEN2",
+      "Altitude": 9000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "8",
+        "26",
+        "14",
+        "32"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Southwest Two Eighty Six Jack's departure radar contact proceed right Giggles climb and maintain five thousand\"",
+    "[local-stt] normalized words: [southwest 2 86 jacks departure radar contact proceed right giggles climb and maintain 5 thousand]",
+    "[local-stt] tokens: 13",
+    "[local-stt]   token[0]: Text=\"southwest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"286\" Type=1 Value=286",
+    "[local-stt]   token[2]: Text=\"jacks\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"giggles\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"50\" Type=2 Value=50",
+    "[local-stt] MatchCallsign: 13 tokens, 6 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 13 tokens, 6 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 3 results",
+    "[local-stt]     result 0: \"SkyWest 92 26\" (airline=0.661, flight=0.722, skip=0)",
+    "[local-stt]     result 1: \"Delta 27 85\" (airline=0.437, flight=0.750, skip=0)",
+    "[local-stt]     result 2: \"Southwest two 86\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Southwest two 86\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 14 results",
+    "[local-stt]     result 0: \"Southwest four 80\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"SkyWest 92 26\" (airline=0.661, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Delta 27 85\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Southwest two 86\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"JetBlue 50\" (airline=0.476, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Southwest two 86\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Southwest two 86\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest two 86\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Southwest two 86\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"SWA286\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Southwest two 86\")",
+    "[local-stt] callsign match: Callsign=\"SWA286\" SpokenKey=\"Southwest two 86\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=2282 Fixes=4 Approaches=0 VisualApproaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Baltimore/Washington International Thurgood Marshall\" -\u003e \"KBWI\"",
+    "[local-stt]   fix: \"Jacksonville\" -\u003e \"KJAX\"",
+    "[local-stt]   fix: \"Giggles\" -\u003e \"GIGLZ\"",
+    "[local-stt]   fix: \"Crosby\" -\u003e \"CROSB\"",
+    "[local-stt] command tokens after disregard: 11",
+    "[local-stt]   token[0]: Text=\"jacks\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"giggles\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"50\" Type=2 Value=50",
+    "[local-stt] stripped position ID prefix: 2 tokens",
+    "[local-stt] stripped 'radar contact' prefix",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"right\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"right\" -\u003e \"GIGLZ\" (fuzzy 0.80)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"right\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"right\" -\u003e \"GIGLZ\" (fuzzy 0.80)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"right\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"right\" -\u003e \"GIGLZ\" (fuzzy 0.80)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"right\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"right\" -\u003e \"GIGLZ\" (fuzzy 0.80)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"proceed\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"proceed\"",
+    "[local-stt]   matched command: \"DGIGLZ\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"climb\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"climb\"",
+    "[local-stt]   matched command: \"C50\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[DGIGLZ C50] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DGIGLZ C50] (conf=1.00)",
+    "[local-stt] validated commands: [DGIGLZ C50] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA286 DGIGLZ C50\" (conf=1.00, time=1.5603ms) ==="
+  ]
+}
