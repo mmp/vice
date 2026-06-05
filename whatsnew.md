@@ -14,3 +14,7 @@
 - Facility engineering
  - Fractional values (not just integers) can now be used when specifying aircraft launch rates in scenarios
  - Added "description" field to JSON to provide short descriptive text that is shown in the scenario launch window (radarcontacto)
+  
+- Improve handling of arrival airport winds on final approach (radarcontacto)
+- Facility engineering
+  - Added /intercept to indicate virtually-controlled aircraft should intercept the approach
