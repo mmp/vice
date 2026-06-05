@@ -120,12 +120,9 @@ func (nav *Nav) Check(lg *log.Logger) {
 	}
 }
 
-func (nav *Nav) Update(callsign string, model *wx.Model, fp *av.FlightPlan, simTime Time, bravo *av.AirspaceGrid) UpdateResult {
+func (nav *Nav) Update(callsign string, model *wx.Model, fp *av.FlightPlan, arrivalMETAR *wx.METAR, simTime Time,
+	bravo *av.AirspaceGrid) UpdateResult {
 	wxs := model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime.Time())
-	var arrivalMETAR *wx.METAR
-	if fp != nil && fp.ArrivalAirport != "" {
-		arrivalMETAR = model.AirportMETARForTime(fp.ArrivalAirport, simTime.Time())
-	}
 	return nav.UpdateWithWeather(callsign, wxs, arrivalMETAR, fp, simTime, bravo)
 }
 

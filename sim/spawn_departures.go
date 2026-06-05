@@ -713,7 +713,7 @@ func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, r *rand.
 	start := ac.Position()
 	d.MinSeparation = 120 * time.Second // just in case
 	for i := range 120 {
-		simAc.Update(model, simTime, nil, nil /* lg */)
+		simAc.Update(model, simTime, nil, nil, nil /* lg */)
 		// We need 6,000' and airborne, but we'll add a bit of slop
 		if simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
 			d.MinSeparation = time.Duration(i) * time.Second

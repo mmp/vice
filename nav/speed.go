@@ -254,17 +254,13 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 	if nav.Speed.Assigned == nil && fd != 0 && fd < 10 {
 		hdg := nav.Approach.Assigned.RunwayHeading(nav.FlightState.NmPerLongitude)
 		var approachSpeed float32
-		if arrivalMETAR != nil {
-			windDir := float32(0) // treat variable winds as unknown direction (zero headwind component)
-			if arrivalMETAR.WindDir != nil {
-				windDir = float32(*arrivalMETAR.WindDir)
-			}
+		if arrivalMETAR != nil && arrivalMETAR.WindDir != nil { // METAR and non-VRB winds
 			windSpeed := float32(arrivalMETAR.WindSpeed)
 			windGust := windSpeed // default: no gust above steady wind
 			if arrivalMETAR.WindGust != nil && *arrivalMETAR.WindGust > arrivalMETAR.WindSpeed {
 				windGust = float32(*arrivalMETAR.WindGust)
 			}
-			approachSpeed = nav.Perf.ApproachSpeed(windDir, windSpeed, windGust, float32(hdg))
+			approachSpeed = nav.Perf.ApproachSpeed(float32(*arrivalMETAR.WindDir), windSpeed, windGust, float32(hdg))
 		} else {
 			approachSpeed = nav.Perf.ApproachSpeed(float32(wxs.WindDirection()), wxs.WindSpeed(), 0, float32(hdg))
 		}
