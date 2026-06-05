@@ -15,7 +15,7 @@
   "processor": "GPU: AMD Radeon(TM) Graphics (16234MB)",
   "whisper_model": "ggml-base.en-jlvatc-q5_0.bin",
   "callsign": "DLH79F",
-  "command": "D280",
+  "command": "A280",
   "stt_aircraft": {
     "Air Canada 71 65": {
       "Callsign": "ACA7165",

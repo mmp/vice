@@ -575,8 +575,14 @@ var multiTokenReplacements = map[string][]string{
 	"to recall":      {"direct"},                // STT error: "direct" (TRKT) transcribed as "to recall" (TRKL)
 	"mark point":     {"mach", "point"},         // STT error: "mach" mistranscribed as "mark" before "point"
 	"ready contact":  {"radar", "contact"},      // STT error: "radar" mistranscribed as "ready"
+	"rare contact":   {"radar", "contact"},      // STT error: "radar" mistranscribed as "rare"
 	"i s t f":        {"ils"},                   // STT error: ILS spelled out, badly garbled
 	"descend me the": {"descend", "via", "the"}, // STT error: "via" mistranscribed as "me" in "descend via the {STAR}"
+	// "reduce to contact" is post-normalization; "ready" → "reduce" runs first via commandKeywords.
+	// Original utterance is "radar contact"; restore so radar_contact_info handler can strip it.
+	"reduce to contact": {"radar", "contact"},
+	"to park":           {"depart"}, // STT error: "depart" (TPRT) mistranscribed as "to park" (TPRK)
+	"at the set":        {"descend"},
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
@@ -652,6 +658,7 @@ var wordProcessors = []wordProcessor{
 	processDigitWord,
 	processNumberWord,
 	processFlightLevelMissing,
+	processLevelMissingFlight,
 	processCommandKeyword,
 	processPhraseExpansion,
 	processMergedNATO,
@@ -782,6 +789,47 @@ func processFlightLevelMissing(w string, ctx *normalizeContext) ([]string, int, 
 		return []string{"flight", "level"}, 0, true
 	case 4:
 		return []string{"flight", "level"}, 1, true
+	}
+	return nil, 0, false
+}
+
+// processLevelMissingFlight handles transcripts where "level" survived but the
+// preceding "flight" was dropped (e.g., "maintain level two eight zero"). When
+// "level" is followed by exactly 3 digit words in an altitude-command context
+// and the prior token isn't already "flight", emits ["flight", "level"] so
+// tokenize.go can form a TokenAltitude.
+func processLevelMissingFlight(w string, ctx *normalizeContext) ([]string, int, bool) {
+	if w != "level" || ctx.i+1 >= len(ctx.words) {
+		return nil, 0, false
+	}
+	if n := len(ctx.result); n > 0 && ctx.result[n-1] == "flight" {
+		return nil, 0, false
+	}
+	inAltContext := false
+	for _, t := range ctx.result {
+		if altitudeCommandKeywords[t] {
+			inAltContext = true
+			break
+		}
+	}
+	if !inAltContext {
+		return nil, 0, false
+	}
+	count := 0
+	for j := ctx.i + 1; j < len(ctx.words); j++ {
+		wj := CleanWord(ctx.words[j])
+		if _, ok := digitWords[wj]; ok {
+			count++
+			continue
+		}
+		if IsNumber(wj) {
+			count++
+			continue
+		}
+		break
+	}
+	if count == 3 {
+		return []string{"flight", "level"}, 0, true
 	}
 	return nil, 0, false
 }
