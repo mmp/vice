@@ -1065,7 +1065,8 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			updateResult := ac.Update(s.wxModel, s.State.SimTime, s.bravoAirspace, nil /* s.lg*/)
+			arrivalMETAR := s.State.METAR[ac.FlightPlan.ArrivalAirport]
+			updateResult := ac.Update(s.wxModel, s.State.SimTime, &arrivalMETAR, s.bravoAirspace, nil /* s.lg*/)
 			passedWaypoint := updateResult.PassedWaypoint
 			s.refreshSeenTraffic(ac)
 
