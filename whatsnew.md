@@ -1,8 +1,9 @@
 - New scenario: ZBW Nantucket 17 (Ryan G), M03 (manaphy, Ryan G)
 - Scenario updates: BOI (Elliot B), MIA, ZJX (manaphy), PCT, NCT (Ketan K), ZNY (Ryan G), BTV (EkimWasHere), BOS (radarcontacto)
+- Pronunciation fixes: I90 (Ethan Hawes)
 - Added support for scenario briefings (only JFK and LGA for now)
 - STT:
-  - Fixed handling of "maintian best forward speed"
+  - Fixed handling of "maintain best forward speed"
   - Added support for "cross (fix) at or below (altitude)"
 - Visual approaches
   - Fixed bugs where aircraft cleared for approaches would still report the field insight
