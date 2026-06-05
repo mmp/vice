@@ -14,8 +14,8 @@
   "audio_duration_ms": 3656,
   "processor": "GPU: NVIDIA GeForce GTX 1660 Ti (6180MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
-  "callsign": "",
-  "command": "",
+  "callsign": "UAL7497",
+  "command": "M67",
   "stt_aircraft": {
     "Air Canada one 16": {
       "Callsign": "ACA116",

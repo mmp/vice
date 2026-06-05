@@ -332,6 +332,15 @@ func parseDigitSequence(words []string) (int, string, int) {
 			if lastWasMultiDigit {
 				break
 			}
+			// Don't merge a multi-digit number into an accumulator that already
+			// forms a clean 3-digit heading (1-360 and a multiple of 5 or 10).
+			// Valid ATC speech doesn't follow a heading with a 2-digit number;
+			// the trailing "10" (or "ten", "twenty", etc.) is almost always STT noise
+			// such as a trailing pleasantry. E.g., "heading two four zero ten is a..."
+			// should yield heading 240, not 24010.
+			if len(text) == 3 && num >= 1 && num <= 360 && num%5 == 0 {
+				break
+			}
 			// If we already have digits, combine appropriately
 			if num > 0 {
 				// Combine: 2 + 50 = 250, 2 + 5 + 0 = 250

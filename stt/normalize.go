@@ -480,6 +480,7 @@ var commandKeywords = map[string]string{
 	"secured":     "cleared",
 	"expect":      "expect",
 	"expected":    "expect",
+	"extract":     "expect", // STT error: "expect" mistranscribed as "extract"
 	"vectors":     "vectors",
 	"approach":    "approach",
 	"cancel":      "cancel",
@@ -550,33 +551,36 @@ var phraseExpansions = map[string][]string{
 
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
 var multiTokenReplacements = map[string][]string{
-	"i l s":        {"ils"},
-	"r nav":        {"rnav"},
-	"air nav":      {"rnav"}, // STT error: "R-Nav" transcribed as "Air Nav"
-	"fly level":    {"flight", "level"},
-	"time riding":  {"turn", "right"},
-	"seven e":      {"70"},
-	"eight e":      {"80"},
-	"nine e":       {"90"},
-	"six e":        {"60"},
-	"five e":       {"50"},
-	"r on a":       {"runway"},
-	"right a star": {"via", "star"},
-	"i dead":       {"ident"},
-	"i file":       {"5", "mile"},   // STT error: "five mile" transcribed as "I file"
-	"for left":     {"4", "left"},   // STT error: "four left" transcribed as "for left"
-	"for right":    {"4", "right"},  // STT error: "four right" transcribed as "for right"
-	"for center":   {"4", "center"}, // STT error: "four center" transcribed as "for center"
-	"vector as":    {"vector"},      // STT error: "vector for/to the" transcribed as "vector as"
-	"vectors as":   {"vectors"},
-	"to recall":    {"direct"}, // STT error: "direct" (TRKT) transcribed as "to recall" (TRKL)
+	"i l s":         {"ils"},
+	"r nav":         {"rnav"},
+	"air nav":       {"rnav"}, // STT error: "R-Nav" transcribed as "Air Nav"
+	"fly level":     {"flight", "level"},
+	"time riding":   {"turn", "right"},
+	"seven e":       {"70"},
+	"eight e":       {"80"},
+	"nine e":        {"90"},
+	"six e":         {"60"},
+	"five e":        {"50"},
+	"r on a":        {"runway"},
+	"right a star":  {"via", "star"},
+	"i dead":        {"ident"},
+	"i file":        {"5", "mile"},   // STT error: "five mile" transcribed as "I file"
+	"for left":      {"4", "left"},   // STT error: "four left" transcribed as "for left"
+	"for right":     {"4", "right"},  // STT error: "four right" transcribed as "for right"
+	"for center":    {"4", "center"}, // STT error: "four center" transcribed as "for center"
+	"vector as":     {"vector"},      // STT error: "vector for/to the" transcribed as "vector as"
+	"vectors as":    {"vectors"},
+	"to recall":     {"direct"},           // STT error: "direct" (TRKT) transcribed as "to recall" (TRKL)
+	"mark point":    {"mach", "point"},    // STT error: "mach" mistranscribed as "mark" before "point"
+	"ready contact": {"radar", "contact"}, // STT error: "radar" mistranscribed as "ready"
+	"i s t f":       {"ils"},              // STT error: ILS spelled out, badly garbled
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
 // Returns (matched, replacement, tokensConsumed).
 func matchMultiToken(tokens []string) (bool, []string, int) {
-	// Try longest matches first (3 tokens, then 2)
-	for length := min(3, len(tokens)); length >= 2; length-- {
+	// Try longest matches first (4 tokens, then 3, then 2)
+	for length := min(4, len(tokens)); length >= 2; length-- {
 		key := strings.Join(tokens[:length], " ")
 		if replacement, ok := multiTokenReplacements[key]; ok {
 			return true, replacement, length
@@ -692,8 +696,17 @@ func processDigitWord(w string, _ *normalizeContext) ([]string, int, bool) {
 }
 
 // processNumberWord normalizes number words: "twenty" → "20", "thirty" → "30", etc.
-func processNumberWord(w string, _ *normalizeContext) ([]string, int, bool) {
+// When the previous token is a fix-context keyword (direct/proceed/via), leave
+// the word unconverted so it can be phonetically matched against fix names
+// downstream (e.g., "direct eleven" → fix "Livin"/LIVVN).
+func processNumberWord(w string, ctx *normalizeContext) ([]string, int, bool) {
 	if num, ok := numberWords[w]; ok {
+		if n := len(ctx.result); n > 0 {
+			switch ctx.result[n-1] {
+			case "direct", "proceed", "via":
+				return nil, 0, false
+			}
+		}
 		return []string{num}, 0, true
 	}
 	return nil, 0, false
