@@ -468,6 +468,7 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"approved":     {"approach"},
 	"pro":          {"direct", "proceed"}, // Garbled "pro" is not direct/proceed
 	"redo":         {"right"},             // "redo speed" should not match "turn right"
+	"route":        {"right"},             // "route romeo 3017" (garbled "altimeter 3017") is not "right"
 	"san":          {"say"},               // "san juan" should not match "say"
 	"intermittent": {"ident"},             // noise word should not match "ident" command
 	"claimed":      {"climbed", "climb"},  // STT noise vs altitude command

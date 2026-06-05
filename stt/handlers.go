@@ -299,6 +299,16 @@ func registerAllCommands() {
 		WithPriority(12),
 	)
 
+	// Fallback for cut-off transcripts like "fly present hap-" where STT loses
+	// the "heading" token. Requires literal "fly" so it can't fire on phrases
+	// like "maintain present speed".
+	registerSTTCommand(
+		"fly present",
+		func() string { return "H" },
+		WithName("fly_present_bare"),
+		WithPriority(11),
+	)
+
 	registerSTTCommand(
 		"turn {degrees}",
 		func(dr degreesResult) string {
@@ -1763,7 +1773,7 @@ func registerAllCommands() {
 
 	// === AIRPORT ADVISORY ===
 	registerSTTCommand(
-		"[the] airport [is] [will] [be] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		"[the] airport [is] [will] [be] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile] [report] [the] [field|airport] [in] [sight]",
 		func(oclock int, miles int) string {
 			return fmt.Sprintf("AP/%d/%d", oclock, miles)
 		},
@@ -1771,7 +1781,7 @@ func registerAllCommands() {
 		WithPriority(10),
 	)
 	registerSTTCommand(
-		"[the] field [is] [will] [be] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		"[the] field [is] [will] [be] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile] [report] [the] [field|airport] [in] [sight]",
 		func(oclock int, miles int) string {
 			return fmt.Sprintf("AP/%d/%d", oclock, miles)
 		},
@@ -1789,7 +1799,7 @@ func registerAllCommands() {
 	// Variant that accepts any leading word(s) before o'clock (e.g., "kennedy is at
 	// your 11 o'clock 8 miles"). The {fix} type absorbs the airport name token.
 	registerSTTCommand(
-		"{fix} [is] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile]",
+		"{fix} [is] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile] [report] [the] [field|airport] [in] [sight]",
 		func(_ string, oclock int, miles int) string {
 			return fmt.Sprintf("AP/%d/%d", oclock, miles)
 		},
