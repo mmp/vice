@@ -611,7 +611,7 @@ func isLocalizerPattern(w string) bool {
 // fillerWords are words to ignore during parsing.
 var fillerWords = map[string]bool{
 	"and": true, "the": true, "a": true, "an": true,
-	"uh": true, "um": true, "uhh": true, "umm": true,
+	"uh": true, "um": true, "uhh": true, "umm": true, "ah": true,
 	"please": true, "thanks": true, "thank": true, "you": true,
 	"day": true, "morning": true, "afternoon": true, "evening": true,
 	"sir": true, "ma'am": true,

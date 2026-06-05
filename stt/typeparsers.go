@@ -326,6 +326,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 		return nil, 0, "SPEED"
 	}
 
+	hitCmdBoundary := false
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
 		t := tokens[i]
 
@@ -333,6 +334,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 		// For example, in "cross IZEKO at 30 cleared ILS 22 left", when looking for
 		// a speed after "at", we should stop at "cleared" rather than finding "22".
 		if t.Type == TokenWord && IsCommandKeyword(t.Text) {
+			hitCmdBoundary = true
 			break
 		}
 
@@ -430,6 +432,13 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 		}
 	}
 
+	// If the scan hit a command-keyword boundary without finding any number,
+	// silently fail rather than emit SAYAGAIN/SPEED. This avoids spurious
+	// clarification requests for "maintain heading" / "maintain best forward
+	// speed" patterns where "maintain" is followed by a non-speed command.
+	if hitCmdBoundary {
+		return nil, 0, ""
+	}
 	return nil, 0, "SPEED"
 }
 

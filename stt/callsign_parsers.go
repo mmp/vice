@@ -511,6 +511,12 @@ func collectDigits(tokens []Token, maxTokens int) (string, int) {
 		if t.Type == TokenNumber {
 			numStr.WriteString(strconv.Itoa(t.Value))
 			consumed++
+		} else if t.Type == TokenAltitude {
+			// Altitude tokens encode value in hundreds-of-feet (e.g., "seven
+			// thousand" → Value=70). Decode to the spoken integer so a flight
+			// number said as "Fiji seven thousand" can match "7000".
+			numStr.WriteString(strconv.Itoa(t.Value * 100))
+			consumed++
 		} else if IsNumber(t.Text) || IsDigit(t.Text) {
 			numStr.WriteString(t.Text)
 			consumed++
@@ -543,8 +549,16 @@ func matchFlightNumber(tokens []Token, expectedNum string) (exact bool, consumed
 		}
 
 		// Multi-digit number token
-		if (t.Type == TokenNumber || t.Type == TokenAltitude) && t.Value >= 0 {
+		if t.Type == TokenNumber && t.Value >= 0 {
 			builtNum.WriteString(strconv.Itoa(t.Value))
+			consumed++
+			continue
+		}
+
+		// Altitude token: decode hundreds-of-feet encoding back to the spoken
+		// integer (e.g., "seven thousand" → TokenAltitude{Value: 70} → "7000").
+		if t.Type == TokenAltitude && t.Value >= 0 {
+			builtNum.WriteString(strconv.Itoa(t.Value * 100))
 			consumed++
 			continue
 		}
