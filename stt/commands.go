@@ -369,6 +369,30 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 	// This helps prefer approaches matching the spoken direction.
 	spokenDir := extractSpokenDirection(tokens)
 
+	// Extract the spoken runway number so the fuzzy loop can reject candidates
+	// whose runway number disagrees. Without this, the JW prefix boost from
+	// shared "i l s runway " can let a wrong-runway candidate outscore the right one.
+	// Only honor numbers that are explicitly preceded by "runway" so unrelated
+	// digits ("three mile approach") don't trigger spurious rejections. Filtering
+	// is gated by anyApproachMatchesRunway: if no candidate matches the spoken
+	// runway (the number was likely mis-transcribed), let fuzzy matching proceed
+	// without filtering so the existing fallback behavior is preserved.
+	spokenRunwayNum := ""
+	if num, _, pos := extractRunwayNumber(tokens); num != "" && pos > 0 &&
+		strings.EqualFold(tokens[pos-1].Text, "runway") {
+		spokenRunwayNum = num
+	}
+	anyApproachMatchesRunway := false
+	if spokenRunwayNum != "" {
+		for spokenName := range approaches {
+			nameLower := strings.ToLower(spokenName)
+			if strings.Contains(nameLower, "runway ") && runwayConsistent(nameLower, spokenRunwayNum) {
+				anyApproachMatchesRunway = true
+				break
+			}
+		}
+	}
+
 	// Skip fuzzy loop when the first token is "runway" — there's no approach type
 	// info to match against, so JW scores against full candidate names are misleading
 	// (e.g., "runway" gets a Winkler prefix boost against "r-nav"). The runway
@@ -403,6 +427,12 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 			// Try fuzzy match - find the best one.
 			// Prefer assigned approach on ties, otherwise use alphabetically earlier apprID for determinism.
 			for spokenName, apprID := range approaches {
+				if anyApproachMatchesRunway {
+					nameLower := strings.ToLower(spokenName)
+					if strings.Contains(nameLower, "runway ") && !runwayConsistent(nameLower, spokenRunwayNum) {
+						continue
+					}
+				}
 				score := JaroWinkler(variant, spokenName)
 				if score >= 0.80 {
 					// Bonus for matching spoken direction: if user said "left" and approach ends in "L",
@@ -1360,6 +1390,27 @@ func approachTypeMatches(spokenLower, approachType string) bool {
 			strings.Contains(spokenLower, "i l s") || strings.Contains(spokenLower, "ils")
 	}
 	return false
+}
+
+// runwayConsistent returns true when the candidate's "runway X" portion is
+// compatible with the spoken runway number. Compatibility is first-token
+// equality (so spoken "three" matches candidate "runway three zero" when a
+// pilot trimmed the trailing digit) with niner/nine normalized as equivalent.
+// Returns true when the candidate has no "runway " marker (don't gate it).
+func runwayConsistent(candidateLower, spokenRunwayNum string) bool {
+	idx := strings.Index(candidateLower, "runway ")
+	if idx == -1 {
+		return true
+	}
+	candFirst, _, _ := strings.Cut(candidateLower[idx+7:], " ")
+	spokenFirst, _, _ := strings.Cut(spokenRunwayNum, " ")
+	if candFirst == "niner" {
+		candFirst = "nine"
+	}
+	if spokenFirst == "niner" {
+		spokenFirst = "nine"
+	}
+	return candFirst == spokenFirst
 }
 
 // runwayMatches checks if the candidate approach's runway matches the extracted runway.

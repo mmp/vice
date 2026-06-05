@@ -398,6 +398,8 @@ var commandKeywords = map[string]string{
 	// Altitude
 	"descend":     "descend",
 	"descending":  "descend",
+	"descent":     "descend",
+	"decent":      "descend",
 	"setup":       "descend",
 	"climb":       "climb",
 	"climbing":    "climb",
@@ -649,6 +651,7 @@ var wordProcessors = []wordProcessor{
 	processSplitTextNumber,
 	processDigitWord,
 	processNumberWord,
+	processFlightLevelMissing,
 	processCommandKeyword,
 	processPhraseExpansion,
 	processMergedNATO,
@@ -722,6 +725,63 @@ func processNumberWord(w string, ctx *normalizeContext) ([]string, int, bool) {
 func processCommandKeyword(w string, _ *normalizeContext) ([]string, int, bool) {
 	if norm, ok := commandKeywords[w]; ok {
 		return []string{norm}, 0, true
+	}
+	return nil, 0, false
+}
+
+// altitudeCommandKeywords names command keywords whose presence in prior
+// normalized output indicates we're parsing an altitude command, used to gate
+// processFlightLevelMissing so airline callsigns like "Frontier flight 8555"
+// are not affected.
+var altitudeCommandKeywords = map[string]bool{
+	"cross":    true,
+	"descend":  true,
+	"climb":    true,
+	"maintain": true,
+	"at":       true,
+}
+
+// processFlightLevelMissing handles transcripts where the spoken "level" word
+// was dropped or mis-transcribed (e.g., "flight level 280" heard as "flight
+// 280" or "flight zero 280"). When "flight" is followed by exactly 3 digit
+// words in an altitude-command context, inserts "level" so tokenize.go can
+// form a TokenAltitude. When followed by exactly 4 digit words, also drops
+// the first — almost certainly a garbled "level".
+func processFlightLevelMissing(w string, ctx *normalizeContext) ([]string, int, bool) {
+	if w != "flight" || ctx.i+1 >= len(ctx.words) {
+		return nil, 0, false
+	}
+	if CleanWord(ctx.words[ctx.i+1]) == "level" {
+		return nil, 0, false
+	}
+	inAltContext := false
+	for _, t := range ctx.result {
+		if altitudeCommandKeywords[t] {
+			inAltContext = true
+			break
+		}
+	}
+	if !inAltContext {
+		return nil, 0, false
+	}
+	count := 0
+	for j := ctx.i + 1; j < len(ctx.words); j++ {
+		wj := CleanWord(ctx.words[j])
+		if _, ok := digitWords[wj]; ok {
+			count++
+			continue
+		}
+		if IsNumber(wj) {
+			count++
+			continue
+		}
+		break
+	}
+	switch count {
+	case 3:
+		return []string{"flight", "level"}, 0, true
+	case 4:
+		return []string{"flight", "level"}, 1, true
 	}
 	return nil, 0, false
 }
