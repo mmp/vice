@@ -41,6 +41,13 @@ type PatternState struct {
 // patternSpawnRate is the nominal rate (aircraft per hour) for pattern spawns.
 const patternSpawnRate float32 = 5
 
+// effectivePatternSpawnRate returns patternSpawnRate scaled by the launch
+// config's VFRDepartureRateScale, so the slider controls pattern activity
+// the same way it controls regular VFR departures.
+func (s *Sim) effectivePatternSpawnRate() float32 {
+	return scaleRate(patternSpawnRate, s.State.LaunchConfig.VFRDepartureRateScale)
+}
+
 // bestRunwayForWind returns the runway id best aligned with the current
 // wind at the given airport. It returns "" if the airport is unknown or
 // has no runways.
@@ -205,7 +212,7 @@ func (s *Sim) spawnPatternAircraft() {
 			break
 		}
 		if ac == nil {
-			ps.NextSpawn = now.Add(randomWait(patternSpawnRate, false, s.Rand))
+			ps.NextSpawn = now.Add(randomWait(s.effectivePatternSpawnRate(), false, s.Rand))
 			continue
 		}
 
@@ -222,7 +229,7 @@ func (s *Sim) spawnPatternAircraft() {
 			s.State.MagneticVariation, s.wxModel, now, s.lg)
 		if err != nil {
 			s.lg.Warn("failed to initialize pattern aircraft", slog.Any("error", err))
-			ps.NextSpawn = now.Add(randomWait(patternSpawnRate, false, s.Rand))
+			ps.NextSpawn = now.Add(randomWait(s.effectivePatternSpawnRate(), false, s.Rand))
 			continue
 		}
 
@@ -242,7 +249,7 @@ func (s *Sim) spawnPatternAircraft() {
 			Phase:        PatternUpwind,
 		})
 
-		ps.NextSpawn = now.Add(randomWait(patternSpawnRate, false, s.Rand))
+		ps.NextSpawn = now.Add(randomWait(s.effectivePatternSpawnRate(), false, s.Rand))
 
 		s.lg.Info("spawned pattern aircraft",
 			slog.String("callsign", string(ac.ADSBCallsign)),

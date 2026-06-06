@@ -290,6 +290,13 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 		}
 	}
 
+	if lc.VFRDepartureRateScale != s.State.LaunchConfig.VFRDepartureRateScale {
+		r := scaleRate(patternSpawnRate, lc.VFRDepartureRateScale)
+		for _, ps := range s.PatternState {
+			ps.NextSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
+		}
+	}
+
 	if lc.VFFRequestRate != s.State.LaunchConfig.VFFRequestRate {
 		s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
 	}
@@ -524,7 +531,7 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 			_, hasIFRArrivals := s.State.ArrivalAirports[name]
 			if !hasIFRDepartures && !hasIFRArrivals {
 				s.PatternState[name] = &PatternState{
-					NextSpawn: now.Add(randomWait(patternSpawnRate, false, s.Rand)),
+					NextSpawn: now.Add(randomWait(s.effectivePatternSpawnRate(), false, s.Rand)),
 				}
 			}
 		}
