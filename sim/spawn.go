@@ -268,25 +268,25 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 			r := sumRateMap(categoryRates, s.State.LaunchConfig.DepartureRateScale)
 			s.DepartureState[ap][rwy].setIFRRate(s, r)
 		}
+	}
 
-		for name, rate := range lc.VFRAirportRates {
-			r := scaleRate(rate, lc.VFRDepartureRateScale)
-			rwy := s.State.VFRRunways[name]
-			s.DepartureState[name][av.RunwayID(rwy.Id)].setVFRRate(s, r)
+	for name, rate := range lc.VFRAirportRates {
+		r := scaleRate(rate, lc.VFRDepartureRateScale)
+		rwy := s.State.VFRRunways[name]
+		s.DepartureState[name][av.RunwayID(rwy.Id)].setVFRRate(s, r)
+	}
+
+	for group, groupRates := range lc.InboundFlowRates {
+		var newSum, oldSum float32
+		for ap, rate := range groupRates {
+			newSum += rate
+			oldSum += s.State.LaunchConfig.InboundFlowRates[group][ap]
 		}
+		newSum *= lc.InboundFlowRateScale
+		oldSum *= s.State.LaunchConfig.InboundFlowRateScale
 
-		for group, groupRates := range lc.InboundFlowRates {
-			var newSum, oldSum float32
-			for ap, rate := range groupRates {
-				newSum += rate
-				oldSum += s.State.LaunchConfig.InboundFlowRates[group][ap]
-			}
-			newSum *= lc.InboundFlowRateScale
-			oldSum *= s.State.LaunchConfig.InboundFlowRateScale
-
-			if newSum != oldSum {
-				s.NextInboundSpawn[group] = s.State.SimTime.Add(randomInitialWait(newSum, s.Rand))
-			}
+		if newSum != oldSum {
+			s.NextInboundSpawn[group] = s.State.SimTime.Add(randomInitialWait(newSum, s.Rand))
 		}
 	}
 
