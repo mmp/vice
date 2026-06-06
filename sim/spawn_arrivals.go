@@ -174,9 +174,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
 	}
 
-	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
-
-	return ac, err
+	return ac, s.associateAtSpawn(ac, nasFp)
 }
 
 func (s *Sim) currentCallsigns() []av.ADSBCallsign {
@@ -384,7 +382,33 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
 	}
 
-	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
+	return ac, s.associateAtSpawn(ac, nasFp)
+}
 
-	return ac, err
+// associateAtSpawn registers nasFp with the STARS computer and, if the
+// tracking controller is virtual, immediately associates it with ac so it
+// never appears in UnassociatedFlightPlans / the STARS FLIGHT PLAN list.
+// External-facility-owned flight plans stay unassociated until the handoff
+// into the facility completes.
+func (s *Sim) associateAtSpawn(ac *Aircraft, nasFp NASFlightPlan) error {
+	created, err := s.STARSComputer.CreateFlightPlan(nasFp)
+	if err != nil {
+		return err
+	}
+	if !s.isVirtualController(created.TrackingController) {
+		return nil
+	}
+	fp := s.STARSComputer.takeFlightPlanByACID(created.ACID)
+	if fp == nil {
+		return nil
+	}
+	if s.State.IsLocalController(fp.TrackingController) {
+		fp.LastLocalController = fp.TrackingController
+	}
+	ac.AssociateFlightPlan(fp)
+	s.eventStream.Post(Event{
+		Type: FlightPlanAssociatedEvent,
+		ACID: fp.ACID,
+	})
+	return nil
 }
