@@ -509,6 +509,38 @@ func TestLocalizerFlythroughSteepIntercept(t *testing.T) {
 	f.Run()
 }
 
+// TestOvershootPreservesSpeed verifies that after the pilot announces an
+// overshoot and requests vectors, the aircraft holds its current IAS rather
+// than accelerating to the default 250 below 10k.
+func TestOvershootPreservesSpeed(t *testing.T) {
+	apg := LookupApproachGeometry(t, "KJFK", "I22L")
+	pos := apg.ThresholdOffset(10, -2)
+
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString() + " HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  3000,
+		InitialSpeed:     180,
+		InitialHeading:   280,
+	})
+	f.ExpectApproach("I22L")
+	f.ClearedApproach("I22L")
+
+	f.AfterTicks(300, func(f *FlightTest) {
+		if !f.nav.Approach.MissedApproachIntercept {
+			t.Errorf("expected MissedApproachIntercept to be set after overshoot")
+		}
+		if f.nav.FlightState.IAS > 200 {
+			t.Errorf("IAS %.0f: expected speed to be held near 180 after overshoot, not climbing toward 250",
+				f.nav.FlightState.IAS)
+		}
+	})
+
+	f.Run()
+}
+
 // TestLocalizerFlythroughLateTurn verifies that an aircraft with a
 // reasonable intercept angle (~24°) but positioned very close to the
 // localizer (0.3nm) overshoots because it crosses through before or

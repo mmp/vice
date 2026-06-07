@@ -224,6 +224,8 @@ type NavApproach struct {
 	GoAroundNoApproachClearance bool // pilot should go around (reached FAF without clearance)
 	RequestVectors              bool // pilot should request vectors (overshot localizer)
 	RequestAltitude             bool // pilot should request altitude after being vectored off STAR/approach
+	MissedApproachIntercept     bool // bad vectors -> pilot was unable to intercept
+	ApproachClearanceCancelled  bool // controller canceled approach clearance
 	InterceptState              InterceptState
 	PassedApproachFix           bool // have we passed a fix on the approach yet?
 	PassedFAF                   bool

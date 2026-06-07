@@ -18,3 +18,4 @@
 - Improve handling of arrival airport winds on final approach (radarcontacto)
 - Facility engineering
   - Added /intercept to indicate virtually-controlled aircraft should intercept the approach
+- Fixed bug where aircraft would speed up after missing an approach intercept

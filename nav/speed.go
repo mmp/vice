@@ -276,8 +276,9 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 		return ias, MaximumRate
 	}
 
-	if nav.Approach.Cleared {
-		// Don't speed up if we're cleared and farther away
+	if nav.Approach.Cleared || nav.Approach.MissedApproachIntercept || nav.Approach.ApproachClearanceCancelled {
+		// Don't speed up if we're cleared (or recently were, before an overshoot recovery or
+		// controller cancellation)
 		return nav.FlightState.IAS, MaximumRate
 	}
 

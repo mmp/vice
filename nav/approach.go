@@ -248,6 +248,7 @@ func (nav *Nav) approachOvershootRequestVectors() {
 	nav.Approach.InterceptState = NotIntercepting
 	nav.Approach.Cleared = false
 	nav.Approach.RequestVectors = true
+	nav.Approach.MissedApproachIntercept = true
 }
 
 func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av.Approach, error) {
@@ -943,6 +944,8 @@ func (nav *Nav) applyClearedApproachState() (cancelHold bool) {
 	}
 	nav.Approach.Cleared = true
 	nav.Approach.StandbyApproach = false
+	nav.Approach.MissedApproachIntercept = false
+	nav.Approach.ApproachClearanceCancelled = false
 	nav.Speed = NavSpeed{}
 	return
 }

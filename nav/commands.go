@@ -1261,6 +1261,7 @@ func (nav *Nav) CancelApproachClearance() av.CommandIntent {
 	nav.Approach.Cleared = false
 	nav.Approach.InterceptState = NotIntercepting
 	nav.Approach.NoPT = false
+	nav.Approach.ApproachClearanceCancelled = true
 
 	return av.ApproachIntent{Type: av.ApproachCancel}
 }
