@@ -430,3 +430,91 @@ func BoundLatLongCircle(c Point2LL, r float32) Extent2D {
 		P1: [2]float32{c[0] + dlong, c[1] + dlat},
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Point2LL path encoding
+//
+// EncodePathBytes / DecodePathBytes are a matched pair that compactly
+// encode a slice of Point2LL as a byte stream. The encoding is intended
+// to feed into a downstream entropy coder (flate, zstd). It is exactly
+// 8*len(pts) bytes long and lossless.
+//
+// The filter has two stages, applied independently to the x and y
+// coordinate streams:
+//
+//   1. Within-stream delta: each float32 is bit-cast to uint32 and
+//      delta-encoded against the previous element (starting from 0).
+//      Adjacent path coordinates differ by small amounts so the bit-cast
+//      delta is usually a small integer with predictable upper bytes.
+//   2. Byte-split: the resulting n uint32 deltas are transposed into
+//      four byte streams of length n — byte 0 of all values, then
+//      byte 1, then 2, then 3. This exposes the high-order exponent
+//      bytes' redundancy to the downstream entropy coder.
+//
+// The output layout is: [x stream: 4*n bytes][y stream: 4*n bytes].
+//
+// This empirically compresses to roughly 40-70% of the raw float bytes
+// after flate.BestCompression for typical lat/lon polylines.
+//
+// Based on learnings from https://aras-p.info/blog/2023/01/29/Float-Compression-0-Intro/
+
+// EncodePathBytes appends the encoded representation of pts to b and
+// returns the extended slice. The output length is 8*len(pts).
+func EncodePathBytes(b []byte, pts []Point2LL) []byte {
+	if len(pts) == 0 {
+		return b
+	}
+	b = appendDeltaByteSplitAxis(b, pts, 0)
+	b = appendDeltaByteSplitAxis(b, pts, 1)
+	return b
+}
+
+// DecodePathBytes reads len(out)*8 bytes from stream and writes the
+// decoded path into out. It returns the number of bytes consumed, or an
+// error if stream is too short.
+func DecodePathBytes(stream []byte, out []Point2LL) (int, error) {
+	if len(out) == 0 {
+		return 0, nil
+	}
+	need := 8 * len(out)
+	if len(stream) < need {
+		return 0, fmt.Errorf("DecodePathBytes: stream length %d < %d required for %d points",
+			len(stream), need, len(out))
+	}
+	half := 4 * len(out)
+	decodeDeltaByteSplitAxis(stream[:half], out, 0)
+	decodeDeltaByteSplitAxis(stream[half:half*2], out, 1)
+	return need, nil
+}
+
+func appendDeltaByteSplitAxis(b []byte, pts []Point2LL, axis int) []byte {
+	n := len(pts)
+	deltas := make([]uint32, n)
+	var prev uint32
+	for i, p := range pts {
+		cur := gomath.Float32bits(p[axis])
+		deltas[i] = cur - prev // wraparound on uint32 is intentional
+		prev = cur
+	}
+	for byteIdx := range 4 {
+		for _, u := range deltas {
+			b = append(b, byte(u>>(8*byteIdx)))
+		}
+	}
+	return b
+}
+
+func decodeDeltaByteSplitAxis(stream []byte, out []Point2LL, axis int) {
+	n := len(out)
+	var prev uint32
+	for i := range n {
+		var u uint32
+		u |= uint32(stream[0*n+i]) << 0
+		u |= uint32(stream[1*n+i]) << 8
+		u |= uint32(stream[2*n+i]) << 16
+		u |= uint32(stream[3*n+i]) << 24
+		cur := prev + u
+		out[i][axis] = gomath.Float32frombits(cur)
+		prev = cur
+	}
+}
