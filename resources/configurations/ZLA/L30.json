@@ -264,7 +264,7 @@
       "VERKN": {},
       "ZAYNE": {}
     },
-    "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZLA-stars.mappack",
     "airspace_awareness": [
       {
         "fixes": ["FRNCK", "TUKRR", "VERKN"],

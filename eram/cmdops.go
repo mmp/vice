@@ -413,8 +413,8 @@ func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (C
 	ep.allVideoMaps = radar.BuildERAMClientVideoMaps(maps.Maps)
 
 	for _, eramMap := range maps.Maps {
-		if ps.VideoMapBrightness[eramMap.BcgName] == 0 {
-			ps.VideoMapBrightness[eramMap.BcgName] = 12
+		if ps.VideoMapBrightness[eramMap.BCGName] == 0 {
+			ps.VideoMapBrightness[eramMap.BCGName] = 12
 		}
 	}
 

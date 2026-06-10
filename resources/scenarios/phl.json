@@ -4962,7 +4962,7 @@
       "configuration": "21X",
       "center": "N039.55.00.306,W074.59.15.972",
       "range": 30,
-      "default_maps": ["PHL West"],
+      "default_maps": ["PHL-201 (West)"],
       "wind": {
         "direction": "190-250"
       }
@@ -5029,7 +5029,7 @@
         }
       },
       "configuration": "27L",
-      "default_maps": ["PHL West"],
+      "default_maps": ["PHL-201 (West)"],
       "departure_runways": [
         {
           "airport": "KPHL",
@@ -5103,7 +5103,7 @@
         }
       },
       "configuration": "27L",
-      "default_maps": ["PHL East"],
+      "default_maps": ["PHL-202 (East)"],
       "departure_runways": [
         {
           "airport": "KPHL",

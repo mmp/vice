@@ -448,16 +448,16 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			// Overlay buttons should receive input even if occlusion is active
 			toolbarDrawState.processingOcclusion = true
 			for i, vm := range maps {
-				label := fmt.Sprintf("%s\n%d", vm.BcgName, ps.VideoMapBrightness[vm.BcgName])
+				label := fmt.Sprintf("%s\n%d", vm.BCGName, ps.VideoMapBrightness[vm.BCGName])
 				if i == 10 {
 					toolbarDrawState.buttonCursor = [2]float32{e0[0], e0[1] - buttonSize(buttonFull, scale)[1] - 2}
 					// toolbarDrawState.offsetBottom = true
 					// toolbarDrawState.noTearoff = true
 				}
 				if ep.drawToolbarMainButton(ctx, label, 0, scale, false, false) {
-					brightness := ps.VideoMapBrightness[vm.BcgName]
+					brightness := ps.VideoMapBrightness[vm.BCGName]
 					handleClick(ep, &brightness, 0, 100, 2)
-					ps.VideoMapBrightness[vm.BcgName] = brightness
+					ps.VideoMapBrightness[vm.BCGName] = brightness
 				}
 				if i == 19 {
 					break

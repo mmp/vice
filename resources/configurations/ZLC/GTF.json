@@ -27,7 +27,7 @@
     },
     "center": "KGTF",
     "scratchpads": {},
-    "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZLC-stars.mappack",
     "areas": {
       "1": {
         "video_maps": ["STARS-GTF_N-RVM__North RVM", "STARS-GTF_MVA__MVA"]

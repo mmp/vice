@@ -1514,7 +1514,7 @@
       "WALET": {},
       "YAALL": {}
     },
-    "video_map_file": "videomaps/A80-videomaps.gob.zst",
+    "video_map_file": "videomaps/A80.mappack",
     "filters": {
       "inhibit_ca": [
         {

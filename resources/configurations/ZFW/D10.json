@@ -809,7 +809,7 @@
       "WINDU": {},
       "ZALEA": {}
     },
-    "video_map_file": "videomaps/ZFW-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZFW.mappack",
     "areas": {
       "1": {
         "default_airport": "KDFW",

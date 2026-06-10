@@ -45,7 +45,7 @@
       "KURSE": {},
       "LHO": {}
     },
-    "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZDV-stars.mappack",
     "areas": {
       "1": {
         "video_maps": [

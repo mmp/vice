@@ -1,5 +1,5 @@
 // stars/stars.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package stars
@@ -899,12 +899,22 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	usedIds := make(map[int]any)
 
-	// Helper to add a ClientVideoMap directly (for airspace volumes)
+	// addMap inserts a ClientVideoMap into allVideoMaps, probing forward
+	// through STARS Id space [1, 1000) for a free slot starting at the
+	// map's Id. Maps with Id == 0 are appended without claiming
+	// a slot (they have no DCB Id and are unreachable via the [NUM]
+	// command; they still show up in the MAPS list if they carry a label).
+	// Returns the assigned Id, or 0 if no slot was claimed.
 	addMap := func(vm radar.ClientVideoMap) {
+		if vm.Id == 0 {
+			sp.allVideoMaps = append(sp.allVideoMaps, vm)
+		}
 		for i := range 999 {
 			// See if id is available
 			id := (vm.Id + i) % 1000
-
+			if id == 0 {
+				continue // 0 isn't a valid DCB Id
+			}
 			if _, ok := usedIds[id]; !ok {
 				vm.Id = id
 				sp.allVideoMaps = append(sp.allVideoMaps, vm)
@@ -922,30 +932,31 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	}
 
 	// First grab the video maps needed for the DCB
-	dcbMaps := util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
-		return slices.Contains(client.State.ControllerVideoMaps, vm.Name)
-	})
-
-	// Convert to ClientVideoMaps for rendering
-	sp.allVideoMaps = radar.BuildClientVideoMaps(dcbMaps)
-	for _, vm := range sp.allVideoMaps {
-		usedIds[vm.Id] = nil
-	}
-
-	// Now make a second pass through the maps and add all of the ones that
-	// don't have a conflicting ID with an existing map.
-	var additionalMaps []sim.VideoMap
-	for _, vm := range vmf.Maps {
-		if _, ok := usedIds[vm.Id]; !ok {
-			additionalMaps = append(additionalMaps, vm)
-			usedIds[vm.Id] = nil
+	var dcbMaps []sim.VideoMap
+	addedNames := make(map[string]bool)
+	for _, name := range client.State.ControllerVideoMaps {
+		if m, ok := vmf.Maps[name]; ok && !addedNames[name] {
+			dcbMaps = append(dcbMaps, m)
+			addedNames[name] = true
 		}
 	}
+	for _, vm := range radar.BuildClientVideoMaps(dcbMaps) {
+		addMap(vm)
+	}
 
-	// Convert and append the additional maps
-	if len(additionalMaps) > 0 {
-		clientMaps := radar.BuildClientVideoMaps(additionalMaps)
-		sp.allVideoMaps = append(sp.allVideoMaps, clientMaps...)
+	// Then add every other library map. Maps colliding with a DCB-held
+	// Id get probe-reassigned so they stay reachable via [NUM] and
+	// visible in the MAPS list. Iterate by sorted name so the warning
+	// (and the choice of which map keeps a collided Id) is deterministic
+	// across runs.
+	var additionalMaps []sim.VideoMap
+	for name, vm := range util.SortedMap(vmf.Maps) {
+		if !addedNames[name] {
+			additionalMaps = append(additionalMaps, vm)
+		}
+	}
+	for _, vm := range radar.BuildClientVideoMaps(additionalMaps) {
+		addMap(vm)
 	}
 
 	drawAirspace := func(a av.AirspaceVolume, cb *renderer.CommandBuffer) {

@@ -711,7 +711,7 @@
       "WORMS": {},
       "ZALEN": {}
     },
-    "video_map_file": "videomaps/F11-videomaps.gob.zst",
+    "video_map_file": "videomaps/F11.mappack",
     "range": 30,
     "airspace_awareness": [
       {

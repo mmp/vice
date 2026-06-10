@@ -464,7 +464,7 @@
       "WOLFO": {},
       "ZFP": {}
     },
-    "video_map_file": "videomaps/ZMA-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZMA.mappack",
     "coordination_fixes": {
       "HULKY": [
         {

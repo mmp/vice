@@ -110,7 +110,7 @@
       "ITH": "ITH",
       "RKA": "RKA"
     },
-    "video_map_file": "videomaps/SYR-videomaps.gob.zst",
+    "video_map_file": "videomaps/SYR.mappack",
     "areas": {
       "1": {
         "video_maps": [

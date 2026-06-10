@@ -189,7 +189,7 @@
       "LAMMA": {},
       "ILIND": {}
     },
-    "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZJX-stars.mappack",
     "airspace_awareness": [
       {
         "fixes": ["CRG"],

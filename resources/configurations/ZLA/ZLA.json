@@ -211,7 +211,7 @@
     },
     "center": "KWANG",
     "range": 60,
-    "video_map_file": "videomaps/ZLA-eram-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZLA.mappack",
     "coordination_fixes": {
       "CHOWW": [
         {

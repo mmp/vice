@@ -772,25 +772,21 @@ func drawCenteredLabel(label string, width, initialCursorX float32, font *render
 }
 
 // findVideoMapsFromLibrary extracts the requested video maps by name from a library.
-// Returns pointers into library.Maps so the per-frame call doesn't copy the
-// (~150-byte) VideoMap struct on every append, and pre-sizes the result slice
-// so no growslice/mallocgc fires for the typical 1–2 maps per block.
-func findVideoMapsFromLibrary(library *sim.VideoMapLibrary, mapNames []string) ([]*sim.VideoMap, []error) {
+// The returned slice carries VideoMap by value; the struct's heavy payload
+// (Lines/Symbols/Labels) is slice-backed and shared with the library, so the copy is cheap.
+func findVideoMapsFromLibrary(library *sim.VideoMapLibrary, mapNames []string) ([]sim.VideoMap, []error) {
 	if library == nil {
 		return nil, nil
 	}
 
-	videoMaps := make([]*sim.VideoMap, 0, len(mapNames))
+	videoMaps := make([]sim.VideoMap, 0, len(mapNames))
 	var errs []error
-loop:
 	for _, mapName := range mapNames {
-		for i := range library.Maps {
-			if library.Maps[i].Name == mapName {
-				videoMaps = append(videoMaps, &library.Maps[i])
-				continue loop
-			}
+		if m, ok := library.Maps[mapName]; ok {
+			videoMaps = append(videoMaps, m)
+		} else {
+			errs = append(errs, fmt.Errorf("%s: video map not found in library", mapName))
 		}
-		errs = append(errs, fmt.Errorf("%s: video map not found in library", mapName))
 	}
 	return videoMaps, errs
 }
@@ -1228,7 +1224,7 @@ func (p briefMapProjection) rotNmToLatLon(rotX, rotY float32) math.Point2LL {
 // explicit lat/lon rectangle (rotated bounding box). Otherwise the
 // projection is fit to the content (annotations + airspace, falling back
 // to video map lines), padded, and aspect-capped.
-func calculateMapProjection(briefMap *brief.VideoMapBlock, videoMaps []*sim.VideoMap, state *client.SimState) (briefMapProjection, error) {
+func calculateMapProjection(briefMap *brief.VideoMapBlock, videoMaps []sim.VideoMap, state *client.SimState) (briefMapProjection, error) {
 	useExplicitExtent := briefMap.Extent != [2]math.Point2LL{}
 
 	center := state.GetInitialCenter()
@@ -1280,11 +1276,11 @@ func calculateMapProjection(briefMap *brief.VideoMapBlock, videoMaps []*sim.Vide
 		}
 		if !sawAnnotation {
 			for _, vm := range videoMaps {
-				for _, line := range vm.Lines {
-					for _, p := range line {
-						extend(p)
-					}
-				}
+				b := vm.Bounds()
+				extend(math.Point2LL{b.P0[0], b.P0[1]})
+				extend(math.Point2LL{b.P1[0], b.P0[1]})
+				extend(math.Point2LL{b.P0[0], b.P1[1]})
+				extend(math.Point2LL{b.P1[0], b.P1[1]})
 			}
 		}
 	}
@@ -1502,7 +1498,7 @@ func drawArrowhead(drawList *imgui.DrawList, p1, p2 imgui.Vec2, color uint32) {
 // into drawList in screen coordinates. Airspace draws were previously split
 // out (back when the rest was baked into a cached imgui.DrawList); now that
 // everything is rebuilt every frame there's no benefit to keeping them apart.
-func drawBriefMap(drawList *imgui.DrawList, briefMap *brief.VideoMapBlock, videoMaps []*sim.VideoMap,
+func drawBriefMap(drawList *imgui.DrawList, briefMap *brief.VideoMapBlock, videoMaps []sim.VideoMap,
 	state *client.SimState, disabledTCPs map[string]bool, cursorOverCanvas bool, cursorLatLon math.Point2LL, latLonToScreen func(math.Point2LL) imgui.Vec2) []error {
 	videoMapColorU32 := imgui.ColorU32Vec4(videoMapColor)
 	annotationColorU32 := imgui.ColorU32Vec4(annotationColor)
@@ -1531,7 +1527,7 @@ func drawBriefMap(drawList *imgui.DrawList, briefMap *brief.VideoMapBlock, video
 	maxPolyLen := 0
 	for _, vm := range videoMaps {
 		for _, line := range vm.Lines {
-			maxPolyLen = max(maxPolyLen, len(line))
+			maxPolyLen = max(maxPolyLen, len(line.Points))
 		}
 	}
 	for _, ann := range briefMap.Annotations {
@@ -1572,7 +1568,7 @@ func drawBriefMap(drawList *imgui.DrawList, briefMap *brief.VideoMapBlock, video
 
 	for _, vm := range videoMaps {
 		for _, line := range vm.Lines {
-			drawPolyline(line, videoMapColorU32, imgui.DrawFlagsNone)
+			drawPolyline(line.Points, videoMapColorU32, imgui.DrawFlagsNone)
 		}
 	}
 

@@ -1680,7 +1680,7 @@
         "short_name": "FOI"
       }
     },
-    "video_map_file": "videomaps/ZOA-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZOA.mappack",
     "airspace_awareness": [
       {
         "fixes": ["NTELL", "KAYEX", "SUSEY", "KTINA", "JFREE", "VLREE", "TECKY"],

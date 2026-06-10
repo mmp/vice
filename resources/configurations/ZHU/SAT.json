@@ -258,7 +258,7 @@
         ]
       }
     },
-    "video_map_file": "videomaps/SAT-videomaps.gob.zst",
+    "video_map_file": "videomaps/SAT.mappack",
     "airspace_awareness": [
       {
         "fixes": ["ALISS", "TATAR", "LEJON"],

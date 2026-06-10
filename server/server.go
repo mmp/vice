@@ -78,7 +78,8 @@ import (
 // 68: sim.Future{Field,Traffic}Checks -> map
 // 69: METAR JSON shape: WindDir round-trips via custom Marshal/UnmarshalJSON; ICAO populated by Decode
 // 70: scenario briefs
-const ViceSerializeVersion = 70
+// 71: video map rework
+const ViceSerializeVersion = 71
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion
@@ -139,7 +140,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 		return 0, nil, errorLogger, ""
 	}
 
-	scenarioGroups, scenarioCatalogs, mapManifests, briefs, extraScenarioErrors :=
+	scenarioGroups, scenarioCatalogs, mapSpecs, briefs, extraScenarioErrors :=
 		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, config.ExtraScenarioBrief, false /* skipVideoMaps */, &errorLogger, lg)
 	if errorLogger.HaveErrors() {
 		return 0, nil, errorLogger, ""
@@ -153,7 +154,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	serverFunc := func() {
 		server := rpc.NewServer()
 
-		sm := NewSimManager(scenarioGroups, scenarioCatalogs, mapManifests, briefs, config.ServerAddress, config.IsLocal, lg)
+		sm := NewSimManager(scenarioGroups, scenarioCatalogs, mapSpecs, briefs, config.ServerAddress, config.IsLocal, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)

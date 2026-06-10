@@ -1,18 +1,25 @@
 // cmd/dat2vice/main.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+//
+// Reads a JSON manifest of DAT-format STARS video maps + the DAT files
+// themselves, and emits a vice video map library in the new format
+// (<basename>.mappack).
+//
+// Usage:
+//
+//	dat2vice [-radius nm] <manifest.json> <result-basename>
 
 package main
 
 import (
 	"bufio"
 	"bytes"
-	"encoding/gob"
 	"flag"
 	"fmt"
 	"io"
 	"os"
-	"slices"
 
-	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -66,7 +73,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	vmf := sim.VideoMapLibrary{}
+	lib := &sim.VideoMapLibrary{Maps: make(map[string]sim.VideoMap, len(manifestMaps))}
+	usedIds := make(map[int]string) // Id -> Name for collision messages
 	for _, m := range manifestMaps {
 		d := m.Radius
 		if d == 0 {
@@ -77,48 +85,35 @@ func main() {
 			fmt.Printf("%v\n", err)
 			os.Exit(1)
 		}
-		if slices.ContainsFunc(vmf.Maps, func(m sim.VideoMap) bool { return sm.Id == m.Id }) {
-			fmt.Printf("Multiple maps have the same id: %d\n", sm.Id)
+		// Check name uniqueness
+		if _, dup := lib.Maps[sm.Name]; dup {
+			fmt.Printf("duplicate map name: %q\n", sm.Name)
 			os.Exit(1)
 		}
-
-		vmf.Maps = append(vmf.Maps, sm)
+		// Id uniqueness (preserves the legacy DAT importer's invariant).
+		if sm.Id != 0 {
+			if other, dup := usedIds[sm.Id]; dup {
+				fmt.Printf("Multiple maps have the same id %d: %q and %q\n", sm.Id, other, sm.Name)
+				os.Exit(1)
+			}
+			usedIds[sm.Id] = sm.Name
+		}
+		lib.Maps[sm.Name] = sm
 		fmt.Printf("read %s\n", m.Filename)
 	}
 
-	gf, err := os.Create(args[1] + "-videomaps.gob.zst")
+	out := args[1] + ".mappack"
+	gf, err := os.Create(out)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
 	defer gf.Close()
-
-	zw, err := zstd.NewWriter(gf, zstd.WithEncoderLevel(zstd.SpeedBestCompression))
-	if err != nil {
+	if err := sim.SaveVideoMapLibrary(gf, lib); err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
-	defer zw.Close()
-	if err = gob.NewEncoder(zw).Encode(vmf); err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
-	}
-
-	names := make(map[string]any)
-	for _, m := range vmf.Maps {
-		names[m.Name] = nil
-	}
-	mfn := args[1] + "-manifest.gob"
-	mf, err := os.Create(mfn)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
-	}
-	defer mf.Close()
-	if err = gob.NewEncoder(mf).Encode(names); err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
-	}
+	fmt.Printf("wrote %s\n", out)
 }
 
 func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
@@ -149,6 +144,7 @@ func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
 
 	var center math.Point2LL
 	var currentLineStrip []math.Point2LL
+	var lines [][]math.Point2LL
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		line := []byte(scanner.Text())
@@ -191,8 +187,9 @@ func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
 		if len(line) == 0 {
 			continue
 		} else if string(line) == "LINE " {
-			// start a new line
-			sm.Lines = append(sm.Lines, currentLineStrip)
+			if currentLineStrip != nil {
+				lines = append(lines, currentLineStrip)
+			}
 			currentLineStrip = nil
 		} else if len(line) == 34 && string(line[:3]) == "GP " {
 			// Assume this format is 100% column based for efficiency...
@@ -207,14 +204,15 @@ func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
 	}
 
 	if currentLineStrip != nil {
-		sm.Lines = append(sm.Lines, currentLineStrip)
+		lines = append(lines, currentLineStrip)
 	}
 
 	if center[0] == 0 && center[1] == 0 {
 		return sm, fmt.Errorf("Center not found in DAT file")
 	}
 
-	sm.Lines = util.FilterSlice(sm.Lines, func(strip []math.Point2LL) bool {
+	// Clip strips entirely outside the radius.
+	filtered := util.FilterSlice(lines, func(strip []math.Point2LL) bool {
 		for _, p := range strip {
 			if math.NMDistance2LL(p, center) > maxDist {
 				return false
@@ -222,6 +220,19 @@ func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
 		}
 		return true
 	})
+
+	// DAT-format files only contain lines; no symbols or labels. Carry
+	// the polylines onto sm.Lines as solid VideoMapLine entries.
+	for _, strip := range filtered {
+		if len(strip) < 2 {
+			continue
+		}
+		sm.Lines = append(sm.Lines, sim.VideoMapLine{
+			Points:    strip,
+			Style:     sim.LineStyleSolid,
+			Thickness: 1,
+		})
+	}
 
 	return sm, nil
 }

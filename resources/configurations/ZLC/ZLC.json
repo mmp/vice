@@ -214,7 +214,7 @@
         "slope_angle": 0.175
       }
     },
-    "video_map_file": "videomaps/ZLC-eram-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZLC.mappack",
     "coordination_fixes": {
       "CRAZI": [
         {

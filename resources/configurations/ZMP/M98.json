@@ -356,7 +356,7 @@
       "FGT": {},
       "GEP": {}
     },
-    "video_map_file": "videomaps/ZMP-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZMP.mappack",
     "airspace_awareness": [
       {
         "fixes": ["SNINE", "LSE", "STILS", "TAXEE", "JEDET", "EAU"],

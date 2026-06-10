@@ -257,7 +257,7 @@
         "abbreviation": "G"
       }
     },
-    "video_map_file": "videomaps/aac-videomaps.gob.zst",
+    "video_map_file": "videomaps/aac.mappack",
     "airspace_awareness": [
       {
         "fixes": ["COLIN", "MAYES"],

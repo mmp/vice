@@ -473,7 +473,7 @@
         "short_name": "BNY"
       }
     },
-    "video_map_file": "videomaps/ZAB-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZAB.mappack",
     "airspace_awareness": [
       {
         "fixes": ["ZEPER"],

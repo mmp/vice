@@ -774,7 +774,7 @@
       "WHITE": {},
       "ZIMMZ": {}
     },
-    "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZNY-N90.mappack",
     "filters": {
       "auto_acquisition": [
         {
@@ -1395,11 +1395,12 @@
           "LGA LOC 31",
           "LGA-HPN ARR/DEP",
           "LGA RNAV",
-          "BGM-101",
+          "SWF ILS RWY 27 BDRY",
           "",
           "NY Class B",
           "",
           "NE HELI RNAV ROUTES",
+          "",
           "HPN 16/34 GPS FIXES",
           "NK78 GPS",
           "ISP ARR/DEP",
@@ -1407,7 +1408,20 @@
           "JFK ARR/DEP RWY 4L/R",
           "JFK ARR/DEP RWY 13L/R",
           "",
-          ""
+          "LGA LOC 31",
+          "N90 TFR",
+          "",
+          "R5001/HELI GPS",
+          "Coast",
+          "EOVM",
+          "MVA",
+          "",
+          "",
+          "CATSKILL AREA",
+          "LIBERTY DEP",
+          "JFK ARR/DEP",
+          "JFK ARR/DEP RWY 22L/R",
+          "JFK ARR/DEP RWY 31L/R"
         ],
         "center": "KLGA",
         "range": 60

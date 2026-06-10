@@ -56,7 +56,7 @@
       }
     },
     "scratchpads": {},
-    "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZBW-stars.mappack",
     "areas": {
       "1": {
         "video_maps": ["BGR MAIN", "BGR EOVM", "BGR VFR", "BGR MVA", "BGR RVM"]

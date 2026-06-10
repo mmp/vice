@@ -132,7 +132,7 @@
       "MLP": {},
       "GLANC": {}
     },
-    "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZAU.mappack",
     "airspace_awareness": [
       {
         "fixes": ["ALL"],

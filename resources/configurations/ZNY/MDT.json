@@ -182,7 +182,7 @@
       },
       "COFAX": {}
     },
-    "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZNY-MDT.mappack",
     "airspace_awareness": [
       {
         "fixes": ["LVZ", "ETX", "FJC", "LRP", "PTW", "ARD", "DQO", "VINNY", "HWANG"],

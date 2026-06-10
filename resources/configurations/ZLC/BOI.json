@@ -37,7 +37,7 @@
     },
     "center": "KBOI",
     "scratchpads": {},
-    "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZLC-stars.mappack",
     "areas": {
       "1": {
         "video_maps": [

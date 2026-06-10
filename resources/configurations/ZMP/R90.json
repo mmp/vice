@@ -291,7 +291,7 @@
       "TKO": {},
       "TOP": {}
     },
-    "video_map_file": "videomaps/ZMP-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZMP.mappack",
     "airspace_awareness": [
       {
         "fixes": [

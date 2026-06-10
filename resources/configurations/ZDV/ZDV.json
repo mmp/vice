@@ -196,7 +196,7 @@
     },
     "center": "N039.58.19.255,W104.45.04.202",
     "range": 150,
-    "video_map_file": "videomaps/ZDV-eram-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZDV.mappack",
     "coordination_fixes": {
       "TESSY": [
         {

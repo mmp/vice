@@ -200,7 +200,7 @@ func parseWaypointAnnotation(annotationStr string) (WaypointAnnotation, error) {
 // parseVideoMapContent parses the videomap code block content in key:value format.
 // Format:
 //
-//	file: videomaps/FILE.gob.zst
+//	file: videomaps/FILE.mappack
 //	map: MAP_NAME1
 //	map: MAP_NAME2
 //	width: 50%

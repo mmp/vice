@@ -205,7 +205,7 @@
     },
     "center": "GDM",
     "range": 70,
-    "video_map_file": "videomaps/ZBW-eram-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZBW.mappack",
     "coordination_fixes": {
       "FLOSI": [
         {

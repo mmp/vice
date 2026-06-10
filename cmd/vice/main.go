@@ -61,7 +61,7 @@ var (
 	broadcastPassword     = flag.String("password", "", "`password` to authenticate with server for broadcast message")
 	resetSim              = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
 	showRoutes            = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given `airport`")
-	listMaps              = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY-videomaps.gob.zst)")
+	listMaps              = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY.mappack)")
 	listScenarios         = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
 	runSim                = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
 	navLog                = flag.Bool("navlog", false, "enable navigation logging")
@@ -193,7 +193,9 @@ func runLint(lg *log.Logger) error {
 		}
 	}
 	for m := range videoMaps {
-		sim.CheckVideoMapManifest(m, &e)
+		if _, err := sim.LoadVideoMapSpec(m); err != nil {
+			e.Error(err)
+		}
 	}
 
 	if e.HaveErrors() {

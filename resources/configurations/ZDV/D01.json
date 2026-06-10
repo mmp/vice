@@ -489,7 +489,7 @@
       },
       "SNY": {}
     },
-    "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZDV-stars.mappack",
     "controllers": {
       "1I": {
         "video_maps": [

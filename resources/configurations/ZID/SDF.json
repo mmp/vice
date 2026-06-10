@@ -130,7 +130,7 @@
       "SHIPR": {},
       "STREP": {}
     },
-    "video_map_file": "videomaps/ZID-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZID.mappack",
     "coordination_fixes": {
       "CHERI": [
         {

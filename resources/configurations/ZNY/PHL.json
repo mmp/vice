@@ -355,7 +355,7 @@
       "STOEN": {},
       "WHITE": {}
     },
-    "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZNY-PHL.mappack",
     "coordination_fixes": {
       "OOD": [
         {
@@ -425,15 +425,13 @@
       "1": {
         "default_airport": "KPHL",
         "video_maps": [
-          "PHL West",
-          "P Class B",
+          "PHL-201 (West)",
+          "PHL-016 (Class B)",
           "",
-          "PHL East",
-          "PHL MVA",
+          "PHL-202 (East)",
+          "PHL-086 (MVA)",
           "",
-          "PHL ATCT West",
-          "",
-          "",
+          "PHL-206 (ATCT West)",
           "",
           "",
           "",
@@ -447,7 +445,9 @@
           "",
           "",
           "",
-          "PHL ATCT East",
+          "",
+          "",
+          "PHL-205 (ATCT East)",
           "",
           "",
           "",

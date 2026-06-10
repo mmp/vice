@@ -100,7 +100,7 @@
       "JLPNO": "JLP",
       "FLAVA": "FLA"
     },
-    "video_map_file": "videomaps/ZAB-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZAB.mappack",
     "areas": {
       "1": {
         "video_maps": ["A001 East Flow", "A002 West Flow", "A011 ABQ MVA", "A041 Class C"]

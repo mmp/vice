@@ -65,7 +65,7 @@ type SimManager struct {
 	// Helpers and such
 	wxProvider     *wx.Provider
 	providersReady chan struct{}
-	mapManifests   map[string]*sim.VideoMapManifest
+	mapSpecs       map[string]*sim.VideoMapSpec
 	lg             *log.Logger
 
 	// Stats and internal details
@@ -134,14 +134,14 @@ func (sm *SimManager) loadBrief(facility string) (string, error) {
 // Constructor and Initialization
 
 func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup, scenarioCatalogs map[string]map[string]*ScenarioCatalog,
-	mapManifests map[string]*sim.VideoMapManifest, briefs *briefRegistry,
+	mapSpecs map[string]*sim.VideoMapSpec, briefs *briefRegistry,
 	serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
 	sm := &SimManager{
 		scenarioGroups:   scenarioGroups,
 		scenarioCatalogs: scenarioCatalogs,
 		sessionsByName:   make(map[string]*simSession),
 		sessionsByToken:  make(map[string]*simSession),
-		mapManifests:     mapManifests,
+		mapSpecs:         mapSpecs,
 		briefs:           briefs,
 		startTime:        time.Now(),
 		local:            isLocal,
@@ -426,8 +426,8 @@ func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token 
 	hashes := make(map[string][]byte)
 	maps.Copy(hashes, sm.briefs.videoMapHashes[session.sim.Facility()])
 	if _, present := hashes[vmFile]; !present && vmFile != "" {
-		if manifest, ok := sm.mapManifests[vmFile]; ok {
-			if h, err := manifest.Hash(); err == nil {
+		if spec, ok := sm.mapSpecs[vmFile]; ok {
+			if h, err := spec.Hash(); err == nil {
 				hashes[vmFile] = h
 			}
 		}

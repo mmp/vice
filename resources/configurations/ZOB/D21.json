@@ -381,7 +381,7 @@
       "ZEGBI": {},
       "ZETTR": {}
     },
-    "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZOB.mappack",
     "coordination_fixes": {
       "BONZZ": [
         {

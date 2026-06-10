@@ -90,7 +90,7 @@
     "significant_points": {
       "STEWW": {}
     },
-    "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
+    "video_map_file": "videomaps/ZLC-stars.mappack",
     "coordination_fixes": {
       "CARTR": [
         {
