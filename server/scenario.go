@@ -609,18 +609,16 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 		}
 	}
 
-	if mapSpec != nil {
-		for _, dm := range s.DefaultMaps {
-			if !mapSpec.HasMap(dm) {
-				e.ErrorString(`video map %q in "default_maps" not found. Use -listmaps `+
-					"<path to Zxx.mappack> to show available video maps for an ARTCC.", dm)
-			}
+	for _, dm := range s.DefaultMaps {
+		if !mapSpec.HasMap(dm) {
+			e.ErrorString(`video map %q in "default_maps" not found. Use -listmaps `+
+				"<path to *.mappack> to show available video maps for a facilty.", dm)
 		}
-		if sg.ARTCC != "" {
-			if !mapSpec.HasMapGroup(s.DefaultMapGroup) {
-				e.ErrorString(`video map group %q in "default_map_group" not found. Use -listmaps `+
-					"<path to Zxx.mappack> to show available video map groups for an ARTCC.", s.DefaultMapGroup)
-			}
+	}
+	if sg.ARTCC != "" {
+		if !mapSpec.HasMapGroup(s.DefaultMapGroup) {
+			e.ErrorString(`video map group %q in "default_map_group" not found. Use -listmaps `+
+				"<path to *.mappack> to show available video map groups for a facility.", s.DefaultMapGroup)
 		}
 	}
 
@@ -1360,7 +1358,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	// specForArea returns the effective spec for an area: the area's
 	// own mapSpec if it has a video_map_file, otherwise the facility-level one.
 	specForArea := func(ac *sim.STARSArea) *sim.VideoMapSpec {
-		if ac.VideoMapFile != "" && mapSpecs != nil {
+		if ac.VideoMapFile != "" {
 			if m, ok := mapSpecs[ac.VideoMapFile]; ok {
 				return m
 			}
@@ -1370,7 +1368,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 	// Validate area-level video_map_file entries exist in mapSpecs.
 	for areaNum, ac := range s.Areas {
-		if ac.VideoMapFile != "" && mapSpecs != nil {
+		if ac.VideoMapFile != "" {
 			if _, ok := mapSpecs[ac.VideoMapFile]; !ok {
 				e.ErrorString(`video_map_file %q in area %s not found. Options: %s`,
 					ac.VideoMapFile, areaNum, strings.Join(util.SortedMapKeys(mapSpecs), ", "))
@@ -1381,16 +1379,14 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	// Video maps: validate area-level video_maps against the effective spec.
 	for areaNum, ac := range s.Areas {
 		m := specForArea(ac)
-		if m != nil {
-			for _, name := range ac.VideoMapNames {
-				if name != "" && !m.HasMap(name) {
-					e.ErrorString(`video map %q in area %s "video_maps" is not a valid video map`, name, areaNum)
-				}
+		for _, name := range ac.VideoMapNames {
+			if name != "" && !m.HasMap(name) {
+				e.ErrorString(`video map %q in area %s "video_maps" is not a valid video map`, name, areaNum)
 			}
-			for _, name := range ac.DefaultMaps {
-				if name != "" && !m.HasMap(name) {
-					e.ErrorString(`video map %q in area %s "default_maps" is not a valid video map`, name, areaNum)
-				}
+		}
+		for _, name := range ac.DefaultMaps {
+			if name != "" && !m.HasMap(name) {
+				e.ErrorString(`video map %q in area %s "default_maps" is not a valid video map`, name, areaNum)
 			}
 		}
 	}
@@ -1424,7 +1420,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		for tcp, config := range s.Controllers {
 			// Resolve mapSpec: controller video_map_file > area > facility.
 			ctrlSpec := mapSpec
-			if config.VideoMapFile != "" && mapSpecs != nil {
+			if config.VideoMapFile != "" {
 				if m, ok := mapSpecs[config.VideoMapFile]; ok {
 					ctrlSpec = m
 				} else {
@@ -1436,18 +1432,16 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 					ctrlSpec = specForArea(ac)
 				}
 			}
-			if ctrlSpec != nil {
-				for _, name := range config.DefaultMaps {
-					if !ctrlSpec.HasMap(name) {
-						e.ErrorString(`video map %q in "default_maps" for controller %q is not a valid video map`,
-							name, tcp)
-					}
+			for _, name := range config.DefaultMaps {
+				if !ctrlSpec.HasMap(name) {
+					e.ErrorString(`video map %q in "default_maps" for controller %q is not a valid video map`,
+						name, tcp)
 				}
-				for _, name := range config.VideoMapNames {
-					if name != "" && !ctrlSpec.HasMap(name) {
-						e.ErrorString(`video map %q in "video_maps" for controller %q is not a valid video map`,
-							name, tcp)
-					}
+			}
+			for _, name := range config.VideoMapNames {
+				if name != "" && !ctrlSpec.HasMap(name) {
+					e.ErrorString(`video map %q in "video_maps" for controller %q is not a valid video map`,
+						name, tcp)
 				}
 			}
 		}
@@ -1977,13 +1971,10 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
 //
-// If skipVideoMaps is true, video map specs are not loaded and video map
-// validation is skipped. This is useful for CLI tools that don't need video maps.
-//
 // Returns: scenarioGroups, simConfigurations, mapSpecs, scenarioBriefs, extraScenarioErrors
 // If the extra scenario file has errors, they are returned in extraScenarioErrors
 // and that scenario is not loaded, but execution continues.
-func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename string, extraScenarioBriefFilename string, skipVideoMaps bool,
+func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename string, extraScenarioBriefFilename string,
 	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*ScenarioCatalog, map[string]*sim.VideoMapSpec, *briefRegistry, string) {
 	start := time.Now()
 
@@ -2086,37 +2077,35 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		}
 	}
 
-	// Load video map specs if needed for validation.
+	// Load video map specs (header-only) for validation.
 	mapSpecs := make(map[string]*sim.VideoMapSpec)
-	if !skipVideoMaps {
-		err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
-			if err != nil {
-				lg.Errorf("error walking videomaps: %v", err)
-				return nil
-			}
-
-			if d.IsDir() {
-				return nil
-			}
-
-			if strings.HasSuffix(path, ".mappack") {
-				mapSpecs[path], err = sim.LoadVideoMapSpec(path)
-			}
-
-			return err
-		})
+	err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
-			lg.Errorf("error loading videomaps: %v", err)
-			os.Exit(1)
+			lg.Errorf("error walking videomaps: %v", err)
+			return nil
 		}
 
-		// Load the video map specified on the command line, if any.
-		if extraVideoMapFilename != "" {
-			mapSpecs[extraVideoMapFilename], err = sim.LoadVideoMapSpec(extraVideoMapFilename)
-			if err != nil {
-				lg.Errorf("%s: %v", extraVideoMapFilename, err)
-				os.Exit(1)
-			}
+		if d.IsDir() {
+			return nil
+		}
+
+		if strings.HasSuffix(path, ".mappack") {
+			mapSpecs[path], err = sim.LoadVideoMapSpec(path)
+		}
+
+		return err
+	})
+	if err != nil {
+		lg.Errorf("error loading videomaps: %v", err)
+		os.Exit(1)
+	}
+
+	// Load the video map specified on the command line, if any.
+	if extraVideoMapFilename != "" {
+		mapSpecs[extraVideoMapFilename], err = sim.LoadVideoMapSpec(extraVideoMapFilename)
+		if err != nil {
+			lg.Errorf("%s: %v", extraVideoMapFilename, err)
+			os.Exit(1)
 		}
 	}
 
@@ -2139,15 +2128,13 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		}
 
 		videoMapHashes := make(map[string][]byte)
-		if !skipVideoMaps {
-			for _, filename := range parsed.VideoMapFiles() {
-				if mapSpec, ok := mapSpecs[filename]; !ok {
-					e.ErrorString("Unknown video map file %q referenced in brief", filename)
-				} else if hash, err := mapSpec.Hash(); err != nil {
-					e.ErrorString("Unable to compute hash for video map %q: %v", filename, err)
-				} else {
-					videoMapHashes[filename] = hash
-				}
+		for _, filename := range parsed.VideoMapFiles() {
+			if mapSpec, ok := mapSpecs[filename]; !ok {
+				e.ErrorString("Unknown video map file %q referenced in brief", filename)
+			} else if hash, err := mapSpec.Hash(); err != nil {
+				e.ErrorString("Unable to compute hash for video map %q: %v", filename, err)
+			} else {
+				videoMapHashes[filename] = hash
 			}
 		}
 		return videoMapHashes, true
@@ -2288,21 +2275,15 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				scenarioNames[scenarioName] = groupName
 			}
 
-			if skipVideoMaps {
-				// When skipping video maps, still call PostDeserialize but with nil mapSpec
-				// to initialize catalogs and set default values
-				sgroup.PostDeserialize(e, catalogs, nil, nil)
+			// Make sure we have what we need in terms of video maps
+			fa := &sgroup.FacilityConfig.FacilityAdaptation
+			if vf := fa.VideoMapFile; vf == "" {
+				e.ErrorString(`no "video_map_file" specified`)
+			} else if mapSpec, ok := mapSpecs[vf]; !ok {
+				e.ErrorString("no mapSpec for video map %q found. Options: %s", vf,
+					strings.Join(util.SortedMapKeys(mapSpecs), ", "))
 			} else {
-				// Make sure we have what we need in terms of video maps
-				fa := &sgroup.FacilityConfig.FacilityAdaptation
-				if vf := fa.VideoMapFile; vf == "" {
-					e.ErrorString(`no "video_map_file" specified`)
-				} else if mapSpec, ok := mapSpecs[vf]; !ok {
-					e.ErrorString("no mapSpec for video map %q found. Options: %s", vf,
-						strings.Join(util.SortedMapKeys(mapSpecs), ", "))
-				} else {
-					sgroup.PostDeserialize(e, catalogs, mapSpec, mapSpecs)
-				}
+				sgroup.PostDeserialize(e, catalogs, mapSpec, mapSpecs)
 			}
 
 			e.Pop() // Scenario group
@@ -2313,45 +2294,35 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	// Validate the extra scenario separately with its own error logger
 	if extraScenario != nil {
-		if skipVideoMaps {
-			// When skipping video maps, still call PostDeserialize but with nil mapSpec
-			var extraE util.ErrorLogger
-			extraScenario.PostDeserialize(&extraE, catalogs, nil, nil)
+		var extraE util.ErrorLogger
+		extraE.Push(extraScenario.SourceFile)
+		extraE.Push("TRACON " + extraScenarioFacility)
+		extraE.Push("Scenario group " + extraScenario.Name)
+
+		// Make sure we have what we need in terms of video maps
+		fa := &extraScenario.FacilityConfig.FacilityAdaptation
+		if vf := fa.VideoMapFile; vf == "" {
+			extraE.ErrorString(`no "video_map_file" specified`)
+		} else if mapSpec, ok := mapSpecs[vf]; !ok {
+			extraE.ErrorString("no mapSpec for video map %q found. Options: %s", vf,
+				strings.Join(util.SortedMapKeys(mapSpecs), ", "))
+		} else {
+			extraScenario.PostDeserialize(&extraE, catalogs, mapSpec, mapSpecs)
+		}
+
+		extraE.Pop() // Scenario group
+		extraE.Pop() // TRACON
+		extraE.Pop() // SourceFile
+
+		if extraE.HaveErrors() {
+			extraScenarioErrors = extraE.String()
+			lg.Warnf("Extra scenario file has validation errors and will not be loaded: %s", extraScenarioFilename)
+		} else {
+			// Only add to scenarioGroups if validation succeeded
 			if scenarioGroups[extraScenarioFacility] == nil {
 				scenarioGroups[extraScenarioFacility] = make(map[string]*scenarioGroup)
 			}
 			scenarioGroups[extraScenarioFacility][extraScenario.Name] = extraScenario
-		} else {
-			var extraE util.ErrorLogger
-			extraE.Push(extraScenario.SourceFile)
-			extraE.Push("TRACON " + extraScenarioFacility)
-			extraE.Push("Scenario group " + extraScenario.Name)
-
-			// Make sure we have what we need in terms of video maps
-			fa := &extraScenario.FacilityConfig.FacilityAdaptation
-			if vf := fa.VideoMapFile; vf == "" {
-				extraE.ErrorString(`no "video_map_file" specified`)
-			} else if mapSpec, ok := mapSpecs[vf]; !ok {
-				extraE.ErrorString("no mapSpec for video map %q found. Options: %s", vf,
-					strings.Join(util.SortedMapKeys(mapSpecs), ", "))
-			} else {
-				extraScenario.PostDeserialize(&extraE, catalogs, mapSpec, mapSpecs)
-			}
-
-			extraE.Pop() // Scenario group
-			extraE.Pop() // TRACON
-			extraE.Pop() // SourceFile
-
-			if extraE.HaveErrors() {
-				extraScenarioErrors = extraE.String()
-				lg.Warnf("Extra scenario file has validation errors and will not be loaded: %s", extraScenarioFilename)
-			} else {
-				// Only add to scenarioGroups if validation succeeded
-				if scenarioGroups[extraScenarioFacility] == nil {
-					scenarioGroups[extraScenarioFacility] = make(map[string]*scenarioGroup)
-				}
-				scenarioGroups[extraScenarioFacility][extraScenario.Name] = extraScenario
-			}
 		}
 	}
 
@@ -2411,7 +2382,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 // ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
 func ListAllScenarios(scenarioFilename, videoMapFilename string, lg *log.Logger) ([]string, error) {
 	var e util.ErrorLogger
-	scenarioGroups, _, _, _, _ := LoadScenarioGroups(scenarioFilename, videoMapFilename, "", true /* skipVideoMaps */, &e, lg)
+	scenarioGroups, _, _, _, _ := LoadScenarioGroups(scenarioFilename, videoMapFilename, "", &e, lg)
 	if e.HaveErrors() {
 		return nil, fmt.Errorf("failed to load scenarios")
 	}

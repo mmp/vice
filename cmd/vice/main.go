@@ -177,7 +177,7 @@ func runLint(lg *log.Logger) error {
 	}
 
 	var e util.ErrorLogger
-	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, *scenarioBriefFilename, false /* skipVideoMaps */, &e, lg)
+	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, *scenarioBriefFilename, &e, lg)
 
 	server.CheckArrivalSpawnAltitudes(scenarioGroups, &e)
 
@@ -250,7 +250,7 @@ func runSimulation(lg *log.Logger) error {
 	tracon, scenarioName := parts[0], parts[1]
 
 	var e util.ErrorLogger
-	scenarioGroups, configs, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, *scenarioBriefFilename, true /* skipVideoMaps */, &e, lg)
+	scenarioGroups, configs, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, *scenarioBriefFilename, &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		return fmt.Errorf("scenario loading failed")
