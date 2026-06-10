@@ -42,7 +42,6 @@ func runSTARS(cwd, outDir, inputARTCC string, artcc *ARTCC, eg *errgroup.Group) 
 
 func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog map[string]*ARTCCVideoMap) error {
 	lib := &av.MapLibrary{Maps: make(map[string]av.STARSMap, len(ids))}
-	usedIds := make(map[int]string) // Id -> Name for duplicate detection
 
 	var eg errgroup.Group
 	eg.SetLimit(16)
@@ -55,11 +54,10 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog m
 				return fmt.Errorf("video map %q referenced by %q but not in catalog; skipping", ulid, childID)
 			}
 
-			id := meta.StarsID
 			vm := av.STARSMap{
 				Name:  meta.Name,
 				Label: meta.ShortName,
-				Id:    id,
+				Id:    meta.StarsID,
 				Group: util.Select(meta.StarsBrightnessCategory == "A", 0, 1),
 			}
 			if err := loadMapGeometry(cwd, artccID, ulid, &vm); err != nil {
@@ -74,15 +72,6 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog m
 				return fmt.Errorf("duplicate name %q in facility %s", meta.Name, childID)
 			}
 
-			// Enforce within-facility starsId uniqueness when non-zero.
-			if id != 0 {
-				other, dup := usedIds[id]
-				if dup {
-					return fmt.Errorf("duplicate starsId %d: %q and %q", id, other, meta.Name)
-				}
-				usedIds[id] = meta.Name
-			}
-
 			lib.Maps[meta.Name] = vm
 			return nil
 		})
@@ -90,6 +79,28 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog m
 
 	if err := eg.Wait(); err != nil {
 		return err
+	}
+
+	// Now that every map has been loaded, resolve starsId collisions.  Iterating in sorted-name
+	// order makes the winner of each clash deterministic, and doing it post-load keeps a duplicate
+	// from poaching an id that another map would have used.
+	claimed := make(map[int]bool)
+	for name, m := range util.SortedMap(lib.Maps) {
+		if m.Id == 0 {
+			continue
+		}
+		orig := m.Id
+		for claimed[m.Id] {
+			if m.Id = m.Id%999 + 1; m.Id == orig {
+				return fmt.Errorf("%s/%s: no free starsId for %q", artccID, childID, name)
+			}
+		}
+		if m.Id != orig {
+			log.Printf("STARS [%s/%s] remapping starsId of %q due to duplication: %d -> %d",
+				artccID, childID, name, orig, m.Id)
+		}
+		claimed[m.Id] = true
+		lib.Maps[name] = m
 	}
 
 	outPath := filepath.Join(outDir, fmt.Sprintf("%s-%s.mappack", artccID, childID))
