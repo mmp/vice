@@ -41,7 +41,6 @@ type NewSimConfiguration struct {
 	mgr             *client.ConnectionManager
 	selectedServer  *client.Server
 	defaultFacility *string
-	emergencies     []sim.Emergency
 	lg              *log.Logger
 
 	// UI state
@@ -74,103 +73,12 @@ type NewSimConfiguration struct {
 	savedVFRDepartureRateScale float32
 }
 
-// loadEmergencies loads all emergency types from the emergencies.json resource file.
-// Any errors encountered during loading are reported via the ErrorLogger.
-func loadEmergencies(e *util.ErrorLogger) []sim.Emergency {
-	e.Push("File emergencies.json")
-	defer e.Pop()
-
-	r := util.LoadResource("emergencies.json")
-	defer r.Close()
-
-	var emap map[string][]sim.Emergency // "emergencies": [ ... ]
-	if err := util.UnmarshalJSON(r, &emap); err != nil {
-		e.Error(err)
-		return nil
-	}
-	emergencies := emap["emergencies"]
-
-	if len(emergencies) == 0 {
-		e.ErrorString(`No "emergencies" found`)
-		return nil
-	}
-
-	namesSeen := make(map[string]struct{})
-	for i := range emergencies {
-		em := &emergencies[i] // so we can modify it...
-
-		if _, ok := namesSeen[em.Name]; ok {
-			e.ErrorString("Duplicate emergency name %q", em.Name)
-			continue
-		}
-		namesSeen[em.Name] = struct{}{}
-
-		e.Push(em.Name)
-
-		// Default weight to 1.0 if not specified
-		if em.Weight == 0 {
-			em.Weight = 1
-		}
-
-		if em.ApplicableToString == "" {
-			e.ErrorString("missing required field 'applicable_to'")
-		} else {
-			for typeStr := range strings.SplitSeq(em.ApplicableToString, ",") {
-				typeStr = strings.TrimSpace(typeStr)
-				switch typeStr {
-				case "departure":
-					em.ApplicableTo |= sim.EmergencyApplicabilityDeparture
-				case "arrival":
-					em.ApplicableTo |= sim.EmergencyApplicabilityArrival
-				case "external":
-					em.ApplicableTo |= sim.EmergencyApplicabilityExternal
-				case "approach":
-					em.ApplicableTo |= sim.EmergencyApplicabilityApproach
-				default:
-					e.ErrorString(`invalid "applicable_to" value %q: must be one or more of "departure", "arrival", "external", "approach" (comma-separated)`,
-						typeStr)
-				}
-			}
-		}
-
-		if len(em.Stages) == 0 {
-			e.ErrorString(`no emergency "stages" defined`)
-		}
-		for i, stage := range em.Stages {
-			// transmission is required unless request_return is true
-			if stage.Transmission == "" && !stage.RequestReturn {
-				e.ErrorString(`stage %d missing required field "transmission"`, i)
-			}
-			// duration_minutes is required for all stages except the last one
-			isLastStage := i == len(em.Stages)-1
-			if !isLastStage {
-				if stage.DurationMinutes[1] == 0 {
-					e.ErrorString(`stage %d missing required field "duration_minutes"`, i)
-				}
-				if stage.DurationMinutes[0] > stage.DurationMinutes[1] {
-					e.ErrorString(`First value in "duration_minutes" cannot be greater than second`)
-				}
-			}
-		}
-		e.Pop()
-	}
-
-	return emergencies
-}
-
 func MakeNewSimConfiguration(mgr *client.ConnectionManager, defaultFacility *string, lg *log.Logger) *NewSimConfiguration {
-	var emergencyLogger util.ErrorLogger
-	emergencies := loadEmergencies(&emergencyLogger)
-	if emergencyLogger.HaveErrors() {
-		emergencyLogger.PrintErrors(lg)
-	}
-
 	c := &NewSimConfiguration{
 		lg:              lg,
 		mgr:             mgr,
 		selectedServer:  mgr.LocalServer,
 		defaultFacility: defaultFacility,
-		emergencies:     emergencies,
 		NewSimRequest:   server.MakeNewSimRequest(),
 	}
 
@@ -1444,7 +1352,6 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 }
 
 func (c *NewSimConfiguration) Start(config *Config) error {
-	c.NewSimRequest.Emergencies = c.emergencies
 	c.ScenarioSpec.LaunchConfig.EnableTowerGoArounds = config.EnableTowerGoArounds
 
 	if c.newSimType == NewSimJoinRemote {

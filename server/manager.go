@@ -57,6 +57,7 @@ type SimManager struct {
 	scenarioGroups   map[string]map[string]*scenarioGroup
 	scenarioCatalogs map[string]map[string]*ScenarioCatalog
 	briefs           *briefRegistry
+	emergencies      []sim.Emergency
 
 	// Active sessions
 	sessionsByName  map[string]*simSession
@@ -143,10 +144,12 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup, scenario
 		sessionsByToken:  make(map[string]*simSession),
 		mapSpecs:         mapSpecs,
 		briefs:           briefs,
-		startTime:        time.Now(),
-		local:            isLocal,
-		providersReady:   make(chan struct{}),
-		lg:               lg,
+		// LoadScenarioGroups already validated emergencies.json; re-parse to hand the list to sim sessions.
+		emergencies:    loadEmergencies(nil),
+		startTime:      time.Now(),
+		local:          isLocal,
+		providersReady: make(chan struct{}),
+		lg:             lg,
 	}
 
 	// Initialize WX provider asynchronously so the server can start
@@ -180,8 +183,6 @@ type NewSimRequest struct {
 
 	ScenarioSpec *ScenarioSpec
 	StartTime    time.Time
-
-	Emergencies []sim.Emergency
 
 	RequirePassword bool
 	Password        string
@@ -305,7 +306,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 		ControllerConfiguration:     &sc.ControllerConfiguration,
 		ConfigurationId:             sc.ConfigurationString,
 		WXProvider:                  wxp,
-		Emergencies:                 req.Emergencies,
+		Emergencies:                 sm.emergencies,
 		StartTime:                   req.StartTime,
 		HandoffIDs:                  sg.FacilityConfig.HandoffIDs,
 		FixPairs:                    sg.FacilityConfig.FixPairs,

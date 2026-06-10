@@ -1105,6 +1105,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		for i := range flow.Arrivals {
 			flow.Arrivals[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
 				sg.Airports, sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, e)
+			checkArrivalSpawnAltitude(flow.Arrivals[i], e)
 		}
 		for i := range flow.Overflights {
 			flow.Overflights[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
@@ -1965,11 +1966,13 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 
 // LoadScenarioGroups loads all of the available scenarios, both from the
 // scenarios/ directory in the source code distribution as well as,
-// optionally, a scenario file provided on the command line.  It doesn't
-// try to do any sort of meaningful error handling but it does try to
-// continue on in the presence of errors; all errors will be printed and
-// the program will exit if there are any.  We'd rather force any errors
-// due to invalid scenario definitions to be fixed...
+// optionally, a scenario file provided on the command line, and runs the
+// full startup validation pass: video map references, arrival spawn
+// altitudes, and emergencies.json. It doesn't try to do any sort of
+// meaningful error handling but it does try to continue on in the
+// presence of errors; all errors will be printed and the program will
+// exit if there are any.  We'd rather force any errors due to invalid
+// scenario definitions to be fixed...
 //
 // Returns: scenarioGroups, simConfigurations, mapSpecs, scenarioBriefs, extraScenarioErrors
 // If the extra scenario file has errors, they are returned in extraScenarioErrors
@@ -2376,6 +2379,8 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	}
 	lg.Infof("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
+	loadEmergencies(e)
+
 	return scenarioGroups, catalogs, mapSpecs, briefs, extraScenarioErrors
 }
 
@@ -2493,25 +2498,16 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		}
 	}
 
+	// LoadScenarioGroups already validated emergencies.json; re-parse to hand the list to the sim.
+	newSimConfig.Emergencies = loadEmergencies(nil)
+
 	return newSimConfig, nil
 }
 
-// CheckArrivalSpawnAltitudes checks each arrival's spawn altitude against
-// its first altitude restriction to flag cases where the aircraft spawns
-// too high and too close to meet the restriction.
-func CheckArrivalSpawnAltitudes(scenarioGroups map[string]map[string]*scenarioGroup, e *util.ErrorLogger) {
-	for tracon, sgs := range scenarioGroups {
-		for _, sg := range sgs {
-			for flowName, flow := range sg.InboundFlows {
-				for _, arr := range flow.Arrivals {
-					checkArrivalSpawnAltitude(sg.SourceFile, tracon, flowName, arr, e)
-				}
-			}
-		}
-	}
-}
-
-func checkArrivalSpawnAltitude(sourceFile, tracon, flowName string, arr av.Arrival, e *util.ErrorLogger) {
+// checkArrivalSpawnAltitude flags an arrival whose initial altitude is
+// too high to meet its first "at or below" restriction given the distance
+// to that waypoint. Assumes 2500 fpm descent at 250 kts ground speed.
+func checkArrivalSpawnAltitude(arr av.Arrival, e *util.ErrorLogger) {
 	if arr.AssignedAltitude > 0 {
 		return
 	}
@@ -2549,9 +2545,9 @@ func checkArrivalSpawnAltitude(sourceFile, tracon, flowName string, arr av.Arriv
 
 		needed := spawnAlt - upperBound
 		if needed > maxDescent {
-			e.ErrorString("%s: %s/%s: arrival %s spawns at %.0f ft but restriction [%.0f,%.0f] at %s is %.1f nm away "+
+			e.ErrorString("arrival %s spawns at %.0f ft but restriction [%.0f,%.0f] at %s is %.1f nm away "+
 				"(need %.0f ft descent, max achievable ~%.0f ft)",
-				sourceFile, tracon, flowName, arr.STAR, spawnAlt,
+				arr.STAR, spawnAlt,
 				restr.Range[0], restr.Range[1], wp.Fix, dist,
 				needed, maxDescent)
 		}
@@ -2559,4 +2555,88 @@ func checkArrivalSpawnAltitude(sourceFile, tracon, flowName string, arr av.Arriv
 		// Only check the first altitude restriction that requires descent.
 		return
 	}
+}
+
+// loadEmergencies loads and validates the emergencies.json resource file.
+// Errors are reported via the ErrorLogger.
+func loadEmergencies(e *util.ErrorLogger) []sim.Emergency {
+	e.Push("File emergencies.json")
+	defer e.Pop()
+
+	r := util.LoadResource("emergencies.json")
+	defer r.Close()
+
+	var emap map[string][]sim.Emergency // "emergencies": [ ... ]
+	if err := util.UnmarshalJSON(r, &emap); err != nil {
+		e.Error(err)
+		return nil
+	}
+	emergencies := emap["emergencies"]
+
+	if len(emergencies) == 0 {
+		e.ErrorString(`No "emergencies" found`)
+		return nil
+	}
+
+	namesSeen := make(map[string]struct{})
+	for i := range emergencies {
+		em := &emergencies[i] // so we can modify it...
+
+		if _, ok := namesSeen[em.Name]; ok {
+			e.ErrorString("Duplicate emergency name %q", em.Name)
+			continue
+		}
+		namesSeen[em.Name] = struct{}{}
+
+		e.Push(em.Name)
+
+		// Default weight to 1.0 if not specified
+		if em.Weight == 0 {
+			em.Weight = 1
+		}
+
+		if em.ApplicableToString == "" {
+			e.ErrorString("missing required field 'applicable_to'")
+		} else {
+			for typeStr := range strings.SplitSeq(em.ApplicableToString, ",") {
+				typeStr = strings.TrimSpace(typeStr)
+				switch typeStr {
+				case "departure":
+					em.ApplicableTo |= sim.EmergencyApplicabilityDeparture
+				case "arrival":
+					em.ApplicableTo |= sim.EmergencyApplicabilityArrival
+				case "external":
+					em.ApplicableTo |= sim.EmergencyApplicabilityExternal
+				case "approach":
+					em.ApplicableTo |= sim.EmergencyApplicabilityApproach
+				default:
+					e.ErrorString(`invalid "applicable_to" value %q: must be one or more of "departure", "arrival", "external", "approach" (comma-separated)`,
+						typeStr)
+				}
+			}
+		}
+
+		if len(em.Stages) == 0 {
+			e.ErrorString(`no emergency "stages" defined`)
+		}
+		for i, stage := range em.Stages {
+			// transmission is required unless request_return is true
+			if stage.Transmission == "" && !stage.RequestReturn {
+				e.ErrorString(`stage %d missing required field "transmission"`, i)
+			}
+			// duration_minutes is required for all stages except the last one
+			isLastStage := i == len(em.Stages)-1
+			if !isLastStage {
+				if stage.DurationMinutes[1] == 0 {
+					e.ErrorString(`stage %d missing required field "duration_minutes"`, i)
+				}
+				if stage.DurationMinutes[0] > stage.DurationMinutes[1] {
+					e.ErrorString(`First value in "duration_minutes" cannot be greater than second`)
+				}
+			}
+		}
+		e.Pop()
+	}
+
+	return emergencies
 }

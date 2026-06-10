@@ -177,30 +177,15 @@ func runLint(lg *log.Logger) error {
 	}
 
 	var e util.ErrorLogger
-	scenarioGroups, _, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, *scenarioBriefFilename, &e, lg)
-
-	server.CheckArrivalSpawnAltitudes(scenarioGroups, &e)
-
-	// Check emergencies.json
-	loadEmergencies(&e)
-
-	videoMaps := make(map[string]any)
-	for _, sgs := range scenarioGroups {
-		for _, sg := range sgs {
-			if sg.FacilityConfig.FacilityAdaptation.VideoMapFile != "" {
-				videoMaps[sg.FacilityConfig.FacilityAdaptation.VideoMapFile] = nil
-			}
-		}
-	}
-	for m := range videoMaps {
-		if _, err := sim.LoadVideoMapSpec(m); err != nil {
-			e.Error(err)
-		}
-	}
+	scenarioGroups, _, _, _, extraScenarioErrors := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, *scenarioBriefFilename, &e, lg)
 
 	if e.HaveErrors() {
 		e.PrintErrors(nil)
 		return fmt.Errorf("scenario validation failed")
+	}
+	if extraScenarioErrors != "" {
+		fmt.Fprint(os.Stderr, extraScenarioErrors)
+		return fmt.Errorf("extra scenario validation failed")
 	}
 
 	scenarioAirports := make(map[string]map[string]any)
@@ -278,14 +263,6 @@ func runSimulation(lg *log.Logger) error {
 	newSimConfig.StartTime = time.Date(2025, time.November, day, hour, min, sec, 0, time.UTC)
 	fmt.Printf("Simulation start time: %s\n", newSimConfig.StartTime.Format(time.RFC3339))
 
-	var emergencyLogger util.ErrorLogger
-	emergencies := loadEmergencies(&emergencyLogger)
-	if emergencyLogger.HaveErrors() {
-		emergencyLogger.PrintErrors(lg)
-		return fmt.Errorf("emergency loading failed")
-	}
-
-	newSimConfig.Emergencies = emergencies
 	s := sim.NewSim(*newSimConfig, lg)
 
 	// Sign on as instructor if waypoint commands are specified
