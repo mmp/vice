@@ -32,7 +32,7 @@
     }
   ],
   "facility_adaptations": {
-    "video_map_file": "videomaps/ZSE.mappack",
+    "video_map_file": "videomaps/ZSE-stars.mappack",
     "areas": {
       "1": {
         "video_maps": [

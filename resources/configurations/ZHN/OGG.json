@@ -271,7 +271,7 @@
         "short_name": "PAL"
       }
     },
-    "video_map_file": "videomaps/ZHN.mappack",
+    "video_map_file": "videomaps/ZHN-stars.mappack",
     "coordination_fixes": {
       "BARBY": [
         {

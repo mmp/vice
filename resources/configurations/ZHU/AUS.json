@@ -149,7 +149,7 @@
       "SJT": {},
       "ZENZI": {}
     },
-    "video_map_file": "videomaps/ZHU.mappack",
+    "video_map_file": "videomaps/ZHU-stars.mappack",
     "airspace_awareness": [
       {
         "fixes": ["ABI", "BNDIA", "MUCKY", "SJT", "AMUSE"],

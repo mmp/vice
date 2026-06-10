@@ -175,7 +175,7 @@
       "FAMUK.H": "BER",
       "HARPR": "BER"
     },
-    "video_map_file": "videomaps/ZSE.mappack",
+    "video_map_file": "videomaps/ZSE-stars.mappack",
     "airspace_awareness": [
       {
         "fixes": ["LAVAA", "YKM", "PDT", "SUNED"],

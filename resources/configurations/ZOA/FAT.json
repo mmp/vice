@@ -129,7 +129,7 @@
         }
       ]
     },
-    "video_map_file": "videomaps/ZOA.mappack",
+    "video_map_file": "videomaps/ZOA-stars.mappack",
     "configurations": {
       "CF1": {
         "inbound_assignments": {

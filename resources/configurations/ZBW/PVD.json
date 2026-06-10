@@ -171,7 +171,7 @@
         "short_name": "DNE"
       }
     },
-    "video_map_file": "videomaps/PVD.mappack",
+    "video_map_file": "videomaps/ZBW-PVD.mappack",
     "areas": {
       "1": {
         "video_maps": [

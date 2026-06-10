@@ -36,7 +36,7 @@
     },
     "center": "KTYS",
     "range": 40,
-    "video_map_file": "videomaps/ZTL.mappack",
+    "video_map_file": "videomaps/ZTL-stars.mappack",
     "areas": {
       "1": {
         "default_airport": "KTYS",

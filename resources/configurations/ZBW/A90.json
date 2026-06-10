@@ -604,7 +604,7 @@
         "abbreviation": "Z"
       }
     },
-    "video_map_file": "videomaps/A90.mappack",
+    "video_map_file": "videomaps/ZBW-A90.mappack",
     "ssr_codes": {
       "auto_assignable_codes": {
         "1": {
@@ -983,7 +983,7 @@
           "ODO OTHER SATELLITES",
           ""
         ],
-        "video_map_file": "videomaps/A90.mappack"
+        "video_map_file": "videomaps/ZBW-A90.mappack"
       }
     },
     "monitor": "mdm3",

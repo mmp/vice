@@ -90,7 +90,7 @@
         "short_name": "TAG"
       }
     },
-    "video_map_file": "videomaps/ZAN.mappack",
+    "video_map_file": "videomaps/ZAN-stars.mappack",
     "areas": {
       "1": {
         "default_airport": "PANC",

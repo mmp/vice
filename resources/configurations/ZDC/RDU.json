@@ -108,7 +108,7 @@
       "ROZBO": {},
       "SHPRD": {}
     },
-    "video_map_file": "videomaps/ZDC.mappack",
+    "video_map_file": "videomaps/ZDC-stars.mappack",
     "airspace_awareness": [
       {
         "fixes": ["LWOOD", "DBRAH", "DANCO"],

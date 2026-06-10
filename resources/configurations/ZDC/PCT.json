@@ -1385,7 +1385,7 @@
       "SCOOB": { "short_name": "AME" },
       "SWANN": { "short_name": "SOK" }
     },
-    "video_map_file": "videomaps/PCT.mappack",
+    "video_map_file": "videomaps/ZDC-PCT.mappack",
     "monitor": "mdm3",
     "radar_sites": {
       "DCA": {

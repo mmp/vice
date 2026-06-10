@@ -177,7 +177,7 @@
       },
       "WHITE": {}
     },
-    "video_map_file": "videomaps/ZKC.mappack",
+    "video_map_file": "videomaps/ZKC-stars.mappack",
     "airspace_awareness": [
       {
         "fixes": ["STJ", "OZAKI", "CATTS", "JDOGG", "TONCE", "DIGGY", "TIFTO", "TYTUS", "KENTN"],

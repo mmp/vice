@@ -173,7 +173,7 @@
         "slope_angle": 0.175
       }
     },
-    "video_map_file": "videomaps/ZMA.mappack",
+    "video_map_file": "videomaps/ZMA-stars.mappack",
     "coordination_fixes": {
       "DSIDE": [
         {

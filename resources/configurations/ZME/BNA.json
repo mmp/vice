@@ -135,7 +135,7 @@
       "TINGS": {},
       "TIPPN": {}
     },
-    "video_map_file": "videomaps/ZME.mappack",
+    "video_map_file": "videomaps/ZME-stars.mappack",
     "airspace_awareness": [
       {
         "fixes": ["CHADM", "MUNNY", "KRSTA", "OLSIE"],

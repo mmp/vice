@@ -214,7 +214,7 @@
       "SQUIB": "SQU",
       "LYNNI": "LYN"
     },
-    "video_map_file": "videomaps/ZAU.mappack",
+    "video_map_file": "videomaps/ZAU-stars.mappack",
     "airspace_awareness": [
       {
         "fixes": ["ALL"],

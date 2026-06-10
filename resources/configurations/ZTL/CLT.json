@@ -217,7 +217,7 @@
       "TNSLY": {},
       "TYI": {}
     },
-    "video_map_file": "videomaps/ZTL.mappack",
+    "video_map_file": "videomaps/ZTL-stars.mappack",
     "airspace_awareness": [
       {
         "fixes": ["RDU", "TYI", "BARMY", "NUTZE", "AUDII", "KILNS", "LILLS"],

@@ -194,7 +194,7 @@
         "slope_angle": 0.175
       }
     },
-    "video_map_file": "videomaps/ZOB.mappack",
+    "video_map_file": "videomaps/ZOB-stars.mappack",
     "range": 60,
     "scratchpads": {
       "APE": "CAV",

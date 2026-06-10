@@ -56,7 +56,7 @@
         }
       }
     },
-    "video_map_file": "videomaps/ZOB.mappack",
+    "video_map_file": "videomaps/ZOB-stars.mappack",
     "center": "KBUF",
     "filters": {
       "inhibit_ca": [

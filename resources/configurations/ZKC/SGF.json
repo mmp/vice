@@ -59,7 +59,7 @@
       "YATGU": "YAT",
       "CATIL": "CAT"
     },
-    "video_map_file": "videomaps/ZKC.mappack",
+    "video_map_file": "videomaps/ZKC-stars.mappack",
     "areas": {
       "1": {
         "video_maps": ["SGF Primary Map", "SGF 3NM MVA MAP", "SGF 5NM MVA MAP", "SGF Geography"]

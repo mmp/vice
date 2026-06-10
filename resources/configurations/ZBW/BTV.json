@@ -109,7 +109,7 @@
       }
     },
     "scratchpads": {},
-    "video_map_file": "videomaps/BTV.mappack",
+    "video_map_file": "videomaps/ZBW-BTV.mappack",
     "areas": {
       "1": {
         "video_maps": ["BASE", "EOVM", "BTV_APP", "SATRNAV", "3M_MVA", "AIRWAY", "CLASS D", "SPLIT", "BTVLBL", "SATLBL"]
