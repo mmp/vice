@@ -1093,7 +1093,7 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, paneExtent math.Extent2D, 
 	}
 
 	var text strings.Builder
-	format := func(m sim.VideoMap) {
+	format := func(m av.STARSMap) {
 		if m.Label == "" {
 			return
 		}
@@ -1128,23 +1128,23 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, paneExtent math.Extent2D, 
 
 	text.WriteString(mapTitles[ps.VideoMapsList.Selection])
 	text.WriteByte('\n')
-	var m []sim.VideoMap
+	var m []av.STARSMap
 	if ps.VideoMapsList.Selection == VideoMapCurrent {
 		for _, vm := range sp.allVideoMaps {
 			if _, ok := ps.VideoMapVisible[vm.Id]; ok {
-				m = append(m, vm.VideoMap)
+				m = append(m, vm.STARSMap)
 			}
 		}
 	} else {
 		for _, vm := range sp.allVideoMaps {
 			if vm.Category == int(ps.VideoMapsList.Selection) {
-				m = append(m, vm.VideoMap)
+				m = append(m, vm.STARSMap)
 			}
 		}
 	}
 
 	// Sort by number
-	slices.SortFunc(m, func(a, b sim.VideoMap) int { return a.Id - b.Id })
+	slices.SortFunc(m, func(a, b av.STARSMap) int { return a.Id - b.Id })
 
 	// If more than 50, only display the first 50.
 	if len(m) > 50 {

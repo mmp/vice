@@ -360,7 +360,7 @@ func runListMaps(lg *log.Logger) error {
 	}
 
 	var e util.ErrorLogger
-	sim.PrintVideoMaps(*listMaps, &e)
+	av.PrintMapLibrary(*listMaps, &e)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		return fmt.Errorf("video map listing found errors")

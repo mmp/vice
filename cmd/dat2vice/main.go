@@ -20,8 +20,8 @@ import (
 	"io"
 	"os"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
 
@@ -73,7 +73,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	lib := &sim.VideoMapLibrary{Maps: make(map[string]sim.VideoMap, len(manifestMaps))}
+	lib := &av.MapLibrary{Maps: make(map[string]av.STARSMap, len(manifestMaps))}
 	usedIds := make(map[int]string) // Id -> Name for collision messages
 	for _, m := range manifestMaps {
 		d := m.Radius
@@ -109,15 +109,15 @@ func main() {
 		os.Exit(1)
 	}
 	defer gf.Close()
-	if err := sim.SaveVideoMapLibrary(gf, lib); err != nil {
+	if err := av.SaveMapLibrary(gf, lib); err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("wrote %s\n", out)
 }
 
-func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
-	sm := sim.VideoMap{
+func makeMap(mm ManifestMap, maxDist float32) (av.STARSMap, error) {
+	sm := av.STARSMap{
 		Group:    mm.Group,
 		Label:    mm.Label,
 		Name:     mm.Name,
@@ -227,9 +227,9 @@ func makeMap(mm ManifestMap, maxDist float32) (sim.VideoMap, error) {
 		if len(strip) < 2 {
 			continue
 		}
-		sm.Lines = append(sm.Lines, sim.VideoMapLine{
+		sm.Lines = append(sm.Lines, av.MapLine{
 			Points:    strip,
-			Style:     sim.LineStyleSolid,
+			Style:     av.LineStyleSolid,
 			Thickness: 1,
 		})
 	}

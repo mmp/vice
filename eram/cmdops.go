@@ -14,7 +14,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/sim"
 )
 
@@ -410,7 +409,7 @@ func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (C
 	ps.VideoMapVisible = make(map[string]interface{})
 
 	ep.videoMapLabel = fmt.Sprintf("%s\n%s", maps.LabelLine1, maps.LabelLine2)
-	ep.allVideoMaps = radar.BuildERAMClientVideoMaps(maps.Maps)
+	ep.allVideoMaps = buildClientMaps(maps.Maps)
 
 	for _, eramMap := range maps.Maps {
 		if ps.VideoMapBrightness[eramMap.BCGName] == 0 {

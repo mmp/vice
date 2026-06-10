@@ -1,8 +1,8 @@
-// sim/videomaps_test.go
+// aviation/maps_test.go
 // Copyright(c) 2025-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package aviation
 
 import (
 	"bytes"
@@ -19,9 +19,9 @@ import (
 // kinds: STARS maps with lines (solid + a dashed style), symbols, and
 // labels; an ERAM group with two distinct maps; and a separate ERAM
 // group exercising the duplicate-(L1,L2) case (e.g. ZLA's MVA collision).
-func buildSyntheticLibrary() *VideoMapLibrary {
-	return &VideoMapLibrary{
-		Maps: map[string]VideoMap{
+func buildSyntheticLibrary() *MapLibrary {
+	return &MapLibrary{
+		Maps: map[string]STARSMap{
 			"BASE": {
 				Name:     "BASE",
 				Label:    "BASE",
@@ -29,7 +29,7 @@ func buildSyntheticLibrary() *VideoMapLibrary {
 				Group:    0,
 				Category: 1,
 				Color:    3,
-				Lines: []VideoMapLine{
+				Lines: []MapLine{
 					{
 						Points: []math.Point2LL{
 							{-73.78, 40.64},
@@ -56,7 +56,7 @@ func buildSyntheticLibrary() *VideoMapLibrary {
 				Label: "VOR",
 				Id:    101,
 				Group: 1,
-				Symbols: []VideoMapSymbol{
+				Symbols: []MapSymbol{
 					{P: math.Point2LL{-73.5, 40.5}, Style: SymbolStyleVOR, Size: 1, BCGIndex: 3},
 					{P: math.Point2LL{-73.6, 40.6}, Style: SymbolStyleNDB, Size: 1, BCGIndex: 0},
 				},
@@ -65,7 +65,7 @@ func buildSyntheticLibrary() *VideoMapLibrary {
 				Name:  "LABELS",
 				Label: "LBL",
 				Id:    202,
-				Labels: []VideoMapLabel{
+				Labels: []MapLabel{
 					{
 						P:         math.Point2LL{-74.0, 40.7},
 						Text:      "KJFK",
@@ -88,7 +88,7 @@ func buildSyntheticLibrary() *VideoMapLibrary {
 						LabelLine1: "BASE",
 						LabelLine2: "MAP",
 						BCGName:    "BASE",
-						Lines: []VideoMapLine{{
+						Lines: []MapLine{{
 							Points: []math.Point2LL{
 								{-74.0, 40.7}, {-74.1, 40.8},
 							},
@@ -99,7 +99,7 @@ func buildSyntheticLibrary() *VideoMapLibrary {
 						LabelLine1: "HIGH",
 						LabelLine2: "SECTOR",
 						BCGName:    "HI SEC",
-						Symbols: []VideoMapSymbol{{
+						Symbols: []MapSymbol{{
 							P: math.Point2LL{-73.5, 40.5}, Style: SymbolStyleVOR, Size: 1,
 						}},
 					},
@@ -114,7 +114,7 @@ func buildSyntheticLibrary() *VideoMapLibrary {
 					{
 						LabelLine1: "MVA",
 						BCGName:    "MVA",
-						Lines: []VideoMapLine{{
+						Lines: []MapLine{{
 							Points: []math.Point2LL{{-118.0, 34.0}, {-118.1, 34.1}},
 							Style:  LineStyleSolid,
 						}},
@@ -122,7 +122,7 @@ func buildSyntheticLibrary() *VideoMapLibrary {
 					{
 						LabelLine1: "MVA", // duplicate on (L1,L2) — by design
 						BCGName:    "MVA",
-						Lines: []VideoMapLine{{
+						Lines: []MapLine{{
 							Points: []math.Point2LL{{-117.0, 33.0}, {-117.1, 33.1}},
 							Style:  LineStyleSolid,
 						}},
@@ -133,15 +133,15 @@ func buildSyntheticLibrary() *VideoMapLibrary {
 	}
 }
 
-func TestVideoMapLibraryRoundtrip(t *testing.T) {
+func TestMapLibraryRoundtrip(t *testing.T) {
 	orig := buildSyntheticLibrary()
 
 	var buf bytes.Buffer
-	if err := SaveVideoMapLibrary(&buf, orig); err != nil {
+	if err := SaveMapLibrary(&buf, orig); err != nil {
 		t.Fatalf("save: %v", err)
 	}
 
-	if string(buf.Bytes()[:4]) != videoMapMagic {
+	if string(buf.Bytes()[:4]) != mapLibraryMagic {
 		t.Fatalf("missing magic: got %q", buf.Bytes()[:4])
 	}
 
@@ -186,7 +186,7 @@ func TestVideoMapLibraryRoundtrip(t *testing.T) {
 func TestSpecFastPath(t *testing.T) {
 	orig := buildSyntheticLibrary()
 	var buf bytes.Buffer
-	if err := SaveVideoMapLibrary(&buf, orig); err != nil {
+	if err := SaveMapLibrary(&buf, orig); err != nil {
 		t.Fatalf("save: %v", err)
 	}
 	data := buf.Bytes()
@@ -198,9 +198,9 @@ func TestSpecFastPath(t *testing.T) {
 	// touch it.
 	truncated := append([]byte(nil), data[:headerEnd]...)
 
-	hdr, _, err := parseVideoMapHeader(truncated)
+	hdr, _, err := parseMapLibraryHeader(truncated)
 	if err != nil {
-		t.Fatalf("parseVideoMapHeader on truncated file: %v", err)
+		t.Fatalf("parseMapLibraryHeader on truncated file: %v", err)
 	}
 	if len(hdr.STARSMaps) != len(orig.Maps) {
 		t.Errorf("spec STARS count: got %d, want %d", len(hdr.STARSMaps), len(orig.Maps))
@@ -210,7 +210,7 @@ func TestSpecFastPath(t *testing.T) {
 			len(hdr.ERAMGroups), len(orig.ERAMMapGroups))
 	}
 
-	spec := &VideoMapSpec{header: hdr}
+	spec := &MapLibrarySpec{header: hdr}
 	for name := range orig.Maps {
 		if !spec.HasMap(name) {
 			t.Errorf("spec missing STARS map %q", name)
@@ -232,7 +232,7 @@ func TestSpecFastPath(t *testing.T) {
 func TestDuplicateERAMLabels(t *testing.T) {
 	orig := buildSyntheticLibrary()
 	var buf bytes.Buffer
-	if err := SaveVideoMapLibrary(&buf, orig); err != nil {
+	if err := SaveMapLibrary(&buf, orig); err != nil {
 		t.Fatalf("save: %v", err)
 	}
 	got, err := decodeFromBytes(buf.Bytes())
@@ -257,7 +257,7 @@ func TestDuplicateERAMLabels(t *testing.T) {
 func TestLineStylePreserved(t *testing.T) {
 	orig := buildSyntheticLibrary()
 	var buf bytes.Buffer
-	if err := SaveVideoMapLibrary(&buf, orig); err != nil {
+	if err := SaveMapLibrary(&buf, orig); err != nil {
 		t.Fatalf("save: %v", err)
 	}
 	got, err := decodeFromBytes(buf.Bytes())
@@ -281,7 +281,7 @@ func TestLineStylePreserved(t *testing.T) {
 // clear pointer to upgradevideomap.
 func TestWrongMagic(t *testing.T) {
 	data := []byte("XXXXjunk")
-	_, _, err := parseVideoMapHeader(data)
+	_, _, err := parseMapLibraryHeader(data)
 	if err == nil {
 		t.Fatal("expected error for wrong magic, got nil")
 	}
@@ -293,9 +293,9 @@ func TestWrongMagic(t *testing.T) {
 // ---------- test helpers -----------------------------------------------
 
 // decodeFromBytes parses a serialized library from an in-memory buffer.
-// Mirrors the body of LoadVideoMapLibrary without the fs.FS plumbing.
-func decodeFromBytes(data []byte) (*VideoMapLibrary, error) {
-	hdr, body, err := parseVideoMapHeader(data)
+// Mirrors the body of LoadMapLibrary without the fs.FS plumbing.
+func decodeFromBytes(data []byte) (*MapLibrary, error) {
+	hdr, body, err := parseMapLibraryHeader(data)
 	if err != nil {
 		return nil, err
 	}
@@ -306,8 +306,8 @@ func decodeFromBytes(data []byte) (*VideoMapLibrary, error) {
 		return nil, err
 	}
 
-	lib := &VideoMapLibrary{
-		Maps:          make(map[string]VideoMap, len(hdr.STARSMaps)),
+	lib := &MapLibrary{
+		Maps:          make(map[string]STARSMap, len(hdr.STARSMaps)),
 		ERAMMapGroups: make(map[string]ERAMMapGroup, len(hdr.ERAMGroups)),
 	}
 	for _, e := range hdr.STARSMaps {
@@ -315,7 +315,7 @@ func decodeFromBytes(data []byte) (*VideoMapLibrary, error) {
 		if err != nil {
 			return nil, err
 		}
-		lib.Maps[e.Name] = VideoMap{
+		lib.Maps[e.Name] = STARSMap{
 			Name:     e.Name,
 			Label:    e.Label,
 			Id:       e.Id,

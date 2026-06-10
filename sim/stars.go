@@ -307,6 +307,48 @@ func (fa *FacilityAdaptation) VideoMapFileForArea(area string) string {
 	return fa.VideoMapFile
 }
 
+func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, beaconCodes []av.Squawk) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	fa := &s.State.FacilityAdaptation
+
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+
+	if config, ok := fa.Controllers[tcp]; ok && len(config.VideoMapNames) > 0 {
+		return config.VideoMapNames, config.DefaultMaps, config.MonitoredBeaconCodeBlocks
+	}
+
+	if ctrl, ok := s.ControlPositions[tcp]; ok && ctrl.Area != "" {
+		if ac, ok := fa.Areas[ctrl.Area]; ok && len(ac.VideoMapNames) > 0 {
+			dm := s.State.ScenarioDefaultVideoMaps
+			if len(dm) == 0 {
+				dm = ac.DefaultMaps
+			}
+			return ac.VideoMapNames, dm, ac.MonitoredBeaconCodeBlocks
+		}
+	}
+
+	return nil, s.State.ScenarioDefaultVideoMaps, fa.MonitoredBeaconCodeBlocks
+}
+
+func (s *Sim) GetControllerVideoMapFile(tcw TCW) string {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	fa := &s.State.FacilityAdaptation
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+
+	if config, ok := fa.Controllers[tcp]; ok && config.VideoMapFile != "" {
+		return config.VideoMapFile
+	}
+
+	if ctrl, ok := s.ControlPositions[tcp]; ok {
+		return fa.VideoMapFileForArea(ctrl.Area)
+	}
+	return fa.VideoMapFile
+}
+
 type CoordinationList struct {
 	Name          string   `json:"name"`
 	Id            string   `json:"id"`

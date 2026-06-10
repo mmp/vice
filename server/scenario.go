@@ -94,7 +94,7 @@ type scenario struct {
 	VFRRateScale    *float32      `json:"vfr_rate_scale"`
 }
 
-func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSpec *sim.VideoMapSpec) {
+func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSpec *av.MapLibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Validate wind specifier if present
@@ -865,7 +865,7 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 }
 
 func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[string]*ScenarioCatalog,
-	mapSpec *sim.VideoMapSpec, mapSpecs map[string]*sim.VideoMapSpec) {
+	mapSpec *av.MapLibrarySpec, mapSpecs map[string]*av.MapLibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Rewrite legacy files to be TCP-based.
@@ -1351,14 +1351,14 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 // require the scenario group's Locator, mapSpec, or airport data. Self-contained
 // validation is done earlier in FacilityAdaptation.ValidateConfig.
 func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *scenarioGroup,
-	mapSpec *sim.VideoMapSpec, mapSpecs map[string]*sim.VideoMapSpec) {
+	mapSpec *av.MapLibrarySpec, mapSpecs map[string]*av.MapLibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	e.Push("facility_adaptations")
 
 	// specForArea returns the effective spec for an area: the area's
 	// own mapSpec if it has a video_map_file, otherwise the facility-level one.
-	specForArea := func(ac *sim.STARSArea) *sim.VideoMapSpec {
+	specForArea := func(ac *sim.STARSArea) *av.MapLibrarySpec {
 		if ac.VideoMapFile != "" {
 			if m, ok := mapSpecs[ac.VideoMapFile]; ok {
 				return m
@@ -1978,7 +1978,7 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 // If the extra scenario file has errors, they are returned in extraScenarioErrors
 // and that scenario is not loaded, but execution continues.
 func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename string, extraScenarioBriefFilename string,
-	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*ScenarioCatalog, map[string]*sim.VideoMapSpec, *briefRegistry, string) {
+	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*ScenarioCatalog, map[string]*av.MapLibrarySpec, *briefRegistry, string) {
 	start := time.Now()
 
 	// First load the scenarios.
@@ -2081,7 +2081,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	}
 
 	// Load video map specs (header-only) for validation.
-	mapSpecs := make(map[string]*sim.VideoMapSpec)
+	mapSpecs := make(map[string]*av.MapLibrarySpec)
 	err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
 			lg.Errorf("error walking videomaps: %v", err)
@@ -2093,7 +2093,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		}
 
 		if strings.HasSuffix(path, ".mappack") {
-			mapSpecs[path], err = sim.LoadVideoMapSpec(path)
+			mapSpecs[path], err = av.LoadMapLibrarySpec(path)
 		}
 
 		return err
@@ -2105,7 +2105,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	// Load the video map specified on the command line, if any.
 	if extraVideoMapFilename != "" {
-		mapSpecs[extraVideoMapFilename], err = sim.LoadVideoMapSpec(extraVideoMapFilename)
+		mapSpecs[extraVideoMapFilename], err = av.LoadMapLibrarySpec(extraVideoMapFilename)
 		if err != nil {
 			lg.Errorf("%s: %v", extraVideoMapFilename, err)
 			os.Exit(1)

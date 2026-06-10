@@ -12,7 +12,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/mmp/vice/sim"
+	av "github.com/mmp/vice/aviation"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -23,8 +23,8 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 	}
 	log.Printf("found %d geomaps in eramConfiguration", len(geoMaps))
 
-	lib := &sim.VideoMapLibrary{
-		ERAMMapGroups: make(map[string]sim.ERAMMapGroup, len(geoMaps)),
+	lib := &av.MapLibrary{
+		ERAMMapGroups: make(map[string]av.ERAMMapGroup, len(geoMaps)),
 	}
 	var totalMaps, totalLines, totalSymbols, totalLabels int
 
@@ -37,13 +37,13 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 		// filter has empty labels and is skipped. groupBCGs[fi] is the
 		// BCG name we'll attach to filterMaps[fi]; it may get promoted
 		// from a per-feature override during the pass.
-		filterMaps := make([]*sim.ERAMMap, len(geoMap.FilterMenu))
+		filterMaps := make([]*av.ERAMMap, len(geoMap.FilterMenu))
 		groupBCGs := make([]string, len(geoMap.FilterMenu))
 		for fi, fm := range geoMap.FilterMenu {
 			if fm.LabelLine1 == "" && fm.LabelLine2 == "" {
 				continue
 			}
-			filterMaps[fi] = &sim.ERAMMap{
+			filterMaps[fi] = &av.ERAMMap{
 				LabelLine1: fm.LabelLine1,
 				LabelLine2: fm.LabelLine2,
 			}
@@ -64,7 +64,7 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 
 		// Materialize per-filter ERAMMaps onto the group in filter-menu
 		// order.
-		group := sim.ERAMMapGroup{
+		group := av.ERAMMapGroup{
 			Name:       geoMap.Name,
 			LabelLine1: geoMap.LabelLine1,
 			LabelLine2: geoMap.LabelLine2,
@@ -91,7 +91,7 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 		return err
 	}
 	defer f.Close()
-	if err := sim.SaveVideoMapLibrary(f, lib); err != nil {
+	if err := av.SaveMapLibrary(f, lib); err != nil {
 		return err
 	}
 	return f.Close()
@@ -121,7 +121,7 @@ func loadERAMSources(cwd, artcc string, ids []string) ([]loadedSource, error) {
 // filterMaps is indexed by 0-based filter index. A nil entry means the filter is skipped (empty
 // labels). groupBCGs[fi] is the per-filter BCG name; it may be promoted from a per-feature BCG by
 // the maybePromoteBCG helper inlined into this function.
-func dispatchERAMFeatures(src *loadedSource, filterMaps []*sim.ERAMMap, groupBCGs []string, bcgMenu []string) {
+func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, groupBCGs []string, bcgMenu []string) {
 	clampPositive := func(v, dflt int) int {
 		switch {
 		case v <= 0:
@@ -163,7 +163,7 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*sim.ERAMMap, groupBCG
 					if len(pts) < 2 {
 						continue
 					}
-					filterMaps[fi].Lines = append(filterMaps[fi].Lines, sim.VideoMapLine{
+					filterMaps[fi].Lines = append(filterMaps[fi].Lines, av.MapLine{
 						Points:    pts,
 						Style:     style,
 						Thickness: thickness,
@@ -190,7 +190,7 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*sim.ERAMMap, groupBCG
 					}
 					promoteBCG(fi, eff.BCG)
 					for _, line := range f.Properties.Text {
-						filterMaps[fi].Labels = append(filterMaps[fi].Labels, sim.VideoMapLabel{
+						filterMaps[fi].Labels = append(filterMaps[fi].Labels, av.MapLabel{
 							P:         p,
 							Text:      line,
 							Size:      size,
@@ -209,7 +209,7 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*sim.ERAMMap, groupBCG
 					if eff.Style != "" {
 						warnUnknownStyle(src.path, eff.Style)
 					}
-					style = sim.SymbolStyleVOR
+					style = av.SymbolStyleVOR
 				}
 				size := uint8(clampPositive(eff.Size, 1))
 				bcg := uint8(clampPositive(eff.BCG, 0))
@@ -219,7 +219,7 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*sim.ERAMMap, groupBCG
 						continue
 					}
 					promoteBCG(fi, eff.BCG)
-					filterMaps[fi].Symbols = append(filterMaps[fi].Symbols, sim.VideoMapSymbol{
+					filterMaps[fi].Symbols = append(filterMaps[fi].Symbols, av.MapSymbol{
 						P:        p,
 						Style:    style,
 						Size:     size,

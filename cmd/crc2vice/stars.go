@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/mmp/vice/sim"
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
 	"golang.org/x/sync/errgroup"
 )
@@ -41,7 +41,7 @@ func runSTARS(cwd, outDir, inputARTCC string, artcc *ARTCC, eg *errgroup.Group) 
 }
 
 func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog map[string]*ARTCCVideoMap) error {
-	lib := &sim.VideoMapLibrary{Maps: make(map[string]sim.VideoMap, len(ids))}
+	lib := &av.MapLibrary{Maps: make(map[string]av.STARSMap, len(ids))}
 	usedIds := make(map[int]string) // Id -> Name for duplicate detection
 
 	var eg errgroup.Group
@@ -56,7 +56,7 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog m
 			}
 
 			id := meta.StarsID
-			vm := sim.VideoMap{
+			vm := av.STARSMap{
 				Name:  meta.Name,
 				Label: meta.ShortName,
 				Id:    id,
@@ -99,7 +99,7 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog m
 		return err
 	}
 	defer f.Close()
-	if err := sim.SaveVideoMapLibrary(f, lib); err != nil {
+	if err := av.SaveMapLibrary(f, lib); err != nil {
 		return err
 	}
 	return f.Close()
@@ -107,7 +107,7 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog m
 
 // loadMapGeometry parses a single .geojson into the given VideoMap's
 // Lines/Symbols/Labels.
-func loadMapGeometry(cwd, artccID, ulid string, vm *sim.VideoMap) error {
+func loadMapGeometry(cwd, artccID, ulid string, vm *av.STARSMap) error {
 	path := filepath.Join(cwd, "VideoMaps", artccID, ulid+".geojson")
 	src, err := loadGeoJSON(path)
 	if err != nil {

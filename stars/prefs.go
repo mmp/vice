@@ -312,7 +312,7 @@ func (p *Preferences) Reset(ss client.SimState, sp *STARSPane) {
 	p.VideoMapVisible = make(map[int]any)
 
 	for _, dm := range ss.ControllerDefaultVideoMaps {
-		if idx := slices.IndexFunc(sp.allVideoMaps, func(v radar.ClientVideoMap) bool { return v.Name == dm }); idx != -1 {
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v clientMap) bool { return v.Name == dm }); idx != -1 {
 			p.VideoMapVisible[sp.allVideoMaps[idx].Id] = nil
 		} else {
 			// This should have been validated at load time.

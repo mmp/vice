@@ -275,7 +275,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			if second && i == 0 {
 				i = 20
 			}
-			var vm radar.ERAMVideoMap
+			var vm clientMap
 			if i < len(ep.allVideoMaps) {
 				vm = ep.allVideoMaps[i]
 			}

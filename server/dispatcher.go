@@ -908,16 +908,16 @@ func (sd *dispatcher) DeleteRestrictionArea(ra *RestrictionAreaArgs, update *Sim
 	return err
 }
 
-type VideoMapsArgs struct {
+type MapLibraryArgs struct {
 	Filename string
 }
 
-const GetVideoMapLibraryRPC = "Sim.GetVideoMapLibrary"
+const GetMapLibraryRPC = "Sim.GetMapLibrary"
 
-func (sd *dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *sim.VideoMapLibrary) error {
+func (sd *dispatcher) GetMapLibrary(vm *MapLibraryArgs, vmf *av.MapLibrary) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if v, err := sim.LoadVideoMapLibrary(vm.Filename); err == nil {
+	if v, err := av.LoadMapLibrary(vm.Filename); err == nil {
 		*vmf = *v
 		return nil
 	} else {

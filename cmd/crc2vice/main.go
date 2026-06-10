@@ -22,8 +22,8 @@ import (
 	"strings"
 	"sync"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 	"golang.org/x/sync/errgroup"
 )
@@ -109,9 +109,9 @@ func loadGeoJSON(path string) (loadedSource, error) {
 // featureSink is the trio of slices that both STARS VideoMap and
 // ERAMMap expose; appendFeatures pushes into them via the pointers.
 type featureSink struct {
-	Lines   *[]sim.VideoMapLine
-	Symbols *[]sim.VideoMapSymbol
-	Labels  *[]sim.VideoMapLabel
+	Lines   *[]av.MapLine
+	Symbols *[]av.MapSymbol
+	Labels  *[]av.MapLabel
 }
 
 // appendFeatures emits src.features into sink. If accept is non-nil,
@@ -152,7 +152,7 @@ func appendFeatures(src *loadedSource, sink featureSink, accept func(*GeoJSONPro
 				if len(pts) < 2 {
 					continue
 				}
-				*sink.Lines = append(*sink.Lines, sim.VideoMapLine{
+				*sink.Lines = append(*sink.Lines, av.MapLine{
 					Points:    pts,
 					Style:     style,
 					Thickness: thickness,
@@ -174,7 +174,7 @@ func appendFeatures(src *loadedSource, sink featureSink, accept func(*GeoJSONPro
 					onAccept(&eff)
 				}
 				for _, line := range f.Properties.Text {
-					*sink.Labels = append(*sink.Labels, sim.VideoMapLabel{
+					*sink.Labels = append(*sink.Labels, av.MapLabel{
 						P:         p,
 						Text:      line,
 						Size:      uint8(clampPositive(eff.Size, 1)),
@@ -198,9 +198,9 @@ func appendFeatures(src *loadedSource, sink featureSink, accept func(*GeoJSONPro
 					if eff.Style != "" {
 						warnUnknownStyle(src.path, eff.Style)
 					}
-					style = sim.SymbolStyleVOR
+					style = av.SymbolStyleVOR
 				}
-				*sink.Symbols = append(*sink.Symbols, sim.VideoMapSymbol{
+				*sink.Symbols = append(*sink.Symbols, av.MapSymbol{
 					P:        p,
 					Style:    style,
 					Size:     uint8(clampPositive(eff.Size, 1)),
@@ -299,60 +299,60 @@ func decodePolylines(geomType string, raw json.RawMessage) [][]math.Point2LL {
 // parseLineStyle accepts CRC's case-inconsistent line-style strings
 // ("Solid", "solid", "ShortDashed", "LongDashShortDash", …). Unknown
 // strings fall back to LineStyleSolid.
-func parseLineStyle(s string) sim.LineStyle {
+func parseLineStyle(s string) av.LineStyle {
 	switch strings.ToLower(strings.ReplaceAll(s, "_", "")) {
 	case "shortdashed", "shortdash", "dashed":
-		return sim.LineStyleShortDashed
+		return av.LineStyleShortDashed
 	case "longdashed", "longdash":
-		return sim.LineStyleLongDashed
+		return av.LineStyleLongDashed
 	case "longdashshortdash", "longshortdash":
-		return sim.LineStyleLongDashShortDash
+		return av.LineStyleLongDashShortDash
 	default:
-		return sim.LineStyleSolid
+		return av.LineStyleSolid
 	}
 }
 
 // parseSymbolStyle accepts CRC's case-inconsistent symbol-style strings
 // ("Vor", "vor", "OtherWaypoints", "Ndb", …). Returns ok=false for
 // unrecognized styles; callers may log and fall back to a default.
-func parseSymbolStyle(s string) (sim.SymbolStyle, bool) {
+func parseSymbolStyle(s string) (av.SymbolStyle, bool) {
 	switch strings.ToLower(strings.ReplaceAll(s, "_", "")) {
 	case "vor":
-		return sim.SymbolStyleVOR, true
+		return av.SymbolStyleVOR, true
 	case "ndb":
-		return sim.SymbolStyleNDB, true
+		return av.SymbolStyleNDB, true
 	case "tacan":
-		return sim.SymbolStyleTACAN, true
+		return av.SymbolStyleTACAN, true
 	case "vortacan":
-		return sim.SymbolStyleVOR_TACAN, true
+		return av.SymbolStyleVOR_TACAN, true
 	case "dme":
-		return sim.SymbolStyleDME, true
+		return av.SymbolStyleDME, true
 	case "rnav":
-		return sim.SymbolStyleRNAV, true
+		return av.SymbolStyleRNAV, true
 	case "rnavonlywaypoint", "rnavonlywp":
-		return sim.SymbolStyleRNAVOnlyWaypoint, true
+		return av.SymbolStyleRNAVOnlyWaypoint, true
 	case "airport":
-		return sim.SymbolStyleAirport, true
+		return av.SymbolStyleAirport, true
 	case "satelliteairport", "satelliteaiport": // CRC has a misspelled variant in the wild
-		return sim.SymbolStyleSatelliteAirport, true
+		return av.SymbolStyleSatelliteAirport, true
 	case "emergencyairport":
-		return sim.SymbolStyleEmergencyAirport, true
+		return av.SymbolStyleEmergencyAirport, true
 	case "heliport":
-		return sim.SymbolStyleHeliport, true
+		return av.SymbolStyleHeliport, true
 	case "otherwaypoints", "otherwaypoint", "waypoint":
-		return sim.SymbolStyleOtherWaypoints, true
+		return av.SymbolStyleOtherWaypoints, true
 	case "airwayintersections", "airwayintersection":
-		return sim.SymbolStyleAirwayIntersections, true
+		return av.SymbolStyleAirwayIntersections, true
 	case "iaf":
-		return sim.SymbolStyleIAF, true
+		return av.SymbolStyleIAF, true
 	case "obstruction1", "obstruction":
-		return sim.SymbolStyleObstruction1, true
+		return av.SymbolStyleObstruction1, true
 	case "obstruction2":
-		return sim.SymbolStyleObstruction2, true
+		return av.SymbolStyleObstruction2, true
 	case "nuclear":
-		return sim.SymbolStyleNuclear, true
+		return av.SymbolStyleNuclear, true
 	case "radar":
-		return sim.SymbolStyleRadar, true
+		return av.SymbolStyleRadar, true
 	}
 	return 0, false
 }

@@ -1,8 +1,8 @@
-// sim/videomaps.go
+// aviation/maps.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package aviation
 
 import (
 	"bytes"
@@ -17,17 +17,16 @@ import (
 	"sort"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 
 	"github.com/vmihailenco/msgpack/v5"
 )
 
-// VideoMap is the runtime representation of a single STARS-side video map.
+// STARSMap is the runtime representation of a single STARS-side video map.
 // Lines/Symbols/Labels are populated by the full library loader and left
 // nil by the metadata-only spec loader.
-type VideoMap struct {
+type STARSMap struct {
 	Name     string
 	Label    string // DCB button label (CRC's "shortName")
 	Id       int    // user-visible STARS map number; 0 = no DCB id
@@ -35,9 +34,9 @@ type VideoMap struct {
 	Category int    // -1..9
 	Color    int    // 0..8
 
-	Lines   []VideoMapLine
-	Symbols []VideoMapSymbol
-	Labels  []VideoMapLabel
+	Lines   []MapLine
+	Symbols []MapSymbol
+	Labels  []MapLabel
 }
 
 // ERAMMap is the runtime representation of a single map within an ERAM
@@ -49,9 +48,9 @@ type ERAMMap struct {
 	LabelLine2 string
 	BCGName    string // brightness control group key; intentionally shared across maps
 
-	Lines   []VideoMapLine
-	Symbols []VideoMapSymbol
-	Labels  []VideoMapLabel
+	Lines   []MapLine
+	Symbols []MapSymbol
+	Labels  []MapLabel
 }
 
 type ERAMMapGroup struct {
@@ -64,7 +63,7 @@ type ERAMMapGroup struct {
 // Bounds returns the lat/lon bounding box covering every feature in the
 // map (line vertices, symbol positions, and label positions). Returns
 // an empty Extent2D if the map has no features.
-func (m VideoMap) Bounds() math.Extent2D {
+func (m STARSMap) Bounds() math.Extent2D {
 	return featureBounds(m.Lines, m.Symbols, m.Labels)
 }
 
@@ -75,7 +74,7 @@ func (m ERAMMap) Bounds() math.Extent2D {
 	return featureBounds(m.Lines, m.Symbols, m.Labels)
 }
 
-func featureBounds(lines []VideoMapLine, symbols []VideoMapSymbol, labels []VideoMapLabel) math.Extent2D {
+func featureBounds(lines []MapLine, symbols []MapSymbol, labels []MapLabel) math.Extent2D {
 	e := math.EmptyExtent2D()
 	for _, l := range lines {
 		for _, p := range l.Points {
@@ -91,31 +90,31 @@ func featureBounds(lines []VideoMapLine, symbols []VideoMapSymbol, labels []Vide
 	return e
 }
 
-// VideoMapLibrary is the full in-memory representation of a video map
+// MapLibrary is the full in-memory representation of a video map
 // file. STARS maps are keyed by Name (which is unique within a file);
 // ERAM groups are keyed by group name.
-type VideoMapLibrary struct {
-	Maps          map[string]VideoMap
+type MapLibrary struct {
+	Maps          map[string]STARSMap
 	ERAMMapGroups map[string]ERAMMapGroup
 }
 
 // ---------- per-feature types -------------------------------------------
 
-type VideoMapLine struct {
+type MapLine struct {
 	Points    []math.Point2LL
 	Style     LineStyle
 	Thickness uint8
 	BCGIndex  uint8 // 0 = use the map's group BCG
 }
 
-type VideoMapSymbol struct {
+type MapSymbol struct {
 	P        math.Point2LL
 	Style    SymbolStyle
 	Size     uint8
 	BCGIndex uint8 // 0 = use the map's group BCG
 }
 
-type VideoMapLabel struct {
+type MapLabel struct {
 	P         math.Point2LL
 	Text      string
 	Size      uint8
@@ -218,11 +217,11 @@ func (s SymbolStyle) String() string {
 
 // ---------- on-wire types -----------------------------------------------
 
-// videoMapMagic is the 4-byte file header. The digit is the single
+// mapLibraryMagic is the 4-byte file header. The digit is the single
 // version indicator for the on-disk format — bumping it (and the file
 // header's structure / geometry payload shape together) makes old
 // loaders fail with a clear error.
-const videoMapMagic = "VMV2"
+const mapLibraryMagic = "VMV2"
 
 // wireFileHeader is the msgpack-encoded header block that immediately
 // follows the magic + header length. It contains only metadata; the
@@ -259,12 +258,12 @@ type wireERAMEntry struct {
 	GeomLen    uint32 `msgpack:"sz"`
 }
 
-// ---------- VideoMapSpec: metadata-only loader --------------------------
+// ---------- MapLibrarySpec: metadata-only loader --------------------------
 
-// VideoMapSpec carries everything server startup needs to validate
+// MapLibrarySpec carries everything server startup needs to validate
 // scenario references without touching the geometry region. It also
 // remembers the underlying file so callers can compute Hash() lazily.
-type VideoMapSpec struct {
+type MapLibrarySpec struct {
 	header     *wireFileHeader
 	filesystem fs.FS
 	filename   string
@@ -272,7 +271,7 @@ type VideoMapSpec struct {
 
 // HasMap returns true if name matches a STARS map's Name, or matches
 // the combined label of any ERAM map within any group.
-func (s *VideoMapSpec) HasMap(name string) bool {
+func (s *MapLibrarySpec) HasMap(name string) bool {
 	if s == nil || s.header == nil {
 		return false
 	}
@@ -294,7 +293,7 @@ func (s *VideoMapSpec) HasMap(name string) bool {
 // STARSMapId returns the STARS DCB Id for the named map. Returns 0 if
 // the name is unknown or the map has no DCB Id assigned (0 is the
 // sentinel for "no Id" since STARS commands reject Id 0 anyway).
-func (s *VideoMapSpec) STARSMapId(name string) int {
+func (s *MapLibrarySpec) STARSMapId(name string) int {
 	if s == nil || s.header == nil {
 		return 0
 	}
@@ -307,7 +306,7 @@ func (s *VideoMapSpec) STARSMapId(name string) int {
 }
 
 // HasMapGroup returns true if name matches an ERAM group's name.
-func (s *VideoMapSpec) HasMapGroup(name string) bool {
+func (s *MapLibrarySpec) HasMapGroup(name string) bool {
 	if s == nil || s.header == nil {
 		return false
 	}
@@ -320,9 +319,9 @@ func (s *VideoMapSpec) HasMapGroup(name string) bool {
 }
 
 // Hash returns a hash of the underlying video map file.
-func (s *VideoMapSpec) Hash() ([]byte, error) {
+func (s *MapLibrarySpec) Hash() ([]byte, error) {
 	if s == nil {
-		return nil, errors.New("nil VideoMapSpec")
+		return nil, errors.New("nil MapLibrarySpec")
 	}
 	f, err := s.filesystem.Open(s.filename)
 	if err != nil {
@@ -332,41 +331,41 @@ func (s *VideoMapSpec) Hash() ([]byte, error) {
 	return util.Hash(f)
 }
 
-// LoadVideoMapSpec opens a video map file and decodes only the metadata
+// LoadMapLibrarySpec opens a video map file and decodes only the metadata
 // header, leaving the flate-compressed geometry region untouched.
-func LoadVideoMapSpec(path string) (*VideoMapSpec, error) {
-	filesystem := videoMapFS(path)
+func LoadMapLibrarySpec(path string) (*MapLibrarySpec, error) {
+	filesystem := mapLibraryFS(path)
 	f, err := filesystem.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 
-	hdr, err := readVideoMapHeaderOnly(f)
+	hdr, err := readMapLibraryHeaderOnly(f)
 	if err != nil {
 		return nil, err
 	}
 
-	return &VideoMapSpec{
+	return &MapLibrarySpec{
 		header:     hdr,
 		filesystem: filesystem,
 		filename:   path,
 	}, nil
 }
 
-// readVideoMapHeaderOnly reads just the magic + headerLen + header msgpack
+// readMapLibraryHeaderOnly reads just the magic + headerLen + header msgpack
 // from f and stops without slurping the geometry region. Used by
-// LoadVideoMapSpec so server startup / lint cost is proportional to the
+// LoadMapLibrarySpec so server startup / lint cost is proportional to the
 // header size rather than the (multi-MB) compressed geometry that follows.
-func readVideoMapHeaderOnly(f fs.File) (*wireFileHeader, error) {
+func readMapLibraryHeaderOnly(f fs.File) (*wireFileHeader, error) {
 	var prefix [8]byte
 	if _, err := io.ReadFull(f, prefix[:]); err != nil {
 		return nil, fmt.Errorf("video map: short prefix: %w", err)
 	}
-	if string(prefix[:4]) != videoMapMagic {
+	if string(prefix[:4]) != mapLibraryMagic {
 		return nil, fmt.Errorf("video map: wrong magic %q (expected %q); "+
 			"re-import with cmd/crc2vice or convert with cmd/upgradevideomap",
-			prefix[:4], videoMapMagic)
+			prefix[:4], mapLibraryMagic)
 	}
 	headerLen := binary.LittleEndian.Uint32(prefix[4:8])
 	headerBytes := make([]byte, headerLen)
@@ -380,17 +379,17 @@ func readVideoMapHeaderOnly(f fs.File) (*wireFileHeader, error) {
 	return hdr, nil
 }
 
-// ---------- LoadVideoMapLibrary: full load ------------------------------
+// ---------- LoadMapLibrary: full load ------------------------------
 
-func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
-	filesystem := videoMapFS(path)
+func LoadMapLibrary(path string) (*MapLibrary, error) {
+	filesystem := mapLibraryFS(path)
 	f, err := filesystem.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 
-	hdr, body, err := readVideoMapHeader(f)
+	hdr, body, err := readMapLibraryHeader(f)
 	if err != nil {
 		return nil, err
 	}
@@ -403,8 +402,8 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 		return nil, fmt.Errorf("video map %s: geometry decompress: %w", path, err)
 	}
 
-	lib := &VideoMapLibrary{
-		Maps:          make(map[string]VideoMap, len(hdr.STARSMaps)),
+	lib := &MapLibrary{
+		Maps:          make(map[string]STARSMap, len(hdr.STARSMaps)),
 		ERAMMapGroups: make(map[string]ERAMMapGroup, len(hdr.ERAMGroups)),
 	}
 
@@ -413,7 +412,7 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 		if err != nil {
 			return nil, fmt.Errorf("video map %s: STARS %q: %w", path, e.Name, err)
 		}
-		lib.Maps[e.Name] = VideoMap{
+		lib.Maps[e.Name] = STARSMap{
 			Name:     e.Name,
 			Label:    e.Label,
 			Id:       e.Id,
@@ -454,9 +453,9 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 	return lib, nil
 }
 
-// HashCheckLoadVideoMap loads the file only if its hash matches.
-func HashCheckLoadVideoMap(path string, wantHash []byte) (*VideoMapLibrary, error) {
-	filesystem := videoMapFS(path)
+// HashCheckLoadMapLibrary loads the file only if its hash matches.
+func HashCheckLoadMapLibrary(path string, wantHash []byte) (*MapLibrary, error) {
+	filesystem := mapLibraryFS(path)
 	f, err := filesystem.Open(path)
 	if err != nil {
 		return nil, err
@@ -469,31 +468,31 @@ func HashCheckLoadVideoMap(path string, wantHash []byte) (*VideoMapLibrary, erro
 	if !bytesEqual(gotHash, wantHash) {
 		return nil, errors.New("hash mismatch")
 	}
-	return LoadVideoMapLibrary(path)
+	return LoadMapLibrary(path)
 }
 
-// readVideoMapHeader reads and validates the magic + header length +
+// readMapLibraryHeader reads and validates the magic + header length +
 // header msgpack. It returns the decoded header and the remaining bytes
 // (the flate-compressed geometry region).
-func readVideoMapHeader(f fs.File) (*wireFileHeader, []byte, error) {
+func readMapLibraryHeader(f fs.File) (*wireFileHeader, []byte, error) {
 	contents, err := io.ReadAll(f)
 	if err != nil {
 		return nil, nil, err
 	}
-	return parseVideoMapHeader(contents)
+	return parseMapLibraryHeader(contents)
 }
 
-// parseVideoMapHeader runs the actual magic/length/msgpack validation
+// parseMapLibraryHeader runs the actual magic/length/msgpack validation
 // against an in-memory slice. Split out so tests can exercise the
 // header parser without bringing up an fs.FS.
-func parseVideoMapHeader(contents []byte) (*wireFileHeader, []byte, error) {
+func parseMapLibraryHeader(contents []byte) (*wireFileHeader, []byte, error) {
 	if len(contents) < 8 {
 		return nil, nil, errors.New("video map file too short")
 	}
-	if string(contents[:4]) != videoMapMagic {
+	if string(contents[:4]) != mapLibraryMagic {
 		return nil, nil, fmt.Errorf("video map: wrong magic %q (expected %q); "+
 			"re-import with cmd/crc2vice or convert with cmd/upgradevideomap",
-			contents[:4], videoMapMagic)
+			contents[:4], mapLibraryMagic)
 	}
 	headerLen := binary.LittleEndian.Uint32(contents[4:8])
 	if uint64(headerLen)+8 > uint64(len(contents)) {
@@ -507,12 +506,12 @@ func parseVideoMapHeader(contents []byte) (*wireFileHeader, []byte, error) {
 	return hdr, body, nil
 }
 
-// ---------- SaveVideoMapLibrary: write path -----------------------------
+// ---------- SaveMapLibrary: write path -----------------------------
 
-// SaveVideoMapLibrary encodes a library to the wire format and writes it
+// SaveMapLibrary encodes a library to the wire format and writes it
 // to w. Iteration order over the input maps is deterministic (sorted by
 // name) so files re-import bit-stable across runs.
-func SaveVideoMapLibrary(w io.Writer, lib *VideoMapLibrary) error {
+func SaveMapLibrary(w io.Writer, lib *MapLibrary) error {
 	// First pass: assemble the geometry blob region, recording offsets.
 	var geom bytes.Buffer
 
@@ -587,7 +586,7 @@ func SaveVideoMapLibrary(w io.Writer, lib *VideoMapLibrary) error {
 	}
 
 	// Write [magic][headerLen][header][geometryFlate].
-	if _, err := w.Write([]byte(videoMapMagic)); err != nil {
+	if _, err := w.Write([]byte(mapLibraryMagic)); err != nil {
 		return err
 	}
 	var hdrLen [4]byte
@@ -606,7 +605,7 @@ func SaveVideoMapLibrary(w io.Writer, lib *VideoMapLibrary) error {
 
 // ---------- helpers ----------------------------------------------------
 
-func videoMapFS(path string) fs.FS {
+func mapLibraryFS(path string) fs.FS {
 	if filepath.IsAbs(path) {
 		return util.RootFS{}
 	}
@@ -637,16 +636,16 @@ func bytesEqual(a, b []byte) bool {
 	return true
 }
 
-// PrintVideoMaps prints a table of the maps in the given file.
-func PrintVideoMaps(path string, e *util.ErrorLogger) {
-	vmf, err := LoadVideoMapLibrary(path)
+// PrintMapLibrary prints a table of the maps in the given file.
+func PrintMapLibrary(path string, e *util.ErrorLogger) {
+	vmf, err := LoadMapLibrary(path)
 	if err != nil {
 		e.Error(err)
 		return
 	}
 
 	if len(vmf.Maps) > 0 {
-		maps := make([]VideoMap, 0, len(vmf.Maps))
+		maps := make([]STARSMap, 0, len(vmf.Maps))
 		for _, m := range vmf.Maps {
 			maps = append(maps, m)
 		}
@@ -680,48 +679,6 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 	}
 }
 
-func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, beaconCodes []av.Squawk) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	fa := &s.State.FacilityAdaptation
-
-	tcp := s.State.PrimaryPositionForTCW(tcw)
-
-	if config, ok := fa.Controllers[tcp]; ok && len(config.VideoMapNames) > 0 {
-		return config.VideoMapNames, config.DefaultMaps, config.MonitoredBeaconCodeBlocks
-	}
-
-	if ctrl, ok := s.ControlPositions[tcp]; ok && ctrl.Area != "" {
-		if ac, ok := fa.Areas[ctrl.Area]; ok && len(ac.VideoMapNames) > 0 {
-			dm := s.State.ScenarioDefaultVideoMaps
-			if len(dm) == 0 {
-				dm = ac.DefaultMaps
-			}
-			return ac.VideoMapNames, dm, ac.MonitoredBeaconCodeBlocks
-		}
-	}
-
-	return nil, s.State.ScenarioDefaultVideoMaps, fa.MonitoredBeaconCodeBlocks
-}
-
-func (s *Sim) GetControllerVideoMapFile(tcw TCW) string {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	fa := &s.State.FacilityAdaptation
-	tcp := s.State.PrimaryPositionForTCW(tcw)
-
-	if config, ok := fa.Controllers[tcp]; ok && config.VideoMapFile != "" {
-		return config.VideoMapFile
-	}
-
-	if ctrl, ok := s.ControlPositions[tcp]; ok {
-		return fa.VideoMapFileForArea(ctrl.Area)
-	}
-	return fa.VideoMapFile
-}
-
 // Geometry payload layout (one per STARS or ERAM map). All in a single
 // flate-compressed stream shared by every map in the file; each map's
 // payload is addressed by (GeomOffset, GeomLen) in the wire header.
@@ -744,12 +701,12 @@ func (s *Sim) GetControllerVideoMapFile(tcw TCW) string {
 // the high-order bytes is exploited across maps.
 //
 // There is no per-payload version byte; the entire file's layout is
-// identified by the magic prefix (videoMapMagic). If the geometry shape
+// identified by the magic prefix (mapLibraryMagic). If the geometry shape
 // ever needs to change, bump the magic suffix ("VMV1" → "VMV2").
 
 // encodeGeometry serializes a single map's features to a self-contained
 // payload (no flate; the caller wraps the whole geometry region).
-func encodeGeometry(lines []VideoMapLine, symbols []VideoMapSymbol, labels []VideoMapLabel) []byte {
+func encodeGeometry(lines []MapLine, symbols []MapSymbol, labels []MapLabel) []byte {
 	var b []byte
 
 	// All line preambles first, then a single chained path stream.
@@ -796,7 +753,7 @@ func encodeGeometry(lines []VideoMapLine, symbols []VideoMapSymbol, labels []Vid
 
 // decodeGeometry parses one map's payload out of the shared decompressed
 // geometry region. (offset, length) come from the wire header.
-func decodeGeometry(region []byte, offset, length uint32) ([]VideoMapLine, []VideoMapSymbol, []VideoMapLabel, error) {
+func decodeGeometry(region []byte, offset, length uint32) ([]MapLine, []MapSymbol, []MapLabel, error) {
 	if uint64(offset)+uint64(length) > uint64(len(region)) {
 		return nil, nil, nil, fmt.Errorf("geometry slice out of bounds: offset=%d len=%d region=%d",
 			offset, length, len(region))
@@ -815,9 +772,9 @@ func decodeGeometry(region []byte, offset, length uint32) ([]VideoMapLine, []Vid
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("num symbols: %w", err)
 	}
-	var symbols []VideoMapSymbol
+	var symbols []MapSymbol
 	if numSymbols > 0 {
-		symbols = make([]VideoMapSymbol, numSymbols)
+		symbols = make([]MapSymbol, numSymbols)
 	}
 	for i := range symbols {
 		x, err := d.float32()
@@ -832,7 +789,7 @@ func decodeGeometry(region []byte, offset, length uint32) ([]VideoMapLine, []Vid
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("symbol %d: attrs: %w", i, err)
 		}
-		symbols[i] = VideoMapSymbol{
+		symbols[i] = MapSymbol{
 			P:        math.Point2LL{x, y},
 			Style:    SymbolStyle(attrs[0]),
 			Size:     attrs[1],
@@ -844,9 +801,9 @@ func decodeGeometry(region []byte, offset, length uint32) ([]VideoMapLine, []Vid
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("num labels: %w", err)
 	}
-	var labels []VideoMapLabel
+	var labels []MapLabel
 	if numLabels > 0 {
-		labels = make([]VideoMapLabel, numLabels)
+		labels = make([]MapLabel, numLabels)
 	}
 	for i := range labels {
 		x, err := d.float32()
@@ -869,7 +826,7 @@ func decodeGeometry(region []byte, offset, length uint32) ([]VideoMapLine, []Vid
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("label %d: text: %w", i, err)
 		}
-		labels[i] = VideoMapLabel{
+		labels[i] = MapLabel{
 			P:         math.Point2LL{x, y},
 			Size:      attrs[0],
 			Underline: attrs[1]&0x01 != 0,
@@ -886,7 +843,7 @@ func decodeGeometry(region []byte, offset, length uint32) ([]VideoMapLine, []Vid
 
 // decodeLines reads the line-block: all preambles first, then a single
 // chained path stream covering every line's points.
-func decodeLines(d *payloadReader) ([]VideoMapLine, error) {
+func decodeLines(d *payloadReader) ([]MapLine, error) {
 	numLines, err := d.uvarint()
 	if err != nil {
 		return nil, fmt.Errorf("num lines: %w", err)
@@ -894,7 +851,7 @@ func decodeLines(d *payloadReader) ([]VideoMapLine, error) {
 	if numLines == 0 {
 		return nil, nil
 	}
-	lines := make([]VideoMapLine, numLines)
+	lines := make([]MapLine, numLines)
 	counts := make([]int, numLines)
 	totalPts := 0
 	for i := range lines {
@@ -906,7 +863,7 @@ func decodeLines(d *payloadReader) ([]VideoMapLine, error) {
 		if err != nil {
 			return nil, fmt.Errorf("line %d: header: %w", i, err)
 		}
-		lines[i] = VideoMapLine{
+		lines[i] = MapLine{
 			Style:     LineStyle(style[0]),
 			Thickness: style[1],
 			BCGIndex:  style[2],

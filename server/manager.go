@@ -66,7 +66,7 @@ type SimManager struct {
 	// Helpers and such
 	wxProvider     *wx.Provider
 	providersReady chan struct{}
-	mapSpecs       map[string]*sim.VideoMapSpec
+	mapSpecs       map[string]*av.MapLibrarySpec
 	lg             *log.Logger
 
 	// Stats and internal details
@@ -135,7 +135,7 @@ func (sm *SimManager) loadBrief(facility string) (string, error) {
 // Constructor and Initialization
 
 func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup, scenarioCatalogs map[string]map[string]*ScenarioCatalog,
-	mapSpecs map[string]*sim.VideoMapSpec, briefs *briefRegistry,
+	mapSpecs map[string]*av.MapLibrarySpec, briefs *briefRegistry,
 	serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
 	sm := &SimManager{
 		scenarioGroups:   scenarioGroups,

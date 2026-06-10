@@ -64,9 +64,9 @@ type ERAMPane struct {
 
 	systemFont [11]*renderer.Font `json:"-"`
 
-	allVideoMaps    []radar.ERAMVideoMap `json:"-"`
-	videoMapLabel   string               `json:"-"`
-	currentFacility string               `json:"-"`
+	allVideoMaps    []clientMap `json:"-"`
+	videoMapLabel   string      `json:"-"`
+	currentFacility string      `json:"-"`
 
 	eramCursorSelection string           `json:"-"`
 	eramCursorPath      string           `json:"-"`
@@ -767,13 +767,55 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuf
 	td.GenerateCommands(cb)
 }
 
+// clientMap extends av.ERAMMap with client-side rendering state. The
+// CommandBuffer holds commands to draw the solid-line geometry; dashed
+// lines, symbols, and labels are kept on the embedded ERAMMap and drawn
+// separately at draw time so their stipple pattern / glyph / text can
+// account for scope scale and display DPI.
+type clientMap struct {
+	av.ERAMMap
+	CommandBuffer renderer.CommandBuffer
+}
+
+// buildClientMaps converts []av.ERAMMap to clientMaps, generating
+// CommandBuffers for the solid-line portion.
+func buildClientMaps(maps []av.ERAMMap) []clientMap {
+	if len(maps) == 0 {
+		return nil
+	}
+
+	out := make([]clientMap, len(maps))
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+
+	for i, m := range maps {
+		out[i] = clientMap{ERAMMap: m}
+
+		ld.Reset()
+		hasSolid := false
+		for _, line := range m.Lines {
+			if line.Style != av.LineStyleSolid {
+				continue // dashed lines drawn separately at draw time
+			}
+			fl := util.MapSlice(line.Points, func(p math.Point2LL) [2]float32 { return p })
+			ld.AddLineStrip(fl)
+			hasSolid = true
+		}
+		if hasSolid {
+			ld.GenerateCommands(&out[i].CommandBuffer)
+		}
+	}
+
+	return out
+}
+
 func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	cb.LineWidth(1, ctx.DPIScale)
-	var draw []radar.ERAMVideoMap
+	var draw []clientMap
 	for _, vm := range ep.allVideoMaps {
 		if _, ok := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)]; ok {
 
@@ -805,8 +847,8 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 		}
 	}
 
-	// Convert to ClientVideoMaps for rendering
-	ep.allVideoMaps = radar.BuildERAMClientVideoMaps(maps.Maps)
+	// Convert to clientMaps for rendering
+	ep.allVideoMaps = buildClientMaps(maps.Maps)
 
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
@@ -816,7 +858,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	ep.videoMapLabel = strings.Replace(ep.videoMapLabel, " ", "\n", 1)
 
 	for _, name := range client.State.ControllerDefaultVideoMaps {
-		if idx := slices.IndexFunc(ep.allVideoMaps, func(v radar.ERAMVideoMap) bool { return combine(v.LabelLine1, v.LabelLine2) == name }); idx != -1 {
+		if idx := slices.IndexFunc(ep.allVideoMaps, func(v clientMap) bool { return combine(v.LabelLine1, v.LabelLine2) == name }); idx != -1 {
 
 			ps.VideoMapVisible[combine(ep.allVideoMaps[idx].LabelLine1, ep.allVideoMaps[idx].LabelLine2)] = nil
 		}
