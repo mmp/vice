@@ -67,6 +67,41 @@ func (l *LinesDrawBuilder) AddDashedLine(p0, p1 [2]float32, dashLength, dashStep
 	return n
 }
 
+// AddDashPattern emits a repeating on/off run-length pattern between p0 and
+// p1. The pattern slice alternates between drawn ("on") and skipped ("off")
+// run lengths, starting with an "on" run; e.g. []float32{12, 4, 4, 4} draws
+// a long dash, gap, short dash, gap, repeating until the segment ends. Run
+// lengths are in whatever coordinate space the caller is using (typically
+// window-space pixels for screen-fixed dashes). The number of "on" runs
+// emitted is returned.
+func (l *LinesDrawBuilder) AddDashPattern(p0, p1 [2]float32, pattern []float32) int {
+	if len(pattern) == 0 {
+		return 0
+	}
+	v := math.Sub2f(p1, p0)
+	totalLength := math.Length2f(v)
+	if totalLength == 0 {
+		return 0
+	}
+	dir := math.Scale2f(v, 1/totalLength)
+	n := 0
+	d := float32(0)
+	idx := 0
+	for d < totalLength {
+		runLen := pattern[idx%len(pattern)]
+		runEnd := min(d+runLen, totalLength)
+		if idx%2 == 0 && runEnd > d {
+			start := math.Add2f(p0, math.Scale2f(dir, d))
+			end := math.Add2f(p0, math.Scale2f(dir, runEnd))
+			l.AddLine(start, end)
+			n++
+		}
+		d = runEnd
+		idx++
+	}
+	return n
+}
+
 // AddLineStrip adds multiple lines to the lines draw builder where each
 // line is given by a successive pair of points, a la GL_LINE_STRIP.
 func (l *LinesDrawBuilder) AddLineStrip(p [][2]float32) {
@@ -213,6 +248,13 @@ func (l *ColoredLinesDrawBuilder) AddLine(p0, p1 [2]float32, color RGB) {
 
 func (l *ColoredLinesDrawBuilder) AddDashedLine(p0, p1 [2]float32, dashLength, dashStep float32, color RGB) {
 	n := l.LinesDrawBuilder.AddDashedLine(p0, p1, dashLength, dashStep)
+	for range n {
+		l.color = append(l.color, color, color)
+	}
+}
+
+func (l *ColoredLinesDrawBuilder) AddDashPattern(p0, p1 [2]float32, pattern []float32, color RGB) {
+	n := l.LinesDrawBuilder.AddDashPattern(p0, p1, pattern)
 	for range n {
 		l.color = append(l.color, color, color)
 	}
