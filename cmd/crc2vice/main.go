@@ -13,6 +13,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -82,9 +83,10 @@ func loadGeoJSON(path string) (loadedSource, error) {
 	if err != nil {
 		return loadedSource{}, err
 	}
+	data = bytes.TrimPrefix(data, []byte{0xEF, 0xBB, 0xBF}) // UTF-8 BOM borkage
 	var gj GeoJSON
 	if err := json.Unmarshal(data, &gj); err != nil {
-		return loadedSource{}, fmt.Errorf("decode: %w", err)
+		return loadedSource{}, fmt.Errorf("decode %s: %w", path, err)
 	}
 	src := loadedSource{path: path}
 	for i := range gj.Features {
@@ -173,18 +175,17 @@ func appendFeatures(src *loadedSource, sink featureSink, accept func(*GeoJSONPro
 				if onAccept != nil {
 					onAccept(&eff)
 				}
-				for _, line := range f.Properties.Text {
-					*sink.Labels = append(*sink.Labels, av.MapLabel{
-						P:         p,
-						Text:      line,
-						Size:      uint8(clampPositive(eff.Size, 1)),
-						XOffset:   int8(eff.XOffset),
-						YOffset:   int8(eff.YOffset),
-						Underline: eff.Underline,
-						Opaque:    eff.Opaque,
-						BCGIndex:  uint8(clampPositive(eff.BCG, 0)),
-					})
-				}
+				// Join multi-line labels into a single MapLabel.
+				*sink.Labels = append(*sink.Labels, av.MapLabel{
+					P:         p,
+					Text:      strings.Join(f.Properties.Text, "\n"),
+					Size:      uint8(clampPositive(eff.Size, 1)),
+					XOffset:   int8(eff.XOffset),
+					YOffset:   int8(eff.YOffset),
+					Underline: eff.Underline,
+					Opaque:    eff.Opaque,
+					BCGIndex:  uint8(clampPositive(eff.BCG, 0)),
+				})
 			} else {
 				eff := mergeDefaults(f.Properties, &src.symbolDefaults)
 				if accept != nil && !accept(&eff) {

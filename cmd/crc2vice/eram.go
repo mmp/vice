@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	av "github.com/mmp/vice/aviation"
 	"golang.org/x/sync/errgroup"
@@ -183,24 +184,24 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, groupBCGs
 				xoff := int8(eff.XOffset)
 				yoff := int8(eff.YOffset)
 				bcg := uint8(clampPositive(eff.BCG, 0))
+				// Join multi-line labels into a single MapLabel.
+				text := strings.Join(f.Properties.Text, "\n")
 				for _, filterIdx := range eff.Filters {
 					fi := filterIdx - 1
 					if fi < 0 || fi >= len(filterMaps) || filterMaps[fi] == nil {
 						continue
 					}
 					promoteBCG(fi, eff.BCG)
-					for _, line := range f.Properties.Text {
-						filterMaps[fi].Labels = append(filterMaps[fi].Labels, av.MapLabel{
-							P:         p,
-							Text:      line,
-							Size:      size,
-							XOffset:   xoff,
-							YOffset:   yoff,
-							Underline: eff.Underline,
-							Opaque:    eff.Opaque,
-							BCGIndex:  bcg,
-						})
-					}
+					filterMaps[fi].Labels = append(filterMaps[fi].Labels, av.MapLabel{
+						P:         p,
+						Text:      text,
+						Size:      size,
+						XOffset:   xoff,
+						YOffset:   yoff,
+						Underline: eff.Underline,
+						Opaque:    eff.Opaque,
+						BCGIndex:  bcg,
+					})
 				}
 			} else {
 				eff := mergeDefaults(f.Properties, &src.symbolDefaults)

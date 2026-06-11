@@ -129,5 +129,29 @@ func loadMapGeometry(cwd, artccID, ulid string, vm *av.STARSMap) error {
 		Symbols: &vm.Symbols,
 		Labels:  &vm.Labels,
 	}, nil, nil)
+	warnSTARSUnrenderable(artccID, vm)
 	return nil
+}
+
+// warnSTARSUnrenderable logs warnings for STARS map features that have no
+// rendering path yet (symbols, labels, non-solid lines). The features are
+// kept on the map so the .mappack carries the full data — STARS just won't
+// draw them today. When STARS rendering catches up to ERAM these maps will
+// "wake up" automatically.
+func warnSTARSUnrenderable(artccID string, vm *av.STARSMap) {
+	if n := len(vm.Symbols); n > 0 {
+		log.Printf("STARS [%s] %q: %d symbols present; STARS symbol rendering not implemented",
+			artccID, vm.Name, n)
+	}
+	if n := len(vm.Labels); n > 0 {
+		log.Printf("STARS [%s] %q: %d labels present; STARS label rendering not implemented",
+			artccID, vm.Name, n)
+	}
+	for i, l := range vm.Lines {
+		if l.Style != av.LineStyleSolid {
+			log.Printf("STARS [%s] %q line %d: non-solid style %s; STARS dashed-line rendering not implemented",
+				artccID, vm.Name, i, l.Style)
+			break
+		}
+	}
 }
