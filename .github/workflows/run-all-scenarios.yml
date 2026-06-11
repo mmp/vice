@@ -31,7 +31,33 @@ jobs:
 
     - name: Build vice
       run: ./build.sh
-    
+
+    - name: Cache videomaps
+      id: cache-videomaps
+      uses: actions/cache@v5
+      with:
+        path: resources/videomaps
+        key: videomaps-${{ hashFiles('resources/videomaps/**') }}
+
+    - name: Cache wx resources
+      id: cache-wx
+      uses: actions/cache@v5
+      with:
+        path: resources/wx
+        key: wx-${{ hashFiles('resources/wx/**') }}
+
+    - name: Fetch videomaps from LFS
+      if: steps.cache-videomaps.outputs.cache-hit != 'true'
+      run: |
+        git lfs install
+        git lfs pull --include="resources/videomaps/*"
+
+    - name: Fetch wx resources from LFS
+      if: steps.cache-wx.outputs.cache-hit != 'true'
+      run: |
+        git lfs install
+        git lfs pull --include="resources/wx/**"
+
     - name: Run all scenarios
       run: ./run-all-scenarios.sh ./vice
     
