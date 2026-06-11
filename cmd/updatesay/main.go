@@ -7,10 +7,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"maps"
 	"os"
-	"slices"
-	"sort"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
@@ -246,9 +243,8 @@ func runSample(apiKey string, missingFixes, missingSIDs, missingSTARs []string, 
 }
 
 func printResults(results map[string]string) {
-	keys := slices.Sorted(maps.Keys(results))
-	for _, k := range keys {
-		fmt.Printf("  %s -> %s\n", k, results[k])
+	for k, v := range util.SortedMap(results) {
+		fmt.Printf("  %s -> %s\n", k, v)
 	}
 }
 
@@ -257,12 +253,10 @@ func printThreeLetterItems(label string, items map[string]*ProcedureInfo) {
 		return
 	}
 
-	names := slices.Sorted(maps.Keys(items))
 	fmt.Printf("\n%s:\n", label)
-	for _, name := range names {
-		info := items[name]
-		airportList := slices.Sorted(maps.Keys(info.Airports))
-		fullNames := slices.Sorted(maps.Keys(info.FullNames))
+	for name, info := range util.SortedMap(items) {
+		airportList := util.SortedMapKeys(info.Airports)
+		fullNames := util.SortedMapKeys(info.FullNames)
 		fmt.Printf("  %s: airports=%s, variants=%s\n", name, strings.Join(airportList, ","), strings.Join(fullNames, ","))
 	}
 }
@@ -270,12 +264,11 @@ func printThreeLetterItems(label string, items map[string]*ProcedureInfo) {
 // FindMissingProcedures returns missing base names from procedures.
 func FindMissingProcedures(items map[string]*ProcedureInfo, existing map[string]string) []string {
 	var missing []string
-	for name := range items {
+	for name := range util.SortedMap(items) {
 		if _, exists := existing[name]; !exists {
 			missing = append(missing, name)
 		}
 	}
-	sort.Strings(missing)
 	return missing
 }
 

@@ -1185,12 +1185,7 @@ func collectMapAirspaceTCPs(briefMap *brief.VideoMapBlock, state *client.SimStat
 			seen[string(tcp)] = struct{}{}
 		}
 	}
-	tcps := make([]string, 0, len(seen))
-	for t := range seen {
-		tcps = append(tcps, t)
-	}
-	sort.Strings(tcps)
-	return tcps
+	return util.SortedMapKeys(seen)
 }
 
 // briefMapProjection captures the lat/lon → canvas mapping for a brief video map. lat/lon points

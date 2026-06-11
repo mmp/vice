@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"regexp"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -16,6 +15,7 @@ import (
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -184,11 +184,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	// Sort group labels
-	labels := make([]string, 0, len(ep.CRRGroups))
-	for label := range ep.CRRGroups {
-		labels = append(labels, label)
-	}
-	sort.Strings(labels)
+	labels := util.SortedMapKeys(ep.CRRGroups)
 
 	// Calculate actual content height (limited by LINES setting)
 	maxLines := int(math.Clamp(float32(ps.CRR.Lines), 1, 100))
@@ -661,11 +657,7 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	// Sort group labels for the custom content closure below.
-	groupLabels := make([]string, 0, len(ep.CRRGroups))
-	for l := range ep.CRRGroups {
-		groupLabels = append(groupLabels, l)
-	}
-	sort.Strings(groupLabels)
+	groupLabels := util.SortedMapKeys(ep.CRRGroups)
 
 	cfg := ERAMMenuConfig{
 		Title:                 "CRR",
@@ -804,13 +796,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 	ep.crrFixRects = make(map[string]math.Extent2D)
 
 	// Show existing CRR groups as neon-green asterisk plus label at group location.
-	fixLabels := make([]string, 0, len(ep.CRRGroups))
-	for l := range ep.CRRGroups {
-		fixLabels = append(fixLabels, l)
-	}
-	sort.Strings(fixLabels)
-	for _, l := range fixLabels {
-		g := ep.CRRGroups[l]
+	for l, g := range util.SortedMap(ep.CRRGroups) {
 		if g == nil {
 			continue
 		}

@@ -1697,8 +1697,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 			imgui.TableHeadersRow()
 
 			// First the potentially-human-controlled ones
-			tcws := slices.Collect(maps.Keys(c.State.CurrentConsolidation))
-			slices.Sort(tcws)
+			tcws := util.SortedMapKeys(c.State.CurrentConsolidation)
 			coveredPositions := make(map[av.ControlPosition]struct{})
 			for _, tcw := range tcws {
 				imgui.TableNextRow()
@@ -1798,7 +1797,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 				imgui.TableSetupColumn("METAR")
 				imgui.TableHeadersRow()
 
-				airports := slices.Sorted(maps.Keys(c.State.METAR))
+				airports := util.SortedMapKeys(c.State.METAR)
 				for _, ap := range airports {
 					if !ifrAirports[ap] {
 						continue
@@ -2112,8 +2111,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 	imgui.Separator()
 
 	// Start time and METAR section
-	metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
-	slices.Sort(metarAirports)
+	metarAirports := util.SortedMapKeys(c.airportMETAR)
 	if idx := slices.Index(metarAirports, c.ScenarioSpec.PrimaryAirport); idx > 0 {
 		metarAirports = slices.Delete(metarAirports, idx, idx+1)
 		metarAirports = slices.Insert(metarAirports, 0, c.ScenarioSpec.PrimaryAirport)

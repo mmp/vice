@@ -9,7 +9,8 @@ import (
 	"maps"
 	"os"
 	"path/filepath"
-	"sort"
+
+	"github.com/mmp/vice/util"
 )
 
 // LoadSayFile loads a say*.json file and returns the pronunciation map.
@@ -30,25 +31,19 @@ func LoadSayFile(path string) (map[string]string, error) {
 // SaveSayFile saves a pronunciation map to a say*.json file, sorted alphabetically.
 // Uses atomic write (temp file + rename) to be robust against interruption.
 func SaveSayFile(path string, data map[string]string) error {
-	// Sort keys alphabetically
-	keys := make([]string, 0, len(data))
-	for k := range data {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	// Build ordered JSON manually to preserve key order
-	// Using json.Marshal with a map doesn't preserve order
+	// Build ordered JSON manually to preserve key order.
+	// json.Marshal with a map doesn't preserve order.
 	result := "{\n"
-	for i, k := range keys {
-		v := data[k]
+	i := 0
+	for k, v := range util.SortedMap(data) {
 		keyJSON, _ := json.Marshal(k)
 		valJSON, _ := json.Marshal(v)
 		result += "  " + string(keyJSON) + ": " + string(valJSON)
-		if i < len(keys)-1 {
+		if i < len(data)-1 {
 			result += ","
 		}
 		result += "\n"
+		i++
 	}
 	result += "}\n"
 
@@ -108,11 +103,10 @@ func MergeSayData(existing, new map[string]string) (map[string]string, int) {
 // FindMissing returns a sorted list of items in extracted that are not in existing.
 func FindMissing(extracted map[string]struct{}, existing map[string]string) []string {
 	var missing []string
-	for name := range extracted {
+	for name := range util.SortedMap(extracted) {
 		if _, exists := existing[name]; !exists {
 			missing = append(missing, name)
 		}
 	}
-	sort.Strings(missing)
 	return missing
 }

@@ -160,9 +160,7 @@ func (m *Manifest) RawManifest() RawManifest {
 
 // Facilities returns a sorted list of all facility identifiers in the manifest.
 func (m *Manifest) Facilities() []string {
-	facilities := slices.Collect(maps.Keys(m.data))
-	slices.Sort(facilities)
-	return facilities
+	return util.SortedMapKeys(m.data)
 }
 
 // Count returns the number of facilities in the manifest

@@ -18,6 +18,7 @@ import (
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/mmp/vice/stt"
+	"github.com/mmp/vice/util"
 )
 
 // LogEntry represents an STT command log entry from the slog file.
@@ -819,15 +820,8 @@ func render(screen tcell.Screen, state *AppState) {
 					drawText(screen, 0, y, width, styleContextLabel, " Fixes:")
 					y++
 
-					var fixNames []string
-					for spoken := range ac.Fixes {
-						fixNames = append(fixNames, spoken)
-					}
-					sort.Strings(fixNames)
-
 					fixLine := " "
-					for _, spoken := range fixNames {
-						id := ac.Fixes[spoken]
+					for spoken, id := range util.SortedMap(ac.Fixes) {
 						part := fmt.Sprintf("%s→%s  ", spoken, id)
 						if len(fixLine)+len(part) > width-2 {
 							if y < maxY {
@@ -851,15 +845,8 @@ func render(screen tcell.Screen, state *AppState) {
 					drawText(screen, 0, y, width, styleContextLabel, " Approaches:")
 					y++
 
-					var apprNames []string
-					for spoken := range ac.CandidateApproaches {
-						apprNames = append(apprNames, spoken)
-					}
-					sort.Strings(apprNames)
-
 					apprLine := " "
-					for _, spoken := range apprNames {
-						id := ac.CandidateApproaches[spoken]
+					for spoken, id := range util.SortedMap(ac.CandidateApproaches) {
 						part := fmt.Sprintf("%s→%s  ", spoken, id)
 						if len(apprLine)+len(part) > width-2 {
 							if y < maxY {
@@ -889,15 +876,8 @@ func render(screen tcell.Screen, state *AppState) {
 							drawText(screen, 0, y, width, styleContextLabel, fmt.Sprintf(" Approach %s Fixes:", approachID))
 							y++
 
-							var fixNames []string
-							for spoken := range approachFixes {
-								fixNames = append(fixNames, spoken)
-							}
-							sort.Strings(fixNames)
-
 							fixLine := " "
-							for _, spoken := range fixNames {
-								id := approachFixes[spoken]
+							for spoken, id := range util.SortedMap(approachFixes) {
 								part := fmt.Sprintf("%s→%s  ", spoken, id)
 								if len(fixLine)+len(part) > width-2 {
 									if y < maxY {
@@ -928,11 +908,7 @@ func render(screen tcell.Screen, state *AppState) {
 				for _, a := range entry.STTAircraft {
 					callsignSet[a.Callsign] = true
 				}
-				var callsigns []string
-				for cs := range callsignSet {
-					callsigns = append(callsigns, cs)
-				}
-				sort.Strings(callsigns)
+				callsigns := util.SortedMapKeys(callsignSet)
 
 				csLine := " "
 				for _, cs := range callsigns {

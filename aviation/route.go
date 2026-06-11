@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
-	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -1937,12 +1936,12 @@ func MakeSTAR() *STAR {
 const routePrintFormat = "%-13s: %s\n"
 
 func (s STAR) Print(name string) {
-	for _, tr := range slices.Sorted(maps.Keys(s.Transitions)) {
-		fmt.Printf(routePrintFormat, name+"."+tr, s.Transitions[tr].Encode())
+	for tr, wps := range util.SortedMap(s.Transitions) {
+		fmt.Printf(routePrintFormat, name+"."+tr, wps.Encode())
 	}
 
-	for _, rwy := range slices.Sorted(maps.Keys(s.RunwayWaypoints)) {
-		fmt.Printf(routePrintFormat, name+".RWY"+rwy, s.RunwayWaypoints[rwy].Encode())
+	for rwy, wps := range util.SortedMap(s.RunwayWaypoints) {
+		fmt.Printf(routePrintFormat, name+".RWY"+rwy, wps.Encode())
 	}
 }
 
