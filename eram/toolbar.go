@@ -1322,9 +1322,14 @@ func (ep *ERAMPane) offsetFullButton(ctx *panes.Context) {
 
 // Turns any button with dynamic fields into a main name. (eg. Range 300 -> Range)
 func cleanButtonName(name string) string {
-	weirdNames := []string{"RANGE", "ALT LIM", "VECTOR", "FDB LDR", "NONADSB", "SPEED", "SIZE", "VOLUME", "FDB LDR"}
-	firstLine := strings.Split(name, "\n")[0]
-	if slices.Contains(weirdNames, firstLine) {
+	// Hot path: called ~5× per button per frame. Avoid strings.Split's
+	// slice allocation by slicing to the first '\n' directly.
+	firstLine := name
+	if i := strings.IndexByte(name, '\n'); i >= 0 {
+		firstLine = name[:i]
+	}
+	switch firstLine {
+	case "RANGE", "ALT LIM", "VECTOR", "FDB LDR", "NONADSB", "SPEED", "SIZE", "VOLUME":
 		return firstLine
 	}
 	return name

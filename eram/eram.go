@@ -771,19 +771,17 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuf
 func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	// bcgColor maps a feature's BCGIndex (1-based) to its current RGB.
-	// Returns black if the index is out of range or its slot is empty
-	// — both shouldn't happen given the importer's bcg>0 enforcement,
-	// but stay defensive at draw time so a bad mappack doesn't crash.
-	bcgColor := func(bcgIdx uint8) renderer.RGB {
-		if bcgIdx == 0 || int(bcgIdx) > len(ep.bcgNames) {
-			return renderer.RGB{}
-		}
-		name := ep.bcgNames[bcgIdx-1]
+	// Precompute a BCGIndex → RGB lookup table once per frame so the hot
+	// path becomes an array index. The 0 slot and any out-of-range or
+	// empty-named slot stay at the zero value (black/invisible), matching
+	// the previous defensive bcgColor closure.
+	var bcgRGB [256]renderer.RGB
+	base := renderer.RGB{R: .953, G: .953, B: .953}
+	for i, name := range ep.bcgNames {
 		if name == "" {
-			return renderer.RGB{}
+			continue
 		}
-		return renderer.RGB{R: .953, G: .953, B: .953}.Scale(float32(ps.VideoMapBrightness[name]) / 100)
+		bcgRGB[i+1] = base.Scale(float32(ps.VideoMapBrightness[name]) / 100)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -800,7 +798,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 		}
 
 		for _, line := range vm.Lines {
-			color := bcgColor(line.BCGIndex)
+			color := bcgRGB[line.BCGIndex]
 			if line.Style == av.LineStyleSolid {
 				fl := util.MapSlice(line.Points, func(p math.Point2LL) [2]float32 {
 					return transforms.WindowFromLatLongP(p)
@@ -821,7 +819,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 
 		for _, s := range vm.Symbols {
 			if font := ep.ERAMGeomapFont(int(s.Size)); font != nil {
-				color := bcgColor(s.BCGIndex)
+				color := bcgRGB[s.BCGIndex]
 				pw := transforms.WindowFromLatLongP(s.P)
 				td.AddTextCentered(string(symbolGlyphIndex[s.Style]), pw,
 					renderer.TextStyle{Font: font, Color: color})
@@ -830,7 +828,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 
 		for _, l := range vm.Labels {
 			if font := ep.ERAMFont(int(l.Size)); font != nil {
-				color := bcgColor(l.BCGIndex)
+				color := bcgRGB[l.BCGIndex]
 				pw := transforms.WindowFromLatLongP(l.P)
 				pw[0] += float32(l.XOffset)
 				pw[1] += float32(l.YOffset)
