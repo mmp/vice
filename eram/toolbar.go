@@ -1729,9 +1729,7 @@ func (ep *ERAMPane) handleTornOffButtonsInput(ctx *panes.Context) {
 	gap := float32(1)
 
 	// Deterministic hit-testing in case of overlap.
-	names := util.SortedMapKeys(ps.TornOffButtons)
-	for _, name := range names {
-		pos := ps.TornOffButtons[name]
+	for name, pos := range util.SortedMap(ps.TornOffButtons) {
 
 		// Handle extents.
 		handleP0 := pos

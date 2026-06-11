@@ -297,13 +297,12 @@ func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms rad
 		DrawBackground: true}
 
 	if ep.scopeDraw.arrivals != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
+		for name, flow := range util.SortedMap(ctx.Client.State.InboundFlows) {
 			if ep.scopeDraw.arrivals[name] == nil {
 				continue
 			}
 
-			arrivals := ctx.Client.State.InboundFlows[name].Arrivals
-			for i, arr := range arrivals {
+			for i, arr := range flow.Arrivals {
 				if ep.scopeDraw.arrivals == nil || !ep.scopeDraw.arrivals[name][i] {
 					continue
 				}
@@ -311,9 +310,8 @@ func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms rad
 				radar.DrawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 				// Draw runway-specific waypoints
-				for _, ap := range util.SortedMapKeys(arr.RunwayWaypoints) {
-					for _, rwy := range util.SortedMapKeys(arr.RunwayWaypoints[ap]) {
-						wp := arr.RunwayWaypoints[ap][rwy]
+				for rwyWps := range util.SortedMapValues(arr.RunwayWaypoints) {
+					for rwy, wp := range util.SortedMap(rwyWps) {
 						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 						if len(wp) > 1 {
@@ -356,8 +354,7 @@ func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ra
 				continue
 			}
 			ap := ctx.Client.State.Airports[rwy.Airport]
-			for _, name := range util.SortedMapKeys(ap.Approaches) {
-				appr := ap.Approaches[name]
+			for name, appr := range util.SortedMap(ap.Approaches) {
 				if appr.Runway == rwy.Runway.Base() && ep.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
 						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
@@ -382,21 +379,19 @@ func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms r
 		DrawBackground: true}
 
 	if ep.scopeDraw.departures != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.Airports) {
+		for name, ap := range util.SortedMap(ctx.Client.State.Airports) {
 			if ep.scopeDraw.departures[name] == nil {
 				continue
 			}
 
-			ap := ctx.Client.State.Airports[name]
-			for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
+			for rwy, exitRoutes := range util.SortedMap(ap.DepartureRoutes) {
 				if ep.scopeDraw.departures[name][string(rwy)] == nil {
 					continue
 				}
 
-				exitRoutes := ap.DepartureRoutes[rwy]
-				for _, exit := range util.SortedMapKeys(exitRoutes) {
+				for exit, exitRoute := range util.SortedMap(exitRoutes) {
 					if ep.scopeDraw.departures[name][string(rwy)][string(exit)] {
-						radar.DrawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
+						radar.DrawWaypoints(ctx, exitRoute.Waypoints, drawnWaypoints, transforms,
 							td, style, ld, pd, ldr, color)
 					}
 				}
@@ -418,13 +413,12 @@ func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms 
 		DrawBackground: true}
 
 	if ep.scopeDraw.overflights != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
+		for name, flow := range util.SortedMap(ctx.Client.State.InboundFlows) {
 			if ep.scopeDraw.overflights[name] == nil {
 				continue
 			}
 
-			overflights := ctx.Client.State.InboundFlows[name].Overflights
-			for i, of := range overflights {
+			for i, of := range flow.Overflights {
 				if ep.scopeDraw.overflights == nil || !ep.scopeDraw.overflights[name][i] {
 					continue
 				}
@@ -448,9 +442,9 @@ func (ep *ERAMPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms ra
 	}
 
 	if ep.scopeDraw.airspace != nil {
-		for _, ctrl := range util.SortedMapKeys(ep.scopeDraw.airspace) {
-			for _, volname := range util.SortedMapKeys(ep.scopeDraw.airspace[ctrl]) {
-				if !ep.scopeDraw.airspace[ctrl][volname] {
+		for ctrl, vols := range util.SortedMap(ep.scopeDraw.airspace) {
+			for volname, enabled := range util.SortedMap(vols) {
+				if !enabled {
 					continue
 				}
 

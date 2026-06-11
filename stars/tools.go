@@ -599,18 +599,16 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 		DrawBackground: true}
 
 	if sp.scopeDraw.departures != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.Airports) {
+		for name, ap := range util.SortedMap(ctx.Client.State.Airports) {
 			if sp.scopeDraw.departures[name] == nil {
 				continue
 			}
 
-			ap := ctx.Client.State.Airports[name]
-			for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
+			for rwy, exitRoutes := range util.SortedMap(ap.DepartureRoutes) {
 				if sp.scopeDraw.departures[name][string(rwy)] == nil {
 					continue
 				}
 
-				exitRoutes := ap.DepartureRoutes[rwy]
 				for exit, exitRoute := range util.SortedMap(exitRoutes) {
 					if sp.scopeDraw.departures[name][string(rwy)][string(exit)] {
 						radar.DrawWaypoints(ctx, exitRoute.Waypoints, drawnWaypoints, transforms,
@@ -666,9 +664,9 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms r
 	}
 
 	if sp.scopeDraw.airspace != nil {
-		for _, tcp := range util.SortedMapKeys(sp.scopeDraw.airspace) {
-			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[tcp]) {
-				if !sp.scopeDraw.airspace[tcp][volname] {
+		for tcp, vols := range util.SortedMap(sp.scopeDraw.airspace) {
+			for volname, enabled := range util.SortedMap(vols) {
+				if !enabled {
 					continue
 				}
 

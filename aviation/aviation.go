@@ -1066,8 +1066,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			star.Check(e)
 
 			if len(ar.Waypoints) == 0 {
-				for _, tr := range util.SortedMapKeys(star.Transitions) {
-					wps := star.Transitions[tr]
+				for wps := range util.SortedMapValues(star.Transitions) {
 					if idx := slices.IndexFunc(wps, func(w Waypoint) bool { return w.Fix == spawnPoint }); idx != -1 {
 						if idx == len(wps)-1 {
 							e.ErrorString(

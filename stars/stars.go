@@ -1182,7 +1182,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 
 	// Radar maps
 	radarIndex := 801
-	for _, name := range util.SortedMapKeys(ss.FacilityAdaptation.RadarSites) {
+	for name, site := range util.SortedMap(ss.FacilityAdaptation.RadarSites) {
 		sm := clientMap{
 			STARSMap: av.STARSMap{
 				Label:    name + "RCM",
@@ -1192,7 +1192,6 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 			},
 		}
 
-		site := ss.FacilityAdaptation.RadarSites[name]
 		ld := renderer.GetLinesDrawBuilder()
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.PrimaryRange), 360)
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.SecondaryRange), 360)

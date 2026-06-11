@@ -749,10 +749,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 
 					// Display sub-items (groups for TRACONs, areas for ARTCCs)
 					if facility == c.Facility {
-						sortedAreas := util.SortedMapKeys(areaToGroups)
-						sort.Strings(sortedAreas)
-						for _, areaKey := range sortedAreas {
-							aInfo := areaToGroups[areaKey]
+						for aInfo := range util.SortedMapValues(areaToGroups) {
 							// For TRACONs, just show group names; for ARTCCs, show area names
 							itemLabel := indentSpaces + aInfo.area
 							if !isTRACON && aInfo.area == "" {

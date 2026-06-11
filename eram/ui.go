@@ -132,16 +132,15 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, name := range util.SortedMapKeys(c.State.InboundFlows) {
-				arrivals := c.State.InboundFlows[name].Arrivals
-				if len(arrivals) == 0 {
+			for name, flow := range util.SortedMap(c.State.InboundFlows) {
+				if len(flow.Arrivals) == 0 {
 					continue
 				}
 				if ep.scopeDraw.arrivals[name] == nil {
 					ep.scopeDraw.arrivals[name] = make(map[int]bool)
 				}
 
-				for i, arr := range arrivals {
+				for i, arr := range flow.Arrivals {
 					if len(c.State.LaunchConfig.InboundFlowRates[name]) == 0 {
 						// Not used in the current scenario.
 						continue
@@ -199,8 +198,7 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 					if ep.scopeDraw.approaches[rwy.Airport] == nil {
 						ep.scopeDraw.approaches[rwy.Airport] = make(map[string]bool)
 					}
-					for _, name := range util.SortedMapKeys(ap.Approaches) {
-						appr := ap.Approaches[name]
+					for name, appr := range util.SortedMap(ap.Approaches) {
 						if appr.Runway == rwy.Runway.Base() {
 							imgui.TableNextRow()
 							imgui.TableNextColumn()
@@ -252,13 +250,12 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, airport := range util.SortedMapKeys(c.State.LaunchConfig.DepartureRates) {
+			for airport, runwayRates := range util.SortedMap(c.State.LaunchConfig.DepartureRates) {
 				if ep.scopeDraw.departures[airport] == nil {
 					ep.scopeDraw.departures[airport] = make(map[string]map[string]bool)
 				}
 				ap := c.State.Airports[airport]
 
-				runwayRates := c.State.LaunchConfig.DepartureRates[airport]
 				for _, rwy := range util.SortedMapKeys(runwayRates) {
 					if ep.scopeDraw.departures[airport][string(rwy)] == nil {
 						ep.scopeDraw.departures[airport][string(rwy)] = make(map[string]bool)
@@ -270,16 +267,15 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 					// we'll reverse-engineer that here so we can present
 					// them together in the UI.
 					routeToExit := make(map[string][]string)
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
-						exitRoute := ap.DepartureRoutes[rwy][exit]
+					for exit, exitRoute := range util.SortedMap(exitRoutes) {
 						r := exitRoute.Waypoints.Encode()
 						routeToExit[r] = append(routeToExit[r], string(exit))
 					}
 
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
+					for exit, exitRoute := range util.SortedMap(exitRoutes) {
 						// Draw the row only when we hit the first exit
 						// that uses the corresponding route route.
-						r := exitRoutes[exit].Waypoints.Encode()
+						r := exitRoute.Waypoints.Encode()
 						if routeToExit[r][0] != string(exit) {
 							continue
 						}
@@ -306,7 +302,7 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 							imgui.Text(strings.Join(routeToExit[r], ", "))
 						}
 						imgui.TableNextColumn()
-						imgui.Text(exitRoutes[exit].Description)
+						imgui.Text(exitRoute.Description)
 					}
 				}
 			}
@@ -329,9 +325,8 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, name := range util.SortedMapKeys(c.State.InboundFlows) {
-				overflights := c.State.InboundFlows[name].Overflights
-				if len(overflights) == 0 {
+			for name, flow := range util.SortedMap(c.State.InboundFlows) {
+				if len(flow.Overflights) == 0 {
 					continue
 				}
 
@@ -343,7 +338,7 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 					continue
 				}
 
-				for i, of := range overflights {
+				for i, of := range flow.Overflights {
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
 					enabled := ep.scopeDraw.overflights[name][i]
@@ -380,19 +375,18 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 				}
 			}
 		}
-		for _, pos := range util.SortedMapKeys(ep.scopeDraw.airspace) {
+		for pos, vols := range util.SortedMap(ep.scopeDraw.airspace) {
 			hdr := string(pos)
 			if ctrl, ok := c.State.Controllers[pos]; ok {
 				hdr += " (" + ctrl.Position + ")"
 			}
 			if imgui.TreeNodeExStr(hdr) {
 				if imgui.BeginTableV("volumes", 2, tableFlags, imgui.Vec2{}, 0) {
-					for _, vol := range util.SortedMapKeys(ep.scopeDraw.airspace[pos]) {
+					for vol, b := range util.SortedMap(vols) {
 						imgui.TableNextRow()
 						imgui.TableNextColumn()
-						b := ep.scopeDraw.airspace[pos][vol]
 						if imgui.Checkbox("##"+vol, &b) {
-							ep.scopeDraw.airspace[pos][vol] = b
+							vols[vol] = b
 						}
 						imgui.TableNextColumn()
 						imgui.Text(vol)

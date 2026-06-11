@@ -634,8 +634,7 @@ after the first.`)
 			var apprNames []string
 			for _, rwy := range c.State.ArrivalRunways {
 				ap := c.State.Airports[rwy.Airport]
-				for _, name := range util.SortedMapKeys(ap.Approaches) {
-					appr := ap.Approaches[name]
+				for name, appr := range util.SortedMap(ap.Approaches) {
 					if appr.Runway == rwy.Runway.Base() {
 						apprNames = append(apprNames, name+" ("+rwy.Airport+")")
 					}

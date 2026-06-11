@@ -200,8 +200,8 @@ func runLint(lg *log.Logger) error {
 		}
 	}
 
-	for _, tracon := range util.SortedMapKeys(scenarioAirports) {
-		airports := util.SortedMapKeys(scenarioAirports[tracon])
+	for tracon, ap := range util.SortedMap(scenarioAirports) {
+		airports := util.SortedMapKeys(ap)
 		fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
 	}
 	return nil

@@ -816,8 +816,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 			nav.Speed.AfterAltitude.Encoded()))
 	}
 
-	for _, fix := range util.SortedMapKeys(nav.FixAssignments) {
-		nfa := nav.FixAssignments[fix]
+	for fix, nfa := range util.SortedMap(nav.FixAssignments) {
 		if nfa.Arrive.Altitude != nil || nfa.Arrive.Speed != nil {
 			line := "Cross " + fix + " "
 			if nfa.Arrive.Altitude != nil {

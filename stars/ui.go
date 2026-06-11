@@ -37,11 +37,11 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.RadioButtonIntPtr("ARTS", &sp.FontSelection, fontARTS)
 
 	imgui.Text("Monitor: ")
-	for _, m := range util.SortedMapKeys(monitorColorSets) {
+	for m, colors := range util.SortedMap(monitorColorSets) {
 		imgui.SameLine()
 		if imgui.RadioButtonBool(m, sp.Monitor == m) {
 			sp.Monitor = m
-			sp.Colors = monitorColorSets[sp.Monitor]
+			sp.Colors = colors
 		}
 	}
 
@@ -217,12 +217,11 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, airport := range util.SortedMapKeys(c.State.LaunchConfig.DepartureRates) {
+			for airport, runwayRates := range util.SortedMap(c.State.LaunchConfig.DepartureRates) {
 				if sp.scopeDraw.departures[airport] == nil {
 					sp.scopeDraw.departures[airport] = make(map[string]map[string]bool)
 				}
 				ap := c.State.Airports[airport]
-				runwayRates := c.State.LaunchConfig.DepartureRates[airport]
 
 				// --- 1. Group by SID instead of runway ---
 				sidGroups := make(map[string]struct {
@@ -253,9 +252,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 				}
 
 				// --- 2. Render each SID once ---
-				for _, sid := range util.SortedMapKeys(sidGroups) {
-					group := sidGroups[sid]
-
+				for sid, group := range util.SortedMap(sidGroups) {
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
 
@@ -367,19 +364,18 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 				}
 			}
 		}
-		for _, pos := range util.SortedMapKeys(sp.scopeDraw.airspace) {
+		for pos, vols := range util.SortedMap(sp.scopeDraw.airspace) {
 			hdr := string(pos)
 			if ctrl, ok := c.State.Controllers[pos]; ok {
 				hdr += " (" + ctrl.Position + ")"
 			}
 			if imgui.TreeNodeExStr(hdr) {
 				if imgui.BeginTableV("volumes", 2, tableFlags, imgui.Vec2{}, 0) {
-					for _, vol := range util.SortedMapKeys(sp.scopeDraw.airspace[pos]) {
+					for vol, b := range util.SortedMap(vols) {
 						imgui.TableNextRow()
 						imgui.TableNextColumn()
-						b := sp.scopeDraw.airspace[pos][vol]
 						if imgui.Checkbox("##"+vol, &b) {
-							sp.scopeDraw.airspace[pos][vol] = b
+							vols[vol] = b
 						}
 						imgui.TableNextColumn()
 						imgui.Text(vol)
