@@ -98,13 +98,16 @@ func init() {
 // parsing, console fixup, logging, CPU info, profiler setup, and
 // server address normalization.
 func initCommon() (*log.Logger, *util.Profiler) {
-	flag.Parse()
-
+	// Attach to the parent console (if any) before flag.Parse so that
+	// flag's usage/error output on an unknown flag is visible when vice
+	// is launched from cmd.exe or PowerShell.
 	if err := fixconsole.FixConsoleIfNeeded(); err != nil {
 		// Not sure this will actually appear, but what else are we going
 		// to do...
 		fmt.Printf("FixConsole: %v\n", err)
 	}
+
+	flag.Parse()
 
 	// On Windows GUI builds there is no attached console when launched
 	// from Explorer, so the Go runtime's pre-death stack dump (e.g. for
