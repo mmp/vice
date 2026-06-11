@@ -373,6 +373,16 @@ func TestSortedMapKeys(t *testing.T) {
 }
 
 func TestSortedMapValues(t *testing.T) {
+	empty := map[int]string{}
+	if values := slices.Collect(SortedMapValues(empty)); len(values) != 0 {
+		t.Errorf("SortedMapValues(empty) returned %v, expected empty", values)
+	}
+
+	single := map[int]string{7: "seven"}
+	if values := slices.Collect(SortedMapValues(single)); !slices.Equal(values, []string{"seven"}) {
+		t.Errorf("SortedMapValues(single) returned %v, expected [seven]", values)
+	}
+
 	m := map[int]string{
 		3: "three",
 		1: "one",
@@ -385,6 +395,67 @@ func TestSortedMapValues(t *testing.T) {
 
 	if !slices.Equal(values, expected) {
 		t.Errorf("SortedMapValues returned %v, expected %v", values, expected)
+	}
+
+	// Verify early termination is honored.
+	var seen []string
+	for v := range SortedMapValues(m) {
+		seen = append(seen, v)
+		if len(seen) == 2 {
+			break
+		}
+	}
+	if !slices.Equal(seen, []string{"one", "two"}) {
+		t.Errorf("SortedMapValues early break yielded %v, expected [one two]", seen)
+	}
+}
+
+func TestSortedMap(t *testing.T) {
+	empty := map[int]string{}
+	for range SortedMap(empty) {
+		t.Errorf("SortedMap(empty) yielded an entry")
+	}
+
+	single := map[int]string{7: "seven"}
+	var sk []int
+	var sv []string
+	for k, v := range SortedMap(single) {
+		sk = append(sk, k)
+		sv = append(sv, v)
+	}
+	if !slices.Equal(sk, []int{7}) || !slices.Equal(sv, []string{"seven"}) {
+		t.Errorf("SortedMap(single) returned (%v, %v), expected ([7], [seven])", sk, sv)
+	}
+
+	m := map[int]string{
+		3: "three",
+		1: "one",
+		2: "two",
+		4: "four",
+	}
+	var keys []int
+	var values []string
+	for k, v := range SortedMap(m) {
+		keys = append(keys, k)
+		values = append(values, v)
+	}
+	if !slices.Equal(keys, []int{1, 2, 3, 4}) {
+		t.Errorf("SortedMap keys returned %v, expected [1 2 3 4]", keys)
+	}
+	if !slices.Equal(values, []string{"one", "two", "three", "four"}) {
+		t.Errorf("SortedMap values returned %v, expected [one two three four]", values)
+	}
+
+	// Verify early termination is honored.
+	keys = keys[:0]
+	for k := range SortedMap(m) {
+		keys = append(keys, k)
+		if len(keys) == 2 {
+			break
+		}
+	}
+	if !slices.Equal(keys, []int{1, 2}) {
+		t.Errorf("SortedMap early break yielded %v, expected [1 2]", keys)
 	}
 }
 

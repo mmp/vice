@@ -172,6 +172,14 @@ func SortedMapKeys[K cmp.Ordered, V any](m map[K]V) []K {
 // Return values, ordered by sorting the keys
 func SortedMapValues[K cmp.Ordered, V any](m map[K]V) iter.Seq[V] {
 	return func(yield func(v V) bool) {
+		if len(m) == 1 {
+			for _, v := range m {
+				if !yield(v) {
+					return
+				}
+			}
+			return
+		}
 		sk := SortedMapKeys(m)
 		for k := range slices.Values(sk) {
 			if !yield(m[k]) {
@@ -183,6 +191,14 @@ func SortedMapValues[K cmp.Ordered, V any](m map[K]V) iter.Seq[V] {
 
 func SortedMap[K cmp.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
 	return func(yield func(k K, v V) bool) {
+		if len(m) == 1 {
+			for k, v := range m {
+				if !yield(k, v) {
+					return
+				}
+			}
+			return
+		}
 		sk := SortedMapKeys(m)
 		for k := range slices.Values(sk) {
 			if !yield(k, m[k]) {
