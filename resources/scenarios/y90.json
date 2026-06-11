@@ -1448,6 +1448,58 @@
       "wind": {
         "direction": "300-0"
       }
+    },
+    "BDL Sequencing Practice": {
+      "arrival_runways": [
+        {
+          "airport": "KBDL",
+          "runway": "24"
+        },
+        {
+          "airport": "KBDL",
+          "runway": "33"
+        }
+      ],
+      "inbound_rates": {
+        "STELA1.Jets": {
+          "KBDL": 15
+        },
+        "STELA1.Ga": {
+          "KBDL": 8
+        },
+        "DPK3": {
+          "KBDL": 15
+        },
+        "KEYNN": {
+          "KBDL": 3
+        }
+      },
+      "configuration": "CNW",
+      "airspace": {
+        "1H": [
+          "BDL_H_APP2433"
+        ],
+        "1W": [
+          "BDL_W_APP2433"
+        ],
+        "1Z": [
+          "BDL_Z_APP2433"
+        ],
+        "1F": [
+          "BDL_F_APP2433"
+        ],
+        "1B": [
+          "BDL_B_APP2433"
+        ]
+      },
+      "default_maps": [
+        "Y90 RWY 24/33",
+        "BDL_TWR 24/33",
+        "Y90 COASTLINE"
+      ],
+      "wind": {
+        "direction": "300-0"
+      }
     }
   }
 }
