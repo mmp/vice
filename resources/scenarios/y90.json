@@ -231,16 +231,6 @@
         {
           "airlines": [
             {
-              "icao": "EJA"
-            }
-          ],
-          "destination": "TJIG",
-          "exit": "MAD",
-          "route": "MAD GEDIC Y486 SAVIK L455 LENNT M423 PLING RTE7 SAALR SJU"
-        },
-        {
-          "airlines": [
-            {
               "icao": "SKW"
             }
           ],
