@@ -172,10 +172,19 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 
 	// Flatten out the METAR, sort by date, eliminate duplicates, convert to SOA and flate-compress.
 	metar := wx.NewCompressedMETAR()
+	var nFailedAirports, nDroppedRecords int
 	for ap, fm := range fmetar {
 		var recs []wx.METAR
 		for _, m := range fm {
 			recs = append(recs, m.METAR...)
+		}
+
+		// Scraped files are tagged by their first record's ICAO, but
+		// occasionally contain stray records from other airports. Filter
+		// those out so they don't fail the round-trip check.
+		if mismatched := util.FilterSlice(recs, func(r wx.METAR) bool { return r.ICAO != ap }); len(mismatched) > 0 {
+			nDroppedRecords += len(mismatched)
+			recs = util.FilterSlice(recs, func(r wx.METAR) bool { return r.ICAO == ap })
 		}
 
 		// Sort by date; since the time format used is 2006-01-02 15:04:05,
@@ -193,7 +202,9 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 		}
 
 		if err := metar.SetAirportMETAR(ap, recs); err != nil {
-			return err
+			LogError("%s: %v (skipping airport)", ap, err)
+			nFailedAirports++
+			continue
 		}
 
 		if ap == "KOKC" {
@@ -207,6 +218,13 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 				return err
 			}
 		}
+	}
+
+	if nDroppedRecords > 0 {
+		LogError("dropped %d METAR records whose ICAO didn't match the file's airport", nDroppedRecords)
+	}
+	if nFailedAirports > 0 {
+		LogError("%d airports failed round-trip check and were skipped", nFailedAirports)
 	}
 
 	nb, err := st.StoreObject(wx.METARFilename, metar)
