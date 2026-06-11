@@ -64,9 +64,10 @@ type ERAMPane struct {
 
 	systemFont [11]*renderer.Font `json:"-"`
 
-	allVideoMaps    []clientMap `json:"-"`
-	videoMapLabel   string      `json:"-"`
-	currentFacility string      `json:"-"`
+	allVideoMaps    []av.ERAMMap `json:"-"`
+	bcgNames        []string     `json:"-"` // current group's bcgMenu; index-stable, may include empty slots
+	videoMapLabel   string       `json:"-"`
+	currentFacility string       `json:"-"`
 
 	eramCursorSelection string           `json:"-"`
 	eramCursorPath      string           `json:"-"`
@@ -767,72 +768,24 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuf
 	td.GenerateCommands(cb)
 }
 
-// clientMap extends av.ERAMMap with client-side rendering state. The
-// CommandBuffer holds commands to draw the solid-line geometry; dashed
-// lines, symbols, and labels are kept on the embedded ERAMMap and drawn
-// separately at draw time so their stipple pattern / glyph / text can
-// account for scope scale and display DPI.
-type clientMap struct {
-	av.ERAMMap
-	CommandBuffer renderer.CommandBuffer
-}
-
-// buildClientMaps converts []av.ERAMMap to clientMaps, generating
-// CommandBuffers for the solid-line portion.
-func buildClientMaps(maps []av.ERAMMap) []clientMap {
-	if len(maps) == 0 {
-		return nil
-	}
-
-	out := make([]clientMap, len(maps))
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-
-	for i, m := range maps {
-		out[i] = clientMap{ERAMMap: m}
-
-		ld.Reset()
-		hasSolid := false
-		for _, line := range m.Lines {
-			if line.Style != av.LineStyleSolid {
-				continue // dashed lines drawn separately at draw time
-			}
-			fl := util.MapSlice(line.Points, func(p math.Point2LL) [2]float32 { return p })
-			ld.AddLineStrip(fl)
-			hasSolid = true
-		}
-		if hasSolid {
-			ld.GenerateCommands(&out[i].CommandBuffer)
-		}
-	}
-
-	return out
-}
-
 func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	var draw []clientMap
-	for _, vm := range ep.allVideoMaps {
-		if _, ok := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)]; ok {
-			draw = append(draw, vm)
+	// bcgColor maps a feature's BCGIndex (1-based) to its current RGB.
+	// Returns black if the index is out of range or its slot is empty
+	// — both shouldn't happen given the importer's bcg>0 enforcement,
+	// but stay defensive at draw time so a bad mappack doesn't crash.
+	bcgColor := func(bcgIdx uint8) renderer.RGB {
+		if bcgIdx == 0 || int(bcgIdx) > len(ep.bcgNames) {
+			return renderer.RGB{}
 		}
+		name := ep.bcgNames[bcgIdx-1]
+		if name == "" {
+			return renderer.RGB{}
+		}
+		return renderer.RGB{R: .953, G: .953, B: .953}.Scale(float32(ps.VideoMapBrightness[name]) / 100)
 	}
 
-	mapColor := func(vm clientMap) renderer.RGB {
-		return renderer.RGB{R: .953, G: .953, B: .953}.Scale(float32(ps.VideoMapBrightness[vm.BCGName]) / 100)
-	}
-
-	// Pass 1: solid lines in lat/lon space (pre-built CommandBuffers).
-	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(1, ctx.DPIScale)
-	for _, vm := range draw {
-		cb.SetRGB(mapColor(vm))
-		cb.Call(vm.CommandBuffer)
-	}
-
-	// Pass 2: dashed lines, symbols, and labels in window space so dash
-	// widths and glyph sizes stay constant under zoom.
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 
@@ -841,55 +794,60 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	for _, vm := range draw {
-		color := mapColor(vm)
+	for _, vm := range ep.allVideoMaps {
+		if _, ok := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)]; !ok {
+			continue
+		}
 
 		for _, line := range vm.Lines {
-			pattern := dashPatternPixels(line.Style)
-			if pattern == nil {
-				continue
-			}
-			for i := 0; i+1 < len(line.Points); i++ {
-				p0 := transforms.WindowFromLatLongP(line.Points[i])
-				p1 := transforms.WindowFromLatLongP(line.Points[i+1])
-				ld.AddDashPattern(p0, p1, pattern, color)
+			color := bcgColor(line.BCGIndex)
+			if line.Style == av.LineStyleSolid {
+				fl := util.MapSlice(line.Points, func(p math.Point2LL) [2]float32 {
+					return transforms.WindowFromLatLongP(p)
+				})
+				ld.AddLineStrip(fl, color)
+			} else {
+				pattern := dashPatternPixels(line.Style)
+				if pattern == nil {
+					continue
+				}
+				for i := 0; i+1 < len(line.Points); i++ {
+					p0 := transforms.WindowFromLatLongP(line.Points[i])
+					p1 := transforms.WindowFromLatLongP(line.Points[i+1])
+					ld.AddDashPattern(p0, p1, pattern, color)
+				}
 			}
 		}
 
 		for _, s := range vm.Symbols {
-			font := ep.ERAMGeomapFont(int(s.Size))
-			if font == nil {
-				continue
+			if font := ep.ERAMGeomapFont(int(s.Size)); font != nil {
+				color := bcgColor(s.BCGIndex)
+				pw := transforms.WindowFromLatLongP(s.P)
+				td.AddTextCentered(string(symbolGlyphIndex[s.Style]), pw,
+					renderer.TextStyle{Font: font, Color: color})
 			}
-			pw := transforms.WindowFromLatLongP(s.P)
-			td.AddTextCentered(string(symbolGlyphIndex[s.Style]), pw,
-				renderer.TextStyle{Font: font, Color: color})
 		}
 
 		for _, l := range vm.Labels {
-			font := ep.ERAMFont(int(l.Size))
-			if font == nil {
-				continue
-			}
-			pw := transforms.WindowFromLatLongP(l.P)
-			pw[0] += float32(l.XOffset)
-			pw[1] += float32(l.YOffset)
-			style := renderer.TextStyle{Font: font, Color: color}
-			if l.Opaque {
-				style.DrawBackground = true
-				style.BackgroundColor = renderer.RGB{}
-			}
-			td.AddText(l.Text, pw, style)
-			if l.Underline {
-				w, h := font.BoundText(l.Text, 0)
-				// In window space y grows upward; AddText takes the
-				// upper-left corner, so the baseline is at pw[1] - h.
-				// Drop one more pixel so the underline sits just below.
-				y := pw[1] - float32(h) - 1
-				ld.AddLine(
-					[2]float32{pw[0], y},
-					[2]float32{pw[0] + float32(w), y},
-					color)
+			if font := ep.ERAMFont(int(l.Size)); font != nil {
+				color := bcgColor(l.BCGIndex)
+				pw := transforms.WindowFromLatLongP(l.P)
+				pw[0] += float32(l.XOffset)
+				pw[1] += float32(l.YOffset)
+				style := renderer.TextStyle{Font: font, Color: color}
+				if l.Opaque {
+					style.DrawBackground = true
+					style.BackgroundColor = renderer.RGB{}
+				}
+				td.AddText(l.Text, pw, style)
+				if l.Underline {
+					w, h := font.BoundText(l.Text, 0)
+					// In window space y grows upward; AddText takes the upper-left corner, so the
+					// baseline is at pw[1] - h.  Drop one more pixel so the underline sits just
+					// below.
+					y := pw[1] - float32(h) - 1
+					ld.AddLine([2]float32{pw[0], y}, [2]float32{pw[0] + float32(w), y}, color)
+				}
 			}
 		}
 	}
@@ -952,14 +910,17 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 
 	maps := vmf.ERAMMapGroups[ep.currentPrefs().VideoMapGroup]
 
-	for _, eramMap := range maps.Maps {
-		if _, ok := ps.VideoMapBrightness[eramMap.BCGName]; !ok { // Only set default if missing
-			ps.VideoMapBrightness[eramMap.BCGName] = 12
+	for _, name := range maps.BCGNames {
+		if name == "" {
+			continue
+		}
+		if _, ok := ps.VideoMapBrightness[name]; !ok { // Only set default if missing
+			ps.VideoMapBrightness[name] = 12
 		}
 	}
 
-	// Convert to clientMaps for rendering
-	ep.allVideoMaps = buildClientMaps(maps.Maps)
+	ep.allVideoMaps = maps.Maps
+	ep.bcgNames = maps.BCGNames
 
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
@@ -969,7 +930,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	ep.videoMapLabel = strings.Replace(ep.videoMapLabel, " ", "\n", 1)
 
 	for _, name := range client.State.ControllerDefaultVideoMaps {
-		if idx := slices.IndexFunc(ep.allVideoMaps, func(v clientMap) bool { return combine(v.LabelLine1, v.LabelLine2) == name }); idx != -1 {
+		if idx := slices.IndexFunc(ep.allVideoMaps, func(v av.ERAMMap) bool { return combine(v.LabelLine1, v.LabelLine2) == name }); idx != -1 {
 
 			ps.VideoMapVisible[combine(ep.allVideoMaps[idx].LabelLine1, ep.allVideoMaps[idx].LabelLine2)] = nil
 		}

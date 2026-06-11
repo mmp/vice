@@ -35,11 +35,8 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 			len(geoMap.VideoMapIds))
 
 		// Build a per-filter-menu sink. filterMaps[fi] == nil means the
-		// filter has empty labels and is skipped. groupBCGs[fi] is the
-		// BCG name we'll attach to filterMaps[fi]; it may get promoted
-		// from a per-feature override during the pass.
+		// filter has empty labels and is skipped.
 		filterMaps := make([]*av.ERAMMap, len(geoMap.FilterMenu))
-		groupBCGs := make([]string, len(geoMap.FilterMenu))
 		for fi, fm := range geoMap.FilterMenu {
 			if fm.LabelLine1 == "" && fm.LabelLine2 == "" {
 				continue
@@ -47,9 +44,6 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 			filterMaps[fi] = &av.ERAMMap{
 				LabelLine1: fm.LabelLine1,
 				LabelLine2: fm.LabelLine2,
-			}
-			if fi < len(geoMap.BCGMenu) {
-				groupBCGs[fi] = geoMap.BCGMenu[fi]
 			}
 		}
 
@@ -60,21 +54,23 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 			return err
 		}
 		for si := range sources {
-			dispatchERAMFeatures(&sources[si], filterMaps, groupBCGs, geoMap.BCGMenu)
+			dispatchERAMFeatures(&sources[si], filterMaps)
 		}
 
 		// Materialize per-filter ERAMMaps onto the group in filter-menu
-		// order.
+		// order. The geoMap's bcgMenu rides through as the group's
+		// BCGNames; per-feature BCGIndex (1-based) addresses into it at
+		// draw time.
 		group := av.ERAMMapGroup{
 			Name:       geoMap.Name,
 			LabelLine1: geoMap.LabelLine1,
 			LabelLine2: geoMap.LabelLine2,
+			BCGNames:   geoMap.BCGMenu,
 		}
-		for fi, m := range filterMaps {
+		for _, m := range filterMaps {
 			if m == nil {
 				continue
 			}
-			m.BCGName = groupBCGs[fi]
 			group.Maps = append(group.Maps, *m)
 			totalMaps++
 			totalLines += len(m.Lines)
@@ -120,9 +116,10 @@ func loadERAMSources(cwd, artcc string, ids []string) ([]loadedSource, error) {
 // the feature's effective Filters set.
 //
 // filterMaps is indexed by 0-based filter index. A nil entry means the filter is skipped (empty
-// labels). groupBCGs[fi] is the per-filter BCG name; it may be promoted from a per-feature BCG by
-// the maybePromoteBCG helper inlined into this function.
-func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, groupBCGs []string, bcgMenu []string) {
+// labels). The renderer resolves BCG (brightness) per feature against the group's BCGNames at draw
+// time; this importer just passes BCGIndex through. log.Fatalf fires if any accepted feature has
+// bcg<=0 — we want to know if that case ever shows up so the renderer can stay strict.
+func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap) {
 	clampPositive := func(v, dflt int) int {
 		switch {
 		case v <= 0:
@@ -131,14 +128,6 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, groupBCGs
 			return 255
 		default:
 			return v
-		}
-	}
-	promoteBCG := func(fi, featureBCG int) {
-		if groupBCGs[fi] != "" {
-			return
-		}
-		if featureBCG-1 >= 0 && featureBCG-1 < len(bcgMenu) && bcgMenu[featureBCG-1] != "" {
-			groupBCGs[fi] = bcgMenu[featureBCG-1]
 		}
 	}
 
@@ -159,7 +148,9 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, groupBCGs
 				if fi < 0 || fi >= len(filterMaps) || filterMaps[fi] == nil {
 					continue
 				}
-				promoteBCG(fi, eff.BCG)
+				if bcg == 0 {
+					log.Fatalf("ERAM %s: line feature accepted into filter %d with bcg<=0", src.path, filterIdx)
+				}
 				for _, pts := range polylines {
 					if len(pts) < 2 {
 						continue
@@ -191,7 +182,9 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, groupBCGs
 					if fi < 0 || fi >= len(filterMaps) || filterMaps[fi] == nil {
 						continue
 					}
-					promoteBCG(fi, eff.BCG)
+					if bcg == 0 {
+						log.Fatalf("ERAM %s: label feature accepted into filter %d with bcg<=0", src.path, filterIdx)
+					}
 					filterMaps[fi].Labels = append(filterMaps[fi].Labels, av.MapLabel{
 						P:         p,
 						Text:      text,
@@ -219,7 +212,9 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, groupBCGs
 					if fi < 0 || fi >= len(filterMaps) || filterMaps[fi] == nil {
 						continue
 					}
-					promoteBCG(fi, eff.BCG)
+					if bcg == 0 {
+						log.Fatalf("ERAM %s: symbol feature accepted into filter %d with bcg<=0", src.path, filterIdx)
+					}
 					filterMaps[fi].Symbols = append(filterMaps[fi].Symbols, av.MapSymbol{
 						P:        p,
 						Style:    style,

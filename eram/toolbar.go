@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -275,7 +276,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			if second && i == 0 {
 				i = 20
 			}
-			var vm clientMap
+			var vm av.ERAMMap
 			if i < len(ep.allVideoMaps) {
 				vm = ep.allVideoMaps[i]
 			}
@@ -442,27 +443,29 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 				ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 			}
 
-			// Build buttons for current group's video maps without reloading the library each frame
+			// One button per BCG (brightness group) in the current
+			// group's bcgMenu, skipping empty placeholder slots.
 			toolbarDrawState.buttonCursor = e0
-			maps := ep.allVideoMaps
 			// Overlay buttons should receive input even if occlusion is active
 			toolbarDrawState.processingOcclusion = true
-			for i, vm := range maps {
-				label := fmt.Sprintf("%s\n%d", vm.BCGName, ps.VideoMapBrightness[vm.BCGName])
-				if i == 10 {
+			drawn := 0
+			for _, name := range ep.bcgNames {
+				if name == "" {
+					continue
+				}
+				label := fmt.Sprintf("%s\n%d", name, ps.VideoMapBrightness[name])
+				if drawn == 10 {
 					toolbarDrawState.buttonCursor = [2]float32{e0[0], e0[1] - buttonSize(buttonFull, scale)[1] - 2}
-					// toolbarDrawState.offsetBottom = true
-					// toolbarDrawState.noTearoff = true
 				}
 				if ep.drawToolbarMainButton(ctx, label, 0, scale, false, false) {
-					brightness := ps.VideoMapBrightness[vm.BCGName]
+					brightness := ps.VideoMapBrightness[name]
 					handleClick(ep, &brightness, 0, 100, 2)
-					ps.VideoMapBrightness[vm.BCGName] = brightness
+					ps.VideoMapBrightness[name] = brightness
 				}
-				if i == 19 {
+				drawn++
+				if drawn == 20 {
 					break
 				}
-
 			}
 			// Calculate e1, e2, e3 from the final button cursor position (works for any number of buttons)
 			e2 = toolbarDrawState.buttonCursor

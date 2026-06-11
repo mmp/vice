@@ -83,11 +83,11 @@ func buildSyntheticLibrary() *MapLibrary {
 				Name:       "ZNYMAP",
 				LabelLine1: "ZNY",
 				LabelLine2: "ARTCC",
+				BCGNames:   []string{"BASE", "HI SEC", "", "SPARE"},
 				Maps: []ERAMMap{
 					{
 						LabelLine1: "BASE",
 						LabelLine2: "MAP",
-						BCGName:    "BASE",
 						Lines: []MapLine{{
 							Points: []math.Point2LL{
 								{-74.0, 40.7}, {-74.1, 40.8},
@@ -98,7 +98,6 @@ func buildSyntheticLibrary() *MapLibrary {
 					{
 						LabelLine1: "HIGH",
 						LabelLine2: "SECTOR",
-						BCGName:    "HI SEC",
 						Symbols: []MapSymbol{{
 							P: math.Point2LL{-73.5, 40.5}, Style: SymbolStyleVOR, Size: 1,
 						}},
@@ -110,10 +109,10 @@ func buildSyntheticLibrary() *MapLibrary {
 				Name:       "ZLAWEST",
 				LabelLine1: "ZLA",
 				LabelLine2: "WEST",
+				BCGNames:   []string{"MVA"},
 				Maps: []ERAMMap{
 					{
 						LabelLine1: "MVA",
-						BCGName:    "MVA",
 						Lines: []MapLine{{
 							Points: []math.Point2LL{{-118.0, 34.0}, {-118.1, 34.1}},
 							Style:  LineStyleSolid,
@@ -121,7 +120,6 @@ func buildSyntheticLibrary() *MapLibrary {
 					},
 					{
 						LabelLine1: "MVA", // duplicate on (L1,L2) — by design
-						BCGName:    "MVA",
 						Lines: []MapLine{{
 							Points: []math.Point2LL{{-117.0, 33.0}, {-117.1, 33.1}},
 							Style:  LineStyleSolid,
@@ -332,6 +330,7 @@ func decodeFromBytes(data []byte) (*MapLibrary, error) {
 			Name:       g.Name,
 			LabelLine1: g.LabelLine1,
 			LabelLine2: g.LabelLine2,
+			BCGNames:   g.BCGNames,
 			Maps:       make([]ERAMMap, len(g.Maps)),
 		}
 		for i, m := range g.Maps {
@@ -342,7 +341,6 @@ func decodeFromBytes(data []byte) (*MapLibrary, error) {
 			group.Maps[i] = ERAMMap{
 				LabelLine1: m.LabelLine1,
 				LabelLine2: m.LabelLine2,
-				BCGName:    m.BCGName,
 				Lines:      lines,
 				Symbols:    symbols,
 				Labels:     labels,

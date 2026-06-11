@@ -409,11 +409,15 @@ func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (C
 	ps.VideoMapVisible = make(map[string]interface{})
 
 	ep.videoMapLabel = fmt.Sprintf("%s\n%s", maps.LabelLine1, maps.LabelLine2)
-	ep.allVideoMaps = buildClientMaps(maps.Maps)
+	ep.allVideoMaps = maps.Maps
+	ep.bcgNames = maps.BCGNames
 
-	for _, eramMap := range maps.Maps {
-		if ps.VideoMapBrightness[eramMap.BCGName] == 0 {
-			ps.VideoMapBrightness[eramMap.BCGName] = 12
+	for _, name := range maps.BCGNames {
+		if name == "" {
+			continue
+		}
+		if ps.VideoMapBrightness[name] == 0 {
+			ps.VideoMapBrightness[name] = 12
 		}
 	}
 

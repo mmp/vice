@@ -14,7 +14,6 @@ import (
 	"io/fs"
 	gomath "math"
 	"path/filepath"
-	"sort"
 	"strings"
 
 	"github.com/mmp/vice/math"
@@ -28,7 +27,7 @@ import (
 // nil by the metadata-only spec loader.
 type STARSMap struct {
 	Name     string
-	Label    string // DCB button label (CRC's "shortName")
+	Label    string // DCB button label
 	Id       int    // user-visible STARS map number; 0 = no DCB id
 	Group    int    // 0 = A, 1 = B
 	Category int    // -1..9
@@ -46,7 +45,6 @@ type STARSMap struct {
 type ERAMMap struct {
 	LabelLine1 string
 	LabelLine2 string
-	BCGName    string // brightness control group key; intentionally shared across maps
 
 	Lines   []MapLine
 	Symbols []MapSymbol
@@ -57,6 +55,7 @@ type ERAMMapGroup struct {
 	Name       string
 	LabelLine1 string
 	LabelLine2 string
+	BCGNames   []string // BCGs in source order; per feature BCGIndex references this.
 	Maps       []ERAMMap
 }
 
@@ -221,7 +220,7 @@ func (s SymbolStyle) String() string {
 // version indicator for the on-disk format — bumping it (and the file
 // header's structure / geometry payload shape together) makes old
 // loaders fail with a clear error.
-const mapLibraryMagic = "VMV2"
+const mapLibraryMagic = "VMV3"
 
 // wireFileHeader is the msgpack-encoded header block that immediately
 // follows the magic + header length. It contains only metadata; the
@@ -247,13 +246,13 @@ type wireERAMGroup struct {
 	Name       string          `msgpack:"n"`
 	LabelLine1 string          `msgpack:"l1"`
 	LabelLine2 string          `msgpack:"l2"`
+	BCGNames   []string        `msgpack:"b"`
 	Maps       []wireERAMEntry `msgpack:"m"`
 }
 
 type wireERAMEntry struct {
 	LabelLine1 string `msgpack:"l1"`
 	LabelLine2 string `msgpack:"l2"`
-	BCGName    string `msgpack:"b"`
 	GeomOffset uint32 `msgpack:"o"`
 	GeomLen    uint32 `msgpack:"sz"`
 }
@@ -430,6 +429,7 @@ func LoadMapLibrary(path string) (*MapLibrary, error) {
 			Name:       g.Name,
 			LabelLine1: g.LabelLine1,
 			LabelLine2: g.LabelLine2,
+			BCGNames:   g.BCGNames,
 			Maps:       make([]ERAMMap, len(g.Maps)),
 		}
 		for i, m := range g.Maps {
@@ -441,7 +441,6 @@ func LoadMapLibrary(path string) (*MapLibrary, error) {
 			group.Maps[i] = ERAMMap{
 				LabelLine1: m.LabelLine1,
 				LabelLine2: m.LabelLine2,
-				BCGName:    m.BCGName,
 				Lines:      lines,
 				Symbols:    symbols,
 				Labels:     labels,
@@ -517,13 +516,7 @@ func SaveMapLibrary(w io.Writer, lib *MapLibrary) error {
 
 	hdr := wireFileHeader{}
 
-	starsNames := make([]string, 0, len(lib.Maps))
-	for n := range lib.Maps {
-		starsNames = append(starsNames, n)
-	}
-	sort.Strings(starsNames)
-	for _, n := range starsNames {
-		m := lib.Maps[n]
+	for m := range util.SortedMapValues(lib.Maps) {
 		offset := uint32(geom.Len())
 		payload := encodeGeometry(m.Lines, m.Symbols, m.Labels)
 		geom.Write(payload)
@@ -539,17 +532,12 @@ func SaveMapLibrary(w io.Writer, lib *MapLibrary) error {
 		})
 	}
 
-	eramNames := make([]string, 0, len(lib.ERAMMapGroups))
-	for n := range lib.ERAMMapGroups {
-		eramNames = append(eramNames, n)
-	}
-	sort.Strings(eramNames)
-	for _, n := range eramNames {
-		g := lib.ERAMMapGroups[n]
+	for g := range util.SortedMapValues(lib.ERAMMapGroups) {
 		wg := wireERAMGroup{
 			Name:       g.Name,
 			LabelLine1: g.LabelLine1,
 			LabelLine2: g.LabelLine2,
+			BCGNames:   g.BCGNames,
 			Maps:       make([]wireERAMEntry, len(g.Maps)),
 		}
 		for i, m := range g.Maps {
@@ -559,7 +547,6 @@ func SaveMapLibrary(w io.Writer, lib *MapLibrary) error {
 			wg.Maps[i] = wireERAMEntry{
 				LabelLine1: m.LabelLine1,
 				LabelLine2: m.LabelLine2,
-				BCGName:    m.BCGName,
 				GeomOffset: offset,
 				GeomLen:    uint32(len(payload)),
 			}
@@ -645,36 +632,21 @@ func PrintMapLibrary(path string, e *util.ErrorLogger) {
 	}
 
 	if len(vmf.Maps) > 0 {
-		maps := make([]STARSMap, 0, len(vmf.Maps))
-		for _, m := range vmf.Maps {
-			maps = append(maps, m)
-		}
-		sort.Slice(maps, func(i, j int) bool {
-			if maps[i].Id != maps[j].Id {
-				return maps[i].Id < maps[j].Id
-			}
-			return maps[i].Name < maps[j].Name
-		})
 		fmt.Printf("STARS MAPS\n")
 		fmt.Printf("%5s\t%20s\t%s\n", "Id", "Label", "Name")
-		for _, m := range maps {
+		for m := range util.SortedMapValues(vmf.Maps) {
 			fmt.Printf("%5d\t%20s\t%s\n", m.Id, m.Label, m.Name)
 		}
 	}
 
 	if len(vmf.ERAMMapGroups) > 0 {
-		groups := make([]string, 0, len(vmf.ERAMMapGroups))
-		for n := range vmf.ERAMMapGroups {
-			groups = append(groups, n)
-		}
-		sort.Strings(groups)
 		fmt.Printf("\nERAM GROUPS\n")
-		for _, gn := range groups {
-			g := vmf.ERAMMapGroups[gn]
+		for g := range util.SortedMapValues(vmf.ERAMMapGroups) {
 			fmt.Printf("  %s (%s / %s)\n", g.Name, g.LabelLine1, g.LabelLine2)
 			for _, m := range g.Maps {
-				fmt.Printf("    %-30s  BCG=%s\n", combineLabels(m.LabelLine1, m.LabelLine2), m.BCGName)
+				fmt.Printf("    %s\n", combineLabels(m.LabelLine1, m.LabelLine2))
 			}
+			fmt.Printf("\n")
 		}
 	}
 }

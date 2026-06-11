@@ -18,4 +18,6 @@
 - Improve handling of arrival airport winds on final approach (radarcontacto)
 - Facility engineering
   - Added /intercept to indicate virtually-controlled aircraft should intercept the approach
+  - Updated video map file format: this makes it possible to fix a number of bugs with handling maps with conflicting STARS ids
 - Fixed bug where aircraft would speed up after missing an approach intercept
+- ERAM: fixed multiple bugs with drawing map annotations and map brightness handling
