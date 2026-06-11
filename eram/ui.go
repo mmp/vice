@@ -30,6 +30,12 @@ func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Use right click for primary button", &ps.UseRightClick)
 	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+
+	if false {
+		drawSymbolGlyphDebugUI(tableFlags)
+		drawDashPatternDebugUI(tableFlags)
+	}
+
 	if imgui.CollapsingHeaderBoolPtr("Preferences", nil) {
 		if imgui.BeginTableV("Saved Preferences", 4, tableFlags, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumn("Name")
@@ -474,5 +480,154 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 				imgui.EndTable()
 			}
 		}
+	}
+}
+
+// drawSymbolGlyphDebugUI exposes a +/- table for tweaking which
+// EramGeomap glyph (0x00..0x0F) each SymbolStyle uses. Every click of a
+// step button prints a paste-ready map literal to stdout.
+func drawSymbolGlyphDebugUI(tableFlags imgui.TableFlags) {
+	if !imgui.CollapsingHeaderBoolPtr("Symbol Glyphs (debug)", nil) {
+		return
+	}
+	if !imgui.BeginTableV("symbolglyphs", 4, tableFlags, imgui.Vec2{}, 0) {
+		return
+	}
+	defer imgui.EndTable()
+
+	imgui.TableSetupColumn("Annotation")
+	imgui.TableSetupColumn("Glyph")
+	imgui.TableSetupColumn("Dec")
+	imgui.TableSetupColumn("Inc")
+	imgui.TableHeadersRow()
+
+	const numEramGeomapGlyphs = 16
+
+	var symbolStyleOrder = []av.SymbolStyle{
+		av.SymbolStyleVOR,
+		av.SymbolStyleNDB,
+		av.SymbolStyleTACAN,
+		av.SymbolStyleVOR_TACAN,
+		av.SymbolStyleDME,
+		av.SymbolStyleRNAV,
+		av.SymbolStyleRNAVOnlyWaypoint,
+		av.SymbolStyleAirport,
+		av.SymbolStyleSatelliteAirport,
+		av.SymbolStyleEmergencyAirport,
+		av.SymbolStyleHeliport,
+		av.SymbolStyleOtherWaypoints,
+		av.SymbolStyleAirwayIntersections,
+		av.SymbolStyleIAF,
+		av.SymbolStyleObstruction1,
+		av.SymbolStyleObstruction2,
+		av.SymbolStyleNuclear,
+		av.SymbolStyleRadar,
+	}
+
+	changed := false
+	for i, style := range symbolStyleOrder {
+		imgui.PushIDInt(int32(i))
+
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text(style.String())
+
+		imgui.TableNextColumn()
+		imgui.Text(fmt.Sprintf("0x%02X", int(symbolGlyphIndex[style])))
+
+		imgui.TableNextColumn()
+		if imgui.Button("-##dec") {
+			idx := (int(symbolGlyphIndex[style]) - 1 + numEramGeomapGlyphs) % numEramGeomapGlyphs
+			symbolGlyphIndex[style] = rune(idx)
+			changed = true
+		}
+
+		imgui.TableNextColumn()
+		if imgui.Button("+##inc") {
+			idx := (int(symbolGlyphIndex[style]) + 1) % numEramGeomapGlyphs
+			symbolGlyphIndex[style] = rune(idx)
+			changed = true
+		}
+
+		imgui.PopID()
+	}
+
+	if changed {
+		var b strings.Builder
+		b.WriteString("var symbolGlyphIndex = map[av.SymbolStyle]rune{\n")
+		for _, style := range symbolStyleOrder {
+			fmt.Fprintf(&b, "\tav.SymbolStyle%-20s 0x%02X,\n",
+				style.String()+":", int(symbolGlyphIndex[style]))
+		}
+		b.WriteString("}\n")
+		fmt.Println(b.String())
+	}
+}
+
+// drawDashPatternDebugUI exposes +/- buttons for tweaking each element of
+// the three non-solid dash patterns in window-space pixels.
+func drawDashPatternDebugUI(tableFlags imgui.TableFlags) {
+	if !imgui.CollapsingHeaderBoolPtr("Dash Patterns (debug)", nil) {
+		return
+	}
+
+	// Each entry is one editable slot in one of the three slices.
+	type slot struct {
+		styleName string
+		role      string // "dash" / "gap" / "longDash" / "shortDash"
+		slice     *[]float32
+		idx       int
+	}
+	slots := []slot{
+		{"ShortDashed", "dash", &shortDashedPattern, 0},
+		{"ShortDashed", "gap", &shortDashedPattern, 1},
+		{"LongDashed", "dash", &longDashedPattern, 0},
+		{"LongDashed", "gap", &longDashedPattern, 1},
+		{"LongDashShortDash", "longDash", &longDashShortDashPattern, 0},
+		{"LongDashShortDash", "gap1", &longDashShortDashPattern, 1},
+		{"LongDashShortDash", "shortDash", &longDashShortDashPattern, 2},
+		{"LongDashShortDash", "gap2", &longDashShortDashPattern, 3},
+	}
+
+	if !imgui.BeginTableV("dashpatterns", 5, tableFlags, imgui.Vec2{}, 0) {
+		return
+	}
+	imgui.TableSetupColumn("Style")
+	imgui.TableSetupColumn("Slot")
+	imgui.TableSetupColumn("Px")
+	imgui.TableSetupColumn("Dec")
+	imgui.TableSetupColumn("Inc")
+	imgui.TableHeadersRow()
+
+	changed := false
+	for i, s := range slots {
+		imgui.PushIDInt(int32(i))
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text(s.styleName)
+		imgui.TableNextColumn()
+		imgui.Text(s.role)
+		imgui.TableNextColumn()
+		imgui.Text(fmt.Sprintf("%.0f", (*s.slice)[s.idx]))
+		imgui.TableNextColumn()
+		if imgui.Button("-##dec") {
+			if (*s.slice)[s.idx] > 1 {
+				(*s.slice)[s.idx]--
+				changed = true
+			}
+		}
+		imgui.TableNextColumn()
+		if imgui.Button("+##inc") {
+			(*s.slice)[s.idx]++
+			changed = true
+		}
+		imgui.PopID()
+	}
+	imgui.EndTable()
+
+	if changed {
+		fmt.Printf("shortDashedPattern       = %#v\n", shortDashedPattern)
+		fmt.Printf("longDashedPattern        = %#v\n", longDashedPattern)
+		fmt.Printf("longDashShortDashPattern = %#v\n\n", longDashShortDashPattern)
 	}
 }

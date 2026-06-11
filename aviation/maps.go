@@ -183,11 +183,11 @@ func (s SymbolStyle) String() string {
 	case SymbolStyleVOR_TACAN:
 		return "VOR_TACAN"
 	case SymbolStyleDME:
-		return "Dme"
+		return "DME"
 	case SymbolStyleRNAV:
-		return "Rnav"
+		return "RNAV"
 	case SymbolStyleRNAVOnlyWaypoint:
-		return "RnavOnlyWaypoint"
+		return "RNAVOnlyWaypoint"
 	case SymbolStyleAirport:
 		return "Airport"
 	case SymbolStyleSatelliteAirport:
