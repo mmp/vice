@@ -83,15 +83,14 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 	outPath := filepath.Join(outDir, inputARTCC+".mappack")
 	log.Printf("ERAM: %d maps, %d lines, %d symbols, %d labels across %d groups -> %s",
 		totalMaps, totalLines, totalSymbols, totalLabels, len(lib.ERAMMapGroups), outPath)
-	f, err := os.Create(outPath)
-	if err != nil {
+	if f, err := os.Create(outPath); err != nil {
 		return err
-	}
-	defer f.Close()
-	if err := av.SaveMapLibrary(f, lib); err != nil {
+	} else if err := av.SaveMapLibrary(f, lib); err != nil {
+		f.Close()
 		return err
+	} else {
+		return f.Close()
 	}
-	return f.Close()
 }
 
 func loadERAMSources(cwd, artcc string, ids []string) ([]loadedSource, error) {

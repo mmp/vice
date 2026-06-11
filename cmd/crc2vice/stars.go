@@ -105,15 +105,14 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog m
 
 	outPath := filepath.Join(outDir, fmt.Sprintf("%s-%s.mappack", artccID, childID))
 	log.Printf("STARS [%s/%s] %d video maps -> %s", artccID, childID, len(ids), outPath)
-	f, err := os.Create(outPath)
-	if err != nil {
+	if f, err := os.Create(outPath); err != nil {
 		return err
-	}
-	defer f.Close()
-	if err := av.SaveMapLibrary(f, lib); err != nil {
+	} else if err := av.SaveMapLibrary(f, lib); err != nil {
+		f.Close()
 		return err
+	} else {
+		return f.Close()
 	}
-	return f.Close()
 }
 
 // loadMapGeometry parses a single .geojson into the given VideoMap's
