@@ -382,15 +382,29 @@ func (at *AtmosByTime) GetWindsAloftAtTime(t time.Time, altitudeFeet float32) (d
 	return direction, speed, true
 }
 
-func CheckAtmosConversion(at AtmosByPoint, soa AtmosByPointSOA) error {
+// Heights outside this range get clamped by the encoder. This happens at the
+// 1013.2 mb level over very low-pressure systems (the isobaric surface is
+// underground) and, in principle, at very high altitudes. Aircraft don't fly
+// at either extreme, so clamping is harmless — but the round-trip check needs
+// to know to skip these values.
+const (
+	minRepresentableHeight = -windHeightOffset - 50 // -550m: below this, encoder clamps to 0
+	maxRepresentableHeight = 255*100 - windHeightOffset
+)
+
+// CheckAtmosConversion verifies that round-tripping through the SOA encoding
+// preserves the data within quantization tolerances. The returned clampedHeights
+// counts samples whose Height was outside the encoder's representable range
+// (and thus lost precision); callers may want to log a warning if non-zero.
+func CheckAtmosConversion(at AtmosByPoint, soa AtmosByPointSOA) (clampedHeights int, err error) {
 	ckat := soa.ToAOS()
 	if len(ckat.SampleStacks) != len(at.SampleStacks) {
-		return fmt.Errorf("mismatch in number of entries %d - %d", len(at.SampleStacks), len(ckat.SampleStacks))
+		return 0, fmt.Errorf("mismatch in number of entries %d - %d", len(at.SampleStacks), len(ckat.SampleStacks))
 	}
 	for p, stack := range at.SampleStacks {
 		ckstack, ok := ckat.SampleStacks[p]
 		if !ok {
-			return fmt.Errorf("missing point in SampleStacks map %v", p)
+			return clampedHeights, fmt.Errorf("missing point in SampleStacks map %v", p)
 		}
 		for i := range stack.Levels {
 			sl, ckl := stack.Levels[i], ckstack.Levels[i]
@@ -405,7 +419,7 @@ func CheckAtmosConversion(at AtmosByPoint, soa AtmosByPointSOA) error {
 					fmt.Printf("CK: %+v\n", ckl)
 					fmt.Printf("Dir %f spd %f\n", cd, cs)
 
-					return fmt.Errorf("Direction mismatch round trip %f - %f", d, cd)
+					return clampedHeights, fmt.Errorf("Direction mismatch round trip %f - %f", d, cd)
 				}
 			}
 
@@ -416,21 +430,23 @@ func CheckAtmosConversion(at AtmosByPoint, soa AtmosByPointSOA) error {
 				fmt.Printf("CK: %+v\n", ckl)
 				fmt.Printf("Dir %f spd %f\n", cd, cs)
 
-				return fmt.Errorf("Speed mismatch round trip %f - %f", s, cs)
+				return clampedHeights, fmt.Errorf("Speed mismatch round trip %f - %f", s, cs)
 			}
 
 			if math.Abs(sl.Temperature.Kelvin()-ckl.Temperature.Kelvin()) > 0.51 {
-				return fmt.Errorf("Temperature mismatch round trip %f - %f", sl.Temperature.Kelvin(), ckl.Temperature.Kelvin())
+				return clampedHeights, fmt.Errorf("Temperature mismatch round trip %f - %f", sl.Temperature.Kelvin(), ckl.Temperature.Kelvin())
 			}
 			if math.Abs(sl.Dewpoint.Kelvin()-ckl.Dewpoint.Kelvin()) > 0.51 {
-				return fmt.Errorf("Dewpoint mismatch round trip %f - %f", sl.Dewpoint.Kelvin(), ckl.Dewpoint.Kelvin())
+				return clampedHeights, fmt.Errorf("Dewpoint mismatch round trip %f - %f", sl.Dewpoint.Kelvin(), ckl.Dewpoint.Kelvin())
 			}
-			if math.Abs(sl.Height-ckl.Height) > 51 {
-				return fmt.Errorf("Height mismatch round trip %f - %f", sl.Height, ckl.Height)
+			if sl.Height < minRepresentableHeight || sl.Height > maxRepresentableHeight {
+				clampedHeights++
+			} else if math.Abs(sl.Height-ckl.Height) > 51 {
+				return clampedHeights, fmt.Errorf("Height mismatch round trip %f - %f", sl.Height, ckl.Height)
 			}
 		}
 	}
-	return nil
+	return clampedHeights, nil
 }
 
 func (ap AtmosByPoint) GetGrid() *AtmosGrid {

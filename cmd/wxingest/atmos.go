@@ -599,8 +599,13 @@ func uploadWeatherAtmos(at *wx.AtmosByPoint, facilityID string, t time.Time, st 
 	if err != nil {
 		return 0, err
 	}
-	if err := wx.CheckAtmosConversion(*at, soa); err != nil {
+	clamped, err := wx.CheckAtmosConversion(*at, soa)
+	if err != nil {
 		return 0, err
+	}
+	if clamped > 0 {
+		LogInfo("%s-%s: %d sub-surface height samples clamped (likely a low-pressure system)",
+			facilityID, t.Format(time.RFC3339), clamped)
 	}
 
 	path := fmt.Sprintf("atmos/%s/%s.msgpack.zst", facilityID, t.Format(time.RFC3339))
