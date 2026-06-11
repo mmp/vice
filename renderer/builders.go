@@ -49,7 +49,8 @@ func (l *LinesDrawBuilder) AddLine(p0, p1 [2]float32) {
 
 // AddDashedLine adds a dashed line from p0 to p1, where dashLength specifies
 // the length of each dash segment and dashStep specifies the total length
-// (dash + gap) before the next dash starts. The number of dashes drawn is returned.
+// (dash + gap) before the next dash starts. The number of vertices added to
+// the position buffer is returned.
 func (l *LinesDrawBuilder) AddDashedLine(p0, p1 [2]float32, dashLength, dashStep float32) int {
 	v := math.Sub2f(p1, p0)
 	totalLength := math.Length2f(v)
@@ -61,7 +62,7 @@ func (l *LinesDrawBuilder) AddDashedLine(p0, p1 [2]float32, dashLength, dashStep
 		dashEndDist := min(d+dashLength, totalLength)
 		dashEnd := math.Add2f(p0, math.Scale2f(dir, dashEndDist))
 		l.AddLine(dashStart, dashEnd)
-		n++
+		n += 2
 	}
 
 	return n
@@ -72,8 +73,8 @@ func (l *LinesDrawBuilder) AddDashedLine(p0, p1 [2]float32, dashLength, dashStep
 // run lengths, starting with an "on" run; e.g. []float32{12, 4, 4, 4} draws
 // a long dash, gap, short dash, gap, repeating until the segment ends. Run
 // lengths are in whatever coordinate space the caller is using (typically
-// window-space pixels for screen-fixed dashes). The number of "on" runs
-// emitted is returned.
+// window-space pixels for screen-fixed dashes). The number of vertices added
+// to the position buffer is returned.
 func (l *LinesDrawBuilder) AddDashPattern(p0, p1 [2]float32, pattern []float32) int {
 	if len(pattern) == 0 {
 		return 0
@@ -94,7 +95,7 @@ func (l *LinesDrawBuilder) AddDashPattern(p0, p1 [2]float32, pattern []float32) 
 			start := math.Add2f(p0, math.Scale2f(dir, d))
 			end := math.Add2f(p0, math.Scale2f(dir, runEnd))
 			l.AddLine(start, end)
-			n++
+			n += 2
 		}
 		d = runEnd
 		idx++
@@ -142,7 +143,9 @@ func (l *LinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
 	}
 }
 
-func (l *LinesDrawBuilder) AddLatLongCircle(p math.Point2LL, nmPerLongitude float32, r float32, nsegs int) {
+// AddLatLongCircle approximates a circle on the sphere with line segments,
+// returning the number of vertices added to the position buffer.
+func (l *LinesDrawBuilder) AddLatLongCircle(p math.Point2LL, nmPerLongitude float32, r float32, nsegs int) int {
 	// We want vertices in lat-long space but will draw the circle in
 	// nm space since distance is uniform there.
 	pc := math.LL2NM(p, nmPerLongitude)
@@ -155,12 +158,14 @@ func (l *LinesDrawBuilder) AddLatLongCircle(p math.Point2LL, nmPerLongitude floa
 		}
 		l.AddLine(pt(i), pt(i+1))
 	}
+	return 2 * nsegs
 }
 
 // Draws a number using digits drawn with lines. This can be helpful in
 // cases like drawing an altitude on a video map where we want the number
-// size to change when the user zooms the scope.
-func (l *LinesDrawBuilder) AddNumber(p [2]float32, sz float32, v string) {
+// size to change when the user zooms the scope. The number of vertices
+// added to the position buffer is returned.
+func (l *LinesDrawBuilder) AddNumber(p [2]float32, sz float32, v string) int {
 	// digit -> slice of line segments
 	coords := [][][2][2]float32{
 		{{{0, 2}, {2, 2}}, {{2, 2}, {2, 0}}, {{2, 0}, {0, 0}}, {{0, 0}, {0, 2}}},
@@ -175,6 +180,7 @@ func (l *LinesDrawBuilder) AddNumber(p [2]float32, sz float32, v string) {
 		{{{1, 0}, {2, 0}}, {{2, 0}, {2, 2}}, {{2, 2}, {0, 2}}, {{0, 2}, {0, 1}}, {{0, 1}, {2, 1}}},
 	}
 
+	start := len(l.p)
 	for _, digit := range v {
 		d := digit - '0'
 		if d >= 0 && d <= 9 {
@@ -188,6 +194,7 @@ func (l *LinesDrawBuilder) AddNumber(p [2]float32, sz float32, v string) {
 		}
 		p[0] += 2.5 * sz
 	}
+	return len(l.p) - start
 }
 
 // Bounds returns the 2D bounding box of the specified lines.
@@ -246,17 +253,24 @@ func (l *ColoredLinesDrawBuilder) AddLine(p0, p1 [2]float32, color RGB) {
 	l.color = append(l.color, color, color)
 }
 
+func (l *ColoredLinesDrawBuilder) AddLineStrip(p [][2]float32, color RGB) {
+	l.LinesDrawBuilder.AddLineStrip(p)
+	for range len(p) {
+		l.color = append(l.color, color)
+	}
+}
+
 func (l *ColoredLinesDrawBuilder) AddDashedLine(p0, p1 [2]float32, dashLength, dashStep float32, color RGB) {
 	n := l.LinesDrawBuilder.AddDashedLine(p0, p1, dashLength, dashStep)
 	for range n {
-		l.color = append(l.color, color, color)
+		l.color = append(l.color, color)
 	}
 }
 
 func (l *ColoredLinesDrawBuilder) AddDashPattern(p0, p1 [2]float32, pattern []float32, color RGB) {
 	n := l.LinesDrawBuilder.AddDashPattern(p0, p1, pattern)
 	for range n {
-		l.color = append(l.color, color, color)
+		l.color = append(l.color, color)
 	}
 }
 
@@ -274,6 +288,20 @@ func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs 
 	l.LinesDrawBuilder.AddCircle(p, radius, nsegs)
 
 	for range nsegs {
+		l.color = append(l.color, color)
+	}
+}
+
+func (l *ColoredLinesDrawBuilder) AddLatLongCircle(p math.Point2LL, nmPerLongitude float32, r float32, nsegs int, color RGB) {
+	n := l.LinesDrawBuilder.AddLatLongCircle(p, nmPerLongitude, r, nsegs)
+	for range n {
+		l.color = append(l.color, color)
+	}
+}
+
+func (l *ColoredLinesDrawBuilder) AddNumber(p [2]float32, sz float32, v string, color RGB) {
+	n := l.LinesDrawBuilder.AddNumber(p, sz, v)
+	for range n {
 		l.color = append(l.color, color)
 	}
 }
@@ -380,7 +408,9 @@ func (t *TrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int
 	}
 }
 
-func (t *TrianglesDrawBuilder) AddLatLongCircle(p [2]float32, nmPerLongitude float32, r float32, nsegs int) {
+// AddLatLongCircle adds a filled circle made up of triangles on the sphere,
+// returning the number of vertices added to the position buffer.
+func (t *TrianglesDrawBuilder) AddLatLongCircle(p [2]float32, nmPerLongitude float32, r float32, nsegs int) int {
 	// Like LinesDrawBuilder AddLatLongCircle, do the work in nm space
 	pc := math.LL2NM(p, nmPerLongitude)
 	for i := range nsegs {
@@ -392,6 +422,7 @@ func (t *TrianglesDrawBuilder) AddLatLongCircle(p [2]float32, nmPerLongitude flo
 		}
 		t.AddTriangle(p, pt(i), pt(i+1))
 	}
+	return 3 * nsegs
 }
 
 func (t *TrianglesDrawBuilder) Bounds() math.Extent2D {
@@ -456,6 +487,13 @@ func (t *ColoredTrianglesDrawBuilder) AddQuad(p0, p1, p2, p3 [2]float32, rgb RGB
 func (t *ColoredTrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int, rgb RGB) {
 	t.TrianglesDrawBuilder.AddCircle(p, radius, nsegs)
 	for range nsegs {
+		t.color = append(t.color, rgb)
+	}
+}
+
+func (t *ColoredTrianglesDrawBuilder) AddLatLongCircle(p [2]float32, nmPerLongitude float32, r float32, nsegs int, rgb RGB) {
+	n := t.TrianglesDrawBuilder.AddLatLongCircle(p, nmPerLongitude, r, nsegs)
+	for range n {
 		t.color = append(t.color, rgb)
 	}
 }
