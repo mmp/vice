@@ -27,9 +27,9 @@
           "left_width": 3000,
           "right_width": 3000
         },
-        "24": {
-          "runway_threshold": "N041.57.03.655,W072.40.14.822",
-          "heading": 237,
+        "15": {
+          "runway_threshold": "N041.56.33.676,W072.41.36.588",
+          "heading": 147,
           "max_heading_deviation": 90,
           "floor": 100,
           "ceiling": 5000,
@@ -37,9 +37,9 @@
           "left_width": 3000,
           "right_width": 3000
         },
-        "15": {
-          "runway_threshold": "N041.56.33.676,W072.41.36.588",
-          "heading": 147,
+        "24": {
+          "runway_threshold": "N041.57.03.655,W072.40.14.822",
+          "heading": 237,
           "max_heading_deviation": 90,
           "floor": 100,
           "ceiling": 5000,
@@ -60,49 +60,17 @@
       },
       "departure_routes": {
         "6": {
-          "PVD": {
+          "PVD,THUMB": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
-            "waypoints": "PVD/a4000/h064"
+            "waypoints": "_BDL_24/a4000/h095",
+            "departure_controller": "1B"
           },
-          "CTR": {
+          "CTR,VEERS,MOBBS": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
-            "waypoints": "CTR/a4000/h064"
-          }
-        },
-        "33": {
-          "VEERS": {
-            "cleared_altitude": 4000,
-            "sid": "BDL6",
-            "waypoints": "VEERS/a4000/h330"
-          },
-          "MAD": {
-            "cleared_altitude": 4000,
-            "sid": "BDL6",
-            "waypoints": "MAD/a4000/h330"
-          },
-          "HFD": {
-            "cleared_altitude": 4000,
-            "sid": "BDL6",
-            "waypoints": "HFD/a4000"
-          }
-        },
-        "24": {
-          "VEERS": {
-            "cleared_altitude": 4000,
-            "sid": "BDL6",
-            "waypoints": "VEERS/a4000/h330"
-          },
-          "MAD": {
-            "cleared_altitude": 4000,
-            "sid": "BDL6",
-            "waypoints": "MAD/a4000/h330"
-          },
-          "HFD": {
-            "cleared_altitude": 4000,
-            "sid": "BDL6",
-            "waypoints": "HFD/a4000"
+            "waypoints": "_BDL_24/a4000/h075",
+            "departure_controller": "1Z"
           }
         },
         "15": {
@@ -120,6 +88,48 @@
             "cleared_altitude": 4000,
             "sid": "BDL6",
             "waypoints": "HFD/a4000"
+          }
+        },
+        "24": {
+          "PVD,THUMB": {
+            "cleared_altitude": 4000,
+            "sid": "BDL6",
+            "waypoints": "_BDL_6/a4000/h240",
+            "departure_controller": "1B"
+          },
+          "CTR,VEERS,MOBBS": {
+            "cleared_altitude": 4000,
+            "sid": "BDL6",
+            "waypoints": "_BDL_6/a4000/h280",
+            "departure_controller": "1Z"
+          }
+          },
+        "6/33 33": {
+          "PVD,THUMB": {
+            "cleared_altitude": 4000,
+            "sid": "BDL6",
+            "waypoints": "_BDL_15/a4000/h100",
+            "departure_controller": "1B"
+        },
+          "CTR,VEERS,MOBBS": {
+            "cleared_altitude": 4000,
+            "sid": "BDL6",
+            "waypoints": "_BDL_15/a4000/h330",
+            "departure_controller": "1Z"
+          }
+          },
+        "24/33 33": {
+          "PVD,THUMB": {
+            "cleared_altitude": 4000,
+            "sid": "BDL6",
+            "waypoints": "_BDL_15/a4000/h220",
+            "departure_controller": "1B"
+          },
+          "CTR,VEERS,MOBBS": {
+            "cleared_altitude": 4000,
+            "sid": "BDL6",
+            "waypoints": "_BDL_15/a4000/h330",
+            "departure_controller": "1Z"
           }
         }
       },
@@ -293,14 +303,16 @@
           "CCC": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
-            "waypoints": "HFD/h024 GOETS THUMB NTMEG CCC"
+            "waypoints": "HFD/h024 GOETS THUMB NTMEG CCC",
+            "hold_for_release": true
           }
         },
         "20": {
           "CCC": {
             "cleared_altitude": 4000,
             "sid": "THUMB1",
-            "waypoints": "HFD/h204 GOETS THUMB NTMEG CCC"
+            "waypoints": "HFD/h204 GOETS THUMB NTMEG CCC",
+            "hold_for_release": true
           }
         }
       },
@@ -358,28 +370,22 @@
         ]
       },
       "departure_routes": {
-        "33": {
-          "THUMB": {
-            "cleared_altitude": 3000
-          },
-          "MAD": {
-            "cleared_altitude": 3000
-          }
-        },
-        "15": {
-          "THUMB": {
-            "cleared_altitude": 3000
-          },
-          "MAD": {
-            "cleared_altitude": 3000
-          }
-        },
         "11": {
-          "THUMB": {
-            "cleared_altitude": 3000
-          },
-          "MAD": {
-            "cleared_altitude": 3000
+          "NELIE,CTR,ORW": {
+            "cleared_altitude": 3000,
+            "hold_for_release": true
+          }
+        },
+        "29": {
+          "NELIE,CTR,ORW": {
+            "cleared_altitude": 3000,
+            "hold_for_release": true
+          }
+        },
+        "33": {
+          "ORW": {
+            "cleared_altitude": 3000,
+            "hold_for_release": true
           }
         }
       },
@@ -1215,8 +1221,9 @@
   },
   "default_scenario": "BDL RWY 6/33",
   "fixes": {
-    "_BDL_24": "41.95042067842684, -72.67226068246363",
-    "_BDL_6": "41.93227984351269, -72.69592231050565",
+    "_BDL_24": "N041.57.09.904,W072.40.08.697",
+    "_BDL_6": "N041.55.45.762,W072.42.00.263",
+    "_BDL_15": "N041.56.40.982,W072.41.50.925",
     "CRV": "41.811090869590856, -72.63349544383891",
     "BV": "42.24302459476532, -72.7923705542953",
     "_BGE": "42.09170103828053, -72.61499963404388",
@@ -1332,7 +1339,7 @@
         {
           "airport": "KBDL",
           "rate": 20,
-          "runway": "33"
+          "runway": "6/33 33"
         },
         {
           "airport": "KHFD",
@@ -1422,7 +1429,7 @@
         {
           "airport": "KBDL",
           "rate": 20,
-          "runway": "33"
+          "runway": "6/33 33"
         },
         {
           "airport": "KHFD",
