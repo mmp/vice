@@ -415,6 +415,12 @@
           "runway": "23"
         }
       },
+      "vfr": {
+        "random_routes": {
+          "rate": 5,
+          "fleet": "lightGA"
+        }
+      },
       "departure_routes": {
         "5": {
           "CCC": {
