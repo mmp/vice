@@ -380,7 +380,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 		// If /radius has been specified, draw a corresponding circle
 		if wp.Radius() > 0 {
 			ld.AddLatLongCircle(wp.Location, ctx.NmPerLongitude,
-				wp.Radius(), 32)
+				wp.Radius(), 32, color)
 		}
 
 		// For /shift, extend the line beyond the waypoint (just in case)
