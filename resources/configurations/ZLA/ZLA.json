@@ -210,7 +210,7 @@
       }
     },
     "center": "KWANG",
-    "range": 60,
+    "range": 120,
     "video_map_file": "videomaps/ZLA.mappack",
     "coordination_fixes": {
       "CHOWW": [

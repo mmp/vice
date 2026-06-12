@@ -103,28 +103,28 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 
 		r := ps.Range
 		ps.Range += func() float32 {
-			var amt float32 = 10
+			var amt float32 = 20
 
-			if r < 2 {
-				amt = .25
-			} else if r == 2 {
+			if r < 4 {
+				amt = .5
+			} else if r == 4 {
 				if z > 0 {
-					amt = 1
+					amt = 2
 				} else {
-					amt = .25
+					amt = .5
 				}
-			} else if r < 10 {
-				amt = 1
-			} else if r == 10 {
+			} else if r < 20 {
+				amt = 2
+			} else if r == 20 {
 				if z > 0 {
-					amt = 10
+					amt = 20
 				} else {
-					amt = 1
+					amt = 2
 				}
 			}
 			return amt * z
 		}()
-		ps.Range = math.Clamp(ps.Range, .25, 1300) // 4-33
+		ps.Range = math.Clamp(ps.Range, .5, 2600)
 
 		// We want to zoom in centered at the mouse position; this affects
 		// the scope center after the zoom, so we'll find the

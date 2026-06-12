@@ -316,8 +316,10 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(renderer.RGB{0, 0, .506})) // Scale this eventually
 	ep.processKeyboardInput(ctx)
 	// ctr := UserCenter
+	// ps.Range is the vertical extent of the scope in NM (matching the
+	// real-ERAM RANGE label); GetScopeTransformations wants the half-width.
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
-		ps.CurrentCenter, float32(ps.Range), 0)
+		ps.CurrentCenter, float32(ps.Range)/2, 0)
 
 	// Following are the draw functions. They are listed in the best of my ability
 
@@ -379,6 +381,14 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// handleCapture
 	// updateAudio
 	ep.drawPauseOverlay(ctx, cb)
+}
+
+func (ep *ERAMPane) Upgrade(from, to int) {
+	for _, ps := range ep.ERAMPreferenceSets {
+		if ps != nil {
+			ps.Upgrade(from, to)
+		}
+	}
 }
 
 func (ep *ERAMPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {

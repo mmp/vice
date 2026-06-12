@@ -1122,6 +1122,10 @@
                                 <td>"range"</td>
                                 <td>Number</td>
                                 <td>The initial range for the scope in nautical miles.
+                                  For STARS facilities this is the scope radius (distance from
+                                  center to scope edge); for ERAM facilities this is the vertical
+                                  extent of the scope (top edge to bottom edge), matching the
+                                  value shown on the ERAM RANGE toolbar button.
                                   This is overridden by any range specified in "controllers" and overrides
                                   the top-level "range" in the facility configuration.</td>
                               </tr>
@@ -1296,6 +1300,10 @@
                                 <td>"range"</td>
                                 <td>Number</td>
                                 <td>The initial range for the controller's scope in nautical miles.
+                                  For STARS facilities this is the scope radius (distance from
+                                  center to scope edge); for ERAM facilities this is the vertical
+                                  extent of the scope (top edge to bottom edge), matching the
+                                  value shown on the ERAM RANGE toolbar button.
                                   This takes highest priority, overriding "areas" range and the top-level range.</td>
                               </tr>
                               <tr>
@@ -1326,7 +1334,12 @@
                     <tr>
                       <td>"range"</td>
                       <td>Number</td>
-                      <td>Default radar scope center range in nautical miles. If unspecified, a 50 mile range is the default.</td>
+                      <td>Default radar scope range in nautical miles.
+                        For STARS facilities this is the scope radius (distance from center to
+                        scope edge); for ERAM facilities this is the vertical extent of the
+                        scope (top edge to bottom edge), matching the value shown on the ERAM
+                        RANGE toolbar button.
+                        If unspecified, the default is 50 NM (STARS) or 300 NM vertical (ERAM).</td>
                     </tr>
                     <tr>
                       <td>"video_map_file"</td>

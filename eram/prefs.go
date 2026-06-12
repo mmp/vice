@@ -155,7 +155,7 @@ func makeDefaultPreferences() *Preferences {
 	var prefs Preferences
 
 	prefs.DisplayToolbar = true
-	prefs.Range = 150
+	prefs.Range = 300
 	prefs.VideoMapVisible = make(map[string]interface{})
 
 	prefs.CharSize.Line4 = 0
@@ -256,6 +256,25 @@ func makeDefaultPreferences() *Preferences {
 	prefs.WX.Bright = 80
 
 	return &prefs
+}
+
+func (p *PrefrenceSet) Upgrade(from, to int) {
+	p.Current.Upgrade(from, to)
+	for _, sp := range p.Saved {
+		if sp != nil {
+			sp.Upgrade(from, to)
+		}
+	}
+}
+
+func (p *Preferences) Upgrade(from, to int) {
+	if from < 72 {
+		// ERAM Range now represents the vertical extent of the scope in NM
+		// (matching the real-ERAM RANGE label), not the half-width passed to
+		// the scope transform. Double the stored value so the on-screen extent
+		// is unchanged.
+		p.Range *= 2
+	}
 }
 
 func (ep *ERAMPane) initPrefsForLoadedSim(ss client.SimState) *Preferences {

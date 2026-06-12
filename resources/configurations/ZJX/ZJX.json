@@ -355,7 +355,7 @@
       }
     },
     "center": "N029.0.0.0,W085.20.16.982",
-    "range": 300,
+    "range": 600,
     "max_distance": 350,
     "video_map_file": "videomaps/ZJX.mappack",
     "coordination_fixes": {

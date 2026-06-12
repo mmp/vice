@@ -79,7 +79,8 @@ import (
 // 69: METAR JSON shape: WindDir round-trips via custom Marshal/UnmarshalJSON; ICAO populated by Decode
 // 70: scenario briefs
 // 71: video map rework
-const ViceSerializeVersion = 71
+// 72: ERAM Range now means vertical NM (not half-width)
+const ViceSerializeVersion = 72
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

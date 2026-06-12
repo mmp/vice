@@ -717,7 +717,7 @@
       }
     },
     "center": "N039.43.39.374,W073.03.29.619",
-    "range": 200,
+    "range": 400,
     "video_map_file": "videomaps/ZNY.mappack",
     "coordination_fixes": {
       "FLOSI": [
