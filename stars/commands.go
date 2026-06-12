@@ -974,11 +974,12 @@ func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]flo
 	var trk *sim.Track
 	distance := float32(20) // in pixels; don't consider anything farther away
 
-	for _, t := range sp.visibleTracks {
+	for i := range sp.visibleTracks {
+		t := &sp.visibleTracks[i]
 		pw := transforms.WindowFromLatLongP(t.Location)
 		dist := math.Distance2f(pw, mousePosition)
 		if dist < distance {
-			trk = &t
+			trk = t
 			distance = dist
 		}
 	}

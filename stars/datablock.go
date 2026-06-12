@@ -81,14 +81,13 @@ func (db *fullDatablock) hasAlertInField0(a, b rune) bool {
 func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
 	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
 	idx := clockPhase - 1
-	lines := []dbLine{
-		dbMakeLine(db.field0[:]),
-		dbMakeLine(dbChopTrailing(db.field1[:]), db.field2[:], db.field8[:]),
-		dbMakeLine(dbChopTrailing(db.field34[idx][:]), db.field5[idx][:]),
-		dbMakeLine(db.field6[idx][:], db.field7[idx][:]),
-	}
+	var lines [4]dbLine
+	lines[0] = dbMakeLine(db.field0[:])
+	lines[1] = dbMakeLine(dbChopTrailing(db.field1[:]), db.field2[:], db.field8[:])
+	lines[2] = dbMakeLine(dbChopTrailing(db.field34[idx][:]), db.field5[idx][:])
+	lines[3] = dbMakeLine(db.field6[idx][:], db.field7[idx][:])
 	pt[1] += float32(font.Size) // align leader with line 1
-	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
+	dbDrawLines(&lines, 4, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -112,12 +111,11 @@ func (db partialDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, fon
 	}
 
 	idx := clockPhase - 1
-	lines := []dbLine{
-		dbMakeLine(db.field0[:]),
-		dbMakeLine(dbChopTrailing(db.field12[idx][:]), f3, db.field4[:]),
-	}
+	var lines [4]dbLine
+	lines[0] = dbMakeLine(db.field0[:])
+	lines[1] = dbMakeLine(dbChopTrailing(db.field12[idx][:]), f3, db.field4[:])
 	pt[1] += float32(font.Size) // align leader with line 1
-	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
+	dbDrawLines(&lines, 2, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -139,14 +137,13 @@ type limitedDatablock struct {
 
 func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
 	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
-	lines := []dbLine{
-		dbMakeLine(db.field0[:]),
-		dbMakeLine(db.field1[:], db.field2[:]),
-		dbMakeLine(db.field3[:], db.field4[:], db.field5[:]),
-		dbMakeLine(db.field6[:]),
-	}
+	var lines [4]dbLine
+	lines[0] = dbMakeLine(db.field0[:])
+	lines[1] = dbMakeLine(db.field1[:], db.field2[:])
+	lines[2] = dbMakeLine(db.field3[:], db.field4[:], db.field5[:])
+	lines[3] = dbMakeLine(db.field6[:])
 	pt[1] += 2 * float32(font.Size) // align leader with line 2
-	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
+	dbDrawLines(&lines, 4, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -159,8 +156,9 @@ type suspendedDatablock struct {
 
 func (db suspendedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
 	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
-	lines := []dbLine{dbMakeLine(db.field0[:])}
-	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
+	var lines [4]dbLine
+	lines[0] = dbMakeLine(db.field0[:])
+	dbDrawLines(&lines, 1, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -176,13 +174,12 @@ type ghostDatablock struct {
 
 func (db ghostDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
 	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, clockPhase int, halfSeconds int64) {
-	lines := []dbLine{
-		dbMakeLine(db.field0[:]),
-		dbMakeLine(db.field1[:]),
-	}
+	var lines [4]dbLine
+	lines[0] = dbMakeLine(db.field0[:])
+	lines[1] = dbMakeLine(db.field1[:])
 	// Leader aligns with line 0, so no offset is needed
 	pt[1] += float32(font.Size) // align leader with line 1
-	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
+	dbDrawLines(&lines, 2, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -232,13 +229,14 @@ func dbChopTrailing(f []dbChar) []dbChar {
 	return nil
 }
 
-func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
+func dbDrawLines(lines *[4]dbLine, n int, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
 	brightness radar.Brightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	rightJustify := leaderLineDirection >= math.South
 	glyph := font.LookupGlyph(' ')
 	fontWidth := glyph.AdvanceX
 
-	for _, line := range lines {
+	for i := range n {
+		line := &lines[i]
 		xOffset := float32(4)
 		if rightJustify {
 			xOffset = -4 - float32(line.Len())*fontWidth
@@ -250,7 +248,7 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32, fo
 	}
 }
 
-func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, str *strings.Builder,
+func dbDrawLine(line *dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, str *strings.Builder,
 	brightness radar.Brightness, halfSeconds int64) {
 	// We will batch characters to be drawn up into str and flush them out
 	// in a call to TextDrawBuider AddText() only when the color
@@ -396,12 +394,17 @@ func (sp *STARSPane) getAllDatablocks(ctx *panes.Context) map[av.ADSBCallsign]da
 	sp.ldbArena.Reset()
 	sp.sdbArena.Reset()
 
-	m := make(map[av.ADSBCallsign]datablock)
-	for _, trk := range sp.visibleTracks {
-		color, brightness, _ := sp.trackDatablockColorBrightness(ctx, trk)
-		m[trk.ADSBCallsign] = sp.getDatablock(ctx, trk, trk.FlightPlan, color, brightness)
+	if sp.datablocks == nil {
+		sp.datablocks = make(map[av.ADSBCallsign]datablock, len(sp.visibleTracks))
+	} else {
+		clear(sp.datablocks)
 	}
-	return m
+	for i := range sp.visibleTracks {
+		trk := &sp.visibleTracks[i]
+		color, brightness, _ := sp.trackDatablockColorBrightness(ctx, *trk)
+		sp.datablocks[trk.ADSBCallsign] = sp.getDatablock(ctx, *trk, trk.FlightPlan, color, brightness)
+	}
+	return sp.datablocks
 }
 
 func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NASFlightPlan,
@@ -1376,14 +1379,19 @@ func (sp *STARSPane) drawDatablocks(dbs map[av.ADSBCallsign]datablock, ctx *pane
 	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 
 	// Partition them by DB type so we can draw FDBs last
-	var ldbs, pdbs, sdbs, fdbs []sim.Track
+	n := len(sp.visibleTracks)
+	ldbs := make([]*sim.Track, 0, n)
+	pdbs := make([]*sim.Track, 0, n)
+	sdbs := make([]*sim.Track, 0, n)
+	fdbs := make([]*sim.Track, 0, n)
 
-	for _, trk := range sp.visibleTracks {
-		if !sp.datablockVisible(ctx, trk) {
+	for i := range sp.visibleTracks {
+		trk := &sp.visibleTracks[i]
+		if !sp.datablockVisible(ctx, *trk) {
 			continue
 		}
 
-		switch sp.datablockType(ctx, trk) {
+		switch sp.datablockType(ctx, *trk) {
 		case LimitedDatablock:
 			ldbs = append(ldbs, trk)
 		case PartialDatablock:
@@ -1399,11 +1407,12 @@ func (sp *STARSPane) drawDatablocks(dbs map[av.ADSBCallsign]datablock, ctx *pane
 		// If the dwelled aircraft is in the given slice, move it to the
 		// end so that it is drawn last (among its datablock category) and
 		// appears on top.
-		moveDwelledToEnd := func(tracks []sim.Track) []sim.Track {
-			isDwelled := func(trk sim.Track) bool { return trk.ADSBCallsign == sp.dwellAircraft }
+		moveDwelledToEnd := func(tracks []*sim.Track) []*sim.Track {
+			isDwelled := func(trk *sim.Track) bool { return trk.ADSBCallsign == sp.dwellAircraft }
 			if idx := slices.IndexFunc(tracks, isDwelled); idx != -1 {
-				tracks = append(tracks, tracks[idx])
+				dwelled := tracks[idx]
 				tracks = append(tracks[:idx], tracks[idx+1:]...)
+				tracks = append(tracks, dwelled)
 			}
 			return tracks
 		}
@@ -1414,7 +1423,7 @@ func (sp *STARSPane) drawDatablocks(dbs map[av.ADSBCallsign]datablock, ctx *pane
 		sdbs = moveDwelledToEnd(sdbs)
 	}
 
-	leaderLineEndpoint := func(pw [2]float32, trk sim.Track, leaderLineDirection math.CardinalOrdinalDirection) [2]float32 {
+	leaderLineEndpoint := func(pw [2]float32, trk *sim.Track, leaderLineDirection math.CardinalOrdinalDirection) [2]float32 {
 		var vll [2]float32
 		suspended := trk.IsAssociated() && trk.FlightPlan.Suspended
 		if !suspended {
@@ -1438,14 +1447,14 @@ func (sp *STARSPane) drawDatablocks(dbs map[av.ADSBCallsign]datablock, ctx *pane
 	}
 
 	var strBuilder strings.Builder
-	for _, dbTrack := range [][]sim.Track{ldbs, pdbs, sdbs, fdbs} {
-		for _, trk := range dbTrack {
+	for _, dbTracks := range [][]*sim.Track{ldbs, pdbs, sdbs, fdbs} {
+		for _, trk := range dbTracks {
 			db := dbs[trk.ADSBCallsign]
 			if db == nil {
 				continue
 			}
 
-			_, brightness, _ := sp.trackDatablockColorBrightness(ctx, trk)
+			_, brightness, _ := sp.trackDatablockColorBrightness(ctx, *trk)
 			if brightness == 0 {
 				continue
 			}
@@ -1454,7 +1463,7 @@ func (sp *STARSPane) drawDatablocks(dbs map[av.ADSBCallsign]datablock, ctx *pane
 			// start drawing the datablock.
 			state := sp.TrackState[trk.ADSBCallsign]
 			pac := transforms.WindowFromLatLongP(state.track.Location)
-			leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
+			leaderLineDirection := sp.getLeaderLineDirection(ctx, *trk)
 			pll := leaderLineEndpoint(pac, trk, leaderLineDirection)
 
 			halfSeconds := time.Now().UnixMilli() / 500

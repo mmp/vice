@@ -263,6 +263,9 @@ type STARSPane struct {
 	pdbArena util.ObjectArena[partialDatablock]
 	ldbArena util.ObjectArena[limitedDatablock]
 	sdbArena util.ObjectArena[suspendedDatablock]
+
+	// Reused across frames by getAllDatablocks; cleared at the start of each call.
+	datablocks map[av.ADSBCallsign]datablock
 }
 
 func (sp *STARSPane) notePendingATISGITextUpdate(ctx *panes.Context, line int, atis, text *string) {

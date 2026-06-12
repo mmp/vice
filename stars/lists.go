@@ -66,84 +66,6 @@ func (sp *STARSPane) drawSystemList(ctx *panes.Context, paneExtent math.Extent2D
 // limited to specific list types.
 func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.NASFlightPlan,
 	custom map[string]func() string) string {
-	rewriteFixForList := func(fix string) string {
-		if spt, ok := sp.significantPoints[fix]; ok && spt.ShortName != "" {
-			fix = spt.ShortName
-		}
-		if len(fix) > 3 {
-			fix = fix[:3]
-		}
-		return fmt.Sprintf("%3s", fix)
-	}
-
-	formatters := map[string]func(*sim.NASFlightPlan) string{
-		"ACID": func(fp *sim.NASFlightPlan) string {
-			return fmt.Sprintf("%-7s", string(fp.ACID))
-		},
-		"ACID_MSAWCA": func(fp *sim.NASFlightPlan) string {
-			s := string(fp.ACID)
-			if fp.DisableMSAW {
-				if fp.DisableCA {
-					s += "+"
-				} else {
-					s += "*"
-				}
-			} else if fp.DisableCA {
-				s += STARSTriangleCharacter
-			}
-			return fmt.Sprintf("%-8s", s)
-		},
-		"ACTYPE": func(fp *sim.NASFlightPlan) string {
-			return fmt.Sprintf("%4s", fp.AircraftType)
-		},
-		"BEACON": func(fp *sim.NASFlightPlan) string {
-			haveCode := fp.Rules == av.FlightRulesIFR || ctx.InterpolatedSimTime.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
-			if haveCode {
-				return fp.AssignedSquawk.String()
-			} else {
-				return "VFR "
-			}
-		},
-		"CWT": func(fp *sim.NASFlightPlan) string {
-			return util.Select(fp.CWTCategory != "", string(fp.CWTCategory[:1]), " ")
-		},
-		"DEP_EXIT_FIX": func(fp *sim.NASFlightPlan) string {
-			if fp.TypeOfFlight == av.FlightTypeDeparture {
-				return rewriteFixForList(fp.ExitFix)
-			}
-			return "   "
-		},
-		"ENTRY_FIX": func(fp *sim.NASFlightPlan) string {
-			return rewriteFixForList(fp.EntryFix)
-		},
-		"EXIT_FIX": func(fp *sim.NASFlightPlan) string {
-			return rewriteFixForList(fp.ExitFix)
-		},
-		"EXIT_GATE": func(fp *sim.NASFlightPlan) string {
-			exit := rewriteFixForList(fp.ExitFix)
-			if ctx.FacilityAdaptation.Datablocks.AllowLongScratchpad {
-				return exit + fmt.Sprintf("%03d", fp.RequestedAltitude/100)
-			} else {
-				return exit + fmt.Sprintf("%02d", fp.RequestedAltitude/1000)
-			}
-		},
-		"INDEX": func(fp *sim.NASFlightPlan) string {
-			if fp.ListIndex == sim.UnsetSTARSListIndex {
-				return "  "
-			}
-			return fmt.Sprintf("%2d", fp.ListIndex)
-		},
-		"NUMAC": func(fp *sim.NASFlightPlan) string {
-			return strconv.Itoa(fp.AircraftCount)
-		},
-		"OWNER": func(fp *sim.NASFlightPlan) string {
-			return fmt.Sprintf("%3s", ctx.ResolveController(fp.TrackingController))
-		},
-		"REQ_ALT": func(fp *sim.NASFlightPlan) string {
-			return fmt.Sprintf("%03d", fp.RequestedAltitude/100)
-		},
-	}
-
 	var result strings.Builder
 	i := 0
 	for i < len(format) {
@@ -159,8 +81,8 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 			specifier := format[i+1 : i+endIdx]
 			if formatter, ok := custom[specifier]; ok {
 				result.WriteString(formatter())
-			} else if formatter, ok := formatters[specifier]; ok {
-				result.WriteString(formatter(fp))
+			} else if s, ok := sp.formatBuiltinSpecifier(ctx, specifier, fp); ok {
+				result.WriteString(s)
 			} else {
 				// Unknown specifier, keep it as is. (This should be caught at start up time...)
 				result.WriteString("[" + specifier + "]")
@@ -174,6 +96,72 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 	}
 
 	return result.String()
+}
+
+func (sp *STARSPane) rewriteFixForList(fix string) string {
+	if spt, ok := sp.significantPoints[fix]; ok && spt.ShortName != "" {
+		fix = spt.ShortName
+	}
+	if len(fix) > 3 {
+		fix = fix[:3]
+	}
+	return fmt.Sprintf("%3s", fix)
+}
+
+func (sp *STARSPane) formatBuiltinSpecifier(ctx *panes.Context, name string, fp *sim.NASFlightPlan) (string, bool) {
+	switch name {
+	case "ACID":
+		return fmt.Sprintf("%-7s", string(fp.ACID)), true
+	case "ACID_MSAWCA":
+		s := string(fp.ACID)
+		if fp.DisableMSAW {
+			if fp.DisableCA {
+				s += "+"
+			} else {
+				s += "*"
+			}
+		} else if fp.DisableCA {
+			s += STARSTriangleCharacter
+		}
+		return fmt.Sprintf("%-8s", s), true
+	case "ACTYPE":
+		return fmt.Sprintf("%4s", fp.AircraftType), true
+	case "BEACON":
+		haveCode := fp.Rules == av.FlightRulesIFR || ctx.InterpolatedSimTime.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
+		if haveCode {
+			return fp.AssignedSquawk.String(), true
+		}
+		return "VFR ", true
+	case "CWT":
+		return util.Select(fp.CWTCategory != "", string(fp.CWTCategory[:1]), " "), true
+	case "DEP_EXIT_FIX":
+		if fp.TypeOfFlight == av.FlightTypeDeparture {
+			return sp.rewriteFixForList(fp.ExitFix), true
+		}
+		return "   ", true
+	case "ENTRY_FIX":
+		return sp.rewriteFixForList(fp.EntryFix), true
+	case "EXIT_FIX":
+		return sp.rewriteFixForList(fp.ExitFix), true
+	case "EXIT_GATE":
+		exit := sp.rewriteFixForList(fp.ExitFix)
+		if ctx.FacilityAdaptation.Datablocks.AllowLongScratchpad {
+			return exit + fmt.Sprintf("%03d", fp.RequestedAltitude/100), true
+		}
+		return exit + fmt.Sprintf("%02d", fp.RequestedAltitude/1000), true
+	case "INDEX":
+		if fp.ListIndex == sim.UnsetSTARSListIndex {
+			return "  ", true
+		}
+		return fmt.Sprintf("%2d", fp.ListIndex), true
+	case "NUMAC":
+		return strconv.Itoa(fp.AircraftCount), true
+	case "OWNER":
+		return fmt.Sprintf("%3s", ctx.ResolveController(fp.TrackingController)), true
+	case "REQ_ALT":
+		return fmt.Sprintf("%03d", fp.RequestedAltitude/100), true
+	}
+	return "", false
 }
 
 func (sp *STARSPane) drawSystemLists(ctx *panes.Context, paneExtent math.Extent2D, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
