@@ -8,9 +8,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
@@ -53,9 +55,11 @@ func runERAM(cwd, outDir, inputARTCC string, artcc *ARTCC) error {
 		if err != nil {
 			return err
 		}
+		drops := map[int]int{}
 		for si := range sources {
-			dispatchERAMFeatures(&sources[si], filterMaps)
+			dispatchERAMFeatures(&sources[si], filterMaps, geoMap.BCGMenu, drops)
 		}
+		warnBCGDrops(geoMap.Name, geoMap.BCGMenu, drops)
 
 		// Materialize per-filter ERAMMaps onto the group in filter-menu
 		// order. The geoMap's bcgMenu rides through as the group's
@@ -116,9 +120,12 @@ func loadERAMSources(cwd, artcc string, ids []string) ([]loadedSource, error) {
 //
 // filterMaps is indexed by 0-based filter index. A nil entry means the filter is skipped (empty
 // labels). The renderer resolves BCG (brightness) per feature against the group's BCGNames at draw
-// time; this importer just passes BCGIndex through. log.Fatalf fires if any accepted feature has
-// bcg<=0 — we want to know if that case ever shows up so the renderer can stay strict.
-func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap) {
+// time; this importer passes BCGIndex through. Features whose BCG is unset, out-of-range, or
+// points at an empty-named slot would render as invisible black at runtime (bcgRGB[0] and empty
+// slots are never populated), so we drop them entirely here and tally one count per dropped
+// source feature (not per filter placement) in drops, keyed by the raw effective BCG value so
+// out-of-range originals like 300 are reported as 300 rather than the post-clamp 255.
+func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap, bcgMenu []string, drops map[int]int) {
 	clampPositive := func(v, dflt int) int {
 		switch {
 		case v <= 0:
@@ -128,6 +135,12 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap) {
 		default:
 			return v
 		}
+	}
+	// True if the raw BCG cannot resolve to a populated, brightness-controllable slot. Checked
+	// against the raw eff.BCG so we don't confuse "source said 300" with "source said 255" after
+	// clamping into uint8.
+	invalidSlot := func(raw int) bool {
+		return raw <= 0 || raw > len(bcgMenu) || bcgMenu[raw-1] == ""
 	}
 
 	for i := range src.features {
@@ -139,16 +152,17 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap) {
 				continue
 			}
 			eff := mergeDefaults(f.Properties, &src.lineDefaults)
+			if invalidSlot(eff.BCG) {
+				drops[eff.BCG]++
+				continue
+			}
 			style := parseLineStyle(eff.Style)
 			thickness := uint8(clampPositive(eff.Thickness, 1))
-			bcg := uint8(clampPositive(eff.BCG, 0))
+			bcg := uint8(eff.BCG) // safe: invalidSlot rejected anything > len(bcgMenu) (≤255 in practice).
 			for _, filterIdx := range eff.Filters {
 				fi := filterIdx - 1
 				if fi < 0 || fi >= len(filterMaps) || filterMaps[fi] == nil {
 					continue
-				}
-				if bcg == 0 {
-					log.Fatalf("ERAM %s: line feature accepted into filter %d with bcg<=0", src.path, filterIdx)
 				}
 				for _, pts := range polylines {
 					if len(pts) < 2 {
@@ -170,19 +184,20 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap) {
 			}
 			if f.Properties != nil && len(f.Properties.Text) > 0 {
 				eff := mergeDefaults(f.Properties, &src.textDefaults)
+				if invalidSlot(eff.BCG) {
+					drops[eff.BCG]++
+					continue
+				}
 				size := uint8(clampPositive(eff.Size, 1))
 				xoff := int8(eff.XOffset)
 				yoff := int8(eff.YOffset)
-				bcg := uint8(clampPositive(eff.BCG, 0))
+				bcg := uint8(eff.BCG)
 				// Join multi-line labels into a single MapLabel.
 				text := strings.Join(f.Properties.Text, "\n")
 				for _, filterIdx := range eff.Filters {
 					fi := filterIdx - 1
 					if fi < 0 || fi >= len(filterMaps) || filterMaps[fi] == nil {
 						continue
-					}
-					if bcg == 0 {
-						log.Fatalf("ERAM %s: label feature accepted into filter %d with bcg<=0", src.path, filterIdx)
 					}
 					filterMaps[fi].Labels = append(filterMaps[fi].Labels, av.MapLabel{
 						P:         p,
@@ -197,6 +212,10 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap) {
 				}
 			} else {
 				eff := mergeDefaults(f.Properties, &src.symbolDefaults)
+				if invalidSlot(eff.BCG) {
+					drops[eff.BCG]++
+					continue
+				}
 				style, known := parseSymbolStyle(eff.Style)
 				if !known {
 					if eff.Style != "" {
@@ -205,14 +224,11 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap) {
 					style = av.SymbolStyleVOR
 				}
 				size := uint8(clampPositive(eff.Size, 1))
-				bcg := uint8(clampPositive(eff.BCG, 0))
+				bcg := uint8(eff.BCG)
 				for _, filterIdx := range eff.Filters {
 					fi := filterIdx - 1
 					if fi < 0 || fi >= len(filterMaps) || filterMaps[fi] == nil {
 						continue
-					}
-					if bcg == 0 {
-						log.Fatalf("ERAM %s: symbol feature accepted into filter %d with bcg<=0", src.path, filterIdx)
 					}
 					filterMaps[fi].Symbols = append(filterMaps[fi].Symbols, av.MapSymbol{
 						P:        p,
@@ -223,5 +239,32 @@ func dispatchERAMFeatures(src *loadedSource, filterMaps []*av.ERAMMap) {
 				}
 			}
 		}
+	}
+}
+
+// warnBCGDrops prints one summary line per (geomap, raw BCG value) with dropped source features.
+// Keys are the raw eff.BCG values (not clamped) so out-of-range or unset BCGs are reported as the
+// upstream source said them.
+func warnBCGDrops(geomapName string, bcgMenu []string, drops map[int]int) {
+	if len(drops) == 0 {
+		return
+	}
+	bcgs := make([]int, 0, len(drops))
+	for b := range drops {
+		bcgs = append(bcgs, b)
+	}
+	slices.Sort(bcgs)
+	for _, b := range bcgs {
+		var reason string
+		switch {
+		case b <= 0:
+			reason = "no BCG set on feature or its source-file defaults"
+		case b > len(bcgMenu):
+			reason = fmt.Sprintf("out of range (bcgMenu has %d slots)", len(bcgMenu))
+		default:
+			reason = "empty slot name"
+		}
+		log.Printf("WARN: ERAM geomap %q: dropped %d features referencing BCG slot %d (%s)",
+			geomapName, drops[b], b, reason)
 	}
 }
