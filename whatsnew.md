@@ -2,6 +2,8 @@
 - Scenario updates: BOI (Elliot B), MIA, ZJX (manaphy), PCT, NCT (Ketan K), ZNY (Ryan G), BTV (EkimWasHere), BOS (radarcontacto)
 - Pronunciation fixes: I90 (Ethan Hawes)
 - Added support for scenario briefings (only JFK and LGA for now)
+- Improve handling of arrival airport winds on final approach (radarcontacto)
+- Fixed bug where aircraft would speed up after missing an approach intercept
 - STT:
   - Fixed handling of "maintain best forward speed"
   - Added support for "cross (fix) at or below (altitude)"
@@ -11,13 +13,11 @@
   - Suppress MSAWs for aircraft on visual approaches
 - STARS
  - Fixed bug where aircraft on visual approaches could have unwanted MSAW alerts
+- ERAM
+  - Fixed bugs with drawing map annotations and map brightness handling
 - Facility engineering
  - Fractional values (not just integers) can now be used when specifying aircraft launch rates in scenarios
  - Added "description" field to JSON to provide short descriptive text that is shown in the scenario launch window (radarcontacto)
-  
-- Improve handling of arrival airport winds on final approach (radarcontacto)
-- Facility engineering
-  - Added /intercept to indicate virtually-controlled aircraft should intercept the approach
+  - Added `/intercept` to indicate virtually-controlled aircraft should intercept the approach
   - Updated video map file format: this makes it possible to fix a number of bugs with handling maps with conflicting STARS ids
-- Fixed bug where aircraft would speed up after missing an approach intercept
-- ERAM: fixed multiple bugs with drawing map annotations and map brightness handling
+  
