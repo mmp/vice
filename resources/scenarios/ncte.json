@@ -817,7 +817,7 @@
             "cleared_altitude": 4000,
             "waypoints": "KSMF-17L/h347"
           },
-          "FRA": {
+          "FTHIL": {
             "cleared_altitude": 19000,
             "sid": "FTHIL3",
             "waypoints": "KSMF-17L FTHIL GRDOE"
@@ -971,8 +971,8 @@
           ],
           "altitude": 35000,
           "destination": "KLAX",
-          "route": "FTHIL3 FRA REBRG IRNMN2",
-          "exit": "FRA"
+          "route": "FTHIL FRA REBRG IRNMN2",
+          "exit": "FTHIL"
         },
         {
           "airlines": [
@@ -985,8 +985,8 @@
           ],
           "altitude": 35000,
           "destination": "KSNA",
-          "route": "FTHIL3 FRA REBRG OHSEA3",
-          "exit": "FRA"
+          "route": "FTHIL FRA REBRG OHSEA3",
+          "exit": "FTHIL"
         },
         {
           "airlines": [
@@ -999,8 +999,8 @@
           ],
           "altitude": 35000,
           "destination": "KLGB",
-          "route": "FTHIL3 FRA REBRG PCFIC3",
-          "exit": "FRA"
+          "route": "FTHIL FRA REBRG PCFIC3",
+          "exit": "FTHIL"
         },
         {
           "airlines": [
@@ -1016,8 +1016,8 @@
           ],
           "altitude": 35000,
           "destination": "KSAN",
-          "route": "FTHIL3 FRA EHF HUULK COMIX2",
-          "exit": "FRA"
+          "route": "FTHIL FRA EHF HUULK COMIX2",
+          "exit": "FTHIL"
         },
         {
           "airlines": [
@@ -1030,8 +1030,8 @@
           ],
           "altitude": 35000,
           "destination": "KONT",
-          "route": "FTHIL3 FRA EHF ZIGGY8",
-          "exit": "FRA"
+          "route": "FTHIL FRA EHF ZIGGY8",
+          "exit": "FTHIL"
         },
         {
           "airlines": [
@@ -1296,21 +1296,37 @@
       },
       "departure_routes": {
         "2": {
-          "SAC": {
+          "SAC.L": {
             "cleared_altitude": 2000,
             "waypoints": "KSAC-20/h250"
           },
-          "FROGO": {
+          "SAC.H": {
+            "cleared_altitude": 2000,
+            "waypoints": "KSAC-20/h250"
+          },
+          "RBL": {
+            "cleared_altitude": 2000,
+            "waypoints": "KSAC-20/h250"
+          },
+          "FROGO,TIPRE": {
             "cleared_altitude": 2000,
             "waypoints": "KSAC-20/h340"
           }
         },
         "20": {
-          "SAC": {
+          "SAC.L": {
             "cleared_altitude": 2000,
             "waypoints": "KSAC-2/h150"
           },
-          "FROGO": {
+          "SAC.H": {
+            "cleared_altitude": 2000,
+            "waypoints": "KSAC-2/h150"
+          },
+          "RBL": {
+            "cleared_altitude": 2000,
+            "waypoints": "KSAC-2/h150"
+          },
+          "FROGO,TIPRE": {
             "cleared_altitude": 2000,
             "waypoints": "KSAC-2/h090"
           }
@@ -1326,7 +1342,8 @@
           "altitude": 23000,
           "destination": "KHND",
           "route": "SAC OAL J92 BTY",
-          "exit": "SAC"
+          "scratchpad": "OAL",
+          "exit": "SAC.H"
         },
         {
           "airlines": [
@@ -1357,17 +1374,66 @@
         {
           "airlines": [
             {
-              "icao": "N"
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            },
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ],
+          "destination": "KCRQ",
+          "route": "SAC LODDI PATYY V113 PXN LHS V459 SLI V23 OCN",
+          "scratchpad": "PXN",
+          "exit": "SAC.L"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            },
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ],
+          "destination": "KCRQ",
+          "route": "SAC LODDI PATYY V113 PXN LHS V459 SLI V23 OCN",
+          "scratchpad": "PXN",
+          "exit": "SAC.L"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 27000,
+          "destination": "KSBA",
+          "route": "SAC GVO",
+          "exit": "SAC.H"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "EJA"
             },
             {
               "icao": "N",
               "fleet": "fastGA"
             }
           ],
-          "altitude": 27000,
-          "destination": "KSBA",
-          "route": "SAC GVO",
-          "exit": "SAC"
+          "destination": "KTEB",
+          "route": "GALTS TIPRE Q126 TTOES Q126 BASNN EKR J84 SNY J114 YANKI MAASI ALO JVL PMM J70 JHW LVZ5",
+          "exit": "TIPRE"
         }
       ],
       "exit_categories": {
@@ -1613,6 +1679,7 @@
           "cruise_altitude": 31000,
           "star": "AMRVR2",
           "initial_controller": "C44",
+          "scratchpad": "MA1",
           "initial_altitude": 28000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -1634,6 +1701,7 @@
           "cruise_altitude": 31000,
           "star": "AMRVR2",
           "initial_controller": "C44",
+          "scratchpad": "MA1",
           "initial_altitude": 28000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -1785,14 +1853,14 @@
         }
       ]
     },
-    "CCR2.S": {
+    "FEVTA1": {
       "arrivals": [
         {
-          "waypoints": "CCR N038.14.06.633,W121.51.49.158/d070/ho ISYOH ELKOE/h340",
+          "waypoints": "N038.02.19.581,W122.01.53.790 FEVTA N038.11.25.382,W121.55.26.412/d070 N038.14.06.235,W121.52.35.026/ho ISYOH ELKOE/h340",
           "cruise_altitude": 10000,
-          "route": "CCR2",
+          "route": "TRUKN FEVTA FEVTA1",
           "scratchpad": "SM2",
-          "initial_controller": "1S",
+          "initial_controller": "11S",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "expect_approach": null,
@@ -1803,36 +1871,8 @@
                 "airport": "KSFO"
               },
               {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "KHAF"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "CCR2.N": {
-      "arrivals": [
-        {
-          "waypoints": "CCR/d070 N038.08.56.819,W121.55.17.266/d050 N038.12.07.816,W121.51.30.866/d030/ho/h020",
-          "cruise_altitude": 10000,
-          "route": "CCR2",
-          "scratchpad": "SM2",
-          "initial_controller": "1S",
-          "initial_altitude": 10000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KSMF": [
-              {
                 "icao": "SKW",
                 "airport": "KSFO"
-              },
-              {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "KHAF"
               }
             ]
           }
@@ -1845,6 +1885,7 @@
           "waypoints": "JAGOM KLUBS/ho EELZA BEETH/a16000+ HIWAA/a12000+ BACRT/a11000+ FMG/a10000/h167",
           "star": "EELZA4",
           "initial_controller": "C45",
+          "scratchpad": "RN1",
           "initial_altitude": 20000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -1891,6 +1932,7 @@
           "waypoints": "DNGLE/a21000-23000 N038.44.15.615,W119.31.18.964/ho NEEWW/a16000-19000 BBOOT/a14000+/s250 GOOFN/a12000+ CANYA/a10000/s230/h347",
           "star": "DNGLE1",
           "initial_controller": "C46",
+          "scratchpad": "RN1",
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -1957,6 +1999,7 @@
           "waypoints": "JAGOM KLUBS/ho EELZA/a13000+/s250 LIBGE/a12000/s230/h167",
           "star": "KLUBS1",
           "initial_controller": "C45",
+          "scratchpad": "RN1",
           "initial_altitude": 20000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -2003,6 +2046,7 @@
           "waypoints": "N040.07.14.152,W119.00.18.264 UUPPP/ho HOSME/a13000+/s250 WINRZ/a11000/s230/h223",
           "star": "WINRZ1",
           "initial_controller": "C45",
+          "scratchpad": "RN1",
           "initial_altitude": 20000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -2066,6 +2110,7 @@
           "waypoints": "N039.08.00.857,W120.39.22.747 N039.15.27.905,W120.29.42.339/ho HOBOA/flyover/a16000+/h30",
           "star": "ORRCA1",
           "initial_controller": "C44",
+          "scratchpad": "RN1",
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -2201,6 +2246,7 @@
           "waypoints": "SCOLA/a24000-28000 TEXSS/a17000+ HLDMM/a16000+/s270/ho CHIME/a12000-13000/s250 KLOCK/a10000/s210/h333",
           "star": "SCOLA1",
           "initial_controller": "C46",
+          "scratchpad": "RN1",
           "initial_altitude": 26000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -2478,6 +2524,7 @@
           "waypoints": "N038.43.31.752,W120.12.41.407 KRKWD/a16000+/s280/ho TARVR/a14000/s250 HVNLY/a13100+/s250 FORKK/a11300+ SPOON/a11000/s230/h347",
           "star": "TARVR2",
           "initial_controller": "C44",
+          "scratchpad": "RN1",
           "initial_altitude": 20000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -2518,6 +2565,7 @@
           "waypoints": "SLEAT/a24000-26000 N038.36.50.614,W119.45.51.306/ho NEUPS/a16000+/s280 TARVR/a14000/s250 HVNLY/a13100+/s250 FORKK/a11300+ SPOON/a11000/s230/h347",
           "star": "TARVR2",
           "initial_controller": "C44",
+          "scratchpad": "RN1",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "description": "SLEAT",
@@ -2581,6 +2629,7 @@
           "waypoints": "PEONS/a20000-23000 JBARR/a19000+/s280/ho TARVR/a14000/s250 HVNLY/a13100+/s250 FORKK/a11300+ SPOON/a11000/s230/h347",
           "star": "TARVR2",
           "initial_controller": "C44",
+          "scratchpad": "RN1",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "description": "KENNO",
@@ -2651,6 +2700,7 @@
           "waypoints": "CWALK/a20000-23000/s280 N038.46.46.430,W119.30.31.970/ho TARVR/a14000/s250 HVNLY/a13100+/s250 FORKK/a11300+ SPOON/a11000/s230/h347",
           "star": "TARVR2",
           "initial_controller": "C44",
+          "scratchpad": "RN1",
           "initial_altitude": 22000,
           "initial_speed": 280,
           "description": "MVA",
@@ -3272,7 +3322,7 @@
         }
       ],
       "inbound_rates": {
-        "CCR2.N": {
+        "FEVTA1": {
           "KSMF": 2
         },
         "SLMMR5": {
@@ -3366,7 +3416,7 @@
         }
       ],
       "inbound_rates": {
-        "CCR2.S": {
+        "FEVTA1": {
           "KSMF": 2
         },
         "SLMMR5": {
