@@ -18,7 +18,8 @@
     "1H": {
       "callsign": "PBI_H_APP",
       "frequency": 125925,
-      "radio_name": "Palm Beach Approach"
+      "radio_name": "Palm Beach Approach",
+      "area": "2"
     },
     "1I": {
       "callsign": "PBI_I_APP",
@@ -28,7 +29,8 @@
     "1N": {
       "callsign": "PBI_N_APP",
       "frequency": 123625,
-      "radio_name": "Palm Beach Approach"
+      "radio_name": "Palm Beach Approach",
+      "area": "2"
     },
     "1P": {
       "callsign": "PBI_P_APP",
@@ -38,13 +40,323 @@
     "1S": {
       "callsign": "PBI_S_APP",
       "frequency": 132800,
-      "radio_name": "Palm Beach Approach"
+      "radio_name": "Palm Beach Approach",
+      "area": "2"
     },
     "1T": {
       "callsign": "PBI_TWR",
       "frequency": 119100,
       "radio_name": "Palm Beach Tower"
+    },
+    "1E": {
+      "callsign": "VRB_TWR",
+      "frequency": 126300,
+      "radio_name": "Vero Beach Tower"
+    },
+    "1W": {
+      "callsign": "SUA_TWR",
+      "frequency": 126600,
+      "radio_name": "Stuart Tower"
+    },
+    "1R": {
+      "callsign": "BCT_TWR",
+      "frequency": 118425,
+      "radio_name": "Boca Raton Tower"
+    },
+    "1Z": {
+      "callsign": "FPR_TWR",
+      "frequency": 128200,
+      "radio_name": "Fort Pierce Tower"
     }
+  },
+  "facility_adaptations": {
+    "configurations": {
+      "PBI": {
+        "inbound_assignments": {
+          "BR21V.PBI": "1I",
+          "BR64V.MRLIN": "1F",
+          "T208/LIFRR2.E": "1P",
+          "T208/LIFRR2.W": "1P",
+          "CLMNT2": "1I",
+          "CPTAN3": "1I",
+          "JESTR1": "1I",
+          "MAHHI3": "1F",
+          "VUUDU1": "1P"
+        },
+        "departure_assignments": {
+          "KPBI": "1B",
+          "KBCT": "1F"
+        },
+        "default_consolidation": {
+          "1B": ["1I", "1P"],
+          "1P": ["1F"],
+          "1I": ["1A"]
+        }
+      },
+      "VRB": {
+        "inbound_assignments": {
+          "VRB ARR.N": "1N",
+          "SUA ARR.N": "1H",
+          "SUA ARR.W.E": "1S",
+          "SUA ARR.W.W": "1S",
+          "SUA ARR.E": "1S",
+          "VRB ARR.E": "1N",
+          "FVAP ARR.S.E": "1S",
+          "FVAP ARR.S.W": "1S"
+        },
+        "departure_assignments": {
+          "KSUA": "1S",
+          "KVRB": "1N"
+        },
+        "default_consolidation": {
+          "1N": ["1H", "1S"]
+        }
+      }
+    },
+    "center": "JUUNO",
+    "range": 40,
+    "coordination_fixes": {
+      "CLMNT": [
+        {
+          "type": "route",
+          "to": "PBI",
+          "from": "ZMA"
+        }
+      ],
+      "CPTAN": [
+        {
+          "type": "route",
+          "to": "PBI",
+          "from": "ZMA"
+        }
+      ],
+      "VUUDU": [
+        {
+          "type": "route",
+          "to": "PBI",
+          "from": "ZMA"
+        }
+      ],
+      "KIZER": [
+        {
+          "type": "route",
+          "to": "PBI",
+          "from": "F11"
+        }
+      ],
+      "ROCIT": [
+        {
+          "type": "route",
+          "to": "PBI",
+          "from": "F11"
+        }
+      ]
+    },
+    "areas": {
+      "1": {
+        "video_maps": [
+          "PBI-406S PBI ATAS",
+          "PBI-409S ALL WAYPOINTS LABELED",
+          "PBI-911S EMERGENCY",
+          "PBI-438S HOLDING AIRSPACE",
+          "PBI-108S H-RNAV",
+          "PBI-303S MVA FUS3",
+
+          "PBI-027S PBI RWY 10L FINAL EXTENDED",
+          "PBI-028S PBI RWY 14 FINAL",
+          "PBI-036S BCT RUNWAY 5 FINAL",
+          "PBI-060S SUA RUNWAY 12 FINAL",
+          "PBI-066S FPR RUNWAY 10R FINAL",
+          "PBI-071S FPR RUNWAY 14 FINAL",
+          "PBI-076S VRB RUNWAY 12R FINAL",
+          "PBI-073S VRB RUNWAY 4 FINAL",
+          "PBI-042S LNA RUNWAY 10 FINAL",
+          "PBI-490S T-ROUTES NORTH LABELED",
+          "PBI-422S B SID EAST",
+          "PBI-424S I STAR EAST",
+          "PBI-448S P STAR EAST",
+          "PBI-447S BCT SIDS",
+          "PBI-232S BCT CLASS D",
+          "PBI-226S VRB CLASS D",
+          "PBI-030S PBI RWY 28R FINAL",
+          "PBI-031S PBI RWY 32 FINAL",
+          "PBI-037S BCT RUNWAY 23 FINAL",
+          "PBI-061S SUA RUNWAY 30 FINAL",
+          "PBI-068S FPR RUNWAY 28L RNAV",
+          "PBI-072S FPR RUNWAY 32 FINAL",
+          "PBI-074S VRB RUNWAY 30L FINAL",
+          "PBI-077S VRB RUNWAY 22 FINAL",
+          "PBI-043S LNA RUNWAY 28 FINAL",
+          "PBI-491S T-ROUTES SOUTH LABELED",
+          "PBI-423S B SID WEST",
+          "PBI-425S I STAR WEST",
+          "PBI-449S P STAR WEST",
+          "PBI-434S RUNWAY 32 WAYPOINTS",
+          "PBI-245S SUA CLASS D",
+          "FPR-214S FPR CLASS D"
+        ],
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 12000,
+            "vertices": "N026.21.04.347,W080.09.40.187 N026.23.03.240,W080.09.47.219 N026.23.02.608,W080.10.45.584 N026.30.50.798,W080.16.15.283 N026.30.47.200,W080.39.41.808 N026.57.46.605,W080.50.27.227 N027.05.22.517,W080.45.22.137 N027.08.49.877,W080.13.49.330 N027.18.33.320,W080.14.39.977 N027.18.10.887,W079.55.24.243 N027.11.08.957,W079.53.24.244 N027.00.04.305,W079.47.01.838 N026.49.56.115,W079.22.50.874 N026.26.08.909,W079.36.03.922 N026.22.59.010,W079.41.44.360 N026.23.06.914,W080.03.05.229 N026.20.57.790,W080.03.07.069 N026.19.20.595,W080.05.10.501 N026.19.18.803,W080.07.38.157"
+          }
+        ],
+        "altimeters": ["KPBI", "KSUA", "KBCT"]
+      },
+      "2": {
+        "center": "KFPR",
+        "range": 40,
+        "video_maps": [
+          "PBI-459S FVAP ATAS",
+          "PBI-409S ALL WAYPOINTS LABELED",
+          "PBI-911S EMERGENCY",
+          "PBI-438S HOLDING AIRSPACE",
+          "PBI-150S FVAP MISSED APPROACH",
+          "PBI-303S MVA FUS3",
+
+          "PBI-060S SUA RUNWAY 12 FINAL",
+          "PBI-066S FPR RUNWAY 10R FINAL",
+          "PBI-071S FPR RUNWAY 14 FINAL",
+          "PBI-076S VRB RUNWAY 12R FINAL",
+          "PBI-073S VRB RUNWAY 4 FINAL",
+          "PBI-490S T-ROUTES NORTH LABELED",
+          "PBI-111S SUA SIDS EAST",
+          "PBI-226S VRB CLASS D",
+          "PBI-232S BCT CLASS D",
+          "PBI-310S WARNING AREA 497A",
+          "PBI-311S WARNING AREA 497B",
+          "PBI-312S MARION MOA",
+          "PBI-313S AVON E MOA",
+          "PBI-314S BASINGER MOA",
+          "PBI-315S RESTRICTED AREA 2901",
+          "PBI-061S SUA RUNWAY 30 FINAL",
+          "PBI-068S FPR RUNWAY 28L RNAV",
+          "PBI-072S FPR RUNWAY 32 FINAL",
+          "PBI-074S VRB RUNWAY 30L FINAL",
+          "PBI-077S VRB RUNWAY 22 FINAL",
+          "PBI-491S T-ROUTES SOUTH LABELED",
+          "PBI-112S SUA SIDS  WEST",
+          "PBI-245S SUA CLASS D",
+          "PBI-200S GWINN CLASS D",
+          "PBI-451S ST-S AIRSPACE",
+          "PBI-452S ST-H AIRSPACE",
+          "PBI-492S T-ROUTES WAYPOINTS",
+          "PBI-481S OBE RUNWAYS",
+          "PBI-316S VIP TFR MAR A LAGO",
+          "PBI-251S F11 PALM SECTOR"
+        ],
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 5500,
+            "vertices": "N027.05.36.044,W080.50.48.898 N027.36.15.464,W080.52.29.203 N027.57.31.739,W081.00.45.428 N027.58.35.419,W080.24.53.591 N028.04.04.672,W080.10.11.032 N027.54.12.701,W080.01.22.369 N027.27.38.063,W079.49.57.344 N027.08.24.588,W079.52.04.154 N026.58.30.070,W080.01.13.114 N027.02.32.126,W080.39.26.125"
+          }
+        ],
+        "altimeters": ["KFPR", "KSUA", "KVRB"]
+      }
+    },
+    "lists": {
+      "coordination": [
+        {
+          "name": "BOCA RATON",
+          "id": "BCT",
+          "airports": ["KBCT"]
+        },
+        {
+          "name": "FT PIERCE",
+          "id": "FPR",
+          "airports": ["KFPR"]
+        },
+        {
+          "name": "VERO BEACH",
+          "id": "VRB",
+          "airports": ["KVRB"]
+        },
+        {
+          "name": "STUART",
+          "id": "SUA",
+          "airports": ["KSUA"]
+        }
+      ],
+      "ssa": {
+        "altimeters": ["KPBI", "KFPR", "KSUA", "KVRB", "KBCT"]
+      }
+    },
+    "filters": {
+      "inhibit_ca": [
+        {
+          "id": "PBINOCA",
+          "description": "PBI CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 3000,
+          "radius": 5,
+          "center": "PBI"
+        }
+      ],
+      "auto_acquisition": [
+        {
+          "id": "ACQ",
+          "description": "PBI AUTO-ACQUISITION",
+          "type": "polygon",
+          "vertices": "N026.31.23.242,W081.13.21.727 N028.11.36.368,W081.18.52.223 N028.18.50.918,W079.17.12.550 N026.19.01.953,W078.47.12.604 N025.58.28.216,W079.15.14.199 N025.52.49.253,W081.10.10.153 N026.31.23.242,W081.13.21.727",
+          "floor": 0,
+          "ceiling": 17000
+        }
+      ]
+    },
+    "scratchpads": {
+      "CHEFS": "CHF",
+      "CLEFF": "CLF",
+      "BLUFI": "PER",
+      "BLDOG": "BLD",
+      "LEBUR": "LEB",
+      "TURPS": "TUR",
+      "TBIRD": "TBD",
+      "VIYAP": "TBR",
+      "SHRKS": "TBR",
+      "KPASA": "TBR",
+      "SMELZ": "TBR",
+      "SOPHA": "SOP",
+      "SWOMP": "SWO",
+      "SHEDS": "SND",
+      "JAYMC": "OLK",
+      "LENDS": "SLZ",
+      "WELLY": "WER",
+      "HALBI": "MIX"
+    },
+    "significant_points": {
+      "CLMNT": {},
+      "CPTAN": {},
+      "VUUDU": {},
+      "TBIRD": {},
+      "WELLY": {},
+      "BLUFI": {}
+    },
+    "airspace_awareness": [
+      {
+        "fixes": ["LENDS"],
+        "altitude_range": [0, 12000],
+        "receiving_controller": "C20"
+      },
+      {
+        "fixes": ["HALBI"],
+        "altitude_range": [0, 9000],
+        "receiving_controller": "C21"
+      },
+      {
+        "fixes": ["CHEFS", "KPASA", "MATLK", "SHRKS", "SMELZ", "VIYAP"],
+        "altitude_range": [0, 11000],
+        "receiving_controller": "C46"
+      },
+      {
+        "fixes": ["WELLY"],
+        "altitude_range": [0, 10000],
+        "receiving_controller": "C47"
+      }
+    ],
+    "video_map_file": "videomaps/ZMA-PBI.mappack"
   },
   "handoff_ids": [
     {
@@ -63,8 +375,5 @@
       "id": "ZMA",
       "prefix": "C"
     }
-  ],
-  "facility_adaptations": {
-    "configurations": {}
-  }
+  ]
 }

@@ -173,7 +173,7 @@
         "slope_angle": 0.175
       }
     },
-    "video_map_file": "videomaps/ZMA-stars.mappack",
+    "video_map_file": "videomaps/ZMA-TPA.mappack",
     "coordination_fixes": {
       "DSIDE": [
         {
@@ -247,7 +247,7 @@
           "TPA-113S ILS/NDB",
           "TPA-117S RNAV DPS",
           "TPA-119S CTR BND",
-          "TPA-122S MVA",
+          "TPA-122S 3NM MVA",
           "TPA-124S ROADS",
           "TPA-126S TWR MAP",
           "TPA-128S COUNTY",

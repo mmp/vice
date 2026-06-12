@@ -464,7 +464,7 @@
       "WOLFO": {},
       "ZFP": {}
     },
-    "video_map_file": "videomaps/ZMA-stars.mappack",
+    "video_map_file": "videomaps/ZMA-MIA.mappack",
     "coordination_fixes": {
       "HULKY": [
         {
@@ -538,7 +538,7 @@
           "MIA-002S WEST OPERATIONS ARRIVAL",
           "MIA-049S EMERGENCY MAP",
           "MIA-003S MIA DEPARTURE EAST",
-          "FLL-001S EAST OPERATIONS",
+          "FLL-001S EAST OPERATION",
           "FLL-002S WEST OPERATIONS",
           "MIA-850S CLASS D AIRSPACE",
           "MIA-225S FLL CLASS C",
@@ -584,9 +584,8 @@
           "MIA-014S D WEST EAST AIRSPACE",
           "MIA-024S W EAST AIRSPACE",
           "MIA-035S W WEST AIRSPACE",
-          "MIA-021S H EAST",
-          "MIA-021S H EAST",
-          "MIA-141S H WEST",
+          "MIA-021S H EAST AIRSPACE",
+          "MIA-141S H WEST AIRSPACE",
           "FLL-017S R EAST AIRSPACE",
           "FLL-025S R WEST AIRSPACE",
           "FLL-018S F EAST AIRSPACE",
@@ -601,8 +600,8 @@
           "MIA-033S Z FLL WEST AIRSPACE",
           "MIA-030S Z EAST WEST AIRSPACE",
           "MIA-148S Z WEST EAST AIRSPACE",
-          "FLL-019S L EAST EAST AIRSPACE",
-          "FLL-020S L EAST WEST AIRSPACE",
+          "FLL-019S L EAST-EAST AIRSPACE",
+          "FLL-020S L EAST-WEST AIRSPACE",
           "FLL-024S L WEST WEST AIRSPACE",
           "FLL-026S L WEST EAST AIRSPACE",
           "FLL-016S G EAST AIRSPACE",

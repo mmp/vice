@@ -5073,7 +5073,7 @@
         }
       },
       "configuration": "KMI",
-      "default_maps": ["MIA-001S EAST OPERATIONS ARRIVAL", "FLL-001S EAST OPERATIONS"],
+      "default_maps": ["MIA-001S EAST OPERATIONS ARRIVAL", "FLL-001S EAST OPERATION"],
       "departure_runways": [
         {
           "airport": "KMIA",
@@ -5274,7 +5274,7 @@
         }
       },
       "configuration": "KM1",
-      "default_maps": ["MIA-001S EAST OPERATIONS ARRIVAL", "FLL-001S EAST OPERATIONS"],
+      "default_maps": ["MIA-001S EAST OPERATIONS ARRIVAL", "FLL-001S EAST OPERATION"],
       "departure_runways": [
         {
           "airport": "KMIA",
