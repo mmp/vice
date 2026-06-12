@@ -268,7 +268,8 @@ func (ep *ERAMPane) fullDatablockLineLengths(ctx *panes.Context, trk sim.Track) 
 		return nil
 	}
 
-	lines := fullDatablockLines(fdb)
+	var lines [5]dbLine
+	fullDatablockLines(fdb, &lines)
 	lengths := make(map[int]int, len(lines))
 	for i, line := range lines {
 		if l := line.Len(); l > 0 {
@@ -278,14 +279,12 @@ func (ep *ERAMPane) fullDatablockLineLengths(ctx *panes.Context, trk sim.Track) 
 	return lengths
 }
 
-func fullDatablockLines(db *fullDatablock) []dbLine {
-	return []dbLine{
-		dbMakeLine(dbChopTrailing(db.line0[:])),
-		dbMakeLine(dbChopTrailing(db.line1[:])),
-		dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:])),
-		dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:])),
-		dbMakeLine(dbChopTrailing(db.line4[:])),
-	}
+func fullDatablockLines(db *fullDatablock, out *[5]dbLine) {
+	out[0] = dbMakeLine(dbChopTrailing(db.line0[:]))
+	out[1] = dbMakeLine(dbChopTrailing(db.line1[:]))
+	out[2] = dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:]))
+	out[3] = dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:]))
+	out[4] = dbMakeLine(dbChopTrailing(db.line4[:]))
 }
 
 func fullDatablockMainLengths(lineLengths map[int]int) (int, int, int, int) {

@@ -56,7 +56,20 @@ type SecondaryTCP struct {
 // ControlsPosition returns true if this TCW controls the given position (either as
 // primary or as one of its secondary positions).
 func (tc *TCPConsolidation) ControlsPosition(pos ControlPosition) bool {
-	return slices.Contains(tc.OwnedPositions(), pos)
+	// Equivalent to slices.Contains(tc.OwnedPositions(), pos), but without the memory allocation;
+	// this is called a lot in datablock formatting code, etc.
+	if tc.PrimaryTCP == "" {
+		return false
+	}
+	if tc.PrimaryTCP == pos {
+		return true
+	}
+	for _, sp := range tc.SecondaryTCPs {
+		if sp.TCP == pos {
+			return true
+		}
+	}
+	return false
 }
 
 // OwnedPositions returns all positions controlled by this TCW (primary + all secondaries).

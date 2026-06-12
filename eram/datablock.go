@@ -422,23 +422,30 @@ func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 		assignedAltitude = track.FlightPlan.PerceivedAssigned
 	}
 	interimAltitude := track.FlightPlan.InterimAlt
-	formatCurrent := av.FormatScopeAltitude(currentAltitude)
-	formatAssigned := av.FormatScopeAltitude(assignedAltitude)
-	formatInterim := av.FormatScopeAltitude(interimAltitude)
+	formatScopeAltitude := func(alt int) string {
+		alt = int(alt+50) / 100
+		return string([]byte{
+			byte('0' + alt/100),
+			byte('0' + (alt/10)%10),
+			byte('0' + alt%10),
+		})
+	}
+	formatCurrent := formatScopeAltitude(int(currentAltitude))
+	formatAssigned := formatScopeAltitude(assignedAltitude)
+	formatInterim := formatScopeAltitude(interimAltitude)
 	if interimAltitude > 0 { // Interim alt takes precedence (i think) TODO: check this
 		intType := getInterimAltitudeType(track)
-		return fmt.Sprintf("%03v%s%03v", formatInterim, intType, formatCurrent)
+		return formatInterim + intType + formatCurrent
 	} else /* if assignedAltitude != -1 */ { // Eventually for block altitudes...
 		switch {
 		case formatCurrent == formatAssigned:
-			return fmt.Sprintf("%vC", formatCurrent)
+			return formatCurrent + "C"
 		case currentAltitude > float32(assignedAltitude) && assignedAltitude > -1: // TODO: Find actual font so that the up arrows draw
 			middle := util.Select(!state.ReachedAltitude, downArrow, "+")
-			return fmt.Sprintf("%v%v%v", formatAssigned, middle, formatCurrent)
+			return formatAssigned + middle + formatCurrent
 		case currentAltitude < float32(assignedAltitude):
 			middle := util.Select(!state.ReachedAltitude, upArrow, "+")
-			return fmt.Sprintf("%v%v%v", formatAssigned, middle, formatCurrent) // or maintaining
-
+			return formatAssigned + middle + formatCurrent // or maintaining
 		}
 	}
 	return "" // This shouldn't happen?
@@ -465,18 +472,20 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	var ldbs, eldbs, fdbs []sim.Track
-	for _, trk := range tracks {
+	ep.ldbIdx = ep.ldbIdx[:0]
+	ep.eldbIdx = ep.eldbIdx[:0]
+	ep.fdbIdx = ep.fdbIdx[:0]
+	for i, trk := range tracks {
 		if !ep.datablockVisible(ctx, trk) {
 			continue
 		}
 		switch ep.datablockType(ctx, trk) {
 		case FullDatablock:
-			fdbs = append(fdbs, trk)
+			ep.fdbIdx = append(ep.fdbIdx, i)
 		case EnhancedLimitedDatablock:
-			eldbs = append(eldbs, trk)
+			ep.eldbIdx = append(ep.eldbIdx, i)
 		default:
-			ldbs = append(ldbs, trk)
+			ep.ldbIdx = append(ep.ldbIdx, i)
 		}
 	}
 
@@ -484,8 +493,9 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 	halfSeconds := time.Now().UnixMilli() / 500
 	ps := ep.currentPrefs()
 
-	draw := func(tracks []sim.Track) {
-		for _, trk := range tracks {
+	draw := func(indices []int) {
+		for _, i := range indices {
+			trk := &tracks[i]
 			db := dbs[trk.ADSBCallsign]
 			if db == nil {
 				continue
@@ -494,7 +504,7 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 			if state == nil {
 				continue
 			}
-			dbType := ep.datablockType(ctx, trk)
+			dbType := ep.datablockType(ctx, *trk)
 			var sz int
 			if dbType == FullDatablock {
 				sz = ps.FDBSize
@@ -503,7 +513,7 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 			}
 			font := ep.ERAMFont(sz)
 			start := transforms.WindowFromLatLongP(state.Track.Location)
-			dir := ep.leaderLineDirection(ctx, trk)
+			dir := ep.leaderLineDirection(ctx, *trk)
 			lengthMode := state.LeaderLineLength
 
 			// For mode 0, restrict to W/E only
@@ -537,9 +547,9 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 		}
 	}
 
-	for _, blocks := range [][]sim.Track{ldbs, eldbs, fdbs} {
-		draw(blocks)
-	}
+	draw(ep.ldbIdx)
+	draw(ep.eldbIdx)
+	draw(ep.fdbIdx)
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)

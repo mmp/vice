@@ -166,6 +166,11 @@ type ERAMPane struct {
 	commandMode       CommandMode     `json:"-"`
 	drawRouteAircraft av.ADSBCallsign `json:"-"`
 	drawRoutePoints   []math.Point2LL `json:"-"`
+
+	// Per-frame scratch buffers, reused across Draw calls to avoid
+	// allocations.
+	visibleTracks           []sim.Track `json:"-"`
+	fdbIdx, ldbIdx, eldbIdx []int       `json:"-"`
 }
 
 func NewERAMPane() *ERAMPane {
@@ -309,7 +314,8 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	ps := ep.currentPrefs()
 
-	tracks := ep.visibleTracks(ctx)
+	ep.updateVisibleTracks(ctx)
+	tracks := ep.visibleTracks
 	ep.updateRadarTracks(ctx, tracks)
 
 	// draw the ERAMPane
@@ -346,13 +352,13 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
 	ep.datablockInteractions(ctx, tracks, transforms, cb)
 	ep.drawCRRFixes(ctx, transforms, cb)
-	ep.drawCRRDistances(ctx, transforms, cb)
+	ep.drawCRRDistances(ctx, tracks, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
 	ep.drawQULines(ctx, transforms, cb)
 	// Draw clock
 	ep.drawClock(ctx, transforms, cb)
 	// Draw views
-	ep.drawCRRView(ctx, transforms, cb)
+	ep.drawCRRView(ctx, tracks, transforms, cb)
 	// Draw toolbar and menus on top of the scope
 	cb.SetScissorBounds(ctx.PaneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawtoolbar(ctx, transforms, cb)
@@ -805,6 +811,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
+	var solidLineBuf [][2]float32 // reuse across all lines/maps
 
 	for _, vm := range ep.allVideoMaps {
 		if _, ok := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)]; !ok {
@@ -814,10 +821,11 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 		for _, line := range vm.Lines {
 			color := bcgRGB[line.BCGIndex]
 			if line.Style == av.LineStyleSolid {
-				fl := util.MapSlice(line.Points, func(p math.Point2LL) [2]float32 {
-					return transforms.WindowFromLatLongP(p)
-				})
-				ld.AddLineStrip(fl, color)
+				solidLineBuf = solidLineBuf[:0]
+				for _, p := range line.Points {
+					solidLineBuf = append(solidLineBuf, transforms.WindowFromLatLongP(p))
+				}
+				ld.AddLineStrip(solidLineBuf, color)
 			} else {
 				pattern := dashPatternPixels(line.Style)
 				if pattern == nil {

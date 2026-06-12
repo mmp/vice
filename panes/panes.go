@@ -283,8 +283,8 @@ func (ctx *Context) TCWIsPrivileged(tcw sim.TCW) bool {
 // UserWasRedirector returns true if any of the user's controlled positions
 // are in the given redirector list.
 func (ctx *Context) UserWasRedirector(redirectors []sim.ControlPosition) bool {
-	for _, pos := range ctx.Client.State.GetPositionsForTCW(ctx.UserTCW) {
-		if slices.Contains(redirectors, pos) {
+	for _, pos := range redirectors {
+		if ctx.Client.State.TCWControlsPosition(ctx.UserTCW, pos) {
 			return true
 		}
 	}

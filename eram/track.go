@@ -198,7 +198,8 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 
 		// check to see if the a/c has reached the altitude
 		if trk.IsAssociated() {
-			if av.FormatScopeAltitude(state.Track.TransponderAltitude) == av.FormatScopeAltitude(trk.FlightPlan.AssignedAltitude) {
+			qalt := func(alt float32) int { return int(alt+50) / 100 }
+			if qalt(state.Track.TransponderAltitude) == qalt(float32(trk.FlightPlan.AssignedAltitude)) {
 				state.ReachedAltitude = true
 			}
 		}
@@ -337,17 +338,16 @@ func (ep *ERAMPane) trackColor() renderer.RGB {
 	return bright.ScaleRGB(ERAMYellow)
 }
 
-func (ep *ERAMPane) visibleTracks(ctx *panes.Context) []sim.Track { // When radar holes are added
+func (ep *ERAMPane) updateVisibleTracks(ctx *panes.Context) { // When radar holes are added
 	// Get the visible tracks based on the current range and center.
-	var tracks []sim.Track
+	ep.visibleTracks = ep.visibleTracks[:0]
 	for _, trk := range ctx.Client.State.Tracks {
 		// Radar wholes neeeded for this. For now, return true
 		if trk.TransponderAltitude <= 49 {
 			continue
 		}
-		tracks = append(tracks, *trk)
+		ep.visibleTracks = append(ep.visibleTracks, *trk)
 	}
-	return tracks
 }
 
 // datablockBrightness returns the configured brightness for the given track's

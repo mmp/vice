@@ -146,7 +146,7 @@ func resolveAircraftTokens(ctx *panes.Context, s string) []av.ADSBCallsign {
 }
 
 // drawCRRView renders the Continuous Range Readout view.
-func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.CRR.Visible {
 		return
@@ -179,7 +179,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 
 	// Build quick lookup of current aircraft positions (needed for content calculation)
 	trackPos := make(map[av.ADSBCallsign]math.Point2LL)
-	for _, trk := range ep.visibleTracks(ctx) {
+	for _, trk := range tracks {
 		trackPos[trk.ADSBCallsign] = trk.Location
 	}
 
@@ -839,7 +839,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 // drawCRRDistances draws CRR distance values next to aircraft tags for aircraft
 // that are members of CRR groups. The distance is displayed in the color of the
 // CRR group the aircraft belongs to.
-func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if ep.CRRGroups == nil || len(ep.CRRGroups) == 0 {
 		return
@@ -852,7 +852,7 @@ func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeT
 	}
 	acCRR := make(map[av.ADSBCallsign]crrEntry)
 
-	for _, trk := range ep.visibleTracks(ctx) {
+	for _, trk := range tracks {
 		for _, g := range ep.CRRGroups {
 			if _, ok := g.Aircraft[trk.ADSBCallsign]; ok {
 				trkState := ep.TrackState[trk.ADSBCallsign]
@@ -872,7 +872,7 @@ func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeT
 
 	font := ep.ERAMFont(ps.FDBSize)
 
-	for _, trk := range ep.visibleTracks(ctx) {
+	for _, trk := range tracks {
 		entry, ok := acCRR[trk.ADSBCallsign]
 		if !ok {
 			continue
