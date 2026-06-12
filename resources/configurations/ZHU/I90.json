@@ -110,6 +110,11 @@
       "frequency": 118650,
       "radio_name": "Sugar Land Tower"
     },
+    "4X": {
+      "callsign": "EFD_TWR",
+      "frequency": 126050,
+      "radio_name": "Elington Tower"
+    },
     "4Q": {
       "callsign": "DWH_TWR",
       "frequency": 118400,
@@ -134,11 +139,16 @@
       "callsign": "GLS_TWR",
       "frequency": 120575,
       "radio_name": "Galveston Tower"
+    },
+    "ET": {
+      "callsign": "TME_TWR",
+      "frequency": 126975,
+      "radio_name": "Executive Tower"
     }
   },
   "facility_adaptations": {
     "configurations": {
-      "STD": {
+      "SDS": {
         "inbound_assignments": {
           "BAYYY5": "1G",
           "BELLR6": "1X",
@@ -163,6 +173,9 @@
           "WAPPL7": "1D"
         },
         "departure_assignments": {
+          "KCXO": "1R",
+          "KDWH": "1P",
+          "KEFD": "1P",
           "KGLS": "1B",
           "KHOU/BLTWY7": "1M",
           "KHOU/INDIE8": "1M",
@@ -174,6 +187,7 @@
           "KHOU/PTRON9": "1L",
           "KHOU/PEECE6": "1L",
           "KHOU/ELOCO6": "1L",
+          "KHOU/HOODO7": "1L",
           "KIAH/BLTWY7": "1M",
           "KIAH/INDIE8": "1M",
           "KIAH/LURIC8": "1M",
@@ -186,6 +200,73 @@
           "KIAH/GUMBY3": "1L",
           "KIAH/RITAA7": "1L",
           "KIAH/FLYZA5": "1L",
+          "KTME": "1P",
+          "KSGR": "1P"
+        },
+        "default_consolidation": {
+          "1D": ["1M", "1G", "1N", "1A"],
+          "1N": ["1X"],
+          "1M": ["1W", "1R"],
+          "1W": ["1P", "1L"],
+          "1L": ["1E", "1B"],
+          "1A": ["1I"],
+          "1I": ["1O"],
+          "1X": ["1H"]
+        }
+      },
+      "SDN": {
+        "inbound_assignments": {
+          "BAYYY5": "1G",
+          "BELLR6": "1X",
+          "CESAN4": "1D",
+          "DOOBI3": "1D",
+          "ZEEKK3": "1D",
+          "DRLLR5": "1N",
+          "GESNR2": "1D",
+          "GUSHR3": "1N",
+          "HTOWN3": "1X",
+          "KIDDZ5": "1X",
+          "LINKK1": "1G",
+          "MSCOT4": "1N",
+          "NNCEE2": "1G",
+          "PUCKS4": "1G",
+          "SKNRD5": "1D",
+          "SNDAY1": "1X",
+          "TEJAS5": "1X",
+          "TKNIQ3": "1X",
+          "TSHRT2": "1X",
+          "TTORO3": "1N",
+          "WAPPL7": "1D"
+        },
+        "departure_assignments": {
+          "KCXO": "1R",
+          "KDWH": "1R",
+          "KEFD": "1P",
+          "KGLS": "1B",
+          "KHOU/BLTWY7": "1M",
+          "KHOU/INDIE8": "1M",
+          "KHOU/LURIC8": "1M",
+          "KHOU/WYLSN8": "1M",
+          "KHOU/STRYA8": "1M",
+          "KHOU/STYCK8": "1M",
+          "KHOU/RETYR8": "1W",
+          "KHOU/PTRON9": "1L",
+          "KHOU/PEECE6": "1L",
+          "KHOU/ELOCO6": "1L",
+          "KHOU/HOODO7": "1L",
+          "KIAH/BLTWY7": "1M",
+          "KIAH/INDIE8": "1M",
+          "KIAH/LURIC8": "1M",
+          "KIAH/STRYA8": "1M",
+          "KIAH/STYCK8": "1M",
+          "KIAH/WYLSN8": "1M",
+          "KIAH/BNDTO6": "1W",
+          "KIAH/PITZZ5": "1W",
+          "KIAH/MMUGS4": "1L",
+          "KIAH/GUMBY3": "1L",
+          "KIAH/RITAA7": "1L",
+          "KIAH/FLYZA5": "1L",
+          "KTME": "1P",
           "KSGR": "1P"
         },
         "default_consolidation": {
@@ -219,12 +300,39 @@
     },
     "center": "KIAH",
     "radar_sites": {
-      "I90": {
-        "char": "A",
-        "position": "KIAH",
+      "IAH": {
+        "char": "I",
+        "position": "N029.59.54.925,W095.21.12.299",
+        "elevation": 175,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.3
+      },
+      "HUB": {
+        "char": "H",
+        "position": "N029.37.05.500,W095.16.14.350",
         "elevation": 96,
-        "primary_range": 150,
-        "secondary_range": 200,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.3
+      },
+      "BNH": {
+        "char": "H",
+        "position": "N030.13.38.920,W096.22.45.170",
+        "elevation": 389,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.3
+      },
+      "BPT": {
+        "char": "T",
+        "position": "N029.56.49.270,W094.01.44.110",
+        "elevation": 79,
+        "primary_range": 60,
+        "secondary_range": 120,
         "silence_angle": 30,
         "slope_angle": 0.3
       }
@@ -457,20 +565,35 @@
           "WEST FLOW SECTOR MARKINGS",
           "I90 ROADS",
           "I90 CLASS B",
-          "I90 MVA FUS 3",
           "IAH FINAL EAST FLOW",
-          "IAH FINAL EAST FLOW ALT",
           "IAH FINAL WEST FLOW",
-          "IAH FINAL WEST FLOW ALT",
+          "IAH FINAL E-W FLOW",
+          "IAH 15 FLOW",
+          "IAH 33 FLOW",
           "HOU FINAL 4",
+          "HOU FINAL 22",
+          "HOU FINAL EAST HOU 13",
+          "HOU FINAL WEST-15-33 HOU 13",
+          "HOU FINAL 31",
+          "EAST FLOW ILS TRANSITIONS STARS",
+          "WEST FLOW ILS TRANSITIONS STARS",
+          "EAST FLOW RNP FIXES",
+          "WEST FLOW RNP FIXES",
+          "CLASS D AIRPORTS",
+          "IAH FINAL EAST FLOW ALT",
+          "IAH FINAL WEST FLOW ALT",
+          "IAH FINAL E-W FLOW ALT",
+          "IAH 15 FLOW ALT",
+          "IAH 33 FLOW ALT",
+          "HOU FINAL 4 ALT",
+          "HOU FINAL 22 ALT",
           "HOU FINAL EAST HOU 13 ALT",
           "HOU FINAL WEST-15-33 HOU 13 ALT",
-          "CLASS D AIRPORTS",
-          "BPT EAST 15-33 HOU ALL",
-          "BPT WEST-15 HOU ALL",
-          "CLL-IDU EAST HOU ALL",
-          "CLL-IDU WEST-15-33 HOU ALL",
-          "DWH FINAL"
+          "HOU FINAL 31 ALT",
+          "EAST FLOW ILS TRANSITIONS LINES",
+          "WEST FLOW ILS TRANSITIONS LINES",
+          "EAST FLOW RNP LINES",
+          "WEST FLOW RNP LINES"
         ]
       }
     },
@@ -478,6 +601,48 @@
       "clock_phase": {
         "sequence": [1, 2, 1, 3],
         "intervals": [1, 1, 1, 1]
+      }
+    },
+    "lists": {
+      "coordination": [
+        {
+          "name": "BEAUMONT",
+          "id": "BPT",
+          "airports": ["KBPT"]
+        },
+        {
+          "name": "COLLEGE STATION",
+          "id": "CLL",
+          "airports": ["KCLL"]
+        },
+        {
+          "name": "CONROE",
+          "id": "CXO",
+          "airports": ["KCXO"]
+        },
+        {
+          "name": "HOOKS",
+          "id": "DWH",
+          "airports": ["KDWH"]
+        },
+        {
+          "name": "ELINGTON",
+          "id": "EFD",
+          "airports": ["KEFD"]
+        },
+        {
+          "name": "GALVESTON",
+          "id": "GLS",
+          "airports": ["KGLS"]
+        },
+        {
+          "name": "SUGAR LAND",
+          "id": "SGR",
+          "airports": ["KSGR"]
+        }
+      ],
+      "ssa": {
+        "altimeters": ["KIAH", "KHOU", "KBPT", "KCLL"]
       }
     }
   },

@@ -22,3 +22,5 @@
   - Updated video map file format: this makes it possible to fix a number of bugs with handling maps with conflicting STARS ids
   
 - New scenario: ZJX West combined (manaphy)
+- Scenario updates: I90 (Ethan Hawes)
+
