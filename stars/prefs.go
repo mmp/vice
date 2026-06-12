@@ -17,7 +17,10 @@ import (
 	"github.com/brunoga/deep"
 )
 
-const numSavedPreferenceSets = 32
+const (
+	numSavedPreferenceSets = 32
+	defaultSTARSRange      = 50
+)
 
 // PreferenceSet stores the currently active preferences and up to
 // numSavedPreferenceSets saved preferences; STARSPane keeps a separate
@@ -43,6 +46,9 @@ func (p *PreferenceSet) Upgrade(from, to int) {
 func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *STARSPane) {
 	// Make sure we don't alias slices, maps, etc.
 	p.Current = deep.MustCopy(cur)
+	if p.Current.Range == 0 {
+		p.Current.Range = defaultSTARSRange
+	}
 
 	// Slightly annoying, but we need to let the Platform know the audio
 	// volume from the prefs.
@@ -285,11 +291,7 @@ func (p *Preferences) Reset(ss client.SimState, sp *STARSPane) {
 	p.UseUserCenter = false
 	p.RangeRingsUserCenter = p.DefaultCenter
 	p.UseUserRangeRingsCenter = false
-	if r := ss.GetInitialRange(); r != 0 {
-		p.Range = r
-	} else {
-		p.Range = 50
-	}
+	p.Range = initialSTARSRange(ss)
 	p.QuickLookTCPs = nil
 	p.DisabledQLRegions = nil
 
@@ -446,6 +448,9 @@ func (p *Preferences) Duplicate() *Preferences {
 }
 
 func (p *Preferences) Activate(pl platform.Platform, sp *STARSPane) {
+	if p.Range == 0 {
+		p.Range = defaultSTARSRange
+	}
 	pl.SetAudioVolume(p.AudioVolume)
 
 	if p.VideoMapVisible == nil {
@@ -457,6 +462,13 @@ func (p *Preferences) Activate(pl platform.Platform, sp *STARSPane) {
 	for len(p.AudioEffectEnabled) < AudioNumTypes {
 		p.AudioEffectEnabled = append(p.AudioEffectEnabled, false)
 	}
+}
+
+func initialSTARSRange(ss client.SimState) float32 {
+	if r := ss.GetInitialRange(); r != 0 {
+		return r
+	}
+	return defaultSTARSRange
 }
 
 func (p *Preferences) Upgrade(from, to int) {
@@ -626,6 +638,9 @@ func (sp *STARSPane) initPrefsForLoadedSim(ss client.SimState, pl platform.Platf
 	// Cache the PreferenceSet for use throughout the rest of the STARSPane
 	// methods.
 	sp.prefSet = prefSet
+	if sp.prefSet.Current.Range == 0 {
+		sp.prefSet.Current.Range = initialSTARSRange(ss)
+	}
 	sp.prefSet.Current.Activate(pl, sp)
 }
 
