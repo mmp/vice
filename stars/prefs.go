@@ -285,7 +285,11 @@ func (p *Preferences) Reset(ss client.SimState, sp *STARSPane) {
 	p.UseUserCenter = false
 	p.RangeRingsUserCenter = p.DefaultCenter
 	p.UseUserRangeRingsCenter = false
-	p.Range = ss.GetInitialRange()
+	if r := ss.GetInitialRange(); r != 0 {
+		p.Range = r
+	} else {
+		p.Range = 50
+	}
 	p.QuickLookTCPs = nil
 	p.DisabledQLRegions = nil
 

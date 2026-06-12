@@ -408,9 +408,6 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		}
 	}
 
-	if fa.Range == 0 {
-		fa.Range = 50
-	}
 	if fa.Datablocks.FDB.AcceptFlashDuration == 0 {
 		fa.Datablocks.FDB.AcceptFlashDuration = 5
 	}
