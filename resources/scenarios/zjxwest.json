@@ -1,7 +1,7 @@
 {
   "artcc": "ZJX",
   "area": "West Area",
-  "name": "ZJX 11 Brewton+21",
+  "name": "ZJX West Area Combined",
   "airports": {
     "KPNS": {
       "approaches": {
@@ -502,47 +502,71 @@
     },
     "KMCO": {
       "approaches": {
-        "R8R": { "cifp_id": "RY18R" }
+        "I7L": { "cifp_id": "I17L" },
+        "RY7L": { "cifp_id": "RY17L" },
+        "RZ7L": { "cifp_id": "RZ17L" },
+        "I7R": { "cifp_id": "I17R" },
+        "R7R": { "cifp_id": "R17R" },
+        "R8L": { "cifp_id": "R18L" },
+        "I8R": { "cifp_id": "I18R" },
+        "RY8R": { "cifp_id": "RY18R" },
+        "RZ8R": { "cifp_id": "RZ18R" },
+        "I5L": { "cifp_id": "I35L" },
+        "R5L": { "cifp_id": "R35L" },
+        "I5R": { "cifp_id": "I35R" },
+        "RY5R": { "cifp_id": "RY35R" },
+        "RZ5R": { "cifp_id": "RZ35R" },
+        "RY6L": { "cifp_id": "RY36L" },
+        "RZ6L": { "cifp_id": "RZ36L" },
+        "I6L": { "cifp_id": "I36L" },
+        "I6R": { "cifp_id": "I36R" },
+        "R6R": { "cifp_id": "R36R" }
+      }
+    },
+    "KSFB": {
+      "approaches": {
+        "I9L": { "cifp_id": "I9L" },
+        "R9L": { "cifp_id": "R9L" },
+        "I9R": { "cifp_id": "I9R" },
+        "R9R": { "cifp_id": "R9R" },
+        "I7R": { "cifp_id": "I27R" },
+        "R7R": { "cifp_id": "R27R" },
+        "R7L": { "cifp_id": "R27L" }
+      }
+    },
+    "KMLB": {
+      "approaches": {
+        "I9R": { "cifp_id": "I9R" },
+        "R7L": { "cifp_id": "R27L" },
+        "R7R": { "cifp_id": "R27R" },
+        "R9L": { "cifp_id": "R9L" },
+        "R9R": { "cifp_id": "R9R" }
       }
     },
     "KTPA": {
       "approaches": {
+        "I9L": { "cifp_id": "I19L" },
         "I9R": { "cifp_id": "I19R" }
       }
     },
     "KSRQ": {
       "approaches": {
-        "I14": { "cifp_id": "I14" }
+        "I14": { "cifp_id": "I14" },
+        "R14": { "cifp_id": "R14" }
       }
     },
-    "KRSW": {
+    "KPIE": {
       "approaches": {
-        "R24": { "cifp_id": "RY24" }
+        "I18": { "cifp_id": "I18" },
+        "R18": { "cifp_id": "R18" }
       }
     },
-    "KEYW": {
-      "approaches": {
-        "R9": { "cifp_id": "R9" }
-      }
-    },
-    "KMIA": {
-      "approaches": {
-        "I8R": { "cifp_id": "I8R" }
-      }
-    },
-    "KFLL": {
-      "approaches": {
-        "I0L": { "cifp_id": "I10L" }
-      }
-    },
-    "KPBI": {
-      "approaches": {
-        "I0L": { "cifp_id": "I10L" }
-      }
-    },
-    "KJAX": {
-      "approaches": { "I8": { "cifp_id": "IY8" } }
-    }
+    "KRSW": { "approaches": { "R24": { "cifp_id": "RY24" } } },
+    "KEYW": { "approaches": { "R9": { "cifp_id": "R9" } } },
+    "KMIA": { "approaches": { "I8R": { "cifp_id": "I8R" } } },
+    "KFLL": { "approaches": { "I0L": { "cifp_id": "I10L" } } },
+    "KPBI": { "approaches": { "I0L": { "cifp_id": "I10L" } } },
+    "KJAX": { "approaches": { "I8": { "cifp_id": "IY8" } } }
   },
   "inbound_flows": {
     "DEFUN": {
@@ -559,7 +583,7 @@
           "assigned_altitude": 36000,
           "initial_controller": "17",
           "initial_speed": 440,
-          "waypoints": "JAWJA CABLO HO1/ho DEFUN CEW J50 MCB/delete"
+          "waypoints": "JAWJA CABLO N030.47.11.197,W085.13.33.867/ho DEFUN CEW J50 MCB/delete"
         }
       ]
     },
@@ -592,7 +616,7 @@
           "assigned_altitude": 38000,
           "initial_controller": "34",
           "initial_speed": 440,
-          "waypoints": "CABLO HO1/ho CEW J2 SJI/delete"
+          "waypoints": "CABLO N030.47.11.197,W085.13.33.867/ho CEW J2 SJI/delete"
         },
         {
           "airlines": [
@@ -606,7 +630,7 @@
           "assigned_altitude": 34000,
           "initial_controller": "34",
           "initial_speed": 440,
-          "waypoints": "CABLO HO1/ho DEFUN J2 SJI/delete"
+          "waypoints": "CABLO N030.47.11.197,W085.13.33.867/ho DEFUN J2 SJI/delete"
         },
         {
           "airlines": [
@@ -620,7 +644,7 @@
           "assigned_altitude": 34000,
           "initial_controller": "34",
           "initial_speed": 440,
-          "waypoints": "CAPPS SZW HO2/ho CEW J2 SJI GPT/delete"
+          "waypoints": "CAPPS SZW N030.38.27.472,W085.05.51.150/ho CEW J2 SJI GPT/delete"
         },
         {
           "airlines": [
@@ -634,7 +658,7 @@
           "assigned_altitude": 34000,
           "initial_controller": "17",
           "initial_speed": 440,
-          "waypoints": "CABLO HO1/ho DEFUN J2 SJI/delete"
+          "waypoints": "CABLO N030.47.11.197,W085.13.33.867/ho DEFUN J2 SJI/delete"
         },
         {
           "airlines": [
@@ -648,7 +672,7 @@
           "assigned_altitude": 28000,
           "initial_controller": "17",
           "initial_speed": 440,
-          "waypoints": "JAWJA CABLO HO1/ho DEFUN J2 CEW ERNON/delete"
+          "waypoints": "JAWJA CABLO N030.47.11.197,W085.13.33.867/ho DEFUN J2 CEW ERNON/delete"
         }
       ]
     },
@@ -669,7 +693,7 @@
         }
       ]
     },
-    "MAATY5 (DEFUN)": {
+    "DEFUN.MAATY5": {
       "overflights": [
         {
           "airlines": [
@@ -741,7 +765,7 @@
         }
       ]
     },
-    "BANGZ2 (DEFUN)": {
+    "DEFUN.BANGZ2": {
       "overflights": [
         {
           "airlines": [
@@ -764,7 +788,7 @@
         }
       ]
     },
-    "FROGZ4 (DEFUN)": {
+    "DEFUN.FROGZ5": {
       "overflights": [
         {
           "airlines": [
@@ -806,7 +830,7 @@
         }
       ]
     },
-    "GRNCH5 (DEFUN)": {
+    "DEFUN.GRNCH5": {
       "overflights": [
         {
           "airlines": [
@@ -924,7 +948,7 @@
         }
       ]
     },
-    "MARQO3 (CATLN)": {
+    "CATLN.MARQO3": {
       "overflights": [
         {
           "airlines": [
@@ -962,7 +986,7 @@
         }
       ]
     },
-    "MARQO3 (DEFUN)": {
+    "DEFUN.MARQO3": {
       "overflights": [
         {
           "airlines": [
@@ -1101,7 +1125,7 @@
     "CABLO": {
       "arrivals": [
         {
-          "waypoints": "CABLO HO1/ho DEFUN PENSI KPNS/delete",
+          "waypoints": "CABLO N030.47.11.197,W085.13.33.867/ho DEFUN PENSI KPNS/delete",
           "cruise_altitude": 30000,
           "route": "CABLO DEFUN PENSI",
           "initial_controller": "17",
@@ -1119,7 +1143,7 @@
           }
         },
         {
-          "waypoints": "CABLO HO1/ho DEFUN CORKY KVPS/delete",
+          "waypoints": "CABLO N030.47.11.197,W085.13.33.867/ho DEFUN CORKY KVPS/delete",
           "cruise_altitude": 36000,
           "route": "CABLO DEFUN CORKY",
           "initial_altitude": 36000,
@@ -1153,39 +1177,362 @@
           }
         }
       ]
+    },
+    "Y280/Q100 (West)": {
+      "overflights": [
+        {
+          "airlines": [
+            { "departure_airport": "KMCO", "arrival_airport": "MMMY", "icao": "VIV" },
+            { "departure_airport": "KMCO", "arrival_airport": "KSAN", "icao": "ASA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KSAN", "icao": "SWA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KSFO", "icao": "ASA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KSFO", "icao": "UAL" },
+            { "departure_airport": "KMCO", "arrival_airport": "KSFO", "icao": "VJA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KDFW", "icao": "AAL" },
+            { "departure_airport": "KMCO", "arrival_airport": "KDFW", "icao": "FFT" },
+            { "departure_airport": "KMCO", "arrival_airport": "KDFW", "icao": "NKS" },
+            { "departure_airport": "KMCO", "arrival_airport": "KDFW", "icao": "UPS" },
+            { "departure_airport": "KMCO", "arrival_airport": "KLAX", "icao": "DAL" },
+            { "departure_airport": "KMCO", "arrival_airport": "KLAX", "icao": "AAL" },
+            { "departure_airport": "KMCO", "arrival_airport": "KLAX", "icao": "FFT" },
+            { "departure_airport": "KMCO", "arrival_airport": "KLAX", "icao": "UAL" },
+            { "departure_airport": "KMCO", "arrival_airport": "KLAX", "icao": "SWA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KPHX", "icao": "FFT" },
+            { "departure_airport": "KMCO", "arrival_airport": "KPHX", "icao": "SWA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KPHX", "icao": "AAL" },
+            { "departure_airport": "KMCO", "arrival_airport": "KMSY", "icao": "SWA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KMSY", "icao": "NKS" },
+            { "departure_airport": "KMCO", "arrival_airport": "KMSY", "icao": "MXY" },
+            { "departure_airport": "KMCO", "arrival_airport": "KMSY", "icao": "FFT" },
+            { "departure_airport": "KMCO", "arrival_airport": "KPVU", "icao": "MXY" },
+            { "departure_airport": "KMCO", "arrival_airport": "KAUS", "icao": "SWA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KAUS", "icao": "DAL" },
+            { "departure_airport": "KMCO", "arrival_airport": "KAUS", "icao": "NKS" },
+            { "departure_airport": "KMCO", "arrival_airport": "KIAH", "icao": "FFT" },
+            { "departure_airport": "KMCO", "arrival_airport": "KIAH", "icao": "UAL" },
+            { "departure_airport": "KMCO", "arrival_airport": "KIAH", "icao": "NKS" },
+            { "departure_airport": "KMCO", "arrival_airport": "KLAS", "icao": "SWA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KLAS", "icao": "FFT" },
+            { "departure_airport": "KMCO", "arrival_airport": "KLAS", "icao": "JBU" },
+            { "departure_airport": "KMCO", "arrival_airport": "KSAT", "icao": "SWA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KSAT", "icao": "NKS" },
+            { "departure_airport": "KMCO", "arrival_airport": "KHOU", "icao": "SWA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KHOU", "icao": "DAL" },
+            { "departure_airport": "KMCO", "arrival_airport": "KSMF", "icao": "SWA" },
+            { "departure_airport": "KMCO", "arrival_airport": "KSLC", "icao": "DAL" },
+            { "departure_airport": "KMCO", "arrival_airport": "KSLC", "icao": "FFT" },
+            { "departure_airport": "KMIA", "arrival_airport": "KIAH", "icao": "AAL" },
+            { "departure_airport": "KMIA", "arrival_airport": "KIAH", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KMIA", "arrival_airport": "KIAH", "icao": "FFT" },
+            { "departure_airport": "KMIA", "arrival_airport": "KIAH", "icao": "UAL" },
+            { "departure_airport": "KMIA", "arrival_airport": "KIAH", "icao": "NKS" },
+            { "departure_airport": "KMIA", "arrival_airport": "KIAH", "icao": "CPA" },
+            { "departure_airport": "KMIA", "arrival_airport": "KIAH", "icao": "RPA" },
+            { "departure_airport": "KMIA", "arrival_airport": "KIAH", "icao": "ENY" },
+            { "departure_airport": "KMIA", "arrival_airport": "KIAH", "icao": "GTI" },
+            { "departure_airport": "KMIA", "arrival_airport": "KHOU", "icao": "SWA" },
+            { "departure_airport": "KMIA", "arrival_airport": "KHOU", "icao": "EJM" },
+            { "departure_airport": "KMIA", "arrival_airport": "KHOU", "icao": "EJA" },
+            { "departure_airport": "KMIA", "arrival_airport": "KHOU", "icao": "SWA" },
+            { "departure_airport": "KFLL", "arrival_airport": "KIAH", "icao": "FFT" },
+            { "departure_airport": "KFLL", "arrival_airport": "KIAH", "icao": "UAL" },
+            { "departure_airport": "KFLL", "arrival_airport": "KIAH", "icao": "NKS" },
+            { "departure_airport": "KEYW", "arrival_airport": "KIAH", "icao": "ASH" },
+            { "departure_airport": "KTPA", "arrival_airport": "KIAH", "icao": "UAL" },
+            { "departure_airport": "KTPA", "arrival_airport": "KIAH", "icao": "FFT" },
+            { "departure_airport": "KTPA", "arrival_airport": "KHOU", "icao": "SWA" },
+            { "departure_airport": "KTPA", "arrival_airport": "KHOU", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KTPA", "arrival_airport": "KMSY", "icao": "SWA" },
+            { "departure_airport": "KTPA", "arrival_airport": "KMSY", "icao": "MXY" },
+            { "departure_airport": "KTPA", "arrival_airport": "KMSY", "icao": "NKS" }
+          ],
+          "initial_altitude": 25000,
+          "assigned_altitude": 34000,
+          "initial_controller": "R25",
+          "initial_speed": 350,
+          "waypoints": "N027.48.44.814,W084.49.50.313/ho REMIS Y280 REDFN/delete",
+          "flight_type": "departure"
+        }
+      ]
+    },
+    "Y290/Q102 (West)": {
+      "overflights": [
+        {
+          "airlines": [
+            { "departure_airport": "KTPA", "arrival_airport": "KIAH", "icao": "UAL" },
+            { "departure_airport": "KTPA", "arrival_airport": "KIAH", "icao": "FFT" },
+            { "departure_airport": "KRSW", "arrival_airport": "KIAH", "icao": "UAL" },
+            { "departure_airport": "KTPA", "arrival_airport": "KDFW", "icao": "AAL" },
+            { "departure_airport": "KTPA", "arrival_airport": "KDFW", "icao": "FFT" },
+            { "departure_airport": "KTPA", "arrival_airport": "KDFW", "icao": "UPS" },
+            { "departure_airport": "KTPA", "arrival_airport": "KPHX", "icao": "AAL" },
+            { "departure_airport": "KTPA", "arrival_airport": "KPHX", "icao": "SWA" },
+            { "departure_airport": "KTPA", "arrival_airport": "KMSY", "icao": "SWA" },
+            { "departure_airport": "KTPA", "arrival_airport": "KMSY", "icao": "MXY" },
+            { "departure_airport": "KTPA", "arrival_airport": "KMSY", "icao": "NKS" }
+          ],
+          "initial_altitude": 25000,
+          "assigned_altitude": 34000,
+          "initial_controller": "R25",
+          "initial_speed": 350,
+          "waypoints": "N027.30.36.811,W084.52.56.696/ho BACCA Y290 BLVNS N028.39.22.307,W088.44.59.972/delete",
+          "flight_type": "departure"
+        }
+      ]
+    },
+    "Y280 CHRGE.PRICY5": {
+      "overflights": [
+        {
+          "airlines": [
+            { "departure_airport": "MMMY", "arrival_airport": "KMCO", "icao": "VIV" },
+            { "departure_airport": "KSAN", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "KSAN", "arrival_airport": "KMCO", "icao": "ASA" },
+            { "departure_airport": "KDFW", "arrival_airport": "KMCO", "icao": "AAL" },
+            { "departure_airport": "KDFW", "arrival_airport": "KMCO", "icao": "FFT" },
+            { "departure_airport": "KDFW", "arrival_airport": "KMCO", "icao": "UPS" },
+            { "departure_airport": "KLAX", "arrival_airport": "KMCO", "icao": "AAL" },
+            { "departure_airport": "KLAX", "arrival_airport": "KMCO", "icao": "DAL" },
+            { "departure_airport": "KLAX", "arrival_airport": "KMCO", "icao": "UAL" },
+            { "departure_airport": "KLAX", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "KPHX", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "KPHX", "arrival_airport": "KMCO", "icao": "AAL" },
+            { "departure_airport": "KPHX", "arrival_airport": "KMCO", "icao": "MXY" },
+            { "departure_airport": "KBRO", "arrival_airport": "KMCO", "icao": "MXY" },
+            { "departure_airport": "KMSY", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "KMSY", "arrival_airport": "KMCO", "icao": "FFT" },
+            { "departure_airport": "KMSY", "arrival_airport": "KMCO", "icao": "MXY" },
+            { "departure_airport": "KMSY", "arrival_airport": "KMCO", "icao": "JTL" },
+            { "departure_airport": "KMSY", "arrival_airport": "KMCO", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KAUS", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "KAUS", "arrival_airport": "KMCO", "icao": "DAL" },
+            { "departure_airport": "KAUS", "arrival_airport": "KMCO", "icao": "EJA" },
+            { "departure_airport": "KAUS", "arrival_airport": "KMCO", "icao": "FFT" },
+            { "departure_airport": "KAUS", "arrival_airport": "KMCO", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KIAH", "arrival_airport": "KMCO", "icao": "FFT" },
+            { "departure_airport": "KIAH", "arrival_airport": "KMCO", "icao": "UAL" },
+            { "departure_airport": "KLAS", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "KLAS", "arrival_airport": "KMCO", "icao": "FFT" },
+            { "departure_airport": "KLAS", "arrival_airport": "KMCO", "icao": "JBU" },
+            { "departure_airport": "KSAT", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "KDAL", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "KDAL", "arrival_airport": "KMCO", "icao": "EJM" },
+            { "departure_airport": "KDAL", "arrival_airport": "KMCO", "icao": "JRE" },
+            { "departure_airport": "KHOU", "arrival_airport": "KMCO", "icao": "EJA" },
+            { "departure_airport": "KHOU", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "KSMF", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "KSFO", "arrival_airport": "KMCO", "icao": "UAL" },
+            { "departure_airport": "KSFO", "arrival_airport": "KMCO", "icao": "ASA" }
+          ],
+          "initial_altitude": 37000,
+          "initial_controller": "H72",
+          "initial_speed": 450,
+          "waypoints": "REDFN/ho Y280 CHRGE DAAWG CHIVE/a26000-/a24000+ DECKS/a21000+ BULKS/a20000-/a19000+/s280 PRICY/a16000-/a13000+/s250/delete",
+          "flight_type": "arrival"
+        }
+      ]
+    },
+    "Y280 CHRGE.RAYZZ3": {
+      "overflights": [
+        {
+          "airlines": [
+            { "departure_airport": "KSAN", "arrival_airport": "KTPA", "icao": "ASA" },
+            { "departure_airport": "KSAN", "arrival_airport": "KTPA", "icao": "SWA" },
+            { "departure_airport": "KSFO", "arrival_airport": "KTPA", "icao": "UAL" },
+            { "departure_airport": "KDFW", "arrival_airport": "KTPA", "icao": "AAL" },
+            { "departure_airport": "KDFW", "arrival_airport": "KTPA", "icao": "UPS" },
+            { "departure_airport": "KDFW", "arrival_airport": "KTPA", "icao": "FFT" },
+            { "departure_airport": "KDFW", "arrival_airport": "KTPA", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KPHX", "arrival_airport": "KTPA", "icao": "SWA" },
+            { "departure_airport": "KPHX", "arrival_airport": "KTPA", "icao": "AAL" },
+            { "departure_airport": "KMSY", "arrival_airport": "KTPA", "icao": "SWA" },
+            { "departure_airport": "KMSY", "arrival_airport": "KTPA", "icao": "MXY" },
+            { "departure_airport": "KSNA", "arrival_airport": "KTPA", "icao": "TCN" },
+            { "departure_airport": "KAUS", "arrival_airport": "KTPA", "icao": "DAL" },
+            { "departure_airport": "KAUS", "arrival_airport": "KTPA", "icao": "SWA" },
+            { "departure_airport": "KAUS", "arrival_airport": "KTPA", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KLAX", "arrival_airport": "KTPA", "icao": "DAL" },
+            { "departure_airport": "KLAX", "arrival_airport": "KTPA", "icao": "UAL" },
+            { "departure_airport": "KLAX", "arrival_airport": "KTPA", "icao": "SWA" },
+            { "departure_airport": "KLAX", "arrival_airport": "KTPA", "icao": "EJA" },
+            { "departure_airport": "KDAL", "arrival_airport": "KTPA", "icao": "SWA" },
+            { "departure_airport": "KDAL", "arrival_airport": "KTPA", "icao": "EJA" },
+            { "departure_airport": "KDAL", "arrival_airport": "KTPA", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KHOU", "arrival_airport": "KTPA", "icao": "SWA" },
+            { "departure_airport": "KHOU", "arrival_airport": "KTPA", "icao": "EJA" },
+            { "departure_airport": "KHOU", "arrival_airport": "KTPA", "icao": "JRE" },
+            { "departure_airport": "KLAS", "arrival_airport": "KTPA", "icao": "SWA" },
+            { "departure_airport": "KLAS", "arrival_airport": "KTPA", "icao": "UAL" },
+            { "departure_airport": "KLAS", "arrival_airport": "KTPA", "icao": "FFT" },
+            { "departure_airport": "KLAS", "arrival_airport": "KTPA", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KSAT", "arrival_airport": "KTPA", "icao": "SWA" },
+            { "departure_airport": "KSAT", "arrival_airport": "KTPA", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KIAH", "arrival_airport": "KTPA", "icao": "UAL" }
+          ],
+          "initial_altitude": 37000,
+          "initial_controller": "H72",
+          "initial_speed": 450,
+          "waypoints": "REDFN/ho Y280 CHRGE DAAWG/a21000- RAYZZ/a10000/delete",
+          "flight_type": "arrival"
+        }
+      ]
+    },
+    "Y290 DOWRY.TEEKY4": {
+      "overflights": [
+        {
+          "airlines": [
+            { "departure_airport": "KSAN", "arrival_airport": "KFLL", "icao": "LXJ" },
+            { "departure_airport": "KDFW", "arrival_airport": "KFLL", "icao": "JBU" },
+            { "departure_airport": "KDFW", "arrival_airport": "KFLL", "icao": "FFT" },
+            { "departure_airport": "KDFW", "arrival_airport": "KFLL", "icao": "AAL" },
+            { "departure_airport": "KPHX", "arrival_airport": "KFLL", "icao": "AAL" },
+            { "departure_airport": "KLAX", "arrival_airport": "KFLL", "icao": "JBU" },
+            { "departure_airport": "KLAX", "arrival_airport": "KFLL", "icao": "DAL" },
+            { "departure_airport": "KIAH", "arrival_airport": "KFLL", "icao": "FFT" },
+            { "departure_airport": "KIAH", "arrival_airport": "KFLL", "icao": "UAL" },
+            { "departure_airport": "KLAS", "arrival_airport": "KFLL", "icao": "JBU" },
+            { "departure_airport": "KLAS", "arrival_airport": "KFLL", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KMSY", "arrival_airport": "KFLL", "icao": "JBU" },
+            { "departure_airport": "KMSY", "arrival_airport": "KFLL", "icao": "SWA" },
+            { "departure_airport": "KSFO", "arrival_airport": "KFLL", "icao": "UAL" },
+            { "departure_airport": "KSFO", "arrival_airport": "KFLL", "icao": "JBU" },
+            { "departure_airport": "KDAL", "arrival_airport": "KFLL", "icao": "SWA" },
+            { "departure_airport": "KDAL", "arrival_airport": "KFLL", "icao": "EJA" },
+            { "departure_airport": "KDAL", "arrival_airport": "KFLL", "icao": "N", "fleet": "GAjet" },
+            { "departure_airport": "KHOU", "arrival_airport": "KFLL", "icao": "SWA" },
+            { "departure_airport": "KHOU", "arrival_airport": "KFLL", "icao": "EJA" },
+            { "departure_airport": "KHOU", "arrival_airport": "KFLL", "icao": "N", "fleet": "GAjet" }
+          ],
+          "initial_altitude": 37000,
+          "initial_controller": "H72",
+          "initial_speed": 450,
+          "waypoints": "N028.39.22.307,W088.44.59.972/ho BLVNS Y290 DOWRY CIGAR OCHHO VNECK BBALE/a33000- FIGNA/a31000- JASBO/a26000-/s280 DANNA/a26000-/a23000+ PCOCK TEEKY/a12000+/delete",
+          "flight_type": "arrival"
+        }
+      ]
+    },
+    "Y290 DOWRY.FROGZ5": {
+      "overflights": [
+        {
+          "airlines": [
+            { "departure_airport": "MMMY", "arrival_airport": "KMIA", "icao": "ENY" },
+            { "departure_airport": "MMMY", "arrival_airport": "KMIA", "icao": "VIV" },
+            { "departure_airport": "CYVR", "arrival_airport": "KMIA", "icao": "ROU" },
+            { "departure_airport": "KSEA", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KSEA", "arrival_airport": "KMIA", "icao": "ASA" },
+            { "departure_airport": "KSEA", "arrival_airport": "KMIA", "icao": "DAL" },
+            { "departure_airport": "KPDX", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KAUS", "arrival_airport": "KMIA", "icao": "SWA" },
+            { "departure_airport": "KAUS", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KAUS", "arrival_airport": "KMIA", "icao": "ENY" },
+            { "departure_airport": "KAUS", "arrival_airport": "KMIA", "icao": "JTL" },
+            { "departure_airport": "KAUS", "arrival_airport": "KMIA", "icao": "DAL" },
+            { "departure_airport": "KDFW", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KDFW", "arrival_airport": "KMIA", "icao": "FFT" },
+            { "departure_airport": "KDFW", "arrival_airport": "KMIA", "icao": "CLX" },
+            { "departure_airport": "KDFW", "arrival_airport": "KMIA", "icao": "UPS" },
+            { "departure_airport": "KIAH", "arrival_airport": "KMIA", "icao": "FFT" },
+            { "departure_airport": "KIAH", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KIAH", "arrival_airport": "KMIA", "icao": "UAL" },
+            { "departure_airport": "KIAH", "arrival_airport": "KMIA", "icao": "ENY" },
+            { "departure_airport": "KLAS", "arrival_airport": "KMIA", "icao": "FFT" },
+            { "departure_airport": "KLAS", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KLAS", "arrival_airport": "KMIA", "icao": "VJA" },
+            { "departure_airport": "KLAX", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KLAX", "arrival_airport": "KMIA", "icao": "CAL" },
+            { "departure_airport": "KLAX", "arrival_airport": "KMIA", "icao": "DAL" },
+            { "departure_airport": "KLAX", "arrival_airport": "KMIA", "icao": "EJA" },
+            { "departure_airport": "KLAX", "arrival_airport": "KMIA", "icao": "EJM" },
+            { "departure_airport": "KMSY", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KMSY", "arrival_airport": "KMIA", "icao": "VJA" },
+            { "departure_airport": "KPHX", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KSAN", "arrival_airport": "KMIA", "icao": "EJA" },
+            { "departure_airport": "KSAN", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KSFO", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KSFO", "arrival_airport": "KMIA", "icao": "UAL" },
+            { "departure_airport": "KSAT", "arrival_airport": "KMIA", "icao": "ENY" },
+            { "departure_airport": "KSAT", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KSLC", "arrival_airport": "KMIA", "icao": "AAL" },
+            { "departure_airport": "KSLC", "arrival_airport": "KMIA", "icao": "DAL" },
+            { "departure_airport": "KDAL", "arrival_airport": "KMIA", "icao": "LXJ" },
+            { "departure_airport": "KDAL", "arrival_airport": "KMIA", "icao": "SWA" },
+            { "departure_airport": "KDAL", "arrival_airport": "KMIA", "icao": "EJA" },
+            { "departure_airport": "KHOU", "arrival_airport": "KMIA", "icao": "SWA" },
+            { "departure_airport": "KAFW", "arrival_airport": "KMIA", "icao": "ABX" },
+            { "departure_airport": "KONT", "arrival_airport": "KMIA", "icao": "UPS" },
+            { "departure_airport": "PANC", "arrival_airport": "KMIA", "icao": "GTI" },
+            { "departure_airport": "PANC", "arrival_airport": "KMIA", "icao": "KYE" },
+            { "departure_airport": "PANC", "arrival_airport": "KMIA", "icao": "CPA" },
+            { "departure_airport": "PANC", "arrival_airport": "KMIA", "icao": "KAL" },
+            { "departure_airport": "PANC", "arrival_airport": "KMIA", "icao": "CKS" },
+            { "departure_airport": "PANC", "arrival_airport": "KMIA", "icao": "CLX" },
+            { "departure_airport": "PANC", "arrival_airport": "KMIA", "icao": "CAO" }
+          ],
+          "initial_altitude": 37000,
+          "initial_controller": "H72",
+          "initial_speed": 450,
+          "waypoints": "N028.39.22.307,W088.44.59.972/ho BLVNS Y290 DOWRY CIGAR GAWKS BAGGS PLOWS/a34000+ MATNY KLEET/a28000-/a21000+/s280 BARBN/a15000+ JAMAS/a11000+/s280 FROGZ/delete",
+          "flight_type": "arrival"
+        }
+      ]
+    },
+    "(Background) CIGAR.PRICY5": {
+      "overflights": [
+        {
+          "airlines": [
+            { "departure_airport": "MMUN", "arrival_airport": "KMCO", "icao": "SWA" },
+            { "departure_airport": "MMUN", "arrival_airport": "KMCO", "icao": "JBU" },
+            { "departure_airport": "MMUN", "arrival_airport": "KMCO", "icao": "FFT" },
+            { "departure_airport": "MGGT", "arrival_airport": "KMCO", "icao": "JBU" },
+            { "departure_airport": "MMMD", "arrival_airport": "KMCO", "icao": "VIV" },
+            { "departure_airport": "MMMD", "arrival_airport": "KMCO", "icao": "N", "fleet": "GAjet" }
+          ],
+          "initial_altitude": 33000,
+          "initial_controller": "R25",
+          "initial_speed": 450,
+          "waypoints": "CIGAR DAAWG CHIVE/a26000-/a24000+ DECKS/a21000+ BULKS/a20000-/a19000+/s280 PRICY/a16000-/a13000+/s250/delete",
+          "flight_type": "arrival"
+        }
+      ]
+    },
+    "(Background) CIGAR.RAYZZ3": {
+      "overflights": [
+        {
+          "airlines": [{ "departure_airport": "MMUN", "arrival_airport": "KTPA", "icao": "JBU" }],
+          "initial_altitude": 27000,
+          "assigned_altitude": 10000,
+          "initial_controller": "R25",
+          "initial_speed": 380,
+          "waypoints": "CIGAR DAAWG/a21000- RAYZZ/a10000/delete",
+          "flight_type": "arrival"
+        }
+      ]
     }
   },
-  "default_scenario": "ZJX 11 Brewton+21 PNS/ECP/VPS South",
-  "fixes": {
-    "HO1": "N030.47.11.197,W085.13.33.867",
-    "HO2": "N030.38.27.472,W085.05.51.150"
-  },
+  "default_scenario": "ZJX West Area Combined",
   "magnetic_adjustment": -3.6,
   "scenarios": {
-    "ZJX 11 Brewton+21 PNS/ECP/VPS South": {
-      "configuration": "J11",
-      "default_maps": ["ZJX HI"],
-      "default_map_group": "ZJX",
+    "ZJX West Area Combined": {
+      "configuration": "ZJW",
       "departure_runways": [
         {
           "airport": "KPNS",
           "rate": 10,
-          "runway": "17"
+          "runway": "35"
         },
         {
           "airport": "KVPS",
           "rate": 5,
-          "runway": "12"
+          "runway": "30"
         },
         {
           "airport": "KECP",
           "rate": 5,
-          "runway": "16"
+          "runway": "34"
         },
         {
           "airport": "KTLH",
           "rate": 3,
-          "runway": "18"
+          "runway": "36"
         },
         {
           "airport": "KTLH",
@@ -1196,19 +1543,19 @@
       "arrival_runways": [
         {
           "airport": "KPNS",
-          "runway": "17"
+          "runway": "35"
         },
         {
           "airport": "KVPS",
-          "runway": "12"
+          "runway": "30"
         },
         {
           "airport": "KECP",
-          "runway": "16"
+          "runway": "34"
         },
         {
           "airport": "KTLH",
-          "runway": "18"
+          "runway": "36"
         },
         {
           "airport": "KTLH",
@@ -1255,24 +1602,28 @@
         "DEFUN": { "overflights": 10 },
         "J2": { "overflights": 10 },
         "BULZI CEW IRUBE": { "overflights": 5 },
-        "MAATY5 (DEFUN)": { "overflights": 10 },
-        "BANGZ2 (DEFUN)": { "overflights": 10 },
-        "FROGZ4 (DEFUN)": { "overflights": 10 },
-        "GRNCH5 (DEFUN)": { "overflights": 10 },
-        "MARQO3 (CATLN)": { "overflights": 5 },
-        "MARQO3 (DEFUN)": { "overflights": 10 },
+        "DEFUN.MAATY5": { "overflights": 10 },
+        "DEFUN.BANGZ2": { "overflights": 10 },
+        "DEFUN.FROGZ5": { "overflights": 10 },
+        "DEFUN.GRNCH5": { "overflights": 10 },
+        "CATLN.MARQO3": { "overflights": 5 },
+        "DEFUN.MARQO3": { "overflights": 10 },
         "CEW": { "KPNS": 5, "KTLH": 5, "KVPS": 5 },
         "CABLO": { "KPNS": 5, "KVPS": 5 },
         "LOXLY": { "KPNS": 5 },
-        "SJI": { "KECP": 5 }
+        "SJI": { "KECP": 5 },
+        "Y280/Q100 (West)": { "overflights": 10 },
+        "Y290/Q102 (West)": { "overflights": 10 },
+        "Y280 CHRGE.PRICY5": { "overflights": 6 },
+        "Y280 CHRGE.RAYZZ3": { "overflights": 5 },
+        "Y290 DOWRY.TEEKY4": { "overflights": 3 },
+        "Y290 DOWRY.FROGZ5": { "overflights": 3 },
+        "(Background) CIGAR.PRICY5": { "overflights": 0 },
+        "(Background) CIGAR.RAYZZ3": { "overflights": 0 }
       },
-      "wind": {
-        "direction": "100-170",
-        "speed": "5+",
-        "flight_rules": "VMC"
-      }
+      "default_map_group": "ZJX"
     },
-    "ZJX 11 Brewton+21 PNS/ECP/VPS North": {
+    "ZJX 11 Brewton+21": {
       "configuration": "J11",
       "default_maps": ["ZJX HI"],
       "default_map_group": "ZJX",
@@ -1365,12 +1716,12 @@
         "DEFUN": { "overflights": 10 },
         "J2": { "overflights": 10 },
         "BULZI CEW IRUBE": { "overflights": 5 },
-        "MAATY5 (DEFUN)": { "overflights": 10 },
-        "BANGZ2 (DEFUN)": { "overflights": 10 },
-        "FROGZ4 (DEFUN)": { "overflights": 10 },
-        "GRNCH5 (DEFUN)": { "overflights": 10 },
-        "MARQO3 (CATLN)": { "overflights": 5 },
-        "MARQO3 (DEFUN)": { "overflights": 10 },
+        "DEFUN.MAATY5": { "overflights": 10 },
+        "DEFUN.BANGZ2": { "overflights": 10 },
+        "DEFUN.FROGZ5": { "overflights": 10 },
+        "DEFUN.GRNCH5": { "overflights": 10 },
+        "CATLN.MARQO3": { "overflights": 5 },
+        "DEFUN.MARQO3": { "overflights": 10 },
         "CEW": { "KPNS": 5, "KTLH": 5, "KVPS": 5 },
         "CABLO": { "KPNS": 5, "KVPS": 5 },
         "LOXLY": { "KPNS": 5 },
@@ -1381,6 +1732,21 @@
         "speed": "5+",
         "flight_rules": "VMC"
       }
+    },
+    "ZJX 30 Nepta+31": {
+      "configuration": "J30",
+      "default_maps": ["ZJX HI"],
+      "inbound_rates": {
+        "Y280/Q100 (West)": { "overflights": 10 },
+        "Y290/Q102 (West)": { "overflights": 10 },
+        "Y280 CHRGE.PRICY5": { "overflights": 6 },
+        "Y280 CHRGE.RAYZZ3": { "overflights": 5 },
+        "Y290 DOWRY.TEEKY4": { "overflights": 3 },
+        "Y290 DOWRY.FROGZ5": { "overflights": 3 },
+        "(Background) CIGAR.PRICY5": { "overflights": 0 },
+        "(Background) CIGAR.RAYZZ3": { "overflights": 0 }
+      },
+      "default_map_group": "ZJX"
     }
   }
 }

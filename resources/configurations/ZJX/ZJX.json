@@ -247,17 +247,50 @@
           "15": ["14"]
         }
       },
+      "ZJW": {
+        "departure_assignments": {
+          "KPNS": "10",
+          "KECP": "10",
+          "KVPS": "10",
+          "KTLH": "10"
+        },
+        "inbound_assignments": {
+          "DEFUN": "11",
+          "J2": "11",
+          "BULZI CEW IRUBE": "11",
+          "DEFUN.MAATY5": "11",
+          "DEFUN.BANGZ2": "11",
+          "DEFUN.FROGZ5": "11",
+          "DEFUN.GRNCH5": "11",
+          "DEFUN.MARQO3": "11",
+          "CATLN.MARQO3": "11",
+          "CEW": "11",
+          "LOXLY": "11",
+          "CABLO": "11",
+          "SJI": "11",
+          "Y280/Q100 (West)": "30",
+          "Y290/Q102 (West)": "30",
+          "Y280 CHRGE.PRICY5": "30",
+          "Y280 CHRGE.RAYZZ3": "30",
+          "Y290 DOWRY.TEEKY4": "30",
+          "Y290 DOWRY.FROGZ5": "30"
+        },
+        "default_consolidation": {
+          "30": ["31", "11"],
+          "11": ["21", "10", "12", "28", "29"]
+        }
+      },
       "J11": {
         "inbound_assignments": {
           "DEFUN": "11",
           "J2": "11",
           "BULZI CEW IRUBE": "11",
-          "MAATY5 (DEFUN)": "11",
-          "BANGZ2 (DEFUN)": "11",
-          "FROGZ4 (DEFUN)": "11",
-          "GRNCH5 (DEFUN)": "11",
-          "MARQO3 (CATLN)": "11",
-          "MARQO3 (DEFUN)": "11",
+          "DEFUN.MAATY5": "11",
+          "DEFUN.BANGZ2": "11",
+          "DEFUN.FROGZ5": "11",
+          "DEFUN.GRNCH5": "11",
+          "DEFUN.MARQO3": "11",
+          "CATLN.MARQO3": "11",
           "CEW": "11",
           "LOXLY": "11",
           "CABLO": "11",
@@ -277,8 +310,8 @@
           "Y290/Q102 (West)": "30",
           "Y280 CHRGE.PRICY5": "30",
           "Y280 CHRGE.RAYZZ3": "30",
-          "Y290 DOWRY TEEKY4": "30",
-          "Y290 DOWRY FROGZ5": "30"
+          "Y290 DOWRY.TEEKY4": "30",
+          "Y290 DOWRY.FROGZ5": "30"
         },
         "default_consolidation": { "30": ["31"] }
       },
