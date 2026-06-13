@@ -1252,7 +1252,10 @@
                       <td>Object</td>
                       <td><p>Each entry specifies controller-specific configuration properties.
                           The applicable control positions are specified via members given as a TCP position
-                          (e.g., "2G"). The following properties may be specified for each one:</p>
+                          (e.g., "2G"). A comma-separated list of TCPs (e.g., "1A,1D,1E") may also be given as a key;
+                          the same configuration is then applied to each of the listed positions, which is convenient
+                          when several controllers share an identical configuration.
+                          The following properties may be specified for each one:</p>
 
                       </td>
                     </tr>

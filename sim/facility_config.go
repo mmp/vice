@@ -394,17 +394,17 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 
 	// controller_configs TCP existence.
 	if len(fa.Controllers) > 0 {
+		var err error
+		fa.Controllers, err = util.CommaKeyExpand(fa.Controllers)
+		if err != nil {
+			e.Error(err)
+		}
 		for tcp := range fa.Controllers {
 			if ctrl, ok := fc.ControlPositions[TCP(tcp)]; !ok {
 				e.ErrorString(`Control position %q in "controllers" not defined in "control_positions"`, tcp)
 			} else if ctrl.IsExternal() {
 				e.ErrorString(`Control position %q in "controllers" is external and not in this TRACON.`, tcp)
 			}
-		}
-		var err error
-		fa.Controllers, err = util.CommaKeyExpand(fa.Controllers)
-		if err != nil {
-			e.Error(err)
 		}
 	}
 
