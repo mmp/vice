@@ -306,7 +306,7 @@
           "4U": ["4H", "4S"],
           "3H": ["3B", "3I", "3N", "3O", "3R", "3Z", "5H"],
           "2G": ["1V", "2A", "2J", "2K", "3H", "4P", "5E", "5S", "5T", "5W"],
-          "2K": ["2E", "2M"],
+          "2K": ["2M"],
           "1V": ["1D", "1F", "1L", "1X", "1Y"]
         }
       },
@@ -361,7 +361,7 @@
           "KTEB": "4N"
         },
         "default_consolidation": {
-          "4N": ["4A", "4H", "4P", "4S", "4U", "4W"]
+          "4N": []
         }
       },
       "EWU": {
@@ -382,7 +382,7 @@
           "KTEB": "4N"
         },
         "default_consolidation": {
-          "4U": ["4N", "4S"]
+          "4U": []
         }
       },
       "EWP": {
@@ -404,7 +404,7 @@
           "KTEB": "4N"
         },
         "default_consolidation": {
-          "4P": ["4H", "4N", "4W"]
+          "4P": []
         }
       },
       "EWA": {
@@ -427,7 +427,7 @@
           "KTEB": "4N"
         },
         "default_consolidation": {
-          "4A": ["4N", "4S", "4U", "4W"]
+          "4A": []
         }
       },
       "LGA": {
@@ -522,7 +522,7 @@
           "KISP": "3H"
         },
         "default_consolidation": {
-          "2J": ["3H"]
+          "2J": []
         }
       },
       "JF4": {
@@ -556,8 +556,7 @@
         },
         "default_consolidation": {
           "2G": ["2A", "2J", "2K", "3H"],
-          "2K": ["2E", "2M"],
-          "3H": ["3B", "3R"]
+          "2K": ["2E", "2M"]
         }
       },
       "LIB": {
@@ -616,8 +615,7 @@
       "J22": {
         "default_consolidation": {
           "2G": ["2E", "2J", "2K", "3H"],
-          "2K": ["2A", "2M"],
-          "3H": ["3B", "3R"]
+          "2K": ["2A", "2M"]
         },
         "inbound_assignments": {
           "DENNA1": "3R",
@@ -640,9 +638,8 @@
       },
       "J31": {
         "default_consolidation": {
-          "2G": ["2A", "2E", "2J", "2K", "3H"],
-          "2K": ["2M"],
-          "3H": ["3B", "3R"]
+          "2G": ["2A", "2E", "2J", "2K"],
+          "2K": ["2M"]
         },
         "inbound_assignments": {
           "DENNA1": "3R",
