@@ -5,10 +5,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	av "github.com/mmp/vice/aviation"
@@ -28,7 +30,8 @@ func runSTARS(cwd, outDir, inputARTCC string, artcc *ARTCC, eg *errgroup.Group) 
 	for _, child := range artcc.Facility.ChildFacilities {
 		if len(child.StarsConfiguration.VideoMapIds) > 0 {
 			eg.Go(func() error {
-				if err := writeFacility(cwd, outDir, inputARTCC, child.ID, child.StarsConfiguration.VideoMapIds,
+				if err := writeFacility(cwd, outDir, inputARTCC, child.ID,
+					child.StarsConfiguration.VideoMapIds, child.StarsConfiguration.MapGroups,
 					catalog); err != nil {
 					return fmt.Errorf("%s/%s: %v", inputARTCC, child.ID, err)
 				}
@@ -40,7 +43,8 @@ func runSTARS(cwd, outDir, inputARTCC string, artcc *ARTCC, eg *errgroup.Group) 
 	return nil
 }
 
-func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog map[string]*ARTCCVideoMap) error {
+func writeFacility(cwd, outDir, artccID, childID string, ids []string, mapGroups []MapGroup,
+	catalog map[string]*ARTCCVideoMap) error {
 	lib := &av.MapLibrary{Maps: make(map[string]av.STARSMap, len(ids))}
 
 	var eg errgroup.Group
@@ -105,14 +109,103 @@ func writeFacility(cwd, outDir, artccID, childID string, ids []string, catalog m
 
 	outPath := filepath.Join(outDir, fmt.Sprintf("%s-%s.mappack", artccID, childID))
 	log.Printf("STARS [%s/%s] %d video maps -> %s", artccID, childID, len(ids), outPath)
-	if f, err := os.Create(outPath); err != nil {
+	f, err := os.Create(outPath)
+	if err != nil {
 		return err
-	} else if err := av.SaveMapLibrary(f, lib); err != nil {
+	}
+	if err := av.SaveMapLibrary(f, lib); err != nil {
 		f.Close()
 		return err
-	} else {
-		return f.Close()
 	}
+	if err := f.Close(); err != nil {
+		return err
+	}
+
+	return writeMapConfig(outDir, artccID, childID, mapGroups, lib)
+}
+
+// DCB layout: main bar has 3 columns × 2 rows of map buttons; the MAPS submenu has 15 × 2.
+// vice stores both sections row-major (top row first, then bottom row) but CRC stores its
+// mapGroup.mapIds column-major (consecutive entries are top/bottom of the same column), so
+// we transpose each section before emitting.
+const (
+	mainDCBMapCols     = 3
+	mapsSubmenuMapCols = 15
+)
+
+// writeMapConfig emits a per-TRACON sidecar JSON describing each mapGroup (the DCB-button layouts a
+// controller sees). The output is wrapped in a "controllers" object so it can be pasted directly
+// into a vice facility_adaptations block. Keys are the comma-joined TCP list (e.g. "1A,1D,1E").
+func writeMapConfig(outDir, artccID, childID string, mapGroups []MapGroup, lib *av.MapLibrary) error {
+	if len(mapGroups) == 0 {
+		return nil
+	}
+
+	// The catalog can have multiple maps claiming the same raw starsId. The collision pass above
+	// picks a single winner per starsId and renumbers the losers; the .mappack holds that resolution.
+	// We index off the post-resolution library so each mapGroup slot resolves to the name vice will
+	// actually render at that starsId.
+	byStarsID := make(map[int]string, len(lib.Maps))
+	for name, m := range lib.Maps {
+		if m.Id != 0 {
+			byStarsID[m.Id] = name
+		}
+	}
+
+	type groupEntry struct {
+		VideoMaps []string `json:"video_maps"`
+	}
+	controllers := make(map[string]groupEntry, len(mapGroups))
+
+	for _, mg := range mapGroups {
+		key := strings.Join(mg.Tcps, ",")
+		// Resolve each CRC slot in source (column-major) order. Unresolved starsIds and nil
+		// slots both render as "" so the column alignment isn't disturbed.
+		raw := make([]string, len(mg.MapIds))
+		for i, idp := range mg.MapIds {
+			if idp == nil {
+				continue
+			}
+			if name, ok := byStarsID[*idp]; ok {
+				raw[i] = name
+			} else {
+				log.Printf("STARS [%s/%s] mapGroup [%s]: unresolved starsId %d",
+					artccID, childID, key, *idp)
+			}
+		}
+		// Transpose each section into vice's row-major layout. Main DCB is slots 0..5; MAPS
+		// submenu is slots 6..35. CRC's data can have 38 slots (a 19-column layout) but vice
+		// only renders 15 submenu columns, so the trailing two CRC slots are dropped.
+		var names []string
+		names = append(names, transposeColumnMajor(raw, 0, mainDCBMapCols)...)
+		names = append(names, transposeColumnMajor(raw, 2*mainDCBMapCols, mapsSubmenuMapCols)...)
+		controllers[key] = groupEntry{VideoMaps: names}
+	}
+
+	outPath := filepath.Join(outDir, fmt.Sprintf("%s-%s-maps.json", artccID, childID))
+	data, err := json.MarshalIndent(map[string]any{"controllers": controllers}, "", "  ")
+	if err != nil {
+		return err
+	}
+	log.Printf("STARS [%s/%s] %d mapGroups -> %s", artccID, childID, len(mapGroups), outPath)
+	return os.WriteFile(outPath, data, 0644)
+}
+
+// transposeColumnMajor reads 2*cols entries starting at base from a CRC column-major slice
+// (where index 2k is the top of column k and 2k+1 is the bottom) and returns them in vice's
+// row-major order: top row left-to-right, then bottom row left-to-right. Missing input
+// entries become "".
+func transposeColumnMajor(in []string, base, cols int) []string {
+	out := make([]string, 2*cols)
+	for col := range cols {
+		for row := range 2 {
+			src := base + col*2 + row
+			if src < len(in) {
+				out[row*cols+col] = in[src]
+			}
+		}
+	}
+	return out
 }
 
 // loadMapGeometry parses a single .geojson into the given VideoMap's

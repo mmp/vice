@@ -22,7 +22,8 @@ type ARTCC struct {
 			Type               string `json:"type"`
 			Name               string `json:"name"`
 			StarsConfiguration struct {
-				VideoMapIds []string `json:"videoMapIds"`
+				VideoMapIds []string   `json:"videoMapIds"`
+				MapGroups   []MapGroup `json:"mapGroups"`
 			} `json:"starsConfiguration"`
 		} `json:"childFacilities"`
 		ERAMConfiguration struct {
@@ -48,6 +49,15 @@ type ARTCCGeoMap struct {
 	} `json:"filterMenu"`
 	BCGMenu     []string `json:"bcgMenu"`
 	VideoMapIds []string `json:"videoMapIds"`
+}
+
+// MapGroup is one DCB button layout in a TRACON's starsConfiguration.
+// Tcps lists the position codes (e.g. "1A", "1D") that share this
+// layout; MapIds is the per-slot button assignment, with nil entries
+// for empty slots.
+type MapGroup struct {
+	MapIds []*int   `json:"mapIds"`
+	Tcps   []string `json:"tcps"`
 }
 
 // ARTCCVideoMap is one entry in the top-level videoMaps catalog —
@@ -139,7 +149,7 @@ func (p *GeoJSONProperties) UnmarshalJSON(data []byte) error {
 		if !ok {
 			return
 		}
-		// Accept several CRC encodings: [1,2,3], ["1","2","3"], 1, or "1".
+		// Accept several encodings: [1,2,3], ["1","2","3"], 1, or "1".
 		var ints []int
 		if err := json.Unmarshal(b, &ints); err == nil {
 			*dst = ints
