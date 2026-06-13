@@ -5687,7 +5687,7 @@
         }
       },
       "configuration": "KP3",
-      "default_maps": ["RWY 28", "3 NM BUFFER MVA"],
+      "default_maps": ["RWY 28"],
       "departure_runways": [
         {
           "airport": "KPDX",
@@ -5767,7 +5767,7 @@
         }
       },
       "configuration": "KPD",
-      "default_maps": ["RWY 10", "3 NM BUFFER MVA"],
+      "default_maps": ["RWY 10"],
       "departure_runways": [
         {
           "airport": "KPDX",
@@ -5823,7 +5823,7 @@
       "wind": {
         "direction": "250-310"
       },
-      "default_maps": ["FINAL 28", "3 NM BUFFER MVA"]
+      "default_maps": ["FINAL 28"]
     },
     "KPDX Final East": {
       "airspace": {

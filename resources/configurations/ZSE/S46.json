@@ -179,7 +179,7 @@
       "YVR": {},
       "YYJ": {}
     },
-    "video_map_file": "videomaps/ZSE-stars.mappack",
+    "video_map_file": "videomaps/ZSE-S46.mappack",
     "coordination_fixes": {
       "HUMPP": [
         {
@@ -234,27 +234,42 @@
     "areas": {
       "1": {
         "video_maps": [
-          "ZSE__S46S",
-          "BFI 14R FINAL",
-          "BFI 32L FINAL",
-          "CLASS B",
           "S46 EOVM",
-          "G_FIXES",
-          "HAWKZ N",
-          "HAWKZ S",
-          "MARNR N",
-          "MARNR S",
-          "LMT 3NM MOSIAC",
-          "ZSE__S46N",
-          "16C",
-          "16L",
+          "GPS",
+          "CLASS B",
+          "MVA FUS 3NM",
+          "S46 AIRWAYS",
+          "ZSE BOUNDARIES",
+          "VISUAL SOUTH",
+          "SF _AY",
+          "SF _PD",
+          "SF EWF",
+          "SF _F",
+          "SF _NK",
+          "SF _K",
+          "RNP SOUTH NO NAMES",
           "16R",
-          "34C",
+          "16L",
+          "BNDRY",
+          "BFI 14R FINAL",
+          "BFI RNAV 14",
+          "P51",
+          "SOUTH SHORELINE",
+          "VISUAL NORTH",
+          "NF AY",
+          "NF _P",
+          "NF EWD",
+          "NF _F",
+          "NF _NK",
+          "NF _K",
+          "RNP NORTH NO NAMES",
           "34L",
           "34R",
-          "ZSE HANDOFF",
-          "NORTH SHORELINE",
-          "SOUTH SHORELINE"
+          "SAT FINALS",
+          "BFI 32L FINAL",
+          "BFI RNAV 32",
+          "S46 Class D",
+          "NORTH SHORELINE"
         ]
       }
     }

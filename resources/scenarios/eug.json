@@ -1645,7 +1645,7 @@
           "overflights": 1
         }
       },
-      "default_maps": ["BASE MAP", "EUG RNAV RWY 34L", "MVA 3NM", "EUG-BASEMAP"],
+      "default_maps": ["BASE MAP", "EUG RNAV RWY 34L", "EUG-BASEMAP"],
       "departure_runways": [
         {
           "airport": "KEUG",
@@ -1774,7 +1774,7 @@
         }
       },
       "configuration": "RE",
-      "default_maps": ["BASE MAP", "MVA 3NM", "EUG ILS RWY 16R", "EUG-BASEMAP"],
+      "default_maps": ["BASE MAP", "EUG ILS RWY 16R", "EUG-BASEMAP"],
       "departure_runways": [
         {
           "airport": "KEUG",

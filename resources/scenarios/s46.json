@@ -2345,7 +2345,7 @@
         }
       },
       "configuration": "STD",
-      "default_maps": ["ZSE__S46N"],
+      "default_maps": ["SFLOW"],
       "departure_runways": [
         {
           "airport": "KSEA",
@@ -2400,7 +2400,7 @@
         }
       },
       "configuration": "STD",
-      "default_maps": ["ZSE__S46S"],
+      "default_maps": ["SFLOW"],
       "departure_runways": [
         {
           "airport": "KSEA",
