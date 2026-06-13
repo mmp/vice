@@ -2578,9 +2578,23 @@
               <section class="docs-section" id="fe-video-maps">
                 <h3 class="section-heading">Video Maps</h3>
                 <p>Video maps are specified separately from the rest of the configuration since they require fairly large files and are not generally edited by hand.
-                  The file format is a single <code>.mappack</code> file per facility (named <code>&lt;facility&gt;.mappack</code>);
-                  there is no longer a separate manifest file.
-                  Two utilities are available to generate maps for <i>vice</i> from other formats:</p>
+                  They are stored in a single <code>.mappack</code> file per facility (named <code>&lt;facility&gt;.mappack</code>).
+                  Two utilities are available to generate maps for <i>vice</i> from other formats:
+                  <code>crc2vice</code> and <code>dat2vice</code>.</p>
+                <p>Where to find them:</p>
+                <ul>
+                  <li><b>Windows:</b> both <code>crc2vice.exe</code> and <code>dat2vice.exe</code> are
+                    installed into the <i>vice</i> installation directory
+                    (typically <code>C:\Program Files\Vice</code>) alongside <code>Vice.exe</code>.
+                    Open a Command Prompt and either <code>cd</code> to that directory or
+                    invoke them by their full path.</li>
+                  <li><b>macOS:</b> the tools are not bundled with <code>Vice.app</code>; download the
+                    separate <code>Vice-&lt;version&gt;-osx-tools.zip</code> archive from the
+                    <a href="https://github.com/mmp/vice/releases">releases page</a>. Unzipping
+                    produces <code>crc2vice</code> and <code>dat2vice</code>; run them from a Terminal
+                    in whichever directory you put them. (They are signed and notarized, but you
+                    may need to right-click → Open on first run.)</li>
+                </ul>
                 <h4 id="fe-video-maps-crc2vice">crc2vice</h4>
                 <p><code>crc2vice</code> extracts both STARS and ERAM video maps from an installed CRC ARTCC
                   and converts them to <i>vice</i>'s internal format.</p>

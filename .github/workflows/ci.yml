@@ -176,6 +176,15 @@ jobs:
     - name: Build universal binary
       run: ./build.sh --release --universal
 
+    - name: Build crc2vice and dat2vice (universal)
+      run: |
+        for tool in crc2vice dat2vice; do
+          CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o ${tool}_amd64 ./cmd/${tool}
+          CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o ${tool}_arm64 ./cmd/${tool}
+          lipo -create -output ${tool} ${tool}_amd64 ${tool}_arm64
+          rm ${tool}_amd64 ${tool}_arm64
+        done
+
     - name: Run tests
       run: go test -v ./...
 
@@ -192,6 +201,9 @@ jobs:
     - name: Create zip file for app
       run: zip -rv Vice-osx.zip Vice.app
 
+    - name: Create tools zip
+      run: zip -v Vice-osx-tools.zip crc2vice dat2vice
+
     - name: Save zip file as build artifact
       uses: actions/upload-artifact@v7
       with:
@@ -199,15 +211,25 @@ jobs:
         path: Vice-osx.zip
         compression-level: 0
 
-    - name: Rename zip for release (maybe)
+    - name: Save tools zip as build artifact
+      uses: actions/upload-artifact@v7
+      with:
+        name: Vice-osx-tools.zip
+        path: Vice-osx-tools.zip
+
+    - name: Rename zips for release (maybe)
       if: startsWith(github.ref, 'refs/tags/')
-      run: mv Vice-osx.zip 'Vice-${{ github.ref_name }}-osx.zip'
+      run: |
+        mv Vice-osx.zip 'Vice-${{ github.ref_name }}-osx.zip'
+        mv Vice-osx-tools.zip 'Vice-${{ github.ref_name }}-osx-tools.zip'
 
     - name: Upload release (maybe)
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
-        files: 'Vice-${{ github.ref_name }}-osx.zip'
+        files: |
+          Vice-${{ github.ref_name }}-osx.zip
+          Vice-${{ github.ref_name }}-osx-tools.zip
 
   build-windows:
     name: Build Windows
@@ -380,5 +402,3 @@ jobs:
       with:
         files: |
           Vice-${{ github.ref_name }}-installer.msi
-          dat2vice.exe
-          crc2vice.exe

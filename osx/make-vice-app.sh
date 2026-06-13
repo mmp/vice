@@ -24,6 +24,13 @@ if [ ! -f "vice" ]; then
     exit 1
 fi
 
+for tool in crc2vice dat2vice; do
+    if [ ! -f "$tool" ]; then
+        echo "Error: $tool binary not found in current directory"
+        exit 1
+    fi
+done
+
 echo "=== Creating icons ==="
 mkdir -p icon.iconset
 cp cmd/vice/icons/tower-rounded-inset-16x16.png icon.iconset/icon_16x16.png
@@ -71,15 +78,20 @@ rm cert.p12
 echo "=== Signing Vice.app ==="
 codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime --entitlements osx/vice.entitlements Vice.app
 
+echo "=== Signing crc2vice and dat2vice ==="
+for tool in crc2vice dat2vice; do
+    codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime "$tool"
+done
+
 # Check if notarization credentials are available
 if [ -z "$APPLE_CODESIGN_ID" ] || [ -z "$APPLE_CODESIGN_PASSWORD" ] || [ -z "$APPLE_TEAMID" ]; then
     echo "=== Skipping notarization (missing credentials) ==="
-    echo "Vice.app created and signed successfully (not notarized)"
+    echo "Vice.app and helper tools created and signed successfully (not notarized)"
     exit 0
 fi
 
-echo "=== Notarizing Vice.app ==="
-zip -rv vice-notarize.zip Vice.app
+echo "=== Notarizing Vice.app and helper tools ==="
+zip -rv vice-notarize.zip Vice.app crc2vice dat2vice
 xcrun notarytool submit \
     --wait \
     --apple-id "${APPLE_CODESIGN_ID}" \
@@ -90,6 +102,9 @@ xcrun notarytool submit \
 rm vice-notarize.zip
 
 echo "=== Stapling notarization ==="
+# stapler only works on bundles (.app, .pkg, .dmg). Standalone CLI binaries
+# can't be stapled, but their notarization tickets are looked up online by
+# Gatekeeper when first run.
 xcrun stapler staple Vice.app
 
-echo "Vice.app created, signed, and notarized successfully"
+echo "Vice.app and helper tools created, signed, and notarized successfully"
