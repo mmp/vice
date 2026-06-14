@@ -348,6 +348,7 @@ func (g *glfwPlatform) NewFrame() {
 
 	// Mouse cursor
 	imgui_cursor := imgui.CurrentMouseCursor()
+	io := imgui.CurrentIO()
 
 	if g.cursorOverride != nil {
 		// A pane set a specific OS cursor (e.g., ERAM); show it
@@ -355,14 +356,25 @@ func (g *glfwPlatform) NewFrame() {
 		g.currentCursor = g.cursorOverride
 		g.window.SetCursor(g.cursorOverride)
 		g.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
-	} else if g.mouseDeltaMode || imgui_cursor == imgui.MouseCursorNone {
-		// Hide OS mouse cursor (the pane draws its own)
+	} else if !io.WantCaptureMouse() && (g.mouseDeltaMode || imgui_cursor == imgui.MouseCursorNone) {
+		// Hide the OS mouse cursor so a pane can draw its own (e.g. the STARS
+		// scope cursor). imgui resets its cursor to Arrow every frame, so
+		// MouseCursorNone here means a pane is actively drawing its own cursor
+		// this frame. We skip the hide when imgui is using the mouse so the
+		// cursor stays visible over imgui windows and the menu bar. This is
+		// intentionally independent of window focus, so the pane's own cursor
+		// still renders over its window when the application is unfocused.
 		g.window.SetInputMode(glfw.CursorMode, glfw.CursorHidden)
 	} else {
-		// Show standard OS mouse cursor
-		cursor := g.mouseCursors[imgui_cursor]
-		if cursor == nil {
-			cursor = g.mouseCursors[imgui.MouseCursorArrow]
+		// Show standard OS mouse cursor. Fall back to the arrow when imgui
+		// has no shape to show (MouseCursorNone while imgui is using the
+		// mouse), which also avoids indexing mouseCursors with the
+		// out-of-range MouseCursorNone (-1).
+		cursor := g.mouseCursors[imgui.MouseCursorArrow]
+		if imgui_cursor != imgui.MouseCursorNone {
+			if c := g.mouseCursors[imgui_cursor]; c != nil {
+				cursor = c
+			}
 		}
 		if cursor != g.currentCursor {
 			g.currentCursor = cursor
