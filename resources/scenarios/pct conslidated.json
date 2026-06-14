@@ -240,8 +240,10 @@
       },
       "crda_pairs": [
         {
-          "crda_regions": ["1", "33"],
-          "leader_directions": ["W", "E"],
+          "source_region": "1",
+          "ghost_region": "33",
+          "source_leader_direction": "W",
+          "ghost_leader_direction": "E",
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5

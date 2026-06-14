@@ -743,53 +743,56 @@ func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms radar.ScopeTran
 func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 	var ghosts []*av.GhostTrack
 	ps := sp.currentPrefs()
+	nmPerLongitude := ctx.NmPerLongitude
+
+	tryGhost := func(pair STARSCRDAPair, src, ghost *av.CRDARegion,
+		rwyState CRDARunwayState, defaultLeader math.CardinalOrdinalDirection,
+		mode CRDAMode) {
+		if !rwyState.Enabled {
+			return
+		}
+
+		// Leader line direction comes from the scenario configuration, unless it
+		// has been overridden for the runway via <multifunc>NL.
+		leaderDirection := defaultLeader
+		if rwyState.LeaderLineDirection != nil {
+			leaderDirection = *rwyState.LeaderLineDirection
+		}
+
+		trackId := util.Select(mode == CRDAModeStagger, pair.StaggerSymbol, pair.TieSymbol)
+		offset := util.Select(mode == CRDAModeTie, pair.TieOffset, float32(0))
+
+		for _, trk := range sp.visibleTracks {
+			if trk.IsUnassociated() {
+				continue
+			}
+			state := sp.TrackState[trk.ADSBCallsign]
+
+			force := state.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
+			heading := util.Select(state.HaveHeading(),
+				float32(math.TrueToMagnetic(state.TrackHeading(nmPerLongitude), ctx.MagneticVariation)),
+				float32(trk.Heading))
+
+			g := src.TryMakeGhost(trk.RadarTrack, heading, trk.FlightPlan.Scratchpad, force, offset,
+				leaderDirection, nmPerLongitude, ghost)
+			if g != nil {
+				g.TrackId = trackId
+				ghosts = append(ghosts, g)
+			}
+		}
+	}
 
 	for i, pairState := range ps.CRDA.RunwayPairState {
 		if !pairState.Enabled {
 			continue
 		}
-		for j, rwyState := range pairState.RunwayState {
-			if !rwyState.Enabled {
-				continue
-			}
-
-			// Leader line direction comes from the scenario configuration, unless it
-			// has been overridden for the runway via <multifunc>NL.
-			leaderDirection := sp.CRDAPairs[i].LeaderDirections[j]
-			if rwyState.LeaderLineDirection != nil {
-				leaderDirection = *rwyState.LeaderLineDirection
-			}
-
-			region := sp.CRDAPairs[i].CRDARegions[j]
-			otherRegion := sp.CRDAPairs[i].CRDARegions[(j+1)%2]
-
-			trackId := util.Select(pairState.Mode == CRDAModeStagger, sp.CRDAPairs[i].StaggerSymbol,
-				sp.CRDAPairs[i].TieSymbol)
-
-			offset := util.Select(pairState.Mode == CRDAModeTie, sp.CRDAPairs[i].TieOffset, float32(0))
-
-			nmPerLongitude := ctx.NmPerLongitude
-			for _, trk := range sp.visibleTracks {
-				if trk.IsUnassociated() {
-					continue
-				}
-				state := sp.TrackState[trk.ADSBCallsign]
-
-				// Create a ghost track if appropriate, add it to the
-				// ghosts slice, and draw its radar track.
-				force := state.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
-				heading := util.Select(state.HaveHeading(),
-					float32(math.TrueToMagnetic(state.TrackHeading(nmPerLongitude), ctx.MagneticVariation)),
-					float32(trk.Heading))
-
-				ghost := region.TryMakeGhost(trk.RadarTrack, heading, trk.FlightPlan.Scratchpad, force, offset,
-					leaderDirection, nmPerLongitude, otherRegion)
-				if ghost != nil {
-					ghost.TrackId = trackId
-					ghosts = append(ghosts, ghost)
-				}
-			}
-		}
+		pair := sp.CRDAPairs[i]
+		tryGhost(pair, pair.Source, pair.Ghost, pairState.SourceState,
+			pair.SourceLeaderDirection, pairState.Mode)
+		// The ghost-side direction reverses the source/ghost roles for
+		// controllers who want symmetric ghosting on the pair.
+		tryGhost(pair, pair.Ghost, pair.Source, pairState.GhostState,
+			pair.GhostLeaderDirection, pairState.Mode)
 	}
 
 	return ghosts

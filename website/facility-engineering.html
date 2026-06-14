@@ -2988,9 +2988,12 @@
                   <tr>
                     <td>"crda_pairs"</td>
                     <td>Array of objects</td>
-                    <td><p>Each object specifies a pair of converging CRDA regions that
-                        will be included in the STARS CRDA list. Each object has
-                        the following members:</p>
+                    <td><p>Each object specifies a one-directional ghosting relationship between two
+                        CRDA regions: aircraft flying through the <code>source_region</code>'s
+                        qualification volume have ghost data blocks plotted on the
+                        <code>ghost_region</code>'s centerline. To ghost in both directions, define
+                        two pairs with the roles swapped. Each pair appears as one entry in the
+                        STARS CRDA list.</p>
 
                     </td>
                   </tr>
@@ -3003,15 +3006,32 @@
                           <tbody>
 
                             <tr>
-                              <td>"crda_regions"</td>
-                              <td>Array of two strings</td>
-                              <td>References two regions defined in "crda_regions".</td>
+                              <td>"source_region"</td>
+                              <td>String</td>
+                              <td>Name of a region defined in "crda_regions". Aircraft flying through this
+                                region's qualification volume produce ghost data blocks.</td>
                             </tr>
                             <tr>
-                              <td>"leader_directions"</td>
-                              <td>Array of two strings</td>
-                              <td>Compass directions ("N", "NE", "E", ...) used for leader lines for ghost
-                                aircraft from the two respective regions.</td>
+                              <td>"ghost_region"</td>
+                              <td>String</td>
+                              <td>Name of a region defined in "crda_regions". Ghost data blocks derived
+                                from <code>source_region</code>'s traffic are plotted on this region's
+                                centerline.</td>
+                            </tr>
+                            <tr>
+                              <td>"source_leader_direction"</td>
+                              <td>String</td>
+                              <td>Compass direction ("N", "NE", "E", ...) for leader lines on ghost data
+                                blocks derived from <code>source_region</code>'s traffic.</td>
+                            </tr>
+                            <tr>
+                              <td>"ghost_leader_direction"</td>
+                              <td>String</td>
+                              <td>Compass direction for leader lines on ghost data blocks when the
+                                pair is enabled in the reverse direction (via the per-runway
+                                <code>N&lt;runway&gt;E</code> command); these ghosts are derived from
+                                <code>ghost_region</code>'s traffic and plotted on
+                                <code>source_region</code>'s centerline.</td>
                             </tr>
                             <tr>
                               <td>"stagger_symbol"</td>

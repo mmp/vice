@@ -257,15 +257,19 @@
       },
       "crda_pairs": [
         {
-          "crda_regions": ["8", "14"],
-          "leader_directions": ["N", "N"],
+          "source_region": "8",
+          "ghost_region": "14",
+          "source_leader_direction": "N",
+          "ghost_leader_direction": "N",
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5
         },
         {
-          "crda_regions": ["26", "32"],
-          "leader_directions": ["N", "N"],
+          "source_region": "26",
+          "ghost_region": "32",
+          "source_leader_direction": "N",
+          "ghost_leader_direction": "N",
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5

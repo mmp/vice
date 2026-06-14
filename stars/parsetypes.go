@@ -535,13 +535,19 @@ func (h *crdaRegionIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *Com
 					if !pairState.Enabled {
 						continue
 					}
-					for j, regionName := range pair.Regions {
-						if len(regionName) > len(rest) {
+					for _, rs := range []struct {
+						name  string
+						state *CRDARunwayState
+					}{
+						{pair.SourceRegion, &pairState.SourceState},
+						{pair.GhostRegion, &pairState.GhostState},
+					} {
+						if len(rs.name) > len(rest) {
 							continue
 						}
-						if rest[:len(regionName)] == regionName && len(regionName) > bestLen {
-							bestMatch = &pairState.RunwayState[j]
-							bestLen = len(regionName)
+						if rest[:len(rs.name)] == rs.name && len(rs.name) > bestLen {
+							bestMatch = rs.state
+							bestLen = len(rs.name)
 						}
 					}
 				}
@@ -565,19 +571,25 @@ func (h *crdaRegionIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *Com
 		if !pairState.Enabled {
 			continue
 		}
-		for j, regionName := range pair.Regions {
-			if len(regionName) > len(text) {
+		for _, rs := range []struct {
+			name  string
+			state *CRDARunwayState
+		}{
+			{pair.SourceRegion, &pairState.SourceState},
+			{pair.GhostRegion, &pairState.GhostState},
+		} {
+			if len(rs.name) > len(text) {
 				continue
 			}
-			if text[:len(regionName)] != regionName {
+			if text[:len(rs.name)] != rs.name {
 				continue
 			}
-			if len(regionName) > bestLen {
-				bestMatch = &pairState.RunwayState[j]
-				bestRemainder = text[len(regionName):]
-				bestLen = len(regionName)
+			if len(rs.name) > bestLen {
+				bestMatch = rs.state
+				bestRemainder = text[len(rs.name):]
+				bestLen = len(rs.name)
 				ambiguous = false
-			} else if len(regionName) == bestLen && bestMatch != &pairState.RunwayState[j] {
+			} else if len(rs.name) == bestLen && bestMatch != rs.state {
 				ambiguous = true
 			}
 		}

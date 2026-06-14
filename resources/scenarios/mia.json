@@ -90,15 +90,19 @@
       },
       "crda_pairs": [
         {
-          "crda_regions": ["12", "8R"],
-          "leader_directions": ["N", "N"],
+          "source_region": "12",
+          "ghost_region": "8R",
+          "source_leader_direction": "N",
+          "ghost_leader_direction": "N",
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 4
         },
         {
-          "crda_regions": ["30", "27"],
-          "leader_directions": ["W", "N"],
+          "source_region": "30",
+          "ghost_region": "27",
+          "source_leader_direction": "W",
+          "ghost_leader_direction": "N",
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 4

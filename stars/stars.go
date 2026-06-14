@@ -347,9 +347,10 @@ const (
 // this is read-only, stored in STARSPane for convenience
 type STARSCRDAPair struct {
 	av.CRDAPair
-	CRDARegions [2]*av.CRDARegion
-	Airport     string
-	Index       int
+	Source  *av.CRDARegion
+	Ghost   *av.CRDARegion
+	Airport string
+	Index   int
 }
 
 type CRDARunwayState struct {
@@ -365,11 +366,12 @@ type CRDARunwayState struct {
 type CRDARunwayPairState struct {
 	Enabled     bool
 	Mode        CRDAMode
-	RunwayState [2]CRDARunwayState
+	SourceState CRDARunwayState
+	GhostState  CRDARunwayState
 }
 
 func (c *STARSCRDAPair) getRegionsString() string {
-	return c.Regions[0] + "/" + c.Regions[1]
+	return c.SourceRegion + "/" + c.GhostRegion
 }
 
 type VideoMapsGroup int
@@ -840,10 +842,10 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 		for idx, pair := range ap.CRDAPairs {
 			sp.CRDAPairs = append(sp.CRDAPairs, STARSCRDAPair{
 				CRDAPair: pair,
-				CRDARegions: [2]*av.CRDARegion{ap.CRDARegions[pair.Regions[0]],
-					ap.CRDARegions[pair.Regions[1]]},
-				Airport: name[1:], // drop the ICAO prefix ("K", "P", or "T")
-				Index:   idx + 1,  // 1-based
+				Source:   ap.CRDARegions[pair.SourceRegion],
+				Ghost:    ap.CRDARegions[pair.GhostRegion],
+				Airport:  name[1:], // drop the ICAO prefix ("K", "P", or "T")
+				Index:    idx + 1,  // 1-based
 			})
 		}
 	}
@@ -1713,37 +1715,37 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	ps := sp.currentPrefs()
-	for i, state := range ps.CRDA.RunwayPairState {
-		for j, rwyState := range state.RunwayState {
-			if rwyState.DrawCourseLines {
-				region := sp.CRDAPairs[i].CRDARegions[j]
-				courseLine := region.CourseLine(ctx.NmPerLongitude)
-				ld := renderer.GetLinesDrawBuilder()
-				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(sp.Colors.GhostDatablock))
-				for k := 0; k+1 < len(courseLine); k++ {
-					ld.AddLine(courseLine[k], courseLine[k+1])
-				}
-
-				ld.GenerateCommands(cb)
-				renderer.ReturnLinesDrawBuilder(ld)
+	drawRegion := func(region *av.CRDARegion, rwyState CRDARunwayState) {
+		if rwyState.DrawCourseLines {
+			courseLine := region.CourseLine(ctx.NmPerLongitude)
+			ld := renderer.GetLinesDrawBuilder()
+			cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(sp.Colors.GhostDatablock))
+			for k := 0; k+1 < len(courseLine); k++ {
+				ld.AddLine(courseLine[k], courseLine[k+1])
 			}
 
-			if rwyState.DrawQualificationRegion {
-				region := sp.CRDAPairs[i].CRDARegions[j]
-				poly := region.QualificationPolygon(ctx.NmPerLongitude)
-
-				ld := renderer.GetLinesDrawBuilder()
-				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(sp.Colors.GhostDatablock))
-				polyF32 := make([][2]float32, len(poly))
-				for k, p := range poly {
-					polyF32[k] = p
-				}
-				ld.AddLineLoop(polyF32)
-
-				ld.GenerateCommands(cb)
-				renderer.ReturnLinesDrawBuilder(ld)
-			}
+			ld.GenerateCommands(cb)
+			renderer.ReturnLinesDrawBuilder(ld)
 		}
+
+		if rwyState.DrawQualificationRegion {
+			poly := region.QualificationPolygon(ctx.NmPerLongitude)
+
+			ld := renderer.GetLinesDrawBuilder()
+			cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(sp.Colors.GhostDatablock))
+			polyF32 := make([][2]float32, len(poly))
+			for k, p := range poly {
+				polyF32[k] = p
+			}
+			ld.AddLineLoop(polyF32)
+
+			ld.GenerateCommands(cb)
+			renderer.ReturnLinesDrawBuilder(ld)
+		}
+	}
+	for i, state := range ps.CRDA.RunwayPairState {
+		drawRegion(sp.CRDAPairs[i].Source, state.SourceState)
+		drawRegion(sp.CRDAPairs[i].Ghost, state.GhostState)
 	}
 }
 

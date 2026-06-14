@@ -303,12 +303,14 @@ func (p *Preferences) Reset(ss client.SimState, sp *STARSPane) {
 	p.CRDA.RunwayPairState = nil
 	for _, pair := range sp.CRDAPairs {
 		state := CRDARunwayPairState{}
-		// The first region is enabled by default
-		state.RunwayState[0].Enabled = true
-		state.RunwayState[0].Airport = pair.Airport
-		state.RunwayState[0].Region = pair.Regions[0]
-		state.RunwayState[1].Airport = pair.Airport
-		state.RunwayState[1].Region = pair.Regions[1]
+		// Source-side ghosting is enabled by default; the ghost-side direction
+		// (which would reverse source/ghost roles) starts disabled and the
+		// controller can enable it with N[runway]E if they want.
+		state.SourceState.Enabled = true
+		state.SourceState.Airport = pair.Airport
+		state.SourceState.Region = pair.SourceRegion
+		state.GhostState.Airport = pair.Airport
+		state.GhostState.Region = pair.GhostRegion
 		p.CRDA.RunwayPairState = append(p.CRDA.RunwayPairState, state)
 	}
 

@@ -154,22 +154,28 @@
       },
       "crda_pairs": [
         {
-          "crda_regions": ["26L", "19R"],
-          "leader_directions": ["NE", "NW"],
+          "source_region": "26L",
+          "ghost_region": "19R",
+          "source_leader_direction": "NE",
+          "ghost_leader_direction": "NW",
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5
         },
         {
-          "crda_regions": ["26L", "1L"],
-          "leader_directions": ["NE", "E"],
+          "source_region": "26L",
+          "ghost_region": "1L",
+          "source_leader_direction": "NE",
+          "ghost_leader_direction": "E",
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5
         },
         {
-          "crda_regions": ["19L", "8R"],
-          "leader_directions": ["NW", "S"],
+          "source_region": "19L",
+          "ghost_region": "8R",
+          "source_leader_direction": "NW",
+          "ghost_leader_direction": "S",
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5

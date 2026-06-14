@@ -59,14 +59,23 @@ type VFRRouteSpec struct {
 	Description string        `json:"description"`
 }
 
+// CRDAPair describes a one-directional ghosting relationship between two
+// CRDA regions. Aircraft flying through SourceRegion's qualification volume
+// have ghost data blocks plotted on GhostRegion's centerline; to ghost in
+// both directions, define two pairs with the roles swapped.
 type CRDAPair struct {
-	Regions                [2]string                        `json:"crda_regions"`
-	TieSymbol              string                           `json:"tie_symbol"`
-	StaggerSymbol          string                           `json:"stagger_symbol"`
-	TieOffset              float32                          `json:"tie_offset"`
-	LeaderDirectionStrings [2]string                        `json:"leader_directions"`
-	LeaderDirections       [2]math.CardinalOrdinalDirection // not in JSON, set during deserialize
-	ConvergencePoint       math.Point2LL                    // not in JSON, set during deserialize
+	SourceRegion             string  `json:"source_region"`
+	GhostRegion              string  `json:"ghost_region"`
+	SourceLeaderDirectionStr string  `json:"source_leader_direction"`
+	GhostLeaderDirectionStr  string  `json:"ghost_leader_direction"`
+	TieSymbol                string  `json:"tie_symbol"`
+	StaggerSymbol            string  `json:"stagger_symbol"`
+	TieOffset                float32 `json:"tie_offset"`
+
+	// Set during deserialize.
+	SourceLeaderDirection math.CardinalOrdinalDirection
+	GhostLeaderDirection  math.CardinalOrdinalDirection
+	ConvergencePoint      math.Point2LL
 }
 
 type GhostTrack struct {
@@ -591,7 +600,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				def.ReferenceLineLength, nmPerLongitude, magneticVariation)
 		}
 		if !slices.ContainsFunc(ap.CRDAPairs,
-			func(c CRDAPair) bool { return c.Regions[0] == name || c.Regions[1] == name }) {
+			func(c CRDAPair) bool { return c.SourceRegion == name || c.GhostRegion == name }) {
 			e.ErrorString(`region not used in "crda_pairs"`)
 		}
 
@@ -599,52 +608,55 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 
 	for i, pair := range ap.CRDAPairs {
-		e.Push("CRDA pair " + pair.Regions[0] + "/" + pair.Regions[1])
+		e.Push("CRDA pair " + pair.SourceRegion + "/" + pair.GhostRegion)
 
-		for _, name := range pair.Regions {
-			if _, ok := ap.CRDARegions[name]; !ok {
-				e.ErrorString(`region %q not defined in "crda_regions"`, name)
-			}
+		srcReg := ap.CRDARegions[pair.SourceRegion]
+		ghostReg := ap.CRDARegions[pair.GhostRegion]
+		if srcReg == nil {
+			e.ErrorString(`region %q not defined in "crda_regions"`, pair.SourceRegion)
+		}
+		if ghostReg == nil {
+			e.ErrorString(`region %q not defined in "crda_regions"`, pair.GhostRegion)
 		}
 
 		// Find the convergence point by extending each path's final
 		// segment as a straight line and computing line-line intersection.
-		reg0, reg1 := ap.CRDARegions[pair.Regions[0]], ap.CRDARegions[pair.Regions[1]]
-		if reg0 != nil && reg1 != nil {
+		if srcReg != nil && ghostReg != nil {
 			// Get final points and headings for both paths
-			p0, h0 := reg0.Path.PointAtDistance(reg0.Path.Length)
-			p1, h1 := reg1.Path.PointAtDistance(reg1.Path.Length)
+			pSrc, hSrc := srcReg.Path.PointAtDistance(srcReg.Path.Length)
+			pGhost, hGhost := ghostReg.Path.PointAtDistance(ghostReg.Path.Length)
 
 			// Extend lines along final headings
-			v0 := math.SinCos(math.Radians(h0))
-			v1 := math.SinCos(math.Radians(h1))
-			p0far := math.Add2f(p0, math.Scale2f(v0, 20))
-			p1far := math.Add2f(p1, math.Scale2f(v1, 20))
+			vSrc := math.SinCos(math.Radians(hSrc))
+			vGhost := math.SinCos(math.Radians(hGhost))
+			pSrcFar := math.Add2f(pSrc, math.Scale2f(vSrc, 20))
+			pGhostFar := math.Add2f(pGhost, math.Scale2f(vGhost, 20))
 
-			p, ok := math.LineLineIntersect(p0, p0far, p1, p1far)
-			if ok && math.Distance2f(p, p0) < 20 && math.Distance2f(p, p1) < 20 {
+			p, ok := math.LineLineIntersect(pSrc, pSrcFar, pGhost, pGhostFar)
+			if ok && math.Distance2f(p, pSrc) < 20 && math.Distance2f(p, pGhost) < 20 {
 				ap.CRDAPairs[i].ConvergencePoint = math.NM2LL(p, nmPerLongitude)
 			} else {
-				mid := math.Scale2f(math.Add2f(p0, p1), 0.5)
+				mid := math.Scale2f(math.Add2f(pSrc, pGhost), 0.5)
 				ap.CRDAPairs[i].ConvergencePoint = math.NM2LL(mid, nmPerLongitude)
 			}
 
 			// Compute distToConvergence for each region
 			convNM := math.LL2NM(ap.CRDAPairs[i].ConvergencePoint, nmPerLongitude)
-			reg0.DistToConvergence = math.Distance2f(p0, convNM)
-			reg1.DistToConvergence = math.Distance2f(p1, convNM)
+			srcReg.DistToConvergence = math.Distance2f(pSrc, convNM)
+			ghostReg.DistToConvergence = math.Distance2f(pGhost, convNM)
 		}
 
-		for j, name := range pair.Regions {
+		parseLeader := func(name, s string, dst *math.CardinalOrdinalDirection) {
 			e.Push(name)
-			var err error
-			ap.CRDAPairs[i].LeaderDirections[j], err =
-				math.ParseCardinalOrdinalDirection(pair.LeaderDirectionStrings[j])
+			d, err := math.ParseCardinalOrdinalDirection(s)
 			if err != nil {
 				e.Error(err)
 			}
+			*dst = d
 			e.Pop()
 		}
+		parseLeader(pair.SourceRegion, pair.SourceLeaderDirectionStr, &ap.CRDAPairs[i].SourceLeaderDirection)
+		parseLeader(pair.GhostRegion, pair.GhostLeaderDirectionStr, &ap.CRDAPairs[i].GhostLeaderDirection)
 		e.Pop()
 	}
 

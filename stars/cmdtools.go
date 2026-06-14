@@ -1297,12 +1297,18 @@ func trackInCRDARegion(sp *STARSPane, ctx *panes.Context, trk *sim.Track) bool {
 		if !pairState.Enabled {
 			continue
 		}
-		for j, rwyState := range pairState.RunwayState {
-			if !rwyState.Enabled {
+		pair := sp.CRDAPairs[i]
+		for _, rs := range []struct {
+			region *av.CRDARegion
+			state  CRDARunwayState
+		}{
+			{pair.Source, pairState.SourceState},
+			{pair.Ghost, pairState.GhostState},
+		} {
+			if !rs.state.Enabled {
 				continue
 			}
-			region := sp.CRDAPairs[i].CRDARegions[j]
-			if lat, _ := region.Inside(state.track.Location, trk.TrueAltitude,
+			if lat, _ := rs.region.Inside(state.track.Location, trk.TrueAltitude,
 				ctx.NmPerLongitude); lat {
 				return true
 			}

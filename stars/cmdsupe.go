@@ -81,10 +81,11 @@ func registerSupeCommands() {
 						if !pairState.Enabled {
 							continue
 						}
-						if sp.CRDAPairs[j].Regions[0] == pair.Regions[0] ||
-							sp.CRDAPairs[j].Regions[0] == pair.Regions[1] ||
-							sp.CRDAPairs[j].Regions[1] == pair.Regions[0] ||
-							sp.CRDAPairs[j].Regions[1] == pair.Regions[1] {
+						other := sp.CRDAPairs[j]
+						if other.SourceRegion == pair.SourceRegion ||
+							other.SourceRegion == pair.GhostRegion ||
+							other.GhostRegion == pair.SourceRegion ||
+							other.GhostRegion == pair.GhostRegion {
 							return CommandStatus{}, ErrSTARSIllegalRunway
 						}
 					}

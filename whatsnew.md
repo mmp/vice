@@ -25,4 +25,5 @@
 - Scenario updates: I90 (Ethan Hawes), NCT (Ketan K)
 - Facility engineering:
   - "controllers" entries in facility configurations now accept a comma-separated list of TCPs
-
+  - CRDA: renamed "crda_regions" array -> "source_region" / "ghost_region"
+  - CRDA: renamed "leader_directions" array -> "source_direction" / "ghost_direction"
