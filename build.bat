@@ -390,6 +390,16 @@ if errorlevel 1 exit /b 1
 
 echo Build complete: vice.exe
 
+REM Build tools. -extldflags=-static bakes the MinGW C/C++ runtime (libgcc,
+REM libstdc++, libwinpthread) into the .exe so users can run the tools from
+REM any working directory without the install folder's DLLs alongside.
+echo === Building tools ===
+go build -ldflags="-s -w -extldflags=-static" -o crc2vice.exe .\cmd\crc2vice
+if errorlevel 1 exit /b 1
+go build -ldflags="-s -w -extldflags=-static" -o dat2vice.exe .\cmd\dat2vice
+if errorlevel 1 exit /b 1
+echo Tools built: crc2vice.exe, dat2vice.exe
+
 REM Run tests
 if %DO_TEST%==1 (
     echo === Running tests ===

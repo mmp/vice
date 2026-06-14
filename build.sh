@@ -445,6 +445,20 @@ build_vice() {
         else
             CGO_ENABLED=1 GOOS=darwin go build -ldflags="-s -w" -tags "$BUILD_TAGS" -o vice ./cmd/vice
         fi
+
+        echo "Building tools..."
+        if [ "$DO_UNIVERSAL" = true ]; then
+            for tool in crc2vice dat2vice; do
+                CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o ${tool}_amd64 ./cmd/${tool}
+                CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o ${tool}_arm64 ./cmd/${tool}
+                lipo -create -output ${tool} ${tool}_amd64 ${tool}_arm64
+                rm ${tool}_amd64 ${tool}_arm64
+            done
+        else
+            for tool in crc2vice dat2vice; do
+                go build -ldflags="-s -w" -o ${tool} ./cmd/${tool}
+            done
+        fi
     elif [ "$OS_TYPE" = "linux" ]; then
         if [ "$DO_VULKAN" = true ]; then
             BUILD_TAGS="$BUILD_TAGS,vulkan"

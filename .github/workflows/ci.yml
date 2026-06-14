@@ -176,15 +176,6 @@ jobs:
     - name: Build universal binary
       run: ./build.sh --release --universal
 
-    - name: Build crc2vice and dat2vice (universal)
-      run: |
-        for tool in crc2vice dat2vice; do
-          CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o ${tool}_amd64 ./cmd/${tool}
-          CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o ${tool}_arm64 ./cmd/${tool}
-          lipo -create -output ${tool} ${tool}_amd64 ${tool}_arm64
-          rm ${tool}_amd64 ${tool}_arm64
-        done
-
     - name: Run tests
       run: go test -v ./...
 
@@ -365,8 +356,6 @@ jobs:
       run: |
         $env:CGO_LDFLAGS = "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib -L $env:VULKAN_SDK/Lib"
         .\build.bat --release
-        go build -o ./crc2vice.exe ./cmd/crc2vice
-        go build -o ./dat2vice.exe ./cmd/dat2vice
       shell: pwsh
       env:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
