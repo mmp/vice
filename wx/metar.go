@@ -522,17 +522,47 @@ func NewCompressedMETAR() CompressedMETAR {
 	return CompressedMETAR{m: make(map[string]compressedMETARSOA)}
 }
 
-// MarshalMsgpack implements custom msgpack encoding for CompressedMETAR.
-// This allows the unexported field 'm' to be properly serialized.
-func (cm CompressedMETAR) MarshalMsgpack() ([]byte, error) {
-	return msgpack.Marshal(cm.m)
+// EncodeMsgpack implements msgpack streaming encoding for CompressedMETAR.
+// We use the streaming CustomEncoder/CustomDecoder interfaces rather than
+// MarshalMsgpack/UnmarshalMsgpack because the buffered path internally
+// records every byte of the value into a recovery buffer (so it can hand
+// a complete []byte to the user's UnmarshalMsgpack) and then re-decodes
+// it. For the multi-tens-of-MB METAR map that doubled allocations at
+// startup; streaming avoids the intermediate buffer entirely. The
+// on-wire format is unchanged: a msgpack map of string -> bin.
+func (cm CompressedMETAR) EncodeMsgpack(enc *msgpack.Encoder) error {
+	if err := enc.EncodeMapLen(len(cm.m)); err != nil {
+		return err
+	}
+	for k, v := range cm.m {
+		if err := enc.EncodeString(k); err != nil {
+			return err
+		}
+		if err := enc.EncodeBytes(v); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
-// UnmarshalMsgpack implements custom msgpack decoding for CompressedMETAR.
-// This allows the unexported field 'm' to be properly deserialized.
-func (cm *CompressedMETAR) UnmarshalMsgpack(b []byte) error {
-	cm.m = make(map[string]compressedMETARSOA)
-	return msgpack.Unmarshal(b, &cm.m)
+func (cm *CompressedMETAR) DecodeMsgpack(dec *msgpack.Decoder) error {
+	n, err := dec.DecodeMapLen()
+	if err != nil {
+		return err
+	}
+	cm.m = make(map[string]compressedMETARSOA, n)
+	for range n {
+		k, err := dec.DecodeString()
+		if err != nil {
+			return err
+		}
+		v, err := dec.DecodeBytes()
+		if err != nil {
+			return err
+		}
+		cm.m[k] = v
+	}
+	return nil
 }
 
 // LoadCompressedMETAR reads a complete compressed METAR file
