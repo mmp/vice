@@ -87,6 +87,16 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 		lg.Warn("Microphone access restricted by system policy")
 	}
 
+	// Audio (SDL) init is independent of GLFW/OpenGL and can run on a
+	// background goroutine while the main thread does the window setup.
+	// Microphone authorization above must complete first.
+	platformDraft := &glfwPlatform{audioRecorder: NewAudioRecorder(lg)}
+	audioDone := make(chan struct{})
+	go func() {
+		defer close(audioDone)
+		platformDraft.audioEngine.Initialize(lg)
+	}()
+
 	lg.Info("Starting GLFW initialization")
 	err := glfw.Init()
 	if err != nil {
@@ -150,15 +160,13 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 	window.Show()
 	window.MakeContextCurrent()
 
-	platform := &glfwPlatform{
-		config:        config,
-		imguiIO:       io,
-		window:        window,
-		multisample:   config.EnableMSAA,
-		heldFKeys:     make(map[imgui.Key]any),
-		audioRecorder: NewAudioRecorder(lg),
-		appFocused:    true,
-	}
+	platform := platformDraft
+	platform.config = config
+	platform.imguiIO = io
+	platform.window = window
+	platform.multisample = config.EnableMSAA
+	platform.heldFKeys = make(map[imgui.Key]any)
+	platform.appFocused = true
 	platform.installCallbacks()
 	platform.createMouseCursors()
 	platform.EnableVSync(true)
@@ -167,7 +175,7 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 
 	lg.Info("Finished GLFW initialization")
 
-	platform.audioEngine.Initialize(lg)
+	<-audioDone
 
 	return platform, nil
 }
