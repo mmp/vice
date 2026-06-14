@@ -57,6 +57,23 @@ func (e *ErrorLogger) HaveErrors() bool {
 	return e != nil && len(e.errors) > 0
 }
 
+// MergeFrom appends errors from other onto e, prefixing each with e's
+// current hierarchy. The other ErrorLogger's hierarchy is preserved in
+// the message bodies (each error is already a fully-qualified string).
+func (e *ErrorLogger) MergeFrom(other *ErrorLogger) {
+	if e == nil || other == nil || len(other.errors) == 0 {
+		return
+	}
+	prefix := strings.Join(e.hierarchy, " / ")
+	for _, msg := range other.errors {
+		if prefix == "" {
+			e.errors = append(e.errors, msg)
+		} else {
+			e.errors = append(e.errors, prefix+" / "+msg)
+		}
+	}
+}
+
 func (e *ErrorLogger) Errors() iter.Seq[string] {
 	return func(yield func(s string) bool) {
 		if e != nil {
