@@ -550,7 +550,73 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	var controlClient *client.ControlClient
 	var activeRadarPane panes.Pane
 
-	plat, render := initPlatformAndRenderer(config, lg)
+	// Kick off the heavy non-OpenGL initialization (aviation database,
+	// weather, scenario loading, local server) in a goroutine so it runs
+	// in parallel with the main-thread OpenGL/font/imgui setup. wx.Init
+	// is fire-and-forget; av.InitDB and MakeServerManager run inline.
+	// MakeServerManager's callbacks reference plat/render/config, but
+	// those are only invoked later when a sim actually connects, so it
+	// is safe to construct mgr before plat is ready.
+	var mgr *client.ConnectionManager
+	var errorLogger util.ErrorLogger
+	var extraScenarioErrors string
+	var plat platform.Platform
+	var render renderer.Renderer
+	bgDone := make(chan struct{})
+	go func() {
+		defer close(bgDone)
+		wx.Init()
+		av.InitDB()
+		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+		mgr, errorLogger, extraScenarioErrors = client.MakeServerManager(*serverAddress, *scenarioFilename,
+			*videoMapFilename, *scenarioBriefFilename, &config.DisableTextToSpeech, lg,
+			func(c *client.ControlClient) { // updated client
+				if c != nil {
+					// Determine if this is a STARS or ERAM scenario
+					isSTARSSim := av.DB.IsTRACON(c.State.Facility) || av.DB.IsATCT(c.State.Facility)
+					activeRadarPane = config.ActiveRadarPane(isSTARSSim)
+
+					// Reset each pane for the new sim
+					activeRadarPane.ResetSim(c, plat, lg)
+					config.MessagesPane.ResetSim(c, plat, lg)
+					config.FlightStripPane.ResetSim(c, plat, lg)
+
+					// Apply waypoint commands if specified via command line (only for new clients)
+					if *waypointCommands != "" {
+						c.SetWaypointCommands(*waypointCommands)
+					}
+
+					// Set crash report RPC client - prefer remote server so crashes
+					// are reported to the public server even for local sims
+					if mgr.RemoteServer != nil && mgr.RemoteServer.RPCClient != nil {
+						lg.SetCrashReportClient(mgr.RemoteServer.RPCClient.Client)
+					} else if mgr.LocalServer != nil && mgr.LocalServer.RPCClient != nil {
+						lg.SetCrashReportClient(mgr.LocalServer.RPCClient.Client)
+					}
+				}
+				uiResetControlClient(c, config, plat, lg)
+				controlClient = c
+			},
+			func(err error) {
+				switch err {
+				case server.ErrRPCVersionMismatch:
+					ShowErrorDialog(plat, lg,
+						"This version of vice is incompatible with the vice multi-controller server.\n"+
+							"If you're using an older version of vice, please upgrade to the latest\n"+
+							"version for multi-controller support.")
+
+				case server.ErrServerDisconnected:
+					ShowErrorDialog(plat, lg, "Lost connection to the vice server.")
+					uiShowConnectOrBenchmarkDialog(mgr, false, config, plat, lg)
+
+				default:
+					lg.Errorf("Server connection error: %v", err)
+				}
+			},
+		)
+	}()
+
+	plat, render = initPlatformAndRenderer(config, lg)
 
 	eventStream := sim.NewEventStream(lg)
 	uiInit(render, plat, config, eventStream, lg)
@@ -559,12 +625,6 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		ShowFatalErrorDialog(render, plat, lg, "Error syncing resources: %v", err)
 	}
 
-	av.InitDB()
-	wx.Init()
-
-	// Initialize navigation logging if requested
-	nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
-
 	// After we have plat and render
 	if configErr != nil {
 		ShowErrorDialog(plat, lg, "Saved configuration file is corrupt. Discarding. (%v)", configErr)
@@ -572,57 +632,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 	config.Activate(render, plat, eventStream, lg)
 
-	var mgr *client.ConnectionManager
-	var errorLogger util.ErrorLogger
-	var extraScenarioErrors string
-	mgr, errorLogger, extraScenarioErrors = client.MakeServerManager(*serverAddress, *scenarioFilename,
-		*videoMapFilename, *scenarioBriefFilename, &config.DisableTextToSpeech, lg,
-		func(c *client.ControlClient) { // updated client
-			if c != nil {
-				// Determine if this is a STARS or ERAM scenario
-				isSTARSSim := av.DB.IsTRACON(c.State.Facility) || av.DB.IsATCT(c.State.Facility)
-				activeRadarPane = config.ActiveRadarPane(isSTARSSim)
-
-				// Reset each pane for the new sim
-				activeRadarPane.ResetSim(c, plat, lg)
-				config.MessagesPane.ResetSim(c, plat, lg)
-				config.FlightStripPane.ResetSim(c, plat, lg)
-
-				// Apply waypoint commands if specified via command line (only for new clients)
-				if *waypointCommands != "" {
-					c.SetWaypointCommands(*waypointCommands)
-				}
-
-				// Set crash report RPC client - prefer remote server so crashes
-				// are reported to the public server even for local sims
-				if mgr.RemoteServer != nil && mgr.RemoteServer.RPCClient != nil {
-					lg.SetCrashReportClient(mgr.RemoteServer.RPCClient.Client)
-				} else if mgr.LocalServer != nil && mgr.LocalServer.RPCClient != nil {
-					lg.SetCrashReportClient(mgr.LocalServer.RPCClient.Client)
-				}
-			}
-			uiResetControlClient(c, config, plat, lg)
-			controlClient = c
-		},
-		func(err error) {
-			switch err {
-			case server.ErrRPCVersionMismatch:
-				ShowErrorDialog(plat, lg,
-					"This version of vice is incompatible with the vice multi-controller server.\n"+
-						"If you're using an older version of vice, please upgrade to the latest\n"+
-						"version for multi-controller support. (If you're using a beta build, then\n"+
-						"thanks for your help testing vice; when the beta is released, the server\n"+
-						"will be updated as well.)")
-
-			case server.ErrServerDisconnected:
-				ShowErrorDialog(plat, lg, "Lost connection to the vice server.")
-				uiShowConnectOrBenchmarkDialog(mgr, false, config, plat, lg)
-
-			default:
-				lg.Errorf("Server connection error: %v", err)
-			}
-		},
-	)
+	<-bgDone
 
 	if errorLogger.HaveErrors() {
 		errorLogger.PrintErrors(lg)
