@@ -12,10 +12,12 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"slices"
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -25,6 +27,7 @@ import (
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/brunoga/deep"
 )
@@ -1823,7 +1826,12 @@ func scenarioBriefPath(facility string) string {
 
 // facilityConfigCache caches loaded facility configs so that multiple
 // scenario groups referencing the same facility (e.g., N90) share one load.
-var facilityConfigCache = make(map[string]*sim.FacilityConfig)
+// Protected by facilityConfigCacheMu since loadFacilityConfig is called
+// from parallel goroutines during scenario loading.
+var (
+	facilityConfigCache   = make(map[string]*sim.FacilityConfig)
+	facilityConfigCacheMu sync.Mutex
+)
 
 // loadFacilityConfig loads and unmarshals a facility configuration file.
 // Results are cached so that shared facilities (like N90, referenced by
@@ -1831,7 +1839,10 @@ var facilityConfigCache = make(map[string]*sim.FacilityConfig)
 // (duplicate keys, unknown fields) is performed here; call PostDeserialize
 // separately for semantic validation.
 func loadFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *sim.FacilityConfig {
-	if fc, ok := facilityConfigCache[path]; ok {
+	facilityConfigCacheMu.Lock()
+	fc, ok := facilityConfigCache[path]
+	facilityConfigCacheMu.Unlock()
+	if ok {
 		return fc
 	}
 
@@ -1860,14 +1871,18 @@ func loadFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *sim
 		return nil
 	}
 
-	var fc sim.FacilityConfig
 	if err := util.UnmarshalJSONBytes(contents, &fc); err != nil {
 		e.Error(err)
 		return nil
 	}
 
-	facilityConfigCache[path] = &fc
-	return &fc
+	facilityConfigCacheMu.Lock()
+	defer facilityConfigCacheMu.Unlock()
+	if existing, ok := facilityConfigCache[path]; ok {
+		return existing
+	}
+	facilityConfigCache[path] = fc
+	return fc
 }
 
 // isARTCC returns true if the facility code looks like an ARTCC
@@ -1971,34 +1986,54 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	briefs := newBriefRegistry()
 	catalogs := make(map[string]map[string]*ScenarioCatalog)
 
+	type scenarioWalkItem struct {
+		filesystem fs.FS
+		path       string
+	}
+	var scenarioItems []scenarioWalkItem
 	err := util.WalkResources("scenarios", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
 			lg.Errorf("error walking scenarios/: %v", err)
 			return nil
 		}
-
-		if d.IsDir() {
+		if d.IsDir() || filepath.Ext(path) != ".json" {
 			return nil
 		}
-
-		if filepath.Ext(path) != ".json" {
-			return nil
-		}
-
-		s := loadScenarioGroup(fs, path, e)
-		if s != nil {
-			facility := util.Select(s.TRACON == "", s.ARTCC, s.TRACON)
-			if _, ok := scenarioGroups[facility][s.Name]; ok {
-				e.ErrorString("%s / %s: scenario redefined", s.TRACON, s.Name)
-			} else {
-				if scenarioGroups[facility] == nil {
-					scenarioGroups[facility] = make(map[string]*scenarioGroup)
-				}
-				scenarioGroups[facility][s.Name] = s
-			}
-		}
+		scenarioItems = append(scenarioItems, scenarioWalkItem{fs, path})
 		return nil
 	})
+
+	type scenarioWalkResult struct {
+		s    *scenarioGroup
+		errs util.ErrorLogger
+	}
+	scenarioResults := make([]scenarioWalkResult, len(scenarioItems))
+	eg := &errgroup.Group{}
+	eg.SetLimit(runtime.NumCPU())
+	for i, it := range scenarioItems {
+		eg.Go(func() error {
+			scenarioResults[i].s = loadScenarioGroup(it.filesystem, it.path, &scenarioResults[i].errs)
+			return nil
+		})
+	}
+	_ = eg.Wait()
+
+	for _, r := range scenarioResults {
+		e.MergeFrom(&r.errs)
+		if r.s == nil {
+			continue
+		}
+		s := r.s
+		facility := util.Select(s.TRACON == "", s.ARTCC, s.TRACON)
+		if _, ok := scenarioGroups[facility][s.Name]; ok {
+			e.ErrorString("%s / %s: scenario redefined", s.TRACON, s.Name)
+		} else {
+			if scenarioGroups[facility] == nil {
+				scenarioGroups[facility] = make(map[string]*scenarioGroup)
+			}
+			scenarioGroups[facility][s.Name] = s
+		}
+	}
 	if err != nil {
 		e.Error(err)
 	}
@@ -2097,8 +2132,6 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		}
 	}
 
-	lg.Infof("scenario/video map mapSpec load time: %s\n", time.Since(start))
-
 	// validateBriefForFacility runs the facility-has-scenarios check and the brief validation
 	// pipeline, returning the per-videomap hashes and whether the facility is known.
 	validateBriefForFacility := func(facility string, content []byte, e *util.ErrorLogger) (map[string][]byte, bool) {
@@ -2169,6 +2202,11 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	// configurations/ directory. Every .json file is loaded and validated
 	// via PostDeserialize, regardless of whether a scenario references it.
 	resourcesFS := util.GetResourcesFS()
+	type configWalkItem struct {
+		filesystem fs.FS
+		path       string
+	}
+	var configItems []configWalkItem
 	err = util.WalkResources("configurations", func(path string, d fs.DirEntry, filesystem fs.FS, err error) error {
 		if err != nil {
 			lg.Errorf("error walking configurations/: %v", err)
@@ -2177,13 +2215,27 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		if d.IsDir() || filepath.Ext(path) != ".json" {
 			return nil
 		}
-
-		fc := loadFacilityConfig(filesystem, path, e)
-		if fc != nil {
-			fc.PostDeserialize(path, e)
-		}
+		configItems = append(configItems, configWalkItem{filesystem, path})
 		return nil
 	})
+
+	configErrs := make([]util.ErrorLogger, len(configItems))
+	eg = &errgroup.Group{}
+	eg.SetLimit(runtime.NumCPU())
+	for i, it := range configItems {
+		eg.Go(func() error {
+			fc := loadFacilityConfig(it.filesystem, it.path, &configErrs[i])
+			if fc != nil {
+				fc.PostDeserialize(it.path, &configErrs[i])
+			}
+			return nil
+		})
+	}
+	eg.Wait()
+
+	for i := range configErrs {
+		e.MergeFrom(&configErrs[i])
+	}
 	if err != nil {
 		e.Error(err)
 	}
@@ -2243,18 +2295,25 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		}
 	}
 
-	// Final tidying before we return the loaded scenarios.
+	// Final tidying before we return the loaded scenarios. Per-scenario
+	// PostDeserialize is the dominant cost here; do them in parallel.
+	type phase3Task struct {
+		tname, groupName string
+		sgroup           *scenarioGroup
+		mapSpec          *av.MapLibrarySpec
+		vfErr            string // pre-validation error, if any
+		localCatalogs    map[string]map[string]*ScenarioCatalog
+		localE           util.ErrorLogger
+	}
+	var phase3Tasks []*phase3Task
+
 	for tname, tracon := range scenarioGroups {
-		e.Push("TRACON " + tname)
-
 		scenarioNames := make(map[string]string)
-
+		// Sequentially handle cheap per-TRACON checks that read shared state.
+		e.Push("TRACON " + tname)
 		for groupName, sgroup := range tracon {
 			e.Push(sgroup.SourceFile)
 			e.Push("Scenario group " + groupName)
-
-			// Make sure the same scenario name isn't used in multiple
-			// group definitions.
 			for scenarioName := range sgroup.Scenarios {
 				if other, ok := scenarioNames[scenarioName]; ok {
 					e.ErrorString("scenario %q is also defined in the %q scenario group",
@@ -2262,22 +2321,54 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				}
 				scenarioNames[scenarioName] = groupName
 			}
-
-			// Make sure we have what we need in terms of video maps
-			fa := &sgroup.FacilityConfig.FacilityAdaptation
-			if vf := fa.VideoMapFile; vf == "" {
-				e.ErrorString(`no "video_map_file" specified`)
-			} else if mapSpec, ok := mapSpecs[vf]; !ok {
-				e.ErrorString("no mapSpec for video map %q found. Options: %s", vf,
-					strings.Join(util.SortedMapKeys(mapSpecs), ", "))
-			} else {
-				sgroup.PostDeserialize(e, catalogs, mapSpec, mapSpecs)
-			}
-
 			e.Pop() // Scenario group
 			e.Pop() // SourceFile
+
+			t := &phase3Task{tname: tname, groupName: groupName, sgroup: sgroup}
+			fa := &sgroup.FacilityConfig.FacilityAdaptation
+			if vf := fa.VideoMapFile; vf == "" {
+				t.vfErr = `no "video_map_file" specified`
+			} else if mapSpec, ok := mapSpecs[vf]; !ok {
+				t.vfErr = fmt.Sprintf("no mapSpec for video map %q found. Options: %s",
+					vf, strings.Join(util.SortedMapKeys(mapSpecs), ", "))
+			} else {
+				t.mapSpec = mapSpec
+			}
+			phase3Tasks = append(phase3Tasks, t)
 		}
 		e.Pop() // TRACON
+	}
+
+	eg = &errgroup.Group{}
+	eg.SetLimit(runtime.NumCPU())
+	for _, t := range phase3Tasks {
+		t.localE.Push("TRACON " + t.tname)
+		t.localE.Push(t.sgroup.SourceFile)
+		t.localE.Push("Scenario group " + t.groupName)
+		if t.vfErr != "" {
+			t.localE.ErrorString("%s", t.vfErr)
+			continue
+		}
+		t.localCatalogs = make(map[string]map[string]*ScenarioCatalog)
+
+		eg.Go(func() error {
+			t.sgroup.PostDeserialize(&t.localE, t.localCatalogs, t.mapSpec, mapSpecs)
+			return nil
+		})
+	}
+	_ = eg.Wait()
+
+	// Merge per-task results.
+	for _, t := range phase3Tasks {
+		e.MergeFrom(&t.localE)
+		for facility, m := range t.localCatalogs {
+			if catalogs[facility] == nil {
+				catalogs[facility] = make(map[string]*ScenarioCatalog)
+			}
+			for name, c := range m {
+				catalogs[facility][name] = c
+			}
+		}
 	}
 
 	// Validate the extra scenario separately with its own error logger
@@ -2366,6 +2457,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	loadEmergencies(e)
 
+	lg.Infof("LoadScenarioGroups total: %s", time.Since(start))
 	return scenarioGroups, catalogs, mapSpecs, briefs, extraScenarioErrors
 }
 
