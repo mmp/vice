@@ -384,8 +384,9 @@ func FontsInit(r Renderer, p platform.Platform) {
 		"RobotoMono-Medium.ttf.zst":       RobotoMono,
 		"RobotoMono-MediumItalic.ttf.zst": RobotoMonoItalic,
 		"Flight-Strip-Printer.ttf.zst":    FlightStripPrinter} {
+		f := loadFont(fn)
 		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
-			createFontSize(loadFont(fn), size, name)
+			createFontSize(f, size, name)
 		}
 	}
 	// Add a large FontAwesome-only font for weather icons
