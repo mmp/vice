@@ -334,7 +334,33 @@ func (ap AircraftPerformance) ApproachSpeed(windDirection, windSpeed, windGust f
 	return ap.baseApproachSpeed() + additive
 }
 
+var (
+	initDBOnce   sync.Once
+	initDBDoneCh = make(chan struct{})
+)
+
+// InitDB ensures the aviation database is initialized and blocks until
+// it is ready. Safe to call multiple times; only the first call does
+// work. Prefer StartInitDB if you want to kick off loading without
+// waiting.
 func InitDB() {
+	StartInitDB()
+	<-initDBDoneCh
+}
+
+// StartInitDB kicks off aviation database loading on a background
+// goroutine without blocking. Subsequent callers of InitDB() will wait
+// until that load completes.
+func StartInitDB() {
+	initDBOnce.Do(func() {
+		go func() {
+			doInitDB()
+			close(initDBDoneCh)
+		}()
+	})
+}
+
+func doInitDB() {
 	db := &StaticDatabase{}
 
 	var wg sync.WaitGroup

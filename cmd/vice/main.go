@@ -777,6 +777,11 @@ func main() {
 	lg, profiler := initCommon()
 	defer profiler.Cleanup()
 
+	// Start the heavy aviation database load as early as possible so it
+	// runs in parallel with config loading and (in GUI mode) OpenGL/font
+	// setup. Subsequent av.InitDB() calls block until the load is done.
+	av.StartInitDB()
+
 	// Only remove this run's crash-stderr file on a known clean exit.
 	// In particular, do *not* remove it during panic unwinding: a panic
 	// in CLI/server modes (or in runGUI before its CatchAndReportCrash
