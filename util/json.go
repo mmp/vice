@@ -22,113 +22,102 @@ type DuplicateJSONKey struct {
 	Key  string // The duplicate key name
 }
 
-// FindDuplicateJSONKeys scans JSON content and returns all duplicate keys found.
-// It uses the json.Decoder token-based API to walk the JSON structure while
-// tracking seen keys at each object nesting level.
+// FindDuplicateJSONKeys scans JSON content and returns all duplicate keys
+// found. It walks the JSON structure recursively over the json.Decoder
+// token stream, tracking the seen keys at each object nesting level. A
+// per-walker pool of map[string]struct{} is reused across object scopes
+// so that deeply nested input does not allocate a fresh map per `{`.
 func FindDuplicateJSONKeys(data []byte) []DuplicateJSONKey {
-	dec := json.NewDecoder(bytes.NewReader(data))
-	var duplicates []DuplicateJSONKey
+	w := dupKeyWalker{dec: json.NewDecoder(bytes.NewReader(data))}
+	_ = w.walkValue()
+	return w.dups
+}
 
-	// Stack entry tracks state for each nesting level
-	type stackEntry struct {
-		isObject  bool            // true for object, false for array
-		seenKeys  map[string]bool // keys seen at this level (only for objects)
-		expectKey bool            // true if next string token is an object key
-		popPath   bool            // true if we should pop path when closing this container
+type dupKeyWalker struct {
+	dec     *json.Decoder
+	path    []string
+	dups    []DuplicateJSONKey
+	keysets []map[string]struct{}
+}
+
+func (w *dupKeyWalker) borrowKeyset() map[string]struct{} {
+	if n := len(w.keysets); n > 0 {
+		m := w.keysets[n-1]
+		w.keysets = w.keysets[:n-1]
+		clear(m)
+		return m
 	}
-	var stack []stackEntry
-	var path []string // Current path components
+	return make(map[string]struct{})
+}
 
-	for {
-		tok, err := dec.Token()
+func (w *dupKeyWalker) returnKeyset(m map[string]struct{}) {
+	w.keysets = append(w.keysets, m)
+}
+
+// walkValue reads the next token from the decoder and dispatches on it.
+// Primitive values are consumed and ignored; objects and arrays recurse
+// into walkObject/walkArray which consume their own closing delimiter.
+func (w *dupKeyWalker) walkValue() error {
+	tok, err := w.dec.Token()
+	if err != nil {
+		return err
+	}
+	if d, ok := tok.(json.Delim); ok {
+		switch d {
+		case '{':
+			return w.walkObject()
+		case '[':
+			return w.walkArray()
+		}
+	}
+	return nil
+}
+
+func (w *dupKeyWalker) walkObject() error {
+	seen := w.borrowKeyset()
+	defer w.returnKeyset(seen)
+
+	for w.dec.More() {
+		tok, err := w.dec.Token()
 		if err != nil {
-			break
+			return err
 		}
+		key, ok := tok.(string)
+		if !ok {
+			// Shouldn't happen for valid JSON object keys, but if the
+			// decoder gives us something unexpected, stop walking this
+			// object.
+			return nil
+		}
+		if _, dup := seen[key]; dup {
+			w.dups = append(w.dups, DuplicateJSONKey{
+				Path: strings.Join(w.path, "."),
+				Key:  key,
+			})
+		}
+		seen[key] = struct{}{}
 
-		switch v := tok.(type) {
-		case json.Delim:
-			switch v {
-			case '{':
-				// Check if this object is a value (parent is object expecting value)
-				popPath := len(stack) > 0 && stack[len(stack)-1].isObject && !stack[len(stack)-1].expectKey
-				stack = append(stack, stackEntry{
-					isObject:  true,
-					seenKeys:  make(map[string]bool),
-					expectKey: true,
-					popPath:   popPath,
-				})
-			case '}':
-				// Pop path only if this object was a value of a key
-				if len(stack) > 0 {
-					if stack[len(stack)-1].popPath && len(path) > 0 {
-						path = path[:len(path)-1]
-					}
-					stack = stack[:len(stack)-1]
-				}
-				// After closing, parent expects next key if it's an object
-				if len(stack) > 0 && stack[len(stack)-1].isObject {
-					stack[len(stack)-1].expectKey = true
-				}
-			case '[':
-				// Check if this array is a value (parent is object expecting value)
-				popPath := len(stack) > 0 && stack[len(stack)-1].isObject && !stack[len(stack)-1].expectKey
-				stack = append(stack, stackEntry{
-					isObject: false,
-					popPath:  popPath,
-				})
-			case ']':
-				// Pop path only if this array was a value of a key
-				if len(stack) > 0 {
-					if stack[len(stack)-1].popPath && len(path) > 0 {
-						path = path[:len(path)-1]
-					}
-					stack = stack[:len(stack)-1]
-				}
-				// After closing, parent expects next key if it's an object
-				if len(stack) > 0 && stack[len(stack)-1].isObject {
-					stack[len(stack)-1].expectKey = true
-				}
-			}
-		case string:
-			if len(stack) > 0 {
-				top := &stack[len(stack)-1]
-				if top.isObject && top.expectKey {
-					// This is an object key
-					if top.seenKeys[v] {
-						fullPath := strings.Join(path, ".")
-						duplicates = append(duplicates, DuplicateJSONKey{
-							Path: fullPath,
-							Key:  v,
-						})
-					}
-					top.seenKeys[v] = true
-					top.expectKey = false
-					path = append(path, v)
-				} else {
-					// This is a string value - pop the key from path
-					if top.isObject {
-						top.expectKey = true
-						if len(path) > 0 {
-							path = path[:len(path)-1]
-						}
-					}
-				}
-			}
-		default:
-			// Other primitive values (numbers, bools, null) - pop the key from path
-			if len(stack) > 0 {
-				top := &stack[len(stack)-1]
-				if top.isObject {
-					top.expectKey = true
-					if len(path) > 0 {
-						path = path[:len(path)-1]
-					}
-				}
-			}
+		w.path = append(w.path, key)
+		if err := w.walkValue(); err != nil {
+			return err
 		}
+		w.path = w.path[:len(w.path)-1]
 	}
 
-	return duplicates
+	// Consume the closing '}'.
+	_, err := w.dec.Token()
+	return err
+}
+
+func (w *dupKeyWalker) walkArray() error {
+	for w.dec.More() {
+		if err := w.walkValue(); err != nil {
+			return err
+		}
+	}
+	// Consume the closing ']'.
+	_, err := w.dec.Token()
+	return err
 }
 
 func UnmarshalJSON[T any](r io.Reader, out *T) error {
