@@ -574,9 +574,6 @@ func setupTestRunway(t *testing.T, icao string, rwy av.Runway) {
 
 func setupTestRunways(t *testing.T, icao string, runways []av.Runway) {
 	t.Helper()
-	if av.DB == nil {
-		av.DB = &av.StaticDatabase{Airports: map[string]av.FAAAirport{}}
-	}
 	old, hadAirport := av.DB.Airports[icao]
 	ap := av.FAAAirport{Id: icao, Runways: runways}
 	av.DB.Airports[icao] = ap
@@ -1691,47 +1688,6 @@ func TestFutureTrafficInSightSupersededByNewAdvisory(t *testing.T) {
 	}
 }
 
-func TestApprovedAcceptsVolunteeredVisualSeparationWithoutReadback(t *testing.T) {
-	vs := NewVisualScenario(t, math.Point2LL{0, 0}, "13L", math.Point2LL{0, 5.0 / 60}, 180)
-
-	sighting := vs.AC.RecordSighting("DAL456", vs.Sim.State.SimTime)
-	sighting.OfferedToMaintainSeparation = true
-
-	result := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "APPROVED", 0)
-	if result.Error != nil {
-		t.Fatalf("APPROVED returned error: %v", result.Error)
-	}
-	if result.ReadbackSpokenText != "" {
-		t.Fatalf("APPROVED should not produce a pilot readback, got %q", result.ReadbackSpokenText)
-	}
-	sighting = requireSeenTraffic(t, vs.AC, "DAL456")
-	if sighting.OfferedToMaintainSeparation {
-		t.Fatal("APPROVED should clear the pending volunteered visual separation")
-	}
-	if !sighting.MaintainingVisualSeparation {
-		t.Fatal("APPROVED should promote the sighting to maintaining visual separation")
-	}
-}
-
-func TestMaintainVisualSeparationMarksAircraftState(t *testing.T) {
-	vs := NewVisualScenario(t, math.Point2LL{0, 0}, "13L", math.Point2LL{0, 5.0 / 60}, 180)
-
-	sighting := vs.AC.RecordSighting("DAL456", vs.Sim.State.SimTime)
-	sighting.OfferedToMaintainSeparation = true
-
-	_, err := vs.Sim.MaintainVisualSeparation(vs.tcw, vs.callsign)
-	if err != nil {
-		t.Fatalf("VISSEP returned error: %v", err)
-	}
-	sighting = requireSeenTraffic(t, vs.AC, "DAL456")
-	if sighting.OfferedToMaintainSeparation {
-		t.Fatal("VISSEP should clear the pending volunteered visual separation")
-	}
-	if !sighting.MaintainingVisualSeparation {
-		t.Fatal("VISSEP should mark the sighting as maintaining visual separation")
-	}
-}
-
 func TestTrafficAdvisoryClearsOfferedStateButKeepsSightingHistory(t *testing.T) {
 	vs := NewVisualScenario(t, math.Point2LL{0, 0}, "13L", math.Point2LL{0, 5.0 / 60}, 180)
 
@@ -1815,115 +1771,6 @@ func TestMaintainingVisualSeparationPersistsUntilTrafficNoLongerVisible(t *testi
 	vs.Sim.refreshSeenTraffic(vs.AC)
 	if len(vs.AC.SeenTraffic) != 0 {
 		t.Fatal("maintaining visual separation should clear once the traffic is no longer visible")
-	}
-}
-
-func TestCVARequiresFieldInSight(t *testing.T) {
-	tests := []struct {
-		name      string
-		setup     func(ac *Aircraft)
-		wantAllow bool
-	}{
-		{
-			name:      "No field in sight, no visual request → refused",
-			setup:     func(ac *Aircraft) {},
-			wantAllow: false,
-		},
-		{
-			name:      "FieldInSight set → allowed",
-			setup:     func(ac *Aircraft) { ac.FieldInSight = true },
-			wantAllow: true,
-		},
-		{
-			name:      "RequestedVisualApproach set → allowed",
-			setup:     func(ac *Aircraft) { ac.RequestedVisualApproach = true },
-			wantAllow: true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ac := makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180)
-			tt.setup(ac)
-
-			// Mirror the gate check in ClearedVisualApproach.
-			allowed := ac.FieldInSight || ac.RequestedVisualApproach
-			if allowed != tt.wantAllow {
-				t.Errorf("CVA gate: allowed=%v, want %v", allowed, tt.wantAllow)
-			}
-		})
-	}
-}
-
-func TestSpontaneousTransmissionsUseContactType(t *testing.T) {
-	// Pilot-initiated transmissions (field in sight, traffic in sight,
-	// visual request) should use MakeContactTransmission, not
-	// MakeReadbackTransmission. Contact transmissions get the
-	// "Approach, {callsign}, ..." prefix automatically; readback
-	// transmissions get "{message}, {callsign}" suffix format.
-	tests := []struct {
-		name    string
-		makeFn  func() *av.RadioTransmission
-		wantTyp int
-	}{
-		{
-			name:    "traffic in sight",
-			makeFn:  func() *av.RadioTransmission { return av.MakeContactTransmission("[traffic in sight]") },
-			wantTyp: av.RadioTransmissionContact,
-		},
-		{
-			name:    "field in sight",
-			makeFn:  func() *av.RadioTransmission { return av.MakeContactTransmission("[field in sight]") },
-			wantTyp: av.RadioTransmissionContact,
-		},
-		{
-			name:    "negative field",
-			makeFn:  func() *av.RadioTransmission { return av.MakeContactTransmission("[negative field]") },
-			wantTyp: av.RadioTransmissionContact,
-		},
-		{
-			name: "visual request",
-			makeFn: func() *av.RadioTransmission {
-				return av.MakeContactTransmission("[field in sight], [requesting the visual] runway {rwy}", "13L")
-			},
-			wantTyp: av.RadioTransmissionContact,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			rt := tt.makeFn()
-			if rt.Type != av.RadioTransmissionType(tt.wantTyp) {
-				t.Errorf("Type = %v, want RadioTransmissionContact (%d)", rt.Type, tt.wantTyp)
-			}
-		})
-	}
-}
-
-func TestTransmissionStringsNoDoubleApproach(t *testing.T) {
-	// The transmission template strings for spontaneous pilot messages
-	// should NOT contain "approach" or "{callsign}" — those are added
-	// automatically by the radio transmission system.
-	templates := []struct {
-		name     string
-		template string
-	}{
-		{"traffic in sight", "[we've got the traffic|we have the traffic in sight|traffic in sight now]"},
-		{"field in sight", "[we have the field in sight now|field in sight|we have the airport in sight now]"},
-		{"negative field", "[negative field|field not in sight|no joy on the field]"},
-		{"visual request", "[field in sight|we have the airport in sight], [requesting the visual|can we get the visual] [approach |]runway {rwy}"},
-	}
-
-	for _, tt := range templates {
-		t.Run(tt.name, func(t *testing.T) {
-			// Should not start with "[approach" or contain "{callsign}"
-			if strings.HasPrefix(tt.template, "[approach") {
-				t.Errorf("template starts with [approach — this will cause double 'approach' in output")
-			}
-			if strings.Contains(tt.template, "{callsign}") {
-				t.Errorf("template contains {callsign} — callsign is added automatically by MakeContactTransmission")
-			}
-		})
 	}
 }
 

@@ -1,6 +1,8 @@
 package sim
 
 import (
+	"os"
+	"testing"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -9,6 +11,11 @@ import (
 	vrand "github.com/mmp/vice/rand"
 	"github.com/mmp/vice/wx"
 )
+
+func TestMain(m *testing.M) {
+	av.InitDB()
+	os.Exit(m.Run())
+}
 
 // NewTestSim creates a minimal Sim suitable for command dispatch tests.
 // Exported only to _test packages via Go's export_test.go convention.

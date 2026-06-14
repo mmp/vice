@@ -28,15 +28,12 @@ func TestE2E_STTToSim(t *testing.T) {
 	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
 	transcriber := stt.NewTranscriber(lg)
 
-	// Initialize av.DB so callsign rendering doesn't crash.
-	if av.DB == nil {
-		av.DB = &av.StaticDatabase{
-			Airports:            map[string]av.FAAAirport{},
-			Callsigns:           map[string]string{"DAL": "delta", "AAL": "american", "SWA": "southwest", "SCX": "sun country"},
-			AircraftPerformance: map[string]av.AircraftPerformance{},
-		}
-	}
-	t.Cleanup(func() { av.DB = nil })
+	// Subtests below clobber av.DB.Airports["KJFK"] with synthetic runway
+	// fixtures (threshold at the origin) so the test aircraft's (0,0)
+	// position lines up with the CVA/EVA geometry checks. Save and restore
+	// the real entry so other tests in the binary aren't poisoned.
+	origKJFK := av.DB.Airports["KJFK"]
+	t.Cleanup(func() { av.DB.Airports["KJFK"] = origKJFK })
 
 	tests := []e2eCase{
 		{
