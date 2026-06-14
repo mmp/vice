@@ -16,12 +16,12 @@
       "radio_name": "Bradley Approach"
     },
     "1Z": {
-      "callsign": "BDL_W_APP",
+      "callsign": "BDL_Z_APP",
       "frequency": 125350,
       "radio_name": "Bradley Approach"
     },
     "1W": {
-      "callsign": "BDL_E_APP",
+      "callsign": "BDL_W_APP",
       "frequency": 119000,
       "radio_name": "Bradley Approach"
     },
@@ -34,24 +34,22 @@
       "callsign": "HFD_TWR",
       "frequency": 119600,
       "radio_name": "Brainard Tower",
-      "scope_char": "H"
+      "scope_char": "S"
     },
     "1U": {
       "callsign": "ORH_TWR",
       "frequency": 120500,
-      "radio_name": "Worcester Tower",
-      "scope_char": "W"
+      "radio_name": "Worcester Tower"
     },
-    "1C": {
+    "1V": {
       "callsign": "CEF_TWR",
-      "frequency": 118900,
+      "frequency": 134850,
       "radio_name": "Westover Tower"
     },
-    "1X": {
+    "1Q": {
       "callsign": "BAF_TWR",
-      "frequency": 134850,
-      "radio_name": "Westfield Tower",
-      "scope_char": "F"
+      "frequency": 125070,
+      "radio_name": "Westfield Tower"
     }
   },
   "facility_adaptations": {
@@ -65,14 +63,19 @@
           "KEYNN": "1W"
         },
         "departure_assignments": {
-          "KBAF": "1W",
+          "KBAF": "1Z",
           "KBDL": "1B",
           "KCEF": "1Z",
           "KHFD": "1H",
           "KORH": "1W"
         },
         "default_consolidation": {
-          "1B": ["1W", "1F", "1H", "1Z"]
+          "1B": [
+            "1W",
+            "1F",
+            "1H",
+            "1Z"
+          ]
         }
       },
       "STD": {
@@ -91,7 +94,12 @@
           "KORH": "1W"
         },
         "default_consolidation": {
-          "1B": ["1W", "1F", "1H", "1Z"]
+          "1B": [
+            "1W",
+            "1F",
+            "1H",
+            "1Z"
+          ]
         }
       }
     },
