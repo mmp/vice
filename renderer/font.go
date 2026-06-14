@@ -651,7 +651,7 @@ func CreateBitmapFontAtlas(r Renderer, p platform.Platform, fontIter iter.Seq2[s
 				y += bf.Height + 1
 			}
 
-			glyph.rasterize(atlas, x, y)
+			glyph.Rasterize(atlas, x, y, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 			glyph.addToFont(ch, x, y, xres, yres, bf, f, scale)
 
 			x += dx
@@ -670,19 +670,17 @@ func CreateBitmapFontAtlas(r Renderer, p platform.Platform, fontIter iter.Seq2[s
 	return newFonts
 }
 
-func (glyph BitmapGlyph) rasterize(img *image.RGBA, x0, y0 int) {
-	// BitmapGlyphs store their bitmaps as an array of uint32s, where each
-	// uint32 encodes a scanline and bits are set in it to indicate that
-	// the corresponding pixel should be drawn; thus, there are no
-	// intermediate values for anti-aliasing.
+// Rasterize writes the glyph's set bits into img at (x0, y0) using c.
+// BitmapGlyphs store their bitmaps as an array of uint32s, where each uint32
+// encodes a scanline and bits are set in it to indicate that the corresponding
+// pixel should be drawn; thus, there are no intermediate values for
+// anti-aliasing.
+func (glyph BitmapGlyph) Rasterize(img *image.RGBA, x0, y0 int, c color.RGBA) {
 	for y, line := range glyph.Bitmap {
-		for x := 0; x < glyph.Bounds[0]; x++ {
-			// The high bit corresponds to the first pixel in the scanline,
-			// so the bitmask is set up accordingly...
-			mask := uint32(1 << (31 - x))
-			if line&mask != 0 {
-				on := color.RGBA{R: 255, G: 255, B: 255, A: 255}
-				img.SetRGBA(x0+x, y0+y, on)
+		for x := range glyph.Bounds[0] {
+			// The high bit corresponds to the first pixel in the scanline.
+			if line&(1<<uint(31-x)) != 0 {
+				img.SetRGBA(x0+x, y0+y, c)
 			}
 		}
 	}

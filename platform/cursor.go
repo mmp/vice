@@ -41,21 +41,43 @@ func (g *glfwPlatform) LoadCursorFromFile(path string) (*Cursor, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	w := rgba.Rect.Dx()
-	h := rgba.Rect.Dy()
-	if w <= 0 || h <= 0 {
-		return nil, fmt.Errorf("%s: cursor image has invalid size", path)
+	c, err := g.CreateCursor(rgba, hotspot[0], hotspot[1])
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", path, err)
 	}
+	return c, nil
+}
 
-	hotspot[0] = math.Clamp(hotspot[0], 0, w-1)
-	hotspot[1] = math.Clamp(hotspot[1], 0, h-1)
-
-	cursor := glfw.CreateCursor(rgba, hotspot[0], hotspot[1])
+func (g *glfwPlatform) CreateCursor(img *image.RGBA, hotspotX, hotspotY int) (*Cursor, error) {
+	if img == nil {
+		return nil, fmt.Errorf("cursor image is nil")
+	}
+	w := img.Rect.Dx()
+	h := img.Rect.Dy()
+	if w <= 0 || h <= 0 {
+		return nil, fmt.Errorf("cursor image has invalid size")
+	}
+	hotspotX = math.Clamp(hotspotX, 0, w-1)
+	hotspotY = math.Clamp(hotspotY, 0, h-1)
+	cursor := glfw.CreateCursor(img, hotspotX, hotspotY)
 	if cursor == nil {
-		return nil, fmt.Errorf("%s: failed to create cursor", path)
+		return nil, fmt.Errorf("failed to create cursor")
 	}
 	return &Cursor{cursor: cursor}, nil
+}
+
+func (g *glfwPlatform) DestroyCursor(c *Cursor) {
+	if c == nil || c.cursor == nil {
+		return
+	}
+	if g.cursorOverride == c.cursor {
+		g.cursorOverride = nil
+	}
+	if g.currentCursor == c.cursor {
+		g.currentCursor = nil
+	}
+	c.cursor.Destroy()
+	c.cursor = nil
 }
 
 type curEntry struct {

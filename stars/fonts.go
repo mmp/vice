@@ -13,7 +13,6 @@ import (
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
-	"github.com/mmp/vice/util"
 )
 import "maps"
 
@@ -58,8 +57,6 @@ func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	sp.dcbFontB[0] = get("sddCharFontSetBSize0", 11)
 	sp.dcbFontB[1] = get("sddCharFontSetBSize1", 12)
 	sp.dcbFontB[2] = get("sddCharFontSetBSize2", 15)
-
-	sp.cursorsFont = get("STARS cursors", 30)
 }
 
 func (sp *STARSPane) systemFont(ctx *panes.Context, idx int) *renderer.Font {
@@ -106,14 +103,5 @@ func rewriteDelta(s string) string {
 }
 
 func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font {
-	// Patch up the cursors (which are missing Offset values) so that they
-	// are centered at the point where they are drawn.
-	for i := range starsCursors.Glyphs {
-		g := &starsCursors.Glyphs[i]
-		g.Offset[0] = -(g.Bounds[0] + 1) / 2
-		g.Offset[1] = starsCursors.Height - (g.Bounds[1]+1)/2
-	}
-
-	seq := util.Seq2Concat(maps.All(starsFonts), util.Seq2Single("STARS cursors", starsCursors))
-	return renderer.CreateBitmapFontAtlas(r, p, seq)
+	return renderer.CreateBitmapFontAtlas(r, p, maps.All(starsFonts))
 }

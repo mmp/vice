@@ -80,8 +80,14 @@ type STARSPane struct {
 	systemFontA, systemFontB               [6]*renderer.Font
 	systemOutlineFontA, systemOutlineFontB [6]*renderer.Font
 	dcbFontA, dcbFontB                     [3]*renderer.Font // 0, 1, 2 only
-	cursorsFont                            *renderer.Font
-	hideMouseCursor                        bool // set after auto-home and the cursor is repositioned
+
+	// crossCursors are OS-managed "+" cursors, one per CharSize.Datablocks
+	// value (clamped to [0,4]); built on demand by crossCursor and rebuilt
+	// when fg/bg change.
+	crossCursors     [5]*platform.Cursor
+	crossFg, crossBg renderer.RGB
+
+	hideMouseCursor bool // set after auto-home and the cursor is repositioned
 
 	fusedTrackVertices [][2]float32
 
@@ -1342,7 +1348,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 			// DCB buttons handle their own click checks, etc.
 			sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
 		}
-		sp.drawMouseCursor(ctx, mouseOverDCB, transforms, cb)
+		sp.drawMouseCursor(ctx, mouseOverDCB)
 	}
 	sp.handleCapture(ctx, transforms, cb)
 
@@ -1749,56 +1755,80 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 	}
 }
 
-func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, transforms radar.ScopeTransformations,
-	cb *renderer.CommandBuffer) {
-	ps := sp.currentPrefs()
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-
+func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool) {
 	if mouseOverDCB {
+		// panes/display.go already called ClearCursorOverride this frame, so
+		// the OS will draw imgui's standard arrow.
 		return
 	}
-
-	ctx.Mouse.SetCursor(imgui.MouseCursorNone)
-
+	ps := sp.currentPrefs()
 	if sp.hideMouseCursor { // auto home
 		if ctx.Mouse != nil && ctx.Mouse.Pos != ps.CursorHome {
 			sp.hideMouseCursor = false // it moved
 		}
 		if sp.hideMouseCursor {
+			ctx.Mouse.SetCursor(imgui.MouseCursorNone)
 			return
 		}
 	}
-
-	// Don't draw the cursor with command modes that capture the mouse
-	if sp.activeSpinner != nil {
-		return
-	}
-	if sp.commandMode == CommandModePlaceCenter {
+	if sp.activeSpinner != nil || sp.commandMode == CommandModePlaceCenter {
+		// These both enter the platform's mouseDeltaMode (see
+		// drawDCBMouseDeltaButton and drawDCBSpinner), which hides the OS
+		// cursor for us. Just leave the override clear.
 		return
 	}
 
 	// STARS Operators Manual 4-74: FDB brightness is used for the cursor
-	color := ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.Cursor)
-	cursorStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: color}
-	background := ps.Brightness.BackgroundContrast.ScaleRGB(sp.Colors.Background)
-	bgStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: background}
-
-	draw := func(idx int, style renderer.TextStyle) {
-		p := [2]float32{float32(int(ctx.Mouse.Pos[0] + 0.5)), float32(int(ctx.Mouse.Pos[1] + 0.5))}
-		td.AddText(string(byte(idx)), p, style)
+	fg := ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.Cursor)
+	bg := ps.Brightness.BackgroundContrast.ScaleRGB(sp.Colors.Background)
+	if c := sp.crossCursor(ctx.Platform, ps.CharSize.Datablocks, fg, bg); c != nil {
+		ctx.Platform.SetCursorOverride(c)
 	}
-	// The STARS "+" cursors start at 0 in the STARS cursors font,
-	// ordered by size. There is no cursor for size 5, so we'll use 4 for that.
-	// The second of the two is the background one
-	// that establishes a mask.
-	idx := 2 * min(4, ps.CharSize.Datablocks)
-	draw(idx+1, bgStyle)
-	draw(idx, cursorStyle)
+}
 
-	cb.SetDrawBounds(ctx.PaneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	transforms.LoadWindowViewingMatrices(cb)
-	td.GenerateCommands(cb)
+// crossCursor returns the OS cursor for the "+" at the given size, building
+// it on first use. The cache is invalidated when fg or bg change.
+func (sp *STARSPane) crossCursor(p platform.Platform, sizeIdx int, fg, bg renderer.RGB) *platform.Cursor {
+	if fg != sp.crossFg || bg != sp.crossBg {
+		for i, c := range sp.crossCursors {
+			p.DestroyCursor(c)
+			sp.crossCursors[i] = nil
+		}
+		sp.crossFg, sp.crossBg = fg, bg
+	}
+	sizeIdx = min(4, sizeIdx)
+	if sp.crossCursors[sizeIdx] == nil {
+		img, hot := rasterizeStarsCross(sizeIdx, fg, bg)
+		c, err := p.CreateCursor(img, hot[0], hot[1])
+		if err != nil {
+			return nil
+		}
+		sp.crossCursors[sizeIdx] = c
+	}
+	return sp.crossCursors[sizeIdx]
+}
+
+// rasterizeStarsCross composites the "+" foreground glyph over its wider
+// mask outline. Returns the image and the hotspot (the center of the cross).
+// sizeIdx is the user's CharSize.Datablocks value; valid range is [0,4].
+func rasterizeStarsCross(sizeIdx int, fg, bg renderer.RGB) (*image.RGBA, [2]int) {
+	gi := 2 * min(4, sizeIdx)
+	fgG := starsCursors.Glyphs[gi]
+	bgG := starsCursors.Glyphs[gi+1] // mask: larger, sets the image size
+	W, H := bgG.Bounds[0], bgG.Bounds[1]
+	img := image.NewRGBA(image.Rect(0, 0, W, H))
+	bgG.Rasterize(img, 0, 0, rgbToRGBA(bg))
+	dx := (W - fgG.Bounds[0]) / 2
+	dy := (H - fgG.Bounds[1]) / 2
+	fgG.Rasterize(img, dx, dy, rgbToRGBA(fg))
+	return img, [2]int{W / 2, H / 2}
+}
+
+func rgbToRGBA(c renderer.RGB) color.RGBA {
+	clamp := func(v float32) uint8 {
+		return uint8(math.Clamp(v*255+0.5, 0, 255))
+	}
+	return color.RGBA{R: clamp(c.R), G: clamp(c.G), B: clamp(c.B), A: 255}
 }
 
 func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {

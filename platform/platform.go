@@ -6,6 +6,7 @@ package platform
 
 import (
 	"errors"
+	"image"
 	"time"
 
 	"github.com/mmp/vice/math"
@@ -118,6 +119,12 @@ type Platform interface {
 	// Cursor overrides. LoadCursorFromFile parses a .cur file and creates a
 	// cursor handle that can be set as the active cursor via SetCursorOverride.
 	LoadCursorFromFile(path string) (*Cursor, error)
+	// CreateCursor builds a Cursor from an in-memory RGBA image with the
+	// given hotspot. The caller retains ownership of img.
+	CreateCursor(img *image.RGBA, hotspotX, hotspotY int) (*Cursor, error)
+	// DestroyCursor frees a cursor previously returned by CreateCursor or
+	// LoadCursorFromFile. Safe to call with nil.
+	DestroyCursor(c *Cursor)
 	// SetCursorOverride replaces the OS cursor until cleared.
 	SetCursorOverride(cursor *Cursor)
 	// ClearCursorOverride removes any cursor override.
