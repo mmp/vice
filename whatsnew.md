@@ -22,7 +22,8 @@
   - Updated video map file format: this makes it possible to fix a number of bugs with handling maps with conflicting STARS ids
   
 - New scenarios: ZJX West combined (manaphy), PBI (Ketan K)
-- Scenario updates: I90 (Ethan Hawes), NCT (Ketan K)
+- Scenario updates: I90 (Ethan Hawes), NCT (Ketan K), Y90 (CiceroIsBack)
+- STARS: fixed bugs with cursor disappearing at inopportune times
 - Facility engineering:
   - "controllers" entries in facility configurations now accept a comma-separated list of TCPs
   - CRDA: renamed "crda_regions" array -> "source_region" / "ghost_region"
