@@ -151,6 +151,7 @@
       "SDS": {
         "inbound_assignments": {
           "BAYYY5": "1G",
+          "BAZBL1": "1N",
           "BELLR6": "1X",
           "CESAN4": "1D",
           "DOOBI3": "1D",
@@ -163,11 +164,14 @@
           "LINKK1": "1G",
           "MSCOT4": "1N",
           "NNCEE2": "1G",
+          "PIEGY1": "1P",
           "PUCKS4": "1G",
+          "RIICE1.EAST": "1N",
+          "RIICE1.WEST": "1N",
           "SKNRD5": "1D",
-          "SNDAY1": "1X",
+          "SNDAY1": "1R",
           "TEJAS5": "1X",
-          "TKNIQ3": "1X",
+          "TKNIQ3": "1G",
           "TSHRT2": "1X",
           "TTORO3": "1N",
           "WAPPL7": "1D"
