@@ -1,0 +1,71 @@
+name: Update flatpak
+on:
+  push:
+    tags:
+      - "v*"
+jobs:
+  update-flatpak:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine flathub branch
+        id: flathub_branch
+        run: |
+          if [[ ${{ github.ref_name }} == *"beta" ]]; then
+            echo "branch=beta" >> $GITHUB_OUTPUT
+          else
+            echo "branch=master" >> $GITHUB_OUTPUT
+          fi
+      - uses: actions/checkout@v6
+        with:
+          repository: flathub/io.github.mmp.Vice
+          ref: ${{ steps.flathub_branch.outputs.branch }}
+          path: flathub
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
+          path: vice
+      - name: Setup Go
+        uses: actions/setup-go@v6
+      - name: Update go modules
+        working-directory: flathub
+        run: |
+          go run github.com/dennwc/flatpak-go-mod@latest ../vice
+      - name: Update vice resources
+        working-directory: vice
+        run: |
+          BASE_URL="https://vice-resources.pharr.org"
+
+          jq -r 'to_entries[] | "\(.key)\t\(.value.hash)\t\(.value.size)"' resources/models/manifest.json | \
+          while IFS=$'\t' read -r filepath hash size; do
+            dir=$(dirname "$filepath")
+            filename=$(basename "$filepath")
+            if [[ "$dir" == "." ]]; then
+                dest="resources/models"
+            else
+                dest="resources/models/${dir}"
+            fi
+            echo "- type: file"
+            echo "  url: ${BASE_URL}/${hash}"
+            echo "  sha256: ${hash}"
+            echo "  dest: ${dest}"
+            echo "  dest-filename: ${filename}"
+          done > ../flathub/vice-resources.yaml
+      - name: Update tag and sha
+        working-directory: flathub
+        run: |
+          yq -i '(.modules[] | select(.name == "vice") | .sources[0].tag) = "${{ github.ref_name }}"' io.github.mmp.Vice.yml
+          yq -i '(.modules[] | select(.name == "vice") | .sources[0].commit) = "${{ github.sha }}"' io.github.mmp.Vice.yml
+      - name: Create pull request
+        if: ${{ success() }}
+        id: create-pr
+        uses: peter-evans/create-pull-request@v8
+        with:
+          path: flathub
+          token: ${{ secrets.FLATHUB_TOKEN }}
+          branch: update/${{ github.ref_name }}
+          commit-message: update to ${{ github.ref_name }}
+          title: Update to ${{ github.ref_name }}
+          delete-branch: true
+          sign-commits: true
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
