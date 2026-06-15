@@ -21,7 +21,7 @@
   - Added `/intercept` to indicate virtually-controlled aircraft should intercept the approach
   - Updated video map file format: this makes it possible to fix a number of bugs with handling maps with conflicting STARS ids
   
-- New scenarios: ZJX West combined (manaphy), PBI (Ketan K)
+- New scenarios: ZJX West combined (manaphy), PBI (Ketan K), ORF (Ryan H)
 - Scenario updates: I90 (Ethan Hawes), NCT (Ketan K), Y90 (CiceroIsBack)
 - STARS: fixed bugs with cursor disappearing at inopportune times
 - Facility engineering:

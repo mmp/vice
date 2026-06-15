@@ -13,7 +13,7 @@
     "1G": {
       "callsign": "ORF_G_APP",
       "frequency": 125200,
-      "radio_name": "Norfolk Approach"
+      "radio_name": "Norfolk Departure"
     },
     "1P": {
       "callsign": "ORF_P_APP",
@@ -34,6 +34,141 @@
       "callsign": "ORF_TWR",
       "frequency": 120800,
       "radio_name": "Norfolk Tower"
+    },
+    "2Z": {
+      "callsign": "PHF_TWR",
+      "frequency": 118700,
+      "radio_name": "Newport Tower"
+    },
+    "3Z": {
+      "callsign": "ECG_TWR",
+      "frequency": 120500,
+      "radio_name": "Elizabeth City Tower"
+    },
+    "4Z": {
+      "callsign": "NGU_TWR",
+      "frequency": 124300,
+      "radio_name": "Chambers Tower"
+    }
+  },
+  "facility_adaptations": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "KOHLS1.RDU": "1S",
+          "KOHLS1.NUTZE": "1S",
+          "KOHLS1.RREGG": "1S",
+          "OUTLA1.MAULS": "1W",
+          "OUTLA1.TBONN": "1E",
+          "OUTLA1.COLIN": "1E",
+          "OUTLA1.TRPOD": "1E",
+          "WAIKS": "1W"
+        },
+        "departure_assignments": {
+          "KORF": "1G",
+          "KPHF": "1G",
+          "KECG": "1G",
+          "KNGU": "1G"
+        },
+        "default_consolidation": {
+          "1W": ["1E", "1S"],
+          "1E": ["1P", "1G"],
+          "1G": ["1F"]
+        }
+      }
+    },
+    "center": "KORF",
+    "scratchpads": {
+      "OUTLA": "OUT",
+      "KALDA": "SCH",
+      "HCM": "HCM",
+      "RDU": "CPN",
+      "EYOBI": "CPN",
+      "PBCUP": "CPN",
+      "KELLE": "WKS",
+      "THHMP": "HOU",
+      "SHLBK": "HOU",
+      "HYTRA": "HOU",
+      "ECH": "SWO",
+      "ELLDE": "SWO",
+      "JOHAR": "SWO",
+      "PRONI": "SWO",
+      "CHIEZ": "SWO",
+      "SKARP": "SWO"
+    },
+    "significant_points": {
+      "OUTLA": {},
+      "ATLIC": {},
+      "KALDA": {},
+      "EYOBI": {},
+      "HCM": {},
+      "HYTRA": {},
+      "KELLE": {},
+      "PBCUP": {},
+      "RDU": {},
+      "SHLBK": {},
+      "THHMP": {},
+      "CHIEZ": {},
+      "ECG": {},
+      "ELLDE": {},
+      "JOHAR": {},
+      "KOOKI": {},
+      "PRONI": {},
+      "SKARP": {},
+      "ORF": {},
+      "FAK": {},
+      "WAIKS": {},
+      "COUPN": {},
+      "MCARY": {},
+      "HPW": {},
+      "JAMIE": {},
+      "HOUKY": {},
+      "SUNNS": {},
+      "SWOPE": {},
+      "WINAL": {}
+    },
+    "video_map_file": "videomaps/ZDC-ORF.mappack",
+    "areas": {
+      "1": {
+        "video_maps": [
+          "ORF SW RVM",
+          "ORF MVA",
+          "",
+          "ORF NE RVM",
+          "ORF VFR",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
     }
   },
   "handoff_ids": [
@@ -53,8 +188,5 @@
       "id": "ZDC",
       "prefix": "C"
     }
-  ],
-  "facility_adaptations": {
-    "configurations": {}
-  }
+  ]
 }
