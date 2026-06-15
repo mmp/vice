@@ -103,21 +103,21 @@
             "waypoints": "_BDL_6/a4000/h280",
             "departure_controller": "1Z"
           }
-          },
+        },
         "6/33 33": {
           "PVD,THUMB": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
             "waypoints": "_BDL_15/a4000/h100",
             "departure_controller": "1B"
-        },
+          },
           "CTR,VEERS,MOBBS": {
             "cleared_altitude": 4000,
             "sid": "BDL6",
             "waypoints": "_BDL_15/a4000/h330",
             "departure_controller": "1Z"
           }
-          },
+        },
         "24/33 33": {
           "PVD,THUMB": {
             "cleared_altitude": 4000,
@@ -1479,27 +1479,13 @@
       },
       "configuration": "CNW",
       "airspace": {
-        "1H": [
-          "BDL_H_APP2433"
-        ],
-        "1W": [
-          "BDL_W_APP2433"
-        ],
-        "1Z": [
-          "BDL_Z_APP2433"
-        ],
-        "1F": [
-          "BDL_F_APP2433"
-        ],
-        "1B": [
-          "BDL_B_APP2433"
-        ]
+        "1H": ["BDL_H_APP2433"],
+        "1W": ["BDL_W_APP2433"],
+        "1Z": ["BDL_Z_APP2433"],
+        "1F": ["BDL_F_APP2433"],
+        "1B": ["BDL_B_APP2433"]
       },
-      "default_maps": [
-        "Y90 RWY 24/33",
-        "BDL_TWR 24/33",
-        "Y90 COASTLINE"
-      ],
+      "default_maps": ["Y90 RWY 24/33", "BDL_TWR 24/33", "Y90 COASTLINE"],
       "wind": {
         "direction": "300-0"
       }
