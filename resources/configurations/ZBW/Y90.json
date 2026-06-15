@@ -33,8 +33,7 @@
     "1S": {
       "callsign": "HFD_TWR",
       "frequency": 119600,
-      "radio_name": "Brainard Tower",
-      "scope_char": "S"
+      "radio_name": "Brainard Tower"
     },
     "1U": {
       "callsign": "ORH_TWR",
@@ -70,12 +69,7 @@
           "KORH": "1W"
         },
         "default_consolidation": {
-          "1B": [
-            "1W",
-            "1F",
-            "1H",
-            "1Z"
-          ]
+          "1B": ["1W", "1F", "1H", "1Z"]
         }
       },
       "STD": {
@@ -94,12 +88,7 @@
           "KORH": "1W"
         },
         "default_consolidation": {
-          "1B": [
-            "1W",
-            "1F",
-            "1H",
-            "1Z"
-          ]
+          "1B": ["1W", "1F", "1H", "1Z"]
         }
       }
     },
