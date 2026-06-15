@@ -58,6 +58,9 @@ jobs:
         git lfs install
         git lfs pull --include="resources/wx/**"
 
+    - name: Check scenarios
+      run: ./vice -lint
+
     - name: Run all scenarios
       run: ./run-all-scenarios.sh ./vice
     
