@@ -10,22 +10,26 @@ jobs:
       - name: Determine flathub branch
         id: flathub_branch
         run: |
-          if [[ ${{ github.ref_name }} == *"beta" ]]; then
+          if [[ ${{ github.ref_name }} == *"beta"* ]]; then
             echo "branch=beta" >> $GITHUB_OUTPUT
           else
             echo "branch=master" >> $GITHUB_OUTPUT
           fi
-      - uses: actions/checkout@v6
+      - name: Checkout flathub
+        uses: actions/checkout@v6
         with:
           repository: flathub/io.github.mmp.Vice
           ref: ${{ steps.flathub_branch.outputs.branch }}
           path: flathub
-      - uses: actions/checkout@v6
+      - name: Checkout vice
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.ref_name }}
           path: vice
       - name: Setup Go
         uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
       - name: Update go modules
         working-directory: flathub
         run: |
