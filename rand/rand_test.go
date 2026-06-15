@@ -5,7 +5,10 @@
 package rand
 
 import (
+	"encoding/json"
 	"testing"
+
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 func TestPermutationElement(t *testing.T) {
@@ -112,6 +115,64 @@ func TestSampleWeighted(t *testing.T) {
 			t.Errorf("Expected 0 samples for 0. Got %d", c)
 		} else if c < expected-300 || c > expected+300 {
 			t.Errorf("Expected roughly %d samples for %d. Got %d [%v]", expected, v, c, counts)
+		}
+	}
+}
+
+// advance pulls n values from r so two generators that diverge produce
+// observably different output.
+func advance(r *Rand, n int) []uint32 {
+	out := make([]uint32, n)
+	for i := range out {
+		out[i] = r.Uint32()
+	}
+	return out
+}
+
+func TestRandJSONRoundtrip(t *testing.T) {
+	r := Make()
+	r.Seed(6502)
+	_ = advance(r, 5) // burn some state so we're not marshaling the seed point
+
+	data, err := json.Marshal(r)
+	if err != nil {
+		t.Fatalf("MarshalJSON: %v", err)
+	}
+
+	var restored Rand
+	if err := json.Unmarshal(data, &restored); err != nil {
+		t.Fatalf("UnmarshalJSON: %v", err)
+	}
+
+	want := advance(r, 16)
+	got := advance(&restored, 16)
+	for i := range want {
+		if got[i] != want[i] {
+			t.Fatalf("post-roundtrip output diverged at %d: got %#x want %#x", i, got[i], want[i])
+		}
+	}
+}
+
+func TestRandMsgpackRoundtrip(t *testing.T) {
+	r := Make()
+	r.Seed(6502)
+	_ = advance(r, 5)
+
+	data, err := msgpack.Marshal(r)
+	if err != nil {
+		t.Fatalf("MarshalMsgpack: %v", err)
+	}
+
+	var restored Rand
+	if err := msgpack.Unmarshal(data, &restored); err != nil {
+		t.Fatalf("UnmarshalMsgpack: %v", err)
+	}
+
+	want := advance(r, 16)
+	got := advance(&restored, 16)
+	for i := range want {
+		if got[i] != want[i] {
+			t.Fatalf("post-roundtrip output diverged at %d: got %#x want %#x", i, got[i], want[i])
 		}
 	}
 }

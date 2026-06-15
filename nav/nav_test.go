@@ -107,7 +107,7 @@ func NewArrivalFlight(t *testing.T, cfg ArrivalConfig) *FlightTest {
 	}
 
 	// Deterministic randomness
-	rng := &rand.Rand{PCG32: rand.NewPCG32()}
+	rng := rand.Make()
 	rng.Seed(42)
 
 	fp := av.FlightPlan{

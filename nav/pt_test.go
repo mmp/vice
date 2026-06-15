@@ -63,7 +63,7 @@ func makePTFlight(t *testing.T, routeStr string, alt, speed float32) *FlightTest
 		ap.OppositeThreshold = opp.Threshold
 	}
 
-	rng := &rand.Rand{PCG32: rand.NewPCG32()}
+	rng := rand.Make()
 	rng.Seed(42)
 
 	// Inbound course: PT fix (wps[0]) toward the next fix (wps[1]).

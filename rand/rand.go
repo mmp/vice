@@ -6,131 +6,134 @@ package rand
 
 import (
 	_ "embed"
+	"encoding/base64"
+	"encoding/json"
 	"iter"
+	mrand "math/rand/v2"
 	"slices"
 	"strings"
 	"time"
 
+	"github.com/vmihailenco/msgpack/v5"
 	"golang.org/x/exp/constraints"
 )
 
 ///////////////////////////////////////////////////////////////////////////
-// PCG32
+// Rand
 
-// This is based on mtj's pcg32 implementation, updated with exported
-// variables for the state (so we can serialize it properly.)
-
-const (
-	pcg32State      = 0x853c49e6748fea9b //  9600629759793949339
-	pcg32Increment  = 0xda3e39cb94b95bdb // 15726070495360670683
-	pcg32Multiplier = 0x5851f42d4c957f2d //  6364136223846793005
-)
-
-type PCG32 struct {
-	State     uint64
-	Increment uint64
-}
-
-func NewPCG32() PCG32 {
-	return PCG32{pcg32State, pcg32Increment}
-}
-
-func (p *PCG32) Seed(state, sequence uint64) {
-	p.Increment = (sequence << 1) | 1
-	p.State = (state+p.Increment)*pcg32Multiplier + p.Increment
-}
-
-func (p *PCG32) Random() uint32 {
-	// Advance 64-bit linear congruential generator to new state
-	oldState := p.State
-	p.State = oldState*pcg32Multiplier + p.Increment
-
-	// Confuse and permute 32-bit output from old state
-	xorShifted := uint32(((oldState >> 18) ^ oldState) >> 27)
-	rot := uint32(oldState >> 59)
-	return (xorShifted >> rot) | (xorShifted << ((-rot) & 31))
-}
-
-func (p *PCG32) Random64() uint64 {
-	return uint64(p.Random())<<32 | uint64(p.Random())
-}
-
-func (p *PCG32) Bounded(bound uint32) uint32 {
-	if bound == 0 {
-		return 0
-	}
-	threshold := -bound % bound
-	for {
-		r := p.Random()
-		if r >= threshold {
-			return r % bound
-		}
-	}
-}
-
-func (p *PCG32) Bounded64(bound uint64) uint64 {
-	if bound == 0 {
-		return 0
-	}
-	threshold := -bound % bound
-	for {
-		r := p.Random64()
-		if r >= threshold {
-			return r % bound
-		}
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Random numbers.
-
+// Rand wraps math/rand/v2's PCG generator and provides project-specific
+// helpers (inclusive ranges, sampling, weighted sampling, etc.) that the
+// stdlib does not. State serializes via PCG.MarshalBinary; we expose it as
+// JSON and msgpack so a *Rand can ride along inside the persisted Sim.
 type Rand struct {
-	PCG32
+	pcg *mrand.PCG
+	r   *mrand.Rand
 }
 
 func Make() *Rand {
-	r := &Rand{PCG32: NewPCG32()}
+	r := &Rand{pcg: mrand.NewPCG(0, 0)}
+	r.r = mrand.New(r.pcg)
 	r.Seed(uint64(time.Now().UnixNano()))
 	return r
 }
 
 func (r *Rand) Seed(s uint64) {
-	r.PCG32.Seed(s, pcg32Increment)
+	r.pcg.Seed(s, 0)
 }
 
 func (r *Rand) Intn(n int) int {
-	return int(r.Bounded(uint32(n)))
+	return r.r.IntN(n)
 }
 
 // IntRange returns a uniformly-sampled value in [low, high].
 func (r *Rand) IntRange(low, high int) int {
-	return low + r.Intn(high-low+1)
+	return low + r.r.IntN(high-low+1)
 }
 
 func (r *Rand) Int31n(n int32) int32 {
-	return int32(r.Bounded(uint32(n)))
+	return r.r.Int32N(n)
 }
 
 func (r *Rand) Float32() float32 {
-	return float32(r.Random()) / (1<<32 - 1)
+	return r.r.Float32()
 }
 
 func (r *Rand) Float32Range(low, high float32) float32 {
-	t := r.Float32()
+	t := r.r.Float32()
 	return (1-t)*low + t*high
 }
 
 func (r *Rand) DurationRange(low, high time.Duration) time.Duration {
-	return low + time.Duration(r.Bounded64(uint64(high-low)))
+	if high <= low {
+		return low
+	}
+	return low + time.Duration(r.r.Int64N(int64(high-low)))
 }
 
 func (r *Rand) Uint32() uint32 {
-	return r.Random()
+	return r.r.Uint32()
 }
 
 func (r *Rand) Bool() bool {
-	return r.Random()&1 == 0
+	return r.r.Uint32()&1 == 0
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Serialization
+
+func (r *Rand) MarshalBinary() ([]byte, error) {
+	return r.pcg.MarshalBinary()
+}
+
+func (r *Rand) UnmarshalBinary(data []byte) error {
+	if r.pcg == nil {
+		r.pcg = mrand.NewPCG(0, 0)
+	}
+	if err := r.pcg.UnmarshalBinary(data); err != nil {
+		return err
+	}
+	r.r = mrand.New(r.pcg)
+	return nil
+}
+
+func (r *Rand) MarshalJSON() ([]byte, error) {
+	data, err := r.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(base64.StdEncoding.EncodeToString(data))
+}
+
+func (r *Rand) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	data, err := base64.StdEncoding.DecodeString(s)
+	if err != nil {
+		return err
+	}
+	return r.UnmarshalBinary(data)
+}
+
+func (r *Rand) MarshalMsgpack() ([]byte, error) {
+	data, err := r.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	return msgpack.Marshal(data)
+}
+
+func (r *Rand) UnmarshalMsgpack(b []byte) error {
+	var data []byte
+	if err := msgpack.Unmarshal(b, &data); err != nil {
+		return err
+	}
+	return r.UnmarshalBinary(data)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Helpers
 
 func ShuffleSlice[Slice ~[]E, E any](s Slice, r *Rand) {
 	n := len(s)

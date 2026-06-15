@@ -11,7 +11,7 @@ import (
 	"image/png"
 	"io"
 	"log"
-	"math/rand"
+	"math/rand/v2"
 	"net"
 	"net/http"
 	"net/http/pprof"
@@ -252,7 +252,7 @@ func calcResolution(facilityID string, radius float32) int {
 // images for a single facility (TRACON or ARTCC) and writes them to disk.
 func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, facilityID string) {
 	// Spread out the requests temporally
-	time.Sleep(time.Duration(rand.Intn(200)) * time.Second)
+	time.Sleep(time.Duration(rand.IntN(200)) * time.Second)
 
 	tick := time.Tick(5 * time.Minute)
 

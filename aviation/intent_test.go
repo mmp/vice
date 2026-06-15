@@ -19,7 +19,7 @@ func renderIntentForTest(intent CommandIntent, seed uint64) string {
 		}
 	}
 
-	r := &rand.Rand{PCG32: rand.NewPCG32()}
+	r := rand.Make()
 	r.Seed(seed)
 	return strings.ToLower(RenderIntents([]CommandIntent{intent}, r).Written(r))
 }

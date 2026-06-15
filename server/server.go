@@ -80,7 +80,8 @@ import (
 // 70: scenario briefs
 // 71: video map rework
 // 72: ERAM Range now means vertical NM (not half-width)
-const ViceSerializeVersion = 72
+// 73: Rand JSON shape changed (PCG32 fields → base64 of math/rand/v2 PCG state)
+const ViceSerializeVersion = 73
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

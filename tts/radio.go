@@ -76,7 +76,7 @@ func addRadioEffect(pcm []int16, sampleRate int, seed uint32, scale float32) {
 		return
 	}
 
-	params := &rand.Rand{}
+	params := rand.Make()
 	params.Seed(uint64(seed))
 
 	// Much higher highpass to kill bass and make it tinny/thin
