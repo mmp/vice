@@ -2,10 +2,13 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"text/template"
 	"unicode"
@@ -33,14 +36,52 @@ func getLatestGitTag() string {
 	return strings.TrimSpace(out.String())
 }
 
+// wixVersion converts a git tag like "v0.14.4" or "v0.14.4-beta2" into a
+// WiX-compatible four-field version. Beta N of X.Y.Z uses N as the fourth
+// field; the final X.Y.Z uses one more than the highest beta number that
+// was ever tagged for X.Y.Z (or 1 if none were).
+func wixVersion(tag string) string {
+	re := regexp.MustCompile(`^v(\d+)\.(\d+)\.(\d+)(?:-beta(\d+))?$`)
+	m := re.FindStringSubmatch(tag)
+	if m == nil {
+		panic("unexpected tag format: " + tag)
+	}
+	if m[4] != "" {
+		return fmt.Sprintf("%s.%s.%s.%s", m[1], m[2], m[3], m[4])
+	}
+	return fmt.Sprintf("%s.%s.%s.%d", m[1], m[2], m[3], maxBetaNumber(m[1], m[2], m[3])+1)
+}
+
+// maxBetaNumber returns the highest N such that a tag vX.Y.Z-betaN exists in
+// the repo, or 0 if none do.
+func maxBetaNumber(x, y, z string) int {
+	prefix := fmt.Sprintf("v%s.%s.%s-beta", x, y, z)
+	cmd := exec.Command("git", "tag", "-l", prefix+"*")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	if err := cmd.Run(); err != nil {
+		panic(err)
+	}
+	re := regexp.MustCompile(`^` + regexp.QuoteMeta(prefix) + `(\d+)$`)
+	max := 0
+	for line := range strings.SplitSeq(out.String(), "\n") {
+		m := re.FindStringSubmatch(strings.TrimSpace(line))
+		if m == nil {
+			continue
+		}
+		n, err := strconv.Atoi(m[1])
+		if err == nil && n > max {
+			max = n
+		}
+	}
+	return max
+}
+
 func main() {
 	tag := getLatestGitTag()
-	if tag[0] != 'v' {
-		panic(tag)
-	}
 
 	var r Release
-	r.Version = tag[1:]
+	r.Version = wixVersion(tag)
 
 	initFiles := func(globs ...string) []InstallFile {
 		var files []InstallFile
@@ -108,7 +149,7 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
 	     SummaryCodepage='1252'
 	     />
 
-    <MajorUpgrade DowngradeErrorMessage="A later version of Vice is already installed. Setup will now exit." />
+    <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A later version of Vice is already installed. Setup will now exit." />
 
     <MediaTemplate EmbedCab="yes" />
 
