@@ -1,5 +1,5 @@
-- New scenario: ZBW Nantucket 17 (Ryan G), M03 (manaphy, Ryan G)
-- Scenario updates: BOI (Elliot B), MIA, ZJX (manaphy), PCT, NCT (Ketan K), ZNY (Ryan G), BTV (EkimWasHere), BOS (radarcontacto)
+- New scenarios: ZBW Nantucket 17 (Ryan G), M03 (manaphy, Ryan G), ZJX West combined (manaphy), PBI (Ketan K), ORF (Ryan H)
+- Scenario updates: BOI (Elliot B), MIA, ZJX (manaphy), PCT, NCT (Ketan K), ZNY (Ryan G), BTV (EkimWasHere), BOS (radarcontacto), I90 (Ethan Hawes), Y90 (CiceroIsBack)
 - Pronunciation fixes: I90 (Ethan Hawes)
 - Added support for scenario briefings (only JFK and LGA for now)
 - Improve handling of arrival airport winds on final approach (radarcontacto)
@@ -8,23 +8,18 @@
   - Fixed handling of "maintain best forward speed"
   - Added support for "cross (fix) at or below (altitude)"
 - Visual approaches
-  - Fixed bugs where aircraft cleared for approaches would still report the field insight
+  - Fixed bugs where aircraft cleared for approaches would still report the field in sight
   - Fixed descent profile for aircraft cleared for visual approaches
-  - Suppress MSAWs for aircraft on visual approaches
 - STARS
- - Fixed bug where aircraft on visual approaches could have unwanted MSAW alerts
+  - Fixed bug where aircraft on visual approaches could have unwanted MSAW alerts
+  - Fixed bugs with cursor disappearing at inopportune times
 - ERAM
   - Fixed bugs with drawing map annotations and map brightness handling
 - Facility engineering
- - Fractional values (not just integers) can now be used when specifying aircraft launch rates in scenarios
- - Added "description" field to JSON to provide short descriptive text that is shown in the scenario launch window (radarcontacto)
+  - Fractional values (not just integers) can now be used when specifying aircraft launch rates in scenarios
+  - Added "description" field to JSON to provide short descriptive text that is shown in the scenario launch window (radarcontacto)
   - Added `/intercept` to indicate virtually-controlled aircraft should intercept the approach
   - Updated video map file format: this makes it possible to fix a number of bugs with handling maps with conflicting STARS ids
-  
-- New scenarios: ZJX West combined (manaphy), PBI (Ketan K), ORF (Ryan H)
-- Scenario updates: I90 (Ethan Hawes), NCT (Ketan K), Y90 (CiceroIsBack)
-- STARS: fixed bugs with cursor disappearing at inopportune times
-- Facility engineering:
   - "controllers" entries in facility configurations now accept a comma-separated list of TCPs
   - CRDA: renamed "crda_regions" array -> "source_region" / "ghost_region"
   - CRDA: renamed "leader_directions" array -> "source_direction" / "ghost_direction"
