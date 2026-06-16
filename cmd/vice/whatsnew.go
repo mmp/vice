@@ -1,5 +1,5 @@
-// whatsnew.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// cmd/vice/whatsnew.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package main
@@ -367,4 +367,18 @@ var whatsNew []string = []string{
 	`STARS: Added support for "Create interfacility VFR flight plan from active local track"`,
 	`STARS: GI and ATIS text in the SSA list is managed by the server (so updates are shared among controllers)`,
 	`STARS: Allow scrolling the DCB if it's too big to fit the screen (Jud Lopez)`,
+	`New scenarios: ZBW Nantucket 17 (Ryan G), M03 (manaphy, Ryan G), ZJX West combined (manaphy), PBI (Ketan K), ORF (Ryan H)`,
+	`Scenario updates: BOI (Elliot B), MIA, ZJX (manaphy), PCT, NCT (Ketan K), ZNY (Ryan G), BTV (EkimWasHere)`,
+	`More scenario updates: BOS (radarcontacto), I90 (Ethan Hawes), Y90 (CiceroIsBack)`,
+	`Pronunciation fixes: I90 (Ethan Hawes)`,
+	`Added support for scenario briefings (only JFK and LGA for now)`,
+	`Improve handling of arrival airport winds on final approach (radarcontacto)`,
+	`Fixed bug where aircraft would speed up after missing an approach intercept`,
+	`STT: Fixed handling of "maintain best forward speed"`,
+	`STT: Added support for "cross (fix) at or below (altitude)"`,
+	`Fixed bugs where aircraft cleared for approaches would still report the field in sight`,
+	`Fixed descent profile for aircraft cleared for visual approaches`,
+	`STARS: Fixed bug where aircraft on visual approaches could have unwanted MSAW alerts`,
+	`STARS: Fixed bugs with cursor disappearing at inopportune times`,
+	`ERAM: Fixed bugs with drawing map annotations and map brightness handling`,
 }
