@@ -103,6 +103,7 @@ func main() {
 	ingestMode := flag.Bool("ingest", false, "ingest entries only, don't start review UI")
 	showStatus := flag.Bool("status", false, "show queue status and exit")
 	lifoMode := flag.Bool("lifo", false, "order entries by time, most recent first")
+	catchup := flag.Bool("catchup", false, "mark all queued entries as seen and clear the queue")
 	flag.Parse()
 
 	// Load persisted state
@@ -112,6 +113,21 @@ func main() {
 	if *showStatus {
 		fmt.Printf("Queue: %d entries to review\n", len(persisted.Queue))
 		fmt.Printf("Seen: %d entries processed\n", len(persisted.Seen))
+		return
+	}
+
+	// Handle -catchup
+	if *catchup {
+		cleared := len(persisted.Queue)
+		for _, e := range persisted.Queue {
+			persisted.markDone(e)
+		}
+		persisted.Queue = nil
+		if err := persisted.save(); err != nil {
+			fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Cleared %d queued entries (marked as seen)\n", cleared)
 		return
 	}
 
