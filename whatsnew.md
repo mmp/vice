@@ -28,3 +28,4 @@
   - "controllers" entries in facility configurations now accept a comma-separated list of TCPs
   - CRDA: renamed "crda_regions" array -> "source_region" / "ghost_region"
   - CRDA: renamed "leader_directions" array -> "source_direction" / "ghost_direction"
+  - An array of multiple altitudes may be given for "initial_altitude" for arrivals

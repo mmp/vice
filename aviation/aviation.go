@@ -145,17 +145,17 @@ type Arrival struct {
 	Route           string                              `json:"route"`
 	STAR            string                              `json:"star"`
 
-	InitialController   ControlPosition  `json:"initial_controller"`
-	InitialAltitude     float32          `json:"initial_altitude"`
-	AssignedAltitude    float32          `json:"assigned_altitude"`
-	ClearedAltitude     float32          `json:"cleared_altitude"`
-	InitialSpeed        float32          `json:"initial_speed"`
-	SpeedRestriction    SpeedRestriction `json:"speed_restriction"`
-	Scratchpad          string           `json:"scratchpad"`
-	SecondaryScratchpad string           `json:"secondary_scratchpad"`
-	Description         string           `json:"description"`
-	CoordinationFix     string           `json:"coordination_fix"`
-	IsRNAV              bool             `json:"is_rnav"`
+	InitialController   ControlPosition         `json:"initial_controller"`
+	InitialAltitudes    util.SingleOrArray[int] `json:"initial_altitude"`
+	AssignedAltitude    float32                 `json:"assigned_altitude"`
+	ClearedAltitude     float32                 `json:"cleared_altitude"`
+	InitialSpeed        float32                 `json:"initial_speed"`
+	SpeedRestriction    SpeedRestriction        `json:"speed_restriction"`
+	Scratchpad          string                  `json:"scratchpad"`
+	SecondaryScratchpad string                  `json:"secondary_scratchpad"`
+	Description         string                  `json:"description"`
+	CoordinationFix     string                  `json:"coordination_fix"`
+	IsRNAV              bool                    `json:"is_rnav"`
 
 	ExpectApproach util.OneOf[string, map[string]string] `json:"expect_approach"`
 
@@ -1252,15 +1252,18 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		}
 	}
 
-	if ar.InitialAltitude == 0 {
-		e.ErrorString(`must specify "initial_altitude"`)
+	if len(ar.InitialAltitudes) == 0 {
+		e.ErrorString(`must specify at least one "initial_altitude"`)
 	} else {
-		// Make sure the initial altitude isn't below any of
+		// Make sure no possible initial altitude is below any of the
 		// altitude restrictions.
-		for _, wp := range ar.Waypoints {
-			if wp.AltitudeRestriction() != nil &&
-				wp.AltitudeRestriction().TargetAltitude(ar.InitialAltitude) > ar.InitialAltitude {
-				e.ErrorString(`"initial_altitude" is below altitude restriction at %q`, wp.Fix)
+		for _, alt := range ar.InitialAltitudes {
+			a := float32(alt)
+			for _, wp := range ar.Waypoints {
+				if wp.AltitudeRestriction() != nil &&
+					wp.AltitudeRestriction().TargetAltitude(a) > a {
+					e.ErrorString(`"initial_altitude" %d is below altitude restriction at %q`, alt, wp.Fix)
+				}
 			}
 		}
 	}

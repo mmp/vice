@@ -2583,7 +2583,8 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 
 // checkArrivalSpawnAltitude flags an arrival whose initial altitude is
 // too high to meet its first "at or below" restriction given the distance
-// to that waypoint. Assumes 2500 fpm descent at 250 kts ground speed.
+// to that waypoint. Assumes 2500 fpm descent at 250 kts ground speed. If
+// multiple spawn altitudes are configured, each is checked.
 func checkArrivalSpawnAltitude(arr av.Arrival, e *util.ErrorLogger) {
 	if arr.AssignedAltitude > 0 {
 		return
@@ -2592,45 +2593,43 @@ func checkArrivalSpawnAltitude(arr av.Arrival, e *util.ErrorLogger) {
 		return
 	}
 
-	spawnAlt := arr.InitialAltitude
-	if spawnAlt == 0 {
-		return
-	}
+	for _, alt := range arr.InitialAltitudes {
+		spawnAlt := float32(alt)
+		dist := float32(0)
 
-	dist := float32(0)
+		for i, wp := range arr.Waypoints {
+			if i > 0 {
+				dist += math.NMDistance2LL(arr.Waypoints[i-1].Location, wp.Location)
+			}
+			if wp.Flags&av.WaypointFlagHasAltRestriction == 0 {
+				continue
+			}
+			restr := wp.AltRestriction
 
-	for i, wp := range arr.Waypoints {
-		if i > 0 {
-			dist += math.NMDistance2LL(arr.Waypoints[i-1].Location, wp.Location)
+			// Only care about "at or below" constraints that require descent.
+			upperBound := restr.Range[1]
+			if upperBound == av.MaxAltitude || spawnAlt <= upperBound {
+				continue
+			}
+
+			// Conservative estimate: 2500 fpm descent at 250 kts ground speed.
+			const descentRate = 2500
+			const gs = 250
+			eta := float32(dist) / gs * 3600 // seconds
+			maxDescent := float32(descentRate) * eta / 60
+
+			needed := spawnAlt - upperBound
+			if needed > maxDescent {
+				e.ErrorString("arrival %s spawns at %.0f ft but restriction [%.0f,%.0f] at %s is %.1f nm away "+
+					"(need %.0f ft descent, max achievable ~%.0f ft)",
+					arr.STAR, spawnAlt,
+					restr.Range[0], restr.Range[1], wp.Fix, dist,
+					needed, maxDescent)
+			}
+
+			// Only check the first altitude restriction that requires descent.
+			break
 		}
-		if wp.Flags&av.WaypointFlagHasAltRestriction == 0 {
-			continue
-		}
-		restr := wp.AltRestriction
-
-		// Only care about "at or below" constraints that require descent.
-		upperBound := restr.Range[1]
-		if upperBound == av.MaxAltitude || spawnAlt <= upperBound {
-			continue
-		}
-
-		// Conservative estimate: 2500 fpm descent at 250 kts ground speed.
-		const descentRate = 2500
-		const gs = 250
-		eta := float32(dist) / gs * 3600 // seconds
-		maxDescent := float32(descentRate) * eta / 60
-
-		needed := spawnAlt - upperBound
-		if needed > maxDescent {
-			e.ErrorString("arrival %s spawns at %.0f ft but restriction [%.0f,%.0f] at %s is %.1f nm away "+
-				"(need %.0f ft descent, max achievable ~%.0f ft)",
-				arr.STAR, spawnAlt,
-				restr.Range[0], restr.Range[1], wp.Fix, dist,
-				needed, maxDescent)
-		}
-
-		// Only check the first altitude restriction that requires descent.
-		return
 	}
 }
 

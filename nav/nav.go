@@ -343,8 +343,9 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan,
 			nav.Altitude.Cleared = &alt
 		}
 
-		nav.FinalAltitude = max(nav.FinalAltitude, arr.InitialAltitude)
-		nav.FlightState.Altitude = arr.InitialAltitude
+		alt := float32(rand.SampleSlice(nav.Rand, arr.InitialAltitudes))
+		nav.FinalAltitude = max(nav.FinalAltitude, alt)
+		nav.FlightState.Altitude = alt
 		nav.FlightState.IAS = arr.InitialSpeed
 		// This won't be quite right but it's better than leaving GS to be
 		// 0 for the first nav update tick which leads to various Inf and
