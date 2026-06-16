@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"io"
 	"maps"
-	"path/filepath"
+	"path"
 	"slices"
 	"strings"
 	"time"
@@ -260,28 +260,32 @@ func GenerateManifestWithPrefix(paths map[string]int64, prefix string) (*Manifes
 	})
 }
 
+// All paths returned here flow into fs.FS lookups (which require "/") or
+// GCS object names (also "/"), so use path.Join, not filepath.Join — the
+// latter produces backslashes on Windows and breaks both consumers.
+
 // BuildObjectPath constructs a weather data object path from a prefix, identifier, and timestamp.
 // Returns a path in the format: "prefix/identifier/{RFC3339 time}.msgpack.zst"
 func BuildObjectPath(prefix, identifier string, t time.Time) string {
-	return filepath.Join(prefix, identifier, t.UTC().Format(time.RFC3339)+".msgpack.zst")
+	return path.Join(prefix, identifier, t.UTC().Format(time.RFC3339)+".msgpack.zst")
 }
 
 // ManifestPath returns the full path to a manifest file for a given prefix
 func ManifestPath(prefix string) string {
-	return filepath.Join(prefix, ManifestFilename)
+	return path.Join(prefix, ManifestFilename)
 }
 
 // MonthlyManifestPath returns the full path to a monthly manifest file.
 // The month parameter should be in "YYYY-MM" format (e.g., "2025-08").
 // Returns a path like "prefix/manifest-int64time-YYYY-MM.msgpack.zst"
 func MonthlyManifestPath(prefix, month string) string {
-	return filepath.Join(prefix, fmt.Sprintf("manifest-int64time-%s.msgpack.zst", month))
+	return path.Join(prefix, fmt.Sprintf("manifest-int64time-%s.msgpack.zst", month))
 }
 
 // MonthlyManifestPrefix returns the prefix used for listing monthly manifest files.
 // Returns a prefix like "prefix/manifest-int64time-"
 func MonthlyManifestPrefix(prefix string) string {
-	return filepath.Join(prefix, "manifest-int64time-")
+	return path.Join(prefix, "manifest-int64time-")
 }
 
 // compressTimestamps delta-encodes and flate-compresses a slice of int64 timestamps.
