@@ -55,6 +55,7 @@ const (
 	PendingTransmissionRequestVisual                                           // Spontaneous "field in sight, requesting visual"
 	PendingTransmissionRequestVectors                                          // Pilot requesting vectors (overshot localizer)
 	PendingTransmissionRequestAltitude                                         // Pilot requesting altitude after being vectored off STAR
+	PendingTransmissionRequestSlowDown                                         // Arrival held fast close in, asking to slow down
 )
 
 // FutureFrequencyChange represents a pilot switching to a new frequency.
@@ -85,6 +86,19 @@ func (s *Sim) hasPendingCheckIn(callsign av.ADSBCallsign) bool {
 		for _, pc := range pcs {
 			if pc.ADSBCallsign == callsign &&
 				(pc.Type == PendingTransmissionArrival || pc.Type == PendingTransmissionDeparture) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// hasPendingTransmission reports whether a transmission of the given type is
+// already queued for the aircraft, used to avoid enqueuing duplicate requests.
+func (s *Sim) hasPendingTransmission(callsign av.ADSBCallsign, ty PendingTransmissionType) bool {
+	for _, pcs := range s.PendingContacts {
+		for _, pc := range pcs {
+			if pc.ADSBCallsign == callsign && pc.Type == ty {
 				return true
 			}
 		}
@@ -475,6 +489,24 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	case PendingTransmissionRequestAltitude:
 		rt = av.MakeContactTransmission("[what altitude should we maintain|what altitude do you want us at]")
+		rt.Type = av.RadioTransmissionUnexpected
+
+	case PendingTransmissionRequestSlowDown:
+		// The controller may have slowed us between enqueue and dispatch; if the
+		// request is no longer warranted (e.g. now satisfies the speed gate),
+		// drop it.
+		if !ac.stillWantsSlowDown() {
+			return "", ""
+		}
+		// All phrasings share this tail; the speed-naming variants are only
+		// added when there's a specific assigned IAS to reference.
+		const tail = "are you still going to need the speed|can we start to slow|we need to start slowing here"
+		if sr := ac.Nav.Speed.Assigned; sr != nil && !sr.IsMach {
+			rt = av.MakeContactTransmission("[do you still need {spd}|how much longer do you need {spd}|"+tail+"]",
+				int(sr.Range[0]))
+		} else {
+			rt = av.MakeContactTransmission("[" + tail + "]")
+		}
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionEmergency:

@@ -144,6 +144,17 @@ type Aircraft struct {
 	// field is in sight. Set to zero after the check (requested or given up) to prevent retries.
 	VisualApproachRequestDistance float32
 
+	// SlowDownAskedGate is the speed gate (kts) at which the pilot last asked
+	// to slow down (issue #884); 0 means no request has been made. The pilot
+	// only re-asks on crossing into a closer (lower-speed) gate band.
+	// SlowDownAskedFloor is the assigned speed floor in force when that ask was
+	// (re-)armed; a change in the assignment re-arms the request. SlowDownLastDist
+	// is the previous tick's distance, used to detect when the aircraft is
+	// receding from the field (overflew/missed) so it stays quiet.
+	SlowDownAskedGate  float32
+	SlowDownAskedFloor float32
+	SlowDownLastDist   float32
+
 	TouchAndGosRemaining int // >0 means pattern aircraft; decremented each lap
 }
 

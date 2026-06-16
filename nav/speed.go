@@ -403,6 +403,63 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, sr *av.SpeedR
 	return false, nil, "", false
 }
 
+// AssignedSpeedFloor returns the lowest speed (in knots) the aircraft may fly
+// given the current controller speed assignment, along with whether such an
+// assignment is in force. It is used to decide whether an arrival should ask
+// to slow down (issue #884); Mach assignments are ignored since they only
+// apply far from the airport.
+func (nav *Nav) AssignedSpeedFloor() (float32, bool) {
+	if nav.Speed.MaintainMaximumForward {
+		// "Maintain maximum forward speed" exceeds any distance-based gate.
+		return av.MaxRestrictionSpeed, true
+	}
+	if sr := nav.Speed.Assigned; sr != nil && !sr.IsMach {
+		return sr.Range[0], true
+	}
+	return 0, false
+}
+
+// SlowDownDistanceNM estimates the distance (in nm) the pilot would use when
+// judging whether they are "getting close" to the runway for the purpose of
+// requesting a speed reduction (issue #884), along with whether that estimate
+// is meaningful.
+//
+// When flying a lateral route (not being vectored) it returns the remaining
+// track miles along the route, which correctly accounts for downwind/base
+// geometry. When being vectored it falls back to the straight-line distance to
+// the assigned approach's runway threshold, but only when the aircraft is
+// actually flying toward it (within 90 degrees); otherwise it returns
+// ok=false, so no premature request is made while on a downwind or base leg
+// where the aircraft can be close to the threshold but heading away from it.
+func (nav *Nav) SlowDownDistanceNM() (float32, bool) {
+	fs := &nav.FlightState
+
+	if nav.Heading.Assigned == nil && len(nav.Waypoints) > 0 {
+		// Sum the remaining track miles. We do not verify the final waypoint is
+		// the runway threshold: a not-yet-cleared arrival on a full STAR yields a
+		// large distance, which arrivalSpeedGate rejects (>20 nm) anyway.
+		d := math.NMDistance2LLFast(fs.Position, nav.Waypoints[0].Location, fs.NmPerLongitude)
+		for i := 0; i+1 < len(nav.Waypoints); i++ {
+			d += math.NMDistance2LLFast(nav.Waypoints[i].Location, nav.Waypoints[i+1].Location,
+				fs.NmPerLongitude)
+		}
+		return d, true
+	}
+
+	// Being vectored: we can only estimate distance if we know which runway
+	// we're being taken to.
+	if nav.Approach.Assigned == nil {
+		return 0, false
+	}
+	threshold := nav.Approach.Assigned.Threshold
+	bearing := math.Heading2LL(fs.Position, threshold, fs.NmPerLongitude)
+	heading := math.MagneticToTrue(fs.Heading, fs.MagneticVariation)
+	if math.HeadingDifference(heading, bearing) > 90 {
+		return 0, false
+	}
+	return math.NMDistance2LLFast(fs.Position, threshold, fs.NmPerLongitude), true
+}
+
 // distanceToEndOfApproach returns the remaining distance to the last
 // waypoint (usually runway threshold) of the currently assigned approach.
 func (nav *Nav) DistanceToEndOfApproach() (float32, error) {
