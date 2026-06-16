@@ -404,7 +404,7 @@ func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, config
 
 	var newestRelease *Release
 	for i := range releases {
-		if strings.HasSuffix(releases[i].TagName, "-beta") {
+		if strings.Contains(releases[i].TagName, "-beta") {
 			continue
 		}
 		if newestRelease == nil || releases[i].Created.After(newestRelease.Created) {
