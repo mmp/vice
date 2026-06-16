@@ -2371,12 +2371,15 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		}
 	}
 
-	// Validate the extra scenario separately with its own error logger
+	// Validate the extra scenario separately with its own error logger and
+	// stage in a separate catalogs map that's only merged on success.
 	if extraScenario != nil {
 		var extraE util.ErrorLogger
 		extraE.Push(extraScenario.SourceFile)
 		extraE.Push("TRACON " + extraScenarioFacility)
 		extraE.Push("Scenario group " + extraScenario.Name)
+
+		localCatalogs := make(map[string]map[string]*ScenarioCatalog)
 
 		// Make sure we have what we need in terms of video maps
 		fa := &extraScenario.FacilityConfig.FacilityAdaptation
@@ -2386,7 +2389,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			extraE.ErrorString("no mapSpec for video map %q found. Options: %s", vf,
 				strings.Join(util.SortedMapKeys(mapSpecs), ", "))
 		} else {
-			extraScenario.PostDeserialize(&extraE, catalogs, mapSpec, mapSpecs)
+			extraScenario.PostDeserialize(&extraE, localCatalogs, mapSpec, mapSpecs)
 		}
 
 		extraE.Pop() // Scenario group
@@ -2397,7 +2400,15 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			extraScenarioErrors = extraE.String()
 			lg.Warnf("Extra scenario file has validation errors and will not be loaded: %s", extraScenarioFilename)
 		} else {
-			// Only add to scenarioGroups if validation succeeded
+			// Merge the local catalogs into the shared one only on success.
+			for facility, m := range localCatalogs {
+				if catalogs[facility] == nil {
+					catalogs[facility] = make(map[string]*ScenarioCatalog)
+				}
+				for name, c := range m {
+					catalogs[facility][name] = c
+				}
+			}
 			if scenarioGroups[extraScenarioFacility] == nil {
 				scenarioGroups[extraScenarioFacility] = make(map[string]*scenarioGroup)
 			}
