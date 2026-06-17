@@ -366,7 +366,7 @@ func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) *math
 	state := ep.TrackState[trk.ADSBCallsign]
 	dir := state.LeaderLineDirection
 	if dir == nil {
-		direction := math.CardinalOrdinalDirection(math.NorthEast)
+		direction := math.NorthEast
 		dir = &direction
 		state.LeaderLineDirection = dir
 	}

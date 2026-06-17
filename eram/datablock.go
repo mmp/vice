@@ -186,7 +186,7 @@ type limitedDatablock struct {
 func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
-	dir = math.CardinalOrdinalDirection(math.East) // Always east or west for LDBs (west not simulated)
+	dir = math.East // Always east or west for LDBs (west not simulated)
 	lines := []dbLine{
 		dbMakeLine(dbChopTrailing(db.line0[:])),
 		dbMakeLine(dbChopTrailing(db.line1[:])),

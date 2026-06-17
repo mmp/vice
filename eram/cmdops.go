@@ -813,7 +813,7 @@ func handleLeaderLine(ep *ERAMPane, ctx *panes.Context, dir int, trk *sim.Track)
 	dbType := ep.datablockType(ctx, *trk)
 
 	if dbType != FullDatablock {
-		if direction != math.CardinalOrdinalDirection(math.East) && direction != math.CardinalOrdinalDirection(math.West) {
+		if direction != math.East && direction != math.West {
 			return CommandStatus{}, ErrERAMIllegalValue
 		}
 	}

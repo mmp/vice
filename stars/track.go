@@ -1532,7 +1532,7 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 	}
 
 	// TODO: should this case have a user-specifiable default?
-	return math.CardinalOrdinalDirection(math.North)
+	return math.North
 }
 
 func (sp *STARSPane) getLeaderLineVector(ctx *panes.Context, dir math.CardinalOrdinalDirection) [2]float32 {

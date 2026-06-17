@@ -36,7 +36,7 @@ type CardinalOrdinalDirection int
 type HeadingT interface{ ~int | ~float32 }
 
 const (
-	North = iota
+	North CardinalOrdinalDirection = iota
 	NorthEast
 	East
 	SouthEast
