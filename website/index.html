@@ -33,6 +33,11 @@
       color: #5d6778;
       text-decoration: underline;
     }
+
+    .eram-toolbar-list strong,
+    .eram-toolbar-list b {
+      font-weight: 500;
+    }
   </style>
   
   <!-- Meta -->
@@ -7378,11 +7383,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
               <h3>Master Toolbar (top bar)</h3>
 
-              <ul>
+              <ul class="eram-toolbar-list">
                 <li><b>DRAW</b> — not implemented</li>
                 <li><strong>ATC TOOLS</strong>
                   <ul>
-                    <li><strong>CRR FIX</strong> — fully implemented (toggles CRR fix overlay)</li>
+                    <li><strong>CRR FIX</strong> — implemented</li>
                     <li><strong>SPEED ADVISORY</strong> — not implemented</li>
                     <li><strong>WX</strong> — not implemented</li>
                   </ul>
@@ -7391,11 +7396,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <li><strong>CURSOR</strong>
                   <ul>
                     <li><strong>SPEED</strong> — not implemented</li>
-                    <li><strong>SIZE</strong> — fully implemented (1–5)</li>
+                    <li><strong>SIZE</strong> — fully implemented</li>
                     <li><strong>VOLUME</strong> — not implemented</li>
                   </ul>
                 </li>
-                <li><strong>BRIGHT</strong> (toggles to MAP BRIGHT mode)
+                <li><strong>BRIGHT</strong>
                   <ul>
                     <li><strong>CPDLC</strong> — not implemented</li>
                     <li><strong>BCKGRD, CURSOR, TEXT, PR TGT, UNP TGT, PR HST, UNP HST, LDB, SLDB, WX, NEXRAD, BCKLGHT, BUTTON, BORDER, TOOLBAR, TB
@@ -7411,53 +7416,32 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </li>
                 <li><strong>DB FIELDS</strong>
                   <ul>
-                    <li><strong>NON-RVSM</strong> — not implemented</li>
-                    <li><strong>VRI</strong> — not implemented</li>
-                    <li><strong>CODE</strong> — not implemented</li>
-                    <li><strong>SPEED</strong> — not implemented</li>
+                    <li><strong>NON-RVSM, VRI, CODE, SPEED</strong> — not implemented</li>
                     <li><strong>DEST</strong> — fully implemented (Line 4 = destination)</li>
                     <li><strong>TYPE</strong> — fully implemented (Line 4 = aircraft type)</li>
                     <li><strong>FDB LDR</strong> — fully implemented (leader length 0–3)</li>
-                    <li><strong>BCAST FLID</strong> — not implemented</li>
-                    <li><strong>PORTAL FENCE</strong> — not implemented</li>
-                    <li><strong>NON-ADS-B</strong> — not implemented</li>
-                    <li><strong>NONADSB 90</strong> — not implemented</li>
-                    <li><strong>SAT COMM</strong> — not implemented</li>
-                    <li><strong>TFM REROUTE</strong> — not implemented</li>
-                    <li><strong>CRR RDB, STA RDB, DELAY RDB, DELAY FORMAT</strong> — not implemented</li>
+                    <li><strong>BCAST FLID, PORTAL FENCE, NON-ADS-B, NONADSB 90,  SAT COMM,  TFM REROUTE, CRR RDB, STA RDB, DELAY RDB, DELAY FORMAT</strong> — not implemented</li>
                   </ul>
                 </li>
                 <li><strong>VECTOR</strong> — fully implemented (cycles 0/1/2/4/8 minutes)</li>
                 <li><strong>VIEWS</strong>
                   <ul>
-                    <li><strong>ALTIM SET</strong> — fully implemented (toggle)</li>
-                    <li><strong>AUTO HO INHIB</strong> — not implemented</li>
-                    <li><strong>CFR</strong> — not implemented</li>
-                    <li><strong>CODE</strong> (Beacon Code view) — not implemented</li>
-                    <li><strong>CONFLCT ALERT</strong> — not implemented</li>
-                    <li><strong>CPDLC ADV, CPDLC HIST, CPDLC MSGOUT, CPDLC TOC SET</strong> — not implemented</li>
-                    <li><strong>CRR</strong> — fully implemented (toggle)</li>
-                    <li><strong>DEPT LIST</strong> — not implemented</li>
-                    <li><strong>FLIGHT EVENT</strong> — not implemented</li>
-                    <li><strong>GROUP SUP</strong> — not implemented</li>
-                    <li><strong>HOLD LIST</strong> — not implemented</li>
-                    <li><strong>INBND LIST</strong> — not implemented</li>
-                    <li><strong>MRP LIST</strong> — not implemented</li>
-                    <li><strong>SAA FILTER</strong> — not implemented</li>
-                    <li><strong>UA</strong> — not implemented</li>
-                    <li><strong>WX REPORT</strong> — fully implemented (toggle)</li>
+                    <li><strong>ALTIM SET</strong> — fully implemented</li>
+                    <li><strong>AUTO HO INHIB, CFR, CODE, CONFLCT ALERT, CPDLC ADV, CPDLC HIST, CPDLC MSGOUT, CPDLC TOC SET</strong> — not implemented</li>
+                    <li><strong>CRR</strong> — fully implemented</li>
+                    <li><strong>DEPT LIST, FLIGHT EVENT, GROUP SUP, HOLD LIST, INBND LIST, MRP LIST, SAA FILTER, UA</strong> — not implemented</li>
+                    <li><strong>WX REPORT</strong> — fully implemented</li>
                   </ul>
                 </li>
                 <li><strong>CHECK LISTS</strong>
                   <ul>
-                    <li><strong>POS CHECK</strong> — not implemented</li>
-                    <li><strong>EMERG CHECK</strong> — not implemented</li>
+                    <li><strong>POS CHECK, EMERG CHECK</strong> — not implemented</li>
                   </ul>
                 </li>
                 <li><strong>COMMAND MENUS</strong> — not implemented</li>
                 <li><strong>VIDEOMAP</strong>
                   <ul>
-                    <li>Dynamic per-map toggles, up to 20 maps; <strong>Alt</strong> reveals an extended set (≈20–42). Toggles fully implemented.</li>
+                    <li>Dynamic per-map toggles, up to 20 maps; <strong>Alt</strong> reveals an extended set (≈20–42). Fully implemented.</li>
                   </ul>
                 </li>
                 <li><strong>ALT LIM</strong> — read-only display of current altitude filter range</li>
@@ -7475,87 +7459,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   torn-off positions persist; delete mode removes them.</li>
               </ul>
 
-              <h3>Not present (documented in real ERAM, absent in vice)</h3>
-              <ul>
-                <li><strong>TIME</strong> button (the clock view exists as a floating window but no toolbar button toggles it)</li>
-                <li>Top-level <strong>CHKLST, BRITE, BCG, BCKGRD, GeoMap</strong> buttons under those documented names (vice uses CHECK LISTS, BRIGHT,
-                  VIDEOMAP, etc., with equivalent function for what is wired)</li>
-              </ul>
-
               <h2>Radar Scope</h2>
-
-              <h3>Maps</h3>
-
-              <h4>Fully implemented</h4>
-              <ul>
-                <li>Map group selection and switching</li>
-                <li>Per-map visibility, persisted across sessions</li>
-                <li>Brightness Control Groups (BCGs): per-feature BCG index; per-BCG brightness 0–100 (default 12)</li>
-                <li>Map BRIGHT submenu (up to 20 BCGs)</li>
-                <li>GeoMap Filter menu (20 base + extended set via Alt)</li>
-                <li>Four line-dash styles: solid, short-dashed, long-dashed, long-dash short-dash</li>
-                <li>17 symbol glyphs (VOR, NDB, TACAN, VOR/TACAN, DME, RNAV, RNAV-only waypoint, airport, satellite airport, emergency airport,
-                  heliport, other waypoints, airway intersections, IAF, two obstruction styles, nuclear, radar)</li>
-                <li>Map labels with X/Y offset, underline, opaque background</li>
-                <li>BCG-driven coloring with brightness scaling</li>
-              </ul>
-
-              <h4>Partially implemented</h4>
-              <ul>
-                <li>Line thickness attribute is parsed but ignored — all map lines render at width 1</li>
-                <li>Default map visibility honors only scenario-defined default lists; visibility resets when changing map group</li>
-              </ul>
-
-              <h4>Not implemented</h4>
-              <ul>
-                <li>Sector boundary outlines as map features</li>
-                <li>Dedicated jet-route vs airway distinction</li>
-                <li>Live NAVAID database overlay (symbols only come from preloaded map data)</li>
-                <li>Airport diagrams / runway-detail overlays</li>
-                <li>Sector identifier labels</li>
-                <li>Runtime per-feature color customization (only brightness is adjustable)</li>
-                <li>FILT / A / B-style named filter groups</li>
-                <li>Filter state preservation across map switches</li>
-              </ul>
 
               <h3>Tracks and Data Blocks</h3>
 
-              <h4>Fully implemented — Tracks</h4>
-              <ul>
-                <li>Eight position symbols selected by primary vs beacon, Mode A/C state, ident flag, squawk, and altitude</li>
-                <li>History trails: 6-point circular buffer, 0–5 visible; separate brightness for primary vs uncorrelated</li>
-                <li>Velocity vectors (PTLs): 0 / 1 / 2 / 4 / 8 minutes, derived from heading + groundspeed</li>
-                <li>Leader lines: eight directions, lengths 0/1/2/3 (≈60/120/180 px); W/E-only constraint for length-0 mode; LDB leader fixed to 8 px
-                  East</li>
-                <li>J-rings: standard 5 nm; reduced 3 nm with gap arcs at the cardinal points; reduced suppressed above FL230</li>
-                <li>Altitude limit filtering (ALT LIM) in 100-ft increments, default 0–99,900 ft</li>
-                <li>FDB vs LDB selection based on ownership / handoff / forced-FDB state</li>
-                <li>Tentative-track detection in the first 5 s after contact; climb/descend/level detection; reached-altitude detection</li>
-              </ul>
-
-              <h4>Fully implemented — Data Blocks</h4>
-              <ul>
-                <li>LDB two-line format (callsign, altitude in hundreds), with E/W-restricted leader</li>
-                <li>FDB five-line format with position symbol and leader; line 1 callsign, line 2 altitude + status char, line 3 VCI / CID /
-                  speed-or-handoff, line 4 destination or aircraft type</li>
-                <li>Ownership "R" indicator</li>
-                <li>Altitude status characters: <code>C</code> (reached), up/down arrows (climbing/descending), <code>T</code> / <code>L</code> /
-                  <code>P</code> (interim types)</li>
-                <li>Interim altitude with type letter alongside current altitude</li>
-                <li>Direction-dependent data-block offsets for all eight directions</li>
-                <li>HSF (Heading / Speed-Mach / Free-text) scratchpad with arrow indicator after field E</li>
-                <li>VCI: <code>x</code> symbol with toggle command and hover activation</li>
-                <li>Flashing-field infrastructure (used for handoff alternation)</li>
-                <li>Field hit-boxes for clickable callsign, VCI, altitude, CID, speed, line-4 regions</li>
-                <li>Field-E alternation every 6 s between handoff/ownership and speed</li>
-              </ul>
-
-              <h4>Partially implemented</h4>
-              <ul>
-                <li><strong>Enhanced Limited Data Block (EDB / ELDB)</strong> — type and allocation present, but never populated with the extra
-                  altitude information</li>
-                <li><strong>Coast / freeze tracks</strong> — track state flags exist (DisplayJRing etc.) but no CST/FRZN rendering of the position
-                  symbol</li>
+              <h4>Not implemented</h4>
+              <ul class="eram-toolbar-list">
+                <li><strong>Enhanced Limited Data Block (EDB / ELDB)</strong></li>
+                <li><strong>Coast / freeze tracks</strong></li>
                 <li><strong>Conflict detection / STCA</strong> — reduced J-ring geometry exists but no 4-minute predictor, no separation-loss alerting,
                   no dynamic J-ring color change</li>
                 <li><strong>RADAR FILTER</strong> — submenu present, only HISTORY actually filters</li>
@@ -7563,20 +7474,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   change; HIJK / RDOF / EMRG markers not rendered</li>
                 <li><strong>Line 4 mode</strong> — DEST and TYPE modes render; the HSF mode-toggle arrow (↴) is not drawn</li>
                 <li><strong>Data-block visibility</strong> — always-on; no Portal Fence rendering and no dwell-emphasis highlighting</li>
-              </ul>
-
-              <h4>Not implemented</h4>
-              <ul>
-                <li>Primary-vs-beacon source distinction in symbol shape</li>
-                <li>Track correlation-quality / uncertainty indicators</li>
-                <li>PTL endpoint symbol at the predicted position</li>
                 <li>Special highlighting for emergency squawks (7500/7600/7700)</li>
                 <li>Block-altitude filtering and block-altitude data-block format</li>
-                <li>Sensor / antenna status indication</li>
-                <li>Radar coverage gaps / holes</li>
                 <li>Free-text labels anchored to a target (independent of HSF)</li>
                 <li>Target age / dwell fading</li>
-                <li>Track grouping (flocks / formations)</li>
                 <li>Cone-shaped separation indicators</li>
                 <li>Conflict Data Block (TFC)</li>
                 <li>Range Data Blocks (CRR RDB, STA RDB, DELAY RDB) — toolbar buttons exist but no rendering</li>
@@ -7592,76 +7493,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
               <h3>NEXRAD / Weather</h3>
 
-              <h4>Fully implemented</h4>
-              <ul>
-                <li>WX and NEXRAD brightness sliders in the BRIGHT submenu</li>
-              </ul>
-
-              <h4>Partially implemented</h4>
-              <ul>
-                <li><strong>NEXRAD precipitation display</strong> — a full 6-level radar pipeline with dBZ mapping, 3-frame history, and stipple
-                  patterns exists in the shared weather module, but ERAM never draws it (only the STARS side calls it). No NX LVL submenu, no
-                  precipitation-level toggles.</li>
-                <li><strong>Weather history / looping</strong> — 3-frame infrastructure exists but no UI to cycle frames</li>
-                <li><strong>Altimeter staleness</strong> — the 65-minute stale marker is not applied to the ALTIM SET display</li>
-              </ul>
-
-              <h4>Not implemented</h4>
-              <ul>
-                <li>Any actual on-scope NEXRAD/precipitation rendering</li>
-                <li>NX LVL filter (OFF / 3 / 23 / 123)</li>
-                <li>CCFP convective forecast polylines</li>
-                <li>AIRMET / SIGMET overlays</li>
-                <li>SUA (Special Use Airspace) display tied to weather</li>
-                <li>Per-station altimeter visibility toggle</li>
-                <li>WX alert / message ticker</li>
-              </ul>
-
-              <h2>Views</h2>
-
-              <h3>Fully implemented</h3>
-              <ul>
-                <li><strong>Message Composition Area (MCA)</strong> — Preview + Feedback split; repositionable; configurable PA LINES, WIDTH, FONT,
-                  BRIGHT; arrow-key navigation, Ctrl+Page Up/Down, Insert toggle, Ctrl+R command recall</li>
-                <li><strong>Response Area (RA)</strong> — standalone, repositionable, with WIDTH / FONT / BRIGHT / CLEAR</li>
-                <li><strong>Time (Clock)</strong> — Zulu HHMM SS, always drawn, repositionable; O/T, BORDER, FONT, BRIGHT</li>
-                <li><strong>CRR (Continuous Range Readout)</strong> — list and panel modes; per-color brightness for
-                  Green/Yellow/Magenta/Cyan/White/Amber; full menu (O/T, BORDER, LINES 1–100, COL, FONT 1–4, BRIGHT 0–100); repositionable; tear-off menu
-                  indicators</li>
-                <li><strong>ALTIM SET</strong> — 1–4 columns; full menu (O/T, BORDER, TEAROFF, LINES 3–24, COL 1–4, FONT 1–3, BRIGHT 0–100); stale
-                  "underline" and <code>-M-</code> for missing; repositionable</li>
-                <li><strong>WX REPORT</strong> — METAR display with word-wrap; full menu (O/T, BORDER, TEAROFF, LINES 3–24, FONT 1–3, BRIGHT 0–100);
-                  <code>-M-</code> for missing; repositionable</li>
-                <li><strong>Common view chrome</strong> — every floating view supports opaque/transparent backgrounds, border show/hide,
-                  font/brightness controls, repositioning, M (menu) and − (minimize) title-bar buttons, and tear-off menu indicators</li>
-                <li><strong>Preference sets</strong> — 10 save slots scoped by ARTCC and video-map group; save/load/delete via Settings UI</li>
-              </ul>
-
-              <h3>Partially implemented</h3>
-              <ul>
-                <li><strong>CRR COLOR selector</strong> — swatch UI exposes 4 of the 6 colors (Yellow and Cyan absent from the picker, though their
-                  brightness sliders exist)</li>
-              </ul>
-
-              <h3>Not implemented</h3>
-              <ul>
-                <li>Beacon Code view (CODE)</li>
-                <li>Conflict Alert list</li>
-                <li>Inbound List (INBND LIST)</li>
-                <li>Holding List (HOLD LIST)</li>
-                <li>Departure List (DEPT LIST)</li>
-                <li>Trial Plan list</li>
-                <li>MRP List</li>
-                <li>Coordination / Aircraft / MCI lists</li>
-                <li>Position-relief checklist (POS CHECK)</li>
-                <li>Emergency checklist (EMERG CHECK)</li>
-                <li>All CPDLC views (ADV, HIST, MSGOUT, TOC SET)</li>
-                <li>AUTO HO INHIB, CFR, FLIGHT EVENT, GROUP SUP, SAA FILTER, UA</li>
-                <li>Display Settings window (Ctrl+D — top-down mode, mouse pan/zoom disable)</li>
-                <li>Ctrl+Shift+B brightness reset</li>
-                <li>Audio settings, keyboard rebinding, factory reset</li>
-              </ul>
-
+              <p>Not yet implemented.</p>
+              
               <h2>Commands</h2>
 
               <h3>Fully implemented</h3>
