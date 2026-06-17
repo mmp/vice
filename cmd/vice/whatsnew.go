@@ -381,4 +381,5 @@ var whatsNew []string = []string{
 	`STARS: Fixed bug where aircraft on visual approaches could have unwanted MSAW alerts`,
 	`STARS: Fixed bugs with cursor disappearing at inopportune times`,
 	`ERAM: Fixed bugs with drawing map annotations and map brightness handling`,
+	`Fixed bug with downloading resources that prevented launching vice.`,
 }

@@ -45,6 +45,14 @@
   </branding>
 
   <releases>
+    <release version="0.14.5" date="2026-06-17">
+      <url type="details">https://pharr.org/vice/#release-0.14.5</url>
+      <description>
+        <ul>
+          <li>Fixed bug with downloading resources that prevented launching vice.</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.14.4" date="2026-06-16">
       <url type="details">https://pharr.org/vice/#release-0.14.4</url>
       <description>
