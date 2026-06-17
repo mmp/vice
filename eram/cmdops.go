@@ -375,7 +375,7 @@ func handleFlightPlanReadout(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) C
 		The aircraft's type and equipment suffix
 		The aircraft's assigned beacon code
 		The aircraft's filed cruise speed (not in NASFlightPlan so 0 for now)
-		The aircraft's assigned altitude
+		The aircraft's assigned altitude (in 100s of feet)
 		The aircraft's route
 		The aircraft's flight plan remarks (not in NASFlightPlan so nothing for now)
 	*/
@@ -383,9 +383,9 @@ func handleFlightPlanReadout(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) C
 	rte := strings.TrimPrefix(fp.Route, "/. ")
 	rte = strings.ReplaceAll(rte, " ", ".")
 	rte += fmt.Sprintf(".%v", fp.ArrivalAirport)
-	fmt.Printf("rte: %v route: %v\n", rte, fp.Route)
 	return CommandStatus{
-		output: fmt.Sprintf("%v\n%v %v(%v) %v %v 0 %v %v", zTime, fp.CID, fp.ACID, fp.TrackingController, fp.AircraftType, fp.AssignedSquawk, fp.AssignedAltitude, rte),
+		output: fmt.Sprintf("%v\n%v %v(%v) %v %v 0 %v %v", zTime, fp.CID, fp.ACID, fp.TrackingController,
+			fp.AircraftType, fp.AssignedSquawk, fp.AssignedAltitude/100, rte),
 	}
 }
 
