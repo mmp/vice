@@ -361,7 +361,11 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 		return
 	}
 
-	// No fallback for clicked commands - all should be handled by the parser
+	// No registered command matched. If the user typed something before clicking, surface a
+	// syntax error rather than silently doing nothing.
+	if strings.TrimSpace(original) != "" {
+		status.err = ErrCommandFormat
+	}
 	return
 }
 
