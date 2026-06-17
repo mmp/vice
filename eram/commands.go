@@ -168,6 +168,11 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 		return
 	}
 
+	// No registered command matched the input; surface a generic syntax error so the user gets
+	// feedback instead of silent no-op (e.g. "QP <FLID> <SECTOR>" with the args swapped).
+	if strings.TrimSpace(original) != "" {
+		status.err = ErrCommandFormat
+	}
 	return
 }
 
@@ -313,7 +318,7 @@ func (ep *ERAMPane) closestTrackToLL(ctx *panes.Context, loc math.Point2LL, maxN
 }
 
 func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller string) error {
-	control, err := ep.lookupControllerForID(ctx, controller, acid)
+	control, err := ep.lookupControllerForID(ctx, controller)
 	if err != nil {
 		ep.displayError(err, ctx)
 		return err
@@ -326,6 +331,58 @@ func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller s
 		func(err error) { ep.displayError(err, ctx) })
 
 	return nil
+}
+
+func (ep *ERAMPane) pointOutTrack(ctx *panes.Context, acid sim.ACID, sector string) error {
+	if control, err := ep.lookupControllerForID(ctx, sector); err != nil {
+		return err
+	} else if !control.ERAMFacility || control.FacilityIdentifier != ctx.UserController().FacilityIdentifier {
+		// Can only point out to controllers in the same facility (just ERAM?)
+		return ErrERAMIllegalPosition
+	} else {
+		ctx.Client.PointOut(acid, control.PositionId(),
+			func(err error) {
+				if err == nil {
+					if trk, _ := ctx.Client.State.GetTrackByACID(acid); trk != nil {
+						ep.bigOutput.Set(ep.currentPrefs(), fmt.Sprintf("ACCEPT\nINITIATE POINT OUT\n%s/%s",
+							trk.ADSBCallsign, trk.FlightPlan.CID))
+					}
+				} else {
+					ep.displayError(err, ctx)
+				}
+			})
+		return nil
+	}
+}
+
+func (ep *ERAMPane) acknowledgePointOut(ctx *panes.Context, acid sim.ACID) error {
+	ctx.Client.AcknowledgePointOut(acid,
+		func(err error) {
+			if err == nil {
+				if trk, _ := ctx.Client.State.GetTrackByACID(acid); trk != nil {
+					ep.bigOutput.Set(ep.currentPrefs(), fmt.Sprintf("ACCEPT\nACKNOWLEDGE POINT OUT\n%s/%s",
+						acid, trk.FlightPlan.CID))
+				}
+			} else {
+				ep.displayError(err, ctx)
+			}
+		})
+	return nil
+}
+
+func (ep *ERAMPane) clearPointOutLock(trk *sim.Track) (CommandStatus, error) {
+	state := ep.TrackState[trk.ADSBCallsign]
+	if trk.FlightPlan == nil {
+		return CommandStatus{}, ErrERAMIllegalACID
+	} else if !state.PointOutFDBLocked {
+		return CommandStatus{}, ErrIllegalUserAction
+	} else {
+		state.PointOutFDBLocked = false
+		state.EFDB = false
+		return CommandStatus{
+			bigOutput: fmt.Sprintf("ACCEPT\nFORCED DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		}, nil
+	}
 }
 
 func (ep *ERAMPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms radar.ScopeTransformations) (*sim.Track, float32) {
@@ -369,7 +426,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 	return
 }
 
-func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string, acid sim.ACID) (*av.Controller, error) {
+func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string) (*av.Controller, error) {
 	// Look at the length of the controller string passed in. If it's one character, ERAM would have to find which controller it goes to.
 	// That is not here yet, so return an error.
 	for _, control := range ctx.Client.State.Controllers {

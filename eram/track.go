@@ -2,6 +2,7 @@ package eram
 
 import (
 	"fmt"
+	"slices"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -46,6 +47,9 @@ type TrackState struct {
 	HoverVCI bool // if the user is hovering over the VCI field
 
 	HSFHide bool
+
+	// p/o receiver keeps a FDB until cleared by QP <FLID>.
+	PointOutFDBLocked bool
 
 	// add more as we figure out what to do...
 }
@@ -130,6 +134,60 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 			state := ep.TrackState[av.ADSBCallsign(event.ACID)]
 			state.EFDB = true
 			state.OSectorEndTime = ctx.InterpolatedSimTime.Add(30 * time.Second)
+
+		case sim.PointOutEvent:
+			if ctx.UserControlsPosition(event.ToController) {
+				// The receiver's FDB stays forced until cleared by QP <FLID>.
+				if state, ok := ep.trackStateForACID(ctx, event.ACID); ok && state != nil {
+					state.PointOutFDBLocked = true
+				}
+				senders := ep.InboundPointOuts[event.ACID]
+				if !slices.Contains(senders, event.FromController) {
+					ep.InboundPointOuts[event.ACID] = append(senders, event.FromController)
+				}
+			}
+			if ctx.UserControlsPosition(event.FromController) {
+				entries := ep.OutboundPointOuts[event.ACID]
+				dupe := slices.ContainsFunc(entries, func(po outboundPointOut) bool {
+					return po.Receiver == event.ToController
+				})
+				if !dupe {
+					ep.OutboundPointOuts[event.ACID] = append(entries,
+						outboundPointOut{Receiver: event.ToController})
+				}
+			}
+
+		case sim.AcknowledgedPointOutEvent:
+			// Per sim/handoff.go, From/To are swapped in this event relative to the original p/o.
+			if ctx.UserControlsPosition(event.FromController) {
+				// We were the recipient
+				delete(ep.InboundPointOuts, event.ACID)
+			}
+			if ctx.UserControlsPosition(event.ToController) {
+				// We were the originator; mark the specific receiver as acked.
+				ep.markOutboundPointOutAcked(event.ACID, event.FromController)
+			}
+
+		case sim.RecalledPointOutEvent:
+			// Receiver clears the originator from its inbound list; the originator clears the
+			// specific receiver from its outbound list.
+			if ctx.UserControlsPosition(event.ToController) {
+				ep.removeInboundPointOut(event.ACID, event.FromController)
+			}
+			if ctx.UserControlsPosition(event.FromController) {
+				ep.removeOutboundPointOutByReceiver(event.ACID, event.ToController)
+			}
+
+		case sim.RejectedPointOutEvent:
+			// From/To are swapped here too (event.FromController is the
+			// recipient who rejected; event.ToController is the originator).
+			if ctx.UserControlsPosition(event.FromController) {
+				delete(ep.InboundPointOuts, event.ACID)
+			}
+			if ctx.UserControlsPosition(event.ToController) {
+				ep.removeOutboundPointOutByReceiver(event.ACID, event.FromController)
+			}
+
 		case sim.FixCoordinatesEvent:
 			ac := event.ACID
 			coords := event.WaypointInfo
@@ -137,6 +195,7 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 				coords:     coords,
 				deleteTime: ctx.InterpolatedSimTime.Add(15 * time.Second),
 			}
+
 		case sim.FlightPlanDirectEvent:
 			ac := event.ACID
 			// Draw the waypoints like QU /M line
@@ -429,6 +488,12 @@ func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockTy
 			return FullDatablock
 		}
 		if ctx.IsHandoffToUser(&trk) {
+			return FullDatablock
+		}
+		if state.PointOutFDBLocked {
+			return FullDatablock
+		}
+		if len(ep.InboundPointOuts[fp.ACID]) > 0 {
 			return FullDatablock
 		}
 		if state.EFDB {

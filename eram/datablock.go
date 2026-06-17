@@ -251,12 +251,20 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 	switch dbType {
 	case FullDatablock:
 		db := ep.fdbArena.AllocClear()
-		// DBLine 0 is point out
+		// Line 0: point-out indicator.
+		if ch, glyphColor, ok := ep.pointOutIndicatorGlyph(&trk, ps.Brightness.FDB); ok {
+			dbWriteText(db.line0[2:], string(ch), glyphColor, false)
+		}
+
+		// Line 1
 		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color, false) // also * if satcom
 		vciBright := radar.Brightness(ps.Brightness.ONFREQ + ps.Brightness.Portal)
 		vciColor := vciBright.ScaleRGB(renderer.RGB{0.01, 1, 0.05})
 		dbWriteText(db.vci[:], util.Select(state.DisplayVCI || state.HoverVCI, vci, ""), vciColor, false)
+
+		// Line 2
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color, false)
+
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
 		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(ERAMYellow)

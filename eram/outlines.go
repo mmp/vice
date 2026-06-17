@@ -3,6 +3,7 @@ package eram
 import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
@@ -20,6 +21,7 @@ const (
 	DBFieldHandoffSpeed DatablockFieldID = "handoff_speed"
 	DBFieldSpeed        DatablockFieldID = "speed"
 	DBFieldLine4        DatablockFieldID = "line4"
+	DBFieldPointOut     DatablockFieldID = "pointout"
 )
 
 // DatablockFieldSpec describes a field location in line/column space (0-based).
@@ -70,6 +72,15 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 			}
 		} else {
 			state.HoverVCI = false
+		}
+		if db.Fields[DBFieldPointOut].Inside(mouse.Pos) {
+			if ep.pointOutIndicatorActive(&trk) {
+				ep.drawOutlineRectangle(ld, db.Fields[DBFieldPointOut], ERAMYellow)
+				if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
+					ep.handlePointOutIndicatorClick(ctx, trk, db.Fields[DBFieldMain])
+					mouse.Clicked = [platform.MouseButtonCount]bool{}
+				}
+			}
 		}
 		if db.Fields[DBFieldAltitude].Inside(mouse.Pos) {
 			// open altitude input
@@ -154,6 +165,7 @@ var fullDatablockLineCols = map[int]int{
 }
 
 var fullDatablockFieldSpecs = map[DatablockFieldID]DatablockFieldSpec{
+	DBFieldPointOut:     {Line: 0, Col: 2, Cols: 1},
 	DBFieldCallsign:     {Line: 1, Col: 0, Cols: 16},
 	DBFieldVCI:          {Line: 2, Col: 0, Cols: 2},
 	DBFieldAltitude:     {Line: 2, Col: 2, Cols: 16},
@@ -292,8 +304,8 @@ func fullDatablockMainLengths(lineLengths map[int]int) (int, int, int, int) {
 		return fullDatablockLineCols[1], 16, 16, fullDatablockLineCols[4]
 	}
 	line1 := lineLengths[1]
-	line2 := intMax(lineLengths[2]-2, 0)
-	line3 := intMax(lineLengths[3]-2, 0)
+	line2 := max(lineLengths[2]-2, 0)
+	line3 := max(lineLengths[3]-2, 0)
 	line4 := lineLengths[4]
 	return line1, line2, line3, line4
 }
@@ -324,11 +336,4 @@ func padExtent(ext math.Extent2D, padding float32) math.Extent2D {
 	ext.P1[0] += padding
 	ext.P1[1] += padding
 	return ext
-}
-
-func intMax(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }

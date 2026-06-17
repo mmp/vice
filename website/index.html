@@ -7377,6 +7377,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <p>To hand off a track to another controller, either enter the controller's sector id and slew the track, or enter the sector id, a space, and the aircraft's flight id.</p>
               <p>Entering a number and slewing an owned track sets the leader line direction accordingly.</p>
 
+              <h2 id="eram-pointouts">Point Outs</h2>
+              <p>Point outs in ERAM are initiated and acknowledged with the <code>QP</code> command. They are restricted to other
+                ERAM sectors within the same ARTCC; point outs to a different ARTCC or to a STARS controller are rejected with
+                an <code>ILLEGAL POSITION</code> error.</p>
+              <table class="table table-striped">
+                <thead>
+                  <tr><th>Command</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>QP [SECTOR_ID] [FLID]</code> or <code>QP [SECTOR_ID][SLEW]</code></td>
+                    <td>Initiates a point out of the specified track to the given sector. The user must own the track.</td>
+                  </tr>
+                  <tr>
+                    <td><code>QP A [FLID]</code> or <code>QP A[SLEW]</code></td>
+                    <td>Acknowledges every inbound point out for this aircraft directed at any sector the user controls.</td>
+                  </tr>
+                  <tr>
+                    <td><code>QP [FLID]</code> or <code>QP[SLEW]</code></td>
+                    <td>Clears the post-point-out FDB lock, returning the datablock to a LDB. The standard
+                      <code>[FLID]</code> Implied command will not unforce a FDB once an aircraft has been involved in a point
+                      out; only this command will.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>When a point out is pending, a yellow <code>P</code> is drawn on line 0 of the FDB on both the originator's and
+                the receiver's scopes; the datablock is forced to FDB. Clicking the <code>P</code> opens a pop-up listing the
+                other sector(s); on the receiver's scope, clicking any entry acknowledges every inbound point out for the
+                aircraft. Once acknowledged the originator sees a white <code>A</code> indicator on line 0 that persists until
+                clicked away. The FDB stays forced after the point-out lifecycle ends &mdash; <code>QP [FLID]</code> is the only
+                way to convert it back to a LDB.</p>
+
               <p>The following sections summarize current support for ERAM commands and capabilities in <i>vice</i>.</p>
 
               <h2>Toolbars</h2>
@@ -7577,8 +7609,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <li><strong><code>AM</code> (amend flight plan)</strong> — altitude amendments and the underlying field-specifier plumbing work, but
                   the documented dot-notation route syntax (e.g. <code>AM AAL123 RTE SSOXS.BUZRD.SEY</code>) and amendment of aircraft type, discrete
                   beacon, filed cruise speed, and remarks via <code>AM</code> are not handled.</li>
-                <li><strong><code>QP</code></strong> — only the J-ring overloads (<code>QP J</code>, <code>QP T</code>) are implemented; the
-                  inter-facility point-out forms (<code>QP [SECTOR] [FLID]</code>, <code>QP A</code>, etc.) are not.</li>
+                <li><strong><code>QP</code></strong> — J-ring overloads (<code>QP J</code>, <code>QP T</code>), same-ARTCC point-out
+                  forms (<code>QP [SECTOR] [FLID]</code>, <code>QP A</code>), and the post-point-out FDB&rarr;LDB form
+                  (<code>QP [FLID]</code>) are implemented; cross-ARTCC point outs are rejected.</li>
                 <li><strong>Route conformance</strong> — display via <code>QU</code> exists, but there is no automatic deviation/conformance
                   alerting.</li>
               </ul>

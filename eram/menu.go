@@ -26,6 +26,9 @@ type ERAMMenuItem struct {
 	Centered bool
 	OnClick  func(clickType ERAMMenuClickType) bool // return true = close menu
 
+	// If non-empty, drawn after Label inside an outlined box (Color is used for both the text and the box).
+	BoxedSuffix string
+
 	// If SubRows is non-nil, this row renders as a scrollable list instead of a single text row.
 	SubRows     []ERAMScrollItem
 	VisibleRows int                                          // Number of visible sub-rows; 0 = show all
@@ -47,14 +50,16 @@ type ERAMScrollItem struct {
 
 // ERAMMenuConfig holds the full configuration for a menu drawn by DrawERAMMenu.
 type ERAMMenuConfig struct {
-	Title       string
-	ShowMButton bool
-	OnMClick    func(ERAMMenuClickType)
-	OnClose     func()
-	Width       float32
-	Font        *renderer.Font // nil = ep.ERAMToolbarFont()
-	ItemHeight  float32        // 0 = default 18px
-	Rows        []ERAMMenuItem
+	Title              string
+	TitleLeftJustified bool // false = centered (default)
+	ShowMButton        bool
+	OnMClick           func(ERAMMenuClickType)
+	OnClose            func()
+	Width              float32
+	Font               *renderer.Font // row font; nil = ep.ERAMToolbarFont()
+	TitleFont          *renderer.Font // title bar font; nil = same as Font
+	ItemHeight         float32        // 0 = default 18px
+	Rows               []ERAMMenuItem
 
 	ShowBorder  bool
 	BorderColor renderer.RGB
@@ -106,6 +111,11 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 
 	cursor := origin
 
+	titleFont := cfg.TitleFont
+	if titleFont == nil {
+		titleFont = font
+	}
+
 	// Title bar
 	{
 		rp0 := cursor
@@ -114,16 +124,21 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
 		trid.AddQuad(rp0, rp1, rp2, rp3, eramGray)
 
-		style := renderer.TextStyle{Font: font, Color: textColor}
+		style := renderer.TextStyle{Font: titleFont, Color: textColor}
 
-		// Title text (centered)
-		centerX := rp0[0] + width/2
-		centerY := rp0[1] - itemH/2
-		td.AddTextCentered(cfg.Title, [2]float32{centerX, centerY}, style)
+		if cfg.TitleLeftJustified {
+			_, th := titleFont.BoundText(cfg.Title, 0)
+			textY := rp0[1] - itemH/2 + float32(th)/2
+			td.AddText(cfg.Title, [2]float32{rp0[0] + 4, textY}, style)
+		} else {
+			centerX := rp0[0] + width/2
+			centerY := rp0[1] - itemH/2
+			td.AddTextCentered(cfg.Title, [2]float32{centerX, centerY}, style)
+		}
 
 		// Close button on right
 		xLabel := "X"
-		xw, _ := font.BoundText(xLabel, 0)
+		xw, _ := titleFont.BoundText(xLabel, 0)
 		xPos := math.Add2f(cursor, [2]float32{width - float32(xw) - 2, -1})
 		td.AddText(xLabel, xPos, style)
 
@@ -137,14 +152,14 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 
 		if cfg.ShowMButton {
 			mLabel := "M"
-			mw, _ := font.BoundText(mLabel, 0)
+			mw, _ := titleFont.BoundText(mLabel, 0)
 			mPad := float32(2)
 			mRect = math.Extent2D{
 				P0: [2]float32{rp0[0], rp0[1] - itemH},
 				P1: [2]float32{rp0[0] + mPad + float32(mw) + mPad, rp0[1]},
 			}
 			// draw M text
-			_, mh := font.BoundText(mLabel, 0)
+			_, mh := titleFont.BoundText(mLabel, 0)
 			td.AddText(mLabel, math.Add2f(rp0, [2]float32{mPad, -itemH/2 + float32(mh)/2}), style)
 		}
 
@@ -243,9 +258,22 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 				centerY := rp0[1] - itemH/2
 				td.AddTextCentered(item.Label, [2]float32{centerX, centerY}, style)
 			} else {
-				_, th := font.BoundText(item.Label, 0)
+				labelW, th := font.BoundText(item.Label, 0)
 				textY := rp0[1] - itemH/2 + float32(th)/2
 				td.AddText(item.Label, [2]float32{rp0[0] + 4, textY}, style)
+
+				if item.BoxedSuffix != "" {
+					suffixW, _ := font.BoundText(item.BoxedSuffix, 0)
+					boxPad := float32(2)
+					boxX0 := rp0[0] + 4 + float32(labelW) + 4
+					boxX1 := boxX0 + float32(suffixW) + 2*boxPad
+					boxY0 := rp0[1] - itemH + 2
+					boxY1 := rp0[1] - 2
+					ld.AddLineLoop(item.Color, [][2]float32{
+						{boxX0, boxY0}, {boxX1, boxY0}, {boxX1, boxY1}, {boxX0, boxY1},
+					})
+					td.AddText(item.BoxedSuffix, [2]float32{boxX0 + boxPad, textY}, style)
+				}
 			}
 
 			cursor = rp3

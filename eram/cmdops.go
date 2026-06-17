@@ -51,6 +51,23 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "QP J [FLID]|QP J[SLEW]", handleJRing)
 	registerCommand(CommandModeNone, "QP T [FLID]|QP T[SLEW]", handleReducedJRing)
 
+	// QP - Point outs
+	// Keyboard: QP [SECTOR_ID] [FLID] to initiate, QP A [FLID] to acknowledge,
+	//           QP [FLID] to clear the post-point-out FDB lock (FDB -> LDB).
+	// Clicked:  QP [SECTOR_ID][SLEW] / QP A[SLEW] / QP[SLEW]
+	registerCommand(CommandModeNone, "QP A [FLID]|QP A[SLEW]",
+		func(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) error {
+			return ep.acknowledgePointOut(ctx, sim.ACID(trk.ADSBCallsign))
+		})
+	registerCommand(CommandModeNone, "QP [SECTOR_ID] [FLID]|QP [SECTOR_ID][SLEW]",
+		func(ep *ERAMPane, ctx *panes.Context, sector string, trk *sim.Track) error {
+			return ep.pointOutTrack(ctx, sim.ACID(trk.ADSBCallsign), sector)
+		})
+	registerCommand(CommandModeNone, "QP [FLID]|QP[SLEW]",
+		func(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
+			return ep.clearPointOutLock(trk)
+		})
+
 	// QF - Flight Plan Display
 	registerCommand(CommandModeNone, "QF [FLID]|QF[SLEW]", handleFlightPlanReadout)
 

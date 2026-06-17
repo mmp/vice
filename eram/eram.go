@@ -2,6 +2,7 @@ package eram
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 	"unicode"
@@ -18,7 +19,6 @@ import (
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
-	"golang.org/x/exp/slices"
 )
 
 var (
@@ -78,8 +78,8 @@ type ERAMPane struct {
 	cursorOverrideUntil     time.Time `json:"-"`
 	cursorRollbackSelection string    `json:"-"` // Cursor to use after temporary cursor expires
 
-	InboundPointOuts  map[string]string `json:"-"`
-	OutboundPointOuts map[string]string `json:"-"`
+	InboundPointOuts  map[sim.ACID][]sim.ControlPosition
+	OutboundPointOuts map[sim.ACID][]outboundPointOut
 
 	// Output and input text for the command line interface.
 	smallOutput inputText `json:"-"`
@@ -163,6 +163,11 @@ type ERAMPane struct {
 	wxRepoStart      time.Time  `json:"-"`
 	wxDragOffset     [2]float32 `json:"-"`
 
+	// Point-out indicator pop-up state; visible if pointOutMenuACID != ""
+	pointOutMenuACID     sim.ACID   `json:"-"`
+	pointOutMenuOutbound bool       `json:"-"`
+	pointOutMenuOrigin   [2]float32 `json:"-"`
+
 	commandMode       CommandMode     `json:"-"`
 	drawRouteAircraft av.ADSBCallsign `json:"-"`
 	drawRoutePoints   []math.Point2LL `json:"-"`
@@ -181,10 +186,10 @@ func NewERAMPane() *ERAMPane {
 func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.EventStream, log *log.Logger) {
 	// Activate maps
 	if ep.InboundPointOuts == nil {
-		ep.InboundPointOuts = make(map[string]string)
+		ep.InboundPointOuts = make(map[sim.ACID][]sim.ControlPosition)
 	}
 	if ep.OutboundPointOuts == nil {
-		ep.OutboundPointOuts = make(map[string]string)
+		ep.OutboundPointOuts = make(map[sim.ACID][]outboundPointOut)
 	}
 
 	if ep.TrackState == nil {
@@ -351,6 +356,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
 	ep.datablockInteractions(ctx, tracks, transforms, cb)
+	ep.drawPointOutMenu(ctx, transforms, cb)
 	ep.drawCRRFixes(ctx, transforms, cb)
 	ep.drawCRRDistances(ctx, tracks, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
