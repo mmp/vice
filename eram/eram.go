@@ -691,7 +691,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			status := ep.executeERAMCommand(ctx, ep.Input)
 			ep.Input.Clear()
 			if status.err != nil {
-				ep.bigOutput.displayError(ps, status.err)
+				ep.displayError(status.err, ctx)
 			} else if status.bigOutput != "" {
 				ep.bigOutput.displaySuccess(ps, status.bigOutput)
 			} else if status.output != "" {

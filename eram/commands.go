@@ -62,7 +62,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 			status := ep.executeERAMClickedCommand(ctx, ep.Input, trk, transforms)
 			ep.Input.Clear()
 			if status.err != nil {
-				ep.bigOutput.displayError(ep.currentPrefs(), status.err)
+				ep.displayError(status.err, ctx)
 			} else if status.bigOutput != "" {
 				ep.bigOutput.displaySuccess(ep.currentPrefs(), status.bigOutput)
 			} else if status.output != "" {
@@ -174,7 +174,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 func (ep *ERAMPane) deleteFLightplan(ctx *panes.Context, trk sim.Track) {
 	ctx.Client.DeleteFlightPlan(sim.ACID(trk.ADSBCallsign.String()), func(err error) {
 		if err != nil {
-			ep.bigOutput.displayError(ep.currentPrefs(), err)
+			ep.displayError(err, ctx)
 			return
 		}
 	})
@@ -188,8 +188,10 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 		Commands: cmds,
 	}, func(errStr string, remaining string) {
 		if errStr != "" {
-
 			if err := server.TryDecodeErrorString(errStr); err != nil {
+				ep.displayError(err, ctx)
+			} else {
+				ep.displayError(ErrCommandFormat, ctx)
 			}
 		}
 	})
@@ -199,7 +201,7 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.FlightPlanSpecifier) {
 	trk, ok := ctx.Client.State.GetTrackByFLID(cid)
 	if !ok {
-		ep.bigOutput.displayError(ep.currentPrefs(), ErrERAMIllegalACID)
+		ep.displayError(ErrERAMIllegalACID, ctx)
 		return
 	}
 
@@ -222,7 +224,7 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.Fl
 	ctx.Client.ModifyFlightPlan(acid, spec,
 		func(err error) {
 			if err != nil {
-				ep.bigOutput.displayError(ep.currentPrefs(), err)
+				ep.displayError(err, ctx)
 			}
 		})
 	// Send aircraft commands if an ERAM command is entered
@@ -256,18 +258,18 @@ func (ep *ERAMPane) getACIDFromCID(ctx *panes.Context, cid string) (sim.ACID, er
 
 func (ep *ERAMPane) acceptHandoff(ctx *panes.Context, acid sim.ACID) {
 	ctx.Client.AcceptHandoff(acid,
-		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
+		func(err error) { ep.displayError(err, ctx) })
 }
 
 func (ep *ERAMPane) recallHandoff(ctx *panes.Context, acid sim.ACID) {
 	ctx.Client.CancelHandoff(acid,
-		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
+		func(err error) { ep.displayError(err, ctx) })
 }
 
 func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID, minutes int) {
 	ctx.Client.SendRouteCoordinates(acid, minutes, func(err error) {
 		if err != nil {
-			ep.bigOutput.displayError(ep.currentPrefs(), err)
+			ep.displayError(err, ctx)
 		}
 	})
 }
@@ -284,7 +286,7 @@ func (ep *ERAMPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
 func (ep *ERAMPane) flightPlanDirect(ctx *panes.Context, acid sim.ACID, fix string) error {
 	ctx.Client.FlightPlanDirect(acid, fix, func(err error) {
 		if err != nil {
-			ep.bigOutput.displayError(ep.currentPrefs(), err)
+			ep.displayError(err, ctx)
 		}
 	})
 	trk, _ := ctx.Client.State.GetTrackByACID(acid)
@@ -313,7 +315,7 @@ func (ep *ERAMPane) closestTrackToLL(ctx *panes.Context, loc math.Point2LL, maxN
 func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller string) error {
 	control, err := ep.lookupControllerForID(ctx, controller, acid)
 	if err != nil {
-		ep.bigOutput.displayError(ep.currentPrefs(), err)
+		ep.displayError(err, ctx)
 		return err
 	}
 	if control == nil {
@@ -321,7 +323,7 @@ func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller s
 	}
 
 	ctx.Client.HandoffTrack(acid, control.PositionId(),
-		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
+		func(err error) { ep.displayError(err, ctx) })
 
 	return nil
 }

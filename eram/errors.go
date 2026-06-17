@@ -5,8 +5,12 @@ import (
 	"fmt"
 	"net/rpc"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/sim"
 )
 
 type ERAMError struct {
@@ -30,7 +34,78 @@ var ( // TODO: Get actual error messages for this
 	ErrERAMSectorNotActive = NewERAMError("SECTOR NOT ACTIVE")
 )
 
-var eramErrorRemap = map[error]*ERAMError{}
+var eramErrorRemap = map[error]*ERAMError{
+	av.ErrBadPoolSpecifier:           ErrERAMIllegalValue,
+	av.ErrInvalidAltitude:            ErrERAMIllegalValue,
+	av.ErrInvalidController:          ErrERAMIllegalPosition,
+	av.ErrInvalidFacility:            ErrERAMIllegalACID,
+	av.ErrInvalidHeading:             ErrERAMIllegalValue,
+	av.ErrNoAircraftForCallsign:      ErrERAMIllegalACID,
+	av.ErrNoController:               ErrERAMSectorNotActive,
+	av.ErrNoFlightPlan:               ErrERAMIllegalACID,
+	av.ErrNoMoreAvailableSquawkCodes: ErrERAMIllegalValue,
+	av.ErrNoValidDepartureFound:      ErrIllegalUserAction,
+	av.ErrNotBeingHandedOffToMe:      ErrIllegalUserAction,
+	av.ErrNotPointedOutByMe:          ErrIllegalUserAction,
+	av.ErrNotPointedOutToMe:          ErrERAMIllegalACID,
+	av.ErrOtherControllerHasTrack:    ErrIllegalUserAction,
+	av.ErrUnknownAirport:             ErrERAMIllegalAirport,
+	av.ErrUnknownRunway:              ErrERAMIllegalValue,
+
+	nav.ErrClearedForUnexpectedApproach: ErrERAMIllegalValue,
+	nav.ErrFixIsTooFarAway:              ErrERAMIllegalValue,
+	nav.ErrFixNotInRoute:                ErrERAMIllegalValue,
+	nav.ErrInvalidApproach:              ErrERAMIllegalValue,
+	nav.ErrInvalidFix:                   ErrERAMIllegalValue,
+	nav.ErrNotClearedForApproach:        ErrERAMIllegalValue,
+	nav.ErrNotFlyingRoute:               ErrERAMIllegalValue,
+	nav.ErrUnableCommand:                ErrERAMIllegalValue,
+	nav.ErrUnknownApproach:              ErrERAMIllegalValue,
+
+	sim.ErrATPADisabled:                    ErrIllegalUserAction,
+	sim.ErrAircraftAlreadyReleased:         ErrIllegalUserAction,
+	sim.ErrBeaconMismatch:                  ErrERAMIllegalValue,
+	sim.ErrDuplicateACID:                   ErrERAMIllegalACID,
+	sim.ErrDuplicateBeacon:                 ErrERAMIllegalValue,
+	sim.ErrIllegalACID:                     ErrERAMIllegalACID,
+	sim.ErrIllegalACType:                   ErrERAMIllegalValue,
+	sim.ErrIllegalATIS:                     ErrERAMIllegalValue,
+	sim.ErrIllegalBeaconCode:               ErrERAMIllegalValue,
+	sim.ErrIllegalFunction:                 ErrIllegalUserAction,
+	sim.ErrIllegalLine:                     ErrERAMIllegalValue,
+	sim.ErrIllegalPosition:                 ErrERAMIllegalPosition,
+	sim.ErrIllegalScratchpad:               ErrERAMIllegalValue,
+	sim.ErrInvalidAbbreviatedFP:            ErrCommandFormat,
+	sim.ErrInvalidDepartureController:      ErrIllegalUserAction,
+	sim.ErrInvalidRestrictionAreaIndex:     ErrERAMIllegalValue,
+	sim.ErrInvalidVolumeId:                 ErrIllegalUserAction,
+	sim.ErrNoACType:                        ErrERAMIllegalValue,
+	sim.ErrNoMatchingFlight:                ErrERAMIllegalACID,
+	sim.ErrNoMatchingFlightPlan:            ErrERAMIllegalACID,
+	sim.ErrNoScratchpad:                    ErrERAMIllegalValue,
+	sim.ErrNoVFRAircraftForFlightFollowing: ErrERAMIllegalACID,
+	sim.ErrNotLaunchController:             ErrIllegalUserAction,
+	sim.ErrTCPAlreadyConsolidated:          ErrIllegalUserAction,
+	sim.ErrTCPNotConsolidated:              ErrIllegalUserAction,
+	sim.ErrTCWIsConsolidated:               ErrERAMIllegalPosition,
+	sim.ErrTCWNotFound:                     ErrERAMIllegalPosition,
+	sim.ErrTCWNotVacant:                    ErrERAMIllegalPosition,
+	sim.ErrTooManyRestrictionAreas:         ErrIllegalUserAction,
+	sim.ErrTrackIsActive:                   ErrIllegalUserAction,
+	sim.ErrIllegalTrackLocalFP:             ErrIllegalUserAction,
+	sim.ErrTrackIsBeingHandedOff:           ErrIllegalUserAction,
+	sim.ErrTrackIsNotActive:                ErrERAMIllegalACID,
+	sim.ErrUnknownAircraftType:             ErrERAMIllegalValue,
+	sim.ErrUnknownController:               ErrERAMIllegalPosition,
+	sim.ErrUnknownControllerFacility:       ErrERAMIllegalPosition,
+	sim.ErrFDAMIllegalArea:                 ErrIllegalUserAction,
+	sim.ErrFDAMNoRegions:                   ErrIllegalUserAction,
+	sim.ErrFDAMProcessingOff:               ErrIllegalUserAction,
+	sim.ErrVolumeDisabled:                  ErrIllegalUserAction,
+	sim.ErrVolumeNot25nm:                   ErrIllegalUserAction,
+
+	server.ErrInvalidCommandSyntax: ErrCommandFormat,
+}
 
 func GetERAMError(e error, lg *log.Logger) *ERAMError {
 	if se, ok := e.(*ERAMError); ok {
@@ -47,4 +122,10 @@ func GetERAMError(e error, lg *log.Logger) *ERAMError {
 
 	lg.Errorf("%v: unexpected error passed to GetERAMError", e)
 	return ErrCommandFormat
+}
+
+func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
+	if err != nil {
+		ep.bigOutput.displayError(ep.currentPrefs(), GetERAMError(err, ctx.Lg))
+	}
 }
