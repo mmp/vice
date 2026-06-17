@@ -1,0 +1,1 @@
+- Fixed bug with downloading resources that prevented launching vice.

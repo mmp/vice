@@ -556,15 +556,21 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	// is fire-and-forget; av.InitDB and MakeServerManager run inline.
 	// MakeServerManager's callbacks reference plat/render/config, but
 	// those are only invoked later when a sim actually connects, so it
-	// is safe to construct mgr before plat is ready.
+	// is safe to construct mgr before plat is ready. The goroutine
+	// blocks on syncDone before touching disk: SyncResources may be
+	// replacing resource files mid-upgrade, and reading scenarios or
+	// wx data before it completes loads stale content from the prior
+	// install.
 	var mgr *client.ConnectionManager
 	var errorLogger util.ErrorLogger
 	var extraScenarioErrors string
 	var plat platform.Platform
 	var render renderer.Renderer
+	syncDone := make(chan struct{})
 	bgDone := make(chan struct{})
 	go func() {
 		defer close(bgDone)
+		<-syncDone
 		wx.Init()
 		av.InitDB()
 		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
@@ -624,6 +630,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	if err := SyncResources(plat, render, lg); err != nil {
 		ShowFatalErrorDialog(render, plat, lg, "Error syncing resources: %v", err)
 	}
+	close(syncDone)
 
 	// After we have plat and render
 	if configErr != nil {
@@ -786,11 +793,6 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 func main() {
 	lg, profiler := initCommon()
 	defer profiler.Cleanup()
-
-	// Start the heavy aviation database load as early as possible so it
-	// runs in parallel with config loading and (in GUI mode) OpenGL/font
-	// setup. Subsequent av.InitDB() calls block until the load is done.
-	av.StartInitDB()
 
 	// Only remove this run's crash-stderr file on a known clean exit.
 	// In particular, do *not* remove it during panic unwinding: a panic
