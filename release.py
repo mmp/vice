@@ -234,11 +234,12 @@ def update_website(tag, old_tag, items):
 
     # 2. Add submenu entry at the top of the release history submenu
     new_submenu = f'      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-{version}">{version}</a></li>'
-    content = content.replace(
-        '    <ul class="submenu">\n',
-        f'    <ul class="submenu">\n{new_submenu}\n',
-        1
-    )
+    pattern = re.compile(r'(href="#releases">Release History</a>\s*\n\s*<ul class="submenu">\n)')
+    new_content, n = pattern.subn(lambda m: m.group(1) + new_submenu + '\n', content, count=1)
+    if n != 1:
+        print("Error: could not find Release History submenu in website/index.html")
+        sys.exit(1)
+    content = new_content
 
     # 3. Add release history entry
     today_str = date.today().strftime("%-d %b %Y")
