@@ -69,7 +69,7 @@ type Sim struct {
 	NextVFFRequest   Time
 
 	Handoffs  map[ACID]Handoff
-	PointOuts map[ACID]PointOut
+	PointOuts map[ACID][]PointOut
 
 	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
 
@@ -241,7 +241,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		lastSimUpdateTime: time.Now(),
 
 		Handoffs:  make(map[ACID]Handoff),
-		PointOuts: make(map[ACID]PointOut),
+		PointOuts: make(map[ACID][]PointOut),
 
 		PrivilegedTCWs: make(map[TCW]bool),
 
@@ -1029,25 +1029,27 @@ func (s *Sim) updateState() {
 		delete(s.Handoffs, acid)
 	}
 
-	for acid, po := range s.PointOuts {
-		if !now.After(po.AcceptTime) {
-			continue
-		}
+	for acid, pos := range s.PointOuts {
+		fp, _, _ := s.getFlightPlanForACID(acid)
+		s.PointOuts[acid] = util.FilterSlice(pos, func(po PointOut) bool {
+			if now.After(po.AcceptTime) && fp != nil && s.isVirtualController(po.ToController) {
+				// Note that "to" and "from" are swapped in the event, since the ack is coming from
+				// the "to" controller of the original point out.
+				s.eventStream.Post(Event{
+					Type:           AcknowledgedPointOutEvent,
+					FromController: po.ToController,
+					ToController:   po.FromController,
+					ACID:           acid,
+				})
+				s.lg.Debug("automatic pointout accept", slog.String("acid", string(acid)),
+					slog.String("by", string(po.ToController)), slog.String("to", string(po.FromController)))
 
-		if fp, _, _ := s.getFlightPlanForACID(acid); fp != nil && s.isVirtualController(po.ToController) {
-			// Note that "to" and "from" are swapped in the event,
-			// since the ack is coming from the "to" controller of the
-			// original point out.
-			s.eventStream.Post(Event{
-				Type:           AcknowledgedPointOutEvent,
-				FromController: po.ToController,
-				ToController:   po.FromController,
-				ACID:           acid,
-			})
-			s.lg.Debug("automatic pointout accept", slog.String("acid", string(acid)),
-				slog.String("by", string(po.ToController)), slog.String("to", string(po.FromController)))
-
-			fp.AddPointOutHistory(po.ToController)
+				fp.AddPointOutHistory(po.ToController)
+				return false // cull it
+			}
+			return true // keep
+		})
+		if fp == nil || len(s.PointOuts[acid]) == 0 {
 			delete(s.PointOuts, acid)
 		}
 	}

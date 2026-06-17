@@ -10,6 +10,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 )
 
 func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p math.Point2LL) error {
@@ -255,7 +256,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			if s.State.TCWControlsPosition(tcw, fp.HandoffController) {
 				return nil
 			}
-			if po, ok := s.PointOuts[fp.ACID]; ok && s.State.TCWControlsPosition(tcw, po.ToController) {
+			if _, ok := s.findInboundPointOut(fp.ACID, tcw); ok {
 				// Point out where the recipient decided to take it as a handoff instead.
 				return nil
 			}
@@ -266,7 +267,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			// not the acceptor's primary TCP. This preserves correct ownership when accepting
 			// handoffs to consolidated secondary positions.
 			newTrackingController := fp.HandoffController
-			if po, ok := s.PointOuts[fp.ACID]; ok && s.State.TCWControlsPosition(tcw, po.ToController) {
+			if po, ok := s.findInboundPointOut(fp.ACID, tcw); ok {
 				// Point out accepted as handoff - use the point-out target
 				newTrackingController = po.ToController
 			}
@@ -476,17 +477,41 @@ func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
 }
 
 func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
+	// Always post the event
 	s.eventStream.Post(Event{
 		Type:           PointOutEvent,
-		FromController: TCP(from.PositionId()),
-		ToController:   TCP(to.PositionId()),
+		FromController: from.PositionId(),
+		ToController:   to.PositionId(),
 		ACID:           acid,
 	})
 
-	s.PointOuts[acid] = PointOut{
-		FromController: TCP(from.PositionId()),
-		ToController:   TCP(to.PositionId()),
-		AcceptTime:     s.State.SimTime.Add(s.Rand.DurationRange(4*time.Second, 14*time.Second)),
+	// But don't have duplicate entries in the PointOut slice for a repeated p/o.
+	if !slices.ContainsFunc(s.PointOuts[acid], func(po PointOut) bool {
+		return po.FromController == from.PositionId() && po.ToController == to.PositionId()
+	}) {
+		s.PointOuts[acid] = append(s.PointOuts[acid], PointOut{
+			FromController: from.PositionId(),
+			ToController:   to.PositionId(),
+			AcceptTime:     s.State.SimTime.Add(s.Rand.DurationRange(4*time.Second, 14*time.Second)),
+		})
+	}
+}
+
+// findInboundPointOut returns the first pending PointOut whose ToController is
+// controlled by tcw (an inbound point out the caller can act on).
+func (s *Sim) findInboundPointOut(acid ACID, tcw TCW) (PointOut, bool) {
+	for _, po := range s.PointOuts[acid] {
+		if s.State.TCWControlsPosition(tcw, po.ToController) {
+			return po, true
+		}
+	}
+	return PointOut{}, false
+}
+
+func (s *Sim) deletePointOuts(acid ACID, match func(PointOut) bool) {
+	s.PointOuts[acid] = slices.DeleteFunc(s.PointOuts[acid], match)
+	if len(s.PointOuts[acid]) == 0 {
+		delete(s.PointOuts, acid)
 	}
 }
 
@@ -494,27 +519,34 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	acked := util.FilterSlice(s.PointOuts[acid], func(po PointOut) bool {
+		return s.State.TCWControlsPosition(tcw, po.ToController)
+	})
+
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
-			if po, ok := s.PointOuts[acid]; !ok || !s.State.TCWControlsPosition(tcw, po.ToController) {
+			if len(acked) == 0 {
 				return av.ErrNotPointedOutToMe
 			}
-
 			return nil
 		},
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
-			po := s.PointOuts[acid]
-			// As with auto accepts, "to" and "from" are swapped in the
-			// event since they are w.r.t. the original point out.
-			s.eventStream.Post(Event{
-				Type:           AcknowledgedPointOutEvent,
-				FromController: po.ToController,
-				ToController:   po.FromController,
-				ACID:           acid,
-			})
-			fp.AddPointOutHistory(po.ToController)
+			for _, po := range acked {
+				// As with auto accepts, "to" and "from" are swapped in
+				// the event since they are w.r.t. the original point out.
+				s.eventStream.Post(Event{
+					Type:           AcknowledgedPointOutEvent,
+					FromController: po.ToController,
+					ToController:   po.FromController,
+					ACID:           acid,
+				})
+				fp.AddPointOutHistory(po.ToController)
+			}
 
-			delete(s.PointOuts, acid)
+			s.deletePointOuts(acid, func(po PointOut) bool {
+				return s.State.TCWControlsPosition(tcw, po.ToController)
+			})
+
 			return nil
 		}); err != nil {
 		return err
@@ -527,23 +559,30 @@ func (s *Sim) RecallPointOut(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	recalled := util.FilterSlice(s.PointOuts[acid], func(po PointOut) bool {
+		return s.State.TCWControlsPosition(tcw, po.FromController)
+	})
+
 	if err := s.dispatchTrackedFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
-			if po, ok := s.PointOuts[acid]; !ok || !s.State.TCWControlsPosition(tcw, po.FromController) {
+			if len(recalled) == 0 {
 				return av.ErrNotPointedOutByMe
 			}
 			return nil
 		},
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) {
-			po := s.PointOuts[acid]
-			s.eventStream.Post(Event{
-				Type:           RecalledPointOutEvent,
-				FromController: po.FromController,
-				ToController:   po.ToController,
-				ACID:           acid,
-			})
+			for _, po := range recalled {
+				s.eventStream.Post(Event{
+					Type:           RecalledPointOutEvent,
+					FromController: po.FromController,
+					ToController:   po.ToController,
+					ACID:           acid,
+				})
+			}
 
-			delete(s.PointOuts, acid)
+			s.deletePointOuts(acid, func(po PointOut) bool {
+				return s.State.TCWControlsPosition(tcw, po.FromController)
+			})
 		}); err != nil {
 		return err
 	}
@@ -555,25 +594,32 @@ func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	rejected := util.FilterSlice(s.PointOuts[acid], func(po PointOut) bool {
+		return s.State.TCWControlsPosition(tcw, po.ToController)
+	})
+
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
-			if po, ok := s.PointOuts[acid]; !ok || !s.State.TCWControlsPosition(tcw, po.ToController) {
+			if len(rejected) == 0 {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
-			po := s.PointOuts[acid]
-			// As with auto accepts, "to" and "from" are swapped in the
-			// event since they are w.r.t. the original point out.
-			s.eventStream.Post(Event{
-				Type:           RejectedPointOutEvent,
-				FromController: po.ToController,
-				ToController:   po.FromController,
-				ACID:           acid,
-			})
+			for _, po := range rejected {
+				// As with auto accepts, "to" and "from" are swapped in
+				// the event since they are w.r.t. the original point out.
+				s.eventStream.Post(Event{
+					Type:           RejectedPointOutEvent,
+					FromController: po.ToController,
+					ToController:   po.FromController,
+					ACID:           acid,
+				})
+			}
 
-			delete(s.PointOuts, acid)
+			s.deletePointOuts(acid, func(po PointOut) bool {
+				return s.State.TCWControlsPosition(tcw, po.ToController)
+			})
 
 			return nil
 		}); err != nil {
