@@ -2,6 +2,7 @@ package eram
 
 import (
 	"fmt"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -76,12 +77,8 @@ func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
 						cp.Name = saveName
 						cp.ARTCC = currentARTCC
 						// Deep copy map fields so saved prefs are not mutated later
-						if cp.VideoMapVisible != nil {
-							cp.VideoMapVisible = cloneStringAnyMap(cp.VideoMapVisible)
-						}
-						if cp.VideoMapBrightness != nil {
-							cp.VideoMapBrightness = cloneStringIntMap(cp.VideoMapBrightness)
-						}
+						cp.VideoMapVisible = maps.Clone(cp.VideoMapVisible)
+						cp.VideoMapBrightness = maps.Clone(cp.VideoMapBrightness)
 						ep.prefSet.Saved[i] = &cp
 						ep.tempSavedNames[i] = ""
 					}
@@ -91,12 +88,8 @@ func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
 					if pref != nil && pref.ARTCC == currentARTCC && pref.VideoMapGroup == currentGroup {
 						ep.prefSet.Current = *pref
 						// Clone map fields so editing current doesn't mutate saved copy
-						if pref.VideoMapVisible != nil {
-							ep.prefSet.Current.VideoMapVisible = cloneStringAnyMap(pref.VideoMapVisible)
-						}
-						if pref.VideoMapBrightness != nil {
-							ep.prefSet.Current.VideoMapBrightness = cloneStringIntMap(pref.VideoMapBrightness)
-						}
+						ep.prefSet.Current.VideoMapVisible = maps.Clone(pref.VideoMapVisible)
+						ep.prefSet.Current.VideoMapBrightness = maps.Clone(pref.VideoMapBrightness)
 					}
 				}
 				imgui.TableNextColumn()

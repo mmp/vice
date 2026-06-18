@@ -963,30 +963,6 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	}
 }
 
-// cloneStringAnyMap returns a shallow copy of map[string]interface{}
-func cloneStringAnyMap(src map[string]interface{}) map[string]interface{} {
-	if src == nil {
-		return nil
-	}
-	dst := make(map[string]interface{}, len(src))
-	for k, v := range src {
-		dst[k] = v
-	}
-	return dst
-}
-
-// cloneStringIntMap returns a copy of map[string]int
-func cloneStringIntMap(src map[string]int) map[string]int {
-	if src == nil {
-		return nil
-	}
-	dst := make(map[string]int, len(src))
-	for k, v := range src {
-		dst[k] = v
-	}
-	return dst
-}
-
 func combine(x, y string) string {
 	x = strings.TrimSpace(x)
 	y = strings.TrimSpace(y)
