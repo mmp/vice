@@ -818,7 +818,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	var solidLineBuf [][2]float32 // reuse across all lines/maps
 
 	for _, vm := range ep.allVideoMaps {
-		if _, ok := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)]; !ok {
+		if _, ok := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2, " ")]; !ok {
 			continue
 		}
 
@@ -950,18 +950,16 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 		ps.VideoMapVisible = make(map[string]interface{})
 	}
 
-	ep.videoMapLabel = combine(maps.LabelLine1, maps.LabelLine2)
-	ep.videoMapLabel = strings.Replace(ep.videoMapLabel, " ", "\n", 1)
+	ep.videoMapLabel = combine(maps.LabelLine1, maps.LabelLine2, "\n")
 
 	for _, name := range client.State.ControllerDefaultVideoMaps {
-		if idx := slices.IndexFunc(ep.allVideoMaps, func(v av.ERAMMap) bool { return combine(v.LabelLine1, v.LabelLine2) == name }); idx != -1 {
-
-			ps.VideoMapVisible[combine(ep.allVideoMaps[idx].LabelLine1, ep.allVideoMaps[idx].LabelLine2)] = nil
+		if slices.ContainsFunc(ep.allVideoMaps, func(v av.ERAMMap) bool { return combine(v.LabelLine1, v.LabelLine2, " ") == name }) {
+			ps.VideoMapVisible[name] = nil
 		}
 	}
 }
 
-func combine(x, y string) string {
+func combine(x, y, sep string) string {
 	x = strings.TrimSpace(x)
 	y = strings.TrimSpace(y)
 
@@ -971,8 +969,7 @@ func combine(x, y string) string {
 	if y == "" {
 		return x
 	}
-	return x + " " + y
-
+	return x + sep + y
 }
 
 // Mouse button helpers:
