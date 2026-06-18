@@ -2,3 +2,4 @@
   - Added support for point outs (QP commands)
   - Fixed bug with placement of dwell boxes with leader-line length 0
   - Fixed bugs in LA/LB commands, added (missing) LC command
+  - Added support for setting leader line position and length together: #/# [FLID]

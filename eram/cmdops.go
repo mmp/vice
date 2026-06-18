@@ -162,14 +162,16 @@ func registerOpsCommands() {
 	// Default commands (no prefix)
 	// [FLID] or [SLEW]: Accept handoff / recall handoff / toggle FDB
 	// [SECTOR_ID] [FLID] or [SECTOR_ID][SLEW]: Initiate handoff
-	// [#] [FLID] or [#][SLEW]: Leader line direction
+	// [1-9] [FLID] or [1-9][SLEW]: Leader line direction
 	registerCommand(CommandModeNone, "[FLID]|[SLEW]", handleDefaultTrack)
 	registerCommand(CommandModeNone, "[SECTOR_ID] [FLID]|[SECTOR_ID][SLEW]", handleInitiateHandoff)
-	registerCommand(CommandModeNone, "[#] [FLID]|[#][SLEW]", handleLeaderLine)
+	registerCommand(CommandModeNone, "[#] [FLID]|[#][SLEW]", handleLeaderLinePosition)
 
 	// Leader line length commands
 	// /[0-3] [FLID] or /[0-3][SLEW]: Set leader line length (0=no line, 1=normal, 2=2x, 3=3x)
+	// [1-9]/[0-3] [FLID] or [1-9]/[0-3][SLEW]: Set leader line position and length
 	registerCommand(CommandModeNone, "/[NUM] [FLID]|/[NUM][SLEW]", handleLeaderLineLength)
+	registerCommand(CommandModeNone, "[NUM]/[NUM] [FLID]|[NUM]/[NUM][SLEW]", handleLeaderLinePositionAndLength)
 
 	// .DRAWROUTE - Custom command for drawing routes
 	registerCommand(CommandModeNone, ".DRAWROUTE", handleDrawRouteMode)
@@ -892,76 +894,76 @@ func handleInitiateHandoff(ep *ERAMPane, ctx *panes.Context, sector string, trk 
 	}, nil
 }
 
-func handleLeaderLine(ep *ERAMPane, ctx *panes.Context, dir int, trk *sim.Track) (CommandStatus, error) {
+func handleLeaderLinePosition(ep *ERAMPane, ctx *panes.Context, dir int, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
 		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
-	direction := ep.numberToLLDirection(dir)
-	callsign := trk.ADSBCallsign
-	dbType := ep.datablockType(ctx, *trk)
-
-	if dbType != FullDatablock {
+	direction, ok := ep.numberToLLDirection(dir)
+	if !ok {
+		return CommandStatus{}, ErrERAMIllegalValue
+	}
+	if ep.datablockType(ctx, *trk) != FullDatablock {
 		if direction != math.East && direction != math.West {
 			return CommandStatus{}, ErrERAMIllegalValue
 		}
 	}
 
-	ep.TrackState[callsign].LeaderLineDirection = &direction
+	ep.TrackState[trk.ADSBCallsign].LeaderLineDirection = &direction
 
 	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", string(callsign) + "/" + trk.FlightPlan.CID},
+		feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}, nil
 }
 
-func (ep *ERAMPane) numberToLLDirection(cmd int) math.CardinalOrdinalDirection {
+func (ep *ERAMPane) numberToLLDirection(cmd int) (math.CardinalOrdinalDirection, bool) {
 	if ep.FlipNumericKeypad {
 		// Inverted layout: 1=NW (top-left on physical numpad)
 		switch cmd {
 		case 1:
-			return math.NorthWest
+			return math.NorthWest, true
 		case 2:
-			return math.North
+			return math.North, true
 		case 3:
-			return math.NorthEast
+			return math.NorthEast, true
 		case 4:
-			return math.West
+			return math.West, true
 		case 5:
-			return math.NorthEast
+			return math.NorthEast, true
 		case 6:
-			return math.East
+			return math.East, true
 		case 7:
-			return math.SouthWest
+			return math.SouthWest, true
 		case 8:
-			return math.South
+			return math.South, true
 		case 9:
-			return math.SouthEast
+			return math.SouthEast, true
 		default:
-			return math.East
+			return 0, false
 		}
 	} else {
 		// Default layout: 1=SW (bottom-left on physical numpad)
 		switch cmd {
 		case 1:
-			return math.SouthWest
+			return math.SouthWest, true
 		case 2:
-			return math.South
+			return math.South, true
 		case 3:
-			return math.SouthEast
+			return math.SouthEast, true
 		case 4:
-			return math.West
+			return math.West, true
 		case 5:
-			return math.NorthEast
+			return math.NorthEast, true
 		case 6:
-			return math.East
+			return math.East, true
 		case 7:
-			return math.NorthWest
+			return math.NorthWest, true
 		case 8:
-			return math.North
+			return math.North, true
 		case 9:
-			return math.NorthEast
+			return math.NorthEast, true
 		default:
-			return math.East
+			return 0, false
 		}
 	}
 }
@@ -969,23 +971,43 @@ func (ep *ERAMPane) numberToLLDirection(cmd int) math.CardinalOrdinalDirection {
 ///////////////////////////////////////////////////////////////////////////
 // Leader Line Length Handlers
 
-func handleLeaderLineLength(ep *ERAMPane, ctx *panes.Context, length int, trk *sim.Track) CommandStatus {
+func handleLeaderLineLength(ep *ERAMPane, ctx *panes.Context, length int, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
-	}
+		return CommandStatus{}, ErrERAMIllegalACID
+	} else if length < 0 || length > 3 {
+		return CommandStatus{}, fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+	} else {
+		ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
 
-	// Validate length is 0-3
-	if length < 0 || length > 3 {
 		return CommandStatus{
-			err: fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
-		}
+			feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
+		}, nil
 	}
+}
 
-	// Update track state
-	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
+func handleLeaderLinePositionAndLength(ep *ERAMPane, ctx *panes.Context, dir, length int, trk *sim.Track) (CommandStatus, error) {
+	if trk.FlightPlan == nil {
+		return CommandStatus{}, ErrERAMIllegalACID
+	} else if length < 0 || length > 3 {
+		return CommandStatus{}, fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+	} else {
+		direction, ok := ep.numberToLLDirection(dir)
+		if !ok {
+			return CommandStatus{}, ErrERAMIllegalValue
+		}
 
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
+		if ep.datablockType(ctx, *trk) != FullDatablock {
+			if direction != math.East && direction != math.West {
+				return CommandStatus{}, ErrERAMIllegalValue
+			}
+		}
+
+		ep.TrackState[trk.ADSBCallsign].LeaderLineDirection = &direction
+		ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
+
+		return CommandStatus{
+			feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
+		}, nil
 	}
 }
 

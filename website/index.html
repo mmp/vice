@@ -7375,7 +7375,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 track, slewing it toggles display of its full datablock.
               </p>
               <p>To hand off a track to another controller, either enter the controller's sector id and slew the track, or enter the sector id, a space, and the aircraft's flight id.</p>
-              <p>Entering a number and slewing an owned track sets the leader line direction accordingly.</p>
+              <p>Entering a number 1&ndash;9 and slewing an owned track sets the leader line direction accordingly
+                (the digit corresponds to a position on the numeric keypad relative to the track). Prefixing the
+                command with <code>/</code> instead sets the leader line length: <code>/0</code> hides the leader
+                line (W/E datablock positions only), <code>/1</code> is normal, and <code>/2</code> and <code>/3</code>
+                are 2&times; and 3&times; respectively. Direction and length may be set together by entering
+                <code>[1-9]/[0-3]</code> followed by a slew or flight id.</p>
 
               <h2 id="eram-pointouts">Point Outs</h2>
               <p>Point outs in ERAM are initiated and acknowledged with the <code>QP</code> command. They are restricted to other
