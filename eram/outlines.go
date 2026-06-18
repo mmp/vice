@@ -1,6 +1,8 @@
 package eram
 
 import (
+	"strings"
+
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -68,7 +70,7 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 				var input inputText
 				input.Set(ep.currentPrefs(), "//")
 				status := ep.executeERAMClickedCommand(ctx, input, &trk, transforms)
-				ep.bigOutput.displaySuccess(ep.currentPrefs(), status.bigOutput)
+				ep.feedbackArea.displaySuccess(ep.currentPrefs(), strings.Join(status.feedbackArea, "\n"))
 			}
 		} else {
 			state.HoverVCI = false

@@ -86,14 +86,14 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	}
 	bx, _ := style.Font.BoundText("X", 0)
 	cols := int(sz[0] / float32(bx))
-	out, _ := util.WrapText(ep.bigOutput.String(), cols, 0, true, true)
-	ep.bigOutput.formatWrap(ps, out)
+	out, _ := util.WrapText(ep.feedbackArea.String(), cols, 0, true, true)
+	ep.feedbackArea.formatWrap(ps, out)
 	winBase := math.Add2f(ps.commandBigPosition, ctx.PaneExtent.P0)
 	commandDrawState.cb.SetScissorBounds(math.Extent2D{
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	ep.writeText(td, ep.bigOutput, [2]float32{p0[0] + 2, p0[1] - 2})
+	ep.writeText(td, ep.feedbackArea, [2]float32{p0[0] + 2, p0[1] - 2})
 
 	// Draw the smaller top box now.  Size may change if the input text
 	// requires more room.
@@ -190,7 +190,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	inputSize := float32(77)
 	bx, _ := style.Font.BoundText("X", 0)
 	cols := int(sz[0] / float32(bx))
-	inText, _ := util.WrapText(ep.smallOutput.String(), cols, 0, true, false)
+	inText, _ := util.WrapText(ep.responseArea.String(), cols, 0, true, false)
 	_, h := style.Font.BoundText(inText, style.LineSpacing)
 	if float32(h)+4 > inputSize {
 		inputSize = float32(h) + 4
@@ -211,14 +211,14 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	// Draw wrapped text output in the box
 
 	cols = int(sz[0] / float32(bx))
-	out, _ := util.WrapText(ep.smallOutput.String(), cols, 0, true, false)
-	ep.smallOutput.formatWrap(ps, out)
+	out, _ := util.WrapText(ep.responseArea.String(), cols, 0, true, false)
+	ep.responseArea.formatWrap(ps, out)
 	winBase := math.Add2f(ps.commandSmallPosition, ctx.PaneExtent.P0)
 	commandDrawState.cb.SetScissorBounds(math.Extent2D{
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	ep.writeText(td, ep.smallOutput, [2]float32{p0[0] + 2, p0[1] - 2})
+	ep.writeText(td, ep.responseArea, [2]float32{p0[0] + 2, p0[1] - 2})
 
 	// Restore scissor
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
@@ -228,14 +228,14 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	mouse := ctx.Mouse
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
 	if mouse != nil {
-		if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionSmallOutput {
-			if !ep.repositionSmallOutput {
+		if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionResponseArea {
+			if !ep.repositionResponseArea {
 				ep.timeSinceRepo = time.Now() // only do it on first click
 			}
 			extent := ctx.PaneExtent
 			extent.P1[1] -= 77 // Adjust the extent to the top box
 			ctx.Platform.StartCaptureMouse(extent)
-			ep.repositionSmallOutput = true
+			ep.repositionResponseArea = true
 			// Draw the outline of the box starting from the cursor as the top left corner.
 			sz = [2]float32{325, 77} // Size of the entire command input box
 			p0 = mouse.Pos
@@ -249,11 +249,11 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 			ld.AddLine(p3, p0, color)
 
 		}
-		if (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && ep.repositionSmallOutput &&
+		if (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && ep.repositionResponseArea &&
 			time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
 			// get the mouse position and set the commandBigPosition to that
 			ps.commandSmallPosition = mouse.Pos
-			ep.repositionSmallOutput = false
+			ep.repositionResponseArea = false
 			ctx.Platform.EndCaptureMouse()
 		}
 	}

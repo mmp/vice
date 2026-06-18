@@ -126,6 +126,6 @@ func GetERAMError(e error, lg *log.Logger) *ERAMError {
 
 func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
 	if err != nil {
-		ep.bigOutput.displayError(ep.currentPrefs(), GetERAMError(err, ctx.Lg))
+		ep.feedbackArea.displayError(ep.currentPrefs(), GetERAMError(err, ctx.Lg))
 	}
 }

@@ -63,10 +63,31 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 			ep.Input.Clear()
 			if status.err != nil {
 				ep.displayError(status.err, ctx)
-			} else if status.bigOutput != "" {
-				ep.bigOutput.displaySuccess(ep.currentPrefs(), status.bigOutput)
-			} else if status.output != "" {
-				ep.smallOutput.Set(ps, status.output)
+			} else {
+				if len(status.feedbackArea) > 0 {
+					ep.feedbackArea.displaySuccess(ep.currentPrefs(), strings.Join(status.feedbackArea, "\n"))
+				}
+				if len(status.responseArea) > 0 {
+					ep.responseArea.Set(ps, strings.Join(status.responseArea, "\n"))
+				}
+			}
+		} else if ep.Input.String() != "" {
+			// Middle-click on empty scope with active input: add the click as
+			// a location and execute. Lets the user finish multi-click
+			// commands (e.g. LA <left> <middle>) in one gesture.
+			pos := transforms.LatLongFromWindowP(mouse.Pos)
+			ep.Input.AddLocation(ps, pos)
+			status := ep.executeERAMCommand(ctx, ep.Input)
+			ep.Input.Clear()
+			if status.err != nil {
+				ep.displayError(status.err, ctx)
+			} else {
+				if len(status.feedbackArea) > 0 {
+					ep.feedbackArea.displaySuccess(ps, strings.Join(status.feedbackArea, "\n"))
+				}
+				if len(status.responseArea) > 0 {
+					ep.responseArea.Set(ps, strings.Join(status.responseArea, "\n"))
+				}
 			}
 		}
 	}
@@ -91,7 +112,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 				cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
 			}
 			ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
-			ep.smallOutput.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
+			ep.responseArea.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
 		} else if ep.Input.String() != "" {
 			pos := transforms.LatLongFromWindowP(mouse.Pos)
 			ep.Input.AddLocation(ps, pos)
@@ -141,10 +162,10 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 }
 
 type CommandStatus struct {
-	clear     bool
-	output    string
-	bigOutput string
-	err       error
+	clear        bool
+	responseArea []string
+	feedbackArea []string
+	err          error
 }
 
 func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (status CommandStatus) {
@@ -162,8 +183,8 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	// First try the new parser-based command system
 	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, nil, hasClick, mousePositions, true, radar.ScopeTransformations{}); handled {
 		status.clear = newStatus.clear
-		status.output = newStatus.output
-		status.bigOutput = newStatus.bigOutput
+		status.responseArea = newStatus.responseArea
+		status.feedbackArea = newStatus.feedbackArea
 		status.err = err
 		return
 	}
@@ -344,8 +365,8 @@ func (ep *ERAMPane) pointOutTrack(ctx *panes.Context, acid sim.ACID, sector stri
 			func(err error) {
 				if err == nil {
 					if trk, _ := ctx.Client.State.GetTrackByACID(acid); trk != nil {
-						ep.bigOutput.Set(ep.currentPrefs(), fmt.Sprintf("ACCEPT\nINITIATE POINT OUT\n%s/%s",
-							trk.ADSBCallsign, trk.FlightPlan.CID))
+						ep.feedbackArea.Set(ep.currentPrefs(), "ACCEPT\nINITIATE POINT OUT\n"+
+							string(trk.ADSBCallsign)+"/"+trk.FlightPlan.CID)
 					}
 				} else {
 					ep.displayError(err, ctx)
@@ -360,8 +381,8 @@ func (ep *ERAMPane) acknowledgePointOut(ctx *panes.Context, acid sim.ACID) error
 		func(err error) {
 			if err == nil {
 				if trk, _ := ctx.Client.State.GetTrackByACID(acid); trk != nil {
-					ep.bigOutput.Set(ep.currentPrefs(), fmt.Sprintf("ACCEPT\nACKNOWLEDGE POINT OUT\n%s/%s",
-						acid, trk.FlightPlan.CID))
+					ep.feedbackArea.Set(ep.currentPrefs(), "ACCEPT\nACKNOWLEDGE POINT OUT\n"+
+						string(acid)+"/"+trk.FlightPlan.CID)
 				}
 			} else {
 				ep.displayError(err, ctx)
@@ -380,7 +401,7 @@ func (ep *ERAMPane) clearPointOutLock(trk *sim.Track) (CommandStatus, error) {
 		state.PointOutFDBLocked = false
 		state.EFDB = false
 		return CommandStatus{
-			bigOutput: fmt.Sprintf("ACCEPT\nFORCED DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+			feedbackArea: []string{"ACCEPT", "FORCED DATA BLK", fmt.Sprintf("%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)},
 		}, nil
 	}
 }
@@ -412,8 +433,8 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 	// Use the new parser-based command system for clicked commands
 	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, trk, true, nil, false, transforms); handled {
 		status.clear = newStatus.clear
-		status.output = newStatus.output
-		status.bigOutput = newStatus.bigOutput
+		status.responseArea = newStatus.responseArea
+		status.feedbackArea = newStatus.feedbackArea
 		status.err = err
 		return
 	}

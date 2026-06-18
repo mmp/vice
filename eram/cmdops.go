@@ -192,7 +192,7 @@ func handleInterimAltitude(ep *ERAMPane, ctx *panes.Context, alt InterimAltitude
 	}
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nINTERIM ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "INTERIM ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}, nil
 }
 
@@ -211,7 +211,7 @@ func handleClearInterimAltitude(ep *ERAMPane, ctx *panes.Context, trk *sim.Track
 	}
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nINTERIM ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "INTERIM ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}
 }
 
@@ -233,7 +233,7 @@ func handleAssignedAltitude(ep *ERAMPane, ctx *panes.Context, alt int, trk *sim.
 	}
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nASSIGNED ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "ASSIGNED ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}
 }
 
@@ -252,7 +252,7 @@ func handleDropTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandS
 	ep.deleteFLightplan(ctx, *trk)
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nDROP TRACK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "DROP TRACK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}, nil
 }
 
@@ -273,13 +273,13 @@ func handleDefaultRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track)
 	if _, ok := ep.aircraftFixCoordinates[trk.ADSBCallsign.String()]; ok {
 		delete(ep.aircraftFixCoordinates, trk.ADSBCallsign.String())
 		return CommandStatus{
-			bigOutput: fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID), // TODO: Find correct message
+			feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID}, // TODO: Find correct message
 		}
 	}
 	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), 20)
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}
 }
 
@@ -291,7 +291,7 @@ func handleMaxRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) Com
 	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), -1)
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}
 }
 
@@ -303,7 +303,7 @@ func handleRouteDisplayMinutes(ep *ERAMPane, ctx *panes.Context, minutes int, tr
 	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), minutes)
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}
 }
 
@@ -315,7 +315,7 @@ func handleDirectToFix(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Tr
 	ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fix)
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nREROUTE\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "REROUTE", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}
 }
 
@@ -332,7 +332,7 @@ func handleJRing(ep *ERAMPane, trk *sim.Track) CommandStatus {
 	state.DisplayReducedJRing = false // clear reduced J ring
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "REQ/DELETE DRI", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}
 }
 
@@ -351,7 +351,7 @@ func handleReducedJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 	state.DisplayReducedJRing = !state.DisplayReducedJRing
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "REQ/DELETE DRI", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}, nil
 }
 
@@ -382,10 +382,13 @@ func handleFlightPlanReadout(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) C
 	zTime := ctx.Client.State.SimTime.Format("1504")
 	rte := strings.TrimPrefix(fp.Route, "/. ")
 	rte = strings.ReplaceAll(rte, " ", ".")
-	rte += fmt.Sprintf(".%v", fp.ArrivalAirport)
+	rte += "." + fp.ArrivalAirport
 	return CommandStatus{
-		output: fmt.Sprintf("%v\n%v %v(%v) %v %v 0 %v %v", zTime, fp.CID, fp.ACID, fp.TrackingController,
-			fp.AircraftType, fp.AssignedSquawk, fp.AssignedAltitude/100, rte),
+		responseArea: []string{
+			zTime,
+			fmt.Sprintf("%v %v(%v) %v %v 0 %v %v", fp.CID, fp.ACID, fp.TrackingController,
+				fp.AircraftType, fp.AssignedSquawk, fp.AssignedAltitude/100, rte),
+		},
 	}
 }
 
@@ -404,7 +407,7 @@ func handleMapRequestList(ep *ERAMPane, ctx *panes.Context) (CommandStatus, erro
 	}
 
 	return CommandStatus{
-		output: fmt.Sprintf("AVAILABLE GEOMAPS: %s", strings.Join(visibleNames, " ")),
+		responseArea: []string{fmt.Sprintf("AVAILABLE GEOMAPS: %s", strings.Join(visibleNames, " "))},
 	}, nil
 }
 
@@ -439,7 +442,7 @@ func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (C
 	}
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nMAP REQUEST\n%v", ps.VideoMapGroup),
+		feedbackArea: []string{"ACCEPT", "MAP REQUEST", ps.VideoMapGroup},
 	}, nil
 }
 
@@ -473,53 +476,53 @@ func formatRangeBearing(from, to math.Point2LL, nmPerLon, magVar float32, trueBr
 func handleLALocLoc(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32) CommandStatus {
 	from := math.Point2LL{pos1[0], pos1[1]}
 	to := math.Point2LL{pos2[0], pos2[1]}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, 0))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, 0))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
 }
 
 func handleLATrkLoc(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32) CommandStatus {
 	to := math.Point2LL{pos[0], pos[1]}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, trk.Groundspeed))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, trk.Groundspeed))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
 }
 
 func handleLALocLocSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32, speed int) CommandStatus {
 	from := math.Point2LL{pos1[0], pos1[1]}
 	to := math.Point2LL{pos2[0], pos2[1]}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
 }
 
 func handleLATrkLocSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32, speed int) CommandStatus {
 	to := math.Point2LL{pos[0], pos[1]}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
 }
 
 func handleLALocLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32, speed int) CommandStatus {
 	from := math.Point2LL{pos1[0], pos1[1]}
 	to := math.Point2LL{pos2[0], pos2[1]}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, float32(speed)))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, float32(speed)))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
 }
 
 func handleLATrkLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32, speed int) CommandStatus {
 	to := math.Point2LL{pos[0], pos[1]}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, float32(speed)))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, float32(speed)))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
 }
 
 func handleLALocLocTrue(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32) CommandStatus {
 	from := math.Point2LL{pos1[0], pos1[1]}
 	to := math.Point2LL{pos2[0], pos2[1]}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, 0))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, 0))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
 }
 
 func handleLATrkLocTrue(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32) CommandStatus {
 	to := math.Point2LL{pos[0], pos[1]}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, 0))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, 0))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -531,8 +534,8 @@ func handleLBFixLoc(ep *ERAMPane, ctx *panes.Context, fix string, pos [2]float32
 		return CommandStatus{}, ErrERAMIllegalValue
 	}
 	to := math.Point2LL{pos[0], pos[1]}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(fixPos, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, 0))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}, nil
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(fixPos, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, 0))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}, nil
 }
 
 func handleLBFixTrk(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Track) (CommandStatus, error) {
@@ -540,8 +543,8 @@ func handleLBFixTrk(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Track
 	if !ok {
 		return CommandStatus{}, ErrERAMIllegalValue
 	}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(fixPos, trk.Location, ctx.NmPerLongitude, ctx.MagneticVariation, false, trk.Groundspeed))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}, nil
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(fixPos, trk.Location, ctx.NmPerLongitude, ctx.MagneticVariation, false, trk.Groundspeed))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}, nil
 }
 
 func handleLBFixSpeedTrk(ep *ERAMPane, ctx *panes.Context, fix string, speed int, trk *sim.Track) (CommandStatus, error) {
@@ -549,8 +552,8 @@ func handleLBFixSpeedTrk(ep *ERAMPane, ctx *panes.Context, fix string, speed int
 	if !ok {
 		return CommandStatus{}, ErrERAMIllegalValue
 	}
-	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(fixPos, trk.Location, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
-	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}, nil
+	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(fixPos, trk.Location, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -587,7 +590,7 @@ func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocati
 	}
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nCRR GROUP %s CREATED", label),
+		feedbackArea: []string{"ACCEPT", fmt.Sprintf("CRR GROUP %s CREATED", label)},
 	}, nil
 }
 
@@ -631,7 +634,7 @@ func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, pos [2]float32, label
 		ep.CRRGroups[label] = g
 
 		return CommandStatus{
-			bigOutput: fmt.Sprintf("ACCEPT\nCRR GROUP %s CREATED", label),
+			feedbackArea: []string{"ACCEPT", fmt.Sprintf("CRR GROUP %s CREATED", label)},
 		}, nil
 	}
 
@@ -644,7 +647,7 @@ func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, pos [2]float32, label
 	g.Aircraft[nearest.ADSBCallsign] = struct{}{}
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nCRR UPDATED %s", g.Label),
+		feedbackArea: []string{"ACCEPT", fmt.Sprintf("CRR UPDATED %s", g.Label)},
 	}, nil
 }
 
@@ -675,7 +678,7 @@ func handleCRRToggleMembership(ep *ERAMPane, ctx *panes.Context, label string, a
 	}
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nCRR UPDATED %s", g.Label),
+		feedbackArea: []string{"ACCEPT", fmt.Sprintf("CRR UPDATED %s", g.Label)},
 	}, nil
 }
 
@@ -701,7 +704,7 @@ func handleToggleVCI(ep *ERAMPane, trk *sim.Track) CommandStatus {
 	state.DisplayVCI = !state.DisplayVCI
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nTOGGLE ON-FREQUENCY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "TOGGLE ON-FREQUENCY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}
 }
 
@@ -772,7 +775,7 @@ func handleDefaultTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (Comma
 		acid := sim.ACID(trk.ADSBCallsign.String())
 		ep.acceptHandoff(ctx, acid)
 		return CommandStatus{
-			bigOutput: fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+			feedbackArea: []string{"ACCEPT", "ACCEPT HANDOFF", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 		}, nil
 	}
 
@@ -781,7 +784,7 @@ func handleDefaultTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (Comma
 		acid := sim.ACID(trk.ADSBCallsign.String())
 		ep.recallHandoff(ctx, acid)
 		return CommandStatus{
-			bigOutput: fmt.Sprintf("ACCEPT\nRECALL HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+			feedbackArea: []string{"ACCEPT", "RECALL HANDOFF", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 		}, nil
 	}
 
@@ -800,7 +803,7 @@ func handleDefaultTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (Comma
 	state.DisplayReducedJRing = false
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nFORCED DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "FORCED DATA BLK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}, nil
 }
 
@@ -816,7 +819,7 @@ func handleInitiateHandoff(ep *ERAMPane, ctx *panes.Context, sector string, trk 
 	}
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nINITIATE HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "INITIATE HANDOFF", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}, nil
 }
 
@@ -838,7 +841,7 @@ func handleLeaderLine(ep *ERAMPane, ctx *panes.Context, dir int, trk *sim.Track)
 	ep.TrackState[callsign].LeaderLineDirection = &direction
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", callsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", string(callsign) + "/" + trk.FlightPlan.CID},
 	}, nil
 }
 
@@ -913,7 +916,7 @@ func handleLeaderLineLength(ep *ERAMPane, ctx *panes.Context, length int, trk *s
 	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
 
 	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}
 }
 
@@ -924,7 +927,7 @@ func handleDrawRouteMode(ep *ERAMPane, ctx *panes.Context) CommandStatus {
 	ep.commandMode = CommandModeDrawRoute
 	ep.drawRoutePoints = nil
 	ps := ep.currentPrefs()
-	ep.smallOutput.Set(ps, "DRAWROUTE")
+	ep.responseArea.Set(ps, "DRAWROUTE")
 	return CommandStatus{clear: true}
 }
 
@@ -940,7 +943,7 @@ func handleDrawRoutePoint(ep *ERAMPane, ctx *panes.Context, pos [2]float32) Comm
 	ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
 
 	ps := ep.currentPrefs()
-	ep.smallOutput.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
+	ep.responseArea.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
 
 	return CommandStatus{}
 }
@@ -955,11 +958,11 @@ func isDigit(r rune) bool {
 ///////////////////////////////////////////////////////////////////////////
 // QS - HSF (Heading / Speed-Mach / Free-text) Handlers
 
-func qsFDBDataAcceptMsg(trk *sim.Track) string {
+func qsFDBDataAcceptMsg(trk *sim.Track) []string {
 	if trk == nil || trk.FlightPlan == nil {
-		return ""
+		return nil
 	}
-	return fmt.Sprintf("ACCEPT\nFDB DATA\n%s/%s", trk.ADSBCallsign.String(), trk.FlightPlan.CID)
+	return []string{"ACCEPT", "FDB DATA", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID}
 }
 
 func handleQSToggleHSF(ep *ERAMPane, trk *sim.Track) CommandStatus {
@@ -971,7 +974,7 @@ func handleQSToggleHSF(ep *ERAMPane, trk *sim.Track) CommandStatus {
 		return CommandStatus{err: ErrERAMIllegalACID}
 	}
 	state.HSFHide = !state.HSFHide
-	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
 }
 
 func handleQSDeleteHeading(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
@@ -982,7 +985,7 @@ func handleQSDeleteHeading(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) Com
 	var fp sim.FlightPlanSpecifier
 	fp.Scratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
-	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
 }
 
 func handleQSDeleteSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
@@ -992,7 +995,7 @@ func handleQSDeleteSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) Comma
 	var fp sim.FlightPlanSpecifier
 	fp.SecondaryScratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
-	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
 }
 
 func handleQSDeleteAll(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
@@ -1003,7 +1006,7 @@ func handleQSDeleteAll(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) Command
 	fp.Scratchpad.Set("")
 	fp.SecondaryScratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
-	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
 }
 
 func handleQSHeading(ep *ERAMPane, ctx *panes.Context, heading string, trk *sim.Track) CommandStatus {
@@ -1015,7 +1018,7 @@ func handleQSHeading(ep *ERAMPane, ctx *panes.Context, heading string, trk *sim.
 	fp.Scratchpad.Set(heading)
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
 
-	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
 }
 
 func handleQSSpeed(ep *ERAMPane, ctx *panes.Context, speed string, trk *sim.Track) CommandStatus {
@@ -1030,7 +1033,7 @@ func handleQSSpeed(ep *ERAMPane, ctx *panes.Context, speed string, trk *sim.Trac
 	}
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
 
-	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
 }
 
 func handleQSFreeText(ep *ERAMPane, ctx *panes.Context, freeText string, trk *sim.Track) CommandStatus {
@@ -1043,7 +1046,7 @@ func handleQSFreeText(ep *ERAMPane, ctx *panes.Context, freeText string, trk *si
 	fp.SecondaryScratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
 
-	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
 }
 
 func isQSFreeText(s string) bool {
@@ -1092,7 +1095,7 @@ func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 			if ep.altimSetScrollOffset > maxOffset {
 				ep.altimSetScrollOffset = maxOffset
 			}
-			return CommandStatus{bigOutput: "ACCEPT\nALTIMETER REQ"}, nil
+			return CommandStatus{feedbackArea: []string{"ACCEPT", "ALTIMETER REQ"}}, nil
 		}
 	}
 
@@ -1102,7 +1105,7 @@ func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	ps := ep.currentPrefs()
 	ps.AltimSet.Visible = true
 
-	return CommandStatus{bigOutput: "ACCEPT\nALTIMETER REQ"}, nil
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "ALTIMETER REQ"}}, nil
 }
 
 // WR - WX REPORT Add Airport Handler
@@ -1133,7 +1136,7 @@ func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 			if ep.wxScrollOffset > maxOffset {
 				ep.wxScrollOffset = maxOffset
 			}
-			return CommandStatus{bigOutput: "ACCEPT\nWEATHER STAT REQ"}, nil
+			return CommandStatus{feedbackArea: []string{"ACCEPT", "WEATHER STAT REQ"}}, nil
 		}
 	}
 
@@ -1143,7 +1146,7 @@ func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	ps := ep.currentPrefs()
 	ps.WX.Visible = true
 
-	return CommandStatus{bigOutput: "ACCEPT\nWEATHER STAT REQ"}, nil
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "WEATHER STAT REQ"}}, nil
 }
 
 // WR R - WX REPORT Display (show METAR in Response Area)
@@ -1175,7 +1178,7 @@ func handleWXReportDisplay(ep *ERAMPane, ctx *panes.Context, airport string) (Co
 	}
 
 	ps := ep.currentPrefs()
-	ep.smallOutput.Set(ps, displayText)
+	ep.responseArea.Set(ps, displayText)
 
 	return CommandStatus{}, nil
 }

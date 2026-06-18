@@ -82,9 +82,9 @@ type ERAMPane struct {
 	OutboundPointOuts map[sim.ACID][]outboundPointOut
 
 	// Output and input text for the command line interface.
-	smallOutput inputText `json:"-"`
-	bigOutput   inputText `json:"-"`
-	Input       inputText `json:"-"`
+	responseArea inputText `json:"-"`
+	feedbackArea inputText `json:"-"`
+	Input        inputText `json:"-"`
 
 	activeToolbarMenu int  `json:"-"`
 	toolbarVisible    bool `json:"-"`
@@ -94,10 +94,10 @@ type ERAMPane struct {
 	fdbArena util.ObjectArena[fullDatablock]    `json:"-"`
 	ldbArena util.ObjectArena[limitedDatablock] `json:"-"`
 
-	repositionLargeInput  bool      `json:"-"`
-	repositionSmallOutput bool      `json:"-"`
-	repositionClock       bool      `json:"-"`
-	timeSinceRepo         time.Time `json:"-"`
+	repositionLargeInput   bool      `json:"-"`
+	repositionResponseArea bool      `json:"-"`
+	repositionClock        bool      `json:"-"`
+	timeSinceRepo          time.Time `json:"-"`
 
 	tearoffInProgress        string                   `json:"-"` // Button name being torn off
 	tearoffIsReposition      bool                     `json:"-"` // Repositioning existing vs new tearoff
@@ -684,9 +684,9 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 							cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
 						}
 						ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
-						ep.smallOutput.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
+						ep.responseArea.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
 					} else {
-						ep.smallOutput.Set(ps, "DRAWROUTE")
+						ep.responseArea.Set(ps, "DRAWROUTE")
 					}
 				}
 			} else if len(ep.Input) > 0 {
@@ -698,10 +698,13 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			ep.Input.Clear()
 			if status.err != nil {
 				ep.displayError(status.err, ctx)
-			} else if status.bigOutput != "" {
-				ep.bigOutput.displaySuccess(ps, status.bigOutput)
-			} else if status.output != "" {
-				ep.smallOutput.Set(ps, status.output)
+			} else {
+				if len(status.feedbackArea) > 0 {
+					ep.feedbackArea.displaySuccess(ps, strings.Join(status.feedbackArea, "\n"))
+				}
+				if len(status.responseArea) > 0 {
+					ep.responseArea.Set(ps, strings.Join(status.responseArea, "\n"))
+				}
 			}
 		case imgui.KeyEscape:
 			if ep.tearoffInProgress != "" || ep.deleteTearoffMode {
@@ -717,10 +720,10 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				break
 			}
 			// Clear the input
-			if ep.repositionLargeInput || ep.repositionSmallOutput || ep.repositionClock ||
+			if ep.repositionLargeInput || ep.repositionResponseArea || ep.repositionClock ||
 				ep.crrReposition || ep.altimSetReposition || ep.wxReposition {
 				ep.repositionLargeInput = false
-				ep.repositionSmallOutput = false
+				ep.repositionResponseArea = false
 				ep.repositionClock = false
 				ep.crrReposition = false
 				ep.altimSetReposition = false
@@ -730,10 +733,10 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				if ep.commandMode == CommandModeDrawRoute {
 					ep.commandMode = CommandModeNone
 					ep.drawRoutePoints = nil
-					ep.smallOutput.Clear()
+					ep.responseArea.Clear()
 				}
 				ep.Input.Clear()
-				ep.bigOutput.Clear()
+				ep.feedbackArea.Clear()
 			}
 		case imgui.KeyTab:
 			if input == "" {
