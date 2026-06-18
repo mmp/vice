@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/rpc"
+	"strings"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
@@ -127,5 +128,22 @@ func GetERAMError(e error, lg *log.Logger) *ERAMError {
 func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
 	if err != nil {
 		ep.feedbackArea.displayError(ep.currentPrefs(), GetERAMError(err, ctx.Lg))
+	}
+}
+
+// applyCommandStatus routes a CommandStatus to the feedback/response areas:
+// an error overrides everything; otherwise non-empty feedback and response
+// lines are joined with newlines and shown.
+func (ep *ERAMPane) applyCommandStatus(ctx *panes.Context, status CommandStatus) {
+	if status.err != nil {
+		ep.displayError(status.err, ctx)
+		return
+	}
+	ps := ep.currentPrefs()
+	if len(status.feedbackArea) > 0 {
+		ep.feedbackArea.displaySuccess(ps, strings.Join(status.feedbackArea, "\n"))
+	}
+	if len(status.responseArea) > 0 {
+		ep.responseArea.Set(ps, strings.Join(status.responseArea, "\n"))
 	}
 }

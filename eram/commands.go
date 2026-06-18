@@ -61,16 +61,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		if trk != nil {
 			status := ep.executeERAMClickedCommand(ctx, ep.Input, trk, transforms)
 			ep.Input.Clear()
-			if status.err != nil {
-				ep.displayError(status.err, ctx)
-			} else {
-				if len(status.feedbackArea) > 0 {
-					ep.feedbackArea.displaySuccess(ep.currentPrefs(), strings.Join(status.feedbackArea, "\n"))
-				}
-				if len(status.responseArea) > 0 {
-					ep.responseArea.Set(ps, strings.Join(status.responseArea, "\n"))
-				}
-			}
+			ep.applyCommandStatus(ctx, status)
 		} else if ep.Input.String() != "" {
 			// Middle-click on empty scope with active input: add the click as
 			// a location and execute. Lets the user finish multi-click
@@ -79,16 +70,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 			ep.Input.AddLocation(ps, pos)
 			status := ep.executeERAMCommand(ctx, ep.Input)
 			ep.Input.Clear()
-			if status.err != nil {
-				ep.displayError(status.err, ctx)
-			} else {
-				if len(status.feedbackArea) > 0 {
-					ep.feedbackArea.displaySuccess(ps, strings.Join(status.feedbackArea, "\n"))
-				}
-				if len(status.responseArea) > 0 {
-					ep.responseArea.Set(ps, strings.Join(status.responseArea, "\n"))
-				}
-			}
+			ep.applyCommandStatus(ctx, status)
 		}
 	}
 	// try get closest track
@@ -365,7 +347,7 @@ func (ep *ERAMPane) pointOutTrack(ctx *panes.Context, acid sim.ACID, sector stri
 			func(err error) {
 				if err == nil {
 					if trk, _ := ctx.Client.State.GetTrackByACID(acid); trk != nil {
-						ep.feedbackArea.Set(ep.currentPrefs(), "ACCEPT\nINITIATE POINT OUT\n"+
+						ep.feedbackArea.displaySuccess(ep.currentPrefs(), "ACCEPT\nINITIATE POINT OUT\n"+
 							string(trk.ADSBCallsign)+"/"+trk.FlightPlan.CID)
 					}
 				} else {
@@ -381,7 +363,7 @@ func (ep *ERAMPane) acknowledgePointOut(ctx *panes.Context, acid sim.ACID) error
 		func(err error) {
 			if err == nil {
 				if trk, _ := ctx.Client.State.GetTrackByACID(acid); trk != nil {
-					ep.feedbackArea.Set(ep.currentPrefs(), "ACCEPT\nACKNOWLEDGE POINT OUT\n"+
+					ep.feedbackArea.displaySuccess(ep.currentPrefs(), "ACCEPT\nACKNOWLEDGE POINT OUT\n"+
 						string(acid)+"/"+trk.FlightPlan.CID)
 				}
 			} else {
