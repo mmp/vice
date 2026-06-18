@@ -1152,23 +1152,21 @@ func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	}
 
 	// Toggle: if already in the list, remove it.
-	for i, existing := range ep.AltimSetAirports {
-		if existing == icao {
-			ep.AltimSetAirports = append(ep.AltimSetAirports[:i], ep.AltimSetAirports[i+1:]...)
-			// Adjust scroll offset if needed after removal
-			ps := ep.currentPrefs()
-			maxOffset := len(ep.AltimSetAirports) - ps.AltimSet.Lines
-			if maxOffset < 0 {
-				maxOffset = 0
-			}
-			if ep.altimSetScrollOffset > maxOffset {
-				ep.altimSetScrollOffset = maxOffset
-			}
-			return CommandStatus{feedbackArea: []string{"ACCEPT", "ALTIMETER REQ"}}, nil
+	if i := slices.Index(ep.AltimSetAirports, icao); i >= 0 {
+		ep.AltimSetAirports = slices.Delete(ep.AltimSetAirports, i, i+1)
+		// Adjust scroll offset if needed after removal
+		ps := ep.currentPrefs()
+		maxOffset := len(ep.AltimSetAirports) - ps.AltimSet.Lines
+		if maxOffset < 0 {
+			maxOffset = 0
 		}
+		if ep.altimSetScrollOffset > maxOffset {
+			ep.altimSetScrollOffset = maxOffset
+		}
+		return CommandStatus{feedbackArea: []string{"ACCEPT", "ALTIMETER REQ"}}, nil
 	}
 
-	ep.AltimSetAirports = append([]string{icao}, ep.AltimSetAirports...)
+	ep.AltimSetAirports = slices.Insert(ep.AltimSetAirports, 0, icao)
 
 	// Make the window visible when the first airport is added.
 	ps := ep.currentPrefs()
@@ -1193,23 +1191,21 @@ func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	if !ok {
 		return CommandStatus{}, NewERAMError("REJECT - WR - UNKNOWN AIRPORT")
 	}
-	for i, existing := range ep.WXReportStations {
-		if existing == icao {
-			ep.WXReportStations = append(ep.WXReportStations[:i], ep.WXReportStations[i+1:]...)
-			// Adjust scroll offset if needed after removal
-			ps := ep.currentPrefs()
-			maxOffset := len(ep.WXReportStations) - ps.WX.Lines
-			if maxOffset < 0 {
-				maxOffset = 0
-			}
-			if ep.wxScrollOffset > maxOffset {
-				ep.wxScrollOffset = maxOffset
-			}
-			return CommandStatus{feedbackArea: []string{"ACCEPT", "WEATHER STAT REQ"}}, nil
+	if i := slices.Index(ep.WXReportStations, icao); i >= 0 {
+		ep.WXReportStations = slices.Delete(ep.WXReportStations, i, i+1)
+		// Adjust scroll offset if needed after removal
+		ps := ep.currentPrefs()
+		maxOffset := len(ep.WXReportStations) - ps.WX.Lines
+		if maxOffset < 0 {
+			maxOffset = 0
 		}
+		if ep.wxScrollOffset > maxOffset {
+			ep.wxScrollOffset = maxOffset
+		}
+		return CommandStatus{feedbackArea: []string{"ACCEPT", "WEATHER STAT REQ"}}, nil
 	}
 
-	ep.WXReportStations = append([]string{icao}, ep.WXReportStations...)
+	ep.WXReportStations = slices.Insert(ep.WXReportStations, 0, icao)
 
 	// Make the window visible when the first airport is added.
 	ps := ep.currentPrefs()

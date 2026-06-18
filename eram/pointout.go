@@ -184,7 +184,7 @@ func (ep *ERAMPane) removeOutboundPointOut(acid sim.ACID, idx int) {
 	if idx < 0 || idx >= len(entries) {
 		return
 	}
-	ep.OutboundPointOuts[acid] = append(entries[:idx], entries[idx+1:]...)
+	ep.OutboundPointOuts[acid] = slices.Delete(entries, idx, idx+1)
 	if len(ep.OutboundPointOuts[acid]) == 0 {
 		delete(ep.OutboundPointOuts, acid)
 	}
@@ -193,24 +193,20 @@ func (ep *ERAMPane) removeOutboundPointOut(acid sim.ACID, idx int) {
 // removeOutboundPointOutByReceiver removes the first outbound entry whose
 // Receiver matches.
 func (ep *ERAMPane) removeOutboundPointOutByReceiver(acid sim.ACID, receiver sim.ControlPosition) {
-	for i, entry := range ep.OutboundPointOuts[acid] {
-		if entry.Receiver == receiver {
-			ep.removeOutboundPointOut(acid, i)
-			return
-		}
+	if i := slices.IndexFunc(ep.OutboundPointOuts[acid], func(e outboundPointOut) bool {
+		return e.Receiver == receiver
+	}); i >= 0 {
+		ep.removeOutboundPointOut(acid, i)
 	}
 }
 
 // removeInboundPointOut removes the first inbound entry from the given sender.
 func (ep *ERAMPane) removeInboundPointOut(acid sim.ACID, sender sim.ControlPosition) {
 	senders := ep.InboundPointOuts[acid]
-	for i, s := range senders {
-		if s == sender {
-			ep.InboundPointOuts[acid] = append(senders[:i], senders[i+1:]...)
-			if len(ep.InboundPointOuts[acid]) == 0 {
-				delete(ep.InboundPointOuts, acid)
-			}
-			return
+	if i := slices.Index(senders, sender); i >= 0 {
+		ep.InboundPointOuts[acid] = slices.Delete(senders, i, i+1)
+		if len(ep.InboundPointOuts[acid]) == 0 {
+			delete(ep.InboundPointOuts, acid)
 		}
 	}
 }
