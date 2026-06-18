@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/sim"
@@ -197,8 +198,7 @@ type CommandInput struct {
 	// Track / position information for click-based commands
 	clickedTrack   *sim.Track
 	hasClick       bool
-	mousePositions [][2]float32
-	posIsLatLong   bool // true if mousePositions are already lat/long (from embedded locations)
+	mousePositions []math.Point2LL
 	transforms     radar.ScopeTransformations
 }
 
@@ -239,7 +239,7 @@ func (c matchCandidate) advance(m matcher, r matchResult) matchCandidate {
 // tryExecuteUserCommand attempts to execute a command using the registered commands
 // for the current command mode.
 func (ep *ERAMPane) tryExecuteUserCommand(ctx *panes.Context, cmd string, clickedTrack *sim.Track, hasClick bool,
-	mousePositions [][2]float32, posIsLatLong bool, transforms radar.ScopeTransformations) (CommandStatus, error, bool) {
+	mousePositions []math.Point2LL, transforms radar.ScopeTransformations) (CommandStatus, error, bool) {
 	// Get commands for current mode
 	cmds, ok := userCommands[ep.commandMode]
 	if !ok || len(cmds) == 0 {
@@ -251,7 +251,6 @@ func (ep *ERAMPane) tryExecuteUserCommand(ctx *panes.Context, cmd string, clicke
 		clickedTrack:   clickedTrack,
 		hasClick:       hasClick,
 		mousePositions: mousePositions,
-		posIsLatLong:   posIsLatLong,
 		transforms:     transforms,
 	}
 

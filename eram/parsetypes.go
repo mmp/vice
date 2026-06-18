@@ -407,16 +407,10 @@ func (h *posParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput,
 		return nil, text, false, nil
 	}
 
-	var p [2]float32
-	if input.posIsLatLong {
-		p = input.mousePositions[0]
-	} else {
-		p = input.transforms.LatLongFromWindowP(input.mousePositions[0])
-	}
-	return p, text, true, nil
+	return input.mousePositions[0], text, true, nil
 }
 
-func (h *posParser) GoType() reflect.Type { return reflect.TypeOf((*[2]float32)(nil)).Elem() }
+func (h *posParser) GoType() reflect.Type { return reflect.TypeOf(math.Point2LL{}) }
 func (h *posParser) ConsumesClick() bool  { return true }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -567,15 +561,10 @@ func (h *locSymParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 		return nil, text, false, nil
 	}
 
-	p := input.mousePositions[idx]
-	if !input.posIsLatLong {
-		p = input.transforms.LatLongFromWindowP(p)
-	}
-
-	return p, remaining, true, nil
+	return input.mousePositions[idx], remaining, true, nil
 }
 
-func (h *locSymParser) GoType() reflect.Type { return reflect.TypeOf((*[2]float32)(nil)).Elem() }
+func (h *locSymParser) GoType() reflect.Type { return reflect.TypeOf(math.Point2LL{}) }
 func (h *locSymParser) ConsumesClick() bool  { return true } // Uses click position from input
 
 // minutesParse parses minutes for QU

@@ -86,7 +86,7 @@ var reFRD = regexp.MustCompile(`^([A-Z0-9]{3,5})(\d{3})(\d{3})$`)
 func tryExtractLocation(it inputText) (math.Point2LL, bool) {
 	for _, ic := range it {
 		if string(ic.char) == locationSymbol {
-			return math.Point2LL{ic.location[0], ic.location[1]}, true
+			return ic.location, true
 		}
 	}
 	return math.Point2LL{}, false

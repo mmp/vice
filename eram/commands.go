@@ -154,7 +154,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	original := strings.TrimSpace(cmdLine.String())
 
 	// Extract all embedded locations from clicking while typing
-	var mousePositions [][2]float32
+	var mousePositions []math.Point2LL
 	for _, ic := range cmdLine {
 		if string(ic.char) == locationSymbol {
 			mousePositions = append(mousePositions, ic.location)
@@ -163,7 +163,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	hasClick := len(mousePositions) > 0
 
 	// First try the new parser-based command system
-	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, nil, hasClick, mousePositions, true, radar.ScopeTransformations{}); handled {
+	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, nil, hasClick, mousePositions, radar.ScopeTransformations{}); handled {
 		status.clear = newStatus.clear
 		status.responseArea = newStatus.responseArea
 		status.feedbackArea = newStatus.feedbackArea
@@ -415,7 +415,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 	// Extract embedded location clicks ('w' chars) so patterns like
 	// LA [LOC_SYM][SLEW] can bind both the prior left-click(s) and the
 	// terminating track click.
-	var mousePositions [][2]float32
+	var mousePositions []math.Point2LL
 	for _, ic := range cmdLine {
 		if string(ic.char) == locationSymbol {
 			mousePositions = append(mousePositions, ic.location)
@@ -423,7 +423,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 	}
 
 	// Use the new parser-based command system for clicked commands
-	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, trk, true, mousePositions, true, transforms); handled {
+	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, trk, true, mousePositions, transforms); handled {
 		status.clear = newStatus.clear
 		status.responseArea = newStatus.responseArea
 		status.feedbackArea = newStatus.feedbackArea

@@ -476,9 +476,7 @@ func formatRangeBearing(from, to math.Point2LL, nmPerLon, magVar float32, trueBr
 	return lines
 }
 
-func handleLALocLoc(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32) CommandStatus {
-	from := math.Point2LL{pos1[0], pos1[1]}
-	to := math.Point2LL{pos2[0], pos2[1]}
+func handleLALocLoc(ep *ERAMPane, ctx *panes.Context, from math.Point2LL, to math.Point2LL) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -486,8 +484,7 @@ func handleLALocLoc(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]f
 	}
 }
 
-func handleLATrkLoc(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32) CommandStatus {
-	to := math.Point2LL{pos[0], pos[1]}
+func handleLATrkLoc(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -495,9 +492,7 @@ func handleLATrkLoc(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]flo
 	}
 }
 
-func handleLALocLocSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32, speed int) CommandStatus {
-	from := math.Point2LL{pos1[0], pos1[1]}
-	to := math.Point2LL{pos2[0], pos2[1]}
+func handleLALocLocSpeed(ep *ERAMPane, ctx *panes.Context, from math.Point2LL, to math.Point2LL, speed int) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -505,8 +500,7 @@ func handleLALocLocSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2
 	}
 }
 
-func handleLATrkLocSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32, speed int) CommandStatus {
-	to := math.Point2LL{pos[0], pos[1]}
+func handleLATrkLocSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL, speed int) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -514,9 +508,7 @@ func handleLATrkLocSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [
 	}
 }
 
-func handleLALocLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32, speed int) CommandStatus {
-	from := math.Point2LL{pos1[0], pos1[1]}
-	to := math.Point2LL{pos2[0], pos2[1]}
+func handleLALocLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, from math.Point2LL, to math.Point2LL, speed int) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -524,8 +516,7 @@ func handleLALocLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, 
 	}
 }
 
-func handleLATrkLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32, speed int) CommandStatus {
-	to := math.Point2LL{pos[0], pos[1]}
+func handleLATrkLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL, speed int) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -533,9 +524,7 @@ func handleLATrkLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, p
 	}
 }
 
-func handleLALocLocTrue(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32) CommandStatus {
-	from := math.Point2LL{pos1[0], pos1[1]}
-	to := math.Point2LL{pos2[0], pos2[1]}
+func handleLALocLocTrue(ep *ERAMPane, ctx *panes.Context, from math.Point2LL, to math.Point2LL) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -543,8 +532,7 @@ func handleLALocLocTrue(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 
 	}
 }
 
-func handleLATrkLocTrue(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32) CommandStatus {
-	to := math.Point2LL{pos[0], pos[1]}
+func handleLATrkLocTrue(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -555,12 +543,11 @@ func handleLATrkLocTrue(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2
 ///////////////////////////////////////////////////////////////////////////
 // LB - Range/Bearing From Fix
 
-func handleLBFixLoc(ep *ERAMPane, ctx *panes.Context, fix string, pos [2]float32) (CommandStatus, error) {
+func handleLBFixLoc(ep *ERAMPane, ctx *panes.Context, fix string, from math.Point2LL) (CommandStatus, error) {
 	fixPos, ok := ctx.Client.State.Locate(fix)
 	if !ok {
 		return CommandStatus{}, ErrERAMIllegalValue
 	}
-	from := math.Point2LL{pos[0], pos[1]}
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(from, fixPos, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -680,14 +667,11 @@ func handleCRRCreateAutoLabel(ep *ERAMPane, ctx *panes.Context, loc CRRLocation)
 }
 
 // handleCRRAddClicked handles LF {pos} LABEL - position comes first, then label
-func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, pos [2]float32, label string) (CommandStatus, error) {
+func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, loc math.Point2LL, label string) (CommandStatus, error) {
 	// Validate label
 	if !validCRRLabel(label) {
 		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", locationSymbol, strings.ToUpper(label))
 	}
-
-	// pos is already lat/long from the [LOC_SYM] parser
-	loc := math.Point2LL{pos[0], pos[1]}
 
 	// Check if group exists
 	g := ep.CRRGroups[label]
@@ -723,7 +707,7 @@ func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, pos [2]float32, label
 }
 
 // handleCRRWrongOrder handles LF LABEL {pos} - wrong order error
-func handleCRRWrongOrder(label string, pos [2]float32) (CommandStatus, error) {
+func handleCRRWrongOrder(label string, pos math.Point2LL) (CommandStatus, error) {
 	return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", strings.ToUpper(label), locationSymbol)
 }
 
@@ -1022,10 +1006,8 @@ func handleDrawRouteMode(ep *ERAMPane, ctx *panes.Context) CommandStatus {
 	return CommandStatus{clear: true}
 }
 
-func handleDrawRoutePoint(ep *ERAMPane, ctx *panes.Context, pos [2]float32) CommandStatus {
-	// Convert window position to lat/long
-	posLL := math.Point2LL{pos[0], pos[1]}
-	ep.drawRoutePoints = append(ep.drawRoutePoints, posLL)
+func handleDrawRoutePoint(ep *ERAMPane, ctx *panes.Context, pos math.Point2LL) CommandStatus {
+	ep.drawRoutePoints = append(ep.drawRoutePoints, pos)
 
 	var cb []string
 	for _, p := range ep.drawRoutePoints {

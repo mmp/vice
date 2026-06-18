@@ -558,7 +558,7 @@ const circleFilled string = "z"
 type inputChar struct {
 	char     rune
 	color    renderer.RGB
-	location [2]float32 // long lat
+	location math.Point2LL
 }
 
 type inputText []inputChar
@@ -566,21 +566,20 @@ type inputText []inputChar
 func (inp *inputText) Set(ps *Preferences, str string) {
 	inp.Clear()
 	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor) // Default white text color
-	location := [2]float32{0, 0}                           // Default location
+	str = formatInput(str)
+	for _, char := range str {
+		*inp = append(*inp, inputChar{char: char, color: color})
+	}
+}
+
+func (inp *inputText) Add(str string, color renderer.RGB, location math.Point2LL) {
 	str = formatInput(str)
 	for _, char := range str {
 		*inp = append(*inp, inputChar{char: char, color: color, location: location})
 	}
 }
 
-func (inp *inputText) Add(str string, color renderer.RGB, location [2]float32) {
-	str = formatInput(str)
-	for _, char := range str {
-		*inp = append(*inp, inputChar{char: char, color: color, location: location})
-	}
-}
-
-func (inp *inputText) AddLocation(ps *Preferences, location [2]float32) {
+func (inp *inputText) AddLocation(ps *Preferences, location math.Point2LL) {
 	// Trim trailing whitespace inputChars in place so prior chars (and the
 	// click locations they carry) are preserved.
 	for len(*inp) > 0 && unicode.IsSpace((*inp)[len(*inp)-1].char) {
@@ -593,9 +592,8 @@ func (inp *inputText) AddLocation(ps *Preferences, location [2]float32) {
 func (inp *inputText) AddBasic(ps *Preferences, str string) {
 	str = formatInput(str)
 	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor) // Default white text color
-	location := [2]float32{0, 0}
 	for _, char := range str {
-		*inp = append(*inp, inputChar{char: char, color: color, location: location})
+		*inp = append(*inp, inputChar{char: char, color: color})
 	}
 }
 
@@ -644,7 +642,7 @@ func (inp inputText) String() string {
 func (inp *inputText) displayError(ps *Preferences, err error) {
 	if err != nil {
 		errMsg := inputText{}
-		errMsg.Add(xMark+" ", renderer.RGB{1, 0, 0}, [2]float32{0, 0}) // TODO: Find actual red color
+		errMsg.Add(xMark+" ", renderer.RGB{1, 0, 0}, math.Point2LL{}) // TODO: Find actual red color
 		errMsg.AddBasic(ps, toUpper(err.Error()))
 		*inp = errMsg
 	}
