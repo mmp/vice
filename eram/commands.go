@@ -56,18 +56,16 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		}
 	}
 	if ep.mouseTertiaryReleased(mouse) {
-		// Try execute a clicked command on the closest track.
-		trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms)
-		if trk != nil {
-			status := ep.executeERAMClickedCommand(ctx, ep.Input, trk, transforms)
-			ep.Input.Clear()
-			ep.applyCommandStatus(ctx, status)
-		} else if ep.Input.String() != "" {
-			// Middle-click on empty scope with active input: add the click as
-			// a location and execute. Lets the user finish multi-click
-			// commands (e.g. LA <left> <middle>) in one gesture.
-			pos := transforms.LatLongFromWindowP(mouse.Pos)
-			ep.Input.AddLocation(ps, pos)
+		// A middle-click is treated as "left-click + [Enter] at this position"; append the click to
+		// the input and execute.
+		pos := transforms.LatLongFromWindowP(mouse.Pos)
+		var callsign av.ADSBCallsign
+		if trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms); trk != nil {
+			callsign = trk.ADSBCallsign
+		}
+		// Skip an empty middle-click on empty space: nothing to dispatch.
+		if callsign != "" || ep.Input.String() != "" {
+			ep.Input.AddLocation(ps, pos, callsign)
 			status := ep.executeERAMCommand(ctx, ep.Input)
 			ep.Input.Clear()
 			ep.applyCommandStatus(ctx, status)
@@ -97,7 +95,11 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 			ep.responseArea.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
 		} else if ep.Input.String() != "" {
 			pos := transforms.LatLongFromWindowP(mouse.Pos)
-			ep.Input.AddLocation(ps, pos)
+			var callsign av.ADSBCallsign
+			if trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms); trk != nil {
+				callsign = trk.ADSBCallsign
+			}
+			ep.Input.AddLocation(ps, pos, callsign)
 		}
 	}
 
@@ -150,33 +152,33 @@ type CommandStatus struct {
 	err          error
 }
 
-func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (status CommandStatus) {
+func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) CommandStatus {
 	original := strings.TrimSpace(cmdLine.String())
 
-	// Extract all embedded locations from clicking while typing
+	// Extract all embedded locations from clicking while typing, along with
+	// the callsigns (if any) of tracks under each click resolved at click time.
 	var mousePositions []math.Point2LL
+	var trackCallsigns []av.ADSBCallsign
 	for _, ic := range cmdLine {
 		if string(ic.char) == locationSymbol {
 			mousePositions = append(mousePositions, ic.location)
+			trackCallsigns = append(trackCallsigns, ic.trackCallsign)
 		}
 	}
-	hasClick := len(mousePositions) > 0
 
-	// First try the new parser-based command system
-	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, nil, hasClick, mousePositions, radar.ScopeTransformations{}); handled {
-		status.clear = newStatus.clear
-		status.responseArea = newStatus.responseArea
-		status.feedbackArea = newStatus.feedbackArea
-		status.err = err
-		return
+	if status, err, handled := ep.tryExecuteUserCommand(ctx, original, mousePositions, trackCallsigns); handled {
+		if err != nil {
+			status.err = err
+		}
+		return status
 	}
 
 	// No registered command matched the input; surface a generic syntax error so the user gets
 	// feedback instead of silent no-op (e.g. "QP <FLID> <SECTOR>" with the args swapped).
-	if strings.TrimSpace(original) != "" {
-		status.err = ErrCommandFormat
+	if original != "" {
+		return CommandStatus{err: ErrCommandFormat}
 	}
-	return
+	return CommandStatus{}
 }
 
 func (ep *ERAMPane) deleteFLightplan(ctx *panes.Context, trk sim.Track) {
@@ -402,41 +404,6 @@ func (ep *ERAMPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]floa
 	}
 
 	return trk, distance
-}
-
-func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputText, trk *sim.Track, transforms radar.ScopeTransformations) (status CommandStatus) {
-	if trk == nil {
-		status.err = ErrERAMIllegalACID
-		return
-	}
-
-	original := strings.TrimSpace(cmdLine.String())
-
-	// Extract embedded location clicks ('w' chars) so patterns like
-	// LA [LOC_SYM][SLEW] can bind both the prior left-click(s) and the
-	// terminating track click.
-	var mousePositions []math.Point2LL
-	for _, ic := range cmdLine {
-		if string(ic.char) == locationSymbol {
-			mousePositions = append(mousePositions, ic.location)
-		}
-	}
-
-	// Use the new parser-based command system for clicked commands
-	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, trk, true, mousePositions, transforms); handled {
-		status.clear = newStatus.clear
-		status.responseArea = newStatus.responseArea
-		status.feedbackArea = newStatus.feedbackArea
-		status.err = err
-		return
-	}
-
-	// No registered command matched. If the user typed something before clicking, surface a
-	// syntax error rather than silently doing nothing.
-	if strings.TrimSpace(original) != "" {
-		status.err = ErrCommandFormat
-	}
-	return
 }
 
 func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string) (*av.Controller, error) {

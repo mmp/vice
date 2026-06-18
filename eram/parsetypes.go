@@ -146,19 +146,31 @@ func (h *flidParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput
 func (h *flidParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
 func (h *flidParser) ConsumesClick() bool  { return false }
 
-// slewParser matches a clicked track (mouse click on scope)
+// slewParser matches the trailing click of a command when that click landed
+// on a track. In that case, the click represented by locationSymbol embedded in the input string by
+// AddLocation with the nearest track's callsign in trackCallsigns.
 type slewParser struct{}
 
 func (h *slewParser) Identifier() string { return "SLEW" }
 
 func (h *slewParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	if input.clickedTrack == nil {
+	trimmed := strings.TrimLeft(text, " ")
+	if !strings.HasPrefix(trimmed, locationSymbol) {
 		return nil, text, false, nil
 	}
-	if strings.TrimSpace(text) != "" {
+	rest := strings.TrimPrefix(trimmed, locationSymbol)
+	if strings.TrimSpace(rest) != "" {
 		return nil, text, false, nil
 	}
-	return input.clickedTrack, "", true, nil
+	idx := len(input.mousePositions) - strings.Count(text, locationSymbol)
+	if idx < 0 || idx >= len(input.mousePositions) {
+		return nil, text, false, nil
+	}
+	trk, ok := ctx.Client.State.Tracks[input.trackCallsigns[idx]]
+	if !ok {
+		return nil, text, false, nil
+	}
+	return trk, "", true, nil
 }
 
 func (h *slewParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
@@ -380,17 +392,22 @@ func (h *fieldParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInpu
 func (h *fieldParser) GoType() reflect.Type { return reflect.TypeOf("") }
 func (h *fieldParser) ConsumesClick() bool  { return false }
 
-// allTextParser captures all remaining text from the current position.
-// Unlike strings.Cut which stops at spaces, this captures everything.
+// allTextParser captures all remaining text from the current position, though it special cases and
+// stops at the locationSymbol 'w' if present; that could only have come from a click through
+// AddLocation() and not as user text input.
+//
+// TODO: stop at any lower case character here, in case others are embedded in input in the future?
 type allTextParser struct{}
 
 func (h *allTextParser) Identifier() string { return "ALL_TEXT" }
 
 func (h *allTextParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	if text == "" {
+	prefix, _, _ := strings.Cut(text, locationSymbol)
+	prefix = strings.TrimRight(prefix, " ")
+	if prefix == "" {
 		return nil, text, false, nil
 	}
-	return text, "", true, nil
+	return prefix, text[len(prefix):], true, nil
 }
 
 func (h *allTextParser) GoType() reflect.Type { return reflect.TypeOf("") }
@@ -403,7 +420,7 @@ func (h *posParser) Identifier() string { return "POS" }
 
 func (h *posParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
 	// Only match clicks on empty space, not on tracks. Use SLEW for track clicks.
-	if !input.hasClick || input.clickedTrack != nil || len(input.mousePositions) == 0 {
+	if len(input.mousePositions) == 0 || input.trackCallsigns[0] != "" {
 		return nil, text, false, nil
 	}
 
@@ -534,14 +551,14 @@ func (h *crrLocParser) GoType() reflect.Type { return reflect.TypeOf(CRRLocation
 func (h *crrLocParser) ConsumesClick() bool  { return false }
 
 // locSymParser matches the location symbol 'w' embedded in text from clicking.
-// Returns [2]float32 lat/long coordinates from CommandInput.
+// Returns the click's math.Point2LL from CommandInput.mousePositions.
 type locSymParser struct{}
 
 func (h *locSymParser) Identifier() string { return "LOC_SYM" }
 
 func (h *locSymParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
 	// Must have a click with positions available and the text must start with the location symbol
-	if !input.hasClick || len(input.mousePositions) == 0 {
+	if len(input.mousePositions) == 0 {
 		return nil, text, false, nil
 	}
 

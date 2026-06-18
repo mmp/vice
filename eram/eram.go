@@ -556,9 +556,10 @@ const circleClear string = "y"
 const circleFilled string = "z"
 
 type inputChar struct {
-	char     rune
-	color    renderer.RGB
-	location math.Point2LL
+	char          rune
+	color         renderer.RGB
+	location      math.Point2LL
+	trackCallsign av.ADSBCallsign // set on 'locationSymbol' chars added by AddLocation when the click landed on a track
 }
 
 type inputText []inputChar
@@ -579,13 +580,16 @@ func (inp *inputText) Add(str string, color renderer.RGB, location math.Point2LL
 	}
 }
 
-func (inp *inputText) AddLocation(ps *Preferences, location math.Point2LL) {
+func (inp *inputText) AddLocation(ps *Preferences, location math.Point2LL, callsign av.ADSBCallsign) {
 	// Trim trailing whitespace inputChars in place so prior chars (and the
 	// click locations they carry) are preserved.
 	for len(*inp) > 0 && unicode.IsSpace((*inp)[len(*inp)-1].char) {
 		*inp = (*inp)[:len(*inp)-1]
 	}
-	inp.Add(" "+locationSymbol+" ", ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
+	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor)
+	for _, char := range formatInput(" " + locationSymbol + " ") {
+		*inp = append(*inp, inputChar{char: char, color: color, location: location, trackCallsign: callsign})
+	}
 }
 
 // No formatting needed
@@ -650,7 +654,7 @@ func (inp *inputText) displayError(ps *Preferences, err error) {
 
 func (inp *inputText) displaySuccess(ps *Preferences, str string) {
 	sucMsg := inputText{}
-	sucMsg.Add(checkMark+" ", renderer.RGB{0, 1, 0}, [2]float32{0, 0}) // TODO: Find actual red color
+	sucMsg.Add(checkMark+" ", renderer.RGB{0, 1, 0}, math.Point2LL{}) // TODO: Find actual green color
 	sucMsg.AddBasic(ps, str)
 	*inp = sucMsg
 

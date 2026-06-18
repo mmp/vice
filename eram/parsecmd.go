@@ -13,9 +13,9 @@ import (
 	"strings"
 	"sync"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -195,11 +195,11 @@ func splitCommands(c string) iter.Seq[string] {
 type CommandInput struct {
 	text string
 
-	// Track / position information for click-based commands
-	clickedTrack   *sim.Track
-	hasClick       bool
+	// A click is represented as a locationSymbol ('w') embedded in text with the click's lat/long
+	// at the corresponding mousePositions index. If the click landed on/near a track at click time,
+	// the parallel trackCallsigns slot holds that track's callsign; otherwise it is "".
 	mousePositions []math.Point2LL
-	transforms     radar.ScopeTransformations
+	trackCallsigns []av.ADSBCallsign // parallel to mousePositions, "" if click missed all tracks
 }
 
 // matchCandidate represents a userCommand and the WIP state from attempting to match its
@@ -238,8 +238,8 @@ func (c matchCandidate) advance(m matcher, r matchResult) matchCandidate {
 
 // tryExecuteUserCommand attempts to execute a command using the registered commands
 // for the current command mode.
-func (ep *ERAMPane) tryExecuteUserCommand(ctx *panes.Context, cmd string, clickedTrack *sim.Track, hasClick bool,
-	mousePositions []math.Point2LL, transforms radar.ScopeTransformations) (CommandStatus, error, bool) {
+func (ep *ERAMPane) tryExecuteUserCommand(ctx *panes.Context, cmd string, mousePositions []math.Point2LL,
+	trackCallsigns []av.ADSBCallsign) (CommandStatus, error, bool) {
 	// Get commands for current mode
 	cmds, ok := userCommands[ep.commandMode]
 	if !ok || len(cmds) == 0 {
@@ -248,10 +248,8 @@ func (ep *ERAMPane) tryExecuteUserCommand(ctx *panes.Context, cmd string, clicke
 
 	input := &CommandInput{
 		text:           cmd,
-		clickedTrack:   clickedTrack,
-		hasClick:       hasClick,
 		mousePositions: mousePositions,
-		transforms:     transforms,
+		trackCallsigns: trackCallsigns,
 	}
 
 	return ep.dispatchCommand(ctx, cmds, input)
@@ -289,7 +287,7 @@ func (ep *ERAMPane) greedyMatchCommands(ctx *panes.Context, input *CommandInput,
 	for _, c := range util.FilterSlice(candidates, func(mc matchCandidate) bool {
 		return len(mc.matchers) == 0 && mc.remaining == ""
 	}) {
-		if input.hasClick && !c.cmd.consumesClick {
+		if len(input.mousePositions) > 0 && !c.cmd.consumesClick {
 			continue
 		}
 
