@@ -1,8 +1,6 @@
 package eram
 
 import (
-	"strings"
-
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -65,12 +63,8 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 		}
 		if db.Fields[DBFieldVCI].Inside(mouse.Pos) {
 			state.HoverVCI = true
-			// check if clicked down on the VCI field to activate it
 			if ep.mousePrimaryClicked(mouse) {
-				var input inputText
-				input.Set(ep.currentPrefs(), "//")
-				status := ep.executeERAMClickedCommand(ctx, input, &trk, transforms)
-				ep.feedbackArea.displaySuccess(ep.currentPrefs(), strings.Join(status.feedbackArea, "\n"))
+				ep.applyCommandStatus(ctx, handleToggleVCI(ep, &trk))
 			}
 		} else {
 			state.HoverVCI = false
