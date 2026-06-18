@@ -7558,7 +7558,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <ul>
                     <li><code>LA</code> — between two locations or FLID-to-location, with optional <code>/SPEED</code> and <code>T</code> true-bearing
                       variants</li>
-                    <li><code>LB</code> — from fix to location or FLID, with optional <code>/SPEED</code></li>
+                    <li><code>LB</code> — from fix to location, FLID, or clicked track, with optional <code>/SPEED</code></li>
+                    <li><code>LC</code> — speed to reach a fix at a given UTC time (<code>LC [FIX]/HHMM [FLID]</code> or clicked track)</li>
                   </ul>
                 </li>
                 <li><strong>CRR groups</strong>
@@ -7621,7 +7622,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <li><strong>Track control</strong>: <code>QH</code> freeze/hold, <code>QB</code> beacon assignment, <code>QR</code> controller-entered
                   reported altitude (CERA), <code>QD</code> altimeter / altitude-limit toggle, <code>QN</code> implied-command prefix</li>
                 <li><strong>Flight plan</strong>: <code>VP</code> VFR FP creation, <code>SR</code> flight-plan editor, <code>DM</code> activate FP,
-                  <code>LC</code> speed-to-fix-at-time, <code>RF</code> force facility transfer</li>
+                  <code>RF</code> force facility transfer</li>
                 <li><strong>Handoff</strong>: <code>RJ</code> reject, <code>AC</code> accept-with-acknowledge, <code>RD</code> handoff readout,
                   <code>/OK</code> force-handoff/"steal"</li>
                 <li><strong>Coordination / messaging</strong>: <code>MS</code>, <code>PO</code>, <code>CO</code>, <code>FP</code>, <code>RR</code>

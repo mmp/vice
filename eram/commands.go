@@ -169,7 +169,7 @@ type CommandStatus struct {
 }
 
 func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (status CommandStatus) {
-	original := cmdLine.String()
+	original := strings.TrimSpace(cmdLine.String())
 
 	// Extract all embedded locations from clicking while typing
 	var mousePositions [][2]float32
@@ -428,10 +428,20 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 		return
 	}
 
-	original := cmdLine.String()
+	original := strings.TrimSpace(cmdLine.String())
+
+	// Extract embedded location clicks ('w' chars) so patterns like
+	// LA [LOC_SYM][SLEW] can bind both the prior left-click(s) and the
+	// terminating track click.
+	var mousePositions [][2]float32
+	for _, ic := range cmdLine {
+		if string(ic.char) == locationSymbol {
+			mousePositions = append(mousePositions, ic.location)
+		}
+	}
 
 	// Use the new parser-based command system for clicked commands
-	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, trk, true, nil, false, transforms); handled {
+	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, trk, true, mousePositions, true, transforms); handled {
 		status.clear = newStatus.clear
 		status.responseArea = newStatus.responseArea
 		status.feedbackArea = newStatus.feedbackArea

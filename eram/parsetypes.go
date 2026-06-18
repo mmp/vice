@@ -302,24 +302,24 @@ type fixParser struct{}
 func (h *fixParser) Identifier() string { return "FIX" }
 
 func (h *fixParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	field, remaining := util.CutAtSpace(text)
-	if field == "" || !isAlpha(field[0]) {
+	if text == "" || !isAlpha(text[0]) {
 		return nil, text, false, nil
 	}
 
-	// Fix names are typically 2-5 characters, all alphanumeric starting with a letter
+	// Consume alphanumeric chars; stop at the first non-alphanumeric
+	// (space, '/', etc.) so patterns like "[FIX]/[NUM]" can match.
+	end := 1
+	for end < len(text) && (isAlpha(text[end]) || isNum(text[end])) {
+		end++
+	}
+
+	field := text[:end]
+	// Fix names are typically 2-5 characters
 	if len(field) < 2 || len(field) > 5 {
 		return nil, text, false, nil
 	}
 
-	// Validate all characters are alphanumeric
-	for i := 1; i < len(field); i++ {
-		if !isAlpha(field[i]) && !isNum(field[i]) {
-			return nil, text, false, nil
-		}
-	}
-
-	return field, remaining, true, nil
+	return field, text[end:], true, nil
 }
 
 func (h *fixParser) GoType() reflect.Type { return reflect.TypeOf("") }

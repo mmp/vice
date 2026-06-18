@@ -8,13 +8,17 @@ package eram
 
 import (
 	"fmt"
+	"maps"
+	"slices"
 	"strings"
+	"time"
 	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 func registerOpsCommands() {
@@ -107,8 +111,11 @@ func registerOpsCommands() {
 
 	// LB
 	registerCommand(CommandModeNone, "LB [FIX] [LOC_SYM]", handleLBFixLoc)
-	registerCommand(CommandModeNone, "LB [FIX] [FLID]", handleLBFixTrk)
-	registerCommand(CommandModeNone, "LB [FIX]/[NUM] [FLID]", handleLBFixSpeedTrk)
+	registerCommand(CommandModeNone, "LB [FIX] [FLID]|LB [FIX][SLEW]", handleLBFixTrk)
+	registerCommand(CommandModeNone, "LB [FIX]/[NUM] [FLID]|LB [FIX]/[NUM][SLEW]", handleLBFixSpeedTrk)
+
+	// LC - speed adjustment to position a track over a fix at a specified UTC time
+	registerCommand(CommandModeNone, "LC [FIX]/[NUM] [FLID]|LC [FIX]/[NUM][SLEW]", handleLCFixTimeTrk)
 
 	// LF - CRR (Continuous Range Readout)
 	// LF //FIX [LABEL]: Create new CRR group at fix location
@@ -401,11 +408,7 @@ func handleMapRequestList(ep *ERAMPane, ctx *panes.Context) (CommandStatus, erro
 		return CommandStatus{}, err
 	}
 
-	var visibleNames []string
-	for groups := range vmf.ERAMMapGroups {
-		visibleNames = append(visibleNames, groups)
-	}
-
+	visibleNames := slices.Collect(maps.Keys(vmf.ERAMMapGroups))
 	return CommandStatus{
 		responseArea: []string{fmt.Sprintf("AVAILABLE GEOMAPS: %s", strings.Join(visibleNames, " "))},
 	}, nil
@@ -428,7 +431,7 @@ func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (C
 	// Get rid of all visible maps
 	ps.VideoMapVisible = make(map[string]interface{})
 
-	ep.videoMapLabel = fmt.Sprintf("%s\n%s", maps.LabelLine1, maps.LabelLine2)
+	ep.videoMapLabel = maps.LabelLine1 + "\n" + maps.LabelLine2
 	ep.allVideoMaps = maps.Maps
 	ep.bcgNames = maps.BCGNames
 
@@ -450,79 +453,101 @@ func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (C
 // LA - Range/Bearing Between Two Points
 
 // formatRangeBearing computes distance/bearing and returns (detail string for secondary output).
-func formatRangeBearing(from, to math.Point2LL, nmPerLon, magVar float32, trueBrg bool, speed float32) string {
+// fromLabel is the third line (e.g. "FROM 1ST TB ENTRY" for LA, "FROM TB TO FIX KLAX" for LB).
+func formatRangeBearing(from, to math.Point2LL, nmPerLon, magVar float32, trueBrg bool, speed float32, fromLabel string) []string {
 	dist := math.NMDistance2LL(from, to)
 
-	brgLabel := "MAG"
-	if trueBrg {
-		brgLabel = "TRUE"
-	}
+	brgLabel := util.Select(trueBrg, "TRUE", "MAG")
 	trueBearing := math.Heading2LL(from, to, nmPerLon)
-	var brg float32
-	if trueBrg {
-		brg = float32(trueBearing)
-	} else {
-		brg = float32(math.TrueToMagnetic(trueBearing, magVar))
-	}
+	brg := util.Select(trueBrg, float32(trueBearing), float32(math.TrueToMagnetic(trueBearing, magVar)))
 
-	s := fmt.Sprintf("RANGE * %.1f NM\nBEARING * %03.0f DEG %s", dist, brg, brgLabel)
-	if speed > 0 {
-		time := (dist / speed) * 60
-		s += fmt.Sprintf("\nGS * %.0f  TIME * %.1f", speed, time)
+	var lines []string
+	lines = append(lines, fmt.Sprintf("RANGE * %.1f NM", dist))
+	lines = append(lines, fmt.Sprintf("BEARING * %03.0f DEG %s", brg, brgLabel))
+	if fromLabel != "" {
+		lines = append(lines, fromLabel)
 	}
-	return s
+	if speed > 0 {
+		minutes := (dist / speed) * 60
+		lines = append(lines, fmt.Sprintf("AT %.0f KTS %.0f MIN", speed, minutes))
+	}
+	return lines
 }
 
 func handleLALocLoc(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32) CommandStatus {
 	from := math.Point2LL{pos1[0], pos1[1]}
 	to := math.Point2LL{pos2[0], pos2[1]}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, 0))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
+			false, 0, "FROM 1ST TB ENTRY"),
+	}
 }
 
 func handleLATrkLoc(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32) CommandStatus {
 	to := math.Point2LL{pos[0], pos[1]}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, trk.Groundspeed))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
+			false, trk.Groundspeed, "FROM 1ST TB ENTRY"),
+	}
 }
 
 func handleLALocLocSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32, speed int) CommandStatus {
 	from := math.Point2LL{pos1[0], pos1[1]}
 	to := math.Point2LL{pos2[0], pos2[1]}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
+			false, float32(speed), "FROM 1ST TB ENTRY"),
+	}
 }
 
 func handleLATrkLocSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32, speed int) CommandStatus {
 	to := math.Point2LL{pos[0], pos[1]}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
+			false, float32(speed), "FROM 1ST TB ENTRY"),
+	}
 }
 
 func handleLALocLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32, speed int) CommandStatus {
 	from := math.Point2LL{pos1[0], pos1[1]}
 	to := math.Point2LL{pos2[0], pos2[1]}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, float32(speed)))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
+			true, float32(speed), "FROM 1ST TB ENTRY"),
+	}
 }
 
 func handleLATrkLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32, speed int) CommandStatus {
 	to := math.Point2LL{pos[0], pos[1]}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, float32(speed)))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
+			true, float32(speed), "FROM 1ST TB ENTRY"),
+	}
 }
 
 func handleLALocLocTrue(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32) CommandStatus {
 	from := math.Point2LL{pos1[0], pos1[1]}
 	to := math.Point2LL{pos2[0], pos2[1]}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, 0))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
+			true, 0, "FROM 1ST TB ENTRY"),
+	}
 }
 
 func handleLATrkLocTrue(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32) CommandStatus {
 	to := math.Point2LL{pos[0], pos[1]}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, 0))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
+			true, 0, "FROM 1ST TB ENTRY"),
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -533,9 +558,13 @@ func handleLBFixLoc(ep *ERAMPane, ctx *panes.Context, fix string, pos [2]float32
 	if !ok {
 		return CommandStatus{}, ErrERAMIllegalValue
 	}
-	to := math.Point2LL{pos[0], pos[1]}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(fixPos, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, 0))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}, nil
+	from := math.Point2LL{pos[0], pos[1]}
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(from, fixPos, ctx.NmPerLongitude, ctx.MagneticVariation,
+			false, 0, "FROM TB TO FIX "+fix),
+	}, nil
+
 }
 
 func handleLBFixTrk(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Track) (CommandStatus, error) {
@@ -543,8 +572,11 @@ func handleLBFixTrk(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Track
 	if !ok {
 		return CommandStatus{}, ErrERAMIllegalValue
 	}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(fixPos, trk.Location, ctx.NmPerLongitude, ctx.MagneticVariation, false, trk.Groundspeed))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}, nil
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(trk.Location, fixPos, ctx.NmPerLongitude, ctx.MagneticVariation,
+			false, trk.Groundspeed, "FROM TB TO FIX "+fix),
+	}, nil
 }
 
 func handleLBFixSpeedTrk(ep *ERAMPane, ctx *panes.Context, fix string, speed int, trk *sim.Track) (CommandStatus, error) {
@@ -552,8 +584,45 @@ func handleLBFixSpeedTrk(ep *ERAMPane, ctx *panes.Context, fix string, speed int
 	if !ok {
 		return CommandStatus{}, ErrERAMIllegalValue
 	}
-	ep.responseArea.Set(ep.currentPrefs(), formatRangeBearing(fixPos, trk.Location, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "RANGE/BEARING"}}, nil
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: formatRangeBearing(trk.Location, fixPos, ctx.NmPerLongitude, ctx.MagneticVariation,
+			false, float32(speed), "FROM TB TO FIX "+fix),
+	}, nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// LC - Speed adjustment to arrive over a fix at a specified UTC time (HHMM)
+
+func handleLCFixTimeTrk(ep *ERAMPane, ctx *panes.Context, fix string, hhmm int, trk *sim.Track) (CommandStatus, error) {
+	fixPos, ok := ctx.Client.State.Locate(fix)
+	if !ok {
+		return CommandStatus{}, ErrERAMIllegalValue
+	}
+
+	hh, mm := hhmm/100, hhmm%100
+	if hh < 0 || hh > 23 || mm < 0 || mm > 59 {
+		return CommandStatus{}, ErrERAMIllegalValue
+	}
+
+	now := ctx.Client.State.SimTime.UTC()
+	target := time.Date(now.Time().Year(), now.Time().Month(), now.Time().Day(), hh, mm, 0, 0, time.UTC)
+	if !target.After(now.Time()) {
+		target = target.Add(24 * time.Hour)
+	}
+	dtHours := target.Sub(now.Time()).Hours()
+	if dtHours <= 0 {
+		return CommandStatus{}, ErrERAMIllegalValue
+	}
+
+	dist := math.NMDistance2LL(trk.Location, fixPos)
+	reqGS := int(math.Round(dist / float32(dtHours)))
+
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		responseArea: []string{fmt.Sprintf("%s AT %02d%02dZ+%dK", fix, hh, mm, reqGS),
+			fmt.Sprintf("CURRENT SPEED %.0fK", trk.Groundspeed)},
+	}, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

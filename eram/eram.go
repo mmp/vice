@@ -581,10 +581,12 @@ func (inp *inputText) Add(str string, color renderer.RGB, location [2]float32) {
 }
 
 func (inp *inputText) AddLocation(ps *Preferences, location [2]float32) {
-	str := inp.String()
-	str = strings.TrimRightFunc(str, unicode.IsSpace)
-	inp.Set(ps, str)
-	inp.Add(" "+locationSymbol+"", ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
+	// Trim trailing whitespace inputChars in place so prior chars (and the
+	// click locations they carry) are preserved.
+	for len(*inp) > 0 && unicode.IsSpace((*inp)[len(*inp)-1].char) {
+		*inp = (*inp)[:len(*inp)-1]
+	}
+	inp.Add(" "+locationSymbol+" ", ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
 }
 
 // No formatting needed
