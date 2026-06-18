@@ -520,38 +520,9 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 				sz = ps.LDBSize
 			}
 			font := ep.ERAMFont(sz)
-			start := transforms.WindowFromLatLongP(state.Track.Location)
-			dir := ep.leaderLineDirection(ctx, *trk)
-			lengthMode := state.LeaderLineLength
-
-			// For mode 0, restrict to W/E only
-			if lengthMode == 0 {
-				if *dir != math.East && *dir != math.West {
-					*dir = math.East // Default to East if in mode 0
-				}
-			}
-
-			offset := datablockOffset(*dir)
-			vector := ep.leaderLineVectorWithLength(*dir, lengthMode)
-
-			// For mode 0, adjust positioning based on direction
-			if lengthMode == 0 {
-				if *dir == math.East {
-					offset[0] += 25 // Move right
-					offset[1] -= 10 // Move down
-				}
-			}
-			if dbType == EnhancedLimitedDatablock || dbType == LimitedDatablock {
-				*dir = math.East // TODO: change to state eventually
-				vector = ep.leaderLineVectorNoLength(*dir)
-				offset[1] = -10
-			}
-			// Calculate final position: track position + leader line + offset
-			end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
-			end[0] += float32(offset[0]) * ctx.DrawPixelScale
-			end[1] += float32(offset[1]) * ctx.DrawPixelScale
+			end, dir := ep.datablockAnchor(ctx, *trk, dbType, transforms)
 			brightness := ep.datablockBrightness(state)
-			db.draw(td, end, font, &sb, brightness, *dir, halfSeconds)
+			db.draw(td, end, font, &sb, brightness, dir, halfSeconds)
 		}
 	}
 
@@ -561,6 +532,44 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
+}
+
+// datablockAnchor returns the window-space anchor point used by both the
+// datablock renderer and the hover-outline computation. It also returns the
+// (possibly adjusted) direction the datablock was placed in.
+func (ep *ERAMPane) datablockAnchor(ctx *panes.Context, trk sim.Track, dbType DatablockType,
+	transforms radar.ScopeTransformations) ([2]float32, math.CardinalOrdinalDirection) {
+	state := ep.TrackState[trk.ADSBCallsign]
+	start := transforms.WindowFromLatLongP(state.Track.Location)
+	dir := ep.leaderLineDirection(ctx, trk)
+	lengthMode := state.LeaderLineLength
+
+	// For mode 0, restrict to W/E only
+	if lengthMode == 0 {
+		if *dir != math.East && *dir != math.West {
+			*dir = math.East // Default to East if in mode 0
+		}
+	}
+
+	offset := datablockOffset(*dir)
+	vector := ep.leaderLineVectorWithLength(*dir, lengthMode)
+
+	// For mode 0, adjust positioning based on direction
+	if lengthMode == 0 {
+		if *dir == math.East {
+			offset[0] += 25 // Move right
+			offset[1] -= 10 // Move down
+		}
+	}
+	if dbType == EnhancedLimitedDatablock || dbType == LimitedDatablock {
+		*dir = math.East // TODO: change to state eventually
+		vector = ep.leaderLineVectorNoLength(*dir)
+		offset[1] = -10
+	}
+	end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
+	end[0] += float32(offset[0]) * ctx.DrawPixelScale
+	end[1] += float32(offset[1]) * ctx.DrawPixelScale
+	return end, *dir
 }
 
 func datablockOffset(dir math.CardinalOrdinalDirection) [2]float32 {

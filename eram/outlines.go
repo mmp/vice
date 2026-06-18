@@ -256,18 +256,10 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 
 func (ep *ERAMPane) fullDatablockAnchor(ctx *panes.Context, trk sim.Track,
 	transforms radar.ScopeTransformations) ([2]float32, bool) {
-	state := ep.TrackState[trk.ADSBCallsign]
-	if state == nil {
+	if ep.TrackState[trk.ADSBCallsign] == nil {
 		return [2]float32{}, false
 	}
-	start := transforms.WindowFromLatLongP(state.Track.Location)
-	dir := ep.leaderLineDirection(ctx, trk)
-
-	offset := datablockOffset(*dir)
-	vector := ep.leaderLineVectorWithLength(*dir, state.LeaderLineLength)
-	vector[0] += float32(offset[0]) * ctx.DrawPixelScale
-	vector[1] += float32(offset[1]) * ctx.DrawPixelScale
-	end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
+	end, _ := ep.datablockAnchor(ctx, trk, FullDatablock, transforms)
 	return end, true
 }
 

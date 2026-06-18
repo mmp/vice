@@ -1,2 +1,3 @@
 - ERAM
   - Added support for point outs (QP commands)
+  - Fixed bug with placement of dwell boxes with leader-line length 0
