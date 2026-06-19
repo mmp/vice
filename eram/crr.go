@@ -246,7 +246,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 	title := "CRR"
 	tw, th := font.BoundText(title, textStyle.LineSpacing)
 	titlePos := math.Add2f(titleP0, [2]float32{width/2 - float32(tw)/2, -titleH/2 + float32(th)/2})
-	titleColor := ps.Brightness.Text.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
+	titleColor := radar.Brightness(ps.CRR.Bright).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
 
 	// Left M button, right minimize
 	mLabel := "M"
@@ -337,7 +337,11 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 		switch {
 		case mRect.Inside(mouse.Pos):
 			ctx.SetMousePosition(math.Add2f(mouse.Pos, [2]float32{width * 1.5, 0}))
-			ep.crrMenuOpen = !ep.crrMenuOpen
+			if _, open := ep.popup.(*crrPopup); open {
+				ep.popup = nil
+			} else {
+				ep.popup = &crrPopup{origin: math.Add2f(titleP3, [2]float32{width, titleH})}
+			}
 			// Consume the click so the config menu doesn't process it
 			// on the same frame (e.g. X button or click-outside dismiss).
 			mouse.Clicked = [platform.MouseButtonCount]bool{}
@@ -370,12 +374,6 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 
 	// Content origin is below the title bar with small padding.
 	cursor := math.Add2f(titleP3, [2]float32{4, -2})
-
-	// Menu, if open (drawn to the right side of the title by default)
-	if ep.crrMenuOpen {
-		menuOrigin := math.Add2f(titleP3, [2]float32{width, titleH})
-		ep.drawCRRMenu(ctx, transforms, menuOrigin, 150, cb)
-	}
 
 	// Draw groups
 	ep.crrLabelRects = make(map[string]math.Extent2D)
@@ -553,16 +551,20 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 	td.GenerateCommands(cb)
 }
 
-// drawCRRMenu draws the CRR configuration menu when ep.crrMenuOpen is true.
-func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, transforms radar.ScopeTransformations, origin [2]float32, width float32, cb *renderer.CommandBuffer) {
-	if !ep.crrMenuOpen {
-		return
-	}
-	ps := ep.currentPrefs()
+// crrPopup is the popup-interface impl for the CRR configuration menu. The
+// origin is captured at open time from the view's current geometry.
+type crrPopup struct {
+	origin [2]float32
+}
 
-	textColor := renderer.RGB{R: 1, G: 1, B: 1}
-	baseBg := eramGray
-	greenBg := CRRGreen.BrightRGB(radar.Brightness(100))
+func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	origin := c.origin
+	const width = float32(150)
+
+	textColor := renderer.RGB{R: .85, G: .85, B: .85}
+	baseBg := renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
+	greenBg := renderer.RGB{R: 0, G: 157.0 / 255.0, B: 0}
 	blackBg := renderer.RGB{R: 0, G: 0, B: 0}
 
 	rtLabel := "T"
@@ -630,13 +632,10 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, transforms radar.ScopeTransf
 	groupLabels := util.SortedMapKeys(ep.CRRGroups)
 
 	cfg := ERAMMenuConfig{
-		Title:                 "CRR",
-		OnClose:               func() { ep.crrMenuOpen = false },
-		Width:                 width,
-		ShowBorder:            true,
-		BorderColor:           renderer.RGB{R: 1, G: 1, B: 1},
-		DismissOnClickOutside: true,
-		Rows:                  rows,
+		Title: "CRR",
+		Width: width,
+		Font:  ep.ERAMFont(2),
+		Rows:  rows,
 
 		// Color swatches + group label rows drawn between the static rows and
 		// the menu border, preserving the original visual order.
@@ -646,8 +645,12 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, transforms radar.ScopeTransf
 			td *renderer.TextDrawBuilder,
 			mouse *platform.MouseState) [2]float32 {
 
+			bButton := ps.Brightness.Button
+			bBorder := ps.Brightness.Border
+			bText := ps.Brightness.Text
+
 			itemH := float32(18)
-			font := ep.ERAMToolbarFont()
+			font := ep.ERAMFont(2)
 
 			// Color swatches
 			swCols := 2
@@ -665,7 +668,7 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, transforms radar.ScopeTransf
 			bgP1 := math.Add2f(bgP0, [2]float32{w, 0})
 			bgP2 := math.Add2f(bgP1, [2]float32{0, -float32(swRows) * swH})
 			bgP3 := math.Add2f(bgP0, [2]float32{0, -float32(swRows) * swH})
-			trid.AddQuad(bgP0, bgP1, bgP2, bgP3, blackBg)
+			trid.AddQuad(bgP0, bgP1, bgP2, bgP3, bButton.ScaleRGB(blackBg))
 
 			type swatchInfo struct {
 				c   CRRColor
@@ -685,7 +688,7 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, transforms radar.ScopeTransf
 				sp3 := [2]float32{x0, yTop - yOffset - swatchH}
 				trid.AddQuad(sp0, sp1, sp2, sp3, c.BrightRGB(radar.Brightness(ps.CRR.ColorBright[c])))
 				if ps.CRR.SelectedColor == c {
-					ld.AddLineLoop(renderer.RGB{R: 1, G: 1, B: 1}, [][2]float32{sp0, sp1, sp2, sp3})
+					ld.AddLineLoop(bBorder.ScaleRGB(renderer.RGB{R: 1, G: 1, B: 1}), [][2]float32{sp0, sp1, sp2, sp3})
 				}
 				swatches = append(swatches, swatchInfo{
 					c:   c,
@@ -695,8 +698,8 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, transforms radar.ScopeTransf
 			cursor = math.Add2f(cursor, [2]float32{0, -float32(swRows) * swH})
 
 			// Group label rows
-			dimColor := eramGray.Scale(.25)
-			brightColor := eramGray.Scale(.8)
+			dimColor := bBorder.ScaleRGB(eramGray.Scale(.25))
+			brightColor := bBorder.ScaleRGB(eramGray.Scale(.8))
 
 			groupExtents := make(map[string]math.Extent2D)
 			for _, l := range groupLabels {
@@ -704,9 +707,9 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, transforms radar.ScopeTransf
 				rp1 := math.Add2f(cursor, [2]float32{w, 0})
 				rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
 				rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
-				trid.AddQuad(rp0, rp1, rp2, rp3, blackBg)
+				trid.AddQuad(rp0, rp1, rp2, rp3, bButton.ScaleRGB(blackBg))
 				style := renderer.TextStyle{Font: font,
-					Color: ep.CRRGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ep.CRRGroups[l].Color]), 0, 100)))}
+					Color: bText.ScaleRGB(ep.CRRGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ep.CRRGroups[l].Color]), 0, 100))))}
 				labelText := strings.ToUpper(l)
 				_, th := font.BoundText(labelText, 0)
 				textY := rp0[1] - itemH/2 + float32(th)/2

@@ -66,9 +66,7 @@ func (ep *ERAMPane) handlePointOutIndicatorClick(ctx *panes.Context, trk sim.Tra
 	acid := trk.FlightPlan.ACID
 	origin := [2]float32{dbMain.P1[0], dbMain.P1[1]}
 	if len(ep.InboundPointOuts[acid]) > 0 {
-		ep.pointOutMenuACID = acid
-		ep.pointOutMenuOutbound = false
-		ep.pointOutMenuOrigin = origin
+		ep.popup = &pointOutPopup{acid: acid, outbound: false, origin: origin}
 		return
 	}
 
@@ -79,23 +77,28 @@ func (ep *ERAMPane) handlePointOutIndicatorClick(ctx *panes.Context, trk sim.Tra
 		return po.Acked
 	}) {
 		// Have unacknowledged p/os
-		ep.pointOutMenuACID = acid
-		ep.pointOutMenuOutbound = true
-		ep.pointOutMenuOrigin = origin
+		ep.popup = &pointOutPopup{acid: acid, outbound: true, origin: origin}
 	} else {
 		delete(ep.OutboundPointOuts, acid)
 	}
 }
 
-// drawPointOutMenu renders the click-through pop-up for the point-out indicator. The receiver view
-// lists each originator (cyan boxed) and a click acknowledges every inbound p/o at once. The
-// originator view lists each receiver, yellow-boxed for not-yet-acked and white-plain for
+// pointOutPopup is the popup-interface impl for the click-through pop-up
+// triggered from the line-0 point-out indicator. Per-instance state (which
+// ACID, originator vs receiver view, anchor origin) lives inline rather than
+// on ERAMPane.
+type pointOutPopup struct {
+	acid     sim.ACID
+	outbound bool
+	origin   [2]float32
+}
+
+// draw renders the menu. The receiver view lists each originator (cyan boxed)
+// and a click acknowledges every inbound p/o at once. The originator view
+// lists each receiver, yellow-boxed for not-yet-acked and white-plain for
 // already-acked; click on an acked row dismisses it locally.
-func (ep *ERAMPane) drawPointOutMenu(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
-	acid := ep.pointOutMenuACID
-	if acid == "" {
-		return
-	}
+func (po *pointOutPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	acid := po.acid
 
 	label := func(p sim.ControlPosition) string {
 		if ctrl := ctx.GetResolvedController(p); ctrl != nil {
@@ -105,10 +108,10 @@ func (ep *ERAMPane) drawPointOutMenu(ctx *panes.Context, transforms radar.ScopeT
 	}
 
 	var rows []ERAMMenuItem
-	if ep.pointOutMenuOutbound {
+	if po.outbound {
 		entries := ep.OutboundPointOuts[acid]
 		if len(entries) == 0 {
-			ep.pointOutMenuACID = ""
+			ep.popup = nil
 			return
 		}
 		for i, entry := range entries {
@@ -136,7 +139,7 @@ func (ep *ERAMPane) drawPointOutMenu(ctx *panes.Context, transforms radar.ScopeT
 	} else {
 		senders := ep.InboundPointOuts[acid]
 		if len(senders) == 0 {
-			ep.pointOutMenuACID = ""
+			ep.popup = nil
 			return
 		}
 
@@ -162,19 +165,15 @@ func (ep *ERAMPane) drawPointOutMenu(ctx *panes.Context, transforms radar.ScopeT
 	width := float32(titleW) + 2*float32(xW) + 12
 
 	cfg := ERAMMenuConfig{
-		Title:                 string(acid),
-		TitleLeftJustified:    true,
-		OnClose:               func() { ep.pointOutMenuACID = "" },
-		Width:                 width,
-		Font:                  rowFont,
-		TitleFont:             titleFont,
-		ShowBorder:            true,
-		BorderColor:           renderer.RGB{R: 213.0 / 255.0, G: 213.0 / 255.0, B: 213.0 / 255.0},
-		DismissOnClickOutside: true,
-		Rows:                  rows,
+		Title:              string(acid),
+		TitleLeftJustified: true,
+		Width:              width,
+		Font:               rowFont,
+		TitleFont:          titleFont,
+		Rows:               rows,
 	}
 
-	ep.DrawERAMMenu(ctx, transforms, cb, ep.pointOutMenuOrigin, cfg)
+	ep.DrawERAMMenu(ctx, transforms, cb, po.origin, cfg)
 }
 
 // removeOutboundPointOut deletes a single outbound entry by index, cleaning

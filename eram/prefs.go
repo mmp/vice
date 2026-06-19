@@ -215,7 +215,7 @@ func makeDefaultPreferences() *Preferences {
 	// CRR defaults
 	prefs.CRR.Visible = true
 	prefs.CRR.ListMode = true
-	prefs.CRR.Opaque = true
+	prefs.CRR.Opaque = false
 	prefs.CRR.ShowBorder = true
 	prefs.CRR.Lines = 13
 	prefs.CRR.Font = 2

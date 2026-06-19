@@ -137,9 +137,11 @@ type ERAMPane struct {
 		AirspaceColor    *[3]float32
 	}
 
+	// At most one floating pop-up menu is open at a time; nil = none open.
+	popup popup `json:"-"`
+
 	// CRR state (session)
 	CRRGroups        map[string]*CRRGroup                         `json:"CRRGroups,omitempty"`
-	crrMenuOpen      bool                                         `json:"-"`
 	crrFixRects      map[string]math.Extent2D                     `json:"-"`
 	crrLabelRects    map[string]math.Extent2D                     `json:"-"`
 	crrAircraftRects map[string]map[av.ADSBCallsign]math.Extent2D `json:"-"`
@@ -150,7 +152,6 @@ type ERAMPane struct {
 	// ALTIM SET state (session)
 	AltimSetAirports     []string   `json:"AltimSetAirports,omitempty"`
 	altimSetScrollOffset int        `json:"-"`
-	altimSetMenuOpen     bool       `json:"-"`
 	altimSetReposition   bool       `json:"-"`
 	altimSetRepoStart    time.Time  `json:"-"`
 	altimSetDragOffset   [2]float32 `json:"-"`
@@ -158,15 +159,9 @@ type ERAMPane struct {
 	// WX window state (session)
 	WXReportStations []string   `json:"WXReportStations,omitempty"`
 	wxScrollOffset   int        `json:"-"`
-	wxMenuOpen       bool       `json:"-"`
 	wxReposition     bool       `json:"-"`
 	wxRepoStart      time.Time  `json:"-"`
 	wxDragOffset     [2]float32 `json:"-"`
-
-	// Point-out indicator pop-up state; visible if pointOutMenuACID != ""
-	pointOutMenuACID     sim.ACID   `json:"-"`
-	pointOutMenuOutbound bool       `json:"-"`
-	pointOutMenuOrigin   [2]float32 `json:"-"`
 
 	commandMode       CommandMode     `json:"-"`
 	drawRouteAircraft av.ADSBCallsign `json:"-"`
@@ -356,7 +351,6 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
 	ep.datablockInteractions(ctx, tracks, transforms, cb)
-	ep.drawPointOutMenu(ctx, transforms, cb)
 	ep.drawCRRFixes(ctx, transforms, cb)
 	ep.drawCRRDistances(ctx, tracks, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
@@ -373,6 +367,11 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// frame the toolbar button is clicked (toolbar sets Visible=true before this runs).
 	ep.drawAltimSetView(ctx, transforms, cb)
 	ep.drawWXView(ctx, transforms, cb)
+
+	// Draw the active floating pop-up (if any) on top of its host view.
+	if ep.popup != nil {
+		ep.popup.draw(ep, ctx, transforms, cb)
+	}
 
 	// Draw torn-off buttons
 	ep.drawTornOffButtons(ctx, transforms, cb)

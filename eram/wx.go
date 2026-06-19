@@ -41,17 +41,19 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		fontNum = 3
 	}
 
+	wxBright := radar.Brightness(ps.WX.Bright)
+
 	titleFont := ep.ERAMFont(2)
 	titleTextStyle := renderer.TextStyle{
 		Font:        titleFont,
-		Color:       radar.Brightness(90).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
+		Color:       wxBright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
 		LineSpacing: 0,
 	}
 
 	listFont := ep.ERAMFont(fontNum)
 	textStyle := renderer.TextStyle{
 		Font:        listFont,
-		Color:       radar.Brightness(90).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
+		Color:       wxBright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
 		LineSpacing: 0,
 	}
 
@@ -290,7 +292,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 	titleText := "WX REPORT"
 	ttw, tth := titleFont.BoundText(titleText, titleTextStyle.LineSpacing)
 	titlePos := math.Add2f(titleP0, [2]float32{width/2 - float32(ttw)/2, -titleH/2 + float32(tth)/2})
-	titleColor := ps.Brightness.Text.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
+	titleColor := wxBright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
 
 	// M button (left side of title bar)
 	mLabel := "M"
@@ -412,9 +414,10 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		switch {
 		case mRect.Inside(mouse.Pos):
 			ctx.SetMousePosition(math.Add2f(mouse.Pos, [2]float32{width * 1.5, 0}))
-			ep.wxMenuOpen = !ep.wxMenuOpen
-			if ep.wxMenuOpen {
-				ep.altimSetMenuOpen = false
+			if _, open := ep.popup.(*wxPopup); open {
+				ep.popup = nil
+			} else {
+				ep.popup = &wxPopup{origin: math.Add2f(titleP3, [2]float32{width, titleH})}
 			}
 			mouse.Clicked = [platform.MouseButtonCount]bool{}
 		case minRect.Inside(mouse.Pos):
@@ -444,16 +447,9 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		ld.AddLine(previewP3, previewP0, c)
 	}
 
-	// Menu, if open
-	if ep.wxMenuOpen {
-		menuOrigin := math.Add2f(titleP3, [2]float32{width, titleH})
-		ep.drawWXMenu(ctx, transforms, menuOrigin, 150, cb)
-	}
-
 	// --- Draw METAR list ---
-	wxBright := radar.Brightness(ps.WX.Bright)
 	yellowColor := wxBright.ScaleRGB(renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0})
-	textColor := ps.Brightness.Text.ScaleRGB(wxBright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}))
+	textColor := wxBright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
 
 	greyBorderColor := renderer.RGB{R: 0.5, G: 0.5, B: 0.5}
 
@@ -601,13 +597,16 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 	td.GenerateCommands(cb)
 }
 
-// drawWXMenu renders the configuration menu for the WX REPORT window.
-func (ep *ERAMPane) drawWXMenu(ctx *panes.Context, transforms radar.ScopeTransformations, origin [2]float32, menuWidth float32, cb *renderer.CommandBuffer) {
-	if !ep.wxMenuOpen {
-		return
-	}
+// wxPopup is the popup-interface impl for the WX REPORT configuration menu.
+// The origin is captured at open time from the view's current geometry.
+type wxPopup struct {
+	origin [2]float32
+}
 
+func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
+	origin := w.origin
+	const menuWidth = float32(150)
 
 	blackBg := renderer.RGB{R: 0, G: 0, B: 0}
 	greyBg := renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
@@ -677,14 +676,10 @@ func (ep *ERAMPane) drawWXMenu(ctx *panes.Context, transforms radar.ScopeTransfo
 	}
 
 	cfg := ERAMMenuConfig{
-		Title:                 "WX",
-		OnClose:               func() { ep.wxMenuOpen = false },
-		Width:                 menuWidth,
-		Font:                  ep.ERAMFont(2),
-		ShowBorder:            true,
-		BorderColor:           renderer.RGB{R: 213.0 / 255.0, G: 213.0 / 255.0, B: 213.0 / 255.0},
-		DismissOnClickOutside: true,
-		Rows:                  rows,
+		Title: "WX",
+		Width: menuWidth,
+		Font:  ep.ERAMFont(2),
+		Rows:  rows,
 	}
 
 	ep.DrawERAMMenu(ctx, transforms, cb, origin, cfg)

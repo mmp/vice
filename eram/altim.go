@@ -9,6 +9,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
@@ -53,10 +54,12 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	fontNum := int(math.Clamp(float32(ps.AltimSet.Font), 1, 3))
 
 	// Title uses fixed FONT 2 for consistent size
+	asBright := radar.Brightness(ps.AltimSet.Bright)
+
 	titleFont := ep.ERAMFont(2)
 	titleTextStyle := renderer.TextStyle{
 		Font:        titleFont,
-		Color:       ps.Brightness.Text.ScaleRGB(radar.Brightness(ps.AltimSet.Bright).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})),
+		Color:       asBright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
 		LineSpacing: 0,
 	}
 
@@ -64,7 +67,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	listFont := ep.ERAMFont(fontNum)
 	textStyle := renderer.TextStyle{
 		Font:        listFont,
-		Color:       ps.Brightness.Text.ScaleRGB(radar.Brightness(ps.AltimSet.Bright).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})),
+		Color:       asBright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
 		LineSpacing: 0,
 	}
 
@@ -306,9 +309,10 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		switch {
 		case mRect.Inside(mouse.Pos):
 			ctx.SetMousePosition(math.Add2f(mouse.Pos, [2]float32{width * 1.5, 0}))
-			ep.altimSetMenuOpen = !ep.altimSetMenuOpen
-			if ep.altimSetMenuOpen {
-				ep.wxMenuOpen = false
+			if _, open := ep.popup.(*altimSetPopup); open {
+				ep.popup = nil
+			} else {
+				ep.popup = &altimSetPopup{origin: math.Add2f(titleP3, [2]float32{width, titleH})}
 			}
 			mouse.Clicked = [platform.MouseButtonCount]bool{}
 		case minRect.Inside(mouse.Pos):
@@ -336,12 +340,6 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		ld.AddLine(previewP1, previewP2, c)
 		ld.AddLine(previewP2, previewP3, c)
 		ld.AddLine(previewP3, previewP0, c)
-	}
-
-	// Menu, if open (drawn to the right side of the title by default)
-	if ep.altimSetMenuOpen {
-		menuOrigin := math.Add2f(titleP3, [2]float32{width, titleH})
-		ep.drawAltimSetMenu(ctx, transforms, menuOrigin, 150, cb)
 	}
 
 	// Draw airport rows
@@ -557,13 +555,16 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	td.GenerateCommands(cb)
 }
 
-// drawAltimSetMenu draws the ALTIM SET configuration menu when ep.altimSetMenuOpen is true.
-func (ep *ERAMPane) drawAltimSetMenu(ctx *panes.Context, transforms radar.ScopeTransformations, origin [2]float32, width float32, cb *renderer.CommandBuffer) {
-	if !ep.altimSetMenuOpen {
-		return
-	}
+// altimSetPopup is the popup-interface impl for the ALTIM SET configuration menu.
+// The origin is captured at open time from the view's current geometry, since
+// the view width depends on dynamic state (column count).
+type altimSetPopup struct {
+	origin [2]float32
+}
 
+func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
+	origin := a.origin
 
 	blackBg := renderer.RGB{R: 0, G: 0, B: 0}
 	greyBg := renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
@@ -579,16 +580,10 @@ func (ep *ERAMPane) drawAltimSetMenu(ctx *panes.Context, transforms radar.ScopeT
 	}
 
 	// BORDER button - grey when ON, black when OFF
-	borderBg := blackBg
-	if ps.AltimSet.ShowBorder {
-		borderBg = greyBg
-	}
+	borderBg := util.Select(ps.AltimSet.ShowBorder, greyBg, blackBg)
 
 	// TEAROFF button - grey when ON, black when OFF
-	tearoffBg := blackBg
-	if ps.AltimSet.ShowIndicators {
-		tearoffBg = greyBg
-	}
+	tearoffBg := util.Select(ps.AltimSet.ShowIndicators, greyBg, blackBg)
 
 	rows := []ERAMMenuItem{
 		{Label: tLabel, BgColor: tBg, Color: textColor, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
@@ -638,15 +633,12 @@ func (ep *ERAMPane) drawAltimSetMenu(ctx *panes.Context, transforms radar.ScopeT
 		{Label: "TEMPLATE", BgColor: blackBg, Color: textColor, Centered: false},
 	}
 
+	const width = 150
 	cfg := ERAMMenuConfig{
-		Title:                 "AS",
-		OnClose:               func() { ep.altimSetMenuOpen = false },
-		Width:                 width,
-		Font:                  ep.ERAMFont(2), // Menu always uses FONT 2, not affected by FONT setting
-		ShowBorder:            true,
-		BorderColor:           renderer.RGB{R: 213.0 / 255.0, G: 213.0 / 255.0, B: 213.0 / 255.0},
-		DismissOnClickOutside: true,
-		Rows:                  rows,
+		Title: "AS",
+		Width: width,
+		Font:  ep.ERAMFont(2), // Menu always uses FONT 2, not affected by FONT setting
+		Rows:  rows,
 	}
 
 	ep.DrawERAMMenu(ctx, transforms, cb, origin, cfg)

@@ -10,6 +10,13 @@ import (
 
 // ERAMMenu - reusable floating popup menu component: streamlines making the many slightly different menus in ERAM.
 
+// popup is the interface implemented by every floating pop-up menu. ERAMPane
+// holds at most one (in ep.popup); opening a new pop-up replaces whatever was
+// there.
+type popup interface {
+	draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer)
+}
+
 // ERAMMenuClickType distinguishes primary from tertiary clicks.
 type ERAMMenuClickType int
 
@@ -54,17 +61,11 @@ type ERAMMenuConfig struct {
 	TitleLeftJustified bool // false = centered (default)
 	ShowMButton        bool
 	OnMClick           func(ERAMMenuClickType)
-	OnClose            func()
 	Width              float32
 	Font               *renderer.Font // row font; nil = ep.ERAMToolbarFont()
 	TitleFont          *renderer.Font // title bar font; nil = same as Font
 	ItemHeight         float32        // 0 = default 18px
 	Rows               []ERAMMenuItem
-
-	ShowBorder  bool
-	BorderColor renderer.RGB
-
-	DismissOnClickOutside bool
 
 	// Escape hatch for custom drawn content (e.g. CRR color swatches).
 	// Returns the new cursor position after drawing.
@@ -100,7 +101,11 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 	width := cfg.Width
 
 	mouse := ctx.Mouse
-	textColor := renderer.RGB{R: 1, G: 1, B: 1}
+	ps := ep.currentPrefs()
+	bButton := ps.Brightness.Button
+	bBorder := ps.Brightness.Border
+	bText := ps.Brightness.Text
+	textColor := bText.ScaleRGB(renderer.RGB{R: 1, G: 1, B: 1})
 
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
@@ -122,7 +127,7 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		rp1 := math.Add2f(cursor, [2]float32{width, 0})
 		rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
 		rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
-		trid.AddQuad(rp0, rp1, rp2, rp3, eramGray)
+		trid.AddQuad(rp0, rp1, rp2, rp3, bButton.ScaleRGB(eramGray))
 
 		style := renderer.TextStyle{Font: titleFont, Color: textColor}
 
@@ -143,7 +148,7 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		td.AddText(xLabel, xPos, style)
 
 		// Separator line at bottom of title
-		ld.AddLine(rp0, rp1, eramGray.Scale(.25))
+		ld.AddLine(rp0, rp1, bBorder.ScaleRGB(eramGray.Scale(.25)))
 		// Left border of title
 		ld.AddLine(cursor, [2]float32{cursor[0], rp3[1]}, renderer.RGB{})
 
@@ -194,25 +199,27 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		mouseInsideTitle := mouse != nil && titleRect.Inside(mouse.Pos)
 		mouseInsideM := cfg.ShowMButton && mouse != nil && mRect.Inside(mouse.Pos)
 
+		dimOutline := bBorder.ScaleRGB(toolbarOutlineColor)
+		hotOutline := bBorder.ScaleRGB(toolbarHoveredOutlineColor)
 		// Draw non-hovered outlines first
 		if cfg.ShowMButton && !mouseInsideM {
-			drawMenuRectOutline(mRect, toolbarOutlineColor)
+			drawMenuRectOutline(mRect, dimOutline)
 		}
 		if !mouseInsideX {
-			drawMenuRectOutline(xRect, toolbarOutlineColor)
+			drawMenuRectOutline(xRect, dimOutline)
 		}
 		if !mouseInsideTitle {
-			drawMenuRectOutline(titleRect, toolbarOutlineColor)
+			drawMenuRectOutline(titleRect, dimOutline)
 		}
 		// Draw hovered outlines last
 		if cfg.ShowMButton && mouseInsideM {
-			drawMenuRectOutline(mRect, toolbarHoveredOutlineColor)
+			drawMenuRectOutline(mRect, hotOutline)
 		}
 		if mouseInsideX {
-			drawMenuRectOutline(xRect, toolbarHoveredOutlineColor)
+			drawMenuRectOutline(xRect, hotOutline)
 		}
 		if mouseInsideTitle {
-			drawMenuRectOutline(titleRect, toolbarHoveredOutlineColor)
+			drawMenuRectOutline(titleRect, hotOutline)
 		}
 
 		// Title bar click handling
@@ -222,9 +229,7 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 				clickType = MenuClickTertiary
 			}
 			if mouseInsideX {
-				if cfg.OnClose != nil {
-					cfg.OnClose()
-				}
+				ep.popup = nil
 				result.Dismissed = true
 			} else if cfg.ShowMButton && mouseInsideM {
 				if cfg.OnMClick != nil {
@@ -250,9 +255,10 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 			rp1 := math.Add2f(cursor, [2]float32{width, 0})
 			rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
 			rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
-			trid.AddQuad(rp0, rp1, rp2, rp3, item.BgColor)
+			trid.AddQuad(rp0, rp1, rp2, rp3, bButton.ScaleRGB(item.BgColor))
 
-			style := renderer.TextStyle{Font: font, Color: item.Color}
+			itemTextColor := bText.ScaleRGB(item.Color)
+			style := renderer.TextStyle{Font: font, Color: itemTextColor}
 			if item.Centered {
 				centerX := rp0[0] + width/2
 				centerY := rp0[1] - itemH/2
@@ -269,7 +275,7 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 					boxX1 := boxX0 + float32(suffixW) + 2*boxPad
 					boxY0 := rp0[1] - itemH + 2
 					boxY1 := rp0[1] - 2
-					ld.AddLineLoop(item.Color, [][2]float32{
+					ld.AddLineLoop(bBorder.ScaleRGB(item.Color), [][2]float32{
 						{boxX0, boxY0}, {boxX1, boxY0}, {boxX1, boxY1}, {boxX0, boxY1},
 					})
 					td.AddText(item.BoxedSuffix, [2]float32{boxX0 + boxPad, textY}, style)
@@ -281,8 +287,8 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 			result.RowExtents[i] = extent
 
 			// Row hover outlines
-			dimColor := eramGray.Scale(.25)
-			brightColor := eramGray.Scale(.8)
+			dimColor := bBorder.ScaleRGB(eramGray.Scale(.25))
+			brightColor := bBorder.ScaleRGB(eramGray.Scale(.8))
 			hovered := mouse != nil && extent.Inside(mouse.Pos)
 
 			if hovered {
@@ -313,9 +319,8 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 
 	result.Extent = math.Extent2D{P0: menuP3, P1: menuP1}
 
-	if cfg.ShowBorder {
-		ld.AddLineLoop(cfg.BorderColor, [][2]float32{menuP0, menuP1, menuP2, menuP3})
-	}
+	menuBorderColor := renderer.RGB{R: 213.0 / 255.0, G: 213.0 / 255.0, B: 213.0 / 255.0}
+	ld.AddLineLoop(bBorder.ScaleRGB(menuBorderColor), [][2]float32{menuP0, menuP1, menuP2, menuP3})
 
 	// Flush draw builders
 	transforms.LoadWindowViewingMatrices(cb)
@@ -324,14 +329,10 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 	td.GenerateCommands(cb)
 
 	// Click-outside dismissal
-	if cfg.DismissOnClickOutside {
-		if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
-			if mouse != nil && !result.Extent.Inside(mouse.Pos) {
-				if cfg.OnClose != nil {
-					cfg.OnClose()
-				}
-				result.Dismissed = true
-			}
+	if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
+		if mouse != nil && !result.Extent.Inside(mouse.Pos) {
+			ep.popup = nil
+			result.Dismissed = true
 		}
 	}
 
@@ -366,6 +367,10 @@ func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, f
 	item *ERAMMenuItem, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
 	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
 
+	ps := ep.currentPrefs()
+	bButton := ps.Brightness.Button
+	bText := ps.Brightness.Text
+
 	ss := item.ScrollState
 	visRows := item.VisibleRows
 	if visRows <= 0 {
@@ -379,7 +384,7 @@ func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, f
 	bgP1 := math.Add2f(bgP0, [2]float32{width, 0})
 	bgP2 := math.Add2f(bgP1, [2]float32{0, -scrollH})
 	bgP3 := math.Add2f(bgP0, [2]float32{0, -scrollH})
-	trid.AddQuad(bgP0, bgP1, bgP2, bgP3, item.BgColor)
+	trid.AddQuad(bgP0, bgP1, bgP2, bgP3, bButton.ScaleRGB(item.BgColor))
 
 	scrollExtent := math.Extent2D{P0: bgP3, P1: bgP1}
 	*extent = scrollExtent
@@ -399,10 +404,10 @@ func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, f
 			sp1 := [2]float32{cursor[0] + width - arrowW, y}
 			sp2 := [2]float32{sp1[0], y - itemH}
 			sp3 := [2]float32{cursor[0], y - itemH}
-			trid.AddQuad(sp0, sp1, sp2, sp3, renderer.RGB{R: .3, G: .3, B: .6})
+			trid.AddQuad(sp0, sp1, sp2, sp3, bButton.ScaleRGB(renderer.RGB{R: .3, G: .3, B: .6}))
 		}
 
-		style := renderer.TextStyle{Font: font, Color: subItem.Color}
+		style := renderer.TextStyle{Font: font, Color: bText.ScaleRGB(subItem.Color)}
 		_, th := font.BoundText(subItem.Label, 0)
 		textY := y - itemH/2 + float32(th)/2
 		td.AddText(subItem.Label, [2]float32{cursor[0] + 4, textY}, style)

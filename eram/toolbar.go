@@ -588,9 +588,10 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		p0 := toolbarDrawState.buttonCursor
 		{
 			ps := ep.currentPrefs()
-			altimActive := ps.AltimSet.Visible || ep.altimSetMenuOpen
-			if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, altimActive, false) {
-				ep.altimSetMenuOpen = false
+			if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, ps.AltimSet.Visible, false) {
+				if _, ok := ep.popup.(*altimSetPopup); ok {
+					ep.popup = nil
+				}
 				ps.AltimSet.Visible = !ps.AltimSet.Visible
 			}
 		}
@@ -623,16 +624,16 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		p1 = oppositeHorizontal(p1, buttonSize(buttonTearoff, scale))
 		// p1 := toolbarDrawState.buttonCursor
 		ps := ep.currentPrefs()
-		crrActive := ps.CRR.Visible || ep.crrMenuOpen
-		if ep.drawToolbarFullButton(ctx, "CRR", 0, scale, crrActive, false) {
-			// Toggle visibility; when enabling, default to LIST mode and keep menu closed.
+		if ep.drawToolbarFullButton(ctx, "CRR", 0, scale, ps.CRR.Visible, false) {
+			// Toggle visibility; the CRR menu (if open) closes either way since it lives on the view.
+			if _, ok := ep.popup.(*crrPopup); ok {
+				ep.popup = nil
+			}
 			if ps.CRR.Visible {
 				ps.CRR.Visible = false
-				ep.crrMenuOpen = false
 			} else {
 				ps.CRR.Visible = true
 				ps.CRR.ListMode = true
-				ep.crrMenuOpen = false
 			}
 		}
 
@@ -664,9 +665,10 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		}
 		{
 			wxPs := ep.currentPrefs()
-			wxActive := wxPs.WX.Visible || ep.wxMenuOpen
-			if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, wxActive, false) {
-				ep.wxMenuOpen = false
+			if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, wxPs.WX.Visible, false) {
+				if _, ok := ep.popup.(*wxPopup); ok {
+					ep.popup = nil
+				}
 				wxPs.WX.Visible = !wxPs.WX.Visible
 			}
 		}
@@ -1077,7 +1079,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	drawToolbarText(text, td, sz, textColor)
 
 	// Draw button outline
-	outlineColor := util.Select(mouseInside, toolbarHoveredOutlineColor, toolbarOutlineColor)
+	outlineColor := ps.Brightness.Border.ScaleRGB(util.Select(mouseInside, toolbarHoveredOutlineColor, toolbarOutlineColor))
 
 	ld.AddLine(p0, p1, outlineColor)
 	ld.AddLine(p1, p2, outlineColor)
@@ -1351,7 +1353,7 @@ func (ep *ERAMPane) checkNextRow(nextRow bool, sz [2]float32, ctx *panes.Context
 func (ep *ERAMPane) drawMenuOutline(ctx *panes.Context, p0, p1, p2, p3 [2]float32) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	color := ep.currentPrefs().Brightness.Border.ScaleRGB(menuOutlineColor)
+	color := ep.currentPrefs().Brightness.TBBRDR.ScaleRGB(menuOutlineColor)
 	toolbarDrawState.cb.LineWidth(3, ctx.DPIScale)
 	ld.AddLine(p0, p1, color)
 	ld.AddLine(p1, p2, color)
@@ -1582,7 +1584,7 @@ func (ep *ERAMPane) drawMasterButton(ctx *panes.Context, text string, pushedIn b
 	trid.AddQuad(p0, p1, p2, p3, buttonColor)
 	drawToolbarText(text, td, sz, textColor)
 
-	outlineColor := util.Select(mouseInside, toolbarHoveredOutlineColor, toolbarOutlineColor)
+	outlineColor := ps.Brightness.Border.ScaleRGB(util.Select(mouseInside, toolbarHoveredOutlineColor, toolbarOutlineColor))
 	ld.AddLine(p0, p1, outlineColor)
 	ld.AddLine(p1, p2, outlineColor)
 	ld.AddLine(p2, p3, outlineColor)
@@ -2019,8 +2021,8 @@ func (ep *ERAMPane) drawSingleTornOffButton(ctx *panes.Context, name string, pos
 	toolbarDrawState.style = savedStyle
 
 	// Draw outlines
-	handleOutline := util.Select(handleHovered, toolbarHoveredOutlineColor, toolbarOutlineColor)
-	buttonOutline := util.Select(buttonHovered, toolbarHoveredOutlineColor, toolbarOutlineColor)
+	handleOutline := ps.Brightness.Border.ScaleRGB(util.Select(handleHovered, toolbarHoveredOutlineColor, toolbarOutlineColor))
+	buttonOutline := ps.Brightness.Border.ScaleRGB(util.Select(buttonHovered, toolbarHoveredOutlineColor, toolbarOutlineColor))
 
 	ld.AddLine(handleP0, handleP1, handleOutline)
 	ld.AddLine(handleP1, handleP2, handleOutline)
@@ -2316,7 +2318,9 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	display := ep.getTornOffButtonText(buttonName)
 	switch cleanButtonName(display) {
 	case "ALTIM\nSET", "ALTIM SET", "ALTIMSET":
-		ep.altimSetMenuOpen = false
+		if _, ok := ep.popup.(*altimSetPopup); ok {
+			ep.popup = nil
+		}
 		ps.AltimSet.Visible = !ps.AltimSet.Visible
 	case "DRAW":
 		// Handle DRAW button
@@ -2363,7 +2367,9 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	case "PREFSET":
 		// Handle PREFSET
 	case "WX\nREPORT", "WX REPORT", "WXREPORT":
-		ep.wxMenuOpen = false
+		if _, ok := ep.popup.(*wxPopup); ok {
+			ep.popup = nil
+		}
 		ps.WX.Visible = !ps.WX.Visible
 	case "CRR\nFIX":
 		ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
