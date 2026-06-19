@@ -1,6 +1,8 @@
 package eram
 
 import (
+	"time"
+
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -9,6 +11,14 @@ import (
 )
 
 // ERAMMenu - reusable floating popup menu component: streamlines making the many slightly different menus in ERAM.
+
+// Standard colors used across popup menus.
+var (
+	popupBlackBg   = renderer.RGB{R: 0, G: 0, B: 0}
+	popupGreyBg    = renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
+	popupGreenBg   = renderer.RGB{R: 0, G: 157.0 / 255.0, B: 0}
+	popupTextColor = renderer.RGB{R: .85, G: .85, B: .85}
+)
 
 // popup is the interface implemented by every floating pop-up menu. ERAMPane
 // holds at most one (in ep.popup); opening a new pop-up replaces whatever was
@@ -76,6 +86,44 @@ type ERAMMenuConfig struct {
 		mouse *platform.MouseState) [2]float32
 }
 
+// OpenPopupAt clamps originGuess so a menu with the given dimensions stays on
+// screen — preferring to flip to the left of hostExtent when the popup would
+// extend past the right edge of the pane — and warps the cursor to the center
+// of the title-bar close (X) button. Returns the clamped origin which the
+// caller stores in the popup struct.
+func (ep *ERAMPane) OpenPopupAt(ctx *panes.Context, originGuess [2]float32, width, height float32, titleFont *renderer.Font, hostExtent math.Extent2D) [2]float32 {
+	pe := ctx.PaneExtent
+	origin := originGuess
+	if origin[0]+width > pe.P1[0] {
+		if hostExtent.Width() > 0 && hostExtent.P0[0]-width >= pe.P0[0] {
+			origin[0] = hostExtent.P0[0] - width
+		} else {
+			origin[0] = pe.P1[0] - width
+		}
+	}
+	if origin[0] < pe.P0[0] {
+		origin[0] = pe.P0[0]
+	}
+	if origin[1]-height < pe.P0[1] {
+		origin[1] = pe.P0[1] + height
+	}
+	if origin[1] > pe.P1[1] {
+		origin[1] = pe.P1[1]
+	}
+
+	// Title bar X button (DrawERAMMenu draws it at width - xPad - xw, with
+	// itemH-tall title bar). The cursor lands at the visual center.
+	const itemH = float32(18)
+	const xPad = float32(2)
+	xw, _ := titleFont.BoundText("X", 0)
+	ctx.SetMousePosition([2]float32{
+		origin[0] + width - xPad - float32(xw)/2,
+		origin[1] - itemH/2,
+	})
+
+	return origin
+}
+
 // ERAMMenuResult is returned by DrawERAMMenu.
 type ERAMMenuResult struct {
 	Extent     math.Extent2D
@@ -114,12 +162,12 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	cursor := origin
-
 	titleFont := cfg.TitleFont
 	if titleFont == nil {
 		titleFont = font
 	}
+
+	cursor := origin
 
 	// Title bar
 	{
@@ -336,23 +384,44 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		}
 	}
 
-	// Row click handling (skip scroll rows - they handle their own clicks)
-	if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
-		clickType := MenuClickPrimary
-		if ep.mouseTertiaryClicked(mouse) {
-			clickType = MenuClickTertiary
-		}
-		for i, ext := range result.RowExtents {
-			if cfg.Rows[i].SubRows != nil {
-				continue // scroll rows handle clicks in drawScrollSection
+	// Row click handling (skip scroll rows - they handle their own clicks).
+	// Fires on initial press and then on hold-repeat once a row has been
+	// pressed continuously, mirroring the toolbar button behavior so that
+	// holding a BRIGHT-style row keeps incrementing.
+	if mouse != nil {
+		primaryDown := ep.mousePrimaryDown(mouse)
+		tertiaryDown := ep.mouseTertiaryDown(mouse)
+		if primaryDown || tertiaryDown {
+			hitRow := -1
+			for i, ext := range result.RowExtents {
+				if cfg.Rows[i].SubRows != nil {
+					continue // scroll rows handle clicks in drawScrollSection
+				}
+				if ext.Inside(mouse.Pos) {
+					hitRow = i
+					break
+				}
 			}
-			if mouse != nil && ext.Inside(mouse.Pos) {
-				if cfg.Rows[i].OnClick != nil {
-					if cfg.Rows[i].OnClick(clickType) {
+			if hitRow >= 0 {
+				now := time.Now()
+				fire := false
+				if toolbarDrawState.mouseYetReleased {
+					toolbarDrawState.mouseYetReleased = false
+					toolbarDrawState.lastHold = now.Add(500 * time.Millisecond)
+					fire = true
+				} else if now.Sub(toolbarDrawState.lastHold) >= holdDuration {
+					toolbarDrawState.lastHold = now
+					fire = true
+				}
+				if fire && cfg.Rows[hitRow].OnClick != nil {
+					clickType := MenuClickPrimary
+					if tertiaryDown {
+						clickType = MenuClickTertiary
+					}
+					if cfg.Rows[hitRow].OnClick(clickType) {
 						result.Dismissed = true
 					}
 				}
-				break
 			}
 		}
 	}

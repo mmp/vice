@@ -5,6 +5,7 @@ TODO:
 package eram
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -61,10 +62,13 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	// For extent2D, save the top left of the input and bottem right of the output
-
 	ps := ep.currentPrefs()
-	sz := [2]float32{390, 77}
+
+	sz := [2]float32{390, 77} // fixed output box; MCA.Width only affects wrap cols.
+	font := ep.ERAMFont(math.Clamp(ps.MCA.Font, 1, 3))
+	cols := math.Clamp(ps.MCA.Width, 1, 200)
+	brightFactor := float32(ps.MCA.Bright) / 100
+
 	p0 := ps.commandBigPosition // top-left of the output box
 	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
@@ -79,13 +83,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	ld.AddLine(p1, p2, color)
 	ld.AddLine(p2, p3, color)
 	ld.AddLine(p3, p0, color)
-	// Draw wrapped output text in the big box
-	style := renderer.TextStyle{
-		Font:  ep.ERAMInputFont(),
-		Color: ps.Brightness.Text.ScaleRGB(toolbarTextColor),
-	}
-	bx, _ := style.Font.BoundText("X", 0)
-	cols := int(sz[0] / float32(bx))
+
 	out, _ := util.WrapText(ep.feedbackArea.String(), cols, 0, true, true)
 	ep.feedbackArea.formatWrap(ps, out)
 	winBase := math.Add2f(ps.commandBigPosition, ctx.PaneExtent.P0)
@@ -93,16 +91,14 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	ep.writeText(td, ep.feedbackArea, [2]float32{p0[0] + 2, p0[1] - 2})
+	ep.writeText(td, ep.feedbackArea, [2]float32{p0[0] + 2, p0[1] - 2}, font, brightFactor)
 
 	// Draw the smaller top box now.  Size may change if the input text
 	// requires more room.
 	inputSize := float32(38)
-	bx, _ = style.Font.BoundText("X", 0)
-	cols = int(sz[0] / float32(bx))
 	input := ep.Input.String() + "_"
 	inText, _ := util.WrapText(input, cols, 0, true, true)
-	_, h := style.Font.BoundText(inText, style.LineSpacing)
+	_, h := font.BoundText(inText, 0)
 	if float32(h)+4 > inputSize {
 		inputSize = float32(h) + 4
 	}
@@ -122,6 +118,11 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	ld.AddLine(p2, p3, color)
 	ld.AddLine(p3, p0, color)
 
+	// Input style: white text scaled first by Brightness.Text (preserves the
+	// original visual at MCA.Bright == 100) and then by MCA.Bright/100.
+	inputColor := ps.Brightness.Text.ScaleRGB(toolbarTextColor).Scale(brightFactor)
+	style := renderer.TextStyle{Font: font, Color: inputColor}
+
 	// Input text inside the small box.  Clip to its extent.
 	winBase = math.Add2f([2]float32{ps.commandBigPosition[0], ps.commandBigPosition[1] + inputSize}, ctx.PaneExtent.P0)
 	commandDrawState.cb.SetScissorBounds(math.Extent2D{
@@ -138,34 +139,46 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	mouse := ctx.Mouse
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
 	if mouse != nil {
-		if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionLargeInput {
-			if !ep.repositionLargeInput {
-				ep.timeSinceRepo = time.Now() // only do it on first click
+		if mouseInside && !ep.repositionLargeInput && ep.mouseTertiaryClicked(mouse) {
+			if _, open := ep.popup.(*mcaPopup); open {
+				ep.popup = nil
+			} else {
+				host := math.Extent2D{P0: [2]float32{e0[0], e2[1]}, P1: [2]float32{e0[0] + sz[0], e0[1]}}
+				const w, h = mcaPopupWidth, 5 * 18
+				origin := ep.OpenPopupAt(ctx, [2]float32{e0[0] + sz[0], e0[1]}, w, h, ep.ERAMFont(2), host)
+				ep.popup = &mcaPopup{origin: origin}
 			}
-			extent := ctx.PaneExtent
-			extent.P1[1] -= 115 // Adjust the extent to the top box
-			ctx.Platform.StartCaptureMouse(extent)
-			ep.repositionLargeInput = true
-			// Draw the outline of the box starting from the cursor as the top left corner.
-			sz = [2]float32{390, 115} // Size of the entire command input box
-			p0 = mouse.Pos
-			p1 = math.Add2f(p0, [2]float32{sz[0], 0})
-			p2 = math.Add2f(p1, [2]float32{0, -sz[1]})
-			p3 = math.Add2f(p2, [2]float32{-sz[0], 0})
-			color = renderer.RGB{1, 1, 1} // White outline. TODO: Check if brightness affects this.
-			ld.AddLine(p0, p1, color)
-			ld.AddLine(p1, p2, color)
-			ld.AddLine(p2, p3, color)
-			ld.AddLine(p3, p0, color)
+			mouse.Clicked = [platform.MouseButtonCount]bool{}
+		} else {
+			if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionLargeInput {
+				if !ep.repositionLargeInput {
+					ep.timeSinceRepo = time.Now() // only do it on first click
+				}
+				extent := ctx.PaneExtent
+				extent.P1[1] -= 115 // Adjust the extent to the top box
+				ctx.Platform.StartCaptureMouse(extent)
+				ep.repositionLargeInput = true
+				// Draw the outline of the box starting from the cursor as the top left corner.
+				sz = [2]float32{390, 115} // Size of the entire command input box
+				p0 = mouse.Pos
+				p1 = math.Add2f(p0, [2]float32{sz[0], 0})
+				p2 = math.Add2f(p1, [2]float32{0, -sz[1]})
+				p3 = math.Add2f(p2, [2]float32{-sz[0], 0})
+				color = renderer.RGB{1, 1, 1} // White outline. TODO: Check if brightness affects this.
+				ld.AddLine(p0, p1, color)
+				ld.AddLine(p1, p2, color)
+				ld.AddLine(p2, p3, color)
+				ld.AddLine(p3, p0, color)
 
-		}
-		if (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && ep.repositionLargeInput &&
-			time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
-			// get the mouse position and set the commandBigPosition to that
-			ps.commandBigPosition = mouse.Pos
-			ps.commandBigPosition[1] -= 38
-			ep.repositionLargeInput = false
-			ctx.Platform.EndCaptureMouse()
+			}
+			if (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && ep.repositionLargeInput &&
+				time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
+				// get the mouse position and set the commandBigPosition to that
+				ps.commandBigPosition = mouse.Pos
+				ps.commandBigPosition[1] -= 38
+				ep.repositionLargeInput = false
+				ctx.Platform.EndCaptureMouse()
+			}
 		}
 	}
 	trid.GenerateCommands(commandDrawState.cb)
@@ -182,19 +195,12 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	defer renderer.ReturnTextDrawBuilder(td)
 
 	ps := ep.currentPrefs()
-	sz := [2]float32{325, 77}
-	style := renderer.TextStyle{
-		Font:  ep.ERAMInputFont(),
-		Color: ps.Brightness.Text.ScaleRGB(toolbarTextColor),
-	}
-	inputSize := float32(77)
-	bx, _ := style.Font.BoundText("X", 0)
-	cols := int(sz[0] / float32(bx))
-	inText, _ := util.WrapText(ep.responseArea.String(), cols, 0, true, false)
-	_, h := style.Font.BoundText(inText, style.LineSpacing)
-	if float32(h)+4 > inputSize {
-		inputSize = float32(h) + 4
-	}
+
+	sz := [2]float32{325, 77} // fixed; RA.Width only affects wrap cols.
+	font := ep.ERAMFont(math.Clamp(ps.RA.Font, 1, 3))
+	cols := math.Clamp(ps.RA.Width, 1, 200)
+	brightFactor := float32(ps.RA.Bright) / 100
+
 	p0 := ps.commandSmallPosition
 	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
@@ -210,7 +216,6 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	ld.AddLine(p3, p0, color)
 	// Draw wrapped text output in the box
 
-	cols = int(sz[0] / float32(bx))
 	out, _ := util.WrapText(ep.responseArea.String(), cols, 0, true, false)
 	ep.responseArea.formatWrap(ps, out)
 	winBase := math.Add2f(ps.commandSmallPosition, ctx.PaneExtent.P0)
@@ -218,7 +223,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	ep.writeText(td, ep.responseArea, [2]float32{p0[0] + 2, p0[1] - 2})
+	ep.writeText(td, ep.responseArea, [2]float32{p0[0] + 2, p0[1] - 2}, font, brightFactor)
 
 	// Restore scissor
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
@@ -228,33 +233,45 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	mouse := ctx.Mouse
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
 	if mouse != nil {
-		if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionResponseArea {
-			if !ep.repositionResponseArea {
-				ep.timeSinceRepo = time.Now() // only do it on first click
+		if mouseInside && !ep.repositionResponseArea && ep.mouseTertiaryClicked(mouse) {
+			if _, open := ep.popup.(*raPopup); open {
+				ep.popup = nil
+			} else {
+				host := math.Extent2D{P0: [2]float32{p0[0], p2[1]}, P1: [2]float32{p0[0] + sz[0], p0[1]}}
+				const w, h = raPopupWidth, 5 * 18
+				origin := ep.OpenPopupAt(ctx, [2]float32{p0[0] + sz[0], p0[1]}, w, h, ep.ERAMFont(2), host)
+				ep.popup = &raPopup{origin: origin}
 			}
-			extent := ctx.PaneExtent
-			extent.P1[1] -= 77 // Adjust the extent to the top box
-			ctx.Platform.StartCaptureMouse(extent)
-			ep.repositionResponseArea = true
-			// Draw the outline of the box starting from the cursor as the top left corner.
-			sz = [2]float32{325, 77} // Size of the entire command input box
-			p0 = mouse.Pos
-			p1 = math.Add2f(p0, [2]float32{sz[0], 0})
-			p2 = math.Add2f(p1, [2]float32{0, -sz[1]})
-			p3 = math.Add2f(p2, [2]float32{-sz[0], 0})
-			color = renderer.RGB{1, 1, 1} // White outline. TODO: Check if brightness affects this.
-			ld.AddLine(p0, p1, color)
-			ld.AddLine(p1, p2, color)
-			ld.AddLine(p2, p3, color)
-			ld.AddLine(p3, p0, color)
+			mouse.Clicked = [platform.MouseButtonCount]bool{}
+		} else {
+			if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionResponseArea {
+				if !ep.repositionResponseArea {
+					ep.timeSinceRepo = time.Now() // only do it on first click
+				}
+				extent := ctx.PaneExtent
+				extent.P1[1] -= 77 // Adjust the extent to the top box
+				ctx.Platform.StartCaptureMouse(extent)
+				ep.repositionResponseArea = true
+				// Draw the outline of the box starting from the cursor as the top left corner.
+				sz = [2]float32{325, 77} // Size of the entire command input box
+				p0 = mouse.Pos
+				p1 = math.Add2f(p0, [2]float32{sz[0], 0})
+				p2 = math.Add2f(p1, [2]float32{0, -sz[1]})
+				p3 = math.Add2f(p2, [2]float32{-sz[0], 0})
+				color = renderer.RGB{1, 1, 1} // White outline. TODO: Check if brightness affects this.
+				ld.AddLine(p0, p1, color)
+				ld.AddLine(p1, p2, color)
+				ld.AddLine(p2, p3, color)
+				ld.AddLine(p3, p0, color)
 
-		}
-		if (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && ep.repositionResponseArea &&
-			time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
-			// get the mouse position and set the commandBigPosition to that
-			ps.commandSmallPosition = mouse.Pos
-			ep.repositionResponseArea = false
-			ctx.Platform.EndCaptureMouse()
+			}
+			if (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && ep.repositionResponseArea &&
+				time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
+				// get the mouse position and set the commandBigPosition to that
+				ps.commandSmallPosition = mouse.Pos
+				ep.repositionResponseArea = false
+				ctx.Platform.EndCaptureMouse()
+			}
 		}
 	}
 
@@ -263,14 +280,16 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	td.GenerateCommands(commandDrawState.cb)
 }
 
-func (ep *ERAMPane) writeText(td *renderer.TextDrawBuilder, text inputText, loc [2]float32) {
+// writeText draws inputText one character at a time, preserving per-character
+// colors. brightFactor multiplicatively scales each character's stored color
+// (1.0 = unchanged, < 1 = dim, > 1 = brighten with OpenGL-side clamping).
+func (ep *ERAMPane) writeText(td *renderer.TextDrawBuilder, text inputText, loc [2]float32, font *renderer.Font, brightFactor float32) {
 	start0 := loc[0]
-	font := ep.ERAMInputFont()
 	style := renderer.TextStyle{Font: font}
 	for _, char := range text {
 		ch := char.char
 		if ch != '\n' {
-			style.Color = char.color
+			style.Color = char.color.Scale(brightFactor)
 			loc = td.AddText(string(ch), loc, style)
 		} else {
 			loc[0] = start0                             // reset the x position
@@ -520,41 +539,70 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 
-	horizontalPxLength := float32(120)
-	verticalPxLength := float32(40)
 	ps := ep.currentPrefs()
 
 	if ps.clockPosition == [2]float32{} {
 		ps.clockPosition = [2]float32{10, ctx.PaneExtent.Height() - 300}
 	}
 
-	p0 := ps.clockPosition
-	p1 := math.Add2f(p0, [2]float32{horizontalPxLength, 0})
-	p2 := math.Add2f(p1, [2]float32{0, -verticalPxLength})
-	p3 := math.Add2f(p2, [2]float32{-horizontalPxLength, 0})
-	p4 := math.Add2f(p3, [2]float32{0, verticalPxLength})
-
-	cb.LineWidth(.3, ctx.DPIScale)
-	ld.AddLine(p0, p1, renderer.RGB{1, 1, 1})
-	ld.AddLine(p1, p2, renderer.RGB{1, 1, 1})
-	ld.AddLine(p2, p3, renderer.RGB{1, 1, 1})
-	ld.AddLine(p3, p4, renderer.RGB{1, 1, 1})
-	cb.LineWidth(1, ctx.DPIScale)
-
-	verticalOffset := float32(3)
-	center := [2]float32{p0[0] + horizontalPxLength/2, p0[1] - verticalPxLength/2 + verticalOffset}
+	fontNum := math.Clamp(ps.TimeView.Font, 1, 3)
+	font := ep.ERAMFont(fontNum)
+	bright := radar.Brightness(ps.TimeView.Bright)
+	textColor := bright.ScaleRGB(renderer.RGB{1, 1, 1})
 
 	simTime := ctx.Client.State.SimTime
 	timeStr := simTime.Format("1504 05")
 
-	td.AddTextCentered(timeStr, center, renderer.TextStyle{Font: ep.ERAMFont(3), Color: renderer.RGB{1, 1, 1}})
+	// Box sized from the cell-metric bounds with a 4px margin. BoundText
+	// reports the cell extent (including font padding and the trailing
+	// advance past the last glyph), so the visible glyphs will sit slightly
+	// off-center inside the box; that's a font-metric quirk to revisit
+	// alongside BoundText itself.
+	tw, th := font.BoundText(timeStr, 0)
+	horizontalPxLength := float32(tw) + 8
+	verticalPxLength := float32(th) + 8
+
+	p0 := ps.clockPosition
+	p1 := math.Add2f(p0, [2]float32{horizontalPxLength, 0})
+	p2 := math.Add2f(p1, [2]float32{0, -verticalPxLength})
+	p3 := math.Add2f(p2, [2]float32{-horizontalPxLength, 0})
+
+	if ps.TimeView.Opaque {
+		bgColor := bright.ScaleRGB(renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0})
+		trid.AddQuad(p0, p1, p2, p3, bgColor)
+	}
+
+	if ps.TimeView.ShowBorder {
+		cb.LineWidth(.3, ctx.DPIScale)
+		ld.AddLine(p0, p1, textColor)
+		ld.AddLine(p1, p2, textColor)
+		ld.AddLine(p2, p3, textColor)
+		ld.AddLine(p3, p0, textColor)
+		cb.LineWidth(1, ctx.DPIScale)
+	}
+
+	center := [2]float32{p0[0] + horizontalPxLength/2, p0[1] - verticalPxLength/2}
+	td.AddTextCentered(timeStr, center, renderer.TextStyle{Font: font, Color: textColor})
 
 	// check if the clock is clicked on for repos
 	extent := math.Extent2DFromPoints([][2]float32{p0, p2})
 	mouse := ctx.Mouse
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
-	if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionClock {
+
+	if mouseInside && !ep.repositionClock && ep.mouseTertiaryClicked(mouse) {
+		if _, open := ep.popup.(*timeViewPopup); open {
+			ep.popup = nil
+		} else {
+			host := math.Extent2D{P0: [2]float32{p0[0], p2[1]}, P1: [2]float32{p0[0] + horizontalPxLength, p0[1]}}
+			const w, h = timeViewPopupWidth, 5 * 18
+			origin := ep.OpenPopupAt(ctx, math.Add2f(p0, [2]float32{horizontalPxLength, 0}), w, h, ep.ERAMFont(2), host)
+			ep.popup = &timeViewPopup{origin: origin}
+		}
+		mouse.Clicked = [platform.MouseButtonCount]bool{}
+	} else if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionClock {
 		if !ep.repositionClock {
 			ep.timeSinceRepo = time.Now()
 		}
@@ -582,9 +630,135 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 				ctx.Platform.EndCaptureMouse()
 			}
 		}
-
 	}
 
+	trid.GenerateCommands(cb)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
+}
+
+const mcaPopupWidth = 150
+
+// mcaPopup is the configuration menu for the Message Composition Area.
+type mcaPopup struct {
+	origin [2]float32
+}
+
+func (m *mcaPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+
+	rows := []ERAMMenuItem{
+		{Label: fmt.Sprintf("PA LINES %d", ps.MCA.PALines), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.MCA.PALines, 1, 50, 1)
+			return false
+		}},
+		{Label: fmt.Sprintf("WIDTH %d", ps.MCA.Width), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.MCA.Width, 10, 200, 1)
+			return false
+		}},
+		{Label: fmt.Sprintf("FONT %d", ps.MCA.Font), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.MCA.Font, 1, 3, 1)
+			return false
+		}},
+		{Label: fmt.Sprintf("BRIGHT %d", ps.MCA.Bright), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.MCA.Bright, 0, 100, 1)
+			return false
+		}},
+	}
+
+	cfg := ERAMMenuConfig{
+		Title: "MCA",
+		Width: mcaPopupWidth,
+		Font:  ep.ERAMFont(2),
+		Rows:  rows,
+	}
+	ep.DrawERAMMenu(ctx, transforms, cb, m.origin, cfg)
+}
+
+const raPopupWidth = 150
+
+// raPopup is the configuration menu for the Response Area.
+type raPopup struct {
+	origin [2]float32
+}
+
+func (r *raPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+
+	rows := []ERAMMenuItem{
+		{Label: fmt.Sprintf("WIDTH %d", ps.RA.Width), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.RA.Width, 10, 200, 1)
+			return false
+		}},
+		{Label: fmt.Sprintf("FONT %d", ps.RA.Font), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.RA.Font, 1, 3, 1)
+			return false
+		}},
+		{Label: fmt.Sprintf("BRIGHT %d", ps.RA.Bright), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.RA.Bright, 0, 100, 1)
+			return false
+		}},
+		{Label: "CLEAR", BgColor: popupBlackBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			ep.responseArea.Clear()
+			return false
+		}},
+	}
+
+	cfg := ERAMMenuConfig{
+		Title: "RA",
+		Width: raPopupWidth,
+		Font:  ep.ERAMFont(2),
+		Rows:  rows,
+	}
+	ep.DrawERAMMenu(ctx, transforms, cb, r.origin, cfg)
+}
+
+const timeViewPopupWidth = 120
+
+// timeViewPopup is the configuration menu for the Time View (clock).
+type timeViewPopup struct {
+	origin [2]float32
+}
+
+func (t *timeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+
+	tLabel := "T"
+	tBg := popupBlackBg
+	if ps.TimeView.Opaque {
+		tLabel = "O"
+		tBg = popupGreyBg
+	}
+	borderBg := util.Select(ps.TimeView.ShowBorder, popupGreyBg, popupBlackBg)
+
+	rows := []ERAMMenuItem{
+		{Label: tLabel, BgColor: tBg, Color: popupTextColor, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
+			if ct == MenuClickTertiary {
+				ps.TimeView.Opaque = !ps.TimeView.Opaque
+			}
+			return false
+		}},
+		{Label: "BORDER", BgColor: borderBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			if ct == MenuClickTertiary {
+				ps.TimeView.ShowBorder = !ps.TimeView.ShowBorder
+			}
+			return false
+		}},
+		{Label: fmt.Sprintf("FONT %d", ps.TimeView.Font), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.TimeView.Font, 1, 3, 1)
+			return false
+		}},
+		{Label: fmt.Sprintf("BRIGHT %d", ps.TimeView.Bright), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+			handleClick(ep, &ps.TimeView.Bright, 0, 100, 1)
+			return false
+		}},
+	}
+
+	cfg := ERAMMenuConfig{
+		Title: "TIME",
+		Width: timeViewPopupWidth,
+		Font:  ep.ERAMFont(2),
+		Rows:  rows,
+	}
+	ep.DrawERAMMenu(ctx, transforms, cb, t.origin, cfg)
 }

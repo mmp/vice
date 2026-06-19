@@ -84,6 +84,29 @@ type Preferences struct {
 		Font           int // 1-3
 		Bright         int // 0-100
 	}
+
+	// MCA (Message Composition Area) preferences
+	MCA struct {
+		PALines int // max number of preview/feedback area lines
+		Width   int // chars per line
+		Font    int // 1-3
+		Bright  int // 0-100
+	}
+
+	// RA (Response Area) preferences
+	RA struct {
+		Width  int // chars per line
+		Font   int // 1-3
+		Bright int // 0-100
+	}
+
+	// TimeView (clock) preferences
+	TimeView struct {
+		Opaque     bool
+		ShowBorder bool
+		Font       int // 1-3
+		Bright     int // 0-100
+	}
 }
 
 const numSavedPreferenceSets = 10
@@ -234,7 +257,6 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.HistoryLength = 5
 
-	// ALTIM SET defaults
 	prefs.AltimSet.Visible = false
 	prefs.AltimSet.Position = [2]float32{200, 600}
 	prefs.AltimSet.Opaque = false
@@ -245,7 +267,6 @@ func makeDefaultPreferences() *Preferences {
 	prefs.AltimSet.Font = 2
 	prefs.AltimSet.Bright = 80
 
-	// WX defaults
 	prefs.WX.Visible = false
 	prefs.WX.Position = [2]float32{400, 600}
 	prefs.WX.Opaque = false
@@ -254,6 +275,20 @@ func makeDefaultPreferences() *Preferences {
 	prefs.WX.Lines = 5
 	prefs.WX.Font = 2
 	prefs.WX.Bright = 80
+
+	prefs.MCA.PALines = 6
+	prefs.MCA.Width = 32
+	prefs.MCA.Font = 2
+	prefs.MCA.Bright = 100
+
+	prefs.RA.Width = 27
+	prefs.RA.Font = 2
+	prefs.RA.Bright = 100
+
+	prefs.TimeView.Opaque = false
+	prefs.TimeView.ShowBorder = true
+	prefs.TimeView.Font = 3
+	prefs.TimeView.Bright = 100
 
 	return &prefs
 }
@@ -274,6 +309,21 @@ func (p *Preferences) Upgrade(from, to int) {
 		// the scope transform. Double the stored value so the on-screen extent
 		// is unchanged.
 		p.Range *= 2
+	}
+	if from < 74 {
+		// MCA, RA, and TimeView preference structs were added; older saves
+		// have zero values that would render as invisible/broken widgets.
+		// These values match makeDefaultPreferences().
+		p.MCA.PALines = 6
+		p.MCA.Width = 32
+		p.MCA.Font = 2
+		p.MCA.Bright = 100
+		p.RA.Width = 27
+		p.RA.Font = 2
+		p.RA.Bright = 100
+		p.TimeView.ShowBorder = true
+		p.TimeView.Font = 3
+		p.TimeView.Bright = 100
 	}
 }
 

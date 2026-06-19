@@ -336,11 +336,15 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 		switch {
 		case mRect.Inside(mouse.Pos):
-			ctx.SetMousePosition(math.Add2f(mouse.Pos, [2]float32{width * 1.5, 0}))
 			if _, open := ep.popup.(*crrPopup); open {
 				ep.popup = nil
 			} else {
-				ep.popup = &crrPopup{origin: math.Add2f(titleP3, [2]float32{width, titleH})}
+				host := math.Extent2D{P0: [2]float32{p0[0], p2[1]}, P1: [2]float32{p0[0] + width, p0[1]}}
+				// CRR menu: 7 fixed rows + title bar, plus ~80px of swatches/group labels.
+				const popupH = (7+1)*18 + 80
+				cOrigin := ep.OpenPopupAt(ctx, math.Add2f(titleP3, [2]float32{width, titleH}),
+					crrPopupWidth, popupH, ep.ERAMFont(2), host)
+				ep.popup = &crrPopup{origin: cOrigin}
 			}
 			// Consume the click so the config menu doesn't process it
 			// on the same frame (e.g. X button or click-outside dismiss).
@@ -551,6 +555,8 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 	td.GenerateCommands(cb)
 }
 
+const crrPopupWidth = 150
+
 // crrPopup is the popup-interface impl for the CRR configuration menu. The
 // origin is captured at open time from the view's current geometry.
 type crrPopup struct {
@@ -560,30 +566,25 @@ type crrPopup struct {
 func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	origin := c.origin
-	const width = float32(150)
-
-	textColor := renderer.RGB{R: .85, G: .85, B: .85}
-	baseBg := renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
-	greenBg := renderer.RGB{R: 0, G: 157.0 / 255.0, B: 0}
-	blackBg := renderer.RGB{R: 0, G: 0, B: 0}
+	const width = float32(crrPopupWidth)
 
 	rtLabel := "T"
-	rtBg := blackBg
+	rtBg := popupBlackBg
 	if ps.CRR.Opaque {
 		rtLabel = "O"
-		rtBg = baseBg
+		rtBg = popupGreyBg
 	}
 
 	rows := []ERAMMenuItem{
-		{Label: rtLabel, BgColor: rtBg, Color: textColor, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: rtLabel, BgColor: rtBg, Color: popupTextColor, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
 			ps.CRR.Opaque = !ps.CRR.Opaque
 			return false
 		}},
-		{Label: "BORDER", BgColor: baseBg, Color: textColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "BORDER", BgColor: popupGreyBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
 			ps.CRR.ShowBorder = !ps.CRR.ShowBorder
 			return false
 		}},
-		{Label: "LINES " + strconv.Itoa(ps.CRR.Lines), BgColor: greenBg, Color: textColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "LINES " + strconv.Itoa(ps.CRR.Lines), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickPrimary {
 				ps.CRR.Lines = int(math.Clamp(float32(ps.CRR.Lines-1), 1, 100))
 			} else {
@@ -591,7 +592,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 			}
 			return false
 		}},
-		{Label: "FONT " + strconv.Itoa(ps.CRR.Font), BgColor: greenBg, Color: textColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "FONT " + strconv.Itoa(ps.CRR.Font), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickPrimary {
 				ps.CRR.Font--
 				if ps.CRR.Font < 1 {
@@ -605,7 +606,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 			}
 			return false
 		}},
-		{Label: "BRIGHT " + strconv.Itoa(ps.CRR.Bright), BgColor: greenBg, Color: textColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "BRIGHT " + strconv.Itoa(ps.CRR.Bright), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickPrimary {
 				ps.CRR.Bright = int(math.Clamp(float32(ps.CRR.Bright-1), 0, 100))
 			} else {
@@ -613,11 +614,11 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 			}
 			return false
 		}},
-		{Label: "LIST", BgColor: baseBg, Color: textColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "LIST", BgColor: popupGreyBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
 			ps.CRR.ListMode = !ps.CRR.ListMode
 			return false
 		}},
-		{Label: "COLOR " + strconv.Itoa(ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: blackBg,
+		{Label: "COLOR " + strconv.Itoa(ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: popupBlackBg,
 			Color: CRRGreen.BrightRGB(radar.Brightness(90)), OnClick: func(ct ERAMMenuClickType) bool {
 				if ct == MenuClickPrimary {
 					ps.CRR.ColorBright[ps.CRR.SelectedColor] = int(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]-1), 0, 100))
@@ -668,7 +669,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 			bgP1 := math.Add2f(bgP0, [2]float32{w, 0})
 			bgP2 := math.Add2f(bgP1, [2]float32{0, -float32(swRows) * swH})
 			bgP3 := math.Add2f(bgP0, [2]float32{0, -float32(swRows) * swH})
-			trid.AddQuad(bgP0, bgP1, bgP2, bgP3, bButton.ScaleRGB(blackBg))
+			trid.AddQuad(bgP0, bgP1, bgP2, bgP3, bButton.ScaleRGB(popupBlackBg))
 
 			type swatchInfo struct {
 				c   CRRColor
@@ -707,7 +708,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 				rp1 := math.Add2f(cursor, [2]float32{w, 0})
 				rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
 				rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
-				trid.AddQuad(rp0, rp1, rp2, rp3, bButton.ScaleRGB(blackBg))
+				trid.AddQuad(rp0, rp1, rp2, rp3, bButton.ScaleRGB(popupBlackBg))
 				style := renderer.TextStyle{Font: font,
 					Color: bText.ScaleRGB(ep.CRRGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ep.CRRGroups[l].Color]), 0, 100))))}
 				labelText := strings.ToUpper(l)

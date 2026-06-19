@@ -10,6 +10,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/util"
 )
 
 const wxWindowWidth = float32(320)
@@ -413,11 +414,15 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 
 		switch {
 		case mRect.Inside(mouse.Pos):
-			ctx.SetMousePosition(math.Add2f(mouse.Pos, [2]float32{width * 1.5, 0}))
 			if _, open := ep.popup.(*wxPopup); open {
 				ep.popup = nil
 			} else {
-				ep.popup = &wxPopup{origin: math.Add2f(titleP3, [2]float32{width, titleH})}
+				host := math.Extent2D{P0: [2]float32{p0[0], p2[1]}, P1: [2]float32{p0[0] + width, p0[1]}}
+				// 6 rows + title bar.
+				const popupH = (6 + 1) * 18
+				wOrigin := ep.OpenPopupAt(ctx, math.Add2f(titleP3, [2]float32{width, titleH}),
+					wxPopupWidth, popupH, ep.ERAMFont(2), host)
+				ep.popup = &wxPopup{origin: wOrigin}
 			}
 			mouse.Clicked = [platform.MouseButtonCount]bool{}
 		case minRect.Inside(mouse.Pos):
@@ -597,6 +602,8 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 	td.GenerateCommands(cb)
 }
 
+const wxPopupWidth = 150
+
 // wxPopup is the popup-interface impl for the WX REPORT configuration menu.
 // The origin is captured at open time from the view's current geometry.
 type wxPopup struct {
@@ -606,53 +613,42 @@ type wxPopup struct {
 func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	origin := w.origin
-	const menuWidth = float32(150)
-
-	blackBg := renderer.RGB{R: 0, G: 0, B: 0}
-	greyBg := renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
-	greenBg := renderer.RGB{R: 0, G: 157.0 / 255.0, B: 0}
-	textColor := renderer.RGB{R: .85, G: .85, B: .85}
+	const menuWidth = float32(wxPopupWidth)
 
 	// T/O button — shows "T" (transparent) or "O" (opaque)
 	tLabel := "T"
-	tBg := blackBg
+	tBg := popupBlackBg
 	if ps.WX.Opaque {
 		tLabel = "O"
-		tBg = greyBg
+		tBg = popupGreyBg
 	}
 
 	// BORDER button - grey when ON, black when OFF
-	borderBg := blackBg
-	if ps.WX.ShowBorder {
-		borderBg = greyBg
-	}
+	borderBg := util.Select(ps.WX.ShowBorder, popupGreyBg, popupBlackBg)
 
 	// TEAROFF button - grey when ON, black when OFF
-	tearoffBg := blackBg
-	if ps.WX.ShowIndicators {
-		tearoffBg = greyBg
-	}
+	tearoffBg := util.Select(ps.WX.ShowIndicators, popupGreyBg, popupBlackBg)
 
 	rows := []ERAMMenuItem{
-		{Label: tLabel, BgColor: tBg, Color: textColor, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: tLabel, BgColor: tBg, Color: popupTextColor, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickTertiary {
 				ps.WX.Opaque = !ps.WX.Opaque
 			}
 			return false
 		}},
-		{Label: "BORDER", BgColor: borderBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "BORDER", BgColor: borderBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickTertiary {
 				ps.WX.ShowBorder = !ps.WX.ShowBorder
 			}
 			return false
 		}},
-		{Label: "TEAROFF", BgColor: tearoffBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "TEAROFF", BgColor: tearoffBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickTertiary {
 				ps.WX.ShowIndicators = !ps.WX.ShowIndicators
 			}
 			return false
 		}},
-		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: greenBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: popupGreenBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.WX.Lines, 3, 24, 1)
 			if ep.wxScrollOffset > 0 {
 				maxOffset := len(ep.WXReportStations) - ps.WX.Lines
@@ -665,11 +661,11 @@ func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 			}
 			return false
 		}},
-		{Label: fmt.Sprintf("FONT %d", ps.WX.Font), BgColor: greenBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("FONT %d", ps.WX.Font), BgColor: popupGreenBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.WX.Font, 1, 3, 1)
 			return false
 		}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.WX.Bright), BgColor: greenBg, Color: textColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("BRIGHT %d", ps.WX.Bright), BgColor: popupGreenBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.WX.Bright, 0, 100, 1)
 			return false
 		}},
