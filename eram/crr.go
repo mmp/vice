@@ -115,36 +115,6 @@ func parseLocation(ctx *panes.Context, token string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
-// resolveAircraftTokens converts a slash-separated list of ACIDs/FLIDs/CIDs to callsigns.
-func resolveAircraftTokens(ctx *panes.Context, s string) []av.ADSBCallsign {
-	var out []av.ADSBCallsign
-	for tok := range strings.SplitSeq(s, "/") {
-		tok = strings.ToUpper(strings.TrimSpace(tok))
-		if tok == "" {
-			continue
-		}
-		if trk, ok := ctx.Client.State.GetTrackByFLID(tok); ok {
-			out = append(out, trk.ADSBCallsign)
-			continue
-		}
-		if trk, ok := ctx.Client.State.GetTrackByACID(sim.ACID(tok)); ok {
-			out = append(out, trk.ADSBCallsign)
-			continue
-		}
-		// CID match
-		for _, t := range ctx.Client.State.Tracks {
-			if !t.IsAssociated() {
-				continue
-			}
-			if t.FlightPlan.CID == tok {
-				out = append(out, t.ADSBCallsign)
-				break
-			}
-		}
-	}
-	return out
-}
-
 // drawCRRView renders the Continuous Range Readout view.
 func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()

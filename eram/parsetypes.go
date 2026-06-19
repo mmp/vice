@@ -44,6 +44,7 @@ var typeParsers = []typeParser{
 
 	// Track/Flight identification
 	&trackParser{},
+	&trackListParser{},
 
 	// QS HSF (heading / speed-mach / free-text)
 	&hsfTextParser{},
@@ -154,6 +155,72 @@ func (h *trackParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInpu
 
 func (h *trackParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
 func (h *trackParser) ConsumesClick() bool  { return true }
+
+// trackListParser matches 1..maxTrackList tracks separated by '/' and/or
+// whitespace. Each token is either a clicked track (the 'w' locationSymbol) or
+// a typed identifier resolved via GetTrackByFLID (CID/ADSB callsign/squawk).
+type trackListParser struct{}
+
+const maxTrackList = 4
+
+func (h *trackListParser) Identifier() string { return "TRACK_LIST" }
+
+func (h *trackListParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	isSep := func(ch byte) bool { return ch == ' ' || ch == '/' }
+	// Index of the next click in input.mousePositions that has not yet been
+	// consumed (by earlier matchers or earlier 'w's in our own loop).
+	clickIdx := len(input.mousePositions) - strings.Count(text, locationSymbol)
+
+	var tracks []*sim.Track
+	pos := 0
+	for pos < len(text) {
+		for pos < len(text) && isSep(text[pos]) {
+			pos++
+		}
+		if pos == len(text) {
+			break
+		}
+
+		if text[pos] == locationSymbol[0] {
+			if clickIdx < 0 || clickIdx >= len(input.mousePositions) {
+				return nil, text, false, nil
+			}
+			cs := input.trackCallsigns[clickIdx]
+			if cs == "" {
+				return nil, text, false, nil // click missed any track
+			}
+			trk, ok := ctx.Client.State.Tracks[cs]
+			if !ok || !trk.IsAssociated() {
+				return nil, text, true, ErrERAMIllegalACID
+			}
+			tracks = append(tracks, trk)
+			clickIdx++
+			pos++
+		} else {
+			start := pos
+			for pos < len(text) && !isSep(text[pos]) && text[pos] != locationSymbol[0] {
+				pos++
+			}
+			trk, ok := ctx.Client.State.GetTrackByFLID(text[start:pos])
+			if !ok {
+				return nil, text, true, ErrERAMIllegalACID
+			}
+			tracks = append(tracks, trk)
+		}
+
+		if len(tracks) > maxTrackList {
+			return nil, text, true, ErrCommandFormat
+		}
+	}
+
+	if len(tracks) == 0 {
+		return nil, text, false, nil
+	}
+	return tracks, "", true, nil
+}
+
+func (h *trackListParser) GoType() reflect.Type { return reflect.TypeOf([]*sim.Track(nil)) }
+func (h *trackListParser) ConsumesClick() bool  { return true }
 
 // eramAltAParser parses assigned altitude (3 digits, e.g., "350" for FL350)
 type eramAltAParser struct{}

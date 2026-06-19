@@ -116,15 +116,17 @@ func registerOpsCommands() {
 
 	// LF - CRR (Continuous Range Readout)
 	// LF //FIX [LABEL]: Create new CRR group at fix location
-	// LF //FIX [LABEL] [AIRCRAFT]: Create new CRR group with aircraft
+	// LF //FIX [LABEL] [AIRCRAFT...]: Create new CRR group with up to 4 aircraft
 	// LF {pos} [LABEL]: Create group at clicked position (click first, then label)
-	// LF [LABEL] [TRACK]: Toggle aircraft membership in existing group
-	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL] [ALL_TEXT]", handleCRRCreateWithAircraft)
+	// LF [LABEL] [AIRCRAFT...]: Toggle membership for up to 4 aircraft
+	// Aircraft tokens may be CIDs, ADSB callsigns, or beacon codes separated by
+	// '/' and/or spaces, and/or clicks on tracks.
+	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL] [TRACK_LIST]", handleCRRCreateWithAircraft)
 	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL]", handleCRRCreate)
 	registerCommand(CommandModeNone, "LF [CRR_LOC]", handleCRRCreateAutoLabel)
 	registerCommand(CommandModeNone, "LF [LOC_SYM] [CRR_LABEL]", handleCRRAddClicked) // LF {pos} LABEL - valid order
 	registerCommand(CommandModeNone, "LF [CRR_LABEL] [LOC_SYM]", handleCRRWrongOrder) // LF LABEL {pos} - wrong order
-	registerCommand(CommandModeNone, "LF [CRR_LABEL] [ALL_TEXT]", handleCRRToggleMembership)
+	registerCommand(CommandModeNone, "LF [CRR_LABEL] [TRACK_LIST]", handleCRRToggleMembership)
 	// Error handlers for incomplete LF commands
 	registerCommand(CommandModeNone, "LF [CRR_LABEL]", handleCRRLabelOnly) // LF LABEL without click or aircraft
 	registerCommand(CommandModeNone, "LF", handleCRREmpty)                 // LF alone
@@ -613,8 +615,7 @@ func handleLCFixTimeTrk(ep *ERAMPane, ctx *panes.Context, fix string, hhmm int, 
 ///////////////////////////////////////////////////////////////////////////
 // LF - CRR (Continuous Range Readout) Handlers
 
-func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocation, label string, aircraftStr string) (CommandStatus, error) {
-	// Validate label
+func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocation, label string, tracks []*sim.Track) (CommandStatus, error) {
 	if !validCRRLabel(label) {
 		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", loc.Token, label)
 	}
@@ -636,11 +637,8 @@ func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocati
 	}
 	ep.CRRGroups[label] = g
 
-	// Add aircraft if specified
-	if aircraftStr != "" {
-		for _, cs := range resolveAircraftTokens(ctx, aircraftStr) {
-			g.Aircraft[cs] = struct{}{}
-		}
+	for _, trk := range tracks {
+		g.Aircraft[trk.ADSBCallsign] = struct{}{}
 	}
 
 	return CommandStatus{
@@ -649,7 +647,7 @@ func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocati
 }
 
 func handleCRRCreate(ep *ERAMPane, ctx *panes.Context, loc CRRLocation, label string) (CommandStatus, error) {
-	return handleCRRCreateWithAircraft(ep, ctx, loc, label, "")
+	return handleCRRCreateWithAircraft(ep, ctx, loc, label, nil)
 }
 
 func handleCRRCreateAutoLabel(ep *ERAMPane, ctx *panes.Context, loc CRRLocation) (CommandStatus, error) {
@@ -707,8 +705,7 @@ func handleCRRWrongOrder(label string, pos math.Point2LL) (CommandStatus, error)
 	return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", strings.ToUpper(label), locationSymbol)
 }
 
-func handleCRRToggleMembership(ep *ERAMPane, ctx *panes.Context, label string, aircraftStr string) (CommandStatus, error) {
-	// Validate label
+func handleCRRToggleMembership(ep *ERAMPane, label string, tracks []*sim.Track) (CommandStatus, error) {
 	if !validCRRLabel(label) {
 		return CommandStatus{}, ErrCommandFormat
 	}
@@ -720,7 +717,8 @@ func handleCRRToggleMembership(ep *ERAMPane, ctx *panes.Context, label string, a
 	}
 
 	// Toggle membership for each aircraft
-	for _, cs := range resolveAircraftTokens(ctx, aircraftStr) {
+	for _, trk := range tracks {
+		cs := trk.ADSBCallsign
 		if _, ok := g.Aircraft[cs]; ok {
 			delete(g.Aircraft, cs)
 		} else {
