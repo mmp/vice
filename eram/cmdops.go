@@ -23,75 +23,72 @@ import (
 
 func registerOpsCommands() {
 	// QQ - Interim altitude
-	// Keyboard: QQ [ALT] [FLID] or QQ [FLID] to clear
-	// Clicked: QQ [ALT][SLEW] or QQ[SLEW] to clear
-	registerCommand(CommandModeNone, "QQ [ERAM_ALT_I] [FLID]|QQ [ERAM_ALT_I][SLEW]", handleInterimAltitude)
-	registerCommand(CommandModeNone, "QQ [FLID]|QQ[SLEW]", handleClearInterimAltitude)
+	// QQ [ALT] [TRACK]: Set interim altitude
+	// QQ [TRACK]: Clear interim altitude
+	registerCommand(CommandModeNone, "QQ [ERAM_ALT_I] [TRACK]", handleInterimAltitude)
+	registerCommand(CommandModeNone, "QQ [TRACK]", handleClearInterimAltitude)
 
 	// QZ - Assigned altitude
-	// Keyboard: QZ [ALT] [FLID]
-	// Clicked: QZ [ALT][SLEW]
-	registerCommand(CommandModeNone, "QZ [ERAM_ALT_A] [FLID]|QZ [ERAM_ALT_A][SLEW]", handleAssignedAltitude)
+	// QZ [ALT] [TRACK]: Set assigned altitude
+	registerCommand(CommandModeNone, "QZ [ERAM_ALT_A] [TRACK]", handleAssignedAltitude)
 
 	// QX - Drop track
-	// Keyboard: QX [FLID]
-	// Clicked: QX[SLEW]
-	registerCommand(CommandModeNone, "QX [FLID]|QX[SLEW]", handleDropTrack)
+	// QX [TRACK]
+	registerCommand(CommandModeNone, "QX [TRACK]", handleDropTrack)
 
 	// QU - Direct to fix / Route display
 	// QU: Clear all route displays
-	// QU /M [FLID] or QU /M[SLEW]: Display route
-	// QU [MINUTES] [FLID] or QU [MINUTES][SLEW]: Display route for specified minutes
-	// QU [FIX] [FLID] or QU [FIX][SLEW]: Direct to fix
+	// QU [TRACK]: Toggle 20-minute route display
+	// QU /M [TRACK]: Display full route
+	// QU [MINUTES] [TRACK]: Display route for specified minutes
+	// QU [FIX] [TRACK]: Direct to fix
 	registerCommand(CommandModeNone, "QU", handleClearRouteDisplay)
-	registerCommand(CommandModeNone, "QU [FLID]|QU [SLEW]", handleDefaultRouteDisplay)
-	registerCommand(CommandModeNone, "QU /M [FLID]|QU /M[SLEW]", handleMaxRouteDisplay)
-	registerCommand(CommandModeNone, "QU [MINUTES] [FLID]|QU [MINUTES][SLEW]", handleRouteDisplayMinutes)
-	registerCommand(CommandModeNone, "QU [FIX] [FLID]|QU [FIX][SLEW]", handleDirectToFix)
+	registerCommand(CommandModeNone, "QU [TRACK]", handleDefaultRouteDisplay)
+	registerCommand(CommandModeNone, "QU /M [TRACK]", handleMaxRouteDisplay)
+	registerCommand(CommandModeNone, "QU [MINUTES] [TRACK]", handleRouteDisplayMinutes)
+	registerCommand(CommandModeNone, "QU [FIX] [TRACK]", handleDirectToFix)
 
 	// QP - J rings
-	// Keyboard: QP J [FLID] or QP T [FLID]
-	// Clicked: QP J[SLEW] or QP T[SLEW]
-	registerCommand(CommandModeNone, "QP J [FLID]|QP J[SLEW]", handleJRing)
-	registerCommand(CommandModeNone, "QP T [FLID]|QP T[SLEW]", handleReducedJRing)
+	// QP J [TRACK]: Toggle J ring
+	// QP T [TRACK]: Toggle reduced J ring
+	registerCommand(CommandModeNone, "QP J [TRACK]", handleJRing)
+	registerCommand(CommandModeNone, "QP T [TRACK]", handleReducedJRing)
 
 	// QP - Point outs
-	// Keyboard: QP [SECTOR_ID] [FLID] to initiate, QP A [FLID] to acknowledge,
-	//           QP [FLID] to clear the post-point-out FDB lock (FDB -> LDB).
-	// Clicked:  QP [SECTOR_ID][SLEW] / QP A[SLEW] / QP[SLEW]
-	registerCommand(CommandModeNone, "QP A [FLID]|QP A[SLEW]",
+	// QP [SECTOR_ID] [TRACK]: Initiate point out
+	// QP A [TRACK]: Acknowledge point out
+	// QP [TRACK]: Clear the post-point-out FDB lock (FDB -> LDB)
+	registerCommand(CommandModeNone, "QP A [TRACK]",
 		func(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) error {
 			return ep.acknowledgePointOut(ctx, sim.ACID(trk.ADSBCallsign))
 		})
-	registerCommand(CommandModeNone, "QP [SECTOR_ID] [FLID]|QP [SECTOR_ID][SLEW]",
+	registerCommand(CommandModeNone, "QP [SECTOR_ID] [TRACK]",
 		func(ep *ERAMPane, ctx *panes.Context, sector string, trk *sim.Track) error {
 			return ep.pointOutTrack(ctx, sim.ACID(trk.ADSBCallsign), sector)
 		})
-	registerCommand(CommandModeNone, "QP [FLID]|QP[SLEW]",
+	registerCommand(CommandModeNone, "QP [TRACK]",
 		func(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 			return ep.clearPointOutLock(trk)
 		})
 
 	// QF - Flight Plan Display
-	registerCommand(CommandModeNone, "QF [FLID]|QF[SLEW]", handleFlightPlanReadout)
+	registerCommand(CommandModeNone, "QF [TRACK]", handleFlightPlanReadout)
 
 	// QS - HSF (Heading / Speed-Mach / Free-text) scratchpad handling
-	// Keyboard:
-	//   QS `<text> <FLID>    - set free text (backtick is clear-weather symbol)
-	//   QS <heading> <FLID>  - set heading (1-4 chars; not validated)
-	//   QS /<speedSpec> <FLID> - set speed or mach (see HSF_SPEED parser)
-	//   QS */ <FLID>         - delete heading
-	//   QS /* <FLID>         - delete speed/mach
-	//   QS * <FLID>          - delete all HSF data
-	//   QS <FLID>            - toggle display of HSF data
-	// Clicked: replace <FLID> with [SLEW]
-	registerCommand(CommandModeNone, "QS [HSF_TEXT] [FLID]|QS [HSF_TEXT][SLEW]", handleQSFreeText)
-	registerCommand(CommandModeNone, "QS [HSF_SPEED] [FLID]|QS [HSF_SPEED][SLEW]", handleQSSpeed)
-	registerCommand(CommandModeNone, "QS [HSF_HDG] [FLID]|QS [HSF_HDG][SLEW]", handleQSHeading)
-	registerCommand(CommandModeNone, "QS */ [FLID]|QS */[SLEW]", handleQSDeleteHeading)
-	registerCommand(CommandModeNone, "QS /* [FLID]|QS /*[SLEW]", handleQSDeleteSpeed)
-	registerCommand(CommandModeNone, "QS * [FLID]|QS *[SLEW]", handleQSDeleteAll)
-	registerCommand(CommandModeNone, "QS [FLID]|QS[SLEW]", handleQSToggleHSF)
+	//   QS `<text> [TRACK]      - set free text (backtick is clear-weather symbol)
+	//   QS <heading> [TRACK]    - set heading (1-4 chars; not validated)
+	//   QS /<speedSpec> [TRACK] - set speed or mach (see HSF_SPEED parser)
+	//   QS */ [TRACK]           - delete heading
+	//   QS /* [TRACK]           - delete speed/mach
+	//   QS * [TRACK]            - delete all HSF data
+	//   QS [TRACK]              - toggle display of HSF data
+	registerCommand(CommandModeNone, "QS [HSF_TEXT] [TRACK]", handleQSFreeText)
+	registerCommand(CommandModeNone, "QS [HSF_SPEED] [TRACK]", handleQSSpeed)
+	registerCommand(CommandModeNone, "QS [HSF_HDG] [TRACK]", handleQSHeading)
+	registerCommand(CommandModeNone, "QS */ [TRACK]", handleQSDeleteHeading)
+	registerCommand(CommandModeNone, "QS /* [TRACK]", handleQSDeleteSpeed)
+	registerCommand(CommandModeNone, "QS * [TRACK]", handleQSDeleteAll)
+	registerCommand(CommandModeNone, "QS [TRACK]", handleQSToggleHSF)
 
 	// MR - Map request (keyboard only)
 	// MR: List available map groups
@@ -99,29 +96,29 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "MR", handleMapRequestList)
 	registerCommand(CommandModeNone, "MR [FIELD]", handleMapRequestLoad)
 
-	// LA
+	// LA - track range - distance between points
 	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM]", handleLALocLoc)
-	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM]", handleLATrkLoc)
+	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM]", handleLATrkLoc)
 	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] /[NUM]", handleLALocLocSpeed)
-	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM] /[NUM]", handleLATrkLocSpeed)
+	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] /[NUM]", handleLATrkLocSpeed)
 	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] T/[NUM]", handleLALocLocTrueSpeed)
-	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM] T/[NUM]", handleLATrkLocTrueSpeed)
+	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] T/[NUM]", handleLATrkLocTrueSpeed)
 	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] T", handleLALocLocTrue)
-	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM] T", handleLATrkLocTrue)
+	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] T", handleLATrkLocTrue)
 
-	// LB
+	// LB - track range - distance between fix and track/location
 	registerCommand(CommandModeNone, "LB [FIX] [LOC_SYM]", handleLBFixLoc)
-	registerCommand(CommandModeNone, "LB [FIX] [FLID]|LB [FIX][SLEW]", handleLBFixTrk)
-	registerCommand(CommandModeNone, "LB [FIX]/[NUM] [FLID]|LB [FIX]/[NUM][SLEW]", handleLBFixSpeedTrk)
+	registerCommand(CommandModeNone, "LB [FIX] [TRACK]", handleLBFixTrk)
+	registerCommand(CommandModeNone, "LB [FIX]/[NUM] [TRACK]", handleLBFixSpeedTrk)
 
 	// LC - speed adjustment to position a track over a fix at a specified UTC time
-	registerCommand(CommandModeNone, "LC [FIX]/[NUM] [FLID]|LC [FIX]/[NUM][SLEW]", handleLCFixTimeTrk)
+	registerCommand(CommandModeNone, "LC [FIX]/[NUM] [TRACK]", handleLCFixTimeTrk)
 
 	// LF - CRR (Continuous Range Readout)
 	// LF //FIX [LABEL]: Create new CRR group at fix location
 	// LF //FIX [LABEL] [AIRCRAFT]: Create new CRR group with aircraft
 	// LF {pos} [LABEL]: Create group at clicked position (click first, then label)
-	// LF [LABEL] [FLID]: Toggle aircraft membership in existing group
+	// LF [LABEL] [TRACK]: Toggle aircraft membership in existing group
 	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL] [ALL_TEXT]", handleCRRCreateWithAircraft)
 	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL]", handleCRRCreate)
 	registerCommand(CommandModeNone, "LF [CRR_LOC]", handleCRRCreateAutoLabel)
@@ -146,32 +143,31 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "WR [FIELD]", handleWXReportAdd)
 
 	// // - Toggle VCI (on-frequency indicator)
-	// Keyboard: //[FLID] or // [FLID]
-	// Clicked: //[SLEW]
-	registerCommand(CommandModeNone, "//[FLID]|// [FLID]|//[SLEW]", handleToggleVCI)
+	// //[TRACK] or // [TRACK]
+	registerCommand(CommandModeNone, "//[TRACK]|// [TRACK]", handleToggleVCI)
 
 	// TG - Target gen commands
 	// TG P: Toggle pause
 	// TG [cmds]: Run commands on last used aircraft
-	// TG [cmds][SLEW]: Run commands on clicked track
+	// TG [cmds][TRACK]: Run commands on clicked track
 	registerCommand(CommandModeNone, "TG P", handleTogglePause)
 	registerCommand(CommandModeNone, "TG [ALL_TEXT]", handleTargetGen)
-	registerCommand(CommandModeNone, "TG [ALL_TEXT][SLEW]", handleTargetGenClicked)
-	registerCommand(CommandModeNone, "TG[SLEW]", handleTargetGenEmptyClicked)
+	registerCommand(CommandModeNone, "TG [ALL_TEXT][TRACK]", handleTargetGenClicked)
+	registerCommand(CommandModeNone, "TG[TRACK]", handleTargetGenEmptyClicked)
 
 	// Default commands (no prefix)
-	// [FLID] or [SLEW]: Accept handoff / recall handoff / toggle FDB
-	// [SECTOR_ID] [FLID] or [SECTOR_ID][SLEW]: Initiate handoff
-	// [1-9] [FLID] or [1-9][SLEW]: Leader line direction
-	registerCommand(CommandModeNone, "[FLID]|[SLEW]", handleDefaultTrack)
-	registerCommand(CommandModeNone, "[SECTOR_ID] [FLID]|[SECTOR_ID][SLEW]", handleInitiateHandoff)
-	registerCommand(CommandModeNone, "[#] [FLID]|[#][SLEW]", handleLeaderLinePosition)
+	// [TRACK]: Accept handoff / recall handoff / toggle FDB
+	// [SECTOR_ID] [TRACK]: Initiate handoff
+	// [1-9] [TRACK]: Leader line direction
+	registerCommand(CommandModeNone, "[TRACK]", handleDefaultTrack)
+	registerCommand(CommandModeNone, "[SECTOR_ID] [TRACK]", handleInitiateHandoff)
+	registerCommand(CommandModeNone, "[#] [TRACK]", handleLeaderLinePosition)
 
 	// Leader line length commands
-	// /[0-3] [FLID] or /[0-3][SLEW]: Set leader line length (0=no line, 1=normal, 2=2x, 3=3x)
-	// [1-9]/[0-3] [FLID] or [1-9]/[0-3][SLEW]: Set leader line position and length
-	registerCommand(CommandModeNone, "/[NUM] [FLID]|/[NUM][SLEW]", handleLeaderLineLength)
-	registerCommand(CommandModeNone, "[NUM]/[NUM] [FLID]|[NUM]/[NUM][SLEW]", handleLeaderLinePositionAndLength)
+	// /[0-3] [TRACK]: Set leader line length (0=no line, 1=normal, 2=2x, 3=3x)
+	// [1-9]/[0-3] [TRACK]: Set leader line position and length
+	registerCommand(CommandModeNone, "/[NUM] [TRACK]", handleLeaderLineLength)
+	registerCommand(CommandModeNone, "[NUM]/[NUM] [TRACK]", handleLeaderLinePositionAndLength)
 
 	// .DRAWROUTE - Custom command for drawing routes
 	registerCommand(CommandModeNone, ".DRAWROUTE", handleDrawRouteMode)

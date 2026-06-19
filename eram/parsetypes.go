@@ -18,7 +18,7 @@ import (
 
 // typeParser defines the interface for parsing and validating typed parameters.
 type typeParser interface {
-	// Identifier returns the token identifier for this handler (e.g., "ALL_TEXT", "FLID").
+	// Identifier returns the token identifier for this handler (e.g., "ALL_TEXT", "TRACK").
 	Identifier() string
 
 	// Parse attempts to extract this type from the input text.
@@ -43,8 +43,7 @@ var typeParsers = []typeParser{
 	&numberParser{id: "##", digits: 2},
 
 	// Track/Flight identification
-	&flidParser{},
-	&slewParser{},
+	&trackParser{},
 
 	// QS HSF (heading / speed-mach / free-text)
 	&hsfTextParser{},
@@ -123,43 +122,23 @@ var fpSpecType = reflect.TypeOf(sim.FlightPlanSpecifier{})
 ///////////////////////////////////////////////////////////////////////////
 // Parser implementations
 
-// flidParser parses ERAM Flight ID - looks up tracks by CID, ACID, beacon code, or list index
-type flidParser struct{}
+// trackParser matches a track reference, either typed (CID/ACID/beacon/index)
+// or clicked. A clicked track is a 'w' (locationSymbol) whose stored callsign
+// at the parallel position in input.trackCallsigns resolves to a live track.
+// The 'w' may be anywhere in the input — non-trailing clicks on tracks are
+// matched here, leaving non-trailing position-only clicks for [LOC_SYM].
+type trackParser struct{}
 
-func (h *flidParser) Identifier() string { return "FLID" }
+func (h *trackParser) Identifier() string { return "TRACK" }
 
-func (h *flidParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	field, remaining := util.CutAtSpace(text)
-	if field == "" {
-		return nil, text, false, nil
+func (h *trackParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	if field, remaining := util.CutAtSpace(text); field != "" {
+		if trk, ok := ctx.Client.State.GetTrackByFLID(field); ok {
+			return trk, remaining, true, nil
+		}
 	}
-
-	// Try to find track by FLID (CID, ACID, beacon, or list index)
-	trk, ok := ctx.Client.State.GetTrackByFLID(field)
-	if ok {
-		return trk, remaining, true, nil
-	}
-
-	return nil, text, false, nil
-}
-
-func (h *flidParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
-func (h *flidParser) ConsumesClick() bool  { return false }
-
-// slewParser matches the trailing click of a command when that click landed
-// on a track. In that case, the click represented by locationSymbol embedded in the input string by
-// AddLocation with the nearest track's callsign in trackCallsigns.
-type slewParser struct{}
-
-func (h *slewParser) Identifier() string { return "SLEW" }
-
-func (h *slewParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
 	trimmed := strings.TrimLeft(text, " ")
 	if !strings.HasPrefix(trimmed, locationSymbol) {
-		return nil, text, false, nil
-	}
-	rest := strings.TrimPrefix(trimmed, locationSymbol)
-	if strings.TrimSpace(rest) != "" {
 		return nil, text, false, nil
 	}
 	idx := len(input.mousePositions) - strings.Count(text, locationSymbol)
@@ -170,11 +149,11 @@ func (h *slewParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput
 	if !ok {
 		return nil, text, false, nil
 	}
-	return trk, "", true, nil
+	return trk, strings.TrimPrefix(trimmed, locationSymbol), true, nil
 }
 
-func (h *slewParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
-func (h *slewParser) ConsumesClick() bool  { return true }
+func (h *trackParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
+func (h *trackParser) ConsumesClick() bool  { return true }
 
 // eramAltAParser parses assigned altitude (3 digits, e.g., "350" for FL350)
 type eramAltAParser struct{}
@@ -419,7 +398,7 @@ type posParser struct{}
 func (h *posParser) Identifier() string { return "POS" }
 
 func (h *posParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	// Only match clicks on empty space, not on tracks. Use SLEW for track clicks.
+	// Only match clicks on empty space, not on tracks. Use TRACK for track clicks.
 	if len(input.mousePositions) == 0 || input.trackCallsigns[0] != "" {
 		return nil, text, false, nil
 	}

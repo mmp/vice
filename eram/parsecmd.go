@@ -26,8 +26,7 @@ import (
 // This system provides a declarative way to specify commands that can be
 // invoked either via keyboard entry or by clicking on the scope (slewing).
 // Commands are specified using a simple syntax that combines literal text
-// and typed matchers in square brackets, with alternatives separated by
-// "|"s, e.g.  "QQ [ERAM_ALT_I] [FLID]|QQ [ERAM_ALT_I][SLEW]"
+// and typed matchers in square brackets, with alternatives separated by "|"s.
 //
 
 // userCommand defines a single command with its specification and handler.
@@ -155,8 +154,8 @@ func makeCommandHandlers(args ...any) []userCommand {
 func splitCommands(c string) iter.Seq[string] {
 	return func(yield func(string) bool) {
 		// Split command alternatives at the top level only (not within brackets); this ensures that
-		// e.g., "QQ [FLID]|QQ [SLEW]" becomes two commands: "QQ [FLID]" and "QQ [SLEW]" but
-		// "[FLID|SLEW]" remains as one matcher with type alternatives.
+		// e.g., "//[TRACK]|// [TRACK]" becomes two commands: "//[TRACK]" and "// [TRACK]" but
+		// "[FLID|MINUTES]" remains as one matcher with type alternatives.
 		start, depth := 0, 0
 		for pos, ch := range c {
 			switch ch {
