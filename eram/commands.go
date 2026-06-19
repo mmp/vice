@@ -66,9 +66,9 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		// Skip an empty middle-click on empty space: nothing to dispatch.
 		if callsign != "" || ep.Input.String() != "" {
 			ep.Input.AddLocation(ps, pos, callsign)
-			status := ep.executeERAMCommand(ctx, ep.Input)
+			status, err := ep.executeERAMCommand(ctx, ep.Input)
 			ep.Input.Clear()
-			ep.applyCommandStatus(ctx, status)
+			ep.applyCommandStatus(ctx, status, err)
 		}
 	}
 	// try get closest track
@@ -149,10 +149,9 @@ type CommandStatus struct {
 	clear        bool
 	responseArea []string
 	feedbackArea []string
-	err          error
 }
 
-func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) CommandStatus {
+func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (CommandStatus, error) {
 	original := strings.TrimSpace(cmdLine.String())
 
 	// Extract all embedded locations from clicking while typing, along with
@@ -167,18 +166,15 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) Co
 	}
 
 	if status, err, handled := ep.tryExecuteUserCommand(ctx, original, mousePositions, trackCallsigns); handled {
-		if err != nil {
-			status.err = err
-		}
-		return status
+		return status, err
 	}
 
 	// No registered command matched the input; surface a generic syntax error so the user gets
 	// feedback instead of silent no-op (e.g. "QP <FLID> <SECTOR>" with the args swapped).
 	if original != "" {
-		return CommandStatus{err: ErrCommandFormat}
+		return CommandStatus{}, ErrCommandFormat
 	}
-	return CommandStatus{}
+	return CommandStatus{}, nil
 }
 
 func (ep *ERAMPane) deleteFLightplan(ctx *panes.Context, trk sim.Track) {

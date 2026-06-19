@@ -698,9 +698,9 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			}
 		case imgui.KeyEnter:
 			// Process the command
-			status := ep.executeERAMCommand(ctx, ep.Input)
+			status, err := ep.executeERAMCommand(ctx, ep.Input)
 			ep.Input.Clear()
-			ep.applyCommandStatus(ctx, status)
+			ep.applyCommandStatus(ctx, status, err)
 		case imgui.KeyEscape:
 			if ep.tearoffInProgress != "" || ep.deleteTearoffMode {
 				if ep.tearoffInProgress != "" {

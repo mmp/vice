@@ -64,7 +64,8 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 		if db.Fields[DBFieldVCI].Inside(mouse.Pos) {
 			state.HoverVCI = true
 			if ep.mousePrimaryClicked(mouse) {
-				ep.applyCommandStatus(ctx, handleToggleVCI(ep, &trk))
+				status, err := handleToggleVCI(ep, &trk)
+				ep.applyCommandStatus(ctx, status, err)
 			}
 		} else {
 			state.HoverVCI = false

@@ -203,9 +203,9 @@ func handleInterimAltitude(ep *ERAMPane, ctx *panes.Context, alt InterimAltitude
 	}, nil
 }
 
-func handleClearInterimAltitude(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+func handleClearInterimAltitude(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	fp := sim.FlightPlanSpecifier{}
@@ -219,15 +219,15 @@ func handleClearInterimAltitude(ep *ERAMPane, ctx *panes.Context, trk *sim.Track
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "INTERIM ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}
+	}, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
 // QZ - Assigned Altitude Handler
 
-func handleAssignedAltitude(ep *ERAMPane, ctx *panes.Context, alt int, trk *sim.Track) CommandStatus {
+func handleAssignedAltitude(ep *ERAMPane, ctx *panes.Context, alt int, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	fp := sim.FlightPlanSpecifier{}
@@ -241,7 +241,7 @@ func handleAssignedAltitude(ep *ERAMPane, ctx *panes.Context, alt int, trk *sim.
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "ASSIGNED ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}
+	}, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -271,9 +271,9 @@ func handleClearRouteDisplay(ep *ERAMPane) {
 }
 
 // Either displays the route for 20 minutes ahead or clears the route display
-func handleDefaultRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+func handleDefaultRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	// Check if the route is currently displayed
@@ -281,57 +281,57 @@ func handleDefaultRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track)
 		delete(ep.aircraftFixCoordinates, trk.ADSBCallsign.String())
 		return CommandStatus{
 			feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID}, // TODO: Find correct message
-		}
+		}, nil
 	}
 	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), 20)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}
+	}, nil
 }
 
-func handleMaxRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+func handleMaxRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), -1)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}
+	}, nil
 }
 
-func handleRouteDisplayMinutes(ep *ERAMPane, ctx *panes.Context, minutes int, trk *sim.Track) CommandStatus {
+func handleRouteDisplayMinutes(ep *ERAMPane, ctx *panes.Context, minutes int, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), minutes)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}
+	}, nil
 }
 
-func handleDirectToFix(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Track) CommandStatus {
+func handleDirectToFix(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fix)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "REROUTE", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}
+	}, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
 // QP - J Ring Handlers
 
-func handleJRing(ep *ERAMPane, trk *sim.Track) CommandStatus {
+func handleJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	state := ep.TrackState[trk.ADSBCallsign]
@@ -340,7 +340,7 @@ func handleJRing(ep *ERAMPane, trk *sim.Track) CommandStatus {
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "REQ/DELETE DRI", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}
+	}, nil
 }
 
 func handleReducedJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
@@ -365,13 +365,13 @@ func handleReducedJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 ///////////////////////////////////////////////////////////////////////////
 // QF - Flight Plan Readout Handlers
 
-func handleFlightPlanReadout(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+func handleFlightPlanReadout(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
 	fp := trk.FlightPlan
 	if fp == nil {
-		return CommandStatus{
-			err: fmt.Errorf("REJECT - NO FLIGHT PLAN\nFLIGHT PLAN READOUT\n%s", trk.ADSBCallsign), // TODO: find the correct error message
-		}
+		// TODO: find the correct error message
+		return CommandStatus{}, fmt.Errorf("REJECT - NO FLIGHT PLAN\nFLIGHT PLAN READOUT\n%s", trk.ADSBCallsign)
 	}
+
 	/*
 		The flight plan readout contains the following elements:
 
@@ -396,7 +396,7 @@ func handleFlightPlanReadout(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) C
 			fmt.Sprintf("%v %v(%v) %v %v 0 %v %v", fp.CID, fp.ACID, fp.TrackingController,
 				fp.AircraftType, fp.AssignedSquawk, fp.AssignedAltitude/100, rte),
 		},
-	}
+	}, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -744,9 +744,9 @@ func handleCRREmpty() (CommandStatus, error) {
 ///////////////////////////////////////////////////////////////////////////
 // // - Toggle VCI Handler
 
-func handleToggleVCI(ep *ERAMPane, trk *sim.Track) CommandStatus {
+func handleToggleVCI(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	state := ep.TrackState[trk.ADSBCallsign]
@@ -754,7 +754,7 @@ func handleToggleVCI(ep *ERAMPane, trk *sim.Track) CommandStatus {
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "TOGGLE ON-FREQUENCY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}
+	}, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1032,65 +1032,65 @@ func qsFDBDataAcceptMsg(trk *sim.Track) []string {
 	return []string{"ACCEPT", "FDB DATA", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID}
 }
 
-func handleQSToggleHSF(ep *ERAMPane, trk *sim.Track) CommandStatus {
+func handleQSToggleHSF(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
+
 	state := ep.TrackState[trk.ADSBCallsign]
-	if state == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
-	}
 	state.HSFHide = !state.HSFHide
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSDeleteHeading(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+func handleQSDeleteHeading(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	var fp sim.FlightPlanSpecifier
 	fp.Scratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSDeleteSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+func handleQSDeleteSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
+
 	var fp sim.FlightPlanSpecifier
 	fp.SecondaryScratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSDeleteAll(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+func handleQSDeleteAll(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
+
 	var fp sim.FlightPlanSpecifier
 	fp.Scratchpad.Set("")
 	fp.SecondaryScratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSHeading(ep *ERAMPane, ctx *panes.Context, heading string, trk *sim.Track) CommandStatus {
+func handleQSHeading(ep *ERAMPane, ctx *panes.Context, heading string, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	var fp sim.FlightPlanSpecifier
 	fp.Scratchpad.Set(heading)
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
 
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSSpeed(ep *ERAMPane, ctx *panes.Context, speed string, trk *sim.Track) CommandStatus {
+func handleQSSpeed(ep *ERAMPane, ctx *panes.Context, speed string, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	var fp sim.FlightPlanSpecifier
@@ -1100,12 +1100,12 @@ func handleQSSpeed(ep *ERAMPane, ctx *panes.Context, speed string, trk *sim.Trac
 	}
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
 
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSFreeText(ep *ERAMPane, ctx *panes.Context, freeText string, trk *sim.Track) CommandStatus {
+func handleQSFreeText(ep *ERAMPane, ctx *panes.Context, freeText string, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{err: ErrERAMIllegalACID}
+		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
 	var fp sim.FlightPlanSpecifier
@@ -1113,7 +1113,7 @@ func handleQSFreeText(ep *ERAMPane, ctx *panes.Context, freeText string, trk *si
 	fp.SecondaryScratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
 
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}
+	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
 func isQSFreeText(s string) bool {

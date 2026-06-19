@@ -134,11 +134,12 @@ func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
 // applyCommandStatus routes a CommandStatus to the feedback/response areas:
 // an error overrides everything; otherwise non-empty feedback and response
 // lines are joined with newlines and shown.
-func (ep *ERAMPane) applyCommandStatus(ctx *panes.Context, status CommandStatus) {
-	if status.err != nil {
-		ep.displayError(status.err, ctx)
+func (ep *ERAMPane) applyCommandStatus(ctx *panes.Context, status CommandStatus, err error) {
+	if err != nil {
+		ep.displayError(err, ctx)
 		return
 	}
+
 	ps := ep.currentPrefs()
 	if len(status.feedbackArea) > 0 {
 		ep.feedbackArea.displaySuccess(ps, strings.Join(status.feedbackArea, "\n"))
