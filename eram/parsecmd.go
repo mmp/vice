@@ -59,11 +59,11 @@ import (
 //   - (CommandStatus) - status with optional command output
 //   - (CommandStatus, error) - status and possible error
 type userCommand struct {
-	cmd           string    // Command specifier (e.g., "QQ [ERAM_ALT_I] [FLID]")
-	handlerFunc   any       // Handler function with flexible signature (see documentation above)
-	matchers      []matcher // Sequence of matchers for this command
-	numInitial    int       // Cached count of initial args (ERAMPane, Context, Preferences)
-	consumesClick bool      // True if the command is initiated from a mouse click
+	cmd          string    // Command specifier (e.g., "QQ [ERAM_ALT_I] [FLID]")
+	handlerFunc  any       // Handler function with flexible signature (see documentation above)
+	matchers     []matcher // Sequence of matchers for this command
+	numInitial   int       // Cached count of initial args (ERAMPane, Context, Preferences)
+	acceptsClick bool      // True if the command is initiated from a mouse click
 }
 
 func makeUserCommand(c string, f any) userCommand {
@@ -81,8 +81,8 @@ func makeUserCommand(c string, f any) userCommand {
 
 	// Check if any matcher consumes clicks (not just the last one)
 	for _, m := range uc.matchers {
-		if m.consumesClick() {
-			uc.consumesClick = true
+		if m.acceptsClick() {
+			uc.acceptsClick = true
 			break
 		}
 	}
@@ -286,7 +286,7 @@ func (ep *ERAMPane) greedyMatchCommands(ctx *panes.Context, input *CommandInput,
 	for _, c := range util.FilterSlice(candidates, func(mc matchCandidate) bool {
 		return len(mc.matchers) == 0 && mc.remaining == ""
 	}) {
-		if len(input.mousePositions) > 0 && !c.cmd.consumesClick {
+		if len(input.mousePositions) > 0 && !c.cmd.acceptsClick {
 			continue
 		}
 
@@ -368,8 +368,8 @@ type matcher interface {
 	// goType returns the Go type this matcher produces, or nil for literal matchers.
 	goType() reflect.Type
 
-	// consumesClick returns whether this matcher consumes mouse clicks.
-	consumesClick() bool
+	// acceptsClick returns whether this matcher consumes mouse clicks.
+	acceptsClick() bool
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -531,7 +531,7 @@ func (lm literalMatcher) match(ep *ERAMPane, ctx *panes.Context, input *CommandI
 
 func (literalMatcher) validate() error      { return nil }
 func (literalMatcher) goType() reflect.Type { return nil }
-func (literalMatcher) consumesClick() bool  { return false }
+func (literalMatcher) acceptsClick() bool   { return false }
 
 ////////////////////////////////////////////////////////////
 
@@ -599,7 +599,7 @@ func (sm singleTypedMatcher) validate() error {
 	if getTypeParser(sm.typeName) == nil {
 		return fmt.Errorf("unknown type: %s", sm.typeName)
 	}
-	if sm.charCount > 0 && getTypeParser(sm.typeName).ConsumesClick() {
+	if sm.charCount > 0 && getTypeParser(sm.typeName).AcceptsClick() {
 		return fmt.Errorf("character count not supported for click-consuming type %s", sm.typeName)
 	}
 	return nil
@@ -609,8 +609,8 @@ func (sm singleTypedMatcher) goType() reflect.Type {
 	return getTypeParser(sm.typeName).GoType()
 }
 
-func (sm singleTypedMatcher) consumesClick() bool {
-	return getTypeParser(sm.typeName).ConsumesClick()
+func (sm singleTypedMatcher) acceptsClick() bool {
+	return getTypeParser(sm.typeName).AcceptsClick()
 }
 
 func checkReturnedType(handler typeParser, value any) error {
@@ -687,9 +687,9 @@ func (am alternativeMatcher) validate() error {
 			return fmt.Errorf("alternatives must have same Go type: %v vs %v", firstType, m.goType())
 		}
 	}
-	firstClick := am.inner[0].consumesClick()
+	firstClick := am.inner[0].acceptsClick()
 	for _, m := range am.inner[1:] {
-		if m.consumesClick() != firstClick {
+		if m.acceptsClick() != firstClick {
 			return fmt.Errorf("alternatives must all consume clicks or none")
 		}
 	}
@@ -700,8 +700,8 @@ func (am alternativeMatcher) goType() reflect.Type {
 	return am.inner[0].goType()
 }
 
-func (am alternativeMatcher) consumesClick() bool {
-	return am.inner[0].consumesClick()
+func (am alternativeMatcher) acceptsClick() bool {
+	return am.inner[0].acceptsClick()
 }
 
 ////////////////////////////////////////////////////////////
@@ -760,7 +760,7 @@ func (gm greedyMatcher) validate() error {
 }
 
 func (gm greedyMatcher) goType() reflect.Type { return gm.inner.goType() }
-func (gm greedyMatcher) consumesClick() bool  { return gm.inner.consumesClick() }
+func (gm greedyMatcher) acceptsClick() bool   { return gm.inner.acceptsClick() }
 
 ///////////////////////////////////////////////////////////////////////////
 // Function Signature Validation and Argument Binding

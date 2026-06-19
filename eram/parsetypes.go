@@ -34,7 +34,7 @@ type typeParser interface {
 	// GoType returns the Go type this handler produces
 	GoType() reflect.Type
 
-	ConsumesClick() bool
+	AcceptsClick() bool
 }
 
 // typeParsers is a slice of typeParsers ordered by priority (earlier = higher priority).
@@ -154,7 +154,7 @@ func (h *trackParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInpu
 }
 
 func (h *trackParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
-func (h *trackParser) ConsumesClick() bool  { return true }
+func (h *trackParser) AcceptsClick() bool   { return true }
 
 // trackListParser matches 1..maxTrackList tracks separated by '/' and/or
 // whitespace. Each token is either a clicked track (the 'w' locationSymbol) or
@@ -220,7 +220,7 @@ func (h *trackListParser) Parse(ep *ERAMPane, ctx *panes.Context, input *Command
 }
 
 func (h *trackListParser) GoType() reflect.Type { return reflect.TypeOf([]*sim.Track(nil)) }
-func (h *trackListParser) ConsumesClick() bool  { return true }
+func (h *trackListParser) AcceptsClick() bool   { return true }
 
 // eramAltAParser parses assigned altitude (3 digits, e.g., "350" for FL350)
 type eramAltAParser struct{}
@@ -250,7 +250,7 @@ func (h *eramAltAParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 }
 
 func (h *eramAltAParser) GoType() reflect.Type { return reflect.TypeOf(0) }
-func (h *eramAltAParser) ConsumesClick() bool  { return false }
+func (h *eramAltAParser) AcceptsClick() bool   { return false }
 
 // eramAltIParser parses interim altitude with optional P/L prefix (e.g., "230", "P230", "L180")
 type eramAltIParser struct{}
@@ -293,7 +293,7 @@ func (h *eramAltIParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 }
 
 func (h *eramAltIParser) GoType() reflect.Type { return reflect.TypeOf(InterimAltitude{}) }
-func (h *eramAltIParser) ConsumesClick() bool  { return false }
+func (h *eramAltIParser) AcceptsClick() bool   { return false }
 
 // InterimAltitude holds an interim altitude value with optional type (P for pilot, L for local)
 type InterimAltitude struct {
@@ -352,7 +352,7 @@ func (h *sectorIDParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 }
 
 func (h *sectorIDParser) GoType() reflect.Type { return reflect.TypeOf("") }
-func (h *sectorIDParser) ConsumesClick() bool  { return false }
+func (h *sectorIDParser) AcceptsClick() bool   { return false }
 
 // fixParser parses navigation fix names and returns the fix name (validation happens in handler)
 type fixParser struct{}
@@ -381,7 +381,7 @@ func (h *fixParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput,
 }
 
 func (h *fixParser) GoType() reflect.Type { return reflect.TypeOf("") }
-func (h *fixParser) ConsumesClick() bool  { return false }
+func (h *fixParser) AcceptsClick() bool   { return false }
 
 // numberParser parses integer numbers.
 type numberParser struct {
@@ -420,7 +420,7 @@ func (h *numberParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 }
 
 func (h *numberParser) GoType() reflect.Type { return reflect.TypeOf(0) }
-func (h *numberParser) ConsumesClick() bool  { return false }
+func (h *numberParser) AcceptsClick() bool   { return false }
 
 // fieldParser extracts a single space-delimited field (token).
 type fieldParser struct{}
@@ -436,7 +436,7 @@ func (h *fieldParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInpu
 }
 
 func (h *fieldParser) GoType() reflect.Type { return reflect.TypeOf("") }
-func (h *fieldParser) ConsumesClick() bool  { return false }
+func (h *fieldParser) AcceptsClick() bool   { return false }
 
 // allTextParser captures all remaining text from the current position, though it special cases and
 // stops at the locationSymbol 'w' if present; that could only have come from a click through
@@ -457,7 +457,7 @@ func (h *allTextParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandIn
 }
 
 func (h *allTextParser) GoType() reflect.Type { return reflect.TypeOf("") }
-func (h *allTextParser) ConsumesClick() bool  { return false }
+func (h *allTextParser) AcceptsClick() bool   { return false }
 
 // posParser handles click position as lat/long (for commands that need position without a track)
 type posParser struct{}
@@ -474,7 +474,7 @@ func (h *posParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput,
 }
 
 func (h *posParser) GoType() reflect.Type { return reflect.TypeOf(math.Point2LL{}) }
-func (h *posParser) ConsumesClick() bool  { return true }
+func (h *posParser) AcceptsClick() bool   { return true }
 
 ///////////////////////////////////////////////////////////////////////////
 // Additional ERAM-specific parsers
@@ -496,7 +496,7 @@ func (h *acidParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput
 }
 
 func (h *acidParser) GoType() reflect.Type { return reflect.TypeOf(sim.ACID("")) }
-func (h *acidParser) ConsumesClick() bool  { return false }
+func (h *acidParser) AcceptsClick() bool   { return false }
 
 // beaconParser parses beacon/squawk codes (4 octal digits)
 type beaconParser struct{}
@@ -516,7 +516,7 @@ func (h *beaconParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 }
 
 func (h *beaconParser) GoType() reflect.Type { return reflect.TypeOf(av.Squawk(0)) }
-func (h *beaconParser) ConsumesClick() bool  { return false }
+func (h *beaconParser) AcceptsClick() bool   { return false }
 
 // mapGroupParser parses video map group names
 type mapGroupParser struct{}
@@ -534,7 +534,7 @@ func (h *mapGroupParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 }
 
 func (h *mapGroupParser) GoType() reflect.Type { return reflect.TypeOf("") }
-func (h *mapGroupParser) ConsumesClick() bool  { return false }
+func (h *mapGroupParser) AcceptsClick() bool   { return false }
 
 // crrLabelParser parses CRR group labels (1-5 alphanumeric characters)
 type crrLabelParser struct{}
@@ -563,7 +563,7 @@ func (h *crrLabelParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 }
 
 func (h *crrLabelParser) GoType() reflect.Type { return reflect.TypeOf("") }
-func (h *crrLabelParser) ConsumesClick() bool  { return false }
+func (h *crrLabelParser) AcceptsClick() bool   { return false }
 
 // crrLocParser parses CRR location tokens (//FIX, //FRD, //lat/long)
 // Returns a CRRLocation struct with the location and original token
@@ -594,7 +594,7 @@ func (h *crrLocParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 }
 
 func (h *crrLocParser) GoType() reflect.Type { return reflect.TypeOf(CRRLocation{}) }
-func (h *crrLocParser) ConsumesClick() bool  { return false }
+func (h *crrLocParser) AcceptsClick() bool   { return false }
 
 // locSymParser matches the location symbol 'w' embedded in text from clicking.
 // Returns the click's math.Point2LL from CommandInput.mousePositions.
@@ -628,7 +628,7 @@ func (h *locSymParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 }
 
 func (h *locSymParser) GoType() reflect.Type { return reflect.TypeOf(math.Point2LL{}) }
-func (h *locSymParser) ConsumesClick() bool  { return true } // Uses click position from input
+func (h *locSymParser) AcceptsClick() bool   { return true } // Uses click position from input
 
 // minutesParse parses minutes for QU
 type minutesParser struct{}
@@ -649,7 +649,7 @@ func (h *minutesParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandIn
 }
 
 func (h *minutesParser) GoType() reflect.Type { return reflect.TypeOf(0) }
-func (h *minutesParser) ConsumesClick() bool  { return false }
+func (h *minutesParser) AcceptsClick() bool   { return false }
 
 ///////////////////////////////////////////////////////////////////////////
 // QS HSF parsers
@@ -678,7 +678,7 @@ func (h *hsfTextParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandIn
 }
 
 func (h *hsfTextParser) GoType() reflect.Type { return reflect.TypeOf("") }
-func (h *hsfTextParser) ConsumesClick() bool  { return false }
+func (h *hsfTextParser) AcceptsClick() bool   { return false }
 
 // Headings don't have to be actual headings, just cannot be > 4 characters.
 type hsfHeadingParser struct{}
@@ -701,7 +701,7 @@ func (h *hsfHeadingParser) Parse(ep *ERAMPane, ctx *panes.Context, input *Comman
 }
 
 func (h *hsfHeadingParser) GoType() reflect.Type { return reflect.TypeOf("") }
-func (h *hsfHeadingParser) ConsumesClick() bool  { return false }
+func (h *hsfHeadingParser) AcceptsClick() bool   { return false }
 
 // hsfSpeedParser parses QS speed/mach scratchpad entries. It returns the canonical
 // form used for storage and display (e.g. "S250", "M75", "S250+", "M75-").
@@ -805,7 +805,7 @@ func (h *hsfSpeedParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 }
 
 func (h *hsfSpeedParser) GoType() reflect.Type { return reflect.TypeOf("") }
-func (h *hsfSpeedParser) ConsumesClick() bool  { return false }
+func (h *hsfSpeedParser) AcceptsClick() bool   { return false }
 
 func allDigits(s string) bool {
 	for i := 0; i < len(s); i++ {
