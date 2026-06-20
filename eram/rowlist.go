@@ -64,6 +64,12 @@ type RowList struct {
 	TopPad     float32 // above each row's content
 	BottomGap  float32 // below each row's content
 
+	// List-level padding applied once at the top/bottom of the whole list
+	// (in addition to per-row TopPad/BottomGap). Use these when the visual
+	// "padding" only belongs above the first row and below the last row.
+	ListTopPad    float32
+	ListBottomPad float32
+
 	// Width is the wrap width for body text and is also the assumed render
 	// width — Draw uses the body extent for placement but expects its width
 	// to match this value, since wrapping happens at Measure time.
@@ -123,12 +129,9 @@ func (l *RowList) Measure() float32 {
 	}
 
 	// Determine visible window.
-	l.visibleFirst = l.Skip
-	if l.visibleFirst > len(l.Rows) {
-		l.visibleFirst = len(l.Rows)
-	}
+	l.visibleFirst = min(l.Skip, len(l.Rows))
 	l.visibleLast = len(l.Rows)
-	l.visibleHeight = 0
+	l.visibleHeight = l.ListTopPad + l.ListBottomPad
 	if l.MaxLines <= 0 {
 		for i := l.visibleFirst; i < l.visibleLast; i++ {
 			l.visibleHeight += l.measured[i].height
@@ -186,7 +189,7 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 	by := l.Font.LayoutBounds("0", 0).Height()
 	visibleCount := l.visibleLast - l.visibleFirst
 	extents := make([]math.Extent2D, visibleCount)
-	rowTop := body.P1[1]
+	rowTop := body.P1[1] - l.ListTopPad
 
 	for i := l.visibleFirst; i < l.visibleLast; i++ {
 		r := l.Rows[i]

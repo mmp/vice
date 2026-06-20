@@ -55,11 +55,11 @@ func (ep *ERAMPane) startDrawCommandInput(ctx *panes.Context, transforms radar.S
 func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	const feedbackH = float32(77)
 	const width = float32(390)
 	font := ep.ERAMFont(math.Clamp(ps.MCA.Font, 1, 3))
 	cols := math.Clamp(ps.MCA.Width, 1, 200)
 	brightFactor := float32(ps.MCA.Bright) / 100
+	feedbackH := font.LayoutBounds("0", 0).Height()*float32(ps.MCA.PALines) + 4
 
 	// Compute input box height (grows with wrapped text).
 	input := ep.Input.String() + "_"
@@ -565,16 +565,12 @@ func (t *timeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 	borderBg := util.Select(ps.TimeView.ShowBorder, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
 
 	rows := []ERAMMenuItem{
-		{Label: tLabel, BgColor: tBg, Color: colors.popup.text, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickTertiary {
-				ps.TimeView.Opaque = !ps.TimeView.Opaque
-			}
+		{Label: tLabel, BgColor: tBg, Color: colors.popup.text, Centered: true, OnClick: func(_ ERAMMenuClickType) bool {
+			ps.TimeView.Opaque = !ps.TimeView.Opaque
 			return false
 		}},
-		{Label: "BORDER", BgColor: borderBg, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickTertiary {
-				ps.TimeView.ShowBorder = !ps.TimeView.ShowBorder
-			}
+		{Label: "BORDER", BgColor: borderBg, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
+			ps.TimeView.ShowBorder = !ps.TimeView.ShowBorder
 			return false
 		}},
 		{Label: fmt.Sprintf("FONT %d", ps.TimeView.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {

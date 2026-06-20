@@ -51,7 +51,6 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	listFont := ep.ERAMFont(fontNum)
 	bright := radar.Brightness(ps.AltimSet.Bright)
 	fontScale := []float32{0.85, 1.0, 1.2}[fontNum-1]
-	by := listFont.LayoutBounds("0", 0).Height()
 	textColor := bright.ScaleRGB(colors.view.text)
 
 	numRows := len(ep.AltimSetAirports)
@@ -85,13 +84,14 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	cols := make([]*RowList, actualCols)
 	for c := range cols {
 		cols[c] = &RowList{
-			Font:       listFont,
-			Width:      colWidth,
-			LineHeight: 17 * fontScale,
-			TopPad:     8 * fontScale,
-			BottomGap:  4 * fontScale,
-			BadgeGap:   4 * fontScale,
-			LabelGap:   0,
+			Font:          listFont,
+			Width:         colWidth,
+			LineHeight:    17 * fontScale,
+			ListTopPad:    8 * fontScale,
+			ListBottomPad: 4 * fontScale,
+			BottomGap:     4 * fontScale,
+			BadgeGap:      4 * fontScale,
+			LabelGap:      0,
 		}
 	}
 	for dataIdx := startIdx; dataIdx < numRows; dataIdx++ {
@@ -103,7 +103,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		if colIdx >= actualCols {
 			break
 		}
-		cols[colIdx].Rows = append(cols[colIdx].Rows, altimRow(ctx, ep.AltimSetAirports[dataIdx], badge, textColor, listFont, textWidth, by))
+		cols[colIdx].Rows = append(cols[colIdx].Rows, altimRow(ctx, ep.AltimSetAirports[dataIdx], badge, textColor, listFont, textWidth))
 	}
 
 	bodyHeight := float32(0)
@@ -158,7 +158,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 // placeholder). The altimeter portion is underlined via AfterDraw when below
 // the standard 29.92 inHg.
 func altimRow(ctx *panes.Context, icao string, badge *Badge, color renderer.RGB,
-	font *renderer.Font, textWidth func(string) float32, by float32) Row {
+	font *renderer.Font, textWidth func(string) float32) Row {
 
 	displayID := altimDisplayID(icao)
 	metar, hasMetar := ctx.Client.State.METAR[icao]
@@ -176,8 +176,11 @@ func altimRow(ctx *panes.Context, icao string, badge *Badge, color renderer.RGB,
 	if altRaw > 0 && altRaw < 2992 && altStr != "..." {
 		offsetX := textWidth(prefix) + textWidth(timeField) + textWidth(mid)
 		fieldW := textWidth(altField)
-		row.AfterDraw = func(extent math.Extent2D, bodyOrigin [2]float32, b *ViewBuilders) {
-			uy := bodyOrigin[1] - by - 1
+		// Position the underline 2px below the ink bottom of the digits so it
+		// tracks the actual glyph descent across font sizes.
+		inkBottom := font.InkBounds(altField, 0).P0[1]
+		row.AfterDraw = func(_ math.Extent2D, bodyOrigin [2]float32, b *ViewBuilders) {
+			uy := bodyOrigin[1] + inkBottom - 2
 			ux := bodyOrigin[0] + offsetX
 			b.Ld.AddLine([2]float32{ux, uy}, [2]float32{ux + fieldW, uy}, color)
 		}
@@ -214,24 +217,18 @@ func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 
 	rows := []ERAMMenuItem{
 		{Label: tLabel, BgColor: tBg, Color: colors.popup.text, Centered: true,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				if ct == MenuClickTertiary {
-					ps.AltimSet.Opaque = !ps.AltimSet.Opaque
-				}
+			OnClick: func(_ ERAMMenuClickType) bool {
+				ps.AltimSet.Opaque = !ps.AltimSet.Opaque
 				return false
 			}},
 		{Label: "BORDER", BgColor: borderBg, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				if ct == MenuClickTertiary {
-					ps.AltimSet.ShowBorder = !ps.AltimSet.ShowBorder
-				}
+			OnClick: func(_ ERAMMenuClickType) bool {
+				ps.AltimSet.ShowBorder = !ps.AltimSet.ShowBorder
 				return false
 			}},
 		{Label: "TEAROFF", BgColor: tearoffBg, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				if ct == MenuClickTertiary {
-					ps.AltimSet.ShowIndicators = !ps.AltimSet.ShowIndicators
-				}
+			OnClick: func(_ ERAMMenuClickType) bool {
+				ps.AltimSet.ShowIndicators = !ps.AltimSet.ShowIndicators
 				return false
 			}},
 		{Label: fmt.Sprintf("LINES %d", ps.AltimSet.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,

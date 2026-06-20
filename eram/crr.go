@@ -142,6 +142,8 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 	switch {
 	case len(labels) == 0:
 		bodyHeight = 0
+		ep.crrLabelRects = nil
+		ep.crrAircraftRects = nil
 	case !ps.CRR.ListMode:
 		bodyHeight, bodyDraw = ep.buildCRRPanel(labels, font)
 	default:
@@ -162,8 +164,10 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 			if _, open := ep.popup.(*crrPopup); open {
 				return nil
 			}
+			// 1 title row + 8 static rows + 2 swatch rows + one row per group.
+			popupH := float32(1+8+2+len(ep.CRRGroups)) * 18
 			origin := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
-				crrPopupWidth, (7+1)*18+80, ep.ERAMFont(2), host)
+				crrPopupWidth, popupH, ep.ERAMFont(2), host)
 			return &crrPopup{origin: origin}
 		},
 		OnMinimize: func() { ps.CRR.Visible = false },
@@ -366,20 +370,16 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 	}
 
 	rows := []ERAMMenuItem{
-		{Label: rtLabel, BgColor: rtBg, Color: colors.popup.text, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: rtLabel, BgColor: rtBg, Color: colors.popup.text, Centered: true, OnClick: func(_ ERAMMenuClickType) bool {
 			ps.CRR.Opaque = !ps.CRR.Opaque
 			return false
 		}},
-		{Label: "BORDER", BgColor: colors.popup.backgroundGrey, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "BORDER", BgColor: colors.popup.backgroundGrey, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
 			ps.CRR.ShowBorder = !ps.CRR.ShowBorder
 			return false
 		}},
 		{Label: "LINES " + strconv.Itoa(ps.CRR.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickPrimary {
-				ps.CRR.Lines = int(math.Clamp(float32(ps.CRR.Lines-1), 1, 100))
-			} else {
-				ps.CRR.Lines = int(math.Clamp(float32(ps.CRR.Lines+1), 1, 100))
-			}
+			handleClick(ep, &ps.CRR.Lines, 1, 100, 1)
 			return false
 		}},
 		{Label: "FONT " + strconv.Itoa(ps.CRR.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
@@ -391,24 +391,18 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 			return false
 		}},
 		{Label: "BRIGHT " + strconv.Itoa(ps.CRR.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickPrimary {
-				ps.CRR.Bright = int(math.Clamp(float32(ps.CRR.Bright-1), 0, 100))
-			} else {
-				ps.CRR.Bright = int(math.Clamp(float32(ps.CRR.Bright+1), 0, 100))
-			}
+			handleClick(ep, &ps.CRR.Bright, 0, 100, 1)
 			return false
 		}},
-		{Label: "LIST", BgColor: colors.popup.backgroundGrey, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "LIST", BgColor: colors.popup.backgroundGrey, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
 			ps.CRR.ListMode = !ps.CRR.ListMode
 			return false
 		}},
 		{Label: "COLOR " + strconv.Itoa(ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: colors.popup.backgroundBlack,
 			Color: CRRGreen.BrightRGB(radar.Brightness(90)), OnClick: func(ct ERAMMenuClickType) bool {
-				if ct == MenuClickPrimary {
-					ps.CRR.ColorBright[ps.CRR.SelectedColor] = int(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]-1), 0, 100))
-				} else {
-					ps.CRR.ColorBright[ps.CRR.SelectedColor] = int(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]+1), 0, 100))
-				}
+				v := ps.CRR.ColorBright[ps.CRR.SelectedColor]
+				handleClick(ep, &v, 0, 100, 1)
+				ps.CRR.ColorBright[ps.CRR.SelectedColor] = v
 				return false
 			}},
 	}

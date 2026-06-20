@@ -40,12 +40,9 @@ type ViewRepoState struct {
 	DragOffset [2]float32
 }
 
-// Cancel ends an in-progress drag and releases mouse capture.
-func (s *ViewRepoState) Cancel(ctx *panes.Context) {
-	if s.Active {
-		s.Active = false
-		ctx.Platform.EndCaptureMouse()
-	}
+// Cancel ends an in-progress drag.
+func (s *ViewRepoState) Cancel(_ *panes.Context) {
+	s.Active = false
 }
 
 // ViewScrollConfig describes the optional scroll bar on the right edge of the
@@ -96,6 +93,22 @@ type View struct {
 	Scroll *ViewScrollConfig
 }
 
+// clampViewPos clamps a view top-left position so the whole window stays
+// inside the pane, leaving the bottom-toolbar buffer free when the toolbar
+// is visible. pos is the view's top-left in pane-local coords (y up); width
+// and totalH are the view's outer dimensions.
+func (ep *ERAMPane) clampViewPos(ctx *panes.Context, pos [2]float32, width, totalH float32) [2]float32 {
+	paneW := ctx.PaneExtent.Width()
+	paneH := ctx.PaneExtent.Height()
+	toolbarH := float32(0)
+	if ep.currentPrefs().DisplayToolbar {
+		toolbarH = buttonSize(buttonFull, ep.toolbarButtonScale(ctx))[1]
+	}
+	pos[0] = math.Clamp(pos[0], 0, max(0, paneW-width))
+	pos[1] = math.Clamp(pos[1], toolbarH+totalH, paneH)
+	return pos
+}
+
 // drawRectOutline draws a 1px line-loop around ex.
 func drawRectOutline(ld *renderer.ColoredLinesDrawBuilder, ex math.Extent2D, color renderer.RGB) {
 	q0 := [2]float32{ex.P0[0], ex.P0[1]}
@@ -124,7 +137,6 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	cb *renderer.CommandBuffer, v View) {
 
 	mouse := ctx.Mouse
-	pos := *v.Position
 	width := v.Width
 
 	trid := renderer.GetColoredTrianglesDrawBuilder()
@@ -149,6 +161,13 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 	bodyH := v.BodyHeight
 	totalH := titleH + bodyH
+
+	// Clamp the position to the pane on every frame so a saved off-screen
+	// position can't produce negative scissor boxes or render outside the
+	// pane. Write the clamped value back so the caller's storage tracks the
+	// constrained position.
+	*v.Position = ep.clampViewPos(ctx, *v.Position, width, totalH)
+	pos := *v.Position
 
 	// Window corners (p0 = top-left, going clockwise).
 	p0 := pos
@@ -331,7 +350,6 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			v.Reposition.Active = true
 			v.Reposition.StartTime = time.Now()
 			v.Reposition.DragOffset = math.Sub2f(mouse.Pos, p0)
-			ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
 			ep.clearMousePrimaryConsumed(mouse)
 			ep.clearMouseTertiaryConsumed(mouse)
 
@@ -345,21 +363,28 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			v.Reposition.Active = true
 			v.Reposition.StartTime = time.Now()
 			v.Reposition.DragOffset = math.Sub2f(mouse.Pos, p0)
-			ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
 			ep.clearMousePrimaryConsumed(mouse)
 
 		case v.Reposition.Active && time.Since(v.Reposition.StartTime) > 100*time.Millisecond:
-			*v.Position = math.Sub2f(mouse.Pos, v.Reposition.DragOffset)
+			*v.Position = ep.clampViewPos(ctx, math.Sub2f(mouse.Pos, v.Reposition.DragOffset), width, totalH)
 			v.Reposition.Active = false
-			ctx.Platform.EndCaptureMouse()
 			ep.clearMousePrimaryConsumed(mouse)
 			ep.clearMouseTertiaryConsumed(mouse)
 		}
 	}
 
-	// Reposition preview outline.
-	if v.Reposition.Active && mouse != nil {
-		previewP0 := math.Sub2f(mouse.Pos, v.Reposition.DragOffset)
+	// Reposition preview outline. When the cursor leaves the pane ctx.Mouse
+	// goes nil — but the drag is still in progress, so query the platform
+	// directly for the cursor position and convert into pane-local coords.
+	// clampViewPos pins the preview to the closest valid edge.
+	if v.Reposition.Active {
+		var mousePos [2]float32
+		if mouse != nil {
+			mousePos = mouse.Pos
+		} else {
+			mousePos = ctx.WindowToPane(ctx.Platform.GetMouse().Pos)
+		}
+		previewP0 := ep.clampViewPos(ctx, math.Sub2f(mousePos, v.Reposition.DragOffset), width, totalH)
 		previewP1 := math.Add2f(previewP0, [2]float32{width, 0})
 		previewP2 := math.Add2f(previewP1, [2]float32{0, -totalH})
 		previewP3 := math.Add2f(previewP0, [2]float32{0, -totalH})

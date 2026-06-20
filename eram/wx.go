@@ -57,8 +57,6 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		}
 	}
 
-	rl.Skip = math.Clamp(ep.wxScroll.Offset, 0, max(len(ep.WXReportStations)-1, 0))
-	ep.wxScroll.Offset = rl.Skip
 	rl.MaxLines = visibleRows
 	for _, icao := range ep.WXReportStations {
 		body, alt := wxMetarBody(ctx, icao)
@@ -67,8 +65,20 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 			Body: body, AltText: alt, Color: textColor,
 		})
 	}
+
+	// Measure first with no skip so totalLines reflects all stations; only
+	// honour the persisted scroll offset when the wrapped content actually
+	// overflows the visible row budget. Otherwise reset the scroll to 0 so
+	// stale offsets don't hide stations.
 	bodyHeight := rl.Measure()
 	totalLines := rl.TotalLines()
+	if totalLines <= visibleRows {
+		ep.wxScroll.Offset = 0
+	} else {
+		rl.Skip = math.Clamp(ep.wxScroll.Offset, 0, max(len(ep.WXReportStations)-1, 0))
+		ep.wxScroll.Offset = rl.Skip
+		bodyHeight = rl.Measure()
+	}
 
 	v := View{
 		Position:   &ps.WX.Position,
@@ -180,24 +190,18 @@ func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 
 	rows := []ERAMMenuItem{
 		{Label: tLabel, BgColor: tBg, Color: colors.popup.text, Centered: true,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				if ct == MenuClickTertiary {
-					ps.WX.Opaque = !ps.WX.Opaque
-				}
+			OnClick: func(_ ERAMMenuClickType) bool {
+				ps.WX.Opaque = !ps.WX.Opaque
 				return false
 			}},
 		{Label: "BORDER", BgColor: borderBg, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				if ct == MenuClickTertiary {
-					ps.WX.ShowBorder = !ps.WX.ShowBorder
-				}
+			OnClick: func(_ ERAMMenuClickType) bool {
+				ps.WX.ShowBorder = !ps.WX.ShowBorder
 				return false
 			}},
 		{Label: "TEAROFF", BgColor: tearoffBg, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				if ct == MenuClickTertiary {
-					ps.WX.ShowIndicators = !ps.WX.ShowIndicators
-				}
+			OnClick: func(_ ERAMMenuClickType) bool {
+				ps.WX.ShowIndicators = !ps.WX.ShowIndicators
 				return false
 			}},
 		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
