@@ -71,6 +71,10 @@ func registerOpsCommands() {
 			return ep.clearPointOutLock(trk)
 		})
 
+	// QL - Quicklook
+	registerCommand(CommandModeNone, "QL [SECTOR_ID_LIST]", handleToggleQuicklook)
+	registerCommand(CommandModeNone, "QL", handleDisableAllQuicklook)
+
 	// QF - Flight Plan Display
 	registerCommand(CommandModeNone, "QF [TRACK]", handleFlightPlanReadout)
 
@@ -360,6 +364,23 @@ func handleReducedJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "REQ/DELETE DRI", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}, nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// QL - Quicklook
+
+func handleToggleQuicklook(ep *ERAMPane, sectors []string) {
+	for _, s := range sectors {
+		if _, ok := ep.QuickLookSectors[s]; ok {
+			delete(ep.QuickLookSectors, s)
+		} else {
+			ep.QuickLookSectors[s] = struct{}{}
+		}
+	}
+}
+
+func handleDisableAllQuicklook(ep *ERAMPane) {
+	clear(ep.QuickLookSectors)
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -496,6 +496,9 @@ func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockTy
 		if len(ep.InboundPointOuts[fp.ACID]) > 0 {
 			return FullDatablock
 		}
+		if _, ok := ep.QuickLookSectors[string(ctx.PrimaryTCPForTCW(fp.OwningTCW))]; ok {
+			return FullDatablock
+		}
 		if state.EFDB {
 			return FullDatablock
 		}

@@ -7547,6 +7547,19 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                       heading, <code>/*</code> delete speed, <code>*</code> delete all, bare toggle</li>
                   </ul>
                 </li>
+                <li><strong>Point outs</strong> (same-ARTCC only; cross-ARTCC and STARS targets are rejected)
+                  <ul>
+                    <li><code>QP [SECTOR] [FLID]</code> — initiate point out to a sector in the same ARTCC</li>
+                    <li><code>QP A [FLID]</code> — acknowledge every inbound point out for the aircraft</li>
+                    <li><code>QP [FLID]</code> — clear the post-point-out FDB lock (FDB &rarr; LDB)</li>
+                  </ul>
+                </li>
+                <li><strong>Quick look</strong>
+                  <ul>
+                    <li><code>QL [SECTOR_LIST]</code> — toggle quick look on the listed sector(s)</li>
+                    <li><code>QL</code> — disable all quick look</li>
+                  </ul>
+                </li>
                 <li><strong>Altitudes</strong>
                   <ul>
                     <li><code>QQ</code> — interim altitude (assign, with optional P/L type, and clear)</li>
@@ -7615,9 +7628,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <li><strong><code>AM</code> (amend flight plan)</strong> — altitude amendments and the underlying field-specifier plumbing work, but
                   the documented dot-notation route syntax (e.g. <code>AM AAL123 RTE SSOXS.BUZRD.SEY</code>) and amendment of aircraft type, discrete
                   beacon, filed cruise speed, and remarks via <code>AM</code> are not handled.</li>
-                <li><strong><code>QP</code></strong> — J-ring overloads (<code>QP J</code>, <code>QP T</code>), same-ARTCC point-out
-                  forms (<code>QP [SECTOR] [FLID]</code>, <code>QP A</code>), and the post-point-out FDB&rarr;LDB form
-                  (<code>QP [FLID]</code>) are implemented; cross-ARTCC point outs are rejected.</li>
                 <li><strong>Route conformance</strong> — display via <code>QU</code> exists, but there is no automatic deviation/conformance
                   alerting.</li>
               </ul>

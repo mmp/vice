@@ -57,6 +57,7 @@ var typeParsers = []typeParser{
 
 	// Controller/Sector
 	&sectorIDParser{},
+	&sectorIDListParser{},
 
 	// Navigation
 	&fixParser{},
@@ -310,8 +311,14 @@ func (h *sectorIDParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	field, remaining := util.CutAtSpace(text)
 	if field == "" {
 		return nil, text, false, nil
+	} else if isSectorID(field) {
+		return field, remaining, true, nil
+	} else {
+		return nil, text, false, nil
 	}
+}
 
+func isSectorID(field string) bool {
 	// Sector ID formats:
 	// - Two digits: "15", "20" (for same facility center sectors)
 	// - Facility + sector: "B20", "N2K", "NNN2K", "NN2G"
@@ -319,13 +326,11 @@ func (h *sectorIDParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 
 	if len(field) == 2 && isNum(field[0]) && isAlpha(field[1]) {
 		// Standard format: digit + letter
-		return field, remaining, true, nil
-	}
-	if len(field) == 2 && isNum(field[0]) && isNum(field[1]) {
+		return true
+	} else if len(field) == 2 && isNum(field[0]) && isNum(field[1]) {
 		// Two-digit sector
-		return field, remaining, true, nil
-	}
-	if len(field) >= 3 && len(field) <= 5 {
+		return true
+	} else if len(field) >= 3 && len(field) <= 5 {
 		// Facility (1-3 alpha chars) + sector (2 alphanumeric chars with at least one digit)
 		// e.g., "N2K" (1+2), "NN2G" (2+2), "NNN2K" (3+2)
 		pfx := len(field) - 2
@@ -340,19 +345,39 @@ func (h *sectorIDParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 		}
 		if allAlpha && isAlphaNum(sector[0]) && isAlphaNum(sector[1]) &&
 			(isNum(sector[0]) || isNum(sector[1])) {
-			return field, remaining, true, nil
+			return true
 		}
-	}
-	if len(field) == 1 && isAlpha(field[0]) {
+	} else if len(field) == 1 && isAlpha(field[0]) {
 		// Single letter shortcut
-		return field, remaining, true, nil
+		return true
 	}
 
-	return nil, text, false, nil
+	return false
 }
 
 func (h *sectorIDParser) GoType() reflect.Type { return reflect.TypeOf("") }
 func (h *sectorIDParser) AcceptsClick() bool   { return false }
+
+// sectorIDListParser parses one or more sector ids
+type sectorIDListParser struct{}
+
+func (l *sectorIDListParser) Identifier() string { return "SECTOR_ID_LIST" }
+
+func (l *sectorIDListParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	tokens := strings.Fields(text)
+	var sectors []string
+	for i, tok := range tokens {
+		if isSectorID(tok) {
+			sectors = append(sectors, tok)
+		} else {
+			return sectors, strings.Join(tokens[i+1:], " "), len(sectors) > 0, nil
+		}
+	}
+	return sectors, "", true, nil
+}
+
+func (l *sectorIDListParser) GoType() reflect.Type { return reflect.TypeOf([]string{}) }
+func (l *sectorIDListParser) AcceptsClick() bool   { return false }
 
 // fixParser parses navigation fix names and returns the fix name (validation happens in handler)
 type fixParser struct{}

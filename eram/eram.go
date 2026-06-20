@@ -239,6 +239,8 @@ type ERAMPane struct {
 	InboundPointOuts  map[sim.ACID][]sim.ControlPosition
 	OutboundPointOuts map[sim.ACID][]outboundPointOut
 
+	QuickLookSectors map[string]struct{}
+
 	// Output and input text for the command line interface.
 	responseArea inputText `json:"-"`
 	feedbackArea inputText `json:"-"`
@@ -341,6 +343,9 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	}
 	if ep.OutboundPointOuts == nil {
 		ep.OutboundPointOuts = make(map[sim.ACID][]outboundPointOut)
+	}
+	if ep.QuickLookSectors == nil {
+		ep.QuickLookSectors = make(map[string]struct{})
 	}
 
 	if ep.TrackState == nil {
