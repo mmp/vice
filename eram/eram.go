@@ -94,10 +94,15 @@ type ERAMPane struct {
 	fdbArena util.ObjectArena[fullDatablock]    `json:"-"`
 	ldbArena util.ObjectArena[limitedDatablock] `json:"-"`
 
-	repositionLargeInput   bool      `json:"-"`
-	repositionResponseArea bool      `json:"-"`
-	repositionClock        bool      `json:"-"`
-	timeSinceRepo          time.Time `json:"-"`
+	// Per-view drag-to-reposition state. `allRepoStates` indexes all of them
+	// so the Escape-key handler can cancel any in-progress drag uniformly.
+	mcaRepo       ViewRepoState    `json:"-"`
+	raRepo        ViewRepoState    `json:"-"`
+	clockRepo     ViewRepoState    `json:"-"`
+	crrRepo       ViewRepoState    `json:"-"`
+	altimSetRepo  ViewRepoState    `json:"-"`
+	wxRepo        ViewRepoState    `json:"-"`
+	allRepoStates []*ViewRepoState `json:"-"`
 
 	tearoffInProgress        string                   `json:"-"` // Button name being torn off
 	tearoffIsReposition      bool                     `json:"-"` // Repositioning existing vs new tearoff
@@ -145,23 +150,14 @@ type ERAMPane struct {
 	crrFixRects      map[string]math.Extent2D                     `json:"-"`
 	crrLabelRects    map[string]math.Extent2D                     `json:"-"`
 	crrAircraftRects map[string]map[av.ADSBCallsign]math.Extent2D `json:"-"`
-	crrReposition    bool                                         `json:"-"`
-	crrRepoStart     time.Time                                    `json:"-"`
-	crrDragOffset    [2]float32                                   `json:"-"`
 
 	// ALTIM SET state (session)
-	AltimSetAirports     []string   `json:"AltimSetAirports,omitempty"`
-	altimSetScrollOffset int        `json:"-"`
-	altimSetReposition   bool       `json:"-"`
-	altimSetRepoStart    time.Time  `json:"-"`
-	altimSetDragOffset   [2]float32 `json:"-"`
+	AltimSetAirports []string        `json:"AltimSetAirports,omitempty"`
+	altimSetScroll   ViewScrollState `json:"-"`
 
 	// WX window state (session)
-	WXReportStations []string   `json:"WXReportStations,omitempty"`
-	wxScrollOffset   int        `json:"-"`
-	wxReposition     bool       `json:"-"`
-	wxRepoStart      time.Time  `json:"-"`
-	wxDragOffset     [2]float32 `json:"-"`
+	WXReportStations []string        `json:"WXReportStations,omitempty"`
+	wxScroll         ViewScrollState `json:"-"`
 
 	commandMode       CommandMode     `json:"-"`
 	drawRouteAircraft av.ADSBCallsign `json:"-"`
@@ -205,6 +201,11 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	}
 	if ep.crrAircraftRects == nil {
 		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
+	}
+
+	ep.allRepoStates = []*ViewRepoState{
+		&ep.mcaRepo, &ep.raRepo, &ep.clockRepo,
+		&ep.crrRepo, &ep.altimSetRepo, &ep.wxRepo,
 	}
 
 	ep.events = es.Subscribe()
@@ -713,17 +714,15 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				}
 				break
 			}
-			// Clear the input
-			if ep.repositionLargeInput || ep.repositionResponseArea || ep.repositionClock ||
-				ep.crrReposition || ep.altimSetReposition || ep.wxReposition {
-				ep.repositionLargeInput = false
-				ep.repositionResponseArea = false
-				ep.repositionClock = false
-				ep.crrReposition = false
-				ep.altimSetReposition = false
-				ep.wxReposition = false
-				ctx.Platform.EndCaptureMouse()
-			} else {
+			// Cancel any in-progress drag.
+			anyActive := false
+			for _, r := range ep.allRepoStates {
+				if r.Active {
+					anyActive = true
+					r.Cancel(ctx)
+				}
+			}
+			if !anyActive {
 				if ep.commandMode == CommandModeDrawRoute {
 					ep.commandMode = CommandModeNone
 					ep.drawRoutePoints = nil

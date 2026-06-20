@@ -6,7 +6,6 @@ import (
 	"slices"
 	"strconv"
 	"strings"
-	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
@@ -121,438 +120,233 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 	if !ps.CRR.Visible {
 		return
 	}
-
-	// Ensure session state.
 	if ep.CRRGroups == nil {
 		ep.CRRGroups = make(map[string]*CRRGroup)
 	}
 
-	// Sizing and styling
-	font := ep.ERAMFont(2) // TODO: Check for windows font size
-	textStyle := renderer.TextStyle{
-		Font:        font,
-		Color:       radar.Brightness(ps.CRR.Bright).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
-		LineSpacing: 0,
-	}
-
-	// Compute baseline line height using font metrics.
-	_, by := font.BoundText("0", textStyle.LineSpacing)
+	font := ep.ERAMFont(2)
+	bright := radar.Brightness(ps.CRR.Bright)
+	_, by := font.BoundText("0", 0)
 	lineH := float32(by + 2)
+	const width = float32(260)
 
-	// Basic pane geometry
-	p0 := ps.CRR.Position
-	width := float32(260)
-	titleH := float32(16)
-	if _, tby := font.BoundText("CRR", textStyle.LineSpacing); tby > 0 {
-		titleH = float32(tby) + 4
-	}
-
-	// Build quick lookup of current aircraft positions (needed for content calculation)
 	trackPos := make(map[av.ADSBCallsign]math.Point2LL)
 	for _, trk := range tracks {
 		trackPos[trk.ADSBCallsign] = trk.Location
 	}
-
-	// Sort group labels
 	labels := util.SortedMapKeys(ep.CRRGroups)
+	textColor := bright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
 
-	// Calculate actual content height (limited by LINES setting)
-	maxLines := int(math.Clamp(float32(ps.CRR.Lines), 1, 100))
-	contentLines := 0
-	numSpacers := 0
-	for _, label := range labels {
-		if contentLines >= maxLines {
-			break
-		}
-		g := ep.CRRGroups[label]
-		if g == nil {
+	// Build per-mode body content.
+	var bodyHeight float32
+	var bodyDraw func(body math.Extent2D, b *ViewBuilders)
+	switch {
+	case len(labels) == 0:
+		bodyHeight = 0
+	case !ps.CRR.ListMode:
+		bodyHeight, bodyDraw = ep.buildCRRPanel(labels, font)
+	default:
+		bodyHeight, bodyDraw = ep.buildCRRList(labels, trackPos, font, textColor, lineH, width)
+	}
+
+	v := View{
+		Position:   &ps.CRR.Position,
+		Reposition: &ep.crrRepo,
+		Width:      width,
+		BodyHeight: bodyHeight,
+		Title:      "CRR",
+		TitleFont:  font,
+		Opaque:     ps.CRR.Opaque,
+		ShowBorder: ps.CRR.ShowBorder,
+		Brightness: bright,
+		OnMenu: func(host math.Extent2D) popup {
+			if _, open := ep.popup.(*crrPopup); open {
+				return nil
+			}
+			origin := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
+				crrPopupWidth, (7+1)*18+80, ep.ERAMFont(2), host)
+			return &crrPopup{origin: origin}
+		},
+		OnMinimize: func() { ps.CRR.Visible = false },
+		Body:       bodyDraw,
+	}
+	ep.DrawView(ctx, transforms, cb, v)
+
+	// Click handling: DrawView consumed title-bar/drag clicks. Anything left
+	// is for the body's group/aircraft rects.
+	mouse := ctx.Mouse
+	if !(ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) {
+		return
+	}
+	primary := ep.mousePrimaryClicked(mouse)
+	for label, rect := range ep.crrLabelRects {
+		if !rect.Inside(mouse.Pos) {
 			continue
 		}
-		contentLines++ // group label
-		if contentLines >= maxLines {
-			break
-		}
-		// Count aircraft entries
-		acCount := 0
-		for cs := range g.Aircraft {
-			if _, ok := trackPos[cs]; ok {
-				acCount++
-			}
-		}
-		// Add aircraft up to maxLines
-		acToAdd := acCount
-		if contentLines+acToAdd > maxLines {
-			acToAdd = maxLines - contentLines
-		}
-		contentLines += acToAdd
-		numSpacers++ // spacer after each group
-	}
-
-	// Height based on actual content. If no groups, show only the title bar.
-	var contentHeight float32
-	if len(labels) == 0 {
-		contentHeight = 0
-	} else if contentLines == 0 {
-		contentHeight = lineH + 8 // minimum 1 line for empty list view
-	} else {
-		contentHeight = lineH*float32(contentLines) + float32(numSpacers)*2 + 8
-	}
-	height := titleH + contentHeight
-
-	bodyHeight := height - titleH
-
-	p1 := math.Add2f(p0, [2]float32{width, 0})
-	p2 := math.Add2f(p1, [2]float32{0, -height})
-	p3 := math.Add2f(p2, [2]float32{-width, 0})
-
-	trid := renderer.GetColoredTrianglesDrawBuilder()
-	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-
-	// Draw body only when there is content (avoids stray black box in empty panel mode).
-	if bodyHeight > 0 {
-		bodyP0 := math.Add2f(p0, [2]float32{0, -titleH})
-		bodyP1 := math.Add2f(bodyP0, [2]float32{width, 0})
-		bodyP2 := math.Add2f(bodyP1, [2]float32{0, -bodyHeight})
-		bodyP3 := math.Add2f(bodyP0, [2]float32{0, -bodyHeight})
-		trid.AddQuad(bodyP0, bodyP1, bodyP2, bodyP3, renderer.RGB{R: 0, G: 0, B: 0})
-	}
-
-	// Border
-	if ps.CRR.ShowBorder {
-		borderColor := ps.Brightness.Border.ScaleRGB(renderer.RGB{R: .914, G: .914, B: .914})
-		ld.AddLine(p0, p1, borderColor)
-		ld.AddLine(p1, p2, borderColor)
-		ld.AddLine(p2, p3, borderColor)
-		ld.AddLine(p3, p0, borderColor)
-	}
-
-	titleP0 := p0
-	titleP1 := math.Add2f(p0, [2]float32{width, 0})
-	titleP2 := math.Add2f(p1, [2]float32{0, -titleH})
-	titleP3 := math.Add2f(p0, [2]float32{0, -titleH})
-	titleBarColor := renderer.RGB{R: 0, G: 0, B: 0} // black for T mode
-	if ps.CRR.Opaque {
-		titleBarColor = renderer.RGB{R: 0.6, G: 0.6, B: 0.6} // gray for O mode
-	}
-	trid.AddQuad(titleP0, titleP1, titleP2, titleP3, titleBarColor)
-
-	mouse := ctx.Mouse
-
-	// Title text centered
-	title := "CRR"
-	tw, th := font.BoundText(title, textStyle.LineSpacing)
-	titlePos := math.Add2f(titleP0, [2]float32{width/2 - float32(tw)/2, -titleH/2 + float32(th)/2})
-	titleColor := radar.Brightness(ps.CRR.Bright).ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
-
-	// Left M button, right minimize
-	mLabel := "M"
-	mw, mh := font.BoundText(mLabel, textStyle.LineSpacing)
-	mPad := float32(2)
-	// Extent2D.Inside expects P0 = min corner, P1 = max corner
-	mRect := math.Extent2D{
-		P0: [2]float32{titleP0[0], titleP0[1] - titleH},                    // bottom-left (min)
-		P1: [2]float32{titleP0[0] + mPad + float32(mw) + mPad, titleP0[1]}, // top-right (max)
-	}
-
-	minLabel := "-"
-	minw, minh := font.BoundText(minLabel, textStyle.LineSpacing)
-	// Extent2D.Inside expects P0 = min corner, P1 = max corner
-	minRect := math.Extent2D{
-		P0: [2]float32{titleP1[0] - mPad - float32(minw) - mPad, titleP1[1] - titleH}, // bottom-left (min)
-		P1: titleP1,                                                                   // top-right (max)
-	}
-	// Hover detection for buttons and title
-	mouseInsideM := mouse != nil && mRect.Inside(mouse.Pos)
-	mouseInsideMin := mouse != nil && minRect.Inside(mouse.Pos)
-	titleRect := math.Extent2D{
-		P0: [2]float32{mRect.P1[0], titleP2[1]}, // bottom-left
-		P1: [2]float32{minRect.P0[0], titleP1[1]},
-	}
-	mouseInsideTitle := mouse != nil && titleRect.Inside(mouse.Pos)
-
-	if mouseInsideTitle {
-		titleColor = toolbarHoveredOutlineColor
-	}
-	td.AddText(title, titlePos, renderer.TextStyle{Font: font, Color: titleColor})
-
-	mTextColor := textStyle.Color
-	if mouseInsideM {
-		mTextColor = toolbarHoveredOutlineColor
-	}
-	td.AddText(mLabel, math.Add2f(titleP0, [2]float32{mPad, -titleH/2 + float32(mh)/2}), renderer.TextStyle{
-		Font:        font,
-		Color:       mTextColor,
-		LineSpacing: textStyle.LineSpacing,
-	})
-
-	minTextColor := textStyle.Color
-	if mouseInsideMin {
-		minTextColor = toolbarHoveredOutlineColor
-	}
-	td.AddText(minLabel, [2]float32{minRect.P0[0] + mPad, titleP1[1] - titleH/2 + float32(minh)/2}, renderer.TextStyle{
-		Font:        font,
-		Color:       minTextColor,
-		LineSpacing: textStyle.LineSpacing,
-	})
-
-	// Button/title outlines with hover highlight
-	// Draw non-hovered first, then hovered so bright lines overwrite dim ones
-	drawRectOutline := func(ex math.Extent2D, color renderer.RGB) {
-		rp0 := [2]float32{ex.P0[0], ex.P0[1]}
-		rp1 := [2]float32{ex.P1[0], ex.P0[1]}
-		rp2 := [2]float32{ex.P1[0], ex.P1[1]}
-		rp3 := [2]float32{ex.P0[0], ex.P1[1]}
-		ld.AddLine(rp0, rp1, color)
-		ld.AddLine(rp1, rp2, color)
-		ld.AddLine(rp2, rp3, color)
-		ld.AddLine(rp3, rp0, color)
-	}
-	// Draw non-hovered outlines first
-	if !mouseInsideM {
-		drawRectOutline(mRect, toolbarOutlineColor)
-	}
-	if !mouseInsideMin {
-		drawRectOutline(minRect, toolbarOutlineColor)
-	}
-	if !mouseInsideTitle {
-		drawRectOutline(titleRect, toolbarOutlineColor)
-	}
-	// Draw hovered outlines last so they overwrite shared edges
-	if mouseInsideM {
-		drawRectOutline(mRect, toolbarHoveredOutlineColor)
-	}
-	if mouseInsideMin {
-		drawRectOutline(minRect, toolbarHoveredOutlineColor)
-	}
-	if mouseInsideTitle {
-		drawRectOutline(titleRect, toolbarHoveredOutlineColor)
-	}
-
-	// Clicks for title buttons (mouse.Pos is already in pane-local window coordinates)
-	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
-		switch {
-		case mRect.Inside(mouse.Pos):
-			if _, open := ep.popup.(*crrPopup); open {
-				ep.popup = nil
+		if primary {
+			ep.Input.Set(ps, "LF "+strings.ToUpper(label)+" ")
+		} else if g := ep.CRRGroups[label]; g != nil {
+			if len(g.Aircraft) > 0 {
+				g.Aircraft = make(map[av.ADSBCallsign]struct{})
 			} else {
-				host := math.Extent2D{P0: [2]float32{p0[0], p2[1]}, P1: [2]float32{p0[0] + width, p0[1]}}
-				// CRR menu: 7 fixed rows + title bar, plus ~80px of swatches/group labels.
-				const popupH = (7+1)*18 + 80
-				cOrigin := ep.OpenPopupAt(ctx, math.Add2f(titleP3, [2]float32{width, titleH}),
-					crrPopupWidth, popupH, ep.ERAMFont(2), host)
-				ep.popup = &crrPopup{origin: cOrigin}
+				delete(ep.CRRGroups, label)
 			}
-			// Consume the click so the config menu doesn't process it
-			// on the same frame (e.g. X button or click-outside dismiss).
-			mouse.Clicked = [platform.MouseButtonCount]bool{}
-		case minRect.Inside(mouse.Pos):
-			ps.CRR.Visible = false
-		case titleRect.Inside(mouse.Pos) && !ep.crrReposition:
-			ep.crrReposition = true
-			ep.crrRepoStart = time.Now()
-			ep.crrDragOffset = math.Sub2f(mouse.Pos, p0)
-			ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
-		case ep.crrReposition && time.Since(ep.crrRepoStart) > 100*time.Millisecond:
-			ps.CRR.Position = math.Sub2f(mouse.Pos, ep.crrDragOffset)
-			ep.crrReposition = false
-			ctx.Platform.EndCaptureMouse()
+		}
+		return
+	}
+	for label, rows := range ep.crrAircraftRects {
+		for cs, rect := range rows {
+			if !rect.Inside(mouse.Pos) {
+				continue
+			}
+			if g := ep.CRRGroups[label]; g != nil && g.Aircraft != nil {
+				delete(g.Aircraft, cs)
+			}
+			return
 		}
 	}
+}
 
-	// Reposition preview outline while dragging
-	if ep.crrReposition && mouse != nil {
-		previewP0 := math.Sub2f(mouse.Pos, ep.crrDragOffset)
-		previewP1 := math.Add2f(previewP0, [2]float32{width, 0})
-		previewP2 := math.Add2f(previewP1, [2]float32{0, -height})
-		previewP3 := math.Add2f(previewP0, [2]float32{0, -height})
-		c := toolbarHoveredOutlineColor
-		ld.AddLine(previewP0, previewP1, c)
-		ld.AddLine(previewP1, previewP2, c)
-		ld.AddLine(previewP2, previewP3, c)
-		ld.AddLine(previewP3, previewP0, c)
-	}
+// buildCRRPanel constructs the panel-mode body: horizontal row of buttons,
+// one per group. Body height = button height + small top margin.
+func (ep *ERAMPane) buildCRRPanel(labels []string, font *renderer.Font) (float32, func(math.Extent2D, *ViewBuilders)) {
+	ps := ep.currentPrefs()
+	_, th := font.BoundText("X", 0)
+	bodyHeight := float32(th) + 8 + 4
 
-	// Content origin is below the title bar with small padding.
-	cursor := math.Add2f(titleP3, [2]float32{4, -2})
-
-	// Draw groups
-	ep.crrLabelRects = make(map[string]math.Extent2D)
-	ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
-
-	linesRemaining := maxLines
-
-	// Panel mode: just draw group buttons row
-	if !ps.CRR.ListMode {
-		x := cursor[0]
-		y := cursor[1]
+	return bodyHeight, func(body math.Extent2D, b *ViewBuilders) {
+		ep.crrLabelRects = make(map[string]math.Extent2D)
+		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
+		borderColor := ps.Brightness.Border.ScaleRGB(renderer.RGB{R: .6, G: .6, B: .6})
+		x := body.P0[0] + 4
+		y := body.P1[1] - 2
 		for _, label := range labels {
 			g := ep.CRRGroups[label]
 			if g == nil {
 				continue
 			}
 			txt := strings.ToUpper(g.Label)
-			tw, th := font.BoundText(txt, textStyle.LineSpacing)
+			tw, th := font.BoundText(txt, 0)
 			w := float32(tw) + 16
 			h := float32(th) + 8
 			bp0 := [2]float32{x, y}
 			bp1 := math.Add2f(bp0, [2]float32{w, 0})
 			bp2 := math.Add2f(bp1, [2]float32{0, -h})
 			bp3 := math.Add2f(bp0, [2]float32{0, -h})
-			trid.AddQuad(bp0, bp1, bp2, bp3, renderer.RGB{R: 0, G: 0, B: 0})
-			ld.AddLine(bp0, bp1, ps.Brightness.Border.ScaleRGB(renderer.RGB{R: .6, G: .6, B: .6}))
-			ld.AddLine(bp1, bp2, ps.Brightness.Border.ScaleRGB(renderer.RGB{R: .6, G: .6, B: .6}))
-			ld.AddLine(bp2, bp3, ps.Brightness.Border.ScaleRGB(renderer.RGB{R: .6, G: .6, B: .6}))
-			ld.AddLine(bp3, bp0, ps.Brightness.Border.ScaleRGB(renderer.RGB{R: .6, G: .6, B: .6}))
-			td.AddText(txt, math.Add2f(bp0, [2]float32{8, -h/2 + float32(th)/2}), renderer.TextStyle{
-				Font:        font,
-				Color:       g.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[g.Color]), 0, 100))),
-				LineSpacing: 0,
+			b.Trid.AddQuad(bp0, bp1, bp2, bp3, renderer.RGB{})
+			b.Ld.AddLine(bp0, bp1, borderColor)
+			b.Ld.AddLine(bp1, bp2, borderColor)
+			b.Ld.AddLine(bp2, bp3, borderColor)
+			b.Ld.AddLine(bp3, bp0, borderColor)
+			b.Td.AddText(txt, math.Add2f(bp0, [2]float32{8, -h/2 + float32(th)/2}), renderer.TextStyle{
+				Font:  font,
+				Color: g.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[g.Color]), 0, 100))),
 			})
-			// P0 = min corner, P1 = max corner for Inside to work
 			ep.crrLabelRects[label] = math.Extent2D{P0: bp3, P1: bp1}
 			x += w + 8
 		}
-		// Emit drawing and return
-		transforms.LoadWindowViewingMatrices(cb)
-		trid.GenerateCommands(cb)
-		ld.GenerateCommands(cb)
-		td.GenerateCommands(cb)
-		// Handle clicks on panel labels
-		if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
-			for label, rect := range ep.crrLabelRects {
-				if rect.Inside(mouse.Pos) {
-					if ep.mousePrimaryClicked(mouse) {
-						ep.Input.Set(ps, "LF "+strings.ToUpper(label)+" ")
-					} else {
-						if g := ep.CRRGroups[label]; g != nil {
-							if len(g.Aircraft) > 0 {
-								g.Aircraft = make(map[av.ADSBCallsign]struct{})
-							} else {
-								delete(ep.CRRGroups, label)
-							}
-						}
-					}
-					break
-				}
-			}
-		}
-		return
+	}
+}
+
+// buildCRRList constructs the list-mode body: per-group header + sorted
+// aircraft rows, separated by 2px spacers. Heights and clicks are tracked via
+// a RowList of header/aircraft/spacer rows, with parallel metadata so the
+// caller can populate crrLabelRects / crrAircraftRects after draw.
+func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math.Point2LL,
+	font *renderer.Font, textColor renderer.RGB, lineH, width float32) (float32, func(math.Extent2D, *ViewBuilders)) {
+
+	ps := ep.currentPrefs()
+	maxLines := int(math.Clamp(float32(ps.CRR.Lines), 1, 100))
+
+	type rowMeta struct {
+		label    string
+		callsign av.ADSBCallsign // empty = group header
+		spacer   bool
 	}
 
+	rl := &RowList{Font: font, Width: width, LineHeight: lineH, MaxLines: maxLines}
+	var metas []rowMeta
+
 	for _, label := range labels {
-		if linesRemaining <= 0 {
-			break
-		}
 		g := ep.CRRGroups[label]
 		if g == nil {
 			continue
 		}
-		// Group header (centered)
-		groupStyle := textStyle
-		groupStyle.Color = g.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[g.Color]), 0, 100)))
-		gw, _ := font.BoundText(g.Label, groupStyle.LineSpacing)
-		centerX := p0[0] + width/2 - float32(gw)/2
-		labelPos := [2]float32{centerX, cursor[1]}
-		td.AddText(strings.ToUpper(g.Label), labelPos, groupStyle)
-		// clickable rect around centered label - P0 = min corner, P1 = max corner
-		ep.crrLabelRects[label] = math.Extent2D{
-			P0: [2]float32{labelPos[0], labelPos[1] - lineH},       // bottom-left (min)
-			P1: [2]float32{labelPos[0] + float32(gw), labelPos[1]}, // top-right (max)
-		}
-		cursor = math.Add2f(cursor, [2]float32{0, -lineH})
-		linesRemaining--
+		// Group header (centered, colored)
+		rl.Rows = append(rl.Rows, Row{
+			Label:    strings.ToUpper(g.Label),
+			Color:    g.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[g.Color]), 0, 100))),
+			Centered: true,
+		})
+		metas = append(metas, rowMeta{label: label})
 
-		if linesRemaining <= 0 {
-			break
+		// Distance-sorted aircraft
+		type dist struct {
+			cs av.ADSBCallsign
+			d  float32
 		}
-
-		// Build distance list
-		type distEntry struct {
-			Callsign av.ADSBCallsign
-			DistNM   float32
-		}
-		var entries []distEntry
+		var entries []dist
 		for cs := range g.Aircraft {
 			if pos, ok := trackPos[cs]; ok {
-				entries = append(entries, distEntry{Callsign: cs, DistNM: math.NMDistance2LL(pos, g.Location)})
+				entries = append(entries, dist{cs, math.NMDistance2LL(pos, g.Location)})
 			}
 		}
-		slices.SortFunc(entries, func(a, b distEntry) int {
-			if a.DistNM < b.DistNM {
+		slices.SortFunc(entries, func(a, b dist) int {
+			switch {
+			case a.d < b.d:
 				return -1
-			} else if a.DistNM > b.DistNM {
+			case a.d > b.d:
 				return 1
 			}
 			return 0
 		})
-		// Draw aircraft with right-aligned distances
-		// init per-group aircraft rects
-		ep.crrAircraftRects[label] = make(map[av.ADSBCallsign]math.Extent2D)
 		for _, e := range entries {
-			if linesRemaining <= 0 {
-				break
-			}
-			cs := fmt.Sprintf("%s    %.1f", e.Callsign, e.DistNM)
-			td.AddText(cs, cursor, textStyle)
-			// clickable row extent spans full width for easier click - P0 = min corner, P1 = max corner
-			rowRect := math.Extent2D{
-				P0: [2]float32{cursor[0], cursor[1] - lineH},     // bottom-left (min)
-				P1: [2]float32{cursor[0] + width - 8, cursor[1]}, // top-right (max)
-			}
-			ep.crrAircraftRects[label][e.Callsign] = rowRect
-			cursor = math.Add2f(cursor, [2]float32{0, -lineH})
-			linesRemaining--
+			rl.Rows = append(rl.Rows, Row{
+				Label: fmt.Sprintf("%s    %.1f", e.cs, e.d),
+				Color: textColor,
+			})
+			metas = append(metas, rowMeta{label: label, callsign: e.cs})
 		}
-		// Spacer
-		cursor = math.Add2f(cursor, [2]float32{0, -2})
+
+		rl.Rows = append(rl.Rows, Row{SpacerHeight: 2})
+		metas = append(metas, rowMeta{spacer: true})
 	}
 
-	// Handle clicks on labels and aircraft rows after layout
-	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
-		// Group labels
-		for label, rect := range ep.crrLabelRects {
-			if rect.Inside(mouse.Pos) {
-				if ep.mousePrimaryClicked(mouse) {
-					// Seed LF command
-					ep.Input.Set(ps, "LF "+strings.ToUpper(label)+" ")
-				} else {
-					// Middle click: delete contents or group
-					if g := ep.CRRGroups[label]; g != nil {
-						if len(g.Aircraft) > 0 {
-							g.Aircraft = make(map[av.ADSBCallsign]struct{})
-						} else {
-							delete(ep.CRRGroups, label)
-						}
-					}
-				}
-				break
-			}
+	// Adapt RowList to the existing layout: rows draw at body.P0 + (4, -2)
+	// padding; non-centered rows' Label appears starting at body.P0[0]+SidePad,
+	// which means BadgeGap doesn't apply and SidePad=4 puts text at the right X.
+	rl.SidePad = 4
+	rl.LabelGap = 0
+	bodyHeight := rl.Measure() + 8 // +8 = top/bottom padding
+	if bodyHeight < lineH+8 {
+		bodyHeight = lineH + 8
+	}
+
+	return bodyHeight, func(body math.Extent2D, b *ViewBuilders) {
+		ep.crrLabelRects = make(map[string]math.Extent2D)
+		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
+
+		inner := math.Extent2D{
+			P0: [2]float32{body.P0[0], body.P0[1]},
+			P1: [2]float32{body.P1[0], body.P1[1] - 2}, // small top pad
 		}
-		// Aircraft rows
-		for label, rows := range ep.crrAircraftRects {
-			for cs, rect := range rows {
-				if rect.Inside(mouse.Pos) {
-					// Toggle remove on either primary or middle click
-					if g := ep.CRRGroups[label]; g != nil && g.Aircraft != nil {
-						if _, ok := g.Aircraft[cs]; ok {
-							delete(g.Aircraft, cs)
-						}
-					}
-					break
+		extents := rl.Draw(inner, b)
+		first := rl.VisibleFirst()
+		for i, ext := range extents {
+			m := metas[first+i]
+			switch {
+			case m.spacer:
+				// no click
+			case m.callsign == "":
+				ep.crrLabelRects[m.label] = ext
+			default:
+				if ep.crrAircraftRects[m.label] == nil {
+					ep.crrAircraftRects[m.label] = make(map[av.ADSBCallsign]math.Extent2D)
 				}
+				ep.crrAircraftRects[m.label][m.callsign] = ext
 			}
 		}
 	}
-
-	// Emit drawing
-	transforms.LoadWindowViewingMatrices(cb)
-	trid.GenerateCommands(cb)
-	ld.GenerateCommands(cb)
-	td.GenerateCommands(cb)
 }
 
 const crrPopupWidth = 150

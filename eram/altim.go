@@ -2,18 +2,16 @@ package eram
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
-const altimWindowWidth = float32(207)
+const altimWindowWidth = 207
 
 // altimMetarForDisplay returns the formatted METAR data for display, extracting
 // the observation time (HHMM) and 3-digit altimeter setting from a wx.METAR object.
@@ -23,7 +21,7 @@ func altimMetarForDisplay(metar wx.METAR) (timeStr string, altStr string, altRaw
 
 	// Convert altimeter from inHg to 4-digit A-setting format
 	// A-setting is always 4 digits (e.g., 2992, 3012)
-	altRaw = int(metar.Altimeter_inHg() * 100)
+	altRaw = int(math.Round(metar.Altimeter_inHg() * 100))
 	if altRaw > 0 {
 		// Last 3 digits of the 4-digit A-setting
 		altStr = fmt.Sprintf("%03d", altRaw%1000)
@@ -45,518 +43,153 @@ func altimDisplayID(icao string) string {
 // drawAltimSetView renders the ALTIM SET floating window.
 func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-
 	if !ps.AltimSet.Visible {
 		return
 	}
 
-	// --- Layout ---
 	fontNum := int(math.Clamp(float32(ps.AltimSet.Font), 1, 3))
-
-	// Title uses fixed FONT 2 for consistent size
-	asBright := radar.Brightness(ps.AltimSet.Bright)
-
-	titleFont := ep.ERAMFont(2)
-	titleTextStyle := renderer.TextStyle{
-		Font:        titleFont,
-		Color:       asBright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
-		LineSpacing: 0,
-	}
-
-	// List uses selected font, only affects list items
 	listFont := ep.ERAMFont(fontNum)
-	textStyle := renderer.TextStyle{
-		Font:        listFont,
-		Color:       asBright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
-		LineSpacing: 0,
-	}
-
-	_, by := listFont.BoundText("0", textStyle.LineSpacing)
-
-	// Scale boxes based on font size: 1=0.85x, 2=1.0x, 3=1.2x (only affects list)
+	bright := radar.Brightness(ps.AltimSet.Bright)
 	fontScale := []float32{0.85, 1.0, 1.2}[fontNum-1]
-	boxW := float32(13) * fontScale
-	boxH := float32(17) * fontScale
-	boxGap := float32(4) * fontScale
-	boxTopPad := float32(8) * fontScale
-	boxBottomPad := float32(8) * fontScale
-
-	p0 := ps.AltimSet.Position
-
-	titleH := float32(16)
-	if _, tby := titleFont.BoundText("ALTIM SET", titleTextStyle.LineSpacing); tby > 0 {
-		titleH = float32(tby) + 4
-	}
+	_, by := listFont.BoundText("0", 0)
+	textColor := bright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
 
 	numRows := len(ep.AltimSetAirports)
-
-	visibleRows := ps.AltimSet.Lines
-	if visibleRows < 3 {
-		visibleRows = 3
-	}
-	if visibleRows > 24 {
-		visibleRows = 24
-	}
-
-	// Calculate window width based on actual number of columns needed
-	numCols := ps.AltimSet.Col
-	if numCols < 1 {
-		numCols = 1
-	}
-	if numCols > 4 {
-		numCols = 4
+	visibleRows := int(math.Clamp(float32(ps.AltimSet.Lines), 3, 24))
+	numCols := int(math.Clamp(float32(ps.AltimSet.Col), 1, 4))
+	colWidth := altimWindowWidth * fontScale
+	textWidth := func(s string) float32 {
+		w, _ := listFont.BoundText(s, 0)
+		return float32(w)
 	}
 
-	var width float32
-	var bodyHeight float32
-
-	// If no airports, just show title bar with minimal width
-	if numRows == 0 {
-		width = altimWindowWidth * fontScale
-		bodyHeight = 0
-	} else {
-		// Calculate actual columns needed based on number of airports and rows
-		actualCols := (numRows + visibleRows - 1) / visibleRows // Ceiling division
+	// Build one RowList per visible column.
+	maxPerPage := visibleRows * numCols
+	startIdx := 0
+	if numRows > maxPerPage {
+		startIdx = ep.altimSetScroll.Offset
+	}
+	actualCols := numCols
+	if numRows-startIdx < maxPerPage {
+		actualCols = (numRows - startIdx + visibleRows - 1) / visibleRows
 		if actualCols < 1 {
 			actualCols = 1
 		}
 		if actualCols > numCols {
-			actualCols = numCols // Don't exceed user preference
-		}
-
-		// Calculate actual rows needed - since rendering fills columns with visibleRows items each,
-		// the first column will have min(visibleRows, numRows) items
-		actualRows := numRows
-		if actualRows > visibleRows {
-			actualRows = visibleRows
-		}
-
-		width = altimWindowWidth * float32(actualCols) * fontScale
-		bodyHeight = boxTopPad + boxBottomPad + float32(actualRows)*boxH + float32(actualRows-1)*boxGap
-	}
-	height := titleH + bodyHeight
-
-	trid := renderer.GetColoredTrianglesDrawBuilder()
-	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-
-	// Window corners
-	p1 := math.Add2f(p0, [2]float32{width, 0})
-	p2 := math.Add2f(p1, [2]float32{0, -height})
-	p3 := math.Add2f(p2, [2]float32{-width, 0})
-
-	// Body background (below title bar)
-	bodyP0 := math.Add2f(p0, [2]float32{0, -titleH})
-	bodyP1 := math.Add2f(bodyP0, [2]float32{width, 0})
-	bodyP2 := math.Add2f(bodyP1, [2]float32{0, -bodyHeight})
-	bodyP3 := math.Add2f(bodyP0, [2]float32{0, -bodyHeight})
-	trid.AddQuad(bodyP0, bodyP1, bodyP2, bodyP3, renderer.RGB{R: 0, G: 0, B: 0})
-
-	// 1px border
-	if ps.AltimSet.ShowBorder {
-		borderColor := ps.Brightness.Border.ScaleRGB(renderer.RGB{R: .914, G: .914, B: .914})
-		ld.AddLine(p0, p1, borderColor)
-		ld.AddLine(p1, p2, borderColor)
-		ld.AddLine(p2, p3, borderColor)
-		ld.AddLine(p3, p0, borderColor)
-	}
-
-	// Title bar background (black or grey based on Opaque mode)
-	titleBgColor := renderer.RGB{R: 0, G: 0, B: 0}
-	if ps.AltimSet.Opaque {
-		titleBgColor = renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
-	}
-	titleP0 := p0
-	titleP1 := math.Add2f(p0, [2]float32{width, 0})
-	titleP2 := math.Add2f(titleP1, [2]float32{0, -titleH})
-	titleP3 := math.Add2f(p0, [2]float32{0, -titleH})
-	trid.AddQuad(titleP0, titleP1, titleP2, titleP3, titleBgColor)
-
-	mouse := ctx.Mouse
-
-	// Title text (centered)
-	titleText := "ALTIM SET"
-	ttw, tth := titleFont.BoundText(titleText, titleTextStyle.LineSpacing)
-	titlePos := math.Add2f(titleP0, [2]float32{width/2 - float32(ttw)/2, -titleH/2 + float32(tth)/2})
-	titleColor := titleTextStyle.Color
-
-	// M button (left side of title bar)
-	mLabel := "M"
-	mw, mh := titleFont.BoundText(mLabel, titleTextStyle.LineSpacing)
-	mPad := float32(2)
-	mRect := math.Extent2D{
-		P0: [2]float32{titleP0[0], titleP0[1] - titleH},
-		P1: [2]float32{titleP0[0] + mPad + float32(mw) + mPad, titleP0[1]},
-	}
-
-	// Minimize button (right side of title bar)
-	minLabel := "-"
-	minw, minh := titleFont.BoundText(minLabel, titleTextStyle.LineSpacing)
-	minRect := math.Extent2D{
-		P0: [2]float32{titleP1[0] - mPad - float32(minw) - mPad, titleP1[1] - titleH},
-		P1: titleP1,
-	}
-
-	titleRect := math.Extent2D{
-		P0: [2]float32{mRect.P1[0], titleP2[1]},
-		P1: [2]float32{minRect.P0[0], titleP1[1]},
-	}
-
-	mouseInsideM := mouse != nil && mRect.Inside(mouse.Pos)
-	mouseInsideMin := mouse != nil && minRect.Inside(mouse.Pos)
-	mouseInsideTitle := mouse != nil && titleRect.Inside(mouse.Pos)
-
-	if mouseInsideTitle {
-		titleColor = toolbarHoveredOutlineColor
-	}
-	td.AddText(titleText, titlePos, renderer.TextStyle{Font: titleFont, Color: titleColor})
-
-	mTextColor := titleTextStyle.Color
-	if mouseInsideM {
-		mTextColor = toolbarHoveredOutlineColor
-	}
-	td.AddText(mLabel, math.Add2f(titleP0, [2]float32{mPad, -titleH/2 + float32(mh)/2}),
-		renderer.TextStyle{Font: titleFont, Color: mTextColor, LineSpacing: titleTextStyle.LineSpacing})
-
-	minTextColor := titleTextStyle.Color
-	if mouseInsideMin {
-		minTextColor = toolbarHoveredOutlineColor
-	}
-	td.AddText(minLabel, [2]float32{minRect.P0[0] + mPad, titleP1[1] - titleH/2 + float32(minh)/2},
-		renderer.TextStyle{Font: titleFont, Color: minTextColor, LineSpacing: titleTextStyle.LineSpacing})
-
-	// Outlines for M, -, and title area
-	drawRectOutline := func(ex math.Extent2D, color renderer.RGB) {
-		rp0 := [2]float32{ex.P0[0], ex.P0[1]}
-		rp1 := [2]float32{ex.P1[0], ex.P0[1]}
-		rp2 := [2]float32{ex.P1[0], ex.P1[1]}
-		rp3 := [2]float32{ex.P0[0], ex.P1[1]}
-		ld.AddLine(rp0, rp1, color)
-		ld.AddLine(rp1, rp2, color)
-		ld.AddLine(rp2, rp3, color)
-		ld.AddLine(rp3, rp0, color)
-	}
-	if !mouseInsideM {
-		drawRectOutline(mRect, toolbarOutlineColor)
-	}
-	if !mouseInsideMin {
-		drawRectOutline(minRect, toolbarOutlineColor)
-	}
-	if !mouseInsideTitle {
-		drawRectOutline(titleRect, toolbarOutlineColor)
-	}
-	if mouseInsideM {
-		drawRectOutline(mRect, toolbarHoveredOutlineColor)
-	}
-	if mouseInsideMin {
-		drawRectOutline(minRect, toolbarHoveredOutlineColor)
-	}
-	if mouseInsideTitle {
-		drawRectOutline(titleRect, toolbarHoveredOutlineColor)
-	}
-
-	// Handle title bar clicks
-	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
-		// Calculate max airports per page for scroll bar visibility
-		maxAirportsPerPage := visibleRows * numCols
-
-		// Check scroll bar clicks first (if scroll bar is visible)
-		if numRows > maxAirportsPerPage {
-			const scrollBarContentW = float32(14)
-			const scrollBarBorderW = float32(1)
-			const scrollBarTotalW = scrollBarContentW + 2*scrollBarBorderW
-			const scrollBarGap = float32(2)
-
-			scrollBarSectionH := (bodyHeight - 2 - scrollBarGap) / 2
-
-			scrollX1 := bodyP1[0] - 4
-			scrollX0 := scrollX1 - scrollBarTotalW
-
-			upY1 := bodyP0[1] - 1
-			upY0 := upY1 - scrollBarSectionH
-
-			downY1 := upY0 - scrollBarGap
-			downY0 := downY1 - scrollBarSectionH
-
-			upRect := math.Extent2D{
-				P0: [2]float32{scrollX0, upY0},
-				P1: [2]float32{scrollX1, upY1},
-			}
-			downRect := math.Extent2D{
-				P0: [2]float32{scrollX0, downY0},
-				P1: [2]float32{scrollX1, downY1},
-			}
-
-			if upRect.Inside(mouse.Pos) {
-				// Scroll up (decrease offset)
-				if ep.altimSetScrollOffset > 0 {
-					ep.altimSetScrollOffset--
-				}
-				mouse.Clicked = [platform.MouseButtonCount]bool{}
-			} else if downRect.Inside(mouse.Pos) {
-				// Scroll down (increase offset)
-				maxOffset := numRows - maxAirportsPerPage
-				if ep.altimSetScrollOffset < maxOffset {
-					ep.altimSetScrollOffset++
-				}
-				mouse.Clicked = [platform.MouseButtonCount]bool{}
-			}
-		}
-
-		switch {
-		case mRect.Inside(mouse.Pos):
-			if _, open := ep.popup.(*altimSetPopup); open {
-				ep.popup = nil
-			} else {
-				host := math.Extent2D{P0: [2]float32{p0[0], p2[1]}, P1: [2]float32{p0[0] + width, p0[1]}}
-				// 8 rows + title bar.
-				const popupH = (8 + 1) * 18
-				aOrigin := ep.OpenPopupAt(ctx, math.Add2f(titleP3, [2]float32{width, titleH}),
-					altimSetPopupWidth, popupH, ep.ERAMFont(2), host)
-				ep.popup = &altimSetPopup{origin: aOrigin}
-			}
-			mouse.Clicked = [platform.MouseButtonCount]bool{}
-		case minRect.Inside(mouse.Pos):
-			ps.AltimSet.Visible = false
-		case titleRect.Inside(mouse.Pos) && !ep.altimSetReposition:
-			ep.altimSetReposition = true
-			ep.altimSetRepoStart = time.Now()
-			ep.altimSetDragOffset = math.Sub2f(mouse.Pos, p0)
-			ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
-		case ep.altimSetReposition && time.Since(ep.altimSetRepoStart) > 100*time.Millisecond:
-			ps.AltimSet.Position = math.Sub2f(mouse.Pos, ep.altimSetDragOffset)
-			ep.altimSetReposition = false
-			ctx.Platform.EndCaptureMouse()
+			actualCols = numCols
 		}
 	}
 
-	// Reposition preview outline while dragging
-	if ep.altimSetReposition && mouse != nil {
-		previewP0 := math.Sub2f(mouse.Pos, ep.altimSetDragOffset)
-		previewP1 := math.Add2f(previewP0, [2]float32{width, 0})
-		previewP2 := math.Add2f(previewP1, [2]float32{0, -height})
-		previewP3 := math.Add2f(previewP0, [2]float32{0, -height})
-		c := toolbarHoveredOutlineColor
-		ld.AddLine(previewP0, previewP1, c)
-		ld.AddLine(previewP1, previewP2, c)
-		ld.AddLine(previewP2, previewP3, c)
-		ld.AddLine(previewP3, previewP0, c)
-	}
-
-	// Draw airport rows
-	// Calculate yellow indicator color based on brightness setting
-	yellowColor := radar.Brightness(ps.AltimSet.Bright).ScaleRGB(renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0})
-	boxBorderColor := renderer.RGB{R: 0.5, G: 0.5, B: 0.5}
-	textColor := textStyle.Color
-
-	textWidth := func(s string) float32 {
-		w, _ := listFont.BoundText(s, textStyle.LineSpacing)
-		return float32(w)
-	}
-	underlineText := func(x float32, y float32, s string, color renderer.RGB) {
-		if s == "" {
-			return
+	var badge *Badge
+	if ps.AltimSet.ShowIndicators {
+		badge = &Badge{
+			Width: 13 * fontScale, Height: 17 * fontScale,
+			Fill:   bright.ScaleRGB(renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0}),
+			Border: renderer.RGB{R: .5, G: .5, B: .5},
 		}
-		underlineY := y - float32(by) - 1
-		ld.AddLine([2]float32{x, underlineY}, [2]float32{x + textWidth(s), underlineY}, color)
 	}
 
-	// Multi-column rendering: fill each column with visibleRows items
-	numCols = ps.AltimSet.Col
-	if numCols < 1 {
-		numCols = 1
-	}
-	if numCols > 4 {
-		numCols = 4
-	}
-
-	// Calculate column width (scaled by font size)
-	colWidth := altimWindowWidth * fontScale
-
-	// For single/multi-column mode, calculate start/end indices based on scroll offset
-	maxAirportsPerPage := visibleRows * numCols
-	var startIdx, endIdx int
-	if numRows > maxAirportsPerPage {
-		startIdx = ep.altimSetScrollOffset
-		endIdx = startIdx + maxAirportsPerPage
-		if endIdx > numRows {
-			endIdx = numRows
+	cols := make([]*RowList, actualCols)
+	for c := range cols {
+		cols[c] = &RowList{
+			Font:       listFont,
+			Width:      colWidth,
+			LineHeight: 17 * fontScale,
+			TopPad:     8 * fontScale,
+			BottomGap:  4 * fontScale,
+			BadgeGap:   4 * fontScale,
+			LabelGap:   0,
 		}
-	} else {
-		startIdx = 0
-		endIdx = numRows
 	}
-
-	// Render all airports across columns
-	for dataIdx := 0; dataIdx < len(ep.AltimSetAirports); dataIdx++ {
-		icao := ep.AltimSetAirports[dataIdx]
-
-		// Skip rows before startIdx or at/after endIdx (for scroll mode)
-		if dataIdx < startIdx || dataIdx >= endIdx {
-			continue
-		}
-
-		// Determine which column and row within the displayed page.
+	for dataIdx := startIdx; dataIdx < numRows; dataIdx++ {
 		displayIdx := dataIdx - startIdx
-		var colIdx, rowIdx int
-		if numCols == 1 {
-			// Single column: use scroll offset
-			colIdx = 0
-			rowIdx = displayIdx
-		} else {
-			// Multi-column: fill columns sequentially
+		colIdx := 0
+		if numCols > 1 {
 			colIdx = displayIdx / visibleRows
-			rowIdx = displayIdx % visibleRows
 		}
-
-		// Skip if beyond current column setting
-		if colIdx >= numCols {
+		if colIdx >= actualCols {
 			break
 		}
-
-		displayID := altimDisplayID(icao)
-
-		// Get METAR from the Client.State (pre-populated with active airports)
-		metar, hasMetar := ctx.Client.State.METAR[icao]
-
-		// Calculate position: base column X + column offset
-		colX0 := bodyP0[0] + float32(colIdx)*colWidth
-		rowX0 := colX0 + 4
-
-		// Calculate Y position within column
-		boxY1 := bodyP0[1] - boxTopPad - float32(rowIdx)*(boxH+boxGap) // top of box
-		boxY0 := boxY1 - boxH                                          // bottom of box
-
-		// Yellow indicator box
-		if ps.AltimSet.ShowIndicators {
-			boxX0 := rowX0
-			boxX1 := rowX0 + boxW
-			bp0 := [2]float32{boxX0, boxY0}
-			bp1 := [2]float32{boxX1, boxY0}
-			bp2 := [2]float32{boxX1, boxY1}
-			bp3 := [2]float32{boxX0, boxY1}
-			trid.AddQuad(bp0, bp1, bp2, bp3, yellowColor)
-			ld.AddLine(bp0, bp1, boxBorderColor)
-			ld.AddLine(bp1, bp2, boxBorderColor)
-			ld.AddLine(bp2, bp3, boxBorderColor)
-			ld.AddLine(bp3, bp0, boxBorderColor)
-		}
-
-		// Text position
-		boxX1 := rowX0 + boxW
-
-		altBelowStandard := false
-		missingReport := false
-		var timeStr string
-		var altStr string
-		var altRaw int
-		if hasMetar {
-			timeStr, altStr, altRaw = altimMetarForDisplay(metar)
-			altBelowStandard = altRaw > 0 && altRaw < 2992
-		} else {
-			missingReport = true
-		}
-
-		textCursor := [2]float32{boxX1 + boxGap, boxY0 + float32(by)}
-		if missingReport {
-			line := fmt.Sprintf("%-4s   -M-  ", displayID)
-			td.AddText(line, textCursor, renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
-			continue
-		}
-
-		prefix := fmt.Sprintf("%-4s  ", displayID)
-		timeField := fmt.Sprintf("%4s", timeStr)
-		mid := " "
-		altField := fmt.Sprintf("%3s", altStr)
-		suffix := "  "
-		line := prefix + timeField + mid + altField + suffix
-
-		td.AddText(line, textCursor, renderer.TextStyle{Font: listFont, Color: textColor, LineSpacing: 0})
-
-		if altBelowStandard && altStr != "..." {
-			underlineText(textCursor[0]+textWidth(prefix)+textWidth(timeField)+textWidth(mid), textCursor[1], altField, textColor)
-		}
+		cols[colIdx].Rows = append(cols[colIdx].Rows, altimRow(ctx, ep.AltimSetAirports[dataIdx], badge, textColor, listFont, textWidth, by))
 	}
 
-	// Render scroll bar when there are more airports than can fit in the current view
-	if numRows > maxAirportsPerPage {
-		const scrollBarContentW = float32(14)
-		const scrollBarBorderW = float32(1)
-		const scrollBarTotalW = scrollBarContentW + 2*scrollBarBorderW // 16 pixels total
-		const scrollBarGap = float32(2)
-
-		// Calculate section height: (bodyHeight - 2px spacing - gap) / 2
-		scrollBarSectionH := (bodyHeight - 2 - scrollBarGap) / 2
-
-		// Position: right edge of the body, hugging right side
-		scrollX1 := bodyP1[0] - 1
-		scrollX0 := scrollX1 - scrollBarTotalW
-
-		// Up arrow section (top)
-		upY1 := bodyP0[1] - 1
-		upY0 := upY1 - scrollBarSectionH
-
-		// Down arrow section (below up section)
-		downY0 := upY0 - scrollBarGap
-		downY1 := downY0 - scrollBarSectionH
-
-		scrollBg := renderer.RGB{R: 0, G: 0, B: 0}
-		scrollBorder := renderer.RGB{R: 0.5, G: 0.5, B: 0.5}
-		arrowColor := renderer.RGB{R: 145.0 / 255.0, G: 145.0 / 255.0, B: 145.0 / 255.0}
-
-		// Draw up arrow section
-		upP0 := [2]float32{scrollX0, upY0}
-		upP1 := [2]float32{scrollX1, upY0}
-		upP2 := [2]float32{scrollX1, upY1}
-		upP3 := [2]float32{scrollX0, upY1}
-		trid.AddQuad(upP0, upP1, upP2, upP3, scrollBg)
-		ld.AddLine(upP0, upP1, scrollBorder)
-		ld.AddLine(upP1, upP2, scrollBorder)
-		ld.AddLine(upP2, upP3, scrollBorder)
-		ld.AddLine(upP3, upP0, scrollBorder)
-
-		// Draw down arrow pointing upward: 1,3,5,7,9 pixels wide from top to bottom
-		// (positioned in top section for scrolling up)
-		arrowCenterX := scrollX0 + scrollBarBorderW + scrollBarContentW/2
-		downArrowTopY := downY1 + 1
-		downArrowWidths := []float32{1, 3, 5, 7, 9}
-		for i, w := range downArrowWidths {
-			y := downArrowTopY + float32(i)
-			x0 := arrowCenterX - w/2
-			x1 := arrowCenterX + w/2
-			ld.AddLine([2]float32{x0, y}, [2]float32{x1, y}, arrowColor)
-		}
-
-		// Draw down button background (top section)
-		downP0 := [2]float32{scrollX0, downY0}
-		downP1 := [2]float32{scrollX1, downY0}
-		downP2 := [2]float32{scrollX1, downY1}
-		downP3 := [2]float32{scrollX0, downY1}
-		trid.AddQuad(downP0, downP1, downP2, downP3, scrollBg)
-		ld.AddLine(downP0, downP1, scrollBorder)
-		ld.AddLine(downP1, downP2, scrollBorder)
-		ld.AddLine(downP2, downP3, scrollBorder)
-		ld.AddLine(downP3, downP0, scrollBorder)
-
-		// Draw up arrow pointing downward: 9,7,5,3,1 pixels wide from top to bottom
-		// (positioned in bottom section for scrolling down)
-		upArrowTopY := upY1 - 5
-		updatedUpArrowWidths := []float32{9, 7, 5, 3, 1}
-		for i, w := range updatedUpArrowWidths {
-			y := upArrowTopY + float32(i)
-			x0 := arrowCenterX - w/2
-			x1 := arrowCenterX + w/2
-			ld.AddLine([2]float32{x0, y}, [2]float32{x1, y}, arrowColor)
+	bodyHeight := float32(0)
+	for _, col := range cols {
+		if h := col.Measure(); h > bodyHeight {
+			bodyHeight = h
 		}
 	}
+	width := float32(actualCols) * colWidth
+	if numRows == 0 {
+		width = altimWindowWidth * fontScale
+		bodyHeight = 0
+	}
 
-	transforms.LoadWindowViewingMatrices(cb)
-	trid.GenerateCommands(cb)
-	ld.GenerateCommands(cb)
-	td.GenerateCommands(cb)
+	v := View{
+		Position:   &ps.AltimSet.Position,
+		Reposition: &ep.altimSetRepo,
+		Width:      width,
+		BodyHeight: bodyHeight,
+		Title:      "ALTIM SET",
+		TitleFont:  ep.ERAMFont(2),
+		Opaque:     ps.AltimSet.Opaque,
+		ShowBorder: ps.AltimSet.ShowBorder,
+		Brightness: bright,
+		OnMenu: func(host math.Extent2D) popup {
+			if _, open := ep.popup.(*altimSetPopup); open {
+				return nil
+			}
+			origin := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
+				altimSetPopupWidth, (8+1)*18, ep.ERAMFont(2), host)
+			return &altimSetPopup{origin: origin}
+		},
+		OnMinimize: func() { ps.AltimSet.Visible = false },
+		Scroll: &ViewScrollConfig{
+			State:     &ep.altimSetScroll,
+			MaxOffset: max(0, numRows-maxPerPage),
+		},
+		Body: func(body math.Extent2D, b *ViewBuilders) {
+			for c, col := range cols {
+				colBody := math.Extent2D{
+					P0: [2]float32{body.P0[0] + float32(c)*colWidth, body.P0[1]},
+					P1: [2]float32{body.P0[0] + float32(c+1)*colWidth, body.P1[1]},
+				}
+				col.Draw(colBody, b)
+			}
+		},
+	}
+	ep.DrawView(ctx, transforms, cb, v)
+}
+
+// altimRow builds one ALTIM SET row from an airport's METAR (or a missing-data
+// placeholder). The altimeter portion is underlined via AfterDraw when below
+// the standard 29.92 inHg.
+func altimRow(ctx *panes.Context, icao string, badge *Badge, color renderer.RGB,
+	font *renderer.Font, textWidth func(string) float32, by int) Row {
+
+	displayID := altimDisplayID(icao)
+	metar, hasMetar := ctx.Client.State.METAR[icao]
+	if !hasMetar {
+		return Row{Badge: badge, AltText: fmt.Sprintf("%-4s   -M-  ", displayID), Color: color}
+	}
+	timeStr, altStr, altRaw := altimMetarForDisplay(metar)
+	prefix := fmt.Sprintf("%-4s  ", displayID)
+	timeField := fmt.Sprintf("%4s", timeStr)
+	mid := " "
+	altField := fmt.Sprintf("%3s", altStr)
+	line := prefix + timeField + mid + altField + "  "
+
+	row := Row{Badge: badge, AltText: line, Color: color}
+	if altRaw > 0 && altRaw < 2992 && altStr != "..." {
+		offsetX := textWidth(prefix) + textWidth(timeField) + textWidth(mid)
+		fieldW := textWidth(altField)
+		row.AfterDraw = func(extent math.Extent2D, bodyOrigin [2]float32, b *ViewBuilders) {
+			uy := bodyOrigin[1] - float32(by) - 1
+			ux := bodyOrigin[0] + offsetX
+			b.Ld.AddLine([2]float32{ux, uy}, [2]float32{ux + fieldW, uy}, color)
+		}
+	}
+	return row
 }
 
 const altimSetPopupWidth = 150
@@ -587,50 +220,57 @@ func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 	tearoffBg := util.Select(ps.AltimSet.ShowIndicators, popupGreyBg, popupBlackBg)
 
 	rows := []ERAMMenuItem{
-		{Label: tLabel, BgColor: tBg, Color: popupTextColor, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickTertiary {
-				ps.AltimSet.Opaque = !ps.AltimSet.Opaque
-			}
-			return false
-		}},
-		{Label: "BORDER", BgColor: borderBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickTertiary {
-				ps.AltimSet.ShowBorder = !ps.AltimSet.ShowBorder
-			}
-			return false
-		}},
-		{Label: "TEAROFF", BgColor: tearoffBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
-			if ct == MenuClickTertiary {
-				ps.AltimSet.ShowIndicators = !ps.AltimSet.ShowIndicators
-			}
-			return false
-		}},
-		{Label: fmt.Sprintf("LINES %d", ps.AltimSet.Lines), BgColor: popupGreenBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.AltimSet.Lines, 3, 24, 1)
-			// Adjust scroll offset if needed
-			if ep.altimSetScrollOffset > 0 {
-				maxOffset := len(ep.AltimSetAirports) - ps.AltimSet.Lines
-				if maxOffset < 0 {
-					maxOffset = 0
+		{Label: tLabel, BgColor: tBg, Color: popupTextColor, Centered: true,
+			OnClick: func(ct ERAMMenuClickType) bool {
+				if ct == MenuClickTertiary {
+					ps.AltimSet.Opaque = !ps.AltimSet.Opaque
 				}
-				if ep.altimSetScrollOffset > maxOffset {
-					ep.altimSetScrollOffset = maxOffset
+				return false
+			}},
+		{Label: "BORDER", BgColor: borderBg, Color: popupTextColor, Centered: false,
+			OnClick: func(ct ERAMMenuClickType) bool {
+				if ct == MenuClickTertiary {
+					ps.AltimSet.ShowBorder = !ps.AltimSet.ShowBorder
 				}
-			}
-			return false
-		}},
-		{Label: fmt.Sprintf("COL %d", ps.AltimSet.Col), BgColor: popupGreenBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.AltimSet.Col, 1, 4, 1)
-			return false
-		}},
-		{Label: fmt.Sprintf("FONT %d", ps.AltimSet.Font), BgColor: popupGreenBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.AltimSet.Font, 1, 3, 1)
-			return false
-		}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.AltimSet.Bright), BgColor: popupGreenBg, Color: popupTextColor, Centered: false, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.AltimSet.Bright, 0, 100, 1)
-			return false
-		}},
+				return false
+			}},
+		{Label: "TEAROFF", BgColor: tearoffBg, Color: popupTextColor, Centered: false,
+			OnClick: func(ct ERAMMenuClickType) bool {
+				if ct == MenuClickTertiary {
+					ps.AltimSet.ShowIndicators = !ps.AltimSet.ShowIndicators
+				}
+				return false
+			}},
+		{Label: fmt.Sprintf("LINES %d", ps.AltimSet.Lines), BgColor: popupGreenBg, Color: popupTextColor, Centered: false,
+			OnClick: func(ct ERAMMenuClickType) bool {
+				handleClick(ep, &ps.AltimSet.Lines, 3, 24, 1)
+				// Adjust scroll offset if needed
+				if ep.altimSetScroll.Offset > 0 {
+					maxOffset := len(ep.AltimSetAirports) - ps.AltimSet.Lines
+					if maxOffset < 0 {
+						maxOffset = 0
+					}
+					if ep.altimSetScroll.Offset > maxOffset {
+						ep.altimSetScroll.Offset = maxOffset
+					}
+				}
+				return false
+			}},
+		{Label: fmt.Sprintf("COL %d", ps.AltimSet.Col), BgColor: popupGreenBg, Color: popupTextColor, Centered: false,
+			OnClick: func(ct ERAMMenuClickType) bool {
+				handleClick(ep, &ps.AltimSet.Col, 1, 4, 1)
+				return false
+			}},
+		{Label: fmt.Sprintf("FONT %d", ps.AltimSet.Font), BgColor: popupGreenBg, Color: popupTextColor, Centered: false,
+			OnClick: func(ct ERAMMenuClickType) bool {
+				handleClick(ep, &ps.AltimSet.Font, 1, 3, 1)
+				return false
+			}},
+		{Label: fmt.Sprintf("BRIGHT %d", ps.AltimSet.Bright), BgColor: popupGreenBg, Color: popupTextColor, Centered: false,
+			OnClick: func(ct ERAMMenuClickType) bool {
+				handleClick(ep, &ps.AltimSet.Bright, 0, 100, 1)
+				return false
+			}},
 		{Label: "TEMPLATE", BgColor: popupBlackBg, Color: popupTextColor, Centered: false},
 	}
 

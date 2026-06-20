@@ -1158,8 +1158,8 @@ func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 		if maxOffset < 0 {
 			maxOffset = 0
 		}
-		if ep.altimSetScrollOffset > maxOffset {
-			ep.altimSetScrollOffset = maxOffset
+		if ep.altimSetScroll.Offset > maxOffset {
+			ep.altimSetScroll.Offset = maxOffset
 		}
 		return CommandStatus{feedbackArea: []string{"ACCEPT", "ALTIMETER REQ"}}, nil
 	}
@@ -1197,8 +1197,8 @@ func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 		if maxOffset < 0 {
 			maxOffset = 0
 		}
-		if ep.wxScrollOffset > maxOffset {
-			ep.wxScrollOffset = maxOffset
+		if ep.wxScroll.Offset > maxOffset {
+			ep.wxScroll.Offset = maxOffset
 		}
 		return CommandStatus{feedbackArea: []string{"ACCEPT", "WEATHER STAT REQ"}}, nil
 	}
