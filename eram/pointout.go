@@ -37,18 +37,18 @@ func (ep *ERAMPane) pointOutIndicatorGlyph(trk *sim.Track, fdbBrightness radar.B
 		return 0, renderer.RGB{}, false
 	}
 	acid := trk.FlightPlan.ACID
-	yellow := fdbBrightness.ScaleRGB(ERAMYellow)
+	y := fdbBrightness.ScaleRGB(colors.yellow)
 	if len(ep.InboundPointOuts[acid]) > 0 {
-		return 'P', yellow, true
+		return 'P', y, true
 	}
 
 	outbound := ep.OutboundPointOuts[acid]
 	if len(outbound) == 0 {
 		return 0, renderer.RGB{}, false
 	} else if slices.ContainsFunc(outbound, func(po outboundPointOut) bool { return !po.Acked }) {
-		return 'P', yellow, true
+		return 'P', y, true
 	} else {
-		white := fdbBrightness.ScaleRGB(renderer.RGB{R: 1, G: 1, B: 1})
+		white := fdbBrightness.ScaleRGB(colors.pointOut.white)
 		return 'A', white, true
 	}
 }
@@ -119,7 +119,7 @@ func (po *pointOutPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar
 				rows = append(rows, ERAMMenuItem{
 					Label:       "A",
 					BoxedSuffix: label(entry.Receiver),
-					Color:       renderer.RGB{R: 1, G: 1, B: 1}, // TODO brightness???
+					Color:       colors.pointOut.white, // TODO brightness???
 					OnClick: func(_ ERAMMenuClickType) bool {
 						ep.removeOutboundPointOut(acid, i)
 						return len(ep.OutboundPointOuts[acid]) == 0
@@ -129,7 +129,7 @@ func (po *pointOutPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar
 				rows = append(rows, ERAMMenuItem{
 					Label:       "P",
 					BoxedSuffix: label(entry.Receiver),
-					Color:       ERAMYellow, // todo: scale by some brightness?
+					Color:       colors.yellow, // todo: scale by some brightness?
 					// Originator can't ack their own p/o; the click is a no-op but still closes the
 					// menu.
 					OnClick: func(_ ERAMMenuClickType) bool { return false },
@@ -147,7 +147,7 @@ func (po *pointOutPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar
 			rows = append(rows, ERAMMenuItem{
 				Label:       "P",
 				BoxedSuffix: label(sender),
-				Color:       renderer.RGB{R: 0, G: 1, B: 1},
+				Color:       colors.pointOut.cyan,
 				OnClick: func(_ ERAMMenuClickType) bool {
 					ep.acknowledgePointOut(ctx, acid)
 					return true

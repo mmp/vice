@@ -238,7 +238,7 @@ func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map
 		dbType := ep.datablockType(ctx, trk)
 		ps := ep.currentPrefs()
 		brite := util.Select(dbType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
-		color := brite.ScaleRGB(ERAMYellow)
+		color := brite.ScaleRGB(colors.yellow)
 		db := ep.getDatablock(ctx, trk, dbType, color)
 		dbs[trk.ADSBCallsign] = db
 	}
@@ -259,7 +259,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		// Line 1
 		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color, false) // also * if satcom
 		vciBright := radar.Brightness(ps.Brightness.ONFREQ + ps.Brightness.Portal)
-		vciColor := vciBright.ScaleRGB(renderer.RGB{0.01, 1, 0.05})
+		vciColor := vciBright.ScaleRGB(colors.vciGreen)
 		dbWriteText(db.vci[:], util.Select(state.DisplayVCI || state.HoverVCI, vci, ""), vciColor, false)
 
 		// Line 2
@@ -267,7 +267,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
-		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(ERAMYellow)
+		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(colors.yellow)
 		dbWriteText(db.col1[:], util.Select(ctx.UserOwnsFlightPlan(trk.FlightPlan), "", " R"), colColor, false)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
 
@@ -319,7 +319,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		}
 
 		// Get line 4 (if applicable)
-		line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(ERAMYellow)
+		line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(colors.yellow)
 		if state != nil && !state.HSFHide && hsfDataExists(trk.FlightPlan) {
 			clear(db.line4[:])
 

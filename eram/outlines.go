@@ -56,7 +56,7 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 			continue
 		}
 		if db.Fields[DBFieldMain].Inside(mouse.Pos) {
-			ep.drawOutlineRectangle(ld, db.Fields[DBFieldMain], ERAMYellow)
+			ep.drawOutlineRectangle(ld, db.Fields[DBFieldMain], colors.yellow)
 		}
 		if db.Fields[DBFieldCallsign].Inside(mouse.Pos) {
 			// TODO: check what this does
@@ -72,7 +72,7 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 		}
 		if db.Fields[DBFieldPointOut].Inside(mouse.Pos) {
 			if ep.pointOutIndicatorActive(&trk) {
-				ep.drawOutlineRectangle(ld, db.Fields[DBFieldPointOut], ERAMYellow)
+				ep.drawOutlineRectangle(ld, db.Fields[DBFieldPointOut], colors.yellow)
 				if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 					ep.handlePointOutIndicatorClick(ctx, trk, db.Fields[DBFieldMain])
 					mouse.Clicked = [platform.MouseButtonCount]bool{}
@@ -262,7 +262,7 @@ func (ep *ERAMPane) fullDatablockAnchor(ctx *panes.Context, trk sim.Track,
 
 func (ep *ERAMPane) fullDatablockLineLengths(ctx *panes.Context, trk sim.Track) map[int]int {
 	ps := ep.currentPrefs()
-	color := ps.Brightness.FDB.ScaleRGB(ERAMYellow)
+	color := ps.Brightness.FDB.ScaleRGB(colors.yellow)
 	db := ep.getDatablock(ctx, trk, FullDatablock, color)
 	fdb, ok := db.(*fullDatablock)
 	if !ok || fdb == nil {

@@ -42,25 +42,6 @@ const (
 	toolbarPrefSet
 )
 
-var ( // TODO: Change to actual colors, but these STARS ones will suffice for now. The colors do vary based on button so maybe
-	// a seperate field in each individual button is needed?
-	toolbarButtonColor            = renderer.RGB{0, 0, .867}
-	toolbarTearoffButtonColor     = renderer.RGB{1, 1, .576}
-	toolbarActiveButtonColor      = renderer.RGB{.906, .616, .6}
-	toolbarTextColor              = renderer.RGB{.953, .953, .953}
-	toolbarUnsupportedButtonColor = renderer.RGB{.4, .4, .4}
-	toolbarUnsupportedTextColor   = renderer.RGB{.8, .8, .8} // Dont think I neeed this
-	toolbarDisabledButtonColor    = renderer.RGB{0, .173 / 2, 0}
-	toolbarDisabledTextColor      = renderer.RGB{.5, 0.5, 0.5} // Dont think I need this either
-	toolbarButtonGreenColor       = renderer.RGB{0, .804, 0}
-	toolbarOutlineColor           = renderer.RGB{.38, .38, .38}
-	menuOutlineColor              = renderer.RGB{1, .761, 0}
-	toolbarHoveredOutlineColor    = renderer.RGB{.953, .953, .953}
-	eramGray                      = renderer.RGB{.78, .78, .78}
-	eramDarkGray                  = renderer.RGB{.404, .404, .404}
-	toolbarTearoffDisabledColor   = renderer.RGB{.7, .7, .7} // Light gray for torn-off tearoff buttons
-)
-
 type toolbarFlags int
 
 const (
@@ -113,13 +94,13 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 	case toolbarMain:
 		toolbarDrawState.lightToolbar = [4][2]float32{}
 		toolbarDrawState.customButton = make(map[string]renderer.RGB)
-		toolbarDrawState.customButton["RANGE"] = renderer.RGB{0, 0, 0}
-		toolbarDrawState.customButton["ALT LIM"] = renderer.RGB{0, 0, 0}
-		toolbarDrawState.customButton["VECTOR"] = renderer.RGB{0, .82, 0}
+		toolbarDrawState.customButton["RANGE"] = colors.toolbar.blackButton
+		toolbarDrawState.customButton["ALT LIM"] = colors.toolbar.blackButton
+		toolbarDrawState.customButton["VECTOR"] = colors.toolbar.vectorGreen
 		if ep.deleteTearoffMode {
-			toolbarDrawState.customButton["DELETE\nTEAROFF"] = toolbarActiveButtonColor
+			toolbarDrawState.customButton["DELETE\nTEAROFF"] = colors.toolbar.activeButton
 		} else {
-			toolbarDrawState.customButton["DELETE\nTEAROFF"] = renderer.RGB{0, .804, .843}
+			toolbarDrawState.customButton["DELETE\nTEAROFF"] = colors.toolbar.deleteTearoff
 		}
 		ep.drawToolbarFullButton(ctx, "DRAW", 0, scale, false, false)
 		if ep.drawToolbarFullButton(ctx, "ATC\nTOOLS", 0, scale, false, false) {
@@ -180,8 +161,8 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
 		main := "ATC\nTOOLS"
-		toolbarDrawState.customButton[main] = toolbarActiveButtonColor
-		toolbarDrawState.customButton["WX"] = toolbarButtonColor
+		toolbarDrawState.customButton[main] = colors.toolbar.activeButton
+		toolbarDrawState.customButton["WX"] = colors.toolbar.button
 		drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
@@ -215,7 +196,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
 		main := "FONT"
-		toolbarDrawState.customButton[main] = toolbarActiveButtonColor // Set the custom
+		toolbarDrawState.customButton[main] = colors.toolbar.activeButton // Set the custom
 		drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
@@ -261,7 +242,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
 		main := ep.videoMapLabel
-		toolbarDrawState.customButton[main] = toolbarActiveButtonColor // Set the custom button color for VIDEOMAP
+		toolbarDrawState.customButton[main] = colors.toolbar.activeButton // Set the custom button color for VIDEOMAP
 		drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
@@ -309,10 +290,10 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		toolbarDrawState.customButton = make(map[string]renderer.RGB)
 		mapb := ep.activeToolbarMenu == toolbarMapBright
 		if ep.activeToolbarMenu == toolbarBright {
-			toolbarDrawState.customButton["MAP\nBRIGHT"] = toolbarButtonColor
-			toolbarDrawState.customButton["CPDLC"] = toolbarButtonColor
+			toolbarDrawState.customButton["MAP\nBRIGHT"] = colors.toolbar.button
+			toolbarDrawState.customButton["CPDLC"] = colors.toolbar.button
 		} else {
-			toolbarDrawState.customButton["MAP\nBRIGHT"] = toolbarActiveButtonColor
+			toolbarDrawState.customButton["MAP\nBRIGHT"] = colors.toolbar.activeButton
 		}
 
 		ps := ep.currentPrefs()
@@ -559,7 +540,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			//handle strobe lines
 		}
 		historyLabel := fmt.Sprintf("HISTORY\n%d", ps.HistoryLength)
-		toolbarDrawState.customButton[historyLabel] = toolbarButtonGreenColor
+		toolbarDrawState.customButton[historyLabel] = colors.toolbar.greenButton
 
 		if ep.drawToolbarFullButton(ctx, historyLabel, 0, scale, false, false) {
 			handleClick(ep, &ps.HistoryLength, 0, 5, 1)
@@ -568,7 +549,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		p2 := [2]float32{rightEdge, toolbarDrawState.buttonCursor[1] - buttonSize(buttonFull, scale)[1]}
 		p3 := [2]float32{p0[0], p2[1]}
 
-		toolbarDrawState.customButton[fmt.Sprintf("HISTORY\n%d", ps.HistoryLength)] = toolbarButtonGreenColor
+		toolbarDrawState.customButton[fmt.Sprintf("HISTORY\n%d", ps.HistoryLength)] = colors.toolbar.greenButton
 
 		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
@@ -702,16 +683,16 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 	case toolbarDBFields:
-		toolbarDrawState.customButton["FDB LDR"] = renderer.RGB{0, .82, 0}
-		toolbarDrawState.customButton["NONADSB"] = renderer.RGB{0, .82, 0}
-		toolbarDrawState.customButton["BCAST\nFLID"] = eramGray
-		toolbarDrawState.customButton["PORTAL\nFENCE"] = eramGray
+		toolbarDrawState.customButton["FDB LDR"] = colors.toolbar.vectorGreen
+		toolbarDrawState.customButton["NONADSB"] = colors.toolbar.vectorGreen
+		toolbarDrawState.customButton["BCAST\nFLID"] = colors.toolbar.grayButton
+		toolbarDrawState.customButton["PORTAL\nFENCE"] = colors.toolbar.grayButton
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
 			t := toolbarDrawState.lightToolbar
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
 		main := "DB\nFIELDS"
-		toolbarDrawState.customButton[main] = toolbarActiveButtonColor // Set the custom
+		toolbarDrawState.customButton[main] = colors.toolbar.activeButton // Set the custom
 		drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
@@ -792,9 +773,9 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			t := toolbarDrawState.lightToolbar
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
-		toolbarDrawState.customButton["SPEED"] = toolbarButtonGreenColor
-		toolbarDrawState.customButton["SIZE"] = toolbarButtonGreenColor
-		toolbarDrawState.customButton["VOLUME"] = toolbarButtonGreenColor
+		toolbarDrawState.customButton["SPEED"] = colors.toolbar.greenButton
+		toolbarDrawState.customButton["SIZE"] = colors.toolbar.greenButton
+		toolbarDrawState.customButton["VOLUME"] = colors.toolbar.greenButton
 		drawButtonSamePosition(ctx, "CURSOR")
 		if ep.drawToolbarFullButton(ctx, "CURSOR", 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
@@ -1016,15 +997,15 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 
 	var buttonColor, textColor renderer.RGB
 
-	textColor = toolbarTextColor
+	textColor = colors.toolbar.text
 
 	disabled := hasFlag(flags, buttonDisabled)
 	if disabled {
-		buttonColor = toolbarDisabledButtonColor
+		buttonColor = colors.toolbar.disabledButton
 	}
 	unsupported := hasFlag(flags, buttonUnsupported)
 	if unsupported {
-		buttonColor = toolbarUnsupportedButtonColor
+		buttonColor = colors.toolbar.unsupportedButton
 	}
 	if !disabled && !unsupported && hasFlag(flags, buttonFull) {
 		if mouseInside && mouseDownInside {
@@ -1033,23 +1014,23 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 			pushedIn = false
 		}
 		if pushedIn {
-			buttonColor = toolbarActiveButtonColor
+			buttonColor = colors.toolbar.activeButton
 			// If its a button that changes the toolbar, add it to the button position
 			// With the exception of MAP BRIGHT, which opens a submenu (TODO: figure out how to do that)
 		} else {
-			buttonColor = toolbarButtonColor
+			buttonColor = colors.toolbar.button
 		}
 
 		if ep.activeToolbarMenu != toolbarMain {
 			buttonColor = ep.customButtonColor(text)
 			if buttonColor == (renderer.RGB{}) && pushedIn {
-				buttonColor = eramGray // The black buttons turn gray when pushed
+				buttonColor = colors.toolbar.grayButton // The black buttons turn gray when pushed
 			}
 		}
 		if customColor, ok := toolbarDrawState.customButton[cleanButtonName(text)]; ok {
 			buttonColor = customColor
 			if customColor == (renderer.RGB{}) && pushedIn {
-				buttonColor = eramGray // The black buttons turn gray when pushed
+				buttonColor = colors.toolbar.grayButton // The black buttons turn gray when pushed
 			}
 		}
 
@@ -1062,12 +1043,12 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 		buttonName := toolbarDrawState.pendingTearoffName
 		if ps.TornOffButtons != nil {
 			if _, tornOff := ps.TornOffButtons[buttonName]; tornOff {
-				buttonColor = toolbarTearoffDisabledColor // Gray - disabled
+				buttonColor = colors.toolbar.tearoffDisabled // Gray - disabled
 			} else {
-				buttonColor = toolbarTearoffButtonColor // Yellow - active
+				buttonColor = colors.toolbar.tearoffButton // Yellow - active
 			}
 		} else {
-			buttonColor = toolbarTearoffButtonColor // Yellow - active (no tearoffs yet)
+			buttonColor = colors.toolbar.tearoffButton // Yellow - active (no tearoffs yet)
 		}
 	}
 	ps := ep.currentPrefs()
@@ -1079,7 +1060,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	drawToolbarText(text, td, sz, textColor)
 
 	// Draw button outline
-	outlineColor := ps.Brightness.Border.ScaleRGB(util.Select(mouseInside, toolbarHoveredOutlineColor, toolbarOutlineColor))
+	outlineColor := ps.Brightness.Border.ScaleRGB(util.Select(mouseInside, colors.toolbar.hoveredOutline, colors.toolbar.outline))
 
 	ld.AddLine(p0, p1, outlineColor)
 	ld.AddLine(p1, p2, outlineColor)
@@ -1213,7 +1194,7 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 
 	toolbarDrawState.style = renderer.TextStyle{
 		Font:        ep.ERAMToolbarFont(),
-		Color:       toolbarTextColor,
+		Color:       colors.toolbar.text,
 		LineSpacing: 0,
 	}
 
@@ -1227,7 +1208,7 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	if drawBackground && ps.DisplayToolbar {
 		trid.AddQuad(toolbarDrawState.drawStartPos, [2]float32{drawEndPos[0], toolbarDrawState.drawStartPos[1]},
-			drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, ps.Brightness.Toolbar.ScaleRGB(eramGray))
+			drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, ps.Brightness.Toolbar.ScaleRGB(colors.toolbar.background))
 		trid.GenerateCommands(cb)
 	}
 	if captureMouse && (ep.mousePrimaryClicked(ctx.Mouse) || ep.mouseTertiaryClicked(ctx.Mouse)) {
@@ -1287,27 +1268,27 @@ var toolbarLabel = map[int][]string{
 }
 
 var menuColor = map[int]renderer.RGB{
-	toolbarVideomap:  {0, 0, 0},               // ARTCC
-	toolbarATCTools:  {0, 0, 0},               // ATC TOOLS
-	toolbarBright:    toolbarButtonGreenColor, // BRIGHT
-	toolbarMapBright: toolbarButtonGreenColor, // MAP BRIGHT
-	toolbarChecklist: {0, 0, 0},               // CHECK LISTS
-	toolbarCursor:    toolbarButtonGreenColor, // CURSOR
-	toolbarDBFields:  {0, 0, 0},               // DB FIELDS
-	toolbarFont:      toolbarButtonGreenColor, // FONT
-	toolbarViews:     {0, 0, 0},               // VIEWS
+	toolbarVideomap:  colors.toolbar.blackButton, // ARTCC
+	toolbarATCTools:  colors.toolbar.blackButton, // ATC TOOLS
+	toolbarBright:    colors.toolbar.greenButton, // BRIGHT
+	toolbarMapBright: colors.toolbar.greenButton, // MAP BRIGHT
+	toolbarChecklist: colors.toolbar.blackButton, // CHECK LISTS
+	toolbarCursor:    colors.toolbar.greenButton, // CURSOR
+	toolbarDBFields:  colors.toolbar.blackButton, // DB FIELDS
+	toolbarFont:      colors.toolbar.greenButton, // FONT
+	toolbarViews:     colors.toolbar.blackButton, // VIEWS
 }
 
 func (ep *ERAMPane) customButtonColor(button string) renderer.RGB {
 	if button == "" {
-		return toolbarTearoffButtonColor // dont change tearoff button color
+		return colors.toolbar.tearoffButton // dont change tearoff button color
 	}
 
 	labels := toolbarLabel[ep.activeToolbarMenu]
 	// Check if button matches any of the labels in the current menu
 	for _, label := range labels {
 		if button == label {
-			return toolbarActiveButtonColor
+			return colors.toolbar.activeButton
 		}
 	}
 	// If button doesn't match any label, use the menu color
@@ -1354,7 +1335,7 @@ func (ep *ERAMPane) checkNextRow(nextRow bool, sz [2]float32, ctx *panes.Context
 func (ep *ERAMPane) drawMenuOutline(ctx *panes.Context, p0, p1, p2, p3 [2]float32) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	color := ep.currentPrefs().Brightness.TBBRDR.ScaleRGB(menuOutlineColor)
+	color := ep.currentPrefs().Brightness.TBBRDR.ScaleRGB(colors.menu.tearoffOutline)
 	toolbarDrawState.cb.LineWidth(3, ctx.DPIScale)
 	ld.AddLine(p0, p1, color)
 	ld.AddLine(p1, p2, color)
@@ -1367,7 +1348,7 @@ func (ep *ERAMPane) drawMenuOutline(ctx *panes.Context, p0, p1, p2, p3 [2]float3
 func (ep *ERAMPane) drawLightToolbar(p0, p1, p2, p3 [2]float32) {
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
-	trid.AddQuad(p0, p1, p2, p3, eramDarkGray)
+	trid.AddQuad(p0, p1, p2, p3, colors.toolbar.submenuBackground)
 	trid.GenerateCommands(toolbarDrawState.cb)
 }
 
@@ -1466,7 +1447,7 @@ func (ep *ERAMPane) drawMasterMenu(ctx *panes.Context, cb *renderer.CommandBuffe
 	scale := ep.toolbarButtonScale(ctx)
 	toolbarDrawState.style = renderer.TextStyle{
 		Font:        ep.ERAMToolbarFont(),
-		Color:       toolbarTextColor,
+		Color:       colors.toolbar.text,
 		LineSpacing: 0,
 	}
 	if ep.drawFullMasterButton(ctx, "TOOLBAR", toolbarDrawState.masterToolbar, scale, 0, false) {
@@ -1533,15 +1514,15 @@ func (ep *ERAMPane) drawMasterButton(ctx *panes.Context, text string, pushedIn b
 		!hasFlag(flags, buttonDisabled)
 
 	var buttonColor, textColor renderer.RGB
-	textColor = toolbarTextColor
+	textColor = colors.toolbar.text
 
 	disabled := hasFlag(flags, buttonDisabled)
 	if disabled {
-		buttonColor = toolbarDisabledButtonColor
+		buttonColor = colors.toolbar.disabledButton
 	}
 	unsupported := hasFlag(flags, buttonUnsupported)
 	if unsupported {
-		buttonColor = toolbarUnsupportedButtonColor
+		buttonColor = colors.toolbar.unsupportedButton
 	}
 
 	if !disabled && !unsupported && hasFlag(flags, buttonFull) {
@@ -1550,16 +1531,16 @@ func (ep *ERAMPane) drawMasterButton(ctx *panes.Context, text string, pushedIn b
 		}
 		if pushedIn {
 			if text != "TOOLBAR" {
-				buttonColor = eramGray
+				buttonColor = colors.toolbar.grayButton
 			} else {
-				buttonColor = toolbarActiveButtonColor
+				buttonColor = colors.toolbar.activeButton
 			}
 
 		} else {
 			if text != "TOOLBAR" {
-				buttonColor = renderer.RGB{0, 0, 0}
+				buttonColor = colors.toolbar.blackButton
 			} else {
-				buttonColor = toolbarButtonColor
+				buttonColor = colors.toolbar.button
 			}
 		}
 
@@ -1569,12 +1550,12 @@ func (ep *ERAMPane) drawMasterButton(ctx *panes.Context, text string, pushedIn b
 		buttonName := toolbarDrawState.pendingTearoffName
 		if ps.TornOffButtons != nil {
 			if _, tornOff := ps.TornOffButtons[buttonName]; tornOff {
-				buttonColor = toolbarTearoffDisabledColor // Gray - disabled
+				buttonColor = colors.toolbar.tearoffDisabled // Gray - disabled
 			} else {
-				buttonColor = toolbarTearoffButtonColor // Yellow - active
+				buttonColor = colors.toolbar.tearoffButton // Yellow - active
 			}
 		} else {
-			buttonColor = toolbarTearoffButtonColor // Yellow - active (no tearoffs yet)
+			buttonColor = colors.toolbar.tearoffButton // Yellow - active (no tearoffs yet)
 		}
 	}
 	ps := ep.currentPrefs()
@@ -1585,7 +1566,7 @@ func (ep *ERAMPane) drawMasterButton(ctx *panes.Context, text string, pushedIn b
 	trid.AddQuad(p0, p1, p2, p3, buttonColor)
 	drawToolbarText(text, td, sz, textColor)
 
-	outlineColor := ps.Brightness.Border.ScaleRGB(util.Select(mouseInside, toolbarHoveredOutlineColor, toolbarOutlineColor))
+	outlineColor := ps.Brightness.Border.ScaleRGB(util.Select(mouseInside, colors.toolbar.hoveredOutline, colors.toolbar.outline))
 	ld.AddLine(p0, p1, outlineColor)
 	ld.AddLine(p1, p2, outlineColor)
 	ld.AddLine(p2, p3, outlineColor)
@@ -1634,7 +1615,7 @@ func (ep *ERAMPane) drawTearoffPreview(ctx *panes.Context, transforms radar.Scop
 	previewP3 := math.Add2f(previewP0, [2]float32{0, -height})
 
 	// Draw white outline
-	color := toolbarHoveredOutlineColor
+	color := colors.toolbar.hoveredOutline
 	ld.AddLine(previewP0, previewP1, color)
 	ld.AddLine(previewP1, previewP2, color)
 	ld.AddLine(previewP2, previewP3, color)
@@ -1989,7 +1970,7 @@ func (ep *ERAMPane) drawSingleTornOffButton(ctx *panes.Context, name string, pos
 	buttonHovered := mouse != nil && buttonExt.Inside(mouse.Pos)
 
 	// Handle color (yellow for repositioning)
-	handleColor := toolbarTearoffButtonColor
+	handleColor := colors.toolbar.tearoffButton
 	handleColor = ps.Brightness.Button.ScaleRGB(handleColor)
 	trid.AddQuad(handleP0, handleP1, handleP2, handleP3, handleColor)
 
@@ -2004,7 +1985,7 @@ func (ep *ERAMPane) drawSingleTornOffButton(ctx *panes.Context, name string, pos
 	trid.AddQuad(buttonP0, buttonP1, buttonP2, buttonP3, buttonColor)
 
 	// Draw text on main button
-	textColor := ps.Brightness.Text.ScaleRGB(toolbarTextColor)
+	textColor := ps.Brightness.Text.ScaleRGB(colors.toolbar.text)
 	// Get display text for button (may have newlines)
 	displayText := ep.getTornOffButtonText(name)
 
@@ -2013,7 +1994,7 @@ func (ep *ERAMPane) drawSingleTornOffButton(ctx *panes.Context, name string, pos
 	savedStyle := toolbarDrawState.style
 	toolbarDrawState.style = renderer.TextStyle{
 		Font:        ep.ERAMToolbarFont(),
-		Color:       toolbarTextColor,
+		Color:       colors.toolbar.text,
 		LineSpacing: 0,
 	}
 	toolbarDrawState.buttonCursor = buttonP0
@@ -2022,8 +2003,8 @@ func (ep *ERAMPane) drawSingleTornOffButton(ctx *panes.Context, name string, pos
 	toolbarDrawState.style = savedStyle
 
 	// Draw outlines
-	handleOutline := ps.Brightness.Border.ScaleRGB(util.Select(handleHovered, toolbarHoveredOutlineColor, toolbarOutlineColor))
-	buttonOutline := ps.Brightness.Border.ScaleRGB(util.Select(buttonHovered, toolbarHoveredOutlineColor, toolbarOutlineColor))
+	handleOutline := ps.Brightness.Border.ScaleRGB(util.Select(handleHovered, colors.toolbar.hoveredOutline, colors.toolbar.outline))
+	buttonOutline := ps.Brightness.Border.ScaleRGB(util.Select(buttonHovered, colors.toolbar.hoveredOutline, colors.toolbar.outline))
 
 	ld.AddLine(handleP0, handleP1, handleOutline)
 	ld.AddLine(handleP1, handleP2, handleOutline)
@@ -2125,12 +2106,12 @@ func (ep *ERAMPane) videoMapKeyForButton(name string) (string, bool) {
 
 func (ep *ERAMPane) tornOffButtonActiveColor(name string) renderer.RGB {
 	if ep.getTornOffButtonText(name) == "CRR\nFIX" {
-		return eramGray
+		return colors.toolbar.grayButton
 	}
 	if _, ok := ep.videoMapKeyForButton(name); ok {
-		return eramGray
+		return colors.toolbar.grayButton
 	}
-	return toolbarActiveButtonColor
+	return colors.toolbar.activeButton
 }
 
 func (ep *ERAMPane) tornOffButtonBaseColor(name string) renderer.RGB {
@@ -2139,25 +2120,25 @@ func (ep *ERAMPane) tornOffButtonBaseColor(name string) renderer.RGB {
 
 	// Individual torn-off buttons that should be black.
 	if display == "CRR\nFIX" {
-		return renderer.RGB{0, 0, 0}
+		return colors.toolbar.blackButton
 	}
 
 	if key == "RANGE" || key == "ALT LIM" {
-		return renderer.RGB{0, 0, 0}
+		return colors.toolbar.blackButton
 	}
 	if key == "VECTOR" || key == "HISTORY" || key == "FDB LDR" || key == "NONADSB" {
-		return toolbarButtonGreenColor
+		return colors.toolbar.greenButton
 	}
 	if display == "DELETE\nTEAROFF" {
-		return renderer.RGB{0, .804, .843}
+		return colors.toolbar.deleteTearoff
 	}
 	if display == "BCAST\nFLID" || display == "PORTAL\nFENCE" {
-		return eramGray
+		return colors.toolbar.grayButton
 	}
 	if _, ok := ep.videoMapKeyForButton(name); ok {
 		return menuColor[toolbarVideomap]
 	}
-	return toolbarButtonColor
+	return colors.toolbar.button
 }
 
 // getTornOffButtonText returns the display text for a torn-off button

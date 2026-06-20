@@ -21,10 +21,168 @@ import (
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-var (
-	ERAMPopupPaneBackgroundColor = renderer.RGB{R: 0, G: 0, B: 0}
-	ERAMYellow                   = renderer.RGB{R: .894, G: .894}
+// Color palette for ERAM rendering. Sub-structs group colors by where they
+// are used: popup rows, menu chrome, floating views, scroll bars, the
+// toolbar, badges, CRR, the point-out popup, and the pause-overlay. Same
+// RGB values intentionally appear under several names when used in distinct
+// places, so each call site can read with local context.
+type (
+	popupPalette struct {
+		backgroundBlack, backgroundGrey, backgroundGreen, text renderer.RGB
+	}
+	menuPalette struct {
+		titleBackground, titleText, titleLeftBorder, outerBorder renderer.RGB
+		buttonOutline, buttonHoverOutline                        renderer.RGB
+		rowDimOutline, rowHoverOutline                           renderer.RGB
+		selectedItem                                             renderer.RGB
+		scrollArrow, scrollDimArrow                              renderer.RGB
+		tearoffOutline                                           renderer.RGB
+	}
+	viewPalette struct {
+		text, clockText, opaqueBackground, border renderer.RGB
+		buttonOutline, hoveredOutline             renderer.RGB
+	}
+	scrollPalette struct {
+		background, border, arrow renderer.RGB
+	}
+	toolbarPalette struct {
+		background, submenuBackground                        renderer.RGB
+		button, tearoffButton, tearoffDisabled, activeButton renderer.RGB
+		text                                                 renderer.RGB
+		unsupportedButton, disabledButton                    renderer.RGB
+		outline, hoveredOutline                              renderer.RGB
+		greenButton, grayButton, blackButton                 renderer.RGB
+		vectorGreen, deleteTearoff                           renderer.RGB
+	}
+	badgePalette struct {
+		fill, border renderer.RGB
+	}
+	crrPalette struct {
+		panelButtonBackground, panelBorder, swatchHighlight renderer.RGB
+		green, yellow, magenta, cyan, white, amber          renderer.RGB
+	}
+	pointOutPalette struct {
+		cyan, white renderer.RGB
+	}
+	pauseOverlayPalette struct {
+		background, text renderer.RGB
+	}
 )
+
+var colors = struct {
+	// Main ERAM yellow used for datablocks, leader lines, J-rings, the
+	// point-out indicator, and outline rectangles.
+	yellow renderer.RGB
+
+	// Input-area status indicators.
+	// TODO: Find the actual ERAM red and green values for these.
+	errorRed, successGreen renderer.RGB
+
+	// ERAM scope clear color.
+	scopeBackground renderer.RGB
+
+	// Default video map line color (used when a BCG slot has no group color).
+	videoMapBase renderer.RGB
+
+	// Data block VCI (Voice Channel Indicator) green.
+	vciGreen renderer.RGB
+
+	// Debug overlay for the draw-route command.
+	drawRoute renderer.RGB
+
+	popup        popupPalette
+	menu         menuPalette
+	view         viewPalette
+	scroll       scrollPalette
+	toolbar      toolbarPalette
+	badge        badgePalette
+	crr          crrPalette
+	pointOut     pointOutPalette
+	pauseOverlay pauseOverlayPalette
+}{
+	yellow:          renderer.RGB{R: .894, G: .894},
+	errorRed:        renderer.RGB{R: 1, G: 0, B: 0},
+	successGreen:    renderer.RGB{R: 0, G: 1, B: 0},
+	scopeBackground: renderer.RGB{R: 0, G: 0, B: .506},
+	videoMapBase:    renderer.RGB{R: .953, G: .953, B: .953},
+	vciGreen:        renderer.RGB{R: 0.01, G: 1, B: 0.05},
+	drawRoute:       renderer.RGB{R: 1, G: .3, B: .3},
+
+	popup: popupPalette{
+		backgroundBlack: renderer.RGB{R: 0, G: 0, B: 0},
+		backgroundGrey:  renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0},
+		backgroundGreen: renderer.RGB{R: 0, G: 157.0 / 255.0, B: 0},
+		text:            renderer.RGB{R: .85, G: .85, B: .85},
+	},
+	menu: menuPalette{
+		titleBackground:    renderer.RGB{R: .78, G: .78, B: .78},
+		titleText:          renderer.RGB{R: 1, G: 1, B: 1},
+		titleLeftBorder:    renderer.RGB{R: 0, G: 0, B: 0},
+		outerBorder:        renderer.RGB{R: 213.0 / 255.0, G: 213.0 / 255.0, B: 213.0 / 255.0},
+		buttonOutline:      renderer.RGB{R: .38, G: .38, B: .38},
+		buttonHoverOutline: renderer.RGB{R: .953, G: .953, B: .953},
+		rowDimOutline:      renderer.RGB{R: .195, G: .195, B: .195},
+		rowHoverOutline:    renderer.RGB{R: .624, G: .624, B: .624},
+		selectedItem:       renderer.RGB{R: .3, G: .3, B: .6},
+		scrollArrow:        renderer.RGB{R: .7, G: .7, B: .7},
+		scrollDimArrow:     renderer.RGB{R: .3, G: .3, B: .3},
+		tearoffOutline:     renderer.RGB{R: 1, G: .761, B: 0},
+	},
+	view: viewPalette{
+		text:             renderer.RGB{R: .85, G: .85, B: .85},
+		clockText:        renderer.RGB{R: 1, G: 1, B: 1},
+		opaqueBackground: renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0},
+		border:           renderer.RGB{R: .914, G: .914, B: .914},
+		buttonOutline:    renderer.RGB{R: .38, G: .38, B: .38},
+		hoveredOutline:   renderer.RGB{R: .953, G: .953, B: .953},
+	},
+	scroll: scrollPalette{
+		background: renderer.RGB{R: 0, G: 0, B: 0},
+		border:     renderer.RGB{R: 0.5, G: 0.5, B: 0.5},
+		arrow:      renderer.RGB{R: 145.0 / 255.0, G: 145.0 / 255.0, B: 145.0 / 255.0},
+	},
+	toolbar: toolbarPalette{
+		background:        renderer.RGB{R: .78, G: .78, B: .78},
+		submenuBackground: renderer.RGB{R: .404, G: .404, B: .404},
+		button:            renderer.RGB{R: 0, G: 0, B: .867},
+		tearoffButton:     renderer.RGB{R: 1, G: 1, B: .576},
+		tearoffDisabled:   renderer.RGB{R: .7, G: .7, B: .7},
+		activeButton:      renderer.RGB{R: .906, G: .616, B: .6},
+		text:              renderer.RGB{R: .953, G: .953, B: .953},
+		unsupportedButton: renderer.RGB{R: .4, G: .4, B: .4},
+		disabledButton:    renderer.RGB{R: 0, G: .173 / 2, B: 0},
+		outline:           renderer.RGB{R: .38, G: .38, B: .38},
+		hoveredOutline:    renderer.RGB{R: .953, G: .953, B: .953},
+		greenButton:       renderer.RGB{R: 0, G: .804, B: 0},
+		grayButton:        renderer.RGB{R: .78, G: .78, B: .78},
+		blackButton:       renderer.RGB{R: 0, G: 0, B: 0},
+		vectorGreen:       renderer.RGB{R: 0, G: .82, B: 0},
+		deleteTearoff:     renderer.RGB{R: 0, G: .804, B: .843},
+	},
+	badge: badgePalette{
+		fill:   renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0},
+		border: renderer.RGB{R: .5, G: .5, B: .5},
+	},
+	crr: crrPalette{
+		panelButtonBackground: renderer.RGB{R: 0, G: 0, B: 0},
+		panelBorder:           renderer.RGB{R: .6, G: .6, B: .6},
+		swatchHighlight:       renderer.RGB{R: 1, G: 1, B: 1},
+		green:                 renderer.RGB{R: .1, G: .9, B: .1},
+		yellow:                renderer.RGBFromHex(0xB7B513),
+		magenta:               renderer.RGBFromHex(0xB000B0),
+		cyan:                  renderer.RGB{R: 0, G: .8, B: .8},
+		white:                 renderer.RGB{R: .85, G: .85, B: .85},
+		amber:                 renderer.RGB{R: .9, G: .7, B: .2},
+	},
+	pointOut: pointOutPalette{
+		cyan:  renderer.RGB{R: 0, G: 1, B: 1},
+		white: renderer.RGB{R: 1, G: 1, B: 1},
+	},
+	pauseOverlay: pauseOverlayPalette{
+		background: renderer.RGB{R: 1, G: 0, B: 0},
+		text:       renderer.RGB{R: 1, G: 1, B: 1},
+	},
+}
 
 const numMapColors = 8
 
@@ -320,7 +478,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.updateRadarTracks(ctx, tracks)
 
 	// draw the ERAMPane
-	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(renderer.RGB{0, 0, .506})) // Scale this eventually
+	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(colors.scopeBackground)) // Scale this eventually
 	ep.processKeyboardInput(ctx)
 	// ctr := UserCenter
 	// ps.Range is the vertical extent of the scope in NM (matching the
@@ -566,7 +724,7 @@ type inputText []inputChar
 
 func (inp *inputText) Set(ps *Preferences, str string) {
 	inp.Clear()
-	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor) // Default white text color
+	color := ps.Brightness.Text.ScaleRGB(colors.toolbar.text) // Default white text color
 	str = formatInput(str)
 	for _, char := range str {
 		*inp = append(*inp, inputChar{char: char, color: color})
@@ -586,7 +744,7 @@ func (inp *inputText) AddLocation(ps *Preferences, location math.Point2LL, calls
 	for len(*inp) > 0 && unicode.IsSpace((*inp)[len(*inp)-1].char) {
 		*inp = (*inp)[:len(*inp)-1]
 	}
-	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor)
+	color := ps.Brightness.Text.ScaleRGB(colors.toolbar.text)
 	for _, char := range formatInput(" " + locationSymbol + " ") {
 		*inp = append(*inp, inputChar{char: char, color: color, location: location, trackCallsign: callsign})
 	}
@@ -595,7 +753,7 @@ func (inp *inputText) AddLocation(ps *Preferences, location math.Point2LL, calls
 // No formatting needed
 func (inp *inputText) AddBasic(ps *Preferences, str string) {
 	str = formatInput(str)
-	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor) // Default white text color
+	color := ps.Brightness.Text.ScaleRGB(colors.toolbar.text) // Default white text color
 	for _, char := range str {
 		*inp = append(*inp, inputChar{char: char, color: color})
 	}
@@ -646,7 +804,7 @@ func (inp inputText) String() string {
 func (inp *inputText) displayError(ps *Preferences, err error) {
 	if err != nil {
 		errMsg := inputText{}
-		errMsg.Add(xMark+" ", renderer.RGB{1, 0, 0}, math.Point2LL{}) // TODO: Find actual red color
+		errMsg.Add(xMark+" ", colors.errorRed, math.Point2LL{})
 		errMsg.AddBasic(ps, toUpper(err.Error()))
 		*inp = errMsg
 	}
@@ -654,7 +812,7 @@ func (inp *inputText) displayError(ps *Preferences, err error) {
 
 func (inp *inputText) displaySuccess(ps *Preferences, str string) {
 	sucMsg := inputText{}
-	sucMsg.Add(checkMark+" ", renderer.RGB{0, 1, 0}, math.Point2LL{}) // TODO: Find actual green color
+	sucMsg.Add(checkMark+" ", colors.successGreen, math.Point2LL{})
 	sucMsg.AddBasic(ps, str)
 	*inp = sucMsg
 
@@ -777,14 +935,14 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuf
 		[2]float32{width/2 + 180, quadTop},    // Right-top
 		[2]float32{width/2 + 180, quadBottom}, // Right-bottom
 		[2]float32{width/2 - 180, quadBottom}, // Left-bottom
-		renderer.RGB{R: 1, G: 0, B: 0})        // Solid red
+		colors.pauseOverlay.background)
 
 	// Draw text
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	td.AddTextCentered(text, [2]float32{width / 2, textY}, renderer.TextStyle{
 		Font:  font,
-		Color: renderer.RGB{R: 1, G: 1, B: 1},
+		Color: colors.pauseOverlay.text,
 	})
 
 	// Apply transformations and draw
@@ -802,7 +960,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	// empty-named slot stay at the zero value (black/invisible), matching
 	// the previous defensive bcgColor closure.
 	var bcgRGB [256]renderer.RGB
-	base := renderer.RGB{R: .953, G: .953, B: .953}
+	base := colors.videoMapBase
 	for i, name := range ep.bcgNames {
 		if name == "" {
 			continue

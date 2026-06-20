@@ -394,7 +394,7 @@ func drawDiamond(ctx *panes.Context, transforms radar.ScopeTransformations, colo
 func (ep *ERAMPane) trackColor() renderer.RGB {
 	ps := ep.currentPrefs()
 	bright := ps.Brightness.PRTGT
-	return bright.ScaleRGB(ERAMYellow)
+	return bright.ScaleRGB(colors.yellow)
 }
 
 func (ep *ERAMPane) updateVisibleTracks(ctx *panes.Context) { // When radar holes are added
@@ -511,7 +511,7 @@ func (ep *ERAMPane) trackDatablockColor(ctx *panes.Context, trk sim.Track) rende
 	dType := ep.datablockType(ctx, trk)
 	ps := ep.currentPrefs()
 	brite := util.Select(dType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
-	return brite.ScaleRGB(ERAMYellow)
+	return brite.ScaleRGB(colors.yellow)
 }
 
 // drawLeaderLines draws leader lines for visible datablocks.
@@ -626,7 +626,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 			bright = ps.Brightness.UNPHST
 		}
 
-		color := bright.ScaleRGB(ERAMYellow)
+		color := bright.ScaleRGB(colors.yellow)
 
 		// Respect selected history length (0–5)
 		max := ps.HistoryLength
@@ -687,7 +687,7 @@ func (ep *ERAMPane) drawJRings(ctx *panes.Context, tracks []sim.Track,
 		if state.DisplayJRing {
 			pw := transforms.WindowFromLatLongP(pos)
 			radius := 5 / transforms.PixelDistanceNM(ctx.NmPerLongitude)
-			jr.AddCircle(pw, radius, 50, ERAMYellow)
+			jr.AddCircle(pw, radius, 50, colors.yellow)
 		}
 		if state.DisplayReducedJRing {
 			pw := transforms.WindowFromLatLongP(pos)
@@ -699,7 +699,7 @@ func (ep *ERAMPane) drawJRings(ctx *panes.Context, tracks []sim.Track,
 				{260, 280},
 			}
 
-			jr.AddGappedCircle(pw, reducedRadius, 50, reducedJRingGaps, ERAMYellow)
+			jr.AddGappedCircle(pw, reducedRadius, 50, reducedJRingGaps, colors.yellow)
 		}
 	}
 	jr.GenerateCommands(cb)

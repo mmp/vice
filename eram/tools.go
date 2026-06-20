@@ -38,7 +38,7 @@ func (ep *ERAMPane) startDrawCommandInput(ctx *panes.Context, transforms radar.S
 
 	toolbarDrawState.style = renderer.TextStyle{
 		Font:        ep.ERAMInputFont(),
-		Color:       toolbarTextColor,
+		Color:       colors.toolbar.text,
 		LineSpacing: 0,
 	}
 
@@ -97,7 +97,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 			seamY := body.P1[1] - inputH
 
 			// Seam line between input and feedback.
-			borderColor := ps.Brightness.Border.ScaleRGB(renderer.RGB{R: .914, G: .914, B: .914})
+			borderColor := ps.Brightness.Border.ScaleRGB(colors.view.border)
 			b.Ld.AddLine([2]float32{body.P0[0], seamY}, [2]float32{body.P1[0], seamY}, borderColor)
 
 			dpi := ctx.Platform.FramebufferSize()[1] / ctx.Platform.DisplaySize()[1]
@@ -111,7 +111,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 				P0: [2]float32{winBase[0], winBase[1] - inputH},
 				P1: [2]float32{winBase[0] + width, winBase[1]},
 			}, dpi)
-			inputColor := ps.Brightness.Text.ScaleRGB(toolbarTextColor).Scale(brightFactor)
+			inputColor := ps.Brightness.Text.ScaleRGB(colors.toolbar.text).Scale(brightFactor)
 			b.Td.AddText(inText, [2]float32{inputTopLeft[0] + 2, inputTopLeft[1] - 2},
 				renderer.TextStyle{Font: font, Color: inputColor})
 
@@ -197,7 +197,7 @@ func (ep *ERAMPane) writeText(td *renderer.TextDrawBuilder, text inputText, loc 
 
 func (ep *ERAMPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB {
 	ps := ep.currentPrefs()
-	return ps.Brightness.Backlight.ScaleRGB(renderer.RGB{input[0], input[1], input[2]})
+	return ps.Brightness.Backlight.ScaleRGB(renderer.RGB{R: input[0], G: input[1], B: input[2]})
 }
 
 func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
@@ -425,7 +425,7 @@ func (ep *ERAMPane) drawPlotPoints(ctx *panes.Context, transforms radar.ScopeTra
 		}
 	}
 	cb.LineWidth(1, ctx.DPIScale)
-	cb.SetRGB(renderer.RGB{1, .3, .3})
+	cb.SetRGB(colors.drawRoute)
 	transforms.LoadWindowViewingMatrices(cb)
 	ld.GenerateCommands(cb)
 }
@@ -440,7 +440,7 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 	fontNum := math.Clamp(ps.TimeView.Font, 1, 3)
 	font := ep.ERAMFont(fontNum)
 	bright := radar.Brightness(ps.TimeView.Bright)
-	textColor := bright.ScaleRGB(renderer.RGB{R: 1, G: 1, B: 1})
+	textColor := bright.ScaleRGB(colors.view.clockText)
 
 	timeStr := ctx.Client.State.SimTime.Format("1504 05")
 
@@ -484,19 +484,19 @@ func (m *mcaPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
-		{Label: fmt.Sprintf("PA LINES %d", ps.MCA.PALines), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("PA LINES %d", ps.MCA.PALines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.MCA.PALines, 1, 50, 1)
 			return false
 		}},
-		{Label: fmt.Sprintf("WIDTH %d", ps.MCA.Width), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("WIDTH %d", ps.MCA.Width), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.MCA.Width, 10, 200, 1)
 			return false
 		}},
-		{Label: fmt.Sprintf("FONT %d", ps.MCA.Font), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("FONT %d", ps.MCA.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.MCA.Font, 1, 3, 1)
 			return false
 		}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.MCA.Bright), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("BRIGHT %d", ps.MCA.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.MCA.Bright, 0, 100, 1)
 			return false
 		}},
@@ -522,19 +522,19 @@ func (r *raPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
-		{Label: fmt.Sprintf("WIDTH %d", ps.RA.Width), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("WIDTH %d", ps.RA.Width), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.RA.Width, 10, 200, 1)
 			return false
 		}},
-		{Label: fmt.Sprintf("FONT %d", ps.RA.Font), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("FONT %d", ps.RA.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.RA.Font, 1, 3, 1)
 			return false
 		}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.RA.Bright), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("BRIGHT %d", ps.RA.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.RA.Bright, 0, 100, 1)
 			return false
 		}},
-		{Label: "CLEAR", BgColor: popupBlackBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			ep.responseArea.Clear()
 			return false
 		}},
@@ -560,31 +560,31 @@ func (t *timeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 	ps := ep.currentPrefs()
 
 	tLabel := "T"
-	tBg := popupBlackBg
+	tBg := colors.popup.backgroundBlack
 	if ps.TimeView.Opaque {
 		tLabel = "O"
-		tBg = popupGreyBg
+		tBg = colors.popup.backgroundGrey
 	}
-	borderBg := util.Select(ps.TimeView.ShowBorder, popupGreyBg, popupBlackBg)
+	borderBg := util.Select(ps.TimeView.ShowBorder, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
 
 	rows := []ERAMMenuItem{
-		{Label: tLabel, BgColor: tBg, Color: popupTextColor, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: tLabel, BgColor: tBg, Color: colors.popup.text, Centered: true, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickTertiary {
 				ps.TimeView.Opaque = !ps.TimeView.Opaque
 			}
 			return false
 		}},
-		{Label: "BORDER", BgColor: borderBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "BORDER", BgColor: borderBg, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickTertiary {
 				ps.TimeView.ShowBorder = !ps.TimeView.ShowBorder
 			}
 			return false
 		}},
-		{Label: fmt.Sprintf("FONT %d", ps.TimeView.Font), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("FONT %d", ps.TimeView.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.TimeView.Font, 1, 3, 1)
 			return false
 		}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.TimeView.Bright), BgColor: popupGreenBg, Color: popupTextColor, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: fmt.Sprintf("BRIGHT %d", ps.TimeView.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			handleClick(ep, &ps.TimeView.Bright, 0, 100, 1)
 			return false
 		}},

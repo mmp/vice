@@ -142,7 +142,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	if hasTitle {
 		titleStyle = renderer.TextStyle{
 			Font:  v.TitleFont,
-			Color: v.Brightness.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
+			Color: v.Brightness.ScaleRGB(colors.view.text),
 		}
 		titleH = v.TitleFont.LayoutBounds(v.Title, 0).Height() + 4
 		if titleH < 16 {
@@ -172,7 +172,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		drawBodyBg := true
 		if v.OpaqueOnlyBg {
 			if v.Opaque {
-				bodyBg = v.Brightness.ScaleRGB(renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0})
+				bodyBg = v.Brightness.ScaleRGB(colors.view.opaqueBackground)
 			} else {
 				drawBodyBg = false
 			}
@@ -181,7 +181,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			trid.AddQuad(bodyP0, bodyP1, bodyP2, bodyP3, bodyBg)
 		}
 		if v.ShowBorder {
-			borderColor := ep.currentPrefs().Brightness.Border.ScaleRGB(renderer.RGB{R: .914, G: .914, B: .914})
+			borderColor := ep.currentPrefs().Brightness.Border.ScaleRGB(colors.view.border)
 			ld.AddLine(p0, p1, borderColor)
 			ld.AddLine(p1, p2, borderColor)
 			ld.AddLine(p2, p3, borderColor)
@@ -195,7 +195,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	if hasTitle {
 		titleBg := renderer.RGB{}
 		if v.Opaque {
-			titleBg = renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
+			titleBg = colors.view.opaqueBackground
 		}
 		titleP0 := p0
 		titleP1 := math.Add2f(p0, [2]float32{width, 0})
@@ -239,7 +239,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		// Title text — bright when title area is hovered.
 		titleColor := titleStyle.Color
 		if mouseInsideTitle {
-			titleColor = toolbarHoveredOutlineColor
+			titleColor = colors.view.hoveredOutline
 		}
 		titleCenter := [2]float32{titleP0[0] + width/2, titleP0[1] - titleH/2}
 		td.AddTextCentered(v.Title, titleCenter, renderer.TextStyle{Font: v.TitleFont, Color: titleColor})
@@ -247,7 +247,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		if v.OnMenu != nil {
 			mTextColor := titleStyle.Color
 			if mouseInsideM {
-				mTextColor = toolbarHoveredOutlineColor
+				mTextColor = colors.view.hoveredOutline
 			}
 			td.AddTextCentered("M", mRect.Center(),
 				renderer.TextStyle{Font: v.TitleFont, Color: mTextColor})
@@ -255,7 +255,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		if v.OnMinimize != nil {
 			minTextColor := titleStyle.Color
 			if mouseInsideMin {
-				minTextColor = toolbarHoveredOutlineColor
+				minTextColor = colors.view.hoveredOutline
 			}
 			td.AddTextCentered("-", minRect.Center(),
 				renderer.TextStyle{Font: v.TitleFont, Color: minTextColor})
@@ -263,22 +263,22 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 		// Dim outlines first, then bright outlines on hover.
 		if v.OnMenu != nil && !mouseInsideM {
-			drawRectOutline(ld, mRect, toolbarOutlineColor)
+			drawRectOutline(ld, mRect, colors.view.buttonOutline)
 		}
 		if v.OnMinimize != nil && !mouseInsideMin {
-			drawRectOutline(ld, minRect, toolbarOutlineColor)
+			drawRectOutline(ld, minRect, colors.view.buttonOutline)
 		}
 		if !mouseInsideTitle {
-			drawRectOutline(ld, titleRect, toolbarOutlineColor)
+			drawRectOutline(ld, titleRect, colors.view.buttonOutline)
 		}
 		if v.OnMenu != nil && mouseInsideM {
-			drawRectOutline(ld, mRect, toolbarHoveredOutlineColor)
+			drawRectOutline(ld, mRect, colors.view.hoveredOutline)
 		}
 		if v.OnMinimize != nil && mouseInsideMin {
-			drawRectOutline(ld, minRect, toolbarHoveredOutlineColor)
+			drawRectOutline(ld, minRect, colors.view.hoveredOutline)
 		}
 		if mouseInsideTitle {
-			drawRectOutline(ld, titleRect, toolbarHoveredOutlineColor)
+			drawRectOutline(ld, titleRect, colors.view.hoveredOutline)
 		}
 	}
 
@@ -366,7 +366,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		previewP1 := math.Add2f(previewP0, [2]float32{width, 0})
 		previewP2 := math.Add2f(previewP1, [2]float32{0, -totalH})
 		previewP3 := math.Add2f(previewP0, [2]float32{0, -totalH})
-		c := toolbarHoveredOutlineColor
+		c := colors.view.hoveredOutline
 		ld.AddLine(previewP0, previewP1, c)
 		ld.AddLine(previewP1, previewP2, c)
 		ld.AddLine(previewP2, previewP3, c)
@@ -388,9 +388,9 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		downY0 := upY0 - scrollBarGap
 		downY1 := downY0 - sectionH
 
-		scrollBg := renderer.RGB{}
-		scrollBorder := renderer.RGB{R: 0.5, G: 0.5, B: 0.5}
-		arrowColor := renderer.RGB{R: 145.0 / 255.0, G: 145.0 / 255.0, B: 145.0 / 255.0}
+		scrollBg := colors.scroll.background
+		scrollBorder := colors.scroll.border
+		arrowColor := colors.scroll.arrow
 
 		// Up section (top half): a downward-pointing arrow (1,3,5,7,9 wide
 		// top to bottom) labels "scroll up".

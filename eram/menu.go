@@ -12,14 +12,6 @@ import (
 
 // ERAMMenu - reusable floating popup menu component: streamlines making the many slightly different menus in ERAM.
 
-// Standard colors used across popup menus.
-var (
-	popupBlackBg   = renderer.RGB{R: 0, G: 0, B: 0}
-	popupGreyBg    = renderer.RGB{R: 153.0 / 255.0, G: 153.0 / 255.0, B: 153.0 / 255.0}
-	popupGreenBg   = renderer.RGB{R: 0, G: 157.0 / 255.0, B: 0}
-	popupTextColor = renderer.RGB{R: .85, G: .85, B: .85}
-)
-
 // popup is the interface implemented by every floating pop-up menu. ERAMPane
 // holds at most one (in ep.popup); opening a new pop-up replaces whatever was
 // there.
@@ -153,7 +145,7 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 	bButton := ps.Brightness.Button
 	bBorder := ps.Brightness.Border
 	bText := ps.Brightness.Text
-	textColor := bText.ScaleRGB(renderer.RGB{R: 1, G: 1, B: 1})
+	textColor := bText.ScaleRGB(colors.menu.titleText)
 
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
@@ -175,7 +167,7 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		rp1 := math.Add2f(cursor, [2]float32{width, 0})
 		rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
 		rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
-		trid.AddQuad(rp0, rp1, rp2, rp3, bButton.ScaleRGB(eramGray))
+		trid.AddQuad(rp0, rp1, rp2, rp3, bButton.ScaleRGB(colors.menu.titleBackground))
 
 		style := renderer.TextStyle{Font: titleFont, Color: textColor}
 
@@ -196,9 +188,9 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		td.AddText(xLabel, xPos, style)
 
 		// Separator line at bottom of title
-		ld.AddLine(rp0, rp1, bBorder.ScaleRGB(eramGray.Scale(.25)))
+		ld.AddLine(rp0, rp1, bBorder.ScaleRGB(colors.menu.rowDimOutline))
 		// Left border of title
-		ld.AddLine(cursor, [2]float32{cursor[0], rp3[1]}, renderer.RGB{})
+		ld.AddLine(cursor, [2]float32{cursor[0], rp3[1]}, colors.menu.titleLeftBorder)
 
 		// Build extents for M button (optional) and X button
 		var mRect, xRect, titleRect math.Extent2D
@@ -246,8 +238,8 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		mouseInsideTitle := mouse != nil && titleRect.Inside(mouse.Pos)
 		mouseInsideM := cfg.ShowMButton && mouse != nil && mRect.Inside(mouse.Pos)
 
-		dimOutline := bBorder.ScaleRGB(toolbarOutlineColor)
-		hotOutline := bBorder.ScaleRGB(toolbarHoveredOutlineColor)
+		dimOutline := bBorder.ScaleRGB(colors.menu.buttonOutline)
+		hotOutline := bBorder.ScaleRGB(colors.menu.buttonHoverOutline)
 		// Draw non-hovered outlines first
 		if cfg.ShowMButton && !mouseInsideM {
 			drawMenuRectOutline(mRect, dimOutline)
@@ -336,8 +328,8 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 			result.RowExtents[i] = extent
 
 			// Row hover outlines
-			dimColor := bBorder.ScaleRGB(eramGray.Scale(.25))
-			brightColor := bBorder.ScaleRGB(eramGray.Scale(.8))
+			dimColor := bBorder.ScaleRGB(colors.menu.rowDimOutline)
+			brightColor := bBorder.ScaleRGB(colors.menu.rowHoverOutline)
 			hovered := mouse != nil && extent.Inside(mouse.Pos)
 
 			if hovered {
@@ -368,8 +360,7 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 
 	result.Extent = math.Extent2D{P0: menuP3, P1: menuP1}
 
-	menuBorderColor := renderer.RGB{R: 213.0 / 255.0, G: 213.0 / 255.0, B: 213.0 / 255.0}
-	ld.AddLineLoop(bBorder.ScaleRGB(menuBorderColor), [][2]float32{menuP0, menuP1, menuP2, menuP3})
+	ld.AddLineLoop(bBorder.ScaleRGB(colors.menu.outerBorder), [][2]float32{menuP0, menuP1, menuP2, menuP3})
 
 	// Flush draw builders
 	transforms.LoadWindowViewingMatrices(cb)
@@ -474,7 +465,7 @@ func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, f
 			sp1 := [2]float32{cursor[0] + width - arrowW, y}
 			sp2 := [2]float32{sp1[0], y - itemH}
 			sp3 := [2]float32{cursor[0], y - itemH}
-			trid.AddQuad(sp0, sp1, sp2, sp3, bButton.ScaleRGB(renderer.RGB{R: .3, G: .3, B: .6}))
+			trid.AddQuad(sp0, sp1, sp2, sp3, bButton.ScaleRGB(colors.menu.selectedItem))
 		}
 
 		style := renderer.TextStyle{Font: font, Color: bText.ScaleRGB(subItem.Color)}
@@ -486,19 +477,17 @@ func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, f
 	// Scroll arrows (right side)
 	canScrollUp := ss.Offset > 0
 	canScrollDown := ss.Offset+visRows < len(item.SubRows)
-	arrowColor := renderer.RGB{R: .7, G: .7, B: .7}
-	dimArrowColor := renderer.RGB{R: .3, G: .3, B: .3}
 
 	upCenter := [2]float32{cursor[0] + width - arrowW/2, cursor[1] - itemH/2}
 	downCenter := [2]float32{cursor[0] + width - arrowW/2, cursor[1] - scrollH + itemH/2}
 
-	upColor := dimArrowColor
+	upColor := colors.menu.scrollDimArrow
 	if canScrollUp {
-		upColor = arrowColor
+		upColor = colors.menu.scrollArrow
 	}
-	downColor := dimArrowColor
+	downColor := colors.menu.scrollDimArrow
 	if canScrollDown {
-		downColor = arrowColor
+		downColor = colors.menu.scrollArrow
 	}
 
 	drawUpTriangle(trid, upCenter, 6, upColor)

@@ -47,13 +47,13 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		BottomGap:  4 * fontScale,
 		BadgeGap:   4 * fontScale,
 	}
-	textColor := bright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
-	yellowColor := bright.ScaleRGB(renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0})
+	textColor := bright.ScaleRGB(colors.view.text)
+	yellowColor := bright.ScaleRGB(colors.badge.fill)
 	var badgeProto *Badge
 	if ps.WX.ShowIndicators {
 		badgeProto = &Badge{
 			Width: 13 * fontScale, Height: lineH,
-			Fill: yellowColor, Border: renderer.RGB{R: .5, G: .5, B: .5},
+			Fill: yellowColor, Border: colors.badge.border,
 		}
 	}
 
@@ -166,41 +166,41 @@ func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 
 	// T/O button — shows "T" (transparent) or "O" (opaque)
 	tLabel := "T"
-	tBg := popupBlackBg
+	tBg := colors.popup.backgroundBlack
 	if ps.WX.Opaque {
 		tLabel = "O"
-		tBg = popupGreyBg
+		tBg = colors.popup.backgroundGrey
 	}
 
 	// BORDER button - grey when ON, black when OFF
-	borderBg := util.Select(ps.WX.ShowBorder, popupGreyBg, popupBlackBg)
+	borderBg := util.Select(ps.WX.ShowBorder, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
 
 	// TEAROFF button - grey when ON, black when OFF
-	tearoffBg := util.Select(ps.WX.ShowIndicators, popupGreyBg, popupBlackBg)
+	tearoffBg := util.Select(ps.WX.ShowIndicators, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
 
 	rows := []ERAMMenuItem{
-		{Label: tLabel, BgColor: tBg, Color: popupTextColor, Centered: true,
+		{Label: tLabel, BgColor: tBg, Color: colors.popup.text, Centered: true,
 			OnClick: func(ct ERAMMenuClickType) bool {
 				if ct == MenuClickTertiary {
 					ps.WX.Opaque = !ps.WX.Opaque
 				}
 				return false
 			}},
-		{Label: "BORDER", BgColor: borderBg, Color: popupTextColor, Centered: false,
+		{Label: "BORDER", BgColor: borderBg, Color: colors.popup.text, Centered: false,
 			OnClick: func(ct ERAMMenuClickType) bool {
 				if ct == MenuClickTertiary {
 					ps.WX.ShowBorder = !ps.WX.ShowBorder
 				}
 				return false
 			}},
-		{Label: "TEAROFF", BgColor: tearoffBg, Color: popupTextColor, Centered: false,
+		{Label: "TEAROFF", BgColor: tearoffBg, Color: colors.popup.text, Centered: false,
 			OnClick: func(ct ERAMMenuClickType) bool {
 				if ct == MenuClickTertiary {
 					ps.WX.ShowIndicators = !ps.WX.ShowIndicators
 				}
 				return false
 			}},
-		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: popupGreenBg, Color: popupTextColor, Centered: false,
+		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
 			OnClick: func(ct ERAMMenuClickType) bool {
 				handleClick(ep, &ps.WX.Lines, 3, 24, 1)
 				if ep.wxScroll.Offset > 0 {
@@ -214,12 +214,12 @@ func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 				}
 				return false
 			}},
-		{Label: fmt.Sprintf("FONT %d", ps.WX.Font), BgColor: popupGreenBg, Color: popupTextColor, Centered: false,
+		{Label: fmt.Sprintf("FONT %d", ps.WX.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
 			OnClick: func(ct ERAMMenuClickType) bool {
 				handleClick(ep, &ps.WX.Font, 1, 3, 1)
 				return false
 			}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.WX.Bright), BgColor: popupGreenBg, Color: popupTextColor, Centered: false,
+		{Label: fmt.Sprintf("BRIGHT %d", ps.WX.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
 			OnClick: func(ct ERAMMenuClickType) bool {
 				handleClick(ep, &ps.WX.Bright, 0, 100, 1)
 				return false
