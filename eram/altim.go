@@ -70,13 +70,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	}
 	actualCols := numCols
 	if numRows-startIdx < maxPerPage {
-		actualCols = (numRows - startIdx + visibleRows - 1) / visibleRows
-		if actualCols < 1 {
-			actualCols = 1
-		}
-		if actualCols > numCols {
-			actualCols = numCols
-		}
+		actualCols = math.Clamp((numRows-startIdx+visibleRows-1)/visibleRows, 1, numCols)
 	}
 
 	var badge *Badge
@@ -243,16 +237,8 @@ func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 		{Label: fmt.Sprintf("LINES %d", ps.AltimSet.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
 			OnClick: func(ct ERAMMenuClickType) bool {
 				handleClick(ep, &ps.AltimSet.Lines, 3, 24, 1)
-				// Adjust scroll offset if needed
-				if ep.altimSetScroll.Offset > 0 {
-					maxOffset := len(ep.AltimSetAirports) - ps.AltimSet.Lines
-					if maxOffset < 0 {
-						maxOffset = 0
-					}
-					if ep.altimSetScroll.Offset > maxOffset {
-						ep.altimSetScroll.Offset = maxOffset
-					}
-				}
+				maxOffset := max(0, len(ep.AltimSetAirports)-ps.AltimSet.Lines)
+				ep.altimSetScroll.Offset = math.Clamp(ep.altimSetScroll.Offset, 0, maxOffset)
 				return false
 			}},
 		{Label: fmt.Sprintf("COL %d", ps.AltimSet.Col), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,

@@ -203,15 +203,8 @@ func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
 			OnClick: func(ct ERAMMenuClickType) bool {
 				handleClick(ep, &ps.WX.Lines, 3, 24, 1)
-				if ep.wxScroll.Offset > 0 {
-					maxOffset := len(ep.WXReportStations) - ps.WX.Lines
-					if maxOffset < 0 {
-						maxOffset = 0
-					}
-					if ep.wxScroll.Offset > maxOffset {
-						ep.wxScroll.Offset = maxOffset
-					}
-				}
+				maxOffset := max(0, len(ep.WXReportStations)-ps.WX.Lines)
+				ep.wxScroll.Offset = math.Clamp(ep.wxScroll.Offset, 0, maxOffset)
 				return false
 			}},
 		{Label: fmt.Sprintf("FONT %d", ps.WX.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,

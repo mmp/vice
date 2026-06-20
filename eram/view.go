@@ -144,10 +144,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			Font:  v.TitleFont,
 			Color: v.Brightness.ScaleRGB(colors.view.text),
 		}
-		titleH = v.TitleFont.LayoutBounds(v.Title, 0).Height() + 4
-		if titleH < 16 {
-			titleH = 16
-		}
+		titleH = max(16, v.TitleFont.LayoutBounds(v.Title, 0).Height()+4)
 	}
 
 	bodyH := v.BodyHeight

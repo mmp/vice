@@ -65,10 +65,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 	input := ep.Input.String() + "_"
 	inText, _ := util.WrapText(input, cols, 0, true, true)
 	h := font.LayoutBounds(inText, 0).Height()
-	inputH := float32(38)
-	if h+4 > inputH {
-		inputH = h + 4
-	}
+	inputH := max(float32(38), h+4)
 
 	out, _ := util.WrapText(ep.feedbackArea.String(), cols, 0, true, true)
 	ep.feedbackArea.formatWrap(ps, out)

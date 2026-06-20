@@ -316,10 +316,7 @@ func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]m
 	// which means BadgeGap doesn't apply and SidePad=4 puts text at the right X.
 	rl.SidePad = 4
 	rl.LabelGap = 0
-	bodyHeight := rl.Measure() + 8 // +8 = top/bottom padding
-	if bodyHeight < lineH+8 {
-		bodyHeight = lineH + 8
-	}
+	bodyHeight := max(rl.Measure()+8, lineH+8) // +8 = top/bottom padding
 
 	return bodyHeight, func(body math.Extent2D, b *ViewBuilders) {
 		ep.crrLabelRects = make(map[string]math.Extent2D)
@@ -387,15 +384,9 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 		}},
 		{Label: "FONT " + strconv.Itoa(ps.CRR.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickPrimary {
-				ps.CRR.Font--
-				if ps.CRR.Font < 1 {
-					ps.CRR.Font = 4
-				}
+				ps.CRR.Font = 1 + (ps.CRR.Font+2)%4
 			} else {
-				ps.CRR.Font++
-				if ps.CRR.Font > 4 {
-					ps.CRR.Font = 1
-				}
+				ps.CRR.Font = 1 + ps.CRR.Font%4
 			}
 			return false
 		}},
