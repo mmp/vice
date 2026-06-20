@@ -410,8 +410,8 @@ func drawWindAndWeatherIcons(metar wx.METAR, largeFont *renderer.Font) {
 			largeFont.ImguiPush()
 		}
 
-		iconWidth, _ := largeFont.BoundText(cond.icon, 0)
-		startX += float32(iconWidth) + iconSpacing
+		iconWidth := largeFont.LayoutBounds(cond.icon, 0).Width()
+		startX += iconWidth + iconSpacing
 	}
 	imgui.PopFont()
 

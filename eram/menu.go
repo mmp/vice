@@ -115,9 +115,9 @@ func (ep *ERAMPane) OpenPopupAt(ctx *panes.Context, originGuess [2]float32, widt
 	// itemH-tall title bar). The cursor lands at the visual center.
 	const itemH = float32(18)
 	const xPad = float32(2)
-	xw, _ := titleFont.BoundText("X", 0)
+	xw := titleFont.LayoutBounds("X", 0).Width()
 	ctx.SetMousePosition([2]float32{
-		origin[0] + width - xPad - float32(xw)/2,
+		origin[0] + width - xPad - xw/2,
 		origin[1] - itemH/2,
 	})
 
@@ -180,8 +180,8 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		style := renderer.TextStyle{Font: titleFont, Color: textColor}
 
 		if cfg.TitleLeftJustified {
-			_, th := titleFont.BoundText(cfg.Title, 0)
-			textY := rp0[1] - itemH/2 + float32(th)/2
+			th := titleFont.LayoutBounds(cfg.Title, 0).Height()
+			textY := rp0[1] - itemH/2 + th/2
 			td.AddText(cfg.Title, [2]float32{rp0[0] + 4, textY}, style)
 		} else {
 			centerX := rp0[0] + width/2
@@ -191,8 +191,8 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 
 		// Close button on right
 		xLabel := "X"
-		xw, _ := titleFont.BoundText(xLabel, 0)
-		xPos := math.Add2f(cursor, [2]float32{width - float32(xw) - 2, -1})
+		xw := titleFont.LayoutBounds(xLabel, 0).Width()
+		xPos := math.Add2f(cursor, [2]float32{width - xw - 2, -1})
 		td.AddText(xLabel, xPos, style)
 
 		// Separator line at bottom of title
@@ -205,20 +205,19 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 
 		if cfg.ShowMButton {
 			mLabel := "M"
-			mw, _ := titleFont.BoundText(mLabel, 0)
+			mext := titleFont.LayoutBounds(mLabel, 0)
+			mw, mh := mext.Width(), mext.Height()
 			mPad := float32(2)
 			mRect = math.Extent2D{
 				P0: [2]float32{rp0[0], rp0[1] - itemH},
-				P1: [2]float32{rp0[0] + mPad + float32(mw) + mPad, rp0[1]},
+				P1: [2]float32{rp0[0] + mPad + mw + mPad, rp0[1]},
 			}
-			// draw M text
-			_, mh := titleFont.BoundText(mLabel, 0)
-			td.AddText(mLabel, math.Add2f(rp0, [2]float32{mPad, -itemH/2 + float32(mh)/2}), style)
+			td.AddText(mLabel, math.Add2f(rp0, [2]float32{mPad, -itemH/2 + mh/2}), style)
 		}
 
 		xPad := float32(2)
 		xRect = math.Extent2D{
-			P0: [2]float32{rp1[0] - xPad - float32(xw) - xPad, rp1[1] - itemH},
+			P0: [2]float32{rp1[0] - xPad - xw - xPad, rp1[1] - itemH},
 			P1: rp1,
 		}
 
@@ -312,21 +311,23 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 				centerY := rp0[1] - itemH/2
 				td.AddTextCentered(item.Label, [2]float32{centerX, centerY}, style)
 			} else {
-				labelW, th := font.BoundText(item.Label, 0)
-				textY := rp0[1] - itemH/2 + float32(th)/2
+				labelExt := font.LayoutBounds(item.Label, 0)
+				labelW, th := labelExt.Width(), labelExt.Height()
+				textY := rp0[1] - itemH/2 + th/2
 				td.AddText(item.Label, [2]float32{rp0[0] + 4, textY}, style)
 
 				if item.BoxedSuffix != "" {
-					suffixW, _ := font.BoundText(item.BoxedSuffix, 0)
+					sext := font.InkBounds(item.BoxedSuffix, 0)
 					boxPad := float32(2)
-					boxX0 := rp0[0] + 4 + float32(labelW) + 4
-					boxX1 := boxX0 + float32(suffixW) + 2*boxPad
+					boxX0 := rp0[0] + 4 + labelW + 4
+					boxX1 := boxX0 + sext.Width() + 2*boxPad
 					boxY0 := rp0[1] - itemH + 2
 					boxY1 := rp0[1] - 2
 					ld.AddLineLoop(bBorder.ScaleRGB(item.Color), [][2]float32{
 						{boxX0, boxY0}, {boxX1, boxY0}, {boxX1, boxY1}, {boxX0, boxY1},
 					})
-					td.AddText(item.BoxedSuffix, [2]float32{boxX0 + boxPad, textY}, style)
+					td.AddText(item.BoxedSuffix,
+						[2]float32{boxX0 + boxPad - sext.P0[0], textY}, style)
 				}
 			}
 
@@ -477,8 +478,8 @@ func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, f
 		}
 
 		style := renderer.TextStyle{Font: font, Color: bText.ScaleRGB(subItem.Color)}
-		_, th := font.BoundText(subItem.Label, 0)
-		textY := y - itemH/2 + float32(th)/2
+		th := font.LayoutBounds(subItem.Label, 0).Height()
+		textY := y - itemH/2 + th/2
 		td.AddText(subItem.Label, [2]float32{cursor[0] + 4, textY}, style)
 	}
 

@@ -303,12 +303,12 @@ func (sp *STARSPane) drawListText(ctx *panes.Context, paneExtent math.Extent2D, 
 	}
 
 	pw := [2]float32{pos[0] * paneExtent.Width(), pos[1] * paneExtent.Height()}
-	w, h := style.Font.BoundText(text, 0)
+	ext := style.Font.LayoutBounds(text, 0)
 	td.AddText(text, pw, style)
 
 	bounds := math.Extent2D{
-		P0: [2]float32{pw[0], pw[1] - float32(h)},
-		P1: [2]float32{pw[0] + float32(w), pw[1]},
+		P0: [2]float32{pw[0], pw[1] - ext.Height()},
+		P1: [2]float32{pw[0] + ext.Width(), pw[1]},
 	}
 	sp.handleListDrag(ctx, bounds, pos, frameTitle, paneExtent, ld)
 	if sp.showListFrames {

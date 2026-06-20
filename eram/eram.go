@@ -867,12 +867,12 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 				}
 				td.AddText(l.Text, pw, style)
 				if l.Underline {
-					w, h := font.BoundText(l.Text, 0)
+					ext := font.LayoutBounds(l.Text, 0)
 					// In window space y grows upward; AddText takes the upper-left corner, so the
 					// baseline is at pw[1] - h.  Drop one more pixel so the underline sits just
 					// below.
-					y := pw[1] - float32(h) - 1
-					ld.AddLine([2]float32{pw[0], y}, [2]float32{pw[0] + float32(w), y}, color)
+					y := pw[1] - ext.Height() - 1
+					ld.AddLine([2]float32{pw[0], y}, [2]float32{pw[0] + ext.Width(), y}, color)
 				}
 			}
 		}

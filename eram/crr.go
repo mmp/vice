@@ -126,8 +126,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 
 	font := ep.ERAMFont(2)
 	bright := radar.Brightness(ps.CRR.Bright)
-	_, by := font.BoundText("0", 0)
-	lineH := float32(by + 2)
+	lineH := font.LayoutBounds("0", 0).Height() + 2
 	const width = float32(260)
 
 	trackPos := make(map[av.ADSBCallsign]math.Point2LL)
@@ -211,8 +210,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 // one per group. Body height = button height + small top margin.
 func (ep *ERAMPane) buildCRRPanel(labels []string, font *renderer.Font) (float32, func(math.Extent2D, *ViewBuilders)) {
 	ps := ep.currentPrefs()
-	_, th := font.BoundText("X", 0)
-	bodyHeight := float32(th) + 8 + 4
+	bodyHeight := font.LayoutBounds("X", 0).Height() + 8 + 4
 
 	return bodyHeight, func(body math.Extent2D, b *ViewBuilders) {
 		ep.crrLabelRects = make(map[string]math.Extent2D)
@@ -226,9 +224,10 @@ func (ep *ERAMPane) buildCRRPanel(labels []string, font *renderer.Font) (float32
 				continue
 			}
 			txt := strings.ToUpper(g.Label)
-			tw, th := font.BoundText(txt, 0)
-			w := float32(tw) + 16
-			h := float32(th) + 8
+			text := font.LayoutBounds(txt, 0)
+			tw, th := text.Width(), text.Height()
+			w := tw + 16
+			h := th + 8
 			bp0 := [2]float32{x, y}
 			bp1 := math.Add2f(bp0, [2]float32{w, 0})
 			bp2 := math.Add2f(bp1, [2]float32{0, -h})
@@ -238,7 +237,7 @@ func (ep *ERAMPane) buildCRRPanel(labels []string, font *renderer.Font) (float32
 			b.Ld.AddLine(bp1, bp2, borderColor)
 			b.Ld.AddLine(bp2, bp3, borderColor)
 			b.Ld.AddLine(bp3, bp0, borderColor)
-			b.Td.AddText(txt, math.Add2f(bp0, [2]float32{8, -h/2 + float32(th)/2}), renderer.TextStyle{
+			b.Td.AddText(txt, math.Add2f(bp0, [2]float32{8, -h/2 + th/2}), renderer.TextStyle{
 				Font:  font,
 				Color: g.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[g.Color]), 0, 100))),
 			})
@@ -506,8 +505,8 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 				style := renderer.TextStyle{Font: font,
 					Color: bText.ScaleRGB(ep.CRRGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ep.CRRGroups[l].Color]), 0, 100))))}
 				labelText := strings.ToUpper(l)
-				_, th := font.BoundText(labelText, 0)
-				textY := rp0[1] - itemH/2 + float32(th)/2
+				th := font.LayoutBounds(labelText, 0).Height()
+				textY := rp0[1] - itemH/2 + th/2
 				td.AddText(labelText, [2]float32{rp0[0] + 4, textY}, style)
 				cursor = rp3
 				extent := math.Extent2D{P0: rp3, P1: rp1}
@@ -574,15 +573,15 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 		p := transforms.WindowFromLatLongP(g.Location)
 		// Draw asterisk then label with a space
 		td.AddText("*", p, style)
-		ax, _ := font.BoundText("*", style.LineSpacing)
-		lp := math.Add2f(p, [2]float32{float32(ax) + 4, 0})
+		ax := font.LayoutBounds("*", style.LineSpacing).Width()
+		lp := math.Add2f(p, [2]float32{ax + 4, 0})
 		label := strings.ToUpper(g.Label)
 		td.AddText(label, lp, style)
-		w, h := font.BoundText("* "+label, style.LineSpacing)
+		ext := font.LayoutBounds("* "+label, style.LineSpacing)
 		// P0 = min corner, P1 = max corner for Inside to work
 		ep.crrFixRects[l] = math.Extent2D{
-			P0: [2]float32{p[0], p[1] - float32(h)}, // bottom-left (min)
-			P1: [2]float32{p[0] + float32(w), p[1]}, // top-right (max)
+			P0: [2]float32{p[0], p[1] - ext.Height()}, // bottom-left (min)
+			P1: [2]float32{p[0] + ext.Width(), p[1]},  // top-right (max)
 		}
 	}
 
@@ -657,12 +656,12 @@ func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, tracks []sim.Track, tra
 
 		// Position the distance text below and to the left of the track
 		distStr := fmt.Sprintf("%.1f", entry.distNM)
-		dw, dh := font.BoundText(distStr, 0)
+		dext := font.LayoutBounds(distStr, 0)
 
 		// Position offset: below and left of the track symbol
 		pos := [2]float32{
-			trackWin[0] - float32(dw) - 8,
-			trackWin[1] - float32(dh) - 4,
+			trackWin[0] - dext.Width() - 8,
+			trackWin[1] - dext.Height() - 4,
 		}
 
 		// Use the CRR group color

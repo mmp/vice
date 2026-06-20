@@ -936,6 +936,9 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 		if positionSymbol != "" {
 			font := sp.systemFont(ctx, ps.CharSize.PositionSymbols)
 			outlineFont := sp.systemOutlineFont(ctx, ps.CharSize.PositionSymbols)
+			// Half-pixel nudge: pw is a continuous window coord that generally
+			// doesn't land on a pixel boundary; this lines the resulting glyph
+			// quad up with the pixel grid for crisp rasterization.
 			pt := math.Add2f(pw, [2]float32{0.5, -0.5})
 			td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
 

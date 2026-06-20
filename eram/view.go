@@ -144,8 +144,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			Font:  v.TitleFont,
 			Color: v.Brightness.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85}),
 		}
-		_, tby := v.TitleFont.BoundText(v.Title, 0)
-		titleH = float32(tby) + 4
+		titleH = v.TitleFont.LayoutBounds(v.Title, 0).Height() + 4
 		if titleH < 16 {
 			titleH = 16
 		}
@@ -204,24 +203,20 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		titleP3 := math.Add2f(p0, [2]float32{0, -titleH})
 		trid.AddQuad(titleP0, titleP1, titleP2, titleP3, titleBg)
 
-		// Title text (centered).
-		ttw, tth := v.TitleFont.BoundText(v.Title, 0)
-		titlePos := math.Add2f(titleP0, [2]float32{width/2 - float32(ttw)/2, -titleH/2 + float32(tth)/2})
-
-		const mPad = 2
+		const mPad = float32(2)
 
 		if v.OnMenu != nil {
-			mw, _ := v.TitleFont.BoundText("M", 0)
+			mw := v.TitleFont.LayoutBounds("M", 0).Width()
 			mRect = math.Extent2D{
 				P0: [2]float32{titleP0[0], titleP0[1] - titleH},
-				P1: [2]float32{titleP0[0] + mPad + float32(mw) + mPad, titleP0[1]},
+				P1: [2]float32{titleP0[0] + mPad + mw + mPad, titleP0[1]},
 			}
 			mouseInsideM = mouse != nil && mRect.Inside(mouse.Pos)
 		}
 		if v.OnMinimize != nil {
-			minw, _ := v.TitleFont.BoundText("-", 0)
+			minw := v.TitleFont.LayoutBounds("-", 0).Width()
 			minRect = math.Extent2D{
-				P0: [2]float32{titleP1[0] - mPad - float32(minw) - mPad, titleP1[1] - titleH},
+				P0: [2]float32{titleP1[0] - mPad - minw - mPad, titleP1[1] - titleH},
 				P1: titleP1,
 			}
 			mouseInsideMin = mouse != nil && minRect.Inside(mouse.Pos)
@@ -246,24 +241,23 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		if mouseInsideTitle {
 			titleColor = toolbarHoveredOutlineColor
 		}
-		td.AddText(v.Title, titlePos, renderer.TextStyle{Font: v.TitleFont, Color: titleColor})
+		titleCenter := [2]float32{titleP0[0] + width/2, titleP0[1] - titleH/2}
+		td.AddTextCentered(v.Title, titleCenter, renderer.TextStyle{Font: v.TitleFont, Color: titleColor})
 
 		if v.OnMenu != nil {
-			_, mh := v.TitleFont.BoundText("M", 0)
 			mTextColor := titleStyle.Color
 			if mouseInsideM {
 				mTextColor = toolbarHoveredOutlineColor
 			}
-			td.AddText("M", math.Add2f(titleP0, [2]float32{mPad, -titleH/2 + float32(mh)/2}),
+			td.AddTextCentered("M", mRect.Center(),
 				renderer.TextStyle{Font: v.TitleFont, Color: mTextColor})
 		}
 		if v.OnMinimize != nil {
-			_, minh := v.TitleFont.BoundText("-", 0)
 			minTextColor := titleStyle.Color
 			if mouseInsideMin {
 				minTextColor = toolbarHoveredOutlineColor
 			}
-			td.AddText("-", [2]float32{minRect.P0[0] + mPad, titleP1[1] - titleH/2 + float32(minh)/2},
+			td.AddTextCentered("-", minRect.Center(),
 				renderer.TextStyle{Font: v.TitleFont, Color: minTextColor})
 		}
 

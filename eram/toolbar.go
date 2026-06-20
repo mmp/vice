@@ -1261,14 +1261,15 @@ func drawToolbarText(text string, td *renderer.TextDrawBuilder, buttonSize [2]fl
 
 	y0 := toolbarDrawState.buttonCursor[1] - 1
 	for _, line := range lines {
-		lw, lh := style.Font.BoundText(line, style.LineSpacing)
+		ext := style.Font.LayoutBounds(line, style.LineSpacing)
+		lw, lh := ext.Width(), ext.Height()
 		// Try to center the text, though if it's too big to fit in the
 		// button then draw it starting from the left edge of the button so
 		// that the trailing characters are the ones that are lost.
-		x0 := toolbarDrawState.buttonCursor[0] + max(1, (buttonSize[0]-float32(lw))/2)
+		x0 := toolbarDrawState.buttonCursor[0] + max(1, (buttonSize[0]-lw)/2)
 
 		td.AddText(line, [2]float32{x0, y0}, style)
-		y0 -= float32(lh) * 1.2
+		y0 -= lh * 1.2
 	}
 }
 

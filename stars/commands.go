@@ -774,11 +774,12 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			// Draw an alpha-blended quad behind the text to make it more legible.
 			trid := renderer.GetTrianglesDrawBuilder()
 			defer renderer.ReturnTrianglesDrawBuilder(trid)
-			bx, by := font.BoundText(info, style.LineSpacing)
+			ext := font.LayoutBounds(info, style.LineSpacing)
+			bx, by := ext.Width(), ext.Height()
 			trid.AddQuad(math.Add2f(ptext, [2]float32{-pad, 0}),
-				math.Add2f(ptext, [2]float32{float32(bx) + pad, 0}),
-				math.Add2f(ptext, [2]float32{float32(bx) + pad, -float32(by) - pad}),
-				math.Add2f(ptext, [2]float32{-pad, -float32(by) - pad}))
+				math.Add2f(ptext, [2]float32{bx + pad, 0}),
+				math.Add2f(ptext, [2]float32{bx + pad, -by - pad}),
+				math.Add2f(ptext, [2]float32{-pad, -by - pad}))
 
 			// Get it all into the command buffer
 			transforms.LoadWindowViewingMatrices(cb)

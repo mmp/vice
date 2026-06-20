@@ -607,12 +607,16 @@ type TextStyle struct {
 	BackgroundColor RGB
 }
 
-// AddTextCentered draws the specified text centered at the specified
-// position p.
+// AddTextCentered draws the specified text visually centered (based on the
+// rasterized pixel extent, not the cell metrics) at the specified position p.
 func (td *TextDrawBuilder) AddTextCentered(text string, p [2]float32, style TextStyle) {
-	bx, by := style.Font.BoundText(text, 0)
-	p[0] -= float32(bx) / 2
-	p[1] += float32(by) / 2
+	ext := style.Font.InkBounds(text, style.LineSpacing)
+	if ext.IsEmpty() {
+		return
+	}
+	c := ext.Center()
+	p[0] -= c[0]
+	p[1] -= c[1]
 	td.AddText(text, p, style)
 }
 

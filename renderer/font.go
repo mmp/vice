@@ -12,7 +12,7 @@ import (
 	"image/color"
 	"io"
 	"io/fs"
-	gomath "math"
+	"iter"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -22,6 +22,7 @@ import (
 	"unicode/utf8"
 	"unsafe"
 
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/util"
 
@@ -29,7 +30,6 @@ import (
 	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/IconFontCppHeaders"
 )
-import "iter"
 
 // Font name constants
 const (
@@ -156,16 +156,19 @@ func (f *Font) LookupGlyph(ch rune) *Glyph {
 	}
 }
 
-// Returns the bound of the specified text in the given font, assuming the
-// given pixel spacing between lines.
-func (font *Font) BoundText(s string, spacing int) (int, int) {
-	dy := font.Size + spacing
-	py := dy
-	var px, xmax float32
+// LayoutBounds returns the cell-metric extent of s in the same coordinate
+// space that AddText uses: origin at the drawing position, x grows right,
+// y grows up. Width is the accumulated AdvanceX (including the trailing
+// advance past the last glyph); height is (font.Size + spacing) per line.
+// Use for layout: row stacking, column widths, hit-test extents, clipping.
+func (font *Font) LayoutBounds(s string, spacing int) math.Extent2D {
+	dy := float32(font.Size + spacing)
+	px, xmax := float32(0), float32(0)
+	lines := 1
 	for _, ch := range s {
 		if ch == '\n' {
 			px = 0
-			py += dy
+			lines++
 		} else {
 			glyph := font.LookupGlyph(ch)
 			px += glyph.AdvanceX
@@ -174,8 +177,33 @@ func (font *Font) BoundText(s string, spacing int) (int, int) {
 			}
 		}
 	}
+	return math.Extent2D{P0: [2]float32{0, -dy * float32(lines)}, P1: [2]float32{xmax, 0}}
+}
 
-	return int(gomath.Ceil(float64(xmax))), py
+// InkBounds returns the bounding box of the rasterized pixels of s in the
+// same coordinate frame as LayoutBounds and AddText. Trailing AdvanceX past
+// the last visible glyph and empty padding inside glyph cells are excluded.
+// Returns an empty extent (IsEmpty() == true) for whitespace-only strings.
+// Use for visual centering and tight background boxes; use LayoutBounds
+// for layout.
+func (font *Font) InkBounds(s string, spacing int) math.Extent2D {
+	ext := math.EmptyExtent2D()
+	dy := float32(font.Size + spacing)
+	px, py := float32(0), float32(0)
+	for _, ch := range s {
+		if ch == '\n' {
+			px = 0
+			py -= dy
+			continue
+		}
+		glyph := font.LookupGlyph(ch)
+		if glyph.Visible {
+			ext = math.Union(ext, [2]float32{px + glyph.X0, py - glyph.Y1})
+			ext = math.Union(ext, [2]float32{px + glyph.X1, py - glyph.Y0})
+		}
+		px += glyph.AdvanceX
+	}
+	return ext
 }
 
 // imgui lets us to embed icons within regular fonts which makes it

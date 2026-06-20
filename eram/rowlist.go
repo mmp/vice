@@ -183,7 +183,7 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 	}
 	l.applyDefaults()
 
-	_, by := l.Font.BoundText("0", 0)
+	by := l.Font.LayoutBounds("0", 0).Height()
 	visibleCount := l.visibleLast - l.visibleFirst
 	extents := make([]math.Extent2D, visibleCount)
 	rowTop := body.P1[1]
@@ -207,9 +207,9 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		style := renderer.TextStyle{Font: l.Font, Color: r.Color}
 
 		if r.Centered {
-			tw, _ := l.Font.BoundText(r.Label, 0)
-			x := body.P0[0] + (body.P1[0]-body.P0[0])/2 - float32(tw)/2
-			y := contentTop - l.LineHeight + float32(by)
+			tw := l.Font.LayoutBounds(r.Label, 0).Width()
+			x := body.P0[0] + (body.P1[0]-body.P0[0])/2 - tw/2
+			y := contentTop - l.LineHeight + by
 			b.Td.AddText(r.Label, [2]float32{x, y}, style)
 			if r.AfterDraw != nil {
 				r.AfterDraw(rowExtent, [2]float32{x, y}, b)
@@ -221,7 +221,7 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		x := body.P0[0] + l.SidePad
 		// Text baseline: aligned to the badge top minus its height plus the
 		// character ascent — matches the existing WX/AltimSet placement.
-		baseY := contentTop - l.LineHeight + float32(by)
+		baseY := contentTop - l.LineHeight + by
 		if r.Badge != nil {
 			bp0 := [2]float32{x, contentTop - r.Badge.Height}
 			bp1 := [2]float32{x + r.Badge.Width, contentTop - r.Badge.Height}
@@ -232,7 +232,7 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 			b.Ld.AddLine(bp1, bp2, r.Badge.Border)
 			b.Ld.AddLine(bp2, bp3, r.Badge.Border)
 			b.Ld.AddLine(bp3, bp0, r.Badge.Border)
-			baseY = contentTop - r.Badge.Height + float32(by)
+			baseY = contentTop - r.Badge.Height + by
 			x += r.Badge.Width + l.BadgeGap
 		}
 
@@ -240,8 +240,8 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		if r.Label != "" {
 			b.Td.AddText(r.Label, [2]float32{labelX, baseY}, style)
 		}
-		lw, _ := l.Font.BoundText(r.Label, 0)
-		bodyX := labelX + float32(lw)
+		lw := l.Font.LayoutBounds(r.Label, 0).Width()
+		bodyX := labelX + lw
 		if r.Label != "" {
 			bodyX += l.LabelGap
 		}
@@ -276,8 +276,8 @@ func (l *RowList) applyDefaults() {
 		l.SidePad = 4
 	}
 	if l.LabelGap == 0 {
-		spaceW, _ := l.Font.BoundText(" ", 0)
-		l.LabelGap = float32(3 * spaceW)
+		spaceW := l.Font.LayoutBounds(" ", 0).Width()
+		l.LabelGap = 3 * spaceW
 	}
 }
 
@@ -288,8 +288,8 @@ func (l *RowList) bodyAvailWidths(r Row) (firstW, contW float32) {
 	}
 	contStart := x
 	if r.Label != "" {
-		lw, _ := l.Font.BoundText(r.Label, 0)
-		x += float32(lw) + l.LabelGap
+		lw := l.Font.LayoutBounds(r.Label, 0).Width()
+		x += lw + l.LabelGap
 	}
 	firstStart := x
 	return l.Width - firstStart - l.SidePad, l.Width - contStart - l.SidePad
@@ -312,8 +312,8 @@ func wrapWords(font *renderer.Font, text string, firstWidth, contWidth float32) 
 			test += " "
 		}
 		test += word
-		w, _ := font.BoundText(test, 0)
-		if float32(w) > availW && cur != "" {
+		w := font.LayoutBounds(test, 0).Width()
+		if w > availW && cur != "" {
 			lines = append(lines, cur)
 			cur = word
 			isFirst = false

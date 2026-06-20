@@ -1074,19 +1074,20 @@ func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float3
 
 	style := dcbDrawState.style
 	style.Color = renderer.LerpRGB(.5, color, dcbDrawState.brightness.ScaleRGB(color))
-	_, h := style.Font.BoundText(strings.Join(lines, "\n"), dcbDrawState.style.LineSpacing)
+	h := style.Font.LayoutBounds(strings.Join(lines, "\n"), dcbDrawState.style.LineSpacing).Height()
 
-	slop := buttonSize[1] - float32(h) // todo: what if negative...
+	slop := buttonSize[1] - h // todo: what if negative...
 	y0 := dcbDrawState.cursor[1] - 1 - slop/2
 	for _, line := range lines {
-		lw, lh := style.Font.BoundText(line, style.LineSpacing)
+		ext := style.Font.LayoutBounds(line, style.LineSpacing)
+		lw, lh := ext.Width(), ext.Height()
 		// Try to center the text, though if it's too big to fit in the
 		// button then draw it starting from the left edge of the button so
 		// that the trailing characters are the ones that are lost.
-		x0 := dcbDrawState.cursor[0] + max(1, (buttonSize[0]-float32(lw))/2)
+		x0 := dcbDrawState.cursor[0] + max(1, (buttonSize[0]-lw)/2)
 
 		td.AddText(line, [2]float32{x0, y0}, style)
-		y0 -= float32(lh)
+		y0 -= lh
 	}
 }
 

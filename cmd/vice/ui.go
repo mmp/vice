@@ -286,11 +286,11 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		// and optionally a microphone icon during PTT recording/garbling.
 		// The 3 buttons are always at the same fixed position so they don't
 		// shift when the microphone icon appears/disappears.
-		iconWidth, _ := ui.font.BoundText(renderer.FontAwesomeIconInfoCircle, 0)
+		iconWidth := ui.font.LayoutBounds(renderer.FontAwesomeIconInfoCircle, 0).Width()
 		style := imgui.CurrentStyle()
 		framePaddingX := style.FramePadding().X
 		itemSpacingX := style.ItemSpacing().X
-		buttonWidth := float32(iconWidth) + 2*framePaddingX
+		buttonWidth := iconWidth + 2*framePaddingX
 		displaySize := imgui.CurrentIO().DisplaySize()
 		buttonsX := displaySize.X - 3*buttonWidth - 2*itemSpacingX - itemSpacingX
 

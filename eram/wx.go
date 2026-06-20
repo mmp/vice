@@ -33,8 +33,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 	fontNum := int(math.Clamp(float32(ps.WX.Font), 1, 3))
 	bright := radar.Brightness(ps.WX.Bright)
 	listFont := ep.ERAMFont(fontNum)
-	_, by := listFont.BoundText("0", 0)
-	lineH := float32(by + 2)
+	lineH := listFont.LayoutBounds("0", 0).Height() + 2
 	fontScale := []float32{0.85, 1.0, 1.2}[fontNum-1]
 
 	visibleRows := int(math.Clamp(float32(ps.WX.Lines), 3, 24))

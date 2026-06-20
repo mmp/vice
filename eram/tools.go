@@ -64,10 +64,10 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 	// Compute input box height (grows with wrapped text).
 	input := ep.Input.String() + "_"
 	inText, _ := util.WrapText(input, cols, 0, true, true)
-	_, h := font.BoundText(inText, 0)
+	h := font.LayoutBounds(inText, 0).Height()
 	inputH := float32(38)
-	if float32(h)+4 > inputH {
-		inputH = float32(h) + 4
+	if h+4 > inputH {
+		inputH = h + 4
 	}
 
 	out, _ := util.WrapText(ep.feedbackArea.String(), cols, 0, true, true)
@@ -444,13 +444,9 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 
 	timeStr := ctx.Client.State.SimTime.Format("1504 05")
 
-	// Box sized from the cell-metric bounds with a 4px margin. BoundText
-	// reports the cell extent (including font padding and the trailing
-	// advance past the last glyph), so the visible glyphs will sit slightly
-	// off-center inside the box.
-	tw, th := font.BoundText(timeStr, 0)
-	width := float32(tw) + 8
-	height := float32(th) + 8
+	ext := font.InkBounds(timeStr, 0)
+	width := ext.Width() + 8
+	height := ext.Height() + 8
 
 	v := View{
 		Position:     &ps.clockPosition,

@@ -51,7 +51,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	listFont := ep.ERAMFont(fontNum)
 	bright := radar.Brightness(ps.AltimSet.Bright)
 	fontScale := []float32{0.85, 1.0, 1.2}[fontNum-1]
-	_, by := listFont.BoundText("0", 0)
+	by := listFont.LayoutBounds("0", 0).Height()
 	textColor := bright.ScaleRGB(renderer.RGB{R: .85, G: .85, B: .85})
 
 	numRows := len(ep.AltimSetAirports)
@@ -59,8 +59,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	numCols := int(math.Clamp(float32(ps.AltimSet.Col), 1, 4))
 	colWidth := altimWindowWidth * fontScale
 	textWidth := func(s string) float32 {
-		w, _ := listFont.BoundText(s, 0)
-		return float32(w)
+		return listFont.LayoutBounds(s, 0).Width()
 	}
 
 	// Build one RowList per visible column.
@@ -165,7 +164,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 // placeholder). The altimeter portion is underlined via AfterDraw when below
 // the standard 29.92 inHg.
 func altimRow(ctx *panes.Context, icao string, badge *Badge, color renderer.RGB,
-	font *renderer.Font, textWidth func(string) float32, by int) Row {
+	font *renderer.Font, textWidth func(string) float32, by float32) Row {
 
 	displayID := altimDisplayID(icao)
 	metar, hasMetar := ctx.Client.State.METAR[icao]
@@ -184,7 +183,7 @@ func altimRow(ctx *panes.Context, icao string, badge *Badge, color renderer.RGB,
 		offsetX := textWidth(prefix) + textWidth(timeField) + textWidth(mid)
 		fieldW := textWidth(altField)
 		row.AfterDraw = func(extent math.Extent2D, bodyOrigin [2]float32, b *ViewBuilders) {
-			uy := bodyOrigin[1] - float32(by) - 1
+			uy := bodyOrigin[1] - by - 1
 			ux := bodyOrigin[0] + offsetX
 			b.Ld.AddLine([2]float32{ux, uy}, [2]float32{ux + fieldW, uy}, color)
 		}

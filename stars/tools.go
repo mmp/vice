@@ -80,7 +80,8 @@ func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, 
 				hi /= 10
 			}
 
-			bx, by := font.BoundText(string(label), 0)
+			ext := font.LayoutBounds(string(label), 0)
+			bx, by := ext.Width(), ext.Height()
 
 			// Initial inset to place the text--a little past the end of
 			// the line.
@@ -91,18 +92,18 @@ func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, 
 			// is specified w.r.t. the position of the upper-left corner...
 			if math.Abs(pEdge[0]) < .125 {
 				// left edge
-				pText[1] += float32(by) / 2
+				pText[1] += by / 2
 			} else if math.Abs(pEdge[0]-bounds.P1[0]) < .125 {
 				// right edge
-				pText[0] -= float32(bx)
-				pText[1] += float32(by) / 2
+				pText[0] -= bx
+				pText[1] += by / 2
 			} else if math.Abs(pEdge[1]) < .125 {
 				// bottom edge
-				pText[0] -= float32(bx) / 2
-				pText[1] += float32(by)
+				pText[0] -= bx / 2
+				pText[1] += by
 			} else if math.Abs(pEdge[1]-bounds.P1[1]) < .125 {
 				// top edge
-				pText[0] -= float32(bx) / 2
+				pText[0] -= bx / 2
 			} else {
 				ctx.Lg.Infof("Edge borkage! pEdge %+v, bounds %+v", pEdge, bounds)
 			}
@@ -251,9 +252,10 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, transforms radar.ScopeTransfor
 
 		// Draw the line and the text.
 		pText := transforms.WindowFromLatLongP(p1) // draw at right endpoint
-		bx, by := style.Font.BoundText(text, style.LineSpacing)
+		ext := style.Font.LayoutBounds(text, style.LineSpacing)
+		bx, by := ext.Width(), ext.Height()
 		p0Text := transforms.WindowFromLatLongP(p0)
-		offsetRight := pText[0] > paneBounds.P1[0]-float32(bx)
+		offsetRight := pText[0] > paneBounds.P1[0]-bx
 		offsetUp := p0Text[1] < pText[1]
 		if !paneBounds.Inside(pText) {
 			// Place text at the window edge if it would otherwise be partially or fully offscreen.
@@ -264,10 +266,10 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, transforms radar.ScopeTransfor
 		if offsetRight {
 			// If it's off the right side of the window, offset vertically so that it's not too
 			// close to the line.
-			pText[1] += float32(util.Select(offsetUp, 4+by, -4))
+			pText[1] += util.Select(offsetUp, 4+by, -4)
 		}
-		pText[0] = math.Clamp(pText[0], 0, paneBounds.P1[0]-float32(bx))
-		pText[1] = math.Clamp(pText[1], float32(by), paneBounds.P1[1])
+		pText[0] = math.Clamp(pText[0], 0, paneBounds.P1[0]-bx)
+		pText[1] = math.Clamp(pText[1], by, paneBounds.P1[1])
 		td.AddText(text, pText, style)
 		ld.AddLine(p0, p1, color)
 	}
@@ -854,14 +856,17 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 
 				pCenter := math.Add2f(pw, rot(math.Scale2f([2]float32{0, 0.5}, length)))
 
-				// Draw a quad in the background color behind the text
+				// Draw a quad in the background color behind the text, sized to
+				// the ink with even padding on all four sides.
 				text := format(lengthNM)
-				bx, by := textStyle.Font.BoundText(" "+text+" ", 0)
-				fbx, fby := float32(bx), float32(by+2)
-				trid.AddQuad(math.Add2f(pCenter, [2]float32{-fbx / 2, -fby / 2}),
-					math.Add2f(pCenter, [2]float32{fbx / 2, -fby / 2}),
-					math.Add2f(pCenter, [2]float32{fbx / 2, fby / 2}),
-					math.Add2f(pCenter, [2]float32{-fbx / 2, fby / 2}))
+				ext := textStyle.Font.InkBounds(text, 0)
+				const padX, padY = float32(2), float32(2)
+				boxW := ext.Width() + 2*padX
+				boxH := ext.Height() + 2*padY
+				trid.AddQuad(math.Add2f(pCenter, [2]float32{-boxW / 2, -boxH / 2}),
+					math.Add2f(pCenter, [2]float32{boxW / 2, -boxH / 2}),
+					math.Add2f(pCenter, [2]float32{boxW / 2, boxH / 2}),
+					math.Add2f(pCenter, [2]float32{-boxW / 2, boxH / 2}))
 
 				td.AddTextCentered(text, pCenter, textStyle)
 			}

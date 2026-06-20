@@ -159,10 +159,10 @@ func (po *pointOutPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar
 	ps := ep.currentPrefs()
 	rowFont := ep.ERAMFont(ps.FDBSize)
 	titleFont := ep.ERAMFont(2)
-	titleW, _ := titleFont.BoundText(string(acid), 0)
-	xW, _ := titleFont.BoundText("X", 0)
+	titleW := titleFont.LayoutBounds(string(acid), 0).Width()
+	xW := titleFont.LayoutBounds("X", 0).Width()
 	// Left pad (4) + title + gap (xW) + X button (xW + 2*xPad) + right pad (2).
-	width := float32(titleW) + 2*float32(xW) + 12
+	width := titleW + 2*xW + 12
 
 	cfg := ERAMMenuConfig{
 		Title:              string(acid),
