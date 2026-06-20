@@ -2,6 +2,7 @@ package eram
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
@@ -50,16 +51,22 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	fontNum := int(math.Clamp(float32(ps.AltimSet.Font), 1, 3))
 	listFont := ep.ERAMFont(fontNum)
 	bright := radar.Brightness(ps.AltimSet.Bright)
-	fontScale := []float32{0.85, 1.0, 1.2}[fontNum-1]
+	lineH := listFont.LayoutBounds("0", 0).Height() + 2
 	textColor := bright.ScaleRGB(colors.view.text)
 
 	numRows := len(ep.AltimSetAirports)
 	visibleRows := int(math.Clamp(float32(ps.AltimSet.Lines), 3, 24))
 	numCols := int(math.Clamp(float32(ps.AltimSet.Col), 1, 4))
-	colWidth := altimWindowWidth * fontScale
 	textWidth := func(s string) float32 {
 		return listFont.LayoutBounds(s, 0).Width()
 	}
+	// Column width comes from the widest row content plus side pads, badge,
+	// and gaps — derived from the actual font so it scales correctly.
+	badgeWidth := listFont.LayoutBounds("M", 0).Width() + 4
+	badgeGap := lineH / 4
+	sidePad := lineH / 4
+	colWidth := sidePad + badgeWidth + badgeGap +
+		textWidth("MMMM   1353 999  ") + sidePad
 
 	// Build one RowList per visible column.
 	maxPerPage := visibleRows * numCols
@@ -75,7 +82,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	var badge *Badge
 	if ps.AltimSet.ShowIndicators {
 		badge = &Badge{
-			Width: 13 * fontScale, Height: 17 * fontScale,
+			Width: badgeWidth, Height: lineH,
 			Fill:   bright.ScaleRGB(colors.badge.fill),
 			Border: colors.badge.border,
 		}
@@ -84,14 +91,18 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	cols := make([]*RowList, actualCols)
 	for c := range cols {
 		cols[c] = &RowList{
-			Font:          listFont,
-			Width:         colWidth,
-			LineHeight:    17 * fontScale,
-			ListTopPad:    8 * fontScale,
-			ListBottomPad: 4 * fontScale,
-			BottomGap:     4 * fontScale,
-			BadgeGap:      4 * fontScale,
-			LabelGap:      0,
+			Font:              listFont,
+			Width:             colWidth,
+			LineHeight:        lineH,
+			ListTopPad:        lineH / 2,
+			ListBottomPad:     lineH / 4,
+			BottomGap:         lineH / 4,
+			BadgeGap:          badgeGap,
+			SidePad:           sidePad,
+			LabelGap:          0,
+			SelectedID:        ep.altimSetSelect.Selected,
+			SelectedBgColor:   colors.popup.backgroundGrey,
+			SelectedTextColor: colors.popup.backgroundBlack,
 		}
 	}
 	for dataIdx := startIdx; dataIdx < numRows; dataIdx++ {
@@ -114,8 +125,15 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	}
 	width := float32(actualCols) * colWidth
 	if numRows == 0 {
-		width = altimWindowWidth * fontScale
+		width = colWidth
 		bodyHeight = 0
+	}
+
+	colBodyExtent := func(c int, body math.Extent2D) math.Extent2D {
+		return math.Extent2D{
+			P0: [2]float32{body.P0[0] + float32(c)*colWidth, body.P0[1]},
+			P1: [2]float32{body.P0[0] + float32(c+1)*colWidth, body.P1[1]},
+		}
 	}
 
 	v := View{
@@ -143,12 +161,37 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		},
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			for c, col := range cols {
-				colBody := math.Extent2D{
-					P0: [2]float32{body.P0[0] + float32(c)*colWidth, body.P0[1]},
-					P1: [2]float32{body.P0[0] + float32(c+1)*colWidth, body.P1[1]},
-				}
-				col.Draw(colBody, b)
+				col.Draw(colBodyExtent(c, body), b)
 			}
+		},
+		Selectable: &ViewSelectable{
+			State: &ep.altimSetSelect,
+			Font:  ep.ERAMFont(2),
+			Items: func(body math.Extent2D) []ViewSelectableItem {
+				var items []ViewSelectableItem
+				for c, col := range cols {
+					ex := col.Extents(colBodyExtent(c, body))
+					for i, e := range ex {
+						row := col.Rows[col.VisibleFirst()+i]
+						items = append(items, ViewSelectableItem{
+							Extent: math.Extent2D{
+								P0: [2]float32{col.RowTextLeft(e.P0[0], row), e.P0[1]},
+								P1: e.P1,
+							},
+							Label: row.ID,
+						})
+					}
+				}
+				return items
+			},
+			OnDelete: func(label string) {
+				for i, icao := range ep.AltimSetAirports {
+					if altimDisplayID(icao) == label {
+						ep.AltimSetAirports = slices.Delete(ep.AltimSetAirports, i, i+1)
+						return
+					}
+				}
+			},
 		},
 	}
 	ep.DrawView(ctx, transforms, cb, v)
@@ -163,7 +206,7 @@ func altimRow(ctx *panes.Context, icao string, badge *Badge, color renderer.RGB,
 	displayID := altimDisplayID(icao)
 	metar, hasMetar := ctx.Client.State.METAR[icao]
 	if !hasMetar {
-		return Row{Badge: badge, AltText: fmt.Sprintf("%-4s   -M-  ", displayID), Color: color}
+		return Row{Badge: badge, ID: displayID, AltText: fmt.Sprintf("%-4s   -M-  ", displayID), Color: color}
 	}
 	timeStr, altStr, altRaw := altimMetarForDisplay(metar)
 	prefix := fmt.Sprintf("%-4s  ", displayID)
@@ -172,7 +215,7 @@ func altimRow(ctx *panes.Context, icao string, badge *Badge, color renderer.RGB,
 	altField := fmt.Sprintf("%3s", altStr)
 	line := prefix + timeField + mid + altField + "  "
 
-	row := Row{Badge: badge, AltText: line, Color: color}
+	row := Row{Badge: badge, ID: displayID, AltText: line, Color: color}
 	if altRaw > 0 && altRaw < 2992 && altStr != "..." {
 		offsetX := textWidth(prefix) + textWidth(timeField) + textWidth(mid)
 		fieldW := textWidth(altField)

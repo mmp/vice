@@ -60,6 +60,34 @@ type ViewScrollState struct {
 	Offset int
 }
 
+// ViewSelectionState is caller-owned selection tracking for the
+// click-to-delete affordance. Selected is the Label of the currently chosen
+// row, or "" for none. DrawView clears Selected automatically whenever the
+// delete-confirmation popup is no longer the active popup, so dismissal via
+// Escape, click-outside, or popup replacement all do the right thing.
+type ViewSelectionState struct {
+	Selected string
+}
+
+// ViewSelectableItem is one selectable row inside the View body. Extent is the
+// pane-coord hit-test rectangle; Label is shown in the popup as
+// "DELETE <Label>" and identifies the row in the selection state. Labels
+// among items in one frame are expected to be unique.
+type ViewSelectableItem struct {
+	Extent math.Extent2D
+	Label  string
+}
+
+// ViewSelectable enables hover outlines and click-to-delete on body rows.
+// Items is invoked once per frame with the body extent so the caller can
+// derive row extents from their RowList without duplicating geometry math.
+type ViewSelectable struct {
+	State    *ViewSelectionState
+	Items    func(body math.Extent2D) []ViewSelectableItem
+	OnDelete func(label string)
+	Font     *renderer.Font // popup font; nil falls back to View.TitleFont
+}
+
 // View is the declarative spec. See package overview above.
 type View struct {
 	Position   *[2]float32
@@ -91,6 +119,8 @@ type View struct {
 	Body func(extent math.Extent2D, b *ViewBuilders)
 
 	Scroll *ViewScrollConfig
+
+	Selectable *ViewSelectable
 }
 
 // clampViewPos clamps a view top-left position so the whole window stays
@@ -315,6 +345,30 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		scrollDownRect = math.Extent2D{P0: [2]float32{scrollX0, downY1}, P1: [2]float32{scrollX1, downY0}}
 	}
 
+	// Selectable rows: compute extents up front so click handling and the
+	// hover-outline pass agree. Also forget any stale selection if the delete
+	// popup is no longer the active popup (Escape, click-outside, or another
+	// popup replacing it).
+	var selItems []ViewSelectableItem
+	hoveredSelIdx := -1
+	selectableActive := v.Selectable != nil && v.Selectable.Items != nil && bodyH > 0
+	if selectableActive {
+		selItems = v.Selectable.Items(bodyExtent)
+		if mouse != nil {
+			for i, it := range selItems {
+				if it.Extent.Inside(mouse.Pos) {
+					hoveredSelIdx = i
+					break
+				}
+			}
+		}
+		if state := v.Selectable.State; state != nil && state.Selected != "" {
+			if dp, ok := ep.popup.(*deleteEntryPopup); !ok || dp.owner != state {
+				state.Selected = ""
+			}
+		}
+	}
+
 	// Click handling. Each branch consumes its click via clearMouse*Consumed
 	// so Body sees only fall-through events.
 	primaryClicked := ep.mousePrimaryClicked(mouse)
@@ -352,6 +406,16 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			v.Reposition.DragOffset = math.Sub2f(mouse.Pos, p0)
 			ep.clearMousePrimaryConsumed(mouse)
 			ep.clearMouseTertiaryConsumed(mouse)
+
+		case selectableActive && primaryClicked && hoveredSelIdx >= 0:
+			item := selItems[hoveredSelIdx]
+			v.Selectable.State.Selected = item.Label
+			popupFont := v.Selectable.Font
+			if popupFont == nil {
+				popupFont = v.TitleFont
+			}
+			ep.popup = ep.openDeleteEntryPopup(ctx, item, v.Selectable, popupFont)
+			ep.clearMousePrimaryConsumed(mouse)
 
 		case !hasTitle && v.OnBodyTertiaryMenu != nil && tertiaryClicked &&
 			!v.Reposition.Active && bodyExtent.Inside(mouse.Pos):
@@ -398,6 +462,16 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	// Body content.
 	if v.Body != nil && bodyH > 0 {
 		v.Body(bodyExtent, &ViewBuilders{CB: cb, Trid: trid, Ld: ld, Td: td})
+	}
+
+	// Hover outline for selectable rows. Skip when the row is also the
+	// currently-selected one — its highlight fill carries the visual instead.
+	if selectableActive && hoveredSelIdx >= 0 {
+		hovered := selItems[hoveredSelIdx]
+		state := v.Selectable.State
+		if state == nil || hovered.Label != state.Selected {
+			drawRectOutline(ld, hovered.Extent, colors.view.hoveredOutline)
+		}
 	}
 
 	// Scroll-bar visual (drawn after Body so it sits on top of body content).
@@ -453,4 +527,110 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	trid.GenerateCommands(cb)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
+}
+
+// deleteEntryPopup is the "DELETE <label>" confirmation popup opened when the
+// user clicks a selectable row in a View. owner is the selection state of the
+// view that opened it — DrawView checks identity to know when to clear the
+// row highlight after dismissal.
+type deleteEntryPopup struct {
+	origin   [2]float32
+	width    float32
+	height   float32
+	label    string
+	owner    *ViewSelectionState
+	font     *renderer.Font
+	onDelete func(label string)
+}
+
+// openDeleteEntryPopup positions a deleteEntryPopup adjacent to the clicked
+// row, flipping left if it would otherwise overflow the pane, and warps the
+// cursor to its center so the user can confirm without moving the mouse.
+func (ep *ERAMPane) openDeleteEntryPopup(ctx *panes.Context, item ViewSelectableItem,
+	sel *ViewSelectable, font *renderer.Font) *deleteEntryPopup {
+
+	text := "DELETE " + item.Label
+	pad := float32(8)
+	width := font.LayoutBounds(text, 0).Width() + 2*pad
+	height := font.LayoutBounds("0", 0).Height() + pad
+
+	pe := ctx.PaneExtent
+	gap := float32(4)
+	rowCenterY := (item.Extent.P0[1] + item.Extent.P1[1]) / 2
+	origin := [2]float32{item.Extent.P1[0] + gap, rowCenterY + height/2}
+	if origin[0]+width > pe.P1[0] {
+		origin[0] = item.Extent.P0[0] - gap - width
+	}
+	if origin[0] < pe.P0[0] {
+		origin[0] = pe.P0[0]
+	}
+	if origin[1]-height < pe.P0[1] {
+		origin[1] = pe.P0[1] + height
+	}
+	if origin[1] > pe.P1[1] {
+		origin[1] = pe.P1[1]
+	}
+
+	ctx.SetMousePosition([2]float32{origin[0] + width/2, origin[1] - height/2})
+
+	return &deleteEntryPopup{
+		origin:   origin,
+		width:    width,
+		height:   height,
+		label:    item.Label,
+		owner:    sel.State,
+		font:     font,
+		onDelete: sel.OnDelete,
+	}
+}
+
+func (d *deleteEntryPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	mouse := ctx.Mouse
+	ps := ep.currentPrefs()
+	bButton := ps.Brightness.Button
+	bBorder := ps.Brightness.Border
+	bText := ps.Brightness.Text
+
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+
+	p0 := d.origin
+	p1 := [2]float32{p0[0] + d.width, p0[1]}
+	p2 := [2]float32{p1[0], p0[1] - d.height}
+	p3 := [2]float32{p0[0], p2[1]}
+	extent := math.Extent2D{P0: p3, P1: p1}
+	hovered := mouse != nil && extent.Inside(mouse.Pos)
+
+	trid.AddQuad(p0, p1, p2, p3, bButton.ScaleRGB(colors.popup.backgroundGrey))
+
+	outline := bBorder.ScaleRGB(colors.menu.rowDimOutline)
+	if hovered {
+		outline = bBorder.ScaleRGB(colors.menu.rowHoverOutline)
+	}
+	ld.AddLine(p0, p1, outline)
+	ld.AddLine(p1, p2, outline)
+	ld.AddLine(p2, p3, outline)
+	ld.AddLine(p3, p0, outline)
+
+	td.AddTextCentered("DELETE "+d.label,
+		[2]float32{p0[0] + d.width/2, p0[1] - d.height/2},
+		renderer.TextStyle{Font: d.font, Color: bText.ScaleRGB(colors.popup.text)})
+
+	transforms.LoadWindowViewingMatrices(cb)
+	trid.GenerateCommands(cb)
+	ld.GenerateCommands(cb)
+	td.GenerateCommands(cb)
+
+	if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
+		if hovered && d.onDelete != nil {
+			d.onDelete(d.label)
+		}
+		ep.popup = nil
+		ep.clearMousePrimaryConsumed(mouse)
+		ep.clearMouseTertiaryConsumed(mouse)
+	}
 }

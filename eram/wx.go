@@ -2,6 +2,7 @@ package eram
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/mmp/vice/math"
@@ -34,34 +35,38 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 	bright := radar.Brightness(ps.WX.Bright)
 	listFont := ep.ERAMFont(fontNum)
 	lineH := listFont.LayoutBounds("0", 0).Height() + 2
-	fontScale := []float32{0.85, 1.0, 1.2}[fontNum-1]
+	badgeWidth := listFont.LayoutBounds("M", 0).Width() + 4
 
 	visibleRows := int(math.Clamp(float32(ps.WX.Lines), 3, 24))
 
 	// Build rows from the scroll offset onward; RowList does the wrapping.
 	rl := &RowList{
-		Font:       listFont,
-		Width:      wxWindowWidth,
-		LineHeight: lineH,
-		TopPad:     8 * fontScale,
-		BottomGap:  4 * fontScale,
-		BadgeGap:   4 * fontScale,
+		Font:              listFont,
+		Width:             wxWindowWidth,
+		LineHeight:        lineH,
+		TopPad:            lineH / 2,
+		BottomGap:         lineH / 4,
+		BadgeGap:          lineH / 4,
+		SelectedID:        ep.wxSelect.Selected,
+		SelectedBgColor:   colors.popup.backgroundGrey,
+		SelectedTextColor: colors.popup.backgroundBlack,
 	}
 	textColor := bright.ScaleRGB(colors.view.text)
 	yellowColor := bright.ScaleRGB(colors.badge.fill)
 	var badgeProto *Badge
 	if ps.WX.ShowIndicators {
 		badgeProto = &Badge{
-			Width: 13 * fontScale, Height: lineH,
+			Width: badgeWidth, Height: lineH,
 			Fill: yellowColor, Border: colors.badge.border,
 		}
 	}
 
 	rl.MaxLines = visibleRows
 	for _, icao := range ep.WXReportStations {
+		displayID := wxDisplayID(icao)
 		body, alt := wxMetarBody(ctx, icao)
 		rl.Rows = append(rl.Rows, Row{
-			Badge: badgeProto, Label: wxDisplayID(icao),
+			Badge: badgeProto, ID: displayID, Label: displayID,
 			Body: body, AltText: alt, Color: textColor,
 		})
 	}
@@ -107,6 +112,33 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 			MaxOffset: scrollMaxOffset(totalLines, visibleRows, len(ep.WXReportStations)),
 		},
 		Body: func(body math.Extent2D, b *ViewBuilders) { rl.Draw(body, b) },
+		Selectable: &ViewSelectable{
+			State: &ep.wxSelect,
+			Font:  ep.ERAMFont(2),
+			Items: func(body math.Extent2D) []ViewSelectableItem {
+				ex := rl.Extents(body)
+				items := make([]ViewSelectableItem, 0, len(ex))
+				for i, e := range ex {
+					row := rl.Rows[rl.VisibleFirst()+i]
+					items = append(items, ViewSelectableItem{
+						Extent: math.Extent2D{
+							P0: [2]float32{rl.RowTextLeft(e.P0[0], row), e.P0[1]},
+							P1: e.P1,
+						},
+						Label: row.ID,
+					})
+				}
+				return items
+			},
+			OnDelete: func(label string) {
+				for i, icao := range ep.WXReportStations {
+					if wxDisplayID(icao) == label {
+						ep.WXReportStations = slices.Delete(ep.WXReportStations, i, i+1)
+						return
+					}
+				}
+			},
+		},
 	}
 	ep.DrawView(ctx, transforms, cb, v)
 }

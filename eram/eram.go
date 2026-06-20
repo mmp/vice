@@ -310,12 +310,14 @@ type ERAMPane struct {
 	crrAircraftRects map[string]map[av.ADSBCallsign]math.Extent2D `json:"-"`
 
 	// ALTIM SET state (session)
-	AltimSetAirports []string        `json:"AltimSetAirports,omitempty"`
-	altimSetScroll   ViewScrollState `json:"-"`
+	AltimSetAirports []string           `json:"AltimSetAirports,omitempty"`
+	altimSetScroll   ViewScrollState    `json:"-"`
+	altimSetSelect   ViewSelectionState `json:"-"`
 
 	// WX window state (session)
-	WXReportStations []string        `json:"WXReportStations,omitempty"`
-	wxScroll         ViewScrollState `json:"-"`
+	WXReportStations []string           `json:"WXReportStations,omitempty"`
+	wxScroll         ViewScrollState    `json:"-"`
+	wxSelect         ViewSelectionState `json:"-"`
 
 	commandMode       CommandMode     `json:"-"`
 	drawRouteAircraft av.ADSBCallsign `json:"-"`
@@ -860,6 +862,10 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			ep.Input.Clear()
 			ep.applyCommandStatus(ctx, status, err)
 		case imgui.KeyEscape:
+			if _, ok := ep.popup.(*deleteEntryPopup); ok {
+				ep.popup = nil
+				break
+			}
 			if ep.tearoffInProgress != "" || ep.deleteTearoffMode {
 				if ep.tearoffInProgress != "" {
 					ep.tearoffInProgress = ""

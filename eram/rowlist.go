@@ -45,6 +45,11 @@ type Row struct {
 	AltText  string
 	Centered bool
 
+	// ID is the selection identifier matched against RowList.SelectedID. It
+	// is independent of Label so rows whose visible text lives entirely in
+	// Body or AltText can still participate in selection.
+	ID string
+
 	Color renderer.RGB
 
 	SpacerHeight float32
@@ -87,6 +92,13 @@ type RowList struct {
 	// last visible row is truncated mid-content if needed; subsequent rows
 	// are dropped. 0 = unlimited.
 	MaxLines int
+
+	// SelectedID: when non-empty, the visible row whose ID matches gets a
+	// filled background (SelectedBgColor) and uses SelectedTextColor for its
+	// label/body text. The badge is left untouched.
+	SelectedID        string
+	SelectedBgColor   renderer.RGB
+	SelectedTextColor renderer.RGB
 
 	// Populated by Measure().
 	measured       []measuredRow
@@ -172,6 +184,39 @@ func (l *RowList) Measure() float32 {
 // VisibleFirst returns the index of the first rendered row (= Skip, clamped).
 func (l *RowList) VisibleFirst() int { return l.visibleFirst }
 
+// RowTextLeft returns the X where a row's label/body text starts, given the
+// row's left edge bodyX0. Used by callers to size selection hit-extents that
+// exclude the badge area.
+func (l *RowList) RowTextLeft(bodyX0 float32, row Row) float32 {
+	l.applyDefaults()
+	x := bodyX0 + l.SidePad
+	if row.Badge != nil {
+		x += row.Badge.Width + l.BadgeGap
+	}
+	return x
+}
+
+// Extents computes the same per-rendered-row extents Draw would return,
+// without drawing. Measure must have been called first. Use to populate a
+// View's selectable-items list before Body runs.
+func (l *RowList) Extents(body math.Extent2D) []math.Extent2D {
+	if l.measured == nil {
+		panic("RowList.Extents: Measure must be called first")
+	}
+	visibleCount := l.visibleLast - l.visibleFirst
+	extents := make([]math.Extent2D, visibleCount)
+	rowTop := body.P1[1] - l.ListTopPad
+	for i := l.visibleFirst; i < l.visibleLast; i++ {
+		rowBottom := rowTop - l.measured[i].height
+		extents[i-l.visibleFirst] = math.Extent2D{
+			P0: [2]float32{body.P0[0], rowBottom},
+			P1: [2]float32{body.P1[0], rowTop},
+		}
+		rowTop = rowBottom
+	}
+	return extents
+}
+
 // TotalLines returns the total wrapped body lines across ALL rows (ignoring
 // Skip and MaxLines). Used by the caller to populate the View's scroll-bar
 // item count.
@@ -222,21 +267,35 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		}
 
 		x := body.P0[0] + l.SidePad
-		// Text baseline: aligned to the badge top minus its height plus the
-		// character ascent — matches the existing WX/AltimSet placement.
 		baseY := contentTop - l.LineHeight + by
 		if r.Badge != nil {
-			bp0 := [2]float32{x, contentTop - r.Badge.Height}
-			bp1 := [2]float32{x + r.Badge.Width, contentTop - r.Badge.Height}
-			bp2 := [2]float32{x + r.Badge.Width, contentTop}
-			bp3 := [2]float32{x, contentTop}
+			// Align the badge's vertical center with the text's ink center
+			// rather than the layout cell — at larger fonts the cell has
+			// noticeably more space below the glyph than the badge does, so
+			// using cell metrics makes the text look low against the badge.
+			inkExt := l.Font.InkBounds("0", 0)
+			textInkCenter := baseY + (inkExt.P0[1]+inkExt.P1[1])/2
+			badgeBottom := textInkCenter - r.Badge.Height/2
+			badgeTop := textInkCenter + r.Badge.Height/2
+			bp0 := [2]float32{x, badgeBottom}
+			bp1 := [2]float32{x + r.Badge.Width, badgeBottom}
+			bp2 := [2]float32{x + r.Badge.Width, badgeTop}
+			bp3 := [2]float32{x, badgeTop}
 			b.Trid.AddQuad(bp0, bp1, bp2, bp3, r.Badge.Fill)
 			b.Ld.AddLine(bp0, bp1, r.Badge.Border)
 			b.Ld.AddLine(bp1, bp2, r.Badge.Border)
 			b.Ld.AddLine(bp2, bp3, r.Badge.Border)
 			b.Ld.AddLine(bp3, bp0, r.Badge.Border)
-			baseY = contentTop - r.Badge.Height + by
 			x += r.Badge.Width + l.BadgeGap
+		}
+
+		if l.SelectedID != "" && r.ID == l.SelectedID {
+			selP0 := [2]float32{x, rowExtent.P1[1]}
+			selP1 := [2]float32{body.P1[0], rowExtent.P1[1]}
+			selP2 := [2]float32{body.P1[0], rowExtent.P0[1]}
+			selP3 := [2]float32{x, rowExtent.P0[1]}
+			b.Trid.AddQuad(selP0, selP1, selP2, selP3, l.SelectedBgColor)
+			style.Color = l.SelectedTextColor
 		}
 
 		labelX := x
