@@ -45,137 +45,54 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	}
 
 	listFont := ep.clampedFont(ps.AltimSet.Font, 1, 3)
-	titleFont := ep.ERAMFont(2)
-	bright := radar.Brightness(ps.AltimSet.Bright)
-	lineH := lineHeight(listFont)
-	textColor := bright.ScaleRGB(colors.view.text)
+	textWidth := func(s string) float32 { return listFont.LayoutBounds(s, 0).Width() }
+	textColor := ep.viewTextColor(ps.AltimSet.Bright)
 
-	numRows := len(ep.AltimSetAirports)
-	visibleRows := math.Clamp(ps.AltimSet.Lines, 3, 24)
-	numCols := math.Clamp(ps.AltimSet.Col, 1, 4)
-	textWidth := func(s string) float32 {
-		return listFont.LayoutBounds(s, 0).Width()
-	}
-	// Column width comes from the widest row content plus the badge column
-	// (matching the title-bar M button), the gap after it, and a right inset
-	// that gives inter-column breathing room. DrawView reserves the scroll
-	// bar area on the right, so this column width is content-only.
-	badgeWidth := titleFont.LayoutBounds("M", 0).Width()
-	badgeGap := viewMPad
-	sidePad := lineH / 4
-	colWidth := badgeWidth + badgeGap +
-		textWidth("MMMM   1353 999  ") + sidePad
-
-	// Build one RowList per visible column.
-	maxPerPage := visibleRows * numCols
-	startIdx := 0
-	if numRows > maxPerPage {
-		startIdx = ep.altimSetScroll.Offset
-	}
-	actualCols := numCols
-	if numRows-startIdx < maxPerPage {
-		actualCols = math.Clamp((numRows-startIdx+visibleRows-1)/visibleRows, 1, numCols)
+	var rows []Row
+	for _, icao := range ep.AltimSetAirports {
+		rows = append(rows, altimRow(ctx, icao, textColor, listFont, textWidth))
 	}
 
-	var badge *Badge
-	if ps.AltimSet.ShowIndicators {
-		badge = defaultBadge(titleFont, bright.ScaleRGB(colors.badge.fill))
-	}
-
-	cols := make([]*RowList, actualCols)
-	for c := range cols {
-		cols[c] = &RowList{
-			Font:              listFont,
-			Width:             colWidth,
-			LineHeight:        lineH,
-			ListTopPad:        lineH / 4,
-			ListBottomPad:     lineH / 4,
-			BottomGap:         lineH / 4,
-			BadgeGap:          badgeGap,
-			SidePad:           sidePad,
-			LabelGap:          0,
-			SelectedID:        ep.altimSetSelect.Selected,
-			SelectedBgColor:   colors.popup.backgroundGrey,
-			SelectedTextColor: colors.popup.backgroundBlack,
-		}
-	}
-	for dataIdx := startIdx; dataIdx < numRows; dataIdx++ {
-		displayIdx := dataIdx - startIdx
-		colIdx := 0
-		if numCols > 1 {
-			colIdx = displayIdx / visibleRows
-		}
-		if colIdx >= actualCols {
-			break
-		}
-		cols[colIdx].Rows = append(cols[colIdx].Rows, altimRow(ctx, ep.AltimSetAirports[dataIdx], badge, textColor, listFont, textWidth))
-	}
-
-	bodyHeight := float32(0)
-	for _, col := range cols {
-		if h := col.Measure(); h > bodyHeight {
-			bodyHeight = h
-		}
-	}
-	width := float32(actualCols) * colWidth
-	if numRows == 0 {
-		width = colWidth
-		bodyHeight = 0
-	}
-
-	colBodyExtent := func(c int, body math.Extent2D) math.Extent2D {
-		return math.Extent2D{
-			P0: [2]float32{body.P0[0] + float32(c)*colWidth, body.P0[1]},
-			P1: [2]float32{body.P0[0] + float32(c+1)*colWidth, body.P1[1]},
-		}
-	}
-
-	v := View{
+	ep.DrawView(ctx, transforms, cb, View{
 		Position:   &ps.AltimSet.Position,
 		ID:         "altim-set",
-		Width:      width,
-		BodyHeight: bodyHeight,
 		Title:      "ALTIM SET",
-		BodyFont:   listFont,
 		Opaque:     ps.AltimSet.Opaque,
 		ShowBorder: ps.AltimSet.ShowBorder,
-		Brightness: bright,
+		Brightness: radar.Brightness(ps.AltimSet.Bright),
 		OnMenu: ep.makeViewMenu(ctx, "altim-set", altimSetPopupWidth, (8+1)*18,
 			func(pb popupBase) popup { return &altimSetPopup{popupBase: pb} }),
 		MinimizeTarget: &ps.AltimSet.Visible,
-		Scroll: &ViewScrollConfig{
-			State:     &ep.altimSetScroll,
-			MaxOffset: max(0, numRows-maxPerPage),
+		RowSource: &ViewRowSource{
+			Rows:                  rows,
+			FontSize:              ps.AltimSet.Font,
+			ContentWidth:          textWidth("MMMM   1353 999  "),
+			MaxCols:               math.Clamp(ps.AltimSet.Col, 1, 4),
+			VisibleRows:           math.Clamp(ps.AltimSet.Lines, 3, 24),
+			BadgeColumn:           true,
+			BadgesVisible:         ps.AltimSet.ShowIndicators,
+			RowSpacing:            RowSpacingCompact,
+			ScrollState:           &ep.altimSetScroll,
+			EmptyKeepsColumnWidth: true,
+			SelectedID:            ep.altimSetSelect.Selected,
+			SelectableState:       &ep.altimSetSelect,
+			SelectableOnDelete:    func(label string) { deleteByID(&ep.AltimSetAirports, label, altimDisplayID) },
 		},
-		Body: func(body math.Extent2D, b *ViewBuilders) {
-			for c, col := range cols {
-				col.Draw(colBodyExtent(c, body), b)
-			}
-		},
-		Selectable: &ViewSelectable{
-			State: &ep.altimSetSelect,
-			Font:  ep.ERAMFont(2),
-			Items: func(body math.Extent2D) []ViewSelectableItem {
-				return SelectableItems(cols, body, colBodyExtent)
-			},
-			OnDelete: func(label string) {
-				deleteByID(&ep.AltimSetAirports, label, altimDisplayID)
-			},
-		},
-	}
-	ep.DrawView(ctx, transforms, cb, v)
+	})
 }
 
 // altimRow builds one ALTIM SET row from an airport's METAR (or a missing-data
 // placeholder). The altimeter portion is underlined via AfterDraw when below
-// the standard 29.92 inHg.
-func altimRow(ctx *panes.Context, icao string, badge *Badge, color renderer.RGB,
+// the standard 29.92 inHg. The badge column and row color are filled in by
+// the View; this function just constructs the row text and the AfterDraw
+// underline (which captures `color` for the line).
+func altimRow(ctx *panes.Context, icao string, color renderer.RGB,
 	font *renderer.Font, textWidth func(string) float32) Row {
 
 	displayID := altimDisplayID(icao)
 	metar, hasMetar := ctx.Client.State.METAR[icao]
 	if !hasMetar {
-		return Row{Badge: badge, ID: displayID, AltText: fmt.Sprintf("%-4s   -M-  ", displayID), Color: color}
+		return Row{ID: displayID, Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
 	}
 	timeStr, altStr, altRaw := altimMetarForDisplay(metar)
 	prefix := fmt.Sprintf("%-4s  ", displayID)
@@ -184,7 +101,7 @@ func altimRow(ctx *panes.Context, icao string, badge *Badge, color renderer.RGB,
 	altField := fmt.Sprintf("%3s", altStr)
 	line := prefix + timeField + mid + altField + "  "
 
-	row := Row{Badge: badge, ID: displayID, AltText: line, Color: color}
+	row := Row{ID: displayID, Body: line}
 	if altRaw > 0 && altRaw < 2992 && altStr != "..." {
 		offsetX := textWidth(prefix) + textWidth(timeField) + textWidth(mid)
 		fieldW := textWidth(altField)

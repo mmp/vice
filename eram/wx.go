@@ -27,117 +27,48 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		return
 	}
 
-	bright := radar.Brightness(ps.WX.Bright)
-	listFont := ep.clampedFont(ps.WX.Font, 1, 3)
-	titleFont := ep.ERAMFont(2)
-	lineH := lineHeight(listFont)
-	spaceW := listFont.LayoutBounds(" ", 0).Width()
-	badgeWidth := titleFont.LayoutBounds("M", 0).Width()
-	badgeGap := viewMPad
+	spaceW := ep.clampedFont(ps.WX.Font, 1, 3).LayoutBounds(" ", 0).Width()
 
-	// Content width: badge column (matching the title-bar M button), the
-	// gap after it, and 24 characters for the METAR body. DrawView adds
-	// another 2 space characters on the right for the scroll bar.
-	contentWidth := badgeWidth + badgeGap + 24*spaceW
-
-	visibleRows := math.Clamp(ps.WX.Lines, 3, 24)
-
-	// Build rows from the scroll offset onward; RowList does the wrapping.
-	rl := &RowList{
-		Font:              listFont,
-		Width:             contentWidth,
-		LineHeight:        lineH,
-		TopPad:            lineH / 2,
-		BottomGap:         lineH / 2,
-		BadgeGap:          badgeGap,
-		SidePad:           0,
-		SelectedID:        ep.wxSelect.Selected,
-		SelectedBgColor:   colors.popup.backgroundGrey,
-		SelectedTextColor: colors.popup.backgroundBlack,
-	}
-	textColor := bright.ScaleRGB(colors.view.text)
-	yellowColor := bright.ScaleRGB(colors.badge.fill)
-	var badgeProto *Badge
-	if ps.WX.ShowIndicators {
-		badgeProto = defaultBadge(titleFont, yellowColor)
-	}
-
-	rl.MaxLines = visibleRows
+	var rows []Row
 	for _, icao := range ep.WXReportStations {
-		displayID := wxDisplayID(icao)
-		body, alt := wxMetarBody(ctx, icao)
-		rl.Rows = append(rl.Rows, Row{
-			Badge: badgeProto, ID: displayID, Label: displayID,
-			Body: body, AltText: alt, Color: textColor,
-		})
+		id := wxDisplayID(icao)
+		rows = append(rows, Row{ID: id, Label: id, Body: wxMetarBody(ctx, icao)})
 	}
 
-	// Measure first with no skip so totalLines reflects all stations; only
-	// honour the persisted scroll offset when the wrapped content actually
-	// overflows the visible row budget. Otherwise reset the scroll to 0 so
-	// stale offsets don't hide stations.
-	bodyHeight := rl.Measure()
-	totalLines := rl.TotalLines()
-	if totalLines <= visibleRows {
-		ep.wxScroll.Offset = 0
-	} else {
-		rl.Skip = math.Clamp(ep.wxScroll.Offset, 0, max(len(ep.WXReportStations)-1, 0))
-		ep.wxScroll.Offset = rl.Skip
-		bodyHeight = rl.Measure()
-	}
-
-	v := View{
+	ep.DrawView(ctx, transforms, cb, View{
 		Position:   &ps.WX.Position,
 		ID:         "wx",
-		Width:      contentWidth,
-		BodyHeight: bodyHeight,
 		Title:      "WX REPORT",
-		BodyFont:   listFont,
 		Opaque:     ps.WX.Opaque,
 		ShowBorder: ps.WX.ShowBorder,
-		Brightness: bright,
+		Brightness: radar.Brightness(ps.WX.Bright),
 		OnMenu: ep.makeViewMenu(ctx, "wx", wxPopupWidth, (6+1)*18,
 			func(pb popupBase) popup { return &wxPopup{popupBase: pb} }),
 		MinimizeTarget: &ps.WX.Visible,
-		Scroll: &ViewScrollConfig{
-			State: &ep.wxScroll,
-			// Offset is a station index, so the user can scroll until the last
-			// station is the top of the page. Only show the scroll bar when
-			// wrapping actually pushes content beyond visibleRows.
-			MaxOffset: scrollMaxOffset(totalLines, visibleRows, len(ep.WXReportStations)),
+		RowSource: &ViewRowSource{
+			Rows:               rows,
+			FontSize:           ps.WX.Font,
+			ContentWidth:       24 * spaceW,
+			MaxCols:            1,
+			VisibleRows:        math.Clamp(ps.WX.Lines, 3, 24),
+			BadgeColumn:        true,
+			BadgesVisible:      ps.WX.ShowIndicators,
+			RowSpacing:         RowSpacingAiry,
+			ScrollState:        &ep.wxScroll,
+			SelectedID:         ep.wxSelect.Selected,
+			SelectableState:    &ep.wxSelect,
+			SelectableOnDelete: func(label string) { deleteByID(&ep.WXReportStations, label, wxDisplayID) },
 		},
-		Body: func(body math.Extent2D, b *ViewBuilders) { rl.Draw(body, b) },
-		Selectable: &ViewSelectable{
-			State: &ep.wxSelect,
-			Font:  ep.ERAMFont(2),
-			Items: func(body math.Extent2D) []ViewSelectableItem {
-				return SelectableItems([]*RowList{rl}, body,
-					func(_ int, b math.Extent2D) math.Extent2D { return b })
-			},
-			OnDelete: func(label string) {
-				deleteByID(&ep.WXReportStations, label, wxDisplayID)
-			},
-		},
-	}
-	ep.DrawView(ctx, transforms, cb, v)
+	})
 }
 
-// scrollMaxOffset returns the max station-index offset when wrapped content
-// (totalLines) overflows the visible row budget; 0 otherwise (no scroll bar).
-func scrollMaxOffset(totalLines, visibleRows, numStations int) int {
-	if totalLines <= visibleRows {
-		return 0
-	}
-	return max(0, numStations-1)
-}
-
-// wxMetarBody returns either the wrappable METAR text (HHMM + remaining
-// fields) for the station, or an AltText status string ("-M-") if no METAR
-// is available.
-func wxMetarBody(ctx *panes.Context, icao string) (body, alt string) {
+// wxMetarBody returns the row body text for a station: the wrappable METAR
+// text (HHMM + remaining fields) when METAR data is available, or "-M-" as
+// a status placeholder otherwise.
+func wxMetarBody(ctx *panes.Context, icao string) string {
 	metar, ok := ctx.Client.State.METAR[icao]
 	if !ok || metar.Raw == "" {
-		return "", "-M-"
+		return "-M-"
 	}
 
 	// Find the time-group token: digits followed by 'Z'. (Plain strings.Index
@@ -161,15 +92,15 @@ func wxMetarBody(ctx *panes.Context, icao string) (body, alt string) {
 		}
 	}
 	if timeField == -1 {
-		return "", "-M-"
+		return "-M-"
 	}
 
 	tok := rawFields[timeField]
-	body = tok[len(tok)-5 : len(tok)-1]
+	body := tok[len(tok)-5 : len(tok)-1]
 	if timeField+1 < len(rawFields) {
 		body += " " + strings.Join(rawFields[timeField+1:], " ")
 	}
-	return body, ""
+	return body
 }
 
 const wxPopupWidth = 150

@@ -54,13 +54,12 @@ func drawBadge(b *ViewBuilders, badge *Badge, startX, textInkCenterY float32) fl
 
 // Row is one row in a RowList. The layout has three logical regions:
 //
-//	[ Badge ][ Label ]  [ Body... wrapped to multiple lines ]
+//	[ Badge ][ Label ]  [ Body... wraps to multiple lines if needed ]
 //	                    [ ...continuation aligned with Label start ]
 //
 // If Centered is true, Label is centered across the row width and Badge/Body
 // are ignored (used for group-header rows).
-// If AltText is set, it replaces Body as a single non-wrapping line (e.g. "-M-").
-// If Body is empty (and no AltText), the row has just Badge + Label.
+// If Body is empty, the row has just Badge + Label.
 //
 // If SpacerHeight > 0, the row renders nothing and just takes up that much
 // vertical space (used for inter-group gaps in CRR list mode).
@@ -69,12 +68,11 @@ type Row struct {
 	Label string
 	Body  string
 
-	AltText  string
 	Centered bool
 
 	// ID is the selection identifier matched against RowList.SelectedID. It
 	// is independent of Label so rows whose visible text lives entirely in
-	// Body or AltText can still participate in selection.
+	// Body can still participate in selection.
 	ID string
 
 	Color renderer.RGB
@@ -136,7 +134,7 @@ type RowList struct {
 }
 
 type measuredRow struct {
-	lines  []string // wrapped body; empty if AltText / Centered / no Body
+	lines  []string // wrapped body; empty if Centered or no Body
 	height float32
 }
 
@@ -154,7 +152,7 @@ func (l *RowList) Measure() float32 {
 			continue
 		}
 		nLines := 1
-		if !r.Centered && r.AltText == "" && r.Body != "" {
+		if !r.Centered && r.Body != "" {
 			firstW, contW := l.bodyAvailWidths(r)
 			lines := wrapWords(l.Font, r.Body, firstW, contW)
 			if len(lines) == 0 {
@@ -239,9 +237,8 @@ func (l *RowList) iterRows(body math.Extent2D, fn func(i int, m measuredRow, ext
 // rowContentLayout returns the text-positioning constants for a non-Centered,
 // non-Spacer row at contentTop. labelX is where the label / first body line
 // starts (post-badge for badge rows, post-SidePad otherwise); bodyX is where
-// the AltText / first wrapped body line starts (after the label and
-// LabelGap, if any); baseY is the AddText upper-left y for the first text
-// line.
+// the first wrapped body line starts (after the label and LabelGap, if any);
+// baseY is the AddText upper-left y for the first text line.
 func (l *RowList) rowContentLayout(r Row, body math.Extent2D, contentTop, lineSlack float32) (labelX, bodyX, baseY float32) {
 	baseY = contentTop - lineSlack
 	if r.Badge != nil {
@@ -257,23 +254,18 @@ func (l *RowList) rowContentLayout(r Row, body math.Extent2D, contentTop, lineSl
 }
 
 // forBodyTextBits invokes fn(string, position) for each rendered text span
-// in row r at the given column positions. Centralizes the AltText /
-// wrapped-Body / label-only switch shared between TextExtents and Draw.
+// in row r at the given column positions. Centralizes the wrapped-Body /
+// label-only switch shared between TextExtents and Draw.
 func (l *RowList) forBodyTextBits(r Row, m measuredRow, labelX, bodyX, baseY float32, fn func(s string, pos [2]float32)) {
 	if r.Label != "" {
 		fn(r.Label, [2]float32{labelX, baseY})
 	}
-	switch {
-	case r.AltText != "":
-		fn(r.AltText, [2]float32{bodyX, baseY})
-	case len(m.lines) > 0:
-		for j, line := range m.lines {
-			lx := bodyX
-			if j > 0 {
-				lx = labelX
-			}
-			fn(line, [2]float32{lx, baseY - float32(j)*l.LineHeight})
+	for j, line := range m.lines {
+		lx := bodyX
+		if j > 0 {
+			lx = labelX
 		}
+		fn(line, [2]float32{lx, baseY - float32(j)*l.LineHeight})
 	}
 }
 
@@ -342,9 +334,9 @@ func (l *RowList) Extents(body math.Extent2D) []math.Extent2D {
 func (l *RowList) TotalLines() int { return l.totalBodyLines }
 
 // TextExtents returns one Extent2D per visible row: a tight box around the
-// rendered text (label + body / AltText), expanded by 1 px on every side.
-// Callers use this for selection / hover hit-testing and outline drawing so
-// the visual matches the ink rather than the row's full strip.
+// rendered text (label + body), expanded by 1 px on every side. Callers use
+// this for selection / hover hit-testing and outline drawing so the visual
+// matches the ink rather than the row's full strip.
 func (l *RowList) TextExtents(body math.Extent2D) []math.Extent2D {
 	if l.measured == nil {
 		panic("RowList.TextExtents: Measure must be called first")

@@ -44,23 +44,38 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 		return
 	}
 
-	bright := radar.Brightness(ps.BeaconCodeView.Bright)
-	listFont := ep.clampedFont(ps.BeaconCodeView.Font, 1, 3)
-	titleFont := ep.ERAMFont(2)
-	lineH := lineHeight(listFont)
+	// Cell content: 4-digit code plus a trailing "." for manually-added
+	// entries. Reserve the dot's width on every cell so columns line up
+	// regardless of which rows actually carry it.
+	cellContentW := ep.clampedFont(ps.BeaconCodeView.Font, 1, 3).LayoutBounds("0000.", 0).Width()
 
-	visibleRows := math.Clamp(ps.BeaconCodeView.Lines, 3, 24)
-	numCols := math.Clamp(ps.BeaconCodeView.Col, 1, 5)
+	ep.DrawView(ctx, transforms, cb, View{
+		Position:   &ps.BeaconCodeView.Position,
+		ID:         "beacon",
+		Title:      "CODE",
+		Opaque:     ps.BeaconCodeView.Opaque,
+		ShowBorder: ps.BeaconCodeView.ShowBorder,
+		Brightness: radar.Brightness(ps.BeaconCodeView.Bright),
+		OnMenu: ep.makeViewMenu(ctx, "beacon", 150, (7+1)*18,
+			func(pb popupBase) popup { return &beaconCodeViewPopup{popupBase: pb} }),
+		MinimizeTarget: &ps.BeaconCodeView.Visible,
+		RowSource: &ViewRowSource{
+			Rows:                    beaconCodeRows(ctx, ep, ps),
+			FontSize:                ps.BeaconCodeView.Font,
+			ContentWidth:            cellContentW,
+			MaxCols:                 math.Clamp(ps.BeaconCodeView.Col, 1, 5),
+			VisibleRows:             math.Clamp(ps.BeaconCodeView.Lines, 3, 24),
+			RowSpacing:              RowSpacingCompact,
+			CenterColumnsInTitleBar: true,
+		},
+	})
+}
 
-	sidePad := lineH / 4
-	// Cell content: 4-digit code plus a trailing "." for manually-added entries.
-	// Reserve the dot's width on every cell so columns line up regardless of
-	// which rows actually carry it.
-	cellContentW := listFont.LayoutBounds("0000.", 0).Width()
-	cellWidth := sidePad + cellContentW + sidePad
-
-	textColor := bright.ScaleRGB(colors.view.text)
-
+// beaconCodeRows returns the flat row list shown by drawBeaconCodeView:
+// manually-added codes (with trailing ".") plus the codes of aircraft whose
+// tracks we own, in the order dictated by SortManual. Row.Color is left zero
+// — the View fills in the default text color.
+func beaconCodeRows(ctx *panes.Context, ep *ERAMPane, ps *Preferences) []Row {
 	// Codes of aircraft whose tracks we own.
 	var owned []av.Squawk
 	for _, trk := range ctx.Client.State.Tracks {
@@ -69,25 +84,22 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 		}
 	}
 
-	// Manually-added codes (via QB) display with a trailing ".".
 	makeRow := func(code av.Squawk) Row {
 		s := code.String()
 		if slices.Contains(ep.AddedBeaconCodes, code) {
 			s += "."
 		}
-		return Row{ID: code.String(), AltText: s, Color: textColor}
+		return Row{ID: code.String(), Body: s}
 	}
 
-	// Build the sorted code list as a flat slice of Rows; distribution into
-	// columns happens below.
-	var codes []Row
+	var rows []Row
 	if ps.BeaconCodeView.SortManual {
 		// First the (sorted) manually added codes, then the sorted owned codes
 		// that aren't also manually added.
 		added := slices.Clone(ep.AddedBeaconCodes)
 		slices.Sort(added)
 		for _, code := range added {
-			codes = append(codes, makeRow(code))
+			rows = append(rows, makeRow(code))
 		}
 		ownedOnly := slices.Clone(owned)
 		ownedOnly = slices.DeleteFunc(ownedOnly, func(c av.Squawk) bool {
@@ -95,7 +107,7 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 		})
 		slices.Sort(ownedOnly)
 		for _, code := range ownedOnly {
-			codes = append(codes, makeRow(code))
+			rows = append(rows, makeRow(code))
 		}
 	} else {
 		// All codes (added + owned) merged and sorted; manual ones keep their ".".
@@ -103,86 +115,8 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 		slices.Sort(all)
 		all = slices.Compact(all)
 		for _, code := range all {
-			codes = append(codes, makeRow(code))
+			rows = append(rows, makeRow(code))
 		}
 	}
-
-	// Only allocate as many columns as we'll actually populate: ceil(len/rows)
-	// clamped to [1, numCols]. Sizing the view to a fixed numCols would leave
-	// empty columns of wasted width when there are few codes.
-	actualCols := math.Clamp((len(codes)+visibleRows-1)/visibleRows, 1, numCols)
-
-	// Distribute column-major: first `visibleRows` codes fill column 0, next
-	// `visibleRows` fill column 1, etc. Extra codes beyond numCols*visibleRows
-	// are dropped (no scroll for the CODE view).
-	cols := make([]*RowList, actualCols)
-	for c := range cols {
-		cols[c] = &RowList{
-			Font:          listFont,
-			Width:         cellWidth,
-			LineHeight:    lineH,
-			ListTopPad:    lineH / 2,
-			ListBottomPad: lineH / 4,
-			BottomGap:     lineH / 4,
-			SidePad:       sidePad,
-			LabelGap:      0,
-			MaxLines:      visibleRows,
-		}
-	}
-	for i, row := range codes {
-		c := i / visibleRows
-		if c >= actualCols {
-			break
-		}
-		cols[c].Rows = append(cols[c].Rows, row)
-	}
-
-	bodyHeight := float32(0)
-	for _, col := range cols {
-		if h := col.Measure(); h > bodyHeight {
-			bodyHeight = h
-		}
-	}
-
-	// View width: enough to fit either the title bar (M button + centered
-	// "CODE" + minimize button, matching DrawView's layout) or the columns of
-	// beacon codes, whichever is wider. The view shrinks down to its smallest
-	// usable size and grows only when the codes demand it.
-	mButtonW := viewMButtonWidth(titleFont)
-	minButtonW := titleFont.LayoutBounds("-", 0).Width() + 2*viewMPad
-	titleTextW := titleFont.LayoutBounds("CODE", 0).Width()
-	// Title text is centered at width/2; clamp by the wider of the two side
-	// buttons so neither overlaps the title.
-	titleBarMinW := titleTextW + 2*max(mButtonW, minButtonW)
-	colsTotalW := float32(actualCols) * cellWidth
-	width := max(titleBarMinW, colsTotalW)
-	// Center the column stack when the title bar is the binding constraint.
-	colsStart := (width - colsTotalW) / 2
-
-	colBodyExtent := func(c int, body math.Extent2D) math.Extent2D {
-		return math.Extent2D{
-			P0: [2]float32{body.P0[0] + colsStart + float32(c)*cellWidth, body.P0[1]},
-			P1: [2]float32{body.P0[0] + colsStart + float32(c+1)*cellWidth, body.P1[1]},
-		}
-	}
-
-	v := View{
-		Position:   &ps.BeaconCodeView.Position,
-		ID:         "beacon",
-		Width:      width,
-		BodyHeight: bodyHeight,
-		Title:      "CODE",
-		Opaque:     ps.BeaconCodeView.Opaque,
-		ShowBorder: ps.BeaconCodeView.ShowBorder,
-		Brightness: bright,
-		OnMenu: ep.makeViewMenu(ctx, "beacon", 150, (7+1)*18,
-			func(pb popupBase) popup { return &beaconCodeViewPopup{popupBase: pb} }),
-		MinimizeTarget: &ps.BeaconCodeView.Visible,
-		Body: func(body math.Extent2D, b *ViewBuilders) {
-			for c, col := range cols {
-				col.Draw(colBodyExtent(c, body), b)
-			}
-		},
-	}
-	ep.DrawView(ctx, transforms, cb, v)
+	return rows
 }

@@ -125,8 +125,6 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 	}
 
 	font := ep.ERAMFont(2)
-	bright := radar.Brightness(ps.CRR.Bright)
-	lineH := lineHeight(font)
 	const width = float32(260)
 
 	trackPos := make(map[av.ADSBCallsign]math.Point2LL)
@@ -134,36 +132,28 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 		trackPos[trk.ADSBCallsign] = trk.Location
 	}
 	labels := util.SortedMapKeys(ep.CRRGroups)
-	textColor := bright.ScaleRGB(colors.view.text)
-
-	// Build per-mode body content.
-	var bodyHeight float32
-	var bodyDraw func(body math.Extent2D, b *ViewBuilders)
-	switch {
-	case len(labels) == 0:
-		bodyHeight = 0
-		ep.crrLabelRects = nil
-		ep.crrAircraftRects = nil
-	case !ps.CRR.ListMode:
-		bodyHeight, bodyDraw = ep.buildCRRPanel(labels, font)
-	default:
-		bodyHeight, bodyDraw = ep.buildCRRList(labels, trackPos, font, textColor, lineH, width)
-	}
 
 	v := View{
 		Position:   &ps.CRR.Position,
 		ID:         "crr",
 		Width:      width,
-		BodyHeight: bodyHeight,
 		Title:      "CRR",
 		Opaque:     ps.CRR.Opaque,
 		ShowBorder: ps.CRR.ShowBorder,
-		Brightness: bright,
+		Brightness: radar.Brightness(ps.CRR.Bright),
 		// 1 title row + 8 static rows + 2 swatch rows + one row per group.
 		OnMenu: ep.makeViewMenu(ctx, "crr", crrPopupWidth, float32(1+8+2+len(ep.CRRGroups))*18,
 			func(pb popupBase) popup { return &crrPopup{popupBase: pb} }),
 		MinimizeTarget: &ps.CRR.Visible,
-		Body:           bodyDraw,
+	}
+	switch {
+	case len(labels) == 0:
+		ep.crrLabelRects = nil
+		ep.crrAircraftRects = nil
+	case !ps.CRR.ListMode:
+		v.BodyHeight, v.Body = ep.buildCRRPanel(labels, font)
+	default:
+		v.RowSource = ep.buildCRRList(labels, trackPos)
 	}
 	ep.DrawView(ctx, transforms, cb, v)
 
@@ -243,15 +233,13 @@ func (ep *ERAMPane) buildCRRPanel(labels []string, font *renderer.Font) (float32
 	}
 }
 
-// buildCRRList constructs the list-mode body: per-group header + sorted
-// aircraft rows, separated by 2px spacers. Heights and clicks are tracked via
-// a RowList of header/aircraft/spacer rows, with parallel metadata so the
-// caller can populate crrLabelRects / crrAircraftRects after draw.
-func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math.Point2LL,
-	font *renderer.Font, textColor renderer.RGB, lineH, width float32) (float32, func(math.Extent2D, *ViewBuilders)) {
-
+// buildCRRList constructs the list-mode RowSource: per-group header +
+// sorted aircraft rows separated by 2px spacers. A parallel metadata slice
+// lets the OnRowExtents callback populate crrLabelRects / crrAircraftRects
+// after the rows are drawn. Group-header rows set Color explicitly; aircraft
+// rows leave Color zero and let the View fill it.
+func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math.Point2LL) *ViewRowSource {
 	ps := ep.currentPrefs()
-	maxLines := int(math.Clamp(float32(ps.CRR.Lines), 1, 100))
 
 	type rowMeta struct {
 		label    string
@@ -259,7 +247,7 @@ func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]m
 		spacer   bool
 	}
 
-	rl := &RowList{Font: font, Width: width, LineHeight: lineH, MaxLines: maxLines}
+	var rows []Row
 	var metas []rowMeta
 
 	for _, label := range labels {
@@ -268,7 +256,7 @@ func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]m
 			continue
 		}
 		// Group header (centered, colored)
-		rl.Rows = append(rl.Rows, Row{
+		rows = append(rows, Row{
 			Label:    strings.ToUpper(g.Label),
 			Color:    g.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[g.Color]), 0, 100))),
 			Centered: true,
@@ -296,48 +284,41 @@ func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]m
 			return 0
 		})
 		for _, e := range entries {
-			rl.Rows = append(rl.Rows, Row{
-				Label: fmt.Sprintf("%s    %.1f", e.cs, e.d),
-				Color: textColor,
-			})
+			rows = append(rows, Row{Label: fmt.Sprintf("%s    %.1f", e.cs, e.d)})
 			metas = append(metas, rowMeta{label: label, callsign: e.cs})
 		}
 
-		rl.Rows = append(rl.Rows, Row{SpacerHeight: 2})
+		rows = append(rows, Row{SpacerHeight: 2})
 		metas = append(metas, rowMeta{spacer: true})
 	}
 
-	// Adapt RowList to the existing layout: rows draw at body.P0 + (4, -2)
-	// padding; non-centered rows' Label appears starting at body.P0[0]+SidePad,
-	// which means BadgeGap doesn't apply and SidePad=4 puts text at the right X.
-	rl.SidePad = 4
-	rl.LabelGap = 0
-	bodyHeight := max(rl.Measure()+8, lineH+8) // +8 = top/bottom padding
-
-	return bodyHeight, func(body math.Extent2D, b *ViewBuilders) {
-		ep.crrLabelRects = make(map[string]math.Extent2D)
-		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
-
-		inner := math.Extent2D{
-			P0: [2]float32{body.P0[0], body.P0[1]},
-			P1: [2]float32{body.P1[0], body.P1[1] - 2}, // small top pad
-		}
-		extents := rl.Draw(inner, b)
-		first := rl.VisibleFirst()
-		for i, ext := range extents {
-			m := metas[first+i]
-			switch {
-			case m.spacer:
-				// no click
-			case m.callsign == "":
-				ep.crrLabelRects[m.label] = ext
-			default:
-				if ep.crrAircraftRects[m.label] == nil {
-					ep.crrAircraftRects[m.label] = make(map[av.ADSBCallsign]math.Extent2D)
+	// 260 px total column width = 2*viewMPad of side pad + content.
+	const totalWidth = 260
+	return &ViewRowSource{
+		Rows:         rows,
+		FontSize:     2,
+		ContentWidth: totalWidth - 2*viewMPad,
+		MaxCols:      1,
+		VisibleRows:  int(math.Clamp(float32(ps.CRR.Lines), 1, 100)),
+		RowSpacing:   RowSpacingCompact,
+		OnRowExtents: func(first int, extents []math.Extent2D) {
+			ep.crrLabelRects = make(map[string]math.Extent2D)
+			ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
+			for i, ext := range extents {
+				m := metas[first+i]
+				switch {
+				case m.spacer:
+					// no click
+				case m.callsign == "":
+					ep.crrLabelRects[m.label] = ext
+				default:
+					if ep.crrAircraftRects[m.label] == nil {
+						ep.crrAircraftRects[m.label] = make(map[av.ADSBCallsign]math.Extent2D)
+					}
+					ep.crrAircraftRects[m.label][m.callsign] = ext
 				}
-				ep.crrAircraftRects[m.label][m.callsign] = ext
 			}
-		}
+		},
 	}
 }
 
