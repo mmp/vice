@@ -854,6 +854,10 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.Input = ep.Input[:len(ep.Input)-1]
 			}
 		case imgui.KeyEnter:
+			// Cancel any in-progress view drag so an incidental click in the
+			// MCA body doesn't leave the drag preview following the cursor
+			// after the command completes.
+			ep.viewRepo.Cancel(ctx)
 			// Process the command
 			status, err := ep.executeERAMCommand(ctx, ep.Input)
 			ep.Input.Clear()
