@@ -87,7 +87,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 
 	v := View{
 		Position:   &ps.WX.Position,
-		Reposition: &ep.wxRepo,
+		ID:         "wx",
 		Width:      wxWindowWidth,
 		BodyHeight: bodyHeight,
 		Title:      "WX REPORT",

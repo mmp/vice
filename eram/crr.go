@@ -152,7 +152,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 
 	v := View{
 		Position:   &ps.CRR.Position,
-		Reposition: &ep.crrRepo,
+		ID:         "crr",
 		Width:      width,
 		BodyHeight: bodyHeight,
 		Title:      "CRR",

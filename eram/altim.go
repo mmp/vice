@@ -138,7 +138,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 
 	v := View{
 		Position:   &ps.AltimSet.Position,
-		Reposition: &ep.altimSetRepo,
+		ID:         "altim-set",
 		Width:      width,
 		BodyHeight: bodyHeight,
 		Title:      "ALTIM SET",

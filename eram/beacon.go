@@ -208,7 +208,7 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 
 	v := View{
 		Position:   &ps.BeaconCodeView.Position,
-		Reposition: &ep.beaconRepo,
+		ID:         "beacon",
 		Width:      width,
 		BodyHeight: bodyHeight,
 		Title:      "CODE",

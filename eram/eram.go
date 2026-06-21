@@ -257,16 +257,9 @@ type ERAMPane struct {
 	fdbArena util.ObjectArena[fullDatablock]    `json:"-"`
 	ldbArena util.ObjectArena[limitedDatablock] `json:"-"`
 
-	// Per-view drag-to-reposition state. `allRepoStates` indexes all of them
-	// so the Escape-key handler can cancel any in-progress drag uniformly.
-	mcaRepo       ViewRepoState    `json:"-"`
-	raRepo        ViewRepoState    `json:"-"`
-	clockRepo     ViewRepoState    `json:"-"`
-	crrRepo       ViewRepoState    `json:"-"`
-	altimSetRepo  ViewRepoState    `json:"-"`
-	wxRepo        ViewRepoState    `json:"-"`
-	beaconRepo    ViewRepoState    `json:"-"`
-	allRepoStates []*ViewRepoState `json:"-"`
+	// Pane-wide drag-to-reposition state. Only one view can be repositioned
+	// at a time; the active view is identified by its View.ID.
+	viewRepo ViewRepoState `json:"-"`
 
 	tearoffInProgress        string                   `json:"-"` // Button name being torn off
 	tearoffIsReposition      bool                     `json:"-"` // Repositioning existing vs new tearoff
@@ -370,10 +363,6 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	}
 	if ep.crrAircraftRects == nil {
 		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
-	}
-
-	ep.allRepoStates = []*ViewRepoState{
-		&ep.mcaRepo, &ep.raRepo, &ep.clockRepo, &ep.crrRepo, &ep.altimSetRepo, &ep.wxRepo, &ep.beaconRepo,
 	}
 
 	ep.events = es.Subscribe()
@@ -888,12 +877,9 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				break
 			}
 			// Cancel any in-progress drag.
-			anyActive := false
-			for _, r := range ep.allRepoStates {
-				if r.Active {
-					anyActive = true
-					r.Cancel(ctx)
-				}
+			anyActive := ep.viewRepo.activeID != ""
+			if anyActive {
+				ep.viewRepo.Cancel(ctx)
 			}
 			if !anyActive {
 				if ep.commandMode == CommandModeDrawRoute {

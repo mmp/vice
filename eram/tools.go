@@ -76,7 +76,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 
 	v := View{
 		Position:   &viewPos,
-		Reposition: &ep.mcaRepo,
+		ID:         "mca",
 		Width:      width,
 		BodyHeight: inputH + feedbackH,
 		ShowBorder: true,
@@ -145,7 +145,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context, transforms radar.
 
 	v := View{
 		Position:   &ps.commandSmallPosition,
-		Reposition: &ep.raRepo,
+		ID:         "ra",
 		Width:      width,
 		BodyHeight: height,
 		ShowBorder: true,
@@ -447,7 +447,7 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 
 	v := View{
 		Position:     &ps.clockPosition,
-		Reposition:   &ep.clockRepo,
+		ID:           "clock",
 		Width:        width,
 		BodyHeight:   height,
 		ShowBorder:   ps.TimeView.ShowBorder,

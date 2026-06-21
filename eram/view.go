@@ -31,18 +31,19 @@ type ViewBuilders struct {
 	Td   *renderer.TextDrawBuilder
 }
 
-// ViewRepoState is caller-owned reposition tracking. One value per view; a
-// pane-wide slice (ep.allRepoStates) lets the Escape-key handler cancel any
-// in-progress drag uniformly.
+// ViewRepoState is the pane-wide drag-to-reposition state. Only one view can
+// be repositioned at a time, so a single instance lives on ERAMPane and
+// activeID identifies which view (by View.ID) currently owns the drag.
+// activeID is "" when no drag is in progress.
 type ViewRepoState struct {
-	Active     bool
-	StartTime  time.Time
-	DragOffset [2]float32
+	activeID   string
+	startTime  time.Time
+	dragOffset [2]float32
 }
 
 // Cancel ends an in-progress drag.
 func (s *ViewRepoState) Cancel(_ *panes.Context) {
-	s.Active = false
+	s.activeID = ""
 }
 
 // ViewScrollConfig describes the optional scroll bar on the right edge of the
@@ -90,8 +91,11 @@ type ViewSelectable struct {
 
 // View is the declarative spec. See package overview above.
 type View struct {
-	Position   *[2]float32
-	Reposition *ViewRepoState
+	Position *[2]float32
+
+	// ID identifies this view for the pane-wide drag state (ep.viewRepo).
+	// Must be unique across all views and stable across frames.
+	ID string
 
 	Width      float32
 	BodyHeight float32
@@ -400,10 +404,10 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			ep.clearMousePrimaryConsumed(mouse)
 			ep.clearMouseTertiaryConsumed(mouse)
 
-		case hasTitle && mouseInsideTitle && !v.Reposition.Active:
-			v.Reposition.Active = true
-			v.Reposition.StartTime = time.Now()
-			v.Reposition.DragOffset = math.Sub2f(mouse.Pos, p0)
+		case hasTitle && mouseInsideTitle && ep.viewRepo.activeID == "":
+			ep.viewRepo.activeID = v.ID
+			ep.viewRepo.startTime = time.Now()
+			ep.viewRepo.dragOffset = math.Sub2f(mouse.Pos, p0)
 			ep.clearMousePrimaryConsumed(mouse)
 			ep.clearMouseTertiaryConsumed(mouse)
 
@@ -418,20 +422,20 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			ep.clearMousePrimaryConsumed(mouse)
 
 		case !hasTitle && v.OnBodyTertiaryMenu != nil && tertiaryClicked &&
-			!v.Reposition.Active && bodyExtent.Inside(mouse.Pos):
+			ep.viewRepo.activeID == "" && bodyExtent.Inside(mouse.Pos):
 			host := math.Extent2D{P0: [2]float32{p0[0], p2[1]}, P1: [2]float32{p0[0] + width, p0[1]}}
 			ep.popup = v.OnBodyTertiaryMenu(host)
 			ep.clearMouseTertiaryConsumed(mouse)
 
-		case !hasTitle && primaryClicked && bodyExtent.Inside(mouse.Pos) && !v.Reposition.Active:
-			v.Reposition.Active = true
-			v.Reposition.StartTime = time.Now()
-			v.Reposition.DragOffset = math.Sub2f(mouse.Pos, p0)
+		case !hasTitle && primaryClicked && bodyExtent.Inside(mouse.Pos) && ep.viewRepo.activeID == "":
+			ep.viewRepo.activeID = v.ID
+			ep.viewRepo.startTime = time.Now()
+			ep.viewRepo.dragOffset = math.Sub2f(mouse.Pos, p0)
 			ep.clearMousePrimaryConsumed(mouse)
 
-		case v.Reposition.Active && time.Since(v.Reposition.StartTime) > 100*time.Millisecond:
-			*v.Position = ep.clampViewPos(ctx, math.Sub2f(mouse.Pos, v.Reposition.DragOffset), width, totalH)
-			v.Reposition.Active = false
+		case ep.viewRepo.activeID == v.ID && time.Since(ep.viewRepo.startTime) > 100*time.Millisecond:
+			*v.Position = ep.clampViewPos(ctx, math.Sub2f(mouse.Pos, ep.viewRepo.dragOffset), width, totalH)
+			ep.viewRepo.activeID = ""
 			ep.clearMousePrimaryConsumed(mouse)
 			ep.clearMouseTertiaryConsumed(mouse)
 		}
@@ -441,14 +445,14 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	// goes nil — but the drag is still in progress, so query the platform
 	// directly for the cursor position and convert into pane-local coords.
 	// clampViewPos pins the preview to the closest valid edge.
-	if v.Reposition.Active {
+	if ep.viewRepo.activeID == v.ID {
 		var mousePos [2]float32
 		if mouse != nil {
 			mousePos = mouse.Pos
 		} else {
 			mousePos = ctx.WindowToPane(ctx.Platform.GetMouse().Pos)
 		}
-		previewP0 := ep.clampViewPos(ctx, math.Sub2f(mousePos, v.Reposition.DragOffset), width, totalH)
+		previewP0 := ep.clampViewPos(ctx, math.Sub2f(mousePos, ep.viewRepo.dragOffset), width, totalH)
 		previewP1 := math.Add2f(previewP0, [2]float32{width, 0})
 		previewP2 := math.Add2f(previewP1, [2]float32{0, -totalH})
 		previewP3 := math.Add2f(previewP0, [2]float32{0, -totalH})
