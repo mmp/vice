@@ -6,7 +6,6 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 )
@@ -29,13 +28,6 @@ func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
 	}
 	size -= 1
 	return ep.systemFont[size]
-}
-
-// clampedFont is a convenience around `ep.ERAMFont(math.Clamp(n, lo, hi))`
-// — every view that has a user-selectable list font uses exactly this
-// pattern, so it lives here instead of being repeated at each call site.
-func (ep *ERAMPane) clampedFont(n, lo, hi int) *renderer.Font {
-	return ep.ERAMFont(math.Clamp(n, lo, hi))
 }
 
 func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {

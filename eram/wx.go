@@ -27,8 +27,6 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		return
 	}
 
-	spaceW := ep.clampedFont(ps.WX.Font, 1, 3).LayoutBounds(" ", 0).Width()
-
 	var rows []Row
 	for _, icao := range ep.WXReportStations {
 		id := wxDisplayID(icao)
@@ -41,16 +39,16 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		Title:      "WX REPORT",
 		Opaque:     ps.WX.Opaque,
 		ShowBorder: ps.WX.ShowBorder,
-		Brightness: radar.Brightness(ps.WX.Bright),
-		OnMenu: ep.makeViewMenu(ctx, "wx", wxPopupWidth, (6+1)*18,
+		Brightness: ps.WX.Bright,
+		OnMenu: ep.makeViewMenu(ctx, "wx", 6,
 			func(pb popupBase) popup { return &wxPopup{popupBase: pb} }),
 		MinimizeTarget: &ps.WX.Visible,
 		RowSource: &ViewRowSource{
 			Rows:               rows,
 			FontSize:           ps.WX.Font,
-			ContentWidth:       24 * spaceW,
+			ContentChars:       24,
 			MaxCols:            1,
-			VisibleRows:        math.Clamp(ps.WX.Lines, 3, 24),
+			VisibleRows:        ps.WX.Lines,
 			BadgeColumn:        true,
 			BadgesVisible:      ps.WX.ShowIndicators,
 			RowSpacing:         RowSpacingAiry,
@@ -103,8 +101,6 @@ func wxMetarBody(ctx *panes.Context, icao string) string {
 	return body
 }
 
-const wxPopupWidth = 150
-
 // wxPopup is the popup-interface impl for the WX REPORT configuration menu.
 // The origin is captured at open time from the view's current geometry.
 type wxPopup struct {
@@ -125,13 +121,13 @@ func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 				ep.wxScroll.Offset = math.Clamp(ep.wxScroll.Offset, 0, maxOffset)
 				return false
 			}},
-		ep.makeIntMenuItem(&ps.WX.Font, "FONT", 1, 3, 1),
-		ep.makeIntMenuItem(&ps.WX.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.WX.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.WX.Bright, "BRIGHT", 0, 100, 1),
 	}
 
 	cfg := ERAMMenuConfig{
 		Title: "WX",
-		Width: wxPopupWidth,
+		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
 		Rows:  rows,
 	}

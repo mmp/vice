@@ -164,9 +164,11 @@ type ViewRowSource struct {
 	// FontSize selects ERAMFont(FontSize); clamped to [1,3].
 	FontSize int
 
-	// ContentWidth is the per-column body content width, in pixels,
-	// excluding the badge column and side pads (View adds those).
-	ContentWidth float32
+	// ContentChars is the per-column body content width in characters of the
+	// selected font (which is fixed-width). View multiplies by the font's
+	// space-character advance to get the pixel width and adds the badge
+	// column and side pads.
+	ContentChars int
 
 	MaxCols     int
 	VisibleRows int
@@ -425,11 +427,10 @@ func scrollReserveWidth(v View) float32 {
 }
 
 // viewTextColor returns the standard list-view text color (colors.view.text)
-// scaled by the given Brightness level (0..100). Callers whose AfterDraw
-// closures need the row's text color use this so they don't have to know
-// about colors.view.text.
-func (ep *ERAMPane) viewTextColor(brightnessLevel int) renderer.RGB {
-	return radar.Brightness(brightnessLevel).ScaleRGB(colors.view.text)
+// scaled by the given Brightness. Callers whose AfterDraw closures need the
+// row's text color use this so they don't have to know about colors.view.text.
+func (ep *ERAMPane) viewTextColor(b radar.Brightness) renderer.RGB {
+	return b.ScaleRGB(colors.view.text)
 }
 
 // applyRowSource fills in Width, BodyHeight, BodyFont, Body, Scroll, and
@@ -444,7 +445,7 @@ func (ep *ERAMPane) viewTextColor(brightnessLevel int) renderer.RGB {
 func (ep *ERAMPane) applyRowSource(v *View) {
 	rs := v.RowSource
 
-	font := ep.clampedFont(rs.FontSize, 1, 3)
+	font := ep.ERAMFont(rs.FontSize)
 	lineH := lineHeight(font)
 	textColor := v.Brightness.ScaleRGB(colors.view.text)
 
@@ -459,7 +460,7 @@ func (ep *ERAMPane) applyRowSource(v *View) {
 	if badgeColumn {
 		leftChrome = viewMButtonWidth(v.TitleFont)
 	}
-	colWidth := leftChrome + rs.ContentWidth + sidePad
+	colWidth := leftChrome + float32(rs.ContentChars)*font.LayoutBounds(" ", 0).Width() + sidePad
 
 	// Standard yellow badge, built once and shared by every row.
 	var badge *Badge

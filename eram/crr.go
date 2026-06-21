@@ -140,9 +140,10 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 		Title:      "CRR",
 		Opaque:     ps.CRR.Opaque,
 		ShowBorder: ps.CRR.ShowBorder,
-		Brightness: radar.Brightness(ps.CRR.Bright),
-		// 1 title row + 8 static rows + 2 swatch rows + one row per group.
-		OnMenu: ep.makeViewMenu(ctx, "crr", crrPopupWidth, float32(1+8+2+len(ep.CRRGroups))*18,
+		Brightness: ps.CRR.Bright,
+		// 8 static rows + 2 swatch rows + one row per group (the title row
+		// is added by makeViewMenu).
+		OnMenu: ep.makeViewMenu(ctx, "crr", 8+2+len(ep.CRRGroups),
 			func(pb popupBase) popup { return &crrPopup{popupBase: pb} }),
 		MinimizeTarget: &ps.CRR.Visible,
 	}
@@ -225,7 +226,7 @@ func (ep *ERAMPane) buildCRRPanel(labels []string, font *renderer.Font) (float32
 			b.Ld.AddLine(bp3, bp0, borderColor)
 			b.Td.AddText(txt, math.Add2f(bp0, [2]float32{8, -h/2 + th/2}), renderer.TextStyle{
 				Font:  font,
-				Color: g.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[g.Color]), 0, 100))),
+				Color: g.Color.BrightRGB(ps.CRR.ColorBright[g.Color]),
 			})
 			ep.crrLabelRects[label] = math.Extent2D{P0: bp3, P1: bp1}
 			x += w + 8
@@ -258,7 +259,7 @@ func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]m
 		// Group header (centered, colored)
 		rows = append(rows, Row{
 			Label:    strings.ToUpper(g.Label),
-			Color:    g.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[g.Color]), 0, 100))),
+			Color:    g.Color.BrightRGB(ps.CRR.ColorBright[g.Color]),
 			Centered: true,
 		})
 		metas = append(metas, rowMeta{label: label})
@@ -292,14 +293,14 @@ func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]m
 		metas = append(metas, rowMeta{spacer: true})
 	}
 
-	// 260 px total column width = 2*viewMPad of side pad + content.
-	const totalWidth = 260
+	// 18 ContentChars * font-2 space-width (14 px) = 252 px content,
+	// + 2*viewMPad side pad = the same 260 px total column width as panel mode.
 	return &ViewRowSource{
 		Rows:         rows,
 		FontSize:     2,
-		ContentWidth: totalWidth - 2*viewMPad,
+		ContentChars: 18,
 		MaxCols:      1,
-		VisibleRows:  int(math.Clamp(float32(ps.CRR.Lines), 1, 100)),
+		VisibleRows:  ps.CRR.Lines,
 		RowSpacing:   RowSpacingCompact,
 		OnRowExtents: func(first int, extents []math.Extent2D) {
 			ep.crrLabelRects = make(map[string]math.Extent2D)
@@ -322,8 +323,6 @@ func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]m
 	}
 }
 
-const crrPopupWidth = 150
-
 // crrPopup is the popup-interface impl for the CRR configuration menu. The
 // origin is captured at open time from the view's current geometry.
 type crrPopup struct {
@@ -333,7 +332,7 @@ type crrPopup struct {
 func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	origin := c.origin
-	const width = float32(crrPopupWidth)
+	const width = viewPopupWidth
 
 	rows := []ERAMMenuItem{
 		ep.makeBooleanMenuItem(&ps.CRR.Opaque, "O", "T"),
@@ -341,7 +340,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 			ps.CRR.ShowBorder = !ps.CRR.ShowBorder
 			return false
 		}},
-		ep.makeIntMenuItem(&ps.CRR.Lines, "LINES", 1, 100, 1),
+		makeIntMenuItem(ep, &ps.CRR.Lines, "LINES", 1, 100, 1),
 		{Label: "FONT " + strconv.Itoa(ps.CRR.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickPrimary {
 				ps.CRR.Font = 1 + (ps.CRR.Font+2)%4
@@ -350,9 +349,9 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 			}
 			return false
 		}},
-		ep.makeIntMenuItem(&ps.CRR.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.CRR.Bright, "BRIGHT", 0, 100, 1),
 		ep.makeToggleMenuItem(&ps.CRR.ListMode, "LIST"),
-		{Label: "COLOR " + strconv.Itoa(ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: colors.popup.backgroundBlack,
+		{Label: fmt.Sprintf("COLOR %d", ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: colors.popup.backgroundBlack,
 			Color: CRRGreen.BrightRGB(radar.Brightness(90)), OnClick: func(_ ERAMMenuClickType) bool {
 				v := ps.CRR.ColorBright[ps.CRR.SelectedColor]
 				handleClick(ep, &v, 0, 100, 1)
@@ -442,7 +441,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 				rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
 				trid.AddQuad(rp0, rp1, rp2, rp3, bButton.ScaleRGB(colors.popup.backgroundBlack))
 				style := renderer.TextStyle{Font: font,
-					Color: bText.ScaleRGB(ep.CRRGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ep.CRRGroups[l].Color]), 0, 100))))}
+					Color: bText.ScaleRGB(ep.CRRGroups[l].Color.BrightRGB(ps.CRR.ColorBright[ep.CRRGroups[l].Color]))}
 				labelText := strings.ToUpper(l)
 				th := font.LayoutBounds(labelText, 0).Height()
 				textY := rp0[1] - itemH/2 + th/2
@@ -507,7 +506,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 			continue
 		}
 		// Get the color for the CRR fix
-		fixColor := g.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[g.Color]), 0, 100)))
+		fixColor := g.Color.BrightRGB(ps.CRR.ColorBright[g.Color])
 		style := renderer.TextStyle{Font: font, Color: fixColor}
 		p := transforms.WindowFromLatLongP(g.Location)
 		// Draw asterisk then label with a space
@@ -604,7 +603,7 @@ func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, tracks []sim.Track, tra
 		}
 
 		// Use the CRR group color
-		color := entry.group.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[entry.group.Color]), 0, 100)))
+		color := entry.group.Color.BrightRGB(ps.CRR.ColorBright[entry.group.Color])
 
 		td.AddText(distStr, pos, renderer.TextStyle{
 			Font:        font,

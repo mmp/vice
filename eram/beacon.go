@@ -4,7 +4,6 @@ import (
 	"slices"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
@@ -20,16 +19,16 @@ func (b *beaconCodeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms 
 	rows := []ERAMMenuItem{
 		ep.makeBooleanMenuItem(&ps.BeaconCodeView.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.BeaconCodeView.ShowBorder, "BORDER"),
-		ep.makeIntMenuItem(&ps.BeaconCodeView.Lines, "LINES", 3, 24, 1),
-		ep.makeIntMenuItem(&ps.BeaconCodeView.Col, "COL", 1, 5, 1),
-		ep.makeIntMenuItem(&ps.BeaconCodeView.Font, "FONT", 1, 3, 1),
-		ep.makeIntMenuItem(&ps.BeaconCodeView.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.BeaconCodeView.Lines, "LINES", 3, 24, 1),
+		makeIntMenuItem(ep, &ps.BeaconCodeView.Col, "COL", 1, 5, 1),
+		makeIntMenuItem(ep, &ps.BeaconCodeView.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.BeaconCodeView.Bright, "BRIGHT", 0, 100, 1),
 		ep.makeToggleMenuItem(&ps.BeaconCodeView.SortManual, "SORT MAN"),
 	}
 
 	cfg := ERAMMenuConfig{
 		Title: "CODE",
-		Width: 150,
+		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
 		Rows:  rows,
 	}
@@ -44,10 +43,9 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 		return
 	}
 
-	// Cell content: 4-digit code plus a trailing "." for manually-added
-	// entries. Reserve the dot's width on every cell so columns line up
-	// regardless of which rows actually carry it.
-	cellContentW := ep.clampedFont(ps.BeaconCodeView.Font, 1, 3).LayoutBounds("0000.", 0).Width()
+	// 4-digit beacon code plus a trailing "." for manually-added entries —
+	// space for the dot is reserved on every cell so columns line up.
+	const cellChars = 5
 
 	ep.DrawView(ctx, transforms, cb, View{
 		Position:   &ps.BeaconCodeView.Position,
@@ -55,16 +53,16 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 		Title:      "CODE",
 		Opaque:     ps.BeaconCodeView.Opaque,
 		ShowBorder: ps.BeaconCodeView.ShowBorder,
-		Brightness: radar.Brightness(ps.BeaconCodeView.Bright),
-		OnMenu: ep.makeViewMenu(ctx, "beacon", 150, (7+1)*18,
+		Brightness: ps.BeaconCodeView.Bright,
+		OnMenu: ep.makeViewMenu(ctx, "beacon", 7,
 			func(pb popupBase) popup { return &beaconCodeViewPopup{popupBase: pb} }),
 		MinimizeTarget: &ps.BeaconCodeView.Visible,
 		RowSource: &ViewRowSource{
 			Rows:                    beaconCodeRows(ctx, ep, ps),
 			FontSize:                ps.BeaconCodeView.Font,
-			ContentWidth:            cellContentW,
-			MaxCols:                 math.Clamp(ps.BeaconCodeView.Col, 1, 5),
-			VisibleRows:             math.Clamp(ps.BeaconCodeView.Lines, 3, 24),
+			ContentChars:            cellChars,
+			MaxCols:                 ps.BeaconCodeView.Col,
+			VisibleRows:             ps.BeaconCodeView.Lines,
 			RowSpacing:              RowSpacingCompact,
 			CenterColumnsInTitleBar: true,
 		},

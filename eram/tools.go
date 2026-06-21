@@ -50,8 +50,8 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 	ps := ep.currentPrefs()
 
 	const width = float32(390)
-	font := ep.clampedFont(ps.MCA.Font, 1, 3)
-	cols := math.Clamp(ps.MCA.Width, 1, 200)
+	font := ep.ERAMFont(ps.MCA.Font)
+	cols := ps.MCA.Width
 	brightFactor := float32(ps.MCA.Bright) / 100
 	feedbackH := font.LayoutBounds("0", 0).Height()*float32(ps.MCA.PALines) + 4
 
@@ -75,7 +75,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 		BodyHeight: inputH + feedbackH,
 		ShowBorder: true,
 		Brightness: ps.Brightness.Border,
-		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "mca", mcaPopupWidth, 5*18,
+		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "mca", 4,
 			func(pb popupBase) popup { return &mcaPopup{popupBase: pb} }),
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			// body.P1 = top-right (top of input); body.P0 = bottom-left (bottom of feedback).
@@ -124,8 +124,8 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context, transforms radar.
 
 	const width = float32(325)
 	const height = float32(77)
-	font := ep.clampedFont(ps.RA.Font, 1, 3)
-	cols := math.Clamp(ps.RA.Width, 1, 200)
+	font := ep.ERAMFont(ps.RA.Font)
+	cols := ps.RA.Width
 	brightFactor := float32(ps.RA.Bright) / 100
 
 	out, _ := util.WrapText(ep.responseArea.String(), cols, 0, true, false)
@@ -137,8 +137,8 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context, transforms radar.
 		Width:      width,
 		BodyHeight: height,
 		ShowBorder: true,
-		Brightness: radar.Brightness(ps.RA.Bright),
-		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "ra", raPopupWidth, 5*18,
+		Brightness: ps.RA.Bright,
+		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "ra", 4,
 			func(pb popupBase) popup { return &raPopup{popupBase: pb} }),
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			dpi := ctx.Platform.FramebufferSize()[1] / ctx.Platform.DisplaySize()[1]
@@ -416,9 +416,8 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 		ps.TimeView.Position = [2]float32{10, ctx.PaneExtent.Height() - 300}
 	}
 
-	font := ep.clampedFont(ps.TimeView.Font, 1, 3)
-	bright := radar.Brightness(ps.TimeView.Bright)
-	textColor := bright.ScaleRGB(colors.view.clockText)
+	font := ep.ERAMFont(ps.TimeView.Font)
+	textColor := ps.TimeView.Bright.ScaleRGB(colors.view.clockText)
 
 	timeStr := ctx.Client.State.SimTime.Format("1504 05")
 
@@ -433,9 +432,9 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 		BodyHeight:   height,
 		ShowBorder:   ps.TimeView.ShowBorder,
 		Opaque:       ps.TimeView.Opaque,
-		Brightness:   bright,
+		Brightness:   ps.TimeView.Bright,
 		OpaqueOnlyBg: true,
-		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "clock", timeViewPopupWidth, 5*18,
+		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "clock", 4,
 			func(pb popupBase) popup { return &timeViewPopup{popupBase: pb} }),
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			center := [2]float32{(body.P0[0] + body.P1[0]) / 2, (body.P0[1] + body.P1[1]) / 2}
@@ -444,8 +443,6 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 	}
 	ep.DrawView(ctx, transforms, cb, v)
 }
-
-const mcaPopupWidth = 150
 
 // mcaPopup is the configuration menu for the Message Composition Area.
 type mcaPopup struct {
@@ -456,22 +453,20 @@ func (m *mcaPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
-		ep.makeIntMenuItem(&ps.MCA.PALines, "PA LINES", 1, 50, 1),
-		ep.makeIntMenuItem(&ps.MCA.Width, "WIDTH", 10, 200, 1),
-		ep.makeIntMenuItem(&ps.MCA.Font, "FONT", 1, 3, 1),
-		ep.makeIntMenuItem(&ps.MCA.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.MCA.PALines, "PA LINES", 1, 50, 1),
+		makeIntMenuItem(ep, &ps.MCA.Width, "WIDTH", 10, 200, 1),
+		makeIntMenuItem(ep, &ps.MCA.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.MCA.Bright, "BRIGHT", 0, 100, 1),
 	}
 
 	cfg := ERAMMenuConfig{
 		Title: "MCA",
-		Width: mcaPopupWidth,
+		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
 		Rows:  rows,
 	}
 	ep.DrawERAMMenu(ctx, transforms, cb, m.origin, cfg)
 }
-
-const raPopupWidth = 150
 
 // raPopup is the configuration menu for the Response Area.
 type raPopup struct {
@@ -482,9 +477,9 @@ func (r *raPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
-		ep.makeIntMenuItem(&ps.RA.Width, "WIDTH", 10, 200, 1),
-		ep.makeIntMenuItem(&ps.RA.Font, "FONT", 1, 3, 1),
-		ep.makeIntMenuItem(&ps.RA.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.RA.Width, "WIDTH", 10, 200, 1),
+		makeIntMenuItem(ep, &ps.RA.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.RA.Bright, "BRIGHT", 0, 100, 1),
 		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
 			ep.responseArea.Clear()
 			return false
@@ -493,14 +488,12 @@ func (r *raPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 
 	cfg := ERAMMenuConfig{
 		Title: "RA",
-		Width: raPopupWidth,
+		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
 		Rows:  rows,
 	}
 	ep.DrawERAMMenu(ctx, transforms, cb, r.origin, cfg)
 }
-
-const timeViewPopupWidth = 120
 
 // timeViewPopup is the configuration menu for the Time View (clock).
 type timeViewPopup struct {
@@ -513,13 +506,13 @@ func (t *timeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 	rows := []ERAMMenuItem{
 		ep.makeBooleanMenuItem(&ps.TimeView.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.TimeView.ShowBorder, "BORDER"),
-		ep.makeIntMenuItem(&ps.TimeView.Font, "FONT", 1, 3, 1),
-		ep.makeIntMenuItem(&ps.TimeView.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.TimeView.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.TimeView.Bright, "BRIGHT", 0, 100, 1),
 	}
 
 	cfg := ERAMMenuConfig{
 		Title: "TIME",
-		Width: timeViewPopupWidth,
+		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
 		Rows:  rows,
 	}

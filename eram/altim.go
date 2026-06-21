@@ -44,7 +44,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		return
 	}
 
-	listFont := ep.clampedFont(ps.AltimSet.Font, 1, 3)
+	listFont := ep.ERAMFont(ps.AltimSet.Font)
 	textWidth := func(s string) float32 { return listFont.LayoutBounds(s, 0).Width() }
 	textColor := ep.viewTextColor(ps.AltimSet.Bright)
 
@@ -59,16 +59,16 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		Title:      "ALTIM SET",
 		Opaque:     ps.AltimSet.Opaque,
 		ShowBorder: ps.AltimSet.ShowBorder,
-		Brightness: radar.Brightness(ps.AltimSet.Bright),
-		OnMenu: ep.makeViewMenu(ctx, "altim-set", altimSetPopupWidth, (8+1)*18,
+		Brightness: ps.AltimSet.Bright,
+		OnMenu: ep.makeViewMenu(ctx, "altim-set", 8,
 			func(pb popupBase) popup { return &altimSetPopup{popupBase: pb} }),
 		MinimizeTarget: &ps.AltimSet.Visible,
 		RowSource: &ViewRowSource{
 			Rows:                  rows,
 			FontSize:              ps.AltimSet.Font,
-			ContentWidth:          textWidth("MMMM   1353 999  "),
-			MaxCols:               math.Clamp(ps.AltimSet.Col, 1, 4),
-			VisibleRows:           math.Clamp(ps.AltimSet.Lines, 3, 24),
+			ContentChars:          len("MMMM   1353 999  "),
+			MaxCols:               ps.AltimSet.Col,
+			VisibleRows:           ps.AltimSet.Lines,
 			BadgeColumn:           true,
 			BadgesVisible:         ps.AltimSet.ShowIndicators,
 			RowSpacing:            RowSpacingCompact,
@@ -117,8 +117,6 @@ func altimRow(ctx *panes.Context, icao string, color renderer.RGB,
 	return row
 }
 
-const altimSetPopupWidth = 150
-
 // altimSetPopup is the popup-interface impl for the ALTIM SET configuration menu.
 // The origin is captured at open time from the view's current geometry, since
 // the view width depends on dynamic state (column count).
@@ -140,15 +138,15 @@ func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 				ep.altimSetScroll.Offset = math.Clamp(ep.altimSetScroll.Offset, 0, maxOffset)
 				return false
 			}},
-		ep.makeIntMenuItem(&ps.AltimSet.Col, "COL", 1, 4, 1),
-		ep.makeIntMenuItem(&ps.AltimSet.Font, "FONT", 1, 3, 1),
-		ep.makeIntMenuItem(&ps.AltimSet.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.AltimSet.Col, "COL", 1, 4, 1),
+		makeIntMenuItem(ep, &ps.AltimSet.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.AltimSet.Bright, "BRIGHT", 0, 100, 1),
 		{Label: "TEMPLATE", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text},
 	}
 
 	cfg := ERAMMenuConfig{
 		Title: "AS",
-		Width: altimSetPopupWidth,
+		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2), // Menu always uses FONT 2, not affected by FONT setting
 		Rows:  rows,
 	}

@@ -53,9 +53,9 @@ type Preferences struct {
 		ShowBorder    bool
 		Lines         int
 		Font          int
-		Bright        int
+		Bright        radar.Brightness
 		SelectedColor CRRColor
-		ColorBright   map[CRRColor]int
+		ColorBright   map[CRRColor]radar.Brightness
 		Position      [2]float32
 		DisplayFixes  bool // ATC TOOLS overlay of CRR fixes
 	}
@@ -68,9 +68,9 @@ type Preferences struct {
 		ShowBorder     bool
 		ShowIndicators bool
 		Lines          int
-		Col            int // 1-4 columns
-		Font           int // 1-3
-		Bright         int // 0-100
+		Col            int              // 1-4 columns
+		Font           int              // 1-3
+		Bright         radar.Brightness // 0-100
 	}
 
 	// WX view preferences
@@ -81,25 +81,25 @@ type Preferences struct {
 		ShowBorder     bool
 		ShowIndicators bool
 		Lines          int
-		Font           int // 1-3
-		Bright         int // 0-100
+		Font           int              // 1-3
+		Bright         radar.Brightness // 0-100
 	}
 
 	// MCA (Message Composition Area) preferences
 	MCA struct {
-		Position [2]float32 // top-left of the feedback box
-		PALines  int        // max number of preview/feedback area lines
-		Width    int        // chars per line
-		Font     int        // 1-3
-		Bright   int        // 0-100
+		Position [2]float32       // top-left of the feedback box
+		PALines  int              // max number of preview/feedback area lines
+		Width    int              // chars per line
+		Font     int              // 1-3
+		Bright   radar.Brightness // 0-100
 	}
 
 	// RA (Response Area) preferences
 	RA struct {
 		Position [2]float32
-		Width    int // chars per line
-		Font     int // 1-3
-		Bright   int // 0-100
+		Width    int              // chars per line
+		Font     int              // 1-3
+		Bright   radar.Brightness // 0-100
 	}
 
 	// TimeView (clock) preferences
@@ -107,8 +107,8 @@ type Preferences struct {
 		Position   [2]float32
 		Opaque     bool
 		ShowBorder bool
-		Font       int // 1-3
-		Bright     int // 0-100
+		Font       int              // 1-3
+		Bright     radar.Brightness // 0-100
 	}
 
 	BeaconCodeView struct {
@@ -119,7 +119,7 @@ type Preferences struct {
 		Lines      int
 		Col        int
 		Font       int
-		Bright     int
+		Bright     radar.Brightness
 		SortManual bool
 	}
 }
@@ -254,7 +254,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.CRR.Font = 2
 	prefs.CRR.Bright = 90
 	prefs.CRR.SelectedColor = CRRGreen
-	prefs.CRR.ColorBright = map[CRRColor]int{
+	prefs.CRR.ColorBright = map[CRRColor]radar.Brightness{
 		CRRGreen:   90,
 		CRRYellow:  90,
 		CRRMagenta: 90,

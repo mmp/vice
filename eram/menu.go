@@ -54,20 +54,30 @@ func (pl viewPopupPlacement) toPopupBase(viewID string) popupBase {
 	}
 }
 
+// viewPopupWidth and viewPopupItemH are the canonical dimensions of every
+// view-spawned configuration menu: a fixed 150 px width and a 18 px row
+// height. Both DrawERAMMenu and makeViewMenu use these; callers don't pick
+// either value.
+const (
+	viewPopupWidth = float32(150)
+	viewPopupItemH = float32(18)
+)
+
 // makeViewMenu builds the standard View.OnMenu closure: don't open a new
 // popup if one is already open for this view, otherwise place a new one
-// using OpenPopupAt and wrap its placement into a typed popup. Every
-// view's OnMenu used to spell this out inline; the helper makes the
-// per-view setup a single line.
-func (ep *ERAMPane) makeViewMenu(ctx *panes.Context, viewID string, popupW, popupH float32, wrap func(popupBase) popup) func(host math.Extent2D) popup {
+// using OpenPopupAt and wrap its placement into a typed popup. rowCount is
+// the number of content rows below the title bar — the helper adds 1 for
+// the title bar and multiplies by viewPopupItemH to get the popup height.
+func (ep *ERAMPane) makeViewMenu(ctx *panes.Context, viewID string, rowCount int, wrap func(popupBase) popup) func(host math.Extent2D) popup {
 	return func(host math.Extent2D) popup {
 		if vap, ok := ep.popup.(viewAnchoredPopup); ok {
 			if id, _, _ := vap.viewAnchor(); id == viewID {
 				return nil
 			}
 		}
+		popupH := float32(rowCount+1) * viewPopupItemH
 		pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
-			popupW, popupH, ep.ERAMFont(2), host)
+			viewPopupWidth, popupH, ep.ERAMFont(2), host)
 		return wrap(pl.toPopupBase(viewID))
 	}
 }
@@ -164,8 +174,10 @@ func (ep *ERAMPane) makeToggleMenuItem(v *bool, label string) ERAMMenuItem {
 
 // makeIntMenuItem builds an int-adjustment row labeled "<label> <value>" with a
 // green background. Primary click decrements, tertiary click increments by step,
-// clamped to [min, max].
-func (ep *ERAMPane) makeIntMenuItem(v *int, label string, min, max, step int) ERAMMenuItem {
+// clamped to [min, max]. Generic over any int-kinded type so callers can pass
+// e.g. *radar.Brightness directly. Free-standing because Go methods cannot have
+// their own type parameters.
+func makeIntMenuItem[T ~int](ep *ERAMPane, v *T, label string, min, max, step int) ERAMMenuItem {
 	return ERAMMenuItem{
 		Label:   fmt.Sprintf("%s %d", label, *v),
 		BgColor: colors.popup.backgroundGreen,
