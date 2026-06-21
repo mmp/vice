@@ -513,30 +513,29 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawCRRDistances(ctx, tracks, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
 	ep.drawQULines(ctx, transforms, cb)
-	// Draw clock
-	ep.drawClock(ctx, transforms, cb)
-	// Draw views
-	ep.drawCRRView(ctx, tracks, transforms, cb)
+
 	// Draw toolbar and menus on top of the scope
 	cb.SetScissorBounds(ctx.PaneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawtoolbar(ctx, transforms, cb)
-	ep.drawCommandInput(ctx, transforms, cb)
+
 	// Draw floating windows after toolbar so they render on top and appear in the same
 	// frame the toolbar button is clicked (toolbar sets Visible=true before this runs).
+	ep.startDrawCommandInput(ctx, transforms, cb)
+	ep.drawResponseArea(ctx, transforms, cb)
+	ep.drawMessageCompositionArea(ctx, transforms, cb)
 	ep.drawAltimSetView(ctx, transforms, cb)
 	ep.drawWXView(ctx, transforms, cb)
 	ep.drawBeaconCodeView(ctx, transforms, cb)
-
+	ep.drawTimeView(ctx, transforms, cb)
+	ep.drawCRRView(ctx, tracks, transforms, cb)
 	// Draw the active floating pop-up (if any) on top of its host view.
 	if ep.popup != nil {
 		ep.popup.draw(ep, ctx, transforms, cb)
 	}
 
-	// Draw torn-off buttons
+	// Tear-offs
 	ep.drawTornOffButtons(ctx, transforms, cb)
-	// Draw torn-off menus
 	ep.drawTearoffMenus(ctx, transforms, cb)
-	// Draw tearoff preview outline while dragging
 	ep.drawTearoffPreview(ctx, transforms, cb)
 
 	// The TOOLBAR tearoff is different from the toolbar (DCB). It overlaps the toolbar and tracks and everything else I've tried.
@@ -637,7 +636,7 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	if ep.prefSet.Current.RA.Position == ([2]float32{}) {
 		ep.prefSet.Current.RA.Position = def.RA.Position
 	}
-	// TimeView.Position is left to drawClock to initialize lazily based on
+	// TimeView.Position is left to drawTimeView to initialize lazily based on
 	// pane height.
 	if ep.prefSet.Current.CursorSize == 0 {
 		ep.prefSet.Current.CursorSize = def.CursorSize
