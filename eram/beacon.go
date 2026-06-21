@@ -1,7 +1,6 @@
 package eram
 
 import (
-	"fmt"
 	"slices"
 
 	av "github.com/mmp/vice/aviation"
@@ -9,7 +8,6 @@ import (
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
-	"github.com/mmp/vice/util"
 )
 
 type beaconCodeViewPopup struct {
@@ -19,50 +17,14 @@ type beaconCodeViewPopup struct {
 func (b *beaconCodeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	// T/O button background
-	toBg := util.Select(ps.BeaconCodeView.Opaque, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
-
-	// BORDER button - grey when ON, black when OFF
-	borderBg := util.Select(ps.BeaconCodeView.ShowBorder, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
-
 	rows := []ERAMMenuItem{
-		{Label: util.Select(ps.BeaconCodeView.Opaque, "O", "T"), BgColor: toBg, Color: colors.popup.text, Centered: true,
-			OnClick: func(_ ERAMMenuClickType) bool {
-				ps.BeaconCodeView.Opaque = !ps.BeaconCodeView.Opaque
-				return false
-			}},
-		{Label: "BORDER", BgColor: borderBg, Color: colors.popup.text, Centered: false,
-			OnClick: func(_ ERAMMenuClickType) bool {
-				ps.BeaconCodeView.ShowBorder = !ps.BeaconCodeView.ShowBorder
-				return false
-			}},
-		{Label: fmt.Sprintf("LINES %d", ps.BeaconCodeView.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				handleClick(ep, &ps.BeaconCodeView.Lines, 3, 24, 1)
-				return false
-			}},
-		{Label: fmt.Sprintf("COL %d", ps.BeaconCodeView.Col), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				handleClick(ep, &ps.BeaconCodeView.Col, 1, 5, 1)
-				return false
-			}},
-		{Label: fmt.Sprintf("FONT %d", ps.BeaconCodeView.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				handleClick(ep, &ps.BeaconCodeView.Font, 1, 3, 1)
-				return false
-			}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.BeaconCodeView.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				handleClick(ep, &ps.BeaconCodeView.Bright, 0, 100, 1)
-				return false
-			}},
-		{Label: "SORT MAN",
-			BgColor: util.Select(ps.BeaconCodeView.SortManual, colors.popup.backgroundGrey, colors.popup.backgroundBlack),
-			Color:   colors.popup.text,
-			OnClick: func(_ ERAMMenuClickType) bool {
-				ps.BeaconCodeView.SortManual = !ps.BeaconCodeView.SortManual
-				return false
-			}},
+		ep.makeBooleanMenuItem(&ps.BeaconCodeView.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&ps.BeaconCodeView.ShowBorder, "BORDER"),
+		ep.makeIntMenuItem(&ps.BeaconCodeView.Lines, "LINES", 3, 24, 1),
+		ep.makeIntMenuItem(&ps.BeaconCodeView.Col, "COL", 1, 5, 1),
+		ep.makeIntMenuItem(&ps.BeaconCodeView.Font, "FONT", 1, 3, 1),
+		ep.makeIntMenuItem(&ps.BeaconCodeView.Bright, "BRIGHT", 0, 100, 1),
+		ep.makeToggleMenuItem(&ps.BeaconCodeView.SortManual, "SORT MAN"),
 	}
 
 	cfg := ERAMMenuConfig{

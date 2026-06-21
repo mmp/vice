@@ -5,7 +5,6 @@ TODO:
 package eram
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/mmp/vice/math"
@@ -476,22 +475,10 @@ func (m *mcaPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
-		{Label: fmt.Sprintf("PA LINES %d", ps.MCA.PALines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.MCA.PALines, 1, 50, 1)
-			return false
-		}},
-		{Label: fmt.Sprintf("WIDTH %d", ps.MCA.Width), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.MCA.Width, 10, 200, 1)
-			return false
-		}},
-		{Label: fmt.Sprintf("FONT %d", ps.MCA.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.MCA.Font, 1, 3, 1)
-			return false
-		}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.MCA.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.MCA.Bright, 0, 100, 1)
-			return false
-		}},
+		ep.makeIntMenuItem(&ps.MCA.PALines, "PA LINES", 1, 50, 1),
+		ep.makeIntMenuItem(&ps.MCA.Width, "WIDTH", 10, 200, 1),
+		ep.makeIntMenuItem(&ps.MCA.Font, "FONT", 1, 3, 1),
+		ep.makeIntMenuItem(&ps.MCA.Bright, "BRIGHT", 0, 100, 1),
 	}
 
 	cfg := ERAMMenuConfig{
@@ -514,19 +501,10 @@ func (r *raPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
-		{Label: fmt.Sprintf("WIDTH %d", ps.RA.Width), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.RA.Width, 10, 200, 1)
-			return false
-		}},
-		{Label: fmt.Sprintf("FONT %d", ps.RA.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.RA.Font, 1, 3, 1)
-			return false
-		}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.RA.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.RA.Bright, 0, 100, 1)
-			return false
-		}},
-		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
+		ep.makeIntMenuItem(&ps.RA.Width, "WIDTH", 10, 200, 1),
+		ep.makeIntMenuItem(&ps.RA.Font, "FONT", 1, 3, 1),
+		ep.makeIntMenuItem(&ps.RA.Bright, "BRIGHT", 0, 100, 1),
+		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
 			ep.responseArea.Clear()
 			return false
 		}},
@@ -551,31 +529,11 @@ type timeViewPopup struct {
 func (t *timeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	tLabel := "T"
-	tBg := colors.popup.backgroundBlack
-	if ps.TimeView.Opaque {
-		tLabel = "O"
-		tBg = colors.popup.backgroundGrey
-	}
-	borderBg := util.Select(ps.TimeView.ShowBorder, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
-
 	rows := []ERAMMenuItem{
-		{Label: tLabel, BgColor: tBg, Color: colors.popup.text, Centered: true, OnClick: func(_ ERAMMenuClickType) bool {
-			ps.TimeView.Opaque = !ps.TimeView.Opaque
-			return false
-		}},
-		{Label: "BORDER", BgColor: borderBg, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
-			ps.TimeView.ShowBorder = !ps.TimeView.ShowBorder
-			return false
-		}},
-		{Label: fmt.Sprintf("FONT %d", ps.TimeView.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.TimeView.Font, 1, 3, 1)
-			return false
-		}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.TimeView.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.TimeView.Bright, 0, 100, 1)
-			return false
-		}},
+		ep.makeBooleanMenuItem(&ps.TimeView.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&ps.TimeView.ShowBorder, "BORDER"),
+		ep.makeIntMenuItem(&ps.TimeView.Font, "FONT", 1, 3, 1),
+		ep.makeIntMenuItem(&ps.TimeView.Bright, "BRIGHT", 0, 100, 1),
 	}
 
 	cfg := ERAMMenuConfig{

@@ -8,7 +8,6 @@ import (
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
-	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
@@ -243,59 +242,21 @@ type altimSetPopup struct {
 func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	// T/O button - toggles opaque mode
-	tLabel := "T"
-	tBg := colors.popup.backgroundBlack
-	if ps.AltimSet.Opaque {
-		tLabel = "O"
-		tBg = colors.popup.backgroundGrey
-	}
-
-	// BORDER button - grey when ON, black when OFF
-	borderBg := util.Select(ps.AltimSet.ShowBorder, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
-
-	// TEAROFF button - grey when ON, black when OFF
-	tearoffBg := util.Select(ps.AltimSet.ShowIndicators, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
-
 	rows := []ERAMMenuItem{
-		{Label: tLabel, BgColor: tBg, Color: colors.popup.text, Centered: true,
+		ep.makeBooleanMenuItem(&ps.AltimSet.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&ps.AltimSet.ShowBorder, "BORDER"),
+		ep.makeToggleMenuItem(&ps.AltimSet.ShowIndicators, "TEAROFF"),
+		{Label: fmt.Sprintf("LINES %d", ps.AltimSet.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text,
 			OnClick: func(_ ERAMMenuClickType) bool {
-				ps.AltimSet.Opaque = !ps.AltimSet.Opaque
-				return false
-			}},
-		{Label: "BORDER", BgColor: borderBg, Color: colors.popup.text, Centered: false,
-			OnClick: func(_ ERAMMenuClickType) bool {
-				ps.AltimSet.ShowBorder = !ps.AltimSet.ShowBorder
-				return false
-			}},
-		{Label: "TEAROFF", BgColor: tearoffBg, Color: colors.popup.text, Centered: false,
-			OnClick: func(_ ERAMMenuClickType) bool {
-				ps.AltimSet.ShowIndicators = !ps.AltimSet.ShowIndicators
-				return false
-			}},
-		{Label: fmt.Sprintf("LINES %d", ps.AltimSet.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
 				handleClick(ep, &ps.AltimSet.Lines, 3, 24, 1)
 				maxOffset := max(0, len(ep.AltimSetAirports)-ps.AltimSet.Lines)
 				ep.altimSetScroll.Offset = math.Clamp(ep.altimSetScroll.Offset, 0, maxOffset)
 				return false
 			}},
-		{Label: fmt.Sprintf("COL %d", ps.AltimSet.Col), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				handleClick(ep, &ps.AltimSet.Col, 1, 4, 1)
-				return false
-			}},
-		{Label: fmt.Sprintf("FONT %d", ps.AltimSet.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				handleClick(ep, &ps.AltimSet.Font, 1, 3, 1)
-				return false
-			}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.AltimSet.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				handleClick(ep, &ps.AltimSet.Bright, 0, 100, 1)
-				return false
-			}},
-		{Label: "TEMPLATE", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, Centered: false},
+		ep.makeIntMenuItem(&ps.AltimSet.Col, "COL", 1, 4, 1),
+		ep.makeIntMenuItem(&ps.AltimSet.Font, "FONT", 1, 3, 1),
+		ep.makeIntMenuItem(&ps.AltimSet.Bright, "BRIGHT", 0, 100, 1),
+		{Label: "TEMPLATE", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text},
 	}
 
 	cfg := ERAMMenuConfig{

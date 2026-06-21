@@ -9,7 +9,6 @@ import (
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
-	"github.com/mmp/vice/util"
 )
 
 const wxWindowWidth = float32(320)
@@ -203,60 +202,25 @@ type wxPopup struct {
 
 func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	const menuWidth = wxPopupWidth
-
-	// T/O button — shows "T" (transparent) or "O" (opaque)
-	tLabel := "T"
-	tBg := colors.popup.backgroundBlack
-	if ps.WX.Opaque {
-		tLabel = "O"
-		tBg = colors.popup.backgroundGrey
-	}
-
-	// BORDER button - grey when ON, black when OFF
-	borderBg := util.Select(ps.WX.ShowBorder, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
-
-	// TEAROFF button - grey when ON, black when OFF
-	tearoffBg := util.Select(ps.WX.ShowIndicators, colors.popup.backgroundGrey, colors.popup.backgroundBlack)
 
 	rows := []ERAMMenuItem{
-		{Label: tLabel, BgColor: tBg, Color: colors.popup.text, Centered: true,
+		ep.makeBooleanMenuItem(&ps.WX.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&ps.WX.ShowBorder, "BORDER"),
+		ep.makeToggleMenuItem(&ps.WX.ShowIndicators, "TEAROFF"),
+		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text,
 			OnClick: func(_ ERAMMenuClickType) bool {
-				ps.WX.Opaque = !ps.WX.Opaque
-				return false
-			}},
-		{Label: "BORDER", BgColor: borderBg, Color: colors.popup.text, Centered: false,
-			OnClick: func(_ ERAMMenuClickType) bool {
-				ps.WX.ShowBorder = !ps.WX.ShowBorder
-				return false
-			}},
-		{Label: "TEAROFF", BgColor: tearoffBg, Color: colors.popup.text, Centered: false,
-			OnClick: func(_ ERAMMenuClickType) bool {
-				ps.WX.ShowIndicators = !ps.WX.ShowIndicators
-				return false
-			}},
-		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
 				handleClick(ep, &ps.WX.Lines, 3, 24, 1)
 				maxOffset := max(0, len(ep.WXReportStations)-ps.WX.Lines)
 				ep.wxScroll.Offset = math.Clamp(ep.wxScroll.Offset, 0, maxOffset)
 				return false
 			}},
-		{Label: fmt.Sprintf("FONT %d", ps.WX.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				handleClick(ep, &ps.WX.Font, 1, 3, 1)
-				return false
-			}},
-		{Label: fmt.Sprintf("BRIGHT %d", ps.WX.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, Centered: false,
-			OnClick: func(ct ERAMMenuClickType) bool {
-				handleClick(ep, &ps.WX.Bright, 0, 100, 1)
-				return false
-			}},
+		ep.makeIntMenuItem(&ps.WX.Font, "FONT", 1, 3, 1),
+		ep.makeIntMenuItem(&ps.WX.Bright, "BRIGHT", 0, 100, 1),
 	}
 
 	cfg := ERAMMenuConfig{
 		Title: "WX",
-		Width: menuWidth,
+		Width: wxPopupWidth,
 		Font:  ep.ERAMFont(2),
 		Rows:  rows,
 	}

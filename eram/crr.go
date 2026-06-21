@@ -362,26 +362,13 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 	origin := c.origin
 	const width = float32(crrPopupWidth)
 
-	rtLabel := "T"
-	rtBg := colors.popup.backgroundBlack
-	if ps.CRR.Opaque {
-		rtLabel = "O"
-		rtBg = colors.popup.backgroundGrey
-	}
-
 	rows := []ERAMMenuItem{
-		{Label: rtLabel, BgColor: rtBg, Color: colors.popup.text, Centered: true, OnClick: func(_ ERAMMenuClickType) bool {
-			ps.CRR.Opaque = !ps.CRR.Opaque
-			return false
-		}},
+		ep.makeBooleanMenuItem(&ps.CRR.Opaque, "O", "T"),
 		{Label: "BORDER", BgColor: colors.popup.backgroundGrey, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
 			ps.CRR.ShowBorder = !ps.CRR.ShowBorder
 			return false
 		}},
-		{Label: "LINES " + strconv.Itoa(ps.CRR.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.CRR.Lines, 1, 100, 1)
-			return false
-		}},
+		ep.makeIntMenuItem(&ps.CRR.Lines, "LINES", 1, 100, 1),
 		{Label: "FONT " + strconv.Itoa(ps.CRR.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
 			if ct == MenuClickPrimary {
 				ps.CRR.Font = 1 + (ps.CRR.Font+2)%4
@@ -390,16 +377,10 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 			}
 			return false
 		}},
-		{Label: "BRIGHT " + strconv.Itoa(ps.CRR.Bright), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
-			handleClick(ep, &ps.CRR.Bright, 0, 100, 1)
-			return false
-		}},
-		{Label: "LIST", BgColor: colors.popup.backgroundGrey, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
-			ps.CRR.ListMode = !ps.CRR.ListMode
-			return false
-		}},
+		ep.makeIntMenuItem(&ps.CRR.Bright, "BRIGHT", 0, 100, 1),
+		ep.makeToggleMenuItem(&ps.CRR.ListMode, "LIST"),
 		{Label: "COLOR " + strconv.Itoa(ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: colors.popup.backgroundBlack,
-			Color: CRRGreen.BrightRGB(radar.Brightness(90)), OnClick: func(ct ERAMMenuClickType) bool {
+			Color: CRRGreen.BrightRGB(radar.Brightness(90)), OnClick: func(_ ERAMMenuClickType) bool {
 				v := ps.CRR.ColorBright[ps.CRR.SelectedColor]
 				handleClick(ep, &v, 0, 100, 1)
 				ps.CRR.ColorBright[ps.CRR.SelectedColor] = v

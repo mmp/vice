@@ -1,6 +1,7 @@
 package eram
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/mmp/vice/math"
@@ -8,6 +9,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/util"
 )
 
 // ERAMMenu - reusable floating popup menu component: streamlines making the many slightly different menus in ERAM.
@@ -55,6 +57,51 @@ type ERAMScrollState struct {
 type ERAMScrollItem struct {
 	Label string
 	Color renderer.RGB
+}
+
+// makeBooleanMenuItem builds a centered toggle row whose label flips between
+// trueLabel and falseLabel based on *v. Background is grey when *v is true,
+// black otherwise. Click toggles *v.
+func (ep *ERAMPane) makeBooleanMenuItem(v *bool, trueLabel, falseLabel string) ERAMMenuItem {
+	return ERAMMenuItem{
+		Label:    util.Select(*v, trueLabel, falseLabel),
+		BgColor:  util.Select(*v, colors.popup.backgroundGrey, colors.popup.backgroundBlack),
+		Color:    colors.popup.text,
+		Centered: true,
+		OnClick: func(_ ERAMMenuClickType) bool {
+			*v = !*v
+			return false
+		},
+	}
+}
+
+// makeToggleMenuItem builds a left-justified toggle row with a fixed label.
+// Background is grey when *v is true, black otherwise. Click toggles *v.
+func (ep *ERAMPane) makeToggleMenuItem(v *bool, label string) ERAMMenuItem {
+	return ERAMMenuItem{
+		Label:   label,
+		BgColor: util.Select(*v, colors.popup.backgroundGrey, colors.popup.backgroundBlack),
+		Color:   colors.popup.text,
+		OnClick: func(_ ERAMMenuClickType) bool {
+			*v = !*v
+			return false
+		},
+	}
+}
+
+// makeIntMenuItem builds an int-adjustment row labeled "<label> <value>" with a
+// green background. Primary click decrements, tertiary click increments by step,
+// clamped to [min, max].
+func (ep *ERAMPane) makeIntMenuItem(v *int, label string, min, max, step int) ERAMMenuItem {
+	return ERAMMenuItem{
+		Label:   fmt.Sprintf("%s %d", label, *v),
+		BgColor: colors.popup.backgroundGreen,
+		Color:   colors.popup.text,
+		OnClick: func(_ ERAMMenuClickType) bool {
+			handleClick(ep, v, min, max, step)
+			return false
+		},
+	}
 }
 
 // ERAMMenuConfig holds the full configuration for a menu drawn by DrawERAMMenu.
