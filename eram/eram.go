@@ -631,15 +631,14 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	}
 
 	def := makeDefaultPreferences()
-	if ep.prefSet.Current.commandBigPosition == ([2]float32{}) {
-		ep.prefSet.Current.commandBigPosition = def.commandBigPosition
+	if ep.prefSet.Current.MCA.Position == ([2]float32{}) {
+		ep.prefSet.Current.MCA.Position = def.MCA.Position
 	}
-	if ep.prefSet.Current.commandSmallPosition == ([2]float32{}) {
-		ep.prefSet.Current.commandSmallPosition = def.commandSmallPosition
+	if ep.prefSet.Current.RA.Position == ([2]float32{}) {
+		ep.prefSet.Current.RA.Position = def.RA.Position
 	}
-	if ep.prefSet.Current.clockPosition == ([2]float32{}) {
-		ep.prefSet.Current.clockPosition = def.clockPosition
-	}
+	// TimeView.Position is left to drawClock to initialize lazily based on
+	// pane height.
 	if ep.prefSet.Current.CursorSize == 0 {
 		ep.prefSet.Current.CursorSize = def.CursorSize
 	}
@@ -833,8 +832,8 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			if ctx.Keyboard.KeyControl() && ctx.Keyboard.KeyShift() && ctx.Mouse != nil {
 				big := ctx.Mouse.Pos
 				big[1] -= 38
-				ps.commandBigPosition = big
-				ps.commandSmallPosition = [2]float32{big[0] + 390, big[1]}
+				ps.MCA.Position = big
+				ps.RA.Position = [2]float32{big[0] + 390, big[1]}
 			}
 		case imgui.KeyBackspace:
 			if ep.commandMode == CommandModeDrawRoute {

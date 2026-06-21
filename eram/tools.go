@@ -17,10 +17,8 @@ import (
 )
 
 var commandDrawState struct {
-	cb                   *renderer.CommandBuffer
-	mouse                *platform.MouseState
-	commandBigPosition   [2]float32
-	commandSmallPosition [2]float32
+	cb    *renderer.CommandBuffer
+	mouse *platform.MouseState
 }
 
 func (ep *ERAMPane) drawCommandInput(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
@@ -32,9 +30,6 @@ func (ep *ERAMPane) drawCommandInput(ctx *panes.Context, transforms radar.ScopeT
 func (ep *ERAMPane) startDrawCommandInput(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	commandDrawState.cb = cb
 	commandDrawState.mouse = ctx.Mouse
-	ps := ep.currentPrefs()
-	commandDrawState.commandBigPosition = ps.commandBigPosition
-	commandDrawState.commandSmallPosition = ps.commandSmallPosition
 
 	toolbarDrawState.style = renderer.TextStyle{
 		Font:        ep.ERAMInputFont(),
@@ -70,9 +65,9 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 	out, _ := util.WrapText(ep.feedbackArea.String(), cols, 0, true, true)
 	ep.feedbackArea.formatWrap(ps, out)
 
-	// ps.commandBigPosition is the top-left of the feedback box (prefs
+	// ps.MCA.Position is the top-left of the feedback box (prefs
 	// semantics). View sees the top-left of the whole envelope (input top).
-	viewPos := [2]float32{ps.commandBigPosition[0], ps.commandBigPosition[1] + inputH}
+	viewPos := [2]float32{ps.MCA.Position[0], ps.MCA.Position[1] + inputH}
 
 	v := View{
 		Position:   &viewPos,
@@ -126,7 +121,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 	ep.DrawView(ctx, transforms, cb, v)
 
 	// View may have updated viewPos via drag; translate back to prefs semantics.
-	ps.commandBigPosition = [2]float32{viewPos[0], viewPos[1] - inputH}
+	ps.MCA.Position = [2]float32{viewPos[0], viewPos[1] - inputH}
 }
 
 // drawSmallCommandOutput renders the RA: a single 325×77 box with the wrapped
@@ -144,7 +139,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context, transforms radar.
 	ep.responseArea.formatWrap(ps, out)
 
 	v := View{
-		Position:   &ps.commandSmallPosition,
+		Position:   &ps.RA.Position,
 		ID:         "ra",
 		Width:      width,
 		BodyHeight: height,
@@ -430,8 +425,8 @@ func (ep *ERAMPane) drawPlotPoints(ctx *panes.Context, transforms radar.ScopeTra
 func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	if ps.clockPosition == [2]float32{} {
-		ps.clockPosition = [2]float32{10, ctx.PaneExtent.Height() - 300}
+	if ps.TimeView.Position == [2]float32{} {
+		ps.TimeView.Position = [2]float32{10, ctx.PaneExtent.Height() - 300}
 	}
 
 	fontNum := math.Clamp(ps.TimeView.Font, 1, 3)
@@ -446,7 +441,7 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 	height := ext.Height() + 8
 
 	v := View{
-		Position:     &ps.clockPosition,
+		Position:     &ps.TimeView.Position,
 		ID:           "clock",
 		Width:        width,
 		BodyHeight:   height,

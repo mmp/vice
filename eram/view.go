@@ -128,8 +128,8 @@ type View struct {
 }
 
 // clampViewPos clamps a view top-left position so the whole window stays
-// inside the pane, leaving the bottom-toolbar buffer free when the toolbar
-// is visible. pos is the view's top-left in pane-local coords (y up); width
+// inside the pane, leaving the top-toolbar buffer free when the toolbar is
+// visible. pos is the view's top-left in pane-local coords (y up); width
 // and totalH are the view's outer dimensions.
 func (ep *ERAMPane) clampViewPos(ctx *panes.Context, pos [2]float32, width, totalH float32) [2]float32 {
 	paneW := ctx.PaneExtent.Width()
@@ -139,7 +139,7 @@ func (ep *ERAMPane) clampViewPos(ctx *panes.Context, pos [2]float32, width, tota
 		toolbarH = buttonSize(buttonFull, ep.toolbarButtonScale(ctx))[1]
 	}
 	pos[0] = math.Clamp(pos[0], 0, max(0, paneW-width))
-	pos[1] = math.Clamp(pos[1], toolbarH+totalH, paneH)
+	pos[1] = math.Clamp(pos[1], totalH, max(totalH, paneH-toolbarH))
 	return pos
 }
 

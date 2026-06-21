@@ -87,21 +87,24 @@ type Preferences struct {
 
 	// MCA (Message Composition Area) preferences
 	MCA struct {
-		PALines int // max number of preview/feedback area lines
-		Width   int // chars per line
-		Font    int // 1-3
-		Bright  int // 0-100
+		Position [2]float32 // top-left of the feedback box
+		PALines  int        // max number of preview/feedback area lines
+		Width    int        // chars per line
+		Font     int        // 1-3
+		Bright   int        // 0-100
 	}
 
 	// RA (Response Area) preferences
 	RA struct {
-		Width  int // chars per line
-		Font   int // 1-3
-		Bright int // 0-100
+		Position [2]float32
+		Width    int // chars per line
+		Font     int // 1-3
+		Bright   int // 0-100
 	}
 
 	// TimeView (clock) preferences
 	TimeView struct {
+		Position   [2]float32
 		Opaque     bool
 		ShowBorder bool
 		Font       int // 1-3
@@ -132,10 +135,7 @@ type PrefrenceSet struct {
 }
 
 type CommonPreferences struct {
-	clockPosition        [2]float32
-	commandBigPosition   [2]float32
-	commandSmallPosition [2]float32
-	CharSize             struct {
+	CharSize struct {
 		Line4   int // Find out what this is
 		RDB     int
 		LDB     int
@@ -228,8 +228,6 @@ func makeDefaultPreferences() *Preferences {
 	prefs.Brightness.DBFEL = 80
 	prefs.Brightness.Outage = 80
 
-	prefs.commandBigPosition = [2]float32{2, 80}
-	prefs.commandSmallPosition = [2]float32{392, 80}
 	prefs.altitudeFilter = [2]int{0, 999}
 	prefs.TornOffButtons = make(map[string][2]float32)
 
@@ -288,11 +286,13 @@ func makeDefaultPreferences() *Preferences {
 	prefs.WX.Font = 2
 	prefs.WX.Bright = 80
 
+	prefs.MCA.Position = [2]float32{2, 80}
 	prefs.MCA.PALines = 6
 	prefs.MCA.Width = 32
 	prefs.MCA.Font = 2
 	prefs.MCA.Bright = 100
 
+	prefs.RA.Position = [2]float32{392, 80}
 	prefs.RA.Width = 27
 	prefs.RA.Font = 2
 	prefs.RA.Bright = 100
@@ -301,6 +301,8 @@ func makeDefaultPreferences() *Preferences {
 	prefs.TimeView.ShowBorder = true
 	prefs.TimeView.Font = 3
 	prefs.TimeView.Bright = 100
+	// TimeView.Position is left zero; drawClock initializes it lazily once
+	// the pane extent is known (it depends on pane height).
 
 	return &prefs
 }
@@ -341,6 +343,15 @@ func (p *Preferences) Upgrade(from, to int) {
 		p.BeaconCodeView.Col = 5
 		p.BeaconCodeView.Font = 2
 		p.BeaconCodeView.Bright = 100
+	}
+	if from < 75 {
+		// MCA/RA/TimeView positions moved from unexported CommonPreferences
+		// fields (which never serialized) to exported fields on each view's
+		// own struct. Initialize them to the defaults from
+		// makeDefaultPreferences(). TimeView.Position stays zero; drawClock
+		// fills it in once it knows the pane size.
+		p.MCA.Position = [2]float32{2, 80}
+		p.RA.Position = [2]float32{392, 80}
 	}
 }
 

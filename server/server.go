@@ -82,7 +82,8 @@ import (
 // 72: ERAM Range now means vertical NM (not half-width)
 // 73: Rand JSON shape changed (PCG32 fields → base64 of math/rand/v2 PCG state)
 // 74: ERAM MCA, RA, TimeView prefs added
-const ViceSerializeVersion = 74
+// 75: ERAM MCA/RA/TimeView positions moved to exported per-view Position fields
+const ViceSerializeVersion = 75
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion
