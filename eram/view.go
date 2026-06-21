@@ -5,10 +5,12 @@
 package eram
 
 import (
+	"slices"
 	"time"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
 )
@@ -125,6 +127,10 @@ type View struct {
 
 	OnMenu     func(host math.Extent2D) popup
 	OnMinimize func()
+	// MinimizeTarget is shorthand for the OnMinimize closure: when set and
+	// OnMinimize is nil, DrawView synthesizes `func() { *MinimizeTarget = false }`.
+	// Every multi-row view's minimize handler is exactly that.
+	MinimizeTarget *bool
 
 	OnBodyTertiaryMenu func(host math.Extent2D) popup
 
@@ -149,6 +155,18 @@ func (ep *ERAMPane) clampViewPos(ctx *panes.Context, pos [2]float32, width, tota
 	pos[0] = math.Clamp(pos[0], 0, max(0, paneW-width))
 	pos[1] = math.Clamp(pos[1], totalH, max(totalH, paneH-toolbarH))
 	return pos
+}
+
+// deleteByID removes the first element of *sl whose key (extracted by
+// idFn) equals id. ViewSelectable.OnDelete callbacks for list views all
+// follow this pattern.
+func deleteByID[T any](sl *[]T, id string, idFn func(T) string) {
+	for i, v := range *sl {
+		if idFn(v) == id {
+			*sl = slices.Delete(*sl, i, i+1)
+			return
+		}
+	}
 }
 
 // drawRectOutline draws a 1px line-loop around ex.
@@ -190,6 +208,111 @@ func viewTitleHeight(titleFont *renderer.Font) float32 {
 	return max(16, titleFont.LayoutBounds("M", 0).Height()+4)
 }
 
+// lineHeight is the row line height ERAM views use: the font cell height
+// plus a 2 px inter-row gap. Identical formula everywhere — keep it here so
+// callers stop re-deriving it.
+func lineHeight(font *renderer.Font) float32 {
+	return font.LayoutBounds("0", 0).Height() + 2
+}
+
+// defaultBadge builds the standard row badge: width and height matched to
+// the title-bar M button, viewMPad horizontal pad, configurable fill, and
+// the default badge border color.
+func defaultBadge(titleFont *renderer.Font, fill renderer.RGB) *Badge {
+	return &Badge{
+		Width:  titleFont.LayoutBounds("M", 0).Width(),
+		Height: viewTitleHeight(titleFont),
+		Pad:    viewMPad,
+		Fill:   fill,
+		Border: colors.badge.border,
+	}
+}
+
+// titleBarState bundles the title-bar's three clickable regions with their
+// per-frame hover state. Computed once in DrawView and reused by both the
+// rendering pass and the click dispatcher so the two never disagree.
+type titleBarState struct {
+	mRect, minRect, titleRect       math.Extent2D
+	insideM, insideMin, insideTitle bool
+}
+
+// titleBarLayout computes the three clickable title-bar regions and their
+// hover flags from the bar's outer geometry. titleP0 is the bar's top-left
+// (= the view's top-left), width is the full view width, titleH the bar
+// height.
+func titleBarLayout(titleP0 [2]float32, width, titleH float32, v View, mouse *platform.MouseState) titleBarState {
+	titleP1 := math.Add2f(titleP0, [2]float32{width, 0})
+	titleP2 := math.Add2f(titleP1, [2]float32{0, -titleH})
+	var s titleBarState
+	if v.OnMenu != nil {
+		s.mRect = math.Extent2D{
+			P0: [2]float32{titleP0[0], titleP0[1] - titleH},
+			P1: [2]float32{titleP0[0] + viewMButtonWidth(v.TitleFont), titleP0[1]},
+		}
+		s.insideM = mouse != nil && s.mRect.Inside(mouse.Pos)
+	}
+	if v.OnMinimize != nil {
+		minw := v.TitleFont.LayoutBounds("-", 0).Width()
+		s.minRect = math.Extent2D{
+			P0: [2]float32{titleP1[0] - 2*viewMPad - minw, titleP1[1] - titleH},
+			P1: titleP1,
+		}
+		s.insideMin = mouse != nil && s.minRect.Inside(mouse.Pos)
+	}
+	leftEdge := titleP0[0]
+	rightEdge := titleP1[0]
+	if v.OnMenu != nil {
+		leftEdge = s.mRect.P1[0]
+	}
+	if v.OnMinimize != nil {
+		rightEdge = s.minRect.P0[0]
+	}
+	s.titleRect = math.Extent2D{
+		P0: [2]float32{leftEdge, titleP2[1]},
+		P1: [2]float32{rightEdge, titleP1[1]},
+	}
+	s.insideTitle = mouse != nil && s.titleRect.Inside(mouse.Pos)
+	return s
+}
+
+// drawTitleButton writes a centered title-bar button label (e.g. "M", "-")
+// to td. The outline is drawn separately so the dim outlines for all three
+// regions can be emitted before the bright ones.
+func drawTitleButton(td *renderer.TextDrawBuilder, label string, rect math.Extent2D, font *renderer.Font, dim, bright renderer.RGB, hovered bool) {
+	color := dim
+	if hovered {
+		color = bright
+	}
+	td.AddTextCentered(label, rect.Center(), renderer.TextStyle{Font: font, Color: color})
+}
+
+// scrollBarLayout returns the two clickable / drawable rectangles for the
+// scroll-bar arrows, given the body geometry. Used once by click handling
+// and once by rendering so the two stay in lock-step.
+func scrollBarLayout(bodyP0, bodyP1 [2]float32, bodyH float32) (upRect, downRect math.Extent2D) {
+	sectionH := (bodyH - 2 - scrollBarGap) / 2
+	scrollX1 := bodyP1[0] - 1
+	scrollX0 := scrollX1 - scrollBarTotalW
+	upY1 := bodyP0[1] - 1
+	upY0 := upY1 - sectionH
+	downY0 := upY0 - scrollBarGap
+	downY1 := downY0 - sectionH
+	upRect = math.Extent2D{P0: [2]float32{scrollX0, upY0}, P1: [2]float32{scrollX1, upY1}}
+	// downY1 < downY0 because y increases upward; canonical Extent2D wants P0 < P1.
+	downRect = math.Extent2D{P0: [2]float32{scrollX0, downY1}, P1: [2]float32{scrollX1, downY0}}
+	return
+}
+
+// drawScrollArrow renders one of the scroll-bar chevrons: a stair-stepped
+// triangle whose tip is at (centerX, tipY) and whose 10-row body extends in
+// the +y direction when dir = +1 or −y direction when dir = −1.
+func drawScrollArrow(ld *renderer.ColoredLinesDrawBuilder, centerX, tipY float32, dir int, color renderer.RGB) {
+	for i, w := range [...]float32{1, 1, 3, 3, 5, 5, 7, 7, 9, 9} {
+		y := tipY + float32(dir*i)
+		ld.AddLine([2]float32{centerX - w/2, y}, [2]float32{centerX + w/2, y}, color)
+	}
+}
+
 // scrollReserveWidth is the right-edge area DrawView reserves for the scroll
 // bar when Scroll is configured. Sized to 2 BodyFont space characters so it
 // scales with the body font; at least scrollBarTotalW so the scroll-bar
@@ -215,6 +338,20 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 	mouse := ctx.Mouse
 
+	// Default TitleFont so callers don't have to thread it through. Every
+	// ERAM view uses ERAMFont(2) for the title bar.
+	if v.TitleFont == nil {
+		v.TitleFont = ep.ERAMFont(2)
+	}
+
+	// Default OnMinimize to "set MinimizeTarget = false" when callers
+	// supply only the target — that's the only thing every minimize
+	// handler does.
+	if v.OnMinimize == nil && v.MinimizeTarget != nil {
+		target := v.MinimizeTarget
+		v.OnMinimize = func() { *target = false }
+	}
+
 	// v.Width is the body content width; DrawView grows the view to make
 	// room for the scroll bar on the right when Scroll is configured.
 	scrollReserveW := scrollReserveWidth(v)
@@ -230,14 +367,12 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 	hasTitle := v.Title != ""
 
-	// Title-bar height (and the title text style) come from TitleFont.
+	// Title-bar height and the dim title-bar text color come from TitleFont
+	// and Brightness; consumers below build their own TextStyle from these.
 	var titleH float32
-	var titleStyle renderer.TextStyle
+	var titleDimColor renderer.RGB
 	if hasTitle {
-		titleStyle = renderer.TextStyle{
-			Font:  v.TitleFont,
-			Color: v.Brightness.ScaleRGB(colors.view.text),
-		}
+		titleDimColor = v.Brightness.ScaleRGB(colors.view.text)
 		titleH = viewTitleHeight(v.TitleFont)
 	}
 
@@ -309,8 +444,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	}
 
 	// Title bar.
-	var mRect, minRect, titleRect math.Extent2D
-	var mouseInsideM, mouseInsideMin, mouseInsideTitle bool
+	var tb titleBarState
 	if hasTitle {
 		titleBg := renderer.RGB{}
 		if v.Opaque {
@@ -322,79 +456,46 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		titleP3 := math.Add2f(p0, [2]float32{0, -titleH})
 		trid.AddQuad(titleP0, titleP1, titleP2, titleP3, titleBg)
 
-		if v.OnMenu != nil {
-			mRect = math.Extent2D{
-				P0: [2]float32{titleP0[0], titleP0[1] - titleH},
-				P1: [2]float32{titleP0[0] + viewMButtonWidth(v.TitleFont), titleP0[1]},
-			}
-			mouseInsideM = mouse != nil && mRect.Inside(mouse.Pos)
-		}
-		if v.OnMinimize != nil {
-			minw := v.TitleFont.LayoutBounds("-", 0).Width()
-			minRect = math.Extent2D{
-				P0: [2]float32{titleP1[0] - viewMPad - minw - viewMPad, titleP1[1] - titleH},
-				P1: titleP1,
-			}
-			mouseInsideMin = mouse != nil && minRect.Inside(mouse.Pos)
-		}
+		tb = titleBarLayout(titleP0, width, titleH, v, mouse)
+		bright := colors.view.hoveredOutline
 
-		leftEdge := titleP0[0]
-		rightEdge := titleP1[0]
-		if v.OnMenu != nil {
-			leftEdge = mRect.P1[0]
+		// Title text is centered on the full title-bar width (so it stays
+		// visually centered in the bar regardless of button presence),
+		// while the M / "-" buttons center within their own rects.
+		titleColor := titleDimColor
+		if tb.insideTitle {
+			titleColor = bright
 		}
-		if v.OnMinimize != nil {
-			rightEdge = minRect.P0[0]
-		}
-		titleRect = math.Extent2D{
-			P0: [2]float32{leftEdge, titleP2[1]},
-			P1: [2]float32{rightEdge, titleP1[1]},
-		}
-		mouseInsideTitle = mouse != nil && titleRect.Inside(mouse.Pos)
-
-		// Title text — bright when title area is hovered.
-		titleColor := titleStyle.Color
-		if mouseInsideTitle {
-			titleColor = colors.view.hoveredOutline
-		}
-		titleCenter := [2]float32{titleP0[0] + width/2, titleP0[1] - titleH/2}
-		td.AddTextCentered(v.Title, titleCenter, renderer.TextStyle{Font: v.TitleFont, Color: titleColor})
+		td.AddTextCentered(v.Title,
+			[2]float32{titleP0[0] + width/2, titleP0[1] - titleH/2},
+			renderer.TextStyle{Font: v.TitleFont, Color: titleColor})
 
 		if v.OnMenu != nil {
-			mTextColor := titleStyle.Color
-			if mouseInsideM {
-				mTextColor = colors.view.hoveredOutline
-			}
-			td.AddTextCentered("M", mRect.Center(),
-				renderer.TextStyle{Font: v.TitleFont, Color: mTextColor})
+			drawTitleButton(td, "M", tb.mRect, v.TitleFont, titleDimColor, bright, tb.insideM)
 		}
 		if v.OnMinimize != nil {
-			minTextColor := titleStyle.Color
-			if mouseInsideMin {
-				minTextColor = colors.view.hoveredOutline
-			}
-			td.AddTextCentered("-", minRect.Center(),
-				renderer.TextStyle{Font: v.TitleFont, Color: minTextColor})
+			drawTitleButton(td, "-", tb.minRect, v.TitleFont, titleDimColor, bright, tb.insideMin)
 		}
 
 		// Dim outlines first, then bright outlines on hover.
-		if v.OnMenu != nil && !mouseInsideM {
-			drawRectOutline(ld, mRect, colors.view.buttonOutline)
+		dim := colors.view.buttonOutline
+		if v.OnMenu != nil && !tb.insideM {
+			drawRectOutline(ld, tb.mRect, dim)
 		}
-		if v.OnMinimize != nil && !mouseInsideMin {
-			drawRectOutline(ld, minRect, colors.view.buttonOutline)
+		if v.OnMinimize != nil && !tb.insideMin {
+			drawRectOutline(ld, tb.minRect, dim)
 		}
-		if !mouseInsideTitle {
-			drawRectOutline(ld, titleRect, colors.view.buttonOutline)
+		if !tb.insideTitle {
+			drawRectOutline(ld, tb.titleRect, dim)
 		}
-		if v.OnMenu != nil && mouseInsideM {
-			drawRectOutline(ld, mRect, colors.view.hoveredOutline)
+		if v.OnMenu != nil && tb.insideM {
+			drawRectOutline(ld, tb.mRect, bright)
 		}
-		if v.OnMinimize != nil && mouseInsideMin {
-			drawRectOutline(ld, minRect, colors.view.hoveredOutline)
+		if v.OnMinimize != nil && tb.insideMin {
+			drawRectOutline(ld, tb.minRect, bright)
 		}
-		if mouseInsideTitle {
-			drawRectOutline(ld, titleRect, colors.view.hoveredOutline)
+		if tb.insideTitle {
+			drawRectOutline(ld, tb.titleRect, bright)
 		}
 	}
 
@@ -403,16 +504,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	scrollVisible := v.Scroll != nil && v.Scroll.MaxOffset > 0 && bodyH > 0
 	var scrollUpRect, scrollDownRect math.Extent2D
 	if scrollVisible {
-		sectionH := (bodyH - 2 - scrollBarGap) / 2
-		scrollX1 := bodyP1[0] - 1
-		scrollX0 := scrollX1 - scrollBarTotalW
-		upY1 := bodyP0[1] - 1
-		upY0 := upY1 - sectionH
-		downY0 := upY0 - scrollBarGap
-		downY1 := downY0 - sectionH
-		scrollUpRect = math.Extent2D{P0: [2]float32{scrollX0, upY0}, P1: [2]float32{scrollX1, upY1}}
-		// Note: downY1 < downY0 here (Y increases upward), so P0 = (x0, downY1), P1 = (x1, downY0).
-		scrollDownRect = math.Extent2D{P0: [2]float32{scrollX0, downY1}, P1: [2]float32{scrollX1, downY0}}
+		scrollUpRect, scrollDownRect = scrollBarLayout(bodyP0, bodyP1, bodyH)
 	}
 
 	// Selectable rows: compute extents up front so click handling and the
@@ -444,38 +536,39 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	primaryClicked := ep.mousePrimaryClicked(mouse)
 	tertiaryClicked := ep.mouseTertiaryClicked(mouse)
 	if mouse != nil && (primaryClicked || tertiaryClicked) {
+		// host is the view's outer extent — clamped to the window-frame
+		// corners — passed to menu-opening callbacks so they can place
+		// the popup relative to the view.
+		host := math.Extent2D{P0: [2]float32{p0[0], p2[1]}, P1: [2]float32{p0[0] + width, p0[1]}}
+		startDrag := func() {
+			ep.viewRepo.activeID = v.ID
+			ep.viewRepo.startTime = time.Now()
+			ep.viewRepo.dragOffset = math.Sub2f(mouse.Pos, p0)
+		}
 		switch {
 		case scrollVisible && scrollUpRect.Inside(mouse.Pos):
 			if v.Scroll.State.Offset > 0 {
 				v.Scroll.State.Offset--
 			}
-			ep.clearMousePrimaryConsumed(mouse)
-			ep.clearMouseTertiaryConsumed(mouse)
+			ep.consumeMouseClick(mouse)
 
 		case scrollVisible && scrollDownRect.Inside(mouse.Pos):
 			if v.Scroll.State.Offset < v.Scroll.MaxOffset {
 				v.Scroll.State.Offset++
 			}
-			ep.clearMousePrimaryConsumed(mouse)
-			ep.clearMouseTertiaryConsumed(mouse)
+			ep.consumeMouseClick(mouse)
 
-		case hasTitle && v.OnMenu != nil && mouseInsideM:
-			host := math.Extent2D{P0: [2]float32{p0[0], p2[1]}, P1: [2]float32{p0[0] + width, p0[1]}}
+		case hasTitle && v.OnMenu != nil && tb.insideM:
 			ep.popup = v.OnMenu(host)
-			ep.clearMousePrimaryConsumed(mouse)
-			ep.clearMouseTertiaryConsumed(mouse)
+			ep.consumeMouseClick(mouse)
 
-		case hasTitle && v.OnMinimize != nil && mouseInsideMin:
+		case hasTitle && v.OnMinimize != nil && tb.insideMin:
 			v.OnMinimize()
-			ep.clearMousePrimaryConsumed(mouse)
-			ep.clearMouseTertiaryConsumed(mouse)
+			ep.consumeMouseClick(mouse)
 
-		case hasTitle && mouseInsideTitle && ep.viewRepo.activeID == "":
-			ep.viewRepo.activeID = v.ID
-			ep.viewRepo.startTime = time.Now()
-			ep.viewRepo.dragOffset = math.Sub2f(mouse.Pos, p0)
-			ep.clearMousePrimaryConsumed(mouse)
-			ep.clearMouseTertiaryConsumed(mouse)
+		case hasTitle && tb.insideTitle && ep.viewRepo.activeID == "":
+			startDrag()
+			ep.consumeMouseClick(mouse)
 
 		case selectableActive && primaryClicked && hoveredSelIdx >= 0:
 			item := selItems[hoveredSelIdx]
@@ -489,21 +582,17 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 		case !hasTitle && v.OnBodyTertiaryMenu != nil && tertiaryClicked &&
 			ep.viewRepo.activeID == "" && bodyExtent.Inside(mouse.Pos):
-			host := math.Extent2D{P0: [2]float32{p0[0], p2[1]}, P1: [2]float32{p0[0] + width, p0[1]}}
 			ep.popup = v.OnBodyTertiaryMenu(host)
 			ep.clearMouseTertiaryConsumed(mouse)
 
 		case !hasTitle && primaryClicked && bodyExtent.Inside(mouse.Pos) && ep.viewRepo.activeID == "":
-			ep.viewRepo.activeID = v.ID
-			ep.viewRepo.startTime = time.Now()
-			ep.viewRepo.dragOffset = math.Sub2f(mouse.Pos, p0)
+			startDrag()
 			ep.clearMousePrimaryConsumed(mouse)
 
 		case ep.viewRepo.activeID == v.ID && time.Since(ep.viewRepo.startTime) > 100*time.Millisecond:
 			*v.Position = ep.clampViewPos(ctx, math.Sub2f(mouse.Pos, ep.viewRepo.dragOffset), width, totalH)
 			ep.viewRepo.activeID = ""
-			ep.clearMousePrimaryConsumed(mouse)
-			ep.clearMouseTertiaryConsumed(mouse)
+			ep.consumeMouseClick(mouse)
 		}
 	}
 
@@ -546,51 +635,31 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 	// Scroll-bar visual (drawn after Body so it sits on top of body content).
 	if scrollVisible {
-		sectionH := (bodyH - 2 - scrollBarGap) / 2
-		scrollX1 := bodyP1[0] - 1
-		scrollX0 := scrollX1 - scrollBarTotalW
-		upY1 := bodyP0[1] - 1
-		upY0 := upY1 - sectionH
-		downY0 := upY0 - scrollBarGap
-		downY1 := downY0 - sectionH
-
 		scrollBg := colors.scroll.background
 		scrollBorder := colors.scroll.border
 		arrowColor := colors.scroll.arrow
 
-		// Up section (top half): a downward-pointing arrow (1,3,5,7,9 wide
-		// top to bottom) labels "scroll up".
-		upQ := [4][2]float32{
-			{scrollX0, upY0}, {scrollX1, upY0}, {scrollX1, upY1}, {scrollX0, upY1},
+		fillBordered := func(r math.Extent2D) {
+			q0 := [2]float32{r.P0[0], r.P1[1]}
+			q1 := [2]float32{r.P1[0], r.P1[1]}
+			q2 := [2]float32{r.P1[0], r.P0[1]}
+			q3 := [2]float32{r.P0[0], r.P0[1]}
+			trid.AddQuad(q0, q1, q2, q3, scrollBg)
+			ld.AddLine(q0, q1, scrollBorder)
+			ld.AddLine(q1, q2, scrollBorder)
+			ld.AddLine(q2, q3, scrollBorder)
+			ld.AddLine(q3, q0, scrollBorder)
 		}
-		trid.AddQuad(upQ[0], upQ[1], upQ[2], upQ[3], scrollBg)
-		ld.AddLine(upQ[0], upQ[1], scrollBorder)
-		ld.AddLine(upQ[1], upQ[2], scrollBorder)
-		ld.AddLine(upQ[2], upQ[3], scrollBorder)
-		ld.AddLine(upQ[3], upQ[0], scrollBorder)
+		fillBordered(scrollUpRect)
+		fillBordered(scrollDownRect)
 
-		arrowCenterX := scrollX0 + scrollBarBorderW + scrollBarContentW/2
-		topArrowTopY := downY1 + 1
-		for i, w := range []float32{1, 1, 3, 3, 5, 5, 7, 7, 9, 9} {
-			y := topArrowTopY + float32(i)
-			ld.AddLine([2]float32{arrowCenterX - w/2, y}, [2]float32{arrowCenterX + w/2, y}, arrowColor)
-		}
-
-		// Down section (bottom half): upward-pointing arrow.
-		downQ := [4][2]float32{
-			{scrollX0, downY0}, {scrollX1, downY0}, {scrollX1, downY1}, {scrollX0, downY1},
-		}
-		trid.AddQuad(downQ[0], downQ[1], downQ[2], downQ[3], scrollBg)
-		ld.AddLine(downQ[0], downQ[1], scrollBorder)
-		ld.AddLine(downQ[1], downQ[2], scrollBorder)
-		ld.AddLine(downQ[2], downQ[3], scrollBorder)
-		ld.AddLine(downQ[3], downQ[0], scrollBorder)
-
-		botArrowTopY := upY1 - 10
-		for i, w := range []float32{9, 9, 7, 7, 5, 5, 3, 3, 1, 1} {
-			y := botArrowTopY + float32(i)
-			ld.AddLine([2]float32{arrowCenterX - w/2, y}, [2]float32{arrowCenterX + w/2, y}, arrowColor)
-		}
+		centerX := (scrollUpRect.P0[0] + scrollUpRect.P1[0]) / 2
+		// Up arrow: tip 1 px below the top of the up section, body extends
+		// downward (−y) inside the section.
+		drawScrollArrow(ld, centerX, scrollUpRect.P1[1]-1, -1, arrowColor)
+		// Down arrow: tip 1 px above the bottom of the down section, body
+		// extends upward (+y) inside the section.
+		drawScrollArrow(ld, centerX, scrollDownRect.P0[1]+1, +1, arrowColor)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)

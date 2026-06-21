@@ -2,7 +2,6 @@ package eram
 
 import (
 	"fmt"
-	"slices"
 	"strings"
 
 	"github.com/mmp/vice/math"
@@ -28,11 +27,10 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		return
 	}
 
-	fontNum := math.Clamp(ps.WX.Font, 1, 3)
 	bright := radar.Brightness(ps.WX.Bright)
-	listFont := ep.ERAMFont(fontNum)
+	listFont := ep.clampedFont(ps.WX.Font, 1, 3)
 	titleFont := ep.ERAMFont(2)
-	lineH := listFont.LayoutBounds("0", 0).Height() + 2
+	lineH := lineHeight(listFont)
 	spaceW := listFont.LayoutBounds(" ", 0).Width()
 	badgeWidth := titleFont.LayoutBounds("M", 0).Width()
 	badgeGap := viewMPad
@@ -61,10 +59,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 	yellowColor := bright.ScaleRGB(colors.badge.fill)
 	var badgeProto *Badge
 	if ps.WX.ShowIndicators {
-		badgeProto = &Badge{
-			Width: badgeWidth, Pad: viewMPad, Height: viewTitleHeight(titleFont),
-			Fill: yellowColor, Border: colors.badge.border,
-		}
+		badgeProto = defaultBadge(titleFont, yellowColor)
 	}
 
 	rl.MaxLines = visibleRows
@@ -97,23 +92,13 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		Width:      contentWidth,
 		BodyHeight: bodyHeight,
 		Title:      "WX REPORT",
-		TitleFont:  titleFont,
 		BodyFont:   listFont,
 		Opaque:     ps.WX.Opaque,
 		ShowBorder: ps.WX.ShowBorder,
 		Brightness: bright,
-		OnMenu: func(host math.Extent2D) popup {
-			if _, open := ep.popup.(*wxPopup); open {
-				return nil
-			}
-			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
-				wxPopupWidth, (6+1)*18, ep.ERAMFont(2), host)
-			return &wxPopup{popupBase: popupBase{
-				origin: pl.Origin, viewID: "wx",
-				anchor: pl.Anchor, pinX: pl.PinX,
-			}}
-		},
-		OnMinimize: func() { ps.WX.Visible = false },
+		OnMenu: ep.makeViewMenu(ctx, "wx", wxPopupWidth, (6+1)*18,
+			func(pb popupBase) popup { return &wxPopup{popupBase: pb} }),
+		MinimizeTarget: &ps.WX.Visible,
 		Scroll: &ViewScrollConfig{
 			State: &ep.wxScroll,
 			// Offset is a station index, so the user can scroll until the last
@@ -126,24 +111,11 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 			State: &ep.wxSelect,
 			Font:  ep.ERAMFont(2),
 			Items: func(body math.Extent2D) []ViewSelectableItem {
-				ex := rl.TextExtents(body)
-				items := make([]ViewSelectableItem, 0, len(ex))
-				for i, e := range ex {
-					row := rl.Rows[rl.VisibleFirst()+i]
-					items = append(items, ViewSelectableItem{
-						Extent: e,
-						Label:  row.ID,
-					})
-				}
-				return items
+				return SelectableItems([]*RowList{rl}, body,
+					func(_ int, b math.Extent2D) math.Extent2D { return b })
 			},
 			OnDelete: func(label string) {
-				for i, icao := range ep.WXReportStations {
-					if wxDisplayID(icao) == label {
-						ep.WXReportStations = slices.Delete(ep.WXReportStations, i, i+1)
-						return
-					}
-				}
+				deleteByID(&ep.WXReportStations, label, wxDisplayID)
 			},
 		},
 	}

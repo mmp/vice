@@ -1221,3 +1221,11 @@ func (ep *ERAMPane) clearMouseTertiaryConsumed(m *platform.MouseState) {
 		m.Clicked[platform.MouseButtonTertiary] = false
 	}
 }
+
+// consumeMouseClick clears BOTH primary and tertiary consumed flags. Most
+// View click handlers want this: the click should not fall through to any
+// later handler whether it was logically primary or tertiary.
+func (ep *ERAMPane) consumeMouseClick(m *platform.MouseState) {
+	ep.clearMousePrimaryConsumed(m)
+	ep.clearMouseTertiaryConsumed(m)
+}

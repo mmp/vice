@@ -2,7 +2,6 @@ package eram
 
 import (
 	"fmt"
-	"slices"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
@@ -45,11 +44,10 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		return
 	}
 
-	fontNum := math.Clamp(ps.AltimSet.Font, 1, 3)
-	listFont := ep.ERAMFont(fontNum)
+	listFont := ep.clampedFont(ps.AltimSet.Font, 1, 3)
 	titleFont := ep.ERAMFont(2)
 	bright := radar.Brightness(ps.AltimSet.Bright)
-	lineH := listFont.LayoutBounds("0", 0).Height() + 2
+	lineH := lineHeight(listFont)
 	textColor := bright.ScaleRGB(colors.view.text)
 
 	numRows := len(ep.AltimSetAirports)
@@ -81,11 +79,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 
 	var badge *Badge
 	if ps.AltimSet.ShowIndicators {
-		badge = &Badge{
-			Width: badgeWidth, Pad: viewMPad, Height: viewTitleHeight(titleFont),
-			Fill:   bright.ScaleRGB(colors.badge.fill),
-			Border: colors.badge.border,
-		}
+		badge = defaultBadge(titleFont, bright.ScaleRGB(colors.badge.fill))
 	}
 
 	cols := make([]*RowList, actualCols)
@@ -142,23 +136,13 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		Width:      width,
 		BodyHeight: bodyHeight,
 		Title:      "ALTIM SET",
-		TitleFont:  titleFont,
 		BodyFont:   listFont,
 		Opaque:     ps.AltimSet.Opaque,
 		ShowBorder: ps.AltimSet.ShowBorder,
 		Brightness: bright,
-		OnMenu: func(host math.Extent2D) popup {
-			if _, open := ep.popup.(*altimSetPopup); open {
-				return nil
-			}
-			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
-				altimSetPopupWidth, (8+1)*18, ep.ERAMFont(2), host)
-			return &altimSetPopup{popupBase: popupBase{
-				origin: pl.Origin, viewID: "altim-set",
-				anchor: pl.Anchor, pinX: pl.PinX,
-			}}
-		},
-		OnMinimize: func() { ps.AltimSet.Visible = false },
+		OnMenu: ep.makeViewMenu(ctx, "altim-set", altimSetPopupWidth, (8+1)*18,
+			func(pb popupBase) popup { return &altimSetPopup{popupBase: pb} }),
+		MinimizeTarget: &ps.AltimSet.Visible,
 		Scroll: &ViewScrollConfig{
 			State:     &ep.altimSetScroll,
 			MaxOffset: max(0, numRows-maxPerPage),
@@ -172,26 +156,10 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 			State: &ep.altimSetSelect,
 			Font:  ep.ERAMFont(2),
 			Items: func(body math.Extent2D) []ViewSelectableItem {
-				var items []ViewSelectableItem
-				for c, col := range cols {
-					ex := col.TextExtents(colBodyExtent(c, body))
-					for i, e := range ex {
-						row := col.Rows[col.VisibleFirst()+i]
-						items = append(items, ViewSelectableItem{
-							Extent: e,
-							Label:  row.ID,
-						})
-					}
-				}
-				return items
+				return SelectableItems(cols, body, colBodyExtent)
 			},
 			OnDelete: func(label string) {
-				for i, icao := range ep.AltimSetAirports {
-					if altimDisplayID(icao) == label {
-						ep.AltimSetAirports = slices.Delete(ep.AltimSetAirports, i, i+1)
-						return
-					}
-				}
+				deleteByID(&ep.AltimSetAirports, label, altimDisplayID)
 			},
 		},
 	}

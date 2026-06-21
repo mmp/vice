@@ -44,11 +44,10 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 		return
 	}
 
-	fontNum := math.Clamp(ps.BeaconCodeView.Font, 1, 3)
 	bright := radar.Brightness(ps.BeaconCodeView.Bright)
-	listFont := ep.ERAMFont(fontNum)
+	listFont := ep.clampedFont(ps.BeaconCodeView.Font, 1, 3)
 	titleFont := ep.ERAMFont(2)
-	lineH := listFont.LayoutBounds("0", 0).Height() + 2
+	lineH := lineHeight(listFont)
 
 	visibleRows := math.Clamp(ps.BeaconCodeView.Lines, 3, 24)
 	numCols := math.Clamp(ps.BeaconCodeView.Col, 1, 5)
@@ -149,9 +148,8 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 	// "CODE" + minimize button, matching DrawView's layout) or the columns of
 	// beacon codes, whichever is wider. The view shrinks down to its smallest
 	// usable size and grows only when the codes demand it.
-	const mPad = float32(2)
-	mButtonW := mPad + titleFont.LayoutBounds("M", 0).Width() + mPad
-	minButtonW := mPad + titleFont.LayoutBounds("-", 0).Width() + mPad
+	mButtonW := viewMButtonWidth(titleFont)
+	minButtonW := titleFont.LayoutBounds("-", 0).Width() + 2*viewMPad
 	titleTextW := titleFont.LayoutBounds("CODE", 0).Width()
 	// Title text is centered at width/2; clamp by the wider of the two side
 	// buttons so neither overlaps the title.
@@ -174,22 +172,12 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 		Width:      width,
 		BodyHeight: bodyHeight,
 		Title:      "CODE",
-		TitleFont:  titleFont,
 		Opaque:     ps.BeaconCodeView.Opaque,
 		ShowBorder: ps.BeaconCodeView.ShowBorder,
 		Brightness: bright,
-		OnMenu: func(host math.Extent2D) popup {
-			if _, open := ep.popup.(*beaconCodeViewPopup); open {
-				return nil
-			}
-			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
-				150, (7+1)*18, titleFont, host)
-			return &beaconCodeViewPopup{popupBase: popupBase{
-				origin: pl.Origin, viewID: "beacon",
-				anchor: pl.Anchor, pinX: pl.PinX,
-			}}
-		},
-		OnMinimize: func() { ps.BeaconCodeView.Visible = false },
+		OnMenu: ep.makeViewMenu(ctx, "beacon", 150, (7+1)*18,
+			func(pb popupBase) popup { return &beaconCodeViewPopup{popupBase: pb} }),
+		MinimizeTarget: &ps.BeaconCodeView.Visible,
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			for c, col := range cols {
 				col.Draw(colBodyExtent(c, body), b)

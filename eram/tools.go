@@ -50,7 +50,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 	ps := ep.currentPrefs()
 
 	const width = float32(390)
-	font := ep.ERAMFont(math.Clamp(ps.MCA.Font, 1, 3))
+	font := ep.clampedFont(ps.MCA.Font, 1, 3)
 	cols := math.Clamp(ps.MCA.Width, 1, 200)
 	brightFactor := float32(ps.MCA.Bright) / 100
 	feedbackH := font.LayoutBounds("0", 0).Height()*float32(ps.MCA.PALines) + 4
@@ -75,17 +75,8 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 		BodyHeight: inputH + feedbackH,
 		ShowBorder: true,
 		Brightness: ps.Brightness.Border,
-		OnBodyTertiaryMenu: func(host math.Extent2D) popup {
-			if _, open := ep.popup.(*mcaPopup); open {
-				return nil
-			}
-			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
-				mcaPopupWidth, 5*18, ep.ERAMFont(2), host)
-			return &mcaPopup{popupBase: popupBase{
-				origin: pl.Origin, viewID: "mca",
-				anchor: pl.Anchor, pinX: pl.PinX,
-			}}
-		},
+		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "mca", mcaPopupWidth, 5*18,
+			func(pb popupBase) popup { return &mcaPopup{popupBase: pb} }),
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			// body.P1 = top-right (top of input); body.P0 = bottom-left (bottom of feedback).
 			seamY := body.P1[1] - inputH
@@ -133,7 +124,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context, transforms radar.
 
 	const width = float32(325)
 	const height = float32(77)
-	font := ep.ERAMFont(math.Clamp(ps.RA.Font, 1, 3))
+	font := ep.clampedFont(ps.RA.Font, 1, 3)
 	cols := math.Clamp(ps.RA.Width, 1, 200)
 	brightFactor := float32(ps.RA.Bright) / 100
 
@@ -147,17 +138,8 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context, transforms radar.
 		BodyHeight: height,
 		ShowBorder: true,
 		Brightness: radar.Brightness(ps.RA.Bright),
-		OnBodyTertiaryMenu: func(host math.Extent2D) popup {
-			if _, open := ep.popup.(*raPopup); open {
-				return nil
-			}
-			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
-				raPopupWidth, 5*18, ep.ERAMFont(2), host)
-			return &raPopup{popupBase: popupBase{
-				origin: pl.Origin, viewID: "ra",
-				anchor: pl.Anchor, pinX: pl.PinX,
-			}}
-		},
+		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "ra", raPopupWidth, 5*18,
+			func(pb popupBase) popup { return &raPopup{popupBase: pb} }),
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			dpi := ctx.Platform.FramebufferSize()[1] / ctx.Platform.DisplaySize()[1]
 			topLeft := [2]float32{body.P0[0], body.P1[1]}
@@ -434,8 +416,7 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 		ps.TimeView.Position = [2]float32{10, ctx.PaneExtent.Height() - 300}
 	}
 
-	fontNum := math.Clamp(ps.TimeView.Font, 1, 3)
-	font := ep.ERAMFont(fontNum)
+	font := ep.clampedFont(ps.TimeView.Font, 1, 3)
 	bright := radar.Brightness(ps.TimeView.Bright)
 	textColor := bright.ScaleRGB(colors.view.clockText)
 
@@ -454,17 +435,8 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 		Opaque:       ps.TimeView.Opaque,
 		Brightness:   bright,
 		OpaqueOnlyBg: true,
-		OnBodyTertiaryMenu: func(host math.Extent2D) popup {
-			if _, open := ep.popup.(*timeViewPopup); open {
-				return nil
-			}
-			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
-				timeViewPopupWidth, 5*18, ep.ERAMFont(2), host)
-			return &timeViewPopup{popupBase: popupBase{
-				origin: pl.Origin, viewID: "clock",
-				anchor: pl.Anchor, pinX: pl.PinX,
-			}}
-		},
+		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "clock", timeViewPopupWidth, 5*18,
+			func(pb popupBase) popup { return &timeViewPopup{popupBase: pb} }),
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			center := [2]float32{(body.P0[0] + body.P1[0]) / 2, (body.P0[1] + body.P1[1]) / 2}
 			b.Td.AddTextCentered(timeStr, center, renderer.TextStyle{Font: font, Color: textColor})

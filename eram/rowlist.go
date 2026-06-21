@@ -26,6 +26,32 @@ type Badge struct {
 	Border renderer.RGB
 }
 
+// drawBadge renders the badge starting at startX, centered vertically on
+// textInkCenterY, and returns the x at which the next column (text or
+// further row content) should begin (i.e. past the right Pad).
+func drawBadge(b *ViewBuilders, badge *Badge, startX, textInkCenterY float32) float32 {
+	badgeBottom := textInkCenterY - badge.Height/2
+	badgeTop := textInkCenterY + badge.Height/2
+
+	// Border quad first…
+	x := startX + badge.Pad
+	bp0 := [2]float32{x, badgeBottom}
+	bp1 := [2]float32{x + badge.Width, badgeBottom}
+	bp2 := [2]float32{x + badge.Width, badgeTop}
+	bp3 := [2]float32{x, badgeTop}
+	b.Trid.AddQuad(bp0, bp1, bp2, bp3, badge.Border)
+
+	// …then a 1 px-inset fill quad to leave a 1 px border ring visible.
+	b.Trid.AddQuad(
+		math.Add2f(bp0, [2]float32{1, 1}),
+		math.Add2f(bp1, [2]float32{-1, 1}),
+		math.Add2f(bp2, [2]float32{-1, -1}),
+		math.Add2f(bp3, [2]float32{1, -1}),
+		badge.Fill)
+
+	return x + badge.Width + badge.Pad
+}
+
 // Row is one row in a RowList. The layout has three logical regions:
 //
 //	[ Badge ][ Label ]  [ Body... wrapped to multiple lines ]
@@ -185,6 +211,105 @@ func (l *RowList) Measure() float32 {
 // VisibleFirst returns the index of the first rendered row (= Skip, clamped).
 func (l *RowList) VisibleFirst() int { return l.visibleFirst }
 
+// textInkCenter returns the vertical center of a "0" glyph's ink for text
+// rendered with baseline upper-left at y = baseY. Used to align badges with
+// the visible text rather than the layout cell — at larger fonts the cell
+// has noticeably more space below the glyph than the badge does.
+func (l *RowList) textInkCenter(baseY float32) float32 {
+	inkExt := l.Font.InkBounds("0", 0)
+	return baseY + (inkExt.P0[1]+inkExt.P1[1])/2
+}
+
+// iterRows walks the visible rows, computing each row's full extent and
+// invoking fn. Centralizes the rowTop / rowBottom walk that Extents,
+// TextExtents, and Draw all share.
+func (l *RowList) iterRows(body math.Extent2D, fn func(i int, m measuredRow, ext math.Extent2D)) {
+	rowTop := body.P1[1] - l.ListTopPad
+	for i := l.visibleFirst; i < l.visibleLast; i++ {
+		m := l.measured[i]
+		rowBottom := rowTop - m.height
+		fn(i, m, math.Extent2D{
+			P0: [2]float32{body.P0[0], rowBottom},
+			P1: [2]float32{body.P1[0], rowTop},
+		})
+		rowTop = rowBottom
+	}
+}
+
+// rowContentLayout returns the text-positioning constants for a non-Centered,
+// non-Spacer row at contentTop. labelX is where the label / first body line
+// starts (post-badge for badge rows, post-SidePad otherwise); bodyX is where
+// the AltText / first wrapped body line starts (after the label and
+// LabelGap, if any); baseY is the AddText upper-left y for the first text
+// line.
+func (l *RowList) rowContentLayout(r Row, body math.Extent2D, contentTop, lineSlack float32) (labelX, bodyX, baseY float32) {
+	baseY = contentTop - lineSlack
+	if r.Badge != nil {
+		labelX = body.P0[0] + r.Badge.Width + 2*r.Badge.Pad
+	} else {
+		labelX = body.P0[0] + l.SidePad
+	}
+	bodyX = labelX + l.Font.LayoutBounds(r.Label, 0).Width()
+	if r.Label != "" {
+		bodyX += l.LabelGap
+	}
+	return
+}
+
+// forBodyTextBits invokes fn(string, position) for each rendered text span
+// in row r at the given column positions. Centralizes the AltText /
+// wrapped-Body / label-only switch shared between TextExtents and Draw.
+func (l *RowList) forBodyTextBits(r Row, m measuredRow, labelX, bodyX, baseY float32, fn func(s string, pos [2]float32)) {
+	if r.Label != "" {
+		fn(r.Label, [2]float32{labelX, baseY})
+	}
+	switch {
+	case r.AltText != "":
+		fn(r.AltText, [2]float32{bodyX, baseY})
+	case len(m.lines) > 0:
+		for j, line := range m.lines {
+			lx := bodyX
+			if j > 0 {
+				lx = labelX
+			}
+			fn(line, [2]float32{lx, baseY - float32(j)*l.LineHeight})
+		}
+	}
+}
+
+// SelectableItems is a convenience for callers wiring ViewSelectable.Items
+// from one or more RowLists: it returns the tight ink extents of each
+// visible row in each list paired with that row's ID. cols' i-th body
+// extent is computed by colExt(i, body).
+func SelectableItems(cols []*RowList, body math.Extent2D, colExt func(c int, body math.Extent2D) math.Extent2D) []ViewSelectableItem {
+	var items []ViewSelectableItem
+	for c, col := range cols {
+		ex := col.TextExtents(colExt(c, body))
+		for i, e := range ex {
+			items = append(items, ViewSelectableItem{
+				Extent: e,
+				Label:  col.Rows[col.VisibleFirst()+i].ID,
+			})
+		}
+	}
+	return items
+}
+
+// inkUnionOf returns the bounding box of all the ink that
+// forBodyTextBits would render for row r, in window coords.
+func (l *RowList) inkUnionOf(r Row, m measuredRow, labelX, bodyX, baseY float32) math.Extent2D {
+	inkUnion := math.EmptyExtent2D()
+	l.forBodyTextBits(r, m, labelX, bodyX, baseY, func(s string, pos [2]float32) {
+		ink := l.Font.InkBounds(s, 0)
+		if ink.IsEmpty() {
+			return
+		}
+		inkUnion = math.Union(inkUnion, math.Add2f(pos, ink.P0))
+		inkUnion = math.Union(inkUnion, math.Add2f(pos, ink.P1))
+	})
+	return inkUnion
+}
+
 // RowTextLeft returns the X where a row's label/body text starts, given the
 // row's left edge bodyX0. Used by callers to size selection hit-extents that
 // exclude the badge area. Badge rows have no left SidePad — the badge sits
@@ -204,17 +329,10 @@ func (l *RowList) Extents(body math.Extent2D) []math.Extent2D {
 	if l.measured == nil {
 		panic("RowList.Extents: Measure must be called first")
 	}
-	visibleCount := l.visibleLast - l.visibleFirst
-	extents := make([]math.Extent2D, visibleCount)
-	rowTop := body.P1[1] - l.ListTopPad
-	for i := l.visibleFirst; i < l.visibleLast; i++ {
-		rowBottom := rowTop - l.measured[i].height
-		extents[i-l.visibleFirst] = math.Extent2D{
-			P0: [2]float32{body.P0[0], rowBottom},
-			P1: [2]float32{body.P1[0], rowTop},
-		}
-		rowTop = rowBottom
-	}
+	extents := make([]math.Extent2D, l.visibleLast-l.visibleFirst)
+	l.iterRows(body, func(i int, _ measuredRow, ext math.Extent2D) {
+		extents[i-l.visibleFirst] = ext
+	})
 	return extents
 }
 
@@ -226,8 +344,7 @@ func (l *RowList) TotalLines() int { return l.totalBodyLines }
 // TextExtents returns one Extent2D per visible row: a tight box around the
 // rendered text (label + body / AltText), expanded by 1 px on every side.
 // Callers use this for selection / hover hit-testing and outline drawing so
-// the visual matches the ink rather than the row's full strip. The
-// per-row positioning here mirrors Draw — keep them in sync.
+// the visual matches the ink rather than the row's full strip.
 func (l *RowList) TextExtents(body math.Extent2D) []math.Extent2D {
 	if l.measured == nil {
 		panic("RowList.TextExtents: Measure must be called first")
@@ -235,73 +352,21 @@ func (l *RowList) TextExtents(body math.Extent2D) []math.Extent2D {
 	l.applyDefaults()
 	by := l.Font.LayoutBounds("0", 0).Height()
 	lineSlack := (l.LineHeight - by) / 2
-	visibleCount := l.visibleLast - l.visibleFirst
-	extents := make([]math.Extent2D, visibleCount)
-	rowTop := body.P1[1] - l.ListTopPad
-
-	for i := l.visibleFirst; i < l.visibleLast; i++ {
+	extents := make([]math.Extent2D, l.visibleLast-l.visibleFirst)
+	l.iterRows(body, func(i int, m measuredRow, fullExtent math.Extent2D) {
 		r := l.Rows[i]
-		m := l.measured[i]
-		rowBottom := rowTop - m.height
-		fullExtent := math.Extent2D{
-			P0: [2]float32{body.P0[0], rowBottom},
-			P1: [2]float32{body.P1[0], rowTop},
-		}
-
 		if r.SpacerHeight > 0 || r.Centered {
 			extents[i-l.visibleFirst] = fullExtent
-			rowTop = rowBottom
-			continue
+			return
 		}
-
-		contentTop := rowTop - l.TopPad
-		baseY := contentTop - lineSlack
-
-		var x float32
-		if r.Badge != nil {
-			x = body.P0[0] + r.Badge.Width + 2*r.Badge.Pad
-		} else {
-			x = body.P0[0] + l.SidePad
-		}
-		labelX := x
-		lw := l.Font.LayoutBounds(r.Label, 0).Width()
-		bodyX := labelX + lw
-		if r.Label != "" {
-			bodyX += l.LabelGap
-		}
-
-		inkUnion := math.EmptyExtent2D()
-		addInk := func(s string, pos [2]float32) {
-			ink := l.Font.InkBounds(s, 0)
-			if ink.IsEmpty() {
-				return
-			}
-			inkUnion = math.Union(inkUnion, math.Add2f(pos, ink.P0))
-			inkUnion = math.Union(inkUnion, math.Add2f(pos, ink.P1))
-		}
-		if r.Label != "" {
-			addInk(r.Label, [2]float32{labelX, baseY})
-		}
-		switch {
-		case r.AltText != "":
-			addInk(r.AltText, [2]float32{bodyX, baseY})
-		case len(m.lines) > 0:
-			for j, line := range m.lines {
-				lx := bodyX
-				if j > 0 {
-					lx = labelX
-				}
-				addInk(line, [2]float32{lx, baseY - float32(j)*l.LineHeight})
-			}
-		}
-
-		if inkUnion.IsEmpty() {
+		labelX, bodyX, baseY := l.rowContentLayout(r, body, fullExtent.P1[1]-l.TopPad, lineSlack)
+		ink := l.inkUnionOf(r, m, labelX, bodyX, baseY)
+		if ink.IsEmpty() {
 			extents[i-l.visibleFirst] = fullExtent
 		} else {
-			extents[i-l.visibleFirst] = inkUnion.Expand(1)
+			extents[i-l.visibleFirst] = ink.Expand(1)
 		}
-		rowTop = rowBottom
-	}
+	})
 	return extents
 }
 
@@ -315,31 +380,18 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 	l.applyDefaults()
 
 	by := l.Font.LayoutBounds("0", 0).Height()
-	visibleCount := l.visibleLast - l.visibleFirst
-	extents := make([]math.Extent2D, visibleCount)
-	rowTop := body.P1[1] - l.ListTopPad
+	// lineSlack centers each text line in its line cell so the rendered
+	// text has equal slack above and below — see iterRows / rowContentLayout.
+	lineSlack := (l.LineHeight - by) / 2
+	extents := make([]math.Extent2D, l.visibleLast-l.visibleFirst)
 
-	for i := l.visibleFirst; i < l.visibleLast; i++ {
-		r := l.Rows[i]
-		m := l.measured[i]
-		rowBottom := rowTop - m.height
-		rowExtent := math.Extent2D{
-			P0: [2]float32{body.P0[0], rowBottom},
-			P1: [2]float32{body.P1[0], rowTop},
-		}
+	l.iterRows(body, func(i int, m measuredRow, rowExtent math.Extent2D) {
 		extents[i-l.visibleFirst] = rowExtent
-
+		r := l.Rows[i]
 		if r.SpacerHeight > 0 {
-			rowTop = rowBottom
-			continue
+			return
 		}
-
-		contentTop := rowTop - l.TopPad
-		// baseY (= AddText's upper-left y for the first line) is centered
-		// in the line cell so the rendered text has equal slack above and
-		// below: this is what lets callers use symmetric ListTopPad /
-		// ListBottomPad and get visually symmetric layout.
-		lineSlack := (l.LineHeight - by) / 2
+		contentTop := rowExtent.P1[1] - l.TopPad
 		style := renderer.TextStyle{Font: l.Font, Color: r.Color}
 
 		if r.Centered {
@@ -350,87 +402,25 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 			if r.AfterDraw != nil {
 				r.AfterDraw(rowExtent, [2]float32{x, y}, b)
 			}
-			rowTop = rowBottom
-			continue
+			return
 		}
 
-		// Badge rows sit flush at body.P0[0] so they line up with the
-		// title-bar M button above; non-badge rows get the normal left
-		// inset.
-		x := body.P0[0]
+		// Position badge first (it owns the leftmost column) and then
+		// derive labelX / bodyX / baseY from rowContentLayout. The badge
+		// itself is rendered before any text so text overlaps cleanly on
+		// top of the fill if there were ever overlap (today there isn't).
 		baseY := contentTop - lineSlack
 		if r.Badge != nil {
-			// Align the badge's vertical center with the text's ink center
-			// rather than the layout cell — at larger fonts the cell has
-			// noticeably more space below the glyph than the badge does, so
-			// using cell metrics makes the text look low against the badge.
-			inkExt := l.Font.InkBounds("0", 0)
-			textInkCenter := baseY + (inkExt.P0[1]+inkExt.P1[1])/2
-			badgeBottom := textInkCenter - r.Badge.Height/2
-			badgeTop := textInkCenter + r.Badge.Height/2
-
-			// Draw the border as a quad (wasteful but gets the corners right)
-			x += r.Badge.Pad
-			bp0 := [2]float32{x, badgeBottom}
-			bp1 := [2]float32{x + r.Badge.Width, badgeBottom}
-			bp2 := [2]float32{x + r.Badge.Width, badgeTop}
-			bp3 := [2]float32{x, badgeTop}
-			b.Trid.AddQuad(bp0, bp1, bp2, bp3, r.Badge.Border)
-
-			bp0 = math.Add2f(bp0, [2]float32{1, 1})
-			bp1 = math.Add2f(bp1, [2]float32{-1, 1})
-			bp2 = math.Add2f(bp2, [2]float32{-1, -1})
-			bp3 = math.Add2f(bp3, [2]float32{1, -1})
-			b.Trid.AddQuad(bp0, bp1, bp2, bp3, r.Badge.Fill)
-
-			x += r.Badge.Width + r.Badge.Pad
-		} else {
-			x += l.SidePad
+			drawBadge(b, r.Badge, body.P0[0], l.textInkCenter(baseY))
 		}
+		labelX, bodyX, _ := l.rowContentLayout(r, body, contentTop, lineSlack)
 
-		labelX := x
-		lw := l.Font.LayoutBounds(r.Label, 0).Width()
-		bodyX := labelX + lw
-		if r.Label != "" {
-			bodyX += l.LabelGap
-		}
-
-		// Collect every (string, position) pair we'll render so the
-		// selection-highlight can be sized to the actual ink rather than
-		// the row's full extent.
-		type textBit struct {
-			s   string
-			pos [2]float32
-		}
-		var bits []textBit
-		if r.Label != "" {
-			bits = append(bits, textBit{r.Label, [2]float32{labelX, baseY}})
-		}
-		switch {
-		case r.AltText != "":
-			bits = append(bits, textBit{r.AltText, [2]float32{bodyX, baseY}})
-		case len(m.lines) > 0:
-			for j, line := range m.lines {
-				lx := bodyX
-				if j > 0 {
-					lx = labelX
-				}
-				bits = append(bits, textBit{line, [2]float32{lx, baseY - float32(j)*l.LineHeight}})
-			}
-		}
-
+		// Selection highlight is drawn behind the text, so compute the
+		// tight ink box first and recolor `style` before the draw pass.
 		if l.SelectedID != "" && r.ID == l.SelectedID {
-			inkUnion := math.EmptyExtent2D()
-			for _, t := range bits {
-				ink := l.Font.InkBounds(t.s, 0)
-				if ink.IsEmpty() {
-					continue
-				}
-				inkUnion = math.Union(inkUnion, math.Add2f(t.pos, ink.P0))
-				inkUnion = math.Union(inkUnion, math.Add2f(t.pos, ink.P1))
-			}
-			if !inkUnion.IsEmpty() {
-				sel := inkUnion.Expand(1)
+			ink := l.inkUnionOf(r, m, labelX, bodyX, baseY)
+			if !ink.IsEmpty() {
+				sel := ink.Expand(1)
 				sp0 := [2]float32{sel.P0[0], sel.P1[1]}
 				sp1 := [2]float32{sel.P1[0], sel.P1[1]}
 				sp2 := [2]float32{sel.P1[0], sel.P0[1]}
@@ -440,16 +430,13 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 			}
 		}
 
-		for _, t := range bits {
-			b.Td.AddText(t.s, t.pos, style)
-		}
-
+		l.forBodyTextBits(r, m, labelX, bodyX, baseY, func(s string, pos [2]float32) {
+			b.Td.AddText(s, pos, style)
+		})
 		if r.AfterDraw != nil {
 			r.AfterDraw(rowExtent, [2]float32{bodyX, baseY}, b)
 		}
-
-		rowTop = rowBottom
-	}
+	})
 	return extents
 }
 

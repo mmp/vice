@@ -126,7 +126,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 
 	font := ep.ERAMFont(2)
 	bright := radar.Brightness(ps.CRR.Bright)
-	lineH := font.LayoutBounds("0", 0).Height() + 2
+	lineH := lineHeight(font)
 	const width = float32(260)
 
 	trackPos := make(map[av.ADSBCallsign]math.Point2LL)
@@ -156,25 +156,14 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 		Width:      width,
 		BodyHeight: bodyHeight,
 		Title:      "CRR",
-		TitleFont:  font,
 		Opaque:     ps.CRR.Opaque,
 		ShowBorder: ps.CRR.ShowBorder,
 		Brightness: bright,
-		OnMenu: func(host math.Extent2D) popup {
-			if _, open := ep.popup.(*crrPopup); open {
-				return nil
-			}
-			// 1 title row + 8 static rows + 2 swatch rows + one row per group.
-			popupH := float32(1+8+2+len(ep.CRRGroups)) * 18
-			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
-				crrPopupWidth, popupH, ep.ERAMFont(2), host)
-			return &crrPopup{popupBase: popupBase{
-				origin: pl.Origin, viewID: "crr",
-				anchor: pl.Anchor, pinX: pl.PinX,
-			}}
-		},
-		OnMinimize: func() { ps.CRR.Visible = false },
-		Body:       bodyDraw,
+		// 1 title row + 8 static rows + 2 swatch rows + one row per group.
+		OnMenu: ep.makeViewMenu(ctx, "crr", crrPopupWidth, float32(1+8+2+len(ep.CRRGroups))*18,
+			func(pb popupBase) popup { return &crrPopup{popupBase: pb} }),
+		MinimizeTarget: &ps.CRR.Visible,
+		Body:           bodyDraw,
 	}
 	ep.DrawView(ctx, transforms, cb, v)
 

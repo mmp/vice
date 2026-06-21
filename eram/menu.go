@@ -42,6 +42,36 @@ type viewPopupPlacement struct {
 	PinX   float32
 }
 
+// toPopupBase fills a popupBase from this placement plus the host view's ID.
+// Removes the identical 4-field struct literal that every popup constructor
+// used to write inline.
+func (pl viewPopupPlacement) toPopupBase(viewID string) popupBase {
+	return popupBase{
+		origin: pl.Origin,
+		viewID: viewID,
+		anchor: pl.Anchor,
+		pinX:   pl.PinX,
+	}
+}
+
+// makeViewMenu builds the standard View.OnMenu closure: don't open a new
+// popup if one is already open for this view, otherwise place a new one
+// using OpenPopupAt and wrap its placement into a typed popup. Every
+// view's OnMenu used to spell this out inline; the helper makes the
+// per-view setup a single line.
+func (ep *ERAMPane) makeViewMenu(ctx *panes.Context, viewID string, popupW, popupH float32, wrap func(popupBase) popup) func(host math.Extent2D) popup {
+	return func(host math.Extent2D) popup {
+		if vap, ok := ep.popup.(viewAnchoredPopup); ok {
+			if id, _, _ := vap.viewAnchor(); id == viewID {
+				return nil
+			}
+		}
+		pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
+			popupW, popupH, ep.ERAMFont(2), host)
+		return wrap(pl.toPopupBase(viewID))
+	}
+}
+
 // popupBase is embedded by every view-spawned pop-up. It carries the
 // placement info needed by DrawView to keep the host view's pinned edge
 // flush with the pop-up as the view resizes.
