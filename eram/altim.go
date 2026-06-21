@@ -48,15 +48,15 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		return
 	}
 
-	fontNum := int(math.Clamp(float32(ps.AltimSet.Font), 1, 3))
+	fontNum := math.Clamp(ps.AltimSet.Font, 1, 3)
 	listFont := ep.ERAMFont(fontNum)
 	bright := radar.Brightness(ps.AltimSet.Bright)
 	lineH := listFont.LayoutBounds("0", 0).Height() + 2
 	textColor := bright.ScaleRGB(colors.view.text)
 
 	numRows := len(ep.AltimSetAirports)
-	visibleRows := int(math.Clamp(float32(ps.AltimSet.Lines), 3, 24))
-	numCols := int(math.Clamp(float32(ps.AltimSet.Col), 1, 4))
+	visibleRows := math.Clamp(ps.AltimSet.Lines, 3, 24)
+	numCols := math.Clamp(ps.AltimSet.Col, 1, 4)
 	textWidth := func(s string) float32 {
 		return listFont.LayoutBounds(s, 0).Width()
 	}
@@ -242,7 +242,6 @@ type altimSetPopup struct {
 
 func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	origin := a.origin
 
 	// T/O button - toggles opaque mode
 	tLabel := "T"
@@ -306,5 +305,5 @@ func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.
 		Rows:  rows,
 	}
 
-	ep.DrawERAMMenu(ctx, transforms, cb, origin, cfg)
+	ep.DrawERAMMenu(ctx, transforms, cb, a.origin, cfg)
 }

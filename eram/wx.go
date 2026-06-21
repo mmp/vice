@@ -31,13 +31,13 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		return
 	}
 
-	fontNum := int(math.Clamp(float32(ps.WX.Font), 1, 3))
+	fontNum := math.Clamp(ps.WX.Font, 1, 3)
 	bright := radar.Brightness(ps.WX.Bright)
 	listFont := ep.ERAMFont(fontNum)
 	lineH := listFont.LayoutBounds("0", 0).Height() + 2
 	badgeWidth := listFont.LayoutBounds("M", 0).Width() + 4
 
-	visibleRows := int(math.Clamp(float32(ps.WX.Lines), 3, 24))
+	visibleRows := math.Clamp(ps.WX.Lines, 3, 24)
 
 	// Build rows from the scroll offset onward; RowList does the wrapping.
 	rl := &RowList{
@@ -203,8 +203,7 @@ type wxPopup struct {
 
 func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	origin := w.origin
-	const menuWidth = float32(wxPopupWidth)
+	const menuWidth = wxPopupWidth
 
 	// T/O button — shows "T" (transparent) or "O" (opaque)
 	tLabel := "T"
@@ -262,5 +261,5 @@ func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 		Rows:  rows,
 	}
 
-	ep.DrawERAMMenu(ctx, transforms, cb, origin, cfg)
+	ep.DrawERAMMenu(ctx, transforms, cb, w.origin, cfg)
 }
