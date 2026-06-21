@@ -75,6 +75,9 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "QL [SECTOR_ID_LIST]", handleToggleQuicklook)
 	registerCommand(CommandModeNone, "QL", handleDisableAllQuicklook)
 
+	// QB - beacon code view codes
+	registerCommand(CommandModeNone, "QB [BCN_LIST]", handleBeaconCodeViewList)
+
 	// QF - Flight Plan Display
 	registerCommand(CommandModeNone, "QF [TRACK]", handleFlightPlanReadout)
 
@@ -381,6 +384,23 @@ func handleToggleQuicklook(ep *ERAMPane, sectors []string) {
 
 func handleDisableAllQuicklook(ep *ERAMPane) {
 	clear(ep.QuickLookSectors)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// QB - beacon code view lists
+
+func handleBeaconCodeViewList(ep *ERAMPane, codes []av.Squawk) error {
+	for _, c := range codes {
+		if idx := slices.Index(ep.AddedBeaconCodes, c); idx != -1 {
+			ep.AddedBeaconCodes = slices.Delete(ep.AddedBeaconCodes, idx, idx+1)
+		} else {
+			ep.AddedBeaconCodes = append(ep.AddedBeaconCodes, c)
+		}
+	}
+
+	// TODO: should there be an error if any of the codes are not owned by us?
+
+	return nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

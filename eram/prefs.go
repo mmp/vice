@@ -107,6 +107,18 @@ type Preferences struct {
 		Font       int // 1-3
 		Bright     int // 0-100
 	}
+
+	BeaconCodeView struct {
+		Visible    bool
+		Position   [2]float32
+		Opaque     bool
+		ShowBorder bool
+		Lines      int
+		Col        int
+		Font       int
+		Bright     int
+		SortManual bool
+	}
 }
 
 const numSavedPreferenceSets = 10
@@ -324,6 +336,11 @@ func (p *Preferences) Upgrade(from, to int) {
 		p.TimeView.ShowBorder = true
 		p.TimeView.Font = 3
 		p.TimeView.Bright = 100
+		p.BeaconCodeView.ShowBorder = true
+		p.BeaconCodeView.Lines = 11
+		p.BeaconCodeView.Col = 5
+		p.BeaconCodeView.Font = 2
+		p.BeaconCodeView.Bright = 100
 	}
 }
 

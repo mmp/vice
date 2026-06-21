@@ -567,16 +567,14 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		ep.buttonVerticalOffset(ctx)
 		toolbarDrawState.buttonCursor[1] += buttonSize(buttonFull, scale)[1] + 3
 		p0 := toolbarDrawState.buttonCursor
-		{
-			ps := ep.currentPrefs()
-			if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, ps.AltimSet.Visible, false) {
-				if _, ok := ep.popup.(*altimSetPopup); ok {
-					ep.popup = nil
-				}
-				ps.AltimSet.Visible = !ps.AltimSet.Visible
-			}
-		}
+		ps := ep.currentPrefs()
 
+		if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, ps.AltimSet.Visible, false) {
+			if _, ok := ep.popup.(*altimSetPopup); ok {
+				ep.popup = nil
+			}
+			ps.AltimSet.Visible = !ps.AltimSet.Visible
+		}
 		if ep.drawToolbarFullButton(ctx, "AUTO HO\nINHIB", 0, scale, false, false) {
 			// handle AUTO HO INHIB
 		}
@@ -584,7 +582,10 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			// handle CFR
 		}
 		if ep.drawToolbarFullButton(ctx, "CODE", 0, scale, false, false) {
-			// handle CODE
+			if _, ok := ep.popup.(*beaconCodeViewPopup); ok {
+				ep.popup = nil
+			}
+			ps.BeaconCodeView.Visible = !ps.BeaconCodeView.Visible
 		}
 		if ep.drawToolbarFullButton(ctx, "CONFLCT\nALERT", 0, scale, false, false) {
 			// handle CONFLCT ALERT
@@ -604,7 +605,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		p1 := oppositeHorizontal(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
 		p1 = oppositeHorizontal(p1, buttonSize(buttonTearoff, scale))
 		// p1 := toolbarDrawState.buttonCursor
-		ps := ep.currentPrefs()
+
 		if ep.drawToolbarFullButton(ctx, "CRR", 0, scale, ps.CRR.Visible, false) {
 			// Toggle visibility; the CRR menu (if open) closes either way since it lives on the view.
 			if _, ok := ep.popup.(*crrPopup); ok {
@@ -644,14 +645,11 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		if ep.drawToolbarFullButton(ctx, "UA", 0, scale, false, false) {
 			// handle UA
 		}
-		{
-			wxPs := ep.currentPrefs()
-			if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, wxPs.WX.Visible, false) {
-				if _, ok := ep.popup.(*wxPopup); ok {
-					ep.popup = nil
-				}
-				wxPs.WX.Visible = !wxPs.WX.Visible
+		if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, ps.WX.Visible, false) {
+			if _, ok := ep.popup.(*wxPopup); ok {
+				ep.popup = nil
 			}
+			ps.WX.Visible = !ps.WX.Visible
 		}
 		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
 		p2[0] = p1[0]

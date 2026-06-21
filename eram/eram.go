@@ -241,6 +241,9 @@ type ERAMPane struct {
 
 	QuickLookSectors map[string]struct{}
 
+	// via QB ...
+	AddedBeaconCodes []av.Squawk
+
 	// Output and input text for the command line interface.
 	responseArea inputText `json:"-"`
 	feedbackArea inputText `json:"-"`
@@ -262,6 +265,7 @@ type ERAMPane struct {
 	crrRepo       ViewRepoState    `json:"-"`
 	altimSetRepo  ViewRepoState    `json:"-"`
 	wxRepo        ViewRepoState    `json:"-"`
+	beaconRepo    ViewRepoState    `json:"-"`
 	allRepoStates []*ViewRepoState `json:"-"`
 
 	tearoffInProgress        string                   `json:"-"` // Button name being torn off
@@ -369,8 +373,7 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	}
 
 	ep.allRepoStates = []*ViewRepoState{
-		&ep.mcaRepo, &ep.raRepo, &ep.clockRepo,
-		&ep.crrRepo, &ep.altimSetRepo, &ep.wxRepo,
+		&ep.mcaRepo, &ep.raRepo, &ep.clockRepo, &ep.crrRepo, &ep.altimSetRepo, &ep.wxRepo, &ep.beaconRepo,
 	}
 
 	ep.events = es.Subscribe()
@@ -533,6 +536,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// frame the toolbar button is clicked (toolbar sets Visible=true before this runs).
 	ep.drawAltimSetView(ctx, transforms, cb)
 	ep.drawWXView(ctx, transforms, cb)
+	ep.drawBeaconCodeView(ctx, transforms, cb)
 
 	// Draw the active floating pop-up (if any) on top of its host view.
 	if ep.popup != nil {

@@ -65,6 +65,10 @@ var typeParsers = []typeParser{
 	&crrLabelParser{},
 	&locSymParser{}, // Matches location symbol 'w' in text
 
+	// Beacon codes
+	&beaconParser{},
+	&beaconListParser{},
+
 	// Generic type parsers
 	&numberParser{id: "NUM"},
 
@@ -542,6 +546,31 @@ func (h *beaconParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 
 func (h *beaconParser) GoType() reflect.Type { return reflect.TypeOf(av.Squawk(0)) }
 func (h *beaconParser) AcceptsClick() bool   { return false }
+
+// beaconListParser parses 1+ beacon/squawk codes separated by spaces
+type beaconListParser struct{}
+
+func (h *beaconListParser) Identifier() string { return "BCN_LIST" }
+
+func (h *beaconListParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	tokens := strings.Fields(text)
+	var codes []av.Squawk
+	for i, tok := range tokens {
+		if len(tok) == 4 {
+			if sq, err := av.ParseSquawk(tok); err == nil {
+				codes = append(codes, sq)
+				continue
+			}
+		}
+		// tok is not a valid beacon code
+		return codes, strings.Join(tokens[i+1:], " "), len(codes) > 0, nil
+		break
+	}
+	return codes, "", len(codes) > 0, nil
+}
+
+func (h *beaconListParser) GoType() reflect.Type { return reflect.TypeOf([]av.Squawk{}) }
+func (h *beaconListParser) AcceptsClick() bool   { return false }
 
 // mapGroupParser parses video map group names
 type mapGroupParser struct{}
