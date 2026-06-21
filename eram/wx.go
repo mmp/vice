@@ -11,8 +11,6 @@ import (
 	"github.com/mmp/vice/renderer"
 )
 
-const wxWindowWidth = float32(320)
-
 // wxDisplayID returns the short display identifier for an ICAO code.
 // US airports (K + 3-letter IATA), Pacific territories (P + 3-letter IATA),
 // and Caribbean territories (T + 3-letter IATA) drop the leading letter for display.
@@ -33,19 +31,28 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 	fontNum := math.Clamp(ps.WX.Font, 1, 3)
 	bright := radar.Brightness(ps.WX.Bright)
 	listFont := ep.ERAMFont(fontNum)
+	titleFont := ep.ERAMFont(2)
 	lineH := listFont.LayoutBounds("0", 0).Height() + 2
-	badgeWidth := listFont.LayoutBounds("M", 0).Width() + 4
+	spaceW := listFont.LayoutBounds(" ", 0).Width()
+	badgeWidth := titleFont.LayoutBounds("M", 0).Width()
+	badgeGap := viewMPad
+
+	// Content width: badge column (matching the title-bar M button), the
+	// gap after it, and 24 characters for the METAR body. DrawView adds
+	// another 2 space characters on the right for the scroll bar.
+	contentWidth := badgeWidth + badgeGap + 24*spaceW
 
 	visibleRows := math.Clamp(ps.WX.Lines, 3, 24)
 
 	// Build rows from the scroll offset onward; RowList does the wrapping.
 	rl := &RowList{
 		Font:              listFont,
-		Width:             wxWindowWidth,
+		Width:             contentWidth,
 		LineHeight:        lineH,
 		TopPad:            lineH / 2,
-		BottomGap:         lineH / 4,
-		BadgeGap:          lineH / 4,
+		BottomGap:         lineH / 2,
+		BadgeGap:          badgeGap,
+		SidePad:           0,
 		SelectedID:        ep.wxSelect.Selected,
 		SelectedBgColor:   colors.popup.backgroundGrey,
 		SelectedTextColor: colors.popup.backgroundBlack,
@@ -55,7 +62,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 	var badgeProto *Badge
 	if ps.WX.ShowIndicators {
 		badgeProto = &Badge{
-			Width: badgeWidth, Height: lineH,
+			Width: badgeWidth, Pad: viewMPad, Height: viewTitleHeight(titleFont),
 			Fill: yellowColor, Border: colors.badge.border,
 		}
 	}
@@ -87,10 +94,11 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 	v := View{
 		Position:   &ps.WX.Position,
 		ID:         "wx",
-		Width:      wxWindowWidth,
+		Width:      contentWidth,
 		BodyHeight: bodyHeight,
 		Title:      "WX REPORT",
-		TitleFont:  ep.ERAMFont(2),
+		TitleFont:  titleFont,
+		BodyFont:   listFont,
 		Opaque:     ps.WX.Opaque,
 		ShowBorder: ps.WX.ShowBorder,
 		Brightness: bright,
@@ -118,16 +126,13 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 			State: &ep.wxSelect,
 			Font:  ep.ERAMFont(2),
 			Items: func(body math.Extent2D) []ViewSelectableItem {
-				ex := rl.Extents(body)
+				ex := rl.TextExtents(body)
 				items := make([]ViewSelectableItem, 0, len(ex))
 				for i, e := range ex {
 					row := rl.Rows[rl.VisibleFirst()+i]
 					items = append(items, ViewSelectableItem{
-						Extent: math.Extent2D{
-							P0: [2]float32{rl.RowTextLeft(e.P0[0], row), e.P0[1]},
-							P1: e.P1,
-						},
-						Label: row.ID,
+						Extent: e,
+						Label:  row.ID,
 					})
 				}
 				return items

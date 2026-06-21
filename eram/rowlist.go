@@ -21,6 +21,7 @@ import (
 type Badge struct {
 	Width  float32
 	Height float32
+	Pad    float32
 	Fill   renderer.RGB
 	Border renderer.RGB
 }
@@ -186,14 +187,14 @@ func (l *RowList) VisibleFirst() int { return l.visibleFirst }
 
 // RowTextLeft returns the X where a row's label/body text starts, given the
 // row's left edge bodyX0. Used by callers to size selection hit-extents that
-// exclude the badge area.
+// exclude the badge area. Badge rows have no left SidePad — the badge sits
+// flush with bodyX0 so it lines up with the title-bar M button.
 func (l *RowList) RowTextLeft(bodyX0 float32, row Row) float32 {
 	l.applyDefaults()
-	x := bodyX0 + l.SidePad
 	if row.Badge != nil {
-		x += row.Badge.Width + l.BadgeGap
+		return bodyX0 + row.Badge.Width + 2*row.Badge.Pad
 	}
-	return x
+	return bodyX0 + l.SidePad
 }
 
 // Extents computes the same per-rendered-row extents Draw would return,
@@ -221,6 +222,88 @@ func (l *RowList) Extents(body math.Extent2D) []math.Extent2D {
 // Skip and MaxLines). Used by the caller to populate the View's scroll-bar
 // item count.
 func (l *RowList) TotalLines() int { return l.totalBodyLines }
+
+// TextExtents returns one Extent2D per visible row: a tight box around the
+// rendered text (label + body / AltText), expanded by 1 px on every side.
+// Callers use this for selection / hover hit-testing and outline drawing so
+// the visual matches the ink rather than the row's full strip. The
+// per-row positioning here mirrors Draw — keep them in sync.
+func (l *RowList) TextExtents(body math.Extent2D) []math.Extent2D {
+	if l.measured == nil {
+		panic("RowList.TextExtents: Measure must be called first")
+	}
+	l.applyDefaults()
+	by := l.Font.LayoutBounds("0", 0).Height()
+	lineSlack := (l.LineHeight - by) / 2
+	visibleCount := l.visibleLast - l.visibleFirst
+	extents := make([]math.Extent2D, visibleCount)
+	rowTop := body.P1[1] - l.ListTopPad
+
+	for i := l.visibleFirst; i < l.visibleLast; i++ {
+		r := l.Rows[i]
+		m := l.measured[i]
+		rowBottom := rowTop - m.height
+		fullExtent := math.Extent2D{
+			P0: [2]float32{body.P0[0], rowBottom},
+			P1: [2]float32{body.P1[0], rowTop},
+		}
+
+		if r.SpacerHeight > 0 || r.Centered {
+			extents[i-l.visibleFirst] = fullExtent
+			rowTop = rowBottom
+			continue
+		}
+
+		contentTop := rowTop - l.TopPad
+		baseY := contentTop - lineSlack
+
+		var x float32
+		if r.Badge != nil {
+			x = body.P0[0] + r.Badge.Width + 2*r.Badge.Pad
+		} else {
+			x = body.P0[0] + l.SidePad
+		}
+		labelX := x
+		lw := l.Font.LayoutBounds(r.Label, 0).Width()
+		bodyX := labelX + lw
+		if r.Label != "" {
+			bodyX += l.LabelGap
+		}
+
+		inkUnion := math.EmptyExtent2D()
+		addInk := func(s string, pos [2]float32) {
+			ink := l.Font.InkBounds(s, 0)
+			if ink.IsEmpty() {
+				return
+			}
+			inkUnion = math.Union(inkUnion, math.Add2f(pos, ink.P0))
+			inkUnion = math.Union(inkUnion, math.Add2f(pos, ink.P1))
+		}
+		if r.Label != "" {
+			addInk(r.Label, [2]float32{labelX, baseY})
+		}
+		switch {
+		case r.AltText != "":
+			addInk(r.AltText, [2]float32{bodyX, baseY})
+		case len(m.lines) > 0:
+			for j, line := range m.lines {
+				lx := bodyX
+				if j > 0 {
+					lx = labelX
+				}
+				addInk(line, [2]float32{lx, baseY - float32(j)*l.LineHeight})
+			}
+		}
+
+		if inkUnion.IsEmpty() {
+			extents[i-l.visibleFirst] = fullExtent
+		} else {
+			extents[i-l.visibleFirst] = inkUnion.Expand(1)
+		}
+		rowTop = rowBottom
+	}
+	return extents
+}
 
 // Draw renders the visible rows (post-Skip, post-MaxLines) into body. Returns
 // per-rendered-row extents (P0 = bottom-left, P1 = top-right) for click hit-testing.
@@ -252,12 +335,17 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		}
 
 		contentTop := rowTop - l.TopPad
+		// baseY (= AddText's upper-left y for the first line) is centered
+		// in the line cell so the rendered text has equal slack above and
+		// below: this is what lets callers use symmetric ListTopPad /
+		// ListBottomPad and get visually symmetric layout.
+		lineSlack := (l.LineHeight - by) / 2
 		style := renderer.TextStyle{Font: l.Font, Color: r.Color}
 
 		if r.Centered {
 			tw := l.Font.LayoutBounds(r.Label, 0).Width()
 			x := body.P0[0] + (body.P1[0]-body.P0[0])/2 - tw/2
-			y := contentTop - l.LineHeight + by
+			y := contentTop - lineSlack
 			b.Td.AddText(r.Label, [2]float32{x, y}, style)
 			if r.AfterDraw != nil {
 				r.AfterDraw(rowExtent, [2]float32{x, y}, b)
@@ -266,8 +354,11 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 			continue
 		}
 
-		x := body.P0[0] + l.SidePad
-		baseY := contentTop - l.LineHeight + by
+		// Badge rows sit flush at body.P0[0] so they line up with the
+		// title-bar M button above; non-badge rows get the normal left
+		// inset.
+		x := body.P0[0]
+		baseY := contentTop - lineSlack
 		if r.Badge != nil {
 			// Align the badge's vertical center with the text's ink center
 			// rather than the layout cell — at larger fonts the cell has
@@ -277,48 +368,80 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 			textInkCenter := baseY + (inkExt.P0[1]+inkExt.P1[1])/2
 			badgeBottom := textInkCenter - r.Badge.Height/2
 			badgeTop := textInkCenter + r.Badge.Height/2
+
+			// Draw the border as a quad (wasteful but gets the corners right)
+			x += r.Badge.Pad
 			bp0 := [2]float32{x, badgeBottom}
 			bp1 := [2]float32{x + r.Badge.Width, badgeBottom}
 			bp2 := [2]float32{x + r.Badge.Width, badgeTop}
 			bp3 := [2]float32{x, badgeTop}
-			b.Trid.AddQuad(bp0, bp1, bp2, bp3, r.Badge.Fill)
-			b.Ld.AddLine(bp0, bp1, r.Badge.Border)
-			b.Ld.AddLine(bp1, bp2, r.Badge.Border)
-			b.Ld.AddLine(bp2, bp3, r.Badge.Border)
-			b.Ld.AddLine(bp3, bp0, r.Badge.Border)
-			x += r.Badge.Width + l.BadgeGap
-		}
+			b.Trid.AddQuad(bp0, bp1, bp2, bp3, r.Badge.Border)
 
-		if l.SelectedID != "" && r.ID == l.SelectedID {
-			selP0 := [2]float32{x, rowExtent.P1[1]}
-			selP1 := [2]float32{body.P1[0], rowExtent.P1[1]}
-			selP2 := [2]float32{body.P1[0], rowExtent.P0[1]}
-			selP3 := [2]float32{x, rowExtent.P0[1]}
-			b.Trid.AddQuad(selP0, selP1, selP2, selP3, l.SelectedBgColor)
-			style.Color = l.SelectedTextColor
+			bp0 = math.Add2f(bp0, [2]float32{1, 1})
+			bp1 = math.Add2f(bp1, [2]float32{-1, 1})
+			bp2 = math.Add2f(bp2, [2]float32{-1, -1})
+			bp3 = math.Add2f(bp3, [2]float32{1, -1})
+			b.Trid.AddQuad(bp0, bp1, bp2, bp3, r.Badge.Fill)
+
+			x += r.Badge.Width + r.Badge.Pad
+		} else {
+			x += l.SidePad
 		}
 
 		labelX := x
-		if r.Label != "" {
-			b.Td.AddText(r.Label, [2]float32{labelX, baseY}, style)
-		}
 		lw := l.Font.LayoutBounds(r.Label, 0).Width()
 		bodyX := labelX + lw
 		if r.Label != "" {
 			bodyX += l.LabelGap
 		}
 
+		// Collect every (string, position) pair we'll render so the
+		// selection-highlight can be sized to the actual ink rather than
+		// the row's full extent.
+		type textBit struct {
+			s   string
+			pos [2]float32
+		}
+		var bits []textBit
+		if r.Label != "" {
+			bits = append(bits, textBit{r.Label, [2]float32{labelX, baseY}})
+		}
 		switch {
 		case r.AltText != "":
-			b.Td.AddText(r.AltText, [2]float32{bodyX, baseY}, style)
+			bits = append(bits, textBit{r.AltText, [2]float32{bodyX, baseY}})
 		case len(m.lines) > 0:
 			for j, line := range m.lines {
 				lx := bodyX
 				if j > 0 {
 					lx = labelX
 				}
-				b.Td.AddText(line, [2]float32{lx, baseY - float32(j)*l.LineHeight}, style)
+				bits = append(bits, textBit{line, [2]float32{lx, baseY - float32(j)*l.LineHeight}})
 			}
+		}
+
+		if l.SelectedID != "" && r.ID == l.SelectedID {
+			inkUnion := math.EmptyExtent2D()
+			for _, t := range bits {
+				ink := l.Font.InkBounds(t.s, 0)
+				if ink.IsEmpty() {
+					continue
+				}
+				inkUnion = math.Union(inkUnion, math.Add2f(t.pos, ink.P0))
+				inkUnion = math.Union(inkUnion, math.Add2f(t.pos, ink.P1))
+			}
+			if !inkUnion.IsEmpty() {
+				sel := inkUnion.Expand(1)
+				sp0 := [2]float32{sel.P0[0], sel.P1[1]}
+				sp1 := [2]float32{sel.P1[0], sel.P1[1]}
+				sp2 := [2]float32{sel.P1[0], sel.P0[1]}
+				sp3 := [2]float32{sel.P0[0], sel.P0[1]}
+				b.Trid.AddQuad(sp0, sp1, sp2, sp3, l.SelectedBgColor)
+				style.Color = l.SelectedTextColor
+			}
+		}
+
+		for _, t := range bits {
+			b.Td.AddText(t.s, t.pos, style)
 		}
 
 		if r.AfterDraw != nil {
@@ -344,9 +467,11 @@ func (l *RowList) applyDefaults() {
 }
 
 func (l *RowList) bodyAvailWidths(r Row) (firstW, contW float32) {
-	x := l.SidePad
+	var x float32
 	if r.Badge != nil {
-		x += r.Badge.Width + l.BadgeGap
+		x = r.Badge.Width + l.BadgeGap
+	} else {
+		x = l.SidePad
 	}
 	contStart := x
 	if r.Label != "" {

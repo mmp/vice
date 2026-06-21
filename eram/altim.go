@@ -11,8 +11,6 @@ import (
 	"github.com/mmp/vice/wx"
 )
 
-const altimWindowWidth = 207
-
 // altimMetarForDisplay returns the formatted METAR data for display, extracting
 // the observation time (HHMM) and 3-digit altimeter setting from a wx.METAR object.
 func altimMetarForDisplay(metar wx.METAR) (timeStr string, altStr string, altRaw int) {
@@ -49,6 +47,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 
 	fontNum := math.Clamp(ps.AltimSet.Font, 1, 3)
 	listFont := ep.ERAMFont(fontNum)
+	titleFont := ep.ERAMFont(2)
 	bright := radar.Brightness(ps.AltimSet.Bright)
 	lineH := listFont.LayoutBounds("0", 0).Height() + 2
 	textColor := bright.ScaleRGB(colors.view.text)
@@ -59,12 +58,14 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	textWidth := func(s string) float32 {
 		return listFont.LayoutBounds(s, 0).Width()
 	}
-	// Column width comes from the widest row content plus side pads, badge,
-	// and gaps — derived from the actual font so it scales correctly.
-	badgeWidth := listFont.LayoutBounds("M", 0).Width() + 4
-	badgeGap := lineH / 4
+	// Column width comes from the widest row content plus the badge column
+	// (matching the title-bar M button), the gap after it, and a right inset
+	// that gives inter-column breathing room. DrawView reserves the scroll
+	// bar area on the right, so this column width is content-only.
+	badgeWidth := titleFont.LayoutBounds("M", 0).Width()
+	badgeGap := viewMPad
 	sidePad := lineH / 4
-	colWidth := sidePad + badgeWidth + badgeGap +
+	colWidth := badgeWidth + badgeGap +
 		textWidth("MMMM   1353 999  ") + sidePad
 
 	// Build one RowList per visible column.
@@ -81,7 +82,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 	var badge *Badge
 	if ps.AltimSet.ShowIndicators {
 		badge = &Badge{
-			Width: badgeWidth, Height: lineH,
+			Width: badgeWidth, Pad: viewMPad, Height: viewTitleHeight(titleFont),
 			Fill:   bright.ScaleRGB(colors.badge.fill),
 			Border: colors.badge.border,
 		}
@@ -93,7 +94,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 			Font:              listFont,
 			Width:             colWidth,
 			LineHeight:        lineH,
-			ListTopPad:        lineH / 2,
+			ListTopPad:        lineH / 4,
 			ListBottomPad:     lineH / 4,
 			BottomGap:         lineH / 4,
 			BadgeGap:          badgeGap,
@@ -141,7 +142,8 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		Width:      width,
 		BodyHeight: bodyHeight,
 		Title:      "ALTIM SET",
-		TitleFont:  ep.ERAMFont(2),
+		TitleFont:  titleFont,
+		BodyFont:   listFont,
 		Opaque:     ps.AltimSet.Opaque,
 		ShowBorder: ps.AltimSet.ShowBorder,
 		Brightness: bright,
@@ -172,15 +174,12 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 			Items: func(body math.Extent2D) []ViewSelectableItem {
 				var items []ViewSelectableItem
 				for c, col := range cols {
-					ex := col.Extents(colBodyExtent(c, body))
+					ex := col.TextExtents(colBodyExtent(c, body))
 					for i, e := range ex {
 						row := col.Rows[col.VisibleFirst()+i]
 						items = append(items, ViewSelectableItem{
-							Extent: math.Extent2D{
-								P0: [2]float32{col.RowTextLeft(e.P0[0], row), e.P0[1]},
-								P1: e.P1,
-							},
-							Label: row.ID,
+							Extent: e,
+							Label:  row.ID,
 						})
 					}
 				}

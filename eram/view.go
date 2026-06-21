@@ -97,11 +97,19 @@ type View struct {
 	// Must be unique across all views and stable across frames.
 	ID string
 
+	// Width is the body *content* width. DrawView adds an additional 2
+	// space characters (per BodyFont) of reserve on the right when Scroll
+	// is non-nil so the scroll bar can be drawn without overlapping content.
 	Width      float32
 	BodyHeight float32
 
 	Title     string
 	TitleFont *renderer.Font
+
+	// BodyFont is the font used for measuring the body-related layout that
+	// DrawView itself performs — currently just the 2-space scroll-bar
+	// reserve. Falls back to TitleFont when nil.
+	BodyFont *renderer.Font
 
 	Opaque     bool
 	ShowBorder bool
@@ -145,10 +153,10 @@ func (ep *ERAMPane) clampViewPos(ctx *panes.Context, pos [2]float32, width, tota
 
 // drawRectOutline draws a 1px line-loop around ex.
 func drawRectOutline(ld *renderer.ColoredLinesDrawBuilder, ex math.Extent2D, color renderer.RGB) {
-	q0 := [2]float32{ex.P0[0], ex.P0[1]}
-	q1 := [2]float32{ex.P1[0], ex.P0[1]}
-	q2 := [2]float32{ex.P1[0], ex.P1[1]}
-	q3 := [2]float32{ex.P0[0], ex.P1[1]}
+	q0 := [2]float32{ex.P0[0] - 1, ex.P0[1] - 1}
+	q1 := [2]float32{ex.P1[0] + 1, ex.P0[1] - 1}
+	q2 := [2]float32{ex.P1[0] + 1, ex.P1[1] + 1}
+	q3 := [2]float32{ex.P0[0] - 1, ex.P1[1] + 1}
 	ld.AddLine(q0, q1, color)
 	ld.AddLine(q1, q2, color)
 	ld.AddLine(q2, q3, color)
@@ -163,6 +171,41 @@ const (
 	scrollBarGap      = float32(2)
 )
 
+// viewMPad is the horizontal padding on each side of the title-bar M and "-"
+// buttons. Exported via viewMButtonWidth so callers can align body decorations
+// (e.g. row badges) with the title-bar M.
+const viewMPad = float32(4)
+
+// viewMButtonWidth returns the on-screen width of the title-bar M button.
+// Callers that want a body element to line up directly below the M (badges,
+// indicators) should size it with this.
+func viewMButtonWidth(titleFont *renderer.Font) float32 {
+	return titleFont.LayoutBounds("M", 0).Width() + 2*viewMPad
+}
+
+// viewTitleHeight returns the on-screen height of the title bar. Matches the
+// computation in DrawView so callers (e.g. badges that want to match the M
+// button's visual size) can use it without poking at DrawView internals.
+func viewTitleHeight(titleFont *renderer.Font) float32 {
+	return max(16, titleFont.LayoutBounds("M", 0).Height()+4)
+}
+
+// scrollReserveWidth is the right-edge area DrawView reserves for the scroll
+// bar when Scroll is configured. Sized to 2 BodyFont space characters so it
+// scales with the body font; at least scrollBarTotalW so the scroll-bar
+// visual still fits when the body font is tiny.
+func scrollReserveWidth(v View) float32 {
+	if v.Scroll == nil {
+		return 0
+	}
+	font := v.BodyFont
+	if font == nil {
+		font = v.TitleFont
+	}
+	spaceW := font.LayoutBounds(" ", 0).Width()
+	return max(2*spaceW, scrollBarTotalW)
+}
+
 // DrawView renders a View, processing chrome and clicks in this order:
 // scroll bar → title-bar buttons → title-bar drag → body-tertiary menu →
 // body-primary drag → finalize in-progress drag. Each handler consumes its
@@ -171,7 +214,12 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	cb *renderer.CommandBuffer, v View) {
 
 	mouse := ctx.Mouse
-	width := v.Width
+
+	// v.Width is the body content width; DrawView grows the view to make
+	// room for the scroll bar on the right when Scroll is configured.
+	scrollReserveW := scrollReserveWidth(v)
+	contentWidth := v.Width
+	width := contentWidth + scrollReserveW
 
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
@@ -190,7 +238,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			Font:  v.TitleFont,
 			Color: v.Brightness.ScaleRGB(colors.view.text),
 		}
-		titleH = max(16, v.TitleFont.LayoutBounds(v.Title, 0).Height()+4)
+		titleH = viewTitleHeight(v.TitleFont)
 	}
 
 	bodyH := v.BodyHeight
@@ -229,7 +277,13 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	bodyP1 := math.Add2f(bodyP0, [2]float32{width, 0})
 	bodyP2 := math.Add2f(bodyP1, [2]float32{0, -bodyH})
 	bodyP3 := math.Add2f(bodyP0, [2]float32{0, -bodyH})
-	bodyExtent := math.Extent2D{P0: bodyP3, P1: bodyP1}
+	// bodyExtent is the area passed to Body and used for body-area click
+	// handling — it excludes the right-edge scroll-bar reserve so callers
+	// don't accidentally render content under the scroll bar.
+	bodyExtent := math.Extent2D{
+		P0: bodyP3,
+		P1: [2]float32{bodyP1[0] - scrollReserveW, bodyP1[1]},
+	}
 
 	// Body background and window border (skip when body is empty).
 	if bodyH > 0 {
@@ -268,20 +322,17 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		titleP3 := math.Add2f(p0, [2]float32{0, -titleH})
 		trid.AddQuad(titleP0, titleP1, titleP2, titleP3, titleBg)
 
-		const mPad = float32(2)
-
 		if v.OnMenu != nil {
-			mw := v.TitleFont.LayoutBounds("M", 0).Width()
 			mRect = math.Extent2D{
 				P0: [2]float32{titleP0[0], titleP0[1] - titleH},
-				P1: [2]float32{titleP0[0] + mPad + mw + mPad, titleP0[1]},
+				P1: [2]float32{titleP0[0] + viewMButtonWidth(v.TitleFont), titleP0[1]},
 			}
 			mouseInsideM = mouse != nil && mRect.Inside(mouse.Pos)
 		}
 		if v.OnMinimize != nil {
 			minw := v.TitleFont.LayoutBounds("-", 0).Width()
 			minRect = math.Extent2D{
-				P0: [2]float32{titleP1[0] - mPad - minw - mPad, titleP1[1] - titleH},
+				P0: [2]float32{titleP1[0] - viewMPad - minw - viewMPad, titleP1[1] - titleH},
 				P1: titleP1,
 			}
 			mouseInsideMin = mouse != nil && minRect.Inside(mouse.Pos)
@@ -520,7 +571,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 		arrowCenterX := scrollX0 + scrollBarBorderW + scrollBarContentW/2
 		topArrowTopY := downY1 + 1
-		for i, w := range []float32{1, 3, 5, 7, 9} {
+		for i, w := range []float32{1, 1, 3, 3, 5, 5, 7, 7, 9, 9} {
 			y := topArrowTopY + float32(i)
 			ld.AddLine([2]float32{arrowCenterX - w/2, y}, [2]float32{arrowCenterX + w/2, y}, arrowColor)
 		}
@@ -535,14 +586,15 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		ld.AddLine(downQ[2], downQ[3], scrollBorder)
 		ld.AddLine(downQ[3], downQ[0], scrollBorder)
 
-		botArrowTopY := upY1 - 5
-		for i, w := range []float32{9, 7, 5, 3, 1} {
+		botArrowTopY := upY1 - 10
+		for i, w := range []float32{9, 9, 7, 7, 5, 5, 3, 3, 1, 1} {
 			y := botArrowTopY + float32(i)
 			ld.AddLine([2]float32{arrowCenterX - w/2, y}, [2]float32{arrowCenterX + w/2, y}, arrowColor)
 		}
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
+	cb.LineWidth(1, ctx.DPIScale)
 	trid.GenerateCommands(cb)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
