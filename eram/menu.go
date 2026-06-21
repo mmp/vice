@@ -21,6 +21,49 @@ type popup interface {
 	draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer)
 }
 
+// popupAnchorSide identifies which edge of the host view is pinned by an
+// open view-spawned pop-up. While the pop-up is open, DrawView re-derives
+// the view's horizontal position so the pinned edge stays put, regardless
+// of width changes driven by the pop-up's settings.
+type popupAnchorSide int
+
+const (
+	popupAnchorNone popupAnchorSide = iota
+	popupAnchorLeft
+	popupAnchorRight
+)
+
+// viewPopupPlacement is the result of OpenPopupAt: the final pop-up origin
+// plus the anchor side and pinned X derived from where the pop-up landed
+// relative to the host view.
+type viewPopupPlacement struct {
+	Origin [2]float32
+	Anchor popupAnchorSide
+	PinX   float32
+}
+
+// popupBase is embedded by every view-spawned pop-up. It carries the
+// placement info needed by DrawView to keep the host view's pinned edge
+// flush with the pop-up as the view resizes.
+type popupBase struct {
+	origin [2]float32
+	viewID string
+	anchor popupAnchorSide
+	pinX   float32
+}
+
+func (p popupBase) viewAnchor() (string, popupAnchorSide, float32) {
+	return p.viewID, p.anchor, p.pinX
+}
+
+// viewAnchoredPopup is implemented by pop-ups that pin a host view's edge.
+// DrawView checks for this on ep.popup to decide whether to override the
+// view's horizontal position.
+type viewAnchoredPopup interface {
+	popup
+	viewAnchor() (viewID string, side popupAnchorSide, pinX float32)
+}
+
 // ERAMMenuClickType distinguishes primary from tertiary clicks.
 type ERAMMenuClickType int
 
@@ -128,20 +171,30 @@ type ERAMMenuConfig struct {
 // OpenPopupAt clamps originGuess so a menu with the given dimensions stays on
 // screen — preferring to flip to the left of hostExtent when the popup would
 // extend past the right edge of the pane — and warps the cursor to the center
-// of the title-bar close (X) button. Returns the clamped origin which the
-// caller stores in the popup struct.
-func (ep *ERAMPane) OpenPopupAt(ctx *panes.Context, originGuess [2]float32, width, height float32, titleFont *renderer.Font, hostExtent math.Extent2D) [2]float32 {
+// of the title-bar close (X) button. The returned placement carries the
+// clamped origin plus the anchor side and pinned X that DrawView uses to
+// keep the host view's pinned edge flush with the pop-up as the view
+// resizes.
+func (ep *ERAMPane) OpenPopupAt(ctx *panes.Context, originGuess [2]float32, width, height float32, titleFont *renderer.Font, hostExtent math.Extent2D) viewPopupPlacement {
 	pe := ctx.PaneExtent
 	origin := originGuess
+	anchor := popupAnchorRight
+	pinX := hostExtent.P1[0]
 	if origin[0]+width > pe.P1[0] {
 		if hostExtent.Width() > 0 && hostExtent.P0[0]-width >= pe.P0[0] {
 			origin[0] = hostExtent.P0[0] - width
+			anchor = popupAnchorLeft
+			pinX = hostExtent.P0[0]
 		} else {
 			origin[0] = pe.P1[0] - width
+			anchor = popupAnchorRight
+			pinX = origin[0]
 		}
 	}
 	if origin[0] < pe.P0[0] {
 		origin[0] = pe.P0[0]
+		anchor = popupAnchorLeft
+		pinX = origin[0] + width
 	}
 	if origin[1]-height < pe.P0[1] {
 		origin[1] = pe.P0[1] + height
@@ -160,7 +213,7 @@ func (ep *ERAMPane) OpenPopupAt(ctx *panes.Context, originGuess [2]float32, widt
 		origin[1] - itemH/2,
 	})
 
-	return origin
+	return viewPopupPlacement{Origin: origin, Anchor: anchor, PinX: pinX}
 }
 
 // ERAMMenuResult is returned by DrawERAMMenu.

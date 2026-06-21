@@ -196,6 +196,21 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	bodyH := v.BodyHeight
 	totalH := titleH + bodyH
 
+	// When this view's configuration pop-up is open, pin the view's edge
+	// adjacent to the pop-up. The pop-up's origin is fixed at open time, so
+	// width changes (font, columns, …) move the view's *other* edge instead
+	// of pushing into the pop-up.
+	if vap, ok := ep.popup.(viewAnchoredPopup); ok {
+		if id, side, pinX := vap.viewAnchor(); id == v.ID {
+			switch side {
+			case popupAnchorRight:
+				(*v.Position)[0] = pinX - width
+			case popupAnchorLeft:
+				(*v.Position)[0] = pinX
+			}
+		}
+	}
+
 	// Clamp the position to the pane on every frame so a saved off-screen
 	// position can't produce negative scissor boxes or render outside the
 	// pane. Write the clamped value back so the caller's storage tracks the

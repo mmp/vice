@@ -79,9 +79,12 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context, transforms radar.Sco
 			if _, open := ep.popup.(*mcaPopup); open {
 				return nil
 			}
-			origin := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
+			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
 				mcaPopupWidth, 5*18, ep.ERAMFont(2), host)
-			return &mcaPopup{origin: origin}
+			return &mcaPopup{popupBase: popupBase{
+				origin: pl.Origin, viewID: "mca",
+				anchor: pl.Anchor, pinX: pl.PinX,
+			}}
 		},
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			// body.P1 = top-right (top of input); body.P0 = bottom-left (bottom of feedback).
@@ -148,9 +151,12 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context, transforms radar.
 			if _, open := ep.popup.(*raPopup); open {
 				return nil
 			}
-			origin := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
+			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
 				raPopupWidth, 5*18, ep.ERAMFont(2), host)
-			return &raPopup{origin: origin}
+			return &raPopup{popupBase: popupBase{
+				origin: pl.Origin, viewID: "ra",
+				anchor: pl.Anchor, pinX: pl.PinX,
+			}}
 		},
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			dpi := ctx.Platform.FramebufferSize()[1] / ctx.Platform.DisplaySize()[1]
@@ -452,9 +458,12 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 			if _, open := ep.popup.(*timeViewPopup); open {
 				return nil
 			}
-			origin := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
+			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
 				timeViewPopupWidth, 5*18, ep.ERAMFont(2), host)
-			return &timeViewPopup{origin: origin}
+			return &timeViewPopup{popupBase: popupBase{
+				origin: pl.Origin, viewID: "clock",
+				anchor: pl.Anchor, pinX: pl.PinX,
+			}}
 		},
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			center := [2]float32{(body.P0[0] + body.P1[0]) / 2, (body.P0[1] + body.P1[1]) / 2}
@@ -468,7 +477,7 @@ const mcaPopupWidth = 150
 
 // mcaPopup is the configuration menu for the Message Composition Area.
 type mcaPopup struct {
-	origin [2]float32
+	popupBase
 }
 
 func (m *mcaPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
@@ -494,7 +503,7 @@ const raPopupWidth = 150
 
 // raPopup is the configuration menu for the Response Area.
 type raPopup struct {
-	origin [2]float32
+	popupBase
 }
 
 func (r *raPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
@@ -523,7 +532,7 @@ const timeViewPopupWidth = 120
 
 // timeViewPopup is the configuration menu for the Time View (clock).
 type timeViewPopup struct {
-	origin [2]float32
+	popupBase
 }
 
 func (t *timeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {

@@ -11,7 +11,7 @@ import (
 )
 
 type beaconCodeViewPopup struct {
-	origin [2]float32
+	popupBase
 }
 
 func (b *beaconCodeViewPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
@@ -182,9 +182,12 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 			if _, open := ep.popup.(*beaconCodeViewPopup); open {
 				return nil
 			}
-			origin := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
+			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
 				150, (7+1)*18, titleFont, host)
-			return &beaconCodeViewPopup{origin: origin}
+			return &beaconCodeViewPopup{popupBase: popupBase{
+				origin: pl.Origin, viewID: "beacon",
+				anchor: pl.Anchor, pinX: pl.PinX,
+			}}
 		},
 		OnMinimize: func() { ps.BeaconCodeView.Visible = false },
 		Body: func(body math.Extent2D, b *ViewBuilders) {

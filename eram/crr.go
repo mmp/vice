@@ -166,9 +166,12 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 			}
 			// 1 title row + 8 static rows + 2 swatch rows + one row per group.
 			popupH := float32(1+8+2+len(ep.CRRGroups)) * 18
-			origin := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
+			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
 				crrPopupWidth, popupH, ep.ERAMFont(2), host)
-			return &crrPopup{origin: origin}
+			return &crrPopup{popupBase: popupBase{
+				origin: pl.Origin, viewID: "crr",
+				anchor: pl.Anchor, pinX: pl.PinX,
+			}}
 		},
 		OnMinimize: func() { ps.CRR.Visible = false },
 		Body:       bodyDraw,
@@ -354,7 +357,7 @@ const crrPopupWidth = 150
 // crrPopup is the popup-interface impl for the CRR configuration menu. The
 // origin is captured at open time from the view's current geometry.
 type crrPopup struct {
-	origin [2]float32
+	popupBase
 }
 
 func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {

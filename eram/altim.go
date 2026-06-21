@@ -149,9 +149,12 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 			if _, open := ep.popup.(*altimSetPopup); open {
 				return nil
 			}
-			origin := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
+			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
 				altimSetPopupWidth, (8+1)*18, ep.ERAMFont(2), host)
-			return &altimSetPopup{origin: origin}
+			return &altimSetPopup{popupBase: popupBase{
+				origin: pl.Origin, viewID: "altim-set",
+				anchor: pl.Anchor, pinX: pl.PinX,
+			}}
 		},
 		OnMinimize: func() { ps.AltimSet.Visible = false },
 		Scroll: &ViewScrollConfig{
@@ -236,7 +239,7 @@ const altimSetPopupWidth = 150
 // The origin is captured at open time from the view's current geometry, since
 // the view width depends on dynamic state (column count).
 type altimSetPopup struct {
-	origin [2]float32
+	popupBase
 }
 
 func (a *altimSetPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {

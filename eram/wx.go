@@ -98,9 +98,12 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 			if _, open := ep.popup.(*wxPopup); open {
 				return nil
 			}
-			origin := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
+			pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
 				wxPopupWidth, (6+1)*18, ep.ERAMFont(2), host)
-			return &wxPopup{origin: origin}
+			return &wxPopup{popupBase: popupBase{
+				origin: pl.Origin, viewID: "wx",
+				anchor: pl.Anchor, pinX: pl.PinX,
+			}}
 		},
 		OnMinimize: func() { ps.WX.Visible = false },
 		Scroll: &ViewScrollConfig{
@@ -197,7 +200,7 @@ const wxPopupWidth = 150
 // wxPopup is the popup-interface impl for the WX REPORT configuration menu.
 // The origin is captured at open time from the view's current geometry.
 type wxPopup struct {
-	origin [2]float32
+	popupBase
 }
 
 func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
