@@ -352,6 +352,14 @@ func (p *Preferences) Upgrade(from, to int) {
 		// fills it in once it knows the pane size.
 		p.MCA.Position = [2]float32{2, 80}
 		p.RA.Position = [2]float32{392, 80}
+
+		// Fixed to only allow these widths; patch up if another width was set.
+		if p.MCA.Width != 30 && p.MCA.Width != 50 {
+			p.MCA.Width = 30
+		}
+		if p.RA.Width != 25 && p.RA.Width != 50 {
+			p.RA.Width = 25
+		}
 	}
 }
 

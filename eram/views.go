@@ -298,17 +298,17 @@ func (ep *ERAMPane) startDrawCommandInput(ctx *panes.Context, transforms radar.S
 	}
 }
 
-// drawMessageCompositionArea renders the MCA: a feedback box (fixed 390×77) below an
-// input box (390×inputSize, where inputSize grows beyond 38px if wrapped input
-// exceeds it). Both boxes share black bg and a white border; the seam between
-// them is drawn by View as part of the outer border (and a separator line in
-// the body).
+// drawMessageCompositionArea renders the MCA: a feedback box below an input
+// box (where inputH grows beyond 38px if wrapped input exceeds it). Both
+// boxes share black bg and a white border; the seam between them is drawn by
+// View as part of the outer border (and a separator line in the body). Width
+// fits ps.MCA.Width characters of the selected font plus 2px side padding.
 func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	const width = 390
 	font := ep.ERAMFont(ps.MCA.Font)
 	cols := ps.MCA.Width
+	width := float32(cols)*charWidth(font) + 4
 	feedbackH := font.LayoutBounds("0", 0).Height()*float32(ps.MCA.PALines) + 4
 
 	// Compute input box height (grows with wrapped text).
@@ -387,7 +387,7 @@ func (m *mcaPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 
 	rows := []ERAMMenuItem{
 		makeIntMenuItem(ep, &ps.MCA.PALines, "PA LINES", 1, 50, 1),
-		makeIntMenuItem(ep, &ps.MCA.Width, "WIDTH", 10, 200, 1),
+		makeIntMenuItem(ep, &ps.MCA.Width, "WIDTH", 30, 50, 20),
 		makeIntMenuItem(ep, &ps.MCA.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.MCA.Bright, "BRIGHT", 0, 100, 1),
 	}
@@ -404,15 +404,16 @@ func (m *mcaPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 ///////////////////////////////////////////////////////////////////////////
 // RA: Response Area
 
-// drawResponseArea renders the RA: a single 325×77 box with the wrapped
-// response-area text.
+// drawResponseArea renders the RA: a single box with the wrapped
+// response-area text. Width fits ps.RA.Width characters of the selected font
+// plus 2px side padding.
 func (ep *ERAMPane) drawResponseArea(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	const width = 325
 	const height = 77
 	font := ep.ERAMFont(ps.RA.Font)
 	cols := ps.RA.Width
+	width := float32(cols)*charWidth(font) + 4
 
 	wrapped, _ := util.WrapText(ep.responseArea, cols, 0, true, false)
 	textColor := ps.RA.Bright.ScaleRGB(colors.toolbar.text)
@@ -444,7 +445,7 @@ func (r *raPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 	ps := ep.currentPrefs()
 
 	rows := []ERAMMenuItem{
-		makeIntMenuItem(ep, &ps.RA.Width, "WIDTH", 10, 200, 1),
+		makeIntMenuItem(ep, &ps.RA.Width, "WIDTH", 25, 50, 25),
 		makeIntMenuItem(ep, &ps.RA.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.RA.Bright, "BRIGHT", 0, 100, 1),
 		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
