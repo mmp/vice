@@ -104,14 +104,16 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "MR [FIELD]", handleMapRequestLoad)
 
 	// LA - track range - distance between points
-	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM]", handleLALocLoc)
-	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM]", handleLATrkLoc)
-	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] /[NUM]", handleLALocLocSpeed)
-	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] /[NUM]", handleLATrkLocSpeed)
-	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] T/[NUM]", handleLALocLocTrueSpeed)
-	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] T/[NUM]", handleLATrkLocTrueSpeed)
-	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] T", handleLALocLocTrue)
-	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] T", handleLATrkLocTrue)
+	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM]",
+		func(ep *ERAMPane, ctx *panes.Context, from math.Point2LL, to math.Point2LL) CommandStatus {
+			return handleLALocLoc(ep, ctx, from, to, laOptions{})
+		})
+	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM]",
+		func(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL) CommandStatus {
+			return handleLATrkLoc(ep, ctx, trk, to, laOptions{})
+		})
+	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] [LA_OPTS]", handleLALocLoc)
+	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] [LA_OPTS]", handleLATrkLoc)
 
 	// LB - track range - distance between fix and track/location
 	registerCommand(CommandModeNone, "LB [FIX] [LOC_SYM]", handleLBFixLoc)
@@ -515,67 +517,19 @@ func formatRangeBearing(from, to math.Point2LL, nmPerLon, magVar float32, trueBr
 	return lines
 }
 
-func handleLALocLoc(ep *ERAMPane, ctx *panes.Context, from math.Point2LL, to math.Point2LL) CommandStatus {
+func handleLALocLoc(ep *ERAMPane, ctx *panes.Context, from math.Point2LL, to math.Point2LL, opts laOptions) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
-			false, 0, "FROM 1ST TB ENTRY"),
+			opts.True, float32(opts.Speed), "FROM 1ST TB ENTRY"),
 	}
 }
 
-func handleLATrkLoc(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL) CommandStatus {
+func handleLATrkLoc(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL, opts laOptions) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
-			false, trk.Groundspeed, "FROM 1ST TB ENTRY"),
-	}
-}
-
-func handleLALocLocSpeed(ep *ERAMPane, ctx *panes.Context, from math.Point2LL, to math.Point2LL, speed int) CommandStatus {
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
-		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
-			false, float32(speed), "FROM 1ST TB ENTRY"),
-	}
-}
-
-func handleLATrkLocSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL, speed int) CommandStatus {
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
-		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
-			false, float32(speed), "FROM 1ST TB ENTRY"),
-	}
-}
-
-func handleLALocLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, from math.Point2LL, to math.Point2LL, speed int) CommandStatus {
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
-		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
-			true, float32(speed), "FROM 1ST TB ENTRY"),
-	}
-}
-
-func handleLATrkLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL, speed int) CommandStatus {
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
-		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
-			true, float32(speed), "FROM 1ST TB ENTRY"),
-	}
-}
-
-func handleLALocLocTrue(ep *ERAMPane, ctx *panes.Context, from math.Point2LL, to math.Point2LL) CommandStatus {
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
-		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
-			true, 0, "FROM 1ST TB ENTRY"),
-	}
-}
-
-func handleLATrkLocTrue(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL) CommandStatus {
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
-		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
-			true, 0, "FROM 1ST TB ENTRY"),
+			opts.True, util.Select(opts.Speed > 0, float32(opts.Speed), trk.Groundspeed), "FROM 1ST TB ENTRY"),
 	}
 }
 

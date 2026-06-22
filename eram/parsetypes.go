@@ -65,6 +65,9 @@ var typeParsers = []typeParser{
 	&crrLabelParser{},
 	&locSymParser{}, // Matches location symbol 'w' in text
 
+	// LA options
+	&laOptionParser{},
+
 	// Beacon codes
 	&beaconParser{},
 	&beaconListParser{},
@@ -526,6 +529,36 @@ func (h *acidParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput
 
 func (h *acidParser) GoType() reflect.Type { return reflect.TypeOf(sim.ACID("")) }
 func (h *acidParser) AcceptsClick() bool   { return false }
+
+// laOptionParser parses trailing options for LA commands: /speed, T, and T/speed
+type laOptionParser struct{}
+
+type laOptions struct {
+	True  bool
+	Speed int
+}
+
+func (h *laOptionParser) Identifier() string { return "LA_OPTS" }
+
+func (h *laOptionParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	var o laOptions
+
+	optText, remainder, _ := strings.Cut(text, " ")
+	optText, o.True = strings.CutPrefix(optText, "T")
+	if len(optText) > 0 {
+		var err error
+		if optText, ok := strings.CutPrefix(optText, "/"); !ok {
+			return nil, text, false, nil
+		} else if o.Speed, err = strconv.Atoi(optText); err != nil || o.Speed <= 0 {
+			return nil, text, false, nil
+		}
+		// TODO? check speed more diligently?
+	}
+	return o, remainder, true, nil
+}
+
+func (h *laOptionParser) GoType() reflect.Type { return reflect.TypeOf(laOptions{}) }
+func (h *laOptionParser) AcceptsClick() bool   { return false }
 
 // beaconParser parses beacon/squawk codes (4 octal digits)
 type beaconParser struct{}
