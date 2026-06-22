@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -847,7 +848,6 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 
 	imgui.Checkbox("Do not show scenario briefs at the start of scenarios", &config.NoBriefAtScenarioStart)
 
-	imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
 	if imgui.Checkbox("Enable tower initiated go-arounds due to separation", &config.EnableTowerGoArounds) {
 		c.State.LaunchConfig.EnableTowerGoArounds = config.EnableTowerGoArounds
 		c.SetLaunchConfig(c.State.LaunchConfig)
@@ -913,6 +913,13 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
 				draw.DrawUI(p, &config.Config)
 			}
+		}
+	}
+
+	if imgui.CollapsingHeaderBoolPtr("Text to Speech", nil) {
+		imgui.Checkbox("Disable", &config.DisableTextToSpeech)
+		if imgui.SliderFloatV("Playback speed", &config.TTSPlaybackSpeed, 1.0, 2.5, "%.2fx", 0) {
+			tts.SetPlaybackSpeed(config.TTSPlaybackSpeed)
 		}
 	}
 

@@ -22,6 +22,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stars"
+	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -62,6 +63,7 @@ type ConfigNoSim struct {
 	InhibitDiscordActivity util.AtomicBool
 	NotifiedTargetGenMode  bool
 	DisableTextToSpeech    bool
+	TTSPlaybackSpeed       float32
 	EnableTowerGoArounds   bool
 
 	UserWorkstation    string
@@ -283,6 +285,10 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	if config.UIFontSize == 0 {
 		config.UIFontSize = 16
 	}
+	if config.TTSPlaybackSpeed == 0 {
+		config.TTSPlaybackSpeed = tts.DefaultPlaybackSpeed
+	}
+	tts.SetPlaybackSpeed(config.TTSPlaybackSpeed)
 	config.Version = server.ViceSerializeVersion
 
 	imgui.LoadIniSettingsFromMemory(config.ImGuiSettings)

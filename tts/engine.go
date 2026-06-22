@@ -17,6 +17,25 @@ import (
 	"github.com/mmp/vice/util"
 )
 
+// DefaultPlaybackSpeed is the Kokoro TTS speed multiplier used when no
+// user preference is set. Chinese voices are scaled proportionally.
+const DefaultPlaybackSpeed = 1.5
+
+// chineseSpeedRatio scales the user-selected speed for Chinese voices,
+// which work better slower.
+const chineseSpeedRatio float32 = 1.3 / 1.75
+
+var playbackSpeed = float32(DefaultPlaybackSpeed)
+var playbackSpeedMu sync.Mutex
+
+// SetPlaybackSpeed sets the base TTS speed multiplier used for synthesis.
+// Chinese voices use a proportionally slower speed.
+func SetPlaybackSpeed(speed float32) {
+	playbackSpeedMu.Lock()
+	defer playbackSpeedMu.Unlock()
+	playbackSpeed = speed
+}
+
 // kokoroVoiceNames maps voice IDs to their names.
 // Prefixes: af/am = American English, bf/bm = British English, ef/em = Spanish,
 // ff = French, hf/hm = Hindi, if/im = Italian, jf/jm = Japanese, pf/pm = Portuguese, zf/zm = Chinese
@@ -167,7 +186,7 @@ func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, text, voice
 	mu.Lock()
 	defer mu.Unlock()
 
-	audio := ttsEngine.Generate(text, voiceID, t.voiceSpeed(voice))
+	audio := ttsEngine.Generate(text, voiceID, voiceSpeed(voice))
 	if audio == nil || len(audio.Samples) == 0 {
 		return nil, fmt.Errorf("TTS generation failed for text: %q", text)
 	}
@@ -224,13 +243,18 @@ func SynthesizeContactTTS(text, voice string, radioSeed uint32) ([]int16, error)
 	return globalTTS.synthesizeContact(text, voice, radioSeed)
 }
 
-// voiceSpeed returns the TTS speed multiplier for the given voice name.
-func (t *localTTS) voiceSpeed(voice string) float32 {
+// voiceSpeed returns the TTS speed multiplier for the given voice name,
+// applying a slowdown for Chinese voices on top of the user-selected
+// base speed.
+func voiceSpeed(voice string) float32 {
+	playbackSpeedMu.Lock()
+	defer playbackSpeedMu.Unlock()
+
+	speed := playbackSpeed
 	if strings.HasPrefix(voice, "zf_") || strings.HasPrefix(voice, "zm_") {
-		return 1.3 // Chinese voices work better with a slower speed
-	} else {
-		return 1.75
+		return speed * chineseSpeedRatio
 	}
+	return speed
 }
 
 // convertAndResample converts float32 samples to int16 and resamples to the
