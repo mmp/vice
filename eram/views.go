@@ -309,7 +309,6 @@ func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms ra
 	const width = 390
 	font := ep.ERAMFont(ps.MCA.Font)
 	cols := ps.MCA.Width
-	brightFactor := float32(ps.MCA.Bright) / 100
 	feedbackH := font.LayoutBounds("0", 0).Height()*float32(ps.MCA.PALines) + 4
 
 	// Compute input box height (grows with wrapped text).
@@ -359,8 +358,7 @@ func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms ra
 
 			inputTopLeft := [2]float32{body.P0[0], body.P1[1]}
 			feedbackTopLeft := [2]float32{body.P0[0], seamY}
-			textColor := ps.Brightness.Text.ScaleRGB(colors.toolbar.text).Scale(brightFactor)
-			textStyle := renderer.TextStyle{Font: font, Color: textColor}
+			textStyle := renderer.TextStyle{Font: font, Color: ps.MCA.Bright.ScaleRGB(colors.toolbar.text)}
 
 			// Input text (top box).
 			b.Td.AddText(inText, [2]float32{inputTopLeft[0] + 2, inputTopLeft[1] - 2}, textStyle)
@@ -368,7 +366,7 @@ func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms ra
 			// Feedback text (bottom box). Two AddText calls share the same
 			// origin so newline resets in `feedbackRest` land at column 0.
 			loc := [2]float32{feedbackTopLeft[0] + 2, feedbackTopLeft[1] - 2}
-			iconStyle := renderer.TextStyle{Font: font, Color: feedbackIconColor.Scale(brightFactor)}
+			iconStyle := renderer.TextStyle{Font: font, Color: ps.MCA.Bright.ScaleRGB(feedbackIconColor)}
 			b.Td.AddText(feedbackIcon, loc, iconStyle)
 			b.Td.AddText(feedbackRest, loc, textStyle)
 		},
@@ -415,10 +413,9 @@ func (ep *ERAMPane) drawResponseArea(ctx *panes.Context, transforms radar.ScopeT
 	const height = 77
 	font := ep.ERAMFont(ps.RA.Font)
 	cols := ps.RA.Width
-	brightFactor := float32(ps.RA.Bright) / 100
 
 	wrapped, _ := util.WrapText(ep.responseArea, cols, 0, true, false)
-	textColor := ps.Brightness.Text.ScaleRGB(colors.toolbar.text).Scale(brightFactor)
+	textColor := ps.RA.Bright.ScaleRGB(colors.toolbar.text)
 
 	v := View{
 		Position:   &ps.RA.Position,
