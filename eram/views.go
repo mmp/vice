@@ -342,30 +342,16 @@ func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms ra
 			borderColor := ps.Brightness.Border.ScaleRGB(colors.view.border)
 			b.Ld.AddLine([2]float32{body.P0[0], seamY}, [2]float32{body.P1[0], seamY}, borderColor)
 
-			dpi := ctx.Platform.FramebufferSize()[1] / ctx.Platform.DisplaySize()[1]
-			paneOrigin := ctx.PaneExtent.P0
 			inputTopLeft := [2]float32{body.P0[0], body.P1[1]}
 			feedbackTopLeft := [2]float32{body.P0[0], seamY}
 
 			// Input text (top box).
-			winBase := math.Add2f(inputTopLeft, paneOrigin)
-			b.CB.SetScissorBounds(math.Extent2D{
-				P0: [2]float32{winBase[0], winBase[1] - inputH},
-				P1: [2]float32{winBase[0] + width, winBase[1]},
-			}, dpi)
 			inputColor := ps.Brightness.Text.ScaleRGB(colors.toolbar.text).Scale(brightFactor)
 			b.Td.AddText(inText, [2]float32{inputTopLeft[0] + 2, inputTopLeft[1] - 2},
 				renderer.TextStyle{Font: font, Color: inputColor})
 
 			// Feedback text (bottom box).
-			winBase = math.Add2f(feedbackTopLeft, paneOrigin)
-			b.CB.SetScissorBounds(math.Extent2D{
-				P0: [2]float32{winBase[0], winBase[1] - feedbackH},
-				P1: [2]float32{winBase[0] + width, winBase[1]},
-			}, dpi)
 			ep.writeText(b.Td, ep.feedbackArea, [2]float32{feedbackTopLeft[0] + 2, feedbackTopLeft[1] - 2}, font, brightFactor)
-
-			b.CB.SetScissorBounds(ctx.PaneExtent, dpi)
 		},
 	}
 	ep.DrawView(ctx, transforms, cb, v)
@@ -425,15 +411,8 @@ func (ep *ERAMPane) drawResponseArea(ctx *panes.Context, transforms radar.ScopeT
 		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "ra", 4,
 			func(pb popupBase) popup { return &raPopup{popupBase: pb} }),
 		Body: func(body math.Extent2D, b *ViewBuilders) {
-			dpi := ctx.Platform.FramebufferSize()[1] / ctx.Platform.DisplaySize()[1]
 			topLeft := [2]float32{body.P0[0], body.P1[1]}
-			winBase := math.Add2f(topLeft, ctx.PaneExtent.P0)
-			b.CB.SetScissorBounds(math.Extent2D{
-				P0: [2]float32{winBase[0], winBase[1] - height},
-				P1: [2]float32{winBase[0] + width, winBase[1]},
-			}, dpi)
 			ep.writeText(b.Td, ep.responseArea, [2]float32{topLeft[0] + 2, topLeft[1] - 2}, font, brightFactor)
-			b.CB.SetScissorBounds(ctx.PaneExtent, dpi)
 		},
 	}
 	ep.DrawView(ctx, transforms, cb, v)
@@ -454,7 +433,6 @@ func (ep *ERAMPane) writeText(td *renderer.TextDrawBuilder, text inputText, loc 
 			loc[0] = start0                             // reset the x position
 			loc[1] -= float32(font.Size) * float32(1.4) // edit this value
 		}
-
 	}
 }
 

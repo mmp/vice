@@ -28,11 +28,8 @@ import (
 
 // ViewBuilders is passed to a View's Body callback. The draw builders are
 // pooled by DrawView and flushed after Body returns; Body should not Generate*
-// on them. CB is included so Body may set scissor bounds (MCA/RA need this for
-// text clipping); Body must restore the pane-wide scissor bounds before
-// returning.
+// on them.
 type ViewBuilders struct {
-	CB   *renderer.CommandBuffer
 	Trid *renderer.ColoredTrianglesDrawBuilder
 	Ld   *renderer.ColoredLinesDrawBuilder
 	Td   *renderer.TextDrawBuilder
@@ -743,7 +740,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 	// Body content.
 	if v.Body != nil && bodyH > 0 {
-		v.Body(bodyExtent, &ViewBuilders{CB: cb, Trid: trid, Ld: ld, Td: td})
+		v.Body(bodyExtent, &ViewBuilders{Trid: trid, Ld: ld, Td: td})
 	}
 
 	// Hover outline for selectable rows. Skip when the row is also selected
