@@ -112,8 +112,16 @@ func registerOpsCommands() {
 		func(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, to math.Point2LL) CommandStatus {
 			return handleLATrkLoc(ep, ctx, trk, to, laOptions{})
 		})
+	registerCommand(CommandModeNone, "LA [TRACK] [TRACK]",
+		func(ep *ERAMPane, ctx *panes.Context, trk1, trk2 *sim.Track) CommandStatus {
+			return handleLATrkLoc(ep, ctx, trk1, trk2.Location, laOptions{})
+		})
 	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] [LA_OPTS]", handleLALocLoc)
 	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] [LA_OPTS]", handleLATrkLoc)
+	registerCommand(CommandModeNone, "LA [TRACK] [TRACK] [LA_OPTS]",
+		func(ep *ERAMPane, ctx *panes.Context, trk1, trk2 *sim.Track, opts laOptions) CommandStatus {
+			return handleLATrkLoc(ep, ctx, trk1, trk2.Location, opts)
+		})
 
 	// LB - track range - distance between fix and track/location
 	registerCommand(CommandModeNone, "LB [FIX] [LOC_SYM]", handleLBFixLoc)
