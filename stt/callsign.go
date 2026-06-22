@@ -66,6 +66,7 @@ type Aircraft struct {
 	AssignedApproach          string
 	SID                       string
 	STAR                      string
+	Route                     []string                   // Ordered route waypoint fix names (full route, no truncation)
 	Altitude                  int                        // Current altitude in feet
 	State                     string                     // "departure", "arrival", "cleared approach", "overflight", "vfr flight following"
 	ControllerFrequency       string                     // Current controller position the aircraft is tuned to

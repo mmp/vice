@@ -414,6 +414,7 @@ func (p *Transcriber) BuildAircraftContext(
 			Callsign:            string(trk.ADSBCallsign),
 			Altitude:            int(trk.TrueAltitude),
 			ControllerFrequency: string(trk.ControllerFrequency),
+			Route:               trk.RouteFixes,
 		}
 
 		// Add tracking controller and aircraft type from flight plan

@@ -184,6 +184,7 @@ func makeDerivedState(s *Sim) DerivedState {
 			ClearedForApproach:        ac.Nav.Approach.Cleared,
 			Approach:                  approach,
 			Fixes:                     ac.GetSTTFixes(av.DB.IsARTCC(s.State.Facility)),
+			RouteFixes:                ac.GetRouteFixes(),
 			SID:                       ac.SID,
 			STAR:                      ac.STAR,
 			MVAsApply:                 ac.MVAsApply(),
@@ -536,6 +537,7 @@ type Track struct {
 	ClearedForApproach        bool
 	Approach                  string   // Full name of assigned approach, if any
 	Fixes                     []string // Relevant fix names for STT
+	RouteFixes                []string // Ordered route waypoint fix names (no truncation)
 	SID                       string
 	STAR                      string
 	ATPAVolume                *av.ATPAVolume

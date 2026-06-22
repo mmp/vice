@@ -825,6 +825,34 @@ func render(screen tcell.Screen, state *AppState) {
 					y++
 				}
 
+				// Route (ordered; order matters)
+				if len(ac.Route) > 0 && y < maxY {
+					drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+					drawText(screen, 0, y, width, styleContextLabel, " Route:")
+					y++
+
+					routeLine := " "
+					for i, fix := range ac.Route {
+						part := fix
+						if i < len(ac.Route)-1 {
+							part += " → "
+						}
+						if len(routeLine)+len(part) > width-2 {
+							if y < maxY {
+								drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, routeLine))
+								y++
+							}
+							routeLine = "   " + part
+						} else {
+							routeLine += part
+						}
+					}
+					if routeLine != " " && routeLine != "   " && y < maxY {
+						drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, routeLine))
+						y++
+					}
+				}
+
 				if len(ac.LAHSORunways) > 0 && y < maxY {
 					drawText(screen, 0, y, width, styleContext, fmt.Sprintf(" LAHSO Runways: %-*s", width-17, strings.Join(ac.LAHSORunways, ", ")))
 					y++
@@ -876,6 +904,31 @@ func render(screen tcell.Screen, state *AppState) {
 					}
 					if apprLine != " " && apprLine != "   " && y < maxY {
 						drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, apprLine))
+						y++
+					}
+				}
+
+				// Visual Approaches (sorted alphabetically)
+				if len(ac.CandidateVisualApproaches) > 0 && y < maxY {
+					drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+					drawText(screen, 0, y, width, styleContextLabel, " Visual Approaches:")
+					y++
+
+					vaLine := " "
+					for spoken, id := range util.SortedMap(ac.CandidateVisualApproaches) {
+						part := fmt.Sprintf("%s→%s  ", spoken, id)
+						if len(vaLine)+len(part) > width-2 {
+							if y < maxY {
+								drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, vaLine))
+								y++
+							}
+							vaLine = "   " + part
+						} else {
+							vaLine += part
+						}
+					}
+					if vaLine != " " && vaLine != "   " && y < maxY {
+						drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, vaLine))
 						y++
 					}
 				}

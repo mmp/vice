@@ -269,6 +269,22 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 	return fixes
 }
 
+// GetRouteFixes returns the ordered list of fix names from the aircraft's
+// assigned route. Synthetic underscore-prefixed waypoints and anything
+// outside the 3-5 character length range are skipped, so lat/long-only
+// waypoints and internal nav markers are excluded. Unlike GetSTTFixes,
+// the list is not distance- or count-truncated and the dep/arr airports
+// are not auto-prepended.
+func (ac *Aircraft) GetRouteFixes() []string {
+	var fixes []string
+	for _, wp := range ac.Nav.AssignedWaypoints() {
+		if len(wp.Fix) >= 3 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' {
+			fixes = append(fixes, wp.Fix)
+		}
+	}
+	return fixes
+}
+
 func (ac *Aircraft) InitializeFlightPlan(r av.FlightRules, acType, dep, arr string) {
 	ac.FlightPlan = av.FlightPlan{
 		Rules:            r,
