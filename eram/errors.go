@@ -127,7 +127,7 @@ func GetERAMError(e error, lg *log.Logger) *ERAMError {
 
 func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
 	if err != nil {
-		ep.feedbackArea.displayError(ep.currentPrefs(), GetERAMError(err, ctx.Lg))
+		ep.feedbackArea.Error(GetERAMError(err, ctx.Lg))
 	}
 }
 
@@ -140,11 +140,10 @@ func (ep *ERAMPane) applyCommandStatus(ctx *panes.Context, status CommandStatus,
 		return
 	}
 
-	ps := ep.currentPrefs()
 	if len(status.feedbackArea) > 0 {
-		ep.feedbackArea.displaySuccess(ps, strings.Join(status.feedbackArea, "\n"))
+		ep.feedbackArea.Success(strings.Join(status.feedbackArea, "\n"))
 	}
 	if len(status.responseArea) > 0 {
-		ep.responseArea.Set(ps, strings.Join(status.responseArea, "\n"))
+		ep.responseArea = formatInput(strings.Join(status.responseArea, "\n"))
 	}
 }

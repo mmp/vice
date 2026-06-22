@@ -92,7 +92,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 				cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
 			}
 			ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
-			ep.responseArea.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
+			ep.responseArea = fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints))
 		} else if ep.Input.String() != "" {
 			pos := transforms.LatLongFromWindowP(mouse.Pos)
 			var callsign av.ADSBCallsign
@@ -334,8 +334,8 @@ func (ep *ERAMPane) pointOutTrack(ctx *panes.Context, trk *sim.Track, sector str
 			func(err error) {
 				if err == nil {
 					if trk, _ := ctx.Client.State.GetTrackByACID(acid); trk != nil {
-						ep.feedbackArea.displaySuccess(ep.currentPrefs(), "ACCEPT\nINITIATE POINT OUT\n"+
-							string(trk.ADSBCallsign)+"/"+trk.FlightPlan.CID)
+						ep.feedbackArea.Success("ACCEPT\nINITIATE POINT OUT\n" +
+							string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID)
 					}
 				} else {
 					ep.displayError(err, ctx)
@@ -355,8 +355,8 @@ func (ep *ERAMPane) acknowledgePointOut(ctx *panes.Context, trk *sim.Track) erro
 		func(err error) {
 			if err == nil {
 				if trk, _ := ctx.Client.State.GetTrackByACID(acid); trk != nil {
-					ep.feedbackArea.displaySuccess(ep.currentPrefs(), "ACCEPT\nACKNOWLEDGE POINT OUT\n"+
-						string(acid)+"/"+trk.FlightPlan.CID)
+					ep.feedbackArea.Success("ACCEPT\nACKNOWLEDGE POINT OUT\n" +
+						string(acid) + "/" + trk.FlightPlan.CID)
 				}
 			} else {
 				ep.displayError(err, ctx)

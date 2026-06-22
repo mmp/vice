@@ -245,9 +245,9 @@ type ERAMPane struct {
 	AddedBeaconCodes []av.Squawk
 
 	// Output and input text for the command line interface.
-	responseArea inputText `json:"-"`
-	feedbackArea inputText `json:"-"`
-	Input        inputText `json:"-"`
+	responseArea string          `json:"-"`
+	feedbackArea feedbackMessage `json:"-"`
+	Input        inputText       `json:"-"`
 
 	activeToolbarMenu int  `json:"-"`
 	toolbarVisible    bool `json:"-"`
@@ -763,24 +763,6 @@ func formatInput(str string) string {
 	return output
 }
 
-// When formatting the text for the wraparound in tools.go, some newline characters are added in. inputText.formatWrap handles these newline
-// characters without messing up colors or locations
-func (inp *inputText) formatWrap(ps *Preferences, str string) {
-	newText := inputText{}
-	var i int // only goes up if not newline
-	for _, char := range str {
-		if char != '\n' {
-			newText.Add(string(char), (*inp)[i].color, (*inp)[i].location)
-			i++
-		} else {
-			newText.AddBasic(ps, "\n")
-		}
-	}
-	*inp = newText
-}
-
-// TODO: Add Success and Error methods to format success and error messages
-
 func (inp *inputText) DeleteOne() {
 	if len(*inp) > 0 {
 		*inp = (*inp)[:len(*inp)-1]
@@ -799,21 +781,38 @@ func (inp inputText) String() string {
 	return sb.String()
 }
 
-func (inp *inputText) displayError(ps *Preferences, err error) {
-	if err != nil {
-		errMsg := inputText{}
-		errMsg.Add(xMark+" ", colors.errorRed, math.Point2LL{})
-		errMsg.AddBasic(ps, toUpper(err.Error()))
-		*inp = errMsg
-	}
+// feedbackMessage is the MCA feedback area's content: either nothing, a
+// success message (green check + text), or an error message (red x + text).
+// The text is stored with formatInput already applied so render-time work is
+// just wrapping + drawing.
+type feedbackMessage struct {
+	kind feedbackKind
+	msg  string
 }
 
-func (inp *inputText) displaySuccess(ps *Preferences, str string) {
-	sucMsg := inputText{}
-	sucMsg.Add(checkMark+" ", colors.successGreen, math.Point2LL{})
-	sucMsg.AddBasic(ps, str)
-	*inp = sucMsg
+type feedbackKind int
 
+const (
+	feedbackNone feedbackKind = iota
+	feedbackSuccess
+	feedbackError
+)
+
+func (m *feedbackMessage) Success(str string) {
+	m.kind = feedbackSuccess
+	m.msg = formatInput(str)
+}
+
+func (m *feedbackMessage) Error(err error) {
+	if err == nil {
+		return
+	}
+	m.kind = feedbackError
+	m.msg = formatInput(toUpper(err.Error()))
+}
+
+func (m *feedbackMessage) Clear() {
+	*m = feedbackMessage{}
 }
 
 // AFAIK, you can only type white, regular characters in the input (apart from the location symbols)
@@ -844,9 +843,9 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 							cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
 						}
 						ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
-						ep.responseArea.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
+						ep.responseArea = fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints))
 					} else {
-						ep.responseArea.Set(ps, "DRAWROUTE")
+						ep.responseArea = "DRAWROUTE"
 					}
 				}
 			} else if len(ep.Input) > 0 {
@@ -856,7 +855,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			// Cancel any in-progress view drag so an incidental click in the
 			// MCA body doesn't leave the drag preview following the cursor
 			// after the command completes.
-			ep.viewRepo.Cancel(ctx)
+			ep.viewRepo.Cancel()
 			// Process the command
 			status, err := ep.executeERAMCommand(ctx, ep.Input)
 			ep.Input.Clear()
@@ -881,13 +880,13 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			// Cancel any in-progress drag.
 			anyActive := ep.viewRepo.activeID != ""
 			if anyActive {
-				ep.viewRepo.Cancel(ctx)
+				ep.viewRepo.Cancel()
 			}
 			if !anyActive {
 				if ep.commandMode == CommandModeDrawRoute {
 					ep.commandMode = CommandModeNone
 					ep.drawRoutePoints = nil
-					ep.responseArea.Clear()
+					ep.responseArea = ""
 				}
 				ep.Input.Clear()
 				ep.feedbackArea.Clear()

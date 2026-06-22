@@ -1005,8 +1005,7 @@ func handleLeaderLinePositionAndLength(ep *ERAMPane, ctx *panes.Context, dir, le
 func handleDrawRouteMode(ep *ERAMPane, ctx *panes.Context) CommandStatus {
 	ep.commandMode = CommandModeDrawRoute
 	ep.drawRoutePoints = nil
-	ps := ep.currentPrefs()
-	ep.responseArea.Set(ps, "DRAWROUTE")
+	ep.responseArea = "DRAWROUTE"
 	return CommandStatus{clear: true}
 }
 
@@ -1019,8 +1018,7 @@ func handleDrawRoutePoint(ep *ERAMPane, ctx *panes.Context, pos math.Point2LL) C
 	}
 	ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
 
-	ps := ep.currentPrefs()
-	ep.responseArea.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
+	ep.responseArea = fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints))
 
 	return CommandStatus{}
 }
@@ -1250,8 +1248,7 @@ func handleWXReportDisplay(ep *ERAMPane, ctx *panes.Context, airport string) (Co
 		displayText = fmt.Sprintf("NO DATA\n%s", icao)
 	}
 
-	ps := ep.currentPrefs()
-	ep.responseArea.Set(ps, displayText)
+	ep.responseArea = formatInput(displayText)
 
 	return CommandStatus{}, nil
 }

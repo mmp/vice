@@ -20,15 +20,13 @@ import (
 // CRR) from a declarative View spec. It owns the common chrome — title bar
 // with M / "-" buttons and hover outlines, window border, body background,
 // scroll bar, drag-to-reposition, and click-consumption ordering — so callers
-// only specify dimensions, decorations, and either a Body callback or a
-// column-major RowSource.
+// only specify dimensions, decorations, and contents.
 
 ///////////////////////////////////////////////////////////////////////////
 // Public types
 
-// ViewBuilders is passed to a View's Body callback. The draw builders are
-// pooled by DrawView and flushed after Body returns; Body should not Generate*
-// on them.
+// ViewBuilders is passed to a View's DrawBody callback. The draw builders are pooled by DrawView
+// and flushed after DrawBody returns; DrawBody should not Generate* on them.
 type ViewBuilders struct {
 	Trid *renderer.ColoredTrianglesDrawBuilder
 	Ld   *renderer.ColoredLinesDrawBuilder
@@ -45,7 +43,7 @@ type ViewRepoState struct {
 }
 
 // Cancel ends an in-progress drag.
-func (s *ViewRepoState) Cancel(_ *panes.Context) { s.activeID = "" }
+func (s *ViewRepoState) Cancel() { s.activeID = "" }
 
 // ViewScrollConfig describes the optional scroll bar on the right edge of the
 // body. State is caller-owned so the view's body can read Offset when
@@ -86,7 +84,6 @@ type ViewSelectable struct {
 	State    *ViewSelectionState
 	Items    func(body math.Extent2D) []ViewSelectableItem
 	OnDelete func(label string)
-	Font     *renderer.Font // popup font; nil falls back to View.TitleFont
 }
 
 // View is the declarative spec. See package overview above.
@@ -122,10 +119,10 @@ type View struct {
 	// Opaque. Clock uses this so the scope shows through in T mode.
 	OpaqueOnlyBg bool
 
-	OnMenu     func(host math.Extent2D) popup
-	OnMinimize func()
-	// MinimizeTarget is shorthand for the OnMinimize closure: when set and
-	// OnMinimize is nil, DrawView synthesizes `func() { *MinimizeTarget = false }`.
+	OnMenu func(host math.Extent2D) popup
+
+	// MinimizeTarget enables the title-bar "-" button: when non-nil, clicking
+	// "-" sets *MinimizeTarget = false.
 	MinimizeTarget *bool
 
 	OnBodyTertiaryMenu func(host math.Extent2D) popup
@@ -419,7 +416,7 @@ func titleBarLayout(titleExt math.Extent2D, v View, mouse *platform.MouseState) 
 	}
 
 	btns[2].label = "-"
-	btns[2].present = v.OnMinimize != nil
+	btns[2].present = v.MinimizeTarget != nil
 	btns[2].rect = math.Extent2D{
 		P0: [2]float32{titleExt.P1[0] - 2*viewMPad - charWidth(v.TitleFont), titleExt.P1[1] - titleH},
 		P1: titleExt.P1,
@@ -490,10 +487,6 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	// Defaults so callers can omit the obvious.
 	if v.TitleFont == nil {
 		v.TitleFont = ep.ERAMFont(2)
-	}
-	if v.OnMinimize == nil && v.MinimizeTarget != nil {
-		target := v.MinimizeTarget
-		v.OnMinimize = func() { *target = false }
 	}
 	if v.RowSource != nil {
 		ep.applyRowSource(&v)
@@ -685,8 +678,8 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			ep.popup = v.OnMenu(outer)
 			ep.consumeMouseClick(mouse)
 
-		case hasTitle && v.OnMinimize != nil && tb[2].hovered:
-			v.OnMinimize()
+		case hasTitle && v.MinimizeTarget != nil && tb[2].hovered:
+			*v.MinimizeTarget = false
 			ep.consumeMouseClick(mouse)
 
 		case hasTitle && tb[1].hovered && ep.viewRepo.activeID == "":
@@ -696,11 +689,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		case selectableActive && primaryClicked && hoveredSelIdx >= 0:
 			item := selItems[hoveredSelIdx]
 			v.Selectable.State.Selected = item.Label
-			popupFont := v.Selectable.Font
-			if popupFont == nil {
-				popupFont = v.TitleFont
-			}
-			ep.popup = ep.openDeleteEntryPopup(ctx, item, v.Selectable, popupFont)
+			ep.popup = ep.openDeleteEntryPopup(ctx, item, v.Selectable, v.TitleFont)
 			ep.clearMousePrimaryConsumed(mouse)
 
 		case !hasTitle && v.OnBodyTertiaryMenu != nil && tertiaryClicked &&
@@ -804,13 +793,11 @@ func (ep *ERAMPane) applyRowSource(v *View) {
 	// Prototype RowList copied per column (each column needs its own Rows
 	// slice). All other fields are shared.
 	proto := RowList{
-		Font:              font,
-		LineHeight:        lineH,
-		Width:             colWidth,
-		MaxLines:          rs.VisibleRows,
-		SelectedID:        rs.SelectedID,
-		SelectedBgColor:   colors.popup.backgroundGrey,
-		SelectedTextColor: colors.popup.backgroundBlack,
+		Font:       font,
+		LineHeight: lineH,
+		Width:      colWidth,
+		MaxLines:   rs.VisibleRows,
+		SelectedID: rs.SelectedID,
 	}
 	switch rs.RowSpacing {
 	case RowSpacingCompact:
@@ -915,7 +902,6 @@ func (ep *ERAMPane) applyRowSource(v *View) {
 	if rs.SelectableState != nil {
 		v.Selectable = &ViewSelectable{
 			State:    rs.SelectableState,
-			Font:     v.TitleFont,
 			OnDelete: rs.SelectableOnDelete,
 			Items: func(body math.Extent2D) []ViewSelectableItem {
 				var items []ViewSelectableItem
@@ -960,11 +946,9 @@ type RowList struct {
 	// 0 = unlimited.
 	MaxLines int
 
-	// Selection: the visible row whose ID matches SelectedID gets a filled
-	// background (SelectedBgColor) and uses SelectedTextColor for its text.
-	SelectedID        string
-	SelectedBgColor   renderer.RGB
-	SelectedTextColor renderer.RGB
+	// Selection: the visible row whose ID matches SelectedID gets the popup
+	// grey fill and inverted text color.
+	SelectedID string
 
 	// Populated by Measure.
 	measured     []measuredRow
@@ -1193,8 +1177,8 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		if l.SelectedID != "" && r.ID == l.SelectedID {
 			ink := l.inkUnionOf(r, m, labelX, bodyX, baseY)
 			if !ink.IsEmpty() {
-				addQuad(b.Trid, ink.Expand(1), l.SelectedBgColor)
-				style.Color = l.SelectedTextColor
+				addQuad(b.Trid, ink.Expand(1), colors.popup.backgroundGrey)
+				style.Color = colors.popup.backgroundBlack
 			}
 		}
 

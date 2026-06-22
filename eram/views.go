@@ -318,8 +318,23 @@ func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms ra
 	h := font.LayoutBounds(inText, 0).Height()
 	inputH := max(float32(38), h+4)
 
-	out, _ := util.WrapText(ep.feedbackArea.String(), cols, 0, true, true)
-	ep.feedbackArea.formatWrap(ps, out)
+	// Feedback rendering: icon (success/error) in its own color, then the
+	// message in default text color. The wrap input includes the icon so the
+	// available width on the first line accounts for it.
+	var feedbackIcon, feedbackRest string
+	var feedbackIconColor renderer.RGB
+	if ep.feedbackArea.kind != feedbackNone {
+		switch ep.feedbackArea.kind {
+		case feedbackSuccess:
+			feedbackIcon, feedbackIconColor = checkMark, colors.successGreen
+		case feedbackError:
+			feedbackIcon, feedbackIconColor = xMark, colors.errorRed
+		}
+		wrapped, _ := util.WrapText(feedbackIcon+" "+ep.feedbackArea.msg, cols, 0, true, true)
+		// wrapped starts with the icon char; the rest starts with the space
+		// that pushes the message past the icon's column on the first line.
+		feedbackRest = wrapped[len(feedbackIcon):]
+	}
 
 	// ps.MCA.Position is the top-left of the feedback box (prefs
 	// semantics). View sees the top-left of the whole envelope (input top).
@@ -344,14 +359,18 @@ func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms ra
 
 			inputTopLeft := [2]float32{body.P0[0], body.P1[1]}
 			feedbackTopLeft := [2]float32{body.P0[0], seamY}
+			textColor := ps.Brightness.Text.ScaleRGB(colors.toolbar.text).Scale(brightFactor)
+			textStyle := renderer.TextStyle{Font: font, Color: textColor}
 
 			// Input text (top box).
-			inputColor := ps.Brightness.Text.ScaleRGB(colors.toolbar.text).Scale(brightFactor)
-			b.Td.AddText(inText, [2]float32{inputTopLeft[0] + 2, inputTopLeft[1] - 2},
-				renderer.TextStyle{Font: font, Color: inputColor})
+			b.Td.AddText(inText, [2]float32{inputTopLeft[0] + 2, inputTopLeft[1] - 2}, textStyle)
 
-			// Feedback text (bottom box).
-			ep.writeText(b.Td, ep.feedbackArea, [2]float32{feedbackTopLeft[0] + 2, feedbackTopLeft[1] - 2}, font, brightFactor)
+			// Feedback text (bottom box). Two AddText calls share the same
+			// origin so newline resets in `feedbackRest` land at column 0.
+			loc := [2]float32{feedbackTopLeft[0] + 2, feedbackTopLeft[1] - 2}
+			iconStyle := renderer.TextStyle{Font: font, Color: feedbackIconColor.Scale(brightFactor)}
+			b.Td.AddText(feedbackIcon, loc, iconStyle)
+			b.Td.AddText(feedbackRest, loc, textStyle)
 		},
 	}
 	ep.DrawView(ctx, transforms, cb, v)
@@ -398,8 +417,8 @@ func (ep *ERAMPane) drawResponseArea(ctx *panes.Context, transforms radar.ScopeT
 	cols := ps.RA.Width
 	brightFactor := float32(ps.RA.Bright) / 100
 
-	out, _ := util.WrapText(ep.responseArea.String(), cols, 0, true, false)
-	ep.responseArea.formatWrap(ps, out)
+	wrapped, _ := util.WrapText(ep.responseArea, cols, 0, true, false)
+	textColor := ps.Brightness.Text.ScaleRGB(colors.toolbar.text).Scale(brightFactor)
 
 	v := View{
 		Position:   &ps.RA.Position,
@@ -412,28 +431,11 @@ func (ep *ERAMPane) drawResponseArea(ctx *panes.Context, transforms radar.ScopeT
 			func(pb popupBase) popup { return &raPopup{popupBase: pb} }),
 		Body: func(body math.Extent2D, b *ViewBuilders) {
 			topLeft := [2]float32{body.P0[0], body.P1[1]}
-			ep.writeText(b.Td, ep.responseArea, [2]float32{topLeft[0] + 2, topLeft[1] - 2}, font, brightFactor)
+			b.Td.AddText(wrapped, [2]float32{topLeft[0] + 2, topLeft[1] - 2},
+				renderer.TextStyle{Font: font, Color: textColor})
 		},
 	}
 	ep.DrawView(ctx, transforms, cb, v)
-}
-
-// writeText draws inputText one character at a time, preserving per-character
-// colors. brightFactor multiplicatively scales each character's stored color
-// (1.0 = unchanged, < 1 = dim, > 1 = brighten with OpenGL-side clamping).
-func (ep *ERAMPane) writeText(td *renderer.TextDrawBuilder, text inputText, loc [2]float32, font *renderer.Font, brightFactor float32) {
-	start0 := loc[0]
-	style := renderer.TextStyle{Font: font}
-	for _, char := range text {
-		ch := char.char
-		if ch != '\n' {
-			style.Color = char.color.Scale(brightFactor)
-			loc = td.AddText(string(ch), loc, style)
-		} else {
-			loc[0] = start0                             // reset the x position
-			loc[1] -= float32(font.Size) * float32(1.4) // edit this value
-		}
-	}
 }
 
 // raPopup is the configuration menu for the Response Area.
@@ -449,7 +451,7 @@ func (r *raPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 		makeIntMenuItem(ep, &ps.RA.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.RA.Bright, "BRIGHT", 0, 100, 1),
 		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
-			ep.responseArea.Clear()
+			ep.responseArea = ""
 			return false
 		}},
 	}
