@@ -149,7 +149,10 @@ func (po *pointOutPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar
 				BoxedSuffix: label(sender),
 				Color:       colors.pointOut.cyan,
 				OnClick: func(_ ERAMMenuClickType) bool {
-					ep.acknowledgePointOut(ctx, acid)
+					if trk, ok := ctx.Client.State.GetTrackByACID(acid); ok {
+						ep.acknowledgePointOut(ctx, trk)
+					}
+					// Not sure what else to do if the lookup fails...
 					return true
 				},
 			})

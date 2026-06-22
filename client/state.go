@@ -84,18 +84,18 @@ func (ss *SimState) GetTrackByACID(acid sim.ACID) (*sim.Track, bool) {
 	return nil, false
 }
 
-func (ss *SimState) GetTrackByFLID(flid string) (*sim.Track, bool) {
+func (ss *SimState) GetTrackByCID(flid string) (*sim.Track, bool) {
 	for i, trk := range ss.Tracks {
-		if !trk.IsAssociated() {
-			continue
-		}
-		if trk.FlightPlan.CID == flid {
+		if trk.IsAssociated() && trk.FlightPlan.CID == flid {
 			return ss.Tracks[i], true
 		}
-		if trk.ADSBCallsign == av.ADSBCallsign(flid) {
-			return ss.Tracks[i], true
-		}
-		if sq, err := av.ParseSquawk(flid); err == nil && trk.FlightPlan.AssignedSquawk == sq {
+	}
+	return nil, false
+}
+
+func (ss *SimState) GetTrackBySquawk(code av.Squawk) (*sim.Track, bool) {
+	for i, trk := range ss.Tracks {
+		if trk.IsAssociated() && trk.FlightPlan.AssignedSquawk == code {
 			return ss.Tracks[i], true
 		}
 	}

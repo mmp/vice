@@ -142,7 +142,7 @@ func (h *trackParser) Identifier() string { return "TRACK" }
 
 func (h *trackParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
 	if field, remaining := util.CutAtSpace(text); field != "" {
-		if trk, ok := ctx.Client.State.GetTrackByFLID(field); ok {
+		if trk := trackFromFLID(ctx, field); trk != nil {
 			return trk, remaining, true, nil
 		}
 	}
@@ -161,12 +161,28 @@ func (h *trackParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInpu
 	return trk, strings.TrimPrefix(trimmed, locationSymbol), true, nil
 }
 
+// General track lookup function that matches CID, ACID, ADSB callsign, and beacon code.
+func trackFromFLID(ctx *panes.Context, id string) *sim.Track {
+	if trk, ok := ctx.Client.State.GetTrackByCID(id); ok {
+		return trk
+	} else if trk, ok := ctx.Client.State.GetTrackByACID(sim.ACID(id)); ok {
+		return trk
+	} else if trk, ok := ctx.Client.State.GetTrackByCallsign(av.ADSBCallsign(id)); ok { // this is slightly sketch
+		return trk
+	} else if code, err := av.ParseSquawk(id); err == nil && len(id) == 4 {
+		if trk, ok := ctx.Client.State.GetTrackBySquawk(code); ok {
+			return trk
+		}
+	}
+	return nil
+}
+
 func (h *trackParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
 func (h *trackParser) AcceptsClick() bool   { return true }
 
 // trackListParser matches 1..maxTrackList tracks separated by '/' and/or
 // whitespace. Each token is either a clicked track (the 'w' locationSymbol) or
-// a typed identifier resolved via GetTrackByFLID (CID/ADSB callsign/squawk).
+// a typed identifier that resolved to a CID/ADSB callsign/squawk.
 type trackListParser struct{}
 
 const maxTrackList = 4
@@ -198,7 +214,7 @@ func (h *trackListParser) Parse(ep *ERAMPane, ctx *panes.Context, input *Command
 				return nil, text, false, nil // click missed any track
 			}
 			trk, ok := ctx.Client.State.Tracks[cs]
-			if !ok || !trk.IsAssociated() {
+			if !ok {
 				return nil, text, true, ErrERAMIllegalACID
 			}
 			tracks = append(tracks, trk)
@@ -209,11 +225,11 @@ func (h *trackListParser) Parse(ep *ERAMPane, ctx *panes.Context, input *Command
 			for pos < len(text) && !isSep(text[pos]) && text[pos] != locationSymbol[0] {
 				pos++
 			}
-			trk, ok := ctx.Client.State.GetTrackByFLID(text[start:pos])
-			if !ok {
+			if trk := trackFromFLID(ctx, text[start:pos]); trk == nil {
 				return nil, text, true, ErrERAMIllegalACID
+			} else {
+				tracks = append(tracks, trk)
 			}
-			tracks = append(tracks, trk)
 		}
 
 		if len(tracks) > maxTrackList {

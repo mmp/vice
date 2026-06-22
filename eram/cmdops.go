@@ -60,11 +60,11 @@ func registerOpsCommands() {
 	// QP [TRACK]: Clear the post-point-out FDB lock (FDB -> LDB)
 	registerCommand(CommandModeNone, "QP A [TRACK]",
 		func(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) error {
-			return ep.acknowledgePointOut(ctx, sim.ACID(trk.ADSBCallsign))
+			return ep.acknowledgePointOut(ctx, trk)
 		})
 	registerCommand(CommandModeNone, "QP [SECTOR_ID] [TRACK]",
 		func(ep *ERAMPane, ctx *panes.Context, sector string, trk *sim.Track) error {
-			return ep.pointOutTrack(ctx, sim.ACID(trk.ADSBCallsign), sector)
+			return ep.pointOutTrack(ctx, trk, sector)
 		})
 	registerCommand(CommandModeNone, "QP [TRACK]",
 		func(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
@@ -209,7 +209,7 @@ func handleInterimAltitude(ep *ERAMPane, ctx *panes.Context, alt InterimAltitude
 		fp.InterimType.Set(alt.Type)
 	}
 
-	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	ep.modifyFlightPlan(ctx, trk, fp)
 	state := ep.TrackState[trk.ADSBCallsign]
 	if state != nil {
 		state.ReachedAltitude = false
@@ -228,7 +228,7 @@ func handleClearInterimAltitude(ep *ERAMPane, ctx *panes.Context, trk *sim.Track
 	fp := sim.FlightPlanSpecifier{}
 	fp.InterimAlt.Set(0)
 
-	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	ep.modifyFlightPlan(ctx, trk, fp)
 	state := ep.TrackState[trk.ADSBCallsign]
 	if state != nil {
 		state.ReachedAltitude = false
@@ -250,7 +250,7 @@ func handleAssignedAltitude(ep *ERAMPane, ctx *panes.Context, alt int, trk *sim.
 	fp := sim.FlightPlanSpecifier{}
 	fp.AssignedAltitude.Set(alt)
 
-	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	ep.modifyFlightPlan(ctx, trk, fp)
 	state := ep.TrackState[trk.ADSBCallsign]
 	if state != nil {
 		state.ReachedAltitude = false
@@ -631,6 +631,13 @@ func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocati
 		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP LABEL\n ALREADY EXISTS\nCONT RANGE\nLF %s %s", loc.Token, label)
 	}
 
+	// All tracks must be associated
+	for _, trk := range tracks {
+		if !trk.IsAssociated() {
+			return CommandStatus{}, ErrERAMIllegalACID
+		}
+	}
+
 	// Create group
 	g := &CRRGroup{
 		Label:    label,
@@ -721,6 +728,10 @@ func handleCRRToggleMembership(ep *ERAMPane, label string, tracks []*sim.Track) 
 
 	// Toggle membership for each aircraft
 	for _, trk := range tracks {
+		if !trk.IsAssociated() {
+			return CommandStatus{}, ErrERAMIllegalACID
+		}
+
 		cs := trk.ADSBCallsign
 		if _, ok := g.Aircraft[cs]; ok {
 			delete(g.Aircraft, cs)
@@ -818,7 +829,7 @@ func handleTargetGenEmptyClicked(ep *ERAMPane, trk *sim.Track) CommandStatus {
 // Default Command Handlers (keyboard and clicked)
 
 func handleDefaultTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
-	if trk.FlightPlan == nil {
+	if trk.IsUnassociated() {
 		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
@@ -841,10 +852,6 @@ func handleDefaultTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (Comma
 	}
 
 	// Toggle FDB display
-	if !trk.IsAssociated() {
-		return CommandStatus{}, ErrCommandFormat
-	}
-
 	if ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
 		return CommandStatus{}, NewERAMError("USER ACTION NOT ALLOWED ON A\nCONTROLLER FLIGHT\nFORCED DATA BLK %s", trk.ADSBCallsign)
 	}
@@ -1036,7 +1043,7 @@ func qsFDBDataAcceptMsg(trk *sim.Track) []string {
 }
 
 func handleQSToggleHSF(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
-	if trk == nil {
+	if trk == nil || trk.FlightPlan == nil {
 		return CommandStatus{}, ErrERAMIllegalACID
 	}
 
@@ -1052,7 +1059,7 @@ func handleQSDeleteHeading(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (Co
 
 	var fp sim.FlightPlanSpecifier
 	fp.Scratchpad.Set("")
-	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	ep.modifyFlightPlan(ctx, trk, fp)
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
@@ -1063,7 +1070,7 @@ func handleQSDeleteSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (Comm
 
 	var fp sim.FlightPlanSpecifier
 	fp.SecondaryScratchpad.Set("")
-	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	ep.modifyFlightPlan(ctx, trk, fp)
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
@@ -1075,7 +1082,7 @@ func handleQSDeleteAll(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (Comman
 	var fp sim.FlightPlanSpecifier
 	fp.Scratchpad.Set("")
 	fp.SecondaryScratchpad.Set("")
-	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	ep.modifyFlightPlan(ctx, trk, fp)
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
@@ -1086,7 +1093,7 @@ func handleQSHeading(ep *ERAMPane, ctx *panes.Context, heading string, trk *sim.
 
 	var fp sim.FlightPlanSpecifier
 	fp.Scratchpad.Set(heading)
-	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	ep.modifyFlightPlan(ctx, trk, fp)
 
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
@@ -1101,7 +1108,7 @@ func handleQSSpeed(ep *ERAMPane, ctx *panes.Context, speed string, trk *sim.Trac
 	if isQSFreeText(trk.FlightPlan.Scratchpad) {
 		fp.Scratchpad.Set("")
 	}
-	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	ep.modifyFlightPlan(ctx, trk, fp)
 
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
@@ -1114,7 +1121,7 @@ func handleQSFreeText(ep *ERAMPane, ctx *panes.Context, freeText string, trk *si
 	var fp sim.FlightPlanSpecifier
 	fp.Scratchpad.Set(freeText)
 	fp.SecondaryScratchpad.Set("")
-	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	ep.modifyFlightPlan(ctx, trk, fp)
 
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }

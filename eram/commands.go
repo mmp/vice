@@ -204,13 +204,7 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 }
 
 // Mainly used for ERAM assigned/ interm alts. May be used for actually changing routes.
-func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.FlightPlanSpecifier) {
-	trk, ok := ctx.Client.State.GetTrackByFLID(cid)
-	if !ok {
-		ep.displayError(ErrERAMIllegalACID, ctx)
-		return
-	}
-
+func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, trk *sim.Track, spec sim.FlightPlanSpecifier) {
 	if trk.FlightPlan != nil {
 		if spec.Scratchpad.IsSet {
 			trk.FlightPlan.Scratchpad = spec.Scratchpad.Value
@@ -252,14 +246,6 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.Fl
 			ep.runAircraftCommands(ctx, trk.ADSBCallsign, spec.SecondaryScratchpad.Value)
 		}
 	}
-}
-
-func (ep *ERAMPane) getACIDFromCID(ctx *panes.Context, cid string) (sim.ACID, error) {
-	trk, ok := ctx.Client.State.GetTrackByFLID(cid)
-	if !ok {
-		return "", ErrERAMIllegalACID
-	}
-	return sim.ACID(trk.ADSBCallsign.String()), nil
 }
 
 func (ep *ERAMPane) acceptHandoff(ctx *panes.Context, acid sim.ACID) {
@@ -334,13 +320,16 @@ func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller s
 	return nil
 }
 
-func (ep *ERAMPane) pointOutTrack(ctx *panes.Context, acid sim.ACID, sector string) error {
-	if control, err := ep.lookupControllerForID(ctx, sector); err != nil {
+func (ep *ERAMPane) pointOutTrack(ctx *panes.Context, trk *sim.Track, sector string) error {
+	if trk.IsUnassociated() {
+		return ErrERAMIllegalACID
+	} else if control, err := ep.lookupControllerForID(ctx, sector); err != nil {
 		return err
 	} else if !control.ERAMFacility || control.FacilityIdentifier != ctx.UserController().FacilityIdentifier {
 		// Can only point out to controllers in the same facility (just ERAM?)
 		return ErrERAMIllegalPosition
 	} else {
+		acid := trk.FlightPlan.ACID
 		ctx.Client.PointOut(acid, control.PositionId(),
 			func(err error) {
 				if err == nil {
@@ -356,7 +345,12 @@ func (ep *ERAMPane) pointOutTrack(ctx *panes.Context, acid sim.ACID, sector stri
 	}
 }
 
-func (ep *ERAMPane) acknowledgePointOut(ctx *panes.Context, acid sim.ACID) error {
+func (ep *ERAMPane) acknowledgePointOut(ctx *panes.Context, trk *sim.Track) error {
+	if trk.IsUnassociated() {
+		return ErrERAMIllegalACID
+	}
+
+	acid := trk.FlightPlan.ACID
 	ctx.Client.AcknowledgePointOut(acid,
 		func(err error) {
 			if err == nil {
