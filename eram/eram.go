@@ -302,6 +302,12 @@ type ERAMPane struct {
 	// At most one floating pop-up menu is open at a time; nil = none open.
 	popup popup `json:"-"`
 
+	// popupExtent is the on-screen rectangle of the active popup, refreshed
+	// each frame by popup.draw. Used by DrawView to suppress view click
+	// handling when the cursor is inside the popup, so the popup always wins
+	// the click. Valid only while popup != nil.
+	popupExtent math.Extent2D `json:"-"`
+
 	// CRR state (session)
 	CRRGroups        map[string]*CRRGroup                         `json:"CRRGroups,omitempty"`
 	crrFixRects      map[string]math.Extent2D                     `json:"-"`

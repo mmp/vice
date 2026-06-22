@@ -501,6 +501,7 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 	menuP3 := [2]float32{origin[0], cursor[1]}
 
 	result.Extent = math.Extent2D{P0: menuP3, P1: menuP1}
+	ep.popupExtent = result.Extent
 
 	ld.AddLineLoop(bBorder.ScaleRGB(colors.menu.outerBorder), [][2]float32{menuP0, menuP1, menuP2, menuP3})
 

@@ -647,14 +647,21 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	}
 
 	// Click handling. Each branch consumes its click so Body sees only
-	// fall-through events.
+	// fall-through events. Pop-ups always win clicks within their extent —
+	// the popup is rendered on top, so a click in the overlap region belongs
+	// to the popup, not the view underneath.
 	primaryClicked := ep.mousePrimaryClicked(mouse)
 	tertiaryClicked := ep.mouseTertiaryClicked(mouse)
-	if mouse != nil && (primaryClicked || tertiaryClicked) {
+	popupClick := ep.popup != nil && mouse != nil && ep.popupExtent.Inside(mouse.Pos)
+	if mouse != nil && (primaryClicked || tertiaryClicked) && !popupClick {
+		// Starting a drag dismisses any open pop-up: the user is moving the
+		// view, so the pop-up should no longer pin it (and our re-pinning
+		// would otherwise snap it back to its old X on the next frame).
 		startDrag := func() {
 			ep.viewRepo.activeID = v.ID
 			ep.viewRepo.startTime = time.Now()
 			ep.viewRepo.dragOffset = math.Sub2f(mouse.Pos, pos)
+			ep.popup = nil
 		}
 		switch {
 		case scrollVisible && scrollUpRect.Inside(mouse.Pos):
@@ -1304,6 +1311,7 @@ func (d *deleteEntryPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms rad
 		P0: [2]float32{d.origin[0], d.origin[1] - d.height},
 		P1: [2]float32{d.origin[0] + d.width, d.origin[1]},
 	}
+	ep.popupExtent = extent
 	hovered := mouse != nil && extent.Inside(mouse.Pos)
 
 	addQuad(trid, extent, ps.Brightness.Button.ScaleRGB(colors.popup.backgroundGrey))
