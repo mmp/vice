@@ -69,12 +69,12 @@ type ViewSelectionState struct {
 }
 
 // ViewSelectableItem is one selectable row inside the View body. Extent is the
-// pane-coord hit-test rectangle; Label is shown in the popup as "DELETE
-// <Label>" and identifies the row. Labels among items in one frame are
-// expected to be unique.
+// pane-coord hit-test rectangle; ID identifies the row (passed to OnDelete)
+// and is also shown verbatim in the popup as "DELETE <ID>". IDs among items in
+// one frame are expected to be unique.
 type ViewSelectableItem struct {
 	Extent math.Extent2D
-	Label  string
+	ID     string
 }
 
 // ViewSelectable enables hover outlines and click-to-delete on body rows.
@@ -127,7 +127,7 @@ type View struct {
 
 	OnBodyTertiaryMenu func(host math.Extent2D) popup
 
-	Body func(extent math.Extent2D, b *ViewBuilders)
+	DrawBody func(extent math.Extent2D, b *ViewBuilders)
 
 	Scroll     *ViewScrollConfig
 	Selectable *ViewSelectable
@@ -135,7 +135,7 @@ type View struct {
 	// RowSource, when set, supplies a column-major list-of-rows body.
 	// DrawView builds per-column layouts, computes Width / BodyHeight, and
 	// wires Scroll / Selectable. Callers must NOT also set Width,
-	// BodyHeight, Body, Scroll, or Selectable when RowSource is set.
+	// BodyHeight, DrawBody, Scroll, or Selectable when RowSource is set.
 	RowSource *ViewRowSource
 }
 
@@ -150,8 +150,8 @@ type ViewRowSource struct {
 	// leaves it zero.
 	Rows []Row
 
-	// FontSize selects ERAMFont(FontSize); clamped to [1,3].
-	FontSize int
+	// FontIndex selects ERAMFont(FontIndex); clamped to [1,3].
+	FontIndex int
 
 	// ContentChars is the per-column body content width in characters of
 	// the selected (fixed-width) font.
@@ -160,13 +160,13 @@ type ViewRowSource struct {
 	MaxCols     int
 	VisibleRows int
 
-	// BadgeColumn reserves the leftmost badge column matching the title-bar
-	// M button. Implied by BadgesVisible.
-	BadgeColumn bool
+	// ReserveBadgeColumn reserves the leftmost badge column matching the
+	// title-bar M button. Implied by ShowBadges.
+	ReserveBadgeColumn bool
 
-	// BadgesVisible draws the standard yellow fill in the badge column,
-	// scaled by Brightness. Implies BadgeColumn.
-	BadgesVisible bool
+	// ShowBadges draws the standard yellow fill in the badge column, scaled
+	// by Brightness. Implies ReserveBadgeColumn.
+	ShowBadges bool
 
 	RowSpacing RowSpacing
 
@@ -186,9 +186,9 @@ type ViewRowSource struct {
 	// SelectedID marks the row whose ID matches for selection highlight.
 	SelectedID string
 
-	// SelectableState / SelectableOnDelete wire click-to-delete using row IDs.
-	SelectableState    *ViewSelectionState
-	SelectableOnDelete func(label string)
+	// SelectableState / OnRowDelete wire click-to-delete using row IDs.
+	SelectableState *ViewSelectionState
+	OnRowDelete     func(id string)
 
 	// OnRowExtents, if non-nil, is called after each column's Draw with the
 	// visible-row extents flattened in display order (col 0 rows, then col 1
@@ -287,12 +287,6 @@ func addRectLoop(ld *renderer.ColoredLinesDrawBuilder, ex math.Extent2D, color r
 		ex.P1,
 		{ex.P0[0], ex.P1[1]},
 	})
-}
-
-// drawRectOutline draws a 1 px line loop 1 px outside ex (used for title-bar
-// button hover outlines).
-func drawRectOutline(ld *renderer.ColoredLinesDrawBuilder, ex math.Extent2D, color renderer.RGB) {
-	addRectLoop(ld, ex.Expand(1), color)
 }
 
 // deleteByID removes the first element of *sl whose key equals id.
@@ -608,14 +602,15 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 		// Dim outlines first, then bright outlines on hover — the bright
 		// pass must overdraw dim in the 1-px overlap at region boundaries.
+		// Outlines sit 1 px outside each button rect.
 		for _, b := range tb {
 			if b.present && !b.hovered {
-				drawRectOutline(ld, b.rect, dim)
+				addRectLoop(ld, b.rect.Expand(1), dim)
 			}
 		}
 		for _, b := range tb {
 			if b.present && b.hovered {
-				drawRectOutline(ld, b.rect, bright)
+				addRectLoop(ld, b.rect.Expand(1), bright)
 			}
 		}
 	}
@@ -688,7 +683,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 		case selectableActive && primaryClicked && hoveredSelIdx >= 0:
 			item := selItems[hoveredSelIdx]
-			v.Selectable.State.Selected = item.Label
+			v.Selectable.State.Selected = item.ID
 			ep.popup = ep.openDeleteEntryPopup(ctx, item, v.Selectable, v.TitleFont)
 			ep.clearMousePrimaryConsumed(mouse)
 
@@ -728,16 +723,16 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	}
 
 	// Body content.
-	if v.Body != nil && bodyH > 0 {
-		v.Body(bodyExtent, &ViewBuilders{Trid: trid, Ld: ld, Td: td})
+	if v.DrawBody != nil && bodyH > 0 {
+		v.DrawBody(bodyExtent, &ViewBuilders{Trid: trid, Ld: ld, Td: td})
 	}
 
 	// Hover outline for selectable rows. Skip when the row is also selected
 	// — its highlight fill carries the visual instead.
 	if selectableActive && hoveredSelIdx >= 0 {
 		hovered := selItems[hoveredSelIdx]
-		if state := v.Selectable.State; state == nil || hovered.Label != state.Selected {
-			drawRectOutline(ld, hovered.Extent, colors.view.hoveredOutline)
+		if state := v.Selectable.State; state == nil || hovered.ID != state.Selected {
+			addRectLoop(ld, hovered.Extent.Expand(1), colors.view.hoveredOutline)
 		}
 	}
 
@@ -764,20 +759,20 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 ///////////////////////////////////////////////////////////////////////////
 // RowSource expansion
 
-// applyRowSource fills in Width, BodyHeight, BodyFont, Body, Scroll, and
+// applyRowSource fills in Width, BodyHeight, BodyFont, DrawBody, Scroll, and
 // Selectable on v from v.RowSource so the rest of DrawView can treat the
 // view as if the caller had wired those fields up directly.
 func (ep *ERAMPane) applyRowSource(v *View) {
 	rs := v.RowSource
 
-	font := ep.ERAMFont(rs.FontSize)
+	font := ep.ERAMFont(rs.FontIndex)
 	lineH := lineHeight(font)
 	textColor := v.Brightness.ScaleRGB(colors.view.text)
 
-	// Reserve a badge column on the left when requested (BadgesVisible
-	// implies BadgeColumn). The badge sits flush with body.P0 so it lines
-	// up with the title-bar M button.
-	badgeColumn := rs.BadgeColumn || rs.BadgesVisible
+	// Reserve a badge column on the left when requested (ShowBadges implies
+	// ReserveBadgeColumn). The badge sits flush with body.P0 so it lines up
+	// with the title-bar M button.
+	badgeColumn := rs.ReserveBadgeColumn || rs.ShowBadges
 	leftChrome := viewMPad
 	if badgeColumn {
 		leftChrome = viewMButtonWidth(v.TitleFont)
@@ -786,7 +781,7 @@ func (ep *ERAMPane) applyRowSource(v *View) {
 
 	// Standard yellow badge, built once and shared by every row.
 	var badge *Badge
-	if rs.BadgesVisible {
+	if rs.ShowBadges {
 		badge = defaultBadge(v.TitleFont, v.Brightness.ScaleRGB(colors.badge.fill))
 	}
 
@@ -882,7 +877,7 @@ func (ep *ERAMPane) applyRowSource(v *View) {
 		}
 	}
 
-	v.Body = func(body math.Extent2D, b *ViewBuilders) {
+	v.DrawBody = func(body math.Extent2D, b *ViewBuilders) {
 		var allExtents []math.Extent2D
 		for c, col := range cols {
 			ext := col.Draw(colExt(c, body), b)
@@ -902,12 +897,12 @@ func (ep *ERAMPane) applyRowSource(v *View) {
 	if rs.SelectableState != nil {
 		v.Selectable = &ViewSelectable{
 			State:    rs.SelectableState,
-			OnDelete: rs.SelectableOnDelete,
+			OnDelete: rs.OnRowDelete,
 			Items: func(body math.Extent2D) []ViewSelectableItem {
 				var items []ViewSelectableItem
 				for c, col := range cols {
 					for i, e := range col.TextExtents(colExt(c, body)) {
-						items = append(items, ViewSelectableItem{Extent: e, Label: col.Rows[i].ID})
+						items = append(items, ViewSelectableItem{Extent: e, ID: col.Rows[i].ID})
 					}
 				}
 				return items
@@ -1247,10 +1242,10 @@ type deleteEntryPopup struct {
 	origin   [2]float32
 	width    float32
 	height   float32
-	label    string
+	id       string
 	owner    *ViewSelectionState
 	font     *renderer.Font
-	onDelete func(label string)
+	onDelete func(id string)
 }
 
 // openDeleteEntryPopup positions a deleteEntryPopup adjacent to the clicked
@@ -1259,7 +1254,7 @@ type deleteEntryPopup struct {
 func (ep *ERAMPane) openDeleteEntryPopup(ctx *panes.Context, item ViewSelectableItem,
 	sel *ViewSelectable, font *renderer.Font) *deleteEntryPopup {
 
-	text := "DELETE " + item.Label
+	text := "DELETE " + item.ID
 	pad := float32(8)
 	width := float32(len(text))*charWidth(font) + 2*pad
 	height := cellHeight(font) + pad
@@ -1287,7 +1282,7 @@ func (ep *ERAMPane) openDeleteEntryPopup(ctx *panes.Context, item ViewSelectable
 		origin:   origin,
 		width:    width,
 		height:   height,
-		label:    item.Label,
+		id:       item.ID,
 		owner:    sel.State,
 		font:     font,
 		onDelete: sel.OnDelete,
@@ -1319,7 +1314,7 @@ func (d *deleteEntryPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms rad
 	}
 	addRectLoop(ld, extent, ps.Brightness.Border.ScaleRGB(outlineColor))
 
-	td.AddTextCentered("DELETE "+d.label, extent.Center(),
+	td.AddTextCentered("DELETE "+d.id, extent.Center(),
 		renderer.TextStyle{Font: d.font, Color: ps.Brightness.Text.ScaleRGB(colors.popup.text)})
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -1329,7 +1324,7 @@ func (d *deleteEntryPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms rad
 
 	if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 		if hovered && d.onDelete != nil {
-			d.onDelete(d.label)
+			d.onDelete(d.id)
 		}
 		ep.popup = nil
 		ep.clearMousePrimaryConsumed(mouse)

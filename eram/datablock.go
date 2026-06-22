@@ -258,8 +258,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 
 		// Line 1
 		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color, false) // also * if satcom
-		vciBright := radar.Brightness(ps.Brightness.ONFREQ + ps.Brightness.Portal)
-		vciColor := vciBright.ScaleRGB(colors.vciGreen)
+		vciColor := (ps.Brightness.ONFREQ + ps.Brightness.Portal).ScaleRGB(colors.vciGreen)
 		dbWriteText(db.vci[:], util.Select(state.DisplayVCI || state.HoverVCI, vci, ""), vciColor, false)
 
 		// Line 2

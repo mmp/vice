@@ -52,18 +52,18 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		MinimizeTarget: &ps.AltimSet.Visible,
 		RowSource: &ViewRowSource{
 			Rows:                  rows,
-			FontSize:              ps.AltimSet.Font,
+			FontIndex:             ps.AltimSet.Font,
 			ContentChars:          len("MMMM   1353 999  "),
 			MaxCols:               ps.AltimSet.Col,
 			VisibleRows:           ps.AltimSet.Lines,
-			BadgeColumn:           true,
-			BadgesVisible:         ps.AltimSet.ShowIndicators,
+			ReserveBadgeColumn:    true,
+			ShowBadges:            ps.AltimSet.ShowIndicators,
 			RowSpacing:            RowSpacingCompact,
 			ScrollState:           &ep.altimSetScroll,
 			EmptyKeepsColumnWidth: true,
 			SelectedID:            ep.altimSetSelect.Selected,
 			SelectableState:       &ep.altimSetSelect,
-			SelectableOnDelete:    func(label string) { deleteByID(&ep.AltimSetAirports, label, altimDisplayID) },
+			OnRowDelete:           func(id string) { deleteByID(&ep.AltimSetAirports, id, altimDisplayID) },
 		},
 	})
 }
@@ -193,7 +193,7 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 		MinimizeTarget: &ps.BeaconCodeView.Visible,
 		RowSource: &ViewRowSource{
 			Rows:                    beaconCodeRows(ctx, ep, ps),
-			FontSize:                ps.BeaconCodeView.Font,
+			FontIndex:               ps.BeaconCodeView.Font,
 			ContentChars:            cellChars,
 			MaxCols:                 ps.BeaconCodeView.Col,
 			VisibleRows:             ps.BeaconCodeView.Lines,
@@ -306,7 +306,7 @@ func (ep *ERAMPane) startDrawCommandInput(ctx *panes.Context, transforms radar.S
 func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	const width = float32(390)
+	const width = 390
 	font := ep.ERAMFont(ps.MCA.Font)
 	cols := ps.MCA.Width
 	brightFactor := float32(ps.MCA.Bright) / 100
@@ -349,7 +349,7 @@ func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms ra
 		Brightness: ps.Brightness.Border,
 		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "mca", 4,
 			func(pb popupBase) popup { return &mcaPopup{popupBase: pb} }),
-		Body: func(body math.Extent2D, b *ViewBuilders) {
+		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
 			// body.P1 = top-right (top of input); body.P0 = bottom-left (bottom of feedback).
 			seamY := body.P1[1] - inputH
 
@@ -411,8 +411,8 @@ func (m *mcaPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 func (ep *ERAMPane) drawResponseArea(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	const width = float32(325)
-	const height = float32(77)
+	const width = 325
+	const height = 77
 	font := ep.ERAMFont(ps.RA.Font)
 	cols := ps.RA.Width
 	brightFactor := float32(ps.RA.Bright) / 100
@@ -429,7 +429,7 @@ func (ep *ERAMPane) drawResponseArea(ctx *panes.Context, transforms radar.ScopeT
 		Brightness: ps.RA.Bright,
 		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "ra", 4,
 			func(pb popupBase) popup { return &raPopup{popupBase: pb} }),
-		Body: func(body math.Extent2D, b *ViewBuilders) {
+		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
 			topLeft := [2]float32{body.P0[0], body.P1[1]}
 			b.Td.AddText(wrapped, [2]float32{topLeft[0] + 2, topLeft[1] - 2},
 				renderer.TextStyle{Font: font, Color: textColor})
@@ -495,7 +495,7 @@ func (ep *ERAMPane) drawTimeView(ctx *panes.Context, transforms radar.ScopeTrans
 		OpaqueOnlyBg: true,
 		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "clock", 4,
 			func(pb popupBase) popup { return &timeViewPopup{popupBase: pb} }),
-		Body: func(body math.Extent2D, b *ViewBuilders) {
+		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
 			center := [2]float32{(body.P0[0] + body.P1[0]) / 2, (body.P0[1] + body.P1[1]) / 2}
 			b.Td.AddTextCentered(timeStr, center, renderer.TextStyle{Font: font, Color: textColor})
 		},
@@ -565,17 +565,17 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		MinimizeTarget: &ps.WX.Visible,
 		RowSource: &ViewRowSource{
 			Rows:               rows,
-			FontSize:           ps.WX.Font,
+			FontIndex:          ps.WX.Font,
 			ContentChars:       24,
 			MaxCols:            1,
 			VisibleRows:        ps.WX.Lines,
-			BadgeColumn:        true,
-			BadgesVisible:      ps.WX.ShowIndicators,
+			ReserveBadgeColumn: true,
+			ShowBadges:         ps.WX.ShowIndicators,
 			RowSpacing:         RowSpacingAiry,
 			ScrollState:        &ep.wxScroll,
 			SelectedID:         ep.wxSelect.Selected,
 			SelectableState:    &ep.wxSelect,
-			SelectableOnDelete: func(label string) { deleteByID(&ep.WXReportStations, label, wxDisplayID) },
+			OnRowDelete:        func(id string) { deleteByID(&ep.WXReportStations, id, wxDisplayID) },
 		},
 	})
 }

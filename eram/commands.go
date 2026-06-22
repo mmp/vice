@@ -65,7 +65,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		}
 		// Skip an empty middle-click on empty space: nothing to dispatch.
 		if callsign != "" || ep.Input.String() != "" {
-			ep.Input.AddLocation(ps, pos, callsign)
+			ep.Input.AddLocation(pos, callsign)
 			status, err := ep.executeERAMCommand(ctx, ep.Input)
 			ep.Input.Clear()
 			ep.applyCommandStatus(ctx, status, err)
@@ -99,7 +99,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 			if trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms); trk != nil {
 				callsign = trk.ADSBCallsign
 			}
-			ep.Input.AddLocation(ps, pos, callsign)
+			ep.Input.AddLocation(pos, callsign)
 		}
 	}
 

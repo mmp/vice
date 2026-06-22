@@ -152,7 +152,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 		ep.crrLabelRects = nil
 		ep.crrAircraftRects = nil
 	case !ps.CRR.ListMode:
-		v.BodyHeight, v.Body = ep.buildCRRPanel(labels, font)
+		v.BodyHeight, v.DrawBody = ep.buildCRRPanel(labels, font)
 	default:
 		v.RowSource = ep.buildCRRList(labels, trackPos)
 	}
@@ -170,7 +170,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 			continue
 		}
 		if primary {
-			ep.Input.Set(ps, "LF "+strings.ToUpper(label)+" ")
+			ep.Input.Set("LF " + strings.ToUpper(label) + " ")
 		} else if g := ep.CRRGroups[label]; g != nil {
 			if len(g.Aircraft) > 0 {
 				g.Aircraft = make(map[av.ADSBCallsign]struct{})
@@ -297,7 +297,7 @@ func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]m
 	// + 2*viewMPad side pad = the same 260 px total column width as panel mode.
 	return &ViewRowSource{
 		Rows:         rows,
-		FontSize:     2,
+		FontIndex:    2,
 		ContentChars: 18,
 		MaxCols:      1,
 		VisibleRows:  ps.CRR.Lines,
@@ -352,7 +352,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 		makeIntMenuItem(ep, &ps.CRR.Bright, "BRIGHT", 0, 100, 1),
 		ep.makeToggleMenuItem(&ps.CRR.ListMode, "LIST"),
 		{Label: fmt.Sprintf("COLOR %d", ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: colors.popup.backgroundBlack,
-			Color: CRRGreen.BrightRGB(radar.Brightness(90)), OnClick: func(_ ERAMMenuClickType) bool {
+			Color: CRRGreen.BrightRGB(90), OnClick: func(_ ERAMMenuClickType) bool {
 				v := ps.CRR.ColorBright[ps.CRR.SelectedColor]
 				handleClick(ep, &v, 0, 100, 1)
 				ps.CRR.ColorBright[ps.CRR.SelectedColor] = v
@@ -418,7 +418,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.Scope
 				sp1 := [2]float32{x0 + swatchW, yTop - yOffset}
 				sp2 := [2]float32{x0 + swatchW, yTop - yOffset - swatchH}
 				sp3 := [2]float32{x0, yTop - yOffset - swatchH}
-				trid.AddQuad(sp0, sp1, sp2, sp3, c.BrightRGB(radar.Brightness(ps.CRR.ColorBright[c])))
+				trid.AddQuad(sp0, sp1, sp2, sp3, c.BrightRGB(ps.CRR.ColorBright[c]))
 				if ps.CRR.SelectedColor == c {
 					ld.AddLineLoop(bBorder.ScaleRGB(colors.crr.swatchHighlight), [][2]float32{sp0, sp1, sp2, sp3})
 				}
@@ -530,7 +530,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 	if mouse := ctx.Mouse; (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && len(ep.Input) == 0 {
 		for id, ex := range ep.crrFixRects {
 			if ex.Inside(mouse.Pos) {
-				ep.Input.Set(ps, "LF "+strings.ToUpper(id)+" ")
+				ep.Input.Set("LF " + strings.ToUpper(id) + " ")
 				break
 			}
 		}

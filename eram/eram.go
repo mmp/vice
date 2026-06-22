@@ -607,7 +607,7 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 		ep.prefSet.Current.VideoMapVisible = make(map[string]interface{})
 	}
 	if ep.prefSet.Current.VideoMapBrightness == nil {
-		ep.prefSet.Current.VideoMapBrightness = make(map[string]int)
+		ep.prefSet.Current.VideoMapBrightness = make(map[string]radar.Brightness)
 	}
 
 	// Update sim-dependent fields if they aren't set
@@ -713,47 +713,34 @@ const circleFilled string = "z"
 
 type inputChar struct {
 	char          rune
-	color         renderer.RGB
 	location      math.Point2LL
 	trackCallsign av.ADSBCallsign // set on 'locationSymbol' chars added by AddLocation when the click landed on a track
 }
 
 type inputText []inputChar
 
-func (inp *inputText) Set(ps *Preferences, str string) {
+func (inp *inputText) Set(str string) {
 	inp.Clear()
-	color := ps.Brightness.Text.ScaleRGB(colors.toolbar.text) // Default white text color
-	str = formatInput(str)
-	for _, char := range str {
-		*inp = append(*inp, inputChar{char: char, color: color})
+	for _, char := range formatInput(str) {
+		*inp = append(*inp, inputChar{char: char})
 	}
 }
 
-func (inp *inputText) Add(str string, color renderer.RGB, location math.Point2LL) {
-	str = formatInput(str)
-	for _, char := range str {
-		*inp = append(*inp, inputChar{char: char, color: color, location: location})
-	}
-}
-
-func (inp *inputText) AddLocation(ps *Preferences, location math.Point2LL, callsign av.ADSBCallsign) {
+func (inp *inputText) AddLocation(location math.Point2LL, callsign av.ADSBCallsign) {
 	// Trim trailing whitespace inputChars in place so prior chars (and the
 	// click locations they carry) are preserved.
 	for len(*inp) > 0 && unicode.IsSpace((*inp)[len(*inp)-1].char) {
 		*inp = (*inp)[:len(*inp)-1]
 	}
-	color := ps.Brightness.Text.ScaleRGB(colors.toolbar.text)
 	for _, char := range formatInput(" " + locationSymbol + " ") {
-		*inp = append(*inp, inputChar{char: char, color: color, location: location, trackCallsign: callsign})
+		*inp = append(*inp, inputChar{char: char, location: location, trackCallsign: callsign})
 	}
 }
 
 // No formatting needed
-func (inp *inputText) AddBasic(ps *Preferences, str string) {
-	str = formatInput(str)
-	color := ps.Brightness.Text.ScaleRGB(colors.toolbar.text) // Default white text color
-	for _, char := range str {
-		*inp = append(*inp, inputChar{char: char, color: color})
+func (inp *inputText) AddBasic(str string) {
+	for _, char := range formatInput(str) {
+		*inp = append(*inp, inputChar{char: char})
 	}
 }
 
@@ -822,7 +809,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	}
 	ps := ep.currentPrefs()
 	keyboardInput := strings.ToUpper(ctx.Keyboard.Input)
-	ep.Input.AddBasic(ps, keyboardInput)
+	ep.Input.AddBasic(keyboardInput)
 	input := ep.Input.String()
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
@@ -893,7 +880,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			}
 		case imgui.KeyTab:
 			if input == "" {
-				ep.Input.Set(ps, "TG ")
+				ep.Input.Set("TG ")
 			}
 		case imgui.KeyPageUp: // velocity vector *2
 			if ep.VelocityTime == 0 {
@@ -967,7 +954,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 		if name == "" {
 			continue
 		}
-		bcgRGB[i+1] = base.Scale(float32(ps.VideoMapBrightness[name]) / 100)
+		bcgRGB[i+1] = ps.VideoMapBrightness[name].ScaleRGB(base)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)

@@ -40,7 +40,7 @@ type Preferences struct {
 	OutageSize  int
 	CursorSize  int
 
-	VideoMapBrightness map[string]int
+	VideoMapBrightness map[string]radar.Brightness
 	HistoryLength      int
 
 	UseRightClick bool
@@ -243,7 +243,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.FDBLdrLength = 1 // Default to normal mode
 
 	prefs.VideoMapVisible = make(map[string]interface{})
-	prefs.VideoMapBrightness = make(map[string]int)
+	prefs.VideoMapBrightness = make(map[string]radar.Brightness)
 
 	// CRR defaults
 	prefs.CRR.Visible = true
