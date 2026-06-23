@@ -309,12 +309,13 @@ func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms ra
 	font := ep.ERAMFont(ps.MCA.Font)
 	cols := ps.MCA.Width
 	width := float32(cols)*charWidth(font) + 4
-	feedbackH := font.LayoutBounds("0", 0).Height()*float32(ps.MCA.PALines) + 4
+	lineSpacing := int(float32(font.Size) * 0.4)
+	feedbackH := font.LayoutBounds("0", lineSpacing).Height()*float32(ps.MCA.PALines) + 4
 
 	// Compute input box height (grows with wrapped text).
 	input := ep.Input.String() + "_"
 	inText, _ := util.WrapText(input, cols, 0, true, true)
-	h := font.LayoutBounds(inText, 0).Height()
+	h := font.LayoutBounds(inText, lineSpacing).Height()
 	inputH := max(float32(38), h+4)
 
 	// Feedback rendering: icon (success/error) in its own color, then the
@@ -358,7 +359,7 @@ func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms ra
 
 			inputTopLeft := [2]float32{body.P0[0], body.P1[1]}
 			feedbackTopLeft := [2]float32{body.P0[0], seamY}
-			textStyle := renderer.TextStyle{Font: font, Color: ps.MCA.Bright.ScaleRGB(colors.toolbar.text)}
+			textStyle := renderer.TextStyle{Font: font, Color: ps.MCA.Bright.ScaleRGB(colors.toolbar.text), LineSpacing: lineSpacing}
 
 			// Input text (top box).
 			b.Td.AddText(inText, [2]float32{inputTopLeft[0] + 2, inputTopLeft[1] - 2}, textStyle)
@@ -366,7 +367,7 @@ func (ep *ERAMPane) drawMessageCompositionArea(ctx *panes.Context, transforms ra
 			// Feedback text (bottom box). Two AddText calls share the same
 			// origin so newline resets in `feedbackRest` land at column 0.
 			loc := [2]float32{feedbackTopLeft[0] + 2, feedbackTopLeft[1] - 2}
-			iconStyle := renderer.TextStyle{Font: font, Color: ps.MCA.Bright.ScaleRGB(feedbackIconColor)}
+			iconStyle := renderer.TextStyle{Font: font, Color: ps.MCA.Bright.ScaleRGB(feedbackIconColor), LineSpacing: lineSpacing}
 			b.Td.AddText(feedbackIcon, loc, iconStyle)
 			b.Td.AddText(feedbackRest, loc, textStyle)
 		},
@@ -414,6 +415,7 @@ func (ep *ERAMPane) drawResponseArea(ctx *panes.Context, transforms radar.ScopeT
 	font := ep.ERAMFont(ps.RA.Font)
 	cols := ps.RA.Width
 	width := float32(cols)*charWidth(font) + 4
+	lineSpacing := int(float32(font.Size) * 0.4)
 
 	wrapped, _ := util.WrapText(ep.responseArea, cols, 0, true, false)
 	textColor := ps.RA.Bright.ScaleRGB(colors.toolbar.text)
@@ -430,7 +432,7 @@ func (ep *ERAMPane) drawResponseArea(ctx *panes.Context, transforms radar.ScopeT
 		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
 			topLeft := [2]float32{body.P0[0], body.P1[1]}
 			b.Td.AddText(wrapped, [2]float32{topLeft[0] + 2, topLeft[1] - 2},
-				renderer.TextStyle{Font: font, Color: textColor})
+				renderer.TextStyle{Font: font, Color: textColor, LineSpacing: lineSpacing})
 		},
 	}
 	ep.DrawView(ctx, transforms, cb, v)
