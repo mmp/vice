@@ -548,3 +548,103 @@ func (s *Sim) checkSpontaneousVisualRequest(ac *Aircraft) {
 		s.enqueuePilotTransmission(ac.ADSBCallsign, ac.ControllerFrequency, PendingTransmissionFieldInSight)
 	}
 }
+
+// arrivalSpeedGate returns the maximum speed (in knots) an arrival would
+// typically want to be doing at the given distance (in nm) from the airport,
+// per the standard TRACON speed-by-distance profile (issue #884). ok is false
+// beyond 20 nm, where there's no expectation to have slowed.
+func arrivalSpeedGate(distNM float32) (float32, bool) {
+	switch {
+	case distNM > 20:
+		return 0, false
+	case distNM >= 18:
+		return 250, true
+	case distNM >= 14:
+		return 210, true
+	case distNM >= 8:
+		return 190, true
+	default:
+		return 180, true
+	}
+}
+
+// checkSlowDownRequest is a per-tick check for an arrival that is being held
+// fast by the controller as it nears the airport. If the controller-assigned
+// speed exceeds what the aircraft would typically fly at its current distance
+// (see arrivalSpeedGate / issue #884), the pilot asks to slow down. The
+// request is made once per speed-gate band and only repeats when the aircraft
+// crosses into a closer (lower-speed) band; a new controller speed assignment
+// re-arms it.
+func (s *Sim) checkSlowDownRequest(ac *Aircraft) {
+	if !ac.IsArrival() || !ac.IsAssociated() || ac.ControllerFrequency == "" || s.hasPendingCheckIn(ac.ADSBCallsign) {
+		return
+	}
+
+	floor, ok := ac.Nav.AssignedSpeedFloor()
+	if !ok {
+		// No controller speed assignment in force: nothing to ask about, and
+		// re-arm so a subsequent assignment is treated fresh.
+		ac.SlowDownLastDist = 0
+		ac.SlowDownAskedGate = 0
+		ac.SlowDownAskedFloor = 0
+		return
+	}
+
+	// A new (or changed) controller speed assignment re-arms the request, so the
+	// pilot will speak up again even within the same speed-gate band.
+	if floor != ac.SlowDownAskedFloor {
+		ac.SlowDownAskedGate = 0
+		ac.SlowDownAskedFloor = floor
+	}
+
+	dist, ok := ac.Nav.SlowDownDistanceNM()
+	if !ok {
+		ac.SlowDownLastDist = 0
+		return
+	}
+
+	// Only ask while still inbound. Once the aircraft is moving away from the
+	// field (overflew the airport, on the missed approach, etc.) stay quiet.
+	movingAway := ac.SlowDownLastDist != 0 && dist > ac.SlowDownLastDist+0.1
+	ac.SlowDownLastDist = dist
+	if movingAway {
+		return
+	}
+
+	gate, ok := arrivalSpeedGate(dist)
+	if !ok || floor <= gate {
+		return
+	}
+
+	// Ask once per band, re-asking only on crossing into a closer (i.e.
+	// lower-speed) band.
+	if ac.SlowDownAskedGate != 0 && gate >= ac.SlowDownAskedGate {
+		return
+	}
+	// Don't stack a duplicate if an earlier request is still queued (the
+	// controller hasn't popped it yet); it re-checks the gate at dispatch.
+	if s.hasPendingTransmission(ac.ADSBCallsign, PendingTransmissionRequestSlowDown) {
+		return
+	}
+	ac.SlowDownAskedGate = gate
+	s.enqueuePilotTransmission(ac.ADSBCallsign, ac.ControllerFrequency, PendingTransmissionRequestSlowDown)
+}
+
+// stillWantsSlowDown reports whether a queued slow-down request is still worth
+// transmitting at dispatch time. The controller may have slowed the aircraft
+// between enqueue and dispatch, so it re-checks that a speed assignment is in
+// force and, where the distance to the field can be estimated, that the
+// assignment still exceeds the speed-by-distance gate (see checkSlowDownRequest
+// / issue #884).
+func (ac *Aircraft) stillWantsSlowDown() bool {
+	floor, ok := ac.Nav.AssignedSpeedFloor()
+	if !ok {
+		return false
+	}
+	if dist, ok := ac.Nav.SlowDownDistanceNM(); ok {
+		if gate, ok := arrivalSpeedGate(dist); ok && floor <= gate {
+			return false
+		}
+	}
+	return true
+}

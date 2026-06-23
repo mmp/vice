@@ -1261,6 +1261,10 @@ func (s *Sim) updateState() {
 			// Enqueue a spontaneous "field in sight" transmission if the pilot
 			// wants to report and the field is currently visible.
 			s.checkSpontaneousVisualRequest(ac)
+
+			// Enqueue a "request to slow down" transmission if the arrival is
+			// being held fast by the controller as it nears the airport.
+			s.checkSlowDownRequest(ac)
 		}
 
 		s.possiblyRequestFlightFollowing()
