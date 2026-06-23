@@ -7,4 +7,4 @@
   - Fixed bugs with left vs. middle click of tracks behaving differently when entering commands
   - Added support for pop-up menus to configure more views
 - Slightly reduced TTS readback speed, added slider to control it.
-
+- STT: fixed a bug where fixes in the expected approach weren't considered for matching fix names in instructions

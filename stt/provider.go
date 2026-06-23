@@ -415,6 +415,7 @@ func (p *Transcriber) BuildAircraftContext(
 			Altitude:            int(trk.TrueAltitude),
 			ControllerFrequency: string(trk.ControllerFrequency),
 			Route:               trk.RouteFixes,
+			ExpectedDirectFix:   trk.ExpectedDirectFix,
 		}
 
 		// Add tracking controller and aircraft type from flight plan
@@ -510,25 +511,22 @@ func (p *Transcriber) BuildAircraftContext(
 					}
 				}
 			}
+		}
 
-			// If there's an assigned approach, merge its fixes into the main Fixes map
-			// so they're available for matching "proceed direct" commands.
-			// AssignedApproach is a full name (e.g., "ILS Runway 22L") but
-			// ApproachFixes is keyed by short code (e.g., "I2L"). Convert
-			// via GetApproachTelephony + CandidateApproaches.
-			if sttAc.AssignedApproach != "" {
-				telephony := av.GetApproachTelephony(sttAc.AssignedApproach)
-				if code, ok := sttAc.CandidateApproaches[telephony]; ok {
-					if approachFixes, ok := sttAc.ApproachFixes[code]; ok {
-						if sttAc.Fixes == nil {
-							sttAc.Fixes = make(map[string]string)
-						}
-						for spoken, fix := range approachFixes {
-							if _, exists := sttAc.Fixes[spoken]; !exists {
-								sttAc.Fixes[spoken] = fix
-							}
-						}
-					}
+		// Merge fixes from the assigned/expected approach into the main Fixes
+		// map so they're available for matching "proceed direct" commands.
+		// trk.AssignedApproachFixes is populated directly from the approach
+		// plate, so this works even when the approach's runway isn't currently
+		// in the active arrival config (in which case it wouldn't appear in
+		// CandidateApproaches/ApproachFixes).
+		if len(trk.AssignedApproachFixes) > 0 {
+			if sttAc.Fixes == nil {
+				sttAc.Fixes = make(map[string]string)
+			}
+			for _, fix := range trk.AssignedApproachFixes {
+				spoken := av.GetFixTelephony(fix)
+				if _, exists := sttAc.Fixes[spoken]; !exists {
+					sttAc.Fixes[spoken] = fix
 				}
 			}
 		}

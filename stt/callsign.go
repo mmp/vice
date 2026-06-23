@@ -64,6 +64,7 @@ type Aircraft struct {
 	CandidateVisualApproaches map[string]string            // spoken name -> runway ID for active plain visual approaches
 	ApproachFixes             map[string]map[string]string // approach ID -> (spoken name -> fix ID)
 	AssignedApproach          string
+	ExpectedDirectFix         string // Fix the controller said to "expect direct" (if any)
 	SID                       string
 	STAR                      string
 	Route                     []string                   // Ordered route waypoint fix names (full route, no truncation)

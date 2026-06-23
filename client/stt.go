@@ -965,6 +965,12 @@ func makeWhisperPrompt(state SimState) string {
 				}
 				fixes[fix] = struct{}{}
 			}
+			// Fixes from the assigned/expected approach plate so whisper
+			// recognizes them in "direct (fix)" instructions, even when the
+			// approach's runway isn't in the active arrival config.
+			for _, fix := range trk.AssignedApproachFixes {
+				fixes[fix] = struct{}{}
+			}
 		}
 	}
 

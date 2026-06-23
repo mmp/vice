@@ -825,6 +825,11 @@ func render(screen tcell.Screen, state *AppState) {
 					y++
 				}
 
+				if ac.ExpectedDirectFix != "" && y < maxY {
+					drawText(screen, 0, y, width, styleContext, fmt.Sprintf(" Expected Direct Fix: %-*s", width-22, ac.ExpectedDirectFix))
+					y++
+				}
+
 				// Route (ordered; order matters)
 				if len(ac.Route) > 0 && y < maxY {
 					drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
