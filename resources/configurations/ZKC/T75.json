@@ -94,6 +94,169 @@
     }
   ],
   "facility_adaptations": {
-    "configurations": {}
+    "configurations": {
+      "STL": {
+        "inbound_assignments": {
+          "AARCH2.VHP": "1J",
+          "AARCH2.RBS": "1J",
+          "BOOSH3.PXV": "1J",
+          "BOOSH3.BNA": "1Q",
+          "BOOSH3.VISQA": "1Q",
+          "BOOSH3.MEM": "1Q",
+          "BOOSH3.ARG": "1Q",
+          "KAYLA3.ANX": "1Q",
+          "KAYLA3.BUM": "1Q",
+          "KAYLA3.SGF": "1Q",
+          "LORLE3.GUZIK": "1J",
+          "LORLE3.IRK": "1J",
+          "BUUDD3": "1J",
+          "DELMA4": "1Q",
+          "DIRTT2": "1J",
+          "JHAUN1": "1Q",
+          "SLVER1": "1Q",
+          "DIXEE3": "1Q",
+          "FARMR3": "1J",
+          "ENL2": "1Q"
+        },
+        "departure_assignments": {
+          "KSTL/BERYY6": "1W",
+          "KSTL/BGOOD5": "1W",
+          "KSTL/BRAKK5": "1W",
+          "KSTL/CHUUC6": "1W",
+          "KSTL/DRUSE5": "1W",
+          "KSTL/EEMOS5": "1E",
+          "KSTL/GATWY1": "1E",
+          "KSTL/JAHNY6": "1W",
+          "KSTL/JHART7": "1E",
+          "KSTL/KSHEE5": "1E",
+          "KSTL/LINDY9": "1W",
+          "KSTL/NATCA5": "1E",
+          "KSTL/ROTRY6": "1E",
+          "KSTL/TEDDD5": "1E",
+          "KSTL/WHRLI7": "1W",
+          "KBLV": "1Z",
+          "KALN": "1K",
+          "KSUS": "1D",
+          "KCPS": "1Z"
+        },
+        "default_consolidation": {
+          "1J": ["1R", "1E", "1Q"],
+          "1Z": ["1K", "1A", "1D"],
+          "1E": ["1W", "1Z"],
+          "1R": ["1N"]
+        }
+      }
+    },
+    "center": "KSTL",
+    "scratchpads": {
+      "SKUTR": "RT",
+      "NEENS": "MO",
+      "LEBOY": "KS",
+      "SEXTN": "KS",
+      "SPI": "NC",
+      "JIGSY": "GB",
+      "ROD": "GB",
+      "BIB": "JH",
+      "VHP": "JH",
+      "CREEP": "JH",
+      "DOBLR": "JH",
+      "KELLY": "JH",
+      "RINTE": "JH",
+      "HILTS": "TD",
+      "IIU": "TD",
+      "DENNI": "PS",
+      "BNA": "PS",
+      "LIT": "LL",
+      "MYERZ": "UC",
+      "ARG": "UC",
+      "LITTR": "BY",
+      "MAP": "JY",
+      "VIH": "BG",
+      "HLV": "BK",
+      "MCM": "WR"
+    },
+    "significant_points": {
+      "SKUTR": {},
+      "NEENS": {},
+      "LEBOY": {},
+      "SEXTN": {},
+      "SPI": {},
+      "JIGSY": {},
+      "ROD": {},
+      "BIB": {},
+      "VHP": {},
+      "CREEP": {},
+      "DOBLR": {},
+      "KELLY": {},
+      "RINTE": {},
+      "HILTS": {},
+      "IIU": {},
+      "DENNI": {},
+      "BNA": {},
+      "LIT": {},
+      "MYERZ": {},
+      "ARG": {},
+      "LITTR": {},
+      "MAP": {},
+      "VIH": {},
+      "HLV": {},
+      "MCM": {}
+    },
+    "video_map_file": "videomaps/ZKC-T75.mappack",
+    "areas": {
+      "1": {
+        "video_maps": [
+          "T75 ST LOUIS ILS RWY 30R-29",
+          "T75 ST LOUIS CLASS B",
+          "",
+          "T75 ST LOUIS ILS RWY 11-12L",
+          "T75 ST LOUIS MVA",
+          "",
+          "T75 ST LOUIS ILS RWY 29-30L",
+          "T75 ST LOUIS ILS RWY 30L-30R",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "T75 ST LOUIS ILS RWY 11-12R",
+          "T75 ST LOUIS ILS RWY 12L-12R",
+          "",
+          "T75 ST LOUIS SATELLITE FINALS"
+        ]
+      }
+    },
+    "lists": {
+      "coordination": [
+        {
+          "name": "SPIRIT",
+          "id": "SUS",
+          "airports": ["KSUS"]
+        },
+        {
+          "name": "DOWNTOWN",
+          "id": "CPS",
+          "airports": ["KCPS"]
+        },
+        {
+          "name": "REGIONAL",
+          "id": "ALN",
+          "airports": ["KALN"]
+        },
+        {
+          "name": "SCOTT",
+          "id": "BLV",
+          "airports": ["KBLV"]
+        }
+      ]
+    }
   }
 }
