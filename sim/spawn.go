@@ -539,13 +539,7 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 }
 
 func scaleRate(rate, scale float32) float32 {
-	rate *= scale
-	if rate <= 0.5 {
-		// Since we round to the nearest int when displaying rates in the UI,
-		// we don't want to ever launch for ones that have rate 0.
-		return 0
-	}
-	return rate
+	return rate * scale
 }
 
 func sumRateMap(rates map[string]float32, scale float32) float32 {
