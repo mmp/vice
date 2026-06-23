@@ -265,7 +265,7 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 	// Update the next spawn time for any rates that changed.
 	for ap, rwyRates := range lc.DepartureRates {
 		for rwy, categoryRates := range rwyRates {
-			r := sumRateMap(categoryRates, s.State.LaunchConfig.DepartureRateScale)
+			r := sumRateMap(categoryRates, lc.DepartureRateScale)
 			s.DepartureState[ap][rwy].setIFRRate(s, r)
 		}
 	}
@@ -298,7 +298,7 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 	}
 
 	if lc.VFFRequestRate != s.State.LaunchConfig.VFFRequestRate {
-		s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
+		s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(lc.VFFRequestRate), s.Rand))
 	}
 
 	if lc.EmergencyAircraftRate != s.State.LaunchConfig.EmergencyAircraftRate {
