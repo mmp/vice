@@ -1,135 +1,135 @@
 {
   "ZAB": {
-    "Latitude": 34.1372,
-    "Longitude": -106.9625,
+    "Latitude": 34.5,
+    "Longitude": -108.0169,
     "Name": "Albuquerque Center",
-    "Radius": 387
+    "Radius": 600
   },
   "ZAN": {
-    "Latitude": 63.6271,
-    "Longitude": -150.6067,
+    "Latitude": 70.0,
+    "Longitude": -157.6066,
     "Name": "Anchorage Center",
-    "Radius": 821
+    "Radius": 1530
   },
   "ZAU": {
-    "Latitude": 41.8998,
-    "Longitude": -89.1257,
+    "Latitude": 42.0,
+    "Longitude": -89.0283,
     "Name": "Chicago Center",
-    "Radius": 231
+    "Radius": 506
   },
   "ZBW": {
-    "Latitude": 43.7658,
-    "Longitude": -70.8406,
+    "Latitude": 43.5,
+    "Longitude": -72.0203,
     "Name": "Boston Center",
-    "Radius": 284
+    "Radius": 536
   },
   "ZDC": {
-    "Latitude": 36.8826,
-    "Longitude": -76.3137,
+    "Latitude": 36.5,
+    "Longitude": -78.0113,
     "Name": "Washington Center",
-    "Radius": 256
+    "Radius": 484
   },
   "ZDV": {
-    "Latitude": 40.0622,
-    "Longitude": -106.4098,
+    "Latitude": 40.0,
+    "Longitude": -105.032,
     "Name": "Denver Center",
-    "Radius": 378
+    "Radius": 623
   },
   "ZFW": {
-    "Latitude": 32.375,
-    "Longitude": -97.8111,
+    "Latitude": 33.0,
+    "Longitude": -97.5211,
     "Name": "Fort Worth Center",
-    "Radius": 326
+    "Radius": 581
   },
   "ZHN": {
-    "Latitude": 22,
-    "Longitude": -157,
+    "Latitude": 21.5,
+    "Longitude": -158.0034,
     "Name": "Honolulu Center",
-    "Radius": 428
+    "Radius": 484
   },
   "ZHU": {
-    "Latitude": 27.6417,
-    "Longitude": -93.5716,
+    "Latitude": 28.0,
+    "Longitude": -89.5392,
     "Name": "Houston Center",
-    "Radius": 521
+    "Radius": 944
   },
   "ZID": {
-    "Latitude": 38.6723,
-    "Longitude": -84.4858,
+    "Latitude": 38.5,
+    "Longitude": -85.0207,
     "Name": "Indianapolis Center",
-    "Radius": 212
+    "Radius": 485
   },
   "ZJX": {
-    "Latitude": 30.2339,
-    "Longitude": -82.2314,
+    "Latitude": 31.0,
+    "Longitude": -82.0121,
     "Name": "Jacksonville Center",
-    "Radius": 346
+    "Radius": 571
   },
   "ZKC": {
-    "Latitude": 38.6842,
-    "Longitude": -95.349,
+    "Latitude": 37.5,
+    "Longitude": -96.032,
     "Name": "Kansas City Center",
-    "Radius": 370
+    "Radius": 623
   },
   "ZLA": {
-    "Latitude": 34.3992,
-    "Longitude": -117.9245,
+    "Latitude": 34.0,
+    "Longitude": -118.0194,
     "Name": "Los Angeles Center",
-    "Radius": 367
+    "Radius": 605
   },
   "ZLC": {
-    "Latitude": 43.4417,
-    "Longitude": -110.1307,
+    "Latitude": 43.0,
+    "Longitude": -109.0481,
     "Name": "Salt Lake Center",
-    "Radius": 476
+    "Radius": 590
   },
   "ZMA": {
-    "Latitude": 24.1196,
-    "Longitude": -76.8253,
+    "Latitude": 22.5,
+    "Longitude": -74.0119,
     "Name": "Miami Center",
-    "Radius": 544
+    "Radius": 906
   },
   "ZME": {
-    "Latitude": 35.4117,
-    "Longitude": -90.4611,
+    "Latitude": 34.0,
+    "Longitude": -90.5226,
     "Name": "Memphis Center",
-    "Radius": 276
+    "Radius": 577
   },
   "ZMP": {
-    "Latitude": 46.1314,
-    "Longitude": -92.8112,
+    "Latitude": 44.0,
+    "Longitude": -92.5979,
     "Name": "Minneapolis Center",
-    "Radius": 495
+    "Radius": 787
   },
   "ZNY": {
-    "Latitude": 40.6668,
-    "Longitude": -75.3857,
+    "Latitude": 37.0,
+    "Longitude": -70.0276,
     "Name": "New York Center",
-    "Radius": 146
+    "Radius": 640
   },
   "ZOA": {
-    "Latitude": 38.7033,
-    "Longitude": -122.2348,
+    "Latitude": 37.5,
+    "Longitude": -121.5229,
     "Name": "Oakland Center",
-    "Radius": 279
+    "Radius": 562
   },
   "ZOB": {
-    "Latitude": 42.4304,
-    "Longitude": -80.7354,
+    "Latitude": 41.5,
+    "Longitude": -82.0203,
     "Name": "Cleveland Center",
-    "Radius": 222
+    "Radius": 470
   },
   "ZSE": {
-    "Latitude": 45.1339,
-    "Longitude": -120.9733,
+    "Latitude": 44.0,
+    "Longitude": -121.0529,
     "Name": "Seattle Center",
-    "Radius": 372
+    "Radius": 632
   },
   "ZTL": {
-    "Latitude": 34.4243,
-    "Longitude": -84.4792,
+    "Latitude": 34.0,
+    "Longitude": -84.0192,
     "Name": "Atlanta Center",
-    "Radius": 279
+    "Radius": 554
   },
   "ZAE": {
     "Name": "Academy Center"
