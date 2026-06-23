@@ -1142,7 +1142,7 @@ func lookupCommandAirport(airport string) (string, bool) {
 ///////////////////////////////////////////////////////////////////////////
 // AR - ALTIM SET Add Airport Handler
 
-func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
+func handleAltimAdd(ep *ERAMPane, ctx *panes.Context, airport string) (CommandStatus, error) {
 	airport = strings.ToUpper(strings.TrimSpace(airport))
 	if len(airport) == 0 {
 		return CommandStatus{}, NewERAMError("REJECT - AR - MISSING AIRPORT")
@@ -1178,12 +1178,14 @@ func handleAltimAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	ps := ep.currentPrefs()
 	ps.AltimSet.Visible = true
 
+	requestMETARIfMissing(ctx, icao)
+
 	return CommandStatus{feedbackArea: []string{"ACCEPT", "ALTIMETER REQ"}}, nil
 }
 
 // WR - WX REPORT Add Airport Handler
 
-func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
+func handleWXReportAdd(ep *ERAMPane, ctx *panes.Context, airport string) (CommandStatus, error) {
 	airport = strings.ToUpper(strings.TrimSpace(airport))
 	if len(airport) == 0 {
 		return CommandStatus{}, NewERAMError("REJECT - WR - MISSING AIRPORT")
@@ -1217,7 +1219,20 @@ func handleWXReportAdd(ep *ERAMPane, airport string) (CommandStatus, error) {
 	ps := ep.currentPrefs()
 	ps.WX.Visible = true
 
+	requestMETARIfMissing(ctx, icao)
+
 	return CommandStatus{feedbackArea: []string{"ACCEPT", "WEATHER STAT REQ"}}, nil
+}
+
+// requestMETARIfMissing asks the server to start supplying METAR for icao
+// when the client has not yet seen any METAR for that airport. The RPC
+// is fire-and-forget: if the server rejects the airport the row keeps
+// showing "-M-", matching the behavior for known airports without
+// bundled data.
+func requestMETARIfMissing(ctx *panes.Context, icao string) {
+	if _, ok := ctx.Client.State.METAR[icao]; !ok {
+		ctx.Client.AddMETARAirport(icao)
+	}
 }
 
 // WR R - WX REPORT Display (show METAR in Response Area)

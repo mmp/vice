@@ -274,19 +274,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		lg.Errorf("%v", err)
 	} else {
 		for ap, msoa := range apmetar {
-			metar := msoa.Decode(ap)
-			idx, ok := slices.BinarySearchFunc(metar, config.StartTime, func(m wx.METAR, t time.Time) int {
-				return m.Time.Compare(t)
-			})
-			if !ok && idx > 0 {
-				// METAR <= the start time
-				idx--
-			}
-			s.ATISChangedTime[ap] = NewSimTime(metar[idx].Time)
-			for idx < len(metar) && metar[idx].Time.Sub(config.StartTime) < 24*time.Hour {
-				s.METAR[ap] = append(s.METAR[ap], metar[idx])
-				idx++
-			}
+			s.loadMETARWindow(ap, msoa, config.StartTime)
 		}
 	}
 
@@ -1318,6 +1306,72 @@ func (s *Sim) updateState() {
 			}
 		}
 	}
+}
+
+// AddMETARAirport loads METAR data for icao from bundled resources so
+// that future state updates carry it in DynamicState.METAR. Returns
+// av.ErrUnknownAirport if the ICAO is not in the aviation database;
+// silently no-ops when the airport is known but has no bundled METAR
+// data or when METAR has already been loaded for it.
+func (s *Sim) AddMETARAirport(icao string) error {
+	if _, ok := av.DB.LookupAirport(icao); !ok {
+		return av.ErrUnknownAirport
+	}
+
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	if _, ok := s.METAR[icao]; ok {
+		return nil
+	}
+
+	apmetar, err := wx.GetMETAR([]string{icao})
+	if err != nil {
+		return err
+	}
+	msoa, ok := apmetar[icao]
+	if !ok {
+		return nil
+	}
+
+	first, ok := s.loadMETARWindow(icao, msoa, s.State.SimTime.Time())
+	if !ok {
+		return nil
+	}
+
+	s.State.METAR[icao] = first
+
+	s.publish()
+	return nil
+}
+
+// loadMETARWindow decodes msoa for icao, appends the 24-hour window of
+// entries starting at-or-before startTime into s.METAR[icao], and sets
+// s.ATISChangedTime[icao] to the first entry's observation time. Returns
+// the first entry of the window (used to seed s.State.METAR) and whether
+// any entries were loaded. Caller is responsible for synchronization.
+func (s *Sim) loadMETARWindow(icao string, msoa wx.METARSOA, startTime time.Time) (wx.METAR, bool) {
+	metar := msoa.Decode(icao)
+	if len(metar) == 0 {
+		return wx.METAR{}, false
+	}
+	idx, ok := slices.BinarySearchFunc(metar, startTime, func(m wx.METAR, t time.Time) int {
+		return m.Time.Compare(t)
+	})
+	if !ok && idx > 0 {
+		// METAR <= the start time
+		idx--
+	}
+	if idx >= len(metar) {
+		return wx.METAR{}, false
+	}
+	s.ATISChangedTime[icao] = NewSimTime(metar[idx].Time)
+	first := metar[idx]
+	for idx < len(metar) && metar[idx].Time.Sub(startTime) < 24*time.Hour {
+		s.METAR[icao] = append(s.METAR[icao], metar[idx])
+		idx++
+	}
+	return first, true
 }
 
 func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {

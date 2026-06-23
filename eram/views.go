@@ -554,7 +554,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 	ep.DrawView(ctx, transforms, cb, View{
 		Position:   &ps.WX.Position,
 		ID:         "wx",
-		Title:      "WX REPORT",
+		Title:      "WX",
 		Opaque:     ps.WX.Opaque,
 		ShowBorder: ps.WX.ShowBorder,
 		Brightness: ps.WX.Bright,

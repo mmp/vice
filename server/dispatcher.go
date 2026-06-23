@@ -122,6 +122,23 @@ func (sd *dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
 	return c.sim.RequestFlightFollowing()
 }
 
+type AddMETARAirportArgs struct {
+	ControllerToken string
+	Airport         string
+}
+
+const AddMETARAirportRPC = "Sim.AddMETARAirport"
+
+func (sd *dispatcher) AddMETARAirport(args *AddMETARAirportArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	return c.sim.AddMETARAirport(args.Airport)
+}
+
 type TriggerEmergencyArgs struct {
 	ControllerToken string
 	EmergencyName   string

@@ -61,6 +61,13 @@ func (c *ControlClient) LaunchArrivalOverflight(ac sim.Aircraft) {
 	}, nil, nil), nil))
 }
 
+func (c *ControlClient) AddMETARAirport(airport string) {
+	c.addCall(makeRPCCall(c.client.Go(server.AddMETARAirportRPC, &server.AddMETARAirportArgs{
+		ControllerToken: c.controllerToken,
+		Airport:         airport,
+	}, nil, nil), nil))
+}
+
 func (c *ControlClient) SendGlobalMessage(message string) {
 	c.addCall(makeRPCCall(c.client.Go(server.GlobalMessageRPC, &server.GlobalMessageArgs{
 		ControllerToken: c.controllerToken,
