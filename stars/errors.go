@@ -133,6 +133,7 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrTCWNotFound:                     ErrSTARSIllegalTCW,
 	sim.ErrTCWNotVacant:                    ErrSTARSIllegalPosition,
 	sim.ErrTooManyRestrictionAreas:         ErrSTARSCapacity,
+	sim.ErrTrackHasActivePointOut:          ErrSTARSIllegalTrack,
 	sim.ErrTrackIsActive:                   ErrSTARSIllegalTrack,
 	sim.ErrIllegalTrackLocalFP:             ErrSTARSIllegalTrackLocalFP,
 	sim.ErrTrackIsBeingHandedOff:           ErrSTARSIllegalTrack,

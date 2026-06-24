@@ -92,6 +92,7 @@ var errorStringToError = map[string]error{
 	sim.ErrTCWNotFound.Error():                     sim.ErrTCWNotFound,
 	sim.ErrTCWNotVacant.Error():                    sim.ErrTCWNotVacant,
 	sim.ErrTooManyRestrictionAreas.Error():         sim.ErrTooManyRestrictionAreas,
+	sim.ErrTrackHasActivePointOut.Error():          sim.ErrTrackHasActivePointOut,
 	sim.ErrTrackIsActive.Error():                   sim.ErrTrackIsActive,
 	sim.ErrTrackIsBeingHandedOff.Error():           sim.ErrTrackIsBeingHandedOff,
 	sim.ErrTrackIsNotActive.Error():                sim.ErrTrackIsNotActive,

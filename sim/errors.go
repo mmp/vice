@@ -45,6 +45,7 @@ var (
 	ErrTCWNotFound                     = errors.New("TCW not found")
 	ErrTCWNotVacant                    = errors.New("receiving TCW has an associated TCP")
 	ErrTooManyRestrictionAreas         = errors.New("Too many restriction areas specified")
+	ErrTrackHasActivePointOut          = errors.New("Track already has an active point out")
 	ErrTrackIsActive                   = errors.New("Track is already active")
 	ErrTrackIsBeingHandedOff           = errors.New("Track is currently being handed off")
 	ErrTrackIsNotActive                = errors.New("Track is not active")

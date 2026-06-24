@@ -462,6 +462,12 @@ func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
 				// Can't point out if it's being handed off
 				return ErrTrackIsBeingHandedOff
 			}
+			// STARS (per 6.12.1 / 6.12.7) rejects any PO initiation while a
+			// track already has an active PO. ERAM permits concurrent POs.
+			fromCtrl := s.State.Controllers[s.State.PrimaryPositionForTCW(fromTCW)]
+			if fromCtrl != nil && !fromCtrl.ERAMFacility && len(s.PointOuts[acid]) > 0 {
+				return ErrTrackHasActivePointOut
+			}
 			return nil
 		},
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) {
