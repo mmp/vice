@@ -588,13 +588,14 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "[FP_ACID] [*FP_BEACON|FP_TCP|FP_FLT_TYPE|FP_TRI_SP1|FP_PLUS_SP2|FP_NUM_ACTYPE_EQ|FP_ALT_R|FP_RULES]", createAbbrevFP)
 
 	// 5.5.2 Create / modify interfacility VFR FP and send FP message to ARTCC (Implied command)
-	registerCommand(CommandModeNone, "[FP_ACID] [FP_VFR_FIXES][FP_ACTYPE_EQ][?FP_ALT_R][?FP_TCP]",
-		func(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpecifier) {
-			spec.Rules.Set(av.FlightRulesVFR)
-			spec.TypeOfFlight.Set(av.FlightTypeArrival)
-			spec.PlanType.Set(sim.LocalEnroute)
-			createFlightPlan(sp, ctx, spec)
-		})
+	createImpliedVFRFP := func(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpecifier) {
+		spec.Rules.Set(av.FlightRulesVFR)
+		spec.TypeOfFlight.Set(av.FlightTypeArrival)
+		spec.PlanType.Set(sim.LocalEnroute)
+		createFlightPlan(sp, ctx, spec)
+	}
+	registerCommand(CommandModeNone, "[FP_ACID] [FP_VFR_FIXES] [FP_ACTYPE_EQ]", createImpliedVFRFP)
+	registerCommand(CommandModeNone, "[FP_ACID] [FP_VFR_FIXES] [FP_ACTYPE_EQ] [*FP_ALT_R|FP_TCP]", createImpliedVFRFP)
 
 	// 5.5.3 Create FP and associate or create Unsupported data block (Implied command) (p. 5-99)
 	createFPAndAssociate := func(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
