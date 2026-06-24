@@ -950,6 +950,7 @@ func buildClientMaps(maps []av.STARSMap) []clientMap {
 }
 
 func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
+	sp.allVideoMaps = nil
 	usedIds := make(map[int]any)
 
 	// addMap inserts a clientMap into allVideoMaps, probing forward
@@ -957,10 +958,10 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	// map's Id. Maps with Id == 0 are appended without claiming
 	// a slot (they have no DCB Id and are unreachable via the [NUM]
 	// command; they still show up in the MAPS list if they carry a label).
-	// Returns the assigned Id, or 0 if no slot was claimed.
 	addMap := func(vm clientMap) {
 		if vm.Id == 0 {
 			sp.allVideoMaps = append(sp.allVideoMaps, vm)
+			return
 		}
 		for i := range 999 {
 			// See if id is available
