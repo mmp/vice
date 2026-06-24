@@ -5,7 +5,6 @@
 package eram
 
 import (
-	"slices"
 	"strings"
 	"time"
 
@@ -100,12 +99,11 @@ type View struct {
 	Width      float32
 	BodyHeight float32
 
-	Title     string
-	TitleFont *renderer.Font
+	Title string
 
 	// BodyFont is the font used for measuring body-related layout that
 	// DrawView itself performs — currently just the scroll-bar reserve.
-	// Falls back to TitleFont when nil.
+	// Falls back to the title font when nil.
 	BodyFont *renderer.Font
 
 	Opaque     bool
@@ -129,14 +127,16 @@ type View struct {
 
 	DrawBody func(extent math.Extent2D, b *ViewBuilders)
 
-	Scroll     *ViewScrollConfig
-	Selectable *ViewSelectable
-
 	// RowSource, when set, supplies a column-major list-of-rows body.
 	// DrawView builds per-column layouts, computes Width / BodyHeight, and
-	// wires Scroll / Selectable. Callers must NOT also set Width,
-	// BodyHeight, DrawBody, Scroll, or Selectable when RowSource is set.
+	// wires scroll / selectable. Callers must NOT also set Width,
+	// BodyHeight, or DrawBody when RowSource is set.
 	RowSource *ViewRowSource
+
+	// scroll / selectable are populated by applyRowSource (or left nil
+	// for non-RowSource views, which don't use them).
+	scroll     *ViewScrollConfig
+	selectable *ViewSelectable
 }
 
 // ViewRowSource declaratively describes a column-major list-of-rows body for
@@ -161,7 +161,8 @@ type ViewRowSource struct {
 	VisibleRows int
 
 	// ReserveBadgeColumn reserves the leftmost badge column matching the
-	// title-bar M button. Implied by ShowBadges.
+	// title-bar M button; this doesn't need to be set if ShowBadges is true,
+	// only if we want to reserve badge space but not fill it.
 	ReserveBadgeColumn bool
 
 	// ShowBadges draws the standard yellow fill in the badge column, scaled
@@ -183,10 +184,8 @@ type ViewRowSource struct {
 	// bar still renders at a reasonable size.
 	EmptyKeepsColumnWidth bool
 
-	// SelectedID marks the row whose ID matches for selection highlight.
-	SelectedID string
-
 	// SelectableState / OnRowDelete wire click-to-delete using row IDs.
+	// The selection highlight tracks SelectableState.Selected.
 	SelectableState *ViewSelectionState
 	OnRowDelete     func(id string)
 
@@ -213,7 +212,6 @@ const (
 type Badge struct {
 	Width  float32
 	Height float32
-	Pad    float32
 	Fill   renderer.RGB
 	Border renderer.RGB
 }
@@ -255,49 +253,24 @@ type Row struct {
 // Layout constants and small helpers
 
 const (
-	scrollBarContentW = float32(14)
-	scrollBarBorderW  = float32(1)
+	scrollBarContentW = 14
+	scrollBarBorderW  = 1
 	scrollBarTotalW   = scrollBarContentW + 2*scrollBarBorderW
-	scrollBarGap      = float32(2)
+	scrollBarGap      = 2
 
-	// viewMPad is the horizontal padding on each side of the title-bar M
+	// titleBarButtonPad is the horizontal padding on each side of the title-bar M
 	// and "-" buttons, and the per-row side pad in the body.
-	viewMPad = float32(4)
+	titleBarButtonPad = 4
 
 	// rowBadgeGap is the gap between a row's badge and the start of its
 	// wrap area (used by the body-wrap calculation).
-	rowBadgeGap = float32(4)
+	rowBadgeGap = 4
 )
 
 // addQuad fills extent ex with color using two triangles.
 func addQuad(trid *renderer.ColoredTrianglesDrawBuilder, ex math.Extent2D, color renderer.RGB) {
-	trid.AddQuad(
-		ex.P0,                          // BL
-		[2]float32{ex.P1[0], ex.P0[1]}, // BR
-		ex.P1,                          // TR
-		[2]float32{ex.P0[0], ex.P1[1]}, // TL
-		color)
-}
-
-// addRectLoop draws a 1 px line loop along the perimeter of ex.
-func addRectLoop(ld *renderer.ColoredLinesDrawBuilder, ex math.Extent2D, color renderer.RGB) {
-	ld.AddLineLoop(color, [][2]float32{
-		ex.P0,
-		{ex.P1[0], ex.P0[1]},
-		ex.P1,
-		{ex.P0[0], ex.P1[1]},
-	})
-}
-
-// deleteByID removes the first element of *sl whose key equals id.
-// ViewSelectable.OnDelete callbacks for list views all follow this pattern.
-func deleteByID[T any](sl *[]T, id string, idFn func(T) string) {
-	for i, v := range *sl {
-		if idFn(v) == id {
-			*sl = slices.Delete(*sl, i, i+1)
-			return
-		}
-	}
+	p := ex.Corners()
+	trid.AddQuad(p[0], p[1], p[2], p[3], color)
 }
 
 // clampViewPos clamps a view top-left so the whole window stays inside the
@@ -337,7 +310,7 @@ func lineHeight(font *renderer.Font) float32 {
 // Callers that want a body element to line up directly below the M (badges,
 // indicators) should size it with this.
 func viewMButtonWidth(titleFont *renderer.Font) float32 {
-	return charWidth(titleFont) + 2*viewMPad
+	return charWidth(titleFont) + 2*titleBarButtonPad
 }
 
 // viewTitleHeight returns the on-screen height of the title bar.
@@ -350,7 +323,7 @@ func viewTitleHeight(titleFont *renderer.Font) float32 {
 // right without overlap.
 func titleBarMinWidth(titleFont *renderer.Font, title string) float32 {
 	cw := charWidth(titleFont)
-	return float32(len(title))*cw + 2*(cw+2*viewMPad)
+	return float32(len(title))*cw + 2*(cw+2*titleBarButtonPad)
 }
 
 // defaultBadge builds the standard row badge: width and height matched to
@@ -359,7 +332,6 @@ func defaultBadge(titleFont *renderer.Font, fill renderer.RGB) *Badge {
 	return &Badge{
 		Width:  charWidth(titleFont),
 		Height: viewTitleHeight(titleFont),
-		Pad:    viewMPad,
 		Fill:   fill,
 		Border: colors.badge.border,
 	}
@@ -368,13 +340,13 @@ func defaultBadge(titleFont *renderer.Font, fill renderer.RGB) *Badge {
 // scrollReserveWidth is the right-edge area DrawView reserves for the scroll
 // bar when Scroll is configured: 2 BodyFont spaces, but at least
 // scrollBarTotalW.
-func scrollReserveWidth(v View) float32 {
-	if v.Scroll == nil {
+func scrollReserveWidth(v View, titleFont *renderer.Font) float32 {
+	if v.scroll == nil {
 		return 0
 	}
 	font := v.BodyFont
 	if font == nil {
-		font = v.TitleFont
+		font = titleFont
 	}
 	return max(2*charWidth(font), scrollBarTotalW)
 }
@@ -398,7 +370,7 @@ type titleButton struct {
 
 // titleBarLayout splits titleExt into the M / title / "-" regions and fills
 // in hover flags. Returned in left-to-right order: [M, title, "-"].
-func titleBarLayout(titleExt math.Extent2D, v View, mouse *platform.MouseState) [3]titleButton {
+func titleBarLayout(titleExt math.Extent2D, v View, titleFont *renderer.Font, mouse *platform.MouseState) [3]titleButton {
 	titleH := titleExt.Height()
 	var btns [3]titleButton
 
@@ -406,13 +378,13 @@ func titleBarLayout(titleExt math.Extent2D, v View, mouse *platform.MouseState) 
 	btns[0].present = v.OnMenu != nil
 	btns[0].rect = math.Extent2D{
 		P0: titleExt.P0,
-		P1: [2]float32{titleExt.P0[0] + viewMButtonWidth(v.TitleFont), titleExt.P1[1]},
+		P1: [2]float32{titleExt.P0[0] + viewMButtonWidth(titleFont), titleExt.P1[1]},
 	}
 
 	btns[2].label = "-"
 	btns[2].present = v.MinimizeTarget != nil
 	btns[2].rect = math.Extent2D{
-		P0: [2]float32{titleExt.P1[0] - 2*viewMPad - charWidth(v.TitleFont), titleExt.P1[1] - titleH},
+		P0: [2]float32{titleExt.P1[0] - 2*titleBarButtonPad - charWidth(titleFont), titleExt.P1[1] - titleH},
 		P1: titleExt.P1,
 	}
 
@@ -478,22 +450,19 @@ func drawScrollArrow(ld *renderer.ColoredLinesDrawBuilder, centerX, tipY float32
 func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer, v View) {
 	mouse := ctx.Mouse
 
-	// Defaults so callers can omit the obvious.
-	if v.TitleFont == nil {
-		v.TitleFont = ep.ERAMFont(2)
-	}
+	titleFont := ep.ERAMFont(2)
 	if v.RowSource != nil {
-		ep.applyRowSource(&v)
+		ep.applyRowSource(&v, titleFont)
 	}
 
 	// Total width includes the scroll-bar reserve on the right when scrolling.
-	scrollReserveW := scrollReserveWidth(v)
+	scrollReserveW := scrollReserveWidth(v, titleFont)
 	width := v.Width + scrollReserveW
 
 	hasTitle := v.Title != ""
 	var titleH float32
 	if hasTitle {
-		titleH = viewTitleHeight(v.TitleFont)
+		titleH = viewTitleHeight(titleFont)
 	}
 	bodyH := v.BodyHeight
 	totalH := titleH + bodyH
@@ -559,7 +528,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			addQuad(trid, bodyOuter, bodyBg)
 		}
 		if v.ShowBorder {
-			addRectLoop(ld, outer, ep.currentPrefs().Brightness.Border.ScaleRGB(colors.view.border))
+			ld.AddLineLoop(ep.currentPrefs().Brightness.Border.ScaleRGB(colors.view.border), outer.Corners())
 		}
 	}
 
@@ -576,7 +545,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		}
 		addQuad(trid, titleExt, titleBg)
 
-		tb = titleBarLayout(titleExt, v, mouse)
+		tb = titleBarLayout(titleExt, v, titleFont, mouse)
 
 		// Title text is centered on the full title-bar width so it stays
 		// visually centered regardless of which side buttons are present.
@@ -585,7 +554,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			titleColor = bright
 		}
 		td.AddTextCentered(v.Title, titleExt.Center(),
-			renderer.TextStyle{Font: v.TitleFont, Color: titleColor})
+			renderer.TextStyle{Font: titleFont, Color: titleColor})
 
 		// M / "-" labels centered in their own rects.
 		for _, b := range tb {
@@ -597,7 +566,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 				c = bright
 			}
 			td.AddTextCentered(b.label, b.rect.Center(),
-				renderer.TextStyle{Font: v.TitleFont, Color: c})
+				renderer.TextStyle{Font: titleFont, Color: c})
 		}
 
 		// Dim outlines first, then bright outlines on hover — the bright
@@ -605,18 +574,18 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		// Outlines sit 1 px outside each button rect.
 		for _, b := range tb {
 			if b.present && !b.hovered {
-				addRectLoop(ld, b.rect.Expand(1), dim)
+				ld.AddLineLoop(dim, b.rect.Expand(1).Corners())
 			}
 		}
 		for _, b := range tb {
 			if b.present && b.hovered {
-				addRectLoop(ld, b.rect.Expand(1), bright)
+				ld.AddLineLoop(bright, b.rect.Expand(1).Corners())
 			}
 		}
 	}
 
 	// Scroll-bar geometry up front so click handling and rendering agree.
-	scrollVisible := v.Scroll != nil && v.Scroll.MaxOffset > 0 && bodyH > 0
+	scrollVisible := v.scroll != nil && v.scroll.MaxOffset > 0 && bodyH > 0
 	var scrollUpRect, scrollDownRect math.Extent2D
 	if scrollVisible {
 		scrollUpRect, scrollDownRect = scrollBarLayout(bodyOuter)
@@ -628,9 +597,9 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	// another popup replacing it).
 	var selItems []ViewSelectableItem
 	hoveredSelIdx := -1
-	selectableActive := v.Selectable != nil && v.Selectable.Items != nil && bodyH > 0
+	selectableActive := v.selectable != nil && v.selectable.Items != nil && bodyH > 0
 	if selectableActive {
-		selItems = v.Selectable.Items(bodyExtent)
+		selItems = v.selectable.Items(bodyExtent)
 		if mouse != nil {
 			for i, it := range selItems {
 				if it.Extent.Inside(mouse.Pos) {
@@ -639,7 +608,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 				}
 			}
 		}
-		if state := v.Selectable.State; state != nil && state.Selected != "" {
+		if state := v.selectable.State; state != nil && state.Selected != "" {
 			if dp, ok := ep.popup.(*deleteEntryPopup); !ok || dp.owner != state {
 				state.Selected = ""
 			}
@@ -665,14 +634,14 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 		}
 		switch {
 		case scrollVisible && scrollUpRect.Inside(mouse.Pos):
-			if v.Scroll.State.Offset > 0 {
-				v.Scroll.State.Offset--
+			if v.scroll.State.Offset > 0 {
+				v.scroll.State.Offset--
 			}
 			ep.consumeMouseClick(mouse)
 
 		case scrollVisible && scrollDownRect.Inside(mouse.Pos):
-			if v.Scroll.State.Offset < v.Scroll.MaxOffset {
-				v.Scroll.State.Offset++
+			if v.scroll.State.Offset < v.scroll.MaxOffset {
+				v.scroll.State.Offset++
 			}
 			ep.consumeMouseClick(mouse)
 
@@ -690,8 +659,8 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 		case selectableActive && primaryClicked && hoveredSelIdx >= 0:
 			item := selItems[hoveredSelIdx]
-			v.Selectable.State.Selected = item.ID
-			ep.popup = ep.openDeleteEntryPopup(ctx, item, v.Selectable, v.TitleFont)
+			v.selectable.State.Selected = item.ID
+			ep.popup = ep.openDeleteEntryPopup(ctx, item, v.selectable, titleFont)
 			ep.clearMousePrimaryConsumed(mouse)
 
 		case !hasTitle && v.OnBodyTertiaryMenu != nil && tertiaryClicked &&
@@ -726,7 +695,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			P0: [2]float32{previewTL[0], previewTL[1] - totalH},
 			P1: [2]float32{previewTL[0] + width, previewTL[1]},
 		}
-		addRectLoop(ld, preview, colors.view.hoveredOutline)
+		ld.AddLineLoop(colors.view.hoveredOutline, preview.Corners())
 	}
 
 	// Body content.
@@ -738,8 +707,8 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	// — its highlight fill carries the visual instead.
 	if selectableActive && hoveredSelIdx >= 0 {
 		hovered := selItems[hoveredSelIdx]
-		if state := v.Selectable.State; state == nil || hovered.ID != state.Selected {
-			addRectLoop(ld, hovered.Extent.Expand(1), colors.view.hoveredOutline)
+		if state := v.selectable.State; state == nil || hovered.ID != state.Selected {
+			ld.AddLineLoop(colors.view.hoveredOutline, hovered.Extent.Expand(1).Corners())
 		}
 	}
 
@@ -747,7 +716,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	if scrollVisible {
 		for _, r := range [...]math.Extent2D{scrollUpRect, scrollDownRect} {
 			addQuad(trid, r, colors.scroll.background)
-			addRectLoop(ld, r, colors.scroll.border)
+			ld.AddLineLoop(colors.scroll.border, r.Corners())
 		}
 		centerX := scrollUpRect.Center()[0]
 		// Up arrow: tip 1 px below top, body extends downward (-y).
@@ -766,10 +735,10 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 ///////////////////////////////////////////////////////////////////////////
 // RowSource expansion
 
-// applyRowSource fills in Width, BodyHeight, BodyFont, DrawBody, Scroll, and
-// Selectable on v from v.RowSource so the rest of DrawView can treat the
+// applyRowSource fills in Width, BodyHeight, BodyFont, DrawBody, scroll, and
+// selectable on v from v.RowSource so the rest of DrawView can treat the
 // view as if the caller had wired those fields up directly.
-func (ep *ERAMPane) applyRowSource(v *View) {
+func (ep *ERAMPane) applyRowSource(v *View, titleFont *renderer.Font) {
 	rs := v.RowSource
 
 	font := ep.ERAMFont(rs.FontIndex)
@@ -780,16 +749,16 @@ func (ep *ERAMPane) applyRowSource(v *View) {
 	// ReserveBadgeColumn). The badge sits flush with body.P0 so it lines up
 	// with the title-bar M button.
 	badgeColumn := rs.ReserveBadgeColumn || rs.ShowBadges
-	leftChrome := viewMPad
+	leftChrome := float32(titleBarButtonPad)
 	if badgeColumn {
-		leftChrome = viewMButtonWidth(v.TitleFont)
+		leftChrome = viewMButtonWidth(titleFont)
 	}
-	colWidth := leftChrome + float32(rs.ContentChars)*charWidth(font) + viewMPad
+	colWidth := leftChrome + float32(rs.ContentChars)*charWidth(font) + titleBarButtonPad
 
 	// Standard yellow badge, built once and shared by every row.
 	var badge *Badge
 	if rs.ShowBadges {
-		badge = defaultBadge(v.TitleFont, v.Brightness.ScaleRGB(colors.badge.fill))
+		badge = defaultBadge(titleFont, v.Brightness.ScaleRGB(colors.badge.fill))
 	}
 
 	// Prototype RowList copied per column (each column needs its own Rows
@@ -799,7 +768,9 @@ func (ep *ERAMPane) applyRowSource(v *View) {
 		LineHeight: lineH,
 		Width:      colWidth,
 		MaxLines:   rs.VisibleRows,
-		SelectedID: rs.SelectedID,
+	}
+	if rs.SelectableState != nil {
+		proto.SelectedID = rs.SelectableState.Selected
 	}
 	switch rs.RowSpacing {
 	case RowSpacingCompact:
@@ -861,7 +832,7 @@ func (ep *ERAMPane) applyRowSource(v *View) {
 	width := colsTotalW
 	colsStart := float32(0)
 	if rs.CenterColumnsInTitleBar {
-		minW := titleBarMinWidth(v.TitleFont, v.Title)
+		minW := titleBarMinWidth(titleFont, v.Title)
 		width = max(minW, colsTotalW)
 		colsStart = (width - colsTotalW) / 2
 	}
@@ -898,11 +869,11 @@ func (ep *ERAMPane) applyRowSource(v *View) {
 	}
 
 	if rs.ScrollState != nil {
-		v.Scroll = &ViewScrollConfig{State: rs.ScrollState, MaxOffset: maxOffset}
+		v.scroll = &ViewScrollConfig{State: rs.ScrollState, MaxOffset: maxOffset}
 	}
 
 	if rs.SelectableState != nil {
-		v.Selectable = &ViewSelectable{
+		v.selectable = &ViewSelectable{
 			State:    rs.SelectableState,
 			OnDelete: rs.OnRowDelete,
 			Items: func(body math.Extent2D) []ViewSelectableItem {
@@ -968,14 +939,14 @@ const labelGapChars = 3
 
 // bodyAvailChars returns the body wrap widths in characters for the first
 // line (after badge + label + label gap) and continuation lines (after badge
-// only). ERAM fonts are fixed-width, so char count is exact.
+// only).
 func (l *RowList) bodyAvailChars(r Row) (firstChars, contChars int) {
 	cw := charWidth(l.Font)
-	leadingPx := viewMPad
+	leadingPx := float32(titleBarButtonPad)
 	if r.Badge != nil {
 		leadingPx = r.Badge.Width + rowBadgeGap
 	}
-	contChars = int((l.Width - leadingPx - viewMPad) / cw)
+	contChars = int((l.Width - leadingPx - titleBarButtonPad) / cw)
 	firstChars = contChars
 	if r.Label != "" {
 		firstChars -= len(r.Label) + labelGapChars
@@ -1034,7 +1005,7 @@ func (l *RowList) Measure() float32 {
 	}
 
 	h := l.ListTopPad + l.ListBottomPad
-	for i := 0; i < l.visibleCount; i++ {
+	for i := range l.visibleCount {
 		h += l.measured[i].height
 	}
 	return h
@@ -1044,7 +1015,7 @@ func (l *RowList) Measure() float32 {
 // extent (full body width × row height) and invoking fn.
 func (l *RowList) iterRows(body math.Extent2D, fn func(i int, m measuredRow, ext math.Extent2D)) {
 	rowTop := body.P1[1] - l.ListTopPad
-	for i := 0; i < l.visibleCount; i++ {
+	for i := range l.visibleCount {
 		m := l.measured[i]
 		rowBottom := rowTop - m.height
 		fn(i, m, math.Extent2D{
@@ -1061,9 +1032,9 @@ func (l *RowList) iterRows(body math.Extent2D, fn func(i int, m measuredRow, ext
 // if any).
 func (l *RowList) rowContentLayout(r Row, body math.Extent2D) (labelX, bodyX float32) {
 	if r.Badge != nil {
-		labelX = body.P0[0] + r.Badge.Width + 2*r.Badge.Pad
+		labelX = body.P0[0] + r.Badge.Width + 2*titleBarButtonPad
 	} else {
-		labelX = body.P0[0] + viewMPad
+		labelX = body.P0[0] + titleBarButtonPad
 	}
 	bodyX = labelX
 	if r.Label != "" {
@@ -1197,7 +1168,7 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 // drawBadge renders the badge starting at startX, centered vertically on
 // yCenter, with a 1 px-inset fill quad inside the border.
 func drawBadge(b *ViewBuilders, badge *Badge, startX, yCenter float32) {
-	x0 := startX + badge.Pad
+	x0 := startX + titleBarButtonPad
 	border := math.Extent2D{
 		P0: [2]float32{x0, yCenter - badge.Height/2},
 		P1: [2]float32{x0 + badge.Width, yCenter + badge.Height/2},
@@ -1273,15 +1244,11 @@ func (ep *ERAMPane) openDeleteEntryPopup(ctx *panes.Context, item ViewSelectable
 	if origin[0]+width > pe.P1[0] {
 		origin[0] = item.Extent.P0[0] - gap - width
 	}
-	if origin[0] < pe.P0[0] {
-		origin[0] = pe.P0[0]
-	}
+	origin[0] = max(origin[0], pe.P0[0])
 	if origin[1]-height < pe.P0[1] {
 		origin[1] = pe.P0[1] + height
 	}
-	if origin[1] > pe.P1[1] {
-		origin[1] = pe.P1[1]
-	}
+	origin[1] = min(origin[1], pe.P1[1])
 
 	ctx.SetMousePosition([2]float32{origin[0] + width/2, origin[1] - height/2})
 
@@ -1320,7 +1287,7 @@ func (d *deleteEntryPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms rad
 	if hovered {
 		outlineColor = colors.menu.rowHoverOutline
 	}
-	addRectLoop(ld, extent, ps.Brightness.Border.ScaleRGB(outlineColor))
+	ld.AddLineLoop(ps.Brightness.Border.ScaleRGB(outlineColor), extent.Corners())
 
 	td.AddTextCentered("DELETE "+d.id, extent.Center(),
 		renderer.TextStyle{Font: d.font, Color: ps.Brightness.Text.ScaleRGB(colors.popup.text)})

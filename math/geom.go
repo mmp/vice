@@ -110,6 +110,11 @@ func (e Extent2D) IsEmpty() bool {
 	return e.P1[0] <= e.P0[0] || e.P1[1] <= e.P0[1]
 }
 
+// Corners returns the 4 corners of the associated box in counter-clockwise order.
+func (e Extent2D) Corners() [][2]float32 {
+	return [][2]float32{e.P0, {e.P1[0], e.P0[1]}, e.P1, {e.P0[0], e.P1[1]}}
+}
+
 func Union(e Extent2D, p [2]float32) Extent2D {
 	e.P0[0] = min(e.P0[0], p[0])
 	e.P0[1] = min(e.P0[1], p[1])

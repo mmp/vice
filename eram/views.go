@@ -61,9 +61,11 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 			RowSpacing:            RowSpacingCompact,
 			ScrollState:           &ep.altimSetScroll,
 			EmptyKeepsColumnWidth: true,
-			SelectedID:            ep.altimSetSelect.Selected,
 			SelectableState:       &ep.altimSetSelect,
-			OnRowDelete:           func(id string) { deleteByID(&ep.AltimSetAirports, id, altimDisplayID) },
+			OnRowDelete: func(id string) {
+				ep.AltimSetAirports = slices.DeleteFunc(ep.AltimSetAirports,
+					func(ap string) bool { return altimDisplayID(ap) == id })
+			},
 		},
 	})
 }
@@ -573,9 +575,11 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 			ShowBadges:         ps.WX.ShowIndicators,
 			RowSpacing:         RowSpacingAiry,
 			ScrollState:        &ep.wxScroll,
-			SelectedID:         ep.wxSelect.Selected,
 			SelectableState:    &ep.wxSelect,
-			OnRowDelete:        func(id string) { deleteByID(&ep.WXReportStations, id, wxDisplayID) },
+			OnRowDelete: func(id string) {
+				ep.WXReportStations = slices.DeleteFunc(ep.WXReportStations,
+					func(station string) bool { return wxDisplayID(station) == id })
+			},
 		},
 	})
 }
