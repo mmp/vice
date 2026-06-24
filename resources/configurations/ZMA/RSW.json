@@ -1,57 +1,60 @@
 {
   "control_positions": {
-    "1E": {
-      "callsign": "RSW_E_APP",
-      "frequency": 126800,
-      "radio_name": "Fort Myers Approach"
-    },
-    "1F": {
-      "callsign": "RSW_F_APP",
-      "frequency": 125150,
-      "radio_name": "Fort Myers Approach"
-    },
-    "1G": {
-      "callsign": "RSW_G_APP",
-      "frequency": 119750,
-      "radio_name": "Fort Myers Approach"
-    },
-    "1J": {
-      "callsign": "RSW_TWR",
-      "frequency": 128750,
-      "radio_name": "Fort Myers Tower"
-    },
-    "1K": {
-      "callsign": "RSW_2_TWR",
-      "frequency": 128750,
-      "radio_name": "Fort Myers Tower"
-    },
-    "1L": {
-      "callsign": "RSW_L_APP",
-      "frequency": 127050,
-      "radio_name": "Fort Myers Approach"
-    },
-    "1S": {
-      "callsign": "RSW_S_APP",
-      "frequency": 124125,
-      "radio_name": "Fort Myers Approach"
-    },
-    "1W": {
-      "callsign": "RSW_W_APP",
-      "frequency": 134425,
-      "radio_name": "Fort Myers Approach"
-    }
+    "1E": { "callsign": "RSW_E_APP", "frequency": 126800, "radio_name": "Fort Myers Approach" },
+    "1F": { "callsign": "RSW_F_APP", "frequency": 125150, "radio_name": "Fort Myers Approach" },
+    "1G": { "callsign": "RSW_G_APP", "frequency": 119750, "radio_name": "Fort Myers Approach" },
+    "1J": { "callsign": "RSW_TWR", "frequency": 128750, "radio_name": "Fort Myers Tower" },
+    "1K": { "callsign": "RSW_2_TWR", "frequency": 128750, "radio_name": "Fort Myers Tower" },
+    "1L": { "callsign": "RSW_L_APP", "frequency": 127050, "radio_name": "Fort Myers Approach" },
+    "1S": { "callsign": "RSW_S_APP", "frequency": 124125, "radio_name": "Fort Myers Approach" },
+    "1W": { "callsign": "RSW_W_APP", "frequency": 134425, "radio_name": "Fort Myers Approach" }
   },
   "handoff_ids": [
-    {
-      "id": "TPA",
-      "prefix": "1"
-    },
-    {
-      "id": "ZMA",
-      "prefix": "C"
-    }
+    { "id": "TPA", "prefix": "1" },
+    { "id": "ZMA", "prefix": "C" }
   ],
   "facility_adaptations": {
-    "configurations": {}
+    "center": "KRSW",
+    "range": 40,
+    "video_map_file": "videomaps/ZMA-RSW.mappack",
+    "areas": {
+      "1": {
+        "video_maps": [
+          "RSW-101S ASR APPROACH",
+          "RSW-102S CENTER SECTORS W FREQS",
+          "RSW-105S TERRAIN MAP",
+          "RSW-107S RWY 24",
+          "RSW-116S WAPOINT OVERLAY RWY 6",
+          "RSW-117S WAPOINT OVERLAY RWY 24",
+          "RSW-120S RSW 3NM MVA",
+          "RSW-123S RSW RNAV 6",
+          "RSW-106S RWY 6",
+          "RSW-124S RSW RNAV 6&24",
+          "RSW-140S ADSB 40NM",
+          "RSW-154S RSW RNAV 24",
+          "RSW-177S COUNTIES",
+          "RSW-185S RSW RWY 24",
+          "RSW-301S RWY 6 OVERLAY",
+          "RSW-302S RWY 24 OVERLAY",
+          "RSW-424S RWY 24 GUL SECTOR",
+          "RSW-502S FLCHK - RSW BAY VISUAL 6"
+        ]
+      }
+    },
+    "configurations": {
+      "RSW": {
+        "default_consolidation": {
+          "1W": ["1E", "1F", "1G", "1L", "1S"]
+        },
+        "departure_assignments": {
+          "KRSW": "1W"
+        },
+        "inbound_assignments": {
+          "TYNEE4": "1W",
+          "SHFTY6": "1W",
+          "PUMPP2": "1W"
+        }
+      }
+    }
   }
 }

@@ -497,6 +497,14 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 
 	// Don't carry this from a waypoint we may have previously passed.
 	nav.Approach.NoPT = false
+	// A controller-issued heading supersedes any prior "join/intercept the
+	// approach" instruction. Without this, the auto-intercept logic in
+	// ApproachHeading() keeps watching for a localizer crossing on the new
+	// heading and will either rejoin the approach (if the heading happens
+	// to cross it) or report "going to miss the localizer, request vectors"
+	// when it doesn't. The controller can re-arm the intercept with another
+	// "join FAC" / "intercept the localizer" instruction.
+	nav.Approach.InterceptState = NotIntercepting
 	nav.EnqueueHeading(hdg, turn, approachCleared, simTime, delayReduction)
 }
 

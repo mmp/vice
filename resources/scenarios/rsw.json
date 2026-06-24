@@ -1,0 +1,463 @@
+{
+  "tracon": "RSW",
+  "fixes": {
+    "CSHEL8": "26.541311,-81.758803"
+  },
+  "airports": {
+    "KRSW": {
+      "approaches": {
+        "I6": {
+          "cifp_id": "I6"
+        },
+        "RZ6": {
+          "cifp_id": "RZ6"
+        },
+        "RY24": {
+          "cifp_id": "RY24"
+        },
+        "RZ24": {
+          "cifp_id": "RZ24"
+        },
+        "S24": {
+          "cifp_id": "S24"
+        }
+      },
+      "departure_routes": {
+        "6": {
+          "CSHEL": {
+            "cleared_altitude": 4000,
+            "sid": "CSHEL8",
+            "description": "CSHEL8",
+            "waypoints": "KRSW/h060/a4000 CSHEL/h347"
+          },
+          "ALICO": {
+            "cleared_altitude": 4000,
+            "sid": "ALICO7",
+            "description": "ALICO7",
+            "waypoints": "KRSW/h060/a4000 ALICO"
+          },
+          "MOOKY": {
+            "cleared_altitude": 3000,
+            "sid": "MOOKY6",
+            "description": "MOOKY6",
+            "waypoints": "KRSW/h060/a3000 MOOKY"
+          }
+        },
+        "24": {
+          "CSHEL": {
+            "cleared_altitude": 4000,
+            "sid": "CSHEL8",
+            "description": "CSHEL8",
+            "waypoints": "KRSW MAPUL SNOKE/a4000/a1800+ WITAR LOSBY YALOO CSHEL/h347"
+          },
+          "ALICO": {
+            "cleared_altitude": 4000,
+            "sid": "ALICO7",
+            "description": "ALICO7",
+            "waypoints": "KRSW/h240/a4000 ALICO"
+          },
+          "MOOKY": {
+            "cleared_altitude": 3000,
+            "sid": "MOOKY6",
+            "description": "MOOKY6",
+            "waypoints": "KRSW/h240/a3000 MOOKY"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            },
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "UAL"
+            },
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "CSHEL",
+          "scratchpad": "CSH",
+          "route": "CSHEL DCT KATL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KDFW",
+          "exit": "MOOKY",
+          "scratchpad": "MOO",
+          "route": "MOOKY DCT KDFW"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KHOU",
+          "exit": "MOOKY",
+          "scratchpad": "MOO",
+          "route": "MOOKY DCT KHOU"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KMSY",
+          "exit": "MOOKY",
+          "scratchpad": "MOO",
+          "route": "MOOKY DCT KMSY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KSTL",
+          "exit": "MOOKY",
+          "scratchpad": "MOO",
+          "route": "MOOKY DCT KSTL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            },
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KJFK",
+          "exit": "ALICO",
+          "scratchpad": "CHA",
+          "route": "ALICO CHARO DCT KJFK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            },
+            {
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "ALICO",
+          "scratchpad": "CHA",
+          "route": "ALICO CHARO DCT KEWR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KBOS",
+          "exit": "ALICO",
+          "scratchpad": "ROG",
+          "route": "ALICO ROGAN DCT KBOS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KPHL",
+          "exit": "ALICO",
+          "scratchpad": "ROG",
+          "route": "ALICO ROGAN DCT KPHL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KDTW",
+          "exit": "ALICO",
+          "scratchpad": "DYL",
+          "route": "ALICO DYLYN DCT KDTW"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            }
+          ],
+          "destination": "KORD",
+          "exit": "ALICO",
+          "scratchpad": "LUC",
+          "route": "ALICO LUCYS DCT KORD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBWI",
+          "exit": "ALICO",
+          "scratchpad": "RAC",
+          "route": "ALICO RACNO DCT KBWI"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KMDW",
+          "exit": "ALICO",
+          "scratchpad": "DID",
+          "route": "ALICO DIDDY DCT KMDW"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY"
+            }
+          ],
+          "destination": "KACY",
+          "exit": "CSHEL",
+          "scratchpad": "CSH",
+          "route": "CSHEL DCT KACY"
+        }
+      ],
+      "exit_categories": {
+        "CSHEL": "CSHEL8",
+        "ALICO": "ALICO",
+        "MOOKY": "MOOKY"
+      },
+      "tower_list": 1
+    }
+  },
+  "inbound_flows": {
+    "SHFTY6": {
+      "arrivals": [
+        {
+          "waypoints": "BUNGE/a16000/ho MAZZY MOEMO/a11000/s250 LBELL",
+          "runway_waypoints": {
+            "KRSW": {
+              "6": "LBELL IRNIE WYCOF STERO/h238",
+              "24": "LBELL RODDE/a3000"
+            }
+          },
+          "route": "DCT",
+          "cruise_altitude": 30000,
+          "initial_controller": "C06",
+          "initial_altitude": 16000,
+          "initial_speed": 250,
+          "airlines": {
+            "KRSW": [
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMDW"
+              },
+              {
+                "icao": "JBU",
+                "airport": "KJFK"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "MXY",
+                "airport": "KACY"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "PUMPP2": {
+      "arrivals": [
+        {
+          "waypoints": "PIE/ho SRQ/a13000+ PUMPP TYNEE/a3000",
+          "runway_waypoints": {
+            "KRSW": {
+              "6": "TYNEE/h150",
+              "24": "TYNEE/h150"
+            }
+          },
+          "route": "DCT",
+          "cruise_altitude": 28000,
+          "initial_controller": "C06",
+          "initial_altitude": 14000,
+          "initial_speed": 250,
+          "airlines": {
+            "KRSW": [
+              {
+                "icao": "JBU",
+                "airport": "KJFK"
+              },
+              {
+                "icao": "JBU",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KPHL"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "TYNEE4": {
+      "arrivals": [
+        {
+          "waypoints": "FRZBE/ho JOSFF JEVES/a11000 TYNEE",
+          "runway_waypoints": {
+            "KRSW": {
+              "6": "TYNEE SAANN/h149",
+              "24": "TYNEE PASTR OBELL LLMER SPNKE COOPR/a4000+/h058"
+            }
+          },
+          "route": "DCT",
+          "cruise_altitude": 22000,
+          "initial_controller": "C06",
+          "initial_altitude": 12000,
+          "initial_speed": 250,
+          "airlines": {
+            "KRSW": [
+              {
+                "icao": "AAL",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "JBU",
+                "airport": "KEWR"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "Runway 06",
+  "name": "KRSW",
+  "primary_airport": "KRSW",
+  "scenarios": {
+    "Runway 06": {
+      "configuration": "RSW",
+      "wind": {
+        "direction": "050-070",
+        "speed": "7-9"
+      },
+      "arrival_runways": [
+        {
+          "airport": "KRSW",
+          "runway": "6"
+        }
+      ],
+      "departure_runways": [
+        {
+          "airport": "KRSW",
+          "rate": 10,
+          "runway": "6",
+          "category": "CSHEL8"
+        },
+        {
+          "airport": "KRSW",
+          "rate": 1,
+          "runway": "6",
+          "category": "ALICO"
+        },
+        {
+          "airport": "KRSW",
+          "rate": 1,
+          "runway": "6",
+          "category": "MOOKY"
+        }
+      ],
+      "inbound_rates": {
+        "SHFTY6": {
+          "KRSW": 3
+        },
+        "PUMPP2": {
+          "KRSW": 1
+        },
+        "TYNEE4": {
+          "KRSW": 6
+        }
+      }
+    },
+    "Runway 24": {
+      "configuration": "RSW",
+      "wind": {
+        "direction": "230-250",
+        "speed": "7-9"
+      },
+      "arrival_runways": [
+        {
+          "airport": "KRSW",
+          "runway": "24"
+        }
+      ],
+      "departure_runways": [
+        {
+          "airport": "KRSW",
+          "rate": 10,
+          "runway": "24",
+          "category": "CSHEL8"
+        },
+        {
+          "airport": "KRSW",
+          "rate": 1,
+          "runway": "24",
+          "category": "ALICO"
+        },
+        {
+          "airport": "KRSW",
+          "rate": 1,
+          "runway": "24",
+          "category": "MOOKY"
+        }
+      ],
+      "inbound_rates": {
+        "SHFTY6": {
+          "KRSW": 3
+        },
+        "PUMPP2": {
+          "KRSW": 1
+        },
+        "TYNEE4": {
+          "KRSW": 6
+        }
+      }
+    }
+  }
+}

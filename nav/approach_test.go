@@ -1211,6 +1211,84 @@ func TestInterceptApproachUnderEVAOnHeadingCommitsToLocalizer(t *testing.T) {
 	}
 }
 
+// TestNewHeadingCancelsInterceptArm verifies that a controller-issued
+// heading supersedes a prior "intercept the localizer" / "join the final
+// approach course" instruction. Without this, the auto-intercept logic in
+// ApproachHeading() keeps watching the new heading and will either rejoin
+// the approach when the heading happens to cross the localizer, or report
+// "going to miss the localizer, request vectors" when it doesn't.
+func TestNewHeadingCancelsInterceptArm(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectVisualApproach("22L")
+	f.AssignHeading(250, av.TurnLeft)
+
+	if intent := f.InterceptApproach(); intent == nil {
+		t.Fatal("InterceptApproach returned nil intent")
+	}
+	if f.nav.Approach.InterceptState != InitialHeading {
+		t.Fatalf("after InterceptApproach: InterceptState = %d, want InitialHeading",
+			f.nav.Approach.InterceptState)
+	}
+
+	// New heading from the controller — supersedes the prior intercept arm.
+	f.AssignHeading(310, av.TurnClosest)
+	if f.nav.Approach.InterceptState != NotIntercepting {
+		t.Errorf("after new heading: InterceptState = %d, want NotIntercepting",
+			f.nav.Approach.InterceptState)
+	}
+	if f.nav.Approach.RequestVectors {
+		t.Errorf("after new heading: RequestVectors set, want false")
+	}
+}
+
+// TestGetApproachPopulatesVisualReferencesForNamedVisual verifies that
+// looking up a named VisualApproach (e.g., a charted "Mount Vernon Visual
+// Runway 1") populates VisualReferences with itself, so that a subsequent
+// ClearedApproach can synthesize a route from those waypoints rather than
+// failing with "we don't know runway X".
+func TestGetApproachPopulatesVisualReferencesForNamedVisual(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+	})
+
+	named := &av.Approach{
+		Id:       "MTV",
+		FullName: "Mount Vernon Visual Runway 22L",
+		Type:     av.VisualApproach,
+		Runway:   "22L",
+		Waypoints: []av.WaypointArray{{
+			{Fix: "MTV1", Location: math.NM2LL([2]float32{-10, -10}, f.nav.FlightState.NmPerLongitude)},
+			{Fix: "MTV2", Location: math.NM2LL([2]float32{-5, -5}, f.nav.FlightState.NmPerLongitude)},
+		}},
+	}
+	airport := &av.Airport{Approaches: map[string]*av.Approach{"MTV": named}}
+
+	ap, refs, err := f.nav.getApproach(airport, "MTV")
+	if err != nil {
+		t.Fatalf("getApproach(MTV) error: %v", err)
+	}
+	if ap != named {
+		t.Errorf("getApproach returned wrong approach")
+	}
+	if len(refs) != 1 || refs[0] != named {
+		t.Errorf("VisualReferences = %v, want %v", refs, []*av.Approach{named})
+	}
+}
+
 // TestSelectVisualReferencesPrioritization verifies that ILS/Localizer are
 // always included, and the visual-style component is picked by priority:
 // VisualApproach > VOR > RNAV > ChartedVisual.

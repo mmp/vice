@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	"github.com/go-gl/glfw/v3.4/glfw"
 	"github.com/mmp/vice/util"
 )
 
@@ -70,12 +71,20 @@ type KeyboardState struct {
 	// if key repeat kicks in.)
 	Pressed   map[imgui.Key]any
 	HeldFKeys map[imgui.Key]any
+	// Modifier state read directly from glfw at GetKeyboard time. Sourcing
+	// these from glfw rather than imgui's KeyCtrl() etc. sidesteps any
+	// platform-specific Cmd/Ctrl remapping the imgui side may apply.
+	shift, ctrl, alt, super bool
 }
 
 func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	keyboard := &KeyboardState{
 		Pressed:   make(map[imgui.Key]any),
 		HeldFKeys: g.heldFKeys,
+		shift:     g.window.GetKey(glfw.KeyLeftShift) == glfw.Press || g.window.GetKey(glfw.KeyRightShift) == glfw.Press,
+		ctrl:      g.window.GetKey(glfw.KeyLeftControl) == glfw.Press || g.window.GetKey(glfw.KeyRightControl) == glfw.Press,
+		alt:       g.window.GetKey(glfw.KeyLeftAlt) == glfw.Press || g.window.GetKey(glfw.KeyRightAlt) == glfw.Press,
+		super:     g.window.GetKey(glfw.KeyLeftSuper) == glfw.Press || g.window.GetKey(glfw.KeyRightSuper) == glfw.Press,
 	}
 
 	keyboard.Input = g.InputCharacters()
@@ -186,18 +195,10 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	return keyboard
 }
 
-func (k *KeyboardState) KeyShift() bool {
-	return imgui.CurrentIO().KeyShift()
-}
-func (k *KeyboardState) KeyControl() bool {
-	return imgui.CurrentIO().KeyCtrl()
-}
-func (k *KeyboardState) KeyAlt() bool {
-	return imgui.CurrentIO().KeyAlt()
-}
-func (k *KeyboardState) KeySuper() bool {
-	return imgui.CurrentIO().KeySuper()
-}
+func (k *KeyboardState) KeyShift() bool   { return k.shift }
+func (k *KeyboardState) KeyControl() bool { return k.ctrl }
+func (k *KeyboardState) KeyAlt() bool     { return k.alt }
+func (k *KeyboardState) KeySuper() bool   { return k.super }
 
 func (k *KeyboardState) WasPressed(key imgui.Key) bool {
 	_, ok := k.Pressed[key]
