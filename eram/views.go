@@ -62,9 +62,8 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 			ScrollState:           &ep.altimSetScroll,
 			EmptyKeepsColumnWidth: true,
 			SelectableState:       &ep.altimSetSelect,
-			OnRowDelete: func(id string) {
-				ep.AltimSetAirports = slices.DeleteFunc(ep.AltimSetAirports,
-					func(ap string) bool { return altimDisplayID(ap) == id })
+			OnRowDelete: func(icao string) {
+				ep.AltimSetAirports = slices.DeleteFunc(ep.AltimSetAirports, func(ap string) bool { return ap == icao })
 			},
 		},
 	})
@@ -81,7 +80,7 @@ func altimRow(ctx *panes.Context, icao string, color renderer.RGB,
 	displayID := altimDisplayID(icao)
 	metar, hasMetar := ctx.Client.State.METAR[icao]
 	if !hasMetar {
-		return Row{ID: displayID, Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
+		return Row{ID: icao, Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
 	}
 	timeStr, altStr, altRaw := altimMetarForDisplay(metar)
 	prefix := fmt.Sprintf("%-4s  ", displayID)
@@ -90,7 +89,7 @@ func altimRow(ctx *panes.Context, icao string, color renderer.RGB,
 	altField := fmt.Sprintf("%3s", altStr)
 	line := prefix + timeField + mid + altField + "  "
 
-	row := Row{ID: displayID, Body: line}
+	row := Row{ID: icao, Body: line}
 	if altRaw > 0 && altRaw < 2992 && altStr != "..." {
 		offsetX := textWidth(prefix) + textWidth(timeField) + textWidth(mid)
 		fieldW := textWidth(altField)
@@ -551,8 +550,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 
 	var rows []Row
 	for _, icao := range ep.WXReportStations {
-		id := wxDisplayID(icao)
-		rows = append(rows, Row{ID: id, Label: id, Body: wxMetarBody(ctx, icao)})
+		rows = append(rows, Row{ID: icao, Label: wxDisplayID(icao), Body: wxMetarBody(ctx, icao)})
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
@@ -576,9 +574,8 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 			RowSpacing:         RowSpacingAiry,
 			ScrollState:        &ep.wxScroll,
 			SelectableState:    &ep.wxSelect,
-			OnRowDelete: func(id string) {
-				ep.WXReportStations = slices.DeleteFunc(ep.WXReportStations,
-					func(station string) bool { return wxDisplayID(station) == id })
+			OnRowDelete: func(icao string) {
+				ep.WXReportStations = slices.DeleteFunc(ep.WXReportStations, func(st string) bool { return st == icao })
 			},
 		},
 	})
