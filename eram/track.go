@@ -1,7 +1,6 @@
 package eram
 
 import (
-	"fmt"
 	"slices"
 	"time"
 
@@ -310,12 +309,7 @@ func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *panes.Co
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
 
 	color := ep.trackColor()
-	font := ep.systemFont[5]
-	if font == nil {
-		fmt.Println("ERAMPane: systemFont[5] is nil, cannot draw targets")
-		return
-	}
-	td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
+	td.AddTextCentered(position, pt, renderer.TextStyle{Font: ep.systemFont[5], Color: color})
 
 	// trackBuilder.GenerateCommands(cb)
 	ld.GenerateCommands(cb) // why does this need to be here?
@@ -614,7 +608,6 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 	ps := ep.currentPrefs()
 
 	for _, trk := range tracks {
-
 		state := ep.TrackState[trk.ADSBCallsign]
 		if state == nil {
 			continue
@@ -631,28 +624,13 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 
 		color := bright.ScaleRGB(colors.yellow)
 
-		// Respect selected history length (0–5)
-		max := ps.HistoryLength
-		if max <= 0 {
-			continue
-		}
-		if max > len(state.HistoryTracks) {
-			max = len(state.HistoryTracks)
-		}
-
-		// Draw newest first (circular buffer handling)
-		for i := 0; i < max; i++ {
-
+		// Draw newest first (circular buffer handling), respecting selected history length.
+		for i := range min(ps.HistoryLength, len(state.HistoryTracks)) {
 			idx := (state.HistoryTrackIndex - 1 - i + len(state.HistoryTracks)) % len(state.HistoryTracks)
 			hist := state.HistoryTracks[idx]
 
 			loc := hist.Location
 			if loc.IsZero() {
-				continue
-			}
-
-			if ep.systemFont[5] == nil {
-				fmt.Println("ERAMPane: systemFont[5] is nil, cannot draw history tracks")
 				continue
 			}
 

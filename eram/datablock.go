@@ -424,11 +424,7 @@ func speedStartFromGroundspeedLine4(gsText string) int {
 func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 	state := ep.TrackState[track.ADSBCallsign]
 	currentAltitude := state.Track.TransponderAltitude
-	assignedAltitude := track.FlightPlan.AssignedAltitude
-	if assignedAltitude == 0 && track.FlightPlan.PerceivedAssigned != 0 {
-		assignedAltitude = track.FlightPlan.PerceivedAssigned
-	}
-	interimAltitude := track.FlightPlan.InterimAlt
+	displayAlt := track.FlightPlan.DataBlockAltitude()
 	formatScopeAltitude := func(alt int) string {
 		alt = int(alt+50) / 100
 		return string([]byte{
@@ -438,22 +434,20 @@ func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 		})
 	}
 	formatCurrent := formatScopeAltitude(int(currentAltitude))
-	formatAssigned := formatScopeAltitude(assignedAltitude)
-	formatInterim := formatScopeAltitude(interimAltitude)
-	if interimAltitude > 0 { // Interim alt takes precedence (i think) TODO: check this
+	formatDisplay := formatScopeAltitude(displayAlt)
+	if track.FlightPlan.InterimAlt > 0 {
 		intType := getInterimAltitudeType(track)
-		return formatInterim + intType + formatCurrent
-	} else /* if assignedAltitude != -1 */ { // Eventually for block altitudes...
-		switch {
-		case formatCurrent == formatAssigned:
-			return formatCurrent + "C"
-		case currentAltitude > float32(assignedAltitude) && assignedAltitude > -1: // TODO: Find actual font so that the up arrows draw
-			middle := util.Select(!state.ReachedAltitude, downArrow, "+")
-			return formatAssigned + middle + formatCurrent
-		case currentAltitude < float32(assignedAltitude):
-			middle := util.Select(!state.ReachedAltitude, upArrow, "+")
-			return formatAssigned + middle + formatCurrent // or maintaining
-		}
+		return formatDisplay + intType + formatCurrent
+	}
+	switch {
+	case formatCurrent == formatDisplay:
+		return formatCurrent + "C"
+	case currentAltitude > float32(displayAlt) && displayAlt > -1: // TODO: Find actual font so that the up arrows draw
+		middle := util.Select(!state.ReachedAltitude, downArrow, "+")
+		return formatDisplay + middle + formatCurrent
+	case currentAltitude < float32(displayAlt):
+		middle := util.Select(!state.ReachedAltitude, upArrow, "+")
+		return formatDisplay + middle + formatCurrent
 	}
 	return "" // This shouldn't happen?
 }

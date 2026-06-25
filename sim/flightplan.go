@@ -118,6 +118,21 @@ func (fp *NASFlightPlan) AddPointOutHistory(tcp TCP) {
 	fp.PointOutHistory = append([]TCP{tcp}, fp.PointOutHistory...)
 }
 
+// DataBlockAltitude returns the altitude shown in the ERAM data block — the
+// "hard altitude or interim altitude" referenced in ERAM conflict alert and
+// other altitude-cap logic. Priority: InterimAlt (TODO: confirm interim really
+// wins) > AssignedAltitude > PerceivedAssigned. Returns 0 if none are set.
+// TODO: AltitudeBlock once block clearances are wired up.
+func (fp *NASFlightPlan) DataBlockAltitude() int {
+	if fp.InterimAlt > 0 {
+		return fp.InterimAlt
+	}
+	if fp.AssignedAltitude != 0 {
+		return fp.AssignedAltitude
+	}
+	return fp.PerceivedAssigned
+}
+
 type NASFlightPlanType int
 
 // Flight plan types (STARS)
