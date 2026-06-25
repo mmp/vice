@@ -667,13 +667,28 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			resetButtonPosDefault(ctx, scale) // Reset the button position to the default
 		}
 		p0 := toolbarDrawState.buttonCursor
-		if ep.drawToolbarFullButton(ctx, "POS\nCHECK", 0, scale, false, false) {
-			// display pos check...
+		ps := ep.currentPrefs()
+		if ep.drawToolbarFullButton(ctx, "POS\nCHECK", 0, scale, ps.CheckList.Visible == checkListPos, false) {
+			if _, ok := ep.popup.(*checkListPopup); ok {
+				ep.popup = nil
+			}
+			if ps.CheckList.Visible == checkListPos {
+				ps.CheckList.Visible = checkListHidden
+			} else {
+				ps.CheckList.Visible = checkListPos
+			}
 		}
 		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
 		p2 = oppositeHorizontal(p2, buttonSize(buttonTearoff, scale))
-		if ep.drawToolbarFullButton(ctx, "EMERG\nCHECK", 0, scale, false, false) {
-			// display emerg check...
+		if ep.drawToolbarFullButton(ctx, "EMERG\nCHECK", 0, scale, ps.CheckList.Visible == checkListEmerg, false) {
+			if _, ok := ep.popup.(*checkListPopup); ok {
+				ep.popup = nil
+			}
+			if ps.CheckList.Visible == checkListEmerg {
+				ps.CheckList.Visible = checkListHidden
+			} else {
+				ps.CheckList.Visible = checkListEmerg
+			}
 		}
 
 		p1 := [2]float32{p2[0], p0[1]}

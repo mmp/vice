@@ -122,6 +122,20 @@ type Preferences struct {
 		Bright     radar.Brightness
 		SortManual bool
 	}
+
+	// Check list views (POS CHECK / EMERG CHECK). Only one is visible at a
+	// time; Visible is an enum (checkListHidden/checkListPos/checkListEmerg)
+	// rather than two booleans so the mutual exclusion is structural.
+	CheckList struct {
+		Visible    int
+		Position   [2]float32
+		Opaque     bool
+		ShowBorder bool
+		Lines      int
+		Font       int
+		Highlight  radar.Brightness
+		Text       radar.Brightness
+	}
 }
 
 const numSavedPreferenceSets = 10
@@ -285,6 +299,15 @@ func makeDefaultPreferences() *Preferences {
 	prefs.WX.Lines = 5
 	prefs.WX.Font = 2
 	prefs.WX.Bright = 80
+
+	prefs.CheckList.Visible = checkListHidden
+	prefs.CheckList.Position = [2]float32{100, 900}
+	prefs.CheckList.Opaque = false
+	prefs.CheckList.ShowBorder = true
+	prefs.CheckList.Lines = 17
+	prefs.CheckList.Font = 2
+	prefs.CheckList.Highlight = 40
+	prefs.CheckList.Text = 76
 
 	prefs.MCA.Position = [2]float32{2, 80}
 	prefs.MCA.PALines = 6

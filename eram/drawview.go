@@ -59,30 +59,38 @@ type ViewScrollState struct {
 }
 
 // ViewSelectionState is caller-owned selection tracking for the
-// click-to-delete affordance. Selected is the Label of the currently chosen
-// row, or "" for none. DrawView clears Selected automatically whenever the
-// delete-confirmation popup is no longer the active popup, so dismissal via
-// Escape, click-outside, or popup replacement all do the right thing.
+// click-to-delete affordance. Selected is the index of the currently chosen
+// row (into the flat ViewRowSource.Rows slice), or -1 for none. DrawView
+// clears Selected automatically whenever the delete-confirmation popup is
+// no longer the active popup, so dismissal via Escape, click-outside, or
+// popup replacement all do the right thing. Callers must initialize new
+// instances with Selected: -1 (zero value 0 would highlight row 0).
 type ViewSelectionState struct {
-	Selected string
+	Selected int
 }
 
-// ViewSelectableItem is one selectable row inside the View body. Extent is the
-// pane-coord hit-test rectangle; ID identifies the row (passed to OnDelete)
-// and is also shown verbatim in the popup as "DELETE <ID>". IDs among items in
-// one frame are expected to be unique.
+// ViewSelectableItem is one selectable row inside the View body. Extent is
+// the pane-coord hit-test rectangle; Idx is the row's index into the flat
+// ViewRowSource.Rows slice (passed to OnDelete/OnToggle, and resolved
+// through ViewSelectable.Label for the "DELETE <X>" popup display).
 type ViewSelectableItem struct {
 	Extent math.Extent2D
-	ID     string
+	Idx    int
 }
 
-// ViewSelectable enables hover outlines and click-to-delete on body rows.
-// Items is invoked once per frame with the body extent so the caller can
-// derive row extents from their RowList without duplicating geometry math.
+// ViewSelectable enables hover outlines and click-to-* on body rows. Either
+// OnDelete (delete-confirmation popup, single selection) or OnToggle
+// (multi-row toggle, no popup) is set, never both. Items is invoked once per
+// frame with the body extent so the caller can derive row extents from their
+// RowList without duplicating geometry math. Label resolves an index to the
+// user-visible string shown in the "DELETE <X>" popup; required when
+// OnDelete is set.
 type ViewSelectable struct {
 	State    *ViewSelectionState
 	Items    func(body math.Extent2D) []ViewSelectableItem
-	OnDelete func(label string)
+	Label    func(idx int) string
+	OnDelete func(idx int)
+	OnToggle func(idx int)
 }
 
 // View is the declarative spec. See package overview above.
@@ -119,9 +127,10 @@ type View struct {
 
 	OnMenu func(host math.Extent2D) popup
 
-	// MinimizeTarget enables the title-bar "-" button: when non-nil, clicking
-	// "-" sets *MinimizeTarget = false.
-	MinimizeTarget *bool
+	// OnMinimize enables the title-bar "-" button: when non-nil, clicking
+	// "-" invokes the callback. Callers typically set a "Visible" pref to
+	// false (or to a hidden-sentinel value for enum-style visibility).
+	OnMinimize func()
 
 	OnBodyTertiaryMenu func(host math.Extent2D) popup
 
@@ -184,10 +193,21 @@ type ViewRowSource struct {
 	// bar still renders at a reasonable size.
 	EmptyKeepsColumnWidth bool
 
-	// SelectableState / OnRowDelete wire click-to-delete using row IDs.
-	// The selection highlight tracks SelectableState.Selected.
+	// SelectableState / OnRowDelete wire click-to-delete by row index.
+	// The selection highlight tracks SelectableState.Selected (an index
+	// into Rows). OnRowDelete is called with the row's index; callers
+	// typically use slices.Delete to remove it from a parallel slice.
 	SelectableState *ViewSelectionState
-	OnRowDelete     func(id string)
+	OnRowDelete     func(idx int)
+
+	// OnRowToggle, when non-nil, makes rows clickable and invokes the
+	// callback with the row's index into Rows. The caller flips its own
+	// per-row state (typically a []bool) and re-sets Row.Toggled on the
+	// next frame. Mutually exclusive with SelectableState.
+	OnRowToggle func(idx int)
+
+	// HighlightColor is the fill drawn behind rows with Row.Toggled=true.
+	HighlightColor renderer.RGB
 
 	// OnRowExtents, if non-nil, is called after each column's Draw with the
 	// visible-row extents flattened in display order (col 0 rows, then col 1
@@ -233,12 +253,17 @@ type Row struct {
 
 	Centered bool
 
-	// ID is the selection identifier matched against RowList.SelectedID. It
-	// is independent of Label so rows whose visible text lives entirely in
-	// Body can still participate in selection.
+	// ID is the user-visible name used in the "DELETE <ID>" confirmation
+	// popup, resolved per index via ViewSelectable.Label. Independent of
+	// Label so rows whose visible text lives entirely in Body still get a
+	// useful delete-popup string.
 	ID string
 
 	Color renderer.RGB
+
+	// Toggled, when true, renders a RowList.HighlightColor fill behind the
+	// row. Used by check list views for click-to-toggle highlighting.
+	Toggled bool
 
 	SpacerHeight float32
 
@@ -382,7 +407,7 @@ func titleBarLayout(titleExt math.Extent2D, v View, titleFont *renderer.Font, mo
 	}
 
 	btns[2].label = "-"
-	btns[2].present = v.MinimizeTarget != nil
+	btns[2].present = v.OnMinimize != nil
 	btns[2].rect = math.Extent2D{
 		P0: [2]float32{titleExt.P1[0] - 2*titleBarButtonPad - charWidth(titleFont), titleExt.P1[1] - titleH},
 		P1: titleExt.P1,
@@ -608,9 +633,9 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 				}
 			}
 		}
-		if state := v.selectable.State; state != nil && state.Selected != "" {
+		if state := v.selectable.State; state != nil && state.Selected >= 0 {
 			if dp, ok := ep.popup.(*deleteEntryPopup); !ok || dp.owner != state {
-				state.Selected = ""
+				state.Selected = -1
 			}
 		}
 	}
@@ -649,8 +674,8 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 			ep.popup = v.OnMenu(outer)
 			ep.consumeMouseClick(mouse)
 
-		case hasTitle && v.MinimizeTarget != nil && tb[2].hovered:
-			*v.MinimizeTarget = false
+		case hasTitle && v.OnMinimize != nil && tb[2].hovered:
+			v.OnMinimize()
 			ep.consumeMouseClick(mouse)
 
 		case hasTitle && tb[1].hovered && ep.viewRepo.activeID == "":
@@ -659,8 +684,12 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 
 		case selectableActive && primaryClicked && hoveredSelIdx >= 0:
 			item := selItems[hoveredSelIdx]
-			v.selectable.State.Selected = item.ID
-			ep.popup = ep.openDeleteEntryPopup(ctx, item, v.selectable, titleFont)
+			if v.selectable.OnToggle != nil {
+				v.selectable.OnToggle(item.Idx)
+			} else {
+				v.selectable.State.Selected = item.Idx
+				ep.popup = ep.openDeleteEntryPopup(ctx, item, v.selectable, titleFont)
+			}
 			ep.clearMousePrimaryConsumed(mouse)
 
 		case !hasTitle && v.OnBodyTertiaryMenu != nil && tertiaryClicked &&
@@ -707,7 +736,7 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 	// — its highlight fill carries the visual instead.
 	if selectableActive && hoveredSelIdx >= 0 {
 		hovered := selItems[hoveredSelIdx]
-		if state := v.selectable.State; state == nil || hovered.ID != state.Selected {
+		if state := v.selectable.State; state == nil || hovered.Idx != state.Selected {
 			ld.AddLineLoop(colors.view.hoveredOutline, hovered.Extent.Expand(1).Corners())
 		}
 	}
@@ -741,6 +770,10 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 func (ep *ERAMPane) applyRowSource(v *View, titleFont *renderer.Font) {
 	rs := v.RowSource
 
+	if rs.SelectableState != nil && rs.OnRowToggle != nil {
+		panic("ViewRowSource: SelectableState and OnRowToggle are mutually exclusive")
+	}
+
 	font := ep.ERAMFont(rs.FontIndex)
 	lineH := lineHeight(font)
 	textColor := v.Brightness.ScaleRGB(colors.view.text)
@@ -762,15 +795,14 @@ func (ep *ERAMPane) applyRowSource(v *View, titleFont *renderer.Font) {
 	}
 
 	// Prototype RowList copied per column (each column needs its own Rows
-	// slice). All other fields are shared.
+	// slice and SelectedRow). All other fields are shared.
 	proto := RowList{
-		Font:       font,
-		LineHeight: lineH,
-		Width:      colWidth,
-		MaxLines:   rs.VisibleRows,
-	}
-	if rs.SelectableState != nil {
-		proto.SelectedID = rs.SelectableState.Selected
+		Font:           font,
+		LineHeight:     lineH,
+		Width:          colWidth,
+		MaxLines:       rs.VisibleRows,
+		HighlightColor: rs.HighlightColor,
+		SelectedRow:    -1,
 	}
 	switch rs.RowSpacing {
 	case RowSpacingCompact:
@@ -798,8 +830,18 @@ func (ep *ERAMPane) applyRowSource(v *View, titleFont *renderer.Font) {
 		actualCols = math.Clamp((remaining+rs.VisibleRows-1)/rs.VisibleRows, 1, rs.MaxCols)
 	}
 	cols := make([]*RowList, actualCols)
+	selectedIdx := -1
+	if rs.SelectableState != nil {
+		selectedIdx = rs.SelectableState.Selected
+	}
 	for c := range cols {
 		rl := proto
+		// Translate the global selected index into this column's local row
+		// index, or leave -1 if the selection is in a different column.
+		colBase := startIdx + c*rs.VisibleRows
+		if selectedIdx >= colBase && selectedIdx < colBase+rs.VisibleRows {
+			rl.SelectedRow = selectedIdx - colBase
+		}
 		cols[c] = &rl
 	}
 	for i := range remaining {
@@ -872,19 +914,36 @@ func (ep *ERAMPane) applyRowSource(v *View, titleFont *renderer.Font) {
 		v.scroll = &ViewScrollConfig{State: rs.ScrollState, MaxOffset: maxOffset}
 	}
 
-	if rs.SelectableState != nil {
+	if rs.SelectableState != nil || rs.OnRowToggle != nil {
+		// For toggle (full-width highlight bar), hit-test the full row so the
+		// hover outline matches the fill. For delete-confirm, hit-test tight
+		// ink bounds since the highlight is a tight inverted-text box.
+		extentsFn := (*RowList).TextExtents
+		if rs.OnRowToggle != nil {
+			extentsFn = (*RowList).RowExtents
+		}
+		// Rows in column c are rs.Rows[startIdx + c*VisibleRows + i] — the
+		// closure rebuilds that absolute index so callbacks can index a flat
+		// per-row state slice directly.
+		items := func(body math.Extent2D) []ViewSelectableItem {
+			var items []ViewSelectableItem
+			for c, col := range cols {
+				colBase := startIdx + c*rs.VisibleRows
+				for i, e := range extentsFn(col, colExt(c, body)) {
+					items = append(items, ViewSelectableItem{
+						Extent: e,
+						Idx:    colBase + i,
+					})
+				}
+			}
+			return items
+		}
 		v.selectable = &ViewSelectable{
 			State:    rs.SelectableState,
+			Items:    items,
+			Label:    func(idx int) string { return rs.Rows[idx].ID },
 			OnDelete: rs.OnRowDelete,
-			Items: func(body math.Extent2D) []ViewSelectableItem {
-				var items []ViewSelectableItem
-				for c, col := range cols {
-					for i, e := range col.TextExtents(colExt(c, body)) {
-						items = append(items, ViewSelectableItem{Extent: e, ID: col.Rows[i].ID})
-					}
-				}
-				return items
-			},
+			OnToggle: rs.OnRowToggle,
 		}
 	}
 }
@@ -919,9 +978,16 @@ type RowList struct {
 	// 0 = unlimited.
 	MaxLines int
 
-	// Selection: the visible row whose ID matches SelectedID gets the popup
-	// grey fill and inverted text color.
-	SelectedID string
+	// SelectedRow is the index *within this column's Rows* of the
+	// currently selected row, or -1 for none. applyRowSource computes
+	// this per-column from the global ViewSelectionState.Selected (a
+	// flat-Rows index).
+	SelectedRow int
+
+	// HighlightColor is the fill drawn behind rows with Row.Toggled=true
+	// (multi-row toggle highlight, e.g. check list views). Independent of
+	// SelectedRow/selection.
+	HighlightColor renderer.RGB
 
 	// Populated by Measure.
 	measured     []measuredRow
@@ -1073,6 +1139,21 @@ func (l *RowList) inkUnionOf(r Row, m measuredRow, labelX, bodyX, baseY float32)
 	return inkUnion
 }
 
+// RowExtents returns one Extent2D per visible row: the full row rectangle
+// (full body width × row height). Used by full-width row affordances (e.g.
+// check list toggle) where the hit-test and hover outline should match the
+// full-width highlight bar drawn behind toggled rows.
+func (l *RowList) RowExtents(body math.Extent2D) []math.Extent2D {
+	if l.measured == nil {
+		panic("RowList.RowExtents: Measure must be called first")
+	}
+	extents := make([]math.Extent2D, l.visibleCount)
+	l.iterRows(body, func(i int, _ measuredRow, ext math.Extent2D) {
+		extents[i] = ext
+	})
+	return extents
+}
+
 // TextExtents returns one Extent2D per visible row: a tight box around the
 // rendered text (expanded by 1 px) for normal rows, or the full row extent
 // for spacers and centered headers. Used for selection / hover hit-testing.
@@ -1145,9 +1226,15 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		}
 		labelX, bodyX := l.rowContentLayout(r, body)
 
+		// Toggle highlight: a clean bar across the full row extent, drawn
+		// behind text. Independent of selection — text color stays as-is.
+		if r.Toggled && l.HighlightColor != (renderer.RGB{}) {
+			addQuad(b.Trid, rowExt, l.HighlightColor)
+		}
+
 		// Selection highlight is drawn behind the text, so compute the
 		// tight ink box first and recolor style before the draw pass.
-		if l.SelectedID != "" && r.ID == l.SelectedID {
+		if i == l.SelectedRow {
 			ink := l.inkUnionOf(r, m, labelX, bodyX, baseY)
 			if !ink.IsEmpty() {
 				addQuad(b.Trid, ink.Expand(1), colors.popup.backgroundGrey)
@@ -1220,10 +1307,11 @@ type deleteEntryPopup struct {
 	origin   [2]float32
 	width    float32
 	height   float32
-	id       string
+	label    string // user-visible name shown as "DELETE <label>"
+	idx      int    // row index passed to onDelete on confirm
 	owner    *ViewSelectionState
 	font     *renderer.Font
-	onDelete func(id string)
+	onDelete func(idx int)
 }
 
 // openDeleteEntryPopup positions a deleteEntryPopup adjacent to the clicked
@@ -1232,7 +1320,11 @@ type deleteEntryPopup struct {
 func (ep *ERAMPane) openDeleteEntryPopup(ctx *panes.Context, item ViewSelectableItem,
 	sel *ViewSelectable, font *renderer.Font) *deleteEntryPopup {
 
-	text := "DELETE " + item.ID
+	label := ""
+	if sel.Label != nil {
+		label = sel.Label(item.Idx)
+	}
+	text := "DELETE " + label
 	pad := float32(8)
 	width := float32(len(text))*charWidth(font) + 2*pad
 	height := cellHeight(font) + pad
@@ -1256,7 +1348,8 @@ func (ep *ERAMPane) openDeleteEntryPopup(ctx *panes.Context, item ViewSelectable
 		origin:   origin,
 		width:    width,
 		height:   height,
-		id:       item.ID,
+		label:    label,
+		idx:      item.Idx,
 		owner:    sel.State,
 		font:     font,
 		onDelete: sel.OnDelete,
@@ -1289,7 +1382,7 @@ func (d *deleteEntryPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms rad
 	}
 	ld.AddLineLoop(ps.Brightness.Border.ScaleRGB(outlineColor), extent.Corners())
 
-	td.AddTextCentered("DELETE "+d.id, extent.Center(),
+	td.AddTextCentered("DELETE "+d.label, extent.Center(),
 		renderer.TextStyle{Font: d.font, Color: ps.Brightness.Text.ScaleRGB(colors.popup.text)})
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -1299,7 +1392,7 @@ func (d *deleteEntryPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms rad
 
 	if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 		if hovered && d.onDelete != nil {
-			d.onDelete(d.id)
+			d.onDelete(d.idx)
 		}
 		ep.popup = nil
 		ep.clearMousePrimaryConsumed(mouse)

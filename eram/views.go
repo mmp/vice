@@ -49,7 +49,7 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 		Brightness: ps.AltimSet.Bright,
 		OnMenu: ep.makeViewMenu(ctx, "altim-set", 8,
 			func(pb popupBase) popup { return &altimSetPopup{popupBase: pb} }),
-		MinimizeTarget: &ps.AltimSet.Visible,
+		OnMinimize: func() { ps.AltimSet.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:                  rows,
 			FontIndex:             ps.AltimSet.Font,
@@ -62,8 +62,8 @@ func (ep *ERAMPane) drawAltimSetView(ctx *panes.Context, transforms radar.ScopeT
 			ScrollState:           &ep.altimSetScroll,
 			EmptyKeepsColumnWidth: true,
 			SelectableState:       &ep.altimSetSelect,
-			OnRowDelete: func(icao string) {
-				ep.AltimSetAirports = slices.DeleteFunc(ep.AltimSetAirports, func(ap string) bool { return ap == icao })
+			OnRowDelete: func(idx int) {
+				ep.AltimSetAirports = slices.Delete(ep.AltimSetAirports, idx, idx+1)
 			},
 		},
 	})
@@ -191,7 +191,7 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *panes.Context, transforms radar.Scop
 		Brightness: ps.BeaconCodeView.Bright,
 		OnMenu: ep.makeViewMenu(ctx, "beacon", 7,
 			func(pb popupBase) popup { return &beaconCodeViewPopup{popupBase: pb} }),
-		MinimizeTarget: &ps.BeaconCodeView.Visible,
+		OnMinimize: func() { ps.BeaconCodeView.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:                    beaconCodeRows(ctx, ep, ps),
 			FontIndex:               ps.BeaconCodeView.Font,
@@ -562,7 +562,7 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 		Brightness: ps.WX.Bright,
 		OnMenu: ep.makeViewMenu(ctx, "wx", 6,
 			func(pb popupBase) popup { return &wxPopup{popupBase: pb} }),
-		MinimizeTarget: &ps.WX.Visible,
+		OnMinimize: func() { ps.WX.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:               rows,
 			FontIndex:          ps.WX.Font,
@@ -574,8 +574,8 @@ func (ep *ERAMPane) drawWXView(ctx *panes.Context, transforms radar.ScopeTransfo
 			RowSpacing:         RowSpacingAiry,
 			ScrollState:        &ep.wxScroll,
 			SelectableState:    &ep.wxSelect,
-			OnRowDelete: func(icao string) {
-				ep.WXReportStations = slices.DeleteFunc(ep.WXReportStations, func(st string) bool { return st == icao })
+			OnRowDelete: func(idx int) {
+				ep.WXReportStations = slices.Delete(ep.WXReportStations, idx, idx+1)
 			},
 		},
 	})
@@ -654,4 +654,120 @@ func (w *wxPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeT
 	}
 
 	ep.DrawERAMMenu(ctx, transforms, cb, w.origin, cfg)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// CHECK LISTS (POS CHECK / EMERG CHECK)
+
+// Preferences.CheckList.Visible enum. Only one of POS CHECK / EMERG CHECK can
+// be visible at a time; the enum makes the mutual exclusion structural.
+const (
+	checkListHidden = iota
+	checkListPos
+	checkListEmerg
+)
+
+var checkListItems = map[int][]string{
+	checkListPos: {
+		"AIRSPACE STATUS",
+		"NOTAMS",
+		"AIRPORT CONDITIONS (RWY, ATIS, ETC)",
+		"EQUIPMENT/FREQUENCIES (NAVAID STATUS)",
+		"RESTRICTIONS/TMIS",
+		"WEATHER, PIREPS, DEVIATIONS",
+		"UNUSUAL SITAUTIONS (PAJA, NON-RVSM, ETC)",
+		"CLEARANCES ISSUED OR PENDING",
+		"TRAFFIC",
+	},
+	checkListEmerg: {
+		"AIRCRAFT ID AND TYPE",
+		"NATURE OF EMERGENCY",
+		"PILOT'S DESIRES",
+		"AIRCRAFT ALTITUDE",
+		"FUEL REMAINING IN TIME",
+		"FLIGHT CONDITIONS/WEATHER",
+		"LAST KNOWN POSITION",
+		"NUMBER OF PEOPLE ON BOARD",
+		"HAZMAT ON BOARD",
+	},
+}
+
+// drawCheckListView renders the active check list (POS CHECK or EMERG CHECK).
+// Rows are click-toggleable; the toggled state lives on ERAMPane and persists
+// across switches between the two lists.
+func (ep *ERAMPane) drawCheckListView(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	if ps.CheckList.Visible == checkListHidden {
+		return
+	}
+
+	var title, id string
+	var toggled []bool
+	switch ps.CheckList.Visible {
+	case checkListPos:
+		title, id, toggled = "POS CHECK", "pos-check", ep.posCheckToggled
+	case checkListEmerg:
+		title, id, toggled = "EMERG CHECK", "emerg-check", ep.emergCheckToggled
+	default:
+		return
+	}
+
+	items := checkListItems[ps.CheckList.Visible]
+	textColor := ps.CheckList.Text.ScaleRGB(colors.view.text)
+	rows := make([]Row, len(items))
+	maxLen := 0
+	for i, s := range items {
+		rows[i] = Row{Body: s, Color: textColor, Toggled: toggled[i]}
+		if len(s) > maxLen {
+			maxLen = len(s)
+		}
+	}
+
+	ep.DrawView(ctx, transforms, cb, View{
+		Position:   &ps.CheckList.Position,
+		ID:         id,
+		Title:      title,
+		Opaque:     ps.CheckList.Opaque,
+		ShowBorder: ps.CheckList.ShowBorder,
+		Brightness: ps.CheckList.Text,
+		OnMenu: ep.makeViewMenu(ctx, id, 6,
+			func(pb popupBase) popup { return &checkListPopup{popupBase: pb} }),
+		OnMinimize: func() { ps.CheckList.Visible = checkListHidden },
+		RowSource: &ViewRowSource{
+			Rows:           rows,
+			FontIndex:      ps.CheckList.Font,
+			ContentChars:   maxLen,
+			MaxCols:        1,
+			VisibleRows:    ps.CheckList.Lines,
+			RowSpacing:     RowSpacingCompact,
+			HighlightColor: ps.CheckList.Highlight.ScaleRGB(colors.popup.backgroundGrey),
+			OnRowToggle:    func(idx int) { toggled[idx] = !toggled[idx] },
+		},
+	})
+}
+
+type checkListPopup struct {
+	popupBase
+}
+
+func (c *checkListPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+
+	rows := []ERAMMenuItem{
+		ep.makeBooleanMenuItem(&ps.CheckList.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&ps.CheckList.ShowBorder, "BORDER"),
+		makeIntMenuItem(ep, &ps.CheckList.Lines, "LINES", 3, 24, 1),
+		makeIntMenuItem(ep, &ps.CheckList.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.CheckList.Highlight, "HIGHLIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.CheckList.Text, "TEXT", 0, 100, 1),
+	}
+
+	cfg := ERAMMenuConfig{
+		Title: util.Select(ps.CheckList.Visible == checkListEmerg, "EMRG CHK", "POS CHK"),
+		Width: viewPopupWidth,
+		Font:  ep.ERAMFont(2),
+		Rows:  rows,
+	}
+
+	ep.DrawERAMMenu(ctx, transforms, cb, c.origin, cfg)
 }

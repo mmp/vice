@@ -7,6 +7,7 @@
   - Added support for setting leader line position and length together: `#/# [FLID]`
   - Fixed bugs with left vs. middle click of tracks behaving differently when entering commands
   - Added support for pop-up menus to configure more views
+  - Added check list views
 - STARS
   - Fixed bug with "create / modify interfacility VFR flight plan" command (e.g. `N123AB LAS*SAN C172 165`)
 - Slightly reduced TTS readback speed, added slider to control it.

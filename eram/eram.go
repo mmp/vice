@@ -324,6 +324,11 @@ type ERAMPane struct {
 	wxScroll         ViewScrollState    `json:"-"`
 	wxSelect         ViewSelectionState `json:"-"`
 
+	// Check list view toggle state (session). Each slice is parallel to
+	// checkListItems[…], with true = row is highlighted ("checked off").
+	posCheckToggled   []bool `json:"-"`
+	emergCheckToggled []bool `json:"-"`
+
 	commandMode       CommandMode     `json:"-"`
 	drawRouteAircraft av.ADSBCallsign `json:"-"`
 	drawRoutePoints   []math.Point2LL `json:"-"`
@@ -370,6 +375,16 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	if ep.crrAircraftRects == nil {
 		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
 	}
+	if ep.posCheckToggled == nil {
+		ep.posCheckToggled = make([]bool, len(checkListItems[checkListPos]))
+	}
+	if ep.emergCheckToggled == nil {
+		ep.emergCheckToggled = make([]bool, len(checkListItems[checkListEmerg]))
+	}
+	// ViewSelectionState's zero-value Selected is 0 (i.e. "row 0 selected").
+	// Initialize to -1 so no row is selected at startup.
+	ep.altimSetSelect.Selected = -1
+	ep.wxSelect.Selected = -1
 
 	ep.events = es.Subscribe()
 
@@ -533,6 +548,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawWXView(ctx, transforms, cb)
 	ep.drawBeaconCodeView(ctx, transforms, cb)
 	ep.drawTimeView(ctx, transforms, cb)
+	ep.drawCheckListView(ctx, transforms, cb)
 	ep.drawCRRView(ctx, tracks, transforms, cb)
 	// Draw the active floating pop-up (if any) on top of its host view.
 	if ep.popup != nil {
@@ -700,6 +716,17 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	}
 	if ep.prefSet.Current.WX.Bright == 0 {
 		ep.prefSet.Current.WX.Bright = def.WX.Bright
+	}
+
+	// Fill in CheckList defaults if this preference set was created before
+	// the check list view existed (Position zero is the marker).
+	if ep.prefSet.Current.CheckList.Position == ([2]float32{}) {
+		ep.prefSet.Current.CheckList.Position = def.CheckList.Position
+		ep.prefSet.Current.CheckList.ShowBorder = def.CheckList.ShowBorder
+		ep.prefSet.Current.CheckList.Lines = def.CheckList.Lines
+		ep.prefSet.Current.CheckList.Font = def.CheckList.Font
+		ep.prefSet.Current.CheckList.Highlight = def.CheckList.Highlight
+		ep.prefSet.Current.CheckList.Text = def.CheckList.Text
 	}
 }
 

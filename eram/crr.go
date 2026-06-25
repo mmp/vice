@@ -145,7 +145,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, tracks []sim.Track, transfor
 		// is added by makeViewMenu).
 		OnMenu: ep.makeViewMenu(ctx, "crr", 8+2+len(ep.CRRGroups),
 			func(pb popupBase) popup { return &crrPopup{popupBase: pb} }),
-		MinimizeTarget: &ps.CRR.Visible,
+		OnMinimize: func() { ps.CRR.Visible = false },
 	}
 	switch {
 	case len(labels) == 0:
