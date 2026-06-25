@@ -641,14 +641,8 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 	}
 
 	// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
-	// On macOS, physical Ctrl-click is delivered as a right-click by Cocoa,
-	// and physical Ctrl maps to KeySuper() due to the Ctrl/Super swap.
-	// So we check both: primary release + KeyControl (Cmd-Shift-Click on macOS,
-	// Ctrl-Shift-Click elsewhere) and secondary release + KeySuper (physical
-	// Ctrl-Shift-Click on macOS).
-	if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() &&
-		((ctx.Mouse.Released[platform.MouseButtonPrimary] && ctx.Keyboard.KeyControl()) ||
-			(ctx.Mouse.Released[platform.MouseButtonSecondary] && ctx.Keyboard.KeySuper())) {
+	if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() && ctx.Keyboard.KeyControl() &&
+		(ctx.Mouse.Released[platform.MouseButtonPrimary] || ctx.Mouse.Released[platform.MouseButtonSecondary]) {
 		mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
 		ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 	}

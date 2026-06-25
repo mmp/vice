@@ -97,6 +97,10 @@ func imguiInit() *imgui.Context {
 	io := imgui.CurrentIO()
 	io.SetConfigFlags(io.ConfigFlags() | imgui.ConfigFlagsViewportsEnable)
 
+	// Disable imgui's "helpful" reporting of control key presses as super (aka command) and
+	// super/command as control (and a few other things we don't care about.)
+	io.SetConfigMacOSXBehaviors(false)
+
 	// Disable the nav windowing popup (Ctrl+Tab/Cmd+Tab window switcher) by
 	// clearing the shortcut keys that trigger it.
 	context.SetConfigNavWindowingKeyNext(imgui.KeyChord(imgui.KeyNone))
