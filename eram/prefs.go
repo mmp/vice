@@ -276,13 +276,13 @@ func makeDefaultPreferences() *Preferences {
 		CRRWhite:   90,
 		CRRAmber:   90,
 	}
-	prefs.CRR.Position = [2]float32{10, 600}
+	prefs.CRR.Position = [2]float32{100, 900}
 	prefs.CRR.DisplayFixes = false
 
 	prefs.HistoryLength = 5
 
 	prefs.AltimSet.Visible = false
-	prefs.AltimSet.Position = [2]float32{200, 600}
+	prefs.AltimSet.Position = [2]float32{100, 900}
 	prefs.AltimSet.Opaque = false
 	prefs.AltimSet.ShowBorder = true
 	prefs.AltimSet.ShowIndicators = true
@@ -292,7 +292,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.AltimSet.Bright = 80
 
 	prefs.WX.Visible = false
-	prefs.WX.Position = [2]float32{400, 600}
+	prefs.WX.Position = [2]float32{100, 900}
 	prefs.WX.Opaque = false
 	prefs.WX.ShowBorder = true
 	prefs.WX.ShowIndicators = true
@@ -324,8 +324,6 @@ func makeDefaultPreferences() *Preferences {
 	prefs.TimeView.ShowBorder = true
 	prefs.TimeView.Font = 3
 	prefs.TimeView.Bright = 100
-	// TimeView.Position is left zero; drawClock initializes it lazily once
-	// the pane extent is known (it depends on pane height).
 
 	return &prefs
 }

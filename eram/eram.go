@@ -658,63 +658,40 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	if ep.prefSet.Current.RA.Position == ([2]float32{}) {
 		ep.prefSet.Current.RA.Position = def.RA.Position
 	}
-	// TimeView.Position is left to drawTimeView to initialize lazily based on
-	// pane height.
+
 	if ep.prefSet.Current.CursorSize == 0 {
 		ep.prefSet.Current.CursorSize = def.CursorSize
 	}
+
 	// Fill in CRR defaults if this preference set was created before CRR existed
 	if ep.prefSet.Current.CRR.ColorBright == nil {
 		ep.prefSet.Current.CRR.ColorBright = def.CRR.ColorBright
-	}
-	if ep.prefSet.Current.CRR.Font == 0 {
 		ep.prefSet.Current.CRR.Font = def.CRR.Font
-	}
-	if ep.prefSet.Current.CRR.Lines == 0 {
 		ep.prefSet.Current.CRR.Lines = def.CRR.Lines
-	}
-	if ep.prefSet.Current.CRR.Bright == 0 {
 		ep.prefSet.Current.CRR.Bright = def.CRR.Bright
-	}
-	if ep.prefSet.Current.CRR.Position == ([2]float32{}) {
 		ep.prefSet.Current.CRR.Position = def.CRR.Position
-	}
-	// If explicitly unset, start visible in new sessions
-	if !ep.prefSet.Current.CRR.Visible {
 		ep.prefSet.Current.CRR.Visible = def.CRR.Visible
 	}
+
 	// Fill in ALTIM SET defaults if this preference set was created before ALTIM SET existed
 	needsAltimSetDefaults := ep.prefSet.Current.AltimSet.Position == ([2]float32{})
 	if needsAltimSetDefaults {
 		ep.prefSet.Current.AltimSet.Position = def.AltimSet.Position
 		ep.prefSet.Current.AltimSet.ShowBorder = def.AltimSet.ShowBorder
 		ep.prefSet.Current.AltimSet.ShowIndicators = def.AltimSet.ShowIndicators
-	}
-	if ep.prefSet.Current.AltimSet.Lines == 0 {
 		ep.prefSet.Current.AltimSet.Lines = def.AltimSet.Lines
-	}
-	if ep.prefSet.Current.AltimSet.Col == 0 {
 		ep.prefSet.Current.AltimSet.Col = def.AltimSet.Col
-	}
-	if ep.prefSet.Current.AltimSet.Font == 0 {
 		ep.prefSet.Current.AltimSet.Font = def.AltimSet.Font
-	}
-	if ep.prefSet.Current.AltimSet.Bright == 0 {
 		ep.prefSet.Current.AltimSet.Bright = def.AltimSet.Bright
 	}
+
 	// Fill in WX defaults if this preference set was created before WX existed
 	needsWXDefaults := ep.prefSet.Current.WX.Position == ([2]float32{})
 	if needsWXDefaults {
 		ep.prefSet.Current.WX.Position = def.WX.Position
 		ep.prefSet.Current.WX.ShowBorder = def.WX.ShowBorder
-	}
-	if ep.prefSet.Current.WX.Lines == 0 {
 		ep.prefSet.Current.WX.Lines = def.WX.Lines
-	}
-	if ep.prefSet.Current.WX.Font == 0 {
 		ep.prefSet.Current.WX.Font = def.WX.Font
-	}
-	if ep.prefSet.Current.WX.Bright == 0 {
 		ep.prefSet.Current.WX.Bright = def.WX.Bright
 	}
 
