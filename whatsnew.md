@@ -1,4 +1,4 @@
-- New scenarios: T75 (Ryan H), RSW (Nelson Tieku)
+- New scenario: T75 (Ryan H)
 - ERAM
   - Added support for point outs (`QP` commands)
   - Added support for quicklook (`QL` commands)

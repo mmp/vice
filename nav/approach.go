@@ -292,14 +292,7 @@ func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av
 
 	for name, appr := range airport.Approaches {
 		if name == id {
-			var refs []*av.Approach
-			if appr.Type == av.VisualApproach {
-				// Named visual approach: its own waypoints are the route the
-				// pilot will fly, so they serve as the sole reference for
-				// ClearedVisualApproach's route synthesis.
-				refs = []*av.Approach{appr}
-			}
-			return appr, refs, nil
+			return appr, nil, nil
 		}
 	}
 	return nil, nil, ErrUnknownApproach

@@ -639,15 +639,18 @@ func (g *glfwPlatform) keyChange(window *glfw.Window, keycode glfw.Key, scancode
 }
 
 func (g *glfwPlatform) updateKeyModifiers() {
-	// Always report physical keys: ModCtrl is the Ctrl key and ModSuper is
-	// the Cmd/Win key on every platform. On macOS imgui's automatic
-	// derivation would swap Cmd into ModCtrl; explicitly issuing these
-	// events overrides that so callers using KeyControl() see physical
-	// Ctrl.
 	g.imguiIO.AddKeyEvent(imgui.ModShift, g.window.GetKey(glfw.KeyLeftShift) == glfw.Press || g.window.GetKey(glfw.KeyRightShift) == glfw.Press)
 	g.imguiIO.AddKeyEvent(imgui.ModAlt, g.window.GetKey(glfw.KeyLeftAlt) == glfw.Press || g.window.GetKey(glfw.KeyRightAlt) == glfw.Press)
-	g.imguiIO.AddKeyEvent(imgui.ModCtrl, g.window.GetKey(glfw.KeyLeftControl) == glfw.Press || g.window.GetKey(glfw.KeyRightControl) == glfw.Press)
-	g.imguiIO.AddKeyEvent(imgui.ModSuper, g.window.GetKey(glfw.KeyLeftSuper) == glfw.Press || g.window.GetKey(glfw.KeyRightSuper) == glfw.Press)
+	if runtime.GOOS == "darwin" {
+		// imgui "helpfully" swaps the Command and Control modifier keys on
+		// OSX. So we need to undo that here so that control still comes
+		// through as control.
+		g.imguiIO.AddKeyEvent(imgui.ModSuper, g.window.GetKey(glfw.KeyLeftControl) == glfw.Press || g.window.GetKey(glfw.KeyRightControl) == glfw.Press)
+		g.imguiIO.AddKeyEvent(imgui.ModCtrl, g.window.GetKey(glfw.KeyLeftSuper) == glfw.Press || g.window.GetKey(glfw.KeyRightSuper) == glfw.Press)
+	} else {
+		g.imguiIO.AddKeyEvent(imgui.ModCtrl, g.window.GetKey(glfw.KeyLeftControl) == glfw.Press || g.window.GetKey(glfw.KeyRightControl) == glfw.Press)
+		g.imguiIO.AddKeyEvent(imgui.ModSuper, g.window.GetKey(glfw.KeyLeftSuper) == glfw.Press || g.window.GetKey(glfw.KeyRightSuper) == glfw.Press)
+	}
 }
 
 func (g *glfwPlatform) charChange(window *glfw.Window, char rune) {
