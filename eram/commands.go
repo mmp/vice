@@ -105,7 +105,6 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 
 	// zoom
 	if z := mouse.Wheel[1]; z != 0 {
-
 		r := ps.Range
 		ps.Range += func() float32 {
 			var amt float32 = 20
@@ -127,7 +126,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 					amt = 2
 				}
 			}
-			return amt * z
+			return amt * z / 10
 		}()
 		ps.Range = math.Clamp(ps.Range, .5, 2600)
 
