@@ -594,17 +594,25 @@ func (ep *ERAMPane) DrawView(ctx *panes.Context, transforms radar.ScopeTransform
 				renderer.TextStyle{Font: titleFont, Color: c})
 		}
 
-		// Dim outlines first, then bright outlines on hover — the bright
-		// pass must overdraw dim in the 1-px overlap at region boundaries.
-		// Outlines sit 1 px outside each button rect.
-		for _, b := range tb {
-			if b.present && !b.hovered {
-				ld.AddLineLoop(dim, b.rect.Expand(1).Corners())
-			}
+		// Dim chrome: horizontal title/body separator and single vertical
+		// separators between adjacent title-bar buttons. The outer view
+		// border covers the title bar's top/sides.
+		ld.AddLine([2]float32{titleExt.P0[0], titleExt.P0[1]},
+			[2]float32{titleExt.P1[0], titleExt.P0[1]}, dim)
+		if tb[0].present {
+			x := tb[0].rect.P1[0]
+			ld.AddLine([2]float32{x, titleExt.P0[1]}, [2]float32{x, titleExt.P1[1]}, dim)
 		}
+		if tb[2].present {
+			x := tb[2].rect.P0[0]
+			ld.AddLine([2]float32{x, titleExt.P0[1]}, [2]float32{x, titleExt.P1[1]}, dim)
+		}
+		// Bright box around the hovered button. Overdraws the dim separators
+		// (and the outer view border, where they coincide) so the hovered
+		// cell reads as fully outlined.
 		for _, b := range tb {
 			if b.present && b.hovered {
-				ld.AddLineLoop(bright, b.rect.Expand(1).Corners())
+				ld.AddLineLoop(bright, b.rect.Corners())
 			}
 		}
 	}
