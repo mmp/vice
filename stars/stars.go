@@ -1800,7 +1800,7 @@ func (sp *STARSPane) crossCursor(p platform.Platform, sizeIdx int, fg, bg render
 	sizeIdx = min(4, sizeIdx)
 	if sp.crossCursors[sizeIdx] == nil {
 		img, hot := rasterizeStarsCross(sizeIdx, fg, bg)
-		c, err := p.CreateCursor(img, hot[0], hot[1])
+		c, err := p.CreateCursorFromImage(img, hot[0], hot[1])
 		if err != nil {
 			return nil
 		}

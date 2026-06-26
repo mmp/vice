@@ -2,7 +2,10 @@ package eram
 
 import (
 	"fmt"
+	"io/fs"
+	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -227,10 +230,7 @@ type ERAMPane struct {
 	videoMapLabel   string       `json:"-"`
 	currentFacility string       `json:"-"`
 
-	eramCursorSelection string           `json:"-"`
-	eramCursorPath      string           `json:"-"`
-	eramCursor          *platform.Cursor `json:"-"`
-	eramCursorLoadErr   string           `json:"-"`
+	eramCursors map[string]*platform.Cursor `json:"-"` // loaded once in Activate; keyed by base name ("Eram1", "EramDeletion", ...)
 
 	cursorOverrideSelection string    `json:"-"`
 	cursorOverrideUntil     time.Time `json:"-"`
@@ -390,6 +390,7 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 
 	// TODO: initialize fonts and audio
 	ep.initializeFonts(r, pl)
+	ep.loadCursors(pl)
 
 	// Activate weather radar, events
 	if ep.prefSet == nil {
@@ -421,70 +422,95 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 
 func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 
+// loadCursors loads all .cur files from the eram-cursors resource directory
+// into ep.eramCursors, keyed by base name (e.g. "Eram1", "EramDeletion").
+// Panics on any failure -- a missing or malformed cursor is a build/install
+// problem, not something the user can recover from.
+func (ep *ERAMPane) loadCursors(pl platform.Platform) {
+	ep.eramCursors = make(map[string]*platform.Cursor)
+	err := util.WalkResources("eram-cursors", func(path string, d fs.DirEntry, _ fs.FS, err error) error {
+		if err != nil {
+			panic(err)
+		}
+		if d.IsDir() || filepath.Ext(path) != ".cur" {
+			return nil
+		}
+		cursor, err := pl.CreateCursorFromCUR(util.LoadResourceBytes(path))
+		if err != nil {
+			panic(fmt.Sprintf("%s: %v", path, err))
+		}
+		ep.eramCursors[strings.TrimSuffix(d.Name(), ".cur")] = cursor
+		return nil
+	})
+	if err != nil {
+		panic(err)
+	}
+}
+
+// updateCursorOverride applies the current ERAM cursor to the platform.
+// The cursor is the temporary override (if any), else the base cursor chosen
+// in the CURSOR menu. When a timed override expires, the rollback cursor (if
+// set) becomes the new override; otherwise we fall back to the base cursor.
 func (ep *ERAMPane) updateCursorOverride(ctx *panes.Context) {
-	if ep.prefSet == nil {
+	if ep.prefSet == nil || ctx.Mouse == nil {
 		return
 	}
 
-	desiredCursor := ""
-	if ep.cursorOverrideSelection != "" {
-		if !ep.cursorOverrideUntil.IsZero() && time.Now().After(ep.cursorOverrideUntil) {
-			// Temporary cursor is over. Check the rollback cursor (if it exists).
-			if ep.cursorRollbackSelection != "" { // If there is a rollback selected
-				ep.cursorOverrideSelection = ep.cursorRollbackSelection
-				ep.cursorOverrideUntil = time.Time{} // Keep indefinitely until changed
-				ep.cursorRollbackSelection = ""      // Clear rollback after using it
-				desiredCursor = ep.cursorOverrideSelection
-			} else { // No rollback cursor. Default to the cursor selected in the CURSOR menu.
-				ep.cursorOverrideSelection = ""
-				ep.cursorOverrideUntil = time.Time{}
-			}
-		} else {
-			desiredCursor = ep.cursorOverrideSelection
+	if ep.cursorOverrideSelection != "" && !ep.cursorOverrideUntil.IsZero() &&
+		time.Now().After(ep.cursorOverrideUntil) {
+		ep.cursorOverrideSelection = ep.cursorRollbackSelection
+		ep.cursorOverrideUntil = time.Time{}
+		ep.cursorRollbackSelection = ""
+	}
+
+	name := ep.cursorOverrideSelection
+	if name == "" {
+		if sz := ep.currentPrefs().CursorSize; sz > 0 {
+			name = fmt.Sprintf("Eram%d", sz)
 		}
 	}
 
-	if desiredCursor == "" {
-		cursorSize := ep.currentPrefs().CursorSize
-		if cursorSize > 0 {
-			desiredCursor = fmt.Sprintf("Eram%d", cursorSize)
-		} else {
-			ep.eramCursorSelection = ""
-			ep.eramCursorPath = ""
-			ep.eramCursor = nil
-			ep.eramCursorLoadErr = ""
-			return
-		}
+	if name == "" {
+		ctx.Platform.ClearCursorOverride()
+	} else {
+		ctx.Platform.SetCursorOverride(ep.eramCursors[name])
+	}
+}
+
+// SetTemporaryCursor displays a cursor type for the given number of seconds.
+func (ep *ERAMPane) SetTemporaryCursor(cursorType string, seconds float64, rollbackCursor string) {
+	cursorType = strings.TrimSpace(cursorType)
+	if cursorType == "" || seconds == 0 || seconds < -1 {
+		ep.ClearTemporaryCursor()
+		return
 	}
 
-	if desiredCursor != ep.eramCursorSelection {
-		ep.eramCursorSelection = desiredCursor
-		ep.eramCursorPath = ""
-		ep.eramCursor = nil
-		ep.eramCursorLoadErr = ""
-		resolvedPath, err := ep.resolveCursorPath(desiredCursor)
-		if err != nil {
-			ep.eramCursorLoadErr = err.Error()
-			if ctx.Lg != nil {
-				ctx.Lg.Warnf("ERAM cursor %q: %v", desiredCursor, err)
-			}
-			return
-		}
-		cursor, err := ctx.Platform.LoadCursorFromFile(resolvedPath)
-		if err != nil {
-			ep.eramCursorLoadErr = err.Error()
-			if ctx.Lg != nil {
-				ctx.Lg.Warnf("ERAM cursor %q: %v", resolvedPath, err)
-			}
-			return
-		}
-		ep.eramCursorPath = resolvedPath
-		ep.eramCursor = cursor
+	if size, err := strconv.Atoi(cursorType); err == nil {
+		cursorType = fmt.Sprintf("Eram%d", size)
 	}
 
-	if ctx.Mouse != nil && ep.eramCursor != nil {
-		ctx.Platform.SetCursorOverride(ep.eramCursor)
+	ep.cursorOverrideSelection = cursorType
+	rollback := strings.TrimSpace(rollbackCursor)
+	if rollback != "" {
+		if size, err := strconv.Atoi(rollback); err == nil {
+			rollback = fmt.Sprintf("Eram%d", size)
+		}
+		ep.cursorRollbackSelection = rollback
+	} else {
+		ep.cursorRollbackSelection = ""
 	}
+	if seconds == -1 {
+		ep.cursorOverrideUntil = time.Time{}
+	} else {
+		ep.cursorOverrideUntil = time.Now().Add(time.Duration(seconds * float64(time.Second)))
+	}
+}
+
+// ClearTemporaryCursor removes any temporary cursor override and rollback cursor.
+func (ep *ERAMPane) ClearTemporaryCursor() {
+	ep.cursorOverrideSelection = ""
+	ep.cursorOverrideUntil = time.Time{}
+	ep.cursorRollbackSelection = ""
 }
 
 func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {

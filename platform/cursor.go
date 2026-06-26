@@ -1,15 +1,15 @@
-// pkg/platform/cursor.go
-// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
+// platform/cursor.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package platform
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"image"
 	"image/color"
-	"os"
 
 	"github.com/go-gl/glfw/v3.4/glfw"
 	"github.com/mmp/vice/math"
@@ -32,23 +32,21 @@ func (g *glfwPlatform) ClearCursorOverride() {
 	g.cursorOverride = nil
 }
 
-func (g *glfwPlatform) LoadCursorFromFile(path string) (*Cursor, error) {
+func (g *glfwPlatform) CreateCursorFromCUR(data []byte) (*Cursor, error) {
 	targetSize := int(32*g.DPIScale() + 0.5)
 	if targetSize <= 0 {
 		targetSize = 32
 	}
-	rgba, hotspot, err := loadCurFile(path, targetSize)
+
+	rgba, hotspot, err := makeImageFromCUR(data, targetSize)
 	if err != nil {
 		return nil, err
 	}
-	c, err := g.CreateCursor(rgba, hotspot[0], hotspot[1])
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", path, err)
-	}
-	return c, nil
+
+	return g.CreateCursorFromImage(rgba, hotspot[0], hotspot[1])
 }
 
-func (g *glfwPlatform) CreateCursor(img *image.RGBA, hotspotX, hotspotY int) (*Cursor, error) {
+func (g *glfwPlatform) CreateCursorFromImage(img *image.RGBA, hotspotX, hotspotY int) (*Cursor, error) {
 	if img == nil {
 		return nil, fmt.Errorf("cursor image is nil")
 	}
@@ -101,24 +99,20 @@ Each image is 16 bytes, so offset for the 6 bytes up there and the previous imag
 8-11: size.
 12-15: offset.
 */
-func loadCurFile(path string, targetSize int) (*image.RGBA, [2]int, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, [2]int{}, err
-	}
+func makeImageFromCUR(data []byte, targetSize int) (*image.RGBA, [2]int, error) {
 	if len(data) < 6 {
-		return nil, [2]int{}, fmt.Errorf("%s: cursor file too small", path)
+		return nil, [2]int{}, errors.New("cursor file truncated")
 	}
 	if binary.LittleEndian.Uint16(data[0:2]) != 0 { // check the validity of the header/ file.
-		return nil, [2]int{}, fmt.Errorf("%s: invalid cursor header", path)
+		return nil, [2]int{}, errors.New("invalid cursor header")
 	}
 	fileType := binary.LittleEndian.Uint16(data[2:4])
 	if fileType != 2 { // ensure this is a cursor and not an icon.
-		return nil, [2]int{}, fmt.Errorf("%s: unsupported cursor type %d", path, fileType)
+		return nil, [2]int{}, fmt.Errorf("unsupported cursor type %d", fileType)
 	}
 	count := int(binary.LittleEndian.Uint16(data[4:6])) // number of cursor images
 	if count == 0 {
-		return nil, [2]int{}, fmt.Errorf("%s: cursor file has no images", path)
+		return nil, [2]int{}, errors.New("cursor file has no images")
 	}
 
 	best := curEntry{}
@@ -127,7 +121,7 @@ func loadCurFile(path string, targetSize int) (*image.RGBA, [2]int, error) {
 	for i := range count { // go over all the images in the file.
 		entryOffset := 6 + i*16 // skip the first 6 bytes and each image is 16 bytes.
 		if entryOffset+16 > len(data) {
-			return nil, [2]int{}, fmt.Errorf("%s: cursor entry %d is truncated", path, i)
+			return nil, [2]int{}, fmt.Errorf("cursor entry %d is truncated", i)
 		}
 		width := int(data[entryOffset])
 		height := int(data[entryOffset+1])
@@ -161,13 +155,13 @@ func loadCurFile(path string, targetSize int) (*image.RGBA, [2]int, error) {
 		}
 	}
 	if bestArea < 0 {
-		return nil, [2]int{}, fmt.Errorf("%s: cursor file has no valid images", path)
+		return nil, [2]int{}, errors.New("cursor file has no valid images")
 	}
 
 	imageData := data[best.offset : best.offset+best.size]
 	rgba, err := decodeCursorDIB(imageData)
 	if err != nil {
-		return nil, [2]int{}, fmt.Errorf("%s: %w", path, err)
+		return nil, [2]int{}, err
 	}
 	return rgba, best.hotspot, nil
 }
@@ -175,7 +169,7 @@ func loadCurFile(path string, targetSize int) (*image.RGBA, [2]int, error) {
 // Turn cursor bitmap into an image.RGBA
 func decodeCursorDIB(data []byte) (*image.RGBA, error) {
 	if len(data) < 40 {
-		return nil, fmt.Errorf("cursor DIB header too small")
+		return nil, errors.New("cursor DIB header too small")
 	}
 	headerSize := int(binary.LittleEndian.Uint32(data[0:4]))
 	if headerSize < 40 || headerSize > len(data) {
@@ -185,12 +179,12 @@ func decodeCursorDIB(data []byte) (*image.RGBA, error) {
 	width := int(int32(binary.LittleEndian.Uint32(data[4:8])))
 	heightTotal := int32(binary.LittleEndian.Uint32(data[8:12]))
 	if width <= 0 || heightTotal == 0 {
-		return nil, fmt.Errorf("cursor DIB has invalid dimensions")
+		return nil, errors.New("cursor DIB has invalid dimensions")
 	}
 	topDown := heightTotal < 0
 	heightAbs := int(math.Abs(heightTotal))
 	if heightAbs%2 != 0 {
-		return nil, fmt.Errorf("cursor DIB height is not even")
+		return nil, errors.New("cursor DIB height is not even")
 	}
 	height := heightAbs / 2
 
@@ -198,7 +192,7 @@ func decodeCursorDIB(data []byte) (*image.RGBA, error) {
 	bitCount := int(binary.LittleEndian.Uint16(data[14:16]))
 	compression := binary.LittleEndian.Uint32(data[16:20])
 	if planes != 1 || compression != 0 {
-		return nil, fmt.Errorf("cursor DIB uses unsupported format")
+		return nil, errors.New("cursor DIB uses unsupported format")
 	}
 
 	var clrUsed uint32
@@ -218,10 +212,10 @@ func decodeCursorDIB(data []byte) (*image.RGBA, error) {
 	paletteOffset := headerSize
 	paletteBytes := paletteEntries * 4
 	if paletteOffset+paletteBytes > len(data) {
-		return nil, fmt.Errorf("cursor palette is truncated")
+		return nil, errors.New("cursor palette is truncated")
 	}
 	palette := make([]color.RGBA, paletteEntries)
-	for i := 0; i < paletteEntries; i++ {
+	for i := range paletteEntries {
 		base := paletteOffset + i*4
 		palette[i] = color.RGBA{
 			R: data[base+2],
@@ -240,24 +234,24 @@ func decodeCursorDIB(data []byte) (*image.RGBA, error) {
 	xorStride := ((bitCount*width + 31) / 32) * 4
 	andStride := ((width + 31) / 32) * 4
 	if xorStride <= 0 || andStride <= 0 {
-		return nil, fmt.Errorf("cursor DIB has invalid stride")
+		return nil, errors.New("cursor DIB has invalid stride")
 	}
 	xorSize := xorStride * height
 	andSize := andStride * height
 	pixelOffset := paletteOffset + paletteBytes
 	if pixelOffset+xorSize+andSize > len(data) {
-		return nil, fmt.Errorf("cursor DIB pixel data is truncated")
+		return nil, errors.New("cursor DIB pixel data is truncated")
 	}
 
 	rgba := image.NewRGBA(image.Rect(0, 0, width, height))
-	for y := 0; y < height; y++ {
+	for y := range height {
 		srcY := y
 		if !topDown {
 			srcY = height - 1 - y
 		}
 		xorRow := pixelOffset + srcY*xorStride
 		andRow := pixelOffset + xorSize + srcY*andStride
-		for x := 0; x < width; x++ {
+		for x := range width {
 			maskByte := data[andRow+(x/8)]
 			maskBit := (maskByte >> uint(7-(x%8))) & 1
 

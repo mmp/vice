@@ -1,5 +1,5 @@
-// pkg/platform/platform.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// platform/platform.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package platform
@@ -116,14 +116,15 @@ type Platform interface {
 	// and which keys are currently down.
 	GetKeyboard() *KeyboardState
 
-	// Cursor overrides. LoadCursorFromFile parses a .cur file and creates a
-	// cursor handle that can be set as the active cursor via SetCursorOverride.
-	LoadCursorFromFile(path string) (*Cursor, error)
-	// CreateCursor builds a Cursor from an in-memory RGBA image with the
-	// given hotspot. The caller retains ownership of img.
-	CreateCursor(img *image.RGBA, hotspotX, hotspotY int) (*Cursor, error)
-	// DestroyCursor frees a cursor previously returned by CreateCursor or
-	// LoadCursorFromFile. Safe to call with nil.
+	// Cursor overrides. CreateCursorFromCUR parses a .cur file's bytes and
+	// creates a cursor handle that can be set as the active cursor via
+	// SetCursorOverride.
+	CreateCursorFromCUR(data []byte) (*Cursor, error)
+	// CreateCursorFromImage builds a Cursor from an in-memory RGBA image with
+	// the given hotspot. The caller retains ownership of img.
+	CreateCursorFromImage(img *image.RGBA, hotspotX, hotspotY int) (*Cursor, error)
+	// DestroyCursor frees a cursor previously returned by
+	// CreateCursorFromImage or CreateCursorFromCUR. Safe to call with nil.
 	DestroyCursor(c *Cursor)
 	// SetCursorOverride replaces the OS cursor until cleared.
 	SetCursorOverride(cursor *Cursor)
