@@ -83,7 +83,8 @@ import (
 // 73: Rand JSON shape changed (PCG32 fields → base64 of math/rand/v2 PCG state)
 // 74: ERAM MCA, RA, TimeView prefs added
 // 75: ERAM MCA/RA/TimeView positions moved to exported per-view Position fields
-const ViceSerializeVersion = 75
+// 76: backfill ERAM BeaconCodeView and CheckList prefs (both were added without bumping the version, so 74/75 saves may have them zero-valued)
+const ViceSerializeVersion = 76
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion

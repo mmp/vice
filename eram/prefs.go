@@ -382,6 +382,30 @@ func (p *Preferences) Upgrade(from, to int) {
 			p.RA.Width = 25
 		}
 	}
+	if from < 76 {
+		// BeaconCodeView and CheckList were each added without bumping the
+		// serialize version, so saves from 74/75 can have these structs zero-
+		// valued — and VisibleRows=0 then divides by zero in applyRowSource.
+		// Backfill defaults only when Lines is the uninitialized zero so we
+		// don't stomp on anyone who configured these views before the bump.
+		if p.BeaconCodeView.Lines == 0 {
+			p.BeaconCodeView.ShowBorder = true
+			p.BeaconCodeView.Lines = 11
+			p.BeaconCodeView.Col = 5
+			p.BeaconCodeView.Font = 2
+			p.BeaconCodeView.Bright = 100
+		}
+		if p.CheckList.Lines == 0 {
+			p.CheckList.Visible = checkListHidden
+			p.CheckList.Position = [2]float32{100, 900}
+			p.CheckList.Opaque = false
+			p.CheckList.ShowBorder = true
+			p.CheckList.Lines = 17
+			p.CheckList.Font = 2
+			p.CheckList.Highlight = 40
+			p.CheckList.Text = 76
+		}
+	}
 }
 
 func (ep *ERAMPane) initPrefsForLoadedSim(ss client.SimState) *Preferences {
