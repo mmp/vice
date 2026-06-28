@@ -21,15 +21,20 @@ import (
 static void cb_log_disable(enum ggml_log_level level, const char * text, void * user_data) { (void)level; (void)text; (void)user_data; }
 static void whisper_log_set_silent_bridge() { whisper_log_set(cb_log_disable, NULL); }
 
-// Try/catch-wrapped init functions defined in whisper_safe.cpp. The
-// error message (when the wrapped init throws) is written into the
-// caller-supplied err_buf on the same cgo call to avoid losing the
-// message when the goroutine is rescheduled to a different OS thread.
+// Try/catch-wrapped init + inference functions defined in
+// whisper_safe.cpp. The error message (when the wrapped call throws) is
+// written into the caller-supplied err_buf on the same cgo call to avoid
+// losing the message when the goroutine is rescheduled to a different OS
+// thread.
 struct whisper_context* whisper_safe_init_from_buffer_with_params(
     void* buffer, size_t buffer_size, struct whisper_context_params params,
     char* err_buf, size_t err_buf_size);
 struct whisper_context* whisper_safe_init_from_file_with_params(
     const char* path, struct whisper_context_params params,
+    char* err_buf, size_t err_buf_size);
+int whisper_safe_full_ptr(
+    struct whisper_context* ctx, struct whisper_full_params* params,
+    const float* samples, int n_samples,
     char* err_buf, size_t err_buf_size);
 
 // Forward whisper.cpp library logs into Go so they land in vice.slog.
@@ -454,9 +459,18 @@ func (ctx *Context) Whisper_full(
 	defer registerEncoderBeginCallback(ctx, nil)
 	defer registerNewSegmentCallback(ctx, nil)
 	defer registerProgressCallback(ctx, nil)
-	// Use pointer-based wrapper to avoid large struct pass-by-value issues on Windows
-	if C.whisper_full_ptr((*C.struct_whisper_context)(ctx), params.ptr, (*C.float)(&samples[0]), C.int(len(samples))) == 0 {
+	// Use the try/catch-wrapped C++ shim so a throw inside whisper.cpp
+	// (e.g. Vulkan buffer allocation failure on a memory-starved IGP)
+	// surfaces as an error rather than killing the process.
+	var errBuf [whisperInitErrBufSize]C.char
+	rc := C.whisper_safe_full_ptr((*C.struct_whisper_context)(ctx), params.ptr,
+		(*C.float)(&samples[0]), C.int(len(samples)),
+		&errBuf[0], C.size_t(len(errBuf)))
+	if rc == 0 {
 		return nil
+	}
+	if msg := C.GoString(&errBuf[0]); msg != "" {
+		return errors.New(msg)
 	}
 	return ErrConversionFailed
 }

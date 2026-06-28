@@ -48,35 +48,39 @@ func (t *Transcriber) AddSamples(samples []int16) {
 }
 
 // Stop ends the recording session and returns the final transcription
-// along with the duration of the recorded audio.
-func (t *Transcriber) Stop() (text string, audioDuration time.Duration) {
-	text, audioDuration, _ = t.StopWithAudio()
+// along with the duration of the recorded audio. The returned error is
+// non-nil if whisper.cpp itself failed (typically a Vulkan allocation
+// failure or other C++ throw caught by the safe wrapper); callers may
+// treat this as a signal to disable the GPU and re-benchmark.
+func (t *Transcriber) Stop() (text string, audioDuration time.Duration, err error) {
+	text, audioDuration, _, err = t.StopWithAudio()
 	return
 }
 
 // StopWithAudio ends the recording session and returns the final transcription,
 // audio duration, and the raw audio samples (as float32, 16kHz mono).
 // This is useful for evaluation modes that need to re-process the audio.
-func (t *Transcriber) StopWithAudio() (text string, audioDuration time.Duration, audio []float32) {
+func (t *Transcriber) StopWithAudio() (text string, audioDuration time.Duration, audio []float32, err error) {
 	t.audioMu.Lock()
 	audio = t.audio
 	t.audio = nil // Clear for potential reuse
 	t.audioMu.Unlock()
 
 	if len(audio) == 0 {
-		return "", 0, nil
+		return "", 0, nil, nil
 	}
 
 	// Calculate audio duration from sample count (16kHz sample rate)
 	audioDuration = time.Duration(len(audio)) * time.Second / 16000
 
-	return t.transcribe(audio), audioDuration, audio
+	text, err = t.transcribe(audio)
+	return text, audioDuration, audio, err
 }
 
 // transcribe runs whisper on the given audio samples.
-func (t *Transcriber) transcribe(audio []float32) string {
+func (t *Transcriber) transcribe(audio []float32) (string, error) {
 	if t.model == nil || t.model.model == nil || len(audio) == 0 {
-		return ""
+		return "", nil
 	}
 
 	// Acquire mutex to serialize whisper access
@@ -85,7 +89,7 @@ func (t *Transcriber) transcribe(audio []float32) string {
 
 	ctx, err := t.model.model.NewContext()
 	if err != nil {
-		return ""
+		return "", err
 	}
 	defer ctx.Close() // Free C-allocated params
 
@@ -125,7 +129,7 @@ func (t *Transcriber) transcribe(audio []float32) string {
 	}
 	if lang != "auto" && ctx.IsMultilingual() {
 		if err := ctx.SetLanguage(lang); err != nil {
-			return ""
+			return "", err
 		}
 	}
 
@@ -136,8 +140,8 @@ func (t *Transcriber) transcribe(audio []float32) string {
 	}
 
 	if err := ctx.Process(audio, nil, segmentCb, nil); err != nil {
-		return ""
+		return "", err
 	}
 
-	return strings.TrimSpace(strings.Join(segments, " "))
+	return strings.TrimSpace(strings.Join(segments, " ")), nil
 }

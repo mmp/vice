@@ -59,4 +59,24 @@ struct whisper_context* whisper_safe_init_from_file_with_params(
     }
 }
 
+// whisper.cpp's Vulkan backend throws std::runtime_error from inference when
+// GPU buffer allocation fails (seen in the wild on low-memory IGPs). Returns
+// the underlying whisper_full_with_params_ptr status on success, or -1 with
+// the exception message written to err_buf on a throw.
+int whisper_safe_full_ptr(
+    struct whisper_context* ctx, struct whisper_full_params* params,
+    const float* samples, int n_samples,
+    char* err_buf, size_t err_buf_size) {
+    if (err_buf != nullptr && err_buf_size > 0) err_buf[0] = '\0';
+    try {
+        return whisper_full_with_params_ptr(ctx, params, samples, n_samples);
+    } catch (const std::exception& e) {
+        copy_err(err_buf, err_buf_size, e.what());
+        return -1;
+    } catch (...) {
+        copy_err(err_buf, err_buf_size, "unknown C++ exception");
+        return -1;
+    }
+}
+
 }  // extern "C"
