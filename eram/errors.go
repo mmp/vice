@@ -44,6 +44,7 @@ var eramErrorRemap = map[error]*ERAMError{
 	av.ErrNoAircraftForCallsign:      ErrERAMIllegalACID,
 	av.ErrNoController:               ErrERAMSectorNotActive,
 	av.ErrNoFlightPlan:               ErrERAMIllegalACID,
+	av.ErrNoMatchingFix:              ErrERAMIllegalValue,
 	av.ErrNoMoreAvailableSquawkCodes: ErrERAMIllegalValue,
 	av.ErrNoValidDepartureFound:      ErrIllegalUserAction,
 	av.ErrNotBeingHandedOffToMe:      ErrIllegalUserAction,
