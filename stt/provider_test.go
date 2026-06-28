@@ -68,6 +68,18 @@ func TestBasicAltitudeCommands(t *testing.T) {
 			expected: "DAL88 C90",
 		},
 		{
+			// "radar contact" mistranscribed as "rate of contact" ("rate" → "right" via
+			// phonetic match, then "right of contact" → "radar contact" via multi-token
+			// replacement). Without the replacement, "contact come" matches the garbled-
+			// tower fallback and emits a spurious TO.
+			name:       "rate of contact mistranscription",
+			transcript: "Southwest 6147 Detroit departure your rate of contact come and maintain one seven thousand",
+			aircraft: map[string]Aircraft{
+				"Southwest 6147": {Callsign: "SWA6147", Altitude: 3000, State: "departure"},
+			},
+			expected: "SWA6147 A170",
+		},
+		{
 			name:       "maintain altitude at same level",
 			transcript: "Southwest 221 maintain one zero ten thousand",
 			aircraft: map[string]Aircraft{

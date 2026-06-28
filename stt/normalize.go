@@ -581,8 +581,11 @@ var multiTokenReplacements = map[string][]string{
 	// "reduce to contact" is post-normalization; "ready" → "reduce" runs first via commandKeywords.
 	// Original utterance is "radar contact"; restore so radar_contact_info handler can strip it.
 	"reduce to contact": {"radar", "contact"},
-	"to park":           {"depart"}, // STT error: "depart" (TPRT) mistranscribed as "to park" (TPRK)
-	"at the set":        {"descend"},
+	// "right of contact" is post-normalization; raw "rate" → "right" via phonetic match.
+	// Original utterance is "radar contact" mistranscribed as "rate of contact".
+	"right of contact": {"radar", "contact"},
+	"to park":          {"depart"}, // STT error: "depart" (TPRT) mistranscribed as "to park" (TPRK)
+	"at the set":       {"descend"},
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
