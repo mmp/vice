@@ -173,70 +173,68 @@ func (c *NewSimConfiguration) initDefaultWindDirection() {
 	c.weatherFilterError = ""
 }
 
+// fetchMETAR runs in its own goroutine. The slow wx.GetMETAR / wx.GetAtmosByTime
+// calls happen without c.mu held so the UI thread (which also takes c.mu in the
+// dialog draw) doesn't stall for several seconds while we read from resources.
 func (c *NewSimConfiguration) fetchMETAR() {
 	c.mu.Lock(c.lg)
-	defer c.mu.Unlock(c.lg)
-
 	if c.ScenarioSpec == nil {
+		c.mu.Unlock(c.lg)
 		return
 	}
-
 	airports := c.ScenarioSpec.AllAirports()
+	facility := c.Facility
 	if slices.Equal(c.metarAirports, airports) {
 		// No need to refetch, but the scenario may have changed
 		// (different runways / weather filter), so resample the start time.
 		c.updateStartTimeForRunways()
+		c.mu.Unlock(c.lg)
 		return
 	}
+	c.mu.Unlock(c.lg)
 
-	c.airportMETAR = nil
-	c.fetchMETARError = nil
-	c.availableWXIntervals = nil
-	c.atmosByTime = nil
-
-	// Load METAR data from local resources
-	metarSOA, err := wx.GetMETAR(airports)
-	if err != nil {
-		c.fetchMETARError = err
-		return
+	metarSOA, metarErr := wx.GetMETAR(airports)
+	var metars map[string][]wx.METAR
+	if metarErr == nil {
+		metars = make(map[string][]wx.METAR)
+		for ap, soa := range metarSOA {
+			metars[ap] = soa.Decode(ap)
+		}
 	}
+	// TRACON: single altitude at 5,000' (representative of terminal area
+	// traffic). Center/ARTCC: FL240 and FL380 (lower and upper flight levels).
+	isTRACON := av.DB.IsTRACON(facility)
+	windsAloftAltitudes := [2]float32{24000, 38000}
+	if isTRACON {
+		windsAloftAltitudes = [2]float32{5000, 0}
+	}
+	atmosByTime, _ := wx.GetAtmosByTime(facility)
 
-	// Decode SOA to regular METAR slices
-	metars := make(map[string][]wx.METAR)
-	for ap, soa := range metarSOA {
-		metars[ap] = soa.Decode(ap)
+	c.mu.Lock(c.lg)
+	defer c.mu.Unlock(c.lg)
+
+	// If the airport set changed during I/O a newer fetchMETAR is responsible
+	// for the commit; don't stomp on it with stale data. (If the user picked a
+	// different scenario with the same airports, the data we loaded is still
+	// good and we commit normally.)
+	if c.ScenarioSpec == nil || !slices.Equal(c.ScenarioSpec.AllAirports(), airports) {
+		return
 	}
 
 	c.airportMETAR = metars
+	c.fetchMETARError = metarErr
 	c.metarAirports = airports
+	c.atmosByTime = atmosByTime
+	c.isTRACON = isTRACON
+	c.windsAloftAltitudes = windsAloftAltitudes
+	c.availableWXIntervals = nil
 
-	c.loadAtmosphericData()
-	c.computeAvailableWXIntervals()
-	c.updateStartTimeForRunways()
-}
-
-// loadAtmosphericData loads atmospheric data for the current facility and determines
-// the appropriate winds aloft altitudes based on whether it's a TRACON or ARTCC.
-func (c *NewSimConfiguration) loadAtmosphericData() {
-	c.isTRACON = av.DB.IsTRACON(c.Facility)
-
-	// Set altitudes based on facility type:
-	// - TRACON: single altitude at 5,000' (representative of terminal area traffic)
-	// - Center/ARTCC: FL240 and FL380 (lower and upper flight levels)
-	if c.isTRACON {
-		c.windsAloftAltitudes = [2]float32{5000, 0}
-	} else {
-		c.windsAloftAltitudes = [2]float32{24000, 38000}
-	}
-
-	// Try to load atmospheric data for the facility
-	atmosByTime, err := wx.GetAtmosByTime(c.Facility)
-	if err != nil {
-		c.atmosByTime = nil
+	if metarErr != nil {
 		return
 	}
 
-	c.atmosByTime = atmosByTime
+	c.computeAvailableWXIntervals()
+	c.updateStartTimeForRunways()
 }
 
 func (c *NewSimConfiguration) computeAvailableWXIntervals() {
