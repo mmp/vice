@@ -58,9 +58,18 @@ type NewSimConfiguration struct {
 	weatherFilter      wx.WeatherFilter
 	weatherFilterError string
 
-	mu              util.LoggingMutex // protects airportMETAR/availableWXIntervals
+	// mu protects all fields written by the fetchMETAR goroutine and the
+	// inputs it reads back when committing: the cached METAR + atmospheric
+	// state below, plus c.weatherFilter / c.weatherFilterError / c.StartTime /
+	// c.savedVFRDepartureRateScale, and the c.GroupName / c.ScenarioSpec /
+	// c.ScenarioName fields written by SetScenario. fetchSeq is incremented
+	// each time SetScenario launches a new fetch; a goroutine bails if its
+	// captured seq no longer matches.
+	mu              util.LoggingMutex
+	fetchSeq        uint64
 	airportMETAR    map[string][]wx.METAR
 	metarAirports   []string
+	metarFacility   string
 	fetchMETARError error
 
 	// Winds aloft data for the current facility
@@ -112,22 +121,33 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 		c.lg.Errorf("%s: group not found in TRACON %s", groupName, c.Facility)
 		groupName, scenarioCatalog = util.FirstSortedMapEntry(c.selectedFacilityCatalogs)
 	}
-	c.GroupName = groupName
 
-	if c.ScenarioSpec, ok = scenarioCatalog.Scenarios[scenarioName]; !ok {
+	spec, ok := scenarioCatalog.Scenarios[scenarioName]
+	if !ok {
 		if scenarioName != "" {
-			c.lg.Errorf("%s: scenario not found in group %s", scenarioName, c.GroupName)
+			c.lg.Errorf("%s: scenario not found in group %s", scenarioName, groupName)
 		}
 		scenarioName = scenarioCatalog.DefaultScenario
-		c.ScenarioSpec = scenarioCatalog.Scenarios[scenarioName]
+		spec = scenarioCatalog.Scenarios[scenarioName]
 	}
+
+	airports := spec.AllAirports()
+	facility := c.Facility
+
+	c.mu.Lock(c.lg)
+	c.GroupName = groupName
+	c.ScenarioSpec = spec
 	c.ScenarioName = scenarioName
-	c.savedVFRDepartureRateScale = c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale
-
-	// Initialize default wind direction from runways
+	c.savedVFRDepartureRateScale = spec.LaunchConfig.VFRDepartureRateScale
 	c.initDefaultWindDirection()
+	c.fetchSeq++
+	seq := c.fetchSeq
+	if c.metarFacility != facility || !slices.Equal(c.metarAirports, airports) {
+		c.clearWeatherLocked()
+	}
+	c.mu.Unlock(c.lg)
 
-	go c.fetchMETAR()
+	go c.fetchMETAR(seq, facility, airports, spec)
 }
 
 // initDefaultWindDirection computes the default wind direction range from the scenario's runways.
@@ -173,21 +193,21 @@ func (c *NewSimConfiguration) initDefaultWindDirection() {
 	c.weatherFilterError = ""
 }
 
-// fetchMETAR runs in its own goroutine. The slow wx.GetMETAR / wx.GetAtmosByTime
+// fetchMETAR runs in its own goroutine. Its inputs come in by parameter so it
+// never reads c.Facility / c.ScenarioSpec from the UI thread; staleness is
+// detected via the fetchSeq snapshot. The slow wx.GetMETAR / wx.GetAtmosByTime
 // calls happen without c.mu held so the UI thread (which also takes c.mu in the
 // dialog draw) doesn't stall for several seconds while we read from resources.
-func (c *NewSimConfiguration) fetchMETAR() {
+func (c *NewSimConfiguration) fetchMETAR(seq uint64, facility string, airports []string, spec *server.ScenarioSpec) {
 	c.mu.Lock(c.lg)
-	if c.ScenarioSpec == nil {
+	if c.fetchSeq != seq {
 		c.mu.Unlock(c.lg)
 		return
 	}
-	airports := c.ScenarioSpec.AllAirports()
-	facility := c.Facility
-	if slices.Equal(c.metarAirports, airports) {
+	if c.metarFacility == facility && slices.Equal(c.metarAirports, airports) {
 		// No need to refetch, but the scenario may have changed
 		// (different runways / weather filter), so resample the start time.
-		c.updateStartTimeForRunways()
+		c.updateStartTimeForRunways(spec)
 		c.mu.Unlock(c.lg)
 		return
 	}
@@ -213,17 +233,14 @@ func (c *NewSimConfiguration) fetchMETAR() {
 	c.mu.Lock(c.lg)
 	defer c.mu.Unlock(c.lg)
 
-	// If the airport set changed during I/O a newer fetchMETAR is responsible
-	// for the commit; don't stomp on it with stale data. (If the user picked a
-	// different scenario with the same airports, the data we loaded is still
-	// good and we commit normally.)
-	if c.ScenarioSpec == nil || !slices.Equal(c.ScenarioSpec.AllAirports(), airports) {
+	if c.fetchSeq != seq {
 		return
 	}
 
 	c.airportMETAR = metars
 	c.fetchMETARError = metarErr
 	c.metarAirports = airports
+	c.metarFacility = facility
 	c.atmosByTime = atmosByTime
 	c.isTRACON = isTRACON
 	c.windsAloftAltitudes = windsAloftAltitudes
@@ -233,11 +250,23 @@ func (c *NewSimConfiguration) fetchMETAR() {
 		return
 	}
 
-	c.computeAvailableWXIntervals()
-	c.updateStartTimeForRunways()
+	c.computeAvailableWXIntervals(facility)
+	c.updateStartTimeForRunways(spec)
 }
 
-func (c *NewSimConfiguration) computeAvailableWXIntervals() {
+func (c *NewSimConfiguration) clearWeatherLocked() {
+	c.airportMETAR = nil
+	c.metarAirports = nil
+	c.metarFacility = ""
+	c.fetchMETARError = nil
+	c.atmosByTime = nil
+	c.isTRACON = false
+	c.windsAloftAltitudes = [2]float32{}
+	c.availableWXIntervals = nil
+	c.weatherFilterError = ""
+}
+
+func (c *NewSimConfiguration) computeAvailableWXIntervals(facility string) {
 	// Extract METAR times from all airports
 	var metarTimes []time.Time
 	for _, metars := range c.airportMETAR {
@@ -257,11 +286,11 @@ func (c *NewSimConfiguration) computeAvailableWXIntervals() {
 	// TRACONs and ARTCCs have different data histories.
 	var facilityIntervals []util.TimeInterval
 	if c.isTRACON {
-		if intervals, ok := wx.GetTRACONTimeIntervals()[c.Facility]; ok {
+		if intervals, ok := wx.GetTRACONTimeIntervals()[facility]; ok {
 			facilityIntervals = intervals
 		}
 	} else {
-		if intervals, ok := wx.GetARTCCTimeIntervals()[c.Facility]; ok {
+		if intervals, ok := wx.GetARTCCTimeIntervals()[facility]; ok {
 			facilityIntervals = intervals
 		}
 	}
@@ -2128,7 +2157,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		TimePicker(&c.NewSimRequest.StartTime, c.availableWXIntervals, metar, ui.fixedFont)
 		imgui.SameLine()
 		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
-			c.updateStartTimeForRunways()
+			c.updateStartTimeForRunways(c.ScenarioSpec)
 		}
 
 		// METAR
@@ -2164,24 +2193,24 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 	}
 
 	if changed {
-		c.updateStartTimeForRunways()
+		c.updateStartTimeForRunways(c.ScenarioSpec)
 	}
 }
 
-func (c *NewSimConfiguration) updateStartTimeForRunways() {
+func (c *NewSimConfiguration) updateStartTimeForRunways(spec *server.ScenarioSpec) {
 	c.weatherFilterError = ""
 
-	if c.ScenarioSpec == nil || c.airportMETAR == nil {
+	if spec == nil || c.airportMETAR == nil {
 		return
 	}
 
-	airports := c.ScenarioSpec.AllAirports()
+	airports := spec.AllAirports()
 	if len(airports) == 0 {
 		return
 	}
 	var ap string
-	if slices.Contains(airports, c.ScenarioSpec.PrimaryAirport) {
-		ap = c.ScenarioSpec.PrimaryAirport
+	if slices.Contains(airports, spec.PrimaryAirport) {
+		ap = spec.PrimaryAirport
 	} else {
 		ap = airports[0]
 	}
@@ -2194,7 +2223,7 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 			c.availableWXIntervals,
 			&c.weatherFilter,
 			c.windsAloftAltitudes,
-			c.ScenarioSpec.MagneticVariation)
+			spec.MagneticVariation)
 
 		if sampledMETAR != nil {
 			// Start at a random time between the sampled METAR and the next one
@@ -2211,9 +2240,9 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 			// Set VFR launch rate to zero if selected weather is IMC;
 			// restore the original value if VMC.
 			if !sampledMETAR.IsVMC() {
-				c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale = 0
+				spec.LaunchConfig.VFRDepartureRateScale = 0
 			} else {
-				c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale = c.savedVFRDepartureRateScale
+				spec.LaunchConfig.VFRDepartureRateScale = c.savedVFRDepartureRateScale
 			}
 		} else {
 			c.weatherFilterError = "No weather matching filters found"
