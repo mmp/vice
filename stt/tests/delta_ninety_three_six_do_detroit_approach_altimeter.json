@@ -1,0 +1,36 @@
+{
+  "msg": "STT command",
+  "transcript": "Delta Ninety Three Six do Detroit approach expect the ILS one eight two one left straight altimeter two nine right eight",
+  "callsign": "DAL9360",
+  "command": "EI1L",
+  "stt_aircraft": {
+    "Delta ninety three six": {
+      "Callsign": "DAL9360",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Detroit": "KDTW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two one left": "I1L",
+        "I L S runway two one right": "I1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Bogey": "BOGEY"
+        },
+        "I1R": {
+          "Bogey": "BOGEY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "DTW",
+      "TrackingController": "DTW",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  }
+}

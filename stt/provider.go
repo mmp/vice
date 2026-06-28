@@ -1147,29 +1147,56 @@ func stripRadarContactPrefix(tokens []Token) []Token {
 	return tokens
 }
 
-// stripAltimeterSuffix removes an altimeter setting from the end of the
-// token stream. Controllers often append "(airport) altimeter (setting)"
-// as informational; it is not an actionable command.
+// stripAltimeterSuffix removes altimeter settings from the token stream
+// wherever they appear. Controllers often include "(airport) altimeter
+// (4 digits)" as informational; it is not an actionable command.
+//
+// An altimeter reading is 4 digits. We walk forward from "altimeter" until
+// 4 digits have been consumed: a TokenNumber contributes its digit count
+// (so "30" counts as 2), any other token contributes 1 (STT garbles like
+// "right" for "niner" are absorbed). A "point" token after exactly 2 digits
+// have been consumed is skipped without contributing, so readings spoken as
+// "three zero point one four" are eaten cleanly. The span is stripped only
+// when at least 2 number tokens were seen — otherwise we assume "altimeter"
+// was a false positive and leave the stream alone.
 func stripAltimeterSuffix(tokens []Token) []Token {
-	for i, t := range tokens {
-		if strings.ToLower(t.Text) != "altimeter" {
+	result := make([]Token, 0, len(tokens))
+	i := 0
+	for i < len(tokens) {
+		if strings.ToLower(tokens[i].Text) != "altimeter" {
+			result = append(result, tokens[i])
+			i++
 			continue
 		}
-		if i+1 >= len(tokens) || tokens[i+1].Type != TokenNumber {
+		end := i + 1
+		digits := 0
+		numCount := 0
+		for end < len(tokens) && digits < 4 {
+			if digits == 2 && strings.ToLower(tokens[end].Text) == "point" {
+				end++
+				continue
+			}
+			if tokens[end].Type == TokenNumber {
+				numCount++
+				digits += len(tokens[end].Text)
+			} else {
+				digits++
+			}
+			end++
+		}
+		if numCount < 2 {
+			result = append(result, tokens[i])
+			i++
 			continue
 		}
-		if i+2 < len(tokens) {
-			continue
+		if len(result) > 0 && result[len(result)-1].Type == TokenWord &&
+			!IsCommandKeyword(strings.ToLower(result[len(result)-1].Text)) {
+			result = result[:len(result)-1]
 		}
-		start := i
-		if start > 0 && tokens[start-1].Type == TokenWord &&
-			!IsCommandKeyword(strings.ToLower(tokens[start-1].Text)) {
-			start--
-		}
-		logLocalStt("stripped altimeter suffix: %d tokens", len(tokens)-start)
-		return tokens[:start]
+		logLocalStt("stripped altimeter reading: %d tokens", end-i)
+		i = end
 	}
-	return tokens
+	return result
 }
 
 // logging helpers
