@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/brunoga/deep"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
@@ -260,12 +261,11 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					appr.Runway = dbAppr.Runway
 				}
 
-				// This is a little hacky, but we'll duplicate the waypoint
-				// arrays since later we e.g., append a waypoint for the
-				// runway threshold.  This leads to errors if a CIFP
-				// approach is referenced in two scenario files.
+				// Deep-copy the waypoint arrays so per-scenario mutations (appending the threshold
+				// waypoint, etc.) don't race with other scenarios that reference the same CIFP
+				// approach.
 				for _, wps := range dbAppr.Waypoints {
-					appr.Waypoints = append(appr.Waypoints, util.DuplicateSlice(wps))
+					appr.Waypoints = append(appr.Waypoints, deep.MustCopy(wps))
 				}
 			}
 		} else {
