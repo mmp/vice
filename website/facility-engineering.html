@@ -396,20 +396,24 @@
               <h2 class="section-heading">Running a Server Locally</h2>
                 <p>If you're working on multi-controller support for a
                   scenario, you may want to run a <i>vice</i> server locally to
-                  debug it. A few command-line options are useful:</p>
+                  debug it. The server is a separate executable,
+                  <code>viceserver</code> (<code>viceserver.exe</code> on
+                  Windows), which is installed alongside <i>vice</i> itself.
+                  A few command-line options are useful:</p>
                 <ul>
-                  <li><code>-runserver</code> launches a <i>vice</i> server on
-                    your local system</li>
-                  <li><code>-server</code> specifies the IP address and
-                    (optionally), the port of a <i>vice</i>
-                    server to connect to. Specifying <code>localhost</code>
-                    will connect to a local server launched
-                    via <code>-runserver</code>.
+                  <li><code>viceserver</code> (with no arguments) launches a
+                    <i>vice</i> server on your local system.</li>
+                  <li><code>-server</code> (passed to the <i>vice</i>
+                    client) specifies the IP address and (optionally), the
+                    port of a <i>vice</i> server to connect to. Specifying
+                    <code>localhost</code> will connect to a local server
+                    launched via <code>viceserver</code>.
                   </li>
                   <li><code>-port</code> allows specifying a custom port number
-                    for the server to listen to.  If this is used, then the
-                    address supplied to <code>-server</code> should be of the
-                    form <i>hostname:port</i>.</li>
+                    for the server to listen on (passed to both
+                    <code>viceserver</code> and to the <i>vice</i> client's
+                    <code>-server</code> address, which should then be of the
+                    form <i>hostname:port</i>).</li>
                 </ul>
                 <h4>Windows Example: Running a Local Multi-Controller Server</h4>
                 <p>Here's a step-by-step guide for testing multi-controller scenarios on Windows:</p>
@@ -418,7 +422,7 @@
                   <li><strong>Navigate to the vice directory:</strong> Enter <code>cd "c:\Program Files (x86)\Vice"</code><br>
                     <em>Note: The quotes are essential if the path contains spaces.</em>
                   </li>
-                  <li><strong>Start the multi-controller server:</strong> Enter enter <code>vice.exe -runserver</code><br/>
+                  <li><strong>Start the multi-controller server:</strong> Enter <code>viceserver.exe</code><br/>
                     If there are errors in your scenario configuration, they will be displayed here. Otherwise, the server launches and will be
                     running in the background.
                   </li>
@@ -433,10 +437,8 @@
                 <p><strong>Restarting after scenario changes:</strong> If you modify your scenario files, you must restart the server to load the changes:</p>
                 <ol>
                   <li>Close all <i>vice</i> client windows</li>
-                  <li>Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Esc</kbd> to open the Task Manager</li>
-                  <li>Click the "Details" tab and look for "vice.exe" in the list to find the server</li>
-                  <li>Select it and click "End task"</li>
-                  <li>Return to step 2 above to restart the server with your updated scenario</li>
+                  <li>In the Command Prompt window running <code>viceserver.exe</code>, press <kbd>Ctrl</kbd>+<kbd>C</kbd> to stop the server</li>
+                  <li>Return to step 3 above to restart the server with your updated scenario</li>
                 </ol>
             </section><!--//section-->
 

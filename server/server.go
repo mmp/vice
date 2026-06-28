@@ -98,6 +98,11 @@ type ServerLaunchConfig struct {
 	ExtraScenarioBrief string
 	ServerAddress      string // address to use for remote TTS provider
 	IsLocal            bool
+	// ExitAfterLoad causes LaunchServer to return as soon as scenarios
+	// have been loaded and validated, without entering the accept loop.
+	// Used by CI smoketests to exercise scenario loading (which is where
+	// data races during PostDeserialize would manifest) and then exit.
+	ExitAfterLoad bool
 }
 
 func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
@@ -112,6 +117,9 @@ func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
 	}
 	if extraScenarioErrors != "" {
 		lg.Warnf("Extra scenario file had errors:\n%s", extraScenarioErrors)
+	}
+	if config.ExitAfterLoad {
+		return
 	}
 	server()
 }

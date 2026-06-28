@@ -108,6 +108,15 @@ jobs:
     - name: Run tests
       run: go test -v ./...
 
+    - name: Race-detector smoketest (viceserver -loadonly)
+      run: |
+        go build -race -o viceserver-race ./cmd/viceserver
+        # -loadonly returns as soon as scenarios are loaded; any race
+        # detected during loading prints "Found N data race(s)" and exits
+        # with code 66. -port 0 picks an open port so concurrent CI runs
+        # don't fight over a fixed one.
+        ./viceserver-race -loadonly -port 0
+
   build-mac:
     name: Build macOS
     needs: bundle-resources
@@ -177,7 +186,7 @@ jobs:
       run: zip -rv Vice-osx.zip Vice.app
 
     - name: Create tools zip
-      run: zip -v Vice-osx-tools.zip crc2vice dat2vice
+      run: zip -v Vice-osx-tools.zip crc2vice dat2vice viceserver
 
     - name: Save zip file as build artifact
       uses: actions/upload-artifact@v7

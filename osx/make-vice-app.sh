@@ -24,7 +24,7 @@ if [ ! -f "vice" ]; then
     exit 1
 fi
 
-for tool in crc2vice dat2vice; do
+for tool in crc2vice dat2vice viceserver; do
     if [ ! -f "$tool" ]; then
         echo "Error: $tool binary not found in current directory"
         exit 1
@@ -78,8 +78,8 @@ rm cert.p12
 echo "=== Signing Vice.app ==="
 codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime --entitlements osx/vice.entitlements Vice.app
 
-echo "=== Signing crc2vice and dat2vice ==="
-for tool in crc2vice dat2vice; do
+echo "=== Signing crc2vice, dat2vice, viceserver ==="
+for tool in crc2vice dat2vice viceserver; do
     codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime "$tool"
 done
 
@@ -91,7 +91,7 @@ if [ -z "$APPLE_CODESIGN_ID" ] || [ -z "$APPLE_CODESIGN_PASSWORD" ] || [ -z "$AP
 fi
 
 echo "=== Notarizing Vice.app and helper tools ==="
-zip -rv vice-notarize.zip Vice.app crc2vice dat2vice
+zip -rv vice-notarize.zip Vice.app crc2vice dat2vice viceserver
 xcrun notarytool submit \
     --wait \
     --apple-id "${APPLE_CODESIGN_ID}" \

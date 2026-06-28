@@ -3,7 +3,7 @@
 // SPDX: GPL-3.0-only
 
 // for race checking:
-// % go run -race ./cmd/vice -runserver
+// % go run -race ./cmd/viceserver
 // % go run ./cmd/vice -starsrandoms -server localhost
 //
 // alternatively, just:

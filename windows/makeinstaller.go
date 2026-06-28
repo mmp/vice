@@ -165,6 +165,9 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
           <Component Id="Dat2viceExe" Guid='d2e3f4a5-b6c7-489a-9d0e-1f2a3b4c5d6e'>
             <File KeyPath="yes" Name="dat2vice.exe" Source="dat2vice.exe"></File>
           </Component>
+          <Component Id="ViceserverExe" Guid='9b4f1a72-7c4e-4b5a-8e1d-3a8f7c6e5d4f'>
+            <File KeyPath="yes" Name="viceserver.exe" Source="viceserver.exe"></File>
+          </Component>
           <Component Id="SDLDLL" Guid='85535501-4016-47c4-9466-846df4cf49a5'>
             <File KeyPath="yes" Source="windows/SDL2.dll"></File>
           </Component>
@@ -256,6 +259,7 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
       <ComponentRef Id="ViceExe" />
       <ComponentRef Id="Crc2viceExe" />
       <ComponentRef Id="Dat2viceExe" />
+      <ComponentRef Id="ViceserverExe" />
       <ComponentRef Id="SDLDLL" />
       <ComponentRef Id="gccseh" />
       <ComponentRef Id="libstdcpp" />

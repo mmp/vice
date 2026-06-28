@@ -51,8 +51,7 @@ var (
 	logLevel              = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
 	logDir                = flag.String("logdir", "", "log file `directory`")
 	lintScenarios         = flag.Bool("lint", false, "check the validity of the built-in scenarios")
-	runServer             = flag.Bool("runserver", false, "run vice scenario server")
-	serverPort            = flag.Int("port", server.ViceServerPort, "`port` to listen on when running server")
+	runServer             = flag.Bool("runserver", false, "removed; use the separate viceserver binary instead")
 	serverAddress         = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
 	scenarioFilename      = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
 	videoMapFilename      = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
@@ -116,11 +115,11 @@ func initCommon() (*log.Logger, *util.Profiler) {
 	// logger, so the slog text handler captures the redirected
 	// os.Stderr at construction time. No-op on other platforms and on
 	// Windows when stderr already targets a real console.
-	resolvedLogDir := log.DefaultLogDir(*runServer, *logDir)
+	resolvedLogDir := log.DefaultLogDir(false /* not server mode */, *logDir)
 	redirectedStderrFn := log.RedirectStderrToCrashFile(resolvedLogDir)
 
 	// Initialize the logging system.
-	lg := log.New(*runServer, *logLevel, resolvedLogDir)
+	lg := log.New(false /* not server mode */, *logLevel, resolvedLogDir)
 	if redirectedStderrFn != "" {
 		lg.Infof("Redirected stderr to %s", redirectedStderrFn)
 	}
@@ -328,25 +327,6 @@ func runReplay(config *Config, configErr error, lg *log.Logger) error {
 
 func runBroadcast(lg *log.Logger) error {
 	client.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
-	return nil
-}
-
-func runServerMode(lg *log.Logger) error {
-	if err := cliInit(); err != nil {
-		return err
-	}
-
-	// Initialize navigation logging if requested
-	nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
-
-	server.LaunchServer(server.ServerLaunchConfig{
-		Port:               *serverPort,
-		ExtraScenario:      *scenarioFilename,
-		ExtraVideoMap:      *videoMapFilename,
-		ExtraScenarioBrief: *scenarioBriefFilename,
-		ServerAddress:      *serverAddress,
-		IsLocal:            false,
-	}, lg)
 	return nil
 }
 
@@ -823,7 +803,7 @@ func main() {
 	case *broadcastMessage != "":
 		err = runBroadcast(lg)
 	case *runServer:
-		err = runServerMode(lg)
+		err = fmt.Errorf("-runserver has been removed; run the viceserver binary instead (it ships alongside vice)")
 	case *showRoutes != "":
 		err = runShowRoutes()
 	case *listMaps != "":

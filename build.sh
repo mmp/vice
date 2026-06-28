@@ -448,14 +448,14 @@ build_vice() {
 
         echo "Building tools..."
         if [ "$DO_UNIVERSAL" = true ]; then
-            for tool in crc2vice dat2vice; do
+            for tool in crc2vice dat2vice viceserver; do
                 CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o ${tool}_amd64 ./cmd/${tool}
                 CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o ${tool}_arm64 ./cmd/${tool}
                 lipo -create -output ${tool} ${tool}_amd64 ${tool}_arm64
                 rm ${tool}_amd64 ${tool}_arm64
             done
         else
-            for tool in crc2vice dat2vice; do
+            for tool in crc2vice dat2vice viceserver; do
                 go build -ldflags="-s -w" -o ${tool} ./cmd/${tool}
             done
         fi
