@@ -296,10 +296,10 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	return
 }
 
-func (c *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
+func (c *Config) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
 	// Activate all panes
-	c.STARSPane.Activate(r, p, eventStream, lg)
-	c.ERAMPane.Activate(r, p, eventStream, lg)
-	c.MessagesPane.Activate(r, p, eventStream, lg)
-	c.FlightStripPane.Activate(r, p, eventStream, lg)
+	c.STARSPane.Activate(r, p, lg)
+	c.ERAMPane.Activate(r, p, lg)
+	c.MessagesPane.Activate(r, p, lg)
+	c.FlightStripPane.Activate(r, p, lg)
 }

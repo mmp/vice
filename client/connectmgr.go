@@ -175,7 +175,7 @@ func (cm *ConnectionManager) Disconnect() {
 
 func (cm *ConnectionManager) UpdateRunningSims() error {
 	if cm.updateRunningSimsCall != nil && cm.updateRunningSimsCall.CheckFinished() {
-		cm.updateRunningSimsCall.InvokeCallback(nil, nil)
+		cm.updateRunningSimsCall.InvokeCallback(nil)
 		cm.updateRunningSimsCall = nil
 		err := cm.updateRunningSimsError
 		cm.updateRunningSimsError = nil
@@ -222,7 +222,7 @@ func (cm *ConnectionManager) ConnectToSim(config server.JoinSimRequest, initials
 	}
 }
 
-func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg *log.Logger) {
+func (cm *ConnectionManager) Update(p platform.Platform, lg *log.Logger) {
 	if cm.LocalServer == nil {
 		cm.LocalServer = <-cm.localServerChan
 	}
@@ -258,9 +258,10 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 	}
 
 	if cm.client != nil {
-		cm.client.GetUpdates(es, p,
+		client := cm.client
+		client.GetUpdates(p,
 			func(err error) {
-				es.Post(sim.Event{
+				client.PostEvent(sim.Event{
 					Type:        sim.StatusMessageEvent,
 					WrittenText: "Error getting update from server: " + err.Error(),
 				})

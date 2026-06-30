@@ -304,7 +304,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	// where we have to check our accesses to the sp.Aircraft map and not
 	// crash if we don't find an entry for an aircraft we have an event
 	// for.
-	for _, event := range sp.events.Get() {
+	for _, event := range ctx.Events {
 		switch event.Type {
 		case sim.PointOutEvent:
 			sp.PointOuts[event.ACID] = PointOutControllers{

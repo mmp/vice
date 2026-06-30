@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
 
@@ -53,7 +54,7 @@ func (f *KeyboardFocus) Current() any {
 // DrawPanes renders a single radar pane that fills the entire display area
 // below the menu bar.
 func DrawPanes(pane Pane, p platform.Platform, r renderer.Renderer,
-	controlClient *client.ControlClient, menuBarHeight float32, lg *log.Logger) renderer.RendererStats {
+	controlClient *client.ControlClient, menuBarHeight float32, events []sim.Event, lg *log.Logger) renderer.RendererStats {
 	if controlClient == nil {
 		commandBuffer := renderer.GetCommandBuffer()
 		defer renderer.ReturnCommandBuffer(commandBuffer)
@@ -125,6 +126,7 @@ func DrawPanes(pane Pane, p platform.Platform, r renderer.Renderer,
 		Keyboard:            keyboard,
 		HaveFocus:           haveFocus,
 		InterpolatedSimTime: controlClient.InterpolatedSimTime(),
+		Events:              events,
 		Lg:                  lg,
 		MenuBarHeight:       menuBarHeight,
 		KeyboardFocus:       &wm.focus,

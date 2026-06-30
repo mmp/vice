@@ -1,5 +1,5 @@
-// pkg/panes/messages.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// panes/messages.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package panes
@@ -9,7 +9,6 @@ import (
 	"log/slog"
 	"slices"
 	"strings"
-	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
@@ -41,11 +40,9 @@ type MessagesPane struct {
 	ReadbackTransmissionsAlert bool
 
 	font             *renderer.Font
-	events           *sim.EventsSubscription
 	messages         []Message
 	alertAudioIndex  map[string]int
 	shouldAutoScroll bool
-	lastDrawTime     time.Time
 }
 
 func NewMessagesPane() *MessagesPane {
@@ -54,12 +51,11 @@ func NewMessagesPane() *MessagesPane {
 	}
 }
 
-func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
+func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
 	if mp.font = renderer.GetFont(mp.FontIdentifier); mp.font == nil {
 		mp.font = renderer.GetDefaultFont()
 		mp.FontIdentifier = mp.font.Id
 	}
-	mp.events = eventStream.Subscribe()
 
 	mp.alertAudioIndex = make(map[string]int)
 	for alert, path := range util.SortedMap(audioAlerts) {
@@ -119,16 +115,10 @@ func (msg *Message) ImguiColor() imgui.Vec4 {
 	return imgui.Vec4{X: c.R, Y: c.G, Z: c.B, W: 1}
 }
 
-func (mp *MessagesPane) DrawWindow(show *bool, c *client.ControlClient, p platform.Platform,
-	unpinnedWindows map[string]struct{}, lg *log.Logger) {
-	// Only play sounds if the window has been continuously visible. If
-	// more than 250ms have elapsed since the last DrawWindow call, we
-	// must have missed frames (window was hidden), so drain accumulated
-	// events silently to avoid spamming audio for the backlog.
-	now := time.Now()
-	playSound := !mp.lastDrawTime.IsZero() && now.Sub(mp.lastDrawTime) < 250*time.Millisecond
-	mp.lastDrawTime = now
-	mp.processEvents(playSound, c, p, lg)
+func (mp *MessagesPane) DrawWindow(show *bool, p platform.Platform, unpinnedWindows map[string]struct{}) {
+	if !*show {
+		return
+	}
 
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{4096, 4096})
 	if mp.font != nil {
@@ -159,8 +149,8 @@ func (mp *MessagesPane) DrawWindow(show *bool, c *client.ControlClient, p platfo
 
 }
 
-func (mp *MessagesPane) processEvents(playSound bool, c *client.ControlClient, p platform.Platform, lg *log.Logger) {
-	for _, event := range mp.events.Get() {
+func (mp *MessagesPane) ProcessEvents(playSound bool, events []sim.Event, c *client.ControlClient, p platform.Platform, lg *log.Logger) {
+	for _, event := range events {
 		switch event.Type {
 		case sim.RadioTransmissionEvent:
 			toUs := c.State.UserControlsPosition(event.ToController)

@@ -40,8 +40,6 @@ var (
 		aboutFont      *renderer.Font
 		aboutFontSmall *renderer.Font
 
-		eventsSubscription *sim.EventsSubscription
-
 		menuBarHeight float32
 
 		showAboutDialog bool
@@ -120,7 +118,7 @@ func imguiInit() *imgui.Context {
 	return context
 }
 
-func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.EventStream, lg *log.Logger) {
+func uiInit(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Logger) {
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
@@ -129,7 +127,6 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 	ui.fixedFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: renderer.FixedFontSize(config.UIFontSize)})
 	ui.aboutFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 18})
 	ui.aboutFontSmall = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 14})
-	ui.eventsSubscription = es.Subscribe()
 
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
 		lg.Errorf("Unable to decode icon PNG: %v", err)
@@ -165,7 +162,7 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 }
 
 func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
-	controlClient *client.ControlClient, activeRadarPane panes.Pane, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
+	controlClient *client.ControlClient, activeRadarPane panes.Pane, events []sim.Event, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -335,7 +332,13 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 	}
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
-	if controlClient != nil && !hasActiveModalDialogs() {
+	activeModal := hasActiveModalDialogs()
+	if controlClient != nil {
+		// Keep the Messages pane current even when modal dialogs suppress normal window drawing.
+		config.MessagesPane.ProcessEvents(ui.showMessages && !activeModal, events, controlClient, p, lg)
+	}
+
+	if controlClient != nil && !activeModal {
 		uiDrawSettingsWindow(controlClient, config, activeRadarPane, p, lg)
 
 		if ui.showScenarioInfo {
@@ -346,20 +349,21 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			if ui.launchControlWindow == nil {
 				ui.launchControlWindow = MakeLaunchControlWindow(controlClient, lg)
 			}
-			ui.launchControlWindow.Draw(eventStream, p, config)
+			ui.launchControlWindow.Draw(p, config)
 		}
 
 		if ui.showMessages {
 			applyPinWindowClass("Messages", config, p)
-			config.MessagesPane.DrawWindow(&ui.showMessages, controlClient, p, config.UnpinnedWindows, lg)
 		}
+		config.MessagesPane.DrawWindow(&ui.showMessages, p, config.UnpinnedWindows)
+
 		if ui.showFlightStrips {
 			applyPinWindowClass("Flight Strips", config, p)
 			config.FlightStripPane.DrawWindow(&ui.showFlightStrips, controlClient, p, config.UnpinnedWindows, lg)
 		}
 	}
 
-	for _, event := range ui.eventsSubscription.Get() {
+	for _, event := range events {
 		if event.Type == sim.ServerBroadcastMessageEvent {
 			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.WrittenText}, p), false)
 		}

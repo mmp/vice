@@ -464,7 +464,7 @@ func loadSavedSim(mgr *client.ConnectionManager, config *Config,
 // setupFuzzTesting connects to a server, picks a random scenario, and
 // creates a fuzz controller for STARS command testing.
 func setupFuzzTesting(mgr *client.ConnectionManager, config *Config,
-	eventStream *sim.EventStream, plat platform.Platform, lg *log.Logger) (*stars.FuzzController, error) {
+	plat platform.Platform, lg *log.Logger) (*stars.FuzzController, error) {
 
 	var srv *client.Server
 	defaultAddr := net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort))
@@ -474,7 +474,7 @@ func setupFuzzTesting(mgr *client.ConnectionManager, config *Config,
 		fmt.Printf("Waiting for remote server at %s...\n", *serverAddress)
 		timeout := time.After(30 * time.Second)
 		for mgr.RemoteServer == nil {
-			mgr.Update(eventStream, plat, lg)
+			mgr.Update(plat, lg)
 			select {
 			case <-timeout:
 				return nil, fmt.Errorf("timeout waiting for remote server connection")
@@ -604,8 +604,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 	plat, render = initPlatformAndRenderer(config, lg)
 
-	eventStream := sim.NewEventStream(lg)
-	uiInit(render, plat, config, eventStream, lg)
+	uiInit(render, plat, config, lg)
 
 	if err := SyncResources(plat, render, lg); err != nil {
 		ShowFatalErrorDialog(render, plat, lg, "Error syncing resources: %v", err)
@@ -617,7 +616,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		ShowErrorDialog(plat, lg, "Saved configuration file is corrupt. Discarding. (%v)", configErr)
 	}
 
-	config.Activate(render, plat, eventStream, lg)
+	config.Activate(render, plat, lg)
 
 	<-bgDone
 
@@ -649,7 +648,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 	if *starsRandoms {
 		var err error
-		fuzzController, err = setupFuzzTesting(mgr, config, eventStream, plat, lg)
+		fuzzController, err = setupFuzzTesting(mgr, config, plat, lg)
 		if err != nil {
 			return err
 		}
@@ -683,7 +682,17 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 			}, config, lg)
 		}
 
-		mgr.Update(eventStream, plat, lg)
+		mgr.Update(plat, lg)
+
+		// Drain after Update so state changes applied by this frame's
+		// GetStateUpdate callback and the events that describe them are
+		// processed together — otherwise event handlers in stars/eram
+		// processEvents would see state from a later snapshot than the
+		// event they're handling.
+		var frameEvents []sim.Event
+		if controlClient != nil {
+			frameEvents = controlClient.DrainEvents()
+		}
 
 		// Report whisper benchmark to server (only sends once, when benchmark done and server available)
 		client.ReportWhisperBenchmark(mgr.RemoteServer, lg)
@@ -719,7 +728,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 		// Generate and render vice draw lists
 		stats.drawPanes = panes.DrawPanes(activeRadarPane, plat, render, controlClient,
-			ui.menuBarHeight, lg)
+			ui.menuBarHeight, frameEvents, lg)
 
 		// Execute fuzz commands if in fuzz testing mode
 		if fuzzController != nil && controlClient != nil {
@@ -728,7 +737,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		}
 
 		// Draw the user interface
-		stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, activeRadarPane, eventStream, lg)
+		stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, activeRadarPane, frameEvents, lg)
 
 		// Wait for vsync
 		plat.PostRender()

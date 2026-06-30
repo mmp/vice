@@ -742,8 +742,8 @@ type SimStateUpdate struct {
 }
 
 // Apply applies the update to the state, including server-specific fields.
-// If eventStream is provided, events from the update are posted to it.
-func (su *SimStateUpdate) Apply(state *SimState, eventStream *sim.EventStream) {
+// The caller is responsible for delivering su.Events to consumers.
+func (su *SimStateUpdate) Apply(state *SimState) {
 	// Make sure the generation index is above the current index so that if
 	// updates are returned out of order we ignore stale ones.
 	if state.GenerationIndex < su.GenerationIndex {
@@ -753,13 +753,6 @@ func (su *SimStateUpdate) Apply(state *SimState, eventStream *sim.EventStream) {
 
 	state.ActiveTCWs = su.ActiveTCWs
 	state.FlightStripACIDs = su.FlightStripACIDs
-
-	// Post events after updating state so they reflect current state.
-	if eventStream != nil {
-		for _, e := range su.Events {
-			eventStream.Post(e)
-		}
-	}
 }
 
 // GetStateUpdate fills in a server.SimStateUpdate with both sim state and human controllers.

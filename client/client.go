@@ -36,7 +36,13 @@ type ControlClient struct {
 	LastTranscription     string
 	LastCommand           string
 	LastWhisperDurationMs int64 // Last whisper transcription time in milliseconds
-	eventStream           *sim.EventStream
+
+	// Events accumulated since the last DrainEvents call. Includes events
+	// from server state updates and events posted by client-side code (RPC
+	// errors, STT, etc). The main loop drains these once per frame and
+	// distributes them to consumers via panes.Context.Events and uiDraw.
+	pendingEvents   []sim.Event
+	pendingEventsMu sync.Mutex
 
 	// Streaming STT state
 	streamingSTT   *streamingSTT
@@ -116,6 +122,25 @@ func (c *ControlClient) RPCClient() *RPCClient {
 	return c.client
 }
 
+// PostEvent appends an event to the per-client pending events slice. Safe to
+// call from any goroutine (STT runs on its own goroutine, RPC callbacks may
+// also fire concurrently).
+func (c *ControlClient) PostEvent(e sim.Event) {
+	c.pendingEventsMu.Lock()
+	c.pendingEvents = append(c.pendingEvents, e)
+	c.pendingEventsMu.Unlock()
+}
+
+// DrainEvents returns and clears the pending events. Called once per frame
+// from the main loop.
+func (c *ControlClient) DrainEvents() []sim.Event {
+	c.pendingEventsMu.Lock()
+	defer c.pendingEventsMu.Unlock()
+	events := c.pendingEvents
+	c.pendingEvents = nil
+	return events
+}
+
 func (c *ControlClient) SetRemoteServer(remote *RPCClient) {
 	c.mu.Lock()
 	c.remoteServer = remote
@@ -148,14 +173,14 @@ func (c *RPCClient) callWithTimeout(serviceMethod string, args any, reply any) e
 type pendingCall struct {
 	Call      *rpc.Call
 	IssueTime time.Time
-	Callback  func(*sim.EventStream, *SimState, error)
+	Callback  func(*ControlClient, error)
 }
 
 func makeRPCCall(call *rpc.Call, callback func(error)) *pendingCall {
 	return &pendingCall{
 		Call:      call,
 		IssueTime: time.Now(),
-		Callback: func(es *sim.EventStream, state *SimState, err error) {
+		Callback: func(_ *ControlClient, err error) {
 			if callback != nil {
 				callback(err)
 			}
@@ -167,11 +192,14 @@ func makeStateUpdateRPCCall(call *rpc.Call, update *server.SimStateUpdate, callb
 	return &pendingCall{
 		Call:      call,
 		IssueTime: time.Now(),
-		Callback: func(es *sim.EventStream, state *SimState, err error) {
+		Callback: func(c *ControlClient, err error) {
 			if err == nil {
-				update.Apply(&state.SimState, es)
+				update.Apply(&c.State.SimState)
+				for _, e := range update.Events {
+					c.PostEvent(e)
+				}
 			} else {
-				es.Post(sim.Event{
+				c.PostEvent(sim.Event{
 					Type:        sim.ErrorMessageEvent,
 					WrittenText: "Server state update failed: " + err.Error(),
 				})
@@ -192,9 +220,9 @@ func (p *pendingCall) CheckFinished() bool {
 	}
 }
 
-func (p *pendingCall) InvokeCallback(es *sim.EventStream, state *SimState) {
+func (p *pendingCall) InvokeCallback(c *ControlClient) {
 	if p.Callback != nil {
-		p.Callback(es, state, p.Call.Error)
+		p.Callback(c, p.Call.Error)
 	}
 }
 
@@ -264,7 +292,7 @@ func (c *ControlClient) AirspaceForTCW(tcw sim.TCW) []av.ControllerAirspaceVolum
 	return vols
 }
 
-func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Platform, onErr func(error)) {
+func (c *ControlClient) GetUpdates(p platform.Platform, onErr func(error)) {
 	if c.client == nil {
 		return
 	}
@@ -278,17 +306,13 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 
 	c.mu.Lock()
 
-	// Store eventStream for STT event posting and TTS latency tracking
-	c.eventStream = eventStream
-	c.transmissions.SetEventStream(eventStream)
-
 	if c.updateCall != nil {
 		if c.updateCall.CheckFinished() {
 			updateCallFinished = c.updateCall
 			c.updateCall = nil
 			c.SessionStats.Update(&c.State)
 		} else {
-			callbackErr = checkTimeout(c.updateCall, eventStream)
+			callbackErr = c.checkTimeout(c.updateCall)
 		}
 	}
 
@@ -308,7 +332,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	shouldRequestContact := c.transmissions.ShouldRequestContact()
 
 	if callbackErr == nil {
-		completedCalls, callbackErr = c.checkPendingRPCs(eventStream)
+		completedCalls, callbackErr = c.checkPendingRPCs()
 	}
 
 	c.mu.Unlock()
@@ -328,7 +352,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	// re-catches up to where it had been.
 	if updateCallFinished != nil {
 		prevGen := c.State.GenerationIndex
-		updateCallFinished.InvokeCallback(eventStream, &c.State)
+		updateCallFinished.InvokeCallback(c)
 		if c.State.GenerationIndex > prevGen {
 			now := time.Now()
 			c.mu.Lock()
@@ -337,7 +361,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		}
 	}
 	for _, call := range completedCalls {
-		call.InvokeCallback(eventStream, &c.State)
+		call.InvokeCallback(c)
 	}
 	if callbackErr != nil && onErr != nil {
 		onErr(callbackErr)
@@ -349,7 +373,7 @@ func (c *ControlClient) updateSpeech(p platform.Platform) {
 	c.transmissions.Update(p, c.State.Paused, c.sttActive)
 }
 
-func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream) ([]*pendingCall, error) {
+func (c *ControlClient) checkPendingRPCs() ([]*pendingCall, error) {
 	var completed []*pendingCall
 	c.pendingCalls = slices.DeleteFunc(c.pendingCalls,
 		func(call *pendingCall) bool {
@@ -361,20 +385,20 @@ func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream) ([]*pendi
 		})
 
 	for _, call := range c.pendingCalls {
-		if err := checkTimeout(call, eventStream); err != nil {
+		if err := c.checkTimeout(call); err != nil {
 			return completed, err
 		}
 	}
 	return completed, nil
 }
 
-func checkTimeout(call *pendingCall, eventStream *sim.EventStream) error {
+func (c *ControlClient) checkTimeout(call *pendingCall) error {
 	// The long-poll GetStateUpdate is bounded by server.StateUpdateMaxWait
 	// and returns an error (not a hung RPC) on the server's own timeout.
 	// This check catches genuine network failures where the RPC never
 	// returns at all; StateUpdateWarn is comfortably above MaxWait.
 	if time.Since(call.IssueTime) > server.StateUpdateWarn && !util.DebuggerIsRunning() {
-		eventStream.Post(sim.Event{
+		c.PostEvent(sim.Event{
 			Type: sim.StatusMessageEvent,
 			WrittenText: fmt.Sprintf("No response from server for over %s. Network connection may be lost.",
 				server.StateUpdateWarn),

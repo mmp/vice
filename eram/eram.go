@@ -221,8 +221,6 @@ type ERAMPane struct {
 	DisableERAMtoRadio bool `json:"-"`
 	FlipNumericKeypad  bool
 
-	events *sim.EventsSubscription `json:"-"`
-
 	systemFont [11]*renderer.Font `json:"-"`
 
 	allVideoMaps    []av.ERAMMap `json:"-"`
@@ -344,7 +342,7 @@ func NewERAMPane() *ERAMPane {
 	return &ERAMPane{}
 }
 
-func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.EventStream, log *log.Logger) {
+func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, log *log.Logger) {
 	// Activate maps
 	if ep.InboundPointOuts == nil {
 		ep.InboundPointOuts = make(map[sim.ACID][]sim.ControlPosition)
@@ -385,8 +383,6 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	// Initialize to -1 so no row is selected at startup.
 	ep.altimSetSelect.Selected = -1
 	ep.wxSelect.Selected = -1
-
-	ep.events = es.Subscribe()
 
 	// TODO: initialize fonts and audio
 	ep.initializeFonts(r, pl)

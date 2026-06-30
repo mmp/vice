@@ -123,7 +123,7 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 			ep.TrackState[trk.ADSBCallsign] = sa
 		}
 	}
-	for _, event := range ep.events.Get() {
+	for _, event := range ctx.Events {
 		switch event.Type {
 		case sim.AcceptedHandoffEvent:
 			thisCtrl := !ctx.UserControlsPosition(event.FromController) && ctx.UserControlsPosition(event.ToController)

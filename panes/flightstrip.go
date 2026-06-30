@@ -49,7 +49,7 @@ func NewFlightStripPane() *FlightStripPane {
 	}
 }
 
-func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
+func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}

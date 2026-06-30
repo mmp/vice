@@ -38,7 +38,6 @@ type TransmissionManager struct {
 	holdCount    int       // explicit holds (e.g., during STT recording/processing)
 	holdUntil    time.Time // time-based hold for post-transmission pauses
 	lastCallsign av.ADSBCallsign
-	eventStream  *sim.EventStream
 	lg           *log.Logger
 
 	// Contact request management
@@ -59,14 +58,6 @@ func NewTransmissionManager(lg *log.Logger) *TransmissionManager {
 	return &TransmissionManager{
 		lg: lg,
 	}
-}
-
-// SetEventStream sets the event stream for posting TTS latency events.
-// This must be called before Update() will post latency events.
-func (tm *TransmissionManager) SetEventStream(es *sim.EventStream) {
-	tm.mu.Lock()
-	defer tm.mu.Unlock()
-	tm.eventStream = es
 }
 
 // EnqueueReadbackPCM adds a readback with pre-decoded PCM to the front of the queue (high priority).
@@ -1095,10 +1086,7 @@ func makeWhisperPrompt(state SimState) string {
 
 // postSTTEvent posts an STTCommandEvent to the event stream.
 func (c *ControlClient) postSTTEvent(transcript, command, timings string) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	c.eventStream.Post(sim.Event{
+	c.PostEvent(sim.Event{
 		Type:          sim.STTCommandEvent,
 		STTTranscript: transcript,
 		STTCommand:    command,

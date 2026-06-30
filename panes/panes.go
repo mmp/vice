@@ -27,7 +27,7 @@ import (
 type Pane interface {
 	// Activate is called once at startup time; it should do general,
 	// Sim-independent initialization.
-	Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger)
+	Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger)
 
 	// LoadedSim is called when vice is restarted and a Sim is loaded from disk.
 	LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger)
@@ -135,6 +135,7 @@ type Context struct {
 	Keyboard            *platform.KeyboardState
 	HaveFocus           bool
 	InterpolatedSimTime sim.Time
+	Events              []sim.Event
 	Lg                  *log.Logger
 
 	MenuBarHeight float32

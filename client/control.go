@@ -33,11 +33,11 @@ type AircraftCommandRequest struct {
 	STTDebugLogs      []string
 }
 
-func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) {
+func (c *ControlClient) TakeOrReturnLaunchControl() {
 	c.addCall(makeRPCCall(c.client.Go(server.TakeOrReturnLaunchControlRPC, c.controllerToken, nil, nil),
 		func(err error) {
 			if err != nil {
-				eventStream.Post(sim.Event{
+				c.PostEvent(sim.Event{
 					Type:        sim.StatusMessageEvent,
 					WrittenText: err.Error(),
 				})

@@ -91,8 +91,6 @@ type STARSPane struct {
 
 	fusedTrackVertices [][2]float32
 
-	events *sim.EventsSubscription
-
 	// Preferences that were active when we entered the PREF menu.
 	RestorePreferences       *Preferences
 	RestorePreferencesNumber *int
@@ -761,7 +759,7 @@ func NewSTARSPane() *STARSPane {
 	return &STARSPane{}
 }
 
-func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
+func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
 	if sp.PointOuts == nil {
 		sp.PointOuts = make(map[sim.ACID]PointOutControllers)
 	}
@@ -784,8 +782,6 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	if sp.VFRFPFirstSeen == nil {
 		sp.VFRFPFirstSeen = make(map[sim.ACID]sim.Time)
 	}
-
-	sp.events = eventStream.Subscribe()
 
 	sp.lastTrackUpdate = sim.Time{} // force immediate update at start
 	sp.lastHistoryTrackUpdate = sim.Time{}

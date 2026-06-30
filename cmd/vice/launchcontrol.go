@@ -279,7 +279,7 @@ func (lc *LaunchControlWindow) cleanupAllAircraft() {
 	lc.cleanupOverflights()
 }
 
-func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Platform, config *Config) {
+func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 	showLaunchControls := true
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(p.WindowSize()[1]) * 19 / 20})
 	applyPinWindowClass("Launch Control", config, p)
@@ -293,11 +293,11 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		imgui.Text("Controlling controller: " + util.Select(ctrl == "", "(none)", string(ctrl)))
 		if ctrl == lc.client.State.UserTCW {
 			if imgui.Button("Release launch control") {
-				lc.client.TakeOrReturnLaunchControl(eventStream)
+				lc.client.TakeOrReturnLaunchControl()
 			}
 		} else {
 			if imgui.Button("Take launch control") {
-				lc.client.TakeOrReturnLaunchControl(eventStream)
+				lc.client.TakeOrReturnLaunchControl()
 			}
 		}
 	}
@@ -895,7 +895,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	imgui.End()
 
 	if !showLaunchControls {
-		lc.client.TakeOrReturnLaunchControl(eventStream)
+		lc.client.TakeOrReturnLaunchControl()
 		lc.cleanupAllAircraft()
 		ui.showLaunchControl = false
 	}
