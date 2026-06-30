@@ -699,6 +699,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RunningSim) erro
 // controllerContext holds the context for a connected controller, returned by LookupController.
 // A nil value indicates the controller was not found.
 type controllerContext struct {
+	token    string
 	tcw      sim.TCW
 	initials string
 	sim      *sim.Sim
@@ -763,10 +764,21 @@ func (su *SimStateUpdate) Apply(state *SimState, eventStream *sim.EventStream) {
 
 // GetStateUpdate fills in a server.SimStateUpdate with both sim state and human controllers.
 func (c *controllerContext) GetStateUpdate() SimStateUpdate {
+	// Re-validate the connection under the session lock before pulling events:
+	// the client may have signed off (via SimManager.SignOff or CullIdleControllers)
+	// between LookupController and now, in which case c.eventSub.Unsubscribe()
+	// has already run.
+	var events []sim.Event
+	c.session.mu.Lock(c.session.lg)
+	if _, ok := c.session.connectionsByToken[c.token]; ok {
+		events = c.eventSub.Get()
+	}
+	c.session.mu.Unlock(c.session.lg)
+
 	return SimStateUpdate{
 		StateUpdate: c.sim.GetStateUpdate(c.tcw),
 		ActiveTCWs:  c.session.GetActiveTCWs(),
-		Events:      c.sim.PrepareRadioTransmissionsForTCW(c.tcw, c.eventSub.Get()),
+		Events:      c.sim.PrepareRadioTransmissionsForTCW(c.tcw, events),
 	}
 }
 

@@ -218,17 +218,22 @@ func (ss *simSession) GetStateUpdate(token string) (*SimStateUpdate, error) {
 		return nil, err
 	}
 
+	// The client may have signed off while we were waiting. Re-validate under
+	// ss.mu before calling eventSub.Get(): SignOff serializes Unsubscribe via
+	// ss.mu, so this closes the lifecycle race that would otherwise produce
+	// "Attempted to get with unregistered subscription" errors.
 	ss.mu.Lock(ss.lg)
-	// The client may have signed off while we were waiting...
+	var events []sim.Event
 	if conn, ok = ss.connectionsByToken[token]; ok {
 		conn.lastSentGen = gen
+		events = eventSub.Get()
 	}
 	ss.mu.Unlock(ss.lg)
 
 	return &SimStateUpdate{
 		StateUpdate: update,
 		ActiveTCWs:  ss.GetActiveTCWs(),
-		Events:      ss.sim.PrepareRadioTransmissionsForTCW(tcw, eventSub.Get()),
+		Events:      ss.sim.PrepareRadioTransmissionsForTCW(tcw, events),
 	}, nil
 }
 
@@ -242,6 +247,7 @@ func (ss *simSession) MakeControllerContext(token string) *controllerContext {
 		return nil
 	}
 	return &controllerContext{
+		token:    token,
 		tcw:      conn.tcw,
 		initials: conn.initials,
 		sim:      ss.sim,
