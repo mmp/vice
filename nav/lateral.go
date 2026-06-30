@@ -170,6 +170,17 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 		if len(dh.Waypoints) > 0 {
 			nav.Waypoints = dh.Waypoints
 		}
+		// If the heading was assigned while the aircraft was descending on
+		// a STAR/approach with no assigned altitude, snapshot the current
+		// altitude now (rather than at command-issue time) so the aircraft
+		// holds where the pilot actually was when they turned. Re-check the
+		// conditions in case an altitude was assigned during the deferred
+		// window.
+		if dh.SnapshotAltitudeOnEffect &&
+			nav.Altitude.Assigned == nil && nav.Altitude.AfterSpeed == nil {
+			alt := nav.FlightState.Altitude
+			nav.Altitude.Cleared = &alt
+		}
 		nav.DeferredNavHeading = nil
 	}
 

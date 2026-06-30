@@ -470,6 +470,7 @@ func (nav *Nav) AssignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 
 func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, simTime Time, delayReduction time.Duration) {
 	approachCleared := nav.Approach.Cleared
+	snapshotAltitude := false
 
 	if _, ok := nav.AssignedHeading(); !ok {
 		// Only cancel approach clearance if the aircraft wasn't on a
@@ -480,17 +481,18 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 		nav.Approach.PassedApproachFix = false
 
 		// If an arrival is given a heading off of a route with altitude
-		// constraints, set its cleared altitude to its current altitude
-		// for now. AfterSpeed counts as an explicit assignment too — the
+		// constraints, the pilot will request an altitude from the
+		// controller, and once the deferred heading actually takes effect
+		// we capture the current altitude into Altitude.Cleared so the
+		// aircraft holds whatever altitude the pilot was at when they
+		// turned. AfterSpeed counts as an explicit assignment too — the
 		// controller has assigned an altitude, it's just deferred until
 		// the speed change completes.
 		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR() || nav.Waypoints[0].OnApproach()) &&
 			nav.Altitude.Assigned == nil && nav.Altitude.AfterSpeed == nil {
 			if _, ok := nav.findAltitudeTarget(); ok {
-				// Don't take a direct pointer to nav.FlightState.Altitude!
-				alt := nav.FlightState.Altitude
-				nav.Altitude.Cleared = &alt
 				nav.Approach.RequestAltitude = true
+				snapshotAltitude = true
 			}
 		}
 	}
@@ -498,6 +500,9 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 	// Don't carry this from a waypoint we may have previously passed.
 	nav.Approach.NoPT = false
 	nav.EnqueueHeading(hdg, turn, approachCleared, simTime, delayReduction)
+	if snapshotAltitude && nav.DeferredNavHeading != nil {
+		nav.DeferredNavHeading.SnapshotAltitudeOnEffect = true
+	}
 }
 
 func (nav *Nav) FlyPresentHeading(simTime Time, delayReduction time.Duration) av.CommandIntent {

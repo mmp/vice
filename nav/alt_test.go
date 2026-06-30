@@ -878,3 +878,98 @@ func TestClearedVisualDescendsContinuously(t *testing.T) {
 
 	f.Run()
 }
+
+// TestVectorOffSTARHoldsAltitude verifies that vectoring an arrival off a
+// STAR with a heading does not cause the aircraft to subsequently climb back
+// to its altitude at command-issue time. Earlier code snapshotted Altitude.Cleared
+// immediately when the heading was assigned, but the heading itself was deferred
+// 2-4 seconds during which the aircraft kept descending along the STAR. When
+// the heading finally took effect, the saved Cleared was higher than current
+// and the aircraft would climb back up. The fix moves the snapshot to the
+// moment the deferred heading actually takes effect.
+func TestVectorOffSTARHoldsAltitude(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL/a10000-15000/star DETGY/a8000+/star HAUPT/a6000/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  15000,
+		InitialSpeed:     280,
+	})
+
+	// Tick until the STAR descent is active.
+	for range 300 {
+		wxs := f.weather(f.nav.FlightState.Altitude)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+		f.simTime = f.simTime.Add(time.Second)
+		if f.nav.FlightState.AltitudeRate < -50 {
+			break
+		}
+	}
+	if f.nav.FlightState.AltitudeRate >= -50 {
+		t.Fatal("expected STAR descent to have started before assigning heading")
+	}
+
+	altAtCommand := f.nav.FlightState.Altitude
+
+	// Vector off the STAR. With the bug, this captures Altitude.Cleared at
+	// command time; with the fix, the snapshot is deferred until the heading
+	// takes effect.
+	f.AssignHeading(360, av.TurnClosest)
+
+	// At command time, Cleared must not be set yet — the deferred heading
+	// hasn't taken effect.
+	if f.nav.Altitude.Cleared != nil {
+		t.Fatalf("expected Altitude.Cleared to remain unset at heading-command time, got %.0f",
+			*f.nav.Altitude.Cleared)
+	}
+	if f.nav.DeferredNavHeading == nil || !f.nav.DeferredNavHeading.SnapshotAltitudeOnEffect {
+		t.Fatal("expected SnapshotAltitudeOnEffect to be set on deferred heading")
+	}
+	deferredEffectTime := f.nav.DeferredNavHeading.Time
+
+	// Run through the deferred window. Aircraft should keep descending along
+	// the STAR; it should never climb during this window.
+	for f.simTime.Before(deferredEffectTime.Add(time.Second)) {
+		wxs := f.weather(f.nav.FlightState.Altitude)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+		f.simTime = f.simTime.Add(time.Second)
+		if f.nav.FlightState.Altitude > altAtCommand+5 {
+			t.Fatalf("aircraft climbed during deferred window: current=%.0f command-time=%.0f",
+				f.nav.FlightState.Altitude, altAtCommand)
+		}
+	}
+
+	// Heading should now be active, snapshot should be in place.
+	if f.nav.Heading.Assigned == nil {
+		t.Fatal("expected deferred heading to have taken effect")
+	}
+	if f.nav.Altitude.Cleared == nil {
+		t.Fatal("expected Altitude.Cleared to be set after heading took effect")
+	}
+	snapshotAlt := *f.nav.Altitude.Cleared
+	if snapshotAlt > altAtCommand+50 || snapshotAlt < altAtCommand-500 {
+		t.Errorf("snapshot %.0f should be near (slightly below) command-time altitude %.0f",
+			snapshotAlt, altAtCommand)
+	}
+	if !f.nav.Approach.RequestAltitude {
+		// RequestAltitude is set at command time and is only cleared by
+		// sim-side processing (which this test does not exercise).
+		t.Error("expected Approach.RequestAltitude to remain set")
+	}
+
+	// Run several more seconds and confirm the aircraft holds the snapshot
+	// altitude rather than climbing back up to the command-time altitude.
+	// The earlier-snapshot bug shows up here as an upward drift back toward
+	// altAtCommand.
+	altAtEffect := f.nav.FlightState.Altitude
+	for range 30 {
+		wxs := f.weather(f.nav.FlightState.Altitude)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+		f.simTime = f.simTime.Add(time.Second)
+		if f.nav.FlightState.Altitude > altAtEffect+50 {
+			t.Fatalf("aircraft climbed above heading-effect altitude: current=%.0f effect-time=%.0f command-time=%.0f",
+				f.nav.FlightState.Altitude, altAtEffect, altAtCommand)
+		}
+	}
+}
