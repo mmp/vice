@@ -67,6 +67,16 @@ func (l *Logger) uploadAndDeleteCrashStderrFiles() {
 			_ = os.Remove(fn)
 			continue
 		}
+		// Capture files accumulate the text slog handler's warn+
+		// output and any fmt.Fprintf(os.Stderr, ...) writes for the
+		// life of the process — useful inline context when a crash
+		// dump is also present, but on its own just session noise.
+		// Only upload files that contain a marker the Go runtime (or
+		// the OS, for Windows SEH) writes when killing the process.
+		if !hasRuntimeFatalMarker(fn) {
+			_ = os.Remove(fn)
+			continue
+		}
 		toUpload = append(toUpload, fn)
 	}
 	if len(toUpload) == 0 {
@@ -170,4 +180,39 @@ func (l *Logger) uploadCrashStderrFile(rpcClient *rpc.Client, sysInfo SystemInfo
 	} else {
 		l.Infof("Uploaded and removed prior-run crash-stderr: %s", filepath.Base(fn))
 	}
+}
+
+// runtimeFatalMarkers are substrings the Go runtime (or Windows SEH for
+// cgo crashes) writes to fd 2 / STD_ERROR_HANDLE when killing the
+// process. Anything else in the capture — slog text output, scenario
+// validation dumps, our own fmt.Fprintf(os.Stderr, ...) — is session
+// noise and shouldn't be reported as a crash.
+var runtimeFatalMarkers = []string{
+	"panic:",                // runtime/panic.go gopanic, etc.
+	"fatal error:",          // runtime fatalthrow
+	"runtime error:",        // runtime error wrappers
+	"signal arrived during", // cgo signal during external code execution
+	"Exception 0x",          // Windows SEH dumps
+}
+
+// hasRuntimeFatalMarker reports whether the given capture file contains
+// any sign of a real runtime fatal. Reads at most 256 KiB — capture
+// files are small and the markers always appear at the start of the
+// runtime's dump.
+func hasRuntimeFatalMarker(fn string) bool {
+	f, err := os.Open(fn)
+	if err != nil {
+		return false
+	}
+	defer f.Close()
+
+	buf := make([]byte, 256*1024)
+	n, _ := f.Read(buf)
+	body := string(buf[:n])
+	for _, m := range runtimeFatalMarkers {
+		if strings.Contains(body, m) {
+			return true
+		}
+	}
+	return false
 }
