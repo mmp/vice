@@ -5290,7 +5290,7 @@
           "initial_controller": "1B",
           "initial_speed": 220,
           "speed_restriction": 220,
-          "star": "AYLNA3",
+          "star": "ALYNA4",
           "scratchpad": "IE",
           "waypoints": "BURNE ALYNA/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000",
           "is_rnav": true
@@ -5318,7 +5318,7 @@
           "initial_controller": "1B",
           "initial_speed": 220,
           "speed_restriction": 220,
-          "star": "AYLNA3",
+          "star": "ALYNA4",
           "scratchpad": "FI",
           "waypoints": "BURNE ALYNA/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000",
           "is_rnav": true
@@ -10436,7 +10436,7 @@
           "initial_speed": 220,
           "star": "PRICY5",
           "scratchpad": "IR",
-          "waypoints": "GIRAF/a8000/s220 DVOLA/a6000/s210/ho",
+          "waypoints": "GIRAF/a8000/s220 DVOLA/a6000/s210/h006/ho",
           "is_rnav": true
         }
       ]
