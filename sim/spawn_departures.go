@@ -636,8 +636,11 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 	isTRACON := av.DB.IsTRACON(s.State.Facility)
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeDeparture)
 	nasFp.Route = ac.FlightPlan.Route
-	nasFp.EntryFix = util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:],
-		ac.FlightPlan.DepartureAirport)
+	if len(ac.FlightPlan.DepartureAirport) == 4 {
+		nasFp.EntryFix = ac.FlightPlan.DepartureAirport[1:]
+	} else {
+		nasFp.EntryFix = ac.FlightPlan.DepartureAirport
+	}
 	nasFp.ExitFix = shortExit
 	if dep.Scratchpad != "" { // this has top priority
 		nasFp.Scratchpad = dep.Scratchpad

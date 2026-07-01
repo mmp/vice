@@ -133,7 +133,10 @@ func (sp *STARSPane) formatBuiltinSpecifier(ctx *panes.Context, name string, fp 
 		}
 		return "VFR ", true
 	case "CWT":
-		return util.Select(fp.CWTCategory != "", string(fp.CWTCategory[:1]), " "), true
+		if fp.CWTCategory == "" {
+			return " ", true
+		}
+		return string(fp.CWTCategory[:1]), true
 	case "DEP_EXIT_FIX":
 		if fp.TypeOfFlight == av.FlightTypeDeparture {
 			return sp.rewriteFixForList(fp.ExitFix), true

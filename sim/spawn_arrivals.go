@@ -128,7 +128,11 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeArrival)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO
-	nasFp.ExitFix = util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport)
+	if len(ac.FlightPlan.ArrivalAirport) == 4 {
+		nasFp.ExitFix = ac.FlightPlan.ArrivalAirport[1:]
+	} else {
+		nasFp.ExitFix = ac.FlightPlan.ArrivalAirport
+	}
 	nasFp.TrackingController = arr.InitialController
 	nasFp.OwningTCW = s.tcwForPosition(arr.InitialController)
 	ac.ControllerFrequency = arr.InitialController
