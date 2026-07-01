@@ -113,14 +113,14 @@ type LaunchConfig struct {
 	EmergencyAircraftRate float32 // Aircraft per hour
 }
 
-func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports map[string]*av.Airport,
-	inbound map[string]map[string]float32, haveVFRReportingRegions bool) LaunchConfig {
+func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vffRequestRate int32,
+	vfrAirports map[string]*av.Airport, inbound map[string]map[string]float32, haveVFRReportingRegions bool) LaunchConfig {
 	lc := LaunchConfig{
 		GoAroundRate:                0.01,
 		DepartureRateScale:          1,
 		VFRDepartureRateScale:       vfrRateScale,
 		VFRAirportRates:             make(map[string]float32),
-		VFFRequestRate:              10,
+		VFFRequestRate:              vffRequestRate,
 		HaveVFRReportingRegions:     haveVFRReportingRegions,
 		InboundFlowRateScale:        1,
 		ArrivalPushFrequencyMinutes: 20,

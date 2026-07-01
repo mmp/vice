@@ -1072,6 +1072,15 @@
                                   Used to define controller-specific airspace boundaries for the area.</td>
                               </tr>
                               <tr>
+                                <td>"airspace_awareness"</td>
+                                <td>Array of objects</td>
+                                <td>Per-area airspace awareness rules that take priority over the facility-level
+                                  <a href="#fe-airspace-awareness">"airspace_awareness"</a> for controllers in this area.
+                                  Same format as the top-level airspace awareness array.
+                                  Area entries are checked first; facility-level entries are used as fallback
+                                  for fixes not matched by area entries.</td>
+                              </tr>
+                              <tr>
                                 <td>"altimeters"</td>
                                 <td>Array of strings</td>
                                 <td>If specified, lists the airports whose altimeters are displayed in the SSA list
@@ -1109,13 +1118,6 @@
                                 <td>Specifies which of the video maps should be initially displayed.</td>
                               </tr>
                               <tr>
-                                <td>"video_map_file"</td>
-                                <td>String</td>
-                                <td>Overrides the facility-level <code>"video_map_file"</code> for controllers in this area.
-                                  When specified, video maps for this area are loaded from the given file
-                                  instead of the facility-level video map library.</td>
-                              </tr>
-                              <tr>
                                 <td>"flight_following_airspace"</td>
                                 <td>Array of objects</td>
                                 <td>Airspace volumes for flight following in this area.</td>
@@ -1139,13 +1141,11 @@
                                   Same format as the top-level scratchpads map.</td>
                               </tr>
                               <tr>
-                                <td>"airspace_awareness"</td>
-                                <td>Array of objects</td>
-                                <td>Per-area airspace awareness rules that take priority over the facility-level
-                                  <a href="#fe-airspace-awareness">"airspace_awareness"</a> for controllers in this area.
-                                  Same format as the top-level airspace awareness array.
-                                  Area entries are checked first; facility-level entries are used as fallback
-                                  for fixes not matched by area entries.</td>
+                                <td>"video_map_file"</td>
+                                <td>String</td>
+                                <td>Overrides the facility-level <code>"video_map_file"</code> for controllers in this area.
+                                  When specified, video maps for this area are loaded from the given file
+                                  instead of the facility-level video map library.</td>
                               </tr>
                               <tr>
                                 <td>"video_maps"</td>
@@ -4383,6 +4383,11 @@
                     <td>"vfr_rate_scale"</td>
                     <td>Number</td>
                     <td>Scale factor to adjust the rate of distractor VFR launches in the scenario. Set to 0 for none.</td>
+                  </tr>
+                  <tr>
+                    <td>"flight_following_request_rate"</td>
+                    <td>Number</td>
+                    <td>(<i>Optional</i>) Default rate at which VFR aircraft in a controller's flight-following airspace request flight following, in requests per hour. Applied when the scenario is loaded; the value can be adjusted at any time via the launch-config UI. If unspecified, defaults to 10.</td>
                   </tr>
                   <tr>
                     <td>"wind"</td>

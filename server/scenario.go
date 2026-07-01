@@ -95,6 +95,7 @@ type scenario struct {
 	DefaultMaps     []string      `json:"default_maps"`
 	DefaultMapGroup string        `json:"default_map_group"`
 	VFRRateScale    *float32      `json:"vfr_rate_scale"`
+	VFFRequestRate  *int32        `json:"flight_following_request_rate,omitempty"`
 }
 
 func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSpec *av.MapLibrarySpec) {
@@ -613,6 +614,10 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 	if s.VFRRateScale == nil { // unspecified -> default to 1
 		one := float32(1)
 		s.VFRRateScale = &one
+	}
+	if s.VFFRequestRate == nil { // unspecified -> default to 10 per hour
+		ten := int32(10)
+		s.VFFRequestRate = &ten
 	}
 }
 
@@ -1716,8 +1721,8 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 		}
 		haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(sg.FacilityConfig.FacilityAdaptation.Controllers),
 			func(cc *sim.STARSController) bool { return len(cc.FlightFollowingAirspace) > 0 })
-		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
-			scenario.InboundFlowDefaultRates, haveVFRReportingRegions)
+		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, *scenario.VFFRequestRate,
+			vfrAirports, scenario.InboundFlowDefaultRates, haveVFRReportingRegions)
 
 		spec := &ScenarioSpec{
 			ControllerConfiguration: &scenario.ControllerConfiguration,
@@ -2528,7 +2533,8 @@ func CreateLaunchConfig(scenario *scenario, scenarioGroup *scenarioGroup) sim.La
 	// Create proper LaunchConfig
 	return sim.MakeLaunchConfig(
 		scenario.DepartureRunways,
-		util.Select(scenario.VFRRateScale == nil, 1.0, *scenario.VFRRateScale),
+		*scenario.VFRRateScale,
+		*scenario.VFFRequestRate,
 		vfrAirports,
 		scenario.InboundFlowDefaultRates,
 		haveVFRReportingRegions,

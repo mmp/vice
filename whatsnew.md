@@ -13,3 +13,5 @@
   - Fixed bug with "create / modify interfacility VFR flight plan" command (e.g. `N123AB LAS*SAN C172 165`)
 - Slightly reduced TTS readback speed, added slider to control it.
 - STT: fixed a bug where fixes in the expected approach weren't considered for matching fix names in instructions
+- Facility engineering
+  - Added "flight_following_request_rate" to scenario specifications (10/hour by default)
