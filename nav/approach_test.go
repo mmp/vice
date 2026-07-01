@@ -1143,6 +1143,104 @@ func TestClearedVisualAlongILSUsesILSGeometry(t *testing.T) {
 	}
 }
 
+// TestClearedVisualAlongILSAfterVectorArmsIntercept verifies that issuing
+// CVA to an aircraft that was committed to an ILS reference, then vectored
+// off, re-arms the intercept state machine (InterceptState = InitialHeading,
+// NoPT). Without this, ApproachHeading's gate at lateral.go fails and the
+// aircraft just flies the assigned heading through the localizer.
+func TestClearedVisualAlongILSAfterVectorArmsIntercept(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectVisualApproach("22L")
+	f.DirectFix("ROSLY") // commits to the I22L route; sets InterceptState=OnApproachCourse
+	if f.nav.Approach.InterceptedReference == nil {
+		t.Fatal("setup: InterceptedReference not set after DirectFix on ILS fix")
+	}
+	if f.nav.Approach.InterceptState != OnApproachCourse {
+		t.Fatalf("setup: InterceptState = %d, want OnApproachCourse", f.nav.Approach.InterceptState)
+	}
+
+	// Vector off — equivalent to the controller saying "right 350" for
+	// sequencing. assignHeading resets Cleared/PassedApproachFix but
+	// leaves InterceptedReference and the prior OnApproachCourse intact.
+	f.AssignHeading(180, av.TurnClosest)
+	if _, onHeading := f.nav.AssignedHeading(); !onHeading {
+		t.Fatal("setup: AssignHeading did not register an assigned heading")
+	}
+
+	intent := f.ClearedVisualApproach("22L")
+	if _, ok := intent.(av.UnableIntent); ok {
+		t.Fatalf("ClearedVisualApproach returned unable: %+v", intent)
+	}
+
+	if !f.nav.Approach.Cleared {
+		t.Error("Cleared = false, want true")
+	}
+	if f.nav.Approach.InterceptState != InitialHeading {
+		t.Errorf("InterceptState = %d, want InitialHeading (state machine must be re-armed after vector)",
+			f.nav.Approach.InterceptState)
+	}
+	if !f.nav.Approach.NoPT {
+		t.Error("NoPT = false, want true after vectored-to-final clearance")
+	}
+}
+
+// TestClearedVisualAlongILSAfterAtFixInterceptArmsIntercept covers the
+// AEDDYY/I path — InterceptedReference is set by AtFixIntercept (via
+// routeDirectIfNeeded → visualReferenceForFix), where the fix is already in
+// the route so the InterceptState=OnApproachCourse branch in
+// routeDirectIfNeeded is skipped. A subsequent vector + CVA must still
+// arm the intercept state machine.
+func TestClearedVisualAlongILSAfterAtFixInterceptArmsIntercept(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		AssignedAltitude: 5000,
+	})
+
+	f.ExpectVisualApproach("22L")
+	intent := f.AtFixIntercept("ROSLY")
+	if _, ok := intent.(av.UnableIntent); ok {
+		t.Fatalf("AtFixIntercept returned unable: %+v", intent)
+	}
+	if f.nav.Approach.InterceptedReference == nil {
+		t.Fatal("setup: InterceptedReference not set after AtFixIntercept")
+	}
+
+	// Vector off before reaching ROSLY (so AtFixInterceptFix is still
+	// armed for ROSLY, but a clearance arrives first).
+	f.AssignHeading(180, av.TurnClosest)
+
+	if cvaIntent := f.ClearedVisualApproach("22L"); cvaIntent == nil {
+		t.Fatal("ClearedVisualApproach returned nil intent")
+	} else if _, ok := cvaIntent.(av.UnableIntent); ok {
+		t.Fatalf("ClearedVisualApproach returned unable: %+v", cvaIntent)
+	}
+
+	if !f.nav.Approach.Cleared {
+		t.Error("Cleared = false, want true")
+	}
+	if f.nav.Approach.InterceptState != InitialHeading {
+		t.Errorf("InterceptState = %d, want InitialHeading",
+			f.nav.Approach.InterceptState)
+	}
+	if !f.nav.Approach.NoPT {
+		t.Error("NoPT = false, want true")
+	}
+}
+
 // TestExpectVisualApproachResetsExpectApproachState verifies that EVA after
 // a prior ExpectApproach clears any stale ILS state (InterceptState,
 // AtFixInterceptFix, etc.).

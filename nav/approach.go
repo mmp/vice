@@ -782,6 +782,13 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 		}
 		ap.Waypoints = out
 		cancelHold := nav.applyClearedApproachState()
+		// Vectoring since the last capture invalidates any prior intercept
+		// progress; rearm the state machine so ApproachHeading recaptures
+		// against the now-installed localizer geometry.
+		if _, onHeading := nav.AssignedHeading(); onHeading {
+			nav.Approach.InterceptState = InitialHeading
+			nav.Approach.NoPT = true
+		}
 		if nav.Approach.PassedApproachFix || nav.Approach.InterceptState == OnApproachCourse {
 			nav.clearAltitudeForApproach()
 			if nav.Approach.InterceptState == OnApproachCourse {
