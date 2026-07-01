@@ -35,16 +35,32 @@ jobs:
         go-version-file: go.mod
         cache-dependency-path: go.sum
 
-    - name: Fetch LFS and generate manifest
+    - name: Restore LFS objects cache
+      id: lfs-cache
+      uses: actions/cache@v5
+      with:
+        path: .git/lfs/objects
+        key: lfs-objects-v1-${{ hashFiles('resources/videomaps/**', 'resources/wx/**') }}
+
+    - name: Fetch LFS
+      if: steps.lfs-cache.outputs.cache-hit != 'true'
+      run: |
+        git lfs install
+        git lfs pull
+
+    - name: Materialize LFS working-tree files
+      if: steps.cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
+      run: |
+        git lfs install
+        git lfs checkout
+
+    - name: Generate manifest and upload to R2
       if: steps.cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
       env:
         R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
         R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
         R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-      run: |
-        git lfs install
-        git lfs pull
-        go run ./cmd/bundleresources
+      run: go run ./cmd/bundleresources
 
     - name: Create empty manifest (PR build)
       if: steps.cache.outputs.cache-hit != 'true' && github.event_name == 'pull_request'
@@ -107,6 +123,17 @@ jobs:
 
     - name: Run tests
       run: go test -v ./...
+
+    - name: Restore LFS objects cache
+      uses: actions/cache@v5
+      with:
+        path: .git/lfs/objects
+        key: lfs-objects-v1-${{ hashFiles('resources/videomaps/**', 'resources/wx/**') }}
+
+    - name: Materialize LFS working-tree files
+      run: |
+        git lfs install
+        git lfs checkout
 
     - name: Race-detector smoketest (viceserver -loadonly)
       run: |
