@@ -11,6 +11,7 @@
   - Added check list views
   - Adjusted scrollwheel sensitivity for zooming into scope
   - Fixed bug with drawing ERAM cursors
+  - Added support for F-key shortcuts (F1 -> QF, etc.)
 - STARS
   - Fixed bug with "create / modify interfacility VFR flight plan" command (e.g. `N123AB LAS*SAN C172 165`)
 - Slightly reduced TTS readback speed, added slider to control it.

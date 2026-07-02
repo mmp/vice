@@ -926,6 +926,40 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			} else {
 				ep.VelocityTime = 0
 			}
+		case imgui.KeyF1:
+			if ctx.Keyboard.KeyShift() {
+				ep.Input.Set("DM ")
+			} else {
+				ep.Input.Set("QF ")
+			}
+		case imgui.KeyF2:
+			if ctx.Keyboard.KeyShift() {
+				ep.Input.Set("QD ")
+			} else {
+				ep.Input.Set("QP ")
+			}
+		case imgui.KeyF3:
+			ep.Input.Set("QT ")
+		case imgui.KeyF4:
+			ep.Input.Set("QX ")
+		case imgui.KeyF5:
+			ep.Input.Set("QZ ")
+		case imgui.KeyF6:
+			ep.Input.Set("QU ")
+		case imgui.KeyF7:
+			if ctx.Keyboard.KeyShift() {
+				ep.Input.Set("WR ")
+			} else {
+				ep.Input.Set("QL ")
+			}
+		case imgui.KeyF8:
+			if ctx.Keyboard.KeyShift() {
+				ep.Input.Set("QR ")
+			} else {
+				ep.Input.Set("QQ ")
+			}
+		case imgui.KeyF9:
+			ep.Input.Set("QB ")
 		}
 	}
 }
