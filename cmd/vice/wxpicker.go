@@ -397,7 +397,7 @@ func drawWindAndWeatherIcons(metar wx.METAR, largeFont *renderer.Font) {
 	startX := imgui.CursorPosX()
 
 	largeFont.ImguiPush()
-	for _, cond := range parseWeatherConditions(metar.Raw) {
+	for _, cond := range parseWeatherConditions(metar.Observation()) {
 		imgui.SetCursorPos(imgui.Vec2{X: startX, Y: iconY})
 
 		imgui.PushStyleColorVec4(imgui.ColText, cond.color)
@@ -421,7 +421,7 @@ func drawWindAndWeatherIcons(metar wx.METAR, largeFont *renderer.Font) {
 // drawMETARDisplay renders the METAR information panel
 func drawMETARDisplay(metar wx.METAR, monospaceFont *renderer.Font, largeFont *renderer.Font) {
 	monospaceFont.ImguiPush()
-	imgui.TextWrapped(formatRawMETAR(metar.Raw))
+	imgui.TextWrapped(formatRawMETAR(metar.Observation()))
 	imgui.PopFont()
 
 	imgui.Spacing()

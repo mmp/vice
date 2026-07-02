@@ -1859,7 +1859,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 					}
 
 					imgui.TableNextColumn()
-					raw := strings.TrimPrefix(metar.Raw, "METAR ")
+					raw := strings.TrimPrefix(metar.Observation(), "METAR ")
 					raw = strings.TrimPrefix(raw, "SPECI ")
 					imgui.Text(raw)
 					imgui.PopFont()
@@ -2167,7 +2167,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.TableNextColumn()
 		currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
 		ui.fixedFont.ImguiPush()
-		imgui.Text(strings.TrimPrefix(strings.TrimPrefix(currentMetar.Raw, "METAR "), "SPECI "))
+		imgui.Text(strings.TrimPrefix(strings.TrimPrefix(currentMetar.Observation(), "METAR "), "SPECI "))
 		imgui.PopFont()
 
 		if c.showAllMETAR && len(metarAirports) > 1 {
@@ -2178,7 +2178,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 				imgui.TableNextColumn()
 				ui.fixedFont.ImguiPush()
 				m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
-				imgui.Text(strings.TrimPrefix(strings.TrimPrefix(m.Raw, "METAR "), "SPECI "))
+				imgui.Text(strings.TrimPrefix(strings.TrimPrefix(m.Observation(), "METAR "), "SPECI "))
 				imgui.PopFont()
 			}
 		}

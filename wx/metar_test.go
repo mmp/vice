@@ -111,6 +111,22 @@ func TestMETARJSONRoundTripVRB(t *testing.T) {
 	}
 }
 
+func TestMETARObservation(t *testing.T) {
+	cases := []struct {
+		raw, want string
+	}{
+		{"KJFK 061351Z 18017G25KT 10SM", "KJFK 061351Z 18017G25KT 10SM"},
+		{"KJFK 061351Z 18017G25KT 10SM RMK AO2 SLP985 T01440111", "KJFK 061351Z 18017G25KT 10SM"},
+		{"", ""},
+	}
+	for _, c := range cases {
+		m := METAR{Raw: c.raw}
+		if got := m.Observation(); got != c.want {
+			t.Errorf("Observation(%q) = %q, want %q", c.raw, got, c.want)
+		}
+	}
+}
+
 func TestMETARUnmarshalAPIShape(t *testing.T) {
 	data := `{"icaoId":"KJFK","reportTime":"2026-05-06T14:00:00.000Z","temp":14.4,"dewp":11.1,"wdir":180,"wspd":17,"wgst":25,"altim":1010.6,"rawOb":"METAR KJFK 061351Z 18017G25KT 10SM"}`
 

@@ -194,13 +194,6 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 		// Eliminate duplicates (may happen since the scraper grabs 24-hour chunks every 16 hours.
 		recs = slices.CompactFunc(recs, func(a, b wx.METAR) bool { return a.ReportTime == b.ReportTime })
 
-		// Chop raw after RMK; we don't display it anyway
-		for i := range recs {
-			if idx := strings.Index(recs[i].Raw, " RMK"); idx != -1 {
-				recs[i].Raw = recs[i].Raw[:idx]
-			}
-		}
-
 		if err := metar.SetAirportMETAR(ap, recs); err != nil {
 			LogError("%s: %v (skipping airport)", ap, err)
 			nFailedAirports++

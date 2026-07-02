@@ -21,7 +21,7 @@ func TestCompressedMETARMsgpackSerialization(t *testing.T) {
 			Dewpoint:    av.MakeTemperatureFromCelsius(10.2),
 			Altimeter:   1013.2,
 			WindSpeed:   10,
-			Raw:         "KJFK 151200Z 10010KT",
+			Raw:         "KJFK 151200Z 10010KT RMK AO2 SLP192 T02170172 10233 20189 58004",
 			ReportTime:  "2024-01-15T12:00:00Z",
 		},
 	}
@@ -74,8 +74,8 @@ func TestCompressedMETARMsgpackSerialization(t *testing.T) {
 	if metars[0].Temperature.Celsius() != 15.5 {
 		t.Errorf("Expected Temperature 15.5, got %f", metars[0].Temperature.Celsius())
 	}
-	if metars[0].Raw != "KJFK 151200Z 10010KT" {
-		t.Errorf("Expected Raw 'KJFK 151200Z 10010KT', got '%s'", metars[0].Raw)
+	if metars[0].Raw != "KJFK 151200Z 10010KT RMK AO2 SLP192 T02170172 10233 20189 58004" {
+		t.Errorf("Expected Raw with RMK preserved, got '%s'", metars[0].Raw)
 	}
 }
 

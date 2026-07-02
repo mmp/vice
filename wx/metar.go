@@ -50,6 +50,12 @@ func (m METAR) Altimeter_inHg() float32 {
 	return 0.02953 * m.Altimeter
 }
 
+// Observation returns Raw with any " RMK ..." remarks removed.
+func (m METAR) Observation() string {
+	obs, _, _ := strings.Cut(m.Raw, " RMK")
+	return obs
+}
+
 // MarshalJSON emits "wdir" from WindDir so JSON round-trips preserve direction.
 func (m METAR) MarshalJSON() ([]byte, error) {
 	type Alias METAR
