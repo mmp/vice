@@ -1040,6 +1040,12 @@ func parseFacilities() (map[string]ARTCC, map[string]TRACON, map[string]ATCT) {
 		os.Exit(1)
 	}
 
+	for name, artcc := range artccs {
+		if artcc.Latitude == 0 || artcc.Longitude == 0 || artcc.Radius == 0 {
+			fmt.Fprintf(os.Stderr, "%s: ARTCC missing latitude/longitude/radius in artccs.json\n", name)
+		}
+	}
+
 	// Validate that all of the TRACON ARTCCs are known.
 	for name, tracon := range tracons {
 		if _, ok := artccs[tracon.ARTCC]; !ok {
@@ -1049,6 +1055,9 @@ func parseFacilities() (map[string]ARTCC, map[string]TRACON, map[string]ATCT) {
 		if tracon.Radius < 20 {
 			fmt.Fprintf(os.Stderr, tracon.ARTCC+": unexpectedly small radius %f\n", tracon.Radius)
 			os.Exit(1)
+		}
+		if tracon.Latitude == 0 || tracon.Longitude == 0 {
+			fmt.Fprintf(os.Stderr, "%s: TRACON missing latitude/longitude in tracons.json\n", name)
 		}
 	}
 

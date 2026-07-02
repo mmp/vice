@@ -132,6 +132,10 @@
     "Radius": 554
   },
   "ZAE": {
-    "Name": "Academy Center"
+    "Name": "Academy Center",
+    "Latitude": 33.0,
+    "Longitude": -97.5211,
+    "Name": "Fort Worth Center",
+    "Radius": 581
   }
 }
