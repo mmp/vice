@@ -3629,8 +3629,9 @@
                   </tr>
                   <tr>
                     <td>"cruise_altitude"</td>
-                    <td>Number</td>
-                    <td>(<i>Optional</i>) The aircraft's final cruise altitude. (This is only used in the aircraft's flight strip.) If
+                    <td>Number or array of numbers</td>
+                    <td>(<i>Optional</i>) The aircraft's final cruise altitude. (This is only used in the aircraft's flight strip.)
+                      If multiple altitudes are specified, one is chosen at random. If
                       unspecified, <i>vice</i> tries to choose a reasonable
                       cruise altitude based on the distance and direction of flight.</td>
                   </tr>
@@ -3855,8 +3856,9 @@
                   </tr>
                   <tr>
                     <td>"cruise_altitude"</td>
-                    <td>Number</td>
-                    <td>(<i>Optional</i>) The aircraft's final altitude in its flight plan. If unspecified, a reasonable
+                    <td>Number or array of numbers</td>
+                    <td>(<i>Optional</i>) The aircraft's final altitude in its flight plan.
+                      If multiple altitudes are specified, one is chosen at random. If unspecified, a reasonable
                       guess will be made based on direction of flight and the aircraft's departure and arrival airports.</td>
                   </tr>
                   <tr>

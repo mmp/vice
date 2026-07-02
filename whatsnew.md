@@ -18,3 +18,4 @@
 - STT: fixed a bug where fixes in the expected approach weren't considered for matching fix names in instructions
 - Facility engineering
   - Added "flight_following_request_rate" to scenario specifications (10/hour by default)
+  - Allow arrays of altitudes for "cruise_altitude" for arrivals/overflights

@@ -562,10 +562,12 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 		return ErrUnknownAircraftType
 	}
 
-	ac.FlightPlan.Altitude = int(arr.CruiseAltitude)
-	if ac.FlightPlan.Altitude == 0 { // unspecified
+	r := rand.Make()
+	if len(arr.CruiseAltitudes) > 0 {
+		ac.FlightPlan.Altitude = rand.SampleSlice(r, arr.CruiseAltitudes)
+	} else {
 		ac.FlightPlan.Altitude =
-			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, rand.Make())
+			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, r)
 	}
 	if arr.Route != "" {
 		ac.FlightPlan.Route = arr.Route
@@ -673,10 +675,12 @@ func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float
 		return ErrUnknownAircraftType
 	}
 
-	ac.FlightPlan.Altitude = int(of.CruiseAltitude)
-	if ac.FlightPlan.Altitude == 0 { // unspecified
+	r := rand.Make()
+	if len(of.CruiseAltitudes) > 0 {
+		ac.FlightPlan.Altitude = rand.SampleSlice(r, of.CruiseAltitudes)
+	} else {
 		ac.FlightPlan.Altitude =
-			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, rand.Make())
+			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, r)
 	}
 	ac.FlightPlan.Route = of.Waypoints.RouteString()
 	ac.TypeOfFlight = av.FlightTypeOverflight

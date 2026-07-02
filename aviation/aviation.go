@@ -141,7 +141,7 @@ type Arrival struct {
 	Waypoints       WaypointArray                       `json:"waypoints"`
 	RunwayWaypoints map[string]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
 	SpawnWaypoint   string                              `json:"spawn"`            // if "waypoints" aren't specified
-	CruiseAltitude  float32                             `json:"cruise_altitude"`
+	CruiseAltitudes util.SingleOrArray[int]             `json:"cruise_altitude"`
 	Route           string                              `json:"route"`
 	STAR            string                              `json:"star"`
 
