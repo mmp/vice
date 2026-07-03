@@ -179,7 +179,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			// CRC doesn't even simulate this...
 		}
 		if ep.drawToolbarFullButton(ctx, "WX", 0, scale, false, false) {
-			// Opens WX menu
+			ep.activeToolbarMenu = toolbarWX
 		}
 
 		btnH := buttonSize(buttonFull, scale)[1]
@@ -496,6 +496,52 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			oc := math.Extent2DFromPoints([][2]float32{p0, p1, p2, p3})
 			toolbarDrawState.occlusionExtent = oc
 		}
+
+	case toolbarWX:
+		if toolbarDrawState.lightToolbar != [4][2]float32{} {
+			t := toolbarDrawState.lightToolbar
+			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
+		}
+		// WX1/WX2/WX3 are not simulated; render them dark.
+		toolbarDrawState.customButton["WX1"] = renderer.RGB{R: 0, G: 0, B: 0}
+		toolbarDrawState.customButton["WX2"] = renderer.RGB{R: 0, G: 0, B: 0}
+		toolbarDrawState.customButton["WX3"] = renderer.RGB{R: 0, G: 0, B: 0}
+
+		ps := ep.currentPrefs()
+		drawButtonSamePosition(ctx, "WX")
+		if ep.drawToolbarFullButton(ctx, "WX", 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarATCTools
+			resetButtonPosDefault(ctx, scale)
+			delete(toolbarDrawState.customButton, "WX1")
+			delete(toolbarDrawState.customButton, "WX2")
+			delete(toolbarDrawState.customButton, "WX3")
+		}
+		p0 := toolbarDrawState.buttonCursor
+
+		if ep.drawToolbarFullButton(ctx, "NX 000\n600", 0, scale, false, false) {
+			// Not simulated.
+		}
+		if ep.drawToolbarFullButton(ctx, "NX LVL\n"+nexradLevelLabel(ps.NexradLevel), 0, scale, false, false) {
+			handleNexradLevelClick(ep, &ps.NexradLevel)
+		}
+
+		toolbarDrawState.offsetBottom = true
+		if ep.drawToolbarFullButton(ctx, "WX1", 0, scale, false, true) {
+			// Not simulated.
+		}
+		if ep.drawToolbarFullButton(ctx, "WX2", 0, scale, false, false) {
+			// Not simulated.
+		}
+		if ep.drawToolbarFullButton(ctx, "WX3", 0, scale, false, false) {
+			// Not simulated.
+		}
+
+		p2 := [2]float32{toolbarDrawState.buttonCursor[0], oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))[1]}
+		p2[0] += buttonSize(buttonBoth, scale)[0]
+		p1 := [2]float32{p2[0], p0[1]}
+		p3 := [2]float32{p0[0], p2[1]}
+		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 
 	case toolbarRadarFilter:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
@@ -1278,6 +1324,7 @@ var toolbarLabel = map[int][]string{
 	toolbarFont:      {"FONT"},
 	toolbarViews:     {"VIEWS"},
 	toolbarMapBright: {"BRIGHT", "MAP\nBRIGHT"},
+	toolbarWX:        {"WX"},
 }
 
 var menuColor = map[int]renderer.RGB{
@@ -1290,6 +1337,7 @@ var menuColor = map[int]renderer.RGB{
 	toolbarDBFields:  colors.toolbar.blackButton, // DB FIELDS
 	toolbarFont:      colors.toolbar.greenButton, // FONT
 	toolbarViews:     colors.toolbar.blackButton, // VIEWS
+	toolbarWX:        colors.toolbar.greenButton, // WX
 }
 
 func (ep *ERAMPane) customButtonColor(button string) renderer.RGB {

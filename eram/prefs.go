@@ -190,6 +190,11 @@ type CommonPreferences struct {
 	Line4Type    int
 	FDBLdrLength int // Datablock leader line length: 0=no line (W/E only), 1=normal (default), 2=2x, 3=3x
 
+	// NexradLevel encodes which NEXRAD precipitation levels are displayed,
+	// using the digits the NX LVL toolbar button shows: 0=OFF, 3=Extreme,
+	// 23=Heavy+Extreme, 123=Moderate+Heavy+Extreme.
+	NexradLevel int
+
 	TornOffButtons        map[string][2]float32 // button name -> screen position
 	MasterToolbarPosition [2]float32            // top-left position of the master toolbar button
 }
@@ -198,6 +203,17 @@ const (
 	Line4None = iota
 	Line4Destination
 	Line4Type
+)
+
+// NexradLevel toolbar button settings. Non-OFF values match the digits the
+// NX LVL button displays (e.g., 23 = Heavy and Extreme). OFF is intentionally
+// non-zero so the JSON zero value (from preference sets that predate this
+// field) is reserved as "uninitialized" and gets migrated to the default.
+const (
+	NexradLevelOff     = -1
+	NexradLevelExtreme = 3
+	NexradLevelHeavy   = 23
+	NexradLevelAll     = 123
 )
 
 func makeDefaultPreferences() *Preferences {
@@ -244,6 +260,8 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.altitudeFilter = [2]int{0, 999}
 	prefs.TornOffButtons = make(map[string][2]float32)
+
+	prefs.NexradLevel = NexradLevelAll
 
 	prefs.Line4Size = 0
 	prefs.FDBSize = 1

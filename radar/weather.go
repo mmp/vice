@@ -26,7 +26,55 @@ type WeatherRadar struct {
 	precipCh        chan *wx.Precip
 	errCh           chan error
 	cb              [numWxHistory][NumWxLevels]*renderer.CommandBuffer
+	latestPrecip    *wx.Precip // raw, for non-STARS consumers
+	generation      int        // bumps each time latestPrecip changes
 	mu              util.LoggingMutex
+}
+
+// LatestPrecip advances the fetch state machine and returns the most
+// recent decoded precipitation blob (may be nil) along with a generation
+// counter that bumps each time the blob changes. Callers that build their
+// own command buffers should rebuild only when the counter changes.
+func (w *WeatherRadar) LatestPrecip(ctx *panes.Context) (*wx.Precip, int) {
+	w.mu.Lock(ctx.Lg)
+	defer w.mu.Unlock(ctx.Lg)
+	w.tick(ctx)
+	return w.latestPrecip, w.generation
+}
+
+// tick performs the per-frame fetch maintenance shared by Draw and
+// LatestPrecip. Caller must hold w.mu.
+func (w *WeatherRadar) tick(ctx *panes.Context) {
+	select {
+	case err := <-w.errCh:
+		ctx.Lg.Warnf("%v", err)
+		w.fetchInProgress = false
+	case precip := <-w.precipCh:
+		w.installPrecip(precip)
+		w.fetchInProgress = false
+	default:
+	}
+
+	if w.facility != ctx.Client.State.Facility {
+		w.facility = ctx.Client.State.Facility
+		w.fetchInProgress = false
+		w.nextFetchTime = sim.Time{}
+		w.cb = [numWxHistory][NumWxLevels]*renderer.CommandBuffer{}
+		w.latestPrecip = nil
+	}
+
+	if ctx.InterpolatedSimTime.After(w.nextFetchTime) && !w.fetchInProgress {
+		w.fetchPrecipitation(ctx)
+	}
+}
+
+// installPrecip stores a new precip blob, regenerates STARS CBs, and bumps
+// the generation counter. Caller must hold w.mu.
+func (w *WeatherRadar) installPrecip(precip *wx.Precip) {
+	w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
+	w.cb[0] = makeWeatherCommandBuffers(precip)
+	w.latestPrecip = precip
+	w.generation++
 }
 
 // WXHistory and Levels should eventually be omitted as they're dependent on the scope used.
@@ -91,75 +139,81 @@ func (w *WeatherRadar) HaveWeather() [NumWxLevels]bool {
 	return r
 }
 
-func dbzToLevel(dbz byte) int {
-	// Map the dBZ value to a STARS WX level.
-	if dbz > 55 {
-		return 6
-	} else if dbz > 50 {
-		return 5
-	} else if dbz > 45 {
-		return 4
-	} else if dbz > 40 {
-		return 3
-	} else if dbz > 30 {
-		return 2
-	} else if dbz > 20 {
-		return 1
+// WxScheme captures how a scope bins NEXRAD dBZ samples into discrete
+// display levels. Scopes (STARS, ERAM, ...) supply their own scheme and
+// use MakeCommandBuffers to turn raw precip data into per-level command
+// buffers.
+type WxScheme struct {
+	// Thresholds is an ascending list of dBZ values; a sample whose dBZ
+	// exceeds Thresholds[i] but not Thresholds[i+1] maps to level i+1.
+	Thresholds []byte
+}
+
+func (s WxScheme) NumLevels() int { return len(s.Thresholds) }
+
+func (s WxScheme) LevelForDBZ(dbz byte) int {
+	for i := len(s.Thresholds) - 1; i >= 0; i-- {
+		if dbz > s.Thresholds[i] {
+			return i + 1
+		}
 	}
 	return 0
 }
 
-func makeWeatherCommandBuffers(precip *wx.Precip) [NumWxLevels]*renderer.CommandBuffer {
+// MakeCommandBuffers walks the precip grid once per level, merging
+// horizontal runs of same-level cells into single quads, and returns one
+// CommandBuffer per level (nil entries for empty levels).
+func (s WxScheme) MakeCommandBuffers(precip *wx.Precip) []*renderer.CommandBuffer {
 	nx, ny := precip.Resolution, precip.Resolution
 	bounds := precip.BoundsLL()
 
-	// Now generate the command buffer for each weather level.
-	var cb [NumWxLevels]*renderer.CommandBuffer
 	tb := renderer.GetTrianglesDrawBuilder()
 	defer renderer.ReturnTrianglesDrawBuilder(tb)
 
-	for level := 1; level <= NumWxLevels; level++ {
+	cellLevel := func(x, y int) int {
+		idx := x + y*nx
+		if idx >= len(precip.DBZ) {
+			return 0
+		}
+		return s.LevelForDBZ(precip.DBZ[idx])
+	}
+
+	out := make([]*renderer.CommandBuffer, s.NumLevels())
+	for level := 1; level <= s.NumLevels(); level++ {
 		tb.Reset()
-		levelHasWeather := false
-
-		// Process each row of the precipitation grid
+		any := false
 		for y := range ny {
-			for x := 0; x < nx; x++ {
-				idx := x + y*nx
-				if idx >= len(precip.DBZ) {
+			for x := 0; x < nx; {
+				if cellLevel(x, y) != level {
+					x++
 					continue
 				}
-
-				dbzLevel := dbzToLevel(precip.DBZ[idx])
-				if dbzLevel != level {
-					continue
-				}
-				levelHasWeather = true
-
-				// Find the span of consecutive pixels at this level
+				any = true
 				x0 := x
-				for x < nx && x+y*nx < len(precip.DBZ) && dbzToLevel(precip.DBZ[x+y*nx]) == level {
+				for x < nx && cellLevel(x, y) == level {
 					x++
 				}
-
-				// Convert grid coordinates to lat/long positions
 				p0 := bounds.Lerp([2]float32{float32(x0) / float32(nx), float32(ny-1-y) / float32(ny)})
 				p1 := bounds.Lerp([2]float32{float32(x) / float32(nx), float32(ny-y) / float32(ny)})
-
-				// Draw a quad for this span
 				tb.AddQuad([2]float32{p0[0], p0[1]}, [2]float32{p1[0], p0[1]},
 					[2]float32{p1[0], p1[1]}, [2]float32{p0[0], p1[1]})
 			}
 		}
-
-		// Store command buffer for this level (level 1 goes to index 0)
-		if levelHasWeather {
-			cb[level-1] = &renderer.CommandBuffer{}
-			tb.GenerateCommands(cb[level-1])
+		if any {
+			out[level-1] = &renderer.CommandBuffer{}
+			tb.GenerateCommands(out[level-1])
 		}
 	}
+	return out
+}
 
-	return cb
+var starsWxScheme = WxScheme{Thresholds: []byte{20, 30, 40, 45, 50, 55}}
+
+func makeWeatherCommandBuffers(precip *wx.Precip) [NumWxLevels]*renderer.CommandBuffer {
+	cbs := starsWxScheme.MakeCommandBuffers(precip)
+	var out [NumWxLevels]*renderer.CommandBuffer
+	copy(out[:], cbs)
+	return out
 }
 
 // Stipple patterns. We expect glPixelStore(GL_PACK_LSB_FIRST, GL_TRUE) to
@@ -260,31 +314,7 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32,
 	w.mu.Lock(ctx.Lg)
 	defer w.mu.Unlock(ctx.Lg)
 
-	select {
-	case err := <-w.errCh:
-		ctx.Lg.Warnf("%v", err)
-		w.fetchInProgress = false
-	case precip := <-w.precipCh:
-		// Shift history down before storing the latest
-		w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
-		w.cb[0] = makeWeatherCommandBuffers(precip)
-
-		w.fetchInProgress = false
-	default:
-	}
-
-	facilityChanged := w.facility != ctx.Client.State.Facility
-	if facilityChanged {
-		w.facility = ctx.Client.State.Facility
-		w.fetchInProgress = false
-		w.nextFetchTime = sim.Time{}
-		w.cb = [numWxHistory][NumWxLevels]*renderer.CommandBuffer{}
-	}
-	shouldFetch := ctx.InterpolatedSimTime.After(w.nextFetchTime) && !w.fetchInProgress
-
-	if shouldFetch {
-		w.fetchPrecipitation(ctx)
-	}
+	w.tick(ctx)
 
 	hist = math.Clamp(hist, 0, len(w.cb)-1)
 	transforms.LoadLatLongViewingMatrices(cb)
