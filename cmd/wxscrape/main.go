@@ -24,6 +24,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"cloud.google.com/go/storage"
 	"google.golang.org/api/iterator"
@@ -272,23 +273,34 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 		area = "alaska"
 	}
 
-	// The weather radar image comes via a WMS GetMap request from the NOAA.
+	// The weather radar image comes via a WMS GetMap request to the Iowa
+	// Environmental Mesonet's NEXRAD n0q (0.5 dBZ resolution base
+	// reflectivity) composites; this is the same source that backs NOAA's
+	// radar map at https://www.ncei.noaa.gov/maps/radar/. No-data pixels
+	// are returned fully transparent.
 	//
 	// Relevant background:
-	// https://enterprise.arcgis.com/en/server/10.3/publish-services/windows/communicating-with-a-wms-service-in-a-web-browser.htm
-	// http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd
-	// NOAA weather: https://opengeo.ncep.noaa.gov/geoserver/www/index.html
-	// https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?service=wms&version=1.3.0&request=GetCapabilities
+	// https://mesonet.agron.iastate.edu/ogc/
+	// https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0q.cgi?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetCapabilities
+	layer := map[string]string{
+		"conus":  "nexrad-n0q-900913-conus",
+		"alaska": "nexrad-n0q-900913-ak",
+		"hawaii": "nexrad-n0q-900913-hi",
+	}[area]
 	params := url.Values{}
 	params.Add("SERVICE", "WMS")
+	params.Add("VERSION", "1.1.1")
 	params.Add("REQUEST", "GetMap")
 	params.Add("FORMAT", "image/png")
+	params.Add("TRANSPARENT", "true")
+	params.Add("STYLES", "")
+	params.Add("SRS", "EPSG:4326")
 	params.Add("WIDTH", fmt.Sprintf("%d", fetchResolution))
 	params.Add("HEIGHT", fmt.Sprintf("%d", fetchResolution))
-	params.Add("LAYERS", area+"_bref_qcd")
+	params.Add("LAYERS", layer)
 	params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", bbox.P0[0], bbox.P0[1], bbox.P1[0], bbox.P1[1]))
 
-	url := "https://opengeo.ncep.noaa.gov/geoserver/" + area + "/" + area + "_bref_qcd/ows?" + params.Encode()
+	url := "https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0q.cgi?" + params.Encode()
 
 	for {
 		var havePrecip bool
@@ -309,7 +321,9 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 
 			var status Status
 			havePrecip, status = func() (bool, Status) {
-				// Decode and see if there's anything there.
+				// Decode and see if there's anything there: no-data
+				// pixels are fully transparent, so any pixel with
+				// nonzero alpha is a radar return.
 				img, err := png.Decode(bytes.NewReader(b))
 				if err != nil {
 					LogError("%s: %s: %v", facilityID, url, err)
@@ -324,8 +338,7 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 					bounds := img.Bounds()
 					for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 						for x := bounds.Min.X; x < bounds.Max.X; x++ {
-							r, g, b, _ := img.At(x, y).RGBA()
-							if r != 0xffff || g != 0xffff || b != 0xffff {
+							if _, _, _, a := img.At(x, y).RGBA(); a != 0 {
 								return true, StatusSuccess
 							}
 						}
@@ -338,7 +351,7 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 					for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 						for x := bounds.Min.X; x < bounds.Max.X; x++ {
 							offset := (y-bounds.Min.Y)*stride + (x-bounds.Min.X)*4
-							if pix[offset] != 0xff || pix[offset+1] != 0xff || pix[offset+2] != 0xff {
+							if pix[offset+3] != 0 {
 								return true, StatusSuccess
 							}
 						}
@@ -355,19 +368,21 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 				Resolution int
 				Latitude   float32
 				Longitude  float32
+				Source     string
 			}
-			wx := WX{
+			blob := WX{
 				PNG:        b,
 				Resolution: fetchResolution,
 				Latitude:   center[1],
 				Longitude:  center[0],
+				Source:     string(wx.PrecipSourceIEMN0Q),
 			}
 
 			path := filepath.Join("scrape", "WX", facilityID, time.Now().UTC().Format(time.RFC3339)+".gob")
 
 			objw := bucket.Object(path).NewWriter(ctx)
 
-			if err := gob.NewEncoder(objw).Encode(wx); err != nil {
+			if err := gob.NewEncoder(objw).Encode(blob); err != nil {
 				LogError("%s: %v", path, err)
 				return StatusTransientFailure
 			}

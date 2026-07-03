@@ -2,8 +2,8 @@ package wx
 
 import (
 	_ "embed"
-	"fmt"
 	"image"
+	"image/color"
 	"image/draw"
 	"io"
 	"sort"
@@ -50,11 +50,80 @@ func (p Precip) BoundsLL() math.Extent2D {
 	return math.BoundLatLongCircle(centerLL, widthNM/2 /* radius */)
 }
 
+// MakeDebugPrecip returns a synthetic Precip blob shaped like an inscribed
+// circle inside the scope's bounding square, divided into three horizontal
+// bands so each ERAM/STARS render path lights up: severe (top, dBZ 55 → ERAM
+// Extreme / STARS L5+), medium (middle, dBZ 45 → ERAM Heavy / STARS L3+), low
+// (bottom, dBZ 35 → ERAM Moderate / STARS L2). Used to exercise the rendering
+// pipeline without depending on the live precip server. sideNM is the full
+// square side length in nautical miles; resolution is fixed at 2 px/NM.
+func MakeDebugPrecip(center math.Point2LL, sideNM int) *Precip {
+	const pixelsPerNM = 2
+	resolution := sideNM * pixelsPerNM
+	dbz := make([]byte, resolution*resolution)
+
+	half := float32(resolution) / 2
+	radius2 := half * half
+	thirdY := resolution / 3
+	for y := 0; y < resolution; y++ {
+		var v byte
+		switch {
+		case y < thirdY:
+			v = 55 // severe → Extreme
+		case y < 2*thirdY:
+			v = 45 // medium → Heavy
+		default:
+			v = 35 // low → Moderate
+		}
+		dy := float32(y) - half + 0.5
+		for x := 0; x < resolution; x++ {
+			dx := float32(x) - half + 0.5
+			if dx*dx+dy*dy <= radius2 {
+				dbz[x+y*resolution] = v
+			}
+		}
+	}
+
+	return &Precip{
+		DBZ:        dbz,
+		Resolution: resolution,
+		Latitude:   center[1],
+		Longitude:  center[0],
+	}
+}
+
+// PrecipSource identifies the provider a scraped radar image came from; the
+// provider determines the color ramp used to recover dBZ from the image and
+// how no-data pixels are encoded.
+type PrecipSource string
+
+const (
+	// PrecipSourceNWSWMS is the original opengeo.ncep.noaa.gov GeoServer
+	// imagery (opaque, white background for no data). It is the zero value
+	// since scrape blobs written before the Source field existed all came
+	// from there.
+	PrecipSourceNWSWMS PrecipSource = ""
+
+	// PrecipSourceIEMN0Q is the Iowa Environmental Mesonet NEXRAD n0q
+	// composite (transparent background for no data).
+	PrecipSourceIEMN0Q PrecipSource = "iem-n0q"
+)
+
 // A single scanline of this color map, converted to RGB bytes:
 // https://opengeo.ncep.noaa.gov/geoserver/styles/reflectivity.png
 //
 //go:embed radar_reflectivity.rgb
 var radarReflectivity []byte
+
+// RGB triplets for indices 1-255 of the palette of the IEM NEXRAD n0q
+// composite; index i corresponds to (i-65)/2 dBZ, from -32 dBZ at index 1 to
+// +95 dBZ at index 255. Palette index 0 marks no data and is served fully
+// transparent, so it is omitted here and detected via alpha instead.
+// Extracted from the palette of
+// https://mesonet.agron.iastate.edu/data/gis/images/4326/USCOMP/n0q_0.png
+//
+//go:embed iem_n0q.rgb
+var iemN0QPalette []byte
 
 type kdNode struct {
 	rgb [3]byte
@@ -62,7 +131,9 @@ type kdNode struct {
 	c   [2]*kdNode
 }
 
-func makeRadarKdTree() *kdNode {
+// makeRadarKdTree builds a kd-tree over the RGB triplets in colorMap;
+// entryDBZ gives the dBZ value for the k'th triplet.
+func makeRadarKdTree(colorMap []byte, entryDBZ func(k int) float32) *kdNode {
 	type rgbRefl struct {
 		rgb [3]byte
 		dbz float32
@@ -70,11 +141,10 @@ func makeRadarKdTree() *kdNode {
 
 	var r []rgbRefl
 
-	for i := 0; i < len(radarReflectivity); i += 3 {
+	for i := 0; i < len(colorMap); i += 3 {
 		r = append(r, rgbRefl{
-			rgb: [3]byte{radarReflectivity[i], radarReflectivity[i+1], radarReflectivity[i+2]},
-			// Approximate range of the reflectivity color ramp
-			dbz: math.Lerp(float32(i)/float32(len(radarReflectivity)), -25, 73),
+			rgb: [3]byte{colorMap[i], colorMap[i+1], colorMap[i+2]},
+			dbz: entryDBZ(i / 3),
 		})
 	}
 
@@ -112,11 +182,6 @@ func makeRadarKdTree() *kdNode {
 // Returns estimated dBZ (https://en.wikipedia.org/wiki/DBZ_(meteorology)) for
 // an RGB by going backwards from the color ramp.
 func estimateDBZ(root *kdNode, rgb [3]byte) float32 {
-	// All white -> ~nil
-	if rgb[0] == 255 && rgb[1] == 255 && rgb[2] == 255 {
-		return -100
-	}
-
 	// Returns the distnace between the specified RGB and the RGB passed to
 	// estimateDBZ.
 	dist := func(o []byte) float32 {
@@ -161,49 +226,42 @@ func estimateDBZ(root *kdNode, rgb [3]byte) float32 {
 		return closestNode, closestDist
 	}
 
-	if true {
-		n, _ := searchTree(root, nil, 100000, 0)
-		return n.dbz
-	} else {
-		// Debugging: verify the point found is indeed the closest by
-		// exhaustively checking the distance to all of points in the color
-		// map.
-		n, nd := searchTree(root, nil, 100000, 0)
-
-		closest, closestDist := -1, float32(100000)
-		for i := 0; i < len(radarReflectivity); i += 3 {
-			d := dist(radarReflectivity[i : i+3])
-			if d < closestDist {
-				closestDist = d
-				closest = i
-			}
-		}
-
-		// Note that multiple points in the color map may have the same
-		// distance to the lookup point; thus we only check the distance
-		// here and not the reflectivity (which should be very close but is
-		// not necessarily the same.)
-		if nd != closestDist {
-			fmt.Printf("WAH %d,%d,%d -> %d,%d,%d: dist %f vs %d,%d,%d: dist %f\n",
-				int(rgb[0]), int(rgb[1]), int(rgb[2]),
-				int(n.rgb[0]), int(n.rgb[1]), int(n.rgb[2]), nd,
-				int(radarReflectivity[closest]), int(radarReflectivity[closest+1]), int(radarReflectivity[closest+2]),
-				closestDist)
-		}
-
-		return n.dbz
-	}
+	n, _ := searchTree(root, nil, 100000, 0)
+	return n.dbz
 }
 
 // Allow concurrent calls to RadarImageToDBZ
-var getRadarKdTree = sync.OnceValue(func() *kdNode { return makeRadarKdTree() })
+var getRadarKdTree = sync.OnceValue(func() *kdNode {
+	n := len(radarReflectivity) / 3
+	return makeRadarKdTree(radarReflectivity, func(k int) float32 {
+		// Approximate range of the reflectivity color ramp
+		return math.Lerp(float32(k)/float32(n), -25, 73)
+	})
+})
 
-func RadarImageToDBZ(img image.Image) []byte {
+var getIEMN0QKdTree = sync.OnceValue(func() *kdNode {
+	return makeRadarKdTree(iemN0QPalette, func(k int) float32 {
+		// Entry k is palette index k+1, which maps to (k+1-65)/2 dBZ.
+		return float32(k-64) / 2
+	})
+})
+
+func RadarImageToDBZ(img image.Image, src PrecipSource) []byte {
 	// Convert the Image returned by png.Decode to a simple 8-bit RGBA image.
 	rgba := image.NewRGBA(img.Bounds())
 	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
 
-	root := getRadarKdTree()
+	var root *kdNode
+	var noData func(px color.RGBA) bool
+	switch src {
+	case PrecipSourceIEMN0Q:
+		root = getIEMN0QKdTree()
+		noData = func(px color.RGBA) bool { return px.A == 0 }
+	default:
+		root = getRadarKdTree()
+		// All white -> ~nil
+		noData = func(px color.RGBA) bool { return px.R == 255 && px.G == 255 && px.B == 255 }
+	}
 
 	// Determine the dBZ for each pixel.
 	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
@@ -211,7 +269,10 @@ func RadarImageToDBZ(img image.Image) []byte {
 	for y := range ny {
 		for x := range nx {
 			px := rgba.RGBAAt(x, y)
-			dbz := estimateDBZ(root, [3]byte{px.R, px.G, px.B})
+			dbz := float32(-100)
+			if !noData(px) {
+				dbz = estimateDBZ(root, [3]byte{px.R, px.G, px.B})
+			}
 
 			dbzImage[x+y*nx] = byte(max(0, min(255, dbz)))
 		}

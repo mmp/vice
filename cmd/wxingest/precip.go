@@ -106,6 +106,7 @@ func processPrecip(sb StorageBackend, path string) (int64, string, error) {
 		Resolution int
 		Latitude   float32
 		Longitude  float32
+		Source     string
 	}
 	var wxs WXScraped
 	if err := gob.NewDecoder(bytes.NewReader(scraped)).Decode(&wxs); err != nil {
@@ -118,7 +119,7 @@ func processPrecip(sb StorageBackend, path string) (int64, string, error) {
 	}
 
 	wxp := wx.Precip{
-		DBZ:        util.DeltaEncode(wx.RadarImageToDBZ(img)),
+		DBZ:        util.DeltaEncode(wx.RadarImageToDBZ(img, wx.PrecipSource(wxs.Source))),
 		Resolution: wxs.Resolution,
 		Latitude:   wxs.Latitude,
 		Longitude:  wxs.Longitude,
