@@ -251,7 +251,7 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 
 		// Update history tracks
 		idx := state.HistoryTrackIndex % len(state.HistoryTracks)
-		state.HistoryTracks[idx] = historyTrack{state.Track, ep.positionSymbol(trk, state)}
+		state.HistoryTracks[idx] = historyTrack{state.Track, ep.getTarget(trk, state)}
 		state.HistoryTrackIndex++
 
 		// check to see if the a/c has reached the altitude
@@ -287,8 +287,8 @@ func (ep *ERAMPane) drawTargets(ctx *panes.Context, tracks []sim.Track, transfor
 
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
-		positionSymbol := ep.positionSymbol(trk, state)
-		ep.drawTarget(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td, cb)
+		targetSymbol := ep.getTarget(trk, state)
+		ep.drawTarget(trk, state, ctx, transforms, targetSymbol, trackBuilder, ld, trid, td, cb)
 	}
 	transforms.LoadWindowViewingMatrices(cb)
 	trackBuilder.GenerateCommands(cb)
@@ -340,7 +340,7 @@ func (ep *ERAMPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Conte
 		renderer.TextStyle{Font: font, Color: ep.trackColor()})
 }
 
-func (ep *ERAMPane) positionSymbol(trk sim.Track, state *TrackState) string {
+func (ep *ERAMPane) getTarget(trk sim.Track, state *TrackState) string {
 	symbol := "\u0001"
 	if trk.IsUnassociated() {
 		switch trk.Mode {
