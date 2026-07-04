@@ -734,7 +734,7 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	// Preference sets that predate the NX LVL field unmarshal NexradLevel as 0;
 	// 0 is reserved as the "uninitialized" sentinel and gets the default here.
 	if ep.prefSet.Current.NexradLevel == 0 {
-		ep.prefSet.Current.NexradLevel = NexradLevelAll
+		ep.prefSet.Current.NexradLevel = NexradToolbarAll
 	}
 }
 

@@ -52,9 +52,9 @@ type nexradFilter struct{ Moderate, Heavy, Extreme bool }
 
 func nexradFilterFromPref(level int) nexradFilter {
 	return nexradFilter{
-		Moderate: level == NexradLevelAll,
-		Heavy:    level == NexradLevelAll || level == NexradLevelHeavy,
-		Extreme:  level == NexradLevelAll || level == NexradLevelHeavy || level == NexradLevelExtreme,
+		Moderate: level == NexradToolbarAll,
+		Heavy:    level == NexradToolbarAll || level == NexradToolbarHeavy,
+		Extreme:  level == NexradToolbarAll || level == NexradToolbarHeavy || level == NexradToolbarExtreme,
 	}
 }
 
@@ -105,10 +105,10 @@ func (ep *ERAMPane) drawWeatherRadar(ctx *panes.Context, transforms radar.ScopeT
 
 // NX LVL toolbar button cycle (left-click drops a level: 123 → 23 → 3 →
 // OFF; middle-click reverses).
-var nexradLevelCycle = []int{NexradLevelAll, NexradLevelHeavy, NexradLevelExtreme, NexradLevelOff}
+var nexradLevelCycle = []int{NexradToolbarAll, NexradToolbarHeavy, NexradToolbarExtreme, NexradToolbarOff}
 
 func nexradLevelLabel(level int) string {
-	if level == NexradLevelOff {
+	if level == NexradToolbarOff {
 		return "OFF"
 	}
 	return fmt.Sprintf("%d", level)

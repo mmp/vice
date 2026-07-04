@@ -205,15 +205,16 @@ const (
 	Line4Type
 )
 
-// NexradLevel toolbar button settings. Non-OFF values match the digits the
-// NX LVL button displays (e.g., 23 = Heavy and Extreme). OFF is intentionally
-// non-zero so the JSON zero value (from preference sets that predate this
-// field) is reserved as "uninitialized" and gets migrated to the default.
+// Settings for the NX LVL toolbar button / the NexradLevel preference.
+// Non-OFF values match the digits the button displays (e.g., 23 = Heavy and
+// Extreme). OFF is intentionally non-zero so the JSON zero value (from
+// preference sets that predate this field) is reserved as "uninitialized"
+// and gets migrated to the default.
 const (
-	NexradLevelOff     = -1
-	NexradLevelExtreme = 3
-	NexradLevelHeavy   = 23
-	NexradLevelAll     = 123
+	NexradToolbarOff     = -1
+	NexradToolbarExtreme = 3
+	NexradToolbarHeavy   = 23
+	NexradToolbarAll     = 123
 )
 
 func makeDefaultPreferences() *Preferences {
@@ -261,7 +262,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.altitudeFilter = [2]int{0, 999}
 	prefs.TornOffButtons = make(map[string][2]float32)
 
-	prefs.NexradLevel = NexradLevelAll
+	prefs.NexradLevel = NexradToolbarAll
 
 	prefs.Line4Size = 0
 	prefs.FDBSize = 1
