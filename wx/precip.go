@@ -65,7 +65,7 @@ func MakeDebugPrecip(center math.Point2LL, sideNM int) *Precip {
 	half := float32(resolution) / 2
 	radius2 := half * half
 	thirdY := resolution / 3
-	for y := 0; y < resolution; y++ {
+	for y := range resolution {
 		var v byte
 		switch {
 		case y < thirdY:
@@ -76,7 +76,7 @@ func MakeDebugPrecip(center math.Point2LL, sideNM int) *Precip {
 			v = 35 // low → Moderate
 		}
 		dy := float32(y) - half + 0.5
-		for x := 0; x < resolution; x++ {
+		for x := range resolution {
 			dx := float32(x) - half + 0.5
 			if dx*dx+dy*dy <= radius2 {
 				dbz[x+y*resolution] = v
