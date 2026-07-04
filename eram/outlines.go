@@ -21,6 +21,8 @@ const (
 	DBFieldHandoffSpeed DatablockFieldID = "handoff_speed"
 	DBFieldSpeed        DatablockFieldID = "speed"
 	DBFieldLine4        DatablockFieldID = "line4"
+	DBFieldLine4Heading DatablockFieldID = "line4_heading"
+	DBFieldLine4Speed   DatablockFieldID = "line4_speed"
 	DBFieldPointOut     DatablockFieldID = "pointout"
 )
 
@@ -46,6 +48,11 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 	if mouse == nil {
 		return
 	}
+	// While a popup is open, clicks and hovers inside it belong to the
+	// popup, not to any datablock beneath it.
+	if ep.popup != nil && ep.popupExtent.Inside(mouse.Pos) {
+		return
+	}
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
 		if ep.datablockType(ctx, trk) != FullDatablock {
@@ -55,8 +62,19 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 		if !ok {
 			continue
 		}
-		if db.Fields[DBFieldMain].Inside(mouse.Pos) {
-			ep.drawOutlineRectangle(ld, db.Fields[DBFieldMain], colors.yellow)
+		// Outline any hovered field box (green) and the main box (yellow) so
+		// the hit regions are visible for verification.
+		for id, ext := range db.Fields {
+			if id == DBFieldHandoffSpeed { // same extent as DBFieldSpeed
+				continue
+			}
+			if ext.Inside(mouse.Pos) {
+				if id == DBFieldMain {
+					ep.drawOutlineRectangle(ld, ext, colors.yellow)
+				} else {
+					ep.drawOutlineRectangle(ld, ext, colors.vciGreen)
+				}
+			}
 		}
 		if db.Fields[DBFieldCallsign].Inside(mouse.Pos) {
 			// TODO: check what this does
@@ -72,27 +90,35 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 		}
 		if db.Fields[DBFieldPointOut].Inside(mouse.Pos) {
 			if ep.pointOutIndicatorActive(&trk) {
-				ep.drawOutlineRectangle(ld, db.Fields[DBFieldPointOut], colors.yellow)
 				if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 					ep.handlePointOutIndicatorClick(ctx, trk, db.Fields[DBFieldMain])
 					mouse.Clicked = [platform.MouseButtonCount]bool{}
 				}
 			}
 		}
-		if db.Fields[DBFieldAltitude].Inside(mouse.Pos) {
-			// open altitude input
-		}
-		if db.Fields[DBFieldCID].Inside(mouse.Pos) {
-			// turn menu
+		// Field clicks that open the datablock menus.
+		if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
+			opened := true
+			switch {
+			case db.Fields[DBFieldAltitude].Inside(mouse.Pos):
+				ep.openAltitudeMenu(ctx, &trk, db.Fields[DBFieldMain])
+			case db.Fields[DBFieldCID].Inside(mouse.Pos),
+				db.Fields[DBFieldLine4Heading].Inside(mouse.Pos):
+				ep.openHeadingMenu(ctx, &trk, db.Fields[DBFieldMain])
+			case db.Fields[DBFieldSpeed].Inside(mouse.Pos),
+				db.Fields[DBFieldLine4Speed].Inside(mouse.Pos):
+				ep.openSpeedMenu(ctx, &trk, db.Fields[DBFieldMain])
+			case db.Fields[DBFieldLine4].Inside(mouse.Pos):
+				ep.openFreeTextMenu(ctx, &trk, db.Fields[DBFieldMain])
+			default:
+				opened = false
+			}
+			if opened {
+				mouse.Clicked = [platform.MouseButtonCount]bool{}
+			}
 		}
 		if db.Fields[DBFieldMain].Inside(mouse.Pos) {
 			// remove
-		}
-		if db.Fields[DBFieldSpeed].Inside(mouse.Pos) {
-			// speed menu
-		}
-		if db.Fields[DBFieldLine4].Inside(mouse.Pos) {
-			// TODO: check if this does anything
 		}
 	}
 	ld.GenerateCommands(cb)
@@ -153,41 +179,48 @@ const (
 	dbOutlineYOffset  = -2
 )
 
-var fullDatablockLineCols = map[int]int{
-	0: 16,
-	1: 16,
-	2: 18, // vci (2) + line2 (16)
-	3: 18, // col1 (2) + fieldD (8) + fieldE (8)
-	4: 16,
-}
-
-var fullDatablockFieldSpecs = map[DatablockFieldID]DatablockFieldSpec{
-	DBFieldPointOut:     {Line: 0, Col: 2, Cols: 1},
-	DBFieldCallsign:     {Line: 1, Col: 0, Cols: 16},
-	DBFieldVCI:          {Line: 2, Col: 0, Cols: 2},
-	DBFieldAltitude:     {Line: 2, Col: 2, Cols: 16},
-	DBFieldCID:          {Line: 3, Col: 2, Cols: 8},
-	DBFieldHandoffSpeed: {Line: 3, Col: 10, Cols: 8},
-	DBFieldSpeed:        {Line: 3, Col: 10, Cols: 8},
-	DBFieldLine4:        {Line: 4, Col: 0, Cols: 16},
-}
-
-// FullDatablockFieldSpec returns the built-in field spec, if defined.
-func FullDatablockFieldSpec(id DatablockFieldID) (DatablockFieldSpec, bool) {
-	spec, ok := fullDatablockFieldSpecs[id]
-	return spec, ok
-}
-
-// FullDatablockFieldSpecs returns a copy of the built-in field specs map.
-func FullDatablockFieldSpecs() map[DatablockFieldID]DatablockFieldSpec {
-	specs := make(map[DatablockFieldID]DatablockFieldSpec, len(fullDatablockFieldSpecs))
-	for id, spec := range fullDatablockFieldSpecs {
-		specs[id] = spec
+// dbFieldSpan returns the column span [start, start+n) of the visible
+// (non-space) characters in the field, relative to the field's first
+// character. ok is false if the field has no visible characters.
+func dbFieldSpan(f []dbChar) (start, n int, ok bool) {
+	first, last := -1, -1
+	for i, ch := range f {
+		if ch.ch != 0 && ch.ch != ' ' {
+			if first == -1 {
+				first = i
+			}
+			last = i
+		}
 	}
-	return specs
+	if first == -1 {
+		return 0, 0, false
+	}
+	return first, last - first + 1, true
+}
+
+// dbFieldRuns returns the {start, length} column span of each contiguous run
+// of visible (non-space) characters in the field.
+func dbFieldRuns(f []dbChar) [][2]int {
+	var runs [][2]int
+	start := -1
+	for i, ch := range f {
+		visible := ch.ch != 0 && ch.ch != ' '
+		if visible && start == -1 {
+			start = i
+		} else if !visible && start != -1 {
+			runs = append(runs, [2]int{start, i - start})
+			start = -1
+		}
+	}
+	if start != -1 {
+		runs = append(runs, [2]int{start, len(f) - start})
+	}
+	return runs
 }
 
 // FullDatablockOutlines returns outlines for the ERAM full datablock fields.
+// Field extents are derived from the datablock's actual contents so they
+// track what is drawn rather than each field's maximum width.
 func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 	transforms radar.ScopeTransformations) (DatablockOutlines, bool) {
 	if ep.datablockType(ctx, trk) != FullDatablock {
@@ -204,6 +237,11 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 		return DatablockOutlines{}, false
 	}
 
+	fdb := ep.buildFullDatablock(ctx, trk)
+	if fdb == nil {
+		return DatablockOutlines{}, false
+	}
+
 	layout := DatablockLayout{
 		Anchor:      [2]float32{anchor[0], anchor[1] + dbOutlineYOffset},
 		CharWidth:   dbCharWidth(font),
@@ -213,23 +251,70 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 
 	outlines := DatablockOutlines{
 		Layout: layout,
-		Fields: make(map[DatablockFieldID]math.Extent2D, len(fullDatablockFieldSpecs)+1),
-		Lines:  make(map[int]math.Extent2D, len(fullDatablockLineCols)),
+		Fields: make(map[DatablockFieldID]math.Extent2D, 9),
+		Lines:  make(map[int]math.Extent2D, 5),
 	}
 
-	lineLengths := ep.fullDatablockLineLengths(ctx, trk)
-	for line, cols := range fullDatablockLineCols {
-		if lineLengths != nil {
-			if l, ok := lineLengths[line]; ok && l > 0 {
-				outlines.Lines[line] = layout.LineExtent(line, l)
-			}
-			continue
+	var lines [5]dbLine
+	fullDatablockLines(fdb, &lines)
+	lineLengths := make(map[int]int, len(lines))
+	for i, line := range lines {
+		if l := line.Len(); l > 0 {
+			lineLengths[i] = l
+			outlines.Lines[i] = layout.LineExtent(i, l)
 		}
-		outlines.Lines[line] = layout.LineExtent(line, cols)
 	}
 
-	for id, spec := range fullDatablockFieldSpecs {
-		outlines.Fields[id] = layout.FieldExtent(spec)
+	setField := func(id DatablockFieldID, line, col int, f []dbChar) {
+		if start, n, ok := dbFieldSpan(f); ok {
+			outlines.Fields[id] = layout.FieldExtent(DatablockFieldSpec{Line: line, Col: col + start, Cols: n})
+		} else {
+			outlines.Fields[id] = math.EmptyExtent2D()
+		}
+	}
+	setField(DBFieldPointOut, 0, 0, fdb.line0[:])
+	setField(DBFieldCallsign, 1, 0, fdb.line1[:])
+	// The VCI cell is a fixed hover-to-reveal zone, so it needs an extent
+	// even when nothing is currently drawn there.
+	outlines.Fields[DBFieldVCI] = layout.FieldExtent(DatablockFieldSpec{Line: 2, Col: 0, Cols: 2})
+	setField(DBFieldAltitude, 2, 2, fdb.line2[:])
+	setField(DBFieldCID, 3, 2, fdb.fieldD[:])
+	// Line 3 draws field E immediately after the trailing-chopped CID, not
+	// at fieldD's maximum width.
+	setField(DBFieldSpeed, 3, 2+len(dbChopTrailing(fdb.fieldD[:])), fdb.fieldE[:])
+	outlines.Fields[DBFieldHandoffSpeed] = outlines.Fields[DBFieldSpeed]
+	setField(DBFieldLine4, 4, 0, fdb.line4[:])
+	if _, ok := lineLengths[4]; !ok {
+		// Line 4 is empty: keep a click zone as wide as the datablock so
+		// the free-form text menu can still be opened to create text.
+		line1Len, line2Len, line3Len, _ := fullDatablockMainLengths(lineLengths)
+		if n := max(line1Len, line2Len, line3Len); n > 0 {
+			outlines.Fields[DBFieldLine4] = layout.LineExtent(4, n)
+		}
+	}
+
+	// Line-4 heading and speed pick areas: when HSF data is displayed, two
+	// visible runs are heading then speed; a single run is whichever of the
+	// two is assigned. Free-form text opens its menu via DBFieldLine4.
+	outlines.Fields[DBFieldLine4Heading] = math.EmptyExtent2D()
+	outlines.Fields[DBFieldLine4Speed] = math.EmptyExtent2D()
+	if fp := trk.FlightPlan; fp != nil && hsfDataExists(fp) && !isQSFreeTextScratchpad(fp.Scratchpad) {
+		if state := ep.TrackState[trk.ADSBCallsign]; state != nil && !state.HSFHide {
+			runExtent := func(r [2]int) math.Extent2D {
+				return layout.FieldExtent(DatablockFieldSpec{Line: 4, Col: r[0], Cols: r[1]})
+			}
+			runs := dbFieldRuns(fdb.line4[:])
+			if len(runs) == 2 {
+				outlines.Fields[DBFieldLine4Heading] = runExtent(runs[0])
+				outlines.Fields[DBFieldLine4Speed] = runExtent(runs[1])
+			} else if len(runs) == 1 {
+				if fp.Scratchpad != "" {
+					outlines.Fields[DBFieldLine4Heading] = runExtent(runs[0])
+				} else {
+					outlines.Fields[DBFieldLine4Speed] = runExtent(runs[0])
+				}
+			}
+		}
 	}
 
 	main := math.EmptyExtent2D()
@@ -260,24 +345,14 @@ func (ep *ERAMPane) fullDatablockAnchor(ctx *panes.Context, trk sim.Track,
 	return end, true
 }
 
-func (ep *ERAMPane) fullDatablockLineLengths(ctx *panes.Context, trk sim.Track) map[int]int {
+// buildFullDatablock formats the track's full datablock so extents can be
+// derived from its actual contents.
+func (ep *ERAMPane) buildFullDatablock(ctx *panes.Context, trk sim.Track) *fullDatablock {
 	ps := ep.currentPrefs()
 	color := ps.Brightness.FDB.ScaleRGB(colors.yellow)
 	db := ep.getDatablock(ctx, trk, FullDatablock, color)
-	fdb, ok := db.(*fullDatablock)
-	if !ok || fdb == nil {
-		return nil
-	}
-
-	var lines [5]dbLine
-	fullDatablockLines(fdb, &lines)
-	lengths := make(map[int]int, len(lines))
-	for i, line := range lines {
-		if l := line.Len(); l > 0 {
-			lengths[i] = l
-		}
-	}
-	return lengths
+	fdb, _ := db.(*fullDatablock)
+	return fdb
 }
 
 func fullDatablockLines(db *fullDatablock, out *[5]dbLine) {
@@ -289,9 +364,6 @@ func fullDatablockLines(db *fullDatablock, out *[5]dbLine) {
 }
 
 func fullDatablockMainLengths(lineLengths map[int]int) (int, int, int, int) {
-	if lineLengths == nil {
-		return fullDatablockLineCols[1], 16, 16, fullDatablockLineCols[4]
-	}
 	line1 := lineLengths[1]
 	line2 := max(lineLengths[2]-2, 0)
 	line3 := max(lineLengths[3]-2, 0)

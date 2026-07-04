@@ -104,6 +104,15 @@ type viewAnchoredPopup interface {
 	viewAnchor() (viewID string, side popupAnchorSide, pinX float32)
 }
 
+// keyboardPopup is implemented by pop-ups that take keyboard input (e.g. the
+// free-form text menu). While one is open, processKeyboardInput routes
+// keystrokes to it instead of the command input; handleKeyboard returns true
+// if it consumed the input.
+type keyboardPopup interface {
+	popup
+	handleKeyboard(ep *ERAMPane, ctx *panes.Context) bool
+}
+
 // ERAMMenuClickType distinguishes primary from tertiary clicks.
 type ERAMMenuClickType int
 
@@ -128,6 +137,55 @@ type ERAMMenuItem struct {
 	VisibleRows int                                          // Number of visible sub-rows; 0 = show all
 	ScrollState *ERAMScrollState                             // Required if SubRows is non-nil
 	OnSelect    func(index int, clickType ERAMMenuClickType) // Called when a sub-row is clicked
+
+	// If Cells is non-nil, this row renders as side-by-side pick areas
+	// (e.g. the heading menu's LT | PH | RT row).
+	Cells []ERAMMenuCell
+
+	// If Grid is non-nil, this row renders as a scrollable multi-column
+	// value grid (e.g. the altitude/heading/speed pick lists).
+	Grid *ERAMMenuGrid
+
+	// If Input is non-nil, this row renders as a text input area. Keyboard
+	// handling is the popup's responsibility (see keyboardPopup).
+	Input *ERAMMenuInput
+}
+
+// ERAMMenuCell is one pick area of a multi-cell row.
+type ERAMMenuCell struct {
+	Label   string
+	BgColor renderer.RGB
+	Color   renderer.RGB
+	Weight  float32                                // relative width; 0 = 1
+	OnClick func(clickType ERAMMenuClickType) bool // return true = close menu
+}
+
+// ERAMMenuGridCell is one pick area in a value grid row.
+type ERAMMenuGridCell struct {
+	Label   string
+	BgColor renderer.RGB // zero value = section background
+	Color   renderer.RGB
+	Weight  float32 // relative width; 0 = 1
+	// HoverSpansRow extends the hover outline across the row's full content
+	// width (e.g. the altitude menu's interim T pick area, whose action
+	// includes the altitude to its left).
+	HoverSpansRow bool
+	OnClick       func(clickType ERAMMenuClickType) bool // return true = close menu
+}
+
+// ERAMMenuGrid is a scrollable grid of value pick areas. A reserved arrow
+// column on the right scrolls by pages the way the ERAM altitude/heading/
+// speed menus do; the mouse wheel scrolls by rows.
+type ERAMMenuGrid struct {
+	Rows        [][]ERAMMenuGridCell
+	VisibleRows int  // rows shown per page
+	Offset      *int // caller-owned first visible row index
+}
+
+// ERAMMenuInput is a text input row; the caller owns the buffer and updates
+// it from keyboard input.
+type ERAMMenuInput struct {
+	Buf *string
 }
 
 // ERAMScrollState is caller-owned persistent state for a scrollable list.
@@ -430,6 +488,15 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		if item.SubRows != nil {
 			// Scrollable list section
 			cursor = ep.drawScrollSection(cursor, width, itemH, font, &cfg.Rows[i], trid, ld, td, mouse, &result.RowExtents[i])
+		} else if item.Cells != nil {
+			// Multi-cell pick-area row
+			cursor = ep.drawMenuCellsRow(cursor, width, itemH, font, item.Cells, trid, ld, td, mouse, &result.RowExtents[i])
+		} else if item.Grid != nil {
+			// Scrollable value grid
+			cursor = ep.drawMenuGrid(cursor, width, itemH, font, item.Grid, trid, ld, td, mouse, &result.RowExtents[i])
+		} else if item.Input != nil {
+			// Text input row
+			cursor = ep.drawMenuInputRow(cursor, width, itemH, font, item.Input, trid, td, &result.RowExtents[i])
 		} else {
 			// Normal static row
 			rp0 := cursor
@@ -529,8 +596,9 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		if primaryDown || tertiaryDown {
 			hitRow := -1
 			for i, ext := range result.RowExtents {
-				if cfg.Rows[i].SubRows != nil {
-					continue // scroll rows handle clicks in drawScrollSection
+				if cfg.Rows[i].SubRows != nil || cfg.Rows[i].Cells != nil ||
+					cfg.Rows[i].Grid != nil || cfg.Rows[i].Input != nil {
+					continue // these row types handle their own clicks (or take none)
 				}
 				if ext.Inside(mouse.Pos) {
 					hitRow = i
@@ -681,6 +749,229 @@ func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, f
 	}
 
 	return bgP3
+}
+
+// drawMenuCellsRow renders a row of side-by-side pick areas, splitting the
+// row width by each cell's Weight. Cells handle their own clicks.
+func (ep *ERAMPane) drawMenuCellsRow(cursor [2]float32, width, itemH float32, font *renderer.Font,
+	cells []ERAMMenuCell, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
+	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
+
+	ps := ep.currentPrefs()
+	bButton := ps.Brightness.Button
+	bBorder := ps.Brightness.Border
+	bText := ps.Brightness.Text
+
+	var totalWeight float32
+	for _, c := range cells {
+		totalWeight += max(c.Weight, 1)
+	}
+
+	*extent = math.Extent2D{
+		P0: [2]float32{cursor[0], cursor[1] - itemH},
+		P1: [2]float32{cursor[0] + width, cursor[1]},
+	}
+
+	clicked := ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)
+	clickType := MenuClickPrimary
+	if ep.mouseTertiaryClicked(mouse) {
+		clickType = MenuClickTertiary
+	}
+
+	dimColor := bBorder.ScaleRGB(colors.menu.rowDimOutline)
+	brightColor := bBorder.ScaleRGB(colors.menu.rowHoverOutline)
+
+	x := cursor[0]
+	var hovered *math.Extent2D
+	for i := range cells {
+		c := &cells[i]
+		w := width * max(c.Weight, 1) / totalWeight
+		cellExt := math.Extent2D{
+			P0: [2]float32{x, cursor[1] - itemH},
+			P1: [2]float32{x + w, cursor[1]},
+		}
+
+		trid.AddQuad([2]float32{x, cursor[1]}, [2]float32{x + w, cursor[1]},
+			[2]float32{x + w, cursor[1] - itemH}, [2]float32{x, cursor[1] - itemH},
+			bButton.ScaleRGB(c.BgColor))
+
+		style := renderer.TextStyle{Font: font, Color: bText.ScaleRGB(c.Color)}
+		td.AddTextCentered(c.Label, [2]float32{x + w/2, cursor[1] - itemH/2}, style)
+
+		if mouse != nil && cellExt.Inside(mouse.Pos) {
+			e := cellExt
+			hovered = &e
+			if clicked && c.OnClick != nil && c.OnClick(clickType) {
+				ep.popup = nil
+			}
+		} else {
+			ld.AddLineLoop(dimColor, cellExt.Corners())
+		}
+		x += w
+	}
+	// Hovered outline last so it overdraws the dim borders.
+	if hovered != nil {
+		ld.AddLineLoop(brightColor, hovered.Corners())
+	}
+
+	return [2]float32{cursor[0], cursor[1] - itemH}
+}
+
+// drawMenuGrid renders a scrollable grid of value pick areas with a reserved
+// scroll-arrow column on the right. Cells handle their own clicks.
+func (ep *ERAMPane) drawMenuGrid(cursor [2]float32, width, itemH float32, font *renderer.Font,
+	grid *ERAMMenuGrid, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
+	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
+
+	ps := ep.currentPrefs()
+	bButton := ps.Brightness.Button
+	bText := ps.Brightness.Text
+
+	visRows := grid.VisibleRows
+	if visRows <= 0 {
+		visRows = len(grid.Rows)
+	}
+	maxOffset := max(len(grid.Rows)-visRows, 0)
+	*grid.Offset = math.Clamp(*grid.Offset, 0, maxOffset)
+
+	const arrowW = float32(scrollBarTotalW + 2)
+	contentW := width - arrowW
+	sectionH := float32(visRows) * itemH
+
+	// Section background
+	bgP0 := cursor
+	bgP1 := math.Add2f(bgP0, [2]float32{width, 0})
+	bgP2 := math.Add2f(bgP1, [2]float32{0, -sectionH})
+	bgP3 := math.Add2f(bgP0, [2]float32{0, -sectionH})
+	trid.AddQuad(bgP0, bgP1, bgP2, bgP3, bButton.ScaleRGB(colors.popup.backgroundBlack))
+
+	sectionExtent := math.Extent2D{P0: bgP3, P1: bgP1}
+	*extent = sectionExtent
+
+	clicked := ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)
+	clickType := MenuClickPrimary
+	if ep.mouseTertiaryClicked(mouse) {
+		clickType = MenuClickTertiary
+	}
+
+	bBorder := ps.Brightness.Border
+	brightColor := bBorder.ScaleRGB(colors.menu.rowHoverOutline)
+	var hovered *math.Extent2D
+
+	for vi := range visRows {
+		idx := *grid.Offset + vi
+		if idx >= len(grid.Rows) {
+			break
+		}
+		row := grid.Rows[idx]
+		y := cursor[1] - float32(vi)*itemH
+
+		var totalWeight float32
+		for _, c := range row {
+			totalWeight += max(c.Weight, 1)
+		}
+
+		x := cursor[0]
+		for ci := range row {
+			c := &row[ci]
+			w := contentW * max(c.Weight, 1) / totalWeight
+			cellExt := math.Extent2D{
+				P0: [2]float32{x, y - itemH},
+				P1: [2]float32{x + w, y},
+			}
+
+			if c.BgColor != (renderer.RGB{}) {
+				trid.AddQuad([2]float32{x, y}, [2]float32{x + w, y},
+					[2]float32{x + w, y - itemH}, [2]float32{x, y - itemH},
+					bButton.ScaleRGB(c.BgColor))
+			}
+
+			if c.Label != "" {
+				style := renderer.TextStyle{Font: font, Color: bText.ScaleRGB(c.Color)}
+				td.AddTextCentered(c.Label, [2]float32{x + w/2, y - itemH/2}, style)
+			}
+
+			if c.OnClick != nil && mouse != nil && cellExt.Inside(mouse.Pos) {
+				e := cellExt
+				if c.HoverSpansRow {
+					e.P0[0] = cursor[0]
+					e.P1[0] = cursor[0] + contentW
+				}
+				hovered = &e
+				if clicked && c.OnClick(clickType) {
+					ep.popup = nil
+				}
+			}
+			x += w
+		}
+	}
+
+	if hovered != nil {
+		ld.AddLineLoop(brightColor, hovered.Corners())
+	}
+
+	// Scroll arrows (right column): boxed up/down buttons in the same style
+	// as the view scroll bars, scrolling page-sized steps like the real menus.
+	canScrollUp := *grid.Offset > 0
+	canScrollDown := *grid.Offset < maxOffset
+
+	buttonH := (sectionH - 2 - scrollBarGap) / 2
+	bx1 := cursor[0] + width - 1
+	bx0 := bx1 - scrollBarTotalW
+	upY1 := cursor[1] - 1
+	upRect := math.Extent2D{P0: [2]float32{bx0, upY1 - buttonH}, P1: [2]float32{bx1, upY1}}
+	downY0 := upY1 - buttonH - scrollBarGap
+	downRect := math.Extent2D{P0: [2]float32{bx0, downY0 - buttonH}, P1: [2]float32{bx1, downY0}}
+
+	for _, r := range [...]math.Extent2D{upRect, downRect} {
+		addQuad(trid, r, colors.scroll.background)
+		ld.AddLineLoop(colors.scroll.border, r.Corners())
+	}
+	arrowX := upRect.Center()[0]
+	drawScrollArrow(ld, arrowX, upRect.P1[1]-1, -1, util.Select(canScrollUp, colors.scroll.arrow, colors.menu.scrollDimArrow))
+	drawScrollArrow(ld, arrowX, downRect.P0[1]+1, +1, util.Select(canScrollDown, colors.scroll.arrow, colors.menu.scrollDimArrow))
+
+	if mouse != nil && sectionExtent.Inside(mouse.Pos) {
+		if mouse.Wheel[1] > 0 && canScrollUp {
+			*grid.Offset--
+		} else if mouse.Wheel[1] < 0 && canScrollDown {
+			*grid.Offset++
+		}
+	}
+	if clicked && mouse != nil {
+		if upRect.Inside(mouse.Pos) && canScrollUp {
+			*grid.Offset = max(*grid.Offset-visRows, 0)
+		} else if downRect.Inside(mouse.Pos) && canScrollDown {
+			*grid.Offset = min(*grid.Offset+visRows, maxOffset)
+		}
+	}
+
+	return bgP3
+}
+
+// drawMenuInputRow renders a text input row: a black box showing the buffer
+// contents with a trailing cursor. Keyboard input is the popup's concern.
+func (ep *ERAMPane) drawMenuInputRow(cursor [2]float32, width, itemH float32, font *renderer.Font,
+	input *ERAMMenuInput, trid *renderer.ColoredTrianglesDrawBuilder,
+	td *renderer.TextDrawBuilder, extent *math.Extent2D) [2]float32 {
+
+	ps := ep.currentPrefs()
+	bButton := ps.Brightness.Button
+	bText := ps.Brightness.Text
+
+	rp1 := math.Add2f(cursor, [2]float32{width, 0})
+	rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
+	rp3 := math.Add2f(cursor, [2]float32{0, -itemH})
+	trid.AddQuad(cursor, rp1, rp2, rp3, bButton.ScaleRGB(colors.popup.backgroundBlack))
+
+	*extent = math.Extent2D{P0: rp3, P1: rp1}
+
+	text := *input.Buf + "_"
+	style := renderer.TextStyle{Font: font, Color: bText.ScaleRGB(colors.popup.text)}
+	th := font.LayoutBounds(text, 0).Height()
+	td.AddText(text, [2]float32{cursor[0] + 4, cursor[1] - itemH/2 + th/2}, style)
+
+	return rp3
 }
 
 // drawUpTriangle draws a filled upward-pointing triangle.
