@@ -187,9 +187,9 @@ func (p *altitudeMenuPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms ra
 			var status CommandStatus
 			var err error
 			if p.local {
-				status, err = handleInterimAltitude(ep, ctx, InterimAltitude{Altitude: alt * 100, Type: "L"}, trk)
+				status, err = handleInterimAltitude(ep, ctx, InterimAltitude{Altitude: alt * 100, Type: radar.Local}, trk)
 			} else if p.procedure {
-				status, err = handleInterimAltitude(ep, ctx, InterimAltitude{Altitude: alt * 100, Type: "P"}, trk)
+				status, err = handleInterimAltitude(ep, ctx, InterimAltitude{Altitude: alt * 100, Type: radar.Procedure}, trk)
 			} else {
 				status, err = handleAssignedAltitude(ep, ctx, alt*100, trk)
 			}

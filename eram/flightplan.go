@@ -5,7 +5,6 @@
 package eram
 
 import (
-	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -13,6 +12,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -293,10 +293,14 @@ func parseFpAssignedAltitude(s string, checkSp func(s string, primary bool) bool
 func parseFPInterimAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if unicode.IsLetter(rune(s[0])) {
 		interimType := string(s[0])
-		if !slices.Contains([]string{"P", "L"}, interimType) {
+		switch interimType {
+		case "P":
+			spec.InterimType.Set(radar.Procedure)
+		case "L":
+			spec.InterimType.Set(radar.Local)
+		default:
 			return false, ErrCommandFormat
 		}
-		spec.InterimType.Set(interimType)
 		s = strings.TrimPrefix(s, interimType)
 	}
 	return parseFpAltitude(s, &spec.InterimAlt)

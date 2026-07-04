@@ -205,7 +205,7 @@ func handleInterimAltitude(ep *ERAMPane, ctx *panes.Context, alt InterimAltitude
 
 	fp := sim.FlightPlanSpecifier{}
 	fp.InterimAlt.Set(alt.Altitude)
-	if alt.Type != "" {
+	if alt.Type != 0 {
 		fp.InterimType.Set(alt.Type)
 	}
 

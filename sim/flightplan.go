@@ -213,14 +213,7 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 		fp.InterimAlt = spec.InterimAlt.Get()
 	}
 	if spec.InterimType.IsSet {
-		interimType := spec.InterimType.Get()
-		fmt.Println("Interim type:", interimType)
-		switch interimType {
-		case "L":
-			fp.InterimType = 2
-		case "P":
-			fp.InterimType = 1
-		}
+		fp.InterimType = spec.InterimType.Get()
 	}
 
 	if spec.AircraftType.IsSet {
@@ -348,7 +341,7 @@ type FlightPlanSpecifier struct {
 
 	AssignedAltitude      util.Optional[int]
 	InterimAlt            util.Optional[int]
-	InterimType           util.Optional[string]
+	InterimType           util.Optional[int]
 	AltitudeBlock         util.Optional[[2]int]
 	ControllerReportedAlt util.Optional[int]
 	VFROTP                util.Optional[bool]
