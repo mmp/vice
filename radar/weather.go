@@ -181,14 +181,14 @@ func (s WxScheme) MakeCommandBuffers(precip *wx.Precip) []*renderer.CommandBuffe
 	out := make([]*renderer.CommandBuffer, s.NumLevels())
 	for level := 1; level <= s.NumLevels(); level++ {
 		tb.Reset()
-		any := false
+		haveWx := false
 		for y := range ny {
 			for x := 0; x < nx; {
 				if cellLevel(x, y) != level {
 					x++
 					continue
 				}
-				any = true
+				haveWx = true
 				x0 := x
 				for x < nx && cellLevel(x, y) == level {
 					x++
@@ -199,7 +199,7 @@ func (s WxScheme) MakeCommandBuffers(precip *wx.Precip) []*renderer.CommandBuffe
 					[2]float32{p1[0], p1[1]}, [2]float32{p0[0], p1[1]})
 			}
 		}
-		if any {
+		if haveWx {
 			out[level-1] = &renderer.CommandBuffer{}
 			tb.GenerateCommands(out[level-1])
 		}
