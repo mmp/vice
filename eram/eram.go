@@ -38,6 +38,7 @@ type (
 		buttonOutline, buttonHoverOutline                        renderer.RGB
 		rowDimOutline, rowHoverOutline                           renderer.RGB
 		selectedItem                                             renderer.RGB
+		currentValue                                             renderer.RGB
 		scrollArrow, scrollDimArrow                              renderer.RGB
 		tearoffOutline                                           renderer.RGB
 	}
@@ -127,6 +128,7 @@ var colors = struct {
 		rowDimOutline:      renderer.RGB{R: .195, G: .195, B: .195},
 		rowHoverOutline:    renderer.RGB{R: .624, G: .624, B: .624},
 		selectedItem:       renderer.RGB{R: .3, G: .3, B: .6},
+		currentValue:       renderer.RGB{R: .78, G: .46, B: .42}, // coral shading for the current value in datablock menus
 		scrollArrow:        renderer.RGB{R: .7, G: .7, B: .7},
 		scrollDimArrow:     renderer.RGB{R: .3, G: .3, B: .3},
 		tearoffOutline:     renderer.RGB{R: 1, G: .761, B: 0},
@@ -838,6 +840,13 @@ func (m *feedbackMessage) Clear() {
 func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
 		return
+	}
+	// An open keyboard-taking popup (e.g. the free-form text menu) gets the
+	// keystrokes instead of the command input.
+	if kp, ok := ep.popup.(keyboardPopup); ok {
+		if kp.handleKeyboard(ep, ctx) {
+			return
+		}
 	}
 	ps := ep.currentPrefs()
 	keyboardInput := strings.ToUpper(ctx.Keyboard.Input)

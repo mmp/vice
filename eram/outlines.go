@@ -21,6 +21,8 @@ const (
 	DBFieldHandoffSpeed DatablockFieldID = "handoff_speed"
 	DBFieldSpeed        DatablockFieldID = "speed"
 	DBFieldLine4        DatablockFieldID = "line4"
+	DBFieldLine4Heading DatablockFieldID = "line4_heading"
+	DBFieldLine4Speed   DatablockFieldID = "line4_speed"
 	DBFieldPointOut     DatablockFieldID = "pointout"
 )
 
@@ -44,6 +46,11 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	mouse := ctx.Mouse
 	if mouse == nil {
+		return
+	}
+	// While a popup is open, clicks and hovers inside it belong to the
+	// popup, not to any datablock beneath it.
+	if ep.popup != nil && ep.popupExtent.Inside(mouse.Pos) {
 		return
 	}
 	for _, trk := range tracks {
@@ -89,20 +96,30 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 				}
 			}
 		}
-		if db.Fields[DBFieldAltitude].Inside(mouse.Pos) {
-			// open altitude input
-		}
-		if db.Fields[DBFieldCID].Inside(mouse.Pos) {
-			// turn menu
+		// Field clicks that open the datablock menus.
+		if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
+			opened := true
+			switch {
+			case db.Fields[DBFieldAltitude].Inside(mouse.Pos):
+				ep.openAltitudeMenu(ctx, &trk, db.Fields[DBFieldMain])
+			case db.Fields[DBFieldCID].Inside(mouse.Pos),
+				db.Fields[DBFieldLine4Heading].Inside(mouse.Pos):
+				ep.openHeadingMenu(ctx, &trk, db.Fields[DBFieldMain])
+			case db.Fields[DBFieldSpeed].Inside(mouse.Pos),
+				db.Fields[DBFieldLine4Speed].Inside(mouse.Pos):
+				ep.openSpeedMenu(ctx, &trk, db.Fields[DBFieldMain])
+			case db.Fields[DBFieldLine4].Inside(mouse.Pos) && trk.FlightPlan != nil &&
+				isQSFreeTextScratchpad(trk.FlightPlan.Scratchpad):
+				ep.openFreeTextMenu(ctx, &trk, db.Fields[DBFieldMain])
+			default:
+				opened = false
+			}
+			if opened {
+				mouse.Clicked = [platform.MouseButtonCount]bool{}
+			}
 		}
 		if db.Fields[DBFieldMain].Inside(mouse.Pos) {
 			// remove
-		}
-		if db.Fields[DBFieldSpeed].Inside(mouse.Pos) {
-			// speed menu
-		}
-		if db.Fields[DBFieldLine4].Inside(mouse.Pos) {
-			// TODO: check if this does anything
 		}
 	}
 	ld.GenerateCommands(cb)
@@ -182,6 +199,26 @@ func dbFieldSpan(f []dbChar) (start, n int, ok bool) {
 	return first, last - first + 1, true
 }
 
+// dbFieldRuns returns the {start, length} column span of each contiguous run
+// of visible (non-space) characters in the field.
+func dbFieldRuns(f []dbChar) [][2]int {
+	var runs [][2]int
+	start := -1
+	for i, ch := range f {
+		visible := ch.ch != 0 && ch.ch != ' '
+		if visible && start == -1 {
+			start = i
+		} else if !visible && start != -1 {
+			runs = append(runs, [2]int{start, i - start})
+			start = -1
+		}
+	}
+	if start != -1 {
+		runs = append(runs, [2]int{start, len(f) - start})
+	}
+	return runs
+}
+
 // FullDatablockOutlines returns outlines for the ERAM full datablock fields.
 // Field extents are derived from the datablock's actual contents so they
 // track what is drawn rather than each field's maximum width.
@@ -248,6 +285,30 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 	setField(DBFieldSpeed, 3, 2+len(dbChopTrailing(fdb.fieldD[:])), fdb.fieldE[:])
 	outlines.Fields[DBFieldHandoffSpeed] = outlines.Fields[DBFieldSpeed]
 	setField(DBFieldLine4, 4, 0, fdb.line4[:])
+
+	// Line-4 heading and speed pick areas: when HSF data is displayed, two
+	// visible runs are heading then speed; a single run is whichever of the
+	// two is assigned. Free-form text opens its menu via DBFieldLine4.
+	outlines.Fields[DBFieldLine4Heading] = math.EmptyExtent2D()
+	outlines.Fields[DBFieldLine4Speed] = math.EmptyExtent2D()
+	if fp := trk.FlightPlan; fp != nil && hsfDataExists(fp) && !isQSFreeTextScratchpad(fp.Scratchpad) {
+		if state := ep.TrackState[trk.ADSBCallsign]; state != nil && !state.HSFHide {
+			runExtent := func(r [2]int) math.Extent2D {
+				return layout.FieldExtent(DatablockFieldSpec{Line: 4, Col: r[0], Cols: r[1]})
+			}
+			runs := dbFieldRuns(fdb.line4[:])
+			if len(runs) == 2 {
+				outlines.Fields[DBFieldLine4Heading] = runExtent(runs[0])
+				outlines.Fields[DBFieldLine4Speed] = runExtent(runs[1])
+			} else if len(runs) == 1 {
+				if fp.Scratchpad != "" {
+					outlines.Fields[DBFieldLine4Heading] = runExtent(runs[0])
+				} else {
+					outlines.Fields[DBFieldLine4Speed] = runExtent(runs[0])
+				}
+			}
+		}
+	}
 
 	main := math.EmptyExtent2D()
 	line1Len, line2Len, line3Len, line4Len := fullDatablockMainLengths(lineLengths)
