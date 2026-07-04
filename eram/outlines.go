@@ -108,8 +108,7 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 			case db.Fields[DBFieldSpeed].Inside(mouse.Pos),
 				db.Fields[DBFieldLine4Speed].Inside(mouse.Pos):
 				ep.openSpeedMenu(ctx, &trk, db.Fields[DBFieldMain])
-			case db.Fields[DBFieldLine4].Inside(mouse.Pos) && trk.FlightPlan != nil &&
-				isQSFreeTextScratchpad(trk.FlightPlan.Scratchpad):
+			case db.Fields[DBFieldLine4].Inside(mouse.Pos):
 				ep.openFreeTextMenu(ctx, &trk, db.Fields[DBFieldMain])
 			default:
 				opened = false
@@ -285,6 +284,14 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 	setField(DBFieldSpeed, 3, 2+len(dbChopTrailing(fdb.fieldD[:])), fdb.fieldE[:])
 	outlines.Fields[DBFieldHandoffSpeed] = outlines.Fields[DBFieldSpeed]
 	setField(DBFieldLine4, 4, 0, fdb.line4[:])
+	if _, ok := lineLengths[4]; !ok {
+		// Line 4 is empty: keep a click zone as wide as the datablock so
+		// the free-form text menu can still be opened to create text.
+		line1Len, line2Len, line3Len, _ := fullDatablockMainLengths(lineLengths)
+		if n := max(line1Len, line2Len, line3Len); n > 0 {
+			outlines.Fields[DBFieldLine4] = layout.LineExtent(4, n)
+		}
+	}
 
 	// Line-4 heading and speed pick areas: when HSF data is displayed, two
 	// visible runs are heading then speed; a single run is whichever of the

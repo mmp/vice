@@ -552,9 +552,9 @@ func (p *speedMenuPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms radar
 ///////////////////////////////////////////////////////////////////////////
 // Free Form Text Box Menu
 
-// freeTextMenuPopup is the FDB Free Form Text Box Menu, opened from
-// fourth-line free-form text. It cannot be opened if the aircraft has no
-// assigned free-form text.
+// freeTextMenuPopup is the FDB Free Form Text Box Menu, opened by clicking
+// the fourth line — on existing free-form text to edit it, or on an empty
+// fourth line to create it.
 type freeTextMenuPopup struct {
 	dbMenuBase
 	buf string
@@ -562,7 +562,7 @@ type freeTextMenuPopup struct {
 
 func (ep *ERAMPane) openFreeTextMenu(ctx *panes.Context, trk *sim.Track, dbMain math.Extent2D) {
 	fp := trk.FlightPlan
-	if fp == nil || !isQSFreeTextScratchpad(fp.Scratchpad) {
+	if fp == nil {
 		return
 	}
 	ps := ep.currentPrefs()
