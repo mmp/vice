@@ -252,15 +252,15 @@ func RadarImageToDBZ(img image.Image, src PrecipSource) []byte {
 	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
 
 	var root *kdNode
-	var noData func(px color.RGBA) bool
+	var haveData func(px color.RGBA) bool
 	switch src {
 	case PrecipSourceIEMN0Q:
 		root = getIEMN0QKdTree()
-		noData = func(px color.RGBA) bool { return px.A == 0 }
+		haveData = func(px color.RGBA) bool { return px.A != 0 }
 	default:
 		root = getRadarKdTree()
 		// All white -> ~nil
-		noData = func(px color.RGBA) bool { return px.R == 255 && px.G == 255 && px.B == 255 }
+		haveData = func(px color.RGBA) bool { return px.R != 255 || px.G != 255 || px.B != 255 }
 	}
 
 	// Determine the dBZ for each pixel.
@@ -270,7 +270,7 @@ func RadarImageToDBZ(img image.Image, src PrecipSource) []byte {
 		for x := range nx {
 			px := rgba.RGBAAt(x, y)
 			dbz := float32(-100)
-			if !noData(px) {
+			if haveData(px) {
 				dbz = estimateDBZ(root, [3]byte{px.R, px.G, px.B})
 			}
 
