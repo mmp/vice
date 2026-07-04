@@ -205,9 +205,7 @@ func handleInterimAltitude(ep *ERAMPane, ctx *panes.Context, alt InterimAltitude
 
 	fp := sim.FlightPlanSpecifier{}
 	fp.InterimAlt.Set(alt.Altitude)
-	if alt.Type != 0 {
-		fp.InterimType.Set(alt.Type)
-	}
+	fp.InterimType.Set(alt.Type)
 
 	ep.modifyFlightPlan(ctx, trk, fp)
 	state := ep.TrackState[trk.ADSBCallsign]
@@ -227,6 +225,7 @@ func handleClearInterimAltitude(ep *ERAMPane, ctx *panes.Context, trk *sim.Track
 
 	fp := sim.FlightPlanSpecifier{}
 	fp.InterimAlt.Set(0)
+	fp.InterimType.Set(sim.InterimNormal)
 
 	ep.modifyFlightPlan(ctx, trk, fp)
 	state := ep.TrackState[trk.ADSBCallsign]

@@ -18,6 +18,43 @@ import (
 )
 
 ///////////////////////////////////////////////////////////////////////////
+// InterimAltType
+
+// InterimAltType identifies the flavor of an interim altitude assignment.
+type InterimAltType int
+
+const (
+	InterimNormal InterimAltType = iota
+	InterimProcedure
+	InterimLocal
+)
+
+// String returns the letter shown for the interim altitude type in the datablock.
+func (t InterimAltType) String() string {
+	switch t {
+	case InterimNormal:
+		return "T"
+	case InterimProcedure:
+		return "P"
+	case InterimLocal:
+		return "L"
+	}
+	return ""
+}
+
+// ParseInterimAltType maps a P/L interim altitude prefix character to its type;
+// ok is false for any other character.
+func ParseInterimAltType(ch byte) (t InterimAltType, ok bool) {
+	switch ch {
+	case 'P':
+		return InterimProcedure, true
+	case 'L':
+		return InterimLocal, true
+	}
+	return InterimNormal, false
+}
+
+///////////////////////////////////////////////////////////////////////////
 // NASFlightPlan
 
 type NASFlightPlan struct {
@@ -47,7 +84,7 @@ type NASFlightPlan struct {
 	AssignedAltitude      int
 	PerceivedAssigned     int // what the previous controller would put into the hard alt, even though the aircraft is descending via a STAR.
 	InterimAlt            int
-	InterimType           int
+	InterimType           InterimAltType
 	AltitudeBlock         [2]int
 	ControllerReportedAlt int
 	VFROTP                bool
@@ -341,7 +378,7 @@ type FlightPlanSpecifier struct {
 
 	AssignedAltitude      util.Optional[int]
 	InterimAlt            util.Optional[int]
-	InterimType           util.Optional[int]
+	InterimType           util.Optional[InterimAltType]
 	AltitudeBlock         util.Optional[[2]int]
 	ControllerReportedAlt util.Optional[int]
 	VFROTP                util.Optional[bool]

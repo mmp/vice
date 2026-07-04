@@ -12,7 +12,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -289,15 +288,11 @@ func (h *eramAltIParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	}
 
 	altStr := field
-	var interimType int
+	interimType := sim.InterimNormal
 
 	// Check for P or L prefix
-	if len(field) > 0 && (field[0] == 'P' ) {
-		interimType = radar.Procedure
-		altStr = field[1:]
-	}
-	if len(field) > 0 && (field[0] == 'L') {
-		interimType = radar.Local
+	if t, ok := sim.ParseInterimAltType(field[0]); ok {
+		interimType = t
 		altStr = field[1:]
 	}
 
@@ -324,10 +319,10 @@ func (h *eramAltIParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 func (h *eramAltIParser) GoType() reflect.Type { return reflect.TypeOf(InterimAltitude{}) }
 func (h *eramAltIParser) AcceptsClick() bool   { return false }
 
-// InterimAltitude holds an interim altitude value with optional type (P for pilot, L for local)
+// InterimAltitude holds an interim altitude value with optional type (P for procedure, L for local)
 type InterimAltitude struct {
-	Altitude int    // Altitude in feet
-	Type     int // 0 for none, 1 for pilot, 2 for local
+	Altitude int                // Altitude in feet
+	Type     sim.InterimAltType // InterimNormal when no prefix is given
 }
 
 // sectorIDParser parses ERAM sector identifiers (e.g., "1A", "2B", "15")

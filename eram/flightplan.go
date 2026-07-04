@@ -12,7 +12,6 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -291,18 +290,15 @@ func parseFpAssignedAltitude(s string, checkSp func(s string, primary bool) bool
 }
 
 func parseFPInterimAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
+	interimType := sim.InterimNormal
 	if unicode.IsLetter(rune(s[0])) {
-		interimType := string(s[0])
-		switch interimType {
-		case "P":
-			spec.InterimType.Set(radar.Procedure)
-		case "L":
-			spec.InterimType.Set(radar.Local)
-		default:
+		var ok bool
+		if interimType, ok = sim.ParseInterimAltType(s[0]); !ok {
 			return false, ErrCommandFormat
 		}
-		s = strings.TrimPrefix(s, interimType)
+		s = s[1:]
 	}
+	spec.InterimType.Set(interimType)
 	return parseFpAltitude(s, &spec.InterimAlt)
 }
 

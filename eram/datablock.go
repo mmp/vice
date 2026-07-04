@@ -477,16 +477,7 @@ func getInterimAltitudeType(track sim.Track) string {
 	if track.FlightPlan.InterimAlt == -1 {
 		return ""
 	}
-	interimType := track.FlightPlan.InterimType
-	switch interimType {
-	case radar.Normal:
-		return "T"
-	case radar.Procedure:
-		return "P"
-	case radar.Local:
-		return "L"
-	}
-	return ""
+	return track.FlightPlan.InterimType.String()
 }
 
 func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,

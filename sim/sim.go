@@ -2048,7 +2048,7 @@ func (s *Sim) processFutureOnCourse() {
 					// Clear temporary altitude
 					if ac.NASFlightPlan != nil {
 						ac.NASFlightPlan.InterimAlt = 0
-						ac.NASFlightPlan.InterimType = 0
+						ac.NASFlightPlan.InterimType = InterimNormal
 					}
 					ac.DepartOnCourse(s.State.SimTime, s.lg)
 				}
