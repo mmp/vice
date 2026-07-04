@@ -275,42 +275,63 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		shortERAMID := func(ctrl *av.Controller) string {
 			return shortFieldERAMID(ctrl.FacilityIdentifier, ctrl.Position, ctx.Client.State.HandoffIDs)
 		}
-		if trk.FlightPlan.HandoffController != "" {
-			var controller string
-			if ctrl := ctx.GetResolvedController(trk.FlightPlan.HandoffController); ctrl != nil {
-				controller = shortERAMID(ctrl)
-				if len(controller) == 2 {
-					controller = "-" + controller
-				}
-			} else {
-				controller = string(trk.FlightPlan.HandoffController)
-			}
-			if len(controller) == 2 {
-				controller = "-" + controller
-			}
-			fieldEText = util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), gsText)
+		switch trk.Squawk.String() { // Any cleaner way to do this?
+		case "7500":
+			fieldEText = "HIJK"
 			dbWriteText(db.fieldE[:], fieldEText, color, true)
-		} else if ctx.InterpolatedSimTime.Before(state.OSectorEndTime) {
-			var controller string
-			if ctrl := ctx.GetResolvedController(trk.FlightPlan.TrackingController); ctrl != nil {
-				controller = shortERAMID(ctrl)
+		case "7600":
+			fieldEText = "RDOF"
+			dbWriteText(db.fieldE[:], fieldEText, color, true)
+		case "7700":
+			fieldEText = "EMRG"
+			dbWriteText(db.fieldE[:], fieldEText, color, true)
+		case "7777":
+			fieldEText = "AFIO"
+			dbWriteText(db.fieldE[:], fieldEText, color, true)
+		case "1276":
+			fieldEText = "ADIZ"
+			dbWriteText(db.fieldE[:], fieldEText, color, true)
+		case "7400":
+			fieldEText = "LLNK"
+			dbWriteText(db.fieldE[:], fieldEText, color, true)
+		default:
+			if trk.FlightPlan.HandoffController != "" {
+				var controller string
+				if ctrl := ctx.GetResolvedController(trk.FlightPlan.HandoffController); ctrl != nil {
+					controller = shortERAMID(ctrl)
+					if len(controller) == 2 {
+						controller = "-" + controller
+					}
+				} else {
+					controller = string(trk.FlightPlan.HandoffController)
+				}
 				if len(controller) == 2 {
 					controller = "-" + controller
 				}
+				fieldEText = util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), gsText)
+				dbWriteText(db.fieldE[:], fieldEText, color, true)
+			} else if ctx.InterpolatedSimTime.Before(state.OSectorEndTime) {
+				var controller string
+				if ctrl := ctx.GetResolvedController(trk.FlightPlan.TrackingController); ctrl != nil {
+					controller = shortERAMID(ctrl)
+					if len(controller) == 2 {
+						controller = "-" + controller
+					}
+				} else {
+					controller = string(trk.FlightPlan.TrackingController)
+				}
+				fieldEText = util.Select(ep.dbAlternate, fmt.Sprintf("O%v", controller), gsText)
+				dbWriteText(db.fieldE[:], fieldEText, color, false)
 			} else {
-				controller = string(trk.FlightPlan.TrackingController)
+				middle := " "
+				airportCode, ok := ctx.Client.State.FacilityAdaptation.AirportCodes[trk.FlightPlan.ExitFix]
+				if ok {
+					middle = airportCode
+				}
+				gsText = fmt.Sprintf("%v%v", middle, int(state.Track.Groundspeed))
+				fieldEText = gsText
+				dbWriteText(db.fieldE[:], fieldEText, color, false)
 			}
-			fieldEText = util.Select(ep.dbAlternate, fmt.Sprintf("O%v", controller), gsText)
-			dbWriteText(db.fieldE[:], fieldEText, color, false)
-		} else {
-			middle := " "
-			airportCode, ok := ctx.Client.State.FacilityAdaptation.AirportCodes[trk.FlightPlan.ExitFix]
-			if ok {
-				middle = airportCode
-			}
-			gsText = fmt.Sprintf("%v%v", middle, int(state.Track.Groundspeed))
-			fieldEText = gsText
-			dbWriteText(db.fieldE[:], fieldEText, color, false)
 		}
 
 		if hsfDataExists(trk.FlightPlan) {
