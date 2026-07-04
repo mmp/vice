@@ -211,7 +211,9 @@ func (p *altitudeMenuPopup) draw(ep *ERAMPane, ctx *panes.Context, transforms ra
 				letter = interimLetter
 			}
 			letterCell := ERAMMenuGridCell{
-				Label: letter, Color: textC, Weight: 2,
+				// Assigning an interim altitude acts on the altitude to the
+				// left, so hovering the T outlines both as one pick.
+				Label: letter, Color: textC, Weight: 2, HoverSpansRow: true,
 				OnClick: func(_ ERAMMenuClickType) bool {
 					status, err := handleInterimAltitude(ep, ctx, InterimAltitude{Altitude: alt * 100}, trk)
 					ep.applyCommandStatus(ctx, status, err)

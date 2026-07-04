@@ -165,8 +165,12 @@ type ERAMMenuGridCell struct {
 	Label   string
 	BgColor renderer.RGB // zero value = section background
 	Color   renderer.RGB
-	Weight  float32                                // relative width; 0 = 1
-	OnClick func(clickType ERAMMenuClickType) bool // return true = close menu
+	Weight  float32 // relative width; 0 = 1
+	// HoverSpansRow extends the hover outline across the row's full content
+	// width (e.g. the altitude menu's interim T pick area, whose action
+	// includes the altitude to its left).
+	HoverSpansRow bool
+	OnClick       func(clickType ERAMMenuClickType) bool // return true = close menu
 }
 
 // ERAMMenuGrid is a scrollable grid of value pick areas. A reserved arrow
@@ -830,7 +834,7 @@ func (ep *ERAMPane) drawMenuGrid(cursor [2]float32, width, itemH float32, font *
 	maxOffset := max(len(grid.Rows)-visRows, 0)
 	*grid.Offset = math.Clamp(*grid.Offset, 0, maxOffset)
 
-	const arrowW = float32(16)
+	const arrowW = float32(scrollBarTotalW + 2)
 	contentW := width - arrowW
 	sectionH := float32(visRows) * itemH
 
@@ -889,6 +893,10 @@ func (ep *ERAMPane) drawMenuGrid(cursor [2]float32, width, itemH float32, font *
 
 			if c.OnClick != nil && mouse != nil && cellExt.Inside(mouse.Pos) {
 				e := cellExt
+				if c.HoverSpansRow {
+					e.P0[0] = cursor[0]
+					e.P1[0] = cursor[0] + contentW
+				}
 				hovered = &e
 				if clicked && c.OnClick(clickType) {
 					ep.popup = nil
@@ -902,23 +910,26 @@ func (ep *ERAMPane) drawMenuGrid(cursor [2]float32, width, itemH float32, font *
 		ld.AddLineLoop(brightColor, hovered.Corners())
 	}
 
-	// Scroll arrows (right column), page-sized steps like the real menus.
+	// Scroll arrows (right column): boxed up/down buttons in the same style
+	// as the view scroll bars, scrolling page-sized steps like the real menus.
 	canScrollUp := *grid.Offset > 0
 	canScrollDown := *grid.Offset < maxOffset
 
-	upCenter := [2]float32{cursor[0] + width - arrowW/2, cursor[1] - itemH/2}
-	downCenter := [2]float32{cursor[0] + width - arrowW/2, cursor[1] - sectionH + itemH/2}
-	drawUpTriangle(trid, upCenter, 6, util.Select(canScrollUp, colors.menu.scrollArrow, colors.menu.scrollDimArrow))
-	drawDownTriangle(trid, downCenter, 6, util.Select(canScrollDown, colors.menu.scrollArrow, colors.menu.scrollDimArrow))
+	buttonH := (sectionH - 2 - scrollBarGap) / 2
+	bx1 := cursor[0] + width - 1
+	bx0 := bx1 - scrollBarTotalW
+	upY1 := cursor[1] - 1
+	upRect := math.Extent2D{P0: [2]float32{bx0, upY1 - buttonH}, P1: [2]float32{bx1, upY1}}
+	downY0 := upY1 - buttonH - scrollBarGap
+	downRect := math.Extent2D{P0: [2]float32{bx0, downY0 - buttonH}, P1: [2]float32{bx1, downY0}}
 
-	upExtent := math.Extent2D{
-		P0: [2]float32{cursor[0] + width - arrowW, cursor[1] - sectionH/2},
-		P1: [2]float32{cursor[0] + width, cursor[1]},
+	for _, r := range [...]math.Extent2D{upRect, downRect} {
+		addQuad(trid, r, colors.scroll.background)
+		ld.AddLineLoop(colors.scroll.border, r.Corners())
 	}
-	downExtent := math.Extent2D{
-		P0: [2]float32{cursor[0] + width - arrowW, cursor[1] - sectionH},
-		P1: [2]float32{cursor[0] + width, cursor[1] - sectionH/2},
-	}
+	arrowX := upRect.Center()[0]
+	drawScrollArrow(ld, arrowX, upRect.P1[1]-1, -1, util.Select(canScrollUp, colors.scroll.arrow, colors.menu.scrollDimArrow))
+	drawScrollArrow(ld, arrowX, downRect.P0[1]+1, +1, util.Select(canScrollDown, colors.scroll.arrow, colors.menu.scrollDimArrow))
 
 	if mouse != nil && sectionExtent.Inside(mouse.Pos) {
 		if mouse.Wheel[1] > 0 && canScrollUp {
@@ -928,9 +939,9 @@ func (ep *ERAMPane) drawMenuGrid(cursor [2]float32, width, itemH float32, font *
 		}
 	}
 	if clicked && mouse != nil {
-		if upExtent.Inside(mouse.Pos) && canScrollUp {
+		if upRect.Inside(mouse.Pos) && canScrollUp {
 			*grid.Offset = max(*grid.Offset-visRows, 0)
-		} else if downExtent.Inside(mouse.Pos) && canScrollDown {
+		} else if downRect.Inside(mouse.Pos) && canScrollDown {
 			*grid.Offset = min(*grid.Offset+visRows, maxOffset)
 		}
 	}
