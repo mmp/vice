@@ -502,20 +502,48 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			t := toolbarDrawState.lightToolbar
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
+		// The ATC TOOLS toolbar remains visible to the left of the WX
+		// submenu, as in CRC, with ATC TOOLS and WX both in the active
+		// color. The blue WX entry left over from the ATC TOOLS menu must
+		// be cleared so the toolbarLabel match colors WX active here.
+		main := "ATC\nTOOLS"
+		toolbarDrawState.customButton[main] = colors.toolbar.activeButton
+		delete(toolbarDrawState.customButton, "WX")
+		toolbarDrawState.customButton["CRR\nFIX"] = colors.toolbar.blackButton
+		toolbarDrawState.customButton["SPEED\nADVSRY"] = colors.toolbar.blackButton
 		// WX1/WX2/WX3 are not simulated; render them dark.
 		toolbarDrawState.customButton["WX1"] = renderer.RGB{R: 0, G: 0, B: 0}
 		toolbarDrawState.customButton["WX2"] = renderer.RGB{R: 0, G: 0, B: 0}
 		toolbarDrawState.customButton["WX3"] = renderer.RGB{R: 0, G: 0, B: 0}
 
+		clearCustom := func() {
+			for _, name := range []string{main, "CRR\nFIX", "SPEED\nADVSRY", "WX1", "WX2", "WX3"} {
+				delete(toolbarDrawState.customButton, name)
+			}
+		}
+
 		ps := ep.currentPrefs()
-		drawButtonSamePosition(ctx, "WX")
+		drawButtonSamePosition(ctx, main)
+		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarMain
+			resetButtonPosDefault(ctx, scale)
+			clearCustom()
+		}
+		if ep.drawToolbarFullButton(ctx, "CRR\nFIX", 0, scale, ps.CRR.DisplayFixes, false) {
+			ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
+		}
+		if ep.drawToolbarFullButton(ctx, "SPEED\nADVSRY", 0, scale, false, false) {
+			// CRC doesn't even simulate this...
+		}
+		// Anchor the row start at WX so the second row of the WX submenu
+		// (WX1-WX3) starts one button in, under NX 000.
+		wxPos := toolbarDrawState.buttonCursor
 		if ep.drawToolbarFullButton(ctx, "WX", 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarATCTools
 			resetButtonPosDefault(ctx, scale)
-			delete(toolbarDrawState.customButton, "WX1")
-			delete(toolbarDrawState.customButton, "WX2")
-			delete(toolbarDrawState.customButton, "WX3")
+			clearCustom()
 		}
+		toolbarDrawState.buttonDrawStartPos = wxPos
 		p0 := toolbarDrawState.buttonCursor
 
 		if ep.drawToolbarFullButton(ctx, "NX 000\n600", 0, scale, false, false) {
@@ -536,8 +564,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			// Not simulated.
 		}
 
-		p2 := [2]float32{toolbarDrawState.buttonCursor[0], oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))[1]}
-		p2[0] += buttonSize(buttonBoth, scale)[0]
+		p2 := [2]float32{toolbarDrawState.buttonCursor[0] - 2, oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))[1]}
 		p1 := [2]float32{p2[0], p0[1]}
 		p3 := [2]float32{p0[0], p2[1]}
 		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
