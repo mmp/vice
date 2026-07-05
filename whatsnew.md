@@ -1,6 +1,8 @@
 - New scenarios: T75 (Ryan H), RSW (Nelson Tieku)
 - Scenario update: F11 (manaphy)
 - ERAM
+  - Added support for Nexrad weather radar (Michael Trokel)
+  - Added FDB altitude, speed, and free-form text menus (Michael Trokel)
   - Added support for point outs (`QP` commands)
   - Added support for quicklook (`QL` commands)
   - Fixed bug with placement of dwell boxes with leader line length 0
@@ -8,9 +10,9 @@
   - Added support for setting leader line position and length together: `#/# [FLID]`
   - Fixed bugs with left vs. middle click of tracks behaving differently when entering commands
   - Added support for pop-up menus to configure more views
-  - Added check list views
+  - Added checklist views
   - Adjusted scrollwheel sensitivity for zooming into scope
-  - Fixed bug with drawing ERAM cursors
+  - Fixed bug with ERAM cursors not being drawn
   - Added support for F-key shortcuts (F1 -> QF, etc.)
 - STARS
   - Fixed bug with "create / modify interfacility VFR flight plan" command (e.g. `N123AB LAS*SAN C172 165`)
