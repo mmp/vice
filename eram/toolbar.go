@@ -2219,6 +2219,13 @@ func (ep *ERAMPane) tornOffButtonBaseColor(name string) renderer.RGB {
 	if key == "VECTOR" || key == "HISTORY" || key == "FDB LDR" || key == "NONADSB" {
 		return colors.toolbar.greenButton
 	}
+	// WX toolbar buttons keep their in-toolbar colors when torn off.
+	if key == "NX LVL" || key == "NX 000\n600" {
+		return colors.toolbar.greenButton
+	}
+	if key == "WX1" || key == "WX2" || key == "WX3" {
+		return colors.toolbar.blackButton
+	}
 	if display == "DELETE\nTEAROFF" {
 		return colors.toolbar.deleteTearoff
 	}
