@@ -625,6 +625,43 @@ func registerAllCommands() {
 		WithPriority(12),
 	)
 
+	// "speed X to FIX" — pilot omits "until". Treated as speed-until-fix.
+	// "to" is required (not optional) so bare "speed X" or "speed X at FIX" doesn't
+	// grab an unrelated trailing fix via fuzzy match. Lower priority than the
+	// explicit "until" patterns so those still win when "until" is spoken.
+	registerSTTCommand(
+		"reduce|slow [speed] [to] {speed} [knots] to {fix}",
+		func(spd int, fix string) string {
+			return fmt.Sprintf("S%d/U%s", spd, fix)
+		},
+		WithName("reduce_speed_to_fix"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"increase [speed] [to] {speed} [knots] to {fix}",
+		func(spd int, fix string) string {
+			return fmt.Sprintf("S%d/U%s", spd, fix)
+		},
+		WithName("increase_speed_to_fix"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"speed [to] {speed} [knots] to {fix}",
+		func(spd int, fix string) string {
+			return fmt.Sprintf("S%d/U%s", spd, fix)
+		},
+		WithName("speed_to_fix"),
+		WithPriority(11),
+	)
+	registerSTTCommand(
+		"maintain [speed] {speed} [knots] to {fix}",
+		func(spd int, fix string) string {
+			return fmt.Sprintf("S%d/U%s", spd, fix)
+		},
+		WithName("maintain_speed_to_fix"),
+		WithPriority(11),
+	)
+
 	// === COMPOUND SPEED COMMANDS ===
 	// 2-segment: speed until fix, then speed (open-ended)
 	registerSTTCommand(

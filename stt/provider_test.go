@@ -545,6 +545,50 @@ func TestCompoundSpeedCommands(t *testing.T) {
 			},
 			expected: "ASA500 S250/UROSLY/210/UCAMRN/180",
 		},
+		{
+			// "reduce speed X to FIX" — pilot omits "until". The trailing "to FIX"
+			// should be interpreted as an until-fix restriction.
+			name:       "reduce speed knots to fix",
+			transcript: "Delta 200 reduce speed one seven zero knots to MILTT",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "arrival", Fixes: map[string]string{"MILTT": "MILTT"}},
+			},
+			expected: "DAL200 S170/UMILTT",
+		},
+		{
+			name:       "reduce speed to fix no knots",
+			transcript: "Delta 200 reduce speed one seven zero to MILTT",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "arrival", Fixes: map[string]string{"MILTT": "MILTT"}},
+			},
+			expected: "DAL200 S170/UMILTT",
+		},
+		{
+			name:       "maintain speed knots to fix",
+			transcript: "Delta 200 maintain one seven zero knots to MILTT",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "arrival", Fixes: map[string]string{"MILTT": "MILTT"}},
+			},
+			expected: "DAL200 S170/UMILTT",
+		},
+		{
+			name:       "speed keyword to fix",
+			transcript: "Delta 200 speed one seven zero to MILTT",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "arrival", Fixes: map[string]string{"MILTT": "MILTT"}},
+			},
+			expected: "DAL200 S170/UMILTT",
+		},
+		{
+			// Full user-reported case: contact tower + reduce speed with trailing fix.
+			// Both commands should be emitted, not just the tower handoff.
+			name:       "contact tower then reduce speed to fix",
+			transcript: "Delta 200 contact tower one three two point two two reduce speed one seven zero knots to MILTT",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "arrival", Fixes: map[string]string{"MILTT": "MILTT"}},
+			},
+			expected: "DAL200 TO/132220 S170/UMILTT",
+		},
 	}
 
 	provider := NewTranscriber(nil)

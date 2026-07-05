@@ -33,10 +33,15 @@ func (m *literalMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords [
 		return matchResult{}
 	}
 
-	// Skip filler words
+	// Skip filler words — but don't skip a filler that is one of this template's
+	// target keywords. Some words (e.g. "to") are ambient filler globally, yet
+	// carry meaning in specific templates ("reduce speed X to FIX").
 	for pos < len(tokens) {
 		text := strings.ToLower(tokens[pos].Text)
 		if IsFillerWord(text) {
+			if slices.Contains(m.keywords, text) {
+				break
+			}
 			pos++
 			continue
 		}
