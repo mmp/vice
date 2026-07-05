@@ -1,9 +1,12 @@
 package eram
 
 import (
+	"slices"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/sim"
 )
 
 // ERAM Short-Term Conflict Alert (STCA). Every caUpdateInterval of sim time
@@ -117,4 +120,37 @@ func caConflict(a, b caTarget) bool {
 		}
 	}
 	return false
+}
+
+// CAPair is an active conflict alert between two targets. Callsigns are
+// stored alphabetically ordered so a pair has a single identity.
+type CAPair struct {
+	ADSBCallsigns [2]av.ADSBCallsign
+	Start         sim.Time
+}
+
+// mergeCAPairs reconciles the previous alert list with the pairs detected
+// this pass: pairs that remain keep their Start time and first-detected
+// order, vanished pairs are dropped, and new pairs are appended.
+func mergeCAPairs(prev []CAPair, detected [][2]av.ADSBCallsign, now sim.Time) []CAPair {
+	var merged []CAPair
+	for _, p := range prev {
+		if slices.Contains(detected, p.ADSBCallsigns) {
+			merged = append(merged, p)
+		}
+	}
+	for _, d := range detected {
+		if !slices.ContainsFunc(merged, func(p CAPair) bool { return p.ADSBCallsigns == d }) {
+			merged = append(merged, CAPair{ADSBCallsigns: d, Start: now})
+		}
+	}
+	return merged
+}
+
+// inConflictAlert reports whether the callsign is a member of any active
+// conflict alert pair.
+func (ep *ERAMPane) inConflictAlert(callsign av.ADSBCallsign) bool {
+	return slices.ContainsFunc(ep.CAPairs, func(p CAPair) bool {
+		return p.ADSBCallsigns[0] == callsign || p.ADSBCallsigns[1] == callsign
+	})
 }

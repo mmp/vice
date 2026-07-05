@@ -254,6 +254,10 @@ type ERAMPane struct {
 
 	lastTrackUpdate time.Time `json:"-"`
 
+	// Short-term conflict alert state; recomputed every caUpdateInterval.
+	CAPairs            []CAPair  `json:"-"`
+	lastConflictUpdate time.Time `json:"-"`
+
 	fdbArena util.ObjectArena[fullDatablock]    `json:"-"`
 	ldbArena util.ObjectArena[limitedDatablock] `json:"-"`
 

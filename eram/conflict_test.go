@@ -2,6 +2,10 @@ package eram
 
 import (
 	"testing"
+	"time"
+
+	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/sim"
 )
 
 func TestCAAltitudeEnvelope(t *testing.T) {
@@ -116,5 +120,43 @@ func TestCAConflictReducedSeparation(t *testing.T) {
 	// Within 3 nm at/below FL230 alerts.
 	if !caConflict(mk(20000, 0), mk(20000, 2.5)) {
 		t.Error("2.5nm lateral at FL200: want conflict")
+	}
+}
+
+func TestMergeCAPairs(t *testing.T) {
+	ab := [2]av.ADSBCallsign{"AAL1", "DAL2"}
+	cd := [2]av.ADSBCallsign{"SWA3", "UAL4"}
+	t0, t1 := sim.Time{}, sim.Time{}.Add(5*time.Second)
+
+	prev := []CAPair{{ADSBCallsigns: ab, Start: t0}}
+
+	// AB persists with its original start time; CD is added with now.
+	merged := mergeCAPairs(prev, [][2]av.ADSBCallsign{ab, cd}, t1)
+	if len(merged) != 2 {
+		t.Fatalf("got %d pairs, want 2", len(merged))
+	}
+	if merged[0].ADSBCallsigns != ab || !merged[0].Start.Equal(t0) {
+		t.Errorf("existing pair should keep its start time: got %+v", merged[0])
+	}
+	if merged[1].ADSBCallsigns != cd || !merged[1].Start.Equal(t1) {
+		t.Errorf("new pair should start now: got %+v", merged[1])
+	}
+
+	// AB no longer detected: dropped.
+	merged = mergeCAPairs(merged, [][2]av.ADSBCallsign{cd}, t1)
+	if len(merged) != 1 || merged[0].ADSBCallsigns != cd {
+		t.Errorf("stale pair should be dropped: got %+v", merged)
+	}
+}
+
+func TestInConflictAlert(t *testing.T) {
+	ep := &ERAMPane{CAPairs: []CAPair{
+		{ADSBCallsigns: [2]av.ADSBCallsign{"AAL1", "DAL2"}},
+	}}
+	if !ep.inConflictAlert("AAL1") || !ep.inConflictAlert("DAL2") {
+		t.Error("both pair members should be in conflict alert")
+	}
+	if ep.inConflictAlert("SWA3") {
+		t.Error("non-member should not be in conflict alert")
 	}
 }
