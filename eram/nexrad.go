@@ -2,6 +2,7 @@ package eram
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/radar"
@@ -104,7 +105,9 @@ func (ep *ERAMPane) drawWeatherRadar(ctx *panes.Context, transforms radar.ScopeT
 }
 
 // NX LVL toolbar button cycle (left-click drops a level: 123 → 23 → 3 →
-// OFF; middle-click reverses).
+// OFF; middle-click adds one back). As with other toolbar value
+// adjustments, the cycle doesn't wrap: a click past either end leaves the
+// value alone and briefly shows the invalid-select/-enter cursor.
 var nexradLevelCycle = []int{NexradToolbarAll, NexradToolbarHeavy, NexradToolbarExtreme, NexradToolbarOff}
 
 func nexradLevelLabel(level int) string {
@@ -120,19 +123,21 @@ func handleNexradLevelClick(ep *ERAMPane, pref *int) {
 		return
 	}
 
-	idx := 0
-	for i, v := range nexradLevelCycle {
-		if v == *pref {
-			idx = i
-			break
-		}
-	}
+	idx := max(0, slices.Index(nexradLevelCycle, *pref))
 
 	switch {
-	case ep.mousePrimaryClicked(mouse):
-		idx = (idx + 1) % len(nexradLevelCycle)
-	case ep.mouseTertiaryClicked(mouse):
-		idx = (idx - 1 + len(nexradLevelCycle)) % len(nexradLevelCycle)
+	case ep.mousePrimaryClicked(mouse): // drop a level
+		if idx+1 < len(nexradLevelCycle) {
+			idx++
+		} else {
+			ep.SetTemporaryCursor("EramInvalidSelect", 0.5, "")
+		}
+	case ep.mouseTertiaryClicked(mouse): // add a level back
+		if idx > 0 {
+			idx--
+		} else {
+			ep.SetTemporaryCursor("EramInvalidEnter", 0.5, "")
+		}
 	}
 	*pref = nexradLevelCycle[idx]
 }
