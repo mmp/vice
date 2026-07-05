@@ -228,6 +228,9 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 }
 
 // dimChars scales the color of every populated character in the field.
+// Datablock char colors are final once built (dbDrawLine renders them
+// as-is, ignoring its brightness parameter), so scaling here is the only
+// point where the conflict-alert dim can be applied.
 func dimChars(chars []dbChar, factor float32) {
 	for i := range chars {
 		if chars[i].ch != 0 {

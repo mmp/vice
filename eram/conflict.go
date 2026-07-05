@@ -162,6 +162,9 @@ func (ep *ERAMPane) inConflictAlert(callsign av.ADSBCallsign) bool {
 // past tentative, with enough radar history to derive velocity and
 // vertical rate; at least one target of a pair must be owned by a
 // controller in this ERAM facility.
+// Note: the caller passes ep.visibleTracks; today that is effectively all
+// tracks, but if display filtering (e.g. radar holes) is ever added there,
+// conflict detection coverage would narrow with it.
 func (ep *ERAMPane) updateConflictAlerts(ctx *panes.Context, tracks []sim.Track) {
 	now := ctx.Client.State.SimTime
 	if now.Time().Sub(ep.lastConflictUpdate) < caUpdateInterval {

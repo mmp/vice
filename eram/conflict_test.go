@@ -24,6 +24,8 @@ func TestCAAltitudeEnvelope(t *testing.T) {
 		{"descent away from db", caTarget{alt: 30000, rate: -1000, dbAlt: 34000}, 240, 26000, 26000},
 		// Climbing with no DB altitude: pure extrapolation.
 		{"climb no db", caTarget{alt: 30000, rate: 1000, dbAlt: 0}, 240, 34000, 34000},
+		// Climbing away from a DB altitude that is below: no cap.
+		{"climb away from db", caTarget{alt: 30000, rate: 1000, dbAlt: 26000}, 240, 34000, 34000},
 		// Level at the DB altitude: point envelope.
 		{"level at db", caTarget{alt: 34000, rate: 0, dbAlt: 34000}, 120, 34000, 34000},
 		// Level with DB altitude below: occupies the whole band at all t.
