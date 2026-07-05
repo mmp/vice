@@ -37,6 +37,9 @@ type datablock interface {
 	draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
 		sb *strings.Builder, brightness radar.Brightness,
 		dir math.CardinalOrdinalDirection, halfSeconds int64)
+	// dim scales every populated character's color; used for the conflict
+	// alert brightness-cycle flash.
+	dim(factor float32)
 }
 
 // dbChar represents a single character in a datablock along with its colour and
@@ -224,10 +227,37 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	dbDrawLines(lines, td, pt, font, sb, brightness, dir, halfSeconds)
 }
 
+// dimChars scales the color of every populated character in the field.
+func dimChars(chars []dbChar, factor float32) {
+	for i := range chars {
+		if chars[i].ch != 0 {
+			chars[i].color = chars[i].color.Scale(factor)
+		}
+	}
+}
+
+func (db *fullDatablock) dim(factor float32) {
+	dimChars(db.line0[:], factor)
+	dimChars(db.line1[:], factor)
+	dimChars(db.vci[:], factor)
+	dimChars(db.line2[:], factor)
+	dimChars(db.col1[:], factor)
+	dimChars(db.fieldD[:], factor)
+	dimChars(db.fieldE[:], factor)
+	dimChars(db.line4[:], factor)
+}
+
+func (db *limitedDatablock) dim(factor float32) {
+	dimChars(db.line0[:], factor)
+	dimChars(db.line1[:], factor)
+	dimChars(db.line2[:], factor)
+}
+
 func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
 	ep.fdbArena.Reset()
 	ep.ldbArena.Reset()
 
+	halfSeconds := time.Now().UnixMilli() / 500
 	dbs := make(map[av.ADSBCallsign]datablock)
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
@@ -240,6 +270,12 @@ func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map
 		brite := util.Select(dbType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
 		color := brite.ScaleRGB(colors.yellow)
 		db := ep.getDatablock(ctx, trk, dbType, color)
+		if db != nil && ep.inConflictAlert(trk.ADSBCallsign) && halfSeconds&1 == 1 {
+			// Conflict alert flash: the datablock dims and returns to
+			// normal brightness on a half-second cycle (it never
+			// disappears entirely).
+			db.dim(caDimFactor)
+		}
 		dbs[trk.ADSBCallsign] = db
 	}
 	return dbs
