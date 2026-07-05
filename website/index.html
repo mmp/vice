@@ -125,6 +125,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
+      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.6">0.14.6</a></li>
               <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.5">0.14.5</a></li>
               <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.4">0.14.4</a></li>
               <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.3">0.14.3</a></li>
@@ -1680,7 +1681,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.14.5/Vice-v0.14.5-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.5 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.14.6/Vice-v0.14.6-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.6 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1689,7 +1690,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Ventura or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.14.5/Vice-v0.14.5-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.5 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.14.6/Vice-v0.14.6-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.6 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1717,6 +1718,43 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.14.6">0.14.6 (5 Jul 2026)</h3>
+            <ul>
+              <li>New scenarios: T75 (Ryan H), RSW (Nelson Tieku)</li>
+              <li>Scenario update: F11 (manaphy)</li>
+              <li>ERAM
+                <ul>
+                  <li>Added support for Nexrad weather radar (Michael Trokel)</li>
+                  <li>Added FDB altitude, speed, and free-form text menus (Michael Trokel)</li>
+                  <li>Added support for point outs (<code>QP</code> commands)</li>
+                  <li>Added support for quicklook (<code>QL</code> commands)</li>
+                  <li>Fixed bug with placement of dwell boxes with leader line length 0</li>
+                  <li>Fixed bugs in <code>LA</code>/<code>LB</code> commands, added <code>LC</code> command</li>
+                  <li>Added support for setting leader line position and length together: <code>#/# [FLID]</code></li>
+                  <li>Fixed bugs with left vs. middle click of tracks behaving differently when entering commands</li>
+                  <li>Added support for pop-up menus to configure more views</li>
+                  <li>Added checklist views</li>
+                  <li>Adjusted scrollwheel sensitivity for zooming into scope</li>
+                  <li>Fixed bug with ERAM cursors not being drawn</li>
+                  <li>Added support for F-key shortcuts (F1 -&gt; QF, etc.)</li>
+                </ul>
+              </li>
+              <li>STARS
+                <ul>
+                  <li>Fixed bug with &quot;create / modify interfacility VFR flight plan&quot; command (e.g. <code>N123AB LAS*SAN C172 165</code>)</li>
+                </ul>
+              </li>
+              <li>Slightly reduced TTS readback speed, added slider to control it.</li>
+              <li>STT: fixed a bug where fixes in the expected approach weren't considered for matching fix names in instructions</li>
+              <li>Facility engineering
+                <ul>
+                  <li>Added &quot;flight_following_request_rate&quot; to scenario specifications (10/hour by default)</li>
+                  <li>Allow arrays of altitudes for &quot;cruise_altitude&quot; for arrivals/overflights</li>
+                </ul>
+              </li>
+            </ul>
+
 
             <h3 id="release-0.14.5">0.14.5 (17 Jun 2026)</h3>
             <ul>

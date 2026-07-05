@@ -45,6 +45,33 @@
   </branding>
 
   <releases>
+    <release version="0.14.6" date="2026-07-05">
+      <url type="details">https://pharr.org/vice/#release-0.14.6</url>
+      <description>
+        <ul>
+          <li>New scenarios: T75 (Ryan H), RSW (Nelson Tieku)</li>
+          <li>Scenario update: F11 (manaphy)</li>
+          <li>ERAM: Added support for Nexrad weather radar (Michael Trokel)</li>
+          <li>ERAM: Added FDB altitude, speed, and free-form text menus (Michael Trokel)</li>
+          <li>ERAM: Added support for point outs (QP commands)</li>
+          <li>ERAM: Added support for quicklook (QL commands)</li>
+          <li>ERAM: Fixed bug with placement of dwell boxes with leader line length 0</li>
+          <li>ERAM: Fixed bugs in LA/LB commands, added LC command</li>
+          <li>ERAM: Added support for setting leader line position and length together: #/# [FLID]</li>
+          <li>ERAM: Fixed bugs with left vs. middle click of tracks behaving differently when entering commands</li>
+          <li>ERAM: Added support for pop-up menus to configure more views</li>
+          <li>ERAM: Added checklist views</li>
+          <li>ERAM: Adjusted scrollwheel sensitivity for zooming into scope</li>
+          <li>ERAM: Fixed bug with ERAM cursors not being drawn</li>
+          <li>ERAM: Added support for F-key shortcuts (F1 -&gt; QF, etc.)</li>
+          <li>STARS: Fixed bug with &quot;create / modify interfacility VFR flight plan&quot; command (e.g. N123AB LAS*SAN C172 165)</li>
+          <li>Slightly reduced TTS readback speed, added slider to control it.</li>
+          <li>STT: fixed a bug where fixes in the expected approach weren't considered for matching fix names in instructions</li>
+          <li>Facility engineering: Added &quot;flight_following_request_rate&quot; to scenario specifications (10/hour by default)</li>
+          <li>Facility engineering: Allow arrays of altitudes for &quot;cruise_altitude&quot; for arrivals/overflights</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.14.5" date="2026-06-17">
       <url type="details">https://pharr.org/vice/#release-0.14.5</url>
       <description>
