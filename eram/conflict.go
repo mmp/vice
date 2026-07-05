@@ -6,6 +6,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/sim"
 )
 
@@ -153,4 +154,76 @@ func (ep *ERAMPane) inConflictAlert(callsign av.ADSBCallsign) bool {
 	return slices.ContainsFunc(ep.CAPairs, func(p CAPair) bool {
 		return p.ADSBCallsigns[0] == callsign || p.ADSBCallsigns[1] == callsign
 	})
+}
+
+// updateConflictAlerts runs an STCA detection pass every caUpdateInterval
+// of sim time. It rebuilds the set of predicted-conflict pairs from
+// scratch and merges it into ep.CAPairs. Eligibility: associated, Mode C,
+// past tentative, with enough radar history to derive velocity and
+// vertical rate; at least one target of a pair must be owned by a
+// controller in this ERAM facility.
+func (ep *ERAMPane) updateConflictAlerts(ctx *panes.Context, tracks []sim.Track) {
+	now := ctx.Client.State.SimTime
+	if now.Time().Sub(ep.lastConflictUpdate) < caUpdateInterval {
+		return
+	}
+	ep.lastConflictUpdate = now.Time()
+
+	type caCandidate struct {
+		callsign av.ADSBCallsign
+		target   caTarget
+		owned    bool // owned by a controller in this ERAM facility
+	}
+	var candidates []caCandidate
+	for _, trk := range tracks {
+		if trk.IsUnassociated() || trk.Mode != av.TransponderModeAltitude || trk.IsTentative {
+			continue
+		}
+		state := ep.TrackState[trk.ADSBCallsign]
+		if state == nil || !state.HaveHeading() {
+			continue
+		}
+		dt := float32(state.TrackTime.Sub(state.PreviousTrackTime).Seconds())
+		if dt <= 0 {
+			continue
+		}
+
+		p0 := math.LL2NM(state.PreviousTrack.Location, ctx.NmPerLongitude)
+		p1 := math.LL2NM(state.Track.Location, ctx.NmPerLongitude)
+		var vel [2]float32
+		if d := math.Sub2f(p1, p0); math.Length2f(d) > 0 {
+			vel = math.Scale2f(math.Normalize2f(d), state.Track.Groundspeed/3600) // knots -> NM/s
+		}
+		rate := (state.Track.TransponderAltitude - state.PreviousTrack.TransponderAltitude) / dt * 60 // ft/min
+
+		candidates = append(candidates, caCandidate{
+			callsign: trk.ADSBCallsign,
+			target: caTarget{
+				pos:   p1,
+				vel:   vel,
+				alt:   state.Track.TransponderAltitude,
+				rate:  rate,
+				dbAlt: trk.FlightPlan.DataBlockAltitude(),
+			},
+			owned: ctx.Client.State.IsLocalController(trk.FlightPlan.TrackingController),
+		})
+	}
+
+	var detected [][2]av.ADSBCallsign
+	for i, ca := range candidates {
+		for _, cb := range candidates[i+1:] {
+			if !ca.owned && !cb.owned {
+				continue
+			}
+			if caConflict(ca.target, cb.target) {
+				pair := [2]av.ADSBCallsign{ca.callsign, cb.callsign}
+				if pair[0] > pair[1] {
+					pair[0], pair[1] = pair[1], pair[0]
+				}
+				detected = append(detected, pair)
+			}
+		}
+	}
+
+	ep.CAPairs = mergeCAPairs(ep.CAPairs, detected, now)
 }

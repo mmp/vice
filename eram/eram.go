@@ -524,6 +524,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.updateVisibleTracks(ctx)
 	tracks := ep.visibleTracks
 	ep.updateRadarTracks(ctx, tracks)
+	ep.updateConflictAlerts(ctx, tracks)
 
 	// draw the ERAMPane
 	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(colors.scopeBackground)) // Scale this eventually
@@ -614,12 +615,16 @@ func (ep *ERAMPane) LoadedSim(client *client.ControlClient, pl platform.Platform
 	ep.ensurePrefSetForSim(client.State)
 	ep.makeMaps(client, lg)
 	ep.lastTrackUpdate = time.Time{}
+	ep.CAPairs = nil
+	ep.lastConflictUpdate = time.Time{}
 }
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(client.State)
 	ep.makeMaps(client, lg)
 	ep.lastTrackUpdate = time.Time{}
+	ep.CAPairs = nil
+	ep.lastConflictUpdate = time.Time{}
 
 	ep.scopeDraw.arrivals = nil
 	ep.scopeDraw.approaches = nil
