@@ -510,14 +510,16 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		toolbarDrawState.customButton[main] = colors.toolbar.activeButton
 		delete(toolbarDrawState.customButton, "WX")
 		toolbarDrawState.customButton["CRR\nFIX"] = colors.toolbar.blackButton
-		toolbarDrawState.customButton["SPEED\nADVSRY"] = colors.toolbar.blackButton
+		// cleanButtonName maps "SPEED\nADVSRY" to its first line, so the
+		// custom color must be keyed by "SPEED".
+		toolbarDrawState.customButton["SPEED"] = colors.toolbar.blackButton
 		// WX1/WX2/WX3 are not simulated; render them dark.
 		toolbarDrawState.customButton["WX1"] = renderer.RGB{R: 0, G: 0, B: 0}
 		toolbarDrawState.customButton["WX2"] = renderer.RGB{R: 0, G: 0, B: 0}
 		toolbarDrawState.customButton["WX3"] = renderer.RGB{R: 0, G: 0, B: 0}
 
 		clearCustom := func() {
-			for _, name := range []string{main, "CRR\nFIX", "SPEED\nADVSRY", "WX1", "WX2", "WX3"} {
+			for _, name := range []string{main, "CRR\nFIX", "SPEED", "WX1", "WX2", "WX3"} {
 				delete(toolbarDrawState.customButton, name)
 			}
 		}
