@@ -165,6 +165,10 @@ func (s WxScheme) LevelForDBZ(dbz byte) int {
 // CommandBuffer per level (nil entries for empty levels).
 func (s WxScheme) MakeCommandBuffers(precip *wx.Precip) []*renderer.CommandBuffer {
 	nx, ny := precip.Resolution, precip.Resolution
+	if precip.NX > 0 {
+		// Blob with explicit (possibly non-square) fetch geometry.
+		nx, ny = precip.NX, precip.NY
+	}
 	bounds := precip.BoundsLL()
 
 	tb := renderer.GetTrianglesDrawBuilder()

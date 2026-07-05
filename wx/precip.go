@@ -22,6 +22,13 @@ type Precip struct {
 	Resolution int
 	Latitude   float32
 	Longitude  float32
+
+	// If NX is nonzero, DBZ is an NX x NY grid covering exactly Bounds,
+	// the geometry recorded at fetch time by wxscrape. Otherwise the blob
+	// predates bounds being recorded and DBZ is Resolution^2 at 2
+	// pixels/NM centered on (Latitude, Longitude).
+	NX, NY int
+	Bounds math.Extent2D
 }
 
 func DecodePrecip(r io.Reader) (*Precip, error) {
@@ -43,9 +50,13 @@ func DecodePrecip(r io.Reader) (*Precip, error) {
 
 // lat-long bounds
 func (p Precip) BoundsLL() math.Extent2D {
-	centerLL := math.Point2LL{p.Longitude, p.Latitude}
+	if p.NX > 0 {
+		return p.Bounds
+	}
 
-	// Resolution is in pixels, and we have 0.5nm per pixel (2 samples per nm)
+	// Legacy blob without recorded bounds: reconstruct the extent from the
+	// pixel count, assuming 0.5nm per pixel (2 samples per nm).
+	centerLL := math.Point2LL{p.Longitude, p.Latitude}
 	widthNM := float32(p.Resolution) / 2
 	return math.BoundLatLongCircle(centerLL, widthNM/2 /* radius */)
 }
