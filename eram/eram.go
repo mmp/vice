@@ -534,6 +534,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Following are the draw functions. They are listed in the best of my ability
 
 	// Draw weather
+	ep.drawWeatherRadar(ctx, transforms, cb)
 	ep.drawVideoMaps(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, renderer.GetDefaultFont(), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
@@ -547,7 +548,6 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 		scopeExtent.P1[1] -= sz[1]
 	}
 	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	ep.drawWeatherRadar(ctx, transforms, cb)
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
 	dbs := ep.getAllDatablocks(ctx, tracks)
 	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
