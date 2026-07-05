@@ -1374,7 +1374,7 @@ func cleanButtonName(name string) string {
 		firstLine = name[:i]
 	}
 	switch firstLine {
-	case "RANGE", "ALT LIM", "VECTOR", "FDB LDR", "NONADSB", "SPEED", "SIZE", "VOLUME":
+	case "RANGE", "ALT LIM", "VECTOR", "FDB LDR", "NONADSB", "SPEED", "SIZE", "VOLUME", "NX LVL":
 		return firstLine
 	}
 	return name
@@ -2236,6 +2236,8 @@ func (ep *ERAMPane) getTornOffButtonText(name string) string {
 	case "FDB LDR":
 		ps := ep.currentPrefs()
 		return fmt.Sprintf("FDB LDR\n%d", ps.FDBLdrLength)
+	case "NX LVL":
+		return "NX LVL\n" + nexradLevelLabel(ep.currentPrefs().NexradLevel)
 	case "ALT LIM":
 		ps := ep.currentPrefs()
 		return fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1])
@@ -2370,6 +2372,9 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	case "ATC\nTOOLS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarATCTools)
+	case "WX":
+		ep.clearToolbarMouseDown()
+		ep.toggleTearoffMenu(buttonName, toolbarWX)
 	case "AB\nSETTING":
 		// Handle AB SETTING (options are in ERAM settings UI in ui.go)
 	case "CURSOR":
@@ -2389,6 +2394,8 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	case "FDB LDR":
 		ps := ep.currentPrefs()
 		handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
+	case "NX LVL":
+		handleNexradLevelClick(ep, &ps.NexradLevel)
 	case "VIEWS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarViews)
