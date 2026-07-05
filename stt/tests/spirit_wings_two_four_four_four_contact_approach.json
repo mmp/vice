@@ -1,0 +1,448 @@
+{
+  "time": "2026-06-27T14:36:15.987670984Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:725:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Spirit Wings Two Four Four Four contact approach",
+  "whisper_duration_ms": 309.295,
+  "audio_duration_ms": 3272,
+  "processor": "GPU: AMD Radeon RX 9060 XT (16304MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "NKS2444",
+  "command": "FC",
+  "stt_aircraft": {
+    "American seven 77 heavy": {
+      "Callsign": "AAL777",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Folz": "FOLZZ",
+        "Kay bola": "KBOLA",
+        "London Heathrow": "EGLL",
+        "Mark": "MARCK",
+        "Miami": "KMIA"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 5021,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 57 63": {
+      "Callsign": "JBU5763",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Bepac": "BEPAC",
+        "Fort Lauderdale": "FLL",
+        "Holid": "HOLID",
+        "Kevey": "KEVEY",
+        "Laden": "LATNN",
+        "Luis Munoz Marin": "TJSJ",
+        "Nova": "NOVAE",
+        "Ollas": "OLAHS",
+        "Wanar": "WANAR",
+        "Warrior": "WAROR",
+        "Wavun": "WAVUN",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R",
+        "r-nav runway one zero right": "R0R",
+        "r-nav yankee runway one zero left": "RY0L",
+        "r-nav zulu runway one zero left": "RZ0L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one zero left": "10L",
+        "visual approach runway one zero right": "10R",
+        "visual one zero left": "10L",
+        "visual one zero right": "10R",
+        "visual runway one zero left": "10L",
+        "visual runway one zero right": "10R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        },
+        "R0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII",
+          "Zalal": "ZALAL"
+        },
+        "RY0L": {
+          "Holid": "HOLID",
+          "Jepy": "IJEPY",
+          "Nova": "NOVAE",
+          "Ogihi": "OGIHI",
+          "Siol": "SIYOL",
+          "Vanuy": "VANUY",
+          "Warrior": "WAROR",
+          "Yely": "YELUY",
+          "gamvy": "GAMVE"
+        },
+        "RZ0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Paki": "PAKEE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "OLAHS3",
+      "Route": null,
+      "Altitude": 8093,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 70": {
+      "Callsign": "JBU70",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Adobe": "ADUBE",
+        "Bahia": "BHHIA",
+        "Bezer": "BEZER",
+        "Blame": "BLAIM",
+        "Bunker": "BUNKR",
+        "Fort Lauderdale": "FLL",
+        "Hulky": "HULKY",
+        "José Martí": "MUHA",
+        "Kera": "KERRA",
+        "Lori": "LORII"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R",
+        "r-nav runway one zero right": "R0R",
+        "r-nav yankee runway one zero left": "RY0L",
+        "r-nav zulu runway one zero left": "RZ0L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one zero left": "10L",
+        "visual approach runway one zero right": "10R",
+        "visual one zero left": "10L",
+        "visual one zero right": "10R",
+        "visual runway one zero left": "10L",
+        "visual runway one zero right": "10R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        },
+        "R0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII",
+          "Zalal": "ZALAL"
+        },
+        "RY0L": {
+          "Holid": "HOLID",
+          "Jepy": "IJEPY",
+          "Nova": "NOVAE",
+          "Ogihi": "OGIHI",
+          "Siol": "SIYOL",
+          "Vanuy": "VANUY",
+          "Warrior": "WAROR",
+          "Yely": "YELUY",
+          "gamvy": "GAMVE"
+        },
+        "RZ0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Paki": "PAKEE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "BHHIA3",
+      "Route": null,
+      "Altitude": 12153,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 24 44": {
+      "Callsign": "NKS2444",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Bepac": "BEPAC",
+        "Fort Lauderdale": "FLL",
+        "Holid": "HOLID",
+        "LaGuardia": "KLGA",
+        "Nova": "NOVAE",
+        "Wanar": "WANAR",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R",
+        "r-nav runway one zero right": "R0R",
+        "r-nav yankee runway one zero left": "RY0L",
+        "r-nav zulu runway one zero left": "RZ0L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one zero left": "10L",
+        "visual approach runway one zero right": "10R",
+        "visual one zero left": "10L",
+        "visual one zero right": "10R",
+        "visual runway one zero left": "10L",
+        "visual runway one zero right": "10R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        },
+        "R0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII",
+          "Zalal": "ZALAL"
+        },
+        "RY0L": {
+          "Holid": "HOLID",
+          "Jepy": "IJEPY",
+          "Nova": "NOVAE",
+          "Ogihi": "OGIHI",
+          "Siol": "SIYOL",
+          "Vanuy": "VANUY",
+          "Warrior": "WAROR",
+          "Yely": "YELUY",
+          "gamvy": "GAMVE"
+        },
+        "RZ0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Paki": "PAKEE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Route": null,
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 99 76": {
+      "Callsign": "NKS9976",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Bezer": "BEZER",
+        "Blame": "BLAIM",
+        "Bunker": "BUNKR",
+        "Fort Lauderdale": "FLL",
+        "Heeze": "HEEZE",
+        "José Martí": "MUHA",
+        "Lori": "LORII"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R",
+        "r-nav runway one zero right": "R0R",
+        "r-nav yankee runway one zero left": "RY0L",
+        "r-nav zulu runway one zero left": "RZ0L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one zero left": "10L",
+        "visual approach runway one zero right": "10R",
+        "visual one zero left": "10L",
+        "visual one zero right": "10R",
+        "visual runway one zero left": "10L",
+        "visual runway one zero right": "10R"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        },
+        "I0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII"
+        },
+        "R0R": {
+          "Bezer": "BEZER",
+          "Blame": "BLAIM",
+          "Bunker": "BUNKR",
+          "Fort Lauderdale": "FLL",
+          "Lori": "LORII",
+          "Zalal": "ZALAL"
+        },
+        "RY0L": {
+          "Holid": "HOLID",
+          "Jepy": "IJEPY",
+          "Nova": "NOVAE",
+          "Ogihi": "OGIHI",
+          "Siol": "SIYOL",
+          "Vanuy": "VANUY",
+          "Warrior": "WAROR",
+          "Yely": "YELUY",
+          "gamvy": "GAMVE"
+        },
+        "RZ0L": {
+          "Fort Lauderdale": "FLL",
+          "Holid": "HOLID",
+          "Nova": "NOVAE",
+          "Paki": "PAKEE",
+          "Warrior": "WAROR",
+          "gamvy": "GAMVE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "TEEKY4",
+      "Route": null,
+      "Altitude": 5032,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Spirit Wings Two Four Four Four contact approach\"",
+    "[local-stt] normalized words: [spirit wings 2 4 4 4 contact approach]",
+    "[local-stt] tokens: 5",
+    "[local-stt]   token[0]: Text=\"spirit\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"wings\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"2444\" Type=1 Value=2444",
+    "[local-stt]   token[3]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 5 tokens, 5 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 5 tokens, 5 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"Spirit Wings 24 44\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Spirit Wings 24 44\" (airline=0.456, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Spirit Wings 24 44\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 4 results",
+    "[local-stt]     result 0: \"American seven 77 heavy\" (airline=0.361, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"American seven 77 heavy\" (airline=0.442, flight=0.000, skip=1)",
+    "[local-stt]     result 2: \"JetBlue 57 63\" (airline=0.429, flight=0.000, skip=3)",
+    "[local-stt]     result 3: \"JetBlue 70\" (airline=0.429, flight=0.000, skip=3)",
+    "[local-stt]     pattern \"airline_only\": selected \"American seven 77 heavy\" (airline=0.44, flight=0.00, skip=1)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"American seven 77 heavy\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 3 results",
+    "[local-stt]     result 0: \"Spirit Wings 24 44\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Spirit Wings 24 44\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     result 2: \"Spirit Wings 24 44\" (airline=0.500, flight=1.000, skip=2)",
+    "[local-stt]     pattern \"flight_only\": selected \"Spirit Wings 24 44\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"NKS2444\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Spirit Wings 24 44\")",
+    "[local-stt] callsign match: Callsign=\"NKS2444\" SpokenKey=\"Spirit Wings 24 44\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=8 Approaches=5 VisualApproaches=6 AssignedApproach=\"ILS Runway 10L\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Wanar\" -\u003e \"WANAR\"",
+    "[local-stt]   fix: \"Holid\" -\u003e \"HOLID\"",
+    "[local-stt]   fix: \"gamvy\" -\u003e \"GAMVE\"",
+    "[local-stt]   fix: \"Warrior\" -\u003e \"WAROR\"",
+    "[local-stt]   fix: \"Nova\" -\u003e \"NOVAE\"",
+    "[local-stt]   fix: \"Fort Lauderdale\" -\u003e \"FLL\"",
+    "[local-stt]   fix: \"LaGuardia\" -\u003e \"KLGA\"",
+    "[local-stt]   fix: \"Bepac\" -\u003e \"BEPAC\"",
+    "[local-stt]   approach: \"I L S runway one zero left\" -\u003e \"I0L\"",
+    "[local-stt]   approach: \"r-nav yankee runway one zero left\" -\u003e \"RY0L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one zero left\" -\u003e \"RZ0L\"",
+    "[local-stt]   approach: \"r-nav runway one zero right\" -\u003e \"R0R\"",
+    "[local-stt]   approach: \"I L S runway one zero right\" -\u003e \"I0R\"",
+    "[local-stt]   visual approach: \"visual approach runway one zero right\" -\u003e \"10R\"",
+    "[local-stt]   visual approach: \"visual one zero right\" -\u003e \"10R\"",
+    "[local-stt]   visual approach: \"visual runway one zero left\" -\u003e \"10L\"",
+    "[local-stt]   visual approach: \"visual approach runway one zero left\" -\u003e \"10L\"",
+    "[local-stt]   visual approach: \"visual one zero left\" -\u003e \"10L\"",
+    "[local-stt]   visual approach: \"visual runway one zero right\" -\u003e \"10R\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"contact\" against 8 fixes",
+    "[local-stt]   extractFix: no match found for \"contact\"",
+    "[local-stt]   matched command: \"FC\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[FC] (avgConf=1.00)",
+    "[local-stt] parsed commands: [FC] (conf=1.00)",
+    "[local-stt] validated commands: [FC] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"NKS2444 FC\" (conf=1.00, time=1.0178ms) ==="
+  ]
+}

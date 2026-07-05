@@ -1,0 +1,707 @@
+{
+  "time": "2026-07-01T18:40:06.260754236Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:956:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "New Street ninety eight zero seven direct to Daric cleared r visual only one in approach",
+  "whisper_duration_ms": 1174.822,
+  "audio_duration_ms": 4680,
+  "processor": "GPU: AMD Radeon RX 580 2048SP (8192MB)",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "JIA9807",
+  "command": "CRIV",
+  "stt_aircraft": {
+    "American 72": {
+      "Callsign": "AAL72",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Charlotte Douglas": "KCLT",
+        "Ronald Reagan Washington National": "KDCA"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "River Visual Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CAPSS4",
+      "Route": [
+        "KDCA"
+      ],
+      "Altitude": 4723,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "Blue Streak 60 97": {
+      "Callsign": "JIA6097",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Bradley": "KBDL",
+        "Daric": "DARIC",
+        "Ronald Reagan Washington National": "KDCA"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "Visual Approach Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CLIPR3",
+      "Route": [
+        "DARIC",
+        "KDCA"
+      ],
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "Blue Streak 98 zero seven": {
+      "Callsign": "JIA9807",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Fergi": "FERGI",
+        "General Mitchell": "KMKE",
+        "Ronald Reagan Washington National": "KDCA",
+        "Stand": "STAND",
+        "Together": "TGTHR"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "River Visual Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "FRDMM6",
+      "Route": [
+        "STAND",
+        "TGTHR",
+        "FERGI",
+        "KDCA"
+      ],
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "Brickyard 74 zero niner": {
+      "Callsign": "RPA7409",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "LaGuardia": "KLGA",
+        "Ronald Reagan Washington National": "KDCA"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "River Visual Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CLIPR3",
+      "Route": [
+        "KDCA"
+      ],
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "JetBlue 36 50": {
+      "Callsign": "JBU3650",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Daric": "DARIC",
+        "Fort Lauderdale": "KFLL",
+        "Ronald Reagan Washington National": "KDCA"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "Visual Approach Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CAPSS4",
+      "Route": [
+        "DARIC",
+        "KDCA"
+      ],
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "JetBlue 42": {
+      "Callsign": "JBU42",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Ronald Reagan Washington National": "KDCA"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "River Visual Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "DEALE3",
+      "Route": [
+        "KDCA"
+      ],
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "Southwest five zero niner": {
+      "Callsign": "SWA509",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Fort Lauderdale": "KFLL",
+        "Ronald Reagan Washington National": "KDCA"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "River Visual Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CAPSS4",
+      "Route": [
+        "KDCA"
+      ],
+      "Altitude": 2246,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "Spirit Wings 14 20": {
+      "Callsign": "NKS1420",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Atlantic City": "KACY",
+        "Ronald Reagan Washington National": "KDCA"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "River Visual Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "DEALE3",
+      "Route": [
+        "KDCA"
+      ],
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"New Street ninety eight zero seven direct to Daric cleared r visual only one in approach\"",
+    "[local-stt] normalized words: [new street 98 0 7 direct to direct cleared r visual only 1 in approach]",
+    "[local-stt] tokens: 13",
+    "[local-stt]   token[0]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"street\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"9807\" Type=1 Value=9807",
+    "[local-stt]   token[3]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"r\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"visual\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"only\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"1\" Type=1 Value=1",
+    "[local-stt]   token[11]: Text=\"in\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 13 tokens, 8 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 13 tokens, 8 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Blue Streak 98 zero seven\" (airline=0.472, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Blue Streak 98 zero seven\" (airline=0.47, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"airline_only\": 18 results",
+    "[local-stt]     result 0: \"JetBlue 42\" (airline=0.492, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest five zero niner\" (airline=0.481, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"JetBlue 36 50\" (airline=0.492, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"American 72\" (airline=0.486, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Brickyard 74 zero niner\" (airline=0.426, flight=0.000, skip=1)",
+    "[local-stt]     pattern \"airline_only\": selected \"Southwest five zero niner\" (airline=0.73, flight=0.00, skip=1)",
+    "[local-stt]     pattern \"airline_only\": below MinScore (1.23 \u003c 1.30) for \"Southwest five zero niner\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 3 results",
+    "[local-stt]     result 0: \"Blue Streak 98 zero seven\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Blue Streak 98 zero seven\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     result 2: \"Blue Streak 98 zero seven\" (airline=0.500, flight=1.000, skip=2)",
+    "[local-stt]     pattern \"flight_only\": selected \"Blue Streak 98 zero seven\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"JIA9807\" (conf=0.90, consumed=3, addressingForm=0, spokenKey=\"Blue Streak 98 zero seven\")",
+    "[local-stt] callsign match: Callsign=\"JIA9807\" SpokenKey=\"Blue Streak 98 zero seven\" Conf=0.90 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=3000 Fixes=5 Approaches=4 VisualApproaches=6 AssignedApproach=\"River Visual Runway 19\" LAHSORunways=[1 19 4 22 4 22 15 33]",
+    "[local-stt]   fix: \"Ronald Reagan Washington National\" -\u003e \"KDCA\"",
+    "[local-stt]   fix: \"General Mitchell\" -\u003e \"KMKE\"",
+    "[local-stt]   fix: \"Stand\" -\u003e \"STAND\"",
+    "[local-stt]   fix: \"Together\" -\u003e \"TGTHR\"",
+    "[local-stt]   fix: \"Fergi\" -\u003e \"FERGI\"",
+    "[local-stt]   approach: \"r-nav runway one five\" -\u003e \"R15\"",
+    "[local-stt]   approach: \"r-nav zulu runway one niner\" -\u003e \"RZ9\"",
+    "[local-stt]   approach: \"r-nav yankee runway one niner\" -\u003e \"RY9\"",
+    "[local-stt]   approach: \"River Visual runway one niner\" -\u003e \"RIV\"",
+    "[local-stt]   visual approach: \"visual runway one five\" -\u003e \"15\"",
+    "[local-stt]   visual approach: \"visual approach runway one five\" -\u003e \"15\"",
+    "[local-stt]   visual approach: \"visual one five\" -\u003e \"15\"",
+    "[local-stt]   visual approach: \"visual runway one niner\" -\u003e \"19\"",
+    "[local-stt]   visual approach: \"visual approach runway one niner\" -\u003e \"19\"",
+    "[local-stt]   visual approach: \"visual one niner\" -\u003e \"19\"",
+    "[local-stt] command tokens after disregard: 10",
+    "[local-stt]   token[0]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"r\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"visual\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"only\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"1\" Type=1 Value=1",
+    "[local-stt]   token[8]: Text=\"in\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 10 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"direct\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"direct\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"direct\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"direct\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"direct\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"direct\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"direct\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"direct\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"direct\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"direct\"",
+    "[local-stt]   no match at token[0]=\"direct\", skipping",
+    "[local-stt]   skipping filler word: \"to\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"cleared\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"cleared\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"r\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"r\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"cleared\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"cleared\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"r\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"r\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"cleared\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"cleared\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"r\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"r\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"cleared\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"cleared\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"r\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"r\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"direct\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"direct\"",
+    "[local-stt]   no match at token[2]=\"direct\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"r\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"r\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"visual\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"visual\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"only\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"only\"",
+    "[local-stt]   matchApproachByTypeAndNumber: inferred direction \"center\" from garbled \"in\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"cleared\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"cleared\"",
+    "[local-stt]   no match at token[3]=\"cleared\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"r\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"r\"",
+    "[local-stt]   no match at token[4]=\"r\", skipping",
+    "[local-stt]   extractSTAR: looking for STAR=\"FRDMM6\" telephony=\"Freedom six\"",
+    "[local-stt]   extractSTAR: no match found",
+    "[local-stt]   extractSTAR: looking for STAR=\"FRDMM6\" telephony=\"Freedom six\"",
+    "[local-stt]   extractSTAR: no match found",
+    "[local-stt]   extractSTAR: looking for STAR=\"FRDMM6\" telephony=\"Freedom six\"",
+    "[local-stt]   extractSTAR: no match found",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"visual\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"visual\"",
+    "[local-stt]   matchApproachByTypeAndNumber: inferred direction \"center\" from garbled \"in\"",
+    "[local-stt]   no match at token[5]=\"visual\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"only\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"only\"",
+    "[local-stt]   no match at token[6]=\"only\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"1\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"1\"",
+    "[local-stt]   no match at token[7]=\"1\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"in\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"in\"",
+    "[local-stt]   no match at token[8]=\"in\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"approach\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"approach\"",
+    "[local-stt]   no match at token[9]=\"approach\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"\" (conf=0.90, time=8.8681ms) ==="
+  ]
+}
