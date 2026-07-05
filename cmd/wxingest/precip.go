@@ -15,6 +15,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -106,6 +107,9 @@ func processPrecip(sb StorageBackend, path string) (int64, string, error) {
 		Resolution int
 		Latitude   float32
 		Longitude  float32
+		Source     string
+		NX, NY     int
+		Bounds     math.Extent2D
 	}
 	var wxs WXScraped
 	if err := gob.NewDecoder(bytes.NewReader(scraped)).Decode(&wxs); err != nil {
@@ -118,10 +122,13 @@ func processPrecip(sb StorageBackend, path string) (int64, string, error) {
 	}
 
 	wxp := wx.Precip{
-		DBZ:        util.DeltaEncode(wx.RadarImageToDBZ(img)),
+		DBZ:        util.DeltaEncode(wx.RadarImageToDBZ(img, wx.PrecipSource(wxs.Source))),
 		Resolution: wxs.Resolution,
 		Latitude:   wxs.Latitude,
 		Longitude:  wxs.Longitude,
+		NX:         wxs.NX,
+		NY:         wxs.NY,
+		Bounds:     wxs.Bounds,
 	}
 
 	facilityID, _, ok := strings.Cut(strings.TrimPrefix(path, "scrape/WX/"), "/")

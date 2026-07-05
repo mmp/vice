@@ -24,6 +24,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"cloud.google.com/go/storage"
 	"google.golang.org/api/iterator"
@@ -240,12 +241,60 @@ func fetchPRECIP(ctx context.Context, bucket *storage.BucketHandle) {
 }
 
 // calcResolution returns the image resolution to fetch for a given facility.
-// TRACONs use 4*radius (0.5nm/pixel), ARTCCs use 2*radius capped at 2048 (~1nm/pixel).
+// TRACONs use 4*radius (0.5nm/pixel), ARTCCs use 2*radius capped at 2048
+// (~1nm/pixel). Only used for facilities without an entry in
+// nexradCoverage.
 func calcResolution(facilityID string, radius float32) int {
 	if _, isARTCC := av.DB.ARTCCs[facilityID]; isARTCC {
 		return min(int(2*radius), 2048)
 	}
 	return int(4 * radius)
+}
+
+var nexradCoverage = map[string]struct {
+	TopLat, TopLon float32 // degrees; anchor of pixel (0, 0)
+	Width, Height  int     // NM (and pixels, at 1 NM/px)
+}{
+	"ZAB": {44, -121, 1412, 1140},
+	"ZAU": {50, -101, 1191, 960},
+	"ZBW": {54, -83, 1105, 1260},
+	"ZDC": {46, -88, 1068, 1140},
+	"ZDV": {51, -119, 1466, 1320},
+	"ZFW": {42, -110, 1368, 1080},
+	"ZHN": {31, -167, 1056, 1140},
+	"ZHU": {38, -109, 2221, 1200},
+	"ZID": {47, -96, 1141, 1020},
+	"ZJX": {41, -94, 1343, 1200},
+	"ZKC": {46, -110, 1466, 1020},
+	"ZLA": {44, -131, 1423, 1200},
+	"ZLC": {52, -123, 1388, 1080},
+	"ZMA": {36, -92, 2132, 1620},
+	"ZME": {43, -103, 1357, 1080},
+	"ZMP": {55, -111, 1852, 1320},
+	"ZNY": {48, -84, 1507, 1320},
+	"ZOA": {47, -134, 1322, 1140},
+	"ZOB": {50, -93, 1105, 1020},
+	"ZSE": {54, -136, 1487, 1200},
+	"ZTL": {43, -96, 1303, 1080},
+}
+
+// fetchGeometry returns the pixel dimensions and geographic bounds to fetch
+// for a facility: the nexradCoverage rectangle at ERAM's 1 NM/pixel for
+// ARTCCs, else a square around the facility center (0.5 NM/pixel for
+// TRACONs).
+func fetchGeometry(facilityID string, fac av.Facility) (wpx, hpx int, bbox math.Extent2D) {
+	if cov, ok := nexradCoverage[facilityID]; ok {
+		bottomLat := cov.TopLat - float32(cov.Height)/60
+		eastLon := cov.TopLon + float32(cov.Width)/(60*math.Cos(math.Radians(bottomLat)))
+		bbox = math.Extent2D{
+			P0: [2]float32{cov.TopLon, bottomLat},
+			P1: [2]float32{eastLon, cov.TopLat},
+		}
+		return cov.Width, cov.Height, bbox
+	}
+
+	res := calcResolution(facilityID, fac.Radius)
+	return res, res, math.BoundLatLongCircle(fac.Center(), fac.Radius)
 }
 
 // fetchFacilityPrecip runs asynchronously in a goroutine and fetches radar
@@ -261,9 +310,8 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 		LogError("%s: unable to find facility info", facilityID)
 		return
 	}
-	center := fac.Center()
-	fetchResolution := calcResolution(facilityID, fac.Radius)
-	bbox := math.BoundLatLongCircle(center, fac.Radius)
+	wpx, hpx, bbox := fetchGeometry(facilityID, fac)
+	center := bbox.Center()
 
 	area := "conus"
 	if facilityID == "HCF" || facilityID == "OGG" || facilityID == "ZHN" {
@@ -272,23 +320,34 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 		area = "alaska"
 	}
 
-	// The weather radar image comes via a WMS GetMap request from the NOAA.
+	// The weather radar image comes via a WMS GetMap request to the Iowa
+	// Environmental Mesonet's NEXRAD n0q (0.5 dBZ resolution base
+	// reflectivity) composites; this is the same source that backs NOAA's
+	// radar map at https://www.ncei.noaa.gov/maps/radar/. No-data pixels
+	// are returned fully transparent.
 	//
 	// Relevant background:
-	// https://enterprise.arcgis.com/en/server/10.3/publish-services/windows/communicating-with-a-wms-service-in-a-web-browser.htm
-	// http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd
-	// NOAA weather: https://opengeo.ncep.noaa.gov/geoserver/www/index.html
-	// https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?service=wms&version=1.3.0&request=GetCapabilities
+	// https://mesonet.agron.iastate.edu/ogc/
+	// https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0q.cgi?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetCapabilities
+	layer := map[string]string{
+		"conus":  "nexrad-n0q-900913-conus",
+		"alaska": "nexrad-n0q-900913-ak",
+		"hawaii": "nexrad-n0q-900913-hi",
+	}[area]
 	params := url.Values{}
 	params.Add("SERVICE", "WMS")
+	params.Add("VERSION", "1.1.1")
 	params.Add("REQUEST", "GetMap")
 	params.Add("FORMAT", "image/png")
-	params.Add("WIDTH", fmt.Sprintf("%d", fetchResolution))
-	params.Add("HEIGHT", fmt.Sprintf("%d", fetchResolution))
-	params.Add("LAYERS", area+"_bref_qcd")
+	params.Add("TRANSPARENT", "true")
+	params.Add("STYLES", "")
+	params.Add("SRS", "EPSG:4326")
+	params.Add("WIDTH", fmt.Sprintf("%d", wpx))
+	params.Add("HEIGHT", fmt.Sprintf("%d", hpx))
+	params.Add("LAYERS", layer)
 	params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", bbox.P0[0], bbox.P0[1], bbox.P1[0], bbox.P1[1]))
 
-	url := "https://opengeo.ncep.noaa.gov/geoserver/" + area + "/" + area + "_bref_qcd/ows?" + params.Encode()
+	url := "https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0q.cgi?" + params.Encode()
 
 	for {
 		var havePrecip bool
@@ -309,7 +368,9 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 
 			var status Status
 			havePrecip, status = func() (bool, Status) {
-				// Decode and see if there's anything there.
+				// Decode and see if there's anything there: no-data
+				// pixels are fully transparent, so any pixel with
+				// nonzero alpha is a radar return.
 				img, err := png.Decode(bytes.NewReader(b))
 				if err != nil {
 					LogError("%s: %s: %v", facilityID, url, err)
@@ -324,8 +385,7 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 					bounds := img.Bounds()
 					for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 						for x := bounds.Min.X; x < bounds.Max.X; x++ {
-							r, g, b, _ := img.At(x, y).RGBA()
-							if r != 0xffff || g != 0xffff || b != 0xffff {
+							if _, _, _, a := img.At(x, y).RGBA(); a != 0 {
 								return true, StatusSuccess
 							}
 						}
@@ -338,7 +398,7 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 					for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 						for x := bounds.Min.X; x < bounds.Max.X; x++ {
 							offset := (y-bounds.Min.Y)*stride + (x-bounds.Min.X)*4
-							if pix[offset] != 0xff || pix[offset+1] != 0xff || pix[offset+2] != 0xff {
+							if pix[offset+3] != 0 {
 								return true, StatusSuccess
 							}
 						}
@@ -355,19 +415,29 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 				Resolution int
 				Latitude   float32
 				Longitude  float32
+				Source     string
+				// Pixel dimensions of PNG and the geographic bounds of
+				// the fetch; wxingest carries these through so displays
+				// don't have to reconstruct the extent.
+				NX, NY int
+				Bounds math.Extent2D
 			}
-			wx := WX{
+			blob := WX{
 				PNG:        b,
-				Resolution: fetchResolution,
+				Resolution: wpx,
 				Latitude:   center[1],
 				Longitude:  center[0],
+				Source:     string(wx.PrecipSourceIEMN0Q),
+				NX:         wpx,
+				NY:         hpx,
+				Bounds:     bbox,
 			}
 
 			path := filepath.Join("scrape", "WX", facilityID, time.Now().UTC().Format(time.RFC3339)+".gob")
 
 			objw := bucket.Object(path).NewWriter(ctx)
 
-			if err := gob.NewEncoder(objw).Encode(wx); err != nil {
+			if err := gob.NewEncoder(objw).Encode(blob); err != nil {
 				LogError("%s: %v", path, err)
 				return StatusTransientFailure
 			}

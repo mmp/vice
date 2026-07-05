@@ -179,7 +179,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			// CRC doesn't even simulate this...
 		}
 		if ep.drawToolbarFullButton(ctx, "WX", 0, scale, false, false) {
-			// Opens WX menu
+			ep.activeToolbarMenu = toolbarWX
 		}
 
 		btnH := buttonSize(buttonFull, scale)[1]
@@ -496,6 +496,81 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			oc := math.Extent2DFromPoints([][2]float32{p0, p1, p2, p3})
 			toolbarDrawState.occlusionExtent = oc
 		}
+
+	case toolbarWX:
+		if toolbarDrawState.lightToolbar != [4][2]float32{} {
+			t := toolbarDrawState.lightToolbar
+			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
+		}
+		// The ATC TOOLS toolbar remains visible to the left of the WX
+		// submenu, as in CRC, with ATC TOOLS and WX both in the active
+		// color. The blue WX entry left over from the ATC TOOLS menu must
+		// be cleared so the toolbarLabel match colors WX active here.
+		main := "ATC\nTOOLS"
+		toolbarDrawState.customButton[main] = colors.toolbar.activeButton
+		delete(toolbarDrawState.customButton, "WX")
+		toolbarDrawState.customButton["CRR\nFIX"] = colors.toolbar.blackButton
+		// cleanButtonName maps "SPEED\nADVSRY" to its first line, so the
+		// custom color must be keyed by "SPEED".
+		toolbarDrawState.customButton["SPEED"] = colors.toolbar.blackButton
+		// WX1/WX2/WX3 are not simulated; render them dark.
+		toolbarDrawState.customButton["WX1"] = renderer.RGB{R: 0, G: 0, B: 0}
+		toolbarDrawState.customButton["WX2"] = renderer.RGB{R: 0, G: 0, B: 0}
+		toolbarDrawState.customButton["WX3"] = renderer.RGB{R: 0, G: 0, B: 0}
+
+		clearCustom := func() {
+			for _, name := range []string{main, "CRR\nFIX", "SPEED", "WX1", "WX2", "WX3"} {
+				delete(toolbarDrawState.customButton, name)
+			}
+		}
+
+		ps := ep.currentPrefs()
+		drawButtonSamePosition(ctx, main)
+		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarMain
+			resetButtonPosDefault(ctx, scale)
+			clearCustom()
+		}
+		if ep.drawToolbarFullButton(ctx, "CRR\nFIX", 0, scale, ps.CRR.DisplayFixes, false) {
+			ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
+		}
+		if ep.drawToolbarFullButton(ctx, "SPEED\nADVSRY", 0, scale, false, false) {
+			// CRC doesn't even simulate this...
+		}
+		// Anchor the row start at WX so the second row of the WX submenu
+		// (WX1-WX3) starts one button in, under NX 000.
+		wxPos := toolbarDrawState.buttonCursor
+		if ep.drawToolbarFullButton(ctx, "WX", 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarATCTools
+			resetButtonPosDefault(ctx, scale)
+			clearCustom()
+		}
+		toolbarDrawState.buttonDrawStartPos = wxPos
+		p0 := toolbarDrawState.buttonCursor
+
+		if ep.drawToolbarFullButton(ctx, "NX 000\n600", 0, scale, false, false) {
+			// Not simulated.
+		}
+		if ep.drawToolbarFullButton(ctx, "NX LVL\n"+nexradLevelLabel(ps.NexradLevel), 0, scale, false, false) {
+			handleNexradLevelClick(ep, &ps.NexradLevel)
+		}
+
+		toolbarDrawState.offsetBottom = true
+		if ep.drawToolbarFullButton(ctx, "WX1", 0, scale, false, true) {
+			// Not simulated.
+		}
+		if ep.drawToolbarFullButton(ctx, "WX2", 0, scale, false, false) {
+			// Not simulated.
+		}
+		if ep.drawToolbarFullButton(ctx, "WX3", 0, scale, false, false) {
+			// Not simulated.
+		}
+
+		p2 := [2]float32{toolbarDrawState.buttonCursor[0] - 2, oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))[1]}
+		p1 := [2]float32{p2[0], p0[1]}
+		p3 := [2]float32{p0[0], p2[1]}
+		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 
 	case toolbarRadarFilter:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
@@ -1278,6 +1353,7 @@ var toolbarLabel = map[int][]string{
 	toolbarFont:      {"FONT"},
 	toolbarViews:     {"VIEWS"},
 	toolbarMapBright: {"BRIGHT", "MAP\nBRIGHT"},
+	toolbarWX:        {"WX"},
 }
 
 var menuColor = map[int]renderer.RGB{
@@ -1290,6 +1366,7 @@ var menuColor = map[int]renderer.RGB{
 	toolbarDBFields:  colors.toolbar.blackButton, // DB FIELDS
 	toolbarFont:      colors.toolbar.greenButton, // FONT
 	toolbarViews:     colors.toolbar.blackButton, // VIEWS
+	toolbarWX:        colors.toolbar.greenButton, // WX
 }
 
 func (ep *ERAMPane) customButtonColor(button string) renderer.RGB {
@@ -1326,7 +1403,7 @@ func cleanButtonName(name string) string {
 		firstLine = name[:i]
 	}
 	switch firstLine {
-	case "RANGE", "ALT LIM", "VECTOR", "FDB LDR", "NONADSB", "SPEED", "SIZE", "VOLUME":
+	case "RANGE", "ALT LIM", "VECTOR", "FDB LDR", "NONADSB", "SPEED", "SIZE", "VOLUME", "NX LVL":
 		return firstLine
 	}
 	return name
@@ -2142,6 +2219,13 @@ func (ep *ERAMPane) tornOffButtonBaseColor(name string) renderer.RGB {
 	if key == "VECTOR" || key == "HISTORY" || key == "FDB LDR" || key == "NONADSB" {
 		return colors.toolbar.greenButton
 	}
+	// WX toolbar buttons keep their in-toolbar colors when torn off.
+	if key == "NX LVL" || key == "NX 000\n600" {
+		return colors.toolbar.greenButton
+	}
+	if key == "WX1" || key == "WX2" || key == "WX3" {
+		return colors.toolbar.blackButton
+	}
 	if display == "DELETE\nTEAROFF" {
 		return colors.toolbar.deleteTearoff
 	}
@@ -2188,6 +2272,8 @@ func (ep *ERAMPane) getTornOffButtonText(name string) string {
 	case "FDB LDR":
 		ps := ep.currentPrefs()
 		return fmt.Sprintf("FDB LDR\n%d", ps.FDBLdrLength)
+	case "NX LVL":
+		return "NX LVL\n" + nexradLevelLabel(ep.currentPrefs().NexradLevel)
 	case "ALT LIM":
 		ps := ep.currentPrefs()
 		return fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1])
@@ -2322,6 +2408,9 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	case "ATC\nTOOLS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarATCTools)
+	case "WX":
+		ep.clearToolbarMouseDown()
+		ep.toggleTearoffMenu(buttonName, toolbarWX)
 	case "AB\nSETTING":
 		// Handle AB SETTING (options are in ERAM settings UI in ui.go)
 	case "CURSOR":
@@ -2341,6 +2430,8 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	case "FDB LDR":
 		ps := ep.currentPrefs()
 		handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
+	case "NX LVL":
+		handleNexradLevelClick(ep, &ps.NexradLevel)
 	case "VIEWS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarViews)

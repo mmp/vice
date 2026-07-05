@@ -329,6 +329,9 @@ type ERAMPane struct {
 	posCheckToggled   []bool `json:"-"`
 	emergCheckToggled []bool `json:"-"`
 
+	weatherRadar radar.WeatherRadar `json:"-"`
+	nexrad       nexradCBs          `json:"-"`
+
 	commandMode       CommandMode     `json:"-"`
 	drawRouteAircraft av.ADSBCallsign `json:"-"`
 	drawRoutePoints   []math.Point2LL `json:"-"`
@@ -533,6 +536,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Following are the draw functions. They are listed in the best of my ability
 
 	// Draw weather
+	ep.drawWeatherRadar(ctx, transforms, cb)
 	ep.drawVideoMaps(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, renderer.GetDefaultFont(), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
@@ -728,6 +732,11 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 		ep.prefSet.Current.CheckList.Font = def.CheckList.Font
 		ep.prefSet.Current.CheckList.Highlight = def.CheckList.Highlight
 		ep.prefSet.Current.CheckList.Text = def.CheckList.Text
+	}
+	// Preference sets that predate the NX LVL field unmarshal NexradLevel as 0;
+	// 0 is reserved as the "uninitialized" sentinel and gets the default here.
+	if ep.prefSet.Current.NexradLevel == 0 {
+		ep.prefSet.Current.NexradLevel = NexradToolbarAll
 	}
 }
 
