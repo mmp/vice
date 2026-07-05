@@ -251,13 +251,6 @@ func calcResolution(facilityID string, radius float32) int {
 	return int(4 * radius)
 }
 
-// nexradCoverage gives the NEXRAD image geometry for each ARTCC's weather
-// display: the top-left anchor and the image dimensions in NM at 1
-// NM/pixel. Each image extends Width NM east and Height NM south of its
-// anchor in an equirectangular frame whose longitude scale is cos(bottom
-// latitude). ZAN is omitted (its coverage is polar/cross-dateline and
-// doesn't fit this treatment) and falls back to the square center+radius
-// fetch.
 var nexradCoverage = map[string]struct {
 	TopLat, TopLon float32 // degrees; anchor of pixel (0, 0)
 	Width, Height  int     // NM (and pixels, at 1 NM/px)

@@ -22,13 +22,8 @@ type Precip struct {
 	Resolution int
 	Latitude   float32
 	Longitude  float32
-
-	// If NX is nonzero, DBZ is an NX x NY grid covering exactly Bounds,
-	// the geometry recorded at fetch time by wxscrape. Otherwise the blob
-	// predates bounds being recorded and DBZ is Resolution^2 at 2
-	// pixels/NM centered on (Latitude, Longitude).
-	NX, NY int
-	Bounds math.Extent2D
+	NX, NY     int
+	Bounds     math.Extent2D
 }
 
 func DecodePrecip(r io.Reader) (*Precip, error) {
