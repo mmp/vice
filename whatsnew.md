@@ -1,0 +1,3 @@
+- Fixed bug where virtual controllers wouldn't accept redirected handoffs  
+- STARS
+  - Fixed bugs with redirected handoff datablocks and recalling redirected handoffs

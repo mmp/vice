@@ -276,8 +276,9 @@ type Event struct {
 	ADSBCallsign          av.ADSBCallsign
 	ACID                  ACID
 	FromController        ControlPosition
-	ToController          ControlPosition // For radio transmissions, the controlling controller.
-	DestinationTCW        TCW             // The TCW that should receive this transmission's TTS
+	ToController          ControlPosition   // For radio transmissions, the controlling controller.
+	Redirectors           []ControlPosition // For AcceptedRedirectedHandoffEvent, the redirecting positions.
+	DestinationTCW        TCW               // The TCW that should receive this transmission's TTS
 	WrittenText           string
 	SpokenText            string
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only

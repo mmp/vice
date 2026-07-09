@@ -353,7 +353,10 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockT
 		}
 
 		if len(sfp.RedirectedHandoff.Redirector) > 0 {
-			if ctx.UserControlsPosition(sfp.RedirectedHandoff.RedirectedTo) {
+			// 5.1.18: FDB at the new receiver and at the redirecting
+			// position(s) until the handoff is accepted.
+			if ctx.UserControlsPosition(sfp.RedirectedHandoff.RedirectedTo) ||
+				ctx.UserWasRedirector(sfp.RedirectedHandoff.Redirector) {
 				return FullDatablock
 			}
 		}
@@ -1277,9 +1280,10 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 		} else if ctx.UserControlsPosition(sfp.RedirectedHandoff.OriginalOwner) ||
 			ctx.UserControlsPosition(sfp.RedirectedHandoff.RedirectedTo) {
 			color = sp.Colors.OwnedDatablock
-		} else if ctx.UserControlsPosition(sfp.HandoffController) &&
-			!ctx.UserControlsPosition(sfp.RedirectedHandoff.GetLastRedirector()) {
-			// flashing white if it's being handed off to us.
+		} else if ctx.IsHandoffToUser(&trk) {
+			// flashing white if it's being handed off to us (but not if
+			// we've redirected it away: 5.1.18 has the FDB in the unowned
+			// color at the redirecting positions).
 			color = sp.Colors.OwnedDatablock
 		} else if state.OutboundHandoffAccepted {
 			// we handed it off, it was accepted, but we haven't yet acknowledged

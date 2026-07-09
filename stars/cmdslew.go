@@ -27,7 +27,16 @@ func registerSlewCommands() {
 				fp := trk.FlightPlan
 
 				if fp.HandoffController != "" {
-					if ctx.UserControlsPosition(fp.HandoffController) {
+					if ctx.UserControlsPosition(fp.RedirectedHandoff.RedirectedTo) ||
+						ctx.UserControlsPosition(fp.RedirectedHandoff.GetLastRedirector()) {
+						// This must be checked before the regular handoff accept:
+						// the first redirector still controls HandoffController.
+						// 5.1.5 Accept redirected handoff (implied)
+						// 5.1.6 Recall redirected handoff (implied)
+						// 5.1.19 Recall redirected handoff
+						ctx.Client.AcceptRedirectedHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
+						return CommandStatus{}
+					} else if ctx.IsHandoffToUser(trk) {
 						// 5.1.3 Accept handoff (implied)
 						// 5.1.4 Take control of interfacility track (implied)
 						// 5.1.10 Accept inbound handoff
@@ -35,14 +44,8 @@ func registerSlewCommands() {
 						return CommandStatus{}
 					} else if ctx.UserOwnsFlightPlan(fp) {
 						// 5.1.2 Recall handoff (implied)
-						// 5.1.6 Recall redirected handoff
 						// 5.1.17 Recall handoff (p. 5-33)
-						// 5.1.19 Recall redirected handoff
 						ctx.Client.CancelHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
-						return CommandStatus{}
-					} else if ctx.UserControlsPosition(fp.RedirectedHandoff.RedirectedTo) ||
-						ctx.UserControlsPosition(fp.RedirectedHandoff.GetLastRedirector()) {
-						ctx.Client.AcceptRedirectedHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
 						return CommandStatus{}
 					}
 				}

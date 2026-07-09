@@ -252,6 +252,11 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+			if fp.RedirectedHandoff.RedirectedTo != "" {
+				// Once redirected, the handoff can only be accepted (or
+				// recalled) via the redirected handoff path.
+				return av.ErrNotBeingHandedOffToMe
+			}
 			// Check if the caller's TCW controls the HandoffTrackController TCP (consolidation-aware)
 			if s.State.TCWControlsPosition(tcw, fp.HandoffController) {
 				return nil
@@ -420,6 +425,7 @@ func (s *Sim) acceptRedirectedHandoff(fp *NASFlightPlan, ac *Aircraft, owningTCW
 		Type:           AcceptedRedirectedHandoffEvent,
 		FromController: rh.OriginalOwner,
 		ToController:   rh.RedirectedTo,
+		Redirectors:    rh.Redirector,
 		ACID:           fp.ACID,
 	})
 

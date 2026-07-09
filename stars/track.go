@@ -369,6 +369,12 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 						state.RDIndicatorEnd = ctx.InterpolatedSimTime.Add(30 * time.Second)
 					}
 				}
+				if event.Type == sim.AcceptedRedirectedHandoffEvent && ctx.UserWasRedirector(event.Redirectors) &&
+					!ctx.UserControlsPosition(event.ToController) {
+					// 5.1.3: at the redirecting position(s), the track
+					// retains its FDB (in the unowned color) after acceptance.
+					state.DisplayFDB = true
+				}
 				if outbound || inbound {
 					otherPos := util.Select(outbound, event.ToController, event.FromController)
 					if otherCtrl := ctx.GetResolvedController(otherPos); otherCtrl != nil && otherCtrl.IsExternal() {
