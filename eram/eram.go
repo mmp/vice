@@ -630,6 +630,8 @@ func (ep *ERAMPane) ResetSim(client *client.ControlClient, pl platform.Platform,
 	ep.commandMode = CommandModeNone
 	ep.drawRoutePoints = nil
 	ep.drawRouteAircraft = ""
+
+	ep.weatherRadar.Reset(lg)
 }
 
 // ensurePrefSetForSim initializes the ERAM preference set if needed and

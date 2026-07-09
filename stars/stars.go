@@ -893,6 +893,8 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 	sp.atmosGrid = nil
 	sp.mvaGrid = av.MakeMVAGrid(av.DB.MVAs[client.State.Facility])
 
+	sp.weatherRadar.Reset(lg)
+
 	// nil these out rather than clearing them so that they are rebuilt
 	// from scratch.
 	sp.scopeDraw.arrivals = nil

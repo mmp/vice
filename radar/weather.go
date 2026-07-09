@@ -20,7 +20,6 @@ import (
 // WeatherRadar provides functionality for fetching precipitation data
 // from the server and displaying it in radar scopes.
 type WeatherRadar struct {
-	facility        string
 	nextFetchTime   sim.Time
 	fetchInProgress bool
 	precipCh        chan *wx.Precip
@@ -42,6 +41,21 @@ func (w *WeatherRadar) LatestPrecip(ctx *panes.Context) (*wx.Precip, int) {
 	return w.latestPrecip, w.generation
 }
 
+// Reset clears all cached weather state so that the next tick starts
+// fetching fresh data. It must be called when a new sim is loaded, since
+// nextFetchTime is anchored to the previous sim's calendar date and the
+// cached command buffers belong to the previous sim's weather.
+func (w *WeatherRadar) Reset(lg *log.Logger) {
+	w.mu.Lock(lg)
+	defer w.mu.Unlock(lg)
+
+	w.nextFetchTime = sim.Time{}
+	w.fetchInProgress = false
+	w.cb = [numWxHistory][NumWxLevels]*renderer.CommandBuffer{}
+	w.latestPrecip = nil
+	w.generation++
+}
+
 // tick performs the per-frame fetch maintenance shared by Draw and
 // LatestPrecip. Caller must hold w.mu.
 func (w *WeatherRadar) tick(ctx *panes.Context) {
@@ -50,31 +64,17 @@ func (w *WeatherRadar) tick(ctx *panes.Context) {
 		ctx.Lg.Warnf("%v", err)
 		w.fetchInProgress = false
 	case precip := <-w.precipCh:
-		w.installPrecip(precip)
+		w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
+		w.cb[0] = makeWeatherCommandBuffers(precip)
+		w.latestPrecip = precip
+		w.generation++
 		w.fetchInProgress = false
 	default:
-	}
-
-	if w.facility != ctx.Client.State.Facility {
-		w.facility = ctx.Client.State.Facility
-		w.fetchInProgress = false
-		w.nextFetchTime = sim.Time{}
-		w.cb = [numWxHistory][NumWxLevels]*renderer.CommandBuffer{}
-		w.latestPrecip = nil
 	}
 
 	if ctx.InterpolatedSimTime.After(w.nextFetchTime) && !w.fetchInProgress {
 		w.fetchPrecipitation(ctx)
 	}
-}
-
-// installPrecip stores a new precip blob, regenerates STARS CBs, and bumps
-// the generation counter. Caller must hold w.mu.
-func (w *WeatherRadar) installPrecip(precip *wx.Precip) {
-	w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
-	w.cb[0] = makeWeatherCommandBuffers(precip)
-	w.latestPrecip = precip
-	w.generation++
 }
 
 // WXHistory and Levels should eventually be omitted as they're dependent on the scope used.
