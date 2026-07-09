@@ -983,7 +983,13 @@ func (s *Sim) updateState() {
 		}
 
 		if fp, ac, _ := s.getFlightPlanForACID(acid); fp != nil {
-			if fp.HandoffController != "" && s.isVirtualController(fp.HandoffController) {
+			if rh := fp.RedirectedHandoff; rh.RedirectedTo != "" && s.isVirtualController(rh.RedirectedTo) {
+				// Automated accept of a redirected handoff
+				s.lg.Debug("automatic redirected handoff accept", slog.String("acid", string(fp.ACID)),
+					slog.String("from", string(rh.OriginalOwner)),
+					slog.String("to", string(rh.RedirectedTo)))
+				s.acceptRedirectedHandoff(fp, ac, s.tcwForPosition(rh.RedirectedTo))
+			} else if fp.HandoffController != "" && s.isVirtualController(fp.HandoffController) {
 				// Automated accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedHandoffEvent,

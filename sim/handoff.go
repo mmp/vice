@@ -359,6 +359,14 @@ func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 			rh.AddRedirector(ctrl)
 			rh.RedirectedTo = TCP(octrl.PositionId())
 
+			if s.isVirtualController(rh.RedirectedTo) {
+				// A virtual controller accepts the redirected handoff
+				// after a short delay, as with regular handoffs.
+				s.Handoffs[fp.ACID] = Handoff{
+					AutoAcceptTime: s.State.SimTime.Add(s.Rand.DurationRange(4*time.Second, 14*time.Second)),
+				}
+			}
+
 			return nil
 		}); err != nil {
 		return err
@@ -381,17 +389,7 @@ func (s *Sim) AcceptRedirectedHandoff(tcw TCW, acid ACID) error {
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
 			rh := &fp.RedirectedHandoff
 			if s.State.TCWControlsPosition(tcw, rh.RedirectedTo) { // Accept
-				s.eventStream.Post(Event{
-					Type:           AcceptedRedirectedHandoffEvent,
-					FromController: rh.OriginalOwner,
-					ToController:   rh.RedirectedTo,
-					ACID:           acid,
-				})
-				fp.HandoffController = ""
-				fp.TrackingController = rh.RedirectedTo
-				fp.LastLocalController = rh.RedirectedTo
-				fp.OwningTCW = tcw
-				*rh = RedirectedHandoff{}
+				s.acceptRedirectedHandoff(fp, ac, tcw)
 			} else if s.State.TCWControlsPosition(tcw, rh.GetLastRedirector()) { // Recall (only the last redirector is able to recall)
 				if len(rh.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
 					rh.RedirectedTo = rh.Redirector[len(rh.Redirector)-1]
@@ -407,6 +405,40 @@ func (s *Sim) AcceptRedirectedHandoff(tcw TCW, acid ACID) error {
 	}
 	s.publish()
 	return nil
+}
+
+// acceptRedirectedHandoff updates the flight plan for an accepted redirected
+// handoff, whether accepted by a human controller or automatically by a
+// virtual one. owningTCW is the TCW that takes ownership of the track. Comms
+// follow the original handoff: if a virtual controller is talking to the
+// aircraft, it sends it to the controller the handoff was first offered to,
+// who can then pass it along to the accepting controller with an FC.
+func (s *Sim) acceptRedirectedHandoff(fp *NASFlightPlan, ac *Aircraft, owningTCW TCW) {
+	rh := &fp.RedirectedHandoff
+
+	s.eventStream.Post(Event{
+		Type:           AcceptedRedirectedHandoffEvent,
+		FromController: rh.OriginalOwner,
+		ToController:   rh.RedirectedTo,
+		ACID:           fp.ACID,
+	})
+
+	previousTrackingController := fp.TrackingController
+	offeredToController := fp.HandoffController
+
+	fp.HandoffController = ""
+	fp.TrackingController = rh.RedirectedTo
+	fp.LastLocalController = rh.RedirectedTo
+	fp.OwningTCW = owningTCW
+	*rh = RedirectedHandoff{}
+
+	if ac != nil {
+		haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
+			func(wp av.Waypoint) bool { return wp.HasTransferCommsAction() })
+		if !haveTransferComms && s.isVirtualController(previousTrackingController) && offeredToController != "" {
+			s.virtualControllerTransferComms(ac, previousTrackingController, offeredToController)
+		}
+	}
 }
 
 func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
