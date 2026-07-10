@@ -1091,6 +1091,12 @@ func (s *Sim) updateState() {
 				}
 			}
 
+			if passedWaypoint != nil && passedWaypoint.FAF() && ac.IsAssociated() &&
+				ac.Nav.Approach.Cleared && !ac.GotContactTower {
+				// Passed the FAF without being sent to tower: ask about switching.
+				s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestTowerSwitch)
+			}
+
 			if ac.FirstSeen.IsZero() && s.isRadarVisible(ac) {
 				ac.FirstSeen = s.State.SimTime
 			}
