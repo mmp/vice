@@ -216,24 +216,19 @@ func (s *Sim) launchSequencedDeparture(depState *RunwayLaunchState, airport stri
 	depState.LastDeparture = &dep
 	depState.Sequenced = depState.Sequenced[1:]
 
-	for _, state := range s.sameGroupRunways(airport, depRunway) {
+	for _, state := range s.samePavementRunways(airport, depRunway) {
 		state.LastDeparture = &dep
 	}
 }
 
-// intersectingRunways returns all runways that physically intersect the
-// given runway (centerlines cross within 1nm of both runway segments).
-func (s *Sim) intersectingRunways(airport string, rwy av.RunwayID) []string {
-	return av.IntersectingRunways(airport, rwy, s.State.NmPerLongitude, 1)
-}
-
-// sameGroupRunways returns an iterator over all of the runways in the
-// ~equivalence class with the given depRwy. Such equivalences can come
-// both from user-specified "departure_runways_as_one" but also from
-// runways with dotted suffixes; we want to treat 4 and 4.AutoWest as one,
-// for example.  Note that the iterator will return the provided runway and
-// may return the same runway multiple times.
-func (s *Sim) sameGroupRunways(airport string, depRwy av.RunwayID) iter.Seq2[av.RunwayID, *RunwayLaunchState] {
+// samePavementRunways returns an iterator over all of the runways that
+// share pavement with the given depRwy: these can come both from
+// user-specified "departure_runways_as_one" but also from runways with
+// dotted suffixes; we want to treat 4 and 4.AutoWest as one, for example.
+// Note that the iterator will return the provided runway and may return the
+// same runway multiple times. Merely-intersecting runways are not included;
+// they are handled geometrically in canLaunch.
+func (s *Sim) samePavementRunways(airport string, depRwy av.RunwayID) iter.Seq2[av.RunwayID, *RunwayLaunchState] {
 	depRwyBase := depRwy.Base()
 	runwayState := s.DepartureState[airport]
 	return func(yield func(av.RunwayID, *RunwayLaunchState) bool) {
@@ -249,19 +244,6 @@ func (s *Sim) sameGroupRunways(airport string, depRwy av.RunwayID) iter.Seq2[av.
 					}
 				}
 				break
-			}
-		}
-
-		// Also include intersecting runways.
-		for _, intRwy := range s.intersectingRunways(airport, depRwy) {
-			// We can't directly look up in the runwayState map due to runways like 28L.1
-			// but instead have to check each one for a match.
-			for rwy, state := range runwayState {
-				if intRwy == rwy.Base() {
-					if !yield(rwy, state) {
-						return
-					}
-				}
 			}
 		}
 
@@ -287,6 +269,28 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 	if depState.LastDeparture != nil {
 		elapsed := s.State.SimTime.Sub(depState.LastDeparture.LaunchTime)
 		if elapsed < s.launchInterval(*depState.LastDeparture, dep, considerExit) {
+			return false
+		}
+	}
+
+	// Departures from intersecting runways: the full interval is only
+	// needed if both aircraft are airborne before the intersection point;
+	// otherwise it's enough for the previous departure to have passed it.
+	for otherRwy, otherState := range s.DepartureState[airport] {
+		if otherRwy.SameRunway(runway) || otherState.LastDeparture == nil {
+			continue
+		}
+		prev := *otherState.LastDeparture
+		pt, ok := av.RunwayIntersectionPoint(airport, runway, otherRwy, s.State.NmPerLongitude, 1)
+		if !ok {
+			continue // doesn't intersect
+		}
+		if s.State.SimTime.Sub(prev.LaunchTime) >= s.launchInterval(prev, dep, considerExit) {
+			continue // full separation is satisfied regardless
+		}
+		bothAirborne := s.airborneBeforeIntersection(prev, airport, otherRwy, pt) &&
+			s.airborneBeforeIntersection(dep, airport, runway, pt)
+		if bothAirborne || !s.departureHasPassedPoint(prev, airport, otherRwy, pt) {
 			return false
 		}
 	}
@@ -325,6 +329,56 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 	}
 
 	return true
+}
+
+// runwayThresholdAndDirection returns the runway's threshold and its unit
+// departure direction in nm coordinates.
+func runwayThresholdAndDirection(airport string, rwy av.RunwayID, nmPerLongitude float32) ([2]float32, [2]float32, bool) {
+	runway, ok := av.LookupRunway(airport, rwy.Base())
+	if !ok {
+		return [2]float32{}, [2]float32{}, false
+	}
+	opp, ok := av.LookupOppositeRunway(airport, rwy.Base())
+	if !ok {
+		return [2]float32{}, [2]float32{}, false
+	}
+	t := math.LL2NM(runway.Threshold, nmPerLongitude)
+	o := math.LL2NM(opp.Threshold, nmPerLongitude)
+	return t, math.Normalize2f(math.Sub2f(o, t)), true
+}
+
+// airborneBeforeIntersection reports whether the departure lifts off at or
+// before pt, a point on its departure runway's centerline.
+func (s *Sim) airborneBeforeIntersection(dep DepartureAircraft, airport string, rwy av.RunwayID, pt math.Point2LL) bool {
+	if dep.AirborneDistance < 0 {
+		// It didn't get airborne within the horizon of the takeoff-roll simulation.
+		return false
+	}
+	threshold, dir, ok := runwayThresholdAndDirection(airport, rwy, s.State.NmPerLongitude)
+	if !ok {
+		return true // shouldn't happen; be conservative and require the full interval
+	}
+	// Signed distance from the threshold to the intersection point along
+	// the runway; negative if pt is behind the threshold, in which case the
+	// aircraft is never on the ground there.
+	d := math.Dot(math.Sub2f(math.LL2NM(pt, s.State.NmPerLongitude), threshold), dir)
+	return dep.AirborneDistance <= d
+}
+
+// departureHasPassedPoint reports whether the previously-launched departure
+// has progressed past pt along its departure runway's direction.
+func (s *Sim) departureHasPassedPoint(dep DepartureAircraft, airport string, rwy av.RunwayID, pt math.Point2LL) bool {
+	ac, ok := s.Aircraft[dep.ADSBCallsign]
+	if !ok {
+		return true // it's been deleted, so it's long gone
+	}
+	_, dir, ok := runwayThresholdAndDirection(airport, rwy, s.State.NmPerLongitude)
+	if !ok {
+		return false
+	}
+	d := math.Dot(math.Sub2f(math.LL2NM(ac.Position(), s.State.NmPerLongitude), math.LL2NM(pt, s.State.NmPerLongitude)), dir)
+	const buffer = 0.05 // nm past the intersection: aircraft length plus some slop
+	return d > buffer
 }
 
 // launchInterval returns the amount of time we must wait before launching
@@ -722,8 +776,12 @@ func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, r *rand.
 	simAc := *ac
 	start := ac.Position()
 	d.MinSeparation = 120 * time.Second // just in case
+	d.AirborneDistance = -1             // not airborne within the simulation horizon
 	for i := range 120 {
 		simAc.Update(model, simTime, nil, nil, nil /* lg */)
+		if d.AirborneDistance < 0 && simAc.IsAirborne() {
+			d.AirborneDistance = math.NMDistance2LL(start, simAc.Position())
+		}
 		// We need 6,000' and airborne, but we'll add a bit of slop
 		if simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
 			d.MinSeparation = time.Duration(i) * time.Second

@@ -857,6 +857,53 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 	return ap.Runways[idx], true
 }
 
+// runwayEndpoints returns the runway's two thresholds in nm coordinates.
+func runwayEndpoints(airport, rwy string, nmPerLongitude float32) (p1, p2 [2]float32, ok bool) {
+	var runway, opp Runway
+	if runway, ok = LookupRunway(airport, rwy); !ok {
+		return
+	}
+	if opp, ok = LookupOppositeRunway(airport, rwy); !ok {
+		return
+	}
+	p1 = math.LL2NM(runway.Threshold, nmPerLongitude)
+	p2 = math.LL2NM(opp.Threshold, nmPerLongitude)
+	return p1, p2, true
+}
+
+// RunwayIntersectionPoint returns the point at which the centerlines of the
+// two given runways cross, if that point is within maxDistNM of both runway
+// segments (threshold to threshold). It returns false for same or
+// opposite-direction runway pairs and for parallel runways.
+func RunwayIntersectionPoint(airport string, a, b RunwayID, nmPerLongitude, maxDistNM float32) (math.Point2LL, bool) {
+	aBase, bBase := a.Base(), b.Base()
+	if aBase == bBase || aBase == OppositeRunwayId(bBase) {
+		return math.Point2LL{}, false
+	}
+
+	a1, a2, ok := runwayEndpoints(airport, aBase, nmPerLongitude)
+	if !ok {
+		return math.Point2LL{}, false
+	}
+	b1, b2, ok := runwayEndpoints(airport, bBase, nmPerLongitude)
+	if !ok {
+		return math.Point2LL{}, false
+	}
+
+	// Check if the infinite centerlines intersect
+	p, ok := math.LineLineIntersect(a1, a2, b1, b2)
+	if !ok {
+		return math.Point2LL{}, false // Lines are parallel
+	}
+
+	// Check if the intersection point is within maxDistNM of both runway segments
+	if math.PointSegmentDistance(p, a1, a2) > maxDistNM || math.PointSegmentDistance(p, b1, b2) > maxDistNM {
+		return math.Point2LL{}, false
+	}
+
+	return math.NM2LL(p, nmPerLongitude), true
+}
+
 // IntersectingRunways returns all runways at airport that physically intersect
 // the given runway. It checks if runway centerlines cross and the intersection
 // point is within maxDistNM of both runway segments (threshold to threshold).
@@ -864,85 +911,25 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 // value (e.g., 0.5) to account for pavement extending past thresholds.
 // Returns both directions for each intersecting runway (e.g., both "13L" and "31R").
 func IntersectingRunways(airport string, rwy RunwayID, nmPerLongitude, maxDistNM float32) []string {
-	rwyBase := rwy.Base()
-
-	// Get runway threshold positions
-	rwyEndpoints := func(r string) (p1, p2 [2]float32, ok bool) {
-		var runway, opp Runway
-		if runway, ok = LookupRunway(airport, r); !ok {
-			return
-		}
-		if opp, ok = LookupOppositeRunway(airport, r); !ok {
-			return
-		}
-		p1 = math.LL2NM(runway.Threshold, nmPerLongitude)
-		p2 = math.LL2NM(opp.Threshold, nmPerLongitude)
-		return p1, p2, true
-	}
-
-	// Distance from point p to line segment seg0-seg1
-	pointToSegmentDist := func(p, seg0, seg1 [2]float32) float32 {
-		v := math.Sub2f(seg1, seg0)
-		w := math.Sub2f(p, seg0)
-		c1 := math.Dot(w, v)
-		c2 := math.Dot(v, v)
-		if c2 == 0 {
-			return math.Distance2f(p, seg0)
-		}
-		t := c1 / c2
-		// Clamp to segment endpoints
-		if t < 0 {
-			t = 0
-		} else if t > 1 {
-			t = 1
-		}
-		proj := math.Add2f(seg0, math.Scale2f(v, t))
-		return math.Distance2f(p, proj)
-	}
-
-	rwy1, rwy2, ok := rwyEndpoints(rwyBase)
-	if !ok {
-		return nil
-	}
-
-	oppRwy := OppositeRunwayId(rwyBase)
-
-	var intersecting []string
-	seen := make(map[string]bool)
 	ap, ok := DB.Airports[airport]
 	if !ok {
 		return nil
 	}
 
+	var intersecting []string
+	seen := make(map[string]bool)
 	for _, otherRwy := range ap.Runways {
 		id := RunwayID(otherRwy.Id).Base()
-		if id == rwyBase || id == oppRwy {
+		if seen[id] {
 			continue
 		}
 
-		oth1, oth2, ok := rwyEndpoints(otherRwy.Id)
-		if !ok {
-			continue
-		}
-
-		// Check if the infinite centerlines intersect
-		p, ok := math.LineLineIntersect(rwy1, rwy2, oth1, oth2)
-		if !ok {
-			continue // Lines are parallel
-		}
-
-		// Check if intersection point is within maxDistNM of both runway segments
-		dist1 := pointToSegmentDist(p, rwy1, rwy2)
-		dist2 := pointToSegmentDist(p, oth1, oth2)
-
-		if dist1 <= maxDistNM && dist2 <= maxDistNM {
+		if _, ok := RunwayIntersectionPoint(airport, rwy, RunwayID(otherRwy.Id), nmPerLongitude, maxDistNM); ok {
 			// Add both this runway and its opposite direction
-			if !seen[id] {
-				seen[id] = true
-				intersecting = append(intersecting, id)
-			}
-			oppId := OppositeRunwayId(id)
-			if oppId != "" && !seen[oppId] {
+			seen[id] = true
+			intersecting = append(intersecting, id)
+
+			if oppId := OppositeRunwayId(id); oppId != "" && !seen[oppId] {
 				seen[oppId] = true
 				intersecting = append(intersecting, oppId)
 			}

@@ -63,8 +63,12 @@ type RunwayLaunchState struct {
 type DepartureAircraft struct {
 	ADSBCallsign  av.ADSBCallsign
 	MinSeparation time.Duration // How long after takeoff it will be at ~6000' and airborne
-	SpawnTime     Time          // when it was first spawned
-	LaunchTime    Time          // when it was actually launched; used for wake turbulence separation, etc.
+	// AirborneDistance is the estimated distance in nm from the departure
+	// point at which the aircraft lifts off; negative if it wasn't airborne
+	// within the horizon of the takeoff-roll simulation.
+	AirborneDistance float32
+	SpawnTime        Time // when it was first spawned
+	LaunchTime       Time // when it was actually launched; used for wake turbulence separation, etc.
 
 	// When they're ready to leave the gate
 	ReadyDepartGateTime Time
