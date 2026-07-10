@@ -1284,6 +1284,7 @@ func (s *Sim) updateState() {
 		s.checkFinalApproachSpacing()
 
 		s.updatePatternPhases()
+		s.relievePatternPressure()
 		s.spawnAircraft()
 
 		s.ERAMComputer.Update(s)

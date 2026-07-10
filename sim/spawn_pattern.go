@@ -7,6 +7,7 @@ package sim
 import (
 	"fmt"
 	"log/slog"
+	"slices"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -165,6 +166,12 @@ func (s *Sim) spawnPatternAircraft() {
 			continue
 		}
 
+		// Don't add pattern traffic while arrivals are holding, waiting to
+		// get into the pattern; let them in first.
+		if s.orbitingArrivals(name) > 0 {
+			continue
+		}
+
 		// Don't spawn pattern aircraft in IMC. Check the airport's
 		// METAR first, then fall back to the primary airport's.
 		if metar, ok := s.State.METAR[name]; ok {
@@ -293,6 +300,18 @@ func (s *Sim) canLaunchPattern(airport string, rwy av.Runway) bool {
 		}
 	}
 
+	// Check for VFR arrivals about to land.
+	for cs, ac := range s.Aircraft {
+		if ac.FlightPlan.ArrivalAirport != airport || s.isPatternAircraft(airport, cs) ||
+			len(ac.Nav.Waypoints) == 0 {
+			continue
+		}
+		switch ac.Nav.Waypoints[0].VFRPhase {
+		case av.VFRPhaseBase, av.VFRPhaseFinal, av.VFRPhaseStraightIn:
+			return false
+		}
+	}
+
 	return true
 }
 
@@ -324,6 +343,25 @@ func (s *Sim) updatePatternPhases() {
 				pa.Phase = PatternBase
 			case av.VFRPhaseFinal:
 				pa.Phase = PatternFinal
+			}
+		}
+	}
+}
+
+// relievePatternPressure makes pattern aircraft wrap up their session
+// (full-stop on their current lap) when arrivals are holding, waiting to
+// enter the pattern.
+func (s *Sim) relievePatternPressure() {
+	for airport, ps := range s.PatternState {
+		if len(ps.Aircraft) == 0 || s.orbitingArrivals(airport) == 0 {
+			continue
+		}
+		for _, pa := range ps.Aircraft {
+			if ac, ok := s.Aircraft[pa.ADSBCallsign]; ok && ac.TouchAndGosRemaining > 0 {
+				ac.TouchAndGosRemaining = 0
+				s.lg.Info("pattern aircraft wrapping up for waiting arrivals",
+					slog.String("callsign", string(ac.ADSBCallsign)),
+					slog.String("airport", airport))
 			}
 		}
 	}
@@ -445,6 +483,12 @@ func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 				slog.String("airport", airport))
 		}
 	} else {
+		if len(ac.Nav.Waypoints) > 0 && ac.Nav.Waypoints[0].VFRPhase == av.VFRPhaseOrbit {
+			// Already orbiting; keep flying the current orbit and recheck
+			// at its next waypoint.
+			return
+		}
+
 		wps := s.generateOrbitWaypoints(airport)
 		if len(wps) == 0 {
 			return
@@ -457,28 +501,52 @@ func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 	}
 }
 
-// patternClearForEntry returns true if no pattern aircraft is on downwind
-// and no other VFR arrival is already on a pattern-entry path.
-// Traffic on base or final is acceptable — the arrival joins at the start
-// of downwind and those aircraft will have cleared by the time it gets there.
-func (s *Sim) patternClearForEntry(airport string) bool {
+// isPatternAircraft reports whether the callsign is one of the airport's
+// pattern (touch-and-go) aircraft. Note that TouchAndGosRemaining can't be
+// used for this: it is 0 during a pattern aircraft's last lap.
+func (s *Sim) isPatternAircraft(airport string, callsign av.ADSBCallsign) bool {
 	ps, ok := s.PatternState[airport]
 	if !ok {
-		return true
+		return false
 	}
-	for _, pa := range ps.Aircraft {
-		if pa.Phase == PatternDownwind {
-			return false
+	return slices.ContainsFunc(ps.Aircraft,
+		func(pa PatternAircraft) bool { return pa.ADSBCallsign == callsign })
+}
+
+// orbitingArrivals returns the number of VFR arrivals that are holding in
+// an orbit, waiting to enter the pattern at the given airport.
+func (s *Sim) orbitingArrivals(airport string) int {
+	n := 0
+	for _, ac := range s.Aircraft {
+		if ac.FlightPlan.ArrivalAirport == airport && len(ac.Nav.Waypoints) > 0 &&
+			ac.Nav.Waypoints[0].VFRPhase == av.VFRPhaseOrbit {
+			n++
+		}
+	}
+	return n
+}
+
+// patternClearForEntry returns true if no pattern aircraft is on downwind
+// and no other VFR arrival is still on the downwind portion of a pattern
+// entry. Traffic on base or final is acceptable — the arrival joins at the
+// start of downwind and those aircraft will have cleared by the time it
+// gets there.
+func (s *Sim) patternClearForEntry(airport string) bool {
+	if ps, ok := s.PatternState[airport]; ok {
+		for _, pa := range ps.Aircraft {
+			if pa.Phase == PatternDownwind {
+				return false
+			}
 		}
 	}
 
-	// Block if another VFR arrival is already on a pattern-entry path
-	// to this airport.
-	for _, ac := range s.Aircraft {
-		if ac.FlightPlan.ArrivalAirport == airport && ac.TouchAndGosRemaining == 0 &&
+	// Block if another VFR arrival is on the downwind portion of a
+	// pattern entry to this airport; once it has turned base there is
+	// room for the next one to enter behind it.
+	for cs, ac := range s.Aircraft {
+		if ac.FlightPlan.ArrivalAirport == airport && !s.isPatternAircraft(airport, cs) &&
 			len(ac.Nav.Waypoints) > 0 &&
-			ac.Nav.Waypoints[0].VFRPhase != av.VFRPhaseNone &&
-			ac.Nav.Waypoints[0].VFRPhase != av.VFRPhaseOrbit {
+			ac.Nav.Waypoints[0].VFRPhase == av.VFRPhaseDownwind {
 			return false
 		}
 	}
@@ -486,8 +554,8 @@ func (s *Sim) patternClearForEntry(airport string) bool {
 	return true
 }
 
-// finalClear returns true if no pattern aircraft is on base or final
-// and no VFR arrival is on a straight-in approach to this airport.
+// finalClear returns true if no pattern aircraft or VFR arrival is on
+// base, final, or a straight-in approach to this airport.
 func (s *Sim) finalClear(airport string) bool {
 	if ps, ok := s.PatternState[airport]; ok {
 		for _, pa := range ps.Aircraft {
@@ -497,10 +565,13 @@ func (s *Sim) finalClear(airport string) bool {
 		}
 	}
 
-	// Block if another VFR arrival is already on a straight-in.
-	for _, ac := range s.Aircraft {
-		if ac.FlightPlan.ArrivalAirport == airport && ac.TouchAndGosRemaining == 0 &&
-			len(ac.Nav.Waypoints) > 0 && ac.Nav.Waypoints[0].VFRPhase == av.VFRPhaseStraightIn {
+	for cs, ac := range s.Aircraft {
+		if ac.FlightPlan.ArrivalAirport != airport || s.isPatternAircraft(airport, cs) ||
+			len(ac.Nav.Waypoints) == 0 {
+			continue
+		}
+		switch ac.Nav.Waypoints[0].VFRPhase {
+		case av.VFRPhaseStraightIn, av.VFRPhaseBase, av.VFRPhaseFinal:
 			return false
 		}
 	}
@@ -549,9 +620,12 @@ func (s *Sim) generateOrbitWaypoints(airport string) []av.Waypoint {
 		wp.SetSpeedRestriction(av.MakeAtSpeedRestriction(70))
 		wps[i] = wp
 	}
-	// When the aircraft completes the orbit and passes the last waypoint,
-	// the SequenceVFRLanding handler fires again to re-evaluate.
-	wps[3].SetSequenceVFRLanding(true)
+	// Re-evaluate at every orbit waypoint so an open entry slot isn't left
+	// unused for a full lap; sequenceVFRLanding keeps the current orbit
+	// going if the pattern is still busy.
+	for i := range wps {
+		wps[i].SetSequenceVFRLanding(true)
+	}
 	return wps
 }
 

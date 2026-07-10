@@ -439,6 +439,17 @@ func (s *Sim) makeNewIFRDeparture(airport string, runway av.RunwayID) (ac *Aircr
 	return
 }
 
+// vfrDestinationWeight returns the weight for sampling ap as the
+// destination of a random VFR departure. Airports where arrivals are
+// already backed up waiting to land are excluded so that we don't keep
+// adding to the pile.
+func (s *Sim) vfrDestinationWeight(ap string) float32 {
+	if s.orbitingArrivals(ap) > 0 {
+		return 0
+	}
+	return s.State.Airports[ap].VFRRateSum()
+}
+
 func (s *Sim) makeNewVFRDeparture(depart string, runway av.RunwayID) (ac *Aircraft, err error) {
 	depState := s.DepartureState[depart][runway]
 	if len(depState.ReleasedVFR) >= 5 || len(depState.Sequenced) >= 5 {
@@ -475,13 +486,19 @@ func (s *Sim) makeNewVFRDeparture(depart string, runway av.RunwayID) (ac *Aircra
 			}
 		}
 
+		if sampledRoute != nil && s.orbitingArrivals(sampledRoute.Destination) > 0 {
+			// Arrivals are backed up at the route's destination; hold off
+			// on this one and try again later.
+			return
+		}
+
 		for range 5 {
 			depState.VFRAttempts++
 
 			if sampledRandoms != nil {
 				// Sample destination airport: may be where we started from.
 				arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
-					func(ap string) float32 { return s.State.Airports[ap].VFRRateSum() })
+					s.vfrDestinationWeight)
 				if !ok {
 					s.lg.Errorf("%s: unable to sample VFR destination airport???", depart)
 					continue
@@ -746,7 +763,7 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 	for range 50 {
 		// Sample destination airport: may be where we started from.
 		arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
-			func(ap string) float32 { return s.State.Airports[ap].VFRRateSum() })
+			s.vfrDestinationWeight)
 		if !ok {
 			return nil, nil
 		}
