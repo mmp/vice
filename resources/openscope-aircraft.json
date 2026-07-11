@@ -3323,6 +3323,47 @@
       }
     },
     {
+      "name": "Dassault Falcon 20",
+      "icao": "FA20",
+      "engines": {
+        "number": 2,
+        "type": "J"
+      },
+      "weightClass": "M",
+      "category": {
+        "srs": 3,
+        "lahso": 7,
+        "cwt": "H"
+      },
+      "ceiling": 42000,
+      "rate": {
+        "climb": 2200,
+        "descent": 1900,
+        "accelerate": 5.9,
+        "decelerate": 3
+      },
+      "runway": {
+        "takeoff": 1.6,
+        "landing": 1.1
+      },
+      "speed": {
+        "min": 82,
+        "landing": 110,
+        "cruise": 420,
+        "cruiseM": 0.76,
+        "max": 582,
+        "maxM": 0.86
+      },
+      "capability": {
+        "ils": true,
+        "fix": true
+      },
+      "turn": {
+        "maxBankAngle": 25,
+        "maxBankRate": 5
+      }
+    },
+    {
       "name": "Dassault Falcon 50",
       "icao": "FA50",
       "engines": {
@@ -11138,7 +11179,7 @@
       }
     },
     {
-      "name": "Embraer 170/175",
+      "name": "Embraer 170",
       "icao": "E170",
       "engines": {
         "number": 2,
@@ -12426,6 +12467,47 @@
       }
     },
     {
+      "name": "Bombardier Learjet 55",
+      "icao": "LJ55",
+      "engines": {
+        "number": 2,
+        "type": "J"
+      },
+      "weightClass": "M",
+      "category": {
+        "srs": 3,
+        "lahso": 8,
+        "cwt": "H"
+      },
+      "ceiling": 51000,
+      "rate": {
+        "climb": 3200,
+        "descent": 2200,
+        "accelerate": 5,
+        "decelerate": 3
+      },
+      "runway": {
+        "takeoff": 1.4,
+        "landing": 1.0
+      },
+      "speed": {
+        "min": 105,
+        "landing": 140,
+        "cruise": 400,
+        "cruiseM": 0.76,
+        "max": 470,
+        "maxM": 0.82
+      },
+      "capability": {
+        "ils": true,
+        "fix": true
+      },
+      "turn": {
+        "maxBankAngle": 25,
+        "maxBankRate": 5
+      }
+    },
+    {
       "name": "Bombardier Learjet 60",
       "icao": "LJ60",
       "engines": {
@@ -12453,6 +12535,46 @@
         "min": 105,
         "landing": 130,
         "cruise": 457,
+        "cruiseM": 0.79,
+        "max": 464,
+        "maxM": 0.81
+      },
+      "capability": {
+        "ils": true,
+        "fix": true
+      },
+      "turn": {
+        "maxBankAngle": 25,
+        "maxBankRate": 5
+      }
+    },
+    {
+      "name": "Bombardier Learjet 70",
+      "icao": "LJ70",
+      "engines": {
+        "number": 2,
+        "type": "J"
+      },
+      "category": {
+        "weightClass": "M",
+        "lahso": null,
+        "cwt": "H"
+      },
+      "ceiling": 51000,
+      "rate": {
+        "climb": 3300,
+        "descent": 2200,
+        "accelerate": 5.9,
+        "decelerate": 3
+      },
+      "runway": {
+        "takeoff": 1.35,
+        "landing": 0.81
+      },
+      "speed": {
+        "min": 105,
+        "landing": 140,
+        "cruise": 432,
         "cruiseM": 0.79,
         "max": 464,
         "maxM": 0.81

@@ -3573,6 +3573,17 @@
       }
     },
     {
+      "icao": "apz",
+      "name": "Air Premia",
+      "callsign": {
+        "name": "Air Premia",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["B789", 9]]
+      }
+    },
+    {
       "icao": "ara",
       "name": "Arik Air",
       "callsign": {
@@ -3709,6 +3720,21 @@
         ],
         "a319": [["A319", 8]],
         "long": [["A332", 1]]
+      }
+    },
+    {
+      "icao": "asp",
+      "name": "AirSprint",
+      "callsign": {
+        "name": "AirSprint",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["C25A", 8],
+          ["C25B", 8],
+          ["E550", 8]
+        ]
       }
     },
     {
@@ -5268,6 +5294,21 @@
       }
     },
     {
+      "icao": "cjt",
+      "name": "Cargojet",
+      "callsign": {
+        "name": "CargoJet",
+        "callsignFormats": ["#", "##", "###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["B752", 18],
+          ["B762", 4],
+          ["B763", 23]
+        ]
+      }
+    },
+    {
       "icao": "ckk",
       "name": "China Cargo Airlines",
       "callsign": {
@@ -5575,6 +5616,17 @@
       }
     },
     {
+      "icao": "cre",
+      "name": "Jet OUT",
+      "callsign": {
+        "name": "Cream City",
+        "length": 3
+      },
+      "fleets": {
+        "default": [["C25C", 1]]
+      }
+    },
+    {
       "icao": "crk",
       "name": "Hong Kong Airlines",
       "callsign": {
@@ -5754,6 +5806,24 @@
         ],
         "a333": [["A333", 32]],
         "jfk": [["B77W", 10]]
+      }
+    },
+    {
+      "icao": "css",
+      "name": "SF Airlines",
+      "callsign": {
+        "name": "Shun Feng",
+        "callsignFormats": ["#", "##", "###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["B733", 14],
+          ["B734", 3],
+          ["B738", 2],
+          ["B744", 5],
+          ["B752", 43],
+          ["B763", 23]
+        ]
       }
     },
     {
@@ -6488,6 +6558,24 @@
       }
     },
     {
+      "icao": "dow",
+      "name": "Best Jets International",
+      "callsign": {
+        "name": "Downtown",
+        "length": 3
+      },
+      "fleets": {
+        "default": [
+          ["C680", 8],
+          ["CL30", 8],
+          ["F900", 8],
+          ["F2TH", 8],
+          ["GLF5", 8],
+          ["E170", 8]
+        ]
+      }
+    },
+    {
       "icao": "dpj",
       "name": "Delta Private Jets",
       "callsign": {
@@ -6592,6 +6680,17 @@
           ["MD82", 1],
           ["MD83", 1]
         ]
+      }
+    },
+    {
+      "icao": "dwi",
+      "name": "Arajet",
+      "callsign": {
+        "name": "Dominican",
+        "length": 4
+      },
+      "fleets": {
+        "default": [["B38M", 16]]
       }
     },
     {
@@ -7086,6 +7185,32 @@
       }
     },
     {
+      "icao": "xsr",
+      "name": "Airshare",
+      "callsign": {
+        "name": "Airshare",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["HDJT", 8],
+          ["E50P", 8],
+          ["E55P", 8],
+          ["E550", 8],
+          ["C25C", 8],
+          ["C56X", 8],
+          ["C68A", 8],
+          ["CL30", 8],
+          ["GL5T", 8],
+          ["GLF4", 8],
+          ["GLF5", 8],
+          ["F900", 8],
+          ["F2TH", 8],
+          ["FA7X", 8]
+        ]
+      }
+    },
+    {
       "icao": "LAK",
       "name": "Red Wing Aeroplance Company",
       "callsign": {
@@ -7446,6 +7571,24 @@
         "default": [
           ["C172", 70],
           ["DA42", 10]
+        ]
+      }
+    },
+    {
+      "icao": "ery",
+      "name": "Sky Quest",
+      "callsign": {
+        "name": "Erie Shore",
+        "length": 2
+      },
+      "fleets": {
+        "default": [
+          ["BE40", 8],
+          ["LJ40", 3],
+          ["LJ45", 4],
+          ["H25B", 9],
+          ["CL60", 12],
+          ["GLF4", 145]
         ]
       }
     },
@@ -8123,6 +8266,21 @@
       }
     },
     {
+      "icao": "fce",
+      "name": "Flight Choice",
+      "callsign": {
+        "name": "Flight Choice",
+        "length": 3
+      },
+      "fleets": {
+        "default": [
+          ["BE20", 8],
+          ["BE9L", 8],
+          ["BE58", 8]
+        ]
+      }
+    },
+    {
       "icao": "fda",
       "name": "Fuji Dream Airlines",
       "callsign": {
@@ -8578,6 +8736,21 @@
         "default": [
           ["CRJ7", 46],
           ["CRJ9", 7]
+        ]
+      }
+    },
+    {
+      "icao": "glg",
+      "name": "Avianca Ecuador",
+      "callsign": {
+        "name": "Galapagos",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [
+          ["A319", 2],
+          ["A320", 6],
+          ["A20N", 5]
         ]
       }
     },
@@ -10194,6 +10367,17 @@
       }
     },
     {
+      "icao": "jcm",
+      "name": "Secure Air Charter",
+      "callsign": {
+        "name": "Secure Air",
+        "length": 3
+      },
+      "fleets": {
+        "default": [["H25B", 8]]
+      }
+    },
+    {
       "icao": "jes",
       "name": "JetSMART Airlines",
       "callsign": {
@@ -10243,6 +10427,23 @@
       },
       "fleets": {
         "default": [["A320", 25]]
+      }
+    },
+    {
+      "icao": "jkr",
+      "name": "Justice Air",
+      "callsign": {
+        "name": "Joker",
+        "length": 2
+      },
+      "fleets": {
+        "default": [
+          ["C560", 8],
+          ["H25B", 8],
+          ["FA50", 8],
+          ["F2TH", 8],
+          ["F900", 8]
+        ]
       }
     },
     {
@@ -10701,6 +10902,20 @@
       }
     },
     {
+      "icao": "kow",
+      "name": "Baker Aviation",
+      "callsign": {
+        "name": "Rodeo",
+        "length": 3
+      },
+      "fleets": {
+        "default": [
+          ["C750", 8],
+          ["CL30", 8]
+        ]
+      }
+    },
+    {
       "icao": "kqa",
       "name": "Kenya Airways",
       "callsign": {
@@ -10878,6 +11093,23 @@
         "a320": [["A320", 14]],
         "a321": [["A321", 4]],
         "b738": [["B738", 6]]
+      }
+    },
+    {
+      "icao": "let",
+      "name": "Aerolineas Ejecutivas",
+      "callsign": {
+        "name": "Mexale",
+        "length": 4
+      },
+      "fleets": {
+        "default": [
+          ["C25B", 8],
+          ["LJ45", 8],
+          ["LJ75", 8],
+          ["C68A", 8],
+          ["CL60", 8]
+        ]
       }
     },
     {
@@ -11107,6 +11339,20 @@
         "long": [
           ["B763", 10],
           ["B789", 3]
+        ]
+      }
+    },
+    {
+      "icao": "lrc",
+      "name": "Avianca Costa Rica",
+      "callsign": {
+        "name": "Lasca",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["A320", 1],
+          ["A20N", 3]
         ]
       }
     },
@@ -11985,6 +12231,27 @@
       },
       "fleets": {
         "default": [["GLF5", 8]]
+      }
+    },
+    {
+      "icao": "njm",
+      "name": "Northern Jet",
+      "callsign": {
+        "name": "Northern Jet",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["C25A", 8],
+          ["C25B", 8],
+          ["LJ40", 8],
+          ["LJ45", 8],
+          ["LJ70", 8],
+          ["LJ75", 8],
+          ["C750", 8],
+          ["CL35", 8],
+          ["CL60", 8]
+        ]
       }
     },
     {
@@ -13161,6 +13428,22 @@
       }
     },
     {
+      "icao": "pxg",
+      "name": "Aitheras Aviation Group",
+      "callsign": {
+        "name": "Phoenix Global",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["C680", 8],
+          ["C56X", 8],
+          ["C560", 8],
+          ["C550", 8]
+        ]
+      }
+    },
+    {
       "icao": "pxt",
       "name": "Pacific Coast Jet",
       "callsign": {
@@ -13436,6 +13719,39 @@
         ],
         "b738": [["B738", 30]],
         "jfk": [["B788", 1]]
+      }
+    },
+    {
+      "icao": "rax",
+      "name": "Royal Air Freight",
+      "callsign": {
+        "name": "Air Royal",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["LJ35", 8],
+          ["LJ55", 8],
+          ["LJ60", 8],
+          ["CL35", 8],
+          ["C25B", 8],
+          ["C56X", 8],
+          ["C68A", 8],
+          ["C750", 8],
+          ["E55P", 8],
+          ["E35L", 8],
+          ["FA7X", 8],
+          ["FA20", 8],
+          ["FA50", 8],
+          ["F2TH", 8],
+          ["H25B", 8],
+          ["PC24", 8],
+          ["GLF4", 8],
+          ["GA5C", 8],
+          ["GLF6", 8],
+          ["GLEX", 8],
+          ["GL7T", 8]
+        ]
       }
     },
     {
@@ -14020,6 +14336,21 @@
         ],
         "a320": [["A320", 18]],
         "b738": [["B738", 21]]
+      }
+    },
+    {
+      "icao": "scm",
+      "name": "American Jet International",
+      "callsign": {
+        "name": "Screamer",
+        "callsignFormats": ["#", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["C550", 8],
+          ["E55P", 8],
+          ["LJ60", 8]
+        ]
       }
     },
     {
@@ -14862,6 +15193,32 @@
       }
     },
     {
+      "icao": "syb",
+      "name": "Skyservice Business Aviation",
+      "callsign": {
+        "name": "Skybiz",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["FA7X", 8],
+          ["F900", 8],
+          ["F2TH", 8],
+          ["CL30", 8],
+          ["CL35", 8],
+          ["CL60", 8],
+          ["GL5T", 8],
+          ["GLEX", 8],
+          ["GL7T", 8],
+          ["GALX", 8],
+          ["GLF4", 8],
+          ["GLF6", 8],
+          ["C56X", 8],
+          ["HDJT", 8]
+        ]
+      }
+    },
+    {
       "icao": "syr",
       "name": "Syrian Arab Airlines",
       "callsign": {
@@ -15378,6 +15735,24 @@
       }
     },
     {
+      "icao": "TFF",
+      "name": "Talon Air",
+      "callsign": {
+        "name": "Talon",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["GLF4", 8],
+          ["GLF5", 8],
+          ["CL30", 8],
+          ["CL60", 8],
+          ["H25B", 8],
+          ["HA4T", 8]
+        ]
+      }
+    },
+    {
       "icao": "tfl",
       "name": "TUI Airlines Netherlands",
       "callsign": {
@@ -15821,6 +16196,21 @@
           ["B738", 31]
         ],
         "b738": [["B738", 31]]
+      }
+    },
+    {
+      "icao": "tor",
+      "name": "FLYGTA",
+      "callsign": {
+        "name": "Homerun",
+        "length": 3
+      },
+      "fleets": {
+        "default": [
+          ["E55P", 8],
+          ["LJ45", 8],
+          ["CL60", 8]
+        ]
       }
     },
     {
@@ -17199,6 +17589,17 @@
           ["A321", 10]
         ],
         "jfk": [["A320", 1]]
+      }
+    },
+    {
+      "icao": "vos",
+      "name": "Volaris El Salvador",
+      "callsign": {
+        "name": "Jetsal",
+        "length": 4
+      },
+      "fleets": {
+        "default": [["A20N", 3]]
       }
     },
     {
@@ -18986,6 +19387,20 @@
           ["LJ40", 1],
           ["LJ45", 1],
           ["LJ75", 1]
+        ]
+      }
+    },
+    {
+      "icao": "jsl",
+      "name": "SelectJet",
+      "callsign": {
+        "name": "SelectJet",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["C525", 8],
+          ["LJ60", 8]
         ]
       }
     },

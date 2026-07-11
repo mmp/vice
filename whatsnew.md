@@ -1,3 +1,4 @@
+- New scenario: ZJX Central-Geneva (manaphy)
 - Improve logic for launching aircraft with intersection departures: ignore CWT if not aloft at the intersection
 - Fixed bug where virtual controllers wouldn't accept redirected handoffs
 - Fixed bug where VFR aircraft could end up swarming an aircraft without being able to land

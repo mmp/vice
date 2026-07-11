@@ -315,6 +315,23 @@
         },
         "default_consolidation": { "30": ["31"] }
       },
+      "J33": {
+        "inbound_assignments": {
+          "ZJAYX.GRNCH5": "33",
+          "DEEDA.GRNCH5": "33",
+          "DEFUN.GRNCH5": "33",
+          "BIGDE.SHREK2": "33",
+          "MJKAL.JAFAR3": "33",
+          "OTK.LEESE3": "33",
+          "KRVUR.DADES2": "33",
+          "ZOOSS.MARQO3": "33",
+          "ZPLEN.TEEKY4": "33",
+          "ZPLEN.VUUDU1": "33",
+          "OTK KGNV": "33",
+          "Q118": "33"
+        },
+        "default_consolidation": { "33": [] }
+      },
       "J50": {
         "inbound_assignments": {
           "BAGGY3": "50",
