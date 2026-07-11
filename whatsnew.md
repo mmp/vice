@@ -5,3 +5,5 @@
 - Fixed bug where VFR aircraft could end up swarming an aircraft without being able to land
 - STARS
   - Fixed bugs with redirected handoff datablocks and recalling redirected handoffs
+- ERAM
+  - Added confict alert detection
