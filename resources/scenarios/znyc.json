@@ -36,6 +36,106 @@
         "I22": {
           "cifp_id": "I22"
         }
+      },
+      "departure_controller": "N1L",
+      "departure_routes": {
+        "13": {
+          "GAYEL": {
+            "cleared_altitude": 17000,
+            "sid": "GLDMN8",
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N041.06.20.319,W074.12.09.959/a15000-/hoN5T GAYEL/ho35"
+          },
+          "COATE": {
+            "cleared_altitude": 17000,
+            "sid": "GLDMN8",
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N041.06.20.319,W074.12.09.959/a15000-/hoN5T COATE/ho35"
+          },
+          "NEION": {
+            "cleared_altitude": 17000,
+            "sid": "GLDMN8",
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N041.06.20.319,W074.12.09.959/a15000-/hoN5T NEION/ho35"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            { "icao": "ACA", "types": ["BCS3", "A320"] },
+            { "icao": "RPA" },
+            { "icao": "EDV" },
+            { "icao": "JZA" },
+            { "icao": "POE", "types": ["E295"] }
+          ],
+          "altitude": [24000, 26000, 28000, 30000, 32000, 34000],
+          "destination": "CYYZ",
+          "route": "GAYEL Q818 WOZEE LINNG3",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [{ "icao": "AAL", "types": ["B38M"] }],
+          "altitude": [38000],
+          "destination": "KBZN",
+          "route": "COATE Q436 RAAKK DKK ICHOL TWIGS Q438 RUBYY KG81M KP90E KEKPE SCOFY RECAP SUBKY LVM",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "AAL", "types": ["B738"] }],
+          "altitude": [34000],
+          "destination": "CYYC",
+          "route": "COATE Q436 RAAKK DERLO HHIPP KP87O KP09I KP21A PETBO RUDVI PEMDU BEVEL VESDO EBGAL EBGAL7",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "AAL", "types": ["B38M"] }],
+          "altitude": [36000],
+          "destination": "KGPI",
+          "route": "COATE Q436 RAAKK Q438 RUBYY KG81M GEP KP06E GGW KU18S KU18O FCA",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "EDV" }, { "icao": "RPA" }],
+          "altitude": [20000, 24000, 26000, 28000, 30000],
+          "destination": "KBUF",
+          "route": "NEION Q232 STUBN BENEE",
+          "exit": "NEION"
+        },
+        {
+          "airlines": [{ "icao": "RPA" }, { "icao": "EDV" }],
+          "altitude": [20000, 22000, 24000, 28000],
+          "destination": "KROC",
+          "route": "NEION Q232 STUBN GIBBE",
+          "exit": "NEION"
+        },
+        {
+          "airlines": [{ "icao": "RPA" }, { "icao": "EDV" }],
+          "altitude": [18000],
+          "destination": "KSYR",
+          "route": "NEION Q232 CORDS CFB T335 CORTA",
+          "exit": "NEION"
+        },
+        {
+          "airlines": [{ "icao": "DAL", "types": ["A321"] }, { "icao": "RPA" }, { "icao": "EDV" }],
+          "altitude": [34000],
+          "destination": "KTVC",
+          "route": "GAYEL J95 CFB Q818 WOZEE NOSIK TVC",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [
+            { "icao": "AAL", "types": ["B738", "B38M"] },
+            { "icao": "UAL", "types": ["B738", "B38M"] },
+            { "icao": "DAL", "types": ["BCS3"] }
+          ],
+          "altitude": [30000, 32000, 34000, 36000, 38000],
+          "destination": "KORD",
+          "route": "COATE Q436 KAYYS WYNDE3",
+          "exit": "COATE"
+        }
+      ],
+      "exit_categories": {
+        "GAYEL": "North",
+        "COATE": "North",
+        "NEION": "North"
       }
     },
     "KBOS": {
@@ -92,109 +192,469 @@
         "I2L": {
           "cifp_id": "I22L"
         }
-      }
-    },
-    "KJFK": {
-      "approaches": {
-        "I1R": {
-          "cifp_id": "I31R"
-        }
       },
-      "departure_controller": "N5E",
+      "departure_controller": "N4N",
       "departure_routes": {
         "22R": {
-          "DEEZZ": {
-            "cleared_altitude": 19000,
-            "sid": "JFK5",
-            "waypoints": "KJFK-4L N040.31.23.949,W073.41.52.216/ho N040.54.51.723,W073.28.44.194/a17000",
-            "handoff_controller": "36"
+          "COATE": {
+            "cleared_altitude": 17000,
+            "sid": "EWR5",
+            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.59.06.730,W074.22.10.993/a10000- COATE/ho35"
+          },
+          "NEION": {
+            "cleared_altitude": 17000,
+            "sid": "EWR5",
+            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.59.06.730,W074.22.10.993/a10000- NEION/ho35"
+          },
+          "GAYEL": {
+            "cleared_altitude": 17000,
+            "sid": "EWR5",
+            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.59.06.730,W074.22.10.993/a10000- GAYEL/ho35"
           }
         }
       },
       "departures": [
         {
+          "airlines": [{ "icao": "ACA", "types": ["B38M"] }],
+          "altitude": [30000, 32000, 34000],
+          "destination": "CYYC",
+          "route": "GAYEL Q818 WOZEE NOSIK DLH MOT YQL",
+          "exit": "GAYEL"
+        },
+        {
           "airlines": [
-            {
-              "icao": "AAL",
-              "types": ["A319", "A319"]
-            },
-            {
-              "icao": "RPA",
-              "types": ["E75L"]
-            },
-            {
-              "icao": "EDV",
-              "types": ["CRJ9", "CRJ9", "CRJ9"]
-            },
-            {
-              "icao": "JBU",
-              "types": ["BCS3", "BCS3", "BCS3"]
-            }
+            { "icao": "ACA", "types": ["BCS3", "A320", "A321"] },
+            { "icao": "ASP", "types": ["C25B"] },
+            { "icao": "JZA" },
+            { "icao": "RPA" }
           ],
+          "altitude": [26000, 28000, 30000, 32000, 34000, 36000, 38000],
+          "destination": "CYYZ",
+          "route": "GAYEL Q818 WOZEE LINNG3",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [
+            { "icao": "ACA", "types": ["B789"] },
+            { "icao": "UAL", "types": ["B38M", "B39M"] }
+          ],
+          "altitude": [30000, 32000, 34000, 36000, 38000],
+          "destination": "CYVR",
+          "route": "COATE Q436 RAAKK Q438 TWIGS RUBYY KG84M FALEN KP03G LOCKR KP12A ISN WLLES YXC BOOTH CANUC7",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "APZ" }],
+          "altitude": [32000, 34000],
+          "destination": "RKSI",
+          "route": "GAYEL Q812 SYR RAKAM YUY/delete",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [
+            { "icao": "ASA", "types": ["B738", "B39M"] },
+            { "icao": "UAL", "types": ["B752", "B789", "B78X"] },
+            { "icao": "JBU" }
+          ],
+          "altitude": [32000, 34000],
+          "destination": "KLAX",
+          "route": "COATE Q436 RAAKK Q438 RUBYY PMM OBK IOW J60 HVE PROMT Q88 HAKMN ANJLL4",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [
+            { "icao": "ASA", "types": ["B738", "B739", "B39M"] },
+            { "icao": "UAL", "types": ["A319", "B38M", "B39M"] }
+          ],
+          "altitude": [32000, 34000],
+          "destination": "KPDX",
+          "route": "COATE Q436 RAAKK Q440 IDIOM CESNA KP06G KP12Y KU12U HLN JKNOX HHOOD6",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [
+            { "icao": "ASA", "types": ["B738", "B739", "B38M", "B39M"] },
+            { "icao": "UAL", "types": ["A319", "B737", "B38M", "B39M"] }
+          ],
+          "altitude": [30000, 32000, 34000],
+          "destination": "KSEA",
+          "route": "COATE Q436 RAAKK Q438 RUBYY DABJU J36 BAE MCW J16 BIL J136 MLP GLASR3",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "AAY" }],
+          "altitude": [32000],
+          "destination": "KATW",
+          "route": "COATE Q436 RAAKK Q440 IDIOM",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "AAY" }, { "icao": "RPA" }],
+          "altitude": [28000, 30000, 32000, 34000, 36000],
+          "destination": "KGRR",
+          "route": "COATE Q436 RAAKK Q438 RUBYY",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [
+            { "icao": "AAL", "types": ["A319", "B738", "B38M"] },
+            { "icao": "UAL", "types": ["A21N", "B737", "B739", "B38M", "B39M", "B752", "B753"] }
+          ],
+          "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KORD",
+          "route": "COATE Q436 KAYYS WYNDE3",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [
+            { "icao": "DAL", "types": ["A319", "B712"] },
+            { "icao": "UAL", "types": ["B739"] },
+            { "icao": "RPA" }
+          ],
+          "altitude": [28000, 30000, 32000, 34000, 36000],
+          "destination": "KDTW",
+          "route": "GAYEL J95 CFB TRAAD JACCI FERRL2",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [
+            { "icao": "DAL", "types": ["BCS1", "BCS3", "A320"] },
+            { "icao": "UAL", "types": ["A319", "B739", "B39M"] },
+            { "icao": "RPA" },
+            { "icao": "SCX" }
+          ],
           "altitude": [30000, 32000, 34000, 36000, 38000],
-          "exit": "DEEZZ",
-          "route": "DEEZZ CANDR J60 DANNR RAV Q62 WATSN WATSN4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "RPA",
-              "types": ["E75L", "E75L"]
-            },
-            {
-              "icao": "EDV",
-              "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9", "CRJ9"]
-            }
-          ],
-          "destination": "KCLE",
-          "altitude": [30000, 32000, 34000, 36000, 38000],
-          "exit": "DEEZZ",
-          "route": "DEEZZ CANDR J60 PSB UPPRR TRYBE4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "RPA",
-              "types": ["E75L", "E75L", "E75L", "E75L"]
-            },
-            {
-              "icao": "EDV",
-              "types": ["CRJ9"]
-            },
-            {
-              "icao": "DAL",
-              "types": ["B752"]
-            },
-            {
-              "icao": "JBU",
-              "types": ["BCS3", "BCS3"]
-            }
-          ],
-          "destination": "KPIT",
-          "altitude": [26000, 28000, 30000],
-          "exit": "DEEZZ",
-          "route": "DEEZZ CANDR J60 PSB HAYNZ"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL",
-              "types": ["BCS1", "A319", "BCS1"]
-            },
-            {
-              "icao": "SCX",
-              "types": ["B738"]
-            }
-          ],
           "destination": "KMSP",
+          "route": "COATE Q436 RAAKK Q440 IDIOM MUSCL4",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "UAL", "types": ["B38M"] }],
+          "altitude": [30000, 34000, 36000],
+          "destination": "KBZN",
+          "route": "COATE Q436 RAAKK Q440 IDIOM HUFFR ABR CREKK POWDA2",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "UAL", "types": ["A21N", "B739", "B39M", "B752"] }],
           "altitude": [30000, 32000, 34000, 36000, 38000],
-          "exit": "DEEZZ",
-          "route": "DEEZZ CANDR J60 DJB J34 VIO KAMMA KKILR3"
+          "destination": "KDEN",
+          "route": "COATE Q436 RAAKK Q438 RUBYY BAE HELLO SAUGI PORDR AALLE4",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "UAL", "types": ["B739", "B38M", "B39M"] }],
+          "altitude": [28000, 30000, 32000, 34000],
+          "destination": "KSMF",
+          "route": "COATE Q436 RAAKK Q438 RUBYY BAE KG78K IANNA KP72E AKO KD57Q DTA CRASY SLMMR5",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "UAL", "types": ["B772"] }],
+          "altitude": [28000, 30000],
+          "destination": "RJTT",
+          "route": "GAYEL Q812 SYR/delete",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [{ "icao": "UAL", "types": ["B77W"] }],
+          "altitude": [28000, 30000],
+          "destination": "RJAA",
+          "route": "GAYEL Q812 SYR/delete",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [{ "icao": "UAL", "types": ["B38M"] }],
+          "altitude": [28000, 32000, 34000],
+          "destination": "PANC",
+          "route": "GAYEL Q812 ARRKK Q812 SYR/delete",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [{ "icao": "RPA" }, { "icao": "GJS" }],
+          "altitude": [22000, 24000, 26000, 28000],
+          "destination": "KBUF",
+          "route": "NEION Q232 CORDS STUBN BENEE",
+          "exit": "NEION"
+        },
+        {
+          "airlines": [{ "icao": "UAL", "types": ["B38M"] }],
+          "altitude": [30000],
+          "destination": "KGPI",
+          "route": "COATE Q436 YYOST Q436 REBBL Q436 REXXY Q436 RAAKK Q440 IDIOM KP90K CESNA KP09G TAMMR KP15A BOWIS KU18S KU18Q FCA",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "UAL", "types": ["B737"] }],
+          "altitude": [34000, 36000],
+          "destination": "KJAC",
+          "route": "COATE Q436 REBBL Q436 RAAKK Q438 RUBYY FOD WAXER KD78W JYMBO DNW",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "EJA", "types": ["C700"] }, { "icao": "RPA" }, { "icao": "GJS" }],
+          "altitude": [20000, 22000, 24000],
+          "destination": "KROC",
+          "route": "NEION Q232 CORDS STUBN GIBEE",
+          "exit": "NEION"
+        },
+        {
+          "airlines": [{ "icao": "RPA" }],
+          "altitude": [30000, 32000, 34000],
+          "destination": "KTVC",
+          "route": "COATE Q436 RAAKK DERLO RAKAP TVC",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "UPS", "types": ["A306", "B752"] }],
+          "altitude": [28000, 30000, 32000, 34000, 38000],
+          "destination": "KRFD",
+          "route": "COATE Q436 RAAKK Q438 JAAJA WEBOR HIGUH EMMAS1",
+          "exit": "COATE"
         }
       ],
       "exit_categories": {
-        "DEEZZ": "North"
+        "COATE": "North",
+        "NEION": "North",
+        "GAYEL": "North"
+      }
+    },
+    "KJFK": {
+      "approaches": {
+        "I2L": {
+          "cifp_id": "I22L"
+        }
+      },
+      "departure_controller": "N2J",
+      "departure_routes": {
+        "22R": {
+          "DEEZZ": {
+            "cleared_altitude": 19000,
+            "sid": "DEEZZ6.CANDR",
+            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238 N040.54.38.910,W073.29.09.655/a17000- DEEZZ HEERO KURNL CANDR/ho36"
+          },
+          "GAYEL": {
+            "cleared_altitude": 17000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238 N040.54.38.910,W073.29.09.655/a17000- GAYEL/ho35"
+          },
+          "COATE": {
+            "cleared_altitude": 17000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238 N040.54.38.910,W073.29.09.655/a17000- COATE/ho35"
+          },
+          "NEION": {
+            "cleared_altitude": 17000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238 N040.54.38.910,W073.29.09.655/a17000- NEION/ho35"
+          },
+          "HAAYS": {
+            "cleared_altitude": 17000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238 N040.54.38.910,W073.29.09.655/a17000- HAAYS/ho35"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [{ "icao": "CCA", "types": ["B748"] }],
+          "altitude": [30000],
+          "destination": "ZBAA",
+          "route": "GAYEL Q812 SYR TULEG YYB",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [
+            { "icao": "ASA", "types": ["B738", "B739", "B38M", "B39M"] },
+            { "icao": "DAL", "types": ["A21N"] }
+          ],
+          "altitude": [32000, 34000],
+          "destination": "KPDX",
+          "route": "COATE Q436 DGRAF Q436 RAAKK Q438 RUBYY KP03E KP06A MLS KU09Q JORAD HHOOD6",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [
+            { "icao": "ASA", "types": ["B738", "B739", "B38M", "B39M"] },
+            { "icao": "DAL", "types": ["A21N"] }
+          ],
+          "altitude": [32000, 34000, 36000, 38000],
+          "destination": "KSEA",
+          "route": "COATE Q436 RAAKK Q438 RUBYY DABJU J36 BAE MCW J16 BIL J136 MLP GLASR3",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [
+            { "icao": "ASA", "types": ["B38M"] },
+            { "icao": "CAL", "types": ["B77L"] },
+            { "icao": "CSS", "types": ["B744"] },
+            { "icao": "CKS", "types": ["B744"] },
+            { "icao": "EVA", "types": ["B77L"] },
+            { "icao": "GTI", "types": ["B744", "B77L"] },
+            { "icao": "NCA", "types": ["B748"] }
+          ],
+          "altitude": [34000, 36000, 38000, 40000],
+          "destination": "PANC",
+          "route": "GAYEL Q818 WOZEE Q917 SSM FERNO/delete",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [
+            { "icao": "AAL", "types": ["B789"] },
+            { "icao": "ANA", "types": ["B77W"] },
+            { "icao": "JAL", "types": ["A35K"] }
+          ],
+          "altitude": [28000, 30000, 32000, 34000],
+          "destination": "RJTT",
+          "route": "GAYEL Q812 SYR TULEG IGSUB MOGAG/delete",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [
+            { "icao": "AAL", "types": ["B38M"] },
+            { "icao": "QFA", "types": ["B744"] },
+            { "icao": "THY", "types": ["B77L"] },
+            { "icao": "EDV" },
+            { "icao": "RPA" },
+            { "icao": "JBU" }
+          ],
+          "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
+          "destination": "KORD",
+          "route": "COATE Q436 KAYYS WYNDE3",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "AAL", "types": ["A319"] }],
+          "altitude": [34000, 36000],
+          "destination": "KJAC",
+          "route": "COATE Q436 RAAKK ICHOL HAGGA TWIGS FNT KC78Q KG78K KP78E KD81W RICCO KU84Q",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "EDV" }, { "icao": "JBU" }, { "icao": "RPA" }, { "icao": "ERY" }, { "icao": "LXJ" }],
+          "altitude": [30000, 32000, 34000, 36000, 38000, 40000],
+          "destination": "KCLE",
+          "route": "DEEZZ6 CANDR J60 PSB UPPRR TRYBE4",
+          "exit": "CANDR"
+        },
+        {
+          "airlines": [
+            { "icao": "AAR", "types": ["A359", "A388"] },
+            { "icao": "GTI", "types": ["B744"] },
+            { "icao": "KAL", "types": ["B77L", "B77W", "A388"] }
+          ],
+          "altitude": [30000, 32000, 34000, 36000],
+          "destination": "RKSI",
+          "route": "GAYEL Q812 SYR RAKAM/delete",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [{ "icao": "CPA", "types": ["A359", "A35K", "B744", "B77L", "B77W"] }],
+          "altitude": [30000, 32000, 34000],
+          "destination": "VHHH",
+          "route": "GAYEL Q812 SYR ROSVO/delete",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [
+            { "icao": "CAL", "types": ["B77W"] },
+            { "icao": "EVA", "types": ["B77W"] }
+          ],
+          "altitude": [28000, 30000],
+          "destination": "RCTP",
+          "route": "GAYEL Q812 SYR OTONA/delete",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [
+            { "icao": "DAL", "types": ["BCS1", "BCS3", "A319", "A21N", "B752"] },
+            { "icao": "EDV" },
+            { "icao": "SCX" }
+          ],
+          "altitude": [34000, 36000, 38000, 40000],
+          "destination": "KMSP",
+          "route": "COATE Q436 RAAKK Q440 IDIOM MUSCL4",
+          "exit": "COATE"
+        },
+        {
+          "airlines": [{ "icao": "DAL", "types": ["A319", "B739"] }, { "icao": "EDV" }, { "icao": "JBU" }],
+          "altitude": [32000, 34000, 36000, 38000],
+          "destination": "KDTW",
+          "route": "GAYEL J95 CFB TRAAD JACCI FERRL2",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [{ "icao": "EDV" }, { "icao": "VJA" }],
+          "altitude": [16000, 18000, 20000],
+          "destination": "KITH",
+          "route": "NEION Q232 CORDS CFB",
+          "exit": "NEION"
+        },
+        {
+          "airlines": [{ "icao": "EDV" }],
+          "altitude": [34000],
+          "destination": "KMKE",
+          "route": "DEEZZ6 CANDR J60 DJB CRL PEGEE GETCH LYSTR SUDDS",
+          "exit": "CANDR"
+        },
+        {
+          "airlines": [{ "icao": "EDV" }, { "icao": "JBU", "types": ["A320"] }, { "icao": "JKR" }],
+          "altitude": [20000, 22000, 24000],
+          "destination": "KROC",
+          "route": "NEION Q232 STUBN GIBBE",
+          "exit": "NEION"
+        },
+        {
+          "airlines": [{ "icao": "EDV" }, { "icao": "JBU", "types": ["BCS3"] }],
+          "altitude": [18000, 20000, 22000],
+          "destination": "KSYR",
+          "route": "NEION Q232 CORDS CFB T335 SYR",
+          "exit": "NEION"
+        },
+        {
+          "airlines": [{ "icao": "EDV" }],
+          "altitude": [28000, 30000, 32000, 34000],
+          "destination": "CYYZ",
+          "route": "GAYEL Q818 WOZEE LINNG3",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [{ "icao": "JBU", "types": ["A321"] }],
+          "altitude": [32000, 34000],
+          "destination": "CYVR",
+          "route": "GAYEL Q818 WOZEE HOCKE SLLAP KG81O KP87I KP90A DPR KU06S MLP Q142 METOW EGRET",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [{ "icao": "DAL", "types": ["A319"] }, { "icao": "JBU" }],
+          "altitude": [34000, 36000],
+          "destination": "KBZN",
+          "route": "DEEZZ6 CANDR J60 DJB GERBS OBK J90 VIKNG FNX KP84C DPR KU06U CREKK POWDA2",
+          "exit": "CANDR"
+        },
+        {
+          "airlines": [{ "icao": "PAL", "types": ["A35K"] }],
+          "altitude": [32000, 34000],
+          "destination": "RPLL",
+          "route": "GAYEL Q812 SYR NOVON YXI YUY YMO/delete",
+          "exit": "GAYEL"
+        },
+        {
+          "airlines": [
+            { "icao": "UPS", "types": ["A306", "B763"] },
+            { "icao": "ATN", "types": ["B763"] }
+          ],
+          "altitude": [32000, 34000, 36000, 38000],
+          "destination": "KRFD",
+          "route": "COATE Q436 RAAKK Q438 BERYS FNT WEBOR HIGUH EMMAS1",
+          "exit": "COATE"
+        }
+      ],
+      "exit_categories": {
+        "CANDR": "DEEZZ",
+        "GAYEL": "North",
+        "COATE": "North",
+        "NEION": "North"
       }
     },
     "KTEB": {
@@ -1943,7 +2403,14 @@
       "configuration": "N35",
       "default_maps": [],
       "default_map_group": "ZNYMAP",
-      "departure_runways": [],
+      "departure_runways": [
+        {
+          "airport": "KJFK",
+          "runway": "22R",
+          "category": "North",
+          "rate": 10
+        }
+      ],
       "arrival_runways": [],
       "inbound_rates": {
         "Overflights (35)": {
@@ -1964,7 +2431,7 @@
       "arrival_runways": [
         {
           "airport": "KJFK",
-          "runway": "31R"
+          "runway": "22L"
         },
         {
           "airport": "KTEB",
@@ -2001,13 +2468,14 @@
         {
           "airport": "KJFK",
           "rate": 6,
-          "runway": "22R"
+          "runway": "22R",
+          "category": "DEEZZ"
         }
       ],
       "arrival_runways": [
         {
           "airport": "KJFK",
-          "runway": "31R"
+          "runway": "22L"
         }
       ],
       "inbound_rates": {
@@ -2030,7 +2498,7 @@
       "arrival_runways": [
         {
           "airport": "KJFK",
-          "runway": "31R"
+          "runway": "22L"
         },
         {
           "airport": "KMMU",
@@ -2135,8 +2603,15 @@
       "departure_runways": [
         {
           "airport": "KJFK",
+          "runway": "22R",
+          "category": "North",
+          "rate": 10
+        },
+        {
+          "airport": "KJFK",
           "rate": 6,
-          "runway": "22R"
+          "runway": "22R",
+          "category": "DEEZZ"
         }
       ],
       "arrival_runways": [
@@ -2150,7 +2625,7 @@
         },
         {
           "airport": "KJFK",
-          "runway": "31R"
+          "runway": "22L"
         },
         {
           "airport": "KPHL",

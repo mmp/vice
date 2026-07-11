@@ -215,6 +215,35 @@
           "HYPER9 (GANDE)": "42",
           "Overflights (Area B)": "42"
         },
+        "departure_assignments": {
+          "KLGA/BIGGY": "55",
+          "KLGA/PARKE": "39",
+          "KLGA/ZIMMZ": "39",
+          "KLGA/LANNA": "55",
+          "KLGA/NEWEL": "39",
+          "KLGA/WHITE": "68",
+          "KLGA/SHIPP": "66",
+          "KLGA/GAYEL": "35",
+          "KLGA/NEION": "35",
+          "KLGA/COATE": "35",
+          "KJFK/RBV": "55",
+          "KJFK/SHIPP": "66",
+          "KJFK/WAVEY": "66",
+          "KJFK/CANDR": "36",
+          "KJFK/GAYEL": "35",
+          "KJFK/NEION": "35",
+          "KJFK/COATE": "35",
+          "KEWR/BIGGY": "55",
+          "KEWR/PARKE": "39",
+          "KEWR/ZIMMZ": "39",
+          "KEWR/LANNA": "55",
+          "KEWR/NEWEL": "39",
+          "KEWR/GAYEL": "35",
+          "KEWR/NEION": "35",
+          "KEWR/COATE": "35",
+          "KEWR/DIXIE": "68",
+          "KEWR/WHITE": "68"
+        },
         "default_consolidation": {
           "56": [
             "68",
@@ -301,6 +330,10 @@
         },
         "default_consolidation": {
           "55": ["42"]
+        },
+        "departure_assignments": {
+          "KLGA/BIGGY": "55",
+          "KLGA/LANNA": "55"
         }
       },
       "N56": {
@@ -323,6 +356,10 @@
         },
         "default_consolidation": {
           "55": []
+        },
+        "departure_assignments": {
+          "KLGA/BIGGY": "55",
+          "KLGA/LANNA": "55"
         }
       },
       "N39": {
@@ -333,6 +370,11 @@
         },
         "default_consolidation": {
           "39": []
+        },
+        "departure_assignments": {
+          "KLGA/PARKE": "39",
+          "KLGA/ZIMMZ": "39",
+          "KLGA/NEWEL": "39"
         }
       },
       "N68": {
@@ -343,7 +385,8 @@
           "68": []
         },
         "departure_assignments": {
-          "KPHL": "68"
+          "KPHL": "68",
+          "KLGA/WHITE": "68"
         }
       },
       "345": {
@@ -360,6 +403,13 @@
         "default_consolidation": {
           "55": ["42"],
           "42": ["39"]
+        },
+        "departure_assignments": {
+          "KLGA/PARKE": "39",
+          "KLGA/ZIMMZ": "39",
+          "KLGA/NEWEL": "39",
+          "KLGA/BIGGY": "55",
+          "KLGA/LANNA": "55"
         }
       },
       "568": {
@@ -375,7 +425,8 @@
           "56": ["68"]
         },
         "departure_assignments": {
-          "KPHL": "68"
+          "KPHL": "68",
+          "KLGA/WHITE": "68"
         }
       },
       "NYB": {
@@ -401,7 +452,21 @@
           "42": ["39"]
         },
         "departure_assignments": {
-          "KPHL": "68"
+          "KPHL": "68",
+          "KLGA/PARKE": "39",
+          "KLGA/ZIMMZ": "39",
+          "KLGA/NEWEL": "39",
+          "KLGA/BIGGY": "55",
+          "KLGA/LANNA": "55",
+          "KLGA/WHITE": "68",
+          "KJFK/RBV": "55",
+          "KEWR/PARKE": "39",
+          "KEWR/ZIMMZ": "39",
+          "KEWR/NEWEL": "39",
+          "KEWR/BIGGY": "55",
+          "KEWR/LANNA": "55",
+          "KEWR/WHITE": "68",
+          "KEWR/DIXIE": "68"
         }
       },
       "N08": {
@@ -527,6 +592,11 @@
         },
         "default_consolidation": {
           "35": []
+        },
+        "departure_assignments": {
+          "KLGA/North": "35",
+          "KJFK/North": "35",
+          "KEWR/North": "35"
         }
       },
       "N36": {
@@ -535,7 +605,7 @@
           "PUCKY1 - YODAA": "36"
         },
         "departure_assignments": {
-          "KJFK": "36"
+          "KJFK/DEEZZ": "36"
         },
         "default_consolidation": {
           "36": []
@@ -608,6 +678,11 @@
           "36": ["49"],
           "49": ["50"],
           "50": ["51"]
+        },
+        "departure_assignments": {
+          "KLGA/North": "35",
+          "KJFK/North": "35",
+          "KJFK/DEEZZ": "36"
         }
       },
       "ACD": {
@@ -634,8 +709,11 @@
           "FQM3": "72"
         },
         "departure_assignments": {
-          "KJFK": "36",
-          "KPHL": "25"
+          "KJFK/DEEZZ": "36",
+          "KJFK/North": "35",
+          "KPHL": "25",
+          "KLGA/North": "35",
+          "KEWR/North": "35"
         },
         "default_consolidation": {
           "34": [
@@ -667,6 +745,7 @@
           "SARDI1": "66"
         },
         "departure_assignments": {
+          "KLGA": "66",
           "KJFK": "66"
         },
         "default_consolidation": {
@@ -681,8 +760,8 @@
           "BOUNO5": "66"
         },
         "departure_assignments": {
-          "KEWR": "36",
-          "KJFK": "25"
+          "KLGA": "66",
+          "KJFK": "66"
         },
         "default_consolidation": {
           "86": ["66", "65", "82", "83"]
@@ -705,8 +784,22 @@
           "Overflights (Area B)": "42"
         },
         "departure_assignments": {
-          "KEWR": "80",
-          "KJFK": "80"
+          "KLGA/PARKE": "39",
+          "KLGA/ZIMMZ": "39",
+          "KLGA/NEWEL": "39",
+          "KLGA/BIGGY": "55",
+          "KLGA/LANNA": "55",
+          "KLGA/WHITE": "68",
+          "KLGA/SHIPP": "66",
+          "KJFK/SHIPP": "66",
+          "KJFK/WAVEY": "66",
+          "KEWR/PARKE": "39",
+          "KEWR/ZIMMZ": "39",
+          "KEWR/NEWEL": "39",
+          "KEWR/BIGGY": "55",
+          "KEWR/LANNA": "55",
+          "KEWR/WHITE": "68",
+          "KEWR/DIXIE": "68"
         },
         "default_consolidation": {
           "56": ["66", "65", "82", "83", "86", "68"],
