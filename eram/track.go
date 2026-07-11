@@ -481,6 +481,10 @@ func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockTy
 		if ctx.UserOwnsFlightPlan(fp) {
 			return FullDatablock
 		}
+		// Conflict alert forces a full datablock for both participants.
+		if ep.inConflictAlert(trk.ADSBCallsign) {
+			return FullDatablock
+		}
 		if ctx.IsHandoffToUser(&trk) {
 			return FullDatablock
 		}
