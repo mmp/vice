@@ -62,19 +62,10 @@ func (ep *ERAMPane) datablockInteractions(ctx *panes.Context, tracks []sim.Track
 		if !ok {
 			continue
 		}
-		// Outline any hovered field box (green) and the main box (yellow) so
-		// the hit regions are visible for verification.
-		for id, ext := range db.Fields {
-			if id == DBFieldHandoffSpeed { // same extent as DBFieldSpeed
-				continue
-			}
-			if ext.Inside(mouse.Pos) {
-				if id == DBFieldMain {
-					ep.drawOutlineRectangle(ld, ext, colors.yellow)
-				} else {
-					ep.drawOutlineRectangle(ld, ext, colors.vciGreen)
-				}
-			}
+		// Outline the hovered main box (yellow) so its hit region is
+		// visible for verification.
+		if ext := db.Fields[DBFieldMain]; ext.Inside(mouse.Pos) {
+			ep.drawOutlineRectangle(ld, ext, colors.yellow)
 		}
 		if db.Fields[DBFieldCallsign].Inside(mouse.Pos) {
 			// TODO: check what this does
