@@ -58,15 +58,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 				continue // Nothing automatic in this group
 			}
 
-			flow, rateSum := sampleRateMap(filteredRates, s.State.LaunchConfig.InboundFlowRateScale, s.Rand)
-
-			var ac *Aircraft
-			var err error
-			if flow == "overflights" {
-				ac, err = s.createOverflightNoLock(group)
-			} else {
-				ac, err = s.createArrivalNoLock(group, flow)
-			}
+			ac, rateSum, err := s.activeTrafficProvider().createInbound(s, group, filteredRates)
 
 			if err != nil {
 				s.lg.Errorf("create inbound error: %v", err)

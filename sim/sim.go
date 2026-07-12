@@ -110,6 +110,10 @@ type Sim struct {
 
 	Rand *rand.Rand
 
+	// Runtime-only source for automatically generated IFR traffic. This is
+	// intentionally unexported so it is not part of saved simulation state.
+	trafficProvider trafficProvider
+
 	VoiceAssigner *VoiceAssigner
 
 	SquawkWarnedACIDs map[ACID]any // Warn once in CheckLeaks(); don't spam the logs
