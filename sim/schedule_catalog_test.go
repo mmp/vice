@@ -48,6 +48,15 @@ func TestLoadBuiltInScheduleCatalog(t *testing.T) {
 	if got := catalog.ForAirport("KORD"); len(got) != 0 {
 		t.Fatalf("ForAirport returned %d KORD schedules, want 0", len(got))
 	}
+	summaries := catalog.SummariesForAirport("KMSP")
+	if len(summaries) != 1 {
+		t.Fatalf("SummariesForAirport returned %d schedules, want 1", len(summaries))
+	}
+	if summary := summaries[0]; summary.ID != schedule.ID || summary.Name != schedule.Name ||
+		summary.Airport != schedule.Airport || summary.Description != schedule.Description ||
+		summary.Timezone != schedule.Timezone {
+		t.Fatalf("unexpected schedule summary: %+v", summary)
+	}
 }
 
 func TestLoadBuiltInScheduleCatalogValidation(t *testing.T) {

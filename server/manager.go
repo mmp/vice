@@ -92,6 +92,7 @@ type ScenarioSpec struct {
 	PrimaryAirport          string
 	MagneticVariation       float32
 	WindSpecifier           *wx.WindSpecifier
+	RealWorldSchedules      []sim.BuiltInScheduleSummary
 
 	LaunchConfig sim.LaunchConfig
 

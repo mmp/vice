@@ -33,6 +33,38 @@ type BuiltInScheduleCatalog struct {
 	Schedules []BuiltInSchedule
 }
 
+// BuiltInScheduleSummary is the small, client-facing description of a
+// built-in schedule. The full flight list stays on the server until a
+// scenario is launched.
+type BuiltInScheduleSummary struct {
+	ID          string
+	Name        string
+	Airport     string
+	Description string
+	Timezone    string
+}
+
+// Summary returns the client-facing metadata for a built-in schedule.
+func (s BuiltInSchedule) Summary() BuiltInScheduleSummary {
+	return BuiltInScheduleSummary{
+		ID:          s.ID,
+		Name:        s.Name,
+		Airport:     s.Airport,
+		Description: s.Description,
+		Timezone:    s.Timezone,
+	}
+}
+
+// SummariesForAirport returns client-facing schedule metadata for airport.
+func (c BuiltInScheduleCatalog) SummariesForAirport(airport string) []BuiltInScheduleSummary {
+	schedules := c.ForAirport(airport)
+	summaries := make([]BuiltInScheduleSummary, len(schedules))
+	for i, schedule := range schedules {
+		summaries[i] = schedule.Summary()
+	}
+	return summaries
+}
+
 // ForAirport returns schedules published for airport. The returned slice is a
 // copy and may be modified by the caller.
 func (c BuiltInScheduleCatalog) ForAirport(airport string) []BuiltInSchedule {
