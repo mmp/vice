@@ -652,32 +652,18 @@ func (s *Sim) CreateIFRDeparture(departureAirport string, runway av.RunwayID, ca
 // aircraft/airline, initializes the flight plan and navigation, builds the NAS flight
 // plan, assigns controller (handling virtual vs human controllers), and registers with STARS.
 func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.RunwayID, category string) (*Aircraft, error) {
-	// Validate airport exists
-	ap := s.State.Airports[departureAirport]
-	if ap == nil {
-		return nil, av.ErrUnknownAirport
+	ap, rwy, exitRoutes, err := s.departureConfiguration(departureAirport, runway, category)
+	if err != nil {
+		return nil, err
 	}
 
-	// Find the runway configuration
-	idx := slices.IndexFunc(s.State.DepartureRunways,
-		func(r DepartureRunway) bool {
-			return r.Airport == departureAirport && r.Runway == runway && r.Category == category
-		})
-	if idx == -1 {
-		return nil, av.ErrUnknownRunway
-	}
-	rwy := &s.State.DepartureRunways[idx]
-
-	exitRoutes := ap.DepartureRoutes[rwy.Runway]
-
-	// Sample uniformly, minding the category, if specified
-	idx = rand.SampleFiltered(s.Rand, ap.Departures,
+	// Sample uniformly, minding the category, if specified.
+	idx := rand.SampleFiltered(s.Rand, ap.Departures,
 		func(d av.Departure) bool {
-			_, ok := exitRoutes[d.Exit] // make sure the runway handles the exit
+			_, ok := exitRoutes[d.Exit]
 			return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
 		})
 	if idx == -1 {
-		// This shouldn't ever happen...
 		return nil, fmt.Errorf("%s/%s: unable to find a valid departure", departureAirport, rwy.Runway)
 	}
 	dep := &ap.Departures[idx]
@@ -694,8 +680,126 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 		return nil, err
 	}
 
+	return s.initializeIFRDepartureNoLock(ac, ap, departureAirport, runway, dep, exitRoutes)
+}
+
+// createScheduledIFRDepartureNoLock creates a departure using the published
+// identity from a real-world schedule. Vice still resolves the runway, exit,
+// SID, route, altitude, and controller assignment from the active scenario.
+func (s *Sim) createScheduledIFRDepartureNoLock(flight ScheduledFlight, departureAirport string,
+	runway av.RunwayID, category string) (*Aircraft, error) {
+	if flight.OperationAt(departureAirport) != ScheduleOperationDeparture {
+		return nil, fmt.Errorf("%s is not a departure from %s", flight.Callsign, departureAirport)
+	}
+
+	ap, rwy, exitRoutes, err := s.departureConfiguration(departureAirport, runway, category)
+	if err != nil {
+		return nil, err
+	}
+
+	dep, err := s.resolveScheduledDeparture(departureAirport, ap, rwy, exitRoutes, flight.Destination)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", flight.Callsign, err)
+	}
+
+	callsign := strings.ToUpper(strings.TrimSpace(flight.Callsign))
+	if callsign == "" {
+		return nil, fmt.Errorf("scheduled departure callsign is empty")
+	}
+	if av.CallsignClashesWithExisting(s.currentCallsigns(), callsign, s.EnforceUniqueCallsignSuffix) {
+		return nil, fmt.Errorf("scheduled departure callsign %s is already in use", callsign)
+	}
+
+	aircraftType := strings.ToUpper(strings.TrimSpace(flight.AircraftType))
+	if alias := av.DB.AircraftTypeAliases[aircraftType]; alias != "" {
+		aircraftType = alias
+	}
+	if _, ok := av.DB.AircraftPerformance[aircraftType]; !ok {
+		return nil, fmt.Errorf("aircraft type %s is not present in the performance database", aircraftType)
+	}
+
+	ac := &Aircraft{
+		ADSBCallsign: av.ADSBCallsign(callsign),
+		Mode:         av.TransponderModeAltitude,
+	}
+	ac.InitializeFlightPlan(av.FlightRulesIFR, aircraftType, departureAirport, flight.Destination)
+
+	return s.initializeIFRDepartureNoLock(ac, ap, departureAirport, runway, dep, exitRoutes)
+}
+
+func (s *Sim) departureConfiguration(departureAirport string, runway av.RunwayID,
+	category string) (*av.Airport, *DepartureRunway, map[av.ExitID]*av.ExitRoute, error) {
+	ap := s.State.Airports[departureAirport]
+	if ap == nil {
+		return nil, nil, nil, av.ErrUnknownAirport
+	}
+
+	idx := slices.IndexFunc(s.State.DepartureRunways,
+		func(r DepartureRunway) bool {
+			return r.Airport == departureAirport && r.Runway == runway && r.Category == category
+		})
+	if idx == -1 {
+		return nil, nil, nil, av.ErrUnknownRunway
+	}
+	rwy := &s.State.DepartureRunways[idx]
+	return ap, rwy, ap.DepartureRoutes[rwy.Runway], nil
+}
+
+// resolveScheduledDeparture first looks for an exact destination match. If
+// the scenario does not model that city pair, it chooses the compatible
+// departure whose destination is closest in direction to the published one.
+func (s *Sim) resolveScheduledDeparture(departureAirport string, ap *av.Airport, rwy *DepartureRunway,
+	exitRoutes map[av.ExitID]*av.ExitRoute, destination string) (*av.Departure, error) {
+	destination = normalizeScheduleCode(destination)
+	var candidates []*av.Departure
+	for i := range ap.Departures {
+		dep := &ap.Departures[i]
+		if _, ok := exitRoutes[dep.Exit]; !ok {
+			continue
+		}
+		if rwy.Category != "" && rwy.Category != ap.ExitCategories[dep.Exit] {
+			continue
+		}
+		if normalizeScheduleCode(dep.Destination) == destination {
+			return dep, nil
+		}
+		candidates = append(candidates, dep)
+	}
+	if len(candidates) == 0 {
+		return nil, fmt.Errorf("no compatible departure route for runway %s", rwy.Runway)
+	}
+
+	origin, originOK := av.DB.Airports[departureAirport]
+	dest, destinationOK := av.DB.Airports[destination]
+	if !originOK || !destinationOK {
+		return nil, fmt.Errorf("no exact route to %s and airport coordinates are unavailable", destination)
+	}
+	publishedHeading := math.Heading2LL(origin.Location, dest.Location, s.State.NmPerLongitude)
+
+	var best *av.Departure
+	bestDifference := float32(361)
+	for _, dep := range candidates {
+		candidateAirport, ok := av.DB.Airports[normalizeScheduleCode(dep.Destination)]
+		if !ok {
+			continue
+		}
+		heading := math.Heading2LL(origin.Location, candidateAirport.Location, s.State.NmPerLongitude)
+		difference := math.HeadingDifference(publishedHeading, heading)
+		if difference < bestDifference {
+			best = dep
+			bestDifference = difference
+		}
+	}
+	if best == nil {
+		return nil, fmt.Errorf("no exact or directional route to %s", destination)
+	}
+	return best, nil
+}
+
+func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departureAirport string,
+	runway av.RunwayID, dep *av.Departure, exitRoutes map[av.ExitID]*av.ExitRoute) (*Aircraft, error) {
 	exitRoute := exitRoutes[dep.Exit]
-	err = ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, s.State.NmPerLongitude,
+	err := ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
@@ -713,11 +817,10 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 		nasFp.EntryFix = ac.FlightPlan.DepartureAirport
 	}
 	nasFp.ExitFix = shortExit
-	if dep.Scratchpad != "" { // this has top priority
+	if dep.Scratchpad != "" {
 		nasFp.Scratchpad = dep.Scratchpad
 	} else if sp1 := s.State.FacilityAdaptation.Datablocks.Scratchpad1; sp1.DisplayExitFix ||
 		sp1.DisplayExitFix1 || sp1.DisplayExitGate || sp1.DisplayAltExitGate {
-		// Don't set the scratchpad; it will be set automatically.
 	} else if sp, ok := s.State.FacilityAdaptation.Scratchpads[string(dep.Exit)]; ok {
 		nasFp.Scratchpad = sp
 	} else {
@@ -728,30 +831,24 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.FlightPlan.Altitude, 0)
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && exitRoute.IsRNAV
 
-	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
+	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR
 	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, string(runway))
 
 	if err := s.assignSquawk(ac, &nasFp); err != nil {
 		return nil, err
 	}
 
-	// Departures aren't immediately associated, but the STARSComputer will
-	// hold on to their flight plans for now.
-	// Create a flight strip for departures
 	if shouldCreateFlightStrip(&nasFp) {
 		if s.isVirtualController(nasFp.TrackingController) {
-			// Virtual controller: strip goes to the handoff target
 			if !s.isVirtualController(nasFp.InboundHandoffController) {
 				s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
 			}
 		} else {
-			// Human controller: strip goes to the tracking controller
 			s.initFlightStrip(&nasFp, nasFp.TrackingController)
 		}
 	}
 
 	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
-
 	return ac, err
 }
 
