@@ -84,6 +84,14 @@ const (
 	LaunchManual
 )
 
+// TrafficSource identifies how automatic IFR traffic is selected.
+type TrafficSource int32
+
+const (
+	TrafficSourceRandom TrafficSource = iota
+	TrafficSourceRealWorldSchedule
+)
+
 // LaunchConfig collects settings related to launching aircraft in the sim; it's
 // passed back and forth between client and server: server provides them so client
 // can draw the UI for what's available, then client returns one back when launching.
@@ -95,6 +103,19 @@ type LaunchConfig struct {
 	DepartureMode  int32
 	ArrivalMode    int32
 	OverflightMode int32
+
+	// TrafficSource controls whether automatic IFR aircraft come from the
+	// scenario's existing random traffic generator or a built-in schedule.
+	TrafficSource TrafficSource
+	// ScheduleID identifies the selected built-in schedule when TrafficSource
+	// is TrafficSourceRealWorldSchedule.
+	ScheduleID string
+	// ScheduleStartMinute is the selected local start time, expressed as
+	// minutes after midnight at the schedule airport.
+	ScheduleStartMinute int
+	// ScheduleTrafficPercentage is the percentage of eligible scheduled flights
+	// to use. Cargo retention is applied later by the schedule provider.
+	ScheduleTrafficPercentage int
 
 	GoAroundRate         float32
 	EnableTowerGoArounds bool
@@ -120,6 +141,8 @@ type LaunchConfig struct {
 func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vffRequestRate int32,
 	vfrAirports map[string]*av.Airport, inbound map[string]map[string]float32, haveVFRReportingRegions bool) LaunchConfig {
 	lc := LaunchConfig{
+		TrafficSource:               TrafficSourceRandom,
+		ScheduleTrafficPercentage:   100,
 		GoAroundRate:                0.01,
 		DepartureRateScale:          1,
 		VFRDepartureRateScale:       vfrRateScale,
