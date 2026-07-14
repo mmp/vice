@@ -111,15 +111,20 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		return nil, err
 	}
 
-	err = ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr,
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.lg)
+	return s.initializeArrivalNoLock(ac, &arr, group, arrivalAirport)
+}
+func (s *Sim) initializeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
+	arrivalAirport string) (*Aircraft, error) {
+	err := ac.InitializeArrival(s.State.Airports[arrivalAirport], arr,
+		s.State.NmPerLongitude, s.State.MagneticVariation,
+		s.wxModel, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
 	}
 
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeArrival)
 	nasFp.Route = ac.FlightPlan.Route
-	nasFp.EntryFix = "" // TODO
+	nasFp.EntryFix = ""
 	if len(ac.FlightPlan.ArrivalAirport) == 4 {
 		nasFp.ExitFix = ac.FlightPlan.ArrivalAirport[1:]
 	} else {
@@ -133,7 +138,6 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	nasFp.SecondaryScratchpad = arr.SecondaryScratchpad
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && arr.IsRNAV
 
-	// For ERAM, set AssignedAltitude and derive PerceivedAssigned from waypoint restrictions.
 	if _, isERAM := av.DB.ARTCCs[s.State.Facility]; isERAM {
 		spawnAlt := ac.Nav.FlightState.Altitude
 		if arr.AssignedAltitude > 0 {
@@ -142,7 +146,6 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 				nasFp.PerceivedAssigned = alt
 			}
 		} else {
-			// Try to derive from waypoint restrictions
 			if alt, ok := findLowestWaypointAltitude(arr.Waypoints, spawnAlt); ok {
 				nasFp.AssignedAltitude = alt
 				nasFp.PerceivedAssigned = alt
@@ -154,9 +157,6 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 
 	s.maybeSetGoAround(ac, s.State.LaunchConfig.GoAroundRate)
 
-	// Decide at creation whether this pilot will spontaneously report field in sight and, among
-	// those, whether they will also request the visual approach. VisualRequestDistance, when set,
-	// gates the request to the first tick inside that distance.
 	ac.WantsVisualApproach = s.Rand.Float32() < visualFieldProb
 	if ac.WantsVisualApproach && s.Rand.Float32() < visualRequestProb {
 		ac.VisualApproachRequestDistance = s.Rand.Float32Range(9, 16)
@@ -166,14 +166,93 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		return nil, err
 	}
 
-	// Create a flight strip at the inbound handoff controller if it's a human position
-	if shouldCreateFlightStrip(&nasFp) && !s.isVirtualController(nasFp.InboundHandoffController) {
+	if shouldCreateFlightStrip(&nasFp) &&
+		!s.isVirtualController(nasFp.InboundHandoffController) {
 		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
 	}
 
 	return ac, s.associateAtSpawn(ac, nasFp)
 }
+func resolveScheduledArrival(arrivals []av.Arrival, arrivalAirport,
+	origin string) (*av.Arrival, error) {
+	arrivalAirport = normalizeScheduleCode(arrivalAirport)
+	origin = normalizeScheduleCode(origin)
 
+	for i := range arrivals {
+		arr := &arrivals[i]
+		for _, airline := range arr.Airlines[arrivalAirport] {
+			if normalizeScheduleCode(airline.Airport) == origin {
+				return arr, nil
+			}
+		}
+	}
+
+	return nil, fmt.Errorf("no arrival route from %s to %s", origin, arrivalAirport)
+}
+
+// createScheduledArrivalNoLock creates an arrival using the published
+// callsign, aircraft type, origin, and destination. Vice continues to resolve
+// the STAR, initial controller, altitude, and spawn geometry from the scenario.
+func (s *Sim) createScheduledArrivalNoLock(flight ScheduledFlight, group,
+	arrivalAirport string) (*Aircraft, error) {
+	if flight.OperationAt(arrivalAirport) != ScheduleOperationArrival {
+		return nil, fmt.Errorf("%s is not an arrival at %s",
+			flight.Callsign, arrivalAirport)
+	}
+
+	inboundFlow, ok := s.State.InboundFlows[group]
+	if !ok {
+		return nil, fmt.Errorf("unknown inbound flow %s", group)
+	}
+
+	arr, err := resolveScheduledArrival(
+		inboundFlow.Arrivals,
+		arrivalAirport,
+		flight.Origin,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", flight.Callsign, err)
+	}
+
+	callsign := strings.ToUpper(strings.TrimSpace(flight.Callsign))
+	if callsign == "" {
+		return nil, fmt.Errorf("scheduled arrival callsign is empty")
+	}
+	if av.CallsignClashesWithExisting(
+		s.currentCallsigns(),
+		callsign,
+		s.EnforceUniqueCallsignSuffix,
+	) {
+		return nil, fmt.Errorf(
+			"scheduled arrival callsign %s is already in use",
+			callsign,
+		)
+	}
+
+	aircraftType := strings.ToUpper(strings.TrimSpace(flight.AircraftType))
+	if alias := av.DB.AircraftTypeAliases[aircraftType]; alias != "" {
+		aircraftType = alias
+	}
+	if _, ok := av.DB.AircraftPerformance[aircraftType]; !ok {
+		return nil, fmt.Errorf(
+			"aircraft type %s is not present in the performance database",
+			aircraftType,
+		)
+	}
+
+	ac := &Aircraft{
+		ADSBCallsign: av.ADSBCallsign(callsign),
+		Mode:         av.TransponderModeAltitude,
+	}
+	ac.InitializeFlightPlan(
+		av.FlightRulesIFR,
+		aircraftType,
+		normalizeScheduleCode(flight.Origin),
+		normalizeScheduleCode(flight.Destination),
+	)
+
+	return s.initializeArrivalNoLock(ac, arr, group, arrivalAirport)
+}
 func (s *Sim) currentCallsigns() []av.ADSBCallsign {
 	callsigns := slices.Collect(maps.Keys(s.Aircraft))
 	for _, fp := range s.STARSComputer.FlightPlans {
