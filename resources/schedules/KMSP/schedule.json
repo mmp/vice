@@ -1,0 +1,12 @@
+{
+  "airport": "KMSP",
+  "schedules": [
+    {
+      "id": "development_test",
+      "name": "MSP Development Test",
+      "file": "development_test.csv",
+      "description": "Small synthetic schedule used to exercise Real World Schedules during development.",
+      "timezone": "America/Chicago"
+    }
+  ]
+}
