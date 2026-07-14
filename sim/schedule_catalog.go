@@ -33,6 +33,18 @@ type BuiltInScheduleCatalog struct {
 	Schedules []BuiltInSchedule
 }
 
+// Find returns a built-in schedule by airport and ID.
+func (c BuiltInScheduleCatalog) Find(airport, id string) (BuiltInSchedule, bool) {
+	airport = normalizeScheduleCode(airport)
+	id = strings.TrimSpace(id)
+	for _, schedule := range c.Schedules {
+		if schedule.Airport == airport && schedule.ID == id {
+			return schedule, true
+		}
+	}
+	return BuiltInSchedule{}, false
+}
+
 // BuiltInScheduleSummary is the small, client-facing description of a
 // built-in schedule. The full flight list stays on the server until a
 // scenario is launched.

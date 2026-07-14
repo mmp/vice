@@ -339,7 +339,19 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 
 	s.lg.Info("Set launch config", slog.Any("launch_config", lc))
 
+	providerChanged := lc.TrafficSource != s.State.LaunchConfig.TrafficSource ||
+		lc.ScheduleID != s.State.LaunchConfig.ScheduleID ||
+		lc.ScheduleStartMinute != s.State.LaunchConfig.ScheduleStartMinute
+
 	s.State.LaunchConfig = lc
+	if providerChanged {
+		s.trafficProvider = nil
+		for _, runways := range s.DepartureState {
+			for _, depState := range runways {
+				depState.NextIFRSpawn = s.State.SimTime
+			}
+		}
+	}
 	s.publish()
 	return nil
 }
@@ -392,8 +404,9 @@ func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, manualLaunch 
 	// The journey begins...
 	depState := s.DepartureState[ac.FlightPlan.DepartureAirport][runway]
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
-		if manualLaunch {
-			// Keep them moving and for HFR, request the release immediately.
+		if manualLaunch || s.State.LaunchConfig.TrafficSource == TrafficSourceRealWorldSchedule {
+			// Scheduled times represent runway availability, not pushback or
+			// taxi time, so scheduled IFRs enter the launch queue immediately.
 			depac.ReadyDepartGateTime = depac.SpawnTime
 		}
 		// IFRs spend some time at the gate to give them a chance to appear
@@ -534,9 +547,15 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 		if runwayRates, ok := s.State.LaunchConfig.DepartureRates[name]; ok {
 			for rwy, rate := range runwayRates {
 				r := sumRateMap(rate, s.State.LaunchConfig.DepartureRateScale)
+				nextIFRSpawn := randomDelay(r)
+				if s.State.LaunchConfig.TrafficSource == TrafficSourceRealWorldSchedule {
+					// The schedule provider owns the timing. Ask it immediately
+					// for the next published runway departure.
+					nextIFRSpawn = now
+				}
 				s.DepartureState[name][rwy] = &RunwayLaunchState{
 					IFRSpawnRate: r,
-					NextIFRSpawn: randomDelay(r),
+					NextIFRSpawn: nextIFRSpawn,
 				}
 			}
 		}

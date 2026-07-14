@@ -79,10 +79,14 @@ func (s *Sim) spawnDepartures() {
 			// Possibly spawn another aircraft, depending on how much time has
 			// passed since the last one.
 			if now.After(depState.NextIFRSpawn) {
-				if ac, err := s.activeTrafficProvider().createIFRDeparture(s, airport, runway); ac != nil && err == nil {
-					s.addDepartureToPool(ac, runway, false /* not manual launch */)
-					depState.NextIFRSpawn = now.Add(randomWait(depState.IFRSpawnRate, false, s.Rand))
+				ac, delay, err := s.activeTrafficProvider().createIFRDeparture(s, airport, runway)
+				if err != nil {
+					s.lg.Warnf("unable to create IFR departure: %v", err)
 				}
+				if ac != nil && err == nil {
+					s.addDepartureToPool(ac, runway, false /* not manual launch */)
+				}
+				depState.NextIFRSpawn = now.Add(max(time.Millisecond, delay))
 			}
 			if now.After(depState.NextVFRSpawn) {
 				if ac, err := s.makeNewVFRDeparture(airport, runway); ac != nil && err == nil {

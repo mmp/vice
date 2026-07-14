@@ -91,3 +91,20 @@ func TestLoadBuiltInScheduleCatalogValidation(t *testing.T) {
 		})
 	}
 }
+
+func TestBuiltInScheduleCatalogFind(t *testing.T) {
+	catalog := BuiltInScheduleCatalog{Schedules: []BuiltInSchedule{
+		{ID: "summer-weekday", Airport: "KMSP", Name: "MSP Summer Weekday"},
+	}}
+
+	schedule, ok := catalog.Find("kmsp", "summer-weekday")
+	if !ok {
+		t.Fatal("Find did not return the schedule")
+	}
+	if schedule.Name != "MSP Summer Weekday" {
+		t.Fatalf("Find returned %q, want MSP Summer Weekday", schedule.Name)
+	}
+	if _, ok := catalog.Find("KMSP", "missing"); ok {
+		t.Fatal("Find returned a missing schedule")
+	}
+}
