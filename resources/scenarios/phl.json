@@ -3643,7 +3643,7 @@
         },
         {
           "boundaries": ["PHL_NH27_6_W"],
-          "lower": 13000,
+          "lower": 9000,
           "upper": 13000
         },
         {
