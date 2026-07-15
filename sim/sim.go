@@ -110,6 +110,9 @@ type Sim struct {
 
 	Rand *rand.Rand
 
+	// User-selected scenario start time before Vice rewinds the clock for prespawn.
+	scheduleStart Time
+
 	// Runtime-only source for automatically generated IFR traffic. This is
 	// intentionally unexported so it is not part of saved simulation state.
 	trafficProvider trafficProvider
@@ -252,6 +255,8 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		VirtualControllers: config.VirtualControllers,
 
 		Rand: rand.Make(),
+
+		scheduleStart: NewSimTime(config.StartTime.UTC()),
 
 		SquawkWarnedACIDs: make(map[ACID]any),
 

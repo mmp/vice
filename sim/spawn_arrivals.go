@@ -58,16 +58,19 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 				continue // Nothing automatic in this group
 			}
 
-			ac, rateSum, err := s.activeTrafficProvider().createInbound(s, group, filteredRates)
+			ac, delay, err := s.activeTrafficProvider().createInbound(s, group, filteredRates, pushActive)
 
 			if err != nil {
 				s.lg.Errorf("create inbound error: %v", err)
-			} else if ac != nil {
-				s.addAircraftNoLock(*ac)
-				s.NextInboundSpawn[group] = now.Add(randomWait(rateSum, pushActive, s.Rand))
 			}
+			if ac != nil && err == nil {
+				s.addAircraftNoLock(*ac)
+			}
+			s.NextInboundSpawn[group] = now.Add(max(time.Millisecond, delay))
+
 		}
 	}
+
 }
 
 func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*Aircraft, error) {
@@ -229,10 +232,7 @@ func (s *Sim) createScheduledArrivalNoLock(flight ScheduledFlight, group,
 		)
 	}
 
-	aircraftType := strings.ToUpper(strings.TrimSpace(flight.AircraftType))
-	if alias := av.DB.AircraftTypeAliases[aircraftType]; alias != "" {
-		aircraftType = alias
-	}
+	aircraftType := normalizeScheduledAircraftType(flight.AircraftType)
 	if _, ok := av.DB.AircraftPerformance[aircraftType]; !ok {
 		return nil, fmt.Errorf(
 			"aircraft type %s is not present in the performance database",

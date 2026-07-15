@@ -714,12 +714,12 @@ func (s *Sim) createScheduledIFRDepartureNoLock(flight ScheduledFlight, departur
 		return nil, fmt.Errorf("scheduled departure callsign %s is already in use", callsign)
 	}
 
-	aircraftType := strings.ToUpper(strings.TrimSpace(flight.AircraftType))
-	if alias := av.DB.AircraftTypeAliases[aircraftType]; alias != "" {
-		aircraftType = alias
-	}
+	aircraftType := normalizeScheduledAircraftType(flight.AircraftType)
 	if _, ok := av.DB.AircraftPerformance[aircraftType]; !ok {
-		return nil, fmt.Errorf("aircraft type %s is not present in the performance database", aircraftType)
+		return nil, fmt.Errorf(
+			"aircraft type %s is not present in the performance database",
+			aircraftType,
+		)
 	}
 
 	ac := &Aircraft{

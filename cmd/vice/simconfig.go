@@ -140,6 +140,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.ScenarioSpec = spec
 	c.ScenarioName = scenarioName
 	normalizeScheduleLaunchConfig(c.ScenarioSpec)
+	c.scheduleStartTimeText = formatScheduleStartTime(spec.LaunchConfig.ScheduleStartMinute)
 	c.savedVFRDepartureRateScale = spec.LaunchConfig.VFRDepartureRateScale
 	c.initDefaultWindDirection()
 	c.fetchSeq++
@@ -243,6 +244,58 @@ func adjustScheduleStartTime(minutes, adjustment int) int {
 	const minutesPerDay = 24 * 60
 	return ((minutes+adjustment)%minutesPerDay + minutesPerDay) % minutesPerDay
 }
+
+func scheduleStartTimeUTC(base time.Time, startMinute int, timezone string) (time.Time, error) {
+	location, err := time.LoadLocation(timezone)
+	if err != nil {
+		return time.Time{}, fmt.Errorf("load schedule timezone %q: %w", timezone, err)
+	}
+
+	startMinute = ((startMinute % (24 * 60)) + (24 * 60)) % (24 * 60)
+
+	// Preserve the calendar date selected by Vice's UTC weather/time picker,
+	// but interpret the schedule's clock time in the airport timezone.
+	scenarioDate := base.UTC()
+	localStart := time.Date(
+		scenarioDate.Year(),
+		scenarioDate.Month(),
+		scenarioDate.Day(),
+		startMinute/60,
+		startMinute%60,
+		0,
+		0,
+		location,
+	)
+
+	return localStart.UTC(), nil
+}
+
+func (c *NewSimConfiguration) synchronizeScheduleStartTime(spec *server.ScenarioSpec) error {
+	if spec == nil || spec.LaunchConfig.TrafficSource != sim.TrafficSourceRealWorldSchedule {
+		return nil
+	}
+
+	schedule, ok := selectedScheduleSummary(spec)
+	if !ok {
+		return fmt.Errorf(
+			"selected real-world schedule %q was not found",
+			spec.LaunchConfig.ScheduleID,
+		)
+	}
+
+	startTime, err := scheduleStartTimeUTC(
+		c.NewSimRequest.StartTime,
+		spec.LaunchConfig.ScheduleStartMinute,
+		schedule.Timezone,
+	)
+	if err != nil {
+		return err
+	}
+
+	c.NewSimRequest.StartTime = startTime
+	return nil
+}
+
 func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
 	lc := &spec.LaunchConfig
 
@@ -290,17 +343,37 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
 	}
 
 	imgui.Text("Start Time (Airport Local Time):")
+	imgui.SameLine()
+	imgui.SetNextItemWidth(100)
 
-	if imgui.Button("-##scheduleStartTime") {
-		lc.ScheduleStartMinute = adjustScheduleStartTime(lc.ScheduleStartMinute, -15)
+	if c.scheduleStartTimeText == "" {
+		c.scheduleStartTimeText = formatScheduleStartTime(lc.ScheduleStartMinute)
 	}
 
-	imgui.SameLine()
-	imgui.Text(formatScheduleStartTime(lc.ScheduleStartMinute))
+	if imgui.InputTextWithHint(
+		"##scheduleStartTime",
+		"14:00",
+		&c.scheduleStartTimeText,
+		0,
+		nil,
+	) {
+		if minutes, ok := parseScheduleStartTime(c.scheduleStartTimeText); ok {
+			lc.ScheduleStartMinute = minutes
 
-	imgui.SameLine()
-	if imgui.Button("+##scheduleStartTime") {
-		lc.ScheduleStartMinute = adjustScheduleStartTime(lc.ScheduleStartMinute, 15)
+			if err := c.synchronizeScheduleStartTime(spec); err != nil {
+				c.displayError = err
+			} else {
+				c.displayError = nil
+			}
+		}
+	}
+
+	if _, ok := parseScheduleStartTime(c.scheduleStartTimeText); !ok {
+		imgui.SameLine()
+		imgui.TextDisabled("Enter HH:MM or HHMM")
+	} else {
+		imgui.SameLine()
+		imgui.TextDisabled("UTC: " + c.NewSimRequest.StartTime.UTC().Format("1504Z"))
 	}
 	percentage := int32(lc.ScheduleTrafficPercentage)
 	imgui.SetNextItemWidth(260)
@@ -1547,6 +1620,18 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 
 func (c *NewSimConfiguration) Start(config *Config) error {
 	c.ScenarioSpec.LaunchConfig.EnableTowerGoArounds = config.EnableTowerGoArounds
+
+	if c.ScenarioSpec.LaunchConfig.TrafficSource == sim.TrafficSourceRealWorldSchedule {
+		minutes, ok := parseScheduleStartTime(c.scheduleStartTimeText)
+		if !ok {
+			return fmt.Errorf("invalid schedule start time %q", c.scheduleStartTimeText)
+		}
+
+		c.ScenarioSpec.LaunchConfig.ScheduleStartMinute = minutes
+		if err := c.synchronizeScheduleStartTime(c.ScenarioSpec); err != nil {
+			return err
+		}
+	}
 
 	if c.newSimType == NewSimJoinRemote {
 		// Set the privileged flag from the main config

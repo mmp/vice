@@ -19,7 +19,7 @@ import (
 // published runway time.
 type trafficProvider interface {
 	createIFRDeparture(s *Sim, airport string, runway av.RunwayID) (*Aircraft, time.Duration, error)
-	createInbound(s *Sim, group string, rates map[string]float32) (*Aircraft, float32, error)
+	createInbound(s *Sim, group string, rates map[string]float32, pushActive bool) (*Aircraft, time.Duration, error)
 }
 
 // randomTrafficProvider preserves Vice's existing rate-based random traffic
@@ -32,19 +32,31 @@ func (randomTrafficProvider) createIFRDeparture(s *Sim, airport string, runway a
 	return ac, randomWait(depState.IFRSpawnRate, false, s.Rand), err
 }
 
-func (randomTrafficProvider) createInbound(s *Sim, group string, rates map[string]float32) (*Aircraft, float32, error) {
-	flow, rateSum := sampleRateMap(rates, s.State.LaunchConfig.InboundFlowRateScale, s.Rand)
+func (randomTrafficProvider) createInbound(s *Sim, group string,
+	rates map[string]float32, pushActive bool) (*Aircraft, time.Duration, error) {
+	flow, rateSum := sampleRateMap(
+		rates,
+		s.State.LaunchConfig.InboundFlowRateScale,
+		s.Rand,
+	)
+
+	delay := randomWait(rateSum, pushActive, s.Rand)
 
 	if flow == "overflights" {
 		ac, err := s.createOverflightNoLock(group)
-		return ac, rateSum, err
+		return ac, delay, err
 	}
 
 	ac, err := s.createArrivalNoLock(group, flow)
-	return ac, rateSum, err
+	return ac, delay, err
 }
 
 type scheduledDeparture struct {
+	flight ScheduledFlight
+	offset time.Duration
+}
+
+type scheduledArrival struct {
 	flight ScheduledFlight
 	offset time.Duration
 }
@@ -53,37 +65,51 @@ type scheduledDeparture struct {
 // schedule clock starts at ScheduleStartMinute when the provider is
 // first initialized.
 type scheduleTrafficProvider struct {
-	airport    string
-	start      Time
-	departures []scheduledDeparture
-	next       int
+	airport string
+	start   Time
+
+	departures    []scheduledDeparture
+	nextDeparture int
+
+	arrivals    []scheduledArrival
+	nextArrival int
 }
 
 func newScheduleTrafficProvider(schedule BuiltInSchedule, startMinute int, start Time) *scheduleTrafficProvider {
 	p := &scheduleTrafficProvider{airport: schedule.Airport, start: start}
 	for _, flight := range schedule.Flights {
-		if flight.OperationAt(schedule.Airport) != ScheduleOperationDeparture {
-			continue
-		}
 		minutes := (flight.ScheduledMinute - startMinute + 24*60) % (24 * 60)
-		p.departures = append(p.departures, scheduledDeparture{
-			flight: flight,
-			offset: time.Duration(minutes) * time.Minute,
-		})
+		offset := time.Duration(minutes) * time.Minute
+
+		switch flight.OperationAt(schedule.Airport) {
+		case ScheduleOperationDeparture:
+			p.departures = append(p.departures, scheduledDeparture{
+				flight: flight,
+				offset: offset,
+			})
+		case ScheduleOperationArrival:
+			p.arrivals = append(p.arrivals, scheduledArrival{
+				flight: flight,
+				offset: offset,
+			})
+		}
 	}
 	sort.SliceStable(p.departures, func(i, j int) bool {
 		return p.departures[i].offset < p.departures[j].offset
+	})
+	sort.SliceStable(p.arrivals, func(i, j int) bool {
+		return p.arrivals[i].offset < p.arrivals[j].offset
 	})
 	return p
 }
 
 func (p *scheduleTrafficProvider) createIFRDeparture(s *Sim, airport string, runway av.RunwayID) (*Aircraft, time.Duration, error) {
 	const idleDelay = 365 * 24 * time.Hour
-	if airport != p.airport || p.next >= len(p.departures) {
+	if airport != p.airport || p.nextDeparture >= len(p.departures) {
 		return nil, idleDelay, nil
 	}
 
-	scheduled := p.departures[p.next]
+	scheduled := p.departures[p.nextDeparture]
 	due := p.start.Add(scheduled.offset)
 	if s.State.SimTime.Before(due) {
 		return nil, due.Sub(s.State.SimTime), nil
@@ -96,20 +122,94 @@ func (p *scheduleTrafficProvider) createIFRDeparture(s *Sim, airport string, run
 	}
 
 	ac, err := s.createScheduledIFRDepartureNoLock(scheduled.flight, airport, runway, category)
-	p.next++ // unmatched flights are skipped and reported by the caller
+	p.nextDeparture++ // unmatched flights are skipped and reported by the caller
 
 	delay := idleDelay
-	if p.next < len(p.departures) {
-		nextDue := p.start.Add(p.departures[p.next].offset)
+	if p.nextDeparture < len(p.departures) {
+		nextDue := p.start.Add(p.departures[p.nextDeparture].offset)
 		delay = max(time.Millisecond, nextDue.Sub(s.State.SimTime))
 	}
 	return ac, delay, err
 }
 
-func (p *scheduleTrafficProvider) createInbound(s *Sim, group string, rates map[string]float32) (*Aircraft, float32, error) {
-	// Scheduled arrivals are added in a later commit. Keep the existing arrival
-	// behavior until that path is implemented.
-	return randomTrafficProvider{}.createInbound(s, group, rates)
+func (p *scheduleTrafficProvider) createInbound(s *Sim, group string,
+	rates map[string]float32, pushActive bool) (*Aircraft, time.Duration, error) {
+	const idleDelay = 365 * 24 * time.Hour
+
+	if p.nextArrival >= len(p.arrivals) {
+		// Real-world schedules currently provide arrivals and departures only.
+		// Continue generating random overflights when they are enabled.
+		if _, ok := rates["overflights"]; ok {
+			return randomTrafficProvider{}.createInbound(
+				s,
+				group,
+				map[string]float32{"overflights": rates["overflights"]},
+				pushActive,
+			)
+		}
+		return nil, idleDelay, nil
+	}
+
+	scheduled := p.arrivals[p.nextArrival]
+	due := p.start.Add(scheduled.offset)
+	if s.State.SimTime.Before(due) {
+		return nil, due.Sub(s.State.SimTime), nil
+	}
+
+	// Determine which scenario inbound flow contains a route from the
+	// published origin to the schedule airport.
+	matchedGroup := ""
+	for candidateGroup, inboundFlow := range s.State.InboundFlows {
+		if _, err := resolveScheduledArrival(
+			inboundFlow.Arrivals,
+			p.airport,
+			scheduled.flight.Origin,
+		); err == nil {
+			matchedGroup = candidateGroup
+			break
+		}
+	}
+
+	if matchedGroup == "" {
+		p.nextArrival++
+		delay := idleDelay
+		if p.nextArrival < len(p.arrivals) {
+			nextDue := p.start.Add(p.arrivals[p.nextArrival].offset)
+			delay = max(time.Millisecond, nextDue.Sub(s.State.SimTime))
+		}
+		return nil, delay, fmt.Errorf(
+			"%s: no inbound flow from %s to %s",
+			scheduled.flight.Callsign,
+			scheduled.flight.Origin,
+			p.airport,
+		)
+	}
+
+	// Each inbound-flow timer calls this provider independently. Only the
+	// matching flow should create this scheduled arrival.
+	if group != matchedGroup {
+		return nil, time.Second, nil
+	}
+
+	if rate, ok := rates[p.airport]; !ok ||
+		scaleRate(rate, s.State.LaunchConfig.InboundFlowRateScale) == 0 {
+		return nil, time.Second, nil
+	}
+
+	ac, err := s.createScheduledArrivalNoLock(
+		scheduled.flight,
+		group,
+		p.airport,
+	)
+	p.nextArrival++ // unmatched aircraft are skipped and reported by the caller
+
+	delay := idleDelay
+	if p.nextArrival < len(p.arrivals) {
+		nextDue := p.start.Add(p.arrivals[p.nextArrival].offset)
+		delay = max(time.Millisecond, nextDue.Sub(s.State.SimTime))
+	}
+
+	return ac, delay, err
 }
 
 type errorTrafficProvider struct{ err error }
@@ -117,8 +217,9 @@ type errorTrafficProvider struct{ err error }
 func (p errorTrafficProvider) createIFRDeparture(_ *Sim, _ string, _ av.RunwayID) (*Aircraft, time.Duration, error) {
 	return nil, time.Minute, p.err
 }
-func (p errorTrafficProvider) createInbound(_ *Sim, _ string, _ map[string]float32) (*Aircraft, float32, error) {
-	return nil, 0, p.err
+func (p errorTrafficProvider) createInbound(_ *Sim, _ string,
+	_ map[string]float32, _ bool) (*Aircraft, time.Duration, error) {
+	return nil, time.Minute, p.err
 }
 
 func (s *Sim) activeTrafficProvider() trafficProvider {
@@ -144,6 +245,6 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 	}
 
 	s.trafficProvider = newScheduleTrafficProvider(schedule,
-		int(s.State.LaunchConfig.ScheduleStartMinute), s.State.SimTime)
+		int(s.State.LaunchConfig.ScheduleStartMinute), s.scheduleStart)
 	return s.trafficProvider
 }

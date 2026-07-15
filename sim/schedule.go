@@ -57,6 +57,17 @@ func (f ScheduledFlight) OperationAt(airport string) ScheduleOperation {
 	}
 }
 
+func normalizeScheduledAircraftType(value string) string {
+	aircraftType := strings.ToUpper(strings.TrimSpace(value))
+
+	switch aircraftType {
+	case "B717":
+		return "B712"
+	default:
+		return aircraftType
+	}
+}
+
 // LoadScheduleCSV reads a real-world schedule CSV. Required columns may appear
 // in any order. Unknown columns are ignored so the format can grow without
 // breaking older Vice versions.

@@ -538,7 +538,15 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 			rate = scaleRate(rate, s.State.LaunchConfig.InboundFlowRateScale)
 			rateSum += rate
 		}
-		s.NextInboundSpawn[group] = randomDelay(rateSum)
+
+		nextInboundSpawn := randomDelay(rateSum)
+		if s.State.LaunchConfig.TrafficSource == TrafficSourceRealWorldSchedule {
+			// The schedule provider owns arrival timing, so ask it immediately
+			// for the next published runway-arrival event.
+			nextInboundSpawn = now
+		}
+
+		s.NextInboundSpawn[group] = nextInboundSpawn
 	}
 
 	for name := range s.State.DepartureAirports {
