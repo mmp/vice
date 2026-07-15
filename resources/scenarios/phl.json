@@ -4173,6 +4173,11 @@
           "upper": 12000
         },
         {
+          "boundaries": ["PHL_SD27_50_45"],
+          "lower": 11000,
+          "upper": 12000
+        },
+        {
           "boundaries": ["PHL_SD27_50_N"],
           "lower": 11000,
           "upper": 12000
