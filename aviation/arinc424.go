@@ -185,7 +185,8 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 
 				name := strings.TrimSpace(string(line[93:123]))
 				dmeIdent := strings.TrimSpace(string(line[51:55]))
-				hasDME := dmeIdent != "" && !empty(line[55:74])
+				// The presence of the DME lat/long field indicates a co-located DME.
+				hasDME := !empty(line[55:74])
 				var dmeLocation math.Point2LL
 				if hasDME {
 					dmeLocation = parseLatLong(line[55:64], line[64:74])
