@@ -18,7 +18,17 @@ func TestMakeLaunchConfigScheduleDefaults(t *testing.T) {
 	if lc.ScheduleStartMinute != 0 {
 		t.Fatalf("ScheduleStartMinute = %d, want 0", lc.ScheduleStartMinute)
 	}
-	if lc.ScheduleTrafficPercentage != 100 {
-		t.Fatalf("ScheduleTrafficPercentage = %d, want 100", lc.ScheduleTrafficPercentage)
+	if lc.ScheduleArrivalPercentage != 100 {
+		t.Fatalf(
+			"ScheduleArrivalPercentage = %d, want 100",
+			lc.ScheduleArrivalPercentage,
+		)
+	}
+
+	if lc.ScheduleDeparturePercentage != 100 {
+		t.Fatalf(
+			"ScheduleDeparturePercentage = %d, want 100",
+			lc.ScheduleDeparturePercentage,
+		)
 	}
 }

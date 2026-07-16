@@ -113,9 +113,11 @@ type LaunchConfig struct {
 	// ScheduleStartMinute is the selected local start time, expressed as
 	// minutes after midnight at the schedule airport.
 	ScheduleStartMinute int
-	// ScheduleTrafficPercentage is the percentage of eligible scheduled flights
-	// to use. Cargo retention is applied later by the schedule provider.
-	ScheduleTrafficPercentage int
+	// ScheduleArrivalPercentage is the percentage of scheduled IFR arrivals to use.
+	ScheduleArrivalPercentage int
+
+	// ScheduleDeparturePercentage is the percentage of scheduled IFR departures to use.
+	ScheduleDeparturePercentage int
 
 	GoAroundRate         float32
 	EnableTowerGoArounds bool
@@ -142,7 +144,8 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vffRequestRat
 	vfrAirports map[string]*av.Airport, inbound map[string]map[string]float32, haveVFRReportingRegions bool) LaunchConfig {
 	lc := LaunchConfig{
 		TrafficSource:               TrafficSourceRandom,
-		ScheduleTrafficPercentage:   100,
+		ScheduleArrivalPercentage:   100,
+		ScheduleDeparturePercentage: 100,
 		GoAroundRate:                0.01,
 		DepartureRateScale:          1,
 		VFRDepartureRateScale:       vfrRateScale,

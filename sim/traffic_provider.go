@@ -61,6 +61,31 @@ type scheduledArrival struct {
 	offset time.Duration
 }
 
+func includeScheduledFlight(flight ScheduledFlight, percentage int) bool {
+	percentage = min(max(percentage, 0), 100)
+
+	// Zero explicitly disables this direction, including cargo.
+	if percentage == 0 {
+		return false
+	}
+
+	if percentage == 100 || flight.Cargo {
+		return true
+	}
+
+	// Use a stable hash so the same percentage consistently selects the same
+	// flights each time the scenario is loaded.
+	hash := uint32(2166136261)
+	key := flight.Callsign + flight.Origin + flight.Destination
+
+	for i := 0; i < len(key); i++ {
+		hash ^= uint32(key[i])
+		hash *= 16777619
+	}
+
+	return int(hash%100) < percentage
+}
+
 // scheduleTrafficProvider emits departures in published-time order. The
 // schedule clock starts at ScheduleStartMinute when the provider is
 // first initialized.
@@ -75,7 +100,13 @@ type scheduleTrafficProvider struct {
 	nextArrival int
 }
 
-func newScheduleTrafficProvider(schedule BuiltInSchedule, startMinute int, start Time) *scheduleTrafficProvider {
+func newScheduleTrafficProvider(
+	schedule BuiltInSchedule,
+	startMinute int,
+	start Time,
+	arrivalPercentage int,
+	departurePercentage int,
+) *scheduleTrafficProvider {
 	p := &scheduleTrafficProvider{airport: schedule.Airport, start: start}
 	for _, flight := range schedule.Flights {
 		minutes := (flight.ScheduledMinute - startMinute + 24*60) % (24 * 60)
@@ -83,15 +114,20 @@ func newScheduleTrafficProvider(schedule BuiltInSchedule, startMinute int, start
 
 		switch flight.OperationAt(schedule.Airport) {
 		case ScheduleOperationDeparture:
-			p.departures = append(p.departures, scheduledDeparture{
-				flight: flight,
-				offset: offset,
-			})
+			if includeScheduledFlight(flight, departurePercentage) {
+				p.departures = append(p.departures, scheduledDeparture{
+					flight: flight,
+					offset: offset,
+				})
+			}
+
 		case ScheduleOperationArrival:
-			p.arrivals = append(p.arrivals, scheduledArrival{
-				flight: flight,
-				offset: offset,
-			})
+			if includeScheduledFlight(flight, arrivalPercentage) {
+				p.arrivals = append(p.arrivals, scheduledArrival{
+					flight: flight,
+					offset: offset,
+				})
+			}
 		}
 	}
 	sort.SliceStable(p.departures, func(i, j int) bool {
@@ -188,6 +224,12 @@ func (p *scheduleTrafficProvider) createInbound(s *Sim, group string,
 	// Each inbound-flow timer calls this provider independently. Only the
 	// matching flow should create this scheduled arrival.
 	if group != matchedGroup {
+		s.lg.Infof(
+			"scheduled arrival %s waiting for flow %s (currently %s)",
+			scheduled.flight.Callsign,
+			matchedGroup,
+			group,
+		)
 		return nil, time.Second, nil
 	}
 
@@ -244,7 +286,12 @@ func (s *Sim) activeTrafficProvider() trafficProvider {
 		return s.trafficProvider
 	}
 
-	s.trafficProvider = newScheduleTrafficProvider(schedule,
-		int(s.State.LaunchConfig.ScheduleStartMinute), s.scheduleStart)
+	s.trafficProvider = newScheduleTrafficProvider(
+		schedule,
+		int(s.State.LaunchConfig.ScheduleStartMinute),
+		s.scheduleStart,
+		s.State.LaunchConfig.ScheduleArrivalPercentage,
+		s.State.LaunchConfig.ScheduleDeparturePercentage,
+	)
 	return s.trafficProvider
 }

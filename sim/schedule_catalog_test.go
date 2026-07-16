@@ -124,20 +124,36 @@ func TestBundledMSPDevelopmentSchedule(t *testing.T) {
 	if schedule.Name != "MSP Development Test" {
 		t.Fatalf("schedule name = %q, want MSP Development Test", schedule.Name)
 	}
-	if len(schedule.Flights) != 6 {
-		t.Fatalf("schedule has %d flights, want 6", len(schedule.Flights))
+	if len(schedule.Flights) != 9 {
+		t.Fatalf("schedule has %d flights, want 9", len(schedule.Flights))
 	}
 
+	departures := 0
+	arrivals := 0
 	cargo := 0
+
 	for _, flight := range schedule.Flights {
-		if flight.OperationAt("KMSP") != ScheduleOperationDeparture {
-			t.Fatalf("%s is not an MSP departure", flight.Callsign)
+		switch flight.OperationAt("KMSP") {
+		case ScheduleOperationDeparture:
+			departures++
+		case ScheduleOperationArrival:
+			arrivals++
+		default:
+			t.Fatalf("%s is neither an MSP arrival nor departure", flight.Callsign)
 		}
+
 		if flight.Cargo {
 			cargo++
 		}
 	}
-	if cargo != 2 {
-		t.Fatalf("schedule has %d cargo flights, want 2", cargo)
+
+	if departures != 6 {
+		t.Fatalf("schedule has %d departures, want 6", departures)
+	}
+	if arrivals != 3 {
+		t.Fatalf("schedule has %d arrivals, want 3", arrivals)
+	}
+	if cargo != 3 {
+		t.Fatalf("schedule has %d cargo flights, want 3", cargo)
 	}
 }

@@ -19,9 +19,10 @@ func TestNormalizeScheduleLaunchConfig(t *testing.T) {
 			{ID: "development-test", Name: "Development Test"},
 		},
 		LaunchConfig: sim.LaunchConfig{
-			TrafficSource:             sim.TrafficSourceRealWorldSchedule,
-			ScheduleStartMinute:       2000,
-			ScheduleTrafficPercentage: 0,
+			TrafficSource:               sim.TrafficSourceRealWorldSchedule,
+			ScheduleStartMinute:         2000,
+			ScheduleArrivalPercentage:   -5,
+			ScheduleDeparturePercentage: 150,
 		},
 	}
 
@@ -33,8 +34,12 @@ func TestNormalizeScheduleLaunchConfig(t *testing.T) {
 	if got, want := spec.LaunchConfig.ScheduleStartMinute, 1439; got != want {
 		t.Fatalf("ScheduleStartMinute = %d, want %d", got, want)
 	}
-	if got, want := spec.LaunchConfig.ScheduleTrafficPercentage, 1; got != want {
-		t.Fatalf("ScheduleTrafficPercentage = %d, want %d", got, want)
+	if got, want := spec.LaunchConfig.ScheduleArrivalPercentage, 0; got != want {
+		t.Fatalf("ScheduleArrivalPercentage = %d, want %d", got, want)
+	}
+
+	if got, want := spec.LaunchConfig.ScheduleDeparturePercentage, 100; got != want {
+		t.Fatalf("ScheduleDeparturePercentage = %d, want %d", got, want)
 	}
 }
 

@@ -156,7 +156,8 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 func normalizeScheduleLaunchConfig(spec *server.ScenarioSpec) {
 	lc := &spec.LaunchConfig
 	lc.ScheduleStartMinute = min(max(lc.ScheduleStartMinute, 0), 24*60-1)
-	lc.ScheduleTrafficPercentage = min(max(lc.ScheduleTrafficPercentage, 1), 100)
+	lc.ScheduleArrivalPercentage = min(max(lc.ScheduleArrivalPercentage, 0), 100)
+	lc.ScheduleDeparturePercentage = min(max(lc.ScheduleDeparturePercentage, 0), 100)
 
 	if len(spec.RealWorldSchedules) == 0 {
 		lc.TrafficSource = sim.TrafficSourceRandom
@@ -375,15 +376,31 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
 		imgui.SameLine()
 		imgui.TextDisabled("UTC: " + c.NewSimRequest.StartTime.UTC().Format("1504Z"))
 	}
-	percentage := int32(lc.ScheduleTrafficPercentage)
+	arrivalPercentage := int32(lc.ScheduleArrivalPercentage)
 	imgui.SetNextItemWidth(260)
-	if imgui.SliderInt("Scheduled traffic percentage", &percentage, 1, 100) {
-		lc.ScheduleTrafficPercentage = int(percentage)
+	if imgui.SliderInt(
+		"Scheduled IFR arrival percentage",
+		&arrivalPercentage,
+		0,
+		100,
+	) {
+		lc.ScheduleArrivalPercentage = int(arrivalPercentage)
+	}
+
+	departurePercentage := int32(lc.ScheduleDeparturePercentage)
+	imgui.SetNextItemWidth(260)
+	if imgui.SliderInt(
+		"Scheduled IFR departure percentage",
+		&departurePercentage,
+		0,
+		100,
+	) {
+		lc.ScheduleDeparturePercentage = int(departurePercentage)
 	}
 
 	imgui.TextDisabled("Times use the selected airport's local time.")
 	imgui.TextDisabled("Departure times represent runway departures; pushback and taxi are not simulated.")
-	imgui.TextDisabled("Scheduled arrivals will be added in a later development step.")
+	imgui.TextDisabled("IFR arrivals and departures are generated from the selected schedule.")
 }
 
 // initDefaultWindDirection computes the default wind direction range from the scenario's runways.
@@ -1534,20 +1551,46 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 		imgui.PopStyleColor()
 	}
 
-	// Departures (collapsible for random traffic; schedule-controlled otherwise)
+	// Scheduled IFR traffic or random IFR controls.
 	lc := &c.ScenarioSpec.LaunchConfig
 	if lc.TrafficSource == sim.TrafficSourceRealWorldSchedule {
-		imgui.Text("IFR departures are controlled by the selected schedule.")
-	} else if lc.HaveDepartures() {
-		depRate := lc.TotalDepartureRate()
-		headerText := fmt.Sprintf("Departures (Total: %d/hr)###departures", int(depRate+0.5))
-		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
-			drawDepartureUI(lc, p)
-			imgui.Spacing()
+		imgui.Text("IFR arrivals and departures are controlled by the selected schedule.")
+		imgui.TextDisabled(fmt.Sprintf(
+			"Scheduled IFR arrivals: %d%%",
+			lc.ScheduleArrivalPercentage,
+		))
+		imgui.TextDisabled(fmt.Sprintf(
+			"Scheduled IFR departures: %d%%",
+			lc.ScheduleDeparturePercentage,
+		))
+		imgui.Spacing()
+	} else {
+		if lc.HaveDepartures() {
+			depRate := lc.TotalDepartureRate()
+			headerText := fmt.Sprintf(
+				"Departures (Total: %d/hr)###departures",
+				int(depRate+0.5),
+			)
+			if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
+				drawDepartureUI(lc, p)
+				imgui.Spacing()
+			}
+		}
+
+		if lc.HaveArrivals() {
+			arrRate := lc.TotalArrivalRate()
+			headerText := fmt.Sprintf(
+				"Arrivals (Total: %d/hr)###arrivals",
+				int(arrRate+0.5),
+			)
+			if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
+				drawArrivalUI(lc, p)
+				imgui.Spacing()
+			}
 		}
 	}
 
-	// VFR Departures (collapsible)
+	// VFR Departures remain independent of the IFR traffic source.
 	if len(lc.VFRAirportRates) > 0 {
 		var vfrRate float32
 		for _, rate := range lc.VFRAirportRates {
@@ -1556,23 +1599,26 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 				vfrRate += r
 			}
 		}
-		headerText := fmt.Sprintf("VFR Departures (%d/hr)###vfrdepartures", int(vfrRate+0.5))
+		headerText := fmt.Sprintf(
+			"VFR Departures (%d/hr)###vfrdepartures",
+			int(vfrRate+0.5),
+		)
 		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
 			drawVFRDepartureUI(lc, p)
 			imgui.Spacing()
 		}
 	}
 
-	// Arrivals (collapsible)
-	if lc.HaveArrivals() {
-		arrRate := lc.TotalArrivalRate()
-		headerText := fmt.Sprintf("Arrivals (Total: %d/hr)###arrivals", int(arrRate+0.5))
-		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
-			drawArrivalUI(lc, p)
-			imgui.Spacing()
-		}
-	}
-
+	// Go-around probability still applies to scheduled arrivals.
+	imgui.SetNextItemWidth(220)
+	imgui.SliderFloatV(
+		"Go around probability",
+		&lc.GoAroundRate,
+		0,
+		1,
+		"%.02f",
+		0,
+	)
 	// Overflights (collapsible)
 	if lc.HaveOverflights() {
 		ofRate := lc.TotalOverflightRate()

@@ -20,7 +20,13 @@ func TestScheduleTrafficProviderOrdersDeparturesFromSelectedStartTime(t *testing
 		},
 	}
 
-	provider := newScheduleTrafficProvider(schedule, 14*60, start)
+	provider := newScheduleTrafficProvider(
+		schedule,
+		14*60,
+		start,
+		100,
+		100,
+	)
 	if len(provider.departures) != 3 {
 		t.Fatalf("got %d departures, want 3", len(provider.departures))
 	}
@@ -54,7 +60,13 @@ func TestScheduleTrafficProviderOrdersArrivalsFromSelectedStartTime(t *testing.T
 		},
 	}
 
-	provider := newScheduleTrafficProvider(schedule, 14*60, start)
+	provider := newScheduleTrafficProvider(
+		schedule,
+		14*60,
+		start,
+		100,
+		100,
+	)
 	if len(provider.arrivals) != 3 {
 		t.Fatalf("got %d arrivals, want 3", len(provider.arrivals))
 	}
@@ -94,7 +106,12 @@ func TestScheduleTrafficProviderWaitsForPublishedArrivalTime(t *testing.T) {
 			AircraftType:    "A320",
 			ScheduledMinute: 14*60 + 7,
 		}},
-	}, 14*60, start)
+	},
+		14*60,
+		start,
+		100,
+		100,
+	)
 
 	s := &Sim{
 		State: &CommonState{
@@ -129,7 +146,12 @@ func TestScheduleTrafficProviderWaitsForPublishedTime(t *testing.T) {
 			Callsign: "DAL123", Origin: "KMSP", Destination: "KORD", AircraftType: "A320",
 			ScheduledMinute: 14*60 + 5,
 		}},
-	}, 14*60, start)
+	},
+		14*60,
+		start,
+		100,
+		100,
+	)
 
 	s := &Sim{State: &CommonState{DynamicState: DynamicState{SimTime: start}}}
 	ac, delay, err := provider.createIFRDeparture(s, "KMSP", "12L")
