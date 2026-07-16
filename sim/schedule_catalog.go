@@ -202,21 +202,20 @@ func loadScheduleManifest(filesystem fs.FS, filename string) ([]BuiltInSchedule,
 			return nil, fmt.Errorf("%s: close %s: %w", prefix, csvPath, closeErr)
 		}
 
-		for line, flight := range flights {
-			if flight.OperationAt(manifest.Airport) == ScheduleOperationUnknown {
-				return nil, fmt.Errorf("%s: %s row %d callsign %s is neither an arrival nor departure at %s",
-					prefix, entry.File, line+2, flight.Callsign, manifest.Airport)
-			}
-		}
-
-		schedules = append(schedules, BuiltInSchedule{
+		schedule := BuiltInSchedule{
 			ID:          entry.ID,
 			Name:        entry.Name,
 			Airport:     manifest.Airport,
 			Description: entry.Description,
 			Timezone:    entry.Timezone,
 			Flights:     flights,
-		})
+		}
+
+		if err := validateBuiltInSchedule(schedule); err != nil {
+			return nil, fmt.Errorf("%s: %s: %w", prefix, entry.File, err)
+		}
+
+		schedules = append(schedules, schedule)
 	}
 	return schedules, nil
 }
