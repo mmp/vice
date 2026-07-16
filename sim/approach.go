@@ -434,9 +434,11 @@ func (s *Sim) checkAirportVisibility(ac *Aircraft) VisualEligibility {
 	arrivalAirport := ac.FlightPlan.ArrivalAirport
 	ap := s.State.Airports[arrivalAirport]
 
-	// Must be VMC at the arrival airport.
+	// Must be VMC at the arrival airport. If there's no METAR for the airport
+	// (e.g. a newly added TRACON whose weather hasn't been ingested yet),
+	// assume VMC.
 	metar, ok := s.State.METAR[arrivalAirport]
-	if !ok || !metar.IsVMC() {
+	if ok && !metar.IsVMC() {
 		return VisualEligibility{Reason: visualEligibilityIMC}
 	}
 

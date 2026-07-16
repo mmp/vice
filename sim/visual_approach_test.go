@@ -357,13 +357,28 @@ func TestCheckVisualEligibility(t *testing.T) {
 			wantField: true,
 		},
 		{
-			name: "No METAR available",
+			// No METAR (e.g. a newly added TRACON whose weather hasn't been
+			// ingested) is treated as VMC rather than IMC, so a close aircraft
+			// facing the field can see it.
+			name: "No METAR available — assume VMC",
 			sim: func() *Sim {
 				s := makeVisualTestSim(airportLoc, "13L")
 				delete(s.State.METAR, "KJFK")
 				return s
 			}(),
 			ac:        makeVisualTestAircraft(math.Point2LL{0, 5.0 / 60}, 180),
+			wantField: true,
+		},
+		{
+			// The VMC assumption for missing METAR still honors the clear-day
+			// visual range cap, so an aircraft beyond it can't see the field.
+			name: "No METAR available — still out of range",
+			sim: func() *Sim {
+				s := makeVisualTestSim(airportLoc, "13L")
+				delete(s.State.METAR, "KJFK")
+				return s
+			}(),
+			ac:        makeVisualTestAircraft(math.Point2LL{0, 30.0 / 60}, 180),
 			wantField: false,
 		},
 		{
