@@ -589,6 +589,77 @@ func TestCompoundSpeedCommands(t *testing.T) {
 			},
 			expected: "DAL200 TO/132220 S170/UMILTT",
 		},
+		{
+			// Regression: "maintain SPEED until FIX, contact <facility> tower FREQ".
+			// The compound-speed pattern ("maintain X until FIX then Y") must not
+			// reach across the "contact" boundary to grab the tower frequency as a
+			// phantom second speed segment. Previously this parsed as
+			// S160/UGREKO/180 — the tower frequency 118(.7) was skipped into by the
+			// second-speed matcher and teen/ty-confused into 180. Speed-until and
+			// the tower handoff are distinct commands.
+			name:       "maintain speed until fix then contact facility tower with frequency",
+			transcript: "Air Canada Forty Eight Ninety Two reduced speed will maintain one six zero knots until Greko contact La Guardia tower one one eight point seven good night",
+			aircraft: map[string]Aircraft{
+				"Air Canada Forty Eight Ninety Two": {Callsign: "ACA4892", State: "arrival", Fixes: map[string]string{"Greko": "GREKO"}},
+			},
+			expected: "ACA4892 S160/UGREKO TO/118700",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestATISInformation(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "atis acknowledgment",
+			transcript: "Delta 200 Boston Approach information Bravo is current",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "arrival"},
+			},
+			expected: "DAL200 ATIS/B",
+		},
+		{
+			// Regression: the leading "at" of the "at {fix} cleared {approach}"
+			// (and "at {fix} {speed}") handlers fuzzy-matched the word "ATIS",
+			// letting those handlers hijack the "ATIS information Mike is current"
+			// phrase whenever a following word collided with a route fix. Here the
+			// fix "MYNEE" collides with the spoken "Mike", so the whole ATIS phrase
+			// was consumed into a phantom "AMYNEE/..." command and the ATIS
+			// acknowledgment was lost. "atis" must not match "at".
+			name:       "atis phrase not hijacked by at-fix when a word collides with a fix",
+			transcript: "Spirit Winds Fifty Nine Twenty Six Norcal Approach ATIS Information Mike is current the Oakland Altimator Three Zero Zero Six expect ILS runway three zero approach",
+			aircraft: map[string]Aircraft{
+				"Spirit Wings Fifty Nine Twenty Six": {
+					Callsign: "NKS5926",
+					State:    "arrival",
+					Fixes:    map[string]string{"Mike": "MYNEE"},
+					CandidateApproaches: map[string]string{
+						"I L S runway three zero": "I30",
+					},
+					ApproachFixes: map[string]map[string]string{"I30": {"Mynee": "MYNEE"}},
+				},
+			},
+			expected: "NKS5926 ATIS/M EI30",
+		},
 	}
 
 	provider := NewTranscriber(nil)

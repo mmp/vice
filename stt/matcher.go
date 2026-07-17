@@ -187,12 +187,22 @@ func (m *typedMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords []s
 	}
 
 	// Slack: skip up to 2 unrecognized tokens to find a match.
-	// If the current position is a command boundary keyword, limit slack
-	// to 1 to avoid reaching too far past a likely new command.
+	// A command-boundary keyword at the current position that isn't part of
+	// this template starts a new command; don't reach past it to satisfy this
+	// template's value, which would pull a value belonging to the new command
+	// into this one (e.g. the frequency in "...until GREKO contact tower
+	// 118.7" being grabbed as a phantom second speed segment).
+	// Exception: the directional modifiers "left"/"right" attach to a
+	// turn/heading and are often garbled noise (e.g. "cleared right ended",
+	// where "right" is a mangled "direct"), so allow skipping one of them.
 	if allowSlack {
 		maxSlack := 2
-		if IsCommandKeyword(strings.ToLower(tokens[pos].Text)) && !slices.Contains(skipWords, strings.ToLower(tokens[pos].Text)) {
-			maxSlack = 1
+		if posText := strings.ToLower(tokens[pos].Text); IsCommandKeyword(posText) && !slices.Contains(skipWords, posText) {
+			if posText == "left" || posText == "right" {
+				maxSlack = 1
+			} else {
+				maxSlack = 0
+			}
 		}
 		for slack := 1; slack <= maxSlack && pos+slack < len(tokens); slack++ {
 			checkText := strings.ToLower(tokens[pos+slack].Text)
