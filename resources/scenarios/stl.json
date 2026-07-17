@@ -3297,48 +3297,6 @@
     },
     "KBLV": {
       "hold_for_release": true,
-      "atpa_volumes": {
-        "14L": {
-          "runway_threshold": "KBLV-14L",
-          "heading": 139,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "14R": {
-          "runway_threshold": "KBLV-14R",
-          "heading": 139,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "32L": {
-          "runway_threshold": "KBLV-32L",
-          "heading": 319,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "32R": {
-          "runway_threshold": "KBLV-32R",
-          "heading": 319,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        }
-      },
       "approaches": {
         "I4L": {
           "cifp_id": "I14L"
@@ -3392,7 +3350,7 @@
       "departure_routes": {
         "14L": {
           "BIB": {
-            "cleared_altitude": 3000,
+            "cleared_altitude": 5000,
             "sid": "GATWY1",
             "waypoints": "KBLV-32R/h050 TWILA JIGSY BIB"
           },
@@ -3756,18 +3714,906 @@
     }
   },
   "inbound_flows": {
+    "AARCH2.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "PRUET UKAAY/a31000-/s280 AARCH/a11000+/s280 PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000 N038.37.38.198,W089.56.30.435 N038.35.19.660,W089.56.20.136 N038.34.53.815,W089.58.13.487 N038.34.56.163,W089.59.51.156/a5000 TYRSH EXALE/a3500 RELEY/a2100 KSTL-30R/a200/delete",
+          "star": "AARCH2",
+          "initial_controller": "C58",
+          "initial_altitude": 29000,
+          "initial_speed": 290,
+          "expect_approach": "I3R",
+          "airlines": {
+            "KSTL": [
+              {
+                "icao": "SWA",
+                "airport": "KCLE"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KFWA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "AARCH2.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "PRUET UKAAY/a31000-/s280 AARCH/a11000+/s280 PETTI KRIYA/a11000-15000 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210 N038.56.04.027,W090.31.12.564 N038.58.15.767,W090.37.20.222 N039.00.00.508,W090.41.41.943 N038.58.50.140,W090.43.57.130 N038.57.06.210,W090.43.52.736/a4500 N038.55.31.796,W090.42.27.729 KSTL-12L/a200/delete",
+          "star": "AARCH2",
+          "initial_controller": "C58",
+          "initial_altitude": 29000,
+          "initial_speed": 290,
+          "expect_approach": "I2L",
+          "airlines": {
+            "KSTL": [
+              {
+                "icao": "SWA",
+                "airport": "KCLE"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KFWA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BOOSH3.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "BNA CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280 QBALL DENAA/a10000 TEEBE/a8000/s250 N038.28.41.900,W090.06.39.902 N038.31.39.179,W090.03.01.082 ZUMLA/a6000 HUGBA JIGIM/a3500 KEGBE/a2300 KSTL-29/a200/delete",
+          "star": "BOOSH3",
+          "initial_controller": "C54",
+          "initial_altitude": 31000,
+          "initial_speed": 300,
+          "expect_approach": "I29",
+          "airlines": {
+            "KSTL": [
+              {
+                "icao": "SWA",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMIA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BOOSH3.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "BNA CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280 QBALL OOJAY/a11000 PTEES/a10000 LETRR/a7000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210 N038.47.10.339,W090.39.49.004 N038.50.01.945,W090.46.36.459 N038.51.53.745,W090.51.12.766 N038.54.33.554,W090.48.47.059 ZOVUN/a5000 HIXOB/a3500 JEXAR/a2500 KSTL-11/a200/delete",
+          "star": "BOOSH3",
+          "initial_controller": "C54",
+          "initial_altitude": 31000,
+          "initial_speed": 300,
+          "expect_approach": "I11",
+          "airlines": {
+            "KSTL": [
+              {
+                "icao": "SWA",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMIA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "KAYLA3.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "BUM FEBAP/a31000-/s280 KOOOP NATEM/a23000-/s280 KAYLA BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a6000/s210 FLUDD/a6000/s210 N038.33.27.160,W090.11.46.503 N038.30.44.796,W090.05.27.667 N038.32.44.328,W090.03.33.464 N038.35.25.373,W090.05.19.949 ZUMLA/a6000 HUGBA/a4500 KEGBE/a2300 KSTL-29/a200/delete",
+          "star": "KAYLA3",
+          "initial_controller": "C52",
+          "initial_altitude": 31000,
+          "initial_speed": 300,
+          "expect_approach": "I29",
+          "airlines": {
+            "KSTL": [
+              {
+                "icao": "SWA",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KLAS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "KAYLA3.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "BUM FEBAP/a31000-/s280 KOOOP NATEM/a23000-/s280 KAYLA DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+ N038.50.36.854,W090.48.58.677 N038.52.43.101,W090.46.37.503 ZOVUN/a5000 HIXOB/a3500 JEXAR/a2500 KSTL-11/a200/delete",
+          "star": "KAYLA3",
+          "initial_controller": "C52",
+          "initial_altitude": 31000,
+          "initial_speed": 300,
+          "expect_approach": "I11",
+          "airlines": {
+            "KSTL": [
+              {
+                "icao": "SWA",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KLAS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "LORLE3.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "GUZIK SEIZE SKOVE/a31000-/s280 RIVRS/a12000+/s280 LORLE GETUP/a11000-15000/s280 TATRR/a10000-11000 MELVY BRDWL/a8000-9000 ENNEE/a7000-8000/s210 JYAAR/a5000+/s210 DOBLZ/a5000/s210 N038.43.21.823,W090.05.42.306 N038.42.04.685,W090.03.04.213 N038.40.16.319,W090.01.47.556 N038.38.36.412,W090.01.45.990 N038.36.59.169,W090.02.43.284 N038.36.48.444,W090.04.16.256 N038.37.09.057,W090.05.45.217 TYRSH EXALE/a3500 RELEY/a2100 KSTL-30R/a200/delete",
+          "star": "LORLE3",
+          "initial_controller": "C50",
+          "initial_altitude": 31000,
+          "initial_speed": 300,
+          "expect_approach": "I3R",
+          "airlines": {
+            "KSTL": [
+              {
+                "icao": "SKW",
+                "airport": "KFAR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KFAR"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KFAR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KFAR"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "LORLE3.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "GUZIK SEIZE SKOVE/a31000-/s280 RIVRS/a12000+/s280 LORLE HMFRZ/a9000-10000 VEEGE/a8000-9000/s250 N039.03.33.244,W090.45.47.708 N038.59.50.139,W090.43.38.261 N038.56.49.263,W090.41.30.600 MUVDE/a6000 EUBIE/a5000 FARIS/a3500 GREEP/a2500 KSTL-12L/a200/delete",
+          "star": "LORLE3",
+          "initial_controller": "C50",
+          "initial_altitude": 31000,
+          "initial_speed": 300,
+          "expect_approach": "I2L",
+          "airlines": {
+            "KSTL": [
+              {
+                "icao": "SKW",
+                "airport": "KFAR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KFAR"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KFAR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KFAR"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BUUDD3.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "BUUDD/a12000 WEIZZ/a10000",
+          "runway_waypoints": {
+            "KSUS": {
+              "26L": "WEIZZ/a10000 EERRR/a8500 DSETH/a4000 CSX/a2000 N038.43.28.978,W090.23.05.952 N038.42.56.445,W090.23.47.288 N038.42.15.864,W090.24.54.387 N038.41.43.660,W090.26.35.077 EAVES/a2000 KSUS-26L/a200/delete"
+            },
+            "KCPS": {
+              "30L": "WEIZZ/a10000 JULYA/a7000 PAMMM/a4000 SUGAR/a3000 N038.28.49.371,W089.48.30.690 N038.27.09.080,W089.48.26.433 N038.25.52.958,W089.49.29.659 N038.25.28.074,W089.50.55.819 N038.25.29.393,W089.52.10.609 N038.26.09.520,W089.53.27.073/a2500 EBOPE/a2200 ACORE/a2100 KCPS-30L/a200/delete"
+            },
+            "KBLV": {
+              "32R": "WEIZZ/a10000 JULYA/a7000 PAMMM/a4000 DUTMY/a3000 N038.26.19.023,W089.29.42.284 N038.24.04.317,W089.28.50.895 N038.22.14.783,W089.30.34.249 N038.21.43.102,W089.32.12.577 N038.22.04.497,W089.35.07.891 EGNOC/a2400 GOOEY/a2200 KBLV-32R/a200/delete"
+            }
+          },
+          "star": "BUUDD3",
+          "initial_controller": "C59",
+          "initial_altitude": 12000,
+          "initial_speed": 280,
+          "expect_approach": { "KSUS": "I6L", "KCPS": "I3L", "KBLV": "I3R" },
+          "airlines": {
+            "KSUS": [
+              {
+                "icao": "PTI",
+                "airport": "KORD"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KDET"
+              }
+            ],
+            "KCPS": [
+              {
+                "icao": "N",
+                "airport": "KENW"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KMKE"
+              }
+            ],
+            "KBLV": [
+              {
+                "icao": "EJA",
+                "airport": "KDKB"
+              },
+              {
+                "icao": "N",
+                "airport": "KIKK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BUUDD3.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "BUUDD/a12000 WEIZZ/a10000",
+          "runway_waypoints": {
+            "KSUS": {
+              "8R": "WEIZZ/a10000 EERRR/a8500 DSETH/a4000 CSX/a3000 N038.41.01.006,W091.00.55.975 N038.39.02.971,W091.00.40.264 N038.37.46.493,W090.59.39.840 JOBRK/a2500 SNOOP/a2400 KSUS-8R/a200/delete"
+            },
+            "KCPS": {
+              "12R": "WEIZZ/a10000 JULYA/a7000 PAMMM/a4000 SUGAR/a3000 N038.26.22.992,W090.07.22.694 ZINKI/a3000 FOSKU/a2800 JUPIS/a2200 KCPS-12R/a200/delete"
+            },
+            "KBLV": {
+              "14R": "WEIZZ/a10000 JULYA/a7000 PAMMM/a4000 DUTMY/a3000 N038.42.33.840,W089.57.50.828 DADNE/a2200 HELGU/a2200 KBLV-14R/a200/delete"
+            }
+          },
+          "star": "BUUDD3",
+          "initial_controller": "C59",
+          "initial_altitude": 12000,
+          "initial_speed": 280,
+          "expect_approach": { "KSUS": "I8R", "KCPS": "R2R", "KBLV": "I3R" },
+          "airlines": {
+            "KSUS": [
+              {
+                "icao": "PTI",
+                "airport": "KORD"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KDET"
+              }
+            ],
+            "KCPS": [
+              {
+                "icao": "N",
+                "airport": "KENW"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KMKE"
+              }
+            ],
+            "KBLV": [
+              {
+                "icao": "EJA",
+                "airport": "KDKB"
+              },
+              {
+                "icao": "N",
+                "airport": "KIKK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DELMA4.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "DELMA/a13000 MMRSN/a10000",
+          "runway_waypoints": {
+            "KSUS": {
+              "26L": "MMRSN/a10000 EMKAA/a4000 N038.37.26.813,W090.21.29.547 N038.39.55.074,W090.20.45.986 N038.41.21.880,W090.22.04.429 N038.41.43.097,W090.24.31.261 EAVES/a2000 KSUS-26L/a200/delete"
+            },
+            "KCPS": {
+              "30L": "MMRSN/a10000 ESSAR/a5000 HOLLT/a3000 N038.23.26.895,W089.57.09.437 N038.25.32.057,W089.55.57.586/a2200 N038.27.03.793,W089.56.55.457/a2200 ACORE/a2100 KCPS-30L/a200/delete"
+            },
+            "KBLV": {
+              "32L": "MMRSN/a10000 ESSAR/a4000 N038.21.50.490,W089.54.17.501 N038.20.32.981,W089.49.56.740 N038.18.08.868,W089.46.47.940 N038.15.46.485,W089.44.37.313 N038.16.21.683,W089.40.42.095 N038.17.46.621,W089.38.07.902 N038.20.15.554,W089.38.10.045/a2500 TIBLY/a2400 BLVIL/a2400 KBLV-32L/a200/delete"
+            },
+            "KALN": {
+              "35": "MMRSN/a10000 CSX/a6000 N038.49.02.001,W090.17.56.330 N038.49.08.304,W090.13.51.582 N038.48.32.434,W090.09.49.196/a3000 N038.46.27.863,W090.08.41.630 N038.43.16.879,W090.08.37.703 N038.41.28.485,W090.07.30.823 N038.40.47.451,W090.04.42.980 N038.41.32.619,W090.02.44.465 N038.43.24.418,W090.01.38.602/a2400 OGOVE/a2200 KALN-35/a200/delete"
+            }
+          },
+          "star": "DELMA4",
+          "initial_controller": "C52",
+          "initial_altitude": 13000,
+          "initial_speed": 280,
+          "expect_approach": { "KSUS": "I6L", "KCPS": "I3L", "KBLV": "I3L", "KALN": "R35" },
+          "airlines": {
+            "KSUS": [
+              {
+                "icao": "LXJ",
+                "airport": "KXNA"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KRKR"
+              }
+            ],
+            "KCPS": [
+              {
+                "icao": "N",
+                "airport": "KXNA"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KFSM"
+              }
+            ],
+            "KBLV": [
+              {
+                "icao": "AAY",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KXNA"
+              }
+            ],
+            "KALN": [
+              {
+                "icao": "N",
+                "airport": "KXNA"
+              },
+              {
+                "icao": "N",
+                "airport": "KFSM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DELMA4.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "DELMA/a13000 MMRSN/a8000",
+          "runway_waypoints": {
+            "KSUS": {
+              "8R": "MMRSN/a8000 DERDF/a4000 N038.33.44.601,W090.53.42.647 N038.35.54.611,W090.52.31.922 N038.37.29.354,W090.50.08.221/a2500 SNOOP/a2400 KSUS-8R/a200/delete"
+            },
+            "KCPS": {
+              "12R": "MMRSN/a8000 FOSKU/a2800 JUPIS/a2200 KCPS-12R/a200/delete"
+            },
+            "KBLV": {
+              "14R": "MMRSN/a8000 ESSAR/a4000 N038.27.18.514,W090.07.34.696 N038.35.30.455,W090.01.40.305 N038.39.44.994,W090.08.43.800 N038.41.31.026,W090.06.23.560 DADNE/a2200 HELGU/a2200 KBLV-14R/a200/delete"
+            },
+            "KALN": {
+              "11": "MMRSN/a8000 CSX/a7000 N038.51.02.947,W090.15.46.005 N038.55.29.104,W090.25.39.706 N038.57.58.367,W090.31.16.574 N039.00.09.709,W090.28.56.196 N038.59.46.747,W090.24.15.331 SQUAR/a2500 KEELS/a2300 HEDUV/a1100 KALN-11/a200/delete"
+            }
+          },
+          "star": "DELMA4",
+          "initial_controller": "C52",
+          "initial_altitude": 13000,
+          "initial_speed": 280,
+          "expect_approach": { "KSUS": "I8R", "KCPS": "R2R", "KBLV": "I4R", "KALN": "R11" },
+          "airlines": {
+            "KSUS": [
+              {
+                "icao": "LXJ",
+                "airport": "KXNA"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KRKR"
+              }
+            ],
+            "KCPS": [
+              {
+                "icao": "N",
+                "airport": "KXNA"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KFSM"
+              }
+            ],
+            "KBLV": [
+              {
+                "icao": "AAY",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KXNA"
+              }
+            ],
+            "KALN": [
+              {
+                "icao": "N",
+                "airport": "KXNA"
+              },
+              {
+                "icao": "N",
+                "airport": "KFSM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DIRTT2.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "DIRTT/a13000 SEDDN/a11000 BERGY/a7000 DWEES/a3000 EMKAA N038.36.08.577,W090.19.15.734 N038.37.44.556,W090.18.04.762 N038.39.13.697,W090.18.02.015 N038.40.52.079,W090.18.35.524 N038.41.41.078,W090.19.49.379/a2500 N038.42.03.312,W090.21.54.321 EAVES/a2000 KSUS-26L/a200/delete",
+          "star": "DIRTT2",
+          "initial_controller": "C52",
+          "initial_altitude": 13000,
+          "initial_speed": 280,
+          "expect_approach": "I6L",
+          "airlines": {
+            "KSUS": [
+              {
+                "icao": "PTI",
+                "airport": "KDSM"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KCID"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DIRTT2.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "DIRTT/a13000 SEDDN/a11000 BERGY/a7000 FTZ/a5000 N038.38.54.745,W090.57.42.643 EXESS/a3000 WIDNR/a2100 KSUS-8L/a200/delete",
+          "star": "DIRTT2",
+          "initial_controller": "C52",
+          "initial_altitude": 13000,
+          "initial_speed": 280,
+          "expect_approach": "R8L",
+          "airlines": {
+            "KSUS": [
+              {
+                "icao": "PTI",
+                "airport": "KDSM"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KCID"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "JHAUN1.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "JHAUN/a12000 ESSAR PATEY EMKAA N038.37.41.466,W090.21.48.142 N038.39.30.904,W090.21.02.658 N038.40.45.021,W090.21.44.351 N038.41.30.600,W090.23.22.679/a2000 N038.41.28.032,W090.25.02.819 EAVES/a2000 KSUS-26L/a200/delete",
+          "star": "JHAUN1",
+          "initial_controller": "C54",
+          "initial_altitude": 12000,
+          "initial_speed": 280,
+          "expect_approach": "I6L",
+          "airlines": {
+            "KSUS": [
+              {
+                "icao": "PTI",
+                "airport": "KHOP"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KJWN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "JHAUN1.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "JHAUN/a12000 ESSAR DERDF N038.33.23.480,W090.56.29.254 N038.34.52.456,W090.56.46.420 JOBRK/a2400 SNOOP/a2400 KSUS-8R/a200/delete",
+          "star": "JHAUN1",
+          "initial_controller": "C54",
+          "initial_altitude": 12000,
+          "initial_speed": 280,
+          "expect_approach": "I8R",
+          "airlines": {
+            "KSUS": [
+              {
+                "icao": "PTI",
+                "airport": "KHOP"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KJWN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SLVER1.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "SLVER/a12000 GLASS/a10000 PATEY/a6000 EMKAA/a4000 N038.37.32.293,W090.21.14.963 N038.38.55.871,W090.19.27.736 N038.40.47.122,W090.19.36.004 N038.41.29.186,W090.21.14.276 N038.41.40.076,W090.23.12.654/a2000 EAVES/a2000 KSUS-26L/a200/delete",
+          "star": "SLVER1",
+          "initial_controller": "C54",
+          "initial_altitude": 12000,
+          "initial_speed": 280,
+          "expect_approach": "I6L",
+          "airlines": {
+            "KSUS": [
+              {
+                "icao": "EJA",
+                "airport": "KAWM"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KHSV"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SLVER1.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "SLVER/a12000 GLASS N038.29.55.317,W090.49.57.839 N038.32.22.698,W090.53.19.548 N038.35.12.341,W090.54.18.792 N038.36.36.318,W090.52.33.680 N038.37.35.438,W090.50.22.174 SNOOP/a2400 KSUS-8R/a200/delete",
+          "star": "SLVER1",
+          "initial_controller": "C54",
+          "initial_altitude": 12000,
+          "initial_speed": 280,
+          "expect_approach": "I8R",
+          "airlines": {
+            "KSUS": [
+              {
+                "icao": "EJA",
+                "airport": "KAWM"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KHSV"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DIXEE3.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "DIXEE/a13000 EVVNS/a9000",
+          "runway_waypoints": {
+            "KCPS": {
+              "30L": "EVVNS/a9000 ESSAR/a4000 HOLLT/a2500 N038.23.15.579,W089.56.18.103 N038.24.46.161,W089.54.29.366 EBOPE/a2200 ACORE/a2100 KCPS-30L/a200/delete"
+            },
+            "KBLV": {
+              "32L": "EVVNS/a9000 ESSAR/a5000 HOLLT/a4000 N038.23.13.272,W089.53.35.341 N038.20.53.897,W089.51.11.859 N038.18.14.512,W089.49.08.400 N038.15.40.869,W089.47.34.357 N038.15.45.016,W089.42.46.873 N038.17.14.609,W089.39.30.574 N038.19.05.777,W089.39.06.075/a2500 N038.21.15.471,W089.39.19.918 BLVIL/a2400 KBLV-32L/a200/delete"
+            }
+          },
+          "star": "DIXEE3",
+          "initial_controller": "C52",
+          "initial_altitude": 13000,
+          "initial_speed": 250,
+          "expect_approach": { "KBLV": "I3L", "KCPS": "I3L" },
+          "airlines": {
+            "KCPS": [
+              {
+                "icao": "EJA",
+                "airport": "KEMP"
+              },
+              {
+                "icao": "N",
+                "airport": "KMHL"
+              }
+            ],
+            "KBLV": [
+              {
+                "icao": "AAY",
+                "airport": "KMCI"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KLNK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DIXEE3.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "DIXEE/a13000 EVVNS/a8000",
+          "runway_waypoints": {
+            "KCPS": {
+              "12R": "EVVNS/a8000 FOSKU/a2500 JUPIS/a2200 KCPS-12R/a200/delete"
+            },
+            "KBLV": {
+              "14R": "EVVNS ESSAR N038.31.00.603,W089.54.40.325 N038.40.22.966,W090.06.01.038 N038.41.20.204,W090.04.17.739 DADNE/a2200 HELGU/a2200 KBLV-14R/a200/delete"
+            }
+          },
+          "star": "DIXEE3",
+          "initial_controller": "C52",
+          "initial_altitude": 13000,
+          "initial_speed": 250,
+          "expect_approach": { "KCPS": "R2R", "KBLV": "I4R" },
+          "airlines": {
+            "KCPS": [
+              {
+                "icao": "EJA",
+                "airport": "KEMP"
+              },
+              {
+                "icao": "N",
+                "airport": "KMHL"
+              }
+            ],
+            "KBLV": [
+              {
+                "icao": "AAY",
+                "airport": "KMCI"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KLNK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "FARMR3.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "FARMR/a13000 FASHE/a8000",
+          "runway_waypoints": {
+            "KCPS": {
+              "30L": "FASHE/a8000 PAMMM/a5000 N038.39.21.827,W089.53.51.271 N038.30.44.206,W089.51.34.711 N038.27.59.479,W089.52.30.988 EBOPE/a2200 ACORE/a2100 KCPS-30L/a200/delete"
+            },
+            "KBLV": {
+              "32R": "FASHE/a8000 PAMMM/a7000 DUTMY/a3000 N038.25.12.803,W089.28.42.381 N038.22.31.675,W089.31.59.229 EGNOC/a2500 GOOEY/a2200 KBLV-32R/a200/delete"
+            },
+            "KALN": {
+              "29": "FASHE/a8000 BKAAY/a5000 N038.51.02.974,W089.38.36.357 N038.49.14.017,W089.31.33.685 N038.46.56.413,W089.32.14.307 JACOB/a2200 QUNIE/a2100 OSERE/a2100 KALN-29/a200/delete"
+            }
+          },
+          "star": "FARMR3",
+          "initial_controller": "C50",
+          "initial_altitude": 13000,
+          "initial_speed": 250,
+          "expect_approach": { "KCPS": "I3L", "KBLV": "I3R", "KALN": "I29" },
+          "airlines": {
+            "KCPS": [
+              {
+                "icao": "N",
+                "airport": "KFFL"
+              }
+            ],
+            "KBLV": [
+              {
+                "icao": "EJA",
+                "airport": "KFSD"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KRGK"
+              }
+            ],
+            "KALN": [
+              {
+                "icao": "N",
+                "airport": "KPDC"
+              },
+              {
+                "icao": "N",
+                "airport": "KAFK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "FARMR3.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "FARMR/a13000 FASHE/a9000",
+          "runway_waypoints": {
+            "KCPS": {
+              "12R": "FASHE/a9000 PAMMM TOY/a8000 N038.38.35.519,W090.03.25.142/a8000 N038.30.57.225,W090.14.00.866 N038.28.39.401,W090.28.49.248 N038.32.33.382,W090.27.50.361 FOSKU/a2500 JUPIS/a2200 KCPS-12R/a200/delete"
+            },
+            "KBLV": {
+              "14L": "FASHE/a9000 PAMMM/a4000 TOY/a3000 N038.42.29.212,W089.57.50.004 N038.40.21.469,W089.57.50.553/a2200 WUMOT/a2200 KBLV-14L/a200/delete"
+            },
+            "KALN": {
+              "11": "FASHE/a9000 PERCY/a8000 N039.01.50.989,W090.16.59.613 N039.02.43.558,W090.20.51.123 N039.00.33.755,W090.20.41.455 SQUAR/a2500 KEELS/a2300 HEDUV/a1100 KALN-11/a200/delete"
+            }
+          },
+          "star": "FARMR3",
+          "initial_controller": "C50",
+          "initial_altitude": 13000,
+          "initial_speed": 250,
+          "expect_approach": { "KCPS": "R2R", "KBLV": "I4L", "KALN": "R11" },
+          "airlines": {
+            "KCPS": [
+              {
+                "icao": "N",
+                "airport": "KFFL"
+              }
+            ],
+            "KBLV": [
+              {
+                "icao": "EJA",
+                "airport": "KFSD"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KRGK"
+              }
+            ],
+            "KALN": [
+              {
+                "icao": "N",
+                "airport": "KPDC"
+              },
+              {
+                "icao": "N",
+                "airport": "KAFK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "ENL2.LNW": {
+      "arrivals": [
+        {
+          "waypoints": "ENL HOVIZ EIKEL/a7000 DUTMY N038.26.58.011,W089.24.33.815 N038.25.57.723,W089.26.27.414 N038.23.09.990,W089.29.29.979 N038.20.56.739,W089.31.43.710 N038.20.43.006,W089.34.45.067 N038.21.26.979,W089.37.33.378 TIBLY/a2400 BLVIL/a2400 KBLV-32L/a200/delete",
+          "star": "ENL2",
+          "initial_controller": "C54",
+          "initial_altitude": 8000,
+          "initial_speed": 240,
+          "expect_approach": "I3L",
+          "airlines": {
+            "KBLV": [
+              {
+                "icao": "AAY",
+                "airport": "KPIE"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KSFB"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KBNA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "ENL2.LSE": {
+      "arrivals": [
+        {
+          "waypoints": "ENL HOVIZ EIKEL/a7000 DUTMY N038.46.17.261,W089.57.51.020 N038.44.14.557,W090.01.30.939 DADNE/a2200 HELGU/a2200 KBLV-14R/a200/delete",
+          "star": "ENL2",
+          "initial_controller": "C54",
+          "initial_altitude": 8000,
+          "initial_speed": 240,
+          "expect_approach": "I4R",
+          "airlines": {
+            "KBLV": [
+              {
+                "icao": "AAY",
+                "airport": "KPIE"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KSFB"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KBNA"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "AARCH2.VHP": {
       "arrivals": [
         {
-          "waypoints": "PRUET UKAAY/a31000-/s280 AARCH/a11000+/s280 PETTI/ho",
+          "waypoints": "PRUET UKAAY/a31000-/s280 AARCH/a11000+/s280/ho PETTI",
           "runway_waypoints": {
             "KSTL": {
-              "29": "PETTI/ho SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "30L": "PETTI/ho SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "30R": "PETTI/ho SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "11": "PETTI/ho KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t226",
-              "12L": "PETTI/ho KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t226",
-              "12R": "PETTI/ho KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t226"
+              "29": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
+              "30L": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
+              "30R": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
+              "11": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301",
+              "12L": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301",
+              "12R": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301"
             }
           },
           "star": "AARCH2",
@@ -3797,15 +4643,15 @@
     "AARCH2.RBS": {
       "arrivals": [
         {
-          "waypoints": "RBS JARKE BASCO GORDO WLDBL HONKK/a31000-/s280 AARCH/a11000+/s280 PETTI/ho",
+          "waypoints": "RBS JARKE BASCO GORDO WLDBL HONKK/a31000-/s280 AARCH/a11000+/s280/ho PETTI",
           "runway_waypoints": {
             "KSTL": {
-              "29": "PETTI/ho SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "30L": "PETTI/ho SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "30R": "PETTI/ho SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "11": "PETTI/ho KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t226",
-              "12L": "PETTI/ho KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t226",
-              "12R": "PETTI/ho KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t226"
+              "29": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
+              "30L": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
+              "30R": "PETTI SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t226",
+              "11": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301",
+              "12L": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301",
+              "12R": "PETTI KRIYA/a11000-15000/s280 JAAKK/a10000-11000 CHOTO/a8000-10000 GETEE/a7000-8000/s210 HRBEE/a5000+/s210 BUELL/a5000/s210/flyover/t301"
             }
           },
           "star": "AARCH2",
@@ -3847,15 +4693,15 @@
     "BOOSH3.PXV": {
       "arrivals": [
         {
-          "waypoints": "PXV FFOXX SAYDI MOPOE/a310-/s280 BIDWL BOOSH/a140+/s280/ho QBALL",
+          "waypoints": "PXV FFOXX SAYDI MOPOE/a31000-/s280 BIDWL BOOSH/a14000+/s280/ho QBALL",
           "runway_waypoints": {
             "KSTL": {
-              "29": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/t356",
-              "30L": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "30R": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
-              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
-              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302"
+              "29": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "30L": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "30R": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
+              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
+              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302"
             }
           },
           "star": "BOOSH3",
@@ -3889,15 +4735,15 @@
     "BOOSH3.BNA": {
       "arrivals": [
         {
-          "waypoints": "BNA CGI DLITE/a310-/s280 FATSS BOOSH/a140+/s280/ho QBALL",
+          "waypoints": "BNA CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280/ho QBALL",
           "runway_waypoints": {
             "KSTL": {
-              "29": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/t356",
-              "30L": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "30R": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
-              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
-              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302"
+              "29": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "30L": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "30R": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
+              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
+              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302"
             }
           },
           "star": "BOOSH3",
@@ -3935,15 +4781,15 @@
     "BOOSH3.VISQA": {
       "arrivals": [
         {
-          "waypoints": "VISQA CGI DLITE/a310-/s280 FATSS BOOSH/a140+/s280/ho QBALL",
+          "waypoints": "VISQA CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280/ho QBALL",
           "runway_waypoints": {
             "KSTL": {
-              "29": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/t356",
-              "30L": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "30R": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
-              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
-              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302"
+              "29": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "30L": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "30R": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
+              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
+              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302"
             }
           },
           "star": "BOOSH3",
@@ -3973,15 +4819,15 @@
     "BOOSH3.MEM": {
       "arrivals": [
         {
-          "waypoints": "MEM CGI DLITE/a310-/s280 FATSS BOOSH/a140+/s280/ho QBALL",
+          "waypoints": "MEM CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280/ho QBALL",
           "runway_waypoints": {
             "KSTL": {
-              "29": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/t356",
-              "30L": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "30R": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
-              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
-              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302"
+              "29": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "30L": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "30R": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
+              "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302",
+              "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a5000/s210/t302"
             }
           },
           "star": "BOOSH3",
@@ -4015,12 +4861,12 @@
     "BOOSH3.ARG": {
       "arrivals": [
         {
-          "waypoints": "ARG CGI DLITE/a310-/s280 FATSS BOOSH/a140+/s280/ho QBALL",
+          "waypoints": "ARG CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280/ho QBALL",
           "runway_waypoints": {
             "KSTL": {
-              "29": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/t356",
-              "30L": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
-              "30R": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t301",
+              "29": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "30L": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
+              "30R": "QBALL SSKOT/a9000-10000 EADDS/a8000-9000 OSHIE/a7000-8000/s250 FDRKO/a6000-7000/flyover/t356",
               "11": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
               "12L": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302",
               "12R": "QBALL OOJAY/a11000-15000/s280 PTEES/a10000-11000 CHIKN/a8000-9000 LETRR/a7000-8000/s210 RRIPP/a5000+/s210 JBUCK/a005/s210/t302"
@@ -4061,12 +4907,12 @@
     "KAYLA3.BUM": {
       "arrivals": [
         {
-          "waypoints": "BUM FEBAP/a310-/s280 KOOOP NATEM/a230-/s280/ho KAYLA BGMAC",
+          "waypoints": "BUM FEBAP/a31000-/s280 KOOOP NATEM/a23000-/s280/ho KAYLA BGMAC",
           "runway_waypoints": {
             "KSTL": {
-              "29": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210",
-              "30L": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210",
-              "30R": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210",
+              "29": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
+              "30L": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
+              "30R": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
               "11": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
               "12L": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
               "12R": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061"
@@ -4099,12 +4945,12 @@
     "KAYLA3.ANX": {
       "arrivals": [
         {
-          "waypoints": "ANX HEBNA/a310-/s280 KOOOP NATEM/a230-/s280/ho KAYLA BGMAC",
+          "waypoints": "ANX HEBNA/a31000-/s280 KOOOP NATEM/a23000-/s280/ho KAYLA BGMAC",
           "runway_waypoints": {
             "KSTL": {
-              "29": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210",
-              "30L": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210",
-              "30R": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210",
+              "29": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
+              "30L": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
+              "30R": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
               "11": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
               "12L": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
               "12R": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061"
@@ -4141,12 +4987,12 @@
     "KAYLA3.SGF": {
       "arrivals": [
         {
-          "waypoints": "SGF GNNON JEXAV/a310-/s280 ZULMO/a230-/s280/ho KAYLA BGMAC",
+          "waypoints": "SGF GNNON JEXAV/a31000-/s280 ZULMO/a23000-/s280/ho KAYLA BGMAC",
           "runway_waypoints": {
             "KSTL": {
-              "29": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210",
-              "30L": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210",
-              "30R": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210",
+              "29": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
+              "30L": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
+              "30R": "BGMAC GIBEE/a11000-15000/s280 OZZEE/a10000-11000 SNYDR/a8000-9000 HOOOT/a7000-8000/s210 PEJAA/a5000+/s210 FLUDD/a5000/s210/t124",
               "11": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
               "12L": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061",
               "12R": "BGMAC DNISE/a9000-10000 ELBRT/a8000-9000/s240+ STAAN/a7000/s240+/t061"
@@ -4183,7 +5029,7 @@
     "LORLE3.GUZIK": {
       "arrivals": [
         {
-          "waypoints": "GUZIK SEIZE SKOVE/a310-/s280 RIVRS/a120+/s280/ho LORLE",
+          "waypoints": "GUZIK SEIZE SKOVE/a31000-/s280 RIVRS/a12000+/s280/ho LORLE",
           "runway_waypoints": {
             "KSTL": {
               "29": "LORLE GETUP/a11000-15000/s280 TATRR/a10000-11000 MELVY BRDWL/a8000-9000 ENNEE/a7000-8000/s210 JYAAR/a5000+/s210 DOBLZ/a5000/s210/t124",
@@ -4225,7 +5071,7 @@
     "LORLE3.IRK": {
       "arrivals": [
         {
-          "waypoints": "IRK JUDER/a310-/s280 RIVRS/a120+/s280/ho LORLE",
+          "waypoints": "IRK JUDER/a31000-/s280 RIVRS/a12000+/s280/ho LORLE",
           "runway_waypoints": {
             "KSTL": {
               "29": "LORLE GETUP/a11000-15000/s280 TATRR/a10000-11000 MELVY BRDWL/a8000-9000 ENNEE/a7000-8000/s210 JYAAR/a5000+/s210 DOBLZ/a5000/s210/t124",
@@ -4344,10 +5190,10 @@
               "30R": "MMRSN ESSAR HOLLT/t033"
             },
             "KBLV": {
-              "14L": "MMRSN ESSAR/t033",
-              "14R": "MMRSN ESSAR/t033",
-              "32L": "MMRSN ESSAR/t033",
-              "32R": "MMRSN ESSAR/t033"
+              "14L": "MMRSN ESSAR/t084",
+              "14R": "MMRSN ESSAR/t084",
+              "32L": "MMRSN ESSAR/t084",
+              "32R": "MMRSN ESSAR/t084"
             },
             "KALN": {
               "11": "MMRSN CSX/t039",
@@ -4647,7 +5493,7 @@
       ]
     }
   },
-  "default_scenario": "St. Louis - Southeast",
+  "default_scenario": "St. Louis Southeast",
   "name": "KSTL",
   "primary_airport": "KSTL",
   "vfr_reporting_points": [
@@ -4689,7 +5535,7 @@
     }
   ],
   "scenarios": {
-    "St. Louis - Southeast": {
+    "St. Louis Southeast": {
       "arrival_runways": [
         {
           "airport": "KSTL",
@@ -4865,7 +5711,7 @@
         "direction": "80-160"
       }
     },
-    "St. Louis - Northwest": {
+    "St. Louis Northwest": {
       "arrival_runways": [
         {
           "airport": "KSTL",
@@ -5043,6 +5889,314 @@
       ],
       "wind": {
         "direction": "260-340"
+      }
+    },
+    "St. Louis Departure - NW": {
+      "arrival_runways": [
+        {
+          "airport": "KSTL",
+          "runway": "30R"
+        },
+        {
+          "airport": "KSTL",
+          "runway": "30L"
+        },
+        {
+          "airport": "KSTL",
+          "runway": "29"
+        },
+        {
+          "airport": "KSUS",
+          "runway": "26L"
+        },
+        {
+          "airport": "KSUS",
+          "runway": "26R"
+        },
+        {
+          "airport": "KCPS",
+          "runway": "30L"
+        },
+        {
+          "airport": "KCPS",
+          "runway": "30R"
+        },
+        {
+          "airport": "KALN",
+          "runway": "29"
+        },
+        {
+          "airport": "KALN",
+          "runway": "35"
+        },
+        {
+          "airport": "KBLV",
+          "runway": "32R"
+        },
+        {
+          "airport": "KBLV",
+          "runway": "32L"
+        }
+      ],
+      "inbound_rates": {
+        "AARCH2.LNW": {
+          "KSTL": 12
+        },
+        "BOOSH3.LNW": {
+          "KSTL": 12
+        },
+        "KAYLA3.LNW": {
+          "KSTL": 10
+        },
+        "LORLE3.LNW": {
+          "KSTL": 10
+        },
+        "BUUDD3.LNW": {
+          "KSUS": 2,
+          "KCPS": 1,
+          "KBLV": 1
+        },
+        "DELMA4.LNW": {
+          "KSUS": 2,
+          "KCPS": 1,
+          "KBLV": 1,
+          "KALN": 1
+        },
+        "DIRTT2.LNW": {
+          "KSUS": 1
+        },
+        "JHAUN1.LNW": {
+          "KSUS": 2
+        },
+        "SLVER1.LNW": {
+          "KSUS": 2
+        },
+        "DIXEE3.LNW": {
+          "KBLV": 1,
+          "KCPS": 1
+        },
+        "FARMR3.LNW": {
+          "KBLV": 1,
+          "KCPS": 2,
+          "KALN": 1
+        },
+        "ENL2.LNW": {
+          "KBLV": 1
+        }
+      },
+      "configuration": "DEP",
+      "default_maps": ["T75 ST LOUIS ILS RWY 30R-29"],
+      "departure_runways": [
+        {
+          "airport": "KSTL",
+          "rate": 20,
+          "runway": "30L"
+        },
+        {
+          "airport": "KSTL",
+          "rate": 10,
+          "runway": "30R"
+        },
+        {
+          "airport": "KSTL",
+          "rate": 15,
+          "runway": "29"
+        },
+        {
+          "airport": "KSUS",
+          "rate": 5,
+          "runway": "26L"
+        },
+        {
+          "airport": "KSUS",
+          "rate": 5,
+          "runway": "26R"
+        },
+        {
+          "airport": "KCPS",
+          "rate": 3,
+          "runway": "30L"
+        },
+        {
+          "airport": "KCPS",
+          "rate": 3,
+          "runway": "30R"
+        },
+        {
+          "airport": "KBLV",
+          "rate": 2,
+          "runway": "32R"
+        },
+        {
+          "airport": "KBLV",
+          "rate": 2,
+          "runway": "32L"
+        },
+        {
+          "airport": "KALN",
+          "rate": 1,
+          "runway": "29"
+        },
+        {
+          "airport": "KALN",
+          "rate": 1,
+          "runway": "35"
+        }
+      ],
+      "wind": {
+        "direction": "260-340"
+      }
+    },
+    "St. Louis Departure - SE": {
+      "arrival_runways": [
+        {
+          "airport": "KSTL",
+          "runway": "12L"
+        },
+        {
+          "airport": "KSTL",
+          "runway": "12R"
+        },
+        {
+          "airport": "KSTL",
+          "runway": "11"
+        },
+        {
+          "airport": "KSUS",
+          "runway": "8L"
+        },
+        {
+          "airport": "KSUS",
+          "runway": "8R"
+        },
+        {
+          "airport": "KCPS",
+          "runway": "12R"
+        },
+        {
+          "airport": "KALN",
+          "runway": "11"
+        },
+        {
+          "airport": "KALN",
+          "runway": "17"
+        },
+        {
+          "airport": "KBLV",
+          "runway": "14L"
+        },
+        {
+          "airport": "KBLV",
+          "runway": "14R"
+        }
+      ],
+      "inbound_rates": {
+        "AARCH2.LSE": {
+          "KSTL": 12
+        },
+        "BOOSH3.LSE": {
+          "KSTL": 12
+        },
+        "KAYLA3.LSE": {
+          "KSTL": 10
+        },
+        "LORLE3.LSE": {
+          "KSTL": 10
+        },
+        "BUUDD3.LSE": {
+          "KSUS": 2,
+          "KCPS": 1,
+          "KBLV": 1
+        },
+        "DELMA4.LSE": {
+          "KSUS": 2,
+          "KCPS": 1,
+          "KBLV": 1,
+          "KALN": 1
+        },
+        "DIRTT2.LSE": {
+          "KSUS": 1
+        },
+        "JHAUN1.LSE": {
+          "KSUS": 2
+        },
+        "SLVER1.LSE": {
+          "KSUS": 2
+        },
+        "DIXEE3.LSE": {
+          "KBLV": 1,
+          "KCPS": 1
+        },
+        "FARMR3.LSE": {
+          "KBLV": 1,
+          "KCPS": 2,
+          "KALN": 1
+        },
+        "ENL2.LSE": {
+          "KBLV": 1
+        }
+      },
+      "configuration": "DEP",
+      "default_maps": ["T75 ST LOUIS ILS RWY 11-12L"],
+      "departure_runways": [
+        {
+          "airport": "KSTL",
+          "rate": 20,
+          "runway": "12R"
+        },
+        {
+          "airport": "KSTL",
+          "rate": 13,
+          "runway": "12L"
+        },
+        {
+          "airport": "KSTL",
+          "rate": 8,
+          "runway": "11"
+        },
+        {
+          "airport": "KSUS",
+          "rate": 5,
+          "runway": "8L"
+        },
+        {
+          "airport": "KSUS",
+          "rate": 5,
+          "runway": "8R"
+        },
+        {
+          "airport": "KCPS",
+          "rate": 3,
+          "runway": "12L"
+        },
+        {
+          "airport": "KCPS",
+          "rate": 3,
+          "runway": "12R"
+        },
+        {
+          "airport": "KBLV",
+          "rate": 2,
+          "runway": "14R"
+        },
+        {
+          "airport": "KBLV",
+          "rate": 2,
+          "runway": "14L"
+        },
+        {
+          "airport": "KALN",
+          "rate": 1,
+          "runway": "17"
+        },
+        {
+          "airport": "KALN",
+          "rate": 1,
+          "runway": "11"
+        }
+      ],
+      "wind": {
+        "direction": "80-160"
       }
     }
   }

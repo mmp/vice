@@ -145,9 +145,62 @@
           "1E": ["1W", "1Z"],
           "1R": ["1N"]
         }
+      },
+      "DEP": {
+        "inbound_assignments": {
+          "AARCH2.LNW": "1J",
+          "BOOSH3.LNW": "1Q",
+          "KAYLA3.LNW": "1Q",
+          "LORLE3.LNW": "1J",
+          "BUUDD3.LNW": "1J",
+          "DELMA4.LNW": "1Q",
+          "DIRTT2.LNW": "1J",
+          "JHAUN1.LNW": "1Q",
+          "SLVER1.LNW": "1Q",
+          "DIXEE3.LNW": "1Q",
+          "FARMR3.LNW": "1J",
+          "ENL2.LNW": "1Q",
+          "AARCH2.LSE": "1J",
+          "BOOSH3.LSE": "1Q",
+          "KAYLA3.LSE": "1Q",
+          "LORLE3.LSE": "1J",
+          "BUUDD3.LSE": "1J",
+          "DELMA4.LSE": "1Q",
+          "DIRTT2.LSE": "1J",
+          "JHAUN1.LSE": "1Q",
+          "SLVER1.LSE": "1Q",
+          "DIXEE3.LSE": "1Q",
+          "FARMR3.LSE": "1J",
+          "ENL2.LSE": "1Q"
+        },
+        "departure_assignments": {
+          "KSTL/BERYY6": "1W",
+          "KSTL/BGOOD5": "1W",
+          "KSTL/BRAKK5": "1W",
+          "KSTL/CHUUC6": "1W",
+          "KSTL/DRUSE5": "1W",
+          "KSTL/EEMOS5": "1E",
+          "KSTL/GATWY1": "1E",
+          "KSTL/JAHNY6": "1W",
+          "KSTL/JHART7": "1E",
+          "KSTL/KSHEE5": "1E",
+          "KSTL/LINDY9": "1W",
+          "KSTL/NATCA5": "1E",
+          "KSTL/ROTRY6": "1E",
+          "KSTL/TEDDD5": "1E",
+          "KSTL/WHRLI7": "1W",
+          "KBLV": "1W",
+          "KALN": "1E",
+          "KSUS": "1W",
+          "KCPS": "1W"
+        },
+        "default_consolidation": {
+          "1E": ["1W"]
+        }
       }
     },
     "center": "KSTL",
+    "max_distance": 200,
     "scratchpads": {
       "SKUTR": "RT",
       "NEENS": "MO",
