@@ -71,52 +71,52 @@
           "GAYEL": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N041.06.20.319,W074.12.09.959/a15000-/hoN5T GAYEL/ho35"
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c150 N041.04.13.385,W074.13.36.009/hoN5T/c170 GAYEL/ho35"
           },
           "COATE": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N041.06.20.319,W074.12.09.959/a15000-/hoN5T COATE/ho35"
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c150 N041.04.13.385,W074.13.36.009/c170/hoN5T COATE/ho35"
           },
           "NEION": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N041.06.20.319,W074.12.09.959/a15000-/hoN5T NEION/ho35"
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c150 N041.04.13.385,W074.13.36.009/c170/hoN5T NEION/ho35"
           },
           "PARKE": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N040.50.27.996,W074.17.26.365/a15000-/hoN5W PARKE/ho39"
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c150 N040.50.27.996,W074.17.26.365/hoN5W/c170 PARKE/ho39"
           },
           "LANNA": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N040.50.27.996,W074.17.26.365/a15000-/hoN5W LANNA/ho55"
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c150 N040.50.27.996,W074.17.26.365/hoN5W/c170 LANNA/ho55"
           },
           "BIGGY": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N040.50.27.996,W074.17.26.365/a15000-/hoN5W BIGGY/ho55"
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c150 N040.50.27.996,W074.17.26.365/hoN5W/c170 BIGGY/ho55"
           },
           "ZIMMZ": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N040.50.27.996,W074.17.26.365/a15000-/hoN5W ZIMMZ/ho39"
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c150 N040.50.27.996,W074.17.26.365/hoN5W/c170 ZIMMZ/ho39"
           },
           "NEWEL": {
             "cleared_altitude": 17000,
             "sid": "GLDMN8",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN N040.50.27.996,W074.17.26.365/a15000-/hoN5W NEWEL/ho39"
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- VOBOZ/a4500+/s220 GLDMN/c150 N040.50.27.996,W074.17.26.365/hoN5W/c170 NEWEL/ho39"
           },
           "WHITE": {
             "cleared_altitude": 17000,
-            "sid": "TNNIS6",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- NTHNS/a3000+/s220- CNRSE/a5000+/s230- ASALT N040.26.03.766,W074.01.24.924/a10000-/hoN5S WHITE/ho68"
+            "sid": "NTHNS6",
+            "waypoints": "KLGA-13 KIWIE/a2500+/s220- NTHNS/a3000+/s220- CNRSE/a5000+/s230- ASALT/c100 N040.26.03.766,W074.01.24.924/hoN5S/c170 WHITE/ho68"
           },
           "SHIPP": {
             "cleared_altitude": 12000,
-            "sid": "TNNIS6",
-            "waypoints": "KLGA-13 KIWIE/a2500+/s220- NTHNS/a3000+/s220- CNRSE/a5000+/s230- ASALT/a8000- N040.27.42.423,W073.35.58.593 SHIPP/ho66"
+            "sid": "NTHNS6",
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- NTHNS/a3000+/s220- CNRSE/a5000+/s230-/c80 ASALT/hoN2J/c120 N040.27.21.027,W073.32.40.427 SHIPP/ho66"
           }
         }
       },
@@ -722,52 +722,52 @@
           "COATE": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.59.06.730,W074.22.10.993/a10000- COATE/ho35"
+            "waypoints": "KEWR-4L/h219@a5/l190@d2.3ILSQ/r220/c100 N040.58.36.188,W074.25.16.635/hoN5T/c170 COATE/ho35"
           },
           "NEION": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.59.06.730,W074.22.10.993/a10000- NEION/ho35"
+            "waypoints": "KEWR-4L/h219@a5/l190@d2.3ILSQ/r220/c100 N040.58.36.188,W074.25.16.635/hoN5T/c170 NEION/ho35"
           },
           "GAYEL": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.59.06.730,W074.22.10.993/a10000- GAYEL/ho35"
+            "waypoints": "KEWR-4L/h219@a5/l190@d2.3ILSQ/r220/c100 N040.58.36.188,W074.25.16.635/hoN5T/c170 GAYEL/ho35"
           },
           "WHITE": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- ELVAE/a6000-/hoN5S NECCK WHITE/ho68"
+            "waypoints": "KEWR-4L/c60 ELVAE/hoN5S/c170 NECCK WHITE/ho68"
           },
           "DIXIE": {
             "cleared_altitude": 15000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- ELVAE/a6000-/hoN5S NECCK DIXIE/ho68"
+            "waypoints": "KEWR-4L/c60 ELVAE/hoN5S/c150 NECCK DIXIE/ho68"
           },
           "BIGGY": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.53.05.211,W074.36.01.889/a10000-/hoN5W BIGGY/ho55"
+            "waypoints": "KEWR-4L/h219@a5/l190@d2.3ILSQ/r220/c110 N040.36.39.819,W074.36.22.434/hoN5W/c170 BIGGY/ho55"
           },
           "LANNA": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.53.05.211,W074.36.01.889/a10000-/hoN5W LANNA/ho55"
+            "waypoints": "KEWR-4L/h219@a5/l190@d2.3ILSQ/r220/c110 N040.36.39.819,W074.36.22.434/hoN5W/c170 LANNA/ho55"
           },
           "PARKE": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.53.05.211,W074.36.01.889/a10000-/hoN5W PARKE/ho39"
+            "waypoints": "KEWR-4L/h219@a5/l190@d2.3ILSQ/r220/c110 N040.36.39.819,W074.36.22.434/hoN5W/c170 PARKE/ho39"
           },
           "ZIMMZ": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.44.16.961,W074.36.22.049/a10000-/hoN5W ZIMMZ/ho39"
+            "waypoints": "KEWR-4L/h219@a5/l190@d2.3ILSQ/r220/c100 N040.43.47.462,W074.36.16.913/hoN5W/c170 ZIMMZ/ho39"
           },
           "NEWEL": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
-            "waypoints": "KEWR-4L N040.44.08.213,W074.36.15.128/a2500- N040.44.16.961,W074.36.22.049/a10000-/hoN5W NEWEL/ho39"
+            "waypoints": "KEWR-4L/h219@a5/l190@d2.3ILSQ/r220/c100 N040.43.47.462,W074.36.16.913/hoN5W/c170 NEWEL/ho39"
           }
         }
       },
@@ -1744,32 +1744,37 @@
           "DEEZZ": {
             "cleared_altitude": 19000,
             "sid": "DEEZZ6.CANDR",
-            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238 N040.54.38.910,W073.29.09.655/a17000- DEEZZ HEERO KURNL CANDR/ho36"
+            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238/c170 N040.54.38.910,W073.29.09.655/hoN5T/c190 DEEZZ HEERO KURNL CANDR/ho36"
           },
           "GAYEL": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238 N040.54.38.910,W073.29.09.655/a17000- GAYEL/ho35"
+            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238/c170 N040.54.38.910,W073.29.09.655/hoN5T/c170 GAYEL/ho35"
           },
           "COATE": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238 N040.54.38.910,W073.29.09.655/a17000- COATE/ho35"
+            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238/c170 N040.54.38.910,W073.29.09.655/hoN5T/c170 COATE/ho35"
           },
           "NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238 N040.54.38.910,W073.29.09.655/a17000- NEION/ho35"
-          },
-          "HAAYS": {
-            "cleared_altitude": 17000,
-            "sid": "JFK5",
-            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238 N040.54.38.910,W073.29.09.655/a17000- HAAYS/ho35"
+            "waypoints": "KJFK-4L N040.34.57.097,W073.49.00.325 N040.29.50.208,W073.46.58.817 N040.49.00.174,W073.26.28.238/c170 N040.54.38.910,W073.29.09.655/hoN5T/c170 NEION/ho35"
           },
           "RBV": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L N040.20.02.769,W074.00.41.198/a11000-/hoN5S RBV/ho55"
+            "waypoints": "KJFK-4L/h232@a5/c50 N040.34.05.269,W073.50.28.244/c110 N040.32.18.688,W073.51.36.524 N040.20.02.769,W074.00.41.198/hoN5S/c170 RBV/ho55"
+          },
+          "SHIPP": {
+            "cleared_altitude": 12000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L/h232@a5/c50 N040.34.05.269,W073.50.28.244/c120 N040.27.21.027,W073.32.40.427 SHIPP/ho66"
+          },
+          "WAVEY": {
+            "cleared_altitude": 12000,
+            "sid": "JFK5",
+            "waypoints": "KJFK-4L/h232@a5/c50 N040.34.05.269,W073.50.28.244/c120 N040.27.21.027,W073.32.40.427 WAVEY/ho66"
           }
         }
       },

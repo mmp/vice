@@ -42,8 +42,8 @@
         "13": {
           "SHIPP": {
             "cleared_altitude": 12000,
-            "sid": "TNNIS6",
-            "waypoints": "KLGA-31 KIWIE/a2500+/s220- NTHNS/a3000+/s220- CNRSE/a5000+/s230- ASALT/a8000-/hoN2J N040.27.42.423,W073.35.58.593 SHIPP/ho66"
+            "sid": "NTHNS6",
+            "waypoints": "KLGA-31 KIWIE/a2500+/s220- NTHNS/a3000+/s220- CNRSE/a5000+/s230-/c80 ASALT/hoN2J/c120 N040.27.21.027,W073.32.40.427 SHIPP/ho66"
           }
         }
       },
@@ -113,12 +113,12 @@
           "SHIPP": {
             "cleared_altitude": 12000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L N040.36.33.159,W073.47.49.299 N040.34.07.398,W073.50.30.606 N040.32.36.527,W073.51.27.789/a5000- N040.29.00.220,W073.39.51.668 SHIPP/ho66"
+            "waypoints": "KJFK-4L/h232@a5/c50 N040.34.05.269,W073.50.28.244/c120 N040.27.21.027,W073.32.40.427 SHIPP/ho66"
           },
           "WAVEY": {
             "cleared_altitude": 12000,
             "sid": "JFK5",
-            "waypoints": "KJFK-4L N040.36.33.159,W073.47.49.299 N040.34.07.398,W073.50.30.606 N040.32.36.527,W073.51.27.789/a5000- N040.27.25.642,W073.32.50.617 WAVEY/ho66"
+            "waypoints": "KJFK-4L/h232@a5/c50 N040.34.05.269,W073.50.28.244/c120 N040.27.21.027,W073.32.40.427 WAVEY/ho66"
           }
         }
       },
