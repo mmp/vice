@@ -584,6 +584,9 @@ var multiTokenReplacements = map[string][]string{
 	// "right of contact" is post-normalization; raw "rate" → "right" via phonetic match.
 	// Original utterance is "radar contact" mistranscribed as "rate of contact".
 	"right of contact": {"radar", "contact"},
+	// "route of contact" is another mistranscription of "radar contact"
+	// ("radar" heard as "route of").
+	"route of contact": {"radar", "contact"},
 	"to park":          {"depart"}, // STT error: "depart" (TPRT) mistranscribed as "to park" (TPRK)
 	"at the set":       {"descend"},
 }

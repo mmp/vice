@@ -1,0 +1,801 @@
+{
+  "time": "2026-07-18T15:10:59.674439-07:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:742:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:586:reflect.Value.call",
+    "value.go:369:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1447:runtime.goexit"
+  ],
+  "transcript": "Cobra Two Twenty New York departure route of contact",
+  "whisper_duration_ms": 405.442,
+  "audio_duration_ms": 2632,
+  "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "American 90": {
+      "Callsign": "AAL90",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "Cimble": "CIMBL",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Luis Munoz Marin": "TJSJ",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "RX2L",
+        "r-nav yankee runway two two left": "RY2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual approach runway two two right": "22R",
+        "visual runway two two left": "22L",
+        "visual runway two two right": "22R",
+        "visual two two left": "22L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "RX2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "RY2L": {
+          "Deer Park": "DPK",
+          "Nayik": "NAYIK",
+          "Zalpo": "ZALPO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": [
+        "CAMRN",
+        "KJFK"
+      ],
+      "Altitude": 4063,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "Copa two 20": {
+      "Callsign": "CMP220",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Tocumen": "MPTO",
+        "Wavey": "WAVEY"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Route": [
+        "WAVEY",
+        "EMJAY",
+        "TOPRR",
+        "YAZUU",
+        "ZIZZI",
+        "TBONN",
+        "CAANO",
+        "PAJET",
+        "ZJAAY",
+        "KALDA",
+        "TUGGR",
+        "HYPAL",
+        "BGBRD",
+        "PRANK",
+        "SKARP",
+        "JRDAN",
+        "FRRAM",
+        "DIZNY",
+        "JAZZI",
+        "TYCAL",
+        "COACH",
+        "OHLAA",
+        "BRATZ",
+        "ZFP",
+        "URSUS",
+        "MPTO"
+      ],
+      "Altitude": 1416,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "C86",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "El Al four 56 heavy": {
+      "Callsign": "ELY456",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Ben Gurion": "LLBG",
+        "Calverton": "CCC",
+        "Cimble": "CIMBL",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rober": "ROBER",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "RX2L",
+        "r-nav yankee runway two two left": "RY2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual approach runway two two right": "22R",
+        "visual runway two two left": "22L",
+        "visual runway two two right": "22R",
+        "visual two two left": "22L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "RX2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "RY2L": {
+          "Deer Park": "DPK",
+          "Nayik": "NAYIK",
+          "Zalpo": "ZALPO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": [
+        "CCC",
+        "ROBER",
+        "KJFK"
+      ],
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "Endeavor 58 94": {
+      "Callsign": "EDV5894",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Raleigh Durham": "KRDU",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "RX2L",
+        "r-nav yankee runway two two left": "RY2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual approach runway two two right": "22R",
+        "visual runway two two left": "22L",
+        "visual runway two two right": "22R",
+        "visual two two left": "22L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "RX2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "RY2L": {
+          "Deer Park": "DPK",
+          "Nayik": "NAYIK",
+          "Zalpo": "ZALPO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Route": [
+        "KJFK"
+      ],
+      "Altitude": 6056,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "JetBlue 59 22": {
+      "Callsign": "JBU5922",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Pucky": "PUCKY",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Salt Lake City": "KSLC",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Vadder": "VADDR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "RX2L",
+        "r-nav yankee runway two two left": "RY2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual approach runway two two right": "22R",
+        "visual runway two two left": "22L",
+        "visual runway two two right": "22R",
+        "visual two two left": "22L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "RX2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "RY2L": {
+          "Deer Park": "DPK",
+          "Nayik": "NAYIK",
+          "Zalpo": "ZALPO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Route": [
+        "PUCKY",
+        "VADDR",
+        "KJFK"
+      ],
+      "Altitude": 19000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "JetBlue 63 65": {
+      "Callsign": "JBU6365",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Salt Lake City": "KSLC",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Vadder": "VADDR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "RX2L",
+        "r-nav yankee runway two two left": "RY2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual approach runway two two right": "22R",
+        "visual runway two two left": "22L",
+        "visual runway two two right": "22R",
+        "visual two two left": "22L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "RX2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "RY2L": {
+          "Deer Park": "DPK",
+          "Nayik": "NAYIK",
+          "Zalpo": "ZALPO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Route": [
+        "VADDR",
+        "KJFK"
+      ],
+      "Altitude": 13115,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "JetBlue niner zero five": {
+      "Callsign": "JBU905",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "Cimble": "CIMBL",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "L.F. Wade": "TXKF",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "RX2L",
+        "r-nav yankee runway two two left": "RY2L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two two left": "22L",
+        "visual approach runway two two right": "22R",
+        "visual runway two two left": "22L",
+        "visual runway two two right": "22R",
+        "visual two two left": "22L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "BVA": {
+          "Zalpo": "ZALPO"
+        },
+        "I2L": {
+          "Cimble": "CIMBL",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Norton": "NRTON",
+          "Rosley": "ROSLY",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR",
+          "Zalpo": "ZALPO"
+        },
+        "I2R": {
+          "Cimble": "CIMBL",
+          "Corvet": "CORVT",
+          "Detgy": "DETGY",
+          "Hair": "HAIRR",
+          "Haupt": "HAUPT",
+          "Lefer": "LEFER",
+          "Matter": "MATTR",
+          "Norton": "NRTON",
+          "Sajul": "SAJUL",
+          "Seagull": "CEEGL",
+          "Tapper": "TAPPR"
+        },
+        "R2R": {
+          "Deer Park": "DPK",
+          "Heneb": "HENEB",
+          "Rivra": "RIVRA"
+        },
+        "RX2L": {
+          "Capit": "CAPIT",
+          "Deer Park": "DPK",
+          "E-knee": "ENEEE",
+          "Gigpe": "GIGPE",
+          "Wikol": "WIKOL",
+          "Zosdo": "ZOSDO"
+        },
+        "RY2L": {
+          "Deer Park": "DPK",
+          "Nayik": "NAYIK",
+          "Zalpo": "ZALPO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Route": [
+        "CAMRN",
+        "KJFK"
+      ],
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "november niner three two eight kilo": {
+      "Callsign": "N9328K",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury": "KDXR",
+        "Farmingdale": "KFRG",
+        "Republic": "KFRG"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 2685,
+      "State": "vfr flight following",
+      "ControllerFrequency": "2G",
+      "TrackingController": "",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Cobra Two Twenty New York departure route of contact\"",
+    "[local-stt] normalized words: [cobra 2 20 new york departure route of contact]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"cobra\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"220\" Type=1 Value=220",
+    "[local-stt]   token[2]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"route\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"of\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 8 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 8 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Copa two 20\" (airline=0.827, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Copa two 20\" (airline=0.83, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 13 results",
+    "[local-stt]     result 0: \"Copa two 20\" (airline=0.827, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"JetBlue niner zero five\" (airline=0.448, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Endeavor 58 94\" (airline=0.442, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"American 90\" (airline=0.550, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"JetBlue 59 22\" (airline=0.448, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Copa two 20\" (airline=0.83, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Copa two 20\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Copa two 20\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Copa two 20\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"CMP220\" (conf=0.97, consumed=2, addressingForm=0, spokenKey=\"Copa two 20\")",
+    "[local-stt] callsign match: Callsign=\"CMP220\" SpokenKey=\"Copa two 20\" Conf=0.97 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=1416 Fixes=4 Approaches=0 VisualApproaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Tocumen\" -\u003e \"MPTO\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Wavey\" -\u003e \"WAVEY\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"route\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"of\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt] stripped position ID prefix: 3 tokens",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"route\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"route\"",
+    "[local-stt]   no match at token[0]=\"route\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"of\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"of\"",
+    "[local-stt]   no match at token[1]=\"of\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"contact\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"contact\"",
+    "[local-stt]   no match at token[2]=\"contact\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"CMP220 AGAIN\" (conf=0.97, time=1.885958ms) ==="
+  ]
+}

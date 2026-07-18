@@ -2039,14 +2039,34 @@ func extractTraffic(tokens []Token) (int, int, int, bool, bool, int) {
 		}
 
 		// Check for number followed by "o'clock" or just a number in range 1-12
-		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 12 {
-			oclock = t.Value
-			consumed++
-			// Skip "o'clock" if present
-			if consumed < len(tokens) && FuzzyMatch(tokens[consumed].Text, "o'clock", 0.8) {
-				consumed++
+		if t.Type == TokenNumber {
+			oclockFollows := consumed+1 < len(tokens) && FuzzyMatch(tokens[consumed+1].Text, "o'clock", 0.8)
+
+			// When an out-of-range number is immediately followed by "o'clock",
+			// the tokenizer merged a spurious leading digit into the real clock
+			// position (e.g., "eight eleven o'clock" -> "8" "11" -> 811).
+			// Recover the position from the trailing 1-2 digits, mirroring the
+			// altitude recovery in Phase 3.
+			v := t.Value
+			if v > 12 && oclockFollows {
+				if last2 := v % 100; last2 >= 1 && last2 <= 12 {
+					logLocalStt("  extractTraffic: extracted o'clock %d from merged %d", last2, v)
+					v = last2
+				} else if last1 := v % 10; last1 >= 1 && last1 <= 12 {
+					logLocalStt("  extractTraffic: extracted o'clock %d from merged %d", last1, v)
+					v = last1
+				}
 			}
-			break
+
+			if v >= 1 && v <= 12 {
+				oclock = v
+				consumed++
+				// Skip "o'clock" if present
+				if oclockFollows {
+					consumed++
+				}
+				break
+			}
 		}
 		consumed++
 	}
