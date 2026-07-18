@@ -2058,8 +2058,10 @@ func (s *Sim) processFutureOnCourse() {
 				if ac, ok := s.Aircraft[oc.ADSBCallsign]; ok {
 					s.lg.Info("departing on course", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
 						slog.Int("final_altitude", ac.FlightPlan.Altitude))
-					// Clear temporary altitude
-					if ac.NASFlightPlan != nil {
+					// Clear temporary altitude, unless the route's altitude
+					// actions govern the aircraft's altitude and it isn't
+					// climbing to cruise.
+					if ac.NASFlightPlan != nil && !ac.Nav.RouteAltitudeActions {
 						ac.NASFlightPlan.InterimAlt = 0
 						ac.NASFlightPlan.InterimType = InterimNormal
 					}

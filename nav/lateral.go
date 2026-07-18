@@ -80,12 +80,17 @@ func (nav *Nav) updatePositionAndGS(wxs wx.Sample) {
 	nav.FlightState.GS = math.Length2f(math.Add2f(flightVector, windVector)) * 3600
 }
 
+// DepartOnCourse sends a departure direct to its exit fix and climbs it to
+// the given cruise altitude—unless the route has /c or /d altitude actions
+// at its waypoints, in which case those govern its altitude instead.
 func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime Time) {
 	if _, ok := nav.AssignedHeading(); !ok {
 		// Don't do anything if they are not on a heading; let them fly the
 		// regular route and don't (potentially) skip waypoints and go
 		// straight to the exit; however, the altitude should be changed
-		nav.setAssignedAltitude(alt)
+		if !nav.RouteAltitudeActions {
+			nav.setAssignedAltitude(alt)
+		}
 		nav.Speed = NavSpeed{}
 		return
 	}
@@ -98,7 +103,9 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime Time) {
 	if idx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == exit }); idx != -1 {
 		nav.Waypoints = nav.Waypoints[idx:]
 	}
-	nav.setAssignedAltitude(alt)
+	if !nav.RouteAltitudeActions {
+		nav.setAssignedAltitude(alt)
+	}
 	nav.Speed = NavSpeed{}
 	nav.EnqueueOnCourse(simTime)
 }

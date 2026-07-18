@@ -470,6 +470,20 @@ func (wp Waypoint) DescendAltitude() int {
 	return 0
 }
 
+// HasAltitudeActions reports whether the waypoint has a /c or /d altitude
+// action, either directly or in one of its action groups.
+func (wp Waypoint) HasAltitudeActions() bool {
+	if wp.ClimbAltitude() != 0 || wp.DescendAltitude() != 0 {
+		return true
+	}
+	for _, group := range wp.ActionGroups() {
+		if group.Actions.ClimbAltitude != 0 || group.Actions.DescendAltitude != 0 {
+			return true
+		}
+	}
+	return false
+}
+
 func (wp Waypoint) WaypointActions() WaypointActions {
 	actions := WaypointActions{
 		HumanHandoff:              wp.HumanHandoff(),

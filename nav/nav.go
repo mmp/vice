@@ -65,6 +65,13 @@ type Nav struct {
 	FinalAltitude float32
 	Waypoints     av.WaypointArray
 
+	// RouteAltitudeActions is set at creation time if the route includes
+	// /c or /d altitude actions at any of its waypoints. If it does, those
+	// actions govern the aircraft's altitude and DepartOnCourse never
+	// climbs it to its cruise altitude. (Waypoints are dropped from the
+	// route as they are passed, so this must be recorded up front.)
+	RouteAltitudeActions bool
+
 	PendingWaypointActionEvents []av.WaypointActionEvent
 
 	Rand *rand.Rand
@@ -428,6 +435,9 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 
 	av.RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, lg)
+
+	nav.RouteAltitudeActions = slices.ContainsFunc(nav.Waypoints,
+		func(wp av.Waypoint) bool { return wp.HasAltitudeActions() })
 
 	// VFR routes end at their SequenceVFRLanding waypoint; truncate any
 	// trailing slots (including the +1 buffer allocated above).
