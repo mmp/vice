@@ -4727,3 +4727,45 @@ func TestNegativeWithoutCallsign(t *testing.T) {
 		})
 	}
 }
+
+// TestProceedDirectDistantFixes checks "direct <fix>" commands for fixes
+// anywhere along the route. (This is a regression test for NCT Area D, where
+// distance culling used to drop far-away exit fixes from the candidate map so
+// that e.g. "direct Susie" fuzzy-matched the nearby SSTIK instead of SUSEY.)
+func TestProceedDirectDistantFixes(t *testing.T) {
+	aircraft := map[string]Aircraft{
+		"Frontier flight forty four fifty five": {
+			Callsign: "FFT4455", Altitude: 4000, State: "departure", SID: "SSTIK1",
+			Fixes: map[string]string{
+				"San Francisco Intl": "KSFO",
+				"Stick":              "SSTIK",
+				"Lejay":              "LEJAY",
+				"candel":             "CNDEL",
+				"Port":               "PORTE",
+				"Foil":               "FFOIL",
+				"Susie":              "SUSEY",
+				"K-X":                "KAYEX",
+				"Intel":              "NTELL",
+			},
+		},
+	}
+
+	provider := NewTranscriber(nil)
+	for _, tt := range []struct {
+		transcript string
+		expected   string
+	}{
+		{"Frontier flight forty four fifty five cleared direct foil", "FFT4455 DFFOIL"},
+		{"Frontier flight forty four fifty five cleared direct intel", "FFT4455 DNTELL"},
+		// This one in particular must not match the similar-sounding SSTIK.
+		{"Frontier flight forty four fifty five proceed direct susie", "FFT4455 DSUSEY"},
+		{"Frontier flight forty four fifty five proceed direct k x", "FFT4455 DKAYEX"},
+	} {
+		result, err := provider.DecodeTranscript(aircraft, tt.transcript, "")
+		if err != nil {
+			t.Errorf("%q: unexpected error: %v", tt.transcript, err)
+		} else if result != tt.expected {
+			t.Errorf("%q: got %q, want %q", tt.transcript, result, tt.expected)
+		}
+	}
+}

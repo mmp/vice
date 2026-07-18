@@ -1042,9 +1042,20 @@ func GetSTARTelephony(star string) string {
 }
 
 // GetApproachTelephony returns the spoken form of an approach name.
-// For example, "RNAV X Runway 22L" becomes "r-nav x-ray runway 2 2 left".
+// For example, "RNAV X Runway 22L" becomes "r-nav x-ray runway two two left".
 func GetApproachTelephony(approach string) string {
-	var result []string
+	types, runway := ApproachTelephonyComponents(approach)
+	if runway != "" {
+		types = append(types, "runway", runway)
+	}
+	return strings.Join(types, " ")
+}
+
+// ApproachTelephonyComponents returns the spoken units of an approach name separately: the
+// type-related words (e.g., "I L S", "r-nav", "x-ray") and the spoken runway (e.g., "two two
+// left"; empty if the name doesn't include one).
+func ApproachTelephonyComponents(approach string) (types []string, runway string) {
+	var rwy []string
 	lastRunway := false
 
 	for word := range strings.FieldsSeq(approach) {
@@ -1053,13 +1064,13 @@ func GetApproachTelephony(approach string) string {
 			for _, ch := range strings.ToLower(word) {
 				switch ch {
 				case 'l':
-					result = append(result, "left")
+					rwy = append(rwy, "left")
 				case 'r':
-					result = append(result, "right")
+					rwy = append(rwy, "right")
 				case 'c':
-					result = append(result, "center")
+					rwy = append(rwy, "center")
 				case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-					result = append(result, sayDigit(int(ch-'0')))
+					rwy = append(rwy, sayDigit(int(ch-'0')))
 				}
 			}
 			lastRunway = false
@@ -1068,30 +1079,29 @@ func GetApproachTelephony(approach string) string {
 			lower := strings.ToLower(word)
 			if lower == "runway" {
 				lastRunway = true
-				result = append(result, "runway")
 			} else if upper == "ILS" {
-				result = append(result, "I L S")
+				types = append(types, "I L S")
 			} else if upper == "RNAV" {
-				result = append(result, "r-nav")
+				types = append(types, "r-nav")
 			} else if upper == "VOR" {
-				result = append(result, "V O R")
+				types = append(types, "V O R")
 			} else if upper == "GPS" {
-				result = append(result, "G P S")
+				types = append(types, "G P S")
 			} else if upper == "LOC" {
-				result = append(result, "localizer")
+				types = append(types, "localizer")
 			} else if upper == "LDA" {
-				result = append(result, "L D A")
+				types = append(types, "L D A")
 			} else if upper == "NDB" {
-				result = append(result, "N D B")
+				types = append(types, "N D B")
 			} else if sp, ok := spokenLetters[upper]; ok {
-				result = append(result, sp)
+				types = append(types, sp)
 			} else {
-				result = append(result, word)
+				types = append(types, word)
 			}
 		}
 	}
 
-	return strings.Join(result, " ")
+	return types, strings.Join(rwy, " ")
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -7,6 +7,7 @@ package client
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"runtime"
 	"slices"
 	"strings"
@@ -941,146 +942,236 @@ func IsSTTAvailable() bool {
 	return GetWhisperModelError() == nil
 }
 
+// whisperPromptTokenLimit is whisper.cpp's cap on the initial prompt: it
+// keeps the last n_text_ctx/2 = 224 tokens and silently drops the start.
+const whisperPromptTokenLimit = 224
+
 func makeWhisperPrompt(state SimState) string {
-	// Build initial prompt with common phrases, aircraft telephony, and approaches.
-	// Most important items first since whisper has a 224 token limit.
-	promptParts := []string{
+	// Since whisper truncates an over-long initial prompt by dropping tokens from its start, we'll
+	// first assemble the prompt in decreasing order of importance and then reverse it before
+	// returning it so that the most important items then sit at the end, where they survive
+	// truncation.
+	var promptParts []string
+
+	// Callsign telephony is highest priority. Include the aircraft on the user's frequency—the
+	// ones the user may be talking to—matching the set that BuildAircraftContext gives the
+	// command parser. (Not the tracks the user owns: a handed-off aircraft stays on the user's
+	// frequency until its comms are transferred, and conversely.)
+	onFrequencyTracks := maps.Collect(util.FilterSeq2(maps.All(state.Tracks),
+		func(_ av.ADSBCallsign, trk *sim.Track) bool {
+			return state.UserControlsPosition(trk.ControllerFrequency)
+		}))
+
+	for _, trk := range util.SortedMap(onFrequencyTracks) {
+		callsign := string(trk.ADSBCallsign)
+		tele := av.GetCallsignSpoken(callsign, trk.CWTCategory)
+		promptParts = append(promptParts, tele)
+
+		// For GA callsigns (N-prefix), also add type+trailing3 variants
+		if strings.HasPrefix(callsign, "N") && trk.FlightPlan != nil && trk.FlightPlan.AircraftType != "" {
+			typePronunciations := av.GetACTypePronunciations(trk.FlightPlan.AircraftType)
+			if len(typePronunciations) > 0 {
+				trailing3 := av.GetTrailing3Spoken(callsign)
+				if trailing3 != "" {
+					// Only use pronunciations without numbers to avoid callsign confusion
+					for _, typeSpoken := range typePronunciations {
+						if !strings.ContainsAny(typeSpoken, "0123456789") {
+							promptParts = append(promptParts, typeSpoken+" "+trailing3)
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Deduplicate fixes across aircraft and approaches; each addFix call appends the fix to the
+	// given slice only if it hasn't been seen yet.
+	seenFixes := make(map[string]struct{})
+	addFix := func(fixes []string, fix string) []string {
+		if _, ok := seenFixes[fix]; !ok {
+			seenFixes[fix] = struct{}{}
+			fixes = append(fixes, fix)
+		}
+		return fixes
+	}
+
+	// addApproachEntryFixes adds the fixes from the approach's entry legs—everything up to but not
+	// including the FAF—to the given fixes slice and returns it.
+	addApproachEntryFixes := func(fixes []string, appr *av.Approach) []string {
+		for _, wps := range appr.Waypoints {
+			for _, wp := range wps {
+				if wp.FAF() {
+					break
+				}
+				if len(wp.Fix) >= 3 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' {
+					fixes = addFix(fixes, wp.Fix)
+				}
+			}
+		}
+		return fixes
+	}
+
+	// Take the arrival airport plus up to this many route fixes from each aircraft's candidate
+	// fixes; the rest of them may be poorly transcribed but can still be handled by fuzzy
+	// matching in the command parser.
+	const maxRouteFixesPerAircraft = 5
+
+	var routeFixes []string
+	for _, trk := range util.SortedMap(onFrequencyTracks) {
+		// A locally-arriving aircraft's arrival airport is always included; beyond it, take the
+		// first (nearest) route fixes up to the limit. Other airports are skipped: the departure
+		// airport is behind the aircraft and a non-local destination is far away, so neither
+		// will be spoken.
+		_, localArrival := state.Airports[trk.ArrivalAirport]
+		nRouteFixes := 0
+		for _, fix := range trk.Fixes {
+			if fix == trk.ArrivalAirport || fix == trk.DepartureAirport {
+				if localArrival && fix == trk.ArrivalAirport {
+					routeFixes = addFix(routeFixes, fix)
+				}
+			} else if nRouteFixes < maxRouteFixesPerAircraft {
+				routeFixes = addFix(routeFixes, fix)
+				nRouteFixes++
+			}
+		}
+
+		// For an assigned approach, always include its entry leg fixes,
+		// without counting them against the cap.
+		if trk.Approach != "" {
+			if ap, ok := state.Airports[trk.ArrivalAirport]; ok {
+				for _, appr := range ap.Approaches {
+					if appr.FullName == trk.Approach {
+						routeFixes = addApproachEntryFixes(routeFixes, appr)
+						break
+					}
+				}
+			}
+		}
+	}
+	for _, fix := range routeFixes {
+		promptParts = append(promptParts, av.GetFixTelephony(fix))
+	}
+
+	// Next, the approaches. Their names repeat both the approach type and the runway (e.g.,
+	// "I L S runway two two left", "r-nav x-ray runway two two left"), so rather than including
+	// each full name, collect their spoken components and include each of those just once.
+	seenApprComponent := make(map[string]struct{})
+	var apprTypes, apprRunways []string
+	addApproachComponents := func(name string) {
+		types, runway := av.ApproachTelephonyComponents(name)
+		for _, ty := range types {
+			if _, ok := seenApprComponent[ty]; !ok {
+				seenApprComponent[ty] = struct{}{}
+				apprTypes = append(apprTypes, ty)
+			}
+		}
+		if runway != "" {
+			if _, ok := seenApprComponent[runway]; !ok {
+				seenApprComponent[runway] = struct{}{}
+				apprRunways = append(apprRunways, runway)
+			}
+		}
+	}
+
+	assignedApproaches := make(map[string]struct{})
+	for _, trk := range util.SortedMap(onFrequencyTracks) {
+		if trk.Approach != "" {
+			assignedApproaches[trk.Approach] = struct{}{}
+		}
+	}
+	for _, appr := range util.SortedMapKeys(assignedApproaches) {
+		addApproachComponents(appr)
+	}
+
+	// Collect active approaches and their entry leg fixes, though only for airports that
+	// on-frequency aircraft are arriving at; the approach vocabulary is useless otherwise.
+	arrivalAirports := make(map[string]struct{})
+	for _, trk := range onFrequencyTracks {
+		arrivalAirports[trk.ArrivalAirport] = struct{}{}
+	}
+	activeApproaches := make(map[string]struct{})
+	var apprFixes []string
+	for _, ar := range state.ArrivalRunways {
+		if _, ok := arrivalAirports[ar.Airport]; !ok {
+			continue
+		}
+		if ap, ok := state.Airports[ar.Airport]; ok {
+			for _, appr := range ap.Approaches {
+				if appr.Runway == ar.Runway.Base() {
+					activeApproaches[appr.FullName] = struct{}{}
+					apprFixes = addApproachEntryFixes(apprFixes, appr)
+				}
+			}
+		}
+	}
+	for _, appr := range util.SortedMapKeys(activeApproaches) {
+		if _, assigned := assignedApproaches[appr]; !assigned {
+			addApproachComponents(appr)
+		}
+	}
+	promptParts = append(promptParts, apprTypes...)
+	if len(apprRunways) > 0 {
+		promptParts = append(promptParts, "runway")
+		promptParts = append(promptParts, apprRunways...)
+	}
+	for _, fix := range apprFixes {
+		promptParts = append(promptParts, av.GetFixTelephony(fix))
+	}
+
+	// Include SIDs and STARs only when an on-frequency aircraft is flying them.
+	activeSIDs := make(map[string]struct{})
+	activeSTARs := make(map[string]struct{})
+	for _, trk := range onFrequencyTracks {
+		if trk.SID != "" {
+			activeSIDs[trk.SID] = struct{}{}
+		}
+		if trk.STAR != "" {
+			activeSTARs[trk.STAR] = struct{}{}
+		}
+	}
+	for _, sid := range util.SortedMapKeys(activeSIDs) {
+		promptParts = append(promptParts, av.GetSIDTelephony(sid))
+	}
+	for _, star := range util.SortedMapKeys(activeSTARs) {
+		promptParts = append(promptParts, av.GetSTARTelephony(star))
+	}
+
+	// Add ATIS letters so whisper recognizes "information <letter>". The prompt biases whisper
+	// via the presence of words, so there's no reason to repeat any of them: dedupe the letters
+	// across airports and include "information" itself just once.
+	atisLetters := make(map[string]struct{})
+	for _, letter := range state.ATISLetter {
+		if nato, ok := av.NATOPhonetic[letter]; ok {
+			atisLetters[nato] = struct{}{}
+		}
+	}
+	if len(atisLetters) > 0 {
+		promptParts = append(promptParts, "information")
+		promptParts = append(promptParts, util.SortedMapKeys(atisLetters)...)
+	}
+
+	// Common command phrases are the least important: the models we use are trained on ATC speech,
+	// so these mostly serve as a gentle bias and are the first to go if the prompt is over the
+	// token limit.
+	promptParts = append(promptParts,
 		"climb and maintain", "descend and maintain", "maintain", "direct", "cleared direct",
 		"turn left", "turn right", "fly heading", "proceed direct", "expect the",
 		"reduce speed to", "maintain maximum forward speed", "contact tower",
 		"expect", "vectors", "squawk", "ident", "altimieter", "radar contact",
 		"reduce to final approach speed", "miles from", "established", "cleared",
-		"cleared straight-in",
 		"until established", "on the localizer", "flight level", "niner",
-		"climb via", "descend via", "arrival",
+		"cleared straight-in", "climb via", "descend via", "arrival",
 		"expedite climb", "expedite descent", "good rate",
 		"hold", "as published", "radial inbound", "minute legs", "left turns", "right turns",
 		"expect further clearance", "mach", "say mach", "maintain mach",
 		"field in sight", "airport in sight", "visual approach",
 		"the field is at your", "the airport is at your",
 		"caution wake turbulence", "maintain visual separation", "landing the parallel",
-	}
+	)
 
-	// ERAM sessions reference far-field fixes in enroute clearances, so
-	// allow a larger per-aircraft contribution than in STARS.
-	maxFixesPerAircraft := util.Select(av.DB.IsARTCC(state.Facility), 5, 3)
+	fmt.Println(promptParts)
 
-	// Add telephony and approaches for user-controlled tracks.
-	// Collect fixes separately using map to dedupe.
-	assignedApproaches := make(map[string]struct{})
-	fixes := make(map[string]struct{})
-	for _, trk := range state.Tracks {
-		if state.UserControlsTrack(trk) && trk.IsAssociated() {
-			callsign := string(trk.ADSBCallsign)
-			tele := av.GetCallsignSpoken(callsign, trk.CWTCategory)
-			promptParts = append(promptParts, tele)
-
-			// For GA callsigns (N-prefix), also add type+trailing3 variants
-			if strings.HasPrefix(callsign, "N") && trk.FlightPlan.AircraftType != "" {
-				typePronunciations := av.GetACTypePronunciations(trk.FlightPlan.AircraftType)
-				if len(typePronunciations) > 0 {
-					trailing3 := av.GetTrailing3Spoken(callsign)
-					if trailing3 != "" {
-						// Only use pronunciations without numbers to avoid callsign confusion
-						for _, typeSpoken := range typePronunciations {
-							if !strings.ContainsAny(typeSpoken, "0123456789") {
-								promptParts = append(promptParts, typeSpoken+" "+trailing3)
-							}
-						}
-					}
-				}
-			}
-
-			if trk.Approach != "" {
-				assignedApproaches[trk.Approach] = struct{}{}
-			}
-			for i, fix := range trk.Fixes {
-				if i >= maxFixesPerAircraft {
-					break
-				}
-				fixes[fix] = struct{}{}
-			}
-			// Fixes from the assigned/expected approach plate so whisper
-			// recognizes them in "direct (fix)" instructions, even when the
-			// approach's runway isn't in the active arrival config.
-			for _, fix := range trk.AssignedApproachFixes {
-				fixes[fix] = struct{}{}
-			}
-		}
-	}
-
-	// Add assigned approaches (higher priority)
-	for appr := range assignedApproaches {
-		promptParts = append(promptParts, av.GetApproachTelephony(appr))
-	}
-
-	// Collect active approaches and their fixes
-	activeApproaches := make(map[string]struct{})
-	for _, ar := range state.ArrivalRunways {
-		if ap, ok := state.Airports[ar.Airport]; ok {
-			for _, appr := range ap.Approaches {
-				if appr.Runway == ar.Runway.Base() {
-					activeApproaches[appr.FullName] = struct{}{}
-					// Add all fixes from this active approach
-					for _, wps := range appr.Waypoints {
-						for _, wp := range wps {
-							if len(wp.Fix) >= 3 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' {
-								fixes[wp.Fix] = struct{}{}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	for appr := range activeApproaches {
-		if _, assigned := assignedApproaches[appr]; !assigned {
-			promptParts = append(promptParts, av.GetApproachTelephony(appr))
-		}
-	}
-
-	// Collect active SIDs from departure airports
-	activeSIDs := make(map[string]struct{})
-	for _, dr := range state.DepartureRunways {
-		if ap, ok := state.Airports[dr.Airport]; ok {
-			if rwyRoutes, ok := ap.DepartureRoutes[dr.Runway]; ok {
-				for _, route := range rwyRoutes {
-					if route.SID != "" {
-						activeSIDs[route.SID] = struct{}{}
-					}
-				}
-			}
-		}
-	}
-	for sid := range activeSIDs {
-		promptParts = append(promptParts, av.GetSIDTelephony(sid))
-	}
-
-	// Collect active STARs from inbound flows
-	activeSTARs := make(map[string]struct{})
-	for _, flow := range state.InboundFlows {
-		for _, arr := range flow.Arrivals {
-			if arr.STAR != "" {
-				activeSTARs[arr.STAR] = struct{}{}
-			}
-		}
-	}
-	for star := range activeSTARs {
-		promptParts = append(promptParts, av.GetSTARTelephony(star))
-	}
-
-	// Add current ATIS letters so whisper recognizes "information <letter>"
-	for _, letter := range state.ATISLetter {
-		if nato, ok := av.NATOPhonetic[letter]; ok {
-			promptParts = append(promptParts, "information "+nato)
-		}
-	}
-
-	// Add fixes (lower priority, may get truncated by token limit)
-	for fix := range fixes {
-		promptParts = append(promptParts, av.GetFixTelephony(fix))
-	}
-
+	slices.Reverse(promptParts)
 	return strings.Join(promptParts, ", ")
 }
 
@@ -1123,9 +1214,17 @@ func (c *ControlClient) StartStreamingSTT(lg *log.Logger) error {
 	// Snapshot state for prompt construction
 	state := c.State
 
+	prompt := makeWhisperPrompt(state)
+	lg.Debugf("whisper initial prompt: %s", prompt)
+	// Rough token estimate: whisper BPE tokens average ~4 characters.
+	if estTokens := len(prompt) / 4; estTokens > whisperPromptTokenLimit {
+		lg.Warnf("whisper initial prompt is an estimated %d tokens, over the %d limit; whisper will drop its lower-priority start",
+			estTokens, whisperPromptTokenLimit)
+	}
+
 	st := whisper.NewTranscriber(whisperModel, &whisperModelMu, whisper.Options{
 		Language:       "en",
-		InitialPrompt:  makeWhisperPrompt(state),
+		InitialPrompt:  prompt,
 		RealtimeFactor: whisperRealtimeFactor,
 	})
 

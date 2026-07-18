@@ -210,17 +210,15 @@ func (ac *Aircraft) RecentSightingOf(traffic av.ADSBCallsign, now Time, maxAge t
 }
 
 // GetSTTFixes returns the raw fix names relevant for STT context.
-// For STARS (terminal) sessions, assigned waypoints within 75nm are included with no count
-// limit. For ERAM (enroute) sessions, up to 5 assigned waypoints within 300nm are included.
-// Approach waypoints are included unconditionally when applicable.
+// For ERAM (enroute) sessions, up to 5 assigned waypoints within 300nm are included. For
+// STARS (terminal) sessions, the fixes depend on the type of flight: for departures, the
+// SID's waypoints plus the exit fix; for arrivals, all remaining route waypoints; for
+// overflights, remaining route waypoints within 120nm. For aircraft that have been told
+// to expect an approach but haven't joined it yet, all of the approach's waypoints are
+// included as well.
 func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 	var fixes []string
 	p := ac.Nav.FlightState.Position
-
-	maxDistNM, maxCount := float32(75), 0
-	if isERAM {
-		maxDistNM, maxCount = 300, 5
-	}
 
 	isValidFix := func(fix string) bool {
 		return len(fix) >= 3 && len(fix) <= 5 && fix[0] != '_'
@@ -235,30 +233,67 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 		fixes = append(fixes, ac.FlightPlan.DepartureAirport)
 	}
 
-	routeFixes := 0
-	for _, wp := range ac.Nav.AssignedWaypoints() {
-		if math.NMDistance2LL(p, wp.Location) > maxDistNM && len(fixes) > 0 {
-			break
-		}
-		if isValidFix(wp.Fix) {
-			fixes = append(fixes, wp.Fix)
-			routeFixes++
-			if maxCount > 0 && routeFixes >= maxCount {
+	if isERAM {
+		routeFixes := 0
+		for _, wp := range ac.Nav.AssignedWaypoints() {
+			if math.NMDistance2LL(p, wp.Location) > 300 && len(fixes) > 0 {
 				break
+			}
+			if isValidFix(wp.Fix) {
+				fixes = append(fixes, wp.Fix)
+				routeFixes++
+				if routeFixes >= 5 {
+					break
+				}
+			}
+		}
+	} else if ac.IsDeparture() {
+		// Include the SID's waypoints and the exit fix, regardless of how
+		// far away they are. The exit fix isn't necessarily among the SID's
+		// waypoints (e.g., when the SID ends with a vector to it), though it
+		// may also appear both there and in the enroute part of the route,
+		// so skip fixes we've already taken.
+		exit := ac.FlightPlan.Exit.Base()
+		for _, wp := range ac.Nav.AssignedWaypoints() {
+			if isValidFix(wp.Fix) && (wp.OnSID() || wp.Fix == exit) && !slices.Contains(fixes, wp.Fix) {
+				fixes = append(fixes, wp.Fix)
+			}
+		}
+	} else if ac.IsArrival() {
+		// Include all remaining route waypoints, regardless of distance.
+		for _, wp := range ac.Nav.AssignedWaypoints() {
+			if isValidFix(wp.Fix) && !slices.Contains(fixes, wp.Fix) {
+				fixes = append(fixes, wp.Fix)
+			}
+		}
+	} else {
+		// Overflights and the rest: remaining route waypoints within 120nm,
+		// though always take the first valid one so at least one fix is
+		// included.
+		haveRouteFix := false
+		for _, wp := range ac.Nav.AssignedWaypoints() {
+			if !isValidFix(wp.Fix) || slices.Contains(fixes, wp.Fix) {
+				continue
+			}
+			if !haveRouteFix || math.NMDistance2LL(p, wp.Location) <= 120 {
+				fixes = append(fixes, wp.Fix)
+				haveRouteFix = true
 			}
 		}
 	}
 
 	if ac.Nav.Approach.Assigned != nil {
-		// Check if approach waypoints are already in the route
-		hasApproachWaypoints := slices.ContainsFunc(ac.Nav.AssignedWaypoints(),
+		// If the aircraft has been told to expect an approach but hasn't
+		// joined it yet, add all of the approach's waypoints; once it has
+		// joined, its remaining route carries the remaining approach
+		// waypoints, so those suffice.
+		joinedApproach := slices.ContainsFunc(ac.Nav.AssignedWaypoints(),
 			func(wp av.Waypoint) bool { return wp.OnApproach() })
 
-		// If not, add all approach waypoints (aircraft is being vectored to intercept)
-		if !hasApproachWaypoints {
+		if !joinedApproach {
 			for _, wps := range ac.Nav.Approach.Assigned.Waypoints {
 				for _, wp := range wps {
-					if isValidFix(wp.Fix) {
+					if isValidFix(wp.Fix) && !slices.Contains(fixes, wp.Fix) {
 						fixes = append(fixes, wp.Fix)
 					}
 				}
@@ -711,9 +746,6 @@ func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *av.Radi
 }
 
 func (ac *Aircraft) DepartOnCourse(simTime Time, lg *log.Logger) {
-	if ac.FlightPlan.Exit == "" {
-		lg.Warn(`unset "exit" for departure`, slog.String("adsb_callsign", string(ac.ADSBCallsign)))
-	}
 	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), string(ac.FlightPlan.Exit), simTime.NavTime())
 }
 

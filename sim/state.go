@@ -163,18 +163,8 @@ func makeDerivedState(s *Sim) DerivedState {
 		}
 
 		var approach string
-		var approachFixes []string
 		if ac.Nav.Approach.Assigned != nil {
 			approach = ac.Nav.Approach.Assigned.FullName
-			seen := make(map[string]bool)
-			for _, wps := range ac.Nav.Approach.Assigned.Waypoints {
-				for _, wp := range wps {
-					if len(wp.Fix) >= 3 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' && !seen[wp.Fix] {
-						seen[wp.Fix] = true
-						approachFixes = append(approachFixes, wp.Fix)
-					}
-				}
-			}
 		}
 
 		rt := Track{
@@ -195,7 +185,6 @@ func makeDerivedState(s *Sim) DerivedState {
 			Approach:                  approach,
 			Fixes:                     ac.GetSTTFixes(av.DB.IsARTCC(s.State.Facility)),
 			RouteFixes:                ac.GetRouteFixes(),
-			AssignedApproachFixes:     approachFixes,
 			ExpectedDirectFix:         ac.Nav.ExpectedDirectFix,
 			SID:                       ac.SID,
 			STAR:                      ac.STAR,
@@ -550,7 +539,6 @@ type Track struct {
 	Approach                  string   // Full name of assigned approach, if any
 	Fixes                     []string // Relevant fix names for STT
 	RouteFixes                []string // Ordered route waypoint fix names (no truncation)
-	AssignedApproachFixes     []string // Fix names from the assigned/expected approach (all)
 	ExpectedDirectFix         string   // Fix the controller said to "expect direct", if any
 	SID                       string
 	STAR                      string

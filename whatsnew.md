@@ -2,8 +2,11 @@
 - Scenario updates: ZNY (manaphy), T75 (Ryan H), M98 (Shane)
 - Improve logic for launching aircraft with intersection departures: ignore CWT if not aloft at the intersection
 - Fixed bug where virtual controllers wouldn't accept redirected handoffs
-- Fixed bug where VFR aircraft could end up swarming an aircraft without being able to land
+- Fixed bug where VFR aircraft could end up swarming an airport
+- STT: fixed few bugs with fixes in an aircraft's route not being recognized
 - STARS
   - Fixed bugs with redirected handoff datablocks and recalling redirected handoffs
 - ERAM
   - Added confict alert detection
+- Facility engineering
+  - For STARS scenarios, aircraft are culled by default at 200nm now (was 125nm)

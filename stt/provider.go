@@ -513,24 +513,6 @@ func (p *Transcriber) BuildAircraftContext(
 			}
 		}
 
-		// Merge fixes from the assigned/expected approach into the main Fixes
-		// map so they're available for matching "proceed direct" commands.
-		// trk.AssignedApproachFixes is populated directly from the approach
-		// plate, so this works even when the approach's runway isn't currently
-		// in the active arrival config (in which case it wouldn't appear in
-		// CandidateApproaches/ApproachFixes).
-		if len(trk.AssignedApproachFixes) > 0 {
-			if sttAc.Fixes == nil {
-				sttAc.Fixes = make(map[string]string)
-			}
-			for _, fix := range trk.AssignedApproachFixes {
-				spoken := av.GetFixTelephony(fix)
-				if _, exists := sttAc.Fixes[spoken]; !exists {
-					sttAc.Fixes[spoken] = fix
-				}
-			}
-		}
-
 		// Key by telephony (spoken callsign). Use the true CWT category
 		// from the aircraft performance DB rather than the NAS flight plan,
 		// since the user may have changed the flight plan's aircraft type.
