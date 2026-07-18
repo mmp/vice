@@ -76,7 +76,7 @@
           "NTELL": {
             "cleared_altitude": 19000,
             "sid": "CNDEL5",
-            "waypoints": "LEJAY/a2000- CNDEL/flyover PORTE/a10000- UTOOB N037.01.05.107,W120.27.04.877"
+            "waypoints": "LEJAY/a2000- CNDEL/flyover PORTE/a10000- UTOOB NTELL"
           },
           "KAYEX": {
             "cleared_altitude": 19000,
@@ -128,7 +128,7 @@
           "NTELL": {
             "cleared_altitude": 19000,
             "sid": "CNDEL5",
-            "waypoints": "LEJAY/a2000- CNDEL/flyover PORTE/a10000- UTOOB N037.01.05.107,W120.27.04.877"
+            "waypoints": "LEJAY/a2000- CNDEL/flyover PORTE/a10000- UTOOB NTELL"
           },
           "KAYEX": {
             "cleared_altitude": 19000,
@@ -200,7 +200,7 @@
           "NTELL": {
             "cleared_altitude": 19000,
             "sid": "CNDEL5",
-            "waypoints": "LEJAY/a2000- CNDEL/flyover PORTE/a10000- UTOOB N037.01.05.107,W120.27.04.877"
+            "waypoints": "LEJAY/a2000- CNDEL/flyover PORTE/a10000- UTOOB NTELL"
           },
           "KAYEX": {
             "cleared_altitude": 10000,
@@ -282,7 +282,7 @@
           "NTELL": {
             "cleared_altitude": 19000,
             "sid": "CNDEL5",
-            "waypoints": "LEJAY/a2000- CNDEL/flyover PORTE/a10000- UTOOB N037.01.05.107,W120.27.04.877"
+            "waypoints": "LEJAY/a2000- CNDEL/flyover PORTE/a10000- UTOOB NTELL"
           },
           "KAYEX": {
             "cleared_altitude": 19000,
@@ -866,7 +866,7 @@
             "sid": "WESLA5",
             "departure_controller": "4U",
             "is_rnav": true,
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 N037.01.05.107,W120.27.04.877"
+            "waypoints": "WESLA/a2000+/s230/flyover PORTE/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 NTELL"
           },
           "KAYEX": {
             "cleared_altitude": 19000,
@@ -971,7 +971,7 @@
             "sid": "WESLA5",
             "departure_controller": "4U",
             "is_rnav": true,
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 N037.01.05.107,W120.27.04.877"
+            "waypoints": "WESLA/a2000+/s230/flyover PORTE/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 NTELL"
           },
           "KAYEX": {
             "cleared_altitude": 19000,
@@ -1078,7 +1078,7 @@
             "sid": "WESLA5",
             "departure_controller": "4U",
             "is_rnav": true,
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 N037.01.05.107,W120.27.04.877"
+            "waypoints": "WESLA/a2000+/s230/flyover PORTE/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 NTELL"
           },
           "KAYEX.28": {
             "cleared_altitude": 19000,
@@ -1185,7 +1185,7 @@
             "sid": "WESLA5",
             "departure_controller": "4R",
             "is_rnav": true,
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 N037.01.05.107,W120.27.04.877"
+            "waypoints": "WESLA/a2000+/s230/flyover PORTE/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 NTELL"
           },
           "KAYEX.28": {
             "cleared_altitude": 19000,
@@ -1328,7 +1328,7 @@
             "cleared_altitude": 3000,
             "sid": "WESLA5",
             "is_rnav": true,
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE UTOOB N037.01.05.107,W120.27.04.877"
+            "waypoints": "WESLA/a2000+/s230/flyover PORTE UTOOB NTELL"
           },
           "KAYEX.28": {
             "cleared_altitude": 3000,
@@ -1473,7 +1473,7 @@
             "sid": "WESLA5",
             "departure_controller": "4U",
             "is_rnav": true,
-            "waypoints": "WESLA/a2000+/s230/flyover PORTE UTOOB N037.01.05.107,W120.27.04.877"
+            "waypoints": "WESLA/a2000+/s230/flyover PORTE UTOOB NTELL"
           },
           "KAYEX.28": {
             "cleared_altitude": 3000,
@@ -1583,7 +1583,7 @@
             "cleared_altitude": 19000,
             "sid": "SSTIK5",
             "is_rnav": true,
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 N037.01.05.107,W120.27.04.877"
+            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 NTELL"
           },
           "KAYEX": {
             "cleared_altitude": 19000,
