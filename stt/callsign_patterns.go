@@ -15,6 +15,19 @@ func registerAllCallsignPatterns() {
 		WithCallsignConfidence(1.0),
 	)
 
+	// Fused whole-callsign match: whisper merged the spoken key into one
+	// token ("kirutu" for "Cair two"). Fuzzy by nature, so it ranks below
+	// the word-by-word patterns.
+	RegisterCallsignPattern("{skip:2} {fused_phrase}",
+		WithCallsignName("fused_phrase"),
+		WithCallsignPriority(50),
+		// Cap confidence below flight-number-verified matches (0.90): a
+		// merged-token alignment must not outrank word-by-word evidence.
+		WithCallsignScoring(func(r *callsignMatchResult) float64 {
+			return 0.6 + 0.28*r.AirlineScore
+		}),
+	)
+
 	// GA suffix match
 	// Matches when tokens match the suffix of a GA callsign (starts with "N")
 	// e.g., "2 victor romeo" matches end of "november 9 2 2 victor romeo"

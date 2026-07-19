@@ -87,6 +87,13 @@ func (m *flightMatcher) match(ctx *callsignMatchContext) []callsignMatchResult {
 		return nil
 	}
 
+	// Aircraft whose airline is unique on frequency can be identified from
+	// weaker flight-number evidence: count siblings per airline prefix.
+	airlineCount := make(map[string]int)
+	for _, a := range ctx.Aircraft {
+		airlineCount[callsignAirline(string(a.Callsign))]++
+	}
+
 	var results []callsignMatchResult
 	for _, cand := range ctx.Candidates {
 		remaining := ctx.Tokens[cand.Consumed:]
@@ -94,15 +101,16 @@ func (m *flightMatcher) match(ctx *callsignMatchContext) []callsignMatchResult {
 		if flightNum == "" {
 			continue
 		}
+		sole := airlineCount[callsignAirline(string(cand.AC.Callsign))] == 1
 
-		exact, consumed, score := matchFlightNumber(remaining, flightNum)
+		exact, consumed, score := matchFlightNumber(remaining, flightNum, sole)
 		// Try skipping up to 3 garbage words before the flight number
 		// (whisper may insert extra words between the airline and flight number)
 		for skip := 1; consumed == 0 && skip <= 3 && skip < len(remaining); skip++ {
 			if remaining[skip-1].Type != TokenWord || IsCommandKeyword(remaining[skip-1].Text) {
 				break
 			}
-			exact, consumed, score = matchFlightNumber(remaining[skip:], flightNum)
+			exact, consumed, score = matchFlightNumber(remaining[skip:], flightNum, sole)
 			if consumed > 0 {
 				consumed += skip // account for skipped garbage tokens
 			}
@@ -166,6 +174,100 @@ func (m *exactPhraseMatcher) match(ctx *callsignMatchContext) []callsignMatchRes
 	}
 
 	return nil
+}
+
+// fusedPhraseMatcher matches ONE transcript token against an entire
+// multi-word spoken key that whisper merged into a single word
+// ("kirutu" for "Cair two"). Every word of the key must align with a
+// segment of the token, in order, verified independently.
+type fusedPhraseMatcher struct{}
+
+func (m *fusedPhraseMatcher) match(ctx *callsignMatchContext) []callsignMatchResult {
+	if ctx.TokenPos >= len(ctx.Tokens) {
+		return nil
+	}
+	tok := ctx.Tokens[ctx.TokenPos]
+	if tok.Type != TokenWord || len(tok.Text) < 5 {
+		return nil
+	}
+	text := strings.ToLower(tok.Text)
+	if commandVocabulary[text] {
+		return nil
+	}
+
+	var results []callsignMatchResult
+	for spokenName, ac := range ctx.Aircraft {
+		words := NormalizeTranscript(spokenName)
+		if len(words) < 2 {
+			continue
+		}
+		score := fusedKeyScore(text, words)
+		if score == 0 {
+			continue
+		}
+		results = append(results, callsignMatchResult{
+			SpokenKey:    spokenName,
+			AC:           ac,
+			Consumed:     ctx.TokenPos + 1,
+			AirlineScore: score,
+			FlightScore:  score,
+			Skip:         ctx.Skip,
+		})
+	}
+	return results
+}
+
+// fusedKeyScore scores one merged transcript token against the words of a
+// spoken key ("kirutu" vs ["cair", "2"]). Every word must align with a
+// segment of the token in order; the result is the weakest segment's
+// score, or 0 if any word fails to align.
+func fusedKeyScore(text string, words []string) float64 {
+	if len(words) == 1 {
+		return fusedSegmentScore(text, words[0])
+	}
+	best := 0.0
+	for split := 2; split <= len(text)-2; split++ {
+		s1 := fusedSegmentScore(text[:split], words[0])
+		if s1 == 0 {
+			continue
+		}
+		if rest := fusedKeyScore(text[split:], words[1:]); rest > 0 {
+			if s := min(s1, rest); s > best {
+				best = s
+			}
+		}
+	}
+	return best
+}
+
+// fusedSegmentScore compares a token fragment with one spoken-key word.
+// Digit strings compare via their spoken digit words, and the usual
+// short-word guard is relaxed since fragments are short by construction.
+func fusedSegmentScore(frag, word string) float64 {
+	digit := IsNumber(word)
+	if digit {
+		word = strings.ReplaceAll(spokenDigits(ParseNumber(word)), " ", "")
+	}
+	if strings.EqualFold(frag, word) {
+		return 1
+	}
+	s := JaroWinkler(frag, word)
+	if p := phoneticScore(frag, word); p > s {
+		s = p
+	}
+	// Digit fragments are too short for meaningful letter similarity
+	// ("tu" for "two"); metaphone-prefix agreement suffices.
+	if digit && s < 0.80 {
+		p1, _ := DoubleMetaphone(frag)
+		p2, _ := DoubleMetaphone(word)
+		if p1 != "" && (strings.HasPrefix(p2, p1) || strings.HasPrefix(p1, p2)) {
+			s = 0.80
+		}
+	}
+	if s < 0.75 {
+		return 0
+	}
+	return min(s, scoreFuzzyCap)
 }
 
 // suffixPhraseMatcher matches tokens as a suffix of GA callsigns.
@@ -529,7 +631,7 @@ func collectDigits(tokens []Token, maxTokens int) (string, int) {
 
 // matchFlightNumber matches tokens against an expected flight number.
 // Returns (exact, consumed, score).
-func matchFlightNumber(tokens []Token, expectedNum string) (exact bool, consumed int, score float64) {
+func matchFlightNumber(tokens []Token, expectedNum string, soleAirline bool) (exact bool, consumed int, score float64) {
 	if len(tokens) == 0 || expectedNum == "" {
 		return false, 0, 0
 	}
@@ -624,6 +726,21 @@ func matchFlightNumber(tokens []Token, expectedNum string) (exact bool, consumed
 	// give a reasonable score since ATC often uses trailing digits to disambiguate.
 	if len(built) == 2 && len(expectedNum) == 2 && built[1] == expectedNum[1] {
 		return false, consumed, 0.7
+	}
+
+	// Spoken digits with one dropped: the built number is a subsequence of
+	// the expected covering most of it ("124" for "1244"). Two-digit
+	// evidence is too weak when sibling aircraft share the airline ("99"
+	// would claim 919 as readily as 989), but when the airline names a
+	// unique aircraft on frequency ("jetblue nine four" with one JetBlue)
+	// the dropped middle digit is recoverable.
+	minBuilt := 3
+	if soleAirline {
+		minBuilt = 2
+	}
+	if len(built) >= minBuilt && isSubsequence(built, expectedNum) &&
+		float64(len(built))/float64(len(expectedNum)) >= 0.5 {
+		return false, consumed, 0.65
 	}
 
 	return false, 0, 0

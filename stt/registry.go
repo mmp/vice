@@ -6,16 +6,33 @@ import (
 	"sync"
 )
 
+// commandKind classifies what a matched template means for the
+// transmission as a whole. Most templates issue commands; the other kinds
+// mark informational segments that consume tokens without issuing
+// anything, so the output assembly can recognize acknowledgment-only or
+// handoff transmissions without inspecting words.
+type commandKind int
+
+const (
+	kindCommand        commandKind = iota
+	kindInformational              // "radar contact", altimeter settings
+	kindPositionID                 // controller position identification ("New York departure")
+	kindSignOff                    // "have a good one", "good day"
+	kindAcknowledgment             // roger/wilco/greeting check-ins
+)
+
 // sttCommand represents a registered command with its template and handler.
 type sttCommand struct {
-	name              string    // Human-readable name for debugging
-	template          string    // Original template string
-	matchers          []matcher // Parsed matchers
-	handler           any       // Handler function
-	priority          int       // Higher priority wins when multiple match
-	thenVariant       string    // Output format for "then" variant (e.g., "TD%d")
-	sayAgainOnFail    bool      // If true, emit SAYAGAIN when type parser fails
-	sayAgainMinTokens int       // Minimum tokens consumed before SAYAGAIN triggers (0 = use default)
+	name              string      // Human-readable name for debugging
+	template          string      // Original template string
+	matchers          []matcher   // Parsed matchers
+	skipWords         []string    // Optional-literal words slack may skip past
+	handler           any         // Handler function
+	priority          int         // Higher priority wins when scores tie
+	kind              commandKind // What matching this template means for the transmission
+	thenVariant       string      // Output format for "then" variant (e.g., "TD%d")
+	sayAgainOnFail    bool        // If true, emit SAYAGAIN when type parser fails
+	sayAgainMinTokens int         // Minimum tokens consumed before SAYAGAIN triggers (0 = use default)
 }
 
 // sttCommands holds all registered commands.
@@ -60,6 +77,13 @@ func WithName(name string) CommandOption {
 func WithSayAgainOnFail() CommandOption {
 	return func(c *sttCommand) {
 		c.sayAgainOnFail = true
+	}
+}
+
+// WithKind marks a template as informational rather than command-issuing.
+func WithKind(k commandKind) CommandOption {
+	return func(c *sttCommand) {
+		c.kind = k
 	}
 }
 
@@ -123,6 +147,7 @@ func registerSTTCommand(template string, handler any, opts ...CommandOption) {
 		panic(fmt.Sprintf("failed to parse template %q: %v", template, err))
 	}
 	cmd.matchers = matchers
+	cmd.skipWords = extractSkipWords(template)
 
 	// Validate handler signature matches template parameters
 	if err := validateHandler(handler, matchers); err != nil {
@@ -144,29 +169,9 @@ func validateHandler(handler any, matchers []matcher) error {
 		return fmt.Errorf("handler must return exactly one string")
 	}
 
-	// Count typed parameters from matchers
-	var expectedParams []reflect.Type
-	for _, m := range matchers {
-		if tm, ok := m.(*typedMatcher); ok {
-			if om, ok2 := tm.inner.(*optionalGroupMatcher); ok2 {
-				// Optional group - collect all typed matchers, they become pointers
-				for _, inner := range om.matchers {
-					if tm2, ok3 := inner.(*typedMatcher); ok3 {
-						expectedParams = append(expectedParams, reflect.PointerTo(tm2.parser.goType()))
-					}
-				}
-			} else {
-				expectedParams = append(expectedParams, tm.parser.goType())
-			}
-		} else if om, ok := m.(*optionalGroupMatcher); ok {
-			// Optional group at top level - collect typed matchers as pointers
-			for _, inner := range om.matchers {
-				if tm, ok2 := inner.(*typedMatcher); ok2 {
-					expectedParams = append(expectedParams, reflect.PointerTo(tm.parser.goType()))
-				}
-			}
-		}
-	}
+	// The template's typed slots determine the expected parameters; slots
+	// inside optional groups become pointers (nil when absent).
+	expectedParams := slotTypes(matchers)
 
 	// Check parameter count
 	if handlerType.NumIn() != len(expectedParams) {

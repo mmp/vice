@@ -39,16 +39,23 @@ func Tokenize(words []string) []Token {
 	for i < len(words) {
 		w := words[i]
 
-		// Check for "flight level" pattern
-		if w == "flight" && i+1 < len(words) && words[i+1] == "level" {
-			fl, consumed := parseFlightLevel(words[i+2:])
+		// Check for "flight level" pattern ("fl" is the standard
+		// abbreviation, often produced by STT; "flight" itself may be
+		// garbled, e.g. "fight level")
+		if flWords := 0; w == "fl" || (i+1 < len(words) && WordScore(w, "flight") >= 0.8 && WordScore(words[i+1], "level") >= 0.8) {
+			if w == "fl" {
+				flWords = 1
+			} else {
+				flWords = 2
+			}
+			fl, consumed := parseFlightLevel(words[i+flWords:])
 			if consumed > 0 {
 				tokens = append(tokens, Token{
 					Text:  "FL" + strconv.Itoa(fl),
 					Type:  TokenAltitude,
 					Value: fl,
 				})
-				i += 2 + consumed
+				i += flWords + consumed
 				continue
 			}
 		}
@@ -305,7 +312,7 @@ func parseDigitSequence(words []string) (int, string, int) {
 			}
 			// Don't merge a single digit if "thousand" follows - it's part of an altitude
 			// pattern like "18 3 thousand" where "3 thousand" means 3000 feet.
-			if num > 0 && consumed+1 < len(words) && words[consumed+1] == "thousand" {
+			if num > 0 && consumed+1 < len(words) && FuzzyMatch(words[consumed+1], "thousand", 0.90) {
 				break // Let this digit be parsed with "thousand" as an altitude
 			}
 			// Don't merge a single digit if "mile"/"miles" follows and we already

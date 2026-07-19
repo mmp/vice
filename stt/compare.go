@@ -61,7 +61,37 @@ func commandEquivalent(expected, actual string, ac Aircraft, hasAircraftContext 
 		return true
 	}
 
-	// Check for A/D/C altitude command equivalence
+	// Contact tower with and without an explicit frequency are the same
+	// instruction (the sim looks up the tower frequency when it is absent).
+	if (expected == "TO" || strings.HasPrefix(expected, "TO/")) &&
+		(actual == "TO" || strings.HasPrefix(actual, "TO/")) {
+		return true
+	}
+
+	// A visual-approach clearance with and without the runway direction
+	// letter is the same instruction: when the controller says just
+	// "runway two two", the sim resolves the bare number to the unique
+	// matching runway.
+	if strings.HasPrefix(expected, "CVA") && strings.HasPrefix(actual, "CVA") {
+		stripDir := func(s string) (string, byte) {
+			if n := len(s); n > 0 && (s[n-1] == 'L' || s[n-1] == 'R' || s[n-1] == 'C') {
+				return s[:n-1], s[n-1]
+			}
+			return s, 0
+		}
+		expBase, expDir := stripDir(expected[3:])
+		actBase, actDir := stripDir(actual[3:])
+		if expBase == actBase && (expDir == 0 || actDir == 0 || expDir == actDir) {
+			return true
+		}
+	}
+
+	// Check for A/D/C altitude command equivalence; then-sequenced forms
+	// (TA/TD/TC) are compared the same way when both are sequenced.
+	if hasAircraftContext && len(expected) > 2 && len(actual) > 2 &&
+		expected[0] == 'T' && actual[0] == 'T' {
+		expected, actual = expected[1:], actual[1:]
+	}
 	if hasAircraftContext && len(expected) > 1 && len(actual) > 1 {
 		expType := expected[0]
 		actType := actual[0]

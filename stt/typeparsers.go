@@ -2,6 +2,7 @@ package stt
 
 import (
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -37,8 +38,6 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 	}
 
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
-		t := tokens[i]
-
 		// Skip numbers followed by "mile"/"miles" (distances) or "knots" (speeds)
 		if i+1 < len(tokens) {
 			nextText := strings.ToLower(tokens[i+1].Text)
@@ -47,73 +46,20 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 			}
 		}
 
-		if t.Type == TokenAltitude {
-			return t.Value, i - pos + 1, ""
-		}
-
-		if t.Type == TokenNumber {
-			// If a TokenAltitude is nearby (within next 2 tokens), prefer it over
-			// this number - the number is likely noise (e.g., "18 3 thousand" where
-			// "18" is noise and "3 thousand" is the actual altitude).
+		// If a TokenAltitude is nearby (within next 2 tokens), prefer it over
+		// a plain number here - the number is likely noise (e.g., "18 3
+		// thousand" where "18" is noise and "3 thousand" is the altitude).
+		if tokens[i].Type == TokenNumber {
 			for j := i + 1; j < len(tokens) && j <= i+2; j++ {
 				if tokens[j].Type == TokenAltitude {
 					return tokens[j].Value, j - pos + 1, ""
 				}
 			}
+		}
 
-			// Standard altitude encoding (10-99 means 1000-9900 ft, 100+ for higher)
-			// Exclude speed range 100-400 unless allowFlightLevel is set
-			if t.Value >= 10 && t.Value <= 600 {
-				if t.Value < 100 || t.Value > 400 || p.allowFlightLevel {
-					alt := t.Value
-
-					// In climb/descend context, 3-digit values that aren't multiples
-					// of 10 likely have a garbled "thousand" merged into the digit
-					// sequence. E.g., "one one five" -> 115 where "five" is garbled
-					// "thousand"; the intended altitude is 11,000 ft = encoded 110.
-					// Standard ATC altitudes are always in thousands (multiples of
-					// 10 in encoded form); x,500 altitudes use explicit "thousand
-					// five hundred" which tokenizes correctly as TokenAltitude.
-					if p.allowFlightLevel && alt >= 100 && alt%10 != 0 {
-						corrected := (alt / 10) * 10
-						logLocalStt("  altitude correction: %d -> %d (garbled thousand in digit sequence)", alt, corrected)
-						alt = corrected
-					}
-
-					// Context-aware altitude correction: if the parsed altitude is below
-					// the aircraft's current altitude and multiplying by 10 gives a valid
-					// altitude, assume the user meant the higher value.
-					// E.g., aircraft at 7000 ft, "16" → 160 (16,000 ft), not 16 (1,600 ft)
-					currentAlt := ac.Altitude / 100 // Convert feet to hundreds
-					if alt < currentAlt && alt*10 <= 600 {
-						logLocalStt("  altitude correction: %d -> %d (aircraft at %d ft)", alt, alt*10, ac.Altitude)
-						alt = alt * 10
-					}
-
-					return alt, i - pos + 1, ""
-				}
-			}
-
-			// Large number in raw feet
-			if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
-				return t.Value / 100, i - pos + 1, ""
-			}
-
-			// Handle "repeated altitude" pattern: "one three thirteen" → 1313
-			// where the altitude is stated twice. Pattern: 4-digit ABAB.
-			if t.Value >= 1010 && t.Value <= 6060 {
-				firstHalf := t.Value / 100
-				secondHalf := t.Value % 100
-				if firstHalf == secondHalf && firstHalf >= 10 && firstHalf <= 60 {
-					logLocalStt("  repeated altitude pattern: %d -> %d", t.Value, firstHalf*10)
-					return firstHalf * 10, i - pos + 1, ""
-				}
-			}
-
-			// Single digit 1-9 means thousands
-			if t.Value >= 1 && t.Value <= 9 {
-				return t.Value * 10, i - pos + 1, ""
-			}
+		ctx := NumberContext{Kind: NumAltitude, AC: ac, AllowFlightLevel: p.allowFlightLevel}
+		if cands := DecodeNumber(tokens, i, ctx); len(cands) > 0 {
+			return cands[0].Value, i - pos + cands[0].Consumed, ""
 		}
 	}
 
@@ -145,173 +91,24 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 	maxLookahead := min(2, len(tokens)-pos)
 
 	for i := pos; i < pos+maxLookahead; i++ {
-		t := tokens[i]
-
 		// Skip numbers that follow "speed" keyword - those are speed values, not headings.
 		if i > pos && strings.ToLower(tokens[i-1].Text) == "speed" {
 			continue
 		}
 
-		// Check if "to"/"too"/"tu" should be interpreted as digit "2" and combined
-		// with the following number to form a heading. E.g., "heading to nine zero"
-		// where "to" is STT mishearing of "two" → heading 290.
-		if t.Type == TokenWord && i+1 < len(tokens) && tokens[i+1].Type == TokenNumber {
-			text := strings.ToLower(t.Text)
-			if text == "to" || text == "too" || text == "tu" || text == "t" {
-				nextVal := tokens[i+1].Value
-				// Try prepending 2: "to 90" → 290, "to 70" → 270
-				if nextVal >= 0 && nextVal <= 160 {
-					combined := 200 + nextVal
-					if combined >= 200 && combined <= 360 {
-						return combined, i + 2 - pos, ""
-					}
-				}
-			}
+		// A number followed by "point" is a frequency, not a heading.
+		// E.g., "heading contact boston center 128 point 75".
+		if tokens[i].Type == TokenNumber && i+1 < len(tokens) &&
+			strings.ToLower(tokens[i+1].Text) == "point" {
+			continue
 		}
 
-		// Check if this number is followed by "point" - that indicates a frequency, not a heading.
-		// E.g., "heading contact boston center 128 point 75" - the 128.75 is a frequency.
-		if t.Type == TokenNumber && i+1 < len(tokens) {
-			nextText := strings.ToLower(tokens[i+1].Text)
-			if nextText == "point" {
-				continue
-			}
-		}
-
-		// Handle 4-digit values where first 3 digits form valid heading (e.g., 1507 → 150)
-		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
-			hdg := t.Value / 10
-			mod1000 := t.Value % 1000
-			if hdg >= 1 && hdg <= 360 {
-				// If truncating gives a non-multiple-of-5 heading, check for
-				// a duplicate digit caused by STT stutter (e.g., "0990" where
-				// "zero nine nine zero" should be "zero nine zero" = 090).
-				// Removing one duplicate digit may yield a cleaner heading.
-				if hdg%5 != 0 {
-					if better, ok := headingByRemovingDuplicateDigit(t.Text); ok {
-						hdg = better
-					} else if mod1000 >= 1 && mod1000 <= 360 && mod1000%5 == 0 {
-						// STT inserted an extra leading digit (e.g., "one two one
-						// zero" → 1210 where speaker said "two one zero" = 210).
-						hdg = mod1000
-					}
-				}
-				return hdg, i - pos + 1, ""
-			}
-			if mod1000 >= 1 && mod1000 <= 360 {
-				return mod1000, i - pos + 1, ""
-			}
-		}
-
-		// Handle leading-zero 4-digit values where the trailing digit is noise.
-		// ATC headings use leading zeros for headings < 100 ("zero one zero").
-		// A trailing digit that makes the heading not a multiple of 5 is
-		// almost certainly noise (headings are always multiples of 5 or 10).
-		if t.Type == TokenNumber && len(t.Text) == 4 && t.Text[0] == '0' && t.Value%5 != 0 {
-			hdg := ParseNumber(t.Text[:3])
-			if hdg >= 1 {
-				return hdg, i - pos + 1, ""
-			}
-		}
-
-		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
-			hdg := t.Value
-
-			// Check for garbled word between heading digits: "3 [garbled] 40" → 340.
-			// STT sometimes inserts a garbled word between digit groups.
-			// Only try when the first token is a single digit 1-3 (valid hundreds digit).
-			if hdg >= 1 && hdg <= 3 && i+2 < len(tokens) &&
-				tokens[i+1].Type == TokenWord && !IsCommandKeyword(tokens[i+1].Text) &&
-				tokens[i+2].Type == TokenNumber && tokens[i+2].Value >= 10 {
-				remainder := tokens[i+2].Value
-				combined := hdg*100 + remainder
-				if combined >= 100 && combined <= 360 {
-					logLocalStt("  heading: skipping garbled %q between digits: %d + %d -> %d",
-						tokens[i+1].Text, hdg, remainder, combined)
-					return combined, i + 3 - pos, ""
-				}
-			}
-
-			// Handle leading zero and dropped trailing zero patterns
-			text := t.Text
-			hasLeadingZero := len(text) > 0 && text[0] == '0'
-
-			if hasLeadingZero {
-				// Rewrite single-digit headings to add trailing zero, with exception:
-				// For 3-digit inputs like "005" that are multiples of 5, leave as-is
-				// (e.g., "001" -> 010 likely transcription error, but "005" is valid heading 5).
-				// For 2-digit like "05", always multiply by 10 (heading 050 - common shorthand).
-				if hdg < 10 && (len(text) < 3 || hdg%5 != 0) {
-					hdg *= 10
-				}
-			} else if len(text) == 2 && hdg >= 10 && hdg <= 36 && hdg%10 != 0 {
-				hdg *= 10
-			} else if hdg < 10 {
-				hdg *= 10
-			}
-
-			return hdg, i - pos + 1, ""
+		if cands := DecodeNumber(tokens, i, NumberContext{Kind: NumHeading, AC: ac}); len(cands) > 0 {
+			return cands[0].Value, i - pos + cands[0].Consumed, ""
 		}
 	}
 
 	return nil, 0, "HEADING"
-}
-
-// headingByRemovingDuplicateDigit tries to fix STT stutter where a digit is
-// spoken twice (e.g., "zero nine nine zero" → "0990" instead of "090").
-// It removes each pair of duplicate adjacent digits and returns the first
-// result that is a valid heading (1-360) and a multiple of 5 or 10.
-func headingByRemovingDuplicateDigit(text string) (int, bool) {
-	for i := 0; i+1 < len(text); i++ {
-		if text[i] == text[i+1] {
-			candidate := text[:i] + text[i+1:]
-			val, err := strconv.Atoi(candidate)
-			if err != nil {
-				continue
-			}
-			if val >= 1 && val <= 360 && val%5 == 0 {
-				return val, true
-			}
-		}
-	}
-	return 0, false
-}
-
-// adjustSpeedForPerformance checks if a parsed speed is below the aircraft's
-// minimum speed and, if so, tries bumping by +100/+200/+300 to find a
-// plausible speed. This handles cases where the leading digit was garbled
-// or lost in transcription (e.g., "one one zero" when the controller said
-// "two one zero").
-func adjustSpeedForPerformance(speed int, ac Aircraft) int {
-	if ac.AircraftType == "" || av.DB == nil {
-		return speed
-	}
-	perf, ok := av.DB.AircraftPerformance[ac.AircraftType]
-	if !ok {
-		return speed
-	}
-	minSpeed := perf.Speed.Min
-	if minSpeed <= 0 || float32(speed) >= minSpeed {
-		return speed
-	}
-
-	// Speed is below aircraft min; the leading digit was likely garbled.
-	// Try bumping by 100 at a time to find the lowest plausible speed.
-	for bump := 100; bump <= 300; bump += 100 {
-		candidate := speed + bump
-		if candidate > 400 {
-			break
-		}
-		if float32(candidate) >= minSpeed {
-			// Below 10,000' the speed limit is 250 kts; prefer
-			// candidates that respect this when possible.
-			if ac.Altitude > 0 && ac.Altitude < 10000 && candidate > 250 {
-				continue
-			}
-			return candidate
-		}
-	}
-	return speed
 }
 
 // speedParser extracts speed values (100-400 knots).
@@ -328,107 +125,16 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 
 	hitCmdBoundary := false
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
-		t := tokens[i]
-
 		// Stop at command boundary keywords - these indicate a new command context.
 		// For example, in "cross IZEKO at 30 cleared ILS 22 left", when looking for
 		// a speed after "at", we should stop at "cleared" rather than finding "22".
-		if t.Type == TokenWord && IsCommandKeyword(t.Text) {
+		if tokens[i].Type == TokenWord && IsCommandKeyword(tokens[i].Text) {
 			hitCmdBoundary = true
 			break
 		}
 
-		if t.Type == TokenNumber {
-			// Normal speed range
-			// Round down to nearest 10 - ATC speeds are always multiples of 10.
-			if t.Value >= 100 && t.Value <= 400 {
-				rounded := (t.Value / 10) * 10
-				// STT teen/ty confusion: e.g., "one eighteen" (118) when
-				// the controller said "one eighty" (180). If the last two
-				// digits are 11-19, reinterpret as the -ty form.
-				lastTwo := t.Value % 100
-				if lastTwo >= 11 && lastTwo <= 19 {
-					rounded = (t.Value/100)*100 + (t.Value%10)*10
-				}
-				return adjustSpeedForPerformance(rounded, ac), i - pos + 1, ""
-			}
-
-			// 4-digit starting with 2 and ending in 0: the leading "2"
-			// is likely "to" misheard as "two" (e.g., "speed to one seven
-			// zero" → "speed 2170" → 170).
-			if t.Value >= 2000 && t.Value < 3000 && t.Value%10 == 0 {
-				last3 := t.Value % 1000
-				if last3 >= 100 && last3 <= 400 {
-					return adjustSpeedForPerformance(last3, ac), i - pos + 1, ""
-				}
-			}
-
-			// 4-digit with extra digit: try both /10 (drop trailing) and
-			// %1000 (drop leading). Prefer the one that's a multiple of 10.
-			// e.g., 1160: /10=116 (not round), %1000=160 (round) → 160
-			if t.Value > 400 {
-				div10 := t.Value / 10
-				mod1000 := t.Value % 1000
-				div10Valid := div10 >= 100 && div10 <= 400
-				mod1000Valid := mod1000 >= 100 && mod1000 <= 400
-				if div10Valid && mod1000Valid {
-					// Both valid: prefer the one that's a multiple of 10
-					if mod1000%10 == 0 && div10%10 != 0 {
-						return adjustSpeedForPerformance(mod1000, ac), i - pos + 1, ""
-					}
-					return adjustSpeedForPerformance(div10, ac), i - pos + 1, ""
-				} else if mod1000Valid {
-					return adjustSpeedForPerformance(mod1000, ac), i - pos + 1, ""
-				} else if div10Valid {
-					return adjustSpeedForPerformance(div10, ac), i - pos + 1, ""
-				}
-			}
-
-			// Handle 2-digit speeds followed by a trailing zero token
-			// STT sometimes splits "two one zero" into "21" "0"
-			if t.Value >= 10 && t.Value <= 40 && i+1 < len(tokens) {
-				next := tokens[i+1]
-				if next.Type == TokenNumber && next.Value == 0 {
-					combined := t.Value * 10
-					if combined >= 100 && combined <= 400 {
-						return adjustSpeedForPerformance(combined, ac), i - pos + 2, ""
-					}
-				}
-				// Filler word after 2-digit speed: garbled zero
-				// e.g., "one seven day" → 17, "day" is garbled "zero" → 170
-				if IsFillerWord(next.Text) {
-					combined := t.Value * 10
-					if combined >= 100 && combined <= 400 {
-						return adjustSpeedForPerformance(combined, ac), i - pos + 2, ""
-					}
-				}
-				// "knots" after 2-digit speed: "two zero knots" → 200
-				// The word "knots" confirms speed context and implies a dropped
-				// trailing zero. Require combined >= 150 to avoid false positives
-				// with ambiguous values like "one zero" (10 → 100, below min
-				// speed for most aircraft). Don't consume "knots".
-				if strings.ToLower(next.Text) == "knots" {
-					combined := t.Value * 10
-					if combined >= 150 && combined <= 400 {
-						return adjustSpeedForPerformance(combined, ac), i - pos + 1, ""
-					}
-				}
-			}
-
-			// Handle "to" + 2-digit value as garbled "two" prefix.
-			// "speed to one zero" → tokens: ..., "to", "10" → speed 210.
-			// "to" sounds like "two" and was consumed as optional [to] or
-			// skipped as filler, but it was really the leading digit.
-			if t.Value >= 10 && t.Value <= 40 && i > 0 {
-				if strings.ToLower(tokens[i-1].Text) == "to" {
-					combined := 200 + t.Value
-					rounded := (combined / 10) * 10
-					if rounded >= 100 && rounded <= 400 {
-						return adjustSpeedForPerformance(rounded, ac), i - pos + 1, ""
-					}
-				}
-			}
-
+		if cands := DecodeNumber(tokens, i, NumberContext{Kind: NumSpeed, AC: ac}); len(cands) > 0 {
+			return cands[0].Value, i - pos + cands[0].Consumed, ""
 		}
 	}
 
@@ -454,16 +160,8 @@ func (p *machParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, stri
 		return nil, 0, "MACH"
 	}
 
-	t := tokens[pos]
-	if t.Type == TokenNumber {
-		// Two-digit values 60-99 returned as-is (e.g., 75 → M75)
-		if t.Value >= 60 && t.Value <= 99 {
-			return t.Value, 1, ""
-		}
-		// Single-digit values 6-9 multiplied by 10 (e.g., 7 → 70 for mach 0.70)
-		if t.Value >= 6 && t.Value <= 9 {
-			return t.Value * 10, 1, ""
-		}
+	if cands := DecodeNumber(tokens, pos, NumberContext{Kind: NumMach, AC: ac}); len(cands) > 0 {
+		return cands[0].Value, cands[0].Consumed, ""
 	}
 
 	return nil, 0, "MACH"
@@ -550,10 +248,6 @@ func (p *visualApproachParser) parse(tokens []Token, pos int, ac Aircraft) (any,
 	approachType, _ := extractApproachType(tokens[pos:])
 	if approachType != "visual" {
 		return nil, 0, ""
-	}
-
-	if len(ac.CandidateVisualApproaches) == 0 {
-		return nil, 0, "APPROACH"
 	}
 
 	runway, consumed := matchVisualApproach(tokens[pos:], ac.CandidateVisualApproaches)
@@ -676,10 +370,28 @@ func (p *rangeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 	}
 
 	t := tokens[pos]
-	if t.Type == TokenNumber && t.Value >= p.minVal && t.Value <= p.maxVal {
-		return t.Value, 1, ""
+	if t.Type != TokenNumber || t.Value < 0 {
+		return nil, 0, ""
 	}
 
+	// Spoken digit sequences arrive as separate tokens ("one two miles" →
+	// 1 2): extend with following single-digit tokens while the combined
+	// value stays in range.
+	value, consumed := t.Value, 1
+	for pos+consumed < len(tokens) {
+		nt := tokens[pos+consumed]
+		if nt.Type != TokenNumber || nt.Value < 0 || nt.Value > 9 {
+			break
+		}
+		v := value*10 + nt.Value
+		if v < p.minVal || v > p.maxVal {
+			break
+		}
+		value, consumed = v, consumed+1
+	}
+	if value >= p.minVal && value <= p.maxVal {
+		return value, consumed, ""
+	}
 	return nil, 0, ""
 }
 
@@ -852,8 +564,100 @@ func fuzzyNATOLetter(word string, threshold float64) (string, bool) {
 	return "", false
 }
 
+// positionVetoKeywords are words that rule out reading the surrounding
+// tokens as a controller position identification: a facility name never
+// contains them, and their presence means a real command is being spoken.
+var positionVetoKeywords = map[string]bool{
+	"climb": true, "climbing": true, "descend": true, "descending": true,
+	"maintain": true, "turn": true, "heading": true, "speed": true,
+	"direct": true, "proceed": true, "cleared": true, "expect": true,
+	"contact": true, "squawk": true, "ident": true, "cross": true,
+	"hold": true, "intercept": true, "fly": true, "reduce": true,
+	"increase": true, "expedite": true, "cancel": true, "canceled": true,
+	"cancelled": true, "resume": true, "vectors": true, "go": true,
+	"standby": true, "left": true, "right": true, "center": true,
+	"runway": true, "ils": true, "rnav": true, "localizer": true,
+	"visual": true, "approach": true, "departure": true,
+}
+
+// facilityWordParser extracts a single word token that could be part of a
+// facility name ("New York", "Boston"). Unlike garbled_word it accepts
+// words that happen to be command keywords elsewhere ("set" in "Bassett"),
+// but never the position-veto keywords that mark a real command.
+type facilityWordParser struct{}
+
+func (p *facilityWordParser) goType() reflect.Type {
+	return reflect.TypeOf("")
+}
+
+func (p *facilityWordParser) parse(tokens []Token, pos int, ac Aircraft) (value any, consumed int, sayAgain string) {
+	if pos >= len(tokens) {
+		return nil, 0, ""
+	}
+	text := strings.ToLower(tokens[pos].Text)
+	if tokens[pos].Type == TokenWord && !positionVetoKeywords[text] &&
+		!commandVocabulary[text] && !IsFillerWord(text) && len(confusionTable[text]) == 0 {
+		return tokens[pos].Text, 1, ""
+	}
+	return nil, 0, ""
+}
+
 // garbledWordParser extracts a single word token that is NOT a command keyword.
 // Used for matching garbled facility names without accidentally consuming command keywords.
+// aircraftTypeParser consumes an aircraft-type description in a
+// follow-the-traffic advisory: a manufacturer word and/or type digits
+// ("boeing triple seven", "bus three three" for a garbled Airbus A330,
+// "heavy 777"). Requires a manufacturer word, a known type number, or a
+// "triple"/"double" digit pattern so it can't absorb arbitrary numbers.
+type aircraftTypeParser struct{}
+
+var aircraftMakerWords = []string{"boeing", "airbus", "bus", "embraer", "cessna", "gulfstream", "md"}
+
+func (p *aircraftTypeParser) goType() reflect.Type {
+	return reflect.TypeOf("")
+}
+
+func (p *aircraftTypeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	consumed := 0
+	sawEvidence := false
+	for pos+consumed < len(tokens) {
+		t := tokens[pos+consumed]
+		if t.Type == TokenNumber {
+			if isAircraftTypeNumber(t.Value) {
+				sawEvidence = true
+				consumed++
+				continue
+			}
+			// Bare digits continue a type read off digit-by-digit ("bus
+			// three three", possibly tokenizer-merged to 33), but only once
+			// a maker word anchored the read.
+			if sawEvidence && t.Value <= 99 {
+				consumed++
+				continue
+			}
+			break
+		}
+		text := strings.ToLower(t.Text)
+		if slices.Contains(aircraftMakerWords, text) {
+			sawEvidence = true
+			consumed++
+			continue
+		}
+		// "triple seven" / "double seven" digit patterns.
+		if (text == "triple" || text == "double") && pos+consumed+1 < len(tokens) &&
+			tokens[pos+consumed+1].Type == TokenNumber && tokens[pos+consumed+1].Value <= 9 {
+			sawEvidence = true
+			consumed += 2
+			continue
+		}
+		break
+	}
+	if !sawEvidence {
+		return nil, 0, ""
+	}
+	return "", consumed, ""
+}
+
 type garbledWordParser struct{}
 
 func (p *garbledWordParser) goType() reflect.Type {
@@ -864,8 +668,11 @@ func (p *garbledWordParser) parse(tokens []Token, pos int, ac Aircraft) (value a
 	if pos >= len(tokens) {
 		return nil, 0, ""
 	}
-	// Match a word token that is NOT a command keyword
-	if tokens[pos].Type == TokenWord && !IsCommandKeyword(tokens[pos].Text) {
+	// Match a word token that is NOT a command keyword. A word with a
+	// confusion-table reading is a garbled command word ("club" for
+	// "climb"), not absorbable noise.
+	if tokens[pos].Type == TokenWord && !IsCommandKeyword(tokens[pos].Text) &&
+		len(confusionTable[strings.ToLower(tokens[pos].Text)]) == 0 {
 		return tokens[pos].Text, 1, ""
 	}
 	return nil, 0, ""
@@ -1094,6 +901,10 @@ func getTypeParser(typeID string) typeParser {
 		return &atisLetterParser{}
 	case "garbled_word":
 		return &garbledWordParser{}
+	case "aircraft_type":
+		return &aircraftTypeParser{}
+	case "facility_word":
+		return &facilityWordParser{}
 	case "speed_until":
 		return &speedUntilParser{}
 	case "dme":

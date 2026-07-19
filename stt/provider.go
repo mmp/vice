@@ -1,6 +1,9 @@
 package stt
 
 import (
+	"maps"
+	"math"
+	"slices"
 	"strings"
 	"time"
 
@@ -146,73 +149,51 @@ func (p *Transcriber) decodeInternal(
 		logLocalStt("  visual approach: %q -> %q", spokenName, runway)
 	}
 
+	// A transmission that OPENS with "correction" revises the previous
+	// transmission (nothing precedes it to correct within this one): undo
+	// the previous command and issue what follows.
+	rollback := false
+	if idx := slices.IndexFunc(commandTokens, func(t Token) bool {
+		return !IsFillerWord(strings.ToLower(t.Text))
+	}); idx >= 0 && strings.ToLower(commandTokens[idx].Text) == "correction" {
+		rollback = true
+		commandTokens = commandTokens[idx+1:]
+		logLocalStt("leading 'correction': will ROLLBACK previous command")
+	}
+
 	// Handle "disregard" or "correction" in remaining tokens
 	// This discards previous command attempts but preserves callsign
+	hadTokens := len(commandTokens) > 0
 	commandTokens = applyDisregard(commandTokens)
 	logLocalStt("command tokens after disregard: %d", len(commandTokens))
 	for i, t := range commandTokens {
 		logLocalStt("  token[%d]: Text=%q Type=%d Value=%d", i, t.Text, t.Type, t.Value)
 	}
 
-	// Classify and early-return for non-command transmissions
-	if kind := classifyTransmission(commandTokens); kind != transmissionCommand {
-		logLocalStt("classified as %s, returning empty", kind)
+	// A transmission that retracts itself ("disregard", possibly with
+	// trailing filler) requires no response.
+	if hadTokens && countNonFiller(commandTokens) == 0 {
+		logLocalStt("disregard-only transmission, returning empty")
 		elapsed := time.Since(start)
-		logLocalStt(`=== DecodeTranscript END: "" (%s, time=%s) ===`, kind, elapsed)
-		p.logInfo(`local STT: %q -> "" (%s, time=%s)`, transcript, kind, elapsed)
+		logLocalStt(`=== DecodeTranscript END: "" (disregard, time=%s) ===`, elapsed)
+		p.logInfo(`local STT: %q -> "" (disregard, time=%s)`, transcript, elapsed)
 		return "", nil
 	}
 
-	// Strip informational phrases (position ID prefix, radar contact, altimeter setting)
-	var facilityStripped bool
-	commandTokens, facilityStripped = stripInformational(commandTokens)
+	// Altimeter readings are stripped positionally: the 4-digit reading
+	// after "altimeter" absorbs arbitrary garble ("right" for "niner"),
+	// which template matching cannot express.
+	commandTokens = stripAltimeterSuffix(commandTokens)
 
-	// If no tokens remain after stripping, controller just identified themselves.
-	// For VFR aircraft, treat this as an implicit "go ahead" — the pilot is
-	// checking in on frequency with just their callsign + facility name.
-	if len(commandTokens) == 0 {
-		if ac.State == "vfr flight following" {
-			output := callsign + " GA"
-			elapsed := time.Since(start)
-			logLocalStt("VFR aircraft with position ID only, treating as implicit go ahead")
-			logLocalStt(`=== DecodeTranscript END: %q (implicit GA, time=%s) ===`, output, elapsed)
-			p.logInfo(`local STT: %q -> %q (implicit GA, time=%s)`, transcript, output, elapsed)
-			return output, nil
-		}
-		logLocalStt("no tokens after stripping prefixes, returning empty")
-		elapsed := time.Since(start)
-		logLocalStt(`=== DecodeTranscript END: "" (position ID only, time=%s) ===`, elapsed)
-		p.logInfo(`local STT: %q -> "" (position ID only, time=%s)`, transcript, elapsed)
-		return "", nil
-	}
-
-	// Re-classify after stripping — position ID removal may reveal an
-	// acknowledgment-only or radar-contact-only transmission.
-	if kind := classifyTransmission(commandTokens); kind != transmissionCommand {
-		logLocalStt("classified as %s after stripping, returning empty", kind)
-		elapsed := time.Since(start)
-		logLocalStt(`=== DecodeTranscript END: "" (%s, time=%s) ===`, kind, elapsed)
-		p.logInfo(`local STT: %q -> "" (%s, time=%s)`, transcript, kind, elapsed)
-		return "", nil
-	}
-
-	// If a facility suffix was stripped and what remains is just a sign-off
-	// phrase ("have a good one", "good day"), the controller is handing off
-	// to the named facility. Emit FC (frequency change).
-	if facilityStripped && isSignOffOnly(commandTokens) {
-		output := callsign + " FC"
-		elapsed := time.Since(start)
-		logLocalStt(`=== DecodeTranscript END: %q (handoff sign-off, time=%s) ===`, output, elapsed)
-		p.logInfo(`local STT: %q -> %q (handoff sign-off, time=%s)`, transcript, output, elapsed)
-		return output, nil
-	}
-
-	// Layer 4: Command parsing
-	commands, cmdConf := ParseCommands(commandTokens, ac)
-	logLocalStt("parsed commands: %v (conf=%.2f)", commands, cmdConf)
+	// Layer 4: Command parsing. Informational phrases — position IDs,
+	// "radar contact", acknowledgments, sign-offs — match kind-tagged
+	// templates that emit no commands; what kinds were seen drives the
+	// output assembly below.
+	parse := parseTransmission(commandTokens, ac)
+	logLocalStt("parsed commands: %v (conf=%.2f, kinds=%b)", parse.commands, parse.conf, parse.kinds)
 
 	// Layer 5: Validation
-	validation := ValidateCommands(commands, ac)
+	validation := ValidateCommands(parse.commands, ac)
 	logLocalStt("validated commands: %v (conf=%.2f)", validation.ValidCommands, validation.Confidence)
 	if len(validation.Errors) > 0 {
 		logLocalStt("validation errors: %v", validation.Errors)
@@ -220,51 +201,64 @@ func (p *Transcriber) decodeInternal(
 
 	// Compute overall confidence
 	confidence := callsignConfidence
-	if len(commands) > 0 {
-		confidence *= cmdConf * validation.Confidence
+	if len(parse.commands) > 0 {
+		confidence *= parse.conf * validation.Confidence
 	}
 
-	// If no valid commands were found but the tokens contain a greeting word
-	// (hello, hi, hey), this is likely a check-in, not a garbled command.
-	// Return empty instead of AGAIN.
-	if len(validation.ValidCommands) == 0 && containsGreeting(commandTokens) {
-		logLocalStt("no commands but greeting detected, returning empty")
-		elapsed := time.Since(start)
-		logLocalStt(`=== DecodeTranscript END: "" (greeting, time=%s) ===`, elapsed)
-		p.logInfo(`local STT: %q -> "" (greeting, time=%s)`, transcript, elapsed)
-		return "", nil
-	}
-
-	// Generate output
+	// Generate output.
 	var output string
-	// cmdConf > 0 with no commands means a pattern matched but intentionally
-	// produced no output (e.g., "standby for the approach"). Treat as
-	// understood — return just the callsign, not AGAIN.
-	noCommands := len(validation.ValidCommands) == 0 && cmdConf == 0
+	// conf > 0 with no commands means a pattern matched but intentionally
+	// produced no output. Informational-only transmissions (no
+	// command-kind segment at all) require no response beyond, at most,
+	// an implicit go-ahead or frequency change.
+	noCommands := len(validation.ValidCommands) == 0 && parse.conf == 0
+	informationalOnly := len(validation.ValidCommands) == 0 && parse.conf > 0 &&
+		parse.kinds != 0 && !parse.sawKind(kindCommand)
+	rollbackPrefix := ""
+	if rollback && len(validation.ValidCommands) > 0 {
+		rollbackPrefix = "ROLLBACK "
+	}
 	if isFallback {
 		if noCommands {
 			output = "AGAIN"
 		} else {
-			output = strings.Join(validation.ValidCommands, " ")
+			output = rollbackPrefix + strings.Join(validation.ValidCommands, " ")
+		}
+	} else if len(validation.ValidCommands) > 0 {
+		output = callsign + " " + rollbackPrefix + strings.Join(validation.ValidCommands, " ")
+	} else if informationalOnly {
+		switch {
+		case parse.sawKind(kindPositionID) && parse.sawKind(kindSignOff):
+			// The controller named a facility and signed off: a handoff.
+			logLocalStt("position ID with sign-off, treating as handoff")
+			output = callsign + " FC"
+		case parse.sawKind(kindAcknowledgment):
+			// Acknowledgments and greetings require no response.
+			logLocalStt("acknowledgment-only transmission, returning empty")
+		case parse.sawKind(kindPositionID) && ac.State == "vfr flight following":
+			// A VFR pilot addressed with just the facility name is being
+			// invited to check in.
+			logLocalStt("VFR aircraft with position ID only, treating as implicit go ahead")
+			output = callsign + " GA"
+		default:
+			// Radar contact and the like require no response.
+			logLocalStt("informational-only transmission, returning empty")
+		}
+	} else if noCommands {
+		// Only emit AGAIN when the callsign match is confident enough.
+		// A weak airline match combined with a coincidental flight
+		// number can produce a false callsign; requesting a repeat
+		// from the wrong aircraft is worse than silence.
+		if callsignConfidence >= 0.93 {
+			output = callsign + " AGAIN"
 		}
 	} else {
-		if noCommands {
-			// Only emit AGAIN when the callsign match is confident enough.
-			// A weak airline match combined with a coincidental flight
-			// number can produce a false callsign; requesting a repeat
-			// from the wrong aircraft is worse than silence.
-			if callsignConfidence >= 0.93 {
-				output = callsign + " AGAIN"
-			}
-		} else if len(validation.ValidCommands) == 0 {
-			// A pattern matched but produced no command (informational
-			// transmission). Emit just the callsign when confident; stay
-			// silent for low-confidence matches for the same reason as AGAIN.
-			if callsignConfidence >= 0.93 {
-				output = callsign
-			}
-		} else {
-			output = callsign + " " + strings.Join(validation.ValidCommands, " ")
+		// A command-kind pattern matched but produced no command (e.g.,
+		// "standby for the approach"). Emit just the callsign when
+		// confident; stay silent for low-confidence matches for the same
+		// reason as AGAIN.
+		if callsignConfidence >= 0.93 {
+			output = callsign
 		}
 	}
 
@@ -329,8 +323,14 @@ func (p *Transcriber) resolveCallsign(
 		return
 	}
 
-	// Layer 3: Callsign matching
-	callsignMatch, remainingTokens := MatchCallsign(tokens, aircraft)
+	// Layer 3: Callsign matching. Among near-tied candidates, prefer one
+	// whose following tokens parse as commands.
+	var callsignMatch CallsignMatch
+	remainingTokens := tokens
+	if cands := MatchCallsignCandidates(tokens, aircraft); len(cands) > 0 {
+		callsignMatch = selectCallsignByCommands(tokens, cands, aircraft)
+		remainingTokens = tokens[callsignMatch.Consumed:]
+	}
 	logLocalStt("callsign match: Callsign=%q SpokenKey=%q Conf=%.2f Consumed=%d",
 		callsignMatch.Callsign, callsignMatch.SpokenKey, callsignMatch.Confidence, callsignMatch.Consumed)
 
@@ -373,6 +373,51 @@ func (p *Transcriber) resolveCallsign(
 		ac = aircraft[callsignMatch.SpokenKey]
 	}
 	return
+}
+
+// selectCallsignByCommands picks among near-tied callsign candidates by
+// whether the tokens that follow parse as commands: if the best-scoring
+// callsign leaves an unparseable remainder but a near-tied alternative's
+// remainder parses cleanly, the alternative likely absorbed the right
+// tokens and is the real addressee.
+func selectCallsignByCommands(tokens []Token, cands []CallsignMatch, aircraft map[string]Aircraft) CallsignMatch {
+	best := cands[0]
+	if len(cands) == 1 {
+		return best
+	}
+
+	// Probe with a cloned fix map so expect-approach fix injection during
+	// probing doesn't leak into the shared aircraft context. The probe's
+	// quality combines how well the remaining tokens parse (the beam's
+	// coverage-adjusted score) with the callsign evidence, so a candidate
+	// whose remainder parses as a complete command beats one that absorbed
+	// half the command into the callsign.
+	probe := func(c CallsignMatch) (float64, bool) {
+		ac := aircraft[c.SpokenKey]
+		ac.Fixes = maps.Clone(ac.Fixes)
+		parse := parseTransmission(tokens[c.Consumed:], ac)
+		if len(parse.commands) == 0 && parse.conf == 0 {
+			return math.Inf(-1), false
+		}
+		return parse.score + math.Log(max(c.Confidence, 1e-3)), len(parse.commands) > 0
+	}
+
+	bestQuality, _ := probe(best)
+	for _, c := range cands[1:] {
+		if best.Confidence-c.Confidence > callsignJointMargin {
+			break
+		}
+		// Displacing the leader requires actual commands — a remainder
+		// that merely scores well as informational chatter is not a
+		// better reading of the transmission.
+		if q, hasCommands := probe(c); hasCommands && q > bestQuality+scoreCallsignSwitchGain {
+			logLocalStt("  callsign %q (conf=%.3f consumed=%d) parses better than %q: selecting it",
+				c.Callsign, c.Confidence, c.Consumed, best.Callsign)
+			best = c
+			bestQuality = q
+		}
+	}
+	return best
 }
 
 // DecodeFromState decodes a transcript using the simulation state directly.
@@ -840,77 +885,41 @@ func applyDisregard(tokens []Token) []Token {
 	return tokens
 }
 
-// findCommandTypeKeyword scans tokens backwards to find the most recent command
-// type keyword that indicates what kind of value (heading, speed, altitude) was
-// being specified. This is used when "correction <number>" needs to inherit the
-// command type from the corrected portion.
-// Returns the keyword to prepend (e.g., "heading", "speed", "descend") or empty string if none found.
-func findCommandTypeKeyword(tokens []Token) string {
-	// Scan backwards through tokens looking for command type indicators
-	// For altitude, we may find "maintain" first but should keep looking for "descend"/"climb"
-	// since those are more specific (e.g., "descend and maintain 5000" -> prefer "descend")
-	var altitudeKeyword string
+// correctionTypeKeywords maps command-type indicator words, in check
+// order, to the keyword prepended when a bare corrected value inherits
+// its command type ("fly heading 270 correction 290").
+var correctionTypeKeywords = []struct{ word, keyword string }{
+	{"heading", "heading"}, {"fly", "heading"}, {"flight", "heading"}, {"turn", "heading"},
+	{"speed", "speed"}, {"reduce", "speed"}, {"slow", "speed"}, {"increase", "speed"}, {"knots", "speed"},
+	{"descend", "descend"}, {"climb", "climb"}, {"altitude", "maintain"},
+}
 
+// findCommandTypeKeyword scans tokens backwards for the most recent
+// command-type indicator, used when "correction <number>" needs to inherit
+// the command type of the corrected portion.
+func findCommandTypeKeyword(tokens []Token) string {
+	maintain := ""
 	for i := len(tokens) - 1; i >= 0; i-- {
 		w := strings.ToLower(tokens[i].Text)
-
-		// Heading indicators - return immediately
-		if w == "heading" || FuzzyMatch(w, "heading", 0.85) {
-			return "heading"
+		for _, k := range correctionTypeKeywords {
+			if WordScore(w, k.word) >= 0.85 {
+				return k.keyword
+			}
 		}
-		// "fly" before heading context implies heading
-		if w == "fly" || w == "flight" || FuzzyMatch(w, "fly", 0.80) || FuzzyMatch(w, "flight", 0.80) {
-			return "heading"
-		}
-		// "turn" with "left"/"right" implies heading
-		if w == "turn" {
-			return "heading"
-		}
-
-		// Speed indicators - return immediately
-		if w == "speed" || FuzzyMatch(w, "speed", 0.85) {
-			return "speed"
-		}
-		if w == "reduce" || w == "slow" || w == "increase" {
-			return "speed"
-		}
-		// "knots" indicates speed context
-		if w == "knots" || FuzzyMatch(w, "knots", 0.85) {
-			return "speed"
-		}
-
-		// Altitude indicators - "descend"/"climb" are preferred over "maintain"
-		if w == "descend" || FuzzyMatch(w, "descend", 0.85) {
-			return "descend"
-		}
-		if w == "climb" || FuzzyMatch(w, "climb", 0.85) {
-			return "climb"
-		}
-		if w == "altitude" {
-			return "maintain"
-		}
-		// "maintain" could be speed or altitude - check context, but keep looking for descend/climb
-		if w == "maintain" && altitudeKeyword == "" {
-			// Look ahead to see if there's altitude context (thousand, hundred, flight level)
+		// "maintain" alone is ambiguous between speed and altitude:
+		// following speed words decide; otherwise assume altitude but keep
+		// scanning for an explicit descend/climb further back.
+		if maintain == "" && WordScore(w, "maintain") >= 0.85 {
+			maintain = "maintain"
 			for j := i + 1; j < len(tokens); j++ {
 				next := strings.ToLower(tokens[j].Text)
-				if next == "thousand" || next == "hundred" || next == "feet" || next == "level" {
-					altitudeKeyword = "maintain"
-					break
-				}
 				if next == "speed" || next == "knots" {
 					return "speed"
 				}
 			}
-			if altitudeKeyword == "" {
-				// Default to maintain (altitude) as it's more common
-				altitudeKeyword = "maintain"
-			}
 		}
 	}
-
-	// Return altitude keyword if found (maintain, but descend/climb would have returned early)
-	return altitudeKeyword
+	return maintain
 }
 
 // correctionKeywordCategory returns the command category for a keyword used in
@@ -927,206 +936,6 @@ func correctionKeywordCategory(word string) string {
 	default:
 		return ""
 	}
-}
-
-// transmissionKind categorizes a transmission for early-return decisions.
-type transmissionKind int
-
-const (
-	transmissionCommand        transmissionKind = iota // Contains actionable commands
-	transmissionDisregard                              // "disregard" only
-	transmissionAcknowledgment                         // roger, wilco, copy, etc.
-	transmissionRadarContact                           // "radar contact" with no real commands
-)
-
-func (k transmissionKind) String() string {
-	switch k {
-	case transmissionDisregard:
-		return "disregard"
-	case transmissionAcknowledgment:
-		return "acknowledgment"
-	case transmissionRadarContact:
-		return "radar contact"
-	default:
-		return "command"
-	}
-}
-
-// classifyTransmission returns the kind of transmission represented by tokens.
-// Non-command transmissions (disregard, acknowledgment, radar contact) should
-// be returned as empty strings without parsing commands.
-func classifyTransmission(tokens []Token) transmissionKind {
-	if len(tokens) == 0 {
-		return transmissionCommand
-	}
-
-	acknowledgmentWords := map[string]bool{
-		"roger": true, "wilco": true, "copy": true, "affirm": true, "affirmative": true,
-		"hello": true, "hey": true, "hi": true, "howdy": true,
-	}
-
-	hasDisregard := false
-	hasAcknowledgment := false
-	hasRadarContact := false
-	allFillerOrSpecial := true
-
-	for i, t := range tokens {
-		text := strings.ToLower(t.Text)
-		switch {
-		case text == "disregard":
-			hasDisregard = true
-		case acknowledgmentWords[text]:
-			hasAcknowledgment = true
-		case text == "radar" && i+1 < len(tokens) && strings.ToLower(tokens[i+1].Text) == "contact":
-			hasRadarContact = true
-		case text == "contact" && i > 0 && strings.ToLower(tokens[i-1].Text) == "radar":
-			// Already counted as part of "radar contact" pair
-		case IsFillerWord(text):
-			// Filler words don't affect classification
-		default:
-			allFillerOrSpecial = false
-		}
-	}
-
-	if !allFillerOrSpecial {
-		// If there's a radar contact phrase but also other non-filler,
-		// non-special tokens, check if any are command keywords.
-		if hasRadarContact {
-			hasCommandKeyword := false
-			for _, t := range tokens {
-				text := strings.ToLower(t.Text)
-				if text == "radar" || text == "contact" {
-					continue
-				}
-				if IsCommandKeyword(text) {
-					hasCommandKeyword = true
-					break
-				}
-			}
-			if !hasCommandKeyword {
-				return transmissionRadarContact
-			}
-		}
-		return transmissionCommand
-	}
-
-	// All tokens are filler/special — classify by what special words we found
-	if hasDisregard {
-		return transmissionDisregard
-	}
-	if hasAcknowledgment {
-		return transmissionAcknowledgment
-	}
-	if hasRadarContact {
-		return transmissionRadarContact
-	}
-	return transmissionCommand
-}
-
-// containsGreeting returns true if any token is a greeting word.
-// Used to detect check-in transmissions that have no actionable commands.
-func containsGreeting(tokens []Token) bool {
-	for _, t := range tokens {
-		text := strings.ToLower(t.Text)
-		if text == "hello" || text == "hi" || text == "hey" || text == "howdy" {
-			return true
-		}
-	}
-	return false
-}
-
-// stripInformational applies all informational prefix/suffix strippers in sequence:
-// position ID prefix, radar contact prefix, and altimeter setting suffix.
-// The bool return reports whether a facility suffix (departure/approach/center/tower)
-// was stripped from the prefix.
-func stripInformational(tokens []Token) ([]Token, bool) {
-	tokens, facilityStripped := stripPositionIDPrefix(tokens)
-	tokens = stripRadarContactPrefix(tokens)
-	tokens = stripAltimeterSuffix(tokens)
-	return tokens, facilityStripped
-}
-
-// stripPositionIDPrefix removes a controller position identification prefix
-// from the tokens (e.g., "New York departure", "Boston approach").
-// This appears right after the callsign when the controller identifies themselves.
-// Only strips if no command keyword appears before the position suffix.
-// The bool return is true if a facility suffix was actually stripped.
-func stripPositionIDPrefix(tokens []Token) ([]Token, bool) {
-	if len(tokens) == 0 {
-		return tokens, false
-	}
-
-	positionSuffixes := map[string]bool{
-		"departure": true, "approach": true, "center": true,
-	}
-
-	commandKeywords := map[string]bool{
-		"climb": true, "climbing": true, "descend": true, "descending": true,
-		"maintain": true, "turn": true, "heading": true, "speed": true,
-		"direct": true, "proceed": true, "cleared": true, "expect": true,
-		"contact": true, "squawk": true, "ident": true, "cross": true,
-		"hold": true, "intercept": true, "fly": true, "reduce": true,
-		"increase": true, "expedite": true, "cancel": true, "canceled": true, "cancelled": true,
-		"resume": true, "vectors": true, "go": true, "standby": true,
-	}
-
-	for i, t := range tokens {
-		text := strings.ToLower(t.Text)
-		if commandKeywords[text] {
-			return tokens, false
-		}
-		if positionSuffixes[text] {
-			remaining := tokens[i+1:]
-			if len(remaining) < len(tokens) {
-				logLocalStt("stripped position ID prefix: %d tokens", i+1)
-			}
-			return remaining, true
-		}
-		if i >= 4 {
-			break
-		}
-	}
-
-	return tokens, false
-}
-
-// isSignOffOnly returns true when tokens are only filler words and common
-// sign-off vocabulary ("have a good one", "good day", etc.). Used to detect
-// handoff transmissions where the controller named a facility and signed off.
-func isSignOffOnly(tokens []Token) bool {
-	if len(tokens) == 0 {
-		return false
-	}
-	signOffWords := map[string]bool{
-		"have": true, "good": true, "nice": true, "great": true,
-		"bye": true, "see": true, "later": true,
-	}
-	for _, t := range tokens {
-		text := strings.ToLower(t.Text)
-		if signOffWords[text] {
-			continue
-		}
-		if IsFillerWord(text) {
-			continue
-		}
-		// Allow the trailing "one" in "have a good one" (tokenized as number 1).
-		if t.Type == TokenNumber && t.Value == 1 {
-			continue
-		}
-		return false
-	}
-	return true
-}
-
-// stripRadarContactPrefix removes "radar contact" from the start of tokens.
-func stripRadarContactPrefix(tokens []Token) []Token {
-	if len(tokens) >= 2 &&
-		strings.ToLower(tokens[0].Text) == "radar" &&
-		strings.ToLower(tokens[1].Text) == "contact" {
-		logLocalStt("stripped 'radar contact' prefix")
-		return tokens[2:]
-	}
-	return tokens
 }
 
 // stripAltimeterSuffix removes altimeter settings from the token stream

@@ -14,7 +14,7 @@
   "audio_duration_ms": 3528,
   "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
-  "callsign": "JBU6797",
+  "callsign": "",
   "command": "",
   "stt_aircraft": {
     "American 52 zero seven heavy": {

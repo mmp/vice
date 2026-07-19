@@ -10,8 +10,9 @@
 //	go run ./cmd/sttsim -norm "five hundred"
 //	go run ./cmd/sttsim -norm "two thousand five hundred"
 //
-// Similarity mode shows Jaro-Winkler score, Double Metaphone encodings,
-// PhoneticMatch result, and FuzzyMatch results at various thresholds.
+// Similarity mode shows the combined WordScore, its Jaro-Winkler and
+// Double Metaphone components, PhoneticMatch, and FuzzyMatch results at
+// various thresholds.
 //
 // Normalization mode shows how a transcript is normalized before parsing.
 package main
@@ -65,9 +66,12 @@ func runNormalize(transcript string) {
 }
 
 func runSimilarity(w1, w2 string) {
+	// The combined score used throughout the parser
+	fmt.Printf("WordScore: %.4f\n", stt.WordScore(w1, w2))
+
 	// Jaro-Winkler score
 	jw := stt.JaroWinkler(w1, w2)
-	fmt.Printf("Jaro-Winkler: %.4f\n", jw)
+	fmt.Printf("\nJaro-Winkler: %.4f\n", jw)
 
 	// Double Metaphone encodings
 	p1, a1 := stt.DoubleMetaphone(w1)

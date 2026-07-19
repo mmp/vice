@@ -120,437 +120,6 @@ func ExtractNATOSpelling(words []string) (string, int) {
 	return result.String(), consumed
 }
 
-// natoCanonical maps each letter to its canonical NATO phonetic name.
-// Used for fuzzy matching merged NATO letters.
-var natoCanonical = map[string]string{
-	"a": "alpha", "b": "bravo", "c": "charlie", "d": "delta", "e": "echo",
-	"f": "foxtrot", "g": "golf", "h": "hotel", "i": "india", "j": "juliet",
-	"k": "kilo", "l": "lima", "m": "mike", "n": "november", "o": "oscar",
-	"p": "papa", "q": "quebec", "r": "romeo", "s": "sierra", "t": "tango",
-	"u": "uniform", "v": "victor", "w": "whiskey", "x": "xray", "y": "yankee",
-	"z": "zulu",
-}
-
-// trySplitMergedNATO attempts to split a word into two NATO phonetic letters.
-// STT sometimes merges "echo whiskey" into "echowiski". This function detects
-// such patterns using fuzzy matching and returns the split words.
-// Returns nil if the word doesn't appear to be merged NATO letters.
-func trySplitMergedNATO(word string) []string {
-	word = strings.ToLower(word)
-	if len(word) < 8 { // Minimum: two short NATO words merged (e.g., "echogolf" = 8)
-		return nil
-	}
-
-	// Don't split if the word itself is already a NATO letter
-	if _, ok := natoAlphabet[word]; ok {
-		return nil
-	}
-
-	// Try each NATO letter as a potential prefix
-	for _, nato1 := range natoCanonical {
-		// Try different split points based on the NATO word length
-		// Allow some flexibility for STT errors
-		minSplit := max(len(nato1)-1, 3)           // Require at least 3 chars for prefix
-		maxSplit := min(len(nato1)+1, len(word)-3) // Require at least 3 chars for suffix
-
-		for splitAt := minSplit; splitAt <= maxSplit; splitAt++ {
-			prefix := word[:splitAt]
-			suffix := word[splitAt:]
-
-			// Check if prefix fuzzy-matches the NATO word (high threshold)
-			if JaroWinkler(prefix, nato1) < 0.85 {
-				continue
-			}
-
-			// Check if suffix fuzzy-matches any NATO word (high threshold, min length)
-			if len(suffix) < 3 {
-				continue
-			}
-			for _, nato2 := range natoCanonical {
-				if JaroWinkler(suffix, nato2) >= 0.80 {
-					// Found a valid split
-					return []string{nato1, nato2}
-				}
-			}
-		}
-	}
-	return nil
-}
-
-// mergedCommandPrefixes are command words that commonly appear first in merged transcriptions.
-var mergedCommandPrefixes = []string{"turn", "climb", "descend", "cleared", "expect", "fly"}
-
-// canonicalSuffixes are command words that can be matched phonetically after a merged prefix.
-// These are the actual command words that might be merged with a prefix.
-var canonicalSuffixes = []string{"left", "right", "maintain", "direct", "ils", "heading"}
-
-// garbledSuffixMappings maps specific garbled forms to their canonical command words.
-// These are exact matches only - they should NOT be matched phonetically to avoid false positives.
-// For example, "tor" should not match "der" even though they share metaphone "TR".
-var garbledSuffixMappings = map[string]string{
-	"dered": "direct", // garbled "direct" in "cleardered"
-	"dred":  "direct", // garbled "direct"
-	"red":   "direct", // garbled "direct" in "clerder" -> "cler" + "der" split fails, try "cleared" + "red"
-	"der":   "direct", // truncated "direct"
-	"drick": "direct", // garbled "direct" in "cleardrick"
-}
-
-// prefixSuffixCompatibility defines valid suffix words for each prefix.
-// If a prefix is listed here, only the specified suffixes are allowed.
-// This prevents false positives like "cleared" + "right" (which is not valid ATC).
-var prefixSuffixCompatibility = map[string][]string{
-	"cleared": {"direct", "ils"},  // "cleared direct" or "cleared ILS" are valid, not "cleared right"
-	"expect":  {"heading", "ils"}, // "expect heading" or "expect ILS", not "expect direct"
-}
-
-// trySplitMergedCommand attempts to split a word into two command words.
-// STT sometimes merges "turn right" into "turnwright". This function detects
-// such patterns using phonetic matching and returns the split words.
-// Returns nil if the word doesn't appear to be merged command words.
-func trySplitMergedCommand(word string) []string {
-	word = strings.ToLower(word)
-	if len(word) < 7 { // Minimum: "turnleft" = 8, but allow some flexibility
-		return nil
-	}
-
-	// Don't split if it's already a known command keyword
-	if _, ok := commandKeywords[word]; ok {
-		return nil
-	}
-
-	// Find the best match across all prefixes and split points
-	var bestPrefix, bestSuffix string
-	var bestScore float64
-
-	// Try each prefix command word
-	for _, prefix := range mergedCommandPrefixes {
-		// Try different split points based on prefix length (allow ±2 for STT errors)
-		minSplit := max(len(prefix)-2, 3)
-		maxSplit := min(len(prefix)+2, len(word)-1)
-
-		for splitAt := minSplit; splitAt <= maxSplit; splitAt++ {
-			wordPrefix := word[:splitAt]
-			wordSuffix := word[splitAt:]
-
-			// Check if prefix part matches the command word (phonetic or JW >= 0.85)
-			prefixScore := 0.0
-			if PhoneticMatch(wordPrefix, prefix) {
-				prefixScore = 1.0
-			} else {
-				jw := JaroWinkler(wordPrefix, prefix)
-				if jw >= 0.85 {
-					prefixScore = jw
-				}
-			}
-			if prefixScore == 0 {
-				continue
-			}
-
-			// Check if suffix part matches any known suffix
-			if len(wordSuffix) < 2 {
-				continue
-			}
-			// Get allowed suffixes for this prefix (if restricted)
-			allowedSuffixes := prefixSuffixCompatibility[prefix]
-
-			// First, check for exact match against garbled suffix mappings
-			if canonical, ok := garbledSuffixMappings[wordSuffix]; ok {
-				// Skip if this prefix has restrictions and this suffix isn't allowed
-				if len(allowedSuffixes) == 0 || slices.Contains(allowedSuffixes, canonical) {
-					totalScore := prefixScore + 2.0 // High score for exact garbled match
-					if totalScore > bestScore {
-						bestScore = totalScore
-						bestPrefix = prefix
-						bestSuffix = canonical
-					}
-				}
-			}
-
-			// Then, check for phonetic/fuzzy match against canonical suffixes only
-			for _, canonical := range canonicalSuffixes {
-				// Skip if this prefix has restrictions and this suffix isn't allowed
-				if len(allowedSuffixes) > 0 && !slices.Contains(allowedSuffixes, canonical) {
-					continue
-				}
-				suffixScore := scoreSuffixMatch(wordSuffix, canonical)
-				if suffixScore > 0 {
-					totalScore := prefixScore + suffixScore
-					if totalScore > bestScore {
-						bestScore = totalScore
-						bestPrefix = prefix
-						bestSuffix = canonical
-					}
-				}
-			}
-		}
-	}
-
-	if bestScore > 0 {
-		return []string{bestPrefix, bestSuffix}
-	}
-	return nil
-}
-
-// scoreSuffixMatch returns a match score for suffix matching.
-// Higher scores indicate better matches. Returns 0 for no match.
-func scoreSuffixMatch(wordSuffix, target string) float64 {
-	// Minimum suffix length to avoid false positives like "r" -> "right"
-	if len(wordSuffix) < 2 {
-		return 0
-	}
-
-	// Strategy 1: Exact phonetic match - highest score
-	if PhoneticMatch(wordSuffix, target) {
-		// Bonus for longer target (prefer "right" over "red" when both match phonetically)
-		// Also add small bonus for Jaro-Winkler similarity as tiebreaker
-		return 1.0 + float64(len(target))/10.0 + JaroWinkler(wordSuffix, target)/100.0
-	}
-
-	// Strategy 2: High Jaro-Winkler similarity
-	jw := JaroWinkler(wordSuffix, target)
-	if jw >= 0.80 {
-		return jw
-	}
-
-	// Strategy 3: Metaphone prefix match - handles truncated suffixes
-	// e.g., "der" (TR) matches "direct" (TRKT) because TR is prefix of TRKT
-	// Require suffix length >= 3 to avoid false positives from very short
-	// suffixes (e.g., "al" matching "ils" via AL→ALS prefix).
-	suffixMeta, _ := DoubleMetaphone(wordSuffix)
-	targetMeta, _ := DoubleMetaphone(target)
-	if len(wordSuffix) >= 3 && len(suffixMeta) >= 2 && strings.HasPrefix(targetMeta, suffixMeta) {
-		// Score based on how much of target's metaphone is covered
-		return float64(len(suffixMeta)) / float64(len(targetMeta))
-	}
-
-	return 0
-}
-
-// phoneticCommandKeywords are command keywords that should be matched phonetically
-// when exact lookup fails. Only high-value keywords are included to avoid false positives.
-var phoneticCommandKeywords = []string{
-	"heading", "descend", "climb", "maintain", "turn", "left", "right",
-	"direct", "cleared", "contact", "approach", "intercept", "localizer",
-	"expedite", "speed", "altitude", "runway", "reduce",
-}
-
-// phoneticCommandBlocklist prevents specific words from matching certain keywords.
-// Key is the input word, value is the list of keywords it should NOT match.
-var phoneticCommandBlocklist = map[string][]string{
-	"continue":  {"maintain"}, // "continue your turn" is not "maintain"
-	"continued": {"maintain"},
-	"flight":    {"right", "left"}, // "flight 123" is not "right 123"
-	"red":       {"right"},         // "red" in garbled phrases (e.g., "Red or Collins") is not "right"
-	"redu":      {"right"},         // "redu-speed" is "reduce speed", not "right speed"
-	"redo":      {"right"},         // "redo speed" is "reduce speed", not "right speed"
-	"roto":      {"right"},         // "roto" is garbled airline name (Chronos), not "right"
-	"towards":   {"reduce"},        // "contact towards" is not "reduce"
-	"had":       {"heading"},       // "just had to" is not "heading"
-	// "buddy" as part of a callsign should not match "expedite"
-	"buddy": {"expedite"},
-	// Speed-related words should match "speed" not "intercept" (suffix match on SPT)
-	"rotospeed": {"intercept"}, // STT garble of "reduce speed"
-	"speedo":    {"intercept"}, // STT garble of "speed"
-	// NATO phonetic letters should not match command keywords
-	"tango":   {"heading"},          // NATO letter T, not "heading"
-	"juliet":  {"left"},             // NATO letter J, not "left"
-	"charlie": {"climb", "cleared"}, // NATO letter C, not command keywords
-	// Facility/location names should not match command keywords
-	"barracuda": {"direct"},            // Miami position name, not "direct"
-	"veracosta": {"cleared", "direct"}, // Garbled position name
-	"mayr":      {"maintain"},          // Garbled word
-	"argentina": {"maintain"},          // Airline name, not command
-}
-
-// tryPhoneticCommandMatch attempts to match a word phonetically against
-// high-value command keywords. Returns the canonical keyword if matched.
-func tryPhoneticCommandMatch(word string) string {
-	if len(word) < 3 {
-		return ""
-	}
-	wordLower := strings.ToLower(word)
-	blocked := phoneticCommandBlocklist[wordLower]
-	// Also check fuzzyMatchBlocklist from similarity.go
-	if globalBlocked, ok := fuzzyMatchBlocklist[wordLower]; ok {
-		blocked = append(blocked, globalBlocked...)
-	}
-	for _, kw := range phoneticCommandKeywords {
-		// Skip if this word is blocked from matching this keyword
-		isBlocked := false
-		for _, b := range blocked {
-			if b == kw {
-				isBlocked = true
-				break
-			}
-		}
-		if isBlocked {
-			continue
-		}
-		if PhoneticMatch(word, kw) {
-			return kw
-		}
-	}
-	return ""
-}
-
-// commandKeywords maps spoken command words to normalized forms.
-var commandKeywords = map[string]string{
-	// Altitude
-	"descend":     "descend",
-	"descending":  "descend",
-	"descent":     "descend",
-	"decent":      "descend",
-	"setup":       "descend",
-	"climb":       "climb",
-	"climbing":    "climb",
-	"climin":      "climb",
-	"club":        "climb",
-	"con":         "climb",
-	"maintain":    "maintain",
-	"maintained":  "maintain",
-	"altitude":    "altitude",
-	"thousand":    "thousand",
-	"thousandth":  "thousand",
-	"thousandths": "thousand",
-	"hundred":     "hundred",
-	"flight":      "flight",
-	"fight":       "flight",
-	"level":       "level",
-	"expedite":    "expedite",
-
-	// Heading
-	"heading": "heading",
-	"turn":    "turn",
-	"turning": "turn",
-	"turned":  "turn",
-	"left":    "left",
-	"right":   "right",
-	"degrees": "degrees",
-	"fly":     "fly",
-	"present": "present",
-
-	// Speed
-	"speed":    "speed",
-	"space":    "speed", // STT mishears "speed" as "space"
-	"reduce":   "reduce",
-	"ready":    "reduce",
-	"increase": "increase",
-	"slow":     "slow",
-	"slowest":  "slowest",
-	"minimum":  "minimum",
-	"maximum":  "maximum",
-	"forward":  "forward",
-	"knots":    "knots",
-	"normal":   "normal",
-	"mach":     "mach",
-
-	// Navigation
-	"direct":   "direct",
-	"directed": "direct",
-	"colonel":  "kernel", // English homophones: both pronounced /ˈkɜːrnəl/
-	"proceed":  "proceed",
-	"cross":    "cross",
-	"across":   "cross",
-	"depart":   "depart",
-	"hold":     "hold",
-	"land":     "land",
-	"short":    "short", // For "hold short" LAHSO commands
-	"via":      "via",
-	"sid":      "sid",
-
-	// Hold-related
-	"radial":    "radial",
-	"bearing":   "bearing",
-	"inbound":   "inbound",
-	"legs":      "legs",
-	"minute":    "minute",
-	"turns":     "turns",
-	"published": "published",
-
-	// Compass directions (for hold instructions)
-	"north":     "north",
-	"south":     "south",
-	"east":      "east",
-	"west":      "west",
-	"northeast": "northeast",
-	"northwest": "northwest",
-	"southeast": "southeast",
-	"southwest": "southwest",
-
-	// Approach
-	"cleared":     "cleared",
-	"secured":     "cleared",
-	"expect":      "expect",
-	"expected":    "expect",
-	"extract":     "expect", // STT error: "expect" mistranscribed as "extract"
-	"vectors":     "vectors",
-	"approach":    "approach",
-	"cancel":      "cancel",
-	"localizer":   "localizer",
-	"localize":    "localizer", // STT drops trailing 'r'
-	"intercept":   "intercept",
-	"intercepted": "intercept",
-	"interceptor": "intercept", // STT error: "intercept" transcribed as "interceptor"
-	"clearance":   "clearance",
-	"visual":      "visual",
-	"ils":         "ils",
-	"isle":        "ils",
-	"rls":         "ils",
-	"rnav":        "rnav",
-	"arnav":       "rnav",
-	"vor":         "vor",
-	"runway":      "runway",
-
-	// Transponder
-	"squawk":      "squawk",
-	"transponder": "transponder",
-	"ident":       "ident",
-	"standby":     "standby",
-	"mode":        "mode",
-
-	// Handoff
-	"contact":   "contact",
-	"cansec":    "contact",
-	"tower":     "tower",
-	"tarot":     "tower",
-	"frequency": "frequency",
-	"departure": "departure",
-	"center":    "center",
-
-	// VFR/Misc
-	"go":         "go",
-	"ahead":      "ahead",
-	"radar":      "radar",
-	"services":   "services",
-	"terminated": "terminated",
-	"resume":     "resume",
-	"own":        "own",
-	"navigation": "navigation",
-	"vfr":        "vfr",
-
-	// Disregard
-	"disregard": "disregard",
-	"negative":  "negative",
-
-	// Expected clearance (to be ignored in hold instructions)
-	"further": "further",
-
-	// Then sequencing
-	"then": "then",
-}
-
-// phraseExpansions maps single STT words to multiple normalized words.
-var phraseExpansions = map[string][]string{
-	"flighting":   {"fly", "heading"},
-	"fighting":    {"fly", "heading"},
-	"centimeter":  {"descend", "maintain"},
-	"sediment":    {"descend", "maintain"},
-	"decimate":    {"descend", "maintain"},
-	"disassembly": {"descend", "via"},
-	"fl":          {"flight", "level"},
-	"insight":     {"in", "sight"}, // STT: "in sight" rendered as one word
-}
-
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
 var multiTokenReplacements = map[string][]string{
 	"i l s":          {"ils"},
@@ -574,17 +143,13 @@ var multiTokenReplacements = map[string][]string{
 	"vectors as":     {"vectors"},
 	"to recall":      {"direct"},                // STT error: "direct" (TRKT) transcribed as "to recall" (TRKL)
 	"mark point":     {"mach", "point"},         // STT error: "mach" mistranscribed as "mark" before "point"
-	"ready contact":  {"radar", "contact"},      // STT error: "radar" mistranscribed as "ready"
-	"rare contact":   {"radar", "contact"},      // STT error: "radar" mistranscribed as "rare"
 	"i s t f":        {"ils"},                   // STT error: ILS spelled out, badly garbled
 	"descend me the": {"descend", "via", "the"}, // STT error: "via" mistranscribed as "me" in "descend via the {STAR}"
-	// "reduce to contact" is post-normalization; "ready" → "reduce" runs first via commandKeywords.
+	"send me the":    {"descend", "via", "the"}, // Same, with "descend" also garbled to "send"
 	// Original utterance is "radar contact"; restore so radar_contact_info handler can strip it.
 	"reduce to contact": {"radar", "contact"},
-	// "right of contact" is post-normalization; raw "rate" → "right" via phonetic match.
 	// Original utterance is "radar contact" mistranscribed as "rate of contact".
 	"right of contact": {"radar", "contact"},
-	// "route of contact" is another mistranscription of "radar contact"
 	// ("radar" heard as "route of").
 	"route of contact": {"radar", "contact"},
 	"to park":          {"depart"}, // STT error: "depart" (TPRT) mistranscribed as "to park" (TPRK)
@@ -602,24 +167,6 @@ func matchMultiToken(tokens []string) (bool, []string, int) {
 		}
 	}
 	return false, nil, 0
-}
-
-// localizerPrefixes contains prefixes that indicate "intercept localizer" when
-// combined with "lok" or "lawk" in the word.
-var localizerPrefixes = []string{"zap", "zop", "za"}
-
-// isLocalizerPattern checks if a word is a garbled "intercept localizer".
-// STT often produces words like "zapulokwizer" or "zapulawkwizer".
-func isLocalizerPattern(w string) bool {
-	if !strings.Contains(w, "lok") && !strings.Contains(w, "lawk") {
-		return false
-	}
-	for _, prefix := range localizerPrefixes {
-		if strings.HasPrefix(w, prefix) {
-			return true
-		}
-	}
-	return false
 }
 
 // fillerWords are words to ignore during parsing.
@@ -663,16 +210,64 @@ var wordProcessors = []wordProcessor{
 	processSplitTextNumber,
 	processDigitWord,
 	processNumberWord,
+	processCommandVocabulary,
 	processFlightLevelMissing,
 	processLevelMissingFlight,
-	processCommandKeyword,
-	processPhraseExpansion,
-	processMergedNATO,
-	processMergedCommand,
-	processPhoneticCommand,
-	processLocalizerPattern,
-	processOrNoise,
 	processAndDigit,
+}
+
+// commandVocabulary is the spoken ATC command vocabulary: canonical command
+// words and their real morphological variants. Words in this set pass
+// through normalization untouched — they are meaningful as spoken and must
+// not be reinterpreted by the garble-recovery processors below. Garbled
+// renderings of these words are not repaired here; the scored template
+// matching recognizes them via similarity and the confusion table.
+var commandVocabulary = map[string]bool{
+	// Altitude
+	"descend": true, "descending": true, "descent": true,
+	"climb": true, "climbing": true, "maintain": true, "maintained": true,
+	"altitude": true, "thousand": true, "thousandth": true, "thousandths": true,
+	"hundred": true, "flight": true, "level": true, "expedite": true,
+	// Heading
+	"heading": true, "turn": true, "turning": true, "turned": true,
+	"left": true, "right": true, "degrees": true, "fly": true, "present": true,
+	// Speed
+	"speed": true, "reduce": true, "increase": true, "slow": true,
+	"down": true, "up": true,
+	"slowest": true, "minimum": true, "maximum": true, "forward": true,
+	"knots": true, "normal": true, "mach": true,
+	// Navigation
+	"direct": true, "directed": true, "proceed": true, "cross": true,
+	"across": true, "depart": true, "hold": true, "land": true,
+	"short": true, "via": true, "sid": true,
+	// Holds
+	"radial": true, "bearing": true, "inbound": true, "legs": true,
+	"minute": true, "turns": true, "published": true,
+	// Compass directions
+	"north": true, "south": true, "east": true, "west": true,
+	"northeast": true, "northwest": true, "southeast": true, "southwest": true,
+	// Approach
+	"cleared": true, "expect": true, "expected": true, "vectors": true,
+	"approach": true, "cancel": true, "localizer": true, "localize": true,
+	"intercept": true, "intercepted": true, "clearance": true,
+	"visual": true, "ils": true, "rnav": true, "vor": true, "runway": true,
+	// Transponder
+	"squawk": true, "transponder": true, "ident": true, "standby": true, "mode": true,
+	// Handoff
+	"contact": true, "tower": true, "frequency": true, "departure": true, "center": true,
+	// VFR/misc
+	"go": true, "ahead": true, "radar": true, "services": true,
+	"terminated": true, "resume": true, "own": true, "navigation": true, "vfr": true,
+	// Discourse
+	"disregard": true, "negative": true, "further": true, "then": true,
+}
+
+// processCommandVocabulary passes known command words through untouched.
+func processCommandVocabulary(w string, _ *normalizeContext) ([]string, int, bool) {
+	if commandVocabulary[w] {
+		return []string{w}, 0, true
+	}
+	return nil, 0, false
 }
 
 // processMultiTokenRaw checks for multi-token patterns on raw words BEFORE phonetic matching.
@@ -733,14 +328,6 @@ func processNumberWord(w string, ctx *normalizeContext) ([]string, int, bool) {
 // "delta" could be airline names (Delta Air Lines). NATO conversion is
 // deferred to scoreGACallsign() and scoreFlightNumberMatch() where the
 // context makes it clear we're building a callsign from phonetics.
-
-// processCommandKeyword normalizes command keywords: "descending" → "descend", etc.
-func processCommandKeyword(w string, _ *normalizeContext) ([]string, int, bool) {
-	if norm, ok := commandKeywords[w]; ok {
-		return []string{norm}, 0, true
-	}
-	return nil, 0, false
-}
 
 // altitudeCommandKeywords names command keywords whose presence in prior
 // normalized output indicates we're parsing an altitude command, used to gate
@@ -840,81 +427,6 @@ func processLevelMissingFlight(w string, ctx *normalizeContext) ([]string, int, 
 	return nil, 0, false
 }
 
-// processPhraseExpansion expands single STT words to multiple words:
-// "flighting" → ["fly", "heading"], etc. Checked BEFORE phonetic matching
-// so exact table matches take priority.
-func processPhraseExpansion(w string, _ *normalizeContext) ([]string, int, bool) {
-	if expansion, ok := phraseExpansions[w]; ok {
-		return expansion, 0, true
-	}
-	return nil, 0, false
-}
-
-// processMergedNATO splits merged NATO phonetic letters: "echowiski" → ["echo", "whiskey"].
-func processMergedNATO(w string, _ *normalizeContext) ([]string, int, bool) {
-	if natoSplit := trySplitMergedNATO(w); natoSplit != nil {
-		return natoSplit, 0, true
-	}
-	return nil, 0, false
-}
-
-// processMergedCommand splits merged command words: "turnwright" → ["turn", "right"].
-// Checked BEFORE phonetic matching since long merged words may partially match
-// a single keyword but should actually be split into multiple words.
-func processMergedCommand(w string, _ *normalizeContext) ([]string, int, bool) {
-	if cmdSplit := trySplitMergedCommand(w); cmdSplit != nil {
-		return cmdSplit, 0, true
-	}
-	return nil, 0, false
-}
-
-// processPhoneticCommand matches words phonetically to command keywords: "hitting" → "heading".
-func processPhoneticCommand(w string, _ *normalizeContext) ([]string, int, bool) {
-	if phoneticMatch := tryPhoneticCommandMatch(w); phoneticMatch != "" {
-		return []string{phoneticMatch}, 0, true
-	}
-	return nil, 0, false
-}
-
-// processLocalizerPattern detects garbled "intercept localizer" patterns:
-// words containing "lok"/"lawk" with certain prefixes (e.g., "zapulokwizer").
-func processLocalizerPattern(w string, _ *normalizeContext) ([]string, int, bool) {
-	if isLocalizerPattern(w) {
-		return []string{"intercept", "localizer"}, 0, true
-	}
-	return nil, 0, false
-}
-
-// processOrNoise handles "or" as STT noise in various contexts.
-// Skips "or" between digits and between "turn" and direction words.
-// May mutate ctx.words (converting "1000" to "thousand" for "9 or 1000").
-func processOrNoise(w string, ctx *normalizeContext) ([]string, int, bool) {
-	if w != "or" || len(ctx.result) == 0 || ctx.i+1 >= len(ctx.words) {
-		return nil, 0, false
-	}
-	prev := ctx.result[len(ctx.result)-1]
-	nextWord := CleanWord(ctx.words[ctx.i+1])
-
-	// Skip "or" between digits (e.g., "two nine or zero" for "two niner zero")
-	prevIsDigit := IsNumber(prev)
-	_, nextIsDigitWord := digitWords[nextWord]
-	nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
-	if prevIsDigit && nextIsDigit {
-		// Special case: "9 or 1000" means "niner thousand" - convert 1000 to thousand
-		if nextWord == "1000" {
-			ctx.words[ctx.i+1] = "thousand"
-		}
-		return nil, 0, true // skip "or"
-	}
-
-	// Skip "or" between "turn" and "left"/"right" (STT transcribes pause as "or")
-	if prev == "turn" && (nextWord == "left" || nextWord == "right" ||
-		PhoneticMatch(nextWord, "left") || PhoneticMatch(nextWord, "right")) {
-		return nil, 0, true // skip "or"
-	}
-	return nil, 0, false
-}
-
 // processAndDigit handles "and" between digits: STT mishears "one" as "and".
 // e.g., "two and zero" → "two one zero" (210).
 // But "two nine and zero" → "290" (and is filler, not replacing one).
@@ -955,6 +467,41 @@ func processAndDigit(w string, ctx *normalizeContext) ([]string, int, bool) {
 // NormalizeTranscript normalizes a raw STT transcript for parsing.
 // Handles phonetic corrections and cleanup. Disregard handling is done
 // at a higher level after callsign matching.
+// collapseRepetitions collapses three or more consecutive occurrences of a
+// one- or two-word group down to one ("x ray x ray x ray jet" → "x ray
+// jet"): whisper loops on unclear audio. Two occurrences are meaningful
+// (NATO spelling like "sierra sierra"), and repeated digits are real
+// content ("seven seven seven" for a 777), so both are left alone.
+func collapseRepetitions(words []string) []string {
+	isDigits := func(w string) bool {
+		for _, r := range w {
+			if r < '0' || r > '9' {
+				return false
+			}
+		}
+		return len(w) > 0
+	}
+	for g := 2; g >= 1; g-- {
+		var out []string
+		for i := 0; i < len(words); {
+			reps := 1
+			for i+(reps+1)*g <= len(words) && slices.Equal(words[i:i+g], words[i+reps*g:i+(reps+1)*g]) {
+				reps++
+			}
+			hasWord := slices.ContainsFunc(words[i:i+min(g, len(words)-i)], func(w string) bool { return !isDigits(w) })
+			if reps >= 3 && hasWord {
+				out = append(out, words[i:i+g]...)
+				i += reps * g
+			} else {
+				out = append(out, words[i])
+				i++
+			}
+		}
+		words = out
+	}
+	return words
+}
+
 func NormalizeTranscript(transcript string) []string {
 	// Convert to lowercase and split
 	transcript = strings.ToLower(strings.TrimSpace(transcript))
@@ -971,6 +518,7 @@ func NormalizeTranscript(transcript string) []string {
 	if len(words) == 0 {
 		return nil
 	}
+	words = collapseRepetitions(words)
 
 	// Normalize each word through the processor pipeline
 	ctx := &normalizeContext{words: words}

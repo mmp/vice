@@ -22,21 +22,33 @@ func parseTemplate(template string) ([]matcher, error) {
 }
 
 // elementsToCommandMatchers converts template elements to command matchers.
+// Runs of adjacent literal words (required and optional) are grouped into a
+// single phraseMatcher so they can be matched — and scored — as a phrase.
 func elementsToCommandMatchers(elements []templateElement) ([]matcher, error) {
 	var matchers []matcher
+	var phrase []phraseWord
+	flushPhrase := func() {
+		if len(phrase) > 0 {
+			matchers = append(matchers, &phraseMatcher{words: phrase})
+			phrase = nil
+		}
+	}
+
 	for _, elem := range elements {
 		switch elem.Kind {
 		case elementLiteral:
-			matchers = append(matchers, &literalMatcher{keywords: elem.Keywords})
+			phrase = append(phrase, phraseWord{keywords: elem.Keywords})
+		case elementOptionalLiteral:
+			phrase = append(phrase, phraseWord{keywords: elem.Keywords, optional: true})
 		case elementTyped:
+			flushPhrase()
 			parser := getTypeParser(elem.TypeSpec)
 			if parser == nil {
 				return nil, fmt.Errorf("unknown type: %s", elem.TypeSpec)
 			}
-			matchers = append(matchers, &typedMatcher{parser: parser})
-		case elementOptionalLiteral:
-			matchers = append(matchers, &optionalLiteralMatcher{keywords: elem.Keywords})
+			matchers = append(matchers, &slotMatcher{parser: parser})
 		case elementOptionalGroup:
+			flushPhrase()
 			inner, err := elementsToCommandMatchers(elem.Inner)
 			if err != nil {
 				return nil, err
@@ -44,6 +56,7 @@ func elementsToCommandMatchers(elements []templateElement) ([]matcher, error) {
 			matchers = append(matchers, &optionalGroupMatcher{matchers: inner})
 		}
 	}
+	flushPhrase()
 	return matchers, nil
 }
 
@@ -65,50 +78,6 @@ func findMatchingBracket(s string, start int, open, close byte) int {
 		}
 	}
 	return -1
-}
-
-// optionalLiteralMatcher matches optional literal words.
-type optionalLiteralMatcher struct {
-	keywords []string
-}
-
-func (m *optionalLiteralMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords []string, allowSlack bool) matchResult {
-	if pos >= len(tokens) {
-		return matchResult{consumed: pos} // Optional, so success with 0 additional tokens
-	}
-
-	text := strings.ToLower(tokens[pos].Text)
-
-	// Try to match against any keyword
-	for _, kw := range m.keywords {
-		// For short keywords (2 chars or less like "to", "at"), require exact match
-		// to prevent false positives like "torch" matching "to".
-		if len(kw) <= 2 {
-			if text == kw {
-				return matchResult{consumed: pos + 1}
-			}
-			continue
-		}
-
-		// For longer keywords, use fuzzy matching but check length ratio.
-		// Don't match if lengths differ by more than 2x (e.g., "torch" vs "direct").
-		textLen := len(text)
-		kwLen := len(kw)
-		if textLen > 2*kwLen || kwLen > 2*textLen {
-			continue
-		}
-
-		if FuzzyMatch(text, kw, 0.8) {
-			return matchResult{consumed: pos + 1}
-		}
-	}
-
-	// Didn't match, but that's ok - it's optional
-	return matchResult{consumed: pos}
-}
-
-func (m *optionalLiteralMatcher) isOptional() bool {
-	return true
 }
 
 // extractSkipWords extracts skip words from the template.

@@ -2124,13 +2124,16 @@ func TestNormalizeTranscript(t *testing.T) {
 		{"turn left disregard turn right", []string{"turn", "left", "disregard", "turn", "right"}},
 		{"1-1-thousand", []string{"1", "1", "thousand"}}, // Hyphens split into separate words
 		// "niner" sometimes transcribed as "nine or" - should skip "or" between digits
-		{"two nine or zero", []string{"2", "9", "0"}},
+		// "or" noise between digits passes through; matching absorbs it.
+		{"two nine or zero", []string{"2", "9", "or", "0"}},
 		{"heading two niner zero", []string{"heading", "2", "9", "0"}},
 		{"", nil},
-		// "niner thousand" transcribed as "9 or 1000" - should convert 1000 to thousand
-		{"descend and maintain, 9 or 1000", []string{"descend", "and", "maintain", "9", "thousand"}},
-		// "fly heading" sometimes transcribed as "flighting"
-		{"flighting 030", []string{"fly", "heading", "030"}},
+		// "niner thousand" transcribed as "9 or 1000" passes through.
+		{"descend and maintain, 9 or 1000", []string{"descend", "and", "maintain", "9", "or", "1000"}},
+		// Garbled command words ("flighting" for "fly heading") pass
+		// through normalization untouched; they are recognized during
+		// template matching via the confusion table.
+		{"flighting 030", []string{"flighting", "030"}},
 		// "@" should be treated as "at"
 		{"@ cameron descend", []string{"at", "cameron", "descend"}},
 		// processAndDigit: single digits on both sides → "and" → "1" (mishearing of "one")

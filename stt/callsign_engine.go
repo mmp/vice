@@ -1,6 +1,8 @@
 package stt
 
 import (
+	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -12,12 +14,13 @@ type patternMatch struct {
 	match   CallsignMatch
 }
 
-// matchCallsignWithPatterns attempts to match tokens to an aircraft callsign using DSL patterns.
-// Returns the best match and remaining tokens after the callsign.
-func matchCallsignWithPatterns(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch, []Token) {
+// callsignCandidates returns all distinct callsign interpretations of the
+// leading tokens, best first. The ordering is: match confidence, then
+// pattern priority, then fewer skipped tokens, then more tokens consumed.
+func callsignCandidates(tokens []Token, aircraft map[string]Aircraft) []CallsignMatch {
 	logLocalStt("matchCallsignWithPatterns: %d tokens, %d aircraft", len(tokens), len(aircraft))
 	if len(tokens) == 0 || len(aircraft) == 0 {
-		return CallsignMatch{}, tokens
+		return nil
 	}
 
 	// Collect candidates from all patterns
@@ -79,57 +82,45 @@ func matchCallsignWithPatterns(tokens []Token, aircraft map[string]Aircraft) (Ca
 	}
 
 	if len(allMatches) == 0 {
-		return CallsignMatch{}, tokens
+		return nil
 	}
 
-	// Select the best match across all patterns
-	best := selectBestMatch(allMatches)
+	// Rank matches across all patterns, then keep the best per callsign.
+	slices.SortStableFunc(allMatches, func(a, b patternMatch) int {
+		if a.match.Confidence != b.match.Confidence {
+			if a.match.Confidence > b.match.Confidence {
+				return -1
+			}
+			return 1
+		}
+		if a.pattern.Priority != b.pattern.Priority {
+			return b.pattern.Priority - a.pattern.Priority
+		}
+		if a.result.Skip != b.result.Skip {
+			return a.result.Skip - b.result.Skip
+		}
+		return b.match.Consumed - a.match.Consumed
+	})
 
-	logLocalStt("  pattern %q matched: %q (conf=%.2f, consumed=%d, addressingForm=%d, spokenKey=%q)",
-		best.pattern.Name, best.match.Callsign, best.match.Confidence, best.match.Consumed,
-		best.match.AddressingForm, best.match.SpokenKey)
-
-	return best.match, tokens[best.match.Consumed:]
-}
-
-// selectBestMatch chooses the best match from candidates across all patterns.
-func selectBestMatch(matches []patternMatch) patternMatch {
-	if len(matches) == 0 {
-		return patternMatch{}
+	// Keep the best candidate per (callsign, consumed) span: the same
+	// aircraft via different spans are real alternatives — command
+	// parsability decides between them downstream.
+	var cands []CallsignMatch
+	seen := make(map[string]bool)
+	for _, m := range allMatches {
+		key := fmt.Sprintf("%s/%d", m.match.Callsign, m.match.Consumed)
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		cands = append(cands, m.match)
 	}
 
-	best := matches[0]
-	for _, m := range matches[1:] {
-		// Prefer higher confidence
-		if m.match.Confidence > best.match.Confidence {
-			best = m
-			continue
-		}
-		if m.match.Confidence < best.match.Confidence {
-			continue
-		}
-		// Same confidence - prefer higher pattern priority
-		if m.pattern.Priority > best.pattern.Priority {
-			best = m
-			continue
-		}
-		if m.pattern.Priority < best.pattern.Priority {
-			continue
-		}
-		// Same priority - prefer lower skip (fewer skipped tokens)
-		if m.result.Skip < best.result.Skip {
-			best = m
-			continue
-		}
-		if m.result.Skip > best.result.Skip {
-			continue
-		}
-		// Same skip - prefer more consumed tokens (more specific match)
-		if m.match.Consumed > best.match.Consumed {
-			best = m
-		}
-	}
-	return best
+	best := cands[0]
+	logLocalStt("  best callsign candidate: %q (conf=%.2f, consumed=%d, addressingForm=%d, spokenKey=%q; %d candidates)",
+		best.Callsign, best.Confidence, best.Consumed, best.AddressingForm, best.SpokenKey, len(cands))
+
+	return cands
 }
 
 // matchPattern tries to match a pattern against tokens.

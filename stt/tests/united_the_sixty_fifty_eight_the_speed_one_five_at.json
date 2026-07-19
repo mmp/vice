@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 4050 Laptop GPU (5921MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "UAL6058",
-  "command": "SAYAGAIN/SPEED",
+  "command": "S150",
   "stt_aircraft": {
     "American 39 zero seven": {
       "Callsign": "AAL3907",

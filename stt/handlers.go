@@ -48,6 +48,7 @@ func registerAllCommands() {
 		func(alt int) string { return fmt.Sprintf("A%d", alt) },
 		WithName("maintain_altitude"),
 		WithPriority(3),
+		WithThenVariant("TA%d"),
 	)
 
 	// Standalone altitude - catches cases where the command keyword is garbled
@@ -380,6 +381,16 @@ func registerAllCommands() {
 		WithPriority(2),
 		WithThenVariant("TS%d"),
 		WithSayAgainOnFail(),
+	)
+
+	// An explicit "level" reads as flight level even without "flight"
+	// ("maintain level two eight zero"); outranks the speed reading of
+	// the same number.
+	registerSTTCommand(
+		"maintain level {altitude_fl}",
+		func(alt int) string { return fmt.Sprintf("A%d", alt) },
+		WithName("maintain_flight_level"),
+		WithPriority(4),
 	)
 
 	registerSTTCommand(
@@ -1603,6 +1614,7 @@ func registerAllCommands() {
 		"radar contact",
 		func() string { return "" }, // Informational only
 		WithName("radar_contact_info"),
+		WithKind(kindInformational),
 		WithPriority(20),
 	)
 
@@ -1672,7 +1684,6 @@ func registerAllCommands() {
 	// If we clearly heard "contact" but what follows is too short to be a frequency,
 	// it's most likely "contact tower" with a garbled "tower".
 	// Uses {garbled_word} to avoid matching command keywords like "climb".
-	// Lower priority than FC patterns so those match first when applicable.
 	registerSTTCommand(
 		"contact {garbled_word}",
 		func(_ string) string { return "TO" },
@@ -1786,6 +1797,21 @@ func registerAllCommands() {
 		WithPriority(15),
 	)
 
+	// The traffic description that follows a wake-turbulence advisory
+	// ("you will follow a heavy Boeing triple seven"). Consuming it as
+	// informational keeps the type digits from being misread as a heading
+	// or altitude command. "heavy"/"heavier" between "follow" and the type
+	// is absorbed by filler skipping and slot slack; listing them as
+	// optionals would let "heading" fuzzy-match "heavier" and hijack "fly
+	// heading 330" (A330 is a type number).
+	registerSTTCommand(
+		"follow [a|the] {aircraft_type}",
+		func(_ string) string { return "" },
+		WithName("follow_traffic_type"),
+		WithKind(kindInformational),
+		WithPriority(10),
+	)
+
 	// === ATIS INFORMATION ===
 	registerSTTCommand(
 		"information {atis_letter} [is] [current]",
@@ -1810,19 +1836,11 @@ func registerAllCommands() {
 
 	// === AIRPORT ADVISORY ===
 	registerSTTCommand(
-		"[the] airport [is] [will] [be] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile] [report] [the] [field|airport] [in] [sight]",
+		"[the] airport|field [is|its] [gonna] [will] [be] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile] [report] [the] [field|airport] [in] [sight]",
 		func(oclock int, miles int) string {
 			return fmt.Sprintf("AP/%d/%d", oclock, miles)
 		},
 		WithName("airport_advisory"),
-		WithPriority(10),
-	)
-	registerSTTCommand(
-		"[the] field [is] [will] [be] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile] [report] [the] [field|airport] [in] [sight]",
-		func(oclock int, miles int) string {
-			return fmt.Sprintf("AP/%d/%d", oclock, miles)
-		},
-		WithName("airport_advisory_field"),
 		WithPriority(10),
 	)
 	registerSTTCommand(
@@ -1889,6 +1907,58 @@ func registerAllCommands() {
 		WithName("traffic_and_airport_in_sight"),
 		WithPriority(15),
 	)
+
+	// === INFORMATIONAL / DISCOURSE SEGMENTS ===
+	// These consume tokens without issuing commands. Their kind lets the
+	// output assembly recognize acknowledgment-only, position-ID-only, and
+	// handoff transmissions from what was matched, rather than from
+	// positional token stripping.
+
+	registerSTTCommand(
+		"roger|wilco|copy|affirm|affirmative",
+		func() string { return "" },
+		WithName("acknowledgment"),
+		WithKind(kindAcknowledgment),
+	)
+
+	registerSTTCommand(
+		"hello|hey|hi|howdy",
+		func() string { return "" },
+		WithName("greeting"),
+		WithKind(kindAcknowledgment),
+	)
+
+	// Controller position identification ("New York departure", "Boston
+	// approach"): up to two facility-name words before the position word.
+	// Absorbing the facility words matters: it makes this a real match at
+	// the head of the phrase, so a command template cannot poach garbled
+	// facility words ("bah SET approach") out of the middle of it. The
+	// beam only accepts this near the start of the transmission.
+	registerSTTCommand(
+		"[{facility_word}] [{facility_word}] departure|approach|center",
+		func(_, _ *string) string { return "" },
+		WithName("position_id"),
+		WithKind(kindPositionID),
+		// Weak evidence: any real command template at the same anchor wins.
+		WithPriority(1),
+	)
+
+	// Sign-off pleasantries; "one" in "have a good one" tokenizes as the
+	// digit 1.
+	registerSTTCommand(
+		"have [a] good|nice|great day|night|evening|one|1",
+		func() string { return "" },
+		WithName("sign_off_have"),
+		WithKind(kindSignOff),
+	)
+
+	registerSTTCommand(
+		"good day|night|evening|morning",
+		func() string { return "" },
+		WithName("sign_off_good"),
+		WithKind(kindSignOff),
+	)
+
 }
 
 func formatTrafficCommand(tr trafficResult) string {

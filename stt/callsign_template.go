@@ -15,6 +15,7 @@ import (
 //   - {flight_only}   - Match flight number against all aircraft (standalone)
 //   - {exact_phrase}  - Match entire phrase exactly against aircraft map
 //   - {suffix_phrase} - Match phrase as suffix of GA callsign
+//   - {fused_phrase}  - Match one merged token against a whole spoken key
 //   - word            - Match literal keyword (fuzzy matched)
 //   - word1|word2     - Match keyword alternatives
 //   - [word]          - Match optional literal keyword
@@ -76,6 +77,8 @@ func createCallsignMatcher(typeSpec string) (callsignMatcher, error) {
 		return &exactPhraseMatcher{}, nil
 	case "suffix_phrase":
 		return &suffixPhraseMatcher{}, nil
+	case "fused_phrase":
+		return &fusedPhraseMatcher{}, nil
 	case "ga_november":
 		return &gaNovemberMatcher{}, nil
 	default:

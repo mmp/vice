@@ -18,14 +18,24 @@ type CallsignMatch struct {
 // MatchCallsign attempts to match tokens to an aircraft callsign.
 // Tries starting at different positions to handle garbage words at the beginning.
 // Returns the best match and remaining tokens after the callsign.
+func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch, []Token) {
+	cands := MatchCallsignCandidates(tokens, aircraft)
+	if len(cands) == 0 {
+		return CallsignMatch{}, tokens
+	}
+	return cands[0], tokens[cands[0].Consumed:]
+}
+
+// MatchCallsignCandidates returns the distinct callsign interpretations of
+// the leading tokens, best first.
 //
 // Matching proceeds using a declarative pattern-based approach:
 //  1. Weight class filtering - if "heavy"/"super" found, filter aircraft first
 //  2. Pattern-based matching - uses DSL patterns in priority order
-func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch, []Token) {
+func MatchCallsignCandidates(tokens []Token, aircraft map[string]Aircraft) []CallsignMatch {
 	logLocalStt("MatchCallsign: %d tokens, %d aircraft", len(tokens), len(aircraft))
 	if len(tokens) == 0 || len(aircraft) == 0 {
-		return CallsignMatch{}, tokens
+		return nil
 	}
 
 	// Phase 1: Weight class filtering
@@ -37,22 +47,26 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 		if filtered := filterByWeightClass(aircraft, weightClass); len(filtered) > 0 && len(filtered) < len(aircraft) {
 			logLocalStt("  detected %q in callsign region, filtering to %d aircraft", weightClass, len(filtered))
 			// Try matching against weight-class-filtered aircraft (tokens including weight class)
-			filteredMatch, _ := matchCallsignWithPatterns(tokens[:weightClassIdx+1], filtered)
+			cands := callsignCandidates(tokens[:weightClassIdx+1], filtered)
 			// Also try all aircraft (tokens excluding weight class) in case the
 			// spoken key doesn't include the weight class
-			allMatch, _ := matchCallsignWithPatterns(tokens[:weightClassIdx], aircraft)
-			match := filteredMatch
-			if allMatch.Confidence >= 0.95 && allMatch.Confidence > filteredMatch.Confidence {
-				match = allMatch
+			all := callsignCandidates(tokens[:weightClassIdx], aircraft)
+			if len(all) > 0 && all[0].Confidence >= 0.95 &&
+				(len(cands) == 0 || all[0].Confidence > cands[0].Confidence) {
+				cands = all
 			}
-			if match.Callsign != "" {
-				return match, tokens[weightClassIdx+1:]
+			if len(cands) > 0 {
+				// The callsign region extends through the weight-class word.
+				for i := range cands {
+					cands[i].Consumed = weightClassIdx + 1
+				}
+				return cands
 			}
 		}
 	}
 
 	// Phase 2: Pattern-based matching using DSL
-	return matchCallsignWithPatterns(tokens, aircraft)
+	return callsignCandidates(tokens, aircraft)
 }
 
 // Aircraft holds context for a single aircraft for STT processing.
@@ -140,4 +154,14 @@ func isAlphanumeric(s string) bool {
 		}
 	}
 	return hasLetter && hasDigit
+}
+
+// callsignAirline returns the leading letter prefix of an ICAO callsign
+// (the airline code; "N" for GA N-numbers).
+func callsignAirline(callsign string) string {
+	i := 0
+	for i < len(callsign) && callsign[i] >= 'A' && callsign[i] <= 'Z' {
+		i++
+	}
+	return callsign[:i]
 }
