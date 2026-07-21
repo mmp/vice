@@ -117,3 +117,40 @@ func TestValidateBuiltInScheduleRejectsCrossMidnightCallsignOverlap(t *testing.T
 		t.Fatal("expected cross-midnight callsign validation error")
 	}
 }
+func TestValidateBuiltInScheduleRejectsUnknownOriginAirport(t *testing.T) {
+	schedule := BuiltInSchedule{
+		Airport: "KMSP",
+		Flights: []ScheduledFlight{
+			{
+				Callsign:        "DAL300",
+				Origin:          "KZZZ",
+				Destination:     "KMSP",
+				AircraftType:    "A320",
+				ScheduledMinute: 12 * 60,
+			},
+		},
+	}
+
+	if err := validateBuiltInSchedule(schedule); err == nil {
+		t.Fatal("expected unknown origin airport validation error")
+	}
+}
+
+func TestValidateBuiltInScheduleRejectsUnknownDestinationAirport(t *testing.T) {
+	schedule := BuiltInSchedule{
+		Airport: "KMSP",
+		Flights: []ScheduledFlight{
+			{
+				Callsign:        "DAL301",
+				Origin:          "KMSP",
+				Destination:     "KZZZ",
+				AircraftType:    "A320",
+				ScheduledMinute: 13 * 60,
+			},
+		},
+	}
+
+	if err := validateBuiltInSchedule(schedule); err == nil {
+		t.Fatal("expected unknown destination airport validation error")
+	}
+}

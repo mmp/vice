@@ -76,6 +76,23 @@ func validateBuiltInSchedule(schedule BuiltInSchedule) error {
 				aircraftType,
 			)
 		}
+		if _, ok := av.DB.Airports[flight.Origin]; !ok {
+			return fmt.Errorf(
+				"row %d callsign %s uses unknown origin airport %s",
+				row,
+				flight.Callsign,
+				flight.Origin,
+			)
+		}
+
+		if _, ok := av.DB.Airports[flight.Destination]; !ok {
+			return fmt.Errorf(
+				"row %d callsign %s uses unknown destination airport %s",
+				row,
+				flight.Callsign,
+				flight.Destination,
+			)
+		}
 
 		if previousRow, ok := seenRows[flight]; ok {
 			return fmt.Errorf(

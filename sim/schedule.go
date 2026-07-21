@@ -21,8 +21,9 @@ type ScheduledFlight struct {
 	Destination  string
 	AircraftType string
 
-	// ScheduledMinute is the runway operation time expressed as minutes after
-	// local midnight at the schedule airport.
+	// ScheduledMinute is expressed as minutes after local midnight at the
+	// schedule airport. For departures it is the published pushback time; for
+	// arrivals it is the published arrival/runway operation time.
 	ScheduledMinute int
 
 	// Cargo flights are retained when the user reduces the traffic percentage.

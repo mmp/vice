@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"maps"
@@ -15,9 +16,27 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 )
+
+const scheduledArrivalMinSpawnSeparationNM = 10
+
+var errScheduledArrivalSpawnConflict = errors.New("scheduled arrival spawn point occupied")
+
+func (s *Sim) scheduledArrivalSpawnConflict(candidate *Aircraft) bool {
+	for _, existing := range s.Aircraft {
+		if !existing.IsArrival() {
+			continue
+		}
+		if math.NMDistance2LL(candidate.Position(), existing.Position()) <
+			scheduledArrivalMinSpawnSeparationNM {
+			return true
+		}
+	}
+	return false
+}
 
 func (s *Sim) spawnArrivalsAndOverflights() {
 	now := s.State.SimTime
@@ -125,6 +144,11 @@ func (s *Sim) initializeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group strin
 		return nil, err
 	}
 
+	return s.finalizeArrivalNoLock(ac, arr, group, arrivalAirport)
+}
+
+func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
+	arrivalAirport string) (*Aircraft, error) {
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeArrival)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = ""
@@ -251,7 +275,16 @@ func (s *Sim) createScheduledArrivalNoLock(flight ScheduledFlight, group,
 		normalizeScheduleCode(flight.Destination),
 	)
 
-	return s.initializeArrivalNoLock(ac, arr, group, arrivalAirport)
+	if err := ac.InitializeArrival(s.State.Airports[arrivalAirport], arr,
+		s.State.NmPerLongitude, s.State.MagneticVariation,
+		s.wxModel, s.State.SimTime, s.lg); err != nil {
+		return nil, err
+	}
+	if s.scheduledArrivalSpawnConflict(ac) {
+		return nil, errScheduledArrivalSpawnConflict
+	}
+
+	return s.finalizeArrivalNoLock(ac, arr, group, arrivalAirport)
 }
 func (s *Sim) currentCallsigns() []av.ADSBCallsign {
 	callsigns := slices.Collect(maps.Keys(s.Aircraft))

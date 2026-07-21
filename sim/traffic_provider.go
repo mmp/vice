@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"errors"
 	"fmt"
 	"sort"
 	"time"
@@ -16,7 +17,7 @@ import (
 // trafficProvider supplies automatically generated IFR aircraft to the
 // simulation. It also controls when the next departure request should occur;
 // random traffic uses a rate-based delay while schedule traffic uses the next
-// published runway time.
+// published pushback time plus simulated taxi-out time.
 type trafficProvider interface {
 	createIFRDeparture(s *Sim, airport string, runway av.RunwayID) (*Aircraft, time.Duration, error)
 	createInbound(s *Sim, group string, rates map[string]float32, pushActive bool) (*Aircraft, time.Duration, error)
@@ -86,15 +87,17 @@ func includeScheduledFlight(flight ScheduledFlight, percentage int) bool {
 	return int(hash%100) < percentage
 }
 
-// scheduleTrafficProvider emits departures in published-time order. The
-// schedule clock starts at ScheduleStartMinute when the provider is
-// first initialized.
+// scheduleTrafficProvider emits departures in runway-ready order. Published
+// departure times are treated as pushback times; a random 10-20 minute taxi-out
+// duration is generated once per departure when the provider is first used.
+// The schedule clock starts at ScheduleStartMinute when the provider is created.
 type scheduleTrafficProvider struct {
 	airport string
 	start   Time
 
-	departures    []scheduledDeparture
-	nextDeparture int
+	departures            []scheduledDeparture
+	nextDeparture         int
+	departuresInitialized bool
 
 	arrivals    []scheduledArrival
 	nextArrival int
@@ -133,11 +136,18 @@ func newScheduleTrafficProvider(
 	sort.SliceStable(p.departures, func(i, j int) bool {
 		return p.departures[i].offset < p.departures[j].offset
 	})
+
 	sort.SliceStable(p.arrivals, func(i, j int) bool {
 		return p.arrivals[i].offset < p.arrivals[j].offset
 	})
+
 	return p
+
 }
+
+// initializeDepartures generates one taxi-out duration for each scheduled
+// departure and orders the departures by the time they reach the runway queue.
+// It runs only once, so taxi times remain fixed for the life of the scenario.
 
 func (p *scheduleTrafficProvider) createIFRDeparture(s *Sim, airport string, runway av.RunwayID) (*Aircraft, time.Duration, error) {
 	const idleDelay = 365 * 24 * time.Hour
@@ -243,6 +253,12 @@ func (p *scheduleTrafficProvider) createInbound(s *Sim, group string,
 		group,
 		p.airport,
 	)
+	if errors.Is(err, errScheduledArrivalSpawnConflict) {
+		// Keep this arrival at the head of the queue and retry shortly. This
+		// preserves schedule order while allowing the preceding arrival to
+		// move at least 10 NM away from the common spawn point.
+		return nil, 5 * time.Second, nil
+	}
 	p.nextArrival++ // unmatched aircraft are skipped and reported by the caller
 
 	delay := idleDelay
