@@ -399,7 +399,8 @@ func (s *Sim) LaunchAircraft(ac Aircraft, departureRunway av.RunwayID) {
 }
 
 func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, manualLaunch bool) {
-	depac := makeDepartureAircraft(ac, s.State.SimTime, s.wxModel, s.Rand)
+	depac := makeDepartureAircraft(ac, s.State.SimTime, s.wxModel,
+		s.State.LaunchConfig.TrafficSource, s.Rand)
 
 	ac.WaitingForLaunch = true
 	s.addAircraftNoLock(*ac)
