@@ -1,18 +1,12 @@
 {
   "airport": "KMSP",
   "schedules": [
+
     {
-      "id": "development_test",
-      "name": "MSP Development Test",
-      "file": "development_test.csv",
-      "description": "Small synthetic schedule used to exercise Real World Schedules during development.",
-      "timezone": "America/Chicago"
-    },
-    {
-      "id": "summer_weekday_placeholder",
-      "name": "MSP Summer Weekday (Placeholder Aircraft)",
-      "file": "summer_weekday_placeholder.csv",
-      "description": "Full-day real-world MSP schedule using placeholder B738 aircraft for testing.",
+      "id": "summer_weekday",
+      "name": "MSP Summer Weekday",
+      "file": "summer_weekday.csv",
+      "description": "Full-day real-world MSP schedule.",
       "timezone": "America/Chicago"
     }
   ]
