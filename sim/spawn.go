@@ -407,9 +407,7 @@ func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, manualLaunch 
 	// The journey begins...
 	depState := s.DepartureState[ac.FlightPlan.DepartureAirport][runway]
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
-		if manualLaunch || s.State.LaunchConfig.TrafficSource == TrafficSourceRealWorldSchedule {
-			// Scheduled times represent runway availability, not pushback or
-			// taxi time, so scheduled IFRs enter the launch queue immediately.
+		if manualLaunch {
 			depac.ReadyDepartGateTime = depac.SpawnTime
 		}
 		// IFRs spend some time at the gate to give them a chance to appear
