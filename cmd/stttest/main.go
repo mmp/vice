@@ -8,39 +8,12 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
 )
-
-// STTTestFile matches the structure in stt/provider_test.go
-type STTTestFile struct {
-	Transcript  string `json:"transcript"`
-	Callsign    string `json:"callsign"`
-	Command     string `json:"command"`
-	STTAircraft map[string]struct {
-		Callsign                  string                       `json:"Callsign"`
-		AircraftType              string                       `json:"AircraftType"`
-		Fixes                     map[string]string            `json:"Fixes"`
-		CandidateApproaches       map[string]string            `json:"CandidateApproaches"`
-		CandidateVisualApproaches map[string]string            `json:"CandidateVisualApproaches"`
-		ApproachFixes             map[string]map[string]string `json:"ApproachFixes"`
-		AssignedApproach          string                       `json:"AssignedApproach"`
-		SID                       string                       `json:"SID"`
-		STAR                      string                       `json:"STAR"`
-		Altitude                  int                          `json:"Altitude"`
-		State                     string                       `json:"State"`
-		ControllerFrequency       string                       `json:"ControllerFrequency"`
-		TrackingController        string                       `json:"TrackingController"`
-		AddressingForm            int                          `json:"AddressingForm"`
-		LAHSORunways              []string                     `json:"LAHSORunways"`
-	} `json:"stt_aircraft"`
-}
 
 func main() {
 	// Initialize the aviation database for aircraft performance lookups
@@ -52,64 +25,13 @@ func main() {
 	}
 
 	file := os.Args[1]
-	data, err := os.ReadFile(file)
+	testFile, err := stt.LoadTestFile(file)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error loading test file: %v\n", err)
 		os.Exit(1)
 	}
 
-	var testFile STTTestFile
-	if err := json.Unmarshal(data, &testFile); err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing JSON: %v\n", err)
-		os.Exit(1)
-	}
-
-	// Convert JSON aircraft to STT Aircraft map.
-	// Bake /T into the callsign for type-based addressing entries,
-	// mirroring the production context initialization in provider.go.
-	aircraft := make(map[string]stt.Aircraft)
-	for key, ac := range testFile.STTAircraft {
-		callsign := ac.Callsign
-		form := sim.CallsignAddressingForm(ac.AddressingForm)
-		if form == sim.AddressingFormTypeTrailing3 && !strings.HasSuffix(callsign, "/T") {
-			callsign += "/T"
-		}
-		// Merge assigned approach fixes into the Fixes map, mirroring
-		// the production behavior in provider.go.
-		fixes := ac.Fixes
-		if ac.AssignedApproach != "" && len(ac.ApproachFixes) > 0 {
-			telephony := av.GetApproachTelephony(ac.AssignedApproach)
-			if code, ok := ac.CandidateApproaches[telephony]; ok {
-				if approachFixes, ok := ac.ApproachFixes[code]; ok {
-					if fixes == nil {
-						fixes = make(map[string]string)
-					}
-					for spoken, fix := range approachFixes {
-						if _, exists := fixes[spoken]; !exists {
-							fixes[spoken] = fix
-						}
-					}
-				}
-			}
-		}
-
-		aircraft[key] = stt.Aircraft{
-			Callsign:                  callsign,
-			AircraftType:              ac.AircraftType,
-			Fixes:                     fixes,
-			CandidateApproaches:       ac.CandidateApproaches,
-			CandidateVisualApproaches: ac.CandidateVisualApproaches,
-			AssignedApproach:          ac.AssignedApproach,
-			SID:                       ac.SID,
-			STAR:                      ac.STAR,
-			Altitude:                  ac.Altitude,
-			State:                     ac.State,
-			ControllerFrequency:       ac.ControllerFrequency,
-			TrackingController:        ac.TrackingController,
-			AddressingForm:            form,
-			LAHSORunways:              ac.LAHSORunways,
-		}
-	}
+	aircraft := testFile.BuildAircraftMap()
 
 	// Run the transcript through STT
 	provider := stt.NewTranscriber(nil)
@@ -119,13 +41,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Build expected output
-	var expected string
-	if testFile.Callsign == "" && testFile.Command == "" {
-		expected = ""
-	} else {
-		expected = strings.TrimSpace(testFile.Callsign + " " + testFile.Command)
-	}
+	expected := testFile.Expected()
 
 	// Output results
 	fmt.Printf("File:       %s\n", file)

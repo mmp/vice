@@ -43,6 +43,14 @@ var categoryRules = []categoryRule{
 	{match: func(cmd string) bool {
 		return len(cmd) > 1 && cmd[0] == 'T' && (cmd[1] == 'L' || cmd[1] == 'R')
 	}, category: "heading"},
+	// Bare turns to a heading (L270, R080) → heading; L/R followed by a
+	// letter is left/right direct-to-fix (LDDARIC) → navigation.
+	{match: func(cmd string) bool {
+		return len(cmd) > 1 && (cmd[0] == 'L' || cmd[0] == 'R') && cmd[1] >= '0' && cmd[1] <= '9'
+	}, category: "heading"},
+	{match: func(cmd string) bool {
+		return len(cmd) > 1 && (cmd[0] == 'L' || cmd[0] == 'R') && cmd[1] == 'D'
+	}, category: "navigation"},
 	// T-prefix: then-descend/climb (TD, TC) → altitude
 	{match: func(cmd string) bool {
 		return len(cmd) > 1 && cmd[0] == 'T' && (cmd[1] == 'D' || cmd[1] == 'C')
@@ -85,6 +93,13 @@ var categoryRules = []categoryRule{
 	{match: func(cmd string) bool { return cmd[0] == 'H' }, category: "heading"},
 	// E → expect_approach
 	{match: func(cmd string) bool { return cmd[0] == 'E' }, category: "expect_approach"},
+}
+
+// CommandCategory returns the category of an output command ("heading",
+// "altitude", "speed", ...), or "" if it has none. Exported for analysis
+// tooling (cmd/stteval).
+func CommandCategory(cmd string) string {
+	return getCommandCategory(cmd)
 }
 
 // getCommandCategory returns the category of a command based on its prefix.

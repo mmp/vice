@@ -2,15 +2,12 @@ package main
 
 import (
 	"bufio"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"math/rand/v2"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -21,29 +18,9 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// LogEntry represents an STT command log entry from the slog file.
-type LogEntry struct {
-	Time              string                  `json:"time"`
-	Level             string                  `json:"level"`
-	Msg               string                  `json:"msg"`
-	Callstack         []string                `json:"callstack,omitempty"`
-	Transcript        string                  `json:"transcript"`
-	WhisperDurationMs float64                 `json:"whisper_duration_ms,omitempty"`
-	Duration          int64                   `json:"duration,omitempty"`
-	AudioDurationMs   float64                 `json:"audio_duration_ms,omitempty"`
-	Processor         string                  `json:"processor,omitempty"`
-	WhisperModel      string                  `json:"whisper_model,omitempty"`
-	Callsign          string                  `json:"callsign"`
-	Command           string                  `json:"command"`
-	STTAircraft       map[string]stt.Aircraft `json:"stt_aircraft"`
-	Logs              []string                `json:"logs,omitempty"`
-}
-
-// PersistedState stores the review queue and seen entries between sessions.
-type PersistedState struct {
-	Queue []LogEntry      `json:"queue"`
-	Seen  map[string]bool `json:"seen"`
-}
+// LogEntry is one STT command record; the type lives in the stt package,
+// shared with the test harness and cmd/stteval.
+type LogEntry = stt.TestFile
 
 // FocusedField indicates which input field has keyboard focus.
 type FocusedField int
@@ -104,10 +81,13 @@ func main() {
 	showStatus := flag.Bool("status", false, "show queue status and exit")
 	lifoMode := flag.Bool("lifo", false, "order entries by time, most recent first")
 	catchup := flag.Bool("catchup", false, "mark all queued entries as seen and clear the queue")
+	statePathFlag := flag.String("state", stateDir+"/state.json", "review state file to load and update")
 	flag.Parse()
 
+	statePath := expandPath(*statePathFlag)
+
 	// Load persisted state
-	persisted := loadState()
+	persisted := stt.LoadReviewState(statePath)
 
 	// Handle -status
 	if *showStatus {
@@ -120,10 +100,10 @@ func main() {
 	if *catchup {
 		cleared := len(persisted.Queue)
 		for _, e := range persisted.Queue {
-			persisted.markDone(e)
+			persisted.MarkDone(e)
 		}
 		persisted.Queue = nil
-		if err := persisted.save(); err != nil {
+		if err := persisted.Save(statePath); err != nil {
 			fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
 			os.Exit(1)
 		}
@@ -138,9 +118,9 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error loading file: %v\n", err)
 			os.Exit(1)
 		}
-		added := persisted.ingest(entries)
+		added := persisted.Ingest(entries)
 		fmt.Printf("Ingested %d new entries (%d already seen)\n", added, len(entries)-added)
-		if err := persisted.save(); err != nil {
+		if err := persisted.Save(statePath); err != nil {
 			fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
 			os.Exit(1)
 		}
@@ -211,11 +191,11 @@ func main() {
 				if appState.disposition[i] == DispositionNone {
 					remaining = append(remaining, entry)
 				} else {
-					persisted.markDone(entry)
+					persisted.MarkDone(entry)
 				}
 			}
 			persisted.Queue = remaining
-			if err := persisted.save(); err != nil {
+			if err := persisted.Save(statePath); err != nil {
 				fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
 			}
 			return
@@ -229,8 +209,14 @@ func (state *AppState) initFromEntry(entryIdx int) {
 		return
 	}
 	entry := state.entries[entryIdx]
-	callsign := strings.TrimSuffix(entry.Callsign, "/T")
-	state.correction = callsign + " " + entry.Command
+	if entry.Suggested != "" {
+		// A pre-review pass (cmd/stteval) attached a suggested correction;
+		// start from it rather than the decoder output.
+		state.correction = entry.Suggested
+	} else {
+		callsign := strings.TrimSuffix(entry.Callsign, "/T")
+		state.correction = callsign + " " + entry.Command
+	}
 	state.cursorPos = len(state.correction)
 	state.correctionEntryIdx = entryIdx
 }
@@ -301,81 +287,6 @@ func expandPath(path string) string {
 		return filepath.Join(home, path[2:])
 	}
 	return path
-}
-
-// loadState loads persisted state from disk.
-func loadState() *PersistedState {
-	path := expandPath(stateDir + "/state.json")
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return &PersistedState{Seen: make(map[string]bool)}
-	}
-	var state PersistedState
-	if err := json.Unmarshal(data, &state); err != nil {
-		return &PersistedState{Seen: make(map[string]bool)}
-	}
-	if state.Seen == nil {
-		state.Seen = make(map[string]bool)
-	}
-
-	// Filter out any entries that are already in the Seen set and deduplicate
-	seen := make(map[string]bool)
-	var filtered []LogEntry
-	for _, e := range state.Queue {
-		h := entryHash(e)
-		if !state.Seen[h] && !seen[h] {
-			filtered = append(filtered, e)
-			seen[h] = true
-		}
-	}
-	state.Queue = filtered
-
-	return &state
-}
-
-// save persists the state to disk.
-func (s *PersistedState) save() error {
-	dir := expandPath(stateDir)
-	if err := os.MkdirAll(dir, 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(s, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(filepath.Join(dir, "state.json"), data, 0644)
-}
-
-// ingest adds new entries to the queue, skipping already-seen ones and duplicates.
-func (s *PersistedState) ingest(entries []LogEntry) int {
-	// Build set of hashes already in queue
-	queued := make(map[string]bool)
-	for _, e := range s.Queue {
-		queued[entryHash(e)] = true
-	}
-
-	added := 0
-	for _, e := range entries {
-		h := entryHash(e)
-		if !s.Seen[h] && !queued[h] {
-			s.Queue = append(s.Queue, e)
-			queued[h] = true
-			added++
-		}
-	}
-	return added
-}
-
-// markDone marks an entry as processed.
-func (s *PersistedState) markDone(e LogEntry) {
-	s.Seen[entryHash(e)] = true
-}
-
-// entryHash computes a unique hash for an entry.
-func entryHash(e LogEntry) string {
-	h := sha256.New()
-	h.Write([]byte(e.Transcript + "|" + e.Callsign + "|" + e.Command))
-	return hex.EncodeToString(h.Sum(nil))
 }
 
 // loadEntriesFromFile parses a slog file and extracts STT command entries.
@@ -1270,6 +1181,8 @@ func saveEntry(entry LogEntry, correction, outputDir string) (string, error) {
 		entry.Callsign = callsign
 		entry.Command = command
 	}
+	// The suggestion is review-time metadata, not part of the test case.
+	entry.Suggested = ""
 
 	// Create output directory if needed
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
@@ -1277,11 +1190,11 @@ func saveEntry(entry LogEntry, correction, outputDir string) (string, error) {
 	}
 
 	// Generate filename from transcript
-	filename := sanitizeFilename(entry.Transcript) + ".json"
+	filename := stt.SanitizeTestFilename(entry.Transcript) + ".json"
 	path := filepath.Join(outputDir, filename)
 
 	// Handle collision by adding suffix
-	base := sanitizeFilename(entry.Transcript)
+	base := stt.SanitizeTestFilename(entry.Transcript)
 	for i := 1; fileExists(path); i++ {
 		path = filepath.Join(outputDir, fmt.Sprintf("%s_%d.json", base, i))
 	}
@@ -1310,29 +1223,6 @@ func extractExpectApproachID(command string) string {
 		}
 	}
 	return ""
-}
-
-// sanitizeFilename creates a safe filename from a transcript.
-func sanitizeFilename(transcript string) string {
-	// Convert to lowercase and replace spaces with underscores
-	s := strings.ToLower(transcript)
-	s = strings.ReplaceAll(s, " ", "_")
-
-	// Remove non-alphanumeric characters except underscores
-	reg := regexp.MustCompile(`[^a-z0-9_]`)
-	s = reg.ReplaceAllString(s, "")
-
-	// Truncate to reasonable length
-	if len(s) > 50 {
-		s = s[:50]
-	}
-
-	// Handle empty result
-	if s == "" {
-		s = "entry"
-	}
-
-	return s
 }
 
 // fileExists checks if a file exists.
