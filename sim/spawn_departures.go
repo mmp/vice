@@ -882,11 +882,19 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 	return nil, nil
 }
 
+func departureGateDelay(ac *Aircraft, r *rand.Rand) time.Duration {
+	if ac.FlightPlan.Rules != av.FlightRulesIFR {
+		return 0
+	}
+
+	return 5 * time.Minute
+}
+
 func makeDepartureAircraft(ac *Aircraft, simTime Time, model *wx.Model, r *rand.Rand) DepartureAircraft {
 	d := DepartureAircraft{
 		ADSBCallsign:        ac.ADSBCallsign,
 		SpawnTime:           simTime,
-		ReadyDepartGateTime: simTime.Add(5 * time.Minute),
+		ReadyDepartGateTime: simTime.Add(departureGateDelay(ac, r)),
 	}
 
 	// Simulate out the takeoff roll and initial climb to figure out when
