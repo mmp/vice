@@ -529,17 +529,23 @@ func render(screen tcell.Screen, state *AppState) {
 	col1Width := 50 // Transcript
 	col2Width := 30 // Callsign + Command
 
-	// Adjust widths based on screen size
-	if col1Width+col2Width+8 > width {
-		col1Width = width - col2Width - 8
-		if col1Width < 30 {
-			col1Width = 30
-			col2Width = width - col1Width - 8
+	// Layout chrome: a 3-column prefix plus a 3-char " │ " separator before
+	// each of columns 2 and 3. The correction column gets whatever remains.
+	const chrome = 3 + 3 + 3
+	col3Width := width - chrome - col1Width - col2Width
+	if col3Width < 20 {
+		// Too narrow for the full transcript column; borrow from it first,
+		// then from the callsign column, keeping the correction visible.
+		col1Width = width - chrome - col2Width - 20
+		if col1Width < 20 {
+			col1Width = 20
+			col2Width = width - chrome - col1Width - 20
 		}
+		col3Width = 20
 	}
-
-	// Correction column gets all remaining width
-	col3Width := width - 3 - col1Width - 3 - col2Width - 3
+	col1Width = max(col1Width, 0)
+	col2Width = max(col2Width, 0)
+	col3Width = max(col3Width, 0)
 
 	headerLine := fmt.Sprintf("   %-*s │ %-*s │ %-*s",
 		col1Width, "TRANSCRIPT",
@@ -952,6 +958,9 @@ func drawText(screen tcell.Screen, x, y, maxWidth int, style tcell.Style, text s
 
 // truncate truncates a string to fit within maxLen.
 func truncate(s string, maxLen int) string {
+	if maxLen <= 0 {
+		return ""
+	}
 	if len(s) <= maxLen {
 		return s
 	}
