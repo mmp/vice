@@ -200,6 +200,14 @@ func makeDerivedState(s *Sim) DerivedState {
 			rt.CWTCategory = perf.Category.CWT
 		}
 
+		// Assigned heading/speed from nav, for STT intent inference. A speed
+		// restriction may be in knots or mach; carry each in its own field
+		// and its own units (mach in hundredths, matching the STT M command).
+		if ac.Nav.Heading.Assigned != nil {
+			rt.AssignedHeading = int(*ac.Nav.Heading.Assigned)
+		}
+		rt.AssignedSpeed, rt.AssignedMach = assignedSpeedForSTT(ac.Nav.Speed.Assigned)
+
 		for _, wp := range ac.Nav.Waypoints {
 			rt.Route = append(rt.Route, wp.Location)
 		}
@@ -518,6 +526,31 @@ func (ss *CommonState) IsATPAVolume25nmEnabled(volumeId string) bool {
 	return false
 }
 
+// assignedSpeedForSTT extracts a representative controller-assigned speed
+// from a nav speed restriction for the STT aircraft context. It returns the
+// value in whichever units the restriction uses: knots, or mach in
+// hundredths (78 for M0.78, matching the STT "M" command). At most one
+// return is non-zero; a nil restriction yields (0, 0).
+func assignedSpeedForSTT(sr *av.SpeedRestriction) (knots, mach int) {
+	if sr == nil {
+		return 0, 0
+	}
+	val, exact := sr.ExactValue()
+	if !exact {
+		// Range restriction (at-or-above / at-or-below / band): take the
+		// constraining, non-extreme bound.
+		if sr.Range[0] > 0 {
+			val = sr.Range[0]
+		} else {
+			val = sr.Range[1]
+		}
+	}
+	if sr.IsMach {
+		return 0, int(val*100 + 0.5)
+	}
+	return int(val), 0
+}
+
 type Track struct {
 	av.RadarTrack
 
@@ -540,6 +573,9 @@ type Track struct {
 	Fixes                     []string // Relevant fix names for STT
 	RouteFixes                []string // Ordered route waypoint fix names (no truncation)
 	ExpectedDirectFix         string   // Fix the controller said to "expect direct", if any
+	AssignedHeading           int      // Controller-assigned heading from nav (0 if none), for STT
+	AssignedSpeed             int      // Controller-assigned speed in knots from nav (0 if none / if mach), for STT
+	AssignedMach              int      // Controller-assigned mach in hundredths from nav (0 if none / if knots), for STT
 	SID                       string
 	STAR                      string
 	ATPAVolume                *av.ATPAVolume

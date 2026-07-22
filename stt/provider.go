@@ -458,15 +458,22 @@ func (p *Transcriber) BuildAircraftContext(
 		sttAc := Aircraft{
 			Callsign:            string(trk.ADSBCallsign),
 			Altitude:            int(trk.TrueAltitude),
+			Heading:             int(trk.Heading),
+			Speed:               int(trk.Groundspeed),
+			AssignedHeading:     trk.AssignedHeading,
+			AssignedSpeed:       trk.AssignedSpeed,
+			AssignedMach:        trk.AssignedMach,
 			ControllerFrequency: string(trk.ControllerFrequency),
 			Route:               trk.RouteFixes,
 			ExpectedDirectFix:   trk.ExpectedDirectFix,
 		}
 
-		// Add tracking controller and aircraft type from flight plan
+		// Add tracking controller, aircraft type, and assigned altitude from
+		// the flight plan.
 		if trk.FlightPlan != nil {
 			sttAc.TrackingController = string(trk.FlightPlan.TrackingController)
 			sttAc.AircraftType = trk.FlightPlan.AircraftType
+			sttAc.AssignedAltitude = trk.FlightPlan.AssignedAltitude
 		}
 
 		// Build fixes map

@@ -738,6 +738,26 @@ func render(screen tcell.Screen, state *AppState) {
 					y++
 				}
 
+				// Heading / speed, with assigned values when present.
+				if y < maxY {
+					hdg := fmt.Sprintf("%d", ac.Heading)
+					if ac.AssignedHeading != 0 {
+						hdg += fmt.Sprintf(" (assigned %d)", ac.AssignedHeading)
+					}
+					spd := fmt.Sprintf("%d", ac.Speed)
+					if ac.AssignedSpeed != 0 {
+						spd += fmt.Sprintf(" (assigned %d)", ac.AssignedSpeed)
+					} else if ac.AssignedMach != 0 {
+						spd += fmt.Sprintf(" (assigned M.%02d)", ac.AssignedMach)
+					}
+					fs := fmt.Sprintf(" Heading: %s   Speed: %s", hdg, spd)
+					if ac.AssignedAltitude != 0 {
+						fs += fmt.Sprintf("   Assigned alt: %d", ac.AssignedAltitude)
+					}
+					drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, fs))
+					y++
+				}
+
 				// Controller info
 				if y < maxY && (ac.ControllerFrequency != "" || ac.TrackingController != "") {
 					ctrlInfo := " "

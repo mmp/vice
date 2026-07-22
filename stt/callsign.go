@@ -83,6 +83,12 @@ type Aircraft struct {
 	STAR                      string
 	Route                     []string                   // Ordered route waypoint fix names (full route, no truncation)
 	Altitude                  int                        // Current altitude in feet
+	Heading                   int                        // Current magnetic heading in degrees (0 if unknown)
+	Speed                     int                        // Current groundspeed in knots (0 if unknown)
+	AssignedAltitude          int                        // Controller-assigned altitude in feet (0 if none)
+	AssignedHeading           int                        // Controller-assigned heading in degrees (0 if none)
+	AssignedSpeed             int                        // Controller-assigned speed in knots (0 if none, or if assigned in mach)
+	AssignedMach              int                        // Controller-assigned mach in hundredths, e.g. 78 for M0.78 (0 if none, or if assigned in knots)
 	State                     string                     // "departure", "arrival", "cleared approach", "overflight", "vfr flight following"
 	ControllerFrequency       string                     // Current controller position the aircraft is tuned to
 	TrackingController        string                     // Controller tracking this aircraft (from flight plan)
