@@ -143,16 +143,43 @@ func (s *Sim) PopReadyContact(positions []TCP) *PendingContact {
 	return s.popReadyContact(positions)
 }
 
+// isInitialCheckIn reports whether the transmission type is an aircraft's
+// first call to the controller, as opposed to a response or request made
+// during an already-established exchange.
+func (t PendingTransmissionType) isInitialCheckIn() bool {
+	switch t {
+	case PendingTransmissionDeparture, PendingTransmissionArrival, PendingTransmissionFlightFollowingReq:
+		return true
+	default:
+		return false
+	}
+}
+
 // popReadyContact is the internal version that requires the lock to already be held.
 func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
 	if s.PendingContacts == nil {
 		return nil
 	}
 
-	// Find the first contact that's ready (ReadyTime has passed) for any position
+	// A pilot's response or request during an already-established exchange
+	// (the full request after "go ahead", "traffic in sight", a go-around,
+	// etc.) takes priority over an unrelated aircraft's initial check-in: it
+	// would be unrealistic for a third party to key up in the middle of an
+	// exchange the controller just initiated. Prefer a ready response, then
+	// fall back to initial check-ins.
+	if pc := s.popReadyMatching(positions, func(t PendingTransmissionType) bool { return !t.isInitialCheckIn() }); pc != nil {
+		return pc
+	}
+	return s.popReadyMatching(positions, func(t PendingTransmissionType) bool { return t.isInitialCheckIn() })
+}
+
+// popReadyMatching removes and returns the first pending contact, in queue
+// order across the given positions, whose type satisfies match and whose
+// ReadyTime has passed. Returns nil if none qualify.
+func (s *Sim) popReadyMatching(positions []TCP, match func(PendingTransmissionType) bool) *PendingContact {
 	for _, tcp := range positions {
 		for i, pc := range s.PendingContacts[tcp] {
-			if s.State.SimTime.After(pc.ReadyTime) {
+			if match(pc.Type) && s.State.SimTime.After(pc.ReadyTime) {
 				s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
 				return &pc
 			}
