@@ -52,6 +52,14 @@ type selectedRow struct {
 	Novel int    `json:"novel"`
 }
 
+// diagnosis is one suspect's review note: an optional proposed correction
+// ("CALLSIGN CMDS", or a single space for "expected = silence") and the
+// reason behind it. The apply phase attaches these to the suspects queue.
+type diagnosis struct {
+	Suggestion string `json:"suggestion"`
+	Reason     string `json:"reason"`
+}
+
 func expandPath(path string) string {
 	if strings.HasPrefix(path, "~/") {
 		if home, err := os.UserHomeDir(); err == nil {
@@ -67,7 +75,7 @@ func main() {
 	evalDir := flag.String("evaldir", "~/.sttreview/eval", "directory for evaluation outputs")
 	testsDir := flag.String("tests", "stt/tests", "existing corpus directory")
 	acceptedPath := flag.String("accepted", "", "file listing accepted staged-test filenames (apply phase)")
-	diagnosesPath := flag.String("diagnoses", "", "JSON object {transcript: suggested-correction} to prefill suspect reviews (apply phase)")
+	diagnosesPath := flag.String("diagnoses", "", "JSON object {transcript: {suggestion, reason}} to annotate suspect reviews (apply phase)")
 	flag.Parse()
 
 	av.InitDB()
@@ -668,10 +676,11 @@ func phaseApply(statePath, evalDir, testsDir, acceptedPath, diagnosesPath string
 		accepted[filepath.Base(line)] = true
 	}
 
-	// Optional per-suspect suggested corrections, keyed by transcript
-	// (the suspects' stored output was rewritten to the current decoder
-	// output during emit, so the entry hash no longer matches the report).
-	diagnoses := make(map[string]string)
+	// Optional per-suspect diagnoses, keyed by transcript (the suspects'
+	// stored output was rewritten to the current decoder output during
+	// emit, so the entry hash no longer matches the report). Each carries an
+	// optional suggested correction and a human-readable reason.
+	diagnoses := make(map[string]diagnosis)
 	if diagnosesPath != "" {
 		if err := readJSON(diagnosesPath, &diagnoses); err != nil {
 			return err
@@ -705,12 +714,20 @@ func phaseApply(statePath, evalDir, testsDir, acceptedPath, diagnosesPath string
 	suspectsPath := filepath.Join(evalDir, "suspects.json")
 	suspects := stt.LoadReviewState(suspectsPath)
 
-	// Attach diagnosed corrections to the suspects for the review prefill.
-	prefilled := 0
+	// Attach diagnoses to the suspects: the reason is shown for every
+	// diagnosed entry; the suggested correction (present only when the
+	// diagnosis proposed a change) prefills the review edit field.
+	prefilled, noted := 0, 0
 	for i := range suspects.Queue {
-		if s, ok := diagnoses[suspects.Queue[i].Transcript]; ok {
-			suspects.Queue[i].Suggested = s
-			prefilled++
+		if d, ok := diagnoses[suspects.Queue[i].Transcript]; ok {
+			if d.Suggestion != "" {
+				suspects.Queue[i].Suggested = d.Suggestion
+				prefilled++
+			}
+			if d.Reason != "" {
+				suspects.Queue[i].Reason = d.Reason
+				noted++
+			}
 		}
 	}
 
@@ -754,7 +771,7 @@ func phaseApply(statePath, evalDir, testsDir, acceptedPath, diagnosesPath string
 	}
 
 	fmt.Printf("installed %d tests in %s, diverted %d to suspects\n", installed, testsDir, doubted)
-	fmt.Printf("suspects queue: %d entries (%d with a suggested correction) in %s\n", len(suspects.Queue), prefilled, suspectsPath)
+	fmt.Printf("suspects queue: %d entries (%d with a suggested correction, %d with a note) in %s\n", len(suspects.Queue), prefilled, noted, suspectsPath)
 	fmt.Printf("main queue drained %d -> %d entries (backup at %s)\n", before, len(state.Queue), statePath+".bak")
 	return nil
 }

@@ -489,6 +489,7 @@ func render(screen tcell.Screen, state *AppState) {
 	styleInvalid := tcell.StyleDefault.Foreground(tcell.ColorRed).Bold(true)
 	styleContext := tcell.StyleDefault.Background(tcell.ColorWhite).Foreground(tcell.ColorBlack)
 	styleContextLabel := tcell.StyleDefault.Background(tcell.ColorWhite).Foreground(tcell.ColorDarkBlue).Bold(true)
+	styleReason := tcell.StyleDefault.Foreground(tcell.ColorDarkGoldenrod).Bold(true)
 	styleSaved := tcell.StyleDefault.Foreground(tcell.ColorGreen)
 	styleSkipped := tcell.StyleDefault.Foreground(tcell.ColorGray)
 	styleFocused := tcell.StyleDefault.Foreground(tcell.ColorDarkCyan).Bold(true)
@@ -558,9 +559,25 @@ func render(screen tcell.Screen, state *AppState) {
 	drawText(screen, 0, y, width, styleDefault, strings.Repeat("─", width))
 	y++
 
+	// Reserve rows at the bottom for the selected entry's diagnosis note
+	// (why it is a suspect / why the suggested correction), when present.
+	var reasonLines []string
+	if e := state.getSelectedEntry(); e != nil && e.Reason != "" {
+		reasonLines = wrapText("Why: "+e.Reason, width, width)
+		if len(reasonLines) > 3 {
+			reasonLines = reasonLines[:3]
+		}
+	}
+	// When the context pane is open the note is shown inside it (beneath the
+	// other entries), so only reserve the bottom rows in the compact view.
+	bottomReserve := 0
+	if len(reasonLines) > 0 && !state.showContext {
+		bottomReserve = len(reasonLines) + 1 // + separator row
+	}
+
 	// Calculate visible area
 	listStartY := y
-	listEndY := height - 2 // Leave room for help line
+	listEndY := height - 2 - bottomReserve // Leave room for help + reason note
 	if state.showContext {
 		// In context mode, only show the selected entry to ensure full transcript is visible
 		state.scrollOffset = state.selectedIndex
@@ -683,7 +700,7 @@ func render(screen tcell.Screen, state *AppState) {
 		entry := state.getSelectedEntry()
 		if entry != nil {
 			y++ // blank line
-			maxY := height - 2
+			maxY := height - 2 - bottomReserve
 			entryCallsign := strings.TrimSuffix(entry.Callsign, "/T")
 
 			// Show whisper model if available
@@ -920,11 +937,36 @@ func render(screen tcell.Screen, state *AppState) {
 				}
 			}
 
+			// Diagnosis note, beneath the other context entries.
+			if entry.Reason != "" && y < maxY {
+				drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+				drawText(screen, 0, y, width, styleContextLabel, " Why:")
+				y++
+				for _, ln := range wrapText(entry.Reason, width-2, width-2) {
+					if y >= maxY {
+						break
+					}
+					drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, " "+ln))
+					y++
+				}
+			}
+
 			// Fill remaining context area with white
 			for y < maxY {
 				drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
 				y++
 			}
+		}
+	}
+
+	// Diagnosis note for the selected entry, just above the help footer
+	// (compact view only; the context pane shows it inline).
+	if len(reasonLines) > 0 && !state.showContext {
+		ry := height - 1 - len(reasonLines)
+		drawText(screen, 0, ry-1, width, styleDefault, strings.Repeat("─", width))
+		for _, ln := range reasonLines {
+			drawText(screen, 0, ry, width, styleReason, fmt.Sprintf("%-*s", width, ln))
+			ry++
 		}
 	}
 
@@ -1181,6 +1223,13 @@ func handleCorrectionInput(ev *tcell.EventKey, state *AppState) Action {
 // saveEntry saves an entry to the output directory as a test case.
 // Returns the path of the saved file.
 func saveEntry(entry LogEntry, correction, outputDir string) (string, error) {
+	// Carry the diagnosis rationale into the saved test — but only when the
+	// reviewer accepted the proposed correction verbatim. If they overrode
+	// it (or there was no proposal), the stored reason describes a different
+	// answer and would mislead a later fix pass, so drop it.
+	keepReason := entry.Reason != "" && entry.Suggested != "" &&
+		strings.TrimSpace(correction) == strings.TrimSpace(entry.Suggested)
+
 	// Parse correction if provided
 	if correction != "" {
 		callsign, command, valid := parseCorrection(correction, entry)
@@ -1192,6 +1241,9 @@ func saveEntry(entry LogEntry, correction, outputDir string) (string, error) {
 	}
 	// The suggestion is review-time metadata, not part of the test case.
 	entry.Suggested = ""
+	if !keepReason {
+		entry.Reason = ""
+	}
 
 	// Create output directory if needed
 	if err := os.MkdirAll(outputDir, 0755); err != nil {

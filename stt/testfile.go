@@ -29,6 +29,7 @@ type TestFile struct {
 	Callsign          string              `json:"callsign"`
 	Command           string              `json:"command"`
 	Suggested         string              `json:"suggested,omitempty"` // reviewer-prefill correction, if any
+	Reason            string              `json:"reason,omitempty"`    // why the entry is a suspect / the suggestion (review note)
 	STTAircraft       map[string]Aircraft `json:"stt_aircraft"`
 	Logs              []string            `json:"logs,omitempty"`
 }
