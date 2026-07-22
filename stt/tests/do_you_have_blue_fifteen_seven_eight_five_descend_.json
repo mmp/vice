@@ -1,0 +1,386 @@
+{
+  "time": "2026-07-01T18:19:59.441160065Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:742:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Do you have blue fifteen seven eight five descend and maintain eight thousand?",
+  "whisper_duration_ms": 384.026,
+  "audio_duration_ms": 4424,
+  "processor": "GPU: AMD Radeon(TM) Graphics (16234MB)",
+  "whisper_model": "ggml-base.en-jlvatc-q5_0.bin",
+  "callsign": "JBU1575",
+  "command": "D80",
+  "stt_aircraft": {
+    "Blue Streak 60 97": {
+      "Callsign": "JIA6097",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Bradley": "KBDL",
+        "Daric": "DARIC",
+        "Edwood": "EDDWD",
+        "Eyes": "EYESS",
+        "Meggs": "MEGGS",
+        "Nayes": "NAYES",
+        "Ronald Reagan Washington National": "KDCA"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RIV": {
+          "Daric": "DARIC",
+          "Fergi": "FERGI"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "Visual Approach Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CLIPR3",
+      "Route": [
+        "EYESS",
+        "EDDWD",
+        "MEGGS",
+        "NAYES",
+        "KDCA"
+      ],
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "JetBlue 15 75": {
+      "Callsign": "JBU1575",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Meggs": "MEGGS",
+        "Ronald Reagan Washington National": "KDCA",
+        "Thane": "THANE"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RIV": {
+          "Daric": "DARIC",
+          "Fergi": "FERGI"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "Visual Approach Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "DEALE3",
+      "Route": [
+        "THANE",
+        "MEGGS",
+        "KDCA"
+      ],
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "JetBlue 36 50": {
+      "Callsign": "JBU3650",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Baam": "BAAAM",
+        "Daric": "DARIC",
+        "Fort Lauderdale": "KFLL",
+        "Jiles": "JILES",
+        "Pack": "PACKE",
+        "Ronald Reagan Washington National": "KDCA",
+        "Smoot": "SMOOT"
+      },
+      "CandidateApproaches": {
+        "River Visual runway one niner": "RIV",
+        "r-nav runway one five": "R15",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual approach runway one niner": "19",
+        "visual one five": "15",
+        "visual one niner": "19",
+        "visual runway one five": "15",
+        "visual runway one niner": "19"
+      },
+      "ApproachFixes": {
+        "R15": {
+          "Avole": "AVOLE",
+          "Punk": "PUNKN"
+        },
+        "RIV": {
+          "Daric": "DARIC",
+          "Fergi": "FERGI"
+        },
+        "RY9": {
+          "Dalla": "DALLA",
+          "Daric": "DARIC",
+          "Rork": "RORRK",
+          "Sunny": "SUNEY",
+          "Udere": "UDERE",
+          "slacker": "SLAKR"
+        },
+        "RZ9": {
+          "Daric": "DARIC",
+          "Firop": "FIROP",
+          "Fonvi": "FONVI",
+          "Greys": "GREYZ",
+          "Jubol": "JUBOL",
+          "Sunny": "SUNEY",
+          "Wirso": "WIRSO"
+        }
+      },
+      "AssignedApproach": "Visual Approach Runway 19",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CAPSS4",
+      "Route": [
+        "JILES",
+        "SMOOT",
+        "BAAAM",
+        "PACKE",
+        "KDCA"
+      ],
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "1J",
+      "TrackingController": "1J",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "1",
+        "19",
+        "4",
+        "22",
+        "4",
+        "22",
+        "15",
+        "33"
+      ]
+    },
+    "Southwest 72 36": {
+      "Callsign": "SWA7236",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Anchor": "ANCRR",
+        "Atlanta": "KATL",
+        "Baltimore/Washington International Thurgood Marshall": "KBWI",
+        "Beemore": "BMORE",
+        "Capko": "CAPKO",
+        "Exprto": "XPRTO",
+        "Hartsfield": "KATL",
+        "Hueyp": "HUEYP",
+        "Hun": "HUNNN",
+        "Kahn": "KAHNN",
+        "Kevin": "KEVVN",
+        "Kylo": "KYYLO",
+        "Lurl": "LURRL",
+        "Navy": "NAVEY",
+        "Raven": "RAVNN",
+        "Seed": "SEEED",
+        "Zartz": "ZARTZ",
+        "Zoey": "ZOEYY"
+      },
+      "CandidateApproaches": {
+        "I L S runway one five right": "I5R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five right": "15R",
+        "visual one five right": "15R",
+        "visual runway one five right": "15R"
+      },
+      "ApproachFixes": {
+        "I5R": {
+          "Beemore": "BMORE",
+          "Exprto": "XPRTO",
+          "Hueyp": "HUEYP",
+          "Kahn": "KAHNN",
+          "Kevin": "KEVVN",
+          "Kylo": "KYYLO",
+          "Zartz": "ZARTZ"
+        }
+      },
+      "AssignedApproach": "ILS Runway 15R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "RAVNN8",
+      "Route": [
+        "CAPKO",
+        "RAVNN",
+        "SEEED",
+        "NAVEY",
+        "ANCRR",
+        "LURRL",
+        "HUNNN",
+        "ZARTZ",
+        "ZOEYY",
+        "KBWI"
+      ],
+      "Altitude": 11868,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Do you have blue fifteen seven eight five descend and maintain eight thousand?\"",
+    "[local-stt] normalized words: [do you have blue 15 7 8 5 descend and maintain 8 thousand]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"do\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"you\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"have\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"blue\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"15785\" Type=1 Value=15785",
+    "[local-stt]   token[5]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"80\" Type=2 Value=80",
+    "[local-stt] MatchCallsign: 9 tokens, 4 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 9 tokens, 4 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"JetBlue 15 75\" (airline=0.464, flight=0.953, skip=2)",
+    "[local-stt]     result 1: \"JetBlue 15 75\" (airline=0.464, flight=0.953, skip=3)",
+    "[local-stt]     pattern \"airline_flight\": selected \"JetBlue 15 75\" (airline=0.46, flight=0.95, skip=2)",
+    "[local-stt]   pattern \"airline_only\": 11 results",
+    "[local-stt]     result 0: \"Southwest 72 36\" (airline=0.537, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest 72 36\" (airline=0.630, flight=0.000, skip=1)",
+    "[local-stt]     result 2: \"Blue Streak 60 97\" (airline=0.528, flight=0.000, skip=1)",
+    "[local-stt]     result 3: \"JetBlue 36 50\" (airline=0.464, flight=0.000, skip=2)",
+    "[local-stt]     result 4: \"Southwest 72 36\" (airline=0.454, flight=0.000, skip=2)",
+    "[local-stt]     pattern \"airline_only\": selected \"Blue Streak 60 97\" (airline=1.00, flight=0.00, skip=3)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"JetBlue 15 75\" (airline=0.500, flight=0.953, skip=2)",
+    "[local-stt]     pattern \"flight_only\": selected \"JetBlue 15 75\" (airline=0.50, flight=0.95, skip=2)",
+    "[local-stt]   pattern \"flight_only\" matched: \"JBU1575\" (conf=0.71, consumed=5, addressingForm=0, spokenKey=\"JetBlue 15 75\")",
+    "[local-stt] callsign match: Callsign=\"JBU1575\" SpokenKey=\"JetBlue 15 75\" Conf=0.71 Consumed=5",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=10000 Fixes=4 Approaches=4 VisualApproaches=6 AssignedApproach=\"Visual Approach Runway 19\" LAHSORunways=[1 19 4 22 4 22 15 33]",
+    "[local-stt]   fix: \"Ronald Reagan Washington National\" -\u003e \"KDCA\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   fix: \"Thane\" -\u003e \"THANE\"",
+    "[local-stt]   fix: \"Meggs\" -\u003e \"MEGGS\"",
+    "[local-stt]   approach: \"r-nav zulu runway one niner\" -\u003e \"RZ9\"",
+    "[local-stt]   approach: \"r-nav yankee runway one niner\" -\u003e \"RY9\"",
+    "[local-stt]   approach: \"River Visual runway one niner\" -\u003e \"RIV\"",
+    "[local-stt]   approach: \"r-nav runway one five\" -\u003e \"R15\"",
+    "[local-stt]   visual approach: \"visual runway one niner\" -\u003e \"19\"",
+    "[local-stt]   visual approach: \"visual approach runway one niner\" -\u003e \"19\"",
+    "[local-stt]   visual approach: \"visual one niner\" -\u003e \"19\"",
+    "[local-stt]   visual approach: \"visual runway one five\" -\u003e \"15\"",
+    "[local-stt]   visual approach: \"visual approach runway one five\" -\u003e \"15\"",
+    "[local-stt]   visual approach: \"visual one five\" -\u003e \"15\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"80\" Type=2 Value=80",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"descend\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"descend\"",
+    "[local-stt]   matched command: \"D80\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[D80] (avgConf=1.00)",
+    "[local-stt] parsed commands: [D80] (conf=1.00)",
+    "[local-stt] validated commands: [D80] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU1575 D80\" (conf=0.71, time=1.7529ms) ==="
+  ]
+}

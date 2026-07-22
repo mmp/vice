@@ -1,0 +1,313 @@
+{
+  "time": "2026-06-27T21:57:39.969452094Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:951:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "FedEx Eight Six Three Radar Contact",
+  "whisper_duration_ms": 305.864,
+  "audio_duration_ms": 3400,
+  "processor": "GPU: NVIDIA GeForce RTX 4060 (7956MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "American four zero seven heavy": {
+      "Callsign": "AAL407",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Adolfo Suárez Madrid–Barajas": "LEMD",
+        "Happy": "HAPIE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "SKORR6.YNKEE",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 10084,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "B17",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 97 heavy": {
+      "Callsign": "DAL97",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Rober": "ROBER",
+        "Shannon": "EINN",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Fedex eight 63 heavy": {
+      "Callsign": "FDX863",
+      "AircraftType": "MD11",
+      "Fixes": {
+        "Kennedy": "JFK",
+        "LaGuardia": "KLGA",
+        "Norfolk": "KORF",
+        "White": "WHITE"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "LGA7",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 6000,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 93 94": {
+      "Callsign": "JBU9394",
+      "AircraftType": "A320",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Luis Munoz Marin": "TJSJ",
+        "Meals": "MEALS",
+        "Zachs": "ZACHS"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 4465,
+      "State": "cleared approach",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "JetBlue eight 48": {
+      "Callsign": "JBU848",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Copes": "COPES",
+        "Harry Reid": "KLAS",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Mets": "METSS",
+        "Ranger": "RNGRR",
+        "Robbinsville": "RBV",
+        "Score": "SKORR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "SKORR6.RNGRR",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 3094,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november four lima": {
+      "Callsign": "N4L",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury": "KDXR",
+        "Farmingdale": "KFRG",
+        "Republic": "KFRG"
+      },
+      "CandidateApproaches": {},
+      "CandidateVisualApproaches": {},
+      "ApproachFixes": {},
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 2611,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"FedEx Eight Six Three Radar Contact\"",
+    "[local-stt] normalized words: [fedex 8 6 3 radar contact]",
+    "[local-stt] tokens: 4",
+    "[local-stt]   token[0]: Text=\"fedex\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"863\" Type=1 Value=863",
+    "[local-stt]   token[2]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 4 tokens, 6 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 4 tokens, 6 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Fedex eight 63 heavy\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Fedex eight 63 heavy\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 11 results",
+    "[local-stt]     result 0: \"JetBlue eight 48\" (airline=0.448, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Fedex eight 63 heavy\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Delta 97 heavy\" (airline=0.467, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"JetBlue 93 94\" (airline=0.448, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"American four zero seven heavy\" (airline=0.442, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Fedex eight 63 heavy\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Fedex eight 63 heavy\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Fedex eight 63 heavy\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"Fedex eight 63 heavy\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"FDX863\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"Fedex eight 63 heavy\")",
+    "[local-stt] callsign match: Callsign=\"FDX863\" SpokenKey=\"Fedex eight 63 heavy\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=6000 Fixes=4 Approaches=0 VisualApproaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Norfolk\" -\u003e \"KORF\"",
+    "[local-stt]   fix: \"LaGuardia\" -\u003e \"KLGA\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"JFK\"",
+    "[local-stt]   fix: \"White\" -\u003e \"WHITE\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt] classified as radar contact, returning empty",
+    "[local-stt] === DecodeTranscript END: \"\" (radar contact, time=569.1µs) ==="
+  ]
+}

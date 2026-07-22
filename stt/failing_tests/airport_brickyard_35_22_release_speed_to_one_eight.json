@@ -1,0 +1,643 @@
+{
+  "time": "2026-06-27T17:02:27.257146742Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:951:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Airport, Brickyard 35 22 release speed to one eight zero maintain that until Dennis",
+  "whisper_duration_ms": 522.291,
+  "audio_duration_ms": 6216,
+  "processor": "GPU: Apple M4 Pro, 12 CPU / 16 GPU cores, 24GB",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "RPA3522",
+  "command": "S180/UDNNIS",
+  "stt_aircraft": {
+    "Air Canada 30 11": {
+      "Callsign": "ACA3011",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Benji": "BENNG",
+        "Dennis": "DNNIS",
+        "Greg": "GGREG",
+        "Jacie": "JACIE",
+        "LaGuardia": "KLGA",
+        "Montreal / Pierre Elliott Trudeau": "CYUL",
+        "Necol": "NECOL",
+        "Rahel": "RAHEL",
+        "Vadder": "VADDR",
+        "Varaz": "VARAZ",
+        "Zarid": "ZARID"
+      },
+      "CandidateApproaches": {
+        "I L S runway four": "I4",
+        "r-nav yankee runway four": "R4"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four": "4",
+        "visual four": "4",
+        "visual runway four": "4"
+      },
+      "ApproachFixes": {
+        "I4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Zarid": "ZARID"
+        },
+        "R4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Warren": "WARIN",
+          "Zarid": "ZARID"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 35 22": {
+      "Callsign": "RPA3522",
+      "AircraftType": "E170",
+      "Fixes": {
+        "Benji": "BENNG",
+        "Dennis": "DNNIS",
+        "Greg": "GGREG",
+        "Jacie": "JACIE",
+        "LaGuardia": "KLGA",
+        "Necol": "NECOL",
+        "Piedmont Triad": "KGSO",
+        "Rahel": "RAHEL",
+        "Vadder": "VADDR",
+        "Varaz": "VARAZ",
+        "Zarid": "ZARID"
+      },
+      "CandidateApproaches": {
+        "I L S runway four": "I4",
+        "r-nav yankee runway four": "R4"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four": "4",
+        "visual four": "4",
+        "visual runway four": "4"
+      },
+      "ApproachFixes": {
+        "I4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Zarid": "ZARID"
+        },
+        "R4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Warren": "WARIN",
+          "Zarid": "ZARID"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PROUD2",
+      "Route": null,
+      "Altitude": 3000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 58 69": {
+      "Callsign": "RPA5869",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Benji": "BENNG",
+        "Dennis": "DNNIS",
+        "Detroit Metro": "KDTW",
+        "Greg": "GGREG",
+        "Jacie": "JACIE",
+        "LaGuardia": "KLGA",
+        "Metro": "KDTW",
+        "Necol": "NECOL",
+        "Rahel": "RAHEL",
+        "Vadder": "VADDR",
+        "Varaz": "VARAZ",
+        "Zarid": "ZARID"
+      },
+      "CandidateApproaches": {
+        "I L S runway four": "I4",
+        "r-nav yankee runway four": "R4"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four": "4",
+        "visual four": "4",
+        "visual runway four": "4"
+      },
+      "ApproachFixes": {
+        "I4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Zarid": "ZARID"
+        },
+        "R4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Warren": "WARIN",
+          "Zarid": "ZARID"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 3726,
+      "State": "cleared approach",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 88 51": {
+      "Callsign": "RPA8851",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Apple": "APPLE",
+        "Benji": "BENNG",
+        "Dennis": "DNNIS",
+        "Depdy": "DEPDY",
+        "Greg": "GGREG",
+        "Jacie": "JACIE",
+        "Jersey": "JERZY",
+        "LaGuardia": "KLGA",
+        "Minks": "MINKS",
+        "Necol": "NECOL",
+        "Proud": "PROUD",
+        "Rahel": "RAHEL",
+        "Renew": "RENUE",
+        "Ronald Reagan Washington National": "KDCA",
+        "Tykes": "TYKES",
+        "Vadder": "VADDR",
+        "Varaz": "VARAZ",
+        "Zarid": "ZARID"
+      },
+      "CandidateApproaches": {
+        "I L S runway four": "I4",
+        "r-nav yankee runway four": "R4"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four": "4",
+        "visual four": "4",
+        "visual runway four": "4"
+      },
+      "ApproachFixes": {
+        "I4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Zarid": "ZARID"
+        },
+        "R4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Warren": "WARIN",
+          "Zarid": "ZARID"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PROUD2",
+      "Route": null,
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Delta 62 14": {
+      "Callsign": "DAL6214",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Apple": "APPLE",
+        "Benji": "BENNG",
+        "Dennis": "DNNIS",
+        "Des Moines": "KDSM",
+        "Greg": "GGREG",
+        "Jacie": "JACIE",
+        "LaGuardia": "KLGA",
+        "Necol": "NECOL",
+        "Proud": "PROUD",
+        "Rahel": "RAHEL",
+        "Vadder": "VADDR",
+        "Varaz": "VARAZ",
+        "Zarid": "ZARID"
+      },
+      "CandidateApproaches": {
+        "I L S runway four": "I4",
+        "r-nav yankee runway four": "R4"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four": "4",
+        "visual four": "4",
+        "visual runway four": "4"
+      },
+      "ApproachFixes": {
+        "I4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Zarid": "ZARID"
+        },
+        "R4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Warren": "WARIN",
+          "Zarid": "ZARID"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Endeavor 31 42": {
+      "Callsign": "EDV3142",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Apple": "APPLE",
+        "Beauty": "BEUTY",
+        "Dreams": "DREMS",
+        "Harlem": "HARLM",
+        "LaGuardia": "KLGA",
+        "Northwest Arkansas National": "KXNA",
+        "Proud": "PROUD"
+      },
+      "CandidateApproaches": {
+        "I L S runway four": "I4",
+        "r-nav yankee runway four": "R4"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four": "4",
+        "visual four": "4",
+        "visual runway four": "4"
+      },
+      "ApproachFixes": {
+        "I4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Zarid": "ZARID"
+        },
+        "R4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Warren": "WARIN",
+          "Zarid": "ZARID"
+        }
+      },
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 12703,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Endeavor 52 zero niner": {
+      "Callsign": "EDV5209",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Benji": "BENNG",
+        "Charlotte Douglas": "KCLT",
+        "Dennis": "DNNIS",
+        "Greg": "GGREG",
+        "Jacie": "JACIE",
+        "LaGuardia": "KLGA",
+        "Necol": "NECOL",
+        "Rahel": "RAHEL",
+        "Vadder": "VADDR",
+        "Varaz": "VARAZ",
+        "Zarid": "ZARID"
+      },
+      "CandidateApproaches": {
+        "I L S runway four": "I4",
+        "r-nav yankee runway four": "R4"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four": "4",
+        "visual four": "4",
+        "visual runway four": "4"
+      },
+      "ApproachFixes": {
+        "I4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Zarid": "ZARID"
+        },
+        "R4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Warren": "WARIN",
+          "Zarid": "ZARID"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PROUD2",
+      "Route": null,
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Southwest seven 74": {
+      "Callsign": "SWA774",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Apple": "APPLE",
+        "Benji": "BENNG",
+        "Dennis": "DNNIS",
+        "Dreams": "DREMS",
+        "Greg": "GGREG",
+        "Jacie": "JACIE",
+        "Kansas City": "KMCI",
+        "LaGuardia": "KLGA",
+        "Necol": "NECOL",
+        "Proud": "PROUD",
+        "Rahel": "RAHEL",
+        "Vadder": "VADDR",
+        "Varaz": "VARAZ",
+        "Zarid": "ZARID"
+      },
+      "CandidateApproaches": {
+        "I L S runway four": "I4",
+        "r-nav yankee runway four": "R4"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway four": "4",
+        "visual four": "4",
+        "visual runway four": "4"
+      },
+      "ApproachFixes": {
+        "I4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Zarid": "ZARID"
+        },
+        "R4": {
+          "Benji": "BENNG",
+          "Dennis": "DNNIS",
+          "Greg": "GGREG",
+          "Jacie": "JACIE",
+          "Necol": "NECOL",
+          "Rahel": "RAHEL",
+          "Vadder": "VADDR",
+          "Varaz": "VARAZ",
+          "Warren": "WARIN",
+          "Zarid": "ZARID"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Airport, Brickyard 35 22 release speed to one eight zero maintain that until Dennis\"",
+    "[local-stt] normalized words: [airport brickyard 35 22 release speed to 1 8 0 maintain that until dennis]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"airport\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"brickyard\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"35\" Type=1 Value=35",
+    "[local-stt]   token[3]: Text=\"22\" Type=1 Value=22",
+    "[local-stt]   token[4]: Text=\"release\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[8]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"that\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"until\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"dennis\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 12 tokens, 8 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 12 tokens, 8 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Brickyard 35 22\" (airline=1.000, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Brickyard 35 22\" (airline=1.00, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"airline_flight\": 4 results",
+    "[local-stt]     result 0: \"Endeavor 31 42\" (airline=0.512, flight=0.700, skip=0)",
+    "[local-stt]     result 1: \"Brickyard 35 22\" (airline=0.476, flight=1.000, skip=0)",
+    "[local-stt]     result 2: \"Endeavor 31 42\" (airline=0.491, flight=0.700, skip=1)",
+    "[local-stt]     result 3: \"Brickyard 35 22\" (airline=1.000, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Brickyard 35 22\" (airline=1.00, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"airline_only\": 14 results",
+    "[local-stt]     result 0: \"Endeavor 52 zero niner\" (airline=0.512, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest seven 74\" (airline=0.503, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Brickyard 88 51\" (airline=0.476, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Endeavor 31 42\" (airline=0.512, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Brickyard 58 69\" (airline=0.476, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Brickyard 35 22\" (airline=0.48, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Brickyard 35 22\"",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Brickyard 35 22\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     result 1: \"Brickyard 35 22\" (airline=0.500, flight=1.000, skip=2)",
+    "[local-stt]     pattern \"flight_only\": selected \"Brickyard 35 22\" (airline=0.50, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"RPA3522\" (conf=0.90, consumed=4, addressingForm=0, spokenKey=\"Brickyard 35 22\")",
+    "[local-stt] callsign match: Callsign=\"RPA3522\" SpokenKey=\"Brickyard 35 22\" Conf=0.90 Consumed=4",
+    "[local-stt] aircraft context: State=\"cleared approach\" Altitude=3000 Fixes=11 Approaches=2 VisualApproaches=3 AssignedApproach=\"ILS Runway 4\" LAHSORunways=[13 31]",
+    "[local-stt]   fix: \"Piedmont Triad\" -\u003e \"KGSO\"",
+    "[local-stt]   fix: \"Dennis\" -\u003e \"DNNIS\"",
+    "[local-stt]   fix: \"Greg\" -\u003e \"GGREG\"",
+    "[local-stt]   fix: \"Zarid\" -\u003e \"ZARID\"",
+    "[local-stt]   fix: \"Necol\" -\u003e \"NECOL\"",
+    "[local-stt]   fix: \"Benji\" -\u003e \"BENNG\"",
+    "[local-stt]   fix: \"LaGuardia\" -\u003e \"KLGA\"",
+    "[local-stt]   fix: \"Rahel\" -\u003e \"RAHEL\"",
+    "[local-stt]   fix: \"Vadder\" -\u003e \"VADDR\"",
+    "[local-stt]   fix: \"Jacie\" -\u003e \"JACIE\"",
+    "[local-stt]   fix: \"Varaz\" -\u003e \"VARAZ\"",
+    "[local-stt]   approach: \"r-nav yankee runway four\" -\u003e \"R4\"",
+    "[local-stt]   approach: \"I L S runway four\" -\u003e \"I4\"",
+    "[local-stt]   visual approach: \"visual runway four\" -\u003e \"4\"",
+    "[local-stt]   visual approach: \"visual approach runway four\" -\u003e \"4\"",
+    "[local-stt]   visual approach: \"visual four\" -\u003e \"4\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"release\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[4]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"that\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"until\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"dennis\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"release\" against 11 fixes",
+    "[local-stt]   extractFix: no match found for \"release\"",
+    "[local-stt]   no match at token[0]=\"release\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"speed\" against 11 fixes",
+    "[local-stt]   extractFix: no match found for \"speed\"",
+    "[local-stt]   matched command: \"S180\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"maintain\" against 11 fixes",
+    "[local-stt]   extractFix: no match found for \"maintain\"",
+    "[local-stt]   matched command: \"SAYAGAIN/SPEED\" (conf=0.50, consumed=1, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"that\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"that\" -\u003e \"DNNIS\" (fuzzy 0.80)",
+    "[local-stt]   no match at token[5]=\"that\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"until\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"until\" -\u003e \"DNNIS\" (fuzzy 0.80)",
+    "[local-stt]   no match at token[6]=\"until\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"dennis\" against 11 fixes",
+    "[local-stt]   extractFix: matched \"dennis\" -\u003e \"DNNIS\" (exact)",
+    "[local-stt]   extractFix: matched \"dennis\" -\u003e \"DNNIS\" (fuzzy 1.00)",
+    "[local-stt]   no match at token[7]=\"dennis\", skipping",
+    "[local-stt] ParseCommands: result=[S180 SAYAGAIN/SPEED] (avgConf=0.75)",
+    "[local-stt] parsed commands: [S180 SAYAGAIN/SPEED] (conf=0.75)",
+    "[local-stt] validated commands: [S180 SAYAGAIN/SPEED] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"RPA3522 S180 SAYAGAIN/SPEED\" (conf=0.68, time=2.483834ms) ==="
+  ]
+}

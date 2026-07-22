@@ -1,0 +1,471 @@
+{
+  "time": "2026-06-15T21:52:21.812291319Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:951:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "United Sixty Six Eighteen say heading",
+  "whisper_duration_ms": 140.618,
+  "audio_duration_ms": 1992,
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "UAL6618",
+  "command": "SH",
+  "stt_aircraft": {
+    "Bahamas 17 zero zero": {
+      "Callsign": "BHS1700",
+      "AircraftType": "AT45",
+      "Fixes": {
+        "Didme": "DIDME",
+        "Gullo": "GULLO",
+        "Leonard M Thompson": "MYAM",
+        "Merlin": "MRLIN",
+        "Palm Beach": "KPBI",
+        "Sans": "SANZZ",
+        "Sheedy": "SHDEE",
+        "Wilba": "WILBA",
+        "Zisur": "ZISUR"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "r-nav yankee runway one zero left": "RY0L",
+        "r-nav zulu runway one zero left": "RZ0L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one zero left": "10L",
+        "visual one zero left": "10L",
+        "visual runway one zero left": "10L"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Gullo": "GULLO",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        },
+        "RY0L": {
+          "Didme": "DIDME",
+          "Gullo": "GULLO",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        },
+        "RZ0L": {
+          "Gullo": "GULLO",
+          "Sans": "SANZZ",
+          "Sheedy": "SHDEE",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        }
+      },
+      "AssignedApproach": "Visual Approach Runway 10L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "14",
+        "32"
+      ]
+    },
+    "Delta seven 90": {
+      "Callsign": "DAL790",
+      "AircraftType": "BCS1",
+      "Fixes": {
+        "Clement": "CLMNT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Mazel": "MAZEL",
+        "Palm Beach": "KPBI"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "r-nav yankee runway one zero left": "RY0L",
+        "r-nav zulu runway one zero left": "RZ0L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one zero left": "10L",
+        "visual one zero left": "10L",
+        "visual runway one zero left": "10L"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Gullo": "GULLO",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        },
+        "RY0L": {
+          "Didme": "DIDME",
+          "Gullo": "GULLO",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        },
+        "RZ0L": {
+          "Gullo": "GULLO",
+          "Sans": "SANZZ",
+          "Sheedy": "SHDEE",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        }
+      },
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CLMNT2",
+      "Route": null,
+      "Altitude": 12049,
+      "State": "arrival",
+      "ControllerFrequency": "1I",
+      "TrackingController": "1I",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "14",
+        "32"
+      ]
+    },
+    "Delta two zero two": {
+      "Callsign": "DAL202",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Delman": "DLMAN",
+        "Gullo": "GULLO",
+        "Juno": "JUUNO",
+        "LaGuardia": "KLGA",
+        "Palm Beach": "KPBI",
+        "Sans": "SANZZ",
+        "Wilba": "WILBA",
+        "Zisur": "ZISUR"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "r-nav yankee runway one zero left": "RY0L",
+        "r-nav zulu runway one zero left": "RZ0L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one zero left": "10L",
+        "visual one zero left": "10L",
+        "visual runway one zero left": "10L"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Gullo": "GULLO",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        },
+        "RY0L": {
+          "Didme": "DIDME",
+          "Gullo": "GULLO",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        },
+        "RZ0L": {
+          "Gullo": "GULLO",
+          "Sans": "SANZZ",
+          "Sheedy": "SHDEE",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CLMNT2",
+      "Route": null,
+      "Altitude": 5339,
+      "State": "arrival",
+      "ControllerFrequency": "1I",
+      "TrackingController": "1I",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "14",
+        "32"
+      ]
+    },
+    "Southwest 25 18": {
+      "Callsign": "SWA2518",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Hilbert": "HLIBT",
+        "Nashville": "KBNA",
+        "Palm Beach": "KPBI",
+        "Tarty": "TARTY"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "r-nav yankee runway one zero left": "RY0L",
+        "r-nav zulu runway one zero left": "RZ0L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one zero left": "10L",
+        "visual one zero left": "10L",
+        "visual runway one zero left": "10L"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Gullo": "GULLO",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        },
+        "RY0L": {
+          "Didme": "DIDME",
+          "Gullo": "GULLO",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        },
+        "RZ0L": {
+          "Gullo": "GULLO",
+          "Sans": "SANZZ",
+          "Sheedy": "SHDEE",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        }
+      },
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "VUUDU1",
+      "Route": null,
+      "Altitude": 11058,
+      "State": "arrival",
+      "ControllerFrequency": "1P",
+      "TrackingController": "1P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "14",
+        "32"
+      ]
+    },
+    "United 66 18": {
+      "Callsign": "UAL6618",
+      "AircraftType": "B738",
+      "Fixes": {
+        "George Bush Intercontinental Houston": "KIAH",
+        "Gullo": "GULLO",
+        "Palm Beach": "KPBI",
+        "Wilba": "WILBA",
+        "Zisur": "ZISUR"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "r-nav yankee runway one zero left": "RY0L",
+        "r-nav zulu runway one zero left": "RZ0L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one zero left": "10L",
+        "visual one zero left": "10L",
+        "visual runway one zero left": "10L"
+      },
+      "ApproachFixes": {
+        "I0L": {
+          "Gullo": "GULLO",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        },
+        "RY0L": {
+          "Didme": "DIDME",
+          "Gullo": "GULLO",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        },
+        "RZ0L": {
+          "Gullo": "GULLO",
+          "Sans": "SANZZ",
+          "Sheedy": "SHDEE",
+          "Wilba": "WILBA",
+          "Zisur": "ZISUR"
+        }
+      },
+      "AssignedApproach": "ILS Runway 10L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "VUUDU1",
+      "Route": null,
+      "Altitude": 4040,
+      "State": "arrival",
+      "ControllerFrequency": "1P",
+      "TrackingController": "1P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "14",
+        "32"
+      ]
+    },
+    "United niner": {
+      "Callsign": "UAL9",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Fixas": "FIXAS",
+        "Newark": "KEWR",
+        "Palm Beach": "KPBI",
+        "Quizer": "QUIZR",
+        "Slides": "SLIDZ"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "SLIDZ3",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 7797,
+      "State": "departure",
+      "ControllerFrequency": "1B",
+      "TrackingController": "1B",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "embraer phenom one hundred three victor sierra": {
+      "Callsign": "N953VS/T",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Boca Raton": "KBCT",
+        "Bongos": "BNGOS",
+        "Coffee": "CAWFE",
+        "Conas": "CONAS",
+        "Java": "JAVAA",
+        "Mizner": "MYZNR",
+        "Naples Municipal": "KAPF",
+        "Welly": "WELLY",
+        "slam": "SLAAM"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "MYZNR3",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 8193,
+      "State": "departure",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "november niner five three victor sierra": {
+      "Callsign": "N953VS",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Boca Raton": "KBCT",
+        "Bongos": "BNGOS",
+        "Coffee": "CAWFE",
+        "Conas": "CONAS",
+        "Java": "JAVAA",
+        "Mizner": "MYZNR",
+        "Naples Municipal": "KAPF",
+        "Welly": "WELLY",
+        "slam": "SLAAM"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "MYZNR3",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 8193,
+      "State": "departure",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "phenom one hundred three victor sierra": {
+      "Callsign": "N953VS/T",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Boca Raton": "KBCT",
+        "Bongos": "BNGOS",
+        "Coffee": "CAWFE",
+        "Conas": "CONAS",
+        "Java": "JAVAA",
+        "Mizner": "MYZNR",
+        "Naples Municipal": "KAPF",
+        "Welly": "WELLY",
+        "slam": "SLAAM"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "MYZNR3",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 8193,
+      "State": "departure",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"United Sixty Six Eighteen say heading\"",
+    "[local-stt] normalized words: [united 66 18 say heading]",
+    "[local-stt] tokens: 5",
+    "[local-stt]   token[0]: Text=\"united\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"66\" Type=1 Value=66",
+    "[local-stt]   token[2]: Text=\"18\" Type=1 Value=18",
+    "[local-stt]   token[3]: Text=\"say\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 5 tokens, 9 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 5 tokens, 9 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"United 66 18\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"United 66 18\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"United 66 18\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"United 66 18\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 7 results",
+    "[local-stt]     result 0: \"Delta seven 90\" (airline=0.456, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta two zero two\" (airline=0.456, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"United niner\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Southwest 25 18\" (airline=0.611, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"United 66 18\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"United 66 18\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"United 66 18\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"United 66 18\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"United 66 18\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"UAL6618\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"United 66 18\")",
+    "[local-stt] callsign match: Callsign=\"UAL6618\" SpokenKey=\"United 66 18\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4040 Fixes=5 Approaches=3 VisualApproaches=3 AssignedApproach=\"ILS Runway 10L\" LAHSORunways=[14 32]",
+    "[local-stt]   fix: \"Palm Beach\" -\u003e \"KPBI\"",
+    "[local-stt]   fix: \"George Bush Intercontinental Houston\" -\u003e \"KIAH\"",
+    "[local-stt]   fix: \"Gullo\" -\u003e \"GULLO\"",
+    "[local-stt]   fix: \"Wilba\" -\u003e \"WILBA\"",
+    "[local-stt]   fix: \"Zisur\" -\u003e \"ZISUR\"",
+    "[local-stt]   approach: \"r-nav yankee runway one zero left\" -\u003e \"RY0L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one zero left\" -\u003e \"RZ0L\"",
+    "[local-stt]   approach: \"I L S runway one zero left\" -\u003e \"I0L\"",
+    "[local-stt]   visual approach: \"visual runway one zero left\" -\u003e \"10L\"",
+    "[local-stt]   visual approach: \"visual approach runway one zero left\" -\u003e \"10L\"",
+    "[local-stt]   visual approach: \"visual one zero left\" -\u003e \"10L\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"say\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"say\" against 5 fixes",
+    "[local-stt]   extractFix: no match found for \"say\"",
+    "[local-stt]   matched command: \"SH\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[SH] (avgConf=1.00)",
+    "[local-stt] parsed commands: [SH] (conf=1.00)",
+    "[local-stt] validated commands: [SH] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UAL6618 SH\" (conf=1.00, time=1.5734ms) ==="
+  ]
+}

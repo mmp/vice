@@ -1,0 +1,351 @@
+{
+  "time": "2026-06-27T21:54:58.352044312Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:951:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American Four Zero Seven heavy X-ray climb",
+  "whisper_duration_ms": 300.119,
+  "audio_duration_ms": 3016,
+  "processor": "GPU: NVIDIA GeForce RTX 4060 (7956MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "AAL407",
+  "command": "AGAIN",
+  "stt_aircraft": {
+    "American 70": {
+      "Callsign": "AAL70",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Blue": "BLUUU",
+        "Cyril E. King": "TIST",
+        "Doggers": "DOGRS",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Score": "SKORR",
+        "Seaside": "CESID",
+        "Ship": "SHIPP",
+        "Yankee": "YNKEE",
+        "speedy": "SPDEY"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "SKORR6.YNKEE",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 2654,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American four zero seven heavy": {
+      "Callsign": "AAL407",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Adolfo Suárez Madrid–Barajas": "LEMD",
+        "Happy": "HAPIE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Seaside": "CESID",
+        "Yankee": "YNKEE"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "SKORR6.YNKEE",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 4898,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 97 heavy": {
+      "Callsign": "DAL97",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Rober": "ROBER",
+        "Shannon": "EINN",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 6963,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Ethiopian five 15 heavy": {
+      "Callsign": "ETH515",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Addis Ababa Bole": "HAAB",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Merrit": "MERIT"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "SKORR6.YNKEE",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 9833,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "B19",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 93 94": {
+      "Callsign": "JBU9394",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Luis Munoz Marin": "TJSJ"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 9564,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "november four lima": {
+      "Callsign": "N4L",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury": "KDXR",
+        "Farmingdale": "KFRG",
+        "Republic": "KFRG"
+      },
+      "CandidateApproaches": {},
+      "CandidateVisualApproaches": {},
+      "ApproachFixes": {},
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 2552,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American Four Zero Seven heavy X-ray climb\"",
+    "[local-stt] normalized words: [american 4 0 7 heavy x ray climb]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"407\" Type=1 Value=407",
+    "[local-stt]   token[2]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"x\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"ray\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 6 tokens, 6 aircraft",
+    "[local-stt]   detected \"heavy\" in callsign region, filtering to 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 3 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"American four zero seven heavy\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"American four zero seven heavy\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 6 results",
+    "[local-stt]     result 0: \"American four zero seven heavy\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Ethiopian five 15 heavy\" (airline=0.648, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Delta 97 heavy\" (airline=0.550, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Ethiopian five 15 heavy\" (airline=0.374, flight=0.000, skip=2)",
+    "[local-stt]     result 4: \"Delta 97 heavy\" (airline=0.467, flight=0.000, skip=2)",
+    "[local-stt]     pattern \"airline_only\": selected \"American four zero seven heavy\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"American four zero seven heavy\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"American four zero seven heavy\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"American four zero seven heavy\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"AAL407\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"American four zero seven heavy\")",
+    "[local-stt] matchCallsignWithPatterns: 2 tokens, 6 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"American four zero seven heavy\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"American four zero seven heavy\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 5 results",
+    "[local-stt]     result 0: \"JetBlue 93 94\" (airline=0.423, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta 97 heavy\" (airline=0.550, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"American four zero seven heavy\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Ethiopian five 15 heavy\" (airline=0.648, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"American 70\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"American four zero seven heavy\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"American four zero seven heavy\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"American four zero seven heavy\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"American four zero seven heavy\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"AAL407\" (conf=1.00, consumed=2, addressingForm=0, spokenKey=\"American four zero seven heavy\")",
+    "[local-stt] callsign match: Callsign=\"AAL407\" SpokenKey=\"American four zero seven heavy\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=4898 Fixes=6 Approaches=0 VisualApproaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Seaside\" -\u003e \"CESID\"",
+    "[local-stt]   fix: \"Yankee\" -\u003e \"YNKEE\"",
+    "[local-stt]   fix: \"Happy\" -\u003e \"HAPIE\"",
+    "[local-stt]   fix: \"Adolfo Suárez Madrid–Barajas\" -\u003e \"LEMD\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"x\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"ray\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"x\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"x\"",
+    "[local-stt]   no match at token[0]=\"x\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"ray\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"ray\"",
+    "[local-stt]   no match at token[1]=\"ray\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"climb\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"climb\"",
+    "[local-stt]   no match at token[2]=\"climb\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL407 AGAIN\" (conf=1.00, time=516.3µs) ==="
+  ]
+}

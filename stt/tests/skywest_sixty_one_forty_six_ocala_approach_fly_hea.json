@@ -1,0 +1,237 @@
+{
+  "time": "2026-07-17T07:46:56.453986116Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:956:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Skywest Sixty One Forty Six Ocala Approach fly heading zero nine zero descend and maintain six thousand",
+  "whisper_duration_ms": 201.861,
+  "audio_duration_ms": 4936,
+  "processor": "GPU: NVIDIA GeForce RTX 4080 (16264MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "Delta 50 77": {
+      "Callsign": "DAL5077",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Aztec": "AZTEK",
+        "Jeeves": "JEEVS",
+        "Lindy": "LYNDI",
+        "Lucky": "LUCKI",
+        "Minneapolis": "KMSP",
+        "Okain": "OKAIN",
+        "San Diego": "KSAN",
+        "Sijhi": "CIJHI",
+        "Vida": "VYDDA",
+        "reebo": "REEBO"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two seven": "27",
+        "visual runway two seven": "27",
+        "visual two seven": "27"
+      },
+      "ApproachFixes": {
+        "L27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RY7": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RZ7": {
+          "Carsner": "CRSNR",
+          "Catdog": "CATDG",
+          "Clomn": "KLOMN",
+          "Jade": "AJADE",
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sayae": "SAYAE",
+          "Sijhi": "CIJHI",
+          "Tokyo": "TOKOE",
+          "Vida": "VYDDA"
+        },
+        "V27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        }
+      },
+      "AssignedApproach": "RNAV Y Runway 27",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "LUCKI1",
+      "Route": [
+        "AZTEK",
+        "JEEVS",
+        "LUCKI",
+        "LYNDI",
+        "KSAN"
+      ],
+      "Altitude": 10405,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Fedex niner 41": {
+      "Callsign": "FDX941",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Ontario": "KONT",
+        "San Diego": "KSAN"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "RV",
+      "STAR": "",
+      "Route": [
+        "KONT"
+      ],
+      "Altitude": 6000,
+      "State": "departure",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest seven 82": {
+      "Callsign": "SWA782",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Carsner": "CRSNR",
+        "Catdog": "CATDG",
+        "Clomn": "KLOMN",
+        "Jade": "AJADE",
+        "Lindy": "LYNDI",
+        "Metropolitan Oakland": "KOAK",
+        "Okain": "OKAIN",
+        "San Diego": "KSAN",
+        "Sayae": "SAYAE",
+        "Sijhi": "CIJHI",
+        "Tokyo": "TOKOE",
+        "Vida": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two seven": "27",
+        "visual runway two seven": "27",
+        "visual two seven": "27"
+      },
+      "ApproachFixes": {
+        "L27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RY7": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RZ7": {
+          "Carsner": "CRSNR",
+          "Catdog": "CATDG",
+          "Clomn": "KLOMN",
+          "Jade": "AJADE",
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sayae": "SAYAE",
+          "Sijhi": "CIJHI",
+          "Tokyo": "TOKOE",
+          "Vida": "VYDDA"
+        },
+        "V27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 27",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Route": [
+        "CRSNR",
+        "SAYAE",
+        "CIJHI",
+        "TOKOE",
+        "KSAN"
+      ],
+      "Altitude": 4870,
+      "State": "cleared approach",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Skywest Sixty One Forty Six Ocala Approach fly heading zero nine zero descend and maintain six thousand\"",
+    "[local-stt] normalized words: [skywest 61 46 ocala approach fly heading 0 9 0 descend and maintain 6 thousand]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"skywest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"61\" Type=1 Value=61",
+    "[local-stt]   token[2]: Text=\"46\" Type=1 Value=46",
+    "[local-stt]   token[3]: Text=\"ocala\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"090\" Type=1 Value=90",
+    "[local-stt]   token[8]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"60\" Type=2 Value=60",
+    "[local-stt] MatchCallsign: 12 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 12 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": no results",
+    "[local-stt]   pattern \"airline_only\": 4 results",
+    "[local-stt]     result 0: \"Southwest seven 82\" (airline=0.661, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Fedex niner 41\" (airline=0.448, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Delta 50 77\" (airline=0.600, flight=0.000, skip=3)",
+    "[local-stt]     result 3: \"Southwest seven 82\" (airline=0.437, flight=0.000, skip=3)",
+    "[local-stt]     pattern \"airline_only\": selected \"Southwest seven 82\" (airline=0.66, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Southwest seven 82\"",
+    "[local-stt]   pattern \"flight_only\": no results",
+    "[local-stt] callsign match: Callsign=\"\" SpokenKey=\"\" Conf=0.00 Consumed=0",
+    "[local-stt] no callsign match for \"Skywest Sixty One Forty Six Ocala Approach fly heading zero nine zero descend and maintain six thousand\", ignoring"
+  ]
+}

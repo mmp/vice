@@ -1,0 +1,319 @@
+{
+  "time": "2026-06-22T22:25:42.80575183Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:725:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "SkyWest two four one delta turn left heading two eight zero intercept localizer two five left",
+  "whisper_duration_ms": 380.949,
+  "audio_duration_ms": 4680,
+  "processor": "GPU: AMD Radeon RX 9060 XT (16304MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SKW241D",
+  "command": "L280 I",
+  "stt_aircraft": {
+    "Frontier Flight eight 25": {
+      "Callsign": "FFT825",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Budme": "BUDME",
+        "Conte": "KONTE",
+        "Gypsy": "GIPSE",
+        "Hamek": "HAMEK",
+        "Lemo": "LEMOE",
+        "Los Angeles": "KLAX",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two five left": "25L",
+        "visual approach runway two six": "26",
+        "visual runway two five left": "25L",
+        "visual runway two six": "26",
+        "visual two five left": "25L",
+        "visual two six": "26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "Visual Runway 25L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "HYDRR1",
+      "Route": null,
+      "Altitude": 8627,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "SkyWest two 41 delta": {
+      "Callsign": "SKW241D",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Budme": "BUDME",
+        "Finap": "FINAP",
+        "Fixar": "FIXAR",
+        "Gypsy": "GIPSE",
+        "Hamek": "HAMEK",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX",
+        "Tucson International Airport / Morris Air National Guard Base": "KTUS",
+        "Zerlo": "ZERLO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two five left": "25L",
+        "visual approach runway two six": "26",
+        "visual runway two five left": "25L",
+        "visual runway two six": "26",
+        "visual two five left": "25L",
+        "visual two six": "26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 25L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PINNG1",
+      "Route": null,
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United four 57": {
+      "Callsign": "UAL457",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Los Angeles": "KLAX",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two five left": "25L",
+        "visual approach runway two six": "26",
+        "visual runway two five left": "25L",
+        "visual runway two six": "26",
+        "visual two five left": "25L",
+        "visual two six": "26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "Visual Approach Runway 25L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "HYDRR1",
+      "Route": null,
+      "Altitude": 3000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"SkyWest two four one delta turn left heading two eight zero intercept localizer two five left\"",
+    "[local-stt] normalized words: [skywest 2 4 1 delta turn left heading 2 8 0 intercept localizer 2 5 left]",
+    "[local-stt] tokens: 11",
+    "[local-stt]   token[0]: Text=\"skywest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"241\" Type=1 Value=241",
+    "[local-stt]   token[2]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"280\" Type=1 Value=280",
+    "[local-stt]   token[7]: Text=\"intercept\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"25\" Type=1 Value=25",
+    "[local-stt]   token[10]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 11 tokens, 3 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 11 tokens, 3 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"SkyWest two 41 delta\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"SkyWest two 41 delta\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 6 results",
+    "[local-stt]     result 0: \"SkyWest two 41 delta\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"United four 57\" (airline=0.437, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"United four 57\" (airline=0.456, flight=0.000, skip=2)",
+    "[local-stt]     result 3: \"Frontier Flight eight 25\" (airline=0.442, flight=0.000, skip=2)",
+    "[local-stt]     result 4: \"United four 57\" (airline=0.611, flight=0.000, skip=3)",
+    "[local-stt]     pattern \"airline_only\": selected \"SkyWest two 41 delta\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"SkyWest two 41 delta\" (airline=0.500, flight=0.942, skip=0)",
+    "[local-stt]     result 1: \"SkyWest two 41 delta\" (airline=0.500, flight=0.942, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"SkyWest two 41 delta\" (airline=0.50, flight=0.94, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"SKW241D\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"SkyWest two 41 delta\")",
+    "[local-stt] callsign match: Callsign=\"SKW241D\" SpokenKey=\"SkyWest two 41 delta\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=10 Approaches=4 VisualApproaches=6 AssignedApproach=\"ILS Runway 25L\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Zerlo\" -\u003e \"ZERLO\"",
+    "[local-stt]   fix: \"Fixar\" -\u003e \"FIXAR\"",
+    "[local-stt]   fix: \"Budme\" -\u003e \"BUDME\"",
+    "[local-stt]   fix: \"Phoenix\" -\u003e \"KPHX\"",
+    "[local-stt]   fix: \"Sky Harbor\" -\u003e \"KPHX\"",
+    "[local-stt]   fix: \"Tucson International Airport / Morris Air National Guard Base\" -\u003e \"KTUS\"",
+    "[local-stt]   fix: \"Finap\" -\u003e \"FINAP\"",
+    "[local-stt]   fix: \"Gypsy\" -\u003e \"GIPSE\"",
+    "[local-stt]   fix: \"Hamek\" -\u003e \"HAMEK\"",
+    "[local-stt]   fix: \"Scade\" -\u003e \"SCADE\"",
+    "[local-stt]   approach: \"I L S runway two five left\" -\u003e \"I5L\"",
+    "[local-stt]   approach: \"Visual runway two six\" -\u003e \"V26\"",
+    "[local-stt]   approach: \"I L S runway two six\" -\u003e \"I26\"",
+    "[local-stt]   approach: \"Visual runway two five left\" -\u003e \"V5L\"",
+    "[local-stt]   visual approach: \"visual runway two five left\" -\u003e \"25L\"",
+    "[local-stt]   visual approach: \"visual approach runway two five left\" -\u003e \"25L\"",
+    "[local-stt]   visual approach: \"visual two five left\" -\u003e \"25L\"",
+    "[local-stt]   visual approach: \"visual runway two six\" -\u003e \"26\"",
+    "[local-stt]   visual approach: \"visual approach runway two six\" -\u003e \"26\"",
+    "[local-stt]   visual approach: \"visual two six\" -\u003e \"26\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"280\" Type=1 Value=280",
+    "[local-stt]   token[4]: Text=\"intercept\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"25\" Type=1 Value=25",
+    "[local-stt]   token[7]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"turn\" against 10 fixes",
+    "[local-stt]   extractFix: matched \"turn\" -\u003e \"KTUS\" (fuzzy 0.80)",
+    "[local-stt]   matched command: \"L280\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"intercept\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"intercept\"",
+    "[local-stt]   matched command: \"I\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"25\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"25\"",
+    "[local-stt]   no match at token[6]=\"25\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"left\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"left\"",
+    "[local-stt]   no match at token[7]=\"left\", skipping",
+    "[local-stt] ParseCommands: result=[L280 I] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L280 I] (conf=1.00)",
+    "[local-stt] validated commands: [L280 I] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SKW241D L280 I\" (conf=1.00, time=2.0413ms) ==="
+  ]
+}

@@ -1,0 +1,899 @@
+{
+  "time": "2026-06-22T21:18:08.461399041Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:951:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Zagit Nineteen Eighty Six climbing maintain one six thousand",
+  "whisper_duration_ms": 324.328,
+  "audio_duration_ms": 3272,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 Ti SUPER (16277MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "EJA1986",
+  "command": "C160",
+  "reason": "[proposed fix] Spoken digits 1986 exactly match ExecJet 1986 (Zagit garbles ExecJet); decoder picked the wrong aircraft LXJ798.",
+  "stt_aircraft": {
+    "Connie 39 55 heavy": {
+      "Callsign": "CKS3955",
+      "AircraftType": "B744",
+      "Fixes": {
+        "Eppley": "KOMA",
+        "Oakland County": "KPTK",
+        "Pontiac": "KPTK",
+        "picture": "PICTR"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven left": "R7L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two seven left": "27L",
+        "visual runway two seven left": "27L",
+        "visual two seven left": "27L"
+      },
+      "ApproachFixes": {
+        "R7L": {
+          "Favli": "FAVLI",
+          "Flint": "FNT",
+          "Guzvy": "GUZVY",
+          "Kuna": "KUHNA",
+          "Lehra": "LEHRA"
+        }
+      },
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PETTE2",
+      "Route": null,
+      "Altitude": 7379,
+      "State": "arrival",
+      "ControllerFrequency": "1P",
+      "TrackingController": "1P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "18",
+        "36"
+      ]
+    },
+    "Connie four 87 heavy": {
+      "Callsign": "CKS487",
+      "AircraftType": "B744",
+      "Fixes": {
+        "Eppley": "KOMA",
+        "Favli": "FAVLI",
+        "Flint": "FNT",
+        "Guzvy": "GUZVY",
+        "Kuna": "KUHNA",
+        "Lehra": "LEHRA",
+        "Oakland County": "KPTK",
+        "Pontiac": "KPTK"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven left": "R7L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two seven left": "27L",
+        "visual runway two seven left": "27L",
+        "visual two seven left": "27L"
+      },
+      "ApproachFixes": {
+        "R7L": {
+          "Favli": "FAVLI",
+          "Flint": "FNT",
+          "Guzvy": "GUZVY",
+          "Kuna": "KUHNA",
+          "Lehra": "LEHRA"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 27L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PETTE2",
+      "Route": null,
+      "Altitude": 3433,
+      "State": "cleared approach",
+      "ControllerFrequency": "1P",
+      "TrackingController": "1P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "18",
+        "36"
+      ]
+    },
+    "Delta 28": {
+      "Callsign": "DAL28",
+      "AircraftType": "B712",
+      "Fixes": {
+        "Count": "COUNT",
+        "Detroit Metro": "KDTW",
+        "Givz": "GIVVZ",
+        "Kaali": "KAALI",
+        "Metro": "KDTW",
+        "Nesbi": "NESBI",
+        "Orlando": "KMCO",
+        "Pukle": "PUKLE",
+        "Robby": "ROBBI",
+        "Ryder": "RYEDR",
+        "Taffy": "TOFFY",
+        "Tigrz": "TIGRZ",
+        "balas": "BALAS",
+        "cobbo": "COBBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two one left": "I1L",
+        "I L S yankee runway two two right": "Y2R",
+        "I L S zulu runway two two right": "I2R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two one left": "21L",
+        "visual approach runway two two right": "22R",
+        "visual runway two one left": "21L",
+        "visual runway two two right": "22R",
+        "visual two one left": "21L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Count": "COUNT",
+          "Givz": "GIVVZ",
+          "Kaali": "KAALI",
+          "Nesbi": "NESBI",
+          "Pukle": "PUKLE",
+          "Robby": "ROBBI",
+          "Ryder": "RYEDR",
+          "Taffy": "TOFFY",
+          "Tigrz": "TIGRZ",
+          "balas": "BALAS",
+          "cobbo": "COBBO"
+        },
+        "I2R": {
+          "Clier": "KLIER",
+          "Fudge": "FUDDJ",
+          "Geter": "GEETR",
+          "Guyvy": "GUYVE",
+          "Herron": "HRRON",
+          "Inkser": "INKSR",
+          "Joid": "JOYDD",
+          "Nugent": "NUJNT",
+          "Pride": "PRYDE",
+          "Tara": "TARAH",
+          "Vali": "VALLI"
+        },
+        "Y2R": {
+          "Angel": "ANGGL",
+          "Clier": "KLIER",
+          "Emin": "EMINN",
+          "Grady": "GRDCY",
+          "Herron": "HRRON",
+          "Motor": "MMOTR",
+          "Talon": "TAYUL",
+          "Vali": "VALLI",
+          "Wonder": "WONDR",
+          "pyret": "PYRET"
+        }
+      },
+      "AssignedApproach": "ILS Runway 21L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "HTROD2",
+      "Route": null,
+      "Altitude": 4343,
+      "State": "arrival",
+      "ControllerFrequency": "1H",
+      "TrackingController": "1H",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9L",
+        "27R",
+        "9R",
+        "27L",
+        "9L",
+        "27R"
+      ]
+    },
+    "Delta 60 heavy": {
+      "Callsign": "DAL60",
+      "AircraftType": "B763",
+      "Fixes": {
+        "City": "RKCTY",
+        "Detroit Metro": "KDTW",
+        "Dream": "DREME",
+        "Metro": "KDTW",
+        "Minneapolis": "KMSP",
+        "Vali": "VALLI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two one left": "I1L",
+        "I L S yankee runway two two right": "Y2R",
+        "I L S zulu runway two two right": "I2R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two one left": "21L",
+        "visual approach runway two two right": "22R",
+        "visual runway two one left": "21L",
+        "visual runway two two right": "22R",
+        "visual two one left": "21L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Count": "COUNT",
+          "Givz": "GIVVZ",
+          "Kaali": "KAALI",
+          "Nesbi": "NESBI",
+          "Pukle": "PUKLE",
+          "Robby": "ROBBI",
+          "Ryder": "RYEDR",
+          "Taffy": "TOFFY",
+          "Tigrz": "TIGRZ",
+          "balas": "BALAS",
+          "cobbo": "COBBO"
+        },
+        "I2R": {
+          "Clier": "KLIER",
+          "Fudge": "FUDDJ",
+          "Geter": "GEETR",
+          "Guyvy": "GUYVE",
+          "Herron": "HRRON",
+          "Inkser": "INKSR",
+          "Joid": "JOYDD",
+          "Nugent": "NUJNT",
+          "Pride": "PRYDE",
+          "Tara": "TARAH",
+          "Vali": "VALLI"
+        },
+        "Y2R": {
+          "Angel": "ANGGL",
+          "Clier": "KLIER",
+          "Emin": "EMINN",
+          "Grady": "GRDCY",
+          "Herron": "HRRON",
+          "Motor": "MMOTR",
+          "Talon": "TAYUL",
+          "Vali": "VALLI",
+          "Wonder": "WONDR",
+          "pyret": "PYRET"
+        }
+      },
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "RKCTY2",
+      "Route": null,
+      "Altitude": 14421,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9L",
+        "27R",
+        "9R",
+        "27L",
+        "9L",
+        "27R"
+      ]
+    },
+    "Delta 73 88": {
+      "Callsign": "DAL7388",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Detroit Metro": "KDTW",
+        "George Bush Intercontinental Houston": "KIAH",
+        "Metro": "KDTW",
+        "Sinker": "SINKR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "BARII2",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 17000,
+      "State": "departure",
+      "ControllerFrequency": "1E",
+      "TrackingController": "C48",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 91 67 heavy": {
+      "Callsign": "DAL9167",
+      "AircraftType": "A333",
+      "Fixes": {
+        "Clier": "KLIER",
+        "Detroit Metro": "KDTW",
+        "Fudge": "FUDDJ",
+        "Geter": "GEETR",
+        "Guyvy": "GUYVE",
+        "Herron": "HRRON",
+        "Inkser": "INKSR",
+        "Joid": "JOYDD",
+        "Metro": "KDTW",
+        "Narita": "RJAA",
+        "Nugent": "NUJNT",
+        "Pride": "PRYDE",
+        "Tara": "TARAH",
+        "Vali": "VALLI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two one left": "I1L",
+        "I L S yankee runway two two right": "Y2R",
+        "I L S zulu runway two two right": "I2R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two one left": "21L",
+        "visual approach runway two two right": "22R",
+        "visual runway two one left": "21L",
+        "visual runway two two right": "22R",
+        "visual two one left": "21L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Count": "COUNT",
+          "Givz": "GIVVZ",
+          "Kaali": "KAALI",
+          "Nesbi": "NESBI",
+          "Pukle": "PUKLE",
+          "Robby": "ROBBI",
+          "Ryder": "RYEDR",
+          "Taffy": "TOFFY",
+          "Tigrz": "TIGRZ",
+          "balas": "BALAS",
+          "cobbo": "COBBO"
+        },
+        "I2R": {
+          "Clier": "KLIER",
+          "Fudge": "FUDDJ",
+          "Geter": "GEETR",
+          "Guyvy": "GUYVE",
+          "Herron": "HRRON",
+          "Inkser": "INKSR",
+          "Joid": "JOYDD",
+          "Nugent": "NUJNT",
+          "Pride": "PRYDE",
+          "Tara": "TARAH",
+          "Vali": "VALLI"
+        },
+        "Y2R": {
+          "Angel": "ANGGL",
+          "Clier": "KLIER",
+          "Emin": "EMINN",
+          "Grady": "GRDCY",
+          "Herron": "HRRON",
+          "Motor": "MMOTR",
+          "Talon": "TAYUL",
+          "Vali": "VALLI",
+          "Wonder": "WONDR",
+          "pyret": "PYRET"
+        }
+      },
+      "AssignedApproach": "ILS Z Runway 22R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "LAYKS2",
+      "Route": null,
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9L",
+        "27R",
+        "9R",
+        "27L",
+        "9L",
+        "27R"
+      ]
+    },
+    "Delta seven 36": {
+      "Callsign": "DAL736",
+      "AircraftType": "B712",
+      "Fixes": {
+        "Chews": "CHEWZ",
+        "Count": "COUNT",
+        "Detroit Metro": "KDTW",
+        "Frederick Douglass Greater Rochester": "KROC",
+        "Givz": "GIVVZ",
+        "Gmotor": "GMOTR",
+        "Kaali": "KAALI",
+        "Metro": "KDTW",
+        "Nesbi": "NESBI",
+        "Pukle": "PUKLE",
+        "Robby": "ROBBI",
+        "Ryder": "RYEDR",
+        "Taffy": "TOFFY",
+        "Tigrz": "TIGRZ",
+        "balas": "BALAS",
+        "cobbo": "COBBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two one left": "I1L",
+        "I L S yankee runway two two right": "Y2R",
+        "I L S zulu runway two two right": "I2R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two one left": "21L",
+        "visual approach runway two two right": "22R",
+        "visual runway two one left": "21L",
+        "visual runway two two right": "22R",
+        "visual two one left": "21L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Count": "COUNT",
+          "Givz": "GIVVZ",
+          "Kaali": "KAALI",
+          "Nesbi": "NESBI",
+          "Pukle": "PUKLE",
+          "Robby": "ROBBI",
+          "Ryder": "RYEDR",
+          "Taffy": "TOFFY",
+          "Tigrz": "TIGRZ",
+          "balas": "BALAS",
+          "cobbo": "COBBO"
+        },
+        "I2R": {
+          "Clier": "KLIER",
+          "Fudge": "FUDDJ",
+          "Geter": "GEETR",
+          "Guyvy": "GUYVE",
+          "Herron": "HRRON",
+          "Inkser": "INKSR",
+          "Joid": "JOYDD",
+          "Nugent": "NUJNT",
+          "Pride": "PRYDE",
+          "Tara": "TARAH",
+          "Vali": "VALLI"
+        },
+        "Y2R": {
+          "Angel": "ANGGL",
+          "Clier": "KLIER",
+          "Emin": "EMINN",
+          "Grady": "GRDCY",
+          "Herron": "HRRON",
+          "Motor": "MMOTR",
+          "Talon": "TAYUL",
+          "Vali": "VALLI",
+          "Wonder": "WONDR",
+          "pyret": "PYRET"
+        }
+      },
+      "AssignedApproach": "ILS Runway 21L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "FERRL2",
+      "Route": null,
+      "Altitude": 4833,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9L",
+        "27R",
+        "9R",
+        "27L",
+        "9L",
+        "27R"
+      ]
+    },
+    "ExecJet 19 86": {
+      "Callsign": "EJA1986",
+      "AircraftType": "E55P",
+      "Fixes": {
+        "Cuyahoga County": "KCGF",
+        "Detroit City": "KDET",
+        "Kzlov": "KZLOV",
+        "Wins": "WINNZ"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "KZLOV2",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 3000,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 42 96": {
+      "Callsign": "EJA4296",
+      "AircraftType": "C680",
+      "Fixes": {
+        "Favli": "FAVLI",
+        "Flint": "FNT",
+        "Guzvy": "GUZVY",
+        "Kuna": "KUHNA",
+        "Lehra": "LEHRA",
+        "Nashville": "KBNA",
+        "Oakland County": "KPTK",
+        "Pontiac": "KPTK"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven left": "R7L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two seven left": "27L",
+        "visual runway two seven left": "27L",
+        "visual two seven left": "27L"
+      },
+      "ApproachFixes": {
+        "R7L": {
+          "Favli": "FAVLI",
+          "Flint": "FNT",
+          "Guzvy": "GUZVY",
+          "Kuna": "KUHNA",
+          "Lehra": "LEHRA"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 27L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PETTE2",
+      "Route": null,
+      "Altitude": 14733,
+      "State": "arrival",
+      "ControllerFrequency": "1Y",
+      "TrackingController": "1Y",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "18",
+        "36"
+      ]
+    },
+    "ExecJet 46 31": {
+      "Callsign": "EJA4631",
+      "AircraftType": "C680",
+      "Fixes": {
+        "Favli": "FAVLI",
+        "Flint": "FNT",
+        "Guzvy": "GUZVY",
+        "Kuna": "KUHNA",
+        "Lehra": "LEHRA",
+        "Nashville": "KBNA",
+        "Oakland County": "KPTK",
+        "Pontiac": "KPTK"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven left": "R7L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two seven left": "27L",
+        "visual runway two seven left": "27L",
+        "visual two seven left": "27L"
+      },
+      "ApproachFixes": {
+        "R7L": {
+          "Favli": "FAVLI",
+          "Flint": "FNT",
+          "Guzvy": "GUZVY",
+          "Kuna": "KUHNA",
+          "Lehra": "LEHRA"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 27L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PETTE2",
+      "Route": null,
+      "Altitude": 3012,
+      "State": "cleared approach",
+      "ControllerFrequency": "1Y",
+      "TrackingController": "1Y",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "18",
+        "36"
+      ]
+    },
+    "ExecJet 52 18": {
+      "Callsign": "EJA5218",
+      "AircraftType": "CL60",
+      "Fixes": {
+        "Nashville": "KBNA",
+        "Oakland County": "KPTK",
+        "Pontiac": "KPTK",
+        "petty": "PETTE"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven left": "R7L"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two seven left": "27L",
+        "visual runway two seven left": "27L",
+        "visual two seven left": "27L"
+      },
+      "ApproachFixes": {
+        "R7L": {
+          "Favli": "FAVLI",
+          "Flint": "FNT",
+          "Guzvy": "GUZVY",
+          "Kuna": "KUHNA",
+          "Lehra": "LEHRA"
+        }
+      },
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PETTE2",
+      "Route": null,
+      "Altitude": 17000,
+      "State": "arrival",
+      "ControllerFrequency": "1Y",
+      "TrackingController": "1Y",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "18",
+        "36"
+      ]
+    },
+    "ExecJet 71 55": {
+      "Callsign": "EJA7155",
+      "AircraftType": "H25B",
+      "Fixes": {
+        "Charlotte Douglas": "KCLT",
+        "Tif-tun": "TFTUN",
+        "Willow Run": "KYIP",
+        "calvin": "CLVIN"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "CLVIN3",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 16000,
+      "State": "departure",
+      "ControllerFrequency": "1Y",
+      "TrackingController": "C48",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 92 56": {
+      "Callsign": "EJA9256",
+      "AircraftType": "C680",
+      "Fixes": {
+        "Detroit City": "KDET",
+        "Palm Beach": "KPBI",
+        "Swety": "SWETY",
+        "Verners": "VRNRS"
+      },
+      "CandidateApproaches": {
+        "I L S runway one five": "I15",
+        "r-nav runway one five": "R15"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway one five": "15",
+        "visual one five": "15",
+        "visual runway one five": "15"
+      },
+      "ApproachFixes": {
+        "I15": {
+          "Goat": "GOATT",
+          "I hide": "IHIDE"
+        },
+        "R15": {
+          "Esayo": "ESAYO",
+          "Goat": "GOATT",
+          "I hide": "IHIDE",
+          "Simca": "SIMCA",
+          "Tonya": "TONYA"
+        }
+      },
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "FOREY2",
+      "Route": null,
+      "Altitude": 13949,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Flexjet seven 98": {
+      "Callsign": "LXJ798",
+      "AircraftType": "CL30",
+      "Fixes": {
+        "Indianapolis Executive": "KTYQ",
+        "Jwels": "JWELS",
+        "Oakland County": "KPTK",
+        "Pontiac": "KPTK"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "SNDRS3",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 4077,
+      "State": "departure",
+      "ControllerFrequency": "1P",
+      "TrackingController": "1P",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest niner zero eight": {
+      "Callsign": "SWA908",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Detroit Metro": "KDTW",
+        "Hysman": "HYSMN",
+        "Los Angeles": "KLAX",
+        "Metro": "KDTW",
+        "Uofm": "UUOFM"
+      },
+      "CandidateApproaches": {
+        "I L S runway two one left": "I1L",
+        "I L S yankee runway two two right": "Y2R",
+        "I L S zulu runway two two right": "I2R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway two one left": "21L",
+        "visual approach runway two two right": "22R",
+        "visual runway two one left": "21L",
+        "visual runway two two right": "22R",
+        "visual two one left": "21L",
+        "visual two two right": "22R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Count": "COUNT",
+          "Givz": "GIVVZ",
+          "Kaali": "KAALI",
+          "Nesbi": "NESBI",
+          "Pukle": "PUKLE",
+          "Robby": "ROBBI",
+          "Ryder": "RYEDR",
+          "Taffy": "TOFFY",
+          "Tigrz": "TIGRZ",
+          "balas": "BALAS",
+          "cobbo": "COBBO"
+        },
+        "I2R": {
+          "Clier": "KLIER",
+          "Fudge": "FUDDJ",
+          "Geter": "GEETR",
+          "Guyvy": "GUYVE",
+          "Herron": "HRRON",
+          "Inkser": "INKSR",
+          "Joid": "JOYDD",
+          "Nugent": "NUJNT",
+          "Pride": "PRYDE",
+          "Tara": "TARAH",
+          "Vali": "VALLI"
+        },
+        "Y2R": {
+          "Angel": "ANGGL",
+          "Clier": "KLIER",
+          "Emin": "EMINN",
+          "Grady": "GRDCY",
+          "Herron": "HRRON",
+          "Motor": "MMOTR",
+          "Talon": "TAYUL",
+          "Vali": "VALLI",
+          "Wonder": "WONDR",
+          "pyret": "PYRET"
+        }
+      },
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "VCTRZ2",
+      "Route": null,
+      "Altitude": 15424,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9L",
+        "27R",
+        "9R",
+        "27L",
+        "9L",
+        "27R"
+      ]
+    },
+    "Spirit Wings 14 zero five": {
+      "Callsign": "NKS1405",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Curve": "CORVE",
+        "Detroit Metro": "KDTW",
+        "Jaxi": "JAXII",
+        "Metro": "KDTW",
+        "Miggy": "MIGGY",
+        "Minneapolis": "KMSP",
+        "Vesa": "VESSA"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "MIGGY2",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 7000,
+      "State": "departure",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Zagit Nineteen Eighty Six climbing maintain one six thousand\"",
+    "[local-stt] normalized words: [zagit 19 86 climb maintain 1 6 thousand]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"zagit\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[2]: Text=\"86\" Type=1 Value=86",
+    "[local-stt]   token[3]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"160\" Type=2 Value=160",
+    "[local-stt] MatchCallsign: 6 tokens, 16 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 16 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 4 results",
+    "[local-stt]     result 0: \"Delta 91 67 heavy\" (airline=0.467, flight=0.722, skip=0)",
+    "[local-stt]     result 1: \"Southwest niner zero eight\" (airline=0.437, flight=0.722, skip=0)",
+    "[local-stt]     result 2: \"Flexjet seven 98\" (airline=0.850, flight=0.722, skip=0)",
+    "[local-stt]     result 3: \"ExecJet 19 86\" (airline=0.448, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Flexjet seven 98\" (airline=0.85, flight=0.72, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 23 results",
+    "[local-stt]     result 0: \"Delta 28\" (airline=0.467, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta 91 67 heavy\" (airline=0.467, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Connie four 87 heavy\" (airline=0.456, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"ExecJet 92 56\" (airline=0.448, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Delta 60 heavy\" (airline=0.467, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta 60 heavy\" (airline=0.47, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Delta 60 heavy\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"ExecJet 19 86\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"ExecJet 19 86\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     pattern \"flight_only\": selected \"ExecJet 19 86\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"LXJ798\" (conf=0.91, consumed=3, addressingForm=0, spokenKey=\"Flexjet seven 98\")",
+    "[local-stt] callsign match: Callsign=\"LXJ798\" SpokenKey=\"Flexjet seven 98\" Conf=0.91 Consumed=3",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=4077 Fixes=4 Approaches=0 VisualApproaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Indianapolis Executive\" -\u003e \"KTYQ\"",
+    "[local-stt]   fix: \"Oakland County\" -\u003e \"KPTK\"",
+    "[local-stt]   fix: \"Pontiac\" -\u003e \"KPTK\"",
+    "[local-stt]   fix: \"Jwels\" -\u003e \"JWELS\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"160\" Type=2 Value=160",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"climb\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"climb\"",
+    "[local-stt]   matched command: \"C160\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[C160] (avgConf=1.00)",
+    "[local-stt] parsed commands: [C160] (conf=1.00)",
+    "[local-stt] validated commands: [C160] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"LXJ798 C160\" (conf=0.91, time=4.1765ms) ==="
+  ]
+}

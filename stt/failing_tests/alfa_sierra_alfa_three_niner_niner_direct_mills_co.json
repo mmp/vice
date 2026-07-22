@@ -1,0 +1,494 @@
+{
+  "time": "2026-06-22T21:20:58.930570542Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:725:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Alfa Sierra Alfa Three Niner Niner Direct Mills correction Direct Zachs descend two thousand feet",
+  "whisper_duration_ms": 414.211,
+  "audio_duration_ms": 9928,
+  "processor": "GPU: NVIDIA GeForce RTX 4080 (16048MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "ASA399",
+  "command": "SAYAGAIN/FIXD20",
+  "stt_aircraft": {
+    "Alaska three 99": {
+      "Callsign": "ASA399",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Portland": "KPDX",
+        "Vadder": "VADDR",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Route": null,
+      "Altitude": 2500,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "American 32": {
+      "Callsign": "AAL32",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "San Francisco": "KSFO",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Route": null,
+      "Altitude": 4295,
+      "State": "cleared approach",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "American 99 47": {
+      "Callsign": "AAL9947",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "L.F. Wade": "TXKF",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Route": null,
+      "Altitude": 5000,
+      "State": "cleared approach",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "American two 63": {
+      "Callsign": "AAL263",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Aeropuerto Internacional Lic. Benito Juárez": "MMMX",
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Route": null,
+      "Altitude": 895,
+      "State": "cleared approach",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Turkish seven 48 heavy": {
+      "Callsign": "THY748",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Rober": "ROBER",
+        "Zulab": "ZULAB",
+        "İstanbul": "LTFM"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Alfa Sierra Alfa Three Niner Niner Direct Mills correction Direct Zachs descend two thousand feet\"",
+    "[local-stt] normalized words: [alfa sierra alfa 3 9 9 direct mills correction direct zachs descend 2 thousand feet]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"alfa\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"sierra\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"alfa\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"399\" Type=1 Value=399",
+    "[local-stt]   token[4]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"mills\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"correction\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"zachs\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"20\" Type=2 Value=20",
+    "[local-stt]   token[11]: Text=\"feet\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 12 tokens, 5 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 12 tokens, 5 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 6 results",
+    "[local-stt]     result 0: \"American 99 47\" (airline=0.625, flight=0.722, skip=0)",
+    "[local-stt]     result 1: \"Alaska three 99\" (airline=0.800, flight=0.480, skip=0)",
+    "[local-stt]     result 2: \"American 99 47\" (airline=0.597, flight=0.722, skip=1)",
+    "[local-stt]     result 3: \"Alaska three 99\" (airline=0.444, flight=0.600, skip=1)",
+    "[local-stt]     result 4: \"American 99 47\" (airline=0.625, flight=0.722, skip=2)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Alaska three 99\" (airline=0.80, flight=1.00, skip=2)",
+    "[local-stt]   pattern \"airline_only\": 13 results",
+    "[local-stt]     result 0: \"American 32\" (airline=0.625, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"American 99 47\" (airline=0.625, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Alaska three 99\" (airline=0.800, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"American two 63\" (airline=0.625, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Alaska three 99\" (airline=0.444, flight=0.000, skip=1)",
+    "[local-stt]     pattern \"airline_only\": selected \"Alaska three 99\" (airline=0.80, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 2 results",
+    "[local-stt]     result 0: \"Alaska three 99\" (airline=0.500, flight=1.000, skip=1)",
+    "[local-stt]     result 1: \"Alaska three 99\" (airline=0.500, flight=1.000, skip=2)",
+    "[local-stt]     pattern \"flight_only\": selected \"Alaska three 99\" (airline=0.50, flight=1.00, skip=1)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"ASA399\" (conf=0.90, consumed=4, addressingForm=0, spokenKey=\"Alaska three 99\")",
+    "[local-stt] callsign match: Callsign=\"ASA399\" SpokenKey=\"Alaska three 99\" Conf=0.90 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=2500 Fixes=7 Approaches=5 VisualApproaches=6 AssignedApproach=\"ILS Runway 31R\" LAHSORunways=[4L 22R 4L 22R 4R 22L]",
+    "[local-stt]   fix: \"Vadder\" -\u003e \"VADDR\"",
+    "[local-stt]   fix: \"Catod\" -\u003e \"CATOD\"",
+    "[local-stt]   fix: \"Maldey\" -\u003e \"MALDE\"",
+    "[local-stt]   fix: \"Zulab\" -\u003e \"ZULAB\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Portland\" -\u003e \"KPDX\"",
+    "[local-stt]   approach: \"I L S runway three one right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"r-nav runway three one left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"I L S runway three one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"V O R runway three one Left\" -\u003e \"V1L\"",
+    "[local-stt]   approach: \"r-nav runway three one right\" -\u003e \"R1R\"",
+    "[local-stt]   visual approach: \"visual runway three one left\" -\u003e \"31L\"",
+    "[local-stt]   visual approach: \"visual approach runway three one left\" -\u003e \"31L\"",
+    "[local-stt]   visual approach: \"visual three one left\" -\u003e \"31L\"",
+    "[local-stt]   visual approach: \"visual runway three one right\" -\u003e \"31R\"",
+    "[local-stt]   visual approach: \"visual approach runway three one right\" -\u003e \"31R\"",
+    "[local-stt]   visual approach: \"visual three one right\" -\u003e \"31R\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"zachs\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"20\" Type=2 Value=20",
+    "[local-stt]   token[4]: Text=\"feet\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"zachs\" against 7 fixes",
+    "[local-stt]   extractFix: no match found for \"zachs\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"zachs\" against 7 fixes",
+    "[local-stt]   extractFix: no match found for \"zachs\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"zachs\" against 7 fixes",
+    "[local-stt]   extractFix: no match found for \"zachs\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"zachs\" against 7 fixes",
+    "[local-stt]   extractFix: no match found for \"zachs\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"direct\" against 7 fixes",
+    "[local-stt]   extractFix: no match found for \"direct\"",
+    "[local-stt]   no match at token[0]=\"direct\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"zachs\" against 7 fixes",
+    "[local-stt]   extractFix: no match found for \"zachs\"",
+    "[local-stt]   no match at token[1]=\"zachs\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"descend\" against 7 fixes",
+    "[local-stt]   extractFix: no match found for \"descend\"",
+    "[local-stt]   matched command: \"D20\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"feet\" against 7 fixes",
+    "[local-stt]   extractFix: no match found for \"feet\"",
+    "[local-stt]   no match at token[4]=\"feet\", skipping",
+    "[local-stt] ParseCommands: result=[D20] (avgConf=1.00)",
+    "[local-stt] parsed commands: [D20] (conf=1.00)",
+    "[local-stt] validated commands: [D20] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ASA399 D20\" (conf=0.90, time=2.3446ms) ==="
+  ]
+}

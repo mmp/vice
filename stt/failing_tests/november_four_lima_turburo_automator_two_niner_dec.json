@@ -1,0 +1,340 @@
+{
+  "time": "2026-06-27T21:57:04.320353481Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:951:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "November Four Lima Turburo Automator Two Niner Decimal Niner Two",
+  "whisper_duration_ms": 413.96,
+  "audio_duration_ms": 5704,
+  "processor": "GPU: NVIDIA GeForce RTX 4060 (7956MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "American four zero seven heavy": {
+      "Callsign": "AAL407",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Adolfo Suárez Madrid–Barajas": "LEMD",
+        "Happy": "HAPIE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "SKORR6.YNKEE",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 8973,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "B17",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 97 heavy": {
+      "Callsign": "DAL97",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Rober": "ROBER",
+        "Shannon": "EINN",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Fedex eight 63 heavy": {
+      "Callsign": "FDX863",
+      "AircraftType": "MD11",
+      "Fixes": {
+        "Kennedy": "JFK",
+        "LaGuardia": "KLGA",
+        "Norfolk": "KORF",
+        "White": "WHITE"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "LGA7",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 5917,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 93 94": {
+      "Callsign": "JBU9394",
+      "AircraftType": "A320",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Luis Munoz Marin": "TJSJ",
+        "Meals": "MEALS",
+        "Zachs": "ZACHS"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "V O R runway three one Left": "V1L",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "CandidateVisualApproaches": {
+        "visual approach runway three one left": "31L",
+        "visual approach runway three one right": "31R",
+        "visual runway three one left": "31L",
+        "visual runway three one right": "31R",
+        "visual three one left": "31L",
+        "visual three one right": "31R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        },
+        "V1L": {
+          "Jamca": "JAMCA",
+          "Lokoe": "LOKOE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31L",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 5965,
+      "State": "cleared approach",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "JetBlue eight 48": {
+      "Callsign": "JBU848",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Harry Reid": "KLAS",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Mets": "METSS",
+        "Ranger": "RNGRR",
+        "Robbinsville": "RBV",
+        "Score": "SKORR"
+      },
+      "CandidateApproaches": null,
+      "CandidateVisualApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "SKORR6.RNGRR",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 1845,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november four lima": {
+      "Callsign": "N4L",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury": "KDXR",
+        "Farmingdale": "KFRG",
+        "Republic": "KFRG"
+      },
+      "CandidateApproaches": {},
+      "CandidateVisualApproaches": {},
+      "ApproachFixes": {},
+      "AssignedApproach": "",
+      "ExpectedDirectFix": "",
+      "SID": "",
+      "STAR": "",
+      "Route": null,
+      "Altitude": 2611,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"November Four Lima Turburo Automator Two Niner Decimal Niner Two\"",
+    "[local-stt] normalized words: [november 4 lima turburo automator 2 9 decimal 9 2]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"november\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"4\" Type=1 Value=4",
+    "[local-stt]   token[2]: Text=\"lima\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"turburo\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"automator\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"29\" Type=1 Value=29",
+    "[local-stt]   token[6]: Text=\"decimal\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"92\" Type=1 Value=92",
+    "[local-stt] MatchCallsign: 8 tokens, 6 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 6 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"november four lima\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"november four lima\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"ga_suffix\": 1 results",
+    "[local-stt]     result 0: \"november four lima\" (airline=0.950, flight=0.950, skip=0)",
+    "[local-stt]     pattern \"ga_suffix\": selected \"november four lima\" (airline=0.95, flight=0.95, skip=0)",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"november four lima\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"november four lima\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 9 results",
+    "[local-stt]     result 0: \"JetBlue eight 48\" (airline=0.601, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta 97 heavy\" (airline=0.442, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Fedex eight 63 heavy\" (airline=0.550, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"JetBlue 93 94\" (airline=0.601, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Delta 97 heavy\" (airline=0.483, flight=0.000, skip=2)",
+    "[local-stt]     pattern \"airline_only\": selected \"JetBlue eight 48\" (airline=0.62, flight=0.00, skip=3)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"JetBlue eight 48\"",
+    "[local-stt]   pattern \"ga_november\": 1 results",
+    "[local-stt]     result 0: \"november four lima\" (airline=0.800, flight=0.750, skip=0)",
+    "[local-stt]     pattern \"ga_november\": selected \"november four lima\" (airline=0.80, flight=0.75, skip=0)",
+    "[local-stt]   pattern \"flight_only\": no results",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"N4L\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"november four lima\")",
+    "[local-stt] callsign match: Callsign=\"N4L\" SpokenKey=\"november four lima\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=2611 Fixes=3 Approaches=0 VisualApproaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Danbury\" -\u003e \"KDXR\"",
+    "[local-stt]   fix: \"Republic\" -\u003e \"KFRG\"",
+    "[local-stt]   fix: \"Farmingdale\" -\u003e \"KFRG\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"turburo\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"automator\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"29\" Type=1 Value=29",
+    "[local-stt]   token[3]: Text=\"decimal\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"92\" Type=1 Value=92",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"turburo\" against 3 fixes",
+    "[local-stt]   extractFix: no match found for \"turburo\"",
+    "[local-stt]   no match at token[0]=\"turburo\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"automator\" against 3 fixes",
+    "[local-stt]   extractFix: no match found for \"automator\"",
+    "[local-stt]   no match at token[1]=\"automator\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"29\" against 3 fixes",
+    "[local-stt]   extractFix: no match found for \"29\"",
+    "[local-stt]   no match at token[2]=\"29\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"decimal\" against 3 fixes",
+    "[local-stt]   extractFix: no match found for \"decimal\"",
+    "[local-stt]   no match at token[3]=\"decimal\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"92\" against 3 fixes",
+    "[local-stt]   extractFix: no match found for \"92\"",
+    "[local-stt]   no match at token[4]=\"92\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"N4L AGAIN\" (conf=1.00, time=2.5092ms) ==="
+  ]
+}
