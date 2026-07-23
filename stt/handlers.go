@@ -114,6 +114,16 @@ func registerAllCommands() {
 		WithPriority(10),
 	)
 
+	// Bare "expedite" with no direction word ("descend four thousand
+	// expedite"): the direction is taken from the preceding altitude command
+	// in post-processing (resolveExpedite), defaulting to descend.
+	registerSTTCommand(
+		"expedite",
+		func() string { return "EXPEDITE" },
+		WithName("expedite_bare"),
+		WithPriority(8),
+	)
+
 	registerSTTCommand(
 		"expedite climb|your",
 		func() string { return "EC" },
@@ -300,6 +310,16 @@ func registerAllCommands() {
 		WithPriority(12),
 	)
 
+	// "maintain present/current heading" - "maintain" is required so a bare
+	// "current heading" can't fire on garbles like "turret heading" (a
+	// misheard "turn right heading NNN") and swallow the heading value.
+	registerSTTCommand(
+		"maintain present|current heading",
+		func() string { return "H" },
+		WithName("maintain_present_heading"),
+		WithPriority(12),
+	)
+
 	// Fallback for cut-off transcripts like "fly present hap-" where STT loses
 	// the "heading" token. Requires literal "fly" so it can't fire on phrases
 	// like "maintain present speed".
@@ -475,9 +495,26 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"[maintain] {speed} or greater|better",
+		"[maintain] {speed} [knots] or greater|better",
 		func(spd int) string { return fmt.Sprintf("S%d+", spd) },
 		WithName("speed_or_greater"),
+		WithPriority(12),
+		WithThenVariant("TS%d+"),
+	)
+
+	registerSTTCommand(
+		"speed [to] {speed} [knots] or greater|better {speed_until}",
+		func(spd int, until speedUntilResult) string {
+			return fmt.Sprintf("S%d+/U%s", spd, until.suffix)
+		},
+		WithName("speed_keyword_or_greater_until"),
+		WithPriority(15),
+	)
+
+	registerSTTCommand(
+		"speed [to] {speed} [knots] or greater|better",
+		func(spd int) string { return fmt.Sprintf("S%d+", spd) },
+		WithName("speed_keyword_or_greater"),
 		WithPriority(12),
 		WithThenVariant("TS%d+"),
 	)
@@ -559,6 +596,16 @@ func registerAllCommands() {
 		func() string { return "S" },
 		WithName("no_speed_restrictions"),
 		WithPriority(12),
+	)
+
+	// Catch-all: any garbled verb before "speed restrictions" is a cancel
+	// ("Neleep speed restrictions" for "delete speed restrictions"). The
+	// distinctive "speed restrictions" tail carries the intent.
+	registerSTTCommand(
+		"{garbled_word} speed restrictions|restriction",
+		func(_ string) string { return "S" },
+		WithName("garbled_cancel_speed_restrictions"),
+		WithPriority(6),
 	)
 
 	registerSTTCommand(
@@ -1404,7 +1451,7 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"expect [vectors] [for] [to] [the] {approach_lahso}",
+		"expect [vectors] [for] [to] [the] {approach_expect_lahso}",
 		func(appr string) string { return fmt.Sprintf("E%s", appr) },
 		WithName("expect_approach"),
 		WithPriority(15),     // Higher than heading commands to match approach context first
@@ -1644,6 +1691,22 @@ func registerAllCommands() {
 		},
 		WithName("facility_tower"),
 		WithPriority(5),
+	)
+	// Bare "tower <freq>" or "tower <garble>" when the callsign consumed the
+	// word that would otherwise precede "tower" (e.g. "Endeavor 66 tower
+	// 118.7", "Fedex 92 15 tower charlie"). Low priority so the "contact ..."
+	// and "{facility} tower" patterns win when their context is present.
+	registerSTTCommand(
+		"tower {frequency_value}",
+		func(freq av.Frequency) string { return fmt.Sprintf("TO/%d", int(freq)) },
+		WithName("bare_tower_freq"),
+		WithPriority(4),
+	)
+	registerSTTCommand(
+		"tower {garbled_word}",
+		func(_ string) string { return "TO" },
+		WithName("bare_tower_word"),
+		WithPriority(2),
 	)
 	// Pattern: "contact Kennedy Tower" or "contact Lindbergh Tower"
 	// The {text} parameter consumes one token (the facility name)

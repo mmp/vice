@@ -252,6 +252,11 @@ var confusionTable = map[string][]confusion{
 	"route": {{"right direct", 0.85}},
 	// "rioted in two seven zero" for "right turn two seven zero".
 	"rioted": {{"right", 0.85}},
+	// Garbled turn/heading command words.
+	"rider":    {{"right", 0.85}},       // "rider in three six zero" for "right heading ..."
+	"rating":   {{"right", 0.85}},       // "turn rating zero five zero" for "turn right ..."
+	"flying":   {{"fly heading", 0.85}}, // "flying two two zero" for "fly heading ..."
+	"designed": {{"descend", 0.85}},     // "designed three thousand" for "descend ..."
 }
 
 type confusion struct {
@@ -311,6 +316,8 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"hitting":      {"heading"},           // garbled word should not match heading command
 	"information":  {"uniform"},           // "information X" is the ATIS keyword, not NATO letter U
 	"atis":         {"at"},                // "ATIS information X" is not "at {fix}" — don't let the ATIS phrase be hijacked by at-fix handlers
+	"expect":       {"expedite"},          // "expect ILS" (approach) vs "expedite" (climb/descent rate)
+	"expedite":     {"expect"},
 }
 
 // JaroWinkler computes the Jaro-Winkler similarity between two strings.

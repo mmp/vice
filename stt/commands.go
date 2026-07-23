@@ -663,18 +663,20 @@ func extractDME(tokens []Token) (int, int) {
 		return 0, 0
 	}
 
-	// Check for "DME" or "D M E" or "D. M. E." patterns
+	// Check for "DME" or "D M E" or "D. M. E." patterns. "dm" is a common STT
+	// clipping of "DME" that the short-word fuzzy guard rejects, so match it
+	// explicitly.
 	nextText := strings.ToLower(tokens[consumed].Text)
-	if nextText == "dme" || FuzzyMatch(nextText, "dme", 0.8) {
+	if nextText == "dme" || nextText == "dm" || FuzzyMatch(nextText, "dme", 0.8) {
 		return num, consumed + 1
 	}
 
-	// Check for spelled out "D M E"
-	if nextText == "d" && consumed+2 < len(tokens) {
-		if strings.ToLower(tokens[consumed+1].Text) == "m" &&
-			strings.ToLower(tokens[consumed+2].Text) == "e" {
+	// Check for spelled out "D M E", or "D M" (trailing E clipped).
+	if nextText == "d" && consumed+1 < len(tokens) && strings.ToLower(tokens[consumed+1].Text) == "m" {
+		if consumed+2 < len(tokens) && strings.ToLower(tokens[consumed+2].Text) == "e" {
 			return num, consumed + 3
 		}
+		return num, consumed + 2
 	}
 
 	return 0, 0

@@ -15,6 +15,29 @@ func removeCombinedApproved(commands []string) []string {
 	return slices.DeleteFunc(commands, func(cmd string) bool { return cmd == "APPROVED" })
 }
 
+// resolveExpedite replaces the bare-"expedite" marker with EC or ED based on
+// the nearest preceding altitude command: a climb yields EC, otherwise ED
+// (descend, or the default when no altitude command precedes it).
+func resolveExpedite(commands []string) []string {
+	for i, cmd := range commands {
+		if cmd != "EXPEDITE" {
+			continue
+		}
+		dir := "ED"
+		for j := i - 1; j >= 0; j-- {
+			c := strings.TrimPrefix(commands[j], "T")
+			if len(c) > 1 && (c[0] == 'C' || c[0] == 'D' || c[0] == 'A') && IsNumber(c[1:]) {
+				if c[0] == 'C' {
+					dir = "EC"
+				}
+				break
+			}
+		}
+		commands[i] = dir
+	}
+	return commands
+}
+
 // convertAltitudeToSpeedIfKnots checks if "knots" appears anywhere in the tokens.
 // If "knots" is present but no speed command was parsed, it means the altitude
 // command should actually be a speed command (the "knots" wasn't matched to anything).

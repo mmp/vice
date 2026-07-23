@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 3060 Ti (8238MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "JBU636",
-  "command": "EVA19RDBLAIM",
+  "command": "EVA10R DBLAIM",
   "stt_aircraft": {
     "JetBlue six 36": {
       "Callsign": "JBU636",

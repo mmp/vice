@@ -191,6 +191,19 @@ func (p *fixParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, strin
 // approachParser extracts approach names.
 type approachParser struct {
 	allowLAHSO bool
+	// garbledFallback enables the last-resort match against candidate
+	// approaches when the type word is unrecognizable. Only strong clearance
+	// contexts (expect/cleared/at-fix/localizer) set it; the weak "vectors
+	// {approach}" template does not, so "vectors for traffic" can't clear the
+	// assigned approach.
+	garbledFallback bool
+	// garbledRequireEvidence demands a runway signal (digits/direction/variant)
+	// from the transcript for the garbled fallback, rather than leaning on the
+	// assigned approach alone. Set for the bare-{approach} cleared slot, where
+	// "cleared direct FIX" / "cancel approach clearance" would otherwise be
+	// misread as an approach; unset for "expect", where "expect ah less diners"
+	// legitimately resolves to the assigned approach.
+	garbledRequireEvidence bool
 }
 
 func (p *approachParser) goType() reflect.Type {
@@ -204,7 +217,7 @@ func (p *approachParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 
 	// Delegate to existing extractApproach function
 	// Pass the assigned approach so we prefer it when there are ties
-	appr, _, consumed := extractApproach(tokens[pos:], ac.CandidateApproaches, ac.AssignedApproach)
+	appr, _, consumed := extractApproach(tokens[pos:], ac.CandidateApproaches, ac.AssignedApproach, p.garbledFallback, p.garbledRequireEvidence)
 	if consumed == 0 {
 		return nil, 0, "APPROACH"
 	}
@@ -876,9 +889,11 @@ func getTypeParser(typeID string) typeParser {
 	case "fix":
 		return &fixParser{}
 	case "approach":
-		return &approachParser{}
+		return &approachParser{garbledFallback: true, garbledRequireEvidence: true}
 	case "approach_lahso":
 		return &approachParser{allowLAHSO: true}
+	case "approach_expect_lahso":
+		return &approachParser{allowLAHSO: true, garbledFallback: true}
 	case "visual_approach_lahso":
 		return &visualApproachParser{allowLAHSO: true}
 	case "squawk":

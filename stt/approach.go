@@ -16,7 +16,7 @@ import (
 // extractApproach extracts an approach from tokens.
 // assignedApproach is the approach the aircraft was previously told to expect (e.g., "ILS Runway 10R").
 // When there are multiple matches with equal scores, the assigned approach is preferred.
-func extractApproach(tokens []Token, approaches map[string]string, assignedApproach string) (string, float64, int) {
+func extractApproach(tokens []Token, approaches map[string]string, assignedApproach string, allowGarbled, requireEvidence bool) (string, float64, int) {
 	if len(tokens) == 0 || len(approaches) == 0 {
 		return "", 0, 0
 	}
@@ -405,7 +405,180 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 		return apprID, 0.70, len(tokens)
 	}
 
+	// Garbled-type fallback: the approach type word is unrecognizable ("aisles",
+	// "a less", "lstu", "idols" for ILS; "the honor of" for a name), but this is
+	// an explicit expect/cleared clearance (extractApproach is only reached from
+	// that path). Score every candidate against the spoken runway digits,
+	// direction, variant, and the assigned approach and take the best.
+	if allowGarbled {
+		if appr, consumed := matchGarbledApproach(tokens, approaches, assignedApproach, requireEvidence); consumed > 0 {
+			return appr, 0.75, consumed
+		}
+	}
+
 	return "", 0, 0
+}
+
+// candidateRunway parses a candidate's spoken approach name into its runway
+// digit string and direction (e.g. "I L S runway two four right" -> "24", 'R';
+// "r-nav zulu runway one two" -> "12", 0).
+func candidateRunway(spokenName string) (digits string, dir byte) {
+	lower := strings.ToLower(spokenName)
+	idx := strings.Index(lower, "runway ")
+	if idx < 0 {
+		return "", 0
+	}
+	for _, w := range strings.Fields(lower[idx+len("runway "):]) {
+		if d, ok := digitWords[w]; ok {
+			digits += d
+			continue
+		}
+		if IsNumber(w) {
+			digits += w
+			continue
+		}
+		switch w {
+		case "left", "l":
+			dir = 'L'
+		case "right", "r":
+			dir = 'R'
+		case "center", "c":
+			dir = 'C'
+		}
+		// Stop once we have digits and hit a non-digit word (direction handled).
+		if digits != "" {
+			break
+		}
+	}
+	return digits, dir
+}
+
+// matchGarbledApproach is the last-resort approach matcher for an explicit
+// expect/cleared clearance whose type word is garbled beyond recognition. It
+// requires the span to open with a garbled type WORD (not a bare runway
+// number), so a genuinely typeless "expect two four right" still yields
+// SAYAGAIN. It scores every candidate by runway-digit overlap, spoken
+// direction, spoken variant (zulu/yankee), the assigned approach, and an ILS
+// prior (garbled types are overwhelmingly ILS) and returns the best.
+func matchGarbledApproach(tokens []Token, approaches map[string]string, assignedApproach string, requireEvidence bool) (string, int) {
+	// Require a leading garbled type word.
+	i := 0
+	for i < len(tokens) && IsFillerWord(strings.ToLower(tokens[i].Text)) {
+		i++
+	}
+	if i >= len(tokens) {
+		return "", 0
+	}
+	first := strings.ToLower(tokens[i].Text)
+	// A number/direction/"runway" opener means the type was never spoken (a bare
+	// runway is genuinely ambiguous); a command keyword ("direct", "intercept",
+	// "cancel") means this span is a different command, not a garbled approach.
+	if tokens[i].Type == TokenNumber || IsCommandKeyword(first) ||
+		first == "runway" || first == "cancel" || first == "unable" {
+		return "", 0
+	}
+
+	// Consume the approach phrase up to a command boundary, gathering signals.
+	end := i
+	spokenDigits := ""
+	var spokenDir byte
+	var spokenVariant string
+	for j := i; j < len(tokens); j++ {
+		w := strings.ToLower(tokens[j].Text)
+		// A trailing "left"/"right"/"center" is the runway direction, so capture
+		// it even though those words are also command boundaries elsewhere.
+		if w == "left" || w == "right" || w == "center" {
+			spokenDir = w[0] - 'a' + 'A'
+			end = j
+			continue
+		}
+		if j > i && IsCommandKeyword(w) {
+			break
+		}
+		end = j
+		switch {
+		case tokens[j].Type == TokenNumber:
+			spokenDigits += tokens[j].Text
+		default:
+			if v, ok := ConvertNATOLetter(w); ok && (v == "z" || v == "y") {
+				spokenVariant = v
+			}
+		}
+	}
+
+	best, bestScore, bestEvidence := "", 0.0, false
+	for spokenName, apprID := range approaches {
+		candDigits, candDir := candidateRunway(spokenName)
+		candVariant := ""
+		if len(apprID) >= 2 && (apprID[1] == 'Y' || apprID[1] == 'Z') {
+			candVariant = strings.ToLower(string(apprID[1]))
+		}
+
+		// Hard filters: spoken direction and variant must not conflict.
+		if spokenDir != 0 && candDir != 0 && candDir != spokenDir {
+			continue
+		}
+		if spokenVariant != "" && candVariant != spokenVariant {
+			continue
+		}
+
+		// evidence: a positive signal from the transcript itself (runway
+		// digits, direction, or variant), as opposed to leaning only on the
+		// assigned approach.
+		score, evidence := 0.0, false
+		if candDigits != "" && strings.Contains(spokenDigits, candDigits) {
+			score += 3.0
+			evidence = true
+		} else if candDigits != "" && spokenDigits != "" && strings.HasSuffix(spokenDigits, candDigits[len(candDigits)-1:]) {
+			score += 1.0
+			evidence = true
+		}
+		if spokenDir != 0 && candDir == spokenDir {
+			score += 1.5
+			evidence = true
+		}
+		if matchesAssignedRunway(apprID, assignedApproach) {
+			score += 2.0
+		}
+		if apprID != "" && apprID[0] == 'I' {
+			score += 0.5 // garbled types are overwhelmingly ILS
+		}
+		if spokenVariant != "" && candVariant == spokenVariant {
+			score += 0.3
+			evidence = true
+		}
+
+		if score > bestScore || (score == bestScore && best != "" && apprID < best) {
+			best, bestScore, bestEvidence = apprID, score, evidence
+		}
+	}
+
+	// A recognizable approach-type word anywhere in the span (e.g. "cleared ILS"
+	// with the runway garbled) confirms an approach clearance and satisfies the
+	// evidence requirement even without a runway signal.
+	hasTypeWord := false
+	for k := i; k <= end && !hasTypeWord; k++ {
+		// "localizer" is excluded: a bare localizer reference is an intercept
+		// instruction ("at FIX intercept localizer" -> I), not a clearance.
+		if t, _ := extractApproachType(tokens[k:]); t != "" && t != "localizer" {
+			hasTypeWord = true
+		}
+	}
+
+	if bestScore < 1.5 || (requireEvidence && !bestEvidence && !hasTypeWord) {
+		return "", 0
+	}
+	logLocalStt("  matchGarbledApproach: digits=%q dir=%c variant=%q -> %q (score=%.1f)",
+		spokenDigits, dirOrDash(spokenDir), spokenVariant, best, bestScore)
+	return best, end + 1
+}
+
+// dirOrDash renders a direction byte for logging, using '-' for none.
+func dirOrDash(dir byte) byte {
+	if dir == 0 {
+		return '-'
+	}
+	return dir
 }
 
 // approachMatchesAssigned checks if an approach ID matches the assigned approach.
