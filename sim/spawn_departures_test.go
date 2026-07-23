@@ -240,3 +240,69 @@ func TestSamePavementRunways(t *testing.T) {
 		t.Errorf("samePavementRunways = %v, shouldn't include intersecting runway 36", got)
 	}
 }
+
+func TestResolveScheduledDepartureExactDestination(t *testing.T) {
+	s := &Sim{State: &CommonState{NmPerLongitude: testNmPerLongitude}}
+	ap := &av.Airport{
+		Departures: []av.Departure{
+			{Exit: "NORTH", Destination: "KNOR"},
+			{Exit: "EAST", Destination: "KTGT"},
+		},
+		ExitCategories: map[av.ExitID]string{"NORTH": "jet", "EAST": "jet"},
+	}
+	rwy := &DepartureRunway{Runway: "30L", Category: "jet"}
+	exitRoutes := map[av.ExitID]*av.ExitRoute{"NORTH": {}, "EAST": {}}
+
+	dep, err := s.resolveScheduledDeparture("KORG", ap, rwy, exitRoutes, "KTGT")
+	if err != nil {
+		t.Fatalf("resolveScheduledDeparture: %v", err)
+	}
+	if dep.Destination != "KTGT" {
+		t.Fatalf("destination = %q, want KTGT", dep.Destination)
+	}
+}
+
+func TestResolveScheduledDepartureByDirection(t *testing.T) {
+	original := make(map[string]av.FAAAirport)
+	for _, code := range []string{"KORG", "KTGT", "KEAS", "KNOR"} {
+		if airport, ok := av.DB.Airports[code]; ok {
+			original[code] = airport
+		}
+	}
+	t.Cleanup(func() {
+		for _, code := range []string{"KORG", "KTGT", "KEAS", "KNOR"} {
+			if airport, ok := original[code]; ok {
+				av.DB.Airports[code] = airport
+			} else {
+				delete(av.DB.Airports, code)
+			}
+		}
+	})
+
+	nm := func(x, y float32) math.Point2LL {
+		return math.NM2LL([2]float32{x, y}, testNmPerLongitude)
+	}
+	av.DB.Airports["KORG"] = av.FAAAirport{Id: "KORG", Location: nm(0, 0)}
+	av.DB.Airports["KTGT"] = av.FAAAirport{Id: "KTGT", Location: nm(100, 0)}
+	av.DB.Airports["KEAS"] = av.FAAAirport{Id: "KEAS", Location: nm(80, 10)}
+	av.DB.Airports["KNOR"] = av.FAAAirport{Id: "KNOR", Location: nm(0, 80)}
+
+	s := &Sim{State: &CommonState{NmPerLongitude: testNmPerLongitude}}
+	ap := &av.Airport{
+		Departures: []av.Departure{
+			{Exit: "NORTH", Destination: "KNOR"},
+			{Exit: "EAST", Destination: "KEAS"},
+		},
+		ExitCategories: map[av.ExitID]string{"NORTH": "jet", "EAST": "jet"},
+	}
+	rwy := &DepartureRunway{Runway: "30L", Category: "jet"}
+	exitRoutes := map[av.ExitID]*av.ExitRoute{"NORTH": {}, "EAST": {}}
+
+	dep, err := s.resolveScheduledDeparture("KORG", ap, rwy, exitRoutes, "KTGT")
+	if err != nil {
+		t.Fatalf("resolveScheduledDeparture: %v", err)
+	}
+	if dep.Destination != "KEAS" {
+		t.Fatalf("destination = %q, want directionally closest KEAS", dep.Destination)
+	}
+}

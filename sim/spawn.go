@@ -84,6 +84,14 @@ const (
 	LaunchManual
 )
 
+// TrafficSource identifies how automatic IFR traffic is selected.
+type TrafficSource int32
+
+const (
+	TrafficSourceRandom TrafficSource = iota
+	TrafficSourceRealWorldSchedule
+)
+
 // LaunchConfig collects settings related to launching aircraft in the sim; it's
 // passed back and forth between client and server: server provides them so client
 // can draw the UI for what's available, then client returns one back when launching.
@@ -95,6 +103,21 @@ type LaunchConfig struct {
 	DepartureMode  int32
 	ArrivalMode    int32
 	OverflightMode int32
+
+	// TrafficSource controls whether automatic IFR aircraft come from the
+	// scenario's existing random traffic generator or a built-in schedule.
+	TrafficSource TrafficSource
+	// ScheduleID identifies the selected built-in schedule when TrafficSource
+	// is TrafficSourceRealWorldSchedule.
+	ScheduleID string
+	// ScheduleStartMinute is the selected local start time, expressed as
+	// minutes after midnight at the schedule airport.
+	ScheduleStartMinute int
+	// ScheduleArrivalPercentage is the percentage of scheduled IFR arrivals to use.
+	ScheduleArrivalPercentage int
+
+	// ScheduleDeparturePercentage is the percentage of scheduled IFR departures to use.
+	ScheduleDeparturePercentage int
 
 	GoAroundRate         float32
 	EnableTowerGoArounds bool
@@ -120,6 +143,9 @@ type LaunchConfig struct {
 func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vffRequestRate int32,
 	vfrAirports map[string]*av.Airport, inbound map[string]map[string]float32, haveVFRReportingRegions bool) LaunchConfig {
 	lc := LaunchConfig{
+		TrafficSource:               TrafficSourceRandom,
+		ScheduleArrivalPercentage:   100,
+		ScheduleDeparturePercentage: 100,
 		GoAroundRate:                0.01,
 		DepartureRateScale:          1,
 		VFRDepartureRateScale:       vfrRateScale,
@@ -316,7 +342,19 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 
 	s.lg.Info("Set launch config", slog.Any("launch_config", lc))
 
+	providerChanged := lc.TrafficSource != s.State.LaunchConfig.TrafficSource ||
+		lc.ScheduleID != s.State.LaunchConfig.ScheduleID ||
+		lc.ScheduleStartMinute != s.State.LaunchConfig.ScheduleStartMinute
+
 	s.State.LaunchConfig = lc
+	if providerChanged {
+		s.trafficProvider = nil
+		for _, runways := range s.DepartureState {
+			for _, depState := range runways {
+				depState.NextIFRSpawn = s.State.SimTime
+			}
+		}
+	}
 	s.publish()
 	return nil
 }
@@ -361,7 +399,8 @@ func (s *Sim) LaunchAircraft(ac Aircraft, departureRunway av.RunwayID) {
 }
 
 func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, manualLaunch bool) {
-	depac := makeDepartureAircraft(ac, s.State.SimTime, s.wxModel, s.Rand)
+	depac := makeDepartureAircraft(ac, s.State.SimTime, s.wxModel,
+		s.State.LaunchConfig.TrafficSource, s.Rand)
 
 	ac.WaitingForLaunch = true
 	s.addAircraftNoLock(*ac)
@@ -370,7 +409,6 @@ func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, manualLaunch 
 	depState := s.DepartureState[ac.FlightPlan.DepartureAirport][runway]
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
 		if manualLaunch {
-			// Keep them moving and for HFR, request the release immediately.
 			depac.ReadyDepartGateTime = depac.SpawnTime
 		}
 		// IFRs spend some time at the gate to give them a chance to appear
@@ -502,7 +540,15 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 			rate = scaleRate(rate, s.State.LaunchConfig.InboundFlowRateScale)
 			rateSum += rate
 		}
-		s.NextInboundSpawn[group] = randomDelay(rateSum)
+
+		nextInboundSpawn := randomDelay(rateSum)
+		if s.State.LaunchConfig.TrafficSource == TrafficSourceRealWorldSchedule {
+			// The schedule provider owns arrival timing, so ask it immediately
+			// for the next published runway-arrival event.
+			nextInboundSpawn = now
+		}
+
+		s.NextInboundSpawn[group] = nextInboundSpawn
 	}
 
 	for name := range s.State.DepartureAirports {
@@ -511,9 +557,15 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 		if runwayRates, ok := s.State.LaunchConfig.DepartureRates[name]; ok {
 			for rwy, rate := range runwayRates {
 				r := sumRateMap(rate, s.State.LaunchConfig.DepartureRateScale)
+				nextIFRSpawn := randomDelay(r)
+				if s.State.LaunchConfig.TrafficSource == TrafficSourceRealWorldSchedule {
+					// The schedule provider owns the timing. Ask it immediately
+					// for the next published runway departure.
+					nextIFRSpawn = now
+				}
 				s.DepartureState[name][rwy] = &RunwayLaunchState{
 					IFRSpawnRate: r,
-					NextIFRSpawn: randomDelay(r),
+					NextIFRSpawn: nextIFRSpawn,
 				}
 			}
 		}

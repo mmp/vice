@@ -1,0 +1,13 @@
+{
+  "airport": "KMSP",
+  "schedules": [
+
+    {
+      "id": "summer_weekday",
+      "name": "MSP Summer Weekday",
+      "file": "summer_weekday.csv",
+      "description": "Full-day real-world MSP schedule.",
+      "timezone": "America/Chicago"
+    }
+  ]
+}
