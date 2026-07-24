@@ -82,9 +82,11 @@ func fixMatchScore(phrase, spokenName, fixID string) float64 {
 		}
 		// The fix identifier itself: STT may transcribe the identifier
 		// pronunciation rather than the spoken form ("betel" for BAKEL).
+		// Graded by phonetic agreement so identical metaphone codes
+		// ("kishi" / KSHEE) outrank the weaker letter-evidence tiers.
 		if fixIDLower := strings.ToLower(fixID); fixIDLower != spokenLower {
-			if PhoneticMatch(phrase, fixIDLower) {
-				score = max(score, 0.78)
+			if p := phoneticScore(phrase, fixIDLower); p >= scorePhoneticPartial {
+				score = max(score, p*0.9)
 			}
 			if jw := JaroWinkler(phrase, fixIDLower); jw >= 0.75 {
 				score = max(score, jw)

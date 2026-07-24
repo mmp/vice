@@ -38,6 +38,19 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 	}
 
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
+		// A command keyword — other than the altitude introducers
+		// "maintain" and "altitude" ("descend altitude four thousand") —
+		// ends the slot: scanning past it would steal the next command's
+		// value ("descend 2309 speed 230" must not read the 230 as the
+		// altitude). One at the very start means the altitude was never
+		// spoken at all ("descend, contact approach"): fail silently
+		// rather than requesting a repeat.
+		if w := strings.ToLower(tokens[i].Text); IsCommandKeyword(w) && w != "maintain" && w != "altitude" {
+			if i == pos {
+				return nil, 0, ""
+			}
+			break
+		}
 		// Skip numbers followed by "mile"/"miles" (distances) or "knots" (speeds)
 		if i+1 < len(tokens) {
 			nextText := strings.ToLower(tokens[i+1].Text)
@@ -67,7 +80,13 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 }
 
 // headingParser extracts heading values (1-360).
-type headingParser struct{}
+type headingParser struct {
+	// requireLeadingZero only accepts numbers spoken with an explicit
+	// leading zero ("zero five zero"). That phrasing is unique to
+	// headings, so templates whose keyword context is otherwise too weak
+	// to accept an arbitrary number can accept these.
+	requireLeadingZero bool
+}
 
 func (p *headingParser) goType() reflect.Type {
 	return reflect.TypeOf(0)
@@ -100,6 +119,11 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 		// E.g., "heading contact boston center 128 point 75".
 		if tokens[i].Type == TokenNumber && i+1 < len(tokens) &&
 			strings.ToLower(tokens[i+1].Text) == "point" {
+			continue
+		}
+
+		if p.requireLeadingZero &&
+			(tokens[i].Type != TokenNumber || len(tokens[i].Text) != 3 || tokens[i].Text[0] != '0') {
 			continue
 		}
 
@@ -185,7 +209,18 @@ func (p *fixParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, strin
 		return fix, consumed, ""
 	}
 
-	return nil, 0, "FIX"
+	// Only request a repeat when the failing token could plausibly be a
+	// garbled fix name. A command keyword, filler, NATO letter, or
+	// position word in the fix slot means no fix was spoken here at all
+	// ("proceed direct, descend and maintain...").
+	w := strings.ToLower(tokens[pos].Text)
+	if tokens[pos].Type == TokenWord && !IsCommandKeyword(w) && !IsFillerWord(w) &&
+		!positionVetoKeywords[w] {
+		if _, nato := ConvertNATOLetter(w); !nato {
+			return nil, 0, "FIX"
+		}
+	}
+	return nil, 0, ""
 }
 
 // approachParser extracts approach names.
@@ -260,6 +295,14 @@ func (p *visualApproachParser) parse(tokens []Token, pos int, ac Aircraft) (any,
 
 	approachType, _ := extractApproachType(tokens[pos:])
 	if approachType != "visual" {
+		return nil, 0, ""
+	}
+
+	// A charted visual approach ("River Visual") garbles into "<name>
+	// visual"; when the words just before "visual" resemble a named
+	// candidate's leading word ("a very" for "River"), the span belongs to
+	// that approach — yield so the named-approach template wins.
+	if precedingResemblesNamedVisual(tokens, pos, ac.CandidateApproaches) {
 		return nil, 0, ""
 	}
 
@@ -671,7 +714,13 @@ func (p *aircraftTypeParser) parse(tokens []Token, pos int, ac Aircraft) (any, i
 	return "", consumed, ""
 }
 
-type garbledWordParser struct{}
+type garbledWordParser struct {
+	// notBeforeKeyword additionally rejects a word directly followed by a
+	// command keyword: in a trailing slot like "contact {garbled_word}",
+	// such a word is the next command's modifier ("present" in "contact,
+	// present heading"), not a garbled facility name.
+	notBeforeKeyword bool
+}
 
 func (p *garbledWordParser) goType() reflect.Type {
 	return reflect.TypeOf("")
@@ -683,9 +732,12 @@ func (p *garbledWordParser) parse(tokens []Token, pos int, ac Aircraft) (value a
 	}
 	// Match a word token that is NOT a command keyword. A word with a
 	// confusion-table reading is a garbled command word ("club" for
-	// "climb"), not absorbable noise.
+	// "climb"), not absorbable noise; a filler word ("continue", "your")
+	// is discourse glue, not a garbled facility or fix name.
 	if tokens[pos].Type == TokenWord && !IsCommandKeyword(tokens[pos].Text) &&
-		len(confusionTable[strings.ToLower(tokens[pos].Text)]) == 0 {
+		len(confusionTable[strings.ToLower(tokens[pos].Text)]) == 0 &&
+		!IsFillerWord(strings.ToLower(tokens[pos].Text)) &&
+		!(p.notBeforeKeyword && pos+1 < len(tokens) && IsCommandKeyword(strings.ToLower(tokens[pos+1].Text))) {
 		return tokens[pos].Text, 1, ""
 	}
 	return nil, 0, ""
@@ -882,6 +934,8 @@ func getTypeParser(typeID string) typeParser {
 		return &altitudeParser{allowFlightLevel: true}
 	case "heading":
 		return &headingParser{}
+	case "heading_leading_zero":
+		return &headingParser{requireLeadingZero: true}
 	case "speed":
 		return &speedParser{}
 	case "mach":
@@ -916,6 +970,8 @@ func getTypeParser(typeID string) typeParser {
 		return &atisLetterParser{}
 	case "garbled_word":
 		return &garbledWordParser{}
+	case "garbled_word_final":
+		return &garbledWordParser{notBeforeKeyword: true}
 	case "aircraft_type":
 		return &aircraftTypeParser{}
 	case "facility_word":

@@ -555,9 +555,13 @@ func matchCommands(tokens []Token, startPos int, ac Aircraft, isThen bool, exclu
 		if consumed <= 0 {
 			continue
 		}
-		// Check if this command's category is excluded
+		// Check if this command's category is excluded. A restated absolute
+		// heading passes anyway: the controller is correcting the earlier
+		// one ("right heading two seven zero, ah, right heading zero nine
+		// zero"), and post-processing keeps only the last.
 		category := getCommandCategory(match.Command)
-		if category != "" && excludeCategories[category] {
+		if category != "" && excludeCategories[category] &&
+			!(category == "heading" && isAbsoluteHeadingCommand(match.Command)) {
 			continue
 		}
 

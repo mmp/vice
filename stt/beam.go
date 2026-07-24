@@ -89,6 +89,10 @@ func parseTransmission(tokens []Token, ac Aircraft) transmissionParse {
 	// Post-processing: if "knots" appears in the transcript, convert altitude commands to speed
 	commands = convertAltitudeToSpeedIfKnots(tokens, commands)
 	commands = resolveExpedite(commands)
+	commands = dedupeRepeatedHeadings(commands)
+	commands = mergeUntilFixMarkers(commands)
+	commands = dropFixSayAgainBeforeClearance(commands)
+	commands = resolveGarbledClearanceVerb(tokens, commands, ac)
 	commands = coalesceAfterFixAltitudes(commands)
 	commandsBeforeApprovalFilter := len(commands)
 	commands = removeCombinedApproved(commands)

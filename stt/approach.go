@@ -5,6 +5,7 @@ import (
 	"slices"
 	"strings"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
 )
 
@@ -66,8 +67,40 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 	// fallback below handles this correctly.
 	skipFuzzyLoop := len(tokens) > 0 && strings.ToLower(tokens[0].Text) == "runway"
 
+	// When the tokens contain a runway number that matches no candidate at
+	// all, the number was garbled in transcription ("two three" for "two
+	// six"). Letter similarity can't recover it — "two three" is about as
+	// close to "two five" as to "two six" — so the assigned approach gets a
+	// decisive preference instead of the usual tie-breaking nudge, unless a
+	// clearly spoken direction contradicts the assigned runway.
+	garbledRunwayNum := false
+	if num, _, pos := extractRunwayNumber(tokens); num != "" && pos >= 0 {
+		garbledRunwayNum = !slices.ContainsFunc(util.SortedMapKeys(approaches), func(spokenName string) bool {
+			return runwayMatches(strings.ToLower(spokenName), num)
+		})
+		if d := extractSpokenDirection(tokens); d != 0 {
+			if ad := assignedRunwayDir(assignedApproach); ad != 0 && ad != d {
+				garbledRunwayNum = false
+			}
+		}
+	}
+
+	// Bound candidate phrases at keywords that start a clearly different
+	// command: "ils maintain two one zero" must not fuzzy-match "i l s
+	// runway two four right" just because the runway-inserted variant
+	// shares a long prefix. Heading/turn words are NOT boundaries — they
+	// commonly appear as garbled approach text ("i l s turn to around
+	// three left" for "ILS runway two three left").
+	maxPhrase := len(tokens)
+	for i, t := range tokens {
+		if i > 0 && approachPhraseBoundary[strings.ToLower(t.Text)] {
+			maxPhrase = i
+			break
+		}
+	}
+
 	// Build candidate phrases (1-7 words for approach names, since spoken numbers expand)
-	for length := min(7, len(tokens)); length >= 1 && !skipFuzzyLoop; length-- {
+	for length := min(7, maxPhrase); length >= 1 && !skipFuzzyLoop; length-- {
 		var parts []string
 		for i := range length {
 			// Expand numeric tokens to spoken form to match telephony
@@ -110,8 +143,14 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 
 					// Bonus for matching the assigned/expected approach: prefer the
 					// approach the aircraft was told to expect. This helps when the
-					// approach type is garbled but the runway matches.
-					if approachMatchesAssigned(apprID, assignedApproach) {
+					// approach type is garbled but the runway matches. With a garbled
+					// runway number the bonus is decisive and runway-number-aware, so
+					// only the actually-assigned runway collects it.
+					if garbledRunwayNum {
+						if matchesAssignedRunway(apprID, assignedApproach) {
+							score += 0.12
+						}
+					} else if approachMatchesAssigned(apprID, assignedApproach) {
 						score += 0.03
 					}
 
@@ -419,6 +458,36 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 	return "", 0, 0
 }
 
+// approachPhraseBoundary lists the command keywords that end an approach
+// phrase: speed, altitude, and handoff commands never garble from spoken
+// approach names.
+var approachPhraseBoundary = map[string]bool{
+	"maintain": true, "speed": true, "slow": true, "reduce": true, "increase": true,
+	"descend": true, "climb": true, "altitude": true, "mach": true,
+	"contact": true, "squawk": true,
+}
+
+// assignedRunwayDir returns the runway direction ('L'/'R'/'C') of an
+// assigned approach string like "ILS Runway 21 Left", or 0 if none.
+func assignedRunwayDir(assignedApproach string) byte {
+	upper := strings.ToUpper(assignedApproach)
+	idx := strings.Index(upper, "RUNWAY")
+	if idx == -1 {
+		return 0
+	}
+	for _, c := range strings.TrimSpace(upper[idx+6:]) {
+		switch {
+		case c >= '0' && c <= '9' || c == ' ':
+			continue
+		case c == 'L' || c == 'R' || c == 'C':
+			return byte(c)
+		default:
+			return 0
+		}
+	}
+	return 0
+}
+
 // candidateRunway parses a candidate's spoken approach name into its runway
 // digit string and direction (e.g. "I L S runway two four right" -> "24", 'R';
 // "r-nav zulu runway one two" -> "12", 0).
@@ -470,11 +539,45 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 		return "", 0
 	}
 	first := strings.ToLower(tokens[i].Text)
-	// A number/direction/"runway" opener means the type was never spoken (a bare
-	// runway is genuinely ambiguous); a command keyword ("direct", "intercept",
-	// "cancel") means this span is a different command, not a garbled approach.
-	if tokens[i].Type == TokenNumber || IsCommandKeyword(first) ||
-		first == "runway" || first == "cancel" || first == "unable" {
+	// A number/direction/"runway" opener means the type was never spoken (a
+	// bare runway is genuinely ambiguous) — unless the number is exactly
+	// the assigned approach's runway ("cleared nine" with ILS runway 9 on
+	// file), which is unambiguous shorthand. A command keyword ("direct",
+	// "intercept", "cancel") means this span is a different command, not a
+	// garbled approach.
+	if tokens[i].Type == TokenNumber {
+		// Several approach types can serve the assigned runway; prefer the
+		// one whose type matches the assigned approach (I9 over R9 when
+		// ILS runway 9 is on file), alphabetical for determinism.
+		assignedLower := strings.ToLower(assignedApproach)
+		typeMatches := func(apprID string) bool {
+			switch {
+			case strings.Contains(assignedLower, "ils"):
+				return apprID[0] == 'I'
+			case strings.Contains(assignedLower, "rnav"):
+				return apprID[0] == 'R'
+			default:
+				return false
+			}
+		}
+		best := ""
+		for spokenName, apprID := range approaches {
+			if digits, _ := candidateRunway(spokenName); digits != tokens[i].Text ||
+				!matchesAssignedRunway(apprID, assignedApproach) {
+				continue
+			}
+			if best == "" || (typeMatches(apprID) && !typeMatches(best)) ||
+				(typeMatches(apprID) == typeMatches(best) && apprID < best) {
+				best = apprID
+			}
+		}
+		if best != "" {
+			logLocalStt("  matchGarbledApproach: bare runway %q matches assigned -> %q", tokens[i].Text, best)
+			return best, i + 1
+		}
+		return "", 0
+	}
+	if IsCommandKeyword(first) || first == "runway" || first == "cancel" || first == "unable" {
 		return "", 0
 	}
 
@@ -506,6 +609,14 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 		}
 	}
 
+	// The assigned approach's spoken name, for identity matching of named
+	// approaches ("River Visual runway one niner") whose IDs carry no
+	// runway digits for matchesAssignedRunway to compare.
+	assignedTelephony := ""
+	if assignedApproach != "" {
+		assignedTelephony = av.GetApproachTelephony(assignedApproach)
+	}
+
 	best, bestScore, bestEvidence := "", 0.0, false
 	for spokenName, apprID := range approaches {
 		candDigits, candDir := candidateRunway(spokenName)
@@ -523,8 +634,9 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 		}
 
 		// evidence: a positive signal from the transcript itself (runway
-		// digits, direction, or variant), as opposed to leaning only on the
-		// assigned approach.
+		// digits, direction, variant, or the candidate's own name showing
+		// through the garble), as opposed to leaning only on the assigned
+		// approach.
 		score, evidence := 0.0, false
 		if candDigits != "" && strings.Contains(spokenDigits, candDigits) {
 			score += 3.0
@@ -537,7 +649,8 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 			score += 1.5
 			evidence = true
 		}
-		if matchesAssignedRunway(apprID, assignedApproach) {
+		if matchesAssignedRunway(apprID, assignedApproach) ||
+			strings.EqualFold(spokenName, assignedTelephony) {
 			score += 2.0
 		}
 		if apprID != "" && apprID[0] == 'I' {
@@ -548,6 +661,16 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 			evidence = true
 		}
 
+		// Word-level alignment of the garbled span against the candidate's
+		// spoken name: "very visual only one non" resembles "River Visual
+		// runway one niner" far more than "r-nav yankee runway one niner",
+		// which digits/direction/variant alone cannot see.
+		align := approachNameAlignScore(tokens[i:end+1], spokenName)
+		score += 2 * align
+		if align >= 0.45 {
+			evidence = true
+		}
+
 		if score > bestScore || (score == bestScore && best != "" && apprID < best) {
 			best, bestScore, bestEvidence = apprID, score, evidence
 		}
@@ -555,12 +678,18 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 
 	// A recognizable approach-type word anywhere in the span (e.g. "cleared ILS"
 	// with the runway garbled) confirms an approach clearance and satisfies the
-	// evidence requirement even without a runway signal.
+	// evidence requirement even without a runway signal. The literal word
+	// "approach" — including as the command boundary just past the span
+	// ("cleared dialist approach") — counts the same way: it confirms this
+	// is an approach clearance, not a misread "cleared direct FIX".
 	hasTypeWord := false
-	for k := i; k <= end && !hasTypeWord; k++ {
+	for k := i; k <= min(end+1, len(tokens)-1) && !hasTypeWord; k++ {
 		// "localizer" is excluded: a bare localizer reference is an intercept
 		// instruction ("at FIX intercept localizer" -> I), not a clearance.
 		if t, _ := extractApproachType(tokens[k:]); t != "" && t != "localizer" {
+			hasTypeWord = true
+		}
+		if WordScore(strings.ToLower(tokens[k].Text), "approach") >= 0.8 {
 			hasTypeWord = true
 		}
 	}
@@ -571,6 +700,47 @@ func matchGarbledApproach(tokens []Token, approaches map[string]string, assigned
 	logLocalStt("  matchGarbledApproach: digits=%q dir=%c variant=%q -> %q (score=%.1f)",
 		spokenDigits, dirOrDash(spokenDir), spokenVariant, best, bestScore)
 	return best, end + 1
+}
+
+// approachNameAlignScore measures how much of a candidate approach's
+// spoken name shows through a garbled span. The span's tokens are aligned
+// in order against the name's words; each aligned pair contributes its
+// WordScore above a noise floor, and adjacent-token merges are tried so
+// fusions and splits ("a very" for "river") still align. The result is
+// the summed above-floor credit — roughly, the number of name words
+// clearly present.
+func approachNameAlignScore(tokens []Token, spokenName string) float64 {
+	nameWords := NormalizeTranscript(spokenName)
+	if len(nameWords) == 0 {
+		return 0
+	}
+	const floor = 0.6
+
+	pair := func(w, name string) float64 {
+		if s := WordScore(w, name); s >= floor {
+			return s - floor
+		}
+		return 0
+	}
+
+	// DP over (span position, name position): skip either side freely,
+	// or align 1:1 / 2:1 (merged span tokens against one name word).
+	prev := make([]float64, len(nameWords)+1)
+	cur := make([]float64, len(nameWords)+1)
+	twoAgo := make([]float64, len(nameWords)+1)
+	for i := 1; i <= len(tokens); i++ {
+		w := strings.ToLower(tokens[i-1].Text)
+		for j := 1; j <= len(nameWords); j++ {
+			cur[j] = max(prev[j], cur[j-1], prev[j-1]+pair(w, nameWords[j-1]))
+			if i >= 2 {
+				merged := strings.ToLower(tokens[i-2].Text) + w
+				cur[j] = max(cur[j], twoAgo[j-1]+pair(merged, nameWords[j-1]))
+			}
+		}
+		twoAgo, prev, cur = prev, cur, twoAgo
+		clear(cur)
+	}
+	return prev[len(nameWords)]
 }
 
 // dirOrDash renders a direction byte for logging, using '-' for none.
@@ -743,9 +913,16 @@ func extractApproachIDVariant(approachID string) string {
 // extractSpokenDirection looks for a direction word (left/right/center) in the tokens.
 // Returns 'L', 'R', 'C', or 0 if no direction found.
 func extractSpokenDirection(tokens []Token) byte {
-	for _, t := range tokens {
+	for i, t := range tokens {
 		switch strings.ToLower(t.Text) {
-		case "left", "l", "west": // "west" is STT error for "left"
+		case "left", "west": // "west" is STT error for "left"
+			return 'L'
+		case "l":
+			// An "l" directly followed by "s" is a fragment of "ILS"
+			// ("cleared L S two three"), not a runway direction.
+			if i+1 < len(tokens) && strings.EqualFold(tokens[i+1].Text, "s") {
+				continue
+			}
 			return 'L'
 		case "right", "r":
 			return 'R'
@@ -1504,6 +1681,32 @@ func visualApproachTelephonyVariants(rwy string) []string {
 	}
 }
 
+// precedingResemblesNamedVisual reports whether the token(s) just before
+// position pos (where a "visual" approach-type word matched) resemble the
+// leading name word of a charted visual approach among the candidates —
+// e.g. "a very" before "visual" resembling "River" of "River Visual".
+func precedingResemblesNamedVisual(tokens []Token, pos int, approaches map[string]string) bool {
+	if pos == 0 {
+		return false
+	}
+	texts := []string{strings.ToLower(tokens[pos-1].Text)}
+	if pos >= 2 {
+		texts = append(texts, strings.ToLower(tokens[pos-2].Text)+texts[0])
+	}
+	for spokenName := range approaches {
+		words := strings.Fields(strings.ToLower(spokenName))
+		if len(words) < 2 || words[0] == "visual" || !slices.Contains(words, "visual") {
+			continue
+		}
+		if slices.ContainsFunc(texts, func(t string) bool {
+			return JaroWinkler(t, words[0]) >= 0.7 || phoneticScore(t, words[0]) >= scorePhoneticPartial
+		}) {
+			return true
+		}
+	}
+	return false
+}
+
 func matchVisualApproach(tokens []Token, candidates map[string]string) (string, int) {
 	approachType, typeConsumed := extractApproachType(tokens)
 	if approachType != "visual" {
@@ -1513,7 +1716,21 @@ func matchVisualApproach(tokens []Token, candidates map[string]string) (string, 
 	remainingTokens := tokens[typeConsumed:]
 	runwaySpoken, runwayDir, numPos := extractRunwayNumber(remainingTokens)
 	if runwaySpoken == "" {
-		return "", 0
+		// A 3-digit number whose leading two digits form a runway has a
+		// garbled trailing digit merged in ("one zero nine" for "one zero
+		// right" -> 109); recover the runway and let the unique-candidate
+		// check below sort out the direction.
+		for i, t := range remainingTokens {
+			if t.Type == TokenNumber && t.Value > 100 && t.Value <= 369 {
+				if rwy := t.Value / 10; rwy >= 1 && rwy <= 36 {
+					runwaySpoken, numPos = spokenDigits(rwy), i
+					break
+				}
+			}
+		}
+		if runwaySpoken == "" {
+			return "", 0
+		}
 	}
 	if runwayDir != "" {
 		runwaySpoken += " " + runwayDir

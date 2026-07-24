@@ -431,10 +431,12 @@ func buildCallsignMatch(result *callsignMatchResult, pattern CallsignPattern, to
 	}
 
 	// A perfect flight number match is strong evidence of the correct
-	// callsign; ensure it isn't dragged below 0.90 by a weak airline
-	// score or skip penalty.
+	// callsign; ensure it isn't dragged below 0.92 by a weak airline
+	// score or skip penalty, and that it outranks fuzzy flight matches
+	// riding on a good airline score ("Flexjet 798" must not beat
+	// "ExecJet 1986" when the transcript said "1986").
 	if result.FlightScore >= 1.0 {
-		conf = max(conf, 0.90)
+		conf = max(conf, 0.92)
 	}
 
 	return CallsignMatch{

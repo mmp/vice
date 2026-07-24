@@ -154,6 +154,12 @@ var multiTokenReplacements = map[string][]string{
 	"route of contact": {"radar", "contact"},
 	"to park":          {"depart"}, // STT error: "depart" (TPRT) mistranscribed as "to park" (TPRK)
 	"at the set":       {"descend"},
+	// "until a five mile final" spoken quickly: "'til a five" comes out
+	// "twelve five" (number words are already digits at this stage).
+	"12 5 mile":  {"until", "5", "mile"},
+	"12 5 miles": {"until", "5", "miles"},
+	// "flyin' three six zero" split into two words.
+	"flight in": {"fly", "heading"},
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.

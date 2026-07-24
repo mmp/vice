@@ -84,6 +84,11 @@ func WordScore(word, target string) float64 {
 	if slices.Contains(fuzzyMatchBlocklist[w], t) {
 		return 0
 	}
+	// Curated confusion pairs are trusted as-is, ahead of the short-word
+	// guard below ("on" for "one").
+	if c := confusionScore(w, t); c > 0 {
+		return c
+	}
 	// Very short words fuzzy-match longer targets too easily ("i" vs "in").
 	if len(w) < 3 && len(t) > len(w) {
 		return 0
@@ -92,9 +97,6 @@ func WordScore(word, target string) float64 {
 	score := JaroWinkler(w, t)
 	if p := phoneticScore(w, t); p > score {
 		score = p
-	}
-	if c := confusionScore(w, t); c > score {
-		score = c
 	}
 	return min(score, scoreFuzzyCap)
 }
@@ -229,10 +231,11 @@ var confusionTable = map[string][]confusion{
 	"climin":  {{"climb", 0.85}},
 	"club":    {{"climb", 0.85}},
 	"con":     {{"climb", 0.85}},
-	"fight":   {{"flight", 0.85}},
+	"fight":   {{"flight", 0.85}, {"five", 0.92}}, // "one fight zero" for "one five zero"
 	"space":   {{"speed", 0.85}},
 	"ready":   {{"reduce", 0.85}, {"radar", 0.85}},
 	"secured": {{"cleared", 0.85}},
+	"clicked": {{"cleared", 0.85}}, // "clicked ILS approach two four right"
 	"extract": {{"expect", 0.85}},
 	"isle":    {{"ils", 0.85}},
 	"rls":     {{"ils", 0.85}},
@@ -240,6 +243,7 @@ var confusionTable = map[string][]confusion{
 	"cansec":  {{"contact", 0.85}},
 	"tarot":   {{"tower", 0.85}},
 	"tarom":   {{"tower", 0.85}},
+	"effect":  {{"expect", 0.85}}, // "effect ILS approach two four right"
 	// Advisory phrases: "the field is at your eleven o'clock" and
 	// "caution wake turbulence".
 	"feels":     {{"field", 0.85}},
@@ -251,12 +255,19 @@ var confusionTable = map[string][]confusion{
 	// reads as a bare "right" turn (see the blocklist entry).
 	"route": {{"right direct", 0.85}},
 	// "rioted in two seven zero" for "right turn two seven zero".
-	"rioted": {{"right", 0.85}},
+	"rioted":  {{"right", 0.85}},
+	"righted": {{"right", 0.85}}, // "righted zero nine zero" for "right heading ..."
 	// Garbled turn/heading command words.
 	"rider":    {{"right", 0.85}},       // "rider in three six zero" for "right heading ..."
 	"rating":   {{"right", 0.85}},       // "turn rating zero five zero" for "turn right ..."
 	"flying":   {{"fly heading", 0.85}}, // "flying two two zero" for "fly heading ..."
 	"designed": {{"descend", 0.85}},     // "designed three thousand" for "descend ..."
+	// "maintain one eight zero now it's your greater": "or greater" garbled.
+	"your": {{"or", 0.85}},
+	// "maintain two on zero knots" for "two one zero".
+	"on": {{"one", 0.92}},
+	// "disseminate one thousand eight" for "descend and maintain ...".
+	"disseminate": {{"descend maintain", 0.85}, {"descend", 0.85}},
 }
 
 type confusion struct {
@@ -318,6 +329,8 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"atis":         {"at"},                // "ATIS information X" is not "at {fix}" — don't let the ATIS phrase be hijacked by at-fix handlers
 	"expect":       {"expedite"},          // "expect ILS" (approach) vs "expedite" (climb/descent rate)
 	"expedite":     {"expect"},
+	"accept":       {"speed"}, // "accept the runway two one left localizer" is not a speed command
+	"less":         {"los"},   // "cleared the less approach" is a garbled ILS, not Los Angeles
 }
 
 // JaroWinkler computes the Jaro-Winkler similarity between two strings.
@@ -665,6 +678,48 @@ func DoubleMetaphone(word string) (primary, alternate string) {
 	}
 
 	return pri.String(), alt.String()
+}
+
+// Levenshtein returns the edit distance (insertions, deletions,
+// substitutions) between two strings.
+func Levenshtein(a, b string) int {
+	if len(a) == 0 {
+		return len(b)
+	}
+	if len(b) == 0 {
+		return len(a)
+	}
+	prev := make([]int, len(b)+1)
+	cur := make([]int, len(b)+1)
+	for j := range prev {
+		prev[j] = j
+	}
+	for i := 1; i <= len(a); i++ {
+		cur[0] = i
+		for j := 1; j <= len(b); j++ {
+			cost := 1
+			if a[i-1] == b[j-1] {
+				cost = 0
+			}
+			cur[j] = min(prev[j]+1, cur[j-1]+1, prev[j-1]+cost)
+		}
+		prev, cur = cur, prev
+	}
+	return prev[len(b)]
+}
+
+// isAnagram reports whether two strings contain exactly the same
+// characters, possibly in a different order.
+func isAnagram(a, b string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	var counts [256]int
+	for i := range a {
+		counts[a[i]]++
+		counts[b[i]]--
+	}
+	return !slices.ContainsFunc(counts[:], func(c int) bool { return c != 0 })
 }
 
 // isSubsequence returns true if every character of short appears in long

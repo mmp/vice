@@ -108,6 +108,105 @@ func tryImplicitApproachMatch(tokens []Token, ac Aircraft) (string, int) {
 	return prefix + appr, consumed
 }
 
+// mergeUntilFixMarkers folds "UNTILFIX/{fix}" markers ("maintain that
+// until Dennis") into the nearest preceding speed command as an
+// until-fix restriction: S180 + UNTILFIX/DNNIS -> S180/UDNNIS. A marker
+// with no speed command to modify is dropped.
+func mergeUntilFixMarkers(commands []string) []string {
+	for i := 0; i < len(commands); i++ {
+		fix, ok := strings.CutPrefix(commands[i], "UNTILFIX/")
+		if !ok {
+			continue
+		}
+		for j := i - 1; j >= 0; j-- {
+			if len(commands[j]) > 1 && commands[j][0] == 'S' && IsNumber(commands[j][1:]) {
+				logLocalStt("  merged until-fix: %s + %s -> %s/U%s", commands[j], commands[i], commands[j], fix)
+				commands[j] += "/U" + fix
+				break
+			}
+		}
+		commands = slices.Delete(commands, i, i+1)
+		i--
+	}
+	return commands
+}
+
+// dropFixSayAgainBeforeClearance removes a SAYAGAIN/FIX request when the
+// same transmission also contains an approach clearance: "direct
+// {unrecognized} cleared River Visual" — the clearance defines the
+// routing, so asking for the fix again is unhelpful.
+func dropFixSayAgainBeforeClearance(commands []string) []string {
+	hasClearance := slices.ContainsFunc(commands, func(cmd string) bool {
+		return len(cmd) > 1 && cmd[0] == 'C' && cmd != "CVS" && cmd != "CAC" &&
+			!IsNumber(cmd[1:]) && !strings.Contains(cmd, "/")
+	})
+	if !hasClearance {
+		return commands
+	}
+	return slices.DeleteFunc(commands, func(cmd string) bool { return cmd == "SAYAGAIN/FIX" })
+}
+
+// resolveGarbledClearanceVerb converts an approach clearance to an
+// expect-approach when the aircraft has no assigned approach and the word
+// "cleared" was never actually spoken (the clearance verb was recovered
+// from a garble like "clicked"). ATC assigns approaches expect-first, so
+// with nothing on file a clearance with an unintelligible verb is almost
+// certainly the expect leg; an explicit "cleared" is honored as spoken.
+func resolveGarbledClearanceVerb(tokens []Token, commands []string, ac Aircraft) []string {
+	if ac.AssignedApproach != "" {
+		return commands
+	}
+	for i, cmd := range commands {
+		if getCommandCategory(cmd) != "cleared_approach" || cmd == "CVS" || cmd == "CAC" ||
+			strings.Contains(cmd, "/") || strings.HasPrefix(cmd, "CSI") {
+			continue
+		}
+		if slices.ContainsFunc(tokens, func(t Token) bool {
+			return strings.EqualFold(t.Text, "cleared") || strings.EqualFold(t.Text, "clear")
+		}) {
+			return commands
+		}
+		logLocalStt("  garbled clearance verb with no assigned approach: %s -> E%s", cmd, cmd[1:])
+		commands[i] = "E" + cmd[1:]
+	}
+	return commands
+}
+
+// dedupeRepeatedHeadings keeps only the last of multiple absolute heading
+// commands in one transmission: a controller restating a heading ("right
+// heading two seven zero, ah, right heading zero nine zero") is
+// correcting the earlier one, not issuing two turns. Sequential turns are
+// spoken with "then" and parse as T-prefixed commands, which are left
+// alone.
+func dedupeRepeatedHeadings(commands []string) []string {
+	last := -1
+	count := 0
+	for i, cmd := range commands {
+		if isAbsoluteHeadingCommand(cmd) {
+			last = i
+			count++
+		}
+	}
+	if count < 2 {
+		return commands
+	}
+	logLocalStt("  repeated heading commands: keeping only %s", commands[last])
+	out := commands[:0]
+	for i, cmd := range commands {
+		if !isAbsoluteHeadingCommand(cmd) || i == last {
+			out = append(out, cmd)
+		}
+	}
+	return out
+}
+
+// isAbsoluteHeadingCommand reports whether cmd assigns an absolute
+// heading (H270, L090, R110) as opposed to a relative turn or a
+// direct-to-fix.
+func isAbsoluteHeadingCommand(cmd string) bool {
+	return len(cmd) >= 2 && (cmd[0] == 'H' || cmd[0] == 'L' || cmd[0] == 'R') && IsNumber(cmd[1:])
+}
+
 // coalesceAfterFixAltitudes transforms bare altitude commands that follow a
 // cross-fix command into after-fix commands. When a controller says "cross FIX
 // at ALT1, descend and maintain ALT2" as a single utterance, the parser

@@ -1,6 +1,7 @@
 package stt
 
 import (
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -423,15 +424,32 @@ func (m *flightOnlyMatcher) match(ctx *callsignMatchContext) []callsignMatchResu
 	// Scan for numbers in first few tokens (keep tight since this is last-resort)
 	maxScan := min(3, len(toks))
 	for startIdx := range maxScan {
-		builtNum, numTokens := collectDigits(toks[startIdx:maxScan], 0)
+		if toks[startIdx].Type != TokenNumber && toks[startIdx].Type != TokenAltitude &&
+			!IsDigit(toks[startIdx].Text) {
+			continue
+		}
+		builtNum, numTokens := collectFlightChars(toks[startIdx:maxScan])
 		if builtNum == "" {
 			continue
 		}
+
+		// Tail-addressing candidates ("seventy two" for DAL2172) are only
+		// usable when the tail names exactly one aircraft on frequency.
+		var tailMatches []callsignMatchResult
 
 		// Find aircraft whose flight number matches
 		for spokenName, ac := range ctx.Aircraft {
 			flightNum := flightNumber(string(ac.Callsign))
 			if flightNum == "" {
+				continue
+			}
+
+			// A single character matches too many callsigns to stand on
+			// its own ("five" in random chatter would claim UAL5); require
+			// something before it that at least resembles the airline
+			// ("k one" for "Cair one").
+			if len(builtNum) < 2 &&
+				!anyTokenResemblesAirline(ctx.Tokens[:ctx.TokenPos+startIdx], spokenName) {
 				continue
 			}
 
@@ -447,25 +465,37 @@ func (m *flightOnlyMatcher) match(ctx *callsignMatchContext) []callsignMatchResu
 			} else if strings.Contains(builtNum, flightNum) && len(flightNum) >= 2 {
 				// Substring match
 				score = 0.65
-			} else if len(builtNum) >= 3 && len(flightNum) >= 3 {
+			} else if len(builtNum) >= 3 && len(flightNum) >= 3 &&
+				!hasForeignLetters(builtNum, flightNum) {
 				// Fuzzy match
 				if jwScore := JaroWinkler(builtNum, flightNum); jwScore >= 0.8 {
 					score = jwScore
 				}
 			}
 
-			if score > 0 {
-				results = append(results, callsignMatchResult{
-					SpokenKey:    spokenName,
-					AC:           ac,
-					Consumed:     ctx.TokenPos + startIdx + numTokens,
-					AirlineScore: 0.5, // Nominal score
-					FlightScore:  score,
-					FlightExact:  exact,
-					FlightTokens: numTokens,
-					Skip:         ctx.Skip,
-				})
+			result := callsignMatchResult{
+				SpokenKey:    spokenName,
+				AC:           ac,
+				Consumed:     ctx.TokenPos + startIdx + numTokens,
+				AirlineScore: 0.5, // Nominal score
+				FlightScore:  score,
+				FlightExact:  exact,
+				FlightTokens: numTokens,
+				Skip:         ctx.Skip,
 			}
+
+			if score > 0 {
+				results = append(results, result)
+			} else if len(builtNum) >= 2 && strings.HasSuffix(flightNum, builtNum) {
+				// Tail addressing: the spoken digits are the trailing digits
+				// of the flight number ("seventy two" for 2172).
+				result.FlightScore = 0.7
+				tailMatches = append(tailMatches, result)
+			}
+		}
+
+		if len(results) == 0 && len(tailMatches) == 1 {
+			results = tailMatches
 		}
 
 		// Only use first number position found
@@ -475,6 +505,35 @@ func (m *flightOnlyMatcher) match(ctx *callsignMatchContext) []callsignMatchResu
 	}
 
 	return results
+}
+
+// hasForeignLetters reports whether built contains a letter that does not
+// appear in expected.
+func hasForeignLetters(built, expected string) bool {
+	return strings.ContainsFunc(built, func(r rune) bool {
+		return r >= 'A' && r <= 'Z' && !strings.ContainsRune(expected, r)
+	})
+}
+
+// anyTokenResemblesAirline reports whether any of the given tokens has at
+// least weak letter or phonetic similarity to the first word of the
+// spoken name's airline ("k" or "carry" for "Cair"). WordScore's
+// short-word guard is deliberately bypassed: garbled airline fragments
+// are often one or two characters.
+func anyTokenResemblesAirline(tokens []Token, spokenName string) bool {
+	parts := parseAirlineParts(spokenName)
+	if len(parts) == 0 {
+		return false
+	}
+	return slices.ContainsFunc(tokens, func(t Token) bool {
+		w := strings.ToLower(t.Text)
+		// Filler words resemble airline names by coincidence ("and" is
+		// phonetically ANT, a prefix of "united"'s ANTT), not evidence.
+		if IsFillerWord(w) {
+			return false
+		}
+		return JaroWinkler(w, parts[0]) >= 0.5 || phoneticScore(w, parts[0]) >= 0.5
+	})
 }
 
 // parseAirlineParts extracts airline word parts from a spoken name.
@@ -600,48 +659,25 @@ func matchMultiWordAirline(tokens []Token, parts []string, spokenName string, ac
 	return airlineMatch{spokenName, ac, len(parts), allExact, totalScore / float64(len(parts))}, true
 }
 
-// collectDigits builds a digit string from consecutive number tokens.
-// Returns the string and number of tokens consumed.
-// If maxTokens > 0, stops after that many tokens are consumed.
-func collectDigits(tokens []Token, maxTokens int) (string, int) {
-	var numStr strings.Builder
-	consumed := 0
-	for _, t := range tokens {
-		if maxTokens > 0 && consumed >= maxTokens {
-			break
-		}
-		if t.Type == TokenNumber {
-			numStr.WriteString(strconv.Itoa(t.Value))
-			consumed++
-		} else if t.Type == TokenAltitude {
-			// Altitude tokens encode value in hundreds-of-feet (e.g., "seven
-			// thousand" → Value=70). Decode to the spoken integer so a flight
-			// number said as "Fiji seven thousand" can match "7000".
-			numStr.WriteString(strconv.Itoa(t.Value * 100))
-			consumed++
-		} else if IsNumber(t.Text) || IsDigit(t.Text) {
-			numStr.WriteString(t.Text)
-			consumed++
-		} else {
-			break
-		}
-	}
-	return numStr.String(), consumed
-}
-
-// matchFlightNumber matches tokens against an expected flight number.
-// Returns (exact, consumed, score).
-func matchFlightNumber(tokens []Token, expectedNum string, soleAirline bool) (exact bool, consumed int, score float64) {
-	if len(tokens) == 0 || expectedNum == "" {
-		return false, 0, 0
-	}
-
-	// Build flight number from consecutive digit/letter tokens
+// collectFlightChars builds a flight-number string from consecutive
+// digit, number, letter, and NATO-phonetic-letter tokens. Filler words
+// with digits on both sides are bridged ("sixteen and twelve"). Returns
+// the string and the number of tokens consumed.
+func collectFlightChars(tokens []Token) (string, int) {
 	var builtNum strings.Builder
-	consumed = 0
+	consumed := 0
 
 	for consumed < len(tokens) {
 		t := tokens[consumed]
+
+		// "and" joins spoken number groups ("sixteen and twelve" for
+		// 6912); other fillers ("ah") separate them and end the read.
+		if builtNum.Len() > 0 && consumed+1 < len(tokens) && t.Type == TokenWord &&
+			strings.EqualFold(t.Text, "and") &&
+			(tokens[consumed+1].Type == TokenNumber || IsDigit(tokens[consumed+1].Text)) {
+			consumed++
+			continue
+		}
 
 		// Single digit token
 		if IsDigit(t.Text) {
@@ -689,11 +725,20 @@ func matchFlightNumber(tokens []Token, expectedNum string, soleAirline bool) (ex
 		break
 	}
 
-	if consumed == 0 {
+	return builtNum.String(), consumed
+}
+
+// matchFlightNumber matches tokens against an expected flight number.
+// Returns (exact, consumed, score).
+func matchFlightNumber(tokens []Token, expectedNum string, soleAirline bool) (exact bool, consumed int, score float64) {
+	if len(tokens) == 0 || expectedNum == "" {
 		return false, 0, 0
 	}
 
-	built := builtNum.String()
+	built, consumed := collectFlightChars(tokens)
+	if consumed == 0 {
+		return false, 0, 0
+	}
 
 	// Exact match
 	if built == expectedNum {
@@ -708,18 +753,33 @@ func matchFlightNumber(tokens []Token, expectedNum string, soleAirline bool) (ex
 	// Check if expected is a suffix of built (overshot). Require the
 	// expected number to be at least half the length of the built number;
 	// otherwise the match is too weak (e.g., "6662" ending in "2" matches
-	// 1-in-10 random numbers). Scale score by the length ratio.
+	// 1-in-10 random numbers). The full flight number appearing intact
+	// after leading garble ("11420" for 1420, "689FF" for 89FF) is strong
+	// evidence, so the score stays high, decaying with the garble fraction.
 	if strings.HasSuffix(built, expectedNum) {
 		ratio := float64(len(expectedNum)) / float64(len(built))
 		if ratio >= 0.5 {
-			return false, consumed, 0.8 * ratio
+			return false, consumed, 0.65 + 0.25*ratio
 		}
 	}
 
-	// Fuzzy match on the number
-	jwScore := JaroWinkler(built, expectedNum)
-	if jwScore >= 0.7 {
-		return false, consumed, jwScore
+	// Digit transposition: whisper sometimes scrambles digit order
+	// ("eight three four" for 384). Same length and same characters is a
+	// plausible garble of the flight number, not a different aircraft.
+	if len(built) >= 3 && len(built) == len(expectedNum) && isAnagram(built, expectedNum) {
+		return false, consumed, 0.7
+	}
+
+	// Fuzzy match on the number. Spoken letters are reliable evidence —
+	// whisper garbles digits into each other far more readily than it
+	// invents NATO letters — so a built number whose letters don't appear
+	// in the expected flight number is somebody else's callsign ("689FF"
+	// must not fuzzy-match AAL69), unless it is within a single edit.
+	if !hasForeignLetters(built, expectedNum) || Levenshtein(built, expectedNum) <= 1 {
+		jwScore := JaroWinkler(built, expectedNum)
+		if jwScore >= 0.7 {
+			return false, consumed, jwScore
+		}
 	}
 
 	// For 2-digit numbers, if the trailing digit matches (like "91" vs "81"),

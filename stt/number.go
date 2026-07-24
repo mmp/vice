@@ -82,13 +82,51 @@ func DecodeNumber(tokens []Token, pos int, ctx NumberContext) []NumberCandidate 
 		text := tokens[pos].Text
 		extra := 0
 		digitConf := 1.0
-		for p := pos + 1; p < len(tokens) && tokens[p].Type == TokenWord; p++ {
+		// Filler words interrupting a heading's digit run ("one ah nine or
+		// zero") are absorbed, but only once a following digit confirms the
+		// run continues — trailing fillers are left alone.
+		pendingFillers := 0
+		for p := pos + 1; p < len(tokens); p++ {
+			if tokens[p].Type == TokenNumber {
+				// A number token continues the digit string only once a
+				// recovered word joined it ("two to zero": the "0" after
+				// the recovered "to") or a filler was bridged.
+				if extra == 0 && pendingFillers == 0 {
+					break
+				}
+				text += tokens[p].Text
+				extra += pendingFillers + 1
+				pendingFillers = 0
+				continue
+			}
+			if tokens[p].Type != TokenWord {
+				break
+			}
+			w := strings.ToLower(tokens[p].Text)
+			// "to" sandwiched between digits is the digit "two"
+			// ("two to zero" -> 220).
+			if (w == "to" || w == "too") && p+1 < len(tokens) && tokens[p+1].Type == TokenNumber {
+				text += "2"
+				extra += pendingFillers + 1
+				pendingFillers = 0
+				digitConf *= 0.85
+				continue
+			}
+			// Hesitations inside a heading's digit run ("one ah nine or
+			// zero") pass for free; the digits on both sides carry the
+			// value. "or" reads as filler only here — elsewhere it can be
+			// a garbled "thousand" or part of "or greater".
+			if ctx.Kind == NumHeading && (IsFillerWord(w) || w == "or") {
+				pendingFillers++
+				continue
+			}
 			d, ds := fuzzyDigit(tokens[p].Text)
 			if d == "" {
 				break
 			}
 			text += d
-			extra++
+			extra += pendingFillers + 1
+			pendingFillers = 0
 			digitConf *= ds
 		}
 		if extra > 0 {
@@ -144,7 +182,9 @@ func kindCandidates(tokens []Token, pos int, ctx NumberContext) []NumberCandidat
 // as a digit. Command vocabulary and filler words never read as digits.
 func fuzzyDigit(word string) (string, float64) {
 	w := strings.ToLower(word)
-	if len(w) < 3 || IsFillerWord(w) || commandVocabulary[w] {
+	// Short words are noise unless a curated confusion entry vouches for
+	// them ("on" for "one").
+	if (len(w) < 3 && len(confusionTable[w]) == 0) || IsFillerWord(w) || commandVocabulary[w] {
 		return "", 0
 	}
 	best, bestDigit := 0.0, ""
@@ -204,9 +244,16 @@ func headingCandidates(tokens []Token, pos int) []NumberCandidate {
 					cands = append(cands, NumberCandidate{Value: better, Consumed: 1, Score: numScoreDupDigit})
 				}
 				// STT inserted an extra leading digit ("one two one zero"
-				// -> 1210; the speaker said 210).
+				// -> 1210; the speaker said 210). When the trailing three
+				// digits carry their own leading zero ("one zero eight
+				// zero" -> 1080), that is sub-100 heading phrasing ("zero
+				// eight zero") and outranks other repairs of the garble.
 				if mod := v % 1000; mod >= 1 && mod <= 360 && mod%5 == 0 {
-					cands = append(cands, NumberCandidate{Value: mod, Consumed: 1, Score: numScorePreferredMul})
+					score := numScorePreferredMul
+					if len(t.Text) == 4 && t.Text[1] == '0' {
+						score = numScoreDupDigit
+					}
+					cands = append(cands, NumberCandidate{Value: mod, Consumed: 1, Score: score})
 				}
 			}
 		} else if mod := v % 1000; mod >= 1 && mod <= 360 {
@@ -319,6 +366,13 @@ func speedCandidates(tokens []Token, pos int, ac Aircraft) []NumberCandidate {
 			cands = append(cands, perf(mod1000, 1, numScoreDropLeading))
 		} else if div10Valid {
 			cands = append(cands, perf(div10, 1, numScoreDropTrailing))
+		}
+		// Tokenizer-merged trailing garble ("one six zero two four" ->
+		// 16024): the leading three digits read as a clean speed.
+		if len(cands) == 0 && len(t.Text) >= 5 {
+			if lead3 := ParseNumber(t.Text[:3]); lead3 >= 100 && lead3 <= 400 && lead3%10 == 0 {
+				cands = append(cands, perf(lead3, 1, numScoreDropTrailing))
+			}
 		}
 		return cands
 	}

@@ -106,6 +106,21 @@ func (p *Transcriber) decodeInternal(
 		return "", nil
 	}
 
+	// "break break" separates messages to different aircraft in one
+	// transmission. Only one response is possible; decode the final
+	// message, which is the one the controller finished with.
+	for i := 0; i+1 < len(tokens); i++ {
+		if strings.EqualFold(tokens[i].Text, "break") && strings.EqualFold(tokens[i+1].Text, "break") {
+			logLocalStt("'break break' at token %d: decoding only the following message", i)
+			tokens = tokens[i+2:]
+			i = -1
+		}
+	}
+	if len(tokens) == 0 {
+		logLocalStt(`nothing after "break break", returning ""`)
+		return "", nil
+	}
+
 	var callsign string
 	var ac Aircraft
 	var commandTokens []Token
@@ -183,7 +198,19 @@ func (p *Transcriber) decodeInternal(
 	// Altimeter readings are stripped positionally: the 4-digit reading
 	// after "altimeter" absorbs arbitrary garble ("right" for "niner"),
 	// which template matching cannot express.
+	hadBeforeAltimeter := countNonFiller(commandTokens) > 0
 	commandTokens = stripAltimeterSuffix(commandTokens)
+
+	// A transmission that was nothing but an altimeter report ("November
+	// Four Lima, Kennedy altimeter two niner two eight") is informational
+	// and requires no response.
+	if hadBeforeAltimeter && countNonFiller(commandTokens) == 0 {
+		logLocalStt("altimeter-report-only transmission, returning empty")
+		elapsed := time.Since(start)
+		logLocalStt(`=== DecodeTranscript END: "" (altimeter report, time=%s) ===`, elapsed)
+		p.logInfo(`local STT: %q -> "" (altimeter report, time=%s)`, transcript, elapsed)
+		return "", nil
+	}
 
 	// Layer 4: Command parsing. Informational phrases — position IDs,
 	// "radar contact", acknowledgments, sign-offs — match kind-tagged
@@ -203,6 +230,15 @@ func (p *Transcriber) decodeInternal(
 	confidence := callsignConfidence
 	if len(parse.commands) > 0 {
 		confidence *= parse.conf * validation.Confidence
+	}
+
+	// A response that is only a SAYAGAIN/FIX request carries no
+	// instruction; like AGAIN, sending it from a shaky callsign match
+	// risks addressing the wrong aircraft, so require the same confidence.
+	if callsignConfidence < 0.93 && len(validation.ValidCommands) > 0 &&
+		!slices.ContainsFunc(validation.ValidCommands, func(c string) bool { return c != "SAYAGAIN/FIX" }) {
+		logLocalStt("SAYAGAIN/FIX-only with low callsign confidence (%.2f), suppressing", callsignConfidence)
+		validation.ValidCommands = nil
 	}
 
 	// Generate output.
@@ -350,6 +386,24 @@ func (p *Transcriber) resolveCallsign(
 		}
 		logLocalStt("no callsign match for %q, ignoring", transcript)
 		return // callsign is "", earlyResult is ""
+	}
+
+	// A "correction" followed by a full restatement of a callsign
+	// re-addresses the transmission: everything before it was a false
+	// start ("...the seven maintains seven thousand, correction, ExecJet
+	// 92 10 maintain eight thousand"). Only a high-confidence match (a
+	// spoken airline + flight, not a stray number) re-anchors.
+	for i, t := range remainingTokens {
+		if !strings.EqualFold(t.Text, "correction") || i+1 >= len(remainingTokens) {
+			continue
+		}
+		if cands := MatchCallsignCandidates(remainingTokens[i+1:], aircraft); len(cands) > 0 &&
+			cands[0].Confidence >= 0.95 && cands[0].SpokenKey != "" {
+			logLocalStt("'correction' + restated callsign %q: re-anchoring", cands[0].Callsign)
+			callsignMatch = cands[0]
+			remainingTokens = remainingTokens[i+1+cands[0].Consumed:]
+			break
+		}
 	}
 
 	// Check for "not for you" correction pattern
@@ -694,13 +748,19 @@ func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
 		// command self-correction handled by applyDisregard, not a callsign
 		// re-addressing.
 		if strings.ToLower(tokens[i].Text) == "correction" {
+			// A word with a curated confusion reading is a garbled command
+			// keyword ("disseminate" for "descend and maintain") and counts
+			// the same as one here.
+			isCommandish := func(w string) bool {
+				return IsCommandKeyword(w) || len(confusionTable[w]) > 0
+			}
 			followedByCommand := false
 			for j := i + 1; j < len(tokens); j++ {
 				w := strings.ToLower(tokens[j].Text)
 				if IsFillerWord(w) {
 					continue
 				}
-				if IsCommandKeyword(w) {
+				if isCommandish(w) {
 					followedByCommand = true
 				}
 				break
@@ -711,8 +771,7 @@ func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
 			// re-addressing. applyDisregard handles this case.
 			precededByCommand := false
 			for j := i - 1; j >= 0; j-- {
-				w := strings.ToLower(tokens[j].Text)
-				if IsCommandKeyword(w) {
+				if isCommandish(strings.ToLower(tokens[j].Text)) {
 					precededByCommand = true
 					break
 				}
@@ -796,6 +855,22 @@ func applyDisregard(tokens []Token) []Token {
 	for i := len(tokens) - 1; i >= 0; i-- {
 		text := strings.ToLower(tokens[i].Text)
 		if text == "disregard" {
+			// "disregard" retracts the clause being spoken, which starts at
+			// the most recent run of command keywords ("turn left heading
+			// zero, disregard" retracts from "turn"). Commands completed
+			// before that clause stand: "ident, climbing, er, disregard"
+			// retracts only the climb — "ident" is complete on its own and
+			// never opens a clause.
+			for j := i - 1; j >= 0; j-- {
+				if !opensDisregardClause(tokens[j].Text) {
+					continue
+				}
+				start := j
+				for start > 0 && opensDisregardClause(tokens[start-1].Text) {
+					start--
+				}
+				return append(tokens[:start], tokens[i+1:]...)
+			}
 			return tokens[i+1:]
 		}
 		if text == "correction" {
@@ -892,6 +967,33 @@ func applyDisregard(tokens []Token) []Token {
 	return tokens
 }
 
+// opensDisregardClause reports whether a word can open (or continue
+// leftward) the clause a trailing "disregard" retracts: a command keyword,
+// a garbled rendering of one, or a curated confusion whose reading is a
+// command word. "ident" is excluded — it is a complete command on its own
+// and never the start of an unfinished clause.
+func opensDisregardClause(text string) bool {
+	w := strings.ToLower(text)
+	if w == "ident" {
+		return false
+	}
+	if IsCommandKeyword(w) {
+		return true
+	}
+	if slices.ContainsFunc(confusionTable[w], func(c confusion) bool {
+		first, _, _ := strings.Cut(c.target, " ")
+		return IsCommandKeyword(first)
+	}) {
+		return true
+	}
+	for kw := range commandBoundaryKeywords {
+		if WordScore(w, kw) >= 0.85 {
+			return true
+		}
+	}
+	return false
+}
+
 // correctionTypeKeywords maps command-type indicator words, in check
 // order, to the keyword prepended when a bare corrected value inherits
 // its command type ("fly heading 270 correction 290").
@@ -961,13 +1063,14 @@ func stripAltimeterSuffix(tokens []Token) []Token {
 	result := make([]Token, 0, len(tokens))
 	i := 0
 	for i < len(tokens) {
-		if strings.ToLower(tokens[i].Text) != "altimeter" {
+		if !FuzzyMatch(strings.ToLower(tokens[i].Text), "altimeter", 0.8) {
 			result = append(result, tokens[i])
 			i++
 			continue
 		}
 		end := i + 1
 		digits := 0
+		numDigits := 0
 		numCount := 0
 		for end < len(tokens) && digits < 4 {
 			if digits == 2 && strings.ToLower(tokens[end].Text) == "point" {
@@ -977,12 +1080,16 @@ func stripAltimeterSuffix(tokens []Token) []Token {
 			if tokens[end].Type == TokenNumber {
 				numCount++
 				digits += len(tokens[end].Text)
+				numDigits += len(tokens[end].Text)
 			} else {
 				digits++
 			}
 			end++
 		}
-		if numCount < 2 {
+		// Require a real reading after "altimeter": either several number
+		// tokens or a single tokenizer-merged one carrying all 4 digits
+		// itself ("2928") — garble words don't count toward that.
+		if numCount < 2 && !(numCount == 1 && numDigits >= 4) {
 			result = append(result, tokens[i])
 			i++
 			continue

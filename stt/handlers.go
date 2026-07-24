@@ -24,6 +24,7 @@ func registerAllCommands() {
 		WithName("descend"),
 		WithPriority(5),
 		WithThenVariant("TD%d"),
+		WithSayAgainOnFail(), // "descend {garbled}" should ask for the altitude again
 	)
 
 	registerSTTCommand(
@@ -354,6 +355,16 @@ func registerAllCommands() {
 		WithPriority(3),
 	)
 
+	// Same, for headings below 100: those must be spoken with an explicit
+	// leading zero ("zero five zero"), which callsign fragments and other
+	// stray numbers never carry, so the range guard above isn't needed.
+	registerSTTCommand(
+		"turn [to] {heading_leading_zero}",
+		func(hdg int) string { return fmt.Sprintf("H%03d", hdg) },
+		WithName("turn_heading_leading_zero"),
+		WithPriority(3),
+	)
+
 	registerSTTCommand(
 		"say heading",
 		func() string { return "SH" },
@@ -392,6 +403,17 @@ func registerAllCommands() {
 		WithName("speed_only"),
 		WithPriority(5),
 		WithThenVariant("TS%d"),
+	)
+
+	// "speed" with a single-digit value ("speed eight to descend...",
+	// "speed one maybe"): no repair yields a valid speed, but a value was
+	// clearly attempted — ask for it again. Two-digit values are handled
+	// by the dropped-zero repairs above and never reach this.
+	registerSTTCommand(
+		"speed [to] {num:1-9}",
+		func(int) string { return "SAYAGAIN/SPEED" },
+		WithName("speed_garbled_value"),
+		WithPriority(3),
 	)
 
 	registerSTTCommand(
@@ -646,11 +668,22 @@ func registerAllCommands() {
 		WithPriority(18),
 	)
 
+	// "have you maintained two two zero knots": a confirmation question
+	// that assigns the speed. "maintained" is blocklisted against fuzzy
+	// "maintain" (it is usually a readback echo), so this literal template
+	// carries the reading; "knots" is required to anchor it to speed.
+	registerSTTCommand(
+		"maintained {speed} knots",
+		func(spd int) string { return fmt.Sprintf("S%d", spd) },
+		WithName("maintained_speed_question"),
+		WithPriority(8),
+	)
+
 	// Speed until commands - higher priority to match before regular speed commands
 	registerSTTCommand(
 		"reduce|slow [speed] [to] {speed} {speed_until}",
 		func(spd int, until speedUntilResult) string {
-			return fmt.Sprintf("S%d/U%s", spd, until.suffix)
+			return fmt.Sprintf("S%d%s/U%s", spd, until.mod(), until.suffix)
 		},
 		WithName("reduce_speed_until"),
 		WithPriority(15),
@@ -659,7 +692,7 @@ func registerAllCommands() {
 	registerSTTCommand(
 		"increase [speed] [to] {speed} {speed_until}",
 		func(spd int, until speedUntilResult) string {
-			return fmt.Sprintf("S%d/U%s", spd, until.suffix)
+			return fmt.Sprintf("S%d%s/U%s", spd, until.mod(), until.suffix)
 		},
 		WithName("increase_speed_until"),
 		WithPriority(15),
@@ -668,7 +701,7 @@ func registerAllCommands() {
 	registerSTTCommand(
 		"speed [to] {speed} {speed_until}",
 		func(spd int, until speedUntilResult) string {
-			return fmt.Sprintf("S%d/U%s", spd, until.suffix)
+			return fmt.Sprintf("S%d%s/U%s", spd, until.mod(), until.suffix)
 		},
 		WithName("speed_until"),
 		WithPriority(12),
@@ -677,7 +710,7 @@ func registerAllCommands() {
 	registerSTTCommand(
 		"maintain [speed] {speed} {speed_until}",
 		func(spd int, until speedUntilResult) string {
-			return fmt.Sprintf("S%d/U%s", spd, until.suffix)
+			return fmt.Sprintf("S%d%s/U%s", spd, until.mod(), until.suffix)
 		},
 		WithName("maintain_speed_until"),
 		WithPriority(12),
@@ -829,6 +862,7 @@ func registerAllCommands() {
 		func(fix string) string { return fmt.Sprintf("D%s", fix) },
 		WithName("direct_fix"),
 		WithPriority(10),
+		WithSayAgainOnFail(), // "direct {unrecognizable}" should ask for the fix again
 	)
 
 	// "cleared direct [fix]" - SAYAGAIN when fix is garbled.
@@ -1458,6 +1492,27 @@ func registerAllCommands() {
 		WithSayAgainOnFail(), // "expect [approach]" should ask for clarification if approach unrecognized
 	)
 
+	// "expect cleared ILS two six": the clearance verb wins — this is an
+	// approach clearance, with "expect" as a slip of the tongue.
+	registerSTTCommand(
+		"expect cleared [approach] [for] {approach}",
+		func(appr string) string { return fmt.Sprintf("C%s", appr) },
+		WithName("expect_cleared_approach"),
+		WithPriority(16),
+		WithSayAgainOnFail(),
+	)
+
+	// "maintain that until {fix}": "that" refers to the speed just
+	// assigned ("release speed to one eight zero, maintain that until
+	// Dennis"). Emits a marker that post-processing folds into the
+	// preceding speed command as an until-fix restriction.
+	registerSTTCommand(
+		"maintain that|it until {fix}",
+		func(fix string) string { return "UNTILFIX/" + fix },
+		WithName("maintain_that_until_fix"),
+		WithPriority(16),
+	)
+
 	// "standby for the approach" is informational — swallow it silently.
 	registerSTTCommand(
 		"standby [for] [the] approach",
@@ -1665,6 +1720,17 @@ func registerAllCommands() {
 		WithPriority(20),
 	)
 
+	// "contact one five miles south of Kennedy": "radar" was dropped from
+	// "radar contact"; the distance-and-bearing position report gives it
+	// away — a handoff never has one.
+	registerSTTCommand(
+		"contact {num:1-99} miles [{compass_dir}]",
+		func(int, *string) string { return "" },
+		WithName("radar_contact_position"),
+		WithKind(kindInformational),
+		WithPriority(18),
+	)
+
 	// Contact tower patterns - need to handle "contact <facility> tower"
 	registerSTTCommand(
 		"contact tower [{frequency_value}]",
@@ -1748,7 +1814,7 @@ func registerAllCommands() {
 	// it's most likely "contact tower" with a garbled "tower".
 	// Uses {garbled_word} to avoid matching command keywords like "climb".
 	registerSTTCommand(
-		"contact {garbled_word}",
+		"contact {garbled_word_final}",
 		func(_ string) string { return "TO" },
 		WithName("contact_garbled_tower"),
 		WithPriority(2),
@@ -1788,6 +1854,16 @@ func registerAllCommands() {
 		func() string { return "RST" },
 		WithName("radar_services_terminated"),
 		WithPriority(15),
+	)
+
+	// "unable" is a pilot word; a transmission consisting of it was
+	// misattributed or is a readback — no response.
+	registerSTTCommand(
+		"unable",
+		func() string { return "" },
+		WithName("unable"),
+		WithKind(kindAcknowledgment),
+		WithPriority(10),
 	)
 
 	registerSTTCommand(

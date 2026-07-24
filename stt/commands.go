@@ -542,6 +542,21 @@ func skipExpectFurtherClearance(tokens []Token, start int) int {
 // speedUntilResult represents the result of extracting a speed "until" specification.
 type speedUntilResult struct {
 	suffix string // e.g., "ROSLY", "5DME", "6"
+	plus   bool   // "or greater" spoken before "until"
+	minus  bool   // "or less" spoken before "until"
+}
+
+// mod renders the speed-restriction modifier ("+" for or-greater, "-"
+// for or-less) detected in the pre-until scan.
+func (r speedUntilResult) mod() string {
+	switch {
+	case r.plus:
+		return "+"
+	case r.minus:
+		return "-"
+	default:
+		return ""
+	}
 }
 
 // extractSpeedUntil extracts a speed "until" specification from tokens.
@@ -564,6 +579,7 @@ func extractSpeedUntil(tokens []Token, ac Aircraft) (speedUntilResult, int) {
 	// noise words, but never reach past a command keyword — that starts a
 	// new command and any "to" beyond it belongs there.
 	untilFound := false
+	plus, minus := false, false
 	noise := 0
 	for consumed < len(tokens) && consumed < 6 {
 		text := strings.ToLower(tokens[consumed].Text)
@@ -571,6 +587,14 @@ func extractSpeedUntil(tokens []Token, ac Aircraft) (speedUntilResult, int) {
 			untilFound = true
 			consumed++
 			break
+		}
+		// An "or greater"/"or less" restriction before "until" modifies
+		// the speed ("one eight zero, now it's your greater, until a five
+		// mile final" — "your greater" is a garbled "or greater").
+		if WordScore(text, "greater") >= 0.8 || WordScore(text, "better") >= 0.8 {
+			plus = true
+		} else if text == "less" {
+			minus = true
 		}
 		// Skip filler words and speed-related words (e.g., "knots" between speed and "until")
 		if IsFillerWord(text) || isSpeedFillerWord(text) {
@@ -600,22 +624,22 @@ func extractSpeedUntil(tokens []Token, ac Aircraft) (speedUntilResult, int) {
 
 	// 1. Try DME pattern: number followed by "DME" or "D M E"
 	if dme, dmeConsumed := extractDME(tokens[consumed:]); dmeConsumed > 0 {
-		return speedUntilResult{suffix: fmt.Sprintf("%dDME", dme)}, consumed + dmeConsumed
+		return speedUntilResult{suffix: fmt.Sprintf("%dDME", dme), plus: plus, minus: minus}, consumed + dmeConsumed
 	}
 
 	// 2. Try mile final pattern: number followed by "mile(s) final"
 	if miles, mileConsumed := extractMileFinal(tokens[consumed:]); mileConsumed > 0 {
-		return speedUntilResult{suffix: fmt.Sprintf("%d", miles)}, consumed + mileConsumed
+		return speedUntilResult{suffix: fmt.Sprintf("%d", miles), plus: plus, minus: minus}, consumed + mileConsumed
 	}
 
 	// 3. Try fix name match from aircraft's known fixes (includes approach fixes)
 	if fix, _, fixConsumed := extractFix(tokens[consumed:], ac.Fixes); fixConsumed > 0 {
-		return speedUntilResult{suffix: fix}, consumed + fixConsumed
+		return speedUntilResult{suffix: fix, plus: plus, minus: minus}, consumed + fixConsumed
 	}
 
 	// 4. Bare number after "until" — commonly shortened "until N mile final"
 	if tokens[consumed].Type == TokenNumber && tokens[consumed].Value >= 1 && tokens[consumed].Value <= 20 {
-		return speedUntilResult{suffix: fmt.Sprintf("%d", tokens[consumed].Value)}, consumed + 1
+		return speedUntilResult{suffix: fmt.Sprintf("%d", tokens[consumed].Value), plus: plus, minus: minus}, consumed + 1
 	}
 
 	return speedUntilResult{}, 0
