@@ -687,31 +687,108 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport string, runway av.Runway
 	return s.initializeIFRDepartureNoLock(ac, ap, departureAirport, runway, dep, exitRoutes)
 }
 
-// createScheduledIFRDepartureNoLock creates a departure using the published
-// identity from a real-world schedule. Vice still resolves the runway, exit,
-// SID, route, altitude, and controller assignment from the active scenario.
-func (s *Sim) createScheduledIFRDepartureNoLock(flight ScheduledFlight, departureAirport string,
-	runway av.RunwayID, category string) (*Aircraft, error) {
+// createScheduledIFRDepartureNoLock creates a departure at the scheduled time
+// using the published callsign and aircraft type. Vice's normal scenario logic
+// selects the runway-compatible departure, destination, exit, SID, route,
+// altitude, and controller assignment.
+// createScheduledIFRDepartureNoLock creates a published scheduled departure
+// using the matching departure definition from the active Vice scenario.
+//
+// The schedule supplies the callsign, aircraft type, origin, destination, and
+// time. The scenario supplies the compatible runway, exit, SID, route,
+// altitude, and controller assignment.
+func (s *Sim) createScheduledIFRDepartureNoLock(
+	flight ScheduledFlight,
+	departureAirport string,
+	runway av.RunwayID,
+	category string,
+) (*Aircraft, error) {
 	if flight.OperationAt(departureAirport) != ScheduleOperationDeparture {
-		return nil, fmt.Errorf("%s is not a departure from %s", flight.Callsign, departureAirport)
+		return nil, fmt.Errorf(
+			"%s is not a departure from %s",
+			flight.Callsign,
+			departureAirport,
+		)
 	}
 
-	ap, rwy, exitRoutes, err := s.departureConfiguration(departureAirport, runway, category)
+	ap, rwy, exitRoutes, err := s.departureConfiguration(
+		departureAirport,
+		runway,
+		category,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	dep, err := s.resolveScheduledDeparture(departureAirport, ap, rwy, exitRoutes, flight.Destination)
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", flight.Callsign, err)
+	destination := normalizeScheduleCode(flight.Destination)
+
+	destinationModeled := false
+
+	for i := range ap.Departures {
+		if normalizeScheduleCode(ap.Departures[i].Destination) == destination {
+			destinationModeled = true
+			break
+		}
 	}
+
+	if !destinationModeled {
+		return nil, fmt.Errorf(
+			"%s: destination %s is not modeled in the %s scenario departures",
+			flight.Callsign,
+			destination,
+			departureAirport,
+		)
+	}
+
+	// Find exact scenario departure definitions for the scheduled destination
+	// that are compatible with this runway and departure category.
+	var candidates []*av.Departure
+
+	for i := range ap.Departures {
+		dep := &ap.Departures[i]
+
+		if normalizeScheduleCode(dep.Destination) != destination {
+			continue
+		}
+
+		if _, ok := exitRoutes[dep.Exit]; !ok {
+			continue
+		}
+
+		if rwy.Category != "" &&
+			rwy.Category != ap.ExitCategories[dep.Exit] {
+			continue
+		}
+
+		candidates = append(candidates, dep)
+	}
+
+	// This runway cannot handle the scheduled destination. Return the sentinel
+	// error so the provider leaves the flight at the front of the queue and
+	// allows another active runway to claim it.
+	if len(candidates) == 0 {
+		return nil, errScheduledDepartureRunwayMismatch
+	}
+
+	// Some scenarios may contain more than one valid departure definition for
+	// the same destination and runway. Let Vice randomly choose among those
+	// equally valid scenario definitions.
+	dep := candidates[s.Rand.Intn(len(candidates))]
 
 	callsign := strings.ToUpper(strings.TrimSpace(flight.Callsign))
 	if callsign == "" {
 		return nil, fmt.Errorf("scheduled departure callsign is empty")
 	}
-	if av.CallsignClashesWithExisting(s.currentCallsigns(), callsign, s.EnforceUniqueCallsignSuffix) {
-		return nil, fmt.Errorf("scheduled departure callsign %s is already in use", callsign)
+
+	if av.CallsignClashesWithExisting(
+		s.currentCallsigns(),
+		callsign,
+		s.EnforceUniqueCallsignSuffix,
+	) {
+		return nil, fmt.Errorf(
+			"scheduled departure callsign %s is already in use",
+			callsign,
+		)
 	}
 
 	aircraftType := normalizeScheduledAircraftType(flight.AircraftType)
@@ -726,9 +803,24 @@ func (s *Sim) createScheduledIFRDepartureNoLock(flight ScheduledFlight, departur
 		ADSBCallsign: av.ADSBCallsign(callsign),
 		Mode:         av.TransponderModeAltitude,
 	}
-	ac.InitializeFlightPlan(av.FlightRulesIFR, aircraftType, departureAirport, flight.Destination)
 
-	return s.initializeIFRDepartureNoLock(ac, ap, departureAirport, runway, dep, exitRoutes)
+	// Preserve the published destination. The selected scenario departure
+	// definition supplies the exit, SID, and route used to reach it.
+	ac.InitializeFlightPlan(
+		av.FlightRulesIFR,
+		aircraftType,
+		departureAirport,
+		destination,
+	)
+
+	return s.initializeIFRDepartureNoLock(
+		ac,
+		ap,
+		departureAirport,
+		runway,
+		dep,
+		exitRoutes,
+	)
 }
 
 func (s *Sim) departureConfiguration(departureAirport string, runway av.RunwayID,
@@ -747,57 +839,6 @@ func (s *Sim) departureConfiguration(departureAirport string, runway av.RunwayID
 	}
 	rwy := &s.State.DepartureRunways[idx]
 	return ap, rwy, ap.DepartureRoutes[rwy.Runway], nil
-}
-
-// resolveScheduledDeparture first looks for an exact destination match. If
-// the scenario does not model that city pair, it chooses the compatible
-// departure whose destination is closest in direction to the published one.
-func (s *Sim) resolveScheduledDeparture(departureAirport string, ap *av.Airport, rwy *DepartureRunway,
-	exitRoutes map[av.ExitID]*av.ExitRoute, destination string) (*av.Departure, error) {
-	destination = normalizeScheduleCode(destination)
-	var candidates []*av.Departure
-	for i := range ap.Departures {
-		dep := &ap.Departures[i]
-		if _, ok := exitRoutes[dep.Exit]; !ok {
-			continue
-		}
-		if rwy.Category != "" && rwy.Category != ap.ExitCategories[dep.Exit] {
-			continue
-		}
-		if normalizeScheduleCode(dep.Destination) == destination {
-			return dep, nil
-		}
-		candidates = append(candidates, dep)
-	}
-	if len(candidates) == 0 {
-		return nil, fmt.Errorf("no compatible departure route for runway %s", rwy.Runway)
-	}
-
-	origin, originOK := av.DB.Airports[departureAirport]
-	dest, destinationOK := av.DB.Airports[destination]
-	if !originOK || !destinationOK {
-		return nil, fmt.Errorf("no exact route to %s and airport coordinates are unavailable", destination)
-	}
-	publishedHeading := math.Heading2LL(origin.Location, dest.Location, s.State.NmPerLongitude)
-
-	var best *av.Departure
-	bestDifference := float32(361)
-	for _, dep := range candidates {
-		candidateAirport, ok := av.DB.Airports[normalizeScheduleCode(dep.Destination)]
-		if !ok {
-			continue
-		}
-		heading := math.Heading2LL(origin.Location, candidateAirport.Location, s.State.NmPerLongitude)
-		difference := math.HeadingDifference(publishedHeading, heading)
-		if difference < bestDifference {
-			best = dep
-			bestDifference = difference
-		}
-	}
-	if best == nil {
-		return nil, fmt.Errorf("no exact or directional route to %s", destination)
-	}
-	return best, nil
 }
 
 func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departureAirport string,

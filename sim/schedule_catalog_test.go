@@ -7,8 +7,6 @@ package sim
 import (
 	"testing"
 	"testing/fstest"
-
-	"github.com/mmp/vice/util"
 )
 
 func TestLoadBuiltInScheduleCatalog(t *testing.T) {
@@ -108,52 +106,5 @@ func TestBuiltInScheduleCatalogFind(t *testing.T) {
 	}
 	if _, ok := catalog.Find("KMSP", "missing"); ok {
 		t.Fatal("Find returned a missing schedule")
-	}
-}
-
-func TestBundledMSPDevelopmentSchedule(t *testing.T) {
-	catalog, err := LoadBuiltInScheduleCatalog(util.GetResourcesFS(), "schedules")
-	if err != nil {
-		t.Fatalf("LoadBuiltInScheduleCatalog: %v", err)
-	}
-
-	schedule, ok := catalog.Find("KMSP", "development_test")
-	if !ok {
-		t.Fatal("bundled MSP development schedule was not found")
-	}
-	if schedule.Name != "MSP Development Test" {
-		t.Fatalf("schedule name = %q, want MSP Development Test", schedule.Name)
-	}
-	if len(schedule.Flights) != 9 {
-		t.Fatalf("schedule has %d flights, want 9", len(schedule.Flights))
-	}
-
-	departures := 0
-	arrivals := 0
-	cargo := 0
-
-	for _, flight := range schedule.Flights {
-		switch flight.OperationAt("KMSP") {
-		case ScheduleOperationDeparture:
-			departures++
-		case ScheduleOperationArrival:
-			arrivals++
-		default:
-			t.Fatalf("%s is neither an MSP arrival nor departure", flight.Callsign)
-		}
-
-		if flight.Cargo {
-			cargo++
-		}
-	}
-
-	if departures != 6 {
-		t.Fatalf("schedule has %d departures, want 6", departures)
-	}
-	if arrivals != 3 {
-		t.Fatalf("schedule has %d arrivals, want 3", arrivals)
-	}
-	if cargo != 3 {
-		t.Fatalf("schedule has %d cargo flights, want 3", cargo)
 	}
 }

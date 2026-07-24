@@ -14,6 +14,10 @@ import (
 	"github.com/mmp/vice/util"
 )
 
+var errScheduledDepartureRunwayMismatch = errors.New(
+	"scheduled departure is not compatible with this runway",
+)
+
 // trafficProvider supplies automatically generated IFR aircraft to the
 // simulation. It also controls when the next departure request should occur;
 // random traffic uses a rate-based delay while schedule traffic uses the next
@@ -149,32 +153,58 @@ func newScheduleTrafficProvider(
 // departure and orders the departures by the time they reach the runway queue.
 // It runs only once, so taxi times remain fixed for the life of the scenario.
 
-func (p *scheduleTrafficProvider) createIFRDeparture(s *Sim, airport string, runway av.RunwayID) (*Aircraft, time.Duration, error) {
+func (p *scheduleTrafficProvider) createIFRDeparture(
+	s *Sim,
+	airport string,
+	runway av.RunwayID,
+) (*Aircraft, time.Duration, error) {
 	const idleDelay = 365 * 24 * time.Hour
+
 	if airport != p.airport || p.nextDeparture >= len(p.departures) {
 		return nil, idleDelay, nil
 	}
 
 	scheduled := p.departures[p.nextDeparture]
 	due := p.start.Add(scheduled.offset)
+
 	if s.State.SimTime.Before(due) {
 		return nil, due.Sub(s.State.SimTime), nil
 	}
 
 	rates := s.State.LaunchConfig.DepartureRates[airport][runway]
-	category, rateSum := sampleRateMap(rates, s.State.LaunchConfig.DepartureRateScale, s.Rand)
+	category, rateSum := sampleRateMap(
+		rates,
+		s.State.LaunchConfig.DepartureRateScale,
+		s.Rand,
+	)
+
 	if rateSum == 0 {
 		return nil, time.Second, nil
 	}
 
-	ac, err := s.createScheduledIFRDepartureNoLock(scheduled.flight, airport, runway, category)
-	p.nextDeparture++ // unmatched flights are skipped and reported by the caller
+	ac, err := s.createScheduledIFRDepartureNoLock(
+		scheduled.flight,
+		airport,
+		runway,
+		category,
+	)
+
+	if errors.Is(err, errScheduledDepartureRunwayMismatch) {
+		// This runway does not support the scheduled destination. Keep the
+		// flight at the front of the queue so another active runway can claim it.
+		return nil, time.Second, nil
+	}
+
+	// The flight has either spawned successfully or failed for a permanent
+	// reason such as an invalid callsign/type or an unmodeled destination.
+	p.nextDeparture++
 
 	delay := idleDelay
 	if p.nextDeparture < len(p.departures) {
 		nextDue := p.start.Add(p.departures[p.nextDeparture].offset)
 		delay = max(time.Millisecond, nextDue.Sub(s.State.SimTime))
 	}
+
 	return ac, delay, err
 }
 
