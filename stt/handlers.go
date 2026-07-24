@@ -63,11 +63,27 @@ func registerAllCommands() {
 		WithPriority(1), // Very low priority - only matches if nothing else does
 	)
 
-	// "{altitude} until established [on] [the] [localizer|glide|slope|glideslope]"
+	// "{altitude} until established [on] [the] [localizer|glideslope|final approach course]"
+	// The trailing "on the localizer" / "on the final approach course" clause is
+	// informational and folded into the altitude command. The preposition is loose
+	// ("on" is often mis-transcribed as "from") and the object list covers the
+	// localizer, glideslope, and final approach course phrasings; unless the whole
+	// clause is absorbed here, a dangling "localizer" gets misread as an approach
+	// clearance (e.g., "cleared ILS 28R" → CY8R).
 	registerSTTCommand(
-		"{standalone_altitude} until established|establishing [on] [the] [localizer|glide|slope|glideslope]",
+		"{standalone_altitude} until established|establishing [on|from|onto|of] [the] [localizer|glideslope|glide|slope|final] [approach] [course]",
 		func(alt int) string { return fmt.Sprintf("A%d", alt) },
 		WithName("altitude_until_established"),
+		WithPriority(12),
+	)
+
+	// Absorb a standalone "until established on the localizer / final approach
+	// course" clause (said without a preceding altitude) so its trailing
+	// "localizer" isn't misread as an approach clearance.
+	registerSTTCommand(
+		"until established|establishing [on|from|onto|of] [the] [localizer|glideslope|glide|slope|final] [approach] [course]",
+		func() string { return "" },
+		WithName("until_established"),
 		WithPriority(12),
 	)
 
