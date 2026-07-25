@@ -20,6 +20,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+	// Embed the time zone database: Windows has no system copy, and airport
+	// time zones have to resolve everywhere Vice runs.
+	_ "time/tzdata"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
@@ -43,6 +46,7 @@ type StaticDatabase struct {
 	Callsigns           map[string]string            // 3 letter -> callsign
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
+	AirportTimeZones    map[string]*time.Location // ICAO -> local time zone
 	Airlines            map[string]Airline
 	MagneticGrid        MagneticGrid
 	ARTCCs              map[string]ARTCC
@@ -367,6 +371,7 @@ func doInitDB() {
 	var customAirports map[string]FAAAirport
 	wg.Go(func() { db.Airports, customAirports = parseAirports() })
 	wg.Go(func() { db.AircraftTypeAliases, db.AircraftPerformance = parseAircraft() })
+	wg.Go(func() { db.AirportTimeZones = parseAirportTimeZones() })
 	wg.Go(func() { db.Airlines, db.Callsigns = parseAirlines() })
 	var airports map[string]FAAAirport
 	wg.Go(func() {
@@ -606,6 +611,40 @@ func parseAircraft() (map[string]string, map[string]AircraftPerformance) {
 	}
 
 	return aliases, ap
+}
+
+// parseAirportTimeZones returns the local time zone of each airport Vice
+// simulates. The airports are grouped by zone in the JSON so that the file
+// stays short: there are only a handful of distinct zones.
+func parseAirportTimeZones() map[string]*time.Location {
+	const filename = "airport-timezones.json"
+
+	r := util.LoadResource(filename)
+	defer r.Close()
+
+	var zones map[string][]string
+	if err := util.UnmarshalJSON(r, &zones); err != nil {
+		fmt.Fprintf(os.Stderr, "%s: %v\n", filename, err)
+		os.Exit(1)
+	}
+
+	locations := make(map[string]*time.Location)
+	for zone, airports := range zones {
+		location, err := time.LoadLocation(zone)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s: %v\n", filename, err)
+			os.Exit(1)
+		}
+		for _, airport := range airports {
+			if previous, ok := locations[airport]; ok {
+				fmt.Fprintf(os.Stderr, "%s: %s is listed under both %s and %s\n", filename,
+					airport, previous, zone)
+				os.Exit(1)
+			}
+			locations[airport] = location
+		}
+	}
+	return locations
 }
 
 func parseAirlines() (map[string]Airline, map[string]string) {

@@ -1053,6 +1053,9 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		ap.PostDeserialize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
 			sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.Scratchpads, sg.Airports,
 			sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, e)
+		if _, ok := av.DB.AirportTimeZones[name]; !ok {
+			e.ErrorString("no time zone for this airport; add it to resources/airport-timezones.json")
+		}
 		e.Pop()
 	}
 
