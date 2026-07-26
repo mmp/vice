@@ -398,9 +398,11 @@ go build -ldflags="-s -w -extldflags=-static" -o crc2vice.exe .\cmd\crc2vice
 if errorlevel 1 exit /b 1
 go build -ldflags="-s -w -extldflags=-static" -o dat2vice.exe .\cmd\dat2vice
 if errorlevel 1 exit /b 1
+go build -ldflags="-s -w -extldflags=-static" -o importflights.exe .\cmd\importflights
+if errorlevel 1 exit /b 1
 go build -ldflags="-s -w -extldflags=-static" -o viceserver.exe .\cmd\viceserver
 if errorlevel 1 exit /b 1
-echo Tools built: crc2vice.exe, dat2vice.exe, viceserver.exe
+echo Tools built: crc2vice.exe, dat2vice.exe, importflights.exe, viceserver.exe
 
 REM Run tests
 if %DO_TEST%==1 (
