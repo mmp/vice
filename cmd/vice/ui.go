@@ -315,8 +315,14 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Display information about vice")
 		}
-		if imgui.Button(renderer.FontAwesomeIconDiscord) {
-			browser.OpenURL("https://discord.gg/y993vgQxhY")
+		if imgui.BeginMenu(renderer.FontAwesomeIconDiscord) {
+			if imgui.MenuItemBool("vice development server") {
+				browser.OpenURL("https://discord.gg/y993vgQxhY")
+			}
+			if imgui.MenuItemBool("vice ATC Hub (staff-ups)") {
+				browser.OpenURL("https://discord.gg/PTb99EKCx")
+			}
+			imgui.EndMenu()
 		}
 
 		if imgui.Button(util.Select(p.IsFullScreen(), renderer.FontAwesomeIconCompressAlt, renderer.FontAwesomeIconExpandAlt)) {
