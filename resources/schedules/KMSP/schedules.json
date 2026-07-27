@@ -1,0 +1,9 @@
+[
+  {
+    "id": "summer_weekday",
+    "name": "MSP Summer Weekday",
+    "file": "summer_weekday.csv",
+    "description": "Representative weekday operation",
+    "timezone": "America/Chicago"
+  }
+]

@@ -1,8 +1,8 @@
 # Real World Schedules
 
-Built-in airport schedules are stored in one directory per ICAO airport code.
-Each airport directory contains a `schedule.json` manifest and one or more CSV
-schedule files.
+Built-in real-world schedules are stored under this directory, with one
+subdirectory per airport.
 
-Schedule data is intentionally added separately from the schedule engine so
-that every bundled flight can be sourced and reviewed.
+See `website/facility-engineering.html` for documentation describing the
+schedule manifest format, CSV format, and how real-world schedules integrate
+with scenarios.

@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-const scheduleCatalogFilename = "schedule.json"
+const scheduleCatalogFilename = "schedules.json"
 
 // BuiltInSchedule describes one schedule distributed in Vice's resources.
 // Flights are loaded and validated when the catalog is read so malformed
@@ -90,7 +90,7 @@ func (c BuiltInScheduleCatalog) ForAirport(airport string) []BuiltInSchedule {
 	return schedules
 }
 
-// LoadBuiltInScheduleCatalog discovers schedule.json files below root and
+// LoadBuiltInScheduleCatalog discovers schedules.json files below root...
 // loads the CSV files they reference.
 func LoadBuiltInScheduleCatalog(filesystem fs.FS, root string) (BuiltInScheduleCatalog, error) {
 	var catalog BuiltInScheduleCatalog
@@ -131,10 +131,7 @@ func LoadBuiltInScheduleCatalog(filesystem fs.FS, root string) (BuiltInScheduleC
 	return catalog, nil
 }
 
-type scheduleManifest struct {
-	Airport   string                  `json:"airport"`
-	Schedules []scheduleManifestEntry `json:"schedules"`
-}
+
 
 type scheduleManifestEntry struct {
 	ID          string `json:"id"`
@@ -150,25 +147,27 @@ func loadScheduleManifest(filesystem fs.FS, filename string) ([]BuiltInSchedule,
 		return nil, fmt.Errorf("read %s: %w", filename, err)
 	}
 
-	var manifest scheduleManifest
+	var manifest []scheduleManifestEntry
 	decoder := json.NewDecoder(strings.NewReader(string(contents)))
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&manifest); err != nil {
 		return nil, fmt.Errorf("decode %s: %w", filename, err)
 	}
 
-	manifest.Airport = normalizeScheduleCode(manifest.Airport)
-	if manifest.Airport == "" {
-		return nil, fmt.Errorf("%s: airport is required", filename)
-	}
-	if len(manifest.Schedules) == 0 {
-		return nil, fmt.Errorf("%s: at least one schedule is required", filename)
-	}
+	airport := normalizeScheduleCode(path.Base(path.Dir(filename)))
+
+if airport == "" {
+    return nil, fmt.Errorf("%s: unable to determine airport from directory", filename)
+}
+
+if len(manifest) == 0 {
+    return nil, fmt.Errorf("%s: at least one schedule is required", filename)
+}
 
 	directory := path.Dir(filename)
 	ids := make(map[string]struct{})
-	schedules := make([]BuiltInSchedule, 0, len(manifest.Schedules))
-	for index, entry := range manifest.Schedules {
+	schedules := make([]BuiltInSchedule, 0, len(manifest))
+	for index, entry := range manifest {
 		entry.ID = strings.TrimSpace(entry.ID)
 		entry.Name = strings.TrimSpace(entry.Name)
 		entry.File = strings.TrimSpace(entry.File)
@@ -205,7 +204,7 @@ func loadScheduleManifest(filesystem fs.FS, filename string) ([]BuiltInSchedule,
 		schedule := BuiltInSchedule{
 			ID:          entry.ID,
 			Name:        entry.Name,
-			Airport:     manifest.Airport,
+			Airport:     airport,
 			Description: entry.Description,
 			Timezone:    entry.Timezone,
 			Flights:     flights,

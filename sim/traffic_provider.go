@@ -101,7 +101,6 @@ type scheduleTrafficProvider struct {
 
 	departures            []scheduledDeparture
 	nextDeparture         int
-	departuresInitialized bool
 
 	arrivals    []scheduledArrival
 	nextArrival int

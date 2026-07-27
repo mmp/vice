@@ -11,16 +11,15 @@ import (
 
 func TestLoadBuiltInScheduleCatalog(t *testing.T) {
 	filesystem := fstest.MapFS{
-		"schedules/KMSP/schedule.json": &fstest.MapFile{Data: []byte(`{
-			"airport": "kmsp",
-			"schedules": [{
+		"schedules/KMSP/schedules.json": &fstest.MapFile{Data: []byte(`[
+			{
 				"id": "summer_weekday",
 				"name": "MSP Summer Weekday",
 				"file": "summer_weekday.csv",
 				"description": "Representative weekday operation",
 				"timezone": "America/Chicago"
-			}]
-		}`)},
+			}
+		]`)},
 		"schedules/KMSP/summer_weekday.csv": &fstest.MapFile{Data: []byte(
 			"callsign,origin,destination,aircraft_type,time,cargo\n" +
 				"DAL1045,KMSP,KATL,A321,14:05,false\n" +
@@ -52,8 +51,10 @@ func TestLoadBuiltInScheduleCatalog(t *testing.T) {
 	if len(summaries) != 1 {
 		t.Fatalf("SummariesForAirport returned %d schedules, want 1", len(summaries))
 	}
-	if summary := summaries[0]; summary.ID != schedule.ID || summary.Name != schedule.Name ||
-		summary.Airport != schedule.Airport || summary.Description != schedule.Description ||
+	if summary := summaries[0]; summary.ID != schedule.ID ||
+		summary.Name != schedule.Name ||
+		summary.Airport != schedule.Airport ||
+		summary.Description != schedule.Description ||
 		summary.Timezone != schedule.Timezone {
 		t.Fatalf("unexpected schedule summary: %+v", summary)
 	}
@@ -62,24 +63,39 @@ func TestLoadBuiltInScheduleCatalog(t *testing.T) {
 func TestLoadBuiltInScheduleCatalogValidation(t *testing.T) {
 	tests := map[string]fstest.MapFS{
 		"flight does not serve airport": {
-			"schedules/KMSP/schedule.json": &fstest.MapFile{Data: []byte(`{
-				"airport":"KMSP",
-				"schedules":[{"id":"weekday","name":"Weekday","file":"weekday.csv","timezone":"America/Chicago"}]
-			}`)},
+			"schedules/KMSP/schedules.json": &fstest.MapFile{Data: []byte(`[
+				{
+					"id":"weekday",
+					"name":"Weekday",
+					"file":"weekday.csv",
+					"timezone":"America/Chicago"
+				}
+			]`)},
 			"schedules/KMSP/weekday.csv": &fstest.MapFile{Data: []byte(
-				"callsign,origin,destination,aircraft_type,time\nDAL1,KATL,KDTW,A321,12:00\n")},
+				"callsign,origin,destination,aircraft_type,time\n" +
+					"DAL1,KATL,KDTW,A321,12:00\n")},
 		},
+
 		"missing CSV": {
-			"schedules/KMSP/schedule.json": &fstest.MapFile{Data: []byte(`{
-				"airport":"KMSP",
-				"schedules":[{"id":"weekday","name":"Weekday","file":"weekday.csv","timezone":"America/Chicago"}]
-			}`)},
+			"schedules/KMSP/schedules.json": &fstest.MapFile{Data: []byte(`[
+				{
+					"id":"weekday",
+					"name":"Weekday",
+					"file":"weekday.csv",
+					"timezone":"America/Chicago"
+				}
+			]`)},
 		},
+
 		"nested CSV path": {
-			"schedules/KMSP/schedule.json": &fstest.MapFile{Data: []byte(`{
-				"airport":"KMSP",
-				"schedules":[{"id":"weekday","name":"Weekday","file":"other/weekday.csv","timezone":"America/Chicago"}]
-			}`)},
+			"schedules/KMSP/schedules.json": &fstest.MapFile{Data: []byte(`[
+				{
+					"id":"weekday",
+					"name":"Weekday",
+					"file":"other/weekday.csv",
+					"timezone":"America/Chicago"
+				}
+			]`)},
 		},
 	}
 
@@ -93,9 +109,15 @@ func TestLoadBuiltInScheduleCatalogValidation(t *testing.T) {
 }
 
 func TestBuiltInScheduleCatalogFind(t *testing.T) {
-	catalog := BuiltInScheduleCatalog{Schedules: []BuiltInSchedule{
-		{ID: "summer-weekday", Airport: "KMSP", Name: "MSP Summer Weekday"},
-	}}
+	catalog := BuiltInScheduleCatalog{
+		Schedules: []BuiltInSchedule{
+			{
+				ID:      "summer-weekday",
+				Airport: "KMSP",
+				Name:    "MSP Summer Weekday",
+			},
+		},
+	}
 
 	schedule, ok := catalog.Find("kmsp", "summer-weekday")
 	if !ok {

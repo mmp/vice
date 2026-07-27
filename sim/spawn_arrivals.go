@@ -164,7 +164,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	nasFp.Scratchpad = arr.Scratchpad
 	nasFp.SecondaryScratchpad = arr.SecondaryScratchpad
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && arr.IsRNAV
-
+	// For ERAM, set AssignedAltitude and derive PerceivedAssigned from waypoint restrictions.
 	if _, isERAM := av.DB.ARTCCs[s.State.Facility]; isERAM {
 		spawnAlt := ac.Nav.FlightState.Altitude
 		if arr.AssignedAltitude > 0 {
@@ -173,6 +173,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 				nasFp.PerceivedAssigned = alt
 			}
 		} else {
+			// Try to derive from waypoint restrictions
 			if alt, ok := findLowestWaypointAltitude(arr.Waypoints, spawnAlt); ok {
 				nasFp.AssignedAltitude = alt
 				nasFp.PerceivedAssigned = alt
@@ -184,6 +185,9 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 
 	s.maybeSetGoAround(ac, s.State.LaunchConfig.GoAroundRate)
 
+	// Decide at creation whether this pilot will spontaneously report field in sight and, among
+	// those, whether they will also request the visual approach. VisualRequestDistance, when set,
+	// gates the request to the first tick inside that distance.
 	ac.WantsVisualApproach = s.Rand.Float32() < visualFieldProb
 	if ac.WantsVisualApproach && s.Rand.Float32() < visualRequestProb {
 		ac.VisualApproachRequestDistance = s.Rand.Float32Range(9, 16)
@@ -192,7 +196,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	if err := s.assignSquawk(ac, &nasFp); err != nil {
 		return nil, err
 	}
-
+	// Create a flight strip at the inbound handoff controller if it's a human position
 	if shouldCreateFlightStrip(&nasFp) &&
 		!s.isVirtualController(nasFp.InboundHandoffController) {
 		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
@@ -200,6 +204,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 
 	return ac, s.associateAtSpawn(ac, nasFp)
 }
+
 func resolveScheduledArrival(arrivals []av.Arrival, arrivalAirport,
 	origin string) (*av.Arrival, error) {
 	arrivalAirport = normalizeScheduleCode(arrivalAirport)

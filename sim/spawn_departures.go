@@ -849,6 +849,8 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	if err != nil {
 		return nil, err
 	}
+
+	// Departures aren't immediately associated, but the STARSComputer will	
 	ac.ReportDepartureHeading = exitRoutesHaveVariedHeadings(exitRoutes)
 	ac.ReportDepartureSID = exitRoutesHaveVariedSIDs(exitRoutes)
 
@@ -866,6 +868,7 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 		nasFp.Scratchpad = dep.Scratchpad
 	} else if sp1 := s.State.FacilityAdaptation.Datablocks.Scratchpad1; sp1.DisplayExitFix ||
 		sp1.DisplayExitFix1 || sp1.DisplayExitGate || sp1.DisplayAltExitGate {
+		// Don't set the scratchpad; it will be set automatically.
 	} else if sp, ok := s.State.FacilityAdaptation.Scratchpads[string(dep.Exit)]; ok {
 		nasFp.Scratchpad = sp
 	} else {
@@ -876,19 +879,25 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.FlightPlan.Altitude, 0)
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && exitRoute.IsRNAV
 
-	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR
+	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR  // VFRs aren't held
 	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, string(runway))
 
 	if err := s.assignSquawk(ac, &nasFp); err != nil {
 		return nil, err
 	}
 
+
+		// Departures aren't immediately associated, but the STARSComputer will
+		// hold on to their flight plans for now.
+		// Create a flight strip for departures
 	if shouldCreateFlightStrip(&nasFp) {
 		if s.isVirtualController(nasFp.TrackingController) {
+			// Virtual controller: strip goes to the handoff target			
 			if !s.isVirtualController(nasFp.InboundHandoffController) {
 				s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
 			}
 		} else {
+			// Human controller: strip goes to the tracking controller
 			s.initFlightStrip(&nasFp, nasFp.TrackingController)
 		}
 	}
