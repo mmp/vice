@@ -10224,6 +10224,51 @@
       }
     },
     {
+      "name": "CRJ 550",
+      "icao": "CRJ5",
+      "engines": {
+        "number": 2,
+        "type": "J"
+      },
+      "weightClass": "L",
+      "category": {
+        "srs": 3,
+        "lahso": 7,
+        "cwt": "G"
+      },
+      "ceiling": 41000,
+      "rate": {
+        "climb": 2600,
+        "descent": 2200,
+        "accelerate": 5.9,
+        "decelerate": 3
+      },
+      "runway": {
+        "takeoff": 1.7,
+        "landing": 1.48
+      },
+      "speed": {
+        "min": 110,
+        "landing": 135,
+        "cruise": 424,
+        "cruiseM": 0.76,
+        "max": 470,
+        "maxM": 0.8
+      },
+      "capability": {
+        "ils": true,
+        "fix": true
+      },
+      "turn": {
+        "maxBankAngle": 25,
+        "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 50,
+        "fuel_pounds": 15000
+      }
+    },
+    {
       "name": "CRJ 900",
       "icao": "CRJ9",
       "engines": {
@@ -11179,7 +11224,7 @@
       }
     },
     {
-      "name": "Embraer 170",
+      "name": "Embraer 170/175",
       "icao": "E170",
       "engines": {
         "number": 2,

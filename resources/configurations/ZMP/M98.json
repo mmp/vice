@@ -96,19 +96,31 @@
       "117": {
         "inbound_assignments": {
           "BAINY4.12s": "1I",
-          "BLUEM5.12s": "1H",
+          "BLUEM5_NITZR4.12s": "1H",
           "KKILR4.12s": "1I",
           "MUSCL4.12s": "1I",
-          "NITZR4.12s": "1H",
           "TORGY4.12s": "1H",
           "GEP1.12s": "1I",
           "LSE.12s": "1G",
-          "RPD": "1G"
+          "RPD": "1G",
+          "ENCEE3_RIXIE_FCM_RWF_ANE": "1E",
+          "TWOLF4": "1E",
+          "AGUDE6": "1G",
+          "GEP1.SAT": "1K",
+          "FGT_SIMMN_GEP.E": "1E",
+          "FGT_SIMMN_GEP.G": "1G",
+          "MKT": "1E",
+          "GEP.E": "1E",
+          "GEP.K": "1K"
         },
         "departure_assignments": {
           "KMSP/12L": "1D",
           "KMSP/12R_17": "1L",
-          "KMSP/17_12s": "1R"
+          "KMSP/17_12s": "1R",
+          "KFCM": "1E",
+          "KSTP": "1G",
+          "KMIC": "1K",
+          "KANE": "1K"
         },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
@@ -120,18 +132,30 @@
       "135": {
         "inbound_assignments": {
           "BAINY4.35": "1I",
-          "BLUEM5.35": "1N",
+          "BLUEM5_NITZR4.35": "1N",
           "KKILR4.35": "1H",
           "MUSCL4.35": "1H",
-          "NITZR4.35": "1N",
           "TORGY4.35": "1I",
           "GEP1.35": "1I",
           "LSE.30s": "1G",
-          "RPD": "1G"
+          "RPD": "1G",
+          "ENCEE3_RIXIE_FCM_RWF_ANE": "1E",
+          "TWOLF4": "1E",
+          "AGUDE6": "1G",
+          "GEP1.SAT": "1K",
+          "FGT_SIMMN_GEP.E": "1E",
+          "FGT_SIMMN_GEP.G": "1G",
+          "MKT": "1E",
+          "GEP.E": "1E",
+          "GEP.K": "1K"
         },
         "departure_assignments": {
           "KMSP/12R": "1R",
-          "KMSP/12L": "1D"
+          "KMSP/12L": "1D",
+          "KFCM": "1E",
+          "KSTP": "1G",
+          "KMIC": "1K",
+          "KANE": "1K"
         },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
@@ -143,19 +167,31 @@
       "317": {
         "inbound_assignments": {
           "BAINY4.30s": "1I",
-          "BLUEM5.30s": "1H",
+          "BLUEM5_NITZR4.KIO": "1H",
           "KKILR4.30s": "1I",
           "MUSCL4.30s": "1I",
-          "NITZR4.30s": "1H",
           "TORGY4.30s": "1H",
           "GEP1.30s": "1I",
           "LSE.30s": "1G",
-          "RPD": "1G"
+          "RPD": "1G",
+          "ENCEE3_RIXIE_FCM_RWF_ANE": "1E",
+          "TWOLF4": "1E",
+          "AGUDE6": "1G",
+          "GEP1.SAT": "1K",
+          "FGT_SIMMN_GEP.E": "1E",
+          "FGT_SIMMN_GEP.G": "1G",
+          "MKT": "1E",
+          "GEP.E": "1E",
+          "GEP.K": "1K"
         },
         "departure_assignments": {
           "KMSP/30L_17": "1R",
           "KMSP/30R": "1D",
-          "KMSP/17_30s": "1R"
+          "KMSP/17_30s": "1R",
+          "KFCM": "1E",
+          "KSTP": "1G",
+          "KMIC": "1K",
+          "KANE": "1K"
         },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
@@ -167,18 +203,30 @@
       "335": {
         "inbound_assignments": {
           "BAINY4.30s": "1I",
-          "BLUEM5.35": "1J",
+          "BLUEM5_NITZR4.35": "1J",
           "KKILR4.30s": "1I",
           "MUSCL4.30s": "1I",
-          "NITZR4.35": "1J",
           "TORGY4.35": "1H",
           "GEP1.30s": "1I",
           "LSE.30s": "1G",
-          "RPD": "1G"
+          "RPD": "1G",
+          "ENCEE3_RIXIE_FCM_RWF_ANE": "1E",
+          "TWOLF4": "1E",
+          "AGUDE6": "1G",
+          "GEP1.SAT": "1K",
+          "FGT_SIMMN_GEP.E": "1E",
+          "FGT_SIMMN_GEP.G": "1G",
+          "MKT": "1E",
+          "GEP.E": "1E",
+          "GEP.K": "1K"
         },
         "departure_assignments": {
           "KMSP/30L": "1R",
-          "KMSP/30R": "1D"
+          "KMSP/30R": "1D",
+          "KFCM": "1E",
+          "KSTP": "1G",
+          "KMIC": "1K",
+          "KANE": "1K"
         },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
@@ -190,18 +238,30 @@
       "12S": {
         "inbound_assignments": {
           "BAINY4.12s": "1I",
-          "BLUEM5.12s": "1H",
+          "BLUEM5_NITZR4.12s": "1H",
           "KKILR4.12s": "1I",
           "MUSCL4.12s": "1I",
-          "NITZR4.12s": "1H",
           "TORGY4.12s": "1H",
           "GEP1.12s": "1I",
           "LSE.12s": "1G",
-          "RPD": "1G"
+          "RPD": "1G",
+          "ENCEE3_RIXIE_FCM_RWF_ANE": "1E",
+          "TWOLF4": "1E",
+          "AGUDE6": "1G",
+          "GEP1.SAT": "1K",
+          "FGT_SIMMN_GEP.E": "1E",
+          "FGT_SIMMN_GEP.G": "1G",
+          "MKT": "1E",
+          "GEP.E": "1E",
+          "GEP.K": "1K"
         },
         "departure_assignments": {
           "KMSP/12L": "1D",
-          "KMSP/12R": "1R"
+          "KMSP/12R": "1R",
+          "KFCM": "1E",
+          "KSTP": "1G",
+          "KMIC": "1K",
+          "KANE": "1K"
         },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
@@ -213,18 +273,30 @@
       "30S": {
         "inbound_assignments": {
           "BAINY4.30s": "1I",
-          "BLUEM5.30s": "1H",
+          "BLUEM5_NITZR4.30s": "1H",
           "KKILR4.30s": "1I",
           "MUSCL4.30s": "1I",
-          "NITZR4.30s": "1H",
           "TORGY4.30s": "1H",
           "GEP1.30s": "1I",
           "LSE.30s": "1G",
-          "RPD": "1G"
+          "RPD": "1G",
+          "ENCEE3_RIXIE_FCM_RWF_ANE": "1E",
+          "TWOLF4": "1E",
+          "AGUDE6": "1G",
+          "GEP1.SAT": "1K",
+          "FGT_SIMMN_GEP.E": "1E",
+          "FGT_SIMMN_GEP.G": "1G",
+          "MKT": "1E",
+          "GEP.E": "1E",
+          "GEP.K": "1K"
         },
         "departure_assignments": {
           "KMSP/30L": "1R",
-          "KMSP/30R": "1D"
+          "KMSP/30R": "1D",
+          "KFCM": "1E",
+          "KSTP": "1G",
+          "KMIC": "1K",
+          "KANE": "1K"
         },
         "default_consolidation": {
           "1H": ["1I", "1N", "1R"],
@@ -265,6 +337,92 @@
             "N044.46.98.000,W093.15.89.000"
           ]
         }
+      ],
+      "fdam": [
+        {
+          "id": "MSP 12L",
+          "description": "MSP 12L AUTO LEADER LINE DIRECTION",
+          "type": "polygon",
+          "flight_type": "arrival",
+          "scratchpad": "12L, VL1, YL1, ZL1",
+          "new_owner_leader_direction": "NE",
+          "floor": 0,
+          "ceiling": 17000,
+          "vertices": [
+            "N045.27.54.316,W092.46.13.361",
+            "N045.02.19.059,W092.19.02.495",
+            "N044.34.35.166,W092.23.56.846",
+            "N044.15.57.609,W092.52.21.375",
+            "N044.16.24.594,W093.28.08.131",
+            "N044.28.55.249,W093.52.43.677",
+            "N044.41.29.007,W094.07.48.127",
+            "N045.10.39.871,W094.05.46.563",
+            "N045.30.27.232,W093.33.52.662"
+          ]
+        },
+        {
+          "id": "MSP 12R",
+          "description": "MSP 12R AUTO LEADER LINE DIRECTION",
+          "type": "polygon",
+          "flight_type": "arrival",
+          "scratchpad": "12R, VR1, YR1, ZR1",
+          "new_owner_leader_direction": "SW",
+          "floor": 0,
+          "ceiling": 17000,
+          "vertices": [
+            "N045.27.54.316,W092.46.13.361",
+            "N045.02.19.059,W092.19.02.495",
+            "N044.34.35.166,W092.23.56.846",
+            "N044.15.57.609,W092.52.21.375",
+            "N044.16.24.594,W093.28.08.131",
+            "N044.28.55.249,W093.52.43.677",
+            "N044.41.29.007,W094.07.48.127",
+            "N045.10.39.871,W094.05.46.563",
+            "N045.30.27.232,W093.33.52.662"
+          ]
+        },
+        {
+          "id": "MSP 30L",
+          "description": "MSP 30L AUTO LEADER LINE DIRECTION",
+          "type": "polygon",
+          "flight_type": "arrival",
+          "scratchpad": "30L, VL3, YL3, ZL3",
+          "new_owner_leader_direction": "SW",
+          "floor": 0,
+          "ceiling": 17000,
+          "vertices": [
+            "N045.27.54.316,W092.46.13.361",
+            "N045.02.19.059,W092.19.02.495",
+            "N044.34.35.166,W092.23.56.846",
+            "N044.15.57.609,W092.52.21.375",
+            "N044.16.24.594,W093.28.08.131",
+            "N044.28.55.249,W093.52.43.677",
+            "N044.41.29.007,W094.07.48.127",
+            "N045.10.39.871,W094.05.46.563",
+            "N045.30.27.232,W093.33.52.662"
+          ]
+        },
+        {
+          "id": "MSP 30R",
+          "description": "MSP 30R AUTO LEADER LINE DIRECTION",
+          "type": "polygon",
+          "flight_type": "arrival",
+          "scratchpad": "30R, VR3, YR3, ZR3",
+          "new_owner_leader_direction": "NE",
+          "floor": 0,
+          "ceiling": 17000,
+          "vertices": [
+            "N045.27.54.316,W092.46.13.361",
+            "N045.02.19.059,W092.19.02.495",
+            "N044.34.35.166,W092.23.56.846",
+            "N044.15.57.609,W092.52.21.375",
+            "N044.16.24.594,W093.28.08.131",
+            "N044.28.55.249,W093.52.43.677",
+            "N044.41.29.007,W094.07.48.127",
+            "N045.10.39.871,W094.05.46.563",
+            "N045.30.27.232,W093.33.52.662"
+          ]
+        }
       ]
     },
     "radar_sites": {
@@ -288,56 +446,31 @@
       }
     },
     "scratchpads": {
-      "HRBEK.PISTON": "FAR",
-      "HRBEK.TURBOPROP": "FAR",
-      "HRBEK.JET": "FAR",
-      "HRBEK.HEAVYJET": "FAR",
-      "ZOGAP.PISTON": "SME",
-      "ZOGAP.TURBOPROP": "SME",
-      "ZOGAP.JET": "SME",
-      "ZOGAP.HEAVYJET": "SME",
-      "TONCA.PISTON": "LEI",
-      "TONCA.TURBOPROP": "LEI",
-      "TONCA.JET": "LEI",
-      "HUGIR.PISTON": "ONL",
-      "HUGIR.TURBOPROP": "ONL",
-      "HUGIR.JET": "ONL",
-      "HUGIR.HEAVYJET": "ONL",
-      "JURNY.PISTON": "FOD",
-      "JURNY.TURBOPROP": "FOD",
-      "JURNY.JET": "FOD",
-      "FOBUG.PISTON": "RST",
-      "FOBUG.TURBOPROP": "RST",
-      "FOBUG.JET": "RST",
-      "FOBUG.HEAVYJET": "RST",
-      "JEDET.PISTON": "ODI",
-      "JEDET.TURBOPROP": "ODI",
-      "JEDET.JET": "ODI",
-      "JEDET.HEAVYJET": "ODI",
-      "TAXEE.PISTON": "DLL",
-      "TAXEE.TURBOPROP": "DLL",
-      "TAXEE.JET": "DLL",
-      "SNINE.PISTON": "GRB",
-      "SNINE.TURBOPROP": "GRB",
-      "SNINE.JET": "GRB",
-      "SNINE.HEAVYJET": "GRB",
-      "DLH.PISTON": "DLH",
-      "DLH.TURBOPROP": "DLH",
-      "DLH.JET": "DLH",
-      "DLH.HEAVYJET": "DLH",
-      "BRNRD.PISTON": "BRD",
-      "BRNRD.TURBOPROP": "BRD",
-      "BRNRD.JET": "BRD",
-      "BRNRD.HEAVYJET": "BRD",
-      "LSE.PISTON": "LSE",
-      "LSE.TURBOPROP": "LSE",
-      "LSE.JET": "LSE",
-      "FGT.PISTON": "FGT",
-      "FGT.TURBOPROP": "FGT",
-      "FGT.JET": "FGT",
-      "GEP.PISTON": "GEP",
-      "GEP.TURBOPROP": "GEP",
-      "GEP.JET": "GEP"
+      "HRBEK": "FAR",
+      "ZOGAP": "SME",
+      "TONCA": "LEI",
+      "HUGIR": "ONL",
+      "JURNY": "FOD",
+      "FOBUG": "RST",
+      "JEDET": "ODI",
+      "TAXEE": "DLL",
+      "SNINE": "GRB",
+      "DLH": "DLH",
+      "BRNRD": "BRD",
+      "LSE": "LSE",
+      "FGT": "FGT",
+      "GEP": "GEP",
+      "INUNE": "INU",
+      "MKT": "MKT",
+      "RIXIE": "RIX",
+      "EAU": "EAU",
+      "JALEP": "JLP",
+      "HIREL": "HRL",
+      "DESTE": "DST",
+      "LENCK": "LNK",
+      "ZOSAG": "ZSG",
+      "ANIML": "AML",
+      "FCM": "FCM"
     },
     "significant_points": {
       "HRBEK": {},
@@ -431,6 +564,28 @@
       }
     },
     "lists": {
+      "coordination": [
+        {
+          "name": "ANOKA",
+          "id": "PO",
+          "airports": ["KANE"]
+        },
+        {
+          "name": "FLYING CLOUD",
+          "id": "PF",
+          "airports": ["KFCM"]
+        },
+        {
+          "name": "CRYSTAL",
+          "id": "PM",
+          "airports": ["KMIC"]
+        },
+        {
+          "name": "ST PAUL",
+          "id": "PP",
+          "airports": ["KSTP"]
+        }
+      ],
       "ssa": {
         "altimeters": ["KMSP", "KFCM", "KANE", "KSTP", "KMIC"]
       }
