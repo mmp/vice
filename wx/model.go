@@ -28,10 +28,10 @@ type Model struct {
 }
 
 type AtmosResult struct {
-	AtmosByPointSOA *AtmosByPointSOA
-	Time            time.Time
-	NextTime        time.Time
-	Err             error
+	Grid     *AtmosGrid
+	Time     time.Time
+	NextTime time.Time
+	Err      error
 }
 
 func MakeModel(provider *Provider, facility string, primaryAirport string, startTime time.Time, lg *log.Logger) *Model {
@@ -60,12 +60,18 @@ func (m *Model) fetchAtmos(t time.Time) <-chan AtmosResult {
 	go func() {
 		defer close(ch)
 		atmos, atmosTime, nextTime, err := m.provider.GetAtmosGrid(m.facility, t, m.primaryAirport)
-		ch <- AtmosResult{
-			AtmosByPointSOA: atmos,
-			Time:            atmosTime,
-			NextTime:        nextTime,
-			Err:             err,
+		ar := AtmosResult{
+			Time:     atmosTime,
+			NextTime: nextTime,
+			Err:      err,
 		}
+		if err == nil && atmos != nil {
+			// Build the grid here so that Lookup callers (e.g. the sim
+			// update goroutine) don't stall on its construction when they
+			// pick up the result.
+			ar.Grid = atmos.ToAOS().GetGrid()
+		}
+		ch <- ar
 	}()
 
 	return ch
@@ -115,7 +121,7 @@ func (m *Model) updateAtmos(ar AtmosResult) {
 	if ar.Err != nil {
 		m.lg.Errorf("%v", ar.Err)
 		return
-	} else if ar.AtmosByPointSOA != nil {
+	} else if ar.Grid != nil {
 		if !aviation.DB.IsFacility(m.facility) {
 			return
 		}
@@ -123,8 +129,7 @@ func (m *Model) updateAtmos(ar AtmosResult) {
 		// Shift down to make room for the new one in [1].
 		m.grids[0], m.times[0] = m.grids[1], m.times[1]
 
-		atmos := ar.AtmosByPointSOA.ToAOS()
-		m.grids[1] = atmos.GetGrid()
+		m.grids[1] = ar.Grid
 		m.times[1] = ar.Time
 		m.nextFetch = ar.NextTime
 
