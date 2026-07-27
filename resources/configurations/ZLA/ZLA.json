@@ -188,18 +188,21 @@
   },
   "facility_adaptations": {
     "configurations": {
-      "STD": {
+      "14": {
         "inbound_assignments": {
           "HUULL2": "14",
-          "RUKKI1/BAUBB3": "14",
+          "RUKKI1/BAUBB3/LEGOZ4.ZIPRR": "14",
           "RYDRR2.ELKEY": "14",
-          "RYDRR2.SNAXX": "14"
+          "RYDRR2.SNAXX": "14",
+          "PITBL2": "14",
+          "SBP FIM.CNDOR ARR": "14",
+          "IRNMN2.14 & LEGOZ4.BURGL/REBRG": "14"
         },
         "default_consolidation": {
           "14": []
         }
       },
-      "ZLA": {
+      "18": {
         "inbound_assignments": {
           "SIZLR4": "18",
           "ZIGGY8": "18"
