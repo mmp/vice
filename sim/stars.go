@@ -214,21 +214,18 @@ type STARSController struct {
 // within a TRACON area. Controller-specific settings in Controllers
 // override or append these defaults.
 type STARSArea struct {
-	DefaultAirport                  string                         `json:"default_airport,omitempty"` // CRDA default airport for this area
-	VideoMapFile                    string                         `json:"video_map_file,omitempty"`
-	VideoMapNames                   []string                       `json:"video_maps,omitempty"`
-	DefaultMaps                     []string                       `json:"default_maps,omitempty"`
-	Center                          math.Point2LL                  `json:"-"`
-	CenterString                    string                         `json:"center,omitempty"`
-	Range                           float32                        `json:"range,omitempty"`
-	MonitoredBeaconCodeBlocksString *string                        `json:"beacon_code_blocks,omitempty"`
-	MonitoredBeaconCodeBlocks       []av.Squawk                    `json:"-"`
-	FlightFollowingAirspace         []av.AirspaceVolume            `json:"flight_following_airspace,omitempty"`
-	Altimeters                      []string                       `json:"altimeters,omitempty"`
-	Scratchpads                     map[string]string              `json:"scratchpads,omitempty"`
-	CoordinationLists               []CoordinationList             `json:"coordination_lists,omitempty"`
-	AirspaceAwareness               []AirspaceAwareness            `json:"airspace_awareness,omitempty"`
-	Airspace                        map[string][]av.AirspaceVolume `json:"airspace,omitempty"`
+	DefaultAirport                  string              `json:"default_airport,omitempty"` // CRDA default airport for this area
+	VideoMapFile                    string              `json:"video_map_file,omitempty"`
+	VideoMapNames                   []string            `json:"video_maps,omitempty"`
+	DefaultMaps                     []string            `json:"default_maps,omitempty"`
+	Center                          math.Point2LL       `json:"-"`
+	CenterString                    string              `json:"center,omitempty"`
+	Range                           float32             `json:"range,omitempty"`
+	MonitoredBeaconCodeBlocksString *string             `json:"beacon_code_blocks,omitempty"`
+	MonitoredBeaconCodeBlocks       []av.Squawk         `json:"-"`
+	Altimeters                      []string            `json:"altimeters,omitempty"`
+	Scratchpads                     map[string]string   `json:"scratchpads,omitempty"`
+	AirspaceAwareness               []AirspaceAwareness `json:"airspace_awareness,omitempty"`
 }
 
 // CurrentDatablockClockPhase returns the current clock phase (1-4)
@@ -444,26 +441,12 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 	for areaNum, ac := range fa.Areas {
 		e.Push(fmt.Sprintf("areas[%s]", areaNum))
 
-		for i := range ac.FlightFollowingAirspace {
-			ac.FlightFollowingAirspace[i].PostDeserialize(loc, e)
-		}
-
 		if ac.CenterString != "" {
 			if pos, ok := loc.Locate(ac.CenterString); ok {
 				ac.Center = pos
 			} else {
 				e.ErrorString("unknown location %q specified for area center", ac.CenterString)
 			}
-		}
-
-		for name, volumes := range ac.Airspace {
-			for i := range volumes {
-				volumes[i].PostDeserialize(loc, e)
-				if volumes[i].Id == "" {
-					volumes[i].Id = fmt.Sprintf("A%s-%s-%d", areaNum, name, i+1)
-				}
-			}
-			ac.Airspace[name] = volumes
 		}
 
 		e.Pop()

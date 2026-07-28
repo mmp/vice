@@ -539,16 +539,6 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 			}
 		}
 
-		// Auto-generate flight following airspace IDs/descriptions.
-		for i := range ac.FlightFollowingAirspace {
-			if ac.FlightFollowingAirspace[i].Id == "" {
-				ac.FlightFollowingAirspace[i].Id = fmt.Sprintf("FFA%s-%d", areaNum, i+1)
-			}
-			if ac.FlightFollowingAirspace[i].Description == "" {
-				ac.FlightFollowingAirspace[i].Description = fmt.Sprintf("FLIGHT FOLLOWING AREA %s %d", areaNum, i+1)
-			}
-		}
-
 		// Parse area beacon code blocks.
 		if ac.MonitoredBeaconCodeBlocksString != nil {
 			for s := range strings.SplitSeq(*ac.MonitoredBeaconCodeBlocksString, ",") {
