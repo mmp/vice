@@ -15,8 +15,8 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// FacilityConfiguration defines which controller handles each inbound/departure flow,
-// the default consolidation hierarchy for the configuration, and optional fix pair assignments.
+// FacilityConfiguration defines which controller handles each inbound/departure flow
+// and the default consolidation hierarchy for the configuration.
 type FacilityConfiguration struct {
 	InboundAssignments   map[string]TCP `json:"inbound_assignments"`
 	DepartureAssignments map[string]TCP `json:"departure_assignments"`
@@ -24,7 +24,6 @@ type FacilityConfiguration struct {
 	// who should handle go-arounds. If not specified, departure controller is used.
 	GoAroundAssignments  map[string]TCP        `json:"go_around_assignments"`
 	DefaultConsolidation PositionConsolidation `json:"default_consolidation"`
-	FixPairAssignments   []FixPairAssignment   `json:"fix_pair_assignments,omitempty"`
 
 	// ScratchpadLeaderLineDirectionStrings is the JSON-facing map from
 	// primary scratchpad values to cardinal/ordinal direction strings

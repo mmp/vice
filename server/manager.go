@@ -310,7 +310,6 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 		Emergencies:                 sm.emergencies,
 		StartTime:                   req.StartTime,
 		HandoffIDs:                  sg.FacilityConfig.HandoffIDs,
-		FixPairs:                    sg.FacilityConfig.FixPairs,
 	}
 
 	// Look up historical TFRs for this facility and time.

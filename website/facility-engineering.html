@@ -919,51 +919,6 @@
                       </details>
                   </td></tr>
                   <tr>
-                    <td>"fix_pairs"</td>
-                    <td>Array of objects</td>
-                    <td><p>Defines fix pair rules for fine-grained aircraft routing assignments.
-                        Each object specifies an entry/exit fix combination with optional constraints.</p>
-
-                    </td>
-                  </tr>
-                  <tr><td colspan="3">
-                      <details class="json-fields"><summary>"fix_pairs" members</summary>
-                        <table class="table">
-                          <thead>
-                            <tr><th>Element</th><th>Type</th><th>Description</th></tr>
-                          </thead>
-                          <tbody>
-
-                            <tr>
-                              <td>"altitude_range"</td>
-                              <td>Array of two numbers</td>
-                              <td>(<i>Optional</i>) Altitude range [floor, ceiling] in feet. If omitted or [0,0], no altitude constraint.</td>
-                            </tr>
-                            <tr>
-                              <td>"entry_fix"</td>
-                              <td>String</td>
-                              <td>The entry fix name. Empty string matches any entry fix.</td>
-                            </tr>
-                            <tr>
-                              <td>"exit_fix"</td>
-                              <td>String</td>
-                              <td>The exit fix name. Empty string matches any exit fix.</td>
-                            </tr>
-                            <tr>
-                              <td>"flight_type"</td>
-                              <td>String</td>
-                              <td>(<i>Optional</i>) "A" for arrivals, "P" for departures, "E" for overflights. If omitted, matches any type.</td>
-                            </tr>
-                            <tr>
-                              <td>"priority"</td>
-                              <td>Number</td>
-                              <td>The match priority; lower numbers are higher priority. Must be unique per configuration.</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </details>
-                  </td></tr>
-                  <tr>
                     <td>"handoff_ids"</td>
                     <td>Array</td>
                     <td><p>An array of objects identifying neighboring facilities and mapping them
@@ -1215,13 +1170,6 @@
                                   SID ("KJFK/SKORR5"). It is not allowed to specify runway and SID departure selections
                                   at an airport, however the airport name alone may be given as a catch-all
                                   for any unspecified runways/SIDs if that method is used.</td>
-                              </tr>
-                              <tr>
-                                <td>"fix_pair_assignments"</td>
-                                <td>Array of objects</td>
-                                <td>(<i>Optional</i>) Maps fix pair rules to controllers.
-                                  Each object has "tcp" (the controller to assign) and "priority" (matching priority; lower is higher).
-                                  These reference the fix pair definitions from the top-level "fix_pairs" in the facility config.</td>
                               </tr>
                               <tr>
                                 <td>"go_around_assignments"</td>

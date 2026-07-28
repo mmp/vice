@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"path/filepath"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -18,13 +17,12 @@ import (
 )
 
 // FacilityConfig represents an external facility configuration file that
-// contains control positions, STARS configuration, handoff IDs, and
-// fix pair definitions for a facility (TRACON or ARTCC).
+// contains control positions, STARS configuration, and handoff IDs for a
+// facility (TRACON or ARTCC).
 type FacilityConfig struct {
 	ControlPositions           map[TCP]*av.Controller `json:"control_positions"`
 	FacilityAdaptation         FacilityAdaptation     `json:"facility_adaptations"`
 	HandoffIDs                 []HandoffID            `json:"handoff_ids"`
-	FixPairs                   []FixPairDefinition    `json:"fix_pairs"`
 	DisableTFRRestrictionAreas bool                   `json:"disable_tfr_restriction_areas"`
 }
 
@@ -41,25 +39,6 @@ type HandoffID struct {
 	StarsID           string `json:"stars_id,omitempty"`
 	FieldEFormat      string `json:"field_e_format,omitempty"`
 	FieldELetter      string `json:"field_e_letter,omitempty"`
-}
-
-// FixPairDefinition defines a fixed pair (entry fix, exit fix) with
-// optional constraints. Fix pairs are used in TRACON facility configs
-// to provide fine-grained routing rules for aircraft assignment.
-type FixPairDefinition struct {
-	EntryFix      string `json:"entry_fix"`                // Entry fix name, empty = wildcard
-	ExitFix       string `json:"exit_fix"`                 // Exit fix name, empty = wildcard
-	FlightType    string `json:"flight_type,omitempty"`    // "A" (arrival), "P" (departure), "E" (overflight), empty = any
-	AltitudeRange [2]int `json:"altitude_range,omitempty"` // [floor, ceiling] in feet; [0,0] = no constraint
-	Priority      int    `json:"priority"`                 // Lower number = higher priority; must be unique per config
-}
-
-// FixPairAssignment maps a fix pair definition (by index) to a controller
-// TCP for a specific configuration. These are stored in
-// FacilityConfiguration alongside inbound/departure assignments.
-type FixPairAssignment struct {
-	TCP      TCP `json:"tcp"`      // Controller assigned to handle this fix pair
-	Priority int `json:"priority"` // Priority for deterministic matching
 }
 
 // PostDeserialize validates the facility config right after JSON
@@ -238,11 +217,6 @@ func (fc *FacilityConfig) PostDeserialize(configPath string, e *util.ErrorLogger
 
 		e.Pop()
 	}
-
-	// Fix pair validation (TODO)
-	// - priority uniqueness
-	// - flight_type in {"A", "P", "E", ""}
-	// - altitude_range floor <= ceiling
 
 	fc.validateAdaptation(isARTCC, e)
 }
@@ -684,63 +658,4 @@ func (fc *FacilityConfig) validateERAMAdaptation(e *util.ErrorLogger) {
 			}
 		}
 	}
-}
-
-// MatchFixPair finds the highest-priority fix pair that matches the given
-// aircraft parameters. Returns the index into the FixPairs slice and true
-// if a match is found, or -1 and false otherwise.
-func MatchFixPair(fixPairs []FixPairDefinition, entryFix, exitFix string, flightType av.TypeOfFlight, altitude int) (int, bool) {
-	// Sort by priority (lower = higher priority)
-	type indexedPair struct {
-		index int
-		pair  FixPairDefinition
-	}
-	sorted := make([]indexedPair, len(fixPairs))
-	for i, fp := range fixPairs {
-		sorted[i] = indexedPair{index: i, pair: fp}
-	}
-	sort.Slice(sorted, func(i, j int) bool {
-		return sorted[i].pair.Priority < sorted[j].pair.Priority
-	})
-
-	for _, ip := range sorted {
-		fp := ip.pair
-
-		// Entry fix match (empty = wildcard)
-		if fp.EntryFix != "" && fp.EntryFix != entryFix {
-			continue
-		}
-
-		// Exit fix match (empty = wildcard)
-		if fp.ExitFix != "" && fp.ExitFix != exitFix {
-			continue
-		}
-
-		// Flight type match (empty = any)
-		if fp.FlightType != "" {
-			var ftStr string
-			switch flightType {
-			case av.FlightTypeArrival:
-				ftStr = "A"
-			case av.FlightTypeDeparture:
-				ftStr = "P"
-			case av.FlightTypeOverflight:
-				ftStr = "E"
-			}
-			if fp.FlightType != ftStr {
-				continue
-			}
-		}
-
-		// Altitude range match ([0,0] = no constraint)
-		if fp.AltitudeRange[0] != 0 || fp.AltitudeRange[1] != 0 {
-			if altitude < fp.AltitudeRange[0] || altitude > fp.AltitudeRange[1] {
-				continue
-			}
-		}
-
-		return ip.index, true
-	}
-
-	return -1, false
 }

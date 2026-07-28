@@ -1688,61 +1688,6 @@
       }
     }
   },
-  "fix_pairs": [
-    {
-      "entry_fix": "IGN",
-      "exit_fix": "KLGA",
-      "flight_type": "A",
-      "priority": 1
-    },
-    {
-      "entry_fix": "CAMRN",
-      "exit_fix": "KJFK",
-      "flight_type": "A",
-      "priority": 2
-    },
-    {
-      "entry_fix": "PARCH",
-      "exit_fix": "KJFK",
-      "flight_type": "A",
-      "priority": 3
-    },
-    {
-      "entry_fix": "COATE",
-      "exit_fix": "KEWR",
-      "flight_type": "A",
-      "priority": 4
-    },
-    {
-      "entry_fix": "MAZIE",
-      "exit_fix": "KEWR",
-      "flight_type": "A",
-      "priority": 5
-    },
-    {
-      "entry_fix": "",
-      "exit_fix": "KJFK",
-      "flight_type": "A",
-      "priority": 20
-    },
-    {
-      "entry_fix": "",
-      "exit_fix": "KLGA",
-      "flight_type": "A",
-      "priority": 21
-    },
-    {
-      "entry_fix": "",
-      "exit_fix": "KEWR",
-      "flight_type": "A",
-      "priority": 22
-    },
-    {
-      "entry_fix": "",
-      "exit_fix": "",
-      "priority": 99
-    }
-  ],
   "handoff_ids": [
     {
       "id": "ABE",

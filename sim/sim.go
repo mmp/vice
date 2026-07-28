@@ -199,9 +199,7 @@ type NewSimConfiguration struct {
 
 	Emergencies []Emergency
 
-	HandoffIDs         []HandoffID
-	FixPairs           []FixPairDefinition
-	FixPairAssignments []FixPairAssignment
+	HandoffIDs []HandoffID
 }
 
 func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {

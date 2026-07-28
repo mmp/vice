@@ -2617,14 +2617,6 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		ControllerAirspace:      scenario.Airspace,
 		VirtualControllers:      scenario.VirtualControllers,
 		HandoffIDs:              scenarioGroup.FacilityConfig.HandoffIDs,
-		FixPairs:                scenarioGroup.FacilityConfig.FixPairs,
-	}
-
-	// Resolve fix pair assignments from the selected configuration
-	if scenario.ConfigurationString != "" {
-		if config, ok := scenarioGroup.FacilityConfig.FacilityAdaptation.Configurations[scenario.ConfigurationString]; ok {
-			newSimConfig.FixPairAssignments = config.FixPairAssignments
-		}
 	}
 
 	// LoadScenarioGroups already validated emergencies.json; re-parse to hand the list to the sim.
