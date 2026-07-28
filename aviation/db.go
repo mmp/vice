@@ -20,6 +20,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+
 	// Embed the time zone database: Windows has no system copy, and airport
 	// time zones have to resolve everywhere Vice runs.
 	_ "time/tzdata"
@@ -53,6 +54,7 @@ type StaticDatabase struct {
 	TRACONs             map[string]TRACON
 	ATCTs               map[string]ATCT
 	MVAs                map[string][]MVA // TRACON -> MVAs
+	AirportPairRoutes   map[AirportPair][]AirportPairRoute
 	ERAMAdaptations     map[string]ERAMAdaptation
 	BravoAirspace       map[string][]AirspaceVolume
 	CharlieAirspace     map[string][]AirspaceVolume
@@ -388,6 +390,7 @@ func doInitDB() {
 	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
 	wg.Go(func() { db.ARTCCs, db.TRACONs, db.ATCTs = parseFacilities() })
 	wg.Go(func() { db.MVAs = parseMVAs() })
+	wg.Go(func() { db.AirportPairRoutes = parseAirportPairRoutes() })
 	wg.Go(func() { db.ERAMAdaptations = parseAdaptations() })
 	wg.Go(func() {
 		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
@@ -872,6 +875,9 @@ func (mg *MagneticGrid) Lookup(p math.Point2LL) (float32, error) {
 	return -mg.Samples[long+nlong*lat], nil
 }
 
+///////////////////////////////////////////////////////////////////////////
+// MVA
+
 type MVA struct {
 	MinimumLimit          int                      `xml:"minimumLimit"`
 	MinimumLimitReference string                   `xml:"minimumLimitReference"`
@@ -1061,6 +1067,58 @@ func parseMVAs() map[string][]MVA {
 
 	return mvas
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Airport-pair Routes
+
+func parseAirportPairRoutes() map[AirportPair][]AirportPairRoute {
+	routes := make(map[AirportPair][]AirportPairRoute)
+
+	r := util.LoadResource("routes.csv.zst")
+	defer r.Close()
+	mungeCSV("routes", r, []string{"orig", "dest", "type", "dep_fix", "acft", "rnav", "route"},
+		func(s []string) {
+			pair := AirportPair{From: strings.TrimSpace(s[0]), To: strings.TrimSpace(s[1])}
+			routes[pair] = append(routes[pair], AirportPairRoute{
+				Route:        strings.TrimSpace(s[6]),
+				DepartureFix: strings.TrimSpace(s[3]),
+				Type:         strings.TrimSpace(s[2]),
+				Aircraft:     strings.TrimSpace(s[4]),
+				RNAVRequired: strings.TrimSpace(s[5]) == "Y",
+			})
+		})
+
+	return routes
+}
+
+// AirportPair keys the city-pair route database by ICAO airport codes.
+type AirportPair struct {
+	From, To string
+}
+
+// AirportPairRoute is one real-world route between two airports, taken from the
+// FAA preferred-route and coded-departure-route databases by cmd/importroutes.
+type AirportPairRoute struct {
+	Route        string // e.g. "NEION J223 CORDS J132 ULW BENEE"
+	DepartureFix string // explicit for coded departure routes, empty otherwise
+	Type         string // TEC, H, L, NAR, SHD, HSD, SLD, or CDR
+	Aircraft     string // "jet", "prop", or empty for no restriction
+	RNAVRequired bool
+}
+
+// LowAltitude reports whether the route is a low-altitude one, flown by
+// aircraft that stay out of the flight levels.
+func (r AirportPairRoute) LowAltitude() bool {
+	return r.Type == "TEC" || r.Type == "L" || r.Type == "SLD"
+}
+
+// RoutesBetween returns the real-world routes from one airport to another,
+// ordered preferred-routes first, or nil if the pair isn't in the database.
+func (d StaticDatabase) RoutesBetween(from, to string) []AirportPairRoute {
+	return d.AirportPairRoutes[AirportPair{From: from, To: to}]
+}
+
+///////////////////////////////////////////////////////////////////////////
 
 func parseFacilities() (map[string]ARTCC, map[string]TRACON, map[string]ATCT) {
 	ar := util.LoadResource("artccs.json")
