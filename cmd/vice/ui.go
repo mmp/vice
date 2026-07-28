@@ -320,7 +320,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 				browser.OpenURL("https://discord.gg/y993vgQxhY")
 			}
 			if imgui.MenuItemBool("vice ATC Hub (staff-ups)") {
-				browser.OpenURL("https://discord.gg/PTb99EKCx")
+				browser.OpenURL("https://discord.gg/hUqetK9xwt")
 			}
 			imgui.EndMenu()
 		}
