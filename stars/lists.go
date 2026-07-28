@@ -882,7 +882,13 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, paneExtent math.Extent2D, s
 				return false
 			}
 
-			if ctx.UserOwnsFlightPlan(fp) {
+			// Departures are owned by their assigned position. Resolve list
+			// membership through the live consolidation via that position
+			// (below) rather than the OwningTCW baked at spawn, so a departure
+			// follows its owner as positions consolidate/split; otherwise it
+			// stays stuck in the list of whoever was the consolidation master
+			// when it spawned.
+			if fp.TypeOfFlight != av.FlightTypeDeparture && ctx.UserOwnsFlightPlan(fp) {
 				return true
 			}
 
@@ -1331,6 +1337,24 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 
 	var allBounds []math.Extent2D
 	fa := ctx.FacilityAdaptation
+
+	// Per airport, the set of owners that have a dedicated (owner-scoped) list.
+	// A catch-all list (no owner_tcp) shows only the remainder -- departures
+	// whose owner has no dedicated list -- so each departure lands in exactly
+	// one list.
+	dedicatedOwners := make(map[string]map[sim.TCP]bool)
+	for _, cl := range fa.Lists.Coordination {
+		if cl.OwnerTCP == "" {
+			continue
+		}
+		for _, ap := range cl.Airports {
+			if dedicatedOwners[ap] == nil {
+				dedicatedOwners[ap] = make(map[sim.TCP]bool)
+			}
+			dedicatedOwners[ap][cl.OwnerTCP] = true
+		}
+	}
+
 	for i, cl := range fa.Lists.Coordination {
 		listStyle := renderer.TextStyle{
 			Font:  font,
@@ -1367,6 +1391,16 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 				}
 
 				if !slices.Contains(cl.Airports, dep.DepartureAirport) {
+					return false
+				}
+				// An owner-scoped list shows only its owner's departures; a
+				// catch-all list shows the remainder -- departures whose owner
+				// has no dedicated list -- so each departure lands in one list.
+				if cl.OwnerTCP != "" {
+					if dep.DepartureController != cl.OwnerTCP {
+						return false
+					}
+				} else if dedicatedOwners[dep.DepartureAirport][dep.DepartureController] {
 					return false
 				}
 				for callsign, state := range sp.TrackState {

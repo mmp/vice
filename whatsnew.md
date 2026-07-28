@@ -12,3 +12,4 @@
 - Facility engineering
   - For STARS scenarios, aircraft are culled by default at 200nm now (was 125nm)
   - Scenarios may now specify "default_consolidation", overriding the config's consolidation (radarcontacto)
+  - Coordination lists may specify "owner_tcp" to split one airport's release entries by assigned departure TCP (radarcontacto)

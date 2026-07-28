@@ -435,10 +435,12 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		e.Pop()
 	}
 
-	// Coordination lists: name/id required, id uniqueness.
+	// Coordination lists: name/id required, id uniqueness, owner_tcp validity,
+	// and no overlapping (airport, owner) coverage.
 	seenIds := make(map[string][]string)
+	airportOwners := make(map[string][]TCP) // airport -> each covering list's owner_tcp ("" = catch-all)
 	for _, list := range fa.Lists.Coordination {
-		e.Push(`"coordination_lists" ` + list.Name)
+		e.Push(`"lists.coordination" ` + list.Name)
 
 		if list.Name == "" {
 			e.ErrorString(`"name" must be specified for coordination list.`)
@@ -449,14 +451,40 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		if len(list.Airports) == 0 {
 			e.ErrorString(`At least one airport must be specified in "airports" for coordination list.`)
 		}
+		if list.OwnerTCP != "" {
+			if _, ok := fc.ControlPositions[list.OwnerTCP]; !ok {
+				e.ErrorString(`"owner_tcp" %q is not in "control_positions"`, list.OwnerTCP)
+			}
+		}
 
 		seenIds[list.Id] = append(seenIds[list.Id], list.Name)
+		for _, ap := range list.Airports {
+			airportOwners[ap] = append(airportOwners[ap], list.OwnerTCP)
+		}
 
 		e.Pop()
 	}
 	for id, groups := range seenIds {
 		if len(groups) > 1 {
-			e.ErrorString(`Multiple "coordination_lists" are using id %q: %s`, id, strings.Join(groups, ", "))
+			e.ErrorString(`Multiple "lists.coordination" entries are using id %q: %s`, id, strings.Join(groups, ", "))
+		}
+	}
+
+	// Per airport, at most one list per distinct owner: several owner-scoped
+	// lists plus at most one catch-all (no owner_tcp) are allowed. A catch-all
+	// shows the "remainder" -- departures whose owner has no dedicated list --
+	// so a departure always lands in exactly one list.
+	for ap, owners := range airportOwners {
+		seen := make(map[TCP]bool)
+		for _, o := range owners {
+			if seen[o] {
+				if o == "" {
+					e.ErrorString(`airport %q has multiple catch-all "lists.coordination" entries (no "owner_tcp")`, ap)
+				} else {
+					e.ErrorString(`airport %q has multiple "lists.coordination" entries for "owner_tcp" %q`, ap, o)
+				}
+			}
+			seen[o] = true
 		}
 	}
 

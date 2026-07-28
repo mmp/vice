@@ -2048,8 +2048,10 @@
                                         <tr>
                                           <td>"airports"</td>
                                           <td>Array of strings</td>
-                                          <td>The airports managed by the list. Any airport with "hold_for_release"
-                                            set to "true" must be in exactly one coordination list.</td>
+                                          <td>The airports managed by the list. Listing an airport here makes it
+                                            hold for release, whether or not it sets "hold_for_release" itself.
+                                            An airport may appear in more than one coordination list only when entries
+                                            are split by assigned departure TCP using "owner_tcp" (below).</td>
                                         </tr>
                                         <tr>
                                           <td>"format"</td>
@@ -2068,6 +2070,22 @@
                                           <td>"name"</td>
                                           <td>String</td>
                                           <td>The list name, shown at the top of the list when it is visible in the STARS window.</td>
+                                        </tr>
+                                        <tr>
+                                          <td>"owner_tcp"</td>
+                                          <td>String</td>
+                                          <td><p>(<i>Optional</i>) Restricts the list to departures whose assigned departure
+                                              controller TCP matches the given TCP, which must be present in
+                                              <a href="#fe-facility-config">"control_positions"</a>. This does not assign or
+                                              change the departure controller; it only determines which coordination list
+                                              displays the departure.</p>
+                                            <p>Each airport may have at most one list per assigned departure TCP, plus at most one
+                                              list without "owner_tcp". When no owner-scoped list applies to an airport, a
+                                              list without "owner_tcp" shows all departures from that airport. When
+                                              owner-scoped lists also apply, the list without "owner_tcp" shows only the
+                                              <i>remainder</i> &mdash; departures whose assigned departure TCP has no list of
+                                              its own &mdash; so a departure always appears in exactly one list.</p>
+                                          </td>
                                         </tr>
                                         <tr>
                                           <td>"yellow_entries"</td>
@@ -3212,7 +3230,7 @@
                     <td>"hold_for_release"</td>
                     <td>Boolean</td>
                     <td>(<i>Optional</i>) If true, departures from the airport must be released by a controller.
-                      If the airport is listed in "coordination_lists" in <a href="#fe-config-stars">"facility_adaptations"</a>,
+                      If the airport is listed in "lists.coordination" in <a href="#fe-config-stars">"facility_adaptations"</a>,
                       then the release will be managed using STARS coordination lists; otherwise it will appear
                       in the <i>Launch Control</i> window.
                     </td>
@@ -3404,7 +3422,7 @@
                     <td>"hold_for_release"</td>
                     <td>Boolean</td>
                     <td>(<i>Optional</i>) If true, departures on this route must be released by a controller.
-                      If the airport is listed in "coordination_lists" in <a href="#fe-config-stars">"facility_adaptations"</a>,
+                      If the airport is listed in "lists.coordination" in <a href="#fe-config-stars">"facility_adaptations"</a>,
                       then the release will be managed using STARS coordination lists; otherwise it will appear
                       in the <i>Launch Control</i> window.
                     </td>

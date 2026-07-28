@@ -1581,20 +1581,19 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 
 		if hfr {
-			// Make sure it's in either zero or one of the coordination lists.
-			if len(matches) > 1 {
-				e.ErrorString(`Airport %q is in multiple entries in "coordination_lists": %s.`, airport, strings.Join(matches, ", "))
-			}
+			// An airport may appear in several coordination lists when they are
+			// split by "owner_tcp"; facility validation forbids genuinely
+			// overlapping coverage.
 		} else if len(matches) != 0 {
 			// And it shouldn't be any if it's not hold for release
-			e.ErrorString(`Airport %q isn't "hold_for_release" but is in "coordination_lists": %s.`, airport,
+			e.ErrorString(`Airport %q isn't "hold_for_release" but is in "lists.coordination": %s.`, airport,
 				strings.Join(matches, ", "))
 		}
 	}
 
 	// Coordination list airports (require sg.Airports).
 	for _, list := range s.Lists.Coordination {
-		e.Push(`"coordination_lists" ` + list.Name)
+		e.Push(`"lists.coordination" ` + list.Name)
 		for _, ap := range list.Airports {
 			if _, ok := sg.Airports[ap]; !ok {
 				e.ErrorString("Airport %q not defined in scenario group.", ap)

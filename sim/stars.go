@@ -354,6 +354,14 @@ type CoordinationList struct {
 	Airports      []string `json:"airports"`
 	YellowEntries bool     `json:"yellow_entries"`
 	Format        string   `json:"format"`
+
+	// OwnerTCP, if set, restricts this list to release requests for departures
+	// assigned to that departure controller TCP. This does not assign the
+	// departure controller; it only lets one airport's releases be split across
+	// several lists by assigned TCP.
+	// Empty = all assigned TCPs for the list's airports, or the remainder when
+	// the airport also has owner-scoped lists.
+	OwnerTCP TCP `json:"owner_tcp,omitempty"`
 }
 
 // Validates a format string for a STARS system list. Extra specifiers that are specific to
