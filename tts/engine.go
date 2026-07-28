@@ -171,8 +171,14 @@ func CheckTTSLoadError() (error, bool) {
 	}
 }
 
-func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, text, voice string, radioSeed uint32) ([]int16, error) {
+// synthesize generates radio-effected PCM for text. kind identifies the
+// caller ("readback" or "contact") in the timing log; that log breaks the
+// latency down by phase since a slow readback may be waiting on the model
+// load or queued behind another synthesis rather than generating slowly.
+func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, kind, text, voice string, radioSeed uint32) ([]int16, error) {
+	start := time.Now()
 	<-t.done
+	loadWait := time.Since(start)
 
 	if ttsEngine == nil || text == "" {
 		return nil, nil
@@ -183,13 +189,17 @@ func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, text, voice
 		return nil, fmt.Errorf("%s: invalid voice", voice)
 	}
 
+	lockStart := time.Now()
 	mu.Lock()
 	defer mu.Unlock()
+	queueWait := time.Since(lockStart)
 
+	genStart := time.Now()
 	audio := ttsEngine.Generate(text, voiceID, voiceSpeed(voice))
 	if audio == nil || len(audio.Samples) == 0 {
 		return nil, fmt.Errorf("TTS generation failed for text: %q", text)
 	}
+	generate := time.Since(genStart)
 
 	pcm := t.convertAndResample(audio.Samples, audio.SampleRate)
 
@@ -208,27 +218,27 @@ func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, text, voice
 	pcm = append(pcm, make([]int16, tailSamples)...)
 
 	addRadioEffect(pcm, t.targetSampleRate, radioSeed, 1)
+
+	t.lg.Infof("TTS %s: %q (%s) in %s: model wait %s, queue wait %s, generate %s",
+		kind, text, voice, time.Since(start), loadWait, queueWait, generate)
+
 	return pcm, nil
 }
 
 // synthesizeReadback generates speech using the high-priority TTS instance.
 func (t *localTTS) synthesizeReadback(text, voice string, radioSeed uint32) ([]int16, error) {
-	return t.synthesize(&t.readbackMu, t.readbackTTS, text, voice, radioSeed)
+	return t.synthesize(&t.readbackMu, t.readbackTTS, "readback", text, voice, radioSeed)
 }
 
 // synthesizeContact generates speech using the low-priority TTS instance.
 func (t *localTTS) synthesizeContact(text, voice string, radioSeed uint32) ([]int16, error) {
-	return t.synthesize(&t.contactMu, t.contactTTS, text, voice, radioSeed)
+	return t.synthesize(&t.contactMu, t.contactTTS, "contact", text, voice, radioSeed)
 }
 
 // SynthesizeReadbackTTS generates PCM audio for a readback using the
 // high-priority TTS instance. The radioSeed determines per-aircraft radio
 // characteristics so the same aircraft has a consistent sound.
 func SynthesizeReadbackTTS(text, voice string, radioSeed uint32) ([]int16, error) {
-	start := time.Now()
-	defer func() {
-		fmt.Printf("readback %s: %q in %s\n", voice, text, time.Since(start))
-	}()
 	return globalTTS.synthesizeReadback(text, voice, radioSeed)
 }
 
@@ -236,10 +246,6 @@ func SynthesizeReadbackTTS(text, voice string, radioSeed uint32) ([]int16, error
 // low-priority TTS instance. The radioSeed determines per-aircraft radio
 // characteristics so the same aircraft has a consistent sound.
 func SynthesizeContactTTS(text, voice string, radioSeed uint32) ([]int16, error) {
-	start := time.Now()
-	defer func() {
-		fmt.Printf("contact %s: %q in %s\n", voice, text, time.Since(start))
-	}()
 	return globalTTS.synthesizeContact(text, voice, radioSeed)
 }
 
