@@ -902,16 +902,6 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 			}
 		}
 
-		if wp.HumanHandoff() {
-			// Check if any subsequent waypoints have a HandoffController
-			for _, wfut := range wa[i:] {
-				if wfut.HandoffController() != "" {
-					e.ErrorString("Cannot have handoff to virtual controller after human handoff")
-					break
-				}
-			}
-		}
-
 		if i == 0 && wp.Shift() > 0 {
 			e.ErrorString("Can't specify /shift at the first fix in a route")
 		}

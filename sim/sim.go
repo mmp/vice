@@ -829,7 +829,9 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, actions av.WaypointActions)
 		if sfp == nil {
 			sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 		}
-		if sfp != nil {
+		// Only initiate the handoff if a virtual controller has the track; if
+		// a human owns it, it's their call when to hand it off.
+		if sfp != nil && s.isVirtualController(sfp.TrackingController) {
 			s.handoffTrack(sfp, TCP(actions.HandoffController))
 		}
 	}
