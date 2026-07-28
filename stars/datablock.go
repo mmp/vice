@@ -948,20 +948,16 @@ func (sp *STARSPane) fillFDBField5(ctx *panes.Context, trk sim.Track, sfp *sim.N
 			formatDBText(field[idx:], rulesCategory, color, false)
 			return
 		}
-		if state.IFFlashing {
-			if trk.Ident {
-				formatDBText(field, "IF"+"ID", color, true)
-			} else {
-				formatDBText(field, "IF"+rulesCategory, color, true)
-			}
+		// The speed slot shows a blinking "IF" on an interfacility transfer
+		// error (FDB_L2_SPEED, xfer_error_flag != ho_if_err_ok), else "HL" when
+		// holding, else the groundspeed. The trailing indicator (ident, or
+		// flight-rules + CWT) follows it in every case.
+		speed := util.Select(state.IFFlashing, "IF", util.Select(sfp.HoldState, "HL", groundspeed))
+		idx := formatDBText(field, speed, color, state.IFFlashing)
+		if trk.Ident {
+			formatDBText(field[idx:], "ID", color, true)
 		} else {
-			gs := util.Select(sfp.HoldState, "HL", groundspeed)
-			idx := formatDBText(field, gs, color, false)
-			if trk.Ident {
-				formatDBText(field[idx:], "ID", color, true)
-			} else {
-				formatDBText(field[idx:], rulesCategory, color, false)
-			}
+			formatDBText(field[idx:], rulesCategory, color, false)
 		}
 	}
 
