@@ -73,6 +73,11 @@ type scenario struct {
 	// populated during PostDeserialize from ConfigurationString.
 	ControllerConfiguration sim.ControllerConfiguration `json:"-"`
 
+	// DefaultConsolidation optionally overrides the referenced facility
+	// configuration's consolidation tree. When empty, the facility
+	// configuration's is used.
+	DefaultConsolidation sim.PositionConsolidation `json:"default_consolidation,omitempty"`
+
 	// VirtualControllers is auto-derived at runtime from the facility config
 	// and scenario routes; it is NOT read from JSON.
 	VirtualControllers []sim.TCP `json:"-"`
@@ -124,7 +129,17 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, mapSp
 		s.ControllerConfiguration.InboundAssignments = maps.Clone(config.InboundAssignments)
 		s.ControllerConfiguration.DepartureAssignments = maps.Clone(config.DepartureAssignments)
 		s.ControllerConfiguration.GoAroundAssignments = maps.Clone(config.GoAroundAssignments)
-		s.ControllerConfiguration.DefaultConsolidation = deep.MustCopy(config.DefaultConsolidation)
+
+		// A scenario may override the facility configuration's consolidation
+		// tree; otherwise fall back to the configuration's. A scenario-provided
+		// override is validated the same way facility configurations are (the
+		// fallback was already validated at config load).
+		if len(s.DefaultConsolidation) > 0 {
+			s.DefaultConsolidation.Validate(sg.FacilityConfig.ControlPositions, e)
+			s.ControllerConfiguration.DefaultConsolidation = deep.MustCopy(s.DefaultConsolidation)
+		} else {
+			s.ControllerConfiguration.DefaultConsolidation = deep.MustCopy(config.DefaultConsolidation)
+		}
 
 		// Auto-add airspace controllers to consolidation if they're valid
 		// control positions but missing from the consolidation tree.

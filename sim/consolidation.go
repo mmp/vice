@@ -88,9 +88,10 @@ func (tc *TCPConsolidation) OwnedPositions() []ControlPosition {
 // All fields are populated at runtime from the referenced configuration in the
 // facility config file.
 type ControllerConfiguration struct {
-	// DefaultConsolidation defines the consolidation tree. It is always
-	// populated from the referenced facility configuration during
-	// post-deserialization. Scenarios cannot override this field.
+	// DefaultConsolidation defines the consolidation tree. It is populated
+	// during post-deserialization: a scenario may define its own
+	// "default_consolidation", otherwise it falls back to the one on the
+	// referenced facility configuration.
 	DefaultConsolidation PositionConsolidation `json:"-"`
 
 	// InboundAssignments maps inbound flow names to the TCP that handles them.
@@ -107,6 +108,60 @@ type ControllerConfiguration struct {
 }
 
 type PositionConsolidation map[TCP][]TCP
+
+// Validate checks a consolidation tree: parents and children must be known
+// control positions, there must be exactly one root, no cycles, and no position
+// may be a child of multiple parents. Errors accumulate in e.
+func (pc PositionConsolidation) Validate(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
+	for parent, children := range pc {
+		if _, ok := controlPositions[parent]; !ok {
+			e.ErrorString(`default_consolidation: parent %q is not in "control_positions"`, parent)
+		}
+		for _, child := range children {
+			if _, ok := controlPositions[child]; !ok {
+				e.ErrorString(`default_consolidation: child %q (under %q) is not in "control_positions"`, child, parent)
+			}
+		}
+	}
+
+	// Exactly one root position.
+	if _, err := pc.RootPosition(); err != nil {
+		e.Error(err)
+	}
+
+	// No cycles (a position can't be its own ancestor).
+	getConsolidatedInto := func(tcp TCP) TCP {
+		for parent, children := range pc {
+			if slices.Contains(children, tcp) {
+				return parent
+			}
+		}
+		return ""
+	}
+	for tcp := range pc {
+		visited := make(map[TCP]bool)
+		for current := tcp; current != ""; current = getConsolidatedInto(current) {
+			if visited[current] {
+				e.ErrorString("cycle detected in consolidation hierarchy involving %q", tcp)
+				break
+			}
+			visited[current] = true
+		}
+	}
+
+	// No position may be a child of multiple parents.
+	childParent := make(map[TCP]TCP)
+	for parent, children := range pc {
+		for _, child := range children {
+			if existingParent, ok := childParent[child]; ok {
+				e.ErrorString(`position %q appears as a child of both %q and %q in "default_consolidation"`,
+					child, existingParent, parent)
+			} else {
+				childParent[child] = parent
+			}
+		}
+	}
+}
 
 // RootPosition returns the root TCP of the consolidation tree, or empty string if not found.
 func (cc *ControllerConfiguration) RootPosition() (TCP, error) {

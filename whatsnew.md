@@ -1,6 +1,7 @@
 - New scenario: ZJX Central-Geneva (manaphy)
 - Scenario updates: ZNY (manaphy), T75 (Ryan H), M98 (Shane, Logan S), ZLA (Ketan K)
 - Improve logic for launching aircraft with intersection departures: ignore CWT if not aloft at the intersection
+- Fixed bug where departures would climb to cruise altitude even if they had /cALT in their upcoming route
 - Fixed bug where virtual controllers wouldn't accept redirected handoffs
 - Fixed bug where VFR aircraft could end up swarming an airport
 - STT: fixed few bugs with fixes in an aircraft's route not being recognized
@@ -10,3 +11,4 @@
   - Added confict alert detection
 - Facility engineering
   - For STARS scenarios, aircraft are culled by default at 200nm now (was 125nm)
+  - Scenarios may now specify "default_consolidation", overriding the config's consolidation (radarcontacto)

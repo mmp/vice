@@ -274,56 +274,9 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 			}
 		}
 
-		for parent, children := range config.DefaultConsolidation {
-			if _, ok := fc.ControlPositions[parent]; !ok {
-				e.ErrorString(`default_consolidation: parent %q is not in "control_positions"`, parent)
-			}
-			for _, child := range children {
-				if _, ok := fc.ControlPositions[child]; !ok {
-					e.ErrorString(`default_consolidation: child %q (under %q) is not in "control_positions"`, child, parent)
-				}
-			}
-		}
-
-		// Check for exactly one root position.
-		if _, err := config.DefaultConsolidation.RootPosition(); err != nil {
-			e.Error(err)
-		}
-
-		// Check for cycles (a position can't be its own ancestor).
-		getConsolidatedInto := func(tcp TCP) TCP {
-			for parent, children := range config.DefaultConsolidation {
-				if slices.Contains(children, tcp) {
-					return parent
-				}
-			}
-			return ""
-		}
-		for tcp := range config.DefaultConsolidation {
-			visited := make(map[TCP]bool)
-			current := tcp
-			for current != "" {
-				if visited[current] {
-					e.ErrorString("cycle detected in consolidation hierarchy involving %q", tcp)
-					break
-				}
-				visited[current] = true
-				current = getConsolidatedInto(current)
-			}
-		}
-
-		// Check that no position appears as a child of multiple parents.
-		childParent := make(map[TCP]TCP)
-		for parent, children := range config.DefaultConsolidation {
-			for _, child := range children {
-				if existingParent, ok := childParent[child]; ok {
-					e.ErrorString(`position %q appears as a child of both %q and %q in "default_consolidation"`,
-						child, existingParent, parent)
-				} else {
-					childParent[child] = parent
-				}
-			}
-		}
+		// Validate the consolidation tree (positions, single root, cycles,
+		// multi-parent). Shared with scenario-level consolidation.
+		config.DefaultConsolidation.Validate(fc.ControlPositions, e)
 
 		// Resolve scratchpad leader line direction strings to native directions.
 		if len(config.ScratchpadLeaderLineDirectionStrings) > 0 {

@@ -1200,7 +1200,10 @@
                                   into 1A, and 1D is consolidated into 1C (and transitively into 1A).
                                   All positions that are covered by humans must be present exactly once in the consolidation hierarchy.
                                   All positions must eventually consolidate into a single <i>root</i> position; this
-                                  is the primary controller for the scenario.</td>
+                                  is the primary controller for the scenario.
+                                  An individual scenario may override this hierarchy while still using this
+                                  configuration's assignments; see
+                                  <a href="#fe-scenarios">"default_consolidation"</a> in "scenarios".</td>
                               </tr>
                               <tr>
                                 <td>"departure_assignments"</td>
@@ -4337,6 +4340,29 @@
                       and the default consolidation hierarchy for this scenario.
                       The selected configuration must have assignments for all of the scenario's active
                       arrivals and departures.
+                      A scenario may override just the consolidation hierarchy using
+                      "default_consolidation" below, while still taking its assignments from the
+                      referenced configuration.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>"default_consolidation"</td>
+                    <td>Object</td>
+                    <td><p><i>(Optional)</i> Overrides the consolidation hierarchy from the configuration
+                        referenced by <a href="#fe-scenarios">"configuration"</a>, for this scenario only.
+                        The format is identical to
+                        <a href="#fe-config-common">"default_consolidation"</a> in "configurations":
+                        each key is a parent TCP and its value is an array of TCPs consolidated into it.
+                        When this member is absent or empty, the referenced configuration's hierarchy is
+                        used unchanged.</p>
+                      <p>An overriding hierarchy is validated exactly like a configuration's: every
+                        position must appear in
+                        <a href="#fe-facility-config">"control_positions"</a>, no position may be a child
+                        of more than one parent, the hierarchy may not contain a cycle, and all positions
+                        must consolidate into a single root. As with the configuration's hierarchy,
+                        control positions that are given airspace by the scenario's
+                        <a href="#fe-scenarios">"airspace"</a> but are absent from the hierarchy are
+                        automatically added under the root.</p>
                     </td>
                   </tr>
                   <tr>
