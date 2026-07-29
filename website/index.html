@@ -152,6 +152,7 @@
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#inbound-handoffs">Inbound Handoffs</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#outbound-handoffs">Outbound Handoffs</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#redirecting-handoffs">Redirecting Handoffs</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#automatic-handoffs">Automatic Handoffs</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#terminating-control">Terminating Control</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-pointouts">Point Outs</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#position-consolidation">Position Consolidation</a></li>
@@ -3569,48 +3570,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <div class="text-center">
               <img src="airspace-awareness-info.png" srcset="airspace-awareness-info-2x.png 2x" width="522" height="334">
             </div><br>
-            <p>The following STARS commands offer further control over how airspace awareness is applied:</p>
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th style="width:30%">Command</th>
-                    <th>Function</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>[HND OFF]CXE</code></td>
-                    <td>Enables airspace awareness for interfacility handoffs.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>[HND OFF]CXI</code></td>
-                    <td>Disables ("inhibits") airspace awareness for interfacility handoffs.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>[HND OFF]CTE</code></td>
-                    <td>Enables airspace awareness for intrafacility handoffs.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>[HND OFF]CTI</code></td>
-                    <td>Disables ("inhibits") airspace awareness for intraacility handoffs.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>[HND OFF]CE</code></td>
-                    <td>Enables airspace awareness for both inter- and intrafacility handoffs.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>[HND OFF]CI</code></td>
-                    <td>Disables airspace awareness for both inter- and intrafacility handoffs.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
               <h3 id="cursor-hiding-home">The Cursor Home and Hiding the Cursor</h3>
 
             <p>After a keyboard command is entered, the STARS cursor may be optionally returned to a "home"
@@ -3936,6 +3895,89 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="redirected-handoff.png" srcset="redirected-handoff-2x.png 2x" width="175" height="75">
             </div><br>
             <p>Redirected handoffs can be canceled using the same commands as are used for canceling regular handoffs.</p>
+
+            <h3 id="automatic-handoffs">Automatic Handoffs</h3>
+
+            <p>A facility's adaptation may define <em>automatic handoff</em> volumes. When a track you own
+              enters one of them and matches the conditions adapted for it&mdash;its type of flight, entry or
+              exit fix, scratchpad, requested altitude, aircraft type, etc.&mdash;STARS acts on it
+              without any input from you: it either initiates a handoff to the adapted receiving position,
+              transfers control of the track to that position outright with no handoff to accept, or marks the
+              track as ineligible for further automatic handoffs.</p>
+
+            <p>Not every track is a candidate: a track is skipped if it is already in handoff status, if it is
+              still owned by a center or another facility, if its flight plan is suspended, or if it is squawking a
+              non-discrete beacon code (one ending in "00", such as 1200). Recalling an automatic handoff also
+              makes that track ineligible for any further automatic handoff.</p>
+
+            <p>A track that has been made ineligible for automatic handoffs shows a delta (∆) in the fourth field of its full
+              datablock&mdash;the same place an outbound handoff's receiving position id appears. You can turn
+              automatic handoffs off (or back on) for a single track that you own with the following
+              commands. (Note that <i>vice</i> maps the delta key to the backtick.)</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:30%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>∆[SLEW]</code> /<br><code>[HND OFF]∆[SLEW]</code> /<br><code>[HND OFF]∆ (FLT ID)</code></td>
+                    <td>Toggles automatic handoffs for the specified track.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            <p>This command is not valid for a track that is in handoff status, for one owned by another
+              facility, or for one that the adaptation itself disabled by way of an automatic handoff volume
+              whose action is to do so; those cases give an <code>ILL TRK</code> or <code>ILL FNCT</code>
+              error.</p>
+
+            <p>Automatic handoff processing can also be turned off wholesale, either for your own position or
+              for the entire facility:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:30%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[HND OFF]CI</code> / <code>[HND OFF]CE</code></td>
+                    <td>Inhibits / enables automatic handoff processing for your position, for both intra- and
+                      interfacility handoffs.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[HND OFF]CTI</code> / <code>[HND OFF]CTE</code></td>
+                    <td>Inhibits / enables automatic <i>intra</i>facility (within this facility) handoff
+                      processing for your position.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[HND OFF]CXI</code> / <code>[HND OFF]CXE</code></td>
+                    <td>Inhibits / enables automatic <i>inter</i>facility (to another facility) handoff
+                      processing for your position. <i>vice</i> only performs intrafacility automatic
+                      handoffs, so this setting is displayed but does not change any behavior.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[HND OFF]I</code> / <code>[HND OFF]E</code></td>
+                    <td>Inhibits / enables automatic handoff processing for the entire facility. Reports
+                      <code>NO CHANGE</code> if it is already in the requested state.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            <p>When automatic handoffs are inhibited for your position, <code>HOPT</code> (intrafacility)
+              and/or <code>HOPX</code> (interfacility) appear on the "TCP off indicators" line of the
+              <a href="#stars-ssa-list">system status area</a>, enabled with the "OFF IND" button in the
+              <code>SSA FILTER</code> DCB menu. When they are inhibited for the whole facility,
+              <code>HOP</code> appears on the system off indicators line ("SYS OFF"). In either case the
+              affected tracks stop showing the delta, since automatic handoffs are off for all of them; the
+              per-track setting is remembered and takes effect again once processing is re-enabled.</p>
 
             <h3 id="terminating-control">Terminating Control</h3>
 

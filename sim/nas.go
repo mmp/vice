@@ -217,6 +217,129 @@ func (sc *STARSComputer) Update(s *Sim) {
 		if ac.IsAssociated() && !s.FDAMSystemInhibited {
 			s.processFDAMRegions(ac)
 		}
+
+		// Auto-handoff filter processing for associated tracks.
+		if ac.IsAssociated() && !s.State.AutoHandoffSiteInhibited {
+			s.processHandoffFilterRegions(ac)
+		}
+	}
+}
+
+// processHandoffFilterRegions implements the STARS Auto-Handoff Window (DMS
+// Sec. 4.7.7, p. 4-185): when a locally-owned track enters a handoff filter
+// volume and matches a row's conditions, the first matching row's Handoff
+// Action fires.
+func (s *Sim) processHandoffFilterRegions(ac *Aircraft) {
+	fp := ac.NASFlightPlan
+	if fp == nil {
+		return
+	}
+	regions := s.State.FacilityAdaptation.Filters.Handoff
+	if len(regions) == 0 {
+		return
+	}
+
+	// Auto-handoff initiate is for locally-owned tracks: a local sector hands
+	// the track to another sector. Tracks owned by an external facility are
+	// not eligible, nor are ones already in handoff status.
+	if !s.State.IsLocalController(fp.TrackingController) ||
+		fp.HandoffController != "" || fp.RedirectedHandoff.RedirectedTo != "" {
+		return
+	}
+
+	// AHOP may be inhibited for the owning position (STARS 4.3, p. 4-30), and
+	// some tracks are permanently excluded from it (STARS 5.1.7, p. 5-15).
+	if s.State.AutoHandoffInhibitedForTCW(fp.OwningTCW) || autoHandoffDisabledByCondition(fp, ac) {
+		return
+	}
+
+	if fp.HandoffFilterState == nil {
+		fp.HandoffFilterState = make(map[string]bool)
+	}
+
+	acType := fp.AircraftType
+	engine := engineClass(acType)
+	activePlan := s.State.ConfigurationId
+	sigPts := s.State.FacilityAdaptation.SignificantPoints
+	pos := ac.Position()
+	alt := int(ac.Altitude())
+
+	firstFired := -1
+	for i := range regions {
+		region := &regions[i]
+		wasInside := fp.HandoffFilterState[region.Id]
+
+		// On entry, both the volume and all conditions must match. Once
+		// inside, only the volume determines continued presence, so that an
+		// action which changes a qualifying field doesn't immediately toggle
+		// the track back out (mirrors FDAM processing).
+		var nowInside bool
+		if wasInside {
+			nowInside = region.AirspaceVolume.Inside(pos, alt)
+		} else {
+			nowInside = region.qualifies(pos, alt, fp, acType, engine, activePlan, sigPts) &&
+				s.handoffFilterOwnerMatch(region, fp)
+		}
+		fp.HandoffFilterState[region.Id] = nowInside
+
+		if nowInside && !wasInside && firstFired == -1 {
+			firstFired = i
+		}
+	}
+
+	if firstFired >= 0 {
+		s.applyHandoffFilterAction(&regions[firstFired], fp)
+	}
+}
+
+// handoffFilterOwnerMatch checks the Owning TCP / "+ Slave TCPs" condition
+// (DMS Table 4-30) against the track's current owner.
+func (s *Sim) handoffFilterOwnerMatch(region *HandoffFilterRegion, fp *NASFlightPlan) bool {
+	if len(region.OwnerTCPs) == 0 {
+		return true
+	}
+	return slices.ContainsFunc(region.OwnerTCPs, func(tcp ControlPosition) bool {
+		// "+" also matches when an adapted Owning TCP is consolidated to the
+		// flight's owning TCP (i.e. it is a secondary TCP of the owner's TCW).
+		return tcp == fp.TrackingController ||
+			(region.SlaveTCPs && s.State.TCWControlsPosition(fp.OwningTCW, tcp))
+	})
+}
+
+// applyHandoffFilterAction executes a matched row's Handoff Action.
+func (s *Sim) applyHandoffFilterAction(region *HandoffFilterRegion, fp *NASFlightPlan) {
+	if region.HandoffAction == "D" {
+		// Disable automatic handoff for this track; shows the delta indicator
+		// and can't be undone by the controller.
+		fp.AutoHandoffInhibited = true
+		fp.AutoHandoffInhibitLocked = true
+		return
+	}
+
+	// A track that a controller disabled for auto-handoff is left alone, as is
+	// one whose owner already controls the row's receiver (both are resolved
+	// through consolidation before comparing).
+	if fp.AutoHandoffInhibited ||
+		s.State.ResolveController(region.HORcvr) == s.State.ResolveController(fp.TrackingController) {
+		return
+	}
+
+	switch region.HandoffAction {
+	case "I":
+		s.handoffTrack(fp, region.HORcvr)
+		// Mark it automatic so that a recall makes the track ineligible for
+		// further auto-handoff (STARS 5.1.17, p. 5-33).
+		fp.HandoffWasAutomatic = true
+
+	case "T":
+		s.eventStream.Post(Event{
+			Type:           TransferAcceptedEvent,
+			FromController: fp.TrackingController,
+			ToController:   region.HORcvr,
+			ACID:           fp.ACID,
+		})
+		fp.TrackingController = region.HORcvr
+		fp.OwningTCW = s.tcwForPosition(region.HORcvr)
 	}
 }
 

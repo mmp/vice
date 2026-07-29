@@ -36,6 +36,7 @@ func NewTestSim(lg *log.Logger) *Sim {
 			Airports: map[string]*av.Airport{},
 		},
 		Aircraft:            map[av.ADSBCallsign]*Aircraft{},
+		Handoffs:            make(map[ACID]Handoff),
 		PendingContacts:     make(map[TCP][]PendingContact),
 		PrivilegedTCWs:      map[TCW]bool{tcw: true},
 		FutureFieldChecks:   make(map[av.ADSBCallsign]*FutureFieldCheck),

@@ -1717,6 +1717,16 @@
                                   of fields.</td>
                               </tr>
                               <tr>
+                                <td>"handoff"</td>
+                                <td>Automatic handoff regions. When a locally-owned associated track
+                                  enters one of these volumes and matches its conditions, the adapted
+                                  handoff action is performed automatically: a handoff is initiated to
+                                  another position, control is transferred outright, or the track is
+                                  marked ineligible for automatic handoff. See the
+                                  <a href="#fe-stars-handoff">Automatic Handoffs section</a> below for
+                                  the full list of fields.</td>
+                              </tr>
+                              <tr>
                                 <td>"inhibit_ca"</td>
                                 <td>Collision alerts are disabled for aircraft within the filter's volume.
                                   These are especially useful around airports so that alerts aren't issued for aircraft
@@ -1965,6 +1975,102 @@
                                     directions set via "pointout_tcps".</td>
                                 </tr>
                             </tbody></table>
+                          </details>
+                          <details class="json-fields" id="fe-stars-handoff"><summary>"handoff" members</summary>
+                            <p>Each entry in "handoff" is one row of the Automatic Handoffs table: a filter
+                              volume, a set of conditions, and the handoff action to perform. When a
+                              locally-owned associated track first enters the volume and matches every
+                              condition, that row's action runs.</p>
+                            <p>Rows are checked <b>in order and the first match wins</b>; later rows are not
+                              considered. Because of this, put narrow rules first and broad ones (especially
+                              those using "slave_tcps") last.</p>
+                            <p>Every condition below is optional and an omitted condition matches any flight,
+                              so a row with no conditions applies to every eligible track in the volume.
+                              The volume itself is described with the same fields as the other filters
+                              ("type", "vertices" or "center"/"radius", "floor", "ceiling").</p>
+                            <p>A track is only eligible while it is owned by a local position and is not
+                              already in handoff status. A track may also be individually
+                              marked ineligible, either by the "D" action below or by the controller using STARS commands.</p>
+                            <table class="table"><thead><tr><th>Element</th><th>Type</th><th>Description</th></tr></thead><tbody>
+                                <tr>
+                                  <td>"handoff_action"</td>
+                                  <td>String</td>
+                                  <td>What to do when a flight matches: "I" initiates a handoff to "ho_receiver",
+                                    exactly as if a controller had initiated it; "T" transfers control to
+                                    "ho_receiver" immediately with no handoff to accept; "D" marks the track
+                                    ineligible for automatic handoff, which is useful to carve an exception
+                                    out of a larger automatic-handoff area. Defaults to "I".</td>
+                                </tr>
+                                <tr>
+                                  <td>"ho_receiver"</td>
+                                  <td>String</td>
+                                  <td>The local position that receives the handoff or transfer. Required for
+                                    "I" and "T", and must be omitted for "D". Handing off to another facility
+                                    is not supported.</td>
+                                </tr>
+                                <tr>
+                                  <td>"actype_class"</td>
+                                  <td>String</td>
+                                  <td>Aircraft type class: "JET", "PROP", or "TURBO", or an exact aircraft
+                                    type such as "B738".</td>
+                                </tr>
+                                <tr>
+                                  <td>"config_plan"</td>
+                                  <td>String</td>
+                                  <td>The configuration plan that must be active for the row to apply.</td>
+                                </tr>
+                                <tr>
+                                  <td>"slave_tcps"</td>
+                                  <td>Boolean</td>
+                                  <td>If true, a position named in "owning_tcp" (below) also matches when it
+                                    is consolidated to the track's owner, rather than only when it is the
+                                    owner itself. Requires "owning_tcp".</td>
+                                </tr>
+                                <tr>
+                                  <td>"terminal_sector"</td>
+                                  <td>String</td>
+                                  <td>A single letter A-Z other than "T", naming the terminal sector at which
+                                    "config_plan" must be active; may only be given together with
+                                    "config_plan". <i>Currently validated but not enforced</i>, as vice does
+                                    not model per-terminal-sector configuration plans.</td>
+                                </tr>
+                                <tr>
+                                  <td colspan="3">The remaining conditions are the qualifiers shared with the
+                                    quicklook and FDAM filters: "owning_tcp" (a comma-separated list of the
+                                    positions that may own the track before the handoff), "flight_type",
+                                    "flight_rules", "entry_fix", "exit_fix", "scratchpad" (where "^" matches a
+                                    delta), "secondary_scratchpad", "requested_altitude" (a range in hundreds
+                                    of feet, e.g. "0-180"), "ssr_codes", and "cwt_category". Note that "tcps"
+                                    is not accepted here; use "owning_tcp" instead.</td>
+                                </tr>
+                            </tbody></table>
+                            <p>Some parts of the real system are not modeled: a row cannot be conditioned on
+                              the flight's heading, and the "A" (automatic accept) action and handoffs to an
+                              external facility are not supported. Since every automatic handoff is therefore
+                              intrafacility, inhibiting <i>inter</i>facility automatic handoffs for a position
+                              has no effect.</p>
+                            <p>For example, to transfer every locally-owned track in a box to position 1T,
+                              while leaving props alone:</p>
+                            <pre>"handoff": [
+    {
+        "id": "PROPS_EXEMPT",
+        "description": "Props keep their current owner",
+        "type": "polygon",
+        "ceiling": 60000,
+        "vertices": "...",
+        "actype_class": "PROP",
+        "handoff_action": "D"
+    },
+    {
+        "id": "BOX_TO_1T",
+        "description": "Everything else transfers to 1T",
+        "type": "polygon",
+        "ceiling": 60000,
+        "vertices": "...",
+        "handoff_action": "T",
+        "ho_receiver": "1T"
+    }
+]</pre>
                           </details>
                         </details>
                     </td></tr>

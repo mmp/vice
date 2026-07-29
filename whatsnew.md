@@ -6,10 +6,12 @@
 - Fixed bug where VFR aircraft could end up swarming an airport
 - STT: fixed few bugs with fixes in an aircraft's route not being recognized
 - STARS
+  - Added support for automatic handoffs (radarcontacto)
   - Fixed bugs with redirected handoff datablocks and recalling redirected handoffs
 - ERAM
-  - Added confict alert detection
+  - Added confict alert detection (Michael Trokel)
 - Facility engineering
   - For STARS scenarios, aircraft are culled by default at 200nm now (was 125nm)
   - Scenarios may now specify "default_consolidation", overriding the config's consolidation (radarcontacto)
   - Coordination lists may specify "owner_tcp" to split one airport's release entries by assigned departure TCP (radarcontacto)
+  - Added "handoff" filters to adapt automatic handoff volumes and conditions (radarcontacto)

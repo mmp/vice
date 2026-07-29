@@ -1019,6 +1019,7 @@ func (s *Sim) updateState() {
 				}
 				fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
 				fp.HandoffController = ""
+				fp.HandoffWasAutomatic = false
 
 				if ac != nil {
 					haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,

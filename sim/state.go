@@ -44,11 +44,25 @@ type DynamicState struct {
 
 	ATPAEnabled     bool                                   // True if ATPA is enabled system-wide
 	ATPAVolumeState map[string]map[string]*ATPAVolumeState // airport -> volumeId -> state
+
+	// Automatic handoff processing (AHOP) inhibits: site-wide (STARS 8.8,
+	// p. 8-13) and per-TCP (STARS 4.3, p. 4-30). TCPs with nothing inhibited
+	// are absent from the map.
+	AutoHandoffSiteInhibited bool
+	AutoHandoffTCPInhibits   map[ControlPosition]AutoHandoffInhibit
 }
 
 type ATPAVolumeState struct {
 	Disabled          bool
 	Reduced25Disabled bool
+}
+
+// AutoHandoffInhibit records which categories of automatic handoff processing
+// a TCP has inhibited (STARS 4.3, p. 4-30). The two are reported separately in
+// the SSA as "HOPT" and "HOPX".
+type AutoHandoffInhibit struct {
+	Intrafacility bool
+	Interfacility bool
 }
 
 // CommonState represents the sim state that is both used server side and client-side.
@@ -252,6 +266,8 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 
 			ATPAEnabled:     true,
 			ATPAVolumeState: initATPAVolumeState(config.Airports),
+
+			AutoHandoffTCPInhibits: make(map[ControlPosition]AutoHandoffInhibit),
 		},
 
 		ScenarioBrief: config.Brief,
@@ -474,6 +490,14 @@ func (ss *CommonState) TCWForPosition(pos ControlPosition) TCW {
 		}
 	}
 	return TCW(pos) // it may be a center or external controller, etc.
+}
+
+// AutoHandoffInhibitedForTCW reports whether intrafacility automatic handoff
+// processing is inhibited for the tracks owned by the given TCW, either
+// site-wide (STARS 8.8) or for its primary TCP (STARS 4.3).
+func (ss *CommonState) AutoHandoffInhibitedForTCW(tcw TCW) bool {
+	return ss.AutoHandoffSiteInhibited ||
+		ss.AutoHandoffTCPInhibits[ss.PrimaryPositionForTCW(tcw)].Intrafacility
 }
 
 // PrimaryPositionForTCW returns the primary position for the given TCW.

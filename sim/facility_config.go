@@ -584,8 +584,8 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		}
 	}
 
-	// Validate TCP references in Quicklook and FDAM filter regions
-	// against this facility's ControlPositions.
+	// Validate TCP references in Quicklook, FDAM, and auto-handoff filter
+	// regions against this facility's ControlPositions.
 	for i, filt := range fa.Filters.Quicklook {
 		e.Push(filt.Description)
 		fa.Filters.Quicklook[i].ValidateTCPs(fc.ControlPositions, e)
@@ -594,6 +594,11 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	for i, filt := range fa.Filters.FDAM {
 		e.Push(filt.Description)
 		fa.Filters.FDAM[i].ValidateTCPs(fc.ControlPositions, e)
+		e.Pop()
+	}
+	for i, filt := range fa.Filters.Handoff {
+		e.Push(filt.Description)
+		fa.Filters.Handoff[i].ValidateTCPs(fc.ControlPositions, e)
 		e.Pop()
 	}
 

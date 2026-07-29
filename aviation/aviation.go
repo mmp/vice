@@ -630,6 +630,11 @@ type Squawk int
 
 func (sq Squawk) String() string { return fmt.Sprintf("%04o", sq) }
 
+// IsDiscrete returns true if the code is a discrete beacon code; the
+// non-discrete codes are those ending in "00" (1200, 4000, ...), which are
+// assigned to more than one aircraft at a time.
+func (sq Squawk) IsDiscrete() bool { return sq&0o77 != 0 }
+
 func ParseSquawk(s string) (Squawk, error) {
 	if len(s) != 4 {
 		return Squawk(0), ErrInvalidSquawkCode

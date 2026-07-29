@@ -748,7 +748,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		ssaButton("QL", &ps.SSAList.Filter.QuickLookPositions)
 		ssaButton("TW OFF", &ps.SSAList.Filter.DisabledTerminal)
 		ssaButton("CON/CPL", &ps.SSAList.Filter.Consolidation)
-		sp.unsupportedButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
+		ssaButton("OFF IND", &ps.SSAList.Filter.TCPOff)
 		ssaButton("CRDA", &ps.SSAList.Filter.ActiveCRDAPairs)
 		sp.unsupportedButton(ctx, "FLOW", buttonHalfVertical, buttonScale) // TODO
 		sp.unsupportedButton(ctx, "AMZ", buttonHalfVertical, buttonScale)  // TODO

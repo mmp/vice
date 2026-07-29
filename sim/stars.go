@@ -54,16 +54,17 @@ type FacilityAdaptation struct {
 
 	// Airpsace filters
 	Filters struct {
-		AutoAcquisition FilterRegions    `json:"auto_acquisition"`
-		ArrivalDrop     FilterRegions    `json:"arrival_drop"`
-		Departure       FilterRegions    `json:"departure"`
-		InhibitCA       FilterRegions    `json:"inhibit_ca"`
-		InhibitMSAW     FilterRegions    `json:"inhibit_msaw"`
-		Quicklook       QuicklookRegions `json:"quicklook"`
-		FDAM            FDAMRegions      `json:"fdam"`
-		SecondaryDrop   FilterRegions    `json:"secondary_drop"`
-		SurfaceTracking FilterRegions    `json:"surface_tracking"`
-		VFRInhibit      FilterRegions    `json:"vfr_inhibit"`
+		AutoAcquisition FilterRegions        `json:"auto_acquisition"`
+		ArrivalDrop     FilterRegions        `json:"arrival_drop"`
+		Departure       FilterRegions        `json:"departure"`
+		InhibitCA       FilterRegions        `json:"inhibit_ca"`
+		InhibitMSAW     FilterRegions        `json:"inhibit_msaw"`
+		Quicklook       QuicklookRegions     `json:"quicklook"`
+		FDAM            FDAMRegions          `json:"fdam"`
+		Handoff         HandoffFilterRegions `json:"handoff"`
+		SecondaryDrop   FilterRegions        `json:"secondary_drop"`
+		SurfaceTracking FilterRegions        `json:"surface_tracking"`
+		VFRInhibit      FilterRegions        `json:"vfr_inhibit"`
 	} `json:"filters"`
 
 	MonitoredBeaconCodeBlocksString  *string
@@ -497,6 +498,21 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 
 			if _, ok := ids[filt.Id]; ok {
 				e.ErrorString(`FDAM filter "id"s must be unique: %q was repeated`, filt.Id)
+			}
+			ids[filt.Id] = nil
+
+			e.Pop()
+		}
+	}
+
+	{
+		ids := make(map[string]any)
+		for i, filt := range fa.Filters.Handoff {
+			e.Push(filt.Description)
+			fa.Filters.Handoff[i].PostDeserialize(loc, e)
+
+			if _, ok := ids[filt.Id]; ok {
+				e.ErrorString(`handoff filter "id"s must be unique: %q was repeated`, filt.Id)
 			}
 			ids[filt.Id] = nil
 

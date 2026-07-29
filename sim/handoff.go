@@ -6,6 +6,7 @@ package sim
 
 import (
 	"slices"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -287,6 +288,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			previousTrackingController := fp.TrackingController
 
 			fp.HandoffController = ""
+			fp.HandoffWasAutomatic = false
 			fp.TrackingController = newTrackingController
 			fp.LastLocalController = newTrackingController
 			fp.OwningTCW = tcw // The accepting TCW owns the track
@@ -318,6 +320,12 @@ func (s *Sim) CancelHandoff(tcw TCW, acid ACID) error {
 
 	if err := s.dispatchTrackedFlightPlanCommand(tcw, acid, nil,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) {
+			// Recalling an *automatic* handoff makes the track ineligible for further auto-handoff
+			// (STARS 5.1.17, p. 5-33).
+			if fp.HandoffWasAutomatic {
+				fp.AutoHandoffInhibited = true
+				fp.HandoffWasAutomatic = false
+			}
 			delete(s.Handoffs, acid)
 			fp.HandoffController = ""
 			fp.RedirectedHandoff = RedirectedHandoff{}
@@ -433,6 +441,7 @@ func (s *Sim) acceptRedirectedHandoff(fp *NASFlightPlan, ac *Aircraft, owningTCW
 	offeredToController := fp.HandoffController
 
 	fp.HandoffController = ""
+	fp.HandoffWasAutomatic = false
 	fp.TrackingController = rh.RedirectedTo
 	fp.LastLocalController = rh.RedirectedTo
 	fp.OwningTCW = owningTCW
@@ -787,6 +796,95 @@ type Handoff struct {
 	ReceivingFacility string // only for auto accept
 }
 
+///////////////////////////////////////////////////////////////////////////
+// Automatic handoff processing (AHOP) configuration
+
+// AutoHandoffOp identifies which automatic handoff processing inhibit a
+// ConfigureAutoHandoff call applies to.
+type AutoHandoffOp int
+
+const (
+	// AutoHandoffSite is the site-wide inhibit (STARS 8.8, p. 8-13).
+	AutoHandoffSite AutoHandoffOp = iota
+	// AutoHandoffTCPBoth and friends are the entering TCP's inhibits (STARS
+	// 4.3, p. 4-30).
+	AutoHandoffTCPBoth
+	AutoHandoffTCPIntrafacility
+	AutoHandoffTCPInterfacility
+)
+
+// ConfigureAutoHandoff enables or inhibits automatic handoff processing,
+// either site-wide or for the entering TCW's primary TCP.
+func (s *Sim) ConfigureAutoHandoff(tcw TCW, op AutoHandoffOp, enable bool) (msg string, err error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	defer func() {
+		if err == nil {
+			s.publish()
+		}
+	}()
+
+	if op == AutoHandoffSite {
+		if s.State.AutoHandoffSiteInhibited == !enable {
+			return "NO CHANGE", nil
+		}
+		s.State.AutoHandoffSiteInhibited = !enable
+		return "", nil
+	}
+
+	// 4.3: the command is rejected if the entering position has no sector or
+	// if automatic handoffs are off for the whole site.
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+	if _, ok := s.State.Controllers[tcp]; !ok {
+		return "", ErrIllegalPosition
+	}
+	if s.State.AutoHandoffSiteInhibited {
+		return "", ErrIllegalFunction
+	}
+
+	if s.State.AutoHandoffTCPInhibits == nil {
+		s.State.AutoHandoffTCPInhibits = make(map[ControlPosition]AutoHandoffInhibit)
+	}
+	inh := s.State.AutoHandoffTCPInhibits[tcp]
+	if op == AutoHandoffTCPBoth || op == AutoHandoffTCPIntrafacility {
+		inh.Intrafacility = !enable
+	}
+	if op == AutoHandoffTCPBoth || op == AutoHandoffTCPInterfacility {
+		inh.Interfacility = !enable
+	}
+	if inh == (AutoHandoffInhibit{}) {
+		delete(s.State.AutoHandoffTCPInhibits, tcp)
+	} else {
+		s.State.AutoHandoffTCPInhibits[tcp] = inh
+	}
+	return "", nil
+}
+
+// autoHandoffDisabledByCondition reports whether a track is ineligible for
+// automatic handoff processing for a reason a controller can't reverse: a
+// non-discrete beacon code, being suspended, or having been disabled by a
+// handoff filter row with the "D" action (STARS 5.1.7, p. 5-15).
+func autoHandoffDisabledByCondition(fp *NASFlightPlan, ac *Aircraft) bool {
+	return fp.AutoHandoffInhibitLocked || fp.Suspended || (ac != nil && !ac.Squawk.IsDiscrete())
+}
+
+// checkAutoHandoffToggle validates a controller's request to enable or inhibit
+// automatic handoffs for a single track (STARS 5.1.7, p. 5-15 and 5.1.20,
+// p. 5-38).
+func (s *Sim) checkAutoHandoffToggle(fp *NASFlightPlan, ac *Aircraft) error {
+	if s.State.IsExternalController(fp.TrackingController) {
+		// Not valid for tracks owned by another facility.
+		return av.ErrOtherControllerHasTrack
+	}
+	if fp.HandoffController != "" || fp.RedirectedHandoff.RedirectedTo != "" {
+		return ErrTrackIsBeingHandedOff
+	}
+	if s.State.AutoHandoffInhibitedForTCW(fp.OwningTCW) || autoHandoffDisabledByCondition(fp, ac) {
+		return ErrIllegalFunction
+	}
+	return nil
+}
+
 type PointOut struct {
 	FromController ControlPosition
 	ToController   ControlPosition
@@ -825,4 +923,170 @@ func (rd *RedirectedHandoff) AddRedirector(ctrl *av.Controller) {
 		// (the case in which the last redirector recalls and then redirects again)
 		rd.Redirector = append(rd.Redirector, ctrl.PositionId())
 	}
+}
+
+// HandoffFilterRegion models one row of the STARS Auto-Handoff Window (DMS
+// Sec. 4.7.7, p. 4-185; parameters in Table 4-30, p. 4-187). Each row is a
+// handoff filter volume plus a set of "Handoff Conditions"; when a track
+// enters the volume and its flight plan matches the conditions, the row's
+// Handoff Action fires. Rows are processed in order, first-match-wins.
+//
+// The shared match criteria (flight type, owning TCP, entry/exit fix,
+// scratchpads, requested-level range) are handled by the embedded
+// FilterQualifiers, the same vehicle used by Quicklook and FDAM regions. The
+// auto-handoff-specific columns (config plan, slave TCPs, A/C type class,
+// action, receiver) are added here.
+//
+// Not modeled from Table 4-30: the Hdg Start / Hdg End true-heading range, and
+// the Ext Sector column that accompanies an external HO Rcvr.
+type HandoffFilterRegion struct {
+	av.AirspaceVolume
+	FilterQualifiers
+
+	// ConfigPlan (Config Plan): the configuration plan that must be active for
+	// this row to apply; blank means any plan.
+	ConfigPlan string `json:"config_plan"`
+	// TerminalSector (Terminal Sector): conditions the ConfigPlan match on a
+	// specific terminal sector. Parsed and validated but not enforced at
+	// runtime, since vice does not model per-terminal-sector plan activation.
+	TerminalSector string `json:"terminal_sector"`
+	// SlaveTCPs (+ Slave TCPs): when true, a TCP named in "owning_tcp" also
+	// matches if it is consolidated to the flight's owning TCP.
+	SlaveTCPs bool `json:"slave_tcps"`
+	// OwnerTCPs takes over the "owning_tcp" list parsed by the embedded
+	// FilterQualifiers, which is left empty: the match needs the SlaveTCPs
+	// flag and the current consolidation, so it is made in the Sim rather than
+	// by FilterQualifiers.Match.
+	OwnerTCPs []ControlPosition `json:"-"`
+	// ACTypeClass (A/C Type Class): the AHO aircraft type class
+	// (JET/PROP/TURBO) or an exact aircraft type; blank means any.
+	ACTypeClass string `json:"actype_class"`
+	// HandoffAction (Handoff Action): "I" initiate, "T" transfer, or "D"
+	// disable auto-handoff for the track. Mandatory in the real system; we
+	// default it to "I". ("A", accept, is not supported.)
+	HandoffAction string `json:"handoff_action"`
+	// HORcvr (HO Rcvr): the local TCP that receives the handoff or transfer
+	// for "I"/"T". Must be blank for "D". External facility receivers are not
+	// supported.
+	HORcvr ControlPosition `json:"ho_receiver"`
+}
+
+type HandoffFilterRegions []HandoffFilterRegion
+
+func (r *HandoffFilterRegion) ValidateTCPs(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
+	r.FilterQualifiers.PostDeserialize(controlPositions, e)
+	if r.TCPsString != "" {
+		e.ErrorString(`"tcps" is not supported for handoff filter regions; use "owning_tcp"`)
+	}
+	r.TCPs = nil
+
+	// FilterQualifiers validated and parsed "owning_tcp"; take the result over
+	// so that the Sim can widen it with "+ Slave TCPs".
+	r.OwnerTCPs, r.FilterQualifiers.OwningTCPs = r.FilterQualifiers.OwningTCPs, nil
+
+	// "+ Slave TCPs" qualifies adapted Owning TCPs, so it requires one.
+	if r.SlaveTCPs && len(r.OwnerTCPs) == 0 {
+		e.ErrorString(`"owning_tcp" must be set when "slave_tcps" is true`)
+	}
+
+	// ho_receiver must reference a local position.
+	r.HORcvr = ControlPosition(strings.ToUpper(strings.TrimSpace(string(r.HORcvr))))
+	validateLocalHORcvr := func() {
+		ctrl, ok := controlPositions[TCP(r.HORcvr)]
+		if !ok {
+			e.ErrorString(`unknown TCP %q in "ho_receiver"`, r.HORcvr)
+		} else if ctrl.FacilityIdentifier != "" {
+			e.ErrorString(`TCP %q in "ho_receiver" is not a local position`, r.HORcvr)
+		}
+	}
+
+	r.HandoffAction = strings.ToUpper(strings.TrimSpace(r.HandoffAction))
+	if r.HandoffAction == "" {
+		r.HandoffAction = "I"
+	}
+	switch r.HandoffAction {
+	case "I", "T":
+		if r.HORcvr == "" {
+			e.ErrorString(`"ho_receiver" must be specified for handoff_action %q`, r.HandoffAction)
+		} else {
+			validateLocalHORcvr()
+		}
+	case "D":
+		if r.HORcvr != "" {
+			e.ErrorString(`"ho_receiver" must be blank for handoff_action "D"`)
+		}
+	case "A":
+		e.ErrorString(`handoff_action "A" (accept) is not supported`)
+	default:
+		e.ErrorString(`invalid "handoff_action" %q: must be "I", "T", or "D"`, r.HandoffAction)
+	}
+
+	// Terminal Sector must be blank if Config Plan is blank (Table 4-30).
+	r.ConfigPlan = strings.ToUpper(strings.TrimSpace(r.ConfigPlan))
+	r.TerminalSector = strings.ToUpper(strings.TrimSpace(r.TerminalSector))
+	if r.TerminalSector != "" {
+		if len(r.TerminalSector) != 1 || r.TerminalSector[0] < 'A' || r.TerminalSector[0] > 'Z' || r.TerminalSector == "T" {
+			e.ErrorString(`invalid "terminal_sector" %q: must be a single letter A-Z (not T)`, r.TerminalSector)
+		}
+		if r.ConfigPlan == "" {
+			e.ErrorString(`"terminal_sector" must be blank when "config_plan" is blank`)
+		}
+	}
+
+	r.ACTypeClass = strings.ToUpper(strings.TrimSpace(r.ACTypeClass))
+}
+
+func (r *HandoffFilterRegion) PostDeserialize(loc av.Locator, e *util.ErrorLogger) {
+	r.AirspaceVolume.PostDeserialize(loc, e)
+}
+
+// matchACTypeClass matches an AHO aircraft type class (Table 4-30 "A/C Type
+// Class"): the JET/PROP/TURBO classes, or an exact aircraft type.
+func matchACTypeClass(field, engineClass, acType string) bool {
+	switch strings.ToUpper(strings.TrimSpace(field)) {
+	case "", "*":
+		return true
+	case "JET":
+		return engineClass == "jet"
+	case "PROP":
+		return engineClass == "prop"
+	case "TURBO", "TURBOPROP":
+		return engineClass == "turboprop"
+	default:
+		return strings.EqualFold(field, acType)
+	}
+}
+
+// engineClass returns the adaptation engine vocabulary for an aircraft type.
+func engineClass(acType string) string {
+	switch av.DB.AircraftPerformance[acType].Engine.AircraftType {
+	case "J":
+		return "jet"
+	case "T":
+		return "turboprop"
+	default:
+		return "prop"
+	}
+}
+
+// qualifies reports whether a track at the given position and altitude
+// satisfies this row's owner-independent conditions (volume, config plan, A/C
+// type class, and the shared FilterQualifiers). Owner and slave matching is
+// handled separately in the Sim since it needs the current consolidation.
+func (r *HandoffFilterRegion) qualifies(p math.Point2LL, alt int, fp *NASFlightPlan,
+	acType, engine, activeConfigPlan string, significantPoints map[string]SignificantPoint) bool {
+	if !r.AirspaceVolume.Inside(p, alt) {
+		return false
+	}
+	if r.ConfigPlan != "" && !strings.EqualFold(r.ConfigPlan, activeConfigPlan) {
+		return false
+	}
+	if r.ACTypeClass != "" && !matchACTypeClass(r.ACTypeClass, engine, acType) {
+		return false
+	}
+	// FilterQualifiers covers flight type, entry/exit fix, scratchpads,
+	// requested-level range, flight rules, and SSR codes. Its "tcps" is
+	// rejected for handoff rows and its "owning_tcp" moved to OwnerTCPs, so
+	// neither is checked here.
+	return r.FilterQualifiers.Match(fp, nil, acType, significantPoints)
 }

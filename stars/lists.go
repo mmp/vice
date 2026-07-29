@@ -531,6 +531,9 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		if ps.CRDA.Disabled {
 			disabled = append(disabled, "CRDA")
 		}
+		if ctx.Client.State.AutoHandoffSiteInhibited {
+			disabled = append(disabled, "HOP")
+		}
 		if !ctx.Client.State.ATPAEnabled {
 			disabled = append(disabled, "INTRAIL")
 		}
@@ -757,6 +760,22 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		// TODO: others?
 		if ps.CRDA.Disabled {
 			pw = td.AddText("TW OFF: CRDA", pw, listStyle)
+			newline()
+		}
+	}
+
+	// TCP OFF indicators for the entering TCP (2-85, Table 2-20).
+	if filter.All || filter.TCPOff {
+		tcp := ctx.UserPrimaryPosition()
+		if inh := ctx.Client.State.AutoHandoffTCPInhibits[tcp]; inh != (sim.AutoHandoffInhibit{}) {
+			var off []string
+			if inh.Intrafacility {
+				off = append(off, "HOPT")
+			}
+			if inh.Interfacility {
+				off = append(off, "HOPX")
+			}
+			pw = td.AddText(string(tcp)+" OFF: "+strings.Join(off, " "), pw, listStyle)
 			newline()
 		}
 	}

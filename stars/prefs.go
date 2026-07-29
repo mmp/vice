@@ -108,11 +108,6 @@ type Preferences struct {
 		Associated   [2]int
 	}
 
-	AutomaticHandoffs struct { // 4-30
-		Interfacility bool
-		Intrafacility bool
-	}
-
 	QuickLookAll       bool
 	QuickLookAllIsPlus bool
 	QuickLookTCPs      map[string]bool // in map: is quicklooked; bool indicates QL+
@@ -230,6 +225,7 @@ type CommonPreferences struct {
 			Codes               bool
 			SpecialPurposeCodes bool
 			SysOff              bool
+			TCPOff              bool
 			Range               bool
 			PredictedTrackLines bool
 			AltitudeFilters     bool

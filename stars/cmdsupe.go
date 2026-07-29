@@ -145,9 +145,13 @@ func registerSupeCommands() {
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "D")
 		})
 
-	// 8.8 Enable / inhibit automatic handoffs (p. 8-13)
-	//registerCommand(UserCommand{M: CommandModeHandOff, C: "E", F: unimplementedCommand})
-	//registerCommand(UserCommand{M: CommandModeHandOff, C: "I", F: unimplementedCommand})
+	// 8.8 Enable / inhibit automatic handoffs for this site (p. 8-13)
+	registerCommand(CommandModeHandOff, "E", func(sp *STARSPane, ctx *panes.Context) error {
+		return configureAutoHandoff(sp, ctx, sim.AutoHandoffSite, true)
+	})
+	registerCommand(CommandModeHandOff, "I", func(sp *STARSPane, ctx *panes.Context) error {
+		return configureAutoHandoff(sp, ctx, sim.AutoHandoffSite, false)
+	})
 
 	// 8.9 Hide / show restriction area at specified TCW/TDWs
 

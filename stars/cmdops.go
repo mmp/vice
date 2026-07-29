@@ -44,8 +44,22 @@ func registerOpsCommands() {
 	}
 	registerCommand(CommandModeNone, "[TCP1][SLEW]|[TCP2][SLEW]|[TCP_TRI][SLEW]|[ARTCC][SLEW]", handoffOrRedirectTrack)
 
-	// 5.1.7 Enable / inhibit automatic handoff for a flight
-	// registerCommand(CommandModeNone, STARSTriangleCharater+"[SLEW]", ...)
+	// 5.1.7 Enable / inhibit automatic handoff for a flight (Implied command)
+	// (p. 5-15): delta + slew toggles AHOP for a track owned by the entering
+	// position; the delta indicator shows in field 4 while it is inhibited.
+	toggleAutoHandoff := func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
+		if trk.IsUnassociated() {
+			return ErrSTARSIllegalTrack
+		}
+		fp := trk.FlightPlan
+		// Ownership, handoff status, and whether AHOP is available at all are
+		// enforced server-side; see Sim.checkAutoHandoffToggle.
+		spec := sim.FlightPlanSpecifier{}
+		spec.AutoHandoffInhibited.Set(!fp.AutoHandoffInhibited)
+		modifyFlightPlan(sp, ctx, fp.ACID, spec, false)
+		return nil
+	}
+	registerCommand(CommandModeNone, STARSTriangleCharacter+"[SLEW]", toggleAutoHandoff)
 
 	// 5.1.9 Initiate intrafacility handoff (p. 5-18)
 	// 5.1.16 Transfer track ownership to another keyboard
@@ -105,8 +119,9 @@ func registerOpsCommands() {
 	// 5.1.14 Initiate NAS FP handoff to adjacent tracon
 	registerCommand(CommandModeHandOff, "[TCP_TRI] [TRK_ACID]|[TCP_TRI] [TRK_BCN]|[TCP_TRI][SLEW]", handoffOrRedirectTrack)
 
-	// 5.1.20 Enable / inhibit automatic handoff of a flight
-	// registerCommand(UserCommand{M: CommandModeHandOff, C: STARSTriangleCharacter + "[SLEW]|" + STARSTriangleCharacter + " [TRK_ACID]"})
+	// 5.1.20 Enable / inhibit automatic handoff for a flight (p. 5-38)
+	registerCommand(CommandModeHandOff, STARSTriangleCharacter+"[SLEW]|"+
+		STARSTriangleCharacter+" [TRK_ACID]|"+STARSTriangleCharacter+" [TRK_BCN]", toggleAutoHandoff)
 
 	// 5.2.1 Create coordination message
 	// 5.2.2 Modify coordination message text
@@ -1057,6 +1072,21 @@ func createFlightPlan(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpec
 				sp.displayError(err, ctx, "")
 			}
 		})
+}
+
+// configureAutoHandoff enables or inhibits automatic handoff processing; it
+// backs both the per-TCP command (4.3, p. 4-30) and the site-wide supervisor
+// command (8.8, p. 8-13).
+func configureAutoHandoff(sp *STARSPane, ctx *panes.Context, op sim.AutoHandoffOp, enable bool) error {
+	ctx.Client.ConfigureAutoHandoff(op, enable,
+		func(output string, err error) {
+			if err != nil {
+				sp.displayError(err, ctx, "")
+			} else {
+				sp.previewAreaOutput = output
+			}
+		})
+	return nil
 }
 
 func modifyFlightPlan(sp *STARSPane, ctx *panes.Context, acid sim.ACID, spec sim.FlightPlanSpecifier, display bool) {

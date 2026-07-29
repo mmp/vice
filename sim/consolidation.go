@@ -422,6 +422,7 @@ func (s *Sim) ConsolidateTCP(receivingTCW TCW, sendingTCP TCP, consType Consolid
 				if ac.NASFlightPlan.HandoffController != "" && s.State.TCWControlsPosition(receivingTCW, ac.NASFlightPlan.HandoffController) {
 					// It's being flashed to us but was then consolidated; the handoff is now irrelevant...
 					ac.NASFlightPlan.HandoffController = ""
+					ac.NASFlightPlan.HandoffWasAutomatic = false
 				}
 				s.lg.Infof("transferred track %s ownership to %s", ac.NASFlightPlan.ACID, receivingTCW)
 			}

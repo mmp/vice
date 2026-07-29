@@ -1058,6 +1058,35 @@ func (sd *dispatcher) ConfigureFDAM(args *FDAMConfigArgs, result *FDAMConfigResu
 	return err
 }
 
+type AutoHandoffConfigArgs struct {
+	ControllerToken string
+	Op              sim.AutoHandoffOp
+	Enable          bool
+}
+
+type AutoHandoffConfigResult struct {
+	SimStateUpdate
+	Output string
+}
+
+const ConfigureAutoHandoffRPC = "Sim.ConfigureAutoHandoff"
+
+func (sd *dispatcher) ConfigureAutoHandoff(args *AutoHandoffConfigArgs, result *AutoHandoffConfigResult) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+
+	var err error
+	result.Output, err = c.sim.ConfigureAutoHandoff(c.tcw, args.Op, args.Enable)
+	if err == nil {
+		result.SimStateUpdate = c.GetStateUpdate()
+	}
+	return err
+}
+
 type RequestContactArgs struct {
 	ControllerToken string
 }

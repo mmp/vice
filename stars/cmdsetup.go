@@ -97,25 +97,23 @@ func registerSetupCommands() {
 	})
 
 	// 4.3 Enable / inhibit automatic handoff processing for entering TCP (p. 4-30)
-	registerCommand(CommandModeHandOff, "CE", func(ps *Preferences) {
-		ps.AutomaticHandoffs.Intrafacility = true
-		ps.AutomaticHandoffs.Interfacility = true
+	registerCommand(CommandModeHandOff, "CE", func(sp *STARSPane, ctx *panes.Context) error {
+		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPBoth, true)
 	})
-	registerCommand(CommandModeHandOff, "CI", func(ps *Preferences) {
-		ps.AutomaticHandoffs.Intrafacility = false
-		ps.AutomaticHandoffs.Interfacility = false
+	registerCommand(CommandModeHandOff, "CI", func(sp *STARSPane, ctx *panes.Context) error {
+		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPBoth, false)
 	})
-	registerCommand(CommandModeHandOff, "CTE", func(ps *Preferences) {
-		ps.AutomaticHandoffs.Intrafacility = true
+	registerCommand(CommandModeHandOff, "CTE", func(sp *STARSPane, ctx *panes.Context) error {
+		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPIntrafacility, true)
 	})
-	registerCommand(CommandModeHandOff, "CTI", func(ps *Preferences) {
-		ps.AutomaticHandoffs.Intrafacility = false
+	registerCommand(CommandModeHandOff, "CTI", func(sp *STARSPane, ctx *panes.Context) error {
+		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPIntrafacility, false)
 	})
-	registerCommand(CommandModeHandOff, "CXE", func(ps *Preferences) {
-		ps.AutomaticHandoffs.Interfacility = true
+	registerCommand(CommandModeHandOff, "CXE", func(sp *STARSPane, ctx *panes.Context) error {
+		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPInterfacility, true)
 	})
-	registerCommand(CommandModeHandOff, "CXI", func(ps *Preferences) {
-		ps.AutomaticHandoffs.Interfacility = false
+	registerCommand(CommandModeHandOff, "CXI", func(sp *STARSPane, ctx *panes.Context) error {
+		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPInterfacility, false)
 	})
 
 	// 4.5.1 Display / remove maps
