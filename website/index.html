@@ -6880,8 +6880,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <br>
             <p>The buttons toggle display of the following elements:</p>
             <ul>
+              <li>ALL: displays every element below, regardless of the individual buttons</li>
               <li>TIME: current time in zulu</li>
               <li>STATUS: system status; always "OK/OK/NA"</li>
+              <li>PLAN: id of the currently-active configuration plan</li>
               <li>RADAR: radar mode: FUSED, MULTI, or SINGLE</li>
               <li>SPC: whether to show an alert for any special purpose codes currently being squawked by aircraft (e.g., "RF" for an aircraft squawking 7600 due to a radio failure.)</li>
               <li>RANGE: radar range</li>
@@ -6893,9 +6895,30 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>ALTSTG: show altimeter at primary airport</li>
               <li>CODES: show selected beacon codes</li>
               <li>PTL: length of predicted track lines</li>
+              <li>INTRAIL: ATPA in-trail status: "INTRAIL ON", or "INTRAIL OFF:" followed by
+                the ATPA volumes that are disabled. Only applies when the facility has ATPA
+                enabled.</li>
+              <li>2.5: "INTRAIL 2.5 ON:" followed by the ATPA volumes currently using 2.5nm
+                separation on final. Only applies when the facility has ATPA enabled.</li>
               <li>WX HIST: weather history snapshot currently being displayed</li>
               <li>TW OFF: disabled system features (e.g., CA, MSAW)</li>
+              <li>SYS OFF: features that have been disabled for the entire facility, one
+                indicator each &mdash; <code>CA</code>, <code>MCI</code>, <code>MSAW</code>,
+                <code>CRDA</code>, <code>INTRAIL</code>, and <code>HOP</code> when
+                <a href="#automatic-handoffs">automatic handoffs</a> are inhibited facility-wide.
+                The line is only shown when something is disabled.</li>
+              <li>CON/CPL: your workstation's consolidation status, shown as
+                <code><i>workstation</i> CON:</code> followed by the position you are working and
+                any positions consolidated into it. A position is prefixed with <code>*</code> if
+                it has moved to another workstation but you still own tracks for it.</li>
+              <li>OFF IND: processing that has been disabled for your position, shown as
+                <code><i>position</i> OFF:</code> followed by one indicator per disabled capability
+                &mdash; currently <code>HOPT</code> and/or <code>HOPX</code> when
+                <a href="#automatic-handoffs">automatic handoffs</a> are inhibited for it. The line
+                is only shown when your position has something disabled.</li>
             </ul>
+            <p>The remaining buttons in the menu&mdash;NAS I/F, OP MODE, TT, FLOW, AMZ, and
+              TBFM&mdash;are not supported.</p>
 
             <h4>Flight Plan List</h4>
 
