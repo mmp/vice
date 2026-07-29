@@ -164,6 +164,8 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	nasFp.Scratchpad = arr.Scratchpad
 	nasFp.SecondaryScratchpad = arr.SecondaryScratchpad
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && arr.IsRNAV
+	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
+
 	// For ERAM, set AssignedAltitude and derive PerceivedAssigned from waypoint restrictions.
 	if _, isERAM := av.DB.ARTCCs[s.State.Facility]; isERAM {
 		spawnAlt := ac.Nav.FlightState.Altitude
@@ -491,6 +493,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		return nil, err
 	}
 
+	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 	// Create a flight strip at the inbound handoff controller if it's a human position
 	if shouldCreateFlightStrip(&nasFp) && !s.isVirtualController(nasFp.InboundHandoffController) {
 		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
