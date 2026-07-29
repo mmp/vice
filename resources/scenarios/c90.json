@@ -9477,7 +9477,7 @@
         }
       },
       "configuration": "13L",
-      "default_maps": ["C90 SSAT MDW 31C"],
+      "default_maps": ["C90 SSAT MDW 31R"],
       "departure_runways": [
         {
           "airport": "KMDW",
@@ -9545,7 +9545,7 @@
         }
       },
       "configuration": "13L",
-      "default_maps": ["C90 SSAT MDW 13C"],
+      "default_maps": ["C90 SSAT MDW 13L"],
       "departure_runways": [
         {
           "airport": "KMDW",

@@ -1,5 +1,5 @@
 - New scenario: ZJX Central-Geneva (manaphy)
-- Scenario updates: ZNY (manaphy), T75 (Ryan H), M98 (Shane, Logan S), ZLA (Ketan K)
+- Scenario updates: ZNY, ZAU, C90 (manaphy), T75 (Ryan H), M98 (Shane, Logan S), ZLA (Ketan K)
 - Improve logic for launching aircraft with intersection departures: ignore CWT if not aloft at the intersection
 - Fixed bug where departures would climb to cruise altitude even if they had /cALT in their upcoming route
 - Fixed bug where virtual controllers wouldn't accept redirected handoffs
