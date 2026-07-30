@@ -958,8 +958,8 @@ type HandoffFilterRegion struct {
 	// flag and the current consolidation, so it is made in the Sim rather than
 	// by FilterQualifiers.Match.
 	OwnerTCPs []ControlPosition `json:"-"`
-	// ACTypeClass (A/C Type Class): the AHO aircraft type class
-	// (JET/PROP/TURBO) or an exact aircraft type; blank means any.
+	// ACTypeClass (A/C Type Class): an adapted class from
+	// "automatic_handoff_classes"; blank means any.
 	ACTypeClass string `json:"actype_class"`
 	// HandoffAction (Handoff Action): "I" initiate, "T" transfer, or "D"
 	// disable auto-handoff for the track. Mandatory in the real system; we
@@ -1040,23 +1040,6 @@ func (r *HandoffFilterRegion) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 	r.AirspaceVolume.PostDeserialize(loc, e)
 }
 
-// matchACTypeClass matches an AHO aircraft type class (Table 4-30 "A/C Type
-// Class"): the JET/PROP/TURBO classes, or an exact aircraft type.
-func matchACTypeClass(field, engineClass, acType string) bool {
-	switch strings.ToUpper(strings.TrimSpace(field)) {
-	case "", "*":
-		return true
-	case "JET":
-		return engineClass == "jet"
-	case "PROP":
-		return engineClass == "prop"
-	case "TURBO", "TURBOPROP":
-		return engineClass == "turboprop"
-	default:
-		return strings.EqualFold(field, acType)
-	}
-}
-
 // engineClass returns the adaptation engine vocabulary for an aircraft type.
 func engineClass(acType string) string {
 	switch av.DB.AircraftPerformance[acType].Engine.AircraftType {
@@ -1071,17 +1054,19 @@ func engineClass(acType string) string {
 
 // qualifies reports whether a track at the given position and altitude
 // satisfies this row's owner-independent conditions (volume, config plan, A/C
-// type class, and the shared FilterQualifiers). Owner and slave matching is
-// handled separately in the Sim since it needs the current consolidation.
+// type class, and the shared FilterQualifiers). acTypeClasses is the adapted
+// "automatic_handoff_classes" map. Owner and slave matching is handled
+// separately in the Sim since it needs the current consolidation.
 func (r *HandoffFilterRegion) qualifies(p math.Point2LL, alt int, fp *NASFlightPlan,
-	acType, engine, activeConfigPlan string, significantPoints map[string]SignificantPoint) bool {
+	acType, activeConfigPlan string, acTypeClasses map[string][]string,
+	significantPoints map[string]SignificantPoint) bool {
 	if !r.AirspaceVolume.Inside(p, alt) {
 		return false
 	}
 	if r.ConfigPlan != "" && !strings.EqualFold(r.ConfigPlan, activeConfigPlan) {
 		return false
 	}
-	if r.ACTypeClass != "" && !matchACTypeClass(r.ACTypeClass, engine, acType) {
+	if !matchACTypeClass(acTypeClasses, r.ACTypeClass, acType) {
 		return false
 	}
 	// FilterQualifiers covers flight type, entry/exit fix, scratchpads,

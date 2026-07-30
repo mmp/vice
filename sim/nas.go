@@ -258,8 +258,8 @@ func (s *Sim) processHandoffFilterRegions(ac *Aircraft) {
 	}
 
 	acType := fp.AircraftType
-	engine := engineClass(acType)
 	activePlan := s.State.ConfigurationId
+	acClasses := s.State.FacilityAdaptation.AutomaticHandoffClasses
 	sigPts := s.State.FacilityAdaptation.SignificantPoints
 	pos := ac.Position()
 	alt := int(ac.Altitude())
@@ -277,7 +277,7 @@ func (s *Sim) processHandoffFilterRegions(ac *Aircraft) {
 		if wasInside {
 			nowInside = region.AirspaceVolume.Inside(pos, alt)
 		} else {
-			nowInside = region.qualifies(pos, alt, fp, acType, engine, activePlan, sigPts) &&
+			nowInside = region.qualifies(pos, alt, fp, acType, activePlan, acClasses, sigPts) &&
 				s.handoffFilterOwnerMatch(region, fp)
 		}
 		fp.HandoffFilterState[region.Id] = nowInside

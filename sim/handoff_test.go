@@ -108,25 +108,26 @@ func TestHandoffFilterQualifies(t *testing.T) {
 	ac := MakeTestAircraft("TST100", "22L")
 	fp := &NASFlightPlan{ACID: "TST100", TypeOfFlight: av.FlightTypeArrival}
 	// Matches when config plan matches and flight type matches.
-	if !r.qualifies(ac.Position(), int(ac.Altitude()), fp, "B738", "jet", "CP2", nil) {
+	if !r.qualifies(ac.Position(), int(ac.Altitude()), fp, "B738", "CP2", nil, nil) {
 		t.Error("should qualify: config plan + flight type match")
 	}
 	// Wrong active config plan -> no match.
-	if r.qualifies(ac.Position(), int(ac.Altitude()), fp, "B738", "jet", "CP1", nil) {
+	if r.qualifies(ac.Position(), int(ac.Altitude()), fp, "B738", "CP1", nil, nil) {
 		t.Error("should not qualify: wrong active config plan")
 	}
 	// Wrong flight type -> no match.
 	dep := &NASFlightPlan{ACID: "TST100", TypeOfFlight: av.FlightTypeDeparture}
-	if r.qualifies(ac.Position(), int(ac.Altitude()), dep, "B738", "jet", "CP2", nil) {
+	if r.qualifies(ac.Position(), int(ac.Altitude()), dep, "B738", "CP2", nil, nil) {
 		t.Error("should not qualify: departure vs arrival filter")
 	}
-	// A/C type class gate.
-	r2 := HandoffFilterRegion{AirspaceVolume: bigCircle(), ACTypeClass: "PROP"}
-	if r2.qualifies(ac.Position(), int(ac.Altitude()), fp, "B738", "jet", "", nil) {
-		t.Error("jet should not qualify a PROP-class row")
+	// A/C type class gate: membership in the adapted "automatic_handoff" class.
+	classes := map[string][]string{"PISTON": {"C172", "PA28"}}
+	r2 := HandoffFilterRegion{AirspaceVolume: bigCircle(), ACTypeClass: "PISTON"}
+	if r2.qualifies(ac.Position(), int(ac.Altitude()), fp, "B738", "", classes, nil) {
+		t.Error("B738 should not qualify a PISTON-class row")
 	}
-	if !r2.qualifies(ac.Position(), int(ac.Altitude()), fp, "C172", "prop", "", nil) {
-		t.Error("prop should qualify a PROP-class row")
+	if !r2.qualifies(ac.Position(), int(ac.Altitude()), fp, "C172", "", classes, nil) {
+		t.Error("C172 should qualify a PISTON-class row")
 	}
 }
 func newHandoffTestSim() *Sim {

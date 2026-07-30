@@ -52,6 +52,14 @@ type FacilityAdaptation struct {
 	Scratchpads       map[string]string                    `json:"scratchpads"`
 	SignificantPoints map[string]SignificantPoint          `json:"significant_points"`
 
+	// TCPAssignmentClasses and AutomaticHandoffClasses name adapted aircraft
+	// classes (DMS Sec. 4.21.1), each mapping a class name (1-8 alphanumeric
+	// characters, at most 26 classes) to the aircraft types in the class.
+	// The former is referenced by fix-pair reassignment rules' "ac_type", the
+	// latter by handoff filters' "actype_class".
+	TCPAssignmentClasses    map[string][]string `json:"tcp_assignment_classes,omitempty"`
+	AutomaticHandoffClasses map[string][]string `json:"automatic_handoff_classes,omitempty"`
+
 	// Airpsace filters
 	Filters struct {
 		AutoAcquisition FilterRegions        `json:"auto_acquisition"`

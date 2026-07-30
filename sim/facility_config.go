@@ -306,6 +306,10 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
 
+	// Aircraft type classes.
+	validateAircraftClasses("tcp_assignment_classes", fa.TCPAssignmentClasses, e)
+	validateAircraftClasses("automatic_handoff_classes", fa.AutomaticHandoffClasses, e)
+
 	// Collect all video map names across all area configs.
 	var allAreaVideoMaps []string
 	for _, ac := range fa.Areas {
@@ -599,6 +603,11 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	for i, filt := range fa.Filters.Handoff {
 		e.Push(filt.Description)
 		fa.Filters.Handoff[i].ValidateTCPs(fc.ControlPositions, e)
+		if ac := fa.Filters.Handoff[i].ACTypeClass; ac != "" && ac != "*" {
+			if _, ok := fa.AutomaticHandoffClasses[ac]; !ok {
+				e.ErrorString(`"actype_class" %q is not a class in "automatic_handoff_classes"`, ac)
+			}
+		}
 		e.Pop()
 	}
 
