@@ -1749,6 +1749,16 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 	}
 }
 
+func attachBuiltInSchedules(catalogs map[string]map[string]*ScenarioCatalog, schedules sim.BuiltInScheduleCatalog) {
+	for _, facilityCatalogs := range catalogs {
+		for _, catalog := range facilityCatalogs {
+			for _, scenario := range catalog.Scenarios {
+				scenario.RealWorldSchedules = schedules.SummariesForAirport(scenario.PrimaryAirport)
+			}
+		}
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // LoadScenarioGroups
 
@@ -2475,6 +2485,13 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	lg.Infof("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
 	loadEmergencies(e)
+
+	scheduleCatalog, err := sim.LoadBuiltInScheduleCatalog(util.GetResourcesFS(), "schedules")
+	if err != nil {
+		e.Error(err)
+	} else {
+		attachBuiltInSchedules(catalogs, scheduleCatalog)
+	}
 
 	lg.Infof("LoadScenarioGroups total: %s", time.Since(start))
 	return scenarioGroups, catalogs, mapSpecs, briefs, extraScenarioErrors

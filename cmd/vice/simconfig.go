@@ -52,7 +52,8 @@ type NewSimConfiguration struct {
 	selectedTCPs        map[sim.TCP]bool
 
 	// New UI state for improved flow
-	filterText string // search/filter for scenario selection
+	filterText            string // search/filter for scenario selection
+	scheduleStartTimeText string
 
 	// Weather filter UI state
 	weatherFilter      wx.WeatherFilter
@@ -138,6 +139,8 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.GroupName = groupName
 	c.ScenarioSpec = spec
 	c.ScenarioName = scenarioName
+	normalizeScheduleLaunchConfig(c.ScenarioSpec)
+	c.scheduleStartTimeText = formatScheduleStartTime(spec.LaunchConfig.ScheduleStartMinute)
 	c.savedVFRDepartureRateScale = spec.LaunchConfig.VFRDepartureRateScale
 	c.initDefaultWindDirection()
 	c.fetchSeq++
@@ -148,6 +151,256 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.mu.Unlock(c.lg)
 
 	go c.fetchMETAR(seq, facility, airports, spec)
+}
+
+func normalizeScheduleLaunchConfig(spec *server.ScenarioSpec) {
+	lc := &spec.LaunchConfig
+	lc.ScheduleStartMinute = min(max(lc.ScheduleStartMinute, 0), 24*60-1)
+	lc.ScheduleArrivalPercentage = min(max(lc.ScheduleArrivalPercentage, 0), 100)
+	lc.ScheduleDeparturePercentage = min(max(lc.ScheduleDeparturePercentage, 0), 100)
+
+	if len(spec.RealWorldSchedules) == 0 {
+		lc.TrafficSource = sim.TrafficSourceRandom
+		lc.ScheduleID = ""
+		return
+	}
+
+	for _, schedule := range spec.RealWorldSchedules {
+		if schedule.ID == lc.ScheduleID {
+			return
+		}
+	}
+	lc.ScheduleID = spec.RealWorldSchedules[0].ID
+}
+
+func selectedScheduleSummary(spec *server.ScenarioSpec) (sim.BuiltInScheduleSummary, bool) {
+	for _, schedule := range spec.RealWorldSchedules {
+		if schedule.ID == spec.LaunchConfig.ScheduleID {
+			return schedule, true
+		}
+	}
+	return sim.BuiltInScheduleSummary{}, false
+}
+func formatScheduleStartTime(minutes int) string {
+	minutes = ((minutes % (24 * 60)) + (24 * 60)) % (24 * 60)
+	return fmt.Sprintf("%02d:%02d", minutes/60, minutes%60)
+}
+
+func parseScheduleStartTime(value string) (int, bool) {
+	value = strings.TrimSpace(value)
+	if value == "" {
+		return 0, false
+	}
+
+	var hour, minute int
+
+	if strings.Contains(value, ":") {
+		parts := strings.Split(value, ":")
+		if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+			return 0, false
+		}
+
+		var err error
+		hour, err = strconv.Atoi(parts[0])
+		if err != nil {
+			return 0, false
+		}
+
+		minute, err = strconv.Atoi(parts[1])
+		if err != nil {
+			return 0, false
+		}
+	} else {
+		if len(value) > 4 {
+			return 0, false
+		}
+
+		number, err := strconv.Atoi(value)
+		if err != nil {
+			return 0, false
+		}
+
+		switch len(value) {
+		case 1, 2:
+			hour = number
+		case 3:
+			hour = number / 100
+			minute = number % 100
+		case 4:
+			hour = number / 100
+			minute = number % 100
+		default:
+			return 0, false
+		}
+	}
+
+	if hour < 0 || hour > 23 || minute < 0 || minute > 59 {
+		return 0, false
+	}
+
+	return hour*60 + minute, true
+}
+
+func adjustScheduleStartTime(minutes, adjustment int) int {
+	const minutesPerDay = 24 * 60
+	return ((minutes+adjustment)%minutesPerDay + minutesPerDay) % minutesPerDay
+}
+
+func scheduleStartTimeUTC(base time.Time, startMinute int, timezone string) (time.Time, error) {
+	location, err := time.LoadLocation(timezone)
+	if err != nil {
+		return time.Time{}, fmt.Errorf("load schedule timezone %q: %w", timezone, err)
+	}
+
+	startMinute = ((startMinute % (24 * 60)) + (24 * 60)) % (24 * 60)
+
+	// Preserve the calendar date selected by Vice's UTC weather/time picker,
+	// but interpret the schedule's clock time in the airport timezone.
+	scenarioDate := base.UTC()
+	localStart := time.Date(
+		scenarioDate.Year(),
+		scenarioDate.Month(),
+		scenarioDate.Day(),
+		startMinute/60,
+		startMinute%60,
+		0,
+		0,
+		location,
+	)
+
+	return localStart.UTC(), nil
+}
+
+func (c *NewSimConfiguration) synchronizeScheduleStartTime(spec *server.ScenarioSpec) error {
+	if spec == nil || spec.LaunchConfig.TrafficSource != sim.TrafficSourceRealWorldSchedule {
+		return nil
+	}
+
+	schedule, ok := selectedScheduleSummary(spec)
+	if !ok {
+		return fmt.Errorf(
+			"selected real-world schedule %q was not found",
+			spec.LaunchConfig.ScheduleID,
+		)
+	}
+
+	startTime, err := scheduleStartTimeUTC(
+		c.NewSimRequest.StartTime,
+		spec.LaunchConfig.ScheduleStartMinute,
+		schedule.Timezone,
+	)
+	if err != nil {
+		return err
+	}
+
+	c.NewSimRequest.StartTime = startTime
+	return nil
+}
+
+func (c *NewSimConfiguration) drawTrafficSourceUI(spec *server.ScenarioSpec) {
+	lc := &spec.LaunchConfig
+
+	imgui.Text("IFR traffic source:")
+	imgui.SameLine()
+	imgui.RadioButtonIntPtr("Random", (*int32)(&lc.TrafficSource), int32(sim.TrafficSourceRandom))
+
+	imgui.SameLine()
+	if len(spec.RealWorldSchedules) == 0 {
+		imgui.BeginDisabled()
+	}
+	imgui.RadioButtonIntPtr("Real World Schedule", (*int32)(&lc.TrafficSource), int32(sim.TrafficSourceRealWorldSchedule))
+	if len(spec.RealWorldSchedules) == 0 {
+		imgui.EndDisabled()
+		imgui.TextDisabled("No built-in schedules are available for " + spec.PrimaryAirport + ".")
+		return
+	}
+
+	if lc.TrafficSource != sim.TrafficSourceRealWorldSchedule {
+		return
+	}
+
+	normalizeScheduleLaunchConfig(spec)
+	selected, _ := selectedScheduleSummary(spec)
+
+	imgui.Text("Schedule:")
+	imgui.SameLine()
+	imgui.SetNextItemWidth(260)
+	if imgui.BeginCombo("##realWorldSchedule", selected.Name) {
+		for _, schedule := range spec.RealWorldSchedules {
+			isSelected := schedule.ID == lc.ScheduleID
+			if imgui.SelectableBoolV(schedule.Name, isSelected, 0, imgui.Vec2{}) {
+				lc.ScheduleID = schedule.ID
+				selected = schedule
+			}
+			if isSelected {
+				imgui.SetItemDefaultFocus()
+			}
+		}
+		imgui.EndCombo()
+	}
+
+	if selected.Description != "" {
+		imgui.TextWrapped(selected.Description)
+	}
+
+	imgui.Text("Start Time (Airport Local Time):")
+	imgui.SameLine()
+	imgui.SetNextItemWidth(100)
+
+	if c.scheduleStartTimeText == "" {
+		c.scheduleStartTimeText = formatScheduleStartTime(lc.ScheduleStartMinute)
+	}
+
+	if imgui.InputTextWithHint(
+		"##scheduleStartTime",
+		"14:00",
+		&c.scheduleStartTimeText,
+		0,
+		nil,
+	) {
+		if minutes, ok := parseScheduleStartTime(c.scheduleStartTimeText); ok {
+			lc.ScheduleStartMinute = minutes
+
+			if err := c.synchronizeScheduleStartTime(spec); err != nil {
+				c.displayError = err
+			} else {
+				c.displayError = nil
+			}
+		}
+	}
+
+	if _, ok := parseScheduleStartTime(c.scheduleStartTimeText); !ok {
+		imgui.SameLine()
+		imgui.TextDisabled("Enter HH:MM or HHMM")
+	} else {
+		imgui.SameLine()
+		imgui.TextDisabled("UTC: " + c.NewSimRequest.StartTime.UTC().Format("1504Z"))
+	}
+	arrivalPercentage := int32(lc.ScheduleArrivalPercentage)
+	imgui.SetNextItemWidth(260)
+	if imgui.SliderInt(
+		"Scheduled IFR arrival percentage",
+		&arrivalPercentage,
+		0,
+		100,
+	) {
+		lc.ScheduleArrivalPercentage = int(arrivalPercentage)
+	}
+
+	departurePercentage := int32(lc.ScheduleDeparturePercentage)
+	imgui.SetNextItemWidth(260)
+	if imgui.SliderInt(
+		"Scheduled IFR departure percentage",
+		&departurePercentage,
+		0,
+		100,
+	) {
+		lc.ScheduleDeparturePercentage = int(departurePercentage)
+	}
+
+	imgui.TextDisabled("Times use the selected airport's local time.")
+	imgui.TextDisabled("Departure times represent runway departures; pushback and taxi are not simulated.")
+	imgui.TextDisabled("IFR arrivals and departures are generated from the selected schedule.")
 }
 
 // initDefaultWindDirection computes the default wind direction range from the scenario's runways.
@@ -1281,6 +1534,11 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	}
 	imgui.Spacing()
 
+	// TRAFFIC SOURCE section
+	drawSectionHeader("Traffic Source")
+	c.drawTrafficSourceUI(c.ScenarioSpec)
+	imgui.Spacing()
+
 	// TRAFFIC RATES section
 	drawSectionHeader("Traffic Rates")
 
@@ -1293,18 +1551,46 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 		imgui.PopStyleColor()
 	}
 
-	// Departures (collapsible)
+	// Scheduled IFR traffic or random IFR controls.
 	lc := &c.ScenarioSpec.LaunchConfig
-	if lc.HaveDepartures() {
-		depRate := lc.TotalDepartureRate()
-		headerText := fmt.Sprintf("Departures (Total: %d/hr)###departures", int(depRate+0.5))
-		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
-			drawDepartureUI(lc, p)
-			imgui.Spacing()
+	if lc.TrafficSource == sim.TrafficSourceRealWorldSchedule {
+		imgui.Text("IFR arrivals and departures are controlled by the selected schedule.")
+		imgui.TextDisabled(fmt.Sprintf(
+			"Scheduled IFR arrivals: %d%%",
+			lc.ScheduleArrivalPercentage,
+		))
+		imgui.TextDisabled(fmt.Sprintf(
+			"Scheduled IFR departures: %d%%",
+			lc.ScheduleDeparturePercentage,
+		))
+		imgui.Spacing()
+	} else {
+		if lc.HaveDepartures() {
+			depRate := lc.TotalDepartureRate()
+			headerText := fmt.Sprintf(
+				"Departures (Total: %d/hr)###departures",
+				int(depRate+0.5),
+			)
+			if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
+				drawDepartureUI(lc, p)
+				imgui.Spacing()
+			}
+		}
+
+		if lc.HaveArrivals() {
+			arrRate := lc.TotalArrivalRate()
+			headerText := fmt.Sprintf(
+				"Arrivals (Total: %d/hr)###arrivals",
+				int(arrRate+0.5),
+			)
+			if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
+				drawArrivalUI(lc, p)
+				imgui.Spacing()
+			}
 		}
 	}
 
-	// VFR Departures (collapsible)
+	// VFR Departures remain independent of the IFR traffic source.
 	if len(lc.VFRAirportRates) > 0 {
 		var vfrRate float32
 		for _, rate := range lc.VFRAirportRates {
@@ -1313,23 +1599,26 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 				vfrRate += r
 			}
 		}
-		headerText := fmt.Sprintf("VFR Departures (%d/hr)###vfrdepartures", int(vfrRate+0.5))
+		headerText := fmt.Sprintf(
+			"VFR Departures (%d/hr)###vfrdepartures",
+			int(vfrRate+0.5),
+		)
 		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
 			drawVFRDepartureUI(lc, p)
 			imgui.Spacing()
 		}
 	}
 
-	// Arrivals (collapsible)
-	if lc.HaveArrivals() {
-		arrRate := lc.TotalArrivalRate()
-		headerText := fmt.Sprintf("Arrivals (Total: %d/hr)###arrivals", int(arrRate+0.5))
-		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
-			drawArrivalUI(lc, p)
-			imgui.Spacing()
-		}
-	}
-
+	// Go-around probability still applies to scheduled arrivals.
+	imgui.SetNextItemWidth(220)
+	imgui.SliderFloatV(
+		"Go around probability",
+		&lc.GoAroundRate,
+		0,
+		1,
+		"%.02f",
+		0,
+	)
 	// Overflights (collapsible)
 	if lc.HaveOverflights() {
 		ofRate := lc.TotalOverflightRate()
@@ -1377,6 +1666,18 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 
 func (c *NewSimConfiguration) Start(config *Config) error {
 	c.ScenarioSpec.LaunchConfig.EnableTowerGoArounds = config.EnableTowerGoArounds
+
+	if c.ScenarioSpec.LaunchConfig.TrafficSource == sim.TrafficSourceRealWorldSchedule {
+		minutes, ok := parseScheduleStartTime(c.scheduleStartTimeText)
+		if !ok {
+			return fmt.Errorf("invalid schedule start time %q", c.scheduleStartTimeText)
+		}
+
+		c.ScenarioSpec.LaunchConfig.ScheduleStartMinute = minutes
+		if err := c.synchronizeScheduleStartTime(c.ScenarioSpec); err != nil {
+			return err
+		}
+	}
 
 	if c.newSimType == NewSimJoinRemote {
 		// Set the privileged flag from the main config

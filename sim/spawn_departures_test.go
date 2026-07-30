@@ -240,3 +240,4 @@ func TestSamePavementRunways(t *testing.T) {
 		t.Errorf("samePavementRunways = %v, shouldn't include intersecting runway 36", got)
 	}
 }
+
