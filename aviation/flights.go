@@ -145,16 +145,6 @@ const (
 	secondsPerDay = 24 * 60 * 60
 )
 
-// splitCallsign divides a callsign into its leading letters and whatever
-// follows: "DAL1062" into "DAL" and "1062", "N484EM" into "N" and "484EM".
-func splitCallsign(callsign string) (base, number string) {
-	i := 0
-	for i < len(callsign) && callsign[i] >= 'A' && callsign[i] <= 'Z' {
-		i++
-	}
-	return callsign[:i], callsign[i:]
-}
-
 // dictionary collects the distinct values of a field in the order they first
 // appear and gives the index of each one.
 type dictionary struct {
@@ -316,7 +306,7 @@ func EncodeFlights(flights []Flight) ([]byte, error) {
 	}
 
 	for i, f := range flights {
-		base, number := splitCallsign(f.Callsign)
+		base, number := SplitCallsign(f.Callsign)
 		baseIndices[i] = bases.index(base)
 		// Only store the flight number as a number when that reproduces it
 		// exactly; "0123" would otherwise come back as "123".
@@ -613,9 +603,11 @@ func FacilityFlightInterval(resources fs.FS, facility string) (util.TimeInterval
 
 // FlightsInWindow returns the flights at the given airports that take off or
 // touch down between start and end, in time order. This is what a sim is handed
-// when it launches: the flights it needs and nothing else.
+// when it launches: the flights it needs and nothing else. Flights whose
+// callsign prefix isn't in airlines (pass DB.Airlines) are left out; the sim
+// can't voice a callsign it has no telephony for.
 func FlightsInWindow(data []byte, departureAirports, arrivalAirports map[string]bool,
-	start, end time.Time) ([]Flight, error) {
+	airlines map[string]Airline, start, end time.Time) ([]Flight, error) {
 	flights, err := DecodeFlights(data)
 	if err != nil {
 		return nil, err
@@ -634,6 +626,10 @@ func FlightsInWindow(data []byte, departureAirports, arrivalAirports map[string]
 				continue
 			}
 		} else if !arrivalAirports[f.Airport] {
+			continue
+		}
+		base, _ := SplitCallsign(f.Callsign)
+		if _, ok := airlines[base]; !ok {
 			continue
 		}
 		if f.Day < firstDay || f.Day > lastDay {

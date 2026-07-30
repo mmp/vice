@@ -22,9 +22,9 @@ func TestSplitCallsign(t *testing.T) {
 		{"ABC", "ABC", ""},
 		{"", "", ""},
 	} {
-		base, number := splitCallsign(tc.callsign)
+		base, number := SplitCallsign(tc.callsign)
 		if base != tc.base || number != tc.number {
-			t.Errorf("splitCallsign(%q) = %q, %q; expected %q, %q",
+			t.Errorf("SplitCallsign(%q) = %q, %q; expected %q, %q",
 				tc.callsign, base, number, tc.base, tc.number)
 		}
 	}
@@ -213,6 +213,8 @@ func TestFlightsInWindow(t *testing.T) {
 			Day: day, Minute: 20 * 60, Departure: true},
 		{Airport: "KSTP", Callsign: "DAL4", Other: "KATL", AircraftType: "B738",
 			Day: day, Minute: 9 * 60, Departure: true},
+		{Airport: "KMSP", Callsign: "XXX5", Other: "KATL", AircraftType: "B738",
+			Day: day, Minute: 8*60 + 30, Departure: true},
 	}
 	SortFlights(flights)
 	encoded, err := EncodeFlights(flights)
@@ -222,7 +224,8 @@ func TestFlightsInWindow(t *testing.T) {
 
 	start := FlightDataDate(day).Add(8 * time.Hour)
 	msp := map[string]bool{"KMSP": true}
-	window, err := FlightsInWindow(encoded, msp, msp, start, start.Add(2*time.Hour))
+	airlines := map[string]Airline{"DAL": {}}
+	window, err := FlightsInWindow(encoded, msp, msp, airlines, start, start.Add(2*time.Hour))
 	if err != nil {
 		t.Fatalf("FlightsInWindow: %v", err)
 	}
@@ -231,14 +234,14 @@ func TestFlightsInWindow(t *testing.T) {
 	for _, f := range window {
 		callsigns = append(callsigns, f.Callsign)
 	}
-	// KSTP isn't wanted, DAL3 is outside the window, and the rest come back in
-	// time order.
+	// KSTP isn't wanted, DAL3 is outside the window, XXX5 isn't an airline, and
+	// the rest come back in time order.
 	if !slices.Equal(callsigns, []string{"DAL1", "DAL2"}) {
 		t.Errorf("got %v, expected [DAL1 DAL2]", callsigns)
 	}
 
 	// An airport a scenario only departs contributes no arrivals.
-	window, err = FlightsInWindow(encoded, msp, nil, start, start.Add(2*time.Hour))
+	window, err = FlightsInWindow(encoded, msp, nil, airlines, start, start.Add(2*time.Hour))
 	if err != nil {
 		t.Fatalf("FlightsInWindow: %v", err)
 	}
