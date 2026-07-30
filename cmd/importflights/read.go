@@ -153,6 +153,7 @@ type importer struct {
 	departureAirports map[string]bool
 	arrivalAirports   map[string]bool
 	performance       map[string]av.AircraftPerformance
+	airlines          map[string]av.Airline
 
 	symbols *symbols
 	buckets map[bucket][]record
@@ -174,18 +175,25 @@ type importer struct {
 	// unknownTypes counts the flights dropped for each unusable aircraft type,
 	// which is what tells us what to add to aircraftTypeRewrites.
 	unknownTypes map[string]int64
+
+	// unknownAirlines counts the flights seen for each callsign prefix that
+	// isn't in the airline database. Those flights are still imported, but a
+	// sim skips them until the airline is added to openscope-airlines.json.
+	unknownAirlines map[string]int64
 }
 
 func makeImporter(departureAirports, arrivalAirports map[string]bool,
-	performance map[string]av.AircraftPerformance) *importer {
+	performance map[string]av.AircraftPerformance, airlines map[string]av.Airline) *importer {
 	return &importer{
 		departureAirports: departureAirports,
 		arrivalAirports:   arrivalAirports,
 		performance:       performance,
+		airlines:          airlines,
 		symbols:           makeSymbols(),
 		buckets:           make(map[bucket][]record),
 		daysPresent:       make(map[string]map[string]bool),
 		unknownTypes:      make(map[string]int64),
+		unknownAirlines:   make(map[string]int64),
 	}
 }
 
@@ -221,6 +229,11 @@ func (imp *importer) processRow(row *flightRow) {
 		callsign[0] < 'A' || callsign[0] > 'Z' {
 		imp.badCallsign++
 		return
+	}
+
+	base, _ := av.SplitCallsign(callsign)
+	if _, ok := imp.airlines[base]; !ok {
+		imp.unknownAirlines[base]++
 	}
 
 	aircraftType, ok := normalizeAircraftType(row.AircraftType, imp.performance)
@@ -304,32 +317,45 @@ func (imp *importer) report() {
 	}
 
 	if len(imp.unknownTypes) > 0 {
-		types := make([]string, 0, len(imp.unknownTypes))
-		for t := range imp.unknownTypes {
-			types = append(types, t)
-		}
-		sort.Slice(types, func(i, j int) bool {
-			if imp.unknownTypes[types[i]] != imp.unknownTypes[types[j]] {
-				return imp.unknownTypes[types[i]] > imp.unknownTypes[types[j]]
-			}
-			return types[i] < types[j]
-		})
+		fmt.Printf("\n%d unknown aircraft types (add to aircraftTypeRewrites as needed):\n",
+			len(imp.unknownTypes))
+		printCounts(imp.unknownTypes)
+	}
 
-		fmt.Printf("\n%d unknown aircraft types (add to aircraftTypeRewrites as needed):\n", len(types))
-		const show = 30
-		for _, t := range types[:min(show, len(types))] {
-			fmt.Printf("  %-8s %s\n", t, commas(imp.unknownTypes[t]))
-		}
-		if len(types) > show {
-			var rest int64
-			for _, t := range types[show:] {
-				rest += imp.unknownTypes[t]
-			}
-			fmt.Printf("  and %d more accounting for %s flights\n", len(types)-show, commas(rest))
-		}
+	if len(imp.unknownAirlines) > 0 {
+		fmt.Printf("\n%d callsign prefixes not in openscope-airlines.json "+
+			"(their flights are imported but sims skip them):\n", len(imp.unknownAirlines))
+		printCounts(imp.unknownAirlines)
 	}
 
 	fmt.Printf("\n")
+}
+
+// printCounts lists the keys of counts from most to least common, showing the
+// most common few and summarizing the rest.
+func printCounts(counts map[string]int64) {
+	keys := make([]string, 0, len(counts))
+	for k := range counts {
+		keys = append(keys, k)
+	}
+	sort.Slice(keys, func(i, j int) bool {
+		if counts[keys[i]] != counts[keys[j]] {
+			return counts[keys[i]] > counts[keys[j]]
+		}
+		return keys[i] < keys[j]
+	})
+
+	const show = 100
+	for _, k := range keys[:min(show, len(keys))] {
+		fmt.Printf("  %-8s %s\n", k, commas(counts[k]))
+	}
+	if len(keys) > show {
+		var rest int64
+		for _, k := range keys[show:] {
+			rest += counts[k]
+		}
+		fmt.Printf("  and %d more accounting for %s flights\n", len(keys)-show, commas(rest))
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

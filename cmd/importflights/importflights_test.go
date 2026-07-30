@@ -152,7 +152,34 @@ func TestParseTime(t *testing.T) {
 // database lookups involved.
 func makeTestImporter(airport string) *importer {
 	return makeImporter(map[string]bool{airport: true}, map[string]bool{airport: true},
-		map[string]av.AircraftPerformance{"B738": {}})
+		map[string]av.AircraftPerformance{"B738": {}}, map[string]av.Airline{"DAL": {}})
+}
+
+// A callsign whose prefix isn't in the airline database is counted so that the
+// report can list what's missing from openscope-airlines.json.
+func TestUnknownAirlineCallsigns(t *testing.T) {
+	imp := makeTestImporter("KMSP")
+	// The aircraft type is left unknown so that processRow returns before it
+	// consults av.DB, which isn't loaded in tests.
+	row := flightRow{
+		Callsign:            "ZZZ123",
+		AircraftType:        "ZZZZ",
+		OriginTime:          "2026-03-30 14:04:59",
+		OriginAirports:      "['KMSP']",
+		DestinationTime:     "2026-03-30 16:00:00",
+		DestinationAirports: "['KORD']",
+		Route:               "-",
+	}
+	imp.processRow(&row)
+	row.Callsign = "DAL88"
+	imp.processRow(&row)
+
+	if got := imp.unknownAirlines["ZZZ"]; got != 1 {
+		t.Errorf("ZZZ counted %d times, expected 1", got)
+	}
+	if _, ok := imp.unknownAirlines["DAL"]; ok {
+		t.Errorf("DAL is in the airline database but was counted as unknown")
+	}
 }
 
 // The times in the source data are UTC and that is how they are recorded, so a
