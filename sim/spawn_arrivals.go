@@ -185,6 +185,11 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 		}
 	}
 
+	// The STARS fix-pair pipeline assigns the owning position, overriding the
+	// inbound-flow default above when adapted.
+	s.applyFixPairAssignment(&nasFp)
+	s.applyAutoScratchpadAssignment(&nasFp)
+
 	s.maybeSetGoAround(ac, s.State.LaunchConfig.GoAroundRate)
 
 	// Decide at creation whether this pilot will spontaneously report field in sight and, among
@@ -486,14 +491,19 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	nasFp.Scratchpad = of.Scratchpad
 	nasFp.SecondaryScratchpad = of.SecondaryScratchpad
 	nasFp.AssignedAltitude = util.Select(!isTRACON, int(of.AssignedAltitude), 0)
+	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && of.IsRNAV
 	nasFp.TypeOfFlight = of.TypeOfFlight
+
+	// The STARS fix-pair pipeline; overrides the inbound-flow default above
+	// when adapted.
+	s.applyFixPairAssignment(&nasFp)
+	s.applyAutoScratchpadAssignment(&nasFp)
 
 	if err := s.assignSquawk(ac, &nasFp); err != nil {
 		return nil, err
 	}
 
-	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 	// Create a flight strip at the inbound handoff controller if it's a human position
 	if shouldCreateFlightStrip(&nasFp) && !s.isVirtualController(nasFp.InboundHandoffController) {
 		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)

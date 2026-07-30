@@ -882,6 +882,11 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR  // VFRs aren't held
 	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, string(runway))
 
+	// The STARS fix-pair pipeline; overrides the departure assignment above
+	// when adapted.
+	s.applyFixPairAssignment(&nasFp)
+	s.applyAutoScratchpadAssignment(&nasFp)
+
 	if err := s.assignSquawk(ac, &nasFp); err != nil {
 		return nil, err
 	}

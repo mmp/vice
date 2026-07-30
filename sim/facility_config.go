@@ -306,9 +306,13 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
 
-	// Aircraft type classes.
+	// Aircraft type classes, then the fix-pair configuration that references
+	// them.
 	validateAircraftClasses("tcp_assignment_classes", fa.TCPAssignmentClasses, e)
 	validateAircraftClasses("automatic_handoff_classes", fa.AutomaticHandoffClasses, e)
+	fa.FixPairConfiguration.validate(fa, fc.ControlPositions, e)
+	// Automatic scratchpad assignment: validate + sort.
+	validateAutoScratchpad(fa.AutoScratchpadAssignment, e)
 
 	// Collect all video map names across all area configs.
 	var allAreaVideoMaps []string

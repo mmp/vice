@@ -615,6 +615,15 @@ func (sp *STARSPane) resolveScratchpad1(ctx *panes.Context, trk sim.Track,
 		return ""
 	}
 	abbrevExit := func() string {
+		// When fix-pair reassignment substituted a derived exit fix, its
+		// abbreviation is displayed if it has one adapted; otherwise the
+		// actual exit fix's abbreviation remains.
+		if d := sfp.DerivedExitFix; d != "" {
+			d, _, _ = strings.Cut(d, ".")
+			if sigPt, ok := sp.significantPoints[d]; ok && sigPt.Abbreviation != "" {
+				return sigPt.Abbreviation
+			}
+		}
 		e := sfp.ExitFix
 		if e == "" {
 			return ""

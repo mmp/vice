@@ -52,6 +52,15 @@ type FacilityAdaptation struct {
 	Scratchpads       map[string]string                    `json:"scratchpads"`
 	SignificantPoints map[string]SignificantPoint          `json:"significant_points"`
 
+	// Airports are fix-pair endpoints that name an airport rather than a
+	// significant point.
+	Airports map[string]*FixPairAirport `json:"airports,omitempty"`
+	// FixPairConfiguration is the STARS-side fix-pair adaptation: reassignment
+	// rules and per-configuration-plan owner assignments.
+	FixPairConfiguration *FixPairConfiguration `json:"fix_pair_configuration,omitempty"`
+	// AutoScratchpadAssignment sets a flight's default scratchpad(s) at
+	// creation from adapted criteria (DMS Sec. 4.7.8, p. 4-189).
+	AutoScratchpadAssignment []AutoScratchpadRow `json:"automatic_scratchpad_assignment,omitempty"`
 	// TCPAssignmentClasses and AutomaticHandoffClasses name adapted aircraft
 	// classes (DMS Sec. 4.21.1), each mapping a class name (1-8 alphanumeric
 	// characters, at most 26 classes) to the aircraft types in the class.
@@ -425,6 +434,22 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogge
 		e.ErrorString(`unknown location %q specified for "center"`, ctr)
 	} else {
 		fa.Center = pos
+	}
+
+	// Resolve fix-pair airport locations and check their abbreviations
+	// (the same single-character rule as significant points).
+	for id, ap := range fa.Airports {
+		if abbrev := ap.Abbreviation; len(abbrev) > 1 {
+			e.ErrorString("airports[%s]: abbreviation %q must be a single character", id, abbrev)
+		}
+		if ap.LocationStr == "" {
+			continue
+		}
+		if pos, ok := loc.Locate(ap.LocationStr); ok {
+			ap.Location = pos
+		} else {
+			e.ErrorString("airports[%s]: unknown location %q", id, ap.LocationStr)
+		}
 	}
 
 	// Locator-dependent controller config validation.

@@ -208,10 +208,18 @@ func (r FilterQualifiers) Match(fp *NASFlightPlan, userPositions []ControlPositi
 		if len(r.OwningTCPs) > 0 && !slices.Contains(r.OwningTCPs, fp.TrackingController) {
 			return false
 		}
-		if len(r.EntryFixes) > 0 && fp.EntryFix != "" && !slices.Contains(r.EntryFixes, fp.EntryFix) {
+		// Fix criteria match the derived fix (when reassignment substituted
+		// one) as well as the actual one; a flight with neither set passes.
+		fixMatch := func(fixes []string, actual, derived string) bool {
+			if actual == "" && derived == "" {
+				return true
+			}
+			return slices.Contains(fixes, actual) || (derived != "" && slices.Contains(fixes, derived))
+		}
+		if len(r.EntryFixes) > 0 && !fixMatch(r.EntryFixes, fp.EntryFix, fp.DerivedEntryFix) {
 			return false
 		}
-		if len(r.ExitFixes) > 0 && fp.ExitFix != "" && !slices.Contains(r.ExitFixes, fp.ExitFix) {
+		if len(r.ExitFixes) > 0 && !fixMatch(r.ExitFixes, fp.ExitFix, fp.DerivedExitFix) {
 			return false
 		}
 		if r.FlightType != "" {

@@ -1851,6 +1851,23 @@ func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {
 		sp.significantPointsSlice = append(sp.significantPointsSlice, pt)
 	}
 
+	// Adapted fix-pair airports carry their own name, location, and
+	// abbreviation; add them ahead of the database airports below so the
+	// adaptation wins.
+	for id, ap := range ss.FacilityAdaptation.Airports {
+		if _, ok := sp.significantPoints[id]; ok {
+			continue
+		}
+		pt := sim.SignificantPoint{
+			Name:         id,
+			Abbreviation: ap.Abbreviation,
+			Description:  ap.Name,
+			Location:     ap.Location,
+		}
+		sp.significantPoints[id] = pt
+		sp.significantPointsSlice = append(sp.significantPointsSlice, pt)
+	}
+
 	// All airports within 250nm
 	center := ss.GetInitialCenter()
 	for name, ap := range av.DB.Airports {
@@ -1877,6 +1894,18 @@ func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {
 		if math.NMDistance2LL(fix.Location, center) < 250 {
 			// FIXME: should be INTERSECTION not WAYPOINT potentially
 			tryAdd(name, name+" WAYPOINT", fix.Location)
+		}
+	}
+
+	// Alias significant points by short name — in the lookup map only, so the
+	// display slice has no duplicates. Flight plans carry the 3-character
+	// short name for points with longer names, so lookups by flight-plan fix
+	// must resolve through it.
+	for _, pt := range sp.significantPointsSlice {
+		if pt.ShortName != "" {
+			if _, ok := sp.significantPoints[pt.ShortName]; !ok {
+				sp.significantPoints[pt.ShortName] = pt
+			}
 		}
 	}
 

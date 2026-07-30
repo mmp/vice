@@ -58,10 +58,18 @@ func ParseInterimAltType(ch byte) (t InterimAltType, ok bool) {
 // NASFlightPlan
 
 type NASFlightPlan struct {
-	ACID                  ACID
-	CID                   string
-	EntryFix              string
-	ExitFix               string
+	ACID     ACID
+	CID      string
+	EntryFix string
+	ExitFix  string
+	// DerivedEntryFix/DerivedExitFix are set when fix-pair reassignment
+	// substitutes a derived fix for that end of the pair; empty means no
+	// substitution. The flight plan keeps its actual fixes: the derived pair
+	// is used for owning-TCP assignment, automatic scratchpad assignment, and
+	// handoff-filter qualification, and the FDB prefers the derived fix's
+	// abbreviation, but the displayed entry/exit fixes remain the actual ones.
+	DerivedEntryFix       string
+	DerivedExitFix        string
 	ArrivalAirport        string // Technically not a string, but until the NAS system is fully integrated, we'll need this.
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
