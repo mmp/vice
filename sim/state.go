@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
@@ -93,6 +94,10 @@ type CommonState struct {
 	ScenarioDefaultVideoGroup string
 
 	FacilityAdaptation FacilityAdaptation
+	// ERAMCoordination is the pseudo-ERAM adaptation this sim uses to derive
+	// entry/exit fixes, resolved at load from the ERAM host (ARTCC) config for
+	// this facility's TRACON computer id. Nil if none is adapted.
+	ERAMCoordination *enroute.Coordination
 
 	Facility          string
 	MagneticVariation float32
@@ -292,6 +297,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		ScenarioDefaultVideoGroup: config.DefaultMapGroup,
 
 		FacilityAdaptation: deep.MustCopy(config.FacilityAdaptation),
+		ERAMCoordination:   config.ERAMCoordination,
 
 		Facility:          config.Facility,
 		MagneticVariation: config.MagneticVariation,

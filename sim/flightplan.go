@@ -136,6 +136,10 @@ type NASFlightPlan struct {
 	ContainedFacilities []string
 	RedirectedHandoff   RedirectedHandoff
 
+	// LocalArrival marks an internal ("fully-contained") flight whose exit fix
+	// is a local-arrival airport, i.e. its destination is within this facility.
+	LocalArrival bool `json:"-"`
+
 	// AutoHandoffInhibited marks the track ineligible for automatic handoff
 	// processing (AHOP); it drives the delta indicator in the data block.
 	AutoHandoffInhibited bool

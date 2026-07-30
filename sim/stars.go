@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
@@ -68,6 +69,11 @@ type FacilityAdaptation struct {
 	// latter by handoff filters' "actype_class".
 	TCPAssignmentClasses    map[string][]string `json:"tcp_assignment_classes,omitempty"`
 	AutomaticHandoffClasses map[string][]string `json:"automatic_handoff_classes,omitempty"`
+
+	// Pseudo-ERAM coordination adaptation; these live on the ARTCC (ERAM host)
+	// configuration rather than on a TRACON's.
+	ArtsCoordination map[string]*enroute.ArtsCoordEntry `json:"arts_coordination,omitempty"`
+	Restrictions     []enroute.Restriction              `json:"restrictions,omitempty"`
 
 	// Airpsace filters
 	Filters struct {

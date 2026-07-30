@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
@@ -679,6 +680,9 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 
 func (fc *FacilityConfig) validateERAMAdaptation(e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
+
+	// Pseudo-ERAM coordination adaptation.
+	enroute.Validate(fa.ArtsCoordination, fa.Restrictions, e)
 
 	// Validate area configs if present.
 	if len(fa.Areas) > 0 {

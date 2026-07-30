@@ -15,6 +15,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
@@ -200,6 +201,9 @@ type NewSimConfiguration struct {
 	Emergencies []Emergency
 
 	HandoffIDs []HandoffID
+	// ERAMCoordination is the resolved pseudo-ERAM adaptation for this
+	// facility's TRACON computer id, or nil if none is adapted.
+	ERAMCoordination *enroute.Coordination
 }
 
 func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {

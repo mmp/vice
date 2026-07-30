@@ -185,8 +185,10 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 		}
 	}
 
-	// The STARS fix-pair pipeline assigns the owning position, overriding the
-	// inbound-flow default above when adapted.
+	// Pseudo-ERAM coordination derives the entry fix; the STARS fix-pair
+	// pipeline then reassigns the pair and assigns the owning position,
+	// overriding the inbound-flow default above.
+	s.deriveERAMFixPair(&nasFp, ac)
 	s.applyFixPairAssignment(&nasFp)
 	s.applyAutoScratchpadAssignment(&nasFp)
 
@@ -495,8 +497,9 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && of.IsRNAV
 	nasFp.TypeOfFlight = of.TypeOfFlight
 
-	// The STARS fix-pair pipeline; overrides the inbound-flow default above
-	// when adapted.
+	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
+	// inbound-flow default above when adapted.
+	s.deriveERAMFixPair(&nasFp, ac)
 	s.applyFixPairAssignment(&nasFp)
 	s.applyAutoScratchpadAssignment(&nasFp)
 

@@ -882,9 +882,17 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR  // VFRs aren't held
 	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, string(runway))
 
-	// The STARS fix-pair pipeline; overrides the departure assignment above
-	// when adapted.
+	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
+	// departure assignment above when adapted.
+	s.deriveERAMFixPair(&nasFp, ac)
 	s.applyFixPairAssignment(&nasFp)
+	// A fully-contained (internal) flight whose exit fix is a local-arrival
+	// airport is reclassified as an arrival for display/processing. The initial
+	// owner stays the departure controller assigned above; ownership is
+	// deliberately not re-derived as an arrival.
+	if nasFp.LocalArrival {
+		nasFp.TypeOfFlight = av.FlightTypeArrival
+	}
 	s.applyAutoScratchpadAssignment(&nasFp)
 
 	if err := s.assignSquawk(ac, &nasFp); err != nil {

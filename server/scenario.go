@@ -10,6 +10,7 @@ import (
 	"io/fs"
 	"maps"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -22,6 +23,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/brief"
+	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
@@ -60,6 +62,11 @@ type scenarioGroup struct {
 	// FacilityConfig is populated at runtime from the facility config file,
 	// not from the scenario group JSON.
 	FacilityConfig sim.FacilityConfig `json:"-"`
+
+	// ERAMCoordination is the resolved pseudo-ERAM adaptation for this
+	// facility's TRACON computer id, loaded from the ERAM host (ARTCC)
+	// config. Nil if none is adapted.
+	ERAMCoordination *enroute.Coordination `json:"-"`
 
 	SourceFile string // path of the JSON file this was loaded from
 }
@@ -644,7 +651,26 @@ func (sg *scenarioGroup) Locate(s string) (math.Point2LL, bool) {
 	// ScenarioGroup's definitions take precedence...
 	if p, ok := sg.Fixes[s]; ok {
 		return p, true
-	} else if n, ok := av.DB.Navaids[s]; ok {
+	}
+	//... and then the static database.
+	return dbLocator{}.Locate(s)
+}
+
+// dbLocator resolves locations against the static nav database alone; it is
+// used for facility-config data that must resolve the same way regardless of
+// which scenario group (with its own fixes) is being loaded.
+type dbLocator struct{}
+
+func (dbLocator) Similar(fix string) []string {
+	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), nil, nil)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Airports), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Fixes), d1, d2)
+	return util.Select(len(d1) > 0, d1, d2)
+}
+
+func (dbLocator) Locate(s string) (math.Point2LL, bool) {
+	s = strings.ToUpper(s)
+	if n, ok := av.DB.Navaids[s]; ok {
 		return n.Location, ok
 	} else if ap, ok := av.DB.LookupAirport(s); ok {
 		return ap.Location, ok
@@ -870,6 +896,51 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 		})
 	}
 	return regions
+}
+
+// resolveERAMCoordination returns this TRACON's pseudo-ERAM coordination
+// adaptation from its parent ARTCC host config, keyed by the TRACON's STARS
+// computer id (its stars_id in the ARTCC's handoff_ids). configs holds all
+// the facility configs, loaded — with any coordination geometry parsed and
+// validated — before scenario groups are processed; the result is shared
+// read-only. Returns nil for ARTCC-primary scenarios (no single child
+// computer id) and for TRACONs whose host adapts no coordination for them.
+func resolveERAMCoordination(sg *scenarioGroup, configs map[string]*sim.FacilityConfig) *enroute.Coordination {
+	if sg.TRACON == "" || sg.TRACON == sg.ARTCC {
+		return nil
+	}
+	// TRACON scenarios frequently omit "artcc"; derive the host ARTCC.
+	artcc := sg.ARTCC
+	if artcc == "" {
+		artcc = av.DB.ARTCCForFacility(sg.TRACON)
+	}
+	if artcc == "" {
+		return nil
+	}
+	afc := configs[configurationsPath(artcc, artcc)]
+	if afc == nil {
+		return nil
+	}
+	// The TRACON's computer id is its stars_id in the ARTCC's handoff_ids.
+	computerID := ""
+	for _, hid := range afc.HandoffIDs {
+		if hid.ID == sg.TRACON {
+			computerID = hid.StarsID
+			break
+		}
+	}
+	if computerID == "" {
+		return nil
+	}
+	entry, ok := afc.FacilityAdaptation.ArtsCoordination[computerID]
+	if !ok {
+		return nil
+	}
+	return &enroute.Coordination{
+		ComputerID:   computerID,
+		Coord:        entry,
+		Restrictions: afc.FacilityAdaptation.Restrictions,
+	}
 }
 
 func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[string]*ScenarioCatalog,
@@ -1842,6 +1913,12 @@ func facilityConfigPath(sg *scenarioGroup) string {
 	if artcc == "" {
 		artcc = av.DB.ARTCCForFacility(sg.TRACON)
 	}
+	return configurationsPath(artcc, facility)
+}
+
+// configurationsPath returns the path of facility's configuration file, which
+// lives in its ARTCC's directory.
+func configurationsPath(artcc, facility string) string {
 	return "configurations/" + artcc + "/" + facility + ".json"
 }
 
@@ -2252,6 +2329,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	})
 
 	configErrs := make([]util.ErrorLogger, len(configItems))
+	loadedConfigs := make([]*sim.FacilityConfig, len(configItems))
 	eg = &errgroup.Group{}
 	eg.SetLimit(runtime.NumCPU())
 	for i, it := range configItems {
@@ -2260,16 +2338,53 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			if fc != nil {
 				fc.PostDeserialize(it.path, &configErrs[i])
 			}
+			loadedConfigs[i] = fc
 			return nil
 		})
 	}
 	eg.Wait()
+
+	// All of the loaded facility configs, by path; the phases below resolve
+	// cross-facility references (a TRACON's host ARTCC adaptation, neighbor
+	// controllers) against this rather than reloading anything.
+	facilityConfigs := make(map[string]*sim.FacilityConfig)
+	for i, it := range configItems {
+		if loadedConfigs[i] != nil {
+			facilityConfigs[it.path] = loadedConfigs[i]
+		}
+	}
 
 	for i := range configErrs {
 		e.MergeFrom(&configErrs[i])
 	}
 	if err != nil {
 		e.Error(err)
+	}
+
+	// Every facility config lives in its ARTCC's directory, and the ARTCC
+	// must have a config of its own there: TRACONs resolve their pseudo-ERAM
+	// coordination through it.
+	missingARTCC := make(map[string]bool)
+	for _, it := range configItems {
+		artcc := path.Base(path.Dir(it.path))
+		if artccPath := configurationsPath(artcc, artcc); !missingARTCC[artcc] {
+			if _, ok := facilityConfigs[artccPath]; !ok {
+				missingARTCC[artcc] = true
+				e.ErrorString("%s: no config for the ARTCC itself", artccPath)
+			}
+		}
+	}
+
+	// Parse pseudo-ERAM coordination geometry once, so that TRACON scenario
+	// groups can share it read-only (see resolveERAMCoordination). This is
+	// the host ARTCC's data, so it resolves against the nav database alone
+	// rather than any scenario group's fixes.
+	for _, it := range configItems {
+		if fc := facilityConfigs[it.path]; fc != nil && len(fc.FacilityAdaptation.ArtsCoordination) > 0 {
+			e.Push("Facility config " + it.path)
+			enroute.ParseGeometry(fc.FacilityAdaptation.ArtsCoordination, fc.FacilityAdaptation.Restrictions, dbLocator{}, e)
+			e.Pop()
+		}
 	}
 
 	// Phase 2: Attach validated configs to scenario groups and load
@@ -2283,6 +2398,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			}
 
 			sg.FacilityConfig = *deep.MustCopy(fc)
+			sg.ERAMCoordination = resolveERAMCoordination(sg, facilityConfigs)
 
 			// Add missing airports referenced by altimeters and coordination
 			// lists from sibling scenario groups. The facility config is
@@ -2421,6 +2537,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			extraE.ErrorString("no mapSpec for video map %q found. Options: %s", vf,
 				strings.Join(util.SortedMapKeys(mapSpecs), ", "))
 		} else {
+			extraScenario.ERAMCoordination = resolveERAMCoordination(extraScenario, facilityConfigs)
 			extraScenario.PostDeserialize(&extraE, localCatalogs, mapSpec, mapSpecs)
 		}
 
@@ -2616,6 +2733,7 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		ControllerAirspace:      scenario.Airspace,
 		VirtualControllers:      scenario.VirtualControllers,
 		HandoffIDs:              scenarioGroup.FacilityConfig.HandoffIDs,
+		ERAMCoordination:        scenarioGroup.ERAMCoordination,
 	}
 
 	// LoadScenarioGroups already validated emergencies.json; re-parse to hand the list to the sim.
