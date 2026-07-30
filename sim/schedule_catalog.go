@@ -5,15 +5,12 @@
 package sim
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/fs"
 	"path"
 	"sort"
 	"strings"
 )
-
-const scheduleCatalogFilename = "schedules.json"
 
 // BuiltInSchedule describes one schedule distributed in Vice's resources.
 // Flights are loaded and validated when the catalog is read so malformed
@@ -90,32 +87,51 @@ func (c BuiltInScheduleCatalog) ForAirport(airport string) []BuiltInSchedule {
 	return schedules
 }
 
-// LoadBuiltInScheduleCatalog discovers schedules.json files below root...
-// loads the CSV files they reference.
+// LoadBuiltInScheduleCatalog discovers CSV files in airport directories
+// directly below root. For example, schedules/KMSP/Summer Weekday.csv is
+// exposed as a KMSP schedule named "Summer Weekday".
 func LoadBuiltInScheduleCatalog(filesystem fs.FS, root string) (BuiltInScheduleCatalog, error) {
 	var catalog BuiltInScheduleCatalog
 	seen := make(map[string]string)
+	root = path.Clean(root)
 
 	err := fs.WalkDir(filesystem, root, func(filename string, entry fs.DirEntry, walkErr error) error {
 		if walkErr != nil {
 			return walkErr
 		}
-		if entry.IsDir() || entry.Name() != scheduleCatalogFilename {
+		if entry.IsDir() || !strings.EqualFold(path.Ext(entry.Name()), ".csv") {
 			return nil
 		}
 
-		schedules, err := loadScheduleManifest(filesystem, filename)
+		// Only load CSV files directly inside an airport directory:
+		// root/KMSP/Schedule.csv. Nested files are intentionally ignored.
+		directory := path.Dir(filename)
+		if path.Dir(directory) != root {
+			return nil
+		}
+
+		airport := normalizeScheduleCode(path.Base(directory))
+		if airport == "" {
+			return fmt.Errorf("%s: unable to determine airport from directory", filename)
+		}
+
+		name := strings.TrimSpace(strings.TrimSuffix(entry.Name(), path.Ext(entry.Name())))
+		if name == "" {
+			return fmt.Errorf("%s: schedule filename must have a name before the .csv extension", filename)
+		}
+
+		key := airport + "/" + strings.ToLower(name)
+		if previous, ok := seen[key]; ok {
+			return fmt.Errorf("duplicate built-in schedule %q in %s and %s", airport+"/"+name, previous, filename)
+		}
+
+		schedule, err := loadDiscoveredSchedule(filesystem, filename, airport, name)
 		if err != nil {
 			return err
 		}
-		for _, schedule := range schedules {
-			key := schedule.Airport + "/" + schedule.ID
-			if previous, ok := seen[key]; ok {
-				return fmt.Errorf("duplicate built-in schedule %q in %s and %s", key, previous, filename)
-			}
-			seen[key] = filename
-			catalog.Schedules = append(catalog.Schedules, schedule)
-		}
+
+		seen[key] = filename
+		catalog.Schedules = append(catalog.Schedules, schedule)
 		return nil
 	})
 	if err != nil {
@@ -131,90 +147,55 @@ func LoadBuiltInScheduleCatalog(filesystem fs.FS, root string) (BuiltInScheduleC
 	return catalog, nil
 }
 
-
-
-type scheduleManifestEntry struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	File        string `json:"file"`
-	Description string `json:"description"`
-	Timezone    string `json:"timezone"`
-}
-
-func loadScheduleManifest(filesystem fs.FS, filename string) ([]BuiltInSchedule, error) {
-	contents, err := fs.ReadFile(filesystem, filename)
+func loadDiscoveredSchedule(
+	filesystem fs.FS,
+	filename string,
+	airport string,
+	name string,
+) (BuiltInSchedule, error) {
+	csvFile, err := filesystem.Open(filename)
 	if err != nil {
-		return nil, fmt.Errorf("read %s: %w", filename, err)
+		return BuiltInSchedule{}, fmt.Errorf("open %s: %w", filename, err)
 	}
 
-	var manifest []scheduleManifestEntry
-	decoder := json.NewDecoder(strings.NewReader(string(contents)))
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&manifest); err != nil {
-		return nil, fmt.Errorf("decode %s: %w", filename, err)
+	flights, loadErr := LoadScheduleCSV(csvFile)
+	closeErr := csvFile.Close()
+	if loadErr != nil {
+		return BuiltInSchedule{}, fmt.Errorf("%s: %w", filename, loadErr)
+	}
+	if closeErr != nil {
+		return BuiltInSchedule{}, fmt.Errorf("close %s: %w", filename, closeErr)
 	}
 
-	airport := normalizeScheduleCode(path.Base(path.Dir(filename)))
+	schedule := BuiltInSchedule{
+		ID:          name,
+		Name:        scheduleDisplayName(name),
+		Airport:     airport,
+		Description: "",
+		Timezone:    "",
+		Flights:     flights,
+	}
+	if err := validateBuiltInSchedule(schedule); err != nil {
+		return BuiltInSchedule{}, fmt.Errorf("%s: %w", filename, err)
+	}
 
-if airport == "" {
-    return nil, fmt.Errorf("%s: unable to determine airport from directory", filename)
+	return schedule, nil
 }
+func scheduleDisplayName(id string) string {
+	id = strings.TrimSuffix(id, path.Ext(id))
 
-if len(manifest) == 0 {
-    return nil, fmt.Errorf("%s: at least one schedule is required", filename)
-}
+	parts := strings.FieldsFunc(id, func(r rune) bool {
+		return r == '_' || r == '-'
+	})
 
-	directory := path.Dir(filename)
-	ids := make(map[string]struct{})
-	schedules := make([]BuiltInSchedule, 0, len(manifest))
-	for index, entry := range manifest {
-		entry.ID = strings.TrimSpace(entry.ID)
-		entry.Name = strings.TrimSpace(entry.Name)
-		entry.File = strings.TrimSpace(entry.File)
-		entry.Description = strings.TrimSpace(entry.Description)
-		entry.Timezone = strings.TrimSpace(entry.Timezone)
-
-		prefix := fmt.Sprintf("%s schedule %d", filename, index+1)
-		if entry.ID == "" || entry.Name == "" || entry.File == "" || entry.Timezone == "" {
-			return nil, fmt.Errorf("%s: id, name, file, and timezone are required", prefix)
+	for i, part := range parts {
+		if part == strings.ToUpper(part) {
+			continue
 		}
-		if _, ok := ids[entry.ID]; ok {
-			return nil, fmt.Errorf("%s: duplicate schedule id %q", filename, entry.ID)
+		if len(part) > 0 {
+			parts[i] = strings.ToUpper(part[:1]) + strings.ToLower(part[1:])
 		}
-		ids[entry.ID] = struct{}{}
-
-		if path.Base(entry.File) != entry.File || path.Ext(entry.File) != ".csv" {
-			return nil, fmt.Errorf("%s: file %q must be a CSV in the same directory", prefix, entry.File)
-		}
-
-		csvPath := path.Join(directory, entry.File)
-		csvFile, err := filesystem.Open(csvPath)
-		if err != nil {
-			return nil, fmt.Errorf("%s: open %s: %w", prefix, csvPath, err)
-		}
-		flights, loadErr := LoadScheduleCSV(csvFile)
-		closeErr := csvFile.Close()
-		if loadErr != nil {
-			return nil, fmt.Errorf("%s: %w", prefix, loadErr)
-		}
-		if closeErr != nil {
-			return nil, fmt.Errorf("%s: close %s: %w", prefix, csvPath, closeErr)
-		}
-
-		schedule := BuiltInSchedule{
-			ID:          entry.ID,
-			Name:        entry.Name,
-			Airport:     airport,
-			Description: entry.Description,
-			Timezone:    entry.Timezone,
-			Flights:     flights,
-		}
-
-		if err := validateBuiltInSchedule(schedule); err != nil {
-			return nil, fmt.Errorf("%s: %s: %w", prefix, entry.File, err)
-		}
-
-		schedules = append(schedules, schedule)
 	}
-	return schedules, nil
+
+	return strings.Join(parts, " ")
 }
