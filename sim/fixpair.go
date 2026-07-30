@@ -123,6 +123,7 @@ func (lb LevelBand) MarshalJSON() ([]byte, error) {
 		return []byte(`"*"`), nil
 	}
 }
+
 func (lb *LevelBand) UnmarshalJSON(b []byte) error {
 	b = bytes.TrimSpace(b)
 	if len(b) == 0 || string(b) == "null" {
@@ -142,13 +143,13 @@ func (lb *LevelBand) UnmarshalJSON(b []byte) error {
 		case "OTP":
 			lb.OTP = true
 		default:
-			return fmt.Errorf("invalid level_band %q: want [lo,hi], \"VFR\", \"OTP\", or \"*\"", s)
+			return fmt.Errorf(`invalid level_band %q: want [lo,hi], "VFR", "OTP", or "*"`, s)
 		}
 		return nil
 	}
 	var r [2]int
 	if err := json.Unmarshal(b, &r); err != nil {
-		return fmt.Errorf("invalid level_band %s: want [lo,hi], \"VFR\", \"OTP\", or \"*\"", string(b))
+		return fmt.Errorf(`invalid level_band %s: want [lo,hi], "VFR", "OTP", or "*"`, string(b))
 	}
 	lb.Range = r
 	lb.HasRange = true
@@ -646,6 +647,16 @@ func sortAutoScratchpad(rows []AutoScratchpadRow) {
 		}
 		return 0
 	}
+	// wildcardMatch treats "" the same as "*" for ConfigPlan (unlike EntryFix/
+	// ExitFix, where "" is the narrower "only unassigned" criterion), so the
+	// sort must rank it as a wildcard too or a "" row can win ahead of
+	// plan-specific rows it should lose to.
+	configPlanWild := func(s string) int {
+		if s == "*" || s == "" {
+			return 1
+		}
+		return 0
+	}
 	isVFR := func(r AutoScratchpadRow) int {
 		if strings.EqualFold(strings.TrimSpace(r.Altitude), "VFR") {
 			return 0
@@ -684,7 +695,7 @@ func sortAutoScratchpad(rows []AutoScratchpadRow) {
 	}
 	slices.SortStableFunc(rows, func(a, b AutoScratchpadRow) int {
 		for _, d := range []int{
-			wild(a.ConfigPlan) - wild(b.ConfigPlan),
+			configPlanWild(a.ConfigPlan) - configPlanWild(b.ConfigPlan),
 			wild(a.EntryFix) - wild(b.EntryFix),
 			wild(a.ExitFix) - wild(b.ExitFix),
 			isVFR(a) - isVFR(b),

@@ -653,38 +653,7 @@ func (sg *scenarioGroup) Locate(s string) (math.Point2LL, bool) {
 		return p, true
 	}
 	//... and then the static database.
-	return dbLocator{}.Locate(s)
-}
-
-// dbLocator resolves locations against the static nav database alone; it is
-// used for facility-config data that must resolve the same way regardless of
-// which scenario group (with its own fixes) is being loaded.
-type dbLocator struct{}
-
-func (dbLocator) Similar(fix string) []string {
-	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), nil, nil)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Airports), d1, d2)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Fixes), d1, d2)
-	return util.Select(len(d1) > 0, d1, d2)
-}
-
-func (dbLocator) Locate(s string) (math.Point2LL, bool) {
-	s = strings.ToUpper(s)
-	if n, ok := av.DB.Navaids[s]; ok {
-		return n.Location, ok
-	} else if ap, ok := av.DB.LookupAirport(s); ok {
-		return ap.Location, ok
-	} else if f, ok := av.DB.Fixes[s]; ok {
-		return f.Location, ok
-	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
-		return p, true
-	} else if len(s) > 5 && s[4] == '-' {
-		if rwy, ok := av.LookupRunway(s[:4], s[5:]); ok {
-			return rwy.Threshold, true
-		}
-	}
-
-	return math.Point2LL{}, false
+	return enroute.DBLocator{}.Locate(s)
 }
 
 func (sg *scenarioGroup) LocateDME(s string) (math.Point2LL, int, bool) {
@@ -2382,7 +2351,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	for _, it := range configItems {
 		if fc := facilityConfigs[it.path]; fc != nil && len(fc.FacilityAdaptation.ArtsCoordination) > 0 {
 			e.Push("Facility config " + it.path)
-			enroute.ParseGeometry(fc.FacilityAdaptation.ArtsCoordination, fc.FacilityAdaptation.Restrictions, dbLocator{}, e)
+			enroute.ParseGeometry(fc.FacilityAdaptation.ArtsCoordination, fc.FacilityAdaptation.Restrictions, enroute.DBLocator{}, e)
 			e.Pop()
 		}
 	}

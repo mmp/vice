@@ -15,6 +15,7 @@ package enroute
 
 import (
 	"fmt"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -98,6 +99,39 @@ type Coordination struct {
 	ComputerID   string
 	Coord        *ArtsCoordEntry
 	Restrictions []Restriction
+}
+
+// DBLocator resolves locations against the static nav database alone; it is
+// used for facility-config data that must resolve the same way regardless of
+// which scenario group (with its own fixes) is loading it, and to re-derive
+// ArtsCoordEntry/Restriction geometry (see ParseGeometry) after a saved sim is
+// restored, since that geometry is excluded from JSON.
+type DBLocator struct{}
+
+func (DBLocator) Similar(fix string) []string {
+	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), nil, nil)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Airports), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Fixes), d1, d2)
+	return util.Select(len(d1) > 0, d1, d2)
+}
+
+func (DBLocator) Locate(s string) (math.Point2LL, bool) {
+	s = strings.ToUpper(s)
+	if n, ok := av.DB.Navaids[s]; ok {
+		return n.Location, ok
+	} else if ap, ok := av.DB.LookupAirport(s); ok {
+		return ap.Location, ok
+	} else if f, ok := av.DB.Fixes[s]; ok {
+		return f.Location, ok
+	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
+		return p, true
+	} else if len(s) > 5 && s[4] == '-' {
+		if rwy, ok := av.LookupRunway(s[:4], s[5:]); ok {
+			return rwy.Threshold, true
+		}
+	}
+
+	return math.Point2LL{}, false
 }
 
 // parseBoundary parses a space-separated list of "lat,long" vertices.
@@ -381,7 +415,9 @@ func routeRuleMatches(rule RouteRule, wps []av.Waypoint, routeStr string) bool {
 		// rule only applies when the flight traverses the airway in that
 		// direction; "both"/"" matches either way.
 		if dir := strings.ToLower(rule.Direction); dir == "up" || dir == "down" {
-			if fd := flightAirwayDirection(wps, rule.ID); fd != "" && fd != dir {
+			// Fail closed when the direction can't be determined, rather than
+			// letting both an "up" and a "down" rule match the same flight.
+			if flightAirwayDirection(wps, rule.ID) != dir {
 				return false
 			}
 		}
@@ -417,6 +453,7 @@ func routeContainsSequence(routeStr, id string) bool {
 	}
 	return false
 }
+
 func hasFlag(wps []av.Waypoint, pred func(av.Waypoint) bool) bool {
 	for _, wp := range wps {
 		if pred(wp) {
@@ -425,6 +462,7 @@ func hasFlag(wps []av.Waypoint, pred func(av.Waypoint) bool) bool {
 	}
 	return false
 }
+
 func airwayMatches(wps []av.Waypoint, id string) bool {
 	for _, wp := range wps {
 		if wp.Airway() == id {
@@ -437,19 +475,31 @@ func airwayMatches(wps []av.Waypoint, id string) bool {
 // flightAirwayDirection reports whether the flight traverses the given airway
 // "down" (in the airway's defined fix order) or "up" (opposite), by comparing
 // the order of the flight's on-airway fixes against the canonical airway
-// definition. Returns "" when it can't be determined (fewer than two on-airway
-// fixes, or the fixes aren't found in the airway definition).
+// definition. Returns "" when it can't be determined (no on-airway fixes, or
+// the fixes aren't found in the airway definition).
 func flightAirwayDirection(wps []av.Waypoint, airwayID string) string {
-	var flown []string
-	for _, wp := range wps {
+	var flownIdx []int
+	for i, wp := range wps {
 		if wp.Airway() == airwayID {
-			flown = append(flown, wp.Fix)
+			flownIdx = append(flownIdx, i)
 		}
 	}
-	if len(flown) < 2 {
+	if len(flownIdx) == 0 {
 		return ""
 	}
-	first, last := flown[0], flown[len(flown)-1]
+	first, last := wps[flownIdx[0]].Fix, wps[flownIdx[len(flownIdx)-1]].Fix
+	if len(flownIdx) == 1 {
+		// Adjacent airway fixes have no intermediate fix to tag, so only the
+		// clause's entry fix is marked; fall back to the very next waypoint
+		// in the route, which the route grammar ("entry AIRWAY exit")
+		// guarantees is that clause's exit fix, even though it isn't itself
+		// tagged with this airway.
+		i := flownIdx[0]
+		if i+1 >= len(wps) {
+			return ""
+		}
+		last = wps[i+1].Fix
+	}
 	for _, awy := range av.DB.Airways[airwayID] {
 		i0, i1 := -1, -1
 		for idx, af := range awy.Fixes {
@@ -469,6 +519,7 @@ func flightAirwayDirection(wps []av.Waypoint, airwayID string) string {
 	}
 	return ""
 }
+
 func routeHasToken(routeStr, id string) bool {
 	for tok := range strings.FieldsSeq(routeStr) {
 		if tok == id {
@@ -548,6 +599,7 @@ func zoneBearing(center math.Point2LL, traj *Trajectory, ft av.TypeOfFlight) int
 	}
 	return int(math.Heading2LL(center, pt, nmPer))
 }
+
 func zoneBucket(area *ZoneArea, ft av.TypeOfFlight) []ZoneEntry {
 	switch ft {
 	case av.FlightTypeArrival:

@@ -234,9 +234,17 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 		fp.PlanType = spec.PlanType.Get()
 	}
 	if spec.EntryFix.IsSet {
+		if fp.EntryFix != spec.EntryFix.Get() {
+			// The derived fix was substituted for the old entry fix; it no
+			// longer applies once the actual fix changes.
+			fp.DerivedEntryFix = ""
+		}
 		fp.EntryFix = spec.EntryFix.Get()
 	}
 	if spec.ExitFix.IsSet {
+		if fp.ExitFix != spec.ExitFix.Get() {
+			fp.DerivedExitFix = ""
+		}
 		fp.ExitFix = spec.ExitFix.Get()
 		fp.ExitFixIsIntermediate = spec.ExitFixIsIntermediate.GetOr(false)
 

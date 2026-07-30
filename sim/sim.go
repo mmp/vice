@@ -453,6 +453,21 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 	// Restore json:"-" fields that are lost during JSON config save/load.
 	restoreControllerFields(s.ControlPositions)
 	restoreControllerFields(s.State.Controllers)
+	restoreERAMCoordinationGeometry(s.State.ERAMCoordination, lg)
+}
+
+// restoreERAMCoordinationGeometry re-derives the json:"-" geometry (zone-area
+// centers, restriction lines) that ParseGeometry parses from adapted strings
+// at scenario-group load: a saved sim's restore goes through Activate, not
+// scenario loading, so without this the geometry would be zero-valued and
+// zone_based coordination would compute bearings from the origin.
+func restoreERAMCoordinationGeometry(ec *enroute.Coordination, lg *log.Logger) {
+	if ec == nil || ec.Coord == nil {
+		return
+	}
+	var errs util.ErrorLogger
+	enroute.ParseGeometry(map[string]*enroute.ArtsCoordEntry{ec.ComputerID: ec.Coord}, ec.Restrictions, enroute.DBLocator{}, &errs)
+	errs.PrintErrors(lg)
 }
 
 // restoreControllerFields reconstructs the json:"-" fields

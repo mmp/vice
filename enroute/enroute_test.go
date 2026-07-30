@@ -99,6 +99,46 @@ func TestAirwayDirection(t *testing.T) {
 	}
 }
 
+// TestAirwayDirectionAdjacentFixes verifies direction derivation when the
+// route has adjacent airway fixes (e.g. "A ZZ99 B"): the route parser tags
+// only the entry fix and inserts no intermediate airway fixes between it and
+// the exit, so only one waypoint carries the airway tag. Direction should
+// still be derived from that fix and its untagged neighbor, and a directional
+// rule must not match when it can't be (the flight ends right at the tagged
+// fix, with no neighbor to derive direction from).
+func TestAirwayDirectionAdjacentFixes(t *testing.T) {
+	av.DB.Airways["ZZ99"] = []av.Airway{{Name: "ZZ99",
+		Fixes: []av.AirwayFix{{Fix: "A"}, {Fix: "B"}, {Fix: "C"}}}}
+	defer delete(av.DB.Airways, "ZZ99")
+	tagged := func(fix string) av.Waypoint {
+		return av.Waypoint{Fix: fix, Extra: &av.WaypointExtra{Airway: "ZZ99"}}
+	}
+	plain := func(fix string) av.Waypoint { return av.Waypoint{Fix: fix} }
+
+	// A -> B (adjacent, defined order): only A is tagged; B is derived from
+	// the next waypoint.
+	down := []av.Waypoint{tagged("A"), plain("B")}
+	if d := flightAirwayDirection(down, "ZZ99"); d != "down" {
+		t.Errorf("A->B direction = %q, want down", d)
+	}
+	// C -> B (adjacent, reverse order): only C is tagged.
+	up := []av.Waypoint{tagged("C"), plain("B")}
+	if d := flightAirwayDirection(up, "ZZ99"); d != "up" {
+		t.Errorf("C->B direction = %q, want up", d)
+	}
+	// The tagged fix is the last waypoint in the route: no neighbor to derive
+	// direction from, so it's undetermined and a directional rule must fail
+	// closed rather than matching by default.
+	noNeighbor := []av.Waypoint{plain("X"), tagged("A")}
+	if d := flightAirwayDirection(noNeighbor, "ZZ99"); d != "" {
+		t.Errorf("direction with no trailing neighbor = %q, want \"\" (undetermined)", d)
+	}
+	ruleDown := RouteRule{Type: "airway", ID: "ZZ99", Direction: "down"}
+	if routeRuleMatches(ruleDown, noNeighbor, "X A") {
+		t.Error("directional rule should NOT match when direction is undetermined")
+	}
+}
+
 func TestCoordFixAltitudeKind(t *testing.T) {
 	// Level overflight at FL350; FIXA is on the route, FIXX is not.
 	traj := &Trajectory{

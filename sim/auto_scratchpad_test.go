@@ -105,6 +105,21 @@ func TestSortAutoScratchpad(t *testing.T) {
 		}
 	}
 }
+func TestSortAutoScratchpadEmptyConfigPlan(t *testing.T) {
+	// wildcardMatch treats an empty ConfigPlan the same as "*" (unlike
+	// EntryFix/ExitFix, where "" is the narrower "unassigned only" case), so
+	// it must sort as a wildcard too, behind the plan-specific row.
+	rows := []AutoScratchpadRow{
+		{ConfigPlan: "", Altitude: "*", Scratchpad1: "empty"},
+		{ConfigPlan: "CO1", Altitude: "*", Scratchpad1: "specific"},
+	}
+	sortAutoScratchpad(rows)
+	got := []string{rows[0].Scratchpad1, rows[1].Scratchpad1}
+	want2 := []string{"specific", "empty"}
+	if got[0] != want2[0] || got[1] != want2[1] {
+		t.Errorf("order = %v, want %v", got, want2)
+	}
+}
 func TestApplyAutoScratchpadAssignment(t *testing.T) {
 	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
 	s := NewTestSim(lg)
