@@ -20621,6 +20621,2031 @@
           ["PRM1", 1]
         ]
       }
+    },
+    {
+      "icao": "skq",
+      "name": "Labcorp",
+      "callsign": {
+        "name": "Skylab",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["PC12", 20],
+          ["PC24", 1]
+        ]
+      }
+    },
+    {
+      "icao": "lbq",
+      "name": "Quest Diagnostics",
+      "callsign": {
+        "name": "Labquest",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["PC12", 20],
+          ["E50P", 1],
+          ["F2TH", 1]
+        ]
+      }
+    },
+    {
+      "icao": "pcm",
+      "name": "Westair Industries",
+      "callsign": {
+        "name": "Pac Valley",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [["C208", 1]]
+      }
+    },
+    {
+      "icao": "jtz",
+      "name": "Nicholas Air",
+      "callsign": {
+        "name": "Steel Jet",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["E55P", 20],
+          ["C68A", 4],
+          ["E50P", 4],
+          ["CL35", 2],
+          ["C25B", 1],
+          ["CL30", 1],
+          ["GLF6", 1]
+        ]
+      }
+    },
+    {
+      "icao": "lta",
+      "name": "LIFT Academy",
+      "callsign": {
+        "name": "Lift",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["DA40", 11],
+          ["DA42", 2]
+        ]
+      }
+    },
+    {
+      "icao": "cap",
+      "name": "Civil Air Patrol",
+      "callsign": {
+        "name": "CAP",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["C182", 13],
+          ["C172", 10],
+          ["T206", 2],
+          ["C82S", 1],
+          ["C82T", 1]
+        ]
+      }
+    },
+    {
+      "icao": "aip",
+      "name": "Alpine Air Express",
+      "callsign": {
+        "name": "Alpine Air",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["B190", 17],
+          ["BE99", 2],
+          ["BE20", 1]
+        ]
+      }
+    },
+    {
+      "icao": "yel",
+      "name": "Summit Aviation",
+      "callsign": {
+        "name": "Yellowstone",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["E55P", 1]]
+      }
+    },
+    {
+      "icao": "dcm",
+      "name": "Fltplan.com",
+      "callsign": {
+        "name": "Dot Com",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["PC12", 15],
+          ["GA5C", 10],
+          ["BE20", 8],
+          ["C68A", 8],
+          ["PRM1", 6],
+          ["B350", 4],
+          ["C25B", 4],
+          ["C25C", 4],
+          ["C680", 4],
+          ["H25B", 4],
+          ["CL30", 3],
+          ["F2TH", 3],
+          ["BE9L", 2],
+          ["C550", 2],
+          ["C560", 2],
+          ["C56X", 2],
+          ["F900", 2],
+          ["GLEX", 2],
+          ["GLF4", 2],
+          ["C650", 1],
+          ["E545", 1],
+          ["FA7X", 1],
+          ["HDJT", 1],
+          ["TBM9", 1]
+        ]
+      }
+    },
+    {
+      "icao": "cpt",
+      "name": "Corporate Air",
+      "callsign": {
+        "name": "Air Spur",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["C208", 1]]
+      }
+    },
+    {
+      "icao": "ndu",
+      "name": "University of North Dakota",
+      "callsign": {
+        "name": "Sioux",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 10],
+          ["PA44", 3],
+          ["C172", 1]
+        ]
+      }
+    },
+    {
+      "icao": "frg",
+      "name": "Freight Runners Express",
+      "callsign": {
+        "name": "Freight Runners",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [
+          ["SB20", 6],
+          ["BE99", 5],
+          ["E120", 3]
+        ]
+      }
+    },
+    {
+      "icao": "sfy",
+      "name": "Skyborne Airline Academy",
+      "callsign": {
+        "name": "Sky Flite",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 12],
+          ["P28R", 1],
+          ["PA44", 1]
+        ]
+      }
+    },
+    {
+      "icao": "aer",
+      "name": "Alaska Central Express",
+      "callsign": {
+        "name": "Ace Air",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [["B190", 1]]
+      }
+    },
+    {
+      "icao": "rvj",
+      "name": "Aircraft Management Group",
+      "callsign": {
+        "name": "Rivers Jet",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["BE40", 10],
+          ["C56X", 3],
+          ["C68A", 2],
+          ["H25B", 2],
+          ["C25B", 1],
+          ["C680", 1]
+        ]
+      }
+    },
+    {
+      "icao": "mra",
+      "name": "Martinaire",
+      "callsign": {
+        "name": "Martex",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["C208", 1]]
+      }
+    },
+    {
+      "icao": "reh",
+      "name": "REACH Air Medical Services",
+      "callsign": {
+        "name": "Reachmed",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["BE20", 3],
+          ["BE9L", 1]
+        ]
+      }
+    },
+    {
+      "icao": "csj",
+      "name": "Castle Aviation",
+      "callsign": {
+        "name": "Castle",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C208", 4],
+          ["SF34", 2],
+          ["AEST", 1]
+        ]
+      }
+    },
+    {
+      "icao": "mvp",
+      "name": "Premier Private Jets",
+      "callsign": {
+        "name": "Allstar",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["H25B", 4],
+          ["C550", 1],
+          ["C560", 1]
+        ]
+      }
+    },
+    {
+      "icao": "tsu",
+      "name": "Gulf & Caribbean Cargo",
+      "callsign": {
+        "name": "Transauto",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["AT75", 4],
+          ["CRJ2", 2],
+          ["B722", 1]
+        ]
+      }
+    },
+    {
+      "icao": "nit",
+      "name": "Middle Georgia State University",
+      "callsign": {
+        "name": "Nighttrain",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 12],
+          ["P28R", 1],
+          ["PA44", 1]
+        ]
+      }
+    },
+    {
+      "icao": "pjc",
+      "name": "Pittsburgh Jet Center",
+      "callsign": {
+        "name": "Pittsburgh Jet",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["C56X", 8],
+          ["C25B", 2],
+          ["C25C", 1],
+          ["C680", 1],
+          ["CL60", 1],
+          ["G280", 1],
+          ["GLF4", 1]
+        ]
+      }
+    },
+    {
+      "icao": "bbq",
+      "name": "Eastern Air Express",
+      "callsign": {
+        "name": "Eastern Express",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["B734", 20],
+          ["B733", 1],
+          ["B738", 1]
+        ]
+      }
+    },
+    {
+      "icao": "xaa",
+      "name": "Aeronautical Radio, Inc.",
+      "callsign": {
+        "name": "Rockfish",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["GLF6", 4],
+          ["C68A", 2],
+          ["CL35", 2],
+          ["GLEX", 2],
+          ["E55P", 1],
+          ["F2TH", 1]
+        ]
+      }
+    },
+    {
+      "icao": "lae",
+      "name": "Línea Aérea Carguera de Colombia",
+      "callsign": {
+        "name": "Lanco",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [["B763", 1]]
+      }
+    },
+    {
+      "icao": "xfl",
+      "name": "Executive Fliteways",
+      "callsign": {
+        "name": "Ex-Flight",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["GLF5", 14],
+          ["E55P", 12],
+          ["GLF4", 7],
+          ["PC12", 6],
+          ["C680", 4],
+          ["E35L", 4],
+          ["FA50", 4],
+          ["CL30", 3],
+          ["F2TH", 3],
+          ["CL35", 2],
+          ["E550", 2],
+          ["G280", 2],
+          ["LJ60", 2],
+          ["FA7X", 1]
+        ]
+      }
+    },
+    {
+      "icao": "her",
+      "name": "Hera Flight",
+      "callsign": {
+        "name": "Hera",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C750", 5],
+          ["GLF4", 4],
+          ["LJ60", 2],
+          ["CL30", 1]
+        ]
+      }
+    },
+    {
+      "icao": "janet",
+      "name": "Janet",
+      "callsign": {
+        "name": "Janet",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["B736", 10],
+          ["B350", 1]
+        ]
+      }
+    },
+    {
+      "icao": "aih",
+      "name": "Air Incheon",
+      "callsign": {
+        "name": "Air Incheon",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["B744", 1]]
+      }
+    },
+    {
+      "icao": "r",
+      "name": "United States Army",
+      "callsign": {
+        "name": "Army",
+        "callsignFormats": ["#####"]
+      },
+      "fleets": {
+        "default": [
+          ["BE20", 3],
+          ["B190", 2],
+          ["B350", 1],
+          ["T206", 1]
+        ]
+      }
+    },
+    {
+      "icao": "nac",
+      "name": "Northern Air Cargo",
+      "callsign": {
+        "name": "Yukon",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["B734", 6],
+          ["B738", 4],
+          ["B733", 2],
+          ["B763", 1]
+        ]
+      }
+    },
+    {
+      "icao": "snc",
+      "name": "Air Cargo Carriers",
+      "callsign": {
+        "name": "Night Cargo",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["SF34", 1]]
+      }
+    },
+    {
+      "icao": "svl",
+      "name": "Alante Air Charter",
+      "callsign": {
+        "name": "Sun Devil",
+        "callsignFormats": ["#", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["C25B", 12],
+          ["C25C", 2],
+          ["C525", 1]
+        ]
+      }
+    },
+    {
+      "icao": "vjt",
+      "name": "VistaJet",
+      "callsign": {
+        "name": "Vista Jet",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["GLEX", 20],
+          ["GL7T", 10],
+          ["CL35", 2],
+          ["CL60", 1]
+        ]
+      }
+    },
+    {
+      "icao": "scw",
+      "name": "SkyWest Charter",
+      "callsign": {
+        "name": "Charter West",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [["CRJ2", 1]]
+      }
+    },
+    {
+      "icao": "gtx",
+      "name": "GTA Air",
+      "callsign": {
+        "name": "Big-Dee",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["BE58", 12],
+          ["BE36", 10],
+          ["C210", 1]
+        ]
+      }
+    },
+    {
+      "icao": "life",
+      "name": "Life Flight",
+      "callsign": {
+        "name": "Life Flight",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["PC12", 4],
+          ["BE20", 3],
+          ["LJ35", 1]
+        ]
+      }
+    },
+    {
+      "icao": "ljy",
+      "name": "L J Aviation",
+      "callsign": {
+        "name": "Eljay",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C56X", 16],
+          ["CL35", 16],
+          ["G280", 15],
+          ["C25B", 12],
+          ["C25C", 8],
+          ["CL30", 8],
+          ["GLF5", 5],
+          ["GLF6", 4],
+          ["F900", 1],
+          ["GLF4", 1]
+        ]
+      }
+    },
+    {
+      "icao": "jlg",
+      "name": "Jet Logistics",
+      "callsign": {
+        "name": "Logistics",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["LJ45", 15],
+          ["C25B", 10],
+          ["SF50", 8],
+          ["H25B", 7],
+          ["LJ31", 1],
+          ["BE9L", 1]
+        ]
+      }
+    },
+    {
+      "icao": "sjx",
+      "name": "Starlux Airlines",
+      "callsign": {
+        "name": "Starwalker",
+        "callsignFormats": ["#", "##", "###"]
+      },
+      "fleets": {
+        "default": [["A359", 1]]
+      }
+    },
+    {
+      "icao": "tzp",
+      "name": "ZIPAIR Tokyo",
+      "callsign": {
+        "name": "Zippy",
+        "callsignFormats": ["#", "##"]
+      },
+      "fleets": {
+        "default": [["B788", 1]]
+      }
+    },
+    {
+      "icao": "scj",
+      "name": "Spring City Aviation",
+      "callsign": {
+        "name": "Spring City",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["C550", 6],
+          ["BE20", 2],
+          ["C56X", 2],
+          ["C750", 1]
+        ]
+      }
+    },
+    {
+      "icao": "trf",
+      "name": "Thrust Flight",
+      "callsign": {
+        "name": "Thrust",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 12],
+          ["PA44", 4],
+          ["PA46", 1]
+        ]
+      }
+    },
+    {
+      "icao": "tcf",
+      "name": "Florida Institute of Technology",
+      "callsign": {
+        "name": "Tech Flight",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 14],
+          ["PA44", 1]
+        ]
+      }
+    },
+    {
+      "icao": "hrt",
+      "name": "Chartright Air",
+      "callsign": {
+        "name": "Chartright",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C560", 18],
+          ["CL30", 16],
+          ["CL60", 11],
+          ["GL5T", 11],
+          ["CL35", 8],
+          ["GALX", 4],
+          ["F2TH", 3],
+          ["C56X", 2],
+          ["G280", 2],
+          ["C750", 1],
+          ["GLF4", 1],
+          ["LJ45", 1]
+        ]
+      }
+    },
+    {
+      "icao": "are",
+      "name": "LAN Colombia",
+      "callsign": {
+        "name": "Lan Colombia",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [["A320", 1]]
+      }
+    },
+    {
+      "icao": "wwi",
+      "name": "Worldwide Jet Charter",
+      "callsign": {
+        "name": "Worldwide",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["CL60", 13],
+          ["GLF4", 10],
+          ["GLEX", 3],
+          ["H25B", 2]
+        ]
+      }
+    },
+    {
+      "icao": "glt",
+      "name": "Aero Charter",
+      "callsign": {
+        "name": "Gaslight",
+        "callsignFormats": ["#", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C56X", 13],
+          ["B350", 8],
+          ["C680", 4],
+          ["C25A", 2]
+        ]
+      }
+    },
+    {
+      "icao": "fxc",
+      "name": "Flexjet Vertical",
+      "callsign": {
+        "name": "Flex Copter",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["PC12", 1]]
+      }
+    },
+    {
+      "icao": "pwa",
+      "name": "Priester Aviation",
+      "callsign": {
+        "name": "Priester",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C56X", 21],
+          ["G150", 16],
+          ["LJ45", 10],
+          ["HA4T", 9],
+          ["E545", 8],
+          ["CL30", 6],
+          ["CL60", 6],
+          ["CL35", 5],
+          ["GLF4", 5],
+          ["GALX", 4],
+          ["G280", 3],
+          ["GL5T", 3],
+          ["C750", 2],
+          ["F2TH", 2],
+          ["BE40", 1],
+          ["LJ60", 1]
+        ]
+      }
+    },
+    {
+      "icao": "fto",
+      "name": "Tropic Ocean Airways",
+      "callsign": {
+        "name": "Wagner",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["C208", 1]]
+      }
+    },
+    {
+      "icao": "pft",
+      "name": "Paragon Airways",
+      "callsign": {
+        "name": "Paragon Flight",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["C56X", 9],
+          ["C750", 3],
+          ["C560", 2],
+          ["GLF4", 1]
+        ]
+      }
+    },
+    {
+      "icao": "vtm",
+      "name": "Aeronaves TSM",
+      "callsign": {
+        "name": "Aeronaves TSM",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["CRJ2", 10],
+          ["MD83", 4],
+          ["SW4", 4],
+          ["MD82", 2],
+          ["B734", 1],
+          ["DC93", 1]
+        ]
+      }
+    },
+    {
+      "icao": "cmd",
+      "name": "CALSTAR",
+      "callsign": {
+        "name": "Calstar Med",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["BE20", 1]]
+      }
+    },
+    {
+      "icao": "csq",
+      "name": "IBC Airways",
+      "callsign": {
+        "name": "Chasqui",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["SF34", 20],
+          ["E145", 1]
+        ]
+      }
+    },
+    {
+      "icao": "sjj",
+      "name": "Spirit Jets",
+      "callsign": {
+        "name": "Spirit Jet",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["H25B", 15],
+          ["CL60", 10],
+          ["CL35", 5],
+          ["GLF5", 3],
+          ["CL30", 1]
+        ]
+      }
+    },
+    {
+      "icao": "dzr",
+      "name": "Midwest Aviation",
+      "callsign": {
+        "name": "Dozer",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["LJ45", 20],
+          ["CL30", 2],
+          ["GLF4", 1]
+        ]
+      }
+    },
+    {
+      "icao": "fbu",
+      "name": "French Bee",
+      "callsign": {
+        "name": "French Bee",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["A359", 8],
+          ["A35K", 1]
+        ]
+      }
+    },
+    {
+      "icao": "byf",
+      "name": "San Carlos Flight Center",
+      "callsign": {
+        "name": "Bay Flight",
+        "callsignFormats": ["#", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["C172", 15],
+          ["C182", 3],
+          ["C152", 2],
+          ["P28A", 2]
+        ]
+      }
+    },
+    {
+      "icao": "flc",
+      "name": "FAA Flight Inspection",
+      "callsign": {
+        "name": "Flight Check",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["B350", 6],
+          ["CL60", 1]
+        ]
+      }
+    },
+    {
+      "icao": "rkj",
+      "name": "Arca Jet",
+      "callsign": {
+        "name": "Arca Jet",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [["C750", 1]]
+      }
+    },
+    {
+      "icao": "jus",
+      "name": "USA Jet Airlines",
+      "callsign": {
+        "name": "Jet USA",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["MD88", 15],
+          ["B722", 3],
+          ["MD83", 1]
+        ]
+      }
+    },
+    {
+      "icao": "hpn",
+      "name": "AirDialog",
+      "callsign": {
+        "name": "Harpoon",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [["C208", 1]]
+      }
+    },
+    {
+      "icao": "emd",
+      "name": "EagleMed",
+      "callsign": {
+        "name": "EagleMed",
+        "callsignFormats": ["#", "##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["BE20", 3],
+          ["BE9L", 1]
+        ]
+      }
+    },
+    {
+      "icao": "tyson",
+      "name": "Tyson",
+      "callsign": {
+        "name": "Tyson",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["B737", 30],
+          ["B738", 11],
+          ["A320", 9],
+          ["B733", 4],
+          ["A321", 3],
+          ["E145", 3],
+          ["B734", 2]
+        ]
+      }
+    },
+    {
+      "icao": "rgy",
+      "name": "Regency Air",
+      "callsign": {
+        "name": "Regency",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["BE40", 1]]
+      }
+    },
+    {
+      "icao": "csi",
+      "name": "CSI Aviation",
+      "callsign": {
+        "name": "Sandia",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["B350", 6],
+          ["BE20", 6],
+          ["B190", 3],
+          ["BE9L", 1]
+        ]
+      }
+    },
+    {
+      "icao": "asi",
+      "name": "AeroGuard Flight Training Center",
+      "callsign": {
+        "name": "Aerosun",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C172", 12],
+          ["P28A", 4],
+          ["PA44", 1]
+        ]
+      }
+    },
+    {
+      "icao": "avl",
+      "name": "Aviation Adventures",
+      "callsign": {
+        "name": "Sky Ventures",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["C172", 30],
+          ["P28A", 6],
+          ["C182", 3],
+          ["DA40", 2],
+          ["C82S", 1],
+          ["GA7", 1],
+          ["P28R", 1],
+          ["PA30", 1],
+          ["PA32", 1],
+          ["SR22", 1]
+        ]
+      }
+    },
+    {
+      "icao": "gtw",
+      "name": "American Air Charter",
+      "callsign": {
+        "name": "Gateway",
+        "callsignFormats": ["#", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["G150", 6],
+          ["PC12", 6],
+          ["HDJT", 5],
+          ["C680", 4],
+          ["BE20", 2],
+          ["PC24", 2]
+        ]
+      }
+    },
+    {
+      "icao": "uwd",
+      "name": "Skyward Aviation",
+      "callsign": {
+        "name": "Upward",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["LJ60", 10],
+          ["LJ31", 9],
+          ["CL60", 2],
+          ["PC24", 2]
+        ]
+      }
+    },
+    {
+      "icao": "kmk",
+      "name": "Kamaka Air",
+      "callsign": {
+        "name": "Kamaka",
+        "callsignFormats": ["#", "###"]
+      },
+      "fleets": {
+        "default": [["C208", 1]]
+      }
+    },
+    {
+      "icao": "elz",
+      "name": "Elite Air",
+      "callsign": {
+        "name": "Elite Air",
+        "callsignFormats": ["#", "##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["H25B", 13],
+          ["LJ45", 7],
+          ["CL35", 4],
+          ["E35L", 4],
+          ["GL5T", 3],
+          ["CL60", 2],
+          ["GLEX", 2],
+          ["C68A", 1],
+          ["CL30", 1]
+        ]
+      }
+    },
+    {
+      "icao": "aub",
+      "name": "Auburn University",
+      "callsign": {
+        "name": "Aubie",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["C172", 5],
+          ["PA44", 1]
+        ]
+      }
+    },
+    {
+      "icao": "var",
+      "name": "United Aviate Academy",
+      "callsign": {
+        "name": "Varney",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["SR20", 1]]
+      }
+    },
+    {
+      "icao": "sca",
+      "name": "Sierra Charlie Aviation",
+      "callsign": {
+        "name": "Aviator",
+        "callsignFormats": ["#", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["C172", 18],
+          ["K100", 1],
+          ["PA44", 1]
+        ]
+      }
+    },
+    {
+      "icao": "bya",
+      "name": "Berry Aviation",
+      "callsign": {
+        "name": "Berry",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["E120", 20],
+          ["DH8B", 1]
+        ]
+      }
+    },
+    {
+      "icao": "siy",
+      "name": "Executive Aviation",
+      "callsign": {
+        "name": "Serenity",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["H25B", 5],
+          ["E35L", 2]
+        ]
+      }
+    },
+    {
+      "icao": "syx",
+      "name": "South Aero",
+      "callsign": {
+        "name": "Skyvan",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C208", 4],
+          ["C404", 3]
+        ]
+      }
+    },
+    {
+      "icao": "lkf",
+      "name": "Aviation Advisor",
+      "callsign": {
+        "name": "Lakefront",
+        "callsignFormats": ["#", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["C25B", 10],
+          ["C25C", 8],
+          ["C56X", 5],
+          ["CL30", 4],
+          ["G280", 4],
+          ["LJ45", 4],
+          ["C25A", 2],
+          ["F2TH", 2]
+        ]
+      }
+    },
+    {
+      "icao": "ubt",
+      "name": "Norse Atlantic UK",
+      "callsign": {
+        "name": "Longboat",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["B789", 1]]
+      }
+    },
+    {
+      "icao": "pre",
+      "name": "Precision Aircraft Management",
+      "callsign": {
+        "name": "Precision",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C680", 19],
+          ["C25B", 8],
+          ["GALX", 8],
+          ["BE9L", 6],
+          ["F900", 6],
+          ["H25B", 6],
+          ["LJ45", 6],
+          ["C525", 3],
+          ["BE20", 2],
+          ["G280", 2],
+          ["PC12", 2],
+          ["B350", 1]
+        ]
+      }
+    },
+    {
+      "icao": "cbc",
+      "name": "Longhorn Aviation",
+      "callsign": {
+        "name": "Sky Share",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["PC12", 6],
+          ["C25A", 5],
+          ["C56X", 4],
+          ["GALX", 3]
+        ]
+      }
+    },
+    {
+      "icao": "pod",
+      "name": "Craft Charter",
+      "callsign": {
+        "name": "Airpod",
+        "callsignFormats": ["#"]
+      },
+      "fleets": {
+        "default": [
+          ["CL30", 8],
+          ["CL35", 3]
+        ]
+      }
+    },
+    {
+      "icao": "nbt",
+      "name": "Norse Atlantic Airways",
+      "callsign": {
+        "name": "Longship",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["B789", 1]]
+      }
+    },
+    {
+      "icao": "axo",
+      "name": "Fenix Air Charter",
+      "callsign": {
+        "name": "Axio",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["BE58", 8],
+          ["BE20", 5],
+          ["E50P", 2],
+          ["SR22", 2]
+        ]
+      }
+    },
+    {
+      "icao": "ncr",
+      "name": "National Air Cargo",
+      "callsign": {
+        "name": "National Cargo",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["B744", 14],
+          ["A332", 6],
+          ["A333", 3]
+        ]
+      }
+    },
+    {
+      "icao": "ecj",
+      "name": "East Coast Jets",
+      "callsign": {
+        "name": "Eastcoast Jet",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["H25B", 4],
+          ["LJ35", 1]
+        ]
+      }
+    },
+    {
+      "icao": "kfb",
+      "name": "STAJets",
+      "callsign": {
+        "name": "Mission",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["GLF4", 16],
+          ["GLF5", 5],
+          ["CL60", 2],
+          ["GLF6", 2],
+          ["C56X", 1],
+          ["H25B", 1]
+        ]
+      }
+    },
+    {
+      "icao": "xen",
+      "name": "Thro Aviation",
+      "callsign": {
+        "name": "Zen Jet",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["F2TH", 13],
+          ["GLF5", 8],
+          ["GLF4", 4],
+          ["E55P", 1]
+        ]
+      }
+    },
+    {
+      "icao": "jj",
+      "name": "Pensacola flight training",
+      "callsign": {
+        "name": "JJ",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [["DA40", 1]]
+      }
+    },
+    {
+      "icao": "wst",
+      "name": "Western Air",
+      "callsign": {
+        "name": "Western Air",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["E145", 1]]
+      }
+    },
+    {
+      "icao": "mvj",
+      "name": "Mira Vista Aviation",
+      "callsign": {
+        "name": "Mira Vista",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["GLF4", 10],
+          ["GLF6", 6],
+          ["GL5T", 3],
+          ["GL7T", 3],
+          ["GLF5", 3],
+          ["E50P", 2],
+          ["C25C", 1]
+        ]
+      }
+    },
+    {
+      "icao": "djt",
+      "name": "Dreamjet",
+      "callsign": {
+        "name": "Dreamjet",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["A21N", 1]]
+      }
+    },
+    {
+      "icao": "sub",
+      "name": "Suburban Air Freight",
+      "callsign": {
+        "name": "Sub Air",
+        "callsignFormats": ["##", "####"]
+      },
+      "fleets": {
+        "default": [["B190", 1]]
+      }
+    },
+    {
+      "icao": "rli",
+      "name": "Reliant Air Charter",
+      "callsign": {
+        "name": "Reliant",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["C25B", 6],
+          ["C25C", 3],
+          ["B350", 2]
+        ]
+      }
+    },
+    {
+      "icao": "spar",
+      "name": "United States Air Force",
+      "callsign": {
+        "name": "Spar",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["LJ35", 9],
+          ["B737", 2],
+          ["GLF5", 1]
+        ]
+      }
+    },
+    {
+      "icao": "noj",
+      "name": "NovaJet",
+      "callsign": {
+        "name": "Novajet",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["C25M", 17],
+          ["CL60", 10],
+          ["F900", 9],
+          ["C680", 6],
+          ["CL35", 5],
+          ["CRJ2", 5],
+          ["E55P", 5],
+          ["BE20", 4],
+          ["H25B", 4],
+          ["ASTR", 3],
+          ["C525", 3],
+          ["CL30", 3],
+          ["GLF6", 2],
+          ["F2TH", 2],
+          ["GALX", 2],
+          ["GLEX", 1]
+        ]
+      }
+    },
+    {
+      "icao": "sis",
+      "name": "Scott Aviation",
+      "callsign": {
+        "name": "Silverspeed",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C25B", 20],
+          ["GLF5", 19],
+          ["CL35", 18],
+          ["C750", 14],
+          ["H25B", 11],
+          ["GLEX", 10],
+          ["GLF4", 7],
+          ["CRJ2", 5],
+          ["PC12", 5],
+          ["C56X", 3],
+          ["CL60", 3],
+          ["GL5T", 3],
+          ["CL30", 2]
+        ]
+      }
+    },
+    {
+      "icao": "xsn",
+      "name": "McLean Aviation Services",
+      "callsign": {
+        "name": "Santana",
+        "callsignFormats": ["#", "##"]
+      },
+      "fleets": {
+        "default": [["PC12", 1]]
+      }
+    },
+    {
+      "icao": "csg",
+      "name": "China Southern Cargo",
+      "callsign": {
+        "name": "Southern Cargo",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [["B77L", 1]]
+      }
+    },
+    {
+      "icao": "ntw",
+      "name": "MaxAir",
+      "callsign": {
+        "name": "Northwoods",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["E55P", 20],
+          ["PC24", 1]
+        ]
+      }
+    },
+    {
+      "icao": "oae",
+      "name": "Omni Air International",
+      "callsign": {
+        "name": "Omni-Express",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["B763", 5],
+          ["B772", 3],
+          ["B762", 2]
+        ]
+      }
+    },
+    {
+      "icao": "wcc",
+      "name": "West Coast Charters",
+      "callsign": {
+        "name": "West Coast",
+        "callsignFormats": ["#", "##"]
+      },
+      "fleets": {
+        "default": [["B350", 1]]
+      }
+    },
+    {
+      "icao": "cwg",
+      "name": "Wing Aviation",
+      "callsign": {
+        "name": "Clear Wing",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["E35L", 19],
+          ["GLF4", 16],
+          ["H25B", 14],
+          ["C700", 10],
+          ["C680", 9],
+          ["GLF5", 9],
+          ["CL60", 8],
+          ["GALX", 6],
+          ["PC12", 6],
+          ["C750", 3]
+        ]
+      }
+    },
+    {
+      "icao": "scu",
+      "name": "Spartan College of Aeronautics",
+      "callsign": {
+        "name": "Skelly",
+        "callsignFormats": ["#", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 11],
+          ["PA44", 1]
+        ]
+      }
+    },
+    {
+      "icao": "ija",
+      "name": "International Jet Aviation Services",
+      "callsign": {
+        "name": "I-Jet",
+        "callsignFormats": ["#", "##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["LJ60", 21],
+          ["H25B", 14],
+          ["LJ35", 3],
+          ["LJ55", 3],
+          ["BE9L", 2],
+          ["F900", 2],
+          ["BE20", 1],
+          ["C550", 1],
+          ["GLF5", 1]
+        ]
+      }
+    },
+    {
+      "icao": "nxc",
+      "name": "ConciAir",
+      "callsign": {
+        "name": "Nexcon",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["C25A", 1],
+          ["C25B", 1],
+          ["PC12", 1]
+        ]
+      }
+    },
+    {
+      "icao": "sbe",
+      "name": "World Class Jet",
+      "callsign": {
+        "name": "Starbase",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["HDJT", 9],
+          ["C56X", 7],
+          ["CL30", 4]
+        ]
+      }
+    },
+    {
+      "icao": "new",
+      "name": "Northeastern Aviation",
+      "callsign": {
+        "name": "Northeastern",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["CL60", 10],
+          ["GLF5", 4],
+          ["E35L", 3],
+          ["H25B", 3],
+          ["GLF4", 2]
+        ]
+      }
+    },
+    {
+      "icao": "pwr",
+      "name": "Quanta Aviation Services",
+      "callsign": {
+        "name": "Powergrid",
+        "callsignFormats": ["#", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["G280", 8],
+          ["PC12", 3],
+          ["C680", 3],
+          ["C25C", 2]
+        ]
+      }
+    },
+    {
+      "icao": "tek",
+      "name": "Aero-Tech Services",
+      "callsign": {
+        "name": "Atech",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["PC12", 6],
+          ["LJ45", 1]
+        ]
+      }
+    },
+    {
+      "icao": "ctf",
+      "name": "Cutter Aviation",
+      "callsign": {
+        "name": "Cutter Flight",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["PC12", 10],
+          ["PC24", 4],
+          ["C68A", 2],
+          ["HDJT", 1]
+        ]
+      }
+    },
+    {
+      "icao": "vfr",
+      "name": "VFR",
+      "callsign": {
+        "name": "VFR",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 14],
+          ["C172", 10],
+          ["C152", 10],
+          ["C150", 8],
+          ["C182", 2],
+          ["PA24", 2],
+          ["BE35", 1],
+          ["BE36", 1],
+          ["M20P", 1],
+          ["PA30", 1]
+        ]
+      }
+    },
+    {
+      "icao": "skx",
+      "name": "Sky Airline Peru",
+      "callsign": {
+        "name": "Sky Peru",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [
+          ["A20N", 14],
+          ["CRJ7", 2],
+          ["CRJ2", 1]
+        ]
+      }
+    },
+    {
+      "icao": "rqj",
+      "name": "Airtrek",
+      "callsign": {
+        "name": "Rescue Jet",
+        "callsignFormats": ["#"]
+      },
+      "fleets": {
+        "default": [
+          ["C560", 8],
+          ["C650", 2],
+          ["C414", 1],
+          ["C550", 1]
+        ]
+      }
+    },
+    {
+      "icao": "fsr",
+      "name": "Flightstar",
+      "callsign": {
+        "name": "Flightstar",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["LJ45", 8],
+          ["CL35", 1]
+        ]
+      }
+    },
+    {
+      "icao": "tkr",
+      "name": "Air Tanker",
+      "callsign": {
+        "name": "Tanker",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["B462", 6],
+          ["DC10", 5],
+          ["MD87", 5],
+          ["RJ85", 4],
+          ["C130", 3],
+          ["DH8D", 2],
+          ["B733", 1]
+        ]
+      }
+    },
+    {
+      "icao": "lvl",
+      "name": "Fly Level",
+      "callsign": {
+        "name": "Dali",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [["A332", 1]]
+      }
+    },
+    {
+      "icao": "tog",
+      "name": "CSM Aviation",
+      "callsign": {
+        "name": "Tioga",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["BE20", 15],
+          ["G150", 3],
+          ["BE9T", 2],
+          ["C560", 1]
+        ]
+      }
+    },
+    {
+      "icao": "jny",
+      "name": "Journey Aviation",
+      "callsign": {
+        "name": "Rock Band",
+        "callsignFormats": ["#", "##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["GLF4", 11],
+          ["GLF5", 3],
+          ["GALX", 2],
+          ["F2TH", 1]
+        ]
+      }
+    },
+    {
+      "icao": "gmh",
+      "name": "Hughes Flying Service",
+      "callsign": {
+        "name": "Hughes",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [["BE40", 1]]
+      }
+    },
+    {
+      "icao": "oxf",
+      "name": "Oxford Aviation Academy",
+      "callsign": {
+        "name": "Oxford",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 7],
+          ["PA44", 3],
+          ["SR20", 1]
+        ]
+      }
+    },
+    {
+      "icao": "wing",
+      "name": "Army",
+      "callsign": {
+        "name": "Wing",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["BE20", 11],
+          ["C560", 10]
+        ]
+      }
+    },
+    {
+      "icao": "ngf",
+      "name": "Air Charity Network",
+      "callsign": {
+        "name": "Angel Flight",
+        "callsignFormats": ["####"]
+      },
+      "fleets": {
+        "default": [
+          ["BE36", 32],
+          ["SR22", 21],
+          ["P46T", 20],
+          ["C182", 16],
+          ["PA46", 9],
+          ["C82R", 8],
+          ["BE58", 6],
+          ["C172", 5],
+          ["DA40", 5],
+          ["S22T", 5],
+          ["SR20", 5],
+          ["TBM7", 5],
+          ["P32R", 4],
+          ["PA30", 4],
+          ["PA32", 4],
+          ["BE33", 3],
+          ["C340", 3],
+          ["M20P", 3],
+          ["P28A", 3],
+          ["P28B", 3]
+        ]
+      }
+    },
+    {
+      "icao": "mad",
+      "name": "Malone Aircharter",
+      "callsign": {
+        "name": "Malone",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["C25B", 7],
+          ["C56X", 6],
+          ["C680", 6],
+          ["CL30", 4]
+        ]
+      }
+    },
+    {
+      "icao": "mtu",
+      "name": "Middle Tennessee State University",
+      "callsign": {
+        "name": "Blue Raider",
+        "callsignFormats": ["##"]
+      },
+      "fleets": {
+        "default": [
+          ["DA40", 13],
+          ["PA44", 1],
+          ["S22T", 1]
+        ]
+      }
+    },
+    {
+      "icao": "xlj",
+      "name": "Xcel Jet",
+      "callsign": {
+        "name": "Xcel Jet",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["LJ45", 13],
+          ["GALX", 1]
+        ]
+      }
+    },
+    {
+      "icao": "nus",
+      "name": "Northern Illinois Flight Center",
+      "callsign": {
+        "name": "Enjet",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["H25B", 18],
+          ["C68A", 14],
+          ["C680", 13],
+          ["CL35", 12],
+          ["PC24", 12],
+          ["C56X", 9],
+          ["ASTR", 7],
+          ["C560", 7],
+          ["F2TH", 7],
+          ["BE58", 2],
+          ["CL30", 2]
+        ]
+      }
+    },
+    {
+      "icao": "lifeln",
+      "name": "Lifeline",
+      "callsign": {
+        "name": "Lifeline",
+        "callsignFormats": ["##", "###"]
+      },
+      "fleets": {
+        "default": [
+          ["PC12", 3],
+          ["BE20", 2],
+          ["LJ45", 1]
+        ]
+      }
     }
   ]
 }
