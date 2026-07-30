@@ -15,3 +15,8 @@
   - Scenarios may now specify "default_consolidation", overriding the config's consolidation (radarcontacto)
   - Coordination lists may specify "owner_tcp" to split one airport's release entries by assigned departure TCP (radarcontacto)
   - Added "handoff" filters to adapt automatic handoff volumes and conditions (radarcontacto)
+  - Added pseudo-ERAM coordination: a center's "arts_coordination" and "restrictions" derive each flight's entry/exit fixes at spawn, as the enroute host would (radarcontacto)
+  - Added "fix_pair_configuration" to assign a flight's initial owning position from its entry/exit fix pair, per configuration plan, with reassignment rules (altitude, aircraft class, callsign, active runway) and RNAV route designation (radarcontacto)
+  - Added "tcp_assignment_classes" and "automatic_handoff_classes" to name aircraft classes for fix-pair and handoff-filter matching (radarcontacto)
+  - Added "automatic_scratchpad_assignment" to default a flight's scratchpads from its fixes, altitude, and flight type (radarcontacto)
+  - Adapted the above for A80/ZTL, A90/ZBW, and TPA/ZMA (radarcontacto)
