@@ -850,7 +850,7 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 		return nil, err
 	}
 
-	// Departures aren't immediately associated, but the STARSComputer will	
+	// Departures aren't immediately associated, but the STARSComputer will
 	ac.ReportDepartureHeading = exitRoutesHaveVariedHeadings(exitRoutes)
 	ac.ReportDepartureSID = exitRoutesHaveVariedSIDs(exitRoutes)
 
@@ -879,7 +879,7 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.FlightPlan.Altitude, 0)
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && exitRoute.IsRNAV
 
-	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR  // VFRs aren't held
+	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
 	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, string(runway))
 
 	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
@@ -899,13 +899,12 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 		return nil, err
 	}
 
-
-		// Departures aren't immediately associated, but the STARSComputer will
-		// hold on to their flight plans for now.
-		// Create a flight strip for departures
+	// Departures aren't immediately associated, but the STARSComputer will
+	// hold on to their flight plans for now.
+	// Create a flight strip for departures
 	if shouldCreateFlightStrip(&nasFp) {
 		if s.isVirtualController(nasFp.TrackingController) {
-			// Virtual controller: strip goes to the handoff target			
+			// Virtual controller: strip goes to the handoff target
 			if !s.isVirtualController(nasFp.InboundHandoffController) {
 				s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
 			}

@@ -99,8 +99,8 @@ type scheduleTrafficProvider struct {
 	airport string
 	start   Time
 
-	departures            []scheduledDeparture
-	nextDeparture         int
+	departures    []scheduledDeparture
+	nextDeparture int
 
 	arrivals    []scheduledArrival
 	nextArrival int
