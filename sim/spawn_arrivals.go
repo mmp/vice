@@ -57,27 +57,37 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 
 	pushActive := now.Before(s.PushEnd)
 
-	for group, rates := range s.State.LaunchConfig.InboundFlowRates {
-		if now.After(s.NextInboundSpawn[group]) {
-			// Filter rates to only include types that are in automatic mode
-			filteredRates := make(map[string]float32)
-			for name, rate := range rates {
-				if name == "overflights" {
-					if s.State.LaunchConfig.OverflightMode == LaunchAutomatic {
-						filteredRates[name] = rate
-					}
-				} else {
-					if s.State.LaunchConfig.ArrivalMode == LaunchAutomatic {
-						filteredRates[name] = rate
-					}
+	lc := &s.State.LaunchConfig
+	for group, rates := range lc.InboundFlowRates {
+		// Overflights spawn on their own rate-based timer regardless of the
+		// traffic source: timetables and historical data cover arrivals and
+		// departures only.
+		if rate := rates["overflights"]; rate > 0 && lc.OverflightMode == LaunchAutomatic &&
+			now.After(s.NextOverflightSpawn[group]) {
+			ac, err := s.createOverflightNoLock(group)
+			if err != nil {
+				s.lg.Errorf("create overflight error: %v", err)
+			} else if ac != nil {
+				s.addAircraftNoLock(*ac)
+			}
+			s.NextOverflightSpawn[group] =
+				now.Add(randomWait(scaleRate(rate, lc.InboundFlowRateScale), false, s.Rand))
+		}
+
+		if lc.ArrivalMode == LaunchAutomatic && now.After(s.NextInboundSpawn[group]) {
+			arrivalRates := make(map[string]float32)
+			for airport, rate := range rates {
+				if airport != "overflights" {
+					arrivalRates[airport] = rate
 				}
 			}
-
-			if len(filteredRates) == 0 {
-				continue // Nothing automatic in this group
+			if len(arrivalRates) == 0 {
+				// This flow only has overflights.
+				s.NextInboundSpawn[group] = now.Add(idleDelay)
+				continue
 			}
 
-			ac, delay, err := s.activeTrafficProvider().createInbound(s, group, filteredRates, pushActive)
+			ac, delay, err := s.activeTrafficProvider().createInbound(s, group, arrivalRates, pushActive)
 
 			if err != nil {
 				s.lg.Errorf("create inbound error: %v", err)
@@ -86,10 +96,8 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 				s.addAircraftNoLock(*ac)
 			}
 			s.NextInboundSpawn[group] = now.Add(max(time.Millisecond, delay))
-
 		}
 	}
-
 }
 
 func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*Aircraft, error) {

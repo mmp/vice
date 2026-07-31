@@ -346,16 +346,25 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 	}
 
 	for group, groupRates := range lc.InboundFlowRates {
+		oldRates := s.State.LaunchConfig.InboundFlowRates[group]
+
 		var newSum, oldSum float32
 		for ap, rate := range groupRates {
-			newSum += rate
-			oldSum += s.State.LaunchConfig.InboundFlowRates[group][ap]
+			if ap != "overflights" {
+				newSum += rate
+				oldSum += oldRates[ap]
+			}
 		}
 		newSum *= lc.InboundFlowRateScale
 		oldSum *= s.State.LaunchConfig.InboundFlowRateScale
-
 		if newSum != oldSum {
 			s.NextInboundSpawn[group] = s.State.SimTime.Add(randomInitialWait(newSum, s.Rand))
+		}
+
+		newOverflight := groupRates["overflights"] * lc.InboundFlowRateScale
+		oldOverflight := oldRates["overflights"] * s.State.LaunchConfig.InboundFlowRateScale
+		if newOverflight != oldOverflight {
+			s.NextOverflightSpawn[group] = s.State.SimTime.Add(randomInitialWait(newOverflight, s.Rand))
 		}
 	}
 
@@ -582,9 +591,10 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 
 	for group, rates := range s.State.LaunchConfig.InboundFlowRates {
 		var rateSum float32
-		for _, rate := range rates {
-			rate = scaleRate(rate, s.State.LaunchConfig.InboundFlowRateScale)
-			rateSum += rate
+		for ap, rate := range rates {
+			if ap != "overflights" {
+				rateSum += scaleRate(rate, s.State.LaunchConfig.InboundFlowRateScale)
+			}
 		}
 
 		nextInboundSpawn := randomDelay(rateSum)
@@ -593,8 +603,13 @@ func (s *Sim) setInitialSpawnTimes(now Time) {
 			// for the next published runway-arrival event.
 			nextInboundSpawn = now
 		}
-
 		s.NextInboundSpawn[group] = nextInboundSpawn
+
+		// Overflights are always rate-based, no matter the traffic source.
+		if rate, ok := rates["overflights"]; ok {
+			s.NextOverflightSpawn[group] = randomDelay(
+				scaleRate(rate, s.State.LaunchConfig.InboundFlowRateScale))
+		}
 	}
 
 	for name := range s.State.DepartureAirports {

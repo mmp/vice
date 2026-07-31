@@ -19,7 +19,9 @@ import (
 // trafficProvider supplies automatically generated IFR aircraft to the
 // simulation. It also controls when the next departure request should occur;
 // scenario traffic uses a rate-based delay while timetable and historical
-// traffic use the next flight's published time.
+// traffic use the next flight's published time. createInbound's rates map
+// arrival airports only: overflights aren't part of any traffic source's data,
+// so the Sim generates them itself on a rate-based timer.
 type trafficProvider interface {
 	createIFRDeparture(s *Sim, airport string, runway av.RunwayID) (*Aircraft, time.Duration, error)
 	createInbound(s *Sim, group string, rates map[string]float32, pushActive bool) (*Aircraft, time.Duration, error)
@@ -38,7 +40,7 @@ func (scenarioTrafficProvider) createIFRDeparture(s *Sim, airport string, runway
 
 func (scenarioTrafficProvider) createInbound(s *Sim, group string,
 	rates map[string]float32, pushActive bool) (*Aircraft, time.Duration, error) {
-	flow, rateSum := sampleRateMap(
+	airport, rateSum := sampleRateMap(
 		rates,
 		s.State.LaunchConfig.InboundFlowRateScale,
 		s.Rand,
@@ -46,12 +48,7 @@ func (scenarioTrafficProvider) createInbound(s *Sim, group string,
 
 	delay := randomWait(rateSum, pushActive, s.Rand)
 
-	if flow == "overflights" {
-		ac, err := s.createOverflightNoLock(group)
-		return ac, delay, err
-	}
-
-	ac, err := s.createArrivalNoLock(group, flow)
+	ac, err := s.createArrivalNoLock(group, airport)
 	return ac, delay, err
 }
 
@@ -515,17 +512,10 @@ func (p *publishedTrafficProvider) departureDelay(s *Sim, airport string) time.D
 }
 
 func (p *publishedTrafficProvider) createInbound(s *Sim, group string,
-	rates map[string]float32, pushActive bool) (*Aircraft, time.Duration, error) {
+	rates map[string]float32, _ bool) (*Aircraft, time.Duration, error) {
 	index := p.nextArrivalFor(s, group, rates)
 	if index < 0 {
-		// Nothing left for this flow. Timetables and historical data provide
-		// arrivals and departures only, so let the scenario keep generating
-		// overflights when they are enabled.
-		if _, ok := rates["overflights"]; ok {
-			return scenarioTrafficProvider{}.createInbound(s, group,
-				map[string]float32{"overflights": rates["overflights"]}, pushActive)
-		}
-		return nil, idleDelay, nil
+		return nil, idleDelay, nil // Nothing left for this flow.
 	}
 
 	published := p.arrivals[index]

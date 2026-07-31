@@ -67,7 +67,10 @@ type Sim struct {
 	PatternState map[string]*PatternState
 	// Key is inbound flow group name
 	NextInboundSpawn map[string]Time
-	NextVFFRequest   Time
+	// Key is inbound flow group name; overflights spawn on their own timer
+	// since they are always rate-based, regardless of the traffic source.
+	NextOverflightSpawn map[string]Time
+	NextVFFRequest      Time
 
 	Handoffs  map[ACID]Handoff
 	PointOuts map[ACID][]PointOut
@@ -214,9 +217,10 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 	s := &Sim{
 		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
 
-		DepartureState:   make(map[string]map[av.RunwayID]*RunwayLaunchState),
-		PatternState:     make(map[string]*PatternState),
-		NextInboundSpawn: make(map[string]Time),
+		DepartureState:      make(map[string]map[av.RunwayID]*RunwayLaunchState),
+		PatternState:        make(map[string]*PatternState),
+		NextInboundSpawn:    make(map[string]Time),
+		NextOverflightSpawn: make(map[string]Time),
 
 		ControlPositions:     config.ControlPositions,
 		InboundAssignments:   config.ControllerConfiguration.InboundAssignments,
@@ -449,6 +453,10 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 		s.Rand = rand.Make()
 	}
 
+	if s.NextOverflightSpawn == nil {
+		s.NextOverflightSpawn = make(map[string]Time)
+	}
+
 	s.wxProvider = provider
 	if s.wxModel == nil {
 		s.wxModel = wx.MakeModel(provider, s.State.Facility, s.State.PrimaryAirport, s.State.SimTime.Time(), s.lg)
@@ -557,6 +565,7 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Any("state", s.State),
 		slog.Any("departure_state", s.DepartureState),
 		slog.Any("next_inbound_spawn", s.NextInboundSpawn),
+		slog.Any("next_overflight_spawn", s.NextOverflightSpawn),
 		slog.Any("automatic_handoffs", s.Handoffs),
 		slog.Any("automatic_pointouts", s.PointOuts),
 		slog.Time("next_push_start", s.NextPushStart.Time()),
