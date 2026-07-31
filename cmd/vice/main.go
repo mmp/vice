@@ -300,6 +300,9 @@ func runSimulation(lg *log.Logger) error {
 	fmt.Printf("Simulation start time: %s\n", newSimConfig.StartTime.Format(time.RFC3339))
 
 	s := sim.NewSim(*newSimConfig, lg)
+	// Same as SimManager.Add does for a sim launched from the UI; without it a
+	// scenario flying published traffic has no flights to fly.
+	s.Activate(lg, newSimConfig.WXProvider)
 
 	// Sign on as instructor if waypoint commands are specified
 	instructor := *waypointCommands != ""
